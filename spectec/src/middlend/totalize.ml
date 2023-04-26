@@ -87,7 +87,7 @@ and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, a) -> DotP (t_path env path, a)
+  | DotP (path, t, a) -> DotP (t_path env path, t, a)
 
 and t_path env x = { x with it = t_path' env x.it }
 
