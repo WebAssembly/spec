@@ -461,7 +461,7 @@ Stack
 ~~~~~
 
 Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
-The stack contains three kinds of entries:
+The stack contains five kinds of entries:
 
 * *Values*: the *operands* of instructions.
 
