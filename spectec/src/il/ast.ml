@@ -124,7 +124,7 @@ and path' =
   | RootP                        (*  *)
   | IdxP of path * exp           (* path `[` exp `]` *)
   | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
-  | DotP of path * atom          (* path `.` atom *)
+  | DotP of path * typ * atom    (* path `.` atom *)
 
 and iterexp = iter * id list
 

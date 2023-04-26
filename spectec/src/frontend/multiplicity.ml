@@ -265,9 +265,9 @@ and annot_path env p : Il.Ast.path * occur =
     let e1', occur2 = annot_exp env e1 in
     let e2', occur3 = annot_exp env e2 in
     SliceP (p1', e1', e2') $ p.at, union occur1 (union occur2 occur3)
-  | DotP (p1, atom) ->
+  | DotP (p1, t, atom) ->
     let p1', occur1 = annot_path env p1 in
-    DotP (p1', atom) $ p.at, occur1
+    DotP (p1', t, atom) $ p.at, occur1
 
 and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
   assert (ids = []);

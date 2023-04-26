@@ -106,7 +106,7 @@ and free_path p =
   | IdxP (p1, e) -> union (free_path p1) (free_exp e)
   | SliceP (p1, e1, e2) ->
     union (free_path p1) (union (free_exp e1) (free_exp e2))
-  | DotP (p1, _) -> free_path p1
+  | DotP (p1, t, _atom) -> union (free_path p1) (free_typ t)
 
 and free_iterexp (iter, ids) =
     union (free_iter iter) (free_list free_varid ids)
