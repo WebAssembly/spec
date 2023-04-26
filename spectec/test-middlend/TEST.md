@@ -1973,7 +1973,6 @@ def size : valtype -> nat?
   def size(F64_valtype) = ?(64)
   ;; 2-aux.watsup:24.1-24.22
   def size(V128_valtype) = ?(128)
-  ;;
   def {x : valtype} size(x) = ?()
 
 ;; 2-aux.watsup:29.1-29.40
@@ -2643,7 +2642,6 @@ def default_ : valtype -> val?
   def default_(F64_valtype) = ?(CONST_val(F64_numtype, 0))
   ;; 4-runtime.watsup:49.1-49.34
   def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
-  ;;
   def {x : valtype} default_(x) = ?()
 
 ;; 4-runtime.watsup:60.1-60.71
@@ -3602,7 +3600,6 @@ def size : valtype -> nat?
   def size(F64_valtype) = ?(64)
   ;; 2-aux.watsup:24.1-24.22
   def size(V128_valtype) = ?(128)
-  ;;
   def {x : valtype} size(x) = ?()
 
 ;; 2-aux.watsup:29.1-29.40
@@ -4326,7 +4323,6 @@ def default_ : valtype -> val?
   def default_(F64_valtype) = ?(CONST_val(F64_numtype, 0))
   ;; 4-runtime.watsup:49.1-49.34
   def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
-  ;;
   def {x : valtype} default_(x) = ?()
 
 ;; 4-runtime.watsup:60.1-60.71
