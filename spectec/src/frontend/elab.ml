@@ -567,7 +567,7 @@ and elab_exp env e t : Il.exp =
     let e1' = elab_exp env e1 t1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
     let t' = find_field tfs atom e1.at in
-    let e' = Il.DotE (elab_typ env t1, e1', elab_atom atom) $$ e.at % !!env t' in
+    let e' = Il.DotE (e1', elab_atom atom) $$ e.at % !!env t' in
     cast_exp "field" env e' t' t
   | CommaE (e1, e2) ->
     let e1' = elab_exp env e1 t in
@@ -842,7 +842,7 @@ and elab_exp_variant env es cases t at : Il.exp =
     let es' = elab_exp_notation' env e2 (SeqT ts $ t.at) in
     let t2 = expand_singular' env t.it $ at in
     cast_exp "variant case" env
-      (Il.CaseE (elab_atom atom, tup_exp' es' at, elab_typ env t2) $$ at % !!env t2) t2 t
+      (Il.CaseE (elab_atom atom, tup_exp' es' at) $$ at % !!env t2) t2 t
   | _ ->
     error_typ at "expression" t
 
@@ -866,7 +866,7 @@ and elab_path env p t : Il.path * typ =
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
     let t' = find_field tfs atom p1.at in
-    Il.DotP (p1', elab_typ env t1, elab_atom atom) $$ p.at % !!env t', t'
+    Il.DotP (p1', elab_atom atom) $$ p.at % !!env t', t'
 
 
 and cast_empty phrase env t at t' : Il.exp =

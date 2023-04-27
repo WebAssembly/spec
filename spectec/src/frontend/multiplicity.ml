@@ -205,9 +205,9 @@ and annot_exp env e : Il.Ast.exp * occur =
     | StrE efs ->
       let efs', occurs = List.split (List.map (annot_expfield env) efs) in
       StrE efs', List.fold_left union Env.empty occurs
-    | DotE (t, e1, atom) ->
+    | DotE (e1, atom) ->
       let e1', occur1 = annot_exp env e1 in
-      DotE (t, e1', atom), occur1
+      DotE (e1', atom), occur1
     | CompE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
@@ -243,9 +243,9 @@ and annot_exp env e : Il.Ast.exp * occur =
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
       CatE (e1', e2'), union occur1 occur2
-    | CaseE (atom, e1, t) ->
+    | CaseE (atom, e1) ->
       let e1', occur1 = annot_exp env e1 in
-      CaseE (atom, e1', t), occur1
+      CaseE (atom, e1'), occur1
     | SubE (e1, t1, t2) ->
       let e1', occur1 = annot_exp env e1 in
       SubE (e1', t1, t2), occur1
@@ -268,9 +268,9 @@ and annot_path env p : Il.Ast.path * occur =
       let e1', occur2 = annot_exp env e1 in
       let e2', occur3 = annot_exp env e2 in
       SliceP (p1', e1', e2'), union occur1 (union occur2 occur3)
-    | DotP (p1, t, atom) ->
+    | DotP (p1, atom) ->
       let p1', occur1 = annot_path env p1 in
-      DotP (p1', t, atom), occur1
+      DotP (p1', atom), occur1
   in {p with it}, occur
 
 and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =

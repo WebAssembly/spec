@@ -52,13 +52,13 @@ let rec t_exp env e : premise list =
   | VarE _ | BoolE _ | NatE _ | TextE _ | OptE None
   -> []
   | UnE (_, exp)
-  | DotE (_, exp, _)
+  | DotE (exp, _)
   | LenE exp
   | MixE (_, exp)
   | CallE (_, exp)
   | OptE (Some exp)
   | TheE exp
-  | CaseE (_, exp, _)
+  | CaseE (_, exp)
   | SubE (exp, _, _)
   -> t_exp env exp
   | BinE (_, exp1, exp2)
@@ -89,7 +89,7 @@ and t_path env path = match path.it with
   | RootP -> []
   | IdxP (path, e) -> t_path env path @ t_exp env e
   | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
-  | DotP (path, _, _) -> t_path env path
+  | DotP (path, _) -> t_path env path
 
 
 let rec t_prem env prem = match prem.it with

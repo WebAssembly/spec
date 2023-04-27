@@ -69,16 +69,14 @@ and eq_exp e1 e2 =
   | TupE es1, TupE es2
   | ListE es1, ListE es2 -> eq_list eq_exp es1 es2
   | StrE efs1, StrE efs2 -> eq_list eq_expfield efs1 efs2
-  | DotE (t1, e11, atom1), DotE (t2, e21, atom2) ->
-    eq_typ t1 t2 && eq_exp e11 e21 && atom1 = atom2
+  | DotE (e11, atom1), DotE (e21, atom2) -> eq_exp e11 e21 && atom1 = atom2
   | MixE (op1, e1), MixE (op2, e2) -> op1 = op2 && eq_exp e1 e2
   | CallE (id1, e1), CallE (id2, e2) -> eq_id id1 id2 && eq_exp e1 e2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iterexp iter1 iter2
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
   | TheE e1, TheE e2 -> eq_exp e1 e2
-  | CaseE (atom1, e1, t1), CaseE (atom2, e2, t2) ->
-    atom1 = atom2 && eq_exp e1 e2 && eq_typ t1 t2
+  | CaseE (atom1, e1), CaseE (atom2, e2) -> atom1 = atom2 && eq_exp e1 e2
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
   | _, _ -> false
@@ -92,8 +90,7 @@ and eq_path p1 p2 =
   | IdxP (p11, e1), IdxP (p21, e2) -> eq_path p11 p21 && eq_exp e1 e2
   | SliceP (p11, e11, e12), SliceP (p21, e21, e22) ->
     eq_path p11 p21 && eq_exp e11 e21 && eq_exp e12 e22
-  | DotP (p11, t1, atom1), DotP (p21, t2, atom2) ->
-    eq_path p11 p21 && eq_typ t1 t2 && atom1 = atom2
+  | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && atom1 = atom2
   | _, _ -> false
 
 and eq_iterexp (iter1, ids1) (iter2, ids2) =

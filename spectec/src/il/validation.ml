@@ -307,8 +307,8 @@ and infer_exp env e : typ =
   | ExtE (e1, _, _)
   | CompE (e1, _) -> infer_exp env e1
   | StrE _ -> error e.at "cannot infer type of record"
-  | DotE (t1, e1, atom) ->
-    let tfs = as_struct_typ "expression" env Check t1 e1.at in
+  | DotE (e1, atom) ->
+    let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
     find_field tfs atom e1.at
   | TupE es -> TupT (List.map (infer_exp env) es) $ e.at
   | CallE (id, _) -> snd (find "function" env.defs id)
@@ -321,7 +321,7 @@ and infer_exp env e : typ =
   | ListE _ -> error e.at "cannot infer type of list"
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
-  | SubE (_, _, t) -> t
+  | SubE _ -> error e.at "cannot infer type of subsumption"
 
 
 and valid_exp env e t =
@@ -382,8 +382,8 @@ and valid_exp env e t =
   | StrE efs ->
     let tfs = as_struct_typ "record" env Check t e.at in
     valid_list valid_expfield env efs tfs e.at
-  | DotE (t1, e1, atom) ->
-    valid_typ env t1;
+  | DotE (e1, atom) ->
+    let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
     let t' = find_field tfs atom e1.at in
@@ -423,12 +423,10 @@ and valid_exp env e t =
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
     valid_exp env e2 t
-  | CaseE (atom, e1, t2) ->
-    valid_typ env t2;
-    let cases = as_variant_typ "case" env Check t2 e.at in
+  | CaseE (atom, e1) ->
+    let cases = as_variant_typ "case" env Check t e.at in
     let t1 = find_case cases atom e1.at in
-    valid_exp env e1 t1;
-    equiv_typ env t2 t e.at
+    valid_exp env e1 t1
   | SubE (e1, t1, t2) ->
     valid_typ env t1;
     valid_typ env t2;
@@ -462,9 +460,8 @@ and valid_path env p t : typ =
       valid_exp env e2 (NatT $ e2.at);
       let _ = as_list_typ "path" env Check t1 p1.at in
       t1
-    | DotP (p1, t1, atom) ->
-      let t1' = valid_path env p1 t in
-      equiv_typ env t1' t1 p1.at;
+    | DotP (p1, atom) ->
+      let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
       find_field tfs atom p1.at
   in
