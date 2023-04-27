@@ -200,32 +200,23 @@ and valid_instrs env instrs =
 let total = ref 0
 let fail = ref 0
 
-let numerics =
-  ["unop"; "binop"; "testop"; "relop"; "cvtop"]
-
-let init_env = function
-  | name when List.mem name numerics ->
-      List.fold_left (fun acc name -> Env.add (N name) StringT acc) Env.empty numerics
-      |> Env.add (N "nt") TopT
-      |> Env.add (N "nt_1") TopT
-      |> Env.add (N "nt_2") TopT
-      |> Env.add (N "sx") (ListT TopT)
-  | _ ->
-      Env.empty
-      |> Env.add (N "a") AddrT
-      |> Env.add (N "bt") TopT
-      |> Env.add (N "l") TopT
-      |> Env.add (N "x") IntT
-      |> Env.add (N "y") IntT
-      |> Env.add (N "z") StateT
+let init_env params =
+  List.fold_left (fun acc (n, ty) -> Env.add n ty acc) Env.empty params
+  |> Env.add (N "z") StateT
 
 let valid_algo algo =
   try (
     total := !total + 1;
-    let Algo (name, _params, instrs) = algo in
+    let Algo (name, params, instrs) = algo in
     print_endline "";
     print_endline name;
-    let env = init_env name in
+
+    let env = init_env params in
+    (* List.iter (fun (n, ty) ->
+      Printf.sprintf "%s -> %s, " (Print.string_of_name n) (Print.string_of_ir_type ty) |> print_endline)
+      params;
+    print_endline "";*)
+
     let _ = valid_instrs env instrs in
     print_endline "Ok"
   ) with

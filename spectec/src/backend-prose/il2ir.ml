@@ -43,10 +43,25 @@ let rec count_instrs instrs = instrs |>
   ) |> List.fold_left (+) 0
 
 (** Translate `Ast.type` *)
-let il_type2ir_type t =
-  match t.it with
-  | Ast.NatT -> Ir.IntT
-  | _ -> (* TODO *) TopT
+let il_type2ir_type t = match t.it with
+  | Ast.VarT id ->
+      begin match id.it with
+        | "n" -> Ir.IntT
+        | "numtype" -> Ir.IntT
+        | idx when String.ends_with ~suffix: "idx" idx -> Ir.IntT
+        | numerics when String.ends_with ~suffix: "_numtype" numerics -> Ir.StringT
+        | "addr" -> Ir.AddrT
+        | "functype" -> Ir.TopT
+        | "cvtop" -> Ir.StringT
+        | "sx" -> Ir.TopT
+        | "val" -> Ir.WasmValueTopT
+        | "valtype" -> Ir.WasmValueTopT
+        | _ ->
+            (* TODO *)
+            (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
+            Ir.TopT
+      end
+  | _ -> failwith "Unreachable"
 
 let rec find_type tenv exp = match exp.it with
   | Ast.VarE id ->

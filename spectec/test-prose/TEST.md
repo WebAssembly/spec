@@ -478,7 +478,7 @@ loop
 Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
 
 if
-Failure("Not found: N(instr_1)")
+Ok
 
 label
 Ok
@@ -490,7 +490,7 @@ br_if
 Ok
 
 br_table
-Failure("TopT is not subtype of ListT (TopT)")
+Ok
 
 frame
 Failure("FrameE")
@@ -591,6 +591,6 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 data.drop
 Ok
 
-Pass/Total: [24/44]
+Pass/Total: [26/44]
 == Complete.
 ```
