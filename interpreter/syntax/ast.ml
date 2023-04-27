@@ -408,4 +408,5 @@ let module_type_of (m : module_) : module_type =
   let a = Array.make (List.length dts) BotHT in
   let s = function StatX x -> a.(Int32.to_int x) | RecX x -> VarHT (RecX x) in
   List.iteri (fun i dt -> a.(i) <- DefHT (subst_def_type s dt)) dts;
-  subst_module_type s (ModuleT (its, ets))
+  subst_module_type s (ModuleT
+    (List.map (subst_import_type s) its, List.map (subst_export_type s) ets))
