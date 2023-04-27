@@ -17,11 +17,8 @@ Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == IL Validation...
 == Prose Generation...
-lhs is not list:(val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
-lhs is not list:(val <: admininstr)^k{val} :: [LOOP_admininstr(bt, instr*{instr})]
-lhs is not list:(val <: admininstr)^k{val} :: [BLOCK_admininstr(bt, instr*{instr})]
 unreachable
 1. Trap.
 
@@ -44,7 +41,7 @@ select t?{t}
 8. Else:
   a. Push val_2 to the stack.
 
-block
+block bt instr*{instr}
 1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
@@ -56,7 +53,7 @@ block
       a) Let L be YetE ().
       b) Enter the block Yet with label YetE ().
 
-loop
+loop bt instr*{instr}
 1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
@@ -216,7 +213,7 @@ call_indirect x ft
       a) Let YetE (`%;%`(m, func)) be $funcinst(z)[a].
       b) Execute (CALL_ADDR a).
 
-call_addr
+call_addr a
 1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. If a < the length of $funcinst(z), then:

@@ -465,15 +465,16 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
     | _ -> lhs
   in
 
-  let params = match lhs_stack.it with
-  | Ast.ListE es ->
-    let top = es |> List.rev |> List.hd in
-    ( match top.it with
-    | CaseE(Atom iname, args, _) when iname != "FRAME_" && iname != "LABEL_" ->
-        find_types tenv args
-    | _ -> print_endline "top of the stack is frame / label"; []
-    )
-  | _ -> print_endline ("lhs is not list:" ^ Print.string_of_exp lhs_stack); []
+  let rec top_of e = match e.it with
+  | Ast.ListE es -> top_of ( es |> List.rev |> List.hd )
+  | Ast.CatE (_, e) -> top_of e
+  | _ -> e
+  in
+
+  let params = match (top_of lhs_stack).it with
+  | CaseE(Atom iname, args, _) when iname != "FRAME_" && iname != "LABEL_" ->
+      find_types tenv args
+  | _ -> print_endline "top of the stack is frame / label"; []
   in
 
   let pop_instrs = lhs2pop lhs_stack in
@@ -495,7 +496,7 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
 
 
 
-(** Temporarily convert `Ast.RuleD` into `reduction_group`: id * (lhs, rhs, prems) **)
+(** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
 
 type reduction_group = string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
