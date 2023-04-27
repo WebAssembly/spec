@@ -45,11 +45,11 @@ let failmsg ty1 ty2 =
     |> failwith
 
 let signature_of = function
-  | "unop" -> ([StringT; TopT; IntT], IntT)
-  | "binop" -> ([StringT; TopT; IntT; IntT], IntT)
+  | "unop" -> ([StringT; TopT; IntT], ListT IntT)
+  | "binop" -> ([StringT; TopT; IntT; IntT], ListT IntT)
   | "testop" -> ([StringT; TopT; IntT], IntT)
   | "relop" -> ([StringT; TopT; IntT; IntT], IntT)
-  | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], EmptyListT)
+  | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], ListT IntT)
   | "funcaddr" -> ([StateT], ListT AddrT)
   | "local" -> ([StateT; IntT], WasmValueTopT)
   | "global" -> ([StateT; IntT], WasmValueTopT)
@@ -78,30 +78,30 @@ let subtype ty1 ty2 = match (ty1, ty2) with
   | (ty1, ty2) when ty1 = ty2 -> ()
   | _ -> failmsg ty1 ty2
 
-let rec typeof_expr env expr = match expr with
+let rec typeof env expr = match expr with
   | ValueE _ -> IntT
   | MinusE e ->
-      let ty = typeof_expr env e in
+      let ty = typeof env e in
       subtype ty IntT;
       IntT
   | AddE (e1, e2) | SubE (e1, e2) | MulE (e1, e2) | DivE (e1, e2) ->
-      let ty1 = typeof_expr env e1 in
+      let ty1 = typeof env e1 in
       subtype ty1 IntT;
-      let ty2 = typeof_expr env e2 in
+      let ty2 = typeof env e2 in
       subtype ty2 IntT;
       IntT
   | AppE (N n, el) ->
       let (param_type, result_type) = signature_of n in
-      let args_type = List.map (typeof_expr env) el in
+      let args_type = List.map (typeof env) el in
       List.iter2 subtype args_type param_type;
       result_type
   | IterE (n, _) ->
       Env.find n env
   | ListE ([]) -> EmptyListT
   | IndexAccessE (e1, e2) ->
-      let ty1 = typeof_expr env e1 in
+      let ty1 = typeof env e1 in
       subtype ty1 (ListT (TopT));
-      let ty2 = typeof_expr env e2 in
+      let ty2 = typeof env e2 in
       subtype ty2 (IntT);
       begin match ty1 with
         | ListT ty -> ty
@@ -109,12 +109,13 @@ let rec typeof_expr env expr = match expr with
       end
   | NameE (n) -> Env.find n env
   | RefFuncAddrE e ->
-      let ty = typeof_expr env e in
+      let ty = typeof env e in
       subtype ty AddrT;
       WasmValueTopT
   | ConstE (_, _) -> WasmValueT (NumType I32Type)
   | LengthE e ->
-      let _ = typeof_expr env e in
+      let _ty = typeof env e in
+      (* subtype ty (ListT (TopT)); *)
       IntT
   | _ -> Print.structured_string_of_expr expr |> failwith
 
@@ -127,30 +128,30 @@ and valid_cond env cond = match cond with
       valid_cond env c1;
       valid_cond env c2;
   | EqC (e1, e2) ->
-      let _ = typeof_expr env e1 in
-      let _ = typeof_expr env e2 in
+      let _ = typeof env e1 in
+      let _ = typeof env e2 in
       ()
   | GtC (e1, e2) ->
-      let _ = typeof_expr env e1 in
-      let _ = typeof_expr env e2 in
+      let _ = typeof env e1 in
+      let _ = typeof env e2 in
       ()
   | GeC (e1, e2) ->
-      let _ = typeof_expr env e1 in
-      let _ = typeof_expr env e2 in
+      let _ = typeof env e1 in
+      let _ = typeof env e2 in
       ()
   | LtC (e1, e2) ->
-      let _ = typeof_expr env e1 in
-      let _ = typeof_expr env e2 in
+      let _ = typeof env e1 in
+      let _ = typeof env e2 in
       ()
   | LeC (e1, e2) ->
-      let _ = typeof_expr env e1 in
-      let _ = typeof_expr env e2 in
+      let _ = typeof env e1 in
+      let _ = typeof env e2 in
       ()
   | DefinedC e ->
-      let _ = typeof_expr env e in
+      let _ = typeof env e in
       ()
   | PartOfC el ->
-      let _ = List.map (typeof_expr env) el in
+      let _ = List.map (typeof env) el in
       ()
   | TopC _ | YetC _ -> ()
 
@@ -169,7 +170,7 @@ let rec valid_instr env instr = match instr with
       env
   | AssertI _ -> env
   | PushI e ->
-      let ty = typeof_expr env e in
+      let ty = typeof env e in
       if (ty <> IterT) then subtype ty WasmValueTopT;
       env
   | PopI (ConstE (_, NameE name)) ->
@@ -179,15 +180,15 @@ let rec valid_instr env instr = match instr with
   | PopI (IterE (name, _)) ->
       Env.add name IterT env
   | LetI (NameE (name), e) | LetI (ListE ([NameE (name)]), e) ->
-      Env.add name (typeof_expr env e) env
+      Env.add name (typeof env e) env
   | LetI (RefNullE _, _) -> env
   | TrapI | NopI -> env
   | PerformI (AppE (n, el)) ->
-      let ty = typeof_expr env (AppE (n, el)) in
+      let ty = typeof env (AppE (n, el)) in
       subtype ty StateT;
       env
   | ExecuteI (_, el) ->
-      let _ = List.map (typeof_expr env) el in
+      let _ = List.map (typeof env) el in
       env
   | _ -> Print.structured_string_of_instr 0 instr |> failwith
 
@@ -234,4 +235,4 @@ let valid_algo algo =
 
 let valid ir =
   List.iter valid_algo ir;
-  Printf.sprintf "Pass/Total: [%d/%d]" (!total - !fail) !total |> print_endline
+  Printf.sprintf "\nPass/Total: [%d/%d]" (!total - !fail) !total |> print_endline
