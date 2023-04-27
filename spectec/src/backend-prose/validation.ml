@@ -179,7 +179,8 @@ let rec valid_instr env instr = match instr with
   | LetI (RefNullE _, _) -> env
   | TrapI | NopI -> env
   | PerformI (AppE (n, el)) ->
-      let _ = type_of_expr env (AppE (n, el)) in
+      let ty = type_of_expr env (AppE (n, el)) in
+      subtype ty StateT;
       env
   | ExecuteI (_, el) ->
       let _ = List.map (type_of_expr env) el in
