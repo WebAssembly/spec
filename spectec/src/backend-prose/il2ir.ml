@@ -295,13 +295,23 @@ let reduction2instrs (_, _, rhs, prems) =
     match prem.it with
     | Ast.IfPr exp -> [ Ir.IfI (exp2cond exp, instrs |> check_nop, []) ]
     | Ast.ElsePr -> [ Ir.OtherwiseI (instrs |> check_nop) ]
-    | Ast.AssignPr(exp1, exp2) -> ( match exp1.it with
-      | CaseE (atom, _e, t) -> [ Ir.IfI (
-          EqC (
-            (YetE ("typeof(" ^ (Print.string_of_exp exp2) ^ ")")),
-            (YetE ((Print.string_of_atom atom) ^ "_" ^ (Print.string_of_typ t)))
+    | Ast.AssignPr (exp1, exp2) -> ( match exp1.it with
+      | Ast.CaseE (atom, _e, t) -> [ Ir.IfI (
+          Ir.EqC (
+            Ir.YetE ("typeof(" ^ (Print.string_of_exp exp2) ^ ")"),
+            Ir.YetE ((Print.string_of_atom atom) ^ "_" ^ (Print.string_of_typ t))
           ),
           Ir.LetI (exp2expr exp1, exp2expr exp2) :: instrs,
+          []
+        ) ]
+      | Ast.ListE es ->
+        let rhs = exp2expr exp2 in
+        [ Ir.IfI (
+          Ir.EqC (
+            Ir.LengthE rhs,
+            Ir.ValueE (List.length es)
+          ),
+          Ir.LetI (exp2expr exp1, rhs) :: instrs,
           []
         ) ]
       | _ -> Ir.LetI (exp2expr exp1, exp2expr exp2) :: instrs

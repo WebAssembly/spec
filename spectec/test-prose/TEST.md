@@ -131,9 +131,10 @@ return
 unop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
-3. Let [c] be $unop(unop, nt, c_1).
-4. Push the value nt.CONST c to the stack.
-5. If $unop(unop, nt, c_1) is [], then:
+3. If the length of $unop(unop, nt, c_1) is 1, then:
+  a. Let [c] be $unop(unop, nt, c_1).
+  b. Push the value nt.CONST c to the stack.
+4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
 binop
@@ -141,9 +142,10 @@ binop
 2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value nt.CONST c_1 from the stack.
-5. Let [c] be $binop(binop, nt, c_1, c_2).
-6. Push the value nt.CONST c to the stack.
-7. If $binop(binop, nt, c_1, c_2) is [], then:
+5. If the length of $binop(binop, nt, c_1, c_2) is 1, then:
+  a. Let [c] be $binop(binop, nt, c_1, c_2).
+  b. Push the value nt.CONST c to the stack.
+6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
 testop
@@ -169,9 +171,10 @@ extend
 cvtop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
-3. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
-4. Push the value nt.CONST c to the stack.
-5. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
+3. If the length of $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is 1, then:
+  a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
+  b. Push the value nt.CONST c to the stack.
+4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
 ref.is_null
