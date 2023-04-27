@@ -19,6 +19,8 @@ Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == Prose Generation...
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
+Bubbleup semantics for return: Top of the stack is frame / label
+Bubbleup semantics for br: Top of the stack is frame / label
 unreachable
 1. Trap.
 
@@ -79,7 +81,7 @@ label n instr*{instr} (val <: admininstr)*{val}
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
-br n instr'*{instr'} (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [BR_admininstr(0)] :: (instr <: admininstr)*{instr}
+br
 1. Pop [val'*, [val^n, [[YetE (BR_admininstr(0))], instr*]]] from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
@@ -113,7 +115,7 @@ frame n f (val <: admininstr)^n{val}
 7. If the length of val^n is n, then:
   a. Push val^n to the stack.
 
-return n f (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [RETURN_admininstr] :: (instr <: admininstr)*{instr}
+return
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: due to validation, there are at least n values on the top of the stack.

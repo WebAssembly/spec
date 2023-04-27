@@ -472,9 +472,14 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
   in
 
   let params = match (top_of lhs_stack).it with
-  | CaseE(Atom iname, args, _) when iname != "FRAME_" && iname != "LABEL_" ->
-      find_types tenv args
-  | _ -> print_endline "top of the stack is frame / label"; []
+  | CaseE(Atom iname, args, _) when
+      algo_name = "frame" ||
+      algo_name = "label" ||
+      iname <> "FRAME_" && iname <> "LABEL_" ->
+        find_types tenv args
+  | _ ->
+    print_endline ("Bubbleup semantics for " ^ algo_name ^ ": Top of the stack is frame / label");
+    []
   in
 
   let pop_instrs = lhs2pop lhs_stack in
