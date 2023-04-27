@@ -32,6 +32,8 @@ let rec neg cond = match cond with
 | Ir.LeC (e1, e2) -> Ir.GtC(e1, e2)
 | _ -> Ir.NotC cond
 
+let list_sum = List.fold_left (+) 0
+
 let rec count_instrs instrs = instrs |>
   List.map (function
   | Ir.IfI (_, il1, il2)
@@ -40,7 +42,7 @@ let rec count_instrs instrs = instrs |>
   | Ir.WhileI (_, il)
   | Ir.RepeatI (_, il) -> 1 + count_instrs il
   | _ -> 1
-  ) |> List.fold_left (+) 0
+  ) |> list_sum
 
 (** Translate `Ast.type` *)
 let il_type2ir_type t = match t.it with
@@ -243,10 +245,9 @@ let rec lhs2pop exp = match exp.it with
   (* noraml list expression *)
   | Ast.ListE exps ->
       let rev = List.rev exps |> List.tl in
-      List.fold_right
-        (fun e acc -> insert_assert e :: Ir.PopI (exp2expr e) :: acc)
+      List.concat_map
+        (fun e -> [insert_assert e; Ir.PopI (exp2expr e)])
         rev
-        []
   | _ -> gen_fail_msg_of_exp exp "lhs instruction" |> failwith
 
 (* `Ast.exp` -> `Ir.instr list` *)
@@ -479,7 +480,7 @@ let enhance_readability instrs =
 (** Main translation **)
 
 (* `reduction_group list` -> `Backend-prose.Ir.Algo` *)
-let reduction_group2algo (reduction_name, reduction_group) acc =
+let reduction_group2algo (reduction_name, reduction_group) =
   let algo_name = String.split_on_char '-' reduction_name |> List.hd in
   let (lhs, _, _, tenv) = List.hd reduction_group in
 
@@ -517,7 +518,7 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
     else get_params lhs_stack |> List.map (find_type tenv) in
 
   let body = (pop_instrs @ instrs) |> check_nop |> enhance_readability in
-  Ir.Algo (algo_name, params, body) :: acc
+  Ir.Algo (algo_name, params, body)
 
 
 
@@ -526,15 +527,15 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
 type reduction_group = string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
 (* extract rules except Step/pure and Step/read *)
-let extract_rules def acc = match def.it with
+let extract_rules def = match def.it with
   | Ast.RelD (id, _, _, rules)
     when String.starts_with ~prefix:"Step" id.it ->
       let filter_context =
         (fun rule ->
           let Ast.RuleD (ruleid, _, _, _, _) = rule.it in
           ruleid.it <> "pure" && ruleid.it <> "read") in
-      (List.filter filter_context rules) :: acc
-  | _ -> acc
+      List.filter filter_context rules
+  | _ -> []
 
 let name_of_rule rule =
   let Ast.RuleD (id1, _, _, _, _) = rule.it in
@@ -566,7 +567,7 @@ let rec group = function
 
 (* `Ast.script` -> `Ir.Algo` *)
 let translate il =
-  let rules = List.fold_right extract_rules il [] |> List.flatten in
+  let rules = List.concat_map extract_rules il in
   let reduction_groups: reduction_group list = group rules in
 
-  List.fold_right reduction_group2algo reduction_groups []
+  List.map reduction_group2algo reduction_groups

@@ -17,10 +17,10 @@ Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == IL Validation...
 == Prose Generation...
+Bubbleup semantics for br: Top of the stack is frame / label
+Bubbleup semantics for return: Top of the stack is frame / label
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
-Bubbleup semantics for return: Top of the stack is frame / label
-Bubbleup semantics for br: Top of the stack is frame / label
 unreachable
 1. Trap.
 
