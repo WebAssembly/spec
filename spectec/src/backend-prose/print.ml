@@ -28,7 +28,6 @@ let structured_string_of_ir_type = function
   | WasmValueTopT -> "WasmValueTopT"
   | EmptyListT -> "EmptyListT"
   | ListT(_) -> "ListT(_)" (* TODO *)
-  | IterT -> "IterT"
   | FunT (_) -> "FunT(_)" (* TODO *)
   | IntT -> "IntT"
   | AddrT -> "AddrT"
@@ -248,7 +247,6 @@ let structured_string_of_algorithm = function
 let rec string_of_ir_type = function
   | WasmValueT (_) -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
-  | IterT -> "IterT"
   | EmptyListT -> "EmptyListT"
   | ListT ty -> "ListT (" ^ string_of_ir_type ty ^ ")"
   | StringT -> "StringT"

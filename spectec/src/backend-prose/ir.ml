@@ -3,7 +3,6 @@ type ir_type =
   | WasmValueTopT
   | EmptyListT
   | ListT of ir_type
-  | IterT
   | FunT of (ir_type list * ir_type)
   | IntT
   | AddrT

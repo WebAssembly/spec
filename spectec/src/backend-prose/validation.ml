@@ -49,7 +49,7 @@ let signature_of = function
   | "binop" -> ([StringT; TopT; IntT; IntT], ListT IntT)
   | "testop" -> ([StringT; TopT; IntT], IntT)
   | "relop" -> ([StringT; TopT; IntT; IntT], IntT)
-  | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], ListT IntT)
+  | "cvtop" -> ([TopT; StringT; TopT; ListT TopT; IntT], ListT IntT)
   | "funcaddr" -> ([StateT], ListT AddrT)
   | "local" -> ([StateT; IntT], WasmValueTopT)
   | "global" -> ([StateT; IntT], WasmValueTopT)
@@ -171,14 +171,14 @@ let rec valid_instr env instr = match instr with
   | AssertI _ -> env
   | PushI e ->
       let ty = typeof env e in
-      if (ty <> IterT) then subtype ty WasmValueTopT;
+      (match ty with ListT ty | ty -> subtype ty WasmValueTopT);
       env
   | PopI (ConstE (_, NameE name)) ->
       Env.add name IntT env
   | PopI (NameE n) ->
       Env.add n WasmValueTopT env
   | PopI (IterE (name, _)) ->
-      Env.add name IterT env
+      Env.add name (ListT WasmValueTopT) env
   | LetI (NameE (name), e) | LetI (ListE ([NameE (name)]), e) ->
       Env.add name (typeof env e) env
   | LetI (RefNullE _, _) -> env
@@ -209,7 +209,7 @@ let init_env = function
       |> Env.add (N "nt") TopT
       |> Env.add (N "nt_1") TopT
       |> Env.add (N "nt_2") TopT
-      |> Env.add (N "sx") IterT
+      |> Env.add (N "sx") (ListT TopT)
   | _ ->
       Env.empty
       |> Env.add (N "a") AddrT
