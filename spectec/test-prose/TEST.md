@@ -470,16 +470,16 @@ select
 Ok
 
 block
-Failure("PopI (IterE (N(val), N(k)))")
+Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
 
 loop
-Failure("PopI (IterE (N(val), N(k)))")
+Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
 
 if
-Failure("IterE (N(instr_1), *)")
+Failure("Not found: N(instr_1)")
 
 label
-Failure("PopI (IterE (N(val), *))")
+Ok
 
 br
 Failure("PopI (ListE ([IterE (N(val'), *), ListE ([IterE (N(val), N(n)), ListE ([ListE ([YetE (BR_admininstr(0))]), IterE (N(instr), *)])])]))")
@@ -488,7 +488,7 @@ br_if
 Ok
 
 br_table
-Failure("IterE (N(l), *)")
+Failure("IndexAccessE (IterE (N(l), *), NameE (N(i)))")
 
 frame
 Failure("FrameE")
@@ -509,10 +509,10 @@ relop
 Ok
 
 extend
-Failure("Not found: N(nt)")
+Failure("Unknwon function name: size")
 
 cvtop
-Failure("Not found: N(nt_1)")
+Ok
 
 ref.is_null
 Failure("YetE (typeof(val))")
@@ -521,73 +521,73 @@ local.tee
 Ok
 
 call
-Failure("IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x)))")
+Failure("Unknwon function name: funcaddr")
 
 call_indirect
-Failure("YetE (typeof($table(z, x)[i]))")
+Failure("Unknwon function name: table")
 
 call_addr
-Failure("PopI (IterE (N(val), N(k)))")
+Failure("Not found: N(a)")
 
 ref.func
-Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
+Failure("Unknwon function name: funcaddr")
 
 local.get
-Failure("AppE (N(local), [ NameE (N(z)), NameE (N(x)) ]): TopT is not subtype of WasmValueTopT")
+Failure("Unknwon function name: local")
 
 global.get
-Failure("AppE (N(global), [ NameE (N(z)), NameE (N(x)) ]): TopT is not subtype of WasmValueTopT")
+Failure("Unknwon function name: global")
 
 table.get
-Failure("IndexAccessE (AppE (N(table), [ NameE (N(z)), NameE (N(x)) ]), NameE (N(i)))")
+Failure("Unknwon function name: table")
 
 table.size
-Ok
+Failure("Unknwon function name: table")
 
 table.fill
-Ok
+Failure("Unknwon function name: table")
 
 table.copy
-Ok
+Failure("Unknwon function name: table")
 
 table.init
-Failure("IndexAccessE (AppE (N(elem), [ NameE (N(z)), NameE (N(y)) ]), NameE (N(i)))")
+Failure("Unknwon function name: elem")
 
 load
-Failure("Not found: N(nt)")
+Failure("Unknwon function name: size")
 
 memory.fill
-Failure("YetE (I32_numtype)")
+Failure("Unknwon function name: mem")
 
 memory.copy
-Failure("YetE (I32_numtype)")
+Failure("Unknwon function name: table")
 
 memory.init
-Failure("YetE (I32_numtype)")
+Failure("Unknwon function name: data")
 
 local.set
-Ok
+Failure("Unknwon function name: with_local")
 
 global.set
-Ok
+Failure("Unknwon function name: with_global")
 
 table.set
-Ok
+Failure("Unknwon function name: table")
 
 table.grow
-Failure("YetE (ref^n{})")
+Failure("Unknwon function name: with_tableext")
 
 elem.drop
-Ok
+Failure("Unknwon function name: with_elem")
 
 store
-Failure("Not found: N(nt)")
+Failure("Unknwon function name: size")
 
 memory.grow
-Failure("YetE (0^((n * 64) * $Ki){})")
+Failure("Unknwon function name: with_memext")
 
 data.drop
-Ok
-Pass/Total: [18/44]
+Failure("Unknwon function name: with_data")
+Pass/Total: [12/44]
 == Complete.
 ```

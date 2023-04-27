@@ -228,12 +228,20 @@ let structured_string_of_algorithm = function
 
 (* IR stringifier *)
 
-let string_of_ir_type = function
+let rec string_of_ir_type = function
   | WasmValueT (_) -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
-  | IntT -> "IntT"
   | IterT -> "IterT"
   | EmptyListT -> "EmptyListT"
+  | StringT -> "StringT"
+  | IntT -> "IntT"
+  | FunT (params, res) ->
+      sprintf "[%s] -> %s"
+        (List.fold_left
+          (fun acc ty -> acc ^ (string_of_ir_type ty) ^ ", ")
+          ""
+          params)
+        (string_of_ir_type res)
   | TopT -> "TopT"
 
 let string_of_wasm_type_expr = function

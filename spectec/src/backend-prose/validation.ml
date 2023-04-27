@@ -38,42 +38,50 @@ module Env =
   end
 
 
-let failmsg e ty1 ty2 =
-  Printf.sprintf "%s: %s is not subtype of %s"
-    (Print.structured_string_of_expr e)
+let failmsg ty1 ty2 =
+  Printf.sprintf "%s is not subtype of %s"
     (Print.string_of_ir_type ty1)
     (Print.string_of_ir_type ty2)
     |> failwith
 
+let signature_of = function
+  | "unop" -> ([StringT; TopT; IntT], IntT)
+  | "binop" -> ([StringT; TopT; IntT; IntT], IntT)
+  | "testop" -> ([StringT; TopT; IntT], IntT)
+  | "relop" -> ([StringT; TopT; IntT; IntT], IntT)
+  | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], EmptyListT)
+  | name -> failwith ("Unknwon function name: " ^ name)
+
 (* `ty1` <: `ty2` *)
-let subtype e ty1 ty2 = match (ty1, ty2) with
+let subtype ty1 ty2 = match (ty1, ty2) with
   | (_, TopT) -> ()
   | (WasmValueT _, WasmValueTopT) -> ()
   | (ty1, ty2) when ty1 = ty2 -> ()
-  | _ -> failmsg e ty1 ty2
+  | _ -> failmsg ty1 ty2
 
 let rec type_of_expr env expr = match expr with
   | ValueE _ -> IntT
   | MinusE e ->
       let ty = type_of_expr env e in
-      subtype expr ty IntT;
+      subtype ty IntT;
       IntT
   | AddE (e1, e2) | SubE (e1, e2) | MulE (e1, e2) | DivE (e1, e2) ->
       let ty1 = type_of_expr env e1 in
-      subtype e1 ty1 IntT;
+      subtype ty1 IntT;
       let ty2 = type_of_expr env e2 in
-      subtype e2 ty2 IntT;
+      subtype ty2 IntT;
       IntT
-  | AppE (_, el) ->
-      let _ = List.map (type_of_expr env) el in
-      TopT
+  | AppE (N n, el) ->
+      let (param_type, result_type) = signature_of n in
+      let args_type = List.map (type_of_expr env) el in
+      List.iter2 subtype args_type param_type;
+      result_type
   | IterE (n, _) ->
       Env.find n env
   | ListE ([]) -> EmptyListT
   | NameE (n) -> Env.find n env
   | ConstE (_, _) -> WasmValueT (NumType I32Type)
   | LengthE e ->
-      (* TODO: check sup? *)
       let _ = type_of_expr env e in
       IntT
   | _ -> Print.structured_string_of_expr expr |> failwith
@@ -130,7 +138,7 @@ let rec valid_instr env instr = match instr with
   | AssertI _ -> env
   | PushI e ->
       let ty = type_of_expr env e in
-      if (ty <> IterT) then subtype e ty WasmValueTopT;
+      if (ty <> IterT) then subtype ty WasmValueTopT;
       env
   | PopI (ConstE (_, NameE name)) ->
       Env.add name IntT env
@@ -159,12 +167,15 @@ let total = ref 0
 let fail = ref 0
 
 let numerics =
-  ["unop"; "binop"; "testop"; "relop"]
+  ["unop"; "binop"; "testop"; "relop"; "cvtop"]
 
 let init_env = function
   | name when List.mem name numerics ->
-      Env.add (N name) IntT Env.empty
+      List.fold_left (fun acc name -> Env.add (N name) StringT acc) Env.empty numerics
       |> Env.add (N "nt") TopT
+      |> Env.add (N "nt_1") TopT
+      |> Env.add (N "nt_2") TopT
+      |> Env.add (N "sx") IterT
   | _ ->
       Env.empty
       |> Env.add (N "bt") TopT
