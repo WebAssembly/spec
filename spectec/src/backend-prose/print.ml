@@ -233,8 +233,11 @@ let rec string_of_ir_type = function
   | WasmValueTopT -> "WasmValueTopT"
   | IterT -> "IterT"
   | EmptyListT -> "EmptyListT"
+  | ListT ty -> "ListT (" ^ string_of_ir_type ty ^ ")"
   | StringT -> "StringT"
   | IntT -> "IntT"
+  | AddrT -> "AddrT"
+  | StateT -> "StateT"
   | FunT (params, res) ->
       sprintf "[%s] -> %s"
         (List.fold_left

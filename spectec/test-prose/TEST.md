@@ -488,7 +488,7 @@ br_if
 Ok
 
 br_table
-Failure("IndexAccessE (IterE (N(l), *), NameE (N(i)))")
+Failure("TopT is not subtype of ListT (TopT)")
 
 frame
 Failure("FrameE")
@@ -521,7 +521,7 @@ local.tee
 Ok
 
 call
-Failure("Unknwon function name: funcaddr")
+Ok
 
 call_indirect
 Failure("Unknwon function name: table")
@@ -530,7 +530,7 @@ call_addr
 Failure("Not found: N(a)")
 
 ref.func
-Failure("Unknwon function name: funcaddr")
+Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
 
 local.get
 Failure("Unknwon function name: local")
@@ -588,6 +588,6 @@ Failure("Unknwon function name: with_memext")
 
 data.drop
 Failure("Unknwon function name: with_data")
-Pass/Total: [12/44]
+Pass/Total: [13/44]
 == Complete.
 ```

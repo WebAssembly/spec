@@ -50,11 +50,13 @@ let signature_of = function
   | "testop" -> ([StringT; TopT; IntT], IntT)
   | "relop" -> ([StringT; TopT; IntT; IntT], IntT)
   | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], EmptyListT)
+  | "funcaddr" -> ([StateT], ListT AddrT)
   | name -> failwith ("Unknwon function name: " ^ name)
 
 (* `ty1` <: `ty2` *)
 let subtype ty1 ty2 = match (ty1, ty2) with
   | (_, TopT) -> ()
+  | (ListT _, ListT TopT) -> ()
   | (WasmValueT _, WasmValueTopT) -> ()
   | (ty1, ty2) when ty1 = ty2 -> ()
   | _ -> failmsg ty1 ty2
@@ -79,6 +81,15 @@ let rec type_of_expr env expr = match expr with
   | IterE (n, _) ->
       Env.find n env
   | ListE ([]) -> EmptyListT
+  | IndexAccessE (e1, e2) ->
+      let ty1 = type_of_expr env e1 in
+      subtype ty1 (ListT (TopT));
+      let ty2 = type_of_expr env e2 in
+      subtype ty2 (IntT);
+      begin match ty1 with
+        | ListT ty -> ty
+        | _ -> failwith "Unreachable"
+      end
   | NameE (n) -> Env.find n env
   | ConstE (_, _) -> WasmValueT (NumType I32Type)
   | LengthE e ->
@@ -180,9 +191,9 @@ let init_env = function
       Env.empty
       |> Env.add (N "bt") TopT
       |> Env.add (N "l") TopT
-      |> Env.add (N "x") TopT
-      |> Env.add (N "y") TopT
-      |> Env.add (N "z") TopT
+      |> Env.add (N "x") IntT
+      |> Env.add (N "y") IntT
+      |> Env.add (N "z") StateT
 
 let valid_algo algo =
   try (

@@ -2,10 +2,13 @@ type ir_type =
   | WasmValueT of Reference_interpreter.Types.value_type
   | WasmValueTopT
   | EmptyListT
+  | ListT of ir_type
   | IterT
   | FunT of (ir_type list * ir_type)
   | IntT
+  | AddrT
   | StringT
+  | StateT
   | TopT
 
 type value =
