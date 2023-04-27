@@ -232,6 +232,7 @@ let string_of_ir_type = function
   | WasmValueT (_) -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
   | IntT -> "IntT"
+  | IterT -> "IterT"
   | EmptyListT -> "EmptyListT"
   | TopT -> "TopT"
 

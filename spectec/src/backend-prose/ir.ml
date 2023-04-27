@@ -3,6 +3,7 @@ type ir_type =
   | WasmValueTopT
   | IntT
   | EmptyListT
+  | IterT
   | TopT
 
 type value =

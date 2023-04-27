@@ -67,6 +67,8 @@ let rec type_of_expr env expr = match expr with
   | AppE (_, el) ->
       let _ = List.map (type_of_expr env) el in
       TopT
+  | IterE (n, _) ->
+      Env.find n env
   | ListE ([]) -> EmptyListT
   | NameE (n) -> Env.find n env
   | ConstE (_, _) -> WasmValueT (NumType I32Type)
@@ -128,12 +130,14 @@ let rec valid_instr env instr = match instr with
   | AssertI _ -> env
   | PushI e ->
       let ty = type_of_expr env e in
-      subtype e ty WasmValueTopT;
+      if (ty <> IterT) then subtype e ty WasmValueTopT;
       env
   | PopI (ConstE (_, NameE name)) ->
       Env.add name IntT env
   | PopI (NameE n) ->
       Env.add n WasmValueTopT env
+  | PopI (IterE (name, _)) ->
+      Env.add name IterT env
   | LetI (NameE (name), e) | LetI (ListE ([NameE (name)]), e) ->
       Env.add name (type_of_expr env e) env
   | LetI (RefNullE _, _) -> env
