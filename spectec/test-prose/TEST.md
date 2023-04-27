@@ -524,58 +524,58 @@ call
 Ok
 
 call_indirect
-Failure("Unknwon function name: table")
+Failure("YetE (typeof($table(z, x)[i]))")
 
 call_addr
-Failure("Not found: N(a)")
+Failure("LetI (YetE (`%;%`(m, tmp0)), IndexAccessE (AppE (N(funcinst), [ NameE (N(z)) ]), NameE (N(a))))")
 
 ref.func
 Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
 
 local.get
-Failure("Unknwon function name: local")
+Ok
 
 global.get
-Failure("Unknwon function name: global")
+Ok
 
 table.get
-Failure("Unknwon function name: table")
+Failure("TopT is not subtype of ListT (TopT)")
 
 table.size
-Failure("Unknwon function name: table")
+Ok
 
 table.fill
-Failure("Unknwon function name: table")
+Ok
 
 table.copy
-Failure("Unknwon function name: table")
+Ok
 
 table.init
-Failure("Unknwon function name: elem")
+Failure("TopT is not subtype of ListT (TopT)")
 
 load
 Failure("Unknwon function name: size")
 
 memory.fill
-Failure("Unknwon function name: mem")
+Failure("YetE (I32_numtype)")
 
 memory.copy
-Failure("Unknwon function name: table")
+Failure("YetE (I32_numtype)")
 
 memory.init
-Failure("Unknwon function name: data")
+Failure("YetE (I32_numtype)")
 
 local.set
-Failure("Unknwon function name: with_local")
+Ok
 
 global.set
-Failure("Unknwon function name: with_global")
+Ok
 
 table.set
-Failure("Unknwon function name: table")
+Ok
 
 table.grow
-Failure("Unknwon function name: with_tableext")
+Failure("YetE (ref^n{})")
 
 elem.drop
 Failure("Unknwon function name: with_elem")
@@ -588,6 +588,6 @@ Failure("Unknwon function name: with_memext")
 
 data.drop
 Failure("Unknwon function name: with_data")
-Pass/Total: [13/44]
+Pass/Total: [21/44]
 == Complete.
 ```

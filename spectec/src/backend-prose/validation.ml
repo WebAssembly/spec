@@ -51,6 +51,19 @@ let signature_of = function
   | "relop" -> ([StringT; TopT; IntT; IntT], IntT)
   | "cvtop" -> ([TopT; StringT; TopT; IterT; IntT], EmptyListT)
   | "funcaddr" -> ([StateT], ListT AddrT)
+  | "local" -> ([StateT; IntT], WasmValueTopT)
+  | "global" -> ([StateT; IntT], WasmValueTopT)
+  (* instance *)
+  | "table" -> ([StateT; IntT], TopT)
+  | "elem" -> ([StateT; IntT], TopT)
+  | "mem" -> ([StateT; IntT], TopT)
+  | "data" -> ([StateT; IntT], TopT)
+  | "funcinst" -> ([StateT], TopT)
+  (* state *)
+  | "with_global" -> ([StateT; IntT; WasmValueTopT], StateT)
+  | "with_local" -> ([StateT; IntT; WasmValueTopT], StateT)
+  | "with_table" -> ([StateT; IntT; IntT; WasmValueTopT], StateT)
+  | "with_tableext" -> ([StateT; IntT; WasmValueTopT], StateT)
   | name -> failwith ("Unknwon function name: " ^ name)
 
 (* `ty1` <: `ty2` *)
@@ -189,6 +202,7 @@ let init_env = function
       |> Env.add (N "sx") IterT
   | _ ->
       Env.empty
+      |> Env.add (N "a") AddrT
       |> Env.add (N "bt") TopT
       |> Env.add (N "l") TopT
       |> Env.add (N "x") IntT
