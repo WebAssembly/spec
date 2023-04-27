@@ -64,12 +64,16 @@ let signature_of = function
   | "with_local" -> ([StateT; IntT; WasmValueTopT], StateT)
   | "with_table" -> ([StateT; IntT; IntT; WasmValueTopT], StateT)
   | "with_tableext" -> ([StateT; IntT; WasmValueTopT], StateT)
+  | "with_elem" -> ([StateT; IntT; ListT WasmValueTopT], StateT)
+  | "with_memext" -> ([StateT; IntT; ListT IntT], StateT)
+  | "with_data" -> ([StateT; IntT; ListT IntT], StateT)
   | name -> failwith ("Unknwon function name: " ^ name)
 
 (* `ty1` <: `ty2` *)
 let subtype ty1 ty2 = match (ty1, ty2) with
   | (_, TopT) -> ()
   | (ListT _, ListT TopT) -> ()
+  | (EmptyListT, ListT _) -> ()
   | (WasmValueT _, WasmValueTopT) -> ()
   | (ty1, ty2) when ty1 = ty2 -> ()
   | _ -> failmsg ty1 ty2

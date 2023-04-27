@@ -578,16 +578,16 @@ table.grow
 Failure("YetE (ref^n{})")
 
 elem.drop
-Failure("Unknwon function name: with_elem")
+Ok
 
 store
 Failure("Unknwon function name: size")
 
 memory.grow
-Failure("Unknwon function name: with_memext")
+Failure("YetE (0^((n * 64) * $Ki){})")
 
 data.drop
-Failure("Unknwon function name: with_data")
-Pass/Total: [21/44]
+Ok
+Pass/Total: [23/44]
 == Complete.
 ```
