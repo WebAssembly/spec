@@ -541,7 +541,7 @@ global.get
 Ok
 
 table.get
-Failure("TopT is not subtype of ListT (TopT)")
+Ok
 
 table.size
 Ok
@@ -553,7 +553,7 @@ table.copy
 Ok
 
 table.init
-Failure("TopT is not subtype of ListT (TopT)")
+Ok
 
 load
 Failure("Unknwon function name: size")
@@ -591,6 +591,6 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 data.drop
 Ok
 
-Pass/Total: [26/44]
+Pass/Total: [28/44]
 == Complete.
 ```
