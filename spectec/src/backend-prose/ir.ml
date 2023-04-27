@@ -9,11 +9,17 @@ type value =
   | WasmV of Reference_interpreter.Values.value
   | IntV of int
 
-type name = N of string | SupN of name * string | SubN of name * string
+type name = N of string | SubN of name * string
 
 type wasm_type_expr =
   | WasmTE of Reference_interpreter.Types.value_type
   | VarTE of string
+
+type iter =
+  | Opt                          (* `?` *)
+  | List                         (* `*` *)
+  | List1                        (* `+` *)
+  | ListN of name                 (* `^` exp *)
 
 type expr =
   | ValueE of int
@@ -27,6 +33,7 @@ type expr =
   | NdAppE of (name * expr list)
   | RangedAppE of (name * expr * expr)
   | WithAppE of (name * expr * string)
+  | IterE of (name * iter)
   | ConcatE of (expr * expr)
   | LengthE of expr
   | ArityE of expr

@@ -69,24 +69,24 @@ if
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. If c is not 0, then:
-  a. Execute (BLOCK bt instr_1^*).
+  a. Execute (BLOCK bt instr_1*).
 4. If c is 0, then:
-  a. Execute (BLOCK bt instr_2^*).
+  a. Execute (BLOCK bt instr_2*).
 
 label
-1. Pop val^* from the stack.
+1. Pop val* from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
-4. Push val^* to the stack.
+4. Push val* to the stack.
 
 br
-1. Pop [val'^*, [val^n, [[YetE (BR_admininstr(0))], instr^*]]] from the stack.
+1. Pop [val'*, [val^n, [[YetE (BR_admininstr(0))], instr*]]] from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. If the length of val^n is n, then:
   a. Push val^n to the stack.
-  b. Push instr'^* to the stack.
-5. Push val^* to the stack.
+  b. Push instr'* to the stack.
+5. Push val* to the stack.
 6. Execute (BR l).
 
 br_if
@@ -100,9 +100,9 @@ br_if
 br_table
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i < the length of l^*, then:
-  a. Execute (BR l^*[i]).
-4. If i ≥ the length of l^*, then:
+3. If i < the length of l*, then:
+  a. Execute (BR l*[i]).
+4. If i ≥ the length of l*, then:
   a. Execute (BR l').
 
 frame
@@ -127,7 +127,7 @@ return
 8. Pop the frame from the stack.
 9. If the length of val^n is n, then:
   a. Push val^n to the stack.
-10. Push val^* to the stack.
+10. Push val* to the stack.
 11. Execute (RETURN).
 
 unop
@@ -171,9 +171,9 @@ extend
 cvtop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
-3. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx^?, c_1).
+3. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
 4. Push the value nt.CONST c to the stack.
-5. If $cvtop(nt_1, cvtop, nt_2, sx^?, c_1) is [], then:
+5. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
 ref.is_null
@@ -225,7 +225,7 @@ call_addr
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
         1. YetI: (if ($default_(t) =/= ?()))*{t}.
-        2. Let f be { LOCAL [val^k, Yet^*], MODULE m }.
+        2. Let f be { LOCAL [val^k, Yet*], MODULE m }.
         3. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
         4. Push the activation of F with arity n to the stack.
 
@@ -458,13 +458,13 @@ store
   a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(z, 0), then:
     1) Trap.
 6. If $size(nt) is not YetE (?()), then:
-  a. Let b^* be $bytes_(YetE (!($size(nt <: valtype))), c).
-  b. Perform $with_mem(z, 0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b^*).
+  a. Let b* be $bytes_(YetE (!($size(nt <: valtype))), c).
+  b. Perform $with_mem(z, 0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b*).
 7. If ((i + n_O) + (n / 8)) ≥ the length of $mem(z, 0), then:
   a. Trap.
 8. If $size(nt) is not YetE (?()), then:
-  a. Let b^* be $bytes_(n, $wrap_(YetE ((!($size(nt <: valtype)), n)), c)).
-  b. Perform $with_mem(z, 0, (i + n_O), (n / 8), b^*).
+  a. Let b* be $bytes_(n, $wrap_(YetE ((!($size(nt <: valtype)), n)), c)).
+  b. Perform $with_mem(z, 0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -493,25 +493,25 @@ select
 Ok
 
 block
-Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
+Failure("PopI (IterE (N(val), N(k)))")
 
 loop
-Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
+Failure("PopI (IterE (N(val), N(k)))")
 
 if
-Failure("Not found: SupN(N(instr_1), *)")
+Failure("IterE (N(instr_1), *)")
 
 label
-Ok
+Failure("PopI (IterE (N(val), *))")
 
 br
-Failure("PopI (ListE ([NameE (SupN(N(val'), *)), ListE ([NameE (SupN(N(val), n)), ListE ([ListE ([YetE (BR_admininstr(0))]), NameE (SupN(N(instr), *))])])]))")
+Failure("PopI (ListE ([IterE (N(val'), *), ListE ([IterE (N(val), N(n)), ListE ([ListE ([YetE (BR_admininstr(0))]), IterE (N(instr), *)])])]))")
 
 br_if
 Ok
 
 br_table
-Failure("IndexAccessE (NameE (SupN(N(l), *)), NameE (N(i)))")
+Failure("IterE (N(l), *)")
 
 frame
 Failure("FrameE")
@@ -550,7 +550,7 @@ call_indirect
 Failure("LetI (RefFuncAddrE (NameE (N(a))), IndexAccessE (AppE (N(table), [ NameE (N(z)), NameE (N(x)) ]), NameE (N(i))))")
 
 call_addr
-Failure("Not found: N(a)")
+Failure("PopI (IterE (N(val), N(k)))")
 
 ref.func
 Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
@@ -611,6 +611,6 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 
 data.drop
 Ok
-Pass/Total: [20/44]
+Pass/Total: [19/44]
 == Complete.
 ```

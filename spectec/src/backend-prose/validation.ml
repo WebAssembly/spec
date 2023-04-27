@@ -165,7 +165,6 @@ let init_env = function
       Env.empty
       |> Env.add (N "bt") TopT
       |> Env.add (N "l") TopT
-      |> Env.add (SupN (N "l", "*")) TopT
       |> Env.add (N "x") TopT
       |> Env.add (N "y") TopT
       |> Env.add (N "z") TopT

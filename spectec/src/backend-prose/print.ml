@@ -31,8 +31,15 @@ let structured_string_of_wasm_type_expr = function
 
 let rec structured_string_of_name = function
   | N s -> "N(" ^ s ^ ")"
-  | SupN (n, s) -> "SupN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
   | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
+
+(* iter *)
+
+let structured_string_of_iter = function
+  | Opt -> "?"
+  | List -> "*"
+  | List1 -> "+"
+  | ListN name -> structured_string_of_name name
 
 (* expression *)
 
@@ -77,6 +84,10 @@ let rec structured_string_of_expr = function
         structured_string_of_name n ^ ", " ^
         structured_string_of_expr e ^ ", " ^
         s ^ ")"
+  | IterE (n, iter) ->
+      sprintf "IterE (%s, %s)"
+        (structured_string_of_name n)
+        (structured_string_of_iter iter)
   | ConcatE (e1, e2) ->
       "ConcatE (" ^
         structured_string_of_expr e1 ^ ", " ^
@@ -230,9 +241,13 @@ let string_of_wasm_type_expr = function
 
 let rec string_of_name = function
   | N s -> s
-  | SupN (n, "\\ast") -> sprintf "%s*" (string_of_name n)
-  | SupN (n, s) -> sprintf "%s^%s" (string_of_name n) s
   | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
+
+let string_of_iter = function
+  | Opt -> "?"
+  | List -> "*"
+  | List1 -> "+"
+  | ListN name -> "^" ^ string_of_name name
 
 let rec string_of_expr = function
   | ValueE i -> string_of_int i
@@ -265,6 +280,8 @@ let rec string_of_expr = function
         (string_of_name n)
         (string_of_expr e)
         s
+  | IterE (n, iter) ->
+      string_of_name n ^ string_of_iter iter
   | ConcatE (e1, e2) ->
       sprintf "the concatenation of the two sequences %s and %s"
         (string_of_expr e1)

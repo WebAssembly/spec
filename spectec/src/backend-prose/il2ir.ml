@@ -28,15 +28,13 @@ let take n str =
 let rec exp2name exp = match exp.it with
   | Ast.VarE id -> Ir.N id.it
   | Ast.SubE (inner_exp, _, _) -> exp2name inner_exp
-  | Ast.IterE (inner_exp, (iter, [id])) ->
-      let name = exp2name inner_exp in
-      assert (name = Ir.N id.it);
-      let sup = begin match iter with
-        | Ast.ListN nexp -> Print.string_of_exp nexp
-        | _ -> Print.string_of_iter iter
-      end in
-      Ir.SupN (name, sup)
   | _ -> gen_fail_msg_of_exp exp "identifier" |> print_endline; Ir.N "Yet"
+
+let tmp = function
+  | Ast.Opt -> Ir.Opt
+  | Ast.List1 -> Ir.List1
+  | Ast.List -> Ir.List
+  | Ast.ListN e -> Ir.ListN (exp2name e)
 
 (* `Ast.exp` -> `Ir.expr` *)
 let rec exp2expr exp = match exp.it with
@@ -54,11 +52,7 @@ let rec exp2expr exp = match exp.it with
   | Ast.IterE (inner_exp, (iter, [_id])) ->
       let name = exp2name inner_exp in
       (* assert (name = Ir.N id.it); *)
-      let sup = begin match iter with
-        | Ast.ListN nexp -> Print.string_of_exp nexp
-        | _ -> Print.string_of_iter iter
-      end in
-      Ir.NameE(Ir.SupN (name, sup))
+      Ir.IterE (name, tmp iter)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Ir.MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
