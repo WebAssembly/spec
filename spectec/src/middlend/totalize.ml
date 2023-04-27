@@ -46,7 +46,7 @@ let rec t_exp env exp =
   let exp' = t_exp2 env exp in
   match exp'.it with
   | CallE (f, _) when is_partial env f ->
-    TheE exp' $ no_region
+    {exp' with it = TheE {exp' with note = IterT (exp'.note, Opt) $ exp'.at}}
   | _ -> exp'
 
 and t_exp2 env x = { x with it = t_exp' env x.it }
@@ -122,10 +122,12 @@ let rec t_def' env = function
       let typ2' = IterT (typ2, Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
         DefD (binds, lhs, rhs, prems) ->
-          { clause with it = DefD (binds, lhs, OptE (Some rhs) $ no_region, prems) }
+          { clause with
+            it = DefD (binds, lhs, OptE (Some rhs) $$ no_region % typ2', prems) }
         ) clauses' in
       let x = "x" $ no_region in
-      let catch_all = DefD ([(x, typ1, [])], VarE x $ no_region, OptE None $ no_region, []) $ no_region in
+      let catch_all = DefD ([(x, typ1, [])], VarE x $$ no_region % typ1,
+        OptE None $$ no_region % typ2', []) $ no_region in
       DecD (id, typ1, typ2', clauses'' @ [ catch_all ])
     else
       DecD (id, typ1, typ2, clauses')

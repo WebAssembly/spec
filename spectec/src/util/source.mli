@@ -15,12 +15,16 @@ val string_of_region : region -> string
 
 (* Phrases *)
 
-type 'a phrase = {at : region; it : 'a}
+type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b}
+type 'a phrase = ('a, unit) note_phrase
 
 val ($) : 'a -> region -> 'a phrase
-val it : 'a phrase -> 'a
-val at : 'a phrase -> region
+val ($$) : 'a -> region * 'b -> ('a, 'b) note_phrase
+val (%) : region -> 'b -> region * 'b
 
+val it : ('a, 'b) note_phrase -> 'a
+val at : ('a, 'b) note_phrase -> region
+val note : ('a, 'b) note_phrase -> 'b
 
 (* Errors *)
 

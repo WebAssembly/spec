@@ -92,7 +92,7 @@ and cmpop =
   | LeOp (* `<=` *)
   | GeOp (* `>=` *)
 
-and exp = exp' phrase
+and exp = (exp', typ) note_phrase
 and exp' =
   | VarE of id                   (* varid *)
   | BoolE of bool                (* bool *)
@@ -122,7 +122,7 @@ and exp' =
 
 and expfield = atom * exp        (* atom exp *)
 
-and path = path' phrase
+and path = (path', typ) note_phrase
 and path' =
   | RootP                        (*  *)
   | IdxP of path * exp           (* path `[` exp `]` *)

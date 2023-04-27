@@ -326,9 +326,10 @@ and infer_exp env e : typ =
 
 and valid_exp env e t =
   (*
-  Printf.printf "[valid %s] %s  :  %s\n%!"
-    (string_of_region e.at) (string_of_exp e) (string_of_typ t);
+  Printf.printf "[valid %s] %s  :  %s  ==  %s\n%!"
+    (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t);
   *)
+  equiv_typ env e.note t e.at;
   match e.it with
   | VarE id ->
     let t', dim = find "variable" env.vars id in
@@ -448,23 +449,27 @@ and valid_expfield env (atom1, e) (atom2, t, _) =
   valid_exp env e t
 
 and valid_path env p t : typ =
-  match p.it with
-  | RootP -> t
-  | IdxP (p1, e1) ->
-    let t1 = valid_path env p1 t in
-    valid_exp env e1 (NatT $ e1.at);
-    as_list_typ "path" env Check t1 p1.at
-  | SliceP (p1, e1, e2) ->
-    let t1 = valid_path env p1 t in
-    valid_exp env e1 (NatT $ e1.at);
-    valid_exp env e2 (NatT $ e2.at);
-    let _ = as_list_typ "path" env Check t1 p1.at in
-    t1
-  | DotP (p1, t1, atom) ->
-    let t1' = valid_path env p1 t in
-    equiv_typ env t1' t1 p1.at;
-    let tfs = as_struct_typ "path" env Check t1 p1.at in
-    find_field tfs atom p1.at
+  let t' =
+    match p.it with
+    | RootP -> t
+    | IdxP (p1, e1) ->
+      let t1 = valid_path env p1 t in
+      valid_exp env e1 (NatT $ e1.at);
+      as_list_typ "path" env Check t1 p1.at
+    | SliceP (p1, e1, e2) ->
+      let t1 = valid_path env p1 t in
+      valid_exp env e1 (NatT $ e1.at);
+      valid_exp env e2 (NatT $ e2.at);
+      let _ = as_list_typ "path" env Check t1 p1.at in
+      t1
+    | DotP (p1, t1, atom) ->
+      let t1' = valid_path env p1 t in
+      equiv_typ env t1' t1 p1.at;
+      let tfs = as_struct_typ "path" env Check t1 p1.at in
+      find_field tfs atom p1.at
+  in
+  equiv_typ env p.note t' p.at;
+  t'
 
 and valid_iterexp env (iter, ids) : env =
   valid_iter env iter;

@@ -196,7 +196,7 @@ let string_of_binds = function
 
 let rec string_of_prem prem =
   match prem.it with
-  | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
+  | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp {e with it = MixE (op, e)}
   | IfPr e -> "if " ^ string_of_exp e
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
@@ -214,7 +214,7 @@ let string_of_rule rule =
     let id' = if id.it = "" then "_" else id.it in
     "\n" ^ region_comment "  " rule.at ^
     "  rule " ^ id' ^ string_of_binds binds ^ ":\n    " ^
-      string_of_exp (MixE (mixop, e) $ e.at) ^
+      string_of_exp {e with it = MixE (mixop, e)} ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let string_of_clause id clause =

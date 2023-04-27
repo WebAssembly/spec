@@ -33,12 +33,16 @@ let string_of_region r =
 
 (* Phrases *)
 
-type 'a phrase = {at : region; it : 'a}
+type ('a, 'b) note_phrase = {at : region; it : 'a; note : 'b}
+type 'a phrase = ('a, unit) note_phrase
 
-let ($) x region = {it = x; at = region}
+let ($) it at = {it; at; note = ()}
+let ($$) it (at, note) = {it; at; note}
+let (%) at note = (at, note)
 
-let it {it; at = _} = it
-let at {at; it = _} = at
+let it {it; _} = it
+let at {at; _} = at
+let note {note; _} = note
 
 
 (* Errors *)
