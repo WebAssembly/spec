@@ -113,9 +113,18 @@ let sub_type = function
 let rec_type = function
   | RecT sts -> list sub_type sts
 
+let def_type = function
+  | DefT (_x, rt, _i) -> rec_type rt
+
 let global_type (GlobalT (_mut, t)) = val_type t
 let table_type (TableT (_lim, t)) = ref_type t
 let memory_type (MemoryT (_lim)) = empty
+
+let extern_type = function
+  | ExternFuncT dt -> def_type dt
+  | ExternTableT tt -> table_type tt
+  | ExternMemoryT mt -> memory_type mt
+  | ExternGlobalT gt -> global_type gt
 
 let block_type = function
   | VarBlockType x -> types (idx x)

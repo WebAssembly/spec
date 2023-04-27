@@ -36,6 +36,7 @@ let create n =
   with Out_of_memory -> raise OutOfMemory
 
 let alloc (MemoryT lim as ty) =
+  assert Free.((memory_type ty).types = Set.empty);
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min}
 

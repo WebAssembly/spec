@@ -953,9 +953,9 @@ let eval_const (inst : module_inst) (const : const) : value =
 (* Modules *)
 
 let init_type (inst : module_inst) (type_ : type_) : module_inst =
-  let rt = subst_rec_type (subst_of inst) type_.it in
   let x = Lib.List32.length inst.types in
-  {inst with types = inst.types @ roll_def_types x rt}
+  let rt = subst_rec_type (subst_of inst) type_.it in
+  {inst with types = inst.types @ inject_def_types x (roll_rec_type x rt)}
 
 let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   let {idesc; _} = im.it in
@@ -968,7 +968,7 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   in
   let et = subst_extern_type (subst_of inst) it in
   let et' = extern_type_of inst.types ex in
-  if not (Match.match_extern_type et' et) then
+  if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^

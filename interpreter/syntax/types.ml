@@ -41,7 +41,7 @@ and str_type =
 
 and sub_type = SubT of final * heap_type list * str_type
 and rec_type = RecT of sub_type list
-and def_type = DefT of rec_type * int32
+and def_type = DefT of type_idx * rec_type * int32
 
 type table_type = TableT of Int32.t limits * ref_type
 type memory_type = MemoryT of Int32.t limits
@@ -208,7 +208,7 @@ let subst_rec_type s = function
   | RecT sts -> RecT (List.map (subst_sub_type s) sts)
 
 let subst_def_type s = function
-  | DefT (rt, i) -> DefT (subst_rec_type s rt, i)
+  | DefT (x, rt, i) -> DefT (x, subst_rec_type s rt, i)
 
 
 let subst_memory_type s = function
@@ -253,33 +253,24 @@ let roll_rec_type x (rt : rec_type) : rec_type =
   in
   subst_rec_type s rt
 
-let roll_def_types x (rt : rec_type) : def_type list =
-  let RecT sts as rt' = roll_rec_type x rt in
-  Lib.List32.mapi (fun i _ -> DefT (rt', i)) sts
+
+let inject_def_types x (rt : rec_type) : def_type list =
+  let RecT sts = rt in
+  Lib.List32.mapi (fun i _ -> DefT (x, rt, i)) sts
 
 let roll_def_types_list (rts : rec_type list) : def_type list =
   List.fold_left (fun (rts, x) rt ->
-    rts @ roll_def_types x rt, Int32.add x (Lib.List32.length rts)
+    rts @ inject_def_types x (roll_rec_type x rt),
+    Int32.add x (Lib.List32.length rts)
   ) ([], 0l) rts |> fst
 
-
-let unroll_rec_type (rt : rec_type) : rec_type =
-  let s = function
-    | RecX i -> DefHT (DefT (rt, i))
-    | var -> VarHT var
-  in
-  subst_rec_type s rt
-
-let unroll_def_type (dt : def_type) : sub_type =
-  match dt with
-  | DefT (rt, i) ->
-    let RecT sts = unroll_rec_type rt in
-    Lib.List32.nth sts i
+let project_def_type (dt : def_type) : sub_type =
+  let DefT (_x, RecT sts, i) = dt in
+  Lib.List32.nth sts i
 
 let expand_def_type (dt : def_type) : str_type =
-  match unroll_def_type dt with
-  | SubT (_, _, st) -> st
-
+  let SubT (_, _, st) = project_def_type dt in
+  st
 
 
 (* String conversion *)
@@ -393,8 +384,8 @@ and string_of_rec_type = function
     String.concat " " (List.map (fun st -> "(" ^ string_of_sub_type st ^ ")") sts)
 
 and string_of_def_type = function
-  | DefT (RecT [st], 0l) -> string_of_sub_type st
-  | DefT (rt, i) -> "(" ^ string_of_rec_type rt ^ ")." ^ I32.to_string_u i
+  | DefT (_x, RecT [st], 0l) -> string_of_sub_type st
+  | DefT (_x, rt, i) -> "(" ^ string_of_rec_type rt ^ ")." ^ I32.to_string_u i
 
 
 let string_of_limits = function
