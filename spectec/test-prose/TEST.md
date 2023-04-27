@@ -530,7 +530,7 @@ call_addr
 Failure("LetI (YetE (`%;%`(m, tmp0)), IndexAccessE (AppE (N(funcinst), [ NameE (N(z)) ]), NameE (N(a))))")
 
 ref.func
-Failure("RefFuncAddrE (IndexAccessE (AppE (N(funcaddr), [ NameE (N(z)) ]), NameE (N(x))))")
+Ok
 
 local.get
 Ok
@@ -588,6 +588,6 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 
 data.drop
 Ok
-Pass/Total: [23/44]
+Pass/Total: [24/44]
 == Complete.
 ```
