@@ -470,6 +470,19 @@
   "section size mismatch"
 )
 
+;; Init expression with missing end marker
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01\04\01\60\00\00"       ;; Type section: 1 type
+    "\03\02\01\00"             ;; Function section: 1 function
+    "\06\05\01\7f\00\41\00"    ;; Global section: 1 entry with missing end marker
+    ;; Missing end marker here
+    "\0a\04\01\02\00\0b"       ;; Code section: 1 function
+  )
+  "illegal opcode"
+)
+
 ;; Unsigned LEB128 must not be overlong
 (assert_malformed
   (module binary
