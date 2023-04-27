@@ -21,6 +21,7 @@ val structured_string_of_mixop : mixop -> string
 val structured_string_of_iter : iter -> string
 val structured_string_of_typ : typ -> string
 val structured_string_of_exp : exp -> string
+val structured_string_of_binds : binds -> string
 val structured_string_of_premise : premise -> string
 val structured_string_of_def : def -> string
 val structured_string_of_deftyp : deftyp -> string

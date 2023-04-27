@@ -43,23 +43,34 @@ let rec count_instrs instrs = instrs |>
   ) |> List.fold_left (+) 0
 
 (** Translate `Ast.type` *)
-let type2ir_type t =
+let il_type2ir_type t =
   match t.it with
   | Ast.NatT -> Ir.IntT
   | _ -> (* TODO *) TopT
 
-let find_types tenv es =
-  let find_type e = match e.it with
+let rec find_type tenv exp = match exp.it with
   | Ast.VarE id ->
-    ( match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-    | Some (_, t, _) -> (id.it, type2ir_type t)
-    | _ -> failwith (id.it ^ "'s type is unknown. There must be a problem in the IL.")
-    )
-  | _ -> (Print.string_of_exp e, Ir.TopT)
-  in
-  match es.it with
-  | Ast.TupE es -> List.map find_type es
-  | _ -> [ find_type es ]
+      begin match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
+        | Some (_, t, []) -> (Ir.N id.it, il_type2ir_type t)
+        | Some (_, t, _) -> (Ir.N id.it, Ir.ListT (il_type2ir_type t))
+        | _ -> failwith (id.it ^ "'s type is unknown. There must be a problem in the IL.")
+      end
+  | Ast.IterE (inner_exp, _) | Ast.SubE (inner_exp, _, _) ->
+      find_type tenv inner_exp
+  | _ -> (Ir.N (Print.string_of_exp exp), Ir.TopT)
+
+let rec get_top_of_stack stack = match stack.it with
+  | Ast.ListE exps -> exps |> List.rev |> List.hd
+  | Ast.CatE (_, exp) -> get_top_of_stack exp
+  | _ -> stack
+
+let get_params lhs_stack = match get_top_of_stack lhs_stack |> it with
+  | Ast.CaseE (_, { it = Ast.TupE exps; _ }, _) -> exps
+  | Ast.CaseE (_, exp, _) -> [exp]
+  | _ ->
+    print_endline
+      ("Bubbleup semantics: Top of the stack is frame / label");
+    []
 
 (** Translate `Ast.exp` **)
 
@@ -456,6 +467,7 @@ let enhance_readability instrs =
 let reduction_group2algo (reduction_name, reduction_group) acc =
   let algo_name = String.split_on_char '-' reduction_name |> List.hd in
   let (lhs, _, _, tenv) = List.hd reduction_group in
+
   let lhs_stack = match lhs.it with
     (* z; lhs *)
     | Ast.MixE (
@@ -463,23 +475,6 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
       {it=Ast.TupE ({it=Ast.VarE {it="z"; _ }; _ } :: exp :: []); _}
     ) -> exp
     | _ -> lhs
-  in
-
-  let rec top_of e = match e.it with
-  | Ast.ListE es -> top_of ( es |> List.rev |> List.hd )
-  | Ast.CatE (_, e) -> top_of e
-  | _ -> e
-  in
-
-  let params = match (top_of lhs_stack).it with
-  | CaseE(Atom iname, args, _) when
-      algo_name = "frame" ||
-      algo_name = "label" ||
-      iname <> "FRAME_" && iname <> "LABEL_" ->
-        find_types tenv args
-  | _ ->
-    print_endline ("Bubbleup semantics for " ^ algo_name ^ ": Top of the stack is frame / label");
-    []
   in
 
   let pop_instrs = lhs2pop lhs_stack in
@@ -495,6 +490,16 @@ let reduction_group2algo (reduction_name, reduction_group) acc =
       let blocks = List.map reduction2instrs reduction_group in
       List.fold_right merge_otherwise blocks []
     in
+
+  let params =
+    if (algo_name = "br" || algo_name = "return") then (
+      sprintf
+        "Bubbleup semantics for %s: Top of the stack is frame / label"
+        algo_name
+      |> print_endline;
+      []
+    )
+    else get_params lhs_stack |> List.map (find_type tenv) in
 
   let body = (pop_instrs @ instrs) |> check_nop |> enhance_readability in
   Ir.Algo (algo_name, params, body) :: acc

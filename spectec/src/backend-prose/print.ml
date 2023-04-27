@@ -238,7 +238,7 @@ and structured_string_of_instrs depth instrs =
 let structured_string_of_algorithm = function
   | Algo (name, params, instrs) ->
     name ^ List.fold_left (fun acc (p, t) ->
-      acc ^ " " ^ p ^ ":" ^ structured_string_of_ir_type t
+      acc ^ " " ^ structured_string_of_name p ^ ":" ^ structured_string_of_ir_type t
     ) "" params ^ ":\n" ^
     structured_string_of_instrs 1 instrs
 
@@ -458,7 +458,7 @@ and string_of_instrs depth instrs =
 let string_of_algorithm = function
   | Algo (name, params, instrs) ->
     name ^ List.fold_left (fun acc (p, _t) ->
-      acc ^ " " ^ p
+      acc ^ " " ^ string_of_name p
     ) "" params ^
     string_of_instrs 0 instrs ^ "\n"
 

@@ -31,7 +31,7 @@ drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 
-select t?{t}
+select t
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -43,7 +43,7 @@ select t?{t}
 8. Else:
   a. Push val_2 to the stack.
 
-block bt instr*{instr}
+block bt instr
 1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
@@ -55,7 +55,7 @@ block bt instr*{instr}
       a) Let L be YetE ().
       b) Enter the block Yet with label YetE ().
 
-loop bt instr*{instr}
+loop bt instr
 1. Assert: due to validation, there are at least k values on the top of the stack.
 2. Pop val^k from the stack.
 3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
@@ -67,7 +67,7 @@ loop bt instr*{instr}
       a) Let L be YetE ().
       b) Enter the block Yet with label YetE ().
 
-if bt instr_1*{instr_1} instr_2*{instr_2}
+if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. If c is not 0, then:
@@ -75,7 +75,7 @@ if bt instr_1*{instr_1} instr_2*{instr_2}
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-label n instr*{instr} (val <: admininstr)*{val}
+label n instr val
 1. Pop val* from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
@@ -97,7 +97,7 @@ br_if l
 3. If c is not 0, then:
   a. Execute (BR l).
 
-br_table l*{l} l'
+br_table l l'
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If i < the length of l*, then:
@@ -105,7 +105,7 @@ br_table l*{l} l'
 4. Else:
   a. Execute (BR l').
 
-frame n f (val <: admininstr)^n{val}
+frame n f val
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: due to validation, there are at least n values on the top of the stack.
@@ -170,7 +170,7 @@ extend nt n
 3. If $size(nt) is not YetE (?()), then:
   a. Push the value nt.CONST $ext(n, YetE (!($size(nt <: valtype))), YetE (S_sx), c) to the stack.
 
-cvtop nt_1 cvtop nt_2 sx?{sx}
+cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
 3. If the length of $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is 1, then:
