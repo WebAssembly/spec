@@ -17,8 +17,11 @@ Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == IL Validation...
 == Prose Generation...
+lhs is not list:(val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]
 Invalid expression `!($default_(t))` to be IR identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
+lhs is not list:(val <: admininstr)^k{val} :: [LOOP_admininstr(bt, instr*{instr})]
+lhs is not list:(val <: admininstr)^k{val} :: [BLOCK_admininstr(bt, instr*{instr})]
 unreachable
 1. Trap.
 
@@ -29,7 +32,7 @@ drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 
-select
+select t?{t}
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -65,7 +68,7 @@ loop
       a) Let L be YetE ().
       b) Enter the block Yet with label YetE ().
 
-if
+if bt instr_1*{instr_1} instr_2*{instr_2}
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. If c is not 0, then:
@@ -73,13 +76,13 @@ if
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-label
+label n instr*{instr} (val <: admininstr)*{val}
 1. Pop val* from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
-br
+br n instr'*{instr'} (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [BR_admininstr(0)] :: (instr <: admininstr)*{instr}
 1. Pop [val'*, [val^n, [[YetE (BR_admininstr(0))], instr*]]] from the stack.
 2. Assert: Assert: due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
@@ -89,13 +92,13 @@ br
 5. Push val* to the stack.
 6. Execute (BR l).
 
-br_if
+br_if l
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. If c is not 0, then:
   a. Execute (BR l).
 
-br_table
+br_table l*{l} l'
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If i < the length of l*, then:
@@ -103,7 +106,7 @@ br_table
 4. Else:
   a. Execute (BR l').
 
-frame
+frame n f (val <: admininstr)^n{val}
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: due to validation, there are at least n values on the top of the stack.
@@ -113,7 +116,7 @@ frame
 7. If the length of val^n is n, then:
   a. Push val^n to the stack.
 
-return
+return n f (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [RETURN_admininstr] :: (instr <: admininstr)*{instr}
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: due to validation, there are at least n values on the top of the stack.
@@ -128,7 +131,7 @@ return
 10. Push val* to the stack.
 11. Execute (RETURN).
 
-unop
+unop nt unop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
 3. If the length of $unop(unop, nt, c_1) is 1, then:
@@ -137,7 +140,7 @@ unop
 4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
-binop
+binop nt binop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -148,13 +151,13 @@ binop
 6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
-testop
+testop nt testop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
 3. Let c be $testop(testop, nt, c_1).
 4. Push the value i32.CONST c to the stack.
 
-relop
+relop nt relop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -162,13 +165,13 @@ relop
 5. Let c be $relop(relop, nt, c_1, c_2).
 6. Push the value i32.CONST c to the stack.
 
-extend
+extend nt n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c from the stack.
 3. If $size(nt) is not YetE (?()), then:
   a. Push the value nt.CONST $ext(n, YetE (!($size(nt <: valtype))), YetE (S_sx), c) to the stack.
 
-cvtop
+cvtop nt_1 cvtop nt_2 sx?{sx}
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
 3. If the length of $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is 1, then:
@@ -186,18 +189,18 @@ ref.is_null
   a. Let the value ref.null rt be val.
   b. Push the value i32.CONST 1 to the stack.
 
-local.tee
+local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
 5. Execute (LOCAL.SET x).
 
-call
+call x
 1. If x < the length of $funcaddr(z), then:
   a. Execute (CALL_ADDR $funcaddr(z)[x]).
 
-call_indirect
+call_indirect x ft
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If i ≥ the length of $table(z, x), then:
@@ -230,17 +233,17 @@ call_addr
         3. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
         4. Push the activation of F with arity n to the stack.
 
-ref.func
+ref.func x
 1. If x < the length of $funcaddr(z), then:
   a. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.
 
-local.get
+local.get x
 1. Push $local(z, x) to the stack.
 
-global.get
+global.get x
 1. Push $global(z, x) to the stack.
 
-table.get
+table.get x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If i ≥ the length of $table(z, x), then:
@@ -248,11 +251,11 @@ table.get
 4. Else:
   a. Push $table(z, x)[i] to the stack.
 
-table.size
+table.size x
 1. Let n be the length of $table(z, x).
 2. Push the value i32.CONST n to the stack.
 
-table.fill
+table.fill x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -271,7 +274,7 @@ table.fill
     6) Push the value i32.CONST (n - 1) to the stack.
     7) Execute (TABLE.FILL x).
 
-table.copy
+table.copy x y
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -295,7 +298,7 @@ table.copy
     7) Push the value i32.CONST (n - 1) to the stack.
     8) Execute (TABLE.COPY x y).
 
-table.init
+table.init x y
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -315,7 +318,7 @@ table.init
       f) Push the value i32.CONST (n - 1) to the stack.
       g) Execute (TABLE.INIT x y).
 
-load
+load nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If $size(nt) is not YetE (?()), then:
@@ -372,7 +375,7 @@ memory.copy
     7) Push the value i32.CONST (n - 1) to the stack.
     8) Execute (MEMORY.COPY).
 
-memory.init
+memory.init x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -392,17 +395,17 @@ memory.init
       f) Push the value i32.CONST (n - 1) to the stack.
       g) Execute (MEMORY.INIT x).
 
-local.set
+local.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_local(z, x, val).
 
-global.set
+global.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_global(z, x, val).
 
-table.set
+table.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -412,7 +415,7 @@ table.set
 6. Else:
   a. Perform $with_table(z, x, i, ref).
 
-table.grow
+table.grow x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -423,10 +426,10 @@ table.grow
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
 
-elem.drop
+elem.drop x
 1. Perform $with_elem(z, x, []).
 
-store
+store nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -452,7 +455,7 @@ memory.grow
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
 
-data.drop
+data.drop x
 1. Perform $with_data(z, x, []).
 
 == IR Validation...

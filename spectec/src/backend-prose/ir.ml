@@ -102,4 +102,4 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of (string * instr list)
+type algorithm = Algo of (string * (string * ir_type) list * instr list)

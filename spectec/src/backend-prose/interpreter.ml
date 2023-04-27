@@ -160,7 +160,7 @@ and interp_instrs env il =
   List.fold_left interp_instr env il
 
 let interp_algo algo =
-  let Ir.Algo (_, il) = algo in
+  let Ir.Algo (_, _params, il) = algo in
   interp_instrs Env.empty il
 
 
@@ -177,7 +177,7 @@ module AlgoMap = Map.Make(AlgoMapKey)
 
 let to_map algos =
   let f acc algo =
-    let Ir.Algo (name, _) = algo in
+    let Ir.Algo (name, _params, _) = algo in
     AlgoMap.add name algo acc in
 
   List.fold_left f AlgoMap.empty algos

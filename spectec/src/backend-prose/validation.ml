@@ -221,7 +221,7 @@ let init_env = function
 let valid_algo algo =
   try (
     total := !total + 1;
-    let Algo (name, instrs) = algo in
+    let Algo (name, _params, instrs) = algo in
     print_endline "";
     print_endline name;
     let env = init_env name in

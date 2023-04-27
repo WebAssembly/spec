@@ -42,6 +42,25 @@ let rec count_instrs instrs = instrs |>
   | _ -> 1
   ) |> List.fold_left (+) 0
 
+(** Translate `Ast.type` *)
+let type2ir_type t =
+  match t.it with
+  | Ast.NatT -> Ir.IntT
+  | _ -> (* TODO *) TopT
+
+let find_types tenv es =
+  let find_type e = match e.it with
+  | Ast.VarE id ->
+    ( match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
+    | Some (_, t, _) -> (id.it, type2ir_type t)
+    | _ -> failwith (id.it ^ "'s type is unknown. There must be a problem in the IL.")
+    )
+  | _ -> (Print.string_of_exp e, Ir.TopT)
+  in
+  match es.it with
+  | Ast.TupE es -> List.map find_type es
+  | _ -> [ find_type es ]
+
 (** Translate `Ast.exp` **)
 
 (* `Ast.exp` -> `Ir.name` *)
@@ -290,7 +309,7 @@ let rec exp2cond exp = match exp.it with
 
 (** reduction -> `Ir.instr list` **)
 
-let reduction2instrs (_, _, rhs, prems) =
+let reduction2instrs (_, rhs, prems, _) =
   List.fold_right ( fun prem instrs ->
     match prem.it with
     | Ast.IfPr exp -> [ Ir.IfI (exp2cond exp, instrs |> check_nop, []) ]
@@ -322,6 +341,9 @@ let reduction2instrs (_, _, rhs, prems) =
   )
   prems
   (rhs2instrs rhs)
+
+
+(** IR -> IR transpilers *)
 
 (* Recursively append else block to every empty if *)
 let rec insert_otherwise else_body instrs =
@@ -431,21 +453,34 @@ let enhance_readability instrs =
 (** Main translation **)
 
 (* `reduction_group list` -> `Backend-prose.Ir.Algo` *)
-let reduction_group2algo reduction_group acc =
-  let (reduction_name, lhs, _, _) = List.hd reduction_group in
+let reduction_group2algo (reduction_name, reduction_group) acc =
   let algo_name = String.split_on_char '-' reduction_name |> List.hd in
-
-  let pop_instrs = match lhs.it with
+  let (lhs, _, _, tenv) = List.hd reduction_group in
+  let lhs_stack = match lhs.it with
     (* z; lhs *)
     | Ast.MixE (
       [[]; [Ast.Semicolon]; [Ast.Star]],
       {it=Ast.TupE ({it=Ast.VarE {it="z"; _ }; _ } :: exp :: []); _}
-    ) -> lhs2pop exp
-    | _ -> lhs2pop lhs in
+    ) -> exp
+    | _ -> lhs
+  in
+
+  let params = match lhs_stack.it with
+  | Ast.ListE es ->
+    let top = es |> List.rev |> List.hd in
+    ( match top.it with
+    | CaseE(Atom iname, args, _) when iname != "FRAME_" && iname != "LABEL_" ->
+        find_types tenv args
+    | _ -> print_endline "top of the stack is frame / label"; []
+    )
+  | _ -> print_endline ("lhs is not list:" ^ Print.string_of_exp lhs_stack); []
+  in
+
+  let pop_instrs = lhs2pop lhs_stack in
 
   let instrs = match reduction_group with
     (* no premise: either *)
-    | [(_, lhs1, rhs1, []); (_, lhs2, rhs2, [])]
+    | [(lhs1, rhs1, [], _); (lhs2, rhs2, [], _)]
       when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
         let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
         let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
@@ -456,14 +491,13 @@ let reduction_group2algo reduction_group acc =
     in
 
   let body = (pop_instrs @ instrs) |> check_nop |> enhance_readability in
-
-  Ir.Algo (algo_name, body) :: acc
-
+  Ir.Algo (algo_name, params, body) :: acc
 
 
-(** Temporarily convert `Ast.RuleD` into `reduction_group` **)
 
-type reduction_group = (string * Ast.exp * Ast.exp * Ast.premise list) list
+(** Temporarily convert `Ast.RuleD` into `reduction_group`: id * (lhs, rhs, prems) **)
+
+type reduction_group = string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
 (* extract rules except Step/pure and Step/read *)
 let extract_rules def acc = match def.it with
@@ -481,9 +515,9 @@ let name_of_rule rule =
   String.split_on_char '-' id1.it |> List.hd
 
 let rule2tup rule =
-  let Ast.RuleD (id, _, _, exp, prems) = rule.it in
+  let Ast.RuleD (_, tenv, _, exp, prems) = rule.it in
   match exp.it with
-    | Ast.TupE (lhs :: rhs :: []) -> (id.it, lhs, rhs, prems)
+    | Ast.TupE (lhs :: rhs :: []) -> (lhs, rhs, prems, tenv)
     | _ ->
         Print.string_of_exp exp
         |> sprintf "Invalid expression `%s` to be reduction rule."
@@ -493,11 +527,12 @@ let rule2tup rule =
 let rec group = function
   | [] -> []
   | h :: t ->
+    let name = name_of_rule h in
     let (reduction_group, rem) =
       List.partition
-        (fun rule -> name_of_rule h = name_of_rule rule)
+        (fun rule -> name = name_of_rule rule)
         t in
-    List.map rule2tup (h :: reduction_group) :: (group rem)
+    (name, List.map rule2tup (h :: reduction_group)) :: (group rem)
 
 
 

@@ -23,6 +23,19 @@ let rec repeat str num =
 
 (* wasm type *)
 
+let structured_string_of_ir_type = function
+  | WasmValueT (_) -> "WasmValueT(_)" (* TODO *)
+  | WasmValueTopT -> "WasmValueTopT"
+  | EmptyListT -> "EmptyListT"
+  | ListT(_) -> "ListT(_)" (* TODO *)
+  | IterT -> "IterT"
+  | FunT (_) -> "FunT(_)" (* TODO *)
+  | IntT -> "IntT"
+  | AddrT -> "AddrT"
+  | StringT -> "StringT"
+  | StateT -> "StateT"
+  | TopT -> "TopT"
+ 
 let structured_string_of_wasm_type_expr = function
   | VarTE s -> "VarTE " ^ s
   | _ -> "WasmTE _"
@@ -224,7 +237,11 @@ and structured_string_of_instrs depth instrs =
     "" instrs
 
 let structured_string_of_algorithm = function
-  | Algo (name, instrs) -> name ^ ":\n" ^ structured_string_of_instrs 1 instrs
+  | Algo (name, params, instrs) ->
+    name ^ List.fold_left (fun acc (p, t) ->
+      acc ^ " " ^ p ^ ":" ^ structured_string_of_ir_type t
+    ) "" params ^ ":\n" ^
+    structured_string_of_instrs 1 instrs
 
 (* IR stringifier *)
 
@@ -343,7 +360,7 @@ and string_of_cond = function
         (string_of_expr e1)
         (string_of_expr e2)
   | PartOfC _ -> failwith "Invalid case"
-  | TopC s -> sprintf "the top of the stack is %s" s 
+  | TopC s -> sprintf "the top of the stack is %s" s
   | YetC s -> sprintf "YetC (%s)" s
 
 let make_index index depth =
@@ -400,7 +417,7 @@ let rec string_of_instr index depth = function
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth) (string_of_expr e)
   | PopI e ->
-      sprintf "%s Pop %s from the stack." (make_index index depth) (string_of_expr e) 
+      sprintf "%s Pop %s from the stack." (make_index index depth) (string_of_expr e)
   | LetI (n, e) ->
       sprintf "%s Let %s be %s."
         (make_index index depth)
@@ -441,5 +458,9 @@ and string_of_instrs depth instrs =
     "" instrs
 
 let string_of_algorithm = function
-  | Algo (name, instrs) -> "" ^ name ^ string_of_instrs 0 instrs ^ "\n"
+  | Algo (name, params, instrs) ->
+    name ^ List.fold_left (fun acc (p, _t) ->
+      acc ^ " " ^ p
+    ) "" params ^
+    string_of_instrs 0 instrs ^ "\n"
 
