@@ -1,4 +1,4 @@
-open Ir
+open Al
 open Reference_interpreter
 
 (* Data Structures *)
@@ -18,7 +18,7 @@ module Env =
     module ValueTypeEnv = Map.Make(ValueTypeEnvKey)
     module TypeEnv = Map.Make(TypeEnvKey)
 
-    type t = (ir_type ValueTypeEnv.t) * (Types.value_type TypeEnv.t)
+    type t = (al_type ValueTypeEnv.t) * (Types.value_type TypeEnv.t)
 
     let empty = (ValueTypeEnv.empty, TypeEnv.empty)
 
@@ -40,8 +40,8 @@ module Env =
 
 let failmsg ty1 ty2 =
   Printf.sprintf "%s is not subtype of %s"
-    (Print.string_of_ir_type ty1)
-    (Print.string_of_ir_type ty2)
+    (Print.string_of_al_type ty1)
+    (Print.string_of_al_type ty2)
     |> failwith
 
 let signature_of = function
@@ -213,7 +213,7 @@ let valid_algo algo =
 
     let env = init_env params in
     (* List.iter (fun (n, ty) ->
-      Printf.sprintf "%s -> %s, " (Print.string_of_name n) (Print.string_of_ir_type ty) |> print_endline)
+      Printf.sprintf "%s -> %s, " (Print.string_of_name n) (Print.string_of_al_type ty) |> print_endline)
       params;
     print_endline "";*)
 
@@ -224,6 +224,6 @@ let valid_algo algo =
       fail := !fail + 1;
       Printexc.to_string err |> print_endline
 
-let valid ir =
-  List.iter valid_algo ir;
+let valid al =
+  List.iter valid_algo al;
   Printf.sprintf "\nPass/Total: [%d/%d]" (!total - !fail) !total |> print_endline

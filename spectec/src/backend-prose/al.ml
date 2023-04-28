@@ -1,9 +1,9 @@
-type ir_type =
+type al_type =
   | WasmValueT of Reference_interpreter.Types.value_type
   | WasmValueTopT
   | EmptyListT
-  | ListT of ir_type
-  | FunT of (ir_type list * ir_type)
+  | ListT of al_type
+  | FunT of (al_type list * al_type)
   | IntT
   | AddrT
   | StringT
@@ -80,7 +80,7 @@ and cond =
 
 type instr =
   | IfI of (cond * instr list * instr list)
-  | OtherwiseI of (instr list) (* This is only for intermideate process durinng il->ir *)
+  | OtherwiseI of (instr list) (* This is only for intermideate process durinng il->al *)
   | WhileI of (cond * instr list)
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)
@@ -101,4 +101,4 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of (string * (name * ir_type) list * instr list)
+type algorithm = Algo of (string * (name * al_type) list * instr list)

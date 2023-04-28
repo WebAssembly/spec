@@ -50,7 +50,7 @@ module Env =
   struct
     module ValueEnvKey =
       struct
-        type t = Ir.name
+        type t = Al.name
         let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
       end
     module TypeEnvKey =
@@ -62,7 +62,7 @@ module Env =
     module ValueEnv = Map.Make(ValueEnvKey)
     module TypeEnv = Map.Make(TypeEnvKey)
 
-    type t = (Ir.value ValueEnv.t) * (Types.value_type TypeEnv.t)
+    type t = (Al.value ValueEnv.t) * (Types.value_type TypeEnv.t)
 
     let empty = (ValueEnv.empty, TypeEnv.empty)
 
@@ -85,17 +85,17 @@ let st_ref: stack ref = ref []
 
 (* Helper functions *)
 
-let ir_type2wasm_type env = function
-  | Ir.WasmTE ty -> ty
-  | Ir.VarTE x -> Env.find_type x env
+let al_type2wasm_type env = function
+  | Al.WasmTE ty -> ty
+  | Al.VarTE x -> Env.find_type x env
 
 (* NOTE: These functions should be used only if validation ensures no failure *)
-let ir_value2wasm_value = function
-  | Ir.WasmV v -> v
+let al_value2wasm_value = function
+  | Al.WasmV v -> v
   | _ -> failwith "Not a Wasm value"
 
-let ir_value2int = function
-  | Ir.IntV i -> i
+let al_value2int = function
+  | Al.IntV i -> i
   | _ -> failwith "Not an integer value"
 
 let wasm_value2int = function
@@ -118,41 +118,41 @@ let mk_wasm_num ty i = match ty with
 
 (* Interpreter *)
 let rec try_numerics env fname args = match (fname, args) with
-  | (Ir.N "testop", [Ir.NameE N "testop"; _; arg]) ->
-      let v = eval_expr env arg |> ir_value2int in
+  | (Al.N "testop", [Al.NameE N "testop"; _; arg]) ->
+      let v = eval_expr env arg |> al_value2int in
       v = 0 |> Bool.to_int
   (* TODO: handle non-deterministic *)
   | _ -> string_of_name fname |> failwith
 
 and eval_expr env e = match e with
   (* TODO: extend function application *)
-  | Ir.AppE (fname, el) -> Ir.IntV (try_numerics env fname el)
-  | Ir.NameE name -> Env.find name env
-  | Ir.ConstE (ty, inner_e) ->
-      let i = eval_expr env inner_e |> ir_value2int in
-      let wasm_ty = ir_type2wasm_type env ty in
-      Ir.WasmV (mk_wasm_num wasm_ty i)
+  | Al.AppE (fname, el) -> Al.IntV (try_numerics env fname el)
+  | Al.NameE name -> Env.find name env
+  | Al.ConstE (ty, inner_e) ->
+      let i = eval_expr env inner_e |> al_value2int in
+      let wasm_ty = al_type2wasm_type env ty in
+      Al.WasmV (mk_wasm_num wasm_ty i)
   | e -> structured_string_of_expr e |> failwith
 
 let eval_cond _ = function
   | c -> structured_string_of_cond c |> failwith
 
 let rec interp_instr env i = match (i, !st_ref) with
-  | (Ir.IfI (c, il1, il2), _) ->
+  | (Al.IfI (c, il1, il2), _) ->
       if eval_cond env c
       then interp_instrs env il1
       else interp_instrs env il2
-  | (Ir.AssertI (_), _) -> env (* TODO: insert assertion *)
-  | (Ir.PushI e, st) ->
-      let v = eval_expr env e |> ir_value2wasm_value in
+  | (Al.AssertI (_), _) -> env (* TODO: insert assertion *)
+  | (Al.PushI e, st) ->
+      let v = eval_expr env e |> al_value2wasm_value in
       st_ref := v :: st;
       env
-  | (Ir.PopI (Ir.ConstE (Ir.VarTE nt, Ir.NameE name)), h :: t) ->
+  | (Al.PopI (Al.ConstE (Al.VarTE nt, Al.NameE name)), h :: t) ->
       st_ref := t;
 
       let ty = Values.type_of_value h in
-      Env.add_type nt ty env |> Env.add name (Ir.IntV (wasm_value2int h))
-  | (Ir.LetI (Ir.NameE (name), e), _) ->
+      Env.add_type nt ty env |> Env.add name (Al.IntV (wasm_value2int h))
+  | (Al.LetI (Al.NameE (name), e), _) ->
       Env.add name (eval_expr env e) env
   | _ -> structured_string_of_instr 0 i |> failwith
 
@@ -160,12 +160,12 @@ and interp_instrs env il =
   List.fold_left interp_instr env il
 
 let interp_algo algo =
-  let Ir.Algo (_, _params, il) = algo in
+  let Al.Algo (_, _params, il) = algo in
   interp_instrs Env.empty il
 
 
 
-(* Search IR algorithm to run *)
+(* Search AL algorithm to run *)
 
 module AlgoMapKey =
   struct
@@ -177,7 +177,7 @@ module AlgoMap = Map.Make(AlgoMapKey)
 
 let to_map algos =
   let f acc algo =
-    let Ir.Algo (name, _params, _) = algo in
+    let Al.Algo (name, _params, _) = algo in
     AlgoMap.add name algo acc in
 
   List.fold_left f AlgoMap.empty algos

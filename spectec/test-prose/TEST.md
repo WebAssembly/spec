@@ -19,8 +19,8 @@ Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
-Invalid expression `!($default_(t))` to be IR identifier.
-Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be IR instr.
+Invalid expression `!($default_(t))` to be AL identifier.
+Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be AL instr.
 unreachable
 1. Trap.
 
@@ -457,7 +457,7 @@ memory.grow
 data.drop x
 1. Perform $with_data(z, x, []).
 
-== IR Validation...
+== AL Validation...
 
 unreachable
 Ok

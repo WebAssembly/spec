@@ -157,14 +157,14 @@ let () =
         failwith "Prose generatiron requires `--animate` flag."
       else
       log "Prose Generation...";
-      let ir_algos = Backend_prose.Il2ir.translate il in
+      let al = Backend_al.Translate.translate il in
       List.iter
-        (fun algo -> Backend_prose.Print.string_of_algorithm algo |> print_endline)
-        ir_algos;
-      log "IR Validation...";
-      Backend_prose.Validation.valid ir_algos;
-      (*log "Interpret IR...";
-      let result = Backend_prose.Interpreter.interpret ir_algos in
+        (fun algo -> Backend_al.Print.string_of_algorithm algo |> print_endline)
+        al;
+      log "AL Validation...";
+      Backend_al.Validation.valid al;
+      (*log "Interpret AL...";
+      let result = Backend_al.Interpreter.interpret al in
       print_endline result*)
     );
     log "Complete."

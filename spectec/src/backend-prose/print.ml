@@ -1,4 +1,4 @@
-open Ir
+open Al
 open Printf
 
 (* helper functions *)
@@ -23,7 +23,7 @@ let rec repeat str num =
 
 (* wasm type *)
 
-let structured_string_of_ir_type = function
+let structured_string_of_al_type = function
   | WasmValueT (_) -> "WasmValueT(_)" (* TODO *)
   | WasmValueTopT -> "WasmValueTopT"
   | EmptyListT -> "EmptyListT"
@@ -238,17 +238,17 @@ and structured_string_of_instrs depth instrs =
 let structured_string_of_algorithm = function
   | Algo (name, params, instrs) ->
     name ^ List.fold_left (fun acc (p, t) ->
-      acc ^ " " ^ structured_string_of_name p ^ ":" ^ structured_string_of_ir_type t
+      acc ^ " " ^ structured_string_of_name p ^ ":" ^ structured_string_of_al_type t
     ) "" params ^ ":\n" ^
     structured_string_of_instrs 1 instrs
 
-(* IR stringifier *)
+(* AL stringifier *)
 
-let rec string_of_ir_type = function
+let rec string_of_al_type = function
   | WasmValueT (_) -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
   | EmptyListT -> "EmptyListT"
-  | ListT ty -> "ListT (" ^ string_of_ir_type ty ^ ")"
+  | ListT ty -> "ListT (" ^ string_of_al_type ty ^ ")"
   | StringT -> "StringT"
   | IntT -> "IntT"
   | AddrT -> "AddrT"
@@ -256,10 +256,10 @@ let rec string_of_ir_type = function
   | FunT (params, res) ->
       sprintf "[%s] -> %s"
         (List.fold_left
-          (fun acc ty -> acc ^ (string_of_ir_type ty) ^ ", ")
+          (fun acc ty -> acc ^ (string_of_al_type ty) ^ ", ")
           ""
           params)
-        (string_of_ir_type res)
+        (string_of_al_type res)
   | TopT -> "TopT"
 
 let string_of_wasm_type_expr = function
