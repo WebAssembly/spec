@@ -477,7 +477,7 @@ let enhance_readability instrs =
   |> List.map swap_if
   |> List.concat_map unify_if_tail
 
-(** Main translation **)
+(** Main translation for reduction rules **)
 
 (* `reduction_group list` -> `Backend-prose.Ir.Algo` *)
 let reduction_group2algo (reduction_name, reduction_group) =
@@ -551,23 +551,37 @@ let rule2tup rule =
         |> failwith
 
 (* group reduction rules that have same name *)
-let rec group = function
+let rec group_rules = function
   | [] -> []
   | h :: t ->
     let name = name_of_rule h in
     let (reduction_group, rem) =
       List.partition
-        (fun rule -> name = name_of_rule rule)
+        (fun rule -> name_of_rule rule = name)
         t in
-    (name, List.map rule2tup (h :: reduction_group)) :: (group rem)
+    (name, List.map rule2tup (h :: reduction_group)) :: (group_rules rem)
 
+let translate_rules il =
+  let rules = List.concat_map extract_rules il in
+  let reduction_groups: reduction_group list = group_rules rules in
 
+  List.map reduction_group2algo reduction_groups
+
+(** Main translation for helper functions **)
+
+let extract_helpers _def = []
+
+let group_helpers _helpers = []
+
+let helper_group2algo _helper_group = []
+
+let translate_helpers il =
+  let helpers = List.concat_map extract_helpers il in
+  let helper_groups = group_helpers helpers in
+
+  List.map reduction_group2algo helper_groups
 
 (** Entry **)
 
 (* `Ast.script` -> `Ir.Algo` *)
-let translate il =
-  let rules = List.concat_map extract_rules il in
-  let reduction_groups: reduction_group list = group rules in
-
-  List.map reduction_group2algo reduction_groups
+let translate il = translate_helpers il @ translate_rules il
