@@ -7,9 +7,10 @@ def $Ki = 1024
 ;; General functions
 
 def $min(nat, nat) : nat
-def $min(0, j) = 0
-def $min(i, 0) = 0
-def $min($(i+1), $(j+1)) = $min(i, j)
+def $min(i, j) = 0
+-- if i = 0 \/ j = 0
+def $min(i, j) = $min($(i-1), $(j-1))
+-- otherwise
 
 
 ;; Auxiliary Definitions on Types
@@ -17,11 +18,12 @@ def $min($(i+1), $(j+1)) = $min(i, j)
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
 def $size(valtype) : nat  hint(partial) hint(show |%|)
-def $size(I32) = 32
-def $size(I64) = 64
-def $size(F32) = 32
-def $size(F64) = 64
-def $size(V128) = 128
+def $size(t) = 32
+-- if t = I32 \/ t = F32
+def $size(t) = 64
+-- if t = I64 \/ t = F64
+def $size(t) = 128
+-- if t = V128
 
 
 ;; Some notation tests

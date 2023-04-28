@@ -5,6 +5,10 @@ open Printf
 
 let indent = "  "
 
+let string_of_opt prefix stringifier suffix = function
+  | None -> ""
+  | Some x -> prefix ^ stringifier x ^ suffix
+
 let string_of_list stringifier left sep right = function
   | [] -> left ^ right
   | h :: t ->
@@ -214,7 +218,7 @@ let rec structured_string_of_instr depth = function
       "LetI (" ^ structured_string_of_expr n ^ ", " ^ structured_string_of_expr e ^ ")"
   | TrapI -> "TrapI"
   | NopI -> "NopI"
-  | ReturnI -> "ReturnI"
+  | ReturnI e_opt -> "ReturnI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
   | InvokeI e -> "InvokeI (" ^ structured_string_of_expr e ^ ")"
   | EnterI (s, e) -> "EnterI (" ^ s ^ ", " ^ structured_string_of_expr e ^ ")"
   | ExecuteI (s, el) ->
@@ -423,7 +427,8 @@ let rec string_of_instr index depth = function
         (string_of_expr e)
   | TrapI -> sprintf "%s Trap." (make_index index depth)
   | NopI -> sprintf "%s Do nothing." (make_index index depth)
-  | ReturnI -> sprintf "%s Return." (make_index index depth)
+  | ReturnI e_opt ->
+      sprintf "%s Return%s." (make_index index depth) (string_of_opt " " string_of_expr "" e_opt)
   | InvokeI e ->
       sprintf "%s Invoke the function instance at address %s."
         (make_index index depth)

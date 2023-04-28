@@ -21,6 +21,87 @@ Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
 Invalid expression `!($default_(t))` to be AL identifier.
 Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be AL instr.
+Ki
+1. Return 1024.
+
+size t
+1. If t is YetE (I32_valtype) or t is YetE (F32_valtype), then:
+  a. Return YetE (?(32)).
+2. If t is YetE (I64_valtype) or t is YetE (F64_valtype), then:
+  a. Return YetE (?(64)).
+3. If t is YetE (V128_valtype), then:
+  a. Return YetE (?(128)).
+4. Return YetE (?()).
+
+test_sub_ATOM_22 n_3_ATOM_y
+1. Return 0.
+
+curried_ n_1 n_2
+1. Return (n_1 + n_2).
+
+default_ t
+1. If t is YetE (I32_valtype), then:
+  a. Return YetE (?(CONST_val(I32_numtype, 0))).
+2. If t is YetE (I64_valtype), then:
+  a. Return YetE (?(CONST_val(I64_numtype, 0))).
+3. If t is YetE (F32_valtype), then:
+  a. Return YetE (?(CONST_val(F32_numtype, 0))).
+4. If t is YetE (F64_valtype), then:
+  a. Return YetE (?(CONST_val(F64_numtype, 0))).
+5. Return YetE (?(REF.NULL_val(rt))).
+6. Return YetE (?()).
+
+funcaddr `%;%`(s, f)
+1. Return YetE (f.MODULE_frame.FUNC_moduleinst).
+
+funcinst `%;%`(s, f)
+1. Return YetE (s.FUNC_store).
+
+func `%;%`(s, f) x
+1. Return YetE (s.FUNC_store)[YetE (f.MODULE_frame.FUNC_moduleinst)[x]].
+
+global `%;%`(s, f) x
+1. Return YetE (s.GLOBAL_store)[YetE (f.MODULE_frame.GLOBAL_moduleinst)[x]].
+
+table `%;%`(s, f) x
+1. Return YetE (s.TABLE_store)[YetE (f.MODULE_frame.TABLE_moduleinst)[x]].
+
+mem `%;%`(s, f) x
+1. Return YetE (s.MEM_store)[YetE (f.MODULE_frame.MEM_moduleinst)[x]].
+
+elem `%;%`(s, f) x
+1. Return YetE (s.ELEM_store)[YetE (f.MODULE_frame.ELEM_moduleinst)[x]].
+
+data `%;%`(s, f) x
+1. Return YetE (s.DATA_store)[YetE (f.MODULE_frame.DATA_moduleinst)[x]].
+
+local `%;%`(s, f) x
+1. Return YetE (f.LOCAL_frame)[x].
+
+with_local `%;%`(s, f) x v
+1. Replace YetE (state) with YetE (new state).
+
+with_global `%;%`(s, f) x v
+1. Replace YetE (state) with YetE (new state).
+
+with_table `%;%`(s, f) x i r
+1. Replace YetE (state) with YetE (new state).
+
+with_tableext `%;%`(s, f) x r
+1. Replace YetE (state) with YetE (new state).
+
+with_mem `%;%`(s, f) x i j b
+1. Replace YetE (state) with YetE (new state).
+
+with_memext `%;%`(s, f) x b
+1. Replace YetE (state) with YetE (new state).
+
+with_elem `%;%`(s, f) x r
+1. Replace YetE (state) with YetE (new state).
+
+with_data `%;%`(s, f) x b
+1. Replace YetE (state) with YetE (new state).
+
 unreachable
 1. Trap.
 
@@ -459,6 +540,72 @@ data.drop x
 
 == AL Validation...
 
+Ki
+Failure("ReturnI (ValueE 1024)")
+
+size
+Failure("YetE (I32_valtype)")
+
+test_sub_ATOM_22
+Failure("ReturnI (ValueE 0)")
+
+curried_
+Failure("ReturnI (AddE (NameE (N(n_1)), NameE (N(n_2))))")
+
+default_
+Failure("YetE (I32_valtype)")
+
+funcaddr
+Failure("ReturnI (YetE (f.MODULE_frame.FUNC_moduleinst))")
+
+funcinst
+Failure("ReturnI (YetE (s.FUNC_store))")
+
+func
+Failure("ReturnI (IndexAccessE (YetE (s.FUNC_store), IndexAccessE (YetE (f.MODULE_frame.FUNC_moduleinst), NameE (N(x)))))")
+
+global
+Failure("ReturnI (IndexAccessE (YetE (s.GLOBAL_store), IndexAccessE (YetE (f.MODULE_frame.GLOBAL_moduleinst), NameE (N(x)))))")
+
+table
+Failure("ReturnI (IndexAccessE (YetE (s.TABLE_store), IndexAccessE (YetE (f.MODULE_frame.TABLE_moduleinst), NameE (N(x)))))")
+
+mem
+Failure("ReturnI (IndexAccessE (YetE (s.MEM_store), IndexAccessE (YetE (f.MODULE_frame.MEM_moduleinst), NameE (N(x)))))")
+
+elem
+Failure("ReturnI (IndexAccessE (YetE (s.ELEM_store), IndexAccessE (YetE (f.MODULE_frame.ELEM_moduleinst), NameE (N(x)))))")
+
+data
+Failure("ReturnI (IndexAccessE (YetE (s.DATA_store), IndexAccessE (YetE (f.MODULE_frame.DATA_moduleinst), NameE (N(x)))))")
+
+local
+Failure("ReturnI (IndexAccessE (YetE (f.LOCAL_frame), NameE (N(x))))")
+
+with_local
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_global
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_table
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_tableext
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_mem
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_memext
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_elem
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
+with_data
+Failure("ReplaceI (YetE (state), YetE (new state))")
+
 unreachable
 Ok
 
@@ -591,6 +738,6 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 data.drop
 Ok
 
-Pass/Total: [28/44]
+Pass/Total: [28/66]
 == Complete.
 ```

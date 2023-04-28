@@ -91,7 +91,7 @@ type instr =
   | LetI of (expr * expr)
   | TrapI
   | NopI
-  | ReturnI
+  | ReturnI of (expr option)
   | InvokeI of expr
   | EnterI of (string * expr)
   | ExecuteI of (string * expr list)

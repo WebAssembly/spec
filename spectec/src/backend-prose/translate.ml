@@ -63,6 +63,7 @@ let il_type2al_type t = match t.it with
             (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
             Al.TopT
       end
+  | Ast.NatT -> Al.IntT
   | _ -> failwith "Unreachable"
 
 let rec find_type tenv exp = match exp.it with
@@ -333,10 +334,8 @@ let rec exp2cond exp = match exp.it with
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
 
-
-(** reduction -> `Al.instr list` **)
-
-let reduction2instrs (_, rhs, prems, _) =
+(** prems -> `Al.instr list` -> `Al.instr list` **)
+let prems2instrs =
   List.fold_right ( fun prem instrs ->
     match prem.it with
     | Ast.IfPr exp -> [ Al.IfI (exp2cond exp, instrs |> check_nop, []) ]
@@ -366,8 +365,11 @@ let reduction2instrs (_, rhs, prems, _) =
       gen_fail_msg_of_prem prem "instr" |> print_endline ;
       Al.YetI (Il.Print.string_of_prem prem) :: instrs
   )
-  prems
-  (rhs2instrs rhs)
+
+(** reduction -> `Al.instr list` **)
+
+let reduction2instrs (_, rhs, prems, _) =
+  prems2instrs prems (rhs2instrs rhs)
 
 
 (** AL -> AL transpilers *)
@@ -567,19 +569,38 @@ let translate_rules il =
 
   List.map reduction_group2algo reduction_groups
 
+let mutator2instrs clause =
+  let Ast.DefD(_binds, _e1, _e2, prems) = clause.it in
+  prems2instrs prems [ Al.ReplaceI ((Al.YetE "state"), (Al.YetE "new state")) ]
+
+let helper2instrs clause =
+  let Ast.DefD(_binds, _e1, e2, prems) = clause.it in
+  prems2instrs prems [ Al.ReturnI ( Option.some (exp2expr e2) ) ]
+
 (** Main translation for helper functions **)
 
-let extract_helpers _def = []
+let helpers2algo def = match def.it with
+  | Ast.DecD (_, _, _, []) -> None
+  | Ast.DecD (id, _t1, _t2, clauses) ->
+    let DefD(binds, params, _, _) = (List.hd clauses).it in
+    let typed_params = ( match params.it with
+    | Ast.TupE exps -> exps
+    | _ -> [ params ]
+    ) |> List.map (find_type binds)
+    in
+    let blocks = if String.starts_with ~prefix:"with" id.it then
+      List.map mutator2instrs clauses
+    else
+      List.map helper2instrs clauses
+    in
+    let algo_body = List.fold_right merge_otherwise blocks [] in
 
-let group_helpers _helpers = []
-
-let helper_group2algo _helper_group = []
+    let algo = Al.Algo(id.it, typed_params, algo_body) in
+    Some algo
+  | _ -> None
 
 let translate_helpers il =
-  let helpers = List.concat_map extract_helpers il in
-  let helper_groups = group_helpers helpers in
-
-  List.map reduction_group2algo helper_groups
+  List.filter_map helpers2algo il
 
 (** Entry **)
 
