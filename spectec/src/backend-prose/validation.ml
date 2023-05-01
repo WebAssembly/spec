@@ -44,6 +44,7 @@ let failmsg ty1 ty2 =
     (Print.string_of_al_type ty2)
     |> failwith
 
+(* TODO: Get signature from algorithm *)
 let signature_of = function
   | "unop" -> ([StringT; TopT; IntT], ListT IntT)
   | "binop" -> ([StringT; TopT; IntT; IntT], ListT IntT)

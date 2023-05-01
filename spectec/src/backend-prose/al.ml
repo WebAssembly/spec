@@ -7,6 +7,8 @@ type al_type =
   | IntT
   | AddrT
   | StringT
+  | FrameT
+  | StoreT
   | StateT
   | TopT
 
@@ -14,7 +16,7 @@ type value =
   | WasmV of Reference_interpreter.Values.value
   | IntV of int
 
-type name = N of string | SubN of name * string
+type name = N of string | NN of string * string | SubN of name * string
 
 type wasm_type_expr =
   | WasmTE of Reference_interpreter.Types.value_type

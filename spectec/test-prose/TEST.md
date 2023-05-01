@@ -51,56 +51,73 @@ default_ t
 5. Return YetE (?(REF.NULL_val(rt))).
 6. Return YetE (?()).
 
-funcaddr `%;%`(s, f)
-1. Return YetE (f.MODULE_frame.FUNC_moduleinst).
+funcaddr
+1. Let f be the current frame.
+2. Return f.MODULE.FUNC.
 
-funcinst `%;%`(s, f)
-1. Return YetE (s.FUNC_store).
+funcinst
+1. Let f be the current frame.
+2. Return s.FUNC.
 
-func `%;%`(s, f) x
-1. Return YetE (s.FUNC_store)[YetE (f.MODULE_frame.FUNC_moduleinst)[x]].
+func x
+1. Let f be the current frame.
+2. Return s.FUNC[f.MODULE.FUNC[x]].
 
-global `%;%`(s, f) x
-1. Return YetE (s.GLOBAL_store)[YetE (f.MODULE_frame.GLOBAL_moduleinst)[x]].
+global x
+1. Let f be the current frame.
+2. Return s.GLOBAL[f.MODULE.GLOBAL[x]].
 
-table `%;%`(s, f) x
-1. Return YetE (s.TABLE_store)[YetE (f.MODULE_frame.TABLE_moduleinst)[x]].
+table x
+1. Let f be the current frame.
+2. Return s.TABLE[f.MODULE.TABLE[x]].
 
-mem `%;%`(s, f) x
-1. Return YetE (s.MEM_store)[YetE (f.MODULE_frame.MEM_moduleinst)[x]].
+mem x
+1. Let f be the current frame.
+2. Return s.MEM[f.MODULE.MEM[x]].
 
-elem `%;%`(s, f) x
-1. Return YetE (s.ELEM_store)[YetE (f.MODULE_frame.ELEM_moduleinst)[x]].
+elem x
+1. Let f be the current frame.
+2. Return s.ELEM[f.MODULE.ELEM[x]].
 
-data `%;%`(s, f) x
-1. Return YetE (s.DATA_store)[YetE (f.MODULE_frame.DATA_moduleinst)[x]].
+data x
+1. Let f be the current frame.
+2. Return s.DATA[f.MODULE.DATA[x]].
 
-local `%;%`(s, f) x
-1. Return YetE (f.LOCAL_frame)[x].
+local x
+1. Let f be the current frame.
+2. Return f.LOCAL[x].
 
-with_local `%;%`(s, f) x v
-1. Replace YetE (state) with YetE (new state).
+with_local x v
+1. Let f be the current frame.
+2. Replace f.LOCAL[x] with v.
 
-with_global `%;%`(s, f) x v
-1. Replace YetE (state) with YetE (new state).
+with_global x v
+1. Let f be the current frame.
+2. Replace s.GLOBAL[f.MODULE.GLOBAL[x]] with v.
 
-with_table `%;%`(s, f) x i r
-1. Replace YetE (state) with YetE (new state).
+with_table x i r
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]][i] with r.
 
-with_tableext `%;%`(s, f) x r
-1. Replace YetE (state) with YetE (new state).
+with_tableext x r
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]] with r*.
 
-with_mem `%;%`(s, f) x i j b
-1. Replace YetE (state) with YetE (new state).
+with_mem x i j b
+1. Let f be the current frame.
+2. Replace YetE (s.MEM_top[f.MODULE_frame.MEM_moduleinst[x]][i : j]) with b*.
 
-with_memext `%;%`(s, f) x b
-1. Replace YetE (state) with YetE (new state).
+with_memext x b
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]] with b*.
 
-with_elem `%;%`(s, f) x r
-1. Replace YetE (state) with YetE (new state).
+with_elem x r
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]] with r*.
 
-with_data `%;%`(s, f) x b
-1. Replace YetE (state) with YetE (new state).
+with_data x b
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]] with b*.
 
 unreachable
 1. Trap.
@@ -318,10 +335,10 @@ ref.func x
   a. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.
 
 local.get x
-1. Push $local(z, x) to the stack.
+1. Push $local(x) to the stack.
 
 global.get x
-1. Push $global(z, x) to the stack.
+1. Push $global(x) to the stack.
 
 table.get x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -478,12 +495,12 @@ memory.init x
 local.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. Perform $with_local(z, x, val).
+3. Perform $with_local(x, val).
 
 global.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. Perform $with_global(z, x, val).
+3. Perform $with_global(x, val).
 
 table.set x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -493,7 +510,7 @@ table.set x
 5. If i ≥ the length of $table(z, x), then:
   a. Trap.
 6. Else:
-  a. Perform $with_table(z, x, i, ref).
+  a. Perform $with_table(x, i, ref).
 
 table.grow x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -501,13 +518,13 @@ table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Perform $with_tableext(z, x, YetE (ref^n{})).
+  a. Perform $with_tableext(x, YetE (ref^n{})).
   b. Push the value i32.CONST the length of $table(z, x) to the stack.
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
 
 elem.drop x
-1. Perform $with_elem(z, x, []).
+1. Perform $with_elem(x, []).
 
 store nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -519,24 +536,24 @@ store nt ?() n_A n_O
     1) Trap.
 6. If $size(nt) is not YetE (?()), then:
   a. Let b* be $bytes_(YetE (!($size(nt <: valtype))), c).
-  b. Perform $with_mem(z, 0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b*).
+  b. Perform $with_mem(0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b*).
 7. If ((i + n_O) + (n / 8)) ≥ the length of $mem(z, 0), then:
   a. Trap.
 8. If $size(nt) is not YetE (?()), then:
   a. Let b* be $bytes_(n, $wrap_(YetE ((!($size(nt <: valtype)), n)), c)).
-  b. Perform $with_mem(z, 0, (i + n_O), (n / 8), b*).
+  b. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Either:
-  a. Perform $with_memext(z, 0, YetE (0^((n * 64) * $Ki){})).
+  a. Perform $with_memext(0, YetE (0^((n * 64) * $Ki){})).
   b. Push the value i32.CONST the length of $mem(z, 0) to the stack.
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
 
 data.drop x
-1. Perform $with_data(z, x, []).
+1. Perform $with_data(x, []).
 
 == AL Validation...
 
@@ -556,55 +573,55 @@ default_
 Failure("YetE (I32_valtype)")
 
 funcaddr
-Failure("ReturnI (YetE (f.MODULE_frame.FUNC_moduleinst))")
+Failure("FrameE")
 
 funcinst
-Failure("ReturnI (YetE (s.FUNC_store))")
+Failure("FrameE")
 
 func
-Failure("ReturnI (IndexAccessE (YetE (s.FUNC_store), IndexAccessE (YetE (f.MODULE_frame.FUNC_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 global
-Failure("ReturnI (IndexAccessE (YetE (s.GLOBAL_store), IndexAccessE (YetE (f.MODULE_frame.GLOBAL_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 table
-Failure("ReturnI (IndexAccessE (YetE (s.TABLE_store), IndexAccessE (YetE (f.MODULE_frame.TABLE_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 mem
-Failure("ReturnI (IndexAccessE (YetE (s.MEM_store), IndexAccessE (YetE (f.MODULE_frame.MEM_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 elem
-Failure("ReturnI (IndexAccessE (YetE (s.ELEM_store), IndexAccessE (YetE (f.MODULE_frame.ELEM_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 data
-Failure("ReturnI (IndexAccessE (YetE (s.DATA_store), IndexAccessE (YetE (f.MODULE_frame.DATA_moduleinst), NameE (N(x)))))")
+Failure("FrameE")
 
 local
-Failure("ReturnI (IndexAccessE (YetE (f.LOCAL_frame), NameE (N(x))))")
+Failure("FrameE")
 
 with_local
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_global
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_table
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_tableext
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_mem
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_memext
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_elem
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 with_data
-Failure("ReplaceI (YetE (state), YetE (new state))")
+Failure("FrameE")
 
 unreachable
 Ok
@@ -682,10 +699,10 @@ ref.func
 Ok
 
 local.get
-Ok
+Failure("IntT is not subtype of StateT")
 
 global.get
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.get
 Ok
@@ -715,19 +732,19 @@ memory.init
 Failure("YetE (I32_numtype)")
 
 local.set
-Ok
+Failure("IntT is not subtype of StateT")
 
 global.set
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.set
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.grow
 Failure("YetE (ref^n{})")
 
 elem.drop
-Ok
+Failure("IntT is not subtype of StateT")
 
 store
 Failure("Unknwon function name: size")
@@ -736,8 +753,8 @@ memory.grow
 Failure("YetE (0^((n * 64) * $Ki){})")
 
 data.drop
-Ok
+Failure("IntT is not subtype of StateT")
 
-Pass/Total: [28/66]
+Pass/Total: [21/66]
 == Complete.
 ```

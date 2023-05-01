@@ -58,6 +58,9 @@ let il_type2al_type t = match t.it with
         | "sx" -> Al.TopT
         | "val" -> Al.WasmValueTopT
         | "valtype" -> Al.WasmValueTopT
+        | "frame" -> Al.FrameT
+        | "store" -> Al.StoreT
+        | "state" -> Al.StateT
         | _ ->
             (* TODO *)
             (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
@@ -75,6 +78,12 @@ let rec find_type tenv exp = match exp.it with
       end
   | Ast.IterE (inner_exp, _) | Ast.SubE (inner_exp, _, _) ->
       find_type tenv inner_exp
+  | Ast.MixE ( [[]; [Ast.Semicolon]; []], {it = Ast.TupE([st; fr]); _} ) ->
+      (
+        match (find_type tenv st, find_type tenv fr) with
+        | ((Al.N s, StoreT), (Al.N f, FrameT)) -> (Al.NN (s, f), Al.StateT)
+        | _ -> (Al.N (Print.string_of_exp exp), Al.TopT)
+      )
   | _ -> (Al.N (Print.string_of_exp exp), Al.TopT)
 
 let rec get_top_of_stack stack = match stack.it with
@@ -121,6 +130,8 @@ let rec exp2expr exp = match exp.it with
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)
       Al.IterE (name, tmp iter)
+  (* property access *)
+  | Ast.DotE (_, inner_exp, Atom p) -> Al.PropE (exp2expr inner_exp, p)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Al.MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
@@ -371,6 +382,15 @@ let prems2instrs =
 let reduction2instrs (_, rhs, prems, _) =
   prems2instrs prems (rhs2instrs rhs)
 
+(* `Ast.exp` -> `Ast.path` -> `Al.expr` *)
+let path2expr exp path =
+  let rec path2expr' path = match path.it with
+    | Ast.RootP -> exp
+    | Ast.IdxP (p, e) -> Ast.IdxE(path2expr' p, e) $ path.at
+    | Ast.SliceP (p, e1, e2) -> Ast.SliceE(path2expr' p, e1, e2) $ path.at
+    | Ast.DotP (p, a) -> Ast.DotE(Ast.VarT ("top" $ no_region) $ no_region, path2expr' p, a) $ path.at
+  in
+  path2expr' path |> exp2expr
 
 (** AL -> AL transpilers *)
 
@@ -569,9 +589,21 @@ let translate_rules il =
 
   List.map reduction_group2algo reduction_groups
 
+let replace_with e =
+  match e.it with
+  | Ast.UpdE (base, path, v)
+  | Ast.ExtE (base, path, v) -> [ Al.ReplaceI (path2expr base path, exp2expr v) ]
+  | _ -> []
+
 let mutator2instrs clause =
-  let Ast.DefD(_binds, _e1, _e2, prems) = clause.it in
-  prems2instrs prems [ Al.ReplaceI ((Al.YetE "state"), (Al.YetE "new state")) ]
+  let Ast.DefD(_binds, _e1, e2, prems) = clause.it in
+
+  prems2instrs prems (
+    match e2.it with
+    | Ast.MixE ([[]; [Ast.Semicolon]; []], {it = Ast.TupE [new_s; new_f]; _}) ->
+      replace_with new_s @ replace_with new_f
+    | _ -> []
+  )
 
 let helper2instrs clause =
   let Ast.DefD(_binds, _e1, e2, prems) = clause.it in
@@ -602,7 +634,52 @@ let helpers2algo def = match def.it with
 let translate_helpers il =
   List.filter_map helpers2algo il
 
+(* Hide state and make it implicit from the prose. Can be turned off. *)
+
+let is_state = function
+| Al.NameE (Al.N "z") -> true
+| _ -> false
+
+let hide_state_expr e = match e with
+| Al.AppE (f, args) -> Al.AppE(f, List.filter (fun x -> not (is_state x)) args)
+| _ -> e
+
+let rec hide_state_instr instr =
+  let hide_state_instrs = List.map hide_state_instr in
+  match instr with
+  | Al.IfI (c, t, e) -> Al.IfI (c, hide_state_instrs t, hide_state_instrs e)
+  | Al.OtherwiseI (b) -> Al.OtherwiseI (hide_state_instrs b)
+  | Al.WhileI (c, il) -> Al.WhileI (c, hide_state_instrs il)
+  | Al.RepeatI (e, il) -> Al.RepeatI (e, hide_state_instrs il)
+  | Al.EitherI (il1, il2) -> Al.EitherI (hide_state_instrs il1, hide_state_instrs il2)
+  | Al.AssertI s -> Al.AssertI s
+  | Al.PushI e -> Al.PushI (hide_state_expr e)
+  | Al.PopI e -> Al.PopI (hide_state_expr e)
+  | Al.LetI (n, e) -> Al.LetI (n, hide_state_expr e)
+  | Al.TrapI -> Al.TrapI
+  | Al.NopI -> Al.NopI
+  | Al.ReturnI e_opt -> Al.ReturnI (Option.map hide_state_expr e_opt)
+  | Al.InvokeI e -> Al.InvokeI (hide_state_expr e)
+  | Al.EnterI (s, e) -> Al.EnterI (s, hide_state_expr e)
+  | Al.ExecuteI (s, el) -> Al.ExecuteI (s, List.map hide_state_expr el)
+  | Al.ReplaceI (e1, e2) -> Al.ReplaceI (hide_state_expr e1, hide_state_expr e2)
+  | Al.JumpI e -> Al.JumpI (hide_state_expr e)
+  | Al.PerformI e -> Al.PerformI (hide_state_expr e)
+  | Al.YetI s -> Al.YetI s
+
+let hide_state = function Al.Algo(name, params, body) ->
+  let new_body = body |> List.map hide_state_instr in
+  match params with
+  | (Al.NN (_, f), StateT) :: rest_params -> Al.Algo(
+      name,
+      rest_params,
+      Al.LetI(Al.NameE (Al.N f), Al.FrameE) :: new_body
+    )
+  | _ -> Al.Algo(name, params, new_body)
+
 (** Entry **)
 
 (* `Ast.script` -> `Al.Algo` *)
-let translate il = translate_helpers il @ translate_rules il
+let translate il =
+  ( translate_helpers il @ translate_rules il )
+  |> List.map hide_state (* Can be turned off *)

@@ -36,6 +36,8 @@ let structured_string_of_al_type = function
   | IntT -> "IntT"
   | AddrT -> "AddrT"
   | StringT -> "StringT"
+  | FrameT -> "FrameT"
+  | StoreT -> "StoreT"
   | StateT -> "StateT"
   | TopT -> "TopT"
  
@@ -47,6 +49,7 @@ let structured_string_of_wasm_type_expr = function
 
 let rec structured_string_of_name = function
   | N s -> "N(" ^ s ^ ")"
+  | NN (s1, s2) -> "NN(" ^ s1 ^ ", " ^ s2 ^ ")"
   | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
 
 (* iter *)
@@ -256,6 +259,8 @@ let rec string_of_al_type = function
   | StringT -> "StringT"
   | IntT -> "IntT"
   | AddrT -> "AddrT"
+  | FrameT -> "FrameT"
+  | StoreT -> "StoreT"
   | StateT -> "StateT"
   | FunT (params, res) ->
       sprintf "[%s] -> %s"
@@ -272,6 +277,7 @@ let string_of_wasm_type_expr = function
 
 let rec string_of_name = function
   | N s -> s
+  | NN (s1, s2) -> sprintf "(%s, %s)" s1 s2
   | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
 
 let string_of_iter = function
