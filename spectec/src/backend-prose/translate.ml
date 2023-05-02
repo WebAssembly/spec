@@ -115,7 +115,7 @@ let tmp = function
 
 (* `Ast.exp` -> `Al.expr` *)
 let rec exp2expr exp = match exp.it with
-  | Ast.NatE n -> Al.ValueE n
+  | Ast.NatE n -> Al.ValueE (Al.IntV n)
   (* List *)
   | Ast.LenE inner_exp -> Al.LengthE (exp2expr inner_exp)
   | Ast.ListE exps -> Al.ListE (List.map exp2expr exps)
@@ -153,8 +153,8 @@ let rec exp2expr exp = match exp.it with
         | Ast.CaseE (Ast.Atom "I32", _, _) ->
             let ty =
               Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type in
-            Al.ConstE (Al.WasmTE (ty), exp2expr num)
-        | Ast.VarE (id) -> Al.ConstE (Al.VarTE id.it, exp2expr num)
+            Al.ConstE (Al.ValueE (Al.WasmTypeV ty), exp2expr num)
+        | Ast.VarE (id) -> Al.ConstE (Al.WasmTypeVarE id.it, exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
       end
   (* Call with multiple arguments *)
@@ -365,7 +365,7 @@ let prems2instrs =
         [ Al.IfI (
           Al.EqC (
             Al.LengthE rhs,
-            Al.ValueE (List.length es)
+            Al.ValueE (Al.IntV (List.length es))
           ),
           Al.LetI (exp2expr exp1, rhs) :: instrs,
           []

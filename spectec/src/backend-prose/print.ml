@@ -41,10 +41,6 @@ let structured_string_of_al_type = function
   | StateT -> "StateT"
   | TopT -> "TopT"
  
-let structured_string_of_wasm_type_expr = function
-  | VarTE s -> "VarTE " ^ s
-  | _ -> "WasmTE _"
-
 (* name *)
 
 let rec structured_string_of_name = function
@@ -62,8 +58,14 @@ let structured_string_of_iter = function
 
 (* expression *)
 
+let structured_string_of_value = function
+  | WasmV v -> Reference_interpreter.Values.string_of_value v
+  | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
+  | IntV i -> string_of_int i
+
 let rec structured_string_of_expr = function
-  | ValueE (i) -> "ValueE " ^ string_of_int i
+  | ValueE (v) -> "ValueE " ^ structured_string_of_value v
+  | WasmTypeVarE v -> "WasmTypeVarE " ^ v
   | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
   | AddE (e1, e2) ->
       "AddE (" ^
@@ -141,7 +143,7 @@ let rec structured_string_of_expr = function
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
   | ConstE (t, e) ->
       "ConstE (" ^
-        structured_string_of_wasm_type_expr t ^ ", " ^
+        structured_string_of_expr t ^ ", " ^
         structured_string_of_expr e ^ ")"
   | RefNullE n -> "RefNullE (" ^ structured_string_of_name n ^ ")"
   | RefFuncAddrE e -> "RefFuncAddrE (" ^ structured_string_of_expr e ^ ")"
@@ -271,10 +273,6 @@ let rec string_of_al_type = function
         (string_of_al_type res)
   | TopT -> "TopT"
 
-let string_of_wasm_type_expr = function
-  | VarTE s -> s
-  | WasmTE (ty) -> Reference_interpreter.Types.string_of_value_type ty
-
 let rec string_of_name = function
   | N s -> s
   | NN (s1, s2) -> sprintf "(%s, %s)" s1 s2
@@ -286,8 +284,14 @@ let string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
 
+let string_of_value = function
+  | WasmV v -> Reference_interpreter.Values.string_of_value v
+  | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
+  | IntV i -> string_of_int i
+
 let rec string_of_expr = function
-  | ValueE i -> string_of_int i
+  | ValueE v -> string_of_value v
+  | WasmTypeVarE v -> v
   | MinusE e ->
       sprintf "-%s" (string_of_expr e)
   | AddE (e1, e2) ->
@@ -346,7 +350,7 @@ let rec string_of_expr = function
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
   | ConstE (t, e) ->
-      sprintf "the value %s.CONST %s" (string_of_wasm_type_expr t) (string_of_expr e)
+      sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
   | RefFuncAddrE e -> sprintf "the value ref.funcaddr %s" (string_of_expr e)
   | YetE s -> sprintf "YetE (%s)" s

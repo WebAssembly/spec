@@ -85,14 +85,14 @@ let st_ref: stack ref = ref []
 
 (* Helper functions *)
 
-let al_type2wasm_type env = function
-  | Al.WasmTE ty -> ty
-  | Al.VarTE x -> Env.find_type x env
-
 (* NOTE: These functions should be used only if validation ensures no failure *)
 let al_value2wasm_value = function
   | Al.WasmV v -> v
   | _ -> failwith "Not a Wasm value"
+
+let al_value2wasm_type = function
+  | Al.WasmTypeV ty -> ty
+  | _ -> failwith "Not a Wasm type"
 
 let al_value2int = function
   | Al.IntV i -> i
@@ -130,7 +130,7 @@ and eval_expr env e = match e with
   | Al.NameE name -> Env.find name env
   | Al.ConstE (ty, inner_e) ->
       let i = eval_expr env inner_e |> al_value2int in
-      let wasm_ty = al_type2wasm_type env ty in
+      let wasm_ty = eval_expr env ty |> al_value2wasm_type in
       Al.WasmV (mk_wasm_num wasm_ty i)
   | e -> structured_string_of_expr e |> failwith
 
@@ -147,7 +147,7 @@ let rec interp_instr env i = match (i, !st_ref) with
       let v = eval_expr env e |> al_value2wasm_value in
       st_ref := v :: st;
       env
-  | (Al.PopI (Al.ConstE (Al.VarTE nt, Al.NameE name)), h :: t) ->
+  | (Al.PopI (Al.ConstE (Al.WasmTypeVarE nt, Al.NameE name)), h :: t) ->
       st_ref := t;
 
       let ty = Values.type_of_value h in

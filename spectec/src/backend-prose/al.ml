@@ -14,13 +14,10 @@ type al_type =
 
 type value =
   | WasmV of Reference_interpreter.Values.value
+  | WasmTypeV of Reference_interpreter.Types.value_type
   | IntV of int
 
 type name = N of string | NN of string * string | SubN of name * string
-
-type wasm_type_expr =
-  | WasmTE of Reference_interpreter.Types.value_type
-  | VarTE of string
 
 type iter =
   | Opt                          (* `?` *)
@@ -29,7 +26,8 @@ type iter =
   | ListN of name                 (* `^` exp *)
 
 type expr =
-  | ValueE of int
+  | ValueE of value
+  | WasmTypeVarE of string
   | MinusE of expr
   | AddE of (expr * expr)
   | SubE of (expr * expr)
@@ -59,7 +57,7 @@ type expr =
   | LabelE of (expr * expr)
   | NameE of name
   (* Wasm Value Expr *)
-  | ConstE of wasm_type_expr * expr
+  | ConstE of expr * expr
   | RefNullE of name
   | RefFuncAddrE of expr
   (* Yet *)
