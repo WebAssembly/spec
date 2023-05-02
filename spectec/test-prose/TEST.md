@@ -315,8 +315,8 @@ memory.copy
   b. Push YetE (CONST_admininstr(I32_numtype, ((i + n) - 1))) to the stack.
   c. Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) YetE (0) YetE (0)).
   d. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
+  e. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
+  f. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
   g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
   h. Execute (MEMORY.COPY).
 

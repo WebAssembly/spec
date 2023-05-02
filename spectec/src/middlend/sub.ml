@@ -103,7 +103,7 @@ and t_exp' env = function
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
   | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
-  | DotE (t, e, a) -> DotE (t, t_exp env e, a)
+  | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LenE exp -> LenE exp
   | TupE es -> TupE (List.map (t_exp env) es)
@@ -115,7 +115,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
-  | CaseE (a, e, t) -> CaseE (a, t_exp env e, t)
+  | CaseE (a, e) -> CaseE (a, t_exp env e)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
 and t_iter env = function
@@ -128,7 +128,7 @@ and t_path' env = function
   | RootP -> RootP
   | IdxP (path, e) -> IdxP (t_path env path, t_exp env e)
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
-  | DotP (path, t, a) -> DotP (t_path env path, t, a)
+  | DotP (path, a) -> DotP (t_path env path, a)
 
 and t_path env x = { x with it = t_path' env x.it }
 
@@ -197,17 +197,18 @@ let insert_injections env (def : def) : def list =
     let sup_ty = VarT sup $ no_region in
     let (real_id, cases) = lookup env sub in
     let clauses = List.map (fun (a, arg_typ, _hints) ->
-        if arg_typ.it = TupT []
-        then
-          DefD ([],
-            CaseE (a, TupE [] $ no_region, VarT real_id $ no_region) $ no_region,
-            CaseE (a, TupE [] $ no_region, sup_ty) $ no_region, []) $ no_region
-        else
-          let x = "x" $ no_region in
-          let xe = VarE x $ no_region in
-          DefD ([(x, arg_typ, [])],
-            CaseE (a, xe, VarT real_id $ no_region) $ no_region,
-            CaseE (a, xe, sup_ty) $ no_region, []) $ no_region
+      if arg_typ.it = TupT []
+      then
+        let unitE = TupE [] $$ no_region % arg_typ in
+        DefD ([],
+          CaseE (a, unitE) $$ no_region % (VarT real_id $ no_region),
+          CaseE (a, unitE) $$ no_region % sup_ty, []) $ no_region
+      else
+        let x = "x" $ no_region in
+        let xe = VarE x $$ no_region % arg_typ in
+        DefD ([(x, arg_typ, [])],
+          CaseE (a, xe) $$ no_region % (VarT real_id $ no_region),
+          CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       ) cases in
     DecD (name, sub_ty, sup_ty, clauses) $ no_region
   ) pairs

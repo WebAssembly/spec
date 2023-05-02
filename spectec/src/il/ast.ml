@@ -1,6 +1,9 @@
 open Util.Source
 
 
+(* TODO: annotate types on nodes *)
+
+
 (* Terminals *)
 
 type nat = int
@@ -89,7 +92,7 @@ and cmpop =
   | LeOp (* `<=` *)
   | GeOp (* `>=` *)
 
-and exp = exp' phrase
+and exp = (exp', typ) note_phrase
 and exp' =
   | VarE of id                   (* varid *)
   | BoolE of bool                (* bool *)
@@ -103,28 +106,28 @@ and exp' =
   | UpdE of exp * path * exp     (* exp `[` path `=` exp `]` *)
   | ExtE of exp * path * exp     (* exp `[` path `=..` exp `]` *)
   | StrE of expfield list        (* `{` list(expfield, `,`) `}` *)
-  | DotE of typ * exp * atom     (* exp `.` atom *)
+  | DotE of exp * atom           (* exp `.` atom *)
   | CompE of exp * exp           (* exp `@` exp *)
   | LenE of exp                  (* `|` exp `|` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | MixE of mixop * exp          (* exp atom exp *)
   | CallE of id * exp            (* defid exp? *)
   | IterE of exp * iterexp       (* exp iter *)
-  | OptE of exp option           (* exp? : typ? *)
+  | OptE of exp option           (* exp? *)
   | TheE of exp                  (* THE exp *)
   | ListE of exp list            (* [exp ... exp] *)
   | CatE of exp * exp            (* exp :: exp *)
-  | CaseE of atom * exp * typ    (* atom exp : typ *)
+  | CaseE of atom * exp          (* atom exp *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
 
 and expfield = atom * exp        (* atom exp *)
 
-and path = path' phrase
+and path = (path', typ) note_phrase
 and path' =
   | RootP                        (*  *)
   | IdxP of path * exp           (* path `[` exp `]` *)
   | SliceP of path * exp * exp   (* path `[` exp `:` exp `]` *)
-  | DotP of path * typ * atom    (* path `.` atom *)
+  | DotP of path * atom          (* path `.` atom *)
 
 and iterexp = iter * id list
 

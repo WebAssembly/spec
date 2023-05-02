@@ -166,108 +166,112 @@ let rec annot_iter env iter : Il.Ast.iter * occur =
     ListN e', occur
 
 and annot_exp env e : Il.Ast.exp * occur =
-  match e.it with
-  | VarE id ->
-    VarE id $ e.at, Env.singleton id.it (Env.find id.it env)
-  | BoolE _ | NatE _ | TextE _ ->
-    e, Env.empty
-  | UnE (op, e1) ->
-    let e1', occur1 = annot_exp env e1 in
-    UnE (op, e1') $ e.at, occur1
-  | BinE (op, e1, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    BinE (op, e1', e2') $ e.at, union occur1 occur2
-  | CmpE (op, e1, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    CmpE (op, e1', e2') $ e.at, union occur1 occur2
-  | IdxE (e1, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    IdxE (e1', e2') $ e.at, union occur1 occur2
-  | SliceE (e1, e2, e3) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    let e3', occur3 = annot_exp env e3 in
-    SliceE (e1', e2', e3') $ e.at, union (union occur1 occur2) occur3
-  | UpdE (e1, p, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let p', occur2 = annot_path env p in
-    let e2', occur3 = annot_exp env e2 in
-    UpdE (e1', p', e2') $ e.at, union (union occur1 occur2) occur3
-  | ExtE (e1, p, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let p', occur2 = annot_path env p in
-    let e2', occur3 = annot_exp env e2 in
-    ExtE (e1', p', e2') $ e.at, union (union occur1 occur2) occur3
-  | StrE efs ->
-    let efs', occurs = List.split (List.map (annot_expfield env) efs) in
-    StrE efs' $ e.at, List.fold_left union Env.empty occurs
-  | DotE (t, e1, atom) ->
-    let e1', occur1 = annot_exp env e1 in
-    DotE (t, e1', atom) $ e.at, occur1
-  | CompE (e1, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    CompE (e1', e2') $ e.at, union occur1 occur2
-  | LenE e1 ->
-    let e1', occur1 = annot_exp env e1 in
-    LenE e1' $ e.at, occur1
-  | TupE es ->
-    let es', occurs = List.split (List.map (annot_exp env) es) in
-    TupE es' $ e.at, List.fold_left union Env.empty occurs
-  | MixE (op, e1) ->
-    let e1', occur1 = annot_exp env e1 in
-    MixE (op, e1') $ e.at, occur1
-  | CallE (id, e1) ->
-    let e1', occur1 = annot_exp env e1 in
-    CallE (id, e1') $ e.at, occur1
-  | IterE (e1, iter) ->
-    let e1', occur1 = annot_exp env e1 in
-    let iter', occur' = annot_iterexp env occur1 iter e.at in
-    IterE (e1', iter') $ e.at, occur'
-  | OptE None ->
-    OptE None $ e.at, Env.empty
-  | OptE (Some e1) ->
-    let e1', occur1 = annot_exp env e1 in
-    OptE (Some e1') $ e.at, occur1
-  | TheE e1 ->
-    let e1', occur1 = annot_exp env e1 in
-    TheE e1' $ e.at, occur1
-  | ListE es ->
-    let es', occurs = List.split (List.map (annot_exp env) es) in
-    ListE es' $ e.at, List.fold_left union Env.empty occurs
-  | CatE (e1, e2) ->
-    let e1', occur1 = annot_exp env e1 in
-    let e2', occur2 = annot_exp env e2 in
-    CatE (e1', e2') $ e.at, union occur1 occur2
-  | CaseE (atom, e1, t) ->
-    let e1', occur1 = annot_exp env e1 in
-    CaseE (atom, e1', t) $ e.at, occur1
-  | SubE (e1, t1, t2) ->
-    let e1', occur1 = annot_exp env e1 in
-    SubE (e1', t1, t2) $ e.at, occur1
+  let it, occur =
+    match e.it with
+    | VarE id ->
+      VarE id, Env.singleton id.it (Env.find id.it env)
+    | BoolE _ | NatE _ | TextE _ ->
+      e.it, Env.empty
+    | UnE (op, e1) ->
+      let e1', occur1 = annot_exp env e1 in
+      UnE (op, e1'), occur1
+    | BinE (op, e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      BinE (op, e1', e2'), union occur1 occur2
+    | CmpE (op, e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      CmpE (op, e1', e2'), union occur1 occur2
+    | IdxE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      IdxE (e1', e2'), union occur1 occur2
+    | SliceE (e1, e2, e3) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      let e3', occur3 = annot_exp env e3 in
+      SliceE (e1', e2', e3'), union (union occur1 occur2) occur3
+    | UpdE (e1, p, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let p', occur2 = annot_path env p in
+      let e2', occur3 = annot_exp env e2 in
+      UpdE (e1', p', e2'), union (union occur1 occur2) occur3
+    | ExtE (e1, p, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let p', occur2 = annot_path env p in
+      let e2', occur3 = annot_exp env e2 in
+      ExtE (e1', p', e2'), union (union occur1 occur2) occur3
+    | StrE efs ->
+      let efs', occurs = List.split (List.map (annot_expfield env) efs) in
+      StrE efs', List.fold_left union Env.empty occurs
+    | DotE (e1, atom) ->
+      let e1', occur1 = annot_exp env e1 in
+      DotE (e1', atom), occur1
+    | CompE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      CompE (e1', e2'), union occur1 occur2
+    | LenE e1 ->
+      let e1', occur1 = annot_exp env e1 in
+      LenE e1', occur1
+    | TupE es ->
+      let es', occurs = List.split (List.map (annot_exp env) es) in
+      TupE es', List.fold_left union Env.empty occurs
+    | MixE (op, e1) ->
+      let e1', occur1 = annot_exp env e1 in
+      MixE (op, e1'), occur1
+    | CallE (id, e1) ->
+      let e1', occur1 = annot_exp env e1 in
+      CallE (id, e1'), occur1
+    | IterE (e1, iter) ->
+      let e1', occur1 = annot_exp env e1 in
+      let iter', occur' = annot_iterexp env occur1 iter e.at in
+      IterE (e1', iter'), occur'
+    | OptE None ->
+      OptE None, Env.empty
+    | OptE (Some e1) ->
+      let e1', occur1 = annot_exp env e1 in
+      OptE (Some e1'), occur1
+    | TheE e1 ->
+      let e1', occur1 = annot_exp env e1 in
+      TheE e1', occur1
+    | ListE es ->
+      let es', occurs = List.split (List.map (annot_exp env) es) in
+      ListE es', List.fold_left union Env.empty occurs
+    | CatE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      CatE (e1', e2'), union occur1 occur2
+    | CaseE (atom, e1) ->
+      let e1', occur1 = annot_exp env e1 in
+      CaseE (atom, e1'), occur1
+    | SubE (e1, t1, t2) ->
+      let e1', occur1 = annot_exp env e1 in
+      SubE (e1', t1, t2), occur1
+  in {e with it}, occur
 
 and annot_expfield env (atom, e) : Il.Ast.expfield * occur =
   let e', occur = annot_exp env e in
   (atom, e'), occur
 
 and annot_path env p : Il.Ast.path * occur =
-  match p.it with
-  | RootP -> p, Env.empty
-  | IdxP (p1, e) ->
-    let p1', occur1 = annot_path env p1 in
-    let e', occur2 = annot_exp env e in
-    IdxP (p1', e') $ p.at, union occur1 occur2
-  | SliceP (p1, e1, e2) ->
-    let p1', occur1 = annot_path env p1 in
-    let e1', occur2 = annot_exp env e1 in
-    let e2', occur3 = annot_exp env e2 in
-    SliceP (p1', e1', e2') $ p.at, union occur1 (union occur2 occur3)
-  | DotP (p1, t, atom) ->
-    let p1', occur1 = annot_path env p1 in
-    DotP (p1', t, atom) $ p.at, occur1
+  let it, occur =
+    match p.it with
+    | RootP -> RootP, Env.empty
+    | IdxP (p1, e) ->
+      let p1', occur1 = annot_path env p1 in
+      let e', occur2 = annot_exp env e in
+      IdxP (p1', e'), union occur1 occur2
+    | SliceP (p1, e1, e2) ->
+      let p1', occur1 = annot_path env p1 in
+      let e1', occur2 = annot_exp env e1 in
+      let e2', occur3 = annot_exp env e2 in
+      SliceP (p1', e1', e2'), union occur1 (union occur2 occur3)
+    | DotP (p1, atom) ->
+      let p1', occur1 = annot_path env p1 in
+      DotP (p1', atom), occur1
+  in {p with it}, occur
 
 and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
   assert (ids = []);
@@ -284,20 +288,21 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
 
 
 and annot_prem env prem : Il.Ast.premise * occur =
-  match prem.it with
-  | RulePr (id, op, e) ->
-    let e', occur = annot_exp env e in
-    RulePr (id, op, e') $ prem.at, occur
-  | IfPr e ->
-    let e', occur = annot_exp env e in
-    IfPr e' $ prem.at, occur
-  | ElsePr ->
-    prem, Env.empty
-  | IterPr (prem1, iter) ->
-    let prem1', occur1 = annot_prem env prem1 in
-    let iter', occur' = annot_iterexp env occur1 iter prem.at in
-    IterPr (prem1', iter') $ prem.at, occur'
-
+  let it, occur =
+    match prem.it with
+    | RulePr (id, op, e) ->
+      let e', occur = annot_exp env e in
+      RulePr (id, op, e'), occur
+    | IfPr e ->
+      let e', occur = annot_exp env e in
+      IfPr e', occur
+    | ElsePr ->
+      ElsePr, Env.empty
+    | IterPr (prem1, iter) ->
+      let prem1', occur1 = annot_prem env prem1 in
+      let iter', occur' = annot_iterexp env occur1 iter prem.at in
+      IterPr (prem1', iter'), occur'
+  in {prem with it}, occur
 
 let annot_exp env e =
   let e', occurs = annot_exp env e in
