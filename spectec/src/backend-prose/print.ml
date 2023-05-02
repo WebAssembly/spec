@@ -58,6 +58,8 @@ let structured_string_of_iter = function
 (* expression *)
 
 let structured_string_of_value = function
+  | FrameV _ -> "FrameV (TODO)"
+  | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | IntV i -> string_of_int i
@@ -283,7 +285,12 @@ let string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
 
+let string_of_frame f =
+  Printf.sprintf "{ local: %s }" (Reference_interpreter.Values.string_of_values f.local)
+
 let string_of_value = function
+  | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
+  | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | IntV i -> string_of_int i

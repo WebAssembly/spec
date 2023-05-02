@@ -757,6 +757,9 @@ Failure("IntT is not subtype of StateT")
 
 Pass/Total: [21/66]
 == Interpret AL...
-1
+[Stack]
+7
+{ local: [3 0 7] }
+
 == Complete.
 ```
