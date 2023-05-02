@@ -62,6 +62,7 @@ let structured_string_of_value = function
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | IntV i -> string_of_int i
+  | FloatV i -> string_of_float i
   | StringV s -> s
 
 let rec structured_string_of_expr = function
@@ -289,6 +290,7 @@ let string_of_value = function
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | IntV i -> string_of_int i
+  | FloatV i -> string_of_float i
   | StringV s -> s
 
 let rec string_of_expr = function
