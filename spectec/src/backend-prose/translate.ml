@@ -154,7 +154,7 @@ let rec exp2expr exp = match exp.it with
             let ty =
               Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type in
             Al.ConstE (Al.ValueE (Al.WasmTypeV ty), exp2expr num)
-        | Ast.VarE (id) -> Al.ConstE (Al.WasmTypeVarE id.it, exp2expr num)
+        | Ast.VarE (id) -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
       end
   (* Call with multiple arguments *)

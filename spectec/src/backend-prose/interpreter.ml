@@ -186,16 +186,16 @@ let rec interp_instr env = function
       assert (ty = ty');
       let v = wasm_value2al_num_value h in
       Env.add name v env
-  | Al.PopI (Al.ConstE (Al.WasmTypeVarE nt, Al.NameE name)) ->
+  | Al.PopI (Al.ConstE (Al.NameE nt, Al.NameE name)) ->
       (* Due to Wasm validation *)
       assert (List.length !st_ref > 0);
 
       let h = List.hd !st_ref in
       st_ref := List.tl !st_ref;
 
-      let ty = Values.type_of_value h in
+      let ty = Al.WasmTypeV (Values.type_of_value h) in
       let v = wasm_value2al_num_value h in
-      Env.add_type nt ty env |> Env.add name v
+      Env.add nt ty env |> Env.add name v
   | Al.PopI (Al.NameE (name)) -> 
       (* Due to Wasm validation *)
       assert (List.length !st_ref > 0);

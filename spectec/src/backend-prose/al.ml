@@ -29,7 +29,6 @@ type iter =
 
 type expr =
   | ValueE of value
-  | WasmTypeVarE of string
   | MinusE of expr
   | AddE of (expr * expr)
   | SubE of (expr * expr)

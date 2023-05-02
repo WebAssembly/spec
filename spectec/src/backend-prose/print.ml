@@ -67,7 +67,6 @@ let structured_string_of_value = function
 
 let rec structured_string_of_expr = function
   | ValueE (v) -> "ValueE " ^ structured_string_of_value v
-  | WasmTypeVarE v -> "WasmTypeVarE " ^ v
   | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
   | AddE (e1, e2) ->
       "AddE (" ^
@@ -295,7 +294,6 @@ let string_of_value = function
 
 let rec string_of_expr = function
   | ValueE v -> string_of_value v
-  | WasmTypeVarE v -> v
   | MinusE e ->
       sprintf "-%s" (string_of_expr e)
   | AddE (e1, e2) ->
