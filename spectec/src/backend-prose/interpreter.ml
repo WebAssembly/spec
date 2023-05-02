@@ -243,9 +243,9 @@ let algo_name_of winstr = match winstr.it with
   | _ -> failwith "Not implemented"
 
 let init_env params winstr = match (params, winstr.it) with
-  | ([(_ty, _); (op, _)], Ast.Test (Values.I32 Ast.I32Op.Eqz)) ->
+  | ([(_, _); (Al.NameE op, _)], Ast.Test (Values.I32 Ast.I32Op.Eqz)) ->
       Env.add op (Al.StringV "Eqz") Env.empty
-  | ([(ty, _); (op, _)], Ast.Compare (Values.F32 Ast.F32Op.Gt)) ->
+  | ([(Al.NameE ty, _); (Al.NameE op, _)], Ast.Compare (Values.F32 Ast.F32Op.Gt)) ->
       Env.empty
       |> Env.add ty (Al.WasmTypeV (Types.NumType Types.F32Type))
       |> Env.add op (Al.StringV "Gt")

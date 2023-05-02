@@ -19,7 +19,7 @@ type value =
   | FloatV of float
   | StringV of string
 
-type name = N of string | NN of string * string | SubN of name * string
+type name = N of string | SubN of name * string
 
 type iter =
   | Opt                          (* `?` *)
@@ -34,7 +34,7 @@ type expr =
   | SubE of (expr * expr)
   | MulE of (expr * expr)
   | DivE of (expr * expr)
-  | VecE of (expr * expr)
+  | PairE of (expr * expr)
   | AppE of (name * expr list)
   | NdAppE of (name * expr list)
   | RangedAppE of (name * expr * expr)
@@ -102,4 +102,4 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of (string * (name * al_type) list * instr list)
+type algorithm = Algo of (string * (expr * al_type) list * instr list)

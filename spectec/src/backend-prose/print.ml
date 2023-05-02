@@ -45,7 +45,6 @@ let structured_string_of_al_type = function
 
 let rec structured_string_of_name = function
   | N s -> "N(" ^ s ^ ")"
-  | NN (s1, s2) -> "NN(" ^ s1 ^ ", " ^ s2 ^ ")"
   | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
 
 (* iter *)
@@ -84,8 +83,8 @@ let rec structured_string_of_expr = function
       "DivE (" ^
         structured_string_of_expr e1 ^ ", " ^
         structured_string_of_expr e2 ^ ")"
-  | VecE (e1, e2) ->
-      "VecE (" ^
+  | PairE (e1, e2) ->
+      "PairE (" ^
         structured_string_of_expr e1 ^ ", " ^
         structured_string_of_expr e2 ^ ")"
   | AppE (n, nl) ->
@@ -248,7 +247,7 @@ and structured_string_of_instrs depth instrs =
 let structured_string_of_algorithm = function
   | Algo (name, params, instrs) ->
     name ^ List.fold_left (fun acc (p, t) ->
-      acc ^ " " ^ structured_string_of_name p ^ ":" ^ structured_string_of_al_type t
+      acc ^ " " ^ structured_string_of_expr p ^ ":" ^ structured_string_of_al_type t
     ) "" params ^ ":\n" ^
     structured_string_of_instrs 1 instrs
 
@@ -276,7 +275,6 @@ let rec string_of_al_type = function
 
 let rec string_of_name = function
   | N s -> s
-  | NN (s1, s2) -> sprintf "(%s, %s)" s1 s2
   | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
 
 let string_of_iter = function
@@ -304,7 +302,7 @@ let rec string_of_expr = function
       sprintf "(%s · %s)" (string_of_expr e1) (string_of_expr e2)
   | DivE (e1, e2) ->
       sprintf "(%s / %s)" (string_of_expr e1) (string_of_expr e2)
-  | VecE (e1, e2) -> sprintf "%s^%s" (string_of_expr e1) (string_of_expr e2)
+  | PairE (e1, e2) -> sprintf "(%s; %s)" (string_of_expr e1) (string_of_expr e2)
   | AppE (n, el) ->
       sprintf "$%s(%s)"
         (string_of_name n)
@@ -475,7 +473,7 @@ and string_of_instrs depth instrs =
 let string_of_algorithm = function
   | Algo (name, params, instrs) ->
     name ^ List.fold_left (fun acc (p, _t) ->
-      acc ^ " " ^ string_of_name p
+      acc ^ " " ^ string_of_expr p
     ) "" params ^
     string_of_instrs 0 instrs ^ "\n"
 

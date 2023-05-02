@@ -69,11 +69,13 @@ let il_type2al_type t = match t.it with
   | Ast.NatT -> Al.IntT
   | _ -> failwith "Unreachable"
 
-let rec find_type tenv exp = match exp.it with
+let rec find_type tenv exp =
+  let to_NameE x = Al.NameE (Al.N x) in
+  match exp.it with
   | Ast.VarE id ->
       begin match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-        | Some (_, t, []) -> (Al.N id.it, il_type2al_type t)
-        | Some (_, t, _) -> (Al.N id.it, Al.ListT (il_type2al_type t))
+        | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
+        | Some (_, t, _) -> (id.it |> to_NameE, Al.ListT (il_type2al_type t))
         | _ -> failwith (id.it ^ "'s type is unknown. There must be a problem in the IL.")
       end
   | Ast.IterE (inner_exp, _) | Ast.SubE (inner_exp, _, _) ->
@@ -81,10 +83,10 @@ let rec find_type tenv exp = match exp.it with
   | Ast.MixE ( [[]; [Ast.Semicolon]; []], {it = Ast.TupE([st; fr]); _} ) ->
       (
         match (find_type tenv st, find_type tenv fr) with
-        | ((Al.N s, StoreT), (Al.N f, FrameT)) -> (Al.NN (s, f), Al.StateT)
-        | _ -> (Al.N (Print.string_of_exp exp), Al.TopT)
+        | ((s, StoreT), (f, FrameT)) -> (Al.PairE (s, f), Al.StateT)
+        | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
       )
-  | _ -> (Al.N (Print.string_of_exp exp), Al.TopT)
+  | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
 
 let rec get_top_of_stack stack = match stack.it with
   | Ast.ListE exps -> exps |> List.rev |> List.hd
@@ -670,10 +672,10 @@ let rec hide_state_instr instr =
 let hide_state = function Al.Algo(name, params, body) ->
   let new_body = body |> List.map hide_state_instr in
   match params with
-  | (Al.NN (_, f), StateT) :: rest_params -> Al.Algo(
+  | (Al.PairE (_, f), StateT) :: rest_params -> Al.Algo(
       name,
       rest_params,
-      Al.LetI(Al.NameE (Al.N f), Al.FrameE) :: new_body
+      Al.LetI(f, Al.FrameE) :: new_body
     )
   | _ -> Al.Algo(name, params, new_body)
 

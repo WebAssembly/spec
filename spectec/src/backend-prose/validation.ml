@@ -202,7 +202,10 @@ let total = ref 0
 let fail = ref 0
 
 let init_env params =
-  List.fold_left (fun acc (n, ty) -> Env.add n ty acc) Env.empty params
+  List.fold_left (fun acc (e, ty) -> match e with
+    | NameE n -> Env.add n ty acc
+    | _ -> acc (* TODO *)
+  ) Env.empty params
   |> Env.add (N "z") StateT
 
 let valid_algo algo =
