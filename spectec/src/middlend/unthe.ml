@@ -96,7 +96,6 @@ let rec t_exp env n e : eqns * exp =
     in
     let x = fresh_id n in
     let xe = VarE x $$ no_region % t in
-    let t = Il.Validation.infer_exp env e' in
     let bind = (x, t, []) in
     let prem = IfPr (
       CmpE (EqOp, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
