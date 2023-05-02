@@ -15,7 +15,7 @@ open Il.Ast
 
 (* Errors *)
 
-let _error at msg = Source.error at "sideconditions" msg
+let error at msg = Source.error at "sideconditions" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 
@@ -56,8 +56,8 @@ let under_iterexp (iter, vs) eqns : iterexp * eqns =
 type 'a traversal = Il.Validation.env -> int ref -> 'a -> eqns * 'a
 type ('a, 'b) traversal_k = Il.Validation.env -> int ref -> 'a -> ('a -> 'b) -> eqns * 'b
 
-let phrase (t : 'a traversal) : 'a phrase traversal
-  = fun env n x -> let eqns, x' = t env n x.it in eqns, x' $ x.at
+let phrase (t : 'a traversal) : ('a, 'b) note_phrase traversal
+  = fun env n x -> let eqns, x' = t env n x.it in eqns, x' $$ x.at % x.note
 
 let t_list (t : 'a traversal) : ('a list, 'b) traversal_k
   = fun env n xs k ->
@@ -89,11 +89,18 @@ let rec t_exp env n e : eqns * exp =
   let eqns, e' = t_exp2 env n e in
   match e.it with
   |  TheE exp ->
+    let ot = exp.note in
+    let t = match ot.it with
+      | IterT (t, Opt) -> t
+      | _ -> error exp.at "Expected option type in TheE"
+    in
     let x = fresh_id n in
-    let xe = VarE x $ no_region in
+    let xe = VarE x $$ no_region % t in
     let t = Il.Validation.infer_exp env e' in
     let bind = (x, t, []) in
-    let prem = IfPr (CmpE (EqOp, exp, OptE (Some xe) $ no_region) $ no_region) $ no_region in
+    let prem = IfPr (
+      CmpE (EqOp, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
+    ) $ no_region in
     eqns @ [(bind, prem)], xe
   | _ -> eqns, e'
 
@@ -111,13 +118,13 @@ and t_exp' env n e : eqns * exp' =
   | VarE _ | BoolE _ | NatE _ | TextE _ | OptE None -> [], e
 
   | UnE (uo, exp) -> t_e env n exp (fun exp' -> UnE (uo, exp'))
-  | DotE (a, exp, b) -> t_e env n exp (fun exp' -> DotE (a, exp', b))
+  | DotE (exp, a) -> t_e env n exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e env n exp (fun exp' -> LenE exp')
   | MixE (mo, exp) -> t_e env n exp (fun exp' -> MixE (mo, exp'))
   | CallE (f, exp) ->t_e env n exp (fun exp' -> CallE (f, exp'))
   | OptE (Some exp) ->t_e env n exp (fun exp' -> OptE (Some exp'))
   | TheE exp ->t_e env n exp (fun exp' -> TheE exp')
-  | CaseE (a, exp, b) ->t_e env n exp (fun exp' -> CaseE (a, exp', b))
+  | CaseE (a, exp) ->t_e env n exp (fun exp' -> CaseE (a, exp'))
   | SubE (exp, a, b) -> t_e env n exp (fun exp' -> SubE (exp', a, b))
 
   | BinE (bo, exp1, exp2) -> t_ee env n (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
@@ -159,7 +166,7 @@ and t_path' env n path = match path with
   | RootP -> [], path
   | IdxP (path, e) -> binary t_path t_exp env n (path, e) (fun (path', e') -> IdxP (path', e'))
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp env n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
-  | DotP (path, t, a) -> unary t_path env n path (fun path' -> DotP (path', t, a))
+  | DotP (path, a) -> unary t_path env n path (fun path' -> DotP (path', a))
 
 let rec t_prem env n : premise -> eqns * premise = phrase t_prem' env n
 
