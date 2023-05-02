@@ -56,7 +56,7 @@ let pop left = match left.it with
     let v = Print.string_of_exp e in
     printf_step "Pop the value %s from the stack." v
   )
-  | ParenE({it = SeqE({it = AtomE(Atom "LABEL_"); _} :: _); at = _}, _) ->
+  | ParenE({it = SeqE({it = AtomE(Atom "LABEL_"); _} :: _); _}, _) ->
     printf_step "YET: Bubble-up semantics."
   | _ -> ()
 
@@ -94,18 +94,18 @@ let bind_atomic e =
   else
     printf_step "Let %s be %s." id (Print.string_of_exp e)
   ;
-  { it = VarE({it = id; at = e.at}); at = e.at }
+  VarE(id $ e.at) $ e.at
 
 let rec bind e = match e.it with
   | VarE _
   | IterE({it = VarE _; _}, _)
   | AtomE _
   | NatE _ -> e
-  | BinE _ -> { it = ParenE(e, true) ; at = no_region }
+  | BinE _ -> ParenE(e, true) $ e.at
   | IdxE(base, idx) ->
     let base = bind base in
     let idx  = bind idx in
-    bind_atomic {it = IdxE(base, idx); at = e.at}
+    bind_atomic (IdxE(base, idx) $ e.at)
   | _ ->
     bind_atomic e
 

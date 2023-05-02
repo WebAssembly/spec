@@ -466,7 +466,7 @@ and render_typ env t =
         map_nl_list (render_typcase env t.at) tcases @ render_dots dots2)
   | AtomT atom -> render_typcase env t.at (atom, [], [])
   | SeqT [] -> "\\epsilon"
-  | SeqT ({it = AtomT atom; at}::ts) -> render_typcase env at (atom, ts, [])
+  | SeqT ({it = AtomT atom; at; _}::ts) -> render_typcase env at (atom, ts, [])
   | SeqT ts -> render_typs "~" env ts
   | InfixT ({it = SeqT []; _}, atom, t2) ->
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env t2
@@ -527,7 +527,7 @@ and render_exp env e =
   | CmpE (e1, op, e2) ->
     render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
-  | SeqE ({it = AtomE atom; at}::es) -> render_expcase env atom es at
+  | SeqE ({it = AtomE atom; at; _}::es) -> render_expcase env atom es at
   (* Hack for binop_nt *)
   | SeqE (e1::e2::es) when chop_sub_exp e1 <> None ->
     "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
@@ -649,7 +649,7 @@ let merge_typ t1 t2 =
 
 let rec merge_syndefs = function
   | [] -> []
-  | {it = SynD (id1, _, t1, _); at}::
+  | {it = SynD (id1, _, t1, _); at; _}::
     {it = SynD (id2, _, t2, _); _}::ds when id1.it = id2.it ->
     let d' = SynD (id1, "" $ no_region, merge_typ t1 t2, []) $ at in
     merge_syndefs (d'::ds)

@@ -1534,7 +1534,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:341.1-345.15
   rule memory.copy-gt {i : nat, j : nat, n : n, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
@@ -1973,7 +1973,6 @@ def size : valtype -> nat?
   def size(F64_valtype) = ?(64)
   ;; 2-aux.watsup:24.1-24.22
   def size(V128_valtype) = ?(128)
-  ;;
   def {x : valtype} size(x) = ?()
 
 ;; 2-aux.watsup:29.1-29.40
@@ -2643,7 +2642,6 @@ def default_ : valtype -> val?
   def default_(F64_valtype) = ?(CONST_val(F64_numtype, 0))
   ;; 4-runtime.watsup:49.1-49.34
   def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
-  ;;
   def {x : valtype} default_(x) = ?()
 
 ;; 4-runtime.watsup:60.1-60.71
@@ -3163,7 +3161,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:341.1-345.15
   rule memory.copy-gt {i : nat, j : nat, n : n, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60
@@ -5249,7 +5247,6 @@ def size : valtype -> nat?
   def size(F64_valtype) = ?(64)
   ;; 2-aux.watsup:24.1-24.22
   def size(V128_valtype) = ?(128)
-  ;;
   def {x : valtype} size(x) = ?()
 
 ;; 2-aux.watsup:29.1-29.40
@@ -5977,7 +5974,6 @@ def default_ : valtype -> val?
   def default_(F64_valtype) = ?(CONST_val(F64_numtype, 0))
   ;; 4-runtime.watsup:49.1-49.34
   def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
-  ;;
   def {x : valtype} default_(x) = ?()
 
 ;; 4-runtime.watsup:60.1-60.71
@@ -6521,7 +6517,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:341.1-345.15
   rule memory.copy-gt {i : nat, j : nat, n : n, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr]), [CONST_admininstr(I32_numtype, ((j + n) - 1)) CONST_admininstr(I32_numtype, ((i + n) - 1)) LOAD_admininstr(I32_numtype, ?((8, U_sx)), 0, 0) STORE_admininstr(I32_numtype, ?(8), 0, 0) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, (n - 1)) MEMORY.COPY_admininstr])
     -- otherwise
 
   ;; 6-reduction.watsup:348.1-350.60

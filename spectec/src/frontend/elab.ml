@@ -61,7 +61,7 @@ let tup_typ' ts' at =
 let tup_exp' es' at =
   match es' with
   | [e'] -> e'
-  | _ -> Il.TupE es' $ at
+  | _ -> Il.TupE es' $$ (at, Il.TupT (List.map note es') $ at)
 
 let lift_exp' e' iter' =
   if iter' = Opt then
@@ -75,6 +75,7 @@ let cat_exp' e1' e2' =
   | Il.ListE [], _ -> e2'.it
   | Il.ListE es1, Il.ListE es2 -> Il.ListE (es1 @ es2)
   | _ -> Il.CatE (e1', e2')
+
 
 
 (* Environment *)
@@ -351,15 +352,14 @@ and elab_typ env t : Il.typ =
   | NatT -> Il.NatT $ t.at
   | TextT -> Il.TextT $ t.at
   | ParenT t1 -> elab_typ env t1
-  | TupT ts ->
-    Il.TupT (List.map (elab_typ env) ts) $ t.at
+  | TupT ts -> Il.TupT (List.map (elab_typ env) ts) $ t.at
   | IterT (t1, iter) ->
     (match iter with
     | List1 | ListN _ -> error t.at "illegal iterator in syntax type"
     | _ -> Il.IterT (elab_typ env t1, elab_iter env iter) $ t.at
     )
   | StrT _ | CaseT _ | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
-    error t.at "this type is only allowed in type definitions"
+    failwith(*error t.at*) "this type is only allowed in type definitions"
 
 and elab_typ_definition env id t : Il.deftyp =
   (match t.it with
@@ -431,6 +431,10 @@ and elab_typcase env at (atom, ts, hints) : Il.typcase =
   (elab_atom atom, tup_typ' (List.concat tss') at, elab_hints hints)
 
 
+and (!!) env t = elab_typ env t
+and (!!!) env t = let _, _, ts' = elab_typ_notation env t in tup_typ' ts' t.at
+
+
 (* Expressions *)
 
 and infer_unop = function
@@ -489,103 +493,104 @@ and elab_exp env e t : Il.exp =
   match e.it with
   | VarE id ->
     let t' = infer_exp env e in
-    cast_exp "variable" env (Il.VarE id $ e.at) t' t
+    cast_exp "variable" env (Il.VarE id $$ e.at % !!env t') t' t
   | BoolE b ->
     let t' = infer_exp env e in
-    cast_exp "boolean" env (Il.BoolE b $ e.at) t' t
+    cast_exp "boolean" env (Il.BoolE b $$ e.at % !!env t') t' t
   | NatE n ->
     let t' = infer_exp env e in
-    cast_exp "number" env (Il.NatE n $ e.at) t' t
+    cast_exp "number" env (Il.NatE n $$ e.at % !!env t') t' t
   | TextE s ->
     let t' = infer_exp env e in
-    cast_exp "text" env (Il.TextE s $ e.at) t' t
+    cast_exp "text" env (Il.TextE s $$ e.at % !!env t') t' t
   | UnE (op, e1) ->
     let t' = infer_unop op $ e.at in
     let e1' = elab_exp env e1 t' in
-    let e' = Il.UnE (elab_unop op, e1') $ e.at in
+    let e' = Il.UnE (elab_unop op, e1') $$ e.at % !!env t' in
     cast_exp "unary operator" env e' t' t
   | BinE (e1, op, e2) ->
     let t' = infer_binop op $ e.at in
     let e1' = elab_exp env e1 t' in
     let e2' = elab_exp env e2 t' in
-    let e' = Il.BinE (elab_binop op, e1', e2') $ e.at in
+    let e' = Il.BinE (elab_binop op, e1', e2') $$ e.at % !!env t' in
     cast_exp "binary operator" env e' t' t
   | CmpE (e1, op, e2) ->
-    let t' =
+    let t1' =
       match infer_cmpop op with
-      | Some t' -> t' $ e.at
+      | Some t1' -> t1' $ e.at
       | None -> infer_exp env e1
     in
-    let e1' = elab_exp env e1 t' in
+    let e1' = elab_exp env e1 t1' in
+    let t' = BoolT $ e.at in
     let e' =
       match e2.it with
       | CmpE (e21, _, _) ->
-        let e21' = elab_exp env e21 t' in
+        let e21' = elab_exp env e21 t1' in
         let e2' = elab_exp env e2 (BoolT $ e2.at) in
-        Il.BinE (Il.AndOp, Il.CmpE (elab_cmpop op, e1', e21') $ e1.at, e2')
-          $ e.at
+        Il.BinE (Il.AndOp,
+          Il.CmpE (elab_cmpop op, e1', e21') $$ e1.at % !!env t' , e2') $$ e.at % !!env t'
       | _ ->
-        let e2' = elab_exp env e2 t' in
-        Il.CmpE (elab_cmpop op, e1', e2') $ e.at
+        let e2' = elab_exp env e2 t1' in
+        Il.CmpE (elab_cmpop op, e1', e2') $$ e.at % !!env t'
     in
-    cast_exp "comparison operator" env e' (BoolT $ e.at) t
+    cast_exp "comparison operator" env e' t' t
   | IdxE (e1, e2) ->
     let t1 = infer_exp env e1 in
     let t' = as_list_typ "expression" env Infer t1 e1.at in
     let e1' = elab_exp env e1 t1 in
     let e2' = elab_exp env e2 (NatT $ e2.at) in
-    let e' = Il.IdxE (e1', e2') $ e.at in
+    let e' = Il.IdxE (e1', e2') $$ e.at % !!env t' in
     cast_exp "list element" env e' t' t
   | SliceE (e1, e2, e3) ->
     let _t' = as_list_typ "expression" env Check t e1.at in
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 (NatT $ e2.at) in
     let e3' = elab_exp env e3 (NatT $ e3.at) in
-    Il.SliceE (e1', e2', e3') $ e.at
+    Il.SliceE (e1', e2', e3') $$ e.at % !!env t
   | UpdE (e1, p, e2) ->
     let e1' = elab_exp env e1 t in
     let p', t2 = elab_path env p t in
     let e2' = elab_exp env e2 t2 in
-    Il.UpdE (e1', p', e2') $ e.at
+    Il.UpdE (e1', p', e2') $$ e.at % !!env t
   | ExtE (e1, p, e2) ->
     let e1' = elab_exp env e1 t in
     let p', t2 = elab_path env p t in
     let _t21 = as_list_typ "path" env Check t2 p.at in
     let e2' = elab_exp env e2 t2 in
-    Il.ExtE (e1', p', e2') $ e.at
+    Il.ExtE (e1', p', e2') $$ e.at % !!env t
   | StrE efs ->
     let tfs = as_struct_typ "record" env Check t e.at in
     let efs' = elab_expfields env (filter_nl efs) tfs e.at in
-    Il.StrE efs' $ e.at
+    Il.StrE efs' $$ e.at % !!env t
   | DotE (e1, atom) ->
     let t1 = infer_exp env e1 in
     let e1' = elab_exp env e1 t1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
     let t' = find_field tfs atom e1.at in
-    let e' = Il.DotE (elab_typ env t1, e1', elab_atom atom) $ e.at in
+    let e' = Il.DotE (e1', elab_atom atom) $$ e.at % !!env t' in
     cast_exp "field" env e' t' t
   | CommaE (e1, e2) ->
     let e1' = elab_exp env e1 t in
     let tfs = as_struct_typ "expression" env Check t e1.at in
     (* TODO: this is a bit of a hack *)
     (match e2.it with
-    | SeqE ({it = AtomE atom; at} :: es2) ->
+    | SeqE ({it = AtomE atom; at; _} :: es2) ->
       let _t2 = find_field tfs atom at in
       let e2 = match es2 with [e2] -> e2 | _ -> SeqE es2 $ e2.at in
       let e2' = elab_exp env (StrE [Elem (atom, e2)] $ e2.at) t in
-      Il.CompE (e1', e2') $ e.at
+      Il.CompE (e1', e2') $$ e.at % !!env t
     | _ -> failwith "unimplemented check CommaE"
     )
   | CompE (e1, e2) ->
     let _ = as_struct_typ "record" env Check t e.at in
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp env e2 t in
-    Il.CompE (e1', e2') $ e.at
+    Il.CompE (e1', e2') $$ e.at % !!env t
   | LenE e1 ->
     let t1 = infer_exp env e1 in
     let _t11 = as_list_typ "expression" env Infer t1 e1.at in
     let e1' = elab_exp env e1 t1 in
-    let e' = Il.LenE e1' $ e.at in
+    let e' = Il.LenE e1' $$ e.at % !!env (NatT $ e.at) in
     cast_exp "list length" env e' (NatT $ e.at) t
   | ParenE (e1, true) when is_iter_typ env t ->
     (* Significant parentheses indicate a singleton *)
@@ -597,11 +602,11 @@ and elab_exp env e t : Il.exp =
   | TupE es ->
     let ts = as_tup_typ "tuple" env Check t e.at in
     let es' = elab_exps env es ts e.at in
-    Il.TupE es' $ e.at
+    Il.TupE es' $$ e.at % !!env t
   | CallE (id, e2) ->
     let t2, t', _ = find "function" env.defs id in
     let e2' = elab_exp env e2 t2 in
-    let e' = Il.CallE (id, e2') $ e.at in
+    let e' = Il.CallE (id, e2') $$ e.at % !!env t' in
     cast_exp "expression" env e' t' t
   | SeqE [_] -> assert false  (* sequences cannot be singleton *)
   | EpsE | SeqE _ when is_iter_typ env t ->
@@ -617,7 +622,7 @@ and elab_exp env e t : Il.exp =
      * either a defined notation/variant type or (for SeqE) an iteration type;
      * the latter case is already captured above *)
     if is_notation_typ env t then
-      elab_exp_notation env e (as_notation_typ "" env Check t e.at)
+      elab_exp_notation env e (as_notation_typ "" env Check t e.at) t
     else if is_variant_typ env t then
       elab_exp_variant env (unseq_exp e)
         (fst (as_variant_typ "" env Check t e.at)) t e.at
@@ -631,7 +636,7 @@ and elab_exp env e t : Il.exp =
       error_typ e.at "iteration expression" t;
     let e1' = elab_exp env e1 t1 in
     let iter2' = elab_iterexp env iter2 in
-    Il.IterE (e1', iter2') $ e.at
+    Il.IterE (e1', iter2') $$ e.at % !!env t
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
 
@@ -649,7 +654,8 @@ and elab_expfields env efs tfs at : Il.expfield list =
     (elab_atom atom1, tup_exp' es' e.at) :: efs2'
   | _, (atom, t, _)::tfs2 ->
     let atom' = string_of_atom atom in
-    let e' = cast_empty ("omitted record field `" ^ atom' ^ "`") env t at in
+    let e' =
+      cast_empty ("omitted record field `" ^ atom' ^ "`") env t at (!!env t) in
     let efs2' = elab_expfields env efs tfs2 at in
     (elab_atom atom, e') :: efs2'
   | (atom, e)::_, [] ->
@@ -665,36 +671,36 @@ and elab_exp_iter env es (t1, iter) t at : Il.exp =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1}::_, _ when is_variant_typ env t1 &&
+  | {it = AtomE atom; at = at1; _}::_, _ when is_variant_typ env t1 &&
       case_has_args env t1 atom at1 ->
     let cases, _dots = as_variant_typ "" env Check t1 at in
-    lift_exp' (elab_exp_variant env es cases t1 at) iter $ at
+    lift_exp' (elab_exp_variant env es cases t1 at) iter $$ at % !!env t
 
   (* An empty sequence represents the None case for options *)
   | [], Opt ->
-    Il.OptE None $ at
+    Il.OptE None $$ at % !!env t
   (* An empty sequence represents the Nil case for lists *)
   | [], List ->
-    Il.ListE [] $ at
+    Il.ListE [] $$ at % !!env t
   (* All other elements are either splices or (by cast injection) elements *)
   | e1::es2, List ->
     let e1' = elab_exp env e1 t in
     let e2' = elab_exp_iter env es2 (t1, iter) t at in
-    cat_exp' e1' e2' $ at
+    cat_exp' e1' e2' $$ at % !!env t
 
   | _, _ ->
     error_typ at "expression" t
 
-and elab_exp_notation env e t : Il.exp =
+and elab_exp_notation env e nt t : Il.exp =
   (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)
   (* Convert notation into applications of mixin operators *)
-  let e' = tup_exp' (elab_exp_notation' env e t) e.at in
-  match elab_typ_notation env t with
+  let e' = tup_exp' (elab_exp_notation' env e nt) e.at in
+  match elab_typ_notation env nt with
   | false, _, _ -> e'
-  | true, mixop, _ -> Il.MixE (mixop, e') $ e.at
+  | true, mixop, _ -> Il.MixE (mixop, e') $$ e.at % !!env t
 
 and elab_exp_notation' env e t : Il.exp list =
   (*
@@ -722,7 +728,7 @@ and elab_exp_notation' env e t : Il.exp list =
   (* Optional iterations may always be inlined, use backtracking *)
   | SeqE (e1::es2), SeqT (({it = IterT (_, Opt); _} as t1)::ts2) ->
     (try
-      let es1' = [cast_empty "omitted sequence tail" env t1 e.at] in
+      let es1' = [cast_empty "omitted sequence tail" env t1 e.at (!!!env t1)] in
       let es2' = elab_exp_notation' env e (SeqT ts2 $ t.at) in
       es1' @ es2'
     with Source.Error _ ->
@@ -740,7 +746,7 @@ and elab_exp_notation' env e t : Il.exp list =
     es1' @ es2'
   (* Trailing elements can be omitted if they can be epsilon *)
   | SeqE [], SeqT (t1::ts2) ->
-    let e1' = cast_empty "omitted sequence tail" env t1 e.at in
+    let e1' = cast_empty "omitted sequence tail" env t1 e.at (!!!env t1) in
     let es2' =
       elab_exp_notation' env (SeqE [] $ e.at) (SeqT ts2 $ t.at) in
     [e1'] @ es2'
@@ -760,11 +766,11 @@ and elab_exp_notation' env e t : Il.exp list =
       error_typ e.at "iteration expression" t;
     let es1' = elab_exp_notation' env e1 t1 in
     let iter1' = elab_iter env iter1 in
-    [Il.IterE (tup_exp' es1' e1.at, (iter1', [])) $ e.at]
+    [Il.IterE (tup_exp' es1' e1.at, (iter1', [])) $$ e.at % !!!env t]
   (* Significant parentheses indicate a singleton *)
   | ParenE (e1, true), IterT (t1, iter) ->
     let es' = elab_exp_notation' env e1 t1 in
-    [lift_exp' (tup_exp' es' e.at) iter $ e.at]
+    [lift_exp' (tup_exp' es' e.at) iter $$ e.at % !!env t]
   (* Elimination forms are considered splices *)
   | (IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | CallE _), IterT _ ->
     [elab_exp env e t]
@@ -772,7 +778,7 @@ and elab_exp_notation' env e t : Il.exp list =
   (* TODO: can't they be splices, too? *)
   | _, IterT (t1, iter) ->
     let es' = elab_exp_notation' env e t1 in
-    [lift_exp' (tup_exp' es' e.at) iter $ e.at]
+    [lift_exp' (tup_exp' es' e.at) iter $$ e.at % !!!env t]
 
   | ParenE (e1, _), _ ->
     elab_exp_notation' env e1 t
@@ -792,23 +798,23 @@ and elab_exp_notation_iter env es (t1, iter) t at : Il.exp =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1}::_, iter when is_variant_typ env t1 &&
+  | {it = AtomE atom; at = at1; _}::_, iter when is_variant_typ env t1 &&
       case_has_args env t1 atom at1 ->
     let cases, _ = as_variant_typ "expression" env Check t1 at in
-    lift_exp' (elab_exp_variant env es cases t1 at) iter $ at
+    lift_exp' (elab_exp_variant env es cases t1 at) iter $$ at % !!!env t
 
   (* An empty sequence represents the None case for options *)
   | [], Opt ->
-    Il.OptE None $ at
+    Il.OptE None $$ at % !!!env t
   (* An empty sequence represents the Nil case for lists *)
   | [], List ->
-    Il.ListE [] $ at
+    Il.ListE [] $$ at % !!!env t
   (* All other elements are either splices or (by cast injection) elements;
    * nested expressions must be lifted into a tuple *)
   | e1::es2, List ->
     let es1' = elab_exp_notation' env e1 t in
     let e2' = elab_exp_notation_iter env es2 (t1, iter) t at in
-    cat_exp' (tup_exp' es1' e1.at) e2' $ at
+    cat_exp' (tup_exp' es1' e1.at) e2' $$ at % !!!env t
 
   | _, _ ->
     error_typ at "expression" t
@@ -836,7 +842,7 @@ and elab_exp_variant env es cases t at : Il.exp =
     let es' = elab_exp_notation' env e2 (SeqT ts $ t.at) in
     let t2 = expand_singular' env t.it $ at in
     cast_exp "variant case" env
-      (Il.CaseE (elab_atom atom, tup_exp' es' at, elab_typ env t2) $ at) t2 t
+      (Il.CaseE (elab_atom atom, tup_exp' es' at) $$ at % !!env t2) t2 t
   | _ ->
     error_typ at "expression" t
 
@@ -844,29 +850,29 @@ and elab_exp_variant env es cases t at : Il.exp =
 and elab_path env p t : Il.path * typ =
   match p.it with
   | RootP ->
-    Il.RootP $ p.at, t
+    Il.RootP $$ p.at % !!env t, t
   | IdxP (p1, e1) ->
     let p1', t1 = elab_path env p1 t in
     let e1' = elab_exp env e1 (NatT $ e1.at) in
-    let t = as_list_typ "path" env Check t1 p1.at in
-    Il.IdxP (p1', e1') $ p.at, t
+    let t' = as_list_typ "path" env Check t1 p1.at in
+    Il.IdxP (p1', e1') $$ p.at % !!env t', t'
   | SliceP (p1, e1, e2) ->
     let p1', t1 = elab_path env p1 t in
     let e1' = elab_exp env e1 (NatT $ e1.at) in
     let e2' = elab_exp env e2 (NatT $ e2.at) in
     let _ = as_list_typ "path" env Check t1 p1.at in
-    Il.SliceP (p1', e1', e2') $ p.at, t1
+    Il.SliceP (p1', e1', e2') $$ p.at % !!env t1, t1
   | DotP (p1, atom) ->
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
-    Il.DotP (p1', elab_typ env t1, elab_atom atom) $ p.at,
-      find_field tfs atom p1.at
+    let t' = find_field tfs atom p1.at in
+    Il.DotP (p1', elab_atom atom) $$ p.at % !!env t', t'
 
 
-and cast_empty phrase env t at : Il.exp =
+and cast_empty phrase env t at t' : Il.exp =
   match expand env t with
-  | IterT (_, Opt) -> Il.OptE None $ at
-  | IterT (_, List) -> Il.ListE [] $ at
+  | IterT (_, Opt) -> Il.OptE None $$ at % t'
+  | IterT (_, List) -> Il.ListE [] $$ at % t'
   | _ -> error_typ at phrase t
 
 and cast_exp phrase env e' t1 t2 : Il.exp =
@@ -881,9 +887,9 @@ and cast_exp phrase env e' t1 t2 : Il.exp =
   if equiv_typ env t1 t2 then e' else
   match expand env t2 with
   | IterT (t21, Opt) ->
-    Il.OptE (Some (cast_exp_variant phrase env e' t1 t21)) $ e'.at
+    Il.OptE (Some (cast_exp_variant phrase env e' t1 t21)) $$ e'.at % !!env t2
   | IterT (t21, (List | List1)) ->
-    Il.ListE [cast_exp_variant phrase env e' t1 t21] $ e'.at
+    Il.ListE [cast_exp_variant phrase env e' t1 t21] $$ e'.at % !!env t2
   | _ ->
     cast_exp_variant phrase env e' t1 t2
 
@@ -904,7 +910,7 @@ and cast_exp_variant phrase env e' t1 t2 : Il.exp =
       ) cases1
     with Error (_, msg) -> error_typ2 e'.at phrase t1 t2 (", " ^ msg)
     );
-    Il.SubE (e', elab_typ env t1, elab_typ env t2) $ e'.at
+    Il.SubE (e', elab_typ env t1, elab_typ env t2) $$ e'.at % !!env t2
   else
     error_typ2 e'.at phrase t1 t2 ""
 
@@ -982,7 +988,7 @@ let elab_def env d : Il.def list =
         t, dots2 = NoDots
       | Either.Left _, _ ->
         t, true
-      | Either.Right ({it = CaseT (dots1, ids1, tcs1, Dots); at}, _),
+      | Either.Right ({it = CaseT (dots1, ids1, tcs1, Dots); at; _}, _),
           CaseT (Dots, ids2, tcs2, dots2) ->
         CaseT (dots1, ids1 @ ids2, tcs1 @ tcs2, dots2) $ over_region [at; t.at],
           dots2 = NoDots
