@@ -1,5 +1,5 @@
 (library
   (name middlend)
   (libraries util il)
-  (modules totalize sideconditions)
+  (modules sub totalize sideconditions)
 )
