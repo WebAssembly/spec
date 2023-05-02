@@ -163,9 +163,9 @@ let () =
         al;
       log "AL Validation...";
       Backend_al.Validation.valid al;
-      (*log "Interpret AL...";
+      log "Interpret AL...";
       let result = Backend_al.Interpreter.interpret al in
-      print_endline result*)
+      print_endline result
     );
     log "Complete."
   with

@@ -16,6 +16,7 @@ type value =
   | WasmV of Reference_interpreter.Values.value
   | WasmTypeV of Reference_interpreter.Types.value_type
   | IntV of int
+  | StringV of string
 
 type name = N of string | NN of string * string | SubN of name * string
 

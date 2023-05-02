@@ -118,14 +118,18 @@ let mk_wasm_num ty i = match ty with
 
 (* Interpreter *)
 let rec try_numerics env fname args = match (fname, args) with
-  | (Al.N "testop", [Al.NameE N "testop"; _; arg]) ->
+  | (Al.N "testop", [op; _; arg]) ->
       let v = eval_expr env arg |> al_value2int in
-      v = 0 |> Bool.to_int
+      begin match eval_expr env op with
+        | Al.StringV "Eqz" -> v = 0 |> Bool.to_int
+        | _ -> failwith "Invalid testop"
+      end
   (* TODO: handle non-deterministic *)
   | _ -> string_of_name fname |> failwith
 
 and eval_expr env e = match e with
   (* TODO: extend function application *)
+  | Al.ValueE v -> v
   | Al.AppE (fname, el) -> Al.IntV (try_numerics env fname el)
   | Al.NameE name -> Env.find name env
   | Al.ConstE (ty, inner_e) ->
@@ -159,44 +163,52 @@ let rec interp_instr env i = match (i, !st_ref) with
 and interp_instrs env il =
   List.fold_left interp_instr env il
 
-let interp_algo algo =
-  let Al.Algo (_, _params, il) = algo in
-  interp_instrs Env.empty il
 
 
+(* Algo Map *)
 
-(* Search AL algorithm to run *)
-
-module AlgoMapKey =
-  struct
-    type t = string
-    let compare = Stdlib.compare
-  end
+module AlgoMapKey = struct
+  type t = string
+  let compare = Stdlib.compare
+end
 
 module AlgoMap = Map.Make(AlgoMapKey)
 
+let algo_map = ref AlgoMap.empty
+
 let to_map algos =
   let f acc algo =
-    let Al.Algo (name, _params, _) = algo in
+    let Al.Algo (name, _, _) = algo in
     AlgoMap.add name algo acc in
 
   List.fold_left f AlgoMap.empty algos
 
-let get_algo_name winstr = match winstr.it with
+(* Search AL algorithm to run *)
+
+let algo_name_of winstr = match winstr.it with
   | Ast.Test (_) -> "testop"
   | _ -> failwith "Not implemented"
 
-let run_algo algos winstr = match winstr.it with
+let init_env params winstr = match (params, winstr.it) with
+  | ([(_ty, _); (op, _)], Ast.Test (Values.I32 Ast.I32Op.Eqz)) ->
+      Env.add op (Al.StringV "Eqz") Env.empty
+  | _ -> failwith "Not implemented"
+
+let run_wasm_instr winstr = match winstr.it with
   | Ast.Const num -> st_ref := Values.Num (num.it) :: !st_ref
   | _ ->
-      let algo_name = get_algo_name winstr in
-      let _env = AlgoMap.find algo_name algos |> interp_algo in
+      let algo_name = algo_name_of winstr in
+      let Al.Algo (_, params, il) = AlgoMap.find algo_name !algo_map in
+      let env = init_env params winstr in
+      let _result_env = interp_instrs env il in
       ()
+
+let run winstrs = List.iter run_wasm_instr winstrs
 
 
 
 (* Entry *)
 let interpret algos =
-  let algo_map = to_map algos in
-  List.iter (run_algo algo_map) testop;
+  algo_map := to_map algos;
+  run testop;
   Values.string_of_values !st_ref
