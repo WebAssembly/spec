@@ -142,10 +142,10 @@ select t
   a. Push val_2 to the stack.
 
 block bt instr
-1. Assert: due to validation, there are at least k values on the top of the stack.
-2. Pop val^k from the stack.
-3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
-4. Let t_1^k be tmp0.
+1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
+2. Let t_1^k be tmp0.
+3. Assert: due to validation, there are at least k values on the top of the stack.
+4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
 6. If the length of t_1^k is k, then:
   a. If the length of t_2^n is n, then:
@@ -154,10 +154,10 @@ block bt instr
       b) Enter the block Yet with label YetE ().
 
 loop bt instr
-1. Assert: due to validation, there are at least k values on the top of the stack.
-2. Pop val^k from the stack.
-3. Let YetE (`%->%`(tmp0, tmp1)) be bt.
-4. Let t_1^k be tmp0.
+1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
+2. Let t_1^k be tmp0.
+3. Assert: due to validation, there are at least k values on the top of the stack.
+4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
 6. If the length of t_1^k is k, then:
   a. If the length of t_2^n is n, then:
@@ -314,15 +314,15 @@ call_indirect x ft
       b) Execute (CALL_ADDR a).
 
 call_addr a
-1. Assert: due to validation, there are at least k values on the top of the stack.
-2. Pop val^k from the stack.
-3. If a < the length of $funcinst(z), then:
+1. If a < the length of $funcinst(z), then:
   a. Let YetE (`%;%`(m, tmp0)) be $funcinst(z)[a].
   b. Let YetE (`FUNC%%*%`(tmp1, t*{t}, instr*{instr})) be tmp0.
   c. Let YetE (`%->%`(tmp2, tmp3)) be tmp1.
   d. Let t_1^k be tmp2.
-  e. Let t_2^n be tmp3.
-  f. If the length of t_1^k is k, then:
+  e. Assert: due to validation, there are at least k values on the top of the stack.
+  f. Pop val^k from the stack.
+  g. Let t_2^n be tmp3.
+  h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
         1. YetI: (if ($default_(t) =/= ?()))*{t}.
