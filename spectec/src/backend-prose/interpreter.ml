@@ -40,7 +40,9 @@ module Env = struct
   let set_result v (env, _) = env, v
 
   (* Environment API *)
-  let empty = Env'.empty, Al.StringV "Undefined"
+  let empty =
+    let env = Env'.add (N "s") Al.StoreV Env'.empty in
+    env, Al.StringV "Undefined"
   let find key (env, _) = Env'.find key env
   let add key elem (env, res) = Env'.add key elem env, res
 
@@ -62,9 +64,7 @@ let stack: stack ref = ref []
 
 (* Store *)
 
-type store = { global: Values.value list }
-
-let store: store ref = ref { global = [] }
+let store: Al.store ref = ref { Al.global = [] }
 
 
 
@@ -118,11 +118,21 @@ let mk_wasm_num ty i = match ty with
       failwith "Not implemented"
   | _ -> failwith "Not a Numtype"
 
-let access_field v s = match (v, s) with
-  | (Al.FrameV f, "LOCAL") ->
+let access_field v s = match v, s with
+  | Al.FrameV f, "LOCAL" ->
       let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) f.local in
       Al.ListE l
-  | _ -> failwith "Invalid field access"
+  | Al.FrameV f, "MODULE" ->
+      Al.ValueE (ModuleInstV f.moduleinst)
+  | Al.ModuleInstV m, "GLOBAL" ->
+      let l = List.map (fun a -> Al.ValueE a) m.globaladdr in
+      Al.ListE l
+  | Al.StoreV, "GLOBAL" ->
+      let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
+      Al.ListE l
+  | v, x ->
+      Printf.sprintf "Invalid field access %s.%s" (Print.string_of_value v) x
+      |> failwith
 
 
 
@@ -290,56 +300,71 @@ let i64 = I64.of_int_s
 let f32 = F32.of_float
 let f64 = F64.of_float
 
+(* Hardcoded Store *)
+
+let initial_store = { Al.global = [
+  Values.Num (Values.F32 (f32 1.4));
+  Values.Num (Values.F32 (f32 5.2));
+  Values.Num (Values.F32 (f32 6.9))
+] }
+
 (* Hardcoded Frame *)
 
-let initial_frame = { Al.local = [
-  Values.Num (Values.I32 (i32 3));
-  Values.Num (Values.I32 (i32 0));
-  Values.Num (Values.I32 (i32 7))
-] }
+let initial_frame =
+  {
+    Al.local = [
+      Values.Num (Values.I32 (i32 3));
+      Values.Num (Values.I32 (i32 0));
+      Values.Num (Values.I32 (i32 7))
+    ];
+    Al.moduleinst = { globaladdr = [
+      IntV 0; (* global address 0 *)
+      IntV 1; (* global address 1 *)
+      IntV 2; (* global address 2 *)
+    ] }
+  }
 
 (* Hardcoded Wasm Instructions *)
 
 let testop = "testop", [
-  Operators.i32_const (i32 0 |> to_phrase);
-  Operators.i32_eqz
+  Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
+  Operators.i32_eqz |> to_phrase
 ], "1"
 
 let relop = "relop", [
-  Operators.f32_const (f32 1.4142135 |> to_phrase);
-  Operators.f32_const (f32 3.1415926 |> to_phrase);
-  Operators.f32_gt
+  Operators.f32_const (f32 1.4142135 |> to_phrase) |> to_phrase;
+  Operators.f32_const (f32 3.1415926 |> to_phrase) |> to_phrase;
+  Operators.f32_gt |> to_phrase
 ], "0"
 
 let nop = "nop", [
-  Operators.i64_const (i64 0 |> to_phrase);
-  Operators.nop
+  Operators.i64_const (i64 0 |> to_phrase) |> to_phrase;
+  Operators.nop |> to_phrase
 ], "0"
 
 let drop = "drop", [
-  Operators.f64_const (f64 3.1 |> to_phrase);
-  Operators.f64_const (f64 5.2 |> to_phrase);
-  Operators.drop
+  Operators.f64_const (f64 3.1 |> to_phrase) |> to_phrase;
+  Operators.f64_const (f64 5.2 |> to_phrase) |> to_phrase;
+  Operators.drop |> to_phrase
 ], "3.100_000_000_000_000_1"
 
 let select = "select", [
-  Operators.f64_const (f64 Float.max_float |> to_phrase);
-  Operators.ref_null Types.FuncRefType;
-  Operators.i32_const (i32 0 |> to_phrase);
-  Operators.select None
+  Operators.f64_const (f64 Float.max_float |> to_phrase) |> to_phrase;
+  Operators.ref_null Types.FuncRefType |> to_phrase;
+  Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
+  Operators.select None |> to_phrase
 ], "null"
 
 let local_get = "local_get", [
-  Operators.local_get (i32 2 |> to_phrase)
+  Operators.local_get (i32 2 |> to_phrase) |> to_phrase
 ], "7"
 
 let global_get = "global_get", [
-  Operators.global_get (i32 1 |> to_phrase)
-], "5"
+  Operators.global_get (i32 1 |> to_phrase) |> to_phrase
+], "5.199_999_809_265_136_7"
 
 let test_cases =
-  [ testop; relop; nop; drop; select; local_get(*; global_get*) ]
-
+  [ testop; relop; nop; drop; select; local_get; global_get ]
 
 
 (* Stack Stringifier *)
@@ -356,6 +381,8 @@ let string_of_stack st =
   
 (* Test Interpreter *)
 
+let init_store () = store := initial_store
+
 let init_stack () = stack := FrameS initial_frame :: []
 
 let test test_case =
@@ -365,9 +392,10 @@ let test test_case =
 
   (* Initialize *)
   init_stack ();
+  init_store ();
 
   (* Execute *)
-  List.map to_phrase ast |> run;
+  run ast;
 
   (* Check *)
   let actual_result = List.hd !stack |> string_of_stack_elem in

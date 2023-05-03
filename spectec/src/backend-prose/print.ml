@@ -59,6 +59,8 @@ let structured_string_of_iter = function
 
 let structured_string_of_value = function
   | FrameV _ -> "FrameV (TODO)"
+  | StoreV -> "StoreV"
+  | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
@@ -290,6 +292,8 @@ let string_of_frame f =
 
 let string_of_value = function
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
+  | StoreV -> "StoreV"
+  | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t

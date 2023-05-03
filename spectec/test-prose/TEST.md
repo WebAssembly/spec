@@ -775,5 +775,8 @@ Ok
 local_get
 Ok
 
+global_get
+Ok
+
 == Complete.
 ```

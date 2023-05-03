@@ -12,10 +12,17 @@ type al_type =
   | StateT
   | TopT
 
-type frame = { local: Reference_interpreter.Values.value list (*; module: ??? *)}
+type moduleinst = { globaladdr: value list }
+
+and frame = { local: Reference_interpreter.Values.value list; moduleinst: moduleinst  }
+
+and store = { global: Reference_interpreter.Values.value list }
+
 
 and value =
   | FrameV of frame
+  | StoreV
+  | ModuleInstV of moduleinst
   | ListV of value list
   | WasmV of Reference_interpreter.Values.value
   | WasmTypeV of Reference_interpreter.Types.value_type
