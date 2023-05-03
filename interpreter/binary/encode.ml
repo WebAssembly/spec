@@ -244,10 +244,10 @@ struct
     | BrOnNull x -> op 0xd4; var x
     | BrOnNonNull x -> op 0xd6; var x
     | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
-      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) + bit 2 false in
-      op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
+      op 0xfb; op 0x4e; byte flags; var x; heap_type t1; heap_type t2
     | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
-      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) + bit 2 true in
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
       op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
     | Return -> op 0x0f
     | Call x -> op 0x10; var x

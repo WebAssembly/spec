@@ -774,17 +774,17 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb41 | `ref.cast (ref ht)` | `ht : heaptype` |
 | 0xfb48 | `ref.test (ref null ht)` | `ht : heaptype` |
 | 0xfb49 | `ref.cast (ref null ht)` | `ht : heaptype` |
-| 0xfb4f | `br_on_cast(_fail)? $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb4e | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb4f | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 | 0xfb70 | `extern.internalize` | |
 | 0xfb71 | `extern.externalize` | |
 
-Flag byte encoding for `br_on_cast`:
+Flag byte encoding for `br_on_cast(_fail)?`:
 
 | Bit | Function      |
 | --- | ------------- |
 | 0   | null1 present |
 | 1   | null2 present |
-| 2   | _fail present |
 
 
 ## JS API
