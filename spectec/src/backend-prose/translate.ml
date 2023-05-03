@@ -17,6 +17,10 @@ let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem
   |> sprintf "Invalid premise `%s` to be AL %s."
 
+let rec flatten e = match e.it with
+  | Ast.CatE (e1, e2) -> flatten e1 @ flatten e2
+  | Ast.ListE es -> List.concat_map flatten es
+  | _ -> [e]
 
 (** Translate `Ast.type` *)
 let il_type2al_type t = match t.it with
@@ -62,12 +66,7 @@ let rec find_type tenv exp =
       )
   | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
 
-let rec get_top_of_stack stack = match stack.it with
-  | Ast.ListE exps -> exps |> List.rev |> List.hd
-  | Ast.CatE (_, exp) -> get_top_of_stack exp
-  | _ -> stack
-
-let get_params lhs_stack = match get_top_of_stack lhs_stack |> it with
+let get_params lhs_stack = match List.hd lhs_stack |> it with
   | Ast.CaseE (_, { it = Ast.TupE exps; _ }, _) -> exps
   | Ast.CaseE (_, exp, _) -> [exp]
   | _ ->
@@ -154,7 +153,7 @@ let rec exp2expr exp = match exp.it with
 
 (* `Ast.exp` -> `Al.AssertI` *)
 let insert_assert exp = match exp.it with
-  | Ast.ListE ([{ it = Ast.CaseE(Ast.Atom "FRAME_", _, _); _ }]) ->
+  | Ast.CaseE(Ast.Atom "FRAME_", _, _) ->
       Al.AssertI
         "due to validation, the frame F is now on the top of the stack"
   | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) ->
@@ -164,10 +163,10 @@ let insert_assert exp = match exp.it with
         (sprintf
           "due to validation, there are at least %s values on the top of the stack"
           n.it)
-  | Ast.ListE ([{ it = Ast.CaseE (
+  | Ast.CaseE (
     Ast.Atom "LABEL_",
     { it = Ast.TupE ([_n; _instrs; _vals]); _ }, _
-  ); _ }]) ->
+  ) ->
       Al.AssertI
         "Assert: due to validation, the label L is now on the top of the stack"
   | Ast.CaseE (
@@ -180,20 +179,19 @@ let insert_assert exp = match exp.it with
   | _ ->
       Al.AssertI "Due to validation, a value is on the top of the stack"
 
-(* `Ast.exp` -> `Al.instr list` *)
-let rec lhs2pop exp = match exp.it with
-  | Ast.CatE (iterexp, listexp) ->
-      insert_assert iterexp ::
-        Al.PopI (exp2expr iterexp) ::
-        lhs2pop listexp
+(* `Ast.exp list` -> `Al.instr list` *)
+(* Assumption: the target instruction is currently at the top of the stack. *)
+(* The assumption does not hold for br and return *)
+let lhs2pop = function
+| [] -> failwith "Unreachable: empty lhs stack"
+| inst :: rest -> match inst.it with
   (* Frame *)
-  | Ast.ListE ([{
-    it = Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE ([
+  | Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE ([
       { it = Ast.VarE (arity); _ };
       { it = Ast.VarE (name); _ };
       inner_exp
-    ]); _ }, _); _
-  }]) ->
+    ]); _ }, _)
+  ->
       let let_instrs = [
         Al.LetI (Al.NameE(Al.N name.it), Al.FrameE);
         Al.LetI (Al.NameE(Al.N arity.it), Al.ArityE (Al.NameE (Al.N name.it)))
@@ -218,25 +216,23 @@ let rec lhs2pop exp = match exp.it with
               ) :: []
         | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
       let pop_frame_instrs =
-        insert_assert exp ::
+        insert_assert inst ::
           Al.PopI (Al.NameE (Al.N "the frame")) :: [] in
       let_instrs @ pop_instrs @ pop_frame_instrs
   (* Label *)
-  | Ast.ListE ([{ it = Ast.CaseE (
+  | Ast.CaseE (
     Ast.Atom "LABEL_",
     { it = Ast.TupE ([_n; _instrs; vals]); _ }, _
-  ); _ }]) ->
+  ) ->
       (* TODO: append Jump instr *)
       Al.PopI (exp2expr vals) ::
-        insert_assert exp ::
+        insert_assert inst ::
         Al.PopI (Al.NameE (N "the label")) :: []
   (* noraml list expression *)
-  | Ast.ListE exps ->
-      let rev = List.rev exps |> List.tl in
+  | _ ->
       List.concat_map
         (fun e -> [insert_assert e; Al.PopI (exp2expr e)])
-        rev
-  | _ -> gen_fail_msg_of_exp exp "lhs instruction" |> failwith
+        rest
 
 (* `Ast.exp` -> `Al.instr list` *)
 let rec rhs2instrs exp = match exp.it with
@@ -376,13 +372,14 @@ let reduction_group2algo (reduction_name, reduction_group) =
   let algo_name = String.split_on_char '-' reduction_name |> List.hd in
   let (lhs, _, _, tenv) = List.hd reduction_group in
 
-  let lhs_stack = match lhs.it with
+  let lhs_stack = ( match lhs.it with
     (* z; lhs *)
     | Ast.MixE (
       [[]; [Ast.Semicolon]; [Ast.Star]],
       {it=Ast.TupE ({it=Ast.VarE {it="z"; _ }; _ } :: exp :: []); _}
     ) -> exp
     | _ -> lhs
+  ) |> flatten |> List.rev
   in
 
   let pop_instrs = lhs2pop lhs_stack in
