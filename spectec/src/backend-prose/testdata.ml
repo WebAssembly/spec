@@ -40,7 +40,13 @@ let testop = "testop", [
   Operators.i32_eqz |> to_phrase
 ], "1"
 
-let relop = "relop", [
+let relop1 = "relop i32", [
+  Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+  Operators.i32_const (i32 3 |> to_phrase) |> to_phrase;
+  Operators.i32_gt_s |> to_phrase
+], "0"
+
+let relop2 = "relop f32", [
   Operators.f32_const (f32 1.4142135 |> to_phrase) |> to_phrase;
   Operators.f32_const (f32 3.1415926 |> to_phrase) |> to_phrase;
   Operators.f32_gt |> to_phrase
@@ -73,4 +79,4 @@ let global_get = "global_get", [
 ], "5.199_999_809_265_136_7"
 
 let test_cases =
-  [ testop; relop; nop; drop; select; local_get; global_get ]
+  [ testop; relop1; relop2; nop; drop; select; local_get; global_get ]

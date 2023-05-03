@@ -147,35 +147,18 @@ let access_field v s = match v, s with
 
 (* Interpreter *)
 
-let rec dsl_function_call env fname args = match (fname, args) with
+let rec dsl_function_call fname args = match fname with
   (* Numerics *)
-  | (Al.N "testop", [op; _; e]) ->
-      let v = eval_expr env e |> al_value2int in
-      begin match eval_expr env op with
-        | Al.StringV "Eqz" ->
-            let i = v = 0 |> Bool.to_int in
-            Al.IntV i
-        | _ -> failwith "Invalid testop"
-      end
-  | (Al.N "relop", [op; _; e1; e2]) ->
-      let v1 = eval_expr env e1 |> al_value2float in
-      let v2 = eval_expr env e2 |> al_value2float in
-      begin match eval_expr env op with
-        | Al.StringV "Gt" ->
-            let i = v1 > v2 |> Bool.to_int in
-            Al.IntV i
-        | _ -> failwith "Invalid relop"
-      end
+  | Al.N name when Numerics.mem name -> Numerics.call_numerics name args
   (* Runtime *)
-  | (Al.N name, args) ->
-      List.map (eval_expr env) args
-      |> run_algo name
-      |> Env.get_result
+  | Al.N name when AlgoMap.mem name !algo_map ->
+      run_algo name args |> Env.get_result
   | _ -> failwith "Invalid DSL function call"
 
 and eval_expr env expr = match expr with
   | Al.ValueE v -> v
-  | Al.AppE (fname, el) -> dsl_function_call env fname el
+  | Al.AppE (fname, el) ->
+      List.map (eval_expr env) el |> dsl_function_call fname
   | Al.FrameE -> FrameV (get_current_frame ())
   | Al.NameE name -> Env.find name env
   | Al.PropE (e, s) ->
@@ -190,6 +173,7 @@ and eval_expr env expr = match expr with
       begin match (v1, v2) with
         | (Al.ListV l, Al.IntV n) -> List.nth l n
         | _ ->
+            (* Due to AL validation unreachable *)
             Printf.sprintf "Invalid index access %s" (string_of_expr expr)
             |> failwith
       end
@@ -275,6 +259,8 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
       "testop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Eqz"]
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
       "relop", [Al.WasmTypeV (Types.NumType Types.F32Type); Al.StringV "Gt"]
+  | Ast.Compare (Values.I32 Ast.I32Op.GtS) ->
+      "relop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "GtS"]
   | Ast.Select None -> "select", [Al.StringV "TODO: None"]
   | Ast.LocalGet i32 ->
       let n = Int32.to_int i32.it in

@@ -760,7 +760,10 @@ Pass/Total: [21/66]
 testop
 Ok
 
-relop
+relop i32
+Ok
+
+relop f32
 Ok
 
 nop
