@@ -190,9 +190,7 @@ let lhs2pop = function
       { it = Ast.VarE (arity); _ };
       { it = Ast.VarE (name); _ };
       inner_exp
-    ]); _ }, _)
-  ->
-      let let_instrs = [
+    ]); _ }, _) ->  let let_instrs = [
         Al.LetI (Al.NameE(Al.N name.it), Al.FrameE);
         Al.LetI (Al.NameE(Al.N arity.it), Al.ArityE (Al.NameE (Al.N name.it)))
       ] in
@@ -215,24 +213,29 @@ let lhs2pop = function
                 [Al.PopI (Al.NameE (Al.N "the top element"))]
               ) :: []
         | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith in
-      let pop_frame_instrs =
-        insert_assert inst ::
-          Al.PopI (Al.NameE (Al.N "the frame")) :: [] in
-      let_instrs @ pop_instrs @ pop_frame_instrs
+      let pop_frame_instrs = [
+        insert_assert inst;
+        Al.PopI (Al.NameE (Al.N "the frame"))
+      ] in
+      (let_instrs @ pop_instrs @ pop_frame_instrs, rest)
   (* Label *)
   | Ast.CaseE (
     Ast.Atom "LABEL_",
     { it = Ast.TupE ([_n; _instrs; vals]); _ }, _
   ) ->
-      (* TODO: append Jump instr *)
-      Al.PopI (exp2expr vals) ::
-        insert_assert inst ::
-        Al.PopI (Al.NameE (N "the label")) :: []
+      ([
+        (* TODO: append Jump instr *)
+        Al.PopI (exp2expr vals);
+        insert_assert inst;
+        Al.PopI (Al.NameE (N "the label"))
+      ], rest)
   (* noraml list expression *)
-  | _ ->
-      List.concat_map
-        (fun e -> [insert_assert e; Al.PopI (exp2expr e)])
-        rest
+  | _ -> List.fold_left (fun (instrs, rest) e ->
+      if List.length rest > 0 then (instrs, rest @ [e]) else
+      match e.it with
+      | Ast.IterE (_, (ListN _, _)) -> instrs, [e]
+      | _ -> (instrs @ [insert_assert e; Al.PopI (exp2expr e)]), rest
+    ) ([], []) rest
 
 (* `Ast.exp` -> `Al.instr list` *)
 let rec rhs2instrs exp = match exp.it with
@@ -316,20 +319,29 @@ let rec exp2cond exp = match exp.it with
       end
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
+let bound_by binding e = match e.it with
+| Ast.IterE (_, (ListN {it = VarE {it = n; _}; _}, _)) ->
+  if Free.Set.mem n (Free.free_exp binding).varid then
+    [insert_assert e; Al.PopI (exp2expr e)]
+  else
+    []
+| _ -> []
 
-(** prems -> `Al.instr list` -> `Al.instr list` **)
-let prems2instrs =
+(** `Il.instr expr list` -> `prems -> `Al.instr list` -> `Al.instr list` **)
+let prems2instrs remain_lhs =
   List.fold_right ( fun prem instrs ->
     match prem.it with
     | Ast.IfPr exp -> [ Al.IfI (exp2cond exp, instrs |> check_nop, []) ]
     | Ast.ElsePr -> [ Al.OtherwiseI (instrs |> check_nop) ]
-    | Ast.AssignPr (exp1, exp2) -> ( match exp1.it with
+    | Ast.AssignPr (exp1, exp2) ->
+      let instrs' = (List.concat_map (bound_by exp1) remain_lhs) @ instrs in
+      ( match exp1.it with
       | Ast.CaseE (atom, _e, t) -> [ Al.IfI (
           Al.EqC (
             Al.YetE ("typeof(" ^ (Print.string_of_exp exp2) ^ ")"),
             Al.YetE ((Print.string_of_atom atom) ^ "_" ^ (Print.string_of_typ t))
           ),
-          Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs,
+          Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
           []
         ) ]
       | Ast.ListE es ->
@@ -339,10 +351,10 @@ let prems2instrs =
             Al.LengthE rhs,
             Al.ValueE (Al.IntV (List.length es))
           ),
-          Al.LetI (exp2expr exp1, rhs) :: instrs,
+          Al.LetI (exp2expr exp1, rhs) :: instrs',
           []
         ) ]
-      | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs
+      | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs'
     )
     | _ ->
       gen_fail_msg_of_prem prem "instr" |> print_endline ;
@@ -351,8 +363,8 @@ let prems2instrs =
 
 (** reduction -> `Al.instr list` **)
 
-let reduction2instrs (_, rhs, prems, _) =
-  prems2instrs prems (rhs2instrs rhs)
+let reduction2instrs remain_lhs (_, rhs, prems, _) =
+  prems2instrs (remain_lhs) prems (rhs2instrs rhs)
 
 (* `Ast.exp` -> `Ast.path` -> `Al.expr` *)
 let path2expr exp path =
@@ -382,17 +394,18 @@ let reduction_group2algo (reduction_name, reduction_group) =
   ) |> flatten |> List.rev
   in
 
-  let pop_instrs = lhs2pop lhs_stack in
+  let (pop_instrs, remain) = lhs2pop lhs_stack in
 
   let instrs = match reduction_group with
     (* no premise: either *)
     | [(lhs1, rhs1, [], _); (lhs2, rhs2, [], _)]
       when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
+        assert (List.length remain = 0);
         let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
         let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
         [Al.EitherI(rhs_instrs1, rhs_instrs2)]
     | _ ->
-      let blocks = List.map reduction2instrs reduction_group in
+      let blocks = List.map (reduction2instrs remain) reduction_group in
       List.fold_right Transpile.merge_otherwise blocks []
     in
 
@@ -465,7 +478,7 @@ let replace_with e =
 let mutator2instrs clause =
   let Ast.DefD(_binds, _e1, e2, prems) = clause.it in
 
-  prems2instrs prems (
+  prems2instrs [] prems (
     match e2.it with
     | Ast.MixE ([[]; [Ast.Semicolon]; []], {it = Ast.TupE [new_s; new_f]; _}) ->
       replace_with new_s @ replace_with new_f
@@ -474,7 +487,7 @@ let mutator2instrs clause =
 
 let helper2instrs clause =
   let Ast.DefD(_binds, _e1, e2, prems) = clause.it in
-  prems2instrs prems [ Al.ReturnI ( Option.some (exp2expr e2) ) ]
+  prems2instrs [] prems [ Al.ReturnI ( Option.some (exp2expr e2) ) ]
 
 (** Main translation for helper functions **)
 
