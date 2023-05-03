@@ -1,5 +1,13 @@
 (library
   (name backend_al)
   (libraries reference_interpreter util il el)
-  (modules translate print al interpreter validation numerics testdata)
+  (modules
+    translate
+    transpile
+    print
+    al
+    interpreter
+    validation
+    numerics
+    testdata)
 )
