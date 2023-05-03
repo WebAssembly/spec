@@ -52,31 +52,40 @@ end
 
 (* Wasm Data Structures *)
 
-(* Stack *)
-
-type stack_elem =
-  | ValueS of Values.value
-  | FrameS of Al.frame
-
-type stack = stack_elem list
-
-let stack: stack ref = ref []
-
-(* Store *)
+let stack: Al.stack ref = ref []
 
 let store: Al.store ref = ref { Al.global = [] }
+
+(* Stack Helper functions *)
+
+let reset_stack () = stack := []
+
+let push_v v = stack := Al.ValueS (v) :: !stack
+
+let push_f f = stack := Al.FrameS (f) :: !stack
+
+let pop () =
+  let res = List.hd !stack in
+  stack := List.tl !stack;
+  res
+
+let get_current_frame () =
+  let f = function Al.FrameS _ -> true | _ -> false in
+  match List.find f !stack with
+    | Al.FrameS frame -> frame
+    | _ ->
+        (* Due to Wasm validation, unreachable *)
+        failwith "No frame"
+
+(* Store Helper *)
+
+let set_store s = store := s
 
 
 
 (* Helper functions *)
 
 (* NOTE: These functions should be used only if validation ensures no failure *)
-
-let get_current_frame () =
-  let f = function FrameS _ -> true | _ -> false in
-  match List.find f !stack with
-    | FrameS frame -> frame
-    | _ -> failwith "No frame"
 
 let al_value2wasm_value = function
   | Al.WasmV v -> v
@@ -131,7 +140,7 @@ let access_field v s = match v, s with
       let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
       Al.ListE l
   | v, x ->
-      Printf.sprintf "Invalid field access %s.%s" (Print.string_of_value v) x
+      Printf.sprintf "Invalid field access %s.%s" (string_of_value v) x
       |> failwith
 
 
@@ -181,7 +190,7 @@ and eval_expr env expr = match expr with
       begin match (v1, v2) with
         | (Al.ListV l, Al.IntV n) -> List.nth l n
         | _ ->
-            Printf.sprintf "Invalid index access %s" (Print.string_of_expr expr)
+            Printf.sprintf "Invalid index access %s" (string_of_expr expr)
             |> failwith
       end
   | Al.ConstE (ty, inner_e) ->
@@ -207,14 +216,13 @@ and interp_instr env = function
   | Al.AssertI (_) -> env (* TODO: insert assertion *)
   | Al.PushI e ->
       let v = eval_expr env e |> al_value2wasm_value in
-      stack := (ValueS v) :: !stack;
+      push_v v;
       env
   | Al.PopI e ->
       (* due to Wasm validation *)
       assert (List.length !stack > 0);
 
-      let h = List.hd !stack in
-      stack := List.tl !stack;
+      let h = pop () in
 
       begin match (h, e) with
         | (ValueS h, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
@@ -281,8 +289,8 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> stack := ValueS (Values.Num (num.it)) :: !stack
-  | Ast.RefNull ref -> stack := ValueS (Values.Ref (Values.NullRef ref)) :: !stack
+  | Ast.Const num -> push_v (Values.Num num.it)
+  | Ast.RefNull ref -> push_v (Values.Ref (Values.NullRef ref))
   | _ ->
       let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
@@ -292,98 +300,7 @@ let run winstrs = List.iter run_wasm_instr winstrs
 
 
 
-(* Hardcoded Data *)
-
-let to_phrase x = (@@) x no_region
-let i32 = I32.of_int_s
-let i64 = I64.of_int_s
-let f32 = F32.of_float
-let f64 = F64.of_float
-
-(* Hardcoded Store *)
-
-let initial_store = { Al.global = [
-  Values.Num (Values.F32 (f32 1.4));
-  Values.Num (Values.F32 (f32 5.2));
-  Values.Num (Values.F32 (f32 6.9))
-] }
-
-(* Hardcoded Frame *)
-
-let initial_frame =
-  {
-    Al.local = [
-      Values.Num (Values.I32 (i32 3));
-      Values.Num (Values.I32 (i32 0));
-      Values.Num (Values.I32 (i32 7))
-    ];
-    Al.moduleinst = { globaladdr = [
-      IntV 0; (* global address 0 *)
-      IntV 1; (* global address 1 *)
-      IntV 2; (* global address 2 *)
-    ] }
-  }
-
-(* Hardcoded Wasm Instructions *)
-
-let testop = "testop", [
-  Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
-  Operators.i32_eqz |> to_phrase
-], "1"
-
-let relop = "relop", [
-  Operators.f32_const (f32 1.4142135 |> to_phrase) |> to_phrase;
-  Operators.f32_const (f32 3.1415926 |> to_phrase) |> to_phrase;
-  Operators.f32_gt |> to_phrase
-], "0"
-
-let nop = "nop", [
-  Operators.i64_const (i64 0 |> to_phrase) |> to_phrase;
-  Operators.nop |> to_phrase
-], "0"
-
-let drop = "drop", [
-  Operators.f64_const (f64 3.1 |> to_phrase) |> to_phrase;
-  Operators.f64_const (f64 5.2 |> to_phrase) |> to_phrase;
-  Operators.drop |> to_phrase
-], "3.100_000_000_000_000_1"
-
-let select = "select", [
-  Operators.f64_const (f64 Float.max_float |> to_phrase) |> to_phrase;
-  Operators.ref_null Types.FuncRefType |> to_phrase;
-  Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
-  Operators.select None |> to_phrase
-], "null"
-
-let local_get = "local_get", [
-  Operators.local_get (i32 2 |> to_phrase) |> to_phrase
-], "7"
-
-let global_get = "global_get", [
-  Operators.global_get (i32 1 |> to_phrase) |> to_phrase
-], "5.199_999_809_265_136_7"
-
-let test_cases =
-  [ testop; relop; nop; drop; select; local_get; global_get ]
-
-
-(* Stack Stringifier *)
-
-let string_of_stack_elem e = match e with
-  | ValueS v -> Values.string_of_value v
-  | FrameS f -> Print.string_of_frame f
-
-let string_of_stack st =
-  let f acc e = acc ^ string_of_stack_elem e ^ "\n" in
-  List.fold_left f "[Stack]\n" st
-
-
-  
 (* Test Interpreter *)
-
-let init_store () = store := initial_store
-
-let init_stack () = stack := FrameS initial_frame :: []
 
 let test test_case =
   (* Print test name *)
@@ -391,8 +308,9 @@ let test test_case =
   print_endline name;
 
   (* Initialize *)
-  init_stack ();
-  init_store ();
+  reset_stack ();
+  push_f Testdata.initial_frame;
+  set_store Testdata.initial_store;
 
   (* Execute *)
   run ast;
@@ -404,8 +322,9 @@ let test test_case =
   else
     "Fail!\n" ^ string_of_stack !stack |> print_endline
 
+(* Entry *)
+
 let interpret algos =
   algo_map := to_map algos;
 
-  (* Test all asts *)
-  List.iter test test_cases
+  List.iter test Testdata.test_cases

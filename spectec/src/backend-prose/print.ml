@@ -290,6 +290,15 @@ let string_of_iter = function
 let string_of_frame f =
   Printf.sprintf "{ local: %s }" (Reference_interpreter.Values.string_of_values f.local)
 
+let string_of_stack_elem e = match e with
+  | Al.ValueS v -> Reference_interpreter.Values.string_of_value v
+  | Al.FrameS f -> string_of_frame f
+
+let string_of_stack st =
+  let f acc e = acc ^ string_of_stack_elem e ^ "\n" in
+  List.fold_left f "[Stack]\n" st
+
+
 let string_of_value = function
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV -> "StoreV"

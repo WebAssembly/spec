@@ -1,5 +1,9 @@
+open Reference_interpreter
+
+(* AL Type *)
+
 type al_type =
-  | WasmValueT of Reference_interpreter.Types.value_type
+  | WasmValueT of Types.value_type
   | WasmValueTopT
   | EmptyListT
   | ListT of al_type
@@ -12,20 +16,29 @@ type al_type =
   | StateT
   | TopT
 
+(* Wasm Data Structures *)
+
 type moduleinst = { globaladdr: value list }
 
-and frame = { local: Reference_interpreter.Values.value list; moduleinst: moduleinst  }
+and frame = { local: Values.value list; moduleinst: moduleinst  }
 
-and store = { global: Reference_interpreter.Values.value list }
+and stack_elem =
+  | ValueS of Values.value
+  | FrameS of frame
 
+and stack = stack_elem list
+
+and store = { global: Values.value list }
+
+(* AL AST *)
 
 and value =
   | FrameV of frame
   | StoreV
   | ModuleInstV of moduleinst
   | ListV of value list
-  | WasmV of Reference_interpreter.Values.value
-  | WasmTypeV of Reference_interpreter.Types.value_type
+  | WasmV of Values.value
+  | WasmTypeV of Types.value_type
   | IntV of int
   | FloatV of float
   | StringV of string
