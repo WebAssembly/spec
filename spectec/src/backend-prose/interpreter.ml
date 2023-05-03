@@ -2,52 +2,7 @@ open Print
 open Reference_interpreter
 open Source
 
-(* Hardcoded Wasm AST *)
-let to_phrase x = (@@) x no_region
-let i32 = I32.of_int_s
-let i64 = I64.of_int_s
-let f32 = F32.of_float
-let f64 = F64.of_float
-
-let testop = [
-  Ast.Const (Values.I32 I32.zero |> to_phrase) |> to_phrase;
-  Ast.Test (Values.I32 Ast.I32Op.Eqz) |> to_phrase
-]
-
-let relop = [
-  Ast.Const (Values.F32 (f32 1.4142135) |> to_phrase) |> to_phrase;
-  Ast.Const (Values.F32 (f32 3.1415926) |> to_phrase) |> to_phrase;
-  Ast.Compare (Values.F32 Ast.F32Op.Gt) |> to_phrase
-]
-
-let nop = [
-  Ast.Const (Values.I64 (i64 42) |> to_phrase) |> to_phrase;
-  Ast.Nop |> to_phrase
-]
-
-let drop = [
-  Ast.Const (Values.F64 (f64 3.1) |> to_phrase) |> to_phrase;
-  Ast.Const (Values.F64 (f64 5.2) |> to_phrase) |> to_phrase;
-  Ast.Drop |> to_phrase
-]
-
-let ref_is_null = [
-  Ast.RefNull Types.ExternRefType |> to_phrase;
-  Ast.RefIsNull |> to_phrase
-]
-
-let select = [
-  Ast.Const (Values.F64 (f64 Float.max_float) |> to_phrase) |> to_phrase;
-  Ast.RefNull Types.FuncRefType |> to_phrase;
-  Ast.Const (Values.I32 (I32.of_int_s 0) |> to_phrase) |> to_phrase;
-  Ast.Select None |> to_phrase
-]
-
-let local_get = [
-  Ast.LocalGet (i32 2 |> to_phrase) |> to_phrase
-]
-
-
+(* AL Data Structures *)
 
 (* Algorithm Map *)
 
@@ -66,8 +21,6 @@ let to_map algos =
     AlgoMap.add name algo acc in
 
   List.fold_left f AlgoMap.empty algos
-
-
 
 (* Environmet *)
 
@@ -95,6 +48,8 @@ end
 
 
 
+(* Wasm Data Structures *)
+
 (* Stack *)
 
 type stack_elem =
@@ -103,23 +58,23 @@ type stack_elem =
 
 type stack = stack_elem list
 
-let st_ref: stack ref = ref []
+let stack: stack ref = ref []
+
+(* Store *)
+
+type store = { global: Values.value list }
+
+let store: store ref = ref { global = [] }
 
 
 
 (* Helper functions *)
 
-let string_of_stack st =
-  let f acc = function
-    | ValueS v -> acc ^ Values.string_of_value v ^ "\n"
-    | FrameS f -> acc ^ Print.string_of_frame f ^ "\n" in
-  List.fold_left f "[Stack]\n" st
-
 (* NOTE: These functions should be used only if validation ensures no failure *)
 
 let get_current_frame () =
   let f = function FrameS _ -> true | _ -> false in
-  match List.find f !st_ref with
+  match List.find f !stack with
     | FrameS frame -> frame
     | _ -> failwith "No frame"
 
@@ -173,8 +128,8 @@ let access_field v s = match (v, s) with
 
 (* Interpreter *)
 
-let rec call_helper_function env fname args = match (fname, args) with
-  (* numerics *)
+let rec dsl_function_call env fname args = match (fname, args) with
+  (* Numerics *)
   | (Al.N "testop", [op; _; e]) ->
       let v = eval_expr env e |> al_value2int in
       begin match eval_expr env op with
@@ -192,17 +147,16 @@ let rec call_helper_function env fname args = match (fname, args) with
             Al.IntV i
         | _ -> failwith "Invalid relop"
       end
-  (* helper functions *)
+  (* Runtime *)
   | (Al.N name, args) ->
       List.map (eval_expr env) args
       |> run_algo name
       |> Env.get_result
-  (* TODO: handle non-deterministic *)
-  | _ -> string_of_name fname |> failwith
+  | _ -> failwith "Invalid DSL function call"
 
 and eval_expr env expr = match expr with
   | Al.ValueE v -> v
-  | Al.AppE (fname, el) -> call_helper_function env fname el
+  | Al.AppE (fname, el) -> dsl_function_call env fname el
   | Al.FrameE -> FrameV (get_current_frame ())
   | Al.NameE name -> Env.find name env
   | Al.PropE (e, s) ->
@@ -236,20 +190,21 @@ and eval_cond env = function
 
 and interp_instr env = function
   | Al.IfI (c, il1, il2) ->
-      if eval_cond env c
-      then interp_instrs env il1
-      else interp_instrs env il2
+      if eval_cond env c then
+        interp_instrs env il1
+      else
+        interp_instrs env il2
   | Al.AssertI (_) -> env (* TODO: insert assertion *)
   | Al.PushI e ->
       let v = eval_expr env e |> al_value2wasm_value in
-      st_ref := (ValueS v) :: !st_ref;
+      stack := (ValueS v) :: !stack;
       env
   | Al.PopI e ->
       (* due to Wasm validation *)
-      assert (List.length !st_ref > 0);
+      assert (List.length !stack > 0);
 
-      let h = List.hd !st_ref in
-      st_ref := List.tl !st_ref;
+      let h = List.hd !stack in
+      stack := List.tl !stack;
 
       begin match (h, e) with
         | (ValueS h, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
@@ -293,19 +248,22 @@ and interp_algo algo args =
 
 
 
-(* Search AL algorithm to run *)
+(* Search AL Algorithm *)
 
-and extract_data winstr = match winstr.it with
+and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.Nop -> "nop", []
   | Ast.Drop -> "drop", []
   | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
       "testop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Eqz"]
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
       "relop", [Al.WasmTypeV (Types.NumType Types.F32Type); Al.StringV "Gt"]
-  | Ast.Select None -> "select", []
+  | Ast.Select None -> "select", [Al.StringV "TODO: None"]
   | Ast.LocalGet i32 ->
       let n = Int32.to_int i32.it in
       "local.get", [Al.IntV n]
+  | Ast.GlobalGet i32 ->
+      let n = Int32.to_int i32.it in
+      "global.get", [Al.IntV n]
   | _ -> failwith "Not implemented"
 
 and run_algo name args =
@@ -313,10 +271,10 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> st_ref := ValueS (Values.Num (num.it)) :: !st_ref
-  | Ast.RefNull ref -> st_ref := ValueS (Values.Ref (Values.NullRef ref)) :: !st_ref
+  | Ast.Const num -> stack := ValueS (Values.Num (num.it)) :: !stack
+  | Ast.RefNull ref -> stack := ValueS (Values.Ref (Values.NullRef ref)) :: !stack
   | _ ->
-      let (name, args) = extract_data winstr in
+      let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
       ()
 
@@ -324,19 +282,102 @@ let run winstrs = List.iter run_wasm_instr winstrs
 
 
 
-(* Entry *)
+(* Hardcoded Data *)
+
+let to_phrase x = (@@) x no_region
+let i32 = I32.of_int_s
+let i64 = I64.of_int_s
+let f32 = F32.of_float
+let f64 = F64.of_float
+
+(* Hardcoded Frame *)
+
+let initial_frame = { Al.local = [
+  Values.Num (Values.I32 (i32 3));
+  Values.Num (Values.I32 (i32 0));
+  Values.Num (Values.I32 (i32 7))
+] }
+
+(* Hardcoded Wasm Instructions *)
+
+let testop = "testop", [
+  Operators.i32_const (i32 0 |> to_phrase);
+  Operators.i32_eqz
+], "1"
+
+let relop = "relop", [
+  Operators.f32_const (f32 1.4142135 |> to_phrase);
+  Operators.f32_const (f32 3.1415926 |> to_phrase);
+  Operators.f32_gt
+], "0"
+
+let nop = "nop", [
+  Operators.i64_const (i64 0 |> to_phrase);
+  Operators.nop
+], "0"
+
+let drop = "drop", [
+  Operators.f64_const (f64 3.1 |> to_phrase);
+  Operators.f64_const (f64 5.2 |> to_phrase);
+  Operators.drop
+], "3.100_000_000_000_000_1"
+
+let select = "select", [
+  Operators.f64_const (f64 Float.max_float |> to_phrase);
+  Operators.ref_null Types.FuncRefType;
+  Operators.i32_const (i32 0 |> to_phrase);
+  Operators.select None
+], "null"
+
+let local_get = "local_get", [
+  Operators.local_get (i32 2 |> to_phrase)
+], "7"
+
+let global_get = "global_get", [
+  Operators.global_get (i32 1 |> to_phrase)
+], "5"
+
+let test_cases =
+  [ testop; relop; nop; drop; select; local_get(*; global_get*) ]
+
+
+
+(* Stack Stringifier *)
+
+let string_of_stack_elem e = match e with
+  | ValueS v -> Values.string_of_value v
+  | FrameS f -> Print.string_of_frame f
+
+let string_of_stack st =
+  let f acc e = acc ^ string_of_stack_elem e ^ "\n" in
+  List.fold_left f "[Stack]\n" st
+
+
+  
+(* Test Interpreter *)
+
+let init_stack () = stack := FrameS initial_frame :: []
+
+let test test_case =
+  (* Print test name *)
+  let (name, ast, expected_result) = test_case in
+  print_endline name;
+
+  (* Initialize *)
+  init_stack ();
+
+  (* Execute *)
+  List.map to_phrase ast |> run;
+
+  (* Check *)
+  let actual_result = List.hd !stack |> string_of_stack_elem in
+  if actual_result = expected_result then
+    print_endline "Ok\n"
+  else
+    "Fail!\n" ^ string_of_stack !stack |> print_endline
 
 let interpret algos =
   algo_map := to_map algos;
 
-  (* Hardcoded frame *)
-  let current_frame =
-    FrameS { local = [
-      Values.Num (Values.I32 (i32 3));
-      Values.Num (Values.I32 (i32 0));
-      Values.Num (Values.I32 (i32 7))
-    ] } in
-  st_ref := current_frame :: !st_ref;
-
-  run local_get;
-  string_of_stack !st_ref
+  (* Test all asts *)
+  List.iter test test_cases
