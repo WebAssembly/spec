@@ -353,7 +353,8 @@ and valid_exp env e t =
     let t' =
       match infer_cmpop op with
       | Some t' -> t' $ e.at
-      | None -> infer_exp env e1
+      | None -> try infer_exp env e1 with
+        | _ -> infer_exp env e2
     in
     valid_exp env e1 t';
     valid_exp env e2 t';
@@ -497,8 +498,8 @@ let rec valid_prem env prem =
     valid_expmix env mixop e (find "relation" env.rels id) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
-  | AssignPr (_, _) ->
-    ()
+  | AssignPr (e1, e2) ->
+    valid_prem env (IfPr (CmpE (EqOp, e1, e2) $ no_region) $ no_region)
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->

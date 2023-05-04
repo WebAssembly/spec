@@ -92,10 +92,27 @@ let is_assign env prem = match prem.it with
 
 (* Generate fresh variables *)
 let _fresh = ref 0
-let fresh _ =
+let _fresh_env = ref []
+let fresh e =
   let id = !_fresh in
   _fresh := id + 1;
-  "tmp" ^ string_of_int id
+  let name = "tmp" ^ string_of_int id in
+
+  (* hard-coded infered type of fresh variable *)
+  (* TODO: Fix this to be generally applicable*)
+  let fresh_env = !_fresh_env in
+  let t = match e.it with
+  | MixE ([[]; [Arrow]; []], _) -> VarT ("functype" $ no_region)
+  | MixE ([[Atom "FUNC"]; []; [Star]; []], _) -> VarT ("func" $ no_region)
+  | IterE (id, _) when
+    Il.Print.string_of_exp id = "t_1" ||
+    Il.Print.string_of_exp id = "t_2" ->
+      IterT(VarT ("valtype" $ no_region) $ no_region, List)
+  | _ -> VarT ("unknown_type_due_to_animation" $ no_region)
+  in
+  _fresh_env := fresh_env @ [(name $ no_region, t $ no_region, [])];
+
+  name
 
 (* Simplify assign target of each premises *)
 let rec simplify_assign_target assign =
@@ -105,7 +122,7 @@ let rec simplify_assign_target assign =
     | IterE (_, (List, _))
     | IterE (_, (List1, _)) -> (e, [])
     | _ ->
-      let fresh = (VarE ( fresh() $ no_region)) $ no_region in
+      let fresh = (VarE ( fresh(e) $ no_region)) $ no_region in
       let new_assigns = simplify_assign_target (AssignPr (e, fresh) $ no_region) in
       (fresh, new_assigns)
   in
@@ -162,6 +179,7 @@ and select_assign prems acc env = ( match prems with
 (* Animate the list of premises *)
 let animate_prems lhs prems =
   _fresh := 0;
+  _fresh_env := [];
 
   let known_vars = free_lhs_exp lhs in
   let reorder prems =
@@ -182,7 +200,8 @@ let animate_rule r = match r.it with
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
       let new_prems = animate_prems lhs prems in
-      RuleD(id, binds, mixop, e, new_prems) $ r.at
+      let extra_binds = !_fresh_env in
+      RuleD(id, binds @ extra_binds, mixop, e, new_prems) $ r.at
     | _ -> r
   )
 

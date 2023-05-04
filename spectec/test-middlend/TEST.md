@@ -7953,7 +7953,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (c = 0)
 
   ;; 6-reduction.watsup:35.1-37.28
-  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
+  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, tmp0 : valtype*, tmp1 : valtype*}:
     `%*~>%*`((val <: admininstr)^k{val} :: [BLOCK_admininstr(bt, instr*{instr})], [LABEL__admininstr(n, [], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
     -- where `%->%`(tmp0, tmp1) := bt
     -- where t_1^k{t_1} := tmp0
@@ -7963,7 +7963,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (|val^k{val}| = k)
 
   ;; 6-reduction.watsup:39.1-41.28
-  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
+  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, tmp0 : valtype*, tmp1 : valtype*}:
     `%*~>%*`((val <: admininstr)^k{val} :: [LOOP_admininstr(bt, instr*{instr})], [LABEL__admininstr(n, [LOOP_instr(bt, instr*{instr})], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
     -- where `%->%`(tmp0, tmp1) := bt
     -- where t_1^k{t_1} := tmp0
@@ -8109,7 +8109,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:94.1-97.52
-  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*}:
+  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*, tmp0 : func, tmp1 : functype, tmp2 : valtype*, tmp3 : valtype*}:
     `%~>%*`(`%;%*`(z, (val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])])
     -- if (a < |$funcinst(z)|)
     -- where `%;%`(m, tmp0) := $funcinst(z)[a]
