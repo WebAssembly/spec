@@ -2762,7 +2762,7 @@ syntax admininstr =
 }
 
 def admininstr_globalinst : globalinst -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_globalinst(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_globalinst(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_globalinst(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_globalinst(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_globalinst(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -2772,22 +2772,22 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(NOP_instr) = NOP_admininstr
   def admininstr_instr(DROP_instr) = DROP_admininstr
   def {x : valtype?} admininstr_instr(SELECT_instr(x)) = SELECT_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(BLOCK_instr(x)) = BLOCK_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(LOOP_instr(x)) = LOOP_admininstr(x)
-  def {x : (blocktype, instr*, instr*)} admininstr_instr(IF_instr(x)) = IF_admininstr(x)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(BLOCK_instr(x0, x1)) = BLOCK_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(LOOP_instr(x0, x1)) = LOOP_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*, x2 : instr*} admininstr_instr(IF_instr(x0, x1, x2)) = IF_admininstr(x0, x1, x2)
   def {x : labelidx} admininstr_instr(BR_instr(x)) = BR_admininstr(x)
   def {x : labelidx} admininstr_instr(BR_IF_instr(x)) = BR_IF_admininstr(x)
-  def {x : (labelidx*, labelidx)} admininstr_instr(BR_TABLE_instr(x)) = BR_TABLE_admininstr(x)
+  def {x0 : labelidx*, x1 : labelidx} admininstr_instr(BR_TABLE_instr(x0, x1)) = BR_TABLE_admininstr(x0, x1)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : (tableidx, functype)} admininstr_instr(CALL_INDIRECT_instr(x)) = CALL_INDIRECT_admininstr(x)
+  def {x0 : tableidx, x1 : functype} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
-  def {x : (numtype, c_numtype)} admininstr_instr(CONST_instr(x)) = CONST_admininstr(x)
-  def {x : (numtype, unop_numtype)} admininstr_instr(UNOP_instr(x)) = UNOP_admininstr(x)
-  def {x : (numtype, binop_numtype)} admininstr_instr(BINOP_instr(x)) = BINOP_admininstr(x)
-  def {x : (numtype, testop_numtype)} admininstr_instr(TESTOP_instr(x)) = TESTOP_admininstr(x)
-  def {x : (numtype, relop_numtype)} admininstr_instr(RELOP_instr(x)) = RELOP_admininstr(x)
-  def {x : (numtype, n)} admininstr_instr(EXTEND_instr(x)) = EXTEND_admininstr(x)
-  def {x : (numtype, cvtop, numtype, sx?)} admininstr_instr(CVTOP_instr(x)) = CVTOP_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
+  def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : binop_numtype} admininstr_instr(BINOP_instr(x0, x1)) = BINOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : testop_numtype} admininstr_instr(TESTOP_instr(x0, x1)) = TESTOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : relop_numtype} admininstr_instr(RELOP_instr(x0, x1)) = RELOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : n} admininstr_instr(EXTEND_instr(x0, x1)) = EXTEND_admininstr(x0, x1)
+  def {x0 : numtype, x1 : cvtop, x2 : numtype, x3 : sx?} admininstr_instr(CVTOP_instr(x0, x1, x2, x3)) = CVTOP_admininstr(x0, x1, x2, x3)
   def {x : reftype} admininstr_instr(REF.NULL_instr(x)) = REF.NULL_admininstr(x)
   def {x : funcidx} admininstr_instr(REF.FUNC_instr(x)) = REF.FUNC_admininstr(x)
   def admininstr_instr(REF.IS_NULL_instr) = REF.IS_NULL_admininstr
@@ -2801,8 +2801,8 @@ def admininstr_instr : instr -> admininstr
   def {x : tableidx} admininstr_instr(TABLE.SIZE_instr(x)) = TABLE.SIZE_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.GROW_instr(x)) = TABLE.GROW_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.FILL_instr(x)) = TABLE.FILL_admininstr(x)
-  def {x : (tableidx, tableidx)} admininstr_instr(TABLE.COPY_instr(x)) = TABLE.COPY_admininstr(x)
-  def {x : (tableidx, elemidx)} admininstr_instr(TABLE.INIT_instr(x)) = TABLE.INIT_admininstr(x)
+  def {x0 : tableidx, x1 : tableidx} admininstr_instr(TABLE.COPY_instr(x0, x1)) = TABLE.COPY_admininstr(x0, x1)
+  def {x0 : tableidx, x1 : elemidx} admininstr_instr(TABLE.INIT_instr(x0, x1)) = TABLE.INIT_admininstr(x0, x1)
   def {x : elemidx} admininstr_instr(ELEM.DROP_instr(x)) = ELEM.DROP_admininstr(x)
   def admininstr_instr(MEMORY.SIZE_instr) = MEMORY.SIZE_admininstr
   def admininstr_instr(MEMORY.GROW_instr) = MEMORY.GROW_admininstr
@@ -2810,8 +2810,8 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(MEMORY.COPY_instr) = MEMORY.COPY_admininstr
   def {x : dataidx} admininstr_instr(MEMORY.INIT_instr(x)) = MEMORY.INIT_admininstr(x)
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
-  def {x : (numtype, (n, sx)?, u32, u32)} admininstr_instr(LOAD_instr(x)) = LOAD_admininstr(x)
-  def {x : (numtype, n?, u32, u32)} admininstr_instr(STORE_instr(x)) = STORE_admininstr(x)
+  def {x0 : numtype, x1 : (n, sx)?, x2 : u32, x3 : u32} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
+  def {x0 : numtype, x1 : n?, x2 : u32, x3 : u32} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
 
 def admininstr_ref : ref -> admininstr
   def {x : reftype} admininstr_ref(REF.NULL_ref(x)) = REF.NULL_admininstr(x)
@@ -2819,7 +2819,7 @@ def admininstr_ref : ref -> admininstr
   def {x : hostaddr} admininstr_ref(REF.HOST_ADDR_ref(x)) = REF.HOST_ADDR_admininstr(x)
 
 def admininstr_val : val -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_val(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_val(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_val(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_val(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_val(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -4481,7 +4481,7 @@ syntax admininstr =
 }
 
 def admininstr_globalinst : globalinst -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_globalinst(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_globalinst(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_globalinst(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_globalinst(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_globalinst(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -4491,22 +4491,22 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(NOP_instr) = NOP_admininstr
   def admininstr_instr(DROP_instr) = DROP_admininstr
   def {x : valtype?} admininstr_instr(SELECT_instr(x)) = SELECT_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(BLOCK_instr(x)) = BLOCK_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(LOOP_instr(x)) = LOOP_admininstr(x)
-  def {x : (blocktype, instr*, instr*)} admininstr_instr(IF_instr(x)) = IF_admininstr(x)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(BLOCK_instr(x0, x1)) = BLOCK_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(LOOP_instr(x0, x1)) = LOOP_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*, x2 : instr*} admininstr_instr(IF_instr(x0, x1, x2)) = IF_admininstr(x0, x1, x2)
   def {x : labelidx} admininstr_instr(BR_instr(x)) = BR_admininstr(x)
   def {x : labelidx} admininstr_instr(BR_IF_instr(x)) = BR_IF_admininstr(x)
-  def {x : (labelidx*, labelidx)} admininstr_instr(BR_TABLE_instr(x)) = BR_TABLE_admininstr(x)
+  def {x0 : labelidx*, x1 : labelidx} admininstr_instr(BR_TABLE_instr(x0, x1)) = BR_TABLE_admininstr(x0, x1)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : (tableidx, functype)} admininstr_instr(CALL_INDIRECT_instr(x)) = CALL_INDIRECT_admininstr(x)
+  def {x0 : tableidx, x1 : functype} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
-  def {x : (numtype, c_numtype)} admininstr_instr(CONST_instr(x)) = CONST_admininstr(x)
-  def {x : (numtype, unop_numtype)} admininstr_instr(UNOP_instr(x)) = UNOP_admininstr(x)
-  def {x : (numtype, binop_numtype)} admininstr_instr(BINOP_instr(x)) = BINOP_admininstr(x)
-  def {x : (numtype, testop_numtype)} admininstr_instr(TESTOP_instr(x)) = TESTOP_admininstr(x)
-  def {x : (numtype, relop_numtype)} admininstr_instr(RELOP_instr(x)) = RELOP_admininstr(x)
-  def {x : (numtype, n)} admininstr_instr(EXTEND_instr(x)) = EXTEND_admininstr(x)
-  def {x : (numtype, cvtop, numtype, sx?)} admininstr_instr(CVTOP_instr(x)) = CVTOP_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
+  def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : binop_numtype} admininstr_instr(BINOP_instr(x0, x1)) = BINOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : testop_numtype} admininstr_instr(TESTOP_instr(x0, x1)) = TESTOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : relop_numtype} admininstr_instr(RELOP_instr(x0, x1)) = RELOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : n} admininstr_instr(EXTEND_instr(x0, x1)) = EXTEND_admininstr(x0, x1)
+  def {x0 : numtype, x1 : cvtop, x2 : numtype, x3 : sx?} admininstr_instr(CVTOP_instr(x0, x1, x2, x3)) = CVTOP_admininstr(x0, x1, x2, x3)
   def {x : reftype} admininstr_instr(REF.NULL_instr(x)) = REF.NULL_admininstr(x)
   def {x : funcidx} admininstr_instr(REF.FUNC_instr(x)) = REF.FUNC_admininstr(x)
   def admininstr_instr(REF.IS_NULL_instr) = REF.IS_NULL_admininstr
@@ -4520,8 +4520,8 @@ def admininstr_instr : instr -> admininstr
   def {x : tableidx} admininstr_instr(TABLE.SIZE_instr(x)) = TABLE.SIZE_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.GROW_instr(x)) = TABLE.GROW_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.FILL_instr(x)) = TABLE.FILL_admininstr(x)
-  def {x : (tableidx, tableidx)} admininstr_instr(TABLE.COPY_instr(x)) = TABLE.COPY_admininstr(x)
-  def {x : (tableidx, elemidx)} admininstr_instr(TABLE.INIT_instr(x)) = TABLE.INIT_admininstr(x)
+  def {x0 : tableidx, x1 : tableidx} admininstr_instr(TABLE.COPY_instr(x0, x1)) = TABLE.COPY_admininstr(x0, x1)
+  def {x0 : tableidx, x1 : elemidx} admininstr_instr(TABLE.INIT_instr(x0, x1)) = TABLE.INIT_admininstr(x0, x1)
   def {x : elemidx} admininstr_instr(ELEM.DROP_instr(x)) = ELEM.DROP_admininstr(x)
   def admininstr_instr(MEMORY.SIZE_instr) = MEMORY.SIZE_admininstr
   def admininstr_instr(MEMORY.GROW_instr) = MEMORY.GROW_admininstr
@@ -4529,8 +4529,8 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(MEMORY.COPY_instr) = MEMORY.COPY_admininstr
   def {x : dataidx} admininstr_instr(MEMORY.INIT_instr(x)) = MEMORY.INIT_admininstr(x)
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
-  def {x : (numtype, (n, sx)?, u32, u32)} admininstr_instr(LOAD_instr(x)) = LOAD_admininstr(x)
-  def {x : (numtype, n?, u32, u32)} admininstr_instr(STORE_instr(x)) = STORE_admininstr(x)
+  def {x0 : numtype, x1 : (n, sx)?, x2 : u32, x3 : u32} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
+  def {x0 : numtype, x1 : n?, x2 : u32, x3 : u32} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
 
 def admininstr_ref : ref -> admininstr
   def {x : reftype} admininstr_ref(REF.NULL_ref(x)) = REF.NULL_admininstr(x)
@@ -4538,7 +4538,7 @@ def admininstr_ref : ref -> admininstr
   def {x : hostaddr} admininstr_ref(REF.HOST_ADDR_ref(x)) = REF.HOST_ADDR_admininstr(x)
 
 def admininstr_val : val -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_val(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_val(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_val(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_val(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_val(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -6209,7 +6209,7 @@ syntax admininstr =
 }
 
 def admininstr_globalinst : globalinst -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_globalinst(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_globalinst(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_globalinst(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_globalinst(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_globalinst(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -6219,22 +6219,22 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(NOP_instr) = NOP_admininstr
   def admininstr_instr(DROP_instr) = DROP_admininstr
   def {x : valtype?} admininstr_instr(SELECT_instr(x)) = SELECT_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(BLOCK_instr(x)) = BLOCK_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(LOOP_instr(x)) = LOOP_admininstr(x)
-  def {x : (blocktype, instr*, instr*)} admininstr_instr(IF_instr(x)) = IF_admininstr(x)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(BLOCK_instr(x0, x1)) = BLOCK_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(LOOP_instr(x0, x1)) = LOOP_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*, x2 : instr*} admininstr_instr(IF_instr(x0, x1, x2)) = IF_admininstr(x0, x1, x2)
   def {x : labelidx} admininstr_instr(BR_instr(x)) = BR_admininstr(x)
   def {x : labelidx} admininstr_instr(BR_IF_instr(x)) = BR_IF_admininstr(x)
-  def {x : (labelidx*, labelidx)} admininstr_instr(BR_TABLE_instr(x)) = BR_TABLE_admininstr(x)
+  def {x0 : labelidx*, x1 : labelidx} admininstr_instr(BR_TABLE_instr(x0, x1)) = BR_TABLE_admininstr(x0, x1)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : (tableidx, functype)} admininstr_instr(CALL_INDIRECT_instr(x)) = CALL_INDIRECT_admininstr(x)
+  def {x0 : tableidx, x1 : functype} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
-  def {x : (numtype, c_numtype)} admininstr_instr(CONST_instr(x)) = CONST_admininstr(x)
-  def {x : (numtype, unop_numtype)} admininstr_instr(UNOP_instr(x)) = UNOP_admininstr(x)
-  def {x : (numtype, binop_numtype)} admininstr_instr(BINOP_instr(x)) = BINOP_admininstr(x)
-  def {x : (numtype, testop_numtype)} admininstr_instr(TESTOP_instr(x)) = TESTOP_admininstr(x)
-  def {x : (numtype, relop_numtype)} admininstr_instr(RELOP_instr(x)) = RELOP_admininstr(x)
-  def {x : (numtype, n)} admininstr_instr(EXTEND_instr(x)) = EXTEND_admininstr(x)
-  def {x : (numtype, cvtop, numtype, sx?)} admininstr_instr(CVTOP_instr(x)) = CVTOP_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
+  def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : binop_numtype} admininstr_instr(BINOP_instr(x0, x1)) = BINOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : testop_numtype} admininstr_instr(TESTOP_instr(x0, x1)) = TESTOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : relop_numtype} admininstr_instr(RELOP_instr(x0, x1)) = RELOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : n} admininstr_instr(EXTEND_instr(x0, x1)) = EXTEND_admininstr(x0, x1)
+  def {x0 : numtype, x1 : cvtop, x2 : numtype, x3 : sx?} admininstr_instr(CVTOP_instr(x0, x1, x2, x3)) = CVTOP_admininstr(x0, x1, x2, x3)
   def {x : reftype} admininstr_instr(REF.NULL_instr(x)) = REF.NULL_admininstr(x)
   def {x : funcidx} admininstr_instr(REF.FUNC_instr(x)) = REF.FUNC_admininstr(x)
   def admininstr_instr(REF.IS_NULL_instr) = REF.IS_NULL_admininstr
@@ -6248,8 +6248,8 @@ def admininstr_instr : instr -> admininstr
   def {x : tableidx} admininstr_instr(TABLE.SIZE_instr(x)) = TABLE.SIZE_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.GROW_instr(x)) = TABLE.GROW_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.FILL_instr(x)) = TABLE.FILL_admininstr(x)
-  def {x : (tableidx, tableidx)} admininstr_instr(TABLE.COPY_instr(x)) = TABLE.COPY_admininstr(x)
-  def {x : (tableidx, elemidx)} admininstr_instr(TABLE.INIT_instr(x)) = TABLE.INIT_admininstr(x)
+  def {x0 : tableidx, x1 : tableidx} admininstr_instr(TABLE.COPY_instr(x0, x1)) = TABLE.COPY_admininstr(x0, x1)
+  def {x0 : tableidx, x1 : elemidx} admininstr_instr(TABLE.INIT_instr(x0, x1)) = TABLE.INIT_admininstr(x0, x1)
   def {x : elemidx} admininstr_instr(ELEM.DROP_instr(x)) = ELEM.DROP_admininstr(x)
   def admininstr_instr(MEMORY.SIZE_instr) = MEMORY.SIZE_admininstr
   def admininstr_instr(MEMORY.GROW_instr) = MEMORY.GROW_admininstr
@@ -6257,8 +6257,8 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(MEMORY.COPY_instr) = MEMORY.COPY_admininstr
   def {x : dataidx} admininstr_instr(MEMORY.INIT_instr(x)) = MEMORY.INIT_admininstr(x)
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
-  def {x : (numtype, (n, sx)?, u32, u32)} admininstr_instr(LOAD_instr(x)) = LOAD_admininstr(x)
-  def {x : (numtype, n?, u32, u32)} admininstr_instr(STORE_instr(x)) = STORE_admininstr(x)
+  def {x0 : numtype, x1 : (n, sx)?, x2 : u32, x3 : u32} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
+  def {x0 : numtype, x1 : n?, x2 : u32, x3 : u32} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
 
 def admininstr_ref : ref -> admininstr
   def {x : reftype} admininstr_ref(REF.NULL_ref(x)) = REF.NULL_admininstr(x)
@@ -6266,7 +6266,7 @@ def admininstr_ref : ref -> admininstr
   def {x : hostaddr} admininstr_ref(REF.HOST_ADDR_ref(x)) = REF.HOST_ADDR_admininstr(x)
 
 def admininstr_val : val -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_val(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_val(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_val(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_val(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_val(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -7995,7 +7995,7 @@ syntax admininstr =
 }
 
 def admininstr_globalinst : globalinst -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_globalinst(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_globalinst(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_globalinst(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_globalinst(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_globalinst(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
@@ -8005,22 +8005,22 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(NOP_instr) = NOP_admininstr
   def admininstr_instr(DROP_instr) = DROP_admininstr
   def {x : valtype?} admininstr_instr(SELECT_instr(x)) = SELECT_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(BLOCK_instr(x)) = BLOCK_admininstr(x)
-  def {x : (blocktype, instr*)} admininstr_instr(LOOP_instr(x)) = LOOP_admininstr(x)
-  def {x : (blocktype, instr*, instr*)} admininstr_instr(IF_instr(x)) = IF_admininstr(x)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(BLOCK_instr(x0, x1)) = BLOCK_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*} admininstr_instr(LOOP_instr(x0, x1)) = LOOP_admininstr(x0, x1)
+  def {x0 : blocktype, x1 : instr*, x2 : instr*} admininstr_instr(IF_instr(x0, x1, x2)) = IF_admininstr(x0, x1, x2)
   def {x : labelidx} admininstr_instr(BR_instr(x)) = BR_admininstr(x)
   def {x : labelidx} admininstr_instr(BR_IF_instr(x)) = BR_IF_admininstr(x)
-  def {x : (labelidx*, labelidx)} admininstr_instr(BR_TABLE_instr(x)) = BR_TABLE_admininstr(x)
+  def {x0 : labelidx*, x1 : labelidx} admininstr_instr(BR_TABLE_instr(x0, x1)) = BR_TABLE_admininstr(x0, x1)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : (tableidx, functype)} admininstr_instr(CALL_INDIRECT_instr(x)) = CALL_INDIRECT_admininstr(x)
+  def {x0 : tableidx, x1 : functype} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
-  def {x : (numtype, c_numtype)} admininstr_instr(CONST_instr(x)) = CONST_admininstr(x)
-  def {x : (numtype, unop_numtype)} admininstr_instr(UNOP_instr(x)) = UNOP_admininstr(x)
-  def {x : (numtype, binop_numtype)} admininstr_instr(BINOP_instr(x)) = BINOP_admininstr(x)
-  def {x : (numtype, testop_numtype)} admininstr_instr(TESTOP_instr(x)) = TESTOP_admininstr(x)
-  def {x : (numtype, relop_numtype)} admininstr_instr(RELOP_instr(x)) = RELOP_admininstr(x)
-  def {x : (numtype, n)} admininstr_instr(EXTEND_instr(x)) = EXTEND_admininstr(x)
-  def {x : (numtype, cvtop, numtype, sx?)} admininstr_instr(CVTOP_instr(x)) = CVTOP_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
+  def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : binop_numtype} admininstr_instr(BINOP_instr(x0, x1)) = BINOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : testop_numtype} admininstr_instr(TESTOP_instr(x0, x1)) = TESTOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : relop_numtype} admininstr_instr(RELOP_instr(x0, x1)) = RELOP_admininstr(x0, x1)
+  def {x0 : numtype, x1 : n} admininstr_instr(EXTEND_instr(x0, x1)) = EXTEND_admininstr(x0, x1)
+  def {x0 : numtype, x1 : cvtop, x2 : numtype, x3 : sx?} admininstr_instr(CVTOP_instr(x0, x1, x2, x3)) = CVTOP_admininstr(x0, x1, x2, x3)
   def {x : reftype} admininstr_instr(REF.NULL_instr(x)) = REF.NULL_admininstr(x)
   def {x : funcidx} admininstr_instr(REF.FUNC_instr(x)) = REF.FUNC_admininstr(x)
   def admininstr_instr(REF.IS_NULL_instr) = REF.IS_NULL_admininstr
@@ -8034,8 +8034,8 @@ def admininstr_instr : instr -> admininstr
   def {x : tableidx} admininstr_instr(TABLE.SIZE_instr(x)) = TABLE.SIZE_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.GROW_instr(x)) = TABLE.GROW_admininstr(x)
   def {x : tableidx} admininstr_instr(TABLE.FILL_instr(x)) = TABLE.FILL_admininstr(x)
-  def {x : (tableidx, tableidx)} admininstr_instr(TABLE.COPY_instr(x)) = TABLE.COPY_admininstr(x)
-  def {x : (tableidx, elemidx)} admininstr_instr(TABLE.INIT_instr(x)) = TABLE.INIT_admininstr(x)
+  def {x0 : tableidx, x1 : tableidx} admininstr_instr(TABLE.COPY_instr(x0, x1)) = TABLE.COPY_admininstr(x0, x1)
+  def {x0 : tableidx, x1 : elemidx} admininstr_instr(TABLE.INIT_instr(x0, x1)) = TABLE.INIT_admininstr(x0, x1)
   def {x : elemidx} admininstr_instr(ELEM.DROP_instr(x)) = ELEM.DROP_admininstr(x)
   def admininstr_instr(MEMORY.SIZE_instr) = MEMORY.SIZE_admininstr
   def admininstr_instr(MEMORY.GROW_instr) = MEMORY.GROW_admininstr
@@ -8043,8 +8043,8 @@ def admininstr_instr : instr -> admininstr
   def admininstr_instr(MEMORY.COPY_instr) = MEMORY.COPY_admininstr
   def {x : dataidx} admininstr_instr(MEMORY.INIT_instr(x)) = MEMORY.INIT_admininstr(x)
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
-  def {x : (numtype, (n, sx)?, u32, u32)} admininstr_instr(LOAD_instr(x)) = LOAD_admininstr(x)
-  def {x : (numtype, n?, u32, u32)} admininstr_instr(STORE_instr(x)) = STORE_admininstr(x)
+  def {x0 : numtype, x1 : (n, sx)?, x2 : u32, x3 : u32} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
+  def {x0 : numtype, x1 : n?, x2 : u32, x3 : u32} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
 
 def admininstr_ref : ref -> admininstr
   def {x : reftype} admininstr_ref(REF.NULL_ref(x)) = REF.NULL_admininstr(x)
@@ -8052,7 +8052,7 @@ def admininstr_ref : ref -> admininstr
   def {x : hostaddr} admininstr_ref(REF.HOST_ADDR_ref(x)) = REF.HOST_ADDR_admininstr(x)
 
 def admininstr_val : val -> admininstr
-  def {x : (numtype, c_numtype)} admininstr_val(CONST_val(x)) = CONST_admininstr(x)
+  def {x0 : numtype, x1 : c_numtype} admininstr_val(CONST_val(x0, x1)) = CONST_admininstr(x0, x1)
   def {x : reftype} admininstr_val(REF.NULL_val(x)) = REF.NULL_admininstr(x)
   def {x : funcaddr} admininstr_val(REF.FUNC_ADDR_val(x)) = REF.FUNC_ADDR_admininstr(x)
   def {x : hostaddr} admininstr_val(REF.HOST_ADDR_val(x)) = REF.HOST_ADDR_admininstr(x)
