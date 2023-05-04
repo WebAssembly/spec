@@ -24,7 +24,7 @@ type table_inst = Values.value list
 
 type module_inst = { globaladdr: value list; tableaddr: value list }
 
-and frame = { local: Values.value list; moduleinst: module_inst  }
+and frame = { local: Values.value array; moduleinst: module_inst  }
 
 and stack_elem =
   | ValueS of Values.value

@@ -126,7 +126,9 @@ let mk_wasm_num ty i = match ty with
 let access_field v s = match v, s with
   (* Frame *)
   | Al.FrameV f, "LOCAL" ->
-      let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) f.local in
+      let l =
+        Array.map (fun w -> Al.ValueE (Al.WasmV w)) f.local
+        |> Stdlib.Array.to_list in
       Al.ListE l
   | Al.FrameV f, "MODULE" ->
       Al.ValueE (ModuleInstV f.moduleinst)
@@ -207,7 +209,8 @@ and eval_cond env = function
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instr env i =
-  (* string_of_instr (ref 0) 0 i |> print_endline; *)
+  (*string_of_stack !stack |> print_endline;
+  string_of_instr (ref 0) 0 i |> print_endline;*)
   match i with
   | Al.IfI (c, il1, il2) ->
       if eval_cond env c then
@@ -241,12 +244,33 @@ and interp_instr env i =
             Env.add name (Al.WasmV h) env
         | _ -> failwith "Invalid case"
       end
-  | Al.LetI (Al.NameE (name), e) ->
-      Env.add name (eval_expr env e) env
+  | Al.LetI (pattern, e) ->
+      let v = eval_expr env e in
+      begin match pattern, v with
+        | Al.ListE [Al.NameE name], ListV [v]
+        | Al.NameE name, v -> Env.add name v env
+        | _ ->
+            string_of_instr (ref 0) 0 i
+            |> Printf.sprintf "Invalid pattern: %s"
+            |> failwith
+      end
   | Al.NopI | Al.ReturnI None -> env
-  | Al.ReturnI (Some e)->
+  | Al.ReturnI (Some e) ->
       let result = eval_expr env e in
       Env.set_result result env
+  | Al.ReplaceI (Al.IndexAccessE (Al.PropE (e1, "LOCAL"), e2), e3) ->
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      let v3 = eval_expr env e3 in
+      begin match v1, v2, v3 with
+        | Al.FrameV f, IntV i, WasmV v ->
+            Array.set f.local i v;
+            env
+        | _ -> failwith "Invalid Replace instr"
+      end
+  | Al.PerformI e ->
+      let _ = eval_expr env e in
+      env
   | i -> structured_string_of_instr 0 i |> failwith
 
 and interp_instrs env il =
@@ -272,6 +296,8 @@ and interp_algo algo args =
 and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.Nop -> "nop", []
   | Ast.Drop -> "drop", []
+  | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
+      "binop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Add"]
   | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
       "testop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Eqz"]
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
@@ -282,6 +308,9 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.LocalGet i32 ->
       let n = Int32.to_int i32.it in
       "local.get", [Al.IntV n]
+  | Ast.LocalSet i32 ->
+      let n = Int32.to_int i32.it in
+      "local.set", [Al.IntV n]
   | Ast.GlobalGet i32 ->
       let n = Int32.to_int i32.it in
       "global.get", [Al.IntV n]

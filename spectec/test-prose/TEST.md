@@ -757,6 +757,9 @@ Failure("IntT is not subtype of StateT")
 
 Pass/Total: [14/66]
 == Interpret AL...
+binop
+Ok
+
 testop
 Ok
 
@@ -776,6 +779,9 @@ select
 Ok
 
 local_get
+Ok
+
+local_set
 Ok
 
 global_get

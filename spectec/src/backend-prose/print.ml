@@ -288,7 +288,9 @@ let string_of_iter = function
   | ListN name -> "^" ^ string_of_name name
 
 let string_of_frame f =
-  Printf.sprintf "{ local: %s }" (Reference_interpreter.Values.string_of_values f.local)
+  Stdlib.Array.to_list f.local
+  |> Reference_interpreter.Values.string_of_values
+  |> Printf.sprintf "{ local: %s }"
 
 let string_of_stack_elem e = match e with
   | Al.ValueS v -> Reference_interpreter.Values.string_of_value v

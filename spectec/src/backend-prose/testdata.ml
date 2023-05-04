@@ -58,15 +58,21 @@ let initial_store =
 
 let initial_frame =
   {
-    local = [
+    local = [|
       Values.Num (Values.I32 (i32 3));
       Values.Num (Values.I32 (i32 0));
       Values.Num (Values.I32 (i32 7))
-    ];
+    |];
     moduleinst = module_inst
   }
 
 (* Hardcoded Wasm Instructions *)
+
+let binop = "binop", [
+  Operators.i32_const (i32 19 |> to_phrase) |> to_phrase;
+  Operators.i32_const (i32 27 |> to_phrase) |> to_phrase;
+  Operators.i32_add |> to_phrase
+], "46"
 
 let testop = "testop", [
   Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
@@ -107,6 +113,13 @@ let local_get = "local_get", [
   Operators.local_get (i32 2 |> to_phrase) |> to_phrase
 ], "7"
 
+let local_set = "local_set", [
+  Operators.local_get (i32 2 |> to_phrase) |> to_phrase;
+  Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+  Operators.i32_add |> to_phrase;
+  Operators.local_set (i32 2 |> to_phrase) |> to_phrase;
+  Operators.local_get (i32 2 |> to_phrase) |> to_phrase
+], "8"
 
 let global_get = "global_get", [
   Operators.global_get (i32 1 |> to_phrase) |> to_phrase
@@ -118,4 +131,4 @@ let table_get = "table_get", [
 ], "null"
 
 let test_cases =
-  [ testop; relop1; relop2; nop; drop; select; local_get; global_get; table_get ]
+  [ binop; testop; relop1; relop2; nop; drop; select; local_get; local_set; global_get; table_get ]
