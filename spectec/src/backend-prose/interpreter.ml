@@ -54,7 +54,7 @@ end
 
 let stack: Al.stack ref = ref []
 
-let store: Al.store ref = ref { Al.global = [] }
+let store: Al.store ref = ref { Al.global = []; Al.table = [] }
 
 (* Stack Helper functions *)
 
@@ -99,10 +99,6 @@ let al_value2int = function
   | Al.IntV i -> i
   | _ -> failwith "Not an integer value"
 
-let al_value2float = function
-  | Al.FloatV f -> f
-  | _ -> failwith "Not a float value"
-
 let wasm_value2al_num_value v = match v with
   | Values.Num n -> 
       let n = Values.string_of_num n in
@@ -128,16 +124,26 @@ let mk_wasm_num ty i = match ty with
   | _ -> failwith "Not a Numtype"
 
 let access_field v s = match v, s with
+  (* Frame *)
   | Al.FrameV f, "LOCAL" ->
       let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) f.local in
       Al.ListE l
   | Al.FrameV f, "MODULE" ->
       Al.ValueE (ModuleInstV f.moduleinst)
+  (* Module instance *)
   | Al.ModuleInstV m, "GLOBAL" ->
       let l = List.map (fun a -> Al.ValueE a) m.globaladdr in
       Al.ListE l
+  | Al.ModuleInstV m, "TABLE" ->
+      let l = List.map (fun a -> Al.ValueE a) m.globaladdr in
+      Al.ListE l
+  (* Store *)
   | Al.StoreV, "GLOBAL" ->
       let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
+      Al.ListE l
+  | Al.StoreV, "TABLE" ->
+      let wrap_list wl = Al.ListE (List.map (fun w -> Al.ValueE (Al.WasmV w)) wl) in
+      let l = List.map wrap_list !store.table in
       Al.ListE l
   | v, x ->
       Printf.sprintf "Invalid field access %s.%s" (string_of_value v) x
@@ -159,8 +165,12 @@ and eval_expr env expr = match expr with
   | Al.ValueE v -> v
   | Al.AppE (fname, el) ->
       List.map (eval_expr env) el |> dsl_function_call fname
+  | Al.LengthE e ->
+      begin match eval_expr env e with
+        | ListV (vl) -> IntV (List.length vl)
+        | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
+      end
   | Al.FrameE -> FrameV (get_current_frame ())
-  | Al.NameE name -> Env.find name env
   | Al.PropE (e, s) ->
       let v = eval_expr env e in
       access_field v s |> eval_expr env
@@ -177,6 +187,7 @@ and eval_expr env expr = match expr with
             Printf.sprintf "Invalid index access %s" (string_of_expr expr)
             |> failwith
       end
+  | Al.NameE name -> Env.find name env
   | Al.ConstE (ty, inner_e) ->
       let i = eval_expr env inner_e |> al_value2int in
       let wasm_ty = eval_expr env ty |> al_value2wasm_type in
@@ -189,9 +200,15 @@ and eval_cond env = function
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       v1 = v2
+  | Al.GeC (e1, e2) ->
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      v1 >= v2
   | c -> structured_string_of_cond c |> failwith
 
-and interp_instr env = function
+and interp_instr env i =
+  (* string_of_instr (ref 0) 0 i |> print_endline; *)
+  match i with
   | Al.IfI (c, il1, il2) ->
       if eval_cond env c then
         interp_instrs env il1
@@ -268,6 +285,9 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.GlobalGet i32 ->
       let n = Int32.to_int i32.it in
       "global.get", [Al.IntV n]
+  | Ast.TableGet i32 ->
+      let n = Int32.to_int i32.it in
+      "table.get", [Al.IntV n]
   | _ -> failwith "Not implemented"
 
 and run_algo name args =

@@ -781,5 +781,8 @@ Ok
 global_get
 Ok
 
+table_get
+Ok
+
 == Complete.
 ```

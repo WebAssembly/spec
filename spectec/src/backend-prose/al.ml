@@ -18,9 +18,13 @@ type al_type =
 
 (* Wasm Data Structures *)
 
-type moduleinst = { globaladdr: value list }
+type global_inst = Values.value
 
-and frame = { local: Values.value list; moduleinst: moduleinst  }
+type table_inst = Values.value list
+
+type module_inst = { globaladdr: value list; tableaddr: value list }
+
+and frame = { local: Values.value list; moduleinst: module_inst  }
 
 and stack_elem =
   | ValueS of Values.value
@@ -28,14 +32,14 @@ and stack_elem =
 
 and stack = stack_elem list
 
-and store = { global: Values.value list }
+and store = { global: global_inst list; table: table_inst list }
 
 (* AL AST *)
 
 and value =
   | FrameV of frame
   | StoreV
-  | ModuleInstV of moduleinst
+  | ModuleInstV of module_inst
   | ListV of value list
   | WasmV of Values.value
   | WasmTypeV of Types.value_type

@@ -1,5 +1,6 @@
 open Reference_interpreter
 open Source
+open Al
 
 (* Hardcoded Data *)
 
@@ -9,28 +10,60 @@ let i64 = I64.of_int_s
 let f32 = F32.of_float
 let f64 = F64.of_float
 
-(* Hardcoded Store *)
+(* Hardcoded Instas *)
 
-let initial_store = { Al.global = [
+let global_insts: global_inst list = [
   Values.Num (Values.F32 (f32 1.4));
   Values.Num (Values.F32 (f32 5.2));
   Values.Num (Values.F32 (f32 6.9))
-] }
+]
+
+let table_insts: table_inst list = [
+  [
+    Values.Ref (Values.NullRef ExternRefType);
+    Values.Ref (Values.NullRef FuncRefType);
+    Values.Ref (Values.NullRef FuncRefType)
+  ];
+  [
+    Values.Ref (Values.NullRef FuncRefType);
+    Values.Ref (Values.NullRef ExternRefType);
+    Values.Ref (Values.NullRef FuncRefType)
+  ];
+  [
+    Values.Ref (Values.NullRef FuncRefType);
+    Values.Ref (Values.NullRef FuncRefType);
+    Values.Ref (Values.NullRef ExternRefType)
+  ]
+]
+
+let module_inst: module_inst = {
+  globaladdr = [
+    IntV 0; (* global address 0 *)
+    IntV 1; (* global address 1 *)
+    IntV 2; (* global address 2 *)
+  ];
+  tableaddr = [
+    IntV 0; (* table address 0 *)
+    IntV 1; (* table address 1 *)
+    IntV 2; (* table address 2 *)
+  ]
+}
+
+(* Hardcoded Store *)
+
+let initial_store =
+  { global = global_insts; table = table_insts }
 
 (* Hardcoded Frame *)
 
 let initial_frame =
   {
-    Al.local = [
+    local = [
       Values.Num (Values.I32 (i32 3));
       Values.Num (Values.I32 (i32 0));
       Values.Num (Values.I32 (i32 7))
     ];
-    Al.moduleinst = { globaladdr = [
-      IntV 0; (* global address 0 *)
-      IntV 1; (* global address 1 *)
-      IntV 2; (* global address 2 *)
-    ] }
+    moduleinst = module_inst
   }
 
 (* Hardcoded Wasm Instructions *)
@@ -74,9 +107,15 @@ let local_get = "local_get", [
   Operators.local_get (i32 2 |> to_phrase) |> to_phrase
 ], "7"
 
+
 let global_get = "global_get", [
   Operators.global_get (i32 1 |> to_phrase) |> to_phrase
 ], "5.199_999_809_265_136_7"
 
+let table_get = "table_get", [
+  Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+  Operators.table_get (i32 2 |> to_phrase) |> to_phrase
+], "null"
+
 let test_cases =
-  [ testop; relop1; relop2; nop; drop; select; local_get; global_get ]
+  [ testop; relop1; relop2; nop; drop; select; local_get; global_get; table_get ]
