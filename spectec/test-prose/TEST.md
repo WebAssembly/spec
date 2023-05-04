@@ -294,28 +294,28 @@ local.tee x
 5. Execute (LOCAL.SET x).
 
 call x
-1. If x < the length of $funcaddr(z), then:
-  a. Execute (CALL_ADDR $funcaddr(z)[x]).
+1. If x < the length of $funcaddr(), then:
+  a. Execute (CALL_ADDR $funcaddr()[x]).
 
 call_indirect x ft
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i ≥ the length of $table(z, x), then:
+3. If i ≥ the length of $table(x), then:
   a. Trap.
 4. Else:
   a. If YetE (typeof($table(z, x)[i])) is not YetE (REF.FUNC_ADDR_ref), then:
     1) Trap.
   b. Else:
-    1) Let the value ref.funcaddr a be $table(z, x)[i].
-    2) If a ≥ the length of $funcinst(z), then:
+    1) Let the value ref.funcaddr a be $table(x)[i].
+    2) If a ≥ the length of $funcinst(), then:
       a) Trap.
     3) Else:
-      a) Let YetE (`%;%`(m, func)) be $funcinst(z)[a].
+      a) Let YetE (`%;%`(m, func)) be $funcinst()[a].
       b) Execute (CALL_ADDR a).
 
 call_addr a
-1. If a < the length of $funcinst(z), then:
-  a. Let YetE (`%;%`(m, tmp0)) be $funcinst(z)[a].
+1. If a < the length of $funcinst(), then:
+  a. Let YetE (`%;%`(m, tmp0)) be $funcinst()[a].
   b. Let YetE (`FUNC%%*%`(tmp1, t*{t}, instr*{instr})) be tmp0.
   c. Let YetE (`%->%`(tmp2, tmp3)) be tmp1.
   d. Let t_1^k be tmp2.
@@ -331,8 +331,8 @@ call_addr a
         4. Push the activation of F with arity n to the stack.
 
 ref.func x
-1. If x < the length of $funcaddr(z), then:
-  a. Push the value ref.funcaddr $funcaddr(z)[x] to the stack.
+1. If x < the length of $funcaddr(), then:
+  a. Push the value ref.funcaddr $funcaddr()[x] to the stack.
 
 local.get x
 1. Push $local(x) to the stack.
@@ -343,13 +343,13 @@ global.get x
 table.get x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i ≥ the length of $table(z, x), then:
+3. If i ≥ the length of $table(x), then:
   a. Trap.
 4. Else:
-  a. Push $table(z, x)[i] to the stack.
+  a. Push $table(x)[i] to the stack.
 
 table.size x
-1. Let n be the length of $table(z, x).
+1. Let n be the length of $table(x).
 2. Push the value i32.CONST n to the stack.
 
 table.fill x
@@ -359,7 +359,7 @@ table.fill x
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST i from the stack.
-7. If (i + n) > the length of $table(z, x), then:
+7. If (i + n) > the length of $table(x), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
@@ -378,7 +378,7 @@ table.copy x y
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $table(z, y) or (j + n) > the length of $table(z, x), then:
+7. If (i + n) > the length of $table(y) or (j + n) > the length of $table(x), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
@@ -402,13 +402,13 @@ table.init x y
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $elem(z, y) or (j + n) > the length of $table(z, x), then:
+7. If (i + n) > the length of $elem(y) or (j + n) > the length of $table(x), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
-    1) If i < the length of $elem(z, y), then:
+    1) If i < the length of $elem(y), then:
       a) Push the value i32.CONST j to the stack.
-      b) Push $elem(z, y)[i] to the stack.
+      b) Push $elem(y)[i] to the stack.
       c) Execute (TABLE.SET x).
       d) Push the value i32.CONST (j + 1) to the stack.
       e) Push the value i32.CONST (i + 1) to the stack.
@@ -419,12 +419,12 @@ load nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
 3. If $size(nt) is not YetE (?()), then:
-  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(z, 0), then:
+  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(0), then:
     1) Trap.
 4. If $size(nt) is not YetE (?()), then:
   a. Let $bytes_(YetE (!($size(nt <: valtype))), c) be YetE ($mem(z, 0)[(i + n_O) : (!($size(nt <: valtype)) / 8)]).
   b. Push the value nt.CONST c to the stack.
-5. If ((i + n_O) + (n / 8)) ≥ the length of $mem(z, 0), then:
+5. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
 6. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
 7. Push the value nt.CONST c to the stack.
@@ -436,7 +436,7 @@ memory.fill
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST i from the stack.
-7. If (i + n) > the length of $mem(z, 0), then:
+7. If (i + n) > the length of $mem(0), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
@@ -455,7 +455,7 @@ memory.copy
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $table(z, 0) or (j + n) > the length of $table(z, 0), then:
+7. If (i + n) > the length of $table(0) or (j + n) > the length of $table(0), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
@@ -479,13 +479,13 @@ memory.init x
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $data(z, x) or (j + n) > the length of $mem(z, 0), then:
+7. If (i + n) > the length of $data(x) or (j + n) > the length of $mem(0), then:
   a. Trap.
 8. Else:
   a. If n is not 0, then:
-    1) If i < the length of $data(z, x), then:
+    1) If i < the length of $data(x), then:
       a) Push the value i32.CONST j to the stack.
-      b) Push the value i32.CONST $data(z, x)[i] to the stack.
+      b) Push the value i32.CONST $data(x)[i] to the stack.
       c) Execute (STORE YetE (I32_numtype) YetE (?(8)) 0 0).
       d) Push the value i32.CONST (j + 1) to the stack.
       e) Push the value i32.CONST (i + 1) to the stack.
@@ -507,7 +507,7 @@ table.set x
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If i ≥ the length of $table(z, x), then:
+5. If i ≥ the length of $table(x), then:
   a. Trap.
 6. Else:
   a. Perform $with_table(x, i, ref).
@@ -519,7 +519,7 @@ table.grow x
 4. Pop ref from the stack.
 5. Either:
   a. Perform $with_tableext(x, YetE (ref^n{})).
-  b. Push the value i32.CONST the length of $table(z, x) to the stack.
+  b. Push the value i32.CONST the length of $table(x) to the stack.
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
 
@@ -532,12 +532,12 @@ store nt ?() n_A n_O
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
 5. If $size(nt) is not YetE (?()), then:
-  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(z, 0), then:
+  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(0), then:
     1) Trap.
 6. If $size(nt) is not YetE (?()), then:
   a. Let b* be $bytes_(YetE (!($size(nt <: valtype))), c).
   b. Perform $with_mem(0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b*).
-7. If ((i + n_O) + (n / 8)) ≥ the length of $mem(z, 0), then:
+7. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
 8. If $size(nt) is not YetE (?()), then:
   a. Let b* be $bytes_(n, $wrap_(YetE ((!($size(nt <: valtype)), n)), c)).
@@ -548,7 +548,7 @@ memory.grow
 2. Pop the value i32.CONST n from the stack.
 3. Either:
   a. Perform $with_memext(0, YetE (0^((n * 64) * $Ki){})).
-  b. Push the value i32.CONST the length of $mem(z, 0) to the stack.
+  b. Push the value i32.CONST the length of $mem(0) to the stack.
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
 
@@ -687,16 +687,16 @@ local.tee
 Ok
 
 call
-Ok
+Invalid_argument("List.iter2")
 
 call_indirect
-Failure("YetE (typeof($table(z, x)[i]))")
+Failure("IntT is not subtype of StateT")
 
 call_addr
-Failure("LetI (YetE (`%;%`(m, tmp0)), IndexAccessE (AppE (N(funcinst), [ NameE (N(z)) ]), NameE (N(a))))")
+Invalid_argument("List.iter2")
 
 ref.func
-Ok
+Invalid_argument("List.iter2")
 
 local.get
 Failure("IntT is not subtype of StateT")
@@ -705,31 +705,31 @@ global.get
 Failure("IntT is not subtype of StateT")
 
 table.get
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.size
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.fill
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.copy
-Ok
+Failure("IntT is not subtype of StateT")
 
 table.init
-Ok
+Failure("IntT is not subtype of StateT")
 
 load
 Failure("Unknwon function name: size")
 
 memory.fill
-Failure("YetE (I32_numtype)")
+Failure("IntT is not subtype of StateT")
 
 memory.copy
-Failure("YetE (I32_numtype)")
+Failure("IntT is not subtype of StateT")
 
 memory.init
-Failure("YetE (I32_numtype)")
+Failure("IntT is not subtype of StateT")
 
 local.set
 Failure("IntT is not subtype of StateT")
@@ -755,7 +755,7 @@ Failure("YetE (0^((n * 64) * $Ki){})")
 data.drop
 Failure("IntT is not subtype of StateT")
 
-Pass/Total: [21/66]
+Pass/Total: [14/66]
 == Interpret AL...
 testop
 Ok
