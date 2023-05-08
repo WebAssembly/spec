@@ -12,41 +12,41 @@ let f64 = F64.of_float
 
 (* Hardcoded Instas *)
 
-let global_insts: global_inst list = [
+let global_insts: global_inst array = [|
   Values.Num (Values.F32 (f32 1.4));
   Values.Num (Values.F32 (f32 5.2));
   Values.Num (Values.F32 (f32 6.9))
-]
+|]
 
-let table_insts: table_inst list = [
-  [
+let table_insts: table_inst array = [|
+  [|
     Values.Ref (Values.NullRef ExternRefType);
     Values.Ref (Values.NullRef FuncRefType);
     Values.Ref (Values.NullRef FuncRefType)
-  ];
-  [
+  |];
+  [|
     Values.Ref (Values.NullRef FuncRefType);
     Values.Ref (Values.NullRef ExternRefType);
     Values.Ref (Values.NullRef FuncRefType)
-  ];
-  [
+  |];
+  [|
     Values.Ref (Values.NullRef FuncRefType);
     Values.Ref (Values.NullRef FuncRefType);
     Values.Ref (Values.NullRef ExternRefType)
-  ]
-]
+  |]
+|]
 
 let module_inst: module_inst = {
-  globaladdr = [
+  globaladdr = [|
     IntV 0; (* global address 0 *)
     IntV 1; (* global address 1 *)
     IntV 2; (* global address 2 *)
-  ];
-  tableaddr = [
+  |];
+  tableaddr = [|
     IntV 0; (* table address 0 *)
     IntV 1; (* table address 1 *)
     IntV 2; (* table address 2 *)
-  ]
+  |]
 }
 
 (* Hardcoded Store *)
@@ -63,7 +63,7 @@ let initial_frame =
       Values.Num (Values.I32 (i32 0));
       Values.Num (Values.I32 (i32 7))
     |];
-    moduleinst = module_inst
+    module_inst = module_inst
   }
 
 (* Hardcoded Wasm Instructions *)
@@ -130,5 +130,7 @@ let table_get = "table_get", [
   Operators.table_get (i32 2 |> to_phrase) |> to_phrase
 ], "null"
 
-let test_cases =
-  [ binop; testop; relop1; relop2; nop; drop; select; local_get; local_set; global_get; table_get ]
+let test_cases = [
+  binop; testop; relop1; relop2; nop; drop; select;
+  local_get; local_set; global_get; table_get
+]

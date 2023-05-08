@@ -54,7 +54,7 @@ end
 
 let stack: Al.stack ref = ref []
 
-let store: Al.store ref = ref { Al.global = []; Al.table = [] }
+let store: Al.store ref = ref { Al.global = [||]; Al.table = [||] }
 
 (* Stack Helper functions *)
 
@@ -126,26 +126,24 @@ let mk_wasm_num ty i = match ty with
 let access_field v s = match v, s with
   (* Frame *)
   | Al.FrameV f, "LOCAL" ->
-      let l =
-        Array.map (fun w -> Al.ValueE (Al.WasmV w)) f.local
-        |> Stdlib.Array.to_list in
+      let l = Array.map (fun w -> Al.ValueE (Al.WasmV w)) f.local in
       Al.ListE l
   | Al.FrameV f, "MODULE" ->
-      Al.ValueE (ModuleInstV f.moduleinst)
+      Al.ValueE (ModuleInstV f.module_inst)
   (* Module instance *)
   | Al.ModuleInstV m, "GLOBAL" ->
-      let l = List.map (fun a -> Al.ValueE a) m.globaladdr in
+      let l = Array.map (fun a -> Al.ValueE a) m.globaladdr in
       Al.ListE l
   | Al.ModuleInstV m, "TABLE" ->
-      let l = List.map (fun a -> Al.ValueE a) m.globaladdr in
+      let l = Array.map (fun a -> Al.ValueE a) m.globaladdr in
       Al.ListE l
   (* Store *)
   | Al.StoreV, "GLOBAL" ->
-      let l = List.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
+      let l = Array.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
       Al.ListE l
   | Al.StoreV, "TABLE" ->
-      let wrap_list wl = Al.ListE (List.map (fun w -> Al.ValueE (Al.WasmV w)) wl) in
-      let l = List.map wrap_list !store.table in
+      let wrap_list wl = Al.ListE (Array.map (fun w -> Al.ValueE (Al.WasmV w)) wl) in
+      let l = Array.map wrap_list !store.table in
       Al.ListE l
   | v, x ->
       Printf.sprintf "Invalid field access %s.%s" (string_of_value v) x
@@ -169,7 +167,7 @@ and eval_expr env expr = match expr with
       List.map (eval_expr env) el |> dsl_function_call fname
   | Al.LengthE e ->
       begin match eval_expr env e with
-        | ListV (vl) -> IntV (List.length vl)
+        | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
   | Al.FrameE -> FrameV (get_current_frame ())
@@ -177,13 +175,13 @@ and eval_expr env expr = match expr with
       let v = eval_expr env e in
       access_field v s |> eval_expr env
   | Al.ListE el ->
-      let vl = List.map (eval_expr env) el in
+      let vl = Array.map (eval_expr env) el in
       Al.ListV vl
   | Al.IndexAccessE (e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match (v1, v2) with
-        | (Al.ListV l, Al.IntV n) -> List.nth l n
+        | (Al.ListV l, Al.IntV n) -> Array.get l n
         | _ ->
             (* Due to AL validation unreachable *)
             Printf.sprintf "Invalid index access %s" (string_of_expr expr)
@@ -247,7 +245,7 @@ and interp_instr env i =
   | Al.LetI (pattern, e) ->
       let v = eval_expr env e in
       begin match pattern, v with
-        | Al.ListE [Al.NameE name], ListV [v]
+        | Al.ListE [|Al.NameE name|], ListV [|v|]
         | Al.NameE name, v -> Env.add name v env
         | _ ->
             string_of_instr (ref 0) 0 i

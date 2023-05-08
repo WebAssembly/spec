@@ -7,7 +7,7 @@ let binop: numerics = {
   f = function
     | [StringV "Add"; _; IntV i1; IntV i2] ->
         let result = i1 + i2 in
-        ListV [ IntV result ]
+        ListV [| IntV result |]
     | _ -> failwith "Invalid binop"
 }
 

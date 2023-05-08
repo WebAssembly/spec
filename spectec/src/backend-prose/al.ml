@@ -20,11 +20,11 @@ type al_type =
 
 type global_inst = Values.value
 
-type table_inst = Values.value list
+type table_inst = Values.value array
 
-type module_inst = { globaladdr: value list; tableaddr: value list }
+type module_inst = { globaladdr: value array; tableaddr: value array }
 
-and frame = { local: Values.value array; moduleinst: module_inst  }
+and frame = { local: Values.value array; module_inst: module_inst  }
 
 and stack_elem =
   | ValueS of Values.value
@@ -32,7 +32,7 @@ and stack_elem =
 
 and stack = stack_elem list
 
-and store = { global: global_inst list; table: table_inst list }
+and store = { global: global_inst array; table: table_inst array }
 
 (* AL AST *)
 
@@ -40,7 +40,7 @@ and value =
   | FrameV of frame
   | StoreV
   | ModuleInstV of module_inst
-  | ListV of value list
+  | ListV of value array
   | WasmV of Values.value
   | WasmTypeV of Types.value_type
   | IntV of int
@@ -74,7 +74,7 @@ type expr =
   | FrameE
   | BitWidthE of expr
   | PropE of (expr * string)
-  | ListE of expr list
+  | ListE of expr array
   | IndexAccessE of (expr * expr)
   | SliceAccessE of (expr * expr * expr)
   | ForWhichE of cond

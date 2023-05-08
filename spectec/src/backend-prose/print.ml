@@ -18,6 +18,9 @@ let string_of_list stringifier left sep right = function
           (stringifier h) t
       ^ right
 
+let string_of_array stringifier left sep right a =
+  Array.to_list a |> string_of_list stringifier left sep right
+
 let rec repeat str num =
   if num = 0 then ""
   else if Int.rem num 2 = 0 then repeat (str ^ str) (num / 2)
@@ -123,7 +126,7 @@ let rec structured_string_of_expr = function
   | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
   | PropE (e, s) -> "PropE (" ^ structured_string_of_expr e ^ ", " ^ s ^ ")"
   | ListE el ->
-      "ListE (" ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
+      "ListE (" ^ string_of_array structured_string_of_expr "[" ", " "]" el ^ ")"
   | IndexAccessE (e1, e2) ->
       "IndexAccessE (" ^
         structured_string_of_expr e1 ^ ", " ^
@@ -354,7 +357,7 @@ let rec string_of_expr = function
   | FrameE -> "the current frame"
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | PropE (e, s) -> sprintf "%s.%s" (string_of_expr e) s
-  | ListE (el) -> string_of_list string_of_expr "[" ", " "]" el
+  | ListE (el) -> string_of_array string_of_expr "[" ", " "]" el
   | IndexAccessE (e1, e2) -> sprintf "%s[%s]" (string_of_expr e1) (string_of_expr e2)
   | SliceAccessE (e1, e2, e3) ->
       sprintf "%s[%s : %s]" (string_of_expr e1) (string_of_expr e2) (string_of_expr e3)

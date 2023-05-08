@@ -98,7 +98,7 @@ let rec typeof env expr = match expr with
       result_type
   | IterE (n, _) ->
       Env.find n env
-  | ListE ([]) -> EmptyListT
+  | ListE ([||]) -> EmptyListT
   | IndexAccessE (e1, e2) ->
       let ty1 = typeof env e1 in
       subtype ty1 (ListT (TopT));
@@ -180,7 +180,7 @@ let rec valid_instr env instr = match instr with
       Env.add n WasmValueTopT env
   | PopI (IterE (name, _)) ->
       Env.add name (ListT WasmValueTopT) env
-  | LetI (NameE (name), e) | LetI (ListE ([NameE (name)]), e) ->
+  | LetI (NameE (name), e) | LetI (ListE ([|NameE (name)|]), e) ->
       Env.add name (typeof env e) env
   | LetI (RefNullE _, _) -> env
   | TrapI | NopI -> env
