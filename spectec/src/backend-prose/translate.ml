@@ -518,5 +518,15 @@ let translate_helpers il =
 
 (* `Ast.script` -> `Al.Algo` *)
 let translate il =
-  ( translate_helpers il @ translate_rules il )
-  |> List.map Transpile.hide_state (* Can be turned off *)
+  let algos = translate_helpers il @ translate_rules il in
+
+  (* transpile functions *)
+  let id x = x in
+  let hide_state = function
+    | Al.AppE (f, args) ->
+      let new_args =
+        List.filter (function Al.NameE (Al.N "z") -> false | _ -> true) args in
+      Al.AppE (f, new_args)
+    | e -> e in
+
+  List.map (Transpile.walk (id, id, hide_state)) algos(* Can be turned off *)
