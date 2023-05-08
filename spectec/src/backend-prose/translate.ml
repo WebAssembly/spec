@@ -22,6 +22,15 @@ let rec flatten e = match e.it with
   | Ast.ListE es -> List.concat_map flatten es
   | _ -> [e]
 
+let string2type s =
+  Reference_interpreter.Types.NumType
+    (match s with
+    | "I32" -> Reference_interpreter.Types.I32Type
+    | "I64" -> Reference_interpreter.Types.I64Type
+    | "F32" -> Reference_interpreter.Types.F32Type
+    | "F64" -> Reference_interpreter.Types.F64Type
+    | _ -> s |> sprintf "Invalid type atom `%s`" |> failwith)
+
 (** Translate `Ast.type` *)
 let il_type2al_type t = match t.it with
   | Ast.VarT id ->
@@ -125,9 +134,8 @@ let rec exp2expr exp = match exp.it with
       Al.RefFuncAddrE (exp2expr inner_exp)
   | Ast.CaseE (Ast.Atom "CONST", { it = Ast.TupE ([ty; num]); _ }, _) ->
       begin match ty.it with
-        | Ast.CaseE (Ast.Atom "I32", _, _) ->
-            let ty =
-              Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type in
+        | Ast.CaseE (Ast.Atom ty_name, _, _) ->
+            let ty = string2type ty_name in
             Al.ConstE (Al.ValueE (Al.WasmTypeV ty), exp2expr num)
         | Ast.VarE (id) -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
