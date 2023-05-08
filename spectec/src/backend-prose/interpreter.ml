@@ -40,46 +40,11 @@ module Env = struct
   let set_result v (env, _) = env, v
 
   (* Environment API *)
-  let empty =
-    let env = Env'.add (N "s") Al.StoreV Env'.empty in
-    env, Al.StringV "Undefined"
+  let empty = Env'.empty, Al.StringV "Undefined"
   let find key (env, _) = Env'.find key env
   let add key elem (env, res) = Env'.add key elem env, res
 
 end
-
-
-
-(* Wasm Data Structures *)
-
-let stack: Al.stack ref = ref []
-
-let store: Al.store ref = ref { Al.global = [||]; Al.table = [||] }
-
-(* Stack Helper functions *)
-
-let reset_stack () = stack := []
-
-let push_v v = stack := Al.ValueS (v) :: !stack
-
-let push_f f = stack := Al.FrameS (f) :: !stack
-
-let pop () =
-  let res = List.hd !stack in
-  stack := List.tl !stack;
-  res
-
-let get_current_frame () =
-  let f = function Al.FrameS _ -> true | _ -> false in
-  match List.find f !stack with
-    | Al.FrameS frame -> frame
-    | _ ->
-        (* Due to Wasm validation, unreachable *)
-        failwith "No frame"
-
-(* Store Helper *)
-
-let set_store s = store := s
 
 
 
@@ -123,32 +88,6 @@ let mk_wasm_num ty i = match ty with
       failwith "Not implemented"
   | _ -> failwith "Not a Numtype"
 
-let access_field v s = match v, s with
-  (* Frame *)
-  | Al.FrameV f, "LOCAL" ->
-      let l = Array.map (fun w -> Al.ValueE (Al.WasmV w)) f.local in
-      Al.ListE l
-  | Al.FrameV f, "MODULE" ->
-      Al.ValueE (ModuleInstV f.module_inst)
-  (* Module instance *)
-  | Al.ModuleInstV m, "GLOBAL" ->
-      let l = Array.map (fun a -> Al.ValueE a) m.globaladdr in
-      Al.ListE l
-  | Al.ModuleInstV m, "TABLE" ->
-      let l = Array.map (fun a -> Al.ValueE a) m.globaladdr in
-      Al.ListE l
-  (* Store *)
-  | Al.StoreV, "GLOBAL" ->
-      let l = Array.map (fun w -> Al.ValueE (Al.WasmV w)) !store.global in
-      Al.ListE l
-  | Al.StoreV, "TABLE" ->
-      let wrap_list wl = Al.ListE (Array.map (fun w -> Al.ValueE (Al.WasmV w)) wl) in
-      let l = Array.map wrap_list !store.table in
-      Al.ListE l
-  | v, x ->
-      Printf.sprintf "Invalid field access %s.%s" (string_of_value v) x
-      |> failwith
-
 
 
 (* Interpreter *)
@@ -170,10 +109,14 @@ and eval_expr env expr = match expr with
         | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
-  | Al.FrameE -> FrameV (get_current_frame ())
-  | Al.PropE (e, s) ->
-      let v = eval_expr env e in
-      access_field v s |> eval_expr env
+  | Al.FrameE -> FrameV (Stack.get_current_frame ())
+  | Al.PropE (e, str) ->
+      begin match eval_expr env e with
+        | ModuleInstV m -> Al.Record.find str m
+        | FrameV f -> Al.Record.find str f
+        | StoreV s -> Al.Record.find str s
+        | _ -> failwith "Not a record"
+      end
   | Al.ListE el ->
       let vl = Array.map (eval_expr env) el in
       Al.ListV vl
@@ -218,13 +161,13 @@ and interp_instr env i =
   | Al.AssertI (_) -> env (* TODO: insert assertion *)
   | Al.PushI e ->
       let v = eval_expr env e |> al_value2wasm_value in
-      push_v v;
+      Stack.push_v v;
       env
   | Al.PopI e ->
       (* due to Wasm validation *)
-      assert (List.length !stack > 0);
+      assert (Stack.length () > 0);
 
-      let h = pop () in
+      let h = Stack.pop () in
 
       begin match (h, e) with
         | (ValueS h, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
@@ -256,13 +199,13 @@ and interp_instr env i =
   | Al.ReturnI (Some e) ->
       let result = eval_expr env e in
       Env.set_result result env
-  | Al.ReplaceI (Al.IndexAccessE (Al.PropE (e1, "LOCAL"), e2), e3) ->
+  | Al.ReplaceI (Al.IndexAccessE (e1, e2), e3) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       let v3 = eval_expr env e3 in
-      begin match v1, v2, v3 with
-        | Al.FrameV f, IntV i, WasmV v ->
-            Array.set f.local i v;
+      begin match v1, v2 with
+        | Al.ListV l, IntV i ->
+            Array.set l i v3;
             env
         | _ -> failwith "Invalid Replace instr"
       end
@@ -283,7 +226,10 @@ and interp_algo algo args =
     match (pattern, arg) with
       | (Al.NameE n, arg) -> Env.add n arg acc
       | _ -> failwith "Invalid destructuring assignment" in
-  let init_env = List.fold_left2 f Env.empty params args in
+
+  let init_env =
+    List.fold_left2 f Env.empty params args
+    |> Env.add (N "s") (Al.StoreV !Testdata.store) in
 
   interp_instrs init_env il
 
@@ -312,6 +258,9 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.GlobalGet i32 ->
       let n = Int32.to_int i32.it in
       "global.get", [Al.IntV n]
+  | Ast.GlobalSet i32 ->
+      let n = Int32.to_int i32.it in
+      "global.set", [Al.IntV n]
   | Ast.TableGet i32 ->
       let n = Int32.to_int i32.it in
       "table.get", [Al.IntV n]
@@ -322,8 +271,8 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> push_v (Values.Num num.it)
-  | Ast.RefNull ref -> push_v (Values.Ref (Values.NullRef ref))
+  | Ast.Const num -> Stack.push_v (Values.Num num.it)
+  | Ast.RefNull ref -> Stack.push_v (Values.Ref (Values.NullRef ref))
   | _ ->
       let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
@@ -341,19 +290,19 @@ let test test_case =
   print_endline name;
 
   (* Initialize *)
-  reset_stack ();
-  push_f Testdata.initial_frame;
-  set_store Testdata.initial_store;
+  Stack.reset_stack ();
+  Testdata.get_frame_data () |> Stack.push_f;
+  Testdata.store := Testdata.get_store_data ();
 
   (* Execute *)
   run ast;
 
   (* Check *)
-  let actual_result = List.hd !stack |> string_of_stack_elem in
+  let actual_result = Stack.hd () |> string_of_stack_elem in
   if actual_result = expected_result then
     print_endline "Ok\n"
   else
-    "Fail!\n" ^ string_of_stack !stack |> print_endline
+    "Fail!\n" ^ string_of_stack (Stack.get_stack ()) |> print_endline
 
 (* Entry *)
 

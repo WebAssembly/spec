@@ -778,13 +778,19 @@ Ok
 select
 Ok
 
-local_get
-Ok
-
 local_set
 Ok
 
-global_get
+local_get
+Ok
+
+global_set
+Ok
+
+global_get1
+Ok
+
+global_get2
 Ok
 
 table_get

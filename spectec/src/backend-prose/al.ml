@@ -16,29 +16,35 @@ type al_type =
   | StateT
   | TopT
 
-(* Wasm Data Structures *)
+module FieldName = struct
+  type t = string
+  let compare = Stdlib.compare
+end
 
-type global_inst = Values.value
+module Record = Map.Make (FieldName)
 
-type table_inst = Values.value array
+type record = value Record.t
 
-type module_inst = { globaladdr: value array; tableaddr: value array }
+(* Wasm value *)
+and global_inst = value
 
-and frame = { local: Values.value array; module_inst: module_inst  }
+(* Wasm value list *)
+and table_inst = value
 
-and stack_elem =
-  | ValueS of Values.value
-  | FrameS of frame
+(* Table, Global: Address list *)
+and module_inst = record
 
-and stack = stack_elem list
+(* local: Wasm value list, module_inst: ModuleInstV *)
+and frame = record
 
-and store = { global: global_inst array; table: table_inst array }
+(* global: global_inst list table: table_inst list *)
+and store = record
 
 (* AL AST *)
 
 and value =
   | FrameV of frame
-  | StoreV
+  | StoreV of store
   | ModuleInstV of module_inst
   | ListV of value array
   | WasmV of Values.value

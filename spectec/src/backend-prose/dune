@@ -5,6 +5,7 @@
     translate
     transpile
     print
+    stack
     al
     interpreter
     validation

@@ -12,59 +12,62 @@ let f64 = F64.of_float
 
 (* Hardcoded Instas *)
 
-let global_insts: global_inst array = [|
-  Values.Num (Values.F32 (f32 1.4));
-  Values.Num (Values.F32 (f32 5.2));
-  Values.Num (Values.F32 (f32 6.9))
+let get_global_insts_data () = ListV([|
+  WasmV (Values.Num (Values.F32 (f32 1.4)));
+  WasmV (Values.Num (Values.F32 (f32 5.2)));
+  WasmV (Values.Num (Values.I32 (i32 42)))
+|])
+
+let get_table_insts_data () = ListV([|
+  ListV [|
+    WasmV (Values.Ref (Values.NullRef ExternRefType));
+    WasmV (Values.Ref (Values.NullRef FuncRefType));
+    WasmV (Values.Ref (Values.NullRef FuncRefType))
+  |];
+  ListV [|
+    WasmV (Values.Ref (Values.NullRef FuncRefType));
+    WasmV (Values.Ref (Values.NullRef ExternRefType));
+    WasmV (Values.Ref (Values.NullRef FuncRefType))
+  |];
+  ListV [|
+    WasmV (Values.Ref (Values.NullRef FuncRefType));
+    WasmV (Values.Ref (Values.NullRef FuncRefType));
+    WasmV (Values.Ref (Values.NullRef ExternRefType))
+  |]
+|])
+
+let addrs = ListV [|
+  IntV 0; (* global address 0 *)
+  IntV 1; (* global address 1 *)
+  IntV 2; (* global address 2 *)
 |]
 
-let table_insts: table_inst array = [|
-  [|
-    Values.Ref (Values.NullRef ExternRefType);
-    Values.Ref (Values.NullRef FuncRefType);
-    Values.Ref (Values.NullRef FuncRefType)
-  |];
-  [|
-    Values.Ref (Values.NullRef FuncRefType);
-    Values.Ref (Values.NullRef ExternRefType);
-    Values.Ref (Values.NullRef FuncRefType)
-  |];
-  [|
-    Values.Ref (Values.NullRef FuncRefType);
-    Values.Ref (Values.NullRef FuncRefType);
-    Values.Ref (Values.NullRef ExternRefType)
-  |]
-|]
-
-let module_inst: module_inst = {
-  globaladdr = [|
-    IntV 0; (* global address 0 *)
-    IntV 1; (* global address 1 *)
-    IntV 2; (* global address 2 *)
-  |];
-  tableaddr = [|
-    IntV 0; (* table address 0 *)
-    IntV 1; (* table address 1 *)
-    IntV 2; (* table address 2 *)
-  |]
-}
+let module_inst: module_inst =
+  Record.empty
+  |> Record.add "GLOBAL" addrs
+  |> Record.add "TABLE" addrs
 
 (* Hardcoded Store *)
 
-let initial_store =
-  { global = global_insts; table = table_insts }
+let get_store_data (): store =
+  Record.empty
+  |> Record.add "GLOBAL" (get_global_insts_data ())
+  |> Record.add "TABLE" (get_table_insts_data ())
+
+let store: store ref = ref Record.empty
 
 (* Hardcoded Frame *)
 
-let initial_frame =
-  {
-    local = [|
-      Values.Num (Values.I32 (i32 3));
-      Values.Num (Values.I32 (i32 0));
-      Values.Num (Values.I32 (i32 7))
-    |];
-    module_inst = module_inst
-  }
+let get_locals_data () = ListV [|
+  WasmV (Values.Num (Values.I32 (i32 3)));
+  WasmV (Values.Num (Values.I32 (i32 0)));
+  WasmV (Values.Num (Values.I32 (i32 7)))
+|]
+
+let get_frame_data (): frame =
+  Record.empty
+  |> Record.add "LOCAL" (get_locals_data ())
+  |> Record.add "MODULE" (ModuleInstV module_inst)
 
 (* Hardcoded Wasm Instructions *)
 
@@ -109,10 +112,6 @@ let select = "select", [
   Operators.select None |> to_phrase
 ], "null"
 
-let local_get = "local_get", [
-  Operators.local_get (i32 2 |> to_phrase) |> to_phrase
-], "7"
-
 let local_set = "local_set", [
   Operators.local_get (i32 2 |> to_phrase) |> to_phrase;
   Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
@@ -121,9 +120,25 @@ let local_set = "local_set", [
   Operators.local_get (i32 2 |> to_phrase) |> to_phrase
 ], "8"
 
-let global_get = "global_get", [
+let local_get = "local_get", [
+  Operators.local_get (i32 2 |> to_phrase) |> to_phrase
+], "7"
+
+let global_set = "global_set", [
+  Operators.global_get (i32 2 |> to_phrase) |> to_phrase;
+  Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+  Operators.i32_add |> to_phrase;
+  Operators.global_set (i32 2 |> to_phrase) |> to_phrase;
+  Operators.global_get (i32 2 |> to_phrase) |> to_phrase
+], "43"
+
+let global_get1 = "global_get1", [
   Operators.global_get (i32 1 |> to_phrase) |> to_phrase
 ], "5.199_999_809_265_136_7"
+
+let global_get2 = "global_get2", [
+  Operators.global_get (i32 2 |> to_phrase) |> to_phrase
+], "42"
 
 let table_get = "table_get", [
   Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
@@ -132,5 +147,5 @@ let table_get = "table_get", [
 
 let test_cases = [
   binop; testop; relop1; relop2; nop; drop; select;
-  local_get; local_set; global_get; table_get
+  local_set; local_get; global_set; global_get1; global_get2; table_get
 ]

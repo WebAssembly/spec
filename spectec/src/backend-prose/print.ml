@@ -62,7 +62,7 @@ let structured_string_of_iter = function
 
 let structured_string_of_value = function
   | FrameV _ -> "FrameV (TODO)"
-  | StoreV -> "StoreV"
+  | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
@@ -290,25 +290,29 @@ let string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
 
-let string_of_frame f =
-  Stdlib.Array.to_list f.local
-  |> Reference_interpreter.Values.string_of_values
-  |> Printf.sprintf "{ local: %s }"
+let rec string_of_record r =
+  Al.Record.fold
+    (fun k v acc ->
+      acc ^ k ^ ": " ^ string_of_value v ^ "; ")
+    r
+    "{ " ^ "}"
 
-let string_of_stack_elem e = match e with
-  | Al.ValueS v -> Reference_interpreter.Values.string_of_value v
-  | Al.FrameS f -> string_of_frame f
+and string_of_frame f = string_of_record f
 
-let string_of_stack st =
+and string_of_stack_elem e = match e with
+  | Stack.ValueS v -> Reference_interpreter.Values.string_of_value v
+  | Stack.FrameS f -> string_of_frame f
+
+and string_of_stack st =
   let f acc e = acc ^ string_of_stack_elem e ^ "\n" in
   List.fold_left f "[Stack]\n" st
 
 
-let string_of_value = function
+and string_of_value = function
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
-  | StoreV -> "StoreV"
+  | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
-  | ListV _ -> "ListV"
+  | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | IntV i -> string_of_int i
