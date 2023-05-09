@@ -498,7 +498,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
     require (match_val_type [] (RefT rt1'') t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_ref_type rt1' ^
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt1'' ^
        " but label has " ^ string_of_result_type (label c x));
     (ts0 @ [RefT rt1']) --> (ts0 @ [RefT rt2']), []
 
