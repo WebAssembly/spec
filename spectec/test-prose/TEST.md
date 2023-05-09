@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --totalize --sideconditions --animate --prose)
+$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --totalize --sideconditions --the-elimination --animate --prose)
 watsup 0.3 generator
 == Parsing...
 == Elaboration...
