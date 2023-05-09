@@ -770,10 +770,10 @@ relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
     -- InstrSeq_ok: `%|-%*:%`(C, [instr_2], `%->%`(t_2*{t_2}, t_3*{t_3}))
 
   ;; 3-typing.watsup:141.1-146.38
-  rule weak {C : context, instr* : instr*, t'_1 : valtype, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*}:
-    `%|-%*:%`(C, instr*{instr}, `%->%`([t'_1], t'_2*{t'_2}))
+  rule weak {C : context, instr* : instr*, t'_1* : valtype*, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*}:
+    `%|-%*:%`(C, instr*{instr}, `%->%`(t'_1*{t'_1}, t'_2*{t'_2}))
     -- InstrSeq_ok: `%|-%*:%`(C, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2}))
-    -- Resulttype_sub: `|-%*<:%*`(t'_1*{}, t_1*{t_1})
+    -- Resulttype_sub: `|-%*<:%*`(t'_1*{t'_1}, t_1*{t_1})
     -- Resulttype_sub: `|-%*<:%*`(t_2*{t_2}, t'_2*{t'_2})
 
   ;; 3-typing.watsup:148.1-150.45
@@ -2187,7 +2187,7 @@ $$
 { \vdash }\;{\mathit{t}_{2}^\ast} \leq {{\mathit{t}'}_{2}^\ast}
 \end{array}
 }{
-\mathit{C} \vdash {\mathit{instr}^\ast} : {\mathit{t}'}_{1} \rightarrow {{\mathit{t}'}_{2}^\ast}
+\mathit{C} \vdash {\mathit{instr}^\ast} : {{\mathit{t}'}_{1}^\ast} \rightarrow {{\mathit{t}'}_{2}^\ast}
 } \, {[\textsc{\scriptsize T*{-}weak}]}
 \qquad
 \end{array}

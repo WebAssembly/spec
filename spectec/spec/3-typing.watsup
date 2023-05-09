@@ -139,7 +139,7 @@ rule InstrSeq_ok/seq:
   -- InstrSeq_ok: C |- instr_2 : t_2* -> t_3*
 
 rule InstrSeq_ok/weak:
-  C |- instr* : t'_1 -> t'_2*
+  C |- instr* : t'_1* -> t'_2*
   -- InstrSeq_ok: C |- instr* : t_1* -> t_2*
 
   -- Resulttype_sub: |- t'_1* <: t_1*
