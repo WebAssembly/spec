@@ -141,7 +141,8 @@ let rec instr (e : instr) =
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
-  | BrOnCast (x, t) | BrOnCastFail (x, t) -> labels (idx x) ++ ref_type t
+  | BrOnCast (x, t1, t2) | BrOnCastFail (x, t1, t2) ->
+    labels (idx x) ++ ref_type t1 ++ ref_type t2
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return -> empty
   | Call x | ReturnCall x -> funcs (idx x)
