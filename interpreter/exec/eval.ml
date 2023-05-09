@@ -220,16 +220,16 @@ let rec step (c : config) : config =
       | BrOnNonNull x, Ref r :: vs' ->
         Ref r :: vs', [Plain (Br x) @@ e.at]
 
-      | BrOnCast (x, rt), Ref r :: vs' ->
-        let rt' = subst_ref_type (subst_of c.frame.inst) rt in
-        if Match.match_ref_type [] (type_of_ref r) rt' then
+      | BrOnCast (x, _rt1, rt2), Ref r :: vs' ->
+        let rt2' = subst_ref_type (subst_of c.frame.inst) rt2 in
+        if Match.match_ref_type [] (type_of_ref r) rt2' then
           Ref r :: vs', [Plain (Br x) @@ e.at]
         else
           Ref r :: vs', []
 
-      | BrOnCastFail (x, rt), Ref r :: vs' ->
-        let rt' = subst_ref_type (subst_of c.frame.inst) rt in
-        if Match.match_ref_type [] (type_of_ref r) rt' then
+      | BrOnCastFail (x, _rt1, rt2), Ref r :: vs' ->
+        let rt2' = subst_ref_type (subst_of c.frame.inst) rt2 in
+        if Match.match_ref_type [] (type_of_ref r) rt2' then
           Ref r :: vs', []
         else
           Ref r :: vs', [Plain (Br x) @@ e.at]
