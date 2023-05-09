@@ -214,6 +214,11 @@ let check_type (c : context) (t : type_) : context =
   check_rec_type c t.it t.at
 
 
+let diff_ref_type (nul1, ht1) (nul2, ht2) =
+  match nul2 with
+  | Null -> (NoNull, ht1)
+  | NoNull -> (nul1, ht1)
+
 
 (* Stack typing *)
 
@@ -464,41 +469,38 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        " but label has " ^ string_of_result_type (label c x));
     (ts0 @ [RefT (Null, ht)]) --> ts0, []
 
-  | BrOnCast (x, rt) ->
-    let (_nul, ht) as rt = check_ref_type c rt e.at in
-    let rt' = peek_ref 0 s e.at in
-    let tht = top_of_heap_type ht in
+  | BrOnCast (x, rt1, rt2) ->
+    let rt1' = check_ref_type c rt1 e.at in
+    let rt2' = check_ref_type c rt2 e.at in
     require
-      (match_ref_type [] rt' (Null, tht)) e.at
-      ("type mismatch: instruction requires type " ^
-        string_of_ref_type (Null, tht) ^
-       " but stack has " ^ string_of_ref_type rt');
+      (match_ref_type [] rt2' rt1') e.at
+      ("type mismatch on cast: type " ^ string_of_ref_type rt2 ^
+       " does not match " ^ string_of_ref_type rt1);
     require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_ref_type rt ^
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt2 ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type [] (RefT rt) t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_ref_type rt ^
+    require (match_val_type [] (RefT rt2') t1) e.at
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt2 ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [RefT rt']) --> (ts0 @ [RefT rt']), []
+    (ts0 @ [RefT rt1']) --> (ts0 @ [RefT (diff_ref_type rt1' rt2')]), []
 
-  | BrOnCastFail (x, rt) ->
-    let (_nul, ht) as rt = check_ref_type c rt e.at in
-    let rt' = peek_ref 0 s e.at in
-    let tht = top_of_heap_type ht in
+  | BrOnCastFail (x, rt1, rt2) ->
+    let rt1' = check_ref_type c rt1 e.at in
+    let rt2' = check_ref_type c rt2 e.at in
+    let rt1'' = diff_ref_type rt1' rt2' in
     require
-      (match_ref_type [] rt' (Null, tht)) e.at
-      ("type mismatch: instruction requires type " ^
-        string_of_ref_type (Null, tht) ^
-       " but stack has " ^ string_of_ref_type rt');
+      (match_ref_type [] rt2' rt1') e.at
+      ("type mismatch on cast: type " ^ string_of_ref_type rt2 ^
+       " does not match " ^ string_of_ref_type rt1);
     require (label c x <> []) e.at
-      ("type mismatch: instruction requires type " ^ string_of_ref_type rt' ^
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt1' ^
        " but label has " ^ string_of_result_type (label c x));
     let ts0, t1 = Lib.List.split_last (label c x) in
-    require (match_val_type [] (RefT rt') t1) e.at
-      ("type mismatch: instruction requires type " ^ string_of_ref_type rt' ^
+    require (match_val_type [] (RefT rt1'') t1) e.at
+      ("type mismatch: instruction requires type " ^ string_of_ref_type rt1' ^
        " but label has " ^ string_of_result_type (label c x));
-    (ts0 @ [RefT rt']) --> (ts0 @ [RefT rt]), []
+    (ts0 @ [RefT rt1']) --> (ts0 @ [RefT rt2']), []
 
   | Return ->
     c.results -->... [], []
@@ -681,8 +683,8 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     [RefT (Null, top_of_heap_type ht)] --> [NumT I32T], []
 
   | RefCast rt ->
-    let (nul, ht) = check_ref_type c rt e.at in
-    [RefT (Null, top_of_heap_type ht)] --> [RefT (nul, ht)], []
+    let (_nul, ht) as rt' = check_ref_type c rt e.at in
+    [RefT (Null, top_of_heap_type ht)] --> [RefT rt'], []
 
   | RefEq ->
     [RefT (Null, EqHT); RefT (Null, EqHT)] --> [NumT I32T], []

@@ -61,11 +61,11 @@
   (type $vec (array f32))
   (type $mvec (array (mut f32)))
 
-  (global (ref $vec) (array.new_canon $vec (f32.const 1) (i32.const 3)))
-  (global (ref $vec) (array.new_canon_default $vec (i32.const 3)))
+  (global (ref $vec) (array.new $vec (f32.const 1) (i32.const 3)))
+  (global (ref $vec) (array.new_default $vec (i32.const 3)))
 
   (func $new (export "new") (result (ref $vec))
-    (array.new_canon_default $vec (i32.const 3))
+    (array.new_default $vec (i32.const 3))
   )
 
   (func $get (param $i i32) (param $v (ref $vec)) (result f32)
@@ -81,7 +81,7 @@
   )
   (func (export "set_get") (param $i i32) (param $y f32) (result f32)
     (call $set_get (local.get $i)
-      (array.new_canon_default $mvec (i32.const 3))
+      (array.new_default $mvec (i32.const 3))
       (local.get $y)
     )
   )
@@ -107,10 +107,10 @@
   (type $vec (array f32))
   (type $mvec (array (mut f32)))
 
-  (global (ref $vec) (array.new_canon_fixed $vec 2 (f32.const 1) (f32.const 2)))
+  (global (ref $vec) (array.new_fixed $vec 2 (f32.const 1) (f32.const 2)))
 
   (func $new (export "new") (result (ref $vec))
-    (array.new_canon_fixed $vec 2 (f32.const 1) (f32.const 2))
+    (array.new_fixed $vec 2 (f32.const 1) (f32.const 2))
   )
 
   (func $get (param $i i32) (param $v (ref $vec)) (result f32)
@@ -126,7 +126,7 @@
   )
   (func (export "set_get") (param $i i32) (param $y f32) (result f32)
     (call $set_get (local.get $i)
-      (array.new_canon_fixed $mvec 3 (f32.const 1) (f32.const 2) (f32.const 3))
+      (array.new_fixed $mvec 3 (f32.const 1) (f32.const 2) (f32.const 3))
       (local.get $y)
     )
   )
@@ -155,7 +155,7 @@
   (data $d "\00\01\02\03\04")
 
   (func $new (export "new") (result (ref $vec))
-    (array.new_canon_data $vec $d (i32.const 1) (i32.const 3))
+    (array.new_data $vec $d (i32.const 1) (i32.const 3))
   )
 
   (func $get (param $i i32) (param $v (ref $vec)) (result i32)
@@ -171,7 +171,7 @@
   )
   (func (export "set_get") (param $i i32) (param $y i32) (result i32)
     (call $set_get (local.get $i)
-      (array.new_canon_data $mvec $d (i32.const 1) (i32.const 3))
+      (array.new_data $mvec $d (i32.const 1) (i32.const 3))
       (local.get $y)
     )
   )
@@ -201,19 +201,19 @@
   (type $avec (array (mut anyref)))
 
   (elem $e (ref $bvec)
-    (array.new_canon $bvec (i32.const 7) (i32.const 3))
-    (array.new_canon_fixed $bvec 2 (i32.const 1) (i32.const 2))
+    (array.new $bvec (i32.const 7) (i32.const 3))
+    (array.new_fixed $bvec 2 (i32.const 1) (i32.const 2))
   )
 
   (func $new (export "new") (result (ref $vec))
-    (array.new_canon_elem $vec $e (i32.const 0) (i32.const 2))
+    (array.new_elem $vec $e (i32.const 0) (i32.const 2))
   )
 
   (func $sub1 (result (ref $nvec))
-    (array.new_canon_elem $nvec $e (i32.const 0) (i32.const 2))
+    (array.new_elem $nvec $e (i32.const 0) (i32.const 2))
   )
   (func $sub2 (result (ref $avec))
-    (array.new_canon_elem $avec $e (i32.const 0) (i32.const 2))
+    (array.new_elem $avec $e (i32.const 0) (i32.const 2))
   )
 
   (func $get (param $i i32) (param $j i32) (param $v (ref $vec)) (result i32)
@@ -229,7 +229,7 @@
   )
   (func (export "set_get") (param $i i32) (param $j i32) (param $y i32) (result i32)
     (call $set_get (local.get $i) (local.get $j)
-      (array.new_canon_elem $mvec $e (i32.const 0) (i32.const 2))
+      (array.new_elem $mvec $e (i32.const 0) (i32.const 2))
       (local.get $y)
     )
   )
@@ -269,7 +269,7 @@
     (data $d "\00\01\02\03\04")
 
     (global (ref $bvec)
-      (array.new_canon_data $bvec $d (i32.const 1) (i32.const 3))
+      (array.new_data $bvec $d (i32.const 1) (i32.const 3))
     )
   )
   "constant expression required"
@@ -283,7 +283,7 @@
     (elem $e (ref $bvec) (ref.null $bvec))
 
     (global (ref $vvec)
-      (array.new_canon_elem $vvec $e (i32.const 0) (i32.const 1))
+      (array.new_elem $vvec $e (i32.const 0) (i32.const 1))
     )
   )
   "constant expression required"

@@ -77,16 +77,9 @@ let heap_type t = string_of_heap_type t
 let val_type t = string_of_val_type t
 let storage_type t = string_of_storage_type t
 
-let null = function
-  | NoNull -> ""
-  | Null -> "null "
-
 let final = function
   | NoFinal -> ""
   | Final -> " final"
-
-let ref_type_raw (nul, t) =
-  Atom (null nul ^ heap_type t)
 
 let decls kind ts = tab kind (atom val_type) ts
 
@@ -507,8 +500,10 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | BrOnNull x -> "br_on_null " ^ var x, []
     | BrOnNonNull x -> "br_on_non_null " ^ var x, []
-    | BrOnCast (x, t) -> "br_on_cast " ^ var x, [ref_type_raw t]
-    | BrOnCastFail (x, t) -> "br_on_cast_fail " ^ var x, [ref_type_raw t]
+    | BrOnCast (x, t1, t2) ->
+      "br_on_cast " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
+    | BrOnCastFail (x, t1, t2) ->
+      "br_on_cast_fail " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef x -> "call_ref " ^ var x, []
@@ -547,19 +542,19 @@ let rec instr e =
     | RefFunc x -> "ref.func " ^ var x, []
     | RefIsNull -> "ref.is_null", []
     | RefAsNonNull -> "ref.as_non_null", []
-    | RefTest t -> "ref.test", [ref_type_raw t]
-    | RefCast t -> "ref.cast", [ref_type_raw t]
+    | RefTest t -> "ref.test", [Atom (ref_type t)]
+    | RefCast t -> "ref.cast", [Atom (ref_type t)]
     | RefEq -> "ref.eq", []
     | I31New -> "i31.new", []
     | I31Get ext -> "i31.get" ^ extension ext, []
-    | StructNew (x, op) -> "struct.new_canon" ^ initop op ^ " " ^ var x, []
+    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
     | StructGet (x, y, exto) ->
       "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
     | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
-    | ArrayNew (x, op) -> "array.new_canon" ^ initop op ^ " " ^ var x, []
-    | ArrayNewFixed (x, n) -> "array.new_canon_fixed " ^ var x ^ " " ^ nat32 n, []
-    | ArrayNewElem (x, y) -> "array.new_canon_elem " ^ var x ^ " " ^ var y, []
-    | ArrayNewData (x, y) -> "array.new_canon_data " ^ var x ^ " " ^ var y, []
+    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
+    | ArrayNewFixed (x, n) -> "array.new_fixed " ^ var x ^ " " ^ nat32 n, []
+    | ArrayNewElem (x, y) -> "array.new_elem " ^ var x ^ " " ^ var y, []
+    | ArrayNewData (x, y) -> "array.new_data " ^ var x ^ " " ^ var y, []
     | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
     | ArraySet x -> "array.set " ^ var x, []
     | ArrayLen -> "array.len", []

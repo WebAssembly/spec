@@ -187,10 +187,10 @@ rule token = parse
       | "br" -> BR
       | "br_if" -> BR_IF
       | "br_table" -> BR_TABLE
-      | "br_on_null" -> BR_ON_NULL
-      | "br_on_non_null" -> BR_ON_NON_NULL
-      | "br_on_cast" -> BR_ON_CAST (br_on_cast, br_on_cast_null)
-      | "br_on_cast_fail" -> BR_ON_CAST_FAIL (br_on_cast_fail, br_on_cast_fail_null)
+      | "br_on_null" -> BR_ON_NULL br_on_null
+      | "br_on_non_null" -> BR_ON_NULL br_on_non_null
+      | "br_on_cast" -> BR_ON_CAST br_on_cast
+      | "br_on_cast_fail" -> BR_ON_CAST br_on_cast_fail
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
@@ -316,26 +316,26 @@ rule token = parse
 
       | "ref.is_null" -> REF_IS_NULL
       | "ref.as_non_null" -> REF_AS_NON_NULL
-      | "ref.test" -> REF_TEST (ref_test, ref_test_null)
-      | "ref.cast" -> REF_CAST (ref_cast, ref_cast_null)
+      | "ref.test" -> REF_TEST
+      | "ref.cast" -> REF_CAST
       | "ref.eq" -> REF_EQ
 
       | "i31.new" -> I31_NEW
       | "i31.get_u" -> I31_GET i31_get_u
       | "i31.get_s" -> I31_GET i31_get_s
 
-      | "struct.new_canon" -> STRUCT_NEW struct_new_canon
-      | "struct.new_canon_default" -> STRUCT_NEW struct_new_canon_default
+      | "struct.new" -> STRUCT_NEW struct_new
+      | "struct.new_default" -> STRUCT_NEW struct_new_default
       | "struct.get" -> STRUCT_GET struct_get
       | "struct.get_u" -> STRUCT_GET struct_get_u
       | "struct.get_s" -> STRUCT_GET struct_get_s
       | "struct.set" -> STRUCT_SET
 
-      | "array.new_canon" -> ARRAY_NEW array_new_canon
-      | "array.new_canon_default" -> ARRAY_NEW array_new_canon_default
-      | "array.new_canon_fixed" -> ARRAY_NEW_FIXED
-      | "array.new_canon_elem" -> ARRAY_NEW_ELEM
-      | "array.new_canon_data" -> ARRAY_NEW_DATA
+      | "array.new" -> ARRAY_NEW array_new
+      | "array.new_default" -> ARRAY_NEW array_new_default
+      | "array.new_fixed" -> ARRAY_NEW_FIXED
+      | "array.new_elem" -> ARRAY_NEW_ELEM
+      | "array.new_data" -> ARRAY_NEW_DATA
       | "array.get" -> ARRAY_GET array_get
       | "array.get_u" -> ARRAY_GET array_get_u
       | "array.get_s" -> ARRAY_GET array_get_s

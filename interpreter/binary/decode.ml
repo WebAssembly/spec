@@ -62,6 +62,8 @@ let at f s =
 
 (* Generic values *)
 
+let bit i n = n land (1 lsl i) <> 0
+
 let byte s =
   get s
 
@@ -588,37 +590,40 @@ let rec instr s =
 
   | 0xfb as b ->
     (match u32 s with
-    | 0x01l -> struct_new_canon (at var s)
-    | 0x02l -> struct_new_canon_default (at var s)
+    | 0x01l -> struct_new (at var s)
+    | 0x02l -> struct_new_default (at var s)
     | 0x03l -> let x = at var s in let y = at var s in struct_get x y
     | 0x04l -> let x = at var s in let y = at var s in struct_get_s x y
     | 0x05l -> let x = at var s in let y = at var s in struct_get_u x y
     | 0x06l -> let x = at var s in let y = at var s in struct_set x y
 
-    | 0x11l -> array_new_canon (at var s)
-    | 0x12l -> array_new_canon_default (at var s)
+    | 0x11l -> array_new (at var s)
+    | 0x12l -> array_new_default (at var s)
     | 0x13l -> array_get (at var s)
     | 0x14l -> array_get_s (at var s)
     | 0x15l -> array_get_u (at var s)
     | 0x16l -> array_set (at var s)
     | 0x17l -> array_len
 
-    | 0x19l -> let x = at var s in let n = u32 s in array_new_canon_fixed x n
-    | 0x1bl -> let x = at var s in let y = at var s in array_new_canon_data x y
-    | 0x1cl -> let x = at var s in let y = at var s in array_new_canon_elem x y
+    | 0x19l -> let x = at var s in let n = u32 s in array_new_fixed x n
+    | 0x1bl -> let x = at var s in let y = at var s in array_new_data x y
+    | 0x1cl -> let x = at var s in let y = at var s in array_new_elem x y
 
     | 0x20l -> i31_new
     | 0x21l -> i31_get_s
     | 0x22l -> i31_get_u
 
-    | 0x40l -> ref_test (heap_type s)
-    | 0x41l -> ref_cast (heap_type s)
-    | 0x42l -> let x = at var s in br_on_cast x (heap_type s)
-    | 0x43l -> let x = at var s in br_on_cast_fail x (heap_type s)
-    | 0x48l -> ref_test_null (heap_type s)
-    | 0x49l -> ref_cast_null (heap_type s)
-    | 0x4al -> let x = at var s in br_on_cast_null x (heap_type s)
-    | 0x4bl -> let x = at var s in br_on_cast_fail_null x (heap_type s)
+    | 0x40l -> ref_test (NoNull, heap_type s)
+    | 0x41l -> ref_cast (NoNull, heap_type s)
+    | 0x48l -> ref_test (Null, heap_type s)
+    | 0x49l -> ref_cast (Null, heap_type s)
+    | 0x4el | 0x4fl as opcode ->
+      let flags = byte s in
+      require (flags land 0xfc = 0) s (pos + 2) "malformed br_on_cast flags";
+      let x = at var s in
+      let rt1 = ((if bit 0 flags then Null else NoNull), heap_type s) in
+      let rt2 = ((if bit 1 flags then Null else NoNull), heap_type s) in
+      (if opcode = 0x4el then br_on_cast else br_on_cast_fail) x rt1 rt2
 
     | 0x70l -> extern_internalize
     | 0x71l -> extern_externalize
