@@ -31,6 +31,7 @@ let print_all_il = ref false
 
 let pass_sub = ref false
 let pass_totalize = ref false
+let pass_unthe = ref false
 let pass_sideconditions = ref false
 
 
@@ -66,6 +67,7 @@ let argspec = Arg.align
 
   "--sub", Arg.Set pass_sub, "Synthesize explicit subtype coercions";
   "--totalize", Arg.Set pass_totalize, "Run function totalization";
+  "--the-elimination", Arg.Set pass_unthe, "Eliminate the ! operator in relations";
   "--sideconditions", Arg.Set pass_sideconditions, "Infer side conditoins";
 
   "-help", Arg.Unit ignore, "";
@@ -103,6 +105,17 @@ let () =
     let il = if not !pass_totalize then il else
       ( log "Function totalization...";
         let il = Middlend.Totalize.transform il in
+        if !print_all_il then
+          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+        log "IL Validation...";
+        Il.Validation.valid il;
+        il
+      )
+    in
+
+    let il = if not !pass_unthe then il else
+      ( log "Option projection eliminiation";
+        let il = Middlend.Unthe.transform il in
         if !print_all_il then
           Printf.printf "%s\n%!" (Il.Print.string_of_script il);
         log "IL Validation...";
