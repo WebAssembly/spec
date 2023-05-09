@@ -12,7 +12,7 @@ let rec walk_expr f e =
     | IterE (n, iter) -> f_expr(IterE (n, iter))
     | LengthE inner_e -> f_expr(LengthE (walk_expr f inner_e))
     | ArityE inner_e -> f_expr(ArityE (walk_expr f inner_e))
-    | FrameE -> f_expr(FrameE)
+    | GetCurFrameE -> f_expr(GetCurFrameE)
     | PropE (inner_e, s) -> f_expr(PropE (walk_expr f inner_e, s))
     | ListE (el) -> f_expr(ListE (Array.map (walk_expr f) el))
     | IndexAccessE (e1, e2) -> f_expr(IndexAccessE (walk_expr f e1, walk_expr f e2))
@@ -71,6 +71,6 @@ let walk f = function Algo(name, params, body) ->
   | (PairE (_, f), StateT) :: rest_params -> Algo(
       name,
       rest_params,
-      LetI(f, FrameE) :: new_body
+      LetI(f, GetCurFrameE) :: new_body
     )
   | _ -> Algo(name, params, new_body)

@@ -122,7 +122,7 @@ let rec structured_string_of_expr = function
         structured_string_of_expr e2 ^ ")"
   | LengthE e -> "LengthE (" ^ structured_string_of_expr e ^ ")"
   | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
-  | FrameE -> "FrameE"
+  | GetCurFrameE -> "GetCurFrameE"
   | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
   | PropE (e, s) -> "PropE (" ^ structured_string_of_expr e ^ ", " ^ s ^ ")"
   | ListE el ->
@@ -358,7 +358,7 @@ let rec string_of_expr = function
         (string_of_expr e2)
   | LengthE e -> sprintf "the length of %s" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
-  | FrameE -> "the current frame"
+  | GetCurFrameE -> "the current frame"
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | PropE (e, s) -> sprintf "%s.%s" (string_of_expr e) s
   | ListE (el) -> string_of_array string_of_expr "[" ", " "]" el

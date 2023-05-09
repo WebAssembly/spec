@@ -199,7 +199,7 @@ let lhs2pop = function
       { it = Ast.VarE (name); _ };
       inner_exp
     ]); _ }, _) ->  let let_instrs = [
-        Al.LetI (Al.NameE(Al.N name.it), Al.FrameE);
+        Al.LetI (Al.NameE(Al.N name.it), Al.GetCurFrameE);
         Al.LetI (Al.NameE(Al.N arity.it), Al.ArityE (Al.NameE (Al.N name.it)))
       ] in
       let pop_instrs = match inner_exp.it with

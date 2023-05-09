@@ -109,7 +109,7 @@ and eval_expr env expr = match expr with
         | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
-  | Al.FrameE -> FrameV (Stack.get_current_frame ())
+  | Al.GetCurFrameE -> FrameV (Stack.get_current_frame ())
   | Al.PropE (e, str) ->
       begin match eval_expr env e with
         | ModuleInstV m -> Al.Record.find str m

@@ -578,55 +578,55 @@ default_
 Failure("YetE (I32_valtype)")
 
 funcaddr
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 funcinst
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 func
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 global
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 table
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 mem
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 elem
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 data
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 local
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_local
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_global
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_table
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_tableext
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_mem
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_memext
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_elem
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 with_data
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 unreachable
 Ok
@@ -662,10 +662,10 @@ br_table
 Ok
 
 frame
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 return
-Failure("FrameE")
+Failure("GetCurFrameE")
 
 unop
 Ok

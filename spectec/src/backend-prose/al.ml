@@ -77,7 +77,7 @@ type expr =
   | ConcatE of (expr * expr)
   | LengthE of expr
   | ArityE of expr
-  | FrameE
+  | GetCurFrameE
   | BitWidthE of expr
   | PropE of (expr * string)
   | ListE of expr array

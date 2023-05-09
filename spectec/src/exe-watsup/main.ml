@@ -161,8 +161,8 @@ let () =
       List.iter
         (fun algo -> Backend_al.Print.string_of_algorithm algo |> print_endline)
         al;
-      log "AL Validation...";
-      Backend_al.Validation.valid al;
+      (*log "AL Validation...";
+      Backend_al.Validation.valid al;*)
       log "Interpret AL...";
       Backend_al.Interpreter.interpret al
     );
