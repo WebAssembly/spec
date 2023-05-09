@@ -61,14 +61,14 @@ let argspec = Arg.align
     " Generate Latex for Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
 
-  "--print-il", Arg.Set print_elab_il, "Print il (after elaboration)";
-  "--print-final-il", Arg.Set print_final_il, "Print final il";
-  "--print-all-il", Arg.Set print_all_il, "Print il after each step";
+  "--print-il", Arg.Set print_elab_il, " Print il (after elaboration)";
+  "--print-final-il", Arg.Set print_final_il, " Print final il";
+  "--print-all-il", Arg.Set print_all_il, " Print il after each step";
 
-  "--sub", Arg.Set pass_sub, "Synthesize explicit subtype coercions";
-  "--totalize", Arg.Set pass_totalize, "Run function totalization";
-  "--the-elimination", Arg.Set pass_unthe, "Eliminate the ! operator in relations";
-  "--sideconditions", Arg.Set pass_sideconditions, "Infer side conditoins";
+  "--sub", Arg.Set pass_sub, " Synthesize explicit subtype coercions";
+  "--totalize", Arg.Set pass_totalize, " Run function totalization";
+  "--the-elimination", Arg.Set pass_unthe, " Eliminate the ! operator in relations";
+  "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
