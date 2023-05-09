@@ -29,7 +29,7 @@ Construct                                        Judgement
 :ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
 :ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
-:ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
+:ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \typeid`
 :ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
@@ -43,7 +43,7 @@ Construct                                        Judgement
 :ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \rightarrow \externtype^\ast`
 ===============================================  ===============================================================================
 
 
@@ -58,6 +58,7 @@ Construct                                        Judgement
 :ref:`Value <valid-val>`                         :math:`S \vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
+:ref:`Type instance <valid-typeinst>`            :math:`S \vdashtypeinst \typeinst \ok`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
 :ref:`Memory instance <valid-meminst>`           :math:`S \vdashmeminst \meminst : \memtype`
@@ -105,6 +106,7 @@ Construct                                        Judgement
 :ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
 :ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
 :ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \matchesresulttype \resulttype_2`
+:ref:`Instruction type <match-instrtype>`        :math:`C \vdashinstrtypematch \instrtype_1 \matchesinstrtype \instrtype_2`
 :ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2`
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`
@@ -120,6 +122,7 @@ Store Extension
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
+:ref:`Type instance <extend-typeinst>`           :math:`\vdashtypeinstextends \typeinst_1 \extendsto \typeinst_2`
 :ref:`Function instance <extend-funcinst>`       :math:`\vdashfuncinstextends \funcinst_1 \extendsto \funcinst_2`
 :ref:`Table instance <extend-tableinst>`         :math:`\vdashtableinstextends \tableinst_1 \extendsto \tableinst_2`
 :ref:`Memory instance <extend-meminst>`          :math:`\vdashmeminstextends \meminst_1 \extendsto \meminst_2`

@@ -36,7 +36,9 @@ let return = Return
 let call x = Call x
 let call_ref x = CallRef x
 let call_indirect x y = CallIndirect (x, y)
+let return_call x = ReturnCall x
 let return_call_ref x = ReturnCallRef x
+let return_call_indirect x y = ReturnCallIndirect (x, y)
 
 let local_get x = LocalGet x
 let local_set x = LocalSet x

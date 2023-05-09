@@ -69,7 +69,7 @@ logo = 'static/webassembly.png'
 repo = 'gc'
 
 # The name of the proposal it represents, if any
-proposal = 'function references + gc'
+proposal = 'tail calls + function references + gc'
 
 # The draft version string (clear out for release cuts)
 draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
@@ -297,7 +297,8 @@ latex_elements = {
   'pointsize': '10pt',
 
    # Additional stuff for the LaTeX preamble.
-   'preamble': '',
+   # Don't type-set cross references with emphasis.
+   'preamble': '\\renewcommand\\sphinxcrossref[1]{#1}\n',
 
    # Latex figure (float) alignment
   'figure_align': 'htbp',

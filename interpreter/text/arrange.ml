@@ -514,7 +514,10 @@ let rec instr e =
     | CallRef x -> "call_ref " ^ var x, []
     | CallIndirect (x, y) ->
       "call_indirect " ^ var x, [Node ("type " ^ var y, [])]
+    | ReturnCall x -> "return_call " ^ var x, []
     | ReturnCallRef x -> "return_call_ref " ^ var x, []
+    | ReturnCallIndirect (x, y) ->
+      "return_call_indirect " ^ var x, [Node ("type " ^ var y, [])]
     | LocalGet x -> "local.get " ^ var x, []
     | LocalSet x -> "local.set " ^ var x, []
     | LocalTee x -> "local.tee " ^ var x, []

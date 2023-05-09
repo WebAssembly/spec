@@ -44,6 +44,8 @@ div.admonition p.admonition-title {
 div.math {
   background-color: #F0F0F0;
   padding: 3px 0 3px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 div.relations {

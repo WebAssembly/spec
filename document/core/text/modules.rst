@@ -96,19 +96,19 @@ If inline declarations are given, then their types must match the referenced :re
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = [t_1^n] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^n] \toF [t_2^\ast] \wedge
         I' = \{\ILOCALS~(\epsilon)^n\}) \\
         \end{array} \\[1ex] &&|&
      \text{(}~\text{type}~~x{:}\Ttypeidx_I~\text{)}
      ~~(t_1{:}\Tparam)^\ast~~(t_2{:}\Tresult)^\ast
        \quad\Rightarrow\quad x, I' \\ &&& \qquad
        (\iff \begin{array}[t]{@{}l@{}}
-        I.\ITYPEDEFS[x] = [t_1^\ast] \to [t_2^\ast] \wedge
+        I.\ITYPEDEFS[x] = [t_1^\ast] \toF [t_2^\ast] \wedge
         I' = \{\ILOCALS~\F{id}(\Tparam)^\ast\} \idcwellformed) \\
         \end{array} \\
    \end{array}
 
-The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the updated :ref:`identifier context <text-context>` including possible parameter identifiers.
+The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the local :ref:`identifier context <text-context>` containing possible parameter identifiers.
 The following auxiliary function extracts optional identifiers from parameters:
 
 .. math::
@@ -117,7 +117,7 @@ The following auxiliary function extracts optional identifiers from parameters:
    \end{array}
 
 .. note::
-   Both productions overlap for the case that the function type is :math:`[] \to []`.
+   Both productions overlap for the case that the function type is :math:`[] \toF []`.
    However, in that case, they also produce the same results, so that the choice is immaterial.
 
    The :ref:`well-formedness <text-context-wf>` condition on :math:`I'` ensures that the parameters do not contain duplicate identifiers.
@@ -138,7 +138,7 @@ In that case, a :ref:`type index <syntax-typeidx>` is automatically inserted:
      \text{(}~\text{type}~~x~\text{)}~~\Tparam^\ast~~\Tresult^\ast \\
    \end{array}
 
-where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose definition in the current module is the :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose definition in the current module is the :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \toF [t_2^\ast]`.
 If no such index exists, then a new :ref:`type definition <text-type>` of the form
 
 .. math::
@@ -200,7 +200,7 @@ Function definitions can bind a symbolic :ref:`function identifier <text-id>`, a
      \text{(}~\text{func}~~\Tid^?~~x,I'{:}\Ttypeuse_I~~
      (\X{loc}{:}\Tlocal_I)^\ast~~(\X{in}{:}\Tinstr_{I''})^\ast~\text{)} \\ &&& \qquad
        \Rightarrow\quad \{ \FTYPE~x, \FLOCALS~\X{loc}^\ast, \FBODY~\X{in}^\ast~\END \} \\ &&& \qquad\qquad\qquad
-       (\iff I'' = I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
+       (\iff I'' = I \compose I' \compose \{\ILOCALS~\F{id}(\Tlocal)^\ast\} \idcwellformed) \\[1ex]
    \production{local} & \Tlocal_I &::=&
      \text{(}~\text{local}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
        \quad\Rightarrow\quad \{ \LTYPE~t \} \\
@@ -302,7 +302,7 @@ An :ref:`element segment <text-elem>` can be given inline with a table definitio
    \production{module field} &
      \text{(}~\text{table}~~\Tid^?~~\Treftype~~\text{(}~\text{elem}~~x^n{:}\Tvec(\Tfuncidx)~\text{)}~\text{)} \quad\equiv \\ & \qquad
        \text{(}~\text{table}~~\Tid'~~n~~n~~\Treftype~\text{)} \\ & \qquad
-       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\text{func}~~\Tvec(\Tfuncidx)~\text{)}
+       \text{(}~\text{elem}~~\text{(}~\text{table}~~\Tid'~\text{)}~~\text{(}~\text{i32.const}~~\text{0}~\text{)}~~\Treftype~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx~\text{)})~\text{)}
        \\ & \qquad\qquad
        (\iff \Tid^? \neq \epsilon \wedge \Tid' = \Tid^? \vee \Tid^? = \epsilon \wedge \Tid' \idfresh) \\
    \end{array}

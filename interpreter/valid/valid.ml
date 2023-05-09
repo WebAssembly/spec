@@ -434,11 +434,11 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     (ts @ [NumT I32T]) -->... [], []
 
   | BrOnNull x ->
-    let (_nul, ht) = peek_ref 0 s e.at in
+    let (_, ht) = peek_ref 0 s e.at in
     (label c x @ [RefT (Null, ht)]) --> (label c x @ [RefT (NoNull, ht)]), []
 
   | BrOnNonNull x ->
-    let (_nul, ht) = peek_ref 0 s e.at in
+    let (_, ht) = peek_ref 0 s e.at in
     let t' = RefT (NoNull, ht) in
     require (label c x <> []) e.at
       ("type mismatch: instruction requires type " ^ string_of_val_type t' ^
@@ -501,6 +501,14 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        " but table has element type " ^ string_of_ref_type t);
     (ts1 @ [NumT I32T]) --> ts2, []
 
+  | ReturnCall x ->
+    let FuncT (ts1, ts2) = as_func_str_type (expand_ctx_type (func c x)) in
+    require (match_result_type c.types ts2 c.results) e.at
+      ("type mismatch: current function requires result type " ^
+       string_of_result_type c.results ^
+       " but callee returns " ^ string_of_result_type ts2);
+    ts1 -->... [], []
+
   | ReturnCallRef x ->
     let FuncT (ts1, ts2) = func_type c x in
     require (match_result_type c.types ts2 c.results) e.at
@@ -508,6 +516,15 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
        string_of_result_type c.results ^
        " but callee returns " ^ string_of_result_type ts2);
     (ts1 @ [RefT (Null, DefHT (StatX x.it))]) -->... [], []
+
+  | ReturnCallIndirect (x, y) ->
+    let TableT (_lim, t) = table c x in
+    let FuncT (ts1, ts2) = func_type c y in
+    require (match_result_type c.types ts2 c.results) e.at
+      ("type mismatch: current function requires result type " ^
+       string_of_result_type c.results ^
+       " but callee returns " ^ string_of_result_type ts2);
+    (ts1 @ [NumT I32T]) -->... [], []
 
   | LocalGet x ->
     let LocalT (init, t) = local c x in
