@@ -750,7 +750,7 @@ The opcode for heap types is encoded as an `s33`.
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | 0xd5   | `ref.eq`        |            |
-| 0xd6   | `br_on_non_null` | |
+| 0xd6   | `br_on_non_null $l` | `$l : labelidx` |
 | 0xfb01 | `struct.new $t` | `$t : typeidx` |
 | 0xfb02 | `struct.new_default $t` | `$t : typeidx` |
 | 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
