@@ -8,19 +8,21 @@ watsup 0.3 generator
 == IL Validation...
 == Function totalization...
 == IL Validation...
+== Option projection eliminiation
+== IL Validation...
 == Side condition inference
 == IL Validation...
 == Animate
-Animation failed:if ($bytes_(!($size(nt <: valtype)), c) = $mem(z, 0)[(i + n_O) : (!($size(nt <: valtype)) / 8)])
-Animation failed:where $bytes_(!($size(nt <: valtype)), c) := $mem(z, 0)[(i + n_O) : (!($size(nt <: valtype)) / 8)]
+Animation failed:where |o0*{o0}| := |t*{t}|
+Animation failed:if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
+Animation failed:where $bytes_(o0, c) := $mem(z, 0)[(i + n_O) : (o1 / 8)]
 Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == IL Validation...
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
-Invalid expression `!($default_(t))` to be AL identifier.
-Invalid premise `(if ($default_(t) =/= ?()))*{t}` to be AL instr.
+Invalid premise `(if ($default_(t) = ?(o0)))*{t o0}` to be AL instr.
 Ki
 1. Return 1024.
 
@@ -265,8 +267,8 @@ relop nt relop
 extend nt n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c from the stack.
-3. If $size(nt) is not YetE (?()), then:
-  a. Push the value nt.CONST $ext(n, YetE (!($size(nt <: valtype))), YetE (S_sx), c) to the stack.
+3. Let YetE (?(o0)) be $size(nt).
+4. Push the value nt.CONST $ext(n, o0, YetE (S_sx), c) to the stack.
 
 cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -325,10 +327,11 @@ call_addr a
   h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
-        1. YetI: (if ($default_(t) =/= ?()))*{t}.
-        2. Let f be { LOCAL [val^k, Yet*], MODULE m }.
-        3. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
-        4. Push the activation of F with arity n to the stack.
+        1. Let the length of o0* be the length of t*.
+        2. YetI: (if ($default_(t) = ?(o0)))*{t o0}.
+        3. Let f be { LOCAL [val^k, o0*], MODULE m }.
+        4. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
+        5. Push the activation of F with arity n to the stack.
 
 ref.func x
 1. If x < the length of $funcaddr(), then:
@@ -418,16 +421,17 @@ table.init x y
 load nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If $size(nt) is not YetE (?()), then:
-  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(0), then:
-    1) Trap.
-4. If $size(nt) is not YetE (?()), then:
-  a. Let $bytes_(YetE (!($size(nt <: valtype))), c) be YetE ($mem(z, 0)[(i + n_O) : (!($size(nt <: valtype)) / 8)]).
-  b. Push the value nt.CONST c to the stack.
-5. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+3. Let YetE (?(o0)) be $size(nt).
+4. If ((i + n_O) + (o0 / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-6. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
-7. Push the value nt.CONST c to the stack.
+5. Let YetE (?(o0)) be $size(nt).
+6. Let YetE (?(o1)) be $size(nt).
+7. Let $bytes_(o0, c) be YetE ($mem(z, 0)[(i + n_O) : (o1 / 8)]).
+8. Push the value nt.CONST c to the stack.
+9. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+  a. Trap.
+10. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
+11. Push the value nt.CONST c to the stack.
 
 memory.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -531,17 +535,18 @@ store nt ?() n_A n_O
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If $size(nt) is not YetE (?()), then:
-  a. If ((i + n_O) + (YetE (!($size(nt <: valtype))) / 8)) ≥ the length of $mem(0), then:
-    1) Trap.
-6. If $size(nt) is not YetE (?()), then:
-  a. Let b* be $bytes_(YetE (!($size(nt <: valtype))), c).
-  b. Perform $with_mem(0, (i + n_O), (YetE (!($size(nt <: valtype))) / 8), b*).
-7. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+5. Let YetE (?(o0)) be $size(nt).
+6. If ((i + n_O) + (o0 / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-8. If $size(nt) is not YetE (?()), then:
-  a. Let b* be $bytes_(n, $wrap_(YetE ((!($size(nt <: valtype)), n)), c)).
-  b. Perform $with_mem(0, (i + n_O), (n / 8), b*).
+7. Let YetE (?(o0)) be $size(nt).
+8. Let YetE (?(o1)) be $size(nt).
+9. Let b* be $bytes_(o1, c).
+10. Perform $with_mem(0, (i + n_O), (o0 / 8), b*).
+11. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+  a. Trap.
+12. Let YetE (?(o0)) be $size(nt).
+13. Let b* be $bytes_(n, $wrap_(YetE ((o0, n)), c)).
+14. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -675,7 +680,7 @@ relop
 Ok
 
 extend
-Failure("Unknwon function name: size")
+Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
 
 cvtop
 Ok
@@ -720,7 +725,7 @@ table.init
 Failure("IntT is not subtype of StateT")
 
 load
-Failure("Unknwon function name: size")
+Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
 
 memory.fill
 Failure("IntT is not subtype of StateT")
@@ -747,7 +752,7 @@ elem.drop
 Failure("IntT is not subtype of StateT")
 
 store
-Failure("Unknwon function name: size")
+Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
 
 memory.grow
 Failure("YetE (0^((n * 64) * $Ki){})")
