@@ -52,7 +52,7 @@ let argspec = Arg.align
   "-p", Arg.Set dst, " Patch files";
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-l", Arg.Set log, " Log execution steps";
-  "-w", Arg.Set warn, " Warn about unsed or multiply used splices";
+  "-w", Arg.Set warn, " Warn about unused or multiply used splices";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
@@ -68,7 +68,7 @@ let argspec = Arg.align
   "--sub", Arg.Set pass_sub, " Synthesize explicit subtype coercions";
   "--totalize", Arg.Set pass_totalize, " Run function totalization";
   "--the-elimination", Arg.Set pass_unthe, " Eliminate the ! operator in relations";
-  "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
+  "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditions";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
