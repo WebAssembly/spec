@@ -92,7 +92,7 @@ type expr =
   | AfterCallE
   | ContE of expr
   | LabelNthE of expr
-  | LabelE of (expr * expr)
+  | LabelE of expr
   | NameE of name
   (* Wasm Value Expr *)
   | ConstE of expr * expr
@@ -131,7 +131,7 @@ type instr =
   | NopI
   | ReturnI of (expr option)
   | InvokeI of expr
-  | EnterI of (string * expr)
+  | EnterI of (expr * expr)
   | ExecuteI of (string * expr list)
   | ReplaceI of (expr * expr)
   | JumpI of expr

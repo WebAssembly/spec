@@ -153,7 +153,7 @@ block bt instr
   a. If the length of t_2^n is n, then:
     1) If the length of val^k is k, then:
       a) Let L be YetE ().
-      b) Enter the block Yet with label YetE ().
+      b) Enter YetE () with label YetE ().
 
 loop bt instr
 1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
@@ -165,7 +165,7 @@ loop bt instr
   a. If the length of t_2^n is n, then:
     1) If the length of val^k is k, then:
       a) Let L be YetE ().
-      b) Enter the block Yet with label YetE ().
+      b) Enter YetE () with label YetE ().
 
 if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -331,6 +331,9 @@ call_addr a
         2. YetI: (if ($default_(t) = ?(o0)))*{t o0}.
         3. Let f be { LOCAL: [val^k, o0*]; MODULE: m; }.
         4. Push FrameE (n, f) to the stack.
+        5. Let L be the label_n.
+        6. Push L to the stack.
+        7. Jump to instr*.
 
 ref.func x
 1. If x < the length of $funcaddr(), then:

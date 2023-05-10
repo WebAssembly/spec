@@ -22,6 +22,7 @@ let rec walk_expr f e =
     | ConstE (e1, e2) -> f_expr(ConstE (walk_expr f e1, walk_expr f e2))
     | RefFuncAddrE inner_e -> f_expr(RefFuncAddrE (walk_expr f inner_e))
     | RefNullE n -> f_expr(RefNullE n)
+    | LabelE e -> f_expr(LabelE (f_expr e))
     | NameE n -> f_expr(NameE n)
     | YetE s -> f_expr(YetE s)
     | _ -> Print.structured_string_of_expr e |> failwith
@@ -56,7 +57,7 @@ let rec walk_instr f instr =
     | NopI -> f_instr(NopI)
     | ReturnI e_opt -> f_instr(ReturnI (Option.map (walk_expr f) e_opt))
     | InvokeI e -> f_instr(InvokeI (walk_expr f e))
-    | EnterI (s, e) -> f_instr(EnterI (s, walk_expr f e))
+    | EnterI (e1, e2) -> f_instr(EnterI (walk_expr f e1, walk_expr f e2))
     | ExecuteI (s, el) -> f_instr(ExecuteI (s, walk_exprs f el))
     | ReplaceI (e1, e2) -> f_instr(ReplaceI (walk_expr f e1, walk_expr f e2))
     | JumpI e -> f_instr(JumpI (walk_expr f e))
