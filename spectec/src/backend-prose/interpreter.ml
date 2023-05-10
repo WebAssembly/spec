@@ -156,21 +156,24 @@ and eval_expr env expr = match expr with
       Al.WasmV (mk_wasm_num wasm_ty i)
   | e -> structured_string_of_expr e |> failwith
 
-and eval_cond env = function
+and eval_cond env cond =
+  let do_binop e1 binop e2 =
+    let v1 = eval_expr env e1 in
+    let v2 = eval_expr env e2 in
+    binop v1 v2
+  in
+  match cond with
   | Al.NotC c -> eval_cond env c |> not
-  | Al.EqC (e1, e2) ->
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      v1 = v2
-  | Al.GeC (e1, e2) ->
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      v1 >= v2
+  | Al.EqC (e1, e2) -> do_binop e1 (=) e2
+  | Al.LtC (e1, e2) -> do_binop e1 (<) e2
+  | Al.LeC (e1, e2) -> do_binop e1 (<=) e2
+  | Al.GtC (e1, e2) -> do_binop e1 (>) e2
+  | Al.GeC (e1, e2) -> do_binop e1 (>=) e2
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instr env i =
-  (*string_of_stack !stack |> print_endline;
-  string_of_instr (ref 0) 0 i |> print_endline;*)
+  (* string_of_stack !stack |> print_endline; *)
+  (* string_of_instr (ref 0) 0 i |> print_endline; *)
   match i with
   | Al.IfI (c, il1, il2) ->
       if eval_cond env c then
@@ -228,6 +231,9 @@ and interp_instr env i =
   | Al.PerformI e ->
       let _ = eval_expr env e in
       env
+  | Al.ExecuteI (fname, el) ->
+      let _ = List.map (eval_expr env) el |> dsl_function_call (Al.N fname) in
+      env
   | i -> structured_string_of_instr 0 i |> failwith
 
 and interp_instrs env il =
@@ -271,6 +277,9 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.LocalSet i32 ->
       let n = Int32.to_int i32.it in
       "local.set", [Al.IntV n]
+  | Ast.LocalTee i32 ->
+      let n = Int32.to_int i32.it in
+      "local.tee", [Al.IntV n]
   | Ast.GlobalGet i32 ->
       let n = Int32.to_int i32.it in
       "global.get", [Al.IntV n]
@@ -280,6 +289,9 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.TableGet i32 ->
       let n = Int32.to_int i32.it in
       "table.get", [Al.IntV n]
+  | Ast.Call i32 ->
+      let n = Int32.to_int i32.it in
+      "call", [Al.IntV n]
   | _ -> failwith "Not implemented"
 
 and run_algo name args =
@@ -310,15 +322,18 @@ let test test_case =
   Testdata.get_frame_data () |> push;
   Testdata.store := Testdata.get_store_data ();
 
-  (* Execute *)
-  run ast;
+  try
+    (* Execute *)
+    run ast;
 
-  (* Check *)
-  let actual_result = List.hd !stack |> string_of_value in
-  if actual_result = expected_result then
-    print_endline "Ok\n"
-  else
-    "Fail!\n" ^ string_of_stack !stack |> print_endline
+    (* Check *)
+    let actual_result = List.hd !stack |> string_of_value in
+    if actual_result = expected_result then
+      print_endline "Ok\n"
+    else
+      "Fail!\n" ^ string_of_stack !stack |> print_endline
+  with
+    e -> print_endline ("Fail!(" ^ (Printexc.to_string e) ^ ")\n")
 
 (* Entry *)
 

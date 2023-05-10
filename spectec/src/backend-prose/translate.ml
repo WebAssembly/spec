@@ -288,11 +288,12 @@ let rec rhs2instrs exp = match exp.it with
     atomid = "LOAD" || atomid = "STORE" ||
     atomid = "BLOCK" || atomid = "BR" || atomid = "CALL_ADDR" ||
     atomid = "LOCAL.SET" || atomid = "RETURN" ->
+      let lower_id = String.lowercase_ascii atomid in
       begin match argexp.it with
         | Ast.TupE (exps) ->
             let argexprs = List.map exp2expr exps in
-            [Al.ExecuteI (atomid, argexprs)]
-        | _ -> [Al.ExecuteI (atomid, [exp2expr argexp])]
+            [Al.ExecuteI (lower_id, argexprs)]
+        | _ -> [Al.ExecuteI (lower_id, [exp2expr argexp])]
       end
   | Ast.MixE (
     [[]; [Ast.Semicolon]; [Ast.Star]],

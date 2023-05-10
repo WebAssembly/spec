@@ -42,10 +42,19 @@ let addrs = ListV [|
   IntV 2; (* global address 2 *)
 |]
 
+let yetV = StringV "YET"
+
 let module_inst: module_inst =
   Record.empty
+  |> Record.add "IMPORT" yetV
+  |> Record.add "FUNC" addrs
   |> Record.add "GLOBAL" addrs
   |> Record.add "TABLE" addrs
+  |> Record.add "MEM" yetV
+  |> Record.add "ELEM" yetV
+  |> Record.add "DATA" yetV
+  |> Record.add "START" yetV
+  |> Record.add "EXPORT" yetV
 
 (* Hardcoded Store *)
 
@@ -126,6 +135,12 @@ let local_set = "local_set", [
 let local_get = "local_get", [
   Operators.local_get (i32 2 |> to_phrase) |> to_phrase
 ], "7"
+let local_tee = "local_tee", [
+  Operators.local_get (i32 0 |> to_phrase) |> to_phrase;
+  Operators.local_tee (i32 1 |> to_phrase) |> to_phrase;
+  Operators.local_get (i32 1 |> to_phrase) |> to_phrase;
+  Operators.i32_add |> to_phrase;
+], "6"
 
 let global_set = "global_set", [
   Operators.global_get (i32 2 |> to_phrase) |> to_phrase;
@@ -148,7 +163,12 @@ let table_get = "table_get", [
   Operators.table_get (i32 2 |> to_phrase) |> to_phrase
 ], "null"
 
+let call = "call", [
+  Operators.call (i32 0 |> to_phrase) |> to_phrase
+], "yet"
+
 let test_cases = [
   binop; testop; relop1; relop2; nop; drop; select;
-  local_set; local_get; global_set; global_get1; global_get2; table_get
+  local_set; local_get; local_tee; global_set; global_get1; global_get2; table_get;
+  call
 ]
