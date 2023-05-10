@@ -966,7 +966,6 @@
   "integer too large"
 )
 
-
 (module binary
   "\00asm" "\01\00\00\00"
   "\01\04\01"                          ;; type section
@@ -1000,6 +999,84 @@
     "\fc\87\80\80\80\80\00"              ;; i64_trunc_sat_f64_u with 6 bytes
     "\00"                                ;; unreachable
     "\0b"                                ;; end
+  )
+  "integer representation too long"
+)
+
+;; Data segment tags and memory index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\07\01"                          ;; Data section with 1 entry
+  "\80\00"                             ;; Active segment, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\08\01"                          ;; Data section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\00"                                ;; explicit memory index
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\05\03\01"                          ;; Memory section with 1 entry
+  "\00\00"                             ;; no max, minimum 0
+  "\0b\09\01"                          ;; Data section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\80\00"                             ;; explicit memory index, encoded with 2 bytes
+  "\41\00\0b\00"                       ;; (i32.const 0) with contents ""
+)
+
+;; Element segment tags and table index can have non-minimal length
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\07\01"                          ;; Element section with 1 entry
+  "\80\00"                             ;; Active segment
+  "\41\00\0b\00"                       ;; (i32.const 0) with no elements
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\09\01"                          ;; Element section with 1 entry
+  "\02"                                ;; Active segment
+  "\80\00"                             ;; explicit table index, encoded with 2 bytes
+  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\09\01"                          ;; Element section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\00"                                ;; explicit table index
+  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+(module binary
+  "\00asm" "\01\00\00\00"
+  "\04\04\01"                          ;; Table section with 1 entry
+  "\70\00\00"                          ;; no max, minimum 0, funcref
+  "\09\0a\01"                          ;; Element section with 1 entry
+  "\82\00"                             ;; Active segment, encoded with 2 bytes
+  "\80\00"                             ;; explicit table index, encoded with 2 bytes
+  "\41\00\0b\00\00"                    ;; (i32.const 0) with no elements
+)
+
+;; Type section with signed LEB128 encoded type
+(assert_malformed
+  (module binary
+    "\00asm" "\01\00\00\00"
+    "\01"                     ;; Type section id
+    "\05"                     ;; Type section length
+    "\01"                     ;; Types vector length
+    "\e0\7f"                  ;; Malformed functype, -0x20 in signed LEB128 encoding
+    "\00\00"
   )
   "integer representation too long"
 )
