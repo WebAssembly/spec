@@ -35,10 +35,12 @@ and table_inst = value
 and module_inst = record
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
-and frame = record
+and frame = int * record
 
 (* global: global_inst list table: table_inst list *)
 and store = record
+
+and stack = value list
 
 (* AL AST *)
 

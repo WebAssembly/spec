@@ -58,16 +58,19 @@ let store: store ref = ref Record.empty
 
 (* Hardcoded Frame *)
 
-let get_locals_data () = ListV [|
+let get_locals_data () = [|
   WasmV (Values.Num (Values.I32 (i32 3)));
   WasmV (Values.Num (Values.I32 (i32 0)));
   WasmV (Values.Num (Values.I32 (i32 7)))
 |]
 
-let get_frame_data (): frame =
-  Record.empty
-  |> Record.add "LOCAL" (get_locals_data ())
-  |> Record.add "MODULE" (ModuleInstV module_inst)
+let get_frame_data () =
+  let locals = get_locals_data () in
+  let r =
+    Record.empty
+    |> Record.add "LOCAL" (ListV locals)
+    |> Record.add "MODULE" (ModuleInstV module_inst) in
+  FrameV (Array.length locals, r)
 
 (* Hardcoded Wasm Instructions *)
 

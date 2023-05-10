@@ -46,6 +46,25 @@ module Env = struct
 
 end
 
+let stack: Al.stack ref = ref []
+
+let push v = stack := v :: !stack
+
+let pop () =
+  let res = List.hd !stack in
+  stack := List.tl !stack;
+  res
+
+let get_current_frame () =
+  let f = function Al.FrameV _ -> true | _ -> false in
+  match List.find f !stack with
+    | Al.FrameV frame -> frame
+    | _ ->
+        (* Due to Wasm validation, unreachable *)
+        failwith "No frame"
+
+let store: Al.store ref = ref Al.Record.empty
+
 
 
 (* Helper functions *)
@@ -109,11 +128,11 @@ and eval_expr env expr = match expr with
         | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
-  | Al.GetCurFrameE -> FrameV (Stack.get_current_frame ())
+  | Al.GetCurFrameE -> FrameV (get_current_frame ())
   | Al.PropE (e, str) ->
       begin match eval_expr env e with
         | ModuleInstV m -> Al.Record.find str m
-        | FrameV f -> Al.Record.find str f
+        | FrameV (_, r) -> Al.Record.find str r
         | StoreV s -> Al.Record.find str s
         | _ -> failwith "Not a record"
       end
@@ -160,29 +179,26 @@ and interp_instr env i =
         interp_instrs env il2
   | Al.AssertI (_) -> env (* TODO: insert assertion *)
   | Al.PushI e ->
-      let v = eval_expr env e |> al_value2wasm_value in
-      Stack.push_v v;
+      eval_expr env e |> push;
       env
   | Al.PopI e ->
       (* due to Wasm validation *)
-      assert (Stack.length () > 0);
-
-      let h = Stack.pop () in
+      let h = pop () in
 
       begin match (h, e) with
-        | (ValueS h, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
+        | (Al.WasmV w, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
             (* due to Wasm validation *)
-            let ty = Values.type_of_value h in
+            let ty = Values.type_of_value w in
             assert (ty = ty');
 
-            let v = wasm_value2al_num_value h in
+            let v = wasm_value2al_num_value w in
             Env.add name v env
-        | (ValueS h, Al.ConstE (Al.NameE nt, Al.NameE name)) ->
-            let ty = Al.WasmTypeV (Values.type_of_value h) in
-            let v = wasm_value2al_num_value h in
+        | (Al.WasmV w, Al.ConstE (Al.NameE nt, Al.NameE name)) ->
+            let ty = Al.WasmTypeV (Values.type_of_value w) in
+            let v = wasm_value2al_num_value w in
             Env.add nt ty env |> Env.add name v
-        | (ValueS h, Al.NameE (name)) ->
-            Env.add name (Al.WasmV h) env
+        | (h, Al.NameE (name)) ->
+            Env.add name h env
         | _ -> failwith "Invalid case"
       end
   | Al.LetI (pattern, e) ->
@@ -271,8 +287,8 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> Stack.push_v (Values.Num num.it)
-  | Ast.RefNull ref -> Stack.push_v (Values.Ref (Values.NullRef ref))
+  | Ast.Const num -> Al.WasmV (Values.Num num.it) |> push
+  | Ast.RefNull ref -> Al.WasmV (Values.Ref (Values.NullRef ref)) |> push
   | _ ->
       let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
@@ -290,19 +306,19 @@ let test test_case =
   print_endline name;
 
   (* Initialize *)
-  Stack.reset_stack ();
-  Testdata.get_frame_data () |> Stack.push_f;
+  stack := [];
+  Testdata.get_frame_data () |> push;
   Testdata.store := Testdata.get_store_data ();
 
   (* Execute *)
   run ast;
 
   (* Check *)
-  let actual_result = Stack.hd () |> string_of_stack_elem in
+  let actual_result = List.hd !stack |> string_of_value in
   if actual_result = expected_result then
     print_endline "Ok\n"
   else
-    "Fail!\n" ^ string_of_stack (Stack.get_stack ()) |> print_endline
+    "Fail!\n" ^ string_of_stack !stack |> print_endline
 
 (* Entry *)
 

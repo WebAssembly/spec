@@ -297,14 +297,10 @@ let rec string_of_record r =
     r
     "{ " ^ "}"
 
-and string_of_frame f = string_of_record f
-
-and string_of_stack_elem e = match e with
-  | Stack.ValueS v -> Reference_interpreter.Values.string_of_value v
-  | Stack.FrameS f -> string_of_frame f
+and string_of_frame (_, f) = string_of_record f
 
 and string_of_stack st =
-  let f acc e = acc ^ string_of_stack_elem e ^ "\n" in
+  let f acc e = acc ^ string_of_value e ^ "\n" in
   List.fold_left f "[Stack]\n" st
 
 
