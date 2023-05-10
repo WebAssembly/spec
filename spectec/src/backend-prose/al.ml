@@ -34,6 +34,8 @@ and table_inst = value
 (* Table, Global: Address list *)
 and module_inst = value record
 
+and label = int * Ast.instr list
+
 (* local: Wasm value list, module_inst: ModuleInstV *)
 and frame = int * value record
 
@@ -45,15 +47,21 @@ and stack = value list
 (* AL AST *)
 
 and value =
+  | LabelV of label
   | FrameV of frame
   | StoreV of store
   | ModuleInstV of module_inst
   | ListV of value array
   | WasmV of Values.value
   | WasmTypeV of Types.value_type
+  | WasmInstrV of Ast.instr
   | IntV of int
   | FloatV of float
   | StringV of string
+  | PairV of value * value
+  | ArrowV of value * value
+  | ConstructV of string * value list
+  | RecordV of value record
 
 type name = N of string | SubN of name * string
 
@@ -72,9 +80,7 @@ type expr =
   | DivE of (expr * expr)
   | PairE of (expr * expr)
   | AppE of (name * expr list)
-  | NdAppE of (name * expr list)
-  | RangedAppE of (name * expr * expr)
-  | WithAppE of (name * expr * string)
+  | MapE of (name * expr list * iter)
   | IterE of (name * iter)
   | ConcatE of (expr * expr)
   | LengthE of expr
@@ -93,8 +99,10 @@ type expr =
   | ContE of expr
   | LabelNthE of expr
   | LabelE of (expr * expr)
-  | WasmInstr of (string * expr list)
+  | WasmInstrE of (string * expr list)
   | NameE of name
+  | ArrowE of expr * expr
+  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   (* Wasm Value Expr *)
   | ConstE of expr * expr
   | RefNullE of name

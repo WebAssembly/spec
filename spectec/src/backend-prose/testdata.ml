@@ -12,6 +12,34 @@ let f64 = F64.of_float
 
 (* Hardcoded Instas *)
 
+let yetV = StringV "DUMMY"
+
+let addrs = ListV [|
+  IntV 0; (* global address 0 *)
+  IntV 1; (* global address 1 *)
+  IntV 2; (* global address 2 *)
+|]
+
+let module_inst: module_inst =
+  Record.empty
+  |> Record.add "IMPORT" yetV
+  |> Record.add "FUNC" addrs
+  |> Record.add "GLOBAL" addrs
+  |> Record.add "TABLE" addrs
+  |> Record.add "MEM" yetV
+  |> Record.add "ELEM" yetV
+  |> Record.add "DATA" yetV
+  |> Record.add "START" yetV
+  |> Record.add "EXPORT" yetV
+
+let get_func_insts_data () = ListV([|
+  PairV (ModuleInstV module_inst, ConstructV("FUNC", [
+    ArrowV(ListV[||], ListV[||]);
+    ListV[||];
+    yetV
+  ]))
+|])
+
 let get_global_insts_data () = ListV([|
   WasmV (Values.Num (Values.F32 (f32 1.4)));
   WasmV (Values.Num (Values.F32 (f32 5.2)));
@@ -36,32 +64,16 @@ let get_table_insts_data () = ListV([|
   |]
 |])
 
-let addrs = ListV [|
-  IntV 0; (* global address 0 *)
-  IntV 1; (* global address 1 *)
-  IntV 2; (* global address 2 *)
-|]
-
-let yetV = StringV "YET"
-
-let module_inst: module_inst =
-  Record.empty
-  |> Record.add "IMPORT" yetV
-  |> Record.add "FUNC" addrs
-  |> Record.add "GLOBAL" addrs
-  |> Record.add "TABLE" addrs
-  |> Record.add "MEM" yetV
-  |> Record.add "ELEM" yetV
-  |> Record.add "DATA" yetV
-  |> Record.add "START" yetV
-  |> Record.add "EXPORT" yetV
-
 (* Hardcoded Store *)
 
 let get_store_data (): store =
   Record.empty
+  |> Record.add "FUNC" (get_func_insts_data ())
   |> Record.add "GLOBAL" (get_global_insts_data ())
   |> Record.add "TABLE" (get_table_insts_data ())
+  |> Record.add "MEM" yetV
+  |> Record.add "ELEM" yetV
+  |> Record.add "DATA" yetV
 
 let store: store ref = ref Record.empty
 

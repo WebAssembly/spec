@@ -136,7 +136,7 @@ select t
   a. Push val_2 to the stack.
 
 block bt instr
-1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
+1. Let tmp0->tmp1 be bt.
 2. Let t_1^k be tmp0.
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
@@ -149,7 +149,7 @@ block bt instr
       c) Jump to [val^k, instr*].
 
 loop bt instr
-1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
+1. Let tmp0->tmp1 be bt.
 2. Let t_1^k be tmp0.
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
@@ -305,14 +305,14 @@ call_indirect x ft
     2) If a ≥ the length of $funcinst(), then:
       a) Trap.
     3) Else:
-      a) Let YetE (`%;%`(m, func)) be $funcinst()[a].
+      a) Let (m; func) be $funcinst()[a].
       b) Execute (call_addr a).
 
 call_addr a
 1. If a < the length of $funcinst(), then:
-  a. Let YetE (`%;%`(m, tmp0)) be $funcinst()[a].
-  b. Let YetE (`FUNC%%*%`(tmp1, t*{t}, instr*{instr})) be tmp0.
-  c. Let YetE (`%->%`(tmp2, tmp3)) be tmp1.
+  a. Let (m; tmp0) be $funcinst()[a].
+  b. Let FUNC(tmp1, t*, instr*) be tmp0.
+  c. Let tmp2->tmp3 be tmp1.
   d. Let t_1^k be tmp2.
   e. Assert: Due to validation, there are at least k values on the top of the stack.
   f. Pop val^k from the stack.
@@ -320,8 +320,8 @@ call_addr a
   h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
-        1. Let f be { LOCAL: [val^k, YetE ($default_(t)*{t})]; MODULE: m; }.
-        2. Push FrameE (n, f) to the stack.
+        1. Let f be { LOCAL: [val^k, default_(t)*]; MODULE: m; }.
+        2. Push the activation of f with arity n to the stack.
         3. Let L be the label_n{[]}.
         4. Push L to the stack.
         5. Jump to instr*.
@@ -590,7 +590,7 @@ table_get
 Ok
 
 call
-Fail!(Not_found)
+Fail!(Failure("JumpI (IterE (N(instr), *))"))
 
 == Complete.
 ```

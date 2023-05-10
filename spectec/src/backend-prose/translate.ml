@@ -108,8 +108,8 @@ let rec exp2expr exp = match exp.it with
   (* Variable *)
   | Ast.VarE id -> Al.NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
-  | Ast.IterE ({ it = Ast.CallE (_, _); _ }, (_, _)) ->
-      Al.YetE (Print.string_of_exp exp)
+  | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
+      Al.MapE(N id.it, exp2args inner_exp, tmp iter)
   | Ast.IterE (inner_exp, (iter, [_id])) ->
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)
@@ -142,13 +142,10 @@ let rec exp2expr exp = match exp.it with
       end
   (* Wasm Instruction *)
   | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _}, _) ->
-      Al.WasmInstr ("loop", List.map exp2expr exps)
-  (* Call with multiple arguments *)
-  | Ast.CallE (id, { it = Ast.TupE el; _ }) ->
-      Al.AppE(N id.it, List.map exp2expr el)
-  (* Call with a single argument *)
+      Al.WasmInstrE ("loop", List.map exp2expr exps)
+  (* Call *)
   | Ast.CallE (id, inner_exp) ->
-      Al.AppE(N id.it, [exp2expr inner_exp])
+      Al.AppE(N id.it, exp2args inner_exp)
   (* Record expression *)
   | Ast.StrE (expfields) ->
       let f acc = function
@@ -160,7 +157,21 @@ let rec exp2expr exp = match exp.it with
       Al.RecordE (record)
   (* TODO: Handle MixE *)
   (* Yet *)
+  | Ast.MixE (op, {it = Ast.TupE exps; _}) -> ( match (op, exps) with
+    | [[]; [Ast.Semicolon]; []], [e1; e2] ->
+      Al.PairE (exp2expr e1, exp2expr e2)
+    | [[]; [Ast.Arrow]; []], [e1; e2] ->
+      Al.ArrowE (exp2expr e1, exp2expr e2)
+    | [[Ast.Atom "FUNC"]; []; [Ast.Star]; []], _ ->
+      Al.ConstructE ("FUNC", List.map exp2expr exps)
+    | _ -> Al.YetE (Print.structured_string_of_exp exp)
+    )
   | _ -> Al.YetE (Print.string_of_exp exp)
+
+(* `Ast.exp` -> `Al.expr` *)
+and exp2args exp = match exp.it with
+  | Ast.TupE el -> List.map exp2expr el
+  | _ -> [exp2expr exp]
 
 (* `Ast.exp` -> `Al.AssertI` *)
 let insert_assert exp = match exp.it with

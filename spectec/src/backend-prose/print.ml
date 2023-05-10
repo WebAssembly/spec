@@ -60,16 +60,22 @@ let structured_string_of_iter = function
 
 (* expression *)
 
-let structured_string_of_value = function
+let rec structured_string_of_value = function
+  | LabelV _ -> "LabelV (TODO)"
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
+  | WasmInstrV _ -> "WasnInstrV (TODO)"
   | IntV i -> string_of_int i
   | FloatV i -> string_of_float i
   | StringV s -> s
+  | PairV (v1, v2) -> "PairV(" ^ structured_string_of_value v1 ^ ", " ^ structured_string_of_value v2 ^ ")"
+  | ArrowV (v1, v2) -> "ArrowV(" ^ structured_string_of_value v1 ^ ", " ^ structured_string_of_value v2 ^ ")"
+  | ConstructV (s, vl) -> "ConstructV(" ^ s ^ ", " ^ string_of_list structured_string_of_value "[" ", " "]" vl ^ ")"
+  | RecordV _r -> "RecordV (TODO)"
 
 let rec structured_string_of_expr = function
   | ValueE (v) -> "ValueE " ^ structured_string_of_value v
@@ -98,20 +104,11 @@ let rec structured_string_of_expr = function
       "AppE (" ^
         structured_string_of_name n ^ ", " ^
         string_of_list structured_string_of_expr "[ " ", " " ]" nl ^ ")"
-  | NdAppE (n, nl) ->
-      "NdAppE (" ^
+  | MapE (n, nl, iter) ->
+      "MapE (" ^
         structured_string_of_name n ^ ", " ^
-        string_of_list structured_string_of_expr "[ " ", " " ]" nl ^ ")"
-  | RangedAppE (n, e1, e2) ->
-      "RangedAppE (" ^
-        structured_string_of_name n ^ ", " ^
-        structured_string_of_expr e1 ^ ", " ^
-        structured_string_of_expr e2 ^ ")"
-  | WithAppE (n, e, s) ->
-      "WithAppE (" ^
-        structured_string_of_name n ^ ", " ^
-        structured_string_of_expr e ^ ", " ^
-        s ^ ")"
+        string_of_list structured_string_of_expr "[ " ", " " ]" nl ^ ", " ^
+        structured_string_of_iter iter ^ ")"
   | IterE (n, iter) ->
       sprintf "IterE (%s, %s)"
         (structured_string_of_name n)
@@ -145,8 +142,11 @@ let rec structured_string_of_expr = function
   | LabelNthE e1 -> "LabelNthE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
       "LabelE (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
-  | WasmInstr (s, el) -> "WasmInstr (" ^ s ^ ", " ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
+  | WasmInstrE (s, el) -> "WasmInstrE (" ^ s ^ ", " ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
+  | ArrowE (e1, e2) -> "ArrowE (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
+  | ConstructE (s, el) ->
+      "ContructE (" ^ s ^ ", " ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
   | ConstE (t, e) ->
       "ConstE (" ^
         structured_string_of_expr t ^ ", " ^
@@ -304,15 +304,21 @@ and string_of_stack st =
 
 
 and string_of_value = function
+  | LabelV _ -> "LabelV (TODO)"
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
   | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
+  | WasmInstrV _ -> "WasnInstr (TODO)"
   | IntV i -> string_of_int i
   | FloatV i -> string_of_float i
   | StringV s -> s
+  | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
+  | ArrowV (v1, v2) -> string_of_value v1 ^ "->" ^ string_of_value v2
+  | ConstructV (s, vl) -> s ^ string_of_list string_of_value "(" ", " ")" vl
+  | RecordV _r -> "RecordV (TODO)"
 
 let rec string_of_record_expr r =
   Al.Record.fold
@@ -338,20 +344,11 @@ let rec string_of_record_expr r =
       sprintf "$%s(%s)"
         (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
-  | NdAppE (n, el) ->
-      sprintf "a possible result of computing %s(%s)"
+  | MapE (n, el, iter) ->
+      sprintf "%s(%s)%s"
         (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
-  | RangedAppE (n, e1, e2) ->
-      sprintf "the result of computing %s(%s ... %s)"
-        (string_of_name n)
-        (string_of_expr e1)
-        (string_of_expr e2)
-  | WithAppE (n, e, s) ->
-      sprintf "the result of computing %s(%s with %s)"
-        (string_of_name n)
-        (string_of_expr e)
-        s
+        (string_of_iter iter)
   | IterE (n, iter) ->
       string_of_name n ^ string_of_iter iter
   | ConcatE (e1, e2) ->
@@ -361,7 +358,7 @@ let rec string_of_record_expr r =
   | LengthE e -> sprintf "the length of %s" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurFrameE -> "the current frame"
-  | FrameE (e1, e2) -> sprintf "FrameE (%s, %s)" (string_of_expr e1)  (string_of_expr e2)
+  | FrameE (e1, e2) -> sprintf "the activation of %s with arity %s" (string_of_expr e2)  (string_of_expr e1)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | PropE (e, s) -> sprintf "%s.%s" (string_of_expr e) s
   | ListE (el) -> string_of_array string_of_expr "[" ", " "]" el
@@ -376,8 +373,10 @@ let rec string_of_record_expr r =
   | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | WasmInstr (s, el) -> s ^ " " ^ string_of_list string_of_expr "(" ", " ")" el
+  | WasmInstrE (s, el) -> s ^ " " ^ string_of_list string_of_expr "(" ", " ")" el
   | NameE n -> string_of_name n
+  | ArrowE (e1, e2) -> string_of_expr e1 ^ "->" ^ string_of_expr e2
+  | ConstructE (s, el) -> s ^ string_of_list string_of_expr "(" ", " ")" el
   | ConstE (t, e) ->
       sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
