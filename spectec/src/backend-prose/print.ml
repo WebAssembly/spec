@@ -145,6 +145,7 @@ let rec structured_string_of_expr = function
   | LabelNthE e1 -> "LabelNthE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
       "LabelE (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
+  | WasmInstr (s, el) -> "WasmInstr (" ^ s ^ ", " ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
   | ConstE (t, e) ->
       "ConstE (" ^
@@ -375,6 +376,7 @@ let rec string_of_record_expr r =
   | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
+  | WasmInstr (s, el) -> s ^ " " ^ string_of_list string_of_expr "(" ", " ")" el
   | NameE n -> string_of_name n
   | ConstE (t, e) ->
       sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)

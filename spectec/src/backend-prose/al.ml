@@ -93,6 +93,7 @@ type expr =
   | ContE of expr
   | LabelNthE of expr
   | LabelE of (expr * expr)
+  | WasmInstr of (string * expr list)
   | NameE of name
   (* Wasm Value Expr *)
   | ConstE of expr * expr

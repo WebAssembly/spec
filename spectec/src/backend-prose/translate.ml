@@ -140,6 +140,9 @@ let rec exp2expr exp = match exp.it with
         | Ast.VarE (id) -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
         | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith
       end
+  (* Wasm Instruction *)
+  | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _}, _) ->
+      Al.WasmInstr ("loop", List.map exp2expr exps)
   (* Call with multiple arguments *)
   | Ast.CallE (id, { it = Ast.TupE el; _ }) ->
       Al.AppE(N id.it, List.map exp2expr el)
@@ -271,7 +274,8 @@ let rec rhs2instrs exp = match exp.it with
     instrs_exp1;
     instrs_exp2
   ]); _}, _) ->
-      let label_expr = Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1) in
+      let label_expr =
+        Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1) in
       [
         Al.LetI (Al.NameE (Al.N "L"), label_expr);
         Al.PushI (Al.NameE (Al.N "L"));

@@ -165,7 +165,7 @@ loop bt instr
 6. If the length of t_1^k is k, then:
   a. If the length of t_2^n is n, then:
     1) If the length of val^k is k, then:
-      a) Let L be the label_n{[YetE (LOOP_instr(bt, instr*{instr}))]}.
+      a) Let L be the label_n{[loop (bt, instr*)]}.
       b) Push L to the stack.
       c) Jump to [val^k, instr*].
 
