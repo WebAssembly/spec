@@ -1,39 +1,32 @@
 # Preview
 
 ```sh
-$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --totalize --sideconditions --the-elimination --animate --prose)
+$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose)
 watsup 0.3 generator
 == Parsing...
 == Elaboration...
 == IL Validation...
-== Function totalization...
-== IL Validation...
-== Option projection eliminiation
-== IL Validation...
 == Side condition inference
 == IL Validation...
 == Animate
-Animation failed:where |o0*{o0}| := |t*{t}|
-Animation failed:if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
-Animation failed:where $bytes_(o0, c) := $mem(z, 0)[(i + n_O) : (o1 / 8)]
+Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)])
+Animation failed:where $bytes_($size(nt <: valtype), c) := $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]
 Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 == IL Validation...
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
-Invalid premise `(if ($default_(t) = ?(o0)))*{t o0}` to be AL instr.
 Ki
 1. Return 1024.
 
 size t
 1. If t is YetE (I32_valtype) or t is YetE (F32_valtype), then:
-  a. Return YetE (?(32)).
+  a. Return 32.
 2. If t is YetE (I64_valtype) or t is YetE (F64_valtype), then:
-  a. Return YetE (?(64)).
+  a. Return 64.
 3. If t is YetE (V128_valtype), then:
-  a. Return YetE (?(128)).
-4. Return YetE (?()).
+  a. Return 128.
 
 test_sub_ATOM_22 n_3_ATOM_y
 1. Return 0.
@@ -43,15 +36,14 @@ curried_ n_1 n_2
 
 default_ t
 1. If t is YetE (I32_valtype), then:
-  a. Return YetE (?(CONST_val(I32_numtype, 0))).
+  a. Return the value i32.CONST 0.
 2. If t is YetE (I64_valtype), then:
-  a. Return YetE (?(CONST_val(I64_numtype, 0))).
+  a. Return the value i64.CONST 0.
 3. If t is YetE (F32_valtype), then:
-  a. Return YetE (?(CONST_val(F32_numtype, 0))).
+  a. Return the value f32.CONST 0.
 4. If t is YetE (F64_valtype), then:
-  a. Return YetE (?(CONST_val(F64_numtype, 0))).
-5. Return YetE (?(REF.NULL_val(rt))).
-6. Return YetE (?()).
+  a. Return the value f64.CONST 0.
+5. Return the value ref.null rt.
 
 funcaddr
 1. Let f be the current frame.
@@ -269,8 +261,7 @@ relop nt relop
 extend nt n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c from the stack.
-3. Let YetE (?(o0)) be $size(nt).
-4. Push the value nt.CONST $ext(n, o0, YetE (S_sx), c) to the stack.
+3. Push the value nt.CONST $ext(n, $size(nt), YetE (S_sx), c) to the stack.
 
 cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -329,13 +320,11 @@ call_addr a
   h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
-        1. Let the length of o0* be the length of t*.
-        2. YetI: (if ($default_(t) = ?(o0)))*{t o0}.
-        3. Let f be { LOCAL: [val^k, o0*]; MODULE: m; }.
-        4. Push FrameE (n, f) to the stack.
-        5. Let L be the label_n{[]}.
-        6. Push L to the stack.
-        7. Jump to instr*.
+        1. Let f be { LOCAL: [val^k, YetE ($default_(t)*{t})]; MODULE: m; }.
+        2. Push FrameE (n, f) to the stack.
+        3. Let L be the label_n{[]}.
+        4. Push L to the stack.
+        5. Jump to instr*.
 
 ref.func x
 1. If x < the length of $funcaddr(), then:
@@ -425,17 +414,14 @@ table.init x y
 load nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. Let YetE (?(o0)) be $size(nt).
-4. If ((i + n_O) + (o0 / 8)) ≥ the length of $mem(0), then:
+3. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-5. Let YetE (?(o0)) be $size(nt).
-6. Let YetE (?(o1)) be $size(nt).
-7. Let $bytes_(o0, c) be YetE ($mem(z, 0)[(i + n_O) : (o1 / 8)]).
+4. Let $bytes_($size(nt), c) be YetE ($mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]).
+5. Push the value nt.CONST c to the stack.
+6. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+  a. Trap.
+7. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
 8. Push the value nt.CONST c to the stack.
-9. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
-  a. Trap.
-10. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
-11. Push the value nt.CONST c to the stack.
 
 memory.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -539,18 +525,14 @@ store nt ?() n_A n_O
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. Let YetE (?(o0)) be $size(nt).
-6. If ((i + n_O) + (o0 / 8)) ≥ the length of $mem(0), then:
+5. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-7. Let YetE (?(o0)) be $size(nt).
-8. Let YetE (?(o1)) be $size(nt).
-9. Let b* be $bytes_(o1, c).
-10. Perform $with_mem(0, (i + n_O), (o0 / 8), b*).
-11. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+6. Let b* be $bytes_($size(nt), c).
+7. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
+8. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-12. Let YetE (?(o0)) be $size(nt).
-13. Let b* be $bytes_(n, $wrap_(YetE ((o0, n)), c)).
-14. Perform $with_mem(0, (i + n_O), (n / 8), b*).
+9. Let b* be $bytes_(n, $wrap_(YetE (($size(nt <: valtype), n)), c)).
+10. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
