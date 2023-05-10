@@ -500,8 +500,7 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \STRUCTNEW~\typeidx \\&&|&
      \STRUCTNEWDEFAULT~\typeidx \\&&|&
      \STRUCTGET~\typeidx~\u32 \\&&|&
-     \STRUCTGETS~\typeidx~\u32 \\&&|&
-     \STRUCTGETU~\typeidx~\u32 \\&&|&
+     \STRUCTGET\K{\_}\sx~\typeidx~\u32 \\&&|&
      \STRUCTSET~\typeidx~\u32 \\&&|&
      \ARRAYNEW~\typeidx \\&&|&
      \ARRAYNEWFIXED~\typeidx~\u32 \\&&|&
@@ -509,13 +508,11 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \ARRAYNEWDATA~\typeidx~\dataidx \\&&|&
      \ARRAYNEWELEM~\typeidx~\elemidx \\&&|&
      \ARRAYGET~\typeidx \\&&|&
-     \ARRAYGETS~\typeidx \\&&|&
-     \ARRAYGETU~\typeidx \\&&|&
+     \ARRAYGET(\K{\_}\sx~\typeidx \\&&|&
      \ARRAYSET~\typeidx \\&&|&
      \ARRAYLEN \\&&|&
      \I31NEW \\&&|&
-     \I31GETS \\&&|&
-     \I31GETU \\&&|&
+     \I31GET\K{\_}\sx \\&&|&
      \EXTERNINTERNALIZE \\&&|&
      \EXTERNEXTERNALIZE \\
    \end{array}
@@ -531,7 +528,7 @@ The remaining array instructions access individual slots,
 again allowing for different sign extension modes in the case of a :ref:`packed <syntax-type-packed>` storage type.
 Last, |ARRAYLEN| produces the length of an array.
 
-The instructions |I31NEW|, |I31GETS|, and |I31GETU| convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
+The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 
 The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 

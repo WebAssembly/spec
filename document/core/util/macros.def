@@ -141,6 +141,7 @@
 .. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u1}}
 .. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u8}}
 .. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u16}}
+.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u31}}
 .. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u32}}
 .. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u64}}
 
@@ -1088,7 +1089,9 @@
 .. |globaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\X{globaladdr}}
 .. |elemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\X{elemaddr}}
 .. |dataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\X{dataaddr}}
-.. |externaddr| mathdef:: \xref{exec/runtime}{syntax-externaddr}{\X{externaddr}}
+.. |structaddr| mathdef:: \xref{exec/runtime}{syntax-structaddr}{\X{structaddr}}
+.. |arrayaddr| mathdef:: \xref{exec/runtime}{syntax-arrayaddr}{\X{arrayaddr}}
+.. |hostaddr| mathdef:: \xref{exec/runtime}{syntax-hostaddr}{\X{hostaddr}}
 
 
 .. Address, meta functions
@@ -1139,8 +1142,20 @@
 .. |MIDATAS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{dataaddrs}}
 .. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
+.. |SITYPE| mathdef:: \xref{exec/runtime}{syntax-structinst}{\K{type}}
+.. |SIFIELDS| mathdef:: \xref{exec/runtime}{syntax-structinst}{\K{fields}}
+
+.. |AITYPE| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{type}}
+.. |AIFIELDS| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{fields}}
+
+.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I8.PACK}}
+.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I16.PACK}}
+
 
 .. Instances, non-terminals
+
+.. |fieldval| mathdef:: \xref{exec/runtime}{syntax-fieldval}{\X{fieldval}}
+.. |packval| mathdef:: \xref{exec/runtime}{syntax-packval}{\X{packval}}
 
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
@@ -1172,6 +1187,8 @@
 .. |SGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
 .. |SELEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elems}}
 .. |SDATAS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{datas}}
+.. |SSTRUCTS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{structs}}
+.. |SARRAYS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{arrays}}
 
 .. Store, non-terminals
 
@@ -1200,8 +1217,12 @@
 
 .. Administrative Instructions, terminals
 
+.. |REFI31| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i31}}
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
-.. |REFEXTERNADDR| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
+.. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
+.. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
+.. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref.host}{\K{ref{.}host}}
+.. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |RETURNINVOKE| mathdef:: \xref{exec/runtime}{syntax-return_invoke}{\K{return\_invoke}}
