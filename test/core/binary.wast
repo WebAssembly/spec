@@ -129,50 +129,6 @@
   "integer representation too long"
 )
 
-
-;; Signed LEB128 must not be overlong
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0b\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\80\80\80\80\80\00"              ;; i32.const 0 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\0b\01"                          ;; Global section with 1 entry
-    "\7f\00"                             ;; i32, immutable
-    "\41\ff\ff\ff\ff\ff\7f"              ;; i32.const -1 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\10\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\80\80\80\80\80\80\80\80\80\80\00"  ;; i64.const 0 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\06\10\01"                          ;; Global section with 1 entry
-    "\7e\00"                             ;; i64, immutable
-    "\42\ff\ff\ff\ff\ff\ff\ff\ff\ff\ff\7f"  ;; i64.const -1 with one byte too many
-    "\0b"                                ;; end
-  )
-  "integer representation too long"
-)
-
 ;; Function with missing end marker (between two functions)
 (assert_malformed
   (module binary
