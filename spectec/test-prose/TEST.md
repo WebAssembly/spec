@@ -329,9 +329,8 @@ call_addr a
       a) If the length of val^k is k, then:
         1. Let the length of o0* be the length of t*.
         2. YetI: (if ($default_(t) = ?(o0)))*{t o0}.
-        3. Let f be { LOCAL [val^k, o0*], MODULE m }.
-        4. Let F be { module YetE (f.module), locals YetE (val^n :: default_t*) }.
-        5. Push the activation of F with arity n to the stack.
+        3. Let f be { LOCAL: [val^k, o0*]; MODULE: m; }.
+        4. Push FrameE (n, f) to the stack.
 
 ref.func x
 1. If x < the length of $funcaddr(), then:

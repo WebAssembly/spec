@@ -148,12 +148,12 @@ let rec exp2expr exp = match exp.it with
       Al.AppE(N id.it, [exp2expr inner_exp])
   (* Record expression *)
   | Ast.StrE (expfields) ->
-      let record =
-        List.map
-          (function
-            | (Ast.Atom name, fieldexp) -> (name, exp2expr fieldexp)
-            | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
-          expfields in
+      let f acc = function
+        | (Ast.Atom name, fieldexp) ->
+            let expr = exp2expr fieldexp in
+            Al.Record.add name expr acc
+        | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith in
+      let record = List.fold_left f Al.Record.empty expfields in
       Al.RecordE (record)
   (* TODO: Handle MixE *)
   (* Yet *)
@@ -260,20 +260,11 @@ let rec rhs2instrs exp = match exp.it with
   (* Frame *)
   | Ast.CaseE(Ast.Atom "FRAME_", { it = Ast.TupE ([
       { it = Ast.VarE (arity); _ };
-      { it = Ast.VarE (_name); _ };
+      { it = Ast.VarE (fname); _ };
       _inner_exp
     ]); _ }, _) ->
-
       [
-        Al.LetI (
-          Al.NameE (Al.N "F"),
-          Al.RecordE ([
-            ("module", Al.YetE "f.module");
-            ("locals", Al.YetE "val^n :: default_t*")
-          ]));
-        Al.PushI (Al.NameE (Al.N (
-          sprintf "the activation of F with arity %s" arity.it
-        )))
+        Al.PushI (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it)))
         (* TODO: enter label *)
       ]
   (* TODO: Label *)

@@ -123,6 +123,7 @@ let rec structured_string_of_expr = function
   | LengthE e -> "LengthE (" ^ structured_string_of_expr e ^ ")"
   | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
   | GetCurFrameE -> "GetCurFrameE"
+  | FrameE _ -> "FrameE TODO"
   | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
   | PropE (e, s) -> "PropE (" ^ structured_string_of_expr e ^ ", " ^ s ^ ")"
   | ListE el ->
@@ -137,8 +138,7 @@ let rec structured_string_of_expr = function
         structured_string_of_expr e2 ^ ", " ^
         structured_string_of_expr e3 ^ ")"
   | ForWhichE cond -> "ForWhichE (" ^ structured_string_of_cond cond ^ ")"
-  | RecordE l ->
-      "RecordE (" ^ string_of_list structured_string_of_field "[" ", " "]" l ^ ")"
+  | RecordE _ -> "RecordE (TODO)"
   | PageSizeE -> "PageSizeE"
   | AfterCallE -> "AfterCallE"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
@@ -315,7 +315,14 @@ and string_of_value = function
   | FloatV i -> string_of_float i
   | StringV s -> s
 
-let rec string_of_expr = function
+let rec string_of_record_expr r =
+  Al.Record.fold
+    (fun k v acc ->
+      acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    r
+    "{ " ^ "}"
+
+  and string_of_expr = function
   | ValueE v -> string_of_value v
   | MinusE e ->
       sprintf "-%s" (string_of_expr e)
@@ -355,6 +362,7 @@ let rec string_of_expr = function
   | LengthE e -> sprintf "the length of %s" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurFrameE -> "the current frame"
+  | FrameE (e1, e2) -> sprintf "FrameE (%s, %s)" (string_of_expr e1)  (string_of_expr e2)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | PropE (e, s) -> sprintf "%s.%s" (string_of_expr e) s
   | ListE (el) -> string_of_array string_of_expr "[" ", " "]" el
@@ -362,11 +370,7 @@ let rec string_of_expr = function
   | SliceAccessE (e1, e2, e3) ->
       sprintf "%s[%s : %s]" (string_of_expr e1) (string_of_expr e2) (string_of_expr e3)
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
-  | RecordE (fl) ->
-      let string_of_field (n, e) =
-        sprintf "%s %s" n (string_of_expr e) in
-      sprintf "{ %s }"
-        (string_of_list string_of_field "" ", " "" fl)
+  | RecordE r -> string_of_record_expr r
   | PageSizeE -> "the page size"
   | AfterCallE -> "the instruction after the original call that pushed the frame"
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)

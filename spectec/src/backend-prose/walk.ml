@@ -13,12 +13,12 @@ let rec walk_expr f e =
     | LengthE inner_e -> f_expr(LengthE (walk_expr f inner_e))
     | ArityE inner_e -> f_expr(ArityE (walk_expr f inner_e))
     | GetCurFrameE -> f_expr(GetCurFrameE)
+    | FrameE (e1, e2) -> f_expr(FrameE (walk_expr f e1, walk_expr f e2))
     | PropE (inner_e, s) -> f_expr(PropE (walk_expr f inner_e, s))
     | ListE (el) -> f_expr(ListE (Array.map (walk_expr f) el))
     | IndexAccessE (e1, e2) -> f_expr(IndexAccessE (walk_expr f e1, walk_expr f e2))
-    | RecordE pl ->
-        let walk_elem (s, e) = (s, walk_expr f e) in
-        f_expr(RecordE (List.map walk_elem pl))
+    | RecordE r ->
+        RecordE (Record.map (walk_expr f) r)
     | ConstE (e1, e2) -> f_expr(ConstE (walk_expr f e1, walk_expr f e2))
     | RefFuncAddrE inner_e -> f_expr(RefFuncAddrE (walk_expr f inner_e))
     | RefNullE n -> f_expr(RefNullE n)

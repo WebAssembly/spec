@@ -23,7 +23,7 @@ end
 
 module Record = Map.Make (FieldName)
 
-type record = value Record.t
+type 'a record = 'a Record.t
 
 (* Wasm value *)
 and global_inst = value
@@ -32,13 +32,13 @@ and global_inst = value
 and table_inst = value
 
 (* Table, Global: Address list *)
-and module_inst = record
+and module_inst = value record
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
-and frame = int * record
+and frame = int * value record
 
 (* global: global_inst list table: table_inst list *)
-and store = record
+and store = value record
 
 and stack = value list
 
@@ -80,13 +80,14 @@ type expr =
   | LengthE of expr
   | ArityE of expr
   | GetCurFrameE
+  | FrameE of (expr * expr)
   | BitWidthE of expr
   | PropE of (expr * string)
   | ListE of expr array
   | IndexAccessE of (expr * expr)
   | SliceAccessE of (expr * expr * expr)
   | ForWhichE of cond
-  | RecordE of (string * expr) list
+  | RecordE of expr record
   | PageSizeE
   | AfterCallE
   | ContE of expr
