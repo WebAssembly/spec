@@ -143,8 +143,8 @@ let rec structured_string_of_expr = function
   | AfterCallE -> "AfterCallE"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelNthE e1 -> "LabelNthE (" ^ structured_string_of_expr e1 ^ ")"
-  | LabelE (e1) ->
-      "LabelE (" ^ structured_string_of_expr e1 ^ ")"
+  | LabelE (e1, e2) ->
+      "LabelE (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
   | ConstE (t, e) ->
       "ConstE (" ^
@@ -373,8 +373,8 @@ let rec string_of_record_expr r =
   | AfterCallE -> "the instruction after the original call that pushed the frame"
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
-  | LabelE (e1) ->
-      sprintf "the label_%s" (string_of_expr e1)
+  | LabelE (e1, e2) ->
+      sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
   | ConstE (t, e) ->
       sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)

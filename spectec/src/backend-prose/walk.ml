@@ -22,7 +22,7 @@ let rec walk_expr f e =
     | ConstE (e1, e2) -> f_expr(ConstE (walk_expr f e1, walk_expr f e2))
     | RefFuncAddrE inner_e -> f_expr(RefFuncAddrE (walk_expr f inner_e))
     | RefNullE n -> f_expr(RefNullE n)
-    | LabelE e -> f_expr(LabelE (f_expr e))
+    | LabelE (e1, e2) -> f_expr(LabelE (f_expr e1, f_expr e2))
     | NameE n -> f_expr(NameE n)
     | YetE s -> f_expr(YetE s)
     | _ -> Print.structured_string_of_expr e |> failwith

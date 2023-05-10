@@ -261,21 +261,22 @@ let rec rhs2instrs exp = match exp.it with
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE ([
       { it = Ast.VarE (arity); _ };
       { it = Ast.VarE (fname); _ };
-      { it = Ast.ListE [{ it = Ast.CaseE (Atom "LABEL_", { it = Ast.TupE ([
-        { it = Ast.VarE (label_arity); _ };
-        _instrs_exp1;
-        instrs_exp2
-      ]); _}, _); _ }]; _ }
+      { it = Ast.ListE [labelexp]; _ }
     ]); _ }, _) ->
+      Al.PushI (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it))) :: 
+        rhs2instrs labelexp
+  (* TODO: Label *)
+  | Ast.CaseE (Atom "LABEL_", { it = Ast.TupE ([
+    { it = Ast.VarE (label_arity); _ };
+    instrs_exp1;
+    instrs_exp2
+  ]); _}, _) ->
+      let label_expr = Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1) in
       [
-        Al.PushI (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it)));
-        Al.LetI (Al.NameE (Al.N "L"), Al.LabelE (Al.NameE (Al.N label_arity.it)));
+        Al.LetI (Al.NameE (Al.N "L"), label_expr);
         Al.PushI (Al.NameE (Al.N "L"));
         Al.JumpI (exp2expr instrs_exp2)
       ]
-  (* TODO: Label *)
-  | Ast.CaseE (Atom "LABEL_", _, _) ->
-      [ Al.LetI (Al.NameE (Al.N "L"), Al.YetE ""); Al.EnterI (YetE "", YetE "") ]
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp, _)
     when String.starts_with ~prefix: "TABLE." atomid ||

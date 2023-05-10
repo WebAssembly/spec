@@ -92,7 +92,7 @@ type expr =
   | AfterCallE
   | ContE of expr
   | LabelNthE of expr
-  | LabelE of expr
+  | LabelE of (expr * expr)
   | NameE of name
   (* Wasm Value Expr *)
   | ConstE of expr * expr
