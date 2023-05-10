@@ -492,25 +492,27 @@
   )
   "integer representation too long"
 )
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\11\01"                ;; Code section
-    ;; function 0
-    "\0f\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\28"                      ;; i32.load
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
-    "\1a"                      ;; drop
-    "\0b"                      ;; end
-  )
-  "integer representation too long"
-)
+;; The memory offset will be decoded as u64 in the memory64 proposal.
+;; TODO: Re-enable this test as assert_trap test in the memory64 repo.
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\11\01"                ;; Code section
+;;     ;; function 0
+;;     "\0f\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\28"                      ;; i32.load
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
+;;     "\1a"                      ;; drop
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer representation too long"
+;; )
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -549,25 +551,27 @@
   )
   "integer representation too long"
 )
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\12\01"                ;; Code section
-    ;; function 0
-    "\10\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\41\03"                   ;; i32.const 3
-    "\36"                      ;; i32.store
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
-    "\0b"                      ;; end
-  )
-  "integer representation too long"
-)
+;; The memory offset will be decoded as u64 in the memory64 proposal.
+;; TODO: Re-enable this test as assert_trap test in the memory64 repo.
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\12\01"                ;; Code section
+;;     ;; function 0
+;;     "\10\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\41\03"                   ;; i32.const 3
+;;     "\36"                      ;; i32.store
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\80\00"       ;; offset 2 with one byte too many
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer representation too long"
+;; )
 
 ;; Signed LEB128 must not be overlong
 (assert_malformed
@@ -629,44 +633,46 @@
   )
   "integer too large"
 )
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\10\01"                ;; Code section
-    ;; function 0
-    "\0e\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\28"                      ;; i32.load
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\10"          ;; offset 2 with unused bits set
-    "\1a"                      ;; drop
-    "\0b"                      ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\10\01"                ;; Code section
-    ;; function 0
-    "\0e\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\28"                      ;; i32.load
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\40"          ;; offset 2 with some unused bits set
-    "\1a"                      ;; drop
-    "\0b"                      ;; end
-  )
-  "integer too large"
-)
+;; The memory offset will be decoded as u64 in the memory64 proposal.
+;; TODO: Re-enable this test as assert_trap test in the memory64 repo.
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\10\01"                ;; Code section
+;;     ;; function 0
+;;     "\0e\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\28"                      ;; i32.load
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\10"          ;; offset 2 with unused bits set
+;;     "\1a"                      ;; drop
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer too large"
+;; )
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\10\01"                ;; Code section
+;;     ;; function 0
+;;     "\0e\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\28"                      ;; i32.load
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\40"          ;; offset 2 with some unused bits set
+;;     "\1a"                      ;; drop
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer too large"
+;; )
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"
@@ -742,45 +748,46 @@
   )
   "integer too large"
 )
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\11\01"                ;; Code section
-    ;; function 0
-    "\0f\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\41\03"                   ;; i32.const 3
-    "\36"                      ;; i32.store
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\10"          ;; offset 2 with unused bits set
-    "\0b"                      ;; end
-  )
-  "integer too large"
-)
-(assert_malformed
-  (module binary
-    "\00asm" "\01\00\00\00"
-    "\01\04\01\60\00\00"       ;; Type section
-    "\03\02\01\00"             ;; Function section
-    "\05\03\01\00\01"          ;; Memory section
-    "\0a\11\01"                ;; Code section
-
-    ;; function 0
-    "\0f\01\01"                ;; local type count
-    "\7f"                      ;; i32
-    "\41\00"                   ;; i32.const 0
-    "\41\03"                   ;; i32.const 3
-    "\36"                      ;; i32.store
-    "\02"                      ;; alignment 2
-    "\82\80\80\80\40"          ;; offset 2 with some unused bits set
-    "\0b"                      ;; end
-  )
-  "integer too large"
-)
+;; The memory offset will be decoded as u64 in the memory64 proposal.
+;; TODO: Re-enable this test as assert_trap test in the memory64 repo.
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\11\01"                ;; Code section
+;;     ;; function 0
+;;     "\0f\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\41\03"                   ;; i32.const 3
+;;     "\36"                      ;; i32.store
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\10"          ;; offset 2 with unused bits set
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer too large"
+;; )
+;; (assert_malformed
+;;   (module binary
+;;     "\00asm" "\01\00\00\00"
+;;     "\01\04\01\60\00\00"       ;; Type section
+;;     "\03\02\01\00"             ;; Function section
+;;     "\05\03\01\00\01"          ;; Memory section
+;;     "\0a\11\01"                ;; Code section
+;;     ;; function 0
+;;     "\0f\01\01"                ;; local type count
+;;     "\7f"                      ;; i32
+;;     "\41\00"                   ;; i32.const 0
+;;     "\41\03"                   ;; i32.const 3
+;;     "\36"                      ;; i32.store
+;;     "\02"                      ;; alignment 2
+;;     "\82\80\80\80\40"          ;; offset 2 with some unused bits set
+;;     "\0b"                      ;; end
+;;   )
+;;   "integer too large"
+;; )
 
 ;; Signed LEB128s sign-extend
 (assert_malformed
