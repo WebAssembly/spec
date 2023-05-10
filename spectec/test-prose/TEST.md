@@ -146,7 +146,7 @@ select t
 block bt instr
 1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
 2. Let t_1^k be tmp0.
-3. Assert: due to validation, there are at least k values on the top of the stack.
+3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
 6. If the length of t_1^k is k, then:
@@ -158,7 +158,7 @@ block bt instr
 loop bt instr
 1. Let YetE (`%->%`(tmp0, tmp1)) be bt.
 2. Let t_1^k be tmp0.
-3. Assert: due to validation, there are at least k values on the top of the stack.
+3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
 6. If the length of t_1^k is k, then:
@@ -177,13 +177,13 @@ if bt instr_1 instr_2
 
 label n instr val
 1. Pop val* from the stack.
-2. Assert: Assert: due to validation, the label L is now on the top of the stack.
+2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
 br
 1. Pop [val'*, [val^n, [[YetE (BR_admininstr(0))], instr*]]] from the stack.
-2. Assert: Assert: due to validation, the label L is now on the top of the stack.
+2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. If the length of val^n is n, then:
   a. Push val^n to the stack.
@@ -208,9 +208,9 @@ br_table l l'
 frame n f val
 1. Let f be the current frame.
 2. Let n be the arity of f.
-3. Assert: due to validation, there are at least n values on the top of the stack.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop val^n from the stack.
-5. Assert: due to validation, the frame F is now on the top of the stack.
+5. Assert: Due to validation, the frame F is now on the top of the stack.
 6. Pop the frame from the stack.
 7. If the length of val^n is n, then:
   a. Push val^n to the stack.
@@ -218,12 +218,12 @@ frame n f val
 return
 1. Let f be the current frame.
 2. Let n be the arity of f.
-3. Assert: due to validation, there are at least n values on the top of the stack.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop val^n from the stack.
-5. Assert: due to validation, the stack contains at least one frame.
+5. Assert: Due to validation, the stack contains at least one frame.
 6. While the top of the stack is not a frame, do:
   a. Pop the top element from the stack.
-7. Assert: due to validation, the frame F is now on the top of the stack.
+7. Assert: Due to validation, the frame F is now on the top of the stack.
 8. Pop the frame from the stack.
 9. If the length of val^n is n, then:
   a. Push val^n to the stack.
@@ -321,7 +321,7 @@ call_addr a
   b. Let YetE (`FUNC%%*%`(tmp1, t*{t}, instr*{instr})) be tmp0.
   c. Let YetE (`%->%`(tmp2, tmp3)) be tmp1.
   d. Let t_1^k be tmp2.
-  e. Assert: due to validation, there are at least k values on the top of the stack.
+  e. Assert: Due to validation, there are at least k values on the top of the stack.
   f. Pop val^k from the stack.
   g. Let t_2^n be tmp3.
   h. If the length of t_1^k is k, then:
@@ -560,207 +560,6 @@ memory.grow
 data.drop x
 1. Perform $with_data(x, []).
 
-== AL Validation...
-
-Ki
-Failure("ReturnI (ValueE 1024)")
-
-size
-Failure("YetE (I32_valtype)")
-
-test_sub_ATOM_22
-Failure("ReturnI (ValueE 0)")
-
-curried_
-Failure("ReturnI (AddE (NameE (N(n_1)), NameE (N(n_2))))")
-
-default_
-Failure("YetE (I32_valtype)")
-
-funcaddr
-Failure("GetCurFrameE")
-
-funcinst
-Failure("GetCurFrameE")
-
-func
-Failure("GetCurFrameE")
-
-global
-Failure("GetCurFrameE")
-
-table
-Failure("GetCurFrameE")
-
-mem
-Failure("GetCurFrameE")
-
-elem
-Failure("GetCurFrameE")
-
-data
-Failure("GetCurFrameE")
-
-local
-Failure("GetCurFrameE")
-
-with_local
-Failure("GetCurFrameE")
-
-with_global
-Failure("GetCurFrameE")
-
-with_table
-Failure("GetCurFrameE")
-
-with_tableext
-Failure("GetCurFrameE")
-
-with_mem
-Failure("GetCurFrameE")
-
-with_memext
-Failure("GetCurFrameE")
-
-with_elem
-Failure("GetCurFrameE")
-
-with_data
-Failure("GetCurFrameE")
-
-unreachable
-Ok
-
-nop
-Ok
-
-drop
-Ok
-
-select
-Ok
-
-block
-Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
-
-loop
-Failure("LetI (YetE (`%->%`(tmp0, tmp1)), NameE (N(bt)))")
-
-if
-Ok
-
-label
-Ok
-
-br
-Failure("PopI (ListE ([IterE (N(val'), *), ListE ([IterE (N(val), N(n)), ListE ([ListE ([YetE (BR_admininstr(0))]), IterE (N(instr), *)])])]))")
-
-br_if
-Ok
-
-br_table
-Ok
-
-frame
-Failure("GetCurFrameE")
-
-return
-Failure("GetCurFrameE")
-
-unop
-Ok
-
-binop
-Ok
-
-testop
-Ok
-
-relop
-Ok
-
-extend
-Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
-
-cvtop
-Ok
-
-ref.is_null
-Failure("YetE (typeof(val))")
-
-local.tee
-Ok
-
-call
-Invalid_argument("List.iter2")
-
-call_indirect
-Failure("IntT is not subtype of StateT")
-
-call_addr
-Invalid_argument("List.iter2")
-
-ref.func
-Invalid_argument("List.iter2")
-
-local.get
-Failure("IntT is not subtype of StateT")
-
-global.get
-Failure("IntT is not subtype of StateT")
-
-table.get
-Failure("IntT is not subtype of StateT")
-
-table.size
-Failure("IntT is not subtype of StateT")
-
-table.fill
-Failure("IntT is not subtype of StateT")
-
-table.copy
-Failure("IntT is not subtype of StateT")
-
-table.init
-Failure("IntT is not subtype of StateT")
-
-load
-Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
-
-memory.fill
-Failure("IntT is not subtype of StateT")
-
-memory.copy
-Failure("IntT is not subtype of StateT")
-
-memory.init
-Failure("IntT is not subtype of StateT")
-
-local.set
-Failure("IntT is not subtype of StateT")
-
-global.set
-Failure("IntT is not subtype of StateT")
-
-table.set
-Failure("IntT is not subtype of StateT")
-
-table.grow
-Failure("YetE (ref^n{})")
-
-elem.drop
-Failure("IntT is not subtype of StateT")
-
-store
-Failure("LetI (YetE (?(o0)), AppE (N(size), [ NameE (N(nt)) ]))")
-
-memory.grow
-Failure("YetE (0^((n * 64) * $Ki){})")
-
-data.drop
-Failure("IntT is not subtype of StateT")
-
-Pass/Total: [14/66]
 == Interpret AL...
 binop
 Ok

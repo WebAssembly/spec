@@ -163,20 +163,20 @@ let rec exp2expr exp = match exp.it with
 let insert_assert exp = match exp.it with
   | Ast.CaseE(Ast.Atom "FRAME_", _, _) ->
       Al.AssertI
-        "due to validation, the frame F is now on the top of the stack"
+        "Due to validation, the frame F is now on the top of the stack"
   | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) ->
-      Al.AssertI "due to validation, the stack contains at least one frame"
+      Al.AssertI "Due to validation, the stack contains at least one frame"
   | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) ->
       Al.AssertI
         (sprintf
-          "due to validation, there are at least %s values on the top of the stack"
+          "Due to validation, there are at least %s values on the top of the stack"
           n.it)
   | Ast.CaseE (
     Ast.Atom "LABEL_",
     { it = Ast.TupE ([_n; _instrs; _vals]); _ }, _
   ) ->
       Al.AssertI
-        "Assert: due to validation, the label L is now on the top of the stack"
+        "Due to validation, the label L is now on the top of the stack"
   | Ast.CaseE (
     Ast.Atom "CONST",
     { it = Ast.TupE({ it = Ast.CaseE (Ast.Atom "I32", _, _); _ } :: _); _ },
