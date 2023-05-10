@@ -200,6 +200,9 @@
 
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
+.. |ANY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{any}}
+.. |EQ| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{eq}}
+.. |I31| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{i31}}
 .. |STRUCT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{struct}}
 .. |ARRAY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{array}}
 .. |FUNC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{func}}

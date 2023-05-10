@@ -456,7 +456,7 @@ The former merely returns the result of the test,
 while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
 
 .. note::
-   The |BR_ON_CAST| and |BR_ON_CAST_FAIL| instructions provides versions of the latter that branch depending on the success of the downcast instead of trapping.
+   The |BRONCAST| and |BRONCASTFAIL| instructions provides versions of the latter that branch depending on the success of the downcast instead of trapping.
 
 
 .. index:: reference instruction, reference, null, heap type, reference type

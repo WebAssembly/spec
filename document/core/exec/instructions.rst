@@ -478,7 +478,7 @@ Reference Instructions
 .. _exec-struct.get_sx:
 
 :math:`\STRUCTGET\K{\_}\sx~\typeidx~i`
-.....................................
+......................................
 
 .. todo:: Prose
 .. todo:: Unpack
