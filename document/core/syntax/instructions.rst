@@ -528,10 +528,10 @@ Similarly, :ref:`arrays <syntax-type-array>` can be allocated either with an exp
 Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
 and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segement, respectively.
 The remaining array instructions access individual slots,
-again allowing for different sign extension modes in the case of :ref:`packed <syntax-type-packed>` a storage type.
+again allowing for different sign extension modes in the case of a :ref:`packed <syntax-type-packed>` storage type.
 Last, |ARRAYLEN| produces the length of an array.
 
-The instructions |I31NEW|, |I31GETS|, and |I31GETU| convert between type |I31| and an unboxed :ref:`scalars <syntax-i31>`.
+The instructions |I31NEW|, |I31GETS|, and |I31GETU| convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 
 The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 

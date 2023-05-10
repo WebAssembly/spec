@@ -106,22 +106,22 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 
 A heap type is either *abstract* or *concrete*.
 
-The abstract type |FUNC| denotes the infinite union (i.e., supertype) of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
-Dually, the type |NOFUNC| denotes the infinite intersection (i.e., subtype) of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+The abstract type |FUNC| denotes the common supertype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+Dually, the type |NOFUNC| denotes the common subtype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
 This type has no values.
 
-The abstract type |EXTERN| denotes the infinite union of all external references received through the :ref:`embedder <embedder>`.
+The abstract type |EXTERN| denotes the common supertype of all external references received through the :ref:`embedder <embedder>`.
 This type has no concrete subtypes.
-Dually, the type |NOEXTERN| denotes the infinite intersection of all forms of external references.
+Dually, the type |NOEXTERN| denotes the common subtype of all forms of external references.
 This type has no values.
 
-The abstract type |ANY| denotes the infinite union of all aggregate types, as well as possibly abstract values produced by *internalizing* an external reference of type |EXTERN|.
-Dually, the type |NONE| denotes the infinite intersection of all forms of aggregate types.
+The abstract type |ANY| denotes the common supertype of all aggregate types, as well as possibly abstract values produced by *internalizing* an external reference of type |EXTERN|.
+Dually, the type |NONE| denotes the common subtype of all forms of aggregate types.
 This type has no values.
 
 The abstract type |EQ| is a subtype of |ANY| that includes all types for which references can be compared, i.e., aggregate values and |I31|.
 
-The abstract types |STRUCT| and |ARRAY| denote the infinite union of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
+The abstract types |STRUCT| and |ARRAY| denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
 
 The abstract type |I31| denotes *unboxed scalars*, that is, integers injected into references.
 Their observable value range is limited to 31 bits.
