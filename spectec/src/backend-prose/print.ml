@@ -241,7 +241,7 @@ let rec structured_string_of_instr depth = function
         structured_string_of_expr e2 ^ ")"
   | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
   | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
-  | ExitI _ -> "Exit"
+  | ExitI n -> "ExitI (" ^ structured_string_of_name n ^ ")"
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs depth instrs =
@@ -351,7 +351,7 @@ let rec string_of_record_expr r =
   | IterE (n, iter) ->
       string_of_name n ^ string_of_iter iter
   | ConcatE (e1, e2) ->
-      sprintf "the concatenation of the two sequences %s and %s"
+      sprintf "%s ++ %s"
         (string_of_expr e1)
         (string_of_expr e2)
   | LengthE e -> sprintf "the length of %s" (string_of_expr e)
@@ -489,7 +489,7 @@ let rec string_of_instr index depth = function
         (string_of_expr e2)
   | JumpI e -> sprintf "%s Jump to %s." (make_index index depth) (string_of_expr e)
   | PerformI e -> sprintf "%s Perform %s." (make_index index depth) (string_of_expr e)
-  | ExitI _ -> make_index index depth ^ "Exit"
+  | ExitI _ -> make_index index depth ^ " Exit current context."
   | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
 
 and string_of_instrs depth instrs =

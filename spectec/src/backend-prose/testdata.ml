@@ -45,6 +45,8 @@ let get_func_insts_data () = ListV([|
     ArrowV(ListV[|i32TV; i32TV|], ListV[|i32TV|]);
     ListV[||];
     ListV[|
+      WasmInstrV("local.get", [IntV 0]);
+      WasmInstrV("local.get", [IntV 1]);
       WasmInstrV("binop", [i32TV; StringV "Add"])
     |];
   ]));
@@ -53,17 +55,20 @@ let get_func_insts_data () = ListV([|
     ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
     ListV[||];
     ListV[|
+      WasmInstrV("local.get", [IntV(0)]);
       WasmInstrV("if", [
         ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
         ListV[|
-          WasmInstrV("local.tee", [IntV(0)]);
+          WasmInstrV("local.get", [IntV(0)]);
           WasmInstrV("local.get", [IntV(0)]);
           WasmInstrV("const", [i32TV; IntV(1)]);
-          WasmInstrV("binop", [i32TV; StringV("sub")]);
+          WasmInstrV("binop", [i32TV; StringV("Sub")]);
           WasmInstrV("call", [IntV(2)]);
-          WasmInstrV("binop", [i32TV; StringV("add")])
+          WasmInstrV("binop", [i32TV; StringV("Add")])
         |];
-        ListV[||]
+        ListV[|
+          WasmInstrV("const", [i32TV; IntV(0)]);
+        |]
       ])
     |];
   ]))
@@ -205,18 +210,30 @@ let table_get = "table_get", [
   Operators.table_get (i32 2 |> to_phrase) |> to_phrase
 ], "null"
 
-let call = "call", [
+let call_nop = "call_nop", [
+  Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
   Operators.call (i32 0 |> to_phrase) |> to_phrase
-], "yet"
+], "0"
+
+let call_add = "call_add", [
+  Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+  Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
+  Operators.call (i32 1 |> to_phrase) |> to_phrase
+], "3"
+
+let call_sum = "call_sum", [
+  Operators.i32_const (i32 10 |> to_phrase) |> to_phrase;
+  Operators.call (i32 2 |> to_phrase) |> to_phrase
+], "55"
 
 (* Printer of final result *)
 let string_of_result v = match v with
   | WasmInstrV ("const", [_; n]) -> Print.string_of_value n
   | WasmInstrV ("ref.null", _) -> "null"
-  | _ -> Print.string_of_value v ^ "is not a wasm value." |> failwith
+  | _ -> Print.string_of_value v ^ "is not a wasm value."
 
 let test_cases = [
   binop; testop; relop1; relop2; nop; drop; select;
   local_set; local_get; local_tee; global_set; global_get1; global_get2; table_get;
-  call
+  call_nop; call_add; call_sum
 ]

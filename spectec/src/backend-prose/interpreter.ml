@@ -144,6 +144,11 @@ and eval_expr env expr = match expr with
         | StoreV s -> Record.find str s
         | _ -> failwith "Not a record"
       end
+  | ConcatE (e1, e2) ->
+      begin match eval_expr env e1, eval_expr env e2 with
+        | ListV v1, ListV v2 -> ListV (Array.append v1 v2)
+        | _ -> failwith "Not a list"
+      end
   | ListE el -> ListV (Array.map (eval_expr env) el)
   | IndexAccessE (e1, e2) ->
       let v1 = eval_expr env e1 in
@@ -277,6 +282,26 @@ and interp_instr env i =
   | ExecuteI (fname, el) ->
       let _ = List.map (eval_expr env) el |> dsl_function_call (N fname) in
       env
+  (* TODO: Merge this with run_wasm_instr *)
+  | JumpI (e) ->
+      begin match eval_expr env e with
+      | ListV vl -> Array.iter (fun i -> match i with
+          | WasmInstrV("const", _)
+          | WasmInstrV("ref.null", _) -> push i
+          | WasmInstrV(name, args) -> ignore (run_algo name args)
+          | _ -> "Not a Wasm Instruction" |> failwith
+        ) vl
+      | _ -> "Not a list of Wasm Instruction" |> failwith
+      end;
+      env
+  | ExitI _ ->
+    let rec pop_while pred =
+      let top = pop() in
+      if pred top then top :: pop_while pred else []
+    in
+    let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
+    vals |> List.rev |> List.iter push;
+    env
   | i -> structured_string_of_instr 0 i |> failwith
 
 and interp_instrs env il =
@@ -364,7 +389,10 @@ let test test_case =
     if actual_result = expected_result then
       print_endline "Ok\n"
     else
-      "Fail!\n" ^ string_of_stack !stack |> print_endline
+      "Fail!\n" ^
+      "Expected: " ^ expected_result ^ "\n" ^
+      "Actual: " ^ actual_result ^ "\n" ^
+      string_of_stack !stack |> print_endline
   with
     e -> print_endline ("Fail!(" ^ (Printexc.to_string e) ^ ")\n")
 

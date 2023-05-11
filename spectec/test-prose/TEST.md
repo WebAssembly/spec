@@ -148,7 +148,7 @@ block bt instr
       b) Push L to the stack.
       c) Push val^k to the stack.
       d) Jump to instr*.
-      e)Exit
+      e) Exit current context.
 
 loop bt instr
 1. Let tmp0->tmp1 be bt.
@@ -163,7 +163,7 @@ loop bt instr
       b) Push L to the stack.
       c) Push val^k to the stack.
       d) Jump to instr*.
-      e)Exit
+      e) Exit current context.
 
 if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -180,7 +180,7 @@ label n instr val
 4. Push val* to the stack.
 
 br
-1. Pop [val'*, [val^n, [[YetE (BR_admininstr(0))], instr*]]] from the stack.
+1. Pop val'* ++ val^n ++ [YetE (BR_admininstr(0))] ++ instr* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. If the length of val^n is n, then:
@@ -324,13 +324,13 @@ call_addr a
   h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
-        1. Let f be { LOCAL: [val^k, default_(t)*]; MODULE: m; }.
+        1. Let f be { LOCAL: val^k ++ default_(t)*; MODULE: m; }.
         2. Push the activation of f with arity n to the stack.
         3. Let L be the label_n{[]}.
         4. Push L to the stack.
         5. Jump to instr*.
-        6.Exit
-        7.Exit
+        6. Exit current context.
+        7. Exit current context.
 
 ref.func x
 1. If x < the length of $funcaddr(), then:
@@ -595,8 +595,14 @@ Ok
 table_get
 Ok
 
-call
-Fail!(Failure("JumpI (IterE (N(instr), *))"))
+call_nop
+Ok
+
+call_add
+Ok
+
+call_sum
+Ok
 
 == Complete.
 ```

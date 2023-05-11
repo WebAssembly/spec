@@ -104,7 +104,7 @@ let rec exp2expr exp = match exp.it with
   | Ast.LenE inner_exp -> Al.LengthE (exp2expr inner_exp)
   | Ast.ListE exps -> Al.ListE (List.map exp2expr exps |> Stdlib.Array.of_list)
   | Ast.IdxE (exp1, exp2) -> Al.IndexAccessE (exp2expr exp1, exp2expr exp2)
-  | Ast.CatE (exp1, exp2) -> Al.ListE ([|exp2expr exp1; exp2expr exp2|])
+  | Ast.CatE (exp1, exp2) -> Al.ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
   | Ast.VarE id -> Al.NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
