@@ -427,7 +427,6 @@ Reference Instructions
 ...........................
 
 .. todo:: Prose
-.. todo:: pack fields
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -435,7 +434,7 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~\val^n\} \\
+      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_\fieldtype(\val))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
    \end{array}
@@ -447,7 +446,6 @@ Reference Instructions
 ..................................
 
 .. todo:: Prose
-.. todo:: Extend default to fieldtypes
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -455,38 +453,28 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\default_{\fieldtype}^n)\} \\
+      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\pack_\fieldtype(\default_{\unpacktype(\fieldtype)}))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
    \end{array}
 
 
 .. _exec-struct.get:
-
-:math:`\STRUCTGET~\typeidx~i`
-.............................
-
-.. todo:: Prose
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; (\REFSTRUCT~a)~(\STRUCTGET~x~i) &\stepto& \val
-     & (\iff & \val = S.\SSTRUCTS[a].\SIFIELDS[i])
-   \end{array}
-
-
 .. _exec-struct.get_sx:
 
-:math:`\STRUCTGET\K{\_}\sx~\typeidx~i`
-......................................
+:math:`\STRUCTGET\K{\_}\sx^?~\typeidx~i`
+........................................
 
 .. todo:: Prose
-.. todo:: Unpack
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFSTRUCT~a)~(\STRUCTGET\K{\_}\sx~x~i) &\stepto& \val
-     & (\iff & \val = S.\SSTRUCTS[a].\SIFIELDS[i])
+   S; F; (\REFSTRUCT~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
+      \land & \val = \unpackval^{\sx^?}_{\fieldtype[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+     \end{array} \\
    \end{array}
 
 
@@ -496,12 +484,15 @@ Reference Instructions
 .............................
 
 .. todo:: Prose
-.. todo:: Pack
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; (\REFSTRUCT~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
-     & (\iff & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \val)
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \pack_{\fieldtype[i]}(\val))
+     \end{array} \\
    \end{array}
 
 
@@ -511,7 +502,6 @@ Reference Instructions
 ..........................
 
 .. todo:: Prose
-.. todo:: pack fields
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -519,7 +509,7 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~\val^n\} \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\pack_\fieldtype(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
    \end{array}
@@ -531,7 +521,6 @@ Reference Instructions
 ..................................
 
 .. todo:: Prose
-.. todo:: Extend default to fieldtypes
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -539,7 +528,7 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\default_{\fieldtype}^n)\} \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\pack_\fieldtype(\default_{\unpacktype(\fieldtype}))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
    \end{array}
@@ -582,26 +571,26 @@ Reference Instructions
 
 
 .. _exec-array.get:
+.. _exec-array.get_sx:
 
-:math:`\ARRAYGET~\typeidx`
-..........................
+:math:`\ARRAYGET\K{\_}\sx^?~\typeidx`
+.....................................
 
 .. todo:: Prose
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAY~a)~(\I32.\CONST~i)~(\ARRAYGET~x) &\stepto& \val
-     & (\iff & \val = S.\SARRAYS[a].\AIFIELDS[i])
+   S; (\REFARRAY~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
+      \land & \val = \unpackval^{\sx^?}_{\fieldtype}(S.\SARRAYS[a].\AIFIELDS[i]))
+     \end{array} \\
    \end{array}
 
 
-.. _exec-array.get_sx:
-
-:math:`\ARRAYGET\K{\_}\sx~\typeidx`
-...................................
 
 .. todo:: Prose
-.. todo:: Unpack
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -616,12 +605,15 @@ Reference Instructions
 ..........................
 
 .. todo:: Prose
-.. todo:: Pack
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; (\REFARRAY~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
-     & (\iff & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \val)
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
+      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \pack_{\fieldtype}(\val))
+     \end{array} \\
    \end{array}
 
 

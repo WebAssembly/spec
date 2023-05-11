@@ -100,7 +100,7 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
    \production{heap type} & \heaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
-     \ANY ~|~ \EQ ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
+     \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
      \typeidx ~|~ \deftype ~|~ \BOT \\
    \end{array}
 
@@ -119,7 +119,7 @@ The abstract type |ANY| denotes the common supertype of all aggregate types, as 
 Dually, the type |NONE| denotes the common subtype of all forms of aggregate types.
 This type has no values.
 
-The abstract type |EQ| is a subtype of |ANY| that includes all types for which references can be compared, i.e., aggregate values and |I31|.
+The abstract type |EQT| is a subtype of |ANY| that includes all types for which references can be compared, i.e., aggregate values and |I31|.
 
 The abstract types |STRUCT| and |ARRAY| denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
 

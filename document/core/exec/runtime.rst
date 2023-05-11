@@ -470,8 +470,9 @@ It filters out entries of a specific kind in an order-preserving fashion:
    pair: structure; instance
    pair: array; instance
 .. _syntax-fieldval:
-.. _syntax-packval:
+.. _syntax-packedval:
 .. _syntax-structinst:
+.. _syntax-arrayinst:
 
 Structure and Array Instances
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -485,12 +486,35 @@ Both record their respective and hold a vector of the values of their *fields*.
    \production{structure instance} & \structinst &::=&
      \{ \SITYPE~\structtype, \SIFIELDS~\vec(\fieldval) \} \\
    \production{array instance} & \arrayinst &::=&
-     \{ \AITYPE~\arraytype, \!IFIELDS~\vec(\fieldval) \} \\
+     \{ \AITYPE~\arraytype, \AIFIELDS~\vec(\fieldval) \} \\
    \production{field value} & \fieldval &::=&
-     \val ~|~ \packval \\
-   \production{packed value} & \packval &::=&
+     \val ~|~ \packedval \\
+   \production{packed value} & \packedval &::=&
      \I8PACK~\u8 ~|~ \I16PACK~\u16 \\
    \end{array}
+
+
+.. _packval:
+.. _unpackval:
+
+Conventions
+...........
+
+* Conversion of a regular :ref:`value <syntax-val>` to a :ref:`field value <syntax-fieldval>` is defined as follows:
+
+  .. math::
+     \begin{array}{@{}lcl}
+     \packval_\valtype(\val) &=& \val \\
+     \packval_\packtype(\I32.\CONST~i) &=& \packtype\K{.PACK}~(\wrap_{32,|\packtype|}(i))
+     \end{array}
+
+* The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
+
+  .. math::
+     \begin{array}{@{}lcl}
+     \unpackval_\valtype(\val) &=& \val \\
+     \unpackval^\sx_\packtype(\packtype\K{.PACK}~i) &=& \I32.\CONST~(\extend^\sx_{|\packtype|,32}(i))
+     \end{array}
 
 
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
@@ -628,7 +652,7 @@ The |REFI31| instruction represents :ref:`unboxed scalar <syntax-ref.i31>` refer
 |REFSTRUCTADDR| and |REFARRAYADDR| represent :ref:`structure <syntax-ref.struct>` and :ref:`array <syntax-ref.array>` reference values, respectively,
 and |REFFUNCADDR| instruction represents :ref:`function reference <syntax-ref.func>` values.
 Similarly, |REFHOSTADDR| represents :ref:`host references <syntax-ref.host>`
-and |REFEXTERNADDR| represents any externalized reference.
+and |REFEXTERN| represents any externalized reference.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.

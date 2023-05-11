@@ -201,7 +201,7 @@
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
 .. |ANY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{any}}
-.. |EQ| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{eq}}
+.. |EQT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{eq}}
 .. |I31| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{i31}}
 .. |STRUCT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{struct}}
 .. |ARRAY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{array}}
@@ -1158,7 +1158,7 @@
 .. Instances, non-terminals
 
 .. |fieldval| mathdef:: \xref{exec/runtime}{syntax-fieldval}{\X{fieldval}}
-.. |packval| mathdef:: \xref{exec/runtime}{syntax-packval}{\X{packval}}
+.. |packedval| mathdef:: \xref{exec/runtime}{syntax-packedval}{\X{packedval}}
 
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
@@ -1243,6 +1243,12 @@
 .. Values, meta-functions
 
 .. |default| mathdef:: \xref{exec/runtime}{default-val}{\F{default}}
+
+
+.. Fields, metaa-functions
+
+.. |packval| mathdef:: \xref{exec/runtime}{packval}{\F{pack}}
+.. |unpackval| mathdef:: \xref{exec/runtime}{unpackval}{\F{unpack}}
 
 
 .. Administrative Instructions, non-terminals
