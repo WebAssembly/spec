@@ -15,6 +15,7 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 ## Building
 
+You'll need OCaml 4.12 or higher and also the ocaml-base-compiler. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
 Once you have OCaml, simply do
 
