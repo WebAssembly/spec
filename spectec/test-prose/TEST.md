@@ -146,7 +146,8 @@ block bt instr
     1) If the length of val^k is k, then:
       a) Let L be the label_n{[]}.
       b) Push L to the stack.
-      c) Jump to [val^k, instr*].
+      c) Push val^k to the stack.
+      d) Jump to instr*.
 
 loop bt instr
 1. Let tmp0->tmp1 be bt.
@@ -159,7 +160,8 @@ loop bt instr
     1) If the length of val^k is k, then:
       a) Let L be the label_n{[loop (bt, instr*)]}.
       b) Push L to the stack.
-      c) Jump to [val^k, instr*].
+      c) Push val^k to the stack.
+      d) Jump to instr*.
 
 if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.

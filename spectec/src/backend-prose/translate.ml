@@ -287,11 +287,21 @@ let rec rhs2instrs exp = match exp.it with
   ]); _}, _) ->
       let label_expr =
         Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1) in
-      [
-        Al.LetI (Al.NameE (Al.N "L"), label_expr);
-        Al.PushI (Al.NameE (Al.N "L"));
-        Al.JumpI (exp2expr instrs_exp2)
-      ]
+      begin match instrs_exp2.it with
+        | Ast.CatE (valexp, instrsexp) ->
+            [
+              Al.LetI (Al.NameE (Al.N "L"), label_expr);
+              Al.PushI (Al.NameE (Al.N "L"));
+              Al.PushI (exp2expr valexp);
+              Al.JumpI (exp2expr instrsexp)
+            ]
+        | _ ->
+            [
+              Al.LetI (Al.NameE (Al.N "L"), label_expr);
+              Al.PushI (Al.NameE (Al.N "L"));
+              Al.JumpI (exp2expr instrs_exp2)
+            ]
+      end
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp, _)
     when String.starts_with ~prefix: "TABLE." atomid ||
