@@ -276,8 +276,8 @@
 
 .. Types, meta functions
 
-.. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\X{pack}}
-.. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\X{unpack}}
+.. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
+.. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
 
 .. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
 .. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}

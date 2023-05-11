@@ -432,9 +432,9 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
-     &
+     \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
@@ -450,14 +450,24 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
-     &
+   F; (\STRUCTNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft})}))^n~(\STRUCTNEW~x)
+     \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
-      \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n)
      \end{array} \\
    \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+         \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
+         \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
+        \end{array} \\
+      \end{array}
 
 
 .. _exec-struct.get:
@@ -473,7 +483,7 @@ Reference Instructions
    S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
    \end{array}
@@ -491,7 +501,7 @@ Reference Instructions
    S; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}[i]}(\val))
      \end{array} \\
    \end{array}
@@ -506,14 +516,20 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-     &
-     \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
-      \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
-     \end{array} \\
+   \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& \val^n~(\ARRAYNEWFIXED~x~n)
    \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
+         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+        \end{array} \\
+      \end{array}
 
 
 .. _exec-array.new_default:
@@ -525,14 +541,24 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-     &
+   F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft}}))^n~(\ARRAYNEWFIXED~x~n)
+     \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
-      \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft})
      \end{array} \\
    \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
+         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+        \end{array} \\
+      \end{array}
 
 
 .. _exec-array.new_fixed:
@@ -545,9 +571,9 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; \val^n~(\I32.\CONST~n)~(\ARRAYNEWFIXED~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
-     &
+     \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
       \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
@@ -556,18 +582,53 @@ Reference Instructions
 
 .. _exec-array.new_data:
 
-:math:`\ARRAYNEWDATA~\typeidx`
-..............................
+:math:`\ARRAYNEWDATA~\typeidx~\dataidx`
+.......................................
 
-.. todo:: all
+.. todo:: Prose
+.. todo:: extend type size convention to field types
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      \land & s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
+     \end{array} \\
+   \\[1ex]
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~i)^n~(\ARRAYNEWFIXED~x)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      \land & t = \unpacktype(\X{ft}) \\
+      \land & (b^\ast)^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
+      \land & (\bytes_{\X{ft}}(i) = \unpackval_{\X{ft}}(b^\ast))^n)
+     \end{array} \\
+   \end{array}
 
 
 .. _exec-array.new_elem:
 
-:math:`\ARRAYNEWELEM~\typeidx`
-..............................
+:math:`\ARRAYNEWELEM~\typeidx~\elemidx`
+.......................................
 
-.. todo:: all
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \TRAP
+     \\&&
+     (\iff s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
+   \\[1ex]
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \reff^n~(\ARRAYNEWFIXED~x)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & \reff^n = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s \slice n])
+     \end{array} \\
+   \end{array}
 
 
 .. _exec-array.get:
@@ -583,7 +644,7 @@ Reference Instructions
    S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
      \end{array} \\
    \end{array}
@@ -601,7 +662,7 @@ Reference Instructions
    S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
      \end{array} \\
    \end{array}
