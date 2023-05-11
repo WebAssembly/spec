@@ -79,14 +79,9 @@ let get_current_frame () =
 let store: store ref = ref Record.empty
 
 
-
 (* Helper functions *)
 
 (* NOTE: These functions should be used only if validation ensures no failure *)
-
-let al_value2wasm_value = function
-  | WasmV v -> v
-  | _ -> failwith "Not a Wasm value"
 
 let al_value2wasm_type = function
   | WasmTypeV ty -> ty
@@ -96,30 +91,15 @@ let al_value2int = function
   | IntV i -> i
   | _ -> failwith "Not an integer value"
 
-let wasm_value2al_num_value v = match v with
-  | Values.Num n ->
-      let n = Values.string_of_num n in
-      begin match Values.type_of_value v with
-        | Types.NumType I32Type
-        | Types.NumType I64Type -> IntV (int_of_string n)
-        | Types.NumType F32Type
-        | Types.NumType F64Type -> FloatV (float_of_string n)
-        | _ -> failwith "Not a Numtype"
-      end
-  | _ -> failwith "Not a Num value"
-
-let mk_wasm_num ty i = match ty with
-  | Types.NumType I32Type ->
-      let num = I32.of_int_s i |> Values.I32Num.to_num in
-      Values.Num (num)
-  | Types.NumType I64Type ->
-      let num = I64.of_int_s i |> Values.I64Num.to_num in
-      Values.Num (num)
-  | Types.NumType F32Type | Types.NumType F64Type ->
-      (* TODO *)
-      failwith "Not implemented"
-  | _ -> failwith "Not a Numtype"
-
+let wasm_num2al_value n =
+  let s = Values.string_of_num n in
+  let t = Values.type_of_num n in
+  begin match t with
+    | I32Type
+    | I64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); IntV (int_of_string s)])
+    | F32Type
+    | F64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); FloatV (float_of_string s)])
+  end
 
 
 (* Interpreter *)
@@ -188,9 +168,9 @@ and eval_expr env expr = match expr with
   | NameE name
   | IterE (name, _) -> Env.find name env
   | ConstE (ty, inner_e) ->
-      let i = eval_expr env inner_e |> al_value2int in
-      let wasm_ty = eval_expr env ty |> al_value2wasm_type in
-      WasmV (mk_wasm_num wasm_ty i)
+      let v = eval_expr env inner_e in
+      let wasm_ty = eval_expr env ty in
+      WasmInstrV ("const", [wasm_ty; v])
   | RecordE r -> RecordV (Record.map (eval_expr env) r)
   | e -> structured_string_of_expr e |> failwith
 
@@ -236,17 +216,11 @@ and interp_instr env i =
         let h = pop () in
 
         match (h, e) with
-          | (WasmV w, ConstE (ValueE (WasmTypeV ty'), NameE name)) ->
-              (* due to Wasm validation *)
-              let ty = Values.type_of_value w in
+          | (WasmInstrV ("const", [ty; v]), ConstE (ValueE ty', NameE name)) ->
               assert (ty = ty');
-
-              let v = wasm_value2al_num_value w in
               Env.add name v env
-          | (WasmV w, ConstE (NameE nt, NameE name)) ->
-              let ty = WasmTypeV (Values.type_of_value w) in
-              let v = wasm_value2al_num_value w in
-              Env.add nt ty env |> Env.add name v
+          | (WasmInstrV ("const", [ty; v]), ConstE (NameE nt, NameE name)) ->
+              env |> Env.add nt ty |> Env.add name v
           | (h, NameE name) ->
               Env.add name h env
           | _ -> failwith "Invalid pop"
@@ -368,8 +342,8 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> WasmV (Values.Num num.it) |> push
-  | Ast.RefNull ref -> WasmV (Values.Ref (Values.NullRef ref)) |> push
+  | Ast.Const num -> wasm_num2al_value num.it |> push
+  | Ast.RefNull t -> WasmInstrV ("ref.null", [WasmTypeV (RefType t)]) |> push
   | _ ->
       let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
@@ -396,7 +370,7 @@ let test test_case =
     run ast;
 
     (* Check *)
-    let actual_result = List.hd !stack |> string_of_value in
+    let actual_result = List.hd !stack |> Testdata.string_of_result in
     if actual_result = expected_result then
       print_endline "Ok\n"
     else

@@ -66,9 +66,8 @@ let rec structured_string_of_value = function
   | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
-  | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
-  | WasmInstrV _ -> "WasnInstrV (TODO)"
+  | WasmInstrV (s, vl) -> "WasmInstrV(" ^ s ^ ", " ^ string_of_list structured_string_of_value "[" ", " "]" vl ^ ")"
   | IntV i -> string_of_int i
   | FloatV i -> string_of_float i
   | StringV s -> s
@@ -309,9 +308,8 @@ and string_of_value = function
   | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
-  | WasmV v -> Reference_interpreter.Values.string_of_value v
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
-  | WasmInstrV _ -> "WasnInstr (TODO)"
+  | WasmInstrV (s, vl) -> "(" ^ s ^ string_of_list string_of_value " " " " ")" vl
   | IntV i -> string_of_int i
   | FloatV i -> string_of_float i
   | StringV s -> s
@@ -504,4 +502,3 @@ let string_of_algorithm = function
       acc ^ " " ^ string_of_expr p
     ) "" params ^
     string_of_instrs 0 instrs ^ "\n"
-

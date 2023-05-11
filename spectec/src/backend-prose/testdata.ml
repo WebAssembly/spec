@@ -41,26 +41,26 @@ let get_func_insts_data () = ListV([|
 |])
 
 let get_global_insts_data () = ListV([|
-  WasmV (Values.Num (Values.F32 (f32 1.4)));
-  WasmV (Values.Num (Values.F32 (f32 5.2)));
-  WasmV (Values.Num (Values.I32 (i32 42)))
+  WasmInstrV ("const", [(WasmTypeV (NumType F32Type)); (FloatV 1.4)]);
+  WasmInstrV ("const", [(WasmTypeV (NumType F32Type)); (FloatV 5.2)]);
+  WasmInstrV ("const", [(WasmTypeV (NumType I32Type)); (IntV 42)])
 |])
 
 let get_table_insts_data () = ListV([|
   ListV [|
-    WasmV (Values.Ref (Values.NullRef ExternRefType));
-    WasmV (Values.Ref (Values.NullRef FuncRefType));
-    WasmV (Values.Ref (Values.NullRef FuncRefType))
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType ExternRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))])
   |];
   ListV [|
-    WasmV (Values.Ref (Values.NullRef FuncRefType));
-    WasmV (Values.Ref (Values.NullRef ExternRefType));
-    WasmV (Values.Ref (Values.NullRef FuncRefType))
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType ExternRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))])
   |];
   ListV [|
-    WasmV (Values.Ref (Values.NullRef FuncRefType));
-    WasmV (Values.Ref (Values.NullRef FuncRefType));
-    WasmV (Values.Ref (Values.NullRef ExternRefType))
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType FuncRefType))]);
+    WasmInstrV ("ref.null", [(WasmTypeV (RefType ExternRefType))])
   |]
 |])
 
@@ -80,9 +80,9 @@ let store: store ref = ref Record.empty
 (* Hardcoded Frame *)
 
 let get_locals_data () = [|
-  WasmV (Values.Num (Values.I32 (i32 3)));
-  WasmV (Values.Num (Values.I32 (i32 0)));
-  WasmV (Values.Num (Values.I32 (i32 7)))
+  WasmInstrV ("const", [(WasmTypeV (NumType I32Type)); (IntV 3)]);
+  WasmInstrV ("const", [(WasmTypeV (NumType I32Type)); (IntV 0)]);
+  WasmInstrV ("const", [(WasmTypeV (NumType I32Type)); (IntV 7)])
 |]
 
 let get_frame_data () =
@@ -127,7 +127,8 @@ let drop = "drop", [
   Operators.f64_const (f64 3.1 |> to_phrase) |> to_phrase;
   Operators.f64_const (f64 5.2 |> to_phrase) |> to_phrase;
   Operators.drop |> to_phrase
-], "3.100_000_000_000_000_1"
+], "3.1"
+
 
 let select = "select", [
   Operators.f64_const (f64 Float.max_float |> to_phrase) |> to_phrase;
@@ -164,7 +165,7 @@ let global_set = "global_set", [
 
 let global_get1 = "global_get1", [
   Operators.global_get (i32 1 |> to_phrase) |> to_phrase
-], "5.199_999_809_265_136_7"
+], "5.2"
 
 let global_get2 = "global_get2", [
   Operators.global_get (i32 2 |> to_phrase) |> to_phrase
@@ -178,6 +179,12 @@ let table_get = "table_get", [
 let call = "call", [
   Operators.call (i32 0 |> to_phrase) |> to_phrase
 ], "yet"
+
+(* Printer of final result *)
+let string_of_result v = match v with
+  | WasmInstrV ("const", [_; n]) -> Print.string_of_value n
+  | WasmInstrV ("ref.null", _) -> "null"
+  | _ -> Print.string_of_value v ^ "is not a wasm value." |> failwith
 
 let test_cases = [
   binop; testop; relop1; relop2; nop; drop; select;
