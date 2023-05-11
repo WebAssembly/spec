@@ -144,6 +144,7 @@ type instr =
   | ReplaceI of (expr * expr)
   | JumpI of expr
   | PerformI of expr
+  | ExitI of name
   (* Yet *)
   | YetI of string
 

@@ -277,8 +277,10 @@ let rec rhs2instrs exp = match exp.it with
       { it = Ast.VarE (fname); _ };
       { it = Ast.ListE [labelexp]; _ }
     ]); _ }, _) ->
-      Al.PushI (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it))) :: 
-        rhs2instrs labelexp
+        let push_instr =
+          Al.PushI (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it))) in
+        let exit_instr = Al.ExitI (Al.N fname.it) in
+        push_instr :: rhs2instrs labelexp @ [exit_instr]
   (* TODO: Label *)
   | Ast.CaseE (Atom "LABEL_", { it = Ast.TupE ([
     { it = Ast.VarE (label_arity); _ };
@@ -293,13 +295,15 @@ let rec rhs2instrs exp = match exp.it with
               Al.LetI (Al.NameE (Al.N "L"), label_expr);
               Al.PushI (Al.NameE (Al.N "L"));
               Al.PushI (exp2expr valexp);
-              Al.JumpI (exp2expr instrsexp)
+              Al.JumpI (exp2expr instrsexp);
+              Al.ExitI (Al.N "L")
             ]
         | _ ->
             [
               Al.LetI (Al.NameE (Al.N "L"), label_expr);
               Al.PushI (Al.NameE (Al.N "L"));
-              Al.JumpI (exp2expr instrs_exp2)
+              Al.JumpI (exp2expr instrs_exp2);
+              Al.ExitI (Al.N "L")
             ]
       end
   (* Execute instr *)

@@ -64,6 +64,7 @@ let rec walk_instr f instr =
     | ReplaceI (e1, e2) -> f_instr(ReplaceI (walk_expr f e1, walk_expr f e2))
     | JumpI e -> f_instr(JumpI (walk_expr f e))
     | PerformI e -> f_instr(PerformI (walk_expr f e))
+    | ExitI n -> f_instr(ExitI n)
     | YetI s -> f_instr(YetI s)
 
 and walk_instrs f = walk_instr f |> List.map

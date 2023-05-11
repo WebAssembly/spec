@@ -148,6 +148,7 @@ block bt instr
       b) Push L to the stack.
       c) Push val^k to the stack.
       d) Jump to instr*.
+      e)Exit
 
 loop bt instr
 1. Let tmp0->tmp1 be bt.
@@ -162,6 +163,7 @@ loop bt instr
       b) Push L to the stack.
       c) Push val^k to the stack.
       d) Jump to instr*.
+      e)Exit
 
 if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -327,6 +329,8 @@ call_addr a
         3. Let L be the label_n{[]}.
         4. Push L to the stack.
         5. Jump to instr*.
+        6.Exit
+        7.Exit
 
 ref.func x
 1. If x < the length of $funcaddr(), then:
