@@ -302,39 +302,28 @@ and interp_algo algo args =
 
 (* Search AL Algorithm *)
 
-and extract_data_of_wasm_instruction winstr = match winstr.it with
-  | Ast.Nop -> "nop", []
-  | Ast.Drop -> "drop", []
+and wasm_instruction2al_value winstr =
+  let f_i32 f i32 = WasmInstrV (f, [IntV (Int32.to_int i32.it)]) in
+
+  match winstr.it with
+  | Ast.Nop -> WasmInstrV ("nop", [])
+  | Ast.Drop -> WasmInstrV ("drop", [])
   | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
-      "binop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Add"]
+      WasmInstrV ("binop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Add"])
   | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
-      "testop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Eqz"]
+      WasmInstrV ("testop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Eqz"])
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
-      "relop", [WasmTypeV (Types.NumType Types.F32Type); StringV "Gt"]
+      WasmInstrV ("relop", [WasmTypeV (Types.NumType Types.F32Type); StringV "Gt"])
   | Ast.Compare (Values.I32 Ast.I32Op.GtS) ->
-      "relop", [WasmTypeV (Types.NumType Types.I32Type); StringV "GtS"]
-  | Ast.Select None -> "select", [StringV "TODO: None"]
-  | Ast.LocalGet i32 ->
-      let n = Int32.to_int i32.it in
-      "local.get", [IntV n]
-  | Ast.LocalSet i32 ->
-      let n = Int32.to_int i32.it in
-      "local.set", [IntV n]
-  | Ast.LocalTee i32 ->
-      let n = Int32.to_int i32.it in
-      "local.tee", [IntV n]
-  | Ast.GlobalGet i32 ->
-      let n = Int32.to_int i32.it in
-      "global.get", [IntV n]
-  | Ast.GlobalSet i32 ->
-      let n = Int32.to_int i32.it in
-      "global.set", [IntV n]
-  | Ast.TableGet i32 ->
-      let n = Int32.to_int i32.it in
-      "table.get", [IntV n]
-  | Ast.Call i32 ->
-      let n = Int32.to_int i32.it in
-      "call", [IntV n]
+      WasmInstrV ("relop", [WasmTypeV (Types.NumType Types.I32Type); StringV "GtS"])
+  | Ast.Select None -> WasmInstrV ("select", [StringV "TODO: None"])
+  | Ast.LocalGet i32 -> f_i32 "local.get" i32
+  | Ast.LocalSet i32 ->f_i32 "local.set" i32
+  | Ast.LocalTee i32 ->f_i32 "local.tee" i32
+  | Ast.GlobalGet i32 ->f_i32 "global.get" i32
+  | Ast.GlobalSet i32 ->f_i32 "global.set" i32
+  | Ast.TableGet i32 ->f_i32 "table.get" i32
+  | Ast.Call i32 ->f_i32 "call" i32
   | _ -> failwith "Not implemented"
 
 and run_algo name args =
@@ -345,9 +334,10 @@ let run_wasm_instr winstr = match winstr.it with
   | Ast.Const num -> wasm_num2al_value num.it |> push
   | Ast.RefNull t -> WasmInstrV ("ref.null", [WasmTypeV (RefType t)]) |> push
   | _ ->
-      let (name, args) = extract_data_of_wasm_instruction winstr in
-      let _env = run_algo name args in
-      ()
+      begin match wasm_instruction2al_value winstr with
+      | WasmInstrV(name, args) -> ignore (run_algo name args)
+      | _ -> failwith "impossible"
+      end
 
 let run winstrs = List.iter run_wasm_instr winstrs
 
