@@ -609,34 +609,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: extern address
+.. index:: value, value type
 
-:math:`\REFEXTERNADDR~\externaddr`
-..................................
+:math:`\val`
+............
 
-* The instruction is valid with type :math:`[] \to [(\REF~\EXTERN)]`.
+* The value :math:`\val` must be valid with :ref:`value type <syntax-valtype>` :math:`t`.
 
-.. math::
-   \frac{
-   }{
-     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [(\REF~\EXTERN)]
-   }
-
-
-.. index:: function address, extern value, extern type, function type
-
-:math:`\REFFUNCADDR~\funcaddr`
-..............................
-
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC~\functype`.
-
-* Then the instruction is valid with type :math:`[] \to [(\REF~\functype)]`.
+* Then it is valid as an instruction with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
+     S \vdashval \val : t
    }{
-     S; C \vdashadmininstr \REFFUNCADDR~a : [] \to [(\REF~\functype)]
+     S; C \vdashadmininstr \val : [] \to [t]
    }
 
 

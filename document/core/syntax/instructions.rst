@@ -39,7 +39,7 @@ Numeric instructions provide basic operations over numeric :ref:`values <syntax-
 These operations closely match respective operations available in hardware.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{width} & \X{nn}, \X{mm} &::=&
      \K{32} ~|~ \K{64} \\
    \production{signedness} & \sx &::=&
@@ -151,7 +151,7 @@ Conventions
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{unary operator} & \unop &::=&
      \iunop ~|~
      \funop ~|~
@@ -198,7 +198,7 @@ Vector Instructions
 Vector instructions (also known as *SIMD* instructions, *single instruction multiple data*) provide basic operations over :ref:`values <syntax-value>` of :ref:`vector type <syntax-vectype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{ishape} & \ishape &::=&
      \K{i8x16} ~|~ \K{i16x8} ~|~ \K{i32x4} ~|~ \K{i64x2} \\
    \production{fshape} & \fshape &::=&
@@ -211,7 +211,7 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
    \end{array}
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \K{v128.}\VCONST~\i128 \\&&|&
@@ -278,7 +278,7 @@ Vector instructions (also known as *SIMD* instructions, *single instruction mult
    \end{array}
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{vector bitwise unary operator} & \vvunop &::=&
      \K{not} \\
    \production{vector bitwise binary operator} & \vvbinop &::=&
@@ -391,7 +391,7 @@ Conventions
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{unary operator} & \vunop &::=&
      \viunop ~|~
      \vfunop ~|~
@@ -432,7 +432,7 @@ Reference Instructions
 Instructions in this group are concerned with accessing :ref:`references <syntax-reftype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \REFNULL~\heaptype \\&&|&
@@ -494,7 +494,7 @@ Aggregate Instructions
 Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-type-aggregate>` types.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \STRUCTNEW~\typeidx \\&&|&
@@ -517,15 +517,15 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \EXTERNEXTERNALIZE \\
    \end{array}
 
-The instructions |STRUCTNEW| and |STRUCTNEWDEFAULT| allocate a new :ref:`structure <syntax-type-struct>`, initializing them either with operands or with default values.
+The instructions |STRUCTNEW| and |STRUCTNEWDEFAULT| allocate a new :ref:`structure <syntax-structtype>`, initializing them either with operands or with default values.
 The remaining instructions on structs access individual fields,
-allowing for different sign extension modes in the case of :ref:`packed <syntax-type-packed>` storage types.
+allowing for different sign extension modes in the case of :ref:`packed <syntax-packedtype>` storage types.
 
-Similarly, :ref:`arrays <syntax-type-array>` can be allocated either with an explicit initialization operand or a default value.
+Similarly, :ref:`arrays <syntax-arraytype>` can be allocated either with an explicit initialization operand or a default value.
 Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
 and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segement, respectively.
 The remaining array instructions access individual slots,
-again allowing for different sign extension modes in the case of a :ref:`packed <syntax-type-packed>` storage type.
+again allowing for different sign extension modes in the case of a :ref:`packed <syntax-packedtype>` storage type.
 Last, |ARRAYLEN| produces the length of an array.
 
 The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
@@ -543,7 +543,7 @@ Parametric Instructions
 Instructions in this group can operate on operands of any :ref:`value type <syntax-valtype>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \DROP \\&&|&
@@ -569,7 +569,7 @@ Variable Instructions
 Variable instructions are concerned with access to :ref:`local <syntax-local>` or :ref:`global <syntax-global>` variables.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \LOCALGET~\localidx \\&&|&
@@ -598,7 +598,7 @@ Table Instructions
 Instructions in this group are concerned with tables :ref:`table <syntax-table>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
      \TABLEGET~\tableidx \\&&|&
@@ -640,7 +640,7 @@ Memory Instructions
 Instructions in this group are concerned with linear :ref:`memory <syntax-mem>`.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{memory immediate} & \memarg &::=&
      \{ \OFFSET~\u32, \ALIGN~\u32 \} \\
    \production{lane width} & \X{ww} &::=&
@@ -734,7 +734,7 @@ Control Instructions
 Instructions in this group affect the flow of control.
 
 .. math::
-   \begin{array}{llcl}
+   \begin{array}{llrl}
    \production{block type} & \blocktype &::=&
      \typeidx ~|~ \valtype^? \\
    \production{instruction} & \instr &::=&
@@ -824,7 +824,7 @@ Expressions
 :ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>`, and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{expression} & \expr &::=&
      \instr^\ast~\END \\
    \end{array}

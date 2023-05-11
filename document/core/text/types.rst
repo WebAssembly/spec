@@ -13,7 +13,7 @@ Number Types
 ~~~~~~~~~~~~
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llrll@{\qquad\qquad}l}
    \production{number type} & \Tnumtype_I &::=&
      \text{i32} &\Rightarrow& \I32 \\ &&|&
      \text{i64} &\Rightarrow& \I64 \\ &&|&
@@ -44,7 +44,7 @@ Heap Types
 ~~~~~~~~~~
 
 .. math::
-   \begin{array}{llcll@{\qquad\qquad}l}
+   \begin{array}{llrll@{\qquad\qquad}l}
    \production{heap type} & \Theaptype_I &::=&
      \text{func} &\Rightarrow& \FUNC \\ &&|&
      \text{extern} &\Rightarrow& \EXTERN \\ &&|&

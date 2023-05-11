@@ -20,7 +20,7 @@ Number Types
 *Number types* classify numeric values.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{number type} & \numtype &::=&
      \I32 ~|~ \I64 ~|~ \F32 ~|~ \F64 \\
    \end{array}
@@ -54,7 +54,7 @@ Vector Types
 *Vector types* classify vectors of :ref:`numeric <syntax-numtype>` values processed by vector instructions (also known as *SIMD* instructions, single instruction multiple data).
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{vector type} & \vectype &::=&
      \V128 \\
    \end{array}
@@ -75,11 +75,11 @@ Conventions
 
 .. index:: ! heap type, store, type identifier, ! substitution, ! closed type, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
-.. _type-i31:
 .. _type-subst:
 .. _type-closed:
 .. _type-abstract:
 .. _type-concrete:
+.. _syntax-i31:
 .. _syntax-heaptype:
 
 Heap Types
@@ -96,7 +96,7 @@ The values from the latter two hierarchies are interconvertible by ways of the |
 That is, both type hierarchies are inhabited by an isomorphic set of values, but may have different, incompatible representations in practice.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{heap type} & \heaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
@@ -174,7 +174,7 @@ Reference Types
 *Reference types* classify :ref:`values <syntax-value>` that are first-class references to objects in the runtime :ref:`store <store>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{reference type} & \reftype &::=&
      \REF~\NULL^?~\heaptype \\
    \end{array}
@@ -205,7 +205,7 @@ By virtue of being representable in neither the :ref:`binary format <binary-valt
 it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{value type} & \valtype &::=&
      \numtype ~|~ \vectype ~|~ \reftype ~|~ \BOT \\
    \end{array}
@@ -228,7 +228,7 @@ Result Types
 which is a sequence of values, written with brackets.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{result type} & \resulttype &::=&
      [\vec(\valtype)] \\
    \end{array}
@@ -245,7 +245,7 @@ Instruction Types
 *Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{instruction type} & \instrtype &::=&
      \resulttype \toX{\localidx^\ast} \resulttype \\
    \end{array}
@@ -271,7 +271,7 @@ Local Types
 *Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{initialization status} & \init &::=&
      \SET ~|~ \UNSET \\
    \production{local type} & \localtype &::=&
@@ -296,7 +296,7 @@ mapping a vector of parameters to a vector of results.
 They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{function type} & \functype &::=&
      \resulttype \to \resulttype \\
    \end{array}
@@ -314,7 +314,7 @@ Defined Types
 *Defined types* are the ones that can be defined in a :ref:`module <syntax-module>`, assigning them a :ref:`type index <syntax-typeidx>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{defined type} & \deftype &::=&
      \functype \\
    \end{array}
@@ -335,7 +335,7 @@ Limits
 *Limits* classify the size range of resizeable storage associated with :ref:`memory types <syntax-memtype>` and :ref:`table types <syntax-tabletype>`.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{limits} & \limits &::=&
      \{ \LMIN~\u32, \LMAX~\u32^? \} \\
    \end{array}
@@ -355,7 +355,7 @@ Memory Types
 *Memory types* classify linear :ref:`memories <syntax-mem>` and their size range.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{memory type} & \memtype &::=&
      \limits \\
    \end{array}
@@ -376,7 +376,7 @@ Table Types
 *Table types* classify :ref:`tables <syntax-table>` over elements of :ref:`reference type <syntax-reftype>` within a size range.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{table type} & \tabletype &::=&
      \limits~\reftype \\
    \end{array}
@@ -402,7 +402,7 @@ Global Types
 *Global types* classify :ref:`global <syntax-global>` variables, which hold a value and can either be mutable or immutable.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{global type} & \globaltype &::=&
      \mut~\valtype \\
    \production{mutability} & \mut &::=&
@@ -422,7 +422,7 @@ External Types
 *External types* classify :ref:`imports <syntax-import>` and :ref:`external values <syntax-externval>` with their respective types.
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{llrl}
    \production{external types} & \externtype &::=&
      \ETFUNC~\functype ~|~
      \ETTABLE~\tabletype ~|~

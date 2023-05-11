@@ -329,7 +329,7 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
-     & (\iff S \vdashref \reff : \X{rt}'
+     & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
    S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
      & (\otherwise) \\
@@ -366,7 +366,7 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
-     & (\iff S \vdashref \reff : \X{rt}'
+     & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
    S; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
      & (\otherwise) \\
@@ -406,17 +406,17 @@ Reference Instructions
 
    a. Trap.
 
-4. Assert: due to validation, a :ref:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
+4. Assert: due to validation, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
 
 5. Let :math:`(\REFI31~i)` be the reference value :math:`\reff`.
 
-6. Let :math:`j` be the result of computing :math:`\extend^\sx_{31,32}(i)`.
+6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
 
 7. Push the value :math:`(\I32.\CONST~j)` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFI31~i)~\I31NEW &\stepto& (\I32.\CONST~\extend^\sx_{31,32}(i)) \\
+   (\REFI31~i)~\I31NEW &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
    (\REFNULL~t)~\I31NEW &\stepto& \TRAP
    \end{array}
 
@@ -426,15 +426,16 @@ Reference Instructions
 :math:`\STRUCTNEW~\typeidx`
 ...........................
 
+.. todo:: Abstract allocation of structs and arrays into alloc functions
 .. todo:: Prose
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCT~|S.\SSTRUCTS|)
+   S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_\fieldtype(\val))^n\} \\
+      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
    \end{array}
@@ -449,11 +450,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCT~|S.\SSTRUCTS|)
+   S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\pack_\fieldtype(\default_{\unpacktype(\fieldtype)}))^n\} \\
+      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
    \end{array}
@@ -469,11 +470,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCT~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
+   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \val = \unpackval^{\sx^?}_{\fieldtype[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
    \end{array}
 
@@ -487,11 +488,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFSTRUCT~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+   S; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \pack_{\fieldtype[i]}(\val))
+     (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}[i]}(\val))
      \end{array} \\
    \end{array}
 
@@ -505,11 +506,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAY~|S.\SARRAYS|)
+   S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\pack_\fieldtype(\val))^n\} \\
+      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
    \end{array}
@@ -524,11 +525,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAY~|S.\SARRAYS|)
+   S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\pack_\fieldtype(\default_{\unpacktype(\fieldtype}))^n\} \\
+      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
    \end{array}
@@ -540,15 +541,14 @@ Reference Instructions
 ...............................
 
 .. todo:: Prose
-.. todo:: pack fields
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; \val^n~(\I32.\CONST~n)~(\ARRAYNEWFIXED~x) &\stepto& S'; F; (\REFARRAY~|S.\SARRAYS|)
+   S; F; \val^n~(\I32.\CONST~n)~(\ARRAYNEWFIXED~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~\val^n\} \\
+      (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
    \end{array}
@@ -580,22 +580,12 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAY~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE[x] = \TARRAY~\fieldtype \\
-      \land & \val = \unpackval^{\sx^?}_{\fieldtype}(S.\SARRAYS[a].\AIFIELDS[i]))
+      (\iff & F.\AMODULE[x] = \TARRAY~\X{ft} \\
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
      \end{array} \\
-   \end{array}
-
-
-
-.. todo:: Prose
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAY~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx~x) &\stepto& \val
-     & (\iff & \val = S.\SARRAYS[a].\AIFIELDS[i])
    \end{array}
 
 
@@ -608,11 +598,11 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAY~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE[x] = \TSTRUCT~\fieldtype^n \\
-      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \pack_{\fieldtype}(\val))
+     (\iff & F.\AMODULE[x] = \TSTRUCT~\X{ft}^n \\
+      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
      \end{array} \\
    \end{array}
 
@@ -626,7 +616,7 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAY~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|\SARRAYS[a].\AIFIELDS[i]|)
+   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|\SARRAYS[a].\AIFIELDS[i]|)
    \end{array}
 
 
@@ -3215,7 +3205,7 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& (\BR~l)
-     & (\iff S \vdashref \reff : \X{rt}
+     & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\otherwise) \\
@@ -3250,7 +3240,7 @@ Control Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~X{rt}_2) &\stepto& \reff
-     & (\iff S \vdashref \reff : \X{rt}
+     & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& (\BR~l)
      & (\otherwise) \\

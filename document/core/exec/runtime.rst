@@ -494,8 +494,8 @@ Both record their respective and hold a vector of the values of their *fields*.
    \end{array}
 
 
-.. _packval:
-.. _unpackval:
+.. _aux-packval:
+.. _aux-unpackval:
 
 Conventions
 ...........
@@ -504,16 +504,16 @@ Conventions
 
   .. math::
      \begin{array}{@{}lcl}
-     \packval_\valtype(\val) &=& \val \\
-     \packval_\packtype(\I32.\CONST~i) &=& \packtype\K{.PACK}~(\wrap_{32,|\packtype|}(i))
+     \packval_{\valtype}(\val) &=& \val \\
+     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype\K{.PACK}~(\wrap_{32,|\packtype|}(i))
      \end{array}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
 
   .. math::
      \begin{array}{@{}lcl}
-     \unpackval_\valtype(\val) &=& \val \\
-     \unpackval^\sx_\packtype(\packtype\K{.PACK}~i) &=& \I32.\CONST~(\extend^\sx_{|\packtype|,32}(i))
+     \unpackval_{\valtype}(\val) &=& \val \\
+     \unpackval^{\sx}_{\packedtype}(\packedtype\K{.PACK}~i) &=& \I32.\CONST~(\extend^{\sx}_{|\packedtype|,32}(i))
      \end{array}
 
 
