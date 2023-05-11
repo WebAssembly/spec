@@ -69,17 +69,16 @@ let pop () =
   res
 
 let get_current_frame () =
-  let f = function FrameV _ -> true | _ -> false in
-  match List.find f !stack with
-    | FrameV frame -> frame
-    | _ ->
-        (* Due to Wasm validation, unreachable *)
-        failwith "No frame"
+  match List.find_map (function FrameV f -> Some f | _ -> None ) !stack with
+    | Some frame -> frame
+    | None -> failwith "No frame"(* Due to Wasm validation, unreachable *)
 
 let store: store ref = ref Record.empty
 
 
 (* Helper functions *)
+
+let array_to_list a = Array.fold_right List.cons a []
 
 (* NOTE: These functions should be used only if validation ensures no failure *)
 
@@ -90,16 +89,6 @@ let al_value2wasm_type = function
 let al_value2int = function
   | IntV i -> i
   | _ -> failwith "Not an integer value"
-
-let wasm_num2al_value n =
-  let s = Values.string_of_num n in
-  let t = Values.type_of_num n in
-  begin match t with
-    | I32Type
-    | I64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); IntV (int_of_string s)])
-    | F32Type
-    | F64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); FloatV (float_of_string s)])
-  end
 
 
 (* Interpreter *)
@@ -116,7 +105,7 @@ and eval_expr env expr = match expr with
   | ValueE v -> v
   | AppE (fname, el) ->
       List.map (eval_expr env) el |> dsl_function_call fname
-  | MapE (fname, [e], _) ->
+  | MapE (fname, [e], _) -> (* TODO: handle cases where more than 1 arguments *)
       begin match eval_expr env e with
         | ListV vs -> ListV (Array.map (fun v -> dsl_function_call fname [v]) vs)
         | _ -> Print.string_of_expr e ^ " is not iterable." |> failwith (* Due to WASM validation, unreachable *)
@@ -164,7 +153,7 @@ and eval_expr env expr = match expr with
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match (v1, v2) with
-        | (IntV n, ListV [||]) -> LabelV (n, []) (*TODO Actually put in the correct instructions *)
+        | (IntV n, ListV vs) -> LabelV (n, array_to_list vs)
         | _ ->
             (* Due to AL validation unreachable *)
             "Invalid Label: " ^ (string_of_expr expr)
@@ -282,15 +271,9 @@ and interp_instr env i =
   | ExecuteI (fname, el) ->
       let _ = List.map (eval_expr env) el |> dsl_function_call (N fname) in
       env
-  (* TODO: Merge this with run_wasm_instr *)
-  | JumpI (e) ->
+  | JumpI e ->
       begin match eval_expr env e with
-      | ListV vl -> Array.iter (fun i -> match i with
-          | WasmInstrV("const", _)
-          | WasmInstrV("ref.null", _) -> push i
-          | WasmInstrV(name, args) -> ignore (run_algo name args)
-          | _ -> "Not a Wasm Instruction" |> failwith
-        ) vl
+      | ListV vl -> vl |> array_to_list |> run
       | _ -> "Not a list of Wasm Instruction" |> failwith
       end;
       env
@@ -327,10 +310,35 @@ and interp_algo algo args =
 
 (* Search AL Algorithm *)
 
-and wasm_instruction2al_value winstr =
+and wasm_num2al_value n =
+  let s = Values.string_of_num n in
+  let t = Values.type_of_num n in
+  begin match t with
+    | I32Type
+    | I64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); IntV (int_of_string s)])
+    | F32Type
+    | F64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); FloatV (float_of_string s)])
+  end
+
+and run_algo name args =
+  let algo = AlgoMap.find name !algo_map in
+  interp_algo algo args
+
+and run_wasm_instr winstr = match winstr with
+  | WasmInstrV("const", _) | WasmInstrV("ref.null", _) -> push winstr
+  | WasmInstrV(name, args) -> ignore (run_algo name args)
+  | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
+
+and run winstrs = List.iter run_wasm_instr winstrs
+
+let wasm_instr2al_value winstr =
   let f_i32 f i32 = WasmInstrV (f, [IntV (Int32.to_int i32.it)]) in
 
   match winstr.it with
+  (* wasm values *)
+  | Ast.Const num -> wasm_num2al_value num.it
+  | Ast.RefNull t -> WasmInstrV ("ref.null", [WasmTypeV (RefType t)])
+  (* wasm instructions *)
   | Ast.Nop -> WasmInstrV ("nop", [])
   | Ast.Drop -> WasmInstrV ("drop", [])
   | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
@@ -351,28 +359,13 @@ and wasm_instruction2al_value winstr =
   | Ast.Call i32 ->f_i32 "call" i32
   | _ -> failwith "Not implemented"
 
-and run_algo name args =
-  let algo = AlgoMap.find name !algo_map in
-  interp_algo algo args
-
-let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> wasm_num2al_value num.it |> push
-  | Ast.RefNull t -> WasmInstrV ("ref.null", [WasmTypeV (RefType t)]) |> push
-  | _ ->
-      begin match wasm_instruction2al_value winstr with
-      | WasmInstrV(name, args) -> ignore (run_algo name args)
-      | _ -> failwith "impossible"
-      end
-
-let run winstrs = List.iter run_wasm_instr winstrs
-
-
-
 (* Test Interpreter *)
 
 let test test_case =
+  let (name, raw_ast, expected_result) = test_case in
+  let ast = List.map wasm_instr2al_value raw_ast in
+
   (* Print test name *)
-  let (name, ast, expected_result) = test_case in
   print_endline name;
 
   (* Initialize *)
