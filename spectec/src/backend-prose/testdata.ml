@@ -13,6 +13,7 @@ let f64 = F64.of_float
 (* Hardcoded Instas *)
 
 let yetV = StringV "DUMMY"
+let i32TV = WasmTypeV (NumType I32Type)
 
 let addrs = ListV [|
   IntV 0; (* global address 0 *)
@@ -33,10 +34,38 @@ let module_inst: module_inst =
   |> Record.add "EXPORT" yetV
 
 let get_func_insts_data () = ListV([|
+  (* nop *)
   PairV (ModuleInstV module_inst, ConstructV("FUNC", [
     ArrowV(ListV[||], ListV[||]);
     ListV[||];
-    yetV
+    ListV[||];
+  ]));
+  (* add *)
+  PairV (ModuleInstV module_inst, ConstructV("FUNC", [
+    ArrowV(ListV[|i32TV; i32TV|], ListV[|i32TV|]);
+    ListV[||];
+    ListV[|
+      WasmInstrV("binop", [i32TV; StringV "Add"])
+    |];
+  ]));
+  (* sum *)
+  PairV (ModuleInstV module_inst, ConstructV("FUNC", [
+    ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
+    ListV[||];
+    ListV[|
+      WasmInstrV("if", [
+        ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
+        ListV[|
+          WasmInstrV("local.tee", [IntV(0)]);
+          WasmInstrV("local.get", [IntV(0)]);
+          WasmInstrV("const", [i32TV; IntV(1)]);
+          WasmInstrV("binop", [i32TV; StringV("sub")]);
+          WasmInstrV("call", [IntV(2)]);
+          WasmInstrV("binop", [i32TV; StringV("add")])
+        |];
+        ListV[||]
+      ])
+    |];
   ]))
 |])
 
