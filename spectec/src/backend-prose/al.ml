@@ -54,7 +54,7 @@ and value =
   | ListV of value array
   | WasmV of Values.value
   | WasmTypeV of Types.value_type
-  | WasmInstrV of Ast.instr
+  | WasmInstrV of string * value list
   | IntV of int
   | FloatV of float
   | StringV of string

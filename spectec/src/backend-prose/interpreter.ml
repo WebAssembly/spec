@@ -1,6 +1,7 @@
 open Print
 open Reference_interpreter
 open Source
+open Al
 
 (* AL Data Structures *)
 
@@ -17,7 +18,7 @@ let algo_map = ref AlgoMap.empty
 
 let to_map algos =
   let f acc algo =
-    let Al.Algo (name, _, _) = algo in
+    let Algo (name, _, _) = algo in
     AlgoMap.add name algo acc in
 
   List.fold_left f AlgoMap.empty algos
@@ -27,13 +28,13 @@ let to_map algos =
 module Env = struct
 
   module EnvKey = struct
-    type t = Al.name
+    type t = name
     let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
   end
 
   module Env' = Map.Make (EnvKey)
 
-  type t = Al.name Env'.t * Al.value
+  type t = name Env'.t * value
 
   (* Result *)
   let get_result (_, res) = res
@@ -46,7 +47,7 @@ module Env = struct
     (Env'.bindings env)
 
   (* Environment API *)
-  let empty = Env'.empty, Al.StringV "Undefined"
+  let empty = Env'.empty, StringV "Undefined"
   let find key (env, _) = try Env'.find key env with
   | Not_found ->
     Printf.sprintf "The key '%s' is not in the map: %s."
@@ -58,7 +59,7 @@ module Env = struct
 
 end
 
-let stack: Al.stack ref = ref []
+let stack: stack ref = ref []
 
 let push v = stack := v :: !stack
 
@@ -68,14 +69,14 @@ let pop () =
   res
 
 let get_current_frame () =
-  let f = function Al.FrameV _ -> true | _ -> false in
+  let f = function FrameV _ -> true | _ -> false in
   match List.find f !stack with
-    | Al.FrameV frame -> frame
+    | FrameV frame -> frame
     | _ ->
         (* Due to Wasm validation, unreachable *)
         failwith "No frame"
 
-let store: Al.store ref = ref Al.Record.empty
+let store: store ref = ref Record.empty
 
 
 
@@ -84,15 +85,15 @@ let store: Al.store ref = ref Al.Record.empty
 (* NOTE: These functions should be used only if validation ensures no failure *)
 
 let al_value2wasm_value = function
-  | Al.WasmV v -> v
+  | WasmV v -> v
   | _ -> failwith "Not a Wasm value"
 
 let al_value2wasm_type = function
-  | Al.WasmTypeV ty -> ty
+  | WasmTypeV ty -> ty
   | _ -> failwith "Not a Wasm type"
 
 let al_value2int = function
-  | Al.IntV i -> i
+  | IntV i -> i
   | _ -> failwith "Not an integer value"
 
 let wasm_value2al_num_value v = match v with
@@ -100,9 +101,9 @@ let wasm_value2al_num_value v = match v with
       let n = Values.string_of_num n in
       begin match Values.type_of_value v with
         | Types.NumType I32Type
-        | Types.NumType I64Type -> Al.IntV (int_of_string n)
+        | Types.NumType I64Type -> IntV (int_of_string n)
         | Types.NumType F32Type
-        | Types.NumType F64Type -> Al.FloatV (float_of_string n)
+        | Types.NumType F64Type -> FloatV (float_of_string n)
         | _ -> failwith "Not a Numtype"
       end
   | _ -> failwith "Not a Num value"
@@ -125,72 +126,72 @@ let mk_wasm_num ty i = match ty with
 
 let rec dsl_function_call fname args = match fname with
   (* Numerics *)
-  | Al.N name when Numerics.mem name -> Numerics.call_numerics name args
+  | N name when Numerics.mem name -> Numerics.call_numerics name args
   (* Runtime *)
-  | Al.N name when AlgoMap.mem name !algo_map ->
+  | N name when AlgoMap.mem name !algo_map ->
       run_algo name args |> Env.get_result
   | _ -> failwith "Invalid DSL function call"
 
 and eval_expr env expr = match expr with
-  | Al.ValueE v -> v
-  | Al.AppE (fname, el) ->
+  | ValueE v -> v
+  | AppE (fname, el) ->
       List.map (eval_expr env) el |> dsl_function_call fname
-  | Al.MapE (fname, [e], _) ->
+  | MapE (fname, [e], _) ->
       begin match eval_expr env e with
         | ListV vs -> ListV (Array.map (fun v -> dsl_function_call fname [v]) vs)
         | _ -> Print.string_of_expr e ^ " is not iterable." |> failwith (* Due to WASM validation, unreachable *)
       end
-  | Al.LengthE e ->
+  | LengthE e ->
       begin match eval_expr env e with
         | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
-  | Al.GetCurFrameE -> FrameV (get_current_frame ())
-  | Al.FrameE (e1, e2) ->
+  | GetCurFrameE -> FrameV (get_current_frame ())
+  | FrameE (e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match (v1, v2) with
-        | (Al.IntV n, Al.RecordV r) -> FrameV (n, r)
+        | (IntV n, RecordV r) -> FrameV (n, r)
         | _ ->
             (* Due to AL validation unreachable *)
             "Invalid frame: " ^ (string_of_expr expr)
             |> failwith
       end
-  | Al.PropE (e, str) ->
+  | PropE (e, str) ->
       begin match eval_expr env e with
-        | ModuleInstV m -> Al.Record.find str m
-        | FrameV (_, r) -> Al.Record.find str r
-        | StoreV s -> Al.Record.find str s
+        | ModuleInstV m -> Record.find str m
+        | FrameV (_, r) -> Record.find str r
+        | StoreV s -> Record.find str s
         | _ -> failwith "Not a record"
       end
-  | Al.ListE el -> Al.ListV (Array.map (eval_expr env) el)
-  | Al.IndexAccessE (e1, e2) ->
+  | ListE el -> ListV (Array.map (eval_expr env) el)
+  | IndexAccessE (e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match (v1, v2) with
-        | (Al.ListV l, Al.IntV n) -> Array.get l n
+        | (ListV l, IntV n) -> Array.get l n
         | _ ->
             (* Due to AL validation unreachable *)
             Printf.sprintf "Invalid index access %s" (string_of_expr expr)
             |> failwith
       end
-  | Al.LabelE (e1, e2) ->
+  | LabelE (e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match (v1, v2) with
-        | (Al.IntV n, Al.ListV [||]) -> LabelV (n, []) (*TODO Actually put in the correct instructions *)
+        | (IntV n, ListV [||]) -> LabelV (n, []) (*TODO Actually put in the correct instructions *)
         | _ ->
             (* Due to AL validation unreachable *)
             "Invalid Label: " ^ (string_of_expr expr)
             |> failwith
       end
-  | Al.NameE name
-  | Al.IterE (name, _) -> Env.find name env
-  | Al.ConstE (ty, inner_e) ->
+  | NameE name
+  | IterE (name, _) -> Env.find name env
+  | ConstE (ty, inner_e) ->
       let i = eval_expr env inner_e |> al_value2int in
       let wasm_ty = eval_expr env ty |> al_value2wasm_type in
-      Al.WasmV (mk_wasm_num wasm_ty i)
-  | Al.RecordE r -> Al.RecordV (Al.Record.map (eval_expr env) r)
+      WasmV (mk_wasm_num wasm_ty i)
+  | RecordE r -> RecordV (Record.map (eval_expr env) r)
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
@@ -200,12 +201,12 @@ and eval_cond env cond =
     binop v1 v2
   in
   match cond with
-  | Al.NotC c -> eval_cond env c |> not
-  | Al.EqC (e1, e2) -> do_binop e1 (=) e2
-  | Al.LtC (e1, e2) -> do_binop e1 (<) e2
-  | Al.LeC (e1, e2) -> do_binop e1 (<=) e2
-  | Al.GtC (e1, e2) -> do_binop e1 (>) e2
-  | Al.GeC (e1, e2) -> do_binop e1 (>=) e2
+  | NotC c -> eval_cond env c |> not
+  | EqC (e1, e2) -> do_binop e1 (=) e2
+  | LtC (e1, e2) -> do_binop e1 (<) e2
+  | LeC (e1, e2) -> do_binop e1 (<=) e2
+  | GtC (e1, e2) -> do_binop e1 (>) e2
+  | GeC (e1, e2) -> do_binop e1 (>=) e2
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instr env i =
@@ -213,21 +214,21 @@ and interp_instr env i =
   (* structured_string_of_instr 0 i |> print_endline; *)
   (* string_of_instr (ref 0) 0 i |> print_endline; *)
   match i with
-  | Al.IfI (c, il1, il2) ->
+  | IfI (c, il1, il2) ->
       if eval_cond env c then
         interp_instrs env il1
       else
         interp_instrs env il2
-  | Al.AssertI (_) -> env (* TODO: insert assertion *)
-  | Al.PushI e ->
+  | AssertI (_) -> env (* TODO: insert assertion *)
+  | PushI e ->
       eval_expr env e |> push;
       env
-  | Al.PopI e -> begin match e with
-      | Al.IterE (name, Al.ListN n) ->
+  | PopI e -> begin match e with
+      | IterE (name, ListN n) ->
         begin match Env.find n env with
           | IntV k ->
             let vs = Array.init k (fun _ -> pop()) in
-            Env.add name (Al.ListV vs) env
+            Env.add name (ListV vs) env
           | _ -> failwith "Invalid pop"
         end
       | _ ->
@@ -235,43 +236,43 @@ and interp_instr env i =
         let h = pop () in
 
         match (h, e) with
-          | (Al.WasmV w, Al.ConstE (Al.ValueE (WasmTypeV ty'), Al.NameE name)) ->
+          | (WasmV w, ConstE (ValueE (WasmTypeV ty'), NameE name)) ->
               (* due to Wasm validation *)
               let ty = Values.type_of_value w in
               assert (ty = ty');
 
               let v = wasm_value2al_num_value w in
               Env.add name v env
-          | (Al.WasmV w, Al.ConstE (Al.NameE nt, Al.NameE name)) ->
-              let ty = Al.WasmTypeV (Values.type_of_value w) in
+          | (WasmV w, ConstE (NameE nt, NameE name)) ->
+              let ty = WasmTypeV (Values.type_of_value w) in
               let v = wasm_value2al_num_value w in
               Env.add nt ty env |> Env.add name v
-          | (h, Al.NameE name) ->
+          | (h, NameE name) ->
               Env.add name h env
           | _ -> failwith "Invalid pop"
       end
-  | Al.LetI (pattern, e) ->
+  | LetI (pattern, e) ->
       let v = eval_expr env e in
       begin match pattern, v with
-        | Al.IterE (name, Al.ListN n), ListV vs ->
+        | IterE (name, ListN n), ListV vs ->
           env
           |> Env.add name v
-          |> Env.add n (Al.IntV (Array.length vs))
-        | Al.NameE name, v
-        | Al.ListE [|Al.NameE name|], ListV [|v|]
-        | Al.IterE (name, _), v ->
+          |> Env.add n (IntV (Array.length vs))
+        | NameE name, v
+        | ListE [|NameE name|], ListV [|v|]
+        | IterE (name, _), v ->
           Env.add name v env
-        | Al.PairE (Al.NameE n1, Al.NameE n2), Al.PairV (v1, v2)
-        | Al.ArrowE (Al.NameE n1, Al.NameE n2), Al.ArrowV (v1, v2) ->
+        | PairE (NameE n1, NameE n2), PairV (v1, v2)
+        | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
           env
           |> Env.add n1 v1
           |> Env.add n2 v2
-        | Al.ConstructE (lhs_tag, ps), Al.ConstructV (rhs_tag, vs)
+        | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
           when lhs_tag = rhs_tag ->
             List.fold_left2 (fun env p v ->
               match p with
-              | Al.NameE n
-              | Al.IterE (n, _) -> Env.add n v env
+              | NameE n
+              | IterE (n, _) -> Env.add n v env
               | _ ->
                 string_of_instr (ref 0) 0 i
                 |> Printf.sprintf "Invalid destructuring assignment: %s"
@@ -282,25 +283,25 @@ and interp_instr env i =
             |> Printf.sprintf "Invalid assignment: %s"
             |> failwith
       end
-  | Al.NopI | Al.ReturnI None -> env
-  | Al.ReturnI (Some e) ->
+  | NopI | ReturnI None -> env
+  | ReturnI (Some e) ->
       let result = eval_expr env e in
       Env.set_result result env
-  | Al.ReplaceI (Al.IndexAccessE (e1, e2), e3) ->
+  | ReplaceI (IndexAccessE (e1, e2), e3) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       let v3 = eval_expr env e3 in
       begin match v1, v2 with
-        | Al.ListV l, IntV i ->
+        | ListV l, IntV i ->
             Array.set l i v3;
             env
         | _ -> failwith "Invalid Replace instr"
       end
-  | Al.PerformI e ->
+  | PerformI e ->
       let _ = eval_expr env e in
       env
-  | Al.ExecuteI (fname, el) ->
-      let _ = List.map (eval_expr env) el |> dsl_function_call (Al.N fname) in
+  | ExecuteI (fname, el) ->
+      let _ = List.map (eval_expr env) el |> dsl_function_call (N fname) in
       env
   | i -> structured_string_of_instr 0 i |> failwith
 
@@ -308,18 +309,18 @@ and interp_instrs env il =
   List.fold_left interp_instr env il
 
 and interp_algo algo args =
-  let Al.Algo (_, params, il) = algo in
+  let Algo (_, params, il) = algo in
   assert (List.length params = List.length args);
 
   let f acc param arg =
     let (pattern, _) = param in
     match (pattern, arg) with
-      | (Al.NameE n, arg) -> Env.add n arg acc
+      | (NameE n, arg) -> Env.add n arg acc
       | _ -> failwith "Invalid destructuring assignment" in
 
   let init_env =
     List.fold_left2 f Env.empty params args
-    |> Env.add (N "s") (Al.StoreV !Testdata.store) in
+    |> Env.add (N "s") (StoreV !Testdata.store) in
 
   interp_instrs init_env il
 
@@ -331,35 +332,35 @@ and extract_data_of_wasm_instruction winstr = match winstr.it with
   | Ast.Nop -> "nop", []
   | Ast.Drop -> "drop", []
   | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
-      "binop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Add"]
+      "binop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Add"]
   | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
-      "testop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "Eqz"]
+      "testop", [WasmTypeV (Types.NumType Types.I32Type); StringV "Eqz"]
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
-      "relop", [Al.WasmTypeV (Types.NumType Types.F32Type); Al.StringV "Gt"]
+      "relop", [WasmTypeV (Types.NumType Types.F32Type); StringV "Gt"]
   | Ast.Compare (Values.I32 Ast.I32Op.GtS) ->
-      "relop", [Al.WasmTypeV (Types.NumType Types.I32Type); Al.StringV "GtS"]
-  | Ast.Select None -> "select", [Al.StringV "TODO: None"]
+      "relop", [WasmTypeV (Types.NumType Types.I32Type); StringV "GtS"]
+  | Ast.Select None -> "select", [StringV "TODO: None"]
   | Ast.LocalGet i32 ->
       let n = Int32.to_int i32.it in
-      "local.get", [Al.IntV n]
+      "local.get", [IntV n]
   | Ast.LocalSet i32 ->
       let n = Int32.to_int i32.it in
-      "local.set", [Al.IntV n]
+      "local.set", [IntV n]
   | Ast.LocalTee i32 ->
       let n = Int32.to_int i32.it in
-      "local.tee", [Al.IntV n]
+      "local.tee", [IntV n]
   | Ast.GlobalGet i32 ->
       let n = Int32.to_int i32.it in
-      "global.get", [Al.IntV n]
+      "global.get", [IntV n]
   | Ast.GlobalSet i32 ->
       let n = Int32.to_int i32.it in
-      "global.set", [Al.IntV n]
+      "global.set", [IntV n]
   | Ast.TableGet i32 ->
       let n = Int32.to_int i32.it in
-      "table.get", [Al.IntV n]
+      "table.get", [IntV n]
   | Ast.Call i32 ->
       let n = Int32.to_int i32.it in
-      "call", [Al.IntV n]
+      "call", [IntV n]
   | _ -> failwith "Not implemented"
 
 and run_algo name args =
@@ -367,8 +368,8 @@ and run_algo name args =
   interp_algo algo args
 
 let run_wasm_instr winstr = match winstr.it with
-  | Ast.Const num -> Al.WasmV (Values.Num num.it) |> push
-  | Ast.RefNull ref -> Al.WasmV (Values.Ref (Values.NullRef ref)) |> push
+  | Ast.Const num -> WasmV (Values.Num num.it) |> push
+  | Ast.RefNull ref -> WasmV (Values.Ref (Values.NullRef ref)) |> push
   | _ ->
       let (name, args) = extract_data_of_wasm_instruction winstr in
       let _env = run_algo name args in
