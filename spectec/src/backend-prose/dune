@@ -9,5 +9,6 @@
     interpreter
     numerics
     testdata
-    walk)
+    walk
+    manual)
 )
