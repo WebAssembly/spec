@@ -195,8 +195,10 @@ and interp_instr env i =
       else
         interp_instrs env il2
   | AssertI (_) -> env (* TODO: insert assertion *)
-  | PushI e ->
-      eval_expr env e |> push;
+  | PushI e -> begin match eval_expr env e with
+      | ListV vs -> Array.iter push vs
+      | v -> push v
+      end;
       env
   | PopI e -> begin match e with
       | IterE (name, ListN n) ->
@@ -362,10 +364,7 @@ let wasm_instr2al_value winstr =
 
 (* Test Interpreter *)
 
-let test test_case =
-  let (name, raw_ast, expected_result) = test_case in
-  let ast = List.map wasm_instr2al_value raw_ast in
-
+let test name ast expected_result =
   (* Print test name *)
   print_endline name;
 
@@ -390,6 +389,15 @@ let test test_case =
   with
     e -> print_endline ("Fail!(" ^ (Printexc.to_string e) ^ ")\n")
 
+let test_reference test_case =
+  let (name, raw_ast, expected_result) = test_case in
+  let ast = List.map wasm_instr2al_value raw_ast in
+  test name ast expected_result
+
+let test_wasm_value test_case =
+  let (name, ast, expected_result) = test_case in
+  test name ast expected_result
+
 (* Entry *)
 
 let interpret algos =
@@ -401,4 +409,5 @@ let interpret algos =
         AlgoMap.add name algo acc)
       !algo_map Manual.manual_algos;
 
-  List.iter test Testdata.test_cases
+  List.iter test_reference Testdata.test_cases_reference;
+  List.iter test_wasm_value Testdata.test_cases_wasm_value

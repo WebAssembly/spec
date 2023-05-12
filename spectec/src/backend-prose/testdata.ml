@@ -127,7 +127,7 @@ let get_frame_data () =
     |> Record.add "MODULE" (ModuleInstV module_inst) in
   FrameV (Array.length locals, r)
 
-(* Hardcoded Wasm Instructions *)
+(* Hardcoded Wasm Instructions in Reference Interpreter AST *)
 
 let binop = "binop", [
   Operators.i32_const (i32 19 |> to_phrase) |> to_phrase;
@@ -226,14 +226,29 @@ let call_sum = "call_sum", [
   Operators.call (i32 2 |> to_phrase) |> to_phrase
 ], "55"
 
+let test_cases_reference = [
+  binop; testop; relop1; relop2; nop; drop; select;
+  local_set; local_get; local_tee; global_set; global_get1; global_get2; table_get;
+  call_nop; call_add; call_sum
+]
+
+(* Hardcoded Wasm Instructions in WASM Values *)
+
+let block = "block", [
+  WasmInstrV("const", [ i32TV; IntV(1) ]);
+  WasmInstrV("const", [ i32TV; IntV(2) ]);
+  WasmInstrV("block", [
+    ArrowV(ListV[| i32TV; i32TV |], ListV[|i32TV|]);
+    ListV[| 
+      WasmInstrV("binop", [ i32TV; StringV "Sub" ]) 
+    |];
+  ])
+], "-1"
+
+let test_cases_wasm_value = [ block ]
+
 (* Printer of final result *)
 let string_of_result v = match v with
   | WasmInstrV ("const", [_; n]) -> Print.string_of_value n
   | WasmInstrV ("ref.null", _) -> "null"
   | _ -> Print.string_of_value v ^ "is not a wasm value."
-
-let test_cases = [
-  binop; testop; relop1; relop2; nop; drop; select;
-  local_set; local_get; local_tee; global_set; global_get1; global_get2; table_get;
-  call_nop; call_add; call_sum
-]
