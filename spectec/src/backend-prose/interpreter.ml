@@ -414,7 +414,7 @@ let test_wasm_value testcase =
 
 let interpret algos =
 
-  let test_module_semantics = true in
+  let test_module_semantics = false in
 
   algo_map := to_map algos;
   algo_map :=
