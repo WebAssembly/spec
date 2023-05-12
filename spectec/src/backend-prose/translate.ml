@@ -156,7 +156,6 @@ let rec exp2expr exp = match exp.it with
       let record = List.fold_left f Al.Record.empty expfields in
       Al.RecordE (record)
   (* TODO: Handle MixE *)
-  (* Yet *)
   | Ast.MixE (op, {it = Ast.TupE exps; _}) -> ( match (op, exps) with
     | [[]; [Ast.Semicolon]; []], [e1; e2] ->
       Al.PairE (exp2expr e1, exp2expr e2)
@@ -166,6 +165,8 @@ let rec exp2expr exp = match exp.it with
       Al.ConstructE ("FUNC", List.map exp2expr exps)
     | _ -> Al.YetE (Print.structured_string_of_exp exp)
     )
+  | Ast.OptE (inner_exp) -> Al.OptE (Option.map exp2expr inner_exp)
+  (* Yet *)
   | _ -> Al.YetE (Print.string_of_exp exp)
 
 (* `Ast.exp` -> `Al.expr` *)

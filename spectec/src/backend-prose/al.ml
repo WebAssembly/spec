@@ -102,6 +102,7 @@ type expr =
   | NameE of name
   | ArrowE of expr * expr
   | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | OptE of expr option
   (* Wasm Value Expr *)
   | ConstE of expr * expr
   | RefNullE of name

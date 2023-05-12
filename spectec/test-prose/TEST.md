@@ -442,7 +442,7 @@ memory.fill
   a. If n is not 0, then:
     1) Push the value i32.CONST i to the stack.
     2) Push val to the stack.
-    3) Execute (store YetE (I32_numtype) YetE (?(8)) 0 0).
+    3) Execute (store YetE (I32_numtype) ?(8) 0 0).
     4) Push the value i32.CONST (i + 1) to the stack.
     5) Push val to the stack.
     6) Push the value i32.CONST (n - 1) to the stack.
@@ -465,8 +465,8 @@ memory.copy
     2) Else:
       a) Push the value i32.CONST ((j + n) - 1) to the stack.
       b) Push the value i32.CONST ((i + n) - 1) to the stack.
-    3) Execute (load YetE (I32_numtype) YetE (?((8, U_sx))) 0 0).
-    4) Execute (store YetE (I32_numtype) YetE (?(8)) 0 0).
+    3) Execute (load YetE (I32_numtype) ?(YetE ((8, U_sx))) 0 0).
+    4) Execute (store YetE (I32_numtype) ?(8) 0 0).
     5) Push the value i32.CONST (j + 1) to the stack.
     6) Push the value i32.CONST (i + 1) to the stack.
     7) Push the value i32.CONST (n - 1) to the stack.
@@ -486,7 +486,7 @@ memory.init x
     1) If i < the length of $data(x), then:
       a) Push the value i32.CONST j to the stack.
       b) Push the value i32.CONST $data(x)[i] to the stack.
-      c) Execute (store YetE (I32_numtype) YetE (?(8)) 0 0).
+      c) Execute (store YetE (I32_numtype) ?(8) 0 0).
       d) Push the value i32.CONST (j + 1) to the stack.
       e) Push the value i32.CONST (i + 1) to the stack.
       f) Push the value i32.CONST (n - 1) to the stack.

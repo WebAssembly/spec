@@ -146,6 +146,7 @@ let rec structured_string_of_expr = function
   | ArrowE (e1, e2) -> "ArrowE (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
   | ConstructE (s, el) ->
       "ContructE (" ^ s ^ ", " ^ string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
+  | OptE o -> "OptE " ^ string_of_opt "(" structured_string_of_expr ")" o
   | ConstE (t, e) ->
       "ConstE (" ^
         structured_string_of_expr t ^ ", " ^
@@ -376,6 +377,8 @@ let rec string_of_record_expr r =
   | NameE n -> string_of_name n
   | ArrowE (e1, e2) -> string_of_expr e1 ^ "->" ^ string_of_expr e2
   | ConstructE (s, el) -> s ^ string_of_list string_of_expr "(" ", " ")" el
+  | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
+  | OptE None -> "?()"
   | ConstE (t, e) ->
       sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
