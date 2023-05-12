@@ -305,7 +305,7 @@ and string_of_stack st =
 
 
 and string_of_value = function
-  | LabelV _ -> "LabelV (TODO)"
+  | LabelV _ -> "LabelV (TODO)" 
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
   | ModuleInstV _ -> "ModuleInstV (TODO)"

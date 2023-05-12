@@ -245,7 +245,38 @@ let block = "block", [
   ])
 ], "-1"
 
-let testcases_wasm_value = [ block ]
+let br_zero = "br_zero", [
+  WasmInstrV("const", [ i32TV; IntV(1) ]); 
+  WasmInstrV("block", [
+    ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
+    ListV[| 
+      WasmInstrV("const", [ i32TV; IntV(32) ]);
+      WasmInstrV("const", [ i32TV; IntV(42) ]);
+      WasmInstrV("br", [ IntV(0) ]);
+      WasmInstrV("const", [ i32TV; IntV(52) ]);
+    |];
+  ]);
+], "42"
+
+let br_succ = "br_succ", [
+  WasmInstrV("const", [ i32TV; IntV(1) ]); 
+  WasmInstrV("block", [
+    ArrowV(ListV[|i32TV|], ListV[|i32TV|]);
+    ListV[| 
+      WasmInstrV("const", [ i32TV; IntV(32) ]);
+      WasmInstrV("block", [
+        ArrowV(ListV[| i32TV; i32TV |], ListV[|i32TV|]);
+        ListV[|
+          WasmInstrV("const", [ i32TV; IntV(42) ]);
+          WasmInstrV("br", [ IntV(1) ]);
+          WasmInstrV("const", [ i32TV; IntV(52) ]);
+        |]
+      ]); 
+    |];
+  ]);
+], "42"
+
+let testcases_wasm_value = [ block; br_zero; br_succ ]
 
 (* Printer of final result *)
 let string_of_result v = match v with

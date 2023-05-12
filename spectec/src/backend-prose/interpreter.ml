@@ -68,6 +68,11 @@ let pop () =
   stack := List.tl !stack;
   res
 
+let get_current_label () =
+  match List.find_map (function LabelV l -> Some l | _ -> None ) !stack with
+    | Some label -> label 
+    | None -> failwith "No label"(* Due to Wasm validation, unreachable *)
+
 let get_current_frame () =
   match List.find_map (function FrameV f -> Some f | _ -> None ) !stack with
     | Some frame -> frame
@@ -75,6 +80,9 @@ let get_current_frame () =
 
 let store: store ref = ref Record.empty
 
+(* Evaluation Context *)
+
+exception ExitCont
 
 (* Helper functions *)
 
@@ -115,6 +123,12 @@ and eval_expr env expr = match expr with
         | ListV (vl) -> IntV (Array.length vl)
         | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
       end
+  | ArityE e -> 
+      begin match eval_expr env e with
+        | LabelV (n, _) -> IntV n
+        | _ -> failwith "Not a label" (* Due to AL validation, unreachable *)
+      end
+  | GetCurLabelE -> LabelV (get_current_label ())
   | GetCurFrameE -> FrameV (get_current_frame ())
   | FrameE (e1, e2) ->
       let v1 = eval_expr env e1 in
@@ -167,6 +181,12 @@ and eval_expr env expr = match expr with
       let wasm_ty = eval_expr env ty in
       WasmInstrV ("const", [wasm_ty; v])
   | RecordE r -> RecordV (Record.map (eval_expr env) r)
+  | ContE e ->
+      let v = eval_expr env e in
+      begin match v with
+      | LabelV (_, vs) -> ListV (Array.of_list vs) 
+      | _ -> failwith "Not a label"
+      end
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
@@ -182,6 +202,14 @@ and eval_cond env cond =
   | LeC (e1, e2) -> do_binop e1 (<=) e2
   | GtC (e1, e2) -> do_binop e1 (>) e2
   | GeC (e1, e2) -> do_binop e1 (>=) e2
+  | TopC "value" ->
+      begin match !stack with
+        | [] -> false
+        | h :: _ -> begin match h with
+          | WasmInstrV _ -> true
+          | _ -> false 
+        end
+      end
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instr env i =
@@ -194,6 +222,12 @@ and interp_instr env i =
         interp_instrs env il1
       else
         interp_instrs env il2
+  | WhileI (c, il) ->
+      (* TODO: this is a recursive implementation of while *)
+      if eval_cond env c then
+        interp_instr (interp_instrs env il) i
+      else
+        env
   | AssertI (_) -> env (* TODO: insert assertion *)
   | PushI e -> begin match eval_expr env e with
       | ListV vs -> Array.iter push vs
@@ -276,8 +310,13 @@ and interp_instr env i =
       env
   | JumpI e ->
       begin match eval_expr env e with
-      | ListV vl -> vl |> array_to_list |> execute_wasm_instrs
+      | ListV vl -> 
+          vl |> array_to_list |> execute_wasm_instrs
       | _ -> "Not a list of Wasm Instruction" |> failwith
+      end;
+      begin match e with
+      | ContE _ -> raise ExitCont
+      | _ -> ()
       end;
       env
   | ExitI _ ->
@@ -324,15 +363,27 @@ and wasm_num2al_value n =
   end
 
 and call_algo name args =
+  (*
+  let _ = print_endline ("[[ " ^ name ^ "]]") in
+  let _ = print_endline (name ^ "-BEFORE") in
+  let _ = string_of_stack !stack |> print_endline in
+  *)
   let algo = AlgoMap.find name !algo_map in
-  interp_algo algo args
+  let res = interp_algo algo args in
+  (*
+  let _ = print_endline (name ^ "-AFTER") in
+  let _ = string_of_stack !stack |> print_endline in
+  *)
+  res
 
 and execute_wasm_instr winstr = match winstr with
   | WasmInstrV("const", _) | WasmInstrV("ref.null", _) -> push winstr
   | WasmInstrV(name, args) -> call_algo name args |> ignore
   | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
 
-and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
+and execute_wasm_instrs winstrs = try List.iter execute_wasm_instr winstrs with
+  | ExitCont -> ()
+  | _ -> ()
 
 (* TODO *)
 let execute wmodule =

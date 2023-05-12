@@ -163,6 +163,7 @@ let () =
         al;
       (*log "AL Validation...";
       Backend_al.Validation.valid al;*)
+      Backend_al.Print.string_of_algorithm (Backend_al.Manual.br) |> print_endline;
       log "Interpret AL...";
       Backend_al.Interpreter.interpret al
     );
