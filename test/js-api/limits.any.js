@@ -255,7 +255,7 @@ function testModuleSizeLimit(size, expectPass) {
     buffer = new Uint8Array(size);
   } catch (e) {
     if (e instanceof RangeError) {
-      // 32-bit systems may fail to allocate a big TypedArray.
+      // Allocation of a big TypedArray may fail.
       return;
     }
     throw e;
