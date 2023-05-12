@@ -552,28 +552,6 @@ memory.grow
 data.drop x
 1. Perform $with_data(x, []).
 
-br l
-1. If l is 0, then:
-  a. Let L be the current label.
-  b. Let n be the arity of L.
-  c. Assert: Due to validation, there are at least n values on the top of the stack.
-  d. Pop val^n from the stack.
-  e. While the top of the stack is value, do:
-    1) Pop val' from the stack.
-  f. Assert: Due to validation, the label L is now on the top of the stack.
-  g. Pop the label from the stack.
-  h. Push val^n to the stack.
-  i. Jump to the continuation of L.
-2. Else:
-  a. Let val* be [].
-  b. While the top of the stack is value, do:
-    1) Pop val' from the stack.
-    2) Let val* be [val'] ++ val*.
-  c. Assert: Due to validation, the label L is now on the top of the stack.
-  d. Pop the label from the stack.
-  e. Push val* to the stack.
-  f. Execute (br (l - 1)).
-
 == Interpret AL...
 binop
 Ok

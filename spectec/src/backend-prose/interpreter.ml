@@ -310,8 +310,7 @@ and interp_instr env i =
       env
   | JumpI e ->
       begin match eval_expr env e with
-      | ListV vl -> 
-          vl |> array_to_list |> execute_wasm_instrs
+      | ListV vl -> vl |> array_to_list |> execute_wasm_instrs
       | _ -> "Not a list of Wasm Instruction" |> failwith
       end;
       begin match e with
@@ -363,18 +362,8 @@ and wasm_num2al_value n =
   end
 
 and call_algo name args =
-  (*
-  let _ = print_endline ("[[ " ^ name ^ "]]") in
-  let _ = print_endline (name ^ "-BEFORE") in
-  let _ = string_of_stack !stack |> print_endline in
-  *)
   let algo = AlgoMap.find name !algo_map in
-  let res = interp_algo algo args in
-  (*
-  let _ = print_endline (name ^ "-AFTER") in
-  let _ = string_of_stack !stack |> print_endline in
-  *)
-  res
+  interp_algo algo args
 
 and execute_wasm_instr winstr = match winstr with
   | WasmInstrV("const", _) | WasmInstrV("ref.null", _) -> push winstr
