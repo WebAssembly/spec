@@ -335,7 +335,20 @@ and execute_wasm_instr winstr = match winstr with
 and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
 
 (* TODO *)
-let execute _wmodule = ()
+let execute wmodule =
+  (* Instantiation *)
+  let instantiation_result =
+    call_algo "instantiation" [wmodule]
+    |> Env.get_result in
+  let store, modinst = match instantiation_result with
+    | PairV (StoreV s, ModuleInstV m) -> s, m
+    | _ -> failwith "Invalid instantiation" in
+
+  (* Invocation *)
+  let invocation_result =
+    call_algo "invocation" [StoreV store; ModuleInstV modinst]
+    |> Env.get_result in
+  string_of_value invocation_result |> print_endline
 
 let wasm_instr2al_value winstr =
   let f_i32 f i32 = WasmInstrV (f, [IntV (Int32.to_int i32.it)]) in
@@ -427,6 +440,7 @@ let interpret algos =
   if test_module_semantics
   then
     List.iter test_module Testdata.module_testcases
-  else
+  else begin
     List.iter test_reference Testdata.testcases_reference;
     List.iter test_wasm_value Testdata.testcases_wasm_value
+  end

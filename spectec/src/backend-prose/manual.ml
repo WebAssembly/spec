@@ -60,4 +60,7 @@ let br =
   let if_instr = IfI (br_cond, br_zero, br_succ) in
   Algo ("br", [ (NameE (N "l"), IntT) ], [ if_instr ])
 
-let manual_algos = [ br ]
+let instantiation =
+  Algo ("instantiation", [ (NameE (N "module"), TopT)], [])
+
+let manual_algos = [ br; instantiation ]
