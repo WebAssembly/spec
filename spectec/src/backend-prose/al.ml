@@ -141,7 +141,7 @@ type instr =
   | ReturnI of (expr option)
   | InvokeI of expr
   | EnterI of (expr * expr)
-  | ExecuteI of (string * expr list)
+  | ExecuteI of expr
   | ReplaceI of (expr * expr)
   | JumpI of expr
   | PerformI of expr

@@ -98,7 +98,7 @@ let rec dsl_function_call fname args = match fname with
   | N name when Numerics.mem name -> Numerics.call_numerics name args
   (* Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      run_algo name args |> Env.get_result
+      call_algo name args |> Env.get_result
   | _ -> failwith "Invalid DSL function call"
 
 and eval_expr env expr = match expr with
@@ -159,6 +159,7 @@ and eval_expr env expr = match expr with
             "Invalid Label: " ^ (string_of_expr expr)
             |> failwith
       end
+  | WasmInstrE (s, el) -> WasmInstrV (s, List.map (eval_expr env) el)
   | NameE name
   | IterE (name, _) -> Env.find name env
   | ConstE (ty, inner_e) ->
@@ -266,25 +267,25 @@ and interp_instr env i =
         | _ -> failwith "Invalid Replace instr"
       end
   | PerformI e ->
-      let _ = eval_expr env e in
+      eval_expr env e |> ignore;
       env
-  | ExecuteI (fname, el) ->
-      let _ = List.map (eval_expr env) el |> dsl_function_call (N fname) in
+  | ExecuteI e ->
+      eval_expr env e |> execute_wasm_instr;
       env
   | JumpI e ->
       begin match eval_expr env e with
-      | ListV vl -> vl |> array_to_list |> run
+      | ListV vl -> vl |> array_to_list |> execute
       | _ -> "Not a list of Wasm Instruction" |> failwith
       end;
       env
   | ExitI _ ->
-    let rec pop_while pred =
-      let top = pop() in
-      if pred top then top :: pop_while pred else []
-    in
-    let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
-    vals |> List.rev |> List.iter push;
-    env
+      let rec pop_while pred =
+        let top = pop() in
+        if pred top then top :: pop_while pred else []
+      in
+      let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
+      vals |> List.rev |> List.iter push;
+      env
   | i -> structured_string_of_instr 0 i |> failwith
 
 and interp_instrs env il =
@@ -320,16 +321,16 @@ and wasm_num2al_value n =
     | F64Type -> WasmInstrV ("const", [WasmTypeV (NumType t); FloatV (float_of_string s)])
   end
 
-and run_algo name args =
+and call_algo name args =
   let algo = AlgoMap.find name !algo_map in
   interp_algo algo args
 
-and run_wasm_instr winstr = match winstr with
+and execute_wasm_instr winstr = match winstr with
   | WasmInstrV("const", _) | WasmInstrV("ref.null", _) -> push winstr
-  | WasmInstrV(name, args) -> ignore (run_algo name args)
+  | WasmInstrV(name, args) -> call_algo name args |> ignore
   | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
 
-and run winstrs = List.iter run_wasm_instr winstrs
+and execute winstrs = List.iter execute_wasm_instr winstrs
 
 let wasm_instr2al_value winstr =
   let f_i32 f i32 = WasmInstrV (f, [IntV (Int32.to_int i32.it)]) in
@@ -375,7 +376,7 @@ let test test_case =
 
   try
     (* Execute *)
-    run ast;
+    execute ast;
 
     (* Check *)
     let actual_result = List.hd !stack |> Testdata.string_of_result in

@@ -232,10 +232,8 @@ let rec structured_string_of_instr depth = function
   | ReturnI e_opt -> "ReturnI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
   | InvokeI e -> "InvokeI (" ^ structured_string_of_expr e ^ ")"
   | EnterI (e1, e2) -> "EnterI (" ^ structured_string_of_expr e1 ^ ", " ^ structured_string_of_expr e2 ^ ")"
-  | ExecuteI (s, el) ->
-      "ExecuteI (" ^
-      s ^ ", " ^
-      string_of_list structured_string_of_expr "[" ", " "]" el ^ ")"
+  | ExecuteI e ->
+      "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ReplaceI (e1, e2) ->
       "ReplaceI (" ^
         structured_string_of_expr e1 ^ ", " ^
@@ -373,7 +371,8 @@ let rec string_of_record_expr r =
   | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | WasmInstrE (s, el) -> s ^ " " ^ string_of_list string_of_expr "(" ", " ")" el
+  | WasmInstrE (s, []) -> s
+  | WasmInstrE (s, el) -> s ^ string_of_list string_of_expr " " " " "" el
   | NameE n -> string_of_name n
   | ArrowE (e1, e2) -> string_of_expr e1 ^ "->" ^ string_of_expr e2
   | ConstructE (s, el) -> s ^ string_of_list string_of_expr "(" ", " ")" el
@@ -478,13 +477,8 @@ let rec string_of_instr index depth = function
         (make_index index depth)
         (string_of_expr e1)
         (string_of_expr e2)
-  | ExecuteI (s, []) ->
-      sprintf "%s Execute (%s)." (make_index index depth) s
-  | ExecuteI (s, el) ->
-      sprintf "%s Execute (%s %s)."
-        (make_index index depth)
-        s
-        (string_of_list string_of_expr "" " " "" el)
+  | ExecuteI e ->
+      sprintf "%s Execute (%s)." (make_index index depth) (string_of_expr e)
   | ReplaceI (e1, e2) ->
       sprintf "%s Replace %s with %s."
         (make_index index depth)
