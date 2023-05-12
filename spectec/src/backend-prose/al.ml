@@ -84,6 +84,7 @@ type expr =
   | ConcatE of (expr * expr)
   | LengthE of expr
   | ArityE of expr
+  | GetCurLabelE
   | GetCurFrameE
   | FrameE of (expr * expr)
   | BitWidthE of expr

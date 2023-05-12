@@ -118,6 +118,7 @@ let rec structured_string_of_expr = function
         structured_string_of_expr e2 ^ ")"
   | LengthE e -> "LengthE (" ^ structured_string_of_expr e ^ ")"
   | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
+  | GetCurLabelE -> "GetCurLabelE"
   | GetCurFrameE -> "GetCurFrameE"
   | FrameE _ -> "FrameE TODO"
   | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
@@ -355,6 +356,7 @@ let rec string_of_record_expr r =
         (string_of_expr e2)
   | LengthE e -> sprintf "the length of %s" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
+  | GetCurLabelE -> "the current label"
   | GetCurFrameE -> "the current frame"
   | FrameE (e1, e2) -> sprintf "the activation of %s with arity %s" (string_of_expr e2)  (string_of_expr e1)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
