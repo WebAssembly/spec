@@ -276,7 +276,7 @@ and interp_instr env i =
       env
   | JumpI e ->
       begin match eval_expr env e with
-      | ListV vl -> vl |> array_to_list |> execute
+      | ListV vl -> vl |> array_to_list |> execute_wasm_instrs
       | _ -> "Not a list of Wasm Instruction" |> failwith
       end;
       env
@@ -332,7 +332,10 @@ and execute_wasm_instr winstr = match winstr with
   | WasmInstrV(name, args) -> call_algo name args |> ignore
   | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
 
-and execute winstrs = List.iter execute_wasm_instr winstrs
+and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
+
+(* TODO *)
+let execute _wmodule = ()
 
 let wasm_instr2al_value winstr =
   let f_i32 f i32 = WasmInstrV (f, [IntV (Int32.to_int i32.it)]) in
@@ -364,6 +367,15 @@ let wasm_instr2al_value winstr =
 
 (* Test Interpreter *)
 
+(* TODO *)
+let wasm2al _wasm_module = WasmModuleV
+
+let test_module wasm_module =
+  let wasm_module_value = wasm2al wasm_module in
+
+  (* Execute *)
+  execute wasm_module_value
+
 let test name ast expected_result =
   (* Print test name *)
   print_endline name;
@@ -375,7 +387,7 @@ let test name ast expected_result =
 
   try
     (* Execute *)
-    execute ast;
+    execute_wasm_instrs ast;
 
     (* Check *)
     let actual_result = List.hd !stack |> Testdata.string_of_result in
@@ -389,18 +401,21 @@ let test name ast expected_result =
   with
     e -> print_endline ("Fail!(" ^ (Printexc.to_string e) ^ ")\n")
 
-let test_reference test_case =
-  let (name, raw_ast, expected_result) = test_case in
+let test_reference testcase =
+  let (name, raw_ast, expected_result) = testcase in
   let ast = List.map wasm_instr2al_value raw_ast in
   test name ast expected_result
 
-let test_wasm_value test_case =
-  let (name, ast, expected_result) = test_case in
+let test_wasm_value testcase =
+  let (name, ast, expected_result) = testcase in
   test name ast expected_result
 
 (* Entry *)
 
 let interpret algos =
+
+  let test_module_semantics = true in
+
   algo_map := to_map algos;
   algo_map :=
     List.fold_left 
@@ -409,5 +424,9 @@ let interpret algos =
         AlgoMap.add name algo acc)
       !algo_map Manual.manual_algos;
 
-  List.iter test_reference Testdata.test_cases_reference;
-  List.iter test_wasm_value Testdata.test_cases_wasm_value
+  if test_module_semantics
+  then
+    List.iter test_module Testdata.module_testcases
+  else
+    List.iter test_reference Testdata.testcases_reference;
+    List.iter test_wasm_value Testdata.testcases_wasm_value

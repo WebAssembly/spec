@@ -75,6 +75,7 @@ let rec structured_string_of_value = function
   | ArrowV (v1, v2) -> "ArrowV(" ^ structured_string_of_value v1 ^ ", " ^ structured_string_of_value v2 ^ ")"
   | ConstructV (s, vl) -> "ConstructV(" ^ s ^ ", " ^ string_of_list structured_string_of_value "[" ", " "]" vl ^ ")"
   | RecordV _r -> "RecordV (TODO)"
+  | WasmModuleV -> "WasmModuleV"
 
 let rec structured_string_of_expr = function
   | ValueE (v) -> "ValueE " ^ structured_string_of_value v
@@ -318,6 +319,7 @@ and string_of_value = function
   | ArrowV (v1, v2) -> string_of_value v1 ^ "->" ^ string_of_value v2
   | ConstructV (s, vl) -> s ^ string_of_list string_of_value "(" ", " ")" vl
   | RecordV _r -> "RecordV (TODO)"
+  | WasmModuleV -> "WasmModuleV"
 
 let rec string_of_record_expr r =
   Al.Record.fold

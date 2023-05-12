@@ -226,7 +226,7 @@ let call_sum = "call_sum", [
   Operators.call (i32 2 |> to_phrase) |> to_phrase
 ], "55"
 
-let test_cases_reference = [
+let testcases_reference = [
   binop; testop; relop1; relop2; nop; drop; select;
   local_set; local_get; local_tee; global_set; global_get1; global_get2; table_get;
   call_nop; call_add; call_sum
@@ -245,10 +245,38 @@ let block = "block", [
   ])
 ], "-1"
 
-let test_cases_wasm_value = [ block ]
+let testcases_wasm_value = [ block ]
 
 (* Printer of final result *)
 let string_of_result v = match v with
   | WasmInstrV ("const", [_; n]) -> Print.string_of_value n
   | WasmInstrV ("ref.null", _) -> "null"
   | _ -> Print.string_of_value v ^ "is not a wasm value."
+
+(* Module tests *)
+
+let wasm_func_skeleton: Ast.func' = {
+  Ast.ftype = Int32.of_int 0 |> to_phrase;
+  Ast.locals = [];
+  Ast.body = []
+}
+
+let wasm_module_skeleton: Ast.module_' = {
+  Ast.types = [];
+  Ast.globals = [];
+  Ast.tables = [];
+  Ast.memories = [];
+  Ast.funcs = [];
+  Ast.start = None;
+  Ast.elems = [];
+  Ast.datas = [];
+  Ast.imports = [];
+  Ast.exports = []
+}
+
+let gen_module_testcase testcase =
+  let (name, wl, expected_result) = testcase in
+  let wasm_func = { wasm_func_skeleton with Ast.body = wl } |> to_phrase in
+  let wasm_module = { wasm_module_skeleton with Ast.funcs = [wasm_func] } |> to_phrase in
+  (name, wasm_module, expected_result)
+let module_testcases = List.map gen_module_testcase testcases_reference

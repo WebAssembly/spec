@@ -61,6 +61,7 @@ and value =
   | ArrowV of value * value
   | ConstructV of string * value list
   | RecordV of value record
+  | WasmModuleV
 
 type name = N of string | SubN of name * string
 
