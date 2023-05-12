@@ -250,7 +250,16 @@ function testModuleSizeLimit(size, expectPass) {
 
   // Define a WebAssembly module that consists of a single custom section which
   // has an empty name. The module size will be `size`.
-  const buffer = new Uint8Array(size);
+  let buffer;
+  try {
+    buffer = new Uint8Array(size);
+  } catch (e) {
+    if (e instanceof RangeError) {
+      // 32-bit systems may fail to allocate a big TypedArray.
+      return;
+    }
+    throw e;
+  }
   const header = [
     kWasmH0, kWasmH1, kWasmH2, kWasmH3, // magic word
     kWasmV0, kWasmV1, kWasmV2, kWasmV3, // version
