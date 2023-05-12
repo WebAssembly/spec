@@ -394,5 +394,11 @@ let test test_case =
 
 let interpret algos =
   algo_map := to_map algos;
+  algo_map :=
+    List.fold_left 
+      (fun acc algo ->
+        let Algo (name, _, _) = algo in
+        AlgoMap.add name algo acc)
+      !algo_map Manual.manual_algos;
 
   List.iter test Testdata.test_cases
