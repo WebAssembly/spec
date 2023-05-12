@@ -202,8 +202,8 @@ and interp_instr env i =
       | IterE (name, ListN n) ->
         begin match Env.find n env with
           | IntV k ->
-            let vs = Array.init k (fun _ -> pop()) in
-            Env.add name (ListV vs) env
+            let vs = List.rev (List.init k (fun _ -> pop())) in
+            Env.add name (ListV (Array.of_list vs)) env
           | _ -> failwith "Invalid pop"
         end
       | _ ->
