@@ -18,6 +18,7 @@ type al_type =
 
 module FieldName = struct
   type t = string
+
   let compare = Stdlib.compare
 end
 
@@ -33,7 +34,6 @@ and table_inst = value
 
 (* Table, Global: Address list *)
 and module_inst = value record
-
 and label = int * value list
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
@@ -41,11 +41,9 @@ and frame = int * value record
 
 (* global: global_inst list table: table_inst list *)
 and store = value record
-
 and stack = value list
 
 (* AL AST *)
-
 and value =
   | LabelV of label
   | FrameV of frame
@@ -66,10 +64,10 @@ and value =
 type name = N of string | SubN of name * string
 
 type iter =
-  | Opt                          (* `?` *)
-  | List                         (* `*` *)
-  | List1                        (* `+` *)
-  | ListN of name                 (* `^` exp *)
+  | Opt (* `?` *)
+  | List (* `*` *)
+  | List1 (* `+` *)
+  | ListN of name (* `^` exp *)
 
 type expr =
   | ValueE of value
@@ -129,7 +127,8 @@ and cond =
 
 type instr =
   | IfI of (cond * instr list * instr list)
-  | OtherwiseI of (instr list) (* This is only for intermideate process durinng il->al *)
+  | OtherwiseI of instr list
+    (* This is only for intermideate process durinng il->al *)
   | WhileI of (cond * instr list)
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)
@@ -140,7 +139,7 @@ type instr =
   | LetI of (expr * expr)
   | TrapI
   | NopI
-  | ReturnI of (expr option)
+  | ReturnI of expr option
   | InvokeI of expr
   | EnterI of (expr * expr)
   | ExecuteI of expr
