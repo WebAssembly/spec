@@ -187,6 +187,24 @@ Other references are *non-null*.
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
+.. _aux-reftypediff:
+
+Convention
+..........
+
+* The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two reference types is defined as follows:
+
+  .. math::
+     \begin{array}{lll}
+     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\NULL~\X{ht}_2) &=& (\REF~\X{ht}_1) \\
+     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\X{ht}_2) &=& (\REF~\NULL_1^?~\X{ht}_1) \\
+     \end{array}
+
+.. note::
+   This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
+   Since the type system does not have general union types,
+   it only affects the presence of null and cannot express the absence of any other values.
+
 
 .. index:: ! value type, number type, vector type, reference type, ! bottom type
    pair: abstract syntax; value type
@@ -302,25 +320,121 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
    \end{array}
 
 
-.. index:: ! defined type, function type
+.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type
+   pair: abstract syntax; structure type
+   pair: abstract syntax; array type
+   pair: abstract syntax; field type
+   pair: abstract syntax; storage type
+   pair: abstract syntax; packed type
+.. _syntax-aggrtype:
+.. _syntax-structtype:
+.. _syntax-arraytype:
+.. _syntax-fieldtype:
+.. _syntax-storagetype:
+.. _syntax-packedtype:
+
+Aggregate Types
+~~~~~~~~~~~~~~~
+
+*Aggregate types* describe compound objects consisting of multiple values.
+These are either *structures* or *arrays*,
+which both consist of a list of possibly mutable and possibly packed *fields*.
+Structures are heterogeneous, but require static indexing, while arrays need to be homogeneous, but allow dynamic indexing.
+
+.. math::
+   \begin{array}{llrl}
+   \production{structure type} & \structtype &::=&
+     \fieldtype^\ast \\
+   \production{array type} & \arraytype &::=&
+     \fieldtype \\
+   \production{field type} & \fieldtype &::=&
+     \mut~\storagetype \\
+   \production{storage type} & \storagetype &::=&
+     \valtype ~|~ \packedtype \\
+   \production{packed type} & \packedtype &::=&
+     \I8 ~|~ \I16 \\
+   \end{array}
+
+
+.. index:: ! structured type, function type, aggreagate type, structure type, array type
+   pair: abstract syntax; structured type
+.. _syntax-strtype:
+
+Structured Types
+~~~~~~~~~~~~~~~~
+
+*Structured types* are all types composed from simpler types,
+including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syntax-aggrtype>`.
+
+.. math::
+   \begin{array}{llrl}
+   \production{structured type} & \strtype &::=&
+     \TFUNC~\functype ~|~ \TSTRUCT~\structtype ~|~ \TARRAY~\arraytype \\
+   \end{array}
+
+
+.. index:: ! recursive type, ! sub type, structured type, ! final, subtyping
+   pair: abstract syntax; recursive type
+   pair: abstract syntax; sub type
+.. _syntax-rectype:
+.. _syntax-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+*Recursive types* denote a group of mutually recursive :ref:`structured types <syntax-strtype>`, each of which can optionally declare a list of supertypes that it :ref:`matches <match-strtype>`.
+Each type can also be declared *final*, preventing further subtyping.
+.
+In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
+
+.. math::
+   \begin{array}{llrl}
+   \production{recursive type} & \rectype &::=&
+     \TREC~\subtype^\ast \\
+   \production{sub types} & \subtype &::=&
+     \TSUB~\TFINAL^?~\heaptype^\ast~\strtype \\
+   \end{array}
+
+
+.. index:: ! defined type, recursive type, ! unroll, ! expand
    pair: abstract syntax; defined type
 .. _syntax-deftype:
 
 Defined Types
 ~~~~~~~~~~~~~
 
-.. todo:: structured types, recrusive types, etc.
+*Defined types* denote the individual types defined in a :ref:`module <syntax-module>`.
+Each such type is represented as a projection from the :ref:`recursive type <syntax-rectype>` group it originates from, indexed by its position in that group.
 
-*Defined types* are the ones that can be defined in a :ref:`module <syntax-module>`, assigning them a :ref:`type index <syntax-typeidx>`.
 
 .. math::
    \begin{array}{llrl}
    \production{defined type} & \deftype &::=&
-     \functype \\
+     \rectype.i \\
    \end{array}
 
-.. note::
-   Future versions of WebAssembly may introduce additional forms of defined types.
+Defined types do not occur in the :ref:`binary <binary>` or :ref:`text <text>` format,
+but are formed during :ref:`validation <valid>` and :ref:`execution <exec>` from the recursive types defined in each module.
+
+.. _aux-expand:
+.. _aux-unroll:
+
+Conventions
+...........
+
+* The following auxiliary function denotes the *unrolling* of a defined type:
+
+  .. math::
+     \begin{array}{lll}
+     \unroll((\subtype^\ast).i) &=& \subtype^\ast[i] \\
+     \end{array}
+
+* The following auxiliary function denotes the *expansion* of a defined type:
+
+  .. math::
+     \begin{array}{llll}
+     \expand(\deftype) &=& \strtype & (\iff \unroll(\deftype) = \TSUB~\TFINAL^?~\X{ht}^?~\strtype) \\
+     \end{array}
 
 
 .. index:: ! limits, memory type, table type
@@ -384,9 +498,6 @@ Table Types
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
 
-.. note::
-   In future versions of WebAssembly, additional element types may be introduced.
-
 
 .. index:: ! global type, ! mutability, value type, global, mutability
    pair: abstract syntax; global type
@@ -411,7 +522,7 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, function type, table type, memory type, global type, import, external value
+.. index:: ! external type, defined type, function type, table type, memory type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -424,7 +535,7 @@ External Types
 .. math::
    \begin{array}{llrl}
    \production{external types} & \externtype &::=&
-     \ETFUNC~\functype ~|~
+     \ETFUNC~\deftype ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
      \ETGLOBAL~\globaltype \\

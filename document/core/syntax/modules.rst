@@ -14,7 +14,7 @@ and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`el
 .. math::
    \begin{array}{llrll}
    \production{module} & \module &::=& \{ &
-     \MTYPES~\vec(\functype), \\&&&&
+     \MTYPES~\vec(\rectype), \\&&&&
      \MFUNCS~\vec(\func), \\&&&&
      \MTABLES~\vec(\table), \\&&&&
      \MMEMS~\vec(\mem), \\&&&&
@@ -112,20 +112,15 @@ Conventions
    For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
 
 
-.. index:: ! type definition, type index, function type
+.. index:: ! type definition, type index, function type, aggregate type
    pair: abstract syntax; type definition
 .. _syntax-typedef:
 
 Types
 ~~~~~
 
-The |MTYPES| component of a module defines a vector of :ref:`function types <syntax-functype>`.
-
-All function types used in a module must be defined in this component.
-They are referenced by :ref:`type indices <syntax-typeidx>`.
-
-.. note::
-   Future versions of WebAssembly may add additional forms of type definitions.
+The |MTYPES| component of a module defines a vector of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
+All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this component.
 
 
 .. index:: ! function, ! local, function index, local index, type index, value type, expression, import

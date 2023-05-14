@@ -286,8 +286,8 @@ The module instance is used to resolve references to other definitions during ex
 .. math::
    \begin{array}{llll}
    \production{function instance} & \funcinst &::=&
-     \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
-     \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
+     \{ \FITYPE~\deftype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
+     \{ \FITYPE~\deftype, \FIHOSTCODE~\hostfunc \} \\
    \production{host function} & \hostfunc &::=& \dots \\
    \end{array}
 
@@ -462,7 +462,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
-.. index:: ! structure instance, ! array instance, structure type, array type, ! field value, ! packed value
+.. index:: ! structure instance, ! array instance, structure type, array type, defined type, ! field value, ! packed value
    pair: abstract syntax; field value
    pair: abstract syntax; packed value
    pair: abstract syntax; structure instance
@@ -473,20 +473,21 @@ It filters out entries of a specific kind in an order-preserving fashion:
 .. _syntax-packedval:
 .. _syntax-structinst:
 .. _syntax-arrayinst:
+.. _syntax-aggrinst:
 
-Structure and Array Instances
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Aggregate Instances
+~~~~~~~~~~~~~~~~~~~
 
 A *structure instance* is the runtime representation of a heap object allocated from a :ref:`structure type <syntax-structtype>`.
 Likewise, an *array instance* is the runtime representation of a heap object allocated from an :ref:`array type <syntax-arraytype>`.
-Both record their respective type and hold a vector of the values of their *fields*.
+Both record their respective :ref:`defined type <syntax-deftype>` and hold a vector of the values of their *fields*.
 
 .. math::
    \begin{array}{llcl}
    \production{structure instance} & \structinst &::=&
-     \{ \SITYPE~\structtype, \SIFIELDS~\vec(\fieldval) \} \\
+     \{ \SITYPE~\deftype, \SIFIELDS~\vec(\fieldval) \} \\
    \production{array instance} & \arrayinst &::=&
-     \{ \AITYPE~\arraytype, \AIFIELDS~\vec(\fieldval) \} \\
+     \{ \AITYPE~\deftype, \AIFIELDS~\vec(\fieldval) \} \\
    \production{field value} & \fieldval &::=&
      \val ~|~ \packedval \\
    \production{packed value} & \packedval &::=&
@@ -595,7 +596,7 @@ Locals may be uninitialized, in which case they are empty.
 Locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
 
-.. _exec-expand:
+.. _aux-fblocktype:
 
 Conventions
 ...........
@@ -607,9 +608,9 @@ Conventions
 * The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`instruction type <syntax-instrtype>` that it denotes in the current frame:
 
 .. math::
-   \begin{array}{lll}
-   \expand_{S;F}(\typeidx) &=& F.\AMODULE.\MITYPES[\typeidx] \\
-   \expand_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
+   \begin{array}{llll}
+   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expand(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
+   \fblocktype_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
    \end{array}
 
 

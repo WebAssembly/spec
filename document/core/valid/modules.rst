@@ -20,9 +20,9 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
 .....................................................
 
-* The type :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]` be the :ref:`expansion <aux-expand>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`.
 
 * For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
 
@@ -46,7 +46,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
+     \expand(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      (C \vdashlocal t : \init~t)^\ast
      \qquad
@@ -379,14 +379,14 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
 
-* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`[] \toF []`.
+* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`\TFUNC~[] \toF []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\CTYPES[C.\CFUNCS[x]] = [] \toF []
+     C.\CTYPES[C.\CFUNCS[x]] = \TFUNC~[] \toF []
    }{
      C \vdashstart \{ \SFUNC~x \} \ok
    }
@@ -430,7 +430,7 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
    \frac{
      C.\CFUNCS[x] = \functype
    }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\functype
+     C \vdashexportdesc \EDFUNC~x : \ETFUNC~(\TFUNC~\functype)
    }
 
 
@@ -509,15 +509,15 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\IDFUNC~x`
 .................
 
-* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
-* Then the import description is valid with type :math:`\ETFUNC~x`.
+* Then the import description is valid with type :math:`\ETFUNC~C.\CTYPES[x]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = \functype
+     C.\CTYPES[x] = \TFUNC~\functype
    }{
-     C \vdashimportdesc \IDFUNC~x : \ETFUNC~x
+     C \vdashimportdesc \IDFUNC~x : \ETFUNC~C.\CTYPES[x]
    }
 
 
@@ -588,6 +588,8 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`C` be a :ref:`context <context>` where:
 
+  * .. todo:: Adjust type context
+
   * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
 
   * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
@@ -614,11 +616,13 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
-* For each function type :math:`\functype_i` in :math:`\module.\MTYPES`:
+* For each recursive type :math:`\rectype_i` in :math:`\module.\MTYPES`:
+
+  * .. todo:: expand rectypes
 
   * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
 
-  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C_i`.
+  * The recursive type :math:`\rectype_i` must be :ref:`valid <valid-rectype>` under context :math:`C_i`.
 
 * Let :math:`C'` be the :ref:`context <context>` where:
 

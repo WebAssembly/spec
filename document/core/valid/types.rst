@@ -169,7 +169,7 @@ Block Types
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = [t_1^\ast] \toF [t_2^\ast]
+     C.\CTYPES[\typeidx] = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
@@ -388,18 +388,22 @@ Global Types
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\typeidx`
+:math:`\ETFUNC~\deftype`
 ........................
 
-* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the external type is valid.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = \functype
+     C \vdashdeftype \deftype \ok
+     \qquad
+     \expand(\deftype) = \TFUNC~\functype
    }{
-     C \vdashexterntype \ETFUNC~x
+     C \vdashexterntype \ETFUNC~\deftype
    }
 
 :math:`\ETTABLE~\tabletype`

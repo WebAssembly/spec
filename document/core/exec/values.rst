@@ -84,15 +84,19 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\structinst` be the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]`.
 
-* Let :math:`\structtype` be the :ref:`structure type <syntax-structtype>` :math:`\structinst.\SITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\structinst.\SITYPE`.
 
-* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\structtype)`.
+* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be a :ref:`struct type <syntax-structtype>`.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\deftype)`.
 
 .. math::
    \frac{
-     \structtype = S.\SSTRUCTS[a].\SITYPE
+     \deftype = S.\SSTRUCTS[a].\SITYPE
+     \qquad
+     \expand(\deftype) = \TSTRUCT~\structtype
    }{
-     S \vdashval \REFSTRUCTADDR~a : \REF~\structtype
+     S \vdashval \REFSTRUCTADDR~a : \REF~\deftype
    }
 
 
@@ -103,15 +107,19 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\arrayinst` be the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]`.
 
-* Let :math:`\arraytype` be the :ref:`array type <syntax-arraytype>` :math:`\arrayinst.\AITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\arrayinst.\AITYPE`.
+
+* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\arraytype)`.
 
 .. math::
    \frac{
-     \arraytype = S.\SARRAYS[a].\AITYPE
+     \deftype = S.\SARRAYS[a].\AITYPE
+     \qquad
+     \expand(\deftype) = \TARRAY~\arraytype
    }{
-     S \vdashval \REFARRAYADDR~a : \REF~\arraytype
+     S \vdashval \REFARRAYADDR~a : \REF~\deftype
    }
 
 
@@ -122,15 +130,19 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-* Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`\funcinst.\FITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\funcinst.\FITYPE`.
+
+* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
 .. math::
    \frac{
-     \functype = S.\SFUNCS[a].\FITYPE
+     \deftype = S.\SFUNCS[a].\FITYPE
+     \qquad
+     \expand(\deftype) = \TFUNC~\functype
    }{
-     S \vdashval \REFFUNCADDR~a : \REF~\functype
+     S \vdashval \REFFUNCADDR~a : \REF~\deftype
    }
 
 
