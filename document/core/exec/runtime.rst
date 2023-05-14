@@ -35,7 +35,7 @@ They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-i
 *array references*, pointing to a specific :ref:`array address <syntax-arrayaddr>`,
 *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
 or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
-Any reference can furthermore be wrapped up as an *external reference*.
+Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
 .. math::
    \begin{array}{llcl}
@@ -479,7 +479,7 @@ Structure and Array Instances
 
 A *structure instance* is the runtime representation of a heap object allocated from a :ref:`structure type <syntax-structtype>`.
 Likewise, an *array instance* is the runtime representation of a heap object allocated from an :ref:`array type <syntax-arraytype>`.
-Both record their respective and hold a vector of the values of their *fields*.
+Both record their respective type and hold a vector of the values of their *fields*.
 
 .. math::
    \begin{array}{llcl}

@@ -80,7 +80,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :ref:`Structure References <syntax-ref>` :math:`\REFSTRUCTADDR~a`
 .................................................................
 
-* The :ref:`structure address <syntax-structaddr>` :math:`a` must be exist in the store.
+* The :ref:`structure address <syntax-structaddr>` :math:`a` must exist in the store.
 
 * Let :math:`\structinst` be the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]`.
 
@@ -99,7 +99,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :ref:`Array References <syntax-ref>` :math:`\REFARRAYADDR~a`
 ............................................................
 
-* The :ref:`array address <syntax-arrayaddr>` :math:`a` must be exist in the store.
+* The :ref:`array address <syntax-arrayaddr>` :math:`a` must exist in the store.
 
 * Let :math:`\arrayinst` be the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]`.
 
@@ -118,7 +118,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
 ..............................................................
 
-* The :ref:`function address <syntax-funcaddr>` :math:`a` must be exist in the store.
+* The :ref:`function address <syntax-funcaddr>` :math:`a` must exist in the store.
 
 * Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
