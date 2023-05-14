@@ -20,13 +20,18 @@ let rec flatten e =
   | _ -> [ e ]
 
 let string2type s =
-  Reference_interpreter.Types.NumType
-    (match s with
-    | "I32" -> Reference_interpreter.Types.I32Type
-    | "I64" -> Reference_interpreter.Types.I64Type
-    | "F32" -> Reference_interpreter.Types.F32Type
-    | "F64" -> Reference_interpreter.Types.F64Type
-    | _ -> s |> sprintf "Invalid type atom `%s`" |> failwith)
+  match s with
+  | "I32" ->
+      Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type
+  | "I64" ->
+      Reference_interpreter.Types.NumType Reference_interpreter.Types.I64Type
+  | "F32" ->
+      Reference_interpreter.Types.NumType Reference_interpreter.Types.F32Type
+  | "F64" ->
+      Reference_interpreter.Types.NumType Reference_interpreter.Types.F64Type
+  | "V128" ->
+      Reference_interpreter.Types.VecType Reference_interpreter.Types.V128Type
+  | _ -> s |> sprintf "Invalid type atom `%s`" |> failwith
 
 (** Translate `Ast.type` *)
 let il_type2al_type t =
@@ -140,6 +145,10 @@ let rec exp2expr exp =
           Al.ConstE (Al.ValueE (Al.WasmTypeV ty), exp2expr num)
       | Ast.VarE id -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
       | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith)
+  | Ast.CaseE
+      (Ast.Atom typ, _, { it = Ast.VarT { it = "valtype" | "numtype"; _ }; _ })
+    ->
+      Al.ValueE (Al.WasmTypeV (string2type typ))
   (* Wasm Instruction *)
   | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }, _) ->
       Al.WasmInstrE ("loop", List.map exp2expr exps)
@@ -167,7 +176,7 @@ let rec exp2expr exp =
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
-  | _ -> Al.YetE (Print.string_of_exp exp)
+  | _ -> Al.YetE (Print.structured_string_of_exp exp)
 
 (* `Ast.exp` -> `Al.expr` *)
 and exp2args exp =
