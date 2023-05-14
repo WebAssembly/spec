@@ -176,7 +176,7 @@ let rec exp2expr exp =
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
-  | _ -> Al.YetE (Print.structured_string_of_exp exp)
+  | _ -> Al.YetE (Print.string_of_exp exp)
 
 (* `Ast.exp` -> `Al.expr` *)
 and exp2args exp =
