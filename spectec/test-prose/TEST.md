@@ -21,11 +21,11 @@ Ki
 1. Return 1024.
 
 size t
-1. If t is YetE (I32_valtype) or t is YetE (F32_valtype), then:
+1. If t is i32 or t is f32, then:
   a. Return 32.
-2. If t is YetE (I64_valtype) or t is YetE (F64_valtype), then:
+2. If t is i64 or t is f64, then:
   a. Return 64.
-3. If t is YetE (V128_valtype), then:
+3. If t is v128, then:
   a. Return 128.
 
 test_sub_ATOM_22 n_3_ATOM_y
@@ -35,13 +35,13 @@ curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
 default_ t
-1. If t is YetE (I32_valtype), then:
+1. If t is i32, then:
   a. Return the value i32.CONST 0.
-2. If t is YetE (I64_valtype), then:
+2. If t is i64, then:
   a. Return the value i64.CONST 0.
-3. If t is YetE (F32_valtype), then:
+3. If t is f32, then:
   a. Return the value f32.CONST 0.
-4. If t is YetE (F64_valtype), then:
+4. If t is f64, then:
   a. Return the value f64.CONST 0.
 5. Return the value ref.null rt.
 
@@ -99,7 +99,7 @@ with_tableext x r
 
 with_mem x i j b
 1. Let f be the current frame.
-2. Replace YetE (s.MEM_top[f.MODULE_frame.MEM_moduleinst[x]][i : j]) with b*.
+2. Replace YetE (SliceE (IdxE (DotE (VarT "top", VarE "s", Atom "MEM"), IdxE (DotE (VarT "moduleinst", DotE (VarT "frame", VarE "f", Atom "MODULE"), Atom "MEM"), VarE "x")), VarE "i", VarE "j")) with b*.
 
 with_memext x b
 1. Let f be the current frame.
@@ -180,7 +180,7 @@ label n instr val
 4. Push val* to the stack.
 
 br
-1. Pop val'* ++ val^n ++ [YetE (BR_admininstr(0))] ++ instr* from the stack.
+1. Pop val'* ++ val^n ++ [YetE (CaseE (Atom "BR", VarT "admininstr", NatE 0))] ++ instr* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. If the length of val^n is n, then:
@@ -265,7 +265,7 @@ relop nt relop
 extend nt n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c from the stack.
-3. Push the value nt.CONST $ext(n, $size(nt), YetE (S_sx), c) to the stack.
+3. Push the value nt.CONST $ext(n, $size(nt), YetE (CaseE (Atom "S", VarT "sx", TupE ([]))), c) to the stack.
 
 cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -422,11 +422,11 @@ load nt ?() n_A n_O
 2. Pop the value i32.CONST i from the stack.
 3. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-4. Let $bytes_($size(nt), c) be YetE ($mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]).
+4. Let $bytes_($size(nt), c) be YetE (SliceE (CallE ("mem", TupE ([VarE "z", NatE 0])), BinE (VarE "i", AddOp, VarE "n_O"), BinE (CallE ("size", SubE (VarE "nt", VarT "numtype", VarT "valtype")), DivOp, NatE 8))).
 5. Push the value nt.CONST c to the stack.
 6. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-7. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
+7. Let $bytes_(n, c) be YetE (SliceE (CallE ("mem", TupE ([VarE "z", NatE 0])), BinE (VarE "i", AddOp, VarE "n_O"), BinE (VarE "n", DivOp, NatE 8))).
 8. Push the value nt.CONST c to the stack.
 
 memory.fill
@@ -442,7 +442,7 @@ memory.fill
   a. If n is not 0, then:
     1) Push the value i32.CONST i to the stack.
     2) Push val to the stack.
-    3) Execute (store YetE (I32_numtype) ?(8) 0 0).
+    3) Execute (store i32 ?(8) 0 0).
     4) Push the value i32.CONST (i + 1) to the stack.
     5) Push val to the stack.
     6) Push the value i32.CONST (n - 1) to the stack.
@@ -465,8 +465,8 @@ memory.copy
     2) Else:
       a) Push the value i32.CONST ((j + n) - 1) to the stack.
       b) Push the value i32.CONST ((i + n) - 1) to the stack.
-    3) Execute (load YetE (I32_numtype) ?(YetE ((8, U_sx))) 0 0).
-    4) Execute (store YetE (I32_numtype) ?(8) 0 0).
+    3) Execute (load i32 ?(YetE (TupE ([NatE 8, CaseE (Atom "U", VarT "sx", TupE ([]))]))) 0 0).
+    4) Execute (store i32 ?(8) 0 0).
     5) Push the value i32.CONST (j + 1) to the stack.
     6) Push the value i32.CONST (i + 1) to the stack.
     7) Push the value i32.CONST (n - 1) to the stack.
@@ -486,7 +486,7 @@ memory.init x
     1) If i < the length of $data(x), then:
       a) Push the value i32.CONST j to the stack.
       b) Push the value i32.CONST $data(x)[i] to the stack.
-      c) Execute (store YetE (I32_numtype) ?(8) 0 0).
+      c) Execute (store i32 ?(8) 0 0).
       d) Push the value i32.CONST (j + 1) to the stack.
       e) Push the value i32.CONST (i + 1) to the stack.
       f) Push the value i32.CONST (n - 1) to the stack.
@@ -518,7 +518,7 @@ table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Perform $with_tableext(x, YetE (ref^n{})).
+  a. Perform $with_tableext(x, YetE (IterE (VarE "ref", (ListN (VarE "n"), [])))).
   b. Push the value i32.CONST the length of $table(x) to the stack.
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
@@ -537,14 +537,14 @@ store nt ?() n_A n_O
 7. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 8. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-9. Let b* be $bytes_(n, $wrap_(YetE (($size(nt <: valtype), n)), c)).
+9. Let b* be $bytes_(n, $wrap_(YetE (TupE ([CallE ("size", SubE (VarE "nt", VarT "numtype", VarT "valtype")), VarE "n"])), c)).
 10. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Either:
-  a. Perform $with_memext(0, YetE (0^((n * 64) * $Ki){})).
+  a. Perform $with_memext(0, YetE (IterE (NatE 0, (ListN (BinE (BinE (VarE "n", MulOp, NatE 64), MulOp, CallE ("Ki", TupE ([])))), [])))).
   b. Push the value i32.CONST the length of $mem(0) to the stack.
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
