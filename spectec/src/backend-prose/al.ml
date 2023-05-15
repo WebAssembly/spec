@@ -93,6 +93,7 @@ type expr =
   | SliceAccessE of (expr * expr * expr)
   | ForWhichE of cond
   | RecordE of expr record
+  | TupE of expr list
   | PageSizeE
   | AfterCallE
   | ContE of expr

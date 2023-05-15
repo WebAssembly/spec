@@ -22,6 +22,7 @@ let rec walk_expr f e =
   | IndexAccessE (e1, e2) ->
       f_expr (IndexAccessE (walk_expr f e1, walk_expr f e2))
   | RecordE r -> RecordE (Record.map (walk_expr f) r)
+  | TupE el -> TupE (List.map (walk_expr f) el)
   | OptE e -> OptE (Option.map (walk_expr f) e)
   | ConstE (e1, e2) -> f_expr (ConstE (walk_expr f e1, walk_expr f e2))
   | RefFuncAddrE inner_e -> f_expr (RefFuncAddrE (walk_expr f inner_e))

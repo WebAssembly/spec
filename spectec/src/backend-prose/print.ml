@@ -177,6 +177,8 @@ let rec structured_string_of_expr = function
       ^ ")"
   | ForWhichE cond -> "ForWhichE (" ^ structured_string_of_cond cond ^ ")"
   | RecordE _ -> "RecordE (TODO)"
+  | TupE el ->
+      "TupE (" ^ string_of_list structured_string_of_expr "(" ", " ")" el
   | PageSizeE -> "PageSizeE"
   | AfterCallE -> "AfterCallE"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
@@ -476,6 +478,7 @@ and string_of_expr = function
         (string_of_expr e3)
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE r -> string_of_record_expr r
+  | TupE el -> string_of_list string_of_expr "(" ", " ")" el
   | PageSizeE -> "the page size"
   | AfterCallE ->
       "the instruction after the original call that pushed the frame"

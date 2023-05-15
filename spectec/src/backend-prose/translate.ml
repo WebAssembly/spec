@@ -152,6 +152,8 @@ let rec exp2expr exp =
   (* Wasm Instruction *)
   | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }, _) ->
       Al.WasmInstrE ("loop", List.map exp2expr exps)
+  (* Tuple *)
+  | Ast.TupE exps -> Al.TupE (List.map exp2expr exps)
   (* Call *)
   | Ast.CallE (id, inner_exp) -> Al.AppE (N id.it, exp2args inner_exp)
   (* Record expression *)
@@ -176,7 +178,7 @@ let rec exp2expr exp =
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
-  | _ -> Al.YetE (Print.string_of_exp exp)
+  | _ -> Al.YetE (Print.structured_string_of_exp exp)
 
 (* `Ast.exp` -> `Al.expr` *)
 and exp2args exp =
