@@ -371,7 +371,53 @@ let br_succ =
     ],
     "42" )
 
-let testcases_wasm_value = [ block; br_zero; br_succ ]
+let if_true =
+  ( "if_true",
+    [
+      WasmInstrV ("const", [ i32TV; IntV 42 ]);
+      WasmInstrV ("const", [ i32TV; IntV 1 ]);
+      WasmInstrV
+        ( "if",
+          [
+            ArrowV (ListV [| i32TV |], ListV [| i32TV |]);
+            ListV
+              [|
+                WasmInstrV ("const", [ i32TV; IntV 2 ]);
+                WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+              |];
+            ListV 
+              [| 
+                WasmInstrV ("const", [ i32TV; IntV 3 ]);
+                WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+              |];
+          ] );
+    ],
+    "44" )
+
+let if_false =
+  ( "if_false",
+    [
+      WasmInstrV ("const", [ i32TV; IntV 42 ]);
+      WasmInstrV ("const", [ i32TV; IntV 0 ]);
+      WasmInstrV
+        ( "if",
+          [
+            ArrowV (ListV [| i32TV |], ListV [| i32TV |]);
+            ListV
+              [|
+                WasmInstrV ("const", [ i32TV; IntV 2 ]);
+                WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+              |];
+            ListV 
+              [| 
+                WasmInstrV ("const", [ i32TV; IntV 3 ]);
+                WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+              |];
+          ] );
+    ],
+    "45" )
+
+let testcases_wasm_value = [ block; br_zero; br_succ; if_true; if_false; ]
 
 (* Printer of final result *)
 let string_of_result v =
