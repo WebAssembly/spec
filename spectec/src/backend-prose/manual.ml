@@ -123,6 +123,34 @@ let instantiation =
       PushI (NameE frame_name);
       (* TODO: element & data & start *)
       PopI (NameE frame_name);
+      ReturnI (Some (PairE (NameE store_name, NameE module_inst_name)))
     ]
   )
-let manual_algos = [ br; instantiation ]
+
+let alloc_module =
+  (* Name definition *)
+  let store_name = N "s" in
+  let module_name = N "module" in
+  let func_name = N "func" in
+  let func_iter = IterE (func_name, List) in
+  let funcaddr_iter = IterE (N "funcaddr", List) in
+  let module_inst_name = N "moduleinst" in
+  let module_inst_rec = Record.add "FUNC" funcaddr_iter Record.empty in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_module",
+    [ (NameE store_name, StoreT); (NameE module_name, TopT) ],
+    [
+      LetI (ConstructE ("MODULE", [func_iter]), NameE module_name);
+      LetI (
+        funcaddr_iter,
+        (* dummy module instance *)
+        MapE (N "alloc_func", [ NameE func_name ], List)
+      );
+      LetI (NameE module_inst_name, RecordE (module_inst_rec));
+      ReturnI (Some (NameE module_inst_name))
+    ]
+  )
+
+let manual_algos = [ br; instantiation; alloc_module ]
