@@ -128,11 +128,32 @@ let drop n (vs : 'a stack) at =
 
 let split n (vs : 'a stack) at = take n vs at, drop n vs at
 
-let e_of_v (v : value) at : admin_instr' =
+let admin_instr_of_value (v : value) at : admin_instr' =
   match v with
   | Num n -> Plain (Const (n @@ at))
   | Vec v -> Plain (VecConst (v @@ at))
   | Ref r -> Refer r
+
+let value_of_data_ind (seg : Data.data) (st : storage_type) (j : int) at =
+  let bs = Data.bytes seg in
+  match st with
+    | PackStorageT Pack.Pack8 ->
+      Num (I32 (I32.of_int_u (String.get_uint8 bs j)))
+    | PackStorageT Pack.Pack16 ->
+      Num (I32 (I32.of_int_u (String.get_uint16_le bs j)))
+    | ValStorageT (NumT I32T) ->
+      Num (I32 (String.get_int32_le bs j))
+    | ValStorageT (NumT I64T) ->
+      Num (I64 (String.get_int64_le bs j))
+    | ValStorageT (NumT F32T) ->
+      Num (F32 (F32.of_bits (String.get_int32_le bs j)))
+    | ValStorageT (NumT F64T) ->
+      Num (F64 (F64.of_bits (String.get_int64_le bs j)))
+    | ValStorageT (VecT V128T) ->
+      Vec (V128 (V128.of_bits (String.sub bs j 16)))
+    | _ ->
+      Crash.error at "type mismatch packing value"
+
 
 (* Evaluation *)
 
@@ -686,27 +707,10 @@ let rec step (c : config) : config =
         else
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let bs = Data.bytes seg in
           let args = Lib.List32.init n
             (fun i ->
               let j = I32.to_int_u s + I32.to_int_u i * storage_size st in
-              match st with
-              | PackStorageT Pack.Pack8 ->
-                Num (I32 (I32.of_int_u (String.get_uint8 bs j)))
-              | PackStorageT Pack.Pack16 ->
-                Num (I32 (I32.of_int_u (String.get_uint16_le bs j)))
-              | ValStorageT (NumT I32T) ->
-                Num (I32 (String.get_int32_le bs j))
-              | ValStorageT (NumT I64T) ->
-                Num (I64 (String.get_int64_le bs j))
-              | ValStorageT (NumT F32T) ->
-                Num (F32 (F32.of_bits (String.get_int32_le bs j)))
-              | ValStorageT (NumT F64T) ->
-                Num (F64 (F64.of_bits (String.get_int64_le bs j)))
-              | ValStorageT (VecT V128T) ->
-                Vec (V128 (V128.of_bits (String.sub bs j 16)))
-              | _ ->
-                Crash.error e.at "type mismatch packing value"
+              value_of_data_ind seg st j e.at
             )
           in
           let array =
@@ -749,17 +753,18 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),  Num (I32 sz) :: Num (I32 src) :: Ref Aggr.(ArrayRef (Array (ts, fss))) :: Num (I32 dst) :: Ref Aggr.(ArrayRef (Array (td, fsd))) :: vs' ->
-        if I64.gt_u
-             (I64.add (I64_convert.extend_i32_u src) (I64_convert.extend_i32_u sz))
-               (I64_convert.extend_i32_u (Lib.List32.length fss)) then
+        let src_bound = I64.add (I64_convert.extend_i32_u src) (I64_convert.extend_i32_u sz) in
+        if I64.gt_u src_bound (I64_convert.extend_i32_u (Lib.List32.length fss)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if I64.gt_u
-                  (I64.add (I64_convert.extend_i32_u dst) (I64_convert.extend_i32_u sz))
-                    (I64_convert.extend_i32_u (Lib.List32.length fsd)) then
+        else let dst_bound = I64.add (I64_convert.extend_i32_u dst) (I64_convert.extend_i32_u sz) in
+        if I64.gt_u dst_bound (I64_convert.extend_i32_u (Lib.List32.length fsd)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if sz = 0l then
           vs', []
-        else let exto = Aggr.(match type_of_array (Array (ts, fss)) with | ArrayT (FieldT (_,st)) -> (if is_packed_storage_type st then Some ZX else None)) in
+        else let exto =
+          match Aggr.(type_of_array (Array (ts, fss))) with
+            | ArrayT (FieldT (_,st)) -> if is_packed_storage_type st then Some ZX else None
+        in
         if I32.le_u dst src then
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (td, fsd))));
@@ -795,9 +800,8 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayFill x, Num (I32 n) :: v :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        if I64.gt_u
-             (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-               (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
+        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if n = 0l then
           vs', []
@@ -805,11 +809,11 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 i @@ e.at));
-            (e_of_v v e.at);
+            (admin_instr_of_value v e.at);
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
-            (e_of_v v e.at);
+            (admin_instr_of_value v e.at);
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayFill x);
           ]
@@ -818,9 +822,8 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitData (x, y), Num (I32 n) :: Num (I32 y_off) :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        if I64.gt_u
-             (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-               (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
+        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if data_oob c.frame y y_off n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
@@ -829,31 +832,12 @@ let rec step (c : config) : config =
         else
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let bs = Data.bytes seg in
           let j = I32.to_int_u y_off in
-          (* TODO: unify with ArrayNewData *)
-          let v = match st with
-            | PackStorageT Pack.Pack8 ->
-              Num (I32 (I32.of_int_u (String.get_uint8 bs j)))
-            | PackStorageT Pack.Pack16 ->
-              Num (I32 (I32.of_int_u (String.get_uint16_le bs j)))
-            | ValStorageT (NumT I32T) ->
-              Num (I32 (String.get_int32_le bs j))
-            | ValStorageT (NumT I64T) ->
-              Num (I64 (String.get_int64_le bs j))
-            | ValStorageT (NumT F32T) ->
-              Num (F32 (F32.of_bits (String.get_int32_le bs j)))
-            | ValStorageT (NumT F64T) ->
-              Num (F64 (F64.of_bits (String.get_int64_le bs j)))
-            | ValStorageT (VecT V128T) ->
-              Vec (V128 (V128.of_bits (String.sub bs j 16)))
-            | _ ->
-              Crash.error e.at "type mismatch packing value"
-          in
+          let v = value_of_data_ind seg st j e.at in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 i @@ e.at));
-            (e_of_v v e.at);
+            (admin_instr_of_value v e.at);
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
@@ -866,9 +850,8 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitElem (x, y), Num (I32 n) :: Num (I32 y_off) :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        if I64.gt_u
-             (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
-               (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
+        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if elem_oob c.frame y y_off n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
@@ -881,7 +864,7 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 i @@ e.at));
-            (e_of_v v e.at);
+            (admin_instr_of_value v e.at);
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
