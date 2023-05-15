@@ -347,7 +347,7 @@ let execute wmodule =
 
   (* Instantiation *)
   let instantiation_result =
-    call_algo "instantiation" [ RecordV Record.empty; wmodule ] |> Env.get_result
+    call_algo "instantiation" [ wmodule ] |> Env.get_result
   in
   let store, modinst =
     match instantiation_result with
@@ -424,6 +424,9 @@ let wasm_module2al wasm_module =
 let test_module testcase =
   let (_, wasm_module, _) = testcase in
   let module_construct = wasm_module2al wasm_module in
+
+  (* TODO *)
+  Testdata.store := Record.empty;
 
   (* Execute *)
   execute module_construct

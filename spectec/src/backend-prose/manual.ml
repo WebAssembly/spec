@@ -86,7 +86,6 @@ let br =
 
 let instantiation =
   (* Name definition *)
-  let store_name = N "s" in
   let module_name = N "module" in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init = Record.add "FUNC" (ListV [||]) Record.empty in
@@ -105,7 +104,7 @@ let instantiation =
   (* Algorithm *)
   Algo (
     "instantiation",
-    [ (NameE store_name, StoreT); (NameE module_name, TopT) ],
+    [ (NameE module_name, TopT) ],
     [
       LetI (NameE module_inst_init_name, ValueE (ModuleInstV module_inst_init));
       LetI (
@@ -117,19 +116,17 @@ let instantiation =
       PopI (NameE frame_init_name);
       LetI (
         NameE module_inst_name,
-        AppE (N "alloc_module", [NameE store_name; NameE module_name])
+        AppE (N "alloc_module", [NameE module_name])
       );
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
       (* TODO: element & data & start *)
-      PopI (NameE frame_name);
-      ReturnI (Some (PairE (NameE store_name, NameE module_inst_name)))
+      PopI (NameE frame_name)
     ]
   )
 
 let alloc_module =
   (* Name definition *)
-  let store_name = N "s" in
   let module_name = N "module" in
   let func_name = N "func" in
   let func_iter = IterE (func_name, List) in
@@ -140,7 +137,7 @@ let alloc_module =
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ (NameE store_name, StoreT); (NameE module_name, TopT) ],
+    [ (NameE module_name, TopT) ],
     [
       LetI (ConstructE ("MODULE", [func_iter]), NameE module_name);
       LetI (
