@@ -306,6 +306,15 @@ let rec structured_string_of_instr depth = function
       ^ repeat indent depth ^ "Or\n"
       ^ structured_string_of_instrs (depth + 1) il2
       ^ repeat indent depth ^ ")"
+  | ForeachI (e1, e2, il) ->
+      "ForeachI (\n"
+      ^ repeat indent (depth + 1)
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ":\n"
+      ^ structured_string_of_instrs (depth + 1) il
+      ^ repeat indent depth ^ ")"
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
@@ -336,6 +345,14 @@ let rec structured_string_of_instr depth = function
   | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
   | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
   | ExitI n -> "ExitI (" ^ structured_string_of_name n ^ ")"
+  | AppendI (e1, s, e2) ->
+      "AppendI ("
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ s
+      ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ")"
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs depth instrs =
@@ -415,7 +432,7 @@ and string_of_value = function
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
   | ArrowV (v1, v2) -> string_of_value v1 ^ "->" ^ string_of_value v2
   | ConstructV (s, vl) -> s ^ string_of_list string_of_value "(" ", " ")" vl
-  | RecordV _r -> "RecordV (TODO)"
+  | RecordV r -> string_of_record r
   | WasmModuleV -> "WasmModuleV"
 
 let rec string_of_record_expr r =
@@ -540,6 +557,12 @@ let rec string_of_instr index depth = function
         (string_of_instrs (depth + 1) il1)
         (repeat indent depth ^ or_index)
         (string_of_instrs (depth + 1) il2)
+  | ForeachI (e1, e2, il) ->
+      sprintf "%s Foreach %s in %s%s"
+        (make_index index depth)
+        (string_of_expr e1)
+        (string_of_expr e2)
+        (string_of_instrs (depth + 1) il)
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth)
@@ -571,6 +594,9 @@ let rec string_of_instr index depth = function
   | PerformI e ->
       sprintf "%s Perform %s." (make_index index depth) (string_of_expr e)
   | ExitI _ -> make_index index depth ^ " Exit current context."
+  | AppendI (e1, s, e2) ->
+      sprintf "%s Append %s to the %s of %s." (make_index index depth)
+        (string_of_expr e1) s (string_of_expr e2)
   | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
 
 and string_of_instrs depth instrs =

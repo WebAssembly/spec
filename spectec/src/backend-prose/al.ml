@@ -132,6 +132,7 @@ type instr =
   | WhileI of (cond * instr list)
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)
+  | ForeachI of (expr * expr * instr list)
   | AssertI of string
   | PushI of expr
   | PopI of expr
@@ -147,6 +148,7 @@ type instr =
   | JumpI of expr
   | PerformI of expr
   | ExitI of name
+  | AppendI of (expr * string * expr)
   (* Yet *)
   | YetI of string
 

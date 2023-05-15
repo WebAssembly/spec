@@ -133,21 +133,52 @@ let alloc_module =
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec = Record.add "FUNC" funcaddr_iter Record.empty in
+  let func_inst_name = SubN (N "funcinst", "i") in
 
   (* Algorithm *)
   Algo (
     "alloc_module",
     [ (NameE module_name, TopT) ],
     [
-      LetI (ConstructE ("MODULE", [func_iter]), NameE module_name);
+      LetI (ConstructE ("MODULE", [ func_iter ]), NameE module_name);
       LetI (
         funcaddr_iter,
         (* dummy module instance *)
         MapE (N "alloc_func", [ NameE func_name ], List)
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
+      (* TODO *)
+      ForeachI (
+        NameE func_inst_name,
+        PropE (NameE (N "s"), "FUNC"),
+        [
+          LetI (PairE (NameE (N "_"), NameE (N "f")), NameE func_inst_name);
+          ReplaceI (NameE func_inst_name, PairE (NameE module_inst_name, NameE (N "f")))
+        ]
+      );
       ReturnI (Some (NameE module_inst_name))
     ]
   )
 
-let manual_algos = [ br; instantiation; alloc_module ]
+let alloc_func =
+  (* Name definition *)
+  let func_name = N "func" in
+  let addr_name = N "a" in
+  let store_name = N "s" in
+  let dummy_module_inst = N "dummy_module_inst" in
+  let func_inst_name = N "funcinst" in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_func",
+    [ (NameE func_name, TopT) ],
+    [
+      LetI (NameE addr_name, LengthE (PropE (NameE store_name, "FUNC")));
+      LetI (NameE dummy_module_inst, RecordE Record.empty);
+      LetI (NameE func_inst_name, PairE (NameE dummy_module_inst, NameE func_name));
+      AppendI (NameE func_inst_name, "FUNC", NameE store_name);
+      ReturnI (Some (NameE addr_name))
+    ]
+  )
+
+let manual_algos = [ br; instantiation; alloc_module; alloc_func ]

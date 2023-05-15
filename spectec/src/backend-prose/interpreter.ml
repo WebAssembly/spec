@@ -122,9 +122,12 @@ and eval_expr env expr =
           Print.string_of_expr e ^ " is not iterable."
           |> failwith (* Due to WASM validation, unreachable *))
   | LengthE e -> (
-      match eval_expr env e with
-      | ListV vl -> IntV (Array.length vl)
-      | _ -> failwith "Not a list" (* Due to AL validation, unreachable *))
+      try
+        match eval_expr env e with
+        | ListV vl -> IntV (Array.length vl)
+        | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
+      with
+        | Not_found -> IntV 0)
   | ArityE e -> (
       match eval_expr env e with
       | LabelV (n, _) -> IntV n
@@ -139,6 +142,8 @@ and eval_expr env expr =
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
+  | PropE (NameE (N "s"), str) ->
+      Record.find str !Testdata.store
   | PropE (e, str) -> (
       match eval_expr env e with
       | ModuleInstV m -> Record.find str m
@@ -179,6 +184,7 @@ and eval_expr env expr =
       match v with
       | LabelV (_, vs) -> ListV (Array.of_list vs)
       | _ -> failwith "Not a label")
+  | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
@@ -210,6 +216,17 @@ and interp_instr env i =
   | WhileI (c, il) ->
       (* TODO: this is a recursive implementation of while *)
       if eval_cond env c then interp_instr (interp_instrs env il) i else env
+  | ForeachI (e1, e2, il) ->
+      let v = eval_expr env e2 in
+      begin match e1, v with
+      | NameE name, ListV vl ->
+          let f v =
+            let new_env = Env.add name v env in
+            interp_instrs new_env il |> ignore in
+          Array.iter f vl;
+          env
+      | _ -> failwith ""
+      end
   | AssertI _ -> env (* TODO: insert assertion *)
   | PushI e ->
       (match eval_expr env e with
@@ -276,6 +293,13 @@ and interp_instr env i =
           Array.set l i v3;
           env
       | _ -> failwith "Invalid Replace instr")
+  (* TODO *)
+  | ReplaceI (_, e) ->
+      (match Record.find "FUNC" !Testdata.store with
+      | ListV l ->
+          eval_expr env e |> Array.set l 0;
+          env
+      | _ -> failwith "TODO")
   | PerformI e ->
       eval_expr env e |> ignore;
       env
@@ -295,6 +319,10 @@ and interp_instr env i =
       in
       let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
       vals |> List.rev |> List.iter push;
+      env
+  | AppendI (e1, s, NameE (N "s")) ->
+      let v1 = eval_expr env e1 in
+      Testdata.store := Record.add s (ListV [| v1 |]) !Testdata.store;
       env
   | i -> structured_string_of_instr 0 i |> failwith
 
@@ -346,21 +374,13 @@ and execute_wasm_instrs winstrs =
 let execute wmodule =
 
   (* Instantiation *)
-  let instantiation_result =
-    call_algo "instantiation" [ wmodule ] |> Env.get_result
-  in
-  let store, modinst =
-    match instantiation_result with
-    | PairV (StoreV s, ModuleInstV m) -> (s, m)
-    | v ->
-        string_of_value v
-        |> Printf.sprintf "Invalid instantiation result: %s"
-        |> failwith
-  in
+  call_algo "instantiation" [ wmodule ] |> Env.get_result |> ignore;
+
+  string_of_record !Testdata.store |> print_endline;
 
   (* Invocation *)
   let invocation_result =
-    call_algo "invocation" [ StoreV store; ModuleInstV modinst ]
+    call_algo "invocation" []
     |> Env.get_result
   in
   string_of_value invocation_result |> print_endline
