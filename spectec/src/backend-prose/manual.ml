@@ -84,5 +84,45 @@ let br =
             ] );
       ] )
 
-let instantiation = Algo ("instantiation", [ (NameE (N "module"), TopT) ], [])
+let instantiation =
+  (* Name definition *)
+  let store_name = N "s" in
+  let module_name = N "module" in
+  let module_inst_init_name = SubN ((N "moduleinst"), "init") in
+  let module_inst_init = Record.add "FUNC" (ListV [||]) Record.empty in
+  let frame_init_name = SubN ((N "f"), "init") in
+  let frame_init_rec =
+    Record.empty
+    |> Record.add "MODULE" (NameE module_inst_init_name)
+    |> Record.add "LOCAL" (ListE [||]) in
+  let module_inst_name = N "moduleinst" in
+  let frame_name = N "f" in
+  let frame_rec =
+    Record.empty
+    |> Record.add "MODULE" (NameE module_inst_name)
+    |> Record.add "LOCAL" (ListE [||]) in
+
+  (* Algorithm *)
+  Algo (
+    "instantiation",
+    [ (NameE store_name, StoreT); (NameE module_name, TopT) ],
+    [
+      LetI (NameE module_inst_init_name, ValueE (ModuleInstV module_inst_init));
+      LetI (
+        NameE frame_init_name,
+        FrameE (ValueE (IntV 0), RecordE frame_init_rec)
+      );
+      PushI (NameE frame_init_name);
+      (* TODO: global & elements *)
+      PopI (NameE frame_init_name);
+      LetI (
+        NameE module_inst_name,
+        AppE (N "alloc_module", [NameE store_name; NameE module_name])
+      );
+      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
+      PushI (NameE frame_name);
+      (* TODO: element & data & start *)
+      PopI (NameE frame_name);
+    ]
+  )
 let manual_algos = [ br; instantiation ]

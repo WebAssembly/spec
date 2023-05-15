@@ -104,7 +104,7 @@ let rec dsl_function_call fname args =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name -> Numerics.call_numerics name args
-  (* Runtime *)
+  (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       call_algo name args |> Env.get_result
   | _ -> failwith "Invalid DSL function call"
@@ -344,14 +344,19 @@ and execute_wasm_instrs winstrs =
 
 (* TODO *)
 let execute wmodule =
+  AlgoMap.find "instantiation" !algo_map |> string_of_algorithm |> print_endline;
+
   (* Instantiation *)
   let instantiation_result =
-    call_algo "instantiation" [ wmodule ] |> Env.get_result
+    call_algo "instantiation" [ RecordV Record.empty; wmodule ] |> Env.get_result
   in
   let store, modinst =
     match instantiation_result with
     | PairV (StoreV s, ModuleInstV m) -> (s, m)
-    | _ -> failwith "Invalid instantiation"
+    | v ->
+        string_of_value v
+        |> Printf.sprintf "Invalid instantiation result: %s"
+        |> failwith
   in
 
   (* Invocation *)
