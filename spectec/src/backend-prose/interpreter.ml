@@ -344,7 +344,6 @@ and execute_wasm_instrs winstrs =
 
 (* TODO *)
 let execute wmodule =
-  AlgoMap.find "instantiation" !algo_map |> string_of_algorithm |> print_endline;
 
   (* Instantiation *)
   let instantiation_result =
@@ -400,14 +399,34 @@ let wasm_instr2al_value winstr =
 
 (* Test Interpreter *)
 
-(* TODO *)
-let wasm2al _wasm_module = WasmModuleV
+let wasm_func2al wasm_module wasm_func =
+  let { it = Types.FuncType (vtl1, vtl2); _ } =
+    Int32.to_int wasm_func.it.Ast.ftype.it
+    |> List.nth wasm_module.it.Ast.types
+  in
 
-let test_module wasm_module =
-  let wasm_module_value = wasm2al wasm_module in
+  let to_al ty = WasmTypeV ty in
+  let ftype =
+    ArrowV (
+      ListV (List.map to_al vtl1 |> Array.of_list),
+      ListV (List.map to_al vtl2 |> Array.of_list)
+    ) in
+
+  ConstructV ("FUNC", [ftype])
+
+let wasm_module2al wasm_module =
+  let func_list =
+    List.map (wasm_func2al wasm_module) wasm_module.it.funcs
+    |> Array.of_list
+    in
+  ConstructV ("MODULE", [ListV func_list])
+
+let test_module testcase =
+  let (_, wasm_module, _) = testcase in
+  let module_construct = wasm_module2al wasm_module in
 
   (* Execute *)
-  execute wasm_module_value
+  execute module_construct
 
 let test name ast expected_result =
   (* Print test name *)

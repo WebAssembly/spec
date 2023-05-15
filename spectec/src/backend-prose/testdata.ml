@@ -432,8 +432,9 @@ let wasm_func_skeleton : Ast.func' =
   { Ast.ftype = Int32.of_int 0 |> to_phrase; Ast.locals = []; Ast.body = [] }
 
 let wasm_module_skeleton : Ast.module_' =
+  let default_type = Types.FuncType ([], []) |> to_phrase in
   {
-    Ast.types = [];
+    Ast.types = [default_type];
     Ast.globals = [];
     Ast.tables = [];
     Ast.memories = [];
