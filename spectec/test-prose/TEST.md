@@ -309,12 +309,12 @@ call_indirect x ft
     2) If a ≥ the length of $funcinst(), then:
       a) Trap.
     3) Else:
-      a) Let (m; func) be $funcinst()[a].
+      a) Let (m, func) be $funcinst()[a].
       b) Execute (call_addr a).
 
 call_addr a
 1. If a < the length of $funcinst(), then:
-  a. Let (m; tmp0) be $funcinst()[a].
+  a. Let (m, tmp0) be $funcinst()[a].
   b. Let FUNC(tmp1, t*, instr*) be tmp0.
   c. Let tmp2->tmp3 be tmp1.
   d. Let t_1^k be tmp2.

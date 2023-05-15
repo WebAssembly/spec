@@ -431,7 +431,7 @@ and string_of_expr = function
   | SubE (e1, e2) -> sprintf "(%s - %s)" (string_of_expr e1) (string_of_expr e2)
   | MulE (e1, e2) -> sprintf "(%s · %s)" (string_of_expr e1) (string_of_expr e2)
   | DivE (e1, e2) -> sprintf "(%s / %s)" (string_of_expr e1) (string_of_expr e2)
-  | PairE (e1, e2) -> sprintf "(%s; %s)" (string_of_expr e1) (string_of_expr e2)
+  | PairE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | AppE (n, el) ->
       sprintf "$%s(%s)" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
