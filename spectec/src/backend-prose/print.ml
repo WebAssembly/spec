@@ -436,7 +436,7 @@ and string_of_expr = function
       sprintf "$%s(%s)" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
   | MapE (n, el, iter) ->
-      sprintf "%s(%s)%s" (string_of_name n)
+      sprintf "$%s(%s)%s" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
         (string_of_iter iter)
   | IterE (n, iter) -> string_of_name n ^ string_of_iter iter

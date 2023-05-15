@@ -324,7 +324,7 @@ call_addr a
   h. If the length of t_1^k is k, then:
     1) If the length of t_2^n is n, then:
       a) If the length of val^k is k, then:
-        1. Let f be { LOCAL: val^k ++ default_(t)*; MODULE: m; }.
+        1. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
         2. Push the activation of f with arity n to the stack.
         3. Let L be the label_n{[]}.
         4. Push L to the stack.
