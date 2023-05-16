@@ -270,7 +270,7 @@ Reference Instructions
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
-* Then the instruction is valid with type :math:`[\X{rt}'] \to [\X{rt}]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
+* Then the instruction is valid with type :math:`[\X{rt}'] \to [\X{rt}]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
 
 .. math::
    \frac{
