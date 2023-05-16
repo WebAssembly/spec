@@ -750,7 +750,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
 
   | ArrayCopy (x, y) ->
     let ArrayT (FieldT (mutd, std)) = array_type c x in
-    let ArrayT (FieldT (_, sts)) = array_type c y in
+    let ArrayT (FieldT (_muts, sts)) = array_type c y in
     require (mutd = Var) e.at "destination array is immutable";
     require (match_storage_type c.types sts std) e.at "array types do not match";
     [RefT (Null, DefHT (StatX x.it)); NumT I32T; RefT (Null, DefHT (StatX y.it)); NumT I32T; NumT I32T] --> [], []
