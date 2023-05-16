@@ -143,9 +143,9 @@ let store_num_packed sz mem a o n =
   in storen mem a o w x
 
 let load_vec mem a o t =
+  let bs = load_bytes mem (effective_address a o) (vec_size t) in
   match t with
-  | V128T ->
-    V128 (V128.of_bits (load_bytes mem (effective_address a o) (vec_size t)))
+  | V128T -> V128 (V128.of_bits bs)
 
 let store_vec mem a o n =
   match n with
