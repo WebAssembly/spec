@@ -49,4 +49,6 @@ val match_table_type : table_type -> table_type -> bool
 val match_memory_type : memory_type -> memory_type -> bool
 val match_global_type : global_type -> global_type -> bool
 
+val match_storage_type : rec_context -> storage_type -> storage_type -> bool
+
 val match_extern_type : extern_type -> extern_type -> bool
