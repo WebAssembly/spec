@@ -747,12 +747,7 @@ let rec step (c : config) : config =
         Num (I32 (Lib.List32.length fs)) :: vs', []
 
       | ArrayCopy (x, y),
-          Num (I32 sz)
-            :: Num (I32 src)
-              :: Ref (NullRef _)
-                :: Num (I32 dst)
-                  :: Ref _
-                    :: vs' ->
+        Num _ :: Num _ :: Ref (NullRef _) :: Num _ :: Ref _ :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),
