@@ -818,7 +818,7 @@ let rec step (c : config) : config =
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
-            (admin_instr_of_value v e.at);
+            admin_instr_of_value v e.at;
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayFill x);
           ]
