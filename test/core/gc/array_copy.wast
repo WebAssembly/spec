@@ -55,8 +55,8 @@
   (type $arr8 (array i8))
   (type $arr8_mut (array (mut i8)))
 
-  (global $g_arr8 (ref $arr8) (array.new_canon $arr8 (i32.const 10) (i32.const 12)))
-  (global $g_arr8_mut (mut (ref $arr8_mut)) (array.new_canon_default $arr8_mut (i32.const 12)))
+  (global $g_arr8 (ref $arr8) (array.new $arr8 (i32.const 10) (i32.const 12)))
+  (global $g_arr8_mut (mut (ref $arr8_mut)) (array.new_default $arr8_mut (i32.const 12)))
 
   (data $d1 "abcdefghijkl")
 
@@ -78,7 +78,7 @@
 
   (func (export "array_copy_overlap_test-1")
     (local $1 (ref $arr8_mut))
-    (array.new_canon_data $arr8_mut $d1 (i32.const 0) (i32.const 12))
+    (array.new_data $arr8_mut $d1 (i32.const 0) (i32.const 12))
     (local.set $1)
     (array.copy $arr8_mut $arr8_mut (local.get $1) (i32.const 1) (local.get $1) (i32.const 0) (i32.const 11))
     (global.set $g_arr8_mut (local.get $1))
@@ -86,7 +86,7 @@
 
   (func (export "array_copy_overlap_test-2")
     (local $1 (ref $arr8_mut))
-    (array.new_canon_data $arr8_mut $d1 (i32.const 0) (i32.const 12))
+    (array.new_data $arr8_mut $d1 (i32.const 0) (i32.const 12))
     (local.set $1)
     (array.copy $arr8_mut $arr8_mut (local.get $1) (i32.const 0) (local.get $1) (i32.const 1) (i32.const 11))
     (global.set $g_arr8_mut (local.get $1))

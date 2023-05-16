@@ -772,7 +772,7 @@ let rec step (c : config) : config =
         else if n = 0l then
           vs', []
         else let exto =
-          match Aggr.(type_of_array (Array (ts, fss))) with
+          match as_array_str_type (expand_def_type (Aggr.(type_of_array (Array (ts, fss))))) with
             | ArrayT (FieldT (_, st)) -> if is_packed_storage_type st then Some ZX else None
         in
         if I32.le_u d s then

@@ -33,9 +33,9 @@
   (type $arr8_mut (array (mut i8)))
   (type $arr16_mut (array (mut i16)))
 
-  (global $g_arr8 (ref $arr8) (array.new_canon $arr8 (i32.const 10) (i32.const 12)))
-  (global $g_arr8_mut (mut (ref $arr8_mut)) (array.new_canon_default $arr8_mut (i32.const 12)))
-  (global $g_arr16_mut (ref $arr16_mut) (array.new_canon_default $arr16_mut (i32.const 6)))
+  (global $g_arr8 (ref $arr8) (array.new $arr8 (i32.const 10) (i32.const 12)))
+  (global $g_arr8_mut (mut (ref $arr8_mut)) (array.new_default $arr8_mut (i32.const 12)))
+  (global $g_arr16_mut (ref $arr16_mut) (array.new_default $arr16_mut (i32.const 6)))
 
   (data $d1 "abcdefghijkl")
 

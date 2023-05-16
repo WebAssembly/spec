@@ -46,8 +46,8 @@
   (type $arrref (array (ref $t_f)))
   (type $arrref_mut (array (mut funcref)))
 
-  (global $g_arrref (ref $arrref) (array.new_canon $arrref (ref.func $dummy) (i32.const 12)))
-  (global $g_arrref_mut (ref $arrref_mut) (array.new_canon_default $arrref_mut (i32.const 12)))
+  (global $g_arrref (ref $arrref) (array.new $arrref (ref.func $dummy) (i32.const 12)))
+  (global $g_arrref_mut (ref $arrref_mut) (array.new_default $arrref_mut (i32.const 12)))
 
   (table $t 1 funcref)
 
