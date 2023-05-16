@@ -181,4 +181,28 @@ let alloc_func =
     ]
   )
 
-let manual_algos = [ br; instantiation; alloc_module; alloc_func ]
+let invocation =
+  (* Name definition *)
+  let funcaddr_name = N "funcaddr" in
+  let func_inst_name = N "funcinst" in
+  let store_name = N "s" in
+  let frame_name = N "f" in
+
+  (* Algorithm *)
+  Algo (
+    "invocation",
+    [ (NameE funcaddr_name, TopT) ],
+    [
+      LetI (
+        NameE func_inst_name,
+        IndexAccessE (PropE (NameE store_name, "FUNC"), NameE funcaddr_name)
+      );
+      (* TODO *)
+      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE Record.empty));
+      PushI (NameE frame_name);
+      ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]))
+    ]
+  )
+
+
+let manual_algos = [ br; instantiation; alloc_module; alloc_func; invocation ]

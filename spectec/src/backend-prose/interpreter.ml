@@ -1,6 +1,4 @@
 open Print
-open Reference_interpreter
-open Source
 open Al
 
 (* AL Data Structures *)
@@ -348,15 +346,6 @@ and interp_algo algo args =
 
 (* Search AL Algorithm *)
 
-and wasm_num2al_value n =
-  let s = Values.string_of_num n in
-  let t = Values.type_of_num n in
-  match t with
-  | I32Type | I64Type ->
-      WasmInstrV ("const", [ WasmTypeV (NumType t); IntV (int_of_string s) ])
-  | F32Type | F64Type ->
-      WasmInstrV ("const", [ WasmTypeV (NumType t); FloatV (float_of_string s) ])
-
 and call_algo name args =
   let algo = AlgoMap.find name !algo_map in
   interp_algo algo args
@@ -376,80 +365,32 @@ let execute wmodule =
   (* Instantiation *)
   call_algo "instantiation" [ wmodule ] |> Env.get_result |> ignore;
 
-  string_of_record !Testdata.store |> print_endline;
-
   (* Invocation *)
-  let invocation_result =
-    call_algo "invocation" []
-    |> Env.get_result
-  in
-  string_of_value invocation_result |> print_endline
-
-let wasm_instr2al_value winstr =
-  let f_i32 f i32 = WasmInstrV (f, [ IntV (Int32.to_int i32.it) ]) in
-
-  match winstr.it with
-  (* wasm values *)
-  | Ast.Const num -> wasm_num2al_value num.it
-  | Ast.RefNull t -> WasmInstrV ("ref.null", [ WasmTypeV (RefType t) ])
-  (* wasm instructions *)
-  | Ast.Nop -> WasmInstrV ("nop", [])
-  | Ast.Drop -> WasmInstrV ("drop", [])
-  | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
-      WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "Add" ])
-  | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
-      WasmInstrV
-        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "Eqz" ])
-  | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
-      WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.F32Type); StringV "Gt" ])
-  | Ast.Compare (Values.I32 Ast.I32Op.GtS) ->
-      WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "GtS" ])
-  | Ast.Select None -> WasmInstrV ("select", [ StringV "TODO: None" ])
-  | Ast.LocalGet i32 -> f_i32 "local.get" i32
-  | Ast.LocalSet i32 -> f_i32 "local.set" i32
-  | Ast.LocalTee i32 -> f_i32 "local.tee" i32
-  | Ast.GlobalGet i32 -> f_i32 "global.get" i32
-  | Ast.GlobalSet i32 -> f_i32 "global.set" i32
-  | Ast.TableGet i32 -> f_i32 "table.get" i32
-  | Ast.Call i32 -> f_i32 "call" i32
-  | _ -> failwith "Not implemented"
-
-(* Test Interpreter *)
-
-let wasm_func2al wasm_module wasm_func =
-  let { it = Types.FuncType (vtl1, vtl2); _ } =
-    Int32.to_int wasm_func.it.Ast.ftype.it
-    |> List.nth wasm_module.it.Ast.types
-  in
-
-  let to_al ty = WasmTypeV ty in
-  let ftype =
-    ArrowV (
-      ListV (List.map to_al vtl1 |> Array.of_list),
-      ListV (List.map to_al vtl2 |> Array.of_list)
-    ) in
-
-  ConstructV ("FUNC", [ftype])
-
-let wasm_module2al wasm_module =
-  let func_list =
-    List.map (wasm_func2al wasm_module) wasm_module.it.funcs
-    |> Array.of_list
-    in
-  ConstructV ("MODULE", [ListV func_list])
+  call_algo "invocation" [ IntV 0 ] |> ignore
 
 let test_module testcase =
-  let (_, wasm_module, _) = testcase in
-  let module_construct = wasm_module2al wasm_module in
+  let (name, wasm_module, expected_result) = testcase in
+  let module_construct = Construct.al_of_wasm_module wasm_module in
+
+  (* Print test name *)
+  print_endline name;
 
   (* TODO *)
+  stack := [];
   Testdata.store := Record.empty;
 
-  (* Execute *)
-  execute module_construct
+  try
+    (* Execute *)
+    execute module_construct;
+
+    (* Check *)
+    let actual_result = List.hd !stack |> Testdata.string_of_result in
+    if actual_result = expected_result then print_endline "Ok\n"
+    else
+      "Fail!\n" ^ "Expected: " ^ expected_result ^ "\n" ^ "Actual: "
+      ^ actual_result ^ "\n" ^ string_of_stack !stack
+      |> print_endline
+  with e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n")
 
 let test name ast expected_result =
   (* Print test name *)
@@ -475,7 +416,7 @@ let test name ast expected_result =
 
 let test_reference testcase =
   let name, raw_ast, expected_result = testcase in
-  let ast = List.map wasm_instr2al_value raw_ast in
+  let ast = List.map Construct.al_of_wasm_instr raw_ast in
   test name ast expected_result
 
 let test_wasm_value testcase =
@@ -488,9 +429,11 @@ let interpret algos =
   let test_module_semantics = false in
 
   algo_map := to_map algos;
+  print_endline "Manual algorithms\n";
   algo_map :=
     List.fold_left
       (fun acc algo ->
+        string_of_algorithm algo |> print_endline;
         let (Algo (name, _, _)) = algo in
         AlgoMap.add name algo acc)
       !algo_map Manual.manual_algos;

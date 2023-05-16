@@ -10,5 +10,6 @@
     numerics
     testdata
     walk
+    construct
     manual)
 )

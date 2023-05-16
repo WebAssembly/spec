@@ -553,6 +553,62 @@ data.drop x
 1. Perform $with_data(x, []).
 
 == Interpret AL...
+Manual algorithms
+
+br l
+1. If l is 0, then:
+  a. Let L be the current label.
+  b. Let n be the arity of L.
+  c. Assert: Due to validation, there are at least n values on the top of the stack.
+  d. Pop val^n from the stack.
+  e. While the top of the stack is value, do:
+    1) Pop val' from the stack.
+  f. Assert: Due to validation, the label L is now on the top of the stack.
+  g. Pop the label from the stack.
+  h. Push val^n to the stack.
+  i. Jump to the continuation of L.
+2. Else:
+  a. Let val* be [].
+  b. While the top of the stack is value, do:
+    1) Pop val' from the stack.
+    2) Let val* be [val'] ++ val*.
+  c. Assert: Due to validation, the label L is now on the top of the stack.
+  d. Pop the label from the stack.
+  e. Push val* to the stack.
+  f. Execute (br (l - 1)).
+
+instantiation module
+1. Let moduleinst_init be ModuleInstV (TODO).
+2. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
+3. Push f_init to the stack.
+4. Pop f_init from the stack.
+5. Let moduleinst be $alloc_module(module).
+6. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+7. Push f to the stack.
+8. Pop f from the stack.
+
+alloc_module module
+1. Let MODULE(func*) be module.
+2. Let funcaddr* be $alloc_func(func)*.
+3. Let moduleinst be { FUNC: funcaddr*; }.
+4. Foreach funcinst_i in s.FUNC
+  a. Let (_, f) be funcinst_i.
+  b. Replace funcinst_i with (moduleinst, f).
+5. Return moduleinst.
+
+alloc_func func
+1. Let a be the length of s.FUNC.
+2. Let dummy_module_inst be { }.
+3. Let funcinst be (dummy_module_inst, func).
+4. Append funcinst to the FUNC of s.
+5. Return a.
+
+invocation funcaddr
+1. Let funcinst be s.FUNC[funcaddr].
+2. Let f be the activation of { } with arity 0.
+3. Push f to the stack.
+4. Execute (call_addr funcaddr).
+
 binop
 Ok
 
