@@ -47,7 +47,7 @@ and stack = value list
 and value =
   | LabelV of label
   | FrameV of frame
-  | StoreV of store
+  | StoreV of store ref
   | ModuleInstV of module_inst
   | ListV of value array
   | WasmTypeV of Types.value_type

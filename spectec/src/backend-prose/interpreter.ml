@@ -47,7 +47,8 @@ module Env = struct
       "\n{" ",\n  " "\n}" (Env'.bindings env)
 
   (* Environment API *)
-  let empty = (Env'.empty, StringV "Undefined")
+  let empty =
+    (Env'.add (N "s") (StoreV Testdata.store) Env'.empty, StringV "Undefined")
 
   let find key (env, _) =
     try Env'.find key env
@@ -140,13 +141,11 @@ and eval_expr env expr =
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
-  | PropE (NameE (N "s"), str) ->
-      Record.find str !Testdata.store
   | PropE (e, str) -> (
       match eval_expr env e with
       | ModuleInstV m -> Record.find str m
       | FrameV (_, r) -> Record.find str r
-      | StoreV s -> Record.find str s
+      | StoreV s -> Record.find str !s
       | _ -> failwith "Not a record")
   | ConcatE (e1, e2) -> (
       match (eval_expr env e1, eval_expr env e2) with
@@ -337,10 +336,7 @@ and interp_algo algo args =
     | _ -> failwith "Invalid destructuring assignment"
   in
 
-  let init_env =
-    List.fold_left2 f Env.empty params args
-    |> Env.add (N "s") (StoreV !Testdata.store)
-  in
+  let init_env = List.fold_left2 f Env.empty params args in
 
   interp_instrs init_env il
 
