@@ -767,9 +767,7 @@ let rec step (c : config) : config =
         Num (I32 n) ::
           Num (I32 s) :: Ref Aggr.(ArrayRef (Array (ts, fss))) ::
           Num (I32 d) :: Ref Aggr.(ArrayRef (Array (td, fsd))) :: vs' ->
-        if array_oob fss s n then
-          vs', [Trapping "out of bounds array access" @@ e.at]
-        else if array_oob fsd d n then
+        if array_oob fss s n || array_oob fsd d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if n = 0l then
           vs', []
