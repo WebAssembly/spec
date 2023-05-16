@@ -751,12 +751,7 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),
-          Num (I32 sz)
-            :: Num (I32 src)
-              :: Ref _
-                :: Num (I32 dst)
-                  :: Ref (NullRef _)
-                    :: vs' ->
+        Num _ :: Num _ :: Ref _ :: Num _ :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayCopy (x, y),
