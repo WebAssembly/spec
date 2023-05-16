@@ -168,6 +168,7 @@ let alloc_func =
   let addr_name = N "a" in
   let store_name = N "s" in
   let dummy_module_inst = N "dummy_module_inst" in
+  let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
   let func_inst_name = N "funcinst" in
 
   (* Algorithm *)
@@ -176,7 +177,7 @@ let alloc_func =
     [ (NameE func_name, TopT) ],
     [
       LetI (NameE addr_name, LengthE (PropE (NameE store_name, "FUNC")));
-      LetI (NameE dummy_module_inst, RecordE Record.empty);
+      LetI (NameE dummy_module_inst, RecordE dummy_module_rec);
       LetI (NameE func_inst_name, PairE (NameE dummy_module_inst, NameE func_name));
       AppendI (NameE func_inst_name, NameE store_name, "FUNC");
       ReturnI (Some (NameE addr_name))

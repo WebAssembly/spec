@@ -598,7 +598,7 @@ alloc_module module
 
 alloc_func func
 1. Let a be the length of s.FUNC.
-2. Let dummy_module_inst be { }.
+2. Let dummy_module_inst be { FUNC: []; }.
 3. Let funcinst be (dummy_module_inst, func).
 4. Append funcinst to the s.FUNC.
 5. Return a.
