@@ -415,12 +415,15 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! reference instruction, reference, null
+.. index:: ! reference instruction, reference, null, cast, heap type, reference type
    pair: abstract syntax; instruction
 .. _syntax-ref.null:
 .. _syntax-ref.func:
 .. _syntax-ref.is_null:
 .. _syntax-ref.as_non_null:
+.. _syntax-ref.eq:
+.. _syntax-ref.test:
+.. _syntax-ref.cast:
 .. _syntax-instr-ref:
 
 Reference Instructions
@@ -435,11 +438,102 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
      \REFNULL~\heaptype \\&&|&
      \REFFUNC~\funcidx \\&&|&
      \REFISNULL \\&&|&
-     \REFASNONNULL \\
+     \REFASNONNULL \\&&|&
+     \REFEQ \\&&|&
+     \REFTEST~\reftype \\&&|&
+     \REFCAST~\reftype \\
    \end{array}
 
-The first three of these instruction produce a :ref:`null <syntax-null>` value, produce a reference to a given function, or check for a null value, respectively.
-The |REFASNONNULL| casts a :ref:`nullable <syntax-reftype>` to a non-null one, and :ref:`traps <trap>` if it encounters null.
+The |REFNULL| and |REFFUNC| instructions produce a :ref:`null <syntax-null>` value or a reference to a given function, respectively.
+
+The instruction |REFISNULL| checks for null,
+while |REFASNONNULL| converts a :ref:`nullable <syntax-reftype>` to a non-null one, and :ref:`traps <trap>` if it encounters null.
+
+The |REFEQ| compares two references.
+
+The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <syntax-type-dyn>` of a reference operand.
+The former merely returns the result of the test,
+while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
+
+.. note::
+   The |BR_ON_CAST| and |BR_ON_CAST_FAIL| instructions provides versions of the latter that branch depending on the success of the downcast instead of trapping.
+
+
+.. index:: reference instruction, reference, null, heap type, reference type
+   pair: abstract syntax; instruction
+
+.. _syntax-struct.new:
+.. _syntax-struct.new_default:
+.. _syntax-struct.get:
+.. _syntax-struct.get_s:
+.. _syntax-struct.get_u:
+.. _syntax-struct.set:
+.. _syntax-array.new:
+.. _syntax-array.new_default:
+.. _syntax-array.new_fixed:
+.. _syntax-array.new_data:
+.. _syntax-array.new_elem:
+.. _syntax-array.get:
+.. _syntax-array.get_s:
+.. _syntax-array.get_u:
+.. _syntax-array.set:
+.. _syntax-array.len:
+.. _syntax-i31.new:
+.. _syntax-i31.get_s:
+.. _syntax-i31.get_u:
+.. _syntax-extern.internalize:
+.. _syntax-extern.externalize:
+.. _syntax-instr-struct:
+.. _syntax-instr-array:
+.. _syntax-instr-i31:
+.. _syntax-instr-extern:
+
+Aggregate Instructions
+~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-type-aggregate>` types.
+
+.. math::
+   \begin{array}{llcl}
+   \production{instruction} & \instr &::=&
+     \dots \\&&|&
+     \STRUCTNEW~\typeidx \\&&|&
+     \STRUCTNEWDEFAULT~\typeidx \\&&|&
+     \STRUCTGET~\typeidx~\u32 \\&&|&
+     \STRUCTGETS~\typeidx~\u32 \\&&|&
+     \STRUCTGETU~\typeidx~\u32 \\&&|&
+     \STRUCTSET~\typeidx~\u32 \\&&|&
+     \ARRAYNEW~\typeidx \\&&|&
+     \ARRAYNEWFIXED~\typeidx~\u32 \\&&|&
+     \ARRAYNEWDEFAULT~\typeidx \\&&|&
+     \ARRAYNEWDATA~\typeidx~\dataidx \\&&|&
+     \ARRAYNEWELEM~\typeidx~\elemidx \\&&|&
+     \ARRAYGET~\typeidx \\&&|&
+     \ARRAYGETS~\typeidx \\&&|&
+     \ARRAYGETU~\typeidx \\&&|&
+     \ARRAYSET~\typeidx \\&&|&
+     \ARRAYLEN \\&&|&
+     \I31NEW \\&&|&
+     \I31GETS \\&&|&
+     \I31GETU \\&&|&
+     \EXTERNINTERNALIZE \\&&|&
+     \EXTERNEXTERNALIZE \\
+   \end{array}
+
+The instructions |STRUCTNEW| and |STRUCTNEWDEFAULT| allocate a new :ref:`structure <syntax-type-struct>`, initializing them either with operands or with default values.
+The remaining instructions on structs access individual fields,
+allowing for different sign extension modes in the case of :ref:`packed <syntax-type-packed>` storage types.
+
+Similarly, :ref:`arrays <syntax-type-array>` can be allocated either with an explicit initialization operand or a default value.
+Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
+and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segement, respectively.
+The remaining array instructions access individual slots,
+again allowing for different sign extension modes in the case of a :ref:`packed <syntax-type-packed>` storage type.
+Last, |ARRAYLEN| produces the length of an array.
+
+The instructions |I31NEW|, |I31GETS|, and |I31GETU| convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
+
+The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 
 
 .. index:: ! parametric instruction, value type
@@ -627,6 +721,10 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-br:
 .. _syntax-br_if:
 .. _syntax-br_table:
+.. _syntax-br_on_null:
+.. _syntax-br_on_non_null:
+.. _syntax-br_on_cast:
+.. _syntax-br_on_cast_fail:
 .. _syntax-return:
 .. _syntax-call:
 .. _syntax-call_indirect:
@@ -654,6 +752,8 @@ Instructions in this group affect the flow of control.
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \BRONNULL~\labelidx \\&&|&
      \BRONNONNULL~\labelidx \\&&|&
+     \BRONCAST~\labelidx~\reftype~\reftype \\&&|&
+     \BRONCASTFAIL~\labelidx~\reftype~\reftype \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
      \CALLREF~\typeidx \\&&|&
@@ -697,6 +797,8 @@ Branch instructions come in several flavors:
 |BRIF| performs a conditional branch,
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |BRONNULL| and |BRONNONNULL| instructions check whether a reference operand is :ref:`null <syntax-null>` and branch if that is the case or not the case, respectively.
+Similarly, |BRONCAST| and |BRONCASTFAIL| attempt a downcast on a reference operand and branch if that succeeds, or fails, respectively.
+
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
 However, branches may additionally consume operands themselves, which they push back on the operand stack after unwinding.

@@ -40,6 +40,8 @@ struct
 
   (* Generic values *)
 
+  let bit i b = (if b then 1 else 0) lsl i
+
   let byte i = put s (Char.chr (i land 0xff))
   let word16 i = byte (i land 0xff); byte (i lsr 8)
   let word32 i =
@@ -101,7 +103,7 @@ struct
 
   let var_type var = function
     | StatX x -> var x
-    | DynX _ | RecX _ -> assert false
+    | RecX _ -> assert false
 
   let num_type = function
     | I32T -> s7 (-0x01)
@@ -123,8 +125,12 @@ struct
     | NoFuncHT -> s7 (-0x17)
     | ExternHT -> s7 (-0x11)
     | NoExternHT -> s7 (-0x18)
-    | DefHT x -> var_type s33 x
-    | BotHT -> assert false
+    | VarHT x -> var_type s33 x
+    | DefHT _ | BotHT -> assert false
+
+  let var_heap_type = function
+    | VarHT x -> var_type u32 x
+    | _ -> assert false
 
   let ref_type = function
     | (Null, AnyHT) -> s7 (-0x12)
@@ -174,10 +180,10 @@ struct
 
   let sub_type = function
     | SubT (Final, [], st) -> str_type st
-    | SubT (Final, xs, st) -> s7 (-0x32); vec (var_type u32) xs; str_type st
-    | SubT (NoFinal, xs, st) -> s7 (-0x30); vec (var_type u32) xs; str_type st
+    | SubT (Final, hts, st) -> s7 (-0x32); vec var_heap_type hts; str_type st
+    | SubT (NoFinal, hts, st) -> s7 (-0x30); vec var_heap_type hts; str_type st
 
-  let def_type = function
+  let rec_type = function
     | RecT [st] -> sub_type st
     | RecT sts -> s7 (-0x31); vec sub_type sts
 
@@ -241,10 +247,12 @@ struct
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
     | BrOnNull x -> op 0xd4; var x
     | BrOnNonNull x -> op 0xd6; var x
-    | BrOnCast (x, (NoNull, t)) -> op 0xfb; op 0x42; var x; heap_type t
-    | BrOnCast (x, (Null, t)) -> op 0xfb; op 0x4a; var x; heap_type t
-    | BrOnCastFail (x, (NoNull, t)) -> op 0xfb; op 0x43; var x; heap_type t
-    | BrOnCastFail (x, (Null, t)) -> op 0xfb; op 0x4b; var x; heap_type t
+    | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
+      op 0xfb; op 0x4e; byte flags; var x; heap_type t1; heap_type t2
+    | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
+      let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
+      op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x
@@ -853,7 +861,7 @@ struct
 
   (* Type section *)
 
-  let type_ t = def_type t.it
+  let type_ t = rec_type t.it
 
   let type_section ts =
     section 1 (vec type_) ts (ts <> [])

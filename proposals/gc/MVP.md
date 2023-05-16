@@ -108,7 +108,7 @@ New abbreviations are introduced for reference types in binary and text format, 
   - `module ::= {..., types vec(<deftype>)}`
   - a `rec` definition defines a group of mutually recursive types that can refer to each other; it thereby defines several type indices at a time
   - a single type definition, as in Wasm before this proposal, is reinterpreted as a short-hand for a recursive group containing just one type
-  - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types. 
+  - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types.
 
 * `subtype` is a new category of type defining a single type, as a subtype of possible other types
   - `subtype ::= sub final? <typeidx>* <strtype>`
@@ -429,7 +429,7 @@ Subtyping is not defined on type definitions.
 
 #### Runtime Types
 
-* Runtime types (RTTs) are values representing concrete types at runtime. In the MVP, *canonical* RTTs are implicitly created by all instructions depending on runtime type information (recognisable by the suffix `_canon` in their mnemonics). In future versions, RTTs may become explicit values, and non-canonical versions of these instructions will be introduced.
+* Runtime types (RTTs) are values representing concrete types at runtime. In the MVP, *canonical* RTTs are implicitly created by all instructions depending on runtime type information. In future versions, RTTs may become explicit values, and non-canonical versions of these instructions will be introduced.
 
 * An RTT value r1 is *equal* to another RTT value r2 iff they both represent the same static type.
 
@@ -466,7 +466,7 @@ Then, `$rttA` would carry supertype vector `[$rttA]`, `$rttB` has `[$rttA, $rttB
 Now consider a function that casts a `$B` to a `$C`:
 ```
 (func $castBtoC (param $x (ref $B)) (result (ref $C))
-  (ref.cast_canon $C (local.get $x))
+  (ref.cast $C (local.get $x))
 )
 ```
 This can compile to machine code that (1) reads the RTT from `$x`, (2) checks that the length of its supertype table is >= 3, and (3) pointer-compares table[2] against `$rttC`.
@@ -493,14 +493,14 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### Structures
 
-* `struct.new_canon <typeidx>` allocates a structure with canonical [RTT](#values) and initialises its fields with given values
-  - `struct.new_canon $t : [t'*] -> [(ref $t)]`
+* `struct.new <typeidx>` allocates a structure with canonical [RTT](#values) and initialises its fields with given values
+  - `struct.new $t : [t'*] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t'')*`
     - and `(t' = unpacked(t''))*`
   - this is a *constant instruction*
 
-* `struct.new_canon_default <typeidx>` allocates a structure of type `$t` with canonical [RTT](#values) and initialises its fields with default values
-  - `struct.new_canon_default $t : [] -> [(ref $t)]`
+* `struct.new_default <typeidx>` allocates a structure of type `$t` with canonical [RTT](#values) and initialises its fields with default values
+  - `struct.new_default $t : [] -> [(ref $t)]`
     - iff `expand($t) = struct (mut t')*`
     - and all `t'*` are defaultable
   - this is a *constant instruction*
@@ -521,26 +521,26 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### Arrays
 
-* `array.new_canon <typeidx>` allocates an array with canonical [RTT](#values)
-  - `array.new_canon $t : [t' i32] -> [(ref $t)]`
+* `array.new <typeidx>` allocates an array with canonical [RTT](#values)
+  - `array.new $t : [t' i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t'')`
     - and `t' = unpacked(t'')`
   - this is a *constant instruction*
 
-* `array.new_canon_default <typeidx>` allocates an array with canonical [RTT](#values) and initialises its fields with the default value
-  - `array.new_canon_default $t : [i32] -> [(ref $t)]`
+* `array.new_default <typeidx>` allocates an array with canonical [RTT](#values) and initialises its fields with the default value
+  - `array.new_default $t : [i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `t'` is defaultable
   - this is a *constant instruction*
 
-* `array.new_canon_fixed <typeidx> <N>` allocates an array with canonical [RTT](#values) of fixed size and initialises it from operands
-  - `array.new_canon_fixed $t N : [t^N] -> [(ref $t)]`
+* `array.new_fixed <typeidx> <N>` allocates an array with canonical [RTT](#values) of fixed size and initialises it from operands
+  - `array.new_fixed $t N : [t^N] -> [(ref $t)]`
     - iff `expand($t) = array (mut t'')`
     - and `t' = unpacked(t'')`
   - this is a *constant instruction*
 
-* `array.new_canon_data <typeidx> <dataidx>` allocates an array with canonical [RTT](#values) and initialises it from a data segment
-  - `array.new_canon_data $t $d : [i32 i32] -> [(ref $t)]`
+* `array.new_data <typeidx> <dataidx>` allocates an array with canonical [RTT](#values) and initialises it from a data segment
+  - `array.new_data $t $d : [i32 i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `t'` is numeric, vector, or packed
     - and `$d` is a defined data segment
@@ -549,8 +549,8 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
   - traps if `offset + |t'|*size > len($d)`
   - note: for now, this is _not_ a constant instruction, in order to side-step issues of recursion between binary sections; this restriction will be lifted later
 
-* `array.new_canon_elem <typeidx> <elemidx>` allocates an array with canonical [RTT](#values) and initialises it from an element segment
-  - `array.new_canon_elem $t $e : [i32 i32] -> [(ref $t)]`
+* `array.new_elem <typeidx> <elemidx>` allocates an array with canonical [RTT](#values) and initialises it from an element segment
+  - `array.new_elem $t $e : [i32 i32] -> [(ref $t)]`
     - iff `expand($t) = array (mut t')`
     - and `$e : rt`
     - and `rt <: t'`
@@ -576,6 +576,57 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
   - `array.len : [(ref null array)] -> [i32]`
   - traps on `null`
 
+* `array.fill <typeidx>` fills a slice of an array with a given value
+  - `array.fill $t : [(ref null $t) i32 t i32] -> []`
+    - iff `expand($t) = array (mut t')`
+    - and `t = unpacked(t')`
+  - the 1st operand is the `array` to fill
+  - the 2nd operand is the `offset` into the array at which to begin filling
+  - the 3rd operand is the `value` with which to fill
+  - the 4th operand is the `size` of the filled slice
+  - traps if `array` is null or `offset + size > len(array)`
+
+* `array.copy <typeidx> <typeidx>` copies a sequence of elements between two arrays
+  - `array.copy $t1 $t2 : [(ref null $t1) i32 (ref null $t2) i32 i32] -> []`
+    - iff `expand($t1) = array (mut t1)`
+    - and `expand($t2) = array (mut? t2)`
+    - and `t2 <: t1`
+  - the 1st operand is the `dest` array that will be copied to
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `dest`
+  - the 3rd operand is the `src` array that will be copied from
+  - the 4th operand is the `src_offset` at which the copy will begin in `src`
+  - the 5th operand is the `size` of the copy
+  - traps if `dest` is null or `src` is null
+  - traps if `dest_offset + size > len(dest)` or `src_offset + size > len(src)`
+  - note: `dest` and `src` may be the same array and the source and destination
+    regions may overlap. This must be handled correctly just like it is for
+    `memory.copy`.
+
+* `array.init_elem <typeidx> <elemidx>` copies a sequence of elements from an element segment to an array
+  - `array.init_elem $t $e : [(ref null $t) i32 i32 i32] -> []`
+    - iff `expand($t) = array (mut t)`
+    - and `$e : rt`
+    - and `rt <: t`
+  - the 1st operand is the `array` to be initialized
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `array`
+  - the 3rd operand is the `src_offset` at which the copy will begin in `$e`
+  - the 4th operand is the `size` of the copy
+  - traps if `array` is null
+  - traps if `dest_offset + size > len(array)` or `src_offset + size > len($e)`
+
+* `array.init_data <typeidx> <dataidx>` copies a sequence of values from a data segment to an array
+  - `array.init_data $t $d : [(ref null $t) i32 i32 i32] -> []`
+    - iff `expand($t) = array (mut t)`
+    - and `t` is numeric, vector, or packed
+    - and `$d` is a defined data segment
+  - the 1st operand is the `array` to be initialized
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `array`
+  - the 3rd operand is the `src_offset` at which the copy will begin in `$d`
+  - the 4th operand is the `size` of the copy in array slots
+  - note: The size of the source region is `size * |t|`. If `t` is a packed
+    type, the source is interpreted as packed in the same way.
+  - traps if `array` is null
+  - traps if `dest_offset + size > len(array)` or `src_offset + size * |t| > len($d)`
 
 #### Unboxed Scalars
 
@@ -609,31 +660,33 @@ Casts work for both abstract and concrete types. In the latter case, they test i
 
 * `ref.test <reftype>` tests whether a reference has a given type
   - `ref.test rt : [rt'] -> [i32]`
-    - iff `rt <: trt` and `rt' <: trt` for some `trt`
+    - iff `rt <: rt'`
   - if `rt` contains `null`, returns 1 for null, otherwise 0
 
 * `ref.cast <reftype>` tries to convert a reference to a given type
   - `ref.cast rt : [rt'] -> [rt]`
-    - iff `rt <: trt` and `rt' <: trt` for some `trt`
+    - iff `rt <: rt'`
   - traps if reference is not of requested type
   - if `rt` contains `null`, a null operand is passed through, otherwise traps on null
   - equivalent to `(block $l (param trt) (result rt) (br_on_cast $l rt) (unreachable))`
 
-* `br_on_cast <labelidx> <reftype>` branches if a reference has a given type
-  - `br_on_cast $l rt : [t0* rt'] -> [t0* rt']`
-    - iff `$l : [t0* t']`
-    - and `rt <: t'`
-    - and `rt <: trt` and `rt' <: trt` for some `trt`
+* `br_on_cast <labelidx> <reftype> <reftype>` branches if a reference has a given type
+  - `br_on_cast $l rt1 rt2 : [t0* rt1] -> [t0* rt1\rt2]`
+    - iff `$l : [t0* rt2]`
+    - and `rt2 <: rt1`
   - passes operand along with branch under target type, plus possible extra args
-  - if `rt` contains `null`, branches on null, otherwise does not
+  - if `rt2` contains `null`, branches on null, otherwise does not
 
-* `br_on_cast_fail <labelidx> <reftype>` branches if a reference does not have a given type
-  - `br_on_cast_fail $l rt : [t0* rt'] -> [t0* rt]`
-    - iff `$l : [t0* t']`
-    - and `rt' <: t'`
-    - and `rt <: trt` and `rt' <: trt` for some `trt`
+* `br_on_cast_fail <labelidx> <reftype> <reftype>` branches if a reference does not have a given type
+  - `br_on_cast_fail $l rt1 rt2 : [t0* rt1] -> [t0* rt2]`
+    - iff `$l : [t0* rt1\rt2]`
+    - and `rt2 <: rt1`
   - passes operand along with branch, plus possible extra args
-  - if `rt` contains `null`, does not branch on null, otherwise does
+  - if `rt2` contains `null`, does not branch on null, otherwise does
+
+where:
+  - `(ref null1? ht1)\(ref null ht2) = (ref ht1)`
+  - `(ref null1? ht1)\(ref ht2)      = (ref null1? ht1)`
 
 Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
 
@@ -655,9 +708,9 @@ TODO: Should we remove the latter 3 from the typed function references proposal?
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
 * `i31.new` is a constant instruction
-* `struct.new_canon` and `struct.new_canon_default` are constant instructions
-* `array.new_canon`, `array.new_canon_default`, and `array.new_canon_fixed` are constant instructions
-  - Note: `array.new_canon_data` and `array.new_canon_elem` are not for the time being, see above
+* `struct.new` and `struct.new_default` are constant instructions
+* `array.new`, `array.new_default`, and `array.new_fixed` are constant instructions
+  - Note: `array.new_data` and `array.new_elem` are not for the time being, see above
 * `extern.internalize` and `extern.externalize` are constant instructions
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
@@ -748,36 +801,41 @@ The opcode for heap types is encoded as an `s33`.
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | 0xd5   | `ref.eq`        |            |
-| 0xd6   | `br_on_non_null` | |
-| 0xfb01 | `struct.new_canon $t` | `$t : typeidx` |
-| 0xfb02 | `struct.new_canon_default $t` | `$t : typeidx` |
+| 0xd6   | `br_on_non_null $l` | `$l : labelidx` |
+| 0xfb01 | `struct.new $t` | `$t : typeidx` |
+| 0xfb02 | `struct.new_default $t` | `$t : typeidx` |
 | 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb04 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb05 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb06 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb11 | `array.new_canon $t` | `$t : typeidx` |
-| 0xfb12 | `array.new_canon_default $t` | `$t : typeidx` |
+| 0xfb11 | `array.new $t` | `$t : typeidx` |
+| 0xfb12 | `array.new_default $t` | `$t : typeidx` |
 | 0xfb13 | `array.get $t` | `$t : typeidx` |
 | 0xfb14 | `array.get_s $t` | `$t : typeidx` |
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
 | 0xfb17 | `array.len` | |
-| 0xfb19 | `array.new_canon_fixed $t N` | `$t : typeidx`, `N : u32` |
-| 0xfb1b | `array.new_canon_data $t $d` | `$t : typeidx`, `$d : dataidx` |
-| 0xfb1c | `array.new_canon_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
+| 0xfb19 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
+| 0xfb1b | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
+| 0xfb1c | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
 | 0xfb20 | `i31.new` |  |
 | 0xfb21 | `i31.get_s` |  |
 | 0xfb22 | `i31.get_u` |  |
-| 0xfb40 | `ref.test ht` | `ht : heaptype` |
-| 0xfb41 | `ref.cast ht` | `ht : heaptype` |
-| 0xfb42 | `br_on_cast $l ht` | `$l : labelidx`, `ht : heaptype` |
-| 0xfb43 | `br_on_cast_fail $l ht` | `$l : labelidx`, `ht : heaptype` |
-| 0xfb48 | `ref.test null ht` | `ht : heaptype` |
-| 0xfb49 | `ref.cast null ht` | `ht : heaptype` |
-| 0xfb4a | `br_on_cast $l null ht` | `$l : labelidx`, `ht : heaptype` |
-| 0xfb4b | `br_on_cast_fail $l null ht` | `$l : labelidx`, `ht : heaptype` |
+| 0xfb40 | `ref.test (ref ht)` | `ht : heaptype` |
+| 0xfb41 | `ref.cast (ref ht)` | `ht : heaptype` |
+| 0xfb48 | `ref.test (ref null ht)` | `ht : heaptype` |
+| 0xfb49 | `ref.cast (ref null ht)` | `ht : heaptype` |
+| 0xfb4e | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb4f | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 | 0xfb70 | `extern.internalize` | |
 | 0xfb71 | `extern.externalize` | |
+
+Flag byte encoding for `br_on_cast(_fail)?`:
+
+| Bit | Function      |
+| --- | ------------- |
+| 0   | null1 present |
+| 1   | null2 present |
 
 
 ## JS API
@@ -795,7 +853,7 @@ See [GC JS API document](MVP-JS.md) .
 
 
 
-## Appendix: Formal Rules
+## Appendix: Formal Rules for Types
 
 ### Validity
 

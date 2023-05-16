@@ -61,9 +61,9 @@ Similarly, `extern.externalize` will behave differently depending on the
 internal reference value that is being externalized:
 
  - If the value is an i31 reference, convert it to a JS number.
- - If the value is a struct or array reference, create a new JS wrapper for it.
-   _TODO: re-use existing wrapper instead of get bidirectional identity
-   preservation._
+ - If the value is a struct or array reference, create a JS wrapper for it,
+   reusing any pre-existing wrapper to ensure bidirectional identity
+   preservation.
  - Otherwise if the reference is an internalized host reference, return the
    original external host reference.
 

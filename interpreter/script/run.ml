@@ -233,7 +233,7 @@ let type_of_result r =
   | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
   | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
   | RefResult (RefPat r) -> RefT (Value.type_of_ref r.it)
-  | RefResult (RefTypePat t) -> RefT (NoNull, dyn_heap_type [] t)
+  | RefResult (RefTypePat t) -> RefT (NoNull, t)  (* assume closed *)
   | RefResult (NullPat) -> RefT (Null, ExternHT)
 
 let string_of_num_pat (p : num_pat) =
@@ -325,7 +325,8 @@ let run_action act : Value.t list =
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.FuncT (ts1, _ts2) = Func.type_of f in
+      let Types.FuncT (ts1, _ts2) =
+        Types.(as_func_str_type (expand_def_type (Func.type_of f))) in
       if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
       List.iter2 (fun v t ->

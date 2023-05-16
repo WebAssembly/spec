@@ -428,9 +428,9 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \typeid
+     C.\CFUNCS[x] = \functype
    }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\typeid
+     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\functype
    }
 
 

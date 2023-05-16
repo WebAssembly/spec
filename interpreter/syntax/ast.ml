@@ -154,8 +154,8 @@ and instr' =
   | BrTable of idx list * idx         (* indexed break *)
   | BrOnNull of idx                   (* break on type *)
   | BrOnNonNull of idx                (* break on type inverted *)
-  | BrOnCast of idx * ref_type        (* break on type *)
-  | BrOnCastFail of idx * ref_type    (* break on type inverted *)
+  | BrOnCast of idx * ref_type * ref_type     (* break on type *)
+  | BrOnCastFail of idx * ref_type * ref_type (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef of idx                    (* call function through reference *)
@@ -300,7 +300,7 @@ and data_segment' =
 
 (* Modules *)
 
-type type_ = def_type Source.phrase
+type type_ = rec_type Source.phrase
 
 type export_desc = export_desc' Source.phrase
 and export_desc' =
@@ -371,39 +371,46 @@ let empty_module =
 
 open Source
 
+let dt dts (x : idx) : def_type = Lib.List32.nth dts x.it
+
 let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
+  let dts = roll_def_types_list (List.map Source.it m.it.types) in
   let et =
     match idesc.it with
-    | FuncImport x -> ExternFuncT (StatX x.it)
-    | TableImport t -> ExternTableT t
-    | MemoryImport t -> ExternMemoryT t
-    | GlobalImport t -> ExternGlobalT t
+    | FuncImport x -> ExternFuncT (dt dts x)
+    | TableImport tt -> ExternTableT tt
+    | MemoryImport mt -> ExternMemoryT mt
+    | GlobalImport gt -> ExternGlobalT gt
   in ImportT (et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
   let {edesc; name} = ex.it in
+  let dts = roll_def_types_list (List.map Source.it m.it.types) in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map extern_type_of_import_type its in
-  let open Lib.List32 in
   let et =
     match edesc.it with
     | FuncExport x ->
-      let fts = funcs ets @ List.map (fun f -> StatX f.it.ftype.it) m.it.funcs in
-      ExternFuncT (nth fts x.it)
+      let dts = funcs ets @ List.map (fun f -> dt dts f.it.ftype) m.it.funcs in
+      ExternFuncT (Lib.List32.nth dts x.it)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
-      ExternTableT (nth tts x.it)
+      ExternTableT (Lib.List32.nth tts x.it)
     | MemoryExport x ->
       let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
-      ExternMemoryT (nth mts x.it)
+      ExternMemoryT (Lib.List32.nth mts x.it)
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
-      ExternGlobalT (nth gts x.it)
+      ExternGlobalT (Lib.List32.nth gts x.it)
   in ExportT (et, name)
 
 let module_type_of (m : module_) : module_type =
-  let dts = List.map Source.it m.it.types in
+  let dts = roll_def_types_list (List.map Source.it m.it.types) in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  ModuleT (dts, its, ets)
+  let a = Array.make (List.length dts) BotHT in
+  let s = function StatX x -> a.(Int32.to_int x) | RecX x -> VarHT (RecX x) in
+  List.iteri (fun i dt -> a.(i) <- DefHT (subst_def_type s dt)) dts;
+  subst_module_type s (ModuleT
+    (List.map (subst_import_type s) its, List.map (subst_export_type s) ets))

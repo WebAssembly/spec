@@ -3,11 +3,10 @@ open Value
 
 type 'inst t = 'inst func
 and 'inst func =
-  | AstFunc of type_addr * 'inst * Ast.func
-  | HostFunc of type_addr * (value list -> value list)
+  | AstFunc of def_type * 'inst * Ast.func
+  | HostFunc of def_type * (value list -> value list)
 
-val alloc : type_addr -> 'inst -> Ast.func -> 'inst func
-val alloc_host : type_addr -> (value list -> value list) -> 'inst func
+val alloc : def_type -> 'inst -> Ast.func -> 'inst func
+val alloc_host : def_type -> (value list -> value list) -> 'inst func
 
-val type_of : 'inst func -> func_type
-val type_inst_of : 'inst func -> type_addr
+val type_of : 'inst func -> def_type

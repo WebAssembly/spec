@@ -191,7 +191,7 @@ type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
-  let ModuleT (_, _, ets) = dyn_module_type (module_type_of m) in
+  let ModuleT (_, ets) = module_type_of m in
   List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
     NameMap.empty ets
 
@@ -250,22 +250,11 @@ let abs_mask_of = function
   | I32T | F32T -> I32 Int32.max_int
   | I64T | F64T -> I64 Int64.max_int
 
-let null_heap_type_of = function
-  | Types.(AnyHT | NoneHT | EqHT | I31HT | StructHT | ArrayHT) -> NoneHT
-  | Types.(FuncHT | NoFuncHT) -> NoFuncHT
-  | Types.(ExternHT | NoExternHT) -> NoExternHT
-  | Types.BotHT -> assert false
-  | Types.DefHT (StatX _ | RecX _) -> assert false
-  | Types.DefHT (DynX a) ->
-    match expand_ctx_type (Types.def_of a) with
-    | Types.DefFuncT _ -> NoFuncHT
-    | Types.(DefStructT _ | DefArrayT _) -> NoneHT
-
 let value v =
   match v.it with
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Ref (NullRef t) -> [RefNull (null_heap_type_of t) @@ v.at]
+  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type ht) @@ v.at]
   | Ref (Extern.ExternRef (HostRef n)) ->
     [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false
@@ -381,16 +370,16 @@ let assert_return ress ts at =
 let i32 = NumT I32T
 let anyref = RefT (Null, AnyHT)
 let eqref = RefT (Null, EqHT)
-let func_def_type ts1 ts2 at =
+let func_rec_type ts1 ts2 at =
   RecT [SubT (Final, [], DefFuncT (FuncT (ts1, ts2)))] @@ at
 
 let wrap item_name wrap_action wrap_assertion at =
   let itypes, idesc, action = wrap_action at in
   let locals, assertion = wrap_assertion at in
   let types =
-    func_def_type [] [] at ::
-    func_def_type [i32] [anyref] at ::
-    func_def_type [eqref; eqref] [i32] at ::
+    func_rec_type [] [] at ::
+    func_rec_type [i32] [anyref] at ::
+    func_rec_type [eqref; eqref] [i32] at ::
     itypes
   in
   let imports =
@@ -541,9 +530,8 @@ let of_action mods act =
     "call(" ^ of_var_opt mods x_opt ^ ", " ^ of_name name ^ ", " ^
       "[" ^ String.concat ", " (List.map of_value vs) ^ "])",
     (match lookup mods x_opt name act.at with
-    | ExternFuncT x ->
-      let FuncT (_, out) as ft =
-        as_func_str_type (expand_ctx_type (def_of (as_dyn_var x))) in
+    | ExternFuncT dt ->
+      let FuncT (_, out) as ft = as_func_str_type (expand_def_type dt) in
       if is_js_func_type ft then
         None
       else
