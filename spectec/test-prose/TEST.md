@@ -465,7 +465,7 @@ memory.copy
     2) Else:
       a) Push the value i32.CONST ((j + n) - 1) to the stack.
       b) Push the value i32.CONST ((i + n) - 1) to the stack.
-    3) Execute (load i32 ?(YetE ((8, U_sx))) 0 0).
+    3) Execute (load i32 ?((8, YetE (U_sx))) 0 0).
     4) Execute (store i32 ?(8) 0 0).
     5) Push the value i32.CONST (j + 1) to the stack.
     6) Push the value i32.CONST (i + 1) to the stack.
@@ -537,7 +537,7 @@ store nt ?() n_A n_O
 7. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 8. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-9. Let b* be $bytes_(n, $wrap_(YetE (($size(nt <: valtype), n)), c)).
+9. Let b* be $bytes_(n, $wrap_(($size(nt), n), c)).
 10. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
