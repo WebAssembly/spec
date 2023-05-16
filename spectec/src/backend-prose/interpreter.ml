@@ -213,17 +213,15 @@ and interp_instr env i =
   | WhileI (c, il) ->
       (* TODO: this is a recursive implementation of while *)
       if eval_cond env c then interp_instr (interp_instrs env il) i else env
-  | ForeachI (e1, e2, il) ->
-      let v = eval_expr env e2 in
-      begin match e1, v with
-      | NameE name, ListV vl ->
-          let f v =
-            let new_env = Env.add name v env in
-            interp_instrs new_env il |> ignore in
-          Array.iter f vl;
-          env
-      | _ -> failwith ""
-      end
+  | ForI (e, il) ->
+      (match eval_expr env (LengthE e) with
+        | IntV n ->
+            for i = 0 to n-1 do
+              let new_env = Env.add (N "i") (IntV i) env in
+              interp_instrs new_env il |> ignore
+            done;
+            env
+        | _ -> failwith "Unreachable")
   | AssertI _ -> env (* TODO: insert assertion *)
   | PushI e ->
       (match eval_expr env e with

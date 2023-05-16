@@ -133,7 +133,7 @@ type instr =
   | WhileI of (cond * instr list)
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)
-  | ForeachI of (expr * expr * instr list)
+  | ForI of expr * instr list
   | AssertI of string
   | PushI of expr
   | PopI of expr

@@ -133,7 +133,10 @@ let alloc_module =
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec = Record.add "FUNC" funcaddr_iter Record.empty in
-  let func_inst_name = SubN (N "funcinst", "i") in
+  let store_name = N "s" in
+  let func_name' = N "func'" in
+
+  let index_access = IndexAccessE (PropE (NameE (N "s"), "FUNC"), NameE (N "i")) in
 
   (* Algorithm *)
   Algo (
@@ -148,12 +151,11 @@ let alloc_module =
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
-      ForeachI (
-        NameE func_inst_name,
-        PropE (NameE (N "s"), "FUNC"),
+      ForI (
+        PropE (NameE store_name, "FUNC"),
         [
-          LetI (PairE (NameE (N "_"), NameE (N "f")), NameE func_inst_name);
-          ReplaceI (NameE func_inst_name, PairE (NameE module_inst_name, NameE (N "f")))
+          LetI (PairE (NameE (N "_"), NameE func_name'), index_access);
+          ReplaceI (index_access, PairE (NameE module_inst_name, NameE func_name'))
         ]
       );
       ReturnI (Some (NameE module_inst_name))

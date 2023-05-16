@@ -308,12 +308,10 @@ let rec structured_string_of_instr depth = function
       ^ repeat indent depth ^ "Or\n"
       ^ structured_string_of_instrs (depth + 1) il2
       ^ repeat indent depth ^ ")"
-  | ForeachI (e1, e2, il) ->
-      "ForeachI (\n"
+  | ForI (e, il) ->
+      "ForI (\n"
       ^ repeat indent (depth + 1)
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
+      ^ structured_string_of_expr e
       ^ ":\n"
       ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
@@ -560,11 +558,10 @@ let rec string_of_instr index depth = function
         (string_of_instrs (depth + 1) il1)
         (repeat indent depth ^ or_index)
         (string_of_instrs (depth + 1) il2)
-  | ForeachI (e1, e2, il) ->
-      sprintf "%s Foreach %s in %s%s"
+  | ForI (e, il) ->
+      sprintf "%s For i in range |%s| in%s"
         (make_index index depth)
-        (string_of_expr e1)
-        (string_of_expr e2)
+        (string_of_expr e)
         (string_of_instrs (depth + 1) il)
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
   | PushI e ->

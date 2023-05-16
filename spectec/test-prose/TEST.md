@@ -591,9 +591,9 @@ alloc_module module
 1. Let MODULE(func*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
 3. Let moduleinst be { FUNC: funcaddr*; }.
-4. Foreach funcinst_i in s.FUNC
-  a. Let (_, f) be funcinst_i.
-  b. Replace funcinst_i with (moduleinst, f).
+4. For i in range |s.FUNC| in
+  a. Let (_, func') be s.FUNC[i].
+  b. Replace s.FUNC[i] with (moduleinst, func').
 5. Return moduleinst.
 
 alloc_func func
