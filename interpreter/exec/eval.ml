@@ -866,11 +866,8 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitElem (x, y),
-          Num (I32 n)
-            :: Num (I32 y_off)
-              :: Num (I32 i)
-                :: Ref Aggr.(ArrayRef (Array (t, fs)))
-                  :: vs' ->
+        Num (I32 n) :: Num (I32 s) ::
+          Num (I32 d) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
         let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
         if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
