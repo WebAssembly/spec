@@ -814,7 +814,7 @@ let rec step (c : config) : config =
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 i @@ e.at));
-            (admin_instr_of_value v e.at);
+            admin_instr_of_value v e.at;
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
             Plain (Const (I32 (I32.add i 1l) @@ e.at));
