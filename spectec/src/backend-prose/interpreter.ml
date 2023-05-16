@@ -344,6 +344,8 @@ and interp_algo algo args =
 
   interp_instrs init_env il
 
+
+
 (* Search AL Algorithm *)
 
 and call_algo name args =
@@ -359,7 +361,6 @@ and execute_wasm_instr winstr =
 and execute_wasm_instrs winstrs =
   try List.iter execute_wasm_instr winstrs with ExitCont -> () | _ -> ()
 
-(* TODO *)
 let execute wmodule =
 
   (* Instantiation *)
@@ -368,31 +369,11 @@ let execute wmodule =
   (* Invocation *)
   call_algo "invocation" [ IntV 0 ] |> ignore
 
-let test_module testcase =
-  let (name, wasm_module, expected_result) = testcase in
-  let module_construct = Construct.al_of_wasm_module wasm_module in
 
-  (* Print test name *)
-  print_endline name;
 
-  (* TODO *)
-  stack := [];
-  Testdata.store := Record.empty;
+(* Test interpreter *)
 
-  try
-    (* Execute *)
-    execute module_construct;
-
-    (* Check *)
-    let actual_result = List.hd !stack |> Testdata.string_of_result in
-    if actual_result = expected_result then print_endline "Ok\n"
-    else
-      "Fail!\n" ^ "Expected: " ^ expected_result ^ "\n" ^ "Actual: "
-      ^ actual_result ^ "\n" ^ string_of_stack !stack
-      |> print_endline
-  with e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n")
-
-let test name ast expected_result =
+let test name runner expected_result =
   (* Print test name *)
   print_endline name;
 
@@ -403,7 +384,7 @@ let test name ast expected_result =
 
   try
     (* Execute *)
-    execute_wasm_instrs ast;
+    runner ();
 
     (* Check *)
     let actual_result = List.hd !stack |> Testdata.string_of_result in
@@ -414,22 +395,46 @@ let test name ast expected_result =
       |> print_endline
   with e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n")
 
-let test_reference testcase =
-  let name, raw_ast, expected_result = testcase in
-  let ast = List.map Construct.al_of_wasm_instr raw_ast in
-  test name ast expected_result
+let test_module () =
 
-let test_wasm_value testcase =
-  let name, ast, expected_result = testcase in
-  test name ast expected_result
+  print_endline "** Test module **\n";
+
+  (* Construct Al *)
+  let f (name, raw, res) = (name, Construct.al_of_wasm_module raw, res) in
+  let al_testcases = List.map f Testdata.testcases_module in
+
+  (* test *)
+  let test_instr (name, wmodule, res) =
+    let runner () = execute wmodule in
+    test name runner res in
+
+  List.iter test_instr al_testcases
+
+let test_instrs () =
+
+  print_endline "** Test instrs **\n";
+
+  (* Construct Al *)
+  let f (name, raw, res) = (name, Construct.al_of_wasm_instrs raw, res) in
+  let al_testcases =
+    List.map f Testdata.testcases_reference @ Testdata.testcases_wasm_value in
+
+  (* test *)
+  let test_instr (name, winstrs, res) =
+    let runner () = execute_wasm_instrs winstrs in
+    test name runner res in
+
+  List.iter test_instr al_testcases
 
 (* Entry *)
 
 let interpret algos =
-  let test_module_semantics = false in
 
   algo_map := to_map algos;
-  print_endline "Manual algorithms\n";
+
+  (* Add manual algorithms *)
+  print_endline "** Manual algorithms **\n";
+
   algo_map :=
     List.fold_left
       (fun acc algo ->
@@ -438,7 +443,8 @@ let interpret algos =
         AlgoMap.add name algo acc)
       !algo_map Manual.manual_algos;
 
-  if test_module_semantics then List.iter test_module Testdata.module_testcases
-  else (
-    List.iter test_reference Testdata.testcases_reference;
-    List.iter test_wasm_value Testdata.testcases_wasm_value)
+  (* Test instrs *)
+  test_instrs ();
+
+  (* Test module *)
+  test_module ()

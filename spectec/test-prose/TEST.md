@@ -553,7 +553,7 @@ data.drop x
 1. Perform $with_data(x, []).
 
 == Interpret AL...
-Manual algorithms
+** Manual algorithms **
 
 br l
 1. If l is 0, then:
@@ -608,6 +608,8 @@ invocation funcaddr
 2. Let f be the activation of { } with arity 0.
 3. Push f to the stack.
 4. Execute (call_addr funcaddr).
+
+** Test instrs **
 
 binop
 Ok
@@ -674,6 +676,107 @@ Ok
 
 if_false
 Ok
+
+** Test module **
+
+binop
+Ok
+
+testop
+Ok
+
+relop i32
+Ok
+
+relop f32
+Ok
+
+nop
+Ok
+
+drop
+Ok
+
+select
+Ok
+
+local_set
+Fail!
+Expected: 8
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+local_get
+Fail!
+Expected: 7
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+local_tee
+Fail!
+Expected: 6
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+global_set
+Fail!
+Expected: 43
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+global_get1
+Fail!
+Expected: 5.2
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+global_get2
+Fail!
+Expected: 42
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+table_get
+Fail!
+Expected: null
+Actual: FrameV ({ })is not a wasm value.
+[Stack]
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+call_nop
+Ok
+
+call_add
+Fail!
+Expected: 3
+Actual: 2
+[Stack]
+(const i32 2)
+(const i32 1)
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+
+call_sum
+Fail!
+Expected: 55
+Actual: 10
+[Stack]
+(const i32 10)
+FrameV ({ })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 == Complete.
 ```

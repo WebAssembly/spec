@@ -458,4 +458,4 @@ let gen_module_testcase testcase =
   in
   (name, wasm_module, expected_result)
 
-let module_testcases = List.map gen_module_testcase testcases_reference
+let testcases_module = List.map gen_module_testcase testcases_reference

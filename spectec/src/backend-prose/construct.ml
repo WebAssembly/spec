@@ -43,6 +43,8 @@ let al_of_wasm_instr winstr =
   | Ast.Call i32 -> f_i32 "call" i32
   | _ -> failwith "Not implemented"
 
+let al_of_wasm_instrs winstrs = List.map al_of_wasm_instr winstrs
+
 (* Test Interpreter *)
 
 let al_of_wasm_func wasm_module wasm_func =
@@ -61,9 +63,7 @@ let al_of_wasm_func wasm_module wasm_func =
     ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2)) in
 
   (* Construct code *)
-  let code =
-    List.map al_of_wasm_instr wasm_func.it.Ast.body
-    |> Array.of_list in
+  let code = al_of_wasm_instrs wasm_func.it.Ast.body |> Array.of_list in
 
   ConstructV ("FUNC", [ftype; ListV [||]; ListV (code)])
 
