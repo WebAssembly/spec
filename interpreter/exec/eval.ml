@@ -768,7 +768,7 @@ let rec step (c : config) : config =
           vs', []
         else let exto =
           match Aggr.(type_of_array (Array (ts, fss))) with
-            | ArrayT (FieldT (_,st)) -> if is_packed_storage_type st then Some ZX else None
+            | ArrayT (FieldT (_, st)) -> if is_packed_storage_type st then Some ZX else None
         in
         if I32.le_u dst src then
           vs', List.map (Lib.Fun.flip (@@) e.at) [
