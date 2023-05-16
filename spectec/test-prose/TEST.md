@@ -99,7 +99,7 @@ with_tableext x r
 
 with_mem x i j b
 1. Let f be the current frame.
-2. Replace YetE (s.MEM_top[f.MODULE_frame.MEM_moduleinst[x]][i : j]) with b*.
+2. Replace s.MEM[f.MODULE.MEM[x]][i : j] with b*.
 
 with_memext x b
 1. Let f be the current frame.
@@ -422,11 +422,11 @@ load nt ?() n_A n_O
 2. Pop the value i32.CONST i from the stack.
 3. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-4. Let $bytes_($size(nt), c) be YetE ($mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]).
+4. Let $bytes_($size(nt), c) be $mem(0)[(i + n_O) : ($size(nt) / 8)].
 5. Push the value nt.CONST c to the stack.
 6. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
   a. Trap.
-7. Let $bytes_(n, c) be YetE ($mem(z, 0)[(i + n_O) : (n / 8)]).
+7. Let $bytes_(n, c) be $mem(0)[(i + n_O) : (n / 8)].
 8. Push the value nt.CONST c to the stack.
 
 memory.fill

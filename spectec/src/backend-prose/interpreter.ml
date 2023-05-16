@@ -141,26 +141,40 @@ and eval_expr env expr =
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
-  | PropE (e, str) -> (
-      match eval_expr env e with
-      | ModuleInstV m -> Record.find str m
-      | FrameV (_, r) -> Record.find str r
-      | StoreV s -> Record.find str !s
-      | _ -> failwith "Not a record")
   | ConcatE (e1, e2) -> (
       match (eval_expr env e1, eval_expr env e2) with
       | ListV v1, ListV v2 -> ListV (Array.append v1 v2)
       | _ -> failwith "Not a list")
   | ListE el -> ListV (Array.map (eval_expr env) el)
-  | IndexAccessE (e1, e2) -> (
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      match (v1, v2) with
-      | ListV l, IntV n -> Array.get l n
-      | _ ->
-          (* Due to AL validation unreachable *)
-          Printf.sprintf "Invalid index access %s" (string_of_expr expr)
-          |> failwith)
+  | AccessE (e, p) -> begin match p with
+      | IndexP e' ->
+        let v1 = eval_expr env e in
+        let v2 = eval_expr env e' in
+        begin match (v1, v2) with
+        | ListV l, IntV n -> Array.get l n
+        | _ ->
+            (* Due to AL validation unreachable *)
+            Printf.sprintf "Invalid index access %s" (string_of_expr expr)
+            |> failwith
+        end
+      | SliceP (e1, e2) ->
+        let v = eval_expr env e in
+        let v1 = eval_expr env e1 in
+        let v2 = eval_expr env e2 in
+        begin match (v, v1, v2) with
+        | ListV l, IntV n1, IntV n2 -> ListV (Array.sub l n1 n2)
+        | _ ->
+            (* Due to AL validation unreachable *)
+            Printf.sprintf "Invalid slice access %s" (string_of_expr expr)
+            |> failwith
+        end
+      | DotP str -> begin match eval_expr env e with
+        | ModuleInstV m -> Record.find str m
+        | FrameV (_, r) -> Record.find str r
+        | StoreV s -> Record.find str !s
+        | _ -> failwith "Not a record"
+        end
+      end
   | LabelE (e1, e2) -> (
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
@@ -279,7 +293,7 @@ and interp_instr env i =
   | ReturnI (Some e) ->
       let result = eval_expr env e in
       Env.set_result result env
-  | ReplaceI (IndexAccessE (e1, e2), e3) -> (
+  | ReplaceI (e1, IndexP e2, e3) -> (
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       let v3 = eval_expr env e3 in
@@ -289,7 +303,7 @@ and interp_instr env i =
           env
       | _ -> failwith "Invalid Replace instr")
   (* TODO *)
-  | ReplaceI (_, e) ->
+  | ReplaceI (_, _, e) ->
       (match Record.find "FUNC" !Testdata.store with
       | ListV l ->
           eval_expr env e |> Array.set l 0;

@@ -136,7 +136,9 @@ let alloc_module =
   let store_name = N "s" in
   let func_name' = N "func'" in
 
-  let index_access = IndexAccessE (PropE (NameE (N "s"), "FUNC"), NameE (N "i")) in
+  let base = AccessE (NameE (N "s"), DotP ("FUNC")) in
+  let index = IndexP (NameE (N "i")) in
+  let index_access = AccessE (base, index) in
 
   (* Algorithm *)
   Algo (
@@ -152,10 +154,10 @@ let alloc_module =
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
       ForI (
-        PropE (NameE store_name, "FUNC"),
+        AccessE (NameE store_name, DotP "FUNC"),
         [
           LetI (PairE (NameE (N "_"), NameE func_name'), index_access);
-          ReplaceI (index_access, PairE (NameE module_inst_name, NameE func_name'))
+          ReplaceI (base, index, PairE (NameE module_inst_name, NameE func_name'))
         ]
       );
       ReturnI (Some (NameE module_inst_name))
@@ -176,7 +178,7 @@ let alloc_func =
     "alloc_func",
     [ (NameE func_name, TopT) ],
     [
-      LetI (NameE addr_name, LengthE (PropE (NameE store_name, "FUNC")));
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "FUNC")));
       LetI (NameE dummy_module_inst, RecordE dummy_module_rec);
       LetI (NameE func_inst_name, PairE (NameE dummy_module_inst, NameE func_name));
       AppendI (NameE func_inst_name, NameE store_name, "FUNC");
@@ -203,7 +205,7 @@ let invocation =
     [
       LetI (
         NameE func_inst_name,
-        IndexAccessE (PropE (NameE store_name, "FUNC"), NameE funcaddr_name)
+        AccessE (AccessE (NameE store_name, DotP "FUNC"), IndexP (NameE funcaddr_name))
       );
       (* TODO *)
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));

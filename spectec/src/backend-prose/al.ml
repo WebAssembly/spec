@@ -87,10 +87,8 @@ type expr =
   | GetCurFrameE
   | FrameE of (expr * expr)
   | BitWidthE of expr
-  | PropE of (expr * string)
   | ListE of expr array
-  | IndexAccessE of (expr * expr)
-  | SliceAccessE of (expr * expr * expr)
+  | AccessE of (expr * path)
   | ForWhichE of cond
   | RecordE of expr record
   | TupE of expr list
@@ -110,6 +108,11 @@ type expr =
   | RefFuncAddrE of expr
   (* Yet *)
   | YetE of string
+
+and path =
+  | IndexP of expr
+  | SliceP of expr * expr
+  | DotP of string
 
 and cond =
   | NotC of cond
@@ -145,7 +148,7 @@ type instr =
   | InvokeI of expr
   | EnterI of (expr * expr)
   | ExecuteI of expr
-  | ReplaceI of (expr * expr)
+  | ReplaceI of (expr * path * expr)
   | JumpI of expr
   | PerformI of expr
   | ExitI of name

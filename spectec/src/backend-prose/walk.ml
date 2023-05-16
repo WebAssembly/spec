@@ -16,14 +16,12 @@ let rec walk_expr f e =
   | ArityE inner_e -> f_expr (ArityE (walk_expr f inner_e))
   | GetCurFrameE -> f_expr GetCurFrameE
   | FrameE (e1, e2) -> f_expr (FrameE (walk_expr f e1, walk_expr f e2))
-  | PropE (inner_e, s) -> f_expr (PropE (walk_expr f inner_e, s))
   | ConcatE (e1, e2) -> f_expr (ConcatE (walk_expr f e1, walk_expr f e2))
   | ListE el -> f_expr (ListE (Array.map (walk_expr f) el))
-  | IndexAccessE (e1, e2) ->
-      f_expr (IndexAccessE (walk_expr f e1, walk_expr f e2))
-  | RecordE r -> RecordE (Record.map (walk_expr f) r)
-  | TupE el -> TupE (List.map (walk_expr f) el)
-  | OptE e -> OptE (Option.map (walk_expr f) e)
+  | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
+  | RecordE r -> f_expr (RecordE (Record.map (walk_expr f) r))
+  | TupE el -> f_expr (TupE (List.map (walk_expr f) el))
+  | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
   | ConstE (e1, e2) -> f_expr (ConstE (walk_expr f e1, walk_expr f e2))
   | RefFuncAddrE inner_e -> f_expr (RefFuncAddrE (walk_expr f inner_e))
   | RefNullE n -> f_expr (RefNullE n)
@@ -36,6 +34,13 @@ let rec walk_expr f e =
       |> failwith
 
 and walk_exprs f = walk_expr f |> List.map
+
+and walk_path f p =
+  let f_path = (fun p -> p) in (* TODO *)
+  match p with
+  | IndexP e -> f_path (IndexP (walk_expr f e))
+  | SliceP (e1, e2) -> f_path (SliceP (walk_expr f e1, walk_expr f e2))
+  | DotP _ -> f_path p
 
 let rec walk_cond f c =
   let _, f_cond, _ = f in
@@ -70,7 +75,7 @@ let rec walk_instr f instr =
   | InvokeI e -> f_instr (InvokeI (walk_expr f e))
   | EnterI (e1, e2) -> f_instr (EnterI (walk_expr f e1, walk_expr f e2))
   | ExecuteI e -> f_instr (ExecuteI (walk_expr f e))
-  | ReplaceI (e1, e2) -> f_instr (ReplaceI (walk_expr f e1, walk_expr f e2))
+  | ReplaceI (e1, p, e2) -> f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
   | JumpI e -> f_instr (JumpI (walk_expr f e))
   | PerformI e -> f_instr (PerformI (walk_expr f e))
   | ExitI n -> f_instr (ExitI n)

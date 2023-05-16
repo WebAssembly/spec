@@ -156,24 +156,15 @@ let rec structured_string_of_expr = function
   | GetCurFrameE -> "GetCurFrameE"
   | FrameE _ -> "FrameE TODO"
   | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
-  | PropE (e, s) -> "PropE (" ^ structured_string_of_expr e ^ ", " ^ s ^ ")"
   | ListE el ->
       "ListE ("
       ^ string_of_array structured_string_of_expr "[" ", " "]" el
       ^ ")"
-  | IndexAccessE (e1, e2) ->
-      "IndexAccessE ("
-      ^ structured_string_of_expr e1
+  | AccessE (e, p) ->
+      "AccessE ("
+      ^ structured_string_of_expr e
       ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ")"
-  | SliceAccessE (e1, e2, e3) ->
-      "SliceAccessE ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ", "
-      ^ structured_string_of_expr e3
+      ^ structured_string_of_path p
       ^ ")"
   | ForWhichE cond -> "ForWhichE (" ^ structured_string_of_cond cond ^ ")"
   | RecordE _ -> "RecordE (TODO)"
@@ -217,6 +208,13 @@ let rec structured_string_of_expr = function
 
 and structured_string_of_field (n, e) =
   "(" ^ n ^ ", " ^ structured_string_of_expr e ^ ")"
+
+(* path*)
+
+and structured_string_of_path = function
+  | IndexP e -> sprintf "IndexP(%s)" (structured_string_of_expr e)
+  | SliceP (e1, e2) -> sprintf "SliceP(%s,%s)" (structured_string_of_expr e1) (structured_string_of_expr e2)
+  | DotP s -> sprintf "DotP(%s)" s
 
 (* condition *)
 
@@ -336,9 +334,11 @@ let rec structured_string_of_instr depth = function
       ^ structured_string_of_expr e2
       ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
-  | ReplaceI (e1, e2) ->
+  | ReplaceI (e1, p, e2) ->
       "ReplaceI ("
       ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_path p
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
@@ -467,13 +467,8 @@ and string_of_expr = function
       sprintf "the activation of %s with arity %s" (string_of_expr e2)
         (string_of_expr e1)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
-  | PropE (e, s) -> sprintf "%s.%s" (string_of_expr e) s
   | ListE el -> string_of_array string_of_expr "[" ", " "]" el
-  | IndexAccessE (e1, e2) ->
-      sprintf "%s[%s]" (string_of_expr e1) (string_of_expr e2)
-  | SliceAccessE (e1, e2, e3) ->
-      sprintf "%s[%s : %s]" (string_of_expr e1) (string_of_expr e2)
-        (string_of_expr e3)
+  | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE r -> string_of_record_expr r
   | TupE el -> string_of_list string_of_expr "(" ", " ")" el
@@ -496,6 +491,11 @@ and string_of_expr = function
   | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
   | RefFuncAddrE e -> sprintf "the value ref.funcaddr %s" (string_of_expr e)
   | YetE s -> sprintf "YetE (%s)" s
+
+and string_of_path = function
+  | IndexP e -> sprintf "[%s]" (string_of_expr e)
+  | SliceP (e1, e2) -> sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
+  | DotP s -> sprintf ".%s" s
 
 and string_of_cond = function
   | NotC (EqC (e1, e2)) ->
@@ -586,9 +586,9 @@ let rec string_of_instr index depth = function
         (string_of_expr e1) (string_of_expr e2)
   | ExecuteI e ->
       sprintf "%s Execute (%s)." (make_index index depth) (string_of_expr e)
-  | ReplaceI (e1, e2) ->
-      sprintf "%s Replace %s with %s." (make_index index depth)
-        (string_of_expr e1) (string_of_expr e2)
+  | ReplaceI (e1, p, e2) ->
+      sprintf "%s Replace %s%s with %s." (make_index index depth)
+        (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | JumpI e ->
       sprintf "%s Jump to %s." (make_index index depth) (string_of_expr e)
   | PerformI e ->
