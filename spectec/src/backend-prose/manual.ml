@@ -190,6 +190,11 @@ let invocation =
   let func_inst_name = N "funcinst" in
   let store_name = N "s" in
   let frame_name = N "f" in
+  let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
+  let frame_rec =
+    Record.empty
+    |> Record.add "LOCAL" (ListE [||])
+    |> Record.add "MODULE" (RecordE dummy_module_rec) in
 
   (* Algorithm *)
   Algo (
@@ -201,7 +206,7 @@ let invocation =
         IndexAccessE (PropE (NameE store_name, "FUNC"), NameE funcaddr_name)
       );
       (* TODO *)
-      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE Record.empty));
+      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
       ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]))
     ]

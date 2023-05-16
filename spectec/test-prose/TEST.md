@@ -605,7 +605,7 @@ alloc_func func
 
 invocation funcaddr
 1. Let funcinst be s.FUNC[funcaddr].
-2. Let f be the activation of { } with arity 0.
+2. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; }; } with arity 0.
 3. Push f to the stack.
 4. Execute (call_addr funcaddr).
 
@@ -703,51 +703,51 @@ Ok
 local_set
 Fail!
 Expected: 8
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 local_get
 Fail!
 Expected: 7
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 local_tee
 Fail!
 Expected: 6
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 global_set
 Fail!
 Expected: 43
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 global_get1
 Fail!
 Expected: 5.2
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 global_get2
 Fail!
 Expected: 42
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 table_get
 Fail!
 Expected: null
-Actual: FrameV ({ })is not a wasm value.
+Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
 [Stack]
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 call_nop
 Ok
@@ -759,7 +759,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 call_sum
 Fail!
@@ -767,7 +767,7 @@ Expected: 55
 Actual: 10
 [Stack]
 (const i32 10)
-FrameV ({ })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 == Complete.
 ```
