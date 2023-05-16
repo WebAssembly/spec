@@ -824,11 +824,7 @@ let rec step (c : config) : config =
           ]
 
       | ArrayInitData (x, y),
-          Num (I32 n)
-            :: Num (I32 y_off)
-              :: Num (I32 i)
-                :: Ref (NullRef _)
-                  :: vs' ->
+        Num _ :: Num _ :: Num _ :: Ref (NullRef _) :: vs' ->
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayInitData (x, y),
