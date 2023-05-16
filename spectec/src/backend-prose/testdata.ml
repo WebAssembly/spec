@@ -341,8 +341,10 @@ let br_zero =
                 WasmInstrV ("const", [ i32TV; IntV 52 ]);
               |];
           ] );
+      WasmInstrV ("const", [ i32TV; IntV 1 ]);
+      WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
     ],
-    "42" )
+    "43" )
 
 let br_succ =
   ( "br_succ",
@@ -368,8 +370,10 @@ let br_succ =
                     ] );
               |];
           ] );
+      WasmInstrV ("const", [ i32TV; IntV 1 ]);
+      WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
     ],
-    "42" )
+    "43" )
 
 let if_true =
   ( "if_true",
