@@ -252,7 +252,7 @@ Reference Instructions
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
-* Then the instruction is valid with type :math:`[\X{rt}'] \to [\I32]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
+* Then the instruction is valid with type :math:`[\X{rt}'] \to [\I32]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
 
 .. math::
    \frac{
@@ -332,7 +332,7 @@ Aggregate Reference Instructions
 
 * Let :math:`t^\ast` be the concatenation of all :math:`t_i`.
 
-* Then the instruction is valid with type :math:`[t^\ast] \to [(\REF~x)]`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~x)]`.
 
 .. math::
    \frac{
@@ -358,7 +358,7 @@ Aggregate Reference Instructions
 
 * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
 
-* The extension :math:`\sx` must be present of and only if :math:`t` is different from :math:`\storagetype`.
+* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packedtype>`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)] \to [t]`.
 
@@ -547,7 +547,7 @@ Aggregate Reference Instructions
 
 * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
 
-* The extension :math:`\sx` must be present of and only if :math:`t` is different from :math:`\storagetype`.
+* The extension :math:`\sx` must be present if and only if :math:`\storagetype` is a :ref:`packed type <syntax-packedtype>`.
 
 * Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32] \to [t]`.
 
@@ -622,12 +622,12 @@ Scalar Reference Instructions
 :math:`\I31GET\K{\_}\sx`
 ........................
 
-* The instruction is valid with type :math:`[(\REF~\I31)] \to [\I32]`.
+* The instruction is valid with type :math:`[(\REF~\NULL~\I31)] \to [\I32]`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstr \I31GET\K{\_}\sx : [(\REF~\I31)] \to [\I32]
+     C \vdashinstr \I31GET\K{\_}\sx : [(\REF~\NULL~\I31)] \to [\I32]
    }
 
 
