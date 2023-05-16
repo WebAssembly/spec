@@ -80,6 +80,12 @@ let config inst vs es =
 
 let plain e = Plain e.it @@ e.at
 
+let admin_instr_of_value (v : value) at : admin_instr' =
+  match v with
+  | Num n -> Plain (Const (n @@ at))
+  | Vec v -> Plain (VecConst (v @@ at))
+  | Ref r -> Refer r
+
 let is_jumping e =
   match e.it with
   | Trapping _ | Returning _ | ReturningInvoke _ | Breaking _ -> true
@@ -127,12 +133,6 @@ let drop n (vs : 'a stack) at =
   try Lib.List.drop n vs with Failure _ -> Crash.error at "stack underflow"
 
 let split n (vs : 'a stack) at = take n vs at, drop n vs at
-
-let admin_instr_of_value (v : value) at : admin_instr' =
-  match v with
-  | Num n -> Plain (Const (n @@ at))
-  | Vec v -> Plain (VecConst (v @@ at))
-  | Ref r -> Refer r
 
 let value_of_data_ind (seg : Data.data) (st : storage_type) (j : int) at =
   let bs = Data.bytes seg in
@@ -758,45 +758,45 @@ let rec step (c : config) : config =
         Num (I32 n) ::
           Num (I32 s) :: Ref Aggr.(ArrayRef (Array (ts, fss))) ::
           Num (I32 d) :: Ref Aggr.(ArrayRef (Array (td, fsd))) :: vs' ->
-        let src_bound = I64.add (I64_convert.extend_i32_u src) (I64_convert.extend_i32_u sz) in
+        let src_bound = I64.add (I64_convert.extend_i32_u s) (I64_convert.extend_i32_u n) in
         if I64.gt_u src_bound (I64_convert.extend_i32_u (Lib.List32.length fss)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else let dst_bound = I64.add (I64_convert.extend_i32_u dst) (I64_convert.extend_i32_u sz) in
+        else let dst_bound = I64.add (I64_convert.extend_i32_u d) (I64_convert.extend_i32_u n) in
         if I64.gt_u dst_bound (I64_convert.extend_i32_u (Lib.List32.length fsd)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if sz = 0l then
+        else if n = 0l then
           vs', []
         else let exto =
           match Aggr.(type_of_array (Array (ts, fss))) with
             | ArrayT (FieldT (_, st)) -> if is_packed_storage_type st then Some ZX else None
         in
-        if I32.le_u dst src then
+        if I32.le_u d s then
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (td, fsd))));
-            Plain (Const (I32 dst @@ e.at));
+            Plain (Const (I32 d @@ e.at));
             Refer (Aggr.(ArrayRef (Array (ts, fss))));
-            Plain (Const (I32 src @@ e.at));
+            Plain (Const (I32 s @@ e.at));
             Plain (ArrayGet (y, exto));
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (td, fsd))));
-            Plain (Const (I32 (I32.add dst 1l) @@ e.at));
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Refer (Aggr.(ArrayRef (Array (ts, fss))));
-            Plain (Const (I32 (I32.add src 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub sz 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayCopy (x, y));
           ]
         else (* d > s *)
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (td, fsd))));
-            Plain (Const (I32 (I32.add dst 1l) @@ e.at));
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
             Refer (Aggr.(ArrayRef (Array (ts, fss))));
-            Plain (Const (I32 (I32.add src 1l) @@ e.at));
-            Plain (Const (I32 (I32.sub sz 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
+            Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayCopy (x, y));
             Refer (Aggr.(ArrayRef (Array (td, fsd))));
-            Plain (Const (I32 dst @@ e.at));
+            Plain (Const (I32 d @@ e.at));
             Refer (Aggr.(ArrayRef (Array (ts, fss))));
-            Plain (Const (I32 src @@ e.at));
+            Plain (Const (I32 s @@ e.at));
             Plain (ArrayGet (y, exto));
             Plain (ArraySet x);
           ]
@@ -864,25 +864,25 @@ let rec step (c : config) : config =
       | ArrayInitElem (x, y),
         Num (I32 n) :: Num (I32 s) ::
           Num (I32 d) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
+        let bound = I64.add (I64_convert.extend_i32_u d) (I64_convert.extend_i32_u n) in
         if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else if elem_oob c.frame y y_off n then
+        else if elem_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
         else if n = 0l then
           vs', []
         else
           let seg = elem c.frame.inst y in
-          let v = Ref (Elem.load seg y_off)
+          let v = Ref (Elem.load seg s)
           in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.(ArrayRef (Array (t, fs))));
-            Plain (Const (I32 i @@ e.at));
+            Plain (Const (I32 d @@ e.at));
             admin_instr_of_value v e.at;
             Plain (ArraySet x);
             Refer (Aggr.(ArrayRef (Array (t, fs))));
-            Plain (Const (I32 (I32.add i 1l) @@ e.at));
-            Plain (Const (I32 (I32.add y_off 1l) @@ e.at));
+            Plain (Const (I32 (I32.add d 1l) @@ e.at));
+            Plain (Const (I32 (I32.add s 1l) @@ e.at));
             Plain (Const (I32 (I32.sub n 1l) @@ e.at));
             Plain (ArrayInitElem (x, y));
           ]
