@@ -149,7 +149,7 @@ type instr =
   | JumpI of expr
   | PerformI of expr
   | ExitI of name
-  | AppendI of (expr * string * expr)
+  | AppendI of (expr * expr * string)
   (* Yet *)
   | YetI of string
 

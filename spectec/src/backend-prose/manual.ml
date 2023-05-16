@@ -178,7 +178,7 @@ let alloc_func =
       LetI (NameE addr_name, LengthE (PropE (NameE store_name, "FUNC")));
       LetI (NameE dummy_module_inst, RecordE Record.empty);
       LetI (NameE func_inst_name, PairE (NameE dummy_module_inst, NameE func_name));
-      AppendI (NameE func_inst_name, "FUNC", NameE store_name);
+      AppendI (NameE func_inst_name, NameE store_name, "FUNC");
       ReturnI (Some (NameE addr_name))
     ]
   )

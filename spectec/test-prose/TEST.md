@@ -600,7 +600,7 @@ alloc_func func
 1. Let a be the length of s.FUNC.
 2. Let dummy_module_inst be { }.
 3. Let funcinst be (dummy_module_inst, func).
-4. Append funcinst to the FUNC of s.
+4. Append funcinst to the s.FUNC.
 5. Return a.
 
 invocation funcaddr
@@ -706,7 +706,6 @@ Expected: 8
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 local_get
 Fail!
@@ -714,7 +713,6 @@ Expected: 7
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 local_tee
 Fail!
@@ -722,7 +720,6 @@ Expected: 6
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 global_set
 Fail!
@@ -730,7 +727,6 @@ Expected: 43
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 global_get1
 Fail!
@@ -738,7 +734,6 @@ Expected: 5.2
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 global_get2
 Fail!
@@ -746,7 +741,6 @@ Expected: 42
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 table_get
 Fail!
@@ -754,7 +748,6 @@ Expected: null
 Actual: FrameV ({ })is not a wasm value.
 [Stack]
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 call_nop
 Ok
@@ -767,7 +760,6 @@ Actual: 2
 (const i32 2)
 (const i32 1)
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 call_sum
 Fail!
@@ -776,7 +768,6 @@ Actual: 10
 [Stack]
 (const i32 10)
 FrameV ({ })
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 == Complete.
 ```

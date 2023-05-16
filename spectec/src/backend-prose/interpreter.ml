@@ -315,9 +315,12 @@ and interp_instr env i =
       let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
       vals |> List.rev |> List.iter push;
       env
-  | AppendI (e1, s, NameE (N "s")) ->
+  | AppendI (e1, e2, s) ->
       let v1 = eval_expr env e1 in
-      Testdata.store := Record.add s (ListV [| v1 |]) !Testdata.store;
+      (match eval_expr env e2 with
+      | StoreV ref when Record.mem s !ref |> not ->
+          ref := Record.add s (ListV [| v1 |]) !ref
+      | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
       env
   | i -> structured_string_of_instr 0 i |> failwith
 
@@ -367,27 +370,13 @@ let execute wmodule =
 
 (* Test interpreter *)
 
-let test name runner expected_result =
-  (* Print test name *)
-  print_endline name;
-
-  (* Initialize *)
-  stack := [];
-  Testdata.get_frame_data () |> push;
-  Testdata.store := Testdata.get_store_data ();
-
-  try
-    (* Execute *)
-    runner ();
-
-    (* Check *)
+let check expected_result =
     let actual_result = List.hd !stack |> Testdata.string_of_result in
     if actual_result = expected_result then print_endline "Ok\n"
     else
       "Fail!\n" ^ "Expected: " ^ expected_result ^ "\n" ^ "Actual: "
       ^ actual_result ^ "\n" ^ string_of_stack !stack
       |> print_endline
-  with e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n")
 
 let test_module () =
 
@@ -398,11 +387,20 @@ let test_module () =
   let al_testcases = List.map f Testdata.testcases_module in
 
   (* test *)
-  let test_instr (name, wmodule, res) =
-    let runner () = execute wmodule in
-    test name runner res in
+  let test_module (name, wmodule, res) =
 
-  List.iter test_instr al_testcases
+    (* Print test name *)
+    print_endline name;
+
+    (* Initialize *)
+    stack := [];
+    Testdata.store := Record.empty;
+
+    (* Execute *)
+    try execute wmodule; check res with
+    | e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n") in
+
+  List.iter test_module al_testcases
 
 let test_instrs () =
 
@@ -415,8 +413,18 @@ let test_instrs () =
 
   (* test *)
   let test_instr (name, winstrs, res) =
-    let runner () = execute_wasm_instrs winstrs in
-    test name runner res in
+
+    (* Print test name *)
+    print_endline name;
+
+    (* Initialize *)
+    stack := [];
+    Testdata.get_frame_data () |> push;
+    Testdata.store := Testdata.get_store_data ();
+
+    (* execute *)
+    try execute_wasm_instrs winstrs; check res with
+    | e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n") in
 
   List.iter test_instr al_testcases
 
