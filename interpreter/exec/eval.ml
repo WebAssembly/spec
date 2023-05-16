@@ -187,6 +187,10 @@ let elem_oob frame x i n =
   I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
     (I64_convert.extend_i32_u (Elem.size (elem frame.inst x)))
 
+let array_oob x i n =
+  I64.gt_u (I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n))
+    (I64_convert.extend_i32_u (Lib.List32.length x))
+
 let rec step (c : config) : config =
   let vs, es = c.code in
   let e = List.hd es in
@@ -763,11 +767,9 @@ let rec step (c : config) : config =
         Num (I32 n) ::
           Num (I32 s) :: Ref Aggr.(ArrayRef (Array (ts, fss))) ::
           Num (I32 d) :: Ref Aggr.(ArrayRef (Array (td, fsd))) :: vs' ->
-        let src_bound = I64.add (I64_convert.extend_i32_u s) (I64_convert.extend_i32_u n) in
-        if I64.gt_u src_bound (I64_convert.extend_i32_u (Lib.List32.length fss)) then
+        if array_oob fss s n then
           vs', [Trapping "out of bounds array access" @@ e.at]
-        else let dst_bound = I64.add (I64_convert.extend_i32_u d) (I64_convert.extend_i32_u n) in
-        if I64.gt_u dst_bound (I64_convert.extend_i32_u (Lib.List32.length fsd)) then
+        else if array_oob fsd d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if n = 0l then
           vs', []
@@ -810,8 +812,7 @@ let rec step (c : config) : config =
         vs', [Trapping "null array reference" @@ e.at]
 
       | ArrayFill x, Num (I32 n) :: v :: Num (I32 i) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
-        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        if array_oob fs i n then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if n = 0l then
           vs', []
@@ -838,8 +839,7 @@ let rec step (c : config) : config =
               :: Num (I32 i)
                 :: Ref Aggr.(ArrayRef (Array (t, fs)))
                   :: vs' ->
-        let bound = I64.add (I64_convert.extend_i32_u i) (I64_convert.extend_i32_u n) in
-        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        if array_oob fs i n then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if data_oob c.frame y y_off n then
           vs', [Trapping (memory_error e.at Memory.Bounds) @@ e.at]
@@ -869,8 +869,7 @@ let rec step (c : config) : config =
       | ArrayInitElem (x, y),
         Num (I32 n) :: Num (I32 s) ::
           Num (I32 d) :: Ref Aggr.(ArrayRef (Array (t, fs))) :: vs' ->
-        let bound = I64.add (I64_convert.extend_i32_u d) (I64_convert.extend_i32_u n) in
-        if I64.gt_u bound (I64_convert.extend_i32_u (Lib.List32.length fs)) then
+        if array_oob fs d n then
           vs', [Trapping "out of bounds array access" @@ e.at]
         else if elem_oob c.frame y s n then
           vs', [Trapping (table_error e.at Table.Bounds) @@ e.at]
