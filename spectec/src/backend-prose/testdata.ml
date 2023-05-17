@@ -2,23 +2,33 @@ open Reference_interpreter
 open Source
 open Al
 
-(* Helper *)
+(** Helper **)
 let _get_module textual = match textual.it with
   | Script.Textual m -> m
   | _ -> failwith "Failed to get module"
 
+(* string -> Ast.module_ *)
 let string_to_module code =
   Parse.string_to_module code |> _get_module
 
+(* string -> Ast.module_ *)
 let file_to_module file_name =
   let lexbuf = Lexing.from_channel (open_in file_name) in
   Parse.parse file_name lexbuf Parse.Module |> snd |> _get_module
 
+(** Temporal hacks:
+ ** These are temporary helper functions for refactoring, and eventually should be removed **)
 (* Ast.module_ -> Ast.instr list *)
-(* This is a temporary helper function for refactoring, and eventually should be removed *)
 let module_to_instrs (m: Ast.module_) =
   (m.it.funcs |> List.hd).it.body
+(* string -> Ast.instr list *)
 let string_to_instrs code = code |> string_to_module |> module_to_instrs
+
+(* string -> Al.ConstructV("FUNC", ..) *)
+let string_to_func code =
+  let m = string_to_module code in
+  let f = m.it.funcs |> List.hd in
+  Construct.al_of_wasm_func m f
 
 (* Hardcoded Data *)
 
@@ -56,97 +66,61 @@ let get_func_insts_data () =
       (* nop *)
       PairV
         ( ModuleInstV module_inst,
-          ConstructV
-            ("FUNC", [ ArrowV (ListV [||], ListV [||]); ListV [||]; ListV [||] ])
+          "(module(func))" |> string_to_func
         );
       (* add *)
       PairV
         ( ModuleInstV module_inst,
-          ConstructV
-            ( "FUNC",
-              [
-                ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
-                ListV [||];
-                ListV
-                  [|
-                    WasmInstrV ("local.get", [ IntV 0 ]);
-                    WasmInstrV ("local.get", [ IntV 1 ]);
-                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                  |];
-              ] ) );
+          "(module(func (param i32 i32) (result i32)
+              (local.get 0)
+              (local.get 1)
+              (i32.add)
+            ))" |> string_to_func
+        );
       (* sum *)
       PairV
         ( ModuleInstV module_inst,
-          ConstructV
-            ( "FUNC",
-              [
-                ArrowV (ListV [| i32TV |], ListV [| i32TV |]);
-                ListV [||];
-                ListV
-                  [|
-                    WasmInstrV ("local.get", [ IntV 0 ]);
-                    WasmInstrV
-                      ( "if",
-                        [
-                          ArrowV (ListV [| i32TV |], ListV [| i32TV |]);
-                          ListV
-                            [|
-                              WasmInstrV ("local.get", [ IntV 0 ]);
-                              WasmInstrV ("local.get", [ IntV 0 ]);
-                              WasmInstrV ("const", [ i32TV; IntV 1 ]);
-                              WasmInstrV ("binop", [ i32TV; StringV "Sub" ]);
-                              WasmInstrV ("call", [ IntV 2 ]);
-                              WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                            |];
-                          ListV [| WasmInstrV ("const", [ i32TV; IntV 0 ]) |];
-                        ] );
-                  |];
-              ] ) );
+          "(module(func (param i32) (result i32)
+              (local.get 0)
+              (if (result i32) ( then
+                local.get 0
+                local.get 0
+                i32.const 1
+                i32.sub
+                call 2
+                i32.add
+              ) ( else
+                i32.const 0
+              ))
+            ))" |> string_to_func
+          );
       (* return_frame *)
       PairV
         ( ModuleInstV module_inst,
-          ConstructV
-            ( "FUNC",
-              [
-                ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
-                ListV [||];
-                ListV
-                  [|
-                    WasmInstrV ("local.get", [ IntV 0 ]);
-                    WasmInstrV ("local.get", [ IntV 1 ]);
-                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                    WasmInstrV ("return", []);
-                    WasmInstrV ("const", [ i32TV; IntV 1 ]);
-                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                  |];
-              ] ) );
+          "(module(func (param i32 i32) (result i32)
+              (local.get 0)
+              (local.get 1)
+              (i32.add)
+              (return)
+              (i32.const -1)
+              (i32.add)
+            ))" |> string_to_func
+        );
       (* return_label *)
       PairV
         ( ModuleInstV module_inst,
-          ConstructV
-            ( "FUNC",
-              [
-                ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
-                ListV [||];
-                ListV
-                  [|
-                    WasmInstrV ("local.get", [ IntV 0 ]);
-                    WasmInstrV ("local.get", [ IntV 1 ]);
-                    WasmInstrV
-                      ( "block",
-                        [
-                          ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
-                          ListV
-                            [|
-                              WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                              WasmInstrV ("return", []);
-                              WasmInstrV ("br", [ IntV 1 ]);
-                            |]
-                        ] );
-                    WasmInstrV ("const", [ i32TV; IntV 1 ]);
-                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
-                  |];
-              ] ) );
+          "(module(func (param i32 i32) (result i32)
+              (local.get 0)
+              (local.get 1)
+              (block (param i32 i32) (result i32)
+                i32.add
+                return
+                br 1
+              )
+              (i32.const -1)
+              (i32.add)
+            ))" |> string_to_func
+        );
     |]
 
 let get_global_insts_data () =

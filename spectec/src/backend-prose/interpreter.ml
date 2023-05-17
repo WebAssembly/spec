@@ -433,7 +433,7 @@ let test_instrs () =
   print_endline "** Test instrs **\n";
 
   (* Construct Al *)
-  let f (name, raw, res) = (name, Construct.al_of_wasm_instrs raw, res) in
+  let f (name, raw, res) = (name, Construct.al_of_wasm_instrs [] raw, res) in
   let al_testcases =
     List.map f Testdata.testcases_reference @ Testdata.testcases_wasm_value in
 
