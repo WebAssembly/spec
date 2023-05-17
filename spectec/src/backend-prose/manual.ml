@@ -68,6 +68,62 @@ let br =
             ] );
       ] )
 
+(* return *)
+(* DSL
+  rule Step_pure/return-frame:
+  ( FRAME_ n `{f} val'* val^n RETURN instr* )  ~>  val^n
+
+  rule Step_pure/return-label:
+  ( LABEL_ k `{instr'*} val* RETURN instr* )  ~>  val* RETURN
+*)
+(* Prose
+   return
+   1. Pop all values val''* from the stack.
+   2. If the top of the stack is frame, then:
+     a. Pop F from the stack.
+     b. Let n be the arity of F.
+     c. Push F to the stack.
+     d. Push val''* to the stack.
+     e. Pop val^n from the stack.
+     f. Pop all values val'* from the stack.
+     g. Assert: Due to validation, the frame F is now on the top of the stack.
+     h. Pop the frame from the stack.
+     i. Push val^n to the stack.
+   3. Else:
+     a. Pop L from the stack.
+     b. Push val''* to the stack.
+     c. Execute (return).
+*)
+
+let return =
+  Algo
+    ( "return",
+      [],
+      [
+        PopAllI (IterE (N "val''", List));
+        IfI (
+          TopC "frame",
+          (* return_frame *)
+          [
+            PopI (NameE (N "F"));
+            LetI (NameE (N "n"), ArityE (NameE (N "F")));
+            PushI (NameE (N "F"));
+            PushI (IterE (N "val''", List));
+            PopI (IterE (N "val", ListN (N "n")));
+            PopAllI (IterE (N "val'", List));
+            AssertI
+              "Due to validation, the frame F is now on the top of the stack";
+            PopI (NameE (N "the frame"));
+            PushI (IterE (N "val", ListN (N "n")));
+          ],
+          (* return_label *)
+          [
+            PopI (NameE (N "L"));
+            PushI (IterE (N "val''", List));
+            ExecuteI (WasmInstrE ("return", []));
+          ] );
+      ] )
+
 let instantiation =
   (* Name definition *)
   let module_name = N "module" in
@@ -199,4 +255,4 @@ let invocation =
   )
 
 
-let manual_algos = [ br; instantiation; alloc_module; alloc_func; invocation ]
+let manual_algos = [ br; return; instantiation; alloc_module; alloc_func; invocation ]

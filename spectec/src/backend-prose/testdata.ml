@@ -84,6 +84,51 @@ let get_func_insts_data () =
                         ] );
                   |];
               ] ) );
+      (* return_frame *)
+      PairV
+        ( ModuleInstV module_inst,
+          ConstructV
+            ( "FUNC",
+              [
+                ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
+                ListV [||];
+                ListV
+                  [|
+                    WasmInstrV ("local.get", [ IntV 0 ]);
+                    WasmInstrV ("local.get", [ IntV 1 ]);
+                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+                    WasmInstrV ("return", []);
+                    WasmInstrV ("const", [ i32TV; IntV 1 ]);
+                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+                  |];
+              ] ) );
+      (* return_label *)
+      PairV
+        ( ModuleInstV module_inst,
+          ConstructV
+            ( "FUNC",
+              [
+                ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
+                ListV [||];
+                ListV
+                  [|
+                    WasmInstrV ("local.get", [ IntV 0 ]);
+                    WasmInstrV ("local.get", [ IntV 1 ]);
+                    WasmInstrV 
+                      ( "block",
+                        [
+                          ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
+                          ListV
+                            [|
+                              WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+                              WasmInstrV ("return", []);
+                              WasmInstrV ("br", [ IntV 1 ]);
+                            |]
+                        ] ); 
+                    WasmInstrV ("const", [ i32TV; IntV 1 ]);
+                    WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
+                  |];
+              ] ) );
     |]
 
 let get_global_insts_data () =
@@ -288,6 +333,24 @@ let call_sum =
     ],
     "55" )
 
+let call_add_return_frame =
+  ( "call_add_return_frame",
+    [
+      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+      Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
+      Operators.call (i32 1 |> to_phrase) |> to_phrase;
+    ],
+    "3" )
+
+let call_add_return_label =
+  ( "call_add_return_label",
+    [
+      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
+      Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
+      Operators.call (i32 1 |> to_phrase) |> to_phrase;
+    ],
+    "3" )
+
 let testcases_reference =
   [
     binop;
@@ -307,6 +370,8 @@ let testcases_reference =
     call_nop;
     call_add;
     call_sum;
+    call_add_return_frame;
+    call_add_return_label;
   ]
 
 (* Hardcoded Wasm Instructions in WASM Values *)
