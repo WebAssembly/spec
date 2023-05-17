@@ -146,6 +146,10 @@ let rec instr (e : instr) =
   | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
   | ArrayGet (x, _) | ArraySet x -> types (idx x)
   | ArrayLen -> empty
+  | ArrayCopy (x, y) -> types (idx x) ++ types (idx y)
+  | ArrayFill x -> types (idx x)
+  | ArrayInitData (x, y) -> types (idx x) ++ datas (idx y)
+  | ArrayInitElem (x, y) -> types (idx x) ++ elems (idx y)
   | ExternConvert _ -> empty
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es

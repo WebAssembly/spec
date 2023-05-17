@@ -43,6 +43,8 @@ val match_val_type : context -> val_type -> val_type -> bool
 
 val match_result_type : context -> result_type -> result_type -> bool
 
+val match_storage_type : context -> storage_type -> storage_type -> bool
+
 val match_str_type : context -> str_type -> str_type -> bool
 val match_def_type : context -> def_type -> def_type -> bool
 

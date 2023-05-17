@@ -108,7 +108,7 @@ New abbreviations are introduced for reference types in binary and text format, 
   - `module ::= {..., types vec(<deftype>)}`
   - a `rec` definition defines a group of mutually recursive types that can refer to each other; it thereby defines several type indices at a time
   - a single type definition, as in Wasm before this proposal, is reinterpreted as a short-hand for a recursive group containing just one type
-  - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types. 
+  - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types.
 
 * `subtype` is a new category of type defining a single type, as a subtype of possible other types
   - `subtype ::= sub final? <typeidx>* <strtype>`
@@ -576,6 +576,57 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
   - `array.len : [(ref null array)] -> [i32]`
   - traps on `null`
 
+* `array.fill <typeidx>` fills a slice of an array with a given value
+  - `array.fill $t : [(ref null $t) i32 t i32] -> []`
+    - iff `expand($t) = array (mut t')`
+    - and `t = unpacked(t')`
+  - the 1st operand is the `array` to fill
+  - the 2nd operand is the `offset` into the array at which to begin filling
+  - the 3rd operand is the `value` with which to fill
+  - the 4th operand is the `size` of the filled slice
+  - traps if `array` is null or `offset + size > len(array)`
+
+* `array.copy <typeidx> <typeidx>` copies a sequence of elements between two arrays
+  - `array.copy $t1 $t2 : [(ref null $t1) i32 (ref null $t2) i32 i32] -> []`
+    - iff `expand($t1) = array (mut t1)`
+    - and `expand($t2) = array (mut? t2)`
+    - and `t2 <: t1`
+  - the 1st operand is the `dest` array that will be copied to
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `dest`
+  - the 3rd operand is the `src` array that will be copied from
+  - the 4th operand is the `src_offset` at which the copy will begin in `src`
+  - the 5th operand is the `size` of the copy
+  - traps if `dest` is null or `src` is null
+  - traps if `dest_offset + size > len(dest)` or `src_offset + size > len(src)`
+  - note: `dest` and `src` may be the same array and the source and destination
+    regions may overlap. This must be handled correctly just like it is for
+    `memory.copy`.
+
+* `array.init_elem <typeidx> <elemidx>` copies a sequence of elements from an element segment to an array
+  - `array.init_elem $t $e : [(ref null $t) i32 i32 i32] -> []`
+    - iff `expand($t) = array (mut t)`
+    - and `$e : rt`
+    - and `rt <: t`
+  - the 1st operand is the `array` to be initialized
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `array`
+  - the 3rd operand is the `src_offset` at which the copy will begin in `$e`
+  - the 4th operand is the `size` of the copy
+  - traps if `array` is null
+  - traps if `dest_offset + size > len(array)` or `src_offset + size > len($e)`
+
+* `array.init_data <typeidx> <dataidx>` copies a sequence of values from a data segment to an array
+  - `array.init_data $t $d : [(ref null $t) i32 i32 i32] -> []`
+    - iff `expand($t) = array (mut t)`
+    - and `t` is numeric, vector, or packed
+    - and `$d` is a defined data segment
+  - the 1st operand is the `array` to be initialized
+  - the 2nd operand is the `dest_offset` at which the copy will begin in `array`
+  - the 3rd operand is the `src_offset` at which the copy will begin in `$d`
+  - the 4th operand is the `size` of the copy in array slots
+  - note: The size of the source region is `size * |t|`. If `t` is a packed
+    type, the source is interpreted as packed in the same way.
+  - traps if `array` is null
+  - traps if `dest_offset + size > len(array)` or `src_offset + size * |t| > len($d)`
 
 #### Unboxed Scalars
 
@@ -750,7 +801,7 @@ The opcode for heap types is encoded as an `s33`.
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
 | 0xd5   | `ref.eq`        |            |
-| 0xd6   | `br_on_non_null` | |
+| 0xd6   | `br_on_non_null $l` | `$l : labelidx` |
 | 0xfb01 | `struct.new $t` | `$t : typeidx` |
 | 0xfb02 | `struct.new_default $t` | `$t : typeidx` |
 | 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |

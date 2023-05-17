@@ -73,39 +73,84 @@ Conventions
 
 
 
-.. index:: ! heap type, store, type identifier, ! substitution, ! closed type
+.. index:: ! heap type, store, type identifier, ! substitution, ! closed type, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
+.. _type-i31:
 .. _type-subst:
 .. _type-closed:
+.. _type-abstract:
+.. _type-concrete:
 .. _syntax-heaptype:
 
 Heap Types
 ~~~~~~~~~~
 
 *Heap types* classify objects in the runtime :ref:`store <store>`.
+There are three disjoint hierarchies of heap types:
+
+- *function types* classify :ref:`functions <syntax-func>`,
+- *aggregate types* classify dynamically allocated *managed* data, such as *structures*, *arrays*, or *unboxed scalars*,
+- *external types* classify *external* references possibly owned by the :ref:`embedder <embedder>`.
+
+The values from the latter two hierarchies are interconvertible by ways of the |EXTERNINTERNALIZE| and |EXTERNINTERNALIZE| instructions.
+That is, both type hierarchies are inhabited by an isomorphic set of values, but may have different, incompatible representations in practice.
 
 .. math::
    \begin{array}{llll}
    \production{heap type} & \heaptype &::=&
-     \FUNC ~|~ \EXTERN ~|~ \typeidx ~|~ \functype ~|~ \BOT \\
+     \FUNC ~|~ \NOFUNC \\&&|&
+     \EXTERN ~|~ \NOEXTERN \\&&|&
+     \ANY ~|~ \EQ ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
+     \typeidx ~|~ \deftype ~|~ \BOT \\
    \end{array}
 
-The type |FUNC| denotes the infinite union of all types of :ref:`functions <syntax-func>`, regardless of their concrete :ref:`function types <syntax-functype>`.
+A heap type is either *abstract* or *concrete*.
 
-The type |EXTERN| denotes the infinite union of all objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
+The abstract type |FUNC| denotes the common supertype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+Dually, the type |NOFUNC| denotes the common subtype of all :ref:`function types <syntax-functype>`, regardless of their concrete definition.
+This type has no values.
 
-A *concrete* heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
+The abstract type |EXTERN| denotes the common supertype of all external references received through the :ref:`embedder <embedder>`.
+This type has no concrete subtypes.
+Dually, the type |NOEXTERN| denotes the common subtype of all forms of external references.
+This type has no values.
 
-A concrete heap type can also consist of a :ref:`function type <syntax-functype>` directly.
+The abstract type |ANY| denotes the common supertype of all aggregate types, as well as possibly abstract values produced by *internalizing* an external reference of type |EXTERN|.
+Dually, the type |NONE| denotes the common subtype of all forms of aggregate types.
+This type has no values.
+
+The abstract type |EQ| is a subtype of |ANY| that includes all types for which references can be compared, i.e., aggregate values and |I31|.
+
+The abstract types |STRUCT| and |ARRAY| denote the common supertypes of all :ref:`structure <syntax-structtype>` and :ref:`array <syntax-arraytype>` aggregates, respectively.
+
+The abstract type |I31| denotes *unboxed scalars*, that is, integers injected into references.
+Their observable value range is limited to 31 bits.
+
+.. note::
+   An |I31| is not actually allocated in the store,
+   but represented in a way that allows them to be mixed with actual references into the store without ambiguity.
+   Engines need to perform some form of *pointer tagging* to achieve this,
+   which is why 1 bit is reserved.
+
+
+A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
+
+A concrete heap type can also consist of a :ref:`defined type <syntax-deftype>` directly.
 However, this form is representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, such that it cannot be used in a program;
 it only occurs during :ref:`validation <valid>` or :ref:`execution <exec>`, as the result of *substituting* a :ref:`type index <syntax-typeidx>` with its definition.
 
-The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all other heap types.
+A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>`,
+i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>`.
+
+The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all heap types.
 By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
 it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
 
-A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>`,
-i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>`.
+.. note::
+   Although the types |NONE|, |NOFUNC|, and |NOEXTERN| are not inhabited by any values,
+   they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
+   For example, :math:`(\REF~\NULL~\NOFUNC)` is the generic type of a null reference compatible with all function reference types.
+
 
 .. _notation-subst:
 
@@ -263,6 +308,8 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
 
 Defined Types
 ~~~~~~~~~~~~~
+
+.. todo:: structured types, recrusive types, etc.
 
 *Defined types* are the ones that can be defined in a :ref:`module <syntax-module>`, assigning them a :ref:`type index <syntax-typeidx>`.
 
