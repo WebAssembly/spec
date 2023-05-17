@@ -2,6 +2,18 @@ open Reference_interpreter
 open Source
 open Al
 
+(* Helper *)
+let _get_module textual = match textual.it with
+  | Script.Textual m -> m
+  | _ -> failwith "Failed to get module"
+
+let string_to_module code =
+  Parse.string_to_module code |> _get_module
+
+let file_to_module file_name =
+  let lexbuf = Lexing.from_channel (open_in file_name) in
+  Parse.parse file_name lexbuf Parse.Module |> snd |> _get_module
+
 (* Hardcoded Data *)
 
 let to_phrase x = x @@ no_region
@@ -454,8 +466,8 @@ let if_true =
                 WasmInstrV ("const", [ i32TV; IntV 2 ]);
                 WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
               |];
-            ListV 
-              [| 
+            ListV
+              [|
                 WasmInstrV ("const", [ i32TV; IntV 3 ]);
                 WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
               |];
@@ -477,8 +489,8 @@ let if_false =
                 WasmInstrV ("const", [ i32TV; IntV 2 ]);
                 WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
               |];
-            ListV 
-              [| 
+            ListV
+              [|
                 WasmInstrV ("const", [ i32TV; IntV 3 ]);
                 WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
               |];
