@@ -37,6 +37,8 @@ let read_field fld exto =
   | PackField (sz, ir), Some Pack.SX -> Num (I32 (extend_s sz !ir))
   | _, _ -> failwith "read_field"
 
+let array_length (Array (_, fs)) = Lib.List32.length fs
+
 
 let alloc_struct dt vs =
   let StructT fts = as_struct_str_type (expand_def_type dt) in
