@@ -72,27 +72,24 @@ let br =
 (* DSL
   rule Step_pure/return-frame:
   ( FRAME_ n `{f} val'* val^n RETURN instr* )  ~>  val^n
-
   rule Step_pure/return-label:
   ( LABEL_ k `{instr'*} val* RETURN instr* )  ~>  val* RETURN
+  Note that WASM validation step (in the formal spec using evaluation context) 
+  assures that there are 
+  at least n values on the top of the stack before return.
 *)
 (* Prose
    return
-   1. Pop all values val''* from the stack.
-   2. If the top of the stack is frame, then:
-     a. Pop F from the stack.
-     b. Let n be the arity of F.
-     c. Push F to the stack.
-     d. Push val''* to the stack.
-     e. Pop val^n from the stack.
-     f. Pop all values val'* from the stack.
-     g. Assert: Due to validation, the frame F is now on the top of the stack.
-     h. Pop the frame from the stack.
-     i. Push val^n to the stack.
-   3. Else:
-     a. Pop L from the stack.
-     b. Push val''* to the stack.
-     c. Execute (return).
+    1. Let F be the current frame.
+    2. Let n be the arity of F.
+    3. Assert: Due to validation, there are at least n values on the top of the stack.
+    4. Pop val^n from the stack.
+    5. Assert: Due to validation, the stack contains at least one frame.
+    6. While not the top of the stack is frame, do:
+      a. Pop the top element from the stack.
+    7. Assert: The top of the stack is the frame F.
+    8. Pop the frame from the stack.
+    9. Push val^n to the stack.
 *)
 
 let return =
@@ -100,28 +97,17 @@ let return =
     ( "return",
       [],
       [
-        PopAllI (IterE (N "val''", List));
-        IfI (
-          TopC "frame",
-          (* return_frame *)
-          [
-            PopI (NameE (N "F"));
-            LetI (NameE (N "n"), ArityE (NameE (N "F")));
-            PushI (NameE (N "F"));
-            PushI (IterE (N "val''", List));
-            PopI (IterE (N "val", ListN (N "n")));
-            PopAllI (IterE (N "val'", List));
-            AssertI
-              "Due to validation, the frame F is now on the top of the stack";
-            PopI (NameE (N "the frame"));
-            PushI (IterE (N "val", ListN (N "n")));
-          ],
-          (* return_label *)
-          [
-            PopI (NameE (N "L"));
-            PushI (IterE (N "val''", List));
-            ExecuteI (WasmInstrE ("return", []));
-          ] );
+        LetI (NameE (N "F"), GetCurFrameE);
+        LetI (NameE (N "n"), ArityE (NameE (N "F")));
+        AssertI
+          "Due to validation, there are at least n values on the top of the stack";
+        PopI (IterE (N "val", ListN (N "n")));
+        AssertI
+          "Due to validation, the stack contains at least one frame";
+        WhileI (NotC (TopC "frame"), [ PopI (NameE (N "the top element")) ]);
+        AssertI "The top of the stack is the frame F";
+        PopI (NameE (N "the frame"));
+        PushI (IterE (N "val", ListN (N "n")));
       ] )
 
 let instantiation =

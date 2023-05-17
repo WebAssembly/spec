@@ -568,14 +568,23 @@ br l
   h. Push val^n to the stack.
   i. Jump to the continuation of L.
 2. Else:
-  a. Let val* be [].
-  b. While the top of the stack is value, do:
-    1) Pop val' from the stack.
-    2) Let val* be [val'] ++ val*.
-  c. Assert: Due to validation, the label L is now on the top of the stack.
-  d. Pop the label from the stack.
-  e. Push val* to the stack.
-  f. Execute (br (l - 1)).
+  a. Pop all values val* from the stack.
+  b. Assert: Due to validation, the label L is now on the top of the stack.
+  c. Pop the label from the stack.
+  d. Push val* to the stack.
+  e. Execute (br (l - 1)).
+
+return
+1. Let F be the current frame.
+2. Let n be the arity of F.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Pop val^n from the stack.
+5. Assert: Due to validation, the stack contains at least one frame.
+6. While not the top of the stack is frame, do:
+  a. Pop the top element from the stack.
+7. Assert: The top of the stack is the frame F.
+8. Pop the frame from the stack.
+9. Push val^n to the stack.
 
 instantiation module
 1. Let moduleinst_init be ModuleInstV (TODO).
@@ -660,6 +669,12 @@ call_add
 Ok
 
 call_sum
+Ok
+
+call_add_return_frame
+Ok
+
+call_add_return_label
 Ok
 
 block
@@ -767,6 +782,24 @@ Expected: 55
 Actual: 10
 [Stack]
 (const i32 10)
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+
+call_add_return_frame
+Fail!
+Expected: 3
+Actual: 2
+[Stack]
+(const i32 2)
+(const i32 1)
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+
+call_add_return_label
+Fail!
+Expected: 3
+Actual: 2
+[Stack]
+(const i32 2)
+(const i32 1)
 FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
 == Complete.
