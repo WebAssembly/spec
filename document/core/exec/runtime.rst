@@ -7,11 +7,15 @@ Runtime Structure
 :ref:`Store <store>`, :ref:`stack <stack>`, and other *runtime structure* forming the WebAssembly abstract machine, such as :ref:`values <syntax-val>` or :ref:`module instances <syntax-moduleinst>`, are made precise in terms of additional auxiliary syntax.
 
 
-.. index:: ! value, number, reference, constant, number type, vector type, reference type, ! host address, value type, integer, floating-point, vector number, ! default value
+.. index:: ! value, number, reference, constant, number type, vector type, reference type, ! host address, value type, integer, floating-point, vector number, ! default value, unboxed scalar, structure, array, external reference
    pair: abstract syntax; value
 .. _syntax-num:
 .. _syntax-vecc:
 .. _syntax-ref:
+.. _syntax-ref.i31:
+.. _syntax-ref.struct:
+.. _syntax-ref.array:
+.. _syntax-ref.host:
 .. _syntax-ref.extern:
 .. _syntax-val:
 .. _syntax-null:
@@ -26,8 +30,12 @@ In order to avoid ambiguities, values are therefore represented with an abstract
 It is convenient to reuse the same notation as for the |CONST| :ref:`instructions <syntax-const>` and |REFNULL| producing them.
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
-They either are *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
-or *external references* pointing to an uninterpreted form of :ref:`extern address <syntax-externaddr>` that can be defined by the :ref:`embedder <embedder>` to represent its own objects.
+They either are *scalar references*, containing a 31-bit :ref:`integer <syntax-int>`,
+*structure references*, pointing to a specific :ref:`structure address <syntax-structaddr>`,
+*array references*, pointing to a specific :ref:`array address <syntax-arrayaddr>`,
+*function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
+or *host references* pointing to an uninterpreted form of :ref:`host address <syntax-hostaddr>` defined by the :ref:`embedder <embedder>`.
+Any of the aformentioned references can furthermore be wrapped up as an *external reference*.
 
 .. math::
    \begin{array}{llcl}
@@ -40,8 +48,12 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
      \V128.\CONST~\i128 \\
    \production{reference} & \reff &::=&
      \REFNULL~t \\&&|&
+     \REFI31~\u31 \\&&|&
+     \REFSTRUCTADDR~\structaddr \\&&|&
+     \REFARRAYADDR~\arrayaddr \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
-     \REFEXTERNADDR~\externaddr \\
+     \REFHOSTADDR~\hostaddr \\&&|&
+     \REFEXTERN~\reff \\
    \production{value} & \val &::=&
      \num ~|~ \vecc ~|~ \reff \\
    \end{array}
@@ -88,7 +100,7 @@ It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-tr
    \end{array}
 
 
-.. index:: ! store, type instance, function instance, table instance, memory instance, global instance, module, allocation
+.. index:: ! store, type instance, function instance, table instance, memory instance, global instance, module, allocation, structure instance, array instance
    pair: abstract syntax; store
 .. _syntax-store:
 .. _store:
@@ -97,7 +109,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, :ref:`data segments <syntax-datainst>`, and :ref:`structures <syntax-structinst>` or :ref:`arrays <syntax-arrayinst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
@@ -112,7 +124,9 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \SMEMS & \meminst^\ast, \\
      \SGLOBALS & \globalinst^\ast, \\
      \SELEMS & \eleminst^\ast, \\
-     \SDATAS & \datainst^\ast ~\} \\
+     \SDATAS & \datainst^\ast, \\
+     \SSTRUCTS & \structinst^\ast, \\
+     \SARRAYS & \arrayinst^\ast ~\}
      \end{array}
    \end{array}
 
@@ -128,13 +142,15 @@ Convention
 * The meta variable :math:`S` ranges over stores where clear from context.
 
 
-.. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, embedder
+.. index:: ! address, store, function instance, table instance, memory instance, global instance, element instance, data instance, structure instance, array instance, embedder, host
    pair: abstract syntax; function address
    pair: abstract syntax; table address
    pair: abstract syntax; memory address
    pair: abstract syntax; global address
    pair: abstract syntax; element address
    pair: abstract syntax; data address
+   pair: abstract syntax; structure address
+   pair: abstract syntax; array address
    pair: abstract syntax; host address
    pair: function; address
    pair: table; address
@@ -142,6 +158,8 @@ Convention
    pair: global; address
    pair: element; address
    pair: data; address
+   pair: structure; address
+   pair: array; address
    pair: host; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
@@ -149,13 +167,15 @@ Convention
 .. _syntax-globaladdr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
-.. _syntax-externaddr:
+.. _syntax-structaddr:
+.. _syntax-arrayaddr:
+.. _syntax-hostaddr:
 .. _syntax-addr:
 
 Addresses
 ~~~~~~~~~
 
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, and :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, :ref:`data instances <syntax-datainst>` and :ref:`structure <syntax-structinst>` or :ref:`array instances <syntax-arrayinst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
@@ -175,7 +195,11 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
      \addr \\
    \production{data address} & \dataaddr &::=&
      \addr \\
-   \production{extern address} & \externaddr &::=&
+   \production{structure address} & \structaddr &::=&
+     \addr \\
+   \production{array address} & \arrayaddr &::=&
+     \addr \\
+   \production{host address} & \hostaddr &::=&
      \addr \\
    \end{array}
 
@@ -200,6 +224,8 @@ even where this identity is not observable from within WebAssembly code itself
 .. _free-globaladdr:
 .. _free-elemaddr:
 .. _free-dataaddr:
+.. _free-structaddr:
+.. _free-arrayaddr:
 .. _free-localaddr:
 .. _free-labeladdr:
 .. _free-addr:
@@ -436,6 +462,61 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
+.. index:: ! structure instance, ! array instance, structure type, array type, ! field value, ! packed value
+   pair: abstract syntax; field value
+   pair: abstract syntax; packed value
+   pair: abstract syntax; structure instance
+   pair: abstract syntax; array instance
+   pair: structure; instance
+   pair: array; instance
+.. _syntax-fieldval:
+.. _syntax-packedval:
+.. _syntax-structinst:
+.. _syntax-arrayinst:
+
+Structure and Array Instances
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A *structure instance* is the runtime representation of a heap object allocated from a :ref:`structure type <syntax-structtype>`.
+Likewise, an *array instance* is the runtime representation of a heap object allocated from an :ref:`array type <syntax-arraytype>`.
+Both record their respective type and hold a vector of the values of their *fields*.
+
+.. math::
+   \begin{array}{llcl}
+   \production{structure instance} & \structinst &::=&
+     \{ \SITYPE~\structtype, \SIFIELDS~\vec(\fieldval) \} \\
+   \production{array instance} & \arrayinst &::=&
+     \{ \AITYPE~\arraytype, \AIFIELDS~\vec(\fieldval) \} \\
+   \production{field value} & \fieldval &::=&
+     \val ~|~ \packedval \\
+   \production{packed value} & \packedval &::=&
+     \I8PACK~\u8 ~|~ \I16PACK~\u16 \\
+   \end{array}
+
+
+.. _aux-packval:
+.. _aux-unpackval:
+
+Conventions
+...........
+
+* Conversion of a regular :ref:`value <syntax-val>` to a :ref:`field value <syntax-fieldval>` is defined as follows:
+
+  .. math::
+     \begin{array}{@{}lcl}
+     \packval_{\valtype}(\val) &=& \val \\
+     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype\K{.PACK}~(\wrap_{32,|\packtype|}(i))
+     \end{array}
+
+* The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
+
+  .. math::
+     \begin{array}{@{}lcl}
+     \unpackval_{\valtype}(\val) &=& \val \\
+     \unpackval^{\sx}_{\packedtype}(\packedtype\K{.PACK}~i) &=& \I32.\CONST~(\extend^{\sx}_{|\packedtype|,32}(i))
+     \end{array}
+
+
 .. index:: ! stack, ! frame, ! label, instruction, store, activation, function, call, local, module instance
    pair: abstract syntax; frame
    pair: abstract syntax; label
@@ -552,8 +633,12 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
    \production{administrative instruction} & \instr &::=&
      \dots \\ &&|&
      \TRAP \\ &&|&
-     \REFFUNCADDR~\funcaddr \\ &&|&
-     \REFEXTERNADDR~\externaddr \\ &&|&
+     \REFI31~\u31 \\&&|&
+     \REFSTRUCTADDR~\structaddr \\&&|&
+     \REFARRAYADDR~\arrayaddr \\&&|&
+     \REFFUNCADDR~\funcaddr \\&&|&
+     \REFHOSTADDR~\hostaddr \\&&|&
+     \REFEXTERN~\reff \\
      \INVOKE~\funcaddr \\ &&|&
      \RETURNINVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
@@ -563,7 +648,11 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
-The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax-ref.func>`. Similarly, |REFEXTERNADDR| represents :ref:`external references <syntax-ref.extern>`.
+The |REFI31| instruction represents :ref:`unboxed scalar <syntax-ref.i31>` reference values,
+|REFSTRUCTADDR| and |REFARRAYADDR| represent :ref:`structure <syntax-ref.struct>` and :ref:`array <syntax-ref.array>` reference values, respectively,
+and |REFFUNCADDR| instruction represents :ref:`function reference <syntax-ref.func>` values.
+Similarly, |REFHOSTADDR| represents :ref:`host references <syntax-ref.host>`
+and |REFEXTERN| represents any externalized reference.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.

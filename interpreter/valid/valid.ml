@@ -759,7 +759,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     let ArrayT (FieldT (mutd, std)) = array_type c x in
     let ArrayT (FieldT (_muts, sts)) = array_type c y in
     require (mutd = Var) e.at "destination array is immutable";
-    require (match_storage_type [] sts std) e.at "array types do not match";
+    require (match_storage_type c.types sts std) e.at "array types do not match";
     [RefT (Null, DefHT (type_ c x)); NumT I32T; RefT (Null, DefHT (type_ c y)); NumT I32T; NumT I32T] --> [], []
 
   | ArrayFill x ->
@@ -781,7 +781,7 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : infer_in
     let ArrayT (FieldT (mut, st)) = array_type c x in
     require (mut = Var) e.at "array is immutable";
     let rt = elem c y in
-    require (match_val_type [] (RefT rt) (unpacked_storage_type st)) x.at
+    require (match_val_type c.types (RefT rt) (unpacked_storage_type st)) x.at
       ("type mismatch: element segment's type " ^ string_of_ref_type rt ^
        " does not match array's field type " ^ string_of_field_type (FieldT (mut, st)));
     [RefT (Null, DefHT (type_ c x)); NumT I32T; NumT I32T; NumT I32T] --> [], []

@@ -103,7 +103,7 @@ NaN values have a *payload* that describes the mantissa bits in the underlying :
 No distinction is made between signalling and quiet NaNs.
 
 .. math::
-   \begin{array}{llcll}
+   \begin{array}{llrll}
    \production{floating-point value} & \fN &::=&
      {+} \fNmag ~|~ {-} \fNmag \\
    \production{floating-point magnitude} & \fNmag &::=&
@@ -170,7 +170,7 @@ Names
 *Names* are sequences of *characters*, which are *scalar values* as defined by |Unicode|_ (Section 2.4).
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llrlll}
    \production{name} & \name &::=&
      \char^\ast \qquad\qquad (\iff |\utf8(\char^\ast)| < 2^{32}) \\
    \production{character} & \char &::=&
