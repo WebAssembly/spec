@@ -68,6 +68,7 @@ let rec walk_instr f instr =
   | AssertI s -> f_instr (AssertI s)
   | PushI e -> f_instr (PushI (walk_expr f e))
   | PopI e -> f_instr (PopI (walk_expr f e))
+  | PopAllI e -> f_instr (PopAllI (walk_expr f e))
   | LetI (n, e) -> f_instr (LetI (n, walk_expr f e))
   | TrapI -> f_instr TrapI
   | NopI -> f_instr NopI

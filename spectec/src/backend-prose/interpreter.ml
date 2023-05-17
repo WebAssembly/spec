@@ -262,6 +262,18 @@ and interp_instr env i =
               env |> Env.add nt ty |> Env.add name v
           | h, NameE name -> Env.add name h env
           | _ -> failwith "Invalid pop"))
+  | PopAllI e -> (
+    match e with
+    | IterE (name, List) -> 
+      let rec pop_value vs = (match !stack with
+      | h :: _  -> (match h with
+        | WasmInstrV ("const", _) -> pop_value (pop () :: vs)
+        | _ -> vs)
+      | _ -> vs) 
+      in
+      let vs = pop_value [] in
+      Env.add name (ListV (Array.of_list vs)) env
+    | _ -> failwith "Invalid pop")
   | LetI (pattern, e) -> (
       let v = eval_expr env e in
       match (pattern, v) with

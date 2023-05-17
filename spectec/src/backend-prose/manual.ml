@@ -27,14 +27,11 @@ open Al
        h. Push val^n to the stack.
        i. Jump to the continuation of L.
      2. Else:
-       a. Let val* be [].
-       b. While the top of the stack is value, do:
-         1) Pop val' from the stack.
-         2) Let val* be [val'] ++ val*.
-       c. Assert: Due to validation, the label L is now on the top of the stack.
-       d. Pop the label from the stack.
-       e. Push val* to the stack.
-       f. Execute (br (l - 1)).
+       a. Pop all values val* from the stack.
+       b. Assert: Due to validation, the label L is now on the top of the stack.
+       c. Pop the label from the stack.
+       d. Push val* to the stack.
+       e. Execute (br (l - 1)).
 *)
 
 let br =
@@ -61,20 +58,7 @@ let br =
             ],
             (* br_succ *)
             [
-              (* A temporary hack to bind the popped values to val^*,
-                 in a while loop, it pops a value, binds it to val',
-                 then appends it to val^* *)
-              LetI (IterE (N "val", List), ValueE (ListV [||]));
-              WhileI
-                ( TopC "value",
-                  [
-                    PopI (NameE (N "val'"));
-                    LetI
-                      ( IterE (N "val", List),
-                        ConcatE
-                          (ListE [| NameE (N "val'") |], IterE (N "val", List))
-                      );
-                  ] );
+              PopAllI (IterE (N "val", List));
               AssertI
                 "Due to validation, the label L is now on the top of the stack";
               PopI (NameE (N "the label"));

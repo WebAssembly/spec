@@ -316,6 +316,7 @@ let rec structured_string_of_instr depth = function
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
+  | PopAllI e -> "PopAllI (" ^ structured_string_of_expr e ^ ")" 
   | LetI (n, e) ->
       "LetI ("
       ^ structured_string_of_expr n
@@ -569,6 +570,9 @@ let rec string_of_instr index depth = function
         (string_of_expr e)
   | PopI e ->
       sprintf "%s Pop %s from the stack." (make_index index depth)
+        (string_of_expr e)
+  | PopAllI e ->
+      sprintf "%s Pop all values %s from the stack." (make_index index depth)
         (string_of_expr e)
   | LetI (n, e) ->
       sprintf "%s Let %s be %s." (make_index index depth) (string_of_expr n)
