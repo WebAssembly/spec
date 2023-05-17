@@ -14,6 +14,12 @@ let file_to_module file_name =
   let lexbuf = Lexing.from_channel (open_in file_name) in
   Parse.parse file_name lexbuf Parse.Module |> snd |> _get_module
 
+(* Ast.module_ -> Ast.instr list *)
+(* This is a temporary helper function for refactoring, and eventually should be removed *)
+let module_to_instrs (m: Ast.module_) =
+  (m.it.funcs |> List.hd).it.body
+let string_to_instrs code = code |> string_to_module |> module_to_instrs
+
 (* Hardcoded Data *)
 
 let to_phrase x = x @@ no_region
@@ -126,7 +132,7 @@ let get_func_insts_data () =
                   [|
                     WasmInstrV ("local.get", [ IntV 0 ]);
                     WasmInstrV ("local.get", [ IntV 1 ]);
-                    WasmInstrV 
+                    WasmInstrV
                       ( "block",
                         [
                           ArrowV (ListV [| i32TV; i32TV |], ListV [| i32TV |]);
@@ -136,7 +142,7 @@ let get_func_insts_data () =
                               WasmInstrV ("return", []);
                               WasmInstrV ("br", [ IntV 1 ]);
                             |]
-                        ] ); 
+                        ] );
                     WasmInstrV ("const", [ i32TV; IntV 1 ]);
                     WasmInstrV ("binop", [ i32TV; StringV "Add" ]);
                   |];
@@ -207,160 +213,168 @@ let get_frame_data () =
 
 let binop =
   ( "binop",
-    [
-      Operators.i32_const (i32 19 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 27 |> to_phrase) |> to_phrase;
-      Operators.i32_add |> to_phrase;
-    ],
+    "(module (func (result i32)
+       (i32.const 19)
+       (i32.const 27)
+       (i32.add)
+      ))" |> string_to_instrs,
     "46" )
 
 let testop =
   ( "testop",
-    [
-      Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
-      Operators.i32_eqz |> to_phrase;
-    ],
+    "(module (func (result i32)
+       (i32.const 0)
+       (i32.eqz)
+      ))" |> string_to_instrs,
     "1" )
 
 let relop1 =
   ( "relop i32",
-    [
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 3 |> to_phrase) |> to_phrase;
-      Operators.i32_gt_s |> to_phrase;
-    ],
+    "(module (func (result i32)
+       (i32.const 1)
+       (i32.const 3)
+       (i32.gt_s)
+      ))" |> string_to_instrs,
     "0" )
 
 let relop2 =
   ( "relop f32",
-    [
-      Operators.f32_const (f32 1.4142135 |> to_phrase) |> to_phrase;
-      Operators.f32_const (f32 3.1415926 |> to_phrase) |> to_phrase;
-      Operators.f32_gt |> to_phrase;
-    ],
+    "(module (func (result i32)
+       (f32.const 1.4142135)
+       (f32.const 3.1415926)
+       (f32.gt)
+      ))" |> string_to_instrs,
     "0" )
 
 let nop =
   ( "nop",
-    [
-      Operators.i64_const (i64 0 |> to_phrase) |> to_phrase;
-      Operators.nop |> to_phrase;
-    ],
+    "(module (func (result i32)
+       (i64.const 0)
+       (nop)
+      ))" |> string_to_instrs,
     "0" )
 
 let drop =
   ( "drop",
-    [
-      Operators.f64_const (f64 3.1 |> to_phrase) |> to_phrase;
-      Operators.f64_const (f64 5.2 |> to_phrase) |> to_phrase;
-      Operators.drop |> to_phrase;
-    ],
+    "(module (func (result f64)
+       (f64.const 3.1)
+       (f64.const 5.2)
+       (drop)
+      ))" |> string_to_instrs,
     "3.1" )
 
 let select =
   ( "select",
-    [
-      Operators.f64_const (f64 Float.max_float |> to_phrase) |> to_phrase;
-      Operators.ref_null Types.FuncRefType |> to_phrase;
-      Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
-      Operators.select None |> to_phrase;
-    ],
+    "(module (func (result funcref)
+       (f64.const 1.7976931348623157E+308)
+       (ref.null func)
+       (i32.const 0)
+       (select)
+      ))" |> string_to_instrs,
     "null" )
 
 let local_set =
   ( "local_set",
-    [
-      Operators.local_get (i32 2 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_add |> to_phrase;
-      Operators.local_set (i32 2 |> to_phrase) |> to_phrase;
-      Operators.local_get (i32 2 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (local.get 2)
+        (i32.const 1)
+        (i32.add)
+        (local.set 2)
+        (local.get 2)
+      ))" |> string_to_instrs,
     "8" )
 
 let local_get =
-  ("local_get", [ Operators.local_get (i32 2 |> to_phrase) |> to_phrase ], "7")
+  ("local_get",
+    "(module (func (result i32)
+        (local.get 2)
+      ))" |> string_to_instrs,
+  "7")
 
 let local_tee =
   ( "local_tee",
-    [
-      Operators.local_get (i32 0 |> to_phrase) |> to_phrase;
-      Operators.local_tee (i32 1 |> to_phrase) |> to_phrase;
-      Operators.local_get (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_add |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (local.get 0)
+        (local.tee 1)
+        (local.get 1)
+        (i32.add)
+      ))" |> string_to_instrs,
     "6" )
 
 let global_set =
   ( "global_set",
-    [
-      Operators.global_get (i32 2 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_add |> to_phrase;
-      Operators.global_set (i32 2 |> to_phrase) |> to_phrase;
-      Operators.global_get (i32 2 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (global.get 2)
+        (i32.const 1)
+        (i32.add)
+        (global.set 2)
+        (global.get 2)
+      ))" |> string_to_instrs,
     "43" )
 
 let global_get1 =
   ( "global_get1",
-    [ Operators.global_get (i32 1 |> to_phrase) |> to_phrase ],
+    "(module (func (result f32)
+        (global.get 1)
+      ))" |> string_to_instrs,
     "5.2" )
 
 let global_get2 =
   ( "global_get2",
-    [ Operators.global_get (i32 2 |> to_phrase) |> to_phrase ],
+    "(module (func (result i32)
+        (global.get 2)
+      ))" |> string_to_instrs,
     "42" )
 
 let table_get =
   ( "table_get",
-    [
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.table_get (i32 2 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result funcref)
+        (i32.const 1)
+        (table.get 2)
+      ))" |> string_to_instrs,
     "null" )
 
 let call_nop =
   ( "call_nop",
-    [
-      Operators.i32_const (i32 0 |> to_phrase) |> to_phrase;
-      Operators.call (i32 0 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (i32.const 0)
+        (call 0)
+      ))" |> string_to_instrs,
     "0" )
 
 let call_add =
   ( "call_add",
-    [
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
-      Operators.call (i32 1 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (i32.const 1)
+        (i32.const 2)
+        (call 1)
+      ))" |> string_to_instrs,
     "3" )
 
 let call_sum =
   ( "call_sum",
-    [
-      Operators.i32_const (i32 10 |> to_phrase) |> to_phrase;
-      Operators.call (i32 2 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (i32.const 10)
+        (call 2)
+      ))" |> string_to_instrs,
     "55" )
 
 let call_add_return_frame =
   ( "call_add_return_frame",
-    [
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
-      Operators.call (i32 1 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (i32.const 1)
+        (i32.const 2)
+        (call 3)
+      ))" |> string_to_instrs,
     "3" )
 
 let call_add_return_label =
   ( "call_add_return_label",
-    [
-      Operators.i32_const (i32 1 |> to_phrase) |> to_phrase;
-      Operators.i32_const (i32 2 |> to_phrase) |> to_phrase;
-      Operators.call (i32 1 |> to_phrase) |> to_phrase;
-    ],
+    "(module (func (result i32)
+        (i32.const 1)
+        (i32.const 2)
+        (call 4)
+      ))" |> string_to_instrs,
     "3" )
 
 let testcases_reference =

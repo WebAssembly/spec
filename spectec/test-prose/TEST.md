@@ -672,10 +672,22 @@ call_sum
 Ok
 
 call_add_return_frame
-Ok
+Fail!
+Expected: 3
+Actual: 2
+[Stack]
+(const i32 2)
+(const i32 1)
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 call_add_return_label
-Ok
+Fail!
+Expected: 3
+Actual: 2
+[Stack]
+(const i32 2)
+(const i32 1)
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
 
 block
 Ok
