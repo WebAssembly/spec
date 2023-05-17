@@ -216,7 +216,7 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; \REFFUNC~x &\stepto& F; \REFFUNCADDR~a
+   F; \REFFUNC~x &\stepto& F; (\REFFUNCADDR~a)
      & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
    \end{array}
 
@@ -228,9 +228,9 @@ Reference Instructions
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\val` from the stack.
+2. Pop the value :math:`\reff` from the stack.
 
-3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
    a. Push the value :math:`\I32.\CONST~1` to the stack.
 
@@ -240,9 +240,9 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL &\stepto& \I32.\CONST~1
-     & (\iff \val = \REFNULL~\X{ht}) \\
-   \val~\REFISNULL &\stepto& \I32.\CONST~0
+   \reff~\REFISNULL &\stepto& (\I32.\CONST~1)
+     & (\iff \reff = \REFNULL~\X{ht}) \\
+   \reff~\REFISNULL &\stepto& (\I32.\CONST~0)
      & (\otherwise) \\
    \end{array}
 
@@ -254,21 +254,472 @@ Reference Instructions
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\val` from the stack.
+2. Pop the value :math:`\reff` from the stack.
 
-3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
    a. Trap.
 
-4. Push the value :math:`\val` back to the stack.
+4. Push the value :math:`\reff` back to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~\REFASNONNULL &\stepto& \TRAP
-     & (\iff \val = \REFNULL~\X{ht}) \\
-   \val~\REFASNONNULL &\stepto& \val
+   \reff~\REFASNONNULL &\stepto& \TRAP
+     & (\iff \reff = \REFNULL~\X{ht}) \\
+   \reff~\REFASNONNULL &\stepto& \reff
      & (\otherwise) \\
    \end{array}
+
+
+.. _exec-ref.eq:
+
+:math:`\REFEQ`
+..............
+
+1. Assert: due to :ref:`validation <valid-ref.eq>`, two :ref:`reference values <syntax-ref>` are on the top of the stack.
+
+2. Pop the value :math:`\reff_2` from the stack.
+
+3. Pop the value :math:`\reff_1` from the stack.
+
+4. If :math:`\reff_1` is the same as :math:`\reff_2`, then:
+
+   a. Push the value :math:`\I32.\CONST~1` to the stack.
+
+5. Else:
+
+   a. Push the value :math:`\I32.\CONST~0` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
+     & (\iff \reff_1 = \reff_2) \\
+   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~0)
+     & (\iff \reff_1 \neq \reff_2) \\
+   \end{array}
+
+
+.. _exec-ref.test:
+
+:math:`\REFTEST~\X{rt}`
+.......................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
+
+3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
+
+4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+5. Pop the value :math:`\reff` from the stack.
+
+6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
+
+7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
+
+8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
+
+   a. Push the value :math:`\I32.\CONST~1` to the stack.
+
+9. Else:
+
+   a. Push the value :math:`\I32.\CONST~0` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
+     & (\iff S \vdashval \reff : \X{rt}'
+        \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
+   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-ref.cast:
+
+:math:`\REFCAST~\X{rt}`
+.......................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Let :math:`\X{rt}_1` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt})`.
+
+3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}_1` is :ref:`closed <type-closed>`.
+
+4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+5. Pop the value :math:`\reff` from the stack.
+
+6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
+
+7. Let :math:`\X{rt}_2` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
+
+8. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}_2` :ref:`matches <match-reftype>` :math:`\X{rt}_1`, then:
+
+   a. Push the value :math:`\reff` back to the stack.
+
+9. Else:
+
+   a. Trap.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
+     & (\iff S \vdashval \reff : \X{rt}'
+        \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
+   S; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
+     & (\otherwise) \\
+   \end{array}
+
+
+
+.. _exec-i31.new:
+
+:math:`\I31NEW`
+...............
+
+1. Assert: due to :ref:`validation <valid-extern.externalize>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` |I32| is on the top of the stack.
+
+2. Pop the value :math:`(\I32.\CONST~i)` from the stack.
+
+3. Let :math:`j` be the result of computing :math:`\wrap_{32,31}(i)`.
+
+4. Push the reference value :math:`(\REFI31~j)` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\I32.\CONST~i)~\I31NEW &\stepto& (\REFI31~\wrap_{32,31}(i))
+   \end{array}
+
+
+.. _exec-i31.get_s:
+
+:math:`\I31GET\K{\_}\sx`
+........................
+
+1. Assert: due to :ref:`validation <valid-extern.externalize>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
+
+2. Pop the value :math:`\reff` from the stack.
+
+3. If :math:`\reff` is :math:`\REFNULL~t`, then:
+
+   a. Trap.
+
+4. Assert: due to validation, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
+
+5. Let :math:`(\REFI31~i)` be the reference value :math:`\reff`.
+
+6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
+
+7. Push the value :math:`(\I32.\CONST~j)` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\REFI31~i)~\I31NEW &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
+   (\REFNULL~t)~\I31NEW &\stepto& \TRAP
+   \end{array}
+
+
+.. _exec-struct.new:
+
+:math:`\STRUCTNEW~\typeidx`
+...........................
+
+.. todo:: Abstract allocation of structs and arrays into alloc functions
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
+      \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-struct.new_default:
+
+:math:`\STRUCTNEWDEFAULT~\typeidx`
+..................................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\STRUCTNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft})}))^n~(\STRUCTNEW~x)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n)
+     \end{array} \\
+   \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+         \land & \X{si} = \{\SITYPE~F.\AMODULE[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
+         \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
+        \end{array} \\
+      \end{array}
+
+
+.. _exec-struct.get:
+.. _exec-struct.get_sx:
+
+:math:`\STRUCTGET\K{\_}\sx^?~\typeidx~i`
+........................................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-struct.set:
+
+:math:`\STRUCTSET~\typeidx~i`
+.............................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}[i]}(\val))
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.new:
+
+:math:`\ARRAYNEW~\typeidx`
+..........................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& \val^n~(\ARRAYNEWFIXED~x~n)
+   \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
+         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+        \end{array} \\
+      \end{array}
+
+
+.. _exec-array.new_default:
+
+:math:`\ARRAYNEWDEFAULT~\typeidx`
+..................................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft}}))^n~(\ARRAYNEWFIXED~x~n)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft})
+     \end{array} \\
+   \end{array}
+
+.. scratch
+   .. math::
+      \begin{array}{lcl@{\qquad}l}
+      S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
+        \\&&
+        \begin{array}[t]{@{}r@{~}l@{}}
+         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
+         \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+        \end{array} \\
+      \end{array}
+
+
+.. _exec-array.new_fixed:
+
+:math:`\ARRAYNEWFIXED~\typeidx`
+...............................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; F; \val^n~(\I32.\CONST~n)~(\ARRAYNEWFIXED~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      \land & \X{ai} = \{\AITYPE~F.\AMODULE[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
+      \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.new_data:
+
+:math:`\ARRAYNEWDATA~\typeidx~\dataidx`
+.......................................
+
+.. todo:: Prose
+.. todo:: extend type size convention to field types
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      \land & s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
+     \end{array} \\
+   \\[1ex]
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~i)^n~(\ARRAYNEWFIXED~x)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      \land & t = \unpacktype(\X{ft}) \\
+      \land & (b^\ast)^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
+      \land & (\bytes_{\X{ft}}(i) = \unpackval_{\X{ft}}(b^\ast))^n)
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.new_elem:
+
+:math:`\ARRAYNEWELEM~\typeidx~\elemidx`
+.......................................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{lcl@{\qquad}l}
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \TRAP
+     \\&&
+     (\iff s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
+   \\[1ex]
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWELEM~x~y) &\stepto& \reff^n~(\ARRAYNEWFIXED~x)
+     \\&&
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & \reff^n = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s \slice n])
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.get:
+.. _exec-array.get_sx:
+
+:math:`\ARRAYGET\K{\_}\sx^?~\typeidx`
+.....................................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.set:
+
+:math:`\ARRAYSET~\typeidx`
+..........................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
+     &
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
+     \end{array} \\
+   \end{array}
+
+
+.. _exec-array.len:
+
+:math:`\ARRAYLEN`
+.................
+
+.. todo:: Prose
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|\SARRAYS[a].\AIFIELDS[i]|)
+   \end{array}
+
+
+.. _exec-extern.externalize:
+
+:math:`\EXTERNEXTERNALIZE`
+..........................
+
+1. Assert: due to :ref:`validation <valid-extern.externalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\reff` from the stack.
+
+3. Let :math:`\reff'` be the reference value :math:`(\REFEXTERN~\reff)`.
+
+5. Push the reference value :math:`\reff'` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \reff~\EXTERNEXTERNALIZE &\stepto& (\REFEXTERN~\reff)
+   \end{array}
+
+
+.. _exec-extern.internalize:
+
+:math:`\EXTERNINTERNALIZE`
+..........................
+
+1. Assert: due to :ref:`validation <valid-extern.internalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\reff` from the stack.
+
+3. Assert: due to :ref:`validation <valid-extern.internalize>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
+
+4. Let :math:`(\REFEXTERN~\reff')` be the reference value :math:`\reff`.
+
+5. Push the reference value :math:`\reff'` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\REFEXTERN~\reff)~\EXTERNINTERNALIZE &\stepto& \reff
+   \end{array}
+
 
 
 .. index:: vector instruction
@@ -2740,21 +3191,21 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\val` from the stack.
+2. Pop the value :math:`\reff` from the stack.
 
-3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
    a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
 4. Else:
 
-   a. Push the value :math:`\val` back to the stack.
+   a. Push the value :math:`\reff` back to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~(\BRONNULL~l) &\stepto& (\BR~l)
-     & (\iff \val = \REFNULL~\X{ht}) \\
-   \val~(\BRONNULL~l) &\stepto& \val
+   \reff~(\BRONNULL~l) &\stepto& (\BR~l)
+     & (\iff \reff = \REFNULL~\X{ht}) \\
+   \reff~(\BRONNULL~l) &\stepto& \reff
      & (\otherwise) \\
    \end{array}
 
@@ -2766,23 +3217,93 @@ Control Instructions
 
 1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
-2. Pop the value :math:`\val` from the stack.
+2. Pop the value :math:`\reff` from the stack.
 
-3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
    a. Do nothing.
 
 4. Else:
 
-   a. Push the value :math:`\val` back to the stack.
+   a. Push the value :math:`\reff` back to the stack.
 
    b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~(\BRONNONNULL~l) &\stepto& \epsilon
-     & (\iff \val = \REFNULL~\X{ht}) \\
-   \val~(\BRONNONNULL~l) &\stepto& \val~(\BR~l)
+   \reff~(\BRONNONNULL~l) &\stepto& \epsilon
+     & (\iff \reff = \REFNULL~\X{ht}) \\
+   \reff~(\BRONNONNULL~l) &\stepto& \reff~(\BR~l)
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-br_on_cast:
+
+:math:`\BRONCAST~l~\X{rt}_1~\X{rt}_2`
+.....................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
+
+3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
+
+4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+5. Pop the value :math:`\reff` from the stack.
+
+6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
+
+7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
+
+8. Push the value :math:`\reff` back to the stack.
+
+9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` :ref:`matches <match-reftype>` :math:`\X{rt}'_2`, then:
+
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& (\BR~l)
+     & (\iff S \vdashval \reff : \X{rt}
+        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
+   S; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-br_on_cast_fail:
+
+:math:`\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2`
+.........................................
+
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Let :math:`\X{rt}'_2` be the :ref:`reference type <syntax-reftype>` :math:`\insttype_{F.\AMODULE}(\X{rt}_2)`.
+
+3. Assert: due to :ref:`validation <valid-ref.test>`, :math:`\X{rt}'_2` is :ref:`closed <type-closed>`.
+
+4. Assert: due to :ref:`validation <valid-ref.test>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+5. Pop the value :math:`\reff` from the stack.
+
+6. Assert: due to validation, the :ref:`reference value <syntax-ref>` is :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>`.
+
+7. Let :math:`\X{rt}` be the :ref:`reference type <syntax-reftype>` of :math:`\reff`.
+
+8. Push the value :math:`\reff` back to the stack.
+
+9. If the :ref:`reference type <syntax-reftype>` :math:`\X{rt}` does not :ref:`match <match-reftype>` :math:`\X{rt}'_2`, then:
+
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~X{rt}_2) &\stepto& \reff
+     & (\iff S \vdashval \reff : \X{rt}
+        \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
+   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& (\BR~l)
      & (\otherwise) \\
    \end{array}
 

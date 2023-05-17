@@ -141,6 +141,7 @@
 .. |u1| mathdef:: \xref{syntax/values}{syntax-int}{\X{u1}}
 .. |u8| mathdef:: \xref{syntax/values}{syntax-int}{\X{u8}}
 .. |u16| mathdef:: \xref{syntax/values}{syntax-int}{\X{u16}}
+.. |u31| mathdef:: \xref{syntax/values}{syntax-int}{\X{u31}}
 .. |u32| mathdef:: \xref{syntax/values}{syntax-int}{\X{u32}}
 .. |u64| mathdef:: \xref{syntax/values}{syntax-int}{\X{u64}}
 
@@ -199,6 +200,9 @@
 
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
+.. |ANY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{any}}
+.. |EQT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{eq}}
+.. |I31| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{i31}}
 .. |STRUCT| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{struct}}
 .. |ARRAY| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{array}}
 .. |FUNC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{func}}
@@ -251,6 +255,7 @@
 .. |structtype| mathdef:: \xref{syntax/types}{syntax-structtype}{\X{structtype}}
 .. |arraytype| mathdef:: \xref{syntax/types}{syntax-arraytype}{\X{arraytype}}
 .. |fieldtype| mathdef:: \xref{syntax/types}{syntax-fieldtype}{\X{fieldtype}}
+.. |packedtype| mathdef:: \xref{syntax/types}{syntax-packedtype}{\X{packedtype}}
 .. |strtype| mathdef:: \xref{syntax/types}{syntax-strtype}{\X{strtype}}
 .. |subtype| mathdef:: \xref{syntax/types}{syntax-subtype}{\X{subtype}}
 .. |rectype| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{rectype}}
@@ -270,6 +275,9 @@
 
 
 .. Types, meta functions
+
+.. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
+.. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
 
 .. |etfuncs| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{funcs}}
 .. |ettables| mathdef:: \xref{syntax/types}{syntax-externtype}{\F{tables}}
@@ -474,6 +482,7 @@
 .. |ARRAYLEN| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.len}}
 
 .. |I31NEW| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.new}}
+.. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get}}
 .. |I31GETS| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_s}}
 .. |I31GETU| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_u}}
 
@@ -1088,7 +1097,9 @@
 .. |globaladdr| mathdef:: \xref{exec/runtime}{syntax-globaladdr}{\X{globaladdr}}
 .. |elemaddr| mathdef:: \xref{exec/runtime}{syntax-elemaddr}{\X{elemaddr}}
 .. |dataaddr| mathdef:: \xref{exec/runtime}{syntax-dataaddr}{\X{dataaddr}}
-.. |externaddr| mathdef:: \xref{exec/runtime}{syntax-externaddr}{\X{externaddr}}
+.. |structaddr| mathdef:: \xref{exec/runtime}{syntax-structaddr}{\X{structaddr}}
+.. |arrayaddr| mathdef:: \xref{exec/runtime}{syntax-arrayaddr}{\X{arrayaddr}}
+.. |hostaddr| mathdef:: \xref{exec/runtime}{syntax-hostaddr}{\X{hostaddr}}
 
 
 .. Address, meta functions
@@ -1139,8 +1150,20 @@
 .. |MIDATAS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{dataaddrs}}
 .. |MIEXPORTS| mathdef:: \xref{exec/runtime}{syntax-moduleinst}{\K{exports}}
 
+.. |SITYPE| mathdef:: \xref{exec/runtime}{syntax-structinst}{\K{type}}
+.. |SIFIELDS| mathdef:: \xref{exec/runtime}{syntax-structinst}{\K{fields}}
+
+.. |AITYPE| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{type}}
+.. |AIFIELDS| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{fields}}
+
+.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I8.PACK}}
+.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I16.PACK}}
+
 
 .. Instances, non-terminals
+
+.. |fieldval| mathdef:: \xref{exec/runtime}{syntax-fieldval}{\X{fieldval}}
+.. |packedval| mathdef:: \xref{exec/runtime}{syntax-packedval}{\X{packedval}}
 
 .. |externval| mathdef:: \xref{exec/runtime}{syntax-externval}{\X{externval}}
 
@@ -1151,6 +1174,8 @@
 .. |globalinst| mathdef:: \xref{exec/runtime}{syntax-globalinst}{\X{globalinst}}
 .. |eleminst| mathdef:: \xref{exec/runtime}{syntax-eleminst}{\X{eleminst}}
 .. |datainst| mathdef:: \xref{exec/runtime}{syntax-datainst}{\X{datainst}}
+.. |structinst| mathdef:: \xref{exec/runtime}{syntax-structinst}{\X{structinst}}
+.. |arrayinst| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\X{arrayinst}}
 .. |exportinst| mathdef:: \xref{exec/runtime}{syntax-exportinst}{\X{exportinst}}
 
 .. |hostfunc| mathdef:: \xref{exec/runtime}{syntax-hostfunc}{\X{hostfunc}}
@@ -1172,6 +1197,8 @@
 .. |SGLOBALS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{globals}}
 .. |SELEMS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{elems}}
 .. |SDATAS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{datas}}
+.. |SSTRUCTS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{structs}}
+.. |SARRAYS| mathdef:: \xref{exec/runtime}{syntax-store}{\K{arrays}}
 
 .. Store, non-terminals
 
@@ -1200,8 +1227,12 @@
 
 .. Administrative Instructions, terminals
 
+.. |REFI31| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i31}}
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
-.. |REFEXTERNADDR| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
+.. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
+.. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
+.. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref.host}{\K{ref{.}host}}
+.. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |RETURNINVOKE| mathdef:: \xref{exec/runtime}{syntax-return_invoke}{\K{return\_invoke}}
@@ -1219,6 +1250,12 @@
 .. Values, meta-functions
 
 .. |default| mathdef:: \xref{exec/runtime}{default-val}{\F{default}}
+
+
+.. Fields, meta-functions
+
+.. |packval| mathdef:: \xref{exec/runtime}{aux-packval}{\F{pack}}
+.. |unpackval| mathdef:: \xref{exec/runtime}{aux-unpackval}{\F{unpack}}
 
 
 .. Administrative Instructions, non-terminals
