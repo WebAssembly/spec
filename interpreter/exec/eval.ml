@@ -557,7 +557,7 @@ let rec step (c : config) : config =
         else
           let seg = data c.frame.inst x in
           let a = I64_convert.extend_i32_u s in
-          let b = Data.load seg a in
+          let b = Data.load_byte seg a in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Plain (Const (I32 d @@ e.at));
             Plain (Const (I32 (I32.of_int_u (Char.code b)) @@ e.at));
@@ -699,7 +699,7 @@ let rec step (c : config) : config =
           let args = Lib.List32.init n
             (fun i ->
               let a = I32.(add s (mul i (I32.of_int_u (storage_size st)))) in
-              Data.load_field seg (I64_convert.extend_i32_u a) st
+              Data.load_val_storage seg (I64_convert.extend_i32_u a) st
             )
           in
           let array =
@@ -824,7 +824,7 @@ let rec step (c : config) : config =
         else
           let ArrayT (FieldT (_mut, st)) = array_type c.frame.inst x in
           let seg = data c.frame.inst y in
-          let v = Data.load_field seg (I64_convert.extend_i32_u s) st in
+          let v = Data.load_val_storage seg (I64_convert.extend_i32_u s) st in
           vs', List.map (Lib.Fun.flip (@@) e.at) [
             Refer (Aggr.ArrayRef a);
             Plain (Const (I32 d @@ e.at));
