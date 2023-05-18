@@ -22,31 +22,82 @@ let al_of_wasm_blocktype types wtype =
   | Ast.ValBlockType None -> ArrowV(ListV [||], ListV [||])
   | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| WasmTypeV val_type |])
 
+let al_of_unop = function
+  | Ast.IntOp.Clz -> StringV "Clz"
+  | Ast.IntOp.Ctz -> StringV "Ctz"
+  | Ast.IntOp.Popcnt
+  | Ast.IntOp.ExtendS _ -> StringV "TODO"
+let al_of_binop = function
+  | Ast.IntOp.Add -> StringV "Add"
+  | Ast.IntOp.Sub -> StringV "Sub"
+  | Ast.IntOp.Mul -> StringV "Mul"
+  | Ast.IntOp.DivS
+  | Ast.IntOp.DivU
+  | Ast.IntOp.RemS
+  | Ast.IntOp.RemU
+  | Ast.IntOp.And
+  | Ast.IntOp.Or
+  | Ast.IntOp.Xor
+  | Ast.IntOp.Shl
+  | Ast.IntOp.ShrS
+  | Ast.IntOp.ShrU
+  | Ast.IntOp.Rotl
+  | Ast.IntOp.Rotr -> StringV "TODO"
+let al_of_testop = function
+  | Ast.IntOp.Eqz -> StringV "Eqz"
+let al_of_relop = function
+  | Ast.IntOp.Eq -> StringV "Eq"
+  | Ast.IntOp.Ne -> StringV "Ne"
+  | Ast.IntOp.LtS -> StringV "LtS"
+  | Ast.IntOp.LtU -> StringV "LtU"
+  | Ast.IntOp.GtS -> StringV "GtS"
+  | Ast.IntOp.GtU -> StringV "GtU"
+  | Ast.IntOp.LeS -> StringV "LeS"
+  | Ast.IntOp.LeU -> StringV "LeU"
+  | Ast.IntOp.GeS -> StringV "GeS"
+  | Ast.IntOp.GeU -> StringV "GeU"
+let al_of_cvtop = function
+  | Ast.IntOp.ExtendSI32
+  | Ast.IntOp.ExtendUI32
+  | Ast.IntOp.WrapI64
+  | Ast.IntOp.TruncSF32
+  | Ast.IntOp.TruncUF32
+  | Ast.IntOp.TruncSF64
+  | Ast.IntOp.TruncUF64
+  | Ast.IntOp.TruncSatSF32
+  | Ast.IntOp.TruncSatUF32
+  | Ast.IntOp.TruncSatSF64
+  | Ast.IntOp.TruncSatUF64
+  | Ast.IntOp.ReinterpretFloat -> StringV "TODO"
+
 let rec al_of_wasm_instr types winstr =
-  let f_i32 f i32 = WasmInstrV (f, [ IntV (Int32.to_int i32.it) ]) in
+  let to_int i32 = IntV (Int32.to_int i32.it) in
+  let f name  = WasmInstrV (name, []) in
+  let f_i32 name i32 = WasmInstrV (name, [to_int i32]) in
 
   match winstr.it with
   (* wasm values *)
   | Ast.Const num -> al_of_wasm_num num.it
   | Ast.RefNull t -> WasmInstrV ("ref.null", [ WasmTypeV (RefType t) ])
   (* wasm instructions *)
-  | Ast.Nop -> WasmInstrV ("nop", [])
-  | Ast.Drop -> WasmInstrV ("drop", [])
-  | Ast.Binary (Values.I32 Ast.I32Op.Add) ->
+  | Ast.Unreachable -> f "unreachable"
+  | Ast.Nop -> f "nop"
+  | Ast.Drop -> f "drop"
+  | Ast.Unary (Values.I32 op) ->
       WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "Add" ])
-  | Ast.Binary (Values.I32 Ast.I32Op.Sub) ->
+        ("unop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_unop op ])
+  | Ast.Binary (Values.I32 op) ->
       WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "Sub" ])
-  | Ast.Test (Values.I32 Ast.I32Op.Eqz) ->
+        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_binop op ])
+  | Ast.Test (Values.I32 op) ->
       WasmInstrV
-        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "Eqz" ])
+        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_testop op ])
+  | Ast.Compare (Values.I32 op) ->
+      WasmInstrV
+        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_relop op ])
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
       WasmInstrV
         ("relop", [ WasmTypeV (Types.NumType Types.F32Type); StringV "Gt" ])
-  | Ast.Compare (Values.I32 Ast.I32Op.GtS) ->
-      WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); StringV "GtS" ])
   | Ast.Select None -> WasmInstrV ("select", [ StringV "TODO: None" ])
   | Ast.LocalGet i32 -> f_i32 "local.get" i32
   | Ast.LocalSet i32 -> f_i32 "local.set" i32
@@ -55,6 +106,9 @@ let rec al_of_wasm_instr types winstr =
   | Ast.GlobalSet i32 -> f_i32 "global.set" i32
   | Ast.TableGet i32 -> f_i32 "table.get" i32
   | Ast.Call i32 -> f_i32 "call" i32
+  | Ast.CallIndirect (i32, i32') ->
+      WasmInstrV
+        ("call_indirect", [ to_int i32; to_int i32' ])
   | Ast.Block (bt, instrs) ->
       WasmInstrV
         ("block", [
@@ -73,10 +127,29 @@ let rec al_of_wasm_instr types winstr =
             ListV (instrs2 |> al_of_wasm_instrs types |> Array.of_list);
             ])
   | Ast.Br i32 -> f_i32 "br" i32
+  | Ast.BrIf i32 -> f_i32 "br_if" i32
+  | Ast.BrTable (i32s, i32) ->
+      WasmInstrV
+        ("br_table", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
   | Ast.Return -> WasmInstrV ("return", [])
-  | _ -> failwith "al_of_wasm_instr for this instr is not implemented"
+  | Ast.Load _loadop -> StringV "TODO: load"
+  | Ast.Store _storeop -> StringV "TODO: store"
+  | Ast.MemorySize -> f "memory.size"
+  | Ast.MemoryGrow -> f "mewmory.grow"
+  | Ast.MemoryFill -> f "memory.fill"
+  | Ast.MemoryCopy -> f "memory.copy"
+  | _ -> failwith ("al_of_wasm_instr for " ^ Print.string_of_winstr winstr ^ " is not implemented")
 
 and al_of_wasm_instrs types winstrs = List.map (al_of_wasm_instr types) winstrs
+
+let al_of_wasm_value = function
+| Values.Num n -> al_of_wasm_instr [] { it = Ast.Const {it = n; at = no_region}; at = Source.no_region }
+| Values.Vec _v -> failwith "TODO"
+| Values.Ref r ->
+    begin match r with
+      | Values.NullRef t -> al_of_wasm_instr [] {it = Ast.RefNull t; at = Source.no_region}
+      | _ -> failwith "TODO"
+    end
 
 (* Test Interpreter *)
 

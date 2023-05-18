@@ -91,8 +91,8 @@ let rec structured_string_of_value = function
       ^ string_of_list structured_string_of_value "[" ", " "]" vl
       ^ ")"
   | RecordV _r -> "RecordV (TODO)"
-  | WasmModuleV -> "WasmModuleV"
   | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
+  | WasmModuleV -> "WasmModuleV"
 
 let rec structured_string_of_expr = function
   | ValueE v -> "ValueE " ^ structured_string_of_value v
@@ -627,3 +627,72 @@ let string_of_algorithm = function
           (fun acc (p, _t) -> acc ^ " " ^ string_of_expr p)
           "" params
       ^ string_of_instrs 0 instrs ^ "\n"
+
+open Reference_interpreter
+let string_of_winstr (winstr: Ast.instr) =
+  let num (x: Ast.var) = x.it |> I32.to_string_u in
+  match winstr.it with
+  | Ast.Unreachable -> "unreachable"
+  | Ast.Nop -> "nop"
+  | Ast.Drop -> "drop"
+  | Ast.Select None -> "select"
+  | Ast.Select (Some []) -> "select ()"
+  | Ast.Select (Some _) -> "select (...)"
+  | Ast.Block _ -> "block ..."
+  | Ast.Loop _ -> "loop ..."
+  | Ast.If _ -> "if ..."
+  | Ast.Br x -> "br " ^ num x
+  | Ast.BrIf x -> "br_if " ^ num x
+  | Ast.BrTable _ -> "br_table ..."
+  | Ast.Return -> "return"
+  | Ast.Call x -> "call " ^ num x
+  | Ast.CallIndirect (x, y) -> "call_indirect " ^ num x ^ " " ^ num y
+  | Ast.LocalGet x -> "local.get " ^ num x
+  | Ast.LocalSet x -> "local.set " ^ num x
+  | Ast.LocalTee x -> "local.tee " ^ num x
+  | Ast.GlobalGet x -> "global.get " ^ num x
+  | Ast.GlobalSet x -> "global.set " ^ num x
+  | Ast.TableGet x -> "table.get " ^ num x
+  | Ast.TableSet x -> "table.set " ^ num x
+  | Ast.TableSize x -> "table.size " ^ num x
+  | Ast.TableGrow x -> "table.grow " ^ num x
+  | Ast.TableFill x -> "table.fill " ^ num x
+  | Ast.TableCopy (x, y) -> "table.copy " ^ num x ^ " " ^ num y
+  | Ast.TableInit (x, y) -> "table.init " ^ num x ^ " " ^ num y
+  | Ast.ElemDrop x -> "elem.drop " ^ num x
+  | Ast.Load _ -> "load"
+  | Ast.Store _ -> "store"
+  | Ast.VecLoad _ -> "vecload"
+  | Ast.VecStore _ -> "vecstroe"
+  | Ast.VecLoadLane _ -> "vecloadlane"
+  | Ast.VecStoreLane _ -> "vecstorelane"
+  | Ast.MemorySize -> "memory.size"
+  | Ast.MemoryGrow -> "memory.grow"
+  | Ast.MemoryFill -> "memory.fill"
+  | Ast.MemoryCopy -> "memory.copy"
+  | Ast.MemoryInit x -> "memory.init " ^ num x
+  | Ast.DataDrop x -> "data.drop " ^ num x
+  | Ast.RefNull _ -> "ref.null ..."
+  | Ast.RefIsNull -> "ref.is_null"
+  | Ast.RefFunc x -> "ref.func " ^ num x
+  | Ast.Const _ -> "const ..."
+  | Ast.Test _ -> "test"
+  | Ast.Compare _ -> "relop"
+  | Ast.Unary _ -> "unary"
+  | Ast.Binary _ -> "binary"
+  | Ast.Convert _ -> "convert"
+  | Ast.VecConst _ -> "vec_const"
+  | Ast.VecTest _ -> "vec_test"
+  | Ast.VecUnary _ -> "vec_unop"
+  | Ast.VecBinary _ -> "vec_binop"
+  | Ast.VecCompare _ -> "vec_relop"
+  | Ast.VecConvert _ -> "vec_cvtop"
+  | Ast.VecShift _ -> "vec_shiftop"
+  | Ast.VecBitmask _ -> "vec_bitmaskop"
+  | Ast.VecTestBits _ -> "vec_vtestop"
+  | Ast.VecUnaryBits _ -> "vec_vunop"
+  | Ast.VecBinaryBits _ -> "vec_vbinop"
+  | Ast.VecTernaryBits _ -> "vec_vternop"
+  | Ast.VecSplat _ -> "vec_splatop"
+  | Ast.VecExtract _ -> "vec_extractop"
+  | Ast.VecReplace _ -> "vec_replaceop"

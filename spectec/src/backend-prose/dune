@@ -11,5 +11,7 @@
     testdata
     walk
     construct
-    manual)
+    manual
+    tester
+    )
 )
