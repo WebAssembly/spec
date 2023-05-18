@@ -614,6 +614,11 @@ alloc_func func
 5. Return a.
 
 alloc_table table
+1. Let TABLE((n, _), reftype) be table.
+2. Let a be the length of s.TABLE.
+3. Let tableinst be (ref.null reftype)^n.
+4. Append tableinst to the s.TABLE.
+5. Return a.
 
 invocation funcaddr
 1. Let funcinst be s.FUNC[funcaddr].

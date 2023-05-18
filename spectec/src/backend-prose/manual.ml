@@ -222,12 +222,26 @@ let alloc_func =
 let alloc_table =
   (* Name definition *)
   let table_name = N "table" in
+  let min = N "n" in
+  let reftype = N "reftype" in
+  let addr_name = N "a" in
+  let store_name = N "s" in
+  let tableinst_name = N "tableinst" in
+  let ref_null = WasmInstrE ("ref.null", [NameE reftype]) in
 
   (* Algorithm *)
   Algo (
     "alloc_table",
     [ (NameE table_name, TopT) ],
     [
+      LetI (
+        ConstructE ("TABLE", [PairE (NameE min, NameE (N "_")); NameE reftype]),
+        NameE table_name
+      );
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "TABLE")));
+      LetI (NameE tableinst_name, ListFillE (ref_null, NameE min));
+      AppendI (NameE tableinst_name, NameE store_name, "TABLE");
+      ReturnI (Some (NameE addr_name))
     ]
   )
 
@@ -260,4 +274,13 @@ let invocation =
   )
 
 
-let manual_algos = [ br; return; instantiation; alloc_module; alloc_func; alloc_table; invocation ]
+let manual_algos =
+  [
+    br;
+    return;
+    instantiation;
+    alloc_module;
+    alloc_func;
+    alloc_table;
+    invocation
+  ]

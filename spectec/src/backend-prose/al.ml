@@ -88,6 +88,7 @@ type expr =
   | GetCurFrameE
   | FrameE of (expr * expr)
   | BitWidthE of expr
+  | ListFillE of expr * expr
   | ListE of expr array
   | AccessE of (expr * path)
   | ForWhichE of cond

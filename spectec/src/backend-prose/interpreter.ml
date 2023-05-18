@@ -147,6 +147,10 @@ and eval_expr env expr =
       | ListV v1, ListV v2 -> ListV (Array.append v1 v2)
       | _ -> failwith "Not a list")
   | ListE el -> ListV (Array.map (eval_expr env) el)
+  | ListFillE (e1, e2) -> (
+      match (eval_expr env e1, eval_expr env e2) with
+      | v, IntV n -> ListV (Array.make n v)
+      | _ -> failwith "Not an Int")
   | AccessE (e, p) -> begin match p with
       | IndexP e' ->
         let v1 = eval_expr env e in
@@ -291,8 +295,10 @@ and interp_instr env i =
         when lhs_tag = rhs_tag ->
           List.fold_left2
             (fun env p v ->
-              match p with
-              | NameE n | IterE (n, _) -> Env.add n v env
+              match p, v with
+              | NameE n, v | IterE (n, _), v -> Env.add n v env
+              | PairE (NameE n1, NameE n2), PairV (v1, v2) ->
+                  env |> Env.add n1 v1 |> Env.add n2 v2
               | _ ->
                   string_of_instr (ref 0) 0 i
                   |> Printf.sprintf "Invalid destructuring assignment: %s"
@@ -347,6 +353,12 @@ and interp_instr env i =
       (match eval_expr env e2 with
       | StoreV ref when Record.mem s !ref |> not ->
           ref := Record.add s (ListV [| v1 |]) !ref
+      | StoreV ref ->
+          let a = match Record.find s !ref with
+            | ListV l -> l
+            | _ -> failwith "Unreachable" in
+          let appended_result = ListV (Array.append a [| v1 |]) in
+          ref := Record.add s appended_result !ref
       | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
       env
   | i -> structured_string_of_instr 0 i |> failwith

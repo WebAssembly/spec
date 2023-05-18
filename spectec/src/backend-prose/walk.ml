@@ -18,6 +18,7 @@ let rec walk_expr f e =
   | FrameE (e1, e2) -> f_expr (FrameE (walk_expr f e1, walk_expr f e2))
   | ConcatE (e1, e2) -> f_expr (ConcatE (walk_expr f e1, walk_expr f e2))
   | ListE el -> f_expr (ListE (Array.map (walk_expr f) el))
+  | ListFillE (e1, e2) -> f_expr (ListFillE (walk_expr f e1, walk_expr f e2))
   | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
   | RecordE r -> f_expr (RecordE (Record.map (walk_expr f) r))
   | TupE el -> f_expr (TupE (List.map (walk_expr f) el))

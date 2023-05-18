@@ -161,6 +161,12 @@ let rec structured_string_of_expr = function
       "ListE ("
       ^ string_of_array structured_string_of_expr "[" ", " "]" el
       ^ ")"
+  | ListFillE (e1, e2) ->
+      "ListFillE ("
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ")"
   | AccessE (e, p) ->
       "AccessE ("
       ^ structured_string_of_expr e
@@ -472,6 +478,7 @@ and string_of_expr = function
         (string_of_expr e1)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | ListE el -> string_of_array string_of_expr "[" ", " "]" el
+  | ListFillE (e1, e2) -> "(" ^ string_of_expr e1 ^ ")^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE r -> string_of_record_expr r
