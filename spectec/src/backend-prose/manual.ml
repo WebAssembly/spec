@@ -161,7 +161,11 @@ let alloc_module =
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let tableaddr_iter = IterE (N "tableaddr", List) in
   let module_inst_name = N "moduleinst" in
-  let module_inst_rec = Record.add "FUNC" funcaddr_iter Record.empty in
+  let module_inst_rec =
+    Record.empty
+    |> Record.add "FUNC" funcaddr_iter
+    |> Record.add "TABLE" tableaddr_iter
+  in
   let store_name = N "s" in
   let func_name' = N "func'" in
 

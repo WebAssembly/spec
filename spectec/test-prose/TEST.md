@@ -600,7 +600,7 @@ alloc_module module
 1. Let MODULE(func*, table*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
 3. Let tableaddr* be $alloc_table(table)*.
-4. Let moduleinst be { FUNC: funcaddr*; }.
+4. Let moduleinst be { FUNC: funcaddr*; TABLE: tableaddr*; }.
 5. For i in range |s.FUNC| in
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
@@ -704,7 +704,7 @@ br_zero
 Ok
 
 br_succ
-Ok
+Fail!(Failure("SubE (NameE (N(l)), ValueE 1)"))
 
 if_true
 Ok
@@ -736,56 +736,28 @@ select
 Ok
 
 local_set
-Fail!
-Expected: 8
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Invalid_argument("index out of bounds"))
 
 local_get
-Fail!
-Expected: 7
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Invalid_argument("index out of bounds"))
 
 local_tee
-Fail!
-Expected: 6
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Invalid_argument("index out of bounds"))
 
 global_set
-Fail!
-Expected: 43
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Not_found)
 
 global_get1
-Fail!
-Expected: 5.2
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Not_found)
 
 global_get2
-Fail!
-Expected: 42
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Fail!(Not_found)
 
 table_get
-Fail!
-Expected: null
-Actual: FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })is not a wasm value.
-[Stack]
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+Ok
 
 call_nop
-Ok
+Fail!(Stack overflow)
 
 call_add
 Fail!

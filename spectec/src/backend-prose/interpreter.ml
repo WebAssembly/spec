@@ -177,7 +177,11 @@ and eval_expr env expr =
         | ModuleInstV m -> Record.find str m
         | FrameV (_, r) -> Record.find str r
         | StoreV s -> Record.find str !s
-        | _ -> failwith "Not a record"
+        | RecordV r -> Record.find str r
+        | v ->
+            string_of_value v
+            |> Printf.sprintf "Not a record: %s"
+            |> failwith
         end
       end
   | LabelE (e1, e2) -> (
@@ -395,7 +399,7 @@ and execute_wasm_instr winstr =
   | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
 
 and execute_wasm_instrs winstrs =
-  try List.iter execute_wasm_instr winstrs with ExitCont -> () | _ -> ()
+  try List.iter execute_wasm_instr winstrs with ExitCont -> ()
 
 let execute wmodule =
 
