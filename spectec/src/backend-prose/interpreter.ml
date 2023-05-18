@@ -295,6 +295,8 @@ and interp_instr env i =
       | PairE (NameE n1, NameE n2), PairV (v1, v2)
       | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
           env |> Env.add n1 v1 |> Env.add n2 v2
+      | ArrowE (IterE (n1, ListN n), NameE n2), ArrowV (ListV vl, v2) ->
+          env |> Env.add n1 (ListV vl) |> Env.add n2 v2 |> Env.add n (IntV (Array.length vl))
       | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
         when lhs_tag = rhs_tag ->
           List.fold_left2
@@ -377,6 +379,7 @@ and interp_algo algo args =
     let pattern, _ = param in
     match (pattern, arg) with
     | NameE n, arg -> Env.add n arg acc
+    | IterE (n, _), arg -> Env.add n arg acc
     | _ -> failwith "Invalid destructuring assignment"
   in
 
@@ -407,7 +410,7 @@ let execute wmodule =
   call_algo "instantiation" [ wmodule ] |> Env.get_result |> ignore;
 
   (* Invocation *)
-  call_algo "invocation" [ IntV 0 ] |> ignore
+  call_algo "invocation" [ IntV 0; ListV (Testdata.get_locals_data ()) ] |> ignore
 
 
 

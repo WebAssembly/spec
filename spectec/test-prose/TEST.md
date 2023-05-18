@@ -620,11 +620,15 @@ alloc_table table
 4. Append tableinst to the s.TABLE.
 5. Return a.
 
-invocation funcaddr
-1. Let funcinst be s.FUNC[funcaddr].
-2. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; }; } with arity 0.
-3. Push f to the stack.
-4. Execute (call_addr funcaddr).
+invocation funcaddr val*
+1. Let (_, func) be s.FUNC[funcaddr].
+2. Let FUNC(functype, _, _) be func.
+3. Let _^n->_ be functype.
+4. Assert: the length of val* is n.
+5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; }; } with arity 0.
+6. Push f to the stack.
+7. Push val* to the stack.
+8. Execute (call_addr funcaddr).
 
 ** Test instrs **
 
@@ -736,13 +740,13 @@ select
 Ok
 
 local_set
-Fail!(Invalid_argument("index out of bounds"))
+Ok
 
 local_get
-Fail!(Invalid_argument("index out of bounds"))
+Ok
 
 local_tee
-Fail!(Invalid_argument("index out of bounds"))
+Ok
 
 global_set
 Fail!(Not_found)

@@ -501,7 +501,10 @@ let wasm_func_skeleton : Ast.func' =
   { Ast.ftype = Int32.of_int 0 |> to_phrase; Ast.locals = []; Ast.body = [] }
 
 let wasm_module_skeleton : Ast.module_' =
-  let default_type = Types.FuncType ([], []) |> to_phrase in
+  let default_type =
+    Types.FuncType ([NumType I32Type; NumType I32Type; NumType I32Type], [])
+    |> to_phrase
+  in
   let table_type =
     Types.TableType ({ Types.min = Int32.of_int 3; Types.max = None }, FuncRefType) in
   let table = { Ast.ttype = table_type } |> to_phrase in

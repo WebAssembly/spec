@@ -251,9 +251,14 @@ let alloc_table =
 
 let invocation =
   (* Name definition *)
+  let args = N "val" in
+  let args_iter = IterE (args, List) in
   let funcaddr_name = N "funcaddr" in
-  let func_inst_name = N "funcinst" in
+  let ignore_name = N "_" in
+  let func_name = N "func" in
   let store_name = N "s" in
+  let func_type_name = N "functype" in
+  let n = N "n" in
   let frame_name = N "f" in
   let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
   let frame_rec =
@@ -264,15 +269,25 @@ let invocation =
   (* Algorithm *)
   Algo (
     "invocation",
-    [ (NameE funcaddr_name, TopT) ],
+    [ (NameE funcaddr_name, TopT); (args_iter, TopT) ],
     [
       LetI (
-        NameE func_inst_name,
+        PairE (NameE ignore_name, NameE func_name),
         AccessE (AccessE (NameE store_name, DotP "FUNC"), IndexP (NameE funcaddr_name))
       );
+      LetI (
+        ConstructE ("FUNC", [NameE func_type_name; NameE ignore_name; NameE ignore_name]),
+        NameE func_name
+      );
+      LetI (
+        ArrowE (IterE (ignore_name, ListN n), NameE (ignore_name)),
+        NameE func_type_name
+      );
+      AssertI (EqC (LengthE args_iter, NameE n) |> Print.string_of_cond);
       (* TODO *)
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
+      PushI (args_iter);
       ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]))
     ]
   )
