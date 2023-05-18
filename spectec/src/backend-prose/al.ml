@@ -60,6 +60,7 @@ and value =
   | ConstructV of string * value list
   | RecordV of value record
   | WasmModuleV
+  | OptV of value option
 
 type name = N of string | SubN of name * string
 

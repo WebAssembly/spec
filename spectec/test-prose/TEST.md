@@ -597,13 +597,14 @@ instantiation module
 8. Pop f from the stack.
 
 alloc_module module
-1. Let MODULE(func*) be module.
+1. Let MODULE(func*, table*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
-3. Let moduleinst be { FUNC: funcaddr*; }.
-4. For i in range |s.FUNC| in
+3. Let tableaddr* be $alloc_table(table)*.
+4. Let moduleinst be { FUNC: funcaddr*; }.
+5. For i in range |s.FUNC| in
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
-5. Return moduleinst.
+6. Return moduleinst.
 
 alloc_func func
 1. Let a be the length of s.FUNC.
@@ -611,6 +612,8 @@ alloc_func func
 3. Let funcinst be (dummy_module_inst, func).
 4. Append funcinst to the s.FUNC.
 5. Return a.
+
+alloc_table table
 
 invocation funcaddr
 1. Let funcinst be s.FUNC[funcaddr].

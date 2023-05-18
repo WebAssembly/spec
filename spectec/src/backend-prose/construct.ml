@@ -100,6 +100,15 @@ let al_of_wasm_func wasm_module wasm_func =
 
   ConstructV ("FUNC", [ftype; ListV [||]; ListV (code)])
 
+let al_of_wasm_table wasm_table =
+  let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
+
+  let f opt = IntV (Int32.to_int opt) in
+  let limits_pair =
+    PairV (IntV (Int32.to_int limits.Types.min), OptV (Option.map f limits.Types.max)) in
+
+  ConstructV ("TABLE", [limits_pair; WasmTypeV (RefType ref_ty)])
+
 let al_of_wasm_module wasm_module =
 
   (* Construct functions *)
@@ -108,4 +117,10 @@ let al_of_wasm_module wasm_module =
     |> Array.of_list
     in
 
-  ConstructV ("MODULE", [ListV func_list])
+  (* Construct table *)
+  let table_list =
+    List.map al_of_wasm_table wasm_module.it.tables
+    |> Array.of_list
+    in
+
+  ConstructV ("MODULE", [ListV func_list; ListV table_list])

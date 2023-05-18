@@ -156,7 +156,10 @@ let alloc_module =
   let module_name = N "module" in
   let func_name = N "func" in
   let func_iter = IterE (func_name, List) in
+  let table_name = N "table" in
+  let table_iter = IterE (table_name, List) in
   let funcaddr_iter = IterE (N "funcaddr", List) in
+  let tableaddr_iter = IterE (N "tableaddr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec = Record.add "FUNC" funcaddr_iter Record.empty in
   let store_name = N "s" in
@@ -171,11 +174,15 @@ let alloc_module =
     "alloc_module",
     [ (NameE module_name, TopT) ],
     [
-      LetI (ConstructE ("MODULE", [ func_iter ]), NameE module_name);
+      LetI (ConstructE ("MODULE", [ func_iter; table_iter ]), NameE module_name);
       LetI (
         funcaddr_iter,
         (* dummy module instance *)
         MapE (N "alloc_func", [ NameE func_name ], List)
+      );
+      LetI (
+        tableaddr_iter,
+        MapE (N "alloc_table", [ NameE table_name ], List)
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
@@ -212,6 +219,18 @@ let alloc_func =
     ]
   )
 
+let alloc_table =
+  (* Name definition *)
+  let table_name = N "table" in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_table",
+    [ (NameE table_name, TopT) ],
+    [
+    ]
+  )
+
 let invocation =
   (* Name definition *)
   let funcaddr_name = N "funcaddr" in
@@ -241,4 +260,4 @@ let invocation =
   )
 
 
-let manual_algos = [ br; return; instantiation; alloc_module; alloc_func; invocation ]
+let manual_algos = [ br; return; instantiation; alloc_module; alloc_func; alloc_table; invocation ]

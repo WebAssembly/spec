@@ -92,6 +92,7 @@ let rec structured_string_of_value = function
       ^ ")"
   | RecordV _r -> "RecordV (TODO)"
   | WasmModuleV -> "WasmModuleV"
+  | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
 
 let rec structured_string_of_expr = function
   | ValueE v -> "ValueE " ^ structured_string_of_value v
@@ -435,6 +436,8 @@ and string_of_value = function
   | ConstructV (s, vl) -> s ^ string_of_list string_of_value "(" ", " ")" vl
   | RecordV r -> string_of_record r
   | WasmModuleV -> "WasmModuleV"
+  | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
+  | OptV None -> "?()"
 
 let rec string_of_record_expr r =
   Al.Record.fold

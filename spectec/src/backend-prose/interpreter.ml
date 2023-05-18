@@ -106,7 +106,8 @@ let rec dsl_function_call fname args =
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       call_algo name args |> Env.get_result
-  | _ -> failwith "Invalid DSL function call"
+  | _ ->
+      failwith "Invalid DSL function call"
 
 and eval_expr env expr =
   match expr with
