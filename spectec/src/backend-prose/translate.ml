@@ -109,8 +109,10 @@ let rec exp2expr exp =
   (* List *)
   | Ast.LenE inner_exp -> Al.LengthE (exp2expr inner_exp)
   | Ast.ListE exps -> Al.ListE (List.map exp2expr exps |> Stdlib.Array.of_list)
-  | Ast.IdxE (exp1, exp2) -> Al.AccessE (exp2expr exp1, Al.IndexP (exp2expr exp2))
-  | Ast.SliceE (exp1, exp2, exp3) -> Al.AccessE (exp2expr exp1, Al.SliceP (exp2expr exp2, exp2expr exp3))
+  | Ast.IdxE (exp1, exp2) ->
+      Al.AccessE (exp2expr exp1, Al.IndexP (exp2expr exp2))
+  | Ast.SliceE (exp1, exp2, exp3) ->
+      Al.AccessE (exp2expr exp1, Al.SliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> Al.ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
   | Ast.VarE id -> Al.NameE (N id.it)
@@ -121,6 +123,8 @@ let rec exp2expr exp =
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)
       Al.IterE (name, tmp iter)
+  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
+      Al.ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
   | Ast.DotE (_, inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
   (* Binary / Unary operation *)
@@ -550,11 +554,10 @@ let translate_rules il =
 
 let replace_with e =
   match e.it with
-  | Ast.UpdE (base, path, v) | Ast.ExtE (base, path, v) ->
-      begin match path2expr base path with
+  | Ast.UpdE (base, path, v) | Ast.ExtE (base, path, v) -> (
+      match path2expr base path with
       | Al.AccessE (e, p) -> [ Al.ReplaceI (e, p, exp2expr v) ]
-      | _ -> failwith "Impossible: path2expr always return AccessE"
-      end
+      | _ -> failwith "Impossible: path2expr always return AccessE")
   | _ -> []
 
 let mutator2instrs clause =

@@ -7,6 +7,7 @@ let rec walk_expr f e =
   | MinusE inner_e -> f_expr (MinusE (walk_expr f inner_e))
   | AddE (e1, e2) -> f_expr (AddE (walk_expr f e1, walk_expr f e2))
   | SubE (e1, e2) -> f_expr (SubE (walk_expr f e1, walk_expr f e2))
+  | MulE (e1, e2) -> f_expr (MulE (walk_expr f e1, walk_expr f e2))
   | DivE (e1, e2) -> f_expr (DivE (walk_expr f e1, walk_expr f e2))
   | AppE (fname, args) -> f_expr (AppE (fname, walk_exprs f args))
   (* TODO: Implement walker for iter *)
