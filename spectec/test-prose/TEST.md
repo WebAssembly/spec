@@ -794,5 +794,7 @@ Actual: 2
 (const i32 1)
 FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
 
+== Testing AL...
+ok
 == Complete.
 ```
