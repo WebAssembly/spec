@@ -623,12 +623,14 @@ alloc_table table
 invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].
 2. Let FUNC(functype, _, _) be func.
-3. Let _^n->_ be functype.
+3. Let _^n->_^m be functype.
 4. Assert: the length of val* is n.
 5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; }; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.
 8. Execute (call_addr funcaddr).
+9. Pop val_res^m from the stack.
+10. Return val_res^m.
 
 ** Test instrs **
 

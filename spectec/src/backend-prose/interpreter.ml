@@ -295,8 +295,9 @@ and interp_instr env i =
       | PairE (NameE n1, NameE n2), PairV (v1, v2)
       | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
           env |> Env.add n1 v1 |> Env.add n2 v2
-      | ArrowE (IterE (n1, ListN n), NameE n2), ArrowV (ListV vl, v2) ->
-          env |> Env.add n1 (ListV vl) |> Env.add n2 v2 |> Env.add n (IntV (Array.length vl))
+      | ArrowE (IterE (n1, ListN n), IterE (n2, ListN m)), ArrowV (ListV vl1, ListV vl2) ->
+          env |> Env.add n1 (ListV vl1) |> Env.add n (IntV (Array.length vl1))
+          |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
       | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
         when lhs_tag = rhs_tag ->
           List.fold_left2

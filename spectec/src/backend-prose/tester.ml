@@ -26,7 +26,7 @@ let do_invoke m (i: Script.action) = match i.it with
       |> Array.of_list
     ) in
     begin try
-      Interpreter.call_algo "invocaton" [idx; args] |> snd
+      Interpreter.call_algo "invocation" [idx; args] |> snd
     with
       _ -> print_endline "invocation failed"; StringV "Fail"
     end
@@ -39,6 +39,8 @@ let test_assertion m (a: Script.assertion) =
     if result = ListV(expected_result |> List.map al_of_result |> Array.of_list) then
       print_endline "ok"
     else
+      Print.string_of_stack !Interpreter.stack |> print_endline;
+      Print.string_of_value result |> print_endline;
       print_endline "fail"
   | Script.AssertTrap (invoke, _msg) ->
     begin try
@@ -55,6 +57,8 @@ let test file_name =
   match script with
   | {it = Script.Module (_, {it = Script.Textual m; _}); _} :: asserts ->
     begin try
+      Interpreter.stack := [];
+      Testdata.store := Al.Record.empty;
       Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
     with
       _ -> print_endline "instantiation faield"

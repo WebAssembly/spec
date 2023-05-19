@@ -38,6 +38,9 @@ let relop : numerics =
       | [ StringV "GtS"; _; IntV i1; IntV i2 ] ->
           let result = i1 > i2 |> Bool.to_int in
           IntV result
+      | [ StringV "LeS"; _; IntV i1; IntV i2 ] ->
+          let result = i1 <= i2 |> Bool.to_int in
+          IntV result
       | _ -> failwith "Invalid relop");
   }
 

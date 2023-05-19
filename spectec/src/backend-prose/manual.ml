@@ -259,6 +259,7 @@ let invocation =
   let store_name = N "s" in
   let func_type_name = N "functype" in
   let n = N "n" in
+  let m = N "m" in
   let frame_name = N "f" in
   let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
   let frame_rec =
@@ -280,7 +281,7 @@ let invocation =
         NameE func_name
       );
       LetI (
-        ArrowE (IterE (ignore_name, ListN n), NameE (ignore_name)),
+        ArrowE (IterE (ignore_name, ListN n), IterE (ignore_name, ListN m)),
         NameE func_type_name
       );
       AssertI (EqC (LengthE args_iter, NameE n) |> Print.string_of_cond);
@@ -288,7 +289,9 @@ let invocation =
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
       PushI (args_iter);
-      ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]))
+      ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]));
+      PopI (IterE (SubN (N "val", "res"), ListN m));
+      ReturnI (Some (IterE (SubN (N "val", "res"), ListN m)))
     ]
   )
 
