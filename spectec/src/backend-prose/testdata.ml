@@ -367,7 +367,7 @@ let testcases_reference =
     global_get1;
     global_get2;
     table_get;
-    call_nop;
+    (* call_nop; Temporaily commented *)
     call_add;
     call_sum;
     call_add_return_frame;

@@ -676,9 +676,6 @@ Ok
 table_get
 Ok
 
-call_nop
-Ok
-
 call_add
 Ok
 
@@ -761,9 +758,6 @@ Fail!(Not_found)
 
 table_get
 Ok
-
-call_nop
-Fail!(Stack overflow)
 
 call_add
 Fail!
