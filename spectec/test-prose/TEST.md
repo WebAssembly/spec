@@ -279,7 +279,7 @@ cvtop nt_1 cvtop nt_2 sx
 ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. If YetE (typeof(val)) is not YetE (REF.NULL_val), then:
+3. If val is not of the case REF.NULL_val, then:
   a. Push the value i32.CONST 0 to the stack.
 4. Else:
   a. Let the value ref.null rt be val.
@@ -302,7 +302,7 @@ call_indirect x ft
 3. If i ≥ the length of $table(x), then:
   a. Trap.
 4. Else:
-  a. If YetE (typeof($table(z, x)[i])) is not YetE (REF.FUNC_ADDR_ref), then:
+  a. If $table(x)[i] is not of the case REF.FUNC_ADDR_ref, then:
     1) Trap.
   b. Else:
     1) Let the value ref.funcaddr a be $table(x)[i].
