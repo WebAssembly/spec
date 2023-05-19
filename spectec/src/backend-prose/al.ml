@@ -138,6 +138,8 @@ type instr =
   | RepeatI of (expr * instr list)
   | EitherI of (instr list * instr list)
   | ForI of expr * instr list
+  | ForeachI of expr * expr * instr list
+  | YieldI of expr
   | AssertI of string
   | PushI of expr
   | PopI of expr

@@ -70,6 +70,8 @@ let rec walk_instr f instr =
   | EitherI (il1, il2) ->
       f_instr (EitherI (walk_instrs f il1, walk_instrs f il2))
   | ForI (e, il) -> f_instr (ForI (walk_expr f e, walk_instrs f il))
+  | ForeachI (e1, e2, il) -> f_instr (ForeachI (walk_expr f e1, walk_expr f e2, walk_instrs f il))
+  | YieldI e -> f_instr (YieldI (walk_expr f e))
   | AssertI s -> f_instr (AssertI s)
   | PushI e -> f_instr (PushI (walk_expr f e))
   | PopI e -> f_instr (PopI (walk_expr f e))

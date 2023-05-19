@@ -106,8 +106,10 @@ let rec dsl_function_call fname args =
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       call_algo name args
-  | _ ->
-      failwith "Invalid DSL function call"
+  | n ->
+      string_of_name n
+      |> Printf.sprintf "Invalid DSL function call: %s"
+      |> failwith 
 
 and eval_expr env expr =
   match expr with
@@ -299,6 +301,7 @@ and interp_instr env i =
           |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
       | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
         when lhs_tag = rhs_tag ->
+          assert (List.length ps = List.length vs);
           List.fold_left2
             (fun env p v ->
               match p, v with

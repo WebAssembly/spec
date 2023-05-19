@@ -113,6 +113,8 @@ let return =
 let instantiation =
   (* Name definition *)
   let module_name = N "module" in
+  let global_name = N "global" in
+  let global_iter = IterE (global_name, List) in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init =
     Record.empty
@@ -123,6 +125,8 @@ let instantiation =
     Record.empty
     |> Record.add "MODULE" (NameE module_inst_init_name)
     |> Record.add "LOCAL" (ListE [||]) in
+  let val_name = N "val" in
+  let val_iter = IterE (val_name, List) in
   let module_inst_name = N "moduleinst" in
   let frame_name = N "f" in
   let frame_rec =
@@ -135,17 +139,23 @@ let instantiation =
     "instantiation",
     [ (NameE module_name, TopT) ],
     [
+      LetI (
+        ConstructE ("MODULE", [ NameE (N "_"); global_iter; NameE (N "_") ]),
+        NameE module_name
+      );
       LetI (NameE module_inst_init_name, RecordE module_inst_init);
       LetI (
         NameE frame_init_name,
         FrameE (ValueE (IntV 0), RecordE frame_init_rec)
       );
       PushI (NameE frame_init_name);
+      (* Global *)
+      LetI (val_iter, MapE (N "exec_global", [NameE global_name], List));
       (* TODO: global & elements *)
       PopI (NameE frame_init_name);
       LetI (
         NameE module_inst_name,
-        AppE (N "alloc_module", [NameE module_name])
+        AppE (N "alloc_module", [NameE module_name; val_iter])
       );
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
@@ -154,20 +164,29 @@ let instantiation =
     ]
   )
 
+let exec_global =
+  Algo ("exec_global", [NameE (N "_"), TopT], [])
+
 let alloc_module =
   (* Name definition *)
   let module_name = N "module" in
+  let val_name = N "val" in
+  let val_iter = IterE (val_name, List) in
   let func_name = N "func" in
   let func_iter = IterE (func_name, List) in
   let table_name = N "table" in
   let table_iter = IterE (table_name, List) in
+  let global_name = N "global" in
+  let global_iter = IterE (global_name, List) in
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let tableaddr_iter = IterE (N "tableaddr", List) in
+  let globaladdr_iter = IterE (N "globaladdr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
     |> Record.add "FUNC" funcaddr_iter
     |> Record.add "TABLE" tableaddr_iter
+    |> Record.add "GLOBAL" globaladdr_iter
   in
   let store_name = N "s" in
   let func_name' = N "func'" in
@@ -179,17 +198,20 @@ let alloc_module =
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ (NameE module_name, TopT) ],
+    [ NameE module_name, TopT; val_iter, TopT ],
     [
-      LetI (ConstructE ("MODULE", [ func_iter; table_iter ]), NameE module_name);
+      LetI (ConstructE ("MODULE", [ func_iter; table_iter; global_iter ]), NameE module_name);
       LetI (
         funcaddr_iter,
-        (* dummy module instance *)
         MapE (N "alloc_func", [ NameE func_name ], List)
       );
       LetI (
         tableaddr_iter,
         MapE (N "alloc_table", [ NameE table_name ], List)
+      );
+      LetI (
+        globaladdr_iter,
+        MapE (N "alloc_global", [ NameE val_name ], List)
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
@@ -255,6 +277,9 @@ let alloc_table =
     ]
   )
 
+let alloc_global =
+  Algo ("alloc_global", [NameE (N "_"), TopT], [])
+
 let invocation =
   (* Name definition *)
   let args = N "val" in
@@ -310,8 +335,10 @@ let manual_algos =
     br;
     return;
     instantiation;
+    exec_global;
     alloc_module;
     alloc_func;
     alloc_table;
+    alloc_global;
     invocation
   ]

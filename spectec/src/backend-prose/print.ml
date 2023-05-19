@@ -323,6 +323,16 @@ let rec structured_string_of_instr depth = function
       ^ ":\n"
       ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
+  | ForeachI (e1, e2, il) ->
+      "ForeachI (\n"
+      ^ repeat indent (depth + 1)
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ":\n"
+      ^ structured_string_of_instrs (depth + 1) il
+      ^ repeat indent depth ^ ")"
+  | YieldI e -> "YieldI (" ^ structured_string_of_expr e ^ ")"
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
@@ -575,9 +585,15 @@ let rec string_of_instr index depth = function
         (repeat indent depth ^ or_index)
         (string_of_instrs (depth + 1) il2)
   | ForI (e, il) ->
-      sprintf "%s For i in range |%s| in%s" (make_index index depth)
+      sprintf "%s For i in range |%s|:%s" (make_index index depth)
         (string_of_expr e)
         (string_of_instrs (depth + 1) il)
+  | ForeachI (e1, e2, il) ->
+      sprintf "%s Foreach %s in %s:%s" (make_index index depth)
+        (string_of_expr e1)
+        (string_of_expr e2)
+        (string_of_instrs (depth + 1) il)
+  | YieldI e -> sprintf "%s Yield %s." (make_index index depth) (string_of_expr e)
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth)

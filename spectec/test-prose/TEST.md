@@ -587,24 +587,29 @@ return
 9. Push val^n to the stack.
 
 instantiation module
-1. Let moduleinst_init be { FUNC: []; TABLE: []; }.
-2. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
-3. Push f_init to the stack.
-4. Pop f_init from the stack.
-5. Let moduleinst be $alloc_module(module).
-6. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
-7. Push f to the stack.
-8. Pop f from the stack.
+1. Let MODULE(_, global*, _) be module.
+2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
+3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
+4. Push f_init to the stack.
+5. Let val* be $exec_global(global)*.
+6. Pop f_init from the stack.
+7. Let moduleinst be $alloc_module(module, val*).
+8. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+9. Push f to the stack.
+10. Pop f from the stack.
 
-alloc_module module
-1. Let MODULE(func*, table*) be module.
+exec_global _
+
+alloc_module module val*
+1. Let MODULE(func*, table*, global*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
 3. Let tableaddr* be $alloc_table(table)*.
-4. Let moduleinst be { FUNC: funcaddr*; TABLE: tableaddr*; }.
-5. For i in range |s.FUNC| in
+4. Let globaladdr* be $alloc_global(val)*.
+5. Let moduleinst be { FUNC: funcaddr*; GLOBAL: globaladdr*; TABLE: tableaddr*; }.
+6. For i in range |s.FUNC|:
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
-6. Return moduleinst.
+7. Return moduleinst.
 
 alloc_func func
 1. Let a be the length of s.FUNC.
@@ -619,6 +624,8 @@ alloc_table table
 3. Let tableinst be (ref.null reftype)^n.
 4. Append tableinst to the s.TABLE.
 5. Return a.
+
+alloc_global _
 
 invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].
