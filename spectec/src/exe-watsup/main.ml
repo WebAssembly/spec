@@ -163,9 +163,9 @@ let () =
         al;
       (*log "AL Validation...";
       Backend_al.Validation.valid al;*)
-      log "Interpret AL...";
-      Backend_al.Interpreter.interpret al;
-      log "Testing AL...";
+      log "Initializing AL interprter with generated AL...";
+      Backend_al.Interpreter.init al;
+      log "Interpreting AL...";
       Backend_al.Tester.test "test-prose/sample.wast"
     );
     log "Complete."

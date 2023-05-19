@@ -25,6 +25,8 @@ let to_map algos =
 
 (* Environmet *)
 
+let store : store ref = ref Record.empty
+
 module Env = struct
   module EnvKey = struct
     type t = name
@@ -48,7 +50,7 @@ module Env = struct
 
   (* Environment API *)
   let empty =
-    (Env'.add (N "s") (StoreV Testdata.store) Env'.empty, StringV "Undefined")
+    (Env'.add (N "s") (StoreV store) Env'.empty, StringV "Undefined")
 
   let find key (env, _) =
     try Env'.find key env
@@ -78,8 +80,6 @@ let get_current_frame () =
   match List.find_map (function FrameV f -> Some f | _ -> None) !stack with
   | Some frame -> frame
   | None -> failwith "No frame" (* Due to Wasm validation, unreachable *)
-
-let store : store ref = ref Record.empty
 
 (* Evaluation Context *)
 
@@ -332,7 +332,7 @@ and interp_instr env i =
       | _ -> failwith "Invalid Replace instr")
   (* TODO *)
   | ReplaceI (_, _, e) ->
-      (match Record.find "FUNC" !Testdata.store with
+      (match Record.find "FUNC" !store with
       | ListV l ->
           eval_expr env e |> Array.set l 0;
           env
@@ -407,79 +407,9 @@ and execute_wasm_instr winstr =
 and execute_wasm_instrs winstrs =
   try List.iter execute_wasm_instr winstrs with ExitCont -> ()
 
-let execute wmodule =
-
-  (* Instantiation *)
-  call_algo "instantiation" [ wmodule ] |> ignore;
-
-  (* Invocation *)
-  call_algo "invocation" [ IntV 0; ListV (Testdata.get_locals_data ()) ] |> ignore
-
-
-
-(* Test interpreter *)
-
-let check expected_result =
-    let actual_result = List.hd !stack |> Testdata.string_of_result in
-    if actual_result = expected_result then print_endline "Ok\n"
-    else
-      "Fail!\n" ^ "Expected: " ^ expected_result ^ "\n" ^ "Actual: "
-      ^ actual_result ^ "\n" ^ string_of_stack !stack
-      |> print_endline
-
-let test_module () =
-
-  print_endline "** Test module **\n";
-
-  (* Construct Al *)
-  let f (name, raw, res) = (name, Construct.al_of_wasm_module raw, res) in
-  let al_testcases = List.map f Testdata.testcases_module in
-
-  (* test *)
-  let test_module (name, wmodule, res) =
-
-    (* Print test name *)
-    print_endline name;
-
-    (* Initialize *)
-    stack := [];
-    Testdata.store := Record.empty;
-
-    (* Execute *)
-    try execute wmodule; check res with
-    | e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n") in
-
-  List.iter test_module al_testcases
-
-let test_instrs () =
-
-  print_endline "** Test instrs **\n";
-
-  (* Construct Al *)
-  let f (name, raw, res) = (name, Construct.al_of_wasm_instrs [] raw, res) in
-  let al_testcases =
-    List.map f Testdata.testcases_reference @ Testdata.testcases_wasm_value in
-
-  (* test *)
-  let test_instr (name, winstrs, res) =
-
-    (* Print test name *)
-    print_endline name;
-
-    (* Initialize *)
-    stack := [];
-    Testdata.get_frame_data () |> push;
-    Testdata.store := Testdata.get_store_data ();
-
-    (* execute *)
-    try execute_wasm_instrs winstrs; check res with
-    | e -> print_endline ("Fail!(" ^ Printexc.to_string e ^ ")\n") in
-
-  List.iter test_instr al_testcases
 
 (* Entry *)
-
-let interpret algos =
+let init algos =
 
   algo_map := to_map algos;
 
@@ -493,9 +423,3 @@ let interpret algos =
         let (Algo (name, _, _)) = algo in
         AlgoMap.add name algo acc)
       !algo_map Manual.manual_algos;
-
-  (* Test instrs *)
-  test_instrs ();
-
-  (* Test module *)
-  test_module ()

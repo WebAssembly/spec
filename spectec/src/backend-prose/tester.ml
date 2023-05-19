@@ -69,7 +69,7 @@ let test file_name =
   match script with
   | {it = Script.Module (_, {it = Script.Textual m; _}); _} :: asserts ->
     Interpreter.stack := [];
-    Testdata.store := Al.Record.empty;
+    Interpreter.store := Al.Record.empty;
     Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
     List.iter (fun (cmd: Script.command) -> match cmd.it with
       | Script.Assertion a -> test_assertion m a
