@@ -518,7 +518,7 @@ table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Perform $with_tableext(x, YetE (ref^n{})).
+  a. Perform $with_tableext(x, (ref)^n).
   b. Push the value i32.CONST the length of $table(x) to the stack.
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
@@ -544,7 +544,7 @@ memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST n from the stack.
 3. Either:
-  a. Perform $with_memext(0, YetE (0^((n * 64) * $Ki){})).
+  a. Perform $with_memext(0, (0)^((n · 64) · $Ki())).
   b. Push the value i32.CONST the length of $mem(0) to the stack.
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
