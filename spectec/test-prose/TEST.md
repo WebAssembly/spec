@@ -795,6 +795,54 @@ Actual: 2
 FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 
 == Testing AL...
-ok
+[Invoking binop...]
+[Invoking testop...]
+[Invoking relop_i32...]
+[Invoking relop_f32...]
+[Invoking nop...]
+[Invoking drop...]
+[Invoking select...]
+[Invoking local_set...]
+[Invoking local_get...]
+[Invoking local_tee...]
+[Invoking global_set...]
+ Fail!
+ Expected: [(const i32 43)]
+ Actual: Not_found
+
+[Invoking global_get1...]
+ Fail!
+ Expected: [(const f32 5.19999980927)]
+ Actual: Not_found
+
+[Invoking global_get2...]
+ Fail!
+ Expected: [(const i32 42)]
+ Actual: Not_found
+
+[Invoking table_get...]
+[Invoking call_nop...]
+[Invoking call_add...]
+[Invoking call_sum...]
+[Invoking call_add_return_frame...]
+ Fail!
+ Expected: [(const i32 3)]
+ Actual: Failure("Not a label")
+
+[Invoking call_add_return_label...]
+ Fail!
+ Expected: [(const i32 3)]
+ Actual: Failure("Not a label")
+
+[Invoking block...]
+[Invoking br_zero...]
+[Invoking br_succ...]
+ Fail!
+ Expected: [(const i32 43)]
+ Actual: Failure("SubE (NameE (N(l)), ValueE 1)")
+
+[Invoking if_true...]
+[Invoking if_false...]
+[Invoking fib...]
 == Complete.
 ```
