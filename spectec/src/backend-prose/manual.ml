@@ -112,6 +112,7 @@ let return =
 
 let instantiation =
   (* Name definition *)
+  let ignore_name = N "_" in
   let module_name = N "module" in
   let global_name = N "global" in
   let global_iter = IterE (global_name, List) in
@@ -140,7 +141,7 @@ let instantiation =
     [ (NameE module_name, TopT) ],
     [
       LetI (
-        ConstructE ("MODULE", [ NameE (N "_"); global_iter; NameE (N "_") ]),
+        ConstructE ("MODULE", [ NameE ignore_name; NameE ignore_name; global_iter ]),
         NameE module_name
       );
       LetI (NameE module_inst_init_name, RecordE module_inst_init);
@@ -165,10 +166,30 @@ let instantiation =
   )
 
 let exec_global =
-  Algo ("exec_global", [NameE (N "_"), TopT], [])
+  (* Name definition *)
+  let ignore_name = N "_" in
+  let global_name = N "global" in
+  let instr_iter = IterE (N "instr", List) in
+  let val_name = N "val" in
+
+  (* Algorithm *)
+  Algo (
+    "exec_global",
+    [NameE global_name, TopT],
+    [
+      LetI (
+        ConstructE ("GLOBAL", [ NameE ignore_name; instr_iter ]),
+        NameE global_name
+      );
+      JumpI instr_iter;
+      PopI (NameE val_name);
+      ReturnI (Some (NameE val_name))
+    ]
+  )
 
 let alloc_module =
   (* Name definition *)
+  let ignore_name = N "_" in
   let module_name = N "module" in
   let val_name = N "val" in
   let val_iter = IterE (val_name, List) in
@@ -218,7 +239,7 @@ let alloc_module =
       ForI (
         AccessE (NameE store_name, DotP "FUNC"),
         [
-          LetI (PairE (NameE (N "_"), NameE func_name'), index_access);
+          LetI (PairE (NameE ignore_name, NameE func_name'), index_access);
           ReplaceI (base, index, PairE (NameE module_inst_name, NameE func_name'))
         ]
       );
@@ -253,6 +274,7 @@ let alloc_func =
 
 let alloc_table =
   (* Name definition *)
+  let ignore_name = N "_" in
   let table_name = N "table" in
   let min = N "n" in
   let reftype = N "reftype" in
@@ -267,7 +289,7 @@ let alloc_table =
     [ (NameE table_name, TopT) ],
     [
       LetI (
-        ConstructE ("TABLE", [PairE (NameE min, NameE (N "_")); NameE reftype]),
+        ConstructE ("TABLE", [PairE (NameE min, NameE ignore_name); NameE reftype]),
         NameE table_name
       );
       LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "TABLE")));

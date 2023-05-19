@@ -587,7 +587,7 @@ return
 9. Push val^n to the stack.
 
 instantiation module
-1. Let MODULE(_, global*, _) be module.
+1. Let MODULE(_, _, global*) be module.
 2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
 4. Push f_init to the stack.
@@ -598,7 +598,11 @@ instantiation module
 9. Push f to the stack.
 10. Pop f from the stack.
 
-exec_global _
+exec_global global
+1. Let GLOBAL(_, instr*) be global.
+2. Jump to instr*.
+3. Pop val from the stack.
+4. Return val.
 
 alloc_module module val*
 1. Let MODULE(func*, table*, global*) be module.

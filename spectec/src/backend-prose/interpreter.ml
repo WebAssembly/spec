@@ -313,9 +313,9 @@ and interp_instr env i =
                   |> Printf.sprintf "Invalid destructuring assignment: %s"
                   |> failwith)
             env ps vs
-      | _ ->
-          string_of_instr (ref 0) 0 i
-          |> Printf.sprintf "Invalid assignment: %s"
+      | e, v ->
+          Printf.sprintf "Invalid assignment: %s %s"
+            (string_of_expr e) (string_of_value v)
           |> failwith)
   | NopI | ReturnI None -> env
   | ReturnI (Some e) ->
