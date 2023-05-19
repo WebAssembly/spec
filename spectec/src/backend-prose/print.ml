@@ -496,6 +496,7 @@ and string_of_expr = function
   | WasmInstrE (s, el) -> s ^ string_of_list string_of_expr " " " " "" el
   | NameE n -> string_of_name n
   | ArrowE (e1, e2) -> string_of_expr e1 ^ "->" ^ string_of_expr e2
+  | ConstructE (s, []) -> s
   | ConstructE (s, el) -> s ^ string_of_list string_of_expr "(" ", " ")" el
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"

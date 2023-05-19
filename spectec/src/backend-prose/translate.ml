@@ -157,6 +157,10 @@ let rec exp2expr exp =
   (* Wasm Instruction *)
   | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }, _) ->
       Al.WasmInstrE ("loop", List.map exp2expr exps)
+  (* ConstructE *)
+  | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }, _) ->
+      Al.ConstructE (cons, List.map exp2expr args)
+  | Ast.CaseE (Ast.Atom cons, arg, _) -> Al.ConstructE (cons, [ exp2expr arg ])
   (* Tuple *)
   | Ast.TupE exps -> Al.TupE (List.map exp2expr exps)
   (* Call *)
@@ -419,7 +423,10 @@ let prems2instrs remain_lhs =
           | Ast.CaseE (atom, _e, t) ->
               [
                 Al.IfI
-                  ( Al.CaseOfC (exp2expr exp2, Print.string_of_atom atom ^ "_" ^ Print.string_of_typ t),
+                  ( Al.CaseOfC
+                      ( exp2expr exp2,
+                        Print.string_of_atom atom ^ "_" ^ Print.string_of_typ t
+                      ),
                     Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
                     [] );
               ]

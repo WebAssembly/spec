@@ -180,7 +180,7 @@ label n instr val
 4. Push val* to the stack.
 
 br
-1. Pop val'* ++ val^n ++ [YetE (BR_admininstr(0))] ++ instr* from the stack.
+1. Pop val'* ++ val^n ++ [BR(0)] ++ instr* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. If the length of val^n is n, then:
@@ -265,7 +265,7 @@ relop nt relop
 extend nt n
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c from the stack.
-3. Push the value nt.CONST $ext(n, $size(nt), YetE (S_sx), c) to the stack.
+3. Push the value nt.CONST $ext(n, $size(nt), S, c) to the stack.
 
 cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -465,7 +465,7 @@ memory.copy
     2) Else:
       a) Push the value i32.CONST ((j + n) - 1) to the stack.
       b) Push the value i32.CONST ((i + n) - 1) to the stack.
-    3) Execute (load i32 ?((8, YetE (U_sx))) 0 0).
+    3) Execute (load i32 ?((8, U)) 0 0).
     4) Execute (store i32 ?(8) 0 0).
     5) Push the value i32.CONST (j + 1) to the stack.
     6) Push the value i32.CONST (i + 1) to the stack.

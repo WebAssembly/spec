@@ -29,6 +29,7 @@ let rec walk_expr f e =
   | RefNullE n -> f_expr (RefNullE n)
   | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))
   | WasmInstrE (s, el) -> f_expr (WasmInstrE (s, walk_exprs f el))
+  | ConstructE (s, el) -> f_expr (ConstructE (s, walk_exprs f el))
   | NameE n -> f_expr (NameE n)
   | YetE s -> f_expr (YetE s)
   | _ ->
