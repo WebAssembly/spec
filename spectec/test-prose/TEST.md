@@ -587,7 +587,7 @@ return
 9. Push val^n to the stack.
 
 instantiation module
-1. Let moduleinst_init be ModuleInstV (TODO).
+1. Let moduleinst_init be { FUNC: []; TABLE: []; }.
 2. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
 3. Push f_init to the stack.
 4. Pop f_init from the stack.
@@ -608,7 +608,7 @@ alloc_module module
 
 alloc_func func
 1. Let a be the length of s.FUNC.
-2. Let dummy_module_inst be { FUNC: []; }.
+2. Let dummy_module_inst be { FUNC: []; TABLE: []; }.
 3. Let funcinst be (dummy_module_inst, func).
 4. Append funcinst to the s.FUNC.
 5. Return a.
@@ -625,7 +625,7 @@ invocation funcaddr val*
 2. Let FUNC(functype, _, _) be func.
 3. Let _^n->_^m be functype.
 4. Assert: the length of val* is n.
-5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; }; } with arity 0.
+5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.
 8. Execute (call_addr funcaddr).
@@ -689,7 +689,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: { DATA: DUMMY; ELEM: DUMMY; EXPORT: DUMMY; FUNC: [0, 1, 2]; GLOBAL: [0, 1, 2]; IMPORT: DUMMY; MEM: DUMMY; START: DUMMY; TABLE: [0, 1, 2]; }; })
 
 call_add_return_label
 Fail!
@@ -698,7 +698,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: ModuleInstV (TODO); })
+FrameV ({ LOCAL: [(const i32 3), (const i32 0), (const i32 7)]; MODULE: { DATA: DUMMY; ELEM: DUMMY; EXPORT: DUMMY; FUNC: [0, 1, 2]; GLOBAL: [0, 1, 2]; IMPORT: DUMMY; MEM: DUMMY; START: DUMMY; TABLE: [0, 1, 2]; }; })
 
 block
 Ok
@@ -766,7 +766,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 
 call_sum
 Fail!
@@ -774,7 +774,7 @@ Expected: 55
 Actual: 10
 [Stack]
 (const i32 10)
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 
 call_add_return_frame
 Fail!
@@ -783,7 +783,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 
 call_add_return_label
 Fail!
@@ -792,7 +792,7 @@ Actual: 2
 [Stack]
 (const i32 2)
 (const i32 1)
-FrameV ({ LOCAL: []; MODULE: { FUNC: []; }; })
+FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 
 == Testing AL...
 ok

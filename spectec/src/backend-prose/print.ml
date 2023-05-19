@@ -64,7 +64,6 @@ let rec structured_string_of_value = function
   | LabelV _ -> "LabelV (TODO)"
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
-  | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV _ -> "ListV"
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | WasmInstrV (s, vl) ->
@@ -431,7 +430,6 @@ and string_of_value = function
   | LabelV _ -> "LabelV (TODO)"
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
-  | ModuleInstV _ -> "ModuleInstV (TODO)"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
   | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
   | WasmInstrV (s, vl) ->

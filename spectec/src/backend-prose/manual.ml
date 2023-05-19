@@ -114,7 +114,10 @@ let instantiation =
   (* Name definition *)
   let module_name = N "module" in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
-  let module_inst_init = Record.add "FUNC" (ListV [||]) Record.empty in
+  let module_inst_init =
+    Record.empty
+    |> Record.add "FUNC" (ListE [||])
+    |> Record.add "TABLE" (ListE [||]) in
   let frame_init_name = SubN ((N "f"), "init") in
   let frame_init_rec =
     Record.empty
@@ -132,7 +135,7 @@ let instantiation =
     "instantiation",
     [ (NameE module_name, TopT) ],
     [
-      LetI (NameE module_inst_init_name, ValueE (ModuleInstV module_inst_init));
+      LetI (NameE module_inst_init_name, RecordE module_inst_init);
       LetI (
         NameE frame_init_name,
         FrameE (ValueE (IntV 0), RecordE frame_init_rec)
@@ -207,7 +210,10 @@ let alloc_func =
   let addr_name = N "a" in
   let store_name = N "s" in
   let dummy_module_inst = N "dummy_module_inst" in
-  let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
+  let dummy_module_rec =
+    Record.empty
+    |> Record.add "FUNC" (ListE [||])
+    |> Record.add "TABLE" (ListE [||]) in
   let func_inst_name = N "funcinst" in
 
   (* Algorithm *)
@@ -261,7 +267,10 @@ let invocation =
   let n = N "n" in
   let m = N "m" in
   let frame_name = N "f" in
-  let dummy_module_rec = Record.add "FUNC" (ListE [||]) Record.empty in
+  let dummy_module_rec =
+    Record.empty
+    |> Record.add "FUNC" (ListE [||])
+    |> Record.add "TABLE" (ListE [||]) in
   let frame_rec =
     Record.empty
     |> Record.add "LOCAL" (ListE [||])

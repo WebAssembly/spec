@@ -54,7 +54,7 @@ let addrs =
       (* global address 2 *)
     |]
 
-let module_inst : module_inst =
+let module_inst =
   Record.empty |> Record.add "IMPORT" yetV |> Record.add "FUNC" addrs
   |> Record.add "GLOBAL" addrs |> Record.add "TABLE" addrs
   |> Record.add "MEM" yetV |> Record.add "ELEM" yetV |> Record.add "DATA" yetV
@@ -65,12 +65,12 @@ let get_func_insts_data () =
     [|
       (* nop *)
       PairV
-        ( ModuleInstV module_inst,
+        ( RecordV module_inst,
           "(module(func))" |> string_to_func
         );
       (* add *)
       PairV
-        ( ModuleInstV module_inst,
+        ( RecordV module_inst,
           "(module(func (param i32 i32) (result i32)
               (local.get 0)
               (local.get 1)
@@ -79,7 +79,7 @@ let get_func_insts_data () =
         );
       (* sum *)
       PairV
-        ( ModuleInstV module_inst,
+        ( RecordV module_inst,
           "(module(func (param i32) (result i32)
               (local.get 0)
               (if (result i32) ( then
@@ -96,7 +96,7 @@ let get_func_insts_data () =
           );
       (* return_frame *)
       PairV
-        ( ModuleInstV module_inst,
+        ( RecordV module_inst,
           "(module(func (param i32 i32) (result i32)
               (local.get 0)
               (local.get 1)
@@ -108,7 +108,7 @@ let get_func_insts_data () =
         );
       (* return_label *)
       PairV
-        ( ModuleInstV module_inst,
+        ( RecordV module_inst,
           "(module(func (param i32 i32) (result i32)
               (local.get 0)
               (local.get 1)
@@ -179,7 +179,7 @@ let get_frame_data () =
   let r =
     Record.empty
     |> Record.add "LOCAL" (ListV locals)
-    |> Record.add "MODULE" (ModuleInstV module_inst)
+    |> Record.add "MODULE" (RecordV module_inst)
   in
   FrameV (Array.length locals, r)
 

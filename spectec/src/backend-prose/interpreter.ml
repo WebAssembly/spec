@@ -174,7 +174,6 @@ and eval_expr env expr =
             |> failwith
         end
       | DotP str -> begin match eval_expr env e with
-        | ModuleInstV m -> Record.find str m
         | FrameV (_, r) -> Record.find str r
         | StoreV s -> Record.find str !s
         | RecordV r -> Record.find str r

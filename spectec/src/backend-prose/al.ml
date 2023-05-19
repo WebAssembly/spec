@@ -33,7 +33,6 @@ and global_inst = value
 and table_inst = value
 
 (* Table, Global: Address list *)
-and module_inst = value record
 and label = int * value list
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
@@ -48,7 +47,6 @@ and value =
   | LabelV of label
   | FrameV of frame
   | StoreV of store ref
-  | ModuleInstV of module_inst
   | ListV of value array
   | WasmTypeV of Types.value_type
   | WasmInstrV of string * value list
