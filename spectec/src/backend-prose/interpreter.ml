@@ -105,7 +105,7 @@ let rec dsl_function_call fname args =
   | N name when Numerics.mem name -> Numerics.call_numerics name args
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      call_algo name args |> Env.get_result
+      call_algo name args
   | _ ->
       failwith "Invalid DSL function call"
 
@@ -394,7 +394,7 @@ and interp_algo algo args =
 
 and call_algo name args =
   let algo = AlgoMap.find name !algo_map in
-  interp_algo algo args
+  interp_algo algo args |> Env.get_result
 
 and execute_wasm_instr winstr =
   match winstr with
@@ -408,7 +408,7 @@ and execute_wasm_instrs winstrs =
 let execute wmodule =
 
   (* Instantiation *)
-  call_algo "instantiation" [ wmodule ] |> Env.get_result |> ignore;
+  call_algo "instantiation" [ wmodule ] |> ignore;
 
   (* Invocation *)
   call_algo "invocation" [ IntV 0; ListV (Testdata.get_locals_data ()) ] |> ignore

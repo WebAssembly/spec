@@ -30,7 +30,7 @@ let do_invoke m (i: Script.action) = match i.it with
       |> List.map (fun (l: Script.literal) -> Construct.al_of_wasm_value l.it)
       |> Array.of_list
     ) in
-    Interpreter.call_algo "invocation" [idx; args] |> snd
+    Interpreter.call_algo "invocation" [idx; args]
   | _ -> failwith not_supported
 
 let test_assertion m (a: Script.assertion) =
