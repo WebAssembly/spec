@@ -629,7 +629,10 @@ alloc_table table
 4. Append tableinst to the s.TABLE.
 5. Return a.
 
-alloc_global _
+alloc_global val
+1. Let a be the length of s.GLOBAL.
+2. Append val to the s.GLOBAL.
+3. Return a.
 
 invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].
@@ -817,20 +820,8 @@ FrameV ({ LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; })
 [Invoking local_get...]
 [Invoking local_tee...]
 [Invoking global_set...]
- Fail!
- Expected: [(const i32 43)]
- Actual: Not_found
-
 [Invoking global_get1...]
- Fail!
- Expected: [(const f32 5.19999980927)]
- Actual: Not_found
-
 [Invoking global_get2...]
- Fail!
- Expected: [(const i32 42)]
- Actual: Not_found
-
 [Invoking table_get...]
 [Invoking call_nop...]
 [Invoking call_add...]

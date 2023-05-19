@@ -300,7 +300,21 @@ let alloc_table =
   )
 
 let alloc_global =
-  Algo ("alloc_global", [NameE (N "_"), TopT], [])
+  (* Name definition *)
+  let val_name = N "val" in
+  let addr_name = N "a" in
+  let store_name = N "s" in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_global",
+    [NameE val_name, TopT],
+    [
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "GLOBAL")));
+      AppendI (NameE val_name, NameE store_name, "GLOBAL");
+      ReturnI (Some (NameE addr_name))
+    ]
+  )
 
 let invocation =
   (* Name definition *)

@@ -246,7 +246,7 @@
 (assert_return (invoke "local_tee" (i32.const 3) (i32.const 0) (i32.const 7)) (i32.const 6))
 (assert_return (invoke "global_set") (i32.const 43))
 (assert_return (invoke "global_get1") (f32.const 5.2))
-(assert_return (invoke "global_get2") (i32.const 42))
+(assert_return (invoke "global_get2") (i32.const 43))
 (assert_return (invoke "table_get") (ref.null func))
 (assert_return (invoke "call_nop") (i32.const 0))
 (assert_return (invoke "call_add") (i32.const 3))
