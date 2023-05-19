@@ -419,11 +419,7 @@ let prems2instrs remain_lhs =
           | Ast.CaseE (atom, _e, t) ->
               [
                 Al.IfI
-                  ( Al.EqC
-                      ( Al.YetE ("typeof(" ^ Print.string_of_exp exp2 ^ ")"),
-                        Al.YetE
-                          (Print.string_of_atom atom ^ "_"
-                         ^ Print.string_of_typ t) ),
+                  ( Al.CaseOfC (exp2expr exp2, Print.string_of_atom atom ^ "_" ^ Print.string_of_typ t),
                     Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
                     [] );
               ]

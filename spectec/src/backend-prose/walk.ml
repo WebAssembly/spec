@@ -38,7 +38,8 @@ let rec walk_expr f e =
 and walk_exprs f = walk_expr f |> List.map
 
 and walk_path f p =
-  let f_path = (fun p -> p) in (* TODO *)
+  let f_path p = p in
+  (* TODO *)
   match p with
   | IndexP e -> f_path (IndexP (walk_expr f e))
   | SliceP (e1, e2) -> f_path (SliceP (walk_expr f e1, walk_expr f e2))
@@ -54,6 +55,7 @@ let rec walk_cond f c =
   | GtC (e1, e2) -> f_cond (GtC (walk_expr f e1, walk_expr f e2))
   | LtC (e1, e2) -> f_cond (LtC (walk_expr f e1, walk_expr f e2))
   | LeC (e1, e2) -> f_cond (LeC (walk_expr f e1, walk_expr f e2))
+  | CaseOfC (e, c) -> f_cond (CaseOfC (walk_expr f e, c))
   | _ -> Print.structured_string_of_cond c |> failwith
 
 let rec walk_instr f instr =
@@ -78,7 +80,8 @@ let rec walk_instr f instr =
   | InvokeI e -> f_instr (InvokeI (walk_expr f e))
   | EnterI (e1, e2) -> f_instr (EnterI (walk_expr f e1, walk_expr f e2))
   | ExecuteI e -> f_instr (ExecuteI (walk_expr f e))
-  | ReplaceI (e1, p, e2) -> f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
+  | ReplaceI (e1, p, e2) ->
+      f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
   | JumpI e -> f_instr (JumpI (walk_expr f e))
   | PerformI e -> f_instr (PerformI (walk_expr f e))
   | ExitI n -> f_instr (ExitI n)

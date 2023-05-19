@@ -220,7 +220,10 @@ and structured_string_of_field (n, e) =
 
 and structured_string_of_path = function
   | IndexP e -> sprintf "IndexP(%s)" (structured_string_of_expr e)
-  | SliceP (e1, e2) -> sprintf "SliceP(%s,%s)" (structured_string_of_expr e1) (structured_string_of_expr e2)
+  | SliceP (e1, e2) ->
+      sprintf "SliceP(%s,%s)"
+        (structured_string_of_expr e1)
+        (structured_string_of_expr e2)
   | DotP s -> sprintf "DotP(%s)" s
 
 (* condition *)
@@ -274,6 +277,7 @@ and structured_string_of_cond = function
       "PartOfC ("
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"
+  | CaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | TopC s -> "TopC (" ^ s ^ ")"
   | YetC s -> "YetC (" ^ s ^ ")"
 
@@ -323,7 +327,7 @@ let rec structured_string_of_instr depth = function
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
-  | PopAllI e -> "PopAllI (" ^ structured_string_of_expr e ^ ")" 
+  | PopAllI e -> "PopAllI (" ^ structured_string_of_expr e ^ ")"
   | LetI (n, e) ->
       "LetI ("
       ^ structured_string_of_expr n
@@ -356,9 +360,7 @@ let rec structured_string_of_instr depth = function
   | AppendI (e1, e2, s) ->
       "AppendI ("
       ^ structured_string_of_expr e1
-      ^ ", "
-      ^ s
-      ^ ", "
+      ^ ", " ^ s ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
   | YetI s -> "YetI " ^ s
@@ -505,12 +507,15 @@ and string_of_expr = function
 
 and string_of_path = function
   | IndexP e -> sprintf "[%s]" (string_of_expr e)
-  | SliceP (e1, e2) -> sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
+  | SliceP (e1, e2) ->
+      sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
   | DotP s -> sprintf ".%s" s
 
 and string_of_cond = function
   | NotC (EqC (e1, e2)) ->
       sprintf "%s is not %s" (string_of_expr e1) (string_of_expr e2)
+  | NotC (CaseOfC (e, c)) ->
+      sprintf "%s is not of the case %s" (string_of_expr e) c
   | NotC c -> sprintf "not %s" (string_of_cond c)
   | AndC (c1, c2) -> sprintf "%s and %s" (string_of_cond c1) (string_of_cond c2)
   | OrC (c1, c2) -> sprintf "%s or %s" (string_of_cond c1) (string_of_cond c2)
@@ -525,6 +530,7 @@ and string_of_cond = function
       sprintf "%s and %s are part of the instruction" (string_of_expr e1)
         (string_of_expr e2)
   | PartOfC _ -> failwith "Invalid case"
+  | CaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | TopC s -> sprintf "the top of the stack is %s" s
   | YetC s -> sprintf "YetC (%s)" s
 
@@ -570,8 +576,7 @@ let rec string_of_instr index depth = function
         (repeat indent depth ^ or_index)
         (string_of_instrs (depth + 1) il2)
   | ForI (e, il) ->
-      sprintf "%s For i in range |%s| in%s"
-        (make_index index depth)
+      sprintf "%s For i in range |%s| in%s" (make_index index depth)
         (string_of_expr e)
         (string_of_instrs (depth + 1) il)
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
@@ -629,8 +634,9 @@ let string_of_algorithm = function
       ^ string_of_instrs 0 instrs ^ "\n"
 
 open Reference_interpreter
-let string_of_winstr (winstr: Ast.instr) =
-  let num (x: Ast.var) = x.it |> I32.to_string_u in
+
+let string_of_winstr (winstr : Ast.instr) =
+  let num (x : Ast.var) = x.it |> I32.to_string_u in
   match winstr.it with
   | Ast.Unreachable -> "unreachable"
   | Ast.Nop -> "nop"
