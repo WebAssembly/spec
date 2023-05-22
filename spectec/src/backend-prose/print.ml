@@ -365,7 +365,8 @@ let rec structured_string_of_instr depth = function
       ^ ")"
   | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
   | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
-  | ExitI n -> "ExitI (" ^ structured_string_of_name n ^ ")"
+  | ExitNormalI n -> "ExitNormalI (" ^ structured_string_of_name n ^ ")"
+  | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
   | AppendI (e1, e2, s) ->
       "AppendI ("
       ^ structured_string_of_expr e1
@@ -627,7 +628,7 @@ let rec string_of_instr index depth = function
       sprintf "%s Jump to %s." (make_index index depth) (string_of_expr e)
   | PerformI e ->
       sprintf "%s Perform %s." (make_index index depth) (string_of_expr e)
-  | ExitI _ -> make_index index depth ^ " Exit current context."
+  | ExitNormalI _ | ExitAbruptI _ -> make_index index depth ^ " Exit current context."
   | AppendI (e1, e2, s) ->
       sprintf "%s Append %s to the %s.%s." (make_index index depth)
         (string_of_expr e1) (string_of_expr e2) s

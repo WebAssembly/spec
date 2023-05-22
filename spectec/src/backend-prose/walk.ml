@@ -87,7 +87,8 @@ let rec walk_instr f instr =
       f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
   | JumpI e -> f_instr (JumpI (walk_expr f e))
   | PerformI e -> f_instr (PerformI (walk_expr f e))
-  | ExitI n -> f_instr (ExitI n)
+  | ExitNormalI n -> f_instr (ExitNormalI n)
+  | ExitAbruptI n -> f_instr (ExitAbruptI n)
   | AppendI (e1, e2, s) -> f_instr (AppendI (walk_expr f e1, walk_expr f e2, s))
   | YetI s -> f_instr (YetI s)
 

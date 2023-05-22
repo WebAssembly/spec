@@ -325,7 +325,7 @@ let rec rhs2instrs exp =
         Al.PushI
           (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it)))
       in
-      let exit_instr = Al.ExitI (Al.N fname.it) in
+      let exit_instr = Al.ExitNormalI (Al.N fname.it) in
       (push_instr :: rhs2instrs labelexp) @ [ exit_instr ]
   (* TODO: Label *)
   | Ast.CaseE
@@ -347,14 +347,14 @@ let rec rhs2instrs exp =
             Al.PushI (Al.NameE (Al.N "L"));
             Al.PushI (exp2expr valexp);
             Al.JumpI (exp2expr instrsexp);
-            Al.ExitI (Al.N "L");
+            Al.ExitNormalI (Al.N "L");
           ]
       | _ ->
           [
             Al.LetI (Al.NameE (Al.N "L"), label_expr);
             Al.PushI (Al.NameE (Al.N "L"));
             Al.JumpI (exp2expr instrs_exp2);
-            Al.ExitI (Al.N "L");
+            Al.ExitNormalI (Al.N "L");
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp, _)

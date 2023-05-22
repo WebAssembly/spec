@@ -563,28 +563,30 @@ br l
   d. Pop val^n from the stack.
   e. While the top of the stack is value, do:
     1) Pop val' from the stack.
-  f. Assert: Due to validation, the label L is now on the top of the stack.
-  g. Pop the label from the stack.
-  h. Push val^n to the stack.
-  i. Jump to the continuation of L.
+  f. Exit current context.
+  g. Push val^n to the stack.
+  h. Jump to the continuation of L.
 2. Else:
-  a. Pop all values val* from the stack.
-  b. Assert: Due to validation, the label L is now on the top of the stack.
-  c. Pop the label from the stack.
-  d. Push val* to the stack.
-  e. Execute (br (l - 1)).
+  a. Let L be the current label.
+  b. Exit current context.
+  c. Execute (br (l - 1)).
 
 return
-1. Let F be the current frame.
-2. Let n be the arity of F.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Pop val^n from the stack.
-5. Assert: Due to validation, the stack contains at least one frame.
-6. While not the top of the stack is frame, do:
-  a. Pop the top element from the stack.
-7. Assert: The top of the stack is the frame F.
-8. Pop the frame from the stack.
-9. Push val^n to the stack.
+1. Pop all values val'* from the stack.
+2. If the top of the stack is frame, then:
+  a. Pop F from the stack.
+  b. Let n be the arity of F.
+  c. Push F to the stack.
+  d. Push val'* to the stack.
+  e. Pop val^n from the stack.
+  f. Exit current context.
+  g. Push val^n to the stack.
+3. Else:
+  a. Pop L from the stack.
+  b. Push L to the stack.
+  c. Push val'* to the stack.
+  d. Exit current context.
+  e. Execute (return).
 
 instantiation module
 1. Let MODULE(_, _, global*) be module.
@@ -665,22 +667,10 @@ invocation funcaddr val*
 [Invoking call_add...]
 [Invoking call_sum...]
 [Invoking call_add_return_frame...]
- Fail!
- Expected: [(const i32 3)]
- Actual: Failure("Not a label")
-
 [Invoking call_add_return_label...]
- Fail!
- Expected: [(const i32 3)]
- Actual: Failure("Not a label")
-
 [Invoking block...]
 [Invoking br_zero...]
 [Invoking br_succ...]
- Fail!
- Expected: [(const i32 43)]
- Actual: Failure("SubE (NameE (N(l)), ValueE 1)")
-
 [Invoking if_true...]
 [Invoking if_false...]
 [Invoking fib...]

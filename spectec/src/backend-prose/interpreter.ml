@@ -83,7 +83,7 @@ let get_current_frame () =
 
 (* Evaluation Context *)
 
-exception ExitCont
+exception ExitContext of (value Env.Env'.t * value) * instr list
 
 (* Helper functions *)
 
@@ -114,6 +114,10 @@ let rec dsl_function_call fname args =
 and eval_expr env expr =
   match expr with
   | ValueE v -> v
+  | SubE (e1, e2) -> (
+      match (eval_expr env e1, eval_expr env e2) with 
+      | IntV v1, IntV v2 -> IntV (v1 - v2)
+      | _ -> failwith "Not an integer")
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
   | MapE (fname, [ e ], _) -> (
       (* TODO: handle cases where more than 1 arguments *)
@@ -133,6 +137,7 @@ and eval_expr env expr =
   | ArityE e -> (
       match eval_expr env e with
       | LabelV (n, _) -> IntV n
+      | FrameV (n, _) -> IntV n
       | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
   | GetCurLabelE -> LabelV (get_current_label ())
   | GetCurFrameE -> FrameV (get_current_frame ())
@@ -225,154 +230,186 @@ and eval_cond env cond =
       match !stack with
       | [] -> false
       | h :: _ -> ( match h with WasmInstrV _ -> true | _ -> false))
+  | TopC "frame" -> (
+      match !stack with
+      | [] -> false
+      | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
   | c -> structured_string_of_cond c |> failwith
 
-and interp_instr env i =
-  (* string_of_stack !stack |> print_endline; *)
-  (* structured_string_of_instr 0 i |> print_endline; *)
-  (* string_of_instr (ref 0) 0 i |> print_endline; *)
-  match i with
-  | IfI (c, il1, il2) ->
-      if eval_cond env c then interp_instrs env il1 else interp_instrs env il2
-  | WhileI (c, il) ->
-      (* TODO: this is a recursive implementation of while *)
-      if eval_cond env c then interp_instr (interp_instrs env il) i else env
-  | ForI (e, il) ->
-      (match eval_expr env (LengthE e) with
-        | IntV n ->
-            for i = 0 to n-1 do
-              let new_env = Env.add (N "i") (IntV i) env in
-              interp_instrs new_env il |> ignore
-            done;
-            env
-        | _ -> failwith "Unreachable")
-  | AssertI _ -> env (* TODO: insert assertion *)
-  | PushI e ->
-      (match eval_expr env e with
-      | ListV vs -> Array.iter push vs
-      | v -> push v);
-      env
-  | PopI e -> (
-      match e with
-      | IterE (name, ListN n) -> (
-          match Env.find n env with
-          | IntV k ->
-              let vs = List.rev (List.init k (fun _ -> pop ())) in
-              Env.add name (ListV (Array.of_list vs)) env
-          | _ -> failwith "Invalid pop")
-      | _ -> (
-          (* due to Wasm validation *)
-          let h = pop () in
+and interp_instrs env il =
+  match il with
+  | [] -> env
+  | i :: cont ->
+    (* string_of_stack !stack |> print_endline; *)
+    (* structured_string_of_instr 0 i |> print_endline; *)
+    (* string_of_instr (ref 0) 0 i |> print_endline; *)
+    let (env, cont) = (
+      match i with
+      | IfI (c, il1, il2) ->
+          let env = if eval_cond env c then interp_instrs env il1 else interp_instrs env il2 in
+          (env, cont)
+      | WhileI (c, il) ->
+          let rec interp_while env =
+            if eval_cond env c then interp_while (interp_instrs env il)
+            else env
+          in
+          (interp_while env, cont)
+      | ForI (e, il) ->
+          (match eval_expr env (LengthE e) with
+            | IntV n ->
+                for i = 0 to n-1 do
+                  let new_env = Env.add (N "i") (IntV i) env in
+                  interp_instrs new_env il |> ignore
+                done;
+                (env, cont)
+            | _ -> failwith "Unreachable")
+      | AssertI _ -> (env, cont) (* TODO: insert assertion *)
+      | PushI e ->
+          (match eval_expr env e with
+          | ListV vs -> Array.iter push vs
+          | v -> push v);
+          (env, cont)
+      | PopI e -> 
+          let env = (
+            match e with
+            | IterE (name, ListN n) -> (
+                match Env.find n env with
+                | IntV k ->
+                    let vs = List.rev (List.init k (fun _ -> pop ())) in
+                    Env.add name (ListV (Array.of_list vs)) env
+                | _ -> failwith "Invalid pop")
+            | _ -> (
+                (* due to Wasm validation *)
+                let h = pop () in
 
-          match (h, e) with
-          | WasmInstrV ("const", [ ty; v ]), ConstE (ValueE ty', NameE name) ->
-              assert (ty = ty');
-              Env.add name v env
-          | WasmInstrV ("const", [ ty; v ]), ConstE (NameE nt, NameE name) ->
-              env |> Env.add nt ty |> Env.add name v
-          | h, NameE name -> Env.add name h env
-          | _ -> failwith "Invalid pop"))
-  | PopAllI e -> (
-    match e with
-    | IterE (name, List) -> 
-      let rec pop_value vs = (match !stack with
-      | h :: _  -> (match h with
-        | WasmInstrV ("const", _) -> pop_value (pop () :: vs)
-        | _ -> vs)
-      | _ -> vs) 
-      in
-      let vs = pop_value [] in
-      Env.add name (ListV (Array.of_list vs)) env
-    | _ -> failwith "Invalid pop")
-  | LetI (pattern, e) -> (
-      let v = eval_expr env e in
-      match (pattern, v) with
-      | IterE (name, ListN n), ListV vs ->
-          env |> Env.add name v |> Env.add n (IntV (Array.length vs))
-      | NameE name, v
-      | ListE [| NameE name |], ListV [| v |]
-      | IterE (name, _), v ->
-          Env.add name v env
-      | PairE (NameE n1, NameE n2), PairV (v1, v2)
-      | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
-          env |> Env.add n1 v1 |> Env.add n2 v2
-      | ArrowE (IterE (n1, ListN n), IterE (n2, ListN m)), ArrowV (ListV vl1, ListV vl2) ->
-          env |> Env.add n1 (ListV vl1) |> Env.add n (IntV (Array.length vl1))
-          |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
-      | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
-        when lhs_tag = rhs_tag ->
-          assert (List.length ps = List.length vs);
-          List.fold_left2
-            (fun env p v ->
-              match p, v with
-              | NameE n, v | IterE (n, _), v -> Env.add n v env
-              | PairE (NameE n1, NameE n2), PairV (v1, v2) ->
-                  env |> Env.add n1 v1 |> Env.add n2 v2
-              | _ ->
-                  string_of_instr (ref 0) 0 i
-                  |> Printf.sprintf "Invalid destructuring assignment: %s"
-                  |> failwith)
-            env ps vs
-      | e, v ->
-          Printf.sprintf "Invalid assignment: %s %s"
-            (string_of_expr e) (string_of_value v)
-          |> failwith)
-  | NopI | ReturnI None -> env
-  | ReturnI (Some e) ->
-      let result = eval_expr env e in
-      Env.set_result result env
-  | ReplaceI (e1, IndexP e2, e3) -> (
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      let v3 = eval_expr env e3 in
-      match (v1, v2) with
-      | ListV l, IntV i ->
-          Array.set l i v3;
-          env
-      | _ -> failwith "Invalid Replace instr")
-  (* TODO *)
-  | ReplaceI (_, _, e) ->
-      (match Record.find "FUNC" !store with
-      | ListV l ->
-          eval_expr env e |> Array.set l 0;
-          env
-      | _ -> failwith "TODO")
-  | PerformI e ->
-      eval_expr env e |> ignore;
-      env
-  | ExecuteI e ->
-      eval_expr env e |> execute_wasm_instr;
-      env
-  | JumpI e ->
-      (match eval_expr env e with
-      | ListV vl -> vl |> array_to_list |> execute_wasm_instrs
-      | _ -> "Not a list of Wasm Instruction" |> failwith);
-      (match e with ContE _ -> raise ExitCont | _ -> ());
-      env
-  | ExitI _ ->
-      let rec pop_while pred =
-        let top = pop () in
-        if pred top then top :: pop_while pred else []
-      in
-      let vals = pop_while (function WasmInstrV _ -> true | _ -> false) in
-      vals |> List.rev |> List.iter push;
-      env
-  | AppendI (e1, e2, s) ->
-      let v1 = eval_expr env e1 in
-      (match eval_expr env e2 with
-      | StoreV ref when Record.mem s !ref |> not ->
-          ref := Record.add s (ListV [| v1 |]) !ref
-      | StoreV ref ->
-          let a = match Record.find s !ref with
-            | ListV l -> l
-            | _ -> failwith "Unreachable" in
-          let appended_result = ListV (Array.append a [| v1 |]) in
-          ref := Record.add s appended_result !ref
-      | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
-      env
-  | i -> structured_string_of_instr 0 i |> failwith
-
-and interp_instrs env il = List.fold_left interp_instr env il
+                match (h, e) with
+                | WasmInstrV ("const", [ ty; v ]), ConstE (ValueE ty', NameE name) ->
+                    assert (ty = ty');
+                    Env.add name v env
+                | WasmInstrV ("const", [ ty; v ]), ConstE (NameE nt, NameE name) ->
+                    env |> Env.add nt ty |> Env.add name v
+                | h, NameE name -> Env.add name h env
+                | _ -> failwith "Invalid pop"))
+          in
+          (env, cont)
+      | PopAllI e -> (
+        match e with
+        | IterE (name, List) -> 
+          let rec pop_value vs = (match !stack with
+          | h :: _  -> (match h with
+            | WasmInstrV ("const", _) -> pop_value (pop () :: vs)
+            | _ -> vs)
+          | _ -> vs) 
+          in
+          let vs = pop_value [] in
+          let env = Env.add name (ListV (Array.of_list vs)) env in
+          (env, cont)
+        | _ -> failwith "Invalid pop")
+      | LetI (pattern, e) -> 
+          let env = (
+            let v = eval_expr env e in
+            match (pattern, v) with
+            | IterE (name, ListN n), ListV vs ->
+                env |> Env.add name v |> Env.add n (IntV (Array.length vs))
+            | NameE name, v
+            | ListE [| NameE name |], ListV [| v |]
+            | IterE (name, _), v ->
+                Env.add name v env
+            | PairE (NameE n1, NameE n2), PairV (v1, v2)
+            | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
+                env |> Env.add n1 v1 |> Env.add n2 v2
+            | ArrowE (IterE (n1, ListN n), IterE (n2, ListN m)), ArrowV (ListV vl1, ListV vl2) ->
+                env |> Env.add n1 (ListV vl1) |> Env.add n (IntV (Array.length vl1))
+                |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
+            | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
+              when lhs_tag = rhs_tag ->
+                assert (List.length ps = List.length vs);
+                List.fold_left2
+                  (fun env p v ->
+                    match p, v with
+                    | NameE n, v | IterE (n, _), v -> Env.add n v env
+                    | PairE (NameE n1, NameE n2), PairV (v1, v2) ->
+                        env |> Env.add n1 v1 |> Env.add n2 v2
+                    | _ ->
+                        string_of_instr (ref 0) 0 i
+                        |> Printf.sprintf "Invalid destructuring assignment: %s"
+                        |> failwith)
+                  env ps vs
+            | e, v ->
+                Printf.sprintf "Invalid assignment: %s %s"
+                  (string_of_expr e) (string_of_value v)
+                |> failwith)
+          in
+          (env, cont)
+      | NopI | ReturnI None -> (env, cont)
+      | ReturnI (Some e) ->
+          let result = eval_expr env e in
+          let env = Env.set_result result env in
+          (env, cont)
+      | ReplaceI (e1, IndexP e2, e3) -> (
+          let v1 = eval_expr env e1 in
+          let v2 = eval_expr env e2 in
+          let v3 = eval_expr env e3 in
+          match (v1, v2) with
+          | ListV l, IntV i ->
+              Array.set l i v3;
+              (env, cont)
+          | _ -> failwith "Invalid Replace instr")
+      (* TODO *)
+      | ReplaceI (_, _, e) ->
+          (match Record.find "FUNC" !store with
+          | ListV l ->
+              eval_expr env e |> Array.set l 0;
+              (env, cont)
+          | _ -> failwith "TODO")
+      | PerformI e ->
+          eval_expr env e |> ignore;
+          (env, cont)
+      | ExecuteI e ->
+          eval_expr env e |> execute_wasm_instr;
+          (env, cont)
+      | JumpI e ->
+          (match eval_expr env e with
+          | ListV vl -> (
+            try (vl |> array_to_list |> execute_wasm_instrs); (env, cont) with
+            ExitContext (env, cont) -> (env, cont))
+          | _ -> "Not a list of Wasm Instruction" |> failwith)
+      | ExitNormalI _ ->
+          let rec pop_while pred =
+            let top = pop () in
+            if pred top then top :: pop_while pred else []
+          in
+          let vs = pop_while (function WasmInstrV _ -> true | _ -> false) in
+          vs |> List.rev |> List.iter push;
+          (env, cont) 
+      | ExitAbruptI n ->
+          let rec pop_while pred =
+            let top = pop () in
+            if pred top then top :: pop_while pred else []
+          in
+          let until = Env.find n env in
+          let vs = pop_while (function WasmInstrV _ -> true | _ -> false) in
+          vs |> List.rev |> List.iter push;
+          (match until with
+          | LabelV _ -> raise (ExitContext (env, cont))
+          | _ -> ());
+          (env, cont)
+      | AppendI (e1, e2, s) ->
+          let v1 = eval_expr env e1 in
+          (match eval_expr env e2 with
+          | StoreV ref when Record.mem s !ref |> not ->
+              ref := Record.add s (ListV [| v1 |]) !ref
+          | StoreV ref ->
+              let a = match Record.find s !ref with
+                | ListV l -> l
+                | _ -> failwith "Unreachable" in
+              let appended_result = ListV (Array.append a [| v1 |]) in
+              ref := Record.add s appended_result !ref
+          | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
+          (env, cont)
+      | i -> structured_string_of_instr 0 i |> failwith)
+    in
+    interp_instrs env cont
 
 and interp_algo algo args =
   let (Algo (_, params, il)) = algo in
@@ -404,8 +441,7 @@ and execute_wasm_instr winstr =
   | WasmInstrV (name, args) -> call_algo name args |> ignore
   | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
 
-and execute_wasm_instrs winstrs =
-  try List.iter execute_wasm_instr winstrs with ExitCont -> ()
+and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
 
 
 (* Entry *)

@@ -155,7 +155,8 @@ type instr =
   | ReplaceI of (expr * path * expr)
   | JumpI of expr
   | PerformI of expr
-  | ExitI of name
+  | ExitNormalI of name
+  | ExitAbruptI of name
   | AppendI of (expr * expr * string)
   (* Yet *)
   | YetI of string

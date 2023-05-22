@@ -186,6 +186,7 @@
         br 1
         i32.const 52
       end
+      i32.const 62
     end
     i32.const 1
     i32.add
