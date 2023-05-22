@@ -214,18 +214,24 @@ and eval_expr env expr =
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
-  let do_binop e1 binop e2 =
+  let do_binop_expr e1 binop e2 =
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     binop v1 v2
   in
+  let do_binop_cond c1 binop c2 =
+    let v1 = eval_cond env c1 in
+    let v2 = eval_cond env c2 in
+    binop v1 v2
+  in
   match cond with
   | NotC c -> eval_cond env c |> not
-  | EqC (e1, e2) -> do_binop e1 ( = ) e2
-  | LtC (e1, e2) -> do_binop e1 ( < ) e2
-  | LeC (e1, e2) -> do_binop e1 ( <= ) e2
-  | GtC (e1, e2) -> do_binop e1 ( > ) e2
-  | GeC (e1, e2) -> do_binop e1 ( >= ) e2
+  | EqC (e1, e2) -> do_binop_expr e1 ( = ) e2
+  | LtC (e1, e2) -> do_binop_expr e1 ( < ) e2
+  | LeC (e1, e2) -> do_binop_expr e1 ( <= ) e2
+  | GtC (e1, e2) -> do_binop_expr e1 ( > ) e2
+  | GeC (e1, e2) -> do_binop_expr e1 ( >= ) e2
+  | AndC (c1, c2) -> do_binop_cond c1 ( && ) c2
   | TopC "value" -> (
       match !stack with
       | [] -> false

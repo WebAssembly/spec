@@ -141,13 +141,15 @@ let composite g f x = f x |> g
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state = function
-  | Al.AppE (f, args) ->
+  | AppE (f, args) ->
       let new_args =
-        List.filter (function Al.NameE (Al.N "z") -> false | _ -> true) args
+        List.filter (function NameE (N "z") -> false | _ -> true) args
       in
-      Al.AppE (f, new_args)
+      AppE (f, new_args)
   | e -> e
 
-(* TODO: Manual patch *)
-let patch = function Al.YetE "" -> Al.YetE "" | e -> e
-let transpiler = Walk.walk (id, id, composite patch hide_state)
+let flatten_if = function
+  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (AndC (c1, c2), il1, il2)
+  | i -> i
+
+let transpiler = Walk.walk (flatten_if, id, hide_state)
