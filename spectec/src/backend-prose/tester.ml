@@ -14,7 +14,7 @@ let file_to_script file_name =
   in
   Parse.parse file_name lexbuf Parse.Script
 
-let not_supported = "We only support the test script with module in the first entry, and assertions in rest entries."
+let not_supported = "We only support the test script with modules and assertions."
 
 let al_of_result result = match result.it with
   | Script.NumResult (Script.NumPat n) -> Construct.al_of_wasm_value (Values.Num n.it)
@@ -23,7 +23,9 @@ let al_of_result result = match result.it with
 
 (** End of helpers **)
 
-let do_invoke m act = match act.it with
+let exports = ref []
+
+let do_invoke act = match act.it with
   | Script.Invoke (_, name, literals) ->
     let extract_idx (export: Ast.export) = if export.it.name = name then
       match export.it.edesc.it with
@@ -32,7 +34,7 @@ let do_invoke m act = match act.it with
     else
       None
     in
-    let idx = List.find_map extract_idx m.it.exports |> Option.get in
+    let idx = List.find_map extract_idx !exports |> Option.get in
     let args = Al.ListV (
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_wasm_value l.it)
@@ -42,11 +44,11 @@ let do_invoke m act = match act.it with
     Interpreter.call_algo "invocation" [idx; args]
   | _ -> failwith not_supported
 
-let test_assertion m assertion =
+let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
     let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
-    let result = try do_invoke m invoke with e -> StringV (Printexc.to_string e) in
+    let result = try do_invoke invoke with e -> StringV (Printexc.to_string e) in
     if result <> expected_result then begin
       (* Print.string_of_stack !Interpreter.stack |> print_endline; *)
       print_endline " Fail!";
@@ -56,23 +58,24 @@ let test_assertion m assertion =
     end
   | Script.AssertTrap (invoke, _msg) ->
     begin try
-      let _ = do_invoke m invoke in
+      let _ = do_invoke invoke in
       print_endline "fail"
     with
-      | _ -> print_endline "ok"
+      | _ -> print_endline "ok" (*TODO: ok only if it is a trap *)
     end
-  | _ -> failwith not_supported
+  | _ -> () (* ignore other kinds of assertions *)
 
 (** Entry **)
 let test file_name =
-  let script = file_to_script file_name in
-  match script with
-  | {it = Script.Module (_, {it = Script.Textual m; _}); _} :: asserts ->
-    Interpreter.stack := [];
-    Interpreter.store := Al.Record.empty;
-    Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
-    List.iter (fun (cmd: Script.command) -> match cmd.it with
-      | Script.Assertion a -> test_assertion m a
-      | _ -> failwith not_supported
-    ) asserts;
-  | _ -> failwith not_supported
+  file_name
+  |> file_to_script
+  |> List.iter (fun cmd ->
+    match cmd.it with
+    | Script.Module (_, {it = Script.Textual m; _}) ->
+      exports := m.it.exports;
+      Interpreter.stack := [];
+      Interpreter.store := Al.Record.empty;
+      Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
+    | Script.Assertion a -> test_assertion a
+    | _ -> failwith not_supported
+  )

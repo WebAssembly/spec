@@ -260,3 +260,7 @@
 (assert_return (invoke "if_true") (i32.const 44))
 (assert_return (invoke "if_false") (i32.const 45))
 (assert_return (invoke "fib" (i32.const 10)) (i32.const 55))
+
+;;second module
+(module (func (export "f")))
+(assert_return (invoke "f"))

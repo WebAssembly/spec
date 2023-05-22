@@ -659,5 +659,6 @@ invocation funcaddr val*
 [Invoking if_true...]
 [Invoking if_false...]
 [Invoking fib...]
+[Invoking f...]
 == Complete.
 ```
