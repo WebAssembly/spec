@@ -47,8 +47,8 @@ let do_invoke act = match act.it with
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
-    let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
     let result = try do_invoke invoke with e -> StringV (Printexc.to_string e) in
+    let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
     if result <> expected_result then begin
       (* Print.string_of_stack !Interpreter.stack |> Printf.eprintf; *)
       Printf.eprintf " Fail!\n";
