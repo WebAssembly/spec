@@ -125,7 +125,7 @@ and cond =
   | LeC of (expr * expr)
   | DefinedC of expr
   | PartOfC of expr list
-  | CaseOfC of (expr * string) 
+  | CaseOfC of (expr * string)
   | TopC of string
   (* Yet *)
   | YetC of string

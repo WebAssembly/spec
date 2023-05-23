@@ -9,6 +9,14 @@ type result =
   | Fail
   | Ignore
 
+let fail expected actual =
+  Printf.eprintf " Fail!\n";
+  Printf.eprintf " Expected: %s\n" expected;
+  Printf.eprintf " Actual: %s\n\n" actual;
+  let print_stack = false in
+  if print_stack then
+    Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack)
+
 (* string -> Script.script *)
 let file_to_script file_name =
   let lexbuf = Lexing.from_channel (open_in file_name) in
@@ -50,20 +58,17 @@ let test_assertion assertion =
     let result = try do_invoke invoke with e -> StringV (Printexc.to_string e) in
     let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
     if result <> expected_result then begin
-      (* Print.string_of_stack !Interpreter.stack |> Printf.eprintf; *)
-      Printf.eprintf " Fail!\n";
-      Printf.eprintf " Expected: %s\n" (Print.string_of_value expected_result);
-      Printf.eprintf " Actual: %s\n\n" (Print.string_of_value result);
+      fail (Print.string_of_value expected_result) (Print.string_of_value result);
       Fail
     end else Success
   | Script.AssertTrap (invoke, _msg) ->
     begin try
-      let _ = do_invoke invoke in
-      Printf.eprintf "fail\n";
+      let result = do_invoke invoke in
+      fail "Trap" (Print.string_of_value result);
       Fail
     with
-      | _ -> Success
-          (*Printf.eprintf "ok\n" (*TODO: ok only if it is a trap *)*)
+      | Interpreter.Trap -> Success
+      | e -> fail "Trap" (Printexc.to_string e); Fail
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 

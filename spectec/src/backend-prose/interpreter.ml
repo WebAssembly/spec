@@ -99,6 +99,8 @@ let al_value2int = function IntV i -> i | _ -> failwith "Not an integer value"
 
 (* Interpreter *)
 
+exception Trap
+
 let rec dsl_function_call fname args =
   match fname with
   (* Numerics *)
@@ -347,6 +349,7 @@ and interp_instrs env il =
                 |> failwith)
           in
           (env, cont)
+      | TrapI -> raise Trap
       | NopI | ReturnI None -> (env, cont)
       | ReturnI (Some e) ->
           let result = eval_expr env e in
@@ -449,7 +452,7 @@ and execute_wasm_instr winstr =
   match winstr with
   | WasmInstrV ("const", _) | WasmInstrV ("ref.null", _) -> push winstr
   | WasmInstrV (name, args) -> call_algo name args |> ignore
-  | _ -> failwith (string_of_value winstr ^ "is not a wasm instruction")
+  | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
 
