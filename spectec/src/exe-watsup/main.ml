@@ -170,7 +170,7 @@ let () =
       log "Initializing AL interprter with generated AL...";
       Backend_al.Interpreter.init al;
       log "Interpreting AL...";
-      Backend_al.Tester.test !root "test-prose/sample.wast"
+      Backend_al.Tester.test_all !root
     );
     log "Complete."
   with

@@ -138,7 +138,7 @@ let rec al_of_wasm_instr types winstr =
   | Ast.MemoryGrow -> f "mewmory.grow"
   | Ast.MemoryFill -> f "memory.fill"
   | Ast.MemoryCopy -> f "memory.copy"
-  | _ -> failwith ("al_of_wasm_instr for " ^ Print.string_of_winstr winstr ^ " is not implemented")
+  | _ -> WasmInstrV ("Yet: " ^ Print.string_of_winstr winstr, [])
 
 and al_of_wasm_instrs types winstrs = List.map (al_of_wasm_instr types) winstrs
 

@@ -438,7 +438,11 @@ and interp_algo algo args =
 (* Search AL Algorithm *)
 
 and call_algo name args =
-  let algo = AlgoMap.find name !algo_map in
+  let algo =
+    match AlgoMap.find_opt name !algo_map with
+      | Some v -> v
+      | None -> failwith ("Algorithm " ^ name ^ " not found")
+  in
   interp_algo algo args |> Env.get_result
 
 and execute_wasm_instr winstr =

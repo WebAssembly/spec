@@ -4,6 +4,11 @@ open Ast
 
 (** Helpers **)
 
+type result =
+  | Success
+  | Fail
+  | Ignore
+
 (* string -> Script.script *)
 let file_to_script file_name =
   let lexbuf = Lexing.from_channel (open_in file_name) in
@@ -35,7 +40,7 @@ let do_invoke act = match act.it with
       |> List.map (fun (l: Script.literal) -> Construct.al_of_wasm_value l.it)
       |> Array.of_list
     ) in
-    print_endline ("[Invoking " ^ string_of_name name ^ "...]");
+    Printf.eprintf "[Invoking %s...]\n" (string_of_name name);
     Interpreter.call_algo "invocation" [idx; args]
   | _ -> failwith not_supported
 
@@ -45,32 +50,72 @@ let test_assertion assertion =
     let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
     let result = try do_invoke invoke with e -> StringV (Printexc.to_string e) in
     if result <> expected_result then begin
-      (* Print.string_of_stack !Interpreter.stack |> print_endline; *)
-      print_endline " Fail!";
-      " Expected: " ^ Print.string_of_value expected_result |> print_endline;
-      " Actual: " ^ Print.string_of_value result |> print_endline;
-      print_endline ""
-    end
+      (* Print.string_of_stack !Interpreter.stack |> Printf.eprintf; *)
+      Printf.eprintf " Fail!\n";
+      Printf.eprintf " Expected: %s\n" (Print.string_of_value expected_result);
+      Printf.eprintf " Actual: %s\n\n" (Print.string_of_value result);
+      Fail
+    end else Success
   | Script.AssertTrap (invoke, _msg) ->
     begin try
       let _ = do_invoke invoke in
-      print_endline "fail"
+      Printf.eprintf "fail\n";
+      Fail
     with
-      | _ -> print_endline "ok" (*TODO: ok only if it is a trap *)
+      | _ -> Success
+          (*Printf.eprintf "ok\n" (*TODO: ok only if it is a trap *)*)
     end
-  | _ -> () (* ignore other kinds of assertions *)
+  | _ -> Ignore (* ignore other kinds of assertions *)
 
 (** Entry **)
-let test root file_name =
-  Filename.concat root file_name
-  |> file_to_script
-  |> List.iter (fun cmd ->
-    match cmd.it with
-    | Script.Module (_, {it = Script.Textual m; _}) ->
-      exports := m.it.exports;
-      Interpreter.stack := [];
-      Interpreter.store := Al.Record.empty;
-      Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
-    | Script.Assertion a -> test_assertion a
-    | _ -> failwith not_supported
-  )
+let test file_name =
+
+  let start_idx = String.rindex file_name '/' + 1 in
+  let length = String.length file_name - start_idx in
+  let name = String.sub file_name start_idx length in
+
+  let total = ref 0 in
+  let success = ref 0 in
+
+  try
+
+    Printf.eprintf "****************\n\n%s\n\n" file_name;
+
+    file_name
+    |> file_to_script
+    |> List.iter (fun cmd ->
+      match cmd.it with
+      | Script.Module (_, {it = Script.Textual m; _}) ->
+        exports := m.it.exports;
+        Interpreter.stack := [];
+        Interpreter.store := Al.Record.empty;
+        Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
+      | Script.Assertion a ->
+          begin match test_assertion a with
+            | Success ->
+                total := !total + 1;
+                success := !success + 1
+            | Fail ->
+                total := !total + 1
+            | Ignore -> ()
+          end
+      | _ -> failwith not_supported
+    );
+    if !total <> 0 then
+      Printf.sprintf "%s: [%d/%d]" name !success !total |> print_endline
+  with e ->
+    Printexc.to_string e
+    |> Printf.eprintf "[Uncaught exception] %s\n";
+    Printf.sprintf
+      "%s: [Uncaught exception in %dth assertion]"
+      name
+      !total
+    |> print_endline
+
+
+let test_all root =
+  test (Filename.concat root "test-prose/sample.wast");
+
+  let f filename = test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
+
+  Sys.readdir (Filename.concat root "test-prose/spec-test") |> Array.iter f
