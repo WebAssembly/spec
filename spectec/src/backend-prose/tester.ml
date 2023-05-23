@@ -99,6 +99,7 @@ let test file_name =
                 total := !total + 1
             | Ignore -> ()
           end
+      | Action a -> do_invoke a |> ignore
       | _ -> failwith not_supported
     );
     if !total <> 0 then
