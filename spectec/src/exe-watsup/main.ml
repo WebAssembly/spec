@@ -9,6 +9,8 @@ let version = "0.3"
 
 (* Flags and parameters *)
 
+let root = ref ""
+
 type target =
  | Check
  | Latex of Backend_latex.Config.config
@@ -53,6 +55,8 @@ let argspec = Arg.align
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unsed or multiply used splices";
+
+  "--root", Arg.String (fun s -> root := s), " Set the root of watsup. Defaults to current directory";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
@@ -166,7 +170,7 @@ let () =
       log "Initializing AL interprter with generated AL...";
       Backend_al.Interpreter.init al;
       log "Interpreting AL...";
-      Backend_al.Tester.test "test-prose/sample.wast"
+      Backend_al.Tester.test !root "test-prose/sample.wast"
     );
     log "Complete."
   with

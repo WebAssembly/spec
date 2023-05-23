@@ -6,12 +6,7 @@ open Ast
 
 (* string -> Script.script *)
 let file_to_script file_name =
-  (* TODO: Better file resolving *)
-  let lexbuf = try
-    Lexing.from_channel (open_in file_name)
-  with
-    | _ -> Lexing.from_channel (open_in ("../" ^ file_name))
-  in
+  let lexbuf = Lexing.from_channel (open_in file_name) in
   Parse.parse file_name lexbuf Parse.Script
 
 let not_supported = "We only support the test script with modules and assertions."
@@ -66,8 +61,8 @@ let test_assertion assertion =
   | _ -> () (* ignore other kinds of assertions *)
 
 (** Entry **)
-let test file_name =
-  file_name
+let test root file_name =
+  Filename.concat root file_name
   |> file_to_script
   |> List.iter (fun cmd ->
     match cmd.it with
