@@ -5,6 +5,62 @@ Modules
 Furthermore, most definitions are themselves classified with a suitable type.
 
 
+.. index:: type, type index, defined type, recursive type
+   pair: abstract syntax; type
+   single: abstract syntax; type
+.. _valid-types:
+
+Types
+~~~~~
+
+The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally.
+
+:math:`\type^\ast`
+..................
+
+* If the sequence is empty, then:
+
+  * The type :ref:`context <context>` :math:`C.\CTYPES` must be empty.
+
+  * Then the type sequence is valid.
+
+* Otherwise:
+
+  * Let the :ref:`recursive type <syntax-rectype>` :math:`\rectype` be the last element in the sequence.
+
+  * The sequence without :math:`\rectype` must be valid for some context :math:`C'`.
+
+  * Let the :ref:`type index <syntax-typeidx>` :math:`x` be the length of :math:`C'.\CTYPES`, i.e., the first type index free in :math:`C'`.
+
+  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt_x(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
+
+  * The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` under the context :math:`C` for :ref:`type index <syntax-typeidx>` :math:`x`.
+
+  * The current :ref:`context <context>` :math:`C` be the same as :math:`C'`, but with :math:`\deftype^\ast` appended to |CTYPES|.
+
+  * Then the type sequence is valid.
+
+.. math::
+   \frac{
+     C' \vdashtypes \type^\ast \ok
+     \qquad
+     C = C' \with \CTYPES = C'.\CTYPES~\rolldt_{|C'.\CTYPES|}(\rectype)
+     \qquad
+     C \vdashrectype \rectype \ok(|C'.\CTYPES|)
+   }{
+     C \vdashtypes \type^\ast~\rectype \ok
+   }
+   \qquad
+   \frac{
+     C.\CTYPES = \epsilon
+   }{
+     C \vdashtypes \epsilon \ok
+   }
+
+.. note::
+   Despite the appearance, the |CTYPES| component of :math:`C` is effectively an _output_ of this judgement.
+
+
 .. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
@@ -745,25 +801,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
    }{
      \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
-
-.. _valid-types:
-
-where:
-
-.. math::
-   \frac{
-     \vdashtypes \type^\ast \ok
-     \qquad
-     \{\CTYPES~\type^\ast\} \vdashtypes \type \ok
-   }{
-     \vdashtypes \type^\ast~\type \ok
-   }
-   \qquad
-   \frac{
-   }{
-     \vdashtypes \epsilon \ok
-   }
-
 
 .. note::
    Most definitions in a module -- particularly functions -- are mutually recursive.

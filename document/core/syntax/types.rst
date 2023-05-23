@@ -73,9 +73,8 @@ Conventions
 
 
 
-.. index:: ! heap type, store, type identifier, ! substitution, ! closed type, ! abstract type, ! concrete type, ! unboxed scalar
+.. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
-.. _type-subst:
 .. _type-closed:
 .. _type-abstract:
 .. _type-concrete:
@@ -97,11 +96,12 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 
 .. math::
    \begin{array}{llrl}
-   \production{heap type} & \heaptype &::=&
+   \production{abstract heap type} & \abdheaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
      \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
-     \typeidx ~|~ \deftype ~|~ \BOT \\
+   \production{heap type} & \heaptype &::=&
+     \absheaptype ~|~ \typeidx \\
    \end{array}
 
 A heap type is either *abstract* or *concrete*.
@@ -132,34 +132,13 @@ Their observable value range is limited to 31 bits.
    Engines need to perform some form of *pointer tagging* to achieve this,
    which is why 1 bit is reserved.
 
-
-A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
-
-A concrete heap type can also consist of a :ref:`defined type <syntax-deftype>` directly.
-However, this form is representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, such that it cannot be used in a program;
-it only occurs during :ref:`validation <valid>` or :ref:`execution <exec>`, as the result of *substituting* a :ref:`type index <syntax-typeidx>` with its definition.
-
-A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>`,
-i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>`.
-
-The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all heap types.
-By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
-
-.. note::
    Although the types |NONE|, |NOFUNC|, and |NOEXTERN| are not inhabited by any values,
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
    For example, :math:`(\REF~\NULL~\NOFUNC)` is the generic type of a null reference compatible with all function reference types.
 
+A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
 
-.. _notation-subst:
-
-Convention
-..........
-
-* :math:`t[x^\ast \subst \X{ft}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast`, provided :math:`|x^\ast| = |\X{ft}^\ast|` in type :math:`t`.
-
-* :math:`t[\subst \X{ft}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{ft}^\ast]` where :math:`x^\ast = 0 \cdots (|\X{ft}^\ast| - 1)` in type :math:`t`.
+The syntax of heap types is :ref:`extended <syntax-heaptype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
@@ -187,46 +166,25 @@ Other references are *non-null*.
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
-.. _aux-reftypediff:
 
-Convention
-..........
-
-* The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two reference types is defined as follows:
-
-  .. math::
-     \begin{array}{lll}
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\NULL~\X{ht}_2) &=& (\REF~\X{ht}_1) \\
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\X{ht}_2) &=& (\REF~\NULL_1^?~\X{ht}_1) \\
-     \end{array}
-
-.. note::
-   This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
-   Since the type system does not have general union types,
-   the defnition only affects the presence of null and cannot express the absence of other values.
-
-
-.. index:: ! value type, number type, vector type, reference type, ! bottom type
+.. index:: ! value type, number type, vector type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
-.. _syntax-bottype:
 
 Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
-
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other value types.
-By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
+They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, or :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{llrl}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \vectype ~|~ \reftype ~|~ \BOT \\
+     \numtype ~|~ \vectype ~|~ \reftype \\
    \end{array}
+
+The syntax of value types is :ref:`extended <syntax-valtype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 Conventions
 ...........
@@ -252,55 +210,6 @@ which is a sequence of values, written with brackets.
    \end{array}
 
 
-.. index:: ! instruction type, value type, result type, instruction, local, local index
-   pair: abstract syntax; instruction type
-   pair: instruction; type
-.. _syntax-instrtype:
-
-Instruction Types
-~~~~~~~~~~~~~~~~~
-
-*Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
-
-.. math::
-   \begin{array}{llrl}
-   \production{instruction type} & \instrtype &::=&
-     \resulttype \toX{\localidx^\ast} \resulttype \\
-   \end{array}
-
-An instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
-and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
-Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
-
-.. note::
-   Instruction types are only used for :ref:`validation <valid>`,
-   they do not occur in programs.
-
-
-.. index:: ! local type, value type, local, local index
-   pair: abstract syntax; local type
-   pair: local; type
-.. _syntax-init:
-.. _syntax-localtype:
-
-Local Types
-~~~~~~~~~~~
-
-*Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
-
-.. math::
-   \begin{array}{llrl}
-   \production{initialization status} & \init &::=&
-     \SET ~|~ \UNSET \\
-   \production{local type} & \localtype &::=&
-     \init~\valtype \\
-   \end{array}
-
-.. note::
-   Local types are only used for :ref:`validation <valid>`,
-   they do not occur in programs.
-
-
 .. index:: ! function type, value type, vector, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
@@ -316,7 +225,7 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
 .. math::
    \begin{array}{llrl}
    \production{function type} & \functype &::=&
-     \resulttype \to \resulttype \\
+     \resulttype \toF \resulttype \\
    \end{array}
 
 
@@ -356,24 +265,24 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
    \end{array}
 
 
-.. index:: ! structured type, function type, aggreagate type, structure type, array type
-   pair: abstract syntax; structured type
-.. _syntax-strtype:
+.. index:: ! compound type, function type, aggreagate type, structure type, array type
+   pair: abstract syntax; compound type
+.. _syntax-comptype:
 
-Structured Types
-~~~~~~~~~~~~~~~~
+Compound Types
+~~~~~~~~~~~~~~
 
-*Structured types* are all types composed from simpler types,
+*Compound types* are all types composed from simpler types,
 including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syntax-aggrtype>`.
 
 .. math::
    \begin{array}{llrl}
-   \production{structured type} & \strtype &::=&
+   \production{compound type} & \comptype &::=&
      \TFUNC~\functype ~|~ \TSTRUCT~\structtype ~|~ \TARRAY~\arraytype \\
    \end{array}
 
 
-.. index:: ! recursive type, ! sub type, structured type, ! final, subtyping
+.. index:: ! recursive type, ! sub type, compound type, ! final, subtyping, ! roll, ! unroll, recursive type index
    pair: abstract syntax; recursive type
    pair: abstract syntax; sub type
 .. _syntax-rectype:
@@ -382,59 +291,21 @@ including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syn
 Recursive Types
 ~~~~~~~~~~~~~~~
 
-*Recursive types* denote a group of mutually recursive :ref:`structured types <syntax-strtype>`, each of which can optionally declare a list of supertypes that it :ref:`matches <match-strtype>`.
+*Recursive types* denote a group of mutually recursive :ref:`compound types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
 Each type can also be declared *final*, preventing further subtyping.
 .
-In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
 
 .. math::
    \begin{array}{llrl}
    \production{recursive type} & \rectype &::=&
      \TREC~\subtype^\ast \\
    \production{sub types} & \subtype &::=&
-     \TSUB~\TFINAL^?~\heaptype^\ast~\strtype \\
+     \TSUB~\TFINAL^?~\typeidx^\ast~\comptype \\
    \end{array}
 
+In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
 
-.. index:: ! defined type, recursive type, ! unroll, ! expand
-   pair: abstract syntax; defined type
-.. _syntax-deftype:
-
-Defined Types
-~~~~~~~~~~~~~
-
-*Defined types* denote the individual types defined in a :ref:`module <syntax-module>`.
-Each such type is represented as a projection from the :ref:`recursive type <syntax-rectype>` group it originates from, indexed by its position in that group.
-
-
-.. math::
-   \begin{array}{llrl}
-   \production{defined type} & \deftype &::=&
-     \rectype.i \\
-   \end{array}
-
-Defined types do not occur in the :ref:`binary <binary>` or :ref:`text <text>` format,
-but are formed during :ref:`validation <valid>` and :ref:`execution <exec>` from the recursive types defined in each module.
-
-.. _aux-expand:
-.. _aux-unroll:
-
-Conventions
-...........
-
-* The following auxiliary function denotes the *unrolling* of a defined type:
-
-  .. math::
-     \begin{array}{lll}
-     \unroll((\subtype^\ast).i) &=& \subtype^\ast[i] \\
-     \end{array}
-
-* The following auxiliary function denotes the *expansion* of a defined type:
-
-  .. math::
-     \begin{array}{llll}
-     \expand(\deftype) &=& \strtype & (\iff \unroll(\deftype) = \TSUB~\TFINAL^?~\X{ht}^?~\strtype) \\
-     \end{array}
+The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! limits, memory type, table type

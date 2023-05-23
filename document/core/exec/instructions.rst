@@ -3635,7 +3635,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`structured type <syntax-strtype>` :math:`\expand(\X{f}.\FITYPE)`.
+3. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`compound type <syntax-comptype>` :math:`\expand(\X{f}.\FITYPE)`.
 
 4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
@@ -3679,7 +3679,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
-2. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`structured type <syntax-strtype>` :math:`\expand(S.\SFUNCS[a].\FITYPE)`.
+2. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`compound type <syntax-comptype>` :math:`\expand(S.\SFUNCS[a].\FITYPE)`.
 
 3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
 

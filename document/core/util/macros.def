@@ -181,7 +181,8 @@
 .. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
 .. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
 
-.. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
+.. |BOTH| mathdef:: \xref{valid/conventions}{syntax-heaptype-ext}{\K{bot}}
+.. |BOT| mathdef:: \xref{valid/conventions}{syntax-valtype-ext}{\K{bot}}
 
 .. |I8| mathdef:: \xref{syntax/runtime}{syntax-storagetype}{\K{i8}}
 .. |I16| mathdef:: \xref{syntax/runtime}{syntax-storagetype}{\K{i16}}
@@ -221,9 +222,11 @@
 .. |NULLFUNCREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{nullfuncref}}
 .. |NULLEXTERNREF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{nullexternref}}
 
-.. |TFUNC| mathdef:: \xref{syntax/types}{syntax-strtype}{\K{func}}
-.. |TSTRUCT| mathdef:: \xref{syntax/types}{syntax-strtype}{\K{struct}}
-.. |TARRAY| mathdef:: \xref{syntax/types}{syntax-strtype}{\K{array}}
+.. |REC| mathdef:: \xref{syntax/types}{syntax-heaptype}{\K{rec}}
+
+.. |TFUNC| mathdef:: \xref{syntax/types}{syntax-comptype}{\K{func}}
+.. |TSTRUCT| mathdef:: \xref{syntax/types}{syntax-comptype}{\K{struct}}
+.. |TARRAY| mathdef:: \xref{syntax/types}{syntax-comptype}{\K{array}}
 .. |TSUB| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{sub}}
 .. |TREC| mathdef:: \xref{syntax/types}{syntax-rectype}{\K{rec}}
 .. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{filan}}
@@ -248,6 +251,7 @@
 .. |numtype| mathdef:: \xref{syntax/types}{syntax-numtype}{\X{numtype}}
 .. |vectype| mathdef:: \xref{syntax/types}{syntax-vectype}{\X{vectype}}
 .. |heaptype| mathdef:: \xref{syntax/types}{syntax-heaptype}{\X{heaptype}}
+.. |absheaptype| mathdef:: \xref{syntax/types}{syntax-absheaptype}{\X{absheaptype}}
 .. |reftype| mathdef:: \xref{syntax/types}{syntax-reftype}{\X{reftype}}
 .. |valtype| mathdef:: \xref{syntax/types}{syntax-valtype}{\X{valtype}}
 .. |resulttype| mathdef:: \xref{syntax/types}{syntax-resulttype}{\X{resulttype}}
@@ -257,10 +261,10 @@
 .. |fieldtype| mathdef:: \xref{syntax/types}{syntax-fieldtype}{\X{fieldtype}}
 .. |storagetype| mathdef:: \xref{syntax/types}{syntax-storagetype}{\X{storagetype}}
 .. |packedtype| mathdef:: \xref{syntax/types}{syntax-packedtype}{\X{packedtype}}
-.. |strtype| mathdef:: \xref{syntax/types}{syntax-strtype}{\X{strtype}}
+.. |comptype| mathdef:: \xref{syntax/types}{syntax-comptype}{\X{comptype}}
 .. |subtype| mathdef:: \xref{syntax/types}{syntax-subtype}{\X{subtype}}
 .. |rectype| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{rectype}}
-.. |deftype| mathdef:: \xref{syntax/types}{syntax-deftype}{\X{deftype}}
+.. |deftype| mathdef:: \xref{valid/conventions}{syntax-deftype}{\X{deftype}}
 
 .. |globaltype| mathdef:: \xref{syntax/types}{syntax-globaltype}{\X{globaltype}}
 .. |tabletype| mathdef:: \xref{syntax/types}{syntax-tabletype}{\X{tabletype}}
@@ -270,17 +274,20 @@
 .. |mut| mathdef:: \xref{syntax/types}{syntax-mut}{\X{mut}}
 .. |init| mathdef:: \xref{syntax/types}{syntax-init}{\X{init}}
 
-.. |instrtype| mathdef:: \xref{syntax/types}{syntax-instrtype}{\X{instrtype}}
-.. |localtype| mathdef:: \xref{syntax/types}{syntax-localtype}{\X{localtype}}
+.. |instrtype| mathdef:: \xref{valid/conventions}{syntax-instrtype}{\X{instrtype}}
+.. |localtype| mathdef:: \xref{valid/conventions}{syntax-localtype}{\X{localtype}}
 .. |externtype| mathdef:: \xref{syntax/types}{syntax-externtype}{\X{externtype}}
 
 
 .. Types, meta functions
 
-.. |reftypediff| mathdef:: \xref{syntax/types}{aux-reftypediff}{\setminus}
+.. |reftypediff| mathdef:: \xref{valid/conventions}{aux-reftypediff}{\setminus}
 
-.. |unroll| mathdef:: \xref{syntax/types}{aux-unroll}{\F{unroll}}
-.. |expand| mathdef:: \xref{syntax/types}{aux-expand}{\F{expand}}
+.. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
+.. |unrollrt| mathdef:: \xref{valid/conventions}{aux-unroll-rectype}{\F{unroll}}
+.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast}
+.. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
+.. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
 
 .. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
@@ -381,7 +388,7 @@
 .. Modules, non-terminals
 
 .. |module| mathdef:: \xref{syntax/modules}{syntax-module}{\X{module}}
-.. |type| mathdef:: \xref{syntax/types}{syntax-deftype}{\X{type}}
+.. |type| mathdef:: \xref{syntax/types}{syntax-rectype}{\X{type}}
 .. |func| mathdef:: \xref{syntax/modules}{syntax-func}{\X{func}}
 .. |local| mathdef:: \xref{syntax/modules}{syntax-local}{\X{local}}
 .. |table| mathdef:: \xref{syntax/modules}{syntax-table}{\X{table}}
@@ -986,13 +993,18 @@
 .. |matchesfunctype| mathdef:: \xref{valid/matching}{match-functype}{\leq}
 .. |matchesstructtype| mathdef:: \xref{valid/matching}{match-structtype}{\leq}
 .. |matchesarraytype| mathdef:: \xref{valid/matching}{match-arraytype}{\leq}
-.. |matchesstrtype| mathdef:: \xref{valid/matching}{match-strtype}{\leq}
+.. |matchescomptype| mathdef:: \xref{valid/matching}{match-comptype}{\leq}
 .. |matchesdeftype| mathdef:: \xref{valid/matching}{match-deftype}{\leq}
 .. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
 .. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
 .. |matchesglobaltype| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
 .. |matchesexterntype| mathdef:: \xref{valid/matching}{match-externtype}{\leq}
 .. |matcheslimits| mathdef:: \xref{valid/matching}{match-limits}{\leq}
+
+
+.. Meta functions
+
+.. |clostype| mathdef:: \xref{valid/types}{closure}{\K{clos}}
 
 
 .. Contexts
@@ -1008,6 +1020,7 @@
 .. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 .. |CREFS| mathdef:: \xref{valid/conventions}{context}{\K{refs}}
+.. |CRECS| mathdef:: \xref{valid/matching}{context-rec}{\K{rec}}
 
 
 .. Judgments
@@ -1041,7 +1054,7 @@
 .. |vdashfunctypematch| mathdef:: \xref{valid/matching}{match-functype}{\vdash}
 .. |vdashstructtypematch| mathdef:: \xref{valid/matching}{match-structtype}{\vdash}
 .. |vdasharraytypematch| mathdef:: \xref{valid/matching}{match-arraytype}{\vdash}
-.. |vdashstrtypematch| mathdef:: \xref{valid/matching}{match-strtype}{\vdash}
+.. |vdashcomptypematch| mathdef:: \xref{valid/matching}{match-comptype}{\vdash}
 .. |vdashdeftypematch| mathdef:: \xref{valid/matching}{match-deftype}{\vdash}
 .. |vdashtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\vdash}
 .. |vdashmemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\vdash}
