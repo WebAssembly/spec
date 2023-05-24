@@ -63,7 +63,8 @@ let do_invoke act = match act.it with
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
       |> Array.of_list
     ) in
-    Printf.eprintf "[Invoking %s...]\n" (string_of_name name);
+    Interpreter.cnt := 0;
+    Printf.eprintf "[Invoking %s...]\n%!" (string_of_name name);
     Interpreter.call_algo "invocation" [idx; args]
   | _ -> raise Not_supported
 

@@ -165,24 +165,31 @@ and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 (* Construct module *)
 
 let al_of_func wasm_module wasm_func =
+  (* Destruct wasm_module and wasm_func *)
+  let { Ast.types = wasm_types; _ } = wasm_module.it in
+  let { Ast.ftype = wasm_ftype; Ast.locals = wasm_locals; Ast.body = wasm_body} = wasm_func.it in
 
   (* Get function type from module *)
   (* Note: function type will be placed in function in DSL *)
   let { it = Types.FuncType (wtl1, wtl2); _ } =
-    Int32.to_int wasm_func.it.Ast.ftype.it
-    |> List.nth wasm_module.it.Ast.types in
+    List.nth wasm_types (Int32.to_int wasm_ftype.it) in
+
+  let al_of_type ty = WasmTypeV ty in
 
   (* Construct function type *)
   let ftype =
-    let al_of_type ty = WasmTypeV ty in
     let al_tl1 = List.map al_of_type wtl1 in
     let al_tl2 = List.map al_of_type wtl2 in
     ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2)) in
 
-  (* Construct code *)
-  let code = al_of_instrs wasm_module.it.types wasm_func.it.Ast.body |> Array.of_list in
+  (* Construct locals *)
+  let locals = List.map al_of_type wasm_locals |> Array.of_list in
 
-  ConstructV ("FUNC", [ftype; ListV [||]; ListV (code)])
+  (* Construct code *)
+  let code = al_of_instrs wasm_module.it.types wasm_body |> Array.of_list in
+
+  (* Construct func *)
+  ConstructV ("FUNC", [ftype; ListV locals; ListV code])
 
 let al_of_global wasm_global =
   let expr = al_of_instrs [] wasm_global.it.Ast.ginit.it |> Array.of_list in

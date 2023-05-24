@@ -65,14 +65,14 @@ let rec structured_string_of_value = function
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
-  | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
+  | WasmTypeV t -> "WasmTypeV (" ^ Reference_interpreter.Types.string_of_value_type t ^ ")"
   | WasmInstrV (s, vl) ->
       "WasmInstrV(" ^ s ^ ", "
       ^ string_of_list structured_string_of_value "[" ", " "]" vl
       ^ ")"
-  | IntV i -> string_of_int i
-  | FloatV i -> string_of_float i
-  | StringV s -> s
+  | IntV i -> "IntV (" ^ string_of_int i ^ ")"
+  | FloatV f -> "FloatV (" ^ string_of_float f ^ ")"
+  | StringV s -> "StringV (" ^ s ^ ")"
   | PairV (v1, v2) ->
       "PairV("
       ^ structured_string_of_value v1

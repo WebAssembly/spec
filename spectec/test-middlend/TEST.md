@@ -1017,46 +1017,50 @@ def default_ : valtype -> val
   ;; 4-runtime.watsup:51.1-52.14
   def {t : valtype} default_(t) = CONST_val(F64_numtype, 0)
     -- if (t = F64_valtype)
-  ;; 4-runtime.watsup:53.1-53.34
-  def {rt : reftype} default_(rt <: valtype) = REF.NULL_val(rt)
+  ;; 4-runtime.watsup:53.1-54.18
+  def {t : valtype} default_(t) = REF.NULL_val(FUNCREF_reftype)
+    -- if (t = FUNCREF_valtype)
+  ;; 4-runtime.watsup:55.1-56.20
+  def {t : valtype} default_(t) = REF.NULL_val(EXTERNREF_reftype)
+    -- if (t = EXTERNREF_valtype)
 
-;; 4-runtime.watsup:64.1-64.71
+;; 4-runtime.watsup:68.1-68.71
 syntax exportinst = EXPORT(name, externval)
 
-;; 4-runtime.watsup:74.1-81.25
+;; 4-runtime.watsup:78.1-85.25
 syntax moduleinst = {FUNC funcaddr*, GLOBAL globaladdr*, TABLE tableaddr*, MEM memaddr*, ELEM elemaddr*, DATA dataaddr*, EXPORT exportinst*}
 
-;; 4-runtime.watsup:58.1-58.66
+;; 4-runtime.watsup:62.1-62.66
 syntax funcinst = `%;%`(moduleinst, func)
 
-;; 4-runtime.watsup:59.1-59.53
+;; 4-runtime.watsup:63.1-63.53
 syntax globalinst = val
 
-;; 4-runtime.watsup:60.1-60.52
+;; 4-runtime.watsup:64.1-64.52
 syntax tableinst = ref*
 
-;; 4-runtime.watsup:61.1-61.52
+;; 4-runtime.watsup:65.1-65.52
 syntax meminst = byte*
 
-;; 4-runtime.watsup:62.1-62.53
+;; 4-runtime.watsup:66.1-66.53
 syntax eleminst = ref*
 
-;; 4-runtime.watsup:63.1-63.51
+;; 4-runtime.watsup:67.1-67.51
 syntax datainst = byte*
 
-;; 4-runtime.watsup:66.1-72.21
+;; 4-runtime.watsup:70.1-76.21
 syntax store = {FUNC funcinst*, GLOBAL globalinst*, TABLE tableinst*, MEM meminst*, ELEM eleminst*, DATA datainst*}
 
-;; 4-runtime.watsup:83.1-85.24
+;; 4-runtime.watsup:87.1-89.24
 syntax frame = {LOCAL val*, MODULE moduleinst}
 
-;; 4-runtime.watsup:86.1-86.47
+;; 4-runtime.watsup:90.1-90.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 rec {
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -1110,98 +1114,98 @@ syntax admininstr =
   | TRAP
 }
 
-;; 4-runtime.watsup:87.1-87.62
+;; 4-runtime.watsup:91.1-91.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:105.1-105.59
+;; 4-runtime.watsup:109.1-109.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:106.1-106.38
+  ;; 4-runtime.watsup:110.1-110.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:108.1-108.52
+;; 4-runtime.watsup:112.1-112.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:109.1-109.31
+  ;; 4-runtime.watsup:113.1-113.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:111.1-111.67
+;; 4-runtime.watsup:115.1-115.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:119.1-119.48
+  ;; 4-runtime.watsup:123.1-123.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:112.1-112.69
+;; 4-runtime.watsup:116.1-116.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:120.1-120.54
+  ;; 4-runtime.watsup:124.1-124.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.68
+;; 4-runtime.watsup:117.1-117.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:121.1-121.51
+  ;; 4-runtime.watsup:125.1-125.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:114.1-114.66
+;; 4-runtime.watsup:118.1-118.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:122.1-122.45
+  ;; 4-runtime.watsup:126.1-126.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:115.1-115.67
+;; 4-runtime.watsup:119.1-119.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:123.1-123.48
+  ;; 4-runtime.watsup:127.1-127.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.67
+;; 4-runtime.watsup:120.1-120.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:124.1-124.48
+  ;; 4-runtime.watsup:128.1-128.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:117.1-117.68
+;; 4-runtime.watsup:121.1-121.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:125.1-125.35
+  ;; 4-runtime.watsup:129.1-129.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:128.1-128.78
+;; 4-runtime.watsup:132.1-132.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:137.1-137.52
+  ;; 4-runtime.watsup:141.1-141.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:129.1-129.79
+;; 4-runtime.watsup:133.1-133.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:138.1-138.71
+  ;; 4-runtime.watsup:142.1-142.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:130.1-130.83
+;; 4-runtime.watsup:134.1-134.83
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:139.1-139.74
+  ;; 4-runtime.watsup:143.1-143.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:131.1-131.80
+;; 4-runtime.watsup:135.1-135.80
 def with_tableext : (state, tableidx, ref*) -> state
-  ;; 4-runtime.watsup:140.1-140.75
+  ;; 4-runtime.watsup:144.1-144.75
   def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*{r}], f)
 
-;; 4-runtime.watsup:132.1-132.90
+;; 4-runtime.watsup:136.1-136.90
 def with_mem : (state, tableidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:141.1-141.77
+  ;; 4-runtime.watsup:145.1-145.77
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]][i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:133.1-133.78
+;; 4-runtime.watsup:137.1-137.78
 def with_memext : (state, tableidx, byte*) -> state
-  ;; 4-runtime.watsup:142.1-142.69
+  ;; 4-runtime.watsup:146.1-146.69
   def {b* : byte*, f : frame, s : store, x : idx} with_memext(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] =.. b*{b}], f)
 
-;; 4-runtime.watsup:134.1-134.77
+;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:143.1-143.69
+  ;; 4-runtime.watsup:147.1-147.69
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
 
-;; 4-runtime.watsup:135.1-135.77
+;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:144.1-144.65
+  ;; 4-runtime.watsup:148.1-148.65
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 rec {
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -2652,48 +2656,52 @@ def default_ : valtype -> val?
   ;; 4-runtime.watsup:51.1-52.14
   def {t : valtype} default_(t) = ?(CONST_val(F64_numtype, 0))
     -- if (t = F64_valtype)
-  ;; 4-runtime.watsup:53.1-53.34
-  def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
+  ;; 4-runtime.watsup:53.1-54.18
+  def {t : valtype} default_(t) = ?(REF.NULL_val(FUNCREF_reftype))
+    -- if (t = FUNCREF_valtype)
+  ;; 4-runtime.watsup:55.1-56.20
+  def {t : valtype} default_(t) = ?(REF.NULL_val(EXTERNREF_reftype))
+    -- if (t = EXTERNREF_valtype)
   ;;
   def {x : valtype} default_(x) = ?()
 
-;; 4-runtime.watsup:64.1-64.71
+;; 4-runtime.watsup:68.1-68.71
 syntax exportinst = EXPORT(name, externval)
 
-;; 4-runtime.watsup:74.1-81.25
+;; 4-runtime.watsup:78.1-85.25
 syntax moduleinst = {FUNC funcaddr*, GLOBAL globaladdr*, TABLE tableaddr*, MEM memaddr*, ELEM elemaddr*, DATA dataaddr*, EXPORT exportinst*}
 
-;; 4-runtime.watsup:58.1-58.66
+;; 4-runtime.watsup:62.1-62.66
 syntax funcinst = `%;%`(moduleinst, func)
 
-;; 4-runtime.watsup:59.1-59.53
+;; 4-runtime.watsup:63.1-63.53
 syntax globalinst = val
 
-;; 4-runtime.watsup:60.1-60.52
+;; 4-runtime.watsup:64.1-64.52
 syntax tableinst = ref*
 
-;; 4-runtime.watsup:61.1-61.52
+;; 4-runtime.watsup:65.1-65.52
 syntax meminst = byte*
 
-;; 4-runtime.watsup:62.1-62.53
+;; 4-runtime.watsup:66.1-66.53
 syntax eleminst = ref*
 
-;; 4-runtime.watsup:63.1-63.51
+;; 4-runtime.watsup:67.1-67.51
 syntax datainst = byte*
 
-;; 4-runtime.watsup:66.1-72.21
+;; 4-runtime.watsup:70.1-76.21
 syntax store = {FUNC funcinst*, GLOBAL globalinst*, TABLE tableinst*, MEM meminst*, ELEM eleminst*, DATA datainst*}
 
-;; 4-runtime.watsup:83.1-85.24
+;; 4-runtime.watsup:87.1-89.24
 syntax frame = {LOCAL val*, MODULE moduleinst}
 
-;; 4-runtime.watsup:86.1-86.47
+;; 4-runtime.watsup:90.1-90.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 rec {
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -2747,98 +2755,98 @@ syntax admininstr =
   | TRAP
 }
 
-;; 4-runtime.watsup:87.1-87.62
+;; 4-runtime.watsup:91.1-91.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:105.1-105.59
+;; 4-runtime.watsup:109.1-109.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:106.1-106.38
+  ;; 4-runtime.watsup:110.1-110.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:108.1-108.52
+;; 4-runtime.watsup:112.1-112.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:109.1-109.31
+  ;; 4-runtime.watsup:113.1-113.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:111.1-111.67
+;; 4-runtime.watsup:115.1-115.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:119.1-119.48
+  ;; 4-runtime.watsup:123.1-123.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:112.1-112.69
+;; 4-runtime.watsup:116.1-116.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:120.1-120.54
+  ;; 4-runtime.watsup:124.1-124.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.68
+;; 4-runtime.watsup:117.1-117.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:121.1-121.51
+  ;; 4-runtime.watsup:125.1-125.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:114.1-114.66
+;; 4-runtime.watsup:118.1-118.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:122.1-122.45
+  ;; 4-runtime.watsup:126.1-126.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:115.1-115.67
+;; 4-runtime.watsup:119.1-119.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:123.1-123.48
+  ;; 4-runtime.watsup:127.1-127.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.67
+;; 4-runtime.watsup:120.1-120.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:124.1-124.48
+  ;; 4-runtime.watsup:128.1-128.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:117.1-117.68
+;; 4-runtime.watsup:121.1-121.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:125.1-125.35
+  ;; 4-runtime.watsup:129.1-129.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:128.1-128.78
+;; 4-runtime.watsup:132.1-132.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:137.1-137.52
+  ;; 4-runtime.watsup:141.1-141.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:129.1-129.79
+;; 4-runtime.watsup:133.1-133.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:138.1-138.71
+  ;; 4-runtime.watsup:142.1-142.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:130.1-130.83
+;; 4-runtime.watsup:134.1-134.83
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:139.1-139.74
+  ;; 4-runtime.watsup:143.1-143.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:131.1-131.80
+;; 4-runtime.watsup:135.1-135.80
 def with_tableext : (state, tableidx, ref*) -> state
-  ;; 4-runtime.watsup:140.1-140.75
+  ;; 4-runtime.watsup:144.1-144.75
   def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*{r}], f)
 
-;; 4-runtime.watsup:132.1-132.90
+;; 4-runtime.watsup:136.1-136.90
 def with_mem : (state, tableidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:141.1-141.77
+  ;; 4-runtime.watsup:145.1-145.77
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]][i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:133.1-133.78
+;; 4-runtime.watsup:137.1-137.78
 def with_memext : (state, tableidx, byte*) -> state
-  ;; 4-runtime.watsup:142.1-142.69
+  ;; 4-runtime.watsup:146.1-146.69
   def {b* : byte*, f : frame, s : store, x : idx} with_memext(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] =.. b*{b}], f)
 
-;; 4-runtime.watsup:134.1-134.77
+;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:143.1-143.69
+  ;; 4-runtime.watsup:147.1-147.69
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
 
-;; 4-runtime.watsup:135.1-135.77
+;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:144.1-144.65
+  ;; 4-runtime.watsup:148.1-148.65
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 rec {
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -4298,48 +4306,52 @@ def default_ : valtype -> val?
   ;; 4-runtime.watsup:51.1-52.14
   def {t : valtype} default_(t) = ?(CONST_val(F64_numtype, 0))
     -- if (t = F64_valtype)
-  ;; 4-runtime.watsup:53.1-53.34
-  def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
+  ;; 4-runtime.watsup:53.1-54.18
+  def {t : valtype} default_(t) = ?(REF.NULL_val(FUNCREF_reftype))
+    -- if (t = FUNCREF_valtype)
+  ;; 4-runtime.watsup:55.1-56.20
+  def {t : valtype} default_(t) = ?(REF.NULL_val(EXTERNREF_reftype))
+    -- if (t = EXTERNREF_valtype)
   ;;
   def {x : valtype} default_(x) = ?()
 
-;; 4-runtime.watsup:64.1-64.71
+;; 4-runtime.watsup:68.1-68.71
 syntax exportinst = EXPORT(name, externval)
 
-;; 4-runtime.watsup:74.1-81.25
+;; 4-runtime.watsup:78.1-85.25
 syntax moduleinst = {FUNC funcaddr*, GLOBAL globaladdr*, TABLE tableaddr*, MEM memaddr*, ELEM elemaddr*, DATA dataaddr*, EXPORT exportinst*}
 
-;; 4-runtime.watsup:58.1-58.66
+;; 4-runtime.watsup:62.1-62.66
 syntax funcinst = `%;%`(moduleinst, func)
 
-;; 4-runtime.watsup:59.1-59.53
+;; 4-runtime.watsup:63.1-63.53
 syntax globalinst = val
 
-;; 4-runtime.watsup:60.1-60.52
+;; 4-runtime.watsup:64.1-64.52
 syntax tableinst = ref*
 
-;; 4-runtime.watsup:61.1-61.52
+;; 4-runtime.watsup:65.1-65.52
 syntax meminst = byte*
 
-;; 4-runtime.watsup:62.1-62.53
+;; 4-runtime.watsup:66.1-66.53
 syntax eleminst = ref*
 
-;; 4-runtime.watsup:63.1-63.51
+;; 4-runtime.watsup:67.1-67.51
 syntax datainst = byte*
 
-;; 4-runtime.watsup:66.1-72.21
+;; 4-runtime.watsup:70.1-76.21
 syntax store = {FUNC funcinst*, GLOBAL globalinst*, TABLE tableinst*, MEM meminst*, ELEM eleminst*, DATA datainst*}
 
-;; 4-runtime.watsup:83.1-85.24
+;; 4-runtime.watsup:87.1-89.24
 syntax frame = {LOCAL val*, MODULE moduleinst}
 
-;; 4-runtime.watsup:86.1-86.47
+;; 4-runtime.watsup:90.1-90.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 rec {
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -4393,98 +4405,98 @@ syntax admininstr =
   | TRAP
 }
 
-;; 4-runtime.watsup:87.1-87.62
+;; 4-runtime.watsup:91.1-91.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:105.1-105.59
+;; 4-runtime.watsup:109.1-109.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:106.1-106.38
+  ;; 4-runtime.watsup:110.1-110.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:108.1-108.52
+;; 4-runtime.watsup:112.1-112.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:109.1-109.31
+  ;; 4-runtime.watsup:113.1-113.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:111.1-111.67
+;; 4-runtime.watsup:115.1-115.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:119.1-119.48
+  ;; 4-runtime.watsup:123.1-123.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:112.1-112.69
+;; 4-runtime.watsup:116.1-116.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:120.1-120.54
+  ;; 4-runtime.watsup:124.1-124.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.68
+;; 4-runtime.watsup:117.1-117.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:121.1-121.51
+  ;; 4-runtime.watsup:125.1-125.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:114.1-114.66
+;; 4-runtime.watsup:118.1-118.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:122.1-122.45
+  ;; 4-runtime.watsup:126.1-126.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:115.1-115.67
+;; 4-runtime.watsup:119.1-119.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:123.1-123.48
+  ;; 4-runtime.watsup:127.1-127.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.67
+;; 4-runtime.watsup:120.1-120.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:124.1-124.48
+  ;; 4-runtime.watsup:128.1-128.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:117.1-117.68
+;; 4-runtime.watsup:121.1-121.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:125.1-125.35
+  ;; 4-runtime.watsup:129.1-129.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:128.1-128.78
+;; 4-runtime.watsup:132.1-132.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:137.1-137.52
+  ;; 4-runtime.watsup:141.1-141.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:129.1-129.79
+;; 4-runtime.watsup:133.1-133.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:138.1-138.71
+  ;; 4-runtime.watsup:142.1-142.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:130.1-130.83
+;; 4-runtime.watsup:134.1-134.83
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:139.1-139.74
+  ;; 4-runtime.watsup:143.1-143.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:131.1-131.80
+;; 4-runtime.watsup:135.1-135.80
 def with_tableext : (state, tableidx, ref*) -> state
-  ;; 4-runtime.watsup:140.1-140.75
+  ;; 4-runtime.watsup:144.1-144.75
   def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*{r}], f)
 
-;; 4-runtime.watsup:132.1-132.90
+;; 4-runtime.watsup:136.1-136.90
 def with_mem : (state, tableidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:141.1-141.77
+  ;; 4-runtime.watsup:145.1-145.77
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]][i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:133.1-133.78
+;; 4-runtime.watsup:137.1-137.78
 def with_memext : (state, tableidx, byte*) -> state
-  ;; 4-runtime.watsup:142.1-142.69
+  ;; 4-runtime.watsup:146.1-146.69
   def {b* : byte*, f : frame, s : store, x : idx} with_memext(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] =.. b*{b}], f)
 
-;; 4-runtime.watsup:134.1-134.77
+;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:143.1-143.69
+  ;; 4-runtime.watsup:147.1-147.69
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
 
-;; 4-runtime.watsup:135.1-135.77
+;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:144.1-144.65
+  ;; 4-runtime.watsup:148.1-148.65
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 rec {
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -6002,48 +6014,52 @@ def default_ : valtype -> val?
   ;; 4-runtime.watsup:51.1-52.14
   def {t : valtype} default_(t) = ?(CONST_val(F64_numtype, 0))
     -- if (t = F64_valtype)
-  ;; 4-runtime.watsup:53.1-53.34
-  def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
+  ;; 4-runtime.watsup:53.1-54.18
+  def {t : valtype} default_(t) = ?(REF.NULL_val(FUNCREF_reftype))
+    -- if (t = FUNCREF_valtype)
+  ;; 4-runtime.watsup:55.1-56.20
+  def {t : valtype} default_(t) = ?(REF.NULL_val(EXTERNREF_reftype))
+    -- if (t = EXTERNREF_valtype)
   ;;
   def {x : valtype} default_(x) = ?()
 
-;; 4-runtime.watsup:64.1-64.71
+;; 4-runtime.watsup:68.1-68.71
 syntax exportinst = EXPORT(name, externval)
 
-;; 4-runtime.watsup:74.1-81.25
+;; 4-runtime.watsup:78.1-85.25
 syntax moduleinst = {FUNC funcaddr*, GLOBAL globaladdr*, TABLE tableaddr*, MEM memaddr*, ELEM elemaddr*, DATA dataaddr*, EXPORT exportinst*}
 
-;; 4-runtime.watsup:58.1-58.66
+;; 4-runtime.watsup:62.1-62.66
 syntax funcinst = `%;%`(moduleinst, func)
 
-;; 4-runtime.watsup:59.1-59.53
+;; 4-runtime.watsup:63.1-63.53
 syntax globalinst = val
 
-;; 4-runtime.watsup:60.1-60.52
+;; 4-runtime.watsup:64.1-64.52
 syntax tableinst = ref*
 
-;; 4-runtime.watsup:61.1-61.52
+;; 4-runtime.watsup:65.1-65.52
 syntax meminst = byte*
 
-;; 4-runtime.watsup:62.1-62.53
+;; 4-runtime.watsup:66.1-66.53
 syntax eleminst = ref*
 
-;; 4-runtime.watsup:63.1-63.51
+;; 4-runtime.watsup:67.1-67.51
 syntax datainst = byte*
 
-;; 4-runtime.watsup:66.1-72.21
+;; 4-runtime.watsup:70.1-76.21
 syntax store = {FUNC funcinst*, GLOBAL globalinst*, TABLE tableinst*, MEM meminst*, ELEM eleminst*, DATA datainst*}
 
-;; 4-runtime.watsup:83.1-85.24
+;; 4-runtime.watsup:87.1-89.24
 syntax frame = {LOCAL val*, MODULE moduleinst}
 
-;; 4-runtime.watsup:86.1-86.47
+;; 4-runtime.watsup:90.1-90.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 rec {
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -6097,98 +6113,98 @@ syntax admininstr =
   | TRAP
 }
 
-;; 4-runtime.watsup:87.1-87.62
+;; 4-runtime.watsup:91.1-91.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:105.1-105.59
+;; 4-runtime.watsup:109.1-109.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:106.1-106.38
+  ;; 4-runtime.watsup:110.1-110.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:108.1-108.52
+;; 4-runtime.watsup:112.1-112.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:109.1-109.31
+  ;; 4-runtime.watsup:113.1-113.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:111.1-111.67
+;; 4-runtime.watsup:115.1-115.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:119.1-119.48
+  ;; 4-runtime.watsup:123.1-123.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:112.1-112.69
+;; 4-runtime.watsup:116.1-116.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:120.1-120.54
+  ;; 4-runtime.watsup:124.1-124.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.68
+;; 4-runtime.watsup:117.1-117.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:121.1-121.51
+  ;; 4-runtime.watsup:125.1-125.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:114.1-114.66
+;; 4-runtime.watsup:118.1-118.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:122.1-122.45
+  ;; 4-runtime.watsup:126.1-126.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:115.1-115.67
+;; 4-runtime.watsup:119.1-119.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:123.1-123.48
+  ;; 4-runtime.watsup:127.1-127.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.67
+;; 4-runtime.watsup:120.1-120.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:124.1-124.48
+  ;; 4-runtime.watsup:128.1-128.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:117.1-117.68
+;; 4-runtime.watsup:121.1-121.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:125.1-125.35
+  ;; 4-runtime.watsup:129.1-129.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:128.1-128.78
+;; 4-runtime.watsup:132.1-132.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:137.1-137.52
+  ;; 4-runtime.watsup:141.1-141.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:129.1-129.79
+;; 4-runtime.watsup:133.1-133.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:138.1-138.71
+  ;; 4-runtime.watsup:142.1-142.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:130.1-130.83
+;; 4-runtime.watsup:134.1-134.83
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:139.1-139.74
+  ;; 4-runtime.watsup:143.1-143.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:131.1-131.80
+;; 4-runtime.watsup:135.1-135.80
 def with_tableext : (state, tableidx, ref*) -> state
-  ;; 4-runtime.watsup:140.1-140.75
+  ;; 4-runtime.watsup:144.1-144.75
   def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*{r}], f)
 
-;; 4-runtime.watsup:132.1-132.90
+;; 4-runtime.watsup:136.1-136.90
 def with_mem : (state, tableidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:141.1-141.77
+  ;; 4-runtime.watsup:145.1-145.77
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]][i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:133.1-133.78
+;; 4-runtime.watsup:137.1-137.78
 def with_memext : (state, tableidx, byte*) -> state
-  ;; 4-runtime.watsup:142.1-142.69
+  ;; 4-runtime.watsup:146.1-146.69
   def {b* : byte*, f : frame, s : store, x : idx} with_memext(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] =.. b*{b}], f)
 
-;; 4-runtime.watsup:134.1-134.77
+;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:143.1-143.69
+  ;; 4-runtime.watsup:147.1-147.69
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
 
-;; 4-runtime.watsup:135.1-135.77
+;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:144.1-144.65
+  ;; 4-runtime.watsup:148.1-148.65
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 rec {
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -7732,48 +7748,52 @@ def default_ : valtype -> val?
   ;; 4-runtime.watsup:51.1-52.14
   def {t : valtype} default_(t) = ?(CONST_val(F64_numtype, 0))
     -- if (t = F64_valtype)
-  ;; 4-runtime.watsup:53.1-53.34
-  def {rt : reftype} default_(rt <: valtype) = ?(REF.NULL_val(rt))
+  ;; 4-runtime.watsup:53.1-54.18
+  def {t : valtype} default_(t) = ?(REF.NULL_val(FUNCREF_reftype))
+    -- if (t = FUNCREF_valtype)
+  ;; 4-runtime.watsup:55.1-56.20
+  def {t : valtype} default_(t) = ?(REF.NULL_val(EXTERNREF_reftype))
+    -- if (t = EXTERNREF_valtype)
   ;;
   def {x : valtype} default_(x) = ?()
 
-;; 4-runtime.watsup:64.1-64.71
+;; 4-runtime.watsup:68.1-68.71
 syntax exportinst = EXPORT(name, externval)
 
-;; 4-runtime.watsup:74.1-81.25
+;; 4-runtime.watsup:78.1-85.25
 syntax moduleinst = {FUNC funcaddr*, GLOBAL globaladdr*, TABLE tableaddr*, MEM memaddr*, ELEM elemaddr*, DATA dataaddr*, EXPORT exportinst*}
 
-;; 4-runtime.watsup:58.1-58.66
+;; 4-runtime.watsup:62.1-62.66
 syntax funcinst = `%;%`(moduleinst, func)
 
-;; 4-runtime.watsup:59.1-59.53
+;; 4-runtime.watsup:63.1-63.53
 syntax globalinst = val
 
-;; 4-runtime.watsup:60.1-60.52
+;; 4-runtime.watsup:64.1-64.52
 syntax tableinst = ref*
 
-;; 4-runtime.watsup:61.1-61.52
+;; 4-runtime.watsup:65.1-65.52
 syntax meminst = byte*
 
-;; 4-runtime.watsup:62.1-62.53
+;; 4-runtime.watsup:66.1-66.53
 syntax eleminst = ref*
 
-;; 4-runtime.watsup:63.1-63.51
+;; 4-runtime.watsup:67.1-67.51
 syntax datainst = byte*
 
-;; 4-runtime.watsup:66.1-72.21
+;; 4-runtime.watsup:70.1-76.21
 syntax store = {FUNC funcinst*, GLOBAL globalinst*, TABLE tableinst*, MEM meminst*, ELEM eleminst*, DATA datainst*}
 
-;; 4-runtime.watsup:83.1-85.24
+;; 4-runtime.watsup:87.1-89.24
 syntax frame = {LOCAL val*, MODULE moduleinst}
 
-;; 4-runtime.watsup:86.1-86.47
+;; 4-runtime.watsup:90.1-90.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 rec {
 
-;; 4-runtime.watsup:149.1-156.5
+;; 4-runtime.watsup:153.1-160.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -7827,98 +7847,98 @@ syntax admininstr =
   | TRAP
 }
 
-;; 4-runtime.watsup:87.1-87.62
+;; 4-runtime.watsup:91.1-91.62
 syntax config = `%;%*`(state, admininstr*)
 
-;; 4-runtime.watsup:105.1-105.59
+;; 4-runtime.watsup:109.1-109.59
 def funcaddr : state -> funcaddr*
-  ;; 4-runtime.watsup:106.1-106.38
+  ;; 4-runtime.watsup:110.1-110.38
   def {f : frame, s : store} funcaddr(`%;%`(s, f)) = f.MODULE_frame.FUNC_moduleinst
 
-;; 4-runtime.watsup:108.1-108.52
+;; 4-runtime.watsup:112.1-112.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:109.1-109.31
+  ;; 4-runtime.watsup:113.1-113.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:111.1-111.67
+;; 4-runtime.watsup:115.1-115.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:119.1-119.48
+  ;; 4-runtime.watsup:123.1-123.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:112.1-112.69
+;; 4-runtime.watsup:116.1-116.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:120.1-120.54
+  ;; 4-runtime.watsup:124.1-124.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:113.1-113.68
+;; 4-runtime.watsup:117.1-117.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:121.1-121.51
+  ;; 4-runtime.watsup:125.1-125.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:114.1-114.66
+;; 4-runtime.watsup:118.1-118.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:122.1-122.45
+  ;; 4-runtime.watsup:126.1-126.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:115.1-115.67
+;; 4-runtime.watsup:119.1-119.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:123.1-123.48
+  ;; 4-runtime.watsup:127.1-127.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:116.1-116.67
+;; 4-runtime.watsup:120.1-120.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:124.1-124.48
+  ;; 4-runtime.watsup:128.1-128.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:117.1-117.68
+;; 4-runtime.watsup:121.1-121.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:125.1-125.35
+  ;; 4-runtime.watsup:129.1-129.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:128.1-128.78
+;; 4-runtime.watsup:132.1-132.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:137.1-137.52
+  ;; 4-runtime.watsup:141.1-141.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL[x] = v])
 
-;; 4-runtime.watsup:129.1-129.79
+;; 4-runtime.watsup:133.1-133.79
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:138.1-138.71
+  ;; 4-runtime.watsup:142.1-142.71
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL[f.MODULE_frame.GLOBAL_moduleinst[x]] = v], f)
 
-;; 4-runtime.watsup:130.1-130.83
+;; 4-runtime.watsup:134.1-134.83
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:139.1-139.74
+  ;; 4-runtime.watsup:143.1-143.74
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]][i] = r], f)
 
-;; 4-runtime.watsup:131.1-131.80
+;; 4-runtime.watsup:135.1-135.80
 def with_tableext : (state, tableidx, ref*) -> state
-  ;; 4-runtime.watsup:140.1-140.75
+  ;; 4-runtime.watsup:144.1-144.75
   def {f : frame, r* : ref*, s : store, x : idx} with_tableext(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] =.. r*{r}], f)
 
-;; 4-runtime.watsup:132.1-132.90
+;; 4-runtime.watsup:136.1-136.90
 def with_mem : (state, tableidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:141.1-141.77
+  ;; 4-runtime.watsup:145.1-145.77
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]][i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:133.1-133.78
+;; 4-runtime.watsup:137.1-137.78
 def with_memext : (state, tableidx, byte*) -> state
-  ;; 4-runtime.watsup:142.1-142.69
+  ;; 4-runtime.watsup:146.1-146.69
   def {b* : byte*, f : frame, s : store, x : idx} with_memext(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] =.. b*{b}], f)
 
-;; 4-runtime.watsup:134.1-134.77
+;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:143.1-143.69
+  ;; 4-runtime.watsup:147.1-147.69
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
 
-;; 4-runtime.watsup:135.1-135.77
+;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:144.1-144.65
+  ;; 4-runtime.watsup:148.1-148.65
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 rec {
 
-;; 4-runtime.watsup:158.1-161.21
+;; 4-runtime.watsup:162.1-165.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)

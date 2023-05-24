@@ -50,7 +50,11 @@ def $default_(t) = (CONST F32 0)
 -- if t = F32
 def $default_(t) = (CONST F64 0)
 -- if t = F64
-def $default_(rt) = (REF.NULL rt)
+def $default_(t) = (REF.NULL FUNCREF)
+-- if t = FUNCREF
+def $default_(t) = (REF.NULL EXTERNREF)
+-- if t = EXTERNREF
+
 
 
 ;; Configurations

@@ -18,6 +18,8 @@ Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
+Invalid expression `FUNCREF_reftype` to be AL identifier.
+Invalid expression `EXTERNREF_reftype` to be AL identifier.
 Ki
 1. Return 1024.
 
@@ -44,7 +46,10 @@ default_ t
   a. Return the value f32.CONST 0.
 4. If t is f64, then:
   a. Return the value f64.CONST 0.
-5. Return the value ref.null rt.
+5. If t is funcref, then:
+  a. Return the value ref.null Yet.
+6. If t is externref, then:
+  a. Return the value ref.null Yet.
 
 funcaddr
 1. Let f be the current frame.
@@ -671,25 +676,25 @@ table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (reg
 ref_null.wast: [2/2]
 memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 unwind.wast: [49/49]
-call.wast: [39/70]
-local_get.wast: [13/19]
+call.wast: [41/70]
+local_get.wast: [15/19]
 fac.wast: [0/6]
-func.wast: [69/96]
+func.wast: [78/96]
 exports.wast: [4/9]
-local_set.wast: [13/19]
+local_set.wast: [18/19]
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 align.wast: [0/48]
-if.wast: [91/123]
+if.wast: [93/123]
 const.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
 f64_cmp.wast: [0/2400]
-block.wast: [40/52]
-labels.wast: [17/25]
-switch.wast: [10/26]
+block.wast: [44/52]
+labels.wast: [22/25]
+switch.wast: [18/26]
 i64.wast: [0/384]
 memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 stack.wast: [2/5]
-loop.wast: [34/77]
+loop.wast: [40/77]
 conversions.wast: [0/593]
 endianness.wast: [0/68]
 return.wast: [63/63]
@@ -713,7 +718,7 @@ left-to-right.wast: [0/95]
 ref_is_null.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Algorithm Yet: table.set 1 not found]
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-br_table.wast: [115/149]
+br_table.wast: [123/149]
 select.wast: [60/118]
 f32_bitwise.wast: [0/360]
 memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]

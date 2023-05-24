@@ -20,17 +20,15 @@ let rec flatten e =
   | _ -> [ e ]
 
 let string2type s =
+  let open Reference_interpreter.Types in
   match s with
-  | "I32" ->
-      Reference_interpreter.Types.NumType Reference_interpreter.Types.I32Type
-  | "I64" ->
-      Reference_interpreter.Types.NumType Reference_interpreter.Types.I64Type
-  | "F32" ->
-      Reference_interpreter.Types.NumType Reference_interpreter.Types.F32Type
-  | "F64" ->
-      Reference_interpreter.Types.NumType Reference_interpreter.Types.F64Type
-  | "V128" ->
-      Reference_interpreter.Types.VecType Reference_interpreter.Types.V128Type
+  | "I32" -> NumType I32Type
+  | "I64" -> NumType I64Type
+  | "F32" -> NumType F32Type
+  | "F64" -> NumType F64Type
+  | "V128" -> VecType V128Type
+  | "FUNCREF" -> RefType FuncRefType
+  | "EXTERNREF" -> RefType ExternRefType
   | _ -> s |> sprintf "Invalid type atom `%s`" |> failwith
 
 (** Translate `Ast.type` *)

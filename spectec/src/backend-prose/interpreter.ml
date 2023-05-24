@@ -99,7 +99,9 @@ let al_value2int = function IntV i -> i | _ -> failwith "Not an integer value"
 
 (* Interpreter *)
 
+let cnt = ref 0
 exception Trap
+exception Timeout
 
 let rec dsl_function_call fname args =
   match fname with
@@ -264,6 +266,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
+  if !cnt > 1000000 then raise Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->
