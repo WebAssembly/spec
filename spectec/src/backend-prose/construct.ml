@@ -260,7 +260,7 @@ let al_of_module wasm_module =
     |> Array.of_list
   in
 
-  let result = ConstructV (
+  ConstructV (
     "MODULE",
     [
       ListV func_list;
@@ -270,6 +270,4 @@ let al_of_module wasm_module =
       ListV elem_list;
       ListV data_list
     ]
-  ) in
-  Print.string_of_value result |> Printf.eprintf "%s\n";
-  result
+  )
