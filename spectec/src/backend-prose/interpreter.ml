@@ -317,6 +317,10 @@ and interp_instrs env il =
           let env = (
             let v = eval_expr env e in
             match (pattern, v) with
+            | MulE (MulE (NameE name, e1), e2), IntV m ->
+                let n1 = eval_expr env e1 |> al_value2int in
+                let n2 = eval_expr env e2 |> al_value2int in
+                Env.add name (IntV (m / n1 / n2)) env
             | IterE (name, ListN n), ListV vs ->
                 env |> Env.add name v |> Env.add n (IntV (Array.length vs))
             | NameE name, v
