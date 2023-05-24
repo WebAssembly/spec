@@ -43,24 +43,24 @@ let al_of_blocktype types wtype =
 let al_of_unop = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
-  | Ast.IntOp.Popcnt
+  | Ast.IntOp.Popcnt -> StringV "Popcnt"
   | Ast.IntOp.ExtendS _ -> StringV "TODO"
 let al_of_binop = function
   | Ast.IntOp.Add -> StringV "Add"
   | Ast.IntOp.Sub -> StringV "Sub"
   | Ast.IntOp.Mul -> StringV "Mul"
-  | Ast.IntOp.DivS
-  | Ast.IntOp.DivU
-  | Ast.IntOp.RemS
-  | Ast.IntOp.RemU
-  | Ast.IntOp.And
-  | Ast.IntOp.Or
-  | Ast.IntOp.Xor
-  | Ast.IntOp.Shl
-  | Ast.IntOp.ShrS
-  | Ast.IntOp.ShrU
-  | Ast.IntOp.Rotl
-  | Ast.IntOp.Rotr -> StringV "TODO"
+  | Ast.IntOp.DivS -> StringV "DivS"
+  | Ast.IntOp.DivU -> StringV "DivU"
+  | Ast.IntOp.RemS -> StringV "RemS"
+  | Ast.IntOp.RemU -> StringV "RemU"
+  | Ast.IntOp.And -> StringV "And"
+  | Ast.IntOp.Or -> StringV "Or"
+  | Ast.IntOp.Xor -> StringV "Xor"
+  | Ast.IntOp.Shl -> StringV "Shl"
+  | Ast.IntOp.ShrS -> StringV "ShrS"
+  | Ast.IntOp.ShrU -> StringV "ShrU"
+  | Ast.IntOp.Rotl -> StringV "Rotl"
+  | Ast.IntOp.Rotr -> StringV "Rotr"
 let al_of_testop = function
   | Ast.IntOp.Eqz -> StringV "Eqz"
 let al_of_relop = function
@@ -75,18 +75,18 @@ let al_of_relop = function
   | Ast.IntOp.GeS -> StringV "GeS"
   | Ast.IntOp.GeU -> StringV "GeU"
 let al_of_cvtop = function
-  | Ast.IntOp.ExtendSI32
-  | Ast.IntOp.ExtendUI32
-  | Ast.IntOp.WrapI64
-  | Ast.IntOp.TruncSF32
-  | Ast.IntOp.TruncUF32
-  | Ast.IntOp.TruncSF64
-  | Ast.IntOp.TruncUF64
-  | Ast.IntOp.TruncSatSF32
-  | Ast.IntOp.TruncSatUF32
-  | Ast.IntOp.TruncSatSF64
-  | Ast.IntOp.TruncSatUF64
-  | Ast.IntOp.ReinterpretFloat -> StringV "TODO"
+  | Ast.IntOp.ExtendSI32 -> StringV "ExtendI32"
+  | Ast.IntOp.ExtendUI32 -> StringV "ExtendUI32"
+  | Ast.IntOp.WrapI64 -> StringV "WrapI64"
+  | Ast.IntOp.TruncSF32 -> StringV "TruncSF32"
+  | Ast.IntOp.TruncUF32 -> StringV "TruncUF32"
+  | Ast.IntOp.TruncSF64 -> StringV "TruncSF64"
+  | Ast.IntOp.TruncUF64 -> StringV "TruncUF64"
+  | Ast.IntOp.TruncSatSF32 -> StringV "TrucSatSF32"
+  | Ast.IntOp.TruncSatUF32 -> StringV "TrunsSatUF32"
+  | Ast.IntOp.TruncSatSF64 -> StringV "TruncSatSF64"
+  | Ast.IntOp.TruncSatUF64 -> StringV "TruncSatUF64"
+  | Ast.IntOp.ReinterpretFloat -> StringV "ReinterpretFloat"
 
 let rec al_of_instr types winstr =
   let to_int i32 = IntV (Int32.to_int i32.it) in
