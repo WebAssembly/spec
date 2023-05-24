@@ -148,7 +148,7 @@ let al_of_wasm_value = function
 | Values.Ref r ->
     begin match r with
       | Values.NullRef t -> al_of_wasm_instr [] {it = Ast.RefNull t; at = Source.no_region}
-      | Script.ExternRef i -> ConstructV ("ExternRef", [ IntV (Int32.to_int i) ])
+      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
       | r -> Values.string_of_ref r |> failwith
     end
 
