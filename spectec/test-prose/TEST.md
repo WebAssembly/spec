@@ -13,6 +13,7 @@ Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : (
 Animation failed:where $bytes_($size(nt <: valtype), c) := $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]
 Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
+Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 == IL Validation...
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
@@ -417,6 +418,10 @@ load nt ?() n_A n_O
   a. Trap.
 7. Let $bytes_(n, c) be $mem(0)[(i + n_O) : (n / 8)].
 8. Push the value nt.CONST c to the stack.
+
+memory.size
+1. Let ((n · 64) · $Ki()) be the length of $mem(0).
+2. Push the value i32.CONST n to the stack.
 
 memory.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.

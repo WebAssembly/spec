@@ -233,6 +233,7 @@ warning: rule `Step_read/load-num-trap` was never spliced
 warning: rule `Step_read/load-num-val` was never spliced
 warning: rule `Step_read/load-pack-trap` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
+warning: rule `Step_read/memory.size` was never spliced
 warning: rule `Step_read/memory.fill-trap` was never spliced
 warning: rule `Step_read/memory.fill-zero` was never spliced
 warning: rule `Step_read/memory.fill-succ` was never spliced
