@@ -3,6 +3,7 @@ open Source
 open Al
 
 (* Construct value *)
+
 let al_of_num n =
   let s = Values.string_of_num n in
   let t = Values.type_of_num n in
@@ -12,7 +13,18 @@ let al_of_num n =
   | F32Type | F64Type ->
       WasmInstrV ("const", [ WasmTypeV (NumType t); FloatV (float_of_string s) ])
 
+let al_of_value = function
+| Values.Num n -> al_of_num n
+| Values.Vec _v -> failwith "TODO"
+| Values.Ref r ->
+    begin match r with
+      | Values.NullRef t -> WasmInstrV ("ref.null", [ WasmTypeV (RefType t) ])
+      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
+      | r -> Values.string_of_ref r |> failwith
+    end
+
 (* Construct type *)
+
 let al_of_blocktype types wtype =
   match wtype with
   | Ast.VarBlockType idx ->
@@ -24,7 +36,10 @@ let al_of_blocktype types wtype =
   | Ast.ValBlockType None -> ArrowV(ListV [||], ListV [||])
   | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| WasmTypeV val_type |])
 
+
+
 (* Construct instruction *)
+
 let al_of_unop = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
@@ -81,7 +96,7 @@ let rec al_of_instr types winstr =
   match winstr.it with
   (* wasm values *)
   | Ast.Const num -> al_of_num num.it
-  | Ast.RefNull t -> WasmInstrV ("ref.null", [ WasmTypeV (RefType t) ])
+  | Ast.RefNull t -> al_of_value (Values.Ref (Values.NullRef t))
   (* wasm instructions *)
   | Ast.Unreachable -> f "unreachable"
   | Ast.Nop -> f "nop"
@@ -145,15 +160,6 @@ let rec al_of_instr types winstr =
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 
-let al_of_value = function
-| Values.Num n -> al_of_num n
-| Values.Vec _v -> failwith "TODO"
-| Values.Ref r ->
-    begin match r with
-      | Values.NullRef t -> al_of_instr [] {it = Ast.RefNull t; at = Source.no_region}
-      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
-      | r -> Values.string_of_ref r |> failwith
-    end
 
 
 (* Construct module *)
@@ -183,14 +189,40 @@ let al_of_global wasm_global =
 
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; ListV expr ])
 
+let al_of_limits limits =
+  let f opt = IntV (Int32.to_int opt) in
+  PairV (IntV (Int32.to_int limits.Types.min), OptV (Option.map f limits.Types.max))
+
 let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
+  let pair = al_of_limits limits in
 
-  let f opt = IntV (Int32.to_int opt) in
-  let limits_pair =
-    PairV (IntV (Int32.to_int limits.Types.min), OptV (Option.map f limits.Types.max)) in
+  ConstructV ("TABLE", [ pair; WasmTypeV (RefType ref_ty) ])
 
-  ConstructV ("TABLE", [limits_pair; WasmTypeV (RefType ref_ty)])
+let al_of_memory wasm_memory =
+  let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in
+  let pair = al_of_limits limits in
+
+  ConstructV ("MEMORY", [ pair ])
+
+let al_of_segment wasm_segment = match wasm_segment.it with
+  | Ast.Passive -> ConstructV ("PASSIVE", [])
+  | Ast.Active { index = index; offset = offset } ->
+      ConstructV (
+        "MEMORY",
+        [
+          IntV (Int32.to_int index.it);
+          ListV (al_of_instrs [] offset.it |> Array.of_list)
+        ]
+      )
+  | Ast.Declarative -> failwith "TODO: Declarative"
+
+let al_of_data wasm_data =
+  (* TODO: byte list list *)
+  let init = StringV wasm_data.it.Ast.dinit in
+  let mode = al_of_segment wasm_data.it.Ast.dmode in
+
+  ConstructV ("DATA", [ init; mode ])
 
 let al_of_module wasm_module =
 
@@ -212,11 +244,32 @@ let al_of_module wasm_module =
     |> Array.of_list
   in
 
-  ConstructV (
+  (* Construct memory *)
+  let memory_list =
+    List.map al_of_memory wasm_module.it.memories
+    |> Array.of_list
+  in
+
+  (* Construct elem *)
+  (* TODO *)
+  let elem_list = [| StringV "Yet" |] in
+
+  (* Construct data *)
+  let data_list =
+    List.map al_of_data wasm_module.it.datas
+    |> Array.of_list
+  in
+
+  let result = ConstructV (
     "MODULE",
     [
       ListV func_list;
       ListV global_list;
       ListV table_list;
+      ListV memory_list;
+      ListV elem_list;
+      ListV data_list
     ]
-  )
+  ) in
+  Print.string_of_value result |> Printf.eprintf "%s\n";
+  result

@@ -113,7 +113,17 @@ let instantiation =
     [ (NameE module_name, TopT) ],
     [
       LetI (
-        ConstructE ("MODULE", [ NameE ignore_name; global_iter; NameE ignore_name ]),
+        ConstructE (
+          "MODULE",
+          [
+            NameE ignore_name;
+            global_iter;
+            NameE ignore_name;
+            NameE ignore_name;
+            NameE ignore_name;
+            NameE ignore_name
+          ]
+        ),
         NameE module_name
       );
       LetI (NameE module_inst_init_name, RecordE module_inst_init);
@@ -193,7 +203,20 @@ let alloc_module =
     "alloc_module",
     [ NameE module_name, TopT; val_iter, TopT ],
     [
-      LetI (ConstructE ("MODULE", [ func_iter; global_iter; table_iter ]), NameE module_name);
+      LetI (
+        ConstructE (
+          "MODULE",
+          [
+            func_iter;
+            global_iter;
+            table_iter;
+            NameE ignore_name;
+            NameE ignore_name;
+            NameE ignore_name
+          ]
+        ),
+        NameE module_name
+      );
       LetI (
         funcaddr_iter,
         MapE (N "alloc_func", [ NameE func_name ], List)
