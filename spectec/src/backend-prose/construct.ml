@@ -196,15 +196,16 @@ let al_of_wasm_module wasm_module =
     |> Array.of_list
   in
 
+  (* Construct global *)
+  let global_list =
+    List.map al_of_wasm_global wasm_module.it.globals
+    |> Array.of_list
+  in
+
   (* Construct table *)
   let table_list =
     List.map al_of_wasm_table wasm_module.it.tables
     |> Array.of_list
   in
 
-  let global_list =
-    List.map al_of_wasm_global wasm_module.it.globals
-    |> Array.of_list
-  in
-
-  ConstructV ("MODULE", [ListV func_list; ListV table_list; ListV global_list])
+  ConstructV ("MODULE", [ListV func_list; ListV global_list; ListV table_list])

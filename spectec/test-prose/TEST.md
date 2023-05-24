@@ -579,7 +579,7 @@ return
   e. Execute (return).
 
 instantiation module
-1. Let MODULE(_, _, global*) be module.
+1. Let MODULE(_, global*, _) be module.
 2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
 4. Push f_init to the stack.
@@ -597,7 +597,7 @@ exec_global global
 4. Return val.
 
 alloc_module module val*
-1. Let MODULE(func*, table*, global*) be module.
+1. Let MODULE(func*, global*, table*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
 3. Let tableaddr* be $alloc_table(table)*.
 4. Let globaladdr* be $alloc_global(val)*.
