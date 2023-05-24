@@ -25,8 +25,8 @@ let file_to_script file_name =
 let not_supported = "We only support the test script with modules and assertions."
 
 let al_of_result result = match result.it with
-  | Script.NumResult (Script.NumPat n) -> Construct.al_of_wasm_value (Values.Num n.it)
-  | Script.RefResult (Script.RefPat r) -> Construct.al_of_wasm_value (Values.Ref r.it)
+  | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
+  | Script.RefResult (Script.RefPat r) -> Construct.al_of_value (Values.Ref r.it)
   | _ -> failwith "not supported"
 
 (** End of helpers **)
@@ -45,7 +45,7 @@ let do_invoke act = match act.it with
     let idx = List.find_map extract_idx !exports |> Option.get in
     let args = Al.ListV (
       literals
-      |> List.map (fun (l: Script.literal) -> Construct.al_of_wasm_value l.it)
+      |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
       |> Array.of_list
     ) in
     Printf.eprintf "[Invoking %s...]\n" (string_of_name name);
@@ -94,7 +94,7 @@ let test file_name =
         exports := m.it.exports;
         Interpreter.stack := [];
         Interpreter.store := Al.Record.empty;
-        Interpreter.call_algo "instantiation" [ Construct.al_of_wasm_module m ] |> ignore;
+        Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] |> ignore;
       | Script.Assertion a ->
           begin match test_assertion a with
             | Success ->
