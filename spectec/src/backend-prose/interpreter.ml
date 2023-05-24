@@ -111,15 +111,22 @@ let rec dsl_function_call fname args =
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
-      |> failwith 
+      |> failwith
 
 and eval_expr env expr =
+  let do_int_binop e1 binop e2 =
+    let v1 = eval_expr env e1 in
+    let v2 = eval_expr env e2 in
+    match v1, v2 with
+    | IntV v1, IntV v2 -> IntV (binop v1 v2)
+    | _ -> failwith "Not an integer"
+  in
   match expr with
   | ValueE v -> v
-  | SubE (e1, e2) -> (
-      match (eval_expr env e1, eval_expr env e2) with 
-      | IntV v1, IntV v2 -> IntV (v1 - v2)
-      | _ -> failwith "Not an integer")
+  | AddE (e1, e2) -> do_int_binop e1 ( + ) e2
+  | SubE (e1, e2) -> do_int_binop e1 ( - ) e2
+  | MulE (e1, e2) -> do_int_binop e1 ( * ) e2
+  | DivE (e1, e2) -> do_int_binop e1 ( / ) e2
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
   | MapE (fname, [ e ], _) -> (
       (* TODO: handle cases where more than 1 arguments *)
@@ -228,12 +235,13 @@ and eval_cond env cond =
   in
   match cond with
   | NotC c -> eval_cond env c |> not
+  | AndC (c1, c2) -> do_binop_cond c1 ( && ) c2
+  | OrC (c1, c2) -> do_binop_cond c1 ( || ) c2
   | EqC (e1, e2) -> do_binop_expr e1 ( = ) e2
   | LtC (e1, e2) -> do_binop_expr e1 ( < ) e2
   | LeC (e1, e2) -> do_binop_expr e1 ( <= ) e2
   | GtC (e1, e2) -> do_binop_expr e1 ( > ) e2
   | GeC (e1, e2) -> do_binop_expr e1 ( >= ) e2
-  | AndC (c1, c2) -> do_binop_cond c1 ( && ) c2
   | TopC "value" -> (
       match !stack with
       | [] -> false
@@ -277,7 +285,7 @@ and interp_instrs env il =
           | ListV vs -> Array.iter push vs
           | v -> push v);
           (env, cont)
-      | PopI e -> 
+      | PopI e ->
           let env = (
             match e with
             | IterE (name, ListN n) -> (
@@ -302,18 +310,18 @@ and interp_instrs env il =
           (env, cont)
       | PopAllI e -> (
         match e with
-        | IterE (name, List) -> 
+        | IterE (name, List) ->
           let rec pop_value vs = (match !stack with
           | h :: _  -> (match h with
             | WasmInstrV ("const", _) -> pop_value (pop () :: vs)
             | _ -> vs)
-          | _ -> vs) 
+          | _ -> vs)
           in
           let vs = pop_value [] in
           let env = Env.add name (ListV (Array.of_list vs)) env in
           (env, cont)
         | _ -> failwith "Invalid pop")
-      | LetI (pattern, e) -> 
+      | LetI (pattern, e) ->
           let env = (
             let v = eval_expr env e in
             match (pattern, v) with
@@ -394,7 +402,7 @@ and interp_instrs env il =
           in
           let vs = pop_while (function WasmInstrV _ -> true | _ -> false) in
           vs |> List.rev |> List.iter push;
-          (env, cont) 
+          (env, cont)
       | ExitAbruptI n ->
           let rec pop_while pred =
             let top = pop () in

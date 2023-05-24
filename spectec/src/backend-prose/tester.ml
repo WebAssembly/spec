@@ -4,6 +4,8 @@ open Ast
 
 (** Helpers **)
 
+exception Not_supported
+
 type result =
   | Success
   | Fail
@@ -17,24 +19,26 @@ let fail expected actual =
   if print_stack then
     Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack)
 
+let not_supported_msg = "We only support the test script with modules and assertions."
+
+let msg_of = function Failure msg -> msg | e -> Printexc.to_string e
+
 (* string -> Script.script *)
 let file_to_script file_name =
   let lexbuf = Lexing.from_channel (open_in file_name) in
   Parse.parse file_name lexbuf Parse.Script
 
-let not_supported = "We only support the test script with modules and assertions."
-
 let al_of_result result = match result.it with
   | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
   | Script.RefResult (Script.RefPat r) -> Construct.al_of_value (Values.Ref r.it)
-  | _ -> failwith "not supported"
+  | _ -> StringV "TODO"
 
 (** End of helpers **)
 
 let exports = ref []
 
 let do_invoke act = match act.it with
-  | Script.Invoke (_, name, literals) ->
+  | Script.Invoke (None, name, literals) ->
     let extract_idx (export: Ast.export) = if export.it.name = name then
       match export.it.edesc.it with
       | FuncExport x -> Some (Al.IntV (Int32.to_int x.it))
@@ -50,13 +54,13 @@ let do_invoke act = match act.it with
     ) in
     Printf.eprintf "[Invoking %s...]\n" (string_of_name name);
     Interpreter.call_algo "invocation" [idx; args]
-  | _ -> failwith not_supported
+  | _ -> raise Not_supported
 
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
-    let result = try do_invoke invoke with e -> StringV (Printexc.to_string e) in
-    let expected_result = Al.ListV(expected |> List.map al_of_result |> Array.of_list) in
+    let result = try do_invoke invoke with e -> StringV (msg_of e) in
+    let expected_result = try Al.ListV(expected |> List.map al_of_result |> Array.of_list) with e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
     if result <> expected_result then begin
       fail (Print.string_of_value expected_result) (Print.string_of_value result);
       Fail
@@ -94,7 +98,12 @@ let test file_name =
         exports := m.it.exports;
         Interpreter.stack := [];
         Interpreter.store := Al.Record.empty;
-        Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] |> ignore;
+        ( try
+          Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] |> ignore
+        with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith )
+      | Script.Module _ -> failwith "This test contains a binary module"
+      | Script.Register _ -> failwith "This test contains a (register ...) command"
+      | Script.Action a -> (try do_invoke a |> ignore with e -> "Direct invocation failed due to " ^ msg_of e |> failwith)
       | Script.Assertion a ->
           begin match test_assertion a with
             | Success ->
@@ -104,18 +113,19 @@ let test file_name =
                 total := !total + 1
             | Ignore -> ()
           end
-      | Action a -> do_invoke a |> ignore
-      | _ -> failwith not_supported
+      | Script.Meta _ -> failwith not_supported_msg
     );
     if !total <> 0 then
       Printf.sprintf "%s: [%d/%d]" name !success !total |> print_endline
-  with e ->
-    Printexc.to_string e
-    |> Printf.eprintf "[Uncaught exception] %s\n";
+  with
+  | e ->
+    let msg = msg_of e in
+    Printf.eprintf "[Uncaught exception] %s\n" msg;
     Printf.sprintf
-      "%s: [Uncaught exception in %dth assertion]"
+      "%s: [Uncaught exception in %dth assertion: %s]"
       name
       !total
+      msg
     |> print_endline
 
 

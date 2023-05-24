@@ -12,16 +12,6 @@ let al_of_num n =
   | F32Type | F64Type ->
       WasmInstrV ("const", [ WasmTypeV (NumType t); FloatV (float_of_string s) ])
 
-let al_of_value = function
-| Values.Num n -> al_of_num n
-| Values.Vec _v -> failwith "TODO"
-| Values.Ref r ->
-    begin match r with
-      | Values.NullRef t -> al_of_instr [] {it = Ast.RefNull t; at = Source.no_region}
-      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
-      | r -> Values.string_of_ref r |> failwith
-    end
-
 (* Construct type *)
 let al_of_blocktype types wtype =
   match wtype with
@@ -154,6 +144,17 @@ let rec al_of_instr types winstr =
   | _ -> WasmInstrV ("Yet: " ^ Print.string_of_winstr winstr, [])
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
+
+let al_of_value = function
+| Values.Num n -> al_of_num n
+| Values.Vec _v -> failwith "TODO"
+| Values.Ref r ->
+    begin match r with
+      | Values.NullRef t -> al_of_instr [] {it = Ast.RefNull t; at = Source.no_region}
+      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
+      | r -> Values.string_of_ref r |> failwith
+    end
+
 
 (* Construct module *)
 
