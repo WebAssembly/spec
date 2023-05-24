@@ -597,16 +597,17 @@ exec_global global
 4. Return val.
 
 alloc_module module val*
-1. Let MODULE(func*, global*, table*, memory*, _, _) be module.
+1. Let MODULE(func*, global*, table*, memory*, _, data*) be module.
 2. Let funcaddr* be $alloc_func(func)*.
 3. Let tableaddr* be $alloc_table(table)*.
 4. Let globaladdr* be $alloc_global(val)*.
 5. Let memoryaddr* be $alloc_memory(memory)*.
-6. Let moduleinst be { FUNC: funcaddr*; GLOBAL: globaladdr*; MEMORY: memoryaddr*; TABLE: tableaddr*; }.
-7. For i in range |s.FUNC|:
+6. Let dataaddr* be $alloc_data(data)*.
+7. Let moduleinst be { DATA: dataaddr*; FUNC: funcaddr*; GLOBAL: globaladdr*; MEMORY: memoryaddr*; TABLE: tableaddr*; }.
+8. For i in range |s.FUNC|:
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
-8. Return moduleinst.
+9. Return moduleinst.
 
 alloc_func func
 1. Let a be the length of s.FUNC.
@@ -633,6 +634,12 @@ alloc_memory memory
 3. Let memoryinst be (0)^((min · 64) · $Ki()).
 4. Append memoryinst to the s.MEMORY.
 5. Return a.
+
+alloc_data data
+1. Let DATA(init, _) be data.
+2. Let a be the length of s.DATA.
+3. Append init to the s.DATA.
+4. Return a.
 
 invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].

@@ -183,10 +183,13 @@ let alloc_module =
   let global_iter = IterE (global_name, List) in
   let memory_name = N "memory" in
   let memory_iter = IterE (memory_name, List) in
+  let data_name = N "data" in
+  let data_iter = IterE (data_name, List) in
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let tableaddr_iter = IterE (N "tableaddr", List) in
   let globaladdr_iter = IterE (N "globaladdr", List) in
   let memoryaddr_iter = IterE (N "memoryaddr", List) in
+  let dataaddr_iter = IterE (N "dataaddr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
@@ -194,6 +197,7 @@ let alloc_module =
     |> Record.add "TABLE" tableaddr_iter
     |> Record.add "GLOBAL" globaladdr_iter
     |> Record.add "MEMORY" memoryaddr_iter
+    |> Record.add "DATA" dataaddr_iter
   in
   let store_name = N "s" in
   let func_name' = N "func'" in
@@ -216,7 +220,7 @@ let alloc_module =
             table_iter;
             memory_iter;
             NameE ignore_name;
-            NameE ignore_name
+            data_iter;
           ]
         ),
         NameE module_name
@@ -236,6 +240,10 @@ let alloc_module =
       LetI (
         memoryaddr_iter,
         MapE (N "alloc_memory", [ NameE memory_name ], List)
+      );
+      LetI (
+        dataaddr_iter,
+        MapE (N "alloc_data", [ NameE data_name ], List)
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
@@ -338,8 +346,39 @@ let alloc_memory =
         NameE memory_name
       );
       LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "MEMORY")));
-      LetI (NameE memoryinst_name, ListFillE (ValueE (IntV 0), MulE (MulE (NameE min_name, ValueE (IntV 64)), AppE (N "Ki", []))));
+      LetI (
+        NameE memoryinst_name,
+        ListFillE (
+          ValueE (IntV 0),
+          MulE (MulE (NameE min_name, ValueE (IntV 64)), AppE (N "Ki", []))
+        )
+      );
       AppendI (NameE memoryinst_name, NameE store_name, "MEMORY");
+      ReturnI (Some (NameE addr_name))
+    ]
+  )
+
+let alloc_elem = "TODO"
+
+let alloc_data =
+  (* Name definition *)
+  let ignore_name = N "_" in
+  let data_name = N "data" in
+  let init = N "init" in
+  let addr_name = N "a" in
+  let store_name = N "s" in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_data",
+    [ (NameE data_name, TopT) ],
+    [
+      LetI (
+        ConstructE ("DATA", [ NameE init; NameE ignore_name ]),
+        NameE data_name
+      );
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "DATA")));
+      AppendI (NameE init, NameE store_name, "DATA");
       ReturnI (Some (NameE addr_name))
     ]
   )
@@ -405,5 +444,6 @@ let manual_algos =
     alloc_global;
     alloc_table;
     alloc_memory;
+    alloc_data;
     invocation
   ]
