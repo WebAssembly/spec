@@ -2,7 +2,18 @@ open Reference_interpreter
 open Source
 open Ast
 
+(** flag **)
+let test_name = ref ""
+
 (** Helpers **)
+
+let contains substring str =
+  let regex = Str.regexp_string substring in
+  try
+    ignore (Str.search_forward regex str 0);
+    true
+  with Not_found ->
+    false
 
 exception Not_supported
 
@@ -132,6 +143,7 @@ let test file_name =
 let test_all root =
   test (Filename.concat root "test-prose/sample.wast");
 
-  let f filename = test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
+  let f filename = if contains !test_name filename then
+    test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
 
   Sys.readdir (Filename.concat root "test-prose/spec-test") |> Array.iter f

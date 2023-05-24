@@ -1,6 +1,6 @@
 (library
   (name backend_al)
-  (libraries reference_interpreter util il el)
+  (libraries reference_interpreter util il el str)
   (modules
     translate
     transpile

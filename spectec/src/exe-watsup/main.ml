@@ -74,6 +74,8 @@ let argspec = Arg.align
   "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
   "--animate", Arg.Set pass_animate, " Animate equality conditions";
 
+  "--prose-test", Arg.String (fun s -> Backend_al.Tester.test_name := s), " The name of .wast test file for prose-interpreter";
+
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
 ]
