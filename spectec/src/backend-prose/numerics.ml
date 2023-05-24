@@ -51,6 +51,8 @@ let relop : numerics =
     name = "relop";
     f =
       (function
+      | [ StringV "Eq"; _; i1; i2 ] -> wrap_int_relop i1 (=) i2
+      | [ StringV "Ne"; _; i1; i2 ] -> wrap_int_relop i1 (<>) i2
       (* TODO: difference b/w S and U? *)
       | [ StringV "LtS"; _; i1; i2 ]
       | [ StringV "LtU"; _; i1; i2 ] -> wrap_int_relop i1 (<) i2
