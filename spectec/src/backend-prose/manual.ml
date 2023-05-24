@@ -181,15 +181,19 @@ let alloc_module =
   let table_iter = IterE (table_name, List) in
   let global_name = N "global" in
   let global_iter = IterE (global_name, List) in
+  let memory_name = N "memory" in
+  let memory_iter = IterE (memory_name, List) in
   let funcaddr_iter = IterE (N "funcaddr", List) in
   let tableaddr_iter = IterE (N "tableaddr", List) in
   let globaladdr_iter = IterE (N "globaladdr", List) in
+  let memoryaddr_iter = IterE (N "memoryaddr", List) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
     |> Record.add "FUNC" funcaddr_iter
     |> Record.add "TABLE" tableaddr_iter
     |> Record.add "GLOBAL" globaladdr_iter
+    |> Record.add "MEMORY" memoryaddr_iter
   in
   let store_name = N "s" in
   let func_name' = N "func'" in
@@ -210,7 +214,7 @@ let alloc_module =
             func_iter;
             global_iter;
             table_iter;
-            NameE ignore_name;
+            memory_iter;
             NameE ignore_name;
             NameE ignore_name
           ]
@@ -228,6 +232,10 @@ let alloc_module =
       LetI (
         globaladdr_iter,
         MapE (N "alloc_global", [ NameE val_name ], List)
+      );
+      LetI (
+        memoryaddr_iter,
+        MapE (N "alloc_memory", [ NameE memory_name ], List)
       );
       LetI (NameE module_inst_name, RecordE (module_inst_rec));
       (* TODO *)
@@ -267,6 +275,23 @@ let alloc_func =
     ]
   )
 
+let alloc_global =
+  (* Name definition *)
+  let val_name = N "val" in
+  let addr_name = N "a" in
+  let store_name = N "s" in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_global",
+    [NameE val_name, TopT],
+    [
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "GLOBAL")));
+      AppendI (NameE val_name, NameE store_name, "GLOBAL");
+      ReturnI (Some (NameE addr_name))
+    ]
+  )
+
 let alloc_table =
   (* Name definition *)
   let ignore_name = N "_" in
@@ -294,29 +319,37 @@ let alloc_table =
     ]
   )
 
-let alloc_global =
+let alloc_memory =
   (* Name definition *)
-  let val_name = N "val" in
+  let ignore_name = N "_" in
+  let memory_name = N "memory" in
+  let min_name = N "min" in
   let addr_name = N "a" in
   let store_name = N "s" in
+  let memoryinst_name = N "memoryinst" in
 
   (* Algorithm *)
-  Algo (
-    "alloc_global",
-    [NameE val_name, TopT],
+  Algo(
+    "alloc_memory",
+    [ (NameE memory_name, TopT) ],
     [
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "GLOBAL")));
-      AppendI (NameE val_name, NameE store_name, "GLOBAL");
+      LetI (
+        ConstructE ("MEMORY", [ PairE (NameE min_name, NameE ignore_name) ]),
+        NameE memory_name
+      );
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "MEMORY")));
+      LetI (NameE memoryinst_name, ListFillE (ValueE (IntV 0), MulE (MulE (NameE min_name, ValueE (IntV 64)), AppE (N "Ki", []))));
+      AppendI (NameE memoryinst_name, NameE store_name, "MEMORY");
       ReturnI (Some (NameE addr_name))
     ]
   )
 
 let invocation =
   (* Name definition *)
+  let ignore_name = N "_" in
   let args = N "val" in
   let args_iter = IterE (args, List) in
   let funcaddr_name = N "funcaddr" in
-  let ignore_name = N "_" in
   let func_name = N "func" in
   let store_name = N "s" in
   let func_type_name = N "functype" in
@@ -369,7 +402,8 @@ let manual_algos =
     exec_global;
     alloc_module;
     alloc_func;
-    alloc_table;
     alloc_global;
+    alloc_table;
+    alloc_memory;
     invocation
   ]
