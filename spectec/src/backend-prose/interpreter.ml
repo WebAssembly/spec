@@ -263,6 +263,10 @@ and eval_cond env cond =
       match !stack with
       | [] -> false
       | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
+  | CaseOfC (e, expected_tag) -> (
+      match eval_expr env e with
+      | ConstructV (tag, _) -> expected_tag = tag
+      | _ -> false)
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =

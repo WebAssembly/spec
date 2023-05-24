@@ -15,8 +15,6 @@ let contains substring str =
   with Not_found ->
     false
 
-exception Not_supported
-
 type result =
   | Success
   | Fail
@@ -66,7 +64,7 @@ let do_invoke act = match act.it with
     Interpreter.cnt := 0;
     Printf.eprintf "[Invoking %s...]\n%!" (string_of_name name);
     Interpreter.call_algo "invocation" [idx; args]
-  | _ -> raise Not_supported
+  | _ -> failwith "Currently, we only support calling function in the lastly defined module"
 
 let test_assertion assertion =
   match assertion.it with
