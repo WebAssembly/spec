@@ -100,7 +100,7 @@ let test file_name =
 
   try
 
-    Printf.eprintf "****************\n\n%s\n\n" file_name;
+    Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
     file_name
     |> file_to_script
