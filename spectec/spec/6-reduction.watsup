@@ -299,15 +299,17 @@ rule Step/store-pack-val:
   -- if b* = $bytes_(n, $wrap_(($size(nt),n), c))
 
 
+rule Step_read/memory.size:
+  z; (MEMORY.SIZE)  ~>  (CONST I32 n)
+  -- if $(n * 64 * $Ki) = |$mem(z, 0)|
+
+
 rule Step/memory.grow-succeed:
   z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_memext(z, 0, 0^(n * 64 * $Ki)); (CONST I32 $(|$mem(z, 0)|))
 
 rule Step/memory.grow-fail:
   z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $(-1))
 
-rule Step_read/memory.size:
-  z; (MEMORY.SIZE)  ~>  (CONST I32 n)
-  -- if $(n * 64 * $Ki) = |$mem(z, 0)|
 
 rule Step_read/memory.fill-trap:
   z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL)  ~>  TRAP
