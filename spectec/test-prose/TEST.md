@@ -142,7 +142,7 @@ block bt instr
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
-6. If the length of t_1^k is k and the length of t_2^n is n and the length of val^k is k, then:
+6. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
   a. Let L be the label_n{[]}.
   b. Push L to the stack.
   c. Push val^k to the stack.
@@ -155,7 +155,7 @@ loop bt instr
 3. Assert: Due to validation, there are at least k values on the top of the stack.
 4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
-6. If the length of t_1^k is k and the length of t_2^n is n and the length of val^k is k, then:
+6. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
   a. Let L be the label_n{[loop bt instr*]}.
   b. Push L to the stack.
   c. Push val^k to the stack.
@@ -180,7 +180,7 @@ br
 1. Pop val'* ++ val^n ++ [BR(0)] ++ instr* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
-4. If the length of val^n is n, then:
+4. If |val^n| is n, then:
   a. Push val^n to the stack.
   b. Push instr'* to the stack.
 5. Push val* to the stack.
@@ -195,7 +195,7 @@ br_if l
 br_table l l'
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i < the length of l*, then:
+3. If i < |l*|, then:
   a. Execute (br l*[i]).
 4. Else:
   a. Execute (br l').
@@ -207,7 +207,7 @@ frame n f val
 4. Pop val^n from the stack.
 5. Assert: Due to validation, the frame F is now on the top of the stack.
 6. Pop the frame from the stack.
-7. If the length of val^n is n, then:
+7. If |val^n| is n, then:
   a. Push val^n to the stack.
 
 return
@@ -220,7 +220,7 @@ return
   a. Pop the top element from the stack.
 7. Assert: Due to validation, the frame F is now on the top of the stack.
 8. Pop the frame from the stack.
-9. If the length of val^n is n, then:
+9. If |val^n| is n, then:
   a. Push val^n to the stack.
 10. Push val* to the stack.
 11. Execute (return).
@@ -228,7 +228,7 @@ return
 unop nt unop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
-3. If the length of $unop(unop, nt, c_1) is 1, then:
+3. If |$unop(unop, nt, c_1)| is 1, then:
   a. Let [c] be $unop(unop, nt, c_1).
   b. Push the value nt.CONST c to the stack.
 4. If $unop(unop, nt, c_1) is [], then:
@@ -239,7 +239,7 @@ binop nt binop
 2. Pop the value nt.CONST c_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop the value nt.CONST c_1 from the stack.
-5. If the length of $binop(binop, nt, c_1, c_2) is 1, then:
+5. If |$binop(binop, nt, c_1, c_2)| is 1, then:
   a. Let [c] be $binop(binop, nt, c_1, c_2).
   b. Push the value nt.CONST c to the stack.
 6. If $binop(binop, nt, c_1, c_2) is [], then:
@@ -267,7 +267,7 @@ extend nt n
 cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop the value nt.CONST c_1 from the stack.
-3. If the length of $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is 1, then:
+3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
   a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
   b. Push the value nt.CONST c to the stack.
 4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
@@ -290,26 +290,26 @@ local.tee x
 5. Execute (local.set x).
 
 call x
-1. If x < the length of $funcaddr(), then:
+1. If x < |$funcaddr()|, then:
   a. Execute (call_addr $funcaddr()[x]).
 
 call_indirect x ft
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i ≥ the length of $table(x), then:
+3. If i ≥ |$table(x)|, then:
   a. Trap.
 4. Else if $table(x)[i] is not of the case REF.FUNC_ADDR_ref, then:
   a. Trap.
 5. Else:
   a. Let the value ref.funcaddr a be $table(x)[i].
-  b. If a ≥ the length of $funcinst(), then:
+  b. If a ≥ |$funcinst()|, then:
     1) Trap.
   c. Else:
     1) Let (m, func) be $funcinst()[a].
     2) Execute (call_addr a).
 
 call_addr a
-1. If a < the length of $funcinst(), then:
+1. If a < |$funcinst()|, then:
   a. Let (m, tmp0) be $funcinst()[a].
   b. Let FUNC(tmp1, t*, instr*) be tmp0.
   c. Let tmp2->tmp3 be tmp1.
@@ -317,7 +317,7 @@ call_addr a
   e. Assert: Due to validation, there are at least k values on the top of the stack.
   f. Pop val^k from the stack.
   g. Let t_2^n be tmp3.
-  h. If the length of t_1^k is k and the length of t_2^n is n and the length of val^k is k, then:
+  h. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
     1) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
     2) Push the activation of f with arity n to the stack.
     3) Let L be the label_n{[]}.
@@ -327,7 +327,7 @@ call_addr a
     7) Exit current context.
 
 ref.func x
-1. If x < the length of $funcaddr(), then:
+1. If x < |$funcaddr()|, then:
   a. Push the value ref.funcaddr $funcaddr()[x] to the stack.
 
 local.get x
@@ -339,13 +339,13 @@ global.get x
 table.get x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If i ≥ the length of $table(x), then:
+3. If i ≥ |$table(x)|, then:
   a. Trap.
 4. Else:
   a. Push $table(x)[i] to the stack.
 
 table.size x
-1. Let n be the length of $table(x).
+1. Let n be |$table(x)|.
 2. Push the value i32.CONST n to the stack.
 
 table.fill x
@@ -355,7 +355,7 @@ table.fill x
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST i from the stack.
-7. If (i + n) > the length of $table(x), then:
+7. If (i + n) > |$table(x)|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. Push the value i32.CONST i to the stack.
@@ -373,7 +373,7 @@ table.copy x y
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $table(y) or (j + n) > the length of $table(x), then:
+7. If (i + n) > |$table(y)| or (j + n) > |$table(x)|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. If j ≤ i, then:
@@ -396,9 +396,9 @@ table.init x y
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $elem(y) or (j + n) > the length of $table(x), then:
+7. If (i + n) > |$elem(y)| or (j + n) > |$table(x)|, then:
   a. Trap.
-8. Else if n is not 0 and i < the length of $elem(y), then:
+8. Else if n is not 0 and i < |$elem(y)|, then:
   a. Push the value i32.CONST j to the stack.
   b. Push $elem(y)[i] to the stack.
   c. Execute (table.set x).
@@ -410,17 +410,17 @@ table.init x y
 load nt ?() n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
+3. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
   a. Trap.
 4. Let $bytes_($size(nt), c) be $mem(0)[(i + n_O) : ($size(nt) / 8)].
 5. Push the value nt.CONST c to the stack.
-6. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+6. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
   a. Trap.
 7. Let $bytes_(n, c) be $mem(0)[(i + n_O) : (n / 8)].
 8. Push the value nt.CONST c to the stack.
 
 memory.size
-1. Let ((n · 64) · $Ki()) be the length of $mem(0).
+1. Let ((n · 64) · $Ki()) be |$mem(0)|.
 2. Push the value i32.CONST n to the stack.
 
 memory.fill
@@ -430,7 +430,7 @@ memory.fill
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST i from the stack.
-7. If (i + n) > the length of $mem(0), then:
+7. If (i + n) > |$mem(0)|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. Push the value i32.CONST i to the stack.
@@ -448,7 +448,7 @@ memory.copy
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $table(0) or (j + n) > the length of $table(0), then:
+7. If (i + n) > |$table(0)| or (j + n) > |$table(0)|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. If j ≤ i, then:
@@ -471,9 +471,9 @@ memory.init x
 4. Pop the value i32.CONST i from the stack.
 5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 6. Pop the value i32.CONST j from the stack.
-7. If (i + n) > the length of $data(x) or (j + n) > the length of $mem(0), then:
+7. If (i + n) > |$data(x)| or (j + n) > |$mem(0)|, then:
   a. Trap.
-8. Else if n is not 0 and i < the length of $data(x), then:
+8. Else if n is not 0 and i < |$data(x)|, then:
   a. Push the value i32.CONST j to the stack.
   b. Push the value i32.CONST $data(x)[i] to the stack.
   c. Execute (store i32 ?(8) 0 0).
@@ -497,7 +497,7 @@ table.set x
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If i ≥ the length of $table(x), then:
+5. If i ≥ |$table(x)|, then:
   a. Trap.
 6. Else:
   a. Perform $with_table(x, i, ref).
@@ -509,7 +509,7 @@ table.grow x
 4. Pop ref from the stack.
 5. Either:
   a. Perform $with_tableext(x, (ref)^n).
-  b. Push the value i32.CONST the length of $table(x) to the stack.
+  b. Push the value i32.CONST |$table(x)| to the stack.
 6. Or:
   a. Push the value i32.CONST -1 to the stack.
 
@@ -521,11 +521,11 @@ store nt ?() n_A n_O
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If ((i + n_O) + ($size(nt) / 8)) ≥ the length of $mem(0), then:
+5. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
   a. Trap.
 6. Let b* be $bytes_($size(nt), c).
 7. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
-8. If ((i + n_O) + (n / 8)) ≥ the length of $mem(0), then:
+8. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
   a. Trap.
 9. Let b* be $bytes_(n, $wrap_(($size(nt), n), c)).
 10. Perform $with_mem(0, (i + n_O), (n / 8), b*).
@@ -535,7 +535,7 @@ memory.grow
 2. Pop the value i32.CONST n from the stack.
 3. Either:
   a. Perform $with_memext(0, (0)^((n · 64) · $Ki())).
-  b. Push the value i32.CONST the length of $mem(0) to the stack.
+  b. Push the value i32.CONST |$mem(0)| to the stack.
 4. Or:
   a. Push the value i32.CONST -1 to the stack.
 
@@ -579,7 +579,7 @@ return
   e. Execute (return).
 
 instantiation module
-1. Let MODULE(_, global*, _, _, _, _) be module.
+1. Let MODULE(_, global*, _, _, _, data*) be module.
 2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
 4. Push f_init to the stack.
@@ -588,7 +588,17 @@ instantiation module
 7. Let moduleinst be $alloc_module(module, val*).
 8. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 9. Push f to the stack.
-10. Pop f from the stack.
+10. For i in range |data*|:
+  a. Let DATA(init, mode) be data*[i].
+  b. If mode is defined, then:
+    1) Let ?(MEMORY(memidx, dinstrs*)) be mode.
+    2) Assert: memidx is 0.
+    3) Execute the sequence (dinstrs*).
+    4) Execute (CONST(i32, 0)).
+    5) Execute (CONST(i32, |init|)).
+    6) Execute (MEMORY.INIT(i)).
+    7) Execute (DATA.DROP(i)).
+11. Pop f from the stack.
 
 exec_global global
 1. Let GLOBAL(_, instr*) be global.
@@ -603,41 +613,41 @@ alloc_module module val*
 4. Let globaladdr* be $alloc_global(val)*.
 5. Let memoryaddr* be $alloc_memory(memory)*.
 6. Let dataaddr* be $alloc_data(data)*.
-7. Let moduleinst be { DATA: dataaddr*; FUNC: funcaddr*; GLOBAL: globaladdr*; MEMORY: memoryaddr*; TABLE: tableaddr*; }.
+7. Let moduleinst be { DATA: dataaddr*; FUNC: funcaddr*; GLOBAL: globaladdr*; MEM: memoryaddr*; TABLE: tableaddr*; }.
 8. For i in range |s.FUNC|:
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
 9. Return moduleinst.
 
 alloc_func func
-1. Let a be the length of s.FUNC.
+1. Let a be |s.FUNC|.
 2. Let dummy_module_inst be { FUNC: []; TABLE: []; }.
 3. Let funcinst be (dummy_module_inst, func).
 4. Append funcinst to the s.FUNC.
 5. Return a.
 
 alloc_global val
-1. Let a be the length of s.GLOBAL.
+1. Let a be |s.GLOBAL|.
 2. Append val to the s.GLOBAL.
 3. Return a.
 
 alloc_table table
 1. Let TABLE((n, _), reftype) be table.
-2. Let a be the length of s.TABLE.
+2. Let a be |s.TABLE|.
 3. Let tableinst be (ref.null reftype)^n.
 4. Append tableinst to the s.TABLE.
 5. Return a.
 
 alloc_memory memory
 1. Let MEMORY((min, _)) be memory.
-2. Let a be the length of s.MEMORY.
+2. Let a be |s.MEM|.
 3. Let memoryinst be (0)^((min · 64) · $Ki()).
-4. Append memoryinst to the s.MEMORY.
+4. Append memoryinst to the s.MEM.
 5. Return a.
 
 alloc_data data
 1. Let DATA(init, _) be data.
-2. Let a be the length of s.DATA.
+2. Let a be |s.DATA|.
 3. Append init to the s.DATA.
 4. Return a.
 
@@ -645,7 +655,7 @@ invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].
 2. Let FUNC(functype, _, _) be func.
 3. Let _^n->_^m be functype.
-4. Assert: the length of val* is n.
+4. Assert: |val*| is n.
 5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.
@@ -659,7 +669,7 @@ forward.wast: [4/4]
 float_misc.wast: [0/440]
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2]
-memory.wast: [2/45]
+memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 unwind.wast: [49/49]
 call.wast: [39/70]
 local_get.wast: [13/19]
@@ -677,7 +687,7 @@ block.wast: [40/52]
 labels.wast: [17/25]
 switch.wast: [10/26]
 i64.wast: [0/384]
-memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
+memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 stack.wast: [2/5]
 loop.wast: [34/77]
 conversions.wast: [0/593]
@@ -687,29 +697,30 @@ store.wast: [0/9]
 memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 i32.wast: [243/374]
 unreachable.wast: [63/63]
-bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
+bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid DSL function call: bytes_]
 traps.wast: [0/32]
 local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 f64_bitwise.wast: [0/360]
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 memory_grow.wast: [1/84]
+tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 call_indirect.wast: [10/132]
 load.wast: [0/37]
-memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
-memory_size.wast: [3/36]
+memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid DSL function call: bytes_]
+memory_size.wast: [5/36]
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [0/95]
 ref_is_null.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Algorithm Yet: table.set 1 not found]
-memory_trap.wast: [0/180]
+memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [115/149]
 select.wast: [60/118]
 f32_bitwise.wast: [0/360]
-memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm Yet: memory.init 1 not found]
+memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Algorithm Yet: table.set 0 not found]
 f32.wast: [0/2500]
-start.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to TODO: load is not a wasm instruction]
+start.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 table_size.wast: [0/36]
@@ -720,8 +731,9 @@ ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (regis
 names.wast: [481/482]
 unreached-valid.wast: [5/5]
 table_fill.wast: [13/35]
+data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [0/255]
+address.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 table_grow.wast: [3/38]
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]

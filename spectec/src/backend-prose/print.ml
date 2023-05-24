@@ -355,6 +355,7 @@ let rec structured_string_of_instr depth = function
       ^ structured_string_of_expr e2
       ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
+  | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
   | ReplaceI (e1, p, e2) ->
       "ReplaceI ("
       ^ structured_string_of_expr e1
@@ -480,7 +481,7 @@ and string_of_expr = function
   | IterE (n, iter) -> string_of_name n ^ string_of_iter iter
   | ConcatE (e1, e2) ->
       sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
-  | LengthE e -> sprintf "the length of %s" (string_of_expr e)
+  | LengthE e -> sprintf "|%s|" (string_of_expr e)
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurLabelE -> "the current label"
   | GetCurFrameE -> "the current frame"
@@ -644,6 +645,8 @@ let rec string_of_instr index depth = function
         (string_of_expr e1) (string_of_expr e2)
   | ExecuteI e ->
       sprintf "%s Execute (%s)." (make_index index depth) (string_of_expr e)
+  | ExecuteSeqI e ->
+      sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
   | ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s%s with %s." (make_index index depth)
         (string_of_expr e1) (string_of_path p) (string_of_expr e2)

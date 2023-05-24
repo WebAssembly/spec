@@ -140,7 +140,10 @@ and eval_expr env expr =
       try
         match eval_expr env e with
         | ListV vl -> IntV (Array.length vl)
-        | _ -> failwith "Not a list" (* Due to AL validation, unreachable *)
+        | v ->
+            (* Due to AL validation, unreachable *)
+            "Not a list: " ^ Print.string_of_value v
+            |> failwith
       with
         | Not_found -> IntV 0)
   | ArityE e -> (
@@ -220,6 +223,8 @@ and eval_expr env expr =
       | LabelV (_, vs) -> ListV (Array.of_list vs)
       | _ -> failwith "Not a label")
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
+  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el)
+  | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
@@ -242,6 +247,12 @@ and eval_cond env cond =
   | LeC (e1, e2) -> do_binop_expr e1 ( <= ) e2
   | GtC (e1, e2) -> do_binop_expr e1 ( > ) e2
   | GeC (e1, e2) -> do_binop_expr e1 ( >= ) e2
+  | DefinedC e ->
+      begin match eval_expr env e with
+      | OptV (Some (_)) -> true
+      | OptV (_) -> false
+      | _ -> structured_string_of_cond cond |> failwith
+      end
   | TopC "value" -> (
       match !stack with
       | [] -> false
@@ -342,6 +353,7 @@ and interp_instrs env il =
                 env |> Env.add n1 (ListV vl1) |> Env.add n (IntV (Array.length vl1))
                 |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
             | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
+            | OptE (Some (ConstructE (lhs_tag, ps))), OptV (Some (ConstructV (rhs_tag, vs)))
               when lhs_tag = rhs_tag ->
                 assert (List.length ps = List.length vs);
                 List.fold_left2
@@ -388,6 +400,11 @@ and interp_instrs env il =
           (env, cont)
       | ExecuteI e ->
           eval_expr env e |> execute_wasm_instr;
+          (env, cont)
+      | ExecuteSeqI e ->
+          (match eval_expr env e with
+          | ListV winstrs -> Array.to_list winstrs |> execute_wasm_instrs
+          | _ -> failwith "Invalid ExecuteSeqI");
           (env, cont)
       | JumpI e ->
           (match eval_expr env e with
@@ -464,6 +481,12 @@ and execute_wasm_instr winstr =
   match winstr with
   | WasmInstrV ("const", _) | WasmInstrV ("ref.null", _) -> push winstr
   | WasmInstrV (name, args) -> call_algo name args |> ignore
+  | ConstructV ("CONST", args) ->
+      (* TODO *)
+      push (WasmInstrV ("const", args))
+  | ConstructV (name, args) ->
+      let algo_name = String.lowercase_ascii name in
+      call_algo algo_name args |> ignore
   | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs

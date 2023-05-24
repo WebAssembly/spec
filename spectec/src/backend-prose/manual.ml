@@ -1,3 +1,4 @@
+open Reference_interpreter
 open Al
 
 (** Hardcoded algorithms **)
@@ -88,6 +89,8 @@ let instantiation =
   let module_name = N "module" in
   let global_name = N "global" in
   let global_iter = IterE (global_name, List) in
+  let data_name = N "data" in
+  let data_iter = IterE (data_name, List) in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init =
     Record.empty
@@ -106,6 +109,11 @@ let instantiation =
     Record.empty
     |> Record.add "MODULE" (NameE module_inst_name)
     |> Record.add "LOCAL" (ListE [||]) in
+  let init = N "init" in
+  let mode = N "mode" in
+  let memidx = N "memidx" in
+  let dinstrs = IterE (N "dinstrs", List) in
+  let i32_type = WasmTypeV (Types.NumType (Types.I32Type)) in
 
   (* Algorithm *)
   Algo (
@@ -121,7 +129,7 @@ let instantiation =
             NameE ignore_name;
             NameE ignore_name;
             NameE ignore_name;
-            NameE ignore_name
+            data_iter
           ]
         ),
         NameE module_name
@@ -142,7 +150,30 @@ let instantiation =
       );
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
-      (* TODO: element & data & start *)
+      (* TODO: element *)
+      ForI (
+        data_iter,
+        [
+          LetI (
+            ConstructE ("DATA", [ NameE init; NameE mode ]),
+            AccessE (data_iter, IndexP (NameE (N "i")))
+          );
+          IfI (
+            DefinedC (NameE mode),
+            [
+              LetI (OptE (Some (ConstructE ("MEMORY", [ NameE memidx; dinstrs ]))), NameE mode);
+              AssertI (EqC (NameE memidx, ValueE (IntV 0)) |> Print.string_of_cond);
+              ExecuteSeqI dinstrs;
+              ExecuteI (ConstructE ("CONST", [ ValueE i32_type; ValueE (IntV 0) ]));
+              ExecuteI (ConstructE ("CONST", [ ValueE i32_type; LengthE (NameE init) ]));
+              ExecuteI (ConstructE ("MEMORY.INIT", [ NameE (N "i") ]));
+              ExecuteI (ConstructE ("DATA.DROP", [ NameE (N "i") ]));
+            ],
+            []
+          )
+        ]
+      );
+      (* TODO: start *)
       PopI (NameE frame_name)
     ]
   )
@@ -196,7 +227,7 @@ let alloc_module =
     |> Record.add "FUNC" funcaddr_iter
     |> Record.add "TABLE" tableaddr_iter
     |> Record.add "GLOBAL" globaladdr_iter
-    |> Record.add "MEMORY" memoryaddr_iter
+    |> Record.add "MEM" memoryaddr_iter
     |> Record.add "DATA" dataaddr_iter
   in
   let store_name = N "s" in
@@ -345,7 +376,7 @@ let alloc_memory =
         ConstructE ("MEMORY", [ PairE (NameE min_name, NameE ignore_name) ]),
         NameE memory_name
       );
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "MEMORY")));
+      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "MEM")));
       LetI (
         NameE memoryinst_name,
         ListFillE (
@@ -353,7 +384,7 @@ let alloc_memory =
           MulE (MulE (NameE min_name, ValueE (IntV 64)), AppE (N "Ki", []))
         )
       );
-      AppendI (NameE memoryinst_name, NameE store_name, "MEMORY");
+      AppendI (NameE memoryinst_name, NameE store_name, "MEM");
       ReturnI (Some (NameE addr_name))
     ]
   )

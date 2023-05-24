@@ -83,6 +83,7 @@ let rec walk_instr f instr =
   | InvokeI e -> f_instr (InvokeI (walk_expr f e))
   | EnterI (e1, e2) -> f_instr (EnterI (walk_expr f e1, walk_expr f e2))
   | ExecuteI e -> f_instr (ExecuteI (walk_expr f e))
+  | ExecuteSeqI e -> f_instr (ExecuteSeqI (walk_expr f e))
   | ReplaceI (e1, p, e2) ->
       f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
   | JumpI e -> f_instr (JumpI (walk_expr f e))

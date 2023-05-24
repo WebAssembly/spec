@@ -206,23 +206,29 @@ let al_of_memory wasm_memory =
   ConstructV ("MEMORY", [ pair ])
 
 let al_of_segment wasm_segment = match wasm_segment.it with
-  | Ast.Passive -> ConstructV ("PASSIVE", [])
+  | Ast.Passive -> OptV None
   | Ast.Active { index = index; offset = offset } ->
-      ConstructV (
-        "MEMORY",
-        [
-          IntV (Int32.to_int index.it);
-          ListV (al_of_instrs [] offset.it |> Array.of_list)
-        ]
+      OptV (
+        Some (
+          ConstructV (
+            "MEMORY",
+            [
+              IntV (Int32.to_int index.it);
+              ListV (al_of_instrs [] offset.it |> Array.of_list)
+            ]
+          )
+        )
       )
   | Ast.Declarative -> failwith "TODO: Declarative"
 
 let al_of_data wasm_data =
   (* TODO: byte list list *)
-  let init = StringV wasm_data.it.Ast.dinit in
+  let init = wasm_data.it.Ast.dinit in
+  let f chr acc = IntV (Char.code chr) :: acc in
+  let byte_list = String.fold_right f init [] |> Array.of_list in
   let mode = al_of_segment wasm_data.it.Ast.dmode in
 
-  ConstructV ("DATA", [ init; mode ])
+  ConstructV ("DATA", [ ListV byte_list; mode ])
 
 let al_of_module wasm_module =
 

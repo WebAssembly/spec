@@ -152,6 +152,7 @@ type instr =
   | InvokeI of expr
   | EnterI of (expr * expr)
   | ExecuteI of expr
+  | ExecuteSeqI of expr
   | ReplaceI of (expr * path * expr)
   | JumpI of expr
   | PerformI of expr
