@@ -257,6 +257,7 @@ warning: definition `data` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `ext` was never spliced
 warning: definition `global` was never spliced
+warning: definition `inverse_of_bytes_` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `min` was never spliced

@@ -11,6 +11,12 @@ open Source
 open Il.Ast
 open Il.Free
 
+(* Helpers *)
+let exp_to_args exp =
+  match exp.it with
+  | TupE el -> el
+  | _ -> [ exp ]
+
 (* for debugging *)
 let debug = 1 (* 1 : print msg, 2 : fail *)
 let fail prem =
@@ -78,11 +84,20 @@ let is_assign env prem = match prem.it with
       Either.Left (AssignPr(l, r) $ prem.at)
     else if subset (free_exp l) env || subset (free_exp r) env then (
       (* TODO: if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)]) *)
-      fail prem;
-      if subset (free_exp l) env then
-        Either.Left (AssignPr(r, l) $ prem.at)
-      else
-        Either.Left (AssignPr(l, r) $ prem.at)
+      let lhs, rhs = if subset (free_exp l) env then r, l else l, r in
+      match lhs.it with
+      | CallE (name, args) ->
+        let knowns, unknowns = List.partition (fun e -> subset (free_exp e) env) (exp_to_args args) in
+        let new_lhs = match unknowns with
+          | [] -> failwith "Impossible"
+          | [e] -> e
+          | es -> ListE es $ no_region
+        in
+        let new_rhs = CallE ("inverse_of_" ^ name.it $ name.at, TupE (knowns @ [rhs]) $ no_region) $ no_region in
+        Either.Left (AssignPr(new_lhs, new_rhs) $ prem.at)
+      | _ ->
+        fail prem;
+        Either.Left (AssignPr(lhs, rhs) $ prem.at)
     )
     else
       Either.Right prem

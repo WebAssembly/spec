@@ -9,10 +9,6 @@ watsup 0.3 generator
 == Side condition inference
 == IL Validation...
 == Animate
-Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)])
-Animation failed:where $bytes_($size(nt <: valtype), c) := $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)]
-Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
-Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 == IL Validation...
 == Prose Generation...
@@ -417,11 +413,11 @@ load nt ?() n_A n_O
 2. Pop the value i32.CONST i from the stack.
 3. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
   a. Trap.
-4. Let $bytes_($size(nt), c) be $mem(0)[(i + n_O) : ($size(nt) / 8)].
+4. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
 5. Push the value nt.CONST c to the stack.
 6. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
   a. Trap.
-7. Let $bytes_(n, c) be $mem(0)[(i + n_O) : (n / 8)].
+7. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
 8. Push the value nt.CONST c to the stack.
 
 memory.size

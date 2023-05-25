@@ -1236,6 +1236,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
 
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
+
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:16.1-17.24
@@ -2876,6 +2879,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
+
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
 
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
@@ -4526,6 +4532,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
+
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
 
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
@@ -6235,6 +6244,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
 
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
+
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:16.1-17.24
@@ -6670,10 +6682,6 @@ relation Step: `%~>%`(config, config)
 == IL Validation...
 == Animate
 Animation failed:where |o0*{o0}| := |t*{t}|
-Animation failed:if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
-Animation failed:where $bytes_(o0, c) := $mem(z, 0)[(i + n_O) : (o1 / 8)]
-Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
-Animation failed:where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
 Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 
 ;; 1-syntax.watsup:3.1-3.15
@@ -7969,6 +7977,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
 
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
+
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:16.1-17.24
@@ -8259,7 +8270,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [CONST_admininstr(nt, c)])
     -- where ?(o0) := $size(nt <: valtype)
     -- where ?(o1) := $size(nt <: valtype)
-    -- where $bytes_(o0, c) := $mem(z, 0)[(i + n_O) : (o1 / 8)]
+    -- where c := $inverse_of_bytes_(o0, $mem(z, 0)[(i + n_O) : (o1 / 8)])
 
   ;; 6-reduction.watsup:276.1-278.41
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
@@ -8269,7 +8280,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
-    -- where $bytes_(n, c) := $mem(z, 0)[(i + n_O) : (n / 8)]
+    -- where c := $inverse_of_bytes_(n, $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
   rule memory.size {n : n, z : state}:

@@ -1237,6 +1237,9 @@ def wrap_ : ((nat, nat), c_numtype) -> nat
 ;; 5-numerics.watsup:13.1-13.28
 def bytes_ : (nat, c_numtype) -> byte*
 
+;; 5-numerics.watsup:14.1-14.47
+def inverse_of_bytes_ : (nat, byte*) -> c_numtype
+
 ;; 6-reduction.watsup:4.1-4.63
 relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:16.1-17.24
