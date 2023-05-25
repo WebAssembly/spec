@@ -70,7 +70,40 @@ let relop : numerics =
       | _ -> failwith "Invalid relop");
   }
 
-let numerics_list : numerics list = [ binop; testop; relop ]
+let bytes_ : numerics =
+  {
+    name = "bytes_";
+    f =
+      (function
+      | [ IntV n; IntV i ] ->
+          let rec decompose n i =
+            if n = 0 then
+              []
+            else
+              (i mod 256) :: decompose (n-1) (n / 256)
+            in
+          ListV (decompose n i |> List.map (fun x -> IntV x) |> Array.of_list)
+      | [ IntV _; FloatV _ ] -> failwith "TODO: bytes of floats"
+      | _ -> failwith "Invalid bytes"
+      );
+  }
+let inverse_of_bytes_ : numerics =
+  {
+    name = "inverse_of_bytes_";
+    f =
+      (function
+      | [ IntV n; ListV bs] ->
+          assert (n = Array.length bs);
+          IntV (Array.fold_right (fun b acc ->
+            match b with
+            | IntV b when 0 <= b && b < 256 -> b + 255 * acc
+            | _ -> failwith "Invalid inverse_of_bytes"
+          ) bs 0)
+      | _ -> failwith "Invalid inverse_of_bytes"
+      );
+  }
+
+let numerics_list : numerics list = [ binop; testop; relop; bytes_; inverse_of_bytes_ ]
 
 let call_numerics fname args =
   let numerics =
