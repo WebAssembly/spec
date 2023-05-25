@@ -36,8 +36,6 @@ let al_of_blocktype types wtype =
   | Ast.ValBlockType None -> ArrowV(ListV [||], ListV [||])
   | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| WasmTypeV val_type |])
 
-
-
 (* Construct instruction *)
 
 let al_of_unop_int = function
@@ -123,6 +121,20 @@ let al_of_cvtop_float = function
   | Ast.FloatOp.DemoteF64 -> StringV "DemoteF64"
   | Ast.FloatOp.ReinterpretInt -> StringV "ReinterpretInt"
 
+let al_of_packsize = function
+| Types.Pack8 -> IntV 8
+| Types.Pack16 -> IntV 16
+| Types.Pack32 -> IntV 32
+| Types.Pack64 -> IntV 64
+
+let al_of_extension = function
+| Types.SX -> ConstructV ("S", [])
+| Types.ZX -> ConstructV ("U", [])
+
+let al_of_packsize_with_extension (p, s) =
+  ListV [| al_of_packsize p; al_of_extension s |]
+
+
 let rec al_of_instr types winstr =
   let to_int i32 = IntV (Int32.to_int i32.it) in
   let f name  = WasmInstrV (name, []) in
@@ -197,8 +209,20 @@ let rec al_of_instr types winstr =
       WasmInstrV
         ("br_table", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
   | Ast.Return -> WasmInstrV ("return", [])
-  | Ast.Load _loadop -> StringV "TODO: load"
-  | Ast.Store _storeop -> StringV "TODO: store"
+  | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
+      WasmInstrV
+        ("load", [
+            WasmTypeV (Types.NumType ty);
+            OptV (Option.map al_of_packsize_with_extension pack);
+            IntV align;
+            IntV (Int32.to_int offset) ])
+  | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
+      WasmInstrV
+        ("store", [
+            WasmTypeV (Types.NumType ty);
+            OptV (Option.map al_of_packsize pack);
+            IntV align;
+            IntV (Int32.to_int offset) ])
   | Ast.MemorySize -> f "memory.size"
   | Ast.MemoryGrow -> f "memory.grow"
   | Ast.MemoryFill -> f "memory.fill"
