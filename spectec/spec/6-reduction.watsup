@@ -37,7 +37,7 @@ rule Step_pure/block:
   -- if bt = t_1^k -> t_2^n
 
 rule Step_pure/loop:
-  val^k (LOOP bt instr*)  ~>  (LABEL_ n `{LOOP bt instr*} val^k instr*)
+  val^k (LOOP bt instr*)  ~>  (LABEL_ k `{LOOP bt instr*} val^k instr*)
   -- if bt = t_1^k -> t_2^n
 
 rule Step_pure/if-true:
