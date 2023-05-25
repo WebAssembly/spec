@@ -527,6 +527,8 @@ and string_of_cond = function
       sprintf "%s is not %s" (string_of_expr e1) (string_of_expr e2)
   | NotC (CaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" (string_of_expr e) c
+  | NotC (DefinedC e) ->
+      sprintf "%s is not defined" (string_of_expr e)
   | NotC c -> sprintf "not %s" (string_of_cond c)
   | AndC (c1, c2) -> sprintf "%s and %s" (string_of_cond c1) (string_of_cond c2)
   | OrC (c1, c2) -> sprintf "%s or %s" (string_of_cond c1) (string_of_cond c2)

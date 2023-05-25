@@ -103,7 +103,21 @@ let inverse_of_bytes_ : numerics =
       );
   }
 
-let numerics_list : numerics list = [ binop; testop; relop; bytes_; inverse_of_bytes_ ]
+let wrap_ : numerics =
+  {
+    name = "wrap_";
+    f =
+      (function
+      | [ ListV [| IntV _; IntV n |]; IntV i ] ->
+          IntV (
+            let mask = (1 lsl n) - 1 in
+            i land mask
+          )
+      | _ -> failwith "Invalid wrap_"
+      );
+  }
+
+let numerics_list : numerics list = [ binop; testop; relop; bytes_; inverse_of_bytes_; wrap_ ]
 
 let call_numerics fname args =
   let numerics =
