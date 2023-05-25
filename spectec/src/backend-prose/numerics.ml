@@ -5,26 +5,45 @@ type numerics = { name : string; f : value list -> value }
 let wrap_int_binop i1 op i2 = match i1, i2 with
   | IntV i1, IntV i2 -> let result = op i1 i2 in ListV [| IntV result |]
   | _ -> failwith "Operand of this binop should be IntV"
+let wrap_float_binop i1 op i2 = match i1, i2 with
+  | FloatV i1, FloatV i2 -> let result = op i1 i2 in ListV [| FloatV result |]
+  | _ -> failwith "Operand of this binop should be FloatV"
 let binop : numerics =
   {
     name = "binop";
     f =
       (function
-      | [ StringV "Add"; _; i1; i2 ]  -> wrap_int_binop i1 (+) i2
-      | [ StringV "Sub"; _; i1; i2 ]  -> wrap_int_binop i1 (-) i2
-      | [ StringV "Mul"; _; i1; i2 ]  -> wrap_int_binop i1 ( * ) i2
-      | [ StringV "DivS"; _; i1; i2 ] -> wrap_int_binop i1 (/) i2
-      | [ StringV "DivU"; _; i1; i2 ] -> wrap_int_binop i1 (/) i2
-      | [ StringV "RemS"; _; i1; i2 ] -> wrap_int_binop i1 (mod) i2
-      | [ StringV "RemU"; _; i1; i2 ] -> wrap_int_binop i1 (mod) i2
-      | [ StringV "And"; _; i1; i2 ]  -> wrap_int_binop i1 (land) i2
-      | [ StringV "Or"; _; i1; i2 ]   -> wrap_int_binop i1 (lor) i2
-      | [ StringV "Xor"; _; i1; i2 ]  -> wrap_int_binop i1 (lxor) i2
-      | [ StringV "Shl"; _; i1; i2 ]  -> wrap_int_binop i1 (lsl) i2
-      | [ StringV "ShrS"; _; i1; i2 ] -> wrap_int_binop i1 (asr) i2
-      | [ StringV "ShrU"; _; i1; i2 ] -> wrap_int_binop i1 (lsr) i2
-      | [ StringV "Rotl"; _; i1; i2 ] -> wrap_int_binop i1 (fun _ _ -> failwith "TODO: Rotl") i2
-      | [ StringV "Rotr"; _; i1; i2 ] -> wrap_int_binop i1 (fun _ _ -> failwith "TODO: Rotr") i2
+      | [ op; t; v1; v2 ] -> (
+        match t with
+        | WasmTypeV (NumType I32Type) -> (
+          match op with
+          | StringV "Add" -> wrap_int_binop v1 (+) v2
+          | StringV "Sub" -> wrap_int_binop v1 (-) v2
+          | StringV "Mul"  -> wrap_int_binop v1 ( * ) v2
+          | StringV "DivS"
+          | StringV "DivU" -> wrap_int_binop v1 (/) v2
+          | StringV "RemS"
+          | StringV "RemU" -> wrap_int_binop v1 (mod) v2
+          | StringV "And"  -> wrap_int_binop v1 (land) v2
+          | StringV "Or"   -> wrap_int_binop v1 (lor) v2
+          | StringV "Xor"  -> wrap_int_binop v1 (lxor) v2
+          | StringV "Shl"  -> wrap_int_binop v1 (lsl) v2
+          | StringV "ShrS" -> wrap_int_binop v1 (asr) v2
+          | StringV "ShrU" -> wrap_int_binop v1 (lsr) v2
+          | StringV "Rotl" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotl") v2
+          | StringV "Rotr" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotr") v2
+          | _ -> failwith "unreachable")
+        | WasmTypeV (NumType F32Type) -> (
+          match op with
+          | StringV "Add" -> wrap_float_binop v1 (+.) v2 
+          | StringV "Sub" -> wrap_float_binop v1 (-.) v2
+          | StringV "Mul" -> wrap_float_binop v1 ( *. ) v2
+          | StringV "Div" -> wrap_float_binop v1 (/.) v2
+          | StringV "Min" -> wrap_float_binop v1 (Float.min) v2
+          | StringV "Max" -> wrap_float_binop v1 (Float.max) v2
+          | StringV "CopySign" -> wrap_float_binop v1 (fun _ _ -> failwith "TODO: CopySign") v2
+          | _ -> failwith "unreachable")
+        | _ -> failwith "Invalid binop")
       | StringV op :: _ -> failwith ("Invalid binop: " ^ op)
       | _ -> failwith "Invalid binop");
   }
@@ -51,21 +70,31 @@ let relop : numerics =
     name = "relop";
     f =
       (function
-      | [ StringV "Eq"; _; i1; i2 ] -> wrap_int_relop i1 (=) i2
-      | [ StringV "Ne"; _; i1; i2 ] -> wrap_int_relop i1 (<>) i2
-      (* TODO: difference b/w S and U? *)
-      | [ StringV "LtS"; _; i1; i2 ]
-      | [ StringV "LtU"; _; i1; i2 ] -> wrap_int_relop i1 (<) i2
-      | [ StringV "LeS"; _; i1; i2 ]
-      | [ StringV "LeU"; _; i1; i2 ] -> wrap_int_relop i1 (<=) i2
-      | [ StringV "GtS"; _; i1; i2 ]
-      | [ StringV "GtU"; _; i1; i2 ] -> wrap_int_relop i1 (>) i2
-      | [ StringV "GeS"; _; i1; i2 ]
-      | [ StringV "GeU"; _; i1; i2 ] -> wrap_int_relop i1 (>=) i2
-      | [ StringV "Lt"; _; f1; f2 ] -> wrap_float_relop f1 (<) f2
-      | [ StringV "Le"; _; f1; f2 ] -> wrap_float_relop f1 (<=) f2
-      | [ StringV "Gt"; _; f1; f2 ] -> wrap_float_relop f1 (>) f2
-      | [ StringV "Ge"; _; f1; f2 ] -> wrap_float_relop f1 (>=) f2
+      | [ op; t; v1; v2 ] -> (
+        match t with
+        | WasmTypeV (NumType I32Type) -> (
+          match op with
+          | StringV "Eq" -> wrap_int_relop v1 (=) v2
+          | StringV "Ne" -> wrap_int_relop v1 (<>) v2
+          | StringV "LtS"
+          | StringV "LtU" -> wrap_int_relop v1 (<) v2
+          | StringV "LeS"
+          | StringV "LeU" -> wrap_int_relop v1 (<=) v2
+          | StringV "GtS"
+          | StringV "GtU" -> wrap_int_relop v1 (>) v2
+          | StringV "GeS"
+          | StringV "GeU" -> wrap_int_relop v1 (>=) v2
+          | _ -> failwith "unreachable")
+        | WasmTypeV (NumType F32Type) -> (
+          match op with
+          | StringV "Eq" -> wrap_float_relop v1 (=) v2 
+          | StringV "Ne" -> wrap_float_relop v1 (<>) v2
+          | StringV "Lt" -> wrap_float_relop v1 (<) v2
+          | StringV "Gt" -> wrap_float_relop v1 (>) v2
+          | StringV "Le" -> wrap_float_relop v1 (<=) v2
+          | StringV "Ge" -> wrap_float_relop v1 (>=) v2
+          | _ -> failwith "unreachable")
+        | _ -> failwith "Invalid relop")
       | StringV op :: _ -> failwith ("Invalid relop: " ^ op)
       | _ -> failwith "Invalid relop");
   }

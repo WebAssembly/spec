@@ -72,10 +72,10 @@ let al_of_binop_float = function
   | Ast.FloatOp.Add -> StringV "Add"
   | Ast.FloatOp.Sub -> StringV "Sub"
   | Ast.FloatOp.Mul -> StringV "Mul"
-  | Ast.FloatOp.Div -> StringV "DivS"
-  | Ast.FloatOp.Min -> StringV "DivU"
-  | Ast.FloatOp.Max -> StringV "RemS"
-  | Ast.FloatOp.CopySign -> StringV "RemU"
+  | Ast.FloatOp.Div -> StringV "Div"
+  | Ast.FloatOp.Min -> StringV "Min"
+  | Ast.FloatOp.Max -> StringV "Max"
+  | Ast.FloatOp.CopySign -> StringV "CopySign"
 
 let al_of_testop_int = function
   | Ast.IntOp.Eqz -> StringV "Eqz"
