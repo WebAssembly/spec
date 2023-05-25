@@ -186,6 +186,7 @@
         br 1
         i32.const 52
       end
+      drop
       i32.const 62
     end
     i32.const 1
@@ -214,6 +215,18 @@
       i32.const 3
       i32.add
     end
+  )
+
+  (func (export "loop") (result i32)
+    (block (result i32)
+      i32.const 0
+      (loop (param i32) (result i32)
+        (if (result i32)
+          (then i32.const 42 (br 2))
+          (else i32.const 1 (br 1))
+        )
+      )
+    )
   )
 
   (func $fib (export "fib") (param i32) (result i32)
@@ -259,6 +272,7 @@
 (assert_return (invoke "br_succ") (i32.const 43))
 (assert_return (invoke "if_true") (i32.const 44))
 (assert_return (invoke "if_false") (i32.const 45))
+(assert_return (invoke "loop") (i32.const 42))
 (assert_return (invoke "fib" (i32.const 10)) (i32.const 55))
 
 ;;second module

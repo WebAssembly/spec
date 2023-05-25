@@ -33,7 +33,7 @@ let br =
               WhileI (TopC "value", [ PopI (NameE (N "val'")) ]);
               ExitAbruptI (N "L");
               PushI (IterE (N "val", ListN (N "n")));
-              JumpI (ContE (NameE (N "L")));
+              ExecuteSeqI (ContE (NameE (N "L")));
             ],
             (* br_succ *)
             [
@@ -459,6 +459,7 @@ let invocation =
       PushI (args_iter);
       ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]));
       PopI (IterE (SubN (N "val", "res"), ListN m));
+      PopI (NameE frame_name);
       ReturnI (Some (IterE (SubN (N "val", "res"), ListN m)))
     ]
   )

@@ -61,7 +61,7 @@ let structured_string_of_iter = function
 (* expression *)
 
 let rec structured_string_of_value = function
-  | LabelV _ -> "LabelV (TODO)"
+  | LabelV (n, _instrs) -> "LabelV (" ^ string_of_int n ^ ",TODO)"
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
@@ -439,7 +439,7 @@ and string_of_stack st =
   List.fold_left f "[Stack]\n" st
 
 and string_of_value = function
-  | LabelV _ -> "LabelV (TODO)"
+  | LabelV (n, instrs) -> "Label_" ^ string_of_int n ^ string_of_list (fun _ -> "...") " {" "," "}" instrs
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv

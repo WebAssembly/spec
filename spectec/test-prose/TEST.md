@@ -161,7 +161,7 @@ loop bt instr
 4. Pop val^k from the stack.
 5. Let t_2^n be tmp1.
 6. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
-  a. Let L be the label_n{[loop bt instr*]}.
+  a. Let L be the label_k{[loop bt instr*]}.
   b. Push L to the stack.
   c. Push val^k to the stack.
   d. Jump to instr*.
@@ -560,7 +560,7 @@ br l
     1) Pop val' from the stack.
   f. Exit current context.
   g. Push val^n to the stack.
-  h. Jump to the continuation of L.
+  h. Execute the sequence (the continuation of L).
 2. Else:
   a. Let L be the current label.
   b. Exit current context.
@@ -666,10 +666,11 @@ invocation funcaddr val*
 7. Push val* to the stack.
 8. Execute (call_addr funcaddr).
 9. Pop val_res^m from the stack.
-10. Return val_res^m.
+10. Pop f from the stack.
+11. Return val_res^m.
 
 == Interpreting AL...
-sample.wast: [26/26]
+sample.wast: [27/27]
 forward.wast: [4/4]
 float_misc.wast: [0/440]
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -689,12 +690,12 @@ if.wast: [93/123]
 const.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
 f64_cmp.wast: [0/2400]
 block.wast: [44/52]
-labels.wast: [22/25]
+labels.wast: [25/25]
 switch.wast: [18/26]
 i64.wast: [0/384]
 memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 stack.wast: [2/5]
-loop.wast: [40/77]
+loop.wast: [41/77]
 conversions.wast: [0/593]
 endianness.wast: [0/68]
 return.wast: [63/63]

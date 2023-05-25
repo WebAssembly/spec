@@ -485,6 +485,7 @@ and call_algo name args =
   interp_algo algo args |> Env.get_result
 
 and execute_wasm_instr winstr =
+  (* Print.string_of_value winstr |> print_endline; *)
   match winstr with
   | WasmInstrV ("const", _) | WasmInstrV ("ref.null", _) -> push winstr
   | WasmInstrV (name, args) -> call_algo name args |> ignore
