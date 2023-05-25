@@ -671,16 +671,6 @@ forward.wast: [4/4]
 float_misc.wast: [0/440]
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 120,
-  i: 0,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Not_found]
 unwind.wast: [49/49]
 call.wast: [41/70]
@@ -699,16 +689,6 @@ block.wast: [44/52]
 labels.wast: [25/25]
 switch.wast: [18/26]
 i64.wast: [0/384]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 3,
-  i: 2,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 stack.wast: [2/5]
 loop.wast: [41/77]
@@ -719,16 +699,6 @@ store.wast: [0/9]
 memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 i32.wast: [243/374]
 unreachable.wast: [63/63]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 255,
-  i: 1,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Not_found]
 traps.wast: [0/32]
 local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
@@ -738,60 +708,20 @@ memory_grow.wast: [1/84]
 tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 call_indirect.wast: [24/132]
 load.wast: [0/37]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [85, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 85,
-  i: 65280,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Not_found]
 memory_size.wast: [5/36]
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [0/95]
 ref_is_null.wast: [3/11]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 97,
-  i: 0,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Not_found]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [123/149]
 select.wast: [60/118]
 f32_bitwise.wast: [0/360]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 3,
-  i: 2,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [6/9]
 f32.wast: [0/2500]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [65, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 65,
-  i: 0,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 start.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
@@ -805,16 +735,6 @@ unreached-valid.wast: [5/5]
 table_fill.wast: [22/35]
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-The key 'n' is not in the map:
-{?(): ?(8),
-  b: [97, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  c: 97,
-  i: 0,
-  n_A: 0,
-  n_O: 0,
-  nt: i32,
-  s: StoreV
-}.
 address.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 table_grow.wast: [7/38]
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]

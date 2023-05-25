@@ -57,7 +57,7 @@ module Env = struct
     with Not_found ->
       Printf.sprintf "The key '%s' is not in the map: %s."
         (Print.string_of_name key) (string_of_env env)
-      |> print_endline;
+      |> prerr_endline;
       raise Not_found
 
   let add key elem (env, res) = (Env'.add key elem env, res)
