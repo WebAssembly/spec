@@ -92,6 +92,7 @@ let rec al_of_instr types winstr =
   let to_int i32 = IntV (Int32.to_int i32.it) in
   let f name  = WasmInstrV (name, []) in
   let f_i32 name i32 = WasmInstrV (name, [to_int i32]) in
+  let f_i32_i32 name i32 i32' = WasmInstrV (name, [to_int i32; to_int i32']) in
 
   match winstr.it with
   (* wasm values *)
@@ -116,6 +117,8 @@ let rec al_of_instr types winstr =
   | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
       WasmInstrV
         ("relop", [ WasmTypeV (Types.NumType Types.F32Type); StringV "Gt" ])
+  | Ast.RefIsNull -> f "ref.is_null"
+  | Ast.RefFunc i32 -> f_i32 "ref.func" i32
   | Ast.Select None -> WasmInstrV ("select", [ StringV "TODO: None" ])
   | Ast.LocalGet i32 -> f_i32 "local.get" i32
   | Ast.LocalSet i32 -> f_i32 "local.set" i32
@@ -123,10 +126,13 @@ let rec al_of_instr types winstr =
   | Ast.GlobalGet i32 -> f_i32 "global.get" i32
   | Ast.GlobalSet i32 -> f_i32 "global.set" i32
   | Ast.TableGet i32 -> f_i32 "table.get" i32
+  | Ast.TableSet i32 -> f_i32 "table.set" i32
+  | Ast.TableSize i32 -> f_i32 "table.size" i32
+  | Ast.TableGrow i32 -> f_i32 "table.grow" i32
+  | Ast.TableFill i32 -> f_i32 "table.fill" i32
+  | Ast.TableInit (i32, i32') -> f_i32_i32 "table.init" i32 i32'
   | Ast.Call i32 -> f_i32 "call" i32
-  | Ast.CallIndirect (i32, i32') ->
-      WasmInstrV
-        ("call_indirect", [ to_int i32; to_int i32' ])
+  | Ast.CallIndirect (i32, i32') -> f_i32_i32 "call_indirect" i32 i32'
   | Ast.Block (bt, instrs) ->
       WasmInstrV
         ("block", [
@@ -153,7 +159,7 @@ let rec al_of_instr types winstr =
   | Ast.Load _loadop -> StringV "TODO: load"
   | Ast.Store _storeop -> StringV "TODO: store"
   | Ast.MemorySize -> f "memory.size"
-  | Ast.MemoryGrow -> f "mewmory.grow"
+  | Ast.MemoryGrow -> f "memory.grow"
   | Ast.MemoryFill -> f "memory.fill"
   | Ast.MemoryCopy -> f "memory.copy"
   | _ -> WasmInstrV ("Yet: " ^ Print.string_of_winstr winstr, [])
