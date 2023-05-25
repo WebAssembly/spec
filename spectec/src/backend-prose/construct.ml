@@ -40,12 +40,21 @@ let al_of_blocktype types wtype =
 
 (* Construct instruction *)
 
-let al_of_unop = function
+let al_of_unop_int = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
   | Ast.IntOp.ExtendS _ -> StringV "TODO"
-let al_of_binop = function
+let al_of_unop_float = function
+  | Ast.FloatOp.Neg -> StringV "Neg"
+  | Ast.FloatOp.Abs -> StringV "Abs"
+  | Ast.FloatOp.Ceil -> StringV "Ceil"
+  | Ast.FloatOp.Floor -> StringV "Floor"
+  | Ast.FloatOp.Trunc -> StringV "Trunc"
+  | Ast.FloatOp.Nearest -> StringV "Nearest"
+  | Ast.FloatOp.Sqrt -> StringV "Sqrt"
+
+let al_of_binop_int = function
   | Ast.IntOp.Add -> StringV "Add"
   | Ast.IntOp.Sub -> StringV "Sub"
   | Ast.IntOp.Mul -> StringV "Mul"
@@ -61,9 +70,19 @@ let al_of_binop = function
   | Ast.IntOp.ShrU -> StringV "ShrU"
   | Ast.IntOp.Rotl -> StringV "Rotl"
   | Ast.IntOp.Rotr -> StringV "Rotr"
-let al_of_testop = function
+let al_of_binop_float = function
+  | Ast.FloatOp.Add -> StringV "Add"
+  | Ast.FloatOp.Sub -> StringV "Sub"
+  | Ast.FloatOp.Mul -> StringV "Mul"
+  | Ast.FloatOp.Div -> StringV "DivS"
+  | Ast.FloatOp.Min -> StringV "DivU"
+  | Ast.FloatOp.Max -> StringV "RemS"
+  | Ast.FloatOp.CopySign -> StringV "RemU"
+
+let al_of_testop_int = function
   | Ast.IntOp.Eqz -> StringV "Eqz"
-let al_of_relop = function
+
+let al_of_relop_int = function
   | Ast.IntOp.Eq -> StringV "Eq"
   | Ast.IntOp.Ne -> StringV "Ne"
   | Ast.IntOp.LtS -> StringV "LtS"
@@ -74,7 +93,15 @@ let al_of_relop = function
   | Ast.IntOp.LeU -> StringV "LeU"
   | Ast.IntOp.GeS -> StringV "GeS"
   | Ast.IntOp.GeU -> StringV "GeU"
-let al_of_cvtop = function
+let al_of_relop_float = function
+  | Ast.FloatOp.Eq -> StringV "Eq"
+  | Ast.FloatOp.Ne -> StringV "Ne"
+  | Ast.FloatOp.Lt -> StringV "Lt"
+  | Ast.FloatOp.Gt -> StringV "Gt"
+  | Ast.FloatOp.Le -> StringV "Le"
+  | Ast.FloatOp.Ge -> StringV "Ge"
+
+let al_of_cvtop_int = function
   | Ast.IntOp.ExtendSI32 -> StringV "ExtendI32"
   | Ast.IntOp.ExtendUI32 -> StringV "ExtendUI32"
   | Ast.IntOp.WrapI64 -> StringV "WrapI64"
@@ -87,6 +114,14 @@ let al_of_cvtop = function
   | Ast.IntOp.TruncSatSF64 -> StringV "TruncSatSF64"
   | Ast.IntOp.TruncSatUF64 -> StringV "TruncSatUF64"
   | Ast.IntOp.ReinterpretFloat -> StringV "ReinterpretFloat"
+let al_of_cvtop_float = function
+  | Ast.FloatOp.ConvertSI32 -> StringV "ConvertI32"
+  | Ast.FloatOp.ConvertUI32 -> StringV "ConvertUI32"
+  | Ast.FloatOp.ConvertSI64 -> StringV "ConvertI64"
+  | Ast.FloatOp.ConvertUI64 -> StringV "ConvertUI64"
+  | Ast.FloatOp.PromoteF32 -> StringV "PromoteF32"
+  | Ast.FloatOp.DemoteF64 -> StringV "DemoteF64"
+  | Ast.FloatOp.ReinterpretInt -> StringV "ReinterpretInt"
 
 let rec al_of_instr types winstr =
   let to_int i32 = IntV (Int32.to_int i32.it) in
@@ -104,19 +139,25 @@ let rec al_of_instr types winstr =
   | Ast.Drop -> f "drop"
   | Ast.Unary (Values.I32 op) ->
       WasmInstrV
-        ("unop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_unop op ])
+        ("unop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_unop_int op ])
+  | Ast.Unary (Values.F32 op) ->
+      WasmInstrV
+        ("unop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_unop_float op ])
   | Ast.Binary (Values.I32 op) ->
       WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_binop op ])
+        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_binop_int op ])
+  | Ast.Binary (Values.F32 op) ->
+      WasmInstrV
+        ("binop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_binop_float op ])
   | Ast.Test (Values.I32 op) ->
       WasmInstrV
-        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_testop op ])
+        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_testop_int op ])
   | Ast.Compare (Values.I32 op) ->
       WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_relop op ])
-  | Ast.Compare (Values.F32 Ast.F32Op.Gt) ->
+        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_relop_int op ])
+  | Ast.Compare (Values.F32 op) ->
       WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.F32Type); StringV "Gt" ])
+        ("relop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_relop_float op ])
   | Ast.RefIsNull -> f "ref.is_null"
   | Ast.RefFunc i32 -> f_i32 "ref.func" i32
   | Ast.Select None -> WasmInstrV ("select", [ StringV "TODO: None" ])
