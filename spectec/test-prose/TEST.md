@@ -43,9 +43,9 @@ default_ t
 2. If t is i64, then:
   a. Return the value i64.CONST 0.
 3. If t is f32, then:
-  a. Return the value f32.CONST 0.
+  a. Return the value f32.CONST 0..
 4. If t is f64, then:
-  a. Return the value f64.CONST 0.
+  a. Return the value f64.CONST 0..
 5. If t is funcref, then:
   a. Return the value ref.null Yet.
 6. If t is externref, then:
@@ -678,9 +678,9 @@ ref_null.wast: [2/2]
 memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Invalid DSL function call: bytes_]
 unwind.wast: [49/49]
 call.wast: [41/70]
-local_get.wast: [15/19]
+local_get.wast: [17/19]
 fac.wast: [0/6]
-func.wast: [78/96]
+func.wast: [84/96]
 exports.wast: [4/9]
 local_set.wast: [18/19]
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]

@@ -145,7 +145,13 @@ let rec exp2expr exp =
       match ty.it with
       | Ast.CaseE (Ast.Atom ty_name, _, _) ->
           let ty = string2type ty_name in
-          Al.ConstE (Al.ValueE (Al.WasmTypeV ty), exp2expr num)
+          let open Reference_interpreter.Types in
+          let v = match ty, exp2expr num with
+          | NumType F32Type, Al.ValueE (Al.IntV n)
+          | NumType F64Type, Al.ValueE (Al.IntV n) -> Al.ValueE (Al.FloatV (float_of_int n))
+          | _, v -> v
+          in
+          Al.ConstE (Al.ValueE (Al.WasmTypeV ty), v)
       | Ast.VarE id -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
       | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith)
   | Ast.CaseE
