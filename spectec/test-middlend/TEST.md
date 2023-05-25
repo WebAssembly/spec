@@ -6681,8 +6681,6 @@ relation Step: `%~>%`(config, config)
 
 == IL Validation...
 == Animate
-Animation failed:where |o0*{o0}| := |t*{t}|
-Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -8005,21 +8003,17 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (c = 0)
 
   ;; 6-reduction.watsup:35.1-37.28
-  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, tmp0 : valtype*, tmp1 : valtype*}:
+  rule block {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
     `%*~>%*`((val <: admininstr)^k{val} :: [BLOCK_admininstr(bt, instr*{instr})], [LABEL__admininstr(n, [], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
-    -- where `%->%`(tmp0, tmp1) := bt
-    -- where t_1^k{t_1} := tmp0
-    -- where t_2^n{t_2} := tmp1
+    -- where `%->%`(t_1^k{t_1}, t_2^n{t_2}) := bt
     -- if (|t_1^k{t_1}| = k)
     -- if (|t_2^n{t_2}| = n)
     -- if (|val^k{val}| = k)
 
   ;; 6-reduction.watsup:39.1-41.28
-  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, tmp0 : valtype*, tmp1 : valtype*}:
+  rule loop {bt : blocktype, instr* : instr*, k : nat, n : n, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k}:
     `%*~>%*`((val <: admininstr)^k{val} :: [LOOP_admininstr(bt, instr*{instr})], [LABEL__admininstr(k, [LOOP_instr(bt, instr*{instr})], (val <: admininstr)^k{val} :: (instr <: admininstr)*{instr})])
-    -- where `%->%`(tmp0, tmp1) := bt
-    -- where t_1^k{t_1} := tmp0
-    -- where t_2^n{t_2} := tmp1
+    -- where `%->%`(t_1^k{t_1}, t_2^n{t_2}) := bt
     -- if (|t_1^k{t_1}| = k)
     -- if (|t_2^n{t_2}| = n)
     -- if (|val^k{val}| = k)
@@ -8161,14 +8155,10 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 6-reduction.watsup:94.1-97.52
-  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*, tmp0 : func, tmp1 : functype, tmp2 : valtype*, tmp3 : valtype*}:
+  rule call_addr {a : addr, f : frame, instr* : instr*, k : nat, m : moduleinst, n : n, t* : valtype*, t_1^k : valtype^k, t_2^n : valtype^n, val^k : val^k, z : state, o0* : val*}:
     `%~>%*`(`%;%*`(z, (val <: admininstr)^k{val} :: [CALL_ADDR_admininstr(a)]), [FRAME__admininstr(n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])])
     -- if (a < |$funcinst(z)|)
-    -- where `%;%`(m, tmp0) := $funcinst(z)[a]
-    -- where `FUNC%%*%`(tmp1, t*{t}, instr*{instr}) := tmp0
-    -- where `%->%`(tmp2, tmp3) := tmp1
-    -- where t_1^k{t_1} := tmp2
-    -- where t_2^n{t_2} := tmp3
+    -- where `%;%`(m, `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr})) := $funcinst(z)[a]
     -- if (|t_1^k{t_1}| = k)
     -- if (|t_2^n{t_2}| = n)
     -- if (|val^k{val}| = k)

@@ -340,45 +340,34 @@ and interp_instrs env il =
           (env, cont)
         | _ -> failwith "Invalid pop")
       | LetI (pattern, e) ->
-          let env = (
-            let v = eval_expr env e in
-            match (pattern, v) with
+          let rec assign lhs rhs env =
+            match lhs, rhs with
+            | IterE (name, ListN n), ListV vs ->
+                env |> Env.add name rhs |> Env.add n (IntV (Array.length vs))
+            | NameE name, v
+            | IterE (name, _), v ->
+                Env.add name v env
+            | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
+            | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
+                env |> assign lhs1 rhs1 |> assign lhs2 rhs2
+            | ListE lhs_s, ListV rhs_s
+              when Array.length lhs_s = Array.length rhs_s ->
+                List.fold_right2 assign (Array.to_list lhs_s) (Array.to_list rhs_s) env
+            | ConstructE (lhs_tag, lhs_s), ConstructV (rhs_tag, rhs_s)
+              when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
+                List.fold_right2 assign lhs_s rhs_s env
+            | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
+            (* TODO: Remove this. This should be handled by animation *)
             | MulE (MulE (NameE name, e1), e2), IntV m ->
                 let n1 = eval_expr env e1 |> al_value2int in
                 let n2 = eval_expr env e2 |> al_value2int in
                 Env.add name (IntV (m / n1 / n2)) env
-            | IterE (name, ListN n), ListV vs ->
-                env |> Env.add name v |> Env.add n (IntV (Array.length vs))
-            | NameE name, v
-            | ListE [| NameE name |], ListV [| v |]
-            | IterE (name, _), v ->
-                Env.add name v env
-            | PairE (NameE n1, NameE n2), PairV (v1, v2)
-            | ArrowE (NameE n1, NameE n2), ArrowV (v1, v2) ->
-                env |> Env.add n1 v1 |> Env.add n2 v2
-            | ArrowE (IterE (n1, ListN n), IterE (n2, ListN m)), ArrowV (ListV vl1, ListV vl2) ->
-                env |> Env.add n1 (ListV vl1) |> Env.add n (IntV (Array.length vl1))
-                |> Env.add n2 (ListV vl2) |> Env.add m (IntV (Array.length vl2))
-            | ConstructE (lhs_tag, ps), ConstructV (rhs_tag, vs)
-            | OptE (Some (ConstructE (lhs_tag, ps))), OptV (Some (ConstructV (rhs_tag, vs)))
-              when lhs_tag = rhs_tag ->
-                assert (List.length ps = List.length vs);
-                List.fold_left2
-                  (fun env p v ->
-                    match p, v with
-                    | NameE n, v | IterE (n, _), v -> Env.add n v env
-                    | PairE (NameE n1, NameE n2), PairV (v1, v2) ->
-                        env |> Env.add n1 v1 |> Env.add n2 v2
-                    | _ ->
-                        string_of_instr (ref 0) 0 i
-                        |> Printf.sprintf "Invalid destructuring assignment: %s"
-                        |> failwith)
-                  env ps vs
             | e, v ->
-                Printf.sprintf "Invalid assignment: %s %s"
+                Printf.sprintf "Invalid assignment: %s := %s"
                   (string_of_expr e) (string_of_value v)
-                |> failwith)
+                |> failwith
           in
+          let env = assign pattern (eval_expr env e) env in
           (env, cont)
       | TrapI -> raise Trap
       | NopI | ReturnI None -> (env, cont)

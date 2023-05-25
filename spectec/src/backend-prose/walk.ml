@@ -57,6 +57,7 @@ let rec walk_cond f c =
   | LtC (e1, e2) -> f_cond (LtC (walk_expr f e1, walk_expr f e2))
   | LeC (e1, e2) -> f_cond (LeC (walk_expr f e1, walk_expr f e2))
   | CaseOfC (e, c) -> f_cond (CaseOfC (walk_expr f e, c))
+  | DefinedC e -> f_cond (DefinedC (walk_expr f e))
   | _ -> Print.structured_string_of_cond c |> failwith
 
 let rec walk_instr f instr =

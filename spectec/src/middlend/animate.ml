@@ -105,72 +105,6 @@ let is_assign env prem = match prem.it with
   )
 | _ -> Either.Right prem
 
-(* Generate fresh variables *)
-let _fresh = ref 0
-let _fresh_env = ref []
-let fresh e =
-  let id = !_fresh in
-  _fresh := id + 1;
-  let name = "tmp" ^ string_of_int id in
-
-  (* hard-coded infered type of fresh variable *)
-  (* TODO: Fix this to be generally applicable*)
-  let fresh_env = !_fresh_env in
-  let t = match e.it with
-  | MixE ([[]; [Arrow]; []], _) -> VarT ("functype" $ no_region)
-  | MixE ([[Atom "FUNC"]; []; [Star]; []], _) -> VarT ("func" $ no_region)
-  | IterE (id, _) when
-    Il.Print.string_of_exp id = "t_1" ||
-    Il.Print.string_of_exp id = "t_2" ->
-      IterT(VarT ("valtype" $ no_region) $ no_region, List)
-  | _ -> VarT ("unknown_type_due_to_animation" $ no_region)
-  in
-  _fresh_env := fresh_env @ [(name $ no_region, t $ no_region, [])];
-
-  name
-
-(* Simplify assign target of each premises *)
-let rec simplify_assign_target assign =
-  let bind_var e = match e.it with
-    | VarE _
-    | IterE (_, (Opt, _))
-    | IterE (_, (List, _))
-    | IterE (_, (List1, _)) -> (e, [])
-    | _ ->
-      let fresh = (VarE ( fresh(e) $ no_region)) $ no_region in
-      let new_assigns = simplify_assign_target (AssignPr (e, fresh) $ no_region) in
-      (fresh, new_assigns)
-  in
-  let bind_vars = List.fold_left (fun (ids, acc) e ->
-    let (id, new_assigns) = bind_var e in
-    (ids @ [id], acc @ new_assigns)
-  ) ([], [])
-  in
-  match assign.it with
-  | AssignPr(target, rhs) -> ( match target.it with
-    | VarE _  | IterE _ -> [assign]
-    | ListE es ->
-      let (vars, new_assigns) = bind_vars es in
-      let simplified_assign = AssignPr((ListE vars) $ target.at, rhs) $ assign.at in
-      simplified_assign :: new_assigns
-    | OptE _ -> [assign]
-    | MixE (mixOp, { it = TupE es ; at = _ }) ->
-      let (vars, new_assigns) = bind_vars es in
-      let simplified_assign = AssignPr(MixE(mixOp, TupE vars $ target.at) $ target.at, rhs) $ assign.at in
-      simplified_assign :: new_assigns
-    | CaseE (atom, { it = TupE es; at = _}, t) ->
-      let (vars, new_assigns) = bind_vars es in
-      let simplified_assign = AssignPr(CaseE(atom, TupE vars $ target.at, t) $ target.at, rhs) $ assign.at in
-      simplified_assign :: new_assigns
-    | CaseE (atom, e, t) ->
-      let (var, new_assigns) = bind_var e in
-      let simplified_assign = AssignPr(CaseE(atom, var, t) $ target.at, rhs) $ assign.at in
-      simplified_assign :: new_assigns
-    | CallE _ -> fail assign; [assign]
-    | _ -> fail assign; [assign]
-    )
-  | _ -> failwith "Unreachable"
-
 (* Mutual recursive functions that iteratively select tight and assignment premises,
    effectively sorting the premises as a result *)
 let rec select_tight prems acc env = ( match prems with
@@ -185,17 +119,13 @@ and select_assign prems acc env = ( match prems with
   ( match assigns with
   | [] -> List.iter fail non_assigns; ( acc @ prems )
   | _ ->
-    let new_assigns = List.concat_map simplify_assign_target assigns in
-    let new_env = new_assigns |> List.map free_prem |> List.fold_left union env in
-    select_tight non_assigns (acc @ new_assigns) new_env
+    let new_env = assigns |> List.map free_prem |> List.fold_left union env in
+    select_tight non_assigns (acc @ assigns) new_env
   )
 )
 
 (* Animate the list of premises *)
 let animate_prems lhs prems =
-  _fresh := 0;
-  _fresh_env := [];
-
   let known_vars = free_lhs_exp lhs in
   let reorder prems =
     let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
@@ -215,8 +145,7 @@ let animate_rule r = match r.it with
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
       let new_prems = animate_prems lhs prems in
-      let extra_binds = !_fresh_env in
-      RuleD(id, binds @ extra_binds, mixop, e, new_prems) $ r.at
+      RuleD(id, binds, mixop, e, new_prems) $ r.at
     | _ -> r
   )
 

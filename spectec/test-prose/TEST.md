@@ -9,7 +9,6 @@ watsup 0.3 generator
 == Side condition inference
 == IL Validation...
 == Animate
-Animation failed:where ((n * 64) * $Ki) := |$mem(z, 0)|
 == IL Validation...
 == Prose Generation...
 Bubbleup semantics for br: Top of the stack is frame / label
@@ -138,12 +137,10 @@ select t
   a. Push val_2 to the stack.
 
 block bt instr
-1. Let tmp0->tmp1 be bt.
-2. Let t_1^k be tmp0.
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop val^k from the stack.
-5. Let t_2^n be tmp1.
-6. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
+1. Let t_1^k->t_2^n be bt.
+2. Assert: Due to validation, there are at least k values on the top of the stack.
+3. Pop val^k from the stack.
+4. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
   a. Let L be the label_n{[]}.
   b. Push L to the stack.
   c. Push val^k to the stack.
@@ -151,12 +148,10 @@ block bt instr
   e. Exit current context.
 
 loop bt instr
-1. Let tmp0->tmp1 be bt.
-2. Let t_1^k be tmp0.
-3. Assert: Due to validation, there are at least k values on the top of the stack.
-4. Pop val^k from the stack.
-5. Let t_2^n be tmp1.
-6. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
+1. Let t_1^k->t_2^n be bt.
+2. Assert: Due to validation, there are at least k values on the top of the stack.
+3. Pop val^k from the stack.
+4. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
   a. Let L be the label_k{[loop bt instr*]}.
   b. Push L to the stack.
   c. Push val^k to the stack.
@@ -178,14 +173,21 @@ label n instr val
 4. Push val* to the stack.
 
 br
-1. Pop val'* ++ val^n ++ [BR(0)] ++ instr* from the stack.
+1. Pop unified2 ++ unified1 ++ unified0 from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
-4. If |val^n| is n, then:
+4. Let val'* be unified2.
+5. Let val^n be unified1.
+6. Let [BR(0)] ++ instr* be unified0.
+7. If |val^n| is n, then:
   a. Push val^n to the stack.
   b. Push instr'* to the stack.
-5. Push val* to the stack.
-6. Execute (br l).
+8. Let val* be unified2.
+9. If |unified1| is 1, then:
+  a. Let [BR((l + 1))] be unified1.
+  b. Let instr* be unified0.
+  c. Push val* to the stack.
+  d. Execute (br l).
 
 br_if l
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -212,19 +214,14 @@ frame n f val
   a. Push val^n to the stack.
 
 return
-1. Let f be the current frame.
-2. Let n be the arity of f.
-3. Assert: Due to validation, there are at least n values on the top of the stack.
-4. Pop val^n from the stack.
-5. Assert: Due to validation, the stack contains at least one frame.
-6. While the top of the stack is not a frame, do:
-  a. Pop the top element from the stack.
-7. Assert: Due to validation, the frame F is now on the top of the stack.
-8. Pop the frame from the stack.
-9. If |val^n| is n, then:
-  a. Push val^n to the stack.
-10. Push val* to the stack.
-11. Execute (return).
+1. If unified0 is of the case FRAME__admininstr, then:
+  a. Let FRAME_(n, f, val'* ++ val^n ++ [RETURN] ++ instr*) be unified0.
+  b. If |val^n| is n, then:
+    1) Push val^n to the stack.
+2. If unified0 is of the case LABEL__admininstr, then:
+  a. Let LABEL_(k, instr'*, val* ++ [RETURN] ++ instr*) be unified0.
+  b. Push val* to the stack.
+  c. Execute (return).
 
 unop nt unop
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -311,14 +308,10 @@ call_indirect x ft
 
 call_addr a
 1. If a < |$funcinst()|, then:
-  a. Let (m, tmp0) be $funcinst()[a].
-  b. Let FUNC(tmp1, t*, instr*) be tmp0.
-  c. Let tmp2->tmp3 be tmp1.
-  d. Let t_1^k be tmp2.
-  e. Assert: Due to validation, there are at least k values on the top of the stack.
-  f. Pop val^k from the stack.
-  g. Let t_2^n be tmp3.
-  h. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
+  a. Let (m, FUNC(t_1^k->t_2^n, t*, instr*)) be $funcinst()[a].
+  b. Assert: Due to validation, there are at least k values on the top of the stack.
+  c. Pop val^k from the stack.
+  d. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
     1) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
     2) Push the activation of f with arity n to the stack.
     3) Let L be the label_n{[]}.
@@ -408,17 +401,22 @@ table.init x y
   f. Push the value i32.CONST (n - 1) to the stack.
   g. Execute (table.init x y).
 
-load nt ?() n_A n_O
+load nt unified0 n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+3. If not unified0 is defined and ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
   a. Trap.
-4. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
-5. Push the value nt.CONST c to the stack.
-6. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
-  a. Trap.
-7. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
-8. Push the value nt.CONST c to the stack.
+4. If not unified0 is defined, then:
+  a. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
+  b. Push the value nt.CONST c to the stack.
+5. Else:
+  a. Let ?([n, sx]) be unified0.
+  b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
+    1) Trap.
+6. If unified0 is defined, then:
+  a. Let ?([n, sx]) be unified0.
+  b. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
+  c. Push the value nt.CONST c to the stack.
 
 memory.size
 1. Let ((n · 64) · $Ki()) be |$mem(0)|.
@@ -458,7 +456,7 @@ memory.copy
   b. Else:
     1) Push the value i32.CONST ((j + n) - 1) to the stack.
     2) Push the value i32.CONST ((i + n) - 1) to the stack.
-  c. Execute (load i32 ?((8, U)) 0 0).
+  c. Execute (load i32 ?([8, U]) 0 0).
   d. Execute (store i32 ?(8) 0 0).
   e. Push the value i32.CONST (j + 1) to the stack.
   f. Push the value i32.CONST (i + 1) to the stack.
@@ -517,19 +515,24 @@ table.grow x
 elem.drop x
 1. Perform $with_elem(x, []).
 
-store nt ?() n_A n_O
+store nt unified0 n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+5. If not unified0 is defined and ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
   a. Trap.
-6. Let b* be $bytes_($size(nt), c).
-7. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
-8. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
-  a. Trap.
-9. Let b* be $bytes_(n, $wrap_(($size(nt), n), c)).
-10. Perform $with_mem(0, (i + n_O), (n / 8), b*).
+6. If not unified0 is defined, then:
+  a. Let b* be $bytes_($size(nt), c).
+  b. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
+7. Else:
+  a. Let ?(n) be unified0.
+  b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
+    1) Trap.
+8. If unified0 is defined, then:
+  a. Let ?(n) be unified0.
+  b. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
+  c. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -671,7 +674,7 @@ forward.wast: [4/4]
 float_misc.wast: [0/440]
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2]
-memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Not_found]
+memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 unwind.wast: [49/49]
 call.wast: [41/70]
 local_get.wast: [17/19]
@@ -689,7 +692,7 @@ block.wast: [44/52]
 labels.wast: [25/25]
 switch.wast: [18/26]
 i64.wast: [0/384]
-memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 stack.wast: [2/5]
 loop.wast: [41/77]
 conversions.wast: [0/593]
@@ -699,30 +702,30 @@ store.wast: [0/9]
 memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 i32.wast: [243/374]
 unreachable.wast: [63/63]
-bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Not_found]
+bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid DSL function call: wrap_]
 traps.wast: [0/32]
 local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 f64_bitwise.wast: [0/360]
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 memory_grow.wast: [1/84]
-tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 call_indirect.wast: [24/132]
 load.wast: [0/37]
-memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Not_found]
+memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid DSL function call: wrap_]
 memory_size.wast: [5/36]
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [0/95]
 ref_is_null.wast: [3/11]
-memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Not_found]
+memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [123/149]
 select.wast: [60/118]
 f32_bitwise.wast: [0/360]
-memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [6/9]
 f32.wast: [0/2500]
-start.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+start.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to TODO: store is not a wasm instruction]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 table_size.wast: [5/36]
@@ -735,7 +738,7 @@ unreached-valid.wast: [5/5]
 table_fill.wast: [22/35]
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+address.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid DSL function call: wrap_]
 table_grow.wast: [7/38]
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
