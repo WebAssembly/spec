@@ -1,5 +1,6 @@
 open Print
 open Al
+open Reference_interpreter
 
 (* AL Data Structures *)
 
@@ -25,7 +26,16 @@ let to_map algos =
 
 (* Environmet *)
 
+(* TODO: Perhaps automatically generate this *)
 let store : store ref = ref Record.empty
+let init_store () =
+  store := Record.empty
+    |> Record.add "FUNC" (ListV [||])
+    |> Record.add "GLOBAL" (ListV [||])
+    |> Record.add "TABLE" (ListV [||])
+    |> Record.add "MEM" (ListV [||])
+    |> Record.add "ELEM" (ListV [||])
+    |> Record.add "DATA" (ListV [||])
 
 module Env = struct
   module EnvKey = struct
@@ -64,8 +74,8 @@ module Env = struct
 end
 
 let stack : stack ref = ref []
+let init_stack () = stack := []
 let push v = stack := v :: !stack
-
 let pop () =
   let res = List.hd !stack in
   stack := List.tl !stack;
@@ -87,8 +97,10 @@ exception ExitContext of (value Env.Env'.t * value) * instr list
 
 (* Helper functions *)
 
-let array_to_list a = Array.fold_right List.cons a []
-let al_value2int = function IntV i -> i | _ -> failwith "Not an integer value"
+let value_to_array = function ListV a -> a | v -> failwith (string_of_value v ^ "is not a list")
+let value_to_list v = v |> value_to_array |> Array.to_list
+let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ "is not a number")
+let value_to_int v = v |> value_to_num |> Int64.to_int
 
 (* Interpreter *)
 
@@ -113,15 +125,15 @@ and eval_expr env expr =
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     match v1, v2 with
-    | IntV v1, IntV v2 -> IntV (binop v1 v2)
+    | NumV v1, NumV v2 -> NumV (binop v1 v2)
     | _ -> failwith "Not an integer"
   in
   match expr with
   | ValueE v -> v
-  | AddE (e1, e2) -> do_int_binop e1 ( + ) e2
-  | SubE (e1, e2) -> do_int_binop e1 ( - ) e2
-  | MulE (e1, e2) -> do_int_binop e1 ( * ) e2
-  | DivE (e1, e2) -> do_int_binop e1 ( / ) e2
+  | AddE (e1, e2) -> do_int_binop e1 Int64.add e2
+  | SubE (e1, e2) -> do_int_binop e1 Int64.sub e2
+  | MulE (e1, e2) -> do_int_binop e1 Int64.mul e2
+  | DivE (e1, e2) -> do_int_binop e1 Int64.div e2
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
   | MapE (fname, [ e ], _) -> (
       (* TODO: handle cases where more than 1 arguments *)
@@ -131,20 +143,13 @@ and eval_expr env expr =
       | _ ->
           Print.string_of_expr e ^ " is not iterable."
           |> failwith (* Due to WASM validation, unreachable *))
-  | LengthE e -> (
-      try
-        match eval_expr env e with
-        | ListV vl -> IntV (Array.length vl)
-        | v ->
-            (* Due to AL validation, unreachable *)
-            "Not a list: " ^ Print.string_of_value v
-            |> failwith
-      with
-        | Not_found -> IntV 0)
+  | LengthE e ->
+      let a = eval_expr env e |> value_to_array in
+      NumV (I64.of_int_u (Array.length a))
   | ArityE e -> (
       match eval_expr env e with
-      | LabelV (n, _) -> IntV n
-      | FrameV (n, _) -> IntV n
+      | LabelV (n, _) -> NumV n
+      | FrameV (n, _) -> NumV n
       | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
   | GetCurLabelE -> LabelV (get_current_label ())
   | GetCurFrameE -> FrameV (get_current_frame ())
@@ -152,41 +157,29 @@ and eval_expr env expr =
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       match (v1, v2) with
-      | IntV n, RecordV r -> FrameV (n, r)
+      | NumV n, RecordV r -> FrameV (n, r)
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
-  | ConcatE (e1, e2) -> (
-      match (eval_expr env e1, eval_expr env e2) with
-      | ListV v1, ListV v2 -> ListV (Array.append v1 v2)
-      | _ -> failwith "Not a list")
+  | ConcatE (e1, e2) ->
+      let a1 = eval_expr env e1 |> value_to_array in
+      let a2 = eval_expr env e2 |> value_to_array in
+      ListV (Array.append a1 a2)
   | ListE el -> ListV (Array.map (eval_expr env) el)
-  | ListFillE (e1, e2) -> (
-      match (eval_expr env e1, eval_expr env e2) with
-      | v, IntV n -> ListV (Array.make n v)
-      | _ -> failwith "Not an Int")
+  | ListFillE (e1, e2) ->
+      let v = eval_expr env e1 in
+      let i = eval_expr env e2 |> value_to_int in
+      ListV (Array.make i v)
   | AccessE (e, p) -> begin match p with
       | IndexP e' ->
-        let v1 = eval_expr env e in
-        let v2 = eval_expr env e' in
-        begin match (v1, v2) with
-        | ListV l, IntV n -> Array.get l n
-        | _ ->
-            (* Due to AL validation unreachable *)
-            Printf.sprintf "Invalid index access %s" (string_of_expr expr)
-            |> failwith
-        end
+        let a = eval_expr env e |> value_to_array in
+        let i = eval_expr env e' |> value_to_int in
+        Array.get a i
       | SliceP (e1, e2) ->
-        let v = eval_expr env e in
-        let v1 = eval_expr env e1 in
-        let v2 = eval_expr env e2 in
-        begin match (v, v1, v2) with
-        | ListV l, IntV n1, IntV n2 -> ListV (Array.sub l n1 n2)
-        | _ ->
-            (* Due to AL validation unreachable *)
-            Printf.sprintf "Invalid slice access %s" (string_of_expr expr)
-            |> failwith
-        end
+        let a = eval_expr env e |> value_to_array in
+        let i1 = eval_expr env e1 |> value_to_int in
+        let i2 = eval_expr env e2 |> value_to_int in
+        ListV (Array.sub a i1 i2)
       | DotP str -> begin match eval_expr env e with
         | FrameV (_, r) -> Record.find str r
         | StoreV s -> Record.find str !s
@@ -197,14 +190,10 @@ and eval_expr env expr =
             |> failwith
         end
       end
-  | LabelE (e1, e2) -> (
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      match (v1, v2) with
-      | IntV n, ListV vs -> LabelV (n, array_to_list vs)
-      | _ ->
-          (* Due to AL validation unreachable *)
-          "Invalid Label: " ^ string_of_expr expr |> failwith)
+  | LabelE (e1, e2) ->
+      let n = eval_expr env e1 |> value_to_num in
+      let l = eval_expr env e2 |> value_to_list in
+      LabelV (n, l)
   | NameE name | IterE (name, _) -> Env.find name env
   | RecordE r -> RecordV (Record.map (eval_expr env) r)
   | ContE e -> (
@@ -278,9 +267,10 @@ and interp_instrs env il =
           (interp_while env, cont)
       | ForI (e, il) ->
           (match eval_expr env (LengthE e) with
-            | IntV n ->
-                for i = 0 to n-1 do
-                  let new_env = Env.add (N "i") (IntV i) env in
+            | NumV n ->
+                let n = Int64.to_int n in
+                for i = 0 to n - 1 do
+                  let new_env = Env.add (N "i") (NumV (Int64.of_int i)) env in
                   interp_instrs new_env il |> ignore
                 done;
                 (env, cont)
@@ -294,12 +284,10 @@ and interp_instrs env il =
       | PopI e ->
           let env = (
             match e with
-            | IterE (name, ListN n) -> (
-                match Env.find n env with
-                | IntV k ->
-                    let vs = List.rev (List.init k (fun _ -> pop ())) in
-                    Env.add name (ListV (Array.of_list vs)) env
-                | _ -> failwith "Invalid pop")
+            | IterE (name, ListN n) ->
+                let i = Env.find n env |> value_to_int in
+                let vs = List.rev (List.init i (fun _ -> pop ())) in
+                Env.add name (ListV (Array.of_list vs)) env
             | _ -> (
                 (* due to Wasm validation *)
                 let h = pop () in
@@ -331,7 +319,7 @@ and interp_instrs env il =
           let rec assign lhs rhs env =
             match lhs, rhs with
             | IterE (name, ListN n), ListV vs ->
-                env |> Env.add name rhs |> Env.add n (IntV (Array.length vs))
+                env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length vs)))
             | NameE name, v
             | IterE (name, _), v ->
                 Env.add name v env
@@ -346,10 +334,10 @@ and interp_instrs env il =
                 List.fold_right2 assign lhs_s rhs_s env
             | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
             (* TODO: Remove this. This should be handled by animation *)
-            | MulE (MulE (NameE name, e1), e2), IntV m ->
-                let n1 = eval_expr env e1 |> al_value2int in
-                let n2 = eval_expr env e2 |> al_value2int in
-                Env.add name (IntV (m / n1 / n2)) env
+            | MulE (MulE (NameE name, e1), e2), NumV m ->
+                let n1 = eval_expr env e1 |> value_to_int in
+                let n2 = eval_expr env e2 |> value_to_int in
+                Env.add name (NumV (Int64.of_int (Int64.to_int m / n1 / n2))) env
             | e, v ->
                 Printf.sprintf "Invalid assignment: %s := %s"
                   (string_of_expr e) (string_of_value v)
@@ -363,24 +351,21 @@ and interp_instrs env il =
           let result = eval_expr env e in
           let env = Env.set_result result env in
           (env, cont)
-      | ReplaceI (e1, IndexP e2, e3) -> (
-          let v1 = eval_expr env e1 in
-          let v2 = eval_expr env e2 in
-          let v3 = eval_expr env e3 in
-          match (v1, v2) with
-          | ListV l, IntV i ->
-              Array.set l i v3;
-              (env, cont)
-          | _ -> failwith "Invalid Replace instr")
+      | ReplaceI (e1, IndexP e2, e3) ->
+          let a = eval_expr env e1 |> value_to_array in
+          let i = eval_expr env e2 |> value_to_int in
+          let v = eval_expr env e3 in
+          Array.set a i v;
+          (env, cont)
       | ReplaceI (e1, SliceP (e2, e3), e4) -> (
           let v1 = eval_expr env e1 in
           let v2 = eval_expr env e2 in
           let v3 = eval_expr env e3 in
           let v4 = eval_expr env e4 in
           match v1, v2, v3, v4 with
-          | ListV l1, IntV i1, IntV i2, ListV l2 ->
-              for i = i1 to (i1 + i2 - 1) do
-                i - i1 |> Array.get l2 |> Array.set l1 i;
+          | ListV l1, NumV st, NumV len, ListV l2 ->
+              for i = 0 to Int64.to_int len - 1 do
+                i |> Array.get l2 |> Array.set l1 (Int64.to_int st + i);
               done;
               (env, cont)
           | _ -> failwith "Invalid Replace instr")
@@ -396,11 +381,11 @@ and interp_instrs env il =
           | _ -> failwith "Invalid ExecuteSeqI");
           (env, cont)
       | JumpI e ->
-          (match eval_expr env e with
-          | ListV vl -> (
-            try (vl |> array_to_list |> execute_wasm_instrs); (env, cont) with
-            ExitContext (env, cont) -> (env, cont))
-          | _ -> "Not a list of Wasm Instruction" |> failwith)
+          let l = eval_expr env e |> value_to_list in
+          (try
+            execute_wasm_instrs l; (env, cont)
+          with
+            ExitContext (env', cont') -> (env', cont'))
       | ExitNormalI _ ->
           let rec pop_while pred =
             let top = pop () in

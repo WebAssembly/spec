@@ -21,13 +21,13 @@ let al_of_type t =
 (* Construct value *)
 
 let al_of_num n =
-  let s = Values.string_of_num n in
-  let t = Values.type_of_num n in
-  match t with
-  | I32Type | I64Type ->
-      ConstructV ("CONST", [ al_of_type (NumType t); IntV (int_of_string s) ])
-  | F32Type | F64Type ->
-      ConstructV ("CONST", [ al_of_type (NumType t); FloatV (float_of_string s) ])
+  let t, v = match n with
+    | Values.I32 i -> "I32", I64_convert.extend_i32_s i
+    | Values.I64 i -> "I64", i
+    | Values.F32 f -> "F32", F64_convert.promote_f32 f |> F64.to_bits
+    | Values.F64 f -> "F64", F64.to_bits f in
+  let t, v = ConstructV(t, []), NumV v in
+  ConstructV ("CONST", [ t; v ])
 
 let al_of_value = function
 | Values.Num n -> al_of_num n
@@ -35,7 +35,7 @@ let al_of_value = function
 | Values.Ref r ->
     begin match r with
       | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_type (RefType t) ])
-      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
+      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ NumV (Int64.of_int32 i) ])
       | r -> Values.string_of_ref r |> failwith
     end
 
@@ -137,11 +137,14 @@ let al_of_cvtop_float = function
   | Ast.FloatOp.DemoteF64 -> StringV "DemoteF64"
   | Ast.FloatOp.ReinterpretInt -> StringV "ReinterpretInt"
 
-let al_of_packsize = function
-| Types.Pack8 -> IntV 8
-| Types.Pack16 -> IntV 16
-| Types.Pack32 -> IntV 32
-| Types.Pack64 -> IntV 64
+let al_of_packsize p =
+  let s = match p with
+    | Types.Pack8 -> 8
+    | Types.Pack16 -> 16
+    | Types.Pack32 -> 32
+    | Types.Pack64 -> 64
+  in
+  NumV (Int64.of_int s)
 
 let al_of_extension = function
 | Types.SX -> ConstructV ("S", [])
@@ -152,7 +155,7 @@ let al_of_packsize_with_extension (p, s) =
 
 
 let rec al_of_instr types winstr =
-  let to_int i32 = IntV (Int32.to_int i32.it) in
+  let to_int i32 = NumV (Int64.of_int32 i32.it) in
   let f name  = ConstructV (name, []) in
   let f_i32 name i32 = ConstructV (name, [to_int i32]) in
   let f_i32_i32 name i32 i32' = ConstructV (name, [to_int i32; to_int i32']) in
@@ -165,27 +168,41 @@ let rec al_of_instr types winstr =
   | Ast.Unreachable -> f "UNREACHABLE"
   | Ast.Nop -> f "NOP"
   | Ast.Drop -> f "DROP"
-  | Ast.Unary (Values.I32 op) ->
-      ConstructV
-        ("UNOP", [ al_of_type (Types.NumType Types.I32Type); al_of_unop_int op ])
-  | Ast.Unary (Values.F32 op) ->
-      ConstructV
-        ("UNOP", [ al_of_type (Types.NumType Types.F32Type); al_of_unop_float op ])
-  | Ast.Binary (Values.I32 op) ->
-      ConstructV
-        ("BINOP", [ al_of_type (Types.NumType Types.I32Type); al_of_binop_int op ])
-  | Ast.Binary (Values.F32 op) ->
-      ConstructV
-        ("BINOP", [ al_of_type (Types.NumType Types.F32Type); al_of_binop_float op ])
-  | Ast.Test (Values.I32 op) ->
-      ConstructV
-        ("TESTOP", [ al_of_type (Types.NumType Types.I32Type); al_of_testop_int op ])
-  | Ast.Compare (Values.I32 op) ->
-      ConstructV
-        ("RELOP", [ al_of_type (Types.NumType Types.I32Type); al_of_relop_int op ])
-  | Ast.Compare (Values.F32 op) ->
-      ConstructV
-        ("RELOP", [ al_of_type (Types.NumType Types.F32Type); al_of_relop_float op ])
+  | Ast.Unary op ->
+    let (ty, op) = (
+      match op with
+      | Values.I32 op -> (Types.I32Type, al_of_unop_int op)
+      | Values.I64 op -> (Types.I64Type, al_of_unop_int op)
+      | Values.F32 op -> (Types.F32Type, al_of_unop_float op)
+      | Values.F64 op -> (Types.F64Type, al_of_unop_float op))
+    in
+    ConstructV ("UNOP", [ al_of_type (Types.NumType ty); op ])
+  | Ast.Binary op ->
+    let (ty, op) = (
+      match op with
+      | Values.I32 op -> (Types.I32Type, al_of_binop_int op)
+      | Values.I64 op -> (Types.I64Type, al_of_binop_int op)
+      | Values.F32 op -> (Types.F32Type, al_of_binop_float op)
+      | Values.F64 op -> (Types.F64Type, al_of_binop_float op))
+    in
+    ConstructV ("BINOP", [ al_of_type (Types.NumType ty); op ])
+  | Ast.Test op ->
+    let (ty, op) = (
+      match op with
+      | Values.I32 op -> (Types.I32Type, al_of_testop_int op)
+      | Values.I64 op -> (Types.I64Type, al_of_testop_int op)
+      | _ -> .)
+    in
+    ConstructV ("testop", [ al_of_type (Types.NumType ty); op ])
+  | Ast.Compare op ->
+    let (ty, op) = (
+      match op with
+      | Values.I32 op -> (Types.I32Type, al_of_relop_int op)
+      | Values.I64 op -> (Types.I64Type, al_of_relop_int op)
+      | Values.F32 op -> (Types.F32Type, al_of_relop_float op)
+      | Values.F64 op -> (Types.F64Type, al_of_relop_float op))
+    in
+    ConstructV ("relop", [ al_of_type (Types.NumType ty); op ])
   | Ast.RefIsNull -> f "REF.IS_NULL"
   | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
   | Ast.Select None -> ConstructV ("SELECT", [ StringV "TODO: None" ])
@@ -230,20 +247,20 @@ let rec al_of_instr types winstr =
         ("LOAD", [
             al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize_with_extension pack);
-            IntV align;
-            IntV (Int32.to_int offset) ])
+            NumV (Int64.of_int align);
+            NumV (Int64.of_int32 offset) ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("STORE", [
             al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize pack);
-            IntV align;
-            IntV (Int32.to_int offset) ])
+            NumV (Int64.of_int align);
+            NumV (Int64.of_int32 offset) ])
   | Ast.MemorySize -> f "MEMORY.SIZE"
   | Ast.MemoryGrow -> f "MEMORY.GROW"
   | Ast.MemoryFill -> f "MEMORY.FILL"
   | Ast.MemoryCopy -> f "MEMORY.COPY"
-  | _ -> ConstructV ("Yet: " ^ Print.string_of_winstr winstr, [])
+  | _ -> ConstructV ("Yet al_of_instr: " ^ Print.string_of_winstr winstr, [])
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 
@@ -282,8 +299,8 @@ let al_of_global wasm_global =
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; ListV expr ])
 
 let al_of_limits limits =
-  let f opt = IntV (Int32.to_int opt) in
-  PairV (IntV (Int32.to_int limits.Types.min), OptV (Option.map f limits.Types.max))
+  let f opt = NumV (Int64.of_int32 opt) in
+  PairV (NumV (Int64.of_int32 limits.Types.min), OptV (Option.map f limits.Types.max))
 
 let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
@@ -305,7 +322,7 @@ let al_of_segment wasm_segment = match wasm_segment.it with
           ConstructV (
             "MEMORY",
             [
-              IntV (Int32.to_int index.it);
+              NumV (Int64.of_int32 index.it);
               ListV (al_of_instrs [] offset.it |> Array.of_list)
             ]
           )
@@ -316,7 +333,7 @@ let al_of_segment wasm_segment = match wasm_segment.it with
 let al_of_data wasm_data =
   (* TODO: byte list list *)
   let init = wasm_data.it.Ast.dinit in
-  let f chr acc = IntV (Char.code chr) :: acc in
+  let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
   let byte_list = String.fold_right f init [] |> Array.of_list in
   let mode = al_of_segment wasm_data.it.Ast.dmode in
 

@@ -20,7 +20,7 @@ let br =
       [ (NameE (N "l"), IntT) ],
       [
         IfI
-          ( EqC (NameE (N "l"), ValueE (IntV 0)),
+          ( EqC (NameE (N "l"), ValueE (NumV 0L)),
             (* br_zero *)
             [
               LetI (NameE (N "L"), GetCurLabelE);
@@ -39,7 +39,7 @@ let br =
               LetI (NameE (N "L"), GetCurLabelE);
               ExitAbruptI (N "L");
               ExecuteI
-                (ConstructE ("BR", [ SubE (NameE (N "l"), ValueE (IntV 1)) ]));
+                (ConstructE ("BR", [ SubE (NameE (N "l"), ValueE (NumV 1L)) ]));
             ] );
       ] )
 
@@ -136,7 +136,7 @@ let instantiation =
       LetI (NameE module_inst_init_name, RecordE module_inst_init);
       LetI (
         NameE frame_init_name,
-        FrameE (ValueE (IntV 0), RecordE frame_init_rec)
+        FrameE (ValueE (NumV 0L), RecordE frame_init_rec)
       );
       PushI (NameE frame_init_name);
       (* Global *)
@@ -147,7 +147,7 @@ let instantiation =
         NameE module_inst_name,
         AppE (N "alloc_module", [NameE module_name; val_iter])
       );
-      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
+      LetI (NameE frame_name, FrameE (ValueE (NumV 0L), RecordE frame_rec));
       PushI (NameE frame_name);
       (* TODO: element *)
       ForI (
@@ -161,9 +161,9 @@ let instantiation =
             DefinedC (NameE mode),
             [
               LetI (OptE (Some (ConstructE ("MEMORY", [ NameE memidx; dinstrs ]))), NameE mode);
-              AssertI (EqC (NameE memidx, ValueE (IntV 0)) |> Print.string_of_cond);
+              AssertI (EqC (NameE memidx, ValueE (NumV 0L)) |> Print.string_of_cond);
               ExecuteSeqI dinstrs;
-              ExecuteI (ConstructE ("CONST", [ ValueE i32_type; ValueE (IntV 0) ]));
+              ExecuteI (ConstructE ("CONST", [ ValueE i32_type; ValueE (NumV 0L) ]));
               ExecuteI (ConstructE ("CONST", [ ValueE i32_type; LengthE (NameE init) ]));
               ExecuteI (ConstructE ("MEMORY.INIT", [ NameE (N "i") ]));
               ExecuteI (ConstructE ("DATA.DROP", [ NameE (N "i") ]));
@@ -379,8 +379,8 @@ let alloc_memory =
       LetI (
         NameE memoryinst_name,
         ListFillE (
-          ValueE (IntV 0),
-          MulE (MulE (NameE min_name, ValueE (IntV 64)), AppE (N "Ki", []))
+          ValueE (NumV 0L),
+          MulE (MulE (NameE min_name, ValueE (NumV (64L))), AppE (N "Ki", []))
         )
       );
       AppendI (NameE memoryinst_name, NameE store_name, "MEM");
@@ -453,7 +453,7 @@ let invocation =
       );
       AssertI (EqC (LengthE args_iter, NameE n) |> Print.string_of_cond);
       (* TODO *)
-      LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
+      LetI (NameE frame_name, FrameE (ValueE (NumV 0L), RecordE frame_rec));
       PushI (NameE frame_name);
       PushI (args_iter);
       ExecuteI (ConstructE ("CALL_ADDR", [NameE funcaddr_name]));

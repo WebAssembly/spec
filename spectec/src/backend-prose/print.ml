@@ -64,12 +64,11 @@ let structured_string_of_iter = function
 (* expression *)
 
 let rec structured_string_of_value = function
-  | LabelV (n, _instrs) -> "LabelV (" ^ string_of_int n ^ ",TODO)"
+  | LabelV (n, _instrs) -> "LabelV (" ^ Int64.to_string n ^ ",TODO)"
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
-  | IntV i -> "IntV (" ^ string_of_int i ^ ")"
-  | FloatV f -> "FloatV (" ^ string_of_float f ^ ")"
+  | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
   | StringV s -> "StringV (" ^ s ^ ")"
   | PairV (v1, v2) ->
       "PairV("
@@ -429,12 +428,11 @@ and string_of_stack st =
   List.fold_left f "[Stack]\n" st
 
 and string_of_value = function
-  | LabelV (n, instrs) -> "Label_" ^ string_of_int n ^ string_of_list (fun _ -> "...") " {" "," "}" instrs
+  | LabelV (n, instrs) -> "Label_" ^ Int64.to_string n ^ string_of_list (fun _ -> "...") " {" "," "}" instrs
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
-  | IntV i -> string_of_int i
-  | FloatV i -> string_of_float i
+  | NumV n -> Int64.to_string n
   | StringV s -> s
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"

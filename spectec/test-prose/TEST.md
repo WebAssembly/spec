@@ -672,82 +672,82 @@ invocation funcaddr val*
 == Interpreting AL...
 sample.wast: [27/27] (100.00%)
 forward.wast: [4/4] (100.00%)
-float_misc.wast: [61/440] (13.86%)
+float_misc.wast: [439/440] (99.77%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [16/45] (35.56%)
+memory.wast: [34/45] (75.56%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [45/70] (64.29%)
-local_get.wast: [15/19] (78.95%)
-fac.wast: [0/6] (0.00%)
-func.wast: [78/96] (81.25%)
+call.wast: [65/70] (92.86%)
+local_get.wast: [18/19] (94.74%)
+fac.wast: [6/6] (100.00%)
+func.wast: [86/96] (89.58%)
 exports.wast: [4/9] (44.44%)
 local_set.wast: [18/19] (94.74%)
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-float_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
-align.wast: [38/48] (79.17%)
-if.wast: [99/123] (80.49%)
-const.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-f64_cmp.wast: [0/2400] (0.00%)
-block.wast: [47/52] (90.38%)
+float_literals.wast: [Uncaught exception in 82th assertion: This test contains a binary module]
+align.wast: [43/48] (89.58%)
+if.wast: [102/123] (82.93%)
+const.wast: [300/300] (100.00%)
+f64_cmp.wast: [2400/2400] (100.00%)
+block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [18/26] (69.23%)
-i64.wast: [0/384] (0.00%)
-memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
-stack.wast: [2/5] (40.00%)
-loop.wast: [44/77] (57.14%)
+i64.wast: [350/384] (91.15%)
+memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
+stack.wast: [5/5] (100.00%)
+loop.wast: [73/77] (94.81%)
 conversions.wast: [0/593] (0.00%)
-endianness.wast: [3/68] (4.41%)
+endianness.wast: [15/68] (22.06%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
-memory_redundancy.wast: [1/4] (25.00%)
-i32.wast: [243/374] (64.97%)
+memory_redundancy.wast: [2/4] (50.00%)
+i32.wast: [350/374] (93.58%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
 traps.wast: [14/32] (43.75%)
-local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
-f64_bitwise.wast: [0/360] (0.00%)
+local_tee.wast: [47/55] (85.45%)
+f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 memory_grow.wast: [7/84] (8.33%)
-call_indirect.wast: [25/132] (18.94%)
-load.wast: [31/37] (83.78%)
+call_indirect.wast: [31/132] (23.48%)
+load.wast: [32/37] (86.49%)
 memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
 memory_size.wast: [5/36] (13.89%)
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-left-to-right.wast: [0/95] (0.00%)
+left-to-right.wast: [91/95] (95.79%)
 ref_is_null.wast: [10/11] (90.91%)
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
-select.wast: [66/118] (55.93%)
-f32_bitwise.wast: [32/360] (8.89%)
-memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm yet: memory.init 1 not found]
+select.wast: [82/118] (69.49%)
+f32_bitwise.wast: [360/360] (100.00%)
+memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm yet al_of_instr: memory.init 1 not found]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [5/9] (55.56%)
-f32.wast: [1463/2500] (58.52%)
+f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
-float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to TODO: bytes of floats]
-float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
+float_exprs.wast: [606/794] (76.32%)
+float_memory.wast: [48/60] (80.00%)
 table_size.wast: [5/36] (13.89%)
 table_set.wast: [13/18] (72.22%)
-f32_cmp.wast: [1536/2400] (64.00%)
+f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
 ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
-data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
-int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [148/255] (58.04%)
+data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
+int_literals.wast: [30/30] (100.00%)
+address.wast: [205/255] (80.39%)
 table_grow.wast: [8/38] (21.05%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-int_exprs.wast: [25/89] (28.09%)
-f64.wast: [0/2500] (0.00%)
+int_exprs.wast: [72/89] (80.90%)
+f64.wast: [1589/2500] (63.56%)
 br.wast: [76/76] (100.00%)
-nop.wast: [72/83] (86.75%)
-Total [5340/15543] (34.36%; Normalized 56.15%)
+nop.wast: [75/83] (90.36%)
+Total [13208/16546] (79.83%; Normalized 75.57%)
 == Complete.
 ```

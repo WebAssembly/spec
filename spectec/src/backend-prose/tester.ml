@@ -54,7 +54,7 @@ let do_invoke act = match act.it with
   | Script.Invoke (None, name, literals) ->
     let extract_idx (export: Ast.export) = if export.it.name = name then
       match export.it.edesc.it with
-      | FuncExport x -> Some (Al.IntV (Int32.to_int x.it))
+      | FuncExport x -> Some (Al.NumV (Int64.of_int32 x.it))
       | _ -> None
     else
       None
@@ -111,8 +111,8 @@ let test file_name =
       | Script.Module (_, {it = Script.Textual m; _}) ->
         Interpreter.cnt := 0;
         exports := m.it.exports;
-        Interpreter.stack := [];
-        Interpreter.store := Al.Record.empty;
+        Interpreter.init_stack();
+        Interpreter.init_store();
         ( try
           Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] |> ignore
         with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith )

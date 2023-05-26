@@ -33,10 +33,10 @@ and global_inst = value
 and table_inst = value
 
 (* Table, Global: Address list *)
-and label = int * value list
+and label = int64 * value list
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
-and frame = int * value record
+and frame = int64 * value record
 
 (* global: global_inst list table: table_inst list *)
 and store = value record
@@ -48,8 +48,7 @@ and value =
   | FrameV of frame
   | StoreV of store ref
   | ListV of value array
-  | IntV of int
-  | FloatV of float
+  | NumV of int64
   | StringV of string
   | PairV of value * value
   | ArrowV of value * value
