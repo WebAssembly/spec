@@ -270,6 +270,10 @@ load
 6. If YetC (), then:
   a. Push YetE (CONST_admininstr(nt, c)) to the stack.
 
+memory.size
+1. Let YetE (((n * 64) * $Ki)) be YetE (|$mem(z, 0)|).
+2. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
+
 memory.fill
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
