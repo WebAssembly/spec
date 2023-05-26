@@ -404,19 +404,16 @@ table.init x y
 load nt unified0 n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If unified0 is not defined and ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
-  a. Trap.
-4. If unified0 is not defined, then:
-  a. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
-  b. Push the value nt.CONST c to the stack.
-5. Else:
+3. If unified0 is not defined, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+    1) Trap.
+  b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
+4. Else:
   a. Let ?([n, sx]) be unified0.
   b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
     1) Trap.
-6. If unified0 is defined, then:
-  a. Let ?([n, sx]) be unified0.
-  b. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
-  c. Push the value nt.CONST c to the stack.
+  c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
+5. Push the value nt.CONST c to the stack.
 
 memory.size
 1. Let ((n · 64) · $Ki()) be |$mem(0)|.
@@ -520,19 +517,17 @@ store nt unified0 n_A n_O
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If unified0 is not defined and ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
-  a. Trap.
-6. If unified0 is not defined, then:
-  a. Let b* be $bytes_($size(nt), c).
-  b. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
-7. Else:
+5. If unified0 is not defined, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+    1) Trap.
+  b. Let b* be $bytes_($size(nt), c).
+  c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
+6. Else:
   a. Let ?(n) be unified0.
   b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
     1) Trap.
-8. If unified0 is defined, then:
-  a. Let ?(n) be unified0.
-  b. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
-  c. Perform $with_mem(0, (i + n_O), (n / 8), b*).
+  c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
+  d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.

@@ -75,7 +75,35 @@ let merge_otherwise instrs1 instrs2 =
       merged
   | _ -> instrs1 @ instrs2
 
-(* Enhance readability of AL *)
+(** Enhance readability of AL **)
+let rec unify_head acc l1 l2 =
+  match (l1, l2) with
+  | h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
+  | _ -> (List.rev acc, l1, l2)
+
+let rec unify_if instrs =
+  List.fold_right
+    (fun i il ->
+      let new_i =
+        match i with
+        | IfI (c, il1, il2) -> IfI (c, unify_if il1, unify_if il2)
+        | OtherwiseI il -> OtherwiseI (unify_if il)
+        | WhileI (c, il) -> WhileI (c, unify_if il)
+        | RepeatI (e, il) -> RepeatI (e, unify_if il)
+        | EitherI (il1, il2) -> EitherI (unify_if il1, unify_if il2)
+        | ForI (e, il) -> ForI (e, unify_if il)
+        | ForeachI (e1, e2, il) -> ForeachI (e1, e2, unify_if il)
+        | _ -> i
+      in
+      match (new_i, il) with
+      | IfI (c1, body1, []), IfI (c2, body2, []) :: rest
+        when c1 = c2 ->
+          (* Assumption: common should have no side effect (replace) *)
+          let common, own_body1, own_body2 = unify_head [] body1 body2 in
+          IfI (c1, common @ own_body1 @ own_body2, []) :: rest
+      | _ -> new_i :: il)
+    instrs []
+
 let rec infer_else instrs =
   List.fold_right
     (fun i il ->
@@ -86,6 +114,8 @@ let rec infer_else instrs =
         | WhileI (c, il) -> WhileI (c, infer_else il)
         | RepeatI (e, il) -> RepeatI (e, infer_else il)
         | EitherI (il1, il2) -> EitherI (infer_else il1, infer_else il2)
+        | ForI (e, il) -> ForI (e, infer_else il)
+        | ForeachI (e1, e2, il) -> ForeachI (e1, e2, infer_else il)
         | _ -> i
       in
       match (new_i, il) with
@@ -107,12 +137,9 @@ let rec swap_if instr =
   | WhileI (c, il) -> WhileI (c, new_ il)
   | RepeatI (e, il) -> RepeatI (e, new_ il)
   | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
+  | ForI (e, il) -> ForI (e, new_ il)
+  | ForeachI (e1, e2, il) -> ForeachI (e1, e2, new_ il)
   | _ -> instr
-
-let rec unify_head acc l1 l2 =
-  match (l1, l2) with
-  | h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
-  | _ -> (List.rev acc, l1, l2)
 
 let unify_tail instrs1 instrs2 =
   let rev = List.rev in
@@ -129,10 +156,12 @@ let rec unify_if_tail instr =
   | WhileI (c, il) -> [ WhileI (c, new_ il) ]
   | RepeatI (e, il) -> [ RepeatI (e, new_ il) ]
   | EitherI (il1, il2) -> [ EitherI (new_ il1, new_ il2) ]
+  | ForI (e, il) -> [ ForI (e, new_ il) ]
+  | ForeachI (e1, e2, il) -> [ ForeachI (e1, e2, new_ il) ]
   | _ -> [ instr ]
 
 let enhance_readability instrs =
-  instrs |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
+  instrs |> unify_if |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
 
 (* Walker-based Translpiler *)
 
