@@ -2,11 +2,46 @@ open Al
 
 type numerics = { name : string; f : value list -> value }
 
+let wrap_int_unop op i = match i with
+  | IntV i -> let result = op i in ListV [| IntV result |]
+  | _ -> failwith "Operand of this unop should be FloatV"
+let wrap_float_unop op f = match f with
+  | FloatV f -> let result = op f in ListV [| FloatV result |]
+  | _ -> failwith "Operand of this unop should be FloatV"
+let unop: numerics =
+  {
+    name = "unop";
+    f =
+      (function
+      | [ op; t; v ] -> (
+        match t with
+        | WasmTypeV (NumType (I32Type)) -> (
+          match op with
+          | StringV "Clz" -> wrap_int_unop (fun _ -> failwith "TODO: Clz") v
+          | StringV "Ctz" -> wrap_int_unop (fun _ -> failwith "TODO: Ctz") v
+          | StringV "Popcnt" -> wrap_int_unop (fun _ -> failwith "TODO: Popcnt") v
+          | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
+        | WasmTypeV (NumType (F32Type)) -> (
+          match op with
+          | StringV "Neg" -> wrap_float_unop (Float.neg) v
+          | StringV "Abs" -> wrap_float_unop (Float.abs) v
+          | StringV "Ceil" -> wrap_float_unop (Float.ceil) v
+          | StringV "Floor" -> wrap_float_unop (Float.floor) v
+          (* TODO should Trunc and Nearest return an integer value? *)
+          | StringV "Trunc" -> wrap_float_unop (Float.trunc) v
+          | StringV "Nearest" -> wrap_float_unop (Float.round) v
+          | StringV "Sqrt" -> wrap_float_unop (Float.sqrt) v
+          | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
+        | _ -> failwith "Invalid unop")
+      | StringV op :: _ -> failwith ("Invalid unop: " ^ op)
+      | _ -> failwith "Invalid unop")
+  }
+
 let wrap_int_binop i1 op i2 = match i1, i2 with
   | IntV i1, IntV i2 -> let result = op i1 i2 in ListV [| IntV result |]
   | _ -> failwith "Operand of this binop should be IntV"
-let wrap_float_binop i1 op i2 = match i1, i2 with
-  | FloatV i1, FloatV i2 -> let result = op i1 i2 in ListV [| FloatV result |]
+let wrap_float_binop f1 op f2 = match f1, f2 with
+  | FloatV f1, FloatV f2 -> let result = op f1 f2 in ListV [| FloatV result |]
   | _ -> failwith "Operand of this binop should be FloatV"
 let binop : numerics =
   {
@@ -32,7 +67,7 @@ let binop : numerics =
           | StringV "ShrU" -> wrap_int_binop v1 (lsr) v2
           | StringV "Rotl" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotl") v2
           | StringV "Rotr" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotr") v2
-          | _ -> failwith "unreachable")
+          | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | WasmTypeV (NumType F32Type) -> (
           match op with
           | StringV "Add" -> wrap_float_binop v1 (+.) v2 
@@ -42,7 +77,7 @@ let binop : numerics =
           | StringV "Min" -> wrap_float_binop v1 (Float.min) v2
           | StringV "Max" -> wrap_float_binop v1 (Float.max) v2
           | StringV "CopySign" -> wrap_float_binop v1 (fun _ _ -> failwith "TODO: CopySign") v2
-          | _ -> failwith "unreachable")
+          | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid binop")
       | StringV op :: _ -> failwith ("Invalid binop: " ^ op)
       | _ -> failwith "Invalid binop");
@@ -84,7 +119,7 @@ let relop : numerics =
           | StringV "GtU" -> wrap_int_relop v1 (>) v2
           | StringV "GeS"
           | StringV "GeU" -> wrap_int_relop v1 (>=) v2
-          | _ -> failwith "unreachable")
+          | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
         | WasmTypeV (NumType F32Type) -> (
           match op with
           | StringV "Eq" -> wrap_float_relop v1 (=) v2 
@@ -93,7 +128,7 @@ let relop : numerics =
           | StringV "Gt" -> wrap_float_relop v1 (>) v2
           | StringV "Le" -> wrap_float_relop v1 (<=) v2
           | StringV "Ge" -> wrap_float_relop v1 (>=) v2
-          | _ -> failwith "unreachable")
+          | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid relop")
       | StringV op :: _ -> failwith ("Invalid relop: " ^ op)
       | _ -> failwith "Invalid relop");
@@ -146,7 +181,7 @@ let wrap_ : numerics =
       );
   }
 
-let numerics_list : numerics list = [ binop; testop; relop; bytes_; inverse_of_bytes_; wrap_ ]
+let numerics_list : numerics list = [ unop; binop; testop; relop; bytes_; inverse_of_bytes_; wrap_ ]
 
 let call_numerics fname args =
   let numerics =
