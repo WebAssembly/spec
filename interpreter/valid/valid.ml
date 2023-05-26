@@ -177,7 +177,7 @@ let check_sub_type_sub (c : context) (sut : sub_type) x at =
   let SubT (_fin, hts, st) = sut in
   List.iter (fun hti ->
     let xi = match hti with VarHT (StatX xi) -> xi | _ -> assert false in
-    let SubT (fini, _, sti) = project_def_type (type_ c (xi @@ at)) in
+    let SubT (fini, _, sti) = unroll_def_type (type_ c (xi @@ at)) in
     require (xi < x) at ("forward use of type " ^ I32.to_string_u xi ^
       " in sub type definition");
     require (fini = NoFinal) at ("sub type " ^ I32.to_string_u x ^
@@ -189,7 +189,7 @@ let check_sub_type_sub (c : context) (sut : sub_type) x at =
 let check_rec_type (c : context) (rt : rec_type) at : context =
   let RecT sts = rt in
   let x = Lib.List32.length c.types in
-  let c' = {c with types = c.types @ inject_def_types x rt} in
+  let c' = {c with types = c.types @ roll_def_types x rt} in
   List.iter (fun st -> check_sub_type c' st at) sts;
   Lib.List32.iteri
     (fun i st -> check_sub_type_sub c' st (Int32.add x i) at) sts;

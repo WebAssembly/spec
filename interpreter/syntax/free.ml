@@ -114,7 +114,7 @@ let rec_type = function
   | RecT sts -> list sub_type sts
 
 let def_type = function
-  | DefT (_x, rt, _i) -> rec_type rt
+  | DefT (rt, _i) -> rec_type rt
 
 let global_type (GlobalT (_mut, t)) = val_type t
 let table_type (TableT (_lim, t)) = ref_type t

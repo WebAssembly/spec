@@ -215,7 +215,7 @@ let inline_func_type (c : context) ft at =
   let st = SubT (Final, [], DefFuncT ft) in
   match
     Lib.List.index_where (function
-      | DefT (_, RecT [st'], 0l) -> st = st'
+      | DefT (RecT [st'], 0l) -> st = st'
       | _ -> false
       ) c.types.ctx
   with
@@ -223,7 +223,7 @@ let inline_func_type (c : context) ft at =
   | None ->
     let i = anon_type c at in
     define_type c (RecT [st] @@ at);
-    define_def_type c (DefT (i, RecT [st], 0l));
+    define_def_type c (DefT (RecT [st], 0l));
     i @@ at
 
 let inline_func_type_explicit (c : context) x ft at =
@@ -1098,26 +1098,26 @@ inline_export :
 type_def :
   | LPAR TYPE sub_type RPAR
     { let at = at () in
-      fun c -> let x = anon_type c at in fun () -> x, $3 c }
+      fun c -> ignore (anon_type c at); fun () -> $3 c }
   | LPAR TYPE bind_var sub_type RPAR  /* Sugar */
-    { fun c -> let x = bind_type c $3 in fun () -> x, $4 c }
+    { fun c -> ignore (bind_type c $3); fun () -> $4 c }
 
 type_def_list :
-  | /* empty */ { fun c () -> -1l, [] }
+  | /* empty */ { fun c () -> [] }
   | type_def type_def_list
     { fun c -> let tf = $1 c in let tsf = $2 c in fun () ->
-      let x, st = tf () and _x, sts = tsf () in x, st::sts }
+      let st = tf () and sts = tsf () in st::sts }
 
 rec_type :
   | type_def
     { fun c -> let tf = $1 c in fun () ->
-      let x, st = tf () in
-      define_def_type c (DefT (x, RecT [st], 0l));
+      let st = tf () in
+      define_def_type c (DefT (RecT [st], 0l));
       RecT [st] }
   | LPAR REC type_def_list RPAR
     { fun c -> let tf = $3 c in fun () ->
-      let x, sts = tf () in
-      Lib.List32.iteri (fun i _ -> define_def_type c (DefT (x, RecT sts, i))) sts;
+      let sts = tf () in
+      Lib.List32.iteri (fun i _ -> define_def_type c (DefT (RecT sts, i))) sts;
       RecT sts }
 
 type_ :

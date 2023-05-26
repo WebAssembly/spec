@@ -118,9 +118,9 @@ and eq_sub_type c (SubT (fin1, hts1, st1)) (SubT (fin2, hts2, st2)) =
 and eq_rec_type c (RecT sts1) (RecT sts2) =
   eq_list eq_sub_type c sts1 sts2
 
-and eq_def_type c (DefT (x1, rt1, i1) as dt1) (DefT (x2, rt2, i2) as dt2) =
+and eq_def_type c (DefT (rt1, i1) as dt1) (DefT (rt2, i2) as dt2) =
   dt1 == dt2 ||  (* optimisation *)
-  eq_rec_type c (roll_rec_type x1 rt1) (roll_rec_type x2 rt2) && i1 = i2
+  eq_rec_type c rt1 rt2 && i1 = i2
 
 
 let eq_global_type c (GlobalT (mut1, t1)) (GlobalT (mut2, t2)) =
