@@ -247,7 +247,7 @@ and match_str_type c dt1 dt2 =
 
 and match_def_type c dt1 dt2 =
   eq_def_type c dt1 dt2 ||
-  let SubT (_fin, hts1, _st) = project_def_type dt1 in
+  let SubT (_fin, hts1, _st) = unroll_def_type dt1 in
   List.exists (fun ht1 -> match_heap_type c ht1 (DefHT dt2)) hts1
 
 

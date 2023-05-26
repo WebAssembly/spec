@@ -253,6 +253,13 @@ let roll_rec_type x (rt : rec_type) : rec_type =
   in
   subst_rec_type s rt
 
+let unroll_rec_type (rt : rec_type) : rec_type =
+  let s = function
+    | RecX i -> DefHT (DefT (-1l, rt, i))
+    | var -> VarHT var
+  in
+  subst_rec_type s rt
+
 
 let inject_def_types x (rt : rec_type) : def_type list =
   let RecT sts = rt in
@@ -266,6 +273,11 @@ let roll_def_types_list (rts : rec_type list) : def_type list =
 
 let project_def_type (dt : def_type) : sub_type =
   let DefT (_x, RecT sts, i) = dt in
+  Lib.List32.nth sts i
+
+let unroll_def_type (dt : def_type) : sub_type =
+  let DefT (_x, rt, i) = dt in
+  let RecT sts = unroll_rec_type rt in
   Lib.List32.nth sts i
 
 let expand_def_type (dt : def_type) : str_type =
