@@ -207,7 +207,8 @@ let check_rec_type (c : context) (rt : rec_type) at : context =
   let c' = {c with rec_types = sts} in
   let sts' = List.map (fun st -> check_sub_type c' st at) sts in
   let c'' = {c with rec_types = sts'} in
-  Lib.List32.iteri (fun i st -> check_sub_type_sub c'' st i at) sts';
+  let RecT sts'' = unroll_rec_type (RecT sts') in
+  Lib.List32.iteri (fun i st -> check_sub_type_sub c'' st i at) sts'';
   {c with types = c.types @ Lib.List32.mapi (fun i _ -> DefT (RecT sts', i)) sts'}
 
 let check_type (c : context) (t : type_) : context =

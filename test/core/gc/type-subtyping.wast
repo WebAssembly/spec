@@ -112,6 +112,117 @@
   )
 )
 
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g1 (sub $f1 (func))) (type (struct)))
+  (rec (type $g2 (sub $f2 (func))) (type (struct)))
+  (func $g (type $g2))
+  (global (ref $g1) (ref.func $g))
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (func $g (type $g2))
+  (global (ref $g1) (ref.func $g))
+)
+
+(assert_invalid
+  (module
+    (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+    (rec (type $f2 (sub (func))) (type (struct (field (ref $f1)))))
+    (rec (type $g1 (sub $f1 (func))) (type (struct)))
+    (rec (type $g2 (sub $f2 (func))) (type (struct)))
+    (func $g (type $g2))
+    (global (ref $g1) (ref.func $g))
+  )
+  "type mismatch"
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g (sub $f1 (func))) (type (struct)))
+  (func $g (type $g))
+  (global (ref $f1) (ref.func $g))
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (rec (type $h (sub $g1 (func))) (type (struct)))
+  (func $h (type $h))
+  (global (ref $f1) (ref.func $h))
+  (global (ref $g1) (ref.func $h))
+)
+
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (func $f11 (type $f11) (unreachable))
+  (func $f12 (type $f12) (unreachable))
+  (global (ref $f11) (ref.func $f11))
+  (global (ref $f21) (ref.func $f11))
+  (global (ref $f12) (ref.func $f12))
+  (global (ref $f22) (ref.func $f12))
+)
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (rec (type $g11 (sub $f11 (func (result (ref func))))) (type $g12 (sub $g11 (func (result (ref $g11))))))
+  (rec (type $g21 (sub $f21 (func (result (ref func))))) (type $g22 (sub $g21 (func (result (ref $g21))))))
+  (func $g11 (type $g11) (unreachable))
+  (func $g12 (type $g12) (unreachable))
+  (global (ref $f11) (ref.func $g11))
+  (global (ref $f21) (ref.func $g11))
+  (global (ref $f11) (ref.func $g12))
+  (global (ref $f21) (ref.func $g12))
+  (global (ref $g11) (ref.func $g11))
+  (global (ref $g21) (ref.func $g11))
+  (global (ref $g12) (ref.func $g12))
+  (global (ref $g22) (ref.func $g12))
+)
+
+(assert_invalid
+  (module
+    (rec (type $f11 (sub (func))) (type $f12 (sub $f11 (func))))
+    (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+    (func $f (type $f21))
+    (global (ref $f11) (ref.func $f))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (rec (type $f01 (sub (func))) (type $f02 (sub $f01 (func))))
+    (rec (type $f11 (sub (func))) (type $f12 (sub $f01 (func))))
+    (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+    (func $f (type $f21))
+    (global (ref $f11) (ref.func $f))
+  )
+  "type mismatch"
+)
+
 
 ;; Runtime types
 
@@ -204,6 +315,141 @@
 (assert_trap (invoke "fail2") "indirect call")
 (assert_trap (invoke "fail3") "cast")
 (assert_trap (invoke "fail4") "cast")
+
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g1 (sub $f1 (func))) (type (struct)))
+  (rec (type $g2 (sub $f2 (func))) (type (struct)))
+  (func $g (type $g2)) (elem declare func $g)
+  (func (export "run") (result i32)
+    (ref.test (ref $g1) (ref.func $g))
+  )
+)
+(assert_return (invoke "run") (i32.const 1))
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (func $g (type $g2)) (elem declare func $g)
+  (func (export "run") (result i32)
+    (ref.test (ref $g1) (ref.func $g))
+  )
+)
+(assert_return (invoke "run") (i32.const 1))
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $g1 (sub $f1 (func))) (type (struct)))
+  (rec (type $g2 (sub $f2 (func))) (type (struct)))
+  (func $g (type $g2)) (elem declare func $g)
+  (func (export "run") (result i32)
+    (ref.test (ref $g1) (ref.func $g))
+  )
+)
+(assert_return (invoke "run") (i32.const 0))
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g (sub $f1 (func))) (type (struct)))
+  (func $g (type $g)) (elem declare func $g)
+  (func (export "run") (result i32)
+    (ref.test (ref $f1) (ref.func $g))
+  )
+)
+(assert_return (invoke "run") (i32.const 1))
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (rec (type $h (sub $g1 (func))) (type (struct)))
+  (func $h (type $h)) (elem declare func $h)
+  (func (export "run") (result i32 i32)
+    (ref.test (ref $f1) (ref.func $h))
+    (ref.test (ref $g1) (ref.func $h))
+  )
+)
+(assert_return (invoke "run") (i32.const 1) (i32.const 1))
+
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (func $f11 (type $f11) (unreachable)) (elem declare func $f11)
+  (func $f12 (type $f12) (unreachable)) (elem declare func $f12)
+  (func (export "run") (result i32 i32 i32 i32)
+    (ref.test (ref $f11) (ref.func $f11))
+    (ref.test (ref $f21) (ref.func $f11))
+    (ref.test (ref $f12) (ref.func $f12))
+    (ref.test (ref $f22) (ref.func $f12))
+  )
+)
+(assert_return (invoke "run")
+  (i32.const 1) (i32.const 1) (i32.const 1) (i32.const 1)
+)
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (rec (type $g11 (sub $f11 (func (result (ref func))))) (type $g12 (sub $g11 (func (result (ref $g11))))))
+  (rec (type $g21 (sub $f21 (func (result (ref func))))) (type $g22 (sub $g21 (func (result (ref $g21))))))
+  (func $g11 (type $g11) (unreachable)) (elem declare func $g11)
+  (func $g12 (type $g12) (unreachable)) (elem declare func $g12)
+  (func (export "run") (result i32 i32 i32 i32 i32 i32 i32 i32)
+    (ref.test (ref $f11) (ref.func $g11))
+    (ref.test (ref $f21) (ref.func $g11))
+    (ref.test (ref $f11) (ref.func $g12))
+    (ref.test (ref $f21) (ref.func $g12))
+    (ref.test (ref $g11) (ref.func $g11))
+    (ref.test (ref $g21) (ref.func $g11))
+    (ref.test (ref $g12) (ref.func $g12))
+    (ref.test (ref $g22) (ref.func $g12))
+  )
+)
+(assert_return (invoke "run")
+  (i32.const 1) (i32.const 1) (i32.const 1) (i32.const 1)
+  (i32.const 1) (i32.const 1) (i32.const 1) (i32.const 1)
+)
+
+(module
+  (rec (type $f11 (sub (func))) (type $f12 (sub $f11 (func))))
+  (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+  (func $f (type $f21)) (elem declare func $f)
+  (func (export "run") (result i32)
+    (ref.test (ref $f11) (ref.func $f))
+  )
+)
+(assert_return (invoke "run") (i32.const 0))
+
+(module
+  (rec (type $f01 (sub (func))) (type $f02 (sub $f01 (func))))
+  (rec (type $f11 (sub (func))) (type $f12 (sub $f01 (func))))
+  (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+  (func $f (type $f21)) (elem declare func $f)
+  (func (export "run") (result i32)
+    (ref.test (ref $f11) (ref.func $f))
+  )
+)
+(assert_return (invoke "run") (i32.const 0))
 
 
 
