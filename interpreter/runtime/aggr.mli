@@ -19,3 +19,5 @@ val type_of_array : array -> def_type
 
 val read_field : field -> Pack.extension option -> value  (* raises Failure *)
 val write_field : field -> value -> unit  (* raises Falure *)
+
+val array_length : array -> int32

@@ -1,10 +1,46 @@
-;; Static matching of recursive function types
+;; Static matching of recursive types
 
 (module
-  (rec (type $f1 (func)) (type (struct)))
-  (rec (type $f2 (func)) (type (struct)))
-  (global (ref $f1) (ref.func $f))
+  (rec (type $f1 (func)) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (func)) (type (struct (field (ref $f2)))))
   (func $f (type $f2))
+  (global (ref $f1) (ref.func $f))
+)
+
+(module
+  (rec (type $f1 (func)) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (func)) (type (struct (field (ref $f2)))))
+  (rec
+    (type $g1 (func))
+    (type (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1))))
+  )
+  (rec
+    (type $g2 (func))
+    (type (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2))))
+  )
+  (func $g (type $g2))
+  (global (ref $g1) (ref.func $g))
+)
+
+(assert_invalid
+  (module
+    (rec (type $f1 (func)) (type (struct (field (ref $f1)))))
+    (rec (type $f2 (func)) (type (struct (field (ref $f1)))))
+    (func $f (type $f2))
+    (global (ref $f1) (ref.func $f))
+  )
+  "type mismatch"
+)
+
+(assert_invalid
+  (module
+    (rec (type $f0 (func)) (type (struct (field (ref $f0)))))
+    (rec (type $f1 (func)) (type (struct (field (ref $f0)))))
+    (rec (type $f2 (func)) (type (struct (field (ref $f1)))))
+    (func $f (type $f2))
+    (global (ref $f1) (ref.func $f))
+  )
+  "type mismatch"
 )
 
 (assert_invalid

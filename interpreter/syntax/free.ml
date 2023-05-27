@@ -113,9 +113,18 @@ let sub_type = function
 let rec_type = function
   | RecT sts -> list sub_type sts
 
+let def_type = function
+  | DefT (rt, _i) -> rec_type rt
+
 let global_type (GlobalT (_mut, t)) = val_type t
 let table_type (TableT (_lim, t)) = ref_type t
 let memory_type (MemoryT (_lim)) = empty
+
+let extern_type = function
+  | ExternFuncT dt -> def_type dt
+  | ExternTableT tt -> table_type tt
+  | ExternMemoryT mt -> memory_type mt
+  | ExternGlobalT gt -> global_type gt
 
 let block_type = function
   | VarBlockType x -> types (idx x)
@@ -137,6 +146,10 @@ let rec instr (e : instr) =
   | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
   | ArrayGet (x, _) | ArraySet x -> types (idx x)
   | ArrayLen -> empty
+  | ArrayCopy (x, y) -> types (idx x) ++ types (idx y)
+  | ArrayFill x -> types (idx x)
+  | ArrayInitData (x, y) -> types (idx x) ++ datas (idx y)
+  | ArrayInitElem (x, y) -> types (idx x) ++ elems (idx y)
   | ExternConvert _ -> empty
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es

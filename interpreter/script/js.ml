@@ -254,7 +254,7 @@ let value v =
   match v.it with
   | Num n -> [Const (n @@ v.at) @@ v.at]
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
-  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type ht) @@ v.at]
+  | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type [] ht) @@ v.at]
   | Ref (Extern.ExternRef (HostRef n)) ->
     [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false

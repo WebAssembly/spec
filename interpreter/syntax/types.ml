@@ -147,6 +147,11 @@ let globals = List.filter_map (function ExternGlobalT gt -> Some gt | _ -> None)
 
 type subst = var -> heap_type
 
+let subst_of dts = function
+  | StatX x -> DefHT (Lib.List32.nth dts x)
+  | RecX i -> VarHT (RecX i)
+
+
 let subst_num_type s t = t
 
 let subst_vec_type s t = t
@@ -257,11 +262,6 @@ let roll_def_types x (rt : rec_type) : def_type list =
   let RecT sts as rt' = roll_rec_type x rt in
   Lib.List32.mapi (fun i _ -> DefT (rt', i)) sts
 
-let roll_def_types_list (rts : rec_type list) : def_type list =
-  List.fold_left (fun (rts, x) rt ->
-    rts @ roll_def_types x rt, Int32.add x (Lib.List32.length rts)
-  ) ([], 0l) rts |> fst
-
 
 let unroll_rec_type (rt : rec_type) : rec_type =
   let s = function
@@ -271,15 +271,13 @@ let unroll_rec_type (rt : rec_type) : rec_type =
   subst_rec_type s rt
 
 let unroll_def_type (dt : def_type) : sub_type =
-  match dt with
-  | DefT (rt, i) ->
-    let RecT sts = unroll_rec_type rt in
-    Lib.List32.nth sts i
+  let DefT (rt, i) = dt in
+  let RecT sts = unroll_rec_type rt in
+  Lib.List32.nth sts i
 
 let expand_def_type (dt : def_type) : str_type =
-  match unroll_def_type dt with
-  | SubT (_, _, st) -> st
-
+  let SubT (_, _, st) = unroll_def_type dt in
+  st
 
 
 (* String conversion *)
