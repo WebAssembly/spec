@@ -167,7 +167,7 @@
     (type $g2 (sub $f2 (func)))
     (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
   )
-  (rec (type $h (sub $g1 (func))) (type (struct)))
+  (rec (type $h (sub $g2 (func))) (type (struct)))
   (func $h (type $h))
   (global (ref $f1) (ref.func $h))
   (global (ref $g1) (ref.func $h))
@@ -381,7 +381,7 @@
     (type $g2 (sub $f2 (func)))
     (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
   )
-  (rec (type $h (sub $g1 (func))) (type (struct)))
+  (rec (type $h (sub $g2 (func))) (type (struct)))
   (func $h (type $h)) (elem declare func $h)
   (func (export "run") (result i32 i32)
     (ref.test (ref $f1) (ref.func $h))
@@ -532,6 +532,163 @@
     (func (import "M2" "f2") (type $t1))
   )
   "incompatible import type"
+)
+
+
+(module
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g2 (sub $f2 (func))) (type (struct)))
+  (func (export "g") (type $g2))
+)
+(register "M")
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $g1 (sub $f1 (func))) (type (struct)))
+  (func (import "M" "g") (type $g1))
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (func (export "g") (type $g2))
+)
+(register "M")
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (func (import "M" "g") (type $g1))
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $g2 (sub $f2 (func))) (type (struct)))
+  (func (export "g") (type $g2))
+)
+(register "M")
+(assert_unlinkable
+  (module
+    (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+    (rec (type $g1 (sub $f1 (func))) (type (struct)))
+    (func (import "M" "g") (type $g1))
+  )
+  "incompatible import"
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g (sub $f1 (func))) (type (struct)))
+  (func (export "g") (type $g))
+)
+(register "M")
+(module
+  (rec (type $f1 (sub (func))) (type (struct (field (ref $f1)))))
+  (rec (type $f2 (sub (func))) (type (struct (field (ref $f2)))))
+  (rec (type $g (sub $f1 (func))) (type (struct)))
+  (func (import "M" "g") (type $f1))
+)
+
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g2 (sub $f2 (func)))
+    (type (sub $s2 (struct (field (ref $f1) (ref $f2) (ref $f1) (ref $f2) (ref $g2)))))
+  )
+  (rec (type $h (sub $g2 (func))) (type (struct)))
+  (func (export "h") (type $h))
+)
+(register "M")
+(module
+  (rec (type $f1 (sub (func))) (type $s1 (sub (struct (field (ref $f1))))))
+  (rec (type $f2 (sub (func))) (type $s2 (sub (struct (field (ref $f2))))))
+  (rec
+    (type $g1 (sub $f1 (func)))
+    (type (sub $s1 (struct (field (ref $f1) (ref $f1) (ref $f2) (ref $f2) (ref $g1)))))
+  )
+  (rec (type $h (sub $g1 (func))) (type (struct)))
+  (func (import "M" "h") (type $f1))
+  (func (import "M" "h") (type $g1))
+)
+
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (func (export "f11") (type $f11) (unreachable))
+  (func (export "f12") (type $f12) (unreachable))
+)
+(register "M")
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (func (import "M" "f11") (type $f11))
+  (func (import "M" "f11") (type $f21))
+  (func (import "M" "f12") (type $f12))
+  (func (import "M" "f12") (type $f22))
+)
+
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (rec (type $g11 (sub $f11 (func (result (ref func))))) (type $g12 (sub $g11 (func (result (ref $g11))))))
+  (rec (type $g21 (sub $f21 (func (result (ref func))))) (type $g22 (sub $g21 (func (result (ref $g21))))))
+  (func (export "g11") (type $g11) (unreachable))
+  (func (export "g12") (type $g12) (unreachable))
+)
+(register "M")
+(module
+  (rec (type $f11 (sub (func (result (ref func))))) (type $f12 (sub $f11 (func (result (ref $f11))))))
+  (rec (type $f21 (sub (func (result (ref func))))) (type $f22 (sub $f21 (func (result (ref $f21))))))
+  (rec (type $g11 (sub $f11 (func (result (ref func))))) (type $g12 (sub $g11 (func (result (ref $g11))))))
+  (rec (type $g21 (sub $f21 (func (result (ref func))))) (type $g22 (sub $g21 (func (result (ref $g21))))))
+  (func (import "M" "g11") (type $f11))
+  (func (import "M" "g11") (type $f21))
+  (func (import "M" "g12") (type $f11))
+  (func (import "M" "g12") (type $f21))
+  (func (import "M" "g11") (type $g11))
+  (func (import "M" "g11") (type $g21))
+  (func (import "M" "g12") (type $g12))
+  (func (import "M" "g12") (type $g22))
+)
+
+(module
+  (rec (type $f11 (sub (func))) (type $f12 (sub $f11 (func))))
+  (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+  (func (export "f") (type $f21))
+)
+(register "M")
+(assert_unlinkable
+  (module
+    (rec (type $f11 (sub (func))) (type $f12 (sub $f11 (func))))
+    (func (import "M" "f") (type $f11))
+  )
+  "incompatible import"
+)
+
+(module
+  (rec (type $f01 (sub (func))) (type $f02 (sub $f01 (func))))
+  (rec (type $f11 (sub (func))) (type $f12 (sub $f01 (func))))
+  (rec (type $f21 (sub (func))) (type $f22 (sub $f11 (func))))
+  (func (export "f") (type $f21))
+)
+(register "M")
+(assert_unlinkable
+  (module
+    (rec (type $f01 (sub (func))) (type $f02 (sub $f01 (func))))
+    (rec (type $f11 (sub (func))) (type $f12 (sub $f01 (func))))
+    (func (import "M" "f") (type $f11))
+  )
+  "incompatible import"
 )
 
 
