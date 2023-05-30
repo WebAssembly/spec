@@ -75,7 +75,6 @@ Conventions
 
 .. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
-.. _type-closed:
 .. _type-abstract:
 .. _type-concrete:
 .. _syntax-i31:
