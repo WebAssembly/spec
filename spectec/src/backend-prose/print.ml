@@ -12,10 +12,13 @@ let string_of_opt prefix stringifier suffix = function
 let string_of_list stringifier left sep right = function
   | [] -> left ^ right
   | h :: t ->
+      let limit = 16 in
+      let is_long = List.length t > limit in
       left
       ^ List.fold_left
           (fun acc elem -> acc ^ sep ^ stringifier elem)
-          (stringifier h) t
+          (stringifier h) (List.filteri (fun i _ -> i <= limit) t)
+      ^ (if is_long then (sep ^ "...") else "")
       ^ right
 
 let string_of_array stringifier left sep right a =
@@ -408,11 +411,16 @@ let string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
 
+let depth = ref 0
 let rec string_of_record r =
-  Al.Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_value v ^ "; ")
-    r "{ "
-  ^ "}"
+  let base_indent = repeat indent !depth in
+  depth := !depth + 1;
+  let str = Al.Record.fold
+    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value v ^ ";\n")
+    r (base_indent ^ "{\n")
+  ^ (base_indent ^ "}") in
+  depth := !depth - 1;
+  str
 
 and string_of_frame (_, f) = string_of_record f
 
