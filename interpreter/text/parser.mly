@@ -797,11 +797,11 @@ elem_expr_list :
 elem_var_list :
   | var_list
     { let f = function {at; _} as x -> [ref_func x @@ at] @@ at in
-      fun c lookup -> List.map f ($1 c lookup) }
+      fun c -> List.map f ($1 c func) }
 
 elem_list :
   | elem_kind elem_var_list
-    { fun c -> $1, $2 c func }
+    { fun c -> $1, $2 c }
   | ref_type elem_expr_list
     { fun c -> $1 c, $2 c }
 
@@ -833,7 +833,7 @@ elem :
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = (NoNull, FuncHT); einit = $5 c func;
+      { etype = (NoNull, FuncHT); einit = $5 c;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :
@@ -856,10 +856,10 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x at -> let tabs, elems, ims, exs = $2 c x at in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let einit = $4 c func in
+      let einit = $4 c :: $5 c in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let (_, ht) as etype = $1 c in
@@ -867,10 +867,10 @@ table_fields :
       [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
-  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let einit = (fun c -> $4 c :: $5 c) c in
+      let einit = $4 c in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let (_, ht) as etype = $1 c in
