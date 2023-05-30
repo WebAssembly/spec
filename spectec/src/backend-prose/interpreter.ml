@@ -384,13 +384,18 @@ and interp_instrs env il =
               Array.set l i v3;
               (env, cont)
           | _ -> failwith "Invalid Replace instr")
-      (* TODO *)
-      | ReplaceI (_, _, e) ->
-          (match Record.find "FUNC" !store with
-          | ListV l ->
-              eval_expr env e |> Array.set l 0;
+      | ReplaceI (e1, SliceP (e2, e3), e4) -> (
+          let v1 = eval_expr env e1 in
+          let v2 = eval_expr env e2 in
+          let v3 = eval_expr env e3 in
+          let v4 = eval_expr env e4 in
+          match v1, v2, v3, v4 with
+          | ListV l1, IntV i1, IntV i2, ListV l2 ->
+              for i = i1 to i2 do
+                i - i1 |> Array.get l2 |> Array.set l1 i;
+              done;
               (env, cont)
-          | _ -> failwith "TODO")
+          | _ -> failwith "Invalid Replace instr")
       | PerformI e ->
           eval_expr env e |> ignore;
           (env, cont)

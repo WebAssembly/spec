@@ -105,6 +105,7 @@ let test file_name =
     |> List.iter (fun cmd ->
       match cmd.it with
       | Script.Module (_, {it = Script.Textual m; _}) ->
+        Interpreter.cnt := 0;
         exports := m.it.exports;
         Interpreter.stack := [];
         Interpreter.store := Al.Record.empty;
