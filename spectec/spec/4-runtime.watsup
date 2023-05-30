@@ -144,8 +144,8 @@ def $with_table((s; f), x, i, r) = s[.TABLE[f.MODULE.TABLE[x]][i] = r]; f
 def $with_tableext((s; f), x, r*) = s[.TABLE[f.MODULE.TABLE[x]] =.. r*]; f
 def $with_mem((s; f), x, i, j, b*) = s[.MEM[f.MODULE.MEM[x]][i : j] = b*]; f
 def $with_memext((s; f), x, b*) = s[.MEM[f.MODULE.MEM[x]] =.. b*]; f
-def $with_elem((s; f), x, r*) = s[.TABLE[f.MODULE.TABLE[x]] = r*]; f
-def $with_data((s; f), x, b*) = s[.MEM[f.MODULE.MEM[x]] = b*]; f
+def $with_elem((s; f), x, r*) = s[.ELEM[f.MODULE.ELEM[x]] = r*]; f
+def $with_data((s; f), x, b*) = s[.DATA[f.MODULE.DATA[x]] = b*]; f
 
 
 ;; Administrative Instructions

@@ -108,11 +108,11 @@ with_memext x b
 
 with_elem x r
 1. Let f be the current frame.
-2. Replace s.TABLE[f.MODULE.TABLE[x]] with r*.
+2. Replace s.ELEM[f.MODULE.ELEM[x]] with r*.
 
 with_data x b
 1. Let f be the current frame.
-2. Replace s.MEM[f.MODULE.MEM[x]] with b*.
+2. Replace s.DATA[f.MODULE.DATA[x]] with b*.
 
 unreachable
 1. Trap.
@@ -673,7 +673,7 @@ forward.wast: [4/4] (100.00%)
 float_misc.wast: [61/440] (13.86%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [Uncaught exception in 3th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+memory.wast: [2/45] (4.44%)
 unwind.wast: [49/49] (100.00%)
 call.wast: [42/70] (60.00%)
 local_get.wast: [13/19] (68.42%)
@@ -691,7 +691,7 @@ block.wast: [44/52] (84.62%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [18/26] (69.23%)
 i64.wast: [0/384] (0.00%)
-memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+memory_copy.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid assignment: (_, func) := [6, 0, 0, 0, 0, 0, 0, 0]]
 stack.wast: [2/5] (40.00%)
 loop.wast: [41/77] (53.25%)
 conversions.wast: [0/593] (0.00%)
@@ -720,7 +720,7 @@ binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a b
 br_table.wast: [123/149] (82.55%)
 select.wast: [60/118] (50.85%)
 f32_bitwise.wast: [32/360] (8.89%)
-memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+memory_init.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid assignment: (_, func) := [6, 0, 0, 0, 0, 0, 0, 0]]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [6/9] (66.67%)
 f32.wast: [1463/2500] (58.52%)
@@ -735,9 +735,9 @@ ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (regis
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [22/35] (62.86%)
-data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [30/255] (11.76%)
+address.wast: [0/255] (0.00%)
 table_grow.wast: [7/38] (18.42%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -747,6 +747,6 @@ int_exprs.wast: [25/89] (28.09%)
 f64.wast: [0/2500] (0.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [65/83] (78.31%)
-Total [4980/15431] (32.27%; Normalized 44.12%)
+Total [4950/15473] (31.99%; Normalized 42.89%)
 == Complete.
 ```

@@ -1195,13 +1195,13 @@ def with_memext : (state, tableidx, byte*) -> state
 
 ;; 4-runtime.watsup:138.1-138.77
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:147.1-147.69
-  def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]] = r*{r}], f)
+  ;; 4-runtime.watsup:147.1-147.67
+  def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]] = r*{r}], f)
 
 ;; 4-runtime.watsup:139.1-139.77
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:148.1-148.65
-  def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[MEM_store[f.MODULE_frame.MEM_moduleinst[x]] = b*{b}], f)
+  ;; 4-runtime.watsup:148.1-148.67
+  def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[DATA_store[f.MODULE_frame.DATA_moduleinst[x]] = b*{b}], f)
 
 ;; 4-runtime.watsup:162.1-165.21
 rec {
@@ -3310,13 +3310,13 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-(\mathit{s} ; \mathit{f})[\mathsf{elem}[\mathit{x}] = {\mathit{r}^\ast}] &=& \mathit{s}[\mathsf{table}[\mathit{f}.\mathsf{module}.\mathsf{table}[\mathit{x}]] = {\mathit{r}^\ast}] ; \mathit{f} &  \\
+(\mathit{s} ; \mathit{f})[\mathsf{elem}[\mathit{x}] = {\mathit{r}^\ast}] &=& \mathit{s}[\mathsf{elem}[\mathit{f}.\mathsf{module}.\mathsf{elem}[\mathit{x}]] = {\mathit{r}^\ast}] ; \mathit{f} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-(\mathit{s} ; \mathit{f})[\mathsf{data}[\mathit{x}] = {\mathit{b}^\ast}] &=& \mathit{s}[\mathsf{mem}[\mathit{f}.\mathsf{module}.\mathsf{mem}[\mathit{x}]] = {\mathit{b}^\ast}] ; \mathit{f} &  \\
+(\mathit{s} ; \mathit{f})[\mathsf{data}[\mathit{x}] = {\mathit{b}^\ast}] &=& \mathit{s}[\mathsf{data}[\mathit{f}.\mathsf{module}.\mathsf{data}[\mathit{x}]] = {\mathit{b}^\ast}] ; \mathit{f} &  \\
 \end{array}
 $$
 
