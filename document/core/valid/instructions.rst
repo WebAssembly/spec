@@ -413,13 +413,13 @@ Aggregate Reference Instructions
 
 * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
 
-* Then the instruction is valid with type :math:`[t~I32] \to [(\REF~x)]`.
+* Then the instruction is valid with type :math:`[t~\I32] \to [(\REF~x)]`.
 
 .. math::
    \frac{
      \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
    }{
-     C \vdashinstr \ARRAYNEW~x : [\unpacktype(\X{st})~I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEW~x : [\unpacktype(\X{st})~\I32] \to [(\REF~x)]
    }
 
 .. _valid-array.new_default:
@@ -437,7 +437,7 @@ Aggregate Reference Instructions
 
 * The type :math:`t` must be :ref:`defaultable <valid-defaultable>`.
 
-* Then the instruction is valid with type :math:`[I32] \to [(\REF~x)]`.
+* Then the instruction is valid with type :math:`[\I32] \to [(\REF~x)]`.
 
 .. math::
    \frac{
@@ -445,7 +445,7 @@ Aggregate Reference Instructions
      \qquad
      C \vdashvaltypedefaultable \unpacktype(\X{st}) \defaultable
    }{
-     C \vdashinstr \ARRAYNEW~x : [I32] \to [(\REF~x)]
+     C \vdashinstr \ARRAYNEW~x : [\I32] \to [(\REF~x)]
    }
 
 .. _valid-array.new_fixed:
