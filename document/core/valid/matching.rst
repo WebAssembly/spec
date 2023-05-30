@@ -8,20 +8,6 @@ Matching
 On most types, a notion of *subtyping* is defined that is applicable in :ref:`validation <valid>` rules, during :ref:`module instantiation <exec-instantiation>` when checking the types of imports, or during :ref:`execution <exec>`, when performing casts.
 
 
-.. context-rec:
-
-.. todo:: move this to conventions
-
-In order to check :ref:`rolled up <aux-roll-rectype>` recursive types,
-the :ref:`context <context>` is locally extended with an additional component that records the :ref:`supertypes <syntax-subtype>` of each :ref:`recursive type index <syntax-rectypeidx>`, represented as :ref:`defined types <syntaz-deftype>`:
-
-.. math::
-   \begin{array}{llll}
-   \production{context} & C &::=&
-     \{~ \dots, \CRECS & (\deftype^\ast)^\ast ~\} \\
-   \end{array}
-
-
 .. index:: number type
 .. _match-numtype:
 
@@ -74,11 +60,11 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`heaptype_2` is :math:`\EQT`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`STRUCT`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`STRUCT`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand>` to an :ref:`array type <syntax-arraytype>` and :math:`\heaptype_2` is :math:`ARRAY`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to an :ref:`array type <syntax-arraytype>` and :math:`\heaptype_2` is :math:`ARRAY`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand>` to a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`FUNC`.
 
 * Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_1` and :math:`\heaptype_2` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_2`, and :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`.
 
@@ -136,19 +122,19 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 .. math::
    ~\\[-1ex]
    \frac{
-     \expand(\deftype) = \TSTRUCT~\X{st}
+     \expanddt(\deftype) = \TSTRUCT~\X{st}
    }{
      C \vdashheaptypematch \deftype \matchesheaptype \FUNC
    }
    \qquad
    \frac{
-     \expand(\deftype) = \TARRAY~\X{at}
+     \expanddt(\deftype) = \TARRAY~\X{at}
    }{
      C \vdashheaptypematch \deftype \matchesheaptype \ARRAY
    }
    \qquad
    \frac{
-     \expand(\deftype) = \TFUNC~\X{ft}
+     \expanddt(\deftype) = \TFUNC~\X{ft}
    }{
      C \vdashheaptypematch \deftype \matchesheaptype \FUNC
    }
@@ -330,7 +316,7 @@ A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]
 
 
 .. index:: compound types, aggregate type, structure type, array type, field type
-.. _match-compoundtype:
+.. _match-comptype:
 .. _match-structtype:
 .. _match-arraytype:
 
@@ -345,7 +331,7 @@ A :ref:`compound type <syntax-comptype>` :math:`\comptype_1` matches a type :mat
 
 * Or the compound type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
 
-  * The arity :math:`n_1` is greater than or equal to :math:`\n_2`.
+  * The arity :math:`n_1` is greater than or equal to :math:`n_2`.
 
   * For every :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_{2i}` in :math:`\fieldtype_2^{n_2}` and corresponding :math:`\fieldtype_{1i}` in :math:`\fieldtype_1^{n_1}`
 
@@ -368,7 +354,7 @@ A :ref:`compound type <syntax-comptype>` :math:`\comptype_1` matches a type :mat
    \frac{
      (C \vdashfieldtypematch \fieldtype_1 \matchesfieldtype \fieldtype_2)^\ast
    }{
-     C \vdashcomptypematch \TSTRUCT~\fieldtype_1^\ast~\fieldtype'_1^\ast \matchescomptype \TSTRUCT~\fieldtype_2^\ast
+     C \vdashcomptypematch \TSTRUCT~\fieldtype_1^\ast~{\fieldtype'}_1^\ast \matchescomptype \TSTRUCT~\fieldtype_2^\ast
    }
 
 .. math::
@@ -388,20 +374,20 @@ A :ref:`compound type <syntax-comptype>` :math:`\comptype_1` matches a type :mat
 Field Types
 ~~~~~~~~~~~
 
-A :ref:`field type <syntax-fieldtype>` :math:`\MUT_1^?~\storagetype_1` matches a type :math:`\MUT_2^~\storagetype_2` if and only if:
+A :ref:`field type <syntax-fieldtype>` :math:`\mut_1~\storagetype_1` matches a type :math:`\mut_2~\storagetype_2` if and only if:
 
 * :ref:`Storage type <syntax-storagetype>` :math:`\storagetype_1` :ref:`matches <match-storagetype>` :math:`\storagetype_2`.
 
-* Either both types are immutable, i.e., both :math:`\MUT_1` and :math:`\MUT_2` are absent.
+* Either both :math:`\mut_1` and :math:`\mut_2` are :math:`\MCONST`.
 
-* Or both types are immutable, i.e., both :math:`\MUT_1` and :math:`\MUT_2` are present, :math:`\storagetype_2` :ref:`matches <match-storagetype>` :math:`\storagetype_1` as well.
+* Or both :math:`\mut_1` and :math:`\mut_2` are :math:`\MVAR` and :math:`\storagetype_2` :ref:`matches <match-storagetype>` :math:`\storagetype_1` as well.
 
 .. math::
    ~\\[-1ex]
    \frac{
      C \vdashstoragetypematch \storagetype_1 \matchesstoragetype \storagetype_2
    }{
-     C \vdashfieldtypematch \epsilon~\storagetype_1 \matchescomptype \epsilon~\storagetype_2
+     C \vdashfieldtypematch \MCONST~\storagetype_1 \matchescomptype \MCONST~\storagetype_2
    }
    \qquad
    \frac{
@@ -411,7 +397,7 @@ A :ref:`field type <syntax-fieldtype>` :math:`\MUT_1^?~\storagetype_1` matches a
      C \vdashstoragetypematch \storagetype_2 \matchesstoragetype \storagetype_1
      \end{array}
    }{
-     C \vdashfieldtypematch \MUT~\storagetype_1 \matchescomptype \MUT~\storagetype_2
+     C \vdashfieldtypematch \MVAR~\storagetype_1 \matchescomptype \MVAR~\storagetype_2
    }
 
 A :ref:`storage type <syntax-storagetype>` :math:`\storagetype_1` matches a type :math:`\storagetype_2` if and only if:
@@ -432,102 +418,6 @@ A :ref:`packed type <syntax-packedtype>` :math:`\packedtype_1` matches a type :m
    }
 
 
-.. index:: recursive type, sub type, compound type, final, subtyping, type equivalence
-   pair: abstract syntax; recursive type
-   pair: abstract syntax; sub type
-.. _valid-rectype:
-.. _valid-subtype:
-
-Recursive Types
-~~~~~~~~~~~~~~~
-
-:ref:`Recursive types <syntax-rectype>` are validated with respect to their specific :ref:`type index`.
-
-:math:`\TREC~\subtype^\ast`
-...........................
-
-* The sequence :math:`\subtype^\ast` of :ref:`sub types <syntax-subtype>` must be :ref:`valid <valid-subtypeseq>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     C \vdashsubtype \subtype^\ast \ok(x)
-   }{
-     C \vdashrectype \TREC~\subtype^\ast \ok(x)
-   }
-
-:math:`\subtype^\ast`
-.....................
-
-* Either the sequence is empty.
-
-* Or:
-
-  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtypeseq>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtypeseq>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
-
-* Then the sequence is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-   }{
-     C \vdashsubtypeseq \epsilon \ok(x)
-   }
-   \qquad
-   \frac{
-     C \vdashsubtype \subtype \ok(x)
-     \qquad
-     C \vdashsubtypeseq {\subtype'}^+ \ok(x + 1)
-   }{
-     C \vdashsubtypeseq \subtype~{\subtype'}^+ \ok(x)
-   }
-
-:math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
-........................................
-
-* The :ref:`compound type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
-
-* The sequence :math:`y^\ast` may be no longer than :math:`1`.
-
-* For every :ref:`type index <syntax-typeidx>` :math:`y_i` in :math:`y^\ast`:
-
-  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must be smaller than :math:`x`.
-
-  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must exist in the context :math:`C`.
-
-  * Let :math:`\comptype_i` be the :ref:`expansion <aux-expand>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
-
-  * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype_i`.
-
-* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     \begin{array}{@{}c@{}}
-     |y^\ast| \leq 1
-     \qquad
-     (y < x)^\ast
-     \qquad
-     C \vdashcomptype \comptype \ok
-     \qquad
-     (C \vdashcomptypematch \comptype \matchescomptype \expand(C.\CTYPES[y]))^\ast
-     \end{array}
-   }{
-     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype \ok(x)
-   }
-
-.. note::
-   The side condition on the index ensures that a type can only be declared a subtype of previously defined types,
-   preventing cyclic subtype hierarchies.
-
-   Future versions of WebAssembly may allow more than one supertype.
-
-
 .. index:: defined type, recursive type, unroll, type equivalence
    pair: abstract syntax; defined type
 .. _match-deftype:
@@ -539,9 +429,11 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
 
 * Either :math:`\deftype_1` and :math:`\deftype_2` are equal when :ref:`closed <type-closure>` under context :math:`C`.
 
-* Or the :ref:`unrolling <aux-unroll-deftype>` of :math:`\deftype_1` is :math:`\TSUB~\FINAL^?~x^\ast~\comptype` and there exists a :ref:`type index <syntax-typeidx>` :math:`x_i` in :math:`x^\ast` such that the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x_i]` :ref:`matches <match-deftype>` :math:`\deftype_2`.
+* Or:
 
-* Or the :ref:`unrolling <aux-unroll-deftype>` of :math:`\deftype_1` is :math:`\TSUB~\FINAL^?~{\deftype'_1}^\ast~\comptype` and there exists a :ref:`defined type <syntax-deftype>` :math:`\deftype'_{1i}` in :math:`{\deftype'_1}^\ast` such that :math:`\deftype'_{1i}` :ref:`matches <match-deftype>` :math:`\deftype_2`.
+  * Let the :ref:`sub type <syntax-subtype>` :math:`\TSUB~\TFINAL^?~\heaptype^\ast~\comptype` be the result of :ref:`unrolling <aux-unroll-deftype>` :math:`\deftype_1`.
+
+  * Then there must exist a :ref:`heap type <syntax-heaptype>` :math:`\heaptype_i` in :math:`\heaptype^\ast` that :ref:`matches <match-heaptype>` :math:`\deftype_2`.
 
 .. math::
    ~\\[-1ex]
@@ -551,26 +443,14 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
      C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
    }
 
-.. todo:: fix
-
 .. math::
    ~\\[-1ex]
    \frac{
-     \subtype_1^\ast[i] = \TSUB~\FINAL^?~\heaptype^\ast~\comptype
+     \unrolldt(\deftype_1) = \TSUB~\TFINAL^?~\heaptype^\ast~\comptype
      \qquad
-     C \vdashdeftypematch C.\CTYPES[x^\ast[i]] \matchesdeftype \deftype_2
+     C \vdashheaptypematch \heaptype^\ast[i] \matchesheaptype \deftype_2
    }{
-     C \vdashdeftypematch (\TREC~\subtype_1^\ast).i \matchesdeftype \deftype_2
-   }
-
-.. math::
-   ~\\[-1ex]
-   \frac{
-     \subtype_1^\ast[i] = \TSUB~\FINAL^?~{\deftype'_1}^\ast~\comptype
-     \qquad
-     C \vdashdeftypematch C.\CTYPES[x^\ast[i]] \matchesdeftype \deftype_2
-   }{
-     C \vdashdeftypematch (\TREC~\subtype_1^\ast).i \matchesdeftype \deftype_2
+     C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
    }
 
 

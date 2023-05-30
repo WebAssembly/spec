@@ -96,10 +96,10 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 
 .. math::
    \begin{array}{llrl}
-   \production{abstract heap type} & \abdheaptype &::=&
+   \production{abstract heap type} & \absheaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
-     \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
+     \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\
    \production{heap type} & \heaptype &::=&
      \absheaptype ~|~ \typeidx \\
    \end{array}
@@ -184,7 +184,7 @@ They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax
      \numtype ~|~ \vectype ~|~ \reftype \\
    \end{array}
 
-The syntax of value types is :ref:`extended <syntax-valtype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
+The syntax of value types is :ref:`extended <syntax-valtype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>`.
 
 Conventions
 ...........

@@ -119,12 +119,12 @@ Reference Types
    pair: validation; value type
    single: abstract syntax; value type
 .. _valid-valtype:
-.. _valid-bottype:
+.. _valid-valtype-bot:
 
 Value Types
 ~~~~~~~~~~~
 
-Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-bottype>`.
+Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-valtype-ext>`.
 
 :math:`\BOT`
 ............
@@ -339,8 +339,8 @@ Compound Types
 Field Types
 ~~~~~~~~~~~
 
-:math:`\MUT^?~\storagetype`
-...........................
+:math:`\mut~\storagetype`
+.........................
 
 * The :ref:`storage type <syntax-storagetype>` :math:`\storagetype` must be :ref:`valid <valid-storagetype>`.
 
@@ -350,7 +350,7 @@ Field Types
    \frac{
      C \vdashstoragetype \X{st} \ok
    }{
-     C \vdashfieldtype \MUT^?~\X{st} \ok
+     C \vdashfieldtype \mut~\X{st} \ok
    }
 
 :math:`\packedtype`
@@ -379,15 +379,15 @@ Recursive Types
 :math:`\TREC~\subtype^\ast`
 ...........................
 
-.. todo:: add version of this for closed types and generalised supertypes to appendix
+.. todo:: add version of this for extended type syntax to appendix
 
 * Either the sequence :math:`\subtype^\ast` is empty.
 
 * Or:
 
-  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtypeseq>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
+  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtype>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
-  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtypeseq>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
+  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-rectype>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
 
 * Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
@@ -420,9 +420,9 @@ Recursive Types
 
   * Let :math:`\subtype_i` be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
 
-  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\FINAL`.
+  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
 
-  * Let :math:`\comptype'_i` be the :ref:`expansion <aux-expand>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
+  * Let :math:`\comptype'_i` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
 
   * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
 
@@ -611,7 +611,7 @@ External Types
    \frac{
      C \vdashdeftype \deftype \ok
      \qquad
-     \expand(\deftype) = \TFUNC~\functype
+     \expanddt(\deftype) = \TFUNC~\functype
    }{
      C \vdashexterntype \ETFUNC~\deftype
    }
@@ -696,19 +696,3 @@ Value Types
    }{
      C \vdashvaltypedefaultable (\REF~\NULL~\heaptype) \defaultable
    }
-
-
-.. index:: type index, defined type, type closure
-.. _type-closure:
-
-Closure
-~~~~~~~
-
-Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <syntax-context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the the types in :math:`C.\CTYPES` themselves.
-
-.. math::
-   \begin{array}{@{}lcll@{}}
-   \clostype_C(t) &=& t[\subst clostype^\ast(C.\CTYPES)] \\[2ex]
-   \clostype^\ast(\epsilon) &=& \epsilon \\
-   \clostype^\ast(\X{dt}^\ast~\X{dt}_N) &=& {\X{dt}'}^\ast~\X{dt}_N[\subst {\X{dt}'}^\ast] & (\iff {\X{dt}'}^\ast = \clostype^\ast(\X{dt}^\ast)) \\
-   \end{array}

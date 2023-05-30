@@ -86,7 +86,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\structinst.\SITYPE`.
 
-* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be a :ref:`struct type <syntax-structtype>`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`struct type <syntax-structtype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\deftype)`.
 
@@ -94,7 +94,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      \deftype = S.\SSTRUCTS[a].\SITYPE
      \qquad
-     \expand(\deftype) = \TSTRUCT~\structtype
+     \expanddt(\deftype) = \TSTRUCT~\structtype
    }{
      S \vdashval \REFSTRUCTADDR~a : \REF~\deftype
    }
@@ -109,7 +109,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\arrayinst.\AITYPE`.
 
-* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\arraytype)`.
 
@@ -117,7 +117,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      \deftype = S.\SARRAYS[a].\AITYPE
      \qquad
-     \expand(\deftype) = \TARRAY~\arraytype
+     \expanddt(\deftype) = \TARRAY~\arraytype
    }{
      S \vdashval \REFARRAYADDR~a : \REF~\deftype
    }
@@ -132,7 +132,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\funcinst.\FITYPE`.
 
-* The :ref:`expansion <aux-expand>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
@@ -140,7 +140,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
      \deftype = S.\SFUNCS[a].\FITYPE
      \qquad
-     \expand(\deftype) = \TFUNC~\functype
+     \expanddt(\deftype) = \TFUNC~\functype
    }{
      S \vdashval \REFFUNCADDR~a : \REF~\deftype
    }

@@ -991,6 +991,9 @@
 .. |matchesresulttype| mathdef:: \xref{valid/matching}{match-resulttype}{\leq}
 .. |matchesinstrtype| mathdef:: \xref{valid/matching}{match-instrtype}{\leq}
 .. |matchesfunctype| mathdef:: \xref{valid/matching}{match-functype}{\leq}
+.. |matchesfieldtype| mathdef:: \xref{valid/matching}{match-fieldtype}{\leq}
+.. |matchesstoragetype| mathdef:: \xref{valid/matching}{match-storagetype}{\leq}
+.. |matchespackedtype| mathdef:: \xref{valid/matching}{match-packedtype}{\leq}
 .. |matchesstructtype| mathdef:: \xref{valid/matching}{match-structtype}{\leq}
 .. |matchesarraytype| mathdef:: \xref{valid/matching}{match-arraytype}{\leq}
 .. |matchescomptype| mathdef:: \xref{valid/matching}{match-comptype}{\leq}
@@ -1004,7 +1007,7 @@
 
 .. Meta functions
 
-.. |clostype| mathdef:: \xref{valid/types}{closure}{\K{clos}}
+.. |clostype| mathdef:: \xref{valid/conventions}{closure}{\K{clos}}
 
 
 .. Contexts
@@ -1034,6 +1037,12 @@
 .. |vdashlimits| mathdef:: \xref{valid/types}{valid-limits}{\vdash}
 .. |vdashblocktype| mathdef:: \xref{valid/types}{valid-blocktype}{\vdash}
 .. |vdashfunctype| mathdef:: \xref{valid/types}{valid-functype}{\vdash}
+.. |vdashcomptype| mathdef:: \xref{valid/types}{valid-comptype}{\vdash}
+.. |vdashfieldtype| mathdef:: \xref{valid/types}{valid-fieldtype}{\vdash}
+.. |vdashpackedtype| mathdef:: \xref{valid/types}{valid-packedtype}{\vdash}
+.. |vdashstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\vdash}
+.. |vdashsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\vdash}
+.. |vdashrectype| mathdef:: \xref{valid/types}{valid-retype}{\vdash}
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
@@ -1052,6 +1061,9 @@
 .. |vdashresulttypematch| mathdef:: \xref{valid/matching}{match-resulttype}{\vdash}
 .. |vdashinstrtypematch| mathdef:: \xref{valid/matching}{match-instrtype}{\vdash}
 .. |vdashfunctypematch| mathdef:: \xref{valid/matching}{match-functype}{\vdash}
+.. |vdashfieldtypematch| mathdef:: \xref{valid/matching}{match-fieldtype}{\vdash}
+.. |vdashstoragetypematch| mathdef:: \xref{valid/matching}{match-storagetype}{\vdash}
+.. |vdashpackedtypematch| mathdef:: \xref{valid/matching}{match-packedtype}{\vdash}
 .. |vdashstructtypematch| mathdef:: \xref{valid/matching}{match-structtype}{\vdash}
 .. |vdasharraytypematch| mathdef:: \xref{valid/matching}{match-arraytype}{\vdash}
 .. |vdashcomptypematch| mathdef:: \xref{valid/matching}{match-comptype}{\vdash}
@@ -1102,6 +1114,7 @@
 
 .. |insttype| mathdef:: \xref{exec/types}{type-inst}{\F{clos}}
 
+.. |alloctype| mathdef:: \xref{exec/modules}{alloc-type}{\F{alloctype}}
 .. |allocfunc| mathdef:: \xref{exec/modules}{alloc-func}{\F{allocfunc}}
 .. |allochostfunc| mathdef:: \xref{exec/modules}{alloc-hostfunc}{\F{allochostfunc}}
 .. |alloctable| mathdef:: \xref{exec/modules}{alloc-table}{\F{alloctable}}

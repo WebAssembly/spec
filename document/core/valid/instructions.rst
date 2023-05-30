@@ -294,7 +294,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
 * For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
 
@@ -308,7 +308,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TSTRUCT~(\mut~\X{st})^\ast
+     \expanddt(C.\CTYPES[x]) = \TSTRUCT~(\mut~\X{st})^\ast
    }{
      C \vdashinstr \STRUCTNEW~x : [(\unpacktype(\X{st}))^\ast] \to [(\REF~x)]
    }
@@ -320,7 +320,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
 * For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
 
@@ -336,7 +336,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TSTRUCT~(\mut~\X{st})^\ast
+     \expanddt(C.\CTYPES[x]) = \TSTRUCT~(\mut~\X{st})^\ast
      \qquad
      (C \vdashvaltypedefaultable \unpacktype(\X{st}) \defaultable)^\ast
    }{
@@ -352,7 +352,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[i]`.
 
@@ -364,7 +364,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
+     \expanddt(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
      \qquad
      \X{ft}^\ast[i] = \mut~\X{st}
      \qquad
@@ -380,7 +380,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[i]`.
 
@@ -392,7 +392,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
+     \expanddt(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
      \qquad
      \X{ft}^\ast[i] = \MVAR~\X{st}
    }{
@@ -407,7 +407,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
@@ -417,7 +417,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
    }{
      C \vdashinstr \ARRAYNEW~x : [\unpacktype(\X{st})~I32] \to [(\REF~x)]
    }
@@ -429,7 +429,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
@@ -441,7 +441,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
      \qquad
      C \vdashvaltypedefaultable \unpacktype(\X{st}) \defaultable
    }{
@@ -455,7 +455,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
@@ -465,7 +465,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
    }{
      C \vdashinstr \ARRAYNEWFIXED~x~n : [\unpacktype(\X{st})^n] \to [(\REF~x)]
    }
@@ -477,7 +477,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
@@ -493,7 +493,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{rt})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{rt})
      \qquad
      C \vdashreftypematch C.\CELEMS[y] \matchesreftype \X{rt}
    }{
@@ -508,7 +508,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
 
@@ -522,7 +522,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
      \qquad
      \unpacktype(\X{st}) = \numtype \lor \unpacktype(\X{st}) = \vectype
      \qquad
@@ -541,7 +541,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
@@ -553,7 +553,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\mut~\X{st})
      \qquad
      \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
@@ -567,7 +567,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
@@ -579,7 +579,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TSTRUCT~(\MVAR~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TSTRUCT~(\MVAR~\X{st})
    }{
      C \vdashinstr \ARRAYSET~x : [(\REF~\NULL~x)~\I32~\unpacktype(\X{st})] \to []
    }

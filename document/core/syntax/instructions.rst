@@ -451,7 +451,7 @@ while |REFASNONNULL| converts a :ref:`nullable <syntax-reftype>` to a non-null o
 
 The |REFEQ| compares two references.
 
-The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <syntax-type-dyn>` of a reference operand.
+The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <type-inst>` of a reference operand.
 The former merely returns the result of the test,
 while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
 
@@ -491,7 +491,7 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 Aggregate Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-type-aggregate>` types.
+Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-aggrtype>` types.
 
 .. math::
    \begin{array}{llrl}

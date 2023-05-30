@@ -58,6 +58,12 @@ they only occur during :ref:`validation <valid>` or :ref:`execution <exec>`.
 The unique :ref:`value type <syntax-valtype>` |BOT| is a *bottom type* that :ref:`matches <match-heaptype>` all value types.
 Similarly, |BOTH| is also used as a bottom type of all :ref:`heap types <syntax-heaptype>`.
 
+.. note::
+   No validation rule uses bottom types explicitly,
+   but various rules can pick any value or heap type, including bottom.
+   This ensures the existence of :ref:`principal types <principality>`,
+   and thus a :ref:`validation algorithm <algo-valid>` without back tracking.
+
 A :ref:`concrete heap type <syntax-heaptype>` can consist of a :ref:`defined type <syntax-deftype>` directly.
 this occurs as the result of :ref:`substituting <notation-subst>` a :ref:`type index <syntax-typeidx>` with its definition.
 
@@ -69,26 +75,16 @@ Finally, the representation of supertypes in a :ref:`sub type <syntax-subtype>` 
 They occur as :ref:`defined types <syntax-deftype>` or :ref:`recursive type indices <syntax-rectypeidx>` after :ref:`substituting <notation-subst>` type indices or :ref:`rolling up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
 A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>` or a recursive type index without a surrounding :ref:`recursive type <syntax-reftype>`,
-i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll>`.
+i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll-rectype>`.
 
 .. note::
    Recursive type indices are internal to a recursive types.
    They are distinguished from regular type indices and represented such that two closed types are syntactically equal if and only if they have the same recursive structure.
 
-
-.. index:: ! substitution
-.. _type-subst:
-.. _notation-subst:
 .. _aux-reftypediff:
 
 Convention
 ..........
-
-* :math:`t[x^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|x^\ast| = |\X{dt}^\ast|`.
-
-* :math:`t[(\REC~i)^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`recursive type indices <syntax-rectypeidx>` :math:`(\REC~i)^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|(\REC~i)^\ast| = |\X{dt}^\ast|`.
-
-* :math:`t[\subst \X{dt}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{dt}^\ast]`, where :math:`x^\ast = 0 \cdots (|\X{dt}^\ast| - 1)`.
 
 * The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two :ref:`reference types <syntax-reftype>` is defined as follows:
 
@@ -126,6 +122,20 @@ but are formed by :ref:`rolling up <aux-roll-deftype>` the :ref:`recursive types
 It is hence an invariant of the semantics that all :ref:`recursive types <syntax-rectype>` occurring in defined types are :ref:`rolled up <aux-roll-rectype>`.
 
 
+.. index:: ! substitution
+.. _type-subst:
+.. _notation-subst:
+
+Conventions
+...........
+
+* :math:`t[x^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|x^\ast| = |\X{dt}^\ast|`.
+
+* :math:`t[(\REC~i)^\ast \subst \X{dt}^\ast]` denotes the parallel *substitution* of :ref:`recursive type indices <syntax-rectypeidx>` :math:`(\REC~i)^\ast` with :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` in type :math:`t`, provided :math:`|(\REC~i)^\ast| = |\X{dt}^\ast|`.
+
+* :math:`t[\subst \X{dt}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{dt}^\ast]`, where :math:`x^\ast = 0 \cdots (|\X{dt}^\ast| - 1)`.
+
+
 .. index:: recursive type, defined type, sub type, ! rolling, ! unrolling, ! expansion, type equivalence
 .. _aux-roll-rectype:
 .. _aux-unroll-rectype:
@@ -136,11 +146,13 @@ It is hence an invariant of the semantics that all :ref:`recursive types <syntax
 Rolling and Unrolling
 ~~~~~~~~~~~~~~~~~~~~~
 
-In order to allow comparing :ref:`recursive types <syntax-rectype>` for :ref:`equivalence <match-rectype>`, their representation is changed such that all :ref:`type indices <syntax-typeidx>` internal to the same recursive type are replaced by :ref:`recursive type indices <syntax-rectypeidx>`.
+In order to allow comparing :ref:`recursive types <syntax-rectype>` for :ref:`equivalence <match-deftype>`, their representation is changed such that all :ref:`type indices <syntax-typeidx>` internal to the same recursive type are replaced by :ref:`recursive type indices <syntax-rectypeidx>`.
 
 .. note::
    This representation is independent of the type index space,
-   such that types with the same recursive structure are also syntactically equal.
+   so that it is meaningful across module boundaries.
+   Moreover, this representation ensures that types with equivalent recursive structure are also syntactically equal,
+   hence allowing a simple equality check on (closed) types.
    It gives rise to an *iso-recursive* interpretation of types.
 
 The representation change is performed by two auxiliary operations on the syntax of :ref:`recursive types <syntax-rectype>`:
@@ -154,15 +166,15 @@ These operations are extended to :ref:`defined types <syntax-deftype>` and defin
 .. math::
    \begin{array}{@{}llll@{}}
    \rollrt_x(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(x + i)^\ast \subst (\REC~i)^\ast])^\ast \\
-   &&& (\iff :math:`i^\ast = 0 \cdots (|\subtype^\ast| - 1)`)
+   &&& (\iff i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
    \unrollrt(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(\REC~i)^\ast \subst ((\TREC~\subtype^\ast).i)^\ast])^\ast \\[2ex]
-   &&& (\iff :math:`i^\ast = 0 \cdots (|\subtype^\ast| - 1)`)
+   &&& (\iff i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
    \rolldt_x(\rectype) &=& (\rectype'.i)^\ast & (\iff \rollrt_x(\rectype) = \rectype' = \TREC~\subtype^\ast \\
-   &&& \land :math:`i^\ast = 0 \cdots (|\subtype^\ast| - 1)`) \\
+   &&& \land i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
    \unrolldt(\rectype.i) &=& \subtype^\ast[i] & (\iff \unrollrt(\rectype) = \TREC~\subtype^\ast) \\
    \end{array}
 
-In addition, the following auxiliary function denotes the *expansion* of a defined type:
+In addition, the following auxiliary function denotes the *expansion* of a :ref:`defined type <syntax-deftype>`:
 
 .. math::
    \begin{array}{llll}
@@ -277,6 +289,24 @@ In addition to field access written :math:`C.\K{field}` the following notation i
    :ref:`Indexing notation <notation-index>` like :math:`C.\CLABELS[i]` is used to look up indices in their respective :ref:`index space <syntax-index>` in the context.
    Context extension notation :math:`C,\K{field}\,A` is primarily used to locally extend *relative* index spaces, such as :ref:`label indices <syntax-labelidx>`.
    Accordingly, the notation is defined to append at the *front* of the respective sequence, introducing a new relative index :math:`0` and shifting the existing ones.
+
+
+.. index:: ! type closure
+.. _type-closure:
+
+Convention
+..........
+
+.. todo:: move this elsewhere?
+
+Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`closed <type-closed>` form relative to a :ref:`context <context>` it is :ref:`valid <valid-type>` in by :ref:`substituting <notation-subst>` each :ref:`type index <syntax-typeidx>` :math:`x` occurring in it with the corresponding :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`, after first closing the the types in :math:`C.\CTYPES` themselves.
+
+.. math::
+   \begin{array}{@{}lcll@{}}
+   \clostype_C(t) &=& t[\subst clostype^\ast(C.\CTYPES)] \\[2ex]
+   \clostype^\ast(\epsilon) &=& \epsilon \\
+   \clostype^\ast(\X{dt}^\ast~\X{dt}_N) &=& {\X{dt}'}^\ast~\X{dt}_N[\subst {\X{dt}'}^\ast] & (\iff {\X{dt}'}^\ast = \clostype^\ast(\X{dt}^\ast)) \\
+   \end{array}
 
 
 .. _valid-notation-textual:
