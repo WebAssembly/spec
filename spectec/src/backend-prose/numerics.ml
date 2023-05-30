@@ -70,7 +70,7 @@ let binop : numerics =
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | ConstructV ("F32", []) -> (
           match op with
-          | StringV "Add" -> wrap_float_binop v1 (+.) v2 
+          | StringV "Add" -> wrap_float_binop v1 (+.) v2
           | StringV "Sub" -> wrap_float_binop v1 (-.) v2
           | StringV "Mul" -> wrap_float_binop v1 ( *. ) v2
           | StringV "Div" -> wrap_float_binop v1 (/.) v2
@@ -122,7 +122,7 @@ let relop : numerics =
           | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
         | ConstructV ("F32", [])  -> (
           match op with
-          | StringV "Eq" -> wrap_float_relop v1 (=) v2 
+          | StringV "Eq" -> wrap_float_relop v1 (=) v2
           | StringV "Ne" -> wrap_float_relop v1 (<>) v2
           | StringV "Lt" -> wrap_float_relop v1 (<) v2
           | StringV "Gt" -> wrap_float_relop v1 (>) v2
@@ -161,9 +161,9 @@ let inverse_of_bytes_ : numerics =
           IntV (Array.fold_right (fun b acc ->
             match b with
             | IntV b when 0 <= b && b < 256 -> b + 255 * acc
-            | _ -> failwith "Invalid inverse_of_bytes"
+            | _ -> failwith ("Invalid inverse_of_bytes: " ^ Print.string_of_value b ^ " is not a valid byte.")
           ) bs 0)
-      | _ -> failwith "Invalid inverse_of_bytes"
+      | _ -> failwith "Invalid argument for inverse_of_bytes."
       );
   }
 

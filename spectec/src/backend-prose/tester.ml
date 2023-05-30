@@ -4,6 +4,7 @@ open Ast
 
 (** flag **)
 let test_name = ref ""
+let root = ref ""
 
 (** Helpers **)
 
@@ -14,6 +15,8 @@ let contains substring str =
     true
   with Not_found ->
     false
+
+let readdir_with_path path = Sys.readdir (Filename.concat !root path) |> Array.map (Filename.concat path)
 
 type result =
   | Success
@@ -34,8 +37,9 @@ let msg_of = function Failure msg -> msg | e -> Printexc.to_string e
 
 (* string -> Script.script *)
 let file_to_script file_name =
-  let lexbuf = Lexing.from_channel (open_in file_name) in
-  Parse.parse file_name lexbuf Parse.Script
+  let file_path = Filename.concat !root file_name in
+  let lexbuf = Lexing.from_channel (open_in file_path) in
+  Parse.parse file_path lexbuf Parse.Script
 
 let al_of_result result = match result.it with
   | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
@@ -148,17 +152,16 @@ let test file_name =
     else
       (0, 0, 0.)
 
-let test_all root =
-  let sample = test (Filename.concat root "test-prose/sample.wast") in
+let test_all () =
+  let sample = "test-prose/sample.wast" in
+  let tests = Array.append [| sample |] (readdir_with_path "test-prose/spec-test") in
 
   let f filename = if contains !test_name filename then
-    test (Filename.concat root ("test-prose/spec-test/" ^ filename))
+    test filename
   else
     (0, 0, 0.)
   in
-
-  let tests = Sys.readdir (Filename.concat root "test-prose/spec-test") in
-  let results = Array.append [| sample |] (Array.map f tests) in
+  let results = (Array.map f tests) in
 
   let success, total, percentage, count = Array.fold_left 
     (fun acc result -> 

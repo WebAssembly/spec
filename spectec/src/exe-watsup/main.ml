@@ -9,8 +9,6 @@ let version = "0.3"
 
 (* Flags and parameters *)
 
-let root = ref ""
-
 type target =
  | Check
  | Latex of Backend_latex.Config.config
@@ -57,8 +55,6 @@ let argspec = Arg.align
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unused or multiply used splices";
 
-  "--root", Arg.String (fun s -> root := s), " Set the root of watsup. Defaults to current directory";
-
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
   "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
     " Generate Latex (default)";
@@ -76,6 +72,7 @@ let argspec = Arg.align
   "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
   "--animate", Arg.Set pass_animate, " Animate equality conditions";
 
+  "--root", Arg.String (fun s -> Backend_al.Tester.root := s), " Set the root of watsup. Defaults to current directory";
   "--prose-test", Arg.String (fun s -> Backend_al.Tester.test_name := s), " The name of .wast test file for prose-interpreter";
 
   "-help", Arg.Unit ignore, "";
@@ -184,7 +181,7 @@ let () =
       log "Initializing AL interprter with generated AL...";
       Backend_al.Interpreter.init al;
       log "Interpreting AL...";
-      Backend_al.Tester.test_all !root
+      Backend_al.Tester.test_all ()
     );
     log "Complete."
   with
