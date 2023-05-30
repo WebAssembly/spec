@@ -126,7 +126,8 @@ let test file_name =
       | Script.Meta _ -> failwith not_supported_msg
     );
     if !total <> 0 then
-      Printf.sprintf "%s: [%d/%d]" name !success !total |> print_endline
+      Printf.sprintf "%s: [%d/%d]" name !success !total |> print_endline;
+    (!success, !total)
   with
   | e ->
     let msg = msg_of e in
@@ -136,13 +137,23 @@ let test file_name =
       name
       !total
       msg
-    |> print_endline
+      |> print_endline;
+    (!success, !total)
 
 
 let test_all root =
-  test (Filename.concat root "test-prose/sample.wast");
+  let count = test (Filename.concat root "test-prose/sample.wast") in
 
-  let f filename = if contains !test_name filename then
-    test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
+  let f count filename = if contains !test_name filename then
+    let success_acc, total_acc = count in
+    let success, total = test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
+    (success_acc + success, total_acc + total)
+  else
+    count
+  in
 
-  Sys.readdir (Filename.concat root "test-prose/spec-test") |> Array.iter f
+  let tests = Sys.readdir (Filename.concat root "test-prose/spec-test") in
+
+  let success, total = Array.fold_left f count tests in
+
+  Printf.sprintf "Total [%d/%d]" success total |> print_endline

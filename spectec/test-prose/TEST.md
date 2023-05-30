@@ -743,5 +743,6 @@ int_exprs.wast: [25/89]
 f64.wast: [0/2500]
 br.wast: [76/76]
 nop.wast: [69/83]
+Total [5038/15431]
 == Complete.
 ```
