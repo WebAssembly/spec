@@ -379,7 +379,7 @@ and interp_instrs env il =
           let v4 = eval_expr env e4 in
           match v1, v2, v3, v4 with
           | ListV l1, IntV i1, IntV i2, ListV l2 ->
-              for i = i1 to i2 do
+              for i = i1 to (i1 + i2 - 1) do
                 i - i1 |> Array.get l2 |> Array.set l1 i;
               done;
               (env, cont)

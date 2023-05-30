@@ -675,9 +675,9 @@ forward.wast: [4/4] (100.00%)
 float_misc.wast: [61/440] (13.86%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [3/45] (6.67%)
+memory.wast: [16/45] (35.56%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [44/70] (62.86%)
+call.wast: [45/70] (64.29%)
 local_get.wast: [15/19] (78.95%)
 fac.wast: [0/6] (0.00%)
 func.wast: [78/96] (81.25%)
@@ -700,7 +700,7 @@ conversions.wast: [0/593] (0.00%)
 endianness.wast: [3/68] (4.41%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
-memory_redundancy.wast: [0/4] (0.00%)
+memory_redundancy.wast: [1/4] (25.00%)
 i32.wast: [243/374] (64.97%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
@@ -719,7 +719,7 @@ ref_is_null.wast: [10/11] (90.91%)
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
-select.wast: [65/118] (55.08%)
+select.wast: [66/118] (55.93%)
 f32_bitwise.wast: [32/360] (8.89%)
 memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm yet: memory.init 1 not found]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
@@ -738,7 +738,7 @@ unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [132/255] (51.76%)
+address.wast: [148/255] (58.04%)
 table_grow.wast: [8/38] (21.05%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -748,6 +748,6 @@ int_exprs.wast: [25/89] (28.09%)
 f64.wast: [0/2500] (0.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [72/83] (86.75%)
-Total [5288/15543] (34.02%; Normalized 53.72%)
+Total [5340/15543] (34.36%; Normalized 56.15%)
 == Complete.
 ```
