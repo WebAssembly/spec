@@ -1392,31 +1392,31 @@ An implementation must reject a module that exceeds one of the following limits 
 In practice, an implementation may run out of resources for valid modules below these limits.
 
 <ul>
-<li>The maximum size of a module is 1073741824 bytes (1 GiB).</li>
-<li>The maximum number of types defined in the types section is 1000000.</li>
-<li>The maximum number of functions defined in a module is 1000000.</li>
-<li>The maximum number of imports declared in a module is 100000.</li>
-<li>The maximum number of exports declared in a module is 100000.</li>
-<li>The maximum number of globals defined in a module is 1000000.</li>
-<li>The maximum number of data segments defined in a module is 100000.</li>
+<li>The maximum size of a module is 1,073,741,824 bytes (1 GiB).</li>
+<li>The maximum number of types defined in the types section is 1,000,000.</li>
+<li>The maximum number of functions defined in a module is 1,000,000.</li>
+<li>The maximum number of imports declared in a module is 100,000.</li>
+<li>The maximum number of exports declared in a module is 100,000.</li>
+<li>The maximum number of globals defined in a module is 1,000,000.</li>
+<li>The maximum number of data segments defined in a module is 100,000.</li>
 
-<li>The maximum number of tables, including declared or imported tables, is 100000.</li>
-<li>The maximum size of a table is 10000000.</li>
-<li>The maximum number of table entries in any table initialization is 10000000.</li>
+<li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
+<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum number of table entries in any table initialization is 10,000,000.</li>
 <li>The maximum number of memories, including declared or imported memories, is 1.</li>
 
-<li>The maximum number of parameters to any function or block is 1000.</li>
-<li>The maximum number of return values for any function or block is 1000.</li>
-<li>The maximum size of a function body, including locals declarations, is 7654321 bytes.</li>
-<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.</li>
+<li>The maximum number of parameters to any function or block is 1,000.</li>
+<li>The maximum number of return values for any function or block is 1,000.</li>
+<li>The maximum size of a function body, including locals declarations, is 7,654,321 bytes.</li>
+<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50,000.</li>
 </ul>
 
 An implementation must throw a {{RuntimeError}} if one of the following limits is exceeded during runtime:
 In practice, an implementation may run out of resources for valid modules below these limits.
 
 <ul>
-<li>The maximum size of a table is 10000000.</li>
-<li>The maximum number of pages of a memory is 65536.</li>
+<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum number of pages of a memory is 65,536.</li>
 </ul>
 
 <h2 id="security-considerations">Security and Privacy Considerations</h2>
