@@ -381,8 +381,8 @@ elem.drop
 1. YetI: Perform $with_elem(z, x, []).
 
 store
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop YetE (CONST_admininstr(nt, c)) from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
 5. If YetC (), then:
