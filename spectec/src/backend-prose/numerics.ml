@@ -157,7 +157,7 @@ let inverse_of_bytes_ : numerics =
     f =
       (function
       | [ IntV n; ListV bs] ->
-          assert (n = Array.length bs);
+          assert (n = Array.length bs * 8);
           IntV (Array.fold_right (fun b acc ->
             match b with
             | IntV b when 0 <= b && b < 256 -> b + 255 * acc

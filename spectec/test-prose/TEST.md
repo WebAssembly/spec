@@ -723,7 +723,7 @@ memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation faile
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [6/9] (66.67%)
 f32.wast: [1463/2500] (58.52%)
-start.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to File "src/backend-prose/numerics.ml", line 160, characters 10-16: Assertion failed]
+start.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to Invalid wrap_]
 float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to File "src/backend-prose/interpreter.ml", line 321, characters 20-26: Assertion failed]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 table_size.wast: [5/36] (13.89%)
@@ -736,7 +736,7 @@ unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [22/35] (62.86%)
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [0/255] (0.00%)
+address.wast: [112/255] (43.92%)
 table_grow.wast: [7/38] (18.42%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -746,6 +746,6 @@ int_exprs.wast: [25/89] (28.09%)
 f64.wast: [0/2500] (0.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [65/83] (78.31%)
-Total [4951/15535] (31.87%; Normalized 41.54%)
+Total [5110/15535] (32.89%; Normalized 45.66%)
 == Complete.
 ```
