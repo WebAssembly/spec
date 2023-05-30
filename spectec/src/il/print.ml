@@ -138,8 +138,8 @@ and string_of_exp e =
     string_of_exp e1 ^
       "[" ^ string_of_path p ^ " =.. " ^ string_of_exp e2 ^ "]"
   | StrE efs -> "{" ^ concat ", " (List.map string_of_expfield efs) ^ "}"
-  | DotE (t, e1, atom) ->
-    string_of_exp e1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ t
+  | DotE (e1, atom) ->
+    string_of_exp e1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ e1.note
   | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
@@ -150,8 +150,8 @@ and string_of_exp e =
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
-  | CaseE (atom, e1, t) ->
-    string_of_atom atom ^ "_" ^ string_of_typ t ^ string_of_exp_args e1
+  | CaseE (atom, e1) ->
+    string_of_atom atom ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1
   | SubE (e1, _t1, t2) ->
     "(" ^ string_of_exp e1 ^ " <: " ^ string_of_typ t2 ^ ")"
 
@@ -170,11 +170,14 @@ and string_of_expfield (atom, e) =
 and string_of_path p =
   match p.it with
   | RootP -> ""
-  | IdxP (p1, e) -> string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
+  | IdxP (p1, e) ->
+    string_of_path p1 ^ "[" ^ string_of_exp e ^ "]"
   | SliceP (p1, e1, e2) ->
     string_of_path p1 ^ "[" ^ string_of_exp e1 ^ " : " ^ string_of_exp e2 ^ "]"
-  | DotP ({it = RootP; _}, atom) -> string_of_atom atom
-  | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
+  | DotP ({it = RootP; note; _}, atom) ->
+    string_of_atom atom ^ "_" ^ string_of_typ note
+  | DotP (p1, atom) ->
+    string_of_path p1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ p1.note
 
 and string_of_iterexp (iter, ids) =
   string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"
@@ -193,7 +196,7 @@ let string_of_binds = function
 
 let rec string_of_prem prem =
   match prem.it with
-  | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp (MixE (op, e) $ e.at)
+  | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp {e with it = MixE (op, e)}
   | IfPr e -> "if " ^ string_of_exp e
   | AssignPr (e1, e2) -> "where " ^ string_of_exp e1 ^ " := " ^ string_of_exp e2
   | ElsePr -> "otherwise"
@@ -202,26 +205,29 @@ let rec string_of_prem prem =
   | IterPr (prem', iter) ->
     "(" ^ string_of_prem prem' ^ ")" ^ string_of_iterexp iter
 
+let region_comment indent at =
+  if at = no_region then "" else
+  indent ^ ";; " ^ string_of_region at ^ "\n"
 
 let string_of_rule rule =
   match rule.it with
   | RuleD (id, binds, mixop, e, prems) ->
     let id' = if id.it = "" then "_" else id.it in
-    "\n  ;; " ^ string_of_region rule.at ^ "\n" ^
+    "\n" ^ region_comment "  " rule.at ^
     "  rule " ^ id' ^ string_of_binds binds ^ ":\n    " ^
-      string_of_exp (MixE (mixop, e) $ e.at) ^
+      string_of_exp {e with it = MixE (mixop, e)} ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let string_of_clause id clause =
   match clause.it with
   | DefD (binds, e1, e2, prems) ->
-    "\n  ;; " ^ string_of_region clause.at ^ "\n" ^
+    "\n" ^ region_comment "  " clause.at ^
     "  def" ^ string_of_binds binds ^ " " ^ id.it ^ string_of_exp_args e1 ^ " = " ^
       string_of_exp e2 ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let rec string_of_def d =
-  let pre = "\n;; " ^ string_of_region d.at ^ "\n" in
+  let pre = "\n" ^ region_comment "" d.at in
   match d.it with
   | SynD (id, dt) ->
     pre ^ "syntax " ^ id.it ^ " = " ^ string_of_deftyp dt ^ "\n"
@@ -425,9 +431,8 @@ and structured_string_of_exp exp =
   | StrE expfields ->
       sprintf "StrE (%s)"
         (structured_string_of_list structured_string_of_expfield expfields)
-  | DotE (typ, exp1, atom) ->
-      sprintf "DotE (%s, %s, %s)"
-        (structured_string_of_typ typ)
+  | DotE (exp1, atom) ->
+      sprintf "DotE (%s, %s)"
         (structured_string_of_exp exp1)
         (structured_string_of_atom atom)
   | CompE (exp1, exp2) ->
@@ -456,10 +461,9 @@ and structured_string_of_exp exp =
       sprintf "CatE (%s, %s)"
         (structured_string_of_exp exp1)
         (structured_string_of_exp exp2)
-  | CaseE (atom, exp1, typ) ->
-      sprintf "CaseE (%s, %s, %s)"
+  | CaseE (atom, exp1) ->
+      sprintf "CaseE (%s, %s)"
         (structured_string_of_atom atom)
-        (structured_string_of_typ typ)
         (structured_string_of_exp exp1)
   | SubE (exp1, typ1, typ2) ->
       sprintf "SubE (%s, %s, %s)"

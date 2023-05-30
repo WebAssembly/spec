@@ -38,7 +38,8 @@ let rec free_lhs_exp e =
   match e.it with
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _) ->
+  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _)
+  | CallE (_, e1) | DotE (e1, _) | CaseE (_, e1) ->
     free_lhs_exp e1
   | BinE (_, e1, e2) | CmpE (_, e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
@@ -49,9 +50,7 @@ let rec free_lhs_exp e =
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     union (free_list free_lhs_exp [e1; e2]) (free_lhs_path p)
   | StrE efs -> free_list free_lhs_expfield efs
-  | CallE (_id, e1) -> free_lhs_exp e1
   | IterE (e1, iter) -> union (free_lhs_exp e1) (free_lhs_iterexp iter)
-  | DotE (_t, e1, _) | CaseE (_, e1, _t) -> free_lhs_exp e1
 
 and free_lhs_expfield (_, e) = free_lhs_exp e
 
@@ -83,17 +82,21 @@ let is_assign env prem = match prem.it with
     else if subset (free_exp r) env && disjoint (free_exp l) env then
       Either.Left (AssignPr(l, r) $ prem.at)
     else if subset (free_exp l) env || subset (free_exp r) env then (
-      (* TODO: if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)]) *)
       let lhs, rhs = if subset (free_exp l) env then r, l else l, r in
       match lhs.it with
-      | CallE (name, args) ->
+      | CallE (name, args) -> (* Inverse *)
         let knowns, unknowns = List.partition (fun e -> subset (free_exp e) env) (exp_to_args args) in
+        let type_of_exprs es = TupT (List.map (fun e -> e.note) es) $ no_region in
         let new_lhs = match unknowns with
           | [] -> failwith "Impossible"
           | [e] -> e
-          | es -> ListE es $ no_region
+          | es -> ListE es $$ (no_region % type_of_exprs es)
         in
-        let new_rhs = CallE ("inverse_of_" ^ name.it $ name.at, TupE (knowns @ [rhs]) $ no_region) $ no_region in
+        let new_args = knowns @ [rhs] in
+        let new_rhs =
+          CallE ("inverse_of_" ^ name.it $ name.at, TupE new_args $$ no_region % type_of_exprs new_args)
+          $$ (no_region % new_lhs.note)
+        in
         Either.Left (AssignPr(new_lhs, new_rhs) $ prem.at)
       | _ ->
         fail prem;

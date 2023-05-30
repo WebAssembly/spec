@@ -46,7 +46,7 @@ let rec t_exp env exp =
   let exp' = t_exp2 env exp in
   match exp'.it with
   | CallE (f, _) when is_partial env f ->
-    TheE exp' $ no_region
+    {exp' with it = TheE {exp' with note = IterT (exp'.note, Opt) $ exp'.at}}
   | _ -> exp'
 
 and t_exp2 env x = { x with it = t_exp' env x.it }
@@ -62,7 +62,7 @@ and t_exp' env = function
   | UpdE (exp1, path, exp2) -> UpdE (t_exp env exp1, t_path env path, t_exp env exp2)
   | ExtE (exp1, path, exp2) -> ExtE (t_exp env exp1, t_path env path, t_exp env exp2)
   | StrE fields -> StrE (List.map (fun (a, e) -> a, t_exp env e) fields)
-  | DotE (t, e, a) -> DotE (t, t_exp env e, a)
+  | DotE (e, a) -> DotE (t_exp env e, a)
   | CompE (exp1, exp2) -> CompE (t_exp env exp1, t_exp env exp2)
   | LenE exp -> LenE exp
   | TupE es -> TupE (List.map (t_exp env) es)
@@ -74,7 +74,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
-  | CaseE (a, e, t) -> CaseE (a, t_exp env e, t)
+  | CaseE (a, e) -> CaseE (a, t_exp env e)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
 and t_iter env = function
@@ -123,10 +123,12 @@ let rec t_def' env = function
       let typ2' = IterT (typ2, Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
         DefD (binds, lhs, rhs, prems) ->
-          { clause with it = DefD (binds, lhs, OptE (Some rhs) $ no_region, prems) }
+          { clause with
+            it = DefD (binds, lhs, OptE (Some rhs) $$ no_region % typ2', prems) }
         ) clauses' in
       let x = "x" $ no_region in
-      let catch_all = DefD ([(x, typ1, [])], VarE x $ no_region, OptE None $ no_region, []) $ no_region in
+      let catch_all = DefD ([(x, typ1, [])], VarE x $$ no_region % typ1,
+        OptE None $$ no_region % typ2', []) $ no_region in
       DecD (id, typ1, typ2', clauses'' @ [ catch_all ])
     else
       DecD (id, typ1, typ2, clauses')

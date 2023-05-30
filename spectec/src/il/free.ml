@@ -83,7 +83,8 @@ and free_exp e =
   match e.it with
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _) ->
+  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1)
+  | DotE (e1, _) | CaseE (_, e1) ->
     free_exp e1
   | BinE (_, e1, e2) | CmpE (_, e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
@@ -96,7 +97,7 @@ and free_exp e =
   | StrE efs -> free_list free_expfield efs
   | CallE (id, e1) -> union (free_defid id) (free_exp e1)
   | IterE (e1, iter) -> union (free_exp e1) (free_iterexp iter)
-  | DotE (t, e1, _) | CaseE (_, e1, t) -> union (free_exp e1) (free_typ t)
+  | SubE (e1, t1, t2) -> union (free_exp e1) (union (free_typ t1) (free_typ t2))
 
 and free_expfield (_, e) = free_exp e
 
@@ -106,7 +107,7 @@ and free_path p =
   | IdxP (p1, e) -> union (free_path p1) (free_exp e)
   | SliceP (p1, e1, e2) ->
     union (free_path p1) (union (free_exp e1) (free_exp e2))
-  | DotP (p1, _) -> free_path p1
+  | DotP (p1, _atom) -> free_path p1
 
 and free_iterexp (iter, ids) =
     union (free_iter iter) (free_list free_varid ids)

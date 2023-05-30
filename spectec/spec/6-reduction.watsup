@@ -346,7 +346,7 @@ rule Step_read/memory.copy-le:
 rule Step_read/memory.copy-gt:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.COPY)  ~>
     (CONST I32 $(j+n-1)) (CONST I32 $(i+n-1)) (LOAD I32 (8 _ U) 0 0) (STORE I32 8 0 0)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.COPY)
+    (CONST I32 j) (CONST I32 i) (CONST I32 $(n-1)) (MEMORY.COPY)
   -- otherwise
 
 

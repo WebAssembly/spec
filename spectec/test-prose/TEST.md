@@ -19,11 +19,11 @@ Ki
 1. Return 1024.
 
 size t
-1. If t is i32 or t is f32, then:
+1. If t is I32 or t is F32, then:
   a. Return 32.
-2. If t is i64 or t is f64, then:
+2. If t is I64 or t is F64, then:
   a. Return 64.
-3. If t is v128, then:
+3. If t is V128, then:
   a. Return 128.
 
 test_sub_ATOM_22 n_3_ATOM_y
@@ -33,17 +33,17 @@ curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
 default_ t
-1. If t is i32, then:
+1. If t is I32, then:
   a. Return the value i32.CONST 0.
-2. If t is i64, then:
+2. If t is I64, then:
   a. Return the value i64.CONST 0.
-3. If t is f32, then:
+3. If t is F32, then:
   a. Return the value f32.CONST 0..
-4. If t is f64, then:
+4. If t is F64, then:
   a. Return the value f64.CONST 0..
-5. If t is funcref, then:
+5. If t is FUNCREF, then:
   a. Return the value ref.null Yet.
-6. If t is externref, then:
+6. If t is EXTERNREF, then:
   a. Return the value ref.null Yet.
 
 funcaddr
@@ -214,11 +214,11 @@ frame n f val
   a. Push val^n to the stack.
 
 return
-1. If unified0 is of the case FRAME__admininstr, then:
+1. If unified0 is of the case FRAME__(n, frame, admininstr*), then:
   a. Let FRAME_(n, f, val'* ++ val^n ++ [RETURN] ++ instr*) be unified0.
   b. If |val^n| is n, then:
     1) Push val^n to the stack.
-2. If unified0 is of the case LABEL__admininstr, then:
+2. If unified0 is of the case LABEL__(nat, instr*, admininstr*), then:
   a. Let LABEL_(k, instr'*, val* ++ [RETURN] ++ instr*) be unified0.
   b. Push val* to the stack.
   c. Execute (return).
@@ -274,7 +274,7 @@ cvtop nt_1 cvtop nt_2 sx
 ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. If val is not of the case REF.NULL_val, then:
+3. If val is not of the case REF.NULL_reftype, then:
   a. Push the value i32.CONST 0 to the stack.
 4. Else:
   a. Let the value ref.null rt be val.
@@ -296,7 +296,7 @@ call_indirect x ft
 2. Pop the value i32.CONST i from the stack.
 3. If i ≥ |$table(x)|, then:
   a. Trap.
-4. Else if $table(x)[i] is not of the case REF.FUNC_ADDR_ref, then:
+4. Else if $table(x)[i] is not of the case REF.FUNC_ADDR_addr, then:
   a. Trap.
 5. Else:
   a. Let the value ref.funcaddr a be $table(x)[i].
@@ -431,7 +431,7 @@ memory.fill
 8. Else if n is not 0, then:
   a. Push the value i32.CONST i to the stack.
   b. Push val to the stack.
-  c. Execute (store i32 ?(8) 0 0).
+  c. Execute (store I32 ?(8) 0 0).
   d. Push the value i32.CONST (i + 1) to the stack.
   e. Push val to the stack.
   f. Push the value i32.CONST (n - 1) to the stack.
@@ -450,15 +450,19 @@ memory.copy
   a. If j ≤ i, then:
     1) Push the value i32.CONST j to the stack.
     2) Push the value i32.CONST i to the stack.
+    3) Execute (load I32 ?([8, U]) 0 0).
+    4) Execute (store I32 ?(8) 0 0).
+    5) Push the value i32.CONST (j + 1) to the stack.
+    6) Push the value i32.CONST (i + 1) to the stack.
   b. Else:
     1) Push the value i32.CONST ((j + n) - 1) to the stack.
     2) Push the value i32.CONST ((i + n) - 1) to the stack.
-  c. Execute (load i32 ?([8, U]) 0 0).
-  d. Execute (store i32 ?(8) 0 0).
-  e. Push the value i32.CONST (j + 1) to the stack.
-  f. Push the value i32.CONST (i + 1) to the stack.
-  g. Push the value i32.CONST (n - 1) to the stack.
-  h. Execute (memory.copy).
+    3) Execute (load I32 ?([8, U]) 0 0).
+    4) Execute (store I32 ?(8) 0 0).
+    5) Push the value i32.CONST j to the stack.
+    6) Push the value i32.CONST i to the stack.
+  c. Push the value i32.CONST (n - 1) to the stack.
+  d. Execute (memory.copy).
 
 memory.init x
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -472,7 +476,7 @@ memory.init x
 8. Else if n is not 0 and i < |$data(x)|, then:
   a. Push the value i32.CONST j to the stack.
   b. Push the value i32.CONST $data(x)[i] to the stack.
-  c. Execute (store i32 ?(8) 0 0).
+  c. Execute (store I32 ?(8) 0 0).
   d. Push the value i32.CONST (j + 1) to the stack.
   e. Push the value i32.CONST (i + 1) to the stack.
   f. Push the value i32.CONST (n - 1) to the stack.
@@ -671,38 +675,38 @@ table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (reg
 ref_null.wast: [2/2]
 memory.wast: [Uncaught exception in 3th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 unwind.wast: [49/49]
-call.wast: [37/70]
-local_get.wast: [17/19]
+call.wast: [42/70]
+local_get.wast: [13/19]
 fac.wast: [0/6]
-func.wast: [84/96]
+func.wast: [70/96]
 exports.wast: [4/9]
 local_set.wast: [18/19]
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 align.wast: [0/48]
-if.wast: [78/123]
+if.wast: [93/123]
 const.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
 f64_cmp.wast: [0/2400]
-block.wast: [40/52]
+block.wast: [44/52]
 labels.wast: [25/25]
 switch.wast: [18/26]
 i64.wast: [0/384]
 memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 stack.wast: [2/5]
-loop.wast: [51/77]
+loop.wast: [41/77]
 conversions.wast: [0/593]
 endianness.wast: [0/68]
 return.wast: [63/63]
-store.wast: [9/9]
-memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to Invalid assignment: (_, func) := [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+store.wast: [0/9]
+memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to Not an integer]
 i32.wast: [243/374]
 unreachable.wast: [63/63]
 bulk.wast: [Uncaught exception in 5th assertion: Direct invocation failed due to Invalid assignment: (_, func) := [255, 0, 0, 0, 0, 0, 0, 0]]
-traps.wast: [14/32]
+traps.wast: [10/32]
 local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 f64_bitwise.wast: [0/360]
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-memory_grow.wast: [7/84]
+memory_grow.wast: [1/84]
 tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 call_indirect.wast: [25/132]
 load.wast: [0/37]
@@ -714,7 +718,7 @@ ref_is_null.wast: [3/11]
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [123/149]
-select.wast: [64/118]
+select.wast: [60/118]
 f32_bitwise.wast: [32/360]
 memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
@@ -733,7 +737,7 @@ unreached-valid.wast: [5/5]
 table_fill.wast: [22/35]
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [49/255]
+address.wast: [30/255]
 table_grow.wast: [7/38]
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -742,6 +746,6 @@ custom.wast: [Uncaught exception in 0th assertion: This test contains a binary m
 int_exprs.wast: [25/89]
 f64.wast: [0/2500]
 br.wast: [76/76]
-nop.wast: [69/83]
+nop.wast: [65/83]
 == Complete.
 ```

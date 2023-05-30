@@ -77,8 +77,8 @@ let rec find_type tenv exp =
 
 let get_params lhs_stack =
   match List.hd lhs_stack |> it with
-  | Ast.CaseE (_, { it = Ast.TupE exps; _ }, _) -> exps
-  | Ast.CaseE (_, exp, _) -> [ exp ]
+  | Ast.CaseE (_, { it = Ast.TupE exps; _ }) -> exps
+  | Ast.CaseE (_, exp) -> [ exp ]
   | _ ->
       print_endline "Bubbleup semantics: Top of the stack is frame / label";
       []
@@ -124,7 +124,7 @@ let rec exp2expr exp =
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       Al.ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
-  | Ast.DotE (_, inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
+  | Ast.DotE (inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Al.MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) -> (
@@ -137,13 +137,13 @@ let rec exp2expr exp =
       | Ast.DivOp -> Al.DivE (lhs, rhs)
       | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith)
   (* Wasm Value expressions *)
-  | Ast.CaseE (Ast.Atom "REF.NULL", inner_exp, _) ->
+  | Ast.CaseE (Ast.Atom "REF.NULL", inner_exp) ->
       Al.RefNullE (exp2name inner_exp)
-  | Ast.CaseE (Ast.Atom "REF.FUNC_ADDR", inner_exp, _) ->
+  | Ast.CaseE (Ast.Atom "REF.FUNC_ADDR", inner_exp) ->
       Al.RefFuncAddrE (exp2expr inner_exp)
-  | Ast.CaseE (Ast.Atom "CONST", { it = Ast.TupE [ ty; num ]; _ }, _) -> (
+  | Ast.CaseE (Ast.Atom "CONST", { it = Ast.TupE [ ty; num ]; _ }) -> (
       match ty.it with
-      | Ast.CaseE (Ast.Atom ty_name, _, _) ->
+      | Ast.CaseE (Ast.Atom ty_name, _) ->
           let ty = string2type ty_name in
           let open Reference_interpreter.Types in
           let v = match ty, exp2expr num with
@@ -154,17 +154,17 @@ let rec exp2expr exp =
           Al.ConstE (Al.ValueE (Al.WasmTypeV ty), v)
       | Ast.VarE id -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
       | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith)
-  | Ast.CaseE
-      (Ast.Atom typ, _, { it = Ast.VarT { it = "valtype" | "numtype"; _ }; _ })
-    ->
-      Al.ValueE (Al.WasmTypeV (string2type typ))
+  | Ast.CaseE (Ast.Atom typ, e)
+      when Eq.eq_typ e.note (Ast.VarT ("valtype" $ no_region) $ no_region)
+      || Eq.eq_typ e.note (Ast.VarT ("numtype" $ no_region) $ no_region) ->
+        Al.ValueE (Al.WasmTypeV (string2type typ))
   (* Wasm Instruction *)
-  | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }, _) ->
+  | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }) ->
       Al.WasmInstrE ("loop", List.map exp2expr exps)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }, _) ->
+  | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }) ->
       Al.ConstructE (cons, List.map exp2expr args)
-  | Ast.CaseE (Ast.Atom cons, arg, _) -> Al.ConstructE (cons, [ exp2expr arg ])
+  | Ast.CaseE (Ast.Atom cons, arg) -> Al.ConstructE (cons, [ exp2expr arg ])
   (* Tuple *)
   | Ast.TupE exps -> Al.ListE (List.map exp2expr exps |> Array.of_list)
   (* Call *)
@@ -202,7 +202,7 @@ and exp2args exp =
 (* `Ast.exp` -> `Al.AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _, _) ->
+  | Ast.CaseE (Ast.Atom "FRAME_", _) ->
       Al.AssertI "Due to validation, the frame F is now on the top of the stack"
   | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) ->
       Al.AssertI "Due to validation, the stack contains at least one frame"
@@ -212,13 +212,12 @@ let insert_assert exp =
            "Due to validation, there are at least %s values on the top of the \
             stack"
            n.it)
-  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; _vals ]; _ }, _)
+  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; _vals ]; _ })
     ->
       Al.AssertI "Due to validation, the label L is now on the top of the stack"
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE ({ it = Ast.CaseE (Ast.Atom "I32", _, _); _ } :: _); _ },
-        _ ) ->
+        { it = Ast.TupE ({ it = Ast.CaseE (Ast.Atom "I32", _); _ } :: _); _ }) ->
       Al.AssertI
         "Due to validation, a value of value type i32 is on the top of the \
          stack"
@@ -243,8 +242,7 @@ let lhs2pop = function
                     inner_exp;
                   ];
               _;
-            },
-            _ ) ->
+            }) ->
           let let_instrs =
             [
               Al.LetI (Al.NameE (Al.N name.it), Al.GetCurFrameE);
@@ -279,7 +277,7 @@ let lhs2pop = function
           (let_instrs @ pop_instrs @ pop_frame_instrs, rest)
       (* Label *)
       | Ast.CaseE
-          (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }, _) ->
+          (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
           ( [
               (* TODO: append Jump instr *)
               Al.PopI (exp2expr vals);
@@ -302,10 +300,10 @@ let lhs2pop = function
 let rec rhs2instrs exp =
   match exp.it with
   (* Trap *)
-  | Ast.CaseE (Atom "TRAP", _, _) -> [ Al.TrapI ]
+  | Ast.CaseE (Atom "TRAP", _) -> [ Al.TrapI ]
   (* Push *)
   | Ast.SubE (_, _, _) | IterE (_, _) -> [ Al.PushI (exp2expr exp) ]
-  | Ast.CaseE (Atom atomid, _, _)
+  | Ast.CaseE (Atom atomid, _)
     when atomid = "CONST" || atomid = "REF.FUNC_ADDR" ->
       [ Al.PushI (exp2expr exp) ]
   (* multiple rhs' *)
@@ -323,8 +321,7 @@ let rec rhs2instrs exp =
                 { it = Ast.ListE [ labelexp ]; _ };
               ];
           _;
-        },
-        _ ) ->
+        }) ->
       let push_instr =
         Al.PushI
           (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it)))
@@ -339,8 +336,7 @@ let rec rhs2instrs exp =
             Ast.TupE
               [ { it = Ast.VarE label_arity; _ }; instrs_exp1; instrs_exp2 ];
           _;
-        },
-        _ ) -> (
+        }) -> (
       let label_expr =
         Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1)
       in
@@ -361,7 +357,7 @@ let rec rhs2instrs exp =
             Al.ExitNormalI (Al.N "L");
           ])
   (* Execute instr *)
-  | Ast.CaseE (Atom atomid, argexp, _)
+  | Ast.CaseE (Atom atomid, argexp)
     when String.starts_with ~prefix:"TABLE." atomid
          || String.starts_with ~prefix:"MEMORY." atomid
          || atomid = "LOAD" || atomid = "STORE" || atomid = "BLOCK"
@@ -424,12 +420,12 @@ let prems2instrs remain_lhs =
       | Ast.AssignPr (exp1, exp2) -> (
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
           match exp1.it with
-          | Ast.CaseE (atom, _e, t) ->
+          | Ast.CaseE (atom, e) ->
               [
                 Al.IfI
                   ( Al.CaseOfC
                       ( exp2expr exp2,
-                        Print.string_of_atom atom ^ "_" ^ Print.string_of_typ t
+                        Print.string_of_atom atom ^ "_" ^ Print.string_of_typ e.note
                       ),
                     Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
                     [] );
@@ -472,11 +468,11 @@ let path2expr exp path =
   let rec path2expr' path =
     match path.it with
     | Ast.RootP -> exp
-    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $ path.at
-    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $ path.at
+    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
+    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
     | Ast.DotP (p, a) ->
-        Ast.DotE (Ast.VarT ("top" $ no_region) $ no_region, path2expr' p, a)
-        $ path.at
+        Ast.DotE (path2expr' p, a)
+        $$ (path.at % path.note)
   in
   path2expr' path |> exp2expr
 
@@ -573,72 +569,72 @@ let rec group_rules = function
 let _unified_id = ref 0
 let init_unified_id () = _unified_id := 0
 let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
-let gen_new_unified () = Ast.VarE ("unified" ^ (string_of_int (get_unified_id())) $ no_region) $ no_region
+let gen_new_unified () = Ast.VarE ("unified" ^ (string_of_int (get_unified_id())) $ no_region)
 
 let rec overlap e1 e2 = if Eq.eq_exp e1 e2 then e1 else
   let open Ast in
-  match e1.it, e2.it with
-  | VarE id, _ when String.starts_with ~prefix:"unified" id.it -> e1
+  ( match e1.it, e2.it with
+  | VarE id, _ when String.starts_with ~prefix:"unified" id.it -> e1.it
   | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
-      UnE (unop1, overlap e1 e2) $ no_region
+      UnE (unop1, overlap e1 e2)
   | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
-      BinE (binop1, overlap e1 e2, overlap e1' e2') $ no_region
+      BinE (binop1, overlap e1 e2, overlap e1' e2')
   | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
-      CmpE (cmpop1, overlap e1 e2, overlap e1' e2') $ no_region
+      CmpE (cmpop1, overlap e1 e2, overlap e1' e2')
   | IdxE (e1, e1'), IdxE (e2, e2') ->
-      IdxE (overlap e1 e2, overlap e1' e2') $ no_region
+      IdxE (overlap e1 e2, overlap e1' e2')
   | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'') $ no_region
+      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'')
   | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when Eq.eq_path path1 path2 ->
-      UpdE (overlap e1 e2, path1, overlap e1' e2') $ no_region
+      UpdE (overlap e1 e2, path1, overlap e1' e2')
   | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when Eq.eq_path path1 path2 ->
-      ExtE (overlap e1 e2, path1, overlap e1' e2') $ no_region
+      ExtE (overlap e1 e2, path1, overlap e1' e2')
   | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2) $ no_region
-  | DotE (typ1, e1, atom1), DotE (typ2, e2, atom2) when Eq.eq_typ typ1 typ2 && atom1 = atom2 ->
-      DotE (typ1, overlap e1 e2, atom1) $ no_region
+      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
+  | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
+      DotE (overlap e1 e2, atom1)
   | CompE (e1, e1'), CompE (e2, e2') ->
-      CompE (overlap e1 e2, overlap e1' e2') $ no_region
+      CompE (overlap e1 e2, overlap e1' e2')
   | LenE e1, LenE e2 ->
-      LenE (overlap e1 e2) $ no_region
+      LenE (overlap e1 e2)
   | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
-      TupE (List.map2 overlap es1 es2) $ no_region
+      TupE (List.map2 overlap es1 es2)
   | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
-      MixE (mixop1, overlap e1 e2) $ no_region
+      MixE (mixop1, overlap e1 e2)
   | CallE (id1, e1), CallE (id2, e2) when Eq.eq_id id1 id2->
-      CallE (id1, overlap e1 e2) $ no_region
+      CallE (id1, overlap e1 e2)
   | IterE (e1, itere1), IterE (e2, itere2) when Eq.eq_iterexp itere1 itere2 ->
-      IterE (overlap e1 e2, itere1) $ no_region
+      IterE (overlap e1 e2, itere1)
   | OptE (Some e1), OptE (Some e2) ->
-      OptE (Some (overlap e1 e2)) $ no_region
+      OptE (Some (overlap e1 e2))
   | TheE e1, TheE e2 ->
-      TheE (overlap e1 e2) $ no_region
+      TheE (overlap e1 e2)
   | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
-      ListE (List.map2 overlap es1 es2) $ no_region
+      ListE (List.map2 overlap es1 es2)
   | CatE (e1, e1'), CatE (e2, e2') ->
-      CatE (overlap e1 e2, overlap e1' e2') $ no_region
-  | CaseE (atom1, e1, typ1), CaseE (atom2, e2, typ2) when atom1 = atom2 && Eq.eq_typ typ1 typ2 ->
-      CaseE (atom1, overlap e1 e2, typ1) $ no_region
+      CatE (overlap e1 e2, overlap e1' e2')
+  | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
+      CaseE (atom1, overlap e1 e2)
   | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when Eq.eq_typ typ1 typ2 && Eq.eq_typ typ1' typ2' ->
-      SubE (overlap e1 e2, typ1, typ1') $ no_region
-  | _ -> gen_new_unified()
+      SubE (overlap e1 e2, typ1, typ1')
+  | _ -> gen_new_unified() ) $$ (e1.at % e1.note)
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if Eq.eq_exp template e then [], [] else match template.it, e.it with
   | VarE id, _ when String.starts_with ~prefix:"unified" id.it ->
-    [Ast.AssignPr (e, Ast.VarE id $ no_region) $ no_region],
+    [Ast.AssignPr (e, Ast.VarE id $$ (no_region % template.note)) $ no_region],
     [id, (* TODO *) Ast.VarT ("TOP" $ no_region) $ no_region, []]
   (* one e *)
   | UnE (_, e1), UnE (_, e2)
-  | DotE (_, e1, _), DotE (_, e2, _)
+  | DotE (e1, _), DotE (e2, _)
   | LenE e1, LenE e2
   | MixE (_, e1), MixE (_, e2)
   | CallE (_, e1), CallE (_, e2)
   | IterE (e1, _), IterE (e2, _)
   | OptE (Some e1), OptE (Some e2)
   | TheE e1, TheE e2
-  | CaseE (_, e1, _), CaseE (_, e2, _)
+  | CaseE (_, e1), CaseE (_, e2)
   | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
   (* two e *)
   | BinE (_, e1, e1'), BinE (_, e2, e2')
