@@ -126,7 +126,11 @@ let test file_name =
       | Script.Meta _ -> failwith not_supported_msg
     );
     if !total <> 0 then
-      Printf.sprintf "%s: [%d/%d]" name !success !total |> print_endline
+      let percentage = (float_of_int !success /. float_of_int !total) *. 100. in
+      Printf.sprintf "%s: [%d/%d] (%.2f%%)" name !success !total percentage |> print_endline;
+      (!success, !total, percentage)
+    else
+      (0, 0, 0.)
   with
   | e ->
     let msg = msg_of e in
@@ -136,13 +140,36 @@ let test file_name =
       name
       !total
       msg
-    |> print_endline
-
+      |> print_endline;
+    if !total <> 0 then
+      let percentage = (float_of_int !success /. float_of_int !total) *. 100. in
+      (!success, !total, percentage)
+    else
+      (0, 0, 0.)
 
 let test_all root =
-  test (Filename.concat root "test-prose/sample.wast");
+  let sample = test (Filename.concat root "test-prose/sample.wast") in
 
   let f filename = if contains !test_name filename then
-    test (Filename.concat root ("test-prose/spec-test/" ^ filename)) in
+    test (Filename.concat root ("test-prose/spec-test/" ^ filename))
+  else
+    (0, 0, 0.)
+  in
 
-  Sys.readdir (Filename.concat root "test-prose/spec-test") |> Array.iter f
+  let tests = Sys.readdir (Filename.concat root "test-prose/spec-test") in
+  let results = Array.append [| sample |] (Array.map f tests) in
+
+  let success, total, percentage, count = Array.fold_left 
+    (fun acc result -> 
+      let (success_acc, total_acc, percentage_acc, count_acc) = acc in
+      let (success, total, percentage) = result in
+      if (total <> 0) then 
+        (success_acc + success, total_acc + total, percentage_acc +. percentage, count_acc + 1)
+      else
+        acc)
+    (0, 0, 0., 0) results
+  in
+  let percentage_norm = percentage /. float_of_int count in
+  let percentage = (float_of_int success /. float_of_int total) *. 100. in 
+
+  Printf.sprintf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)" success total percentage percentage_norm |> print_endline
