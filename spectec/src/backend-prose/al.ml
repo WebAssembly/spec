@@ -48,8 +48,6 @@ and value =
   | FrameV of frame
   | StoreV of store ref
   | ListV of value array
-  | WasmTypeV of Types.value_type
-  | WasmInstrV of string * value list
   | IntV of int
   | FloatV of float
   | StringV of string
@@ -58,7 +56,6 @@ and value =
   | ConstructV of string * value list
   | RecordV of value record
   | OptV of value option
-  | WasmModuleV
 
 type name = N of string | SubN of name * string
 
@@ -97,15 +94,10 @@ type expr =
   | ContE of expr
   | LabelNthE of expr
   | LabelE of (expr * expr)
-  | WasmInstrE of (string * expr list)
   | NameE of name
   | ArrowE of expr * expr
   | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   | OptE of expr option
-  (* Wasm Value Expr *)
-  | ConstE of expr * expr
-  | RefNullE of name
-  | RefFuncAddrE of expr
   (* Yet *)
   | YetE of string
 

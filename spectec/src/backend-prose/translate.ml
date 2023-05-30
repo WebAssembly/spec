@@ -136,31 +136,6 @@ let rec exp2expr exp =
       | Ast.MulOp -> Al.MulE (lhs, rhs)
       | Ast.DivOp -> Al.DivE (lhs, rhs)
       | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith)
-  (* Wasm Value expressions *)
-  | Ast.CaseE (Ast.Atom "REF.NULL", inner_exp) ->
-      Al.RefNullE (exp2name inner_exp)
-  | Ast.CaseE (Ast.Atom "REF.FUNC_ADDR", inner_exp) ->
-      Al.RefFuncAddrE (exp2expr inner_exp)
-  | Ast.CaseE (Ast.Atom "CONST", { it = Ast.TupE [ ty; num ]; _ }) -> (
-      match ty.it with
-      | Ast.CaseE (Ast.Atom ty_name, _) ->
-          let ty = string2type ty_name in
-          let open Reference_interpreter.Types in
-          let v = match ty, exp2expr num with
-          | NumType F32Type, Al.ValueE (Al.IntV n)
-          | NumType F64Type, Al.ValueE (Al.IntV n) -> Al.ValueE (Al.FloatV (float_of_int n))
-          | _, v -> v
-          in
-          Al.ConstE (Al.ValueE (Al.WasmTypeV ty), v)
-      | Ast.VarE id -> Al.ConstE (Al.NameE (Al.N id.it), exp2expr num)
-      | _ -> gen_fail_msg_of_exp exp "value expression" |> failwith)
-  | Ast.CaseE (Ast.Atom typ, e)
-      when Eq.eq_typ e.note (Ast.VarT ("valtype" $ no_region) $ no_region)
-      || Eq.eq_typ e.note (Ast.VarT ("numtype" $ no_region) $ no_region) ->
-        Al.ValueE (Al.WasmTypeV (string2type typ))
-  (* Wasm Instruction *)
-  | Ast.CaseE (Ast.Atom "LOOP", { it = Ast.TupE exps; _ }) ->
-      Al.WasmInstrE ("loop", List.map exp2expr exps)
   (* ConstructE *)
   | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }) ->
       Al.ConstructE (cons, List.map exp2expr args)
@@ -363,13 +338,12 @@ let rec rhs2instrs exp =
          || atomid = "LOAD" || atomid = "STORE" || atomid = "BLOCK"
          || atomid = "BR" || atomid = "CALL_ADDR" || atomid = "LOCAL.SET"
          || atomid = "RETURN" ->
-      let lower_id = String.lowercase_ascii atomid in
       let args =
         match argexp.it with
         | Ast.TupE exps -> List.map exp2expr exps
         | _ -> [ exp2expr argexp ]
       in
-      [ Al.ExecuteI (Al.WasmInstrE (lower_id, args)) ]
+      [ Al.ExecuteI (Al.ConstructE (atomid, args)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -420,13 +394,17 @@ let prems2instrs remain_lhs =
       | Ast.AssignPr (exp1, exp2) -> (
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
           match exp1.it with
-          | Ast.CaseE (atom, e) ->
+          | Ast.CaseE (Ast.Atom tag, {it = Ast.TupE []; _}) ->
               [
                 Al.IfI
-                  ( Al.CaseOfC
-                      ( exp2expr exp2,
-                        Print.string_of_atom atom ^ "_" ^ Print.string_of_typ e.note
-                      ),
+                  ( Al.CaseOfC (exp2expr exp2, tag),
+                    instrs',
+                    [] );
+              ]
+          | Ast.CaseE (Ast.Atom tag, _) ->
+              [
+                Al.IfI
+                  ( Al.CaseOfC (exp2expr exp2, tag),
                     Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
                     [] );
               ]

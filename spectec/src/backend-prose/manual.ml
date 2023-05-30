@@ -1,4 +1,3 @@
-open Reference_interpreter
 open Al
 
 (** Hardcoded algorithms **)
@@ -40,7 +39,7 @@ let br =
               LetI (NameE (N "L"), GetCurLabelE);
               ExitAbruptI (N "L");
               ExecuteI
-                (WasmInstrE ("br", [ SubE (NameE (N "l"), ValueE (IntV 1)) ]));
+                (ConstructE ("BR", [ SubE (NameE (N "l"), ValueE (IntV 1)) ]));
             ] );
       ] )
 
@@ -79,7 +78,7 @@ let return =
             PushI (NameE (N "L"));
             PushI (IterE (N "val'", List));
             ExitAbruptI (N "L");
-            ExecuteI (WasmInstrE ("return", []));
+            ExecuteI (ConstructE ("RETURN", []));
           ] );
       ] )
 
@@ -113,7 +112,7 @@ let instantiation =
   let mode = N "mode" in
   let memidx = N "memidx" in
   let dinstrs = IterE (N "dinstrs", List) in
-  let i32_type = WasmTypeV (Types.NumType (Types.I32Type)) in
+  let i32_type = ConstructV ("I32", []) in
 
   (* Algorithm *)
   Algo (
@@ -340,7 +339,7 @@ let alloc_table =
   let addr_name = N "a" in
   let store_name = N "s" in
   let tableinst_name = N "tableinst" in
-  let ref_null = WasmInstrE ("ref.null", [NameE reftype]) in
+  let ref_null = ConstructE ("REF.NULL", [NameE reftype]) in
 
   (* Algorithm *)
   Algo (
@@ -457,7 +456,7 @@ let invocation =
       LetI (NameE frame_name, FrameE (ValueE (IntV 0), RecordE frame_rec));
       PushI (NameE frame_name);
       PushI (args_iter);
-      ExecuteI (WasmInstrE ("call_addr", [NameE funcaddr_name]));
+      ExecuteI (ConstructE ("CALL_ADDR", [NameE funcaddr_name]));
       PopI (IterE (SubN (N "val", "res"), ListN m));
       PopI (NameE frame_name);
       ReturnI (Some (IterE (SubN (N "val", "res"), ListN m)))

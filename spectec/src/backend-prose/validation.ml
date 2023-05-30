@@ -1,3 +1,4 @@
+(*
 open Al
 open Reference_interpreter
 
@@ -227,3 +228,6 @@ let valid al =
   List.iter valid_algo al;
   Printf.sprintf "\nPass/Total: [%d/%d]" (!total - !fail) !total
   |> print_endline
+*)
+
+let valid al = print_endline "Deprecated"

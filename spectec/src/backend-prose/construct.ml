@@ -2,6 +2,22 @@ open Reference_interpreter
 open Source
 open Al
 
+(* Construct types *)
+
+let al_of_type t =
+  let open Types in
+  (* num_type *)
+  match t with
+  | NumType I32Type -> ConstructV ("I32", [])
+  | NumType I64Type -> ConstructV ("I64", [])
+  | NumType F32Type -> ConstructV ("F32", [])
+  | NumType F64Type -> ConstructV ("F64", [])
+  (* vec_type *)
+  | VecType V128Type -> ConstructV ("V128", [])
+  (* ref_type *)
+  | RefType FuncRefType -> ConstructV ("FUNCREF", [])
+  | RefType ExternRefType ->ConstructV ("EXTERNREF", [])
+
 (* Construct value *)
 
 let al_of_num n =
@@ -9,16 +25,16 @@ let al_of_num n =
   let t = Values.type_of_num n in
   match t with
   | I32Type | I64Type ->
-      WasmInstrV ("const", [ WasmTypeV (NumType t); IntV (int_of_string s) ])
+      ConstructV ("CONST", [ al_of_type (NumType t); IntV (int_of_string s) ])
   | F32Type | F64Type ->
-      WasmInstrV ("const", [ WasmTypeV (NumType t); FloatV (float_of_string s) ])
+      ConstructV ("CONST", [ al_of_type (NumType t); FloatV (float_of_string s) ])
 
 let al_of_value = function
 | Values.Num n -> al_of_num n
 | Values.Vec _v -> failwith "TODO"
 | Values.Ref r ->
     begin match r with
-      | Values.NullRef t -> WasmInstrV ("ref.null", [ WasmTypeV (RefType t) ])
+      | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_type (RefType t) ])
       | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ IntV (Int32.to_int i) ])
       | r -> Values.string_of_ref r |> failwith
     end
@@ -30,11 +46,11 @@ let al_of_blocktype types wtype =
   | Ast.VarBlockType idx ->
     let Types.FuncType (param_types, result_types) = (Lib.List32.nth types idx.it).it in
     let result_type_to_listV result_type =
-      ListV (List.map (fun t -> WasmTypeV t) result_type |> Array.of_list)
+      ListV (List.map al_of_type result_type |> Array.of_list)
     in
     ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
   | Ast.ValBlockType None -> ArrowV(ListV [||], ListV [||])
-  | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| WasmTypeV val_type |])
+  | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| al_of_type val_type |])
 
 (* Construct instruction *)
 
@@ -137,97 +153,97 @@ let al_of_packsize_with_extension (p, s) =
 
 let rec al_of_instr types winstr =
   let to_int i32 = IntV (Int32.to_int i32.it) in
-  let f name  = WasmInstrV (name, []) in
-  let f_i32 name i32 = WasmInstrV (name, [to_int i32]) in
-  let f_i32_i32 name i32 i32' = WasmInstrV (name, [to_int i32; to_int i32']) in
+  let f name  = ConstructV (name, []) in
+  let f_i32 name i32 = ConstructV (name, [to_int i32]) in
+  let f_i32_i32 name i32 i32' = ConstructV (name, [to_int i32; to_int i32']) in
 
   match winstr.it with
   (* wasm values *)
   | Ast.Const num -> al_of_num num.it
   | Ast.RefNull t -> al_of_value (Values.Ref (Values.NullRef t))
   (* wasm instructions *)
-  | Ast.Unreachable -> f "unreachable"
-  | Ast.Nop -> f "nop"
-  | Ast.Drop -> f "drop"
+  | Ast.Unreachable -> f "UNREACHABLE"
+  | Ast.Nop -> f "NOP"
+  | Ast.Drop -> f "DROP"
   | Ast.Unary (Values.I32 op) ->
-      WasmInstrV
-        ("unop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_unop_int op ])
+      ConstructV
+        ("UNOP", [ al_of_type (Types.NumType Types.I32Type); al_of_unop_int op ])
   | Ast.Unary (Values.F32 op) ->
-      WasmInstrV
-        ("unop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_unop_float op ])
+      ConstructV
+        ("UNOP", [ al_of_type (Types.NumType Types.F32Type); al_of_unop_float op ])
   | Ast.Binary (Values.I32 op) ->
-      WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_binop_int op ])
+      ConstructV
+        ("BINOP", [ al_of_type (Types.NumType Types.I32Type); al_of_binop_int op ])
   | Ast.Binary (Values.F32 op) ->
-      WasmInstrV
-        ("binop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_binop_float op ])
+      ConstructV
+        ("BINOP", [ al_of_type (Types.NumType Types.F32Type); al_of_binop_float op ])
   | Ast.Test (Values.I32 op) ->
-      WasmInstrV
-        ("testop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_testop_int op ])
+      ConstructV
+        ("TESTOP", [ al_of_type (Types.NumType Types.I32Type); al_of_testop_int op ])
   | Ast.Compare (Values.I32 op) ->
-      WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.I32Type); al_of_relop_int op ])
+      ConstructV
+        ("RELOP", [ al_of_type (Types.NumType Types.I32Type); al_of_relop_int op ])
   | Ast.Compare (Values.F32 op) ->
-      WasmInstrV
-        ("relop", [ WasmTypeV (Types.NumType Types.F32Type); al_of_relop_float op ])
-  | Ast.RefIsNull -> f "ref.is_null"
-  | Ast.RefFunc i32 -> f_i32 "ref.func" i32
-  | Ast.Select None -> WasmInstrV ("select", [ StringV "TODO: None" ])
-  | Ast.LocalGet i32 -> f_i32 "local.get" i32
-  | Ast.LocalSet i32 -> f_i32 "local.set" i32
-  | Ast.LocalTee i32 -> f_i32 "local.tee" i32
-  | Ast.GlobalGet i32 -> f_i32 "global.get" i32
-  | Ast.GlobalSet i32 -> f_i32 "global.set" i32
-  | Ast.TableGet i32 -> f_i32 "table.get" i32
-  | Ast.TableSet i32 -> f_i32 "table.set" i32
-  | Ast.TableSize i32 -> f_i32 "table.size" i32
-  | Ast.TableGrow i32 -> f_i32 "table.grow" i32
-  | Ast.TableFill i32 -> f_i32 "table.fill" i32
-  | Ast.TableInit (i32, i32') -> f_i32_i32 "table.init" i32 i32'
-  | Ast.Call i32 -> f_i32 "call" i32
-  | Ast.CallIndirect (i32, i32') -> f_i32_i32 "call_indirect" i32 i32'
+      ConstructV
+        ("RELOP", [ al_of_type (Types.NumType Types.F32Type); al_of_relop_float op ])
+  | Ast.RefIsNull -> f "REF.IS_NULL"
+  | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
+  | Ast.Select None -> ConstructV ("SELECT", [ StringV "TODO: None" ])
+  | Ast.LocalGet i32 -> f_i32 "LOCAL.GET" i32
+  | Ast.LocalSet i32 -> f_i32 "LOCAL.SET" i32
+  | Ast.LocalTee i32 -> f_i32 "LOCAL.TEE" i32
+  | Ast.GlobalGet i32 -> f_i32 "GLOBAL.GET" i32
+  | Ast.GlobalSet i32 -> f_i32 "GLOBAL.SET" i32
+  | Ast.TableGet i32 -> f_i32 "TABLE.GET" i32
+  | Ast.TableSet i32 -> f_i32 "TABLE.SET" i32
+  | Ast.TableSize i32 -> f_i32 "TABLE.SIZE" i32
+  | Ast.TableGrow i32 -> f_i32 "TABLE.GROW" i32
+  | Ast.TableFill i32 -> f_i32 "TABLE.FILL" i32
+  | Ast.TableInit (i32, i32') -> f_i32_i32 "TABLE.INIT" i32 i32'
+  | Ast.Call i32 -> f_i32 "CALL" i32
+  | Ast.CallIndirect (i32, i32') -> f_i32_i32 "CALL_INDIRECT" i32 i32'
   | Ast.Block (bt, instrs) ->
-      WasmInstrV
-        ("block", [
+      ConstructV
+        ("BLOCK", [
             al_of_blocktype types bt;
             ListV (instrs |> al_of_instrs types |> Array.of_list)])
   | Ast.Loop (bt, instrs) ->
-      WasmInstrV
-        ("loop", [
+      ConstructV
+        ("LOOP", [
             al_of_blocktype types bt;
             ListV (instrs |> al_of_instrs types |> Array.of_list)])
   | Ast.If (bt, instrs1, instrs2) ->
-      WasmInstrV
-        ("if", [
+      ConstructV
+        ("IF", [
             al_of_blocktype types bt;
             ListV (instrs1 |> al_of_instrs types |> Array.of_list);
             ListV (instrs2 |> al_of_instrs types |> Array.of_list);
             ])
-  | Ast.Br i32 -> f_i32 "br" i32
-  | Ast.BrIf i32 -> f_i32 "br_if" i32
+  | Ast.Br i32 -> f_i32 "BR" i32
+  | Ast.BrIf i32 -> f_i32 "BR_IF" i32
   | Ast.BrTable (i32s, i32) ->
-      WasmInstrV
-        ("br_table", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
-  | Ast.Return -> WasmInstrV ("return", [])
+      ConstructV
+        ("BR_TABLE", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
+  | Ast.Return -> ConstructV ("RETURN", [])
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
-      WasmInstrV
-        ("load", [
-            WasmTypeV (Types.NumType ty);
+      ConstructV
+        ("LOAD", [
+            al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize_with_extension pack);
             IntV align;
             IntV (Int32.to_int offset) ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
-      WasmInstrV
-        ("store", [
-            WasmTypeV (Types.NumType ty);
+      ConstructV
+        ("STORE", [
+            al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize pack);
             IntV align;
             IntV (Int32.to_int offset) ])
-  | Ast.MemorySize -> f "memory.size"
-  | Ast.MemoryGrow -> f "memory.grow"
-  | Ast.MemoryFill -> f "memory.fill"
-  | Ast.MemoryCopy -> f "memory.copy"
-  | _ -> WasmInstrV ("Yet: " ^ Print.string_of_winstr winstr, [])
+  | Ast.MemorySize -> f "MEMORY.SIZE"
+  | Ast.MemoryGrow -> f "MEMORY.GROW"
+  | Ast.MemoryFill -> f "MEMORY.FILL"
+  | Ast.MemoryCopy -> f "MEMORY.COPY"
+  | _ -> ConstructV ("Yet: " ^ Print.string_of_winstr winstr, [])
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 
@@ -244,8 +260,6 @@ let al_of_func wasm_module wasm_func =
   (* Note: function type will be placed in function in DSL *)
   let { it = Types.FuncType (wtl1, wtl2); _ } =
     List.nth wasm_types (Int32.to_int wasm_ftype.it) in
-
-  let al_of_type ty = WasmTypeV ty in
 
   (* Construct function type *)
   let ftype =
@@ -275,7 +289,7 @@ let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits in
 
-  ConstructV ("TABLE", [ pair; WasmTypeV (RefType ref_ty) ])
+  ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
 
 let al_of_memory wasm_memory =
   let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in

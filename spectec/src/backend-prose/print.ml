@@ -65,11 +65,6 @@ let rec structured_string_of_value = function
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
-  | WasmTypeV t -> "WasmTypeV (" ^ Reference_interpreter.Types.string_of_value_type t ^ ")"
-  | WasmInstrV (s, vl) ->
-      "WasmInstrV(" ^ s ^ ", "
-      ^ string_of_list structured_string_of_value "[" ", " "]" vl
-      ^ ")"
   | IntV i -> "IntV (" ^ string_of_int i ^ ")"
   | FloatV f -> "FloatV (" ^ string_of_float f ^ ")"
   | StringV s -> "StringV (" ^ s ^ ")"
@@ -91,7 +86,6 @@ let rec structured_string_of_value = function
       ^ ")"
   | RecordV _r -> "RecordV (TODO)"
   | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
-  | WasmModuleV -> "WasmModuleV"
 
 let rec structured_string_of_expr = function
   | ValueE v -> "ValueE " ^ structured_string_of_value v
@@ -186,10 +180,6 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | WasmInstrE (s, el) ->
-      "WasmInstrE (" ^ s ^ ", "
-      ^ string_of_list structured_string_of_expr "[" ", " "]" el
-      ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
   | ArrowE (e1, e2) ->
       "ArrowE ("
@@ -198,18 +188,10 @@ let rec structured_string_of_expr = function
       ^ structured_string_of_expr e2
       ^ ")"
   | ConstructE (s, el) ->
-      "ContructE (" ^ s ^ ", "
+      "ConstructE (" ^ s ^ ", "
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"
   | OptE o -> "OptE " ^ string_of_opt "(" structured_string_of_expr ")" o
-  | ConstE (t, e) ->
-      "ConstE ("
-      ^ structured_string_of_expr t
-      ^ ", "
-      ^ structured_string_of_expr e
-      ^ ")"
-  | RefNullE n -> "RefNullE (" ^ structured_string_of_name n ^ ")"
-  | RefFuncAddrE e -> "RefFuncAddrE (" ^ structured_string_of_expr e ^ ")"
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_field (n, e) =
@@ -443,17 +425,15 @@ and string_of_value = function
   | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
-  | WasmTypeV t -> Reference_interpreter.Types.string_of_value_type t
-  | WasmInstrV (s, vl) ->
-      "(" ^ s ^ string_of_list string_of_value " " " " ")" vl
   | IntV i -> string_of_int i
   | FloatV i -> string_of_float i
   | StringV s -> s
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
-  | ArrowV (v1, v2) -> string_of_value v1 ^ "->" ^ string_of_value v2
-  | ConstructV (s, vl) -> s ^ string_of_list string_of_value "(" ", " ")" vl
+  | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
+  | ConstructV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST" ^ string_of_list string_of_value " " " " "" tl ^ ")"
+  | ConstructV (s, []) -> s
+  | ConstructV (s, vl) -> "(" ^ s ^ string_of_list string_of_value " " " " "" vl ^ ")"
   | RecordV r -> string_of_record r
-  | WasmModuleV -> "WasmModuleV"
   | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
   | OptV None -> "?()"
 
@@ -490,7 +470,7 @@ and string_of_expr = function
         (string_of_expr e1)
   | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | ListE el -> string_of_array string_of_expr "[" ", " "]" el
-  | ListFillE (e1, e2) -> "(" ^ string_of_expr e1 ^ ")^" ^ string_of_expr e2
+  | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE r -> string_of_record_expr r
@@ -502,18 +482,13 @@ and string_of_expr = function
   | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | WasmInstrE (s, []) -> s
-  | WasmInstrE (s, el) -> s ^ string_of_list string_of_expr " " " " "" el
   | NameE n -> string_of_name n
-  | ArrowE (e1, e2) -> string_of_expr e1 ^ "->" ^ string_of_expr e2
+  | ArrowE (e1, e2) -> "[" ^ string_of_expr e1 ^ "]->[" ^ string_of_expr e2 ^ "]"
+  | ConstructE ("CONST", hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
   | ConstructE (s, []) -> s
-  | ConstructE (s, el) -> s ^ string_of_list string_of_expr "(" ", " ")" el
+  | ConstructE (s, el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
-  | ConstE (t, e) ->
-      sprintf "the value %s.CONST %s" (string_of_expr t) (string_of_expr e)
-  | RefNullE n -> sprintf "the value ref.null %s" (string_of_name n)
-  | RefFuncAddrE e -> sprintf "the value ref.funcaddr %s" (string_of_expr e)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_path = function
@@ -646,7 +621,7 @@ let rec string_of_instr index depth = function
       sprintf "%s Enter %s with label %s." (make_index index depth)
         (string_of_expr e1) (string_of_expr e2)
   | ExecuteI e ->
-      sprintf "%s Execute (%s)." (make_index index depth) (string_of_expr e)
+      sprintf "%s Execute %s." (make_index index depth) (string_of_expr e)
   | ExecuteSeqI e ->
       sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
   | ReplaceI (e1, p, e2) ->

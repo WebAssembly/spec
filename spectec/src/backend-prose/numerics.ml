@@ -15,13 +15,13 @@ let unop: numerics =
       (function
       | [ op; t; v ] -> (
         match t with
-        | WasmTypeV (NumType (I32Type)) -> (
+        | ConstructV ("I32", []) -> (
           match op with
           | StringV "Clz" -> wrap_int_unop (fun _ -> failwith "TODO: Clz") v
           | StringV "Ctz" -> wrap_int_unop (fun _ -> failwith "TODO: Ctz") v
           | StringV "Popcnt" -> wrap_int_unop (fun _ -> failwith "TODO: Popcnt") v
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
-        | WasmTypeV (NumType (F32Type)) -> (
+        | ConstructV ("F32", [])  -> (
           match op with
           | StringV "Neg" -> wrap_float_unop (Float.neg) v
           | StringV "Abs" -> wrap_float_unop (Float.abs) v
@@ -50,7 +50,7 @@ let binop : numerics =
       (function
       | [ op; t; v1; v2 ] -> (
         match t with
-        | WasmTypeV (NumType I32Type) -> (
+        | ConstructV ("I32", [])  -> (
           match op with
           | StringV "Add" -> wrap_int_binop v1 (+) v2
           | StringV "Sub" -> wrap_int_binop v1 (-) v2
@@ -68,7 +68,7 @@ let binop : numerics =
           | StringV "Rotl" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotl") v2
           | StringV "Rotr" -> wrap_int_binop v1 (fun _ _ -> failwith "TODO: Rotr") v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
-        | WasmTypeV (NumType F32Type) -> (
+        | ConstructV ("F32", []) -> (
           match op with
           | StringV "Add" -> wrap_float_binop v1 (+.) v2 
           | StringV "Sub" -> wrap_float_binop v1 (-.) v2
@@ -107,7 +107,7 @@ let relop : numerics =
       (function
       | [ op; t; v1; v2 ] -> (
         match t with
-        | WasmTypeV (NumType I32Type) -> (
+        | ConstructV ("I32", [])  -> (
           match op with
           | StringV "Eq" -> wrap_int_relop v1 (=) v2
           | StringV "Ne" -> wrap_int_relop v1 (<>) v2
@@ -120,7 +120,7 @@ let relop : numerics =
           | StringV "GeS"
           | StringV "GeU" -> wrap_int_relop v1 (>=) v2
           | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
-        | WasmTypeV (NumType F32Type) -> (
+        | ConstructV ("F32", [])  -> (
           match op with
           | StringV "Eq" -> wrap_float_relop v1 (=) v2 
           | StringV "Ne" -> wrap_float_relop v1 (<>) v2
