@@ -192,10 +192,11 @@ let insert_assert exp =
       Al.AssertI "Due to validation, the label L is now on the top of the stack"
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE ({ it = Ast.CaseE (Ast.Atom "I32", _); _ } :: _); _ }) ->
-      Al.AssertI
-        "Due to validation, a value of value type i32 is on the top of the \
-         stack"
+        { it = Ast.TupE (ty :: _); _ }) ->
+      Al.AssertI (
+        "Due to validation, a value of value type "
+        ^ Print.string_of_exp ty
+        ^ " is on the top of the stack" )
   | _ -> Al.AssertI "Due to validation, a value is on the top of the stack"
 
 (* `Ast.exp list` -> `Al.instr list` *)

@@ -127,7 +127,7 @@ drop
 2. Pop val from the stack.
 
 select t
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val_2 from the stack.
@@ -161,7 +161,7 @@ loop bt instr
   e. Exit current context.
 
 if bt instr_1 instr_2
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BLOCK bt instr_1*).
@@ -192,13 +192,13 @@ br
   d. Execute (BR l).
 
 br_if l
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BR l).
 
 br_table l l'
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i < |l*|, then:
   a. Execute (BR l*[i]).
@@ -226,7 +226,7 @@ return
   c. Execute RETURN.
 
 unop nt unop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. If |$unop(unop, nt, c_1)| is 1, then:
   a. Let [c] be $unop(unop, nt, c_1).
@@ -235,9 +235,9 @@ unop nt unop
   a. Trap.
 
 binop nt binop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop (nt.CONST c_1) from the stack.
 5. If |$binop(binop, nt, c_1, c_2)| is 1, then:
   a. Let [c] be $binop(binop, nt, c_1, c_2).
@@ -246,26 +246,26 @@ binop nt binop
   a. Trap.
 
 testop nt testop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. Let c be $testop(testop, nt, c_1).
 4. Push (I32.CONST c) to the stack.
 
 relop nt relop
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
+3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop (nt.CONST c_1) from the stack.
 5. Let c be $relop(relop, nt, c_1, c_2).
 6. Push (I32.CONST c) to the stack.
 
 extend nt n
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
 cvtop nt_1 cvtop nt_2 sx
-1. Assert: Due to validation, a value is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
   a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
@@ -294,7 +294,7 @@ call x
   a. Execute (CALL_ADDR $funcaddr()[x]).
 
 call_indirect x ft
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x)|, then:
   a. Trap.
@@ -333,7 +333,7 @@ global.get x
 1. Push $global(x) to the stack.
 
 table.get x
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x)|, then:
   a. Trap.
@@ -345,11 +345,11 @@ table.size x
 2. Push (I32.CONST n) to the stack.
 
 table.fill x
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$table(x)|, then:
   a. Trap.
@@ -363,11 +363,11 @@ table.fill x
   g. Execute (TABLE.FILL x).
 
 table.copy x y
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$table(y)| or (j + n) > |$table(x)|, then:
   a. Trap.
@@ -386,11 +386,11 @@ table.copy x y
   h. Execute (TABLE.COPY x y).
 
 table.init x y
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$elem(y)| or (j + n) > |$table(x)|, then:
   a. Trap.
@@ -404,7 +404,7 @@ table.init x y
   g. Execute (TABLE.INIT x y).
 
 load nt _x0 n_A n_O
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
@@ -422,11 +422,11 @@ memory.size
 2. Push (I32.CONST n) to the stack.
 
 memory.fill
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$mem(0)|, then:
   a. Trap.
@@ -440,11 +440,11 @@ memory.fill
   g. Execute MEMORY.FILL.
 
 memory.copy
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$table(0)| or (j + n) > |$table(0)|, then:
   a. Trap.
@@ -467,11 +467,11 @@ memory.copy
   d. Execute MEMORY.COPY.
 
 memory.init x
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$data(x)| or (j + n) > |$mem(0)|, then:
   a. Trap.
@@ -497,7 +497,7 @@ global.set x
 table.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If i ≥ |$table(x)|, then:
   a. Trap.
@@ -505,7 +505,7 @@ table.set x
   a. Perform $with_table(x, i, ref).
 
 table.grow x
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
@@ -519,9 +519,9 @@ elem.drop x
 1. Perform $with_elem(x, []).
 
 store nt _x0 n_A n_O
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop (I32.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c) from the stack.
+3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
@@ -536,7 +536,7 @@ store nt _x0 n_A n_O
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 memory.grow
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
   a. Perform $with_memext(0, 0^((n · 64) · $Ki())).
@@ -685,7 +685,7 @@ exports.wast: [4/9] (44.44%)
 local_set.wast: [18/19] (94.74%)
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
-align.wast: [14/48] (29.17%)
+align.wast: [38/48] (79.17%)
 if.wast: [99/123] (80.49%)
 const.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
 f64_cmp.wast: [0/2400] (0.00%)
@@ -726,7 +726,7 @@ elem.wast: [Uncaught exception in 8th assertion: This test contains a (register 
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1463/2500] (58.52%)
 start.wast: [0/6] (0.00%)
-float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to File "src/backend-prose/interpreter.ml", line 311, characters 20-26: Assertion failed]
+float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to TODO: bytes of floats]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 table_size.wast: [5/36] (13.89%)
 table_set.wast: [13/18] (72.22%)
@@ -748,6 +748,6 @@ int_exprs.wast: [25/89] (28.09%)
 f64.wast: [0/2500] (0.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [72/83] (86.75%)
-Total [5264/15543] (33.87%; Normalized 52.91%)
+Total [5288/15543] (34.02%; Normalized 53.72%)
 == Complete.
 ```

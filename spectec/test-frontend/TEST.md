@@ -1608,22 +1608,22 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:285.1-287.49
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (((i + n_O) + ($size(nt <: valtype) / 8)) >= |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:289.1-291.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}), []))
     -- if (b*{b} = $bytes_($size(nt <: valtype), c))
 
   ;; 6-reduction.watsup:293.1-295.41
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:297.1-299.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), (n / 8), b*{b}), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), (n / 8), b*{b}), []))
     -- if (b*{b} = $bytes_(n, $wrap_(($size(nt <: valtype), n), c)))
 
   ;; 6-reduction.watsup:307.1-308.104
@@ -3652,13 +3652,13 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}store{-}num{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~(\mathit{nt}.\mathsf{store}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z} ; \mathsf{trap} &\quad
+{[\textsc{\scriptsize E{-}store{-}num{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathit{nt}.\mathsf{const}~\mathit{c})~(\mathit{nt}.\mathsf{store}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z} ; \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n}_{\mathsf{o}} + {|\mathit{nt}|} / 8 \geq {|{\mathit{z}.\mathsf{mem}}{[0]}|} \\
-{[\textsc{\scriptsize E{-}store{-}num{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~(\mathit{nt}.\mathsf{store}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0][\mathit{i} + \mathit{n}_{\mathsf{o}} : {|\mathit{nt}|} / 8] = {\mathit{b}^\ast}] ; \epsilon &\quad
+{[\textsc{\scriptsize E{-}store{-}num{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathit{nt}.\mathsf{const}~\mathit{c})~(\mathit{nt}.\mathsf{store}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0][\mathit{i} + \mathit{n}_{\mathsf{o}} : {|\mathit{nt}|} / 8] = {\mathit{b}^\ast}] ; \epsilon &\quad
   \mbox{if}~{\mathit{b}^\ast} = {\mathrm{bytes}}_{{|\mathit{nt}|}}(\mathit{c}) \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~({\mathit{nt}.\mathsf{store}}{\mathit{n}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z} ; \mathsf{trap} &\quad
+{[\textsc{\scriptsize E{-}store{-}pack{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathit{nt}.\mathsf{const}~\mathit{c})~({\mathit{nt}.\mathsf{store}}{\mathit{n}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z} ; \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n}_{\mathsf{o}} + \mathit{n} / 8 \geq {|{\mathit{z}.\mathsf{mem}}{[0]}|} \\
-{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{c})~({\mathit{nt}.\mathsf{store}}{\mathit{n}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0][\mathit{i} + \mathit{n}_{\mathsf{o}} : \mathit{n} / 8] = {\mathit{b}^\ast}] ; \epsilon &\quad
+{[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathit{nt}.\mathsf{const}~\mathit{c})~({\mathit{nt}.\mathsf{store}}{\mathit{n}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0][\mathit{i} + \mathit{n}_{\mathsf{o}} : \mathit{n} / 8] = {\mathit{b}^\ast}] ; \epsilon &\quad
   \mbox{if}~{\mathit{b}^\ast} = {\mathrm{bytes}}_{\mathit{n}}({\mathrm{wrap}}_{{|\mathit{nt}|},\mathit{n}}(\mathit{c})) \\
 \end{array}
 $$
