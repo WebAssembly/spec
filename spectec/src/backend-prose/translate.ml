@@ -566,15 +566,16 @@ let rec group_rules = function
 
 
 (** Unifying lhs **)
+let unified_prefix = "_x"
 let _unified_id = ref 0
 let init_unified_id () = _unified_id := 0
 let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
-let gen_new_unified () = Ast.VarE ("unified" ^ (string_of_int (get_unified_id())) $ no_region)
+let gen_new_unified () = Ast.VarE (unified_prefix ^ (string_of_int (get_unified_id())) $ no_region)
 
 let rec overlap e1 e2 = if Eq.eq_exp e1 e2 then e1 else
   let open Ast in
   ( match e1.it, e2.it with
-  | VarE id, _ when String.starts_with ~prefix:"unified" id.it -> e1.it
+  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it -> e1.it
   | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
       UnE (unop1, overlap e1 e2)
   | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
@@ -622,7 +623,7 @@ let rec overlap e1 e2 = if Eq.eq_exp e1 e2 then e1 else
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if Eq.eq_exp template e then [], [] else match template.it, e.it with
-  | VarE id, _ when String.starts_with ~prefix:"unified" id.it ->
+  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it ->
     [Ast.AssignPr (e, Ast.VarE id $$ (no_region % template.note)) $ no_region],
     [id, (* TODO *) Ast.VarT ("TOP" $ no_region) $ no_region, []]
   (* one e *)
@@ -652,9 +653,9 @@ let rec collect_unified template e = if Eq.eq_exp template e then [], [] else ma
   | TupE es1, TupE es2
   | ListE es1, ListE es2 ->
       List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
-  | _ -> failwith "Impossible"
+  | _ -> failwith "Impossible collect_unified"
 
-let apply_template template (lhs, rhs, prems, binds) =
+let apply_template_to_red_group template (lhs, rhs, prems, binds) =
   let (new_prems, new_binds) = collect_unified template lhs in
   (template, rhs, new_prems @ prems, binds @ new_binds)
 
@@ -664,7 +665,7 @@ let unify_lhs (reduction_name, reduction_group) =
   let hd = List.hd lhs_group in
   let tl = List.tl lhs_group in
   let template = List.fold_left overlap hd tl in
-  let new_reduction_group = List.map (apply_template template) reduction_group in
+  let new_reduction_group = List.map (apply_template_to_red_group template) reduction_group in
   (reduction_name, new_reduction_group)
 
 let translate_rules il =
@@ -697,21 +698,35 @@ let helper2instrs clause =
   let (Ast.DefD (_binds, _e1, e2, prems)) = clause.it in
   prems2instrs [] prems [ Al.ReturnI (Option.some (exp2expr e2)) ]
 
-(** Main translation for helper functions **)
+(** Translation for helper functions **)
+
+let apply_template_to_def template def =
+  let Ast.DefD (binds, lhs, rhs, prems) = def.it in
+  let (new_prems, new_binds) = collect_unified template lhs in
+  Ast.DefD (binds @ new_binds, template, rhs, new_prems @ prems) $ no_region
+
+let unify_defs defs =
+  init_unified_id();
+  let lhs_s = List.map (fun x -> let Ast.DefD(_, lhs, _, _) = x.it in lhs) defs in
+  let hd = List.hd lhs_s in
+  let tl = List.tl lhs_s in
+  let template = List.fold_left overlap hd tl in
+  List.map (apply_template_to_def template) defs
 
 let helpers2algo def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
-      let (DefD (binds, params, _, _)) = (List.hd clauses).it in
+      let unified_clauses = unify_defs clauses in
+      let Ast.DefD (binds, params, _, _) = (List.hd unified_clauses).it in
       let typed_params =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map (find_type binds)
       in
       let blocks =
         if String.starts_with ~prefix:"with" id.it then
-          List.map mutator2instrs clauses
-        else List.map helper2instrs clauses
+          List.map mutator2instrs unified_clauses
+        else List.map helper2instrs unified_clauses
       in
       let algo_body = List.fold_right Transpile.merge_otherwise blocks [] in
 

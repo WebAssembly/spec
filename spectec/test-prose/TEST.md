@@ -18,13 +18,22 @@ Invalid expression `EXTERNREF_reftype` to be AL identifier.
 Ki
 1. Return 1024.
 
-size t
-1. If t is I32 or t is F32, then:
-  a. Return 32.
-2. If t is I64 or t is F64, then:
-  a. Return 64.
-3. If t is V128, then:
-  a. Return 128.
+size _x0
+1. If _x0 is of the case I32_(), then:
+  a. Let I32 be _x0.
+  b. Return 32.
+2. If _x0 is of the case I64_(), then:
+  a. Let I64 be _x0.
+  b. Return 64.
+3. If _x0 is of the case F32_(), then:
+  a. Let F32 be _x0.
+  b. Return 32.
+4. If _x0 is of the case F64_(), then:
+  a. Let F64 be _x0.
+  b. Return 64.
+5. If _x0 is of the case V128_(), then:
+  a. Let V128 be _x0.
+  b. Return 128.
 
 test_sub_ATOM_22 n_3_ATOM_y
 1. Return 0.
@@ -32,19 +41,25 @@ test_sub_ATOM_22 n_3_ATOM_y
 curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
-default_ t
-1. If t is I32, then:
-  a. Return the value i32.CONST 0.
-2. If t is I64, then:
-  a. Return the value i64.CONST 0.
-3. If t is F32, then:
-  a. Return the value f32.CONST 0..
-4. If t is F64, then:
-  a. Return the value f64.CONST 0..
-5. If t is FUNCREF, then:
-  a. Return the value ref.null Yet.
-6. If t is EXTERNREF, then:
-  a. Return the value ref.null Yet.
+default_ _x0
+1. If _x0 is of the case I32_(), then:
+  a. Let I32 be _x0.
+  b. Return the value i32.CONST 0.
+2. If _x0 is of the case I64_(), then:
+  a. Let I64 be _x0.
+  b. Return the value i64.CONST 0.
+3. If _x0 is of the case F32_(), then:
+  a. Let F32 be _x0.
+  b. Return the value f32.CONST 0..
+4. If _x0 is of the case F64_(), then:
+  a. Let F64 be _x0.
+  b. Return the value f64.CONST 0..
+5. If _x0 is of the case FUNCREF_(), then:
+  a. Let FUNCREF be _x0.
+  b. Return the value ref.null Yet.
+6. If _x0 is of the case EXTERNREF_(), then:
+  a. Let EXTERNREF be _x0.
+  b. Return the value ref.null Yet.
 
 funcaddr
 1. Let f be the current frame.
@@ -173,19 +188,19 @@ label n instr val
 4. Push val* to the stack.
 
 br
-1. Pop unified2 ++ unified1 ++ unified0 from the stack.
+1. Pop _x2 ++ _x1 ++ _x0 from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
-4. Let val'* be unified2.
-5. Let val^n be unified1.
-6. Let [BR(0)] ++ instr* be unified0.
+4. Let val'* be _x2.
+5. Let val^n be _x1.
+6. Let [BR(0)] ++ instr* be _x0.
 7. If |val^n| is n, then:
   a. Push val^n to the stack.
   b. Push instr'* to the stack.
-8. Let val* be unified2.
-9. If |unified1| is 1, then:
-  a. Let [BR((l + 1))] be unified1.
-  b. Let instr* be unified0.
+8. Let val* be _x2.
+9. If |_x1| is 1, then:
+  a. Let [BR((l + 1))] be _x1.
+  b. Let instr* be _x0.
   c. Push val* to the stack.
   d. Execute (br l).
 
@@ -214,12 +229,12 @@ frame n f val
   a. Push val^n to the stack.
 
 return
-1. If unified0 is of the case FRAME__(n, frame, admininstr*), then:
-  a. Let FRAME_(n, f, val'* ++ val^n ++ [RETURN] ++ instr*) be unified0.
+1. If _x0 is of the case FRAME__(n, frame, admininstr*), then:
+  a. Let FRAME_(n, f, val'* ++ val^n ++ [RETURN] ++ instr*) be _x0.
   b. If |val^n| is n, then:
     1) Push val^n to the stack.
-2. If unified0 is of the case LABEL__(nat, instr*, admininstr*), then:
-  a. Let LABEL_(k, instr'*, val* ++ [RETURN] ++ instr*) be unified0.
+2. If _x0 is of the case LABEL__(nat, instr*, admininstr*), then:
+  a. Let LABEL_(k, instr'*, val* ++ [RETURN] ++ instr*) be _x0.
   b. Push val* to the stack.
   c. Execute (return).
 
@@ -401,15 +416,15 @@ table.init x y
   f. Push the value i32.CONST (n - 1) to the stack.
   g. Execute (table.init x y).
 
-load nt unified0 n_A n_O
+load nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST i from the stack.
-3. If unified0 is not defined, then:
+3. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
 4. Else:
-  a. Let ?([n, sx]) be unified0.
+  a. Let ?([n, sx]) be _x0.
   b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
@@ -516,18 +531,18 @@ table.grow x
 elem.drop x
 1. Perform $with_elem(x, []).
 
-store nt unified0 n_A n_O
+store nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop the value i32.CONST c from the stack.
 3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 4. Pop the value i32.CONST i from the stack.
-5. If unified0 is not defined, then:
+5. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
-  a. Let ?(n) be unified0.
+  a. Let ?(n) be _x0.
   b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
@@ -673,7 +688,7 @@ forward.wast: [4/4] (100.00%)
 float_misc.wast: [61/440] (13.86%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [3/45] (6.67%)
+memory.wast: [Uncaught exception in 2th assertion: Module Instantiation failed due to Invalid wrap_]
 unwind.wast: [49/49] (100.00%)
 call.wast: [42/70] (60.00%)
 local_get.wast: [13/19] (68.42%)
@@ -691,7 +706,7 @@ block.wast: [44/52] (84.62%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [18/26] (69.23%)
 i64.wast: [0/384] (0.00%)
-memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
+memory_copy.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 stack.wast: [2/5] (40.00%)
 loop.wast: [41/77] (53.25%)
 conversions.wast: [0/593] (0.00%)
@@ -701,29 +716,30 @@ store.wast: [0/9] (0.00%)
 memory_redundancy.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to Not an integer]
 i32.wast: [243/374] (64.97%)
 unreachable.wast: [63/63] (100.00%)
-bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
+bulk.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid wrap_]
 traps.wast: [10/32] (31.25%)
 local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 f64_bitwise.wast: [0/360] (0.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 memory_grow.wast: [1/84] (1.19%)
+tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 call_indirect.wast: [25/132] (18.94%)
 load.wast: [0/37] (0.00%)
-memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
+memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Invalid wrap_]
 memory_size.wast: [5/36] (13.89%)
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [0/95] (0.00%)
 ref_is_null.wast: [3/11] (27.27%)
-memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Invalid wrap_]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [123/149] (82.55%)
 select.wast: [60/118] (50.85%)
 f32_bitwise.wast: [32/360] (8.89%)
-memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm Yet: memory.init 1 not found]
+memory_init.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [6/9] (66.67%)
 f32.wast: [1463/2500] (58.52%)
-start.wast: [Uncaught exception in 1th assertion: Direct invocation failed due to Invalid wrap_]
+start.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 float_exprs.wast: [Uncaught exception in 318th assertion: Direct invocation failed due to File "src/backend-prose/interpreter.ml", line 321, characters 20-26: Assertion failed]
 float_memory.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to float_of_string]
 table_size.wast: [5/36] (13.89%)
@@ -734,9 +750,9 @@ ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (regis
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [22/35] (62.86%)
-data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 int_literals.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to int_of_string]
-address.wast: [112/255] (43.92%)
+address.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid wrap_]
 table_grow.wast: [7/38] (18.42%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
@@ -746,6 +762,6 @@ int_exprs.wast: [25/89] (28.09%)
 f64.wast: [0/2500] (0.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [65/83] (78.31%)
-Total [5110/15535] (32.89%; Normalized 45.66%)
+Total [4950/15169] (32.63%; Normalized 46.82%)
 == Complete.
 ```
