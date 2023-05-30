@@ -544,7 +544,7 @@ Also, the element list may be written as just a sequence of :ref:`function indic
    \begin{array}{llcll}
    \production{element list} &
      \text{func}~~\Tvec(\Tfuncidx_I) &\equiv&
-     \text{funcref}~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
+     \text{(ref}~\text{func)}~~\Tvec(\text{(}~\text{ref.func}~~\Tfuncidx_I~\text{)})
    \end{array}
 
 A table use can be omitted, defaulting to :math:`\T{0}`.

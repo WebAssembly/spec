@@ -610,7 +610,7 @@ It is up to the :ref:`embedder <embedder>` to define how such conditions are rep
      &\wedge& F = \{ \AMODULE~\moduleinst, \ALOCALS~\epsilon \} \\[1ex]
      &\wedge& (S'; F; \expr_{\F{g}} \stepto^\ast S'; F; \val_{\F{g}}~\END)^\ast \\
      &\wedge& (S'; F; \expr_{\F{t}} \stepto^\ast S'; F; \reff_{\F{t}}~\END)^\ast \\
-     &\wedge& ((S'; F; \expr_{\F{e}} \stepto^\ast S'; F; \reff_{\F{e}}~\END)^\ast)^n \\
+     &\wedge& ((S'; F; \expr_{\F{e}} \stepto^\ast S'; F; \reff_{\F{e}}~\END)^\ast)^n) \\
    \end{array}
 
 where:

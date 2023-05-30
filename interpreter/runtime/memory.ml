@@ -1,6 +1,4 @@
 open Types
-open Pack
-open Value
 open Bigarray
 open Lib.Bigarray
 
@@ -13,7 +11,7 @@ type memory' = (int, int8_unsigned_elt, c_layout) Array1.t
 type memory = {mutable ty : memory_type; mutable content : memory'}
 type t = memory
 
-exception Type
+exception Type = Value.Type
 exception Bounds
 exception SizeOverflow
 exception SizeLimit
@@ -36,6 +34,7 @@ let create n =
   with Out_of_memory -> raise OutOfMemory
 
 let alloc (MemoryT lim as ty) =
+  assert Free.((memory_type ty).types = Set.empty);
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min}
 
@@ -80,97 +79,54 @@ let store_bytes mem a bs =
     store_byte mem Int64.(add a (of_int i)) (Char.code bs.[i])
   done
 
+
+(* Typed accessors *)
+
 let effective_address a o =
   let ea = Int64.(add a (of_int32 o)) in
   if I64.lt_u ea a then raise Bounds;
   ea
 
-let loadn mem a o n =
-  assert (n > 0 && n <= 8);
-  let rec loop a n =
-    if n = 0 then 0L else begin
-      let x = Int64.(shift_left (loop (add a 1L) (n - 1)) 8) in
-      Int64.logor (Int64.of_int (load_byte mem a)) x
-    end
-  in loop (effective_address a o) n
-
-let storen mem a o n x =
-  assert (n > 0 && n <= 8);
-  let rec loop a n x =
-    if n > 0 then begin
-      Int64.(loop (add a 1L) (n - 1) (shift_right x 8));
-      store_byte mem a (Int64.to_int x land 0xff)
-    end
-  in loop (effective_address a o) n x
-
-let load_num mem a o t =
-  let n = loadn mem a o (num_size t) in
-  match t with
-  | I32T -> I32 (Int64.to_int32 n)
-  | I64T -> I64 n
-  | F32T -> F32 (F32.of_bits (Int64.to_int32 n))
-  | F64T -> F64 (F64.of_bits n)
+let load_num mem a o nt =
+  let bs = load_bytes mem (effective_address a o) (Types.num_size nt) in
+  Value.num_of_bits nt bs
 
 let store_num mem a o n =
-  let store = storen mem a o (num_size (Value.type_of_num n)) in
-  match n with
-  | I32 x -> store (Int64.of_int32 x)
-  | I64 x -> store x
-  | F32 x -> store (Int64.of_int32 (F32.to_bits x))
-  | F64 x -> store (F64.to_bits x)
+  let bs = Value.bits_of_num n in
+  store_bytes mem (effective_address a o) bs
 
-let extend x n = function
-  | ZX -> x
-  | SX -> let sh = 64 - 8 * n in Int64.(shift_right (shift_left x sh) sh)
-
-let load_num_packed sz ext mem a o t =
-  assert (packed_size sz <= num_size t);
-  let w = packed_size sz in
-  let x = extend (loadn mem a o w) w ext in
-  match t with
-  | I32T -> I32 (Int64.to_int32 x)
-  | I64T -> I64 x
-  | _ -> raise Type
+let load_num_packed sz ext mem a o nt =
+  let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
+  Value.num_of_packed_bits nt sz ext bs
 
 let store_num_packed sz mem a o n =
-  assert (packed_size sz <= num_size (Value.type_of_num n));
-  let w = packed_size sz in
-  let x =
-    match n with
-    | I32 x -> Int64.of_int32 x
-    | I64 x -> x
-    | _ -> raise Type
-  in storen mem a o w x
+  let bs = Value.packed_bits_of_num sz n in
+  store_bytes mem (effective_address a o) bs
 
-let load_vec mem a o t =
-  match t with
-  | V128T ->
-    V128 (V128.of_bits (load_bytes mem (effective_address a o) (vec_size t)))
+let load_vec mem a o vt =
+  let bs = load_bytes mem (effective_address a o) (Types.vec_size vt) in
+  Value.vec_of_bits vt bs
 
-let store_vec mem a o n =
-  match n with
-  | V128 x -> store_bytes mem (effective_address a o) (V128.to_bits x)
+let store_vec mem a o v =
+  let bs = Value.bits_of_vec v in
+  store_bytes mem (effective_address a o) bs
 
 let load_vec_packed sz ext mem a o t =
-  assert (packed_size sz < vec_size t);
-  let x = loadn mem a o (packed_size sz) in
-  let b = Bytes.make 16 '\x00' in
-  Bytes.set_int64_le b 0 x;
-  let v = V128.of_bits (Bytes.to_string b) in
-  let r =
-    match sz, ext with
-    | Pack64, ExtLane (Pack8x8, SX) -> V128.I16x8_convert.extend_low_s v
-    | Pack64, ExtLane (Pack8x8, ZX) -> V128.I16x8_convert.extend_low_u v
-    | Pack64, ExtLane (Pack16x4, SX) -> V128.I32x4_convert.extend_low_s v
-    | Pack64, ExtLane (Pack16x4, ZX) -> V128.I32x4_convert.extend_low_u v
-    | Pack64, ExtLane (Pack32x2, SX) -> V128.I64x2_convert.extend_low_s v
-    | Pack64, ExtLane (Pack32x2, ZX) -> V128.I64x2_convert.extend_low_u v
-    | _, ExtLane _ -> assert false
-    | Pack8, ExtSplat -> V128.I8x16.splat (I8.of_int_s (Int64.to_int x))
-    | Pack16, ExtSplat -> V128.I16x8.splat (I16.of_int_s (Int64.to_int x))
-    | Pack32, ExtSplat -> V128.I32x4.splat (I32.of_int_s (Int64.to_int x))
-    | Pack64, ExtSplat -> V128.I64x2.splat x
-    | Pack32, ExtZero -> v
-    | Pack64, ExtZero -> v
-    | _, ExtZero -> assert false
-  in V128 r
+  let bs = load_bytes mem (effective_address a o) (Pack.packed_size sz) in
+  Value.vec_of_packed_bits t sz ext bs
+
+let load_val mem a o t =
+  let bs = load_bytes mem (effective_address a o) (Types.val_size t) in
+  Value.val_of_bits t bs
+
+let store_val mem a o v =
+  let bs = Value.bits_of_val v in
+  store_bytes mem (effective_address a o) bs
+
+let load_val_storage mem a o st =
+  let bs = load_bytes mem (effective_address a o) (Types.storage_size st) in
+  Value.val_of_storage_bits st bs
+
+let store_val_storage mem a o st v =
+  let bs = Value.storage_bits_of_val st v in
+  store_bytes mem (effective_address a o) bs
