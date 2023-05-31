@@ -82,12 +82,12 @@ let pop () =
   res
 
 let get_current_label () =
-  match List.find_map (function LabelV l -> Some l | _ -> None) !stack with
+  match List.find_opt (function LabelV _ -> true | _ -> false) !stack with
   | Some label -> label
   | None -> failwith "No label" (* Due to Wasm validation, unreachable *)
 
 let get_current_frame () =
-  match List.find_map (function FrameV f -> Some f | _ -> None) !stack with
+  match List.find_opt (function FrameV _ -> true | _ -> false) !stack with
   | Some frame -> frame
   | None -> failwith "No frame" (* Due to Wasm validation, unreachable *)
 
@@ -124,6 +124,7 @@ let rec dsl_function_call fname args =
 and eval_expr env expr =
   match expr with
   | ValueE v -> v
+  (* Numeric Operation *)
   | BinopE (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
@@ -138,6 +139,7 @@ and eval_expr env expr =
           NumV result
       | _ -> failwith "Not an integer"
       end
+  (* Function Call *)
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
   | MapE (fname, [ e ], _) -> (
       (* TODO: handle cases where more than 1 arguments *)
@@ -147,33 +149,20 @@ and eval_expr env expr =
       | _ ->
           Print.string_of_expr e ^ " is not iterable."
           |> failwith (* Due to WASM validation, unreachable *))
-  | LengthE e ->
-      let a = eval_expr env e |> value_to_array in
-      NumV (I64.of_int_u (Array.length a))
-  | ArityE e -> (
-      match eval_expr env e with
-      | LabelV (n, _) -> NumV n
-      | FrameV (n, _) -> NumV n
-      | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
-  | GetCurLabelE -> LabelV (get_current_label ())
-  | GetCurFrameE -> FrameV (get_current_frame ())
-  | FrameE (e1, e2) -> (
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      match (v1, v2) with
-      | NumV n, RecordV r -> FrameV (n, r)
-      | _ ->
-          (* Due to AL validation unreachable *)
-          "Invalid frame: " ^ string_of_expr expr |> failwith)
-  | ConcatE (e1, e2) ->
-      let a1 = eval_expr env e1 |> value_to_array in
-      let a2 = eval_expr env e2 |> value_to_array in
-      ListV (Array.append a1 a2)
+  (* Data Structure *)
   | ListE el -> ListV (Array.map (eval_expr env) el)
   | ListFillE (e1, e2) ->
       let v = eval_expr env e1 in
       let i = eval_expr env e2 |> value_to_int in
       ListV (Array.make i v)
+  | ConcatE (e1, e2) ->
+      let a1 = eval_expr env e1 |> value_to_array in
+      let a2 = eval_expr env e2 |> value_to_array in
+      ListV (Array.append a1 a2)
+  | LengthE e ->
+      let a = eval_expr env e |> value_to_array in
+      NumV (I64.of_int_u (Array.length a))
+  | RecordE r -> RecordV (Record.map (eval_expr env) r)
   | AccessE (e, p) -> begin match p with
       | IndexP e' ->
         let a = eval_expr env e |> value_to_array in
@@ -185,7 +174,7 @@ and eval_expr env expr =
         let i2 = eval_expr env e2 |> value_to_int in
         ListV (Array.sub a i1 i2)
       | DotP str -> begin match eval_expr env e with
-        | FrameV (_, r) -> Record.find str r
+        | FrameV (_, RecordV r) -> Record.find str r
         | StoreV s -> Record.find str !s
         | RecordV r -> Record.find str r
         | v ->
@@ -194,20 +183,35 @@ and eval_expr env expr =
             |> failwith
         end
       end
+  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el)
+  | OptE opt -> OptV (Option.map (eval_expr env) opt)
+  | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
+  (* Context *)
+  | ArityE e -> (
+      match eval_expr env e with
+      | LabelV (v, _) -> v
+      | FrameV (v, _) -> v
+      | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
+  | FrameE (e1, e2) -> (
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      match (v1, v2) with
+      | NumV _, RecordV _ -> FrameV (v1, v2)
+      | _ ->
+          (* Due to AL validation unreachable *)
+          "Invalid frame: " ^ string_of_expr expr |> failwith)
+  | GetCurFrameE -> get_current_frame ()
   | LabelE (e1, e2) ->
-      let n = eval_expr env e1 |> value_to_num in
-      let l = eval_expr env e2 |> value_to_list in
-      LabelV (n, l)
-  | NameE name | IterE (name, _) -> Env.find name env
-  | RecordE r -> RecordV (Record.map (eval_expr env) r)
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      LabelV (v1, v2)
+  | GetCurLabelE -> get_current_label ()
   | ContE e -> (
       let v = eval_expr env e in
       match v with
-      | LabelV (_, vs) -> ListV (Array.of_list vs)
+      | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
-  | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
-  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el)
-  | OptE opt -> OptV (Option.map (eval_expr env) opt)
+  | NameE name | IterE (name, _) -> Env.find name env
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =

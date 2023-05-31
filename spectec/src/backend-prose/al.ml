@@ -26,12 +26,6 @@ module Record = Map.Make (FieldName)
 
 type 'a record = 'a Record.t
 
-(* Table, Global: Address list *)
-and label = int64 * value list
-
-(* local: Wasm value list, module_inst: ModuleInstV *)
-and frame = int64 * value record
-
 and store = value record
 and stack = value list
 
@@ -41,8 +35,8 @@ and value =
   | StringV of string
   | ListV of value array
   | RecordV of value record
-  | FrameV of frame
-  | LabelV of label
+  | FrameV of value * value
+  | LabelV of value * value
   | ConstructV of string * value list
   | OptV of value option
   | PairV of value * value
@@ -76,21 +70,24 @@ type compare_op =
   | Le
 
 type expr =
-  (* Operation *)
   | ValueE of value
+  (* Numeric Operation *)
   | MinusE of expr
   | BinopE of expr_binop * expr * expr
-  (* Function call *)
+  (* Function Call *)
   | AppE of name * expr list
   | MapE of name * expr list * iter
-  (* List *)
-  | ListFillE of expr * expr
+  (* Data Structure *)
   | ListE of expr array
+  | ListFillE of expr * expr
   | ConcatE of expr * expr
   | LengthE of expr
-  (* Record *)
   | RecordE of expr record
   | AccessE of expr * path
+  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | OptE of expr option
+  | PairE of expr * expr
+  | ArrowE of expr * expr
   (* Context *)
   | ArityE of expr
   | FrameE of expr * expr
@@ -98,12 +95,6 @@ type expr =
   | LabelE of expr * expr
   | GetCurLabelE
   | ContE of expr
-  (* Constructor *)
-  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
-  (* Other data structure *)
-  | OptE of expr option
-  | PairE of expr * expr
-  | ArrowE of expr * expr
   (* Name *)
   | IterE of name * iter
   | NameE of name

@@ -78,8 +78,9 @@ and string_of_stack st =
   List.fold_left f "[Stack]\n" st
 
 and string_of_value = function
-  | LabelV (n, instrs) -> "Label_" ^ Int64.to_string n ^ string_of_list (fun _ -> "...") " {" "," "}" instrs
-  | FrameV f -> sprintf "FrameV (%s)" (string_of_frame f)
+  | LabelV (v1, v2) ->
+      sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
+  | FrameV (v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
   | NumV n -> Int64.to_string n
@@ -405,7 +406,7 @@ let structured_string_of_iter = function
 (* expression *)
 
 let rec structured_string_of_value = function
-  | LabelV (n, _instrs) -> "LabelV (" ^ Int64.to_string n ^ ",TODO)"
+  | LabelV (v1, v2) -> "LabelV (" ^ structured_string_of_value v1 ^ "," ^ structured_string_of_value v2 ^ ")"
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
