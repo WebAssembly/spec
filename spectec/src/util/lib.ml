@@ -14,6 +14,9 @@ struct
   let rec nub pred = function
     | [] -> []
     | x::xs -> x :: nub pred (List.filter (fun y -> not (pred x y)) xs)
+
+  let filter_not pred = List.filter (fun x -> not (pred x))
+
 end
 
 module String =

@@ -165,23 +165,21 @@ execution_of_block bt instr
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
-4. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
-  a. Let L be the label_n{[]}.
-  b. Push L to the stack.
-  c. Push val^k to the stack.
-  d. Jump to instr*.
-  e. Exit current context.
+4. Let L be the label_n{[]}.
+5. Push L to the stack.
+6. Push val^k to the stack.
+7. Jump to instr*.
+8. Exit current context.
 
 execution_of_loop bt instr
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
-4. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
-  a. Let L be the label_k{[(LOOP bt instr*)]}.
-  b. Push L to the stack.
-  c. Push val^k to the stack.
-  d. Jump to instr*.
-  e. Exit current context.
+4. Let L be the label_k{[(LOOP bt instr*)]}.
+5. Push L to the stack.
+6. Push val^k to the stack.
+7. Jump to instr*.
+8. Exit current context.
 
 execution_of_if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -204,11 +202,10 @@ execution_of_br
 4. Let val'* be _x2.
 5. Let val^n be _x1.
 6. Let [(BR 0)] ++ instr* be _x0.
-7. If |val^n| is n, then:
-  a. Push val^n to the stack.
-  b. Push instr'* to the stack.
-8. Let val* be _x2.
-9. If |_x1| is 1, then:
+7. Push val^n to the stack.
+8. Push instr'* to the stack.
+9. Let val* be _x2.
+10. If |_x1| is 1, then:
   a. Let [(BR (l + 1))] be _x1.
   b. Let instr* be _x0.
   c. Push val* to the stack.
@@ -235,14 +232,12 @@ execution_of_frame n f val
 4. Pop val^n from the stack.
 5. Assert: Due to validation, the frame F is now on the top of the stack.
 6. Pop the frame from the stack.
-7. If |val^n| is n, then:
-  a. Push val^n to the stack.
+7. Push val^n to the stack.
 
 execution_of_return
 1. If _x0 is of the case FRAME_, then:
   a. Let (FRAME_ n f val'* ++ val^n ++ [RETURN] ++ instr*) be _x0.
-  b. If |val^n| is n, then:
-    1) Push val^n to the stack.
+  b. Push val^n to the stack.
 2. If _x0 is of the case LABEL_, then:
   a. Let (LABEL_ k instr'* val* ++ [RETURN] ++ instr*) be _x0.
   b. Push val* to the stack.
@@ -336,14 +331,13 @@ execution_of_call_addr a
   a. Let (m, (FUNC [t_1^k]->[t_2^n] t* instr*)) be $funcinst()[a].
   b. Assert: Due to validation, there are at least k values on the top of the stack.
   c. Pop val^k from the stack.
-  d. If |t_1^k| is k and |t_2^n| is n and |val^k| is k, then:
-    1) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-    2) Push the activation of f with arity n to the stack.
-    3) Let L be the label_n{[]}.
-    4) Push L to the stack.
-    5) Jump to instr*.
-    6) Exit current context.
-    7) Exit current context.
+  d. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
+  e. Push the activation of f with arity n to the stack.
+  f. Let L be the label_n{[]}.
+  g. Push L to the stack.
+  h. Jump to instr*.
+  i. Exit current context.
+  j. Exit current context.
 
 execution_of_ref.func x
 1. If x < |$funcaddr()|, then:
