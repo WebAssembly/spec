@@ -20,7 +20,7 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
 
 * If the sequence is empty, then:
 
-  * The type :ref:`context <context>` :math:`C` must be empty.
+  * The :ref:`context <context>` :math:`C` must be empty.
 
   * Then the type sequence is valid.
 
@@ -52,9 +52,8 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
    }
    \qquad
    \frac{
-     C.\CTYPES = \epsilon
    }{
-     C \vdashtypes \epsilon \ok
+     \{\} \vdashtypes \epsilon \ok
    }
 
 .. note::
