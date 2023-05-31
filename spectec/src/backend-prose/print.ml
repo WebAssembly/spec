@@ -141,18 +141,11 @@ and string_of_expr = function
   | FrameE (e1, e2) ->
       sprintf "the activation of %s with arity %s" (string_of_expr e2)
         (string_of_expr e1)
-  | BitWidthE e -> sprintf "the bit width of %s" (string_of_expr e)
   | ListE el -> string_of_array string_of_expr "[" ", " "]" el
   | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
-  | ForWhichE c -> sprintf "the constant for which %s" (string_of_cond c)
   | RecordE r -> string_of_record_expr r
-  | TupE el -> string_of_list string_of_expr "(" ", " ")" el
-  | PageSizeE -> "the page size"
-  | AfterCallE ->
-      "the instruction after the original call that pushed the frame"
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
-  | LabelNthE e -> sprintf "the %s-th label in the stack" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
@@ -181,11 +174,6 @@ and string_of_cond = function
   | CompareC (op, e1, e2) ->
       sprintf "%s %s %s" (string_of_expr e1) (string_of_compare_op op) (string_of_expr e2)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
-  | IsPartOfC [ e ] -> sprintf "%s is part of the instruction" (string_of_expr e)
-  | IsPartOfC [ e1; e2 ] ->
-      sprintf "%s and %s are part of the instruction" (string_of_expr e1)
-        (string_of_expr e2)
-  | IsPartOfC _ -> failwith "Invalid case"
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | IsTopC s -> sprintf "the top of the stack is %s" s
   | YetC s -> sprintf "YetC (%s)" s
@@ -243,10 +231,6 @@ let rec string_of_instr index depth = function
   | WhileI (c, il) ->
       sprintf "%s While %s, do:%s" (make_index index depth) (string_of_cond c)
         (string_of_instrs (depth + 1) il)
-  | RepeatI (e, il) ->
-      sprintf "%s Repeat %s times:%s" (make_index index depth)
-        (string_of_expr e)
-        (string_of_instrs (depth + 1) il)
   | EitherI (il1, il2) ->
       let either_index = make_index index depth in
       let or_index = make_index index depth in
@@ -263,7 +247,6 @@ let rec string_of_instr index depth = function
         (string_of_expr e1)
         (string_of_expr e2)
         (string_of_instrs (depth + 1) il)
-  | YieldI e -> sprintf "%s Yield %s." (make_index index depth) (string_of_expr e)
   | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth)
@@ -282,9 +265,6 @@ let rec string_of_instr index depth = function
   | ReturnI e_opt ->
       sprintf "%s Return%s." (make_index index depth)
         (string_of_opt " " string_of_expr "" e_opt)
-  | InvokeI e ->
-      sprintf "%s Invoke the function instance at address %s."
-        (make_index index depth) (string_of_expr e)
   | EnterI (e1, e2) ->
       sprintf "%s Enter %s with label %s." (make_index index depth)
         (string_of_expr e1) (string_of_expr e2)
@@ -496,7 +476,6 @@ let rec structured_string_of_expr = function
   | GetCurLabelE -> "GetCurLabelE"
   | GetCurFrameE -> "GetCurFrameE"
   | FrameE _ -> "FrameE TODO"
-  | BitWidthE expr -> "BitWidthE (" ^ structured_string_of_expr expr ^ ")"
   | ListE el ->
       "ListE ("
       ^ string_of_array structured_string_of_expr "[" ", " "]" el
@@ -513,14 +492,8 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_path p
       ^ ")"
-  | ForWhichE cond -> "ForWhichE (" ^ structured_string_of_cond cond ^ ")"
   | RecordE _ -> "RecordE (TODO)"
-  | TupE el ->
-      "TupE (" ^ string_of_list structured_string_of_expr "(" ", " ")" el
-  | PageSizeE -> "PageSizeE"
-  | AfterCallE -> "AfterCallE"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
-  | LabelNthE e1 -> "LabelNthE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
       "LabelE ("
       ^ structured_string_of_expr e1
@@ -575,10 +548,6 @@ and structured_string_of_cond = function
       ^ structured_string_of_expr e2
       ^ ")"
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
-  | IsPartOfC el ->
-      "PartOfC ("
-      ^ string_of_list structured_string_of_expr "[" ", " "]" el
-      ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | IsTopC s -> "TopC (" ^ s ^ ")"
   | YetC s -> "YetC (" ^ s ^ ")"
@@ -606,13 +575,6 @@ let rec structured_string_of_instr depth = function
       ^ ":\n"
       ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
-  | RepeatI (e, il) ->
-      "RepeatI (\n"
-      ^ repeat indent (depth + 1)
-      ^ structured_string_of_expr e
-      ^ ":\n"
-      ^ structured_string_of_instrs (depth + 1) il
-      ^ repeat indent depth ^ ")"
   | EitherI (il1, il2) ->
       "EitherI (\n"
       ^ structured_string_of_instrs (depth + 1) il1
@@ -635,7 +597,6 @@ let rec structured_string_of_instr depth = function
       ^ ":\n"
       ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
-  | YieldI e -> "YieldI (" ^ structured_string_of_expr e ^ ")"
   | AssertI s -> "AssertI (" ^ s ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
@@ -650,7 +611,6 @@ let rec structured_string_of_instr depth = function
   | NopI -> "NopI"
   | ReturnI e_opt ->
       "ReturnI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
-  | InvokeI e -> "InvokeI (" ^ structured_string_of_expr e ^ ")"
   | EnterI (e1, e2) ->
       "EnterI ("
       ^ structured_string_of_expr e1

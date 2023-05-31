@@ -19,7 +19,6 @@ let rec walk_expr f e =
   | ListFillE (e1, e2) -> f_expr (ListFillE (walk_expr f e1, walk_expr f e2))
   | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
   | RecordE r -> f_expr (RecordE (Record.map (walk_expr f) r))
-  | TupE el -> f_expr (TupE (List.map (walk_expr f) el))
   | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
   | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))
   | ConstructE (s, el) -> f_expr (ConstructE (s, walk_exprs f el))
@@ -56,12 +55,10 @@ let rec walk_instr f instr =
       f_instr (IfI (walk_cond f c, walk_instrs f t, walk_instrs f e))
   | OtherwiseI b -> f_instr (OtherwiseI (walk_instrs f b))
   | WhileI (c, il) -> f_instr (WhileI (walk_cond f c, walk_instrs f il))
-  | RepeatI (e, il) -> f_instr (RepeatI (walk_expr f e, walk_instrs f il))
   | EitherI (il1, il2) ->
       f_instr (EitherI (walk_instrs f il1, walk_instrs f il2))
   | ForI (e, il) -> f_instr (ForI (walk_expr f e, walk_instrs f il))
   | ForeachI (e1, e2, il) -> f_instr (ForeachI (walk_expr f e1, walk_expr f e2, walk_instrs f il))
-  | YieldI e -> f_instr (YieldI (walk_expr f e))
   | AssertI s -> f_instr (AssertI s)
   | PushI e -> f_instr (PushI (walk_expr f e))
   | PopI e -> f_instr (PopI (walk_expr f e))
@@ -70,7 +67,6 @@ let rec walk_instr f instr =
   | TrapI -> f_instr TrapI
   | NopI -> f_instr NopI
   | ReturnI e_opt -> f_instr (ReturnI (Option.map (walk_expr f) e_opt))
-  | InvokeI e -> f_instr (InvokeI (walk_expr f e))
   | EnterI (e1, e2) -> f_instr (EnterI (walk_expr f e1, walk_expr f e2))
   | ExecuteI e -> f_instr (ExecuteI (walk_expr f e))
   | ExecuteSeqI e -> f_instr (ExecuteSeqI (walk_expr f e))

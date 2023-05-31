@@ -25,7 +25,7 @@ let rec count_instrs instrs =
   |> List.map (function
        | IfI (_, il1, il2) | EitherI (il1, il2) ->
            1 + count_instrs il1 + count_instrs il2
-       | OtherwiseI il | WhileI (_, il) | RepeatI (_, il) -> 1 + count_instrs il
+       | OtherwiseI il | WhileI (_, il) -> 1 + count_instrs il
        | _ -> 1)
   |> list_sum
 
@@ -53,10 +53,6 @@ let rec insert_otherwise else_body instrs =
           let visit_if', il' = walk il in
           let visit_if = visit_if || visit_if' in
           (visit_if, WhileI (c, il'))
-      | RepeatI (e, il) ->
-          let visit_if', il' = walk il in
-          let visit_if = visit_if || visit_if' in
-          (visit_if, RepeatI (e, il'))
       | EitherI (il1, il2) ->
           let visit_if1, il1' = walk il1 in
           let visit_if2, il2' = walk il2 in
@@ -91,7 +87,6 @@ let rec unify_if instrs =
         | IfI (c, il1, il2) -> IfI (c, unify_if il1, unify_if il2)
         | OtherwiseI il -> OtherwiseI (unify_if il)
         | WhileI (c, il) -> WhileI (c, unify_if il)
-        | RepeatI (e, il) -> RepeatI (e, unify_if il)
         | EitherI (il1, il2) -> EitherI (unify_if il1, unify_if il2)
         | ForI (e, il) -> ForI (e, unify_if il)
         | ForeachI (e1, e2, il) -> ForeachI (e1, e2, unify_if il)
@@ -114,7 +109,6 @@ let rec infer_else instrs =
         | IfI (c, il1, il2) -> IfI (c, infer_else il1, infer_else il2)
         | OtherwiseI il -> OtherwiseI (infer_else il)
         | WhileI (c, il) -> WhileI (c, infer_else il)
-        | RepeatI (e, il) -> RepeatI (e, infer_else il)
         | EitherI (il1, il2) -> EitherI (infer_else il1, infer_else il2)
         | ForI (e, il) -> ForI (e, infer_else il)
         | ForeachI (e1, e2, il) -> ForeachI (e1, e2, infer_else il)
@@ -137,7 +131,6 @@ let rec swap_if instr =
       else IfI (neg c, new_ il2, new_ il1)
   | OtherwiseI il -> OtherwiseI (new_ il)
   | WhileI (c, il) -> WhileI (c, new_ il)
-  | RepeatI (e, il) -> RepeatI (e, new_ il)
   | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
   | ForI (e, il) -> ForI (e, new_ il)
   | ForeachI (e1, e2, il) -> ForeachI (e1, e2, new_ il)
@@ -156,7 +149,6 @@ let rec unify_if_tail instr =
       IfI (c, then_il, else_il) :: finally_il
   | OtherwiseI il -> [ OtherwiseI (new_ il) ]
   | WhileI (c, il) -> [ WhileI (c, new_ il) ]
-  | RepeatI (e, il) -> [ RepeatI (e, new_ il) ]
   | EitherI (il1, il2) -> [ EitherI (new_ il1, new_ il2) ]
   | ForI (e, il) -> [ ForI (e, new_ il) ]
   | ForeachI (e1, e2, il) -> [ ForeachI (e1, e2, new_ il) ]

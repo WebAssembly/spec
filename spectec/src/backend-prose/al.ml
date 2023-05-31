@@ -26,35 +26,28 @@ module Record = Map.Make (FieldName)
 
 type 'a record = 'a Record.t
 
-(* Wasm value *)
-and global_inst = value
-
-(* Wasm value list *)
-and table_inst = value
-
 (* Table, Global: Address list *)
 and label = int64 * value list
 
 (* local: Wasm value list, module_inst: ModuleInstV *)
 and frame = int64 * value record
 
-(* global: global_inst list table: table_inst list *)
 and store = value record
 and stack = value list
 
 (* AL AST *)
 and value =
-  | LabelV of label
-  | FrameV of frame
-  | StoreV of store ref
-  | ListV of value array
   | NumV of int64
   | StringV of string
+  | ListV of value array
+  | RecordV of value record
+  | FrameV of frame
+  | LabelV of label
+  | ConstructV of string * value list
+  | OptV of value option
   | PairV of value * value
   | ArrowV of value * value
-  | ConstructV of string * value list
-  | RecordV of value record
-  | OptV of value option
+  | StoreV of store ref
 
 type name = N of string | SubN of name * string
 
@@ -83,39 +76,37 @@ type compare_op =
   | Le
 
 type expr =
+  (* Operation *)
   | ValueE of value
   | MinusE of expr
   | BinopE of expr_binop * expr * expr
-  (*| AddE of expr * expr
-  | SubE of expr * expr
-  | MulE of expr * expr
-  | DivE of expr * expr *)
-  | PairE of expr * expr
+  (* Function call *)
   | AppE of name * expr list
   | MapE of name * expr list * iter
-  | ConcatE of expr * expr
-  | LengthE of expr
-  | ArityE of expr
-  | GetCurLabelE
-  | GetCurFrameE
-  | FrameE of expr * expr
-  | BitWidthE of expr
+  (* List *)
   | ListFillE of expr * expr
   | ListE of expr array
-  | AccessE of expr * path
-  | ForWhichE of cond
+  | ConcatE of expr * expr
+  | LengthE of expr
+  (* Record *)
   | RecordE of expr record
-  | TupE of expr list
-  | PageSizeE
-  | AfterCallE
-  | ContE of expr
-  | LabelNthE of expr
+  | AccessE of expr * path
+  (* Context *)
+  | ArityE of expr
+  | FrameE of expr * expr
+  | GetCurFrameE
   | LabelE of expr * expr
+  | GetCurLabelE
+  | ContE of expr
+  (* Constructor *)
+  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  (* Other data structure *)
+  | OptE of expr option
+  | PairE of expr * expr
+  | ArrowE of expr * expr
+  (* Name *)
   | IterE of name * iter
   | NameE of name
-  | ArrowE of expr * expr
-  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
-  | OptE of expr option
   (* Yet *)
   | YetE of string
 
@@ -127,16 +118,8 @@ and path =
 and cond =
   | NotC of cond
   | BinopC of cond_binop * cond * cond
-  (* | AndC of cond * cond
-  | OrC of cond * cond *)
   | CompareC of compare_op * expr * expr
-  (* | EqC of expr * expr
-  | GtC of expr * expr
-  | GeC of expr * expr
-  | LtC of expr * expr
-  | LeC of expr * expr *)
   | IsDefinedC of expr
-  | IsPartOfC of expr list
   | IsCaseOfC of expr * string
   | IsTopC of string
   (* Yet *)
@@ -146,11 +129,9 @@ type instr =
   | IfI of cond * instr list * instr list
   | OtherwiseI of instr list (* This is only for intermideate process durinng il->al *)
   | WhileI of cond * instr list
-  | RepeatI of expr * instr list
   | EitherI of instr list * instr list
   | ForI of expr * instr list
   | ForeachI of expr * expr * instr list
-  | YieldI of expr
   | AssertI of string
   | PushI of expr
   | PopI of expr
@@ -160,7 +141,6 @@ type instr =
   | TrapI
   | NopI
   | ReturnI of expr option
-  | InvokeI of expr
   | EnterI of expr * expr
   | ExecuteI of expr
   | ExecuteSeqI of expr
