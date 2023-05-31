@@ -122,19 +122,22 @@ let rec dsl_function_call fname args =
       |> failwith
 
 and eval_expr env expr =
-  let do_int_binop e1 binop e2 =
-    let v1 = eval_expr env e1 in
-    let v2 = eval_expr env e2 in
-    match v1, v2 with
-    | NumV v1, NumV v2 -> NumV (binop v1 v2)
-    | _ -> failwith "Not an integer"
-  in
   match expr with
   | ValueE v -> v
-  | AddE (e1, e2) -> do_int_binop e1 Int64.add e2
-  | SubE (e1, e2) -> do_int_binop e1 Int64.sub e2
-  | MulE (e1, e2) -> do_int_binop e1 Int64.mul e2
-  | DivE (e1, e2) -> do_int_binop e1 Int64.div e2
+  | BinopE (op, e1, e2) ->
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      begin match v1, v2 with
+      | NumV v1, NumV v2 ->
+          let result = match op with
+          | Add -> Int64.add v1 v2
+          | Sub -> Int64.sub v1 v2
+          | Mul -> Int64.mul v1 v2
+          | Div -> Int64.div v1 v2
+          in
+          NumV result
+      | _ -> failwith "Not an integer"
+      end
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
   | MapE (fname, [ e ], _) -> (
       (* TODO: handle cases where more than 1 arguments *)
@@ -208,40 +211,41 @@ and eval_expr env expr =
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
-  let do_binop_expr e1 binop e2 =
-    let v1 = eval_expr env e1 in
-    let v2 = eval_expr env e2 in
-    binop v1 v2
-  in
-  let do_binop_cond c1 binop c2 =
-    let v1 = eval_cond env c1 in
-    let v2 = eval_cond env c2 in
-    binop v1 v2
-  in
   match cond with
   | NotC c -> eval_cond env c |> not
-  | AndC (c1, c2) -> do_binop_cond c1 ( && ) c2
-  | OrC (c1, c2) -> do_binop_cond c1 ( || ) c2
-  | EqC (e1, e2) -> do_binop_expr e1 ( = ) e2
-  | LtC (e1, e2) -> do_binop_expr e1 ( < ) e2
-  | LeC (e1, e2) -> do_binop_expr e1 ( <= ) e2
-  | GtC (e1, e2) -> do_binop_expr e1 ( > ) e2
-  | GeC (e1, e2) -> do_binop_expr e1 ( >= ) e2
-  | DefinedC e ->
+  | BinopC (op, c1, c2) ->
+      let b1 = eval_cond env c1 in
+      let b2 = eval_cond env c2 in
+      begin match op with
+      | And -> b1 && b2
+      | Or -> b1 || b2
+      end
+  | CompareC (op, e1, e2) ->
+      let v1 = eval_expr env e1 in
+      let v2 = eval_expr env e2 in
+      begin match op with
+      | Eq -> v1 = v2
+      | Ne -> v1 <> v2
+      | Lt -> v1 < v2
+      | Le -> v1 <= v2
+      | Gt -> v1 > v2
+      | Ge -> v1 >= v2
+      end
+  | IsDefinedC e ->
       begin match eval_expr env e with
       | OptV (Some (_)) -> true
       | OptV (_) -> false
       | _ -> structured_string_of_cond cond |> failwith
       end
-  | TopC "value" -> (
+  | IsTopC "value" -> (
       match !stack with
       | [] -> false
       | h :: _ -> ( match h with ConstructV _ -> true | _ -> false))
-  | TopC "frame" -> (
+  | IsTopC "frame" -> (
       match !stack with
       | [] -> false
       | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
-  | CaseOfC (e, expected_tag) -> (
+  | IsCaseOfC (e, expected_tag) -> (
       match eval_expr env e with
       | ConstructV (tag, _) -> expected_tag = tag
       | _ -> false)
@@ -335,7 +339,7 @@ and interp_instrs env il =
                 List.fold_right2 assign lhs_s rhs_s env
             | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
             (* TODO: Remove this. This should be handled by animation *)
-            | MulE (MulE (NameE name, e1), e2), NumV m ->
+            | BinopE (Mul, BinopE (Mul, NameE name, e1), e2), NumV m ->
                 let n1 = eval_expr env e1 |> value_to_int in
                 let n2 = eval_expr env e2 |> value_to_int in
                 Env.add name (NumV (Int64.of_int (Int64.to_int m / n1 / n2))) env

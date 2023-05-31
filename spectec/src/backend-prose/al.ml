@@ -59,32 +59,50 @@ and value =
 type name = N of string | SubN of name * string
 
 type iter =
-  | Opt (* `?` *)
-  | List (* `*` *)
-  | List1 (* `+` *)
-  | ListN of name (* `^` exp *)
+  | Opt
+  | List
+  | List1
+  | ListN of name
+
+type expr_binop =
+  | Add
+  | Sub
+  | Mul
+  | Div
+
+type cond_binop =
+  | And
+  | Or
+
+type compare_op =
+  | Eq
+  | Ne
+  | Gt
+  | Ge
+  | Lt
+  | Le
 
 type expr =
   | ValueE of value
   | MinusE of expr
-  | AddE of (expr * expr)
-  | SubE of (expr * expr)
-  | MulE of (expr * expr)
-  | DivE of (expr * expr)
-  | PairE of (expr * expr)
-  | AppE of (name * expr list)
-  | MapE of (name * expr list * iter)
-  | IterE of (name * iter)
-  | ConcatE of (expr * expr)
+  | BinopE of expr_binop * expr * expr
+  (*| AddE of expr * expr
+  | SubE of expr * expr
+  | MulE of expr * expr
+  | DivE of expr * expr *)
+  | PairE of expr * expr
+  | AppE of name * expr list
+  | MapE of name * expr list * iter
+  | ConcatE of expr * expr
   | LengthE of expr
   | ArityE of expr
   | GetCurLabelE
   | GetCurFrameE
-  | FrameE of (expr * expr)
+  | FrameE of expr * expr
   | BitWidthE of expr
   | ListFillE of expr * expr
   | ListE of expr array
-  | AccessE of (expr * path)
+  | AccessE of expr * path
   | ForWhichE of cond
   | RecordE of expr record
   | TupE of expr list
@@ -92,7 +110,8 @@ type expr =
   | AfterCallE
   | ContE of expr
   | LabelNthE of expr
-  | LabelE of (expr * expr)
+  | LabelE of expr * expr
+  | IterE of name * iter
   | NameE of name
   | ArrowE of expr * expr
   | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
@@ -107,26 +126,28 @@ and path =
 
 and cond =
   | NotC of cond
-  | AndC of (cond * cond)
-  | OrC of (cond * cond)
-  | EqC of (expr * expr)
-  | GtC of (expr * expr)
-  | GeC of (expr * expr)
-  | LtC of (expr * expr)
-  | LeC of (expr * expr)
-  | DefinedC of expr
-  | PartOfC of expr list
-  | CaseOfC of (expr * string)
-  | TopC of string
+  | BinopC of cond_binop * cond * cond
+  (* | AndC of cond * cond
+  | OrC of cond * cond *)
+  | CompareC of compare_op * expr * expr
+  (* | EqC of expr * expr
+  | GtC of expr * expr
+  | GeC of expr * expr
+  | LtC of expr * expr
+  | LeC of expr * expr *)
+  | IsDefinedC of expr
+  | IsPartOfC of expr list
+  | IsCaseOfC of expr * string
+  | IsTopC of string
   (* Yet *)
   | YetC of string
 
 type instr =
-  | IfI of (cond * instr list * instr list)
+  | IfI of cond * instr list * instr list
   | OtherwiseI of instr list (* This is only for intermideate process durinng il->al *)
-  | WhileI of (cond * instr list)
-  | RepeatI of (expr * instr list)
-  | EitherI of (instr list * instr list)
+  | WhileI of cond * instr list
+  | RepeatI of expr * instr list
+  | EitherI of instr list * instr list
   | ForI of expr * instr list
   | ForeachI of expr * expr * instr list
   | YieldI of expr
@@ -135,21 +156,21 @@ type instr =
   | PopI of expr
   | PopAllI of expr
   (* change name as a `expr` type *)
-  | LetI of (expr * expr)
+  | LetI of expr * expr
   | TrapI
   | NopI
   | ReturnI of expr option
   | InvokeI of expr
-  | EnterI of (expr * expr)
+  | EnterI of expr * expr
   | ExecuteI of expr
   | ExecuteSeqI of expr
-  | ReplaceI of (expr * path * expr)
+  | ReplaceI of expr * path * expr
   | JumpI of expr
   | PerformI of expr
   | ExitNormalI of name
   | ExitAbruptI of name
-  | AppendI of (expr * expr * string)
+  | AppendI of expr * expr * string
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of (string * (expr * al_type) list * instr list)
+type algorithm = Algo of string * (expr * al_type) list * instr list

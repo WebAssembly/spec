@@ -8,12 +8,14 @@ let take n str =
 let rec neg cond =
   match cond with
   | NotC c -> c
-  | AndC (c1, c2) -> OrC (neg c1, neg c2)
-  | OrC (c1, c2) -> AndC (neg c1, neg c2)
-  | GtC (e1, e2) -> LeC (e1, e2)
-  | GeC (e1, e2) -> LtC (e1, e2)
-  | LtC (e1, e2) -> GeC (e1, e2)
-  | LeC (e1, e2) -> GtC (e1, e2)
+  | BinopC (And, c1, c2) -> BinopC (Or, neg c1, neg c2)
+  | BinopC (Or, c1, c2) -> BinopC (And, neg c1, neg c2)
+  | CompareC (Eq, e1, e2) -> CompareC (Ne, e1, e2)
+  | CompareC (Ne, e1, e2) -> CompareC (Eq, e1, e2)
+  | CompareC (Gt, e1, e2) -> CompareC (Le, e1, e2)
+  | CompareC (Ge, e1, e2) -> CompareC (Lt, e1, e2)
+  | CompareC (Lt, e1, e2) -> CompareC (Ge, e1, e2)
+  | CompareC (Le, e1, e2) -> CompareC (Gt, e1, e2)
   | _ -> NotC cond
 
 let list_sum = List.fold_left ( + ) 0
@@ -178,7 +180,7 @@ let hide_state = function
   | e -> e
 
 let flatten_if = function
-  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (AndC (c1, c2), il1, il2)
+  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
   | i -> i
 
 let transpiler = Walk.walk (flatten_if, id, hide_state)

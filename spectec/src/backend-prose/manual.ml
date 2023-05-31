@@ -20,7 +20,7 @@ let br =
       [ (NameE (N "l"), IntT) ],
       [
         IfI
-          ( EqC (NameE (N "l"), ValueE (NumV 0L)),
+          ( CompareC (Eq, NameE (N "l"), ValueE (NumV 0L)),
             (* br_zero *)
             [
               LetI (NameE (N "L"), GetCurLabelE);
@@ -29,7 +29,7 @@ let br =
                 "Due to validation, there are at least n values on the top of \
                  the stack"; 
               PopI (IterE (N "val", ListN (N "n")));
-              WhileI (TopC "value", [ PopI (NameE (N "val'")) ]);
+              WhileI (IsTopC "value", [ PopI (NameE (N "val'")) ]);
               ExitAbruptI (N "L");
               PushI (IterE (N "val", ListN (N "n")));
               ExecuteSeqI (ContE (NameE (N "L")));
@@ -39,7 +39,7 @@ let br =
               LetI (NameE (N "L"), GetCurLabelE);
               ExitAbruptI (N "L");
               ExecuteI
-                (ConstructE ("BR", [ SubE (NameE (N "l"), ValueE (NumV 1L)) ]));
+                (ConstructE ("BR", [ BinopE (Sub, NameE (N "l"), ValueE (NumV 1L)) ]));
             ] );
       ] )
 
@@ -61,7 +61,7 @@ let return =
       [
         PopAllI (IterE (N "val'", List));
         IfI (
-          TopC "frame",
+          IsTopC "frame",
           (* return_frame *)
           [
             PopI (NameE (N "F"));
@@ -158,10 +158,10 @@ let instantiation =
             AccessE (data_iter, IndexP (NameE (N "i")))
           );
           IfI (
-            DefinedC (NameE mode),
+            IsDefinedC (NameE mode),
             [
               LetI (OptE (Some (ConstructE ("MEMORY", [ NameE memidx; dinstrs ]))), NameE mode);
-              AssertI (EqC (NameE memidx, ValueE (NumV 0L)) |> Print.string_of_cond);
+              AssertI (CompareC (Eq, NameE memidx, ValueE (NumV 0L)) |> Print.string_of_cond);
               ExecuteSeqI dinstrs;
               ExecuteI (ConstructE ("CONST", [ ValueE i32_type; ValueE (NumV 0L) ]));
               ExecuteI (ConstructE ("CONST", [ ValueE i32_type; LengthE (NameE init) ]));
@@ -380,7 +380,7 @@ let alloc_memory =
         NameE memoryinst_name,
         ListFillE (
           ValueE (NumV 0L),
-          MulE (MulE (NameE min_name, ValueE (NumV (64L))), AppE (N "Ki", []))
+          BinopE (Mul, BinopE (Mul, NameE min_name, ValueE (NumV (64L))), AppE (N "Ki", []))
         )
       );
       AppendI (NameE memoryinst_name, NameE store_name, "MEM");
@@ -451,7 +451,7 @@ let invocation =
         ArrowE (IterE (ignore_name, ListN n), IterE (ignore_name, ListN m)),
         NameE func_type_name
       );
-      AssertI (EqC (LengthE args_iter, NameE n) |> Print.string_of_cond);
+      AssertI (CompareC (Eq, LengthE args_iter, NameE n) |> Print.string_of_cond);
       (* TODO *)
       LetI (NameE frame_name, FrameE (ValueE (NumV 0L), RecordE frame_rec));
       PushI (NameE frame_name);

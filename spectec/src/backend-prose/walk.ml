@@ -5,10 +5,7 @@ let rec walk_expr f e =
   match e with
   | ValueE v -> f_expr (ValueE v)
   | MinusE inner_e -> f_expr (MinusE (walk_expr f inner_e))
-  | AddE (e1, e2) -> f_expr (AddE (walk_expr f e1, walk_expr f e2))
-  | SubE (e1, e2) -> f_expr (SubE (walk_expr f e1, walk_expr f e2))
-  | MulE (e1, e2) -> f_expr (MulE (walk_expr f e1, walk_expr f e2))
-  | DivE (e1, e2) -> f_expr (DivE (walk_expr f e1, walk_expr f e2))
+  | BinopE (op, e1, e2) -> f_expr (BinopE (op, walk_expr f e1, walk_expr f e2))
   | AppE (fname, args) -> f_expr (AppE (fname, walk_exprs f args))
   (* TODO: Implement walker for iter *)
   | MapE (fname, args, iter) -> f_expr (MapE (fname, walk_exprs f args, iter))
@@ -46,14 +43,10 @@ let rec walk_cond f c =
   let _, f_cond, _ = f in
   match c with
   | NotC inner_c -> f_cond (NotC (walk_cond f inner_c))
-  | OrC (c1, c2) -> f_cond (OrC (walk_cond f c1, walk_cond f c2))
-  | EqC (e1, e2) -> f_cond (EqC (walk_expr f e1, walk_expr f e2))
-  | GeC (e1, e2) -> f_cond (GeC (walk_expr f e1, walk_expr f e2))
-  | GtC (e1, e2) -> f_cond (GtC (walk_expr f e1, walk_expr f e2))
-  | LtC (e1, e2) -> f_cond (LtC (walk_expr f e1, walk_expr f e2))
-  | LeC (e1, e2) -> f_cond (LeC (walk_expr f e1, walk_expr f e2))
-  | CaseOfC (e, c) -> f_cond (CaseOfC (walk_expr f e, c))
-  | DefinedC e -> f_cond (DefinedC (walk_expr f e))
+  | BinopC (op, c1, c2) -> f_cond (BinopC (op, walk_cond f c1, walk_cond f c2))
+  | CompareC (op, e1, e2) -> f_cond (CompareC (op, walk_expr f e1, walk_expr f e2))
+  | IsCaseOfC (e, c) -> f_cond (IsCaseOfC (walk_expr f e, c))
+  | IsDefinedC e -> f_cond (IsDefinedC (walk_expr f e))
   | _ -> Print.structured_string_of_cond c |> failwith
 
 let rec walk_instr f instr =

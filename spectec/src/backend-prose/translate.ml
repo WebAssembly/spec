@@ -127,15 +127,17 @@ let rec exp2expr exp =
   | Ast.DotE (inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Al.MinusE (exp2expr inner_exp)
-  | Ast.BinE (op, exp1, exp2) -> (
+  | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
-      match op with
-      | Ast.AddOp -> Al.AddE (lhs, rhs)
-      | Ast.SubOp -> Al.SubE (lhs, rhs)
-      | Ast.MulOp -> Al.MulE (lhs, rhs)
-      | Ast.DivOp -> Al.DivE (lhs, rhs)
-      | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith)
+      let op = match op with
+      | Ast.AddOp -> Al.Add
+      | Ast.SubOp -> Al.Sub
+      | Ast.MulOp -> Al.Mul
+      | Ast.DivOp -> Al.Div
+      | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
+      in
+      Al.BinopE (op, lhs, rhs)
   (* ConstructE *)
   | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }) ->
       Al.ConstructE (cons, List.map exp2expr args)
@@ -240,8 +242,8 @@ let lhs2pop = function
                   (* While the top of the stack is not a frame, do ... *)
                   Al.WhileI
                     ( Al.NotC
-                        (Al.EqC
-                           ( Al.NameE (Al.N "the top of the stack"),
+                        (Al.CompareC
+                           ( Al.Eq, Al.NameE (Al.N "the top of the stack"),
                              Al.NameE (Al.N "a frame") )),
                       [ Al.PopI (Al.NameE (Al.N "the top element")) ] );
                 ]
@@ -358,24 +360,28 @@ let rec rhs2instrs exp =
 (* `Ast.exp` -> `Al.cond` *)
 let rec exp2cond exp =
   match exp.it with
-  | Ast.CmpE (op, exp1, exp2) -> (
+  | Ast.CmpE (op, exp1, exp2) ->
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
-      match op with
-      | Ast.EqOp -> Al.EqC (lhs, rhs)
-      | Ast.NeOp -> Al.NotC (Al.EqC (lhs, rhs))
-      | Ast.GtOp -> Al.GtC (lhs, rhs)
-      | Ast.GeOp -> Al.GeC (lhs, rhs)
-      | Ast.LtOp -> Al.LtC (lhs, rhs)
-      | Ast.LeOp -> Al.LeC (lhs, rhs))
-  | Ast.BinE (op, exp1, exp2) -> (
+      let compare_op = match op with
+      | Ast.EqOp -> Al.Eq
+      | Ast.NeOp -> Al.Ne
+      | Ast.GtOp -> Al.Gt
+      | Ast.GeOp -> Al.Ge
+      | Ast.LtOp -> Al.Lt
+      | Ast.LeOp -> Al.Le
+      in
+      Al.CompareC (compare_op, lhs, rhs)
+  | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2cond exp1 in
       let rhs = exp2cond exp2 in
-      match op with
-      | Ast.AndOp -> Al.AndC (lhs, rhs)
-      | Ast.OrOp -> Al.OrC (lhs, rhs)
+      let binop = match op with
+      | Ast.AndOp -> Al.And
+      | Ast.OrOp -> Al.Or
       | _ ->
-          gen_fail_msg_of_exp exp "binary expression for condition" |> failwith)
+          gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
+      in
+      Al.BinopC (binop, lhs, rhs)
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
 let bound_by binding e =
@@ -398,14 +404,14 @@ let prems2instrs remain_lhs =
           | Ast.CaseE (Ast.Atom tag, {it = Ast.TupE []; _}) ->
               [
                 Al.IfI
-                  ( Al.CaseOfC (exp2expr exp2, tag),
+                  ( Al.IsCaseOfC (exp2expr exp2, tag),
                     instrs',
                     [] );
               ]
           | Ast.CaseE (Ast.Atom tag, _) ->
               [
                 Al.IfI
-                  ( Al.CaseOfC (exp2expr exp2, tag),
+                  ( Al.IsCaseOfC (exp2expr exp2, tag),
                     Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs',
                     [] );
               ]
@@ -413,14 +419,14 @@ let prems2instrs remain_lhs =
               let rhs = exp2expr exp2 in
               [
                 Al.IfI
-                  ( Al.EqC (Al.LengthE rhs, Al.ValueE (Al.NumV (Int64.of_int (List.length es)))),
+                  ( Al.CompareC (Al.Eq, Al.LengthE rhs, Al.ValueE (Al.NumV (Int64.of_int (List.length es)))),
                     Al.LetI (exp2expr exp1, rhs) :: instrs',
                     [] );
               ]
           | Ast.OptE None ->
               [
                 Al.IfI
-                  ( Al.NotC (Al.DefinedC (exp2expr exp2)),
+                  ( Al.NotC (Al.IsDefinedC (exp2expr exp2)),
                     instrs',
                     [] );
               ]
@@ -428,7 +434,7 @@ let prems2instrs remain_lhs =
               let rhs = exp2expr exp2 in
               [
                 Al.IfI
-                  ( Al.DefinedC rhs,
+                  ( Al.IsDefinedC rhs,
                     Al.LetI (exp2expr exp1, rhs) :: instrs',
                     [] );
               ]
