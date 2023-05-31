@@ -78,7 +78,7 @@ type expr =
   | BinopE of expr_binop * expr * expr
   (* Function Call *)
   | AppE of name * expr list
-  | MapE of name * expr list * iter
+  | MapE of name * expr list * iter list
   (* Data Structure *)
   | ListE of expr array
   | ListFillE of expr * expr

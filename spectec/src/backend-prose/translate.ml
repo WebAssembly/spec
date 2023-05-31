@@ -116,7 +116,7 @@ let rec exp2expr exp =
   | Ast.VarE id -> Al.NameE (N id.it, [])
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
-      Al.MapE (N id.it, exp2args inner_exp, tmp iter)
+      Al.MapE (N id.it, exp2args inner_exp, [tmp iter])
   | Ast.IterE (inner_exp, (iter, [ _id ])) ->
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)

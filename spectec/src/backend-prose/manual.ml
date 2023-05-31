@@ -140,7 +140,7 @@ let instantiation =
       );
       PushI (NameE (frame_init_name, []));
       (* Global *)
-      LetI (val_iter, MapE (N "exec_global", [NameE (global_name, [])], List));
+      LetI (val_iter, MapE (N "exec_global", [NameE (global_name, [])], [List]));
       (* TODO: global & elements *)
       PopI (NameE (frame_init_name, []));
       LetI (
@@ -257,23 +257,23 @@ let alloc_module =
       );
       LetI (
         funcaddr_iter,
-        MapE (N "alloc_func", [ NameE (func_name, []) ], List)
+        MapE (N "alloc_func", [ NameE (func_name, []) ], [List])
       );
       LetI (
         tableaddr_iter,
-        MapE (N "alloc_table", [ NameE (table_name, []) ], List)
+        MapE (N "alloc_table", [ NameE (table_name, []) ], [List])
       );
       LetI (
         globaladdr_iter,
-        MapE (N "alloc_global", [ NameE (val_name, []) ], List)
+        MapE (N "alloc_global", [ NameE (val_name, []) ], [List])
       );
       LetI (
         memoryaddr_iter,
-        MapE (N "alloc_memory", [ NameE (memory_name, []) ], List)
+        MapE (N "alloc_memory", [ NameE (memory_name, []) ], [List])
       );
       LetI (
         dataaddr_iter,
-        MapE (N "alloc_data", [ NameE (data_name, []) ], List)
+        MapE (N "alloc_data", [ NameE (data_name, []) ], [List])
       );
       LetI (NameE (module_inst_name, []), RecordE (module_inst_rec));
       (* TODO *)

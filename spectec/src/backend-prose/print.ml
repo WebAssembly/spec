@@ -131,10 +131,10 @@ and string_of_expr = function
   | AppE (n, el) ->
       sprintf "$%s(%s)" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
-  | MapE (n, el, iter) ->
+  | MapE (n, el, iters) ->
       sprintf "$%s(%s)%s" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
-        (string_of_iter iter)
+        (string_of_iters iters)
   | ConcatE (e1, e2) ->
       sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | LengthE e -> sprintf "|%s|" (string_of_expr e)
@@ -457,13 +457,13 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" nl
       ^ ")"
-  | MapE (n, nl, iter) ->
+  | MapE (n, nl, iters) ->
       "MapE ("
       ^ structured_string_of_name n
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" nl
       ^ ", "
-      ^ structured_string_of_iter iter
+      ^ string_of_iters iters
       ^ ")"
   | ConcatE (e1, e2) ->
       "ConcatE ("
