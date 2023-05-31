@@ -166,7 +166,7 @@ let composite g f x = f x |> g
 let hide_state = function
   | AppE (f, args) ->
       let new_args =
-        List.filter (function NameE (N "z") -> false | _ -> true) args
+        List.filter (function NameE (N "z", _) -> false | _ -> true) args
       in
       AppE (f, new_args)
   | e -> e

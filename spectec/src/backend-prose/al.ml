@@ -98,8 +98,7 @@ type expr =
   | GetCurLabelE
   | ContE of expr
   (* Name *)
-  | IterE of name * iter
-  | NameE of name
+  | NameE of name * iter list
   (* Yet *)
   | YetE of string
 

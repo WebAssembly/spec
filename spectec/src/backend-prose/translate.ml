@@ -57,7 +57,7 @@ let il_type2al_type t =
   | _ -> failwith "Unreachable"
 
 let rec find_type tenv exp =
-  let to_NameE x = Al.NameE (Al.N x) in
+  let to_NameE x = Al.NameE (Al.N x, []) in
   match exp.it with
   | Ast.VarE id -> (
       match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
@@ -113,14 +113,14 @@ let rec exp2expr exp =
       Al.AccessE (exp2expr exp1, Al.SliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> Al.ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
-  | Ast.VarE id -> Al.NameE (N id.it)
+  | Ast.VarE id -> Al.NameE (N id.it, [])
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
       Al.MapE (N id.it, exp2args inner_exp, tmp iter)
   | Ast.IterE (inner_exp, (iter, [ _id ])) ->
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)
-      Al.IterE (name, tmp iter)
+      Al.NameE (name, [tmp iter])
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       Al.ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
@@ -223,9 +223,9 @@ let lhs2pop = function
             }) ->
           let let_instrs =
             [
-              Al.LetI (Al.NameE (Al.N name.it), Al.GetCurFrameE);
+              Al.LetI (Al.NameE (Al.N name.it, []), Al.GetCurFrameE);
               Al.LetI
-                (Al.NameE (Al.N arity.it), Al.ArityE (Al.NameE (Al.N name.it)));
+                (Al.NameE (Al.N arity.it, []), Al.ArityE (Al.NameE (Al.N name.it, [])));
             ]
           in
           let pop_instrs =
@@ -243,14 +243,14 @@ let lhs2pop = function
                   Al.WhileI
                     ( Al.NotC
                         (Al.CompareC
-                           ( Al.Eq, Al.NameE (Al.N "the top of the stack"),
-                             Al.NameE (Al.N "a frame") )),
-                      [ Al.PopI (Al.NameE (Al.N "the top element")) ] );
+                           ( Al.Eq, Al.NameE (Al.N "the top of the stack", []),
+                             Al.NameE (Al.N "a frame", []) )),
+                      [ Al.PopI (Al.NameE (Al.N "the top element", [])) ] );
                 ]
             | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith
           in
           let pop_frame_instrs =
-            [ insert_assert inst; Al.PopI (Al.NameE (Al.N "the frame")) ]
+            [ insert_assert inst; Al.PopI (Al.NameE (Al.N "the frame", [])) ]
           in
           (let_instrs @ pop_instrs @ pop_frame_instrs, rest)
       (* Label *)
@@ -260,7 +260,7 @@ let lhs2pop = function
               (* TODO: append Jump instr *)
               Al.PopI (exp2expr vals);
               insert_assert inst;
-              Al.PopI (Al.NameE (N "the label"));
+              Al.PopI (Al.NameE (N "the label", []));
             ],
             rest )
       (* noraml list expression *)
@@ -302,7 +302,7 @@ let rec rhs2instrs exp =
         }) ->
       let push_instr =
         Al.PushI
-          (Al.FrameE (Al.NameE (Al.N arity.it), Al.NameE (Al.N fname.it)))
+          (Al.FrameE (Al.NameE (Al.N arity.it, []), Al.NameE (Al.N fname.it, [])))
       in
       let exit_instr = Al.ExitNormalI (Al.N fname.it) in
       (push_instr :: rhs2instrs labelexp) @ [ exit_instr ]
@@ -316,21 +316,21 @@ let rec rhs2instrs exp =
           _;
         }) -> (
       let label_expr =
-        Al.LabelE (Al.NameE (Al.N label_arity.it), exp2expr instrs_exp1)
+        Al.LabelE (Al.NameE (Al.N label_arity.it, []), exp2expr instrs_exp1)
       in
       match instrs_exp2.it with
       | Ast.CatE (valexp, instrsexp) ->
           [
-            Al.LetI (Al.NameE (Al.N "L"), label_expr);
-            Al.PushI (Al.NameE (Al.N "L"));
+            Al.LetI (Al.NameE (Al.N "L", []), label_expr);
+            Al.PushI (Al.NameE (Al.N "L", []));
             Al.PushI (exp2expr valexp);
             Al.JumpI (exp2expr instrsexp);
             Al.ExitNormalI (Al.N "L");
           ]
       | _ ->
           [
-            Al.LetI (Al.NameE (Al.N "L"), label_expr);
-            Al.PushI (Al.NameE (Al.N "L"));
+            Al.LetI (Al.NameE (Al.N "L", []), label_expr);
+            Al.PushI (Al.NameE (Al.N "L", []));
             Al.JumpI (exp2expr instrs_exp2);
             Al.ExitNormalI (Al.N "L");
           ])

@@ -17,29 +17,29 @@ open Al
 let br =
   Algo
     ( "br",
-      [ (NameE (N "l"), IntT) ],
+      [ (NameE (N "l", []), IntT) ],
       [
         IfI
-          ( CompareC (Eq, NameE (N "l"), NumE 0L),
+          ( CompareC (Eq, NameE (N "l", []), NumE 0L),
             (* br_zero *)
             [
-              LetI (NameE (N "L"), GetCurLabelE);
-              LetI (NameE (N "n"), ArityE (NameE (N "L")));
+              LetI (NameE (N "L", []), GetCurLabelE);
+              LetI (NameE (N "n", []), ArityE (NameE (N "L", [])));
               AssertI
                 "Due to validation, there are at least n values on the top of \
                  the stack"; 
-              PopI (IterE (N "val", ListN (N "n")));
-              WhileI (IsTopC "value", [ PopI (NameE (N "val'")) ]);
+              PopI (NameE (N "val", [ListN (N "n")]));
+              WhileI (IsTopC "value", [ PopI (NameE (N "val'", [])) ]);
               ExitAbruptI (N "L");
-              PushI (IterE (N "val", ListN (N "n")));
-              ExecuteSeqI (ContE (NameE (N "L")));
+              PushI (NameE (N "val", [ListN (N "n")]));
+              ExecuteSeqI (ContE (NameE (N "L", [])));
             ],
             (* br_succ *)
             [
-              LetI (NameE (N "L"), GetCurLabelE);
+              LetI (NameE (N "L", []), GetCurLabelE);
               ExitAbruptI (N "L");
               ExecuteI
-                (ConstructE ("BR", [ BinopE (Sub, NameE (N "l"), NumE 1L) ]));
+                (ConstructE ("BR", [ BinopE (Sub, NameE (N "l", []), NumE 1L) ]));
             ] );
       ] )
 
@@ -59,24 +59,24 @@ let return =
     ( "return",
       [],
       [
-        PopAllI (IterE (N "val'", List));
+        PopAllI (NameE (N "val'", [List]));
         IfI (
           IsTopC "frame",
           (* return_frame *)
           [
-            PopI (NameE (N "F"));
-            LetI (NameE (N "n"), ArityE (NameE (N "F")));
-            PushI (NameE (N "F"));
-            PushI (IterE (N "val'", List));
-            PopI (IterE (N "val", ListN (N "n")));
+            PopI (NameE (N "F", []));
+            LetI (NameE (N "n", []), ArityE (NameE (N "F", [])));
+            PushI (NameE (N "F", []));
+            PushI (NameE (N "val'", [List]));
+            PopI (NameE (N "val", [ListN (N "n")]));
             ExitAbruptI (N "F");
-            PushI (IterE (N "val", ListN (N "n")));
+            PushI (NameE (N "val", [ListN (N "n")]));
           ],
           (* return_label *)
           [
-            PopI (NameE (N "L"));
-            PushI (NameE (N "L"));
-            PushI (IterE (N "val'", List));
+            PopI (NameE (N "L", []));
+            PushI (NameE (N "L", []));
+            PushI (NameE (N "val'", [List]));
             ExitAbruptI (N "L");
             ExecuteI (ConstructE ("RETURN", []));
           ] );
@@ -87,9 +87,9 @@ let instantiation =
   let ignore_name = N "_" in
   let module_name = N "module" in
   let global_name = N "global" in
-  let global_iter = IterE (global_name, List) in
+  let global_iter = NameE (global_name, [List]) in
   let data_name = N "data" in
-  let data_iter = IterE (data_name, List) in
+  let data_iter = NameE (data_name, [List]) in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init =
     Record.empty
@@ -98,82 +98,82 @@ let instantiation =
   let frame_init_name = SubN ((N "f"), "init") in
   let frame_init_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE module_inst_init_name)
+    |> Record.add "MODULE" (NameE (module_inst_init_name, []))
     |> Record.add "LOCAL" (ListE [||]) in
   let val_name = N "val" in
-  let val_iter = IterE (val_name, List) in
+  let val_iter = NameE (val_name, [List]) in
   let module_inst_name = N "moduleinst" in
   let frame_name = N "f" in
   let frame_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE module_inst_name)
+    |> Record.add "MODULE" (NameE (module_inst_name, []))
     |> Record.add "LOCAL" (ListE [||]) in
   let init = N "init" in
   let mode = N "mode" in
   let memidx = N "memidx" in
-  let dinstrs = IterE (N "dinstrs", List) in
+  let dinstrs = NameE (N "dinstrs", [List]) in
   let i32_type = ConstructE ("I32", []) in
 
   (* Algorithm *)
   Algo (
     "instantiation",
-    [ (NameE module_name, TopT) ],
+    [ (NameE (module_name, []), TopT) ],
     [
       LetI (
         ConstructE (
           "MODULE",
           [
-            NameE ignore_name;
+            NameE (ignore_name, []);
             global_iter;
-            NameE ignore_name;
-            NameE ignore_name;
-            NameE ignore_name;
+            NameE (ignore_name, []);
+            NameE (ignore_name, []);
+            NameE (ignore_name, []);
             data_iter
           ]
         ),
-        NameE module_name
+        NameE (module_name, [])
       );
-      LetI (NameE module_inst_init_name, RecordE module_inst_init);
+      LetI (NameE (module_inst_init_name, []), RecordE module_inst_init);
       LetI (
-        NameE frame_init_name,
+        NameE (frame_init_name, []),
         FrameE (NumE 0L, RecordE frame_init_rec)
       );
-      PushI (NameE frame_init_name);
+      PushI (NameE (frame_init_name, []));
       (* Global *)
-      LetI (val_iter, MapE (N "exec_global", [NameE global_name], List));
+      LetI (val_iter, MapE (N "exec_global", [NameE (global_name, [])], List));
       (* TODO: global & elements *)
-      PopI (NameE frame_init_name);
+      PopI (NameE (frame_init_name, []));
       LetI (
-        NameE module_inst_name,
-        AppE (N "alloc_module", [NameE module_name; val_iter])
+        NameE (module_inst_name, []),
+        AppE (N "alloc_module", [NameE (module_name, []); val_iter])
       );
-      LetI (NameE frame_name, FrameE (NumE 0L, RecordE frame_rec));
-      PushI (NameE frame_name);
+      LetI (NameE (frame_name, []), FrameE (NumE 0L, RecordE frame_rec));
+      PushI (NameE (frame_name, []));
       (* TODO: element *)
       ForI (
         data_iter,
         [
           LetI (
-            ConstructE ("DATA", [ NameE init; NameE mode ]),
-            AccessE (data_iter, IndexP (NameE (N "i")))
+            ConstructE ("DATA", [ NameE (init, []); NameE (mode, []) ]),
+            AccessE (data_iter, IndexP (NameE (N "i", [])))
           );
           IfI (
-            IsDefinedC (NameE mode),
+            IsDefinedC (NameE (mode, [])),
             [
-              LetI (OptE (Some (ConstructE ("MEMORY", [ NameE memidx; dinstrs ]))), NameE mode);
-              AssertI (CompareC (Eq, NameE memidx, NumE 0L) |> Print.string_of_cond);
+              LetI (OptE (Some (ConstructE ("MEMORY", [ NameE (memidx, []); dinstrs ]))), NameE (mode, []));
+              AssertI (CompareC (Eq, NameE (memidx, []), NumE 0L) |> Print.string_of_cond);
               ExecuteSeqI dinstrs;
               ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
-              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE (NameE init) ]));
-              ExecuteI (ConstructE ("MEMORY.INIT", [ NameE (N "i") ]));
-              ExecuteI (ConstructE ("DATA.DROP", [ NameE (N "i") ]));
+              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE (NameE (init, [])) ]));
+              ExecuteI (ConstructE ("MEMORY.INIT", [ NameE (N "i", []) ]));
+              ExecuteI (ConstructE ("DATA.DROP", [ NameE (N "i", []) ]));
             ],
             []
           )
         ]
       );
       (* TODO: start *)
-      PopI (NameE frame_name)
+      PopI (NameE (frame_name, []))
     ]
   )
 
@@ -181,21 +181,21 @@ let exec_global =
   (* Name definition *)
   let ignore_name = N "_" in
   let global_name = N "global" in
-  let instr_iter = IterE (N "instr", List) in
+  let instr_iter = NameE (N "instr", [List]) in
   let val_name = N "val" in
 
   (* Algorithm *)
   Algo (
     "exec_global",
-    [NameE global_name, TopT],
+    [NameE (global_name, []), TopT],
     [
       LetI (
-        ConstructE ("GLOBAL", [ NameE ignore_name; instr_iter ]),
-        NameE global_name
+        ConstructE ("GLOBAL", [ NameE (ignore_name, []); instr_iter ]),
+        NameE (global_name, [])
       );
       JumpI instr_iter;
-      PopI (NameE val_name);
-      ReturnI (Some (NameE val_name))
+      PopI (NameE (val_name, []));
+      ReturnI (Some (NameE (val_name, [])))
     ]
   )
 
@@ -204,22 +204,22 @@ let alloc_module =
   let ignore_name = N "_" in
   let module_name = N "module" in
   let val_name = N "val" in
-  let val_iter = IterE (val_name, List) in
+  let val_iter = NameE (val_name, [List]) in
   let func_name = N "func" in
-  let func_iter = IterE (func_name, List) in
+  let func_iter = NameE (func_name, [List]) in
   let table_name = N "table" in
-  let table_iter = IterE (table_name, List) in
+  let table_iter = NameE (table_name, [List]) in
   let global_name = N "global" in
-  let global_iter = IterE (global_name, List) in
+  let global_iter = NameE (global_name, [List]) in
   let memory_name = N "memory" in
-  let memory_iter = IterE (memory_name, List) in
+  let memory_iter = NameE (memory_name, [List]) in
   let data_name = N "data" in
-  let data_iter = IterE (data_name, List) in
-  let funcaddr_iter = IterE (N "funcaddr", List) in
-  let tableaddr_iter = IterE (N "tableaddr", List) in
-  let globaladdr_iter = IterE (N "globaladdr", List) in
-  let memoryaddr_iter = IterE (N "memoryaddr", List) in
-  let dataaddr_iter = IterE (N "dataaddr", List) in
+  let data_iter = NameE (data_name, [List]) in
+  let funcaddr_iter = NameE (N "funcaddr", [List]) in
+  let tableaddr_iter = NameE (N "tableaddr", [List]) in
+  let globaladdr_iter = NameE (N "globaladdr", [List]) in
+  let memoryaddr_iter = NameE (N "memoryaddr", [List]) in
+  let dataaddr_iter = NameE (N "dataaddr", [List]) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
@@ -232,14 +232,14 @@ let alloc_module =
   let store_name = N "s" in
   let func_name' = N "func'" in
 
-  let base = AccessE (NameE (N "s"), DotP ("FUNC")) in
-  let index = IndexP (NameE (N "i")) in
+  let base = AccessE (NameE (N "s", []), DotP ("FUNC")) in
+  let index = IndexP (NameE (N "i", [])) in
   let index_access = AccessE (base, index) in
 
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ NameE module_name, TopT; val_iter, TopT ],
+    [ NameE (module_name, []), TopT; val_iter, TopT ],
     [
       LetI (
         ConstructE (
@@ -249,42 +249,42 @@ let alloc_module =
             global_iter;
             table_iter;
             memory_iter;
-            NameE ignore_name;
+            NameE (ignore_name, []);
             data_iter;
           ]
         ),
-        NameE module_name
+        NameE (module_name, [])
       );
       LetI (
         funcaddr_iter,
-        MapE (N "alloc_func", [ NameE func_name ], List)
+        MapE (N "alloc_func", [ NameE (func_name, []) ], List)
       );
       LetI (
         tableaddr_iter,
-        MapE (N "alloc_table", [ NameE table_name ], List)
+        MapE (N "alloc_table", [ NameE (table_name, []) ], List)
       );
       LetI (
         globaladdr_iter,
-        MapE (N "alloc_global", [ NameE val_name ], List)
+        MapE (N "alloc_global", [ NameE (val_name, []) ], List)
       );
       LetI (
         memoryaddr_iter,
-        MapE (N "alloc_memory", [ NameE memory_name ], List)
+        MapE (N "alloc_memory", [ NameE (memory_name, []) ], List)
       );
       LetI (
         dataaddr_iter,
-        MapE (N "alloc_data", [ NameE data_name ], List)
+        MapE (N "alloc_data", [ NameE (data_name, []) ], List)
       );
-      LetI (NameE module_inst_name, RecordE (module_inst_rec));
+      LetI (NameE (module_inst_name, []), RecordE (module_inst_rec));
       (* TODO *)
       ForI (
-        AccessE (NameE store_name, DotP "FUNC"),
+        AccessE (NameE (store_name, []), DotP "FUNC"),
         [
-          LetI (PairE (NameE ignore_name, NameE func_name'), index_access);
-          ReplaceI (base, index, PairE (NameE module_inst_name, NameE func_name'))
+          LetI (PairE (NameE (ignore_name, []), NameE (func_name', [])), index_access);
+          ReplaceI (base, index, PairE (NameE (module_inst_name, []), NameE (func_name', [])))
         ]
       );
-      ReturnI (Some (NameE module_inst_name))
+      ReturnI (Some (NameE (module_inst_name, [])))
     ]
   )
 
@@ -303,13 +303,13 @@ let alloc_func =
   (* Algorithm *)
   Algo (
     "alloc_func",
-    [ (NameE func_name, TopT) ],
+    [ (NameE (func_name, []), TopT) ],
     [
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "FUNC")));
-      LetI (NameE dummy_module_inst, RecordE dummy_module_rec);
-      LetI (NameE func_inst_name, PairE (NameE dummy_module_inst, NameE func_name));
-      AppendI (NameE func_inst_name, NameE store_name, "FUNC");
-      ReturnI (Some (NameE addr_name))
+      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "FUNC")));
+      LetI (NameE (dummy_module_inst, []), RecordE dummy_module_rec);
+      LetI (NameE (func_inst_name, []), PairE (NameE (dummy_module_inst, []), NameE (func_name, [])));
+      AppendI (NameE (func_inst_name, []), NameE (store_name, []), "FUNC");
+      ReturnI (Some (NameE (addr_name, [])))
     ]
   )
 
@@ -322,11 +322,11 @@ let alloc_global =
   (* Algorithm *)
   Algo (
     "alloc_global",
-    [NameE val_name, TopT],
+    [NameE (val_name, []), TopT],
     [
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "GLOBAL")));
-      AppendI (NameE val_name, NameE store_name, "GLOBAL");
-      ReturnI (Some (NameE addr_name))
+      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "GLOBAL")));
+      AppendI (NameE (val_name, []), NameE (store_name, []), "GLOBAL");
+      ReturnI (Some (NameE (addr_name, [])))
     ]
   )
 
@@ -339,21 +339,21 @@ let alloc_table =
   let addr_name = N "a" in
   let store_name = N "s" in
   let tableinst_name = N "tableinst" in
-  let ref_null = ConstructE ("REF.NULL", [NameE reftype]) in
+  let ref_null = ConstructE ("REF.NULL", [NameE (reftype, [])]) in
 
   (* Algorithm *)
   Algo (
     "alloc_table",
-    [ (NameE table_name, TopT) ],
+    [ (NameE (table_name, []), TopT) ],
     [
       LetI (
-        ConstructE ("TABLE", [PairE (NameE min, NameE ignore_name); NameE reftype]),
-        NameE table_name
+        ConstructE ("TABLE", [PairE (NameE (min, []), NameE (ignore_name, [])); NameE (reftype, [])]),
+        NameE (table_name, [])
       );
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "TABLE")));
-      LetI (NameE tableinst_name, ListFillE (ref_null, NameE min));
-      AppendI (NameE tableinst_name, NameE store_name, "TABLE");
-      ReturnI (Some (NameE addr_name))
+      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "TABLE")));
+      LetI (NameE (tableinst_name, []), ListFillE (ref_null, NameE (min, [])));
+      AppendI (NameE (tableinst_name, []), NameE (store_name, []), "TABLE");
+      ReturnI (Some (NameE (addr_name, [])))
     ]
   )
 
@@ -369,22 +369,22 @@ let alloc_memory =
   (* Algorithm *)
   Algo(
     "alloc_memory",
-    [ (NameE memory_name, TopT) ],
+    [ (NameE (memory_name, []), TopT) ],
     [
       LetI (
-        ConstructE ("MEMORY", [ PairE (NameE min_name, NameE ignore_name) ]),
-        NameE memory_name
+        ConstructE ("MEMORY", [ PairE (NameE (min_name, []), NameE (ignore_name, [])) ]),
+        NameE (memory_name, [])
       );
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "MEM")));
+      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "MEM")));
       LetI (
-        NameE memoryinst_name,
+        NameE (memoryinst_name, []),
         ListFillE (
           NumE 0L,
-          BinopE (Mul, BinopE (Mul, NameE min_name, NumE 64L), AppE (N "Ki", []))
+          BinopE (Mul, BinopE (Mul, NameE (min_name, []), NumE 64L), AppE (N "Ki", []))
         )
       );
-      AppendI (NameE memoryinst_name, NameE store_name, "MEM");
-      ReturnI (Some (NameE addr_name))
+      AppendI (NameE (memoryinst_name, []), NameE (store_name, []), "MEM");
+      ReturnI (Some (NameE (addr_name, [])))
     ]
   )
 
@@ -401,15 +401,15 @@ let alloc_data =
   (* Algorithm *)
   Algo (
     "alloc_data",
-    [ (NameE data_name, TopT) ],
+    [ (NameE (data_name, []), TopT) ],
     [
       LetI (
-        ConstructE ("DATA", [ NameE init; NameE ignore_name ]),
-        NameE data_name
+        ConstructE ("DATA", [ NameE (init, []); NameE (ignore_name, []) ]),
+        NameE (data_name, [])
       );
-      LetI (NameE addr_name, LengthE (AccessE (NameE store_name, DotP "DATA")));
-      AppendI (NameE init, NameE store_name, "DATA");
-      ReturnI (Some (NameE addr_name))
+      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "DATA")));
+      AppendI (NameE (init, []), NameE (store_name, []), "DATA");
+      ReturnI (Some (NameE (addr_name, [])))
     ]
   )
 
@@ -417,7 +417,7 @@ let invocation =
   (* Name definition *)
   let ignore_name = N "_" in
   let args = N "val" in
-  let args_iter = IterE (args, List) in
+  let args_iter = NameE (args, [List]) in
   let funcaddr_name = N "funcaddr" in
   let func_name = N "func" in
   let store_name = N "s" in
@@ -437,29 +437,29 @@ let invocation =
   (* Algorithm *)
   Algo (
     "invocation",
-    [ (NameE funcaddr_name, TopT); (args_iter, TopT) ],
+    [ (NameE (funcaddr_name, []), TopT); (args_iter, TopT) ],
     [
       LetI (
-        PairE (NameE ignore_name, NameE func_name),
-        AccessE (AccessE (NameE store_name, DotP "FUNC"), IndexP (NameE funcaddr_name))
+        PairE (NameE (ignore_name, []), NameE (func_name, [])),
+        AccessE (AccessE (NameE (store_name, []), DotP "FUNC"), IndexP (NameE (funcaddr_name, [])))
       );
       LetI (
-        ConstructE ("FUNC", [NameE func_type_name; NameE ignore_name; NameE ignore_name]),
-        NameE func_name
+        ConstructE ("FUNC", [NameE (func_type_name, []); NameE (ignore_name, []); NameE (ignore_name, [])]),
+        NameE (func_name, [])
       );
       LetI (
-        ArrowE (IterE (ignore_name, ListN n), IterE (ignore_name, ListN m)),
-        NameE func_type_name
+        ArrowE (NameE (ignore_name, [ListN n]), NameE (ignore_name, [ListN m])),
+        NameE (func_type_name, [])
       );
-      AssertI (CompareC (Eq, LengthE args_iter, NameE n) |> Print.string_of_cond);
+      AssertI (CompareC (Eq, LengthE args_iter, NameE (n, [])) |> Print.string_of_cond);
       (* TODO *)
-      LetI (NameE frame_name, FrameE (NumE 0L, RecordE frame_rec));
-      PushI (NameE frame_name);
+      LetI (NameE (frame_name, []), FrameE (NumE 0L, RecordE frame_rec));
+      PushI (NameE (frame_name, []));
       PushI (args_iter);
-      ExecuteI (ConstructE ("CALL_ADDR", [NameE funcaddr_name]));
-      PopI (IterE (SubN (N "val", "res"), ListN m));
-      PopI (NameE frame_name);
-      ReturnI (Some (IterE (SubN (N "val", "res"), ListN m)))
+      ExecuteI (ConstructE ("CALL_ADDR", [NameE (funcaddr_name, [])]));
+      PopI (NameE (SubN (N "val", "res"), [ListN m]));
+      PopI (NameE (frame_name, []));
+      ReturnI (Some (NameE (SubN (N "val", "res"), [ListN m])))
     ]
   )
 

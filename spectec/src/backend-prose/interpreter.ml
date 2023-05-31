@@ -213,7 +213,7 @@ and eval_expr env expr =
       match v with
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
-  | NameE name | IterE (name, _) -> Env.find name env
+  | NameE (name, _) -> Env.find name env
   | e -> structured_string_of_expr e |> failwith
 
 and eval_cond env cond =
@@ -295,7 +295,7 @@ and interp_instrs env il =
       | PopI e ->
           let env = (
             match e with
-            | IterE (name, ListN n) ->
+            | NameE (name, [ ListN n ]) ->
                 let i = Env.find n env |> value_to_int in
                 let vs = List.rev (List.init i (fun _ -> pop ())) in
                 Env.add name (ListV (Array.of_list vs)) env
@@ -304,18 +304,18 @@ and interp_instrs env il =
                 let h = pop () in
 
                 match (e, h) with
-                | ConstructE ("CONST", [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+                | ConstructE ("CONST", [NameE (nt, _); NameE (name, _)]), ConstructV ("CONST", [ ty; v ]) ->
                     env |> Env.add nt ty |> Env.add name v
-                | ConstructE ("CONST", [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+                | ConstructE ("CONST", [tyE; NameE (name, _)]), ConstructV ("CONST", [ ty; v ]) ->
                     assert (eval_expr env tyE = ty);
                     Env.add name v env
-                | NameE name, v -> Env.add name v env
+                | NameE (name, _), v -> Env.add name v env
                 | _ -> failwith (Printf.sprintf "Invalid pop: %s := %s" (structured_string_of_expr e) (structured_string_of_value h))))
           in
           (env, cont)
       | PopAllI e -> (
         match e with
-        | IterE (name, List) ->
+        | NameE (name, [ List ]) ->
           let rec pop_value vs = (match !stack with
           | h :: _  -> (match h with
             | ConstructV ("CONST", _) -> pop_value (pop () :: vs)
@@ -329,10 +329,9 @@ and interp_instrs env il =
       | LetI (pattern, e) ->
           let rec assign lhs rhs env =
             match lhs, rhs with
-            | IterE (name, ListN n), ListV vs ->
+            | NameE (name, [ ListN n ]), ListV vs ->
                 env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length vs)))
-            | NameE name, v
-            | IterE (name, _), v ->
+            | NameE (name, _), v ->
                 Env.add name v env
             | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
             | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
@@ -345,7 +344,7 @@ and interp_instrs env il =
                 List.fold_right2 assign lhs_s rhs_s env
             | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
             (* TODO: Remove this. This should be handled by animation *)
-            | BinopE (Mul, BinopE (Mul, NameE name, e1), e2), NumV m ->
+            | BinopE (Mul, BinopE (Mul, NameE (name, _), e1), e2), NumV m ->
                 let n1 = eval_expr env e1 |> value_to_int in
                 let n2 = eval_expr env e2 |> value_to_int in
                 Env.add name (NumV (Int64.of_int (Int64.to_int m / n1 / n2))) env
@@ -442,8 +441,7 @@ and interp_algo algo args =
   let f acc param arg =
     let pattern, _ = param in
     match (pattern, arg) with
-    | NameE n, arg -> Env.add n arg acc
-    | IterE (n, _), arg -> Env.add n arg acc
+    | NameE (n, _), arg -> Env.add n arg acc
     | _ -> failwith "Invalid destructuring assignment"
   in
 

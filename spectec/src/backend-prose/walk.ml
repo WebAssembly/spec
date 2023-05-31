@@ -10,7 +10,6 @@ let rec walk_expr f e =
   | AppE (fname, args) -> f_expr (AppE (fname, walk_exprs f args))
   (* TODO: Implement walker for iter *)
   | MapE (fname, args, iter) -> f_expr (MapE (fname, walk_exprs f args, iter))
-  | IterE (n, iter) -> f_expr (IterE (n, iter))
   | LengthE inner_e -> f_expr (LengthE (walk_expr f inner_e))
   | ArityE inner_e -> f_expr (ArityE (walk_expr f inner_e))
   | GetCurFrameE -> f_expr GetCurFrameE
@@ -23,7 +22,7 @@ let rec walk_expr f e =
   | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
   | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))
   | ConstructE (s, el) -> f_expr (ConstructE (s, walk_exprs f el))
-  | NameE n -> f_expr (NameE n)
+  | NameE (n, iters) -> f_expr (NameE (n, iters))
   | YetE s -> f_expr (YetE s)
   | _ ->
       "Walker is not implemented for " ^ Print.structured_string_of_expr e

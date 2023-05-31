@@ -60,6 +60,8 @@ let string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
 
+let string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
+
 let depth = ref 0
 let rec string_of_record r =
   let base_indent = repeat indent !depth in
@@ -133,7 +135,6 @@ and string_of_expr = function
       sprintf "$%s(%s)%s" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
         (string_of_iter iter)
-  | IterE (n, iter) -> string_of_name n ^ string_of_iter iter
   | ConcatE (e1, e2) ->
       sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | LengthE e -> sprintf "|%s|" (string_of_expr e)
@@ -150,7 +151,7 @@ and string_of_expr = function
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | NameE n -> string_of_name n
+  | NameE (n, iters) -> string_of_name n ^ string_of_iters iters
   | ArrowE (e1, e2) -> "[" ^ string_of_expr e1 ^ "]->[" ^ string_of_expr e2 ^ "]"
   | ConstructE ("CONST", hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
   | ConstructE (s, []) -> s
@@ -464,10 +465,6 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_iter iter
       ^ ")"
-  | IterE (n, iter) ->
-      sprintf "IterE (%s, %s)"
-        (structured_string_of_name n)
-        (structured_string_of_iter iter)
   | ConcatE (e1, e2) ->
       "ConcatE ("
       ^ structured_string_of_expr e1
@@ -503,7 +500,13 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
+  | NameE (n, iters) ->
+      "NameE ("
+      ^ structured_string_of_name n
+      ^
+      ", "
+      ^ string_of_iters iters
+      ^ ")"
   | ArrowE (e1, e2) ->
       "ArrowE ("
       ^ structured_string_of_expr e1
