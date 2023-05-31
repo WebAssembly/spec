@@ -3,16 +3,16 @@ open Reference_interpreter
 
 type numerics = { name : string; f : value list -> value }
 
-let num_to_i32 = function 
+let num_to_i32 = function
   | NumV i -> I64.of_bits i |> I32_convert.wrap_i64
   | _ -> failwith "Operand should be NumV"
-let num_to_i64 = function 
+let num_to_i64 = function
   | NumV i -> I64.of_bits i
   | _ -> failwith "Operand should be NumV"
-let num_to_f32 = function 
+let num_to_f32 = function
   | NumV f -> F64.of_bits f |> F32_convert.demote_f64
   | _ -> failwith "Operand should be NumV"
-let num_to_f64 = function 
+let num_to_f64 = function
   | NumV f -> F64.of_bits f
   | _ -> failwith "Operand should be NumV"
 
@@ -22,13 +22,13 @@ let i64_to_num i = NumV i
 let f32_to_num f = NumV (F64_convert.promote_f32 f |> F64.to_bits)
 let f64_to_num f = NumV (F64.to_bits f)
 
-let wrap_i32_unop op i = 
+let wrap_i32_unop op i =
   let result = num_to_i32 i |> op |> i32_to_num in
   ListV [| result |]
 let wrap_i64_unop op i =
   let result = num_to_i64 i |> op |> i64_to_num in
   ListV [| result |]
-let wrap_f32_unop op f = 
+let wrap_f32_unop op f =
   let result = num_to_f32 f |> op |> f32_to_num in
   ListV [| result |]
 let wrap_f64_unop op f =
@@ -46,12 +46,20 @@ let unop: numerics =
           | StringV "Clz" -> wrap_i32_unop I32.clz v
           | StringV "Ctz" -> wrap_i32_unop I32.ctz v
           | StringV "Popcnt" -> wrap_i32_unop I32.popcnt v
+          | StringV "Extend8S" -> wrap_i32_unop (I32.extend_s 8) v
+          | StringV "Extend16S" -> wrap_i32_unop (I32.extend_s 16) v
+          | StringV "Extend32S" -> wrap_i32_unop (I32.extend_s 32) v
+          | StringV "Extend64S" -> wrap_i32_unop (I32.extend_s 64) v
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
         | "I64" -> (
           match op with
           | StringV "Clz" -> wrap_i64_unop I64.clz v
           | StringV "Ctz" -> wrap_i64_unop I64.ctz v
           | StringV "Popcnt" -> wrap_i64_unop I64.popcnt v
+          | StringV "Extend8S" -> wrap_i64_unop (I64.extend_s 8) v
+          | StringV "Extend16S" -> wrap_i64_unop (I64.extend_s 16) v
+          | StringV "Extend32S" -> wrap_i64_unop (I64.extend_s 32) v
+          | StringV "Extend64S" -> wrap_i64_unop (I64.extend_s 64) v
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
         | "F32"  -> (
           match op with
@@ -97,6 +105,13 @@ let wrap_f64_binop op f1 f2 =
   let f2 = num_to_f64 f2 in
   let result = op f1 f2 |> f64_to_num in
   ListV [| result |]
+exception Trap
+let catch_ixx_exception f = try f() with
+  | Ixx.DivideByZero
+  | Ixx.Overflow
+  | Ixx.InvalidConversion -> raise Trap
+let wrap_i32_binop_with_trap op i1 i2 = catch_ixx_exception (fun _ -> wrap_i32_binop op i1 i2)
+let wrap_i64_binop_with_trap op i1 i2 = catch_ixx_exception (fun _ -> wrap_i64_binop op i1 i2)
 let binop : numerics =
   {
     name = "binop";
@@ -106,13 +121,13 @@ let binop : numerics =
         match t with
         | "I32"  -> (
           match op with
-          | StringV "Add" -> wrap_i32_binop I32.add v1 v2
-          | StringV "Sub" -> wrap_i32_binop I32.sub v1 v2
+          | StringV "Add"  -> wrap_i32_binop I32.add v1 v2
+          | StringV "Sub"  -> wrap_i32_binop I32.sub v1 v2
           | StringV "Mul"  -> wrap_i32_binop I32.mul v1 v2
-          | StringV "DivS" -> wrap_i32_binop I32.div_s v1 v2
-          | StringV "DivU" -> wrap_i32_binop I32.div_u v1 v2 
-          | StringV "RemS" -> wrap_i32_binop I32.rem_s v1 v2
-          | StringV "RemU" -> wrap_i32_binop I32.rem_u v1 v2
+          | StringV "DivS" -> wrap_i32_binop_with_trap I32.div_s v1 v2
+          | StringV "DivU" -> wrap_i32_binop_with_trap I32.div_u v1 v2
+          | StringV "RemS" -> wrap_i32_binop_with_trap I32.rem_s v1 v2
+          | StringV "RemU" -> wrap_i32_binop_with_trap I32.rem_u v1 v2
           | StringV "And"  -> wrap_i32_binop I32.and_ v1 v2
           | StringV "Or"   -> wrap_i32_binop I32.or_ v1 v2
           | StringV "Xor"  -> wrap_i32_binop I32.xor v1 v2
@@ -120,17 +135,17 @@ let binop : numerics =
           | StringV "ShrS" -> wrap_i32_binop I32.shr_s v1 v2
           | StringV "ShrU" -> wrap_i32_binop I32.shr_u v1 v2
           | StringV "Rotl" -> wrap_i32_binop I32.rotl v1 v2
-          | StringV "Rotr" -> wrap_i32_binop I32.rotr v1 v2 
+          | StringV "Rotr" -> wrap_i32_binop I32.rotr v1 v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | "I64" -> (
           match op with
-          | StringV "Add" -> wrap_i64_binop I64.add v1 v2
-          | StringV "Sub" -> wrap_i64_binop I64.sub v1 v2
+          | StringV "Add"  -> wrap_i64_binop I64.add v1 v2
+          | StringV "Sub"  -> wrap_i64_binop I64.sub v1 v2
           | StringV "Mul"  -> wrap_i64_binop I64.mul v1 v2
-          | StringV "DivS" -> wrap_i64_binop I64.div_s v1 v2
-          | StringV "DivU" -> wrap_i64_binop I64.div_u v1 v2 
-          | StringV "RemS" -> wrap_i64_binop I64.rem_s v1 v2
-          | StringV "RemU" -> wrap_i64_binop I64.rem_u v1 v2
+          | StringV "DivS" -> wrap_i64_binop_with_trap I64.div_s v1 v2
+          | StringV "DivU" -> wrap_i64_binop_with_trap I64.div_u v1 v2
+          | StringV "RemS" -> wrap_i64_binop_with_trap I64.rem_s v1 v2
+          | StringV "RemU" -> wrap_i64_binop_with_trap I64.rem_u v1 v2
           | StringV "And"  -> wrap_i64_binop I64.and_ v1 v2
           | StringV "Or"   -> wrap_i64_binop I64.or_ v1 v2
           | StringV "Xor"  -> wrap_i64_binop I64.xor v1 v2
@@ -138,27 +153,27 @@ let binop : numerics =
           | StringV "ShrS" -> wrap_i64_binop I64.shr_s v1 v2
           | StringV "ShrU" -> wrap_i64_binop I64.shr_u v1 v2
           | StringV "Rotl" -> wrap_i64_binop I64.rotl v1 v2
-          | StringV "Rotr" -> wrap_i64_binop I64.rotr v1 v2 
+          | StringV "Rotr" -> wrap_i64_binop I64.rotr v1 v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | "F32" -> (
           match op with
-          | StringV "Add" -> wrap_f32_binop F32.add v1 v2 
+          | StringV "Add" -> wrap_f32_binop F32.add v1 v2
           | StringV "Sub" -> wrap_f32_binop F32.sub v1 v2
           | StringV "Mul" -> wrap_f32_binop F32.mul v1 v2
           | StringV "Div" -> wrap_f32_binop F32.div v1 v2
           | StringV "Min" -> wrap_f32_binop F32.min v1 v2
           | StringV "Max" -> wrap_f32_binop F32.max v1 v2
-          | StringV "CopySign" -> wrap_f32_binop F32.copysign v1 v2 
+          | StringV "CopySign" -> wrap_f32_binop F32.copysign v1 v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | "F64" -> (
           match op with
-          | StringV "Add" -> wrap_f64_binop F64.add v1 v2 
+          | StringV "Add" -> wrap_f64_binop F64.add v1 v2
           | StringV "Sub" -> wrap_f64_binop F64.sub v1 v2
           | StringV "Mul" -> wrap_f64_binop F64.mul v1 v2
           | StringV "Div" -> wrap_f64_binop F64.div v1 v2
           | StringV "Min" -> wrap_f64_binop F64.min v1 v2
           | StringV "Max" -> wrap_f64_binop F64.max v1 v2
-          | StringV "CopySign" -> wrap_f64_binop F64.copysign v1 v2 
+          | StringV "CopySign" -> wrap_f64_binop F64.copysign v1 v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for binop")
       | _ -> failwith "Invalid binop");
@@ -207,7 +222,7 @@ let relop : numerics =
           | StringV "Eq" -> wrap_i32_relop I32.eq v1 v2
           | StringV "Ne" -> wrap_i32_relop I32.ne v1 v2
           | StringV "LtS" -> wrap_i32_relop I32.lt_s v1 v2
-          | StringV "LtU" -> wrap_i32_relop I32.lt_u v1 v2 
+          | StringV "LtU" -> wrap_i32_relop I32.lt_u v1 v2
           | StringV "LeS" -> wrap_i32_relop I32.le_s v1 v2
           | StringV "LeU" -> wrap_i32_relop I32.le_u v1 v2
           | StringV "GtS" -> wrap_i32_relop I32.gt_s v1 v2
@@ -220,7 +235,7 @@ let relop : numerics =
           | StringV "Eq" -> wrap_i64_relop I64.eq v1 v2
           | StringV "Ne" -> wrap_i64_relop I64.ne v1 v2
           | StringV "LtS" -> wrap_i64_relop I64.lt_s v1 v2
-          | StringV "LtU" -> wrap_i64_relop I64.lt_u v1 v2 
+          | StringV "LtU" -> wrap_i64_relop I64.lt_u v1 v2
           | StringV "LeS" -> wrap_i64_relop I64.le_s v1 v2
           | StringV "LeU" -> wrap_i64_relop I64.le_u v1 v2
           | StringV "GtS" -> wrap_i64_relop I64.gt_s v1 v2
@@ -230,7 +245,7 @@ let relop : numerics =
           | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
         | "F32" -> (
           match op with
-          | StringV "Eq" -> wrap_f32_relop F32.eq v1 v2 
+          | StringV "Eq" -> wrap_f32_relop F32.eq v1 v2
           | StringV "Ne" -> wrap_f32_relop F32.ne v1 v2
           | StringV "Lt" -> wrap_f32_relop F32.lt v1 v2
           | StringV "Gt" -> wrap_f32_relop F32.gt v1 v2
@@ -239,7 +254,7 @@ let relop : numerics =
           | _ -> failwith ("Invalid relop: " ^ (Print.string_of_value op)))
         | "F64" -> (
           match op with
-          | StringV "Eq" -> wrap_f64_relop F64.eq v1 v2 
+          | StringV "Eq" -> wrap_f64_relop F64.eq v1 v2
           | StringV "Ne" -> wrap_f64_relop F64.ne v1 v2
           | StringV "Lt" -> wrap_f64_relop F64.lt v1 v2
           | StringV "Gt" -> wrap_f64_relop F64.gt v1 v2

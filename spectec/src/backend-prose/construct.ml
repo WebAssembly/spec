@@ -58,7 +58,10 @@ let al_of_unop_int = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
-  | Ast.IntOp.ExtendS _ -> StringV "TODO"
+  | Ast.IntOp.ExtendS Types.Pack8 -> StringV "Extend8S"
+  | Ast.IntOp.ExtendS Types.Pack16 -> StringV "Extend16S"
+  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extends32S"
+  | Ast.IntOp.ExtendS Types.Pack64 -> StringV "Extend64S"
 let al_of_unop_float = function
   | Ast.FloatOp.Neg -> StringV "Neg"
   | Ast.FloatOp.Abs -> StringV "Abs"

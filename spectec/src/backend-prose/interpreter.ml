@@ -111,7 +111,8 @@ exception Timeout
 let rec dsl_function_call fname args =
   match fname with
   (* Numerics *)
-  | N name when Numerics.mem name -> Numerics.call_numerics name args
+  | N name when Numerics.mem name ->
+    ( try Numerics.call_numerics name args with Numerics.Trap -> raise Trap )
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       call_algo name args

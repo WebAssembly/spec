@@ -692,7 +692,7 @@ f64_cmp.wast: [2400/2400] (100.00%)
 block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [18/26] (69.23%)
-i64.wast: [350/384] (91.15%)
+i64.wast: [374/384] (97.40%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
@@ -701,10 +701,10 @@ endianness.wast: [15/68] (22.06%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
-i32.wast: [350/374] (93.58%)
+i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
-traps.wast: [14/32] (43.75%)
+traps.wast: [24/32] (75.00%)
 local_tee.wast: [47/55] (85.45%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
@@ -744,10 +744,10 @@ func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed d
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-int_exprs.wast: [72/89] (80.90%)
+int_exprs.wast: [86/89] (96.63%)
 f64.wast: [1589/2500] (63.56%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [13208/16546] (79.83%; Normalized 75.57%)
+Total [13280/16546] (80.26%; Normalized 76.46%)
 == Complete.
 ```
