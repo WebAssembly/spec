@@ -3,7 +3,7 @@ open Il
 open Printf
 open Util.Source
 
-(** helper functions *)
+(** helper functions **)
 
 let check_nop instrs = match instrs with [] -> [ Al.NopI ] | _ -> instrs
 
@@ -19,19 +19,10 @@ let rec flatten e =
   | Ast.ListE es -> List.concat_map flatten es
   | _ -> [ e ]
 
-let string2type s =
-  let open Reference_interpreter.Types in
-  match s with
-  | "I32" -> NumType I32Type
-  | "I64" -> NumType I64Type
-  | "F32" -> NumType F32Type
-  | "F64" -> NumType F64Type
-  | "V128" -> VecType V128Type
-  | "FUNCREF" -> RefType FuncRefType
-  | "EXTERNREF" -> RefType ExternRefType
-  | _ -> s |> sprintf "Invalid type atom `%s`" |> failwith
+let flatten_rec def =
+  match def.it with Ast.RecD defs -> defs | _ -> [def]
 
-(** Translate `Ast.type` *)
+(** Translate `Ast.type` **)
 let il_type2al_type t =
   match t.it with
   | Ast.VarT id -> (
@@ -75,8 +66,8 @@ let rec find_type tenv exp =
       | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT))
   | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
 
-let get_params lhs_stack =
-  match List.hd lhs_stack |> it with
+let get_params winstr =
+  match winstr.it with
   | Ast.CaseE (_, { it = Ast.TupE exps; _ }) -> exps
   | Ast.CaseE (_, exp) -> [ exp ]
   | _ ->
@@ -462,11 +453,9 @@ let path2expr exp path =
   path2expr' path |> exp2expr
 
 (** Main translation for reduction rules **)
-
 (* `reduction_group list` -> `Backend-prose.Al.Algo` *)
-let reduction_group2algo (reduction_name, reduction_group) =
-  let algo_name = String.split_on_char '-' reduction_name |> List.hd in
-  let lhs, _, _, tenv = List.hd reduction_group in
+let reduction_group2algo (instr_name, reduction_group) =
+  let (lhs, _, _, tenv) = List.hd reduction_group in
 
   let lhs_stack =
     (match lhs.it with
@@ -496,19 +485,21 @@ let reduction_group2algo (reduction_name, reduction_group) =
         List.fold_right Transpile.merge_otherwise blocks []
   in
 
+  (* name *)
+  let name = "execution_of_" ^ instr_name in
+  (* params *)
   let params =
-    if algo_name = "br" || algo_name = "return" then (
+    if instr_name = "br" || instr_name = "return" then (
       sprintf "Bubbleup semantics for %s: Top of the stack is frame / label"
-        algo_name
+        instr_name
       |> print_endline;
       [])
-    else get_params lhs_stack |> List.map (find_type tenv)
-  in
+    else get_params (List.hd lhs_stack) |> List.map (find_type tenv) in
+  (* body *)
+  let body = pop_instrs @ instrs |> check_nop |> Transpile.enhance_readability in
 
-  let body =
-    pop_instrs @ instrs |> check_nop |> Transpile.enhance_readability
-  in
-  Al.Algo (algo_name, params, body)
+  (* Algo *)
+  Al.Algo (name, params, body)
 
 (** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
 
@@ -544,10 +535,10 @@ let rec group_rules = function
   | [] -> []
   | h :: t ->
       let name = name_of_rule h in
-      let reduction_group, rem =
-        List.partition (fun rule -> name_of_rule rule = name) t
-      in
-      (name, List.map rule2tup (h :: reduction_group)) :: group_rules rem
+      let same_rules, diff_rules =
+        List.partition (fun rule -> name_of_rule rule = name) t in
+      let group = (name, List.map rule2tup (h :: same_rules)) in
+      group :: group_rules diff_rules
 
 
 (** Unifying lhs **)
@@ -653,6 +644,7 @@ let unify_lhs (reduction_name, reduction_group) =
   let new_reduction_group = List.map (apply_template_to_red_group template) reduction_group in
   (reduction_name, new_reduction_group)
 
+(** Entry for translating reduction rules **)
 let translate_rules il =
   let rules = List.concat_map extract_rules il in
   let reduction_groups : reduction_group list = group_rules rules in
@@ -683,8 +675,6 @@ let helper2instrs clause =
   let (Ast.DefD (_binds, _e1, e2, prems)) = clause.it in
   prems2instrs [] prems [ Al.ReturnI (Option.some (exp2expr e2)) ]
 
-(** Translation for helper functions **)
-
 let apply_template_to_def template def =
   let Ast.DefD (binds, lhs, rhs, prems) = def.it in
   let (new_prems, new_binds) = collect_unified template lhs in
@@ -698,6 +688,7 @@ let unify_defs defs =
   let template = List.fold_left overlap hd tl in
   List.map (apply_template_to_def template) defs
 
+(** Main translation for helper functions **)
 let helpers2algo def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
@@ -719,13 +710,63 @@ let helpers2algo def =
       Some algo
   | _ -> None
 
+(** Entry for translating helper functions **)
 let translate_helpers il = List.filter_map helpers2algo il
+
+type trule_group =
+  string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
+
+(** Main translation for typing rules **)
+let trule_group2algo ((instr_name, trules): trule_group) =
+  let (e, _t, _prems, tenv) = trules |> List.hd in
+  (* name *)
+  let name = "validation_of_" ^ instr_name in
+  (* params *)
+  let params = get_params e |> List.map (find_type tenv) in
+  (* body *)
+  let body = [ Al.NopI ] in
+
+  (* Algo *)
+  Al.Algo (name, params, body)
+
+let extract_trules def =
+  match def.it with
+  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" -> rules
+  | _ -> []
+
+let trule2tup trule =
+  let (Ast.RuleD (_, tenv, _, exp, prems)) = trule.it in
+  match exp.it with
+  (* c |- e : t *)
+  | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
+  | _ ->
+      Print.string_of_exp exp
+      |> sprintf "Invalid expression `%s` to be typing rule."
+      |> failwith
+
+(* group typing rules that have same name *)
+let rec group_trules = function
+  | [] -> []
+  | h :: t ->
+      let name = name_of_rule h in
+      let same_rules, diff_rules =
+        List.partition (fun rule -> name_of_rule rule = name) t in
+      let group = (name, List.map trule2tup (h :: same_rules)) in
+      group :: group_trules diff_rules
+
+(** Entry for translating typing rules **)
+let translate_trules il =
+  let trules = List.concat_map extract_trules il in
+  let trule_groups = group_trules trules in
+
+  List.map trule_group2algo trule_groups
 
 (** Entry **)
 
 (* `Ast.script` -> `Al.Algo` *)
 let translate il =
-  let algos = translate_helpers il @ translate_rules il in
+  let il = List.concat_map flatten_rec il in
+  let algos = translate_helpers il @ translate_rules il @ translate_trules il in
 
   (* Transpile *)
   (* Can be turned off *)

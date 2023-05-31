@@ -465,7 +465,7 @@ and execute_wasm_instr winstr =
   (* Print.string_of_value winstr |> print_endline; *)
   match winstr with
   | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) -> push winstr
-  | ConstructV (name, args) -> call_algo (String.lowercase_ascii name) args |> ignore
+  | ConstructV (name, args) -> call_algo ("execution_of_" ^ String.lowercase_ascii name) args |> ignore
   | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs

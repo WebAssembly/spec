@@ -16,6 +16,17 @@ Bubbleup semantics for return: Top of the stack is frame / label
 Ki
 1. Return 1024.
 
+min _x0 _x1
+1. Let 0 be _x0.
+2. Let j be _x1.
+3. Return 0.
+4. Let i be _x0.
+5. Let 0 be _x1.
+6. Return 0.
+7. Let (i + 1) be _x0.
+8. Let (j + 1) be _x1.
+9. Return $min(i, j).
+
 size _x0
 1. If _x0 is of the case I32, then:
   a. Return 32.
@@ -116,17 +127,17 @@ with_data x b
 1. Let f be the current frame.
 2. Replace s.DATA[f.MODULE.DATA[x]] with b*.
 
-unreachable
+execution_of_unreachable
 1. Trap.
 
-nop
+execution_of_nop
 1. Do nothing.
 
-drop
+execution_of_drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 
-select t
+execution_of_select t
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -138,7 +149,7 @@ select t
 8. Else:
   a. Push val_2 to the stack.
 
-block bt instr
+execution_of_block bt instr
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -149,7 +160,7 @@ block bt instr
   d. Jump to instr*.
   e. Exit current context.
 
-loop bt instr
+execution_of_loop bt instr
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -160,7 +171,7 @@ loop bt instr
   d. Jump to instr*.
   e. Exit current context.
 
-if bt instr_1 instr_2
+execution_of_if bt instr_1 instr_2
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
@@ -168,13 +179,13 @@ if bt instr_1 instr_2
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-label n instr val
+execution_of_label n instr val
 1. Pop val* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
-br
+execution_of_br
 1. Pop _x2 ++ _x1 ++ _x0 from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
@@ -191,13 +202,13 @@ br
   c. Push val* to the stack.
   d. Execute (BR l).
 
-br_if l
+execution_of_br_if l
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BR l).
 
-br_table l l'
+execution_of_br_table l l'
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i < |l*|, then:
@@ -205,7 +216,7 @@ br_table l l'
 4. Else:
   a. Execute (BR l').
 
-frame n f val
+execution_of_frame n f val
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
@@ -215,7 +226,7 @@ frame n f val
 7. If |val^n| is n, then:
   a. Push val^n to the stack.
 
-return
+execution_of_return
 1. If _x0 is of the case FRAME_, then:
   a. Let (FRAME_ n f val'* ++ val^n ++ [RETURN] ++ instr*) be _x0.
   b. If |val^n| is n, then:
@@ -225,7 +236,7 @@ return
   b. Push val* to the stack.
   c. Execute RETURN.
 
-unop nt unop
+execution_of_unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. If |$unop(unop, nt, c_1)| is 1, then:
@@ -234,7 +245,7 @@ unop nt unop
 4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
-binop nt binop
+execution_of_binop nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -245,13 +256,13 @@ binop nt binop
 6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
-testop nt testop
+execution_of_testop nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. Let c be $testop(testop, nt, c_1).
 4. Push (I32.CONST c) to the stack.
 
-relop nt relop
+execution_of_relop nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -259,12 +270,12 @@ relop nt relop
 5. Let c be $relop(relop, nt, c_1, c_2).
 6. Push (I32.CONST c) to the stack.
 
-extend nt n
+execution_of_extend nt n
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
-cvtop nt_1 cvtop nt_2 sx
+execution_of_cvtop nt_1 cvtop nt_2 sx
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
@@ -273,7 +284,7 @@ cvtop nt_1 cvtop nt_2 sx
 4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
-ref.is_null
+execution_of_ref.is_null
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. If val is not of the case REF.NULL, then:
@@ -282,18 +293,18 @@ ref.is_null
   a. Let (REF.NULL rt) be val.
   b. Push (I32.CONST 1) to the stack.
 
-local.tee x
+execution_of_local.tee x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
 5. Execute (LOCAL.SET x).
 
-call x
+execution_of_call x
 1. If x < |$funcaddr()|, then:
   a. Execute (CALL_ADDR $funcaddr()[x]).
 
-call_indirect x ft
+execution_of_call_indirect x ft
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x)|, then:
@@ -308,7 +319,7 @@ call_indirect x ft
     1) Let (m, func) be $funcinst()[a].
     2) Execute (CALL_ADDR a).
 
-call_addr a
+execution_of_call_addr a
 1. If a < |$funcinst()|, then:
   a. Let (m, (FUNC [t_1^k]->[t_2^n] t* instr*)) be $funcinst()[a].
   b. Assert: Due to validation, there are at least k values on the top of the stack.
@@ -322,17 +333,17 @@ call_addr a
     6) Exit current context.
     7) Exit current context.
 
-ref.func x
+execution_of_ref.func x
 1. If x < |$funcaddr()|, then:
   a. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
-local.get x
+execution_of_local.get x
 1. Push $local(x) to the stack.
 
-global.get x
+execution_of_global.get x
 1. Push $global(x) to the stack.
 
-table.get x
+execution_of_table.get x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x)|, then:
@@ -340,11 +351,11 @@ table.get x
 4. Else:
   a. Push $table(x)[i] to the stack.
 
-table.size x
+execution_of_table.size x
 1. Let n be |$table(x)|.
 2. Push (I32.CONST n) to the stack.
 
-table.fill x
+execution_of_table.fill x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -362,7 +373,7 @@ table.fill x
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.FILL x).
 
-table.copy x y
+execution_of_table.copy x y
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -385,7 +396,7 @@ table.copy x y
   g. Push (I32.CONST (n - 1)) to the stack.
   h. Execute (TABLE.COPY x y).
 
-table.init x y
+execution_of_table.init x y
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -403,7 +414,7 @@ table.init x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-load nt _x0 n_A n_O
+execution_of_load nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If _x0 is not defined, then:
@@ -417,11 +428,11 @@ load nt _x0 n_A n_O
   c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
 5. Push (nt.CONST c) to the stack.
 
-memory.size
+execution_of_memory.size
 1. Let ((n · 64) · $Ki()) be |$mem(0)|.
 2. Push (I32.CONST n) to the stack.
 
-memory.fill
+execution_of_memory.fill
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -439,7 +450,7 @@ memory.fill
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute MEMORY.FILL.
 
-memory.copy
+execution_of_memory.copy
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -466,7 +477,7 @@ memory.copy
   c. Push (I32.CONST (n - 1)) to the stack.
   d. Execute MEMORY.COPY.
 
-memory.init x
+execution_of_memory.init x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -484,17 +495,17 @@ memory.init x
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (MEMORY.INIT x).
 
-local.set x
+execution_of_local.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_local(x, val).
 
-global.set x
+execution_of_global.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_global(x, val).
 
-table.set x
+execution_of_table.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -504,7 +515,7 @@ table.set x
 6. Else:
   a. Perform $with_table(x, i, ref).
 
-table.grow x
+execution_of_table.grow x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -515,10 +526,10 @@ table.grow x
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
-elem.drop x
+execution_of_elem.drop x
 1. Perform $with_elem(x, []).
 
-store nt _x0 n_A n_O
+execution_of_store nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -535,7 +546,7 @@ store nt _x0 n_A n_O
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
-memory.grow
+execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
@@ -544,13 +555,148 @@ memory.grow
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
-data.drop x
+execution_of_data.drop x
 1. Perform $with_data(x, []).
+
+validation_of_unreachable
+1. Do nothing.
+
+validation_of_nop
+1. Do nothing.
+
+validation_of_drop
+1. Do nothing.
+
+validation_of_select ?(t)
+1. Do nothing.
+
+validation_of_block bt instr
+1. Do nothing.
+
+validation_of_loop bt instr
+1. Do nothing.
+
+validation_of_if bt instr_1 instr_2
+1. Do nothing.
+
+validation_of_br l
+1. Do nothing.
+
+validation_of_br_if l
+1. Do nothing.
+
+validation_of_br_table l l'
+1. Do nothing.
+
+validation_of_return
+1. Do nothing.
+
+validation_of_call x
+1. Do nothing.
+
+validation_of_call_indirect x ft
+1. Do nothing.
+
+validation_of_const nt c_nt
+1. Do nothing.
+
+validation_of_unop nt unop
+1. Do nothing.
+
+validation_of_binop nt binop
+1. Do nothing.
+
+validation_of_testop nt testop
+1. Do nothing.
+
+validation_of_relop nt relop
+1. Do nothing.
+
+validation_of_extend nt n
+1. Do nothing.
+
+validation_of_reinterpret nt_1 REINTERPRET_cvtop nt_2 ?()
+1. Do nothing.
+
+validation_of_convert in_1 CONVERT_cvtop in_2 sx
+1. Do nothing.
+
+validation_of_ref.null rt
+1. Do nothing.
+
+validation_of_ref.func x
+1. Do nothing.
+
+validation_of_ref.is_null
+1. Do nothing.
+
+validation_of_local.get x
+1. Do nothing.
+
+validation_of_local.set x
+1. Do nothing.
+
+validation_of_local.tee x
+1. Do nothing.
+
+validation_of_global.get x
+1. Do nothing.
+
+validation_of_global.set x
+1. Do nothing.
+
+validation_of_table.get x
+1. Do nothing.
+
+validation_of_table.set x
+1. Do nothing.
+
+validation_of_table.size x
+1. Do nothing.
+
+validation_of_table.grow x
+1. Do nothing.
+
+validation_of_table.fill x
+1. Do nothing.
+
+validation_of_table.copy x_1 x_2
+1. Do nothing.
+
+validation_of_table.init x_1 x_2
+1. Do nothing.
+
+validation_of_elem.drop x
+1. Do nothing.
+
+validation_of_memory.size
+1. Do nothing.
+
+validation_of_memory.grow
+1. Do nothing.
+
+validation_of_memory.fill
+1. Do nothing.
+
+validation_of_memory.copy
+1. Do nothing.
+
+validation_of_memory.init x
+1. Do nothing.
+
+validation_of_data.drop x
+1. Do nothing.
+
+validation_of_load nt (n, sx) n_A n_O
+1. Do nothing.
+
+validation_of_store nt n n_A n_O
+1. Do nothing.
 
 == Initializing AL interprter with generated AL...
 ** Manual algorithms **
 
-br l
+execution_of_br l
 1. If l is 0, then:
   a. Let L be the current label.
   b. Let n be the arity of L.
@@ -566,7 +712,7 @@ br l
   b. Exit current context.
   c. Execute (BR (l - 1)).
 
-return
+execution_of_return
 1. Pop all values val'* from the stack.
 2. If the top of the stack is frame, then:
   a. Pop F from the stack.
@@ -721,7 +867,7 @@ binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a b
 br_table.wast: [126/149] (84.56%)
 select.wast: [82/118] (69.49%)
 f32_bitwise.wast: [360/360] (100.00%)
-memory_init.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Algorithm yet al_of_instr: memory.init 1 not found]
+memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
@@ -748,6 +894,6 @@ int_exprs.wast: [86/89] (96.63%)
 f64.wast: [1589/2500] (63.56%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [13280/16546] (80.26%; Normalized 76.46%)
+Total [13340/16606] (80.33%; Normalized 76.46%)
 == Complete.
 ```

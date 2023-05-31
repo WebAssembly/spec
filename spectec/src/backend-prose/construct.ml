@@ -263,6 +263,8 @@ let rec al_of_instr types winstr =
   | Ast.MemoryGrow -> f "MEMORY.GROW"
   | Ast.MemoryFill -> f "MEMORY.FILL"
   | Ast.MemoryCopy -> f "MEMORY.COPY"
+  | Ast.MemoryInit i32 -> f_i32 "MEMORY.INIT" i32
+  | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
   | _ -> ConstructV ("Yet al_of_instr: " ^ Print.string_of_winstr winstr, [])
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs

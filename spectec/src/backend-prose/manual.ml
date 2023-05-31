@@ -16,7 +16,7 @@ open Al
 
 let br =
   Algo
-    ( "br",
+    ( "execution_of_br",
       [ (NameE (N "l", []), IntT) ],
       [
         IfI
@@ -56,7 +56,7 @@ let br =
 
 let return =
   Algo
-    ( "return",
+    ( "execution_of_return",
       [],
       [
         PopAllI (NameE (N "val'", [List]));
