@@ -317,13 +317,14 @@ let al_of_memory wasm_memory =
 
   ConstructV ("MEMORY", [ pair ])
 
-let al_of_segment wasm_segment = match wasm_segment.it with
+
+let al_of_segment wasm_segment active_name = match wasm_segment.it with
   | Ast.Passive -> OptV None
   | Ast.Active { index = index; offset = offset } ->
       OptV (
         Some (
           ConstructV (
-            "MEMORY",
+            active_name,
             [
               NumV (Int64.of_int32 index.it);
               ListV (al_of_instrs [] offset.it |> Array.of_list)
@@ -331,14 +332,30 @@ let al_of_segment wasm_segment = match wasm_segment.it with
           )
         )
       )
-  | Ast.Declarative -> failwith "TODO: Declarative"
+  | Ast.Declarative -> OptV (Some (ConstructV ("DECLARE", [])))
+
+let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
+
+let al_of_elem wasm_elem =
+  let reftype = al_of_type (Types.RefType wasm_elem.it.Ast.etype) in
+
+  let al_of_const const = ListV (al_of_instrs [] const.it |> Array.of_list) in
+  let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const |> Array.of_list in
+
+  let mode = al_of_elem_segment wasm_elem.it.Ast.emode in
+
+  ConstructV ("ELEM", [ reftype; ListV instrs; mode ])
+
+let al_of_data_segment wasm_segment = al_of_segment wasm_segment "MEMORY"
 
 let al_of_data wasm_data =
   (* TODO: byte list list *)
   let init = wasm_data.it.Ast.dinit in
+
   let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
   let byte_list = String.fold_right f init [] |> Array.of_list in
-  let mode = al_of_segment wasm_data.it.Ast.dmode in
+
+  let mode = al_of_data_segment wasm_data.it.Ast.dmode in
 
   ConstructV ("DATA", [ ListV byte_list; mode ])
 
@@ -369,8 +386,10 @@ let al_of_module wasm_module =
   in
 
   (* Construct elem *)
-  (* TODO *)
-  let elem_list = [| StringV "Yet" |] in
+  let elem_list =
+    List.map al_of_elem wasm_module.it.elems
+    |> Array.of_list
+  in
 
   (* Construct data *)
   let data_list =
