@@ -127,7 +127,7 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
    If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.
 
 
-.. index:: ! type section, type definition
+.. index:: ! type section, type definition, recursive type
    pair: binary format; type section
    pair: section; type
 .. _binary-typedef:
@@ -137,12 +137,12 @@ Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`recursive types <syntax-rectype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{type section} & \Btypesec &::=&
-     \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
+     \X{rt}^\ast{:\,}\Bsection_1(\Bvec(\Brectype)) &\Rightarrow& \X{rt}^\ast \\
    \end{array}
 
 
@@ -525,7 +525,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bmagic \\ &&&
      \Bversion \\ &&&
      \Bcustomsec^\ast \\ &&&
-     \functype^\ast{:\,}\Btypesec \\ &&&
+     \rectype^\ast{:\,}\Btypesec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \import^\ast{:\,}\Bimportsec \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -551,7 +551,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bcustomsec^\ast
      \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
-       \MTYPES~\functype^\ast, \\
+       \MTYPES~\rectype^\ast, \\
        \MFUNCS~\func^n, \\
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\
