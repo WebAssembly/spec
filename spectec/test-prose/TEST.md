@@ -17,15 +17,15 @@ Ki
 1. Return 1024.
 
 min _x0 _x1
-1. Let 0 be _x0.
-2. Let j be _x1.
-3. Return 0.
-4. Let i be _x0.
-5. Let 0 be _x1.
-6. Return 0.
-7. Let (i + 1) be _x0.
-8. Let (j + 1) be _x1.
-9. Return $min(i, j).
+1. If _x0 is 0, then:
+  a. Let j be _x1.
+  b. Return 0.
+2. Let i be _x0.
+3. If _x1 is 0, then:
+  a. Return 0.
+4. Let (i + 1) be _x0.
+5. Let (j + 1) be _x1.
+6. Return $min(i, j).
 
 size _x0
 1. If _x0 is of the case I32, then:

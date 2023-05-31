@@ -600,7 +600,10 @@ let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if Eq.eq_exp template e then [], [] else match template.it, e.it with
   | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it ->
-    [Ast.AssignPr (e, Ast.VarE id $$ (no_region % template.note)) $ no_region],
+    (* TODO: Better animation, perhaps this should be moved as a middle end before animation path *)
+    [ match e.it with
+      | Ast.NatE _ -> Ast.IfPr (Ast.CmpE (Ast.EqOp, Ast.VarE id $$ no_region % template.note, e) $$ no_region % (Ast.BoolT $ no_region)) $ no_region
+      | _ -> Ast.AssignPr (e, Ast.VarE id $$ no_region % template.note) $ no_region ],
     [id, (* TODO *) Ast.VarT ("TOP" $ no_region) $ no_region, []]
   (* one e *)
   | UnE (_, e1), UnE (_, e2)
