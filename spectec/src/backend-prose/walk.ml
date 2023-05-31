@@ -3,7 +3,8 @@ open Al
 let rec walk_expr f e =
   let _, _, f_expr = f in
   match e with
-  | ValueE v -> f_expr (ValueE v)
+  | NumE n -> f_expr (NumE n)
+  | StringE s -> f_expr (StringE s)
   | MinusE inner_e -> f_expr (MinusE (walk_expr f inner_e))
   | BinopE (op, e1, e2) -> f_expr (BinopE (op, walk_expr f e1, walk_expr f e2))
   | AppE (fname, args) -> f_expr (AppE (fname, walk_exprs f args))

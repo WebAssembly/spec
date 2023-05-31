@@ -35,12 +35,12 @@ and value =
   | StringV of string
   | ListV of value array
   | RecordV of value record
-  | FrameV of value * value
-  | LabelV of value * value
   | ConstructV of string * value list
   | OptV of value option
   | PairV of value * value
   | ArrowV of value * value
+  | FrameV of value * value
+  | LabelV of value * value
   | StoreV of store ref
 
 type name = N of string | SubN of name * string
@@ -70,7 +70,9 @@ type compare_op =
   | Le
 
 type expr =
-  | ValueE of value
+  (* Value *)
+  | NumE of int64
+  | StringE of string
   (* Numeric Operation *)
   | MinusE of expr
   | BinopE of expr_binop * expr * expr

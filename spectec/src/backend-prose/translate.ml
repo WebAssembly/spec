@@ -103,7 +103,7 @@ let tmp = function
 (* `Ast.exp` -> `Al.expr` *)
 let rec exp2expr exp =
   match exp.it with
-  | Ast.NatE n -> Al.ValueE (Al.NumV (Int64.of_int n))
+  | Ast.NatE n -> Al.NumE (Int64.of_int n)
   (* List *)
   | Ast.LenE inner_exp -> Al.LengthE (exp2expr inner_exp)
   | Ast.ListE exps -> Al.ListE (List.map exp2expr exps |> Stdlib.Array.of_list)
@@ -419,7 +419,7 @@ let prems2instrs remain_lhs =
               let rhs = exp2expr exp2 in
               [
                 Al.IfI
-                  ( Al.CompareC (Al.Eq, Al.LengthE rhs, Al.ValueE (Al.NumV (Int64.of_int (List.length es)))),
+                  ( Al.CompareC (Al.Eq, Al.LengthE rhs, Al.NumE (Int64.of_int (List.length es))),
                     Al.LetI (exp2expr exp1, rhs) :: instrs',
                     [] );
               ]

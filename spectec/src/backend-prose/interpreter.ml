@@ -123,7 +123,9 @@ let rec dsl_function_call fname args =
 
 and eval_expr env expr =
   match expr with
-  | ValueE v -> v
+  (* Value *)
+  | NumE i -> NumV i
+  | StringE s -> StringV s
   (* Numeric Operation *)
   | BinopE (op, e1, e2) ->
       let v1 = eval_expr env e1 in

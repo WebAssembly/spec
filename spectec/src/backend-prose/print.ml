@@ -120,7 +120,8 @@ let rec string_of_record_expr r =
   ^ "}"
 
 and string_of_expr = function
-  | ValueE v -> string_of_value v
+  | NumE i -> Int64.to_string i
+  | StringE s -> s
   | MinusE e -> sprintf "-%s" (string_of_expr e)
   | BinopE (op, e1, e2) ->
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_expr_binop op) (string_of_expr e2)
@@ -432,7 +433,8 @@ let rec structured_string_of_value = function
   | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
 
 let rec structured_string_of_expr = function
-  | ValueE v -> "ValueE " ^ structured_string_of_value v
+  | NumE i -> Int64.to_string i
+  | StringE s -> s
   | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
   | BinopE (op, e1, e2) ->
       "BinopE ("
