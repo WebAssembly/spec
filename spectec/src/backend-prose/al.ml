@@ -56,10 +56,13 @@ type expr_binop =
   | Sub
   | Mul
   | Div
+  | Exp
 
 type cond_binop =
   | And
   | Or
+  | Impl
+  | Equiv
 
 type compare_op =
   | Eq

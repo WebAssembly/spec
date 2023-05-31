@@ -126,6 +126,7 @@ let rec exp2expr exp =
       | Ast.SubOp -> Al.Sub
       | Ast.MulOp -> Al.Mul
       | Ast.DivOp -> Al.Div
+      | Ast.ExpOp -> Al.Exp
       | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
       in
       Al.BinopE (op, lhs, rhs)
@@ -369,6 +370,8 @@ let rec exp2cond exp =
       let binop = match op with
       | Ast.AndOp -> Al.And
       | Ast.OrOp -> Al.Or
+      | Ast.ImplOp -> Al.Impl
+      | Ast.EquivOp -> Al.Equiv
       | _ ->
           gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
       in
@@ -721,13 +724,14 @@ type trule_group =
 
 (** Main translation for typing rules **)
 let trule_group2algo ((instr_name, trules): trule_group) =
-  let (e, _t, _prems, tenv) = trules |> List.hd in
+  let (e, t, prems, tenv) = trules |> List.hd in
+
   (* name *)
   let name = "validation_of_" ^ instr_name in
   (* params *)
   let params = get_params e |> List.map (find_type tenv) in
   (* body *)
-  let body = [ Al.NopI ] in
+  let body = prems2instrs [] prems [ Al.ReturnI (Some (exp2expr t)) ] in
 
   (* Algo *)
   Al.Algo (name, params, body)

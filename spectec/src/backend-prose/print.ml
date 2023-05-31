@@ -101,10 +101,13 @@ let string_of_expr_binop = function
   | Sub -> "-"
   | Mul -> "·"
   | Div -> "/"
+  | Exp -> "^"
 
 let string_of_cond_binop = function
   | And -> "and"
   | Or -> "or"
+  | Impl -> "=>"
+  | Equiv -> "<=>"
 
 let string_of_compare_op = function
   | Eq -> "is"
@@ -152,7 +155,10 @@ and string_of_expr = function
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE (n, iters) -> string_of_name n ^ string_of_iters iters
-  | ArrowE (e1, e2) -> "[" ^ string_of_expr e1 ^ "]->[" ^ string_of_expr e2 ^ "]"
+  | ArrowE (e1, e2) ->
+    (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
+    ^ "->"
+    ^ (match e2 with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
   | ConstructE ("CONST", hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
   | ConstructE (s, []) -> s
   | ConstructE (s, el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"

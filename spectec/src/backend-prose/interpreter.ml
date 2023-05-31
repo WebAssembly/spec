@@ -102,6 +102,19 @@ let value_to_list v = v |> value_to_array |> Array.to_list
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ "is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
 
+let rec int64_exp base exponent =
+  if exponent = 0L then
+    1L
+  else if exponent = 1L then
+    base
+  else
+    let half_pow = int64_exp base (Int64.div exponent 2L) in
+    let pow = Int64.mul half_pow half_pow in
+    if Int64.rem exponent 2L = 0L then
+      pow
+    else
+      Int64.mul base pow
+
 (* Interpreter *)
 
 let cnt = ref 0
@@ -137,6 +150,7 @@ and eval_expr env expr =
           | Sub -> Int64.sub v1 v2
           | Mul -> Int64.mul v1 v2
           | Div -> Int64.div v1 v2
+          | Exp -> int64_exp v1 v2
           in
           NumV result
       | _ -> failwith "Not an integer"
@@ -225,6 +239,8 @@ and eval_cond env cond =
       begin match op with
       | And -> b1 && b2
       | Or -> b1 || b2
+      | Impl -> not b1 || b2
+      | Equiv -> b1 = b2
       end
   | CompareC (op, e1, e2) ->
       let v1 = eval_expr env e1 in
