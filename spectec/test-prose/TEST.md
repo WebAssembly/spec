@@ -895,7 +895,7 @@ invocation funcaddr val*
 == Interpreting AL...
 sample.wast: [27/27] (100.00%)
 forward.wast: [4/4] (100.00%)
-float_misc.wast: [439/440] (99.77%)
+float_misc.wast: [440/440] (100.00%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [34/45] (75.56%)
@@ -949,7 +949,7 @@ elem.wast: [Uncaught exception in 8th assertion: This test contains a (register 
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
-float_exprs.wast: [606/794] (76.32%)
+float_exprs.wast: [637/794] (80.23%)
 float_memory.wast: [48/60] (80.00%)
 table_size.wast: [5/36] (13.89%)
 table_set.wast: [13/18] (72.22%)
@@ -968,9 +968,9 @@ table_init.wast: [Uncaught exception in 0th assertion: This test contains a (reg
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 int_exprs.wast: [86/89] (96.63%)
-f64.wast: [1589/2500] (63.56%)
+f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [13340/16606] (80.33%; Normalized 76.46%)
+Total [14283/16606] (86.01%; Normalized 77.06%)
 == Complete.
 ```

@@ -29,7 +29,8 @@ let fail expected actual =
   Printf.eprintf " Actual: %s\n\n" actual;
   let print_stack = false in
   if print_stack then
-    Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack)
+    Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack);
+  Fail
 
 let not_supported_msg = "We only support the test script with modules and assertions."
 
@@ -41,8 +42,14 @@ let file_to_script file_name =
   let lexbuf = Lexing.from_channel (open_in file_path) in
   Parse.parse file_path lexbuf Parse.Script
 
+let canonical_nan t = Al.ConstructV (t ^ ".NaN(canonical)", [])
+let arithmetic_nan t = Al.ConstructV (t ^ ".NaN(arithmetic)", [])
 let al_of_result result = match result.it with
   | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
+  | Script.NumResult (Script.NanPat {it = (Values.F32 Script.CanonicalNan); _}) -> canonical_nan "F32"
+  | Script.NumResult (Script.NanPat {it = (Values.F64 Script.CanonicalNan); _}) -> canonical_nan "F64"
+  | Script.NumResult (Script.NanPat {it = (Values.F32 Script.ArithmeticNan); _}) -> arithmetic_nan "F32"
+  | Script.NumResult (Script.NanPat {it = (Values.F64 Script.ArithmeticNan); _}) -> arithmetic_nan "F64"
   | Script.RefResult (Script.RefPat r) -> Construct.al_of_value (Values.Ref r.it)
   | _ -> StringV "TODO"
 
@@ -70,23 +77,58 @@ let do_invoke act = match act.it with
     Interpreter.call_algo "invocation" [idx; args]
   | _ -> failwith "Currently, we only support calling function in the lastly defined module"
 
+let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
+let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32
+let f64_pos_nan = F64.to_bits F64.pos_nan
+let f64_neg_nan = F64.to_bits F64.neg_nan
+
+let is_canonical_nan t v =
+  v = canonical_nan t || match v with
+  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
+    t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
+    ||
+    t = "F64" && (bits = f64_pos_nan || bits = f64_neg_nan)
+  | _ -> false
+
+let is_arithmetic_nan t v =
+  v = arithmetic_nan t || match v with
+  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
+    t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
+    ||
+    t = "F64" && Int64.logand bits f64_pos_nan = f64_pos_nan
+  | _ -> false
+
+let assert_nan actuals expects =
+  match actuals, expects with
+  | Al.ListV [|actual|], Al.ListV [|expect|] ->
+    is_canonical_nan "F32" expect && is_canonical_nan "F32" actual
+    || is_canonical_nan "F64" expect && is_canonical_nan "F64" actual
+    || is_arithmetic_nan "F32" expect && is_arithmetic_nan "F32" actual
+    || is_arithmetic_nan "F64" expect && is_arithmetic_nan "F64" actual
+  | _ -> false
+
+let assert_return actual expect =
+  if actual = expect || assert_nan actual expect then
+    Success
+  else
+    fail (Print.string_of_value expect) (Print.string_of_value actual)
+
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
     let result = try do_invoke invoke with e -> StringV (msg_of e) in
-    let expected_result = try Al.ListV(expected |> List.map al_of_result |> Array.of_list) with e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
-    if result <> expected_result then begin
-      fail (Print.string_of_value expected_result) (Print.string_of_value result);
-      Fail
-    end else Success
+    let expected_result = try
+      Al.ListV(expected |> List.map al_of_result |> Array.of_list)
+    with
+      e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
+    assert_return result expected_result
   | Script.AssertTrap (invoke, _msg) ->
     begin try
       let result = do_invoke invoke in
-      fail "Trap" (Print.string_of_value result);
-      Fail
+      fail "Trap" (Print.string_of_value result)
     with
       | Interpreter.Trap -> Success
-      | e -> fail "Trap" (Printexc.to_string e); Fail
+      | e -> fail "Trap" (Printexc.to_string e)
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
