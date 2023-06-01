@@ -20,10 +20,15 @@ let _error at msg = Source.error at "sideconditions" msg
 
 module Env = Map.Make(String)
 
+(* Smart constructor for LenE that optimizes |x^n| into n *)
+let lenE e = match e.it with
+| IterE (_, (ListN ne, _)) -> ne
+| _ -> LenE e $$ no_region % (NatT $ no_region)
+
 let is_null e = CmpE (EqOp, e, OptE None $$ no_region % e.note) $$ no_region % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ no_region % (BoolT $ no_region)) $ no_region
-let same_len e1 e2 = IfPr (CmpE (EqOp, LenE e1 $$ no_region % (NatT $ e1.at), LenE e2 $$ no_region % (NatT $ e2.at)) $$ no_region % (BoolT $ no_region)) $ no_region
-let has_len ne e = IfPr (CmpE (EqOp, LenE e $$ no_region % (NatT $ e.at), ne) $$ no_region % (BoolT $ no_region)) $ no_region
+let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ no_region % (BoolT $ no_region)) $ no_region
+let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ no_region % (BoolT $ no_region)) $ no_region
 
 let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
   let iter' = if iter = Opt then Opt else List in
@@ -102,18 +107,30 @@ let rec t_prem env prem = match prem.it with
 
 let t_prems env = List.concat_map (t_prem env)
 
+let is_identity e = match e.it with
+  | CmpE (EqOp, e1, e2) -> Il.Eq.eq_exp e1 e2
+  | _ -> false
+
+(* Is prem always true? *)
+let is_true prem = match prem.it with
+  | IfPr e -> is_identity e
+  | _ -> false
+
 (* Does prem1 obviously imply prem2? *)
 let rec implies prem1 prem2 = Il.Eq.eq_prem prem1 prem2 ||
   match prem2.it with
   | IterPr (prem2', _) -> implies prem1 prem2'
   | _ -> false
 
+let reduce_prems prems = prems
+  |> Util.Lib.List.filter_not is_true
+  |> Util.Lib.List.nub implies
 
 let t_rule' = function
   | RuleD (id, binds, mixop, exp, prems) ->
     let env = List.fold_left (fun env (v, t, _) -> Env.add v.it t env) Env.empty binds in
     let extra_prems = t_prems env prems @ t_exp env exp in
-    let prems' = Util.Lib.List.nub implies (extra_prems @ prems) in
+    let prems' = reduce_prems (extra_prems @ prems) in
     RuleD (id, binds, mixop, exp, prems')
 
 let t_rule x = { x with it = t_rule' x.it }
