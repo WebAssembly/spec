@@ -275,13 +275,13 @@ execution_of_extend nt n
 2. Pop (nt.CONST c) from the stack.
 3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
-execution_of_cvtop nt_1 cvtop nt_2 sx
-1. Assert: Due to validation, a value of value type nt is on the top of the stack.
-2. Pop (nt.CONST c_1) from the stack.
-3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
-  a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
-  b. Push (nt.CONST c) to the stack.
-4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
+execution_of_cvtop nt_2 cvtop nt_1 sx
+1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
+2. Pop (nt_1.CONST c_1) from the stack.
+3. If |$cvtop(nt_2, cvtop, nt_1, sx?, c_1)| is 1, then:
+  a. Let [c] be $cvtop(nt_2, cvtop, nt_1, sx?, c_1).
+  b. Push (nt_2.CONST c) to the stack.
+4. If $cvtop(nt_2, cvtop, nt_1, sx?, c_1) is [], then:
   a. Trap.
 
 execution_of_ref.is_null
@@ -898,29 +898,29 @@ forward.wast: [4/4] (100.00%)
 float_misc.wast: [440/440] (100.00%)
 table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [34/45] (75.56%)
+memory.wast: [35/45] (77.78%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [65/70] (92.86%)
-local_get.wast: [18/19] (94.74%)
+call.wast: [66/70] (94.29%)
+local_get.wast: [19/19] (100.00%)
 fac.wast: [6/6] (100.00%)
 func.wast: [86/96] (89.58%)
 exports.wast: [4/9] (44.44%)
-local_set.wast: [18/19] (94.74%)
+local_set.wast: [19/19] (100.00%)
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception in 82th assertion: This test contains a binary module]
 align.wast: [43/48] (89.58%)
-if.wast: [102/123] (82.93%)
+if.wast: [116/123] (94.31%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
 block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
-switch.wast: [18/26] (69.23%)
-i64.wast: [374/384] (97.40%)
+switch.wast: [24/26] (92.31%)
+i64.wast: [384/384] (100.00%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
-conversions.wast: [0/593] (0.00%)
-endianness.wast: [15/68] (22.06%)
+conversions.wast: [520/593] (87.69%)
+endianness.wast: [51/68] (75.00%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
@@ -928,7 +928,7 @@ i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
 traps.wast: [24/32] (75.00%)
-local_tee.wast: [47/55] (85.45%)
+local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 memory_grow.wast: [7/84] (8.33%)
@@ -942,14 +942,14 @@ ref_is_null.wast: [10/11] (90.91%)
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
-select.wast: [82/118] (69.49%)
+select.wast: [84/118] (71.19%)
 f32_bitwise.wast: [360/360] (100.00%)
 memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
-float_exprs.wast: [637/794] (80.23%)
+float_exprs.wast: [747/794] (94.08%)
 float_memory.wast: [48/60] (80.00%)
 table_size.wast: [5/36] (13.89%)
 table_set.wast: [13/18] (72.22%)
@@ -967,10 +967,10 @@ func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed d
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-int_exprs.wast: [86/89] (96.63%)
+int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [14283/16606] (86.01%; Normalized 77.06%)
+Total [15049/16606] (90.62%; Normalized 81.35%)
 == Complete.
 ```

@@ -1,6 +1,7 @@
 open Reference_interpreter
 open Source
 open Ast
+open Al
 
 (** flag **)
 let test_name = ref ""
@@ -42,8 +43,8 @@ let file_to_script file_name =
   let lexbuf = Lexing.from_channel (open_in file_path) in
   Parse.parse file_path lexbuf Parse.Script
 
-let canonical_nan t = Al.ConstructV (t ^ ".NaN(canonical)", [])
-let arithmetic_nan t = Al.ConstructV (t ^ ".NaN(arithmetic)", [])
+let canonical_nan t = singleton (t ^ ".NaN(canonical)")
+let arithmetic_nan t = singleton (t ^ ".NaN(arithmetic)")
 let al_of_result result = match result.it with
   | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
   | Script.NumResult (Script.NanPat {it = (Values.F32 Script.CanonicalNan); _}) -> canonical_nan "F32"
@@ -61,13 +62,13 @@ let do_invoke act = match act.it with
   | Script.Invoke (None, name, literals) ->
     let extract_idx (export: Ast.export) = if export.it.name = name then
       match export.it.edesc.it with
-      | FuncExport x -> Some (Al.NumV (Int64.of_int32 x.it))
+      | FuncExport x -> Some (NumV (Int64.of_int32 x.it))
       | _ -> None
     else
       None
     in
     let idx = List.find_map extract_idx !exports |> Option.get in
-    let args = Al.ListV (
+    let args = ListV (
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
       |> Array.of_list
@@ -100,7 +101,7 @@ let is_arithmetic_nan t v =
 
 let assert_nan actuals expects =
   match actuals, expects with
-  | Al.ListV [|actual|], Al.ListV [|expect|] ->
+  | ListV [|actual|], ListV [|expect|] ->
     is_canonical_nan "F32" expect && is_canonical_nan "F32" actual
     || is_canonical_nan "F64" expect && is_canonical_nan "F64" actual
     || is_arithmetic_nan "F32" expect && is_arithmetic_nan "F32" actual
@@ -118,7 +119,7 @@ let test_assertion assertion =
   | Script.AssertReturn (invoke, expected) ->
     let result = try do_invoke invoke with e -> StringV (msg_of e) in
     let expected_result = try
-      Al.ListV(expected |> List.map al_of_result |> Array.of_list)
+      ListV(expected |> List.map al_of_result |> Array.of_list)
     with
       e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
     assert_return result expected_result

@@ -152,3 +152,6 @@ type instr =
   | YetI of string
 
 type algorithm = Algo of string * (expr * al_type) list * instr list
+
+(* TODO: move this to helper *)
+let singleton x = ConstructV (x, [])

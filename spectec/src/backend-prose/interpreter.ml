@@ -97,9 +97,9 @@ exception ExitContext of (value Env.Env'.t * value) * instr list
 
 (* Helper functions *)
 
-let value_to_array = function ListV a -> a | v -> failwith (string_of_value v ^ "is not a list")
+let value_to_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
 let value_to_list v = v |> value_to_array |> Array.to_list
-let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ "is not a number")
+let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
 
 let rec int64_exp base exponent =

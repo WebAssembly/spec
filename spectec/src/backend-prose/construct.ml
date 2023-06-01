@@ -8,15 +8,15 @@ let al_of_type t =
   let open Types in
   (* num_type *)
   match t with
-  | NumType I32Type -> ConstructV ("I32", [])
-  | NumType I64Type -> ConstructV ("I64", [])
-  | NumType F32Type -> ConstructV ("F32", [])
-  | NumType F64Type -> ConstructV ("F64", [])
+  | NumType I32Type -> singleton "I32"
+  | NumType I64Type -> singleton "I64"
+  | NumType F32Type -> singleton "F32"
+  | NumType F64Type -> singleton "F64"
   (* vec_type *)
-  | VecType V128Type -> ConstructV ("V128", [])
+  | VecType V128Type -> singleton "V128"
   (* ref_type *)
-  | RefType FuncRefType -> ConstructV ("FUNCREF", [])
-  | RefType ExternRefType ->ConstructV ("EXTERNREF", [])
+  | RefType FuncRefType -> singleton "FUNCREF"
+  | RefType ExternRefType ->singleton "EXTERNREF"
 
 (* Construct value *)
 
@@ -60,7 +60,7 @@ let al_of_unop_int = function
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
   | Ast.IntOp.ExtendS Types.Pack8 -> StringV "Extend8S"
   | Ast.IntOp.ExtendS Types.Pack16 -> StringV "Extend16S"
-  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extends32S"
+  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extend32S"
   | Ast.IntOp.ExtendS Types.Pack64 -> StringV "Extend64S"
 let al_of_unop_float = function
   | Ast.FloatOp.Neg -> StringV "Neg"
@@ -118,27 +118,27 @@ let al_of_relop_float = function
   | Ast.FloatOp.Le -> StringV "Le"
   | Ast.FloatOp.Ge -> StringV "Ge"
 
-let al_of_cvtop_int = function
-  | Ast.IntOp.ExtendSI32 -> StringV "ExtendI32"
-  | Ast.IntOp.ExtendUI32 -> StringV "ExtendUI32"
-  | Ast.IntOp.WrapI64 -> StringV "WrapI64"
-  | Ast.IntOp.TruncSF32 -> StringV "TruncSF32"
-  | Ast.IntOp.TruncUF32 -> StringV "TruncUF32"
-  | Ast.IntOp.TruncSF64 -> StringV "TruncSF64"
-  | Ast.IntOp.TruncUF64 -> StringV "TruncUF64"
-  | Ast.IntOp.TruncSatSF32 -> StringV "TrucSatSF32"
-  | Ast.IntOp.TruncSatUF32 -> StringV "TrunsSatUF32"
-  | Ast.IntOp.TruncSatSF64 -> StringV "TruncSatSF64"
-  | Ast.IntOp.TruncSatUF64 -> StringV "TruncSatUF64"
-  | Ast.IntOp.ReinterpretFloat -> StringV "ReinterpretFloat"
-let al_of_cvtop_float = function
-  | Ast.FloatOp.ConvertSI32 -> StringV "ConvertI32"
-  | Ast.FloatOp.ConvertUI32 -> StringV "ConvertUI32"
-  | Ast.FloatOp.ConvertSI64 -> StringV "ConvertI64"
-  | Ast.FloatOp.ConvertUI64 -> StringV "ConvertUI64"
-  | Ast.FloatOp.PromoteF32 -> StringV "PromoteF32"
-  | Ast.FloatOp.DemoteF64 -> StringV "DemoteF64"
-  | Ast.FloatOp.ReinterpretInt -> StringV "ReinterpretInt"
+let al_of_cvtop_int bit_num = function
+  | Ast.IntOp.ExtendSI32 -> "Extend", "I32", Some (singleton "S")
+  | Ast.IntOp.ExtendUI32 -> "Extend", "I32", Some (singleton "U")
+  | Ast.IntOp.WrapI64 -> "Wrap", "I64", None
+  | Ast.IntOp.TruncSF32 -> "Trunc", "F32", Some (singleton "S")
+  | Ast.IntOp.TruncUF32 -> "Trunc", "F32", Some (singleton "U")
+  | Ast.IntOp.TruncSF64 -> "Trunc", "F64", Some (singleton "S")
+  | Ast.IntOp.TruncUF64 -> "Trunc", "F64", Some (singleton "U")
+  | Ast.IntOp.TruncSatSF32 -> "TruncSat", "F32", Some (singleton "S")
+  | Ast.IntOp.TruncSatUF32 -> "TruncSat", "F32", Some (singleton "U")
+  | Ast.IntOp.TruncSatSF64 -> "TruncSat", "F64", Some (singleton "S")
+  | Ast.IntOp.TruncSatUF64 -> "TruncSat", "F64", Some (singleton "U")
+  | Ast.IntOp.ReinterpretFloat -> "Reinterpret", ("F" ^ bit_num), None
+let al_of_cvtop_float bit_num = function
+  | Ast.FloatOp.ConvertSI32 -> "Convert", "I32", Some (singleton "S")
+  | Ast.FloatOp.ConvertUI32 -> "Convert", "I32", Some (singleton "U")
+  | Ast.FloatOp.ConvertSI64 -> "Convert", "I64", Some (singleton "S")
+  | Ast.FloatOp.ConvertUI64 -> "Convert", "I64", Some (singleton "U")
+  | Ast.FloatOp.PromoteF32 -> "Promote", "F32", None
+  | Ast.FloatOp.DemoteF64 -> "Demote", "F64", None
+  | Ast.FloatOp.ReinterpretInt -> "Reinterpret", ("I" ^ bit_num), None
 
 let al_of_packsize p =
   let s = match p with
@@ -150,8 +150,8 @@ let al_of_packsize p =
   NumV (Int64.of_int s)
 
 let al_of_extension = function
-| Types.SX -> ConstructV ("S", [])
-| Types.ZX -> ConstructV ("U", [])
+| Types.SX -> singleton "S"
+| Types.ZX -> singleton "U"
 
 let al_of_packsize_with_extension (p, s) =
   ListV [| al_of_packsize p; al_of_extension s |]
@@ -174,38 +174,47 @@ let rec al_of_instr types winstr =
   | Ast.Unary op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> (Types.I32Type, al_of_unop_int op)
-      | Values.I64 op -> (Types.I64Type, al_of_unop_int op)
-      | Values.F32 op -> (Types.F32Type, al_of_unop_float op)
-      | Values.F64 op -> (Types.F64Type, al_of_unop_float op))
+      | Values.I32 op -> ("I32", al_of_unop_int op)
+      | Values.I64 op -> ("I64", al_of_unop_int op)
+      | Values.F32 op -> ("F32", al_of_unop_float op)
+      | Values.F64 op -> ("F64", al_of_unop_float op))
     in
-    ConstructV ("UNOP", [ al_of_type (Types.NumType ty); op ])
+    ConstructV ("UNOP", [ singleton ty; op ])
   | Ast.Binary op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> (Types.I32Type, al_of_binop_int op)
-      | Values.I64 op -> (Types.I64Type, al_of_binop_int op)
-      | Values.F32 op -> (Types.F32Type, al_of_binop_float op)
-      | Values.F64 op -> (Types.F64Type, al_of_binop_float op))
+      | Values.I32 op -> ("I32", al_of_binop_int op)
+      | Values.I64 op -> ("I64", al_of_binop_int op)
+      | Values.F32 op -> ("F32", al_of_binop_float op)
+      | Values.F64 op -> ("F64", al_of_binop_float op))
     in
-    ConstructV ("BINOP", [ al_of_type (Types.NumType ty); op ])
+    ConstructV ("BINOP", [ singleton ty; op ])
   | Ast.Test op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> (Types.I32Type, al_of_testop_int op)
-      | Values.I64 op -> (Types.I64Type, al_of_testop_int op)
+      | Values.I32 op -> ("I32", al_of_testop_int op)
+      | Values.I64 op -> ("I64", al_of_testop_int op)
       | _ -> .)
     in
-    ConstructV ("testop", [ al_of_type (Types.NumType ty); op ])
+    ConstructV ("TESTOP", [ singleton ty; op ])
   | Ast.Compare op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> (Types.I32Type, al_of_relop_int op)
-      | Values.I64 op -> (Types.I64Type, al_of_relop_int op)
-      | Values.F32 op -> (Types.F32Type, al_of_relop_float op)
-      | Values.F64 op -> (Types.F64Type, al_of_relop_float op))
+      | Values.I32 op -> ("I32", al_of_relop_int op)
+      | Values.I64 op -> ("I64", al_of_relop_int op)
+      | Values.F32 op -> ("F32", al_of_relop_float op)
+      | Values.F64 op -> ("F64", al_of_relop_float op))
     in
-    ConstructV ("relop", [ al_of_type (Types.NumType ty); op ])
+    ConstructV ("RELOP", [ singleton ty; op ])
+  | Ast.Convert op ->
+    let (ty_to, (op, ty_from, sx_opt)) = (
+      match op with
+      | Values.I32 op -> ("I32", al_of_cvtop_int "32" op)
+      | Values.I64 op -> ("I64", al_of_cvtop_int "64" op)
+      | Values.F32 op -> ("F32", al_of_cvtop_float "32" op)
+      | Values.F64 op -> ("F64", al_of_cvtop_float "64" op))
+    in
+    ConstructV ("CVTOP", [ singleton ty_to; StringV op; singleton ty_from; OptV sx_opt ])
   | Ast.RefIsNull -> f "REF.IS_NULL"
   | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
   | Ast.Select None -> ConstructV ("SELECT", [ StringV "TODO: None" ])
@@ -244,7 +253,7 @@ let rec al_of_instr types winstr =
   | Ast.BrTable (i32s, i32) ->
       ConstructV
         ("BR_TABLE", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
-  | Ast.Return -> ConstructV ("RETURN", [])
+  | Ast.Return -> f "RETURN"
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("LOAD", [
@@ -334,7 +343,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
           )
         )
       )
-  | Ast.Declarative -> OptV (Some (ConstructV ("DECLARE", [])))
+  | Ast.Declarative -> OptV (Some (singleton "DECLARE"))
 
 let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
 
