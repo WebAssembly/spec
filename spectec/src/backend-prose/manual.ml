@@ -412,6 +412,14 @@ let new_alloc_module =
   let elemaddr_iter = NameE (N "elemaddr", [List]) in
   let dataaddr_iter = NameE (N "dataaddr", [List]) in
 
+  let ignore_name = NameE (N "_", []) in
+  let store = NameE (N "s", []) in
+  let func' = NameE (N "func'", []) in
+
+  let base = AccessE (NameE (N "s", []), DotP ("FUNC")) in
+  let index = IndexP (NameE (N "i", [])) in
+  let index_access = AccessE (base, index) in
+
   (* Algorithm *)
   Algo (
     "alloc_module",
@@ -440,6 +448,13 @@ let new_alloc_module =
       LetI (dataaddr_iter, MapE (N "alloc_data", [ data ], [ List ]));
       AppendListI (dataaddr_iter, module_inst_init, "DATA");
       PopI frame_init;
+      ForI (
+        AccessE (store, DotP "FUNC"),
+        [
+          LetI (PairE (ignore_name, func'), index_access);
+          ReplaceI (base, index, PairE (module_inst_init, func'))
+        ]
+      );
       ReturnI (Some module_inst_init)
     ]
   )

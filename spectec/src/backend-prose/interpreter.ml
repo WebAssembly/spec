@@ -479,7 +479,6 @@ and interp_algo algo args =
 (* Search AL Algorithm *)
 
 and call_algo name args =
-  print_endline name;
   let algo =
     match AlgoMap.find_opt name !algo_map with
       | Some v -> v

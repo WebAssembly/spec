@@ -774,17 +774,11 @@ execution_of_return
   e. Execute RETURN.
 
 instantiation module
-1. Let (MODULE _ global* _ _ elem* data*) be module.
-2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
-3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
-4. Push f_init to the stack.
-5. Let val* be $init_global(global)*.
-6. Let ref** be $init_elem(elem)*.
-7. Pop f_init from the stack.
-8. Let moduleinst be $alloc_module(module, val*, ref**).
-9. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
-10. Push f to the stack.
-11. For i in range |elem*|:
+1. Let (MODULE _ _ _ _ elem* data*) be module.
+2. Let moduleinst be $alloc_module(module).
+3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+4. Push f to the stack.
+5. For i in range |elem*|:
   a. Let (ELEM _ einit mode) be elem*[i].
   b. If mode is defined and mode is of the case TABLE, then:
     1) Let ?((TABLE tableidx einstrs*)) be mode.
@@ -795,7 +789,7 @@ instantiation module
     6) Execute (ELEM.DROP i).
   c. If mode is defined and mode is of the case DECLARE, then:
     1) Execute (ELEM.DROP i).
-12. For i in range |data*|:
+6. For i in range |data*|:
   a. Let (DATA dinit mode) be data*[i].
   b. If mode is defined, then:
     1) Let ?((MEMORY memidx dinstrs*)) be mode.
@@ -805,12 +799,30 @@ instantiation module
     5) Execute (I32.CONST |dinit|).
     6) Execute (MEMORY.INIT i).
     7) Execute (DATA.DROP i).
-13. Pop f from the stack.
+7. Pop f from the stack.
 
-exec_expr instr*
-1. Jump to instr*.
-2. Pop val from the stack.
-3. Return val.
+alloc_module module
+1. Let (MODULE func* global* table* memory* elem* data*) be module.
+2. Let moduleinst be { DATA: []; ELEM: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
+3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+4. Push f_init to the stack.
+5. Let funcaddr* be $alloc_func(func)*.
+6. Append the sequence funcaddr* to the moduleinst.FUNC.
+7. Let tableaddr* be $alloc_table(table)*.
+8. Append the sequence tableaddr* to the moduleinst.TABLE.
+9. Let globaladdr* be $alloc_global(global)*.
+10. Append the sequence globaladdr* to the moduleinst.GLOBAL.
+11. Let memoryaddr* be $alloc_memory(memory)*.
+12. Append the sequence memoryaddr* to the moduleinst.MEM.
+13. Let elemaddr* be $alloc_elem(elem)*.
+14. Append the sequence elemaddr* to the moduleinst.ELEM.
+15. Let dataaddr* be $alloc_data(data)*.
+16. Append the sequence dataaddr* to the moduleinst.DATA.
+17. Pop f_init from the stack.
+18. For i in range |s.FUNC|:
+  a. Let (_, func') be s.FUNC[i].
+  b. Replace s.FUNC[i] with (moduleinst, func').
+19. Return moduleinst.
 
 init_global global
 1. Let (GLOBAL _ instr*) be global.
@@ -823,19 +835,10 @@ init_elem elem
 2. Let ref* be $exec_expr(instr)*.
 3. Return ref*.
 
-alloc_module module val* ref**
-1. Let (MODULE func* global* table* memory* elem* data*) be module.
-2. Let funcaddr* be $alloc_func(func)*.
-3. Let tableaddr* be $alloc_table(table)*.
-4. Let globaladdr* be $alloc_global(val)*.
-5. Let memoryaddr* be $alloc_memory(memory)*.
-6. Let elemaddr* be $alloc_elem(ref*)*.
-7. Let dataaddr* be $alloc_data(data)*.
-8. Let moduleinst be { DATA: dataaddr*; ELEM: elemaddr*; FUNC: funcaddr*; GLOBAL: globaladdr*; MEM: memoryaddr*; TABLE: tableaddr*; }.
-9. For i in range |s.FUNC|:
-  a. Let (_, func') be s.FUNC[i].
-  b. Replace s.FUNC[i] with (moduleinst, func').
-10. Return moduleinst.
+exec_expr instr*
+1. Jump to instr*.
+2. Pop val from the stack.
+3. Return val.
 
 alloc_func func
 1. Let a be |s.FUNC|.
@@ -844,17 +847,18 @@ alloc_func func
 4. Append funcinst to the s.FUNC.
 5. Return a.
 
-alloc_global val
-1. Let a be |s.GLOBAL|.
-2. Append val to the s.GLOBAL.
-3. Return a.
-
 alloc_table table
 1. Let (TABLE (n, _) reftype) be table.
 2. Let a be |s.TABLE|.
 3. Let tableinst be (REF.NULL reftype)^n.
 4. Append tableinst to the s.TABLE.
 5. Return a.
+
+alloc_global global
+1. Let a be |s.GLOBAL|.
+2. Let val be $init_global(global).
+3. Append val to the s.GLOBAL.
+4. Return a.
 
 alloc_memory memory
 1. Let (MEMORY (min, _)) be memory.
@@ -863,10 +867,11 @@ alloc_memory memory
 4. Append memoryinst to the s.MEM.
 5. Return a.
 
-alloc_elem ref*
+alloc_elem elem
 1. Let a be |s.ELEM|.
-2. Append ref* to the s.ELEM.
-3. Return a.
+2. Let ref* be $init_elem(elem).
+3. Append ref* to the s.ELEM.
+4. Return a.
 
 alloc_data data
 1. Let (DATA init _) be data.
@@ -895,62 +900,61 @@ table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (reg
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [34/45] (75.56%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+call.wast: [65/70] (92.86%)
 local_get.wast: [18/19] (94.74%)
 fac.wast: [6/6] (100.00%)
-func.wast: [Uncaught exception in 92th assertion: Module Instantiation failed due to No frame]
+func.wast: [86/96] (89.58%)
 exports.wast: [4/9] (44.44%)
 local_set.wast: [18/19] (94.74%)
 linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception in 82th assertion: This test contains a binary module]
 align.wast: [43/48] (89.58%)
-if.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+if.wast: [102/123] (82.93%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
-block.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [18/26] (69.23%)
 i64.wast: [374/384] (97.40%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
-loop.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+loop.wast: [73/77] (94.81%)
 conversions.wast: [0/593] (0.00%)
 endianness.wast: [15/68] (22.06%)
-return.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
-unreachable.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
-bulk.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to No frame]
+unreachable.wast: [63/63] (100.00%)
+bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
 traps.wast: [24/32] (75.00%)
-local_tee.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+local_tee.wast: [47/55] (85.45%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-memory_grow.wast: [Uncaught exception in 47th assertion: Module Instantiation failed due to hd]
-tokens.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
-call_indirect.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to No frame]
-load.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+memory_grow.wast: [7/84] (8.33%)
+call_indirect.wast: [31/132] (23.48%)
+load.wast: [32/37] (86.49%)
 memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
 memory_size.wast: [5/36] (13.89%)
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-left-to-right.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to No frame]
-ref_is_null.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+left-to-right.wast: [91/95] (95.79%)
+ref_is_null.wast: [10/11] (90.91%)
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-br_table.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
-select.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to No frame]
+br_table.wast: [126/149] (84.56%)
+select.wast: [82/118] (69.49%)
 f32_bitwise.wast: [360/360] (100.00%)
 memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
-elem.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to No frame]
-table_get.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
+table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
 float_exprs.wast: [606/794] (76.32%)
 float_memory.wast: [48/60] (80.00%)
 table_size.wast: [5/36] (13.89%)
-table_set.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+table_set.wast: [13/18] (72.22%)
 f32_cmp.wast: [2400/2400] (100.00%)
-br_if.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
+br_if.wast: [88/88] (100.00%)
 ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
@@ -958,15 +962,15 @@ table_fill.wast: [35/35] (100.00%)
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 int_literals.wast: [30/30] (100.00%)
 address.wast: [205/255] (80.39%)
-table_grow.wast: [Uncaught exception in 21th assertion: Module Instantiation failed due to hd]
+table_grow.wast: [8/38] (21.05%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 int_exprs.wast: [86/89] (96.63%)
 f64.wast: [1589/2500] (63.56%)
-br.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
-nop.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to hd]
-Total [12242/15214] (80.47%; Normalized 75.07%)
+br.wast: [76/76] (100.00%)
+nop.wast: [75/83] (90.36%)
+Total [13340/16606] (80.33%; Normalized 76.46%)
 == Complete.
 ```
