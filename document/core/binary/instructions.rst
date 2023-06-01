@@ -100,7 +100,7 @@ Control Instructions
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+Generic :ref:`reference instructions <syntax-instr-ref>` are represented by single byte codes, others use prefixes and type operands.
 
 .. _binary-ref.null:
 .. _binary-ref.func:
