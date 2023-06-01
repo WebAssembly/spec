@@ -292,7 +292,7 @@ let cvtop : numerics =
           | None -> ""
           | Some (ConstructV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
-        ListV [| match t_to, op, t_from, sx with
+        ListV [| catch_ixx_exception (fun _ -> match t_to, op, t_from, sx with
         (* Conversion to I32 *)
         | "I32", "Wrap", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
         | "I32", "Trunc", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
@@ -330,7 +330,7 @@ let cvtop : numerics =
         | "F64", "Convert", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
         | "F64", "Convert", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
         | "F64", "Reinterpret", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
-        | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx) |])
+        | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx) ) |])
       | _ -> failwith "Invalid cvtop");
   }
 

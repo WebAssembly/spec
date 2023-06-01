@@ -919,7 +919,7 @@ i64.wast: [384/384] (100.00%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
-conversions.wast: [520/593] (87.69%)
+conversions.wast: [587/593] (98.99%)
 endianness.wast: [51/68] (75.00%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
@@ -927,7 +927,7 @@ memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
-traps.wast: [24/32] (75.00%)
+traps.wast: [32/32] (100.00%)
 local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
@@ -971,6 +971,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [15049/16606] (90.62%; Normalized 81.35%)
+Total [15124/16606] (91.08%; Normalized 81.89%)
 == Complete.
 ```
