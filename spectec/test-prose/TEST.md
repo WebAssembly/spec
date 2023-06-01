@@ -558,184 +558,184 @@ execution_of_data.drop x
 1. Perform $with_data(x, []).
 
 validation_of_unreachable
-1. Return [t_1*]->[t_2*].
+1. The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_nop
-1. Return []->[].
+1. The instruction is valid with type []->[].
 
 validation_of_drop
-1. Return [t]->[].
+1. The instruction is valid with type [t]->[].
 
 validation_of_select ?(t)
-1. Return [t, t, I32]->[t].
+1. The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr
 1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
 2. Under the context C ++ { LABEL: t_2*; }, instr* must be valid with type [t_1*]->[t_2*].
-3. Return [t_1*]->[t_2*].
+3. The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr
 1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
 2. Under the context C ++ { LABEL: t_1*; }, instr* must be valid with type [t_1*]->[t_2*].
-3. Return [t_1*]->[t_2*].
+3. The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1 instr_2
 1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
 2. Under the context C ++ { LABEL: t_2*; }, instr_1* must be valid with type [t_1*]->[t_2*].
 3. Under the context C ++ { LABEL: t_2*; }, instr_2* must be valid with type [t_1*]->[t_2*].
-4. Return [t_1*]->[t_2*].
+4. The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_br l
 1. If l < |C.LABEL| and C.LABEL[l] is t*, then:
-  a. Return [t_1* ++ t*]->[t_2*].
+  a. The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
 validation_of_br_if l
 1. If l < |C.LABEL| and C.LABEL[l] is t*, then:
-  a. Return [t* ++ [I32]]->[t*].
+  a. The instruction is valid with type [t* ++ [I32]]->[t*].
 
 validation_of_br_table l l'
 1. YetI: (if (l < |C.LABEL_context|))*{l}.
 2. If l' < |C.LABEL|, then:
   a. YetI: (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}.
   b. YetI: Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l']).
-  c. Return [t_1* ++ t*]->[t_2*].
+  c. The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
 validation_of_return
 1. If C.RETURN is ?(t*), then:
-  a. Return [t_1* ++ t*]->[t_2*].
+  a. The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
 validation_of_call x
 1. If x < |C.FUNC| and C.FUNC[x] is [t_1*]->[t_2*], then:
-  a. Return [t_1*]->[t_2*].
+  a. The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_call_indirect x ft
 1. If x < |C.TABLE| and C.TABLE[x] is YetE (MixE ([[], [], []], TupE ([VarE "lim", CaseE (Atom "FUNCREF", TupE ([]))]))) and ft is [t_1*]->[t_2*], then:
-  a. Return [t_1* ++ [I32]]->[t_2*].
+  a. The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_const nt c_nt
-1. Return []->[nt].
+1. The instruction is valid with type []->[nt].
 
 validation_of_unop nt unop
-1. Return [nt]->[nt].
+1. The instruction is valid with type [nt]->[nt].
 
 validation_of_binop nt binop
-1. Return [nt, nt]->[nt].
+1. The instruction is valid with type [nt, nt]->[nt].
 
 validation_of_testop nt testop
-1. Return [nt]->[I32].
+1. The instruction is valid with type [nt]->[I32].
 
 validation_of_relop nt relop
-1. Return [nt, nt]->[I32].
+1. The instruction is valid with type [nt, nt]->[I32].
 
 validation_of_extend nt n
 1. If n ≤ $size(nt), then:
-  a. Return [nt]->[nt].
+  a. The instruction is valid with type [nt]->[nt].
 
 validation_of_reinterpret nt_1 REINTERPRET_cvtop nt_2 ?()
 1. If nt_1 is not nt_2 and $size(nt_1) is $size(nt_2), then:
-  a. Return [nt_2]->[nt_1].
+  a. The instruction is valid with type [nt_2]->[nt_1].
 
 validation_of_convert in_1 CONVERT_cvtop in_2 sx
 1. If in_1 is not in_2 and sx? is ?() <=> $size(in_1) > $size(in_2), then:
-  a. Return [in_2]->[in_1].
+  a. The instruction is valid with type [in_2]->[in_1].
 
 validation_of_ref.null rt
-1. Return []->[rt].
+1. The instruction is valid with type []->[rt].
 
 validation_of_ref.func x
 1. If x < |C.FUNC| and C.FUNC[x] is ft, then:
-  a. Return []->[FUNCREF].
+  a. The instruction is valid with type []->[FUNCREF].
 
 validation_of_ref.is_null
-1. Return [rt]->[I32].
+1. The instruction is valid with type [rt]->[I32].
 
 validation_of_local.get x
 1. If x < |C.LOCAL| and C.LOCAL[x] is t, then:
-  a. Return []->[t].
+  a. The instruction is valid with type []->[t].
 
 validation_of_local.set x
 1. If x < |C.LOCAL| and C.LOCAL[x] is t, then:
-  a. Return [t]->[].
+  a. The instruction is valid with type [t]->[].
 
 validation_of_local.tee x
 1. If x < |C.LOCAL| and C.LOCAL[x] is t, then:
-  a. Return [t]->[t].
+  a. The instruction is valid with type [t]->[t].
 
 validation_of_global.get x
 1. If x < |C.GLOBAL| and C.GLOBAL[x] is YetE (MixE ([[Atom "MUT"], [Quest], []], TupE ([IterE (TupE ([]), (Opt, [])), VarE "t"]))), then:
-  a. Return []->[t].
+  a. The instruction is valid with type []->[t].
 
 validation_of_global.set x
 1. If x < |C.GLOBAL| and C.GLOBAL[x] is YetE (MixE ([[Atom "MUT"], [Quest], []], TupE ([OptE (TupE ([])), VarE "t"]))), then:
-  a. Return [t]->[].
+  a. The instruction is valid with type [t]->[].
 
 validation_of_table.get x
 1. If x < |C.TABLE| and C.TABLE[x] is YetE (MixE ([[], [], []], TupE ([VarE "lim", VarE "rt"]))), then:
-  a. Return [I32]->[rt].
+  a. The instruction is valid with type [I32]->[rt].
 
 validation_of_table.set x
 1. If x < |C.TABLE| and C.TABLE[x] is YetE (MixE ([[], [], []], TupE ([VarE "lim", VarE "rt"]))), then:
-  a. Return [I32, rt]->[].
+  a. The instruction is valid with type [I32, rt]->[].
 
 validation_of_table.size x
 1. If x < |C.TABLE| and C.TABLE[x] is tt, then:
-  a. Return []->[I32].
+  a. The instruction is valid with type []->[I32].
 
 validation_of_table.grow x
 1. If x < |C.TABLE| and C.TABLE[x] is YetE (MixE ([[], [], []], TupE ([VarE "lim", VarE "rt"]))), then:
-  a. Return [rt, I32]->[I32].
+  a. The instruction is valid with type [rt, I32]->[I32].
 
 validation_of_table.fill x
 1. If x < |C.TABLE| and C.TABLE[x] is YetE (MixE ([[], [], []], TupE ([VarE "lim", VarE "rt"]))), then:
-  a. Return [I32, rt, I32]->[].
+  a. The instruction is valid with type [I32, rt, I32]->[].
 
 validation_of_table.copy x_1 x_2
 1. If x_1 < |C.TABLE| and x_2 < |C.TABLE| and C.TABLE[x_1] is YetE (MixE ([[], [], []], TupE ([VarE "lim_1", VarE "rt"]))) and C.TABLE[x_2] is YetE (MixE ([[], [], []], TupE ([VarE "lim_2", VarE "rt"]))), then:
-  a. Return [I32, I32, I32]->[].
+  a. The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_table.init x_1 x_2
 1. If x_1 < |C.TABLE| and x_2 < |C.ELEM| and C.TABLE[x_1] is YetE (MixE ([[], [], []], TupE ([VarE "lim", VarE "rt"]))) and C.ELEM[x_2] is rt, then:
-  a. Return [I32, I32, I32]->[].
+  a. The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_elem.drop x
 1. If x < |C.ELEM| and C.ELEM[x] is rt, then:
-  a. Return []->[].
+  a. The instruction is valid with type []->[].
 
 validation_of_memory.size
 1. If 0 < |C.MEM| and C.MEM[0] is mt, then:
-  a. Return []->[I32].
+  a. The instruction is valid with type []->[I32].
 
 validation_of_memory.grow
 1. If 0 < |C.MEM| and C.MEM[0] is mt, then:
-  a. Return [I32]->[I32].
+  a. The instruction is valid with type [I32]->[I32].
 
 validation_of_memory.fill
 1. If 0 < |C.MEM| and C.MEM[0] is mt, then:
-  a. Return [I32, I32, I32]->[I32].
+  a. The instruction is valid with type [I32, I32, I32]->[I32].
 
 validation_of_memory.copy
 1. If 0 < |C.MEM| and C.MEM[0] is mt, then:
-  a. Return [I32, I32, I32]->[I32].
+  a. The instruction is valid with type [I32, I32, I32]->[I32].
 
 validation_of_memory.init x
 1. If 0 < |C.MEM| and x < |C.DATA| and C.MEM[0] is mt and C.DATA[x] is YetE (MixE ([[Atom "OK"]], TupE ([]))), then:
-  a. Return [I32, I32, I32]->[I32].
+  a. The instruction is valid with type [I32, I32, I32]->[I32].
 
 validation_of_data.drop x
 1. If x < |C.DATA| and C.DATA[x] is YetE (MixE ([[Atom "OK"]], TupE ([]))), then:
-  a. Return []->[].
+  a. The instruction is valid with type []->[].
 
 validation_of_load nt (n, sx) n_A n_O
 1. If 0 < |C.MEM| and n? is ?() <=> sx? is ?() and C.MEM[0] is mt and (2 ^ n_A) ≤ ($size(nt) / 8), then:
   a. YetI: (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}.
   b. If n? is ?() or nt is in, then:
-    1) Return [I32]->[nt].
+    1) The instruction is valid with type [I32]->[nt].
 
 validation_of_store nt n n_A n_O
 1. If 0 < |C.MEM| and C.MEM[0] is mt and (2 ^ n_A) ≤ ($size(nt) / 8), then:
   a. YetI: (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}.
   b. If n? is ?() or nt is in, then:
-    1) Return [I32, nt]->[].
+    1) The instruction is valid with type [I32, nt]->[].
 
 == Initializing AL interprter with generated AL...
 ** Manual algorithms **

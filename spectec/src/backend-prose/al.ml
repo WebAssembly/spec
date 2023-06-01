@@ -146,6 +146,7 @@ type instr =
   | ExitAbruptI of name
   | AppendI of expr * expr * string
   | ValidI of expr * expr * expr option
+  | IsValidI of expr option
   (* Yet *)
   | YetI of string
 

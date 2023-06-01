@@ -746,7 +746,7 @@ let trule_group2algo ((instr_name, trules): trule_group) =
   (* params *)
   let params = get_params e |> List.map (find_type tenv) in
   (* body *)
-  let body = prems2instrs [] prems [ Al.ReturnI (Some (exp2expr t)) ] in
+  let body = prems2instrs [] prems [ Al.IsValidI (Some (exp2expr t)) ] in
 
   (* Algo *)
   Al.Algo (name, params, body)
