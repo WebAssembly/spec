@@ -171,8 +171,21 @@ let hide_state = function
       AppE (f, new_args)
   | e -> e
 
+let simplify_record_concat = function
+  | ConcatE (e1, e2) ->
+    let nonempty = function ListE [||] | OptE None -> false | _ -> true in
+    let remove_empty_field = function
+      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty v) r)
+      | e -> e in
+    ConcatE (remove_empty_field e1, remove_empty_field e2)
+  | e -> e
+
 let flatten_if = function
   | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
   | i -> i
 
-let transpiler = Walk.walk (flatten_if, id, hide_state)
+
+let f_instr = flatten_if
+let f_cond = id
+let f_expr = composite hide_state simplify_record_concat
+let transpiler = Walk.walk (f_instr, f_cond, f_expr)

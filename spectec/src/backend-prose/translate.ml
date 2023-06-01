@@ -108,6 +108,10 @@ let rec exp2expr exp =
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
       Al.MapE (N id.it, exp2args inner_exp, [tmp iter])
+  | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _}, (iter, [id']))
+    when id.it = id'.it -> (* TODO: Somehow remove this hack *)
+      let name = Al.N id.it in
+      Al.NameE (name, [tmp iter])
   | Ast.IterE (inner_exp, (iter, [ _id ])) ->
       let name = exp2name inner_exp in
       (* assert (name = Al.N id.it); *)
@@ -116,6 +120,9 @@ let rec exp2expr exp =
       Al.ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
+  (* conacatenation of records *)
+  | Ast.CompE (exp1, exp2) ->
+      Al.ConcatE (exp2expr exp1, exp2expr exp2)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Al.MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
@@ -433,6 +440,14 @@ let prems2instrs remain_lhs =
                     [] );
               ]
           | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs')
+      | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
+          ( match exp2args exp with
+          | [c; e; t] -> Al.ValidI (c, e, Some t)
+          | [c; e] -> Al.ValidI (c, e, None)
+          | _ ->
+            gen_fail_msg_of_prem prem "instr" |> print_endline;
+            Al.YetI (Il.Print.string_of_prem prem)
+          ) :: instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           Al.YetI (Il.Print.string_of_prem prem) :: instrs)

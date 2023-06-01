@@ -11,13 +11,6 @@ watsup 0.3 generator
 == Animate
 == IL Validation...
 == Prose Generation...
-Invalid premise `InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_1]*{t_1}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_2*{instr_2}, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_1*{instr_1}, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
-Invalid premise `Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))` to be AL instr.
 Invalid premise `Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])` to be AL instr.
 Invalid premise `(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}` to be AL instr.
 Invalid premise `(if (l < |C.LABEL_context|))*{l}` to be AL instr.
@@ -577,19 +570,19 @@ validation_of_select ?(t)
 1. Return [t, t, I32]->[t].
 
 validation_of_block bt instr
-1. YetI: Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2})).
-2. YetI: InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2})).
+1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
+2. Under the context C ++ { LABEL: t_2*; }, instr* must be valid with type [t_1*]->[t_2*].
 3. Return [t_1*]->[t_2*].
 
 validation_of_loop bt instr
-1. YetI: Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2})).
-2. YetI: InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_1]*{t_1}, RETURN ?()}, instr*{instr}, `%->%`(t_1*{t_1}, t_2*{t_2})).
+1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
+2. Under the context C ++ { LABEL: t_1*; }, instr* must be valid with type [t_1*]->[t_2*].
 3. Return [t_1*]->[t_2*].
 
 validation_of_if bt instr_1 instr_2
-1. YetI: Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2})).
-2. YetI: InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_1*{instr_1}, `%->%`(t_1*{t_1}, t_2*{t_2})).
-3. YetI: InstrSeq_ok: `%|-%*:%`(C ++ {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2]*{t_2}, RETURN ?()}, instr_2*{instr_2}, `%->%`(t_1*{t_1}, t_2*{t_2})).
+1. Under the context C, bt must be valid with type [t_1*]->[t_2*].
+2. Under the context C ++ { LABEL: t_2*; }, instr_1* must be valid with type [t_1*]->[t_2*].
+3. Under the context C ++ { LABEL: t_2*; }, instr_2* must be valid with type [t_1*]->[t_2*].
 4. Return [t_1*]->[t_2*].
 
 validation_of_br l
