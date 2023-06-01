@@ -444,6 +444,17 @@ and interp_instrs env il =
               sto := Record.add s (ref appended_result) !sto
           | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
           (env, cont)
+      | AppendListI (e1, e2, s) ->
+          begin match eval_expr env e1, eval_expr env e2 with
+          | ListV l1, RecordV r ->
+              let l = Record.find s r in 
+              begin match !l with
+              | ListV l2 -> l := ListV (Array.append l2 l1)
+              | _ -> failwith "TODO"
+              end
+          | _ -> failwith "TODO"
+          end;
+          (env, cont)
       | i -> structured_string_of_instr 0 i |> failwith)
     in
     interp_instrs env cont
@@ -468,6 +479,7 @@ and interp_algo algo args =
 (* Search AL Algorithm *)
 
 and call_algo name args =
+  print_endline name;
   let algo =
     match AlgoMap.find_opt name !algo_map with
       | Some v -> v

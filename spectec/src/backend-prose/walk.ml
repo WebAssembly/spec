@@ -78,6 +78,7 @@ let rec walk_instr f instr =
   | ExitNormalI n -> f_instr (ExitNormalI n)
   | ExitAbruptI n -> f_instr (ExitAbruptI n)
   | AppendI (e1, e2, s) -> f_instr (AppendI (walk_expr f e1, walk_expr f e2, s))
+  | AppendListI (e1, e2, s) -> f_instr (AppendListI (walk_expr f e1, walk_expr f e2, s))
   | ValidI (e1, e2, eo) -> f_instr (ValidI (walk_expr f e1, walk_expr f e2, Option.map (walk_expr f) eo))
   | YetI s -> f_instr (YetI s)
 

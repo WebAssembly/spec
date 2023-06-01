@@ -292,6 +292,9 @@ let rec string_of_instr index depth = function
   | AppendI (e1, e2, s) ->
       sprintf "%s Append %s to the %s.%s." (make_index index depth)
         (string_of_expr e1) (string_of_expr e2) s
+  | AppendListI (e1, e2, s) ->
+      sprintf "%s Append the sequence %s to the %s.%s." (make_index index depth)
+        (string_of_expr e1) (string_of_expr e2) s
   | ValidI (e1, e2, eo) ->
       sprintf "%s Under the context %s, %s must be valid%s." (make_index index depth)
         (string_of_expr e1)
@@ -650,6 +653,12 @@ let rec structured_string_of_instr depth = function
   | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
   | AppendI (e1, e2, s) ->
       "AppendI ("
+      ^ structured_string_of_expr e1
+      ^ ", " ^ s ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ")"
+  | AppendListI (e1, e2, s) ->
+      "AppendListI ("
       ^ structured_string_of_expr e1
       ^ ", " ^ s ^ ", "
       ^ structured_string_of_expr e2
