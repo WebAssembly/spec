@@ -67,7 +67,7 @@ let rec string_of_record r =
   let base_indent = repeat indent !depth in
   depth := !depth + 1;
   let str = Al.Record.fold
-    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value v ^ ";\n")
+    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value !v ^ ";\n")
     r (base_indent ^ "{\n")
   ^ (base_indent ^ "}") in
   depth := !depth - 1;
@@ -120,7 +120,7 @@ let string_of_compare_op = function
 
 let rec string_of_record_expr r =
   Al.Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr !v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -291,6 +291,9 @@ let rec string_of_instr index depth = function
   | ExitNormalI _ | ExitAbruptI _ -> make_index index depth ^ " Exit current context."
   | AppendI (e1, e2, s) ->
       sprintf "%s Append %s to the %s.%s." (make_index index depth)
+        (string_of_expr e1) (string_of_expr e2) s
+  | AppendListI (e1, e2, s) ->
+      sprintf "%s Append the sequence %s to the %s.%s." (make_index index depth)
         (string_of_expr e1) (string_of_expr e2) s
   | ValidI (e1, e2, eo) ->
       sprintf "%s Under the context %s, %s must be valid%s." (make_index index depth)
@@ -653,6 +656,12 @@ let rec structured_string_of_instr depth = function
   | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
   | AppendI (e1, e2, s) ->
       "AppendI ("
+      ^ structured_string_of_expr e1
+      ^ ", " ^ s ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ")"
+  | AppendListI (e1, e2, s) ->
+      "AppendListI ("
       ^ structured_string_of_expr e1
       ^ ", " ^ s ^ ", "
       ^ structured_string_of_expr e2

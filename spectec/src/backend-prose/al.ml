@@ -24,7 +24,7 @@ end
 
 module Record = Map.Make (FieldName)
 
-type 'a record = 'a Record.t
+type 'a record = 'a ref Record.t
 
 and store = value record
 and stack = value list
@@ -145,6 +145,7 @@ type instr =
   | ExitNormalI of name
   | ExitAbruptI of name
   | AppendI of expr * expr * string
+  | AppendListI of expr * expr * string
   | ValidI of expr * expr * expr option
   | IsValidI of expr option
   (* Yet *)

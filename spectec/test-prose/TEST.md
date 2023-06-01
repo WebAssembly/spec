@@ -774,45 +774,71 @@ execution_of_return
   e. Execute RETURN.
 
 instantiation module
-1. Let (MODULE _ global* _ _ _ data*) be module.
-2. Let moduleinst_init be { FUNC: []; TABLE: []; }.
-3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst_init; } with arity 0.
-4. Push f_init to the stack.
-5. Let val* be $exec_global(global)*.
-6. Pop f_init from the stack.
-7. Let moduleinst be $alloc_module(module, val*).
-8. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
-9. Push f to the stack.
-10. For i in range |data*|:
-  a. Let (DATA init mode) be data*[i].
+1. Let (MODULE _ _ _ _ elem* data*) be module.
+2. Let moduleinst be $alloc_module(module).
+3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+4. Push f to the stack.
+5. For i in range |elem*|:
+  a. Let (ELEM _ einit mode) be elem*[i].
+  b. If mode is defined and mode is of the case TABLE, then:
+    1) Let ?((TABLE tableidx einstrs*)) be mode.
+    2) Execute the sequence (einstrs*).
+    3) Execute (I32.CONST 0).
+    4) Execute (I32.CONST |einit|).
+    5) Execute (TABLE.INIT tableidx i).
+    6) Execute (ELEM.DROP i).
+  c. If mode is defined and mode is of the case DECLARE, then:
+    1) Execute (ELEM.DROP i).
+6. For i in range |data*|:
+  a. Let (DATA dinit mode) be data*[i].
   b. If mode is defined, then:
     1) Let ?((MEMORY memidx dinstrs*)) be mode.
     2) Assert: memidx is 0.
     3) Execute the sequence (dinstrs*).
     4) Execute (I32.CONST 0).
-    5) Execute (I32.CONST |init|).
+    5) Execute (I32.CONST |dinit|).
     6) Execute (MEMORY.INIT i).
     7) Execute (DATA.DROP i).
-11. Pop f from the stack.
+7. Pop f from the stack.
 
-exec_global global
+alloc_module module
+1. Let (MODULE func* global* table* memory* elem* data*) be module.
+2. Let moduleinst be { DATA: []; ELEM: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
+3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+4. Push f_init to the stack.
+5. Let funcaddr* be $alloc_func(func)*.
+6. Append the sequence funcaddr* to the moduleinst.FUNC.
+7. Let tableaddr* be $alloc_table(table)*.
+8. Append the sequence tableaddr* to the moduleinst.TABLE.
+9. Let globaladdr* be $alloc_global(global)*.
+10. Append the sequence globaladdr* to the moduleinst.GLOBAL.
+11. Let memoryaddr* be $alloc_memory(memory)*.
+12. Append the sequence memoryaddr* to the moduleinst.MEM.
+13. Let elemaddr* be $alloc_elem(elem)*.
+14. Append the sequence elemaddr* to the moduleinst.ELEM.
+15. Let dataaddr* be $alloc_data(data)*.
+16. Append the sequence dataaddr* to the moduleinst.DATA.
+17. Pop f_init from the stack.
+18. For i in range |s.FUNC|:
+  a. Let (_, func') be s.FUNC[i].
+  b. Replace s.FUNC[i] with (moduleinst, func').
+19. Return moduleinst.
+
+init_global global
 1. Let (GLOBAL _ instr*) be global.
 2. Jump to instr*.
 3. Pop val from the stack.
 4. Return val.
 
-alloc_module module val*
-1. Let (MODULE func* global* table* memory* _ data*) be module.
-2. Let funcaddr* be $alloc_func(func)*.
-3. Let tableaddr* be $alloc_table(table)*.
-4. Let globaladdr* be $alloc_global(val)*.
-5. Let memoryaddr* be $alloc_memory(memory)*.
-6. Let dataaddr* be $alloc_data(data)*.
-7. Let moduleinst be { DATA: dataaddr*; FUNC: funcaddr*; GLOBAL: globaladdr*; MEM: memoryaddr*; TABLE: tableaddr*; }.
-8. For i in range |s.FUNC|:
-  a. Let (_, func') be s.FUNC[i].
-  b. Replace s.FUNC[i] with (moduleinst, func').
-9. Return moduleinst.
+init_elem elem
+1. Let (ELEM _ instr* _) be elem.
+2. Let ref* be $exec_expr(instr)*.
+3. Return ref*.
+
+exec_expr instr*
+1. Jump to instr*.
+2. Pop val from the stack.
+3. Return val.
 
 alloc_func func
 1. Let a be |s.FUNC|.
@@ -821,11 +847,6 @@ alloc_func func
 4. Append funcinst to the s.FUNC.
 5. Return a.
 
-alloc_global val
-1. Let a be |s.GLOBAL|.
-2. Append val to the s.GLOBAL.
-3. Return a.
-
 alloc_table table
 1. Let (TABLE (n, _) reftype) be table.
 2. Let a be |s.TABLE|.
@@ -833,12 +854,24 @@ alloc_table table
 4. Append tableinst to the s.TABLE.
 5. Return a.
 
+alloc_global global
+1. Let a be |s.GLOBAL|.
+2. Let val be $init_global(global).
+3. Append val to the s.GLOBAL.
+4. Return a.
+
 alloc_memory memory
 1. Let (MEMORY (min, _)) be memory.
 2. Let a be |s.MEM|.
 3. Let memoryinst be 0^((min · 64) · $Ki()).
 4. Append memoryinst to the s.MEM.
 5. Return a.
+
+alloc_elem elem
+1. Let a be |s.ELEM|.
+2. Let ref* be $init_elem(elem).
+3. Append ref* to the s.ELEM.
+4. Return a.
 
 alloc_data data
 1. Let (DATA init _) be data.
@@ -932,7 +965,7 @@ address.wast: [205/255] (80.39%)
 table_grow.wast: [8/38] (21.05%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Not_found]
+global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 int_exprs.wast: [86/89] (96.63%)
 f64.wast: [1589/2500] (63.56%)

@@ -82,34 +82,131 @@ let return =
           ] );
       ] )
 
+(* Module Semantics *)
+
+let new_instantiation =
+  (* Name definition *)
+  let ignore_name = NameE (N "_", []) in
+  let module_ = NameE (N "module", []) in
+  let module_inst = NameE (N "moduleinst", []) in
+  let frame_name = NameE (N "f", []) in
+  let frame_rec =
+    Record.empty
+    |> Record.add "MODULE" (ref module_inst)
+    |> Record.add "LOCAL" (ref (ListE [||])) in
+  let elem = NameE (N "elem", [List]) in
+  let data = NameE (N "data", [List]) in
+  let mode = NameE (N "mode", []) in
+  let einit = NameE (N "einit", []) in
+  let dinit = NameE (N "dinit", []) in
+  let idx = NameE (N "i", []) in
+  let tableidx = NameE (N "tableidx", []) in
+  let memidx = NameE (N "memidx", []) in
+  let einstrs = NameE (N "einstrs", [List]) in
+  let dinstrs = NameE (N "dinstrs", [List]) in
+  let i32_type = ConstructE ("I32", []) in
+
+  (* Algorithm *)
+  Algo (
+    "instantiation",
+    [ module_, TopT ],
+    [
+      LetI (
+        ConstructE (
+          "MODULE",
+          [ ignore_name; ignore_name; ignore_name; ignore_name; elem; data ]
+        ),
+        module_
+      );
+      LetI (module_inst, AppE (N "alloc_module", [ module_ ]));
+      LetI (frame_name, FrameE (NumE 0L, RecordE frame_rec));
+      PushI frame_name;
+      (* Element *)
+      ForI (
+        elem,
+        [
+          LetI (ConstructE ("ELEM", [ ignore_name; einit; mode ]), AccessE (elem, IndexP idx));
+          (* Active Element *)
+          IfI (
+            BinopC (And, IsDefinedC mode, IsCaseOfC (mode, "TABLE")),
+            [
+              LetI (OptE (Some (ConstructE ("TABLE", [ tableidx; einstrs ]))), mode);
+              ExecuteSeqI einstrs;
+              ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
+              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE einit ]));
+              ExecuteI (ConstructE ("TABLE.INIT", [ tableidx; idx ]));
+              ExecuteI (ConstructE ("ELEM.DROP", [ idx ]));
+            ],
+            []
+          );
+          (* Declarative Element *)
+          IfI (
+            BinopC (And, IsDefinedC mode, IsCaseOfC (mode, "DECLARE")),
+            [ ExecuteI (ConstructE ("ELEM.DROP", [ idx ])); ],
+            []
+          )
+        ]
+      );
+      (* Active Data *)
+      ForI (
+        data,
+        [
+          LetI (ConstructE ("DATA", [ dinit; mode ]), AccessE (data, IndexP idx));
+          IfI (
+            IsDefinedC mode,
+            [
+              LetI (OptE (Some (ConstructE ("MEMORY", [ memidx; dinstrs ]))), mode);
+              AssertI (CompareC (Eq, memidx, NumE 0L) |> Print.string_of_cond);
+              ExecuteSeqI dinstrs;
+              ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
+              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE dinit ]));
+              ExecuteI (ConstructE ("MEMORY.INIT", [ idx ]));
+              ExecuteI (ConstructE ("DATA.DROP", [ idx ]));
+            ],
+            []
+          )
+        ]
+      );
+      (* TODO: start *)
+      PopI frame_name
+    ]
+  )
+
 let instantiation =
   (* Name definition *)
   let ignore_name = N "_" in
   let module_name = N "module" in
   let global_name = N "global" in
   let global_iter = NameE (global_name, [List]) in
+  let elem_name = N "elem" in
+  let elem_iter = NameE (elem_name, [List]) in
   let data_name = N "data" in
   let data_iter = NameE (data_name, [List]) in
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let frame_init_name = SubN ((N "f"), "init") in
   let frame_init_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE (module_inst_init_name, []))
-    |> Record.add "LOCAL" (ListE [||]) in
+    |> Record.add "MODULE" (ref (NameE (module_inst_init_name, [])))
+    |> Record.add "LOCAL" (ref (ListE [||])) in
   let val_name = N "val" in
   let val_iter = NameE (val_name, [List]) in
+  let ref_name = N "ref" in
+  let ref_ = NameE (ref_name, [ List; List ]) in
   let module_inst_name = N "moduleinst" in
   let frame_name = N "f" in
   let frame_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE (module_inst_name, []))
-    |> Record.add "LOCAL" (ListE [||]) in
-  let init = N "init" in
+    |> Record.add "MODULE" (ref (NameE (module_inst_name, [])))
+    |> Record.add "LOCAL" (ref (ListE [||])) in
+  let einit = N "einit" in
+  let dinit = N "dinit" in
   let mode = N "mode" in
+  let tableidx = N "tableidx" in
+  let einstrs = NameE (N "einstrs", [List]) in
   let memidx = N "memidx" in
   let dinstrs = NameE (N "dinstrs", [List]) in
   let i32_type = ConstructE ("I32", []) in
@@ -127,7 +224,7 @@ let instantiation =
             global_iter;
             NameE (ignore_name, []);
             NameE (ignore_name, []);
-            NameE (ignore_name, []);
+            elem_iter;
             data_iter
           ]
         ),
@@ -139,22 +236,58 @@ let instantiation =
         FrameE (NumE 0L, RecordE frame_init_rec)
       );
       PushI (NameE (frame_init_name, []));
-      (* Global *)
-      LetI (val_iter, MapE (N "exec_global", [NameE (global_name, [])], [List]));
-      (* TODO: global & elements *)
+      (* Global init *)
+      LetI (val_iter, MapE (N "init_global", [NameE (global_name, [])], [List]));
+      (* Element init *)
+      LetI (ref_, MapE (N "init_elem", [NameE (elem_name, [])], [ List ]));
       PopI (NameE (frame_init_name, []));
+      (* Allocation *)
       LetI (
         NameE (module_inst_name, []),
-        AppE (N "alloc_module", [NameE (module_name, []); val_iter])
+        AppE (N "alloc_module", [NameE (module_name, []); val_iter; ref_])
       );
       LetI (NameE (frame_name, []), FrameE (NumE 0L, RecordE frame_rec));
       PushI (NameE (frame_name, []));
-      (* TODO: element *)
+      (* Element *)
+      ForI (
+        elem_iter,
+        [
+          LetI (
+            ConstructE ("ELEM", [ NameE (ignore_name, []); NameE (einit, []); NameE (mode, []) ]),
+            AccessE (elem_iter, IndexP (NameE (N "i", [])))
+          );
+          (* Active Element *)
+          IfI (
+            BinopC (And, IsDefinedC (NameE (mode, [])), IsCaseOfC (NameE (mode, []), "TABLE")),
+            [
+              LetI (
+                OptE (Some (ConstructE ("TABLE", [ NameE (tableidx, []); einstrs ]))),
+                NameE (mode, [])
+              );
+              ExecuteSeqI einstrs;
+              ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
+              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE (NameE (einit, [])) ]));
+              ExecuteI (ConstructE ("TABLE.INIT", [ NameE (tableidx, []); NameE (N "i", []) ]));
+              ExecuteI (ConstructE ("ELEM.DROP", [ NameE (N "i", []) ]));
+            ],
+            []
+          );
+          (* Declarative Element *)
+          IfI (
+            BinopC (And, IsDefinedC (NameE (mode, [])), IsCaseOfC (NameE (mode, []), "DECLARE")),
+            [
+              ExecuteI (ConstructE ("ELEM.DROP", [ NameE (N "i", []) ]));
+            ],
+            []
+          )
+        ]
+      );
+      (* Active Data *)
       ForI (
         data_iter,
         [
           LetI (
-            ConstructE ("DATA", [ NameE (init, []); NameE (mode, []) ]),
+            ConstructE ("DATA", [ NameE (dinit, []); NameE (mode, []) ]),
             AccessE (data_iter, IndexP (NameE (N "i", [])))
           );
           IfI (
@@ -164,7 +297,7 @@ let instantiation =
               AssertI (CompareC (Eq, NameE (memidx, []), NumE 0L) |> Print.string_of_cond);
               ExecuteSeqI dinstrs;
               ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
-              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE (NameE (init, [])) ]));
+              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE (NameE (dinit, [])) ]));
               ExecuteI (ConstructE ("MEMORY.INIT", [ NameE (N "i", []) ]));
               ExecuteI (ConstructE ("DATA.DROP", [ NameE (N "i", []) ]));
             ],
@@ -177,7 +310,23 @@ let instantiation =
     ]
   )
 
-let exec_global =
+let exec_expr =
+  (* Name definition *)
+  let instr_iter = NameE (N "instr", [List]) in
+  let val_name = N "val" in
+
+  (* Algorithm *)
+  Algo (
+    "exec_expr",
+    [ instr_iter, TopT ],
+    [
+      JumpI instr_iter;
+      PopI (NameE (val_name, []));
+      ReturnI (Some (NameE (val_name, [])))
+    ]
+  )
+
+let init_global =
   (* Name definition *)
   let ignore_name = N "_" in
   let global_name = N "global" in
@@ -186,8 +335,8 @@ let exec_global =
 
   (* Algorithm *)
   Algo (
-    "exec_global",
-    [NameE (global_name, []), TopT],
+    "init_global",
+    [ NameE (global_name, []), TopT ],
     [
       LetI (
         ConstructE ("GLOBAL", [ NameE (ignore_name, []); instr_iter ]),
@@ -199,12 +348,125 @@ let exec_global =
     ]
   )
 
+let init_elem =
+  (* Name definition *)
+  let ignore_name = N "_" in
+  let elem_name = N "elem" in
+  let instr_name = N "instr" in
+  let instr_iter = NameE (instr_name, [List]) in
+  let ref_iter = NameE (N "ref", [List]) in
+
+  Algo (
+    "init_elem",
+    [ NameE (elem_name, []) , TopT ],
+    [
+      LetI (
+        ConstructE ("ELEM", [ NameE (ignore_name, []); instr_iter; NameE (ignore_name, []) ]),
+        NameE (elem_name, [])
+      );
+      LetI (ref_iter, MapE (N "exec_expr", [ NameE (instr_name, []) ], [ List ]));
+      ReturnI (Some ref_iter)
+    ]
+  )
+
+let new_alloc_module =
+  (* Name definition *)
+  let module_ = NameE (N "module", []) in
+  let module_inst_init = NameE (N "moduleinst", []) in
+  let module_inst_init_rec =
+    Record.empty
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||]))
+    |> Record.add "GLOBAL" (ref (ListE [||]))
+    |> Record.add "MEM" (ref (ListE [||]))
+    |> Record.add "ELEM" (ref (ListE [||]))
+    |> Record.add "DATA" (ref (ListE [||]))
+  in
+  let frame_init = NameE (SubN ((N "f"), "init"), []) in
+  let frame_init_rec =
+    Record.empty
+    |> Record.add "MODULE" (ref module_inst_init)
+    |> Record.add "LOCAL" (ref (ListE [||])) in
+  let func_name = N "func" in
+  let func = NameE (func_name, []) in
+  let func_iter = NameE (func_name, [List]) in
+  let table_name = N "table" in
+  let table = NameE (table_name, []) in
+  let table_iter = NameE (table_name, [List]) in
+  let global_name = N "global" in
+  let global = NameE (global_name, []) in
+  let global_iter = NameE (global_name, [List]) in
+  let memory_name = N "memory" in
+  let memory = NameE (memory_name, []) in
+  let memory_iter = NameE (memory_name, [List]) in
+  let elem_name = N "elem" in
+  let elem = NameE (elem_name, []) in
+  let elem_iter = NameE (elem_name, [List]) in
+  let data_name = N "data" in
+  let data = NameE (data_name, []) in
+  let data_iter = NameE (data_name, [List]) in
+  let funcaddr_iter = NameE (N "funcaddr", [List]) in
+  let tableaddr_iter = NameE (N "tableaddr", [List]) in
+  let globaladdr_iter = NameE (N "globaladdr", [List]) in
+  let memoryaddr_iter = NameE (N "memoryaddr", [List]) in
+  let elemaddr_iter = NameE (N "elemaddr", [List]) in
+  let dataaddr_iter = NameE (N "dataaddr", [List]) in
+
+  let ignore_name = NameE (N "_", []) in
+  let store = NameE (N "s", []) in
+  let func' = NameE (N "func'", []) in
+
+  let base = AccessE (NameE (N "s", []), DotP ("FUNC")) in
+  let index = IndexP (NameE (N "i", [])) in
+  let index_access = AccessE (base, index) in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_module",
+    [ module_, TopT ],
+    [
+      LetI (
+        ConstructE (
+          "MODULE",
+          [ func_iter; global_iter; table_iter; memory_iter; elem_iter; data_iter; ]
+        ),
+        module_
+      );
+      LetI (module_inst_init, RecordE module_inst_init_rec);
+      LetI (frame_init, FrameE (NumE 0L, RecordE frame_init_rec));
+      PushI frame_init;
+      LetI ( funcaddr_iter, MapE (N "alloc_func", [ func ], [ List ]));
+      AppendListI (funcaddr_iter, module_inst_init, "FUNC");
+      LetI (tableaddr_iter, MapE (N "alloc_table", [ table ], [ List ]));
+      AppendListI (tableaddr_iter, module_inst_init, "TABLE");
+      LetI (globaladdr_iter, MapE (N "alloc_global", [ global ], [ List ]));
+      AppendListI (globaladdr_iter, module_inst_init, "GLOBAL");
+      LetI (memoryaddr_iter, MapE (N "alloc_memory", [ memory ], [ List ]));
+      AppendListI (memoryaddr_iter, module_inst_init, "MEM");
+      LetI (elemaddr_iter, MapE (N "alloc_elem", [ elem ], [ List ]));
+      AppendListI (elemaddr_iter, module_inst_init, "ELEM");
+      LetI (dataaddr_iter, MapE (N "alloc_data", [ data ], [ List ]));
+      AppendListI (dataaddr_iter, module_inst_init, "DATA");
+      PopI frame_init;
+      ForI (
+        AccessE (store, DotP "FUNC"),
+        [
+          LetI (PairE (ignore_name, func'), index_access);
+          ReplaceI (base, index, PairE (module_inst_init, func'))
+        ]
+      );
+      ReturnI (Some module_inst_init)
+    ]
+  )
+
 let alloc_module =
   (* Name definition *)
   let ignore_name = N "_" in
   let module_name = N "module" in
   let val_name = N "val" in
   let val_iter = NameE (val_name, [List]) in
+  let ref_name = N "ref" in
+  let ref_ = NameE (ref_name, [ List; List ]) in
   let func_name = N "func" in
   let func_iter = NameE (func_name, [List]) in
   let table_name = N "table" in
@@ -213,21 +475,25 @@ let alloc_module =
   let global_iter = NameE (global_name, [List]) in
   let memory_name = N "memory" in
   let memory_iter = NameE (memory_name, [List]) in
+  let elem_name = N "elem" in
+  let elem_iter = NameE (elem_name, [List]) in
   let data_name = N "data" in
   let data_iter = NameE (data_name, [List]) in
   let funcaddr_iter = NameE (N "funcaddr", [List]) in
   let tableaddr_iter = NameE (N "tableaddr", [List]) in
   let globaladdr_iter = NameE (N "globaladdr", [List]) in
   let memoryaddr_iter = NameE (N "memoryaddr", [List]) in
+  let elemaddr_iter = NameE (N "elemaddr", [List]) in
   let dataaddr_iter = NameE (N "dataaddr", [List]) in
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
-    |> Record.add "FUNC" funcaddr_iter
-    |> Record.add "TABLE" tableaddr_iter
-    |> Record.add "GLOBAL" globaladdr_iter
-    |> Record.add "MEM" memoryaddr_iter
-    |> Record.add "DATA" dataaddr_iter
+    |> Record.add "FUNC" (ref funcaddr_iter)
+    |> Record.add "TABLE" (ref tableaddr_iter)
+    |> Record.add "GLOBAL" (ref globaladdr_iter)
+    |> Record.add "MEM" (ref memoryaddr_iter)
+    |> Record.add "ELEM" (ref elemaddr_iter)
+    |> Record.add "DATA" (ref dataaddr_iter)
   in
   let store_name = N "s" in
   let func_name' = N "func'" in
@@ -239,7 +505,7 @@ let alloc_module =
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ NameE (module_name, []), TopT; val_iter, TopT ],
+    [ NameE (module_name, []), TopT; val_iter, TopT; ref_ , TopT ],
     [
       LetI (
         ConstructE (
@@ -249,7 +515,7 @@ let alloc_module =
             global_iter;
             table_iter;
             memory_iter;
-            NameE (ignore_name, []);
+            elem_iter;
             data_iter;
           ]
         ),
@@ -270,6 +536,10 @@ let alloc_module =
       LetI (
         memoryaddr_iter,
         MapE (N "alloc_memory", [ NameE (memory_name, []) ], [List])
+      );
+      LetI (
+        elemaddr_iter,
+        MapE (N "alloc_elem", [ NameE (ref_name, [ List ]) ], [ List ])
       );
       LetI (
         dataaddr_iter,
@@ -296,8 +566,8 @@ let alloc_func =
   let dummy_module_inst = N "dummy_module_inst" in
   let dummy_module_rec =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let func_inst_name = N "funcinst" in
 
   (* Algorithm *)
@@ -315,18 +585,20 @@ let alloc_func =
 
 let alloc_global =
   (* Name definition *)
-  let val_name = N "val" in
-  let addr_name = N "a" in
-  let store_name = N "s" in
+  let global = NameE (N "global", []) in
+  let addr = NameE (N "a", []) in
+  let val_ = NameE (N "val", []) in
+  let store = NameE (N "s", []) in
 
   (* Algorithm *)
   Algo (
     "alloc_global",
-    [NameE (val_name, []), TopT],
+    [ global, TopT ],
     [
-      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "GLOBAL")));
-      AppendI (NameE (val_name, []), NameE (store_name, []), "GLOBAL");
-      ReturnI (Some (NameE (addr_name, [])))
+      LetI (addr, LengthE (AccessE (store, DotP "GLOBAL")));
+      LetI (val_, AppE (N "init_global", [ global ]));
+      AppendI (val_, store, "GLOBAL");
+      ReturnI (Some addr)
     ]
   )
 
@@ -388,7 +660,24 @@ let alloc_memory =
     ]
   )
 
-let alloc_elem = "TODO"
+let alloc_elem =
+  (* Name definition *)
+  let elem = NameE (N "elem", []) in
+  let addr = NameE (N "a", []) in
+  let ref = NameE (N "ref", [ List ]) in
+  let store = NameE (N "s", []) in
+
+  (* Algorithm *)
+  Algo (
+    "alloc_elem",
+    [ elem, TopT ],
+    [
+      LetI (addr, LengthE (AccessE (store, DotP "ELEM")));
+      LetI (ref, AppE (N "init_elem", [ elem ]));
+      AppendI (ref, store, "ELEM");
+      ReturnI (Some addr)
+    ]
+  )
 
 let alloc_data =
   (* Name definition *)
@@ -427,12 +716,12 @@ let invocation =
   let frame_name = N "f" in
   let dummy_module_rec =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let frame_rec =
     Record.empty
-    |> Record.add "LOCAL" (ListE [||])
-    |> Record.add "MODULE" (RecordE dummy_module_rec) in
+    |> Record.add "LOCAL" (ref (ListE [||]))
+    |> Record.add "MODULE" (ref (RecordE dummy_module_rec)) in
 
   (* Algorithm *)
   Algo (
@@ -468,13 +757,16 @@ let manual_algos =
   [
     br;
     return;
-    instantiation;
-    exec_global;
-    alloc_module;
+    new_instantiation;
+    new_alloc_module;
+    init_global;
+    init_elem;
+    exec_expr;
     alloc_func;
-    alloc_global;
     alloc_table;
+    alloc_global;
     alloc_memory;
+    alloc_elem;
     alloc_data;
     invocation
   ]
