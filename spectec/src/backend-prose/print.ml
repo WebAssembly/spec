@@ -67,7 +67,7 @@ let rec string_of_record r =
   let base_indent = repeat indent !depth in
   depth := !depth + 1;
   let str = Al.Record.fold
-    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value v ^ ";\n")
+    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value !v ^ ";\n")
     r (base_indent ^ "{\n")
   ^ (base_indent ^ "}") in
   depth := !depth - 1;
@@ -120,7 +120,7 @@ let string_of_compare_op = function
 
 let rec string_of_record_expr r =
   Al.Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr !v ^ "; ")
     r "{ "
   ^ "}"
 

@@ -18,7 +18,7 @@ let rec walk_expr f e =
   | ListE el -> f_expr (ListE (Array.map (walk_expr f) el))
   | ListFillE (e1, e2) -> f_expr (ListFillE (walk_expr f e1, walk_expr f e2))
   | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
-  | RecordE r -> f_expr (RecordE (Record.map (walk_expr f) r))
+  | RecordE r -> f_expr (RecordE (Record.map (fun e -> walk_expr f !e |> ref) r))
   | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
   | ArrowE (e1, e2) -> f_expr (ArrowE (f_expr e1, f_expr e2))
   | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))

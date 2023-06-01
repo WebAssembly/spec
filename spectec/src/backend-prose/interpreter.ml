@@ -30,12 +30,12 @@ let to_map algos =
 let store : store ref = ref Record.empty
 let init_store () =
   store := Record.empty
-    |> Record.add "FUNC" (ListV [||])
-    |> Record.add "GLOBAL" (ListV [||])
-    |> Record.add "TABLE" (ListV [||])
-    |> Record.add "MEM" (ListV [||])
-    |> Record.add "ELEM" (ListV [||])
-    |> Record.add "DATA" (ListV [||])
+    |> Record.add "FUNC" (ref (ListV [||]))
+    |> Record.add "GLOBAL" (ref (ListV [||]))
+    |> Record.add "TABLE" (ref (ListV [||]))
+    |> Record.add "MEM" (ref (ListV [||]))
+    |> Record.add "ELEM" (ref (ListV [||]))
+    |> Record.add "DATA" (ref (ListV [||]))
 
 module Env = struct
   module EnvKey = struct
@@ -178,7 +178,7 @@ and eval_expr env expr =
   | LengthE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> RecordV (Record.map (eval_expr env) r)
+  | RecordE r -> RecordV (Record.map (fun e -> eval_expr env !e |> ref) r)
   | AccessE (e, p) -> begin match p with
       | IndexP e' ->
         let a = eval_expr env e |> value_to_array in
@@ -190,9 +190,9 @@ and eval_expr env expr =
         let i2 = eval_expr env e2 |> value_to_int in
         ListV (Array.sub a i1 i2)
       | DotP str -> begin match eval_expr env e with
-        | FrameV (_, RecordV r) -> Record.find str r
-        | StoreV s -> Record.find str !s
-        | RecordV r -> Record.find str r
+        | FrameV (_, RecordV r) -> Record.find str r |> (!)
+        | StoreV s -> Record.find str !s |> (!)
+        | RecordV r -> Record.find str r |> (!)
         | v ->
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
@@ -436,14 +436,12 @@ and interp_instrs env il =
       | AppendI (e1, e2, s) ->
           let v1 = eval_expr env e1 in
           (match eval_expr env e2 with
-          | StoreV ref when Record.mem s !ref |> not ->
-              ref := Record.add s (ListV [| v1 |]) !ref
-          | StoreV ref ->
-              let a = match Record.find s !ref with
+          | StoreV sto ->
+              let a = match Record.find s !sto |> (!) with
                 | ListV l -> l
                 | _ -> failwith "Unreachable" in
               let appended_result = ListV (Array.append a [| v1 |]) in
-              ref := Record.add s appended_result !ref
+              sto := Record.add s (ref appended_result) !sto
           | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
           (env, cont)
       | i -> structured_string_of_instr 0 i |> failwith)

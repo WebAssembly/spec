@@ -97,23 +97,23 @@ let instantiation =
   let module_inst_init_name = SubN ((N "moduleinst"), "init") in
   let module_inst_init =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let frame_init_name = SubN ((N "f"), "init") in
   let frame_init_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE (module_inst_init_name, []))
-    |> Record.add "LOCAL" (ListE [||]) in
+    |> Record.add "MODULE" (ref (NameE (module_inst_init_name, [])))
+    |> Record.add "LOCAL" (ref (ListE [||])) in
   let val_name = N "val" in
   let val_iter = NameE (val_name, [List]) in
   let ref_name = N "ref" in
-  let ref = NameE (ref_name, [ List; List ]) in
+  let ref_ = NameE (ref_name, [ List; List ]) in
   let module_inst_name = N "moduleinst" in
   let frame_name = N "f" in
   let frame_rec =
     Record.empty
-    |> Record.add "MODULE" (NameE (module_inst_name, []))
-    |> Record.add "LOCAL" (ListE [||]) in
+    |> Record.add "MODULE" (ref (NameE (module_inst_name, [])))
+    |> Record.add "LOCAL" (ref (ListE [||])) in
   let einit = N "einit" in
   let dinit = N "dinit" in
   let mode = N "mode" in
@@ -151,12 +151,12 @@ let instantiation =
       (* Global init *)
       LetI (val_iter, MapE (N "init_global", [NameE (global_name, [])], [List]));
       (* Element init *)
-      LetI (ref, MapE (N "init_elem", [NameE (elem_name, [])], [ List ]));
+      LetI (ref_, MapE (N "init_elem", [NameE (elem_name, [])], [ List ]));
       PopI (NameE (frame_init_name, []));
       (* Allocation *)
       LetI (
         NameE (module_inst_name, []),
-        AppE (N "alloc_module", [NameE (module_name, []); val_iter; ref])
+        AppE (N "alloc_module", [NameE (module_name, []); val_iter; ref_])
       );
       LetI (NameE (frame_name, []), FrameE (NumE 0L, RecordE frame_rec));
       PushI (NameE (frame_name, []));
@@ -288,7 +288,7 @@ let alloc_module =
   let val_name = N "val" in
   let val_iter = NameE (val_name, [List]) in
   let ref_name = N "ref" in
-  let ref = NameE (ref_name, [ List; List ]) in
+  let ref_ = NameE (ref_name, [ List; List ]) in
   let func_name = N "func" in
   let func_iter = NameE (func_name, [List]) in
   let table_name = N "table" in
@@ -310,12 +310,12 @@ let alloc_module =
   let module_inst_name = N "moduleinst" in
   let module_inst_rec =
     Record.empty
-    |> Record.add "FUNC" funcaddr_iter
-    |> Record.add "TABLE" tableaddr_iter
-    |> Record.add "GLOBAL" globaladdr_iter
-    |> Record.add "MEM" memoryaddr_iter
-    |> Record.add "ELEM" elemaddr_iter
-    |> Record.add "DATA" dataaddr_iter
+    |> Record.add "FUNC" (ref funcaddr_iter)
+    |> Record.add "TABLE" (ref tableaddr_iter)
+    |> Record.add "GLOBAL" (ref globaladdr_iter)
+    |> Record.add "MEM" (ref memoryaddr_iter)
+    |> Record.add "ELEM" (ref elemaddr_iter)
+    |> Record.add "DATA" (ref dataaddr_iter)
   in
   let store_name = N "s" in
   let func_name' = N "func'" in
@@ -327,7 +327,7 @@ let alloc_module =
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ NameE (module_name, []), TopT; val_iter, TopT; ref , TopT ],
+    [ NameE (module_name, []), TopT; val_iter, TopT; ref_ , TopT ],
     [
       LetI (
         ConstructE (
@@ -388,8 +388,8 @@ let alloc_func =
   let dummy_module_inst = N "dummy_module_inst" in
   let dummy_module_rec =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let func_inst_name = N "funcinst" in
 
   (* Algorithm *)
@@ -535,12 +535,12 @@ let invocation =
   let frame_name = N "f" in
   let dummy_module_rec =
     Record.empty
-    |> Record.add "FUNC" (ListE [||])
-    |> Record.add "TABLE" (ListE [||]) in
+    |> Record.add "FUNC" (ref (ListE [||]))
+    |> Record.add "TABLE" (ref (ListE [||])) in
   let frame_rec =
     Record.empty
-    |> Record.add "LOCAL" (ListE [||])
-    |> Record.add "MODULE" (RecordE dummy_module_rec) in
+    |> Record.add "LOCAL" (ref (ListE [||]))
+    |> Record.add "MODULE" (ref (RecordE dummy_module_rec)) in
 
   (* Algorithm *)
   Algo (

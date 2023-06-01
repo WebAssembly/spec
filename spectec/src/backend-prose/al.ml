@@ -24,7 +24,7 @@ end
 
 module Record = Map.Make (FieldName)
 
-type 'a record = 'a Record.t
+type 'a record = 'a ref Record.t
 
 and store = value record
 and stack = value list

@@ -149,7 +149,7 @@ let rec exp2expr exp =
   | Ast.StrE expfields ->
       let f acc = function
         | Ast.Atom name, fieldexp ->
-            let expr = exp2expr fieldexp in
+            let expr = exp2expr fieldexp |> ref in
             Al.Record.add name expr acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
