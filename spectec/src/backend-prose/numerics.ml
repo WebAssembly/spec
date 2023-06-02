@@ -4,23 +4,24 @@ open Reference_interpreter
 type numerics = { name : string; f : value list -> value }
 
 let num_to_i32 = function
-  | NumV i -> I64.of_bits i |> I32_convert.wrap_i64
+  | NumV bits -> bits |> Int64.to_int32 |> I32.of_bits
   | _ -> failwith "Operand should be NumV"
 let num_to_i64 = function
-  | NumV i -> I64.of_bits i
+  | NumV bits -> bits |> I64.of_bits
   | _ -> failwith "Operand should be NumV"
 let num_to_f32 = function
-  | NumV f -> F64.of_bits f |> F32_convert.demote_f64
+  | NumV bits -> bits |> Int64.to_int32 |> F32.of_bits
   | _ -> failwith "Operand should be NumV"
 let num_to_f64 = function
-  | NumV f -> F64.of_bits f
+  | NumV bits -> bits |> F64.of_bits
   | _ -> failwith "Operand should be NumV"
 
+let int64_of_int32_u x = x |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let bool_to_num b = NumV (Bool.to_int b |> I64.of_int_s)
-let i32_to_num i = NumV (I64_convert.extend_i32_s i)
-let i64_to_num i = NumV i
-let f32_to_num f = NumV (F64_convert.promote_f32 f |> F64.to_bits)
-let f64_to_num f = NumV (F64.to_bits f)
+let i32_to_num i = NumV ( i |> I32.to_bits |> int64_of_int32_u )
+let i64_to_num i = NumV ( i |> I64.to_bits)
+let f32_to_num f = NumV ( f |> F32.to_bits |> int64_of_int32_u )
+let f64_to_num f = NumV ( f |> F64.to_bits)
 
 let wrap_i32_unop op i =
   let result = num_to_i32 i |> op |> i32_to_num in

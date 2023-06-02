@@ -20,12 +20,13 @@ let al_of_type t =
 
 (* Construct value *)
 
+let int64_of_int32_u x = x |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let al_of_num n =
   let t, v = match n with
-    | Values.I32 i -> "I32", I64_convert.extend_i32_s i
-    | Values.I64 i -> "I64", i
-    | Values.F32 f -> "F32", F64_convert.promote_f32 f |> F64.to_bits
-    | Values.F64 f -> "F64", F64.to_bits f in
+    | Values.I32 i -> "I32", i |> I32.to_bits |> int64_of_int32_u
+    | Values.I64 i -> "I64", i |> I64.to_bits
+    | Values.F32 f -> "F32", f |> F32.to_bits |> int64_of_int32_u
+    | Values.F64 f -> "F64", f |> F64.to_bits in
   let t, v = ConstructV(t, []), NumV v in
   ConstructV ("CONST", [ t; v ])
 

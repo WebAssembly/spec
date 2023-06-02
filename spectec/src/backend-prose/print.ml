@@ -85,7 +85,7 @@ and string_of_value = function
   | FrameV (v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_list string_of_value "[" ", " "]" !lv
-  | NumV n -> Int64.to_string n
+  | NumV n -> Printf.sprintf "%LX" n
   | StringV s -> s
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"

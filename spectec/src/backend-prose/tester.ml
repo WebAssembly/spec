@@ -96,7 +96,7 @@ let do_invoke act = match act.it with
   | Get _ -> failwith "Invalid action: Get"
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
-let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32
+let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let f64_pos_nan = F64.to_bits F64.pos_nan
 let f64_neg_nan = F64.to_bits F64.neg_nan
 
