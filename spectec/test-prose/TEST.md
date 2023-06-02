@@ -774,7 +774,7 @@ execution_of_return
   e. Execute RETURN.
 
 instantiation module
-1. Let (MODULE _ _ _ _ elem* data*) be module.
+1. Let (MODULE _ _ _ _ _ elem* data*) be module.
 2. Let moduleinst be $alloc_module(module).
 3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f to the stack.
@@ -802,7 +802,7 @@ instantiation module
 7. Pop f from the stack.
 
 alloc_module module
-1. Let (MODULE func* global* table* memory* elem* data*) be module.
+1. Let (MODULE _ func* global* table* memory* elem* data*) be module.
 2. Let moduleinst be { DATA: []; ELEM: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f_init to the stack.
