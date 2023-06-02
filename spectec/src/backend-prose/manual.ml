@@ -27,7 +27,7 @@ let br =
               LetI (NameE (N "n", []), ArityE (NameE (N "L", [])));
               AssertI
                 "Due to validation, there are at least n values on the top of \
-                 the stack"; 
+                 the stack";
               PopI (NameE (N "val", [ListN (N "n")]));
               WhileI (IsTopC "value", [ PopI (NameE (N "val'", [])) ]);
               ExitAbruptI (N "L");
@@ -49,8 +49,8 @@ let br =
   ( FRAME_ n `{f} val'* val^n RETURN instr* )  ~>  val^n
   rule Step_pure/return-label:
   ( LABEL_ k `{instr'*} val* RETURN instr* )  ~>  val* RETURN
-  Note that WASM validation step (in the formal spec using evaluation context) 
-  assures that there are 
+  Note that WASM validation step (in the formal spec using evaluation context)
+  assures that there are
   at least n values on the top of the stack before return.
 *)
 

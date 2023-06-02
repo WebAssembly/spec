@@ -454,7 +454,7 @@ and interp_instrs env il =
       | AppendListI (e1, DotP(s), e2) ->
           begin match eval_expr env e1, eval_expr env e2 with
           | RecordV r, ListV l1 ->
-              let l = Record.find s r in 
+              let l = Record.find s r in
               begin match !l with
               | ListV l2 -> l := ListV (Array.append l2 l1)
               | _ -> failwith "TODO"

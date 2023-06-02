@@ -211,17 +211,17 @@ let test_all () =
   in
   let results = (Array.map f tests) in
 
-  let success, total, percentage, count = Array.fold_left 
-    (fun acc result -> 
+  let success, total, percentage, count = Array.fold_left
+    (fun acc result ->
       let (success_acc, total_acc, percentage_acc, count_acc) = acc in
       let (success, total, percentage) = result in
-      if (total <> 0) then 
+      if (total <> 0) then
         (success_acc + success, total_acc + total, percentage_acc +. percentage, count_acc + 1)
       else
         acc)
     (0, 0, 0., 0) results
   in
   let percentage_norm = percentage /. float_of_int count in
-  let percentage = (float_of_int success /. float_of_int total) *. 100. in 
+  let percentage = (float_of_int success /. float_of_int total) *. 100. in
 
   Printf.sprintf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)" success total percentage percentage_norm |> print_endline
