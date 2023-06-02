@@ -86,10 +86,11 @@ let do_invoke act = match act.it with
     let args = ListV (
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
-      |> Array.of_list
+      |> ref
     ) in
     Interpreter.cnt := 0;
     Interpreter.store := sto;
+    Interpreter.wcnt := 0;
     Printf.eprintf "[Invoking %s %s...]\n%!" (string_of_name name) (Print.string_of_value args);
     Interpreter.call_algo "invocation" [idx; args]
   | Get _ -> failwith "Invalid action: Get"
@@ -117,7 +118,7 @@ let is_arithmetic_nan t v =
 
 let assert_nan actuals expects =
   match actuals, expects with
-  | ListV [|actual|], ListV [|expect|] ->
+  | ListV {contents = [actual]}, ListV {contents = [expect]} ->
     is_canonical_nan "F32" expect && is_canonical_nan "F32" actual
     || is_canonical_nan "F64" expect && is_canonical_nan "F64" actual
     || is_arithmetic_nan "F32" expect && is_arithmetic_nan "F32" actual
@@ -135,7 +136,7 @@ let test_assertion assertion =
   | Script.AssertReturn (invoke, expected) ->
     let result = try do_invoke invoke with e -> StringV (msg_of e) in
     let expected_result = try
-      ListV(expected |> List.map al_of_result |> Array.of_list)
+      ListV(expected |> List.map al_of_result |> ref)
     with
       e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
     assert_return result expected_result
@@ -151,12 +152,13 @@ let test_assertion assertion =
 
 let test_module module_name m =
   Interpreter.cnt := 0;
+  Interpreter.wcnt := 0;
   Interpreter.init_stack();
   Interpreter.init_store();
   try
     match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
     | ListV l ->
-        let export = Array.to_list l in
+        let export = !l in
         (match module_name with
         | Some name -> exports := Exports.add name.it (!Interpreter.store, export) !exports
         | None -> ());
@@ -204,35 +206,30 @@ let test file_name =
     | Script.Assertion {it = Script.AssertTrap _ ; _}-> true
     | _ -> false
   ) |> List.length in
-
-  let success = ref 0 in
-
-  try
-
+  
+  if total <> 0 then
+    let time = Sys.time() in
+    let success = ref 0 in
+    Printf.printf "%s: %!" name;
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
-
-    test_script success script;
-
-    if total <> 0 then
-      let percentage = (float_of_int !success /. float_of_int total) *. 100. in
-      Printf.sprintf "%s: [%d/%d] (%.2f%%)" name !success total percentage |> print_endline;
-      (!success, total, percentage)
-    else
-      (0, 0, 0.)
-  with
-  | e ->
-    let msg = msg_of e in
-    Printf.eprintf "[Uncaught exception] %s\n" msg;
-    Printf.sprintf
-      "%s: [Uncaught exception: %s]"
-      name
-      msg
-      |> print_endline;
-    if total <> 0 then
-      let percentage = (float_of_int !success /. float_of_int total) *. 100. in
-      (!success, total, percentage)
-    else
-      (0, 0, 0.)
+    
+    begin try
+      test_script success script;
+    with
+    | e ->
+      let msg = msg_of e in
+      Printf.eprintf "[Uncaught exception] %s, " msg;
+      Printf.printf
+        "[Uncaught exception: %s] "
+        msg
+    end;
+    
+    Printf.eprintf "%s took %f ms.\n" name ((Sys.time() -. time) *. 1000.);
+    let percentage = (float_of_int !success /. float_of_int total) *. 100. in
+    Printf.printf "[%d/%d] (%.2f%%)\n" !success total percentage;
+    (!success, total, percentage)
+  else
+    (0, 0, 0.)
 
 let test_all () =
   let sample = "test-prose/sample.wast" in
@@ -258,4 +255,4 @@ let test_all () =
   let percentage_norm = percentage /. float_of_int count in
   let percentage = (float_of_int success /. float_of_int total) *. 100. in
 
-  Printf.sprintf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)" success total percentage percentage_norm |> print_endline
+  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage percentage_norm

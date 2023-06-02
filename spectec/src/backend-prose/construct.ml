@@ -46,11 +46,11 @@ let al_of_blocktype types wtype =
   | Ast.VarBlockType idx ->
     let Types.FuncType (param_types, result_types) = (Lib.List32.nth types idx.it).it in
     let result_type_to_listV result_type =
-      ListV (List.map al_of_type result_type |> Array.of_list)
+      ListV (List.map al_of_type result_type |> ref)
     in
     ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
-  | Ast.ValBlockType None -> ArrowV(ListV [||], ListV [||])
-  | Ast.ValBlockType (Some val_type) -> ArrowV(ListV [||], ListV[| al_of_type val_type |])
+  | Ast.ValBlockType None -> ArrowV(ListV (ref []), ListV (ref []))
+  | Ast.ValBlockType (Some val_type) -> ArrowV(ListV (ref []), ListV (ref [al_of_type val_type]))
 
 (* Construct instruction *)
 
@@ -154,7 +154,7 @@ let al_of_extension = function
 | Types.ZX -> singleton "U"
 
 let al_of_packsize_with_extension (p, s) =
-  ListV [| al_of_packsize p; al_of_extension s |]
+  ListV ([ al_of_packsize p; al_of_extension s ] |> ref)
 
 
 let rec al_of_instr types winstr =
@@ -235,24 +235,24 @@ let rec al_of_instr types winstr =
       ConstructV
         ("BLOCK", [
             al_of_blocktype types bt;
-            ListV (instrs |> al_of_instrs types |> Array.of_list)])
+            ListV (instrs |> al_of_instrs types |> ref)])
   | Ast.Loop (bt, instrs) ->
       ConstructV
         ("LOOP", [
             al_of_blocktype types bt;
-            ListV (instrs |> al_of_instrs types |> Array.of_list)])
+            ListV (instrs |> al_of_instrs types |> ref)])
   | Ast.If (bt, instrs1, instrs2) ->
       ConstructV
         ("IF", [
             al_of_blocktype types bt;
-            ListV (instrs1 |> al_of_instrs types |> Array.of_list);
-            ListV (instrs2 |> al_of_instrs types |> Array.of_list);
+            ListV (instrs1 |> al_of_instrs types |> ref);
+            ListV (instrs2 |> al_of_instrs types |> ref);
             ])
   | Ast.Br i32 -> f_i32 "BR" i32
   | Ast.BrIf i32 -> f_i32 "BR_IF" i32
   | Ast.BrTable (i32s, i32) ->
       ConstructV
-        ("BR_TABLE", [ ListV (i32s |> List.map to_int |> Array.of_list); to_int i32 ])
+        ("BR_TABLE", [ ListV (i32s |> List.map to_int |> ref); to_int i32 ])
   | Ast.Return -> f "RETURN"
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
@@ -299,19 +299,19 @@ let al_of_func wasm_module wasm_func =
   let ftype =
     let al_tl1 = List.map al_of_type wtl1 in
     let al_tl2 = List.map al_of_type wtl2 in
-    ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2)) in
+    ArrowV (ListV (ref al_tl1), ListV (ref al_tl2)) in
 
   (* Construct locals *)
-  let locals = List.map al_of_type wasm_func.it.Ast.locals |> Array.of_list in
+  let locals = List.map al_of_type wasm_func.it.Ast.locals |> ref in
 
   (* Construct code *)
-  let code = al_of_instrs wasm_module.it.types wasm_func.it.Ast.body |> Array.of_list in
+  let code = al_of_instrs wasm_module.it.types wasm_func.it.Ast.body |> ref in
 
   (* Construct func *)
   ConstructV ("FUNC", [ftype; ListV locals; ListV code])
 
 let al_of_global wasm_global =
-  let expr = al_of_instrs [] wasm_global.it.Ast.ginit.it |> Array.of_list in
+  let expr = al_of_instrs [] wasm_global.it.Ast.ginit.it |> ref in
 
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; ListV expr ])
 
@@ -340,7 +340,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
             active_name,
             [
               NumV (Int64.of_int32 index.it);
-              ListV (al_of_instrs [] offset.it |> Array.of_list)
+              ListV (al_of_instrs [] offset.it |> ref)
             ]
           )
         )
@@ -352,8 +352,8 @@ let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
 let al_of_elem wasm_elem =
   let reftype = al_of_type (Types.RefType wasm_elem.it.Ast.etype) in
 
-  let al_of_const const = ListV (al_of_instrs [] const.it |> Array.of_list) in
-  let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const |> Array.of_list in
+  let al_of_const const = ListV (al_of_instrs [] const.it |> ref) in
+  let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const |> ref in
 
   let mode = al_of_elem_segment wasm_elem.it.Ast.emode in
 
@@ -366,7 +366,7 @@ let al_of_data wasm_data =
   let init = wasm_data.it.Ast.dinit in
 
   let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
-  let byte_list = String.fold_right f init [] |> Array.of_list in
+  let byte_list = String.fold_right f init [] |> ref in
 
   let mode = al_of_data_segment wasm_data.it.Ast.dmode in
 
@@ -388,7 +388,7 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
       let ftype =
         let al_tl1 = List.map al_of_type wtl1 in
         let al_tl2 = List.map al_of_type wtl2 in
-        ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2))
+        ArrowV (ListV (ref al_tl1), ListV (ref al_tl2))
       in
 
       ConstructV ("FUNC", [ ftype ])
@@ -422,49 +422,49 @@ let al_of_module wasm_module =
   (* Construct imports *)
   let import_list =
     List.map (al_of_import wasm_module) wasm_module.it.imports
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct functions *)
   let func_list =
     List.map (al_of_func wasm_module) wasm_module.it.funcs
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct global *)
   let global_list =
     List.map al_of_global wasm_module.it.globals
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct table *)
   let table_list =
     List.map al_of_table wasm_module.it.tables
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct memory *)
   let memory_list =
     List.map al_of_memory wasm_module.it.memories
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct elem *)
   let elem_list =
     List.map al_of_elem wasm_module.it.elems
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct data *)
   let data_list =
     List.map al_of_data wasm_module.it.datas
-    |> Array.of_list
+    |> ref
   in
 
   (* Construct export *)
   let export_list =
     List.map al_of_export wasm_module.it.exports
-    |> Array.of_list
+    |> ref
   in
 
   ConstructV (

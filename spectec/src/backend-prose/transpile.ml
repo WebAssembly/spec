@@ -173,9 +173,9 @@ let hide_state = function
 
 let simplify_record_concat = function
   | ConcatE (e1, e2) ->
-    let nonempty = function ListE [||] | OptE None -> false | _ -> true in
+    let nonempty = function ListE [] | OptE None -> false | _ -> true in
     let remove_empty_field = function
-      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty !v) r)
+      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty v) r)
       | e -> e in
     ConcatE (remove_empty_field e1, remove_empty_field e2)
   | e -> e

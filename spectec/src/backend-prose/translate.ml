@@ -97,7 +97,7 @@ let rec exp2expr exp =
   | Ast.NatE n -> Al.NumE (Int64.of_int n)
   (* List *)
   | Ast.LenE inner_exp -> Al.LengthE (exp2expr inner_exp)
-  | Ast.ListE exps -> Al.ListE (List.map exp2expr exps |> Stdlib.Array.of_list)
+  | Ast.ListE exps -> Al.ListE (List.map exp2expr exps)
   | Ast.IdxE (exp1, exp2) ->
       Al.AccessE (exp2expr exp1, Al.IndexP (exp2expr exp2))
   | Ast.SliceE (exp1, exp2, exp3) ->
@@ -142,14 +142,14 @@ let rec exp2expr exp =
       Al.ConstructE (cons, List.map exp2expr args)
   | Ast.CaseE (Ast.Atom cons, arg) -> Al.ConstructE (cons, [ exp2expr arg ])
   (* Tuple *)
-  | Ast.TupE exps -> Al.ListE (List.map exp2expr exps |> Array.of_list)
+  | Ast.TupE exps -> Al.ListE (List.map exp2expr exps)
   (* Call *)
   | Ast.CallE (id, inner_exp) -> Al.AppE (N id.it, exp2args inner_exp)
   (* Record expression *)
   | Ast.StrE expfields ->
       let f acc = function
         | Ast.Atom name, fieldexp ->
-            let expr = exp2expr fieldexp |> ref in
+            let expr = exp2expr fieldexp in
             Al.Record.add name expr acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
@@ -679,10 +679,7 @@ let replace_with e =
       match path2expr base path with
       | Al.AccessE (e, p) -> [ Al.ReplaceI (e, p, exp2expr v) ]
       | _ -> failwith "Impossible: path2expr always return AccessE" )
-  | Ast.ExtE (base, path, v) -> (
-      match path2expr base path with
-      | Al.AccessE (e, p) -> [ Al.AppendListI (e, p, exp2expr v) ]
-      | _ -> failwith "Impossible: path2expr always return AccessE" )
+  | Ast.ExtE (base, path, v) -> [ Al.AppendListI (path2expr base path, exp2expr v) ]
   | _ -> []
 
 let mutator2instrs clause =

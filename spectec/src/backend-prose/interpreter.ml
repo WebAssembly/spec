@@ -30,12 +30,12 @@ let to_map algos =
 let store : store ref = ref Record.empty
 let init_store () =
   store := Record.empty
-    |> Record.add "FUNC" (ref (ListV [||]))
-    |> Record.add "GLOBAL" (ref (ListV [||]))
-    |> Record.add "TABLE" (ref (ListV [||]))
-    |> Record.add "MEM" (ref (ListV [||]))
-    |> Record.add "ELEM" (ref (ListV [||]))
-    |> Record.add "DATA" (ref (ListV [||]))
+    |> Record.add "FUNC" (ListV (ref []))
+    |> Record.add "GLOBAL" (ListV (ref []))
+    |> Record.add "TABLE" (ListV (ref []))
+    |> Record.add "MEM" (ListV (ref []))
+    |> Record.add "ELEM" (ListV (ref []))
+    |> Record.add "DATA" (ListV (ref []))
 
 module Env = struct
   module EnvKey = struct
@@ -98,9 +98,28 @@ exception ExitContext of (value Env.Env'.t * value) * instr list
 (* Helper functions *)
 
 let value_to_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
-let value_to_list v = v |> value_to_array |> Array.to_list
+let value_to_list v = !(v |> value_to_array)
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
+
+let rec take n l =
+  if n = 0 then [], l
+  else match l with
+  | [] -> raise (Invalid_argument "take")
+  | hd :: tl ->
+    let prefix, suffix = take (n-1) tl in
+    hd :: prefix, suffix
+
+let sublist st len l =
+  let head, rest = take st l in
+  let body, tail = take len rest in
+  (head, body, tail)
+
+let rec list_set l i x =
+  match l, i with
+  | [], _ -> raise (Invalid_argument "list_set")
+  | _ :: tl, 0 -> x :: tl
+  | hd :: tl, _ -> hd :: (list_set tl (i-1) x)
 
 let rec int64_exp base exponent =
   if exponent = 0L then
@@ -118,6 +137,7 @@ let rec int64_exp base exponent =
 (* Interpreter *)
 
 let cnt = ref 0
+let wcnt = ref 0
 
 let rec dsl_function_call fname args =
   match fname with
@@ -155,45 +175,42 @@ and eval_expr env expr =
       end
   (* Function Call *)
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
-  | MapE (fname, [ e ], _) -> (
+  | MapE (fname, [ e ], _) ->
       (* TODO: handle cases where more than 1 arguments *)
-      match eval_expr env e with
-      | ListV vs ->
-          ListV (Array.map (fun v -> dsl_function_call fname [ v ]) vs)
-      | _ ->
-          Print.string_of_expr e ^ " is not iterable."
-          |> failwith (* Due to WASM validation, unreachable *))
+      let l = eval_expr env e |> value_to_list in
+      ListV (List.map (fun v -> dsl_function_call fname [ v ]) l |> ref)
   (* Data Structure *)
-  | ListE el -> ListV (Array.map (eval_expr env) el)
+  | ListE el -> ListV (List.map (eval_expr env) el |> ref)
   | ListFillE (e1, e2) ->
       let v = eval_expr env e1 in
       let i = eval_expr env e2 |> value_to_int in
       if i > 256 * 64 * 1024 then (* 256 pages *)
         raise Exception.OutOfMemory
       else
-        ListV (Array.make i v)
+        ListV (List.init i (function _ -> v) |> ref)
   | ConcatE (e1, e2) ->
-      let a1 = eval_expr env e1 |> value_to_array in
-      let a2 = eval_expr env e2 |> value_to_array in
-      ListV (Array.append a1 a2)
+      let a1 = eval_expr env e1 |> value_to_list in
+      let a2 = eval_expr env e2 |> value_to_list in
+      ListV (a1 @ a2 |> ref)
   | LengthE e ->
-      let a = eval_expr env e |> value_to_array in
-      NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> RecordV (Record.map (fun e -> eval_expr env !e |> ref) r)
+      let a = eval_expr env e |> value_to_list in
+      NumV (I64.of_int_u (List.length a))
+  | RecordE r -> RecordV (Record.map (fun e -> eval_expr env e) r)
   | AccessE (e, p) -> begin match p with
       | IndexP e' ->
-        let a = eval_expr env e |> value_to_array in
+        let l = eval_expr env e |> value_to_list in
         let i = eval_expr env e' |> value_to_int in
-        Array.get a i
+        List.nth l i
       | SliceP (e1, e2) ->
-        let a = eval_expr env e |> value_to_array in
+        let l = eval_expr env e |> value_to_list in
         let i1 = eval_expr env e1 |> value_to_int in
         let i2 = eval_expr env e2 |> value_to_int in
-        ListV (Array.sub a i1 i2)
+        let _, l', _ = sublist i1 i2 l in
+        ListV (ref l')
       | DotP str -> begin match eval_expr env e with
-        | FrameV (_, RecordV r) -> Record.find str r |> (!)
-        | StoreV s -> Record.find str !s |> (!)
-        | RecordV r -> Record.find str r |> (!)
+        | FrameV (_, RecordV r) -> Record.find str r
+        | StoreV s -> Record.find str !s
+        | RecordV r -> Record.find str r
         | v ->
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
@@ -275,7 +292,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
-  if !cnt > 1000000 then raise Exception.Timeout else cnt := !cnt + 1;
+  if !cnt > 3000000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->
@@ -315,7 +332,7 @@ and interp_instrs env il =
       | AssertI _ -> (env, cont) (* TODO: insert assertion *)
       | PushI e ->
           (match eval_expr env e with
-          | ListV vs -> Array.iter push vs
+          | ListV vs -> List.iter push !vs
           | v -> push v);
           (env, cont)
       | PopI e ->
@@ -324,7 +341,7 @@ and interp_instrs env il =
             | NameE (name, [ ListN n ]) ->
                 let i = Env.find n env |> value_to_int in
                 let vs = List.rev (List.init i (fun _ -> pop ())) in
-                Env.add name (ListV (Array.of_list vs)) env
+                Env.add name (ListV (ref vs)) env
             | _ -> (
                 (* due to Wasm validation *)
                 let h = pop () in
@@ -349,22 +366,22 @@ and interp_instrs env il =
           | _ -> vs)
           in
           let vs = pop_value [] in
-          let env = Env.add name (ListV (Array.of_list vs)) env in
+          let env = Env.add name (ListV (ref vs)) env in
           (env, cont)
         | _ -> failwith "Invalid pop")
       | LetI (pattern, e) ->
           let rec assign lhs rhs env =
             match lhs, rhs with
             | NameE (name, [ ListN n ]), ListV vs ->
-                env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length vs)))
+                env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (List.length !vs)))
             | NameE (name, _), v ->
                 Env.add name v env
             | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
             | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
                 env |> assign lhs1 rhs1 |> assign lhs2 rhs2
             | ListE lhs_s, ListV rhs_s
-              when Array.length lhs_s = Array.length rhs_s ->
-                List.fold_right2 assign (Array.to_list lhs_s) (Array.to_list rhs_s) env
+              when List.length lhs_s = List.length !rhs_s ->
+                List.fold_right2 assign lhs_s (!rhs_s) env
             | ConstructE (lhs_tag, lhs_s), ConstructV (rhs_tag, rhs_s)
               when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
                 List.fold_right2 assign lhs_s rhs_s env
@@ -395,7 +412,7 @@ and interp_instrs env il =
           (env, cont)
       | ExecuteSeqI e ->
           (match eval_expr env e with
-          | ListV winstrs -> Array.to_list winstrs |> execute_wasm_instrs
+          | ListV winstrs -> !winstrs |> execute_wasm_instrs
           | _ -> failwith "Invalid ExecuteSeqI");
           (env, cont)
       | JumpI e ->
@@ -429,44 +446,28 @@ and interp_instrs env il =
           let a = eval_expr env e1 |> value_to_array in
           let i = eval_expr env e2 |> value_to_int in
           let v = eval_expr env e3 in
-          Array.set a i v;
+          a := list_set !a i v;
           (env, cont)
       | ReplaceI (e1, SliceP (e2, e3), e4) ->
-          let a1 = eval_expr env e1 |> value_to_array in (* dest *)
+          let  a = eval_expr env e1 |> value_to_array in (* dest *)
           let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
           let i2 = eval_expr env e3 |> value_to_int in   (* length *)
-          let a2 = eval_expr env e4 |> value_to_array in (* src *)
-          for i = 0 to i2 - 1 do
-            i |> Array.get a2 |> Array.set a1 (i1 + i)
-          done;
+          let  l = eval_expr env e4 |> value_to_list in  (* src *)
+          assert (List.length l = i2);
+          let prefix, _, suffix = sublist i1 i2 !a in
+          (* TODO: Maybe we need array again *)
+          cnt := !cnt + (i1 + i2);
+          a := prefix @ l @ suffix;
           (env, cont)
-      | AppendI (e1, DotP(s), e2) ->
-          let v1 = eval_expr env e2 in
-          (match eval_expr env e1 with
-          | StoreV sto ->
-              let a = match Record.find s !sto |> (!) with
-                | ListV l -> l
-                | _ -> failwith "Unreachable" in
-              let appended_result = ListV (Array.append a [| v1 |]) in
-              sto := Record.add s (ref appended_result) !sto
-          | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
+      | AppendI (e1, e2) ->
+          let a = eval_expr env e1 |> value_to_array in
+          let v = eval_expr env e2 in
+          a := !a @ [v];
           (env, cont)
-      | AppendListI (e1, DotP(s), e2) ->
-          begin match eval_expr env e1, eval_expr env e2 with
-          | RecordV r, ListV l1 ->
-              let l = Record.find s r in
-              begin match !l with
-              | ListV l2 -> l := ListV (Array.append l2 l1)
-              | _ -> failwith "TODO"
-              end
-          | _ -> failwith "TODO"
-          end;
-          (env, cont)
-      | AppendListI (e1, IndexP e2, e3) ->
-          let a1 = eval_expr env e1 |> value_to_array in
-          let i = eval_expr env e2 |> value_to_int in
-          let a2 = eval_expr env e3 |> value_to_array in
-          Array.blit a1 i a2 0 (Array.length a2);
+      | AppendListI (e1, e2) ->
+          let a = eval_expr env e1 |> value_to_array in
+          let l = eval_expr env e2 |> value_to_list in
+          a := !a @ l;
           (env, cont)
       | i -> "Interpreter is not implemented for the instruction: " ^ structured_string_of_instr 0 i |> failwith)
     in
@@ -492,6 +493,8 @@ and interp_algo algo args =
 (* Search AL Algorithm *)
 
 and call_algo name args =
+  (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
+  (* string_of_stack !stack |> print_endline; *)
   let algo =
     match AlgoMap.find_opt name !algo_map with
       | Some v -> v
@@ -500,7 +503,11 @@ and call_algo name args =
   interp_algo algo args |> Env.get_result
 
 and execute_wasm_instr winstr =
-  (* Print.string_of_value winstr |> print_endline; *)
+  (* Print.string_of_value winstr |> prerr_endline; *)
+  (* string_of_stack !stack |> prerr_endline; *)
+  (* string_of_record !store |> prerr_endline; *)
+  wcnt := !wcnt + 1;
+  if !wcnt > 5000 then raise Exception.Timeout;
   match winstr with
   | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) -> push winstr
   | ConstructV (name, args) -> call_algo ("execution_of_" ^ String.lowercase_ascii name) args |> ignore

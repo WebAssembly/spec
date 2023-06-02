@@ -24,16 +24,16 @@ let f64_to_num f = NumV (F64.to_bits f)
 
 let wrap_i32_unop op i =
   let result = num_to_i32 i |> op |> i32_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_i64_unop op i =
   let result = num_to_i64 i |> op |> i64_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_f32_unop op f =
   let result = num_to_f32 f |> op |> f32_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_f64_unop op f =
   let result = num_to_f64 f |> op |> f64_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let unop: numerics =
   {
     name = "unop";
@@ -89,22 +89,22 @@ let wrap_i32_binop op i1 i2 =
   let i1 = num_to_i32 i1 in
   let i2 = num_to_i32 i2 in
   let result = op i1 i2 |> i32_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_i64_binop op i1 i2 =
   let i1 = num_to_i64 i1 in
   let i2 = num_to_i64 i2 in
   let result = op i1 i2 |> i64_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_f32_binop op f1 f2 =
   let f1 = num_to_f32 f1 in
   let f2 = num_to_f32 f2 in
   let result = op f1 f2 |> f32_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let wrap_f64_binop op f1 f2 =
   let f1 = num_to_f64 f1 in
   let f2 = num_to_f64 f2 in
   let result = op f1 f2 |> f64_to_num in
-  ListV [| result |]
+  ListV (ref [ result ])
 let catch_ixx_exception f = try f() with
   | Ixx.DivideByZero
   | Ixx.Overflow
@@ -291,7 +291,7 @@ let cvtop : numerics =
           | None -> ""
           | Some (ConstructV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
-        ListV [| catch_ixx_exception (fun _ -> match t_to, op, t_from, sx with
+        ListV ([ catch_ixx_exception (fun _ -> match t_to, op, t_from, sx with
         (* Conversion to I32 *)
         | "I32", "Wrap", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
         | "I32", "Trunc", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
@@ -329,7 +329,7 @@ let cvtop : numerics =
         | "F64", "Convert", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
         | "F64", "Convert", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
         | "F64", "Reinterpret", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
-        | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx) ) |])
+        | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx) ) ] |> ref))
       | _ -> failwith "Invalid cvtop");
   }
 
@@ -344,9 +344,10 @@ let bytes_ : numerics =
             if n = 0L then
               []
             else
-              (Int64.logand bits 255L) :: decompose (Int64.sub n 1L) (Int64.shift_right bits 8)
+              (Int64.logand bits 255L) :: decompose (Int64.sub n 8L) (Int64.shift_right bits 8)
             in
-          ListV (decompose n i |> List.map (fun x -> NumV x) |> Array.of_list)
+          assert (n >= 0L && Int64.rem n 8L = 0L);
+          ListV (decompose n i |> List.map (fun x -> NumV x) |> ref)
       | _ -> failwith "Invalid bytes"
       );
   }
@@ -356,12 +357,12 @@ let inverse_of_bytes_ : numerics =
     f =
       (function
       | [ NumV n; ListV bs] ->
-          assert (n = Int64.of_int (Array.length bs * 8));
-          NumV (Array.fold_right (fun b acc ->
+          assert (n = Int64.of_int (List.length !bs * 8));
+          NumV (List.fold_right (fun b acc ->
             match b with
             | NumV b when 0L <= b && b < 256L -> Int64.add b (Int64.shift_left acc 8)
             | _ -> failwith ("Invalid inverse_of_bytes: " ^ Print.string_of_value b ^ " is not a valid byte.")
-          ) bs 0L)
+          ) !bs 0L)
       | _ -> failwith "Invalid argument for inverse_of_bytes."
       );
   }
@@ -371,11 +372,14 @@ let wrap_ : numerics =
     name = "wrap_";
     f =
       (function
-      | [ ListV [| NumV _; NumV n |]; NumV i ] ->
-          NumV (
-            let mask = Int64.sub (Int64.shift_right 1L (Int64.to_int n)) 1L in
-            Int64.logand i mask
-          )
+      | [ ListV mn; NumV i ] -> (
+          match !mn with
+          | [_; NumV n] ->
+            NumV (
+              let mask = Int64.sub (Int64.shift_right 1L (Int64.to_int n)) 1L in
+              Int64.logand i mask
+            )
+        | _ -> failwith "Invalid wrap_" )
       | _ -> failwith "Invalid wrap_"
       );
   }

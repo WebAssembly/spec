@@ -16,6 +16,8 @@ type al_type =
   | StateT
   | TopT
 
+type 'a mut_list = 'a list ref
+
 module FieldName = struct
   type t = string
 
@@ -24,7 +26,7 @@ end
 
 module Record = Map.Make (FieldName)
 
-type 'a record = 'a ref Record.t
+type 'a record = 'a Record.t
 
 and store = value record
 and stack = value list
@@ -33,7 +35,7 @@ and stack = value list
 and value =
   | NumV of int64
   | StringV of string
-  | ListV of value array
+  | ListV of value mut_list
   | RecordV of value record
   | ConstructV of string * value list
   | OptV of value option
@@ -83,7 +85,7 @@ type expr =
   | AppE of name * expr list
   | MapE of name * expr list * iter list
   (* Data Structure *)
-  | ListE of expr array
+  | ListE of expr list
   | ListFillE of expr * expr
   | ConcatE of expr * expr
   | LengthE of expr
@@ -145,8 +147,8 @@ type instr =
   | ExitAbruptI of name
   (* Mutations *)
   | ReplaceI of expr * path * expr
-  | AppendI of expr * path * expr
-  | AppendListI of expr * path * expr
+  | AppendI of expr * expr
+  | AppendListI of expr * expr
   | ValidI of expr * expr * expr option
   | IsValidI of expr option
   (* Yet *)

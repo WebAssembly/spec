@@ -22,7 +22,7 @@ let string_of_list stringifier left sep right = function
       ^ right
 
 let string_of_array stringifier left sep right a =
-  Array.to_list a |> string_of_list stringifier left sep right
+  !a |> string_of_list stringifier left sep right
 
 let rec repeat str num =
   if num = 0 then ""
@@ -67,7 +67,7 @@ let rec string_of_record r =
   let base_indent = repeat indent !depth in
   depth := !depth + 1;
   let str = Al.Record.fold
-    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value !v ^ ";\n")
+    (fun k v acc -> acc ^ base_indent ^ indent ^ k ^ ": " ^ string_of_value v ^ ";\n")
     r (base_indent ^ "{\n")
   ^ (base_indent ^ "}") in
   depth := !depth - 1;
@@ -76,7 +76,7 @@ let rec string_of_record r =
 and string_of_frame (_, f) = string_of_record f
 
 and string_of_stack st =
-  let f acc e = acc ^ string_of_value e ^ "\n" in
+  let f acc e = acc ^ "*" ^ string_of_value e ^ "\n" in
   List.fold_left f "[Stack]\n" st
 
 and string_of_value = function
@@ -84,7 +84,7 @@ and string_of_value = function
       sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
   | FrameV (v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | StoreV _ -> "StoreV"
-  | ListV lv -> string_of_array string_of_value "[" ", " "]" lv
+  | ListV lv -> string_of_list string_of_value "[" ", " "]" !lv
   | NumV n -> Int64.to_string n
   | StringV s -> s
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
@@ -120,7 +120,7 @@ let string_of_compare_op = function
 
 let rec string_of_record_expr r =
   Al.Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr !v ^ "; ")
+    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -147,7 +147,7 @@ and string_of_expr = function
   | FrameE (e1, e2) ->
       sprintf "the activation of %s with arity %s" (string_of_expr e2)
         (string_of_expr e1)
-  | ListE el -> string_of_array string_of_expr "[" ", " "]" el
+  | ListE el -> string_of_list string_of_expr "[" ", " "]" el
   | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | RecordE r -> string_of_record_expr r
@@ -289,12 +289,12 @@ let rec string_of_instr index depth = function
   | ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s%s with %s." (make_index index depth)
         (string_of_expr e1) (string_of_path p) (string_of_expr e2)
-  | AppendI (e1, p, e2) ->
-      sprintf "%s Append %s to the %s%s." (make_index index depth)
-        (string_of_expr e2) (string_of_expr e1) (string_of_path p)
-  | AppendListI (e1, p, e2) ->
-      sprintf "%s Append the sequence %s to the %s%s." (make_index index depth)
-        (string_of_expr e2) (string_of_expr e1) (string_of_path p)
+  | AppendI (e1, e2) ->
+      sprintf "%s Append %s to the %s." (make_index index depth)
+        (string_of_expr e2) (string_of_expr e1)
+  | AppendListI (e1, e2) ->
+      sprintf "%s Append the sequence %s to the %s." (make_index index depth)
+        (string_of_expr e2) (string_of_expr e1)
   | ValidI (e1, e2, eo) ->
       sprintf "%s Under the context %s, %s must be valid%s." (make_index index depth)
         (string_of_expr e1)
@@ -495,7 +495,7 @@ let rec structured_string_of_expr = function
   | FrameE _ -> "FrameE TODO"
   | ListE el ->
       "ListE ("
-      ^ string_of_array structured_string_of_expr "[" ", " "]" el
+      ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"
   | ListFillE (e1, e2) ->
       "ListFillE ("
@@ -654,19 +654,15 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | AppendI (e1, p, e2) ->
+  | AppendI (e1, e2) ->
       "AppendI ("
       ^ structured_string_of_expr e1
       ^ ", "
-      ^ structured_string_of_path p
-      ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | AppendListI (e1, p, e2) ->
+  | AppendListI (e1, e2) ->
       "AppendListI ("
       ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_path p
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"

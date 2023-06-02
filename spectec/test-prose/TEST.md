@@ -549,7 +549,7 @@ execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Push (I32.CONST |$mem(0)|) to the stack.
+  a. Push (I32.CONST ((|$mem(0)| / 64) / $Ki())) to the stack.
   b. Perform $with_memext(0, 0^((n · 64) · $Ki())).
 4. Or:
   a. Push (I32.CONST -1) to the stack.
@@ -898,7 +898,7 @@ invocation funcaddr val*
 sample.wast: [27/27] (100.00%)
 forward.wast: [4/4] (100.00%)
 float_misc.wast: [440/440] (100.00%)
-table_copy.wast: [Uncaught exception: This test contains a (register ...) command]
+table_copy.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/1649] (0.00%)
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [35/45] (77.78%)
 unwind.wast: [49/49] (100.00%)
@@ -908,17 +908,17 @@ fac.wast: [6/6] (100.00%)
 func.wast: [86/96] (89.58%)
 exports.wast: [6/9] (66.67%)
 local_set.wast: [19/19] (100.00%)
-linking.wast: [Uncaught exception: This test contains a (register ...) command]
-float_literals.wast: [Uncaught exception: This test contains a binary module]
+linking.wast: [Uncaught exception: Module Instantiation failed due to nth] [10/83] (12.05%)
+float_literals.wast: [Uncaught exception: This test contains a binary module] [78/83] (93.98%)
 align.wast: [43/48] (89.58%)
-if.wast: [116/123] (94.31%)
+if.wast: [118/123] (95.93%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
-block.wast: [48/52] (92.31%)
+block.wast: [49/52] (94.23%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [24/26] (92.31%)
 i64.wast: [384/384] (100.00%)
-memory_copy.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
+memory_copy.wast: [Uncaught exception: Direct invocation failed due to nth] [30/4338] (0.69%)
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
 conversions.wast: [587/593] (98.99%)
@@ -928,51 +928,47 @@ store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
-bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout]
+bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [7/66] (10.61%)
 traps.wast: [32/32] (100.00%)
-local_tee.wast: [50/55] (90.91%)
+local_tee.wast: [51/55] (92.73%)
 f64_bitwise.wast: [360/360] (100.00%)
-binary.wast: [Uncaught exception: This test contains a binary module]
-memory_grow.wast: [28/84] (33.33%)
+memory_grow.wast: [72/84] (85.71%)
 call_indirect.wast: [31/132] (23.48%)
-load.wast: [32/37] (86.49%)
-memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Trap]
-memory_size.wast: [9/36] (25.00%)
-imports.wast: [Uncaught exception: This test contains a (register ...) command]
+load.wast: [33/37] (89.19%)
+memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [0/20] (0.00%)
+memory_size.wast: [29/36] (80.56%)
+imports.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/34] (0.00%)
 left-to-right.wast: [91/95] (95.79%)
 ref_is_null.wast: [10/11] (90.91%)
-memory_trap.wast: [Uncaught exception: Module Instantiation failed due to Backend_al.Exception.Trap]
-binary-leb128.wast: [Uncaught exception: This test contains a binary module]
+memory_trap.wast: [Uncaught exception: Module Instantiation failed due to Backend_al.Exception.Trap] [9/180] (5.00%)
 br_table.wast: [126/149] (84.56%)
-select.wast: [84/118] (71.19%)
+select.wast: [86/118] (72.88%)
 f32_bitwise.wast: [360/360] (100.00%)
-memory_init.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
-elem.wast: [Uncaught exception: This test contains a (register ...) command]
+memory_init.wast: [Uncaught exception: Direct invocation failed due to nth] [90/140] (64.29%)
+elem.wast: [8/25] (32.00%)
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
-float_exprs.wast: [747/794] (94.08%)
+float_exprs.wast: [746/794] (93.95%)
 float_memory.wast: [48/60] (80.00%)
-table_size.wast: [16/36] (44.44%)
+table_size.wast: [29/36] (80.56%)
 table_set.wast: [13/18] (72.22%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
-ref_func.wast: [Uncaught exception: This test contains a (register ...) command]
+ref_func.wast: [Uncaught exception: Direct invocation failed due to nth] [4/8] (50.00%)
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
-data.wast: [Uncaught exception: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 int_literals.wast: [30/30] (100.00%)
 address.wast: [205/255] (80.39%)
-table_grow.wast: [13/38] (34.21%)
-func_ptrs.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
-table_init.wast: [Uncaught exception: This test contains a (register ...) command]
-global.wast: [Uncaught exception: Module Instantiation failed due to Invalid_argument("index out of bounds")]
-custom.wast: [Uncaught exception: This test contains a binary module]
+table_grow.wast: [35/38] (92.11%)
+func_ptrs.wast: [Uncaught exception: Direct invocation failed due to nth] [0/25] (0.00%)
+table_init.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/662] (0.00%)
+global.wast: [Uncaught exception: Module Instantiation failed due to nth] [0/58] (0.00%)
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
-nop.wast: [75/83] (90.36%)
-Total [15168/23744] (63.88%; Normalized 71.71%)
+nop.wast: [78/83] (93.98%)
+Total [15298/23744] (64.43%; Normalized 75.89%)
 == Complete.
 ```
