@@ -898,7 +898,7 @@ invocation funcaddr val*
 sample.wast: [27/27] (100.00%)
 forward.wast: [4/4] (100.00%)
 float_misc.wast: [440/440] (100.00%)
-table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
+table_copy.wast: [Uncaught exception: This test contains a (register ...) command]
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [35/45] (77.78%)
 unwind.wast: [49/49] (100.00%)
@@ -908,8 +908,8 @@ fac.wast: [6/6] (100.00%)
 func.wast: [86/96] (89.58%)
 exports.wast: [4/9] (44.44%)
 local_set.wast: [19/19] (100.00%)
-linking.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-float_literals.wast: [Uncaught exception in 82th assertion: This test contains a binary module]
+linking.wast: [Uncaught exception: This test contains a (register ...) command]
+float_literals.wast: [Uncaught exception: This test contains a binary module]
 align.wast: [43/48] (89.58%)
 if.wast: [116/123] (94.31%)
 const.wast: [300/300] (100.00%)
@@ -918,7 +918,7 @@ block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [24/26] (92.31%)
 i64.wast: [384/384] (100.00%)
-memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
+memory_copy.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
 conversions.wast: [587/593] (98.99%)
@@ -928,26 +928,26 @@ store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
-bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Exception.Trap]
+bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Trap]
 traps.wast: [32/32] (100.00%)
 local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
-binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
+binary.wast: [Uncaught exception: This test contains a binary module]
 memory_grow.wast: [28/84] (33.33%)
 call_indirect.wast: [31/132] (23.48%)
 load.wast: [32/37] (86.49%)
-memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Exception.Trap]
+memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Trap]
 memory_size.wast: [9/36] (25.00%)
-imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
+imports.wast: [Uncaught exception: This test contains a (register ...) command]
 left-to-right.wast: [91/95] (95.79%)
 ref_is_null.wast: [10/11] (90.91%)
-memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Exception.Trap]
-binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
+memory_trap.wast: [Uncaught exception: Module Instantiation failed due to Backend_al.Exception.Trap]
+binary-leb128.wast: [Uncaught exception: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
 select.wast: [84/118] (71.19%)
 f32_bitwise.wast: [360/360] (100.00%)
-memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
-elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
+memory_init.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
+elem.wast: [Uncaught exception: This test contains a (register ...) command]
 table_get.wast: [5/9] (55.56%)
 f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
@@ -957,18 +957,18 @@ table_size.wast: [16/36] (44.44%)
 table_set.wast: [13/18] (72.22%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
-ref_func.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
+ref_func.wast: [Uncaught exception: This test contains a (register ...) command]
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
-data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
+data.wast: [Uncaught exception: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 int_literals.wast: [30/30] (100.00%)
 address.wast: [205/255] (80.39%)
 table_grow.wast: [13/38] (34.21%)
-func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
-table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
-global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
-custom.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
+func_ptrs.wast: [Uncaught exception: Direct invocation failed due to Invalid_argument("index out of bounds")]
+table_init.wast: [Uncaught exception: This test contains a (register ...) command]
+global.wast: [Uncaught exception: Module Instantiation failed due to Invalid_argument("index out of bounds")]
+custom.wast: [Uncaught exception: This test contains a binary module]
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)

@@ -132,6 +132,36 @@ let test_assertion assertion =
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
+let test_module m =
+  Interpreter.cnt := 0;
+  Interpreter.init_stack();
+  Interpreter.init_store();
+  try
+    match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
+    | ListV l -> exports := Array.to_list l
+    | _ -> failwith "invalid exports"
+  with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
+
+let rec test_script success = function
+  | [] -> ()
+  | cmd :: tail ->
+      begin match cmd.it with
+      | Script.Module (_name_opt, {it = Script.Textual m; _}) -> test_module m
+      | Script.Module _ -> failwith "This test contains a binary module"
+      | Script.Register _ -> failwith "This test contains a (register ...) command"
+      | Script.Action a -> (
+        try do_invoke a |> ignore with
+        | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
+        )
+      | Script.Assertion a ->
+          begin match test_assertion a with
+            | Success -> success := !success + 1
+            | _ -> ()
+          end
+      | Script.Meta _ -> failwith not_supported_msg
+      end;
+      test_script success tail
+
 (** Entry **)
 let test file_name =
 
@@ -147,37 +177,13 @@ let test file_name =
   ) |> List.length in
 
   let success = ref 0 in
-  let cnt = ref 0 in
 
   try
 
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
-    script |> List.iter (fun cmd ->
-      match cmd.it with
-      | Script.Module (_, {it = Script.Textual m; _}) ->
-        Interpreter.cnt := 0;
-        Interpreter.init_stack();
-        Interpreter.init_store();
-        ( try
-          match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
-          | ListV l -> exports := Array.to_list l
-          | _ -> failwith "invalid exports"
-        with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith )
-      | Script.Module _ -> failwith "This test contains a binary module"
-      | Script.Register _ -> failwith "This test contains a (register ...) command"
-      | Script.Action a -> (try do_invoke a |> ignore with e -> "Direct invocation failed due to " ^ msg_of e |> failwith)
-      | Script.Assertion a ->
-          begin match test_assertion a with
-            | Success ->
-                cnt := !cnt + 1;
-                success := !success + 1
-            | Fail ->
-                cnt := !cnt + 1
-            | _ -> ()
-          end
-      | Script.Meta _ -> failwith not_supported_msg
-    );
+    test_script success script;
+
     if total <> 0 then
       let percentage = (float_of_int !success /. float_of_int total) *. 100. in
       Printf.sprintf "%s: [%d/%d] (%.2f%%)" name !success total percentage |> print_endline;
@@ -189,9 +195,8 @@ let test file_name =
     let msg = msg_of e in
     Printf.eprintf "[Uncaught exception] %s\n" msg;
     Printf.sprintf
-      "%s: [Uncaught exception in %dth assertion: %s]"
+      "%s: [Uncaught exception: %s]"
       name
-      !cnt
       msg
       |> print_endline;
     if total <> 0 then
