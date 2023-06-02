@@ -140,16 +140,21 @@ let test file_name =
   let length = String.length file_name - start_idx in
   let name = String.sub file_name start_idx length in
 
-  let total = ref 0 in
+  let script = file_to_script file_name in
+  let total = script |> List.filter (fun x -> match x.it with
+    | Script.Assertion {it = Script.AssertReturn _; _}
+    | Script.Assertion {it = Script.AssertTrap _ ; _}-> true
+    | _ -> false
+  ) |> List.length in
+
   let success = ref 0 in
+  let cnt = ref 0 in
 
   try
 
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
-    file_name
-    |> file_to_script
-    |> List.iter (fun cmd ->
+    script |> List.iter (fun cmd ->
       match cmd.it with
       | Script.Module (_, {it = Script.Textual m; _}) ->
         Interpreter.cnt := 0;
@@ -165,18 +170,18 @@ let test file_name =
       | Script.Assertion a ->
           begin match test_assertion a with
             | Success ->
-                total := !total + 1;
+                cnt := !cnt + 1;
                 success := !success + 1
             | Fail ->
-                total := !total + 1
-            | Ignore -> ()
+                cnt := !cnt + 1
+            | _ -> ()
           end
       | Script.Meta _ -> failwith not_supported_msg
     );
-    if !total <> 0 then
-      let percentage = (float_of_int !success /. float_of_int !total) *. 100. in
-      Printf.sprintf "%s: [%d/%d] (%.2f%%)" name !success !total percentage |> print_endline;
-      (!success, !total, percentage)
+    if total <> 0 then
+      let percentage = (float_of_int !success /. float_of_int total) *. 100. in
+      Printf.sprintf "%s: [%d/%d] (%.2f%%)" name !success total percentage |> print_endline;
+      (!success, total, percentage)
     else
       (0, 0, 0.)
   with
@@ -186,12 +191,12 @@ let test file_name =
     Printf.sprintf
       "%s: [Uncaught exception in %dth assertion: %s]"
       name
-      !total
+      !cnt
       msg
       |> print_endline;
-    if !total <> 0 then
-      let percentage = (float_of_int !success /. float_of_int !total) *. 100. in
-      (!success, !total, percentage)
+    if total <> 0 then
+      let percentage = (float_of_int !success /. float_of_int total) *. 100. in
+      (!success, total, percentage)
     else
       (0, 0, 0.)
 
