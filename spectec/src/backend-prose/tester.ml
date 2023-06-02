@@ -56,9 +56,15 @@ let al_of_result result = match result.it with
 
 (** End of helpers **)
 
+type export = store * value list
+
 module Exports = Map.Make (String)
-type exports = (store * value list) Exports.t
+type exports = export Exports.t
 let exports: exports ref = ref Exports.empty
+
+module Registers = Map.Make (String)
+type registers = export Registers.t
+let registers = ref Registers.empty
 
 let do_invoke act = match act.it with
   | Script.Invoke (opt, name, literals) ->
@@ -160,14 +166,18 @@ let test_module module_name m =
 
 let rec test_script success = function
   | [] -> ()
-  (* | { it = Script.Module (_name_opt, {it = Script.Textual m; _}) }
-    :: { it = Script.Register (name, idx) } :: tail ->
-      test_module m *)
   | cmd :: tail ->
       begin match cmd.it with
       | Script.Module (module_name, {it = Script.Textual m; _}) -> test_module module_name m
       | Script.Module _ -> failwith "This test contains a binary module"
-      | Script.Register _ -> failwith "This test contains a (register ...) command"
+      | Script.Register (name, module_name_opt) ->
+          let s = Ast.string_of_name name in
+          let module_name = match module_name_opt with
+            | Some s -> s.it
+            | None -> ""
+          in
+          let export = Exports.find module_name !exports in
+          registers := Registers.add s export !registers
       | Script.Action a -> (
         try do_invoke a |> ignore with
         | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
