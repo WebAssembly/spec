@@ -114,7 +114,7 @@ let instantiation =
       LetI (
         ConstructE (
           "MODULE",
-          [ ignore_name; ignore_name; ignore_name; ignore_name; ignore_name; elem; data ]
+          [ ignore_name; ignore_name; ignore_name; ignore_name; ignore_name; elem; data; ignore_name ]
         ),
         module_
       );
@@ -168,7 +168,8 @@ let instantiation =
         ]
       );
       (* TODO: start *)
-      PopI frame_name
+      PopI frame_name;
+      ReturnI (Some (AccessE (module_inst, DotP "EXPORT")))
     ]
   )
 
@@ -243,6 +244,7 @@ let alloc_module =
     |> Record.add "MEM" (ref (ListE [||]))
     |> Record.add "ELEM" (ref (ListE [||]))
     |> Record.add "DATA" (ref (ListE [||]))
+    |> Record.add "EXPORT" (ref (ListE [||]))
   in
   let frame_init = NameE (SubN ((N "f"), "init"), []) in
   let frame_init_rec =
@@ -267,6 +269,8 @@ let alloc_module =
   let data_name = N "data" in
   let data = NameE (data_name, []) in
   let data_iter = NameE (data_name, [List]) in
+  let export_name = N "export" in
+  let export_iter = NameE (export_name, [List]) in
   let funcaddr_iter = NameE (N "funcaddr", [List]) in
   let tableaddr_iter = NameE (N "tableaddr", [List]) in
   let globaladdr_iter = NameE (N "globaladdr", [List]) in
@@ -290,7 +294,16 @@ let alloc_module =
       LetI (
         ConstructE (
           "MODULE",
-          [ ignore_name; func_iter; global_iter; table_iter; memory_iter; elem_iter; data_iter; ]
+          [ 
+            ignore_name;
+            func_iter;
+            global_iter;
+            table_iter;
+            memory_iter;
+            elem_iter;
+            data_iter;
+            export_iter
+          ]
         ),
         module_
       );
@@ -317,6 +330,7 @@ let alloc_module =
           ReplaceI (base, index, PairE (module_inst_init, func'))
         ]
       );
+      AppendListI (module_inst_init, DotP "EXPORT", export_iter);
       ReturnI (Some module_inst_init)
     ]
   )

@@ -774,7 +774,7 @@ execution_of_return
   e. Execute RETURN.
 
 instantiation module
-1. Let (MODULE _ _ _ _ _ elem* data*) be module.
+1. Let (MODULE _ _ _ _ _ elem* data* _) be module.
 2. Let moduleinst be $alloc_module(module).
 3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f to the stack.
@@ -800,10 +800,11 @@ instantiation module
     6) Execute (MEMORY.INIT i).
     7) Execute (DATA.DROP i).
 7. Pop f from the stack.
+8. Return moduleinst.EXPORT.
 
 alloc_module module
-1. Let (MODULE _ func* global* table* memory* elem* data*) be module.
-2. Let moduleinst be { DATA: []; ELEM: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
+1. Let (MODULE _ func* global* table* memory* elem* data* export*) be module.
+2. Let moduleinst be { DATA: []; ELEM: []; EXPORT: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f_init to the stack.
 5. Let funcaddr* be $alloc_func(func)*.
@@ -822,7 +823,8 @@ alloc_module module
 18. For i in range |s.FUNC|:
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
-19. Return moduleinst.
+19. Append the sequence export* to the moduleinst.EXPORT.
+20. Return moduleinst.
 
 init_global global
 1. Let (GLOBAL _ instr*) be global.

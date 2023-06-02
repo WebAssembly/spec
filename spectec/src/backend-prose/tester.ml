@@ -60,12 +60,11 @@ let exports = ref []
 
 let do_invoke act = match act.it with
   | Script.Invoke (None, name, literals) ->
-    let extract_idx (export: Ast.export) = if export.it.name = name then
-      match export.it.edesc.it with
-      | FuncExport x -> Some (NumV (Int64.of_int32 x.it))
+    let extract_idx (export: value) =
+      match export with
+      | ConstructV ("EXPORT", [ StringV (export_name); ConstructV ("FUNC", [ idx ]) ])
+        when export_name = Ast.string_of_name name -> Some (idx)
       | _ -> None
-    else
-      None
     in
     let idx = List.find_map extract_idx !exports |> Option.get in
     let args = ListV (
@@ -158,11 +157,12 @@ let test file_name =
       match cmd.it with
       | Script.Module (_, {it = Script.Textual m; _}) ->
         Interpreter.cnt := 0;
-        exports := m.it.exports;
         Interpreter.init_stack();
         Interpreter.init_store();
         ( try
-          Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] |> ignore
+          match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
+          | ListV l -> exports := Array.to_list l
+          | _ -> failwith "invalid exports"
         with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith )
       | Script.Module _ -> failwith "This test contains a binary module"
       | Script.Register _ -> failwith "This test contains a (register ...) command"

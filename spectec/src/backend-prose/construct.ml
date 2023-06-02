@@ -331,38 +331,6 @@ let al_of_memory wasm_memory =
 
   ConstructV ("MEMORY", [ pair ])
 
-let al_of_import_desc wasm_module import_desc = match import_desc.it with
-  | Ast.FuncImport v ->
-
-      (* Get function type from module *)
-      (* Note: function type will be placed in function in DSL *)
-      let wasm_types = wasm_module.it.Ast.types in
-      let Types.FuncType (wtl1, wtl2) =
-        Int32.to_int v.it
-        |> List.nth wasm_types
-        |> it
-      in
-
-      (* Construct function type *)
-      let ftype =
-        let al_tl1 = List.map al_of_type wtl1 in
-        let al_tl2 = List.map al_of_type wtl2 in
-        ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2))
-      in
-
-      ConstructV ("FUNC", [ ftype ])
-  | Ast.TableImport ty ->  { Ast.ttype = ty } |> at no_region |> al_of_table
-  | Ast.MemoryImport ty -> { Ast.mtype = ty } |> at no_region |> al_of_memory
-  | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
-
-let al_of_import wasm_module wasm_import =
-
-  let module_name = StringV (wasm_import.it.Ast.module_name |> Ast.string_of_name) in
-  let item_name = StringV (wasm_import.it.Ast.item_name |> Ast.string_of_name) in
-  let import_desc = al_of_import_desc wasm_module wasm_import.it.Ast.idesc in
-
-  ConstructV ("IMPORT", [ module_name; item_name; import_desc ])
-
 let al_of_segment wasm_segment active_name = match wasm_segment.it with
   | Ast.Passive -> OptV None
   | Ast.Active { index = index; offset = offset } ->
@@ -403,6 +371,51 @@ let al_of_data wasm_data =
   let mode = al_of_data_segment wasm_data.it.Ast.dmode in
 
   ConstructV ("DATA", [ ListV byte_list; mode ])
+
+let al_of_import_desc wasm_module import_desc = match import_desc.it with
+  | Ast.FuncImport v ->
+
+      (* Get function type from module *)
+      (* Note: function type will be placed in function in DSL *)
+      let wasm_types = wasm_module.it.Ast.types in
+      let Types.FuncType (wtl1, wtl2) =
+        Int32.to_int v.it
+        |> List.nth wasm_types
+        |> it
+      in
+
+      (* Construct function type *)
+      let ftype =
+        let al_tl1 = List.map al_of_type wtl1 in
+        let al_tl2 = List.map al_of_type wtl2 in
+        ArrowV (ListV (Array.of_list al_tl1), ListV (Array.of_list al_tl2))
+      in
+
+      ConstructV ("FUNC", [ ftype ])
+  | Ast.TableImport ty ->  { Ast.ttype = ty } |> at no_region |> al_of_table
+  | Ast.MemoryImport ty -> { Ast.mtype = ty } |> at no_region |> al_of_memory
+  | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
+
+let al_of_import wasm_module wasm_import =
+
+  let module_name = StringV (wasm_import.it.Ast.module_name |> Ast.string_of_name) in
+  let item_name = StringV (wasm_import.it.Ast.item_name |> Ast.string_of_name) in
+  let import_desc = al_of_import_desc wasm_module wasm_import.it.Ast.idesc in
+
+  ConstructV ("IMPORT", [ module_name; item_name; import_desc ])
+
+let al_of_export_desc export_desc = match export_desc.it with
+  | Ast.FuncExport n -> ConstructV ("FUNC", [ NumV (Int64.of_int32 n.it) ])
+  | Ast.TableExport n -> ConstructV ("TABLE", [ NumV (Int64.of_int32 n.it) ])
+  | Ast.MemoryExport n -> ConstructV ("MEMORY", [ NumV (Int64.of_int32 n.it) ])
+  | Ast.GlobalExport n -> ConstructV ("GLOBAL", [ NumV (Int64.of_int32 n.it) ])
+
+let al_of_export wasm_export =
+
+  let name = StringV (wasm_export.it.Ast.name |> Ast.string_of_name) in
+  let export_desc = al_of_export_desc wasm_export.it.Ast.edesc in
+
+  ConstructV ("EXPORT", [ name; export_desc ])
 
 let al_of_module wasm_module =
 
@@ -448,6 +461,12 @@ let al_of_module wasm_module =
     |> Array.of_list
   in
 
+  (* Construct export *)
+  let export_list =
+    List.map al_of_export wasm_module.it.exports
+    |> Array.of_list
+  in
+
   ConstructV (
     "MODULE",
     [
@@ -457,6 +476,7 @@ let al_of_module wasm_module =
       ListV table_list;
       ListV memory_list;
       ListV elem_list;
-      ListV data_list
+      ListV data_list;
+      ListV export_list
     ]
   )
