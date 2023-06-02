@@ -278,7 +278,7 @@ rule Step_read/load-pack-trap:
   -- if $(i + n_O + n/8 >= |$mem(z, 0)|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD nt (n _ sx) n_A n_O)  ~>  (CONST nt c)
+  z; (CONST I32 i) (LOAD nt (n _ sx) n_A n_O)  ~>  (CONST nt $ext(n, $size(nt), sx, c))
   -- if $bytes_(n, c) = $mem(z, 0)[i + n_O : n/8]
 
 

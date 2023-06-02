@@ -1502,7 +1502,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, $size(nt <: valtype), sx, c))])
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -3643,7 +3643,7 @@ $$
   \mbox{if}~{\mathrm{bytes}}_{{|\mathit{nt}|}}(\mathit{c}) = {\mathit{z}.\mathsf{mem}}{[0]}[\mathit{i} + \mathit{n}_{\mathsf{o}} : {|\mathit{nt}|} / 8] \\
 {[\textsc{\scriptsize E{-}load{-}pack{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~({\mathit{nt}.\mathsf{load}}{{{\mathit{n}}{\mathsf{\_}}}{\mathit{sx}}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~\mathit{i} + \mathit{n}_{\mathsf{o}} + \mathit{n} / 8 \geq {|{\mathit{z}.\mathsf{mem}}{[0]}|} \\
-{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~({\mathit{nt}.\mathsf{load}}{{{\mathit{n}}{\mathsf{\_}}}{\mathit{sx}}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~\mathit{c}) &\quad
+{[\textsc{\scriptsize E{-}load{-}pack{-}val}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~({\mathit{nt}.\mathsf{load}}{{{\mathit{n}}{\mathsf{\_}}}{\mathit{sx}}}~\mathit{n}_{\mathsf{a}}~\mathit{n}_{\mathsf{o}}) &\hookrightarrow& (\mathit{nt}.\mathsf{const}~{{\mathrm{ext}}_{\mathit{n}}({|\mathit{nt}|})^{\mathit{sx}}}~(\mathit{c})) &\quad
   \mbox{if}~{\mathrm{bytes}}_{\mathit{n}}(\mathit{c}) = {\mathit{z}.\mathsf{mem}}{[0]}[\mathit{i} + \mathit{n}_{\mathsf{o}} : \mathit{n} / 8] \\
 \end{array}
 $$

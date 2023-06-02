@@ -27,7 +27,7 @@ type result =
 let fail expected actual =
   Printf.eprintf " Fail!\n";
   Printf.eprintf " Expected: %s\n" expected;
-  Printf.eprintf " Actual: %s\n\n" actual;
+  Printf.eprintf " Actual  : %s\n\n" actual;
   let print_stack = false in
   if print_stack then
     Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack);

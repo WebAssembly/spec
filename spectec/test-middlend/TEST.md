@@ -1501,7 +1501,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, $size(nt <: valtype), sx, c))])
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -3228,7 +3228,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, $size($valtype_numtype(nt)), sx, c))])
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -4957,7 +4957,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 6-reduction.watsup:280.1-282.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, !($size($valtype_numtype(nt))), sx, c))])
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -6699,8 +6699,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:280.1-282.50
-  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, o0, sx, c))])
+    -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -8501,8 +8502,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:280.1-282.50
-  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, o0, sx, c))])
+    -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39
@@ -10304,8 +10306,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:280.1-282.50
-  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, c)])
+  rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, o0, sx, c))])
+    -- where ?(o0) := $size($valtype_numtype(nt))
     -- where c := $inverse_of_bytes_(n, $mem(z, 0)[(i + n_O) : (n / 8)])
 
   ;; 6-reduction.watsup:302.1-304.39

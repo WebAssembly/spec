@@ -334,6 +334,22 @@ let cvtop : numerics =
       | _ -> failwith "Invalid cvtop");
   }
 
+let ext : numerics =
+  {
+    name = "ext";
+    f =
+      (function
+      | [ _; _; ConstructV ("U", []); v ] -> v
+      | [ NumV n1; NumV n2; ConstructV ("S", []); NumV n3 ] ->
+        let i1 = Int64.to_int n1 in
+        let i2 = Int64.to_int n2 in
+        if Int64.shift_right n3 (i1 - 1) = 0L then NumV n3 else
+          let mask = Int64.sub (if i2 = 64 then 0L else Int64.shift_left 1L i2) (Int64.shift_left 1L i1) in
+          NumV (Int64.logor n3 mask)
+      | _ -> failwith "Invalid argument fot ext"
+      );
+  }
+
 let bytes_ : numerics =
   {
     name = "bytes_";
@@ -385,7 +401,16 @@ let wrap_ : numerics =
       );
   }
 
-let numerics_list : numerics list = [ unop; binop; testop; relop; cvtop; bytes_; inverse_of_bytes_; wrap_ ]
+let numerics_list : numerics list = [
+  unop;
+  binop;
+  testop;
+  relop;
+  cvtop;
+  ext;
+  bytes_;
+  inverse_of_bytes_;
+  wrap_ ]
 
 let call_numerics fname args =
   let numerics =

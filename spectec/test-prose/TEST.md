@@ -420,12 +420,13 @@ execution_of_load nt _x0 n_A n_O
   a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
+  c. Push (nt.CONST c) to the stack.
 4. Else:
   a. Let ?([n, sx]) be _x0.
   b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
     1) Trap.
   c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
-5. Push (nt.CONST c) to the stack.
+  d. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
 execution_of_memory.size
 1. Let ((n · 64) · $Ki()) be |$mem(0)|.
@@ -900,7 +901,7 @@ forward.wast: [4/4] (100.00%)
 float_misc.wast: [440/440] (100.00%)
 table_copy.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/1649] (0.00%)
 ref_null.wast: [2/2] (100.00%)
-memory.wast: [35/45] (77.78%)
+memory.wast: [45/45] (100.00%)
 unwind.wast: [49/49] (100.00%)
 call.wast: [66/70] (94.29%)
 local_get.wast: [19/19] (100.00%)
@@ -922,7 +923,7 @@ memory_copy.wast: [Uncaught exception: Direct invocation failed due to nth] [30/
 stack.wast: [5/5] (100.00%)
 loop.wast: [73/77] (94.81%)
 conversions.wast: [593/593] (100.00%)
-endianness.wast: [62/68] (91.18%)
+endianness.wast: [68/68] (100.00%)
 return.wast: [63/63] (100.00%)
 store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [4/4] (100.00%)
@@ -969,6 +970,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [78/83] (93.98%)
-Total [16348/23744] (68.85%; Normalized 78.88%)
+Total [16364/23744] (68.92%; Normalized 79.30%)
 == Complete.
 ```
