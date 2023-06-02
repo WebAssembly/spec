@@ -128,7 +128,7 @@ let test_assertion assertion =
       let result = do_invoke invoke in
       fail "Trap" (Print.string_of_value result)
     with
-      | Interpreter.Trap -> Success
+      | Exception.Trap -> Success
       | e -> fail "Trap" (Printexc.to_string e)
     end
   | _ -> Ignore (* ignore other kinds of assertions *)

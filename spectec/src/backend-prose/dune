@@ -12,5 +12,6 @@
     construct
     manual
     tester
+    exception
     )
 )

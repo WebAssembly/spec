@@ -900,7 +900,7 @@ table_copy.wast: [Uncaught exception in 0th assertion: This test contains a (reg
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [35/45] (77.78%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [66/70] (94.29%)
+call.wast: [67/70] (95.71%)
 local_get.wast: [19/19] (100.00%)
 fac.wast: [6/6] (100.00%)
 func.wast: [86/96] (89.58%)
@@ -912,13 +912,13 @@ align.wast: [43/48] (89.58%)
 if.wast: [116/123] (94.31%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
-block.wast: [48/52] (92.31%)
+block.wast: [47/52] (90.38%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [24/26] (92.31%)
 i64.wast: [384/384] (100.00%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
-loop.wast: [73/77] (94.81%)
+loop.wast: [72/77] (93.51%)
 conversions.wast: [587/593] (98.99%)
 endianness.wast: [51/68] (75.00%)
 return.wast: [63/63] (100.00%)
@@ -926,23 +926,23 @@ store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
-bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Interpreter.Timeout]
+bulk.wast: [Uncaught exception in 7th assertion: Direct invocation failed due to Backend_al.Exception.Trap]
 traps.wast: [32/32] (100.00%)
 local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-memory_grow.wast: [7/84] (8.33%)
+memory_grow.wast: [29/84] (34.52%)
 call_indirect.wast: [31/132] (23.48%)
 load.wast: [32/37] (86.49%)
-memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Interpreter.Trap]
-memory_size.wast: [5/36] (13.89%)
+memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Exception.Trap]
+memory_size.wast: [22/36] (61.11%)
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [91/95] (95.79%)
 ref_is_null.wast: [10/11] (90.91%)
-memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Interpreter.Trap]
+memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Exception.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
-select.wast: [84/118] (71.19%)
+select.wast: [82/118] (69.49%)
 f32_bitwise.wast: [360/360] (100.00%)
 memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
@@ -951,7 +951,7 @@ f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
 float_exprs.wast: [747/794] (94.08%)
 float_memory.wast: [48/60] (80.00%)
-table_size.wast: [5/36] (13.89%)
+table_size.wast: [22/36] (61.11%)
 table_set.wast: [13/18] (72.22%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
@@ -962,7 +962,7 @@ table_fill.wast: [35/35] (100.00%)
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 int_literals.wast: [30/30] (100.00%)
 address.wast: [205/255] (80.39%)
-table_grow.wast: [8/38] (21.05%)
+table_grow.wast: [20/38] (52.63%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
@@ -971,6 +971,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [15124/23744] (63.70%; Normalized 70.32%)
+Total [15189/23744] (63.97%; Normalized 72.33%)
 == Complete.
 ```

@@ -118,14 +118,11 @@ let rec int64_exp base exponent =
 (* Interpreter *)
 
 let cnt = ref 0
-exception Trap
-exception Timeout
 
 let rec dsl_function_call fname args =
   match fname with
   (* Numerics *)
-  | N name when Numerics.mem name ->
-    ( try Numerics.call_numerics name args with Numerics.Trap -> raise Trap )
+  | N name when Numerics.mem name -> Numerics.call_numerics name args
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       call_algo name args
@@ -170,7 +167,10 @@ and eval_expr env expr =
   | ListFillE (e1, e2) ->
       let v = eval_expr env e1 in
       let i = eval_expr env e2 |> value_to_int in
-      ListV (Array.make i v)
+      if i > 256 * 64 * 1024 then (* 256 pages *)
+        raise Exception.OutOfMemory
+      else
+        ListV (Array.make i v)
   | ConcatE (e1, e2) ->
       let a1 = eval_expr env e1 |> value_to_array in
       let a2 = eval_expr env e2 |> value_to_array in
@@ -274,7 +274,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
-  if !cnt > 1000000 then raise Timeout else cnt := !cnt + 1;
+  if !cnt > 10000000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->
@@ -292,6 +292,9 @@ and interp_instrs env il =
             else env
           in
           (interp_while env, cont)
+      | EitherI (il1, il2) ->
+          let env = try interp_instrs env il1 with Exception.OutOfMemory -> interp_instrs env il2 in
+          (env, cont)
       | ForI (e, il) ->
           (match eval_expr env (LengthE e) with
             | NumV n ->
@@ -371,7 +374,7 @@ and interp_instrs env il =
           in
           let env = assign pattern (eval_expr env e) env in
           (env, cont)
-      | TrapI -> raise Trap
+      | TrapI -> raise Exception.Trap
       | NopI | ReturnI None -> (env, cont)
       | ReturnI (Some e) ->
           let result = eval_expr env e in
