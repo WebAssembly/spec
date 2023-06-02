@@ -353,7 +353,7 @@ let rec rhs2instrs exp =
       let push_instrs = rhs2instrs rhs in
       match state_exp.it with
       | VarE _ -> push_instrs
-      | _ -> Al.PerformI (exp2expr state_exp) :: push_instrs)
+      | _ -> push_instrs @ [ Al.PerformI (exp2expr state_exp) ])
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
 (* `Ast.exp` -> `Al.cond` *)
@@ -675,10 +675,14 @@ let translate_rules il =
 
 let replace_with e =
   match e.it with
-  | Ast.UpdE (base, path, v) | Ast.ExtE (base, path, v) -> (
+  | Ast.UpdE (base, path, v) -> (
       match path2expr base path with
       | Al.AccessE (e, p) -> [ Al.ReplaceI (e, p, exp2expr v) ]
-      | _ -> failwith "Impossible: path2expr always return AccessE")
+      | _ -> failwith "Impossible: path2expr always return AccessE" )
+  | Ast.ExtE (base, path, v) -> (
+      match path2expr base path with
+      | Al.AccessE (e, p) -> [ Al.AppendListI (e, p, exp2expr v) ]
+      | _ -> failwith "Impossible: path2expr always return AccessE" )
   | _ -> []
 
 let mutator2instrs clause =

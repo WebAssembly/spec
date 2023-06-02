@@ -139,13 +139,14 @@ type instr =
   | EnterI of expr * expr
   | ExecuteI of expr
   | ExecuteSeqI of expr
-  | ReplaceI of expr * path * expr
   | JumpI of expr
   | PerformI of expr
   | ExitNormalI of name
   | ExitAbruptI of name
-  | AppendI of expr * expr * string
-  | AppendListI of expr * expr * string
+  (* Mutations *)
+  | ReplaceI of expr * path * expr
+  | AppendI of expr * path * expr
+  | AppendListI of expr * path * expr
   | ValidI of expr * expr * expr option
   | IsValidI of expr option
   (* Yet *)

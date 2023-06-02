@@ -114,7 +114,7 @@ with_table x i r
 
 with_tableext x r
 1. Let f be the current frame.
-2. Replace s.TABLE[f.MODULE.TABLE[x]] with r*.
+2. Append the sequence r* to the s.TABLE[f.MODULE.TABLE[x]].
 
 with_mem x i j b
 1. Let f be the current frame.
@@ -122,7 +122,7 @@ with_mem x i j b
 
 with_memext x b
 1. Let f be the current frame.
-2. Replace s.MEM[f.MODULE.MEM[x]] with b*.
+2. Append the sequence b* to the s.MEM[f.MODULE.MEM[x]].
 
 with_elem x r
 1. Let f be the current frame.
@@ -520,8 +520,8 @@ execution_of_table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Perform $with_tableext(x, ref^n).
-  b. Push (I32.CONST |$table(x)|) to the stack.
+  a. Push (I32.CONST |$table(x)|) to the stack.
+  b. Perform $with_tableext(x, ref^n).
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -549,8 +549,8 @@ execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Perform $with_memext(0, 0^((n · 64) · $Ki())).
-  b. Push (I32.CONST |$mem(0)|) to the stack.
+  a. Push (I32.CONST |$mem(0)|) to the stack.
+  b. Perform $with_memext(0, 0^((n · 64) · $Ki())).
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -912,13 +912,13 @@ align.wast: [43/48] (89.58%)
 if.wast: [116/123] (94.31%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
-block.wast: [47/52] (90.38%)
+block.wast: [48/52] (92.31%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [24/26] (92.31%)
 i64.wast: [384/384] (100.00%)
 memory_copy.wast: [Uncaught exception in 30th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 stack.wast: [5/5] (100.00%)
-loop.wast: [72/77] (93.51%)
+loop.wast: [73/77] (94.81%)
 conversions.wast: [587/593] (98.99%)
 endianness.wast: [51/68] (75.00%)
 return.wast: [63/63] (100.00%)
@@ -931,18 +931,18 @@ traps.wast: [32/32] (100.00%)
 local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
 binary.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
-memory_grow.wast: [29/84] (34.52%)
+memory_grow.wast: [28/84] (33.33%)
 call_indirect.wast: [31/132] (23.48%)
 load.wast: [32/37] (86.49%)
 memory_fill.wast: [Uncaught exception in 0th assertion: Direct invocation failed due to Backend_al.Exception.Trap]
-memory_size.wast: [22/36] (61.11%)
+memory_size.wast: [9/36] (25.00%)
 imports.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 left-to-right.wast: [91/95] (95.79%)
 ref_is_null.wast: [10/11] (90.91%)
 memory_trap.wast: [Uncaught exception in 13th assertion: Module Instantiation failed due to Backend_al.Exception.Trap]
 binary-leb128.wast: [Uncaught exception in 0th assertion: This test contains a binary module]
 br_table.wast: [126/149] (84.56%)
-select.wast: [82/118] (69.49%)
+select.wast: [84/118] (71.19%)
 f32_bitwise.wast: [360/360] (100.00%)
 memory_init.wast: [Uncaught exception in 90th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 elem.wast: [Uncaught exception in 8th assertion: This test contains a (register ...) command]
@@ -951,7 +951,7 @@ f32.wast: [1589/2500] (63.56%)
 start.wast: [0/6] (0.00%)
 float_exprs.wast: [747/794] (94.08%)
 float_memory.wast: [48/60] (80.00%)
-table_size.wast: [22/36] (61.11%)
+table_size.wast: [16/36] (44.44%)
 table_set.wast: [13/18] (72.22%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
@@ -962,7 +962,7 @@ table_fill.wast: [35/35] (100.00%)
 data.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
 int_literals.wast: [30/30] (100.00%)
 address.wast: [205/255] (80.39%)
-table_grow.wast: [20/38] (52.63%)
+table_grow.wast: [13/38] (34.21%)
 func_ptrs.wast: [Uncaught exception in 3th assertion: Direct invocation failed due to Invalid_argument("index out of bounds")]
 table_init.wast: [Uncaught exception in 0th assertion: This test contains a (register ...) command]
 global.wast: [Uncaught exception in 0th assertion: Module Instantiation failed due to Invalid_argument("index out of bounds")]
@@ -971,6 +971,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [15189/23744] (63.97%; Normalized 72.33%)
+Total [15167/23744] (63.88%; Normalized 71.43%)
 == Complete.
 ```

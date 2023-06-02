@@ -74,7 +74,7 @@ let do_invoke act = match act.it with
       |> Array.of_list
     ) in
     Interpreter.cnt := 0;
-    Printf.eprintf "[Invoking %s...]\n%!" (string_of_name name);
+    Printf.eprintf "[Invoking %s %s...]\n%!" (string_of_name name) (Print.string_of_value args);
     Interpreter.call_algo "invocation" [idx; args]
   | _ -> failwith "Currently, we only support calling function in the lastly defined module"
 

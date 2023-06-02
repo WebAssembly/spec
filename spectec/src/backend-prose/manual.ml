@@ -298,17 +298,17 @@ let alloc_module =
       LetI (frame_init, FrameE (NumE 0L, RecordE frame_init_rec));
       PushI frame_init;
       LetI ( funcaddr_iter, MapE (N "alloc_func", [ func ], [ List ]));
-      AppendListI (funcaddr_iter, module_inst_init, "FUNC");
+      AppendListI (module_inst_init, DotP ("FUNC"), funcaddr_iter);
       LetI (tableaddr_iter, MapE (N "alloc_table", [ table ], [ List ]));
-      AppendListI (tableaddr_iter, module_inst_init, "TABLE");
+      AppendListI (module_inst_init, DotP ("TABLE"), tableaddr_iter);
       LetI (globaladdr_iter, MapE (N "alloc_global", [ global ], [ List ]));
-      AppendListI (globaladdr_iter, module_inst_init, "GLOBAL");
+      AppendListI (module_inst_init, DotP ("GLOBAL"), globaladdr_iter);
       LetI (memoryaddr_iter, MapE (N "alloc_memory", [ memory ], [ List ]));
-      AppendListI (memoryaddr_iter, module_inst_init, "MEM");
+      AppendListI (module_inst_init, DotP ("MEM"), memoryaddr_iter);
       LetI (elemaddr_iter, MapE (N "alloc_elem", [ elem ], [ List ]));
-      AppendListI (elemaddr_iter, module_inst_init, "ELEM");
+      AppendListI (module_inst_init, DotP ("ELEM"), elemaddr_iter);
       LetI (dataaddr_iter, MapE (N "alloc_data", [ data ], [ List ]));
-      AppendListI (dataaddr_iter, module_inst_init, "DATA");
+      AppendListI (module_inst_init, DotP ("DATA"), dataaddr_iter);
       PopI frame_init;
       ForI (
         AccessE (store, DotP "FUNC"),
@@ -341,7 +341,7 @@ let alloc_func =
       LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "FUNC")));
       LetI (NameE (dummy_module_inst, []), RecordE dummy_module_rec);
       LetI (NameE (func_inst_name, []), PairE (NameE (dummy_module_inst, []), NameE (func_name, [])));
-      AppendI (NameE (func_inst_name, []), NameE (store_name, []), "FUNC");
+      AppendI (NameE (store_name, []), DotP ("FUNC"), NameE (func_inst_name, []));
       ReturnI (Some (NameE (addr_name, [])))
     ]
   )
@@ -360,7 +360,7 @@ let alloc_global =
     [
       LetI (addr, LengthE (AccessE (store, DotP "GLOBAL")));
       LetI (val_, AppE (N "init_global", [ global ]));
-      AppendI (val_, store, "GLOBAL");
+      AppendI (store, DotP ("GLOBAL"), val_);
       ReturnI (Some addr)
     ]
   )
@@ -387,7 +387,7 @@ let alloc_table =
       );
       LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "TABLE")));
       LetI (NameE (tableinst_name, []), ListFillE (ref_null, NameE (min, [])));
-      AppendI (NameE (tableinst_name, []), NameE (store_name, []), "TABLE");
+      AppendI (NameE (store_name, []), DotP ("TABLE"), NameE (tableinst_name, []));
       ReturnI (Some (NameE (addr_name, [])))
     ]
   )
@@ -418,7 +418,7 @@ let alloc_memory =
           BinopE (Mul, BinopE (Mul, NameE (min_name, []), NumE 64L), AppE (N "Ki", []))
         )
       );
-      AppendI (NameE (memoryinst_name, []), NameE (store_name, []), "MEM");
+      AppendI (NameE (store_name, []), DotP ("MEM"), NameE (memoryinst_name, []));
       ReturnI (Some (NameE (addr_name, [])))
     ]
   )
@@ -437,7 +437,7 @@ let alloc_elem =
     [
       LetI (addr, LengthE (AccessE (store, DotP "ELEM")));
       LetI (ref, AppE (N "init_elem", [ elem ]));
-      AppendI (ref, store, "ELEM");
+      AppendI (store, DotP ("ELEM"), ref);
       ReturnI (Some addr)
     ]
   )
@@ -460,7 +460,7 @@ let alloc_data =
         NameE (data_name, [])
       );
       LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "DATA")));
-      AppendI (NameE (init, []), NameE (store_name, []), "DATA");
+      AppendI (NameE (store_name, []), DotP ("DATA"), NameE (init, []));
       ReturnI (Some (NameE (addr_name, [])))
     ]
   )

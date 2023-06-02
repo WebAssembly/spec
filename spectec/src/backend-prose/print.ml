@@ -281,20 +281,20 @@ let rec string_of_instr index depth = function
       sprintf "%s Execute %s." (make_index index depth) (string_of_expr e)
   | ExecuteSeqI e ->
       sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
-  | ReplaceI (e1, p, e2) ->
-      sprintf "%s Replace %s%s with %s." (make_index index depth)
-        (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | JumpI e ->
       sprintf "%s Jump to %s." (make_index index depth) (string_of_expr e)
   | PerformI e ->
       sprintf "%s Perform %s." (make_index index depth) (string_of_expr e)
   | ExitNormalI _ | ExitAbruptI _ -> make_index index depth ^ " Exit current context."
-  | AppendI (e1, e2, s) ->
-      sprintf "%s Append %s to the %s.%s." (make_index index depth)
-        (string_of_expr e1) (string_of_expr e2) s
-  | AppendListI (e1, e2, s) ->
-      sprintf "%s Append the sequence %s to the %s.%s." (make_index index depth)
-        (string_of_expr e1) (string_of_expr e2) s
+  | ReplaceI (e1, p, e2) ->
+      sprintf "%s Replace %s%s with %s." (make_index index depth)
+        (string_of_expr e1) (string_of_path p) (string_of_expr e2)
+  | AppendI (e1, p, e2) ->
+      sprintf "%s Append %s to the %s%s." (make_index index depth)
+        (string_of_expr e2) (string_of_expr e1) (string_of_path p)
+  | AppendListI (e1, p, e2) ->
+      sprintf "%s Append the sequence %s to the %s%s." (make_index index depth)
+        (string_of_expr e2) (string_of_expr e1) (string_of_path p)
   | ValidI (e1, e2, eo) ->
       sprintf "%s Under the context %s, %s must be valid%s." (make_index index depth)
         (string_of_expr e1)
@@ -642,6 +642,10 @@ let rec structured_string_of_instr depth = function
       ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
+  | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
+  | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
+  | ExitNormalI n -> "ExitNormalI (" ^ structured_string_of_name n ^ ")"
+  | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
   | ReplaceI (e1, p, e2) ->
       "ReplaceI ("
       ^ structured_string_of_expr e1
@@ -650,20 +654,20 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
-  | PerformI e -> "PerformI (" ^ structured_string_of_expr e ^ ")"
-  | ExitNormalI n -> "ExitNormalI (" ^ structured_string_of_name n ^ ")"
-  | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
-  | AppendI (e1, e2, s) ->
+  | AppendI (e1, p, e2) ->
       "AppendI ("
       ^ structured_string_of_expr e1
-      ^ ", " ^ s ^ ", "
+      ^ ", "
+      ^ structured_string_of_path p
+      ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | AppendListI (e1, e2, s) ->
+  | AppendListI (e1, p, e2) ->
       "AppendListI ("
       ^ structured_string_of_expr e1
-      ^ ", " ^ s ^ ", "
+      ^ ", "
+      ^ structured_string_of_path p
+      ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
   | ValidI (e1, e2, eo) ->

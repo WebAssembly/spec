@@ -137,6 +137,7 @@ and eval_expr env expr =
   | NumE i -> NumV i
   | StringE s -> StringV s
   (* Numeric Operation *)
+  | MinusE inner_e -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
   | BinopE (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
@@ -293,7 +294,13 @@ and interp_instrs env il =
           in
           (interp_while env, cont)
       | EitherI (il1, il2) ->
-          let env = try interp_instrs env il1 with Exception.OutOfMemory -> interp_instrs env il2 in
+          let (orig_store, orig_stack) = (!store, !stack) in
+          let env = try
+            interp_instrs env il1
+          with Exception.OutOfMemory -> (
+            store := orig_store;
+            stack := orig_stack;
+            interp_instrs env il2 ) in
           (env, cont)
       | ForI (e, il) ->
           (match eval_expr env (LengthE e) with
@@ -380,24 +387,6 @@ and interp_instrs env il =
           let result = eval_expr env e in
           let env = Env.set_result result env in
           (env, cont)
-      | ReplaceI (e1, IndexP e2, e3) ->
-          let a = eval_expr env e1 |> value_to_array in
-          let i = eval_expr env e2 |> value_to_int in
-          let v = eval_expr env e3 in
-          Array.set a i v;
-          (env, cont)
-      | ReplaceI (e1, SliceP (e2, e3), e4) -> (
-          let v1 = eval_expr env e1 in
-          let v2 = eval_expr env e2 in
-          let v3 = eval_expr env e3 in
-          let v4 = eval_expr env e4 in
-          match v1, v2, v3, v4 with
-          | ListV l1, NumV st, NumV len, ListV l2 ->
-              for i = 0 to Int64.to_int len - 1 do
-                i |> Array.get l2 |> Array.set l1 (Int64.to_int st + i);
-              done;
-              (env, cont)
-          | _ -> failwith "Invalid Replace instr")
       | PerformI e ->
           eval_expr env e |> ignore;
           (env, cont)
@@ -436,9 +425,24 @@ and interp_instrs env il =
           | LabelV _ -> raise (ExitContext (env, cont))
           | _ -> ());
           (env, cont)
-      | AppendI (e1, e2, s) ->
-          let v1 = eval_expr env e1 in
-          (match eval_expr env e2 with
+      | ReplaceI (e1, IndexP e2, e3) ->
+          let a = eval_expr env e1 |> value_to_array in
+          let i = eval_expr env e2 |> value_to_int in
+          let v = eval_expr env e3 in
+          Array.set a i v;
+          (env, cont)
+      | ReplaceI (e1, SliceP (e2, e3), e4) ->
+          let a1 = eval_expr env e1 |> value_to_array in (* dest *)
+          let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
+          let i2 = eval_expr env e3 |> value_to_int in   (* length *)
+          let a2 = eval_expr env e4 |> value_to_array in (* src *)
+          for i = 0 to i2 - 1 do
+            i |> Array.get a2 |> Array.set a1 (i1 + i)
+          done;
+          (env, cont)
+      | AppendI (e1, DotP(s), e2) ->
+          let v1 = eval_expr env e2 in
+          (match eval_expr env e1 with
           | StoreV sto ->
               let a = match Record.find s !sto |> (!) with
                 | ListV l -> l
@@ -447,9 +451,9 @@ and interp_instrs env il =
               sto := Record.add s (ref appended_result) !sto
           | v -> string_of_value v |> Printf.sprintf "Append %s" |> failwith);
           (env, cont)
-      | AppendListI (e1, e2, s) ->
+      | AppendListI (e1, DotP(s), e2) ->
           begin match eval_expr env e1, eval_expr env e2 with
-          | ListV l1, RecordV r ->
+          | RecordV r, ListV l1 ->
               let l = Record.find s r in 
               begin match !l with
               | ListV l2 -> l := ListV (Array.append l2 l1)
@@ -458,7 +462,13 @@ and interp_instrs env il =
           | _ -> failwith "TODO"
           end;
           (env, cont)
-      | i -> structured_string_of_instr 0 i |> failwith)
+      | AppendListI (e1, IndexP e2, e3) ->
+          let a1 = eval_expr env e1 |> value_to_array in
+          let i = eval_expr env e2 |> value_to_int in
+          let a2 = eval_expr env e3 |> value_to_array in
+          Array.blit a1 i a2 0 (Array.length a2);
+          (env, cont)
+      | i -> "Interpreter is not implemented for the instruction: " ^ structured_string_of_instr 0 i |> failwith)
     in
     interp_instrs env cont
 
