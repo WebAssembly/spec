@@ -275,7 +275,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
-  if !cnt > 10000000 then raise Exception.Timeout else cnt := !cnt + 1;
+  if !cnt > 1000000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->

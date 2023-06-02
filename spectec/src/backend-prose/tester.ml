@@ -56,26 +56,37 @@ let al_of_result result = match result.it with
 
 (** End of helpers **)
 
-let exports = ref []
+module Exports = Map.Make (String)
+type exports = (store * value list) Exports.t
+let exports: exports ref = ref Exports.empty
 
 let do_invoke act = match act.it with
-  | Script.Invoke (None, name, literals) ->
+  | Script.Invoke (opt, name, literals) ->
     let extract_idx (export: value) =
       match export with
       | ConstructV ("EXPORT", [ StringV (export_name); ConstructV ("FUNC", [ idx ]) ])
         when export_name = Ast.string_of_name name -> Some (idx)
       | _ -> None
     in
-    let idx = List.find_map extract_idx !exports |> Option.get in
+    let module_name =
+      match opt with
+      | Some name -> name.it
+      | None -> ""
+    in
+
+    let (sto, export) = Exports.find module_name !exports in
+    let idx = List.find_map extract_idx export |> Option.get in
+
     let args = ListV (
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
       |> Array.of_list
     ) in
     Interpreter.cnt := 0;
+    Interpreter.store := sto;
     Printf.eprintf "[Invoking %s %s...]\n%!" (string_of_name name) (Print.string_of_value args);
     Interpreter.call_algo "invocation" [idx; args]
-  | _ -> failwith "Currently, we only support calling function in the lastly defined module"
+  | Get _ -> failwith "Invalid action: Get"
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
 let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32
@@ -132,27 +143,35 @@ let test_assertion assertion =
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
-let test_module m =
+let test_module module_name m =
   Interpreter.cnt := 0;
   Interpreter.init_stack();
   Interpreter.init_store();
   try
     match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
-    | ListV l -> exports := Array.to_list l
+    | ListV l ->
+        let export = Array.to_list l in
+        (match module_name with
+        | Some name -> exports := Exports.add name.it (!Interpreter.store, export) !exports
+        | None -> ());
+        exports := Exports.add "" (!Interpreter.store, export) !exports;
     | _ -> failwith "invalid exports"
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
 let rec test_script success = function
   | [] -> ()
+  (* | { it = Script.Module (_name_opt, {it = Script.Textual m; _}) }
+    :: { it = Script.Register (name, idx) } :: tail ->
+      test_module m *)
   | cmd :: tail ->
       begin match cmd.it with
-      | Script.Module (_name_opt, {it = Script.Textual m; _}) -> test_module m
+      | Script.Module (module_name, {it = Script.Textual m; _}) -> test_module module_name m
       | Script.Module _ -> failwith "This test contains a binary module"
       | Script.Register _ -> failwith "This test contains a (register ...) command"
       | Script.Action a -> (
         try do_invoke a |> ignore with
         | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
-        )
+      )
       | Script.Assertion a ->
           begin match test_assertion a with
             | Success -> success := !success + 1

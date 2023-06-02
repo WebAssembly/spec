@@ -902,11 +902,11 @@ table_copy.wast: [Uncaught exception: This test contains a (register ...) comman
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [35/45] (77.78%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [67/70] (95.71%)
+call.wast: [66/70] (94.29%)
 local_get.wast: [19/19] (100.00%)
 fac.wast: [6/6] (100.00%)
 func.wast: [86/96] (89.58%)
-exports.wast: [4/9] (44.44%)
+exports.wast: [6/9] (66.67%)
 local_set.wast: [19/19] (100.00%)
 linking.wast: [Uncaught exception: This test contains a (register ...) command]
 float_literals.wast: [Uncaught exception: This test contains a binary module]
@@ -928,7 +928,7 @@ store.wast: [9/9] (100.00%)
 memory_redundancy.wast: [2/4] (50.00%)
 i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
-bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Trap]
+bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout]
 traps.wast: [32/32] (100.00%)
 local_tee.wast: [50/55] (90.91%)
 f64_bitwise.wast: [360/360] (100.00%)
@@ -973,6 +973,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [75/83] (90.36%)
-Total [15167/23744] (63.88%; Normalized 71.43%)
+Total [15168/23744] (63.88%; Normalized 71.71%)
 == Complete.
 ```
