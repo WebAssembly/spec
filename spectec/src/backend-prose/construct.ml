@@ -220,7 +220,8 @@ let rec al_of_instr types winstr =
     ConstructV ("CVTOP", [ singleton ty_to; StringV op; singleton ty_from; OptV sx_opt ])
   | Ast.RefIsNull -> f "REF.IS_NULL"
   | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
-  | Ast.Select None -> ConstructV ("SELECT", [ StringV "TODO: None" ])
+  | Ast.Select None -> ConstructV ("SELECT", [ OptV None ])
+  | Ast.Select (Some [t]) -> ConstructV ("SELECT", [ OptV (Some (al_of_type t)) ])
   | Ast.LocalGet i32 -> f_i32 "LOCAL.GET" i32
   | Ast.LocalSet i32 -> f_i32 "LOCAL.SET" i32
   | Ast.LocalTee i32 -> f_i32 "LOCAL.TEE" i32
