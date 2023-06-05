@@ -780,16 +780,18 @@ instantiation module externval*
 3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f to the stack.
 5. For i in range |elem*|:
-  a. Let (ELEM _ einit mode) be elem*[i].
-  b. If mode is defined and mode is of the case TABLE, then:
-    1) Let ?((TABLE tableidx einstrs*)) be mode.
-    2) Execute the sequence (einstrs*).
-    3) Execute (I32.CONST 0).
-    4) Execute (I32.CONST |einit|).
-    5) Execute (TABLE.INIT tableidx i).
-    6) Execute (ELEM.DROP i).
-  c. If mode is defined and mode is of the case DECLARE, then:
-    1) Execute (ELEM.DROP i).
+  a. Let (ELEM _ einit mode_opt) be elem*[i].
+  b. If mode_opt is defined, then:
+    1) Let ?(mode) be mode_opt.
+    2) If mode is of the case TABLE, then:
+      a) Let (TABLE tableidx einstrs*) be mode.
+      b) Execute the sequence (einstrs*).
+      c) Execute (I32.CONST 0).
+      d) Execute (I32.CONST |einit|).
+      e) Execute (TABLE.INIT tableidx i).
+      f) Execute (ELEM.DROP i).
+    3) If mode is of the case DECLARE, then:
+      a) Execute (ELEM.DROP i).
 6. For i in range |data*|:
   a. Let (DATA dinit mode) be data*[i].
   b. If mode is defined, then:
@@ -903,25 +905,25 @@ table_copy.wast: [Uncaught exception: Module Instantiation failed due to No fram
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [45/45] (100.00%)
 unwind.wast: [49/49] (100.00%)
-call.wast: [66/70] (94.29%)
+call.wast: [68/70] (97.14%)
 local_get.wast: [19/19] (100.00%)
 fac.wast: [6/6] (100.00%)
-func.wast: [92/96] (95.83%)
+func.wast: [96/96] (100.00%)
 exports.wast: [6/9] (66.67%)
 local_set.wast: [19/19] (100.00%)
 linking.wast: [Uncaught exception: Module Instantiation failed due to nth] [10/83] (12.05%)
 float_literals.wast: [Uncaught exception: This test contains a binary module] [82/83] (98.80%)
 align.wast: [47/48] (97.92%)
-if.wast: [118/123] (95.93%)
+if.wast: [123/123] (100.00%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
-block.wast: [49/52] (94.23%)
+block.wast: [52/52] (100.00%)
 labels.wast: [25/25] (100.00%)
 switch.wast: [26/26] (100.00%)
 i64.wast: [384/384] (100.00%)
 memory_copy.wast: [Uncaught exception: Direct invocation failed due to nth] [30/4338] (0.69%)
 stack.wast: [5/5] (100.00%)
-loop.wast: [73/77] (94.81%)
+loop.wast: [76/77] (98.70%)
 conversions.wast: [593/593] (100.00%)
 endianness.wast: [68/68] (100.00%)
 return.wast: [63/63] (100.00%)
@@ -931,29 +933,29 @@ i32.wast: [374/374] (100.00%)
 unreachable.wast: [63/63] (100.00%)
 bulk.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [7/66] (10.61%)
 traps.wast: [32/32] (100.00%)
-local_tee.wast: [51/55] (92.73%)
+local_tee.wast: [55/55] (100.00%)
 f64_bitwise.wast: [360/360] (100.00%)
-memory_grow.wast: [72/84] (85.71%)
-call_indirect.wast: [32/132] (24.24%)
-load.wast: [33/37] (89.19%)
+memory_grow.wast: [75/84] (89.29%)
+call_indirect.wast: [116/132] (87.88%)
+load.wast: [37/37] (100.00%)
 memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [0/20] (0.00%)
 memory_size.wast: [29/36] (80.56%)
 imports.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/34] (0.00%)
-left-to-right.wast: [91/95] (95.79%)
-ref_is_null.wast: [10/11] (90.91%)
+left-to-right.wast: [95/95] (100.00%)
+ref_is_null.wast: [11/11] (100.00%)
 memory_trap.wast: [Uncaught exception: Module Instantiation failed due to Backend_al.Exception.Trap] [11/180] (6.11%)
 br_table.wast: [149/149] (100.00%)
-select.wast: [86/118] (72.88%)
+select.wast: [90/118] (76.27%)
 f32_bitwise.wast: [360/360] (100.00%)
 memory_init.wast: [Uncaught exception: Direct invocation failed due to nth] [90/140] (64.29%)
-elem.wast: [8/25] (32.00%)
-table_get.wast: [7/9] (77.78%)
+elem.wast: [Uncaught exception: Module Instantiation failed due to nth] [0/25] (0.00%)
+table_get.wast: [9/9] (100.00%)
 f32.wast: [2500/2500] (100.00%)
 start.wast: [0/6] (0.00%)
 float_exprs.wast: [792/794] (99.75%)
 float_memory.wast: [60/60] (100.00%)
 table_size.wast: [29/36] (80.56%)
-table_set.wast: [17/18] (94.44%)
+table_set.wast: [18/18] (100.00%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
 ref_func.wast: [Uncaught exception: Direct invocation failed due to nth] [4/8] (50.00%)
@@ -969,7 +971,7 @@ global.wast: [Uncaught exception: Module Instantiation failed due to nth] [0/58]
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
-nop.wast: [78/83] (93.98%)
-Total [16369/23744] (68.94%; Normalized 79.39%)
+nop.wast: [83/83] (100.00%)
+Total [16490/23744] (69.45%; Normalized 81.07%)
 == Complete.
 ```

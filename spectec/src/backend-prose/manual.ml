@@ -97,6 +97,7 @@ let instantiation =
     |> Record.add "LOCAL" (ListE []) in
   let elem = NameE (N "elem", [List]) in
   let data = NameE (N "data", [List]) in
+  let mode_opt = NameE (N "mode_opt", []) in
   let mode = NameE (N "mode", []) in
   let einit = NameE (N "einit", []) in
   let dinit = NameE (N "dinit", []) in
@@ -126,24 +127,31 @@ let instantiation =
       ForI (
         elem,
         [
-          LetI (ConstructE ("ELEM", [ ignore_name; einit; mode ]), AccessE (elem, IndexP idx));
-          (* Active Element *)
+          LetI (ConstructE ("ELEM", [ ignore_name; einit; mode_opt ]), AccessE (elem, IndexP idx));
           IfI (
-            BinopC (And, IsDefinedC mode, IsCaseOfC (mode, "TABLE")),
+            IsDefinedC mode_opt,
             [
-              LetI (OptE (Some (ConstructE ("TABLE", [ tableidx; einstrs ]))), mode);
-              ExecuteSeqI einstrs;
-              ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
-              ExecuteI (ConstructE ("CONST", [ i32_type; LengthE einit ]));
-              ExecuteI (ConstructE ("TABLE.INIT", [ tableidx; idx ]));
-              ExecuteI (ConstructE ("ELEM.DROP", [ idx ]));
+              LetI (OptE (Some (mode)), mode_opt);
+              (* Active Element *)
+              IfI (
+                IsCaseOfC (mode, "TABLE"),
+                [
+                  LetI (ConstructE ("TABLE", [ tableidx; einstrs ]), mode);
+                  ExecuteSeqI einstrs;
+                  ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
+                  ExecuteI (ConstructE ("CONST", [ i32_type; LengthE einit ]));
+                  ExecuteI (ConstructE ("TABLE.INIT", [ tableidx; idx ]));
+                  ExecuteI (ConstructE ("ELEM.DROP", [ idx ]));
+                ],
+                []
+              );
+              (* Declarative Element *)
+              IfI (
+                IsCaseOfC (mode, "DECLARE"),
+                [ ExecuteI (ConstructE ("ELEM.DROP", [ idx ])); ],
+                []
+              )
             ],
-            []
-          );
-          (* Declarative Element *)
-          IfI (
-            BinopC (And, IsDefinedC mode, IsCaseOfC (mode, "DECLARE")),
-            [ ExecuteI (ConstructE ("ELEM.DROP", [ idx ])); ],
             []
           )
         ]
