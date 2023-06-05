@@ -70,6 +70,55 @@ module Register = Map.Make (String)
 type register = export Register.t
 let register: register ref = ref Register.empty
 
+let builtin =
+
+  let initial_store: value list Record.t =
+    Record.empty
+    |> Record.add "FUNC" [] in
+
+  (* Builtin functions *)
+  let funcs = [
+    "print", [ ConstructV ("PRINT", []) ];
+    "print_i32", [ ConstructV ("PRINT_I32", []) ];
+    "print_i64", [ ConstructV ("PRINT_I64", []) ];
+    "print_f32", [ ConstructV ("PRINT_F32", []) ];
+    "print_f64", [ ConstructV ("PRINT_F64", []) ];
+    "print_i32_f32", [ ConstructV ("PRINT_I32_F32", []) ];
+    "print_f64_f64", [ ConstructV ("PRINT_F64_F64", []) ];
+    "global_i32", [ ConstructV ("GLOBAL_I32", []) ];
+    "global_i64", [ ConstructV ("GLOBAL_I64", []) ];
+    "global_f32", [ ConstructV ("GLOBAL_F32", []) ];
+    "global_f64", [ ConstructV ("GLOBAL_F64", []) ];
+    "table", [ ConstructV ("TABLE", []) ];
+    "memory", [ ConstructV ("MEMORY", []) ];
+  ] in
+
+  let f1 (name, code) (sto, extern) =
+
+    (* Update Store *)
+    let new_funcinsts =
+      PairV (RecordV Record.empty, ListV (ref code)) :: Record.find "FUNC" sto
+    in
+    let new_sto = Record.add "FUNC" new_funcinsts sto in
+
+    (* Generate ExternFunc *)
+    let addr = Record.find "FUNC" sto |> List.length |> Int64.of_int in
+    let new_extern =
+      ConstructV ("EXPORT", [ StringV name; ConstructV ("FUNC", [ NumV addr ]) ])
+    in
+
+    (new_sto, new_extern :: extern)
+  in
+
+  let (sto, extern) = List.fold_right f1 funcs (initial_store, []) in
+
+  Record.map (fun l -> ListV (ref l)) sto, extern
+
+
+let find_export = function
+  | "spectest" -> builtin
+  | name -> Register.find name !register
+
 let do_invoke act = match act.it with
   | Script.Invoke (opt, name, literals) ->
     let extract_idx (export: value) =
@@ -84,7 +133,7 @@ let do_invoke act = match act.it with
       | None -> ""
     in
 
-    let (sto, export) = Register.find module_name !register in
+    let (sto, export) = find_export module_name in
     let idx = List.find_map extract_idx export |> Option.get in
 
     let args = ListV (
@@ -156,16 +205,20 @@ let test_assertion assertion =
   | _ -> Ignore (* ignore other kinds of assertions *)
 
 let get_externval = function
-  | ConstructV ("IMPORT", [ StringV _import_module_name; StringV _extern_name; _ty ]) ->
-      (*let export = Registers.find import_module_name !register in
-      let _, externval = Exports.find extern_name export in
-      externval*) ()
+  | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
+      let _, export = find_export import_module_name in
+      let f =
+        function
+          | ConstructV ("EXPORT", [ StringV export_name; use ])
+            when export_name = extern_name -> Some use
+          | _ -> None
+      in
+      List.find_map f export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function
-  | ConstructV ("MODULE", ListV _imports :: _) ->
-      (*ListV (List.map get_externval !imports |> ref) *)
-      ListV (ref [])
+  | ConstructV ("MODULE", ListV imports :: _) ->
+      ListV (List.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
 let test_module module_name m =
@@ -204,7 +257,7 @@ let test_cmd success cmd =
         | Some s -> s.it
         | None -> ""
       in
-      let export = Register.find module_name !register in
+      let export = find_export module_name in
       register := Register.add s export !register
   | Script.Action a -> (
     try do_invoke a |> ignore with
