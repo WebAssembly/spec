@@ -9,7 +9,7 @@ let root = ref ""
 
 (** Helpers **)
 
-let contains substring str =
+let contains str substring =
   let regex = Str.regexp_string substring in
   try
     ignore (Str.search_forward regex str 0);
@@ -17,7 +17,10 @@ let contains substring str =
   with Not_found ->
     false
 
-let readdir_with_path path = Sys.readdir (Filename.concat !root path) |> Array.map (Filename.concat path)
+let readdir_with_path path =
+  Sys.readdir (Filename.concat !root path)
+  |> Array.map (Filename.concat path)
+  |> Array.to_list
 
 type result =
   | Success
@@ -36,6 +39,11 @@ let fail expected actual =
 let not_supported_msg = "We only support the test script with modules and assertions."
 
 let msg_of = function Failure msg -> msg | e -> Printexc.to_string e
+
+let time f =
+  let start_time = Sys.time() in
+  f();
+  Sys.time() -. start_time
 
 (* string -> Script.script *)
 let file_to_script file_name =
@@ -85,9 +93,10 @@ let do_invoke act = match act.it with
       |> ref
     ) in
     Interpreter.cnt := 0;
-    Interpreter.store := sto;
     Interpreter.wcnt := 0;
-    Printf.eprintf "[Invoking %s %s...]\n%!" (string_of_name name) (Print.string_of_value args);
+    Interpreter.init_stack();
+    Interpreter.store := sto;
+    Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
     Interpreter.call_algo "invocation" [idx; args]
   | Get _ -> failwith "Invalid action: Get"
 
@@ -160,7 +169,7 @@ let get_externvals = function
   | _ -> failwith "Invalid module"
 
 let test_module module_name m =
-  
+
   (* Initialize *)
   Interpreter.cnt := 0;
   Interpreter.wcnt := 0;
@@ -221,53 +230,45 @@ let test file_name =
     | Script.Assertion {it = Script.AssertTrap _ ; _}-> true
     | _ -> false
   ) |> List.length in
-  
-  if total <> 0 then
-    let time = Sys.time() in
+
+  if (contains file_name !test_name) && (total > 0) then
     let success = ref 0 in
     Printf.printf "%s: %!" name;
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
-    
-    begin try
-      List.iter (test_cmd success) script;
-    with
-    | e ->
-      let msg = msg_of e in
-      Printf.eprintf "[Uncaught exception] %s, " msg;
-      Printf.printf
-        "[Uncaught exception: %s] "
-        msg
-    end;
-    
-    Printf.eprintf "%s took %f ms.\n" name ((Sys.time() -. time) *. 1000.);
+
+    let took = time (fun () ->
+      try
+        List.iter (test_cmd success) script;
+      with
+      | e ->
+        let msg = msg_of e in
+        Printf.eprintf "[Uncaught exception] %s, " msg;
+        Printf.printf
+          "[Uncaught exception: %s] "
+          msg
+    ) in
+
+    Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
     let percentage = (float_of_int !success /. float_of_int total) *. 100. in
     Printf.printf "[%d/%d] (%.2f%%)\n" !success total percentage;
-    (!success, total, percentage)
+    Some (!success, total, percentage)
   else
-    (0, 0, 0.)
+    None
 
 let test_all () =
   let sample = "test-prose/sample.wast" in
-  let tests = Array.append [| sample |] (readdir_with_path "test-prose/spec-test") in
+  let tests = sample :: (readdir_with_path "test-prose/spec-test") in
 
-  let f filename = if contains !test_name filename then
-    test filename
-  else
-    (0, 0, 0.)
-  in
-  let results = (Array.map f tests) in
+  let results = List.filter_map test tests in
 
-  let success, total, percentage, count = Array.fold_left
+  let success, total, percentage = List.fold_left
     (fun acc result ->
-      let (success_acc, total_acc, percentage_acc, count_acc) = acc in
+      let (success_acc, total_acc, percentage_acc) = acc in
       let (success, total, percentage) = result in
-      if (total <> 0) then
-        (success_acc + success, total_acc + total, percentage_acc +. percentage, count_acc + 1)
-      else
-        acc)
-    (0, 0, 0., 0) results
+      (success_acc + success, total_acc + total, percentage_acc +. percentage))
+    (0, 0, 0.) results
   in
-  let percentage_norm = percentage /. float_of_int count in
-  let percentage = (float_of_int success /. float_of_int total) *. 100. in
+  let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
+  let percentage_norm = percentage /. float_of_int (List.length results) in
 
-  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage percentage_norm
+  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm

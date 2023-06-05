@@ -1,4 +1,3 @@
-module AlPrint = Print
 open Il
 open Printf
 open Util.Source
@@ -85,7 +84,7 @@ let rec exp2name exp =
       gen_fail_msg_of_exp exp "identifier" |> print_endline;
       Al.N "Yet"
 
-let tmp = function
+let iter2iter = function
   | Ast.Opt -> Al.Opt
   | Ast.List1 -> Al.List1
   | Ast.List -> Al.List
@@ -107,22 +106,21 @@ let rec exp2expr exp =
   | Ast.VarE id -> Al.NameE (N id.it, [])
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
-      Al.MapE (N id.it, exp2args inner_exp, [tmp iter])
+      Al.MapE (N id.it, exp2args inner_exp, [iter2iter iter])
   | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _}, (iter, [id']))
     when id.it = id'.it -> (* TODO: Somehow remove this hack *)
       let name = Al.N id.it in
-      Al.NameE (name, [tmp iter])
-  | Ast.IterE (inner_exp, (iter, [ _id ])) ->
+      Al.NameE (name, [iter2iter iter])
+  | Ast.IterE (inner_exp, (iter, [ id ])) ->
       let name = exp2name inner_exp in
-      (* assert (name = Al.N id.it); *)
-      Al.NameE (name, [tmp iter])
+      assert (name = Al.N id.it);
+      Al.NameE (name, [iter2iter iter])
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       Al.ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> Al.AccessE (exp2expr inner_exp, Al.DotP p)
   (* conacatenation of records *)
-  | Ast.CompE (exp1, exp2) ->
-      Al.ConcatE (exp2expr exp1, exp2expr exp2)
+  | Ast.CompE (exp1, exp2) -> Al.ConcatE (exp2expr exp1, exp2expr exp2)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> Al.MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
@@ -138,9 +136,7 @@ let rec exp2expr exp =
       in
       Al.BinopE (op, lhs, rhs)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, { it = Ast.TupE args; _ }) ->
-      Al.ConstructE (cons, List.map exp2expr args)
-  | Ast.CaseE (Ast.Atom cons, arg) -> Al.ConstructE (cons, [ exp2expr arg ])
+  | Ast.CaseE (Ast.Atom cons, arg) -> Al.ConstructE (cons, exp2args arg)
   (* Tuple *)
   | Ast.TupE exps -> Al.ListE (List.map exp2expr exps)
   (* Call *)
@@ -279,13 +275,13 @@ let rec rhs2instrs exp =
   (* Trap *)
   | Ast.CaseE (Atom "TRAP", _) -> [ Al.TrapI ]
   (* Push *)
-  | Ast.SubE (_, _, _) | IterE (_, _) -> [ Al.PushI (exp2expr exp) ]
+  | Ast.SubE _ | IterE _ -> [ Al.PushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _)
     when atomid = "CONST" || atomid = "REF.FUNC_ADDR" ->
       [ Al.PushI (exp2expr exp) ]
   (* multiple rhs' *)
   | Ast.CatE (exp1, exp2) -> rhs2instrs exp1 @ rhs2instrs exp2
-  | Ast.ListE exps -> List.map rhs2instrs exps |> List.flatten
+  | Ast.ListE exps -> List.concat_map rhs2instrs exps
   (* Frame *)
   | Ast.CaseE
       ( Ast.Atom "FRAME_",
@@ -334,18 +330,8 @@ let rec rhs2instrs exp =
             Al.ExitNormalI (Al.N "L");
           ])
   (* Execute instr *)
-  | Ast.CaseE (Atom atomid, argexp)
-    when String.starts_with ~prefix:"TABLE." atomid
-         || String.starts_with ~prefix:"MEMORY." atomid
-         || atomid = "LOAD" || atomid = "STORE" || atomid = "BLOCK"
-         || atomid = "BR" || atomid = "CALL_ADDR" || atomid = "LOCAL.SET"
-         || atomid = "RETURN" ->
-      let args =
-        match argexp.it with
-        | Ast.TupE exps -> List.map exp2expr exps
-        | _ -> [ exp2expr argexp ]
-      in
-      [ Al.ExecuteI (Al.ConstructE (atomid, args)) ]
+  | Ast.CaseE (Atom atomid, argexp) ->
+      [ Al.ExecuteI (Al.ConstructE (atomid, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -464,9 +450,7 @@ let path2expr exp path =
     | Ast.RootP -> exp
     | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
     | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
-    | Ast.DotP (p, a) ->
-        Ast.DotE (path2expr' p, a)
-        $$ (path.at % path.note)
+    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
   in
   path2expr' path |> exp2expr
 
@@ -558,174 +542,50 @@ let rec group_rules = function
       let group = (name, List.map rule2tup (h :: same_rules)) in
       group :: group_rules diff_rules
 
-
-(** Unifying lhs **)
-let unified_prefix = "_x"
-let _unified_id = ref 0
-let init_unified_id () = _unified_id := 0
-let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
-let gen_new_unified () = Ast.VarE (unified_prefix ^ (string_of_int (get_unified_id())) $ no_region)
-
-let rec overlap e1 e2 = if Eq.eq_exp e1 e2 then e1 else
-  let open Ast in
-  ( match e1.it, e2.it with
-  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it -> e1.it
-  | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
-      UnE (unop1, overlap e1 e2)
-  | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
-      BinE (binop1, overlap e1 e2, overlap e1' e2')
-  | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
-      CmpE (cmpop1, overlap e1 e2, overlap e1' e2')
-  | IdxE (e1, e1'), IdxE (e2, e2') ->
-      IdxE (overlap e1 e2, overlap e1' e2')
-  | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'')
-  | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when Eq.eq_path path1 path2 ->
-      UpdE (overlap e1 e2, path1, overlap e1' e2')
-  | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when Eq.eq_path path1 path2 ->
-      ExtE (overlap e1 e2, path1, overlap e1' e2')
-  | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
-      StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
-  | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
-      DotE (overlap e1 e2, atom1)
-  | CompE (e1, e1'), CompE (e2, e2') ->
-      CompE (overlap e1 e2, overlap e1' e2')
-  | LenE e1, LenE e2 ->
-      LenE (overlap e1 e2)
-  | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
-      TupE (List.map2 overlap es1 es2)
-  | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
-      MixE (mixop1, overlap e1 e2)
-  | CallE (id1, e1), CallE (id2, e2) when Eq.eq_id id1 id2->
-      CallE (id1, overlap e1 e2)
-  | IterE (e1, itere1), IterE (e2, itere2) when Eq.eq_iterexp itere1 itere2 ->
-      IterE (overlap e1 e2, itere1)
-  | OptE (Some e1), OptE (Some e2) ->
-      OptE (Some (overlap e1 e2))
-  | TheE e1, TheE e2 ->
-      TheE (overlap e1 e2)
-  | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
-      ListE (List.map2 overlap es1 es2)
-  | CatE (e1, e1'), CatE (e2, e2') ->
-      CatE (overlap e1 e2, overlap e1' e2')
-  | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
-      CaseE (atom1, overlap e1 e2)
-  | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when Eq.eq_typ typ1 typ2 && Eq.eq_typ typ1' typ2' ->
-      SubE (overlap e1 e2, typ1, typ1')
-  | _ -> gen_new_unified() ) $$ (e1.at % e1.note)
-
-let pairwise_concat (a,b) (c,d) = (a@c, b@d)
-
-let rec collect_unified template e = if Eq.eq_exp template e then [], [] else match template.it, e.it with
-  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it ->
-    (* TODO: Better animation, perhaps this should be moved as a middle end before animation path *)
-    [ match e.it with
-      | Ast.NatE _ -> Ast.IfPr (Ast.CmpE (Ast.EqOp, Ast.VarE id $$ no_region % template.note, e) $$ no_region % (Ast.BoolT $ no_region)) $ no_region
-      | _ -> Ast.AssignPr (e, Ast.VarE id $$ no_region % template.note) $ no_region ],
-    [id, (* TODO *) Ast.VarT ("TOP" $ no_region) $ no_region, []]
-  (* one e *)
-  | UnE (_, e1), UnE (_, e2)
-  | DotE (e1, _), DotE (e2, _)
-  | LenE e1, LenE e2
-  | MixE (_, e1), MixE (_, e2)
-  | CallE (_, e1), CallE (_, e2)
-  | IterE (e1, _), IterE (e2, _)
-  | OptE (Some e1), OptE (Some e2)
-  | TheE e1, TheE e2
-  | CaseE (_, e1), CaseE (_, e2)
-  | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
-  (* two e *)
-  | BinE (_, e1, e1'), BinE (_, e2, e2')
-  | CmpE (_, e1, e1'), CmpE (_, e2, e2')
-  | IdxE (e1, e1'), IdxE (e2, e2')
-  | UpdE (e1, _, e1'), UpdE (e2, _, e2')
-  | ExtE (e1, _, e1'), ExtE (e2, _, e2')
-  | CompE (e1, e1'), CompE (e2, e2')
-  | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
-  (* others *)
-  | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
-  | StrE efs1, StrE efs2 ->
-      List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
-  | TupE es1, TupE es2
-  | ListE es1, ListE es2 ->
-      List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
-  | _ -> failwith "Impossible collect_unified"
-
-let apply_template_to_red_group template (lhs, rhs, prems, binds) =
-  let (new_prems, new_binds) = collect_unified template lhs in
-  (template, rhs, new_prems @ prems, binds @ new_binds)
-
-let unify_lhs (reduction_name, reduction_group) =
-  init_unified_id();
-  let lhs_group = List.map (function (lhs, _, _, _) -> lhs) reduction_group in
-  let hd = List.hd lhs_group in
-  let tl = List.tl lhs_group in
-  let template = List.fold_left overlap hd tl in
-  let new_reduction_group = List.map (apply_template_to_red_group template) reduction_group in
-  (reduction_name, new_reduction_group)
-
 (** Entry for translating reduction rules **)
 let translate_rules il =
   let rules = List.concat_map extract_rules il in
   let reduction_groups : reduction_group list = group_rules rules in
-  let unified_reduction_groups = List.map unify_lhs reduction_groups in
+  let unified_reduction_groups = List.map Il2il.unify_lhs reduction_groups in
 
   List.map reduction_group2algo unified_reduction_groups
 
-let replace_with e =
+let exp2mutating_instr e =
   match e.it with
   | Ast.UpdE (base, path, v) -> (
       match path2expr base path with
       | Al.AccessE (e, p) -> [ Al.ReplaceI (e, p, exp2expr v) ]
       | _ -> failwith "Impossible: path2expr always return AccessE" )
   | Ast.ExtE (base, path, v) -> [ Al.AppendListI (path2expr base path, exp2expr v) ]
-  | _ -> []
+  | Ast.VarE _ -> []
+  | _ -> failwith ("TODO: exp2mutating_instr" ^ Print.string_of_exp e)
 
-let mutator2instrs clause =
-  let (Ast.DefD (_binds, _e1, e2, prems)) = clause.it in
+let writer2instrs clause =
+  let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
 
   prems2instrs [] prems
     (match e2.it with
-    | Ast.MixE
-        ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ new_s; new_f ]; _ })
-      ->
-        replace_with new_s @ replace_with new_f
+    | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ new_s; new_f ]; _ }) ->
+        exp2mutating_instr new_s @ exp2mutating_instr new_f
     | _ -> [])
 
-let helper2instrs clause =
-  let (Ast.DefD (_binds, _e1, e2, prems)) = clause.it in
+let reader2instrs clause =
+  let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
   prems2instrs [] prems [ Al.ReturnI (Option.some (exp2expr e2)) ]
-
-let apply_template_to_def template def =
-  let Ast.DefD (binds, lhs, rhs, prems) = def.it in
-  let (new_prems, new_binds) = collect_unified template lhs in
-  Ast.DefD (binds @ new_binds, template, rhs, new_prems @ prems) $ no_region
-
-let unify_defs defs =
-  init_unified_id();
-  let lhs_s = List.map (fun x -> let Ast.DefD(_, lhs, _, _) = x.it in lhs) defs in
-  let hd = List.hd lhs_s in
-  let tl = List.tl lhs_s in
-  let template = List.fold_left overlap hd tl in
-  List.map (apply_template_to_def template) defs
 
 (** Main translation for helper functions **)
 let helpers2algo def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
-      let unified_clauses = unify_defs clauses in
+      let unified_clauses = Il2il.unify_defs clauses in
       let Ast.DefD (binds, params, _, _) = (List.hd unified_clauses).it in
       let typed_params =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map (find_type binds)
       in
-      let blocks =
-        if String.starts_with ~prefix:"with" id.it then
-          List.map mutator2instrs unified_clauses
-        else List.map helper2instrs unified_clauses
-      in
+      let translator = if String.starts_with ~prefix:"with" id.it then writer2instrs else reader2instrs in
+      let blocks = List.map translator unified_clauses in
       let algo_body = List.fold_right Transpile.merge_otherwise blocks [] in
 
       let algo = Al.Algo (id.it, typed_params, algo_body) in

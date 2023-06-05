@@ -101,6 +101,11 @@ let value_to_array = function ListV a -> a | v -> failwith (string_of_value v ^ 
 let value_to_list v = !(v |> value_to_array)
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
+let check_i32_const = function
+  | ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n) ]) ->
+    let n' = Int64.logand 0xFFFFFFFFL n in
+    ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n') ])
+  | v -> v
 
 let rec take n l =
   if n = 0 then [], l
@@ -218,7 +223,7 @@ and eval_expr env expr =
             |> failwith
         end
       end
-  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el)
+  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
   (* Context *)

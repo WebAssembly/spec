@@ -296,7 +296,7 @@ let alloc_module =
       LetI (
         ConstructE (
           "MODULE",
-          [ 
+          [
             ignore_name;
             func_iter;
             global_iter;
