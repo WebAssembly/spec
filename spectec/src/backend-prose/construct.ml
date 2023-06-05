@@ -418,6 +418,9 @@ let al_of_export_desc export_desc = match export_desc.it with
   | Ast.MemoryExport n -> ConstructV ("MEMORY", [ NumV (int64_of_int32_u n.it) ])
   | Ast.GlobalExport n -> ConstructV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
 
+let al_of_start wasm_start =
+  ConstructV ("START", [ NumV (int64_of_int32_u wasm_start.it.Ast.sfunc.it) ])
+
 let al_of_export wasm_export =
 
   let name = StringV (wasm_export.it.Ast.name |> Ast.string_of_name) in
@@ -469,6 +472,11 @@ let al_of_module wasm_module =
     |> ref
   in
 
+  (* Construct start *)
+  let start_opt =
+    Option.map al_of_start wasm_module.it.start
+  in
+
   (* Construct export *)
   let export_list =
     List.map al_of_export wasm_module.it.exports
@@ -495,6 +503,7 @@ let al_of_module wasm_module =
       ListV memory_list;
       ListV elem_list;
       ListV data_list;
+      OptV  start_opt;
       ListV export_list
     ]
   )

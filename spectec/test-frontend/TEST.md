@@ -317,7 +317,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -935,9 +935,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (C = {FUNC ft*{ft}, GLOBAL gt*{gt}, TABLE tt*{tt}, MEM mt*{mt}, ELEM rt*{rt}, DATA OK^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- (Func_ok: `%|-%:%`(C, func, ft))*{ft func}
     -- (Global_ok: `%|-%:%`(C, global, gt))*{global gt}
@@ -945,9 +945,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -1808,7 +1807,7 @@ $$
 \mbox{(external use)} & \mathit{externuse} &::=& \mathsf{func}~\mathit{funcidx} ~|~ \mathsf{global}~\mathit{globalidx} ~|~ \mathsf{table}~\mathit{tableidx} ~|~ \mathsf{memory}~\mathit{memidx} \\
 \mbox{(export)} & \mathit{export} &::=& \mathsf{export}~\mathit{name}~\mathit{externuse} \\
 \mbox{(import)} & \mathit{import} &::=& \mathsf{import}~\mathit{name}~\mathit{name}~\mathit{externtype} \\
-\mbox{(module)} & \mathit{module} &::=& \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^\ast}~{\mathit{export}^\ast} \\
+\mbox{(module)} & \mathit{module} &::=& \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
 \end{array}
 $$
 
@@ -3111,14 +3110,12 @@ $$
  \qquad
 (\mathit{C} \vdash \mathit{data} : \mathsf{ok})^{\mathit{n}}
  \qquad
-(\mathit{C} \vdash \mathit{start} : \mathsf{ok})^\ast
+(\mathit{C} \vdash \mathit{start} : \mathsf{ok})^?
  \\
 {|{\mathit{mem}^\ast}|} \leq 1
- \qquad
-{|{\mathit{start}^\ast}|} \leq 1
 \end{array}
 }{
-{ \vdash }\;\mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^{\mathit{n}}}~{\mathit{start}^\ast}~{\mathit{export}^\ast} : \mathsf{ok}
+{ \vdash }\;\mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^{\mathit{n}}}~{\mathit{start}^?}~{\mathit{export}^\ast} : \mathsf{ok}
 } \, {[\textsc{\scriptsize T{-}module}]}
 \qquad
 \end{array}

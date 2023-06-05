@@ -210,4 +210,4 @@ syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE import* func* global* table* mem* elem* data* start* export*
+  MODULE import* func* global* table* mem* elem* data* start? export*

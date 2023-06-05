@@ -484,7 +484,7 @@ rule Externuse_ok/mem:
 relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
-  |- MODULE import* func* global* table* mem* elem* data^n start* export* : OK
+  |- MODULE import* func* global* table* mem* elem* data^n start? export* : OK
   ;; TODO: incremental contexts for globals
   -- if C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
 
@@ -495,8 +495,7 @@ rule Module_ok:
 
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : OK)^n
-  -- (Start_ok: C |- start : OK)*
+  -- (Start_ok: C |- start : OK)?
 
   -- if |mem*| <= 1
-  -- if |start*| <= 1
   ;; -- TODO: disjoint export names

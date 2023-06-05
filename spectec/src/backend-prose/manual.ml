@@ -97,6 +97,7 @@ let instantiation =
     |> Record.add "LOCAL" (ListE []) in
   let elem = NameE (N "elem", [List]) in
   let data = NameE (N "data", [List]) in
+  let start = NameE (N "start", [Opt]) in
   let mode_opt = NameE (N "mode_opt", []) in
   let mode = NameE (N "mode", []) in
   let einit = NameE (N "einit", []) in
@@ -106,6 +107,7 @@ let instantiation =
   let memidx = NameE (N "memidx", []) in
   let einstrs = NameE (N "einstrs", [List]) in
   let dinstrs = NameE (N "dinstrs", [List]) in
+  let start_idx = NameE (N "start_idx", []) in
   let i32_type = ConstructE ("I32", []) in
 
   (* Algorithm *)
@@ -116,7 +118,7 @@ let instantiation =
       LetI (
         ConstructE (
           "MODULE",
-          [ ignore_name; ignore_name; ignore_name; ignore_name; ignore_name; elem; data; ignore_name ]
+          [ ignore_name; ignore_name; ignore_name; ignore_name; ignore_name; elem; data; start; ignore_name ]
         ),
         module_
       );
@@ -176,7 +178,15 @@ let instantiation =
           )
         ]
       );
-      (* TODO: start *)
+      (* Start *)
+      IfI (
+        IsDefinedC (start),
+        [
+          LetI (OptE (Some (ConstructE ("START", [ start_idx ]))), start);
+          ExecuteI (ConstructE ("CALL", [ start_idx ]))
+        ],
+        []
+      );
       PopI frame_name;
       ReturnI (Some (AccessE (module_inst, DotP "EXPORT")))
     ]
@@ -312,6 +322,7 @@ let alloc_module =
             memory_iter;
             elem_iter;
             data_iter;
+            ignore_name;
             export_iter
           ]
         ),

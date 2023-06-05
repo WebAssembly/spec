@@ -778,7 +778,7 @@ execution_of_return
   e. Execute RETURN.
 
 instantiation module externval*
-1. Let (MODULE _ _ _ _ _ elem* data* _) be module.
+1. Let (MODULE _ _ _ _ _ elem* data* start? _) be module.
 2. Let moduleinst be $alloc_module(module, externval*).
 3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f to the stack.
@@ -805,11 +805,14 @@ instantiation module externval*
     5) Execute (I32.CONST |dinit|).
     6) Execute (MEMORY.INIT i).
     7) Execute (DATA.DROP i).
-7. Pop f from the stack.
-8. Return moduleinst.EXPORT.
+7. If start? is defined, then:
+  a. Let ?((START start_idx)) be start?.
+  b. Execute (CALL start_idx).
+8. Pop f from the stack.
+9. Return moduleinst.EXPORT.
 
 alloc_module module externval*
-1. Let (MODULE _ func* global* table* memory* elem* data* export*) be module.
+1. Let (MODULE _ func* global* table* memory* elem* data* _ export*) be module.
 2. Let moduleinst be { DATA: []; ELEM: []; EXPORT: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f_init to the stack.
@@ -954,7 +957,7 @@ memory_init.wast: [Uncaught exception: Direct invocation failed due to nth] [90/
 elem.wast: [Uncaught exception: Module Instantiation failed due to nth] [0/25] (0.00%)
 table_get.wast: [9/9] (100.00%)
 f32.wast: [2500/2500] (100.00%)
-start.wast: [0/6] (0.00%)
+start.wast: [6/6] (100.00%)
 float_exprs.wast: [792/794] (99.75%)
 float_memory.wast: [60/60] (100.00%)
 table_size.wast: [29/36] (80.56%)
@@ -975,6 +978,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [16730/23744] (70.46%; Normalized 82.80%)
+Total [16736/23744] (70.49%; Normalized 84.15%)
 == Complete.
 ```

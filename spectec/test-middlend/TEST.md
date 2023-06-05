@@ -316,7 +316,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -934,9 +934,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (C = {FUNC ft*{ft}, GLOBAL gt*{gt}, TABLE tt*{tt}, MEM mt*{mt}, ELEM rt*{rt}, DATA OK^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- (Func_ok: `%|-%:%`(C, func, ft))*{ft func}
     -- (Global_ok: `%|-%:%`(C, global, gt))*{global gt}
@@ -944,9 +944,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -1981,7 +1980,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -2599,9 +2598,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (C = {FUNC ft*{ft}, GLOBAL gt*{gt}, TABLE tt*{tt}, MEM mt*{mt}, ELEM rt*{rt}, DATA OK^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- (Func_ok: `%|-%:%`(C, func, ft))*{ft func}
     -- (Global_ok: `%|-%:%`(C, global, gt))*{global gt}
@@ -2609,9 +2608,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -3709,7 +3707,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -4328,9 +4326,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (C = {FUNC ft*{ft}, GLOBAL gt*{gt}, TABLE tt*{tt}, MEM mt*{mt}, ELEM rt*{rt}, DATA OK^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- (Func_ok: `%|-%:%`(C, func, ft))*{ft func}
     -- (Global_ok: `%|-%:%`(C, global, gt))*{global gt}
@@ -4338,9 +4336,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -5439,7 +5436,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -6067,9 +6064,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (C = {FUNC ft*{ft}, GLOBAL gt*{gt}, TABLE tt*{tt}, MEM mt*{mt}, ELEM rt*{rt}, DATA OK^n{}, LOCAL [], LABEL [], RETURN ?()})
     -- (Func_ok: `%|-%:%`(C, func, ft))*{ft func}
     -- (Global_ok: `%|-%:%`(C, global, gt))*{global gt}
@@ -6077,9 +6074,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -7188,7 +7184,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -7859,9 +7855,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (|ft*{ft}| = |func*{func}|)
     -- if (|global*{global}| = |gt*{gt}|)
     -- if (|table*{table}| = |tt*{tt}|)
@@ -7874,9 +7870,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
@@ -8993,7 +8988,7 @@ syntax export = EXPORT(name, externuse)
 syntax import = IMPORT(name, name, externtype)
 
 ;; 1-syntax.watsup:212.1-213.70
-syntax module = `MODULE%*%*%*%*%*%*%*%*%*`(import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
+syntax module = `MODULE%*%*%*%*%*%*%*%?%*`(import*, func*, global*, table*, mem*, elem*, data*, start?, export*)
 
 ;; 2-aux.watsup:3.1-3.14
 def Ki : nat
@@ -9664,9 +9659,9 @@ relation Export_ok: `%|-%:%`(context, export, externtype)
 
 ;; 3-typing.watsup:484.1-484.62
 relation Module_ok: `|-%:OK`(module)
-  ;; 3-typing.watsup:486.1-501.22
-  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start* : start*, table* : table*, tt* : tabletype*}:
-    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start*{start}, export*{export}))
+  ;; 3-typing.watsup:486.1-500.16
+  rule _ {C : context, data^n : data^n, elem* : elem*, export* : export*, ft* : functype*, func* : func*, global* : global*, gt* : globaltype*, import* : import*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*}:
+    `|-%:OK`(`MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (|ft*{ft}| = |func*{func}|)
     -- if (|global*{global}| = |gt*{gt}|)
     -- if (|table*{table}| = |tt*{tt}|)
@@ -9679,9 +9674,8 @@ relation Module_ok: `|-%:OK`(module)
     -- (Mem_ok: `%|-%:%`(C, mem, mt))*{mem mt}
     -- (Elem_ok: `%|-%:%`(C, elem, rt))*{elem rt}
     -- (Data_ok: `%|-%:OK`(C, data))^n{data}
-    -- (Start_ok: `%|-%:OK`(C, start))*{start}
+    -- (Start_ok: `%|-%:OK`(C, start))?{start}
     -- if (|mem*{mem}| <= 1)
-    -- if (|start*{start}| <= 1)
 
 ;; 4-runtime.watsup:3.1-3.39
 syntax addr = nat
