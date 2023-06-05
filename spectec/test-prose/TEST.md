@@ -774,9 +774,9 @@ execution_of_return
   d. Exit current context.
   e. Execute RETURN.
 
-instantiation module
+instantiation module externval*
 1. Let (MODULE _ _ _ _ _ elem* data* _) be module.
-2. Let moduleinst be $alloc_module(module).
+2. Let moduleinst be $alloc_module(module, externval*).
 3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 4. Push f to the stack.
 5. For i in range |elem*|:
@@ -803,7 +803,7 @@ instantiation module
 7. Pop f from the stack.
 8. Return moduleinst.EXPORT.
 
-alloc_module module
+alloc_module module externval*
 1. Let (MODULE _ func* global* table* memory* elem* data* export*) be module.
 2. Let moduleinst be { DATA: []; ELEM: []; EXPORT: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
 3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.

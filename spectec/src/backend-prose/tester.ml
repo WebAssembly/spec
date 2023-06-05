@@ -58,13 +58,9 @@ let al_of_result result = match result.it with
 
 type export = store * value list
 
-module Exports = Map.Make (String)
-type exports = export Exports.t
-let exports: exports ref = ref Exports.empty
-
-module Registers = Map.Make (String)
-type registers = export Registers.t
-let registers = ref Registers.empty
+module Register = Map.Make (String)
+type register = export Register.t
+let register: register ref = ref Register.empty
 
 let do_invoke act = match act.it with
   | Script.Invoke (opt, name, literals) ->
@@ -80,7 +76,7 @@ let do_invoke act = match act.it with
       | None -> ""
     in
 
-    let (sto, export) = Exports.find module_name !exports in
+    let (sto, export) = Register.find module_name !register in
     let idx = List.find_map extract_idx export |> Option.get in
 
     let args = ListV (
@@ -150,48 +146,67 @@ let test_assertion assertion =
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
+let get_externval = function
+  | ConstructV ("IMPORT", [ StringV _import_module_name; StringV _extern_name; _ty ]) ->
+      (*let export = Registers.find import_module_name !register in
+      let _, externval = Exports.find extern_name export in
+      externval*) ()
+  | _ -> failwith "Invalid import"
+
+let get_externvals = function
+  | ConstructV ("MODULE", ListV _imports :: _) ->
+      (*ListV (List.map get_externval !imports |> ref) *)
+      ListV (ref [])
+  | _ -> failwith "Invalid module"
+
 let test_module module_name m =
+  
+  (* Initialize *)
   Interpreter.cnt := 0;
   Interpreter.wcnt := 0;
   Interpreter.init_stack();
   Interpreter.init_store();
+
   try
-    match Interpreter.call_algo "instantiation" [ Construct.al_of_module m ] with
+
+    (* Construct module and extern *)
+    let al_module = Construct.al_of_module m in
+    let externvals = get_externvals al_module in
+
+    (* Instantiate and store exports *)
+    match Interpreter.call_algo "instantiation" [ al_module ; externvals ] with
     | ListV l ->
         let export = !l in
         (match module_name with
-        | Some name -> exports := Exports.add name.it (!Interpreter.store, export) !exports
+        | Some name ->
+            register := Register.add name.it (!Interpreter.store, export) !register
         | None -> ());
-        exports := Exports.add "" (!Interpreter.store, export) !exports;
+        register := Register.add "" (!Interpreter.store, export) !register;
     | _ -> failwith "invalid exports"
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
-let rec test_script success = function
-  | [] -> ()
-  | cmd :: tail ->
-      begin match cmd.it with
-      | Script.Module (module_name, {it = Script.Textual m; _}) -> test_module module_name m
-      | Script.Module _ -> failwith "This test contains a binary module"
-      | Script.Register (name, module_name_opt) ->
-          let s = Ast.string_of_name name in
-          let module_name = match module_name_opt with
-            | Some s -> s.it
-            | None -> ""
-          in
-          let export = Exports.find module_name !exports in
-          registers := Registers.add s export !registers
-      | Script.Action a -> (
-        try do_invoke a |> ignore with
-        | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
-      )
-      | Script.Assertion a ->
-          begin match test_assertion a with
-            | Success -> success := !success + 1
-            | _ -> ()
-          end
-      | Script.Meta _ -> failwith not_supported_msg
-      end;
-      test_script success tail
+let test_cmd success cmd =
+  match cmd.it with
+  | Script.Module (module_name, {it = Script.Textual m; _}) -> test_module module_name m
+  | Script.Module _ -> failwith "This test contains a binary module"
+  | Script.Register (name, module_name_opt) ->
+      let s = Ast.string_of_name name in
+      let module_name = match module_name_opt with
+        | Some s -> s.it
+        | None -> ""
+      in
+      let export = Register.find module_name !register in
+      register := Register.add s export !register
+  | Script.Action a -> (
+    try do_invoke a |> ignore with
+    | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
+  )
+  | Script.Assertion a ->
+      begin match test_assertion a with
+        | Success -> success := !success + 1
+        | _ -> ()
+      end
+  | Script.Meta _ -> failwith not_supported_msg
 
 (** Entry **)
 let test file_name =
@@ -214,7 +229,7 @@ let test file_name =
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
     
     begin try
-      test_script success script;
+      List.iter (test_cmd success) script;
     with
     | e ->
       let msg = msg_of e in

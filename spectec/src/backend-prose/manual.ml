@@ -88,6 +88,7 @@ let instantiation =
   (* Name definition *)
   let ignore_name = NameE (N "_", []) in
   let module_ = NameE (N "module", []) in
+  let externval = NameE (N "externval", [ List ]) in
   let module_inst = NameE (N "moduleinst", []) in
   let frame_name = NameE (N "f", []) in
   let frame_rec =
@@ -109,7 +110,7 @@ let instantiation =
   (* Algorithm *)
   Algo (
     "instantiation",
-    [ module_, TopT ],
+    [ module_, TopT; externval, TopT ],
     [
       LetI (
         ConstructE (
@@ -118,7 +119,7 @@ let instantiation =
         ),
         module_
       );
-      LetI (module_inst, AppE (N "alloc_module", [ module_ ]));
+      LetI (module_inst, AppE (N "alloc_module", [ module_; externval ]));
       LetI (frame_name, FrameE (NumE 0L, RecordE frame_rec));
       PushI frame_name;
       (* Element *)
@@ -235,6 +236,7 @@ let init_elem =
 let alloc_module =
   (* Name definition *)
   let module_ = NameE (N "module", []) in
+  let externval = NameE (N "externval", [ List ]) in
   let module_inst_init = NameE (N "moduleinst", []) in
   let module_inst_init_rec =
     Record.empty
@@ -289,7 +291,7 @@ let alloc_module =
   (* Algorithm *)
   Algo (
     "alloc_module",
-    [ module_, TopT ],
+    [ module_, TopT; externval, TopT ],
     [
       LetI (
         ConstructE (

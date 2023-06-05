@@ -468,6 +468,16 @@ let al_of_module wasm_module =
     |> ref
   in
 
+  (*print_endline "";
+  Print.string_of_value (ListV import_list) |> print_endline;*)
+  (*Print.string_of_value (ListV func_list) |> print_endline;
+  Print.string_of_value (ListV global_list) |> print_endline;
+  Print.string_of_value (ListV table_list) |> print_endline;
+  Print.string_of_value (ListV memory_list) |> print_endline;
+  Print.string_of_value (ListV elem_list) |> print_endline;
+  Print.string_of_value (ListV data_list) |> print_endline;
+  Print.string_of_value (ListV export_list) |> print_endline;*)
+
   ConstructV (
     "MODULE",
     [
