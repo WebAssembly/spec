@@ -127,12 +127,48 @@ and select_assign prems acc env = ( match prems with
   )
 )
 
+
+(* Greedy version of mutual recursive functions
+   that iteratively select tight and assignment premises.
+   Select only one assignment at a time that maximizes # of  assigned vars. *)
+let count_lhs = function
+| AssignPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
+| _ -> failwith "Impossible"
+
+exception InvalidGreedy
+
+let rec select_tight_greedy prems acc env = ( match prems with
+| [] -> acc
+| _ ->
+  let (tights, non_tights) = List.partition (is_tight env) prems in
+  select_assign_greedy non_tights (acc @ tights) env
+)
+and select_assign_greedy prems acc env = ( match prems with
+| [] -> acc
+| _ ->
+    let (assigns, non_assigns) = List.partition_map (fun p -> Either.map_left (fun p' -> p, p') (is_assign env p)) prems in
+    let ((_, assign), rest) = match assigns with
+      | [] -> raise InvalidGreedy
+      | hd :: tl ->
+        List.fold_left (fun (best, rest) cur ->
+          if count_lhs (snd best).it < count_lhs (snd cur).it then
+            cur, (fst best :: rest)
+          else
+            best, (fst cur :: rest)
+        ) (hd, []) tl in
+    let new_env = union (free_prem assign) env in
+    select_tight_greedy (non_assigns @ rest) (acc @ [assign]) new_env
+)
+
 (* Animate the list of premises *)
 let animate_prems lhs prems =
   let known_vars = free_lhs_exp lhs in
   let reorder prems =
+    (* Set --otherwise prem to be the first prem (if any) *)
     let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
-    select_tight non_other other known_vars
+    (* Try greedy *)
+    try select_tight_greedy non_other other known_vars
+    with InvalidGreedy -> select_tight non_other other known_vars
   in
   reorder prems
 

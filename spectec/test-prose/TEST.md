@@ -316,8 +316,11 @@ execution_of_call_indirect x ft
   b. If a ≥ |$funcinst()|, then:
     1) Trap.
   c. Else:
-    1) Let (m, func) be $funcinst()[a].
-    2) Execute (CALL_ADDR a).
+    1) Let (m, (FUNC bt t* instr*)) be $funcinst()[a].
+    2) If ft is bt, then:
+      a) Execute (CALL_ADDR a).
+    3) Else:
+      a) Trap.
 
 execution_of_call_addr a
 1. If a < |$funcinst()|, then:
@@ -936,7 +939,7 @@ traps.wast: [32/32] (100.00%)
 local_tee.wast: [55/55] (100.00%)
 f64_bitwise.wast: [360/360] (100.00%)
 memory_grow.wast: [75/84] (89.29%)
-call_indirect.wast: [116/132] (87.88%)
+call_indirect.wast: [127/132] (96.21%)
 load.wast: [37/37] (100.00%)
 memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [0/20] (0.00%)
 memory_size.wast: [29/36] (80.56%)
@@ -958,7 +961,7 @@ table_size.wast: [29/36] (80.56%)
 table_set.wast: [18/18] (100.00%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
-ref_func.wast: [Uncaught exception: Direct invocation failed due to nth] [4/8] (50.00%)
+ref_func.wast: [Uncaught exception: Direct invocation failed due to nth] [3/8] (37.50%)
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
@@ -972,6 +975,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [16490/23744] (69.45%; Normalized 81.07%)
+Total [16500/23744] (69.49%; Normalized 81.01%)
 == Complete.
 ```

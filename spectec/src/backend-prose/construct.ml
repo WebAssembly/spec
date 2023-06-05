@@ -42,16 +42,18 @@ let al_of_value = function
 
 (* Construct type *)
 
-let al_of_blocktype types wtype =
-  match wtype with
-  | Ast.VarBlockType idx ->
-    let Types.FuncType (param_types, result_types) = (Lib.List32.nth types idx.it).it in
-    let result_type_to_listV result_type =
-      ListV (List.map al_of_type result_type |> ref)
-    in
-    ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
-  | Ast.ValBlockType None -> ArrowV(ListV (ref []), ListV (ref []))
-  | Ast.ValBlockType (Some val_type) -> ArrowV(ListV (ref []), ListV (ref [al_of_type val_type]))
+let al_of_typeidx types idx =
+  let Types.FuncType (param_types, result_types) = (Lib.List32.nth types idx.it).it in
+  let result_type_to_listV result_type =
+    ListV (List.map al_of_type result_type |> ref)
+  in
+  ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
+
+let al_of_blocktype types = function
+| Ast.VarBlockType idx -> al_of_typeidx types idx
+| Ast.ValBlockType None -> ArrowV(ListV (ref []), ListV (ref []))
+| Ast.ValBlockType (Some val_type) -> ArrowV(ListV (ref []), ListV (ref [al_of_type val_type]))
+
 
 (* Construct instruction *)
 
@@ -231,7 +233,11 @@ let rec al_of_instr types winstr =
   | Ast.TableFill i32 -> f_i32 "TABLE.FILL" i32
   | Ast.TableInit (i32, i32') -> f_i32_i32 "TABLE.INIT" i32 i32'
   | Ast.Call i32 -> f_i32 "CALL" i32
-  | Ast.CallIndirect (i32, i32') -> f_i32_i32 "CALL_INDIRECT" i32 i32'
+  | Ast.CallIndirect (i32, i32') ->
+      ConstructV
+        ("CALL_INDIRECT", [
+            to_int i32;
+            al_of_typeidx types i32'])
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
