@@ -36,7 +36,7 @@ let al_of_value = function
 | Values.Ref r ->
     begin match r with
       | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_type (RefType t) ])
-      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ NumV (Int64.of_int32 i) ])
+      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u i) ])
       | r -> Values.string_of_ref r |> failwith
     end
 
@@ -161,7 +161,7 @@ let al_of_packsize_with_extension (p, s) =
 
 
 let rec al_of_instr types winstr =
-  let to_int i32 = NumV (Int64.of_int32 i32.it) in
+  let to_int i32 = NumV (int64_of_int32_u i32.it) in
   let f name  = ConstructV (name, []) in
   let f_i32 name i32 = ConstructV (name, [to_int i32]) in
   let f_i32_i32 name i32 i32' = ConstructV (name, [to_int i32; to_int i32']) in
@@ -267,14 +267,14 @@ let rec al_of_instr types winstr =
             al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize_with_extension pack);
             NumV (Int64.of_int align);
-            NumV (Int64.of_int32 offset) ])
+            NumV (int64_of_int32_u offset) ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("STORE", [
             al_of_type (Types.NumType ty);
             OptV (Option.map al_of_packsize pack);
             NumV (Int64.of_int align);
-            NumV (Int64.of_int32 offset) ])
+            NumV (int64_of_int32_u offset) ])
   | Ast.MemorySize -> f "MEMORY.SIZE"
   | Ast.MemoryGrow -> f "MEMORY.GROW"
   | Ast.MemoryFill -> f "MEMORY.FILL"
@@ -323,8 +323,8 @@ let al_of_global wasm_global =
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; ListV expr ])
 
 let al_of_limits limits =
-  let f opt = NumV (Int64.of_int32 opt) in
-  PairV (NumV (Int64.of_int32 limits.Types.min), OptV (Option.map f limits.Types.max))
+  let f opt = NumV (int64_of_int32_u opt) in
+  PairV (NumV (int64_of_int32_u limits.Types.min), OptV (Option.map f limits.Types.max))
 
 let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
@@ -346,7 +346,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
           ConstructV (
             active_name,
             [
-              NumV (Int64.of_int32 index.it);
+              NumV (int64_of_int32_u index.it);
               ListV (al_of_instrs [] offset.it |> ref)
             ]
           )
@@ -412,10 +412,10 @@ let al_of_import wasm_module wasm_import =
   ConstructV ("IMPORT", [ module_name; item_name; import_desc ])
 
 let al_of_export_desc export_desc = match export_desc.it with
-  | Ast.FuncExport n -> ConstructV ("FUNC", [ NumV (Int64.of_int32 n.it) ])
-  | Ast.TableExport n -> ConstructV ("TABLE", [ NumV (Int64.of_int32 n.it) ])
-  | Ast.MemoryExport n -> ConstructV ("MEMORY", [ NumV (Int64.of_int32 n.it) ])
-  | Ast.GlobalExport n -> ConstructV ("GLOBAL", [ NumV (Int64.of_int32 n.it) ])
+  | Ast.FuncExport n -> ConstructV ("FUNC", [ NumV (int64_of_int32_u n.it) ])
+  | Ast.TableExport n -> ConstructV ("TABLE", [ NumV (int64_of_int32_u n.it) ])
+  | Ast.MemoryExport n -> ConstructV ("MEMORY", [ NumV (int64_of_int32_u n.it) ])
+  | Ast.GlobalExport n -> ConstructV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
 
 let al_of_export wasm_export =
 

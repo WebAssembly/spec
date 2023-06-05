@@ -420,13 +420,13 @@ execution_of_load nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If _x0 is not defined, then:
-  a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
 4. Else:
   a. Let ?([n, sx]) be _x0.
-  b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
+  b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
   c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
   d. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
@@ -538,13 +538,13 @@ execution_of_store nt _x0 n_A n_O
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If _x0 is not defined, then:
-  a. If ((i + n_O) + ($size(nt) / 8)) ≥ |$mem(0)|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
   a. Let ?(n) be _x0.
-  b. If ((i + n_O) + (n / 8)) ≥ |$mem(0)|, then:
+  b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
@@ -916,7 +916,7 @@ exports.wast: [6/9] (66.67%)
 local_set.wast: [19/19] (100.00%)
 linking.wast: [Uncaught exception: Module Instantiation failed due to nth] [10/83] (12.05%)
 float_literals.wast: [Uncaught exception: This test contains a binary module] [82/83] (98.80%)
-align.wast: [47/48] (97.92%)
+align.wast: [48/48] (100.00%)
 if.wast: [123/123] (100.00%)
 const.wast: [300/300] (100.00%)
 f64_cmp.wast: [2400/2400] (100.00%)
@@ -946,7 +946,7 @@ memory_size.wast: [29/36] (80.56%)
 imports.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/34] (0.00%)
 left-to-right.wast: [95/95] (100.00%)
 ref_is_null.wast: [11/11] (100.00%)
-memory_trap.wast: [Uncaught exception: Module Instantiation failed due to Backend_al.Exception.Trap] [11/180] (6.11%)
+memory_trap.wast: [180/180] (100.00%)
 br_table.wast: [149/149] (100.00%)
 select.wast: [90/118] (76.27%)
 f32_bitwise.wast: [360/360] (100.00%)
@@ -966,7 +966,7 @@ names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
 int_literals.wast: [30/30] (100.00%)
-address.wast: [223/255] (87.45%)
+address.wast: [255/255] (100.00%)
 table_grow.wast: [36/38] (94.74%)
 func_ptrs.wast: [Uncaught exception: Direct invocation failed due to nth] [0/25] (0.00%)
 table_init.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/662] (0.00%)
@@ -975,6 +975,6 @@ int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [16500/23744] (69.49%; Normalized 81.01%)
+Total [16702/23744] (70.34%; Normalized 82.48%)
 == Complete.
 ```

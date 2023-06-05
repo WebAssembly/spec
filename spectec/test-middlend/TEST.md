@@ -1485,20 +1485,20 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) ($elem(z, y)[i] <: admininstr) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) TABLE.INIT_admininstr(x, y)])
     -- otherwise
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + ($size(nt <: valtype) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + ($size(nt <: valtype) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [CONST_admininstr(nt, c)])
     -- if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
@@ -1606,20 +1606,20 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + ($size(nt <: valtype) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + ($size(nt <: valtype) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}), []))
     -- if (b*{b} = $bytes_($size(nt <: valtype), c))
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
@@ -3213,20 +3213,20 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) $admininstr_ref($elem(z, y)[i]) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) TABLE.INIT_admininstr(x, y)])
     -- otherwise
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + ($size($valtype_numtype(nt)) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + ($size($valtype_numtype(nt)) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [CONST_admininstr(nt, c)])
     -- if ($bytes_($size($valtype_numtype(nt)), c) = $mem(z, 0)[(i + n_O) : ($size($valtype_numtype(nt)) / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
@@ -3334,20 +3334,20 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + ($size($valtype_numtype(nt)) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + ($size($valtype_numtype(nt)) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), ($size($valtype_numtype(nt)) / 8), b*{b}), []))
     -- if (b*{b} = $bytes_($size($valtype_numtype(nt)), c))
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
@@ -4943,20 +4943,20 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) $admininstr_ref($elem(z, y)[i]) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) TABLE.INIT_admininstr(x, y)])
     -- otherwise
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (!($size($valtype_numtype(nt))) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (!($size($valtype_numtype(nt))) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [CONST_admininstr(nt, c)])
     -- if ($bytes_(!($size($valtype_numtype(nt))), c) = $mem(z, 0)[(i + n_O) : (!($size($valtype_numtype(nt))) / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
@@ -5064,20 +5064,20 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (!($size($valtype_numtype(nt))) / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (!($size($valtype_numtype(nt))) / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`($with_mem(z, 0, (i + n_O), (!($size($valtype_numtype(nt))) / 8), b*{b}), []))
     -- if (b*{b} = $bytes_(!($size($valtype_numtype(nt))), c))
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
@@ -6684,11 +6684,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [CONST_admininstr(I32_numtype, j) $admininstr_ref($elem(z, y)[i]) TABLE.SET_admininstr(x) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (n - 1)) TABLE.INIT_admininstr(x, y)])
     -- otherwise
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
     -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -6697,10 +6697,10 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if ($size($valtype_numtype(nt)) = ?(o1))
     -- if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
@@ -6809,11 +6809,11 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -6822,10 +6822,10 @@ relation Step: `%~>%`(config, config)
     -- if ($size($valtype_numtype(nt)) = ?(o1))
     -- if (b*{b} = $bytes_(o1, c))
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
@@ -8488,11 +8488,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (i < |$elem(z, y)|)
     -- otherwise
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
     -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -8501,10 +8501,10 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if ($size($valtype_numtype(nt)) = ?(o1))
     -- if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
@@ -8614,11 +8614,11 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -8627,10 +8627,10 @@ relation Step: `%~>%`(config, config)
     -- if ($size($valtype_numtype(nt)) = ?(o1))
     -- if (b*{b} = $bytes_(o1, c))
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
@@ -10293,11 +10293,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (i < |$elem(z, y)|)
 
-  ;; 6-reduction.watsup:269.1-271.49
+  ;; 6-reduction.watsup:269.1-271.48
   rule load-num-trap {i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?(), n_A, n_O)]), [TRAP_admininstr])
     -- where ?(o0) := $size($valtype_numtype(nt))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:273.1-275.66
   rule load-num-val {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -10306,10 +10306,10 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- where ?(o1) := $size($valtype_numtype(nt))
     -- where c := $inverse_of_bytes_(o0, $mem(z, 0)[(i + n_O) : (o1 / 8)])
 
-  ;; 6-reduction.watsup:277.1-279.41
+  ;; 6-reduction.watsup:277.1-279.40
   rule load-pack-trap {i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [TRAP_admininstr])
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:281.1-283.50
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
@@ -10419,11 +10419,11 @@ relation Step: `%~>%`(config, config)
   rule elem.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [ELEM.DROP_admininstr(x)]), `%;%*`($with_elem(z, x, []), []))
 
-  ;; 6-reduction.watsup:286.1-288.49
+  ;; 6-reduction.watsup:286.1-288.48
   rule store-num-trap {c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
     -- where ?(o0) := $size($valtype_numtype(nt))
-    -- if (((i + n_O) + (o0 / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (o0 / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:290.1-292.35
   rule store-num-val {b* : byte*, c : c_numtype, i : nat, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat, o1 : nat}:
@@ -10432,10 +10432,10 @@ relation Step: `%~>%`(config, config)
     -- where ?(o1) := $size($valtype_numtype(nt))
     -- where b*{b} := $bytes_(o1, c)
 
-  ;; 6-reduction.watsup:294.1-296.41
+  ;; 6-reduction.watsup:294.1-296.40
   rule store-pack-trap {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state}:
     `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) STORE_admininstr(nt, ?(n), n_A, n_O)]), `%;%*`(z, [TRAP_admininstr]))
-    -- if (((i + n_O) + (n / 8)) >= |$mem(z, 0)|)
+    -- if (((i + n_O) + (n / 8)) > |$mem(z, 0)|)
 
   ;; 6-reduction.watsup:298.1-300.50
   rule store-pack-val {b* : byte*, c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, z : state, o0 : nat}:
