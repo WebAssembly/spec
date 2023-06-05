@@ -205,6 +205,7 @@ and eval_expr env expr =
         let l = eval_expr env e |> value_to_list in
         let i1 = eval_expr env e1 |> value_to_int in
         let i2 = eval_expr env e2 |> value_to_int in
+        cnt := !cnt + (i1 + i2);
         let _, l', _ = sublist i1 i2 l in
         ListV (ref l')
       | DotP str -> begin match eval_expr env e with
