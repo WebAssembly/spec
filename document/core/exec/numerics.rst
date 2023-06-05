@@ -2121,19 +2121,19 @@ Relaxed swizzle lane is deterministic if the signed interpretation of the index 
 Relaxed unsigned truncation converts floating point numbers to integers.
 The result for NaN's and out-of-range values is host-dependent.
 
-* :math:`\EXPROFDET` If :math:`z` is a NaN, return either :math:`0` or :math:`2^N-1`.
+* :math:`\EXPROFDET` If :math:`z` is a NaN, return either :math:`0` or :math:`2^N-1` or :math:`2^N-2` or :math:`2^(N-1)`.
 
 * :math:`\EXPROFDET` Else if :math:`\trunc(z)` is positive and less than :math:`2^N`, return :math:`\truncu_{M,N}(z)`.
 
-* :math:`\EXPROFDET` Else return either :math:`\truncsatu_{M,N}(z)` or :math:`2^N-1`.
+* :math:`\EXPROFDET` Else return either :math:`\truncsatu_{M,N}(z)` or :math:`2^N-1` or :math:`2^N-2` or :math:`2^(N-1)`.
 
 * Return :math:`\truncsatu_{M,N}(z)`.
 
 .. math::
    \begin{array}{@{}llcll}
-   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1 ] \\
+   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm \NAN(n)) &=& [ 0, 2^{N}-1, 2^{N}-2, 2^{N-1}] \\
    \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm q) &=& \truncu_{M,N}(\pm q) & (\iff -1 < \trunc(\pm q) < 2^N) \\
-   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1 ] & (\otherwise) \\
+   \EXPROFDET & \relaxedtrunc^u_{M,N}(\pm p) &=& [ \truncsatu_{M,N}(\pm p), 2^{N}-1, 2^{N}-2, 2^{N-1}] & (\otherwise) \\
    & \relaxedtrunc^u_{M,N}(z) &=& \truncsatu_{M,N}(z) & \\
    \end{array}
 
