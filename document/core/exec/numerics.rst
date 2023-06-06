@@ -2168,23 +2168,31 @@ The result for NaN's and out-of-range values is host-dependent.
 :math:`\relaxedlane_N(i_1, i_2, i_3)`
 .....................................
 
-* If :math:`i_3` is :math:`2^N - 1`, return :math:`i_1`.
+* :math:`\EXPROFDET` If :math:`i_3` is :math:`2^N - 1`, return :math:`i_1`.
 
-* Else if :math:`i_3` is :math:`0`, return :math:`i_2`.
+* :math:`\EXPROFDET` Else if :math:`i_3` is :math:`0`, return :math:`i_2`.
 
-* :math:`\EXPROFDET` Else if :math:`\signed_n(i_3)` is less than :math:`0`, return either :math:`\ibitselect_n(i_1, i_2, i_3)` or :math:`i_1`.
+* :math:`\EXPROFDET` Otherwise return either :math:`\ibitselect_n(i_1, i_2, i_3)` or :math:`i_1` or :math:`i_2` or :math:`\F{top\_bit\_byteselect_N}(i_1, i_2, i_3)`.
 
-* :math:`\EXPROFDET` Otherwise return either :math:`\ibitselect_n(i_1, i_2, i_3)` or :math:`i_2`.
-
-* Otherwise return :math:`\ibitselect_n(i_1, i_2, i_3)`.
+* Return :math:`\ibitselect_n(i_1, i_2, i_3)`.
 
 .. math::
    \begin{array}{@{}llcll}
-   & \relaxedlane_N(i_1, i_2, 2^N-1) &=& i_1 \\
-   & \relaxedlane_N(i_1, i_2, 0) &=& i_2 \\
-   \EXPROFDET & \relaxedlane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_1 ] & (\iff \signed_N(i_3) < 0) \\
-   \EXPROFDET & \relaxedlane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2 ] & (\otherwise) \\
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, 2^N-1) &=& i_1 \\
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, 0) &=& i_2 \\
+   \EXPROFDET & \relaxedlane_N(i_1, i_2, i_3) &=& [ \ibitselect_N(i_1, i_2, i_3), i_2, i_3, \\
+    & & & \qquad \F{top\_bit\_byteselect}(i_1, i_2, i_3)] & (\otherwise) \\
    & \relaxedlane_N(i_1, i_2, i_3) &=& \ibitselect_N(i_1, i_2, i_3) & (\otherwise) \\
+   \end{array}
+
+where:
+
+.. math::
+   \begin{array}{@{}llcll}
+   & \F{top\_bit\_byteselect}_N(i_1, i_2, i_3) &=& tbb_0 ... tbb_{N/8 - 1} \\
+   & \F{tbb_j} &=& \F{byteselect}(\bytes_8(i_1)[j], \bytes_8(i_2)[j], \bytes_8(i_3)[j]) \\
+   & \F{byteselect}(a, b, 0~c^7) &=& a \\
+   & \F{byteselect}(a, b, c) &=& b \\
    \end{array}
 
 
@@ -2195,7 +2203,8 @@ The result for NaN's and out-of-range values is host-dependent.
 
 Relaxed lane selection is deterministic when all bits are set or unset in the
 mask. Otherwise depending on the host, either only the top bit is examined, or
-all bits are examined (i.e. it becomes a bit select).
+all bits are examined (i.e. it becomes a bit select), or the top bit of each
+byte in the lane is examined.
 
 * Return :math:`rll_0 \dots rll_{n-1}` where :math:`rll_i = \relaxedlane_B(a^n[i], b^n[i], c^n[i])`.
 
