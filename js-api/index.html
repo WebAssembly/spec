@@ -4,15 +4,15 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 3383f409d, updated Fri Apr 28 15:49:22 2023 -0700" name="generator">
+  <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="b55d740054915ffc9089e709c99f3319ae6baabc" name="document-revision">
+  <meta content="e19508ade330025158cb2755fa4bbd1b53990a1b" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
 }
 </style>
-<style>/* style-autolinks */
+<style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
     font-size: inherit;
@@ -73,8 +73,238 @@ pre .property::before, pre .property::after {
 [data-link-type=biblio] {
     white-space: pre;
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --selflink-text: black;
+        --selflink-bg: silver;
+        --selflink-hover-text: white;
+    }
+}
 </style>
-<style>/* style-counters */
+<style>/* Boilerplate: style-colors */
+
+/* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
+:root {
+    color-scheme: light dark;
+
+    --text: black;
+    --bg: white;
+
+    --unofficial-watermark: url(https://www.w3.org/StyleSheets/TR/2016/logos/UD-watermark);
+
+    --logo-bg: #1a5e9a;
+    --logo-active-bg: #c00;
+    --logo-text: white;
+
+    --tocnav-normal-text: #707070;
+    --tocnav-normal-bg: var(--bg);
+    --tocnav-hover-text: var(--tocnav-normal-text);
+    --tocnav-hover-bg: #f8f8f8;
+    --tocnav-active-text: #c00;
+    --tocnav-active-bg: var(--tocnav-normal-bg);
+
+    --tocsidebar-text: var(--text);
+    --tocsidebar-bg: #f7f8f9;
+    --tocsidebar-shadow: rgba(0,0,0,.1);
+    --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+    --toclink-text: var(--text);
+    --toclink-underline: #3980b5;
+    --toclink-visited-text: var(--toclink-text);
+    --toclink-visited-underline: #054572;
+
+    --heading-text: #005a9c;
+
+    --hr-text: var(--text);
+
+    --algo-border: #def;
+
+    --del-text: red;
+    --del-bg: transparent;
+    --ins-text: #080;
+    --ins-bg: transparent;
+
+    --a-normal-text: #034575;
+    --a-normal-underline: #bbb;
+    --a-visited-text: var(--a-normal-text);
+    --a-visited-underline: #707070;
+    --a-hover-bg: rgba(75%, 75%, 75%, .25);
+    --a-active-text: #c00;
+    --a-active-underline: #c00;
+
+    --blockquote-border: silver;
+    --blockquote-bg: transparent;
+    --blockquote-text: currentcolor;
+
+    --issue-border: #e05252;
+    --issue-bg: #fbe9e9;
+    --issue-text: var(--text);
+    --issueheading-text: #831616;
+
+    --example-border: #e0cb52;
+    --example-bg: #fcfaee;
+    --example-text: var(--text);
+    --exampleheading-text: #574b0f;
+
+    --note-border: #52e052;
+    --note-bg: #e9fbe9;
+    --note-text: var(--text);
+    --noteheading-text: hsl(120, 70%, 30%);
+    --notesummary-underline: silver;
+
+    --assertion-border: #aaa;
+    --assertion-bg: #eee;
+    --assertion-text: black;
+
+    --advisement-border: orange;
+    --advisement-bg: #fec;
+    --advisement-text: var(--text);
+    --advisementheading-text: #b35f00;
+
+    --warning-border: red;
+    --warning-bg: hsla(40,100%,50%,0.95);
+    --warning-text: var(--text);
+
+    --amendment-border: #330099;
+    --amendment-bg: #F5F0FF;
+    --amendment-text: var(--text);
+    --amendmentheading-text: #220066;
+
+    --def-border: #8ccbf2;
+    --def-bg: #def;
+    --def-text: var(--text);
+    --defrow-border: #bbd7e9;
+
+    --datacell-border: silver;
+
+    --indexinfo-text: #707070;
+
+    --indextable-hover-text: black;
+    --indextable-hover-bg: #f7f8f9;
+
+    --outdatedspec-bg: rgba(0, 0, 0, .5);
+    --outdatedspec-text: black;
+    --outdated-bg: maroon;
+    --outdated-text: white;
+    --outdated-shadow: red;
+
+    --editedrec-bg: darkorange;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text: #ddd;
+        --bg: black;
+
+        --unofficial-watermark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cg fill='%23100808' transform='translate(200 200) rotate(-45) translate(-200 -200)' stroke='%23100808' stroke-width='3'%3E%3Ctext x='50%25' y='220' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EUNOFFICIAL%3C/text%3E%3Ctext x='50%25' y='305' style='font: bold 70px sans-serif; text-anchor: middle; letter-spacing: 6px;'%3EDRAFT%3C/text%3E%3C/g%3E%3C/svg%3E");
+
+        --logo-bg: #1a5e9a;
+        --logo-active-bg: #c00;
+        --logo-text: white;
+
+        --tocnav-normal-text: #999;
+        --tocnav-normal-bg: var(--bg);
+        --tocnav-hover-text: var(--tocnav-normal-text);
+        --tocnav-hover-bg: #080808;
+        --tocnav-active-text: #f44;
+        --tocnav-active-bg: var(--tocnav-normal-bg);
+
+        --tocsidebar-text: var(--text);
+        --tocsidebar-bg: #080808;
+        --tocsidebar-shadow: rgba(255,255,255,.1);
+        --tocsidebar-heading-text: hsla(203,20%,40%,.7);
+
+        --toclink-text: var(--text);
+        --toclink-underline: #6af;
+        --toclink-visited-text: var(--toclink-text);
+        --toclink-visited-underline: #054572;
+
+        --heading-text: #8af;
+
+        --hr-text: var(--text);
+
+        --algo-border: #456;
+
+        --del-text: #f44;
+        --del-bg: transparent;
+        --ins-text: #4a4;
+        --ins-bg: transparent;
+
+        --a-normal-text: #6af;
+        --a-normal-underline: #555;
+        --a-visited-text: var(--a-normal-text);
+        --a-visited-underline: var(--a-normal-underline);
+        --a-hover-bg: rgba(25%, 25%, 25%, .2);
+        --a-active-text: #f44;
+        --a-active-underline: var(--a-active-text);
+
+        --borderedblock-bg: rgba(255, 255, 255, .05);
+
+        --blockquote-border: silver;
+        --blockquote-bg: var(--borderedblock-bg);
+        --blockquote-text: currentcolor;
+
+        --issue-border: #e05252;
+        --issue-bg: var(--borderedblock-bg);
+        --issue-text: var(--text);
+        --issueheading-text: hsl(0deg, 70%, 70%);
+
+        --example-border: hsl(50deg, 90%, 60%);
+        --example-bg: var(--borderedblock-bg);
+        --example-text: var(--text);
+        --exampleheading-text: hsl(50deg, 70%, 70%);
+
+        --note-border: hsl(120deg, 100%, 35%);
+        --note-bg: var(--borderedblock-bg);
+        --note-text: var(--text);
+        --noteheading-text: hsl(120, 70%, 70%);
+        --notesummary-underline: silver;
+
+        --assertion-border: #444;
+        --assertion-bg: var(--borderedblock-bg);
+        --assertion-text: var(--text);
+
+        --advisement-border: orange;
+        --advisement-bg: #222218;
+        --advisement-text: var(--text);
+        --advisementheading-text: #f84;
+
+        --warning-border: red;
+        --warning-bg: hsla(40,100%,20%,0.95);
+        --warning-text: var(--text);
+
+        --amendment-border: #330099;
+        --amendment-bg: #080010;
+        --amendment-text: var(--text);
+        --amendmentheading-text: #cc00ff;
+
+        --def-border: #8ccbf2;
+        --def-bg: #080818;
+        --def-text: var(--text);
+        --defrow-border: #136;
+
+        --datacell-border: silver;
+
+        --indexinfo-text: #aaa;
+
+        --indextable-hover-text: var(--text);
+        --indextable-hover-bg: #181818;
+
+        --outdatedspec-bg: rgba(255, 255, 255, .5);
+        --outdatedspec-text: black;
+        --outdated-bg: maroon;
+        --outdated-text: white;
+        --outdated-shadow: red;
+
+        --editedrec-bg: darkorange;
+    }
+    /* In case a transparent-bg image doesn't expect to be on a dark bg,
+       which is quite common in practice... */
+    img { background: white; }
+}
+</style>
+<style>/* Boilerplate: style-counters */
 body {
     counter-reset: example figure issue;
 }
@@ -103,10 +333,16 @@ figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
 }
 </style>
-<style>/* style-dfn-panel */
+<style>/* Boilerplate: style-dfn-panel */
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
 }
 .dfn-panel {
     position: absolute;
@@ -150,7 +386,60 @@ figcaption:not(.no-marker)::before {
 
 .dfn-paneled[role="button"] { cursor: pointer; }
 </style>
-<style>/* style-issues */
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled[role="button"] { cursor: pointer; }
+</style>
+<style>/* Boilerplate: style-issues */
 a[href].issue-return {
     float: right;
     float: inline-end;
@@ -159,7 +448,7 @@ a[href].issue-return {
     text-decoration: none;
 }
 </style>
-<style>/* style-md-lists */
+<style>/* Boilerplate: style-md-lists */
 /* This is a weird hack for me not yet following the commonmark spec
    regarding paragraph and lists. */
 [data-md] > :first-child {
@@ -169,7 +458,7 @@ a[href].issue-return {
     margin-bottom: 0;
 }
 </style>
-<style>/* style-selflinks */
+<style>/* Boilerplate: style-selflinks */
 
 :root {
     --selflink-text: white;
@@ -229,12 +518,36 @@ a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
-<style>/* style-syntax-highlighting */
+<style>/* Boilerplate: style-style-syntax-highlighting */
 
             pre.idl.highlight {
                 background: var(--borderedblock-bg, var(--def-bg));
             }
             
+</style>
+<style>/* Boilerplate: style-style-var-click-highlighting */
+/*
+Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
+D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
+0 = lab(85,0,85)
+1 = lab(85,80,30)
+2 = lab(85,-40,40)
+3 = lab(85,-50,0)
+4 = lab(85,5,15)
+5 = lab(85,-10,-50)
+6 = lab(85,35,-15)
+*/
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
+<style>/* Boilerplate: style-syntax-highlighting */
+
 code.highlight { padding: .1em; border-radius: .3em; }
 pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
 
@@ -291,23 +604,77 @@ c-[vc] { color: #0077aa } /* Name.Variable.Class */
 c-[vg] { color: #0077aa } /* Name.Variable.Global */
 c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-</style>
-<style>/* style-var-click-highlighting */
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+
+
+@media (prefers-color-scheme: dark) {
+    .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
+
+    c-[a] { color: #d33682 } /* Keyword.Declaration */
+    c-[b] { color: #d33682 } /* Keyword.Type */
+    c-[c] { color: #2aa198 } /* Comment */
+    c-[d] { color: #2aa198 } /* Comment.Multiline */
+    c-[e] { color: #268bd2 } /* Name.Attribute */
+    c-[f] { color: #b58900 } /* Name.Tag */
+    c-[g] { color: #cb4b16 } /* Name.Variable */
+    c-[k] { color: #d33682 } /* Keyword */
+    c-[l] { color: #657b83 } /* Literal */
+    c-[m] { color: #657b83 } /* Literal.Number */
+    c-[n] { color: #268bd2 } /* Name */
+    c-[o] { color: #657b83 } /* Operator */
+    c-[p] { color: #657b83 } /* Punctuation */
+    c-[s] { color: #6c71c4 } /* Literal.String */
+    c-[t] { color: #6c71c4 } /* Literal.String.Single */
+    c-[u] { color: #6c71c4 } /* Literal.String.Double */
+    c-[ch] { color: #2aa198 } /* Comment.Hashbang */
+    c-[cp] { color: #2aa198 } /* Comment.Preproc */
+    c-[cpf] { color: #2aa198 } /* Comment.PreprocFile */
+    c-[c1] { color: #2aa198 } /* Comment.Single */
+    c-[cs] { color: #2aa198 } /* Comment.Special */
+    c-[kc] { color: #d33682 } /* Keyword.Constant */
+    c-[kn] { color: #d33682 } /* Keyword.Namespace */
+    c-[kp] { color: #d33682 } /* Keyword.Pseudo */
+    c-[kr] { color: #d33682 } /* Keyword.Reserved */
+    c-[ld] { color: #657b83 } /* Literal.Date */
+    c-[nc] { color: #268bd2 } /* Name.Class */
+    c-[no] { color: #268bd2 } /* Name.Constant */
+    c-[nd] { color: #268bd2 } /* Name.Decorator */
+    c-[ni] { color: #268bd2 } /* Name.Entity */
+    c-[ne] { color: #268bd2 } /* Name.Exception */
+    c-[nf] { color: #268bd2 } /* Name.Function */
+    c-[nl] { color: #268bd2 } /* Name.Label */
+    c-[nn] { color: #268bd2 } /* Name.Namespace */
+    c-[py] { color: #268bd2 } /* Name.Property */
+    c-[ow] { color: #657b83 } /* Operator.Word */
+    c-[mb] { color: #657b83 } /* Literal.Number.Bin */
+    c-[mf] { color: #657b83 } /* Literal.Number.Float */
+    c-[mh] { color: #657b83 } /* Literal.Number.Hex */
+    c-[mi] { color: #657b83 } /* Literal.Number.Integer */
+    c-[mo] { color: #657b83 } /* Literal.Number.Oct */
+    c-[sa] { color: #6c71c4 } /* Literal.String.Affix */
+    c-[sb] { color: #6c71c4 } /* Literal.String.Backtick */
+    c-[sc] { color: #6c71c4 } /* Literal.String.Char */
+    c-[dl] { color: #6c71c4 } /* Literal.String.Delimiter */
+    c-[sd] { color: #6c71c4 } /* Literal.String.Doc */
+    c-[se] { color: #6c71c4 } /* Literal.String.Escape */
+    c-[sh] { color: #6c71c4 } /* Literal.String.Heredoc */
+    c-[si] { color: #6c71c4 } /* Literal.String.Interpol */
+    c-[sx] { color: #6c71c4 } /* Literal.String.Other */
+    c-[sr] { color: #6c71c4 } /* Literal.String.Regex */
+    c-[ss] { color: #6c71c4 } /* Literal.String.Symbol */
+    c-[fm] { color: #268bd2 } /* Name.Function.Magic */
+    c-[vc] { color: #cb4b16 } /* Name.Variable.Class */
+    c-[vg] { color: #cb4b16 } /* Name.Variable.Global */
+    c-[vi] { color: #cb4b16 } /* Name.Variable.Instance */
+    c-[vm] { color: #cb4b16 } /* Name.Variable.Magic */
+    c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
+}
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-05-30">30 May 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-06-06">6 June 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -440,13 +807,13 @@ are treated as values of the other transparently.</p>
    <h2 class="heading settled" data-level="3" id="webassembly-storage"><span class="secno">3. </span><span class="content">Internal storage</span><a class="self-link" href="#webassembly-storage"></a></h2>
    <h3 class="heading settled" data-level="3.1" id="store"><span class="secno">3.1. </span><span class="content">Interaction of the WebAssembly Store with JavaScript</span><a class="self-link" href="#store"></a></h3>
    <p class="note" role="note"><span class="marker">Note:</span> WebAssembly semantics are defined in terms of an abstract <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-store" id="ref-for-syntax-store">store</a>, representing the state of the WebAssembly abstract machine. WebAssembly operations take a store and return an updated store.</p>
-   <p>Each <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent" id="ref-for-agent">agent</a> has an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="associated-store">associated store</dfn>. When a new agent is created, its associated store is set to the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init" id="ref-for-embed-store-init">store_init</a>().</p>
+   <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#realm&apos;s-agent" id="ref-for-realm&apos;s-agent">agent</a> has an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="associated-store">associated store</dfn>. When a new agent is created, its associated store is set to the result of <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/appendix/embedding.html#embed-store-init" id="ref-for-embed-store-init">store_init</a>().</p>
    <p class="note" role="note"><span class="marker">Note:</span> In this specification, no WebAssembly-related objects, memory or addresses can be shared among agents in an <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-agent-clusters" id="ref-for-sec-agent-clusters">agent cluster</a>. In a future version of WebAssembly, this may change.</p>
    <p>Elements of the WebAssembly store may be <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="identified-with">identified with</dfn> JavaScript values. In particular, each WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances" id="ref-for-memory-instances">memory instance</a> with a corresponding <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory">Memory</a></code> object is identified with a JavaScript <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-data-blocks" id="ref-for-sec-data-blocks">Data Block</a>; modifications to this Data Block are identified to updating the agent’s store to a store which reflects those changes, and vice versa.</p>
    <h3 class="heading settled" data-level="3.2" id="object-caches"><span class="secno">3.2. </span><span class="content">WebAssembly JS Object Caches</span><a class="self-link" href="#object-caches"></a></h3>
    <p class="note" role="note"><span class="marker">Note:</span> There are several WebAssembly objects that may have a corresponding JavaScript object. The correspondence is stored in a per-agent mapping from WebAssembly <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#addresses" id="ref-for-addresses">address</a>es to JavaScript objects.
-This mapping is used to ensure that, for a given <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent" id="ref-for-agent①">agent</a>, there exists at most one JavaScript object for a particular WebAssembly address. However, this property does not hold for shared objects.</p>
-   <p>Each <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent" id="ref-for-agent②">agent</a> is associated with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>s:</p>
+This mapping is used to ensure that, for a given <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#realm&apos;s-agent" id="ref-for-realm&apos;s-agent①">agent</a>, there exists at most one JavaScript object for a particular WebAssembly address. However, this property does not hold for shared objects.</p>
+   <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#realm&apos;s-agent" id="ref-for-realm&apos;s-agent②">agent</a> is associated with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>s:</p>
    <ul>
     <li data-md>
      <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="memory-object-cache">Memory object cache</dfn>, mapping <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-memaddr" id="ref-for-syntax-memaddr">memory address</a>es to <code class="idl"><a data-link-type="idl" href="#memory" id="ref-for-memory①">Memory</a></code> objects.</p>
@@ -1417,7 +1784,7 @@ Each <code class="idl"><a data-link-type="idl" href="#table" id="ref-for-table�
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-a-global-object">create a global object</dfn> from a <a data-link-type="dfn" href="https://webassembly.github.io/spec/core/exec/runtime.html#syntax-globaladdr" id="ref-for-syntax-globaladdr③">global address</a> <var>globaladdr</var>, perform the following steps: 
     <ol>
      <li data-md>
-      <p>Let <var>map</var> be the current <a data-link-type="dfn" href="https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent" id="ref-for-agent③">agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
+      <p>Let <var>map</var> be the current <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#realm&apos;s-agent" id="ref-for-realm&apos;s-agent③">agent</a>'s associated <a data-link-type="dfn" href="#global-object-cache" id="ref-for-global-object-cache①">Global object cache</a>.</p>
      <li data-md>
       <p>If <var>map</var>[<var>globaladdr</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>,</p>
       <ol>
@@ -2265,7 +2632,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="9ab06711">ToNumber</span>
      <li><span class="dfn-paneled" id="4a854a91">ToString</span>
      <li><span class="dfn-paneled" id="58788f9d">TypeError</span>
-     <li><span class="dfn-paneled" id="a653126b">agent</span>
      <li><span class="dfn-paneled" id="fa5c4242">agent cluster</span>
      <li><span class="dfn-paneled" id="e8f0aed3">built-in function objects</span>
      <li><span class="dfn-paneled" id="b107f911">current realm</span>
@@ -2284,6 +2650,7 @@ In practice, an implementation may run out of resources for valid modules below 
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="3134c785">agent</span>
      <li><span class="dfn-paneled" id="d5ac3b38">clean up after running a callback</span>
      <li><span class="dfn-paneled" id="b6a1ae3f">clean up after running script</span>
      <li><span class="dfn-paneled" id="a72449dd">in parallel</span>
@@ -2567,7 +2934,7 @@ In practice, an implementation may run out of resources for valid modules below 
      <a class="issue-return" href="#issue-7eafcf54" title="Jump to section">↵</a>
    </div>
   </div>
-<script>/* script-dfn-panel */
+<script>/* Boilerplate: script-dfn-panel */
 "use strict";
 {
     const dfnsJson = window.dfnsJson || {};
@@ -2720,7 +3087,160 @@ In practice, an implementation may run out of resources for valid modules below 
     }
 }
 </script>
-<script>/* script-dfn-panel-json */
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
+
+    function hideAllDfnPanels() {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
+    }
+
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn, dfnPanel) {
+        // Find dfn panel
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
+                pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        })
+    }
+}
+</script>
+<script>/* Boilerplate: script-dfn-panel-json */
 window.dfnpanelData = {};
 window.dfnpanelData['cd4b1dc4'] = {"dfnID": "cd4b1dc4", "url": "https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands", "dfnText": "!", "refSections": [{"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2461"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2462"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2463"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2464"}], "title": "4.3. Memories"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2465"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2466"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2467"}], "title": "4.4. Tables"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2468"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2460"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2461"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2462"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2463"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2464"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2465"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2466"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2467"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2468"}], "title": "4.6. Exported Functions"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}], "title": "4.7. Error Objects"}], "external": true};
 window.dfnpanelData['ebb4ace3'] = {"dfnID": "ebb4ace3", "url": "https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands", "dfnText": "?", "refSections": [{"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2461"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2462"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2463"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2464"}], "title": "4.3. Memories"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2465"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2466"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2467"}], "title": "4.4. Tables"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2468"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u24ea"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2460"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2461"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2462"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2463"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2464"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2465"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2466"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2467"}, {"id": "ref-for-sec-returnifabrupt-shorthands\u2460\u2468"}], "title": "4.6. Exported Functions"}, {"refs": [{"id": "ref-for-sec-returnifabrupt-shorthands\u2461\u24ea"}], "title": "4.7. Error Objects"}], "external": true};
@@ -2744,7 +3264,6 @@ window.dfnpanelData['06f63be9'] = {"dfnID": "06f63be9", "url": "https://tc39.es/
 window.dfnpanelData['9ab06711'] = {"dfnID": "9ab06711", "url": "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tonumber", "dfnText": "ToNumber", "refSections": [{"refs": [{"id": "ref-for-sec-tonumber"}, {"id": "ref-for-sec-tonumber\u2460"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['4a854a91'] = {"dfnID": "4a854a91", "url": "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-tostring", "dfnText": "ToString", "refSections": [{"refs": [{"id": "ref-for-sec-tostring"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['58788f9d'] = {"dfnID": "58788f9d", "url": "https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"}], "title": "4.4. Tables"}, {"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2464"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2465"}], "title": "4.5. Globals"}, {"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2466"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2467"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2468"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u24ea"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u2460"}], "title": "4.6. Exported Functions"}, {"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460\u2461"}], "title": "4.7. Error Objects"}], "external": true};
-window.dfnpanelData['a653126b'] = {"dfnID": "a653126b", "url": "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#agent", "dfnText": "agent", "refSections": [{"refs": [{"id": "ref-for-agent"}], "title": "3.1. Interaction of the WebAssembly Store with JavaScript"}, {"refs": [{"id": "ref-for-agent\u2460"}, {"id": "ref-for-agent\u2461"}], "title": "3.2. WebAssembly JS Object Caches"}, {"refs": [{"id": "ref-for-agent\u2462"}], "title": "4.5. Globals"}], "external": true};
 window.dfnpanelData['fa5c4242'] = {"dfnID": "fa5c4242", "url": "https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#sec-agent-clusters", "dfnText": "agent cluster", "refSections": [{"refs": [{"id": "ref-for-sec-agent-clusters"}], "title": "3.1. Interaction of the WebAssembly Store with JavaScript"}], "external": true};
 window.dfnpanelData['e8f0aed3'] = {"dfnID": "e8f0aed3", "url": "https://tc39.github.io/ecma262/#sec-built-in-function-objects", "dfnText": "built-in function objects", "refSections": [{"refs": [{"id": "ref-for-sec-built-in-function-objects"}, {"id": "ref-for-sec-built-in-function-objects\u2460"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['b107f911'] = {"dfnID": "b107f911", "url": "https://tc39.github.io/ecma262/#current-realm", "dfnText": "current realm", "refSections": [{"refs": [{"id": "ref-for-current-realm"}], "title": "4.6. Exported Functions"}], "external": true};
@@ -2755,6 +3274,7 @@ window.dfnpanelData['c4df1374'] = {"dfnID": "c4df1374", "url": "https://tc39.git
 window.dfnpanelData['8b2a5c87'] = {"dfnID": "8b2a5c87", "url": "https://tc39.github.io/ecma262/#\u2124", "dfnText": "\u2124", "refSections": [{"refs": [{"id": "ref-for-\u2124"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['c3b271ac'] = {"dfnID": "c3b271ac", "url": "https://tc39.github.io/ecma262/#\ud835\udd3d", "dfnText": "\ud835\udd3d", "refSections": [{"refs": [{"id": "ref-for-\ud835\udd3d"}, {"id": "ref-for-\ud835\udd3d\u2460"}, {"id": "ref-for-\ud835\udd3d\u2461"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['f256859a'] = {"dfnID": "f256859a", "url": "https://encoding.spec.whatwg.org/#utf-8-decode-without-bom-or-fail", "dfnText": "utf-8 decode without bom or fail", "refSections": [{"refs": [{"id": "ref-for-utf-8-decode-without-bom-or-fail"}], "title": "4.1. Modules"}], "external": true};
+window.dfnpanelData['3134c785'] = {"dfnID": "3134c785", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#realm's-agent", "dfnText": "agent", "refSections": [{"refs": [{"id": "ref-for-realm's-agent"}], "title": "3.1. Interaction of the WebAssembly Store with JavaScript"}, {"refs": [{"id": "ref-for-realm's-agent\u2460"}, {"id": "ref-for-realm's-agent\u2461"}], "title": "3.2. WebAssembly JS Object Caches"}, {"refs": [{"id": "ref-for-realm's-agent\u2462"}], "title": "4.5. Globals"}], "external": true};
 window.dfnpanelData['d5ac3b38'] = {"dfnID": "d5ac3b38", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-a-callback", "dfnText": "clean up after running a callback", "refSections": [{"refs": [{"id": "ref-for-clean-up-after-running-a-callback"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['b6a1ae3f'] = {"dfnID": "b6a1ae3f", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#clean-up-after-running-script", "dfnText": "clean up after running script", "refSections": [{"refs": [{"id": "ref-for-clean-up-after-running-script"}], "title": "4.6. Exported Functions"}], "external": true};
 window.dfnpanelData['a72449dd'] = {"dfnID": "a72449dd", "url": "https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel", "dfnText": "in parallel", "refSections": [{"refs": [{"id": "ref-for-in-parallel"}, {"id": "ref-for-in-parallel\u2460"}], "title": "4. The WebAssembly Namespace"}], "external": true};
@@ -2959,8 +3479,9 @@ window.dfnpanelData['retrieving-an-extern-value'] = {"dfnID": "retrieving-an-ext
 window.dfnpanelData['towebassemblyvalue'] = {"dfnID": "towebassemblyvalue", "url": "#towebassemblyvalue", "dfnText": "ToWebAssemblyValue", "refSections": [{"refs": [{"id": "ref-for-towebassemblyvalue"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-towebassemblyvalue\u2460"}, {"id": "ref-for-towebassemblyvalue\u2461"}, {"id": "ref-for-towebassemblyvalue\u2462"}], "title": "4.4. Tables"}, {"refs": [{"id": "ref-for-towebassemblyvalue\u2463"}, {"id": "ref-for-towebassemblyvalue\u2464"}, {"id": "ref-for-towebassemblyvalue\u2465"}], "title": "4.5. Globals"}, {"refs": [{"id": "ref-for-towebassemblyvalue\u2466"}, {"id": "ref-for-towebassemblyvalue\u2467"}, {"id": "ref-for-towebassemblyvalue\u2468"}], "title": "4.6. Exported Functions"}], "external": false};
 window.dfnpanelData['exceptiondef-compileerror'] = {"dfnID": "exceptiondef-compileerror", "url": "#exceptiondef-compileerror", "dfnText": "CompileError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-compileerror"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-exceptiondef-compileerror\u2460"}], "title": "4.1. Modules"}, {"refs": [{"id": "ref-for-exceptiondef-compileerror\u2461"}], "title": "4.7. Error Objects"}, {"refs": [{"id": "ref-for-exceptiondef-compileerror\u2462"}], "title": "6. Implementation-defined Limits"}], "external": false};
 window.dfnpanelData['exceptiondef-linkerror'] = {"dfnID": "exceptiondef-linkerror", "url": "#exceptiondef-linkerror", "dfnText": "LinkError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-linkerror"}, {"id": "ref-for-exceptiondef-linkerror\u2460"}, {"id": "ref-for-exceptiondef-linkerror\u2461"}, {"id": "ref-for-exceptiondef-linkerror\u2462"}, {"id": "ref-for-exceptiondef-linkerror\u2463"}, {"id": "ref-for-exceptiondef-linkerror\u2464"}, {"id": "ref-for-exceptiondef-linkerror\u2465"}, {"id": "ref-for-exceptiondef-linkerror\u2466"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-exceptiondef-linkerror\u2467"}], "title": "4.7. Error Objects"}], "external": false};
-window.dfnpanelData['exceptiondef-runtimeerror'] = {"dfnID": "exceptiondef-runtimeerror", "url": "#exceptiondef-runtimeerror", "dfnText": "RuntimeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-runtimeerror"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2460"}], "title": "4.6. Exported Functions"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2461"}], "title": "4.7. Error Objects"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2462"}], "title": "6. Implementation-defined Limits"}], "external": false};</script>
-<script>/* script-dom-helper */
+window.dfnpanelData['exceptiondef-runtimeerror'] = {"dfnID": "exceptiondef-runtimeerror", "url": "#exceptiondef-runtimeerror", "dfnText": "RuntimeError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-runtimeerror"}], "title": "4. The WebAssembly Namespace"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2460"}], "title": "4.6. Exported Functions"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2461"}], "title": "4.7. Error Objects"}, {"refs": [{"id": "ref-for-exceptiondef-runtimeerror\u2462"}], "title": "6. Implementation-defined Limits"}], "external": false};
+</script>
+<script>/* Boilerplate: script-dom-helper */
 function query(sel) { return document.querySelector(sel); }
 
 function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
@@ -3154,89 +3675,103 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
-}</script>
-<script>/* script-var-click-highlighting */
+}
+</script>
+<script>/* Boilerplate: script-var-click-highlighting */
+/*
+Color-choosing design:
 
-    "use strict";
-    {
-        document.addEventListener("click", e=>{
-            if(e.target.nodeName == "VAR") {
-                highlightSameAlgoVars(e.target);
-            }
-        });
-        const indexCounts = new Map();
-        const indexNames = new Map();
-        function highlightSameAlgoVars(v) {
-            // Find the algorithm container.
-            let algoContainer = null;
-            let searchEl = v;
-            while(algoContainer == null && searchEl != document.body) {
-                searchEl = searchEl.parentNode;
-                if(searchEl.hasAttribute("data-algorithm")) {
-                    algoContainer = searchEl;
-                }
-            }
+Colors are ordered by goodness.
+Each color has a usage count (initially zero).
+Each variable has a last-used color.
 
-            // Not highlighting document-global vars,
-            // too likely to be unrelated.
-            if(algoContainer == null) return;
-
-            const algoName = algoContainer.getAttribute("data-algorithm");
-            const varName = getVarName(v);
-            const addClass = !v.classList.contains("selected");
-            let highlightClass = null;
-            if(addClass) {
-                const index = chooseHighlightIndex(algoName, varName);
-                indexCounts.get(algoName)[index] += 1;
-                indexNames.set(algoName+"///"+varName, index);
-                highlightClass = nameFromIndex(index);
-            } else {
-                const index = previousHighlightIndex(algoName, varName);
-                indexCounts.get(algoName)[index] -= 1;
-                highlightClass = nameFromIndex(index);
-            }
-
-            // Find all same-name vars, and toggle their class appropriately.
-            for(const el of algoContainer.querySelectorAll("var")) {
-                if(getVarName(el) == varName) {
-                    el.classList.toggle("selected", addClass);
-                    el.classList.toggle(highlightClass, addClass);
-                }
+* If the var has a last-used color, and that color's usage is 0,
+    return that color.
+* Otherwise, return the lowest-indexed color with the lowest usage.
+    Increment the color's usage and set it as the last-used color
+    for that var.
+* On unclicking, decrement usage of the color.
+*/
+"use strict";
+{
+    document.addEventListener("click", e=>{
+        if(e.target.nodeName == "VAR") {
+            highlightSameAlgoVars(e.target);
+        }
+    });
+    const indexCounts = new Map();
+    const indexNames = new Map();
+    function highlightSameAlgoVars(v) {
+        // Find the algorithm container.
+        let algoContainer = null;
+        let searchEl = v;
+        while(algoContainer == null && searchEl != document.body) {
+            searchEl = searchEl.parentNode;
+            if(searchEl.hasAttribute("data-algorithm")) {
+                algoContainer = searchEl;
             }
         }
-        function getVarName(el) {
-            return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
-        }
-        function chooseHighlightIndex(algoName, varName) {
-            let indexes = null;
-            if(indexCounts.has(algoName)) {
-                indexes = indexCounts.get(algoName);
-            } else {
-                // 7 classes right now
-                indexes = [0,0,0,0,0,0,0];
-                indexCounts.set(algoName, indexes);
-            }
 
-            // If the element was recently unclicked,
-            // *and* that color is still unclaimed,
-            // give it back the same color.
-            const lastIndex = previousHighlightIndex(algoName, varName);
-            if(indexes[lastIndex] === 0) return lastIndex;
+        // Not highlighting document-global vars,
+        // too likely to be unrelated.
+        if(algoContainer == null) return;
 
-            // Find the earliest index with the lowest count.
-            const minCount = Math.min.apply(null, indexes);
-            let index = null;
-            for(var i = 0; i < indexes.length; i++) {
-                if(indexes[i] == minCount) {
-                    return i;
-                }
+        const algoName = algoContainer.getAttribute("data-algorithm");
+        const varName = getVarName(v);
+        const addClass = !v.classList.contains("selected");
+        let highlightClass = null;
+        if(addClass) {
+            const index = chooseHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] += 1;
+            indexNames.set(algoName+"///"+varName, index);
+            highlightClass = nameFromIndex(index);
+        } else {
+            const index = previousHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] -= 1;
+            highlightClass = nameFromIndex(index);
+        }
+
+        // Find all same-name vars, and toggle their class appropriately.
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(getVarName(el) == varName) {
+                el.classList.toggle("selected", addClass);
+                el.classList.toggle(highlightClass, addClass);
             }
-        }
-        function previousHighlightIndex(algoName, varName) {
-            return indexNames.get(algoName+"///"+varName);
-        }
-        function nameFromIndex(index) {
-            return "selected" + index;
         }
     }
+    function getVarName(el) {
+        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+    }
+    function chooseHighlightIndex(algoName, varName) {
+        let indexes = null;
+        if(indexCounts.has(algoName)) {
+            indexes = indexCounts.get(algoName);
+        } else {
+            // 7 classes right now
+            indexes = [0,0,0,0,0,0,0];
+            indexCounts.set(algoName, indexes);
+        }
+
+        // If the element was recently unclicked,
+        // *and* that color is still unclaimed,
+        // give it back the same color.
+        const lastIndex = previousHighlightIndex(algoName, varName);
+        if(indexes[lastIndex] === 0) return lastIndex;
+
+        // Find the earliest index with the lowest count.
+        const minCount = Math.min.apply(null, indexes);
+        let index = null;
+        for(var i = 0; i < indexes.length; i++) {
+            if(indexes[i] == minCount) {
+                return i;
+            }
+        }
+    }
+    function previousHighlightIndex(algoName, varName) {
+        return indexNames.get(algoName+"///"+varName);
+    }
+    function nameFromIndex(index) {
+        return "selected" + index;
+    }
+}
 </script>
