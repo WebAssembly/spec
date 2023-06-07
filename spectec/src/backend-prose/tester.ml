@@ -74,7 +74,12 @@ let builtin =
 
   let initial_store: value list Record.t =
     Record.empty
-    |> Record.add "FUNC" [] in
+    |> Record.add "FUNC" []
+    |> Record.add "GLOBAL" []
+    |> Record.add "TABLE" []
+    |> Record.add "MEM" []
+    |> Record.add "ELEM" []
+    |> Record.add "DATA" [] in
 
   (* Builtin functions *)
   let funcs = [
@@ -204,9 +209,19 @@ let test_assertion assertion =
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
-let get_externval = function
+(* Note: this function mutates `Interpreter.store` *)
+let get_externval module_used = function
   | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
-      let _, export = find_export import_module_name in
+
+      let s, export = find_export import_module_name in
+
+      (* Update store *)
+      if List.mem import_module_name !module_used |> not then (
+        Interpreter.add_store s;
+        module_used := import_module_name :: !module_used
+      );
+
+      (* Get extern *)
       let f =
         function
           | ConstructV ("EXPORT", [ StringV export_name; use ])
@@ -218,7 +233,8 @@ let get_externval = function
 
 let get_externvals = function
   | ConstructV ("MODULE", ListV imports :: _) ->
-      ListV (List.map get_externval !imports |> ref)
+      let module_used = ref [] in
+      ListV (List.map (get_externval module_used) !imports |> ref)
   | _ -> failwith "Invalid module"
 
 let test_module module_name m =

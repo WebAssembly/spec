@@ -37,6 +37,28 @@ let init_store () =
     |> Record.add "ELEM" (ListV (ref []))
     |> Record.add "DATA" (ListV (ref []))
 
+let add_store s =
+  let concat_listv v1 v2 =
+    match v1, v2 with
+    | ListV l1, ListV l2 -> ListV (ref (!l1 @ !l2))
+    | _ -> failwith "Invalid store"
+  in
+
+  let func = concat_listv (Record.find "FUNC" !store) (Record.find "FUNC" s) in
+  let global = concat_listv (Record.find "GLOBAL" !store) (Record.find "GLOBAL" s) in
+  let table = concat_listv (Record.find "TABLE" !store) (Record.find "TABLE" s) in
+  let mem = concat_listv (Record.find "MEM" !store) (Record.find "MEM" s) in
+  let elem = concat_listv (Record.find "ELEM" !store) (Record.find "ELEM" s) in
+  let data = concat_listv (Record.find "DATA" !store) (Record.find "DATA" s) in
+
+  store := Record.empty
+    |> Record.add "FUNC" func
+    |> Record.add "GLOBAL" global
+    |> Record.add "TABLE" table
+    |> Record.add "MEM" mem
+    |> Record.add "ELEM" elem
+    |> Record.add "DATA" data
+
 module Env = struct
   module EnvKey = struct
     type t = name
