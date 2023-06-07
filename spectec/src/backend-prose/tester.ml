@@ -83,26 +83,33 @@ let builtin =
 
   (* Builtin functions *)
   let funcs = [
-    "print", [ ConstructV ("PRINT", []) ];
-    "print_i32", [ ConstructV ("PRINT_I32", []) ];
-    "print_i64", [ ConstructV ("PRINT_I64", []) ];
-    "print_f32", [ ConstructV ("PRINT_F32", []) ];
-    "print_f64", [ ConstructV ("PRINT_F64", []) ];
-    "print_i32_f32", [ ConstructV ("PRINT_I32_F32", []) ];
-    "print_f64_f64", [ ConstructV ("PRINT_F64_F64", []) ];
-    "global_i32", [ ConstructV ("GLOBAL_I32", []) ];
-    "global_i64", [ ConstructV ("GLOBAL_I64", []) ];
-    "global_f32", [ ConstructV ("GLOBAL_F32", []) ];
-    "global_f64", [ ConstructV ("GLOBAL_F64", []) ];
-    "table", [ ConstructV ("TABLE", []) ];
-    "memory", [ ConstructV ("MEMORY", []) ];
+    "print", [];
+    "print_i32", [ "I32" ];
+    "print_i64", [ "I64" ];
+    "print_f32", [ "F32" ];
+    "print_f64", [ "F64" ];
+    "print_i32_f32", [ "I32"; "F32" ];
+    "print_f64_f64", [ "F64"; "F64" ];
+    "global_i32", [];
+    "global_i64", [];
+    "global_f32", [];
+    "global_f64", [];
+    "table", [];
+    "memory", [];
   ] in
 
-  let f1 (name, code) (sto, extern) =
+  let f1 (name, type_tags) (sto, extern) =
+
+    let code = ConstructV (String.uppercase_ascii name, []) in
+    let ptype = List.map (fun tag -> ConstructV (tag, [])) type_tags in
+    let ftype = ArrowV (listV ptype, listV []) in
 
     (* Update Store *)
     let new_funcinsts =
-      PairV (RecordV Record.empty, listV code) :: Record.find "FUNC" sto
+      PairV (
+        RecordV Record.empty,
+        ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ])
+      ) :: Record.find "FUNC" sto
     in
     let new_sto = Record.add "FUNC" new_funcinsts sto in
 
