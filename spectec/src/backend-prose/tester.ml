@@ -152,7 +152,6 @@ let do_invoke act = match act.it with
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
     ) in
     Interpreter.cnt := 0;
-    Interpreter.wcnt := 0;
     Interpreter.init_stack();
     Interpreter.store := sto;
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
@@ -254,7 +253,6 @@ let test_module module_name m =
 
   (* Initialize *)
   Interpreter.cnt := 0;
-  Interpreter.wcnt := 0;
   Interpreter.init_stack();
   Interpreter.init_store();
 

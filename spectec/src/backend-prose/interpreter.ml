@@ -165,7 +165,6 @@ let rec int64_exp base exponent =
 (* Interpreter *)
 
 let cnt = ref 0
-let wcnt = ref 0
 
 let rec dsl_function_call fname args =
   match fname with
@@ -320,7 +319,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
-  if !cnt > 3000000 then raise Exception.Timeout else cnt := !cnt + 1;
+  if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->
@@ -559,8 +558,6 @@ and execute_wasm_instr winstr =
   (* Print.string_of_value winstr |> prerr_endline; *)
   (* string_of_stack !stack |> prerr_endline; *)
   (* string_of_record !store |> prerr_endline; *)
-  wcnt := !wcnt + 1;
-  if !wcnt > 10000 then raise Exception.Timeout;
   match winstr with
   | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) -> push winstr
   | ConstructV (name, []) when is_builtin name -> call_builtin name
