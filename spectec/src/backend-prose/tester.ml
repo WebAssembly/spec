@@ -237,11 +237,11 @@ let get_externval module_used = function
       (* Get extern *)
       let f =
         function
-          | ConstructV ("EXPORT", [ StringV export_name; use ])
-            when export_name = extern_name -> Some use
-          | _ -> None
+          | ConstructV ("EXPORT", [ StringV export_name; _ ])
+            when export_name = extern_name -> true
+          | _ -> false
       in
-      Array.find_map f export |> Option.get
+      Array.find_opt f export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function

@@ -812,28 +812,34 @@ instantiation module externval*
 9. Return moduleinst.EXPORT.
 
 alloc_module module externval*
-1. Let (MODULE _ func* global* table* memory* elem* data* _ export*) be module.
+1. Let (MODULE import* func* global* table* memory* elem* data* _ export*) be module.
 2. Let moduleinst be { DATA: []; ELEM: []; EXPORT: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
-3. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
-4. Push f_init to the stack.
-5. Let funcaddr* be $alloc_func(func)*.
-6. Append the sequence funcaddr* to the moduleinst.FUNC.
-7. Let tableaddr* be $alloc_table(table)*.
-8. Append the sequence tableaddr* to the moduleinst.TABLE.
-9. Let globaladdr* be $alloc_global(global)*.
-10. Append the sequence globaladdr* to the moduleinst.GLOBAL.
-11. Let memoryaddr* be $alloc_memory(memory)*.
-12. Append the sequence memoryaddr* to the moduleinst.MEM.
-13. Let elemaddr* be $alloc_elem(elem)*.
-14. Append the sequence elemaddr* to the moduleinst.ELEM.
-15. Let dataaddr* be $alloc_data(data)*.
-16. Append the sequence dataaddr* to the moduleinst.DATA.
-17. Pop f_init from the stack.
-18. For i in range |s.FUNC|:
+3. For i in range |import*|:
+  a. Let (IMPORT _ _ import_type) be import*[i].
+  b. Let (EXPORT _ externuse) be externval*[i].
+  c. If import_type is of the case FUNC and externuse is of the case FUNC, then:
+    1) Let (FUNC funcaddr) be externuse.
+    2) Append funcaddr to the moduleinst.FUNC.
+4. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+5. Push f_init to the stack.
+6. Let funcaddr* be $alloc_func(func)*.
+7. Append the sequence funcaddr* to the moduleinst.FUNC.
+8. Let tableaddr* be $alloc_table(table)*.
+9. Append the sequence tableaddr* to the moduleinst.TABLE.
+10. Let globaladdr* be $alloc_global(global)*.
+11. Append the sequence globaladdr* to the moduleinst.GLOBAL.
+12. Let memoryaddr* be $alloc_memory(memory)*.
+13. Append the sequence memoryaddr* to the moduleinst.MEM.
+14. Let elemaddr* be $alloc_elem(elem)*.
+15. Append the sequence elemaddr* to the moduleinst.ELEM.
+16. Let dataaddr* be $alloc_data(data)*.
+17. Append the sequence dataaddr* to the moduleinst.DATA.
+18. Pop f_init from the stack.
+19. For i in range |s.FUNC|:
   a. Let (_, func') be s.FUNC[i].
   b. Replace s.FUNC[i] with (moduleinst, func').
-19. Append the sequence export* to the moduleinst.EXPORT.
-20. Return moduleinst.
+20. Append the sequence export* to the moduleinst.EXPORT.
+21. Return moduleinst.
 
 init_global global
 1. Let (GLOBAL _ instr*) be global.
@@ -907,7 +913,7 @@ invocation funcaddr val*
 sample.wast: [27/27] (100.00%)
 forward.wast: [4/4] (100.00%)
 float_misc.wast: [440/440] (100.00%)
-table_copy.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/1649] (0.00%)
+table_copy.wast: [Uncaught exception: Direct invocation failed due to Algorithm execution_of_yet al_of_instr: table.copy 0 0 not found] [60/1649] (3.64%)
 ref_null.wast: [2/2] (100.00%)
 memory.wast: [45/45] (100.00%)
 unwind.wast: [49/49] (100.00%)
@@ -917,7 +923,7 @@ fac.wast: [6/6] (100.00%)
 func.wast: [96/96] (100.00%)
 exports.wast: [9/9] (100.00%)
 local_set.wast: [19/19] (100.00%)
-linking.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [20/83] (24.10%)
+linking.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [23/83] (27.71%)
 float_literals.wast: [Uncaught exception: This test contains a binary module] [82/83] (98.80%)
 align.wast: [48/48] (100.00%)
 if.wast: [123/123] (100.00%)
@@ -946,7 +952,7 @@ call_indirect.wast: [127/132] (96.21%)
 load.wast: [37/37] (100.00%)
 memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [4/20] (20.00%)
 memory_size.wast: [29/36] (80.56%)
-imports.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/34] (0.00%)
+imports.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/34] (0.00%)
 left-to-right.wast: [95/95] (100.00%)
 ref_is_null.wast: [11/11] (100.00%)
 memory_trap.wast: [180/180] (100.00%)
@@ -957,14 +963,14 @@ memory_init.wast: [Uncaught exception: Direct invocation failed due to Failed Ar
 elem.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/25] (0.00%)
 table_get.wast: [9/9] (100.00%)
 f32.wast: [2500/2500] (100.00%)
-start.wast: [6/6] (100.00%)
+start.wast: [Uncaught exception: Module Instantiation failed due to Algorithm execution_of_table not found] [6/6] (100.00%)
 float_exprs.wast: [794/794] (100.00%)
 float_memory.wast: [60/60] (100.00%)
 table_size.wast: [29/36] (80.56%)
 table_set.wast: [18/18] (100.00%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
-ref_func.wast: [3/8] (37.50%)
+ref_func.wast: [8/8] (100.00%)
 names.wast: [481/482] (99.79%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
@@ -972,12 +978,12 @@ int_literals.wast: [30/30] (100.00%)
 address.wast: [255/255] (100.00%)
 table_grow.wast: [36/38] (94.74%)
 func_ptrs.wast: [Uncaught exception: Direct invocation failed due to Algorithm execution_of_print_f64_f64 not found] [0/25] (0.00%)
-table_init.wast: [Uncaught exception: Module Instantiation failed due to No frame] [0/662] (0.00%)
+table_init.wast: [Uncaught exception: Direct invocation failed due to Algorithm execution_of_yet al_of_instr: elem.drop 1 not found] [60/662] (9.06%)
 global.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/58] (0.00%)
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [16756/23744] (70.57%; Normalized 85.06%)
+Total [16884/23744] (71.11%; Normalized 86.12%)
 == Complete.
 ```

@@ -255,6 +255,8 @@ let alloc_module =
   (* Name definition *)
   let module_ = NameE (N "module", []) in
   let externval = NameE (N "externval", [ List ]) in
+  let import_type = NameE (N "import_type", []) in
+  let externuse = NameE (N "externuse", []) in
   let module_inst_init = NameE (N "moduleinst", []) in
   let module_inst_init_rec =
     Record.empty
@@ -271,6 +273,8 @@ let alloc_module =
     Record.empty
     |> Record.add "MODULE" module_inst_init
     |> Record.add "LOCAL" (ListE []) in
+  let import_name = N "import" in
+  let import_iter = NameE (import_name, [List]) in
   let func_name = N "func" in
   let func = NameE (func_name, []) in
   let func_iter = NameE (func_name, [List]) in
@@ -291,6 +295,7 @@ let alloc_module =
   let data_iter = NameE (data_name, [List]) in
   let export_name = N "export" in
   let export_iter = NameE (export_name, [List]) in
+  let funcaddr' = NameE (N "funcaddr'", []) in
   let funcaddr_iter = NameE (N "funcaddr", [List]) in
   let tableaddr_iter = NameE (N "tableaddr", [List]) in
   let globaladdr_iter = NameE (N "globaladdr", [List]) in
@@ -315,7 +320,7 @@ let alloc_module =
         ConstructE (
           "MODULE",
           [
-            ignore_name;
+            import_iter;
             func_iter;
             global_iter;
             table_iter;
@@ -329,6 +334,21 @@ let alloc_module =
         module_
       );
       LetI (module_inst_init, RecordE module_inst_init_rec);
+      ForI (
+        import_iter,
+        [
+          LetI (ConstructE ("IMPORT", [ ignore_name; ignore_name; import_type ]), AccessE (import_iter, index));
+          LetI (ConstructE ("EXPORT", [ ignore_name; externuse ]), AccessE (externval, index));
+          IfI (
+            BinopC (And, IsCaseOfC (import_type, "FUNC"), IsCaseOfC (externuse, "FUNC")),
+            [
+              LetI (ConstructE ("FUNC", [ funcaddr' ]), externuse);
+              AppendI (AccessE (module_inst_init, DotP "FUNC"), funcaddr')
+            ],
+            []
+          )
+        ]
+      );
       LetI (frame_init, FrameE (NumE 0L, RecordE frame_init_rec));
       PushI frame_init;
       LetI ( funcaddr_iter, MapE (N "alloc_func", [ func ], [ List ]));
