@@ -227,20 +227,34 @@ let get_externval module_used = function
 
       let s, export = find_export import_module_name in
 
+      (* XXX: Assume import from at most 2 modules *)
       (* Update store *)
       if List.mem import_module_name !module_used |> not then (
         Interpreter.add_store s;
         module_used := import_module_name :: !module_used
       );
 
-      (* Get extern *)
-      let f =
-        function
-          | ConstructV ("EXPORT", [ StringV export_name; _ ])
-            when export_name = extern_name -> true
-          | _ -> false
+      let offset =
+        if List.rev !module_used |> List.hd <> import_module_name then
+          let s', _ = List.rev !module_used |> List.hd |> find_export in
+          match Record.find "FUNC" s' with
+          | ListV l -> Array.length !l
+          | _ -> failwith "Invalid store"
+        else 0
       in
-      Array.find_opt f export |> Option.get
+
+      (* Get extern *)
+      let f extern =
+        match extern with
+        | ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV idx ]) ])
+          when export_name = extern_name ->
+            let new_idx = Int64.of_int offset |> Int64.add idx in
+            Some (ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV new_idx ]) ]))
+        | ConstructV ("EXPORT", [ StringV export_name; _ ])
+          when export_name = extern_name -> Some extern
+        | _ -> None
+      in
+      Array.find_map f export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function
