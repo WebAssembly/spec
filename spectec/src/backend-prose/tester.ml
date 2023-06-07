@@ -120,26 +120,25 @@ let builtin =
   Record.map (fun l -> ListV (ref l)) sto, extern
 
 
+let latest = "__latest__"
+let get_module_name = function
+  | Some name -> name.it
+  | None -> latest
 let find_export = function
   | "spectest" -> builtin
   | name -> Register.find name !register
 
-let do_invoke act = match act.it with
-  | Script.Invoke (opt, name, literals) ->
-    let extract_idx (export: value) =
-      match export with
-      | ConstructV ("EXPORT", [ StringV (export_name); ConstructV ("FUNC", [ idx ]) ])
-        when export_name = Ast.string_of_name name -> Some (idx)
-      | _ -> None
-    in
-    let module_name =
-      match opt with
-      | Some name -> name.it
-      | None -> ""
-    in
+let extract_idx_of tag name (export: value) =
+  match export with
+  | ConstructV ("EXPORT", [ StringV (export_name); ConstructV (export_tag, [ idx ]) ])
+    when export_name = Ast.string_of_name name && export_tag = tag -> Some (idx)
+  | _ -> None
 
-    let (sto, export) = find_export module_name in
-    let idx = List.find_map extract_idx export |> Option.get in
+let do_invoke act = match act.it with
+  | Script.Invoke (module_name_opt, name, literals) ->
+    let module_name = get_module_name module_name_opt in
+    let (sto, exports) = find_export module_name in
+    let idx = List.find_map (extract_idx_of "FUNC" name) exports |> Option.get in
 
     let args = ListV (
       literals
@@ -152,7 +151,15 @@ let do_invoke act = match act.it with
     Interpreter.store := sto;
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
     Interpreter.call_algo "invocation" [idx; args]
-  | Get _ -> failwith "Invalid action: Get"
+  | Get (module_name_opt, name) ->
+    let module_name = get_module_name module_name_opt in
+    let (sto, exports) = find_export module_name in
+    let idx = List.find_map (extract_idx_of "GLOBAL" name) exports |> Option.get in
+    let globals = (Record.find "GLOBAL" sto) in
+
+    Printf.eprintf "[Getting %s...]\n" (string_of_name name);
+    let got = List.nth (Interpreter.value_to_list globals) (Interpreter.value_to_int idx) in
+    ListV (ref [got])
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
 let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
@@ -259,7 +266,7 @@ let test_module module_name m =
         | Some name ->
             register := Register.add name.it (!Interpreter.store, export) !register
         | None -> ());
-        register := Register.add "" (!Interpreter.store, export) !register;
+        register := Register.add latest (!Interpreter.store, export) !register;
     | _ -> failwith "invalid exports"
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
@@ -271,7 +278,7 @@ let test_cmd success cmd =
       let s = Ast.string_of_name name in
       let module_name = match module_name_opt with
         | Some s -> s.it
-        | None -> ""
+        | None -> latest
       in
       let export = find_export module_name in
       register := Register.add s export !register
