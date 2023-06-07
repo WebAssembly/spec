@@ -232,7 +232,9 @@ let rec al_of_instr types winstr =
   | Ast.TableSize i32 -> f_i32 "TABLE.SIZE" i32
   | Ast.TableGrow i32 -> f_i32 "TABLE.GROW" i32
   | Ast.TableFill i32 -> f_i32 "TABLE.FILL" i32
+  | Ast.TableCopy (i32, i32') -> f_i32_i32 "TABLE.COPY" i32 i32'
   | Ast.TableInit (i32, i32') -> f_i32_i32 "TABLE.INIT" i32 i32'
+  | Ast.ElemDrop i32 -> f_i32 "ELEM.DROP" i32
   | Ast.Call i32 -> f_i32 "CALL" i32
   | Ast.CallIndirect (i32, i32') ->
       ConstructV
