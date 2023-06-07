@@ -568,17 +568,4 @@ and execute_wasm_instrs winstrs = List.iter execute_wasm_instr winstrs
 
 
 (* Entry *)
-let init algos =
-
-  algo_map := to_map algos;
-
-  (* Add manual algorithms *)
-  print_endline "** Manual algorithms **\n";
-
-  algo_map :=
-    List.fold_left
-      (fun acc algo ->
-        string_of_algorithm algo |> print_endline;
-        let (Algo (name, _, _)) = algo in
-        AlgoMap.add name algo acc)
-      !algo_map Manual.manual_algos;
+let init algos = algo_map := to_map algos;

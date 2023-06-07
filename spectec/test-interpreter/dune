@@ -3,6 +3,8 @@
   (deps
     (file ../src/exe-watsup/main.exe)
     (glob_files ../spec/*.watsup)
+    (source_tree spec-test)
+    (file sample.wast)
   )
   (files TEST.md)
 )

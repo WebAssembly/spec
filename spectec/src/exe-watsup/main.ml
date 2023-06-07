@@ -13,6 +13,7 @@ type target =
  | Check
  | Latex of Backend_latex.Config.config
  | Prose
+ | Interpreter
 
 let target = ref (Latex Backend_latex.Config.latex)
 
@@ -28,6 +29,7 @@ let odst = ref ""    (* generation file argument *)
 let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
+let print_al = ref false
 
 let pass_sub = ref false
 let pass_totalize = ref false
@@ -61,10 +63,12 @@ let argspec = Arg.align
   "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.sphinx),
     " Generate Latex for Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
+  "--interpreter", Arg.Unit (fun () -> target := Interpreter), " Generate interpreter";
 
   "--print-il", Arg.Set print_elab_il, " Print il (after elaboration)";
   "--print-final-il", Arg.Set print_final_il, " Print final il";
   "--print-all-il", Arg.Set print_all_il, " Print il after each step";
+  "--print-al", Arg.Set print_al, " Print al";
 
   "--sub", Arg.Set pass_sub, " Synthesize explicit subtype coercions";
   "--totalize", Arg.Set pass_totalize, " Run function totalization";
@@ -72,8 +76,8 @@ let argspec = Arg.align
   "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
   "--animate", Arg.Set pass_animate, " Animate equality conditions";
 
-  "--root", Arg.String (fun s -> Backend_al.Tester.root := s), " Set the root of watsup. Defaults to current directory";
-  "--prose-test", Arg.String (fun s -> Backend_al.Tester.test_name := s), " The name of .wast test file for prose-interpreter";
+  "--root", Arg.String (fun s -> Backend_interpreter.Tester.root := s), " Set the root of watsup. Defaults to current directory";
+  "--test-interpreter", Arg.String (fun s -> Backend_interpreter.Tester.test_name := s), " The name of .wast test file for interpreter";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -171,17 +175,29 @@ let () =
       if not !pass_animate then
         failwith "Prose generatiron requires `--animate` flag."
       else
-      log "Prose Generation...";
-      let al = Backend_al.Translate.translate il in
-      List.iter
-        (fun algo -> Backend_al.Print.string_of_algorithm algo |> print_endline)
-        al;
+      log "Translating to AL...";
+      let al =
+        Backend_interpreter.Translate.translate il
+        @ Backend_interpreter.Manual.manual_algos in
       (*log "AL Validation...";
-      Backend_al.Validation.valid al;*)
+      Backend_interpreter.Validation.valid al;*)
+      print_endline (Backend_prose.Gen.gen_string il al);
+    | Interpreter ->
+      if not !pass_animate then
+        failwith "Interpreter generatiron requires `--animate` flag."
+      else
+      log "Translating to AL...";
+      let al =
+        Backend_interpreter.Translate.translate il
+        @ Backend_interpreter.Manual.manual_algos in
+      if !print_al then
+        List.iter (fun algo -> Backend_interpreter.Print.string_of_algorithm algo |> print_endline) al;
+      (*log "AL Validation...";
+      Backend_interpreter.Validation.valid al;*)
       log "Initializing AL interprter with generated AL...";
-      Backend_al.Interpreter.init al;
+      Backend_interpreter.Interpreter.init al;
       log "Interpreting AL...";
-      Backend_al.Tester.test_all ()
+      Backend_interpreter.Tester.test_all ()
     );
     log "Complete."
   with

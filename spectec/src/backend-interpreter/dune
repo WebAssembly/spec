@@ -1,0 +1,18 @@
+(library
+  (name backend_interpreter)
+  (libraries reference_interpreter util il el str)
+  (modules
+    translate
+    transpile
+    print
+    al
+    interpreter
+    numerics
+    walk
+    construct
+    manual
+    tester
+    exception
+    il2il
+    )
+)

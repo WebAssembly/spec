@@ -8,6 +8,7 @@
     (re_export frontend)
     (re_export middlend)
     (re_export backend_latex)
-    (re_export backend_al)
+    (re_export backend_prose)
+    (re_export backend_interpreter)
   )
 )
