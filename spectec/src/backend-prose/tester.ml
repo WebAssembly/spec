@@ -64,7 +64,7 @@ let al_of_result result = match result.it with
 
 (** End of helpers **)
 
-type export = store * value list
+type export = store * value array
 
 module Register = Map.Make (String)
 type register = export Register.t
@@ -102,7 +102,7 @@ let builtin =
 
     (* Update Store *)
     let new_funcinsts =
-      PairV (RecordV Record.empty, ListV (ref code)) :: Record.find "FUNC" sto
+      PairV (RecordV Record.empty, listV code) :: Record.find "FUNC" sto
     in
     let new_sto = Record.add "FUNC" new_funcinsts sto in
 
@@ -117,7 +117,7 @@ let builtin =
 
   let (sto, extern) = List.fold_right f1 funcs (initial_store, []) in
 
-  Record.map (fun l -> ListV (ref l)) sto, extern
+  Record.map (fun l -> listV l) sto, extern |> Array.of_list
 
 
 let latest = "__latest__"
@@ -138,12 +138,11 @@ let do_invoke act = match act.it with
   | Script.Invoke (module_name_opt, name, literals) ->
     let module_name = get_module_name module_name_opt in
     let (sto, exports) = find_export module_name in
-    let idx = List.find_map (extract_idx_of "FUNC" name) exports |> Option.get in
+    let idx = Array.find_map (extract_idx_of "FUNC" name) exports |> Option.get in
 
-    let args = ListV (
+    let args = listV (
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
-      |> ref
     ) in
     Interpreter.cnt := 0;
     Interpreter.wcnt := 0;
@@ -154,12 +153,12 @@ let do_invoke act = match act.it with
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let (sto, exports) = find_export module_name in
-    let idx = List.find_map (extract_idx_of "GLOBAL" name) exports |> Option.get in
+    let idx = Array.find_map (extract_idx_of "GLOBAL" name) exports |> Option.get in
     let globals = (Record.find "GLOBAL" sto) in
 
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
-    let got = List.nth (Interpreter.value_to_list globals) (Interpreter.value_to_int idx) in
-    ListV (ref [got])
+    let got = Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int idx) in
+    listV [ got ]
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
 let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
@@ -184,7 +183,7 @@ let is_arithmetic_nan t v =
 
 let assert_nan actuals expects =
   match actuals, expects with
-  | ListV {contents = [actual]}, ListV {contents = [expect]} ->
+  | ListV {contents = [|actual|]}, ListV {contents = [|expect|]} ->
     is_canonical_nan "F32" expect && is_canonical_nan "F32" actual
     || is_canonical_nan "F64" expect && is_canonical_nan "F64" actual
     || is_arithmetic_nan "F32" expect && is_arithmetic_nan "F32" actual
@@ -202,7 +201,7 @@ let test_assertion assertion =
   | Script.AssertReturn (invoke, expected) ->
     let result = try do_invoke invoke with e -> StringV (msg_of e) in
     let expected_result = try
-      ListV(expected |> List.map al_of_result |> ref)
+      listV (expected |> List.map al_of_result)
     with
       e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
     assert_return result expected_result
@@ -235,13 +234,13 @@ let get_externval module_used = function
             when export_name = extern_name -> Some use
           | _ -> None
       in
-      List.find_map f export |> Option.get
+      Array.find_map f export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function
   | ConstructV ("MODULE", ListV imports :: _) ->
       let module_used = ref [] in
-      ListV (List.map (get_externval module_used) !imports |> ref)
+      ListV (Array.map (get_externval module_used) !imports |> ref)
   | _ -> failwith "Invalid module"
 
 let test_module module_name m =

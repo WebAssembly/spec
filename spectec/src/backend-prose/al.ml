@@ -16,7 +16,7 @@ type al_type =
   | StateT
   | TopT
 
-type 'a mut_list = 'a list ref
+type 'a growable_array = 'a array ref
 
 module FieldName = struct
   type t = string
@@ -35,7 +35,7 @@ and stack = value list
 and value =
   | NumV of int64
   | StringV of string
-  | ListV of value mut_list
+  | ListV of value growable_array
   | RecordV of value record
   | ConstructV of string * value list
   | OptV of value option
@@ -156,5 +156,6 @@ type instr =
 
 type algorithm = Algo of string * (expr * al_type) list * instr list
 
-(* TODO: move this to helper *)
+(* TODO: move these to helper *)
 let singleton x = ConstructV (x, [])
+let listV l = ListV (l |> Array.of_list |> ref)

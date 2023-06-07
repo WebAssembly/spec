@@ -22,7 +22,7 @@ let string_of_list stringifier left sep right = function
       ^ right
 
 let string_of_array stringifier left sep right a =
-  !a |> string_of_list stringifier left sep right
+  a |> Array.to_list |> string_of_list stringifier left sep right
 
 let rec repeat str num =
   if num = 0 then ""
@@ -84,7 +84,7 @@ and string_of_value = function
       sprintf "Label_%s %s" (string_of_value v1) (string_of_value v2)
   | FrameV (v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2)
   | StoreV _ -> "StoreV"
-  | ListV lv -> string_of_list string_of_value "[" ", " "]" !lv
+  | ListV lv -> string_of_array string_of_value "[" ", " "]" !lv
   | NumV n -> Printf.sprintf "%LX" n
   | StringV s -> s
   | PairV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
