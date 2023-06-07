@@ -525,6 +525,36 @@ and call_algo name args =
   in
   interp_algo algo args |> Env.get_result
 
+and is_builtin = function
+  | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
+  | _ -> false
+
+and call_builtin name =
+  let local x = call_algo "local" [ NumV (Int64.of_int x) ] in
+  match name with
+  | "PRINT" -> ignore "print: "
+  | "PRINT_I32" ->
+    let i32 = local 0 in
+    ignore ("print_i32: " ^ Print.string_of_value i32)
+  | "PRINT_I64" ->
+    let i64 = local 0 in
+    ignore ("print_i64: " ^ Print.string_of_value i64)
+  | "PRINT_F32" ->
+    let f32 = local 0 in
+    ignore ("print_f32: " ^ Print.string_of_value f32)
+  | "PRINT_F64" ->
+    let f64 = local 0 in
+    ignore ("print_f64: " ^ Print.string_of_value f64)
+  | "PRINT_I32_F32" ->
+    let i32 = local 0 in
+    let f32 = local 1 in
+    ignore ("print_i32_f32: " ^ Print.string_of_value i32 ^ " " ^ Print.string_of_value f32 )
+  | "PRINT_F64_F64" ->
+    let f64 = local 0 in
+    let f64' = local 1 in
+    ignore ("print_f64_f64: " ^ Print.string_of_value f64 ^ " " ^ Print.string_of_value f64' )
+  | _ -> failwith "Impossible"
+
 and execute_wasm_instr winstr =
   (* Print.string_of_value winstr |> prerr_endline; *)
   (* string_of_stack !stack |> prerr_endline; *)
@@ -533,6 +563,7 @@ and execute_wasm_instr winstr =
   if !wcnt > 10000 then raise Exception.Timeout;
   match winstr with
   | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) -> push winstr
+  | ConstructV (name, []) when is_builtin name -> call_builtin name
   | ConstructV (name, args) -> call_algo ("execution_of_" ^ String.lowercase_ascii name) args |> ignore
   | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 

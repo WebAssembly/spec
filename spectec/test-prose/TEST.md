@@ -818,8 +818,8 @@ alloc_module module externval*
   a. Let (IMPORT _ _ import_type) be import*[i].
   b. Let (EXPORT _ externuse) be externval*[i].
   c. If import_type is of the case FUNC and externuse is of the case FUNC, then:
-    1) Let (FUNC funcaddr) be externuse.
-    2) Append funcaddr to the moduleinst.FUNC.
+    1) Let (FUNC funcaddr') be externuse.
+    2) Append funcaddr' to the moduleinst.FUNC.
 4. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 5. Push f_init to the stack.
 6. Let funcaddr* be $alloc_func(func)*.
@@ -952,7 +952,7 @@ call_indirect.wast: [127/132] (96.21%)
 load.wast: [37/37] (100.00%)
 memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [4/20] (20.00%)
 memory_size.wast: [29/36] (80.56%)
-imports.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/34] (0.00%)
+imports.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [1/34] (2.94%)
 left-to-right.wast: [95/95] (100.00%)
 ref_is_null.wast: [11/11] (100.00%)
 memory_trap.wast: [180/180] (100.00%)
@@ -971,19 +971,19 @@ table_set.wast: [18/18] (100.00%)
 f32_cmp.wast: [2400/2400] (100.00%)
 br_if.wast: [88/88] (100.00%)
 ref_func.wast: [8/8] (100.00%)
-names.wast: [481/482] (99.79%)
+names.wast: [482/482] (100.00%)
 unreached-valid.wast: [5/5] (100.00%)
 table_fill.wast: [35/35] (100.00%)
 int_literals.wast: [30/30] (100.00%)
 address.wast: [255/255] (100.00%)
 table_grow.wast: [36/38] (94.74%)
-func_ptrs.wast: [Uncaught exception: Direct invocation failed due to Algorithm execution_of_print_f64_f64 not found] [0/25] (0.00%)
+func_ptrs.wast: [Uncaught exception: Direct invocation failed due to hd] [0/25] (0.00%)
 table_init.wast: [Uncaught exception: Direct invocation failed due to Algorithm execution_of_yet al_of_instr: elem.drop 1 not found] [60/662] (9.06%)
 global.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/58] (0.00%)
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [16884/23744] (71.11%; Normalized 86.12%)
+Total [16886/23744] (71.12%; Normalized 86.17%)
 == Complete.
 ```
