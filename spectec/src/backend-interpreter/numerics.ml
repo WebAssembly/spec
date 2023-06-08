@@ -16,6 +16,11 @@ let num_to_f64 = function
   | NumV bits -> bits |> F64.of_bits
   | _ -> failwith "Operand should be NumV"
 
+let num_to_i32_string n = n |> num_to_i32 |> I32.to_string_s
+let num_to_i64_string n = n |> num_to_i64 |> I64.to_string_s
+let num_to_f32_string n = n |> num_to_f32 |> F32.to_string
+let num_to_f64_string n = n |> num_to_f64 |> F64.to_string
+
 let int64_of_int32_u x = x |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let bool_to_num b = NumV (Bool.to_int b |> I64.of_int_s)
 let i32_to_num i = NumV ( i |> I32.to_bits |> int64_of_int32_u )

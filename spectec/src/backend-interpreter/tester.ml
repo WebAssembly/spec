@@ -361,7 +361,7 @@ let test file_name =
 
   if (contains file_name !test_name) && (total > 0) then
     let success = ref 0 in
-    Printf.printf "%s: %!" name;
+    Printf.printf "===== %s =====\n%!" name;
     Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
     let took = time (fun () ->
@@ -372,13 +372,13 @@ let test file_name =
         let msg = msg_of e in
         Printf.eprintf "[Uncaught exception] %s, " msg;
         Printf.printf
-          "[Uncaught exception: %s] "
+          "- Uncaught exception: %s\n"
           msg
     ) in
 
     Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
     let percentage = (float_of_int !success /. float_of_int total) *. 100. in
-    Printf.printf "[%d/%d] (%.2f%%)\n" !success total percentage;
+    Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
     Some (!success, total, percentage)
   else
     None

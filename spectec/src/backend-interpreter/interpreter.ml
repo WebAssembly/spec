@@ -530,28 +530,31 @@ and is_builtin = function
 
 and call_builtin name =
   let local x = call_algo "local" [ NumV (Int64.of_int x) ] in
+  let as_const ty = function
+  | ConstructV ("CONST", [ ConstructV (ty', []) ; n ]) when ty = ty' -> n
+  | _ -> failwith ("Not " ^ ty ^ ".CONST") in
   match name with
-  | "PRINT" -> ignore "print: "
+  | "PRINT" -> print_endline "- print: ()"
   | "PRINT_I32" ->
-    let i32 = local 0 in
-    ignore ("print_i32: " ^ Print.string_of_value i32)
+    let i32 = local 0 |> as_const "I32" in
+    print_endline ("- print_i32: " ^ Numerics.num_to_i32_string i32)
   | "PRINT_I64" ->
-    let i64 = local 0 in
-    ignore ("print_i64: " ^ Print.string_of_value i64)
+    let i64 = local 0 |> as_const "I64" in
+    print_endline ("- print_i64: " ^ Numerics.num_to_i64_string i64)
   | "PRINT_F32" ->
-    let f32 = local 0 in
-    ignore ("print_f32: " ^ Print.string_of_value f32)
+    let f32 = local 0 |> as_const "F32" in
+    print_endline ("- print_f32: " ^ Numerics.num_to_f32_string f32)
   | "PRINT_F64" ->
-    let f64 = local 0 in
-    ignore ("print_f64: " ^ Print.string_of_value f64)
+    let f64 = local 0 |> as_const "F64" in
+    print_endline ("- print_f64: " ^ Numerics.num_to_f64_string f64)
   | "PRINT_I32_F32" ->
-    let i32 = local 0 in
-    let f32 = local 1 in
-    ignore ("print_i32_f32: " ^ Print.string_of_value i32 ^ " " ^ Print.string_of_value f32 )
+    let i32 = local 0 |> as_const "I32" in
+    let f32 = local 1 |> as_const "F32" in
+    print_endline ("- print_i32_f32: " ^ Numerics.num_to_i32_string i32 ^ " " ^ Numerics.num_to_f32_string f32 )
   | "PRINT_F64_F64" ->
-    let f64 = local 0 in
-    let f64' = local 1 in
-    ignore ("print_f64_f64: " ^ Print.string_of_value f64 ^ " " ^ Print.string_of_value f64' )
+    let f64 = local 0 |> as_const "F64" in
+    let f64' = local 1 |> as_const "F64" in
+    print_endline ("- print_f64_f64: " ^ Numerics.num_to_f64_string f64 ^ " " ^ Numerics.num_to_f64_string f64' )
   | _ -> failwith "Impossible"
 
 and execute_wasm_instr winstr =
