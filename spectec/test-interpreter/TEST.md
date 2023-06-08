@@ -30,7 +30,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 440/440 (100.00%)
 
 ===== table_copy.wast =====
-- 1611/1649 (97.70%)
+- 1649/1649 (100.00%)
 
 ===== ref_null.wast =====
 - 2/2 (100.00%)
@@ -252,7 +252,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 25/25 (100.00%)
 
 ===== table_init.wast =====
-- 652/662 (98.49%)
+- 662/662 (100.00%)
 
 ===== global.wast =====
 - Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
@@ -270,6 +270,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [19058/23744] (80.26%; Normalized 90.13%)
+Total [19106/23744] (80.47%; Normalized 90.18%)
 == Complete.
 ```

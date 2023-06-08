@@ -389,15 +389,19 @@ execution_of_table.copy x y
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
+    3) Execute (TABLE.GET y).
+    4) Execute (TABLE.SET x).
+    5) Push (I32.CONST (j + 1)) to the stack.
+    6) Push (I32.CONST (i + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((j + n) - 1)) to the stack.
     2) Push (I32.CONST ((i + n) - 1)) to the stack.
-  c. Execute (TABLE.GET y).
-  d. Execute (TABLE.SET x).
-  e. Push (I32.CONST (j + 1)) to the stack.
-  f. Push (I32.CONST (i + 1)) to the stack.
-  g. Push (I32.CONST (n - 1)) to the stack.
-  h. Execute (TABLE.COPY x y).
+    3) Execute (TABLE.GET y).
+    4) Execute (TABLE.SET x).
+    5) Push (I32.CONST j) to the stack.
+    6) Push (I32.CONST i) to the stack.
+  c. Push (I32.CONST (n - 1)) to the stack.
+  d. Execute (TABLE.COPY x y).
 
 execution_of_table.init x y
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
