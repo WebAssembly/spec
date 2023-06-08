@@ -317,8 +317,9 @@ let alloc_module =
   (* predefined instructions *)
   let append_if tag =
     let addr' = NameE (N (String.lowercase_ascii tag ^ "addr'"), []) in
+    let tag2 = if tag = "MEM" then "MEMORY" else tag in (* TODO: please fix dsl *)
     IfI (
-      BinopC (And, IsCaseOfC (import_type, tag), IsCaseOfC (externuse, tag)),
+      BinopC (And, IsCaseOfC (import_type, tag2), IsCaseOfC (externuse, tag)),
       [
         LetI (ConstructE (tag, [ addr' ]), externuse);
         AppendI (AccessE (module_inst_init, DotP tag), addr')

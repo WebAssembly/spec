@@ -60,8 +60,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 19/19 (100.00%)
 
 ===== linking.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
-- 63/83 (75.90%)
+- 75/83 (90.36%)
 
 ===== float_literals.wast =====
 - Uncaught exception: This test contains a binary module
@@ -165,7 +164,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
+- Uncaught exception: Module Instantiation failed due to Backend_interpreter.Exception.Trap
 - 18/34 (52.94%)
 
 ===== left-to-right.wast =====
@@ -268,6 +267,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [19242/23744] (81.04%; Normalized 94.08%)
+Total [19254/23744] (81.09%; Normalized 94.27%)
 == Complete.
 ```
