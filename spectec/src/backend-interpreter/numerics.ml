@@ -28,6 +28,11 @@ let i64_to_num i = NumV ( i |> I64.to_bits)
 let f32_to_num f = NumV ( f |> F32.to_bits |> int64_of_int32_u )
 let f64_to_num f = NumV ( f |> F64.to_bits)
 
+let i32_to_const i = ConstructV ("CONST", [singleton "I32"; i |> i32_to_num])
+let i64_to_const i = ConstructV ("CONST", [singleton "I64"; i |> i64_to_num])
+let f32_to_const f = ConstructV ("CONST", [singleton "F32"; f |> f32_to_num])
+let f64_to_const f = ConstructV ("CONST", [singleton "F64"; f |> f64_to_num])
+
 let wrap_i32_unop op i =
   let result = num_to_i32 i |> op |> i32_to_num in
   listV [ result ]

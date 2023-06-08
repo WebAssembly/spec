@@ -166,7 +166,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - print_f64: 24
 - print_i32: 13
 - Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
-- 4/34 (11.76%)
+- 18/34 (52.94%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -191,8 +191,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 90/140 (64.29%)
 
 ===== elem.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
-- 0/25 (0.00%)
+- 20/25 (80.00%)
 
 ===== table_get.wast =====
 - 9/9 (100.00%)
@@ -255,8 +254,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 662/662 (100.00%)
 
 ===== global.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
-- 0/58 (0.00%)
+- 58/58 (100.00%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -270,6 +268,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [19140/23744] (80.61%; Normalized 90.74%)
+Total [19232/23744] (81.00%; Normalized 93.73%)
 == Complete.
 ```

@@ -79,50 +79,69 @@ let builtin =
     |> Record.add "ELEM" []
     |> Record.add "DATA" [] in
 
+  (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
+  let create_func_inst (name, type_tags) =
+    let winstr_tag = String.uppercase_ascii name in
+    let code = singleton winstr_tag in
+    let ptype = List.map singleton type_tags in
+    let ftype = ArrowV (listV ptype, listV []) in
+    name, PairV (
+      RecordV Record.empty, (* dummy module *)
+      ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ])
+    ) in
+
   (* Builtin functions *)
   let funcs = [
-    "print", [];
-    "print_i32", [ "I32" ];
-    "print_i64", [ "I64" ];
-    "print_f32", [ "F32" ];
-    "print_f64", [ "F64" ];
-    "print_i32_f32", [ "I32"; "F32" ];
-    "print_f64_f64", [ "F64"; "F64" ];
-    "global_i32", [];
-    "global_i64", [];
-    "global_f32", [];
-    "global_f64", [];
-    "table", [];
-    "memory", [];
+    ("print", []) |> create_func_inst;
+    ("print_i32", [ "I32" ]) |> create_func_inst;
+    ("print_i64", [ "I64" ]) |> create_func_inst;
+    ("print_f32", [ "F32" ]) |> create_func_inst;
+    ("print_f64", [ "F64" ]) |> create_func_inst;
+    ("print_i32_f32", [ "I32"; "F32" ]) |> create_func_inst;
+    ("print_f64_f64", [ "F64"; "F64" ]) |> create_func_inst
+  ] in
+  (* Builtin globals *)
+  let globals = [
+    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const;
+    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const;
+    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const;
+    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const
+  ] in
+  (* Builtin functions *)
+  let tables = [
+    "table", listV (List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNCREF" ])))
+  ] in
+  (* Builtin functions *)
+  let memories = [
+    "memory", listV [ NumV 0L ]
   ] in
 
-  let f1 (name, type_tags) (sto, extern) =
-
-    let code = ConstructV (String.uppercase_ascii name, []) in
-    let ptype = List.map (fun tag -> ConstructV (tag, [])) type_tags in
-    let ftype = ArrowV (listV ptype, listV []) in
-
+  let append kind (name, inst) (sto, extern) =
     (* Update Store *)
-    let new_funcinsts =
-      PairV (
-        RecordV Record.empty,
-        ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ])
-      ) :: Record.find "FUNC" sto
-    in
-    let new_sto = Record.add "FUNC" new_funcinsts sto in
+    let insts = Record.find kind sto in
+    let new_sto = Record.add kind (insts @ [inst]) sto in
 
     (* Generate ExternFunc *)
-    let addr = (List.length funcs) - (Record.find "FUNC" new_sto |> List.length) |> Int64.of_int in
+    let addr = List.length insts |> Int64.of_int in
     let new_extern =
-      ConstructV ("EXPORT", [ StringV name; ConstructV ("FUNC", [ NumV addr ]) ])
+      ConstructV ("EXPORT", [ StringV name; ConstructV (kind, [ NumV addr ]) ])
     in
 
-    (new_sto, new_extern :: extern)
-  in
+    (new_sto, new_extern :: extern) in
 
-  let (sto, extern) = List.fold_right f1 funcs (initial_store, []) in
+  (* (sto, extern) -> (new_sto, new_extern) *)
+  let append_funcs = List.fold_right (append "FUNC") funcs in
+  let append_globals = List.fold_right (append "GLOBAL") globals in
+  let append_tables = List.fold_right (append "TABLE") tables in
+  let append_memories = List.fold_right (append "MEM") memories in
 
-  let wraped_store = Record.map (fun l -> listV l) sto in
+  let (sto, extern) = (initial_store, [])
+    |> append_funcs
+    |> append_globals
+    |> append_tables
+    |> append_memories in
+
+  let wraped_store = Record.map listV sto in
   let module_inst =
     Record.empty
     |> Record.add "FUNC" (listV [])
