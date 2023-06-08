@@ -202,10 +202,12 @@ and eval_expr env expr =
       end
   (* Function Call *)
   | AppE (fname, el) -> List.map (eval_expr env) el |> dsl_function_call fname
-  | MapE (fname, [ e ], _) ->
-      (* TODO: handle cases where more than 1 arguments *)
-      let l = eval_expr env e |> value_to_list in
-      listV (List.map (fun v -> dsl_function_call fname [ v ]) l)
+  | MapE (fname, el, _) ->
+      (* TODO: handle cases where iteratng argument is not the last *)
+      let args = el |> List.map (eval_expr env) in
+      let front_args, last_arg = Lib.List.split_last args in
+      let xs = value_to_list last_arg in
+      listV (List.map (fun x -> dsl_function_call fname (front_args @ [ x ])) xs)
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
   | ListFillE (e1, e2) ->
@@ -234,7 +236,7 @@ and eval_expr env expr =
         let i2 = eval_expr env e2 |> value_to_int in
         let a' = Array.sub a i1 i2 in
         ListV (ref a')
-      | DotP str -> begin match eval_expr env e with
+      | DotP str -> try match eval_expr env e with
         | FrameV (_, RecordV r) -> Record.find str r
         | StoreV s -> Record.find str !s
         | RecordV r -> Record.find str r
@@ -242,7 +244,7 @@ and eval_expr env expr =
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
             |> failwith
-        end
+        with _ -> failwith ("Failed AccessE DotP: " ^ str)
       end
   | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)

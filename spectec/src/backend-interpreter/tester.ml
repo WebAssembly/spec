@@ -38,7 +38,11 @@ let fail expected actual =
 
 let not_supported_msg = "We only support the test script with modules and assertions."
 
-let msg_of = function Failure msg -> msg | e -> Printexc.to_string e
+let msg_of = function
+| Failure msg -> msg
+| e -> Printexc.to_string e
+  (* ^ " " *)
+  (* ^ (String.split_on_char '\n' (Printexc.get_backtrace() ) |> List.filteri (fun i _ -> i < 2) |> String.concat "\n" ) *)
 
 let time f =
   let start_time = Sys.time() in
@@ -65,7 +69,7 @@ let al_of_result result = match result.it with
 (** End of helpers **)
 
 module Register = Map.Make (String)
-type register = (store * value) Register.t
+type register = value Register.t
 let register: register ref = ref Register.empty
 
 let builtin =
@@ -91,7 +95,7 @@ let builtin =
     ) in
 
   (* Builtin functions *)
-  let funcs = [
+  let funcs = List.rev [
     ("print", []) |> create_func_inst;
     ("print_i32", [ "I32" ]) |> create_func_inst;
     ("print_i64", [ "I64" ]) |> create_func_inst;
@@ -101,7 +105,7 @@ let builtin =
     ("print_f64_f64", [ "F64"; "F64" ]) |> create_func_inst
   ] in
   (* Builtin globals *)
-  let globals = [
+  let globals = List.rev [
     "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const;
     "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const;
     "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const;
@@ -160,43 +164,36 @@ let latest = ""
 let get_module_name = function
   | Some name -> name.it
   | None -> latest
-let find_module_inst = function
-  | "spectest" -> builtin
-  | name -> Register.find name !register
+let find_module_inst name = Register.find name !register
 let find_export name =
     match find_module_inst name with
-    | s, RecordV r ->
+    | RecordV r ->
         begin match Record.find "EXPORT" r with
-        | ListV exs -> s, !exs
+        | ListV exs -> !exs
         | _ -> failwith "Invaild module inst"
         end
     | _ -> failwith "Invalid module inst"
 
-let extract_idx_of tag name (export: value) =
+let extract_addr_of tag name (export: value) =
   match export with
-  | ConstructV ("EXPORT", [ StringV (export_name); ConstructV (export_tag, [ idx ]) ])
-    when export_name = Ast.string_of_name name && export_tag = tag -> Some (idx)
+  | ConstructV ("EXPORT", [ StringV (export_name); ConstructV (export_tag, [ addr ]) ])
+    when export_name = Ast.string_of_name name && export_tag = tag -> Some (addr)
   | _ -> None
 
 let do_invoke act = match act.it with
   | Script.Invoke (module_name_opt, name, literals) ->
     let module_name = get_module_name module_name_opt in
-    let (sto, module_inst) = find_module_inst module_name in
-    let func_insts, export_insts = match module_inst with
+    let module_inst = find_module_inst module_name in
+    let export_insts = match module_inst with
     | RecordV r ->
-        begin match Record.find "FUNC" r, Record.find "EXPORT" r with
-        | ListV fs, ListV exs -> !fs, !exs
+        begin match Record.find "EXPORT" r with
+        | ListV exs -> !exs
         | _ -> failwith "Invaild module inst"
         end
     | _ -> failwith "Invalid module inst"
     in
 
-    let idx =
-      match Array.find_map (extract_idx_of "FUNC" name) export_insts |> Option.get with
-      | NumV n -> Int64.to_int n
-      | _ -> failwith "Invalid idx"
-    in
-    let funcaddr = Array.get func_insts idx in
+    let funcaddr = Array.find_map (extract_addr_of "FUNC" name) export_insts |> Option.get in
 
     let args = listV (
       literals
@@ -204,18 +201,18 @@ let do_invoke act = match act.it with
     ) in
     Interpreter.cnt := 0;
     Interpreter.init_stack();
-    Interpreter.store := sto;
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
+
     Interpreter.call_algo "invocation" [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
-    let (sto, exports) = find_export module_name in
+    let exports = find_export module_name in
 
-    let idx = Array.find_map (extract_idx_of "GLOBAL" name) exports |> Option.get in
-    let globals = (Record.find "GLOBAL" sto) in
+    let addr = Array.find_map (extract_addr_of "GLOBAL" name) exports |> Option.get in
+    let globals = (Record.find "GLOBAL" !Interpreter.store) in
 
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
-    let got = Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int idx) in
+    let got = Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) in
     listV [ got ]
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
@@ -273,48 +270,24 @@ let test_assertion assertion =
     end
   | _ -> Ignore (* ignore other kinds of assertions *)
 
-(* Note: this function mutates `Interpreter.store` *)
-let get_externval module_used = function
+let get_externval = function
   | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
 
-      let s, export = find_export import_module_name in
-
-      (* XXX: Assume import from at most 2 modules *)
-      (* Update store *)
-      if List.mem import_module_name !module_used |> not then (
-        Interpreter.add_store s;
-        module_used := import_module_name :: !module_used
-      );
-
-      let offset =
-        if List.rev !module_used |> List.hd <> import_module_name then
-          let s', _ = List.rev !module_used |> List.hd |> find_export in
-          match Record.find "FUNC" s' with
-          | ListV l -> Array.length !l
-          | _ -> failwith "Invalid store"
-        else 0
-      in
+      let export = find_export import_module_name in
 
       (* Get extern *)
-      let f extern =
-        match extern with
-        | ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV idx ]) ])
-          when export_name = extern_name ->
-            (*print_endline export_name;
-            Int64.to_string idx |> print_endline;*)
-            let new_idx = Int64.of_int offset |> Int64.add idx in
-            Some (ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV new_idx ]) ]))
+      let is_matching_export export =
+        match export with
         | ConstructV ("EXPORT", [ StringV export_name; _ ])
-          when export_name = extern_name -> Some extern
-        | _ -> None
+          when export_name = extern_name -> true
+        | _ -> false
       in
-      Array.find_map f export |> Option.get
+      Array.find_opt is_matching_export export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function
-  | ConstructV ("MODULE", ListV imports :: _) ->
-      let module_used = ref [] in
-      ListV (Array.map (get_externval module_used) !imports |> ref)
+  | ConstructV ("MODULE", (ListV imports) :: _) ->
+      ListV (Array.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
 let test_module module_name m =
@@ -322,7 +295,6 @@ let test_module module_name m =
   (* Initialize *)
   Interpreter.cnt := 0;
   Interpreter.init_stack();
-  Interpreter.init_store();
 
   try
 
@@ -332,13 +304,14 @@ let test_module module_name m =
 
     (* Instantiate and store exports *)
     let module_inst = Interpreter.call_algo "instantiation" [ al_module ; externvals ] in
+    (* prerr_endline (Print.string_of_record !Interpreter.store); *)
 
     (* Store module instance in the register *)
     (match module_name with
     | Some name ->
-        register := Register.add name.it (!Interpreter.store, module_inst) !register
+        register := Register.add name.it module_inst !register
     | None -> ());
-    register := Register.add latest (!Interpreter.store, module_inst) !register;
+    register := Register.add latest module_inst !register;
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
 let test_cmd success cmd =
@@ -364,9 +337,14 @@ let test_cmd success cmd =
       end
   | Script.Meta _ -> failwith not_supported_msg
 
+(* Intialize store and registered modules *)
+let init_tester () =
+  Interpreter.store := fst builtin;
+  register := Register.add "spectest" (snd builtin) Register.empty
+
 (** Entry **)
 let test file_name =
-
+  init_tester ();
   let start_idx = String.rindex file_name '/' + 1 in
   let length = String.length file_name - start_idx in
   let name = String.sub file_name start_idx length in

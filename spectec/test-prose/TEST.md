@@ -849,8 +849,9 @@ alloc_module module externval*
 19. For i in range |funcaddr*|:
   a. Let (_, func') be s.FUNC[funcaddr*[i]].
   b. Replace s.FUNC[funcaddr*[i]] with (moduleinst, func').
-20. Append the sequence export* to the moduleinst.EXPORT.
-21. Return moduleinst.
+20. Let exportinst* be $resolve_export(moduleinst, export)*.
+21. Append the sequence exportinst* to the moduleinst.EXPORT.
+22. Return moduleinst.
 
 init_global global
 1. Let (GLOBAL _ instr*) be global.
@@ -906,6 +907,29 @@ alloc_data data
 2. Let a be |s.DATA|.
 3. Append init to the s.DATA.
 4. Return a.
+
+resolve_export moduleinst export
+1. Let (EXPORT name externuse) be export.
+2. If externuse is of the case FUNC, then:
+  a. Let (FUNC funcidx) be externuse.
+  b. Let funcaddr be moduleinst.FUNC[funcidx].
+  c. Let externval be (FUNC funcaddr).
+  d. Return (EXPORT name externval).
+3. If externuse is of the case TABLE, then:
+  a. Let (TABLE tableidx) be externuse.
+  b. Let tableaddr be moduleinst.TABLE[tableidx].
+  c. Let externval be (TABLE tableaddr).
+  d. Return (EXPORT name externval).
+4. If externuse is of the case MEMORY, then:
+  a. Let (MEMORY memoryidx) be externuse.
+  b. Let memoryaddr be moduleinst.MEM[memoryidx].
+  c. Let externval be (MEM memoryaddr).
+  d. Return (EXPORT name externval).
+5. If externuse is of the case GLOBAL, then:
+  a. Let (GLOBAL globalidx) be externuse.
+  b. Let globaladdr be moduleinst.GLOBAL[globalidx].
+  c. Let externval be (GLOBAL globaladdr).
+  d. Return (EXPORT name externval).
 
 invocation funcaddr val*
 1. Let (_, func) be s.FUNC[funcaddr].
