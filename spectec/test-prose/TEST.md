@@ -809,7 +809,7 @@ instantiation module externval*
   a. Let ?((START start_idx)) be start?.
   b. Execute (CALL start_idx).
 8. Pop f from the stack.
-9. Return moduleinst.EXPORT.
+9. Return moduleinst.
 
 alloc_module module externval*
 1. Let (MODULE import* func* global* table* memory* elem* data* _ export*) be module.
@@ -923,7 +923,7 @@ fac.wast: [6/6] (100.00%)
 func.wast: [96/96] (100.00%)
 exports.wast: [9/9] (100.00%)
 local_set.wast: [19/19] (100.00%)
-linking.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [23/83] (27.71%)
+linking.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [24/83] (28.92%)
 float_literals.wast: [Uncaught exception: This test contains a binary module] [82/83] (98.80%)
 align.wast: [48/48] (100.00%)
 if.wast: [123/123] (100.00%)
@@ -952,7 +952,7 @@ call_indirect.wast: [127/132] (96.21%)
 load.wast: [37/37] (100.00%)
 memory_fill.wast: [Uncaught exception: Direct invocation failed due to Backend_al.Exception.Timeout] [4/20] (20.00%)
 memory_size.wast: [29/36] (80.56%)
-imports.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [1/34] (2.94%)
+imports.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [4/34] (11.76%)
 left-to-right.wast: [95/95] (100.00%)
 ref_is_null.wast: [11/11] (100.00%)
 memory_trap.wast: [180/180] (100.00%)
@@ -963,7 +963,7 @@ memory_init.wast: [Uncaught exception: Direct invocation failed due to Failed Ar
 elem.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/25] (0.00%)
 table_get.wast: [9/9] (100.00%)
 f32.wast: [2500/2500] (100.00%)
-start.wast: [Uncaught exception: Module Instantiation failed due to Algorithm execution_of_table not found] [6/6] (100.00%)
+start.wast: [6/6] (100.00%)
 float_exprs.wast: [794/794] (100.00%)
 float_memory.wast: [60/60] (100.00%)
 table_size.wast: [29/36] (80.56%)
@@ -977,13 +977,13 @@ table_fill.wast: [35/35] (100.00%)
 int_literals.wast: [30/30] (100.00%)
 address.wast: [255/255] (100.00%)
 table_grow.wast: [36/38] (94.74%)
-func_ptrs.wast: [Uncaught exception: Direct invocation failed due to hd] [0/25] (0.00%)
+func_ptrs.wast: [25/25] (100.00%)
 table_init.wast: [652/662] (98.49%)
 global.wast: [Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE] [0/58] (0.00%)
 int_exprs.wast: [89/89] (100.00%)
 f64.wast: [2500/2500] (100.00%)
 br.wast: [76/76] (100.00%)
 nop.wast: [83/83] (100.00%)
-Total [19029/23744] (80.14%; Normalized 88.64%)
+Total [19058/23744] (80.26%; Normalized 90.13%)
 == Complete.
 ```

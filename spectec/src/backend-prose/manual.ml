@@ -188,7 +188,7 @@ let instantiation =
         []
       );
       PopI frame_name;
-      ReturnI (Some (AccessE (module_inst, DotP "EXPORT")))
+      ReturnI (Some module_inst)
     ]
   )
 

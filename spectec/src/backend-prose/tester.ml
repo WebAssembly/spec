@@ -64,10 +64,8 @@ let al_of_result result = match result.it with
 
 (** End of helpers **)
 
-type export = store * value array
-
 module Register = Map.Make (String)
-type register = export Register.t
+type register = (store * value) Register.t
 let register: register ref = ref Register.empty
 
 let builtin =
@@ -114,7 +112,7 @@ let builtin =
     let new_sto = Record.add "FUNC" new_funcinsts sto in
 
     (* Generate ExternFunc *)
-    let addr = Record.find "FUNC" sto |> List.length |> Int64.of_int in
+    let addr = (List.length funcs) - (Record.find "FUNC" new_sto |> List.length) |> Int64.of_int in
     let new_extern =
       ConstructV ("EXPORT", [ StringV name; ConstructV ("FUNC", [ NumV addr ]) ])
     in
@@ -124,16 +122,36 @@ let builtin =
 
   let (sto, extern) = List.fold_right f1 funcs (initial_store, []) in
 
-  Record.map (fun l -> listV l) sto, extern |> Array.of_list
+  let wraped_store = Record.map (fun l -> listV l) sto in
+  let module_inst =
+    Record.empty
+    |> Record.add "FUNC" (listV [])
+    |> Record.add "GLOBAL" (listV [])
+    |> Record.add "TABLE" (listV [])
+    |> Record.add "MEM" (listV [])
+    |> Record.add "ELEM" (listV [])
+    |> Record.add "DATA" (listV [])
+    |> Record.add "EXPORT" (listV extern)
+  in
+
+  wraped_store, RecordV module_inst
 
 
-let latest = "__latest__"
+let latest = ""
 let get_module_name = function
   | Some name -> name.it
   | None -> latest
-let find_export = function
+let find_module_inst = function
   | "spectest" -> builtin
   | name -> Register.find name !register
+let find_export name =
+    match find_module_inst name with
+    | s, RecordV r ->
+        begin match Record.find "EXPORT" r with
+        | ListV exs -> s, !exs
+        | _ -> failwith "Invaild module inst"
+        end
+    | _ -> failwith "Invalid module inst"
 
 let extract_idx_of tag name (export: value) =
   match export with
@@ -144,8 +162,22 @@ let extract_idx_of tag name (export: value) =
 let do_invoke act = match act.it with
   | Script.Invoke (module_name_opt, name, literals) ->
     let module_name = get_module_name module_name_opt in
-    let (sto, exports) = find_export module_name in
-    let idx = Array.find_map (extract_idx_of "FUNC" name) exports |> Option.get in
+    let (sto, module_inst) = find_module_inst module_name in
+    let func_insts, export_insts = match module_inst with
+    | RecordV r ->
+        begin match Record.find "FUNC" r, Record.find "EXPORT" r with
+        | ListV fs, ListV exs -> !fs, !exs
+        | _ -> failwith "Invaild module inst"
+        end
+    | _ -> failwith "Invalid module inst"
+    in
+
+    let idx =
+      match Array.find_map (extract_idx_of "FUNC" name) export_insts |> Option.get with
+      | NumV n -> Int64.to_int n
+      | _ -> failwith "Invalid idx"
+    in
+    let funcaddr = Array.get func_insts idx in
 
     let args = listV (
       literals
@@ -155,10 +187,11 @@ let do_invoke act = match act.it with
     Interpreter.init_stack();
     Interpreter.store := sto;
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
-    Interpreter.call_algo "invocation" [idx; args]
+    Interpreter.call_algo "invocation" [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let (sto, exports) = find_export module_name in
+
     let idx = Array.find_map (extract_idx_of "GLOBAL" name) exports |> Option.get in
     let globals = (Record.find "GLOBAL" sto) in
 
@@ -248,6 +281,8 @@ let get_externval module_used = function
         match extern with
         | ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV idx ]) ])
           when export_name = extern_name ->
+            (*print_endline export_name;
+            Int64.to_string idx |> print_endline;*)
             let new_idx = Int64.of_int offset |> Int64.add idx in
             Some (ConstructV ("EXPORT", [ StringV export_name; ConstructV ("FUNC", [ NumV new_idx ]) ]))
         | ConstructV ("EXPORT", [ StringV export_name; _ ])
@@ -277,15 +312,14 @@ let test_module module_name m =
     let externvals = get_externvals al_module in
 
     (* Instantiate and store exports *)
-    match Interpreter.call_algo "instantiation" [ al_module ; externvals ] with
-    | ListV l ->
-        let export = !l in
-        (match module_name with
-        | Some name ->
-            register := Register.add name.it (!Interpreter.store, export) !register
-        | None -> ());
-        register := Register.add latest (!Interpreter.store, export) !register;
-    | _ -> failwith "invalid exports"
+    let module_inst = Interpreter.call_algo "instantiation" [ al_module ; externvals ] in
+
+    (* Store module instance in the register *)
+    (match module_name with
+    | Some name ->
+        register := Register.add name.it (!Interpreter.store, module_inst) !register
+    | None -> ());
+    register := Register.add latest (!Interpreter.store, module_inst) !register;
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
 let test_cmd success cmd =
@@ -298,8 +332,8 @@ let test_cmd success cmd =
         | Some s -> s.it
         | None -> latest
       in
-      let export = find_export module_name in
-      register := Register.add s export !register
+      let module_inst = find_module_inst module_name in
+      register := Register.add s module_inst !register
   | Script.Action a -> (
     try do_invoke a |> ignore with
     | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
