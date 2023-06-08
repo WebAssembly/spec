@@ -846,9 +846,9 @@ alloc_module module externval*
 16. Let dataaddr* be $alloc_data(data)*.
 17. Append the sequence dataaddr* to the moduleinst.DATA.
 18. Pop f_init from the stack.
-19. For i in range |s.FUNC|:
-  a. Let (_, func') be s.FUNC[i].
-  b. Replace s.FUNC[i] with (moduleinst, func').
+19. For i in range |funcaddr*|:
+  a. Let (_, func') be s.FUNC[funcaddr*[i]].
+  b. Replace s.FUNC[funcaddr*[i]] with (moduleinst, func').
 20. Append the sequence export* to the moduleinst.EXPORT.
 21. Return moduleinst.
 

@@ -307,9 +307,10 @@ let alloc_module =
   let store = NameE (N "s", []) in
   let func' = NameE (N "func'", []) in
 
-  let base = AccessE (NameE (N "s", []), DotP "FUNC") in
+  let base = AccessE (store, DotP "FUNC") in
   let index = IndexP (NameE (N "i", [])) in
-  let index_access = AccessE (base, index) in
+  let funcaddr = IndexP (AccessE (funcaddr_iter, index)) in
+  let index_access = AccessE (base, funcaddr) in
 
   (* predefined instructions *)
   let append_if tag =
@@ -373,10 +374,10 @@ let alloc_module =
       AppendListI (AccessE (module_inst_init, DotP "DATA"), dataaddr_iter);
       PopI frame_init;
       ForI (
-        AccessE (store, DotP "FUNC"),
+        funcaddr_iter,
         [
           LetI (PairE (ignore_name, func'), index_access);
-          ReplaceI (base, index, PairE (module_inst_init, func'))
+          ReplaceI (base, funcaddr, PairE (module_inst_init, func'))
         ]
       );
       AppendListI (AccessE (module_inst_init, DotP "EXPORT"), export_iter);

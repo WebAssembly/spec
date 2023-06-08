@@ -61,7 +61,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 
 ===== linking.wast =====
 - Uncaught exception: Module Instantiation failed due to Failed Array.get during AccessE
-- 43/83 (51.81%)
+- 58/83 (69.88%)
 
 ===== float_literals.wast =====
 - Uncaught exception: This test contains a binary module
@@ -270,6 +270,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [19125/23744] (80.55%; Normalized 90.49%)
+Total [19140/23744] (80.61%; Normalized 90.74%)
 == Complete.
 ```
