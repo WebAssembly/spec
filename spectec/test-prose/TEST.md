@@ -822,6 +822,15 @@ alloc_module module externval*
   c. If import_type is of the case FUNC and externuse is of the case FUNC, then:
     1) Let (FUNC funcaddr') be externuse.
     2) Append funcaddr' to the moduleinst.FUNC.
+  d. If import_type is of the case TABLE and externuse is of the case TABLE, then:
+    1) Let (TABLE tableaddr') be externuse.
+    2) Append tableaddr' to the moduleinst.TABLE.
+  e. If import_type is of the case MEM and externuse is of the case MEM, then:
+    1) Let (MEM memaddr') be externuse.
+    2) Append memaddr' to the moduleinst.MEM.
+  f. If import_type is of the case GLOBAL and externuse is of the case GLOBAL, then:
+    1) Let (GLOBAL globaladdr') be externuse.
+    2) Append globaladdr' to the moduleinst.GLOBAL.
 4. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
 5. Push f_init to the stack.
 6. Let funcaddr* be $alloc_func(func)*.

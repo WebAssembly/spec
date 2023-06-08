@@ -257,6 +257,7 @@ let alloc_module =
   let externval = NameE (N "externval", [ List ]) in
   let import_type = NameE (N "import_type", []) in
   let externuse = NameE (N "externuse", []) in
+
   let module_inst_init = NameE (N "moduleinst", []) in
   let module_inst_init_rec =
     Record.empty
@@ -295,7 +296,6 @@ let alloc_module =
   let data_iter = NameE (data_name, [List]) in
   let export_name = N "export" in
   let export_iter = NameE (export_name, [List]) in
-  let funcaddr' = NameE (N "funcaddr'", []) in
   let funcaddr_iter = NameE (N "funcaddr", [List]) in
   let tableaddr_iter = NameE (N "tableaddr", [List]) in
   let globaladdr_iter = NameE (N "globaladdr", [List]) in
@@ -310,6 +310,18 @@ let alloc_module =
   let base = AccessE (NameE (N "s", []), DotP "FUNC") in
   let index = IndexP (NameE (N "i", [])) in
   let index_access = AccessE (base, index) in
+
+  (* predefined instructions *)
+  let append_if tag =
+    let addr' = NameE (N (String.lowercase_ascii tag ^ "addr'"), []) in
+    IfI (
+      BinopC (And, IsCaseOfC (import_type, tag), IsCaseOfC (externuse, tag)),
+      [
+        LetI (ConstructE (tag, [ addr' ]), externuse);
+        AppendI (AccessE (module_inst_init, DotP tag), addr')
+      ],
+      []
+    ) in
 
   (* Algorithm *)
   Algo (
@@ -339,14 +351,10 @@ let alloc_module =
         [
           LetI (ConstructE ("IMPORT", [ ignore_name; ignore_name; import_type ]), AccessE (import_iter, index));
           LetI (ConstructE ("EXPORT", [ ignore_name; externuse ]), AccessE (externval, index));
-          IfI (
-            BinopC (And, IsCaseOfC (import_type, "FUNC"), IsCaseOfC (externuse, "FUNC")),
-            [
-              LetI (ConstructE ("FUNC", [ funcaddr' ]), externuse);
-              AppendI (AccessE (module_inst_init, DotP "FUNC"), funcaddr')
-            ],
-            []
-          )
+          append_if "FUNC";
+          append_if "TABLE";
+          append_if "MEM";
+          append_if "GLOBAL"
         ]
       );
       LetI (frame_init, FrameE (NumE 0L, RecordE frame_init_rec));
