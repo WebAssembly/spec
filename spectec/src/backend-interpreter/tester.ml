@@ -117,7 +117,7 @@ let builtin =
   ] in
   (* Builtin functions *)
   let memories = [
-    "memory", listV [ NumV 0L ]
+    "memory", listV (List.init 0x10000 (fun _ -> NumV 0L))
   ] in
 
   let append kind (name, inst) (sto, extern) =

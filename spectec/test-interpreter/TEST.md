@@ -164,8 +164,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- Uncaught exception: Module Instantiation failed due to Backend_interpreter.Exception.Trap
-- 18/34 (52.94%)
+- 32/34 (94.12%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -266,6 +265,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23374/23744] (98.44%; Normalized 96.02%)
+Total [23388/23744] (98.50%; Normalized 96.58%)
 == Complete.
 ```
