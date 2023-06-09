@@ -329,7 +329,7 @@ rule Step_read/memory.fill-succ:
 
 rule Step_read/memory.copy-trap:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.COPY)  ~>  TRAP
-  -- if $(i + n) > |$table(z, 0)| \/ $(j + n) > |$table(z, 0)|
+  -- if $(i + n) > |$mem(z, 0)| \/ $(j + n) > |$mem(z, 0)|
 
 rule Step_read/memory.copy-zero:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.COPY)  ~>  epsilon
