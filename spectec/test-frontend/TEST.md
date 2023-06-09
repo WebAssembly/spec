@@ -1386,12 +1386,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -3419,8 +3419,8 @@ $$
 {[\textsc{\scriptsize E{-}call}]} \quad & \mathit{z} ; (\mathsf{call}~\mathit{x}) &\hookrightarrow& (\mathsf{call}~\mathit{z}.\mathsf{module}.\mathsf{func}[\mathit{x}]) &  \\
 {[\textsc{\scriptsize E{-}call\_indirect{-}call}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& (\mathsf{call}~\mathit{a}) &\quad
   \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]}[\mathit{i}] = (\mathsf{ref.func}~\mathit{a}) \\
- &&&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~\mathit{bt}~{\mathit{t}^\ast}~{\mathit{instr}^\ast} \\
- &&&&\quad {\land}~\mathit{ft} = \mathit{bt} \\
+ &&&&\quad {\land}~\mathit{z}.\mathsf{func}[\mathit{a}] = \mathit{m} ; \mathsf{func}~{\mathit{ft}'}~{\mathit{t}^\ast}~{\mathit{instr}^\ast} \\
+ &&&&\quad {\land}~\mathit{ft} = {\mathit{ft}'} \\
 {[\textsc{\scriptsize E{-}call\_indirect{-}trap}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{i})~(\mathsf{call\_indirect}~\mathit{x}~\mathit{ft}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{otherwise} \\
 {[\textsc{\scriptsize E{-}call\_addr}]} \quad & \mathit{z} ; {\mathit{val}^{\mathit{k}}}~(\mathsf{call}~\mathit{a}) &\hookrightarrow& ({{\mathsf{frame}}_{\mathit{n}}}{\{\mathit{f}\}}~({{\mathsf{label}}_{\mathit{n}}}{\{\epsilon\}}~{\mathit{instr}^\ast})) &\quad

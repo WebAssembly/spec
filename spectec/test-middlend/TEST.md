@@ -1385,12 +1385,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -3112,12 +3112,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -4841,12 +4841,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -6580,12 +6580,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -8377,14 +8377,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
     -- if (x < |$funcaddr(z)|)
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if (i < |$table(z, x)|)
     -- if (a < |$funcinst(z)|)
     -- if ($table(z, x)[i] = REF.FUNC_ADDR_ref(a))
-    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})))
-    -- if (ft = bt)
+    -- if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:
@@ -10181,14 +10181,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
     -- if (x < |$funcaddr(z)|)
 
-  ;; 6-reduction.watsup:85.1-89.16
-  rule call_indirect-call {a : addr, bt : blocktype, ft : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
+  ;; 6-reduction.watsup:85.1-89.17
+  rule call_indirect-call {a : addr, ft : functype, ft' : functype, i : nat, instr* : instr*, m : moduleinst, t* : valtype*, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, ft)]), [CALL_ADDR_admininstr(a)])
     -- if (i < |$table(z, x)|)
     -- where REF.FUNC_ADDR_ref(a) := $table(z, x)[i]
     -- if (a < |$funcinst(z)|)
-    -- where `%;%`(m, `FUNC%%*%`(bt, t*{t}, instr*{instr})) := $funcinst(z)[a]
-    -- if (ft = bt)
+    -- where `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})) := $funcinst(z)[a]
+    -- if (ft = ft')
 
   ;; 6-reduction.watsup:91.1-93.15
   rule call_indirect-trap {ft : functype, i : nat, x : idx, z : state}:

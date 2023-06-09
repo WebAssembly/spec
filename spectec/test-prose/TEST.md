@@ -317,8 +317,8 @@ execution_of_call_indirect x ft
   b. If a ≥ |$funcinst()|, then:
     1) Trap.
   c. Else:
-    1) Let (m, (FUNC bt t* instr*)) be $funcinst()[a].
-    2) If ft is bt, then:
+    1) Let (m, (FUNC ft' t* instr*)) be $funcinst()[a].
+    2) If ft is ft', then:
       a) Execute (CALL_ADDR a).
     3) Else:
       a) Trap.
