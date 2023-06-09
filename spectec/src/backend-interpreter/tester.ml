@@ -72,7 +72,7 @@ module Register = Map.Make (String)
 type register = value Register.t
 let register: register ref = ref Register.empty
 
-let builtin =
+let builtin () =
 
   let initial_store: value list Record.t =
     Record.empty
@@ -251,25 +251,6 @@ let assert_return actual expect =
   else
     fail (Print.string_of_value expect) (Print.string_of_value actual)
 
-let test_assertion assertion =
-  match assertion.it with
-  | Script.AssertReturn (invoke, expected) ->
-    let result = try do_invoke invoke with e -> StringV (msg_of e) in
-    let expected_result = try
-      listV (expected |> List.map al_of_result)
-    with
-      e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
-    assert_return result expected_result
-  | Script.AssertTrap (invoke, _msg) ->
-    begin try
-      let result = do_invoke invoke in
-      fail "Trap" (Print.string_of_value result)
-    with
-      | Exception.Trap -> Success
-      | e -> fail "Trap" (Printexc.to_string e)
-    end
-  | _ -> Ignore (* ignore other kinds of assertions *)
-
 let get_externval = function
   | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
 
@@ -290,6 +271,49 @@ let get_externvals = function
       ListV (Array.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
+let rec extract_module def = match def.it with
+  | Script.Textual m -> m
+  | Script.Encoded (name, bs) ->
+    Decode.decode name bs
+  | Script.Quoted (_, s) ->
+    let def' = Parse.string_to_module s in
+    extract_module def'
+
+let test_assertion assertion =
+  match assertion.it with
+  | Script.AssertReturn (invoke, expected) ->
+    let result = try do_invoke invoke with e -> StringV (msg_of e) in
+    let expected_result = try
+      listV (expected |> List.map al_of_result)
+    with
+      e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
+    assert_return result expected_result
+  | Script.AssertTrap (invoke, msg) ->
+    let expected = "Trap due to " ^ msg in
+    begin try
+      let result = do_invoke invoke in
+      fail expected (Print.string_of_value result)
+    with
+      | Exception.Trap -> Success
+      | e -> fail expected (Printexc.to_string e)
+    end
+  | Script.AssertUninstantiable (def, msg) ->
+    let expected = "Module instantiation failure due to " ^ msg in
+    begin try
+      let al_module = Construct.al_of_module (extract_module def) in
+      let externvals = get_externvals al_module in
+      Interpreter.cnt := 0;
+      Interpreter.init_stack();
+      Printf.eprintf "[Trying instantiating module...]\n";
+      ignore (Interpreter.call_algo "instantiation" [ al_module ; externvals ]);
+
+      fail expected"Module instantiation success"
+    with
+      | Exception.Trap -> Success
+      | e -> fail expected (Printexc.to_string e)
+    end
+  | _ -> Ignore (* ignore other kinds of assertions *)
+
 let test_module module_name m =
 
   (* Initialize *)
@@ -303,8 +327,8 @@ let test_module module_name m =
     let externvals = get_externvals al_module in
 
     (* Instantiate and store exports *)
+    Printf.eprintf "[Instantiating module...]\n";
     let module_inst = Interpreter.call_algo "instantiation" [ al_module ; externvals ] in
-    (* prerr_endline (Print.string_of_record !Interpreter.store); *)
 
     (* Store module instance in the register *)
     (match module_name with
@@ -313,14 +337,6 @@ let test_module module_name m =
     | None -> ());
     register := Register.add latest module_inst !register;
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
-
-let rec extract_module def = match def.it with
-  | Script.Textual m -> m
-  | Script.Encoded (name, bs) ->
-    Decode.decode name bs
-  | Script.Quoted (_, s) ->
-    let def' = Parse.string_to_module s in
-    extract_module def'
 
 let test_cmd success cmd =
   match cmd.it with
@@ -346,8 +362,9 @@ let test_cmd success cmd =
 
 (* Intialize store and registered modules *)
 let init_tester () =
-  Interpreter.store := fst builtin;
-  register := Register.add "spectest" (snd builtin) Register.empty
+  let builtin_inst = builtin() in
+  Interpreter.store := fst builtin_inst;
+  register := Register.add "spectest" (snd builtin_inst) Register.empty
 
 (** Entry **)
 let test file_name =
@@ -359,7 +376,8 @@ let test file_name =
   let script = file_to_script file_name in
   let total = script |> List.filter (fun x -> match x.it with
     | Script.Assertion {it = Script.AssertReturn _; _}
-    | Script.Assertion {it = Script.AssertTrap _ ; _}-> true
+    | Script.Assertion {it = Script.AssertTrap _ ; _}
+    | Script.Assertion {it = Script.AssertUninstantiable _ ; _}-> true
     | _ -> false
   ) |> List.length in
 

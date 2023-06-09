@@ -60,7 +60,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 19/19 (100.00%)
 
 ===== linking.wast =====
-- 75/83 (90.36%)
+- 86/90 (95.56%)
 
 ===== float_literals.wast =====
 - 83/83 (100.00%)
@@ -187,7 +187,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 140/140 (100.00%)
 
 ===== elem.wast =====
-- 25/25 (100.00%)
+- 37/37 (100.00%)
 
 ===== table_get.wast =====
 - 9/9 (100.00%)
@@ -199,7 +199,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - print_i32: 1
 - print_i32: 2
 - print: ()
-- 6/6 (100.00%)
+- 7/7 (100.00%)
 
 ===== float_exprs.wast =====
 - 794/794 (100.00%)
@@ -233,6 +233,9 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== table_fill.wast =====
 - 35/35 (100.00%)
 
+===== data.wast =====
+- 14/14 (100.00%)
+
 ===== int_literals.wast =====
 - 30/30 (100.00%)
 
@@ -264,6 +267,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23389/23744] (98.50%; Normalized 96.60%)
+Total [23427/23778] (98.52%; Normalized 96.71%)
 == Complete.
 ```
