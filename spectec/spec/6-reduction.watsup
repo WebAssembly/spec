@@ -141,11 +141,11 @@ rule Step_pure/extend:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_2, cvtop, nt_1, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
-  -- if $cvtop(nt_2, cvtop, nt_1, sx?, c_1) = epsilon  ;; TODO
+  -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = epsilon  ;; TODO
 
 
 rule Step_read/ref.func:

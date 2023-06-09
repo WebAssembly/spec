@@ -297,7 +297,7 @@ let cvtop : numerics =
     name = "cvtop";
     f =
       (function
-      | [ ConstructV (t_to, []); StringV op; ConstructV (t_from, []); OptV sx_opt; v ] -> (
+      | [ ConstructV (t_from, []); StringV op; ConstructV (t_to, []); OptV sx_opt; v ] -> (
         let sx = match sx_opt with
           | None -> ""
           | Some (ConstructV (sx, [])) -> sx

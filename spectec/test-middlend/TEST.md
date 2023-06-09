@@ -1358,12 +1358,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -3085,12 +3085,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -4814,12 +4814,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -6553,12 +6553,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -8349,12 +8349,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -10153,12 +10153,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- where [c] := $cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1)
+    -- where [c] := $cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1)
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:

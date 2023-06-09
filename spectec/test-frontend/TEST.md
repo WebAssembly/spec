@@ -1359,12 +1359,12 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 6-reduction.watsup:142.1-144.48
   rule cvtop-val {c : c_numtype, c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [CONST_admininstr(nt_2, c)])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [c])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [c])
 
   ;; 6-reduction.watsup:146.1-148.54
   rule cvtop-trap {c_1 : c_numtype, cvtop : cvtop, nt_1 : numtype, nt_2 : numtype, sx? : sx?}:
     `%*~>%*`([CONST_admininstr(nt_1, c_1) CVTOP_admininstr(nt_2, cvtop, nt_1, sx?{sx})], [TRAP_admininstr])
-    -- if ($cvtop(nt_2, cvtop, nt_1, sx?{sx}, c_1) = [])
+    -- if ($cvtop(nt_1, cvtop, nt_2, sx?{sx}, c_1) = [])
 
   ;; 6-reduction.watsup:155.1-157.28
   rule ref.is_null-true {rt : reftype, val : val}:
@@ -3486,9 +3486,9 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}cvtop{-}val}]} \quad & (\mathit{nt}_{1}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}_{2} . {{{{\mathit{cvtop}}{\mathsf{\_}}}{\mathit{nt}_{1}}}{\mathsf{\_}}}{{\mathit{sx}^?}}) &\hookrightarrow& (\mathit{nt}_{2}.\mathsf{const}~\mathit{c}) &\quad
-  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{2},\, \mathit{cvtop},\, \mathit{nt}_{1},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \mathit{c} \\
+  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{1},\, \mathit{cvtop},\, \mathit{nt}_{2},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \mathit{c} \\
 {[\textsc{\scriptsize E{-}cvtop{-}trap}]} \quad & (\mathit{nt}_{1}.\mathsf{const}~\mathit{c}_{1})~(\mathit{nt}_{2} . {{{{\mathit{cvtop}}{\mathsf{\_}}}{\mathit{nt}_{1}}}{\mathsf{\_}}}{{\mathit{sx}^?}}) &\hookrightarrow& \mathsf{trap} &\quad
-  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{2},\, \mathit{cvtop},\, \mathit{nt}_{1},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \epsilon \\
+  \mbox{if}~\mathrm{cvtop}(\mathit{nt}_{1},\, \mathit{cvtop},\, \mathit{nt}_{2},\, {\mathit{sx}^?},\, \mathit{c}_{1}) = \epsilon \\
 \end{array}
 $$
 

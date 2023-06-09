@@ -279,10 +279,10 @@ execution_of_extend nt n
 execution_of_cvtop nt_2 cvtop nt_1 sx
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop (nt_1.CONST c_1) from the stack.
-3. If |$cvtop(nt_2, cvtop, nt_1, sx?, c_1)| is 1, then:
-  a. Let [c] be $cvtop(nt_2, cvtop, nt_1, sx?, c_1).
+3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
+  a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
   b. Push (nt_2.CONST c) to the stack.
-4. If $cvtop(nt_2, cvtop, nt_1, sx?, c_1) is [], then:
+4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
 execution_of_ref.is_null
