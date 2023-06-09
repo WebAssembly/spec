@@ -63,8 +63,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 75/83 (90.36%)
 
 ===== float_literals.wast =====
-- Uncaught exception: This test contains a binary module
-- 82/83 (98.80%)
+- 83/83 (100.00%)
 
 ===== align.wast =====
 - 48/48 (100.00%)
@@ -265,6 +264,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23388/23744] (98.50%; Normalized 96.58%)
+Total [23389/23744] (98.50%; Normalized 96.60%)
 == Complete.
 ```

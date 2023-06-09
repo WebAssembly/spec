@@ -314,10 +314,17 @@ let test_module module_name m =
     register := Register.add latest module_inst !register;
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
+let rec extract_module def = match def.it with
+  | Script.Textual m -> m
+  | Script.Encoded (name, bs) ->
+    Decode.decode name bs
+  | Script.Quoted (_, s) ->
+    let def' = Parse.string_to_module s in
+    extract_module def'
+
 let test_cmd success cmd =
   match cmd.it with
-  | Script.Module (module_name, {it = Script.Textual m; _}) -> test_module module_name m
-  | Script.Module _ -> failwith "This test contains a binary module"
+  | Script.Module (module_name, def) -> test_module module_name (extract_module def)
   | Script.Register (name, module_name_opt) ->
       let s = Ast.string_of_name name in
       let module_name = match module_name_opt with
