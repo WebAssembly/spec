@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (cd ../spec && ../src/exe-watsup/main.exe *.watsup -l --print-all-il --sub --totalize --the-elimination --sideconditions --animate --check)
+$ (cd ../spec && ../src/exe-watsup/main.exe *.watsup -l --print-all-il --all-passes --check)
 == Parsing...
 == Elaboration...
 
@@ -1634,7 +1634,7 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
 == IL Validation...
-== Subtype injection...
+== Running pass sub
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -3357,7 +3357,7 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
 == IL Validation...
-== Function totalization...
+== Running pass totalize
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -5082,7 +5082,7 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
 == IL Validation...
-== Option projection eliminiation
+== Running pass the-elimination
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -6826,7 +6826,7 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
 == IL Validation...
-== Side condition inference
+== Running pass sideconditions
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -8626,7 +8626,7 @@ relation Step: `%~>%`(config, config)
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
 == IL Validation...
-== Animate
+== Running pass animate
 Animation failed:if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
 Animation failed:if ($bytes_(o0, c) = $mem(z, 0)[(i + n_O) : (o1 / 8)])
 Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
