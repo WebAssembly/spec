@@ -9,6 +9,7 @@ watsup 0.3 generator
 == Side condition inference
 == IL Validation...
 == Animate
+Animation failed:if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
 Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)])
 Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
 == IL Validation...
@@ -129,9 +130,9 @@ extend
 
 cvtop
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
+2. Pop YetE (CONST_admininstr(nt_1, c_1)) from the stack.
 3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
+  a. Push YetE (CONST_admininstr(nt_2, c)) to the stack.
 4. If YetC (), then:
   a. Trap.
 
@@ -232,8 +233,8 @@ table.copy
   b. Push YetE (CONST_admininstr(I32_numtype, ((i + n) - 1))) to the stack.
   c. Execute (TABLE.GET YetE (y)).
   d. Execute (TABLE.SET YetE (x)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
+  e. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
+  f. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
   g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
   h. Execute (TABLE.COPY YetE (x) YetE (y)).
 
@@ -267,7 +268,7 @@ load
 5. If YetC (), then:
   a. Trap.
 6. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
+  a. Push YetE (CONST_admininstr(nt, $ext(n, $size(nt <: valtype), sx, c))) to the stack.
 
 memory.size
 1. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
@@ -399,7 +400,7 @@ memory.grow
 2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
 3. If YetC (), then:
   a. YetI: Perform $with_memext(z, 0, 0^((n * 64) * $Ki){}).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$mem(z, 0)|)) to the stack.
+  b. Push YetE (CONST_admininstr(I32_numtype, (|$mem(z, 0)| / (64 * $Ki)))) to the stack.
 4. If YetC (), then:
   a. YetI: Perform z.
   b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.

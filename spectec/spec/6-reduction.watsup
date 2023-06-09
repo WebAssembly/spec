@@ -85,7 +85,8 @@ rule Step_read/call:
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x ft)  ~>  (CALL_ADDR a)
   -- if $table(z, x)[i] = (REF.FUNC_ADDR a)
-  -- if $funcinst(z)[a] = m; func
+  -- if $funcinst(z)[a] = m; FUNC ft' t* instr*
+  -- if ft = ft'
 
 rule Step_read/call_indirect-trap:
   z; (CONST I32 i) (CALL_INDIRECT x ft)  ~>  TRAP
@@ -139,11 +140,11 @@ rule Step_pure/extend:
 
 
 rule Step_pure/cvtop-val:
-  (CONST nt c_1) (CVTOP nt_1 cvtop nt_2 sx?)  ~>  (CONST nt c)
+  (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
   -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
-  (CONST nt c_1) (CVTOP nt_1 cvtop nt_2 sx?)  ~>  TRAP
+  (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
   -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = epsilon  ;; TODO
 
 
@@ -241,7 +242,7 @@ rule Step_read/table.copy-le:
 rule Step_read/table.copy-gt:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>
     (CONST I32 $(j+n-1)) (CONST I32 $(i+n-1)) (TABLE.GET y) (TABLE.SET x)
-    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (TABLE.COPY x y)
+    (CONST I32 j) (CONST I32 i) (CONST I32 $(n-1)) (TABLE.COPY x y)
   -- otherwise
 
 
@@ -267,7 +268,7 @@ rule Step/elem.drop:
 
 rule Step_read/load-num-trap:
   z; (CONST I32 i) (LOAD nt n_A n_O)  ~>  TRAP
-  -- if $(i + n_O + $size(nt)/8 >= |$mem(z, 0)|)
+  -- if $(i + n_O + $size(nt)/8 > |$mem(z, 0)|)
 
 rule Step_read/load-num-val:
   z; (CONST I32 i) (LOAD nt n_A n_O)  ~>  (CONST nt c)
@@ -275,16 +276,16 @@ rule Step_read/load-num-val:
 
 rule Step_read/load-pack-trap:
   z; (CONST I32 i) (LOAD nt (n _ sx) n_A n_O)  ~>  TRAP
-  -- if $(i + n_O + n/8 >= |$mem(z, 0)|)
+  -- if $(i + n_O + n/8 > |$mem(z, 0)|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD nt (n _ sx) n_A n_O)  ~>  (CONST nt c)
+  z; (CONST I32 i) (LOAD nt (n _ sx) n_A n_O)  ~>  (CONST nt $ext(n, $size(nt), sx, c))
   -- if $bytes_(n, c) = $mem(z, 0)[i + n_O : n/8]
 
 
 rule Step/store-num-trap:
   z; (CONST I32 i) (CONST nt c) (STORE nt n_A n_O)  ~>  z; TRAP
-  -- if $(i + n_O + $size(nt)/8) >= |$mem(z, 0)|
+  -- if $(i + n_O + $size(nt)/8) > |$mem(z, 0)|
 
 rule Step/store-num-val:
   z; (CONST I32 i) (CONST nt c) (STORE nt n_A n_O)  ~>  $with_mem(z, 0, $(i + n_O), $($size(nt)/8), b*); epsilon
@@ -292,7 +293,7 @@ rule Step/store-num-val:
 
 rule Step/store-pack-trap:
   z; (CONST I32 i) (CONST nt c) (STORE nt n n_A n_O)  ~>  z; TRAP
-  -- if $(i + n_O + n/8) >= |$mem(z, 0)|
+  -- if $(i + n_O + n/8) > |$mem(z, 0)|
 
 rule Step/store-pack-val:
   z; (CONST I32 i) (CONST nt c) (STORE nt n n_A n_O)  ~>  $with_mem(z, 0, $(i + n_O), $(n/8), b*); epsilon
@@ -305,7 +306,7 @@ rule Step_read/memory.size:
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_memext(z, 0, 0^(n * 64 * $Ki)); (CONST I32 $(|$mem(z, 0)|))
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_memext(z, 0, 0^(n * 64 * $Ki)); (CONST I32 $(|$mem(z, 0)| / (64 * $Ki)))
 
 rule Step/memory.grow-fail:
   z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $(-1))
