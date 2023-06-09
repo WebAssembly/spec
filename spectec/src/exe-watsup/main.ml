@@ -33,6 +33,7 @@ let pass_sub = ref false
 let pass_totalize = ref false
 let pass_unthe = ref false
 let pass_sideconditions = ref false
+let pass_animate = ref false
 
 
 (* Argument parsing *)
@@ -69,6 +70,7 @@ let argspec = Arg.align
   "--totalize", Arg.Set pass_totalize, " Run function totalization";
   "--the-elimination", Arg.Set pass_unthe, " Eliminate the ! operator in relations";
   "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditions";
+  "--animate", Arg.Set pass_animate, " Animate equality conditions";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -127,6 +129,17 @@ let () =
     let il = if not !pass_sideconditions then il else
       ( log "Side condition inference";
         let il = Middlend.Sideconditions.transform il in
+        if !print_all_il then
+          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+        log "IL Validation...";
+        Il.Validation.valid il;
+        il
+      )
+    in
+
+    let il = if not !pass_animate then il else
+      ( log "Animate";
+        let il = Middlend.Animate.transform il in
         if !print_all_il then
           Printf.printf "%s\n%!" (Il.Print.string_of_script il);
         log "IL Validation...";
