@@ -295,7 +295,6 @@ let alloc_module =
   let data = NameE (data_name, []) in
   let data_iter = NameE (data_name, [List]) in
   let export_name = N "export" in
-  let export = NameE (export_name, []) in
   let export_iter = NameE (export_name, [List]) in
   let funcaddr_iter = NameE (N "funcaddr", [List]) in
   let tableaddr_iter = NameE (N "tableaddr", [List]) in
@@ -303,7 +302,7 @@ let alloc_module =
   let memoryaddr_iter = NameE (N "memoryaddr", [List]) in
   let elemaddr_iter = NameE (N "elemaddr", [List]) in
   let dataaddr_iter = NameE (N "dataaddr", [List]) in
-  let exportinst_iter = NameE (N "exportinst", [List]) in
+  let name = NameE (N "name", []) in
 
   let ignore_name = NameE (N "_", []) in
   let store = NameE (N "s", []) in
@@ -324,8 +323,26 @@ let alloc_module =
         LetI (ConstructE (tag, [ addr' ]), externuse);
         AppendI (AccessE (module_inst_init, DotP tag), addr')
       ],
-      []
-    ) in
+      []) in
+  let append_export_if tag =
+    let nameE name = NameE (N name, []) in
+    let externval = nameE "externval" in
+    let exportinst = nameE "exportinst" in
+    let lower_tag = String.lowercase_ascii tag in
+    let idx = lower_tag ^ "idx" in
+    let addr = lower_tag ^ "addr" in
+    let out_tag = if tag = "MEMORY" then "MEM" else tag in (* TODO: Change DSL so that they are both MEM *)
+    IfI (
+      IsCaseOfC (externuse, tag),
+      [
+        LetI (ConstructE (tag, [ nameE idx ]), externuse);
+        LetI (nameE addr, AccessE (AccessE (module_inst_init, DotP out_tag), IndexP (nameE idx)));
+        LetI (externval, ConstructE (out_tag, [ nameE addr ]));
+        LetI (exportinst, ConstructE ("EXPORT", [ name; externval ]));
+        AppendI (AccessE (module_inst_init, DotP "EXPORT"), exportinst)
+      ],
+      []) in
+
 
   (* Algorithm *)
   Algo (
@@ -383,8 +400,16 @@ let alloc_module =
           ReplaceI (base, funcaddr, PairE (module_inst_init, func'))
         ]
       );
-      LetI (exportinst_iter, MapE (N "resolve_export", [ module_inst_init; export ], [ List ]));
-      AppendListI (AccessE (module_inst_init, DotP "EXPORT"), exportinst_iter);
+      ForI (
+        export_iter,
+        [
+          LetI (ConstructE ("EXPORT", [ name; externuse ]), AccessE (export_iter, index));
+          append_export_if "FUNC";
+          append_export_if "TABLE";
+          append_export_if "MEMORY";
+          append_export_if "GLOBAL";
+        ]
+      );
       ReturnI (Some module_inst_init)
     ]
   )
@@ -533,43 +558,6 @@ let alloc_data =
     ]
   )
 
-let resolve_export =
-  (* Name definition *)
-  let nameE name = NameE (N name, []) in
-  let moduleinst = nameE "moduleinst" in
-  let export = nameE "export" in
-  let name = nameE "name" in
-  let externuse = nameE "externuse" in
-  let externval = nameE "externval" in
-
-  let return_if tag =
-    let lower_tag = String.lowercase_ascii tag in
-    let idx = lower_tag ^ "idx" in
-    let addr = lower_tag ^ "addr" in
-    let out_tag = if tag = "MEMORY" then "MEM" else tag in (* TODO: Change DSL so that they are both MEM *)
-    IfI (
-      IsCaseOfC (externuse, tag),
-      [
-        LetI (ConstructE (tag, [ nameE idx ]), externuse);
-        LetI (nameE addr, AccessE (AccessE (moduleinst, DotP out_tag), IndexP (nameE idx)));
-        LetI (externval, ConstructE (out_tag, [ nameE addr ]));
-        ReturnI (Some (ConstructE ("EXPORT", [ name; externval ])))
-      ],
-      []) in
-
-  (* Algorithm *)
-  Algo (
-    "resolve_export",
-    [ (moduleinst, TopT); (export, TopT) ],
-    [
-      LetI (ConstructE ("EXPORT", [ name; externuse ]), export);
-      return_if "FUNC";
-      return_if "TABLE";
-      return_if "MEMORY";
-      return_if "GLOBAL"
-    ]
-  )
-
 let invocation =
   (* Name definition *)
   let ignore_name = N "_" in
@@ -636,6 +624,5 @@ let manual_algos =
     alloc_memory;
     alloc_elem;
     alloc_data;
-    resolve_export;
     invocation
   ]
