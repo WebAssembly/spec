@@ -91,8 +91,8 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Direct invocation failed due to Failed Array.get during AccessE
-- 30/4338 (0.69%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 4100/4338 (94.51%)
 
 ===== stack.wast =====
 - 5/5 (100.00%)
@@ -186,8 +186,7 @@ Bubbleup semantics for return: Top of the stack is frame / label
 - 360/360 (100.00%)
 
 ===== memory_init.wast =====
-- Uncaught exception: Direct invocation failed due to Failed Array.get during AccessE
-- 90/140 (64.29%)
+- 140/140 (100.00%)
 
 ===== elem.wast =====
 - 25/25 (100.00%)
@@ -267,6 +266,6 @@ Bubbleup semantics for return: Top of the stack is frame / label
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [19254/23744] (81.09%; Normalized 94.27%)
+Total [23374/23744] (98.44%; Normalized 96.02%)
 == Complete.
 ```

@@ -465,7 +465,7 @@ execution_of_memory.copy
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$table(0)| or (j + n) > |$table(0)|, then:
+7. If (i + n) > |$mem(0)| or (j + n) > |$mem(0)|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. If j ≤ i, then:
