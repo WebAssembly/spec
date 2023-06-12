@@ -215,6 +215,7 @@ Compound Types
 
 .. index:: recursive type, sub type, compound type
    pair: binary format; recursive type
+   pair: binary format; sub type
 .. _binary-rectype:
 .. _binary-subtype:
 
