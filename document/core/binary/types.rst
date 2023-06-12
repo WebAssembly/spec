@@ -204,10 +204,10 @@ Compound Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{compound type} & \Bcomptype &::=&
-     \hex{5E}~~\X{st}{:}\Bstructtype
-       &\Rightarrow& \TARRAY~\X{st} \\ &&|&
-     \hex{5F}~~\X{at}{:}\Barraytype
-       &\Rightarrow& \TSTRUCT~\X{at} \\ &&|&
+     \hex{5E}~~\X{at}{:}\Barraytype
+       &\Rightarrow& \TARRAY~\X{at} \\ &&|&
+     \hex{5F}~~\X{st}{:}\Bstructtype
+       &\Rightarrow& \TSTRUCT~\X{st} \\ &&|&
      \hex{60}~~\X{ft}{:}\Bfunctype
        &\Rightarrow& \TFUNC~\X{ft} \\
    \end{array}
