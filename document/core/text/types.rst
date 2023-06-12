@@ -39,15 +39,26 @@ Vector Types
 .. index:: heap type
    pair: text format; heap type
 .. _text-heaptype:
+.. _text-absheaptype:
 
 Heap Types
 ~~~~~~~~~~
 
 .. math::
    \begin{array}{llrll@{\qquad\qquad}l}
-   \production{heap type} & \Theaptype_I &::=&
+   \production{abstract heap type} & \Tabsheaptype &::=&
+     \text{any} &\Rightarrow& \ANY \\ &&|&
+     \text{eq} &\Rightarrow& \EQT \\ &&|&
+     \text{i31} &\Rightarrow& \I31 \\ &&|&
+     \text{struct} &\Rightarrow& \STRUCT \\ &&|&
+     \text{array} &\Rightarrow& \ARRAY \\ &&|&
+     \text{none} &\Rightarrow& \NONE \\ &&|&
      \text{func} &\Rightarrow& \FUNC \\ &&|&
+     \text{nofunc} &\Rightarrow& \NOFUNC \\ &&|&
      \text{extern} &\Rightarrow& \EXTERN \\ &&|&
+     \text{noextern} &\Rightarrow& \NOEXTERN \\
+   \production{heap type} & \Theaptype_I &::=&
+     t{:}\Tabsheaptype &\Rightarrow& y \\ &&|&
      x{:}\Ttypeidx_I &\Rightarrow& x \\
    \end{array}
 
@@ -76,8 +87,16 @@ There are shorthands for references to abstract heap types.
 .. math::
    \begin{array}{llclll}
    \production{reference type} &
+     \text{anyref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{any}~\text{)} \\
+     \text{eqref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{eq}~\text{)} \\
+     \text{i31ref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{i31}~\text{)} \\
+     \text{structref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{struct}~\text{)} \\
+     \text{arrayref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{array}~\text{)} \\
+     \text{nullref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{none}~\text{)} \\
      \text{funcref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{func}~\text{)} \\
+     \text{nullfuncref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{nofunc}~\text{)} \\
      \text{externref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{extern}~\text{)} \\
+     \text{nullexternref} &\equiv& \text{(}~\text{ref}~~\text{null}~~\text{noextern}~\text{)} \\
    \end{array}
 
 
@@ -137,6 +156,117 @@ Multiple anonymous parameters or results may be combined into a single declarati
    \production{result} &
      \text{(}~~\text{result}~~\Tvaltype^\ast~~\text{)} &\equiv&
      (\text{(}~~\text{result}~~\Tvaltype~~\text{)})^\ast \\
+   \end{array}
+
+
+.. index:: aggregate type, value type, structure type, array type, field type, storage type, packed type, mutability
+   pair: text format; aggregate type
+   pair: text format; structure type
+   pair: text format; array type
+   pair: text format; field type
+   pair: text format; storage type
+   pair: text format; packed type
+.. _text-aggrtype:
+.. _text-structtype:
+.. _text-arraytype:
+.. _text-fieldtype:
+.. _text-storagetype:
+.. _text-packedtype:
+
+Aggregate Types
+~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{array type} & \Tarraytype_I &::=&
+     \text{(}~\text{array}~~\X{ft}{:}\Tfieldtype_I~\text{)}
+       &\Rightarrow& \X{ft} \\
+   \production{structure type} & \Tstructtype_I &::=&
+     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tvec(\Tfield_I)~\text{)}
+       &\Rightarrow& \X{ft}^\ast \\
+   \production{field} & \Tfield_I &::=&
+     \text{(}~\text{field}~~\Tid^?~~\X{ft}{:}\Tfieldtype_I~\text{)}
+       &\Rightarrow& \X{ft} \\
+   \production{field type} & \Tfieldtype_I &::=&
+     \X{st}{:}\Bstoragetype
+       &\Rightarrow& \MCONST~\X{st} \\ &&|&
+     \text{(}~\text{mut}~~\X{st}{:}\Bstoragetype~\text{)}
+       &\Rightarrow& \MVAR~\X{st} \\
+   \production{storage type} & \Tstoragetype_I &::=&
+     t{:}\Tvaltype_I
+       &\Rightarrow& t \\ &&|&
+     t{:}\Tpackedtype
+       &\Rightarrow& t \\
+   \production{packed type} & \Tpackedtype &::=&
+     \text{i8}
+       &\Rightarrow& \I8 \\ &&|&
+     \text{i16}
+       &\Rightarrow& \I16 \\
+   \end{array}
+
+
+.. index:: compound type, structure type, array type, function type
+   pair: text format; compound type
+.. _text-comptype:
+
+Compound Types
+~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{compound type} & \Tcomptype_I &::=&
+     \X{at}{:}\Tarraytype_I
+       &\Rightarrow& \TARRAY~\X{at} \\ &&|&
+     \X{st}{:}\Tstructtype_I
+       &\Rightarrow& \TSTRUCT~\X{at} \\ &&|&
+     \X{ft}{:}\Tfunctype_I
+       &\Rightarrow& \TFUNC~\X{ft} \\
+   \end{array}
+
+
+.. index:: recursive type, sub type, compound type
+   pair: text format; recursive type
+   pair: text format; sub type
+.. _text-rectype:
+.. _text-subtype:
+.. _text-deftype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{recursive type} & \Trectype_I &::=&
+     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tvec(\Tdeftype_I)~\text{)}
+       &\Rightarrow& \TREC~\X{st}^\ast \\
+   \production{defined type} & \Tdeftype_I &::=&
+     \text{(}~\text{type}~~\Tid^?~~\X{st}{:}\Tsubtype_I~\text{)}
+       &\Rightarrow& \X{st} \\
+   \production{sub type} & \Tsubtype_I &::=&
+     \text{(}~\text{sub}~~\text{final}^?~~x^\ast{:\,}\Tvec(\Ttypeidx_I)~~\X{ct}{:}\Tcomptype_I~\text{)}
+       &\Rightarrow& \TSUB~\TFINAL^?~x^\ast~\X{ct} \\
+   \end{array}
+
+
+Abbreviations
+.............
+
+Singular recursive types can omit the |Trec| keyword:
+
+.. math::
+   \begin{array}{llclll}
+   \production{recursive type} &
+     \Tsubtype &\equiv&
+     \text{(}~~\text{rec}~~\Tsubtype~~\text{)} \\
+   \end{array}
+
+Similarly, final sub types with no super-types can omit the |Tsub| keyword and arguments:
+
+.. math::
+   \begin{array}{llclll}
+   \production{sub type} &
+     \Tcomptype &\equiv&
+     \text{(}~~\text{sub}~~\text{final}~~\epsilon~~\Tcomptype~~\text{)} \\
    \end{array}
 
 

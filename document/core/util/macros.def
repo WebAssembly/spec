@@ -866,10 +866,20 @@
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
 .. |Tvectype| mathdef:: \xref{text/types}{text-vectype}{\T{vectype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
+.. |Tabsheaptype| mathdef:: \xref{text/types}{text-absheaptype}{\T{absheaptype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
+.. |Tstructtype| mathdef:: \xref{text/types}{text-structtype}{\T{structtype}}
+.. |Tarraytype| mathdef:: \xref{text/types}{text-arraytype}{\T{arraytype}}
+.. |Taggrtype| mathdef:: \xref{text/types}{text-aggrype}{\T{aggrtype}}
+.. |Tfieldtype| mathdef:: \xref{text/types}{text-fieldtype}{\T{fieldtype}}
+.. |Tstoragetype| mathdef:: \xref{text/types}{text-storagetype}{\T{storagetype}}
+.. |Tpackedtype| mathdef:: \xref{text/types}{text-packedtype}{\T{packedtype}}
+.. |Tcomptype| mathdef:: \xref{text/types}{text-comptype}{\T{comptype}}
+.. |Tsubtype| mathdef:: \xref{text/types}{text-subtype}{\T{subtype}}
 .. |Tdeftype| mathdef:: \xref{text/types}{text-deftype}{\T{deftype}}
+.. |Trectype| mathdef:: \xref{text/types}{text-rectype}{\T{rectype}}
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
@@ -878,6 +888,7 @@
 
 .. |Tparam| mathdef:: \xref{text/types}{text-functype}{\T{param}}
 .. |Tresult| mathdef:: \xref{text/types}{text-functype}{\T{result}}
+.. |Tfield| mathdef:: \xref{text/types}{text-structtype}{\T{field}}
 
 
 .. Indices, non-terminals
@@ -891,14 +902,7 @@
 .. |Tdataidx| mathdef:: \xref{text/modules}{text-dataidx}{\T{dataidx}}
 .. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
 .. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
-
-.. |Ttypebind| mathdef:: \xref{text/modules}{text-typebind}{\T{typebind}}
-.. |Tfuncbind| mathdef:: \xref{text/modules}{text-funcbind}{\T{funcbind}}
-.. |Ttablebind| mathdef:: \xref{text/modules}{text-tablebind}{\T{tablebind}}
-.. |Tmembind| mathdef:: \xref{text/modules}{text-membind}{\T{membind}}
-.. |Tglobalbind| mathdef:: \xref{text/modules}{text-globalbind}{\T{globalbind}}
-.. |Tlocalbind| mathdef:: \xref{text/modules}{text-localbind}{\T{localbind}}
-.. |Tlabelbind| mathdef:: \xref{text/modules}{text-labelbind}{\T{labelbind}}
+.. |Tfieldidx| mathdef:: \xref{text/modules}{text-fieldidx}{\T{fieldidx}}
 
 
 .. Modules, non-terminals
@@ -952,6 +956,7 @@
 .. Contexts
 
 .. |ITYPEDEFS| mathdef:: \xref{text/conventions}{text-context}{\K{typedefs}}
+.. |IFIELDS| mathdef:: \xref{text/conventions}{text-context}{\K{fields}}
 .. |ITYPES| mathdef:: \xref{text/conventions}{text-context}{\K{types}}
 .. |IFUNCS| mathdef:: \xref{text/conventions}{text-context}{\K{funcs}}
 .. |ITABLES| mathdef:: \xref{text/conventions}{text-context}{\K{tables}}
