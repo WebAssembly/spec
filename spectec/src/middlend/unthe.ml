@@ -15,7 +15,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "sideconditions" msg
+let error at msg = Source.error at "unthe" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 
