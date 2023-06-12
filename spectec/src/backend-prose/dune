@@ -2,6 +2,8 @@
   (name backend_prose)
   (libraries util il backend_interpreter)
   (modules
+    prose
+    print
     gen
     )
 )

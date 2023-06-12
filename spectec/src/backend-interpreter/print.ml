@@ -295,14 +295,6 @@ let rec string_of_instr index depth = function
   | AppendListI (e1, e2) ->
       sprintf "%s Append the sequence %s to the %s." (make_index index depth)
         (string_of_expr e2) (string_of_expr e1)
-  | ValidI (e1, e2, eo) ->
-      sprintf "%s Under the context %s, %s must be valid%s." (make_index index depth)
-        (string_of_expr e1)
-        (string_of_expr e2)
-        (string_of_opt " with type " string_of_expr "" eo)
-  | IsValidI e_opt ->
-      sprintf "%s The instruction is valid%s." (make_index index depth)
-        (string_of_opt " with type " string_of_expr "" e_opt)
   | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
 
 and string_of_instrs depth instrs =
@@ -666,16 +658,6 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | ValidI (e1, e2, eo) ->
-      "ValidI ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ", "
-      ^ "(" ^ string_of_opt "" structured_string_of_expr "" eo ^ ")"
-      ^ ")"
-  | IsValidI e_opt ->
-      "IsValidI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
   | YetI s -> "YetI " ^ s
 
 and structured_string_of_instrs depth instrs =

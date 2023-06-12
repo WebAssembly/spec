@@ -149,8 +149,6 @@ type instr =
   | ReplaceI of expr * path * expr
   | AppendI of expr * expr
   | AppendListI of expr * expr
-  | ValidI of expr * expr * expr option
-  | IsValidI of expr option
   (* Yet *)
   | YetI of string
 

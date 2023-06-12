@@ -154,6 +154,7 @@ let rec exp2expr exp =
   (* TODO: Handle MixE *)
   | Ast.MixE (op, { it = Ast.TupE exps; _ }) -> (
       match (op, exps) with
+      | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ] ->
           Al.PairE (exp2expr e1, exp2expr e2)
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
@@ -426,14 +427,6 @@ let prems2instrs remain_lhs =
                     [] );
               ]
           | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs')
-      | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
-          ( match exp2args exp with
-          | [c; e; t] -> Al.ValidI (c, e, Some t)
-          | [c; e] -> Al.ValidI (c, e, None)
-          | _ ->
-            gen_fail_msg_of_prem prem "instr" |> print_endline;
-            Al.YetI (Il.Print.string_of_prem prem)
-          ) :: instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           Al.YetI (Il.Print.string_of_prem prem) :: instrs)
@@ -595,61 +588,12 @@ let helpers2algo def =
 (** Entry for translating helper functions **)
 let translate_helpers il = List.filter_map helpers2algo il
 
-type trule_group =
-  string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
-
-(** Main translation for typing rules **)
-let trule_group2algo ((instr_name, trules): trule_group) =
-  let (e, t, prems, tenv) = trules |> List.hd in
-
-  (* name *)
-  let name = "validation_of_" ^ instr_name in
-  (* params *)
-  let params = get_params e |> List.map (find_type tenv) in
-  (* body *)
-  let body = prems2instrs [] prems [ Al.IsValidI (Some (exp2expr t)) ] in
-
-  (* Algo *)
-  Al.Algo (name, params, body)
-
-let extract_trules def =
-  match def.it with
-  | Ast.RelD (id, _, _, rules) when id.it = "Instr_ok" -> rules
-  | _ -> []
-
-let trule2tup trule =
-  let (Ast.RuleD (_, tenv, _, exp, prems)) = trule.it in
-  match exp.it with
-  (* c |- e : t *)
-  | Ast.TupE [ _c; e; t ] -> (e, t, prems, tenv)
-  | _ ->
-      Print.string_of_exp exp
-      |> sprintf "Invalid expression `%s` to be typing rule."
-      |> failwith
-
-(* group typing rules that have same name *)
-let rec group_trules = function
-  | [] -> []
-  | h :: t ->
-      let name = name_of_rule h in
-      let same_rules, diff_rules =
-        List.partition (fun rule -> name_of_rule rule = name) t in
-      let group = (name, List.map trule2tup (h :: same_rules)) in
-      group :: group_trules diff_rules
-
-(** Entry for translating typing rules **)
-let translate_trules il =
-  let trules = List.concat_map extract_trules il in
-  let trule_groups = group_trules trules in
-
-  List.map trule_group2algo trule_groups
-
 (** Entry **)
 
 (* `Ast.script` -> `Al.Algo` *)
 let translate il =
   let il = List.concat_map flatten_rec il in
-  let algos = translate_helpers il @ translate_rules il @ translate_trules il in
+  let algos = translate_helpers il @ translate_rules il in
 
   (* Transpile *)
   (* Can be turned off *)

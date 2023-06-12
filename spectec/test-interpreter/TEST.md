@@ -11,11 +11,6 @@ watsup 0.3 generator
 == Running pass animate
 == IL Validation...
 == Translating to AL...
-Invalid premise `Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])` to be AL instr.
-Invalid premise `(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}` to be AL instr.
-Invalid premise `(if (l < |C.LABEL_context|))*{l}` to be AL instr.
-Invalid premise `(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}` to be AL instr.
-Invalid premise `(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}` to be AL instr.
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
 == Initializing AL interprter with generated AL...

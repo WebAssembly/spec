@@ -2,6 +2,7 @@ open Al
 
 let rec walk_expr f e =
   let _, _, f_expr = f in
+  let not_impl _ = "Walker is not implemented for " ^ Print.structured_string_of_expr e |> failwith in
   match e with
   | NumE n -> f_expr (NumE n)
   | StringE s -> f_expr (StringE s)
@@ -10,24 +11,24 @@ let rec walk_expr f e =
   | AppE (fname, args) -> f_expr (AppE (fname, walk_exprs f args))
   (* TODO: Implement walker for iter *)
   | MapE (fname, args, iter) -> f_expr (MapE (fname, walk_exprs f args, iter))
-  | LengthE inner_e -> f_expr (LengthE (walk_expr f inner_e))
-  | ArityE inner_e -> f_expr (ArityE (walk_expr f inner_e))
-  | GetCurFrameE -> f_expr GetCurFrameE
-  | FrameE (e1, e2) -> f_expr (FrameE (walk_expr f e1, walk_expr f e2))
-  | ConcatE (e1, e2) -> f_expr (ConcatE (walk_expr f e1, walk_expr f e2))
   | ListE el -> f_expr (ListE (List.map (walk_expr f) el))
   | ListFillE (e1, e2) -> f_expr (ListFillE (walk_expr f e1, walk_expr f e2))
-  | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
+  | ConcatE (e1, e2) -> f_expr (ConcatE (walk_expr f e1, walk_expr f e2))
+  | LengthE inner_e -> f_expr (LengthE (walk_expr f inner_e))
   | RecordE r -> f_expr (RecordE (Record.map (fun e -> walk_expr f e) r))
-  | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
-  | ArrowE (e1, e2) -> f_expr (ArrowE (f_expr e1, f_expr e2))
-  | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))
+  | AccessE (e, p) -> f_expr (AccessE (walk_expr f e, walk_path f p))
   | ConstructE (s, el) -> f_expr (ConstructE (s, walk_exprs f el))
+  | OptE e -> f_expr (OptE (Option.map (walk_expr f) e))
+  | PairE (e1, e2) -> f_expr (PairE (f_expr e1, f_expr e2))
+  | ArrowE (e1, e2) -> f_expr (ArrowE (f_expr e1, f_expr e2))
+  | ArityE inner_e -> f_expr (ArityE (walk_expr f inner_e))
+  | FrameE (e1, e2) -> f_expr (FrameE (walk_expr f e1, walk_expr f e2))
+  | GetCurFrameE -> f_expr GetCurFrameE
+  | LabelE (e1, e2) -> f_expr (LabelE (f_expr e1, f_expr e2))
+  | GetCurLabelE -> not_impl ()
+  | ContE _ -> not_impl ()
   | NameE (n, iters) -> f_expr (NameE (n, iters))
   | YetE s -> f_expr (YetE s)
-  | _ ->
-      "Walker is not implemented for " ^ Print.structured_string_of_expr e
-      |> failwith
 
 and walk_exprs f = walk_expr f |> List.map
 
@@ -78,8 +79,6 @@ let rec walk_instr f instr =
   | ReplaceI (e1, p, e2) -> f_instr (ReplaceI (walk_expr f e1, walk_path f p, walk_expr f e2))
   | AppendI (e1, e2) -> f_instr (AppendI (walk_expr f e1, walk_expr f e2))
   | AppendListI (e1, e2) -> f_instr (AppendListI (walk_expr f e1, walk_expr f e2))
-  | ValidI (e1, e2, eo) -> f_instr (ValidI (walk_expr f e1, walk_expr f e2, Option.map (walk_expr f) eo))
-  | IsValidI (eo) -> f_instr (IsValidI (Option.map (walk_expr f) eo))
   | YetI s -> f_instr (YetI s)
 
 and walk_instrs f = walk_instr f |> List.map
