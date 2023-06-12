@@ -18,13 +18,6 @@
   )
   "duplicate field"
 )
-(assert_malformed
-  (module quote
-    "(type (struct (field $x i32)))"
-    "(type (struct (field $x i32)))"
-  )
-  "duplicate field"
-)
 
 
 ;; Binding structure
@@ -47,6 +40,28 @@
 (assert_invalid
   (module (type (struct (field (mut (ref 1))))))
   "unknown type"
+)
+
+
+;; Field names
+
+(module
+  (type (struct (field $x i32)))
+  (type $t1 (struct (field i32) (field $x f32)))
+  (type $t2 (struct (field i32 i32) (field $x i64)))
+
+  (func (param (ref 0)) (result i32) (struct.get 0 $x (local.get 0)))
+  (func (param (ref $t1)) (result f32) (struct.get 1 $x (local.get 0)))
+  (func (param (ref $t2)) (result i64) (struct.get $t2 $x (local.get 0)))
+)
+
+(assert_invalid
+  (module
+    (type (struct (field $x i64)))
+    (type $t (struct (field $x i32)))
+    (func (param (ref 0)) (result i32) (struct.get 0 $x (local.get 0)))
+  )
+  "type mismatch"
 )
 
 
