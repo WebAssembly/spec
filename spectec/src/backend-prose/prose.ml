@@ -9,6 +9,7 @@ type instr =
 | LetI of Al.expr * Al.expr
 | CmpI of Al.expr * cmpop * Al.expr
 | MustValidI of Al.expr * Al.expr * Al.expr option
+| MustMatchI of Al.expr * Al.expr
 | IsValidI of Al.expr option
 | ForallI of string * instr list
 | YetI of string

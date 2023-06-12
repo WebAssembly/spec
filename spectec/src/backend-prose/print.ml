@@ -41,6 +41,10 @@ let rec string_of_instr = function
         (Print.string_of_expr e1)
         (Print.string_of_expr e2)
         (Print.string_of_opt " with type " Print.string_of_expr "" eo)
+  | MustMatchI (e1, e2) ->
+      sprintf "%s %s must match %s." (indent ())
+        (Print.string_of_expr e2)
+        (Print.string_of_expr e1)
   | IsValidI e_opt ->
       sprintf "%s The instruction is valid%s." (indent ())
         (Print.string_of_opt " with type " Print.string_of_expr "" e_opt)
@@ -77,6 +81,12 @@ let string_of_structured_instr = function
       ^ Print.structured_string_of_expr e2
       ^ ", "
       ^ "(" ^ Print.string_of_opt "" Print.structured_string_of_expr "" eo ^ ")"
+      ^ ")"
+  | MustMatchI (e1, e2) ->
+      "MustMatchI ("
+      ^ Print.structured_string_of_expr e1
+      ^ ", "
+      ^ Print.structured_string_of_expr e2
       ^ ")"
   | IsValidI e_opt ->
       "IsValidI" ^ Print.string_of_opt " (" Print.structured_string_of_expr ")" e_opt

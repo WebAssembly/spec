@@ -24,8 +24,6 @@ Animation failed:
 == Translating to AL...
 Bubbleup semantics for br: Top of the stack is frame / label
 Bubbleup semantics for return: Top of the stack is frame / label
-prem_to_instrs: Invalid prem (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))
-prem_to_instrs: Invalid prem (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l']))
 if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
 if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
 =================
@@ -74,8 +72,8 @@ validation_of_br_table l* l'
   - |C.LABEL| must be greater than l.
 - |C.LABEL| must be greater than l'.
 - For all l in l*,
-  - Yet: Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l])
-- Yet: Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+  - C.LABEL[l] must match t*.
+- C.LABEL[l'] must match t*.
 - The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
 validation_of_return

@@ -61,6 +61,11 @@ let rec prem_to_instrs prem = match prem.it with
     | [c; e] -> [ MustValidI (c, e, None) ]
     | _ -> failwith "prem_to_instr: Invalid prem"
     )
+  | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_sub" id.it ->
+    ( match exp_to_args exp with
+    | [t1; t2] -> [ MustMatchI (t1, t2) ]
+    | _ -> failwith "prem_to_instr: Invalid prem"
+    )
   | Ast.IterPr (prem, iter) ->
     [ ForallI (iter_to_iter iter, prem_to_instrs prem) ]
   | _ ->
