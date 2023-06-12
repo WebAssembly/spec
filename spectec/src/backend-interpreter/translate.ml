@@ -161,6 +161,8 @@ let rec exp2expr exp =
           Al.ArrowE (exp2expr e1, exp2expr e2)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
           Al.ConstructE ("FUNC", List.map exp2expr exps)
+      | [ [ Ast.Atom tag ] ], [] ->
+          Al.ConstructE (tag, [])
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)

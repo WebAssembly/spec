@@ -6,7 +6,7 @@ open Util.Source
 
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
-| Ast.NeOp -> Eq
+| Ast.NeOp -> Ne
 | Ast.LtOp -> Lt
 | Ast.GtOp -> Gt
 | Ast.LeOp -> Le
@@ -51,7 +51,6 @@ let rec if_expr_to_instrs e =
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
-  | Ast.IfPr {it = Ast.CmpE (EqOp, e2, e1); _} (* TODO: Animate this in animate middleend *)
   | Ast.LetPr (e1, e2) ->
     [ LetI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->

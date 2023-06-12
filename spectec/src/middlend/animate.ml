@@ -19,12 +19,17 @@ let exp_to_args exp =
 
 (* for debugging *)
 let debug = 1 (* 1 : print msg, 2 : fail *)
-let fail prem =
-  let msg = "Animation failed:" ^ Il.Print.string_of_prem prem in
+let fail msg =
   match debug with
   | 1 -> Printf.printf "%s\n" msg
   | 2 -> failwith msg
   | _ -> ()
+let fail_prem prem =
+  let msg = "Animation failed: " ^ Il.Print.string_of_prem prem in
+  fail msg
+let fail_prems prems =
+  let msg = "Animation failed:\n  " ^ (prems |> List.map Il.Print.string_of_prem |> String.concat "\n  ") in
+  fail msg
 
 (* free_lhs_??? are equivalent to free_??? in Il.Free module,
    except k appearing in val^k is not considered free.
@@ -99,13 +104,19 @@ let is_assign env prem = match prem.it with
         in
         Either.Left (LetPr(new_lhs, new_rhs) $ prem.at)
       | _ ->
-        fail prem;
+        fail_prem prem;
         Either.Left (LetPr(lhs, rhs) $ prem.at)
     )
     else
       Either.Right prem
   | _ -> Either.Right prem
   )
+| RulePr (_, _, { it = TupE args; _ }) ->
+  let r, l = Util.Lib.List.split_last args in
+  if List.for_all (fun e -> subset (free_exp e) env) r && disjoint (free_exp l) env then
+    Either.Left prem (* TODO: Need a way to notate that this is an assignment *)
+  else
+    Either.Right prem
 | _ -> Either.Right prem
 
 (* Mutual recursive functions that iteratively select tight and assignment premises,
@@ -120,7 +131,7 @@ and select_assign prems acc env = ( match prems with
 | [] -> acc
 | _ -> let (assigns, non_assigns) = List.partition_map (is_assign env) prems in
   ( match assigns with
-  | [] -> List.iter fail non_assigns; ( acc @ prems )
+  | [] -> fail_prems non_assigns; ( acc @ prems )
   | _ ->
     let new_env = assigns |> List.map free_prem |> List.fold_left union env in
     select_tight non_assigns (acc @ assigns) new_env
@@ -130,11 +141,11 @@ and select_assign prems acc env = ( match prems with
 (* Greedy version of mutual recursive functions
    that iteratively select tight and assignment premises.
    Select only one assignment at a time that maximizes # of  assigned vars. *)
+exception InvalidGreedy
+
 let count_lhs = function
 | LetPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
-| _ -> failwith "Impossible"
-
-exception InvalidGreedy
+| _ -> raise InvalidGreedy
 
 let rec select_tight_greedy prems acc env = ( match prems with
 | [] -> acc
@@ -160,8 +171,7 @@ and select_assign_greedy prems acc env = ( match prems with
 )
 
 (* Animate the list of premises *)
-let animate_prems lhs prems =
-  let known_vars = free_lhs_exp lhs in
+let animate_prems known_vars prems =
   let reorder prems =
     (* Set --otherwise prem to be the first prem (if any) *)
     let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
@@ -174,24 +184,29 @@ let animate_prems lhs prems =
 (* Animate rule *)
 let animate_rule r = match r.it with
   | RuleD(id, _ , _, _, _) when id.it = "pure" || id.it = "read" -> r (* TODO: remove this line *)
-  | RuleD(id, binds, mixop, e, prems) -> (
-    match (mixop, e.it) with
+  | RuleD(id, binds, mixop, args, prems) -> (
+    match (mixop, args.it) with
+    (* c |- e : t *)
+    | ([ [] ; [Turnstile] ; [Colon] ; []] , TupE ([c; e; _t])) ->
+      let new_prems = animate_prems (union (free_exp c) (free_exp e)) prems in
+      RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs* ~> rhs* *)
     | ([ [] ; [Star ; SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs* *)
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems lhs prems in
-      RuleD(id, binds, mixop, e, new_prems) $ r.at
+      let new_prems = animate_prems (free_lhs_exp lhs) prems in
+      RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
 
 (* Animate def it it is a relation *)
-let animate_def d = match d.it with
+let rec animate_def d = match d.it with
   | RelD(id, mixop, t, rules) ->
     let new_rules = List.map animate_rule rules in
     RelD(id, mixop, t, new_rules) $ d.at
+  | RecD ds -> RecD (List.map animate_def ds) $ d.at
   | _ -> d
 
 (* Main entry *)

@@ -9,6 +9,17 @@ watsup 0.3 generator
 == Running pass sideconditions
 == IL Validation...
 == Running pass animate
+Animation failed:
+  Valtype_sub: `|-%<:%`(t, t')
+  if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+Animation failed:
+  (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+  Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+Animation failed: if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+Animation failed:
+  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+Animation failed:
+  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 == IL Validation...
 == Translating to AL...
 Bubbleup semantics for br: Top of the stack is frame / label

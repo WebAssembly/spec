@@ -9,6 +9,17 @@ watsup 0.3 generator
 == Running pass sideconditions
 == IL Validation...
 == Running pass animate
+Animation failed:
+  Valtype_sub: `|-%<:%`(t, t')
+  if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+Animation failed:
+  (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+  Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+Animation failed: if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+Animation failed:
+  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+Animation failed:
+  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 == IL Validation...
 == Translating to AL...
 Bubbleup semantics for br: Top of the stack is frame / label
@@ -17,6 +28,9 @@ prem_to_instrs: Invalid prem (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[
 prem_to_instrs: Invalid prem (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l']))
 if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
 if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
+=================
+ Generated prose
+=================
 validation_of_unreachable
 - The instruction is valid with type [t_1*]->[t_2*].
 
@@ -75,8 +89,8 @@ validation_of_call x
 
 validation_of_call_indirect x ft
 - |C.TABLE| must be greater than x.
-- Let (lim, FUNCREF) be C.TABLE[x].
 - Let [t_1*]->[t_2*] be ft.
+- Let (lim, FUNCREF) be C.TABLE[x].
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_const nt c_nt
@@ -99,12 +113,12 @@ validation_of_extend nt n
 - The instruction is valid with type [nt]->[nt].
 
 validation_of_reinterpret nt_1 REINTERPRET nt_2 ?()
-- nt_1 must be equal to nt_2.
-- Let $size(nt_2) be $size(nt_1).
+- nt_1 must be different with nt_2.
+- $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type [nt_2]->[nt_1].
 
 validation_of_convert in_1 CONVERT in_2 sx?
-- in_1 must be equal to in_2.
+- in_1 must be different with in_2.
 - Yet: ((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype)))
 - The instruction is valid with type [in_2]->[in_1].
 
@@ -180,7 +194,7 @@ validation_of_table.init x_1 x_2
 - |C.TABLE| must be greater than x_1.
 - |C.ELEM| must be greater than x_2.
 - Let (lim, rt) be C.TABLE[x_1].
-- Let rt be C.ELEM[x_2].
+- C.ELEM[x_2] must be equal to rt.
 - The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_elem.drop x
@@ -211,34 +225,34 @@ validation_of_memory.copy
 validation_of_memory.init x
 - |C.MEM| must be greater than 0.
 - |C.DATA| must be greater than x.
+- C.DATA[x] must be equal to OK.
 - Let mt be C.MEM[0].
-- Let YetE (MixE ([[Atom "OK"]], TupE ([]))) be C.DATA[x].
 - The instruction is valid with type [I32, I32, I32]->[I32].
 
 validation_of_data.drop x
 - |C.DATA| must be greater than x.
-- Let YetE (MixE ([[Atom "OK"]], TupE ([]))) be C.DATA[x].
+- C.DATA[x] must be equal to OK.
 - The instruction is valid with type []->[].
 
 validation_of_load nt YetE ((n, sx)?{n sx}) n_A n_O
 - |C.MEM| must be greater than 0.
 - Yet: ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-- Let mt be C.MEM[0].
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
+- Let mt be C.MEM[0].
 - If n is defind,
   - nt must be equal to in.
 - The instruction is valid with type [I32]->[nt].
 
 validation_of_store nt n? n_A n_O
 - |C.MEM| must be greater than 0.
-- Let mt be C.MEM[0].
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
+- Let mt be C.MEM[0].
 - If n is defind,
   - nt must be equal to in.
 - The instruction is valid with type [I32, nt]->[].
