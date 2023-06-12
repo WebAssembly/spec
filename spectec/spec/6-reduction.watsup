@@ -306,7 +306,7 @@ rule Step_read/memory.size:
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_memext(z, 0, 0^(n * 64 * $Ki)); (CONST I32 $(|$mem(z, 0)|/64/$Ki()))
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_memext(z, 0, 0^(n * 64 * $Ki)); (CONST I32 $(|$mem(z, 0)| / (64 * $Ki)))
 
 rule Step/memory.grow-fail:
   z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $(-1))

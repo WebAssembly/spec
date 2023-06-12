@@ -17,6 +17,21 @@ type target =
 
 let target = ref (Latex Backend_latex.Config.latex)
 
+type pass =
+  | Sub
+  | Totalize
+  | Unthe
+  | Sideconditions
+  | Animate
+
+(* This list declares the intended order of passes.
+
+Because passes have dependencies, and because some flags enable multiple
+passers (--all-passes, some targets), we do _not_ want to use the order of
+flags on the command line.
+*)
+let all_passes = [ Sub; Totalize; Unthe; Sideconditions; Animate ]
+
 let log = ref false  (* log execution steps *)
 let dst = ref false  (* patch files *)
 let dry = ref false  (* dry run for patching *)
@@ -31,12 +46,32 @@ let print_final_il = ref false
 let print_all_il = ref false
 let print_al = ref false
 
-let pass_sub = ref false
-let pass_totalize = ref false
-let pass_unthe = ref false
-let pass_sideconditions = ref false
-let pass_animate = ref false
+module PS = Set.Make(struct type t = pass let compare = compare; end)
+let selected_passes = ref (PS.empty)
+let enable_pass pass = selected_passes := PS.add pass !selected_passes
 
+(* Il pass metadata *)
+
+let pass_flag = function
+  | Sub -> "sub"
+  | Totalize -> "totalize"
+  | Unthe -> "the-elimination"
+  | Sideconditions -> "sideconditions"
+  | Animate -> "animate"
+
+let pass_desc = function
+  | Sub -> "Synthesize explicit subtype coercions"
+  | Totalize -> "Run function totalization"
+  | Unthe -> "Eliminate the ! operator in relations"
+  | Sideconditions -> "Infer side conditions"
+  | Animate -> "Animate equality conditions"
+
+let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
+  | Sub -> Middlend.Sub.transform
+  | Totalize -> Middlend.Totalize.transform
+  | Unthe -> Middlend.Unthe.transform
+  | Sideconditions -> Middlend.Sideconditions.transform
+  | Animate -> Middlend.Animate.transform
 
 (* Argument parsing *)
 
@@ -47,6 +82,9 @@ let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...]"
 
 let add_arg source =
   let args = if !dst then dsts else srcs in args := !args @ [source]
+
+let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
+  "--" ^ pass_flag pass, Arg.Unit (fun () -> enable_pass pass), " " ^ pass_desc pass
 
 let argspec = Arg.align
 [
@@ -69,12 +107,8 @@ let argspec = Arg.align
   "--print-final-il", Arg.Set print_final_il, " Print final il";
   "--print-all-il", Arg.Set print_all_il, " Print il after each step";
   "--print-al", Arg.Set print_al, " Print al";
-
-  "--sub", Arg.Set pass_sub, " Synthesize explicit subtype coercions";
-  "--totalize", Arg.Set pass_totalize, " Run function totalization";
-  "--the-elimination", Arg.Set pass_unthe, " Eliminate the ! operator in relations";
-  "--sideconditions", Arg.Set pass_sideconditions, " Infer side conditoins";
-  "--animate", Arg.Set pass_animate, " Animate equality conditions";
+] @ List.map pass_argspec all_passes @ [
+  "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
   "--root", Arg.String (fun s -> Backend_interpreter.Tester.root := s), " Set the root of watsup. Defaults to current directory";
   "--test-interpreter", Arg.String (fun s -> Backend_interpreter.Tester.test_name := s), " The name of .wast test file for interpreter";
@@ -101,59 +135,17 @@ let () =
     log "IL Validation...";
     Il.Validation.valid il;
 
-    let il = if not !pass_sub then il else
-      ( log "Subtype injection...";
-        let il = Middlend.Sub.transform il in
+    let il = List.fold_left (fun il pass ->
+      if PS.mem pass !selected_passes
+      then (
+        log ("Running pass " ^ pass_flag pass);
+        let il = run_pass pass il in
         if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
         log "IL Validation...";
         Il.Validation.valid il;
         il
-      )
-    in
-
-    let il = if not !pass_totalize then il else
-      ( log "Function totalization...";
-        let il = Middlend.Totalize.transform il in
-        if !print_all_il then
-          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-        log "IL Validation...";
-        Il.Validation.valid il;
-        il
-      )
-    in
-
-    let il = if not !pass_unthe then il else
-      ( log "Option projection eliminiation";
-        let il = Middlend.Unthe.transform il in
-        if !print_all_il then
-          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-        log "IL Validation...";
-        Il.Validation.valid il;
-        il
-      )
-    in
-
-    let il = if not !pass_sideconditions then il else
-      ( log "Side condition inference";
-        let il = Middlend.Sideconditions.transform il in
-        if !print_all_il then
-          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-        log "IL Validation...";
-        Il.Validation.valid il;
-        il
-      )
-    in
-
-    let il = if not !pass_animate then il else
-      ( log "Animate";
-        let il = Middlend.Animate.transform il in
-        if !print_all_il then
-          Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-        log "IL Validation...";
-        Il.Validation.valid il;
-        il
-      )
-    in
+      ) else il
+    ) il all_passes in
 
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
@@ -172,7 +164,7 @@ let () =
         if !warn then Backend_latex.Splice.warn env;
       );
     | Prose ->
-      if not !pass_animate then
+      if not (PS.mem Animate !selected_passes) then
         failwith "Prose generatiron requires `--animate` flag."
       else
       log "Translating to AL...";
@@ -183,7 +175,7 @@ let () =
       Backend_interpreter.Validation.valid al;*)
       print_endline (Backend_prose.Gen.gen_string il al);
     | Interpreter ->
-      if not !pass_animate then
+      if not (PS.mem Animate !selected_passes) then
         failwith "Interpreter generatiron requires `--animate` flag."
       else
       log "Translating to AL...";

@@ -385,7 +385,7 @@ let prems2instrs remain_lhs =
       match prem.it with
       | Ast.IfPr exp -> [ Al.IfI (exp2cond exp, instrs |> check_nop, []) ]
       | Ast.ElsePr -> [ Al.OtherwiseI (instrs |> check_nop) ]
-      | Ast.AssignPr (exp1, exp2) -> (
+      | Ast.LetPr (exp1, exp2) -> (
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
           match exp1.it with
           | Ast.CaseE (Ast.Atom tag, {it = Ast.TupE []; _}) ->

@@ -6,9 +6,9 @@ watsup 0.3 generator
 == Parsing...
 == Elaboration...
 == IL Validation...
-== Side condition inference
+== Running pass sideconditions
 == IL Validation...
-== Animate
+== Running pass animate
 == IL Validation...
 == Translating to AL...
 Invalid premise `Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])` to be AL instr.
@@ -558,7 +558,7 @@ execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Push (I32.CONST ((|$mem(0)| / 64) / $Ki())) to the stack.
+  a. Push (I32.CONST (|$mem(0)| / (64 · $Ki()))) to the stack.
   b. Perform $with_memext(0, 0^((n · 64) · $Ki())).
 4. Or:
   a. Push (I32.CONST -1) to the stack.

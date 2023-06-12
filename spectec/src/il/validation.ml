@@ -499,8 +499,8 @@ let rec valid_prem env prem =
     valid_expmix env mixop e (find "relation" env.rels id) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
-  | AssignPr (e1, e2) ->
-    valid_exp env (CmpE (EqOp, e1, e2) $$ no_region % (BoolT $ no_region))  (BoolT $ prem.at)
+  | LetPr (e1, e2) ->
+    valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at)
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->

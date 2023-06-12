@@ -78,9 +78,9 @@ let is_assign env prem = match prem.it with
 | IfPr e -> ( match e.it with
   | CmpE(EqOp, l, r) ->
     if subset (free_exp l) env && disjoint (free_exp r) env then
-      Either.Left (AssignPr(r, l) $ prem.at)
+      Either.Left (LetPr(r, l) $ prem.at)
     else if subset (free_exp r) env && disjoint (free_exp l) env then
-      Either.Left (AssignPr(l, r) $ prem.at)
+      Either.Left (LetPr(l, r) $ prem.at)
     else if subset (free_exp l) env || subset (free_exp r) env then (
       let lhs, rhs = if subset (free_exp l) env then r, l else l, r in
       match lhs.it with
@@ -97,10 +97,10 @@ let is_assign env prem = match prem.it with
           CallE ("inverse_of_" ^ name.it $ name.at, TupE new_args $$ no_region % type_of_exprs new_args)
           $$ (no_region % new_lhs.note)
         in
-        Either.Left (AssignPr(new_lhs, new_rhs) $ prem.at)
+        Either.Left (LetPr(new_lhs, new_rhs) $ prem.at)
       | _ ->
         fail prem;
-        Either.Left (AssignPr(lhs, rhs) $ prem.at)
+        Either.Left (LetPr(lhs, rhs) $ prem.at)
     )
     else
       Either.Right prem
@@ -127,12 +127,11 @@ and select_assign prems acc env = ( match prems with
   )
 )
 
-
 (* Greedy version of mutual recursive functions
    that iteratively select tight and assignment premises.
    Select only one assignment at a time that maximizes # of  assigned vars. *)
 let count_lhs = function
-| AssignPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
+| LetPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
 | _ -> failwith "Impossible"
 
 exception InvalidGreedy

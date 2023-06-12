@@ -70,7 +70,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else match
     (* TODO: Better animation, perhaps this should be moved as a middle end before animation path *)
     [ match e.it with
       | NatE _ -> IfPr (CmpE (EqOp, VarE id $$ no_region % template.note, e) $$ no_region % (BoolT $ no_region)) $ no_region
-      | _ -> AssignPr (e, VarE id $$ no_region % template.note) $ no_region ],
+      | _ -> LetPr (e, VarE id $$ no_region % template.note) $ no_region ],
     [id, (* TODO *) VarT ("TOP" $ no_region) $ no_region, []]
   (* one e *)
   | UnE (_, e1), UnE (_, e2)

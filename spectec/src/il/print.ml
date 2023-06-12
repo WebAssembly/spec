@@ -198,7 +198,7 @@ let rec string_of_prem prem =
   match prem.it with
   | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp {e with it = MixE (op, e)}
   | IfPr e -> "if " ^ string_of_exp e
-  | AssignPr (e1, e2) -> "where " ^ string_of_exp e1 ^ " := " ^ string_of_exp e2
+  | LetPr (e1, e2) -> "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter
@@ -521,8 +521,8 @@ let rec structured_string_of_premise prem =
         (structured_string_of_mixop mixop)
         (structured_string_of_exp exp)
   | IfPr (exp) -> sprintf "IfPr (%s)" (structured_string_of_exp exp)
-  | AssignPr (exp1, exp2) ->
-      sprintf "AssignPr (%s, %s)"
+  | LetPr (exp1, exp2) ->
+      sprintf "LetPr (%s, %s)"
         (structured_string_of_exp exp1)
         (structured_string_of_exp exp2)
   | ElsePr -> "ElsePr"
