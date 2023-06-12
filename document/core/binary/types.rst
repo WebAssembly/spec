@@ -64,7 +64,7 @@ Heap Types
      \hex{68} &\Rightarrow& \NOEXTERN \\ &&|&
      \hex{69} &\Rightarrow& \NOFUNC \\ &&|&
      \hex{6A} &\Rightarrow& \I31 \\ &&|&
-     \hex{6D} &\Rightarrow& \EQ \\ &&|&
+     \hex{6D} &\Rightarrow& \EQT \\ &&|&
      \hex{6E} &\Rightarrow& \ANY \\ &&|&
      \hex{6F} &\Rightarrow& \EXTERN \\ &&|&
      \hex{70} &\Rightarrow& \FUNC \\
