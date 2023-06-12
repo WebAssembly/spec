@@ -385,9 +385,7 @@ let rec instr s =
   | 0x14 -> call_ref (at var s)
   | 0x15 -> return_call_ref (at var s)
 
-  | 0x16 as b -> illegal s pos b
-
-  | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
