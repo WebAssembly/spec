@@ -71,7 +71,7 @@ syntax elemtype hint(desc "element type") =
 syntax datatype hint(desc "data type") =
   OK
 syntax externtype hint(desc "external type") =
-  | GLOBAL globaltype | FUNC functype | TABLE tabletype | MEMORY memtype
+  | GLOBAL globaltype | FUNC functype | TABLE tabletype | MEM memtype
 
 var lim : limits
 var ft : functype
@@ -203,11 +203,11 @@ syntax start hint(desc "start function") =
   START funcidx
 
 syntax externuse hint(desc "external use") =
-  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEMORY memidx
+  | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
 syntax export hint(desc "export") =
   EXPORT name externuse
 syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE import* func* global* table* mem* elem* data* start* export*
+  MODULE import* func* global* table* mem* elem* data* start? export*

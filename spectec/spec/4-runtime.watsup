@@ -46,7 +46,8 @@ def $default_(I32) = (CONST I32 0)
 def $default_(I64) = (CONST I64 0)
 def $default_(F32) = (CONST F32 0)
 def $default_(F64) = (CONST F64 0)
-def $default_(rt) = (REF.NULL rt)
+def $default_(FUNCREF) = (REF.NULL FUNCREF)
+def $default_(EXTERNREF) = (REF.NULL EXTERNREF) ;; TODO: All reference types should be caught by one pattern.
 
 
 ;; Configurations

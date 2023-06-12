@@ -51,7 +51,7 @@ rule Externtype_ok/table:
   -- Tabletype_ok: |- tabletype : OK
 
 rule Externtype_ok/mem:
-  |- MEMORY memtype : OK
+  |- MEM memtype : OK
   -- Memtype_ok: |- memtype : OK
 
 
@@ -113,7 +113,7 @@ rule Externtype_sub/table:
   -- Tabletype_sub: |- tt_1 <: tt_2
 
 rule Externtype_sub/mem:
-  |- MEMORY mt_1 <: MEMORY mt_2
+  |- MEM mt_1 <: MEM mt_2
   -- Memtype_sub: |- mt_1 <: mt_2
 
 
@@ -477,14 +477,14 @@ rule Externuse_ok/table:
   -- if C.TABLE[x] = tt
 
 rule Externuse_ok/mem:
-  C |- MEMORY x : MEMORY mt
+  C |- MEM x : MEM mt
   -- if C.MEM[x] = mt
 
 
 relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
-  |- MODULE import* func* global* table* mem* elem* data^n start* export* : OK
+  |- MODULE import* func* global* table* mem* elem* data^n start? export* : OK
   ;; TODO: incremental contexts for globals
   -- if C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
 
@@ -495,8 +495,7 @@ rule Module_ok:
 
   -- (Elem_ok: C |- elem : rt)*
   -- (Data_ok: C |- data : OK)^n
-  -- (Start_ok: C |- start : OK)*
+  -- (Start_ok: C |- start : OK)?
 
   -- if |mem*| <= 1
-  -- if |start*| <= 1
   ;; -- TODO: disjoint export names
