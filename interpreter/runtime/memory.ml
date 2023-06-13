@@ -63,10 +63,12 @@ let grow mem delta =
   mem.content <- after
 
 let load_byte mem a =
-  try Array1_64.get mem.content a with Invalid_argument _ -> raise Bounds
+  if a < 0L || a >= Array1_64.dim mem.content then raise Bounds;
+  Array1_64.get mem.content a
 
 let store_byte mem a b =
-  try Array1_64.set mem.content a b with Invalid_argument _ -> raise Bounds
+  if a < 0L || a >= Array1_64.dim mem.content then raise Bounds;
+  Array1_64.set mem.content a b
 
 let load_bytes mem a n =
   let buf = Buffer.create n in
