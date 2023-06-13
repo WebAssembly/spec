@@ -121,6 +121,13 @@ let rec infer_else instrs =
       | _ -> new_i :: il)
     instrs []
 
+let if_not_defined =
+  let id x = x in
+  let transpile_cond = function
+  | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
+  | c -> c in
+  Walk.walk_instr (id, transpile_cond, id)
+
 let rec swap_if instr =
   let new_ = List.map swap_if in
   match instr with
@@ -155,7 +162,7 @@ let rec unify_if_tail instr =
   | _ -> [ instr ]
 
 let enhance_readability instrs =
-  instrs |> unify_if |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
+  instrs |> unify_if |> List.map if_not_defined |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
 
 (* Walker-based Translpiler *)
 

@@ -649,12 +649,12 @@ execution_of_table.init x y
 execution_of_load nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If _x0 is ?(), then:
+3. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
-4. If _x0 is defined, then:
+4. Else:
   a. Let ?([n, sx]) be _x0.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
@@ -767,12 +767,12 @@ execution_of_store nt _x0 n_A n_O
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If _x0 is ?(), then:
+5. If _x0 is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
-6. If _x0 is defined, then:
+6. Else:
   a. Let ?(n) be _x0.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
