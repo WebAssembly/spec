@@ -1160,7 +1160,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. If |v| is an [=Exported GC Object=],
             1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
             1. Let |objectkind| be the value of |v|'s \[[ObjectKind]] internal slot.
-            1. If |objecttype| is "array",
+            1. If |objectkind| is "array",
                 1. If [=array=] does not match |heaptype|,
                     1. Throw a {{TypeError}}.
                 1. Return [=ref.array=] |objectaddr|.
