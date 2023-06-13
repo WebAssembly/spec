@@ -162,7 +162,7 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~72{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
      \hex{FB}~~73{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
      \hex{FB}~~112{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
-     \hex{FB}~~113{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\ &&|&
+     \hex{FB}~~113{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\
    \end{array}
 
 

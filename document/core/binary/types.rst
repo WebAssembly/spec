@@ -64,7 +64,7 @@ Heap Types
      \hex{68} &\Rightarrow& \NOEXTERN \\ &&|&
      \hex{69} &\Rightarrow& \NOFUNC \\ &&|&
      \hex{6A} &\Rightarrow& \I31 \\ &&|&
-     \hex{6D} &\Rightarrow& \EQ \\ &&|&
+     \hex{6D} &\Rightarrow& \EQT \\ &&|&
      \hex{6E} &\Rightarrow& \ANY \\ &&|&
      \hex{6F} &\Rightarrow& \EXTERN \\ &&|&
      \hex{70} &\Rightarrow& \FUNC \\
@@ -204,10 +204,10 @@ Compound Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{compound type} & \Bcomptype &::=&
-     \hex{5E}~~\X{st}{:}\Bstructtype
-       &\Rightarrow& \TARRAY~\X{st} \\ &&|&
-     \hex{5F}~~\X{at}{:}\Barraytype
-       &\Rightarrow& \TSTRUCT~\X{at} \\ &&|&
+     \hex{5E}~~\X{at}{:}\Barraytype
+       &\Rightarrow& \TARRAY~\X{at} \\ &&|&
+     \hex{5F}~~\X{st}{:}\Bstructtype
+       &\Rightarrow& \TSTRUCT~\X{st} \\ &&|&
      \hex{60}~~\X{ft}{:}\Bfunctype
        &\Rightarrow& \TFUNC~\X{ft} \\
    \end{array}
@@ -215,6 +215,7 @@ Compound Types
 
 .. index:: recursive type, sub type, compound type
    pair: binary format; recursive type
+   pair: binary format; sub type
 .. _binary-rectype:
 .. _binary-subtype:
 
