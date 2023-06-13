@@ -230,7 +230,7 @@ This function is bijective, and hence invertible.
 
 
 .. index:: Boolean
-.. _aux-bool:
+.. _aux-tobool:
 
 Boolean Interpretation
 ......................
@@ -239,8 +239,8 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bool(C) &=& 1 & (\iff C) \\
-   \bool(C) &=& 0 & (\otherwise) \\
+   \tobool(C) &=& 1 & (\iff C) \\
+   \tobool(C) &=& 0 & (\otherwise) \\
    \end{array}
 
 
@@ -557,7 +557,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ieqz_N(i) &=& \bool(i = 0)
+   \ieqz_N(i) &=& \tobool(i = 0)
    \end{array}
 
 
@@ -570,7 +570,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ieq_N(i_1, i_2) &=& \bool(i_1 = i_2)
+   \ieq_N(i_1, i_2) &=& \tobool(i_1 = i_2)
    \end{array}
 
 
@@ -583,7 +583,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ine_N(i_1, i_2) &=& \bool(i_1 \neq i_2)
+   \ine_N(i_1, i_2) &=& \tobool(i_1 \neq i_2)
    \end{array}
 
 
@@ -596,7 +596,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iltu_N(i_1, i_2) &=& \bool(i_1 < i_2)
+   \iltu_N(i_1, i_2) &=& \tobool(i_1 < i_2)
    \end{array}
 
 
@@ -613,7 +613,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ilts_N(i_1, i_2) &=& \bool(\signed_N(i_1) < \signed_N(i_2))
+   \ilts_N(i_1, i_2) &=& \tobool(\signed_N(i_1) < \signed_N(i_2))
    \end{array}
 
 
@@ -626,7 +626,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \igtu_N(i_1, i_2) &=& \bool(i_1 > i_2)
+   \igtu_N(i_1, i_2) &=& \tobool(i_1 > i_2)
    \end{array}
 
 
@@ -643,7 +643,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \igts_N(i_1, i_2) &=& \bool(\signed_N(i_1) > \signed_N(i_2))
+   \igts_N(i_1, i_2) &=& \tobool(\signed_N(i_1) > \signed_N(i_2))
    \end{array}
 
 
@@ -656,7 +656,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \ileu_N(i_1, i_2) &=& \bool(i_1 \leq i_2)
+   \ileu_N(i_1, i_2) &=& \tobool(i_1 \leq i_2)
    \end{array}
 
 
@@ -673,7 +673,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iles_N(i_1, i_2) &=& \bool(\signed_N(i_1) \leq \signed_N(i_2))
+   \iles_N(i_1, i_2) &=& \tobool(\signed_N(i_1) \leq \signed_N(i_2))
    \end{array}
 
 
@@ -686,7 +686,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \igeu_N(i_1, i_2) &=& \bool(i_1 \geq i_2)
+   \igeu_N(i_1, i_2) &=& \tobool(i_1 \geq i_2)
    \end{array}
 
 
@@ -703,7 +703,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{@{}lcll}
-   \iges_N(i_1, i_2) &=& \bool(\signed_N(i_1) \geq \signed_N(i_2))
+   \iges_N(i_1, i_2) &=& \tobool(\signed_N(i_1) \geq \signed_N(i_2))
    \end{array}
 
 
@@ -1501,7 +1501,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \feq_N(\pm \NAN(n), z_2) &=& 0 \\
    \feq_N(z_1, \pm \NAN(n)) &=& 0 \\
    \feq_N(\pm 0, \mp 0) &=& 1 \\
-   \feq_N(z_1, z_2) &=& \bool(z_1 = z_2) \\
+   \feq_N(z_1, z_2) &=& \tobool(z_1 = z_2) \\
    \end{array}
 
 
@@ -1523,7 +1523,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fne_N(\pm \NAN(n), z_2) &=& 1 \\
    \fne_N(z_1, \pm \NAN(n)) &=& 1 \\
    \fne_N(\pm 0, \mp 0) &=& 0 \\
-   \fne_N(z_1, z_2) &=& \bool(z_1 \neq z_2) \\
+   \fne_N(z_1, z_2) &=& \tobool(z_1 \neq z_2) \\
    \end{array}
 
 
@@ -1560,7 +1560,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \flt_N(z_1, + \infty) &=& 1 \\
    \flt_N(z_1, - \infty) &=& 0 \\
    \flt_N(\pm 0, \mp 0) &=& 0 \\
-   \flt_N(z_1, z_2) &=& \bool(z_1 < z_2) \\
+   \flt_N(z_1, z_2) &=& \tobool(z_1 < z_2) \\
    \end{array}
 
 
@@ -1597,7 +1597,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fgt_N(z_1, + \infty) &=& 0 \\
    \fgt_N(z_1, - \infty) &=& 1 \\
    \fgt_N(\pm 0, \mp 0) &=& 0 \\
-   \fgt_N(z_1, z_2) &=& \bool(z_1 > z_2) \\
+   \fgt_N(z_1, z_2) &=& \tobool(z_1 > z_2) \\
    \end{array}
 
 
@@ -1634,7 +1634,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fle_N(z_1, + \infty) &=& 1 \\
    \fle_N(z_1, - \infty) &=& 0 \\
    \fle_N(\pm 0, \mp 0) &=& 1 \\
-   \fle_N(z_1, z_2) &=& \bool(z_1 \leq z_2) \\
+   \fle_N(z_1, z_2) &=& \tobool(z_1 \leq z_2) \\
    \end{array}
 
 
@@ -1671,7 +1671,7 @@ This non-deterministic result is expressed by the following auxiliary function p
    \fge_N(z_1, + \infty) &=& 0 \\
    \fge_N(z_1, - \infty) &=& 1 \\
    \fge_N(\pm 0, \mp 0) &=& 1 \\
-   \fge_N(z_1, z_2) &=& \bool(z_1 \geq z_2) \\
+   \fge_N(z_1, z_2) &=& \tobool(z_1 \geq z_2) \\
    \end{array}
 
 

@@ -1141,7 +1141,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
 
-4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
+4. Let :math:`i` be the result of computing :math:`\tobool(\bigwedge(i_1 \neq 0)^\ast)`.
 
 5. Push the value :math:`\I32.\CONST~i` onto the stack.
 
@@ -1154,7 +1154,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i_1^\ast = \lanes_{\shape}(c) \\
-     \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast))
+     \wedge & i = \tobool(\bigwedge(i_1 \neq 0)^\ast))
      \end{array}
    \end{array}
 
