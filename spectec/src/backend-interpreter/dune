@@ -1,6 +1,6 @@
 (library
   (name backend_interpreter)
-  (libraries reference_interpreter util il el str)
+  (libraries reference_interpreter util il el str middlend)
   (modules
     translate
     transpile

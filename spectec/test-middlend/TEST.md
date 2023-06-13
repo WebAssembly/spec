@@ -1585,12 +1585,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) (ref <: admininstr) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102
@@ -3312,12 +3312,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102
@@ -5041,12 +5041,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102
@@ -6785,12 +6785,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102
@@ -8589,12 +8589,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102
@@ -9572,8 +9572,8 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
   rule _ {C : context, expr : expr, gt : globaltype, t : valtype}:
     `%|-%:%`(C, GLOBAL(gt, expr), gt)
     -- Globaltype_ok: `|-%:OK`(gt)
-    -- where `MUT%?%`(()?{}, t) = gt
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
+    -- where `MUT%?%`(()?{}, t) = gt
 
 ;; 3-typing.watsup:399.1-399.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
@@ -10410,12 +10410,12 @@ relation Step: `%~>%`(config, config)
 
   ;; 6-reduction.watsup:189.1-191.28
   rule table.set-trap {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
     -- if (i >= |$table(z, x)|)
 
   ;; 6-reduction.watsup:193.1-195.27
   rule table.set-val {i : nat, ref : ref, x : idx, z : state}:
-    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.GET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
+    `%~>%`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) $admininstr_ref(ref) TABLE.SET_admininstr(x)]), `%;%*`($with_table(z, x, i, ref), []))
     -- if (i < |$table(z, x)|)
 
   ;; 6-reduction.watsup:203.1-204.102

@@ -9,6 +9,67 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
+(** Wrap with no region and no type **)
+let wrap it = it $$ no_region % (VarT ("TOP" $ no_region) $ no_region)
+
+(** Walker-based transformer **)
+let rec transform_expr f e =
+  let new_ = transform_expr f in
+  { e with it = match (f e).it with
+    | VarE _
+    | BoolE _
+    | NatE _
+    | TextE _ -> e.it
+    | UnE (op, e1) -> UnE (op, new_ e1)
+    | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
+    | CmpE (op, e1, e2) -> CmpE (op, new_ e1, new_ e2)
+    | IdxE (e1, e2) -> IdxE (new_ e1, new_ e2)
+    | SliceE (e1, e2, e3) -> SliceE (new_ e1, new_ e2, new_ e3)
+    | UpdE (e1, p, e2) -> UpdE (new_ e1, p, new_ e2)
+    | ExtE (e1, p, e2) -> ExtE (new_ e1, p, new_ e2)
+    | StrE efs -> StrE efs (* TODO efs *)
+    | DotE (e1, atom) -> DotE (new_ e1, atom)
+    | CompE (e1, e2) -> CompE (new_ e1, new_ e2)
+    | LenE e1 -> LenE (new_ e1)
+    | TupE es -> TupE ((List.map new_) es)
+    | MixE (op, e1) -> MixE (op, new_ e1)
+    | CallE (id, e1) -> CallE (id, new_ e1)
+    | IterE (e1, iter) -> IterE (new_ e1, iter) (* TODO iter *)
+    | OptE eo -> OptE ((Option.map new_) eo)
+    | TheE e1 -> TheE (new_ e1)
+    | ListE es -> ListE ((List.map new_) es)
+    | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
+    | CaseE (atom, e1) -> CaseE (atom, new_ e1)
+    | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2) }
+
+(** Change right_assoc cat into left_assoc cat **)
+let to_left_assoc_cat =
+  let rec rotate_ccw e =
+    begin match e.it with
+    | CatE (l, r) ->
+      begin match r.it with
+      | CatE (rl, rr) ->
+          { e with it = CatE (CatE (l, rl) |> wrap, rr) } |> rotate_ccw
+      | _ -> e
+      end
+    | _ -> e
+    end in
+  transform_expr rotate_ccw
+
+(** Change left_assoc cat into right_assoc cat **)
+let to_right_assoc_cat =
+  let rec rotate_cw e =
+    begin match e.it with
+    | CatE (l, r) ->
+      begin match l.it with
+      | CatE (ll, lr) ->
+          { e with it = CatE (ll, CatE (lr, r) |> wrap) } |> rotate_cw
+      | _ -> e
+      end
+    | _ -> e
+    end in
+  transform_expr rotate_cw
+
 (** Unifying lhs **)
 let unified_prefix = "_x"
 let _unified_id = ref 0
@@ -67,10 +128,7 @@ let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if eq_exp template e then [], [] else match template.it, e.it with
   | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it ->
-    (* TODO: Better animation, perhaps this should be moved as a middle end before animation path *)
-    [ match e.it with
-      | NatE _ -> IfPr (CmpE (EqOp, VarE id $$ no_region % template.note, e) $$ no_region % (BoolT $ no_region)) $ no_region
-      | _ -> LetPr (e, VarE id $$ no_region % template.note) $ no_region ],
+    [ IfPr (CmpE (EqOp, VarE id $$ no_region % template.note, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
     [id, (* TODO *) VarT ("TOP" $ no_region) $ no_region, []]
   (* one e *)
   | UnE (_, e1), UnE (_, e2)
@@ -103,21 +161,28 @@ let rec collect_unified template e = if eq_exp template e then [], [] else match
 
 let apply_template_to_red_group template (lhs, rhs, prems, binds) =
   let (new_prems, new_binds) = collect_unified template lhs in
-  (template, rhs, new_prems @ prems, binds @ new_binds)
+  (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
+  let animated_prems = Middlend.Animate.animate_prems false (Il.Free.free_exp template) new_prems in
+  (template, rhs, animated_prems @ prems, binds @ new_binds)
 
-let unify_lhs (reduction_name, reduction_group) =
+let unify_lhs' reduction_group =
   init_unified_id();
   let lhs_group = List.map (function (lhs, _, _, _) -> lhs) reduction_group in
   let hd = List.hd lhs_group in
   let tl = List.tl lhs_group in
   let template = List.fold_left overlap hd tl in
-  let new_reduction_group = List.map (apply_template_to_red_group template) reduction_group in
-  (reduction_name, new_reduction_group)
+  List.map (apply_template_to_red_group template) reduction_group
+
+let unify_lhs (reduction_name, reduction_group) =
+  let to_left_assoc (lhs, rhs, prems, bind) = (to_left_assoc_cat lhs), rhs, prems, bind in
+  let to_right_assoc (lhs, rhs, prems, bind) = (to_right_assoc_cat lhs), rhs, prems, bind in
+  reduction_name, (reduction_group |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
 
 let apply_template_to_def template def =
   let DefD (binds, lhs, rhs, prems) = def.it in
   let (new_prems, new_binds) = collect_unified template lhs in
-  DefD (binds @ new_binds, template, rhs, new_prems @ prems) $ no_region
+  let animated_prems = Middlend.Animate.animate_prems false (Il.Free.free_exp template) new_prems in
+  DefD (binds @ new_binds, template, rhs, animated_prems @ prems) $ no_region
 
 let unify_defs defs =
   init_unified_id();

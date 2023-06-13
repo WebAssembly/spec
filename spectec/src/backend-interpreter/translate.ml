@@ -12,6 +12,15 @@ let gen_fail_msg_of_exp exp =
 let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem |> sprintf "Invalid premise `%s` to be AL %s."
 
+(* transform z; e into e *)
+let drop_state e = match e.it with
+| Ast.MixE (* z; e *)
+    ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
+      { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; e' ]; _ } )
+  -> e'
+| _ -> e
+
+(* Ast.exp -> Ast.exp list *)
 let rec flatten e =
   match e.it with
   | Ast.CatE (e1, e2) -> flatten e1 @ flatten e2
@@ -427,6 +436,15 @@ let prems2instrs remain_lhs =
                   ( Al.IsDefinedC rhs,
                     Al.LetI (exp2expr exp1, rhs) :: instrs',
                     [] );
+               ]
+          | Ast.BinE (Ast.AddOp, l, r) ->
+              let rhs = exp2expr exp2 in
+              let sub = exp2expr r in
+              [
+                Al.IfI
+                  ( Al.CompareC (Al.Ge, rhs, sub),
+                    Al.LetI (exp2expr l, Al.BinopE (Al.Sub, rhs, sub)) :: instrs',
+                    [] );
               ]
           | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs')
       | _ ->
@@ -449,51 +467,77 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
+(* TODO: Perhaps this should be tail recursion *)
+let rec extract_winstr name stack =
+  match stack with
+  | [] ->
+    print_endline ("Failed to extract the instruction " ^ name ^ " from the stack.");
+    let wrap e = e $$ no_region % (Ast.VarT ("TOP" $ no_region) $ no_region) in
+    [None, ([], [])], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.ListE []) |> wrap) |> wrap
+  | hd :: tl ->
+    match hd.it with
+    | Ast.CaseE (Ast.Atom name', _)
+      when name = (String.lowercase_ascii name')
+      || name ^ "_"  = (String.lowercase_ascii name') ->
+      [None, (tl, [])], hd
+    (* Assumption: The target winstr is inside the first list-argument of this CaseE *)
+    | Ast.CaseE (_, {it = Ast.TupE args; _}) ->
+      let is_list e = match e.it with Ast.CatE _ | Ast.ListE _ -> true | _ -> false in
+      let list_arg = List.find is_list args in
+      let inner_stack = list_arg |> flatten |> List.rev in
+      let context, winstr = extract_winstr name inner_stack in
+      let new_context = (Some hd, (tl, [])) :: context in
+      new_context, winstr
+    | _ ->
+      let context, winstr = extract_winstr name tl in
+      let (c, (vs, is)), inners = Util.Lib.List.split_hd context in
+      let new_context = (c, (vs, hd :: is)) :: inners in
+      new_context, winstr
+
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Al.Algo` *)
 let reduction_group2algo (instr_name, reduction_group) =
   let (lhs, _, _, tenv) = List.hd reduction_group in
+  let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
+  let context, winstr = extract_winstr instr_name lhs_stack in
+  let instrs = match context with
+    | [ None, (_, _) ] ->
+      let pop_instrs, remain = lhs2pop lhs_stack in
 
-  let lhs_stack =
-    (match lhs.it with
-    (* z; lhs *)
-    | Ast.MixE
-        ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
-          { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; exp ]; _ } )
-      ->
-        exp
-    | _ -> lhs)
-    |> flatten |> List.rev
-  in
+      let instrs = match reduction_group with
+      (* no premise: either *)
+      | [ (lhs1, rhs1, [], _); (lhs2, rhs2, [], _) ]
+        when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
+          assert (List.length remain = 0);
+          let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
+          let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
+          [ Al.EitherI (rhs_instrs1, rhs_instrs2) ]
+      | _ ->
+          let blocks = List.map (reduction2instrs remain) reduction_group in
+          List.fold_right Transpile.merge_otherwise blocks [] in
 
-  let pop_instrs, remain = lhs2pop lhs_stack in
-
-  let instrs =
-    match reduction_group with
-    (* no premise: either *)
-    | [ (lhs1, rhs1, [], _); (lhs2, rhs2, [], _) ]
-      when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
-        assert (List.length remain = 0);
-        let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
-        let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
-        [ Al.EitherI (rhs_instrs1, rhs_instrs2) ]
+      pop_instrs @ instrs
     | _ ->
-        let blocks = List.map (reduction2instrs remain) reduction_group in
-        List.fold_right Transpile.merge_otherwise blocks []
-  in
+      [ YetI "TODO" ] in
 
   (* name *)
   let name = "execution_of_" ^ instr_name in
   (* params *)
-  let params =
-    if instr_name = "br" || instr_name = "return" then (
-      sprintf "Bubbleup semantics for %s: Top of the stack is frame / label"
-        instr_name
-      |> print_endline;
-      [])
-    else get_params (List.hd lhs_stack) |> List.map (find_type tenv) in
+  let params = get_params winstr |> List.map (find_type tenv) in
   (* body *)
-  let body = pop_instrs @ instrs |> check_nop |> Transpile.enhance_readability in
+  let body = instrs |> check_nop |> Transpile.enhance_readability in
+
+  (* Debug
+  if instr_name = "br" then (
+    print_endline (Il.Print.string_of_exp lhs);
+    List.iter (fun (_, rhs, prems, _) ->
+      print_endline "";
+      print_endline (Il.Print.string_of_exp rhs);
+      prems |> List.map (Il.Print.string_of_prem) |> List.iter print_endline;
+      print_endline "";
+    ) reduction_group
+  );
+  *)
 
   (* Algo *)
   Al.Algo (name, params, body)

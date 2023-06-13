@@ -22,8 +22,8 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 == IL Validation...
 == Translating to AL...
-Bubbleup semantics for br: Top of the stack is frame / label
-Bubbleup semantics for return: Top of the stack is frame / label
+Animation failed: if (_x1 = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
+Failed to extract the instruction return from the stack.
 if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
 if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
 =================
@@ -262,23 +262,25 @@ min _x0 _x1
 1. If _x0 is 0, then:
   a. Let j be _x1.
   b. Return 0.
-2. Let i be _x0.
-3. If _x1 is 0, then:
-  a. Return 0.
-4. Let (i + 1) be _x0.
-5. Let (j + 1) be _x1.
-6. Return $min(i, j).
+2. If _x1 is 0, then:
+  a. Let i be _x0.
+  b. Return 0.
+3. If _x1 ≥ 1, then:
+  a. Let j be (_x1 - 1).
+  b. If _x0 ≥ 1, then:
+    1) Let i be (_x0 - 1).
+    2) Return $min(i, j).
 
 size _x0
-1. If _x0 is of the case I32, then:
+1. If _x0 is I32, then:
   a. Return 32.
-2. If _x0 is of the case I64, then:
+2. If _x0 is I64, then:
   a. Return 64.
-3. If _x0 is of the case F32, then:
+3. If _x0 is F32, then:
   a. Return 32.
-4. If _x0 is of the case F64, then:
+4. If _x0 is F64, then:
   a. Return 64.
-5. If _x0 is of the case V128, then:
+5. If _x0 is V128, then:
   a. Return 128.
 
 test_sub_ATOM_22 n_3_ATOM_y
@@ -288,17 +290,17 @@ curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
 default_ _x0
-1. If _x0 is of the case I32, then:
+1. If _x0 is I32, then:
   a. Return (I32.CONST 0).
-2. If _x0 is of the case I64, then:
+2. If _x0 is I64, then:
   a. Return (I64.CONST 0).
-3. If _x0 is of the case F32, then:
+3. If _x0 is F32, then:
   a. Return (F32.CONST 0).
-4. If _x0 is of the case F64, then:
+4. If _x0 is F64, then:
   a. Return (F64.CONST 0).
-5. If _x0 is of the case FUNCREF, then:
+5. If _x0 is FUNCREF, then:
   a. Return (REF.NULL FUNCREF).
-6. If _x0 is of the case EXTERNREF, then:
+6. If _x0 is EXTERNREF, then:
   a. Return (REF.NULL EXTERNREF).
 
 funcaddr
@@ -425,21 +427,8 @@ execution_of_label n instr val
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
-execution_of_br
-1. Pop _x2 ++ _x1 ++ _x0 from the stack.
-2. Assert: Due to validation, the label L is now on the top of the stack.
-3. Pop the label from the stack.
-4. Let val'* be _x2.
-5. Let val^n be _x1.
-6. Let [(BR 0)] ++ instr* be _x0.
-7. Push val^n to the stack.
-8. Push instr'* to the stack.
-9. Let val* be _x2.
-10. If |_x1| is 1, then:
-  a. Let [(BR (l + 1))] be _x1.
-  b. Let instr* be _x0.
-  c. Push val* to the stack.
-  d. Execute (BR l).
+execution_of_br _x0
+1. YetI: TODO.
 
 execution_of_br_if l
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -464,7 +453,7 @@ execution_of_frame n f val
 6. Pop the frame from the stack.
 7. Push val^n to the stack.
 
-execution_of_return
+execution_of_return []
 1. If _x0 is of the case FRAME_, then:
   a. Let (FRAME_ n f val'* ++ val^n ++ [RETURN] ++ instr*) be _x0.
   b. Push val^n to the stack.
@@ -660,12 +649,12 @@ execution_of_table.init x y
 execution_of_load nt _x0 n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If _x0 is not defined, then:
+3. If _x0 is ?(), then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
-4. Else:
+4. If _x0 is defined, then:
   a. Let ?([n, sx]) be _x0.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
@@ -778,12 +767,12 @@ execution_of_store nt _x0 n_A n_O
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If _x0 is not defined, then:
+5. If _x0 is ?(), then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
-6. Else:
+6. If _x0 is defined, then:
   a. Let ?(n) be _x0.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.

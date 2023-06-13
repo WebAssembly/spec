@@ -17,6 +17,18 @@ let exp_to_args exp =
   | TupE el -> el
   | _ -> [ exp ]
 
+let is_simpler_lhs e1 e2 = match e1.it, e2.it with
+| (VarE _ | IterE _), (VarE _ | IterE _) -> 0
+| (VarE _ | IterE _), _ -> -1
+| _, (VarE _ | IterE _) -> 1
+| _, _ -> 0
+
+let is_simpler_assign p1 p2 = match p1.it, p2.it with
+| LetPr (lhs1, _), LetPr (lhs2, _) -> is_simpler_lhs lhs1 lhs2
+| LetPr _, _ -> -1
+| _, LetPr _ -> 1
+| _, _ -> 0
+
 (* for debugging *)
 let debug = 1 (* 1 : print msg, 2 : fail *)
 let fail msg =
@@ -134,7 +146,10 @@ and select_assign prems acc env = ( match prems with
   | [] -> fail_prems non_assigns; ( acc @ prems )
   | _ ->
     let new_env = assigns |> List.map free_prem |> List.fold_left union env in
-    select_tight non_assigns (acc @ assigns) new_env
+    (* Sort assigns, so that assignments with complex lhs
+       (which are more likey to also work as condition) comes first *)
+    let sorted_assigns = List.sort is_simpler_assign assigns |> List.rev in
+    select_tight non_assigns (acc @ sorted_assigns) new_env
   )
 )
 
@@ -171,13 +186,16 @@ and select_assign_greedy prems acc env = ( match prems with
 )
 
 (* Animate the list of premises *)
-let animate_prems known_vars prems =
+let animate_prems is_greedy known_vars prems =
   let reorder prems =
     (* Set --otherwise prem to be the first prem (if any) *)
     let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
-    (* Try greedy *)
-    try select_tight_greedy non_other other known_vars
-    with InvalidGreedy -> select_tight non_other other known_vars
+    if is_greedy then
+      (* Try greedy *)
+      try select_tight_greedy non_other other known_vars
+      with InvalidGreedy -> select_tight non_other other known_vars
+    else
+      select_tight non_other other known_vars
   in
   reorder prems
 
@@ -188,7 +206,7 @@ let animate_rule r = match r.it with
     match (mixop, args.it) with
     (* c |- e : t *)
     | ([ [] ; [Turnstile] ; [Colon] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems (union (free_exp c) (free_exp e)) prems in
+      let new_prems = animate_prems true (union (free_exp c) (free_exp e)) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs* ~> rhs* *)
     | ([ [] ; [Star ; SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
@@ -196,7 +214,7 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems (free_lhs_exp lhs) prems in
+      let new_prems = animate_prems true (free_lhs_exp lhs) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
