@@ -26,6 +26,7 @@ Control Instructions
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
 .. _binary-blocktype:
+.. _binary-castflags:
 .. _binary-nop:
 .. _binary-unreachable:
 .. _binary-block:
@@ -36,6 +37,8 @@ Control Instructions
 .. _binary-br_table:
 .. _binary-br_on_null:
 .. _binary-br_on_non_null:
+.. _binary-br_on_cast:
+.. _binary-br_on_cast_fail:
 .. _binary-return:
 .. _binary-call:
 .. _binary-call_ref:
@@ -44,11 +47,11 @@ Control Instructions
 .. _binary-return_call_indirect:
 
 .. math::
-   \begin{array}{llcllll}
+   \begin{array}{@{}llcllll}
    \production{block type} & \Bblocktype &::=&
      \hex{40} &\Rightarrow& \epsilon \\ &&|&
      t{:}\Bvaltype &\Rightarrow& t \\ &&|&
-     x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
+     x{:}\Bs33 &\Rightarrow& x \qquad (\iff x \geq 0) \\
    \production{instruction} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
@@ -58,7 +61,7 @@ Control Instructions
        &\Rightarrow& \LOOP~\X{bt}~\X{in}^\ast~\END \\ &&|&
      \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}^\ast~\ELSE~\epsilon~\END \\ &&|&
-     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
+     \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast\\&&&~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
@@ -73,7 +76,14 @@ Control Instructions
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
      \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
-     \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\
+     \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
+     \hex{FB}~~78{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
+     \hex{FB}~~79{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
+   \production{cast flags} & \Bcastflags &::=&
+     0{:}\Bu8 &\Rightarrow& (\epsilon, \epsilon) \\ &&|&
+     1{:}\Bu8 &\Rightarrow& (\NULL, \epsilon) \\ &&|&
+     2{:}\Bu8 &\Rightarrow& (\epsilon, \NULL) \\ &&|&
+     3{:}\Bu8 &\Rightarrow& (\NULL, \NULL) \\
    \end{array}
 
 .. note::
@@ -90,12 +100,35 @@ Control Instructions
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Reference instructions <syntax-instr-ref>` are represented by single byte codes.
+Generic :ref:`reference instructions <syntax-instr-ref>` are represented by single byte codes, others use prefixes and type operands.
 
 .. _binary-ref.null:
 .. _binary-ref.func:
 .. _binary-ref.is_null:
 .. _binary-ref.as_non_null:
+.. _binary-struct.new:
+.. _binary-struct.new_default:
+.. _binary-struct.get:
+.. _binary-struct.get_s:
+.. _binary-struct.get_u:
+.. _binary-struct.set:
+.. _binary-array.new:
+.. _binary-array.new_default:
+.. _binary-array.new_fixed:
+.. _binary-array.new_elem:
+.. _binary-array.new_data:
+.. _binary-array.get:
+.. _binary-array.get_s:
+.. _binary-array.get_u:
+.. _binary-array.set:
+.. _binary-array.len:
+.. _binary-i31.new:
+.. _binary-i31.get_s:
+.. _binary-i31.get_u:
+.. _binary-ref.test:
+.. _binary-ref.cast:
+.. _binary-extern.internalize:
+.. _binary-extern.externalize:
 
 .. math::
    \begin{array}{llclll}
@@ -103,8 +136,35 @@ Reference Instructions
      \hex{D0}~~t{:}\Bheaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
-     \hex{D3} &\Rightarrow& \REFASNONNULL \\
+     \hex{D3} &\Rightarrow& \REFASNONNULL \\ &&|&
+     \hex{D5} &\Rightarrow& \REFEQ \\ &&|&
+     \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGET~x~i \\ &&|&
+     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
+     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
+     \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \hex{FB}~~17{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \hex{FB}~~18{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~19{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \hex{FB}~~20{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \hex{FB}~~21{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \hex{FB}~~22{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \hex{FB}~~23{:}\Bu32 &\Rightarrow& \ARRAYLEN \\ &&|&
+     \hex{FB}~~25{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \hex{FB}~~27{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \hex{FB}~~28{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \hex{FB}~~32{:}\Bu32 &\Rightarrow& \I31NEW \\ &&|&
+     \hex{FB}~~33{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
+     \hex{FB}~~34{:}\Bu32 &\Rightarrow& \I31GETU \\ &&|&
+     \hex{FB}~~64{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~65{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~72{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~73{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~112{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
+     \hex{FB}~~113{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\
    \end{array}
+
 
 
 .. index:: parametric instruction, value type, polymorphism
