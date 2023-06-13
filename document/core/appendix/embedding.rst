@@ -631,7 +631,7 @@ Globals
 
 
 .. index:: reference, reference type
-.. _embed-ref:
+.. _embed-ref-type:
 
 References
 ~~~~~~~~~~
@@ -656,14 +656,15 @@ References
    In such cases, this function may return a less precise supertype.
 
 
-.. index:: value type, reference type
-.. _embed-sub:
+.. index:: value type, external type, subtyping
+.. _embed-match-valtype:
+.. _embed-match-externtype:
 
-Subtyping
-~~~~~~~~~
+Matching
+~~~~~~~~
 
-:math:`\F{sub\_valtype}(\valtype_1, \valtype_2) : \bool`
-........................................................
+:math:`\F{match\_valtype}(\valtype_1, \valtype_2) : \bool`
+..........................................................
 
 1. Pre-condition: the :ref:`value types <syntax-valtype>` :math:`\valtype_1` and :math:`\valtype_2` are :ref:`valid <valid-valtype>` under the empty :ref:`context <context>`.
 
@@ -673,13 +674,13 @@ Subtyping
 
 .. math::
    \begin{array}{lclll}
-   \F{sub\_reftype}(t_1, t_2) &=& \TRUE && (\iff \vdashvaltypematch t_1 \matchesvaltype t_2) \\
-   \F{sub\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
+   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff \vdashvaltypematch t_1 \matchesvaltype t_2) \\
+   \F{match\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
    \end{array}
 
 
-:math:`\F{sub\_externtype}(\externtype_1, \externtype_2) : \bool`
-.................................................................
+:math:`\F{match\_externtype}(\externtype_1, \externtype_2) : \bool`
+...................................................................
 
 1. Pre-condition: the :ref:`extern types <syntax-externtype>` :math:`\externtype_1` and :math:`\externtype_2` are :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
 
@@ -689,6 +690,6 @@ Subtyping
 
 .. math::
    \begin{array}{lclll}
-   \F{sub\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
-   \F{sub\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}
