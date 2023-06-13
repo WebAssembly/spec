@@ -1378,7 +1378,7 @@
 .. |bytes| mathdef:: \xref{exec/numerics}{aux-bytes}{\F{bytes}}
 .. |littleendian| mathdef:: \xref{exec/numerics}{aux-littleendian}{\F{littleendian}}
 .. |signed| mathdef:: \xref{exec/numerics}{aux-signed}{\F{signed}}
-.. |bool| mathdef:: \xref{exec/numerics}{aux-bool}{\F{bool}}
+.. |tobool| mathdef:: \xref{exec/numerics}{aux-tobool}{\F{bool}}
 
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
@@ -1455,6 +1455,10 @@
 
 .. Embedding
 .. ---------
+
+.. |bool| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{bool}}
+.. |TRUE| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{true}}
+.. |FALSE| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{false}}
 
 .. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
 .. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}
