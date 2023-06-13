@@ -114,6 +114,8 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global_type; url: appendix/embedding.html#embed-global-type
     text: global_read; url: appendix/embedding.html#embed-global-read
     text: global_write; url: appendix/embedding.html#embed-global-write
+    text: ref_type; url: appendix/embedding.html#embed-ref-type
+    text: match_valtype; url: appendix/embedding.html#embed-match-valtype
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
@@ -1138,47 +1140,35 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
 1. If |type| is of the form [=ref=] |null| |heaptype|,
+    1. If [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]),
+        1. Let |r| be [=ToWebAssemblyValue=](|v|, [=ref=] |null| [=heap-type/any=]).
+        1. Return [=ref.extern=] |r|.
     1. If |v| is null,
-        1. If |null| is present,
-            1. Return [=ref.null=] |heaptype|.
-        1. Otherwise,
-            1. Throw a {{TypeError}}.
-    1. If |heaptype| matches [=heap-type/func=],
-        1. If |v| is an [=Exported Function=],
-            1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
-            1. Let |testresult| be [=ref_test=](|heaptype|, [=ref.func=] |funcaddr|).
-            1. If |testresult| is true,
-                1. Return [=ref.func=] |funcaddr|.
-        1. Throw a {{TypeError}}.
-    1. If |heaptype| matches [=any=],
-        1. If |v| [=is a Number=],
-            1. Let |i32| be ? [$ToInt32$](|v|).
-            1. If |v| is equal to |i32| and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
-                1. If [=i31=] does not match |heaptype|,
-                    1. Throw a {{TypeError}}.
-                1. Return [=ref.i31=] |v|.
-        1. If |v| is an [=Exported GC Object=],
-            1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
-            1. Let |objectkind| be the value of |v|'s \[[ObjectKind]] internal slot.
-            1. If |objectkind| is "array",
-                1. If [=array=] does not match |heaptype|,
-                    1. Throw a {{TypeError}}.
-                1. Return [=ref.array=] |objectaddr|.
-            1. If |objectkind| is "struct",
-                1. If [=struct=] does not match |heaptype|,
-                    1. Throw a {{TypeError}}.
-                1. Return [=ref.struct=] |objectaddr|.
-        1. If [=any=] does not match |heaptype|,
-            1. Throw a {{TypeError}}.
+        1. Let |r| be [=ref.null=] |heaptype|.
+    1. Else if |v| [=is a Number=] and |v| is equal to ? [$ToInt32$](|v|) and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
+        1. Let |r| be [=ref.i31=] |v|.
+    1. Else if |v| is an [=Exported Function=],
+        1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
+        1. Let |r| be [=ref.func=] |funcaddr|.
+    1. Else if |v| is an [=Exported GC Object=],
+        1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
+        1. Let |objectkind| be the value of |v|'s \[[ObjectKind]] internal slot.
+        1. If |objectkind| is "array",
+            1. Let |r| be [=ref.array=] |objectaddr|.
+        1. If |objectkind| is "struct",
+            1. Let |r| be [=ref.struct=] |objectaddr|.
+    1. Else,
         1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
         1. If a [=host address=] |hostaddr| exists such that |map|[|hostaddr|] is the same as |v|,
             1. Return [=ref.host=] |hostaddr|.
         1. Let [=host address=] |hostaddr| be the smallest address such that |map|[|hostaddr|] [=map/exists=] is false.
         1. [=map/Set=] |map|[|hostaddr|] to |v|.
-        1. Return [=ref.host=] |hostaddr|.
-    1. If |heaptype| matches [=extern=],
-        1. Let |r| be [=ToWebAssemblyValue=](|v|, [=ref=] |null| [=any=]).
-        1. Return [=ref.extern=] |r|.
+        1. Let |r| be [=ref.host=] |hostaddr|.
+    1. Let |store| be the current agent's [=associated store=].
+    1. Let |actualtype| be [=ref_type=](|store|, |r|).
+    1. If [=match_valtype=](|type|, [=ref=] |null| [=heap-type/func=]) is false,
+        1. Throw a {{TypeError}}.
+    1. Return |r|.
 1. Assert: This step is not reached.
 
 </div>
