@@ -84,6 +84,14 @@
   (table $t funcref (elem (ref.func $f) (ref.null func) (ref.func $g)))
 )
 
+(module
+  (func $f)
+  (func $g)
+
+  (table $t 10 (ref func) (ref.func $f))
+  (elem (i32.const 3) $g)
+)
+
 
 ;; Basic use
 
@@ -233,6 +241,7 @@
   (elem (i32.const 1) $f)
 )
 
+
 ;; Invalid bounds for elements
 
 (assert_trap
@@ -337,6 +346,7 @@
   "out of bounds table access"
 )
 
+
 ;; Implicitly dropped elements
 
 (module
@@ -359,6 +369,7 @@
 )
 (assert_trap (invoke "init") "out of bounds table access")
 
+
 ;; Element without table
 
 (assert_invalid
@@ -368,6 +379,7 @@
   )
   "unknown table"
 )
+
 
 ;; Invalid offsets
 
@@ -489,6 +501,7 @@
    "constant expression required"
 )
 
+
 ;; Invalid elements
 
 (assert_invalid
@@ -540,6 +553,7 @@
   "constant expression required"
 )
 
+
 ;; Two elements target the same slot
 
 (module
@@ -567,6 +581,7 @@
   )
 )
 (assert_return (invoke "call-overwritten-element") (i32.const 66))
+
 
 ;; Element sections across multiple modules change the same table
 
@@ -675,3 +690,26 @@
 
 (assert_return (invoke $m "get" (i32.const 0)) (ref.null extern))
 (assert_return (invoke $m "get" (i32.const 1)) (ref.extern 137))
+
+;; Initializing a table with imported funcref global
+
+(module $module4
+  (func (result i32)
+    i32.const 42
+  )
+  (global (export "f") funcref (ref.func 0))
+)
+
+(register "module4" $module4)
+
+(module
+  (import "module4" "f" (global funcref))
+  (type $out-i32 (func (result i32)))
+  (table 10 funcref)
+  (elem (offset (i32.const 0)) funcref (global.get 0))
+  (func (export "call_imported_elem") (type $out-i32)
+    (call_indirect (type $out-i32) (i32.const 0))
+  )
+)
+
+(assert_return (invoke "call_imported_elem") (i32.const 42))

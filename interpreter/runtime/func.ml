@@ -8,6 +8,7 @@ and 'inst func =
 
 let alloc dt inst f =
   ignore (as_func_str_type (expand_def_type dt));
+  assert Free.((def_type dt).types = Set.empty);
   AstFunc (dt, inst, f)
 
 let alloc_host dt f =

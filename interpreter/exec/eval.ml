@@ -1090,7 +1090,7 @@ let init_import (inst : module_inst) (ex : extern) (im : import) : module_inst =
   in
   let et = subst_extern_type (subst_of inst) it in
   let et' = extern_type_of inst.types ex in
-  if not (Match.match_extern_type et' et) then
+  if not (Match.match_extern_type [] et' et) then
     Link.error im.at ("incompatible import type for " ^
       "\"" ^ Utf8.encode im.it.module_name ^ "\" " ^
       "\"" ^ Utf8.encode im.it.item_name ^ "\": " ^

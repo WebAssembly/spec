@@ -324,7 +324,7 @@ Tables
 
 .. _embed-table-alloc:
 
-:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
+:math:`\F{table\_alloc}(\store, \tabletype, \reff) : (\store, \tableaddr)`
 ..........................................................................
 
 1. Pre-condition: the :math:`\tabletype` is :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
@@ -615,3 +615,29 @@ Globals
    \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \MVAR~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
    \end{array}
+
+
+.. index:: reference, reference type
+.. _embed-ref:
+
+References
+~~~~~~~~~~
+
+:math:`\F{ref\_type}(\store, \reff) : \reftype`
+...............................................
+
+1. Pre-condition: the :ref:`reference <syntax-ref>` :math:`\reff` is :ref:`valid <valid-val>` under store :math:`S`.
+
+2. Return the :ref:`reference type <syntax-reftype>` :math:`t` with which :math:`\reff` is valid.
+
+3. Post-condition: the returned :ref:`reference type <syntax-reftype>` is :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{ref\_type}(S, r) &=& t && (\iff S \vdashval r : t) \\
+   \end{array}
+
+.. note::
+   In future versions of WebAssembly,
+   not all references may carry precise type information at run time.
+   In such cases, this function may return a less precise supertype.
