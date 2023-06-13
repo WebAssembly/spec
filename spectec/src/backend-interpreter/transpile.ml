@@ -1,6 +1,9 @@
 open Al
 
 (** helper *)
+let id x = x
+let composite g f x = f x |> g
+
 let take n str =
   let len = min n (String.length str) in
   String.sub str 0 len ^ if len <= n then "" else "..."
@@ -122,26 +125,23 @@ let rec infer_else instrs =
     instrs []
 
 let if_not_defined =
-  let id x = x in
   let transpile_cond = function
   | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
   | c -> c in
   Walk.walk_instr (id, transpile_cond, id)
 
-let rec swap_if instr =
-  let new_ = List.map swap_if in
-  match instr with
-  | IfI (c, il, []) | IfI (c, il, [ NopI ]) -> IfI (c, new_ il, [])
-  | IfI (c, [ NopI ], il) -> IfI (neg c, new_ il, [])
+let swap_if =
+  let transpile_instr = function
+  | IfI (c, il, [ ])
+  | IfI (c, il, [ NopI ]) -> IfI (c, il, [])
+  | IfI (c, [ NopI ], il) -> IfI (neg c, il, [])
   | IfI (c, il1, il2) ->
-      if count_instrs il1 <= count_instrs il2 then IfI (c, new_ il1, new_ il2)
-      else IfI (neg c, new_ il2, new_ il1)
-  | OtherwiseI il -> OtherwiseI (new_ il)
-  | WhileI (c, il) -> WhileI (c, new_ il)
-  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
-  | ForI (e, il) -> ForI (e, new_ il)
-  | ForeachI (e1, e2, il) -> ForeachI (e1, e2, new_ il)
-  | _ -> instr
+      if count_instrs il1 <= count_instrs il2 then
+        IfI (c, il1, il2)
+      else
+        IfI (neg c, il2, il1)
+  | i -> i in
+  Walk.walk_instr (transpile_instr, id, id)
 
 let unify_tail instrs1 instrs2 =
   let rev = List.rev in
@@ -164,10 +164,7 @@ let rec unify_if_tail instr =
 let enhance_readability instrs =
   instrs |> unify_if |> List.map if_not_defined |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
 
-(* Walker-based Translpiler *)
-
-let id x = x
-let composite g f x = f x |> g
+(** Walker-based Translpiler **)
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state = function
