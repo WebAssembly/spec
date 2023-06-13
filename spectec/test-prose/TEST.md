@@ -351,23 +351,23 @@ with_table x i r
 1. Let f be the current frame.
 2. Replace s.TABLE[f.MODULE.TABLE[x]][i] with r.
 
-with_tableext x r
+with_tableext x r*
 1. Let f be the current frame.
 2. Append the sequence r* to the s.TABLE[f.MODULE.TABLE[x]].
 
-with_mem x i j b
+with_mem x i j b*
 1. Let f be the current frame.
 2. Replace s.MEM[f.MODULE.MEM[x]][i : j] with b*.
 
-with_memext x b
+with_memext x b*
 1. Let f be the current frame.
 2. Append the sequence b* to the s.MEM[f.MODULE.MEM[x]].
 
-with_elem x r
+with_elem x r*
 1. Let f be the current frame.
 2. Replace s.ELEM[f.MODULE.ELEM[x]] with r*.
 
-with_data x b
+with_data x b*
 1. Let f be the current frame.
 2. Replace s.DATA[f.MODULE.DATA[x]] with b*.
 
@@ -381,7 +381,7 @@ execution_of_drop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 
-execution_of_select t
+execution_of_select t?
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -393,7 +393,7 @@ execution_of_select t
 8. Else:
   a. Push val_2 to the stack.
 
-execution_of_block bt instr
+execution_of_block bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -403,7 +403,7 @@ execution_of_block bt instr
 7. Jump to instr*.
 8. Exit current context.
 
-execution_of_loop bt instr
+execution_of_loop bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -413,7 +413,7 @@ execution_of_loop bt instr
 7. Jump to instr*.
 8. Exit current context.
 
-execution_of_if bt instr_1 instr_2
+execution_of_if bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
@@ -421,14 +421,27 @@ execution_of_if bt instr_1 instr_2
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-execution_of_label n instr val
+execution_of_label n instr* val*
 1. Pop val* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
 execution_of_br _x0
-1. YetI: TODO.
+1. Let L be the current label.
+2. Let n be the arity of L.
+3. Let instr'* be the continuation of L.
+4. Pop all values _x1 from the stack.
+5. Exit current context.
+6. If _x0 is 0, then:
+  a. Let val'* ++ val^n be _x1.
+  b. Push val^n to the stack.
+  c. Execute the sequence (instr'*).
+7. If _x0 ≥ 1, then:
+  a. Let l be (_x0 - 1).
+  b. Let val* be _x1.
+  c. Push val* to the stack.
+  d. Execute (BR l).
 
 execution_of_br_if l
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -436,7 +449,7 @@ execution_of_br_if l
 3. If c is not 0, then:
   a. Execute (BR l).
 
-execution_of_br_table l l'
+execution_of_br_table l* l'
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i < |l*|, then:
@@ -444,7 +457,7 @@ execution_of_br_table l l'
 4. Else:
   a. Execute (BR l').
 
-execution_of_frame n f val
+execution_of_frame n f val^n
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
@@ -454,13 +467,7 @@ execution_of_frame n f val
 7. Push val^n to the stack.
 
 execution_of_return []
-1. If _x0 is of the case FRAME_, then:
-  a. Let (FRAME_ n f val'* ++ val^n ++ [RETURN] ++ instr*) be _x0.
-  b. Push val^n to the stack.
-2. If _x0 is of the case LABEL_, then:
-  a. Let (LABEL_ k instr'* val* ++ [RETURN] ++ instr*) be _x0.
-  b. Push val* to the stack.
-  c. Execute RETURN.
+1. YetI: TODO.
 
 execution_of_unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -501,7 +508,7 @@ execution_of_extend nt n
 2. Pop (nt.CONST c) from the stack.
 3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
-execution_of_cvtop nt_2 cvtop nt_1 sx
+execution_of_cvtop nt_2 cvtop nt_1 sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop (nt_1.CONST c_1) from the stack.
 3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:

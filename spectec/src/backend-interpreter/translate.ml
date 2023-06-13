@@ -55,31 +55,12 @@ let il_type2al_type t =
   | Ast.NatT -> Al.IntT
   | _ -> failwith "Unreachable"
 
-let rec find_type tenv exp =
-  let to_NameE x = Al.NameE (Al.N x, []) in
-  match exp.it with
-  | Ast.VarE id -> (
-      match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-      | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
-      | Some (_, t, _) -> (id.it |> to_NameE, Al.ListT (il_type2al_type t))
-      | _ ->
-          failwith
-            (id.it ^ "'s type is unknown. There must be a problem in the IL."))
-  | Ast.IterE (inner_exp, _) | Ast.SubE (inner_exp, _, _) ->
-      find_type tenv inner_exp
-  | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
-    -> (
-      match (find_type tenv st, find_type tenv fr) with
-      | (s, StoreT), (f, FrameT) -> (Al.PairE (s, f), Al.StateT)
-      | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT))
-  | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
-
 let get_params winstr =
   match winstr.it with
   | Ast.CaseE (_, { it = Ast.TupE exps; _ }) -> exps
   | Ast.CaseE (_, exp) -> [ exp ]
   | _ ->
-      print_endline "Bubbleup semantics: Top of the stack is frame / label";
+      print_endline (Print.string_of_exp winstr ^ "is not a vaild wasm instruction.");
       []
 
 (** Translate `Ast.exp` **)
@@ -208,84 +189,96 @@ let insert_assert exp =
         ^ " is on the top of the stack" )
   | _ -> Al.AssertI "Due to validation, a value is on the top of the stack"
 
-(* `Ast.exp list` -> `Al.instr list` *)
-(* Assumption: the target instruction is currently at the top of the stack. *)
-(* The assumption does not hold for br and return *)
-let lhs2pop = function
-  | [] -> failwith "Unreachable: empty lhs stack"
-  | inst :: rest -> (
-      match inst.it with
-      (* Frame *)
-      | Ast.CaseE
-          ( Ast.Atom "FRAME_",
-            {
-              it =
-                Ast.TupE
-                  [
-                    { it = Ast.VarE arity; _ };
-                    { it = Ast.VarE name; _ };
-                    inner_exp;
-                  ];
-              _;
-            }) ->
-          let let_instrs =
+(* `Ast.exp list` -> `Ast.exp list * Al.instr list` *)
+let handle_lhs_stack =
+  List.fold_left
+    (fun (instrs, rest) e ->
+      if List.length rest > 0 then (instrs, rest @ [ e ])
+      else
+        match e.it with
+        | Ast.IterE (_, (ListN _, _)) -> (instrs, [ e ])
+        | _ -> (instrs @ [ insert_assert e; Al.PopI (exp2expr e) ], rest))
+    ([], [])
+
+let handle_context_winstr winstr =
+  match winstr.it with
+  (* Frame *)
+  | Ast.CaseE
+      ( Ast.Atom "FRAME_",
+        {
+          it =
+            Ast.TupE
+              [
+                { it = Ast.VarE arity; _ };
+                { it = Ast.VarE name; _ };
+                inner_exp;
+              ];
+          _;
+        }) ->
+      let let_instrs =
+        [
+          Al.LetI (Al.NameE (Al.N name.it, []), Al.GetCurFrameE);
+          Al.LetI
+            (Al.NameE (Al.N arity.it, []), Al.ArityE (Al.NameE (Al.N name.it, [])));
+        ]
+      in
+      let pop_instrs =
+        match inner_exp.it with
+        (* hardcoded pop instructions for "frame" reduction rule *)
+        | Ast.IterE (_, _) ->
+            [ insert_assert inner_exp; Al.PopI (exp2expr inner_exp) ]
+        (* hardcoded pop instructions for "return" reduction rule *)
+        | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
             [
-              Al.LetI (Al.NameE (Al.N name.it, []), Al.GetCurFrameE);
-              Al.LetI
-                (Al.NameE (Al.N arity.it, []), Al.ArityE (Al.NameE (Al.N name.it, [])));
+              insert_assert valn;
+              Al.PopI (exp2expr valn);
+              insert_assert inner_exp;
+              (* While the top of the stack is not a frame, do ... *)
+              Al.WhileI
+                ( Al.NotC
+                    (Al.CompareC
+                       ( Al.Eq, Al.NameE (Al.N "the top of the stack", []),
+                         Al.NameE (Al.N "a frame", []) )),
+                  [ Al.PopI (Al.NameE (Al.N "the top element", [])) ] );
             ]
-          in
-          let pop_instrs =
-            match inner_exp.it with
-            (* hardcoded pop instructions for "frame" reduction rule *)
-            | Ast.IterE (_, _) ->
-                [ insert_assert inner_exp; Al.PopI (exp2expr inner_exp) ]
-            (* hardcoded pop instructions for "return" reduction rule *)
-            | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
-                [
-                  insert_assert valn;
-                  Al.PopI (exp2expr valn);
-                  insert_assert inner_exp;
-                  (* While the top of the stack is not a frame, do ... *)
-                  Al.WhileI
-                    ( Al.NotC
-                        (Al.CompareC
-                           ( Al.Eq, Al.NameE (Al.N "the top of the stack", []),
-                             Al.NameE (Al.N "a frame", []) )),
-                      [ Al.PopI (Al.NameE (Al.N "the top element", [])) ] );
-                ]
-            | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith
-          in
-          let pop_frame_instrs =
-            [ insert_assert inst; Al.PopI (Al.NameE (Al.N "the frame", [])) ]
-          in
-          (let_instrs @ pop_instrs @ pop_frame_instrs, rest)
-      (* Label *)
-      | Ast.CaseE
-          (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
-          ( [
-              (* TODO: append Jump instr *)
-              Al.PopI (exp2expr vals);
-              insert_assert inst;
-              Al.PopI (Al.NameE (N "the label", []));
-            ],
-            rest )
-      (* noraml list expression *)
-      | _ ->
-          List.fold_left
-            (fun (instrs, rest) e ->
-              if List.length rest > 0 then (instrs, rest @ [ e ])
-              else
-                match e.it with
-                | Ast.IterE (_, (ListN _, _)) -> (instrs, [ e ])
-                | _ -> (instrs @ [ insert_assert e; Al.PopI (exp2expr e) ], rest))
-            ([], []) rest)
+        | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith
+      in
+      let pop_frame_instrs =
+        [ insert_assert winstr; Al.PopI (Al.NameE (Al.N "the frame", [])) ]
+      in
+      let_instrs @ pop_instrs @ pop_frame_instrs
+  (* Label *)
+  | Ast.CaseE
+      (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
+      [
+        (* TODO: append Jump instr *)
+        Al.PopI (exp2expr vals);
+        insert_assert winstr;
+        Al.PopI (Al.NameE (N "the label", []));
+      ]
+  | _ -> []
+
+let handle_context ctx values = match ctx.it, values with
+  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _vals ]; _ }), [ v ] ->
+      [
+        Al.LetI (NameE (N "L", []), GetCurLabelE);
+        Al.LetI (exp2expr n, ArityE (NameE (N "L", [])));
+        Al.LetI (exp2expr instrs, ContE (NameE (N "L", [])));
+        Al.PopAllI (exp2expr v);
+        Al.ExitAbruptI (N "L");
+      ]
+  | _ -> [ Al.YetI "TODO: handle_context" ]
 
 (* `Ast.exp` -> `Al.instr list` *)
 let rec rhs2instrs exp =
   match exp.it with
   (* Trap *)
   | Ast.CaseE (Atom "TRAP", _) -> [ Al.TrapI ]
+  (* Execute instrs *) (* TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
+  | Ast.IterE ({ it = VarE id; _ }, (Ast.List, _))
+  | Ast.IterE ({ it = Ast.SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
+    when id.it = "instr" || id.it = "instr'" ->
+      [ Al.ExecuteSeqI (exp2expr exp) ]
   (* Push *)
   | Ast.SubE _ | IterE _ -> [ Al.PushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _)
@@ -469,30 +462,60 @@ let path2expr exp path =
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec extract_winstr name stack =
+  let wrap e = e $$ no_region % (Ast.VarT ("TOP" $ no_region) $ no_region) in
   match stack with
   | [] ->
     print_endline ("Failed to extract the instruction " ^ name ^ " from the stack.");
-    let wrap e = e $$ no_region % (Ast.VarT ("TOP" $ no_region) $ no_region) in
-    [None, ([], [])], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.ListE []) |> wrap) |> wrap
+    [ ([], []), None ], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.ListE []) |> wrap) |> wrap
   | hd :: tl ->
     match hd.it with
     | Ast.CaseE (Ast.Atom name', _)
       when name = (String.lowercase_ascii name')
       || name ^ "_"  = (String.lowercase_ascii name') ->
-      [None, (tl, [])], hd
+      [ (tl, []), None ], hd
     (* Assumption: The target winstr is inside the first list-argument of this CaseE *)
-    | Ast.CaseE (_, {it = Ast.TupE args; _}) ->
+    | Ast.CaseE (a, ({it = Ast.TupE args; _} as e)) ->
       let is_list e = match e.it with Ast.CatE _ | Ast.ListE _ -> true | _ -> false in
       let list_arg = List.find is_list args in
       let inner_stack = list_arg |> flatten |> List.rev in
+
       let context, winstr = extract_winstr name inner_stack in
-      let new_context = (Some hd, (tl, [])) :: context in
+
+      let hole = Ast.TextE "_" |> wrap in
+      let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
+      let ctx = { hd with it = Ast.CaseE (a, { e with it = Ast.TupE holed_args }) } in
+      let new_context = ((tl, []), Some ctx) :: context in
       new_context, winstr
     | _ ->
       let context, winstr = extract_winstr name tl in
-      let (c, (vs, is)), inners = Util.Lib.List.split_hd context in
-      let new_context = (c, (vs, hd :: is)) :: inners in
+      let ((vs, is), c), inners = Util.Lib.List.split_hd context in
+      let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
+
+let rec find_type tenv exp =
+  let to_NameE x = Al.NameE (Al.N x, []) in
+  let append_iter name iter = match name with
+  | Al.NameE (n, iters) -> Al.NameE (n, iter :: iters)
+  | _ -> failwith "Unreachable" in
+  match exp.it with
+  | Ast.VarE id -> (
+      match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
+      | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
+      | Some (_, t, _) -> (id.it |> to_NameE, Al.ListT (il_type2al_type t))
+      | _ ->
+          failwith
+            (id.it ^ "'s type is unknown. There must be a problem in the IL."))
+  | Ast.IterE (inner_exp, iter) ->
+      let name, ty = find_type tenv inner_exp in
+      append_iter name (iter2iter (fst iter)), ty
+  | Ast.SubE (inner_exp, _, _) ->
+      find_type tenv inner_exp
+  | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
+    -> (
+      match (find_type tenv st, find_type tenv fr) with
+      | (s, StoreT), (f, FrameT) -> (Al.PairE (s, f), Al.StateT)
+      | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT))
+  | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
 
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Al.Algo` *)
@@ -501,8 +524,9 @@ let reduction_group2algo (instr_name, reduction_group) =
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = extract_winstr instr_name lhs_stack in
   let instrs = match context with
-    | [ None, (_, _) ] ->
-      let pop_instrs, remain = lhs2pop lhs_stack in
+    | [(vs, []), None ] ->
+      let pop_instrs, remain = handle_lhs_stack vs in
+      let inner_pop_instrs = handle_context_winstr winstr in
 
       let instrs = match reduction_group with
       (* no premise: either *)
@@ -516,7 +540,11 @@ let reduction_group2algo (instr_name, reduction_group) =
           let blocks = List.map (reduction2instrs remain) reduction_group in
           List.fold_right Transpile.merge_otherwise blocks [] in
 
-      pop_instrs @ instrs
+      pop_instrs @ inner_pop_instrs @ instrs
+    | [ ([], []), Some context ; (vs, _is), None ] ->
+      let head_instrs = handle_context context vs in
+      let body_instrs = List.map (reduction2instrs []) reduction_group |> List.concat in
+      head_instrs @ body_instrs
     | _ ->
       [ YetI "TODO" ] in
 
@@ -526,18 +554,6 @@ let reduction_group2algo (instr_name, reduction_group) =
   let params = get_params winstr |> List.map (find_type tenv) in
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability in
-
-  (* Debug
-  if instr_name = "br" then (
-    print_endline (Il.Print.string_of_exp lhs);
-    List.iter (fun (_, rhs, prems, _) ->
-      print_endline "";
-      print_endline (Il.Print.string_of_exp rhs);
-      prems |> List.map (Il.Print.string_of_prem) |> List.iter print_endline;
-      print_endline "";
-    ) reduction_group
-  );
-  *)
 
   (* Algo *)
   Al.Algo (name, params, body)
