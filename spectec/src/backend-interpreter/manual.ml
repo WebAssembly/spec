@@ -611,7 +611,7 @@ let invocation =
 
 let manual_algos =
   [
-    br;
+    (* br; *)
     return;
     instantiation;
     alloc_module;

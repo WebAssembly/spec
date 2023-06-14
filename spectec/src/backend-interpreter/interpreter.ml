@@ -388,16 +388,14 @@ and interp_instrs env il =
       | PopAllI e -> (
         match e with
         | NameE (name, [ List ]) ->
-          let rec pop_value vs = (match !stack with
-          | h :: _  -> (match h with
-            | ConstructV ("CONST", _) -> pop_value (pop () :: vs)
-            | _ -> vs)
-          | _ -> vs)
-          in
+          let is_boundary = function FrameV _ | LabelV _ -> true | _ -> false in
+          let rec pop_value acc = match !stack with
+          | h :: _  when not (is_boundary h) -> pop_value (pop () :: acc)
+          | _ -> acc in
           let vs = pop_value [] in
           let env = Env.add name (listV vs) env in
           (env, cont)
-        | _ -> failwith "Invalid pop")
+        | _ -> failwith ("Invalid pop: Popall " ^ string_of_expr e))
       | LetI (pattern, e) ->
           let rec assign lhs rhs env =
             match lhs, rhs with
@@ -415,11 +413,24 @@ and interp_instrs env il =
               when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
                 List.fold_right2 assign lhs_s rhs_s env
             | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
-            (* TODO: Remove this. This should be handled by animation *)
-            | BinopE (Mul, BinopE (Mul, NameE (name, _), e1), e2), NumV m ->
-                let n1 = eval_expr env e1 |> value_to_int in
-                let n2 = eval_expr env e2 |> value_to_int in
-                Env.add name (NumV (Int64.of_int (Int64.to_int m / n1 / n2))) env
+            (* Assumption: e1 is the assign target *)
+            | BinopE (binop, e1, e2), NumV m ->
+                let n = eval_expr env e2 |> value_to_num in
+                let invop = match binop with
+                | Add -> Int64.sub
+                | Sub -> Int64.add
+                | Mul -> Int64.unsigned_div
+                | Div -> Int64.mul
+                | _ -> failwith "Invvalid binop for lhs of assignment" in
+                env |> assign e1 (NumV (invop m n))
+            (* TODO: Should this be handled by interpreter? animation? translation? *)
+            | ConcatE (e, NameE (n1, [ListN n2])), ListV vs ->
+              let len = Array.length !vs in
+              let suffix_len = eval_expr env (NameE (n2, [])) |> value_to_int in
+              assert (len >= suffix_len);
+              let prefix = Array.sub !vs 0 (len - suffix_len) in
+              let suffix = Array.sub !vs (len - suffix_len) suffix_len in
+              env |> assign e (ListV (ref prefix)) |> Env.add n1 (ListV (ref suffix))
             | e, v ->
                 Printf.sprintf "Invalid assignment: %s := %s"
                   (string_of_expr e) (string_of_value v)

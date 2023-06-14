@@ -31,7 +31,7 @@ let flatten_rec def =
   match def.it with Ast.RecD defs -> defs | _ -> [def]
 
 (** Translate `Ast.type` **)
-let il_type2al_type t =
+let rec il_type2al_type t =
   match t.it with
   | Ast.VarT id -> (
       match id.it with
@@ -53,7 +53,9 @@ let il_type2al_type t =
           (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
           Al.TopT)
   | Ast.NatT -> Al.IntT
-  | _ -> failwith "Unreachable"
+  | Ast.TupT [t1; t2] -> Al.PairT (il_type2al_type t1, il_type2al_type t2)
+  | Ast.IterT (ty, _) -> Al.ListT (il_type2al_type ty)
+  | _ -> failwith ("TODO: translate il_type into al_type of " ^ Print.string_of_typ t)
 
 let get_params winstr =
   match winstr.it with

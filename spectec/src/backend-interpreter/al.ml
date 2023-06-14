@@ -5,6 +5,7 @@ open Reference_interpreter
 type al_type =
   | WasmValueT of Types.value_type
   | WasmValueTopT
+  | PairT of al_type * al_type
   | EmptyListT
   | ListT of al_type
   | FunT of (al_type list * al_type)

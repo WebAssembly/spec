@@ -35,6 +35,7 @@ let rec string_of_al_type = function
   | WasmValueT _ -> "WasmValueT"
   | WasmValueTopT -> "WasmValueTopT"
   | EmptyListT -> "EmptyListT"
+  | PairT _ -> "PairT" (* TODO *)
   | ListT ty -> "ListT (" ^ string_of_al_type ty ^ ")"
   | StringT -> "StringT"
   | IntT -> "IntT"
@@ -389,6 +390,7 @@ let string_of_winstr (winstr : Ast.instr) =
 let structured_string_of_al_type = function
   | WasmValueT _ -> "WasmValueT(_)" (* TODO *)
   | WasmValueTopT -> "WasmValueTopT"
+  | PairT _ -> "PairT" (*TODO *)
   | EmptyListT -> "EmptyListT"
   | ListT _ -> "ListT(_)" (* TODO *)
   | FunT _ -> "FunT(_)" (* TODO *)

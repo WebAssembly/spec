@@ -22,7 +22,7 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 == IL Validation...
 == Translating to AL...
-Animation failed: if (_x1 = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
+Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
 Failed to extract the instruction return from the stack.
 if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
 if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
@@ -431,15 +431,15 @@ execution_of_br _x0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
-4. Pop all values _x1 from the stack.
+4. Pop all values _x1* from the stack.
 5. Exit current context.
 6. If _x0 is 0, then:
-  a. Let val'* ++ val^n be _x1.
+  a. Let val'* ++ val^n be _x1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).
 7. If _x0 ≥ 1, then:
   a. Let l be (_x0 - 1).
-  b. Let val* be _x1.
+  b. Let val* be _x1*.
   c. Push val* to the stack.
   d. Execute (BR l).
 
@@ -653,16 +653,16 @@ execution_of_table.init x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_load nt _x0 n_A n_O
+execution_of_load nt _x0? n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If _x0 is not defined, then:
+3. If _x0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
 4. Else:
-  a. Let ?([n, sx]) be _x0.
+  a. Let ?([n, sx]) be _x0?.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
   c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
@@ -769,18 +769,18 @@ execution_of_table.grow x
 execution_of_elem.drop x
 1. Perform $with_elem(x, []).
 
-execution_of_store nt _x0 n_A n_O
+execution_of_store nt _x0? n_A n_O
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If _x0 is not defined, then:
+5. If _x0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
-  a. Let ?(n) be _x0.
+  a. Let ?(n) be _x0?.
   b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
     1) Trap.
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
@@ -797,22 +797,6 @@ execution_of_memory.grow
 
 execution_of_data.drop x
 1. Perform $with_data(x, []).
-
-execution_of_br l
-1. If l is 0, then:
-  a. Let L be the current label.
-  b. Let n be the arity of L.
-  c. Assert: Due to validation, there are at least n values on the top of the stack.
-  d. Pop val^n from the stack.
-  e. While the top of the stack is value, do:
-    1) Pop val' from the stack.
-  f. Exit current context.
-  g. Push val^n to the stack.
-  h. Execute the sequence (the continuation of L).
-2. Else:
-  a. Let L be the current label.
-  b. Exit current context.
-  c. Execute (BR (l - 1)).
 
 execution_of_return
 1. Pop all values val'* from the stack.

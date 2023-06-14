@@ -9,9 +9,6 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
-(** Wrap with no region and no type **)
-let wrap it = it $$ no_region % (VarT ("TOP" $ no_region) $ no_region)
-
 (** Walker-based transformer **)
 let rec transform_expr f e =
   let new_ = transform_expr f in
@@ -49,7 +46,7 @@ let to_left_assoc_cat =
     | CatE (l, r) ->
       begin match r.it with
       | CatE (rl, rr) ->
-          { e with it = CatE (CatE (l, rl) |> wrap, rr) } |> rotate_ccw
+          { e with it = CatE (CatE (l, rl) $$ no_region % e.note, rr) } |> rotate_ccw
       | _ -> e
       end
     | _ -> e
@@ -63,7 +60,7 @@ let to_right_assoc_cat =
     | CatE (l, r) ->
       begin match l.it with
       | CatE (ll, lr) ->
-          { e with it = CatE (ll, CatE (lr, r) |> wrap) } |> rotate_cw
+          { e with it = CatE (ll, CatE (lr, r) $$ no_region% e.note) } |> rotate_cw
       | _ -> e
       end
     | _ -> e
@@ -75,11 +72,14 @@ let unified_prefix = "_x"
 let _unified_id = ref 0
 let init_unified_id () = _unified_id := 0
 let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
-let gen_new_unified () = VarE (unified_prefix ^ (string_of_int (get_unified_id())) $ no_region)
+let gen_new_unified () = unified_prefix ^ (string_of_int (get_unified_id())) $ no_region
+let to_iter e iterexp = IterE (e, iterexp)
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   ( match e1.it, e2.it with
-  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it -> e1.it
+  | VarE id, _
+  | IterE ({ it = VarE id; _}, _) , _
+    when String.starts_with ~prefix:unified_prefix id.it -> e1.it
   | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
       UnE (unop1, overlap e1 e2)
   | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
@@ -122,14 +122,21 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       CaseE (atom1, overlap e1 e2)
   | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')
-  | _ -> gen_new_unified() ) $$ (e1.at % e1.note)
+  | _ ->
+    let id = gen_new_unified () in
+    match e1.note.it with
+    | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [id])
+    | _ -> VarE id
+  ) $$ (e1.at % e1.note)
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if eq_exp template e then [], [] else match template.it, e.it with
-  | VarE id, _ when String.starts_with ~prefix:unified_prefix id.it ->
-    [ IfPr (CmpE (EqOp, VarE id $$ no_region % template.note, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-    [id, (* TODO *) VarT ("TOP" $ no_region) $ no_region, []]
+  | VarE id, _
+  | IterE ({ it = VarE id; _}, _) , _
+    when String.starts_with ~prefix:unified_prefix id.it ->
+    [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
+    [id, template.note, []]
   (* one e *)
   | UnE (_, e1), UnE (_, e2)
   | DotE (e1, _), DotE (e2, _)
