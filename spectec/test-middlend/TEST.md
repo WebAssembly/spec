@@ -105,12 +105,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -302,12 +302,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -426,7 +426,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -499,7 +499,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -922,7 +922,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
 ;; 3-typing.watsup:456.1-456.80
@@ -1769,12 +1769,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -1966,12 +1966,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -2090,7 +2090,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -2163,7 +2163,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -2586,7 +2586,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
 ;; 3-typing.watsup:456.1-456.80
@@ -3496,12 +3496,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -3693,12 +3693,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -3818,7 +3818,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -3891,7 +3891,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -4314,7 +4314,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
 ;; 3-typing.watsup:456.1-456.80
@@ -5225,12 +5225,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -5422,12 +5422,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -5547,7 +5547,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -5620,7 +5620,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -6052,7 +6052,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
 ;; 3-typing.watsup:456.1-456.80
@@ -6973,12 +6973,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -7170,12 +7170,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -7295,7 +7295,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -7369,7 +7369,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -7842,7 +7842,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
 
@@ -8794,12 +8794,12 @@ syntax elemtype = reftype
 ;; 1-syntax.watsup:71.1-72.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:73.1-74.69
+;; 1-syntax.watsup:73.1-74.66
 syntax externtype =
   | GLOBAL(globaltype)
   | FUNC(functype)
   | TABLE(tabletype)
-  | MEMORY(memtype)
+  | MEM(memtype)
 
 ;; 1-syntax.watsup:86.1-86.44
 syntax sx =
@@ -8991,12 +8991,12 @@ syntax data = `DATA(*)%*%?`(byte**, datamode?)
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:205.1-206.65
+;; 1-syntax.watsup:205.1-206.62
 syntax externuse =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
-  | MEMORY(memidx)
+  | MEM(memidx)
 
 ;; 1-syntax.watsup:207.1-208.24
 syntax export = EXPORT(name, externuse)
@@ -9116,7 +9116,7 @@ relation Externtype_ok: `|-%:OK`(externtype)
 
   ;; 3-typing.watsup:53.1-55.33
   rule mem {memtype : memtype}:
-    `|-%:OK`(MEMORY_externtype(memtype))
+    `|-%:OK`(MEM_externtype(memtype))
     -- Memtype_ok: `|-%:OK`(memtype)
 
 ;; 3-typing.watsup:61.1-61.65
@@ -9190,7 +9190,7 @@ relation Externtype_sub: `|-%<:%`(externtype, externtype)
 
   ;; 3-typing.watsup:115.1-117.34
   rule mem {mt_1 : memtype, mt_2 : memtype}:
-    `|-%<:%`(MEMORY_externtype(mt_1), MEMORY_externtype(mt_2))
+    `|-%<:%`(MEM_externtype(mt_1), MEM_externtype(mt_2))
     -- Memtype_sub: `|-%<:%`(mt_1, mt_2)
 
 ;; 3-typing.watsup:172.1-172.76
@@ -9663,7 +9663,7 @@ relation Externuse_ok: `%|-%:%`(context, externuse, externtype)
 
   ;; 3-typing.watsup:479.1-481.22
   rule mem {C : context, mt : memtype, x : idx}:
-    `%|-%:%`(C, MEMORY_externuse(x), MEMORY_externtype(mt))
+    `%|-%:%`(C, MEM_externuse(x), MEM_externtype(mt))
     -- if (x < |C.MEM_context|)
     -- where mt = C.MEM_context[x]
 

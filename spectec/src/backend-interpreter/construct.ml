@@ -402,8 +402,14 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
       in
 
       ConstructV ("FUNC", [ ftype ])
-  | Ast.TableImport ty ->  { Ast.ttype = ty } |> at no_region |> al_of_table
-  | Ast.MemoryImport ty -> { Ast.mtype = ty } |> at no_region |> al_of_memory
+  | Ast.TableImport ty ->
+    let Types.TableType (limits, ref_ty) = ty in
+    let pair = al_of_limits limits in
+    ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
+  | Ast.MemoryImport ty ->
+    let Types.MemoryType (limits) = ty in
+    let pair = al_of_limits limits in
+    ConstructV ("MEM", [ pair ])
   | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
 
 let al_of_import wasm_module wasm_import =
@@ -417,7 +423,7 @@ let al_of_import wasm_module wasm_import =
 let al_of_export_desc export_desc = match export_desc.it with
   | Ast.FuncExport n -> ConstructV ("FUNC", [ NumV (int64_of_int32_u n.it) ])
   | Ast.TableExport n -> ConstructV ("TABLE", [ NumV (int64_of_int32_u n.it) ])
-  | Ast.MemoryExport n -> ConstructV ("MEMORY", [ NumV (int64_of_int32_u n.it) ])
+  | Ast.MemoryExport n -> ConstructV ("MEM", [ NumV (int64_of_int32_u n.it) ])
   | Ast.GlobalExport n -> ConstructV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
 
 let al_of_start wasm_start =

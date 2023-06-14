@@ -316,9 +316,8 @@ let alloc_module =
   (* predefined instructions *)
   let append_if tag =
     let addr' = NameE (N (String.lowercase_ascii tag ^ "addr'"), []) in
-    let tag2 = if tag = "MEM" then "MEMORY" else tag in (* TODO: please fix dsl *)
     IfI (
-      BinopC (And, IsCaseOfC (import_type, tag2), IsCaseOfC (externuse, tag)),
+      BinopC (And, IsCaseOfC (import_type, tag), IsCaseOfC (externuse, tag)),
       [
         LetI (ConstructE (tag, [ addr' ]), externuse);
         AppendI (AccessE (module_inst_init, DotP tag), addr')
@@ -331,13 +330,12 @@ let alloc_module =
     let lower_tag = String.lowercase_ascii tag in
     let idx = lower_tag ^ "idx" in
     let addr = lower_tag ^ "addr" in
-    let out_tag = if tag = "MEMORY" then "MEM" else tag in (* TODO: Change DSL so that they are both MEM *)
     IfI (
       IsCaseOfC (externuse, tag),
       [
         LetI (ConstructE (tag, [ nameE idx ]), externuse);
-        LetI (nameE addr, AccessE (AccessE (module_inst_init, DotP out_tag), IndexP (nameE idx)));
-        LetI (externval, ConstructE (out_tag, [ nameE addr ]));
+        LetI (nameE addr, AccessE (AccessE (module_inst_init, DotP tag), IndexP (nameE idx)));
+        LetI (externval, ConstructE (tag, [ nameE addr ]));
         LetI (exportinst, ConstructE ("EXPORT", [ name; externval ]));
         AppendI (AccessE (module_inst_init, DotP "EXPORT"), exportinst)
       ],
@@ -406,7 +404,7 @@ let alloc_module =
           LetI (ConstructE ("EXPORT", [ name; externuse ]), AccessE (export_iter, index));
           append_export_if "FUNC";
           append_export_if "TABLE";
-          append_export_if "MEMORY";
+          append_export_if "MEM";
           append_export_if "GLOBAL";
         ]
       );

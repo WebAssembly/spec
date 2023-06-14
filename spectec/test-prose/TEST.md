@@ -861,7 +861,7 @@ alloc_module module externval*
   d. If import_type is of the case TABLE and externuse is of the case TABLE, then:
     1) Let (TABLE tableaddr') be externuse.
     2) Append tableaddr' to the moduleinst.TABLE.
-  e. If import_type is of the case MEMORY and externuse is of the case MEM, then:
+  e. If import_type is of the case MEM and externuse is of the case MEM, then:
     1) Let (MEM memaddr') be externuse.
     2) Append memaddr' to the moduleinst.MEM.
   f. If import_type is of the case GLOBAL and externuse is of the case GLOBAL, then:
@@ -899,10 +899,10 @@ alloc_module module externval*
     3) Let externval be (TABLE tableaddr).
     4) Let exportinst be (EXPORT name externval).
     5) Append exportinst to the moduleinst.EXPORT.
-  d. If externuse is of the case MEMORY, then:
-    1) Let (MEMORY memoryidx) be externuse.
-    2) Let memoryaddr be moduleinst.MEM[memoryidx].
-    3) Let externval be (MEM memoryaddr).
+  d. If externuse is of the case MEM, then:
+    1) Let (MEM memidx) be externuse.
+    2) Let memaddr be moduleinst.MEM[memidx].
+    3) Let externval be (MEM memaddr).
     4) Let exportinst be (EXPORT name externval).
     5) Append exportinst to the moduleinst.EXPORT.
   e. If externuse is of the case GLOBAL, then:
