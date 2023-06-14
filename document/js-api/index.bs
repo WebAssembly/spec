@@ -1166,7 +1166,7 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |r| be [=ref.host=] |hostaddr|.
     1. Let |store| be the current agent's [=associated store=].
     1. Let |actualtype| be [=ref_type=](|store|, |r|).
-    1. If [=match_valtype=](|type|, [=ref=] |null| [=heap-type/func=]) is false,
+    1. If [=match_valtype=](|actualtype|, |type|) is false,
         1. Throw a {{TypeError}}.
     1. Return |r|.
 1. Assert: This step is not reached.
