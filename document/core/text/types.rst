@@ -204,6 +204,18 @@ Aggregate Types
        &\Rightarrow& \I16 \\
    \end{array}
 
+Abbreviations
+.............
+
+Multiple anonymous structure fields may be combined into a single declaration:
+
+.. math::
+   \begin{array}{llclll}
+   \production{field} &
+     \text{(}~~\text{field}~~\Tfieldtype^\ast~~\text{)} &\equiv&
+     (\text{(}~~\text{field}~~\Tfieldtype~~\text{)})^\ast \\
+   \end{array}
+
 
 .. index:: compound type, structure type, array type, function type
    pair: text format; compound type
