@@ -1,4 +1,4 @@
-# This Makefile uses ocamlbuild but does not rely on ocamlfind or the Opam
+# This Makefile uses dune but does not rely on ocamlfind or the Opam
 # package manager to build. However, Opam package management is available
 # optionally through the check/install/uninstall targets.
 #
@@ -15,10 +15,9 @@ OPT =   	$(NAME)
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
 JSLIB =		wast
-WINMAKE =	winmake.bat
 
 DIRS =		util syntax binary text valid runtime exec script host main tests
-LIBS =		
+LIBS =
 FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45-70 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
@@ -28,7 +27,7 @@ JS =		# set to JS shell command to run JS tests, empty to skip
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint dunebuild
+.PHONY:		default opt unopt libopt libunopt jslib all zip smallint dunebuild
 
 default:	opt
 debug:		unopt
@@ -38,10 +37,9 @@ libopt:		_build/$(LIB).cmx _build/$(LIB).cmxa
 libunopt:	_build/$(LIB).cmo _build/$(LIB).cma
 jslib:		$(JSLIB).js
 all:		unopt opt libunopt libopt test
-land:		$(WINMAKE) all
-zip: 		$(ZIP)
+zip:		$(ZIP)
 smallint:	smallint.native
-ci:			land jslib dunebuild
+ci:		all jslib dunebuild
 
 dunebuild:
 	dune build
@@ -121,20 +119,6 @@ $(JSLIB).byte:	$(JSLIB_DIR)/$(JSLIB).ml
 $(JSLIB).js: $(JSLIB).byte
 		$(JSO) $<
 
-# Building Windows build file
-
-$(WINMAKE):	clean
-		echo rem Auto-generated from Makefile! >$@
-		echo set NAME=$(NAME) >>$@
-		echo if \'%1\' neq \'\' set NAME=%1 >>$@
-		$(OCB) main.byte \
-		| grep -v ocamldep \
-		| grep -v mkdir \
-		| sed s:`which ocaml`:ocaml:g \
-		| sed s:main/main.d.byte:%NAME%.exe: \
-		>>$@
-
-
 # Executing test suite
 
 TESTDIR =	../test/core
@@ -182,8 +166,8 @@ dunetest:
 
 .PHONY:		clean
 
-$(ZIP):		$(WINMAKE)
-		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
+$(ZIP):
+	git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
 		rm -rf _build/jslib $(LIB).mlpack _tags $(JSLIB).js
