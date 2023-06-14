@@ -65,7 +65,8 @@ syntax meminst hint(desc "memory instance") =
   { TYPE memtype,
     DATA byte* }
 syntax eleminst hint(desc "element instance") =
-  { ELEM ref* }
+  { TYPE elemtype,
+    ELEM ref* }
 syntax datainst hint(desc "data instance") =
   { DATA byte* }
 syntax exportinst hint(desc "export instance") =
