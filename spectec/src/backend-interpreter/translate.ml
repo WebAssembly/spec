@@ -12,6 +12,18 @@ let gen_fail_msg_of_exp exp =
 let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem |> sprintf "Invalid premise `%s` to be AL %s."
 
+let list_partition_with pred xs =
+  let rec list_partition acc = function
+  | [] -> acc
+  | hd :: tl ->
+    let same_groups, diff_groups = List.partition (fun group -> pred (List.hd group) hd) acc in
+    match same_groups with
+    | [] -> list_partition ([ hd ] :: acc) tl
+    | [ my_group ] -> list_partition ( (hd :: my_group) :: diff_groups) tl
+    | _ -> failwith "Impossible list_partiton_with: perhaps pred is not equivalence relation"
+  in
+  list_partition [] xs |> List.rev
+
 (* transform z; e into e *)
 let drop_state e = match e.it with
 | Ast.MixE (* z; e *)
@@ -261,13 +273,24 @@ let handle_context_winstr winstr =
   | _ -> []
 
 let handle_context ctx values = match ctx.it, values with
-  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _vals ]; _ }), [ v ] ->
+  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
+      let first_vs, last_v = Util.Lib.List.split_last vs in
       [
         Al.LetI (NameE (N "L", []), GetCurLabelE);
         Al.LetI (exp2expr n, ArityE (NameE (N "L", [])));
         Al.LetI (exp2expr instrs, ContE (NameE (N "L", [])));
-        Al.PopAllI (exp2expr v);
+        ]@ List.map (fun v -> Al.PopI (exp2expr v)) first_vs @[
+        Al.PopAllI (exp2expr last_v);
         Al.ExitAbruptI (N "L");
+      ]
+  | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
+      let first_vs, last_v = Util.Lib.List.split_last vs in
+      [
+        Al.LetI (NameE (N "F", []), GetCurFrameE);
+        Al.LetI (exp2expr n, ArityE (NameE (N "F", [])));
+        ]@ List.map (fun v -> Al.PopI (exp2expr v)) first_vs @[
+        Al.PopAllI (exp2expr last_v);
+        Al.ExitAbruptI (N "F");
       ]
   | _ -> [ Al.YetI "TODO: handle_context" ]
 
@@ -463,12 +486,11 @@ let path2expr exp path =
   path2expr' path |> exp2expr
 
 (* TODO: Perhaps this should be tail recursion *)
-let rec extract_winstr name stack =
+let rec split_context_winstr name stack =
   let wrap e = e $$ no_region % (Ast.VarT ("TOP" $ no_region) $ no_region) in
   match stack with
   | [] ->
-    print_endline ("Failed to extract the instruction " ^ name ^ " from the stack.");
-    [ ([], []), None ], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.ListE []) |> wrap) |> wrap
+    [ ([], []), None ], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.TupE []) |> wrap) |> wrap
   | hd :: tl ->
     match hd.it with
     | Ast.CaseE (Ast.Atom name', _)
@@ -481,7 +503,7 @@ let rec extract_winstr name stack =
       let list_arg = List.find is_list args in
       let inner_stack = list_arg |> flatten |> List.rev in
 
-      let context, winstr = extract_winstr name inner_stack in
+      let context, winstr = split_context_winstr name inner_stack in
 
       let hole = Ast.TextE "_" |> wrap in
       let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
@@ -489,7 +511,7 @@ let rec extract_winstr name stack =
       let new_context = ((tl, []), Some ctx) :: context in
       new_context, winstr
     | _ ->
-      let context, winstr = extract_winstr name tl in
+      let context, winstr = split_context_winstr name tl in
       let ((vs, is), c), inners = Util.Lib.List.split_hd context in
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
@@ -519,12 +541,30 @@ let rec find_type tenv exp =
       | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT))
   | _ -> (Print.string_of_exp exp |> to_NameE, Al.TopT)
 
+let un_unify (_, rhs, prems, binds) =
+  let sub, new_prems = Util.Lib.List.split_hd prems in
+  let new_binds = binds in (* TODO *)
+  match sub.it with
+  | Ast.LetPr (new_lhs, _) -> (new_lhs, rhs, new_prems, new_binds)
+  | _ -> failwith "Unrechable un_unify"
+
+let is_in_same_context (lhs1, _, _, _) (lhs2, _, _, _) =
+  match lhs1.it, lhs2.it with
+  | Ast.CaseE (atom1, _), Ast.CaseE (atom2, _) -> atom1 = atom2
+  | _, _ -> false
+
+let kind_of_context e =
+  match e.it with
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> "frame"
+  | Ast.CaseE (Ast.Atom "LABEL_", _) -> "label"
+  | _ -> "Could not get kind_of_context" ^ Print.string_of_exp e |> failwith
+
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Al.Algo` *)
-let reduction_group2algo (instr_name, reduction_group) =
+let rec reduction_group2algo (instr_name, reduction_group) =
   let (lhs, _, _, tenv) = List.hd reduction_group in
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
-  let context, winstr = extract_winstr instr_name lhs_stack in
+  let context, winstr = split_context_winstr instr_name lhs_stack in
   let instrs = match context with
     | [(vs, []), None ] ->
       let pop_instrs, remain = handle_lhs_stack vs in
@@ -543,17 +583,32 @@ let reduction_group2algo (instr_name, reduction_group) =
           List.fold_right Transpile.merge_otherwise blocks [] in
 
       pop_instrs @ inner_pop_instrs @ instrs
+    (* The target instruction is inside a context *)
     | [ ([], []), Some context ; (vs, _is), None ] ->
       let head_instrs = handle_context context vs in
       let body_instrs = List.map (reduction2instrs []) reduction_group |> List.concat in
       head_instrs @ body_instrs
+    (* The target ubstruction is inside differnet contexts (i.e. return in both label and frame) *)
+    | [ ([], [ _ ]), None ] ->
+      let orig_group = List.map un_unify reduction_group in
+      let sub_groups = list_partition_with is_in_same_context orig_group in
+      let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
+      let lhss = List.map (function _, group -> let lhs, _, _, _ = List.hd group in lhs) unified_sub_groups in
+      let sub_algos = List.map reduction_group2algo unified_sub_groups in
+      List.map2 (fun lhs -> function Al.Algo (_, _, body) ->
+        let kind = kind_of_context lhs in
+        Al.IfI (
+          Al.CompareC (Al.Eq, Al.GetCurContextE, Al.StringE kind),
+          body,
+          [])
+      ) lhss sub_algos
     | _ ->
       [ YetI "TODO" ] in
 
   (* name *)
   let name = "execution_of_" ^ instr_name in
   (* params *)
-  let params = get_params winstr |> List.map (find_type tenv) in
+  let params = get_params winstr |> List.map (find_type tenv) in (* TODO: retieve param for return *)
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability in
 

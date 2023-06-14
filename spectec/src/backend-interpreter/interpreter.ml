@@ -113,6 +113,11 @@ let get_current_frame () =
   | Some frame -> frame
   | None -> failwith "No frame" (* Due to Wasm validation, unreachable *)
 
+let get_current_context () =
+  match List.find_map (function FrameV _ -> Some "frame" | LabelV _ -> Some "label" | _ -> None) !stack with
+  | Some kind -> StringV kind
+  | None -> failwith "Not in context" (* Due to Wasm validation, unreachable *)
+
 (* Evaluation Context *)
 
 exception ExitContext of (value Env.Env'.t * value) * instr list
@@ -269,6 +274,7 @@ and eval_expr env expr =
       let v2 = eval_expr env e2 in
       LabelV (v1, v2)
   | GetCurLabelE -> get_current_label ()
+  | GetCurContextE -> get_current_context ()
   | ContE e -> (
       let v = eval_expr env e in
       match v with

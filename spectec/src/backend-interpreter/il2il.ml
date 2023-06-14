@@ -183,6 +183,7 @@ let unify_lhs' reduction_group =
 let unify_lhs (reduction_name, reduction_group) =
   let to_left_assoc (lhs, rhs, prems, bind) = (to_left_assoc_cat lhs), rhs, prems, bind in
   let to_right_assoc (lhs, rhs, prems, bind) = (to_right_assoc_cat lhs), rhs, prems, bind in
+  (* typical f^-1 ∘ g ∘ f *)
   reduction_name, (reduction_group |> List.map to_left_assoc |> unify_lhs' |> List.map to_right_assoc)
 
 let apply_template_to_def template def =

@@ -102,6 +102,7 @@ type expr =
   | GetCurFrameE
   | LabelE of expr * expr
   | GetCurLabelE
+  | GetCurContextE
   | ContE of expr
   (* Name *)
   | NameE of name * iter list

@@ -23,7 +23,6 @@ Animation failed:
 == IL Validation...
 == Translating to AL...
 Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
-Failed to extract the instruction return from the stack.
 if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
 if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
 =================
@@ -466,8 +465,22 @@ execution_of_frame n f val^n
 6. Pop the frame from the stack.
 7. Push val^n to the stack.
 
-execution_of_return []
-1. YetI: TODO.
+execution_of_return
+1. If the current context is frame, then:
+  a. Let F be the current frame.
+  b. Let n be the arity of F.
+  c. Pop val^n from the stack.
+  d. Pop all values val'* from the stack.
+  e. Exit current context.
+  f. Push val^n to the stack.
+2. If the current context is label, then:
+  a. Let L be the current label.
+  b. Let k be the arity of L.
+  c. Let instr'* be the continuation of L.
+  d. Pop all values val* from the stack.
+  e. Exit current context.
+  f. Push val* to the stack.
+  g. Execute RETURN.
 
 execution_of_unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.

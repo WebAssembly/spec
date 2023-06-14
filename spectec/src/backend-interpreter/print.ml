@@ -145,6 +145,7 @@ and string_of_expr = function
   | ArityE e -> sprintf "the arity of %s" (string_of_expr e)
   | GetCurLabelE -> "the current label"
   | GetCurFrameE -> "the current frame"
+  | GetCurContextE -> "the current context"
   | FrameE (e1, e2) ->
       sprintf "the activation of %s with arity %s" (string_of_expr e2)
         (string_of_expr e1)
@@ -486,6 +487,7 @@ let rec structured_string_of_expr = function
   | ArityE e -> "ArityE (" ^ structured_string_of_expr e ^ ")"
   | GetCurLabelE -> "GetCurLabelE"
   | GetCurFrameE -> "GetCurFrameE"
+  | GetCurContextE -> "GetCurContextE"
   | FrameE _ -> "FrameE TODO"
   | ListE el ->
       "ListE ("

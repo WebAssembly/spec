@@ -7,7 +7,8 @@ let rec walk_expr f e =
   | NumE _
   | StringE _
   | GetCurFrameE
-  | GetCurLabelE -> e
+  | GetCurLabelE
+  | GetCurContextE -> e
   | MinusE e' -> MinusE (new_ e')
   | BinopE (op, e1, e2) -> BinopE (op, new_ e1, new_ e2)
   | AppE (fname, args) -> AppE (fname, List.map new_ args)
