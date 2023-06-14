@@ -48,7 +48,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    then it is shadowed and the earlier label becomes inaccessible.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, reference
    pair: text format; instruction
 .. _text-blockinstr:
 .. _text-plaininstr:
@@ -102,6 +102,8 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-br_table:
 .. _text-br_on_null:
 .. _text-br_on_non_null:
+.. _text-br_on_cast:
+.. _text-br_on_cast_fail:
 .. _text-return:
 .. _text-call:
 .. _text-call_ref:
@@ -122,6 +124,8 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{br\_on\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNULL~l \\ &&|&
      \text{br\_on\_non\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNONNULL~l \\ &&|&
+     \text{br\_on\_cast}~~l{:}\Tlabelidx_I~~t_1{:}\Treftype~~t_2{:}\Treftype &\Rightarrow& \BRONCAST~l~t_1~t_2 \\ &&|&
+     \text{br\_on\_cast\_fail}~~l{:}\Tlabelidx_I~~t_1{:}\Treftype~~t_2{:}\Treftype &\Rightarrow& \BRONCASTFAIL~l~t_1~t_2 \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \CALLREF~x \\ &&|&
@@ -175,6 +179,29 @@ Reference Instructions
 .. _text-ref.func:
 .. _text-ref.is_null:
 .. _text-ref.as_non_null:
+.. _text-struct.new:
+.. _text-struct.new_default:
+.. _text-struct.get:
+.. _text-struct.get_s:
+.. _text-struct.get_u:
+.. _text-struct.set:
+.. _text-array.new:
+.. _text-array.new_default:
+.. _text-array.new_fixed:
+.. _text-array.new_elem:
+.. _text-array.new_data:
+.. _text-array.get:
+.. _text-array.get_s:
+.. _text-array.get_u:
+.. _text-array.set:
+.. _text-array.len:
+.. _text-i31.new:
+.. _text-i31.get_s:
+.. _text-i31.get_u:
+.. _text-ref.test:
+.. _text-ref.cast:
+.. _text-extern.internalize:
+.. _text-extern.externalize:
 
 .. math::
    \begin{array}{llclll}
@@ -182,7 +209,31 @@ Reference Instructions
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
      \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\
+     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\ &&|&
+     \text{ref.eq} &\Rightarrow& \REFEQ \\ &&|&
+     \text{ref.test}~~t{:}\Treftype &\Rightarrow& \REFTEST~t \\ &&|&
+     \text{ref.cast}~~t{:}\Treftype &\Rightarrow& \REFCAST~t \\ &&|&
+     \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \text{struct.get}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~i \\ &&|&
+     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
+     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
+     \text{struct.set}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \text{array.new\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \text{array.new\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \text{array.get}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \text{array.get\_u}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \text{array.get\_s}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \text{array.set}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \text{array.len} &\Rightarrow& \ARRAYLEN \\ &&|&
+     \text{i31.new} &\Rightarrow& \I31NEW \\ &&|&
+     \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
+     \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
+     \text{extern.internalize} &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
+     \text{extern.externalize} &\Rightarrow& \EXTERNEXTERNALIZE \\
    \end{array}
 
 

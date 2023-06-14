@@ -99,8 +99,6 @@ module VarMap = Map.Make(String)
 type space = {mutable map : int32 VarMap.t; mutable count : int32}
 let empty () = {map = VarMap.empty; count = 0l}
 
-let reset space = space.count <- 0l
-
 let shift category at n i =
   let i' = Int32.add i n in
   if I32.lt_u i' n then
@@ -116,27 +114,31 @@ let scoped category n space at =
   {map = VarMap.map (shift category at n) space.map; count = space.count}
 
 
-type types = {space : space; mutable list : type_ list; mutable ctx : def_type list}
-let empty_types () = {space = empty (); list = []; ctx = []}
+type types =
+  { space : space;
+    mutable fields : space list;
+    mutable list : type_ list;
+    mutable ctx : def_type list;
+  }
+let empty_types () = {space = empty (); fields = []; list = []; ctx = []}
 
 type context =
   { types : types; tables : space; memories : space;
     funcs : space; locals : space; globals : space;
     datas : space; elems : space; labels : space;
-    fields : space; deferred_locals : (unit -> unit) list ref
+    deferred_locals : (unit -> unit) list ref
   }
 
 let empty_context () =
   { types = empty_types (); tables = empty (); memories = empty ();
     funcs = empty (); locals = empty (); globals = empty ();
     datas = empty (); elems = empty (); labels = empty ();
-    fields = empty (); deferred_locals = ref []
+    deferred_locals = ref []
   }
 
 let enter_block (c : context) at = {c with labels = scoped "label" 1l c.labels at}
 let enter_let (c : context) at = {c with locals = empty (); deferred_locals = ref []}
 let enter_func (c : context) at = {(enter_let c at) with labels = empty ()}
-let enter_struct (c : context) = reset c.fields; c
 
 let defer_locals (c : context) f =
   c.deferred_locals := (fun () -> ignore (f ())) :: !(c.deferred_locals)
@@ -159,7 +161,8 @@ let memory (c : context) x = lookup "memory" c.memories x
 let elem (c : context) x = lookup "elem segment" c.elems x
 let data (c : context) x = lookup "data segment" c.datas x
 let label (c : context) x = lookup "label " c.labels x
-let field (c : context) x = lookup "field " c.fields x
+let field x (c : context) y =
+  lookup "field " (Lib.List32.nth c.types.fields x) y
 
 let func_type (c : context) x =
   match expand_def_type (Lib.List32.nth c.types.ctx x.it) with
@@ -180,7 +183,10 @@ let bind_rel category space x =
   space.map <- VarMap.add x.it 0l space.map;
   0l
 
-let bind_type (c : context) x = bind_abs "type" c.types.space x
+let new_fields (c : context) =
+  c.types.fields <- c.types.fields @ [empty ()]
+
+let bind_type (c : context) x = new_fields c; bind_abs "type" c.types.space x
 let bind_func (c : context) x = bind_abs "function" c.funcs x
 let bind_local (c : context) x = force_locals c; bind_abs "local" c.locals x
 let bind_global (c : context) x = bind_abs "global" c.globals x
@@ -189,7 +195,8 @@ let bind_memory (c : context) x = bind_abs "memory" c.memories x
 let bind_elem (c : context) x = bind_abs "elem segment" c.elems x
 let bind_data (c : context) x = bind_abs "data segment" c.datas x
 let bind_label (c : context) x = bind_rel "label" c.labels x
-let bind_field (c : context) x = bind_abs "field" c.fields x
+let bind_field (c : context) x y =
+  bind_abs "field" (Lib.List32.nth c.types.fields x) y
 
 let define_type (c : context) (ty : type_) =
   c.types.list <- c.types.list @ [ty]
@@ -198,7 +205,7 @@ let define_def_type (c : context) (dt : def_type) =
   assert (c.types.space.count > Lib.List32.length c.types.ctx);
   c.types.ctx <- c.types.ctx @ [dt]
 
-let anon_type (c : context) at = bind "type" c.types.space 1l at
+let anon_type (c : context) at = new_fields c; bind "type" c.types.space 1l at
 let anon_func (c : context) at = bind "function" c.funcs 1l at
 let anon_locals (c : context) n at =
   defer_locals c (fun () -> bind "local" c.locals n at)
@@ -208,7 +215,8 @@ let anon_memory (c : context) at = bind "memory" c.memories 1l at
 let anon_elem (c : context) at = bind "elem segment" c.elems 1l at
 let anon_data (c : context) at = bind "data segment" c.datas 1l at
 let anon_label (c : context) at = bind "label" c.labels 1l at
-let anon_fields (c : context) n at = bind "field" c.fields n at
+let anon_fields (c : context) x n at =
+  bind "field" (Lib.List32.nth c.types.fields x) n at
 
 
 let inline_func_type (c : context) ft at =
@@ -368,16 +376,16 @@ field_type_list :
   | field_type field_type_list { fun c -> $1 c :: $2 c }
 
 struct_field_list :
-  | /* empty */ { fun c -> [] }
+  | /* empty */ { fun c x -> [] }
   | LPAR FIELD field_type_list RPAR struct_field_list
     { let at3 = ati 3 in
-      fun c -> let fts = $3 c in
-      ignore (anon_fields c (Lib.List32.length fts) at3); fts @ $5 c }
+      fun c x -> let fts = $3 c in
+      ignore (anon_fields c x (Lib.List32.length fts) at3); fts @ $5 c x }
   | LPAR FIELD bind_var field_type RPAR struct_field_list
-    { fun c -> ignore (bind_field c $3); $4 c :: $6 c }
+    { fun c x -> ignore (bind_field c x $3); $4 c :: $6 c x }
 
 struct_type :
-  | struct_field_list { fun c -> let c' = enter_struct c in StructT ($1 c') }
+  | struct_field_list { fun c x -> StructT ($1 c x) }
 
 array_type :
   | field_type { fun c -> ArrayT ($1 c) }
@@ -399,18 +407,18 @@ func_type_result :
     { fun c -> snd $3 c @ $5 c }
 
 str_type :
-  | LPAR STRUCT struct_type RPAR { fun c -> DefStructT ($3 c) }
-  | LPAR ARRAY array_type RPAR { fun c -> DefArrayT ($3 c) }
-  | LPAR FUNC func_type RPAR { fun c -> DefFuncT ($3 c) }
+  | LPAR STRUCT struct_type RPAR { fun c x -> DefStructT ($3 c x) }
+  | LPAR ARRAY array_type RPAR { fun c x -> DefArrayT ($3 c) }
+  | LPAR FUNC func_type RPAR { fun c x -> DefFuncT ($3 c) }
 
 sub_type :
-  | str_type { fun c -> SubT (Final, [], $1 c) }
+  | str_type { fun c x -> SubT (Final, [], $1 c x) }
   | LPAR SUB var_list str_type RPAR
-    { fun c -> SubT (NoFinal,
-        List.map (fun x -> VarHT (StatX x.it)) ($3 c type_), $4 c) }
+    { fun c x -> SubT (NoFinal,
+        List.map (fun y -> VarHT (StatX y.it)) ($3 c type_), $4 c x) }
   | LPAR SUB FINAL var_list str_type RPAR
-    { fun c -> SubT (Final,
-        List.map (fun x -> VarHT (StatX x.it)) ($4 c type_), $5 c) }
+    { fun c x -> SubT (Final,
+        List.map (fun y -> VarHT (StatX y.it)) ($4 c type_), $5 c x) }
 
 table_type :
   | limits ref_type { fun c -> TableT ($1, $2 c) }
@@ -560,8 +568,8 @@ plain_instr :
   | I31_NEW { fun c -> i31_new }
   | I31_GET { fun c -> $1 }
   | STRUCT_NEW var { fun c -> $1 ($2 c type_) }
-  | STRUCT_GET var var { fun c -> $1 ($2 c type_) ($3 c field) }
-  | STRUCT_SET var var { fun c -> struct_set ($2 c type_) ($3 c field) }
+  | STRUCT_GET var var { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)) }
+  | STRUCT_SET var var { fun c -> let x = $2 c type_ in struct_set x ($3 c (field x.it)) }
   | ARRAY_NEW var { fun c -> $1 ($2 c type_) }
   | ARRAY_NEW_FIXED var nat32 { fun c -> array_new_fixed ($2 c type_) $3 }
   | ARRAY_NEW_ELEM var var { fun c -> array_new_elem ($2 c type_) ($3 c elem) }
@@ -1098,9 +1106,9 @@ inline_export :
 type_def :
   | LPAR TYPE sub_type RPAR
     { let at = at () in
-      fun c -> ignore (anon_type c at); fun () -> $3 c }
+      fun c -> let x = anon_type c at in fun () -> $3 c x }
   | LPAR TYPE bind_var sub_type RPAR  /* Sugar */
-    { fun c -> ignore (bind_type c $3); fun () -> $4 c }
+    { fun c -> let x = bind_type c $3 in fun () -> $4 c x }
 
 type_def_list :
   | /* empty */ { fun c () -> [] }
