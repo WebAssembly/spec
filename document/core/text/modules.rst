@@ -98,7 +98,7 @@ If inline declarations are given, then their types must match the referenced :re
 .. note::
    If inline declarations are given, their types must be *syntactically* equal to the types from the indexed definition;
    possible type :ref:`substitutions <notation-subst>` from other definitions that might make them equal are not taken into account.
-   This is to simplify syntactic pre-processing in the presence of recursive types.
+   This is to simplify syntactic pre-processing.
 
 The synthesized attribute of a |Ttypeuse| is a pair consisting of both the used :ref:`type index <syntax-typeidx>` and the local :ref:`identifier context <text-context>` containing possible parameter identifiers.
 The following auxiliary function extracts optional identifiers from parameters:
@@ -130,13 +130,12 @@ In that case, a :ref:`type index <syntax-typeidx>` is automatically inserted:
      \text{(}~\text{type}~~x~\text{)}~~\Tparam^\ast~~\Tresult^\ast \\
    \end{array}
 
-where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose definition in the current module is the :ref:`final <syntax-final>` :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \toF [t_2^\ast]`.
-If no such index exists, then a new :ref:`recursive type <text-rectype>` of the form
+where :math:`x` is the smallest existing :ref:`type index <syntax-typeidx>` whose :ref:`recursive type <syntax-rectype>` definition in the current module is of the form
 
 .. math::
    \text{(}~\text{rec}~\text{(}~\text{type}~\text{(}~\text{sub}~\text{final}~~\text{(}~\text{func}~~\Tparam^\ast~~\Tresult^\ast~\text{)}~\text{)}~\text{)}~\text{)}
 
-is inserted at the end of the module.
+If no such index exists, then a new :ref:`recursive type <text-rectype>` of the same form is inserted at the end of the module.
 
 Abbreviations are expanded in the order they appear, such that previously inserted type definitions are reused by consecutive expansions.
 
