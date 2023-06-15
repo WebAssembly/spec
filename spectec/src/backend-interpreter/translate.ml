@@ -1,3 +1,4 @@
+open Al_util
 open Il
 open Printf
 open Util.Source
@@ -150,10 +151,10 @@ let rec exp2expr exp =
       let f acc = function
         | Ast.Atom name, fieldexp ->
             let expr = exp2expr fieldexp in
-            Al.Record.add name expr acc
+            Record.add name expr acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
-      let record = List.fold_left f Al.Record.empty expfields in
+      let record = List.fold_left f Record.empty expfields in
       Al.RecordE record
   (* TODO: Handle MixE *)
   | Ast.MixE (op, { it = Ast.TupE exps; _ }) -> (

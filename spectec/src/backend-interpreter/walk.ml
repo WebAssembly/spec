@@ -1,4 +1,5 @@
 open Al
+open Al_util
 
 let rec walk_expr f e =
   let _, _, f_expr = f in

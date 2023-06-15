@@ -14,5 +14,6 @@
     tester
     exception
     il2il
+    al_util
     )
 )

@@ -1,4 +1,5 @@
 open Al
+open Al_util
 
 (** Hardcoded algorithms **)
 

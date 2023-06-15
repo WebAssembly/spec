@@ -19,15 +19,7 @@ type al_type =
 
 type 'a growable_array = 'a array ref
 
-module FieldName = struct
-  type t = string
-
-  let compare = Stdlib.compare
-end
-
-module Record = Map.Make (FieldName)
-
-type 'a record = 'a Record.t
+type 'a record = (string * 'a ref) list
 
 and store = value record
 and stack = value list

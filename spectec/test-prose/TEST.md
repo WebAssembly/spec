@@ -573,7 +573,7 @@ execution_of_call_addr a
   a. Let (m, (FUNC [t_1^k]->[t_2^n] t* instr*)) be $funcinst()[a].
   b. Assert: Due to validation, there are at least k values on the top of the stack.
   c. Pop val^k from the stack.
-  d. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
+  d. Let f be { MODULE: m; LOCAL: val^k ++ $default_(t)*; }.
   e. Push the activation of f with arity n to the stack.
   f. Let L be the label_n{[]}.
   g. Push L to the stack.
@@ -864,7 +864,7 @@ instantiation module externval*
 
 alloc_module module externval*
 1. Let (MODULE import* func* global* table* memory* elem* data* _ export*) be module.
-2. Let moduleinst be { DATA: []; ELEM: []; EXPORT: []; FUNC: []; GLOBAL: []; MEM: []; TABLE: []; }.
+2. Let moduleinst be { EXPORT: []; DATA: []; ELEM: []; MEM: []; GLOBAL: []; TABLE: []; FUNC: []; }.
 3. For i in range |import*|:
   a. Let (IMPORT _ _ import_type) be import*[i].
   b. Let (EXPORT _ externuse) be externval*[i].
@@ -944,7 +944,7 @@ exec_expr instr*
 
 alloc_func func
 1. Let a be |s.FUNC|.
-2. Let dummy_module_inst be { FUNC: []; TABLE: []; }.
+2. Let dummy_module_inst be { TABLE: []; FUNC: []; }.
 3. Let funcinst be (dummy_module_inst, func).
 4. Append funcinst to the s.FUNC.
 5. Return a.
@@ -986,7 +986,7 @@ invocation funcaddr val*
 2. Let (FUNC functype _ _) be func.
 3. Let [_^n]->[_^m] be functype.
 4. Assert: |val*| is n.
-5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
+5. Let f be the activation of { MODULE: { TABLE: []; FUNC: []; }; LOCAL: []; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.
 8. Execute (CALL_ADDR funcaddr).

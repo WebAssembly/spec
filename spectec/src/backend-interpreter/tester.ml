@@ -2,6 +2,7 @@ open Reference_interpreter
 open Source
 open Ast
 open Al
+open Al_util
 
 (** flag **)
 let test_name = ref ""
@@ -74,7 +75,7 @@ let register: register ref = ref Register.empty
 
 let builtin () =
 
-  let initial_store: value list Record.t =
+  let initial_store: value list record =
     Record.empty
     |> Record.add "FUNC" []
     |> Record.add "GLOBAL" []
@@ -124,6 +125,7 @@ let builtin () =
     (* Update Store *)
     let insts = Record.find kind sto in
     let new_sto = Record.add kind (insts @ [inst]) sto in
+
 
     (* Generate ExternFunc *)
     let addr = List.length insts |> Int64.of_int in

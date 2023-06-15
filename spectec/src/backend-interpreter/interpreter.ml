@@ -1,5 +1,6 @@
 open Print
 open Al
+open Al_util
 open Reference_interpreter
 
 (* AL Data Structures *)
