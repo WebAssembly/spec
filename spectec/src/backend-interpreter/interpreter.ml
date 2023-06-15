@@ -475,15 +475,15 @@ and interp_instrs env il =
           let vs = pop_while (function ConstructV _ -> true | _ -> false) in
           vs |> List.rev |> List.iter push;
           (env, cont)
-      | ExitAbruptI n ->
+      | ExitAbruptI _ ->
           let rec pop_while pred =
             let top = pop () in
-            if pred top then top :: pop_while pred else []
+            if pred top then top :: pop_while pred else [ top ]
           in
-          let until = Env.find n env in
-          let vs = pop_while (function ConstructV _ -> true | _ -> false) in
-          vs |> List.rev |> List.iter push;
-          (match until with
+          let vs = pop_while (function ConstructV _ -> true | _ -> false) |> List.rev in
+          let ctx = List.hd vs in
+          vs |> List.tl |> List.iter push;
+          (match ctx with
           | LabelV _ -> raise (ExitContext (env, cont))
           | _ -> ());
           (env, cont)

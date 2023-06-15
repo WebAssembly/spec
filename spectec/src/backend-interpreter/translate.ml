@@ -596,13 +596,13 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
       let lhss = List.map (function _, group -> let lhs, _, _, _ = List.hd group in lhs) unified_sub_groups in
       let sub_algos = List.map reduction_group2algo unified_sub_groups in
-      List.map2 (fun lhs -> function Al.Algo (_, _, body) ->
+      List.fold_right2 (fun lhs -> function Al.Algo (_, _, body) -> fun acc ->
         let kind = kind_of_context lhs in
-        Al.IfI (
+        [ Al.IfI (
           Al.CompareC (Al.Eq, Al.GetCurContextE, Al.StringE kind),
           body,
-          [])
-      ) lhss sub_algos
+          acc) ]
+      ) lhss sub_algos []
     | _ ->
       [ YetI "TODO" ] in
 

@@ -473,7 +473,7 @@ execution_of_return
   d. Pop all values val'* from the stack.
   e. Exit current context.
   f. Push val^n to the stack.
-2. If the current context is label, then:
+2. Else if the current context is label, then:
   a. Let L be the current label.
   b. Let k be the arity of L.
   c. Let instr'* be the continuation of L.
@@ -810,23 +810,6 @@ execution_of_memory.grow
 
 execution_of_data.drop x
 1. Perform $with_data(x, []).
-
-execution_of_return
-1. Pop all values val'* from the stack.
-2. If the top of the stack is frame, then:
-  a. Pop F from the stack.
-  b. Let n be the arity of F.
-  c. Push F to the stack.
-  d. Push val'* to the stack.
-  e. Pop val^n from the stack.
-  f. Exit current context.
-  g. Push val^n to the stack.
-3. Else:
-  a. Pop L from the stack.
-  b. Push L to the stack.
-  c. Push val'* to the stack.
-  d. Exit current context.
-  e. Execute RETURN.
 
 instantiation module externval*
 1. Let (MODULE _ _ _ _ _ elem* data* start? _) be module.

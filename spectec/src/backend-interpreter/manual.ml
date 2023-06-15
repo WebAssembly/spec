@@ -1,89 +1,7 @@
 open Al
 open Al_util
 
-(** Hardcoded algorithms **)
-
-(* br *)
-(* Modified DSL
-   rule Step_pure/br-zero:
-   ( LABEL_ n `{instr'*} val'* val^n (BR l) instr* )  ~>  val^n instr'*
-   -- if l = 0
-   rule Step_pure/br-succ:
-   ( LABEL_ n `{instr'*} val* (BR l)) instr* )  ~>  val* (BR $(l-1))
-   -- otherwise
-   Note that we can safely ignore the trailing instr* because
-   our Al interpreter keeps track of the point of interpretation.
-*)
-
-let br =
-  Algo
-    ( "execution_of_br",
-      [ (NameE (N "l", []), IntT) ],
-      [
-        IfI
-          ( CompareC (Eq, NameE (N "l", []), NumE 0L),
-            (* br_zero *)
-            [
-              LetI (NameE (N "L", []), GetCurLabelE);
-              LetI (NameE (N "n", []), ArityE (NameE (N "L", [])));
-              AssertI
-                "Due to validation, there are at least n values on the top of \
-                 the stack";
-              PopI (NameE (N "val", [ListN (N "n")]));
-              WhileI (IsTopC "value", [ PopI (NameE (N "val'", [])) ]);
-              ExitAbruptI (N "L");
-              PushI (NameE (N "val", [ListN (N "n")]));
-              ExecuteSeqI (ContE (NameE (N "L", [])));
-            ],
-            (* br_succ *)
-            [
-              LetI (NameE (N "L", []), GetCurLabelE);
-              ExitAbruptI (N "L");
-              ExecuteI
-                (ConstructE ("BR", [ BinopE (Sub, NameE (N "l", []), NumE 1L) ]));
-            ] );
-      ] )
-
-(* return *)
-(* DSL
-  rule Step_pure/return-frame:
-  ( FRAME_ n `{f} val'* val^n RETURN instr* )  ~>  val^n
-  rule Step_pure/return-label:
-  ( LABEL_ k `{instr'*} val* RETURN instr* )  ~>  val* RETURN
-  Note that WASM validation step (in the formal spec using evaluation context)
-  assures that there are
-  at least n values on the top of the stack before return.
-*)
-
-let return =
-  Algo
-    ( "execution_of_return",
-      [],
-      [
-        PopAllI (NameE (N "val'", [List]));
-        IfI (
-          IsTopC "frame",
-          (* return_frame *)
-          [
-            PopI (NameE (N "F", []));
-            LetI (NameE (N "n", []), ArityE (NameE (N "F", [])));
-            PushI (NameE (N "F", []));
-            PushI (NameE (N "val'", [List]));
-            PopI (NameE (N "val", [ListN (N "n")]));
-            ExitAbruptI (N "F");
-            PushI (NameE (N "val", [ListN (N "n")]));
-          ],
-          (* return_label *)
-          [
-            PopI (NameE (N "L", []));
-            PushI (NameE (N "L", []));
-            PushI (NameE (N "val'", [List]));
-            ExitAbruptI (N "L");
-            ExecuteI (ConstructE ("RETURN", []));
-          ] );
-      ] )
-
-(* Module Semantics *)
+(** Hardcoded module algorithms **)
 
 let instantiation =
   (* Name definition *)
@@ -610,8 +528,6 @@ let invocation =
 
 let manual_algos =
   [
-    (* br; *)
-    return;
     instantiation;
     alloc_module;
     init_global;
