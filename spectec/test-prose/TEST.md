@@ -370,7 +370,7 @@ table.grow
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop YetE ((ref <: admininstr)) from the stack.
 5. If YetC (), then:
-  a. YetI: Perform $with_tableext(z, x, ref^n{}).
+  a. YetI: Perform z'.
   b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)) to the stack.
 6. If YetC (), then:
   a. YetI: Perform z.
@@ -399,7 +399,7 @@ memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
 3. If YetC (), then:
-  a. YetI: Perform $with_memext(z, 0, 0^((n * 64) * $Ki){}).
+  a. YetI: Perform z'.
   b. Push YetE (CONST_admininstr(I32_numtype, (|$mem(z, 0).DATA_meminst| / (64 * $Ki)))) to the stack.
 4. If YetC (), then:
   a. YetI: Perform z.
