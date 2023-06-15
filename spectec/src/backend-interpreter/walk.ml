@@ -1,10 +1,29 @@
 open Al
 open Al_util
 
+type action = {
+  pre_instr: instr -> instr;
+  post_instr: instr -> instr;
+  pre_cond: cond -> cond;
+  post_cond: cond -> cond;
+  pre_expr: expr -> expr;
+  post_expr: expr -> expr;
+}
+
+let id x = x
+let default_action = {
+  pre_instr = id;
+  post_instr = id;
+  pre_cond = id;
+  post_cond = id;
+  pre_expr = id;
+  post_expr = id;
+}
+
 let rec walk_expr f e =
-  let _, _, f_expr = f in
+  let { pre_expr = pre; post_expr = post; _ } = f in
   let new_ = walk_expr f in
-  ( match e with
+  ( match pre e with
   | NumE _
   | StringE _
   | GetCurFrameE
@@ -31,21 +50,22 @@ let rec walk_expr f e =
   | ContE e' -> ContE (new_ e')
   | NameE (n, iters) -> NameE (n, iters)
   | YetE _ -> e )
-  |> f_expr
+  |> post
 
 and walk_path f p =
-  let f_path p = p in (* TODO *)
-  ( match p with
+  let pre = id in
+  let post = id in
+  ( match pre p with
   | IndexP e -> IndexP (walk_expr f e)
   | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
   | DotP _ -> p )
-  |> f_path
+  |> post
 
 let rec walk_cond f c =
-  let _, f_cond, _ = f in
+  let { pre_cond = pre; post_cond = post; _ } = f in
   let new_ = walk_cond f in
   let new_e = walk_expr f in
-  ( match c with
+  ( match pre c with
   | NotC inner_c -> NotC (new_ inner_c)
   | BinopC (op, c1, c2) -> BinopC (op, new_ c1, new_ c2)
   | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
@@ -54,14 +74,14 @@ let rec walk_cond f c =
   | IsTopC _ -> c
   | ValidC e -> ValidC (new_e e)
   | YetC _ -> c )
-  |> f_cond
+  |> post
 
 let rec walk_instr f instr =
-  let f_instr, _, _ = f in
+  let { pre_instr = pre; post_instr = post; _ } = f in
   let new_ = List.map (walk_instr f) in
   let new_c = walk_cond f in
   let new_e = walk_expr f in
-  ( match instr with
+  ( match pre instr with
   | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
   | OtherwiseI il -> OtherwiseI (new_ il)
   | WhileI (c, il) -> WhileI (new_c c, new_ il)
@@ -87,7 +107,7 @@ let rec walk_instr f instr =
   | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
   | AppendListI (e1, e2) -> AppendListI (new_e e1, new_e e2)
   | YetI _ -> instr )
-  |> f_instr
+  |> post
 
 and walk_instrs f = walk_instr f |> List.map
 

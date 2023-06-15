@@ -2,7 +2,6 @@ open Al
 open Al_util
 
 (** helper *)
-let id x = x
 let composite g f x = f x |> g
 
 let take n str =
@@ -129,7 +128,7 @@ let if_not_defined =
   let transpile_cond = function
   | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
   | c -> c in
-  Walk.walk_instr (id, transpile_cond, id)
+  Walk.walk_instr { Walk.default_action with post_cond = transpile_cond }
 
 let swap_if =
   let transpile_instr = function
@@ -142,7 +141,7 @@ let swap_if =
       else
         IfI (neg c, il2, il1)
   | i -> i in
-  Walk.walk_instr (transpile_instr, id, id)
+  Walk.walk_instr { Walk.default_action with post_instr = transpile_instr }
 
 let unify_tail instrs1 instrs2 =
   let rev = List.rev in
@@ -189,8 +188,7 @@ let flatten_if = function
   | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
   | i -> i
 
-
-let f_instr = flatten_if
-let f_cond = id
-let f_expr = composite hide_state simplify_record_concat
-let transpiler = Walk.walk (f_instr, f_cond, f_expr)
+let transpiler = Walk.walk { Walk.default_action with
+  post_instr = flatten_if;
+  post_expr = composite hide_state simplify_record_concat
+}

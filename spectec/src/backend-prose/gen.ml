@@ -20,11 +20,9 @@ let iter_to_iter = function
 | _ -> "For all ...,"
 
 let transpile_expr =
-  Backend_interpreter.Walk.walk_expr (
-    (fun i -> i),
-    (fun c -> c),
-    Backend_interpreter.Transpile.simplify_record_concat
-  )
+  Backend_interpreter.Walk.walk_expr { Backend_interpreter.Walk.default_action with
+    post_expr = Backend_interpreter.Transpile.simplify_record_concat
+  }
 
 let exp_to_expr e = exp2expr e |> transpile_expr
 let exp_to_args es = exp2args es |> List.map transpile_expr
