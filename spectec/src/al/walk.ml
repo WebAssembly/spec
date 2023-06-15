@@ -99,6 +99,8 @@ let rec walk_instr f (instr:instr) : instr list =
   | PopI e -> PopI (new_e e)
   | PopAllI e -> PopAllI (new_e e)
   | LetI (n, e) -> LetI (new_e n, new_e e)
+  | CallI (e1, n, el) -> CallI (new_e e1, n, List.map new_e el)
+  | MapI (e1, n, el, il) -> MapI (new_e e1, n, List.map new_e el, il)
   | TrapI -> TrapI
   | NopI -> NopI
   | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
@@ -106,7 +108,7 @@ let rec walk_instr f (instr:instr) : instr list =
   | ExecuteI e -> ExecuteI (new_e e)
   | ExecuteSeqI e -> ExecuteSeqI (new_e e)
   | JumpI e -> JumpI (new_e e)
-  | PerformI e -> PerformI (new_e e)
+  | PerformI (n, el) -> PerformI (n, List.map new_e el)
   | ExitNormalI n -> ExitNormalI n
   | ExitAbruptI n -> ExitAbruptI n
   | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)

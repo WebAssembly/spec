@@ -193,6 +193,19 @@ let rec mk_access ps base =
   | [] -> base
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
+let hide_state_args = List.filter (function
+  | PairE (NameE (N "s"), NameE (N "f"))
+  | NameE (N "z") -> false
+  | PairE (NameE (N s), NameE (N "f"))
+    when String.starts_with ~prefix:"s_" s -> false
+  | PairE (NameE (N s), NameE (N f))
+    when String.starts_with ~prefix:"s_" s
+    && String.starts_with ~prefix:"f_" f
+      -> false
+  | NameE (N "s") -> false
+  | NameE (N s) when String.starts_with ~prefix:"s_" s -> false
+  | _ -> true)
+
 let hide_state_instr = function
   | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> [ ReturnI None ]
   | ReturnI (Some (PairE ((NameE (N s)), NameE (N f))))
@@ -205,9 +218,9 @@ let hide_state_instr = function
   (* Perform *)
   | LetI (PairE (NameE (N s), NameE (N f)), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
-      && String.starts_with ~prefix:"f_" f -> [ PerformI (AppE (fname, el)) ]
+      && String.starts_with ~prefix:"f_" f -> [ PerformI (fname, el) ]
   | LetI (NameE (N s), AppE (fname, el))
-    when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
+    when String.starts_with ~prefix:"s_" s -> [ PerformI (fname, el) ]
   (* Append *)
   | LetI (NameE (N s), ExtendE (e1, ps, ListE [ e2 ]) )
     when String.starts_with ~prefix:"s_" s ->
@@ -219,27 +232,14 @@ let hide_state_instr = function
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
       | _ -> failwith "Invalid replace"
       end
+  | CallI (lhs, f, args) -> [ CallI (lhs, f, hide_state_args args) ]
+  | MapI (lhs, f, args, iters) -> [ MapI (lhs, f, hide_state_args args, iters) ]
+  | PerformI (f, args) -> [ PerformI (f, hide_state_args args) ]
   | i -> [ i ]
 
+
 let hide_state = function
-  | AppE (f, args) ->
-      let new_args =
-        List.filter
-          (function
-            | PairE (NameE (N "s"), NameE (N "f"))
-            | NameE (N "z") -> false
-            | PairE (NameE (N s), NameE (N "f"))
-              when String.starts_with ~prefix:"s_" s -> false
-            | PairE (NameE (N s), NameE (N f))
-              when String.starts_with ~prefix:"s_" s
-              && String.starts_with ~prefix:"f_" f
-                -> false
-            | NameE (N "s") -> false
-            | NameE (N s) when String.starts_with ~prefix:"s_" s -> false
-            | _ -> true)
-          args
-      in
-      AppE (f, new_args)
+  | AppE (f, args) -> AppE (f, hide_state_args args)
   | ListE [ NameE (N "s"); e ]
   | ListE [ NameE (N "s'"); e ] -> e
   | ListE [ NameE (N s); e ] when String.starts_with ~prefix:"s_" s -> e
@@ -273,3 +273,43 @@ let transpiler algo =
   | (NameE (N "s"), _) :: tail ->
       Algo (name, tail, body)
   | _ -> Algo(name, params, body)
+
+(* Remove AppE / MapE *)
+let app_remover algo =
+  let to_call = function
+    | LetI (lhs, AppE (f, args)) -> CallI (lhs, f, args)
+    | LetI (lhs, MapE (f, args, iters)) -> MapI (lhs, f, args, iters)
+    | i -> i in
+  let stack = ref [] in
+  let pre i =
+    stack := ref [] :: !stack;
+    [ to_call i ] in
+  let post i =
+    let extra = List.rev !(List.hd !stack) in
+    stack := List.tl !stack;
+    extra @ [i] in
+
+  let call_id = ref 0 in
+  let call_prefix = "_r" in
+  let get_fresh () =
+    let id = !call_id in
+    call_id := id + 1;
+    NameE (N (call_prefix ^ (string_of_int id))) in
+  let replace_call e = match e with
+    | AppE (f, args) ->
+      let fresh = get_fresh () in
+      let instrs = List.hd !stack in
+      instrs := CallI (fresh, f, args) :: !instrs;
+      fresh
+    | MapE (f, args, iters) ->
+      let fresh = get_fresh () in
+      let instrs = List.hd !stack in
+      instrs := MapI (fresh, f, args, iters) :: !instrs;
+      fresh
+    | _ -> e in
+
+  Walk.walk { Walk.default_action with
+    pre_instr = pre;
+    post_instr = post;
+    post_expr = replace_call;
+  } algo

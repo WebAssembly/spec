@@ -425,7 +425,7 @@ and replace_path env base path v_new = match path with
       RecordV r_new 
 
 and interp_instrs env il =
-  (* if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1; *)
+  if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> env
   | i :: cont ->
@@ -546,14 +546,16 @@ and interp_instrs env il =
           in
           let env = assign pattern (eval_expr env e) env in
           (env, cont)
+      | CallI (lhs, f, args) -> interp_instrs env [LetI (lhs, AppE (f, args))], cont
+      | MapI (lhs, f, args, iters) -> interp_instrs env [LetI (lhs, MapE (f, args, iters))], cont
       | TrapI -> raise Exception.Trap
       | NopI | ReturnI None -> (env, cont)
       | ReturnI (Some e) ->
           let result = eval_expr env e in
           let env = Env.set_result result env in
           (env, cont)
-      | PerformI e ->
-          eval_expr env e |> ignore;
+      | PerformI (f, args) ->
+          eval_expr env (AppE (f, args)) |> ignore;
           (env, cont)
       | ExecuteI e ->
           eval_expr env e |> execute_wasm_instr;

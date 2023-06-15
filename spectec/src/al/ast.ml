@@ -121,18 +121,22 @@ and cond =
   | YetC of string
 
 type instr =
+  (* Nested instructions *)
   | IfI of cond * instr list * instr list
   | OtherwiseI of instr list (* This is only for intermideate process durinng il->al *)
   | WhileI of cond * instr list
   | EitherI of instr list * instr list
   | ForI of expr * instr list
   | ForeachI of expr * expr * instr list
+  (* Flat instructions *)
   | AssertI of string
   | PushI of expr
   | PopI of expr
   | PopAllI of expr
-  (* change name as a `expr` type *)
   | LetI of expr * expr
+  (* TODO: Merge CallI and MapI *)
+  | CallI of expr * name * expr list
+  | MapI of expr * name * expr list * iter list
   | TrapI
   | NopI
   | ReturnI of expr option
@@ -140,7 +144,7 @@ type instr =
   | ExecuteI of expr
   | ExecuteSeqI of expr
   | JumpI of expr
-  | PerformI of expr
+  | PerformI of name * expr list
   | ExitNormalI of name
   | ExitAbruptI of name
   (* Mutations *)

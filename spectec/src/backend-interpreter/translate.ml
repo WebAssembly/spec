@@ -426,8 +426,9 @@ let rec rhs2instrs exp =
         { it = TupE [ state_exp; rhs ]; _ } ) -> (
       let push_instrs = rhs2instrs rhs in
       match state_exp.it with
-      | VarE _ -> push_instrs
-      | _ -> push_instrs @ [ PerformI (exp2expr state_exp) ])
+      | Ast.VarE _ -> push_instrs
+      | Ast.CallE (f, args) -> push_instrs @ [ PerformI (N f.it, exp2args args) ]
+      | _ -> failwith "Invalid new state" )
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
 (* `Ast.exp` -> `cond` *)
@@ -891,3 +892,4 @@ let translate il =
   (* Transpile *)
   (* Can be turned off *)
   List.map Transpile.transpiler algos
+  |> List.map Transpile.app_remover
