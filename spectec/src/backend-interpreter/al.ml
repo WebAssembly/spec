@@ -113,6 +113,7 @@ and cond =
   | IsDefinedC of expr
   | IsCaseOfC of expr * string
   | IsTopC of string
+  | ValidC of expr
   (* Yet *)
   | YetC of string
 

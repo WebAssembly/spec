@@ -466,6 +466,11 @@ let prems2instrs remain_lhs =
                     [] );
               ]
           | _ -> Al.LetI (exp2expr exp1, exp2expr exp2) :: instrs')
+      | Ast.RulePr (id, _, exp) when id.it = "Tabletype_ok" || id.it = "Memtype_ok" -> (* TODO: Make this general *)
+        ( match exp2args exp with
+        | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
+        | _ -> failwith "prem_to_instr: Invalid prem"
+        )
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           Al.YetI (Il.Print.string_of_prem prem) :: instrs)

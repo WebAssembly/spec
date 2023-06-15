@@ -313,6 +313,10 @@ and eval_cond env cond =
       | OptV (_) -> false
       | _ -> structured_string_of_cond cond |> failwith
       end
+  | IsCaseOfC (e, expected_tag) -> (
+      match eval_expr env e with
+      | ConstructV (tag, _) -> expected_tag = tag
+      | _ -> false)
   | IsTopC "value" -> (
       match !stack with
       | [] -> false
@@ -321,10 +325,20 @@ and eval_cond env cond =
       match !stack with
       | [] -> false
       | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
-  | IsCaseOfC (e, expected_tag) -> (
+  (* TODO : This sohuld be replaced with executing the validation algorithm *)
+  | ValidC e -> (
+      let valid_lim lim k = match lim with
+      | PairV (NumV n, OptV (Some (NumV m))) -> n <= m && m <= k
+      | PairV (NumV n, OptV None) -> n <= k
+      | _ -> failwith "invalid limit" in
       match eval_expr env e with
-      | ConstructV (tag, _) -> expected_tag = tag
-      | _ -> false)
+      (* valid_tabletype *)
+      | PairV (lim, _rt) -> valid_lim lim 0xffffffffL
+      (* valid_memtype *)
+      | ConstructV ("I8", [ lim ]) -> valid_lim lim 0x10000L
+      (* valid_other *)
+      | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
+      )
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =

@@ -51,7 +51,8 @@ let rec walk_cond f c =
   | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
-  | IsTopC _
+  | IsTopC _ -> c
+  | ValidC e -> ValidC (new_e e)
   | YetC _ -> c )
   |> f_cond
 

@@ -188,6 +188,7 @@ and string_of_cond = function
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | IsTopC s -> sprintf "the top of the stack is %s" s
+  | ValidC e -> sprintf "%s is valid" (string_of_expr e)
   | YetC s -> sprintf "YetC (%s)" s
 
 let make_index index depth =
@@ -570,6 +571,7 @@ and structured_string_of_cond = function
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | IsTopC s -> "TopC (" ^ s ^ ")"
+  | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
   | YetC s -> "YetC (" ^ s ^ ")"
 
 (* instruction *)
