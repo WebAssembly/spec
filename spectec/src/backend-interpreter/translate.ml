@@ -576,14 +576,15 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let pop_instrs, remain = handle_lhs_stack vs in
       let inner_pop_instrs = handle_context_winstr winstr in
 
-      let instrs = match reduction_group with
-      (* no premise: either *)
-      | [ (lhs1, rhs1, [], _); (lhs2, rhs2, [], _) ]
-        when Print.string_of_exp lhs1 = Print.string_of_exp lhs2 ->
+      let instrs = match reduction_group |> Util.Lib.List.split_last with
+      (* No premise for last reduction rule: either *)
+      | hds, (_, rhs, [], _) when List.length hds > 0 ->
           assert (List.length remain = 0);
-          let rhs_instrs1 = rhs2instrs rhs1 |> check_nop in
-          let rhs_instrs2 = rhs2instrs rhs2 |> check_nop in
-          [ Al.EitherI (rhs_instrs1, rhs_instrs2) ]
+          let blocks = List.map (reduction2instrs []) hds in
+          let either_body1 = List.fold_right Transpile.merge_otherwise blocks [] in
+          let either_body2 = rhs2instrs rhs |> check_nop in
+          [ Al.EitherI (either_body1, either_body2) ]
+      (* Normal case *)
       | _ ->
           let blocks = List.map (reduction2instrs remain) reduction_group in
           List.fold_right Transpile.merge_otherwise blocks [] in

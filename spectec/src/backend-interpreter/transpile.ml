@@ -161,8 +161,23 @@ let rec unify_if_tail instr =
   | ForeachI (e1, e2, il) -> [ ForeachI (e1, e2, new_ il) ]
   | _ -> [ instr ]
 
+let push_either =
+  let push_either' = fun i -> match i with
+    | EitherI ([ ifi ], il) -> ( match ifi with
+      | IfI (c, then_body, []) -> IfI (c, [ EitherI (then_body, il) ], il)
+      | IfI (c, then_body, else_body) -> IfI (c, [ EitherI (then_body, il) ], [ EitherI (else_body, il) ])
+      | _ -> i )
+    | _ -> i in
+
+  Walk.walk_instr { Walk.default_action with pre_instr = push_either' }
+
 let enhance_readability instrs =
-  instrs |> unify_if |> List.map if_not_defined |> infer_else |> List.map swap_if |> List.concat_map unify_if_tail
+  instrs
+  |> unify_if
+  |> List.map if_not_defined
+  |> infer_else
+  |> List.map swap_if
+  |> List.concat_map unify_if_tail
 
 (** Walker-based Translpiler **)
 
