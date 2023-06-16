@@ -95,6 +95,21 @@ let builtin () =
       "CODE", ref (ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ]))
     ] in
 
+  let create_global_inst t v = RecordV [
+    "TYPE", t |> ref;
+    "VALUE", v |> ref
+  ] in
+
+  let create_table_inst t elems = RecordV [
+    "TYPE", t |> ref;
+    "ELEM", elems |> ref
+  ] in
+
+  let create_mem_inst t bytes_ = RecordV [
+    "TYPE", t |> ref;
+    "DATA", bytes_ |> ref
+  ] in
+
   (* Builtin functions *)
   let funcs = List.rev [
     ("print", []) |> create_func_inst;
@@ -107,18 +122,20 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const;
-    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const;
-    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const;
-    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const
+    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_global_inst (StringV "global_type");
+    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_global_inst (StringV "global_type");
+    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_global_inst (StringV "global_type");
+    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (StringV "global_type");
   ] in
-  (* Builtin functions *)
+  (* Builtin tables *)
+  let nulls = List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNCREF" ])) in
   let tables = [
-    "table", listV (List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNCREF" ])))
+    "table", listV nulls |> create_table_inst (StringV "table_type");
   ] in
-  (* Builtin functions *)
+  (* Builtin memories *)
+  let zeros = List.init 0x10000 (fun _ -> NumV 0L) in
   let memories = [
-    "memory", listV (List.init 0x10000 (fun _ -> NumV 0L))
+    "memory", listV zeros |> create_mem_inst (StringV "mem_type");
   ] in
 
   let append kind (name, inst) (sto, extern) =

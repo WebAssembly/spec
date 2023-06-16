@@ -168,8 +168,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- Uncaught exception: Module Instantiation failed due to Not a record: [(REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF)]
-- 4/34 (11.76%)
+- 26/34 (76.47%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -193,8 +192,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 140/140 (100.00%)
 
 ===== elem.wast =====
-- Uncaught exception: Module Instantiation failed due to Not a record: [(REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF)]
-- 0/37 (0.00%)
+- 37/37 (100.00%)
 
 ===== table_get.wast =====
 - 9/9 (100.00%)
@@ -241,8 +239,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 35/35 (100.00%)
 
 ===== data.wast =====
-- Uncaught exception: Module Instantiation failed due to Not a record: [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...]
-- 0/14 (0.00%)
+- 14/14 (100.00%)
 
 ===== int_literals.wast =====
 - 30/30 (100.00%)
@@ -261,8 +258,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 662/662 (100.00%)
 
 ===== global.wast =====
-- Uncaught exception: Module Instantiation failed due to Not a record: (I32.CONST 0x29A)
-- 0/58 (0.00%)
+- 57/58 (98.28%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -276,6 +272,6 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 ===== nop.wast =====
 - 81/83 (97.59%)
 
-Total [23240/23778] (97.74%; Normalized 90.37%)
+Total [23370/23778] (98.28%; Normalized 95.21%)
 == Complete.
 ```
