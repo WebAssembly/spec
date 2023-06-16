@@ -90,10 +90,10 @@ let builtin () =
     let code = singleton winstr_tag in
     let ptype = List.map singleton type_tags in
     let ftype = ArrowV (listV ptype, listV []) in
-    name, PairV (
-      RecordV Record.empty, (* dummy module *)
-      ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ])
-    ) in
+    name, RecordV [
+      "MODULE", ref (RecordV Record.empty); (* dummy module *)
+      "CODE", ref (ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ]))
+    ] in
 
   (* Builtin functions *)
   let funcs = List.rev [
@@ -130,7 +130,7 @@ let builtin () =
     (* Generate ExternFunc *)
     let addr = List.length insts |> Int64.of_int in
     let new_extern =
-      ConstructV ("EXPORT", [ StringV name; ConstructV (kind, [ NumV addr ]) ])
+      RecordV [ "NAME", ref (StringV name); "VALUE", ref (ConstructV (kind, [ NumV addr ])) ]
     in
 
     (new_sto, new_extern :: extern) in
@@ -178,7 +178,7 @@ let find_export name =
 
 let extract_addr_of tag name (export: value) =
   match export with
-  | ConstructV ("EXPORT", [ StringV (export_name); ConstructV (export_tag, [ addr ]) ])
+  | RecordV [ "NAME", { contents = StringV (export_name) }; "VALUE", { contents = ConstructV (export_tag, [ addr ]) } ]
     when export_name = Ast.string_of_name name && export_tag = tag -> Some (addr)
   | _ -> None
 
@@ -261,11 +261,11 @@ let get_externval = function
       (* Get extern *)
       let is_matching_export export =
         match export with
-        | ConstructV ("EXPORT", [ StringV export_name; _ ])
-          when export_name = extern_name -> true
-        | _ -> false
+        | RecordV [ "NAME", { contents = StringV export_name }; "VALUE", value ]
+          when export_name = extern_name -> Some !value
+        | _ -> None
       in
-      Array.find_opt is_matching_export export |> Option.get
+      Array.find_map is_matching_export export |> Option.get
   | _ -> failwith "Invalid import"
 
 let get_externvals = function

@@ -176,6 +176,8 @@ let alloc_module =
   let externval = NameE (N "externval", [ List ]) in
   let import_type = NameE (N "import_type", []) in
   let externuse = NameE (N "externuse", []) in
+  let index = IndexP (NameE (N "i", [])) in
+  let extern = AccessE (externval, index) in
 
   let module_inst_init = NameE (N "moduleinst", []) in
   let module_inst_init_rec =
@@ -236,9 +238,9 @@ let alloc_module =
   let append_if tag =
     let addr' = NameE (N (String.lowercase_ascii tag ^ "addr'"), []) in
     IfI (
-      BinopC (And, IsCaseOfC (import_type, tag), IsCaseOfC (externuse, tag)),
+      BinopC (And, IsCaseOfC (import_type, tag), IsCaseOfC (extern, tag)),
       [
-        LetI (ConstructE (tag, [ addr' ]), externuse);
+        LetI (ConstructE (tag, [ addr' ]), extern);
         AppendI (AccessE (module_inst_init, DotP tag), addr')
       ],
       []) in
@@ -249,16 +251,29 @@ let alloc_module =
     let lower_tag = String.lowercase_ascii tag in
     let idx = lower_tag ^ "idx" in
     let addr = lower_tag ^ "addr" in
+
+    let record =
+      Record.empty
+      |> Record.add "NAME" name
+      |> Record.add "VALUE" externval
+    in
+
     IfI (
       IsCaseOfC (externuse, tag),
       [
         LetI (ConstructE (tag, [ nameE idx ]), externuse);
         LetI (nameE addr, AccessE (AccessE (module_inst_init, DotP tag), IndexP (nameE idx)));
         LetI (externval, ConstructE (tag, [ nameE addr ]));
-        LetI (exportinst, ConstructE ("EXPORT", [ name; externval ]));
+        LetI (exportinst, RecordE record);
         AppendI (AccessE (module_inst_init, DotP "EXPORT"), exportinst)
       ],
       []) in
+
+  let record = 
+    Record.empty
+    |> Record.add "MODULE" module_inst_init
+    |> Record.add "CODE" func'
+  in
 
 
   (* Algorithm *)
@@ -288,7 +303,6 @@ let alloc_module =
         import_iter,
         [
           LetI (ConstructE ("IMPORT", [ ignore_name; ignore_name; import_type ]), AccessE (import_iter, index));
-          LetI (ConstructE ("EXPORT", [ ignore_name; externuse ]), AccessE (externval, index));
           append_if "FUNC";
           append_if "TABLE";
           append_if "MEM";
@@ -313,8 +327,8 @@ let alloc_module =
       ForI (
         funcaddr_iter,
         [
-          LetI (PairE (ignore_name, func'), index_access);
-          ReplaceI (base, funcaddr, PairE (module_inst_init, func'))
+          LetI (func', AccessE (index_access, DotP "CODE"));
+          ReplaceI (base, funcaddr, RecordE record)
         ]
       );
       ForI (
@@ -333,24 +347,30 @@ let alloc_module =
 
 let alloc_func =
   (* Name definition *)
-  let func_name = N "func" in
+  let func = NameE (N "func", []) in
   let addr_name = N "a" in
   let store_name = N "s" in
-  let dummy_module_inst = N "dummy_module_inst" in
+  let dummy_module_inst = NameE (N "dummy_module_inst", []) in
   let dummy_module_rec =
     Record.empty
     |> Record.add "FUNC" (ListE [])
     |> Record.add "TABLE" (ListE []) in
   let func_inst_name = N "funcinst" in
 
+  let record =
+    Record.empty
+    |> Record.add "MODULE" dummy_module_inst
+    |> Record.add "CODE" func
+  in
+
   (* Algorithm *)
   Algo (
     "alloc_func",
-    [ (NameE (func_name, []), TopT) ],
+    [ func, TopT ],
     [
       LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "FUNC")));
-      LetI (NameE (dummy_module_inst, []), RecordE dummy_module_rec);
-      LetI (NameE (func_inst_name, []), PairE (NameE (dummy_module_inst, []), NameE (func_name, [])));
+      LetI (dummy_module_inst, RecordE dummy_module_rec);
+      LetI (NameE (func_inst_name, []), RecordE record);
       AppendI (AccessE (NameE (store_name, []), DotP "FUNC"), NameE (func_inst_name, []));
       ReturnI (Some (NameE (addr_name, [])))
     ]
@@ -358,10 +378,16 @@ let alloc_func =
 
 let alloc_global =
   (* Name definition *)
-  let global = NameE (N "global", []) in
-  let addr = NameE (N "a", []) in
-  let val_ = NameE (N "val", []) in
-  let store = NameE (N "s", []) in
+  let global = id "global" in
+  let addr = id "a" in
+  let globalinst = id "globalinst" in
+  let store = id "s" in
+
+  let record =
+    Record.empty
+    (* TODO: type *)
+    |> Record.add "VALUE" (AppE (N "init_global", [ global ])) 
+  in
 
   (* Algorithm *)
   Algo (
@@ -369,67 +395,79 @@ let alloc_global =
     [ global, TopT ],
     [
       LetI (addr, LengthE (AccessE (store, DotP "GLOBAL")));
-      LetI (val_, AppE (N "init_global", [ global ]));
-      AppendI (AccessE (store, DotP "GLOBAL"), val_);
+      LetI (globalinst, RecordE record);
+      AppendI (AccessE (store, DotP "GLOBAL"), globalinst);
       ReturnI (Some addr)
     ]
   )
 
 let alloc_table =
   (* Name definition *)
-  let ignore_name = N "_" in
-  let table_name = N "table" in
-  let min = N "n" in
-  let reftype = N "reftype" in
-  let addr_name = N "a" in
-  let store_name = N "s" in
-  let tableinst_name = N "tableinst" in
-  let ref_null = ConstructE ("REF.NULL", [NameE (reftype, [])]) in
+  let table = id "table" in
+  let min = id "n" in
+  let max = id "m" in
+  let reftype = id "reftype" in
+  let addr = id "a" in
+  let store = id "s" in
+  let tableinst = id "tableinst" in
+  let ref_null = ConstructE ("REF.NULL", [ reftype ]) in
+
+  let record =
+    Record.empty
+    |> Record.add "TYPE" (PairE (min, max))
+    |> Record.add "ELEM" (ListFillE (ref_null, min))
+  in
 
   (* Algorithm *)
   Algo (
     "alloc_table",
-    [ (NameE (table_name, []), TopT) ],
+    [ table, TopT ],
     [
       LetI (
-        ConstructE ("TABLE", [PairE (NameE (min, []), NameE (ignore_name, [])); NameE (reftype, [])]),
-        NameE (table_name, [])
+        ConstructE ("TABLE", [ PairE (min, max); reftype ]),
+        table
       );
-      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "TABLE")));
-      LetI (NameE (tableinst_name, []), ListFillE (ref_null, NameE (min, [])));
-      AppendI (AccessE (NameE (store_name, []), DotP "TABLE"), NameE (tableinst_name, []));
-      ReturnI (Some (NameE (addr_name, [])))
+      LetI (addr, LengthE (AccessE (store, DotP "TABLE")));
+      LetI (tableinst, RecordE record);
+      AppendI (AccessE (store, DotP "TABLE"), tableinst);
+      ReturnI (Some (addr))
     ]
   )
 
 let alloc_memory =
   (* Name definition *)
-  let ignore_name = N "_" in
-  let memory_name = N "memory" in
-  let min_name = N "min" in
-  let addr_name = N "a" in
-  let store_name = N "s" in
-  let memoryinst_name = N "memoryinst" in
+  let memory = id "memory" in
+  let min = id "min" in
+  let max = id "max" in
+  let addr = id "a" in
+  let store = id "s" in
+  let memoryinst = id "memoryinst" in
+
+  let record =
+    Record.empty
+    |> Record.add "TYPE" (PairE (min, max))
+    |> Record.add "DATA" (ListFillE (
+          NumE 0L,
+          BinopE (Mul, BinopE (Mul, min, NumE 64L), AppE (N "Ki", []))
+        ))
+  in
 
   (* Algorithm *)
   Algo(
     "alloc_memory",
-    [ (NameE (memory_name, []), TopT) ],
+    [ memory, TopT ],
     [
       LetI (
-        ConstructE ("MEMORY", [ PairE (NameE (min_name, []), NameE (ignore_name, [])) ]),
-        NameE (memory_name, [])
+        ConstructE ("MEMORY", [ PairE (min, max) ]),
+        memory
       );
-      LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "MEM")));
+      LetI (addr, LengthE (AccessE (store, DotP "MEM")));
       LetI (
-        NameE (memoryinst_name, []),
-        ListFillE (
-          NumE 0L,
-          BinopE (Mul, BinopE (Mul, NameE (min_name, []), NumE 64L), AppE (N "Ki", []))
-        )
+        memoryinst,
+        RecordE record
       );
-      AppendI (AccessE (NameE (store_name, []), DotP "MEM"), NameE (memoryinst_name, []));
-      ReturnI (Some (NameE (addr_name, [])))
+      AppendI (AccessE (store, DotP "MEM"), memoryinst);
+      ReturnI (Some (addr))
     ]
   )
 
@@ -437,8 +475,14 @@ let alloc_elem =
   (* Name definition *)
   let elem = NameE (N "elem", []) in
   let addr = NameE (N "a", []) in
-  let ref = NameE (N "ref", [ List ]) in
+  let eleminst = id "eleminst" in
   let store = NameE (N "s", []) in
+
+  let record =
+    Record.empty
+    (* TODO :type *)
+    |> Record.add "ELEM" (AppE (N "init_elem", [ elem ]))
+  in
 
   (* Algorithm *)
   Algo (
@@ -446,8 +490,8 @@ let alloc_elem =
     [ elem, TopT ],
     [
       LetI (addr, LengthE (AccessE (store, DotP "ELEM")));
-      LetI (ref, AppE (N "init_elem", [ elem ]));
-      AppendI (AccessE (store, DotP "ELEM"), ref);
+      LetI (eleminst, RecordE record);
+      AppendI (AccessE (store, DotP "ELEM"), eleminst);
       ReturnI (Some addr)
     ]
   )
@@ -460,6 +504,11 @@ let alloc_data =
   let addr_name = N "a" in
   let store_name = N "s" in
 
+  let record =
+    Record.empty
+    |> Record.add "DATA" (id "init")
+  in
+
   (* Algorithm *)
   Algo (
     "alloc_data",
@@ -470,7 +519,8 @@ let alloc_data =
         NameE (data_name, [])
       );
       LetI (NameE (addr_name, []), LengthE (AccessE (NameE (store_name, []), DotP "DATA")));
-      AppendI (AccessE (NameE (store_name, []), DotP "DATA"), NameE (init, []));
+      LetI (id "datainst", RecordE record);
+      AppendI (AccessE (NameE (store_name, []), DotP "DATA"), id "datainst");
       ReturnI (Some (NameE (addr_name, [])))
     ]
   )
@@ -502,8 +552,8 @@ let invocation =
     [ (NameE (funcaddr_name, []), TopT); (args_iter, TopT) ],
     [
       LetI (
-        PairE (NameE (ignore_name, []), NameE (func_name, [])),
-        AccessE (AccessE (NameE (store_name, []), DotP "FUNC"), IndexP (NameE (funcaddr_name, [])))
+        NameE (func_name, []),
+        AccessE(AccessE (AccessE (NameE (store_name, []), DotP "FUNC"), IndexP (NameE (funcaddr_name, []))), DotP "CODE")
       );
       LetI (
         ConstructE ("FUNC", [NameE (func_type_name, []); NameE (ignore_name, []); NameE (ignore_name, [])]),
@@ -534,8 +584,8 @@ let manual_algos =
     init_elem;
     exec_expr;
     alloc_func;
-    alloc_table;
     alloc_global;
+    alloc_table;
     alloc_memory;
     alloc_elem;
     alloc_data;

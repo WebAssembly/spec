@@ -242,7 +242,7 @@ and eval_expr env expr =
         let i2 = eval_expr env e2 |> value_to_int in
         let a' = Array.sub a i1 i2 in
         ListV (ref a')
-      | DotP str -> try match eval_expr env e with
+      | DotP str -> match eval_expr env e with
         | FrameV (_, RecordV r) -> Record.find str r
         | StoreV s -> Record.find str !s
         | RecordV r -> Record.find str r
@@ -250,7 +250,6 @@ and eval_expr env expr =
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
             |> failwith
-        with _ -> failwith ("Failed AccessE DotP: " ^ str)
       end
   | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
@@ -452,6 +451,8 @@ and interp_instrs env il =
               let prefix = Array.sub !vs 0 (len - suffix_len) in
               let suffix = Array.sub !vs (len - suffix_len) suffix_len in
               env |> assign e (ListV (ref prefix)) |> Env.add n1 (ListV (ref suffix))
+            | RecordE r1, RecordV r2 when Record.keys r1 = Record.keys r2 ->
+                Record.fold (fun k v acc -> (Record.find k r2 |> assign v) acc) r1 env
             | e, v ->
                 Printf.sprintf "Invalid assignment: %s := %s"
                   (string_of_expr e) (string_of_value v)
@@ -514,6 +515,14 @@ and interp_instrs env il =
           let a2 = eval_expr env e4 |> value_to_array in (* src *)
           assert (Array.length a2 = i2);
           Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
+          (env, cont)
+      | ReplaceI (e1, DotP s, e2) ->
+          begin match eval_expr env e1 with
+          | RecordV r ->
+              let v = eval_expr env e2 in
+              Record.replace s v r
+          | _ -> failwith "Not a Record"
+          end;
           (env, cont)
       | AppendI (e1, e2) ->
           let a = eval_expr env e1 |> value_to_growable_array in

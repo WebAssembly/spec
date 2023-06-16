@@ -149,6 +149,7 @@ type instr =
 
 type algorithm = Algo of string * (expr * al_type) list * instr list
 
-(* TODO: move these to helper *)
+(* Smart Constructor *)
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
+let id str = NameE (N str, [])
