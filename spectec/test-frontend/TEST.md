@@ -85,8 +85,8 @@ syntax fn =
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
 
-;; 1-syntax.watsup:59.1-60.16
-syntax limits = `[%..%]`(u32, u32)
+;; 1-syntax.watsup:59.1-60.17
+syntax limits = `[%..%?]`(u32, u32?)
 
 ;; 1-syntax.watsup:61.1-62.15
 syntax globaltype = `MUT%?%`(()?, valtype)
@@ -379,7 +379,7 @@ syntax context = {FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memt
 relation Limits_ok: `|-%:%`(limits, nat)
   ;; 3-typing.watsup:22.1-24.24
   rule _ {k : nat, n_1 : n, n_2 : n}:
-    `|-%:%`(`[%..%]`(n_1, n_2), k)
+    `|-%:%`(`[%..%?]`(n_1, ?(n_2)), k)
     -- if ((n_1 <= n_2) /\ (n_2 <= k))
 
 ;; 3-typing.watsup:15.1-15.64
@@ -451,7 +451,7 @@ relation Resulttype_sub: `|-%*<:%*`(valtype*, valtype*)
 relation Limits_sub: `|-%<:%`(limits, limits)
   ;; 3-typing.watsup:83.1-86.21
   rule _ {n_11 : n, n_12 : n, n_21 : n, n_22 : n}:
-    `|-%<:%`(`[%..%]`(n_11, n_12), `[%..%]`(n_21, n_22))
+    `|-%<:%`(`[%..%?]`(n_11, ?(n_12)), `[%..%?]`(n_21, ?(n_22)))
     -- if (n_11 >= n_21)
     -- if (n_12 <= n_22)
 
@@ -1199,19 +1199,19 @@ def with_data : (state, dataidx, byte*) -> state
 
 ;; 4-runtime.watsup:156.1-156.49
 def grow_table : (tableinst, nat, ref) -> tableinst
-  ;; 4-runtime.watsup:158.1-161.56
-  def {i : nat, i' : nat, j : nat, n : n, r : ref, r'* : ref*, reftype : reftype, ti : tableinst, ti' : tableinst} grow_table(ti, n, r) = ti'
-    -- if (ti = {TYPE `%%`(`[%..%]`(i, j), reftype), ELEM r'*{r'}})
-    -- if (i' = (|r*{}| + n))
-    -- if (ti' = {TYPE `%%`(`[%..%]`(i', j), reftype), ELEM r'*{r'} :: r^n{}})
+  ;; 4-runtime.watsup:158.1-161.57
+  def {i : nat, i' : nat, j? : nat?, n : n, r : ref, r'* : ref*, reftype : reftype, ti : tableinst, ti' : tableinst} grow_table(ti, n, r) = ti'
+    -- if (ti = {TYPE `%%`(`[%..%?]`(i, j?{j}), reftype), ELEM r'*{r'}})
+    -- if (i' = (|r'*{r'}| + n))
+    -- if (ti' = {TYPE `%%`(`[%..%?]`(i', j?{j}), reftype), ELEM r'*{r'} :: r^n{}})
 
 ;; 4-runtime.watsup:157.1-157.41
 def grow_memory : (meminst, nat) -> meminst
-  ;; 4-runtime.watsup:162.1-165.68
-  def {b* : byte*, i : nat, i' : nat, j : nat, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
-    -- if (mi = {TYPE `%I8`(`[%..%]`(i, j)), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
-    -- if (mi' = {TYPE `%I8`(`[%..%]`(i', j)), DATA b*{b} :: [(0 ^ ((n * 64) * $Ki))]})
+  ;; 4-runtime.watsup:162.1-165.66
+  def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
+    -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
+    -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
 rec {
@@ -1611,7 +1611,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [(ref <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -1713,7 +1713,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}}
 \mbox{(result type)} & \mathit{resulttype} &::=& {\mathit{valtype}^\ast} \\
-\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. \mathit{u{\scriptstyle32}}] \\
+\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. {\mathit{u{\scriptstyle32}}^?}] \\
 \mbox{(global type)} & \mathit{globaltype} &::=& {\mathsf{mut}^?}~\mathit{valtype} \\
 \mbox{(function type)} & \mathit{functype} &::=& \mathit{resulttype} \rightarrow \mathit{resulttype} \\
 \mbox{(table type)} & \mathit{tabletype} &::=& \mathit{limits}~\mathit{reftype} \\
@@ -3342,10 +3342,10 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{grow}_{\mathit{table}}(\mathit{ti},\, \mathit{n},\, \mathit{r}) &=& {\mathit{ti}'} &\quad
   \mbox{if}~\mathit{ti} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~[\mathit{i} .. \mathit{j}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast} \}\end{array} \\
- &&&&\quad {\land}~{\mathit{i}'} = {|{\mathit{r}^\ast}|} + \mathit{n} \\
+\mathsf{type}~[\mathit{i} .. {\mathit{j}^?}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast} \}\end{array} \\
+ &&&&\quad {\land}~{\mathit{i}'} = {|{{\mathit{r}'}^\ast}|} + \mathit{n} \\
  &&&&\quad {\land}~{\mathit{ti}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~[{\mathit{i}'} .. \mathit{j}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast}~{\mathit{r}^{\mathit{n}}} \}\end{array} \\
+\mathsf{type}~[{\mathit{i}'} .. {\mathit{j}^?}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast}~{\mathit{r}^{\mathit{n}}} \}\end{array} \\
 \end{array}
 $$
 
@@ -3353,10 +3353,10 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{grow}_{\mathit{memory}}(\mathit{mi},\, \mathit{n}) &=& {\mathit{mi}'} &\quad
   \mbox{if}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast} \}\end{array} \\
- &&&&\quad {\land}~{\mathit{i}'} = {|{\mathit{b}^\ast}|} + \mathit{n} \\
+\mathsf{type}~([\mathit{i} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast} \}\end{array} \\
+ &&&&\quad {\land}~{\mathit{i}'} = {|{\mathit{b}^\ast}|} / (64 \cdot \mathrm{Ki}) + \mathit{n} \\
  &&&&\quad {\land}~{\mathit{mi}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~([{\mathit{i}'} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast}~{0^{\mathit{n} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
+\mathsf{type}~([{\mathit{i}'} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast}~{0^{\mathit{n} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
 \end{array}
 $$
 
@@ -3634,7 +3634,7 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}] = {\mathit{ti}'}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}.\mathsf{elem}|}) &\quad
-  \mbox{if}~{\mathit{z}.\mathsf{table}}{[0]} = \mathit{ti} \\
+  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]} = \mathit{ti} \\
  &&&&\quad {\land}~\mathrm{grow}_{\mathit{table}}(\mathit{ti},\, \mathit{n},\, \mathit{ref}) = {\mathit{ti}'} \\
  &&&&\quad {\land}~{ \vdash }\;{\mathit{ti}'}.\mathsf{type} : \mathsf{ok} \\
 {[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
