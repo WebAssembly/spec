@@ -100,9 +100,11 @@ let stack : stack ref = ref []
 let init_stack () = stack := []
 let push v = stack := v :: !stack
 let pop () =
-  let res = List.hd !stack in
-  stack := List.tl !stack;
-  res
+  try
+    let res = List.hd !stack in
+    stack := List.tl !stack;
+    res
+  with _ -> failwith "Pop some values from empty stack"
 
 let get_current_label () =
   match List.find_opt (function LabelV _ -> true | _ -> false) !stack with
