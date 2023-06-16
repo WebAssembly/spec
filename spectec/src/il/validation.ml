@@ -524,7 +524,9 @@ let valid_clause env t1 t2 clause =
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
     env.vars <- Env.empty;
-    let free_rh = Free.(Set.diff (free_exp e2).varid (free_exp e1).varid) in
+    let free_prems = Free.(free_list free_prem prems) in
+    let free_rh =
+      Free.(Set.diff (Set.diff (free_exp e2).varid (free_exp e1).varid) free_prems.varid) in
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`")
