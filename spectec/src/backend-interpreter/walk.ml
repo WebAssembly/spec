@@ -2,8 +2,8 @@ open Al
 open Al_util
 
 type action = {
-  pre_instr: instr -> instr;
-  post_instr: instr -> instr;
+  pre_instr: instr -> instr list;
+  post_instr: instr -> instr list;
   pre_cond: cond -> cond;
   post_cond: cond -> cond;
   pre_expr: expr -> expr;
@@ -11,9 +11,10 @@ type action = {
 }
 
 let id x = x
+let ids x = [ x ]
 let default_action = {
-  pre_instr = id;
-  post_instr = id;
+  pre_instr = ids;
+  post_instr = ids;
   pre_cond = id;
   post_cond = id;
   pre_expr = id;
@@ -76,12 +77,13 @@ let rec walk_cond f c =
   | YetC _ -> c )
   |> post
 
-let rec walk_instr f instr =
+let rec walk_instr f (instr:instr) : instr list =
   let { pre_instr = pre; post_instr = post; _ } = f in
-  let new_ = List.map (walk_instr f) in
+  let new_ = List.concat_map (walk_instr f) in
   let new_c = walk_cond f in
   let new_e = walk_expr f in
-  ( match pre instr with
+  pre instr
+  |> List.map (function
   | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
   | OtherwiseI il -> OtherwiseI (new_ il)
   | WhileI (c, il) -> WhileI (new_c c, new_ il)
@@ -107,9 +109,9 @@ let rec walk_instr f instr =
   | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
   | AppendListI (e1, e2) -> AppendListI (new_e e1, new_e e2)
   | YetI _ -> instr )
-  |> post
+  |> List.concat_map post
 
-and walk_instrs f = walk_instr f |> List.map
+and walk_instrs f = walk_instr f |> List.concat_map
 
 let walk f = function
   | Algo (name, params, body) -> (

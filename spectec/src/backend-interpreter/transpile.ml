@@ -130,6 +130,8 @@ let if_not_defined =
   | c -> c in
   Walk.walk_instr { Walk.default_action with post_cond = transpile_cond }
 
+let lift f x = [f x]
+
 let swap_if =
   let transpile_instr = function
   | IfI (c, il, [ ])
@@ -141,7 +143,7 @@ let swap_if =
       else
         IfI (neg c, il2, il1)
   | i -> i in
-  Walk.walk_instr { Walk.default_action with post_instr = transpile_instr }
+  Walk.walk_instr { Walk.default_action with post_instr = lift transpile_instr }
 
 let unify_tail instrs1 instrs2 =
   let rev = List.rev in
@@ -163,20 +165,20 @@ let rec unify_if_tail instr =
 
 let push_either =
   let push_either' = fun i -> match i with
-    | EitherI ([ ifi ], il) -> ( match ifi with
-      | IfI (c, then_body, []) -> IfI (c, [ EitherI (then_body, il) ], il)
-      | IfI (c, then_body, else_body) -> IfI (c, [ EitherI (then_body, il) ], [ EitherI (else_body, il) ])
-      | _ -> i )
-    | _ -> i in
+    | EitherI (il1, il2) -> ( match ( Util.Lib.List.split_last il1) with
+      | hds, IfI (c, then_body, []) -> hds @ [ IfI (c, [ EitherI (then_body, il2) ], il2) ]
+      | hds, IfI (c, then_body, else_body) -> hds @ [ IfI (c, [ EitherI (then_body, il2) ], [ EitherI (else_body, il2) ]) ]
+      | _ -> [i] )
+    | _ -> [i] in
 
   Walk.walk_instr { Walk.default_action with pre_instr = push_either' }
 
 let enhance_readability instrs =
   instrs
   |> unify_if
-  |> List.map if_not_defined
+  |> List.concat_map if_not_defined
   |> infer_else
-  |> List.map swap_if
+  |> List.concat_map swap_if
   |> List.concat_map unify_if_tail
 
 (** Walker-based Translpiler **)
@@ -204,6 +206,6 @@ let flatten_if = function
   | i -> i
 
 let transpiler = Walk.walk { Walk.default_action with
-  post_instr = flatten_if;
+  post_instr = lift flatten_if;
   post_expr = composite hide_state simplify_record_concat
 }

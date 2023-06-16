@@ -585,7 +585,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
           let blocks = List.map (reduction2instrs []) hds in
           let either_body1 = List.fold_right Transpile.merge_otherwise blocks [] in
           let either_body2 = rhs2instrs rhs |> check_nop in
-          [ Al.EitherI (either_body1, either_body2) ]
+          Al.EitherI (either_body1, either_body2) |> Transpile.push_either
       (* Normal case *)
       | _ ->
           let blocks = List.map (reduction2instrs remain) reduction_group in
