@@ -377,9 +377,9 @@ grow_table ti n r
 4. Return ti'.
 
 grow_memory mi n
-1. Let { TYPE: (i, j?); DATA: b*; } be mi.
+1. Let { TYPE: (I8 (i, j?)); DATA: b*; } be mi.
 2. Let i' be (|b*| + n).
-3. Let mi' be { TYPE: (i', j?); DATA: b* ++ [(0 ^ ((n · 64) · $Ki()))]; }.
+3. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ [(0 ^ ((n · 64) · $Ki()))]; }.
 4. Return mi'.
 
 execution_of_unreachable
@@ -957,16 +957,16 @@ alloc_global global
 4. Return a.
 
 alloc_table table
-1. Let (TABLE (n, m) reftype) be table.
+1. Let (TABLE (n, m?) reftype) be table.
 2. Let a be |s.TABLE|.
-3. Let tableinst be { TYPE: (n, m); ELEM: (REF.NULL reftype)^n; }.
+3. Let tableinst be { TYPE: ((n, m?), reftype); ELEM: (REF.NULL reftype)^n; }.
 4. Append tableinst to the s.TABLE.
 5. Return a.
 
 alloc_memory memory
-1. Let (MEMORY (min, max)) be memory.
+1. Let (MEMORY (min, max?)) be memory.
 2. Let a be |s.MEM|.
-3. Let memoryinst be { TYPE: (min, max); DATA: 0^((min · 64) · $Ki()); }.
+3. Let memoryinst be { TYPE: (I8 (min, max?)); DATA: 0^((min · 64) · $Ki()); }.
 4. Append memoryinst to the s.MEM.
 5. Return a.
 

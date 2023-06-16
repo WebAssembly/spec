@@ -74,7 +74,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 48/48 (100.00%)
 
 ===== if.wast =====
-- 121/123 (98.37%)
+- 122/123 (99.19%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -139,20 +139,20 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 7/84 (8.33%)
+- 14/84 (16.67%)
 
 ===== call_indirect.wast =====
 - 127/132 (96.21%)
 
 ===== load.wast =====
-- 36/37 (97.30%)
+- 37/37 (100.00%)
 
 ===== memory_fill.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
 - 4/20 (20.00%)
 
 ===== memory_size.wast =====
-- 5/36 (13.89%)
+- 11/36 (30.56%)
 
 ===== imports.wast =====
 - print_i32: 13
@@ -215,7 +215,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 60/60 (100.00%)
 
 ===== table_size.wast =====
-- 5/36 (13.89%)
+- 24/36 (66.67%)
 
 ===== table_set.wast =====
 - 18/18 (100.00%)
@@ -251,7 +251,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- 8/38 (21.05%)
+- 36/38 (94.74%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
@@ -274,8 +274,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 76/76 (100.00%)
 
 ===== nop.wast =====
-- 80/83 (96.39%)
+- 81/83 (97.59%)
 
-Total [23129/23778] (97.27%; Normalized 87.50%)
+Total [23192/23778] (97.54%; Normalized 89.58%)
 == Complete.
 ```

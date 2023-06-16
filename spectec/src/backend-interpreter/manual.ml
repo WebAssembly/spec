@@ -405,7 +405,7 @@ let alloc_table =
   (* Name definition *)
   let table = id "table" in
   let min = id "n" in
-  let max = id "m" in
+  let max = NameE (N "m", [ Opt ]) in
   let reftype = id "reftype" in
   let addr = id "a" in
   let store = id "s" in
@@ -414,7 +414,7 @@ let alloc_table =
 
   let record =
     Record.empty
-    |> Record.add "TYPE" (PairE (min, max))
+    |> Record.add "TYPE" (PairE (PairE (min, max), reftype))
     |> Record.add "ELEM" (ListFillE (ref_null, min))
   in
 
@@ -438,14 +438,14 @@ let alloc_memory =
   (* Name definition *)
   let memory = id "memory" in
   let min = id "min" in
-  let max = id "max" in
+  let max = NameE (N "max", [ Opt ]) in
   let addr = id "a" in
   let store = id "s" in
   let memoryinst = id "memoryinst" in
 
   let record =
     Record.empty
-    |> Record.add "TYPE" (PairE (min, max))
+    |> Record.add "TYPE" (ConstructE ("I8", [ PairE (min, max) ]))
     |> Record.add "DATA" (ListFillE (
           NumE 0L,
           BinopE (Mul, BinopE (Mul, min, NumE 64L), AppE (N "Ki", []))
