@@ -214,7 +214,11 @@ let do_invoke act = match act.it with
     let globals = (Record.find "GLOBAL" !Interpreter.store) in
 
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
-    let got = Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) in
+    let got =
+      match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
+      | RecordV r -> Record.find "VALUE" r
+      | _ -> failwith "Not a Record"
+    in
     listV [ got ]
 
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
