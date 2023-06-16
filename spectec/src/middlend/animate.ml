@@ -219,11 +219,20 @@ let animate_rule r = match r.it with
     | _ -> r
   )
 
-(* Animate def it it is a relation *)
+(* Animate clause *)
+let animate_clause c = match c.it with
+  | DefD (binds, e1, e2, prems) ->
+    let new_prems = animate_prems true (free_lhs_exp e1) prems in
+    DefD (binds, e1, e2, new_prems) $ c.at
+
+(* Animate defs *)
 let rec animate_def d = match d.it with
-  | RelD(id, mixop, t, rules) ->
+  | RelD (id, mixop, t, rules) ->
     let new_rules = List.map animate_rule rules in
-    RelD(id, mixop, t, new_rules) $ d.at
+    RelD (id, mixop, t, new_rules) $ d.at
+  | DecD (id, t1, t2, clauses) ->
+    let new_clauses = List.map animate_clause clauses in
+    DecD (id, t1, t2, new_clauses) $ d.at
   | RecD ds -> RecD (List.map animate_def ds) $ d.at
   | _ -> d
 
