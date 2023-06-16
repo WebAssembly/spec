@@ -160,10 +160,9 @@ let rec exp2expr exp =
   | Ast.MixE (op, { it = Ast.TupE exps; _ }) -> (
       match (op, exps) with
       | [ []; []; [] ], [ e1; e2 ]
-      | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ] ->
+      | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
+      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.Quest; Ast.RBrack ]], [ e1; e2 ] ->
           Al.PairE (exp2expr e1, exp2expr e2)
-      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] -> (* TODO: Change lim of DSL to be opt *)
-          Al.PairE (exp2expr e1, Al.OptE (Some (exp2expr e2)))
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           Al.ArrowE (exp2expr e1, exp2expr e2)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->

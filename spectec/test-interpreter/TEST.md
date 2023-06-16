@@ -65,7 +65,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 19/19 (100.00%)
 
 ===== linking.wast =====
-- 86/90 (95.56%)
+- 81/90 (90.00%)
 
 ===== float_literals.wast =====
 - 83/83 (100.00%)
@@ -74,7 +74,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 48/48 (100.00%)
 
 ===== if.wast =====
-- 123/123 (100.00%)
+- 121/123 (98.37%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -83,7 +83,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 52/52 (100.00%)
+- 51/52 (98.08%)
 
 ===== labels.wast =====
 - 25/25 (100.00%)
@@ -102,7 +102,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 5/5 (100.00%)
 
 ===== loop.wast =====
-- 77/77 (100.00%)
+- 76/77 (98.70%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
@@ -133,26 +133,26 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 55/55 (100.00%)
+- 54/55 (98.18%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 75/84 (89.29%)
+- 7/84 (8.33%)
 
 ===== call_indirect.wast =====
 - 127/132 (96.21%)
 
 ===== load.wast =====
-- 37/37 (100.00%)
+- 36/37 (97.30%)
 
 ===== memory_fill.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
 - 4/20 (20.00%)
 
 ===== memory_size.wast =====
-- 29/36 (80.56%)
+- 5/36 (13.89%)
 
 ===== imports.wast =====
 - print_i32: 13
@@ -168,7 +168,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- 32/34 (94.12%)
+- Uncaught exception: Module Instantiation failed due to Not a record: [(REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF)]
+- 4/34 (11.76%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -177,13 +178,13 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 11/11 (100.00%)
 
 ===== memory_trap.wast =====
-- 180/180 (100.00%)
+- 179/180 (99.44%)
 
 ===== br_table.wast =====
 - 149/149 (100.00%)
 
 ===== select.wast =====
-- 118/118 (100.00%)
+- 116/118 (98.31%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -192,7 +193,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 140/140 (100.00%)
 
 ===== elem.wast =====
-- 37/37 (100.00%)
+- Uncaught exception: Module Instantiation failed due to Not a record: [(REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF), (REF.NULL FUNCREF)]
+- 0/37 (0.00%)
 
 ===== table_get.wast =====
 - 9/9 (100.00%)
@@ -213,7 +215,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 60/60 (100.00%)
 
 ===== table_size.wast =====
-- 29/36 (80.56%)
+- 5/36 (13.89%)
 
 ===== table_set.wast =====
 - 18/18 (100.00%)
@@ -239,7 +241,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 35/35 (100.00%)
 
 ===== data.wast =====
-- 14/14 (100.00%)
+- Uncaught exception: Module Instantiation failed due to Not a record: [0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, ...]
+- 0/14 (0.00%)
 
 ===== int_literals.wast =====
 - 30/30 (100.00%)
@@ -248,7 +251,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- 36/38 (94.74%)
+- 8/38 (21.05%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
@@ -258,7 +261,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 662/662 (100.00%)
 
 ===== global.wast =====
-- 58/58 (100.00%)
+- Uncaught exception: Module Instantiation failed due to Not a record: (I32.CONST 0x29A)
+- 0/58 (0.00%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -270,8 +274,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 76/76 (100.00%)
 
 ===== nop.wast =====
-- 83/83 (100.00%)
+- 80/83 (96.39%)
 
-Total [23427/23778] (98.52%; Normalized 96.71%)
+Total [23129/23778] (97.27%; Normalized 87.50%)
 == Complete.
 ```

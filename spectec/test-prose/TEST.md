@@ -344,31 +344,43 @@ with_local x v
 
 with_global x v
 1. Let f be the current frame.
-2. Replace s.GLOBAL[f.MODULE.GLOBAL[x]] with v.
+2. Replace s.GLOBAL[f.MODULE.GLOBAL[x]].VALUE with v.
 
 with_table x i r
 1. Let f be the current frame.
-2. Replace s.TABLE[f.MODULE.TABLE[x]][i] with r.
+2. Replace s.TABLE[f.MODULE.TABLE[x]].ELEM[i] with r.
 
-with_tableext x r*
+with_tableinst x ti
 1. Let f be the current frame.
-2. Append the sequence r* to the s.TABLE[f.MODULE.TABLE[x]].
+2. Replace s.TABLE[f.MODULE.TABLE[x]] with ti.
 
 with_mem x i j b*
 1. Let f be the current frame.
-2. Replace s.MEM[f.MODULE.MEM[x]][i : j] with b*.
+2. Replace s.MEM[f.MODULE.MEM[x]].DATA[i : j] with b*.
 
-with_memext x b*
+with_meminst x mi
 1. Let f be the current frame.
-2. Append the sequence b* to the s.MEM[f.MODULE.MEM[x]].
+2. Replace s.MEM[f.MODULE.MEM[x]] with mi.
 
 with_elem x r*
 1. Let f be the current frame.
-2. Replace s.ELEM[f.MODULE.ELEM[x]] with r*.
+2. Replace s.ELEM[f.MODULE.ELEM[x]].ELEM with r*.
 
 with_data x b*
 1. Let f be the current frame.
-2. Replace s.DATA[f.MODULE.DATA[x]] with b*.
+2. Replace s.DATA[f.MODULE.DATA[x]].DATA with b*.
+
+grow_table ti n r
+1. Let { TYPE: ((i, j?), reftype); ELEM: r'*; } be ti.
+2. Let i' be (|r'*| + n).
+3. Let ti' be { TYPE: ((i', j?), reftype); ELEM: r'* ++ r^n; }.
+4. Return ti'.
+
+grow_memory mi n
+1. Let { TYPE: (i, j?); DATA: b*; } be mi.
+2. Let i' be (|b*| + n).
+3. Let mi' be { TYPE: (i', j?); DATA: b* ++ [(0 ^ ((n · 64) · $Ki()))]; }.
+4. Return mi'.
 
 execution_of_unreachable
 1. Trap.
@@ -553,16 +565,16 @@ execution_of_call x
 execution_of_call_indirect x ft
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If i ≥ |$table(x)|, then:
+3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
-4. Else if $table(x)[i] is not of the case REF.FUNC_ADDR, then:
+4. Else if $table(x).ELEM[i] is not of the case REF.FUNC_ADDR, then:
   a. Trap.
 5. Else:
-  a. Let (REF.FUNC_ADDR a) be $table(x)[i].
+  a. Let (REF.FUNC_ADDR a) be $table(x).ELEM[i].
   b. If a ≥ |$funcinst()|, then:
     1) Trap.
   c. Else:
-    1) Let (m, (FUNC ft' t* instr*)) be $funcinst()[a].
+    1) Let (FUNC ft' t* instr*) be $funcinst()[a].CODE.
     2) If ft is ft', then:
       a) Execute (CALL_ADDR a).
     3) Else:
@@ -570,16 +582,17 @@ execution_of_call_indirect x ft
 
 execution_of_call_addr a
 1. If a < |$funcinst()|, then:
-  a. Let (m, (FUNC [t_1^k]->[t_2^n] t* instr*)) be $funcinst()[a].
-  b. Assert: Due to validation, there are at least k values on the top of the stack.
-  c. Pop val^k from the stack.
-  d. Let f be { MODULE: m; LOCAL: val^k ++ $default_(t)*; }.
-  e. Push the activation of f with arity n to the stack.
-  f. Let L be the label_n{[]}.
-  g. Push L to the stack.
-  h. Jump to instr*.
-  i. Exit current context.
+  a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
+  b. Let (FUNC [t_1^k]->[t_2^n] t* instr*) be func.
+  c. Assert: Due to validation, there are at least k values on the top of the stack.
+  d. Pop val^k from the stack.
+  e. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
+  f. Push the activation of f with arity n to the stack.
+  g. Let L be the label_n{[]}.
+  h. Push L to the stack.
+  i. Jump to instr*.
   j. Exit current context.
+  k. Exit current context.
 
 execution_of_ref.func x
 1. If x < |$funcaddr()|, then:
@@ -589,18 +602,18 @@ execution_of_local.get x
 1. Push $local(x) to the stack.
 
 execution_of_global.get x
-1. Push $global(x) to the stack.
+1. Push $global(x).VALUE to the stack.
 
 execution_of_table.get x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If i ≥ |$table(x)|, then:
+3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
 4. Else:
-  a. Push $table(x)[i] to the stack.
+  a. Push $table(x).ELEM[i] to the stack.
 
 execution_of_table.size x
-1. Let n be |$table(x)|.
+1. Let n be |$table(x).ELEM|.
 2. Push (I32.CONST n) to the stack.
 
 execution_of_table.fill x
@@ -610,7 +623,7 @@ execution_of_table.fill x
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
-7. If (i + n) > |$table(x)|, then:
+7. If (i + n) > |$table(x).ELEM|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. Push (I32.CONST i) to the stack.
@@ -628,7 +641,7 @@ execution_of_table.copy x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$table(y)| or (j + n) > |$table(x)|, then:
+7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. If j ≤ i, then:
@@ -655,11 +668,11 @@ execution_of_table.init x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$elem(y)| or (j + n) > |$table(x)|, then:
+7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
-8. Else if n is not 0 and i < |$elem(y)|, then:
+8. Else if n is not 0 and i < |$elem(y).ELEM|, then:
   a. Push (I32.CONST j) to the stack.
-  b. Push $elem(y)[i] to the stack.
+  b. Push $elem(y).ELEM[i] to the stack.
   c. Execute (TABLE.SET x).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
@@ -670,19 +683,19 @@ execution_of_load nt _x0? n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If _x0? is not defined, then:
-  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  b. Let c be $inverse_of_bytes_($size(nt), $mem(0)[(i + n_O) : ($size(nt) / 8)]).
+  b. Let c be $inverse_of_bytes_($size(nt), $mem(0).DATA[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
 4. Else:
   a. Let ?([n, sx]) be _x0?.
-  b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
+  b. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  c. Let c be $inverse_of_bytes_(n, $mem(0)[(i + n_O) : (n / 8)]).
+  c. Let c be $inverse_of_bytes_(n, $mem(0).DATA[(i + n_O) : (n / 8)]).
   d. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
 execution_of_memory.size
-1. Let ((n · 64) · $Ki()) be |$mem(0)|.
+1. Let ((n · 64) · $Ki()) be |$mem(0).DATA|.
 2. Push (I32.CONST n) to the stack.
 
 execution_of_memory.fill
@@ -692,7 +705,7 @@ execution_of_memory.fill
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
-7. If (i + n) > |$mem(0)|, then:
+7. If (i + n) > |$mem(0).DATA|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. Push (I32.CONST i) to the stack.
@@ -710,7 +723,7 @@ execution_of_memory.copy
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$mem(0)| or (j + n) > |$mem(0)|, then:
+7. If (i + n) > |$mem(0).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
 8. Else if n is not 0, then:
   a. If j ≤ i, then:
@@ -737,11 +750,11 @@ execution_of_memory.init x
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$data(x)| or (j + n) > |$mem(0)|, then:
+7. If (i + n) > |$data(x).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
-8. Else if n is not 0 and i < |$data(x)|, then:
+8. Else if n is not 0 and i < |$data(x).DATA|, then:
   a. Push (I32.CONST j) to the stack.
-  b. Push (I32.CONST $data(x)[i]) to the stack.
+  b. Push (I32.CONST $data(x).DATA[i]) to the stack.
   c. Execute (STORE I32 ?(8) 0 0).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
@@ -763,7 +776,7 @@ execution_of_table.set x
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If i ≥ |$table(x)|, then:
+5. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
 6. Else:
   a. Perform $with_table(x, i, ref).
@@ -774,8 +787,11 @@ execution_of_table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Push (I32.CONST |$table(x)|) to the stack.
-  b. Perform $with_tableext(x, ref^n).
+  a. Let ti be $table(0).
+  b. Let ti' be $grow_table(ti, n, ref).
+  c. If ti'.TYPE is valid, then:
+    1) Push (I32.CONST |$table(x).ELEM|) to the stack.
+    2) Perform $with_tableinst(x, ti').
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -788,13 +804,13 @@ execution_of_store nt _x0? n_A n_O
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If _x0? is not defined, then:
-  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0)|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
     1) Trap.
   b. Let b* be $bytes_($size(nt), c).
   c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
   a. Let ?(n) be _x0?.
-  b. If ((i + n_O) + (n / 8)) > |$mem(0)|, then:
+  b. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
     1) Trap.
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
@@ -803,8 +819,11 @@ execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Push (I32.CONST (|$mem(0)| / (64 · $Ki()))) to the stack.
-  b. Perform $with_memext(0, 0^((n · 64) · $Ki())).
+  a. Let mi be $mem(0).
+  b. Let mi' be $grow_memory(mi, n).
+  c. If mi'.TYPE is valid, then:
+    1) Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+    2) Perform $with_meminst(0, mi').
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -814,7 +833,7 @@ execution_of_data.drop x
 instantiation module externval*
 1. Let (MODULE _ _ _ _ _ elem* data* start? _) be module.
 2. Let moduleinst be $alloc_module(module, externval*).
-3. Let f be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+3. Let f be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
 4. Push f to the stack.
 5. For i in range |elem*|:
   a. Let (ELEM _ einit mode_opt) be elem*[i].
@@ -847,23 +866,22 @@ instantiation module externval*
 
 alloc_module module externval*
 1. Let (MODULE import* func* global* table* memory* elem* data* _ export*) be module.
-2. Let moduleinst be { EXPORT: []; DATA: []; ELEM: []; MEM: []; GLOBAL: []; TABLE: []; FUNC: []; }.
+2. Let moduleinst be { FUNC: []; TABLE: []; GLOBAL: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. For i in range |import*|:
   a. Let (IMPORT _ _ import_type) be import*[i].
-  b. Let (EXPORT _ externuse) be externval*[i].
-  c. If import_type is of the case FUNC and externuse is of the case FUNC, then:
-    1) Let (FUNC funcaddr') be externuse.
+  b. If import_type is of the case FUNC and externval*[i] is of the case FUNC, then:
+    1) Let (FUNC funcaddr') be externval*[i].
     2) Append funcaddr' to the moduleinst.FUNC.
-  d. If import_type is of the case TABLE and externuse is of the case TABLE, then:
-    1) Let (TABLE tableaddr') be externuse.
+  c. If import_type is of the case TABLE and externval*[i] is of the case TABLE, then:
+    1) Let (TABLE tableaddr') be externval*[i].
     2) Append tableaddr' to the moduleinst.TABLE.
-  e. If import_type is of the case MEM and externuse is of the case MEM, then:
-    1) Let (MEM memaddr') be externuse.
+  d. If import_type is of the case MEM and externval*[i] is of the case MEM, then:
+    1) Let (MEM memaddr') be externval*[i].
     2) Append memaddr' to the moduleinst.MEM.
-  f. If import_type is of the case GLOBAL and externuse is of the case GLOBAL, then:
-    1) Let (GLOBAL globaladdr') be externuse.
+  e. If import_type is of the case GLOBAL and externval*[i] is of the case GLOBAL, then:
+    1) Let (GLOBAL globaladdr') be externval*[i].
     2) Append globaladdr' to the moduleinst.GLOBAL.
-4. Let f_init be the activation of { LOCAL: []; MODULE: moduleinst; } with arity 0.
+4. Let f_init be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
 5. Push f_init to the stack.
 6. Let funcaddr* be $alloc_func(func)*.
 7. Append the sequence funcaddr* to the moduleinst.FUNC.
@@ -879,33 +897,33 @@ alloc_module module externval*
 17. Append the sequence dataaddr* to the moduleinst.DATA.
 18. Pop f_init from the stack.
 19. For i in range |funcaddr*|:
-  a. Let (_, func') be s.FUNC[funcaddr*[i]].
-  b. Replace s.FUNC[funcaddr*[i]] with (moduleinst, func').
+  a. Let func' be s.FUNC[funcaddr*[i]].CODE.
+  b. Replace s.FUNC[funcaddr*[i]] with { MODULE: moduleinst; CODE: func'; }.
 20. For i in range |export*|:
   a. Let (EXPORT name externuse) be export*[i].
   b. If externuse is of the case FUNC, then:
     1) Let (FUNC funcidx) be externuse.
     2) Let funcaddr be moduleinst.FUNC[funcidx].
     3) Let externval be (FUNC funcaddr).
-    4) Let exportinst be (EXPORT name externval).
+    4) Let exportinst be { NAME: name; VALUE: externval; }.
     5) Append exportinst to the moduleinst.EXPORT.
   c. If externuse is of the case TABLE, then:
     1) Let (TABLE tableidx) be externuse.
     2) Let tableaddr be moduleinst.TABLE[tableidx].
     3) Let externval be (TABLE tableaddr).
-    4) Let exportinst be (EXPORT name externval).
+    4) Let exportinst be { NAME: name; VALUE: externval; }.
     5) Append exportinst to the moduleinst.EXPORT.
   d. If externuse is of the case MEM, then:
     1) Let (MEM memidx) be externuse.
     2) Let memaddr be moduleinst.MEM[memidx].
     3) Let externval be (MEM memaddr).
-    4) Let exportinst be (EXPORT name externval).
+    4) Let exportinst be { NAME: name; VALUE: externval; }.
     5) Append exportinst to the moduleinst.EXPORT.
   e. If externuse is of the case GLOBAL, then:
     1) Let (GLOBAL globalidx) be externuse.
     2) Let globaladdr be moduleinst.GLOBAL[globalidx].
     3) Let externval be (GLOBAL globaladdr).
-    4) Let exportinst be (EXPORT name externval).
+    4) Let exportinst be { NAME: name; VALUE: externval; }.
     5) Append exportinst to the moduleinst.EXPORT.
 21. Return moduleinst.
 
@@ -927,49 +945,50 @@ exec_expr instr*
 
 alloc_func func
 1. Let a be |s.FUNC|.
-2. Let dummy_module_inst be { TABLE: []; FUNC: []; }.
-3. Let funcinst be (dummy_module_inst, func).
+2. Let dummy_module_inst be { FUNC: []; TABLE: []; }.
+3. Let funcinst be { MODULE: dummy_module_inst; CODE: func; }.
 4. Append funcinst to the s.FUNC.
-5. Return a.
-
-alloc_table table
-1. Let (TABLE (n, _) reftype) be table.
-2. Let a be |s.TABLE|.
-3. Let tableinst be (REF.NULL reftype)^n.
-4. Append tableinst to the s.TABLE.
 5. Return a.
 
 alloc_global global
 1. Let a be |s.GLOBAL|.
-2. Let val be $init_global(global).
-3. Append val to the s.GLOBAL.
+2. Let globalinst be { VALUE: $init_global(global); }.
+3. Append globalinst to the s.GLOBAL.
 4. Return a.
 
+alloc_table table
+1. Let (TABLE (n, m) reftype) be table.
+2. Let a be |s.TABLE|.
+3. Let tableinst be { TYPE: (n, m); ELEM: (REF.NULL reftype)^n; }.
+4. Append tableinst to the s.TABLE.
+5. Return a.
+
 alloc_memory memory
-1. Let (MEMORY (min, _)) be memory.
+1. Let (MEMORY (min, max)) be memory.
 2. Let a be |s.MEM|.
-3. Let memoryinst be 0^((min · 64) · $Ki()).
+3. Let memoryinst be { TYPE: (min, max); DATA: 0^((min · 64) · $Ki()); }.
 4. Append memoryinst to the s.MEM.
 5. Return a.
 
 alloc_elem elem
 1. Let a be |s.ELEM|.
-2. Let ref* be $init_elem(elem).
-3. Append ref* to the s.ELEM.
+2. Let eleminst be { ELEM: $init_elem(elem); }.
+3. Append eleminst to the s.ELEM.
 4. Return a.
 
 alloc_data data
 1. Let (DATA init _) be data.
 2. Let a be |s.DATA|.
-3. Append init to the s.DATA.
-4. Return a.
+3. Let datainst be { DATA: init; }.
+4. Append datainst to the s.DATA.
+5. Return a.
 
 invocation funcaddr val*
-1. Let (_, func) be s.FUNC[funcaddr].
+1. Let func be s.FUNC[funcaddr].CODE.
 2. Let (FUNC functype _ _) be func.
 3. Let [_^n]->[_^m] be functype.
 4. Assert: |val*| is n.
-5. Let f be the activation of { MODULE: { TABLE: []; FUNC: []; }; LOCAL: []; } with arity 0.
+5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.
 8. Execute (CALL_ADDR funcaddr).
