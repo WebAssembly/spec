@@ -202,10 +202,10 @@ rule Step_read/table.size:
 
 
 rule Step/table.grow-succeed:
-  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  z'; (CONST I32 $(|$table(z, x).ELEM|))
-  -- if $with_tableext(z, x, ref^n) = z'
-  -- if $table(z', 0).TYPE = tabletype
-  -- Tabletype_ok: |- tabletype : OK
+  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti'); (CONST I32 $(|$table(z, x).ELEM|))
+  -- if $table(z, 0) = ti
+  -- if $grow_table(ti, n, ref) = ti'
+  -- Tabletype_ok: |- ti'.TYPE : OK
 
 rule Step/table.grow-fail:
   z; ref (CONST I32 n) (TABLE.GROW x)  ~>  z; (CONST I32 $(-1))
@@ -310,10 +310,10 @@ rule Step_read/memory.size:
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW)  ~>  z'; (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
-  -- if $with_memext(z, 0, 0^(n * 64 * $Ki)) = z'
-  -- if $mem(z', 0).TYPE = memtype
-  -- Memtype_ok: |- memtype : OK
+  z; (CONST I32 n) (MEMORY.GROW)  ~>  $with_meminst(z, 0, mi'); (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
+  -- if $mem(z, 0) = mi
+  -- if $grow_memory(mi, n) = mi'
+  -- Memtype_ok: |- mi'.TYPE : OK
 
 rule Step/memory.grow-fail:
   z; (CONST I32 n) (MEMORY.GROW)  ~>  z; (CONST I32 $(-1))
