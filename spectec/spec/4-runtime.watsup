@@ -161,7 +161,7 @@ def $grow_table(ti, n, r) = ti'
   -- if ti' = { TYPE `[i' .. j?] reftype, ELEM r'* r^n }
 def $grow_memory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j?] I8), DATA b* }
-  -- if i' = $(|b*| + n)
+  -- if i' = $(|b*| / (64 * $Ki) + n)
   -- if mi' = { TYPE (`[i' .. j?] I8), DATA b* 0^(n * 64 * $Ki) }
 
 ;; Administrative Instructions

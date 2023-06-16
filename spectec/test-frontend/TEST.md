@@ -1210,7 +1210,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -3357,7 +3357,7 @@ $$
 \mathrm{grow}_{\mathit{memory}}(\mathit{mi},\, \mathit{n}) &=& {\mathit{mi}'} &\quad
   \mbox{if}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{type}~([\mathit{i} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast} \}\end{array} \\
- &&&&\quad {\land}~{\mathit{i}'} = {|{\mathit{b}^\ast}|} + \mathit{n} \\
+ &&&&\quad {\land}~{\mathit{i}'} = {|{\mathit{b}^\ast}|} / (64 \cdot \mathrm{Ki}) + \mathit{n} \\
  &&&&\quad {\land}~{\mathit{mi}'} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{type}~([{\mathit{i}'} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast}~{0^{\mathit{n} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
 \end{array}

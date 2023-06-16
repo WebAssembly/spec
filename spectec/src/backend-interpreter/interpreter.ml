@@ -221,7 +221,7 @@ and eval_expr env expr =
   | ListFillE (e1, e2) ->
       let v = eval_expr env e1 in
       let i = eval_expr env e2 |> value_to_int in
-      if i > 256 * 64 * 1024 then (* 256 pages *)
+      if i > 1024 * 64 * 1024 then (* 1024 pages *)
         raise Exception.OutOfMemory
       else
         listV (List.init i (function _ -> v))
@@ -343,7 +343,7 @@ and eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 and interp_instrs env il =
-  if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1;
+  (* if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1; *)
   match il with
   | [] -> env
   | i :: cont ->

@@ -47,7 +47,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 49/49 (100.00%)
 
 ===== call.wast =====
-- 68/70 (97.14%)
+- 70/70 (100.00%)
 
 ===== local_get.wast =====
 - 19/19 (100.00%)
@@ -65,7 +65,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 19/19 (100.00%)
 
 ===== linking.wast =====
-- 82/90 (91.11%)
+- 90/90 (100.00%)
 
 ===== float_literals.wast =====
 - 83/83 (100.00%)
@@ -74,7 +74,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 48/48 (100.00%)
 
 ===== if.wast =====
-- 122/123 (99.19%)
+- 123/123 (100.00%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -83,7 +83,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 51/52 (98.08%)
+- 52/52 (100.00%)
 
 ===== labels.wast =====
 - 25/25 (100.00%)
@@ -95,14 +95,13 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4100/4338 (94.51%)
+- 4338/4338 (100.00%)
 
 ===== stack.wast =====
 - 5/5 (100.00%)
 
 ===== loop.wast =====
-- 76/77 (98.70%)
+- 77/77 (100.00%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
@@ -126,33 +125,31 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 63/63 (100.00%)
 
 ===== bulk.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 7/66 (10.61%)
+- 66/66 (100.00%)
 
 ===== traps.wast =====
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 54/55 (98.18%)
+- 55/55 (100.00%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 60/84 (71.43%)
+- 84/84 (100.00%)
 
 ===== call_indirect.wast =====
-- 127/132 (96.21%)
+- 132/132 (100.00%)
 
 ===== load.wast =====
 - 37/37 (100.00%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4/20 (20.00%)
+- 20/20 (100.00%)
 
 ===== memory_size.wast =====
-- 25/36 (69.44%)
+- 36/36 (100.00%)
 
 ===== imports.wast =====
 - print_i32: 13
@@ -168,7 +165,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- 27/34 (79.41%)
+- 34/34 (100.00%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -183,7 +180,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 149/149 (100.00%)
 
 ===== select.wast =====
-- 116/118 (98.31%)
+- 118/118 (100.00%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -258,7 +255,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 662/662 (100.00%)
 
 ===== global.wast =====
-- 57/58 (98.28%)
+- 58/58 (100.00%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -270,8 +267,8 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 76/76 (100.00%)
 
 ===== nop.wast =====
-- 81/83 (97.59%)
+- 83/83 (100.00%)
 
-Total [23387/23778] (98.36%; Normalized 95.80%)
+Total [23766/23778] (99.95%; Normalized 99.56%)
 == Complete.
 ```

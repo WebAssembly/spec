@@ -1209,7 +1209,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -2953,7 +2953,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -4699,7 +4699,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -6454,7 +6454,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -8267,7 +8267,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
-    -- if (i' = (|b*{b}| + n))
+    -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
@@ -10105,7 +10105,7 @@ def grow_memory : (meminst, nat) -> meminst
   ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- where {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}} = mi
-    -- where i' = (|b*{b}| + n)
+    -- where i' = ((|b*{b}| / (64 * $Ki)) + n)
     -- where mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}}
 
 ;; 4-runtime.watsup:178.1-181.21
