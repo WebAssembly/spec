@@ -379,7 +379,7 @@ grow_table ti n r
 grow_memory mi n
 1. Let { TYPE: (I8 (i, j?)); DATA: b*; } be mi.
 2. Let i' be (|b*| + n).
-3. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ [(0 ^ ((n · 64) · $Ki()))]; }.
+3. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ 0^((n · 64) · $Ki()); }.
 4. Return mi'.
 
 execution_of_unreachable

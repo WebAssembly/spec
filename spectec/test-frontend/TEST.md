@@ -1207,11 +1207,11 @@ def grow_table : (tableinst, nat, ref) -> tableinst
 
 ;; 4-runtime.watsup:157.1-157.41
 def grow_memory : (meminst, nat) -> meminst
-  ;; 4-runtime.watsup:162.1-165.69
+  ;; 4-runtime.watsup:162.1-165.66
   def {b* : byte*, i : nat, i' : nat, j? : nat?, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%?]`(i, j?{j})), DATA b*{b}})
     -- if (i' = (|b*{b}| + n))
-    -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: [(0 ^ ((n * 64) * $Ki))]})
+    -- if (mi' = {TYPE `%I8`(`[%..%?]`(i', j?{j})), DATA b*{b} :: 0^((n * 64) * $Ki){}})
 
 ;; 4-runtime.watsup:178.1-181.21
 rec {

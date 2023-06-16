@@ -162,7 +162,7 @@ def $grow_table(ti, n, r) = ti'
 def $grow_memory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j?] I8), DATA b* }
   -- if i' = $(|b*| + n)
-  -- if mi' = { TYPE (`[i' .. j?] I8), DATA b* $(0^(n * 64 * $Ki)) }
+  -- if mi' = { TYPE (`[i' .. j?] I8), DATA b* 0^(n * 64 * $Ki) }
 
 ;; Administrative Instructions
 
