@@ -157,7 +157,7 @@ def $grow_table(tableinst, nat, ref) : tableinst
 def $grow_memory(meminst, nat) : meminst
 def $grow_table(ti, n, r) = ti'
   -- if ti = { TYPE `[i .. j] reftype, ELEM r'* }
-  -- if i' = $(|r*| + n)
+  -- if i' = $(|r'*| + n)
   -- if ti' = { TYPE `[i' .. j] reftype, ELEM r'* r^n }
 def $grow_memory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j] I8), DATA b* }
