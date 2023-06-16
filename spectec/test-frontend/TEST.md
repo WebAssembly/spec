@@ -1614,7 +1614,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [(ref <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -3637,7 +3637,7 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}] = {\mathit{ti}'}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}.\mathsf{elem}|}) &\quad
-  \mbox{if}~{\mathit{z}.\mathsf{table}}{[0]} = \mathit{ti} \\
+  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]} = \mathit{ti} \\
  &&&&\quad {\land}~\mathrm{grow}_{\mathit{table}}(\mathit{ti},\, \mathit{n},\, \mathit{ref}) = {\mathit{ti}'} \\
  &&&&\quad {\land}~{ \vdash }\;{\mathit{ti}'}.\mathsf{type} : \mathsf{ok} \\
 {[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\

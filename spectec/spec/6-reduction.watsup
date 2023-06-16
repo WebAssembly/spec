@@ -203,7 +203,7 @@ rule Step_read/table.size:
 
 rule Step/table.grow-succeed:
   z; ref (CONST I32 n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti'); (CONST I32 $(|$table(z, x).ELEM|))
-  -- if $table(z, 0) = ti
+  -- if $table(z, x) = ti
   -- if $grow_table(ti, n, ref) = ti'
   -- Tabletype_ok: |- ti'.TYPE : OK
 

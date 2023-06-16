@@ -210,7 +210,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 60/60 (100.00%)
 
 ===== table_size.wast =====
-- 24/36 (66.67%)
+- 36/36 (100.00%)
 
 ===== table_set.wast =====
 - 18/18 (100.00%)
@@ -269,6 +269,6 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23766/23778] (99.95%; Normalized 99.56%)
+Total [23778/23778] (100.00%; Normalized 100.00%)
 == Complete.
 ```

@@ -1613,7 +1613,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [(ref <: admininstr) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -3357,7 +3357,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [$admininstr_ref(ref) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -5103,7 +5103,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [$admininstr_ref(ref) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -6864,7 +6864,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [$admininstr_ref(ref) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -8685,7 +8685,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [$admininstr_ref(ref) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- if ($table(z, 0) = ti)
+    -- if ($table(z, x) = ti)
     -- if ($grow_table(ti, n, ref) = ti')
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
@@ -10523,7 +10523,7 @@ relation Step: `%~>%`(config, config)
   ;; 6-reduction.watsup:204.1-208.36
   rule table.grow-succeed {n : n, ref : ref, ti : tableinst, ti' : tableinst, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [$admininstr_ref(ref) CONST_admininstr(I32_numtype, n) TABLE.GROW_admininstr(x)]), `%;%*`($with_tableinst(z, x, ti'), [CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)]))
-    -- where ti = $table(z, 0)
+    -- where ti = $table(z, x)
     -- where ti' = $grow_table(ti, n, ref)
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 

@@ -787,7 +787,7 @@ execution_of_table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Let ti be $table(0).
+  a. Let ti be $table(x).
   b. Let ti' be $grow_table(ti, n, ref).
   c. If ti'.TYPE is not valid, then:
     1) Push (I32.CONST -1) to the stack.
