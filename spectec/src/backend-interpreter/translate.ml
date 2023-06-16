@@ -170,7 +170,7 @@ let rec exp2expr exp =
       | [ [ Ast.Atom tag ] ], [] ->
           Al.ConstructE (tag, [])
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
-  | Ast.MixE (_, inner_e) -> exp2expr inner_e
+  | Ast.MixE ( [ []; [ Ast.Atom "I8" ] ] , inner_e) -> Al.ConstructE ("I8", [ exp2expr inner_e ])
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
   | _ -> Al.YetE (Print.string_of_exp exp)

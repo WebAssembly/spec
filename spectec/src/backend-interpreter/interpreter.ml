@@ -329,7 +329,7 @@ and eval_cond env cond =
       let valid_lim lim k = match lim with
       | PairV (NumV n, OptV (Some (NumV m))) -> n <= m && m <= k
       | PairV (NumV n, OptV None) -> n <= k
-      | _ -> failwith "invalid limit" in
+      | _ -> failwith ("invalid limit: " ^ structured_string_of_value lim) in
       match eval_expr env e with
       (* valid_tabletype *)
       | PairV (lim, _rt) -> valid_lim lim 0xffffffffL
