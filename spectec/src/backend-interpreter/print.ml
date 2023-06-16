@@ -180,6 +180,8 @@ and string_of_cond = function
       sprintf "%s is not of the case %s" (string_of_expr e) c
   | NotC (IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
+  | NotC (ValidC e) ->
+      sprintf "%s is not valid" (string_of_expr e)
   | NotC c -> sprintf "not %s" (string_of_cond c)
   | BinopC (op, c1, c2) ->
       sprintf "%s %s %s" (string_of_cond c1) (string_of_cond_binop op) (string_of_cond c2)

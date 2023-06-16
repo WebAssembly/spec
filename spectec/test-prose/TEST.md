@@ -786,16 +786,16 @@ execution_of_table.grow x
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
-5. Let ti be $table(0).
-6. Let ti' be $grow_table(ti, n, ref).
-7. If not ti'.TYPE is valid, then:
-  a. Push (I32.CONST -1) to the stack.
-8. Else:
-  a. Either:
+5. Either:
+  a. Let ti be $table(0).
+  b. Let ti' be $grow_table(ti, n, ref).
+  c. If ti'.TYPE is not valid, then:
+    1) Push (I32.CONST -1) to the stack.
+  d. Else:
     1) Push (I32.CONST |$table(x).ELEM|) to the stack.
     2) Perform $with_tableinst(x, ti').
-  b. Or:
-    1) Push (I32.CONST -1) to the stack.
+6. Or:
+  a. Push (I32.CONST -1) to the stack.
 
 execution_of_elem.drop x
 1. Perform $with_elem(x, []).
@@ -820,16 +820,16 @@ execution_of_store nt _x0? n_A n_O
 execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Let mi be $mem(0).
-4. Let mi' be $grow_memory(mi, n).
-5. If not mi'.TYPE is valid, then:
-  a. Push (I32.CONST -1) to the stack.
-6. Else:
-  a. Either:
+3. Either:
+  a. Let mi be $mem(0).
+  b. Let mi' be $grow_memory(mi, n).
+  c. If mi'.TYPE is not valid, then:
+    1) Push (I32.CONST -1) to the stack.
+  d. Else:
     1) Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
     2) Perform $with_meminst(0, mi').
-  b. Or:
-    1) Push (I32.CONST -1) to the stack.
+4. Or:
+  a. Push (I32.CONST -1) to the stack.
 
 execution_of_data.drop x
 1. Perform $with_data(x, []).

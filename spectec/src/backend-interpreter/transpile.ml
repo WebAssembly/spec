@@ -166,12 +166,11 @@ let rec unify_if_tail instr =
 let push_either =
   let push_either' = fun i -> match i with
     | EitherI (il1, il2) -> ( match ( Util.Lib.List.split_last il1) with
-      | hds, IfI (c, then_body, []) -> hds @ [ IfI (c, [ EitherI (then_body, il2) ], il2) ]
-      | hds, IfI (c, then_body, else_body) -> hds @ [ IfI (c, [ EitherI (then_body, il2) ], [ EitherI (else_body, il2) ]) ]
-      | _ -> [i] )
-    | _ -> [i] in
+      | hds, IfI (c, then_body, []) -> EitherI (hds @ [ IfI (c, then_body, il2) ], il2)
+      | _ -> i )
+    | _ -> i in
 
-  Walk.walk_instr { Walk.default_action with pre_instr = push_either' }
+  Walk.walk_instr { Walk.default_action with pre_instr = lift push_either' }
 
 let enhance_readability instrs =
   instrs

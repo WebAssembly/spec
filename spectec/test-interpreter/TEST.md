@@ -139,7 +139,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 57/84 (67.86%)
+- 60/84 (71.43%)
 
 ===== call_indirect.wast =====
 - 127/132 (96.21%)
@@ -177,7 +177,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 11/11 (100.00%)
 
 ===== memory_trap.wast =====
-- 179/180 (99.44%)
+- 180/180 (100.00%)
 
 ===== br_table.wast =====
 - 149/149 (100.00%)
@@ -248,7 +248,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- 37/38 (97.37%)
+- 38/38 (100.00%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
@@ -272,6 +272,6 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 ===== nop.wast =====
 - 81/83 (97.59%)
 
-Total [23382/23778] (98.33%; Normalized 95.71%)
+Total [23387/23778] (98.36%; Normalized 95.80%)
 == Complete.
 ```
