@@ -162,6 +162,8 @@ let rec exp2expr exp =
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ] ->
           Al.PairE (exp2expr e1, exp2expr e2)
+      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] -> (* TODO: Change lim of DSL to be opt *)
+          Al.PairE (exp2expr e1, Al.OptE (Some (exp2expr e2)))
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           Al.ArrowE (exp2expr e1, exp2expr e2)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
@@ -169,6 +171,7 @@ let rec exp2expr exp =
       | [ [ Ast.Atom tag ] ], [] ->
           Al.ConstructE (tag, [])
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
+  | Ast.MixE (_, inner_e) -> exp2expr inner_e
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
   | _ -> Al.YetE (Print.string_of_exp exp)
