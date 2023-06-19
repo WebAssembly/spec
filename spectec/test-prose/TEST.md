@@ -23,8 +23,6 @@ Animation failed:
 == IL Validation...
 == Translating to AL...
 Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
-if_expr_to_instrs: Invalid if_prem (((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype))))
-if_expr_to_instrs: Invalid if_prem (((n?{n} = ?()) <=> (sx?{sx} = ?())))
 =================
  Generated prose
 =================
@@ -116,7 +114,7 @@ validation_of_reinterpret nt_1 REINTERPRET nt_2 ?()
 
 validation_of_convert in_1 CONVERT in_2 sx?
 - in_1 must be different with in_2.
-- Yet: ((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype)))
+- ($size(in_1) > $size(in_2)) and (sx? is ?()) are equivalent.
 - The instruction is valid with type [in_2]->[in_1].
 
 validation_of_ref.null rt
@@ -233,7 +231,7 @@ validation_of_data.drop x
 
 validation_of_load nt YetE ((n, sx)?{n sx}) n_A n_O
 - |C.MEM| must be greater than 0.
-- Yet: ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+- (sx? is ?()) and (n? is ?()) are equivalent.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).

@@ -52,6 +52,10 @@ let rec string_of_instr = function
       sprintf "%s %s\n%s" (indent ())
         s
         (string_of_list indented_string_of_instr "" "\n" "" is)
+  | EquivI (e1, e2) ->
+      sprintf "%s (%s) and (%s) are equivalent." (indent ())
+        (Print.string_of_cond e2)
+        (Print.string_of_cond e1)
   | YetI s -> indent () ^ " Yet: " ^ s
 
 and indented_string_of_instr i =
@@ -91,5 +95,6 @@ let string_of_structured_instr = function
   | IsValidI e_opt ->
       "IsValidI" ^ Print.string_of_opt " (" Print.structured_string_of_expr ")" e_opt
   | ForallI _ -> "ForallI(...)"
+  | EquivI _ -> "EquivI ..."
   | YetI s -> "YetI (" ^ s ^ ")"
 

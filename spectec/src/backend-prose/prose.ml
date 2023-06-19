@@ -12,6 +12,7 @@ type instr =
 | MustMatchI of Al.expr * Al.expr
 | IsValidI of Al.expr option
 | ForallI of string * instr list
+| EquivI of Al.cond * Al.cond
 | YetI of string
 
 type def =

@@ -46,6 +46,8 @@ let rec if_expr_to_instrs e =
     [ match neg_cond with
       | [ CmpI (NameE (N name, [Opt]), Eq, OptE None) ] -> ForallI ("If " ^ name ^ " is defind,", body)
       | _ -> fail() ]
+  | Ast.BinE (Ast.EquivOp, e1, e2) ->
+      [ EquivI (exp2cond e1, exp2cond e2) ]
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
