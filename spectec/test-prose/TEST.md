@@ -145,12 +145,12 @@ validation_of_local.tee x
 
 validation_of_global.get x
 - |C.GLOBAL| must be greater than x.
-- Let YetE (MixE ([[Atom "MUT"], [Quest], []], TupE ([IterE (TupE ([]), (Opt, [])), VarE "t"]))) be C.GLOBAL[x].
+- Let (mut?, t) be C.GLOBAL[x].
 - The instruction is valid with type []->[t].
 
 validation_of_global.set x
 - |C.GLOBAL| must be greater than x.
-- Let YetE (MixE ([[Atom "MUT"], [Quest], []], TupE ([OptE (TupE ([])), VarE "t"]))) be C.GLOBAL[x].
+- Let (MUT, t) be C.GLOBAL[x].
 - The instruction is valid with type [t]->[].
 
 validation_of_table.get x

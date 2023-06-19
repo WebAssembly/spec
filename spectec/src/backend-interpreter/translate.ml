@@ -169,6 +169,12 @@ let rec exp2expr exp =
           Al.ConstructE ("FUNC", List.map exp2expr exps)
       | [ [ Ast.Atom tag ] ], [] ->
           Al.ConstructE (tag, [])
+      | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
+        [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
+          Al.PairE (Al.ConstructE ("MUT", []), exp2expr t)
+      | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
+        [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
+          Al.PairE (Al.NameE (Al.N "mut", [ Al.Opt ]), exp2expr t)
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
   | Ast.MixE ( [ []; [ Ast.Atom "I8" ] ] , inner_e) -> Al.ConstructE ("I8", [ exp2expr inner_e ])
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
