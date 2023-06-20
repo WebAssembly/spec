@@ -1,13 +1,2 @@
-*.cmo
-*.cmx
-*.native
-*.byte
-*.opt
-*.unopt
-*.js
-*.zip
-*.mlpack
 _build
 wasm
-wasm.debug
-
