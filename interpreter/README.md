@@ -24,7 +24,7 @@ Once you have OCaml, simply do
 ```
 make
 ```
-You'll get an executable named `_build/default/wasm.exe`.
+You'll get an executable named `./wasm`.
 To run the test suite,
 ```
 make test

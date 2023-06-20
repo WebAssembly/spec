@@ -34,6 +34,8 @@ ci:		all jslib
 .PHONY:		$(NAME).exe
 $(NAME).exe:
 	dune build $@
+	rm -f $(NAME)
+	cp $(BUILDDIR)/$(OPT) $(NAME)
 
 .PHONY:		smallint.exe
 smallint.exe:
