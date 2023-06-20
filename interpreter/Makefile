@@ -12,7 +12,7 @@
 NAME = wasm
 OPT =		$(NAME).exe
 ZIP =		$(NAME).zip
-JSLIB =		wast.bc.js
+JSLIB =		wast.js
 
 BUILDDIR = _build/default
 
@@ -41,7 +41,7 @@ smallint.exe:
 
 # Building JavaScript library
 
-wast.bc.js:
+$(JSLIB):
 	dune build $@
 
 # Executing test suite

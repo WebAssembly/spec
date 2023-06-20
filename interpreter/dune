@@ -29,6 +29,11 @@
   (libraries js_of_ocaml wasm)
   (preprocess (pps js_of_ocaml-ppx)))
 
+(rule
+  (targets wast.js)
+  (deps wast.bc.js)
+  (action (copy wast.bc.js wast.js)))
+
 (subdir
  text
  (rule
