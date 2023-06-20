@@ -1,7 +1,7 @@
 (include_subdirs unqualified)
 
 (library
- (name wasm)
+ (public_name wasm)
  ; The 'wasm' module shall not be part of the library, as it would start the
  ; Wasm REPL every time in all the dependencies.
  ; We exclude the 'wast' module as it is only used for the JS build.
@@ -9,7 +9,7 @@
  (modules :standard \ wasm smallint wast))
 
 (executable
- (name wasm)
+ (public_name wasm)
  (modules wasm)
  (libraries wasm)
  (flags

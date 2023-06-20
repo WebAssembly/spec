@@ -1,1 +1,8 @@
 (lang dune 2.9)
+
+(name "wasm")
+
+(generate_opam_files true)
+
+(package
+  (name "wasm"))

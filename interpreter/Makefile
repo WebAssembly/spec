@@ -81,6 +81,9 @@ smallinttest:	smallint
 dunetest:
 	dune test
 
+install:
+	dune build -p $(NAME) @install
+	dune install
 
 # Miscellaneous targets
 
