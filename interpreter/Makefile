@@ -45,6 +45,8 @@ smallint.exe:
 
 $(JSLIB):
 	dune build $@
+	rm -f $@
+	cp $(BUILDDIR)/$@ $@
 
 # Executing test suite
 
@@ -94,3 +96,4 @@ $(ZIP):
 
 clean:
 	dune clean
+	rm -f $(NAME) $(JSLIB)
