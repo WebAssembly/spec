@@ -9,8 +9,9 @@
 
 # Configuration
 
-OPT =		wasm.exe
-ZIP =		wasm.zip
+NAME = wasm
+OPT =		$(NAME).exe
+ZIP =		$(NAME).zip
 JSLIB =		wast.bc.js
 
 BUILDDIR = _build/default
@@ -30,8 +31,8 @@ smallint:	smallint.exe
 ci:		all jslib
 
 # Building executable
-.PHONY:		wasm.exe
-wasm.exe:
+.PHONY:		$(NAME).exe
+$(NAME).exe:
 	dune build $@
 
 .PHONY:		smallint.exe
