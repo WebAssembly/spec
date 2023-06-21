@@ -33,8 +33,8 @@ ci:		all jslib
 # Building executable
 .PHONY:		$(NAME).exe
 $(NAME).exe:
-	dune build $@
 	rm -f $(NAME)
+	dune build $@
 	cp $(BUILDDIR)/$(OPT) $(NAME)
 
 .PHONY:		smallint.exe
@@ -44,8 +44,8 @@ smallint.exe:
 # Building JavaScript library
 
 $(JSLIB):
-	dune build $@
 	rm -f $@
+	dune build $@
 	cp $(BUILDDIR)/$@ $@
 
 # Executing test suite
