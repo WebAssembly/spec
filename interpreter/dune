@@ -6,7 +6,7 @@
  ; Wasm REPL every time in all the dependencies.
  ; We exclude the 'wast' module as it is only used for the JS build.
  ; 'smallint' is a separate test module.
- (modules :standard \ wasm smallint wast))
+ (modules :standard \ main wasm smallint wast))
 
 (executable
  (public_name wasm)
@@ -28,6 +28,11 @@
   (modes js)
   (libraries js_of_ocaml wasm)
   (preprocess (pps js_of_ocaml-ppx)))
+
+(rule
+  (targets wasm.ml)
+  (deps main/main.ml)
+  (action (copy main/main.ml wasm.ml)))
 
 (rule
   (targets wast.js)
