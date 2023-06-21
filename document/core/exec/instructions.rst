@@ -486,6 +486,7 @@ Reference Instructions
       (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
    \end{array}
 
 
@@ -498,12 +499,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}[i]}(\val))
      \end{array} \\
+   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
    \end{array}
 
 
@@ -641,12 +643,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \TRAP
    \end{array}
 
 
@@ -659,12 +662,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& \TRAP
    \end{array}
 
 
@@ -677,7 +681,8 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|\SARRAYS[a].\AIFIELDS[i]|)
+   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|S.\SARRAYS[a].\AIFIELDS|) \\
+   S; (\REFNULL~t)~\ARRAYLEN &\stepto& \TRAP
    \end{array}
 
 
