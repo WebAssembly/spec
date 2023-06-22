@@ -464,20 +464,49 @@ def $replace_moduleinst(s, fa fa'*, m) = s_res
   -- if s_res = $replace_moduleinst(s_new, fa'*, m)
 
 
+def $alloc_export(moduleinst, export) : exportinst
+
+def $alloc_export(m, export) = xi
+  -- if export = EXPORT name externuse
+  -- if externuse = FUNC x
+  -- if externval = FUNC m.FUNC[x]
+  -- if xi = { NAME name, VALUE externval }
+
+def $alloc_export(m, export) = xi
+  -- if export = EXPORT name externuse
+  -- if externuse = GLOBAL x
+  -- if externval = GLOBAL m.GLOBAL[x]
+  -- if xi = { NAME name, VALUE externval }
+
+def $alloc_export(m, export) = xi
+  -- if export = EXPORT name externuse
+  -- if externuse = TABLE x
+  -- if externval = TABLE m.TABLE[x]
+  -- if xi = { NAME name, VALUE externval }
+
+def $alloc_export(m, export) = xi
+  -- if export = EXPORT name externuse
+  -- if externuse = MEM x
+  -- if externval = MEM m.MEM[x]
+  -- if xi = { NAME name, VALUE externval }
+
+
 def $alloc_module(store, module) : (store, moduleinst)
 
-def $alloc_module(s, module) = (s_res, m)
+def $alloc_module(s, module) = (s_res, m_res)
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
-  -- if m' = { FUNC epsilon, GLOBAL epsilon, TABLE epsilon, MEM epsilon, ELEM epsilon, DATA epsilon, EXPORT epsilon }
-  -- if f = { LOCAL epsilon, MODULE m' }
+  -- if m_init = { FUNC epsilon, GLOBAL epsilon, TABLE epsilon, MEM epsilon, ELEM epsilon, DATA epsilon, EXPORT epsilon }
+  -- if f = { LOCAL epsilon, MODULE m_init }
   -- if (s_func, fa*) = $alloc_func((s; f), func*)
   -- if (s_global, ga*) = $alloc_global((s_func; f), global*)
   -- if (s_table, ta*) = $alloc_table((s_global; f), table*)
   -- if (s_mem, ma*) = $alloc_mem((s_table; f), mem*)
   -- if (s_elem, ea*) = $alloc_elem((s_mem; f), elem*)
   -- if (s_data, da*) = $alloc_data((s_elem; f), data*)
-  -- if m = { FUNC fa*, GLOBAL ga*, TABLE ta*, MEM ma*, ELEM ea*, DATA da*, EXPORT epsilon }
-  -- if s_res = $replace_moduleinst(s_elem, fa*, m)
+  -- if m_ex = { FUNC fa*, GLOBAL ga*, TABLE ta*, MEM ma*, ELEM ea*, DATA da*, EXPORT epsilon }
+  -- if xi* = $alloc_export(m_ex, export)*
+  -- if m_res = m[.EXPORT = xi*]
+  -- if s_res = $replace_moduleinst(s_data, fa*, m_res)
 
 
 def $run_elem(state, elem*, idx) : state
