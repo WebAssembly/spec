@@ -380,6 +380,39 @@ rule Step/data.drop:
 
 ;; Module Semantics
 
+def $alloc_import(moduleinst, import*, externval*) : moduleinst
+
+def $alloc_import(m, epsilon, epsilon) = m
+
+def $alloc_import(m, import import'*, externval externval'*) = m_res
+  -- if import = IMPORT name name' externtype
+  -- if externtype = FUNC functype
+  -- if externval = FUNC fa
+  -- if m_new = m[.FUNC =.. fa]
+  -- if m_res = $alloc_import(m_new, import'*, externval'*)
+
+def $alloc_import(m, import import'*, externval externval'*) = m_res
+  -- if import = IMPORT name name' externtype
+  -- if externtype = GLOBAL globaltype
+  -- if externval = GLOBAL ga
+  -- if m_new = m[.GLOBAL =.. ga]
+  -- if m_res = $alloc_import(m_new, import'*, externval'*)
+
+def $alloc_import(m, import import'*, externval externval'*) = m_res
+  -- if import = IMPORT name name' externtype
+  -- if externtype = TABLE tabletype
+  -- if externval = TABLE ta
+  -- if m_new = m[.TABLE =.. ta]
+  -- if m_res = $alloc_import(m_new, import'*, externval'*)
+
+def $alloc_import(m, import import'*, externval externval'*) = m_res
+  -- if import = IMPORT name name' externtype
+  -- if externtype = MEM memtype
+  -- if externval = MEM ma
+  -- if m_new = m[.MEM =.. ma]
+  -- if m_res = $alloc_import(m_new, import'*, externval'*)
+
+
 def $alloc_func(state, func*) : (store, funcaddr*)
 
 def $alloc_func((s; f), epsilon) = (s, epsilon)
@@ -491,21 +524,23 @@ def $alloc_export(m, export) = xi
   -- if xi = { NAME name, VALUE externval }
 
 
-def $alloc_module(store, module) : (store, moduleinst)
+def $alloc_module(store, module, externval*) : (store, moduleinst)
 
-def $alloc_module(s, module) = (s_res, m_res)
+def $alloc_module(s, module, externval*) = (s_res, m_res)
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = { FUNC epsilon, GLOBAL epsilon, TABLE epsilon, MEM epsilon, ELEM epsilon, DATA epsilon, EXPORT epsilon }
-  -- if f = { LOCAL epsilon, MODULE m_init }
+  -- if m_im = $alloc_import(m_init, import*, externval*)
+  -- if f = { LOCAL epsilon, MODULE m_im }
   -- if (s_func, fa*) = $alloc_func((s; f), func*)
   -- if (s_global, ga*) = $alloc_global((s_func; f), global*)
   -- if (s_table, ta*) = $alloc_table((s_global; f), table*)
   -- if (s_mem, ma*) = $alloc_mem((s_table; f), mem*)
   -- if (s_elem, ea*) = $alloc_elem((s_mem; f), elem*)
   -- if (s_data, da*) = $alloc_data((s_elem; f), data*)
-  -- if m_ex = { FUNC fa*, GLOBAL ga*, TABLE ta*, MEM ma*, ELEM ea*, DATA da*, EXPORT epsilon }
+  -- if m_im = { FUNC fa'*, GLOBAL ga'*, TABLE ta'*, MEM ma'*, ELEM epsilon, DATA epsilon, EXPORT epsilon }
+  -- if m_ex = { FUNC fa'* fa*, GLOBAL ga'* ga*, TABLE ta'* ta*, MEM ma'* ma*, ELEM ea*, DATA da*, EXPORT epsilon }
   -- if xi* = $alloc_export(m_ex, export)*
-  -- if m_res = m[.EXPORT = xi*]
+  -- if m_res = m_ex[.EXPORT = xi*]
   -- if s_res = $replace_moduleinst(s_data, fa*, m_res)
 
 
@@ -547,18 +582,18 @@ def $run_data((s; f), data data'*, i) = s_res; f_res
   -- if $run_data((s_new; f_new), data'*, $(i + 1)) = s_res; f_res
 
 
-def $instantiation(store, module) : (store, moduleinst)
+def $instantiation(store, module, externval*) : (store, moduleinst)
 
-def $instantiation(s, module) = (s_res, m)
+def $instantiation(s, module, externval*) = (s_res, m)
   -- if module = MODULE import* func* global* table* mem* elem* data* export*
-  -- if (s_alloc, m) = $alloc_module(s, module)
+  -- if (s_alloc, m) = $alloc_module(s, module, externval*)
   -- if f = { LOCAL epsilon, MODULE m }
   -- if $run_elem((s_alloc; f_alloc), elem*, 0) = s_elem; f_elem
   -- if $run_data((s_elem; f_elem), data*, 0) = s_res; f_res
 
-def $instantiation(s, module) = (s_res, m)
+def $instantiation(s, module, externval*) = (s_res, m)
   -- if module = MODULE import* func* global* table* mem* elem* data* start export*
-  -- if (s_alloc, m) = $alloc_module(s, module)
+  -- if (s_alloc, m) = $alloc_module(s, module, externval*)
   -- if f = { LOCAL epsilon, MODULE m }
   -- if $run_elem((s_alloc; f_alloc), elem*, 0) = s_elem; f_elem
   -- if $run_data((s_elem; f_elem), data*, 0) = s_data; f_data
