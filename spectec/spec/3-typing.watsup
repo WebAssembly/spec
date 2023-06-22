@@ -431,7 +431,7 @@ rule Elem_ok:
   -- (Elemmode_ok: C |- elemmode : rt)?
 
 rule Data_ok:
-  C |- DATA (b*)* datamode? : OK
+  C |- DATA b* datamode? : OK
   -- (Datamode_ok: C |- datamode : OK)?
 
 rule Elemmode_ok/active:
