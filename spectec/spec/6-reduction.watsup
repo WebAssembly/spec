@@ -376,3 +376,110 @@ rule Step_read/memory.init-succ:
 
 rule Step/data.drop:
   z; (DATA.DROP x)  ~>  $with_data(z, x, epsilon); epsilon
+
+
+;; Module Semantics
+
+def $alloc_func(state, func) : (funcaddr, funcinst)
+def $alloc_global(state, global) : (globaladdr, globalinst)
+def $alloc_table(state, table) : (tableaddr, tableinst)
+def $alloc_mem(state, mem) : (memaddr, meminst)
+def $alloc_elem(state, elem) : (elemaddr, eleminst)
+def $alloc_data(state, data) : (dataaddr, datainst)
+
+def $alloc_func((s; f), func) = (fa, fi)
+  -- if fi = { MODULE f.MODULE, CODE func }
+  -- if fa = |$funcinst((s; f))|
+
+def $alloc_global((s; f), global) = (ga, gi)
+  -- if global = GLOBAL globaltype instr*
+  -- Step_read : s; f; instr* ~> val
+  -- if gi = { TYPE globaltype, VALUE val }
+  -- if ga = |$globalinst((s; f))|
+
+def $alloc_table((s; f), table) = (ta, ti)
+  -- if table = TABLE (`[i .. j?] reftype)
+  -- if ti = { TYPE `[i .. j?] reftype, ELEM (REF.NULL reftype)^i }
+  -- if ta = |$tableinst((s; f))|
+
+def $alloc_mem((s; f), mem) = (ma, mi)
+  -- if mem = MEMORY (`[i .. j?] I8)
+  -- if mi = { TYPE (`[i .. j? ] I8), DATA 0^(i * 64 * $Ki()) }
+  -- if ma = |$meminst((s; f))|
+
+def $alloc_elem((s; f), elem) = (ea, ei)
+  -- if elem = ELEM reftype (instr*)* elemmode?
+  -- (Step_read : s; f; instr* ~> ref)*
+  -- if ei = { TYPE reftype, ELEM ref* }
+  -- if ea = |$eleminst((s; f))|
+
+def $alloc_data((s; f), data) = (da, di)
+  -- if data = DATA byte* datamode?
+  -- if di = { DATA byte* }
+  -- if da = |$datainst((s; f))|
+
+
+def $alloc_module(store, module) : (store, moduleinst)
+
+;; TODO: fold store, replace moduleinst
+def $alloc_module(s, module) = (s, m)
+  -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
+  -- if m' = { FUNC epsilon, GLOBAL epsilon, TABLE epsilon, MEM epsilon, ELEM epsilon, DATA epsilon, EXPORT epsilon }
+  -- if f = { LOCAL epsilon, MODULE m' }
+  -- if $alloc_func((s; f), func)* = (fa, fi)*
+  -- if $alloc_global((s; f), global)* = (ga, gi)*
+  -- if $alloc_table((s; f), table)* = (ta, ti)*
+  -- if $alloc_mem((s; f), mem)* = (ma, mi)*
+  -- if $alloc_elem((s; f), elem)* = (ea, ei)*
+  -- if $alloc_data((s; f), data)* = (da, di)*
+  -- if m = { FUNC fa*, GLOBAL ga*, TABLE ta*, MEM ma*, ELEM ea*, DATA da*, EXPORT epsilon }
+
+
+def $run_elem(state, elem) : state
+def $run_data(state, data) : state
+
+def $run_elem((s; f), elem) = (s; f)
+  -- if elem = ELEM reftype expr*
+
+;; TODO: get index i
+def $run_elem((s; f), elem) = (s'; f')
+  -- if elem = ELEM reftype expr^n elemmode
+  -- if elemmode = TABLE x instr*
+  -- Step : s; f; instr* (CONST I32 0) (CONST I32 n) (TABLE.INIT x i) (ELEM.DROP i) ~> s'; f'; epsilon
+
+def $run_elem((s; f), elem) = (s'; f')
+  -- if elem = ELEM reftype expr* elemmode
+  -- if elemmode = DECLARE
+  -- Step : s; f; (ELEM.DROP i) ~> s'; f'; epsilon
+
+def $run_data((s; f), data) = (s; f)
+  -- if data = DATA byte*
+
+;; TODO: get index i
+def $run_data((s; f), data) = (s'; f')
+  -- if data = DATA byte^n datamode
+  -- if datamode = MEMORY 0 instr*
+  -- Step : s; f; instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT i) (DATA.DROP i) ~> s'; f'; epsilon
+
+
+def $instantiation(store, module) : (store, moduleinst)
+
+;; TODO: fold store
+def $instantiation(s, module) = (s, m)
+  -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
+  -- if $alloc_module(s, module) = (s_alloc, m)
+  -- if f = { LOCAL epsilon, MODULE m }
+  -- if $run_elem((s; f), elem)* = (s'; f')*
+  -- if $run_data((s; f), data)* = (s''; f'')*
+
+
+def $invocation(store, funcaddr, val*) : (store, val*)
+
+def $invocation(s, fa, val^i) = (s', val'^j)
+  -- if m = { FUNC epsilon, GLOBAL epsilon, TABLE epsilon, MEM epsilon, ELEM epsilon, DATA epsilon, EXPORT epsilon }
+  -- if f = { LOCAL epsilon, MODULE m }
+  -- if $funcinst((s; f))[fa].CODE = FUNC functype valtype* expr
+  -- if functype = valtype* -> valtype'*
+  -- if i = |valtype*|
+  -- if j = |valtype'*|
+  -- Step : s; f; val^i (CALL_ADDR fa) ~> s'; f'; val'^j
