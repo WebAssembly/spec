@@ -116,6 +116,10 @@ let rec exp2expr exp =
     when id.it = id'.it -> (* TODO: Somehow remove this hack *)
       let name = Al.N id.it in
       Al.NameE (name, [iter2iter iter])
+  | Ast.IterE ({ it = Ast.IterE (inner_exp, (inner_iter, [ inner_id ])); _ }, (iter, [ id ])) when id.it = inner_id.it ->
+      let name = exp2name inner_exp in
+      assert (name = Al.N id.it);
+      Al.NameE (name, [iter2iter inner_iter; iter2iter iter])
   | Ast.IterE (inner_exp, (iter, [ id ])) ->
       let name = exp2name inner_exp in
       assert (name = Al.N id.it);
@@ -156,8 +160,12 @@ let rec exp2expr exp =
       in
       let record = List.fold_left f Record.empty expfields in
       Al.RecordE record
-  (* TODO: Handle MixE *)
-  | Ast.MixE (op, { it = Ast.TupE exps; _ }) -> (
+  | Ast.MixE (op, e) -> (
+      let exps =
+        match e.it with
+        | TupE exps -> exps
+        | _ -> [ e ]
+      in
       match (op, exps) with
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
@@ -165,6 +173,7 @@ let rec exp2expr exp =
           Al.PairE (exp2expr e1, exp2expr e2)
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           Al.ArrowE (exp2expr e1, exp2expr e2)
+      (* Constructor *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
           Al.ConstructE ("FUNC", List.map exp2expr exps)
       | [ [ Ast.Atom tag ] ], [] ->
@@ -175,8 +184,27 @@ let rec exp2expr exp =
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
           Al.PairE (Al.NameE (Al.N "mut", [ Al.Opt ]), exp2expr t)
+      | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
+          Al.ConstructE ("MODULE", List.map exp2expr el)
+      | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
+          Al.ConstructE ("IMPORT", List.map exp2expr el)
+      | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
+          Al.ConstructE ("GLOBAL", List.map exp2expr el)
+      | [ [ Ast.Atom "TABLE" ]; [] ], el ->
+          Al.ConstructE ("TABLE", List.map exp2expr el)
+      | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
+          Al.ConstructE ("MEMORY", List.map exp2expr el)
+      | [ []; [ Ast.Atom "I8" ] ], el ->
+          Al.ConstructE ("I8", List.map exp2expr el)
+      | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
+          Al.ConstructE ("ELEM", List.map exp2expr el)
+      | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
+          Al.ConstructE ("DATA", List.map exp2expr el)
+      | [ [ Ast.Atom "START" ]; [] ], el ->
+          Al.ConstructE ("START", List.map exp2expr el)
+      | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
+          Al.ConstructE ("EXPORT", List.map exp2expr el)
       | _ -> Al.YetE (Print.structured_string_of_exp exp))
-  | Ast.MixE ( [ []; [ Ast.Atom "I8" ] ] , inner_e) -> Al.ConstructE ("I8", [ exp2expr inner_e ])
   | Ast.OptE inner_exp -> Al.OptE (Option.map exp2expr inner_exp)
   (* Yet *)
   | _ -> Al.YetE (Print.string_of_exp exp)

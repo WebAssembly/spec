@@ -426,7 +426,7 @@ alloc_import m _x0* _x1*
   a. Return m.
 2. Let [externval] ++ externval'* be _x1*.
 3. Let [import] ++ import'* be _x0*.
-4. Let YetE (MixE ([[Atom "IMPORT"], [], [], []], TupE ([VarE "name", VarE "name'", VarE "externtype"]))) be import.
+4. Let (IMPORT name name' externtype) be import.
 5. If externtype is of the case FUNC, then:
   a. Let (FUNC functype) be externtype.
   b. If externval is of the case FUNC, then:
@@ -436,7 +436,7 @@ alloc_import m _x0* _x1*
     4) Return m_res.
 6. Let [externval] ++ externval'* be _x1*.
 7. Let [import] ++ import'* be _x0*.
-8. Let YetE (MixE ([[Atom "IMPORT"], [], [], []], TupE ([VarE "name", VarE "name'", VarE "externtype"]))) be import.
+8. Let (IMPORT name name' externtype) be import.
 9. If externtype is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype) be externtype.
   b. If externval is of the case GLOBAL, then:
@@ -446,7 +446,7 @@ alloc_import m _x0* _x1*
     4) Return m_res.
 10. Let [externval] ++ externval'* be _x1*.
 11. Let [import] ++ import'* be _x0*.
-12. Let YetE (MixE ([[Atom "IMPORT"], [], [], []], TupE ([VarE "name", VarE "name'", VarE "externtype"]))) be import.
+12. Let (IMPORT name name' externtype) be import.
 13. If externtype is of the case TABLE, then:
   a. Let (TABLE tabletype) be externtype.
   b. If externval is of the case TABLE, then:
@@ -456,7 +456,7 @@ alloc_import m _x0* _x1*
     4) Return m_res.
 14. Let [externval] ++ externval'* be _x1*.
 15. Let [import] ++ import'* be _x0*.
-16. Let YetE (MixE ([[Atom "IMPORT"], [], [], []], TupE ([VarE "name", VarE "name'", VarE "externtype"]))) be import.
+16. Let (IMPORT name name' externtype) be import.
 17. If externtype is of the case MEM, then:
   a. Let (MEM memtype) be externtype.
   b. If externval is of the case MEM, then:
@@ -481,7 +481,7 @@ alloc_global _x0*
 2. If _x0* is [], then:
   a. Return [s, []].
 3. Let [global] ++ global'* be _x0*.
-4. Let YetE (MixE ([[Atom "GLOBAL"], [], []], TupE ([VarE "globaltype", IterE (VarE "instr", (List, ["instr"]))]))) be global.
+4. Let (GLOBAL globaltype instr*) be global.
 5. Let ga be |$globalinst((s, f))|.
 6. YetI: Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(val <: admininstr)]).
 7. Let gi be { TYPE: globaltype; VALUE: val; }.
@@ -494,7 +494,7 @@ alloc_table _x0*
 2. If _x0* is [], then:
   a. Return [s, []].
 3. Let [table] ++ table'* be _x0*.
-4. Let YetE (TABLE(tabletype)) be table.
+4. Let (TABLE tabletype) be table.
 5. Let ((i, j?), reftype) be tabletype.
 6. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
 7. Let s_new be YetE (s[TABLE_store =.. [ti]]).
@@ -507,7 +507,7 @@ alloc_mem _x0*
 2. If _x0* is [], then:
   a. Return [s, []].
 3. Let [mem] ++ mem'* be _x0*.
-4. Let YetE (MEMORY(memtype)) be mem.
+4. Let (MEMORY memtype) be mem.
 5. Let (I8 (i, j?)) be memtype.
 6. Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
 7. Let s_new be YetE (s[MEM_store =.. [mi]]).
@@ -520,7 +520,7 @@ alloc_elem _x0*
 2. If _x0* is [], then:
   a. Return [s, []].
 3. Let [elem] ++ elem'* be _x0*.
-4. Let YetE (MixE ([[Atom "ELEM"], [], [Star], [Quest]], TupE ([VarE "reftype", IterE (IterE (VarE "instr", (List, ["instr"])), (List, ["instr"])), IterE (VarE "elemmode", (Opt, ["elemmode"]))]))) be elem.
+4. Let (ELEM reftype instr** elemmode?) be elem.
 5. Let ea be |$eleminst((s, f))|.
 6. YetI: (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(ref <: admininstr)]))*{instr ref}.
 7. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and [s_res, ea'*] is $alloc_elem((s_new, f), elem'*), then:
@@ -531,7 +531,7 @@ alloc_data _x0*
 2. If _x0* is [], then:
   a. Return [s, []].
 3. Let [data] ++ data'* be _x0*.
-4. Let YetE (MixE ([[Atom "DATA"], [Star], [Quest]], TupE ([IterE (VarE "byte", (List, ["byte"])), IterE (VarE "datamode", (Opt, ["datamode"]))]))) be data.
+4. Let (DATA byte* datamode?) be data.
 5. Let di be { DATA: byte*; }.
 6. Let s_new be YetE (s[DATA_store =.. [di]]).
 7. Let [s_res, da'*] be $alloc_data((s_new, f), data'*).
@@ -547,25 +547,25 @@ replace_moduleinst s _x0* m
 5. Return s_res.
 
 alloc_export m export
-1. Let YetE (MixE ([[Atom "EXPORT"], [], []], TupE ([VarE "name", VarE "externuse"]))) be export.
+1. Let (EXPORT name externuse) be export.
 2. If externuse is of the case FUNC, then:
   a. Let (FUNC x) be externuse.
   b. Let externval be (FUNC m.FUNC[x]).
   c. Let xi be { NAME: name; VALUE: externval; }.
   d. Return xi.
-3. Let YetE (MixE ([[Atom "EXPORT"], [], []], TupE ([VarE "name", VarE "externuse"]))) be export.
+3. Let (EXPORT name externuse) be export.
 4. If externuse is of the case GLOBAL, then:
   a. Let (GLOBAL x) be externuse.
   b. Let externval be (GLOBAL m.GLOBAL[x]).
   c. Let xi be { NAME: name; VALUE: externval; }.
   d. Return xi.
-5. Let YetE (MixE ([[Atom "EXPORT"], [], []], TupE ([VarE "name", VarE "externuse"]))) be export.
+5. Let (EXPORT name externuse) be export.
 6. If externuse is of the case TABLE, then:
   a. Let (TABLE x) be externuse.
   b. Let externval be (TABLE m.TABLE[x]).
   c. Let xi be { NAME: name; VALUE: externval; }.
   d. Return xi.
-7. Let YetE (MixE ([[Atom "EXPORT"], [], []], TupE ([VarE "name", VarE "externuse"]))) be export.
+7. Let (EXPORT name externuse) be export.
 8. If externuse is of the case MEM, then:
   a. Let (MEM x) be externuse.
   b. Let externval be (MEM m.MEM[x]).
@@ -573,7 +573,7 @@ alloc_export m export
   d. Return xi.
 
 alloc_module s module externval*
-1. Let YetE (MixE ([[Atom "MODULE"], [Star], [Star], [Star], [Star], [Star], [Star], [Star], [Quest], [Star]], TupE ([IterE (VarE "import", (List, ["import"])), IterE (VarE "func", (List, ["func"])), IterE (VarE "global", (List, ["global"])), IterE (VarE "table", (List, ["table"])), IterE (VarE "mem", (List, ["mem"])), IterE (VarE "elem", (List, ["elem"])), IterE (VarE "data", (List, ["data"])), IterE (VarE "start", (Opt, ["start"])), IterE (VarE "export", (List, ["export"]))]))) be module.
+1. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
 2. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let m_im be $alloc_import(m_init, import*, externval*).
 4. Let { FUNC: fa'*; GLOBAL: ga'*; TABLE: ta'*; MEM: ma'*; ELEM: []; DATA: []; EXPORT: []; } be m_im.
@@ -595,11 +595,11 @@ run_elem _x0* i
 2. If _x0* is [], then:
   a. Return (s, f).
 3. Let [elem] ++ elem'* be _x0*.
-4. Let YetE (MixE ([[Atom "ELEM"], [], [Star], [Quest]], TupE ([VarE "reftype", IterE (VarE "expr", (List, ["expr"])), OptE ()]))) be elem.
+4. Let (ELEM reftype expr* ?()) be elem.
 5. Let (s_res, f_res) be $run_elem((s, f), elem'*, (i + 1)).
 6. Return (s_res, f_res).
 7. Let [elem] ++ elem'* be _x0*.
-8. Let YetE (MixE ([[Atom "ELEM"], [], [Star], [Quest]], TupE ([VarE "reftype", IterE (VarE "expr", (List, ["expr"])), OptE (VarE "elemmode")]))) be elem.
+8. Let (ELEM reftype expr* ?(elemmode)) be elem.
 9. If elemmode is of the case TABLE, then:
   a. Let (TABLE x instr*) be elemmode.
   b. Let n be |expr*|.
@@ -608,7 +608,7 @@ run_elem _x0* i
   e. Return (s_res, f_res).
 10. Let [elem] ++ elem'* be _x0*.
 11. YetI: Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), [])).
-12. Let YetE (MixE ([[Atom "ELEM"], [], [Star], [Quest]], TupE ([VarE "reftype", IterE (VarE "expr", (List, ["expr"])), OptE (VarE "elemmode")]))) be elem.
+12. Let (ELEM reftype expr* ?(elemmode)) be elem.
 13. Let elemmode be DECLARE.
 14. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
 15. Return (s_res, f_res).
@@ -619,10 +619,10 @@ run_data _x0* i
   a. Return (s, f).
 3. Let [data] ++ data'* be _x0*.
 4. Let (s_res, f_res) be $run_data((s, f), data'*, (i + 1)).
-5. Let YetE (MixE ([[Atom "DATA"], [Star], [Quest]], TupE ([IterE (VarE "byte", (List, ["byte"])), OptE ()]))) be data.
+5. Let (DATA byte* ?()) be data.
 6. Return (s_res, f_res).
 7. Let [data] ++ data'* be _x0*.
-8. Let YetE (MixE ([[Atom "DATA"], [Star], [Quest]], TupE ([IterE (VarE "byte", (List, ["byte"])), OptE (VarE "datamode")]))) be data.
+8. Let (DATA byte* ?(datamode)) be data.
 9. Let n be |byte*|.
 10. If datamode is of the case MEMORY, then:
   a. Let (MEMORY 0 instr*) be datamode.
@@ -632,13 +632,13 @@ run_data _x0* i
 
 instantiation s module externval*
 1. Let [s_alloc, m] be $alloc_module(s, module, externval*).
-2. Let YetE (MixE ([[Atom "MODULE"], [Star], [Star], [Star], [Star], [Star], [Star], [Star], [Quest], [Star]], TupE ([IterE (VarE "import", (List, ["import"])), IterE (VarE "func", (List, ["func"])), IterE (VarE "global", (List, ["global"])), IterE (VarE "table", (List, ["table"])), IterE (VarE "mem", (List, ["mem"])), IterE (VarE "elem", (List, ["elem"])), IterE (VarE "data", (List, ["data"])), OptE (), IterE (VarE "export", (List, ["export"]))]))) be module.
+2. Let (MODULE import* func* global* table* mem* elem* data* ?() export*) be module.
 3. Let f be { LOCAL: []; MODULE: m; }.
 4. If $run_elem((s_alloc, f_alloc), elem*, 0) is (s_elem, f_elem) and $run_data((s_elem, f_elem), data*, 0) is (s_res, f_res), then:
   a. Return [s_res, m].
 5. Let [s_alloc, m] be $alloc_module(s, module, externval*).
-6. Let YetE (MixE ([[Atom "MODULE"], [Star], [Star], [Star], [Star], [Star], [Star], [Star], [Quest], [Star]], TupE ([IterE (VarE "import", (List, ["import"])), IterE (VarE "func", (List, ["func"])), IterE (VarE "global", (List, ["global"])), IterE (VarE "table", (List, ["table"])), IterE (VarE "mem", (List, ["mem"])), IterE (VarE "elem", (List, ["elem"])), IterE (VarE "data", (List, ["data"])), OptE (VarE "start"), IterE (VarE "export", (List, ["export"]))]))) be module.
-7. Let YetE (START(x)) be start.
+6. Let (MODULE import* func* global* table* mem* elem* data* ?(start) export*) be module.
+7. Let (START x) be start.
 8. Let f be { LOCAL: []; MODULE: m; }.
 9. If $run_elem((s_alloc, f_alloc), elem*, 0) is (s_elem, f_elem) and $run_data((s_elem, f_elem), data*, 0) is (s_data, f_data), then:
   a. YetI: Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), [])).
