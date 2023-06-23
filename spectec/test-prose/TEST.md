@@ -37,13 +37,6 @@ Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...
 == Translating to AL...
 Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
-Invalid premise `Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(val <: admininstr)])` to be AL instr.
-Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(ref <: admininstr)]))*{instr ref}` to be AL instr.
-Invalid premise `Step: `%~>%`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr} :: [CONST_admininstr(I32_numtype, 0) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, i) ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))` to be AL instr.
-Invalid premise `Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))` to be AL instr.
-Invalid premise `Step: `%~>%`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr} :: [CONST_admininstr(I32_numtype, 0) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(i) DATA.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))` to be AL instr.
-Invalid premise `Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))` to be AL instr.
-Invalid premise `Step: `%~>%`(`%;%*`(`%;%`(s, f), (val <: admininstr)*{val} :: [CALL_ADDR_admininstr(fa)]), `%;%*`(`%;%`(s', f'), (val' <: admininstr)*{val'}))` to be AL instr.
 =================
  Generated prose
 =================
@@ -483,11 +476,12 @@ alloc_global _x0*
 3. Let [global] ++ global'* be _x0*.
 4. Let (GLOBAL globaltype instr*) be global.
 5. Let ga be |$globalinst((s, f))|.
-6. YetI: Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(val <: admininstr)]).
-7. Let gi be { TYPE: globaltype; VALUE: val; }.
-8. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
-9. Let [s_res, ga'*] be $alloc_global((s_new, f), global'*).
-10. Return [s_res, [ga] ++ ga'*].
+6. Execute the sequence (instr*).
+7. Pop val from the stack.
+8. Let gi be { TYPE: globaltype; VALUE: val; }.
+9. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
+10. Let [s_res, ga'*] be $alloc_global((s_new, f), global'*).
+11. Return [s_res, [ga] ++ ga'*].
 
 alloc_table _x0*
 1. Let f be the current frame.
@@ -522,8 +516,9 @@ alloc_elem _x0*
 3. Let [elem] ++ elem'* be _x0*.
 4. Let (ELEM reftype instr** elemmode?) be elem.
 5. Let ea be |$eleminst((s, f))|.
-6. YetI: (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(ref <: admininstr)]))*{instr ref}.
-7. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and [s_res, ea'*] is $alloc_elem((s_new, f), elem'*), then:
+6. Execute the sequence (instr**).
+7. Pop ref* from the stack.
+8. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and [s_res, ea'*] is $alloc_elem((s_new, f), elem'*), then:
   a. Return [s_res, [ea] ++ ea'*].
 
 alloc_data _x0*
@@ -603,11 +598,15 @@ run_elem _x0* i
 9. If elemmode is of the case TABLE, then:
   a. Let (TABLE x instr*) be elemmode.
   b. Let n be |expr*|.
-  c. YetI: Step: `%~>%`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr} :: [CONST_admininstr(I32_numtype, 0) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, i) ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), [])).
-  d. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
-  e. Return (s_res, f_res).
+  c. Execute the sequence (instr*).
+  d. Execute (I32.CONST 0).
+  e. Execute (I32.CONST n).
+  f. Execute (TABLE.INIT x i).
+  g. Execute (ELEM.DROP i).
+  h. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
+  i. Return (s_res, f_res).
 10. Let [elem] ++ elem'* be _x0*.
-11. YetI: Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), [])).
+11. Execute (ELEM.DROP i).
 12. Let (ELEM reftype expr* ?(elemmode)) be elem.
 13. Let elemmode be DECLARE.
 14. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
@@ -626,9 +625,13 @@ run_data _x0* i
 9. Let n be |byte*|.
 10. If datamode is of the case MEMORY, then:
   a. Let (MEMORY 0 instr*) be datamode.
-  b. YetI: Step: `%~>%`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr} :: [CONST_admininstr(I32_numtype, 0) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(i) DATA.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), [])).
-  c. Let (s_res, f_res) be $run_data((s_new, f_new), data'*, (i + 1)).
-  d. Return (s_res, f_res).
+  b. Execute the sequence (instr*).
+  c. Execute (I32.CONST 0).
+  d. Execute (I32.CONST n).
+  e. Execute (MEMORY.INIT i).
+  f. Execute (DATA.DROP i).
+  g. Let (s_res, f_res) be $run_data((s_new, f_new), data'*, (i + 1)).
+  h. Return (s_res, f_res).
 
 instantiation s module externval*
 1. Let [s_alloc, m] be $alloc_module(s, module, externval*).
@@ -641,18 +644,20 @@ instantiation s module externval*
 7. Let (START x) be start.
 8. Let f be { LOCAL: []; MODULE: m; }.
 9. If $run_elem((s_alloc, f_alloc), elem*, 0) is (s_elem, f_elem) and $run_data((s_elem, f_elem), data*, 0) is (s_data, f_data), then:
-  a. YetI: Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), [])).
+  a. Execute (CALL x).
   b. Return [s_res, m].
 
 invocation s fa val*
 1. Let |valtype*| be |val*|.
 2. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let f be { LOCAL: []; MODULE: m; }.
-4. YetI: Step: `%~>%`(`%;%*`(`%;%`(s, f), (val <: admininstr)*{val} :: [CALL_ADDR_admininstr(fa)]), `%;%*`(`%;%`(s', f'), (val' <: admininstr)*{val'})).
-5. Let (FUNC functype valtype* expr) be $funcinst((s, f))[fa].CODE.
-6. Let |valtype'*| be |val'*|.
-7. Let [valtype*]->[valtype'*] be functype.
-8. Return [s', val'*].
+4. Push val* to the stack.
+5. Execute (CALL_ADDR fa).
+6. Pop val'* from the stack.
+7. Let (FUNC functype valtype* expr) be $funcinst((s, f))[fa].CODE.
+8. Let |valtype'*| be |val'*|.
+9. Let [valtype*]->[valtype'*] be functype.
+10. Return [s', val'*].
 
 execution_of_unreachable
 1. Trap.

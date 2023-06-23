@@ -507,6 +507,85 @@ let prems2instrs remain_lhs =
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
+      (* Step *)
+      | Ast.RulePr (
+        id,
+        [ []; [ Ast.SqArrow ]; _ ],
+        { it = Ast.TupE [
+          (* s; f; lhs *)
+          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+            ]; _ }); _ };
+            lhs
+          ]; _ }); _ };
+          (* s; f; rhs *)
+          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+              { it = Ast.VarE _(* s' *); _ }; { it = Ast.VarE _(* f' *); _ }
+            ]; _ }); _ };
+            rhs
+          ]; _ }); _ };
+        ]; _ }
+      )
+      | Ast.RulePr (
+        id,
+        [ []; [ Ast.SqArrow ]; _ ],
+        { it = Ast.TupE [
+          (* s; f; lhs *)
+          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+            ]; _ }); _ };
+            lhs
+          ]; _ }); _ };
+          (* s; f; rhs *)
+            rhs
+        ]; _ }
+      ) when String.starts_with ~prefix:"Step" id.it ->
+          let rec lhs_instr lhs =
+            match lhs with
+            | Al.ListE el -> List.map (fun expr -> Al.ExecuteI expr) el
+            | Al.ConcatE (e1, e2) ->
+                lhs_instr e1 @ lhs_instr e2
+            | Al.NameE (N "val", _) | Al.NameE (N "ref", _) -> [ Al.PushI lhs ]
+            | expr -> [ Al.ExecuteSeqI expr ]
+          in
+          let rhs_instrs =
+            match exp2expr rhs with
+            | Al.ListE [] -> []
+            | Al.ListE [ expr ] -> [ Al.PopI expr ]
+            | expr -> [ Al.PopI expr ]
+          in
+          lhs_instr (exp2expr lhs) @ rhs_instrs @ instrs
+      | Ast.IterPr ({ it = Ast.RulePr (
+        id,
+        [ []; [ Ast.SqArrow ]; _ ],
+        { it = Ast.TupE [
+          (* s; f; lhs *)
+          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+            ]; _ }); _ };
+            lhs
+          ]; _ }); _ };
+          (* s; f; rhs *)
+            rhs
+        ]; _ }
+      ); _ }, (Ast.List, [ instr; ref ])) when String.starts_with ~prefix:"Step" id.it ->
+          let lhs_instr =
+            match exp2expr lhs with
+            | Al.NameE (name, iter) when name = N instr.it ->
+                Al.ExecuteSeqI (Al.NameE (name, iter @ [ Al.List ]))
+            | _ -> failwith "Invalid IterPr"
+          in
+          let rhs_instr =
+            match exp2expr rhs with
+            | Al.ListE [ Al.NameE (name, iter) ] when name = N ref.it ->
+                Al.PopI (Al.NameE (name, iter @ [ Al.List ]))
+            | _ -> failwith "Invalid IterPr"
+          in
+          [ lhs_instr; rhs_instr ] @ instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           Al.YetI (Il.Print.string_of_prem prem) :: instrs)
