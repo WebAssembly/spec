@@ -1,9 +1,8 @@
-open Reference_interpreter
+include Record
 
 (* AL Type *)
 
 type al_type =
-  | WasmValueT of Types.value_type
   | WasmValueTopT
   | PairT of al_type * al_type
   | EmptyListT

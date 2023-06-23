@@ -1,5 +1,5 @@
 open Al
-open Al_util
+open Al.Ast
 
 (** helper *)
 let composite g f x = f x |> g

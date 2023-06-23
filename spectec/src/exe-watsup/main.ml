@@ -187,7 +187,7 @@ let () =
         Backend_interpreter.Translate.translate il
         @ Backend_interpreter.Manual.manual_algos in
       if !print_al then
-        List.iter (fun algo -> Backend_interpreter.Print.string_of_algorithm algo |> print_endline) al;
+        List.iter (fun algo -> Al.Print.string_of_algorithm algo |> print_endline) al;
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
       log "Initializing AL interprter with generated AL...";

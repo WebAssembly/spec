@@ -1,5 +1,6 @@
-open Al
-open Al_util
+open Al.Ast
+open Al.Record
+open Al.Print
 
 (** Hardcoded module algorithms **)
 
@@ -86,7 +87,7 @@ let instantiation =
             IsDefinedC mode,
             [
               LetI (OptE (Some (ConstructE ("MEMORY", [ memidx; dinstrs ]))), mode);
-              AssertI (CompareC (Eq, memidx, NumE 0L) |> Print.string_of_cond);
+              AssertI (CompareC (Eq, memidx, NumE 0L) |> string_of_cond);
               ExecuteSeqI dinstrs;
               ExecuteI (ConstructE ("CONST", [ i32_type; NumE 0L ]));
               ExecuteI (ConstructE ("CONST", [ i32_type; LengthE dinit ]));
@@ -563,7 +564,7 @@ let invocation =
         ArrowE (NameE (ignore_name, [ListN n]), NameE (ignore_name, [ListN m])),
         NameE (func_type_name, [])
       );
-      AssertI (CompareC (Eq, LengthE args_iter, NameE (n, [])) |> Print.string_of_cond);
+      AssertI (CompareC (Eq, LengthE args_iter, NameE (n, [])) |> string_of_cond);
       (* TODO *)
       LetI (NameE (frame_name, []), FrameE (NumE 0L, RecordE frame_rec));
       PushI (NameE (frame_name, []));

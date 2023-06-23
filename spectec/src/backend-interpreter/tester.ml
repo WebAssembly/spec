@@ -1,8 +1,7 @@
 open Reference_interpreter
 open Source
 open Ast
-open Al
-open Al_util
+open Al.Ast
 
 (** flag **)
 let test_name = ref ""
@@ -34,7 +33,7 @@ let fail expected actual =
   Printf.eprintf " Actual  : %s\n\n" actual;
   let print_stack = false in
   if print_stack then
-    Printf.eprintf " Stack: %s\n\n" (Print.string_of_stack !Interpreter.stack);
+    Printf.eprintf " Stack: %s\n\n" (Al.Print.string_of_stack !Interpreter.stack);
   Fail
 
 let not_supported_msg = "We only support the test script with modules and assertions."
@@ -224,7 +223,7 @@ let do_invoke act = match act.it with
     ) in
     Interpreter.cnt := 0;
     Interpreter.init_stack();
-    Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Print.string_of_value args);
+    Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Al.Print.string_of_value args);
 
     Interpreter.call_algo "invocation" [funcaddr; args]
   | Get (module_name_opt, name) ->
@@ -276,7 +275,7 @@ let assert_return actual expect =
   if actual = expect || assert_nan actual expect then
     Success
   else
-    fail (Print.string_of_value expect) (Print.string_of_value actual)
+    fail (Al.Print.string_of_value expect) (Al.Print.string_of_value actual)
 
 let get_externval = function
   | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
@@ -319,7 +318,7 @@ let test_assertion assertion =
     let expected = "Trap due to " ^ msg in
     begin try
       let result = do_invoke invoke in
-      fail expected (Print.string_of_value result)
+      fail expected (Al.Print.string_of_value result)
     with
       | Exception.Trap -> Success
       | e -> fail expected (Printexc.to_string e)

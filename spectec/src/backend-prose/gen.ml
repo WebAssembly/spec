@@ -20,7 +20,7 @@ let iter_to_iter = function
 | _ -> "For all ...,"
 
 let transpile_expr =
-  Backend_interpreter.Walk.walk_expr { Backend_interpreter.Walk.default_action with
+  Al.Walk.walk_expr { Al.Walk.default_action with
     post_expr = Backend_interpreter.Transpile.simplify_record_concat
   }
 

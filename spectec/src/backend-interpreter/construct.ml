@@ -1,6 +1,6 @@
 open Reference_interpreter
 open Source
-open Al
+open Al.Ast
 
 (* Construct types *)
 
@@ -284,7 +284,7 @@ let rec al_of_instr types winstr =
   | Ast.MemoryCopy -> f "MEMORY.COPY"
   | Ast.MemoryInit i32 -> f_i32 "MEMORY.INIT" i32
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
-  | _ -> ConstructV ("Yet al_of_instr: " ^ Print.string_of_winstr winstr, [])
+  | _ -> ConstructV ("Untranslated al", [])
 
 and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 

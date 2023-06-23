@@ -1,6 +1,6 @@
-open Print
 open Al
-open Al_util
+open Al.Ast
+open Al.Print
 open Reference_interpreter
 
 (* AL Data Structures *)
