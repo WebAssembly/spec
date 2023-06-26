@@ -10231,20 +10231,9 @@ Animation failed:
   Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 Animation failed: if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
 Animation failed:
-  if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-  (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-  (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
   if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 Animation failed:
-  if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-  (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-  (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
   if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
-Animation failed:
-  (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), $admininstr_instr(instr)*{instr}), [$admininstr_ref(ref)]))*{instr ref}
-  if (ei = {TYPE reftype, ELEM ref*{ref}})
-  if (s_new = s[ELEM_store =.. [ei]])
-  if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 
@@ -11053,11 +11042,11 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- where mt = C.MEM_context[0]
-    -- if ((2 ^ n_A) <= (o0 / 8))
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
+    -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 
@@ -11065,11 +11054,11 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (0 < |C.MEM_context|)
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- where mt = C.MEM_context[0]
-    -- if ((2 ^ n_A) <= (o0 / 8))
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
+    -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 
@@ -11836,8 +11825,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$funcinst(z)|)
     -- where {MODULE m, CODE func} = $funcinst(z)[a]
     -- where `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}) = func
+    -- (where ?(o0) = $default_(t))*{t o0}
     -- where |o0*{o0}| = |t*{t}|
-    -- (if ($default_(t) = ?(o0)))*{t o0}
     -- where f = {LOCAL val^k{val} :: o0*{o0}, MODULE m}
 
   ;; 6-reduction.watsup:152.1-153.53
@@ -12206,9 +12195,9 @@ def alloc_elem : (state, elem*) -> (store, elemaddr*)
     -- where `ELEM%%*%?`(reftype, instr*{instr}*{instr}, elemmode?{elemmode}) = elem
     -- where ea = |$eleminst(`%;%`(s, f))|
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), $admininstr_instr(instr)*{instr}), [$admininstr_ref(ref)]))*{instr ref}
-    -- if (ei = {TYPE reftype, ELEM ref*{ref}})
-    -- if (s_new = s[ELEM_store =.. [ei]])
-    -- if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
+    -- where ei = {TYPE reftype, ELEM ref*{ref}}
+    -- where s_new = s[ELEM_store =.. [ei]]
+    -- where (s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'})
 }
 
 ;; 7-module.watsup:99.1-99.51

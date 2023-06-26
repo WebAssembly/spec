@@ -91,7 +91,7 @@ let is_tight env prem = subset (free_prem prem) env
 
 (* Check if a given premise is an assignment:
      is eqaulity, and all free variables in one side of equality is known *)
-let is_assign env prem = match prem.it with
+let rec is_assign env prem = match prem.it with
 | IfPr e -> ( match e.it with
   | CmpE(EqOp, l, r) ->
     if subset (free_exp l) env && disjoint (free_exp r) env then
@@ -129,6 +129,9 @@ let is_assign env prem = match prem.it with
     Either.Left prem (* TODO: Need a way to notate that this is an assignment *)
   else
     Either.Right prem
+| IterPr (pr, iter) ->
+  let to_iter p = { prem with it = IterPr (p, iter) } in
+  Either.map ~left:to_iter ~right:to_iter (is_assign env pr)
 | _ -> Either.Right prem
 
 (* Mutual recursive functions that iteratively select tight and assignment premises,

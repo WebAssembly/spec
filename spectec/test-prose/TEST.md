@@ -20,11 +20,6 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
-Animation failed:
-  (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(ref <: admininstr)]))*{instr ref}
-  if (ei = {TYPE reftype, ELEM ref*{ref}})
-  if (s_new = s[ELEM_store =.. [ei]])
-  if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...
@@ -511,8 +506,10 @@ alloc_elem _x0*
 5. Let ea be |$eleminst()|.
 6. Execute the sequence (instr**).
 7. Pop ref* from the stack.
-8. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and ea'* is $alloc_elem(elem'*), then:
-  a. Return [ea] ++ ea'*.
+8. Let ei be { TYPE: reftype; ELEM: ref*; }.
+9. Let s_new be YetE (s[ELEM_store =.. [ei]]).
+10. Let ea'* be $alloc_elem(elem'*).
+11. Return [ea] ++ ea'*.
 
 alloc_data _x0*
 1. Let f be the current frame.
