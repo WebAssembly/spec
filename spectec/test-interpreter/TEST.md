@@ -20,6 +20,20 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+Animation failed:
+  (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), (instr <: admininstr)*{instr}), [(ref <: admininstr)]))*{instr ref}
+  if (ei = {TYPE reftype, ELEM ref*{ref}})
+  if (s_new = s[ELEM_store =.. [ei]])
+  if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
+Animation failed:
+  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
+Animation failed:
+  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
+  Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
+Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
+Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...
 == Translating to AL...
 Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
