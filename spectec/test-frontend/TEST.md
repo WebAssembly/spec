@@ -1930,18 +1930,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -4358,14 +4358,14 @@ $$
  &&&&\quad {\land}~(\mathit{s}_{\mathit{alloc}},\, \mathit{m}) = \mathrm{alloc}_{\mathit{module}}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) \\
  &&&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
- &&&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}_{\mathit{alloc}}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
+ &&&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
  &&&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}}),\, {\mathit{data}^\ast},\, 0) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
 \mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{m}) &\quad
   \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~\mathit{start}~{\mathit{export}^\ast} \\
  &&&&\quad {\land}~(\mathit{s}_{\mathit{alloc}},\, \mathit{m}) = \mathrm{alloc}_{\mathit{module}}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) \\
  &&&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
- &&&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}_{\mathit{alloc}}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
+ &&&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
  &&&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}}),\, {\mathit{data}^\ast},\, 0) = \mathit{s}_{\mathit{data}} ; \mathit{f}_{\mathit{data}} \\
  &&&&\quad {\land}~\mathit{start} = \mathsf{start}~\mathit{x} \\
  &&&&\quad {\land}~\mathit{s}_{\mathit{data}} ; \mathit{f}_{\mathit{data}} ; (\mathsf{call}~\mathit{x}) \hookrightarrow \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} ; \epsilon \\

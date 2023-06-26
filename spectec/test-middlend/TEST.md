@@ -1929,18 +1929,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -3970,18 +3970,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -6013,18 +6013,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -8075,18 +8075,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -10193,18 +10193,18 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
   ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}))
     -- if ((s_alloc, m) = $alloc_module(s, module, externval*{externval}))
     -- if (f = {LOCAL [], MODULE m})
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
+    -- if ($run_elem(`%;%`(s_alloc, f), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
     -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
     -- if (start = START(x))
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -10245,13 +10245,6 @@ Animation failed:
   if (ei = {TYPE reftype, ELEM ref*{ref}})
   if (s_new = s[ELEM_store =.. [ei]])
   if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
-Animation failed:
-  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
-Animation failed:
-  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
-  Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 
@@ -12342,20 +12335,20 @@ def run_data : (state, data*, idx) -> state
 ;; 7-module.watsup:204.1-204.68
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
-    -- where (s_alloc, m) = $alloc_module(s, module, externval*{externval})
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}) = module
-    -- where f = {LOCAL [], MODULE m}
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-    -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
-  ;; 7-module.watsup:213.1-220.62
-  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_alloc : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
     -- where (s_alloc, m) = $alloc_module(s, module, externval*{externval})
-    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}) = module
-    -- where START(x) = start
     -- where f = {LOCAL [], MODULE m}
-    -- if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-    -- if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
+    -- where `%;%`(s_elem, f_elem) = $run_elem(`%;%`(s_alloc, f), elem*{elem}, 0)
+    -- where `%;%`(s_res, f_res) = $run_data(`%;%`(s_elem, f_elem), data*{data}, 0)
+  ;; 7-module.watsup:213.1-220.62
+  def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
+    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}) = module
+    -- where (s_alloc, m) = $alloc_module(s, module, externval*{externval})
+    -- where f = {LOCAL [], MODULE m}
+    -- where `%;%`(s_elem, f_elem) = $run_elem(`%;%`(s_alloc, f), elem*{elem}, 0)
+    -- where `%;%`(s_data, f_data) = $run_data(`%;%`(s_elem, f_elem), data*{data}, 0)
+    -- where START(x) = start
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
 
 ;; 7-module.watsup:223.1-223.55

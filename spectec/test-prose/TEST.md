@@ -25,13 +25,6 @@ Animation failed:
   if (ei = {TYPE reftype, ELEM ref*{ref}})
   if (s_new = s[ELEM_store =.. [ei]])
   if ((s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'}))
-Animation failed:
-  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_res, f_res))
-Animation failed:
-  if ($run_elem(`%;%`(s_alloc, f_alloc), elem*{elem}, 0) = `%;%`(s_elem, f_elem))
-  if ($run_data(`%;%`(s_elem, f_elem), data*{data}, 0) = `%;%`(s_data, f_data))
-  Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...
@@ -633,18 +626,20 @@ run_data _x0* i
   h. Return (s_res, f_res).
 
 instantiation s module externval*
-1. Let [s_alloc, m] be $alloc_module(s, module, externval*).
-2. Let (MODULE import* func* global* table* mem* elem* data* ?() export*) be module.
+1. Let (MODULE import* func* global* table* mem* elem* data* ?() export*) be module.
+2. Let [s_alloc, m] be $alloc_module(s, module, externval*).
 3. Let f be { LOCAL: []; MODULE: m; }.
-4. If $run_elem((s_alloc, f_alloc), elem*, 0) is (s_elem, f_elem) and $run_data((s_elem, f_elem), data*, 0) is (s_res, f_res), then:
-  a. Return [s_res, m].
-5. Let [s_alloc, m] be $alloc_module(s, module, externval*).
-6. Let (MODULE import* func* global* table* mem* elem* data* ?(start) export*) be module.
-7. Let (START x) be start.
-8. Let f be { LOCAL: []; MODULE: m; }.
-9. If $run_elem((s_alloc, f_alloc), elem*, 0) is (s_elem, f_elem) and $run_data((s_elem, f_elem), data*, 0) is (s_data, f_data), then:
-  a. Execute (CALL x).
-  b. Return [s_res, m].
+4. Let (s_elem, f_elem) be $run_elem((s_alloc, f), elem*, 0).
+5. Let (s_res, f_res) be $run_data((s_elem, f_elem), data*, 0).
+6. Return [s_res, m].
+7. Let (MODULE import* func* global* table* mem* elem* data* ?(start) export*) be module.
+8. Let [s_alloc, m] be $alloc_module(s, module, externval*).
+9. Let f be { LOCAL: []; MODULE: m; }.
+10. Let (s_elem, f_elem) be $run_elem((s_alloc, f), elem*, 0).
+11. Let (s_data, f_data) be $run_data((s_elem, f_elem), data*, 0).
+12. Let (START x) be start.
+13. Execute (CALL x).
+14. Return [s_res, m].
 
 invocation s fa val*
 1. Let |valtype*| be |val*|.
