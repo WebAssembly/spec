@@ -96,4 +96,6 @@ $(ZIP):
 
 clean:
 	dune clean
+
+distclean:
 	rm -f $(NAME) $(JSLIB)
