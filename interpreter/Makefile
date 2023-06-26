@@ -92,7 +92,7 @@ install:
 .PHONY:		clean
 
 $(ZIP):
-	git archive --format=zip --prefix=wasm/ -o $@ HEAD
+	git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
 	dune clean
