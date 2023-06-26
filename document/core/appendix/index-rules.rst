@@ -19,7 +19,15 @@ Construct                                        Judgement
 :ref:`Heap type <valid-heaptype>`                :math:`C \vdashheaptype \heaptype \ok`
 :ref:`Reference type <valid-reftype>`            :math:`C \vdashreftype \reftype \ok`
 :ref:`Value type <valid-valtype>`                :math:`C \vdashvaltype \valtype \ok`
+:ref:`Packed type <valid-packedtype>`            :math:`C \vdashpackedtype \packedtype \ok`
+:ref:`Storage type <valid-storagetype>`          :math:`C \vdashstoragetype \storagetype \ok`
+:ref:`Field type <valid-fieldtype>`              :math:`C \vdashfieldtype \fieldtype \ok`
 :ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype \ok`
+:ref:`Structure type <valid-structtype>`         :math:`C \vdashstructtype \structtype \ok`
+:ref:`Array type <valid-arraytype>`              :math:`C \vdasharraytype \arraytype \ok`
+:ref:`Compound type <valid-comptype>`            :math:`C \vdashcomptype \comptype \ok`
+:ref:`Sub type <valid-subtype>`                  :math:`C \vdashsubtype \subtype \ok`
+:ref:`Recursive type <valid-rectype>`            :math:`C \vdashrectype \rectype \ok`
 :ref:`Block type <valid-blocktype>`              :math:`C \vdashblocktype \blocktype : \instrtype`
 :ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype \ok`
 :ref:`Table type <valid-tabletype>`              :math:`C \vdashtabletype \tabletype \ok`
@@ -97,22 +105,28 @@ Construct                                        Judgement
 Matching
 ~~~~~~~~
 
-===============================================  ===============================================================================
+===============================================  ==================================================================================
 Construct                                        Judgement
-===============================================  ===============================================================================
+===============================================  ==================================================================================
 :ref:`Number type <match-numtype>`               :math:`C \vdashnumtypematch \numtype_1 \matchesnumtype \numtype_2`
 :ref:`Heap type <match-heaptype>`                :math:`C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2`
 :ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
 :ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
+:ref:`Packed type <match-packedtype>`            :math:`C \vdashpackedtypematch \packedtype_1 \matchespackedtype \packedtype_2`
+:ref:`Storage type <match-storagetype>`          :math:`C \vdashstoragetypematch \storagetype_1 \matchesstoragetype \storagetype_2`
+:ref:`Field type <match-fieldtype>`              :math:`C \vdashfieldtypematch \fieldtype_1 \matchesfieldtype \fieldtype_2`
 :ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \matchesresulttype \resulttype_2`
 :ref:`Instruction type <match-instrtype>`        :math:`C \vdashinstrtypematch \instrtype_1 \matchesinstrtype \instrtype_2`
 :ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2`
+:ref:`Structure type <match-structtype>`         :math:`C \vdashstructtypematch \structtype_1 \matchesstructtype \structtype_2`
+:ref:`Array type <match-arraytype>`              :math:`C \vdasharraytypematch \arraytype_1 \matchesarraytype \arraytype_2`
+:ref:`Compound type <match-comptype>`            :math:`C \vdashcomptypematch \comptype_1 \matchescomptype \comptype_2`
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`
 :ref:`Global type <match-globaltype>`            :math:`C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2`
 :ref:`External type <match-externtype>`          :math:`C \vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
 :ref:`Limits <match-limits>`                     :math:`C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
-===============================================  ===============================================================================
+===============================================  ==================================================================================
 
 
 Store Extension
