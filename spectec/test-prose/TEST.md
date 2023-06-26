@@ -571,19 +571,18 @@ alloc_module s module externval*
 1. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
 2. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let m_im be $alloc_import(m_init, import*, externval*).
-4. Let { FUNC: fa'*; GLOBAL: ga'*; TABLE: ta'*; MEM: ma'*; ELEM: []; DATA: []; EXPORT: []; } be m_im.
-5. Let f be { LOCAL: []; MODULE: m_im; }.
-6. Let [s_func, fa*] be $alloc_func((s, f), func*).
-7. Let [s_global, ga*] be $alloc_global((s_func, f), global*).
-8. Let [s_table, ta*] be $alloc_table((s_global, f), table*).
-9. Let [s_mem, ma*] be $alloc_mem((s_table, f), mem*).
-10. Let [s_elem, ea*] be $alloc_elem((s_mem, f), elem*).
-11. Let [s_data, da*] be $alloc_data((s_elem, f), data*).
-12. Let m_ex be { FUNC: fa'* ++ fa*; GLOBAL: ga'* ++ ga*; TABLE: ta'* ++ ta*; MEM: ma'* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: []; }.
-13. Let xi* be $alloc_export(m_ex, export)*.
-14. Let m_res be YetE (m_ex[EXPORT_moduleinst = xi*{xi}]).
-15. Let s_res be $replace_moduleinst(s_data, fa*, m_res).
-16. Return [s_res, m_res].
+4. Let f be { LOCAL: []; MODULE: m_im; }.
+5. Let [s_func, fa*] be $alloc_func((s, f), func*).
+6. Let [s_global, ga*] be $alloc_global((s_func, f), global*).
+7. Let [s_table, ta*] be $alloc_table((s_global, f), table*).
+8. Let [s_mem, ma*] be $alloc_mem((s_table, f), mem*).
+9. Let [s_elem, ea*] be $alloc_elem((s_mem, f), elem*).
+10. Let [s_data, da*] be $alloc_data((s_elem, f), data*).
+11. Let m_ex be m_im ++ { FUNC: fa*; GLOBAL: ga*; TABLE: ta*; MEM: ma*; ELEM: ea*; DATA: da*; }.
+12. Let xi* be $alloc_export(m_ex, export)*.
+13. Let m_res be YetE (m_ex[EXPORT_moduleinst = xi*{xi}]).
+14. Let s_res be $replace_moduleinst(s_data, fa*, m_res).
+15. Return [s_res, m_res].
 
 run_elem _x0* i
 1. Let f be the current frame.

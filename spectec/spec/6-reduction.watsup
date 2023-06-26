@@ -537,8 +537,7 @@ def $alloc_module(s, module, externval*) = (s_res, m_res)
   -- if (s_mem, ma*) = $alloc_mem((s_table; f), mem*)
   -- if (s_elem, ea*) = $alloc_elem((s_mem; f), elem*)
   -- if (s_data, da*) = $alloc_data((s_elem; f), data*)
-  -- if m_im = { FUNC fa'*, GLOBAL ga'*, TABLE ta'*, MEM ma'*, ELEM epsilon, DATA epsilon, EXPORT epsilon }
-  -- if m_ex = { FUNC fa'* fa*, GLOBAL ga'* ga*, TABLE ta'* ta*, MEM ma'* ma*, ELEM ea*, DATA da*, EXPORT epsilon }
+  -- if m_ex = m_im ++ { FUNC fa*, GLOBAL ga*, TABLE ta*, MEM ma*, ELEM ea*, DATA da*, EXPORT epsilon }
   -- if xi* = $alloc_export(m_ex, export)*
   -- if m_res = m_ex[.EXPORT = xi*]
   -- if s_res = $replace_moduleinst(s_data, fa*, m_res)
