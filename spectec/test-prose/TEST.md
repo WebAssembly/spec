@@ -458,9 +458,9 @@ alloc_func _x0*
 3. Let [func] ++ func'* be _x0*.
 4. Let fi be { MODULE: f.MODULE; CODE: func; }.
 5. Let s_new be YetE (s[FUNC_store =.. [fi]]).
-6. Let [s_res, fa'*] be $alloc_func((s_new, f), func'*).
-7. Let fa be |$funcinst((s, f))|.
-8. Return [s_res, [fa] ++ fa'*].
+6. Let fa'* be $alloc_func(func'*).
+7. Let fa be |$funcinst()|.
+8. Return [fa] ++ fa'*.
 
 alloc_global _x0*
 1. Let f be the current frame.
@@ -468,13 +468,13 @@ alloc_global _x0*
   a. Return [s, []].
 3. Let [global] ++ global'* be _x0*.
 4. Let (GLOBAL globaltype instr*) be global.
-5. Let ga be |$globalinst((s, f))|.
+5. Let ga be |$globalinst()|.
 6. Execute the sequence (instr*).
 7. Pop val from the stack.
 8. Let gi be { TYPE: globaltype; VALUE: val; }.
 9. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
-10. Let [s_res, ga'*] be $alloc_global((s_new, f), global'*).
-11. Return [s_res, [ga] ++ ga'*].
+10. Let ga'* be $alloc_global(global'*).
+11. Return [ga] ++ ga'*.
 
 alloc_table _x0*
 1. Let f be the current frame.
@@ -485,9 +485,9 @@ alloc_table _x0*
 5. Let ((i, j?), reftype) be tabletype.
 6. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
 7. Let s_new be YetE (s[TABLE_store =.. [ti]]).
-8. Let [s_res, ta'*] be $alloc_table((s_new, f), table'*).
-9. Let ta be |$tableinst((s, f))|.
-10. Return [s_res, [ta] ++ ta'*].
+8. Let ta'* be $alloc_table(table'*).
+9. Let ta be |$tableinst()|.
+10. Return [ta] ++ ta'*.
 
 alloc_mem _x0*
 1. Let f be the current frame.
@@ -498,9 +498,9 @@ alloc_mem _x0*
 5. Let (I8 (i, j?)) be memtype.
 6. Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
 7. Let s_new be YetE (s[MEM_store =.. [mi]]).
-8. Let [s_res, ma'*] be $alloc_mem((s_new, f), mem'*).
-9. Let ma be |$meminst((s, f))|.
-10. Return [s_res, [ma] ++ ma'*].
+8. Let ma'* be $alloc_mem(mem'*).
+9. Let ma be |$meminst()|.
+10. Return [ma] ++ ma'*.
 
 alloc_elem _x0*
 1. Let f be the current frame.
@@ -508,11 +508,11 @@ alloc_elem _x0*
   a. Return [s, []].
 3. Let [elem] ++ elem'* be _x0*.
 4. Let (ELEM reftype instr** elemmode?) be elem.
-5. Let ea be |$eleminst((s, f))|.
+5. Let ea be |$eleminst()|.
 6. Execute the sequence (instr**).
 7. Pop ref* from the stack.
-8. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and [s_res, ea'*] is $alloc_elem((s_new, f), elem'*), then:
-  a. Return [s_res, [ea] ++ ea'*].
+8. If ei is { TYPE: reftype; ELEM: ref*; } and s_new is YetE (s[ELEM_store =.. [ei]]) and ea'* is $alloc_elem(elem'*), then:
+  a. Return [ea] ++ ea'*.
 
 alloc_data _x0*
 1. Let f be the current frame.
@@ -522,16 +522,16 @@ alloc_data _x0*
 4. Let (DATA byte* datamode?) be data.
 5. Let di be { DATA: byte*; }.
 6. Let s_new be YetE (s[DATA_store =.. [di]]).
-7. Let [s_res, da'*] be $alloc_data((s_new, f), data'*).
-8. Let da be |$datainst((s, f))|.
-9. Return [s_res, [da] ++ da'*].
+7. Let da'* be $alloc_data(data'*).
+8. Let da be |$datainst()|.
+9. Return [da] ++ da'*.
 
 replace_moduleinst s _x0* m
 1. If _x0* is [], then:
   a. Return s.
 2. Let [fa] ++ fa'* be _x0*.
 3. Let s_new be YetE (s[FUNC_store[fa].MODULE_funcinst = m]).
-4. Let s_res be $replace_moduleinst(s_new, fa'*, m).
+4. Perform $replace_moduleinst(fa'*, m).
 5. Return s_res.
 
 alloc_export m export
@@ -565,26 +565,26 @@ alloc_module s module externval*
 2. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let m_im be $alloc_import(m_init, import*, externval*).
 4. Let f be { LOCAL: []; MODULE: m_im; }.
-5. Let [s_func, fa*] be $alloc_func((s, f), func*).
-6. Let [s_global, ga*] be $alloc_global((s_func, f), global*).
-7. Let [s_table, ta*] be $alloc_table((s_global, f), table*).
-8. Let [s_mem, ma*] be $alloc_mem((s_table, f), mem*).
-9. Let [s_elem, ea*] be $alloc_elem((s_mem, f), elem*).
-10. Let [s_data, da*] be $alloc_data((s_elem, f), data*).
+5. Let fa* be $alloc_func(func*).
+6. Let ga* be $alloc_global(global*).
+7. Let ta* be $alloc_table(table*).
+8. Let ma* be $alloc_mem(mem*).
+9. Let ea* be $alloc_elem(elem*).
+10. Let da* be $alloc_data(data*).
 11. Let m_ex be m_im ++ { FUNC: fa*; GLOBAL: ga*; TABLE: ta*; MEM: ma*; ELEM: ea*; DATA: da*; }.
 12. Let xi* be $alloc_export(m_ex, export)*.
 13. Let m_res be YetE (m_ex[EXPORT_moduleinst = xi*{xi}]).
-14. Let s_res be $replace_moduleinst(s_data, fa*, m_res).
-15. Return [s_res, m_res].
+14. Perform $replace_moduleinst(fa*, m_res).
+15. Return m_res.
 
 run_elem _x0* i
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return (s, f).
+  a. Return.
 3. Let [elem] ++ elem'* be _x0*.
 4. Let (ELEM reftype expr* ?()) be elem.
-5. Let (s_res, f_res) be $run_elem((s, f), elem'*, (i + 1)).
-6. Return (s_res, f_res).
+5. Perform $run_elem(elem'*, (i + 1)).
+6. Return.
 7. Let [elem] ++ elem'* be _x0*.
 8. Let (ELEM reftype expr* ?(elemmode)) be elem.
 9. If elemmode is of the case TABLE, then:
@@ -595,23 +595,23 @@ run_elem _x0* i
   e. Execute (I32.CONST n).
   f. Execute (TABLE.INIT x i).
   g. Execute (ELEM.DROP i).
-  h. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
-  i. Return (s_res, f_res).
+  h. Perform $run_elem(elem'*, (i + 1)).
+  i. Return.
 10. Let [elem] ++ elem'* be _x0*.
 11. Execute (ELEM.DROP i).
 12. Let (ELEM reftype expr* ?(elemmode)) be elem.
 13. Let elemmode be DECLARE.
-14. Let (s_res, f_res) be $run_elem((s_new, f_new), elem'*, (i + 1)).
-15. Return (s_res, f_res).
+14. Perform $run_elem(elem'*, (i + 1)).
+15. Return.
 
 run_data _x0* i
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return (s, f).
+  a. Return.
 3. Let [data] ++ data'* be _x0*.
-4. Let (s_res, f_res) be $run_data((s, f), data'*, (i + 1)).
+4. Perform $run_data(data'*, (i + 1)).
 5. Let (DATA byte* ?()) be data.
-6. Return (s_res, f_res).
+6. Return.
 7. Let [data] ++ data'* be _x0*.
 8. Let (DATA byte* ?(datamode)) be data.
 9. Let n be |byte*|.
@@ -622,24 +622,24 @@ run_data _x0* i
   d. Execute (I32.CONST n).
   e. Execute (MEMORY.INIT i).
   f. Execute (DATA.DROP i).
-  g. Let (s_res, f_res) be $run_data((s_new, f_new), data'*, (i + 1)).
-  h. Return (s_res, f_res).
+  g. Perform $run_data(data'*, (i + 1)).
+  h. Return.
 
 instantiation s module externval*
 1. Let (MODULE import* func* global* table* mem* elem* data* ?() export*) be module.
-2. Let [s_alloc, m] be $alloc_module(s, module, externval*).
+2. Let m be $alloc_module(module, externval*).
 3. Let f be { LOCAL: []; MODULE: m; }.
-4. Let (s_elem, f_elem) be $run_elem((s_alloc, f), elem*, 0).
-5. Let (s_res, f_res) be $run_data((s_elem, f_elem), data*, 0).
-6. Return [s_res, m].
+4. Perform $run_elem(elem*, 0).
+5. Perform $run_data(data*, 0).
+6. Return m.
 7. Let (MODULE import* func* global* table* mem* elem* data* ?(start) export*) be module.
-8. Let [s_alloc, m] be $alloc_module(s, module, externval*).
+8. Let m be $alloc_module(module, externval*).
 9. Let f be { LOCAL: []; MODULE: m; }.
-10. Let (s_elem, f_elem) be $run_elem((s_alloc, f), elem*, 0).
-11. Let (s_data, f_data) be $run_data((s_elem, f_elem), data*, 0).
+10. Perform $run_elem(elem*, 0).
+11. Perform $run_data(data*, 0).
 12. Let (START x) be start.
 13. Execute (CALL x).
-14. Return [s_res, m].
+14. Return m.
 
 invocation s fa val*
 1. Let |valtype*| be |val*|.
@@ -648,7 +648,7 @@ invocation s fa val*
 4. Push val* to the stack.
 5. Execute (CALL_ADDR fa).
 6. Pop val'* from the stack.
-7. Let (FUNC functype valtype* expr) be $funcinst((s, f))[fa].CODE.
+7. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
 8. Let |valtype'*| be |val'*|.
 9. Let [valtype*]->[valtype'*] be functype.
 10. Return [s', val'*].

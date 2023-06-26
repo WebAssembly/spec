@@ -94,7 +94,7 @@ let rec walk_instr f (instr:instr) : instr list =
   | PushI e -> PushI (new_e e)
   | PopI e -> PopI (new_e e)
   | PopAllI e -> PopAllI (new_e e)
-  | LetI (n, e) -> LetI (n, new_e e)
+  | LetI (n, e) -> LetI (new_e n, new_e e)
   | TrapI -> TrapI
   | NopI -> NopI
   | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)

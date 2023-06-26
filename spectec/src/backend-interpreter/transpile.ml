@@ -2,6 +2,7 @@ open Al
 open Al.Ast
 
 (** helper *)
+let composite_instr g f x = f x |> List.map g |> List.flatten
 let composite g f x = f x |> g
 
 let take n str =
@@ -183,12 +184,38 @@ let enhance_readability instrs =
 (** Walker-based Translpiler **)
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
+let hide_state_instr = function
+  | ReturnI (Some (PairE (NameE (N "s", []), NameE (N "f", [])))) -> [ ReturnI None ]
+  | ReturnI (Some (PairE (NameE (N s, []), NameE (N f, []))))
+    when String.starts_with ~prefix:"s_" s
+      && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
+  | LetI (PairE (NameE (N s, []), NameE (N f, [])), AppE (fname, el))
+    when String.starts_with ~prefix:"s_" s
+      && String.starts_with ~prefix:"f_" f -> [ PerformI (AppE (fname, el)) ]
+  | LetI (NameE (N s, []), AppE (fname, el))
+    when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
+  | i -> [ i ]
+
 let hide_state = function
   | AppE (f, args) ->
       let new_args =
-        List.filter (function NameE (N "z", _) -> false | _ -> true) args
+        List.filter
+          (function
+            | PairE (NameE (N "s", []), NameE (N "f", []))
+            | NameE (N "z", []) -> false
+            | PairE (NameE (N s, []), NameE (N "f", []))
+              when String.starts_with ~prefix:"s_" s -> false
+            | PairE (NameE (N s, []), NameE (N f, []))
+              when String.starts_with ~prefix:"s_" s
+              && String.starts_with ~prefix:"f_" f
+                -> false
+            | NameE (N "s", []) -> false
+            | NameE (N s, []) when String.starts_with ~prefix:"s_" s -> false
+            | _ -> true)
+          args
       in
       AppE (f, new_args)
+  | ListE [ NameE (N s, []); e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
 let simplify_record_concat = function
@@ -205,6 +232,6 @@ let flatten_if = function
   | i -> i
 
 let transpiler = Walk.walk { Walk.default_action with
-  post_instr = lift flatten_if;
+  post_instr = composite_instr hide_state_instr (lift flatten_if);
   post_expr = composite hide_state simplify_record_concat
 }
