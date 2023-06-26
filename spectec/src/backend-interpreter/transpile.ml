@@ -33,6 +33,11 @@ let rec count_instrs instrs =
        | _ -> 1)
   |> list_sum
 
+let rec unify_head acc l1 l2 =
+  match (l1, l2) with
+  | h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
+  | _ -> (List.rev acc, l1, l2)
+
 (** AL -> AL transpilers *)
 
 (* Recursively append else block to every empty if *)
@@ -65,23 +70,22 @@ let rec insert_otherwise else_body instrs =
       | _ -> (visit_if, inst))
     false instrs
 
-(* If the latter block of instrs is a single Otherwise, merge them *)
-let merge_otherwise instrs1 instrs2 =
-  match instrs2 with
+(* Merge two consecutive blocks: *)
+(* - If they share same prefix *)
+(* - If the latter block of instrs is a single Otherwise *)
+let merge instrs1 instrs2 =
+  let head, tail1, tail2 = unify_head [] instrs1 instrs2 in
+  head @ match tail2 with
   | [ OtherwiseI else_body ] ->
-      let visit_if, merged = insert_otherwise else_body instrs1 in
+      let visit_if, merged = insert_otherwise else_body tail1 in
       if not visit_if then
         print_endline
           ("Warning: No corresponding if for"
           ^ take 100 (Print.string_of_instrs 0 instrs2));
       merged
-  | _ -> instrs1 @ instrs2
+  | _ -> tail1 @ tail2
 
 (** Enhance readability of AL **)
-let rec unify_head acc l1 l2 =
-  match (l1, l2) with
-  | h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
-  | _ -> (List.rev acc, l1, l2)
 
 let rec unify_if instrs =
   List.fold_right

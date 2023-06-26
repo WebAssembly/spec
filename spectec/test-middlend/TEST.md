@@ -11042,9 +11042,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- where mt = C.MEM_context[0]
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
@@ -11054,9 +11054,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (0 < |C.MEM_context|)
-    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- where mt = C.MEM_context[0]
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
@@ -11144,8 +11144,8 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
   rule _ {C : context, expr : expr, gt : globaltype, t : valtype}:
     `%|-%:%`(C, GLOBAL(gt, expr), gt)
     -- Globaltype_ok: `|-%:OK`(gt)
-    -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
     -- where `MUT%?%`(()?{}, t) = gt
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
 ;; 3-typing.watsup:399.1-399.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
@@ -11825,8 +11825,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$funcinst(z)|)
     -- where {MODULE m, CODE func} = $funcinst(z)[a]
     -- where `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}) = func
-    -- (where ?(o0) = $default_(t))*{t o0}
     -- where |o0*{o0}| = |t*{t}|
+    -- (where ?(o0) = $default_(t))*{t o0}
     -- where f = {LOCAL val^k{val} :: o0*{o0}, MODULE m}
 
   ;; 6-reduction.watsup:152.1-153.53
@@ -12295,9 +12295,9 @@ def run_elem : (state, elem*, idx) -> state
     -- where `%;%`(s_res, f_res) = $run_elem(`%;%`(s_new, f_new), elem'*{elem'}, (i + 1))
   ;; 7-module.watsup:181.1-185.67
   def {elem : elem, elem'* : elem*, elemmode : elemmode, expr* : expr*, f : frame, f_new : frame, f_res : frame, i : nat, reftype : reftype, s : store, s_new : store, s_res : store} run_elem(`%;%`(s, f), [elem] :: elem'*{elem'}, i) = `%;%`(s_res, f_res)
-    -- Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))
     -- where `ELEM%%*%?`(reftype, expr*{expr}, ?(elemmode)) = elem
     -- where elemmode = DECLARE_elemmode
+    -- Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))
     -- where `%;%`(s_res, f_res) = $run_elem(`%;%`(s_new, f_new), elem'*{elem'}, (i + 1))
 }
 
@@ -12347,8 +12347,8 @@ def invocation : (store, funcaddr, val*) -> (store, val*)
     -- where |valtype*{valtype}| = |val*{val}|
     -- where m = {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
     -- where f = {LOCAL [], MODULE m}
-    -- Step: `%~>%`(`%;%*`(`%;%`(s, f), $admininstr_val(val)*{val} :: [CALL_ADDR_admininstr(fa)]), `%;%*`(`%;%`(s', f'), $admininstr_val(val')*{val'}))
     -- where `FUNC%%*%`(functype, valtype*{valtype}, expr) = $funcinst(`%;%`(s, f))[fa].CODE_funcinst
+    -- Step: `%~>%`(`%;%*`(`%;%`(s, f), $admininstr_val(val)*{val} :: [CALL_ADDR_admininstr(fa)]), `%;%*`(`%;%`(s', f'), $admininstr_val(val')*{val'}))
     -- where |valtype'*{valtype'}| = |val'*{val'}|
     -- where `%->%`(valtype*{valtype}, valtype'*{valtype'}) = functype
 

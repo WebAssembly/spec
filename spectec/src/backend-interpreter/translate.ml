@@ -446,62 +446,82 @@ let bound_by binding e =
       else []
   | _ -> []
 
+let lhs_id_ref = ref 0
+let lhs_prefix = "_y"
+let init_lhs_id () = lhs_id_ref := 0
+let get_lhs_name () =
+  let lhs_id = !lhs_id_ref in
+  lhs_id_ref := (lhs_id + 1);
+  NameE (N (lhs_prefix ^ (lhs_id |> string_of_int)), [])
+
+let rec letI lhs rhs cont =
+  let extract_non_names = List.fold_left_map (fun acc e -> match e with
+    | NameE _ -> acc, e
+    | _ ->
+      let fresh = get_lhs_name() in
+      [ e, fresh ] @ acc, fresh
+  ) [] in
+  match lhs with
+  | ConstructE (tag, es) ->
+    let bindings, es' = extract_non_names es in
+    [
+      IfI
+        ( IsCaseOfC (rhs, tag),
+          LetI (ConstructE (tag, es'), rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont,
+          [] );
+    ]
+  | ListE es ->
+    let bindings, es' = extract_non_names es in
+    if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
+    LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont
+    else
+    [
+      IfI
+        ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
+          LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont,
+          [] );
+    ]
+  | OptE None ->
+    [
+      IfI
+        ( NotC (IsDefinedC rhs),
+          cont,
+          [] );
+    ]
+  | OptE (Some (NameE _)) ->
+    [
+      IfI
+        ( IsDefinedC rhs,
+          LetI (lhs, rhs) :: cont,
+          [] );
+     ]
+  | OptE (Some e) ->
+    let fresh = get_lhs_name() in
+    [
+      IfI
+        ( IsDefinedC rhs,
+          LetI (OptE (Some fresh), rhs) :: letI e fresh cont,
+          [] );
+     ]
+  | BinopE (Add, a, b) ->
+    [
+      IfI
+        ( CompareC (Ge, rhs, b),
+          LetI (a, BinopE (Sub, rhs, b)) :: cont,
+          [] );
+    ]
+  | _ -> LetI (lhs, rhs) :: cont
+
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
 let prems2instrs remain_lhs =
   List.fold_right (fun prem instrs ->
       match prem.it with
       | Ast.IfPr exp -> [ IfI (exp2cond exp, instrs |> check_nop, []) ]
       | Ast.ElsePr -> [ OtherwiseI (instrs |> check_nop) ]
-      | Ast.LetPr (exp1, exp2) -> (
+      | Ast.LetPr (exp1, exp2) ->
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
-          match exp1.it with
-          | Ast.CaseE (Ast.Atom tag, {it = Ast.TupE []; _}) ->
-              [
-                IfI
-                  ( IsCaseOfC (exp2expr exp2, tag),
-                    instrs',
-                    [] );
-              ]
-          | Ast.CaseE (Ast.Atom tag, _) ->
-              [
-                IfI
-                  ( IsCaseOfC (exp2expr exp2, tag),
-                    LetI (exp2expr exp1, exp2expr exp2) :: instrs',
-                    [] );
-              ]
-          | Ast.ListE es ->
-              let rhs = exp2expr exp2 in
-              [
-                IfI
-                  ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-                    LetI (exp2expr exp1, rhs) :: instrs',
-                    [] );
-              ]
-          | Ast.OptE None ->
-              [
-                IfI
-                  ( NotC (IsDefinedC (exp2expr exp2)),
-                    instrs',
-                    [] );
-              ]
-          | Ast.OptE (Some _) ->
-              let rhs = exp2expr exp2 in
-              [
-                IfI
-                  ( IsDefinedC rhs,
-                    LetI (exp2expr exp1, rhs) :: instrs',
-                    [] );
-               ]
-          | Ast.BinE (Ast.AddOp, l, r) ->
-              let rhs = exp2expr exp2 in
-              let sub = exp2expr r in
-              [
-                IfI
-                  ( CompareC (Ge, rhs, sub),
-                    LetI (exp2expr l, BinopE (Sub, rhs, sub)) :: instrs',
-                    [] );
-              ]
-          | _ -> LetI (exp2expr exp1, exp2expr exp2) :: instrs')
+          init_lhs_id();
+          letI (exp2expr exp1) (exp2expr exp2) instrs'
       | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
         ( match exp2args exp with
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
@@ -696,13 +716,13 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       | hds, (_, rhs, [], _) when List.length hds > 0 ->
           assert (List.length remain = 0);
           let blocks = List.map (reduction2instrs []) hds in
-          let either_body1 = List.fold_right Transpile.merge_otherwise blocks [] in
+          let either_body1 = List.fold_right Transpile.merge blocks [] in
           let either_body2 = rhs2instrs rhs |> check_nop in
           EitherI (either_body1, either_body2) |> Transpile.push_either
       (* Normal case *)
       | _ ->
           let blocks = List.map (reduction2instrs remain) reduction_group in
-          List.fold_right Transpile.merge_otherwise blocks [] in
+          List.fold_right Transpile.merge blocks [] in
 
       pop_instrs @ inner_pop_instrs @ instrs
     (* The target instruction is inside a context *)
@@ -820,7 +840,7 @@ let helpers2algo def =
       in
       let translator = if String.starts_with ~prefix:"with" id.it then writer2instrs else reader2instrs in
       let blocks = List.map translator unified_clauses in
-      let algo_body = List.fold_right Transpile.merge_otherwise blocks [] in
+      let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
 
       let algo = Algo (id.it, typed_params, algo_body) in
       Some algo

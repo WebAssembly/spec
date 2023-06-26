@@ -25,8 +25,8 @@ let is_simpler_lhs e1 e2 = match e1.it, e2.it with
 
 let is_simpler_assign p1 p2 = match p1.it, p2.it with
 | LetPr (lhs1, _), LetPr (lhs2, _) -> is_simpler_lhs lhs1 lhs2
-| LetPr _, _ -> -1
-| _, LetPr _ -> 1
+| _, LetPr _ -> -1
+| LetPr _, _ -> 1
 | _, _ -> 0
 
 (* for debugging *)
