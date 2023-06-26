@@ -523,13 +523,13 @@ alloc_data _x0*
 8. Let da be |$datainst()|.
 9. Return [da] ++ da'*.
 
-replace_moduleinst s _x0* m
+replace_moduleinst _x0* m
 1. If _x0* is [], then:
   a. Return s.
 2. Let [fa] ++ fa'* be _x0*.
 3. Let s_new be YetE (s[FUNC_store[fa].MODULE_funcinst = m]).
 4. Perform $replace_moduleinst(fa'*, m).
-5. Return s_res.
+5. Return.
 
 alloc_export m export
 1. Let (EXPORT name externuse) be export.
@@ -557,7 +557,7 @@ alloc_export m export
   c. Let xi be { NAME: name; VALUE: externval; }.
   d. Return xi.
 
-alloc_module s module externval*
+alloc_module module externval*
 1. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
 2. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let m_im be $alloc_import(m_init, import*, externval*).
@@ -622,7 +622,7 @@ run_data _x0* i
   g. Perform $run_data(data'*, (i + 1)).
   h. Return.
 
-instantiation s module externval*
+instantiation module externval*
 1. Let (MODULE import* func* global* table* mem* elem* data* ?() export*) be module.
 2. Let m be $alloc_module(module, externval*).
 3. Let f be { LOCAL: []; MODULE: m; }.
@@ -638,7 +638,7 @@ instantiation s module externval*
 13. Execute (CALL x).
 14. Return m.
 
-invocation s fa val*
+invocation fa val*
 1. Let |valtype*| be |val*|.
 2. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 3. Let f be { LOCAL: []; MODULE: m; }.

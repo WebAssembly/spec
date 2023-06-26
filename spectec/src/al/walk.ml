@@ -113,10 +113,6 @@ let rec walk_instr f (instr:instr) : instr list =
 
 and walk_instrs f = walk_instr f |> List.concat_map
 
-let walk f = function
-  | Algo (name, params, body) -> (
-      let new_body = walk_instrs f body in
-      match params with
-      | (PairE (_, f), StateT) :: rest_params ->
-          Algo (name, rest_params, LetI (f, GetCurFrameE) :: new_body)
-      | _ -> Algo (name, params, new_body))
+let walk f algo =
+  let Algo (name, params, body) = algo in
+  Algo (name, params, walk_instrs f body)

@@ -189,6 +189,9 @@ let hide_state_instr = function
   | ReturnI (Some (PairE (NameE (N s, []), NameE (N f, []))))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
+
+  | ReturnI (Some (NameE (N s, [])))
+    when String.starts_with ~prefix:"s_" s -> [ ReturnI None ]
   | LetI (PairE (NameE (N s, []), NameE (N f, [])), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ PerformI (AppE (fname, el)) ]
@@ -231,7 +234,18 @@ let flatten_if = function
   | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
   | i -> i
 
-let transpiler = Walk.walk { Walk.default_action with
-  post_instr = composite_instr hide_state_instr (lift flatten_if);
-  post_expr = composite hide_state simplify_record_concat
-}
+let transpiler algo =
+  let walker =
+    Walk.walk
+      { Walk.default_action with
+        post_instr = composite_instr hide_state_instr (lift flatten_if);
+        post_expr = composite hide_state simplify_record_concat
+      }
+  in
+  let Algo (name, params, body) = walker algo in
+  match params with
+  | (PairE (_, f), StateT) :: tail ->
+      Algo (name, tail, LetI (f, GetCurFrameE) :: body)
+  | (NameE (N "s", []), _) :: tail ->
+      Algo (name, tail, body)
+  | _ -> Algo(name, params, body)
