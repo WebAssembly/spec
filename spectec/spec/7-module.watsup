@@ -209,14 +209,14 @@ def $instantiation(s, module, externval*) = (s_res, m)
   -- if module = MODULE import* func* global* table* mem* elem* data* export*
   -- if (s_alloc, m) = $alloc_module(s, module, externval*)
   -- if f = { LOCAL epsilon, MODULE m }
-  -- if $run_elem((s_alloc; f_alloc), elem*, 0) = s_elem; f_elem
+  -- if $run_elem((s_alloc; f), elem*, 0) = s_elem; f_elem
   -- if $run_data((s_elem; f_elem), data*, 0) = s_res; f_res
 
 def $instantiation(s, module, externval*) = (s_res, m)
   -- if module = MODULE import* func* global* table* mem* elem* data* start export*
   -- if (s_alloc, m) = $alloc_module(s, module, externval*)
   -- if f = { LOCAL epsilon, MODULE m }
-  -- if $run_elem((s_alloc; f_alloc), elem*, 0) = s_elem; f_elem
+  -- if $run_elem((s_alloc; f), elem*, 0) = s_elem; f_elem
   -- if $run_data((s_elem; f_elem), data*, 0) = s_data; f_data
   -- if start = START x
   -- Step : s_data; f_data; (CALL x) ~> s_res; f_res; epsilon
