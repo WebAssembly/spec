@@ -161,6 +161,32 @@ Floating-Point
 where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
 
+.. index:: numeric vector, shape, lane
+.. _aux-lanes:
+
+Vectors
+.......
+
+Numeric vectors have the same underlying representation as an |i128|.
+They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lll@{\qquad}l}
+   \lanes_{t\K{x}N}(c) &=&
+     c_0~\dots~c_{N-1} \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}l@{~}l@{~}l}
+     (\where & B &=& |t| / 8 \\
+     \wedge & b^{16} &=& \bytes_{\i128}(c) \\
+     \wedge & c_i &=& \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
+     \end{array}
+   \end{array}
+
+These functions are bijections, so they are invertible.
+
+
 .. index:: byte, little endian, memory
 .. _aux-littleendian:
 .. _aux-bytes:
@@ -178,31 +204,6 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
    \end{array}
 
 Again these functions are invertible bijections.
-
-
-.. index:: numeric vectors, shape
-.. _aux-lanes:
-
-Vectors
-.......
-
-Numeric vectors have the same underlying representation as an |i128|. They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
-
-.. math::
-   \begin{array}{l}
-   \begin{array}{lll@{\qquad}l}
-   \lanes_{t\K{x}N}(c) &=&
-     c_0~\dots~c_{N-1} \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\where & B = |t| / 8 \\
-     \wedge & b^{16} = \bytes_{\i128}(c) \\
-     \wedge & c_i = \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
-     \end{array}
-   \end{array}
-
-These functions are bijections, so they are invertible.
 
 
 .. index:: integer
