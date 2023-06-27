@@ -41,7 +41,7 @@ all:		unopt opt libunopt libopt test
 land:		$(WINMAKE) all
 zip: 		$(ZIP)
 smallint:	smallint.native
-ci:			land wast.js dunebuild
+ci:			land jslib dunebuild
 
 dunebuild:
 	dune build

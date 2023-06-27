@@ -20,8 +20,9 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\K{i}N}(n_1,\dots,n_k) &=& \F{i}\X{op}_N(n_1,\dots,n_k) \\
-   \X{op}_{\K{f}N}(z_1,\dots,z_k) &=& \F{f}\X{op}_N(z_1,\dots,z_k) \\
+   \X{op}_{\IN}(i_1,\dots,i_k) &=& \F{i}\X{op}_N(i_1,\dots,i_k) \\
+   \X{op}_{\FN}(z_1,\dots,z_k) &=& \F{f}\X{op}_N(z_1,\dots,z_k) \\
+   \X{op}_{\VN}(i_1,\dots,i_k) &=& \F{i}\X{op}_N(i_1,\dots,i_k) \\
    \end{array}
 
 And for :ref:`conversion operators <exec-cvtop>`:
@@ -486,6 +487,7 @@ Reference Instructions
       (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
    \end{array}
 
 
@@ -498,12 +500,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}[i]}(\val))
      \end{array} \\
+   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
    \end{array}
 
 
@@ -603,8 +606,7 @@ Reference Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
       \land & t = \unpacktype(\X{ft}) \\
-      \land & (b^\ast)^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
-      \land & (\bytes_{\X{ft}}(i) = \unpackval_{\X{ft}}(b^\ast))^n)
+      \land & (\bytes_{\X{ft}}(i))^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
      \end{array} \\
    \end{array}
 
@@ -641,12 +643,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \TRAP
    \end{array}
 
 
@@ -659,12 +662,13 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
      \end{array} \\
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& \TRAP
    \end{array}
 
 
@@ -677,7 +681,171 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|\SARRAYS[a].\AIFIELDS[i]|)
+   S; (\REFARRAYADDR~a)~\ARRAYLEN &\stepto& (\I32.\CONST~|S.\SARRAYS[a].\AIFIELDS|) \\
+   S; (\REFNULL~t)~\ARRAYLEN &\stepto& \TRAP
+   \end{array}
+
+
+.. _exec-array.fill:
+
+:math:`\ARRAYFILL~\typeidx`
+...........................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x)
+     \quad\stepto\quad \TRAP
+     \\ \qquad
+     (\iff d + n > |S.\SARRAYS[a].\AIFIELDS|)
+   \\[1ex]
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~0)~(\ARRAYFILL~x)
+     \quad\stepto\quad S; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~(\ARRAYFILL~x)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\ARRAYSET~x) \\
+       (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.copy:
+
+:math:`\ARRAYCOPY~\typeidx~\typeidx`
+....................................
+
+.. todo:: Prose
+
+.. todo:: Handle packed fields correctly via array.get_u instead of array.get
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y)
+     \quad\stepto\quad \TRAP
+     \\ \qquad
+     (\iff d + n > |S.\SARRAYS[a_1].\AIFIELDS| \vee s + n > |S.\SARRAYS[a_2].\AIFIELDS|)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYCOPY~x~y)
+     \quad\stepto\quad S; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\ARRAYGET~y) \\
+       (\ARRAYSET~x) \\
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise, \iff d \leq s)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~(\ARRAYGET~y) \\
+       (\ARRAYSET~x) \\
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise, \iff d > s)
+   \\[1ex]
+   S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
+   \\[1ex]
+   S; \val~(\I32.\CONST~d)~(\REFNULL~t)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.init_data:
+
+:math:`\ARRAYINITDATA~\typeidx~\dataidx`
+........................................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
+      \vee & (F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \land
+              s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|))
+     \end{array}
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITDATA~x~y)
+     \quad\stepto\quad S; F; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITDATA~x~y)
+     \quad\stepto
+     \\ \quad S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST i)~(\ARRAYSET~x) \\
+     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+|\X{ft}|)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \\
+     \end{array}
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\otherwise, \iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+      \land & t = \unpacktype(\X{ft}) \\
+      \land & \bytes_{\X{ft}}(i) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice |\X{ft}|]
+     \end{array}
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.init_elem:
+
+:math:`\ARRAYINITELEM~\typeidx~\elemidx`
+........................................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
+      \vee & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
+     \end{array}
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITELEM~x~y)
+     \quad\stepto\quad S; F; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITELEM~x~y)
+     \quad\stepto
+     \\ \quad S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\REFARRAYADDR~a)~(\I32.\CONST~d)~\REF~(\ARRAYSET~x) \\
+     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \\
+     \end{array}
+     \\ \qquad
+     (\otherwise, \iff \REF = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s])
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
    \end{array}
 
 
@@ -767,14 +935,14 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`c` be the result of computing :math:`\vvunop_{\I128}(c_1)`.
+3. Let :math:`c` be the result of computing :math:`\vvunop_{\V128}(c_1)`.
 
 4. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c_1)~\V128\K{.}\vvunop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vvunop_{\I128}(c_1)) \\
+     & (\iff c = \vvunop_{\V128}(c_1)) \\
    \end{array}
 
 
@@ -789,14 +957,14 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-4. Let :math:`c` be the result of computing :math:`\vvbinop_{\I128}(c_1, c_2)`.
+4. Let :math:`c` be the result of computing :math:`\vvbinop_{\V128}(c_1, c_2)`.
 
 5. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~\V128\K{.}\vvbinop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vvbinop_{\I128}(c_1, c_2)) \\
+     & (\iff c = \vvbinop_{\V128}(c_1, c_2)) \\
    \end{array}
 
 
@@ -813,14 +981,14 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`c` be the result of computing :math:`\vvternop_{\I128}(c_1, c_2, c_3)`.
+5. Let :math:`c` be the result of computing :math:`\vvternop_{\V128}(c_1, c_2, c_3)`.
 
 6. Push the value :math:`\V128.\VCONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\V128\K{.}\VCONST~c_3)~\V128\K{.}\vvternop &\stepto& (\V128\K{.}\VCONST~c)
-     & (\iff c = \vvternop_{\I128}(c_1, c_2, c_3)) \\
+     & (\iff c = \vvternop_{\V128}(c_1, c_2, c_3)) \\
    \end{array}
 
 
@@ -854,15 +1022,15 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 2. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{i8x16}(c_2)`.
+3. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\I8X16}(c_2)`.
 
 4. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-5. Let :math:`j^\ast` be the result of computing :math:`\lanes_{i8x16}(c_1)`.
+5. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\I8X16}(c_1)`.
 
 6. Let :math:`c^\ast` be the concatenation of the two sequences :math:`j^\ast` and :math:`0^{240}`.
 
-7. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
+7. Let :math:`c'` be the result of computing :math:`\lanes^{-1}_{\I8X16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ])`.
 
 8. Push the value :math:`\V128.\VCONST~c'` onto the stack.
 
@@ -873,9 +1041,9 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{i8x16}(c_2) \\
-      \wedge & c^\ast = \lanes_{i8x16}(c_1)~0^{240} \\
-      \wedge & c' = \lanes^{-1}_{i8x16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
+      (\iff & i^\ast = \lanes_{\I8X16}(c_2) \\
+      \wedge & c^\ast = \lanes_{\I8X16}(c_1)~0^{240} \\
+      \wedge & c' = \lanes^{-1}_{\I8X16}(c^\ast[ i^\ast[0] ] \dots c^\ast[ i^\ast[15] ]))
      \end{array}
    \end{array}
 
@@ -891,15 +1059,15 @@ Most vector instructions are defined in terms of generic numeric operators appli
 
 3. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
 
-4. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{i8x16}(c_2)`.
+4. Let :math:`i_2^\ast` be the result of computing :math:`\lanes_{\I8X16}(c_2)`.
 
 5. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-6. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{i8x16}(c_1)`.
+6. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\I8X16}(c_1)`.
 
 7. Let :math:`i^\ast` be the concatenation of the two sequences :math:`i_1^\ast` and :math:`i_2^\ast`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])`.
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\I8X16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]])`.
 
 9. Push the value :math:`\V128.\VCONST~c` onto the stack.
 
@@ -910,8 +1078,8 @@ Most vector instructions are defined in terms of generic numeric operators appli
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{i8x16}(c_1)~\lanes_{i8x16}(c_2) \\
-      \wedge & c = \lanes^{-1}_{i8x16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]]))
+      (\iff & i^\ast = \lanes_{\I8X16}(c_1)~\lanes_{\I8X16}(c_2) \\
+      \wedge & c = \lanes^{-1}_{\I8X16}(i^\ast[x^\ast[0]] \dots i^\ast[x^\ast[15]]))
      \end{array}
    \end{array}
 
@@ -2295,7 +2463,7 @@ Memory Instructions
 
 13. Let :math:`n_k` be the result of computing :math:`\extend^{\sx}_{M,W}(m_k)`.
 
-14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\X{i}W\K{x}N}(n_0 \dots n_{N-1})`.
+14. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}W\K{x}N}(n_0 \dots n_{N-1})`.
 
 15. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -2312,7 +2480,7 @@ Memory Instructions
      \wedge & \X{ea} + M \cdot N / 8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_{\iM}(m_k) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} + k \cdot M/8 \slice M/8] \\
      \wedge & W = M \cdot 2 \\
-     \wedge & c = \lanes^{-1}_{\X{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
+     \wedge & c = \lanes^{-1}_{\K{i}W\K{x}N}(\extend^{\sx}_{M,W}(m_0) \dots \extend^{\sx}_{M,W}(m_{N-1})))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2354,7 +2522,7 @@ Memory Instructions
 
 12. Let :math:`L` be the integer :math:`128 / N`.
 
-13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\iN\K{x}L}(n^L)`.
+13. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(n^L)`.
 
 14. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -2369,7 +2537,7 @@ Memory Instructions
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_{\iN}(n) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
-     \wedge & c = \lanes^{-1}_{\iN\K{x}L}(n^L))
+     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(n^L))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2470,9 +2638,9 @@ Memory Instructions
 
 14. Let :math:`L` be :math:`128 / N`.
 
-15. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\K{i}N\K{x}L}(v)`.
+15. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(v)`.
 
-16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\K{i}N\K{x}L}(j^\ast \with [x] = r)`.
+16. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\IN\K{x}L}(j^\ast \with [x] = r)`.
 
 17. Push the value :math:`\V128.\CONST~c` to the stack.
 
@@ -2488,7 +2656,7 @@ Memory Instructions
      \wedge & \X{ea} + N/8 \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & \bytes_{\iN}(r) = S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] \\
      \wedge & L = 128/N \\
-     \wedge & c = \lanes^{-1}_{\K{i}N\K{x}L}(\lanes_{\K{i}N\K{x}L}(v) \with [x] = r))
+     \wedge & c = \lanes^{-1}_{\IN\K{x}L}(\lanes_{\IN\K{x}L}(v) \with [x] = r))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2607,7 +2775,7 @@ Memory Instructions
 
 12. Let :math:`L` be :math:`128/N`.
 
-13. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\K{i}N\K{x}L}(c)`.
+13. Let :math:`j^\ast` be the result of computing :math:`\lanes_{\IN\K{x}L}(c)`.
 
 14. Let :math:`b^\ast` be the result of computing :math:`\bytes_{\iN}(j^\ast[x])`.
 
@@ -2624,7 +2792,7 @@ Memory Instructions
      (\iff & \X{ea} = i + \memarg.\OFFSET \\
      \wedge & \X{ea} + N \leq |S.\SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA| \\
      \wedge & L = 128/N \\
-     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\K{i}N\K{x}L}(c)[x]))
+     \wedge & S' = S \with \SMEMS[F.\AMODULE.\MIMEMS[0]].\MIDATA[\X{ea} \slice N/8] = \bytes_{\iN}(\lanes_{\IN\K{x}L}(c)[x]))
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
