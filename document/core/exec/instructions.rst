@@ -606,8 +606,7 @@ Reference Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
       \land & t = \unpacktype(\X{ft}) \\
-      \land & (b^\ast)^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
-      \land & (\bytes_{\X{ft}}(i) = \unpackval_{\X{ft}}(b^\ast))^n)
+      \land & (\bytes_{\X{ft}}(i))^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
      \end{array} \\
    \end{array}
 
