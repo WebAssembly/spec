@@ -190,13 +190,15 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 .. |V128| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v128}}
+.. |IN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i}N}
+.. |FN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f}N}
+.. |VN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v}N}
 .. |I8X16| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i8x16}}
 .. |I16X8| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i16x8}}
 .. |I32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32x4}}
 .. |I64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64x2}}
 .. |F32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32x4}}
 .. |F64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64x2}}
-.. |I128| mathdef:: \K{i128}
 
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
@@ -1388,8 +1390,8 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
-.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat}^{\K{u}}}
-.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat}^{\K{s}}}
+.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat\_u}}
+.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat\_s}}
 
 .. |lanes| mathdef:: \xref{exec/numerics}{aux-lanes}{\F{lanes}}
 
