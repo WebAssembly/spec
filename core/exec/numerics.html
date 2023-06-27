@@ -167,11 +167,12 @@ op(c_1^n, \dots, c_k^n) &amp;=&amp; op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n
 </ul>
 <section id="representations">
 <span id="aux-bits"></span><span id="index-1"></span><h2>Representations<a class="headerlink" href="#representations" title="Permalink to this heading">¶</a></h2>
-<p>Numbers have an underlying binary representation as a sequence of bits:</p>
+<p>Numbers and numeric vectors have an underlying binary representation as a sequence of bits:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{i}N}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) \\
-\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\mathsf{f}N}(z) &amp;=&amp; \href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(z) \\
+\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i}N}}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) \\
+\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{f}N}}(z) &amp;=&amp; \href{../exec/numerics.html#aux-fbits}{\mathrm{fbits}}_N(z) \\
+\href{../exec/numerics.html#aux-bits}{\mathrm{bits}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{v}N}}(i) &amp;=&amp; \href{../exec/numerics.html#aux-ibits}{\mathrm{ibits}}_N(i) \\
 \end{array}\end{split}\]</div>
 <p>Each of these functions is a bijection, hence they are invertible.</p>
 <section id="integers">
@@ -199,7 +200,7 @@ op(c_1^n, \dots, c_k^n) &amp;=&amp; op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n
 <p>where <span class="math notranslate nohighlight">\(M = \href{../syntax/values.html#aux-significand}{\mathrm{signif}}(N)\)</span> and <span class="math notranslate nohighlight">\(E = \href{../syntax/values.html#aux-exponent}{\mathrm{expon}}(N)\)</span>.</p>
 </section>
 <section id="vectors">
-<span id="aux-lanes"></span><span id="index-4"></span><h3>Vectors<a class="headerlink" href="#vectors" title="Permalink to this heading">¶</a></h3>
+<span id="syntax-i128"></span><span id="aux-lanes"></span><span id="index-4"></span><h3>Vectors<a class="headerlink" href="#vectors" title="Permalink to this heading">¶</a></h3>
 <p>Numeric vectors have the same underlying representation as an <span class="math notranslate nohighlight">\(\href{../syntax/values.html#syntax-int}{\mathit{i128}}\)</span>.
 They can also be interpreted as a sequence of numeric values packed into a <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{v128}}\)</span> with a particular <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-shape}{\mathit{shape}}\)</span>.</p>
 <div class="math notranslate nohighlight">
