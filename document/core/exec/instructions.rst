@@ -586,7 +586,6 @@ Reference Instructions
 .......................................
 
 .. todo:: Prose
-.. todo:: extend type size convention to field types
 
 .. math::
    ~\\[-1ex]

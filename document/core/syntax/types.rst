@@ -228,7 +228,7 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
    \end{array}
 
 
-.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type
+.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type, bit width
    pair: abstract syntax; structure type
    pair: abstract syntax; array type
    pair: abstract syntax; field type
@@ -262,6 +262,11 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
    \production{packed type} & \packedtype &::=&
      \I8 ~|~ \I16 \\
    \end{array}
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
 
 
 .. index:: ! compound type, function type, aggreagate type, structure type, array type
