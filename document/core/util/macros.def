@@ -1197,8 +1197,8 @@
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
-.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat}^{\K{u}}}
-.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat}^{\K{s}}}
+.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat\_u}}
+.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat\_s}}
 
 .. |lanes| mathdef:: \xref{exec/numerics}{aux-lanes}{\F{lanes}}
 
