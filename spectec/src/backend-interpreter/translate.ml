@@ -745,7 +745,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       List.fold_right2 (fun lhs -> function Algo (_, _, body) -> fun acc ->
         let kind = kind_of_context lhs in
         [ IfI (
-          CompareC (Eq, GetCurContextE, StringE kind),
+          ContextKindC (kind, GetCurContextE),
           body,
           acc) ]
       ) lhss sub_algos []

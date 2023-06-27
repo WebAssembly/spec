@@ -110,6 +110,7 @@ and cond =
   | NotC of cond
   | BinopC of cond_binop * cond * cond
   | CompareC of compare_op * expr * expr
+  | ContextKindC of string * expr
   | IsDefinedC of expr
   | IsCaseOfC of expr * string
   | IsTopC of string

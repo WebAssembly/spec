@@ -188,6 +188,7 @@ and string_of_cond = function
       sprintf "%s %s %s" (string_of_cond c1) (string_of_cond_binop op) (string_of_cond c2)
   | CompareC (op, e1, e2) ->
       sprintf "%s %s %s" (string_of_expr e1) (string_of_compare_op op) (string_of_expr e2)
+  | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) s
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | IsTopC s -> sprintf "the top of the stack is %s" s
@@ -508,6 +509,7 @@ and structured_string_of_cond = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
+  | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" s (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | IsTopC s -> "TopC (" ^ s ^ ")"

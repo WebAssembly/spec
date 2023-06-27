@@ -203,7 +203,7 @@ let hide_state_instr = function
       && String.starts_with ~prefix:"f_" f -> [ PerformI (AppE (fname, el)) ]
   | LetI (NameE (N s, []), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
-  (* Replace *)
+  (* Append *)
   | LetI (NameE (N s, []), ExtendE (e1, p, ListE [ e2 ]) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (AccessE (e1, p), e2) ]

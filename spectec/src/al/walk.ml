@@ -71,6 +71,7 @@ let rec walk_cond f c =
   | NotC inner_c -> NotC (new_ inner_c)
   | BinopC (op, c1, c2) -> BinopC (op, new_ c1, new_ c2)
   | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
+  | ContextKindC (s, e) -> ContextKindC (s, new_e e)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
   | IsTopC _ -> c

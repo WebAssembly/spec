@@ -25,7 +25,7 @@ let to_map algos =
 
   List.fold_left f AlgoMap.empty algos
 
-(* Environmet *)
+(* Store *)
 
 (* TODO: Perhaps automatically generate this *)
 let store : store ref = ref Record.empty
@@ -59,6 +59,8 @@ let add_store s =
     |> Record.add "MEM" mem
     |> Record.add "ELEM" elem
     |> Record.add "DATA" data
+
+(* Environmet *)
 
 module Env = struct
   module EnvKey = struct
@@ -96,6 +98,8 @@ module Env = struct
   let add key elem (env, res) = (Env'.add key elem env, res)
 end
 
+(* Stack *)
+
 let stack : stack ref = ref []
 let init_stack () = stack := []
 let push v = stack := v :: !stack
@@ -106,20 +110,33 @@ let pop () =
     res
   with _ -> failwith "Pop some values from empty stack"
 
+(* Context *)
+
+let rec pop_context' vs =
+  let v = pop () in
+  match v with
+  | ConstructV _ -> pop_context' (v :: vs)
+  | v -> v :: vs
+
+let pop_context () = pop_context' []
+
 let get_current_label () =
-  match List.find_opt (function LabelV _ -> true | _ -> false) !stack with
-  | Some label -> label
-  | None -> failwith "No label" (* Due to Wasm validation, unreachable *)
+  try
+    List.find (function LabelV _ -> true | _ -> false) !stack
+  (* Due to Wasm validation, unreachable *)
+  with Not_found -> failwith "No label"
 
 let get_current_frame () =
-  match List.find_opt (function FrameV _ -> true | _ -> false) !stack with
-  | Some frame -> frame
-  | None -> failwith "No frame" (* Due to Wasm validation, unreachable *)
+  try
+    List.find (function FrameV _ -> true | _ -> false) !stack
+  (* Due to Wasm validation, unreachable *)
+  with Not_found -> failwith "No frame"
 
 let get_current_context () =
-  match List.find_map (function FrameV _ -> Some "frame" | LabelV _ -> Some "label" | _ -> None) !stack with
-  | Some kind -> StringV kind
-  | None -> failwith "Not in context" (* Due to Wasm validation, unreachable *)
+  try
+    List.find (function FrameV _ | LabelV _ -> true | _ -> false) !stack
+  (* Due to Wasm validation, unreachable *)
+  with Not_found -> failwith "Not in context"
 
 (* Evaluation Context *)
 
@@ -328,6 +345,12 @@ and eval_cond env cond =
       | Gt -> v1 > v2
       | Ge -> v1 >= v2
       end
+  | ContextKindC (kind, e) ->
+      begin match kind, eval_expr env e with
+      | "frame", FrameV _ -> true
+      | "label", LabelV _ -> true
+      | _ -> false
+      end
   | IsDefinedC e ->
       begin match eval_expr env e with
       | OptV (Some (_)) -> true
@@ -504,25 +527,16 @@ and interp_instrs env il =
           with
             ExitContext (env', cont') -> (env', cont'))
       | ExitNormalI _ ->
-          let rec pop_while pred =
-            let top = pop () in
-            if pred top then top :: pop_while pred else []
-          in
-          (* TODO: When Labels and Frames are expressed with ConstructV, the predicate should be changed accordingly *)
-          let vs = pop_while (function ConstructV _ -> true | _ -> false) in
-          vs |> List.rev |> List.iter push;
+          pop_context () |> List.tl |> List.iter push;
           (env, cont)
       | ExitAbruptI _ ->
-          let rec pop_while pred =
-            let top = pop () in
-            if pred top then top :: pop_while pred else [ top ]
-          in
-          let vs = pop_while (function ConstructV _ -> true | _ -> false) |> List.rev in
+          let vs = pop_context () in
           let ctx = List.hd vs in
-          vs |> List.tl |> List.iter push;
-          (match ctx with
+          List.tl vs |> List.iter push;
+          begin match ctx with
           | LabelV _ -> raise (ExitContext (env, cont))
-          | _ -> ());
+          | _ -> ()
+          end;
           (env, cont)
       | ReplaceI (e1, IndexP e2, e3) ->
           let a = eval_expr env e1 |> value_to_array in
