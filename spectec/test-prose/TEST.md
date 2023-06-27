@@ -445,7 +445,7 @@ alloc_func _x0*
   a. Return [].
 3. Let [func] ++ func'* be _x0*.
 4. Let fi be { MODULE: f.MODULE; CODE: func; }.
-5. Let s_new be s with .FUNC extended by [fi].
+5. Append fi to the s.FUNC.
 6. Let fa'* be $alloc_func(func'*).
 7. Let fa be |$funcinst()|.
 8. Return [fa] ++ fa'*.
@@ -460,7 +460,7 @@ alloc_global _x0*
   b. Execute the sequence (instr*).
   c. Pop val from the stack.
   d. Let gi be { TYPE: globaltype; VALUE: val; }.
-  e. Let s_new be s with .GLOBAL extended by [gi].
+  e. Append gi to the s.GLOBAL.
   f. Let ga'* be $alloc_global(global'*).
   g. Let ga be |$globalinst()|.
   h. Return [ga] ++ ga'*.
@@ -474,7 +474,7 @@ alloc_table _x0*
   a. Let (TABLE tabletype) be table.
   b. Let ((i, j?), reftype) be tabletype.
   c. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
-  d. Let s_new be s with .TABLE extended by [ti].
+  d. Append ti to the s.TABLE.
   e. Let ta'* be $alloc_table(table'*).
   f. Let ta be |$tableinst()|.
   g. Return [ta] ++ ta'*.
@@ -490,7 +490,7 @@ alloc_mem _x0*
     1) Let (I8 _y0) be memtype.
     2) Let (i, j?) be _y0.
     3) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
-    4) Let s_new be s with .MEM extended by [mi].
+    4) Append mi to the s.MEM.
     5) Let ma'* be $alloc_mem(mem'*).
     6) Let ma be |$meminst()|.
     7) Return [ma] ++ ma'*.
@@ -505,7 +505,7 @@ alloc_elem _x0*
   b. Execute the sequence (instr**).
   c. Pop ref* from the stack.
   d. Let ei be { TYPE: reftype; ELEM: ref*; }.
-  e. Let s_new be s with .ELEM extended by [ei].
+  e. Append ei to the s.ELEM.
   f. Let ea'* be $alloc_elem(elem'*).
   g. Let ea be |$eleminst()|.
   h. Return [ea] ++ ea'*.
@@ -518,7 +518,7 @@ alloc_data _x0*
 4. If data is of the case DATA, then:
   a. Let (DATA byte* datamode?) be data.
   b. Let di be { DATA: byte*; }.
-  c. Let s_new be s with .DATA extended by [di].
+  c. Append di to the s.DATA.
   d. Let da'* be $alloc_data(data'*).
   e. Let da be |$datainst()|.
   f. Return [da] ++ da'*.
