@@ -250,46 +250,34 @@ and eval_expr env expr =
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
   | RecordE r -> RecordV (Record.map (fun e -> eval_expr env e) r)
-  | AccessE (e, p) -> begin match p with
-      | IndexP e' ->
-        let a = eval_expr env e |> value_to_array in
-        let i = eval_expr env e' |> value_to_int in
-        ( try Array.get a i with Invalid_argument _ -> failwith ("Failed Array.get during AccessE") )
-      | SliceP (e1, e2) ->
-        let a = eval_expr env e |> value_to_array in
-        let i1 = eval_expr env e1 |> value_to_int in
-        let i2 = eval_expr env e2 |> value_to_int in
-        let a' = Array.sub a i1 i2 in
-        ListV (ref a')
-      | DotP str -> match eval_expr env e with
-        | FrameV (_, RecordV r) -> Record.find str r
-        | StoreV s -> Record.find str !s
-        | RecordV r -> Record.find str r
-        | v ->
-            string_of_value v
-            |> Printf.sprintf "Not a record: %s"
-            |> failwith
-      end
-  | ExtendE (e1, p, e2) -> (
-      match p with
-      | DotP str ->
-        let r_orig = (
-          match eval_expr env e1 with
-          | FrameV (_, RecordV r) -> r
-          | StoreV s -> !s
-          | RecordV r -> r
-          | v ->
-              string_of_value v
-              |> Printf.sprintf "Not a record: %s"
-              |> failwith)
-        in
-        let r_new = Record.clone r_orig in
-        let field = Record.find str r_new |> value_to_growable_array in
-        let ext = eval_expr env e2 in
-        field := Array.append (!field) [|ext|];
-        Record.replace str (ListV field) r_new;
-        RecordV r_new
-      | _ -> failwith "Not a record field extension")
+  | AccessE (e, p) -> 
+      let base = eval_expr env e in
+      access_path env base p
+  | ExtendE (e1, ps, e2) -> 
+      let v_new = eval_expr env e2 in
+      let rec extend base ps = (
+        match ps with
+        | path :: rest ->
+            let v_new = extend (access_path env base path) rest in
+            replace_path env base path v_new
+        | [] -> 
+            let a = base |> value_to_array in
+            let a_new = Array.copy a in
+            ListV (ref (Array.append a_new [|v_new|])))
+      in
+      let base = eval_expr env e1 in
+      extend base ps
+  | ReplaceE (e1, ps, e2) ->
+      let v_new = eval_expr env e2 in
+      let rec replace base ps = (
+        match ps with
+        | path :: rest ->
+            let v_new = replace (access_path env base path) rest in
+            replace_path env base path v_new
+        | [] -> v_new)
+      in
+      let base = eval_expr env e1 in
+      replace base ps
   | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
@@ -384,6 +372,56 @@ and eval_cond env cond =
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
       )
   | c -> structured_string_of_cond c |> failwith
+
+and access_path env base path = match path with
+  | IndexP e' ->
+      let a = base |> value_to_array in
+      let i = eval_expr env e' |> value_to_int in
+      ( try Array.get a i with Invalid_argument _ -> failwith ("Failed Array.get during ReplaceE") )
+  | SliceP (e1, e2) ->
+      let a = base |> value_to_array in
+      let i1 = eval_expr env e1 |> value_to_int in
+      let i2 = eval_expr env e2 |> value_to_int in
+      let a' = Array.sub a i1 i2 in
+      ListV (ref a')
+  | DotP str -> (
+      match base with
+      | FrameV (_, RecordV r) -> Record.find str r
+      | StoreV s -> Record.find str !s
+      | RecordV r -> Record.find str r
+      | v ->
+          string_of_value v
+          |> Printf.sprintf "Not a record: %s"
+          |> failwith)
+
+and replace_path env base path v_new = match path with
+  | IndexP e' ->
+      let a = base |> value_to_array in
+      let a_new = Array.copy a in
+      let i = eval_expr env e' |> value_to_int in
+      Array.set a_new i v_new;
+      ListV (ref a_new)
+  | SliceP (e1, e2) ->
+      let a = base |> value_to_array in
+      let a_new = Array.copy a in
+      let i1 = eval_expr env e1 |> value_to_int in
+      let i2 = eval_expr env e2 |> value_to_int in
+      Array.blit (v_new |> value_to_array) 0 a_new i1 (i2 - i1 + 1);
+      ListV (ref a_new)
+  | DotP str ->
+      let r = (
+        match base with
+        | FrameV (_, RecordV r) -> r 
+        | StoreV s -> !s 
+        | RecordV r -> r 
+        | v ->
+            string_of_value v
+            |> Printf.sprintf "Not a record: %s"
+            |> failwith)
+      in
+      let r_new = Record.clone r in
+      Record.replace str v_new r_new;
+      RecordV r_new 
 
 and interp_instrs env il =
   (* if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1; *)

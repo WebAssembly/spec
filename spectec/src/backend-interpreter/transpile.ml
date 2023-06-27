@@ -204,9 +204,15 @@ let hide_state_instr = function
   | LetI (NameE (N s, []), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
   (* Append *)
-  | LetI (NameE (N s, []), ExtendE (e1, p, ListE [ e2 ]) )
+  | LetI (NameE (N s, []), ExtendE (e1, ps, ListE [ e2 ]) )
     when String.starts_with ~prefix:"s_" s ->
-      [ AppendI (AccessE (e1, p), e2) ]
+      let rec collect ps = (
+        match ps with
+        | path :: rest -> AccessE (collect rest, path)
+        | [] -> e1)
+      in
+      let e = collect (List.rev ps) in
+      [ AppendI (e, e2) ]
   | i -> [ i ]
 
 let hide_state = function

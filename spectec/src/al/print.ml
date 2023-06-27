@@ -152,8 +152,10 @@ and string_of_expr = function
   | ListE el -> string_of_list string_of_expr "[" ", " "]" el
   | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
-  | ExtendE (e1, p, e2) ->
-      sprintf "%s with %s extended by %s" (string_of_expr e1) (string_of_path p) (string_of_expr e2)
+  | ExtendE (e1, ps, e2) ->
+      sprintf "%s with %s extended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
+  | ReplaceE (e1, ps, e2) ->
+      sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | RecordE r -> string_of_record_expr r
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
@@ -175,6 +177,8 @@ and string_of_path = function
   | SliceP (e1, e2) ->
       sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
   | DotP s -> sprintf ".%s" s
+
+and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 and string_of_cond = function
   | NotC (IsCaseOfC (e, c)) ->
@@ -440,11 +444,19 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_path p
       ^ ")"
-  | ExtendE (e1, p, e2) ->
+  | ExtendE (e1, ps, e2) ->
       "ExtendE ("
       ^ structured_string_of_expr e1
       ^ ", "
-      ^ structured_string_of_path p
+      ^ structured_string_of_paths ps
+      ^ ", "
+      ^ structured_string_of_expr e2
+      ^ ")"
+  | ReplaceE (e1, ps, e2) ->
+      "ReplaceE ("
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_paths ps
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
@@ -488,6 +500,8 @@ and structured_string_of_path = function
         (structured_string_of_expr e1)
         (structured_string_of_expr e2)
   | DotP s -> sprintf "DotP(%s)" s
+
+and structured_string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 (* condition *)
 

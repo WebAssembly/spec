@@ -527,7 +527,7 @@ replace_moduleinst _x0* m
 1. If _x0* is [], then:
   a. Return.
 2. Let [fa] ++ fa'* be _x0*.
-3. Let s_new be YetE (s[FUNC_store[fa].MODULE_funcinst = m]).
+3. Let s_new be s with .FUNC[fa].MODULE replaced by m.
 4. Perform $replace_moduleinst(fa'*, m).
 5. Return.
 
@@ -569,7 +569,7 @@ alloc_module module externval*
   j. Let da* be $alloc_data(data*).
   k. Let m_ex be m_im ++ { FUNC: fa*; GLOBAL: ga*; TABLE: ta*; MEM: ma*; ELEM: ea*; DATA: da*; }.
   l. Let xi* be $alloc_export(m_ex, export)*.
-  m. Let m_res be YetE (m_ex[EXPORT_moduleinst = xi*{xi}]).
+  m. Let m_res be m_ex with .EXPORT replaced by xi*.
   n. Perform $replace_moduleinst(fa*, m_res).
   o. Return m_res.
 

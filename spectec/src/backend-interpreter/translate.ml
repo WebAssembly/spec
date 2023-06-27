@@ -131,10 +131,9 @@ let rec exp2expr exp =
   (* conacatenation of records *)
   | Ast.CompE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
   (* extension of record field *)
-  | Ast.ExtE (base, path, v) -> (
-      match path2expr base path with
-      | AccessE (e, p) -> ExtendE (e, p, exp2expr v)
-      | _ -> failwith "Impossible: path2expr always return AccessE")
+  | Ast.ExtE (base, path, v) -> ExtendE (exp2expr base, path2paths path, exp2expr v)
+  (* update of record field *)
+  | Ast.UpdE (base, path, v) -> ReplaceE (exp2expr base, path2paths path, exp2expr v)
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
@@ -220,16 +219,17 @@ and exp2args exp =
   | Ast.TupE el -> List.map exp2expr el
   | _ -> [ exp2expr exp ]
 
-(* `Ast.exp` -> `Ast.path` -> `expr` *)
-and path2expr exp path =
-  let rec path2expr' path =
+(* `Ast.path` -> `path list` *)
+and path2paths path =
+  let rec path2paths' path = 
     match path.it with
-    | Ast.RootP -> exp
-    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
-    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
-    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
+    | Ast.RootP -> []
+    | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
+    | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ] 
+    | Ast.DotP (p, Atom a) -> (path2paths' p) @ [ DotP a ]
+    | _ -> failwith "unreachable"
   in
-  path2expr' path |> exp2expr
+  path2paths' path
 
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
@@ -808,6 +808,17 @@ let translate_rules il =
   let unified_reduction_groups = List.map Il2il.unify_lhs reduction_groups in
 
   List.map reduction_group2algo unified_reduction_groups
+
+(* `Ast.exp` -> `Ast.path` -> `expr` *)
+let path2expr exp path =
+  let rec path2expr' path =
+    match path.it with
+    | Ast.RootP -> exp
+    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
+    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
+    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
+  in
+  path2expr' path |> exp2expr
 
 let exp2mutating_instr e =
   match e.it with
