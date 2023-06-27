@@ -104,7 +104,7 @@ Conventions:
 
 
 
-.. index:: bit, integer, floating-point, numeric vector
+.. index:: bit, integer, floating-point, numeric vector, packed type, value type
 .. _aux-bits:
 
 Representations
@@ -118,6 +118,8 @@ Numbers and numeric vectors have an underlying binary representation as a sequen
    \bits_{\FN}(z) &=& \fbits_N(z) \\
    \bits_{\VN}(i) &=& \ibits_N(i) \\
    \end{array}
+
+The first case of these applies to representations of both integer :ref:`value types <syntax-valtype>` and :ref:`packed types <syntax-packedtype>`.
 
 Each of these functions is a bijection, hence they are invertible.
 
