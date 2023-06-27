@@ -686,6 +686,169 @@ Reference Instructions
    \end{array}
 
 
+.. _exec-array.fill:
+
+:math:`\ARRAYFILL~\typeidx`
+...........................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x)
+     \quad\stepto\quad \TRAP
+     \\ \qquad
+     (\iff d + n > |S.\SARRAYS[a].\AIFIELDS|)
+   \\[1ex]
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~0)~(\ARRAYFILL~x)
+     \quad\stepto\quad S; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\I32.\CONST~n+1)~(\ARRAYFILL~x)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a)~(\I32.\CONST~d)~\val~(\ARRAYSET~x) \\
+       (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~n)~(\ARRAYFILL~x) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.copy:
+
+:math:`\ARRAYCOPY~\typeidx~\typeidx`
+....................................
+
+.. todo:: Prose
+
+.. todo:: Handle packed fields correctly via array.get_u instead of array.get
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y)
+     \quad\stepto\quad \TRAP
+     \\ \qquad
+     (\iff d + n > |S.\SARRAYS[a_1].\AIFIELDS| \vee s + n > |S.\SARRAYS[a_2].\AIFIELDS|)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYCOPY~x~y)
+     \quad\stepto\quad S; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\ARRAYGET~y) \\
+       (\ARRAYSET~x) \\
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise, \iff d \leq s)
+   \\[1ex]
+   S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
+     \quad\stepto
+     \\ \quad S;
+       \begin{array}[t]{@{}l@{}}
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~(\ARRAYGET~y) \\
+       (\ARRAYSET~x) \\
+       (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
+       \end{array}
+     \\ \qquad
+     (\otherwise, \iff d > s)
+   \\[1ex]
+   S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
+   \\[1ex]
+   S; \val~(\I32.\CONST~d)~(\REFNULL~t)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.init_data:
+
+:math:`\ARRAYINITDATA~\typeidx~\dataidx`
+........................................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
+      \vee & (F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \land
+              s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|))
+     \end{array}
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITDATA~x~y)
+     \quad\stepto\quad S; F; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITDATA~x~y)
+     \quad\stepto
+     \\ \quad S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST i)~(\ARRAYSET~x) \\
+     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+|\X{ft}|)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \\
+     \end{array}
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\otherwise, \iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+      \land & t = \unpacktype(\X{ft}) \\
+      \land & \bytes_{\X{ft}}(i) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice |\X{ft}|]
+     \end{array}
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+
+.. _exec-array.init_elem:
+
+:math:`\ARRAYINITELEM~\typeidx~\elemidx`
+........................................
+
+.. todo:: Prose
+
+.. math::
+   ~\\[-1ex]
+   \begin{array}{l}
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
+     \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & d + n > |S.\SARRAYS[a].\AIFIELDS| \\
+      \vee & s + n > |S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM|)
+     \end{array}
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~0)~(\ARRAYINITELEM~x~y)
+     \quad\stepto\quad S; F; \epsilon
+     \\ \qquad
+     (\otherwise)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYINITELEM~x~y)
+     \quad\stepto
+     \\ \quad S; F;
+     \begin{array}[t]{@{}l@{}}
+     (\REFARRAYADDR~a)~(\I32.\CONST~d)~\REF~(\ARRAYSET~x) \\
+     (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \\
+     \end{array}
+     \\ \qquad
+     (\otherwise, \iff \REF = S.\SELEMS[F.\AMODULE.\MIELEMS[y]].\EIELEM[s])
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITELEM~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+
 .. _exec-extern.externalize:
 
 :math:`\EXTERNEXTERNALIZE`

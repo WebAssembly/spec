@@ -478,6 +478,10 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 .. _syntax-array.get_u:
 .. _syntax-array.set:
 .. _syntax-array.len:
+.. _syntax-array.fill:
+.. _syntax-array.copy:
+.. _syntax-array.init_data:
+.. _syntax-array.init_elem:
 .. _syntax-i31.new:
 .. _syntax-i31.get_s:
 .. _syntax-i31.get_u:
@@ -508,9 +512,13 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \ARRAYNEWDATA~\typeidx~\dataidx \\&&|&
      \ARRAYNEWELEM~\typeidx~\elemidx \\&&|&
      \ARRAYGET~\typeidx \\&&|&
-     \ARRAYGET(\K{\_}\sx~\typeidx \\&&|&
+     \ARRAYGET\K{\_}\sx~\typeidx \\&&|&
      \ARRAYSET~\typeidx \\&&|&
      \ARRAYLEN \\&&|&
+     \ARRAYFILL~\typeidx \\&&|&
+     \ARRAYCOPY~\typeidx~\typeidx \\&&|&
+     \ARRAYINITDATA~\typeidx~\dataidx \\&&|&
+     \ARRAYINITELEM~\typeidx~\elemidx \\&&|&
      \I31NEW \\&&|&
      \I31GET\K{\_}\sx \\&&|&
      \EXTERNINTERNALIZE \\&&|&
@@ -523,10 +531,11 @@ allowing for different sign extension modes in the case of :ref:`packed <syntax-
 
 Similarly, :ref:`arrays <syntax-arraytype>` can be allocated either with an explicit initialization operand or a default value.
 Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
-and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segement, respectively.
-The remaining array instructions access individual slots,
+and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segment, respectively.
+|ARRAYGET|, |ARRAYGETS|, |ARRAYGETU|, and |ARRAYSET| access individual slots,
 again allowing for different sign extension modes in the case of a :ref:`packed <syntax-packedtype>` storage type.
-Last, |ARRAYLEN| produces the length of an array.
+|ARRAYLEN| produces the length of an array.
+|ARRAYFILL| fills a specified slice of an array with a given value and |ARRAYCOPY|, |ARRAYINITDATA|, and |ARRAYINITELEM| copy elements to a specified slice of an array from a given array, data segment, or element segment, respectively.
 
 The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 

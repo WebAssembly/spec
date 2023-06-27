@@ -482,6 +482,10 @@
 .. |ARRAYGETU| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.get\_u}}
 .. |ARRAYSET| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.set}}
 .. |ARRAYLEN| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.len}}
+.. |ARRAYFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.fill}}
+.. |ARRAYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.copy}}
+.. |ARRAYINITDATA| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_data}}
+.. |ARRAYINITELEM| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_elem}}
 
 .. |I31NEW| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.new}}
 .. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get}}

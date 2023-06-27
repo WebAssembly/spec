@@ -195,6 +195,10 @@ Reference Instructions
 .. _text-array.get_u:
 .. _text-array.set:
 .. _text-array.len:
+.. _text-array.fill:
+.. _text-array.copy:
+.. _text-array.init_data:
+.. _text-array.init_elem:
 .. _text-i31.new:
 .. _text-i31.get_s:
 .. _text-i31.get_u:
@@ -229,6 +233,10 @@ Reference Instructions
      \text{array.get\_s}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETS~x \\ &&|&
      \text{array.set}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYSET~x \\ &&|&
      \text{array.len} &\Rightarrow& \ARRAYLEN \\ &&|&
+     \text{array.fill}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYFILL~x \\ &&|&
+     \text{array.copy}~~x{:}\Ttypeidx_I~~y{:}\Ttypeidx_I &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
+     \text{array.init\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \text{array.init\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
      \text{i31.new} &\Rightarrow& \I31NEW \\ &&|&
      \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
      \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
