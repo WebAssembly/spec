@@ -5,6 +5,9 @@ module Record = struct include List
 
   let empty = []
 
+  let clone r =
+    map (fun (k, v) -> (k, v)) r
+
   let keys r =
     map (fun (k, _) -> k) r |> sort String.compare
   

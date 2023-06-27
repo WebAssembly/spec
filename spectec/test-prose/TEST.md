@@ -457,12 +457,12 @@ alloc_global _x0*
 3. Let [global] ++ global'* be _x0*.
 4. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
-  b. Let ga be |$globalinst()|.
-  c. Execute the sequence (instr*).
-  d. Pop val from the stack.
-  e. Let gi be { TYPE: globaltype; VALUE: val; }.
-  f. Let s_new be s with .GLOBAL extended by [gi].
-  g. Let ga'* be $alloc_global(global'*).
+  b. Execute the sequence (instr*).
+  c. Pop val from the stack.
+  d. Let gi be { TYPE: globaltype; VALUE: val; }.
+  e. Let s_new be s with .GLOBAL extended by [gi].
+  f. Let ga'* be $alloc_global(global'*).
+  g. Let ga be |$globalinst()|.
   h. Return [ga] ++ ga'*.
 
 alloc_table _x0*
@@ -502,12 +502,12 @@ alloc_elem _x0*
 3. Let [elem] ++ elem'* be _x0*.
 4. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
-  b. Let ea be |$eleminst()|.
-  c. Execute the sequence (instr**).
-  d. Pop ref* from the stack.
-  e. Let ei be { TYPE: reftype; ELEM: ref*; }.
-  f. Let s_new be s with .ELEM extended by [ei].
-  g. Let ea'* be $alloc_elem(elem'*).
+  b. Execute the sequence (instr**).
+  c. Pop ref* from the stack.
+  d. Let ei be { TYPE: reftype; ELEM: ref*; }.
+  e. Let s_new be s with .ELEM extended by [ei].
+  f. Let ea'* be $alloc_elem(elem'*).
+  g. Let ea be |$eleminst()|.
   h. Return [ea] ++ ea'*.
 
 alloc_data _x0*
