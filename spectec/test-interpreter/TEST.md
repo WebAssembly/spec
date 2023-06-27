@@ -20,6 +20,7 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...

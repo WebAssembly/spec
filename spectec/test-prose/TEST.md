@@ -20,6 +20,7 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 Animation failed:
   if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 == IL Validation...
@@ -456,12 +457,12 @@ alloc_global _x0*
 3. Let [global] ++ global'* be _x0*.
 4. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
-  b. Let ga be |$globalinst()|.
-  c. Execute the sequence (instr*).
-  d. Pop val from the stack.
-  e. Let gi be { TYPE: globaltype; VALUE: val; }.
-  f. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
-  g. Let ga'* be $alloc_global(global'*).
+  b. Execute the sequence (instr*).
+  c. Pop val from the stack.
+  d. Let gi be { TYPE: globaltype; VALUE: val; }.
+  e. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
+  f. Let ga'* be $alloc_global(global'*).
+  g. Let ga be |$globalinst()|.
   h. Return [ga] ++ ga'*.
 
 alloc_table _x0*
@@ -501,12 +502,12 @@ alloc_elem _x0*
 3. Let [elem] ++ elem'* be _x0*.
 4. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
-  b. Let ea be |$eleminst()|.
-  c. Execute the sequence (instr**).
-  d. Pop ref* from the stack.
-  e. Let ei be { TYPE: reftype; ELEM: ref*; }.
-  f. Let s_new be YetE (s[ELEM_store =.. [ei]]).
-  g. Let ea'* be $alloc_elem(elem'*).
+  b. Execute the sequence (instr**).
+  c. Pop ref* from the stack.
+  d. Let ei be { TYPE: reftype; ELEM: ref*; }.
+  e. Let s_new be YetE (s[ELEM_store =.. [ei]]).
+  f. Let ea'* be $alloc_elem(elem'*).
+  g. Let ea be |$eleminst()|.
   h. Return [ea] ++ ea'*.
 
 alloc_data _x0*
@@ -596,10 +597,10 @@ run_elem _x0* i
       i) Return.
   d. If _y0 is defined, then:
     1) Let ?(elemmode) be _y0.
-    2) Let elemmode be DECLARE.
-    3) Execute (ELEM.DROP i).
-    4) Perform $run_elem(elem'*, (i + 1)).
-    5) Return.
+    2) If elemmode is DECLARE, then:
+      a) Execute (ELEM.DROP i).
+      b) Perform $run_elem(elem'*, (i + 1)).
+      c) Return.
 
 run_data _x0* i
 1. Let f be the current frame.

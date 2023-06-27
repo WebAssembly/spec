@@ -163,7 +163,7 @@ exception InvalidGreedy
 
 let count_lhs = function
 | LetPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
-| _ -> raise InvalidGreedy
+| _ -> 1
 
 let rec select_tight_greedy prems acc env = ( match prems with
 | [] -> acc

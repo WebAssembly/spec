@@ -10234,6 +10234,7 @@ Animation failed:
   if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 Animation failed:
   if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
 Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
 
@@ -11826,7 +11827,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- where {MODULE m, CODE func} = $funcinst(z)[a]
     -- where `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}) = func
     -- where |o0*{o0}| = |t*{t}|
-    -- (where ?(o0) = $default_(t))*{t o0}
+    -- (if ($default_(t) = ?(o0)))*{t o0}
     -- where f = {LOCAL val^k{val} :: o0*{o0}, MODULE m}
 
   ;; 6-reduction.watsup:152.1-153.53
@@ -12142,11 +12143,11 @@ def alloc_global : (state, global*) -> (store, globaladdr*)
   ;; 7-module.watsup:51.1-57.60
   def {f : frame, ga : globaladdr, ga'* : globaladdr*, gi : globalinst, global : global, global'* : global*, globaltype : globaltype, instr* : instr*, s : store, s_new : store, s_res : store, val : val} alloc_global(`%;%`(s, f), [global] :: global'*{global'}) = (s_res, [ga] :: ga'*{ga'})
     -- where GLOBAL(globaltype, instr*{instr}) = global
-    -- where ga = |$globalinst(`%;%`(s, f))|
     -- Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), $admininstr_instr(instr)*{instr}), [$admininstr_val(val)])
     -- where gi = {TYPE globaltype, VALUE val}
     -- where s_new = s[GLOBAL_store =.. [gi]]
     -- where (s_res, ga'*{ga'}) = $alloc_global(`%;%`(s_new, f), global'*{global'})
+    -- where ga = |$globalinst(`%;%`(s, f))|
 }
 
 ;; 7-module.watsup:60.1-60.54
@@ -12193,11 +12194,11 @@ def alloc_elem : (state, elem*) -> (store, elemaddr*)
   ;; 7-module.watsup:90.1-96.56
   def {ea : elemaddr, ea'* : elemaddr*, ei : eleminst, elem : elem, elem'* : elem*, elemmode? : elemmode?, f : frame, instr** : instr**, ref* : ref*, reftype : reftype, s : store, s_new : store, s_res : store} alloc_elem(`%;%`(s, f), [elem] :: elem'*{elem'}) = (s_res, [ea] :: ea'*{ea'})
     -- where `ELEM%%*%?`(reftype, instr*{instr}*{instr}, elemmode?{elemmode}) = elem
-    -- where ea = |$eleminst(`%;%`(s, f))|
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f), $admininstr_instr(instr)*{instr}), [$admininstr_ref(ref)]))*{instr ref}
     -- where ei = {TYPE reftype, ELEM ref*{ref}}
     -- where s_new = s[ELEM_store =.. [ei]]
     -- where (s_res, ea'*{ea'}) = $alloc_elem(`%;%`(s_new, f), elem'*{elem'})
+    -- where ea = |$eleminst(`%;%`(s, f))|
 }
 
 ;; 7-module.watsup:99.1-99.51
@@ -12296,7 +12297,7 @@ def run_elem : (state, elem*, idx) -> state
   ;; 7-module.watsup:181.1-185.67
   def {elem : elem, elem'* : elem*, elemmode : elemmode, expr* : expr*, f : frame, f_new : frame, f_res : frame, i : nat, reftype : reftype, s : store, s_new : store, s_res : store} run_elem(`%;%`(s, f), [elem] :: elem'*{elem'}, i) = `%;%`(s_res, f_res)
     -- where `ELEM%%*%?`(reftype, expr*{expr}, ?(elemmode)) = elem
-    -- where elemmode = DECLARE_elemmode
+    -- if (elemmode = DECLARE_elemmode)
     -- Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))
     -- where `%;%`(s_res, f_res) = $run_elem(`%;%`(s_new, f_new), elem'*{elem'}, (i + 1))
 }
