@@ -104,18 +104,19 @@ Conventions:
 
 
 
-.. index:: bit, integer, floating-point
+.. index:: bit, integer, floating-point, numeric vector
 .. _aux-bits:
 
 Representations
 ~~~~~~~~~~~~~~~
 
-Numbers have an underlying binary representation as a sequence of bits:
+Numbers and numeric vectors have an underlying binary representation as a sequence of bits:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bits_{\K{i}N}(i) &=& \ibits_N(i) \\
-   \bits_{\K{f}N}(z) &=& \fbits_N(z) \\
+   \bits_{\IN}(i) &=& \ibits_N(i) \\
+   \bits_{\FN}(z) &=& \fbits_N(z) \\
+   \bits_{\VN}(i) &=& \ibits_N(i) \\
    \end{array}
 
 Each of these functions is a bijection, hence they are invertible.
@@ -163,6 +164,7 @@ where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
 .. index:: numeric vector, shape, lane
 .. _aux-lanes:
+.. _syntax-i128:
 
 Vectors
 .......

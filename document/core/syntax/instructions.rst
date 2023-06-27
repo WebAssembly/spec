@@ -171,7 +171,7 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! vector instruction, numeric vectors, number, value, value type, SIMD
+.. index:: ! vector instruction, numeric vector, number, value, value type, SIMD
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
 .. _syntax-shape:
