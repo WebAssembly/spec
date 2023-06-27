@@ -319,7 +319,7 @@ let handle_context_winstr winstr =
       (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
       [
         (* TODO: append Jump instr *)
-        PopI (exp2expr vals);
+        PopAllI (exp2expr vals);
         insert_assert winstr;
         PopI (NameE (N "the label", []));
       ]
@@ -755,7 +755,13 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   (* name *)
   let name = "execution_of_" ^ instr_name in
   (* params *)
-  let params = get_params winstr |> List.map (find_type tenv) in (* TODO: retieve param for return *)
+  (* TODO: retieve param for return *)
+  let params =
+    if instr_name = "frame" || instr_name = "label"
+    then []
+    else
+      get_params winstr |> List.map (find_type tenv)
+  in
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability in
 

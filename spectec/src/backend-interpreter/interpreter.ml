@@ -565,7 +565,12 @@ and interp_instrs env il =
           with
             ExitContext (env', cont') -> (env', cont'))
       | ExitNormalI _ ->
-          pop_context () |> List.tl |> List.iter push;
+          begin match get_current_context () with
+            | FrameV _ -> call_algo "execution_of_frame" []
+            | LabelV _ -> call_algo "execution_of_label" []
+            | _ -> failwith "Unreachable"
+          end
+          |> ignore;
           (env, cont)
       | ExitAbruptI _ ->
           let vs = pop_context () in
