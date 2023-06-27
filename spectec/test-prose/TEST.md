@@ -441,7 +441,7 @@ alloc_import m _x0* _x1*
 alloc_func _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [func] ++ func'* be _x0*.
 4. Let fi be { MODULE: f.MODULE; CODE: func; }.
 5. Let s_new be YetE (s[FUNC_store =.. [fi]]).
@@ -452,7 +452,7 @@ alloc_func _x0*
 alloc_global _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [global] ++ global'* be _x0*.
 4. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
@@ -467,7 +467,7 @@ alloc_global _x0*
 alloc_table _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [table] ++ table'* be _x0*.
 4. If table is of the case TABLE, then:
   a. Let (TABLE tabletype) be table.
@@ -481,7 +481,7 @@ alloc_table _x0*
 alloc_mem _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [mem] ++ mem'* be _x0*.
 4. If mem is of the case MEMORY, then:
   a. Let (MEMORY memtype) be mem.
@@ -497,7 +497,7 @@ alloc_mem _x0*
 alloc_elem _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [elem] ++ elem'* be _x0*.
 4. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
@@ -512,7 +512,7 @@ alloc_elem _x0*
 alloc_data _x0*
 1. Let f be the current frame.
 2. If _x0* is [], then:
-  a. Return [s, []].
+  a. Return [].
 3. Let [data] ++ data'* be _x0*.
 4. If data is of the case DATA, then:
   a. Let (DATA byte* datamode?) be data.
@@ -524,7 +524,7 @@ alloc_data _x0*
 
 replace_moduleinst _x0* m
 1. If _x0* is [], then:
-  a. Return s.
+  a. Return.
 2. Let [fa] ++ fa'* be _x0*.
 3. Let s_new be YetE (s[FUNC_store[fa].MODULE_funcinst = m]).
 4. Perform $replace_moduleinst(fa'*, m).
@@ -656,7 +656,7 @@ invocation fa val*
   d. Pop val'* from the stack.
   e. Let |valtype'*| be |val'*|.
   f. Let [valtype*]->[valtype'*] be functype.
-  g. Return [s', val'*].
+  g. Return val'*.
 
 execution_of_unreachable
 1. Trap.

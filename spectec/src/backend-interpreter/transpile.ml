@@ -194,6 +194,7 @@ let hide_state_instr = function
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
 
+  | ReturnI (Some (NameE (N "s", []))) -> [ ReturnI None ]
   | ReturnI (Some (NameE (N s, [])))
     when String.starts_with ~prefix:"s_" s -> [ ReturnI None ]
   | LetI (PairE (NameE (N s, []), NameE (N f, [])), AppE (fname, el))
@@ -222,6 +223,8 @@ let hide_state = function
           args
       in
       AppE (f, new_args)
+  | ListE [ NameE (N "s", []); e ]
+  | ListE [ NameE (N "s'", []); e ] -> e
   | ListE [ NameE (N s, []); e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
