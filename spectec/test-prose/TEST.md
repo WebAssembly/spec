@@ -1194,7 +1194,7 @@ execution_of_data.drop x
 
 instantiation module externval*
 1. Let (MODULE _ _ _ _ _ elem* data* start? _) be module.
-2. Let moduleinst be $alloc_module(module, externval*).
+2. Let moduleinst be the result of computing $alloc_module(module, externval*).
 3. Let f be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
 4. Push f to the stack.
 5. For i in range |elem*|:
@@ -1245,17 +1245,17 @@ alloc_module module externval*
     2) Append globaladdr' to the moduleinst.GLOBAL.
 4. Let f_init be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
 5. Push f_init to the stack.
-6. Let funcaddr* be $alloc_func(func)*.
+6. Let funcaddr* be the result of computing $alloc_func(func)*.
 7. Append the sequence funcaddr* to the moduleinst.FUNC.
-8. Let tableaddr* be $alloc_table(table)*.
+8. Let tableaddr* be the result of computing $alloc_table(table)*.
 9. Append the sequence tableaddr* to the moduleinst.TABLE.
-10. Let globaladdr* be $alloc_global(global)*.
+10. Let globaladdr* be the result of computing $alloc_global(global)*.
 11. Append the sequence globaladdr* to the moduleinst.GLOBAL.
-12. Let memoryaddr* be $alloc_memory(memory)*.
+12. Let memoryaddr* be the result of computing $alloc_memory(memory)*.
 13. Append the sequence memoryaddr* to the moduleinst.MEM.
-14. Let elemaddr* be $alloc_elem(elem)*.
+14. Let elemaddr* be the result of computing $alloc_elem(elem)*.
 15. Append the sequence elemaddr* to the moduleinst.ELEM.
-16. Let dataaddr* be $alloc_data(data)*.
+16. Let dataaddr* be the result of computing $alloc_data(data)*.
 17. Append the sequence dataaddr* to the moduleinst.DATA.
 18. Pop f_init from the stack.
 19. For i in range |funcaddr*|:
@@ -1297,7 +1297,7 @@ init_global global
 
 init_elem elem
 1. Let (ELEM _ instr* _) be elem.
-2. Let ref* be $exec_expr(instr)*.
+2. Let ref* be the result of computing $exec_expr(instr)*.
 3. Return ref*.
 
 exec_expr instr*
@@ -1314,9 +1314,10 @@ alloc_func func
 
 alloc_global global
 1. Let a be |s.GLOBAL|.
-2. Let globalinst be { VALUE: $init_global(global); }.
-3. Append globalinst to the s.GLOBAL.
-4. Return a.
+2. Let _r0 be the result of computing $init_global(global).
+3. Let globalinst be { VALUE: _r0; }.
+4. Append globalinst to the s.GLOBAL.
+5. Return a.
 
 alloc_table table
 1. Let (TABLE (n, m?) reftype) be table.
@@ -1328,15 +1329,17 @@ alloc_table table
 alloc_memory memory
 1. Let (MEMORY (min, max?)) be memory.
 2. Let a be |s.MEM|.
-3. Let memoryinst be { TYPE: (I8 (min, max?)); DATA: 0^((min · 64) · $Ki()); }.
-4. Append memoryinst to the s.MEM.
-5. Return a.
+3. Let _r0 be the result of computing $Ki().
+4. Let memoryinst be { TYPE: (I8 (min, max?)); DATA: 0^((min · 64) · _r0); }.
+5. Append memoryinst to the s.MEM.
+6. Return a.
 
 alloc_elem elem
 1. Let a be |s.ELEM|.
-2. Let eleminst be { ELEM: $init_elem(elem); }.
-3. Append eleminst to the s.ELEM.
-4. Return a.
+2. Let _r0 be the result of computing $init_elem(elem).
+3. Let eleminst be { ELEM: _r0; }.
+4. Append eleminst to the s.ELEM.
+5. Return a.
 
 alloc_data data
 1. Let (DATA init _) be data.

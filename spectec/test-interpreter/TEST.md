@@ -29,252 +29,305 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 27/27 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/27 (0.00%)
 
 ===== forward.wast =====
-- 4/4 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/4 (0.00%)
 
 ===== float_misc.wast =====
-- 440/440 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/440 (0.00%)
 
 ===== table_copy.wast =====
-- 1649/1649 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/1649 (0.00%)
 
 ===== ref_null.wast =====
-- 2/2 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/2 (0.00%)
 
 ===== memory.wast =====
-- 45/45 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/45 (0.00%)
 
 ===== unwind.wast =====
-- 49/49 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/49 (0.00%)
 
 ===== call.wast =====
-- 69/70 (98.57%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/70 (0.00%)
 
 ===== local_get.wast =====
-- 19/19 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/19 (0.00%)
 
 ===== fac.wast =====
-- 6/6 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/6 (0.00%)
 
 ===== func.wast =====
-- 96/96 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/96 (0.00%)
 
 ===== exports.wast =====
-- 9/9 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/9 (0.00%)
 
 ===== local_set.wast =====
-- 19/19 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/19 (0.00%)
 
 ===== linking.wast =====
-- 90/90 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/90 (0.00%)
 
 ===== float_literals.wast =====
-- 83/83 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/83 (0.00%)
 
 ===== align.wast =====
-- 48/48 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/48 (0.00%)
 
 ===== if.wast =====
-- 123/123 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/123 (0.00%)
 
 ===== const.wast =====
-- 300/300 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/300 (0.00%)
 
 ===== f64_cmp.wast =====
-- 2400/2400 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/2400 (0.00%)
 
 ===== block.wast =====
-- 52/52 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/52 (0.00%)
 
 ===== labels.wast =====
-- 25/25 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/25 (0.00%)
 
 ===== switch.wast =====
-- 26/26 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/26 (0.00%)
 
 ===== i64.wast =====
-- 384/384 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/384 (0.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4100/4338 (94.51%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/4338 (0.00%)
 
 ===== stack.wast =====
-- 5/5 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/5 (0.00%)
 
 ===== loop.wast =====
-- 77/77 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/77 (0.00%)
 
 ===== conversions.wast =====
-- 593/593 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/593 (0.00%)
 
 ===== endianness.wast =====
-- 68/68 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/68 (0.00%)
 
 ===== return.wast =====
-- 63/63 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/63 (0.00%)
 
 ===== store.wast =====
-- 9/9 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/9 (0.00%)
 
 ===== memory_redundancy.wast =====
-- 4/4 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/4 (0.00%)
 
 ===== i32.wast =====
-- 374/374 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/374 (0.00%)
 
 ===== unreachable.wast =====
-- 63/63 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/63 (0.00%)
 
 ===== bulk.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 7/66 (10.61%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/66 (0.00%)
 
 ===== traps.wast =====
-- 32/32 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/32 (0.00%)
 
 ===== local_tee.wast =====
-- 55/55 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/55 (0.00%)
 
 ===== f64_bitwise.wast =====
-- 360/360 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/360 (0.00%)
 
 ===== memory_grow.wast =====
-- 78/84 (92.86%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/84 (0.00%)
 
 ===== call_indirect.wast =====
-- 128/132 (96.97%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/132 (0.00%)
 
 ===== load.wast =====
-- 37/37 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/37 (0.00%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4/20 (20.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/20 (0.00%)
 
 ===== memory_size.wast =====
-- 36/36 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/36 (0.00%)
 
 ===== imports.wast =====
-- print_i32: 13
-- print_i32_f32: 14 42
-- print_i32: 13
-- print_i32: 13
-- print_f32: 13
-- print_i32: 13
-- print_i64: 24
-- print_f64_f64: 25 53
-- print_i64: 24
-- print_f64: 24
-- print_f64: 24
-- print_f64: 24
-- print_i32: 13
-- 34/34 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/34 (0.00%)
 
 ===== left-to-right.wast =====
-- 95/95 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/95 (0.00%)
 
 ===== ref_is_null.wast =====
-- 11/11 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/11 (0.00%)
 
 ===== memory_trap.wast =====
-- 180/180 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/180 (0.00%)
 
 ===== br_table.wast =====
-- 149/149 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/149 (0.00%)
 
 ===== select.wast =====
-- 118/118 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/118 (0.00%)
 
 ===== f32_bitwise.wast =====
-- 360/360 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/360 (0.00%)
 
 ===== memory_init.wast =====
-- 140/140 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/140 (0.00%)
 
 ===== elem.wast =====
-- 37/37 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/37 (0.00%)
 
 ===== table_get.wast =====
-- 9/9 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/9 (0.00%)
 
 ===== f32.wast =====
-- 2500/2500 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/2500 (0.00%)
 
 ===== start.wast =====
-- print_i32: 1
-- print_i32: 2
-- print: ()
-- 7/7 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/7 (0.00%)
 
 ===== float_exprs.wast =====
-- 794/794 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/794 (0.00%)
 
 ===== float_memory.wast =====
-- 60/60 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/60 (0.00%)
 
 ===== table_size.wast =====
-- 36/36 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/36 (0.00%)
 
 ===== table_set.wast =====
-- 18/18 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/18 (0.00%)
 
 ===== f32_cmp.wast =====
-- 2400/2400 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/2400 (0.00%)
 
 ===== br_if.wast =====
-- 88/88 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/88 (0.00%)
 
 ===== ref_func.wast =====
-- 8/8 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/8 (0.00%)
 
 ===== names.wast =====
-- print_i32: 42
-- print_i32: 123
-- 482/482 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/482 (0.00%)
 
 ===== unreached-valid.wast =====
-- 5/5 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/5 (0.00%)
 
 ===== table_fill.wast =====
-- 35/35 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/35 (0.00%)
 
 ===== data.wast =====
-- 14/14 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/14 (0.00%)
 
 ===== int_literals.wast =====
-- 30/30 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/30 (0.00%)
 
 ===== address.wast =====
-- 255/255 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/255 (0.00%)
 
 ===== table_grow.wast =====
-- 38/38 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/38 (0.00%)
 
 ===== func_ptrs.wast =====
-- print_i32: 83
-- 25/25 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/25 (0.00%)
 
 ===== table_init.wast =====
-- 662/662 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/662 (0.00%)
 
 ===== global.wast =====
-- 58/58 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/58 (0.00%)
 
 ===== int_exprs.wast =====
-- 89/89 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/89 (0.00%)
 
 ===== f64.wast =====
-- 2500/2500 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/2500 (0.00%)
 
 ===== br.wast =====
-- 76/76 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/76 (0.00%)
 
 ===== nop.wast =====
-- 83/83 (100.00%)
+- Uncaught exception: Module Instantiation failed due to TODO: interp_for
+- 0/83 (0.00%)
 
-Total [23454/23778] (98.64%; Normalized 97.51%)
+Total [0/23778] (0.00%; Normalized 0.00%)
 == Complete.
 ```

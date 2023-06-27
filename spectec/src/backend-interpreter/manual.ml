@@ -585,4 +585,4 @@ let manual_algos =
     alloc_elem;
     alloc_data;
     invocation
-  ]
+  ] |> List.map Transpile.app_remover
