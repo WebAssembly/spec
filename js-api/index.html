@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly JavaScript Interface</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
+  <meta content="Bikeshed version 5edf5e459, updated Thu Jun 22 11:28:01 2023 -0700" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="905f42d3e4d03a44614bee85d50cab988d55869d" name="document-revision">
+  <meta content="c674a0b2ee3f0fbaa5f3951d1a07327eaca2bd12" name="document-revision">
 <style>
 emu-const {
     font-family: serif;
@@ -518,33 +518,12 @@ a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
-<style>/* Boilerplate: style-style-syntax-highlighting */
+<style>/* Boilerplate: style-syntax-highlighting */
 
             pre.idl.highlight {
                 background: var(--borderedblock-bg, var(--def-bg));
             }
             
-</style>
-<style>/* Boilerplate: style-style-var-click-highlighting */
-/*
-Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
-D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
-0 = lab(85,0,85)
-1 = lab(85,80,30)
-2 = lab(85,-40,40)
-3 = lab(85,-50,0)
-4 = lab(85,5,15)
-5 = lab(85,-10,-50)
-6 = lab(85,35,-15)
-*/
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
 </style>
 <style>/* Boilerplate: style-syntax-highlighting */
 
@@ -669,12 +648,33 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
 }
 </style>
+<style>/* Boilerplate: style-var-click-highlighting */
+/*
+Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
+D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
+0 = lab(85,0,85)
+1 = lab(85,80,30)
+2 = lab(85,-40,40)
+3 = lab(85,-50,0)
+4 = lab(85,5,15)
+5 = lab(85,-10,-50)
+6 = lab(85,35,-15)
+*/
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-06-14">14 June 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-06-27">27 June 2023</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
