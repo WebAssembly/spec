@@ -253,6 +253,36 @@ and eval_expr env expr =
             |> Printf.sprintf "Not a record: %s"
             |> failwith
       end
+  | ExtendE (e1, p, e2) -> (
+      match p with
+      | DotP str ->
+        let r = (
+          match eval_expr env e1 with
+          | FrameV (_, RecordV r) -> r
+          | StoreV s -> !s
+          | RecordV r -> r
+          | v ->
+              string_of_value v
+              |> Printf.sprintf "Not a record: %s"
+              |> failwith)
+        in
+        let r = 
+          List.fold_left
+          (fun acc k ->
+            let v = Record.find str r in
+            let v = 
+              if k = str then 
+                let v = v |> value_to_growable_array in
+                let ext = eval_expr env e2 in
+                v := Array.append (!v) [|ext|];
+                ListV v
+              else v
+            in
+            Record.add k v acc)
+          Record.empty (Record.keys r) 
+        in
+        RecordV r
+      | _ -> failwith "Not a record field extension")
   | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)

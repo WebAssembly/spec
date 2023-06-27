@@ -152,6 +152,8 @@ and string_of_expr = function
   | ListE el -> string_of_list string_of_expr "[" ", " "]" el
   | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
+  | ExtendE (e1, p, e2) ->
+      sprintf "%s with %s extended by %s" (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | RecordE r -> string_of_record_expr r
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
@@ -436,6 +438,14 @@ let rec structured_string_of_expr = function
       ^ structured_string_of_expr e
       ^ ", "
       ^ structured_string_of_path p
+      ^ ")"
+  | ExtendE (e1, p, e2) ->
+      "ExtendE ("
+      ^ structured_string_of_expr e1
+      ^ ", "
+      ^ structured_string_of_path p
+      ^ ", "
+      ^ structured_string_of_expr e2
       ^ ")"
   | RecordE _ -> "RecordE (TODO)"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"

@@ -130,6 +130,11 @@ let rec exp2expr exp =
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
   | Ast.CompE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
+  (* extension of record field *)
+  | Ast.ExtE (base, path, v) -> (
+      match path2expr base path with
+      | AccessE (e, p) -> ExtendE (e, p, exp2expr v)
+      | _ -> failwith "Impossible: path2expr always return AccessE")
   (* Binary / Unary operation *)
   | Ast.UnE (Ast.MinusOp, inner_exp) -> MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
@@ -214,6 +219,17 @@ and exp2args exp =
   match exp.it with
   | Ast.TupE el -> List.map exp2expr el
   | _ -> [ exp2expr exp ]
+
+(* `Ast.exp` -> `Ast.path` -> `expr` *)
+and path2expr exp path =
+  let rec path2expr' path =
+    match path.it with
+    | Ast.RootP -> exp
+    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
+    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
+    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
+  in
+  path2expr' path |> exp2expr
 
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
@@ -614,17 +630,6 @@ let prems2instrs remain_lhs =
 
 let reduction2instrs remain_lhs (_, rhs, prems, _) =
   prems2instrs remain_lhs prems (rhs2instrs rhs)
-
-(* `Ast.exp` -> `Ast.path` -> `expr` *)
-let path2expr exp path =
-  let rec path2expr' path =
-    match path.it with
-    | Ast.RootP -> exp
-    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
-    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
-    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
-  in
-  path2expr' path |> exp2expr
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec split_context_winstr name stack =

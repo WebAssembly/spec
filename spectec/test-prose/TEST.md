@@ -414,28 +414,28 @@ alloc_import m _x0* _x1*
     1) Let (FUNC functype) be externtype.
     2) If externval is of the case FUNC, then:
       a) Let (FUNC fa) be externval.
-      b) Let m_new be YetE (m[FUNC_moduleinst =.. [fa]]).
+      b) Let m_new be m with .FUNC extended by [fa].
       c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   c. If externtype is of the case GLOBAL, then:
     1) Let (GLOBAL globaltype) be externtype.
     2) If externval is of the case GLOBAL, then:
       a) Let (GLOBAL ga) be externval.
-      b) Let m_new be YetE (m[GLOBAL_moduleinst =.. [ga]]).
+      b) Let m_new be m with .GLOBAL extended by [ga].
       c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   d. If externtype is of the case TABLE, then:
     1) Let (TABLE tabletype) be externtype.
     2) If externval is of the case TABLE, then:
       a) Let (TABLE ta) be externval.
-      b) Let m_new be YetE (m[TABLE_moduleinst =.. [ta]]).
+      b) Let m_new be m with .TABLE extended by [ta].
       c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   e. If externtype is of the case MEM, then:
     1) Let (MEM memtype) be externtype.
     2) If externval is of the case MEM, then:
       a) Let (MEM ma) be externval.
-      b) Let m_new be YetE (m[MEM_moduleinst =.. [ma]]).
+      b) Let m_new be m with .MEM extended by [ma].
       c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
 
@@ -445,7 +445,7 @@ alloc_func _x0*
   a. Return [].
 3. Let [func] ++ func'* be _x0*.
 4. Let fi be { MODULE: f.MODULE; CODE: func; }.
-5. Let s_new be YetE (s[FUNC_store =.. [fi]]).
+5. Let s_new be s with .FUNC extended by [fi].
 6. Let fa'* be $alloc_func(func'*).
 7. Let fa be |$funcinst()|.
 8. Return [fa] ++ fa'*.
@@ -457,12 +457,12 @@ alloc_global _x0*
 3. Let [global] ++ global'* be _x0*.
 4. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
-  b. Execute the sequence (instr*).
-  c. Pop val from the stack.
-  d. Let gi be { TYPE: globaltype; VALUE: val; }.
-  e. Let s_new be YetE (s[GLOBAL_store =.. [gi]]).
-  f. Let ga'* be $alloc_global(global'*).
-  g. Let ga be |$globalinst()|.
+  b. Let ga be |$globalinst()|.
+  c. Execute the sequence (instr*).
+  d. Pop val from the stack.
+  e. Let gi be { TYPE: globaltype; VALUE: val; }.
+  f. Let s_new be s with .GLOBAL extended by [gi].
+  g. Let ga'* be $alloc_global(global'*).
   h. Return [ga] ++ ga'*.
 
 alloc_table _x0*
@@ -474,7 +474,7 @@ alloc_table _x0*
   a. Let (TABLE tabletype) be table.
   b. Let ((i, j?), reftype) be tabletype.
   c. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
-  d. Let s_new be YetE (s[TABLE_store =.. [ti]]).
+  d. Let s_new be s with .TABLE extended by [ti].
   e. Let ta'* be $alloc_table(table'*).
   f. Let ta be |$tableinst()|.
   g. Return [ta] ++ ta'*.
@@ -490,7 +490,7 @@ alloc_mem _x0*
     1) Let (I8 _y0) be memtype.
     2) Let (i, j?) be _y0.
     3) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
-    4) Let s_new be YetE (s[MEM_store =.. [mi]]).
+    4) Let s_new be s with .MEM extended by [mi].
     5) Let ma'* be $alloc_mem(mem'*).
     6) Let ma be |$meminst()|.
     7) Return [ma] ++ ma'*.
@@ -502,12 +502,12 @@ alloc_elem _x0*
 3. Let [elem] ++ elem'* be _x0*.
 4. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
-  b. Execute the sequence (instr**).
-  c. Pop ref* from the stack.
-  d. Let ei be { TYPE: reftype; ELEM: ref*; }.
-  e. Let s_new be YetE (s[ELEM_store =.. [ei]]).
-  f. Let ea'* be $alloc_elem(elem'*).
-  g. Let ea be |$eleminst()|.
+  b. Let ea be |$eleminst()|.
+  c. Execute the sequence (instr**).
+  d. Pop ref* from the stack.
+  e. Let ei be { TYPE: reftype; ELEM: ref*; }.
+  f. Let s_new be s with .ELEM extended by [ei].
+  g. Let ea'* be $alloc_elem(elem'*).
   h. Return [ea] ++ ea'*.
 
 alloc_data _x0*
@@ -518,7 +518,7 @@ alloc_data _x0*
 4. If data is of the case DATA, then:
   a. Let (DATA byte* datamode?) be data.
   b. Let di be { DATA: byte*; }.
-  c. Let s_new be YetE (s[DATA_store =.. [di]]).
+  c. Let s_new be s with .DATA extended by [di].
   d. Let da'* be $alloc_data(data'*).
   e. Let da be |$datainst()|.
   f. Return [da] ++ da'*.

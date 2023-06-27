@@ -41,6 +41,7 @@ let rec walk_expr f e =
   | LengthE e' -> LengthE (new_ e')
   | RecordE r -> RecordE (Record.map new_ r)
   | AccessE (e, p) -> AccessE (new_ e, walk_path f p)
+  | ExtendE (e1, p, e2) -> ExtendE (new_ e1, walk_path f p, new_ e2)
   | ConstructE (s, el) -> ConstructE (s, List.map new_ el)
   | OptE e -> OptE (Option.map new_ e)
   | PairE (e1, e2) -> PairE (new_ e1, new_ e2)

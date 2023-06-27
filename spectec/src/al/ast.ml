@@ -83,6 +83,7 @@ type expr =
   | LengthE of expr
   | RecordE of expr record
   | AccessE of expr * path
+  | ExtendE of expr * path * expr
   | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   | OptE of expr option
   | PairE of expr * expr
