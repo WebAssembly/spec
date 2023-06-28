@@ -407,10 +407,13 @@ let rec eval_cond env cond =
       )
   | c -> structured_string_of_cond c |> failwith
 
-type cont =
-  | MtK
-  | ExecWinstrs of value list * Env.t * instr list * cont
-  | Return of (value -> Env.t)
+type context = Env.t * instr list * action
+and wstack = (value list * context) list
+(* Specifies what to do upon leaving algorithm *)
+and action =
+  | JumpToNextWinstr
+  | ExecuteWinstrs of value list * context
+  | Return of (value -> wstack -> value)
 
 let rec assign lhs rhs env =
   match lhs, rhs with
@@ -458,60 +461,63 @@ let assign_opt lhs_opt rhs env = match lhs_opt with
   | None -> env
   | Some lhs -> assign lhs rhs env
 
-let rec dsl_function_call lhs_opt fname args env il cont =
+let rec dsl_function_call lhs_opt fname args env il cont action =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
       let rhs = Numerics.call_numerics name args in
-      interp_instrs (assign_opt lhs_opt rhs env) il cont
+      interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      call_algo lhs_opt name args env il cont
+      call_algo lhs_opt name args env il cont action
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
       |> failwith
 
-and dsl_function_map lhs_opt fname front_args last_args env il cont =
+and dsl_function_map lhs_opt fname front_args last_args env il cont action =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
       let rhs = listV (List.map (fun arg -> Numerics.call_numerics name (front_args @ [arg])) last_args) in
-      interp_instrs (assign_opt lhs_opt rhs env) il cont
+      interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      map_algo lhs_opt name front_args last_args [] env il cont
+      map_algo lhs_opt name front_args last_args [] env il cont action
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
       |> failwith
 
-and interp_instrs env il (cont: cont) =
-  if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
+and interp_instrs env il cont action =
+  (* if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1; *)
+  (* Printexc.get_callstack 1000 |> Printexc.raw_backtrace_length |> print_int; print_endline ""; *)
   match il with
-  | [] -> continue env cont
+  | [] -> leave_algo cont action
   | i :: icont ->
     (* string_of_stack !stack |> print_endline; *)
     (* structured_string_of_instr 0 i |> print_endline; *)
     (* string_of_instr (ref 0) 0 i |> print_endline; *)
+    let interp il = interp_instrs env il cont action in
+    let interp_with env il = interp_instrs env il cont action in
     ( match i with
     | IfI (c, il1, il2) ->
-        if eval_cond env c then interp_instrs env (il1 @ icont) cont else interp_instrs env (il2 @ icont) cont
+        if eval_cond env c then interp (il1 @ icont) else interp (il2 @ icont)
     | WhileI (c, il) ->
-        if eval_cond env c then interp_instrs env (il @ (i :: icont)) cont else interp_instrs env icont cont
-    | EitherI (il1, _il2) -> (*TODO: Make EitherI cps *)
-        interp_instrs env (il1 @ icont) cont
-    | ForI (e, il) ->
+        if eval_cond env c then interp (il @ (i :: icont)) else interp icont
+    | EitherI (il1, il2) -> (*TODO: Make EitherI cps *)
+        ( try interp (il1 @ icont) with | Exception.OutOfMemory -> interp (il2 @ icont) )
+    | ForI (e, il') ->
         let n = eval_expr env e |> value_to_array |> Array.length in
-        interp_for n il env icont cont
-    | AssertI _ -> interp_instrs env icont cont (* TODO: insert assertion *)
+        interp_for n il' env icont cont action
+    | AssertI _ -> interp icont (* TODO: insert assertion *)
     | PushI e ->
         (match eval_expr env e with
         | ListV vs -> Array.iter push (!vs)
         | v -> push v);
-        interp_instrs env icont cont
+        interp icont
     | PopI e ->
-        let env = (
+        let new_env = (
           match e with
           | IterE (NameE name, ListN n) ->
               let i = Env.find n env |> value_to_int in
@@ -530,7 +536,7 @@ and interp_instrs env il (cont: cont) =
               | NameE name, v -> Env.add name v env
               | _ -> failwith (Printf.sprintf "Invalid pop: %s := %s" (structured_string_of_expr e) (structured_string_of_value h))))
         in
-        interp_instrs env icont cont
+        interp_with new_env icont
     | PopAllI e -> (
       match e with
       | IterE (NameE name, List) ->
@@ -539,38 +545,38 @@ and interp_instrs env il (cont: cont) =
         | h :: _  when not (is_boundary h) -> pop_value (pop () :: acc)
         | _ -> acc in
         let vs = pop_value [] in
-        let env = Env.add name (listV vs) env in
-        interp_instrs env icont cont
+        let new_env = Env.add name (listV vs) env in
+        interp_with new_env icont
       | _ -> failwith ("Invalid pop: Popall " ^ string_of_expr e))
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
-        interp_instrs new_env icont cont
+        interp_with new_env icont
     | CallI (lhs, f, es) ->
         let args = List.map (eval_expr env) es in
-        dsl_function_call (Some lhs) f args env icont cont
+        dsl_function_call (Some lhs) f args env icont cont action
     | MapI (lhs, f, es, _iters) ->
         (* TODO: handle cases where iteratng argument is not the last *)
         let args = List.map (eval_expr env) es in
         let front_args, last_arg = Lib.List.split_last args in
         let last_args = value_to_list last_arg in
-        dsl_function_map (Some lhs) f front_args last_args env icont cont
+        dsl_function_map (Some lhs) f front_args last_args env icont cont action
     | TrapI -> raise Exception.Trap
-    | NopI -> interp_instrs env icont cont
-    | ReturnI None -> continue env cont
-    | ReturnI (Some e) -> return_some (eval_expr env e) cont
+    | NopI -> interp icont
+    | ReturnI None -> leave_algo cont action
+    | ReturnI (Some e) -> return_some (eval_expr env e) cont action
     | PerformI (f, args) ->
         let vs = List.map (eval_expr env) args in
-        dsl_function_call None f vs env icont cont
+        dsl_function_call None f vs env icont cont action
     | ExecuteI e ->
         let winstrs = [eval_expr env e] in
-        execute_wasm_instrs winstrs env icont cont
+        execute_wasm_instrs winstrs env icont cont action false
     | ExecuteSeqI e ->
         let winstrs = eval_expr env e |> value_to_list in
-        execute_wasm_instrs winstrs env icont cont
+        execute_wasm_instrs winstrs env icont cont action false
     | JumpI e ->
         let winstrs = eval_expr env e |> value_to_list in
         let exit = ConstructV ("EXIT_CONTEXT", []) in
-        execute_wasm_instrs (winstrs @ [exit]) env icont cont
+        execute_wasm_instrs (winstrs @ [exit]) env icont cont action true
     | ExitNormalI _ -> failwith "ExitNormalI should be removed"
     | ExitAbruptI _ ->
         let rec pop_while pred =
@@ -581,16 +587,22 @@ and interp_instrs env il (cont: cont) =
         let ctx = List.hd vs in
         vs |> List.tl |> List.iter push;
         ( match ctx with
-        | LabelV _ | FrameV _ -> ( match cont with
-          | ExecWinstrs (_, env', il, k) -> interp_instrs env icont (ExecWinstrs ([], env', il, k))
-          | _ -> failwith "Abruptly exiting inside a helper function is not supported")
+        | LabelV _ -> ( match cont with
+          | (_, ctxt) :: rest ->
+            let new_action = Return (fun _ cont' ->
+              let (env', il', action') = ctxt in
+              interp_instrs env' il' cont' action'
+            ) in
+            interp_instrs env icont rest new_action
+          | _ -> failwith "Cannot abruptly exit: no context")
+        | FrameV _ -> interp_instrs env icont cont action
         | _ -> failwith "Unreachable" )
     | ReplaceI (e1, IndexP e2, e3) ->
         let a = eval_expr env e1 |> value_to_array in
         let i = eval_expr env e2 |> value_to_int in
         let v = eval_expr env e3 in
         Array.set a i v;
-        interp_instrs env icont cont
+        interp icont
     | ReplaceI (e1, SliceP (e2, e3), e4) ->
         let a1 = eval_expr env e1 |> value_to_array in (* dest *)
         let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
@@ -598,7 +610,7 @@ and interp_instrs env il (cont: cont) =
         let a2 = eval_expr env e4 |> value_to_array in (* src *)
         assert (Array.length a2 = i2);
         Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
-        interp_instrs env icont cont
+        interp icont
     | ReplaceI (e1, DotP s, e2) ->
         begin match eval_expr env e1 with
         | RecordV r ->
@@ -606,38 +618,43 @@ and interp_instrs env il (cont: cont) =
             Record.replace s v r
         | _ -> failwith "Not a Record"
         end;
-        interp_instrs env icont cont
+        interp icont
     | AppendI (e1, e2) ->
         let a = eval_expr env e1 |> value_to_growable_array in
         let v = eval_expr env e2 in
         a := Array.append (!a) [|v|];
-        interp_instrs env icont cont
+        interp icont
     | AppendListI (e1, e2) ->
         let a1 = eval_expr env e1 |> value_to_growable_array in
         let a2 = eval_expr env e2 |> value_to_array in
         a1 := Array.append (!a1) a2;
-        interp_instrs env icont cont
+        interp icont
     | i -> "Interpreter is not implemented for the instruction: " ^ structured_string_of_instr 0 i |> failwith)
 
-and interp_for n body env il cont =
+and interp_for n body env il cont action =
   let unrolled = List.init n (fun i ->
     LetI (NameE (N "i"), NumE (Int64.of_int i)) :: body
   ) in
-  interp_instrs env (List.concat unrolled @ il) cont
+  interp_instrs env (List.concat unrolled @ il) cont action
 
-and return_some v cont =
-  match cont with
-  | Return k -> k v
-  | _ -> failwith "Impossible return_some"
+and return_some v cont = function
+| Return f -> f v cont
+| _ -> failwith "Impossible return_some"
 
-and continue env = function
-| MtK -> env
-| Return f -> f (StringV "UNUSED")
-| ExecWinstrs (winstrs, env, il, cont) -> execute_wasm_instrs winstrs env il cont
+and leave_algo cont = function
+| JumpToNextWinstr ->
+    let winstrs, (env, il, action) = List.hd cont in
+    execute_wasm_instrs winstrs env il (List.tl cont) action true
+| Return f -> f (StringV "UNUSED") cont
+| ExecuteWinstrs (winstrs, (env, il, action)) ->
+    execute_wasm_instrs winstrs env il cont action false
 
-and interp_algo algo args cont =
-  let (Algo (_, params, body)) = algo in
+and interp_algo algo args cont action =
+  let (Algo (_name, params, body)) = algo in
   assert (List.length params = List.length args);
+
+  (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
+  (* string_of_stack !stack |> print_endline; *)
 
   let f acc param arg =
     let pattern, _ = param in
@@ -649,7 +666,7 @@ and interp_algo algo args cont =
 
   let init_env = List.fold_left2 f Env.empty params args in
 
-  interp_instrs init_env body cont
+  interp_instrs init_env body cont action
 
 (* Search AL Algorithm *)
 
@@ -657,31 +674,29 @@ and get_algo name = match AlgoMap.find_opt name !algo_map with
   | Some v -> v
   | None -> failwith ("Algorithm " ^ name ^ " not found")
 
-and call_algo lhs_opt name args env il cont =
-  (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
-  (* string_of_stack !stack |> print_endline; *)
+and call_algo lhs_opt name args env il cont action =
   let algo = get_algo name in
-  let k = Return ( fun rhs ->
-    interp_instrs (assign_opt lhs_opt rhs env) il cont
+  let k = Return ( fun rhs cont' ->
+    interp_instrs (assign_opt lhs_opt rhs env) il cont' action
   ) in
-  interp_algo algo args k
+  interp_algo algo args cont k
 
-and map_algo lhs_opt name front_args last_args acc env il cont =
+and map_algo lhs_opt name front_args last_args acc env il cont action =
   let algo = get_algo name in
   match last_args with
   | [] ->
     let rhs = listV (List.rev acc) in
-    interp_instrs (assign_opt lhs_opt rhs env) il cont
+    interp_instrs (assign_opt lhs_opt rhs env) il cont action
   | la :: las ->
-    let k = Return ( fun v ->
-      map_algo lhs_opt name front_args las (v :: acc) env il cont
+    let k = Return ( fun v cont' ->
+      map_algo lhs_opt name front_args las (v :: acc) env il cont' action
     ) in
-    interp_algo algo (front_args @ [la]) k
+    interp_algo algo (front_args @ [la]) cont k
 
 and call_toplevel_algo name args =
-  let result_name = N "result" in
-  let env = call_algo (Some (NameE result_name)) name args Env.empty [] MtK in
-  Env.find result_name env
+  let algo = get_algo name in
+  let k = Return (fun v _ -> v) in
+  interp_algo algo args [] k
 
 and is_builtin = function
   | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
@@ -716,9 +731,9 @@ and call_builtin name =
     print_endline ("- print_f64_f64: " ^ Numerics.num_to_f64_string f64 ^ " " ^ Numerics.num_to_f64_string f64' )
   | _ -> failwith "Impossible"
 
-and execute_wasm_instrs winstrs env il cont =
+and execute_wasm_instrs winstrs env il cont action is_jump =
   match winstrs with
-  | [] -> interp_instrs env il cont
+  | [] -> interp_instrs env il cont action
   | winstr :: rest_winstr ->
     (* Print.string_of_value winstr |> prerr_endline; *)
     (* string_of_stack !stack |> prerr_endline; *)
@@ -726,7 +741,7 @@ and execute_wasm_instrs winstrs env il cont =
     match winstr with
     | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) ->
       push winstr;
-      execute_wasm_instrs rest_winstr env il cont
+      execute_wasm_instrs rest_winstr env il cont action is_jump
     | ConstructV ("EXIT_CONTEXT", _) ->
       let rec pop_while pred =
         let top = pop () in
@@ -744,15 +759,17 @@ and execute_wasm_instrs winstrs env il cont =
           vs |> List.rev |> List.iter push
         | _ -> ()
       ) with _ -> () );
-      execute_wasm_instrs rest_winstr env il cont
+      execute_wasm_instrs rest_winstr env il cont action is_jump
     | ConstructV (name, []) when is_builtin name ->
       call_builtin name;
-      execute_wasm_instrs rest_winstr env il cont
+      execute_wasm_instrs rest_winstr env il cont action is_jump
     | ConstructV (name, args) ->
       let algo_name = ("execution_of_" ^ String.lowercase_ascii name) in
       let algo = get_algo algo_name in
-      let k = ExecWinstrs (rest_winstr, env, il, cont) in
-      interp_algo algo args k
+      if is_jump then
+        interp_algo algo args ((rest_winstr, (env, il, action)) :: cont) JumpToNextWinstr
+      else
+        interp_algo algo args cont (ExecuteWinstrs (rest_winstr, (env, il, action)))
     | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 (* Entry *)
