@@ -122,7 +122,7 @@ let exec_expr =
     "exec_expr",
     [ instr_iter, TopT ],
     [
-      JumpI instr_iter;
+      ExecuteSeqI instr_iter;
       PopI (val_name);
       ReturnI (Some val_name)
     ]
@@ -144,7 +144,7 @@ let init_global =
         ConstructE ("GLOBAL", [ ignore_name; instr_iter ]),
         global_name
       );
-      JumpI instr_iter;
+      ExecuteSeqI instr_iter;
       PopI (val_name);
       ReturnI (Some val_name)
     ]
@@ -264,7 +264,7 @@ let alloc_module =
       ],
       []) in
 
-  let record = 
+  let record =
     Record.empty
     |> Record.add "MODULE" module_inst_init
     |> Record.add "CODE" func'
@@ -381,7 +381,7 @@ let alloc_global =
   let record =
     Record.empty
     (* TODO: type *)
-    |> Record.add "VALUE" (AppE (N "init_global", [ global ])) 
+    |> Record.add "VALUE" (AppE (N "init_global", [ global ]))
   in
 
   (* Algorithm *)

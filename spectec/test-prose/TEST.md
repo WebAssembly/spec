@@ -699,7 +699,6 @@ execution_of_block bt instr*
 5. Push L to the stack.
 6. Push val^k to the stack.
 7. Jump to instr*.
-8. Exit current context.
 
 execution_of_loop bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
@@ -709,7 +708,6 @@ execution_of_loop bt instr*
 5. Push L to the stack.
 6. Push val^k to the stack.
 7. Jump to instr*.
-8. Exit current context.
 
 execution_of_if bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -903,8 +901,6 @@ execution_of_call_addr a
     8) Let L be the label_n{[]}.
     9) Push L to the stack.
     10) Jump to instr*.
-    11) Exit current context.
-    12) Exit current context.
 
 execution_of_ref.func x
 1. Let _r1 be the result of computing $funcaddr().
@@ -1291,7 +1287,7 @@ alloc_module module externval*
 
 init_global global
 1. Let (GLOBAL _ instr*) be global.
-2. Jump to instr*.
+2. Execute the sequence (instr*).
 3. Pop val from the stack.
 4. Return val.
 
@@ -1301,7 +1297,7 @@ init_elem elem
 3. Return ref*.
 
 exec_expr instr*
-1. Jump to instr*.
+1. Execute the sequence (instr*).
 2. Pop val from the stack.
 3. Return val.
 

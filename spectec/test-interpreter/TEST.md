@@ -29,273 +29,250 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/27 (0.00%)
+- 22/27 (81.48%)
 
 ===== forward.wast =====
-- 0/4 (0.00%)
+- 4/4 (100.00%)
 
 ===== float_misc.wast =====
-- 0/440 (0.00%)
+- 440/440 (100.00%)
 
 ===== table_copy.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/1649 (0.00%)
+- 1649/1649 (100.00%)
 
 ===== ref_null.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/2 (0.00%)
+- 2/2 (100.00%)
 
 ===== memory.wast =====
-- 0/45 (0.00%)
+- 45/45 (100.00%)
 
 ===== unwind.wast =====
 - 8/49 (16.33%)
 
 ===== call.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/70 (0.00%)
+- 64/70 (91.43%)
 
 ===== local_get.wast =====
-- 0/19 (0.00%)
+- 15/19 (78.95%)
 
 ===== fac.wast =====
-- 0/6 (0.00%)
+- 2/6 (33.33%)
 
 ===== func.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/96 (0.00%)
+- 52/96 (54.17%)
 
 ===== exports.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/9 (0.00%)
+- 6/9 (66.67%)
 
 ===== local_set.wast =====
-- 0/19 (0.00%)
+- 15/19 (78.95%)
 
 ===== linking.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/90 (0.00%)
+- 90/90 (100.00%)
 
 ===== float_literals.wast =====
-- 0/83 (0.00%)
+- 83/83 (100.00%)
 
 ===== align.wast =====
-- 1/48 (2.08%)
+- 2/48 (4.17%)
 
 ===== if.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/123 (0.00%)
+- 92/123 (74.80%)
 
 ===== const.wast =====
-- 0/300 (0.00%)
+- 300/300 (100.00%)
 
 ===== f64_cmp.wast =====
-- 0/2400 (0.00%)
+- 2400/2400 (100.00%)
 
 ===== block.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/52 (0.00%)
+- 37/52 (71.15%)
 
 ===== labels.wast =====
-- 0/25 (0.00%)
+- 3/25 (12.00%)
 
 ===== switch.wast =====
 - 0/26 (0.00%)
 
 ===== i64.wast =====
-- 10/384 (2.60%)
+- 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/4338 (0.00%)
+- 4099/4338 (94.49%)
 
 ===== stack.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/5 (0.00%)
+- 2/5 (40.00%)
 
 ===== loop.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/77 (0.00%)
+- 34/77 (44.16%)
 
 ===== conversions.wast =====
-- 67/593 (11.30%)
+- 593/593 (100.00%)
 
 ===== endianness.wast =====
-- 0/68 (0.00%)
+- 68/68 (100.00%)
 
 ===== return.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/63 (0.00%)
+- 10/63 (15.87%)
 
 ===== store.wast =====
-- 0/9 (0.00%)
+- 5/9 (55.56%)
 
 ===== memory_redundancy.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/4 (0.00%)
+- 4/4 (100.00%)
 
 ===== i32.wast =====
-- 10/374 (2.67%)
+- 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/63 (0.00%)
+- 61/63 (96.83%)
 
 ===== bulk.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/66 (0.00%)
+- 66/66 (100.00%)
 
 ===== traps.wast =====
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/55 (0.00%)
+- 47/55 (85.45%)
 
 ===== f64_bitwise.wast =====
-- 0/360 (0.00%)
+- 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 6/84 (7.14%)
+- 67/84 (79.76%)
 
 ===== call_indirect.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/132 (0.00%)
+- 126/132 (95.45%)
 
 ===== load.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/37 (0.00%)
+- 31/37 (83.78%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/20 (0.00%)
+- 6/20 (30.00%)
 
 ===== memory_size.wast =====
-- 0/36 (0.00%)
+- 36/36 (100.00%)
 
 ===== imports.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/34 (0.00%)
+- print_i32: 13
+- print_i32_f32: 14 42
+- print_i32: 13
+- print_i32: 13
+- print_f32: 13
+- print_i32: 13
+- print_i64: 24
+- print_f64_f64: 25 53
+- print_i64: 24
+- print_f64: 24
+- print_f64: 24
+- print_f64: 24
+- print_i32: 13
+- 34/34 (100.00%)
 
 ===== left-to-right.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/95 (0.00%)
+- 94/95 (98.95%)
 
 ===== ref_is_null.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/11 (0.00%)
+- 11/11 (100.00%)
 
 ===== memory_trap.wast =====
-- 160/180 (88.89%)
+- 179/180 (99.44%)
 
 ===== br_table.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/149 (0.00%)
+- 2/149 (1.34%)
 
 ===== select.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/118 (0.00%)
+- 107/118 (90.68%)
 
 ===== f32_bitwise.wast =====
-- 0/360 (0.00%)
+- 360/360 (100.00%)
 
 ===== memory_init.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/140 (0.00%)
+- 134/140 (95.71%)
 
 ===== elem.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/37 (0.00%)
+- 37/37 (100.00%)
 
 ===== table_get.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/9 (0.00%)
+- 9/9 (100.00%)
 
 ===== f32.wast =====
-- 0/2500 (0.00%)
+- 2500/2500 (100.00%)
 
 ===== start.wast =====
-- Uncaught exception: Module Instantiation failed due to ExitNormalI should be removed
-- 0/7 (0.00%)
+- print_i32: 1
+- print_i32: 2
+- print: ()
+- 1/7 (14.29%)
 
 ===== float_exprs.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/794 (0.00%)
+- Uncaught exception: Direct invocation failed due to Not_found
+- 322/794 (40.55%)
 
 ===== float_memory.wast =====
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/60 (0.00%)
+- 60/60 (100.00%)
 
 ===== table_size.wast =====
-- 0/36 (0.00%)
+- 36/36 (100.00%)
 
 ===== table_set.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/18 (0.00%)
+- 18/18 (100.00%)
 
 ===== f32_cmp.wast =====
-- 0/2400 (0.00%)
+- 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/88 (0.00%)
+- 12/88 (13.64%)
 
 ===== ref_func.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/8 (0.00%)
+- 8/8 (100.00%)
 
 ===== names.wast =====
 - print_i32: 42
-- 0/482 (0.00%)
+- print_i32: 123
+- 482/482 (100.00%)
 
 ===== unreached-valid.wast =====
 - 5/5 (100.00%)
 
 ===== table_fill.wast =====
-- 3/35 (8.57%)
+- 35/35 (100.00%)
 
 ===== data.wast =====
 - 14/14 (100.00%)
 
 ===== int_literals.wast =====
-- 0/30 (0.00%)
+- 8/30 (26.67%)
 
 ===== address.wast =====
-- 49/255 (19.22%)
+- 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 6/38 (15.79%)
+- 35/38 (92.11%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
-- Uncaught exception: Direct invocation failed due to ExitNormalI should be removed
-- 0/25 (0.00%)
+- 25/25 (100.00%)
 
 ===== table_init.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/662 (0.00%)
+- 662/662 (100.00%)
 
 ===== global.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/58 (0.00%)
+- 52/58 (89.66%)
 
 ===== int_exprs.wast =====
-- 14/89 (15.73%)
+- 89/89 (100.00%)
 
 ===== f64.wast =====
-- 0/2500 (0.00%)
+- 2500/2500 (100.00%)
 
 ===== br.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/76 (0.00%)
+- 2/76 (2.63%)
 
 ===== nop.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/83 (0.00%)
+- 72/83 (86.75%)
 
-Total [385/23778] (1.62%; Normalized 6.54%)
+Total [22296/23778] (93.77%; Normalized 79.16%)
 == Complete.
 ```

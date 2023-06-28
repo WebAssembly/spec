@@ -527,8 +527,7 @@ and interp_instrs env il (cont: cont) =
               | ConstructE ("CONST", [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   assert (eval_expr env tyE = ty);
                   Env.add name v env
-              | NameE name, v
-              | IterE (NameE name, []), v -> Env.add name v env
+              | NameE name, v -> Env.add name v env
               | _ -> failwith (Printf.sprintf "Invalid pop: %s := %s" (structured_string_of_expr e) (structured_string_of_value h))))
         in
         interp_instrs env icont cont
@@ -582,7 +581,7 @@ and interp_instrs env il (cont: cont) =
         let ctx = List.hd vs in
         vs |> List.tl |> List.iter push;
         ( match ctx with
-        | LabelV _ -> ( match cont with
+        | LabelV _ | FrameV _ -> ( match cont with
           | ExecWinstrs (_, env, il, k) -> interp_instrs env icont (ExecWinstrs ([], env, il, k))
           | _ -> failwith "Abruptly exiting inside a helper function is not supported")
         | _ -> failwith "Unreachable" )

@@ -120,7 +120,7 @@ let rec exp2expr exp =
       let name = exp2name inner_exp in
       assert (name = N id.it);
       IterE (IterE (NameE name, iter2iter inner_iter), iter2iter iter)
-  | Ast.IterE ({ it = Ast.TupE inner_exps; _ }, (Ast.Opt, inner_ids)) -> 
+  | Ast.IterE ({ it = Ast.TupE inner_exps; _ }, (Ast.Opt, inner_ids)) ->
       let inner_names = List.map exp2name inner_exps in
       assert (List.length inner_names = List.length inner_ids);
       List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
@@ -226,11 +226,11 @@ and exp2args exp =
 
 (* `Ast.path` -> `path list` *)
 and path2paths path =
-  let rec path2paths' path = 
+  let rec path2paths' path =
     match path.it with
     | Ast.RootP -> []
     | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
-    | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ] 
+    | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
     | Ast.DotP (p, Atom a) -> (path2paths' p) @ [ DotP a ]
     | _ -> failwith "unreachable"
   in
@@ -387,8 +387,7 @@ let rec rhs2instrs exp =
         PushI
           (FrameE (NameE (N arity.it), NameE (N fname.it)))
       in
-      let exit_instr = ExitNormalI (N fname.it) in
-      (push_instr :: rhs2instrs labelexp) @ [ exit_instr ]
+      push_instr :: rhs2instrs labelexp
   (* TODO: Label *)
   | Ast.CaseE
       ( Atom "LABEL_",
@@ -408,14 +407,12 @@ let rec rhs2instrs exp =
             PushI (NameE (N "L"));
             PushI (exp2expr valexp);
             JumpI (exp2expr instrsexp);
-            ExitNormalI (N "L");
           ]
       | _ ->
           [
             LetI (NameE (N "L"), label_expr);
             PushI (NameE (N "L"));
             JumpI (exp2expr instrs_exp2);
-            ExitNormalI (N "L");
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
@@ -632,7 +629,7 @@ let prems2instrs remain_lhs =
                 PopI (IterE (NameE name, List))
             | ListE [ IterE (NameE name, iter) ] when name = N ref.it ->
                 PopI (IterE (IterE (NameE name, iter), List))
-            | _ -> 
+            | _ ->
                 failwith "Invalid IterPr"
           in
           [ lhs_instr; rhs_instr ] @ instrs
