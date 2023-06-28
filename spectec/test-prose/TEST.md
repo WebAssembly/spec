@@ -527,7 +527,7 @@ replace_moduleinst _x0* m
 1. If _x0* is [], then:
   a. Return.
 2. Let [fa] ++ fa'* be _x0*.
-3. Let s_new be s with .FUNC[fa].MODULE replaced by m.
+3. Replace s.FUNC[fa].MODULE with m.
 4. Perform $replace_moduleinst(fa'*, m).
 5. Return.
 

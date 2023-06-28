@@ -186,6 +186,10 @@ let enhance_readability instrs =
   |> List.concat_map unify_if_tail
 
 (** Walker-based Translpiler **)
+let rec mk_access ps base =
+  match ps with
+  | h :: t -> AccessE (base, h) |> mk_access t
+  | [] -> base
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_instr = function
@@ -204,15 +208,16 @@ let hide_state_instr = function
   | LetI (NameE (N s, []), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
   (* Append *)
-  | LetI (NameE (N s, []), ExtendE (e1, ps, ListE [ e2 ]) )
+  | LetI (NameE (N s, []), ExtendE (e1, ps, ListE [ e2 ]))
     when String.starts_with ~prefix:"s_" s ->
-      let rec collect ps = (
-        match ps with
-        | path :: rest -> AccessE (collect rest, path)
-        | [] -> e1)
-      in
-      let e = collect (List.rev ps) in
-      [ AppendI (e, e2) ]
+      [ AppendI (mk_access ps e1, e2) ]
+  (* Replace *)
+  | LetI (NameE (N s, []), ReplaceE (e1, ps, e2))
+    when String.starts_with ~prefix:"s_" s ->
+      begin match List.rev ps with
+      | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
+      | _ -> failwith "Invalid replace"
+      end
   | i -> [ i ]
 
 let hide_state = function
