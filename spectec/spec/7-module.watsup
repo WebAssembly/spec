@@ -63,7 +63,7 @@ def $alloc_table((s; f), epsilon) = (s, epsilon)
 
 def $alloc_table((s; f), table table'*) = (s_res, ta ta'*)
   -- if table = TABLE tabletype
-  -- if tabletype = `[i .. j?] reftype
+  -- if tabletype = `[i .. j] reftype
   -- if ti = { TYPE tabletype, ELEM (REF.NULL reftype)^i }
   -- if ta = |$tableinst((s; f))|
   -- if s_new = s[.TABLE =.. ti]
@@ -76,7 +76,7 @@ def $alloc_mem((s; f), epsilon) = (s, epsilon)
 
 def $alloc_mem((s; f), mem mem'*) = (s_res, ma ma'*)
   -- if mem = MEMORY memtype
-  -- if memtype = `[i .. j?] I8
+  -- if memtype = `[i .. j] I8
   -- if mi = { TYPE memtype, DATA 0^(i * 64 * $Ki()) }
   -- if ma = |$meminst((s; f))|
   -- if s_new = s[.MEM =.. mi]
