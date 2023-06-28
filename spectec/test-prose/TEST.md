@@ -595,9 +595,7 @@ run_elem _x0* i
       g) Execute (ELEM.DROP i).
       h) Perform $run_elem(elem'*, (i + 1)).
       i) Return.
-  d. If _y0 is defined, then:
-    1) Let ?(elemmode) be _y0.
-    2) If elemmode is DECLARE, then:
+    3) If elemmode is DECLARE, then:
       a) Execute (ELEM.DROP i).
       b) Perform $run_elem(elem'*, (i + 1)).
       c) Return.

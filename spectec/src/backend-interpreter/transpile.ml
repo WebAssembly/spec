@@ -105,7 +105,8 @@ let rec unify_if instrs =
         when c1 = c2 ->
           (* Assumption: common should have no side effect (replace) *)
           let common, own_body1, own_body2 = unify_head [] body1 body2 in
-          IfI (c1, common @ own_body1 @ own_body2, []) :: rest
+          let body = unify_if (common @ own_body1 @ own_body2) in
+          IfI (c1, body, []) :: rest
       | _ -> new_i :: il)
     instrs []
 
