@@ -51,7 +51,8 @@ let rec walk_expr f e =
   | FrameE (e1, e2) -> FrameE (new_ e1, new_ e2)
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
-  | NameE (n, iters) -> NameE (n, iters)
+  | NameE n -> NameE n 
+  | IterE (e, iters) -> IterE (new_ e, iters)
   | YetE _ -> e )
   |> post
 

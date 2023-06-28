@@ -232,7 +232,7 @@ validation_of_data.drop x
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type []->[].
 
-validation_of_load nt YetE ((n, sx)?{n sx}) n_A n_O
+validation_of_load nt [n, sx]? n_A n_O
 - |C.MEM| must be greater than 0.
 - (sx? is ?()) and (n? is ?()) are equivalent.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).

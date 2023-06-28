@@ -160,7 +160,8 @@ and string_of_expr = function
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | NameE (n, iters) -> string_of_name n ^ string_of_iters iters
+  | NameE n -> string_of_name n
+  | IterE (e, iters) -> string_of_expr e ^ string_of_iters iters
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
@@ -468,9 +469,10 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | NameE (n, iters) ->
-      "NameE ("
-      ^ structured_string_of_name n
+  | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
+  | IterE (e, iters) ->
+      "IterE ("
+      ^ structured_string_of_expr e
       ^
       ", "
       ^ string_of_iters iters

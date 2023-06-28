@@ -98,7 +98,8 @@ type expr =
   | GetCurContextE
   | ContE of expr
   (* Name *)
-  | NameE of name * iter list
+  | NameE of name
+  | IterE of expr * iter list
   (* Yet *)
   | YetE of string
 
@@ -154,4 +155,4 @@ type algorithm = Algo of string * (expr * al_type) list * instr list
 (* Smart Constructor *)
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
-let id str = NameE (N str, [])
+let id str = NameE (N str)
