@@ -233,17 +233,17 @@ let rec eval_expr env expr =
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
   | RecordE r -> RecordV (Record.map (fun e -> eval_expr env e) r)
-  | AccessE (e, p) -> 
+  | AccessE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
-  | ExtendE (e1, ps, e2) -> 
+  | ExtendE (e1, ps, e2) ->
       let v_new = eval_expr env e2 in
       let rec extend base ps = (
         match ps with
         | path :: rest ->
             let v_new = extend (access_path env base path) rest in
             replace_path env base path v_new
-        | [] -> 
+        | [] ->
             let a = base |> value_to_array in
             let a_new = Array.copy a in
             ListV (ref (Array.append a_new [|v_new|])))
@@ -332,9 +332,9 @@ and replace_path env base path v_new = match path with
   | DotP str ->
       let r = (
         match base with
-        | FrameV (_, RecordV r) -> r 
-        | StoreV s -> !s 
-        | RecordV r -> r 
+        | FrameV (_, RecordV r) -> r
+        | StoreV s -> !s
+        | RecordV r -> r
         | v ->
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
@@ -342,7 +342,7 @@ and replace_path env base path v_new = match path with
       in
       let r_new = Record.clone r in
       Record.replace str v_new r_new;
-      RecordV r_new 
+      RecordV r_new
 
 let rec eval_cond env cond =
   match cond with
@@ -408,14 +408,15 @@ let rec eval_cond env cond =
   | c -> structured_string_of_cond c |> failwith
 
 type cont =
-  | DoReturn of Env.t * expr option * instr list
-  | ExecWinstrs of value list
+  | MtK
+  | ExecWinstrs of value list * Env.t * instr list * cont
+  | Return of (value -> Env.t)
 
 let rec assign lhs rhs env =
   match lhs, rhs with
   | IterE (NameE name, ListN n), ListV vs ->
       env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length !vs)))
-  | NameE name, v 
+  | NameE name, v
   | IterE (NameE name, _), v ->
       Env.add name v env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
@@ -453,46 +454,62 @@ let rec assign lhs rhs env =
         (string_of_expr e) (string_of_value v)
       |> failwith
 
-let rec dsl_function_call lhs_opt fname args env il conts =
+let assign_opt lhs_opt rhs env = match lhs_opt with
+  | None -> env
+  | Some lhs -> assign lhs rhs env
+
+let rec dsl_function_call lhs_opt fname args env il cont =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
       let rhs = Numerics.call_numerics name args in
-      ( match lhs_opt with
-      | None -> interp_instrs env il conts
-      | Some lhs -> interp_instrs (assign lhs rhs env) il conts )
+      interp_instrs (assign_opt lhs_opt rhs env) il cont
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      call_algo lhs_opt name args env il conts
+      call_algo lhs_opt name args env il cont
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
       |> failwith
 
-and interp_instrs env il conts =
-  if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1;
+and dsl_function_map lhs_opt fname front_args last_args env il cont =
+  match fname with
+  (* Numerics *)
+  | N name when Numerics.mem name ->
+      let rhs = listV (List.map (fun arg -> Numerics.call_numerics name (front_args @ [arg])) last_args) in
+      interp_instrs (assign_opt lhs_opt rhs env) il cont
+  (* Module & Runtime *)
+  | N name when AlgoMap.mem name !algo_map ->
+      map_algo lhs_opt name front_args last_args [] env il cont
+  | n ->
+      string_of_name n
+      |> Printf.sprintf "Invalid DSL function call: %s"
+      |> failwith
+
+and interp_instrs env il (cont: cont) =
+  (* if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1; *)
   match il with
-  | [] -> continue conts
-  | i :: cont ->
+  | [] -> continue env cont
+  | i :: icont ->
     (* string_of_stack !stack |> print_endline; *)
     (* structured_string_of_instr 0 i |> print_endline; *)
     (* string_of_instr (ref 0) 0 i |> print_endline; *)
     ( match i with
     | IfI (c, il1, il2) ->
-        if eval_cond env c then interp_instrs env (il1 @ cont) conts else interp_instrs env (il2 @ cont) conts
+        if eval_cond env c then interp_instrs env (il1 @ icont) cont else interp_instrs env (il2 @ icont) cont
     | WhileI (c, il) ->
-        if eval_cond env c then interp_instrs env (il @ (i :: cont)) conts else interp_instrs env cont conts
+        if eval_cond env c then interp_instrs env (il @ (i :: icont)) cont else interp_instrs env icont cont
     | EitherI (il1, _il2) -> (*TODO: Make EitherI cps *)
-        interp_instrs env (il1 @ cont) conts
+        interp_instrs env (il1 @ icont) cont
     | ForI (e, il) ->
         let n = eval_expr env e |> value_to_array |> Array.length in
-        interp_for 0 n il env cont conts
-    | AssertI _ -> interp_instrs env cont conts (* TODO: insert assertion *)
+        interp_for n il env icont cont
+    | AssertI _ -> interp_instrs env icont cont (* TODO: insert assertion *)
     | PushI e ->
         (match eval_expr env e with
         | ListV vs -> Array.iter push (!vs)
         | v -> push v);
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | PopI e ->
         let env = (
           match e with
@@ -510,10 +527,11 @@ and interp_instrs env il conts =
               | ConstructE ("CONST", [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   assert (eval_expr env tyE = ty);
                   Env.add name v env
-              | NameE name, v -> Env.add name v env
+              | NameE name, v
+              | IterE (NameE name, []), v -> Env.add name v env
               | _ -> failwith (Printf.sprintf "Invalid pop: %s := %s" (structured_string_of_expr e) (structured_string_of_value h))))
         in
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | PopAllI e -> (
       match e with
       | IterE (NameE name, List) ->
@@ -523,41 +541,38 @@ and interp_instrs env il conts =
         | _ -> acc in
         let vs = pop_value [] in
         let env = Env.add name (listV vs) env in
-        interp_instrs env cont conts
+        interp_instrs env icont cont
       | _ -> failwith ("Invalid pop: Popall " ^ string_of_expr e))
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
-        interp_instrs new_env cont conts
-    | CallI (lhs, f, args) ->
-        let vs = List.map (eval_expr env) args in
-        dsl_function_call (Some lhs) f vs env cont conts
-    | MapI (_lhs, _f, _args, _iters) -> failwith "TODO: MapI"
+        interp_instrs new_env icont cont
+    | CallI (lhs, f, es) ->
+        let args = List.map (eval_expr env) es in
+        dsl_function_call (Some lhs) f args env icont cont
+    | MapI (lhs, f, es, _iters) ->
+        (* TODO: handle cases where iteratng argument is not the last *)
+        let args = List.map (eval_expr env) es in
+        let front_args, last_arg = Lib.List.split_last args in
+        let last_args = value_to_list last_arg in
+        dsl_function_map (Some lhs) f front_args last_args env icont cont
     | TrapI -> raise Exception.Trap
-    | NopI -> interp_instrs env cont conts
-    | ReturnI None -> return_none conts
-    | ReturnI (Some e) -> return_some (eval_expr env e) conts
+    | NopI -> interp_instrs env icont cont
+    | ReturnI None -> continue env cont
+    | ReturnI (Some e) -> return_some (eval_expr env e) cont
     | PerformI (f, args) ->
         let vs = List.map (eval_expr env) args in
-        dsl_function_call None f vs env cont conts
+        dsl_function_call None f vs env icont cont
     | ExecuteI e ->
         let winstrs = [eval_expr env e] in
-        execute_wasm_instrs winstrs env cont conts
+        execute_wasm_instrs winstrs env icont cont
     | ExecuteSeqI e ->
         let winstrs = eval_expr env e |> value_to_list in
-        execute_wasm_instrs winstrs env cont conts
+        execute_wasm_instrs winstrs env icont cont
     | JumpI e ->
         let winstrs = eval_expr env e |> value_to_list in
         let exit = ConstructV ("EXIT_CONTEXT", []) in
-        execute_wasm_instrs (winstrs @ [exit]) env cont conts
-    | ExitNormalI _ ->
-        let rec pop_while pred =
-          let top = pop () in
-          if pred top then top :: pop_while pred else []
-        in
-        (* TODO: When Labels and Frames are expressed with ConstructV, the predicate should be changed accordingly *)
-        let vs = pop_while (function ConstructV _ -> true | _ -> false) in
-        vs |> List.rev |> List.iter push;
-        interp_instrs env cont conts
+        execute_wasm_instrs (winstrs @ [exit]) env icont cont
+    | ExitNormalI _ -> failwith "ExitNormalI should be removed"
     | ExitAbruptI _ ->
         let rec pop_while pred =
           let top = pop () in
@@ -566,17 +581,17 @@ and interp_instrs env il conts =
         let vs = pop_while (function ConstructV _ -> true | _ -> false) |> List.rev in
         let ctx = List.hd vs in
         vs |> List.tl |> List.iter push;
-        (match ctx with
-        | LabelV _ ->
-          assert (List.length conts > 0);
-          interp_instrs env cont (List.tl conts)
-        | _ -> interp_instrs env cont conts);
+        ( match ctx with
+        | LabelV _ -> ( match cont with
+          | ExecWinstrs (_, env, il, k) -> interp_instrs env icont (ExecWinstrs ([], env, il, k))
+          | _ -> failwith "Abruptly exiting inside a helper function is not supported")
+        | _ -> failwith "Unreachable" )
     | ReplaceI (e1, IndexP e2, e3) ->
         let a = eval_expr env e1 |> value_to_array in
         let i = eval_expr env e2 |> value_to_int in
         let v = eval_expr env e3 in
         Array.set a i v;
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | ReplaceI (e1, SliceP (e2, e3), e4) ->
         let a1 = eval_expr env e1 |> value_to_array in (* dest *)
         let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
@@ -584,7 +599,7 @@ and interp_instrs env il conts =
         let a2 = eval_expr env e4 |> value_to_array in (* src *)
         assert (Array.length a2 = i2);
         Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | ReplaceI (e1, DotP s, e2) ->
         begin match eval_expr env e1 with
         | RecordV r ->
@@ -592,37 +607,36 @@ and interp_instrs env il conts =
             Record.replace s v r
         | _ -> failwith "Not a Record"
         end;
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | AppendI (e1, e2) ->
         let a = eval_expr env e1 |> value_to_growable_array in
         let v = eval_expr env e2 in
         a := Array.append (!a) [|v|];
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | AppendListI (e1, e2) ->
         let a1 = eval_expr env e1 |> value_to_growable_array in
         let a2 = eval_expr env e2 |> value_to_array in
         a1 := Array.append (!a1) a2;
-        interp_instrs env cont conts
+        interp_instrs env icont cont
     | i -> "Interpreter is not implemented for the instruction: " ^ structured_string_of_instr 0 i |> failwith)
 
-and interp_for _ = failwith "TODO: interp_for"
-        (*
-        (match eval_expr env (LengthE e) with
-          | NumV n ->
-              let n = Int64.to_int n in
-              for i = 0 to n - 1 do
-                let new_env = Env.add (N "i") (NumV (Int64.of_int i)) env in
-                interp_instrs new_env il |> ignore
-              done;
-              (env, cont)
-          | _ -> failwith "Unreachable")
-        *)
-and return_none _ = failwith "TODO: return_none"
-and return_some _ = failwith "TODO: return_some"
-and continue _ = failwith "TODO: continue"
-and return _ = failwith "TODO: return"
+and interp_for n body env il cont =
+  let unrolled = List.init n (fun i ->
+    LetI (NameE (N "i"), NumE (Int64.of_int i)) :: body
+  ) in
+  interp_instrs env (List.concat unrolled @ il) cont
 
-and interp_algo algo args conts =
+and return_some v cont =
+  match cont with
+  | Return k -> k v
+  | _ -> failwith "Impossible return_some"
+
+and continue env = function
+| MtK -> env
+| Return f -> f (StringV "UNUSED")
+| ExecWinstrs (winstrs, env, il, cont) -> execute_wasm_instrs winstrs env il cont
+
+and interp_algo algo args cont =
   let (Algo (_, params, body)) = algo in
   assert (List.length params = List.length args);
 
@@ -636,23 +650,38 @@ and interp_algo algo args conts =
 
   let init_env = List.fold_left2 f Env.empty params args in
 
-  interp_instrs init_env body conts
+  interp_instrs init_env body cont
 
 (* Search AL Algorithm *)
 
-and call_algo lhs_opt name args env il conts =
+and get_algo name = match AlgoMap.find_opt name !algo_map with
+  | Some v -> v
+  | None -> failwith ("Algorithm " ^ name ^ " not found")
+
+and call_algo lhs_opt name args env il cont =
   (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
   (* string_of_stack !stack |> print_endline; *)
-  let algo =
-    match AlgoMap.find_opt name !algo_map with
-      | Some v -> v
-      | None -> failwith ("Algorithm " ^ name ^ " not found")
-  in
-  interp_algo algo args (DoReturn (env, lhs_opt, il) :: conts)
+  let algo = get_algo name in
+  let k = Return ( fun rhs ->
+    interp_instrs (assign_opt lhs_opt rhs env) il cont
+  ) in
+  interp_algo algo args k
+
+and map_algo lhs_opt name front_args last_args acc env il cont =
+  let algo = get_algo name in
+  match last_args with
+  | [] ->
+    let rhs = listV (List.rev acc) in
+    interp_instrs (assign_opt lhs_opt rhs env) il cont
+  | la :: las ->
+    let k = Return ( fun v ->
+      map_algo lhs_opt name front_args las (v :: acc) env il cont
+    ) in
+    interp_algo algo (front_args @ [la]) k
 
 and call_toplevel_algo name args =
   let result_name = N "result" in
-  let env = call_algo (Some (NameE result_name)) name args Env.empty [] [] in
+  let env = call_algo (Some (NameE result_name)) name args Env.empty [] MtK in
   Env.find result_name env
 
 and is_builtin = function
@@ -688,9 +717,9 @@ and call_builtin name =
     print_endline ("- print_f64_f64: " ^ Numerics.num_to_f64_string f64 ^ " " ^ Numerics.num_to_f64_string f64' )
   | _ -> failwith "Impossible"
 
-and execute_wasm_instrs winstrs env il conts =
+and execute_wasm_instrs winstrs env il cont =
   match winstrs with
-  | [] -> interp_instrs env il conts
+  | [] -> interp_instrs env il cont
   | winstr :: rest_winstr ->
     (* Print.string_of_value winstr |> prerr_endline; *)
     (* string_of_stack !stack |> prerr_endline; *)
@@ -698,7 +727,7 @@ and execute_wasm_instrs winstrs env il conts =
     match winstr with
     | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) ->
       push winstr;
-      execute_wasm_instrs rest_winstr env il conts
+      execute_wasm_instrs rest_winstr env il cont
     | ConstructV ("EXIT_CONTEXT", _) ->
       let rec pop_while pred =
         let top = pop () in
@@ -707,13 +736,24 @@ and execute_wasm_instrs winstrs env il conts =
       (* TODO: When Labels and Frames are expressed with ConstructV, the predicate should be changed accordingly *)
       let vs = pop_while (function ConstructV _ -> true | _ -> false) in
       vs |> List.rev |> List.iter push;
-      execute_wasm_instrs rest_winstr env il conts
+      (* If currently in frame, pop again *)
+      ( try (
+        let ctx = get_current_context() in
+        match ctx with
+        | FrameV _ ->
+          let vs = pop_while (function FrameV _ -> false | _ -> true) in
+          vs |> List.rev |> List.iter push
+        | _ -> ()
+      ) with _ -> () );
+      execute_wasm_instrs rest_winstr env il cont
     | ConstructV (name, []) when is_builtin name ->
       call_builtin name;
-      execute_wasm_instrs rest_winstr env il conts
+      execute_wasm_instrs rest_winstr env il cont
     | ConstructV (name, args) ->
       let algo_name = ("execution_of_" ^ String.lowercase_ascii name) in
-      call_algo None algo_name args env il conts
+      let algo = get_algo algo_name in
+      let k = ExecWinstrs (rest_winstr, env, il, cont) in
+      interp_algo algo args k
     | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 (* Entry *)
