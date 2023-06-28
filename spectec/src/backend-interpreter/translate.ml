@@ -108,27 +108,27 @@ let rec exp2expr exp =
       AccessE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
-  | Ast.VarE id -> IterE (NameE (N id.it), [])
+  | Ast.VarE id -> NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
       MapE (N id.it, exp2args inner_exp, [iter2iter iter])
   | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
     when id.it = id'.it -> (* TODO: Somehow remove this hack *)
       let name = N id.it in
-      IterE (NameE name, [iter2iter iter])
+      IterE (NameE name, iter2iter iter)
   | Ast.IterE ({ it = Ast.IterE (inner_exp, (inner_iter, [ inner_id ])); _ }, (iter, [ id ])) when id.it = inner_id.it ->
       let name = exp2name inner_exp in
       assert (name = N id.it);
-      IterE (NameE name, [iter2iter inner_iter; iter2iter iter])
+      IterE (IterE (NameE name, iter2iter inner_iter), iter2iter iter)
   | Ast.IterE ({ it = Ast.TupE inner_exps; _ }, (Ast.Opt, inner_ids)) -> 
       let inner_names = List.map exp2name inner_exps in
       assert (List.length inner_names = List.length inner_ids);
       List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
-      IterE (ListE (List.map exp2expr inner_exps), [ Opt ])
+      IterE (ListE (List.map exp2expr inner_exps), Opt)
   | Ast.IterE (inner_exp, (iter, [ id ])) ->
       let name = exp2name inner_exp in
       assert (name = N id.it);
-      IterE (NameE name, [iter2iter iter])
+      IterE (NameE name, iter2iter iter)
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
@@ -192,7 +192,7 @@ let rec exp2expr exp =
           PairE (ConstructE ("MUT", []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          PairE (IterE (NameE (N "mut"), [ Opt ]), exp2expr t)
+          PairE (IterE (NameE (N "mut"), Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
           ConstructE ("MODULE", List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
@@ -289,9 +289,9 @@ let handle_context_winstr winstr =
         }) ->
       let let_instrs =
         [
-          LetI (IterE (NameE (N name.it), []), GetCurFrameE);
+          LetI (NameE (N name.it), GetCurFrameE);
           LetI
-            (IterE (NameE (N arity.it), []), ArityE (IterE (NameE (N name.it), [])));
+            (NameE (N arity.it), ArityE (NameE (N name.it)));
         ]
       in
       let pop_instrs =
@@ -309,14 +309,14 @@ let handle_context_winstr winstr =
               WhileI
                 ( NotC
                     (CompareC
-                       ( Eq, IterE (NameE (N "the top of the stack"), []),
-                         IterE (NameE (N "a frame"), []) )),
-                  [ PopI (IterE (NameE (N "the top element"), [])) ] );
+                       ( Eq, NameE (N "the top of the stack"),
+                         NameE (N "a frame") )),
+                  [ PopI (NameE (N "the top element")) ] );
             ]
         | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith
       in
       let pop_frame_instrs =
-        [ insert_assert winstr; PopI (IterE (NameE (N "the frame"), [])) ]
+        [ insert_assert winstr; PopI (NameE (N "the frame")) ]
       in
       let_instrs @ pop_instrs @ pop_frame_instrs
   (* Label *)
@@ -326,7 +326,7 @@ let handle_context_winstr winstr =
         (* TODO: append Jump instr *)
         PopAllI (exp2expr vals);
         insert_assert winstr;
-        PopI (IterE (NameE (N "the label"), []));
+        PopI (NameE (N "the label"));
       ]
   | _ -> []
 
@@ -334,9 +334,9 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (IterE (NameE (N "L"), []), GetCurLabelE);
-        LetI (exp2expr n, ArityE (IterE (NameE (N "L"), [])));
-        LetI (exp2expr instrs, ContE (IterE (NameE (N "L"), [])));
+        LetI (NameE (N "L"), GetCurLabelE);
+        LetI (exp2expr n, ArityE (NameE (N "L")));
+        LetI (exp2expr instrs, ContE (NameE (N "L")));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
         ExitAbruptI (N "L");
@@ -344,8 +344,8 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (IterE (NameE (N "F"), []), GetCurFrameE);
-        LetI (exp2expr n, ArityE (IterE (NameE (N "F"), [])));
+        LetI (NameE (N "F"), GetCurFrameE);
+        LetI (exp2expr n, ArityE (NameE (N "F")));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
         ExitAbruptI (N "F");
@@ -385,7 +385,7 @@ let rec rhs2instrs exp =
         }) ->
       let push_instr =
         PushI
-          (FrameE (IterE (NameE (N arity.it), []), IterE (NameE (N fname.it), [])))
+          (FrameE (NameE (N arity.it), NameE (N fname.it)))
       in
       let exit_instr = ExitNormalI (N fname.it) in
       (push_instr :: rhs2instrs labelexp) @ [ exit_instr ]
@@ -399,21 +399,21 @@ let rec rhs2instrs exp =
           _;
         }) -> (
       let label_expr =
-        LabelE (IterE (NameE (N label_arity.it), []), exp2expr instrs_exp1)
+        LabelE (NameE (N label_arity.it), exp2expr instrs_exp1)
       in
       match instrs_exp2.it with
       | Ast.CatE (valexp, instrsexp) ->
           [
-            LetI (IterE (NameE (N "L"), []), label_expr);
-            PushI (IterE (NameE (N "L"), []));
+            LetI (NameE (N "L"), label_expr);
+            PushI (NameE (N "L"));
             PushI (exp2expr valexp);
             JumpI (exp2expr instrsexp);
             ExitNormalI (N "L");
           ]
       | _ ->
           [
-            LetI (IterE (NameE (N "L"), []), label_expr);
-            PushI (IterE (NameE (N "L"), []));
+            LetI (NameE (N "L"), label_expr);
+            PushI (NameE (N "L"));
             JumpI (exp2expr instrs_exp2);
             ExitNormalI (N "L");
           ])
@@ -473,13 +473,17 @@ let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name () =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  IterE (NameE (N (lhs_prefix ^ (lhs_id |> string_of_int))), [])
+  NameE (N (lhs_prefix ^ (lhs_id |> string_of_int)))
 
 let rec letI lhs rhs cont =
-  let extract_non_names = List.fold_left_map (fun acc e -> match e with
-    | NameE _
-    | IterE (NameE _, _) -> acc, e
-    | _ ->
+  let rec has_name = function
+    | NameE _ -> true
+    | IterE (inner_exp, _) -> has_name inner_exp
+    | _ -> false
+  in
+  let extract_non_names = List.fold_left_map (fun acc e ->
+    if has_name e then acc, e
+    else
       let fresh = get_lhs_name() in
       [ e, fresh ] @ acc, fresh
   ) [] in
@@ -510,7 +514,7 @@ let rec letI lhs rhs cont =
           cont,
           [] );
     ]
-  | OptE (Some (IterE _)) ->
+  | OptE (Some (NameE _)) ->
     [
       IfI
         ( IsDefinedC rhs,
@@ -618,14 +622,17 @@ let prems2instrs remain_lhs =
           let lhs_instr =
             match exp2expr lhs with
             | IterE (NameE name, iter) when name = N instr.it ->
-                ExecuteSeqI (IterE (NameE name, iter @ [ List ]))
+                ExecuteSeqI (IterE (IterE (NameE name, iter), List))
             | _ -> failwith "Invalid IterPr"
           in
           let rhs_instr =
             match exp2expr rhs with
+            | ListE [ NameE name ] when name = N ref.it ->
+                PopI (IterE (NameE name, List))
             | ListE [ IterE (NameE name, iter) ] when name = N ref.it ->
-                PopI (IterE (NameE name, iter @ [ List ]))
-            | _ -> failwith "Invalid IterPr"
+                PopI (IterE (IterE (NameE name, iter), List))
+            | _ -> 
+                failwith "Invalid IterPr"
           in
           [ lhs_instr; rhs_instr ] @ instrs
       | _ ->
@@ -669,29 +676,26 @@ let rec split_context_winstr name stack =
       new_context, winstr
 
 let rec find_type tenv exp =
-  let to_IterE x = IterE (NameE (N x), []) in
-  let append_iter name iter = match name with
-  | IterE (n, iters) -> IterE (n, iter :: iters)
-  | _ -> failwith "Unreachable" in
+  let to_NameE x = NameE (N x) in
   match exp.it with
   | Ast.VarE id -> (
       match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-      | Some (_, t, []) -> (id.it |> to_IterE, il_type2al_type t)
-      | Some (_, t, _) -> (id.it |> to_IterE, ListT (il_type2al_type t))
+      | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
+      | Some (_, t, _) -> (id.it |> to_NameE, ListT (il_type2al_type t))
       | _ ->
           failwith
             (id.it ^ "'s type is unknown. There must be a problem in the IL."))
   | Ast.IterE (inner_exp, iter) ->
       let name, ty = find_type tenv inner_exp in
-      append_iter name (iter2iter (fst iter)), ty
+      IterE (name, iter2iter (fst iter)), ty
   | Ast.SubE (inner_exp, _, _) ->
       find_type tenv inner_exp
   | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
     -> (
       match (find_type tenv st, find_type tenv fr) with
       | (s, StoreT), (f, FrameT) -> (PairE (s, f), StateT)
-      | _ -> (Print.string_of_exp exp |> to_IterE, TopT))
-  | _ -> (Print.string_of_exp exp |> to_IterE, TopT)
+      | _ -> (Print.string_of_exp exp |> to_NameE, TopT))
+  | _ -> (Print.string_of_exp exp |> to_NameE, TopT)
 
 let un_unify (_, rhs, prems, binds) =
   let sub, new_prems = Util.Lib.List.split_hd prems in

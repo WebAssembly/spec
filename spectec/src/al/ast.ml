@@ -99,7 +99,7 @@ type expr =
   | ContE of expr
   (* Name *)
   | NameE of name
-  | IterE of expr * iter list
+  | IterE of expr * iter
   (* Yet *)
   | YetE of string
 

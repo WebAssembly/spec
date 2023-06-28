@@ -44,7 +44,7 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI (IterE (NameE (N name), [Opt]), Eq, OptE None) ] -> ForallI ("If " ^ name ^ " is defind,", body)
+      | [ CmpI (IterE (NameE (N name), Opt), Eq, OptE None) ] -> ForallI ("If " ^ name ^ " is defind,", body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp2cond e1, exp2cond e2) ]

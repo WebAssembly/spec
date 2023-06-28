@@ -161,7 +161,7 @@ and string_of_expr = function
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
-  | IterE (e, iters) -> string_of_expr e ^ string_of_iters iters
+  | IterE (e, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
@@ -470,12 +470,12 @@ let rec structured_string_of_expr = function
       ^ structured_string_of_expr e2
       ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
-  | IterE (e, iters) ->
+  | IterE (e, iter) ->
       "IterE ("
       ^ structured_string_of_expr e
       ^
       ", "
-      ^ string_of_iters iters
+      ^ string_of_iter iter
       ^ ")"
   | ArrowE (e1, e2) ->
       "ArrowE ("

@@ -193,26 +193,26 @@ let rec mk_access ps base =
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_instr = function
-  | ReturnI (Some (PairE (IterE (NameE (N "s"), []), IterE (NameE (N "f"), [])))) -> [ ReturnI None ]
-  | ReturnI (Some (PairE (IterE (NameE (N s), []), IterE (NameE (N f), []))))
+  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> [ ReturnI None ]
+  | ReturnI (Some (PairE ((NameE (N s)), NameE (N f))))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
 
-  | ReturnI (Some (IterE (NameE (N "s"), []))) -> [ ReturnI None ]
-  | ReturnI (Some (IterE (NameE (N s), [])))
+  | ReturnI (Some (NameE (N "s"))) -> [ ReturnI None ]
+  | ReturnI (Some (NameE (N s)))
     when String.starts_with ~prefix:"s_" s -> [ ReturnI None ]
   (* Perform *)
-  | LetI (PairE (IterE (NameE (N s), []), IterE (NameE (N f), [])), AppE (fname, el))
+  | LetI (PairE (NameE (N s), NameE (N f)), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ PerformI (AppE (fname, el)) ]
-  | LetI (IterE (NameE (N s), []), AppE (fname, el))
+  | LetI (NameE (N s), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (AppE (fname, el)) ]
   (* Append *)
-  | LetI (IterE (NameE (N s), []), ExtendE (e1, ps, ListE [ e2 ]) )
+  | LetI (NameE (N s), ExtendE (e1, ps, ListE [ e2 ]) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Replace *)
-  | LetI (IterE (NameE (N s), []), ReplaceE (e1, ps, e2))
+  | LetI (NameE (N s), ReplaceE (e1, ps, e2))
     when String.starts_with ~prefix:"s_" s ->
       begin match List.rev ps with
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
@@ -225,23 +225,23 @@ let hide_state = function
       let new_args =
         List.filter
           (function
-            | PairE (IterE (NameE (N "s"), []), IterE (NameE (N "f"), []))
-            | IterE (NameE (N "z"), []) -> false
-            | PairE (IterE (NameE (N s), []), IterE (NameE (N "f"), []))
+            | PairE (NameE (N "s"), NameE (N "f"))
+            | NameE (N "z") -> false
+            | PairE (NameE (N s), NameE (N "f"))
               when String.starts_with ~prefix:"s_" s -> false
-            | PairE (IterE (NameE (N s), []), IterE (NameE (N f), []))
+            | PairE (NameE (N s), NameE (N f))
               when String.starts_with ~prefix:"s_" s
               && String.starts_with ~prefix:"f_" f
                 -> false
-            | IterE (NameE (N "s"), []) -> false
-            | IterE (NameE (N s), []) when String.starts_with ~prefix:"s_" s -> false
+            | NameE (N "s") -> false
+            | NameE (N s) when String.starts_with ~prefix:"s_" s -> false
             | _ -> true)
           args
       in
       AppE (f, new_args)
-  | ListE [ IterE (NameE (N "s"), []); e ]
-  | ListE [ IterE (NameE (N "s'"), []); e ] -> e
-  | ListE [ IterE (NameE (N s), []); e ] when String.starts_with ~prefix:"s_" s -> e
+  | ListE [ NameE (N "s"); e ]
+  | ListE [ NameE (N "s'"); e ] -> e
+  | ListE [ NameE (N s); e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
 let simplify_record_concat = function
@@ -269,6 +269,6 @@ let transpiler algo =
   match params with
   | (PairE (_, f), StateT) :: tail ->
       Algo (name, tail, LetI (f, GetCurFrameE) :: body)
-  | (IterE (NameE (N "s"), []), _) :: tail ->
+  | (NameE (N "s"), _) :: tail ->
       Algo (name, tail, body)
   | _ -> Algo(name, params, body)
