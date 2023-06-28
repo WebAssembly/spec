@@ -709,8 +709,8 @@ execution_of_if bt instr_1* instr_2*
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-execution_of_label n instr* val*
-1. Pop val* from the stack.
+execution_of_label
+1. Pop all values val* from the stack.
 2. Assert: Due to validation, the label L is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
@@ -745,7 +745,7 @@ execution_of_br_table l* l'
 4. Else:
   a. Execute (BR l').
 
-execution_of_frame n f val^n
+execution_of_frame
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
