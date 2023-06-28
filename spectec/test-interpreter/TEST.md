@@ -29,7 +29,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 22/27 (81.48%)
+- 24/27 (88.89%)
 
 ===== forward.wast =====
 - 4/4 (100.00%)
@@ -47,25 +47,25 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 45/45 (100.00%)
 
 ===== unwind.wast =====
-- 8/49 (16.33%)
+- 20/49 (40.82%)
 
 ===== call.wast =====
-- 64/70 (91.43%)
+- 66/70 (94.29%)
 
 ===== local_get.wast =====
-- 15/19 (78.95%)
+- 16/19 (84.21%)
 
 ===== fac.wast =====
 - 2/6 (33.33%)
 
 ===== func.wast =====
-- 52/96 (54.17%)
+- 69/96 (71.88%)
 
 ===== exports.wast =====
-- 6/9 (66.67%)
+- 9/9 (100.00%)
 
 ===== local_set.wast =====
-- 15/19 (78.95%)
+- 16/19 (84.21%)
 
 ===== linking.wast =====
 - 90/90 (100.00%)
@@ -77,7 +77,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2/48 (4.17%)
 
 ===== if.wast =====
-- 92/123 (74.80%)
+- 114/123 (92.68%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -86,10 +86,10 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 37/52 (71.15%)
+- 46/52 (88.46%)
 
 ===== labels.wast =====
-- 3/25 (12.00%)
+- 9/25 (36.00%)
 
 ===== switch.wast =====
 - 0/26 (0.00%)
@@ -98,13 +98,14 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- 4099/4338 (94.49%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 4096/4338 (94.42%)
 
 ===== stack.wast =====
 - 2/5 (40.00%)
 
 ===== loop.wast =====
-- 34/77 (44.16%)
+- 36/77 (46.75%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
@@ -113,10 +114,10 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 68/68 (100.00%)
 
 ===== return.wast =====
-- 10/63 (15.87%)
+- 43/63 (68.25%)
 
 ===== store.wast =====
-- 5/9 (55.56%)
+- 6/9 (66.67%)
 
 ===== memory_redundancy.wast =====
 - 4/4 (100.00%)
@@ -125,31 +126,33 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- 61/63 (96.83%)
+- 62/63 (98.41%)
 
 ===== bulk.wast =====
-- 66/66 (100.00%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 7/66 (10.61%)
 
 ===== traps.wast =====
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 47/55 (85.45%)
+- 49/55 (89.09%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 67/84 (79.76%)
+- 69/84 (82.14%)
 
 ===== call_indirect.wast =====
-- 126/132 (95.45%)
+- 124/132 (93.94%)
 
 ===== load.wast =====
-- 31/37 (83.78%)
+- 33/37 (89.19%)
 
 ===== memory_fill.wast =====
-- 6/20 (30.00%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 3/20 (15.00%)
 
 ===== memory_size.wast =====
 - 36/36 (100.00%)
@@ -180,10 +183,10 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 179/180 (99.44%)
 
 ===== br_table.wast =====
-- 2/149 (1.34%)
+- 8/149 (5.37%)
 
 ===== select.wast =====
-- 107/118 (90.68%)
+- 110/118 (93.22%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -204,10 +207,10 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - print_i32: 1
 - print_i32: 2
 - print: ()
-- 1/7 (14.29%)
+- 7/7 (100.00%)
 
 ===== float_exprs.wast =====
-- Uncaught exception: Direct invocation failed due to Not_found
+- Uncaught exception: Direct invocation failed due to Pop some values from empty stack
 - 322/794 (40.55%)
 
 ===== float_memory.wast =====
@@ -223,7 +226,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- 12/88 (13.64%)
+- 15/88 (17.05%)
 
 ===== ref_func.wast =====
 - 8/8 (100.00%)
@@ -243,7 +246,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 14/14 (100.00%)
 
 ===== int_literals.wast =====
-- 8/30 (26.67%)
+- 30/30 (100.00%)
 
 ===== address.wast =====
 - 255/255 (100.00%)
@@ -259,7 +262,7 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 662/662 (100.00%)
 
 ===== global.wast =====
-- 52/58 (89.66%)
+- 54/58 (93.10%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -268,11 +271,11 @@ Animation failed: if (_x1*{_x1} = (val' <: admininstr)*{val'} :: (val <: adminin
 - 2500/2500 (100.00%)
 
 ===== br.wast =====
-- 2/76 (2.63%)
+- 68/76 (89.47%)
 
 ===== nop.wast =====
-- 72/83 (86.75%)
+- 75/83 (90.36%)
 
-Total [22296/23778] (93.77%; Normalized 79.16%)
+Total [22458/23778] (94.45%; Normalized 84.38%)
 == Complete.
 ```

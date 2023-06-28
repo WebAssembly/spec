@@ -487,7 +487,7 @@ and dsl_function_map lhs_opt fname front_args last_args env il cont =
       |> failwith
 
 and interp_instrs env il (cont: cont) =
-  (* if !cnt > 200000 then raise Exception.Timeout else cnt := !cnt + 1; *)
+  if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
   match il with
   | [] -> continue env cont
   | i :: icont ->
@@ -582,7 +582,7 @@ and interp_instrs env il (cont: cont) =
         vs |> List.tl |> List.iter push;
         ( match ctx with
         | LabelV _ | FrameV _ -> ( match cont with
-          | ExecWinstrs (_, env, il, k) -> interp_instrs env icont (ExecWinstrs ([], env, il, k))
+          | ExecWinstrs (_, env', il, k) -> interp_instrs env icont (ExecWinstrs ([], env', il, k))
           | _ -> failwith "Abruptly exiting inside a helper function is not supported")
         | _ -> failwith "Unreachable" )
     | ReplaceI (e1, IndexP e2, e3) ->
