@@ -1,4 +1,5 @@
 ;; Tests for relaxed i8x16 swizzle.
+;; `either` comes from https://github.com/WebAssembly/threads.
 
 (module
     (func (export "i8x16.relaxed_swizzle") (param v128 v128) (result v128) (i8x16.relaxed_swizzle (local.get 0) (local.get 1)))

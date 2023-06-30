@@ -1,4 +1,5 @@
 ;; Tests for f32x4.min, f32x4.max, f64x2.min, and f64x2.max.
+;; `either` comes from https://github.com/WebAssembly/threads.
 
 (module
     (func (export "f32x4.relaxed_min") (param v128 v128) (result v128) (f32x4.relaxed_min (local.get 0) (local.get 1)))

@@ -1,4 +1,5 @@
 ;; Tests for i32x4.relaxed_trunc_f32x4_s, i32x4.relaxed_trunc_f32x4_u, i32x4.relaxed_trunc_f64x2_s_zero, and i32x4.relaxed_trunc_f64x2_u_zero.
+;; `either` comes from https://github.com/WebAssembly/threads.
 
 (module
     (func (export "i32x4.relaxed_trunc_f32x4_s") (param v128) (result v128) (i32x4.relaxed_trunc_f32x4_s (local.get 0)))
