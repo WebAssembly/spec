@@ -4,6 +4,7 @@ let version = "2.0"
 let all_handlers = [
   (module Handler_custom : Custom.Handler);
   (module Handler_name : Custom.Handler);
+  (module Handler_branch_hint : Custom.Handler);
 ]
 
 let configure custom_handlers =
