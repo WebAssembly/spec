@@ -173,11 +173,11 @@ let () =
         @ Backend_interpreter.Manual.manual_algos in
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
-      let prose = Backend_prose.Gen.gen_string il al in
+      let prose = Backend_prose.Gen.gen_prose il al in
       print_endline "=================";
       print_endline " Generated prose ";
       print_endline "=================";
-      print_endline prose;
+      print_endline (Backend_prose.Render.render_prose prose);
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then
         failwith "Interpreter generatiron requires `--animate` flag."
