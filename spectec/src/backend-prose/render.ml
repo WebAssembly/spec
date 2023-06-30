@@ -29,6 +29,14 @@ let render_order index depth =
 
 (* Operators *)
 
+let render_cmpop = function
+  | Eq -> "equal to"
+  | Ne -> "different with"
+  | Lt -> "less than"
+  | Gt -> "greater than"
+  | Le -> "less than or equal to"
+  | Ge -> "greater than or equal to"
+
 (* Expressions and Paths *)
 
 let render_expr expr = "TODO" ^ "(" ^ Al.Print.string_of_expr expr ^ ")"
@@ -41,18 +49,42 @@ let render_cond cond = "TODO" ^ "(" ^ Al.Print.string_of_cond cond ^ ")"
 
 (* Instructions *)
 
-let rec render_prose_instrs index depth = function
-  | [] -> ""
-  | i :: is ->
-    match i with
-    | LetI (_e1, _e2) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | CmpI (_e1, _cmpop, _e2) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | MustValidI (_e1, _e2, _e3) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | MustMatchI (_e1, _e2) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | IsValidI _e -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | ForallI (_s, _is) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | EquivI (_c1, _c2) -> "TODO" ^ render_prose_instrs (index + 1) depth is
-    | YetI s -> s
+let rec render_prose_instr depth = function
+  | LetI (e1, e2) ->
+      sprintf "* Let %s be %s."
+        (render_expr e1)
+        (render_expr e2)
+  | CmpI (e1, cmpop, e2) ->
+      sprintf "* %s must be %s %s."
+        (render_expr e1)
+        (render_cmpop cmpop)
+        (render_expr e2)
+  | MustValidI (e1, e2, e3) -> 
+      sprintf "* Under the context %s, %s must be valid%s."
+        (render_expr e1)
+        (render_expr e2)
+        (render_opt " with type " render_expr "" e3)
+  | MustMatchI (e1, e2) ->
+      sprintf "* %s must match %s."
+        (render_expr e1)
+        (render_expr e2)
+  | IsValidI e ->
+      sprintf "* The instruction is valid%s."
+        (render_opt " with type " render_expr "" e)
+  | ForallI (s, is) ->
+      sprintf "* %s%s" s (render_prose_instrs (depth + 1) is)
+  | EquivI (c1, c2) ->
+      sprintf "* %s and %s are equivalent."
+        (render_cond c1)
+        (render_cond c2)
+  | YetI s ->
+      sprintf "* YetI: %s." s
+
+and render_prose_instrs depth instrs =
+  List.fold_left
+    (fun sinstrs i ->
+      sinstrs ^ "\n" ^ repeat indent depth ^ render_prose_instr depth i)
+    "" instrs
 
 let rec render_al_instr index depth = function
   | Al.Ast.IfI (c, il, []) ->
@@ -154,8 +186,8 @@ let rec render_al_instr index depth = function
 and render_al_instrs depth instrs =
   let index = ref 0 in
   List.fold_left
-    (fun acc i ->
-      acc ^ "\n" ^ repeat indent depth ^ render_al_instr index depth i)
+    (fun sinstrs i ->
+      sinstrs ^ "\n" ^ repeat indent depth ^ render_al_instr index depth i)
     "" instrs
 
 (* Params *)
@@ -183,7 +215,7 @@ let render_pred name params instrs =
   let title = render_title name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
-  render_prose_instrs 0 0 instrs
+  render_prose_instrs 0 instrs
 
 let render_algo name params instrs = 
   let prefix = "execution_of_" in
