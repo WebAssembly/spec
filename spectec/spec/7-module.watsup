@@ -95,7 +95,7 @@ def $rundata((s; f), DATA byte* (MEMORY 0 instr*), i) =
 
 def $instantiation(store, module, externval*) : config
 def $instantiation(s, module, externval*) =
-  s'; f; $runelem(elem*[i], i):_* $rundata(data*[j], j):_* (CALL x)?
+  s'; f; ...$runelem(elem*[i], i)* ...$rundata(data*[j], j)* (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
