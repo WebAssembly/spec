@@ -2,7 +2,7 @@
 # package manager to build. However, Opam package management is available
 # optionally through the check/install/uninstall targets.
 #
-# The $(JSLIB) target requires node.js and BuckleScript.
+# The $(JSLIB).js target requires Js_of_ocaml (using ocamlfind).
 #
 # See README.me for instructions.
 
@@ -14,20 +14,21 @@ UNOPT = 	$(NAME).debug
 OPT =   	$(NAME)
 LIB =		$(NAME)
 ZIP =		$(NAME).zip
-JSLIB =		wast.js
+JSLIB =		wast
 WINMAKE =	winmake.bat
 
-DIRS =		util syntax binary text valid runtime exec script host main tests
-LIBS =		bigarray
-FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45 -warn-error +a-3'
+DIRS =		util syntax binary text valid runtime exec custom script host main tests
+LIBS =		
+FLAGS = 	-lexflags -ml -cflags '-w +a-4-27-42-44-45-70 -warn-error +a-3'
 OCBA =		ocamlbuild $(FLAGS) $(DIRS:%=-I %)
 OCB =		$(OCBA) $(LIBS:%=-libs %)
-JS =		# set to JS shell command to run JS tests
+JSO =		js_of_ocaml -q --opt 3
+JS =		# set to JS shell command to run JS tests, empty to skip
 
 
 # Main targets
 
-.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint
+.PHONY:		default opt unopt libopt libunopt jslib all land zip smallint dunebuild
 
 default:	opt
 debug:		unopt
@@ -35,11 +36,15 @@ opt:		$(OPT)
 unopt:		$(UNOPT)
 libopt:		_build/$(LIB).cmx _build/$(LIB).cmxa
 libunopt:	_build/$(LIB).cmo _build/$(LIB).cma
-jslib:		$(JSLIB)
-all:		unopt opt libunopt libopt test
+jslib:		$(JSLIB).js
+all:		unopt opt libunopt libopt alltest
+alltest:	unittest test customtest
 land:		$(WINMAKE) all
 zip: 		$(ZIP)
-smallint:	smallint.native
+ci:			land wast.js dunebuild
+
+dunebuild:
+	dune build
 
 
 # Building executable
@@ -106,14 +111,15 @@ _build/$(LIB).cmxa: $(FILES) $(LIB).mllib _tags Makefile
 
 # Building JavaScript library
 
-.PHONY:		$(JSLIB)
-$(JSLIB):	$(UNOPT)
-		mkdir -p _build/jslib/src
-		cp meta/jslib/* _build/jslib
-		cp $(DIRS:%=_build/%/*.ml*) meta/jslib/*.ml _build/jslib/src
-		rm _build/jslib/src/*.ml[^i]
-		(cd _build/jslib; ./build.sh ../../$@)
+JSLIB_DIR =		meta/jslib
+JSLIB_FLAGS =	-I $(JSLIB_DIR) -use-ocamlfind -pkg js_of_ocaml -pkg js_of_ocaml-ppx
 
+.INTERMEDIATE:	$(JSLIB).byte
+$(JSLIB).byte:	$(JSLIB_DIR)/$(JSLIB).ml
+		$(OCBA) $(JSLIB_FLAGS) $@
+
+$(JSLIB).js: $(JSLIB).byte
+		$(JSO) $<
 
 # Building Windows build file
 
@@ -129,21 +135,18 @@ $(WINMAKE):	clean
 		>>$@
 
 
-# Executing test suite
+# Executing core test suite
 
 TESTDIR =	../test/core
-# Skip _output directory, since that's a tmp directory, and list all other wast files.
 TESTFILES =	$(shell cd $(TESTDIR); ls *.wast; ls [a-z]*/*.wast)
 TESTS =		$(TESTFILES:%.wast=%)
 
-.PHONY:		test debugtest partest
+.PHONY:		test debugtest partest dune-test quiettest
 
-test:		$(OPT) smallint
+test:		$(OPT)
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',)
-		./smallint.native
-debugtest:	$(UNOPT) smallint
+debugtest:	$(UNOPT)
 		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) $(if $(JS),--js '$(JS)',)
-		./smallint.native
 
 test/%:		$(OPT)
 		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast
@@ -165,8 +168,55 @@ quiettest/%:	$(OPT)
 		) || \
 		cat $(@F).out || rm $(@F).out || exit 1
 
-smallinttest:	smallint
+
+# Executing custom test suite
+
+CUSTOMTESTDIR =	../test/custom
+CUSTOMTESTDIRS =	$(shell cd $(CUSTOMTESTDIR); ls -d [a-z]*)
+CUSTOMTESTFILES =	$(shell cd $(CUSTOMTESTDIR); ls [a-z]*/*.wast)
+CUSTOMTESTS =		$(CUSTOMTESTFILES:%.wast=%)
+CUSTOMOPTS = -c custom $(CUSTOMTESTDIRS:%=-c %)
+
+.PHONY:		customtest customdebugtest custompartest customquiettest
+
+customtest:		$(OPT)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTFILES:%=$(CUSTOMTESTDIR)/%)
+customdebugtest:	$(UNOPT)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTFILES:%=$(CUSTOMTESTDIR)/%)
+
+customtest/%:		$(OPT)
+		$(TESTDIR)/run.py --wasm `pwd`/$(OPT) --opts '$(CUSTOMOPTS) ' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTDIR)/$*.wast
+customdebugtest/%:	$(UNOPT)
+		$(TESTDIR)/run.py --wasm `pwd`/$(UNOPT) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(CUSTOMTESTDIR)/$*.wast
+
+customrun/%:		$(OPT)
+		./$(OPT) $(CUSTOMOPTS) $(CUSTOMTESTDIR)/$*.wast
+customdebug/%:	$(UNOPT)
+		./$(UNOPT) $(CUSTOMOPTS) $(CUSTOMTESTDIR)/$*.wast
+
+custompartest: 	$(CUSTOMTESTS:%=customquiettest/%)
+		@echo All custom tests passed.
+
+customquiettest/%:	$(OPT)
+		@ ( \
+		  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(OPT) --opts '$(CUSTOMOPTS)' $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
+		  rm $(@F).out \
+		) || \
+		cat $(@F).out || rm $(@F).out || exit 1
+
+
+# Executing unit tests
+
+.PHONY: unittest
+
+unittest:	smallint
 		@./smallint.native
+
+smallint:	smallint.native
+
+dunetest:
+	dune test
+
 
 # Miscellaneous targets
 
@@ -176,7 +226,7 @@ $(ZIP):		$(WINMAKE)
 		git archive --format=zip --prefix=$(NAME)/ -o $@ HEAD
 
 clean:
-		rm -rf _build/jslib $(LIB).mlpack _tags
+		rm -rf _build/jslib $(LIB).mlpack _tags $(JSLIB).js
 		$(OCB) -clean
 
 

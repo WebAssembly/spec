@@ -62,8 +62,9 @@ let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
 let space = [' ''\t''\n''\r']
+let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
-let ascii_no_nl = ['\x00'-'\x09''\x0b'-'\x7f']
+let ascii_no_nl = ascii # '\x0a'
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
     ['\xc2'-'\xdf'] utf8cont
@@ -103,7 +104,7 @@ let name = idchar+
 let id = '$' name
 
 let keyword = ['a'-'z'] (letter | digit | '_' | '.' | ':')+
-let reserved = name | ',' | ';' | '[' | ']' | '{' | '}'
+let reserved = (idchar | string)+ | ',' | ';' | '[' | ']' | '{' | '}'
 
 let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
@@ -696,7 +697,10 @@ rule token = parse
 
   | id as s { VAR s }
 
-  | "(@"name { annot (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
+  | "(@"(name as n)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      Annot.record (Annot.{name = Utf8.decode n; items} @@ r); token lexbuf }
   | "(@" { error lexbuf "malformed annotation id" }
 
   | ";;"utf8_no_nl*eof { EOF }
@@ -708,20 +712,42 @@ rule token = parse
   | eof { EOF }
 
   | reserved { unknown lexbuf }
-  | utf8 { error lexbuf "malformed operator" }
+  | control { error lexbuf "misplaced control character" }
+  | utf8enc { error lexbuf "misplaced unicode character" }
   | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and annot start = parse
-  | ")" { () }
-  | "(" { annot (Lexing.lexeme_start_p lexbuf) lexbuf; annot start lexbuf }
+  | ")" { [] }
+  | "("
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      (Annot.Parens items @@ r) :: annot start lexbuf }
+  | "(@"(name as n)
+    { let r = region lexbuf in
+      let items = annot (Lexing.lexeme_start_p lexbuf) lexbuf in
+      let ann = Annot.{name = Utf8.decode n; items} @@ r in
+      (Annot.Annot ann @@ r) :: annot start lexbuf }
 
-  | reserved { annot start lexbuf }
-  | nat { annot start lexbuf }
-  | int { annot start lexbuf }
-  | float { annot start lexbuf }
-  | id { annot start lexbuf }
-  | string { annot start lexbuf }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
+  | nat as s
+    { let r = region lexbuf in
+      (Annot.Nat s @@ r) :: annot start lexbuf }
+  | int as s
+    { let r = region lexbuf in
+      (Annot.Int s @@ r) :: annot start lexbuf }
+  | float as s
+    { let r = region lexbuf in
+      (Annot.Float s @@ r) :: annot start lexbuf }
+  | id as s
+    { let r = region lexbuf in
+      (Annot.Var s @@ r) :: annot start lexbuf }
+  | string as s
+    { let r = region lexbuf in
+      (Annot.String (string s) @@ r) :: annot start lexbuf }
+  | reserved as s
+    { let r = region lexbuf in
+      (Annot.Atom s @@ r) :: annot start lexbuf }
+  | '"'character*('\n'|eof)
+    { error lexbuf "unclosed string literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
     { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
@@ -741,6 +767,6 @@ and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
   | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
-  | utf8 { comment start lexbuf }
   | _ { error lexbuf "malformed UTF-8 encoding" }

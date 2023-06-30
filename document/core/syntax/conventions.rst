@@ -20,7 +20,7 @@ Grammar Notation
 
 The following conventions are adopted in defining grammar rules for abstract syntax.
 
-* Terminal symbols (atoms) are written in sans-serif font: :math:`\K{i32}, \K{end}`.
+* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: :math:`\K{i32}, \K{end}, {\to}, [, ]`.
 
 * Nonterminal symbols are written in italic font: :math:`\X{valtype}, \X{instr}`.
 
@@ -107,9 +107,9 @@ The following notation is adopted for manipulating such records:
 
 The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
 
-* :math:`s \with [i]\,\X{pth} = A` is short for :math:`s \with [i] = (s[i] \with \X{pth} = A)`.
+* :math:`s \with [i]\,\X{pth} = A` is short for :math:`s \with [i] = (s[i] \with \X{pth} = A)`,
 
-* :math:`r \with \K{field}\,\X{pth} = A` is short for :math:`r \with \K{field} = (r.\K{field} \with \X{pth} = A)`.
+* :math:`r \with \K{field}\,\X{pth} = A` is short for :math:`r \with \K{field} = (r.\K{field} \with \X{pth} = A)`,
 
 where :math:`r \with~.\K{field} = A` is shortened to :math:`r \with \K{field} = A`.
 

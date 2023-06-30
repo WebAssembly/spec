@@ -61,7 +61,7 @@ Different classes of *integers* with different value ranges are distinguished by
      \uN \\
    \end{array}
 
-The latter class defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
+The class |iN| defines *uninterpreted* integers, whose signedness interpretation can vary depending on context.
 In the abstract syntax, they are represented as unsigned values.
 However, some operations :ref:`convert <aux-signed>` them to signed based on a two's complement interpretation.
 
@@ -139,6 +139,8 @@ An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n 
 
 .. note::
    In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the :ref:`binary representation <binary-float>` the exponent of a subnormal is encoded differently than the exponent of any normal number.
+
+   The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the |IEEE754|_ standard (Section 3.5.2) defines for decimal interchange formats.
 
 Conventions
 ...........

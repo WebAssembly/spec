@@ -34,6 +34,8 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    \production{label} & \Tlabel_I &::=&
      v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose I
        & (\iff v \notin I.\ILABELS) \\ &&|&
+     v{:}\Tid &\Rightarrow& \{\ILABELS~v\} \compose (I \with \ILABELS[i] = \epsilon)
+       & (\iff I.\ILABELS[i] = v) \\ &&|&
      \epsilon &\Rightarrow& \{\ILABELS~(\epsilon)\} \compose I \\
    \end{array}
 
@@ -41,6 +43,9 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    The new label entry is inserted at the *beginning* of the label list in the identifier context.
    This effectively shifts all existing labels up by one,
    mirroring the fact that control instructions are indexed relatively not absolutely.
+
+   If a label with the same name already exists,
+   then it is shadowed and the earlier label becomes inaccessible.
 
 
 .. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
@@ -160,7 +165,7 @@ Reference Instructions
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\
    \end{array}
 
 
@@ -239,18 +244,18 @@ Table Instructions
 Abbreviations
 .............
 
-For backwards compatibility, all :math:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
+For backwards compatibility, all :ref:`table indices <syntax-tableidx>` may be omitted from table instructions, defaulting to :math:`0`.
 
 .. math::
-   \begin{array}{llclll}
+   \begin{array}{llcl}
    \production{instruction} &
-     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &&|&
-     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &&|&
-     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &&|&
-     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &&|&
-     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &&|&
-     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &&|&
-     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\ &&|&
+     \text{table.get} &\equiv& \text{table.get}~~\text{0} \\ &
+     \text{table.set} &\equiv& \text{table.set}~~\text{0} \\ &
+     \text{table.size} &\equiv& \text{table.size}~~\text{0} \\ &
+     \text{table.grow} &\equiv& \text{table.grow}~~\text{0} \\ &
+     \text{table.fill} &\equiv& \text{table.fill}~~\text{0} \\ &
+     \text{table.copy} &\equiv& \text{table.copy}~~\text{0}~~\text{0} \\ &
+     \text{table.init}~~x{:}\Telemidx_I &\equiv& \text{table.init}~~\text{0}~~x{:}\Telemidx_I \\
    \end{array}
 
 
@@ -886,7 +891,7 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.convert\_low\_i32x4\_s} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_s}\\  &&|&
      \text{f64x2.convert\_low\_i32x4\_u} &\Rightarrow& \F64X2.\VCONVERT\K{\_low\_i32x4\_u}\\ &&|&
      \text{f32x4.demote\_f64x2\_zero} &\Rightarrow& \F32X4.\VDEMOTE\K{\_f64x2\_zero}\\ &&|&
-     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\ &&|&
+     \text{f64x2.promote\_low\_f32x4} &\Rightarrow& \F64X2.\VPROMOTE\K{\_low\_f32x4}\\
    \end{array}
 
 
@@ -916,7 +921,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
      \text{(}~\text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
        &\equiv\quad \text{loop}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end} \\ &
      \text{(}~\text{if}~~\Tlabel~~\Tblocktype~~\Tfoldedinstr^\ast
-       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)}^?~~\text{)}
+       &\hspace{-3ex} \text{(}~\text{then}~~\Tinstr_1^\ast~\text{)}~~(\text{(}~\text{else}~~\Tinstr_2^\ast~\text{)})^?~~\text{)}
        \quad\equiv \\ &\qquad
          \Tfoldedinstr^\ast~~\text{if}~~\Tlabel~~\Tblocktype &\hspace{-1ex} \Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\
    \end{array}

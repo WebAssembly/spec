@@ -35,7 +35,7 @@ Each subsection consists of a
 
 * a one-byte subsection *id*,
 * the |U32| *size* of the contents, in bytes,
-* the actual *contents*, whose structure is depended on the subsection id.
+* the actual *contents*, whose structure is dependent on the subsection id.
 
 .. math::
    \begin{array}{llcll}

@@ -13,25 +13,29 @@ import sys
 ownDir = os.path.dirname(os.path.abspath(sys.argv[0]))
 inputDir = ownDir
 outputDir = os.path.join(inputDir, "_output")
+opts = ""
+
+mainTestFiles = glob.glob(os.path.join(inputDir, "*.wast"))
+otherTestFiles = glob.glob(os.path.join(inputDir, "[a-z]*/*.wast"))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--wasm", metavar="<wasm-command>", default=os.path.join(os.getcwd(), "wasm"))
 parser.add_argument("--js", metavar="<js-command>")
+parser.add_argument("--generate-js-only", action='store_true')
 parser.add_argument("--out", metavar="<out-dir>", default=outputDir)
+parser.add_argument("--opts", metavar="<options>", default=opts)
 parser.add_argument("file", nargs='*')
 arguments = parser.parse_args()
 sys.argv = sys.argv[:1]
 
-main_test_files = glob.glob(os.path.join(inputDir, "*.wast"))
-# SIMD test files are in a subdirectory.
-simd_test_files = glob.glob(os.path.join(inputDir, "simd", "*.wast"))
-
-wasmCommand = arguments.wasm
+wasmExec = arguments.wasm
 jsCommand = arguments.js
+generateJsOnly = arguments.generate_js_only
 outputDir = arguments.out
-inputFiles = arguments.file if arguments.file else main_test_files + simd_test_files
+inputFiles = arguments.file if arguments.file else mainTestFiles + otherTestFiles
+wasmCommand = wasmExec + " " + arguments.opts
 
-if not os.path.exists(wasmCommand):
+if not os.path.exists(wasmExec):
   sys.stderr.write("""\
 Error: The executable '%s' does not exist.
 Provide the correct path with the '--wasm' flag.
@@ -45,7 +49,10 @@ class RunTests(unittest.TestCase):
   def _runCommand(self, command, logPath, expectedExitCode = 0):
     with open(logPath, 'w+') as out:
       exitCode = subprocess.call(command, shell=True, stdout=out, stderr=subprocess.STDOUT)
-      self.assertEqual(expectedExitCode, exitCode, "failed with exit code %i (expected %i) for %s" % (exitCode, expectedExitCode, command))
+    with open(logPath) as out:
+      log = out.read()
+    msg = "failed with exit code %i (expected %i)\nCommand:\n  %s\nLog:\n%s"
+    self.assertEqual(expectedExitCode, exitCode, msg % (exitCode, expectedExitCode, command, log))
 
   def _auxFile(self, path):
     if os.path.exists(path):
@@ -58,11 +65,19 @@ class RunTests(unittest.TestCase):
         with open(actualFile) as actual:
           expectText = expect.read()
           actualText = actual.read()
-          self.assertEqual(expectText, actualText)
+      self.assertEqual(expectText, actualText)
 
   def _runTestFile(self, inputPath):
     dir, inputFile = os.path.split(inputPath)
     outputPath = os.path.join(outputDir, inputFile)
+
+    # Generate JS first, then return early if we are only generating JS.
+    jsPath = self._auxFile(outputPath.replace(".wast", ".js"))
+    logPath = self._auxFile(jsPath + ".log")
+    self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, jsPath), logPath)
+
+    if generateJsOnly:
+      return
 
     # Run original file
     expectedExitCode = 1 if ".fail." in inputFile else 0
@@ -96,9 +111,6 @@ class RunTests(unittest.TestCase):
     self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, wasm2Path, wast2Path), logPath)
     self._compareFile(wastPath, wast2Path)
 
-    jsPath = self._auxFile(outputPath.replace(".wast", ".js"))
-    logPath = self._auxFile(jsPath + ".log")
-    self._runCommand(('%s -d "%s" -o "%s"') % (wasmCommand, inputPath, jsPath), logPath)
     if jsCommand != None:
       self._runCommand(('%s "%s"') % (jsCommand, jsPath), logPath)
 

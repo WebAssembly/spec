@@ -1,4 +1,5 @@
-![Build Status](https://github.com/WebAssembly/annotations/actions/workflows/main.yml/badge.svg)
+[![CI for specs](https://github.com/WebAssembly/annotations/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/annotations/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/annotations/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/annotations/actions/workflows/ci-interpreter.yml)
 
 # Branch hinting Proposal for WebAssembly
 
