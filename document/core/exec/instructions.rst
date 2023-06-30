@@ -1682,7 +1682,9 @@ Table Instructions
 
 4. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[a]` exists.
 
-5. Replace :math:`S.\SELEMS[a]` with the :ref:`element instance <syntax-eleminst>` :math:`\{\EIELEM~\epsilon\}`.
+5. Let :math:`t` be the :ref:`reference type <syntax-reftype>` :math:`S.\SELEMS[a].\EITYPE`.
+
+6. Replace :math:`S.\SELEMS[a]` with the :ref:`element instance <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIELEM~\epsilon \}`.
 
 .. math::
    ~\\[-1ex]
@@ -1691,7 +1693,11 @@ Table Instructions
    S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-     (\iff S' = S \with \SELEMS[F.\AMODULE.\MIELEMS[x]] = \{ \EIELEM~\epsilon \}) \\
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\iff & F.\AMODULE.\MIELEMS[x] = a \\
+     \wedge & \X{t} = S.\SELEMS[a].\EITYPE \\
+     \wedge & S' = S \with \SELEMS[a] = \{ \EITYPE~t, \EIELEM~\epsilon \}) \\
+     \end{array}
    \end{array}
 
 
