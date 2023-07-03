@@ -1,0 +1,5 @@
+(library
+  (name backend_splice)
+  (libraries util el il al backend_latex backend_prose)
+  (modules splice)
+)

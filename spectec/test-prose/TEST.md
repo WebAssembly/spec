@@ -43,18 +43,18 @@ validation_of_select ?(t)
 
 validation_of_block bt instr*
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C ++ { LABEL: t_2*; }, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by t_2*, instr* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C ++ { LABEL: t_1*; }, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by t_1*, instr* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C ++ { LABEL: t_2*; }, instr_1* must be valid with type [t_1*]->[t_2*].
-- Under the context C ++ { LABEL: t_2*; }, instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by t_2*, instr_1* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by t_2*, instr_2* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_br l
@@ -240,7 +240,7 @@ validation_of_load nt [n, sx]? n_A n_O
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - Let mt be C.MEM[0].
-- If n is defind,
+- If n is defined,
   - nt must be equal to in.
 - The instruction is valid with type [I32]->[nt].
 
@@ -251,7 +251,7 @@ validation_of_store nt n? n_A n_O
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
 - Let mt be C.MEM[0].
-- If n is defind,
+- If n is defined,
   - nt must be equal to in.
 - The instruction is valid with type [I32, nt]->[].
 
@@ -417,28 +417,28 @@ alloc_import m _x0* _x1*
     1) Let (FUNC functype) be externtype.
     2) If externval is of the case FUNC, then:
       a) Let (FUNC fa) be externval.
-      b) Let m_new be m with .FUNC extended by [fa].
+      b) Let m_new be m with .FUNC appended by [fa].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   c. If externtype is of the case GLOBAL, then:
     1) Let (GLOBAL globaltype) be externtype.
     2) If externval is of the case GLOBAL, then:
       a) Let (GLOBAL ga) be externval.
-      b) Let m_new be m with .GLOBAL extended by [ga].
+      b) Let m_new be m with .GLOBAL appended by [ga].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   d. If externtype is of the case TABLE, then:
     1) Let (TABLE tabletype) be externtype.
     2) If externval is of the case TABLE, then:
       a) Let (TABLE ta) be externval.
-      b) Let m_new be m with .TABLE extended by [ta].
+      b) Let m_new be m with .TABLE appended by [ta].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
   e. If externtype is of the case MEM, then:
     1) Let (MEM memtype) be externtype.
     2) If externval is of the case MEM, then:
       a) Let (MEM ma) be externval.
-      b) Let m_new be m with .MEM extended by [ma].
+      b) Let m_new be m with .MEM appended by [ma].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
 
@@ -577,7 +577,7 @@ alloc_module module externval*
   h. Let ma* be the result of computing $alloc_mem(mem*).
   i. Let ea* be the result of computing $alloc_elem(elem*).
   j. Let da* be the result of computing $alloc_data(data*).
-  k. Let m_ex be m_im ++ { FUNC: fa*; GLOBAL: ga*; TABLE: ta*; MEM: ma*; ELEM: ea*; DATA: da*; }.
+  k. Let m_ex be m_im with .FUNC prepended by fa* with .GLOBAL prepended by ga* with .TABLE prepended by ta* with .MEM prepended by ma* with .ELEM prepended by ea* with .DATA prepended by da*.
   l. Let xi* be the result of computing $alloc_export(m_ex, export)*.
   m. Let m_res be m_ex with .EXPORT replaced by xi*.
   n. Perform $replace_moduleinst(fa*, m_res).

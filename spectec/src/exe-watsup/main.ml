@@ -11,11 +11,12 @@ let version = "0.3"
 
 type target =
  | Check
- | Latex of Backend_latex.Config.config
+ | Latex
  | Prose
+ | Splice of Backend_latex.Config.config
  | Interpreter
 
-let target = ref (Latex Backend_latex.Config.latex)
+let target = ref Latex
 
 type pass =
   | Sub
@@ -33,13 +34,16 @@ flags on the command line.
 let all_passes = [ Sub; Totalize; Unthe; Sideconditions; Animate ]
 
 let log = ref false  (* log execution steps *)
-let dst = ref false  (* patch files *)
-let dry = ref false  (* dry run for patching *)
 let warn = ref false (* warn about unused or reused splices *)
 
-let srcs = ref []    (* src file arguments *)
-let dsts = ref []    (* destination file arguments *)
-let odst = ref ""    (* generation file argument *)
+type file_kind =
+  | Spec
+  | Patch
+  | Output
+let file_kind = ref Spec
+let srcs = ref []    (* spec src file arguments *)
+let pdsts = ref []   (* patch file arguments *)
+let odsts = ref []   (* output file arguments *)
 
 let print_elab_il = ref false
 let print_final_il = ref false
@@ -78,10 +82,14 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
 let banner () =
   print_endline (name ^ " " ^ version ^ " generator")
 
-let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...]"
+let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...] [-o file ...]"
 
 let add_arg source =
-  let args = if !dst then dsts else srcs in args := !args @ [source]
+  let args = match !file_kind with
+  | Spec -> srcs
+  | Patch -> pdsts
+  | Output -> odsts in
+  args := !args @ [source]
 
 let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
   "--" ^ pass_flag pass, Arg.Unit (fun () -> enable_pass pass), " " ^ pass_desc pass
@@ -89,17 +97,18 @@ let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
 let argspec = Arg.align
 [
   "-v", Arg.Unit banner, " Show version";
-  "-o", Arg.String (fun s -> odst := s), " Generate file";
-  "-p", Arg.Set dst, " Patch files";
-  "-d", Arg.Set dry, " Dry run (when -p) ";
+  "-p", Arg.Unit (fun () -> file_kind := Patch), " Patch files";
+  "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unused or multiply used splices";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
-  "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
+  "--latex", Arg.Unit (fun () -> target := Latex),
     " Generate Latex (default)";
-  "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.sphinx),
-    " Generate Latex for Sphinx";
+  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_latex.Config.latex),
+    " Splice Sphinx";
+  "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_latex.Config.sphinx),
+    " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
   "--interpreter", Arg.Unit (fun () -> target := Interpreter), " Generate interpreter";
 
@@ -152,17 +161,12 @@ let () =
 
     (match !target with
     | Check -> ()
-    | Latex config ->
+    | Latex ->
       log "Latex Generation...";
-      if !odst = "" && !dsts = [] then
-        print_endline (Backend_latex.Gen.gen_string el);
-      if !odst <> "" then
-        Backend_latex.Gen.gen_file !odst el;
-      if !dsts <> [] then (
-        let env = Backend_latex.Splice.(env config el) in
-        List.iter (fun dst -> Backend_latex.Splice.splice_file ~dry:!dry env dst dst) !dsts;
-        if !warn then Backend_latex.Splice.warn env;
-      );
+      (match !odsts with
+      | [] -> print_endline (Backend_latex.Gen.gen_string el)
+      | odst :: _ -> Backend_latex.Gen.gen_file odst el
+      )
     | Prose ->
       if not (PS.mem Animate !selected_passes) then
         failwith "Prose generatiron requires `--animate` flag."
@@ -173,21 +177,19 @@ let () =
         @ Backend_interpreter.Manual.manual_algos in
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
-      if !dsts <> [] then (
-        if List.length !dsts > 1 then failwith "TODO: multiple patch files for prose";
-        let template = List.hd !dsts in
-        let output = if !odst = "" then template else !odst in
-        let env = Backend_latex.Splice.(env Backend_latex.Config.sphinx el) in
-        Backend_latex.Splice.splice_file ~dry:!dry env template output;
-        if !warn then Backend_latex.Splice.warn env;
-      ) else (
-        let prose = Backend_prose.Gen.gen_prose il al in
-        print_endline "=================";
-        print_endline " Generated prose ";
-        print_endline "=================";
-        print_endline prose;
-        print_endline (Backend_prose.Print.string_of_prose prose);
-      )
+      let prose = Backend_prose.Gen.gen_prose il al in
+      print_endline "=================";
+      print_endline " Generated prose ";
+      print_endline "=================";
+      print_endline (Backend_prose.Print.string_of_prose prose);
+    | Splice config ->
+        let _al = if not (PS.mem Animate !selected_passes) then [] else
+          Backend_interpreter.Translate.translate il
+          @ Backend_interpreter.Manual.manual_algos in
+        let env = Backend_splice.Splice.(env config el) in
+        odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
+        List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
+        if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then
         failwith "Interpreter generatiron requires `--animate` flag."

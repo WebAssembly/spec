@@ -1,0 +1,5 @@
+*.aux
+*.log
+*.pdf
+prose.rst
+_sphinx

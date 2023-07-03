@@ -1,7 +1,7 @@
 open Util
 open Source
 open El.Ast
-open Config
+open Backend_latex.Config
 
 
 (* Errors *)
@@ -41,7 +41,7 @@ type definition = {fdef : def; clauses : def list; use : use}
 
 type env =
   { config : config;
-    render : Render.env;
+    render : Backend_latex.Render.env;
     mutable syn : syntax Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
@@ -74,7 +74,7 @@ let env_def env def =
 let env config script : env =
   let env =
     { config;
-      render = Render.env config script;
+      render = Backend_latex.Render.env config script;
       syn = Map.empty;
       rel = Map.empty;
       def = Map.empty
@@ -215,9 +215,9 @@ let try_def_anchor env src r sort space1 space2 find deco : bool =
     let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
     let env' = env.render
-      |> Render.with_syntax_decoration deco
-      |> Render.with_rule_decoration deco
-    in r := Render.render_defs env' defs
+      |> Backend_latex.Render.with_syntax_decoration deco
+      |> Backend_latex.Render.with_rule_decoration deco
+    in r := Backend_latex.Render.render_defs env' defs
   );
   b
 
@@ -238,7 +238,7 @@ let try_exp_anchor env src r : bool =
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in
-    r := Render.render_exp env.render exp
+    r := Backend_latex.Render.render_exp env.render exp
   );
   b
 
@@ -289,14 +289,15 @@ let splice_string env file s : string =
   splice_all env {file; s; i = 0} buf;
   Buffer.contents buf
 
-let splice_file ?(dry = false) env file_in file_out =
+let splice_file env file_in file_out =
   let ic = In_channel.open_text file_in in
   let s =
     Fun.protect (fun () -> In_channel.input_all ic)
       ~finally:(fun () -> In_channel.close ic)
   in
   let s' = splice_string env file_in s in
-  if not dry then
+  if file_out = "" then print_endline s' else
     let oc = Out_channel.open_text file_out in
     Fun.protect (fun () -> Out_channel.output_string oc s')
       ~finally:(fun () -> Out_channel.close oc)
+
