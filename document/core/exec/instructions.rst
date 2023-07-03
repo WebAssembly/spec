@@ -1676,9 +1676,13 @@ Table Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[F.\AMODULE.\MIELEMS[x]]` exists.
+2. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
 
-3. Replace :math:`S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM` with :math:`\epsilon`.
+3. Let :math:`a` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[x]`.
+
+4. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[a]` exists.
+
+5. Replace :math:`S.\SELEMS[a].\EIELEM` with :math:`\epsilon`.
 
 .. math::
    ~\\[-1ex]
