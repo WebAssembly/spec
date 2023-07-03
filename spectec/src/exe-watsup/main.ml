@@ -160,7 +160,7 @@ let () =
         Backend_latex.Gen.gen_file !odst el;
       if !dsts <> [] then (
         let env = Backend_latex.Splice.(env config el) in
-        List.iter (Backend_latex.Splice.splice_file ~dry:!dry env) !dsts;
+        List.iter (fun dst -> Backend_latex.Splice.splice_file ~dry:!dry env dst dst) !dsts;
         if !warn then Backend_latex.Splice.warn env;
       );
     | Prose ->
@@ -173,12 +173,21 @@ let () =
         @ Backend_interpreter.Manual.manual_algos in
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
-      let prose = Backend_prose.Gen.gen_prose il al in
-      print_endline "=================";
-      print_endline " Generated prose ";
-      print_endline "=================";
-      (*print_endline (Backend_prose.Render.render_prose prose);*)
-      print_endline (Backend_prose.Print.string_of_prose prose);
+      if !dsts <> [] then (
+        if List.length !dsts > 1 then failwith "TODO: multiple patch files for prose";
+        let template = List.hd !dsts in
+        let output = if !odst = "" then template else !odst in
+        let env = Backend_latex.Splice.(env Backend_latex.Config.sphinx el) in
+        Backend_latex.Splice.splice_file ~dry:!dry env template output;
+        if !warn then Backend_latex.Splice.warn env;
+      ) else (
+        let prose = Backend_prose.Gen.gen_prose il al in
+        print_endline "=================";
+        print_endline " Generated prose ";
+        print_endline "=================";
+        print_endline prose;
+        print_endline (Backend_prose.Print.string_of_prose prose);
+      )
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then
         failwith "Interpreter generatiron requires `--animate` flag."

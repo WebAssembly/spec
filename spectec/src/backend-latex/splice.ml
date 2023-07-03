@@ -289,14 +289,14 @@ let splice_string env file s : string =
   splice_all env {file; s; i = 0} buf;
   Buffer.contents buf
 
-let splice_file ?(dry = false) env file =
-  let ic = In_channel.open_text file in
+let splice_file ?(dry = false) env file_in file_out =
+  let ic = In_channel.open_text file_in in
   let s =
     Fun.protect (fun () -> In_channel.input_all ic)
       ~finally:(fun () -> In_channel.close ic)
   in
-  let s' = splice_string env file s in
+  let s' = splice_string env file_in s in
   if not dry then
-    let oc = Out_channel.open_text file in
+    let oc = Out_channel.open_text file_out in
     Fun.protect (fun () -> Out_channel.output_string oc s')
       ~finally:(fun () -> Out_channel.close oc)
