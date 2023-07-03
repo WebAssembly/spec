@@ -237,7 +237,7 @@ let rec eval_expr env expr =
       let base = eval_expr env e in
       access_path env base p
   | ExtendE (e1, ps, e2) ->
-      let v_new = eval_expr env e2 in
+      let v_new = eval_expr env e2 |> value_to_array in
       let rec extend base ps = (
         match ps with
         | path :: rest ->
@@ -246,7 +246,7 @@ let rec eval_expr env expr =
         | [] ->
             let a = base |> value_to_array in
             let a_new = Array.copy a in
-            ListV (ref (Array.append a_new [|v_new|])))
+            ListV (ref (Array.append a_new v_new)))
       in
       let base = eval_expr env e1 in
       extend base ps
