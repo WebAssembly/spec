@@ -393,7 +393,13 @@ let rec structured_string_of_value = function
   | RecordV _r -> "RecordV (TODO)"
   | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
 
-let rec structured_string_of_expr = function
+let rec structured_string_of_record_expr r =
+  Record.fold
+    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    r "{ "
+  ^ "}"
+
+and structured_string_of_expr = function
   | NumE i -> Int64.to_string i
   | StringE s -> s
   | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
@@ -469,7 +475,7 @@ let rec structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | RecordE _ -> "RecordE (TODO)"
+  | RecordE r -> "RecordE (" ^ structured_string_of_record_expr r ^ ")"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
       "LabelE ("

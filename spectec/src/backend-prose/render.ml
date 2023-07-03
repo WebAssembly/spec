@@ -109,7 +109,11 @@ let rec render_expr in_math = function
       let se2 = render_expr true e2 in
       let s = sprintf "%s%s%s" se1 sop se2 in
       if in_math then s else render_math s
-  | Al.Ast.PairE (e1, e2) -> sprintf "(%s, %s)" (render_expr in_math e1) (render_expr in_math e2)
+  | Al.Ast.PairE (e1, e2) -> 
+      let se1 = render_expr true e1 in
+      let se2 = render_expr true e2 in
+      let s = sprintf "%s~%s" se1 se2 in
+      if in_math then s else render_math s
   | Al.Ast.AppE (n, es) ->
       let sn = render_name n in
       let ses = render_list (render_expr true) "" ", " "" es in
@@ -132,18 +136,28 @@ let rec render_expr in_math = function
   | Al.Ast.FrameE (e1, e2) ->
       sprintf "the activation of %s with arity %s" (render_expr in_math e2)
         (render_expr in_math e1)
-  | Al.Ast.ListE el -> render_list (render_expr in_math) "[" ", " "]" el
+  | Al.Ast.ListE el -> render_list (render_expr in_math) "[" "~" "]" el
   | Al.Ast.ListFillE (e1, e2) -> render_expr in_math e1 ^ "^" ^ render_expr in_math e2
-  | Al.Ast.AccessE (e, p) -> sprintf "%s%s" (render_expr in_math e) (render_path in_math p)
+  | Al.Ast.AccessE (e, p) -> 
+      let se = render_expr true e in
+      let sp = render_path true p in
+      let s = sprintf "%s%s" se sp in
+      if in_math then s else render_math s
   | Al.Ast.ExtendE (e1, ps, e2) ->
       sprintf "%s with %s extended by %s" (render_expr in_math e1) (render_paths in_math ps) (render_expr in_math e2)
   | Al.Ast.ReplaceE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" (render_expr in_math e1) (render_paths in_math ps) (render_expr in_math e2)
   | Al.Ast.RecordE r ->
-      Al.Record.Record.fold
-        (fun k v acc -> acc ^ k ^ ": " ^ render_expr in_math v ^ "; ")
-        r "{ "
-      ^ "}"
+      let keys = Al.Record.Record.keys r in
+      let sfields = 
+        List.map
+          (fun k ->
+            let v = Al.Record.Record.find k r in
+            render_name (N k) ^ "~" ^ render_expr true v)
+          keys
+      in
+      let sr = render_list Fun.id "\\{ " ", " " \\}" sfields in
+      if in_math then sr else render_math sr
   | Al.Ast.ContE e -> sprintf "the continuation of %s" (render_expr in_math e)
   | Al.Ast.LabelE (e1, e2) ->
       sprintf "the label whose arity is %s and whose continuation is %s" (render_expr in_math e1) (render_expr in_math e2)
@@ -172,8 +186,8 @@ let rec render_expr in_math = function
         if List.length es > 1 then "~\\END" else ""
       in
       if in_math then s else render_math s
-  | Al.Ast.OptE (Some e) -> "?(" ^ render_expr in_math e ^ ")"
-  | Al.Ast.OptE None -> "?()"
+  | Al.Ast.OptE (Some e) -> "(" ^ render_expr in_math e ^ ")^?"
+  | Al.Ast.OptE None -> "()^?"
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
 
 and render_path in_math = function 
@@ -214,7 +228,7 @@ let rec render_prose_instr depth = function
         (render_expr false e2)
   | CmpI (e1, cmpop, e2) ->
       sprintf "* %s must be %s %s."
-        (render_expr false e1)
+        (String.capitalize_ascii (render_expr false e1))
         (render_prose_cmpop cmpop)
         (render_expr false e2)
   | MustValidI (e1, e2, e3) -> 
@@ -224,7 +238,7 @@ let rec render_prose_instr depth = function
         (render_opt " with type " (render_expr false) "" e3)
   | MustMatchI (e1, e2) ->
       sprintf "* %s must match %s."
-        (render_expr false e1)
+        (String.capitalize_ascii (render_expr false e1))
         (render_expr false e2)
   | IsValidI e ->
       sprintf "* The instruction is valid%s."
@@ -233,7 +247,7 @@ let rec render_prose_instr depth = function
       sprintf "* %s%s" s (render_prose_instrs (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
-        (render_cond false c1)
+        (String.capitalize_ascii (render_cond false c1))
         (render_cond false c2)
   | YetI s ->
       sprintf "* YetI: %s." s
@@ -330,7 +344,6 @@ let rec render_al_instr index depth = function
       sprintf "%s Enter %s with label %s." (render_order index depth)
         (render_expr false e1) (render_expr false e2)
   | Al.Ast.ExecuteI e ->
-      print_endline (Al.Print.structured_string_of_expr e);
       sprintf "%s Execute %s." (render_order index depth) (render_expr false e)
   | Al.Ast.ExecuteSeqI e ->
       sprintf "%s Execute the sequence (%s)." (render_order index depth) (render_expr false e)
