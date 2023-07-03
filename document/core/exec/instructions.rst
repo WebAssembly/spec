@@ -1682,7 +1682,7 @@ Table Instructions
 
 4. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[a]` exists.
 
-5. Replace :math:`S.\SELEMS[a]` with the :ref:`element instance <syntax-eleminst>` :math:`\{\EIELEM~\epsilon\}`.
+5. Replace :math:`S.\SELEMS[a].\EIELEM` with :math:`\epsilon`.
 
 .. math::
    ~\\[-1ex]
@@ -1691,7 +1691,7 @@ Table Instructions
    S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-     (\iff S' = S \with \SELEMS[F.\AMODULE.\MIELEMS[x]] = \{ \EIELEM~\epsilon \}) \\
+     (\iff S' = S \with \SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM = \epsilon) \\
    \end{array}
 
 
