@@ -285,6 +285,7 @@ let render_atom env = function
       "\\vdash" ^ env.current_rel
     else
       "\\vdash"
+  | In -> "\\in"
 
 let render_brack = function
   | Paren -> "(", ")"
