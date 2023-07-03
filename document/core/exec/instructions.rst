@@ -1676,15 +1676,9 @@ Table Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`F.\AMODULE.\MIELEMS[x]` exists.
+2. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[F.\AMODULE.\MIELEMS[x]]` exists.
 
-3. Let :math:`a` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[x]`.
-
-4. Assert: due to :ref:`validation <valid-elem.drop>`, :math:`S.\SELEMS[a]` exists.
-
-5. Let :math:`t` be the :ref:`reference type <syntax-reftype>` :math:`S.\SELEMS[a].\EITYPE`.
-
-6. Replace :math:`S.\SELEMS[a]` with the :ref:`element instance <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIELEM~\epsilon \}`.
+3. Replace :math:`S.\SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM` with :math:`\epsilon`.
 
 .. math::
    ~\\[-1ex]
@@ -1693,11 +1687,7 @@ Table Instructions
    S; F; (\ELEMDROP~x) &\stepto& S'; F; \epsilon
    \end{array}
    \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MIELEMS[x] = a \\
-     \wedge & \X{t} = S.\SELEMS[a].\EITYPE \\
-     \wedge & S' = S \with \SELEMS[a] = \{ \EITYPE~t, \EIELEM~\epsilon \}) \\
-     \end{array}
+     (\iff S' = S \with \SELEMS[F.\AMODULE.\MIELEMS[x]].\EIELEM = \epsilon) \\
    \end{array}
 
 
