@@ -134,9 +134,21 @@ let rec exp2expr exp =
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
-  | Ast.CompE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
+  | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) -> 
+      (* assumption: CompE is only used for prepending to validation context *)
+      let nonempty = function ListE [] | OptE None -> false | _ -> true in
+      List.fold_left
+        (fun acc extend_exp -> match extend_exp with
+        | Ast.Atom name, fieldexp ->
+            let extend_expr = exp2expr fieldexp in
+            if nonempty extend_expr then
+              ExtendE (acc, [ DotP name ], extend_expr, Front)
+            else
+              acc
+        | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
+        (exp2expr inner_exp) expfields
   (* extension of record field *)
-  | Ast.ExtE (base, path, v) -> ExtendE (exp2expr base, path2paths path, exp2expr v)
+  | Ast.ExtE (base, path, v) -> ExtendE (exp2expr base, path2paths path, exp2expr v, Back)
   (* update of record field *)
   | Ast.UpdE (base, path, v) -> ReplaceE (exp2expr base, path2paths path, exp2expr v)
   (* Binary / Unary operation *)

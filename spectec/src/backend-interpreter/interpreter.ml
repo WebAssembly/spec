@@ -236,7 +236,7 @@ let rec eval_expr env expr =
   | AccessE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
-  | ExtendE (e1, ps, e2) ->
+  | ExtendE (e1, ps, e2, dir) ->
       let v_new = eval_expr env e2 |> value_to_array in
       let rec extend base ps = (
         match ps with
@@ -245,8 +245,13 @@ let rec eval_expr env expr =
             replace_path env base path v_new
         | [] ->
             let a = base |> value_to_array in
-            let a_new = Array.copy a in
-            ListV (ref (Array.append a_new v_new)))
+            let a_copy = Array.copy a in
+            let a_new = (
+              match dir with
+              | Front -> Array.append v_new a_copy
+              | Back -> Array.append a_copy v_new)
+            in
+            ListV (ref a_new))
       in
       let base = eval_expr env e1 in
       extend base ps

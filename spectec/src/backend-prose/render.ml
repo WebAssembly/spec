@@ -143,8 +143,13 @@ let rec render_expr in_math = function
       let sp = render_path true p in
       let s = sprintf "%s%s" se sp in
       if in_math then s else render_math s
-  | Al.Ast.ExtendE (e1, ps, e2) ->
-      sprintf "%s with %s extended by %s" (render_expr in_math e1) (render_paths in_math ps) (render_expr in_math e2)
+  | Al.Ast.ExtendE (e1, ps, e2, dir) -> 
+      let se1 = render_expr in_math e1 in
+      let sps = render_paths in_math ps in
+      let se2 = render_expr in_math e2 in
+      (match dir with
+      | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
+      | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.ReplaceE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" (render_expr in_math e1) (render_paths in_math ps) (render_expr in_math e2)
   | Al.Ast.RecordE r ->

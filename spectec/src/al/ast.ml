@@ -45,6 +45,10 @@ type iter =
   | List1
   | ListN of name
 
+type extend_dir =
+  | Front
+  | Back
+
 type expr_binop =
   | Add
   | Sub
@@ -83,7 +87,7 @@ type expr =
   | LengthE of expr
   | RecordE of expr record
   | AccessE of expr * path
-  | ExtendE of expr * path list * expr
+  | ExtendE of expr * path list * expr * extend_dir
   | ReplaceE of expr * path list * expr
   | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   | OptE of expr option

@@ -222,7 +222,7 @@ let hide_state_instr = function
   | LetI (NameE (N s), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (fname, el) ]
   (* Append *)
-  | LetI (NameE (N s), ExtendE (e1, ps, ListE [ e2 ]) )
+  | LetI (NameE (N s), ExtendE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Replace *)

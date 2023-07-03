@@ -63,6 +63,10 @@ let string_of_iter = function
 
 let string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
 
+let string_of_dir = function
+  | Front -> "Front"
+  | Back -> "Back"
+
 let depth = ref 0
 let rec string_of_record r =
   let base_indent = repeat indent !depth in
@@ -152,8 +156,10 @@ and string_of_expr = function
   | ListE el -> string_of_list string_of_expr "[" ", " "]" el
   | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
-  | ExtendE (e1, ps, e2) ->
-      sprintf "%s with %s extended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
+  | ExtendE (e1, ps, e2, dir) -> (
+      match dir with
+      | Front -> sprintf "%s with %s prepended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
+      | Back -> sprintf "%s with %s appended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2))
   | ReplaceE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
   | RecordE r -> string_of_record_expr r
@@ -459,13 +465,15 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_path p
       ^ ")"
-  | ExtendE (e1, ps, e2) ->
+  | ExtendE (e1, ps, e2, dir) ->
       "ExtendE ("
       ^ structured_string_of_expr e1
       ^ ", "
       ^ structured_string_of_paths ps
       ^ ", "
       ^ structured_string_of_expr e2
+      ^ ", "
+      ^ string_of_dir dir
       ^ ")"
   | ReplaceE (e1, ps, e2) ->
       "ReplaceE ("
