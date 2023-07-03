@@ -177,7 +177,8 @@ let () =
       print_endline "=================";
       print_endline " Generated prose ";
       print_endline "=================";
-      print_endline (Backend_prose.Render.render_prose prose);
+      (*print_endline (Backend_prose.Render.render_prose prose);*)
+      print_endline (Backend_prose.Print.string_of_prose prose);
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then
         failwith "Interpreter generatiron requires `--animate` flag."

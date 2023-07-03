@@ -255,8 +255,15 @@ let rec render_prose_instr depth = function
   | IsValidI e ->
       sprintf "* The instruction is valid%s."
         (render_opt " with type " (render_expr false) "" e)
-  | ForallI (s, is) ->
-      sprintf "* %s%s" s (render_prose_instrs (depth + 1) is)
+  | IfI (c, is) ->
+      sprintf "* If %s,%s"
+        (render_cond false c)
+        (render_prose_instrs (depth + 1) is)
+  | ForallI (e1, e2, is) ->
+      sprintf "* For all %s in %s,%s" 
+        (render_expr false e1) 
+        (render_expr false e2) 
+        (render_prose_instrs (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
         (String.capitalize_ascii (render_cond false c1))

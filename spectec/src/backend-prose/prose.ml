@@ -9,7 +9,8 @@ type instr =
 | MustValidI of Al.Ast.expr * Al.Ast.expr * Al.Ast.expr option
 | MustMatchI of Al.Ast.expr * Al.Ast.expr
 | IsValidI of Al.Ast.expr option
-| ForallI of string * instr list
+| IfI of Al.Ast.cond * instr list
+| ForallI of Al.Ast.expr * Al.Ast.expr * instr list
 | EquivI of Al.Ast.cond * Al.Ast.cond
 | YetI of string
 

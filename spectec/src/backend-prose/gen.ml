@@ -14,11 +14,6 @@ let cmpop_to_cmpop = function
 
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 
-let iter_to_iter = function
-| Ast.Opt, [id] -> "If " ^ id.it ^ " is defined,"
-| Ast.List, [id] -> "For all " ^ id.it ^ " in " ^ id.it ^ "*,"
-| _ -> "For all ...,"
-
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_action with
     post_expr = Backend_interpreter.Transpile.simplify_record_concat
@@ -44,7 +39,8 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI (IterE (NameE (N name), Opt), Eq, OptE None) ] -> ForallI ("If " ^ name ^ " is defind,", body)
+      | [ CmpI (IterE (NameE (N name), Opt), Eq, OptE None) ] -> 
+          IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N name)), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp2cond e1, exp2cond e2) ]
@@ -67,7 +63,12 @@ let rec prem_to_instrs prem = match prem.it with
     | _ -> failwith "prem_to_instr: Invalid prem"
     )
   | Ast.IterPr (prem, iter) ->
-    [ ForallI (iter_to_iter iter, prem_to_instrs prem) ]
+    ( match iter with
+    | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N id.it)), prem_to_instrs prem) ]
+    | Ast.List, [id] -> 
+        let name = Al.Ast.NameE (Al.Ast.N id.it) in
+        [ ForallI (name, Al.Ast.IterE (name, Al.Ast.List), prem_to_instrs prem) ]
+    | _ -> failwith "prem_to_instr: Invalid prem")
   | _ ->
     let s = Il.Print.string_of_prem prem in
     print_endline ("prem_to_instrs: Invalid prem (" ^ s ^ ")");

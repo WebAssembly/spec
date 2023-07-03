@@ -48,9 +48,14 @@ let rec string_of_instr = function
   | IsValidI e_opt ->
       sprintf "%s The instruction is valid%s." (indent ())
         (string_of_opt " with type " string_of_expr "" e_opt)
-  | ForallI (s, is) ->
-      sprintf "%s %s\n%s" (indent ())
-        s
+  | IfI (c, is) ->
+      sprintf "%s If %s, \n%s" (indent ())
+        (string_of_cond c)
+        (string_of_list indented_string_of_instr "" "\n" "" is)
+  | ForallI (e1, e2, is) ->
+      sprintf "%s For all %s in %s,\n%s" (indent ())
+        (string_of_expr e1)
+        (string_of_expr e2)
         (string_of_list indented_string_of_instr "" "\n" "" is)
   | EquivI (e1, e2) ->
       sprintf "%s (%s) and (%s) are equivalent." (indent ())
@@ -94,6 +99,7 @@ let string_of_structured_instr = function
       ^ ")"
   | IsValidI e_opt ->
       "IsValidI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
+  | IfI _ -> "IfI(...)"
   | ForallI _ -> "ForallI(...)"
   | EquivI _ -> "EquivI ..."
   | YetI s -> "YetI (" ^ s ^ ")"
