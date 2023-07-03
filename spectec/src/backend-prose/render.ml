@@ -123,8 +123,15 @@ let rec render_expr in_math = function
       sprintf "$%s(%s)%s" (render_name n)
         (render_list (render_expr in_math) "" ", " "" el)
         (render_iters iters)
+  (* TODO a better way to flatten single-element list? *)
+  | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
+      sprintf "%s~%s" (render_expr in_math (List.hd e1)) (render_expr in_math (List.hd e2))
+  | Al.Ast.ConcatE (Al.Ast.ListE e1, e2) when List.length e1 = 1 ->
+      sprintf "%s~%s" (render_expr in_math (List.hd e1)) (render_expr in_math e2)
+  | Al.Ast.ConcatE (e1, Al.Ast.ListE e2) when List.length e2 = 1 ->
+      sprintf "%s~%s" (render_expr in_math e1) (render_expr in_math (List.hd e2))
   | Al.Ast.ConcatE (e1, e2) ->
-      sprintf "%s ++ %s" (render_expr in_math e1) (render_expr in_math e2)
+      sprintf "%s~%s" (render_expr in_math e1) (render_expr in_math e2)
   | Al.Ast.LengthE e -> 
       let se = render_expr true e in
       "the length of " ^
