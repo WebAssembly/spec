@@ -278,6 +278,7 @@ let elab_atom = function
   | SqArrow -> Il.SqArrow
   | Turnstile -> Il.Turnstile
   | Tilesturn -> Il.Tilesturn
+  | In -> Il.In
 
 let elab_brack = function
   | Paren -> Il.LParen, Il.RParen

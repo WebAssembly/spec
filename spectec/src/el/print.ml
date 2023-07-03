@@ -28,6 +28,7 @@ let string_of_atom = function
   | SqArrow -> "~>"
   | Tilesturn -> "-|"
   | Turnstile -> "|-"
+  | In -> "<-"
 
 let string_of_brack = function
   | Paren -> "(", ")"

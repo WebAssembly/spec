@@ -23,6 +23,7 @@ type atom =
   | SqArrow                      (* `~>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
+  | In                           (* `<-` *)
   | LParen                       (* `(` *)
   | LBrack                       (* `[` *)
   | LBrace                       (* `{` *)

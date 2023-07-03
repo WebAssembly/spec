@@ -71,7 +71,7 @@ let signify_parens prec = function
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
-%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN
+%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN IN
 %token DOLLAR TICK
 %token BOT
 %token HOLE MULTIHOLE FUSE
@@ -92,6 +92,7 @@ let signify_parens prec = function
 %nonassoc TILESTURN
 %right SQARROW
 %left COLON SUB
+%nonassoc IN
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE
 %right ARROW
@@ -360,6 +361,7 @@ exp_rel_ :
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
   | exp_rel TILESTURN exp_rel { InfixE ($1, Tilesturn, $3) }
   | exp_rel TURNSTILE exp_rel { InfixE ($1, Turnstile, $3) }
+  | exp_rel IN exp_rel { InfixE ($1, In, $3) }
 
 exp : exp_rel { $1 }
 

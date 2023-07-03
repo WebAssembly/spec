@@ -29,6 +29,7 @@ type atom =
   | SqArrow                      (* `~>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
+  | In                           (* `<-` *)
 
 type brack =
   | Paren                        (* ``(` ... `)` *)
