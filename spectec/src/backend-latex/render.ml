@@ -306,7 +306,6 @@ let render_binop = function
   | MulOp -> "\\cdot"
   | DivOp -> "/"
   | ExpOp -> assert false
-  | InOp -> "\\in"
 
 let render_cmpop = function
   | EqOp -> "="
@@ -396,6 +395,10 @@ and expand_exp' args e' =
     let e1' = expand_exp args e1 in
     let e2' = expand_exp args e2 in
     FuseE (e1', e2')
+  | ElementsOfE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    ElementsOfE (e1', e2')
 
 and expand_expfield args (atom, e) = (atom, expand_exp args e)
 
@@ -585,6 +588,8 @@ and render_exp env e =
     (* Hack for printing t.LOADn_sx *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2' ^ "}"
+  | ElementsOfE (e1, e2) ->
+    render_exp env e1 ^ "\\in" ^ render_exp env e2
   | HoleE _ -> assert false
 
 and render_exps sep env es =

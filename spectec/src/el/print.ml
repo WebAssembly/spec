@@ -49,7 +49,6 @@ let string_of_binop = function
   | MulOp -> "*"
   | DivOp -> "/"
   | ExpOp -> "^"
-  | InOp -> "<-"
 
 let string_of_cmpop = function
   | EqOp -> "="
@@ -156,6 +155,7 @@ and string_of_exp e =
   | HoleE false -> "%"
   | HoleE true -> "%%"
   | FuseE (e1, e2) -> string_of_exp e1 ^ "#" ^ string_of_exp e2
+  | ElementsOfE (e1, e2) -> string_of_exp e1 ^ "<-" ^ string_of_exp e2
 
 and string_of_exps sep es =
   concat sep (List.map string_of_exp es)
