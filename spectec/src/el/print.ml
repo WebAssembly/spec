@@ -149,6 +149,8 @@ and string_of_exp e =
   | BrackE (brack, e) ->
     let l, r = string_of_brack brack in
     "`" ^ l ^ string_of_exp e ^ r
+  | ListBuilderE (e1, e2) ->
+      "[" ^ string_of_exp e1 ^ "|" ^ string_of_exp e2 ^ "]"
   | CallE (id, {it = SeqE []; _}) -> "$" ^ id.it
   | CallE (id, e) -> "$" ^ id.it ^ string_of_exp e
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iter iter

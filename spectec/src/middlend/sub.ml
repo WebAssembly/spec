@@ -115,6 +115,7 @@ and t_exp' env = function
   | TheE exp -> TheE exp
   | ListE es -> ListE (List.map (t_exp env) es)
   | ElementsOfE (exp1, exp2) -> ElementsOfE (t_exp env exp1, t_exp env exp2)
+  | ListBuilderE (exp1, exp2) -> ListBuilderE (t_exp env exp1, t_exp env exp2)
   | CatE (exp1, exp2) -> CatE (t_exp env exp1, t_exp env exp2)
   | CaseE (a, e) -> CaseE (a, t_exp env e)
   | SubE (e, t1, t2) -> SubE (e, t1, t2)

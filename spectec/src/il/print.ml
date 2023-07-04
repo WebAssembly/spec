@@ -151,6 +151,8 @@ and string_of_exp e =
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
   | ElementsOfE (e1, e2) ->
     string_of_exp e1 ^ "<-" ^ string_of_exp e2
+  | ListBuilderE (e1, e2) ->
+    "[" ^ string_of_exp e1 ^ "|" ^ string_of_exp e2 ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
   | CaseE (atom, e1) ->
     string_of_atom atom ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1

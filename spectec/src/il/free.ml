@@ -86,6 +86,7 @@ and free_exp e =
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1)
   | DotE (e1, _) | CaseE (_, e1) ->
     free_exp e1
+  | ListBuilderE (e1, e2) -> diff (free_exp e1) (free_exp e2)
   | BinE (_, e1, e2) | CmpE (_, e1, e2) | ElementsOfE (e1, e2)
   | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list free_exp [e1; e2]
