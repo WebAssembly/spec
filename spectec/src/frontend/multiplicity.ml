@@ -91,7 +91,8 @@ and check_exp env ctx e =
   | IdxE (e1, e2)
   | CommaE (e1, e2)
   | CompE (e1, e2)
-  | InfixE (e1, _, e2) ->
+  | InfixE (e1, _, e2)
+  | ElementsOfE (e1, e2) ->
     check_exp env ctx e1;
     check_exp env ctx e2
   | SliceE (e1, e2, e3) ->

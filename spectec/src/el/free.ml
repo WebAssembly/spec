@@ -71,7 +71,7 @@ and free_exp e =
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
-  | InfixE (e1, _, e2) | FuseE (e1, e2) ->
+  | InfixE (e1, _, e2) | FuseE (e1, e2) | ElementsOfE (e1, e2)->
     free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | SeqE es | TupE es -> free_list free_exp es

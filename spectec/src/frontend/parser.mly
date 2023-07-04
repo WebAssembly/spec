@@ -48,7 +48,7 @@ let prec_of_exp = function  (* as far as iteration is concerned *)
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _
-  | CommaE _ | CompE _ | FuseE _ -> Op
+  | CommaE _ | CompE _ | FuseE _ | ElementsOfE _ -> Op
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -343,7 +343,7 @@ exp_bin_ :
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, ImplOp, $3) }
   | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
-  | exp_bin IN exp_bin { BinE ($1, InOp, $3) }
+  | exp_bin IN exp_bin { ElementsOfE ($1, $3) }
 
 exp_rel : exp_rel_ { $1 $ at $sloc }
 exp_rel_ :

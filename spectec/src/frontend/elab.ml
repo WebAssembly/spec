@@ -299,7 +299,6 @@ let elab_binop = function
   | MulOp -> Il.MulOp
   | DivOp -> Il.DivOp
   | ExpOp -> Il.ExpOp
-  | InOp -> Il.InOp
 
 let elab_cmpop = function
   | EqOp -> Il.EqOp
@@ -443,7 +442,7 @@ and infer_unop = function
   | PlusOp | MinusOp -> NatT
 
 and infer_binop = function
-  | AndOp | OrOp | ImplOp | EquivOp | InOp -> BoolT
+  | AndOp | OrOp | ImplOp | EquivOp -> BoolT
   | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
 
 and infer_cmpop = function
@@ -484,6 +483,7 @@ and infer_exp env e : typ =
     IterT (infer_exp env e1, iter') $ e.at
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
+  | ElementsOfE _ -> BoolT $ e.at
 
 
 and elab_exp env e t : Il.exp =
@@ -640,6 +640,8 @@ and elab_exp env e t : Il.exp =
     Il.IterE (e1', iter2') $$ e.at % !!env t
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
+  | ElementsOfE _ ->
+      failwith "TODO: elab_exp ElementsOfE"
 
 and elab_exps env es ts at : Il.exp list =
   if List.length es <> List.length ts then

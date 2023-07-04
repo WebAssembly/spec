@@ -87,7 +87,6 @@ and binop =
   | MulOp  (* `*` *)
   | DivOp  (* `/` *)
   | ExpOp  (* `^` *)
-  | InOp     (* `<-` *)
 
 and cmpop =
   | EqOp (* `=` *)
@@ -126,6 +125,7 @@ and exp' =
   | IterE of exp * iter          (* exp iter *)
   | HoleE of bool                (* `%` or `%%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
+  | ElementsOfE of exp * exp     (* exp <- exp *)
 
 and expfield = atom * exp        (* atom exp *)
 
