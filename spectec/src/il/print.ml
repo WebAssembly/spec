@@ -49,7 +49,6 @@ let string_of_binop = function
   | MulOp -> "*"
   | DivOp -> "/"
   | ExpOp -> "^"
-  | InOp -> "<-"
 
 let string_of_cmpop = function
   | EqOp -> "="
@@ -150,6 +149,8 @@ and string_of_exp e =
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
+  | ElementsOfE (e1, e2) ->
+    string_of_exp e1 ^ "<-" ^ string_of_exp e2
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
   | CaseE (atom, e1) ->
     string_of_atom atom ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1

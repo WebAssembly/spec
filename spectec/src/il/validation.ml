@@ -207,7 +207,7 @@ let infer_unop = function
   | PlusOp | MinusOp -> NatT
 
 let infer_binop = function
-  | AndOp | OrOp | ImplOp | EquivOp | InOp -> BoolT
+  | AndOp | OrOp | ImplOp | EquivOp -> BoolT
   | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
 
 let infer_cmpop = function
@@ -322,6 +322,7 @@ and infer_exp env e : typ =
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
+  | ElementsOfE _ -> BoolT $ e.at
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
   | SubE _ -> error e.at "cannot infer type of subsumption"
@@ -423,6 +424,8 @@ and valid_exp env e t =
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp env eI t1) es
+  | ElementsOfE _ ->
+      prerr_endline "TODO: Add validation"
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
