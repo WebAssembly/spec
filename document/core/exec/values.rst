@@ -40,6 +40,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval t.\CONST~c : t
    }
 
+
 .. _valid-ref:
 
 :ref:`Null References <syntax-ref>` :math:`\REFNULL~t`
@@ -65,6 +66,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
    That ensures that it is compatible with any nullable type in that hierarchy.
 
 
+.. _valid-ref.i31:
+
 :ref:`Scalar References <syntax-ref>` :math:`\REFI31~i`
 .......................................................
 
@@ -76,6 +79,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval \REFI31~i : \REF~\I31
    }
 
+
+.. _valid-ref.struct:
 
 :ref:`Structure References <syntax-ref>` :math:`\REFSTRUCTADDR~a`
 .................................................................
@@ -95,6 +100,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval \REFSTRUCTADDR~a : \REF~\structtype
    }
 
+
+.. _valid-ref.array:
 
 :ref:`Array References <syntax-ref>` :math:`\REFARRAYADDR~a`
 ............................................................
