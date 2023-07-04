@@ -285,8 +285,8 @@ exp_prim_ :
     }
   | TICK LPAR exp RPAR { BrackE (Paren, $3) }
   | TICK LBRACK exp RBRACK { BrackE (Brack, $3) }
-  | TICK LBRACK exp BAR exp RBRACK { ListBuilderE ($3, $5) }
   | TICK LBRACE exp RBRACE { BrackE (Brace, $3) }
+  | TICK LBRACK exp BAR exp RBRACK { ListBuilderE ($3, $5) }
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 
