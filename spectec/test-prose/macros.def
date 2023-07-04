@@ -332,6 +332,12 @@
 .. |OFFSET| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{offset}}
 .. |ALIGN| mathdef:: \xref{syntax/instructions}{syntax-instr-memory}{\K{align}}
 
+.. |UNOP| mathdef:: {\K{unop}}
+.. |BINOP| mathdef:: {\K{binop}}
+.. |TESTOP| mathdef:: {\K{testop}}
+.. |RELOP| mathdef:: {\K{relop}}
+.. |CVTOP| mathdef:: {\K{cvtop}}
+
 .. |UNREACHABLE| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{unreachable}}
 .. |NOP| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{nop}}
 .. |BLOCK| mathdef:: \xref{syntax/instructions}{syntax-instr-control}{\K{block}}
@@ -525,7 +531,7 @@
 .. |instr| mathdef:: \xref{syntax/instructions}{syntax-instr}{\X{instr}}
 .. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
 
-
+.. |nt| mathdef:: {\X{nt}}
 
 .. Binary Format
 .. -------------

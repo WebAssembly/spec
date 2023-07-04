@@ -78,7 +78,13 @@ let render_al_mathop = function
 
 let rec render_name = function
   | Al.Ast.N s ->
-      if String.length s > 1 then
+      let sprefix = 
+        if String.contains s '_' then (
+          let i = String.index s '_' in
+          String.sub s 0 i)
+        else s
+      in
+      if String.length sprefix > 1 then
         sprintf "\\%s" s
       else
         s
@@ -193,10 +199,7 @@ let rec render_expr in_math = function
   | Al.Ast.ConstructE (s, es) ->
       let s = String.uppercase_ascii s in
       let ses = render_list (render_expr true) "" "~" "" es in
-      let s =
-        sprintf "\\%s~%s" s ses ^
-        if List.length es > 1 then "~\\END" else ""
-      in
+      let s = sprintf "\\%s~%s" s ses in
       if in_math then s else render_math s
   | Al.Ast.OptE (Some e) -> "(" ^ render_expr in_math e ^ ")^?"
   | Al.Ast.OptE None -> "()^?"
@@ -398,7 +401,8 @@ let rec render_params in_math = function
 
 (* Prose *)
 
-let render_title name params = render_expr false (Al.Ast.ConstructE (name, params))
+let render_title name params =
+  render_expr false (Al.Ast.ConstructE (name, params))
 
 let render_pred name params instrs =
   let prefix = "validation_of_" in

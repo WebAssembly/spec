@@ -15,21 +15,31 @@ Numeric Instructions
 
 .. _exec-unop:
 
+%{prose-rule: unop}
+
 $${rule+: Step_pure/unop-*}
 
 .. _exec-binop:
+
+%{prose-rule: binop}
 
 $${rule+: Step_pure/binop-*}
 
 .. _exec-testop:
 
+%{prose-rule: testop}
+
 $${rule+: Step_pure/testop}
 
 .. _exec-relop:
 
+%{prose-rule: relop}
+
 $${rule+: Step_pure/relop}
 
 .. _exec-cvtop:
+
+%{prose-rule: cvtop}
 
 $${rule+: Step_pure/cvtop-*}
 
@@ -69,6 +79,8 @@ Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. _exec-local.get:
+
+%{prose-rule: local.get}
 
 $${rule+: Step_read/local.get}
 
