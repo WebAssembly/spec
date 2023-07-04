@@ -121,12 +121,12 @@ and exp' =
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | InfixE of exp * atom * exp   (* exp atom exp *)
   | BrackE of brack * exp        (* ``` ([{ exp }]) *)
-  | ListBuilderE of exp * exp    (* ``` [ exp : exp ] *)
   | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
   | HoleE of bool                (* `%` or `%%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
   | ElementsOfE of exp * exp     (* exp <- exp *)
+  | ListBuilderE of exp * exp    (* ``` [ exp : exp ] *)
 
 and expfield = atom * exp        (* atom exp *)
 

@@ -427,7 +427,7 @@ and valid_exp env e t =
     List.iter (fun eI -> valid_exp env eI t1) es
   | ElementsOfE _
   | ListBuilderE _ ->
-      prerr_endline "TODO: Add validation"
+      failwith "TODO: Add validation"
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
