@@ -18,6 +18,13 @@ let union sets1 sets2 =
     defid = Set.union sets1.defid sets2.defid;
   }
 
+let diff sets1 sets2 =
+  { synid = Set.diff sets1.synid sets2.synid;
+    relid = Set.diff sets1.relid sets2.relid;
+    varid = Set.diff sets1.varid sets2.varid;
+    defid = Set.diff sets1.defid sets2.defid;
+  }
+
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
 
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
@@ -69,6 +76,7 @@ and free_exp e =
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
+  | ListBuilderE (e1, e2) -> diff (free_exp e1) (free_exp e2)
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
   | InfixE (e1, _, e2) | FuseE (e1, e2) | ElementsOfE (e1, e2) ->

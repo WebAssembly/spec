@@ -6,10 +6,10 @@ def $globals(externval*) : globaladdr*
 def $tables(externval*) : tableaddr*
 def $mems(externval*) : memaddr*
 
-def $funcs(externval*) = `[fa:FUNC fa <- externval]
-def $globals(externval*) = `[ga:GLOBAL ga <- externval]
-def $tables(externval*) = `[ta:TABLE ta <- externval]
-def $mems(externval*) = `[ma:MEM ma <- externval]
+def $funcs(externval*) = `[fa|FUNC fa <- externval]
+def $globals(externval*) = `[ga|GLOBAL ga <- externval]
+def $tables(externval*) = `[ta|TABLE ta <- externval]
+def $mems(externval*) = `[ma|MEM ma <- externval]
 
 
 def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst

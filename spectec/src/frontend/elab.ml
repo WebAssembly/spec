@@ -478,6 +478,7 @@ and infer_exp env e : typ =
   | CallE (id, _) -> let _, t2, _ = find "function" env.defs id in t2
   | InfixE _ -> error e.at "cannot infer type of infix expression"
   | BrackE _ -> error e.at "cannot infer type of bracket expression"
+  | ListBuilderE _ -> error e.at "cannot infer type of bracket expression"
   | IterE (e1, iter) ->
     let iter' = match iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
@@ -629,6 +630,14 @@ and elab_exp env e t : Il.exp =
         (fst (as_variant_typ "" env Check t e.at)) t e.at
     else
       error_typ e.at "expression" t
+  | ListBuilderE (e1, e2) ->
+    let t1, iter = as_iter_typ "iteration" env Check t e.at in
+    if iter <> List then
+      error_typ e.at "iteration expression" t;
+    (* it should be handled in notation *)
+    let e1' = elab_exp env e1 t1 in
+    let e2' = elab_exp env e2 (BoolT $ e2.at) in
+    Il.ListBuilderE (e1', e2') $$ e.at % !!env t
   | IterE (e1, iter2) ->
     (* An iteration expression must match the expected type directly,
      * significant parentheses have to be used otherwise *)
@@ -697,8 +706,7 @@ and elab_exp_iter env es (t1, iter) t at : Il.exp =
   | _, _ ->
     error_typ at "expression" t
 
-and elab_exp_notation env e nt t : Il.exp =
-  (*
+and elab_exp_notation env e nt t : Il.exp = (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)

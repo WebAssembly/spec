@@ -168,6 +168,8 @@ and t_exp' env e : binds * exp' =
   | ListE es -> t_list t_exp env es (fun es' -> ListE es')
   | ElementsOfE (exp1, exp2) ->
       t_ee env (exp1, exp2) (fun (e1', e2') -> ElementsOfE (e1', e2'))
+  | ListBuilderE (exp1, exp2) ->
+      t_ee env (exp1, exp2) (fun (e1', e2') -> ListBuilderE (e1', e2'))
 
   | IterE (e, iterexp) ->
     let binds1, e' = t_exp env e in

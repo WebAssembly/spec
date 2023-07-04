@@ -43,8 +43,8 @@ let atom_vars = ref VarSet.empty
 type prec = Op | Seq | Post | Prim
 
 let prec_of_exp = function  (* as far as iteration is concerned *)
-  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
-  | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
+  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _ | ParenE _
+  | TupE _ | BrackE _ | ListBuilderE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _
@@ -285,6 +285,7 @@ exp_prim_ :
     }
   | TICK LPAR exp RPAR { BrackE (Paren, $3) }
   | TICK LBRACK exp RBRACK { BrackE (Brack, $3) }
+  | TICK LBRACK exp BAR exp RBRACK { ListBuilderE ($3, $5) }
   | TICK LBRACE exp RBRACE { BrackE (Brace, $3) }
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
