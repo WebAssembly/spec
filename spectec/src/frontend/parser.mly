@@ -343,6 +343,7 @@ exp_bin_ :
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, ImplOp, $3) }
   | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
+  | exp_bin IN exp_bin { BinE ($1, InOp, $3) }
 
 exp_rel : exp_rel_ { $1 $ at $sloc }
 exp_rel_ :
@@ -361,7 +362,6 @@ exp_rel_ :
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
   | exp_rel TILESTURN exp_rel { InfixE ($1, Tilesturn, $3) }
   | exp_rel TURNSTILE exp_rel { InfixE ($1, Turnstile, $3) }
-  | exp_rel IN exp_rel { InfixE ($1, In, $3) }
 
 exp : exp_rel { $1 }
 

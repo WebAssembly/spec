@@ -23,7 +23,6 @@ type atom =
   | SqArrow                      (* `~>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
-  | In                           (* `<-` *)
   | LParen                       (* `(` *)
   | LBrack                       (* `[` *)
   | LBrace                       (* `{` *)
@@ -84,6 +83,7 @@ and binop =
   | MulOp  (* `*` *)
   | DivOp  (* `/` *)
   | ExpOp  (* `^` *)
+  | InOp   (* `<-` *)
 
 and cmpop =
   | EqOp (* `=` *)
