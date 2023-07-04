@@ -7,7 +7,7 @@ type anchor =
   }
 
 type config =
-  { 
+  {
     (* Anchor token for splices (default: "@@"/"@@@") *)
     anchors : anchor list;
 
@@ -25,7 +25,7 @@ type t = config
 
 
 let default =
-  { anchors = [];
+  { anchors = [ {token = "%"; prefix = ""; suffix = ""; indent = ""} ];
     macros_for_ids = false;
     macros_for_vdash = false;
     include_grammar_desc = false;
@@ -33,7 +33,7 @@ let default =
 
 let latex =
   { default with
-    anchors = [
+    anchors = default.anchors @ [
       {token = "@@"; prefix = "$"; suffix ="$"; indent = ""};
       {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
     ]
@@ -41,7 +41,7 @@ let latex =
 
 let sphinx =
   { default with
-    anchors = [
+    anchors = default.anchors @ [
       {token = "$"; prefix = ":math:`"; suffix ="`"; indent = ""};
       {token = "$$"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
     ]

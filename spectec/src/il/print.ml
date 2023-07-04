@@ -276,7 +276,7 @@ let structured_string_of_hint hint =
 let structured_string_of_hints hints =
     structured_string_of_list structured_string_of_hint hints
 
-let structured_string_of_hintdef hintdef = 
+let structured_string_of_hintdef hintdef =
   match hintdef.it with
   | SynH (id, hints) -> sprintf "SynH (%s, %s)" id.it (structured_string_of_list structured_string_of_hint hints)
   | RelH (id, hints) -> sprintf "RelH (%s, %s)" id.it (structured_string_of_list structured_string_of_hint hints)

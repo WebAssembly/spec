@@ -3,7 +3,7 @@ open Printf
 
 (* Helpers *)
 
-let indent = "  "
+let indent = "   "
 
 let rec repeat str num =
   if num = 0 then ""
@@ -29,7 +29,7 @@ let render_order index depth =
   | 1 -> alp_idx ^ "."
   | 2 -> num_idx ^ ")"
   | 3 -> alp_idx ^ ")"
-  | _ -> failwith "unreachable" 
+  | _ -> failwith "unreachable"
 
 let render_list stringifier left sep right = function
   | [] -> left ^ right
@@ -77,9 +77,9 @@ let render_al_mathop = function
 (* Names and Iters *)
 
 let rec render_name = function
-  | Al.Ast.N s -> 
+  | Al.Ast.N s ->
       if String.length s > 1 then
-        sprintf "\\%s" s 
+        sprintf "\\%s" s
       else
         s
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name n) s
@@ -95,11 +95,11 @@ let render_iters iters = List.map render_iter iters |> List.fold_left (^) ""
 (* Expressions and Paths *)
 
 let rec render_expr in_math = function
-  | Al.Ast.NumE i -> 
+  | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
   | Al.Ast.StringE s -> s
-  | Al.Ast.MinusE e -> 
+  | Al.Ast.MinusE e ->
       let se = render_expr in_math e in
       let s = sprintf "-%s" se in
       if in_math then s else render_math s
@@ -109,7 +109,7 @@ let rec render_expr in_math = function
       let se2 = render_expr true e2 in
       let s = sprintf "%s%s%s" se1 sop se2 in
       if in_math then s else render_math s
-  | Al.Ast.PairE (e1, e2) -> 
+  | Al.Ast.PairE (e1, e2) ->
       let se1 = render_expr true e1 in
       let se2 = render_expr true e2 in
       let s = sprintf "%s~%s" se1 se2 in
@@ -132,7 +132,7 @@ let rec render_expr in_math = function
       sprintf "%s~%s" (render_expr in_math e1) (render_expr in_math (List.hd e2))
   | Al.Ast.ConcatE (e1, e2) ->
       sprintf "%s~%s" (render_expr in_math e1) (render_expr in_math e2)
-  | Al.Ast.LengthE e -> 
+  | Al.Ast.LengthE e ->
       let se = render_expr true e in
       "the length of " ^
       if in_math then se else render_math se
@@ -145,12 +145,12 @@ let rec render_expr in_math = function
         (render_expr in_math e1)
   | Al.Ast.ListE el -> render_list (render_expr in_math) "[" "~" "]" el
   | Al.Ast.ListFillE (e1, e2) -> render_expr in_math e1 ^ "^" ^ render_expr in_math e2
-  | Al.Ast.AccessE (e, p) -> 
+  | Al.Ast.AccessE (e, p) ->
       let se = render_expr true e in
       let sp = render_path true p in
       let s = sprintf "%s%s" se sp in
       if in_math then s else render_math s
-  | Al.Ast.ExtendE (e1, ps, e2, dir) -> 
+  | Al.Ast.ExtendE (e1, ps, e2, dir) ->
       let se1 = render_expr in_math e1 in
       let sps = render_paths in_math ps in
       let se2 = render_expr in_math e2 in
@@ -161,7 +161,7 @@ let rec render_expr in_math = function
       sprintf "%s with %s replaced by %s" (render_expr in_math e1) (render_paths in_math ps) (render_expr in_math e2)
   | Al.Ast.RecordE r ->
       let keys = Al.Record.Record.keys r in
-      let sfields = 
+      let sfields =
         List.map
           (fun k ->
             let v = Al.Record.Record.find k r in
@@ -173,10 +173,10 @@ let rec render_expr in_math = function
   | Al.Ast.ContE e -> sprintf "the continuation of %s" (render_expr in_math e)
   | Al.Ast.LabelE (e1, e2) ->
       sprintf "the label whose arity is %s and whose continuation is %s" (render_expr in_math e1) (render_expr in_math e2)
-  | Al.Ast.NameE n -> 
+  | Al.Ast.NameE n ->
       let sn = render_name n in
-      if in_math then sn else render_math sn 
-  | Al.Ast.IterE (Al.Ast.NameE n, iter) -> 
+      if in_math then sn else render_math sn
+  | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
       let sn = render_name n in
       let siter = render_iter iter in
       let s = sprintf "%s%s" sn siter in
@@ -190,11 +190,11 @@ let rec render_expr in_math = function
   | Al.Ast.ConstructE (s, []) ->
       let s = sprintf "\\%s" (String.uppercase_ascii s) in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (s, es) -> 
+  | Al.Ast.ConstructE (s, es) ->
       let s = String.uppercase_ascii s in
       let ses = render_list (render_expr true) "" "~" "" es in
-      let s = 
-        sprintf "\\%s~%s" s ses ^ 
+      let s =
+        sprintf "\\%s~%s" s ses ^
         if List.length es > 1 then "~\\END" else ""
       in
       if in_math then s else render_math s
@@ -202,7 +202,7 @@ let rec render_expr in_math = function
   | Al.Ast.OptE None -> "()^?"
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
 
-and render_path in_math = function 
+and render_path in_math = function
   | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr in_math e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr in_math e1) (render_expr in_math e2)
@@ -212,7 +212,7 @@ and render_paths in_math paths = List.map (render_path in_math) paths |> List.fo
 
 (* Conditions *)
 
-and render_cond in_math = function 
+and render_cond in_math = function
   | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" (render_expr in_math e) c
   | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
@@ -243,7 +243,7 @@ let rec render_prose_instr depth = function
         (String.capitalize_ascii (render_expr false e1))
         (render_prose_cmpop cmpop)
         (render_expr false e2)
-  | MustValidI (e1, e2, e3) -> 
+  | MustValidI (e1, e2, e3) ->
       sprintf "* Under the context %s, %s must be valid%s."
         (render_expr false e1)
         (render_expr false e2)
@@ -260,9 +260,9 @@ let rec render_prose_instr depth = function
         (render_cond false c)
         (render_prose_instrs (depth + 1) is)
   | ForallI (e1, e2, is) ->
-      sprintf "* For all %s in %s,%s" 
-        (render_expr false e1) 
-        (render_expr false e2) 
+      sprintf "* For all %s in %s,%s"
+        (render_expr false e1)
+        (render_expr false e2)
         (render_prose_instrs (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
@@ -393,16 +393,16 @@ and render_al_instrs depth instrs =
 
 let rec render_params in_math = function
   | [] -> ""
-  | p :: ps -> 
+  | p :: ps ->
     render_expr in_math p ^ " " ^ render_params in_math ps
 
 (* Prose *)
 
 let render_title name params = render_expr false (Al.Ast.ConstructE (name, params))
 
-let render_pred name params instrs = 
+let render_pred name params instrs =
   let prefix = "validation_of_" in
-  let name = 
+  let name =
     if String.starts_with ~prefix:prefix name then
       String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
     else
@@ -413,9 +413,9 @@ let render_pred name params instrs =
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs 0 instrs
 
-let render_algo name params instrs = 
+let render_algo name params instrs =
   let prefix = "execution_of_" in
-  let name = 
+  let name =
     if String.starts_with ~prefix:prefix name then
       String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
     else
@@ -426,15 +426,13 @@ let render_algo name params instrs =
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs 0 instrs
 
-let rec render_defs = function
-  | [] -> ""
-  | d :: ds ->
-    match d with  
-    | Pred (name, params, instrs) ->
-        "$$\n" ^ render_pred name params instrs ^ "\n$$\n\n" ^
-        render_defs ds
-    | Algo (Al.Ast.Algo (name, params, instrs)) ->
-        "$$\n" ^ render_algo name params instrs ^ "\n$$\n\n" ^
-        render_defs ds
+let render_def = function
+  | Pred (name, params, instrs) ->
+    "\n" ^ render_pred name params instrs ^ "\n\n"
+  | Algo (Al.Ast.Algo (name, params, instrs)) ->
+    "\n" ^ render_algo name params instrs ^ "\n\n"
 
-let render_prose prose = render_defs prose
+let render_prose prose = List.map render_def prose |> String.concat ""
+
+type env = prose
+let env _ = Gen.gen_prose

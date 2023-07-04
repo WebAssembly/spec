@@ -3,7 +3,7 @@
 
 type cmpop = Eq | Ne | Lt | Gt | Le | Ge
 
-type instr = 
+type instr =
 | LetI of Al.Ast.expr * Al.Ast.expr
 | CmpI of Al.Ast.expr * cmpop * Al.Ast.expr
 | MustValidI of Al.Ast.expr * Al.Ast.expr * Al.Ast.expr option

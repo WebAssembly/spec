@@ -41,7 +41,8 @@ type definition = {fdef : def; clauses : def list; use : use}
 
 type env =
   { config : config;
-    render : Backend_latex.Render.env;
+    render_latex : Backend_latex.Render.env;
+    render_prose : Backend_prose.Render.env;
     mutable syn : syntax Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
@@ -71,16 +72,17 @@ let env_def env def =
   | VarD _ | SepD | HintD _ ->
     ()
 
-let env config script : env =
+let env config el il al : env =
   let env =
     { config;
-      render = Backend_latex.Render.env config script;
+      render_latex = Backend_latex.Render.env config el;
+      render_prose = Backend_prose.Render.env config il al;
       syn = Map.empty;
       rel = Map.empty;
       def = Map.empty
     }
   in
-  List.iter (env_def env) script;
+  List.iter (env_def env) el;
   env
 
 
@@ -170,7 +172,7 @@ let rec parse_anchor_end src j depth =
 let rec parse_id' src =
   if not (eos src) then
   match get src with
-  | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' | '`' | '-' | '*' ->
+  | 'A'..'Z' | 'a'..'z' | '0'..'9' | '_' | '\'' | '`' | '-' | '*' | '.' ->
     (adv src; parse_id' src)
   | _ -> ()
 
@@ -214,7 +216,7 @@ let try_def_anchor env src r sort space1 space2 find deco : bool =
       error src "colon `:` expected";
     let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
-    let env' = env.render
+    let env' = env.render_latex
       |> Backend_latex.Render.with_syntax_decoration deco
       |> Backend_latex.Render.with_rule_decoration deco
     in r := Backend_latex.Render.render_defs env' defs
@@ -238,16 +240,33 @@ let try_exp_anchor env src r : bool =
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in
-    r := Backend_latex.Render.render_exp env.render exp
+    r := Backend_latex.Render.render_exp env.render_latex exp
   );
   b
 
+let try_prose_anchor env src r : bool =
+  let b = try_string src "prose-rule" in
+  if b then (
+    parse_space src;
+    if not (try_string src ":") then
+      error src "colon `:` expected";
+    parse_space src;
+    let instr_name = parse_id src "instrname" in
+    if not (try_string src "}") then
+      error src "closing bracket `}` expected";
+    let algo_name = "execution_of_" ^ instr_name in
+    let algo = List.find (function
+      | Backend_prose.Prose.Algo (Al.Ast.Algo (name, _, _)) when name = algo_name -> true
+      | _ -> false
+    ) env.render_prose in
+    r := Backend_prose.Render.render_def algo
+  );
+  b
 
 (* Splicing *)
 
 let splice_anchor env src anchor buf =
   parse_space src;
-  Buffer.add_string buf anchor.prefix;
   let r = ref "" in
   ignore (
     try_exp_anchor env src r ||
@@ -257,12 +276,14 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
     try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
     try_def_anchor env src r "definition" "definition" "" find_func false ||
+    try_prose_anchor env src r ||
     error src "unknown definition sort";
   );
   let s =
     if anchor.indent = "" then !r else
     Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
   in
+  Buffer.add_string buf anchor.prefix;
   Buffer.add_string buf s;
   Buffer.add_string buf anchor.suffix
 

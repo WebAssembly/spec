@@ -28,18 +28,19 @@ $(OUTNAME).rst: $(INNAME).rst $(SPECFILES) $(EXE)
 
 sphinx-splice: html pdf
 
-html: $(OUTNAME).rst conf.py
+html: $(OUTNAME).rst conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
-	cp $(OUTNAME).rst conf.py $(SPHINXDIR)
+	cp $^ $(SPHINXDIR)
 	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
 	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(OUTNAME).html >$(OUTNAME).html.tmp
 	mv -f $(OUTNAME).html.tmp $(SPHINXDIR)/_build/$(OUTNAME).html
 
-pdf: $(OUTNAME).rst conf.py
+pdf: $(OUTNAME).rst conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
-	cp $(OUTNAME).rst conf.py $(SPHINXDIR)
+	cp $^ $(SPHINXDIR)
 	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(OUTNAME).tex)
+	cp $(SPHINXDIR)/_build/prose.pdf .
 
 # Cleanup
 

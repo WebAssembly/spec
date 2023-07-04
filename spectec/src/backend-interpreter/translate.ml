@@ -134,7 +134,7 @@ let rec exp2expr exp =
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
-  | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) -> 
+  | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
       let nonempty = function ListE [] | OptE None -> false | _ -> true in
       List.fold_left

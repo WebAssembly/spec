@@ -183,10 +183,10 @@ let () =
       print_endline "=================";
       print_endline (Backend_prose.Print.string_of_prose prose);
     | Splice config ->
-        let _al = if not (PS.mem Animate !selected_passes) then [] else
+        let al = if not (PS.mem Animate !selected_passes) then [] else
           Backend_interpreter.Translate.translate il
           @ Backend_interpreter.Manual.manual_algos in
-        let env = Backend_splice.Splice.(env config el) in
+        let env = Backend_splice.Splice.(env config el il al) in
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
         if !warn then Backend_splice.Splice.warn env;
