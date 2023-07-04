@@ -257,6 +257,8 @@ warning: definition `data` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `ext` was never spliced
 warning: definition `global` was never spliced
+warning: definition `grow_memory` was never spliced
+warning: definition `grow_table` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `min` was never spliced
@@ -268,9 +270,9 @@ warning: definition `with_elem` was never spliced
 warning: definition `with_global` was never spliced
 warning: definition `with_local` was never spliced
 warning: definition `with_mem` was never spliced
-warning: definition `with_memext` was never spliced
+warning: definition `with_meminst` was never spliced
 warning: definition `with_table` was never spliced
-warning: definition `with_tableext` was never spliced
+warning: definition `with_tableinst` was never spliced
 warning: definition `wrap_` was never spliced
 == Complete.
 ```

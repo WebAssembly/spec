@@ -9,9 +9,9 @@ watsup 0.3 generator
 == Running pass sideconditions
 == IL Validation...
 == Running pass animate
-Animation failed:if ($funcinst(z)[a] = `%;%`(m, `FUNC%%*%`(ft', t*{t}, instr*{instr})))
-Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0)[(i + n_O) : ($size(nt <: valtype) / 8)])
-Animation failed:if ($bytes_(n, c) = $mem(z, 0)[(i + n_O) : (n / 8)])
+Animation failed:if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(ft', t*{t}, instr*{instr}))
+Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0).DATA_meminst[(i + n_O) : ($size(nt <: valtype) / 8)])
+Animation failed:if ($bytes_(n, c) = $mem(z, 0).DATA_meminst[(i + n_O) : (n / 8)])
 == IL Validation...
 == Prose Generation...
 unreachable
@@ -175,7 +175,7 @@ local.get
 1. Push YetE (($local(z, x) <: admininstr)) to the stack.
 
 global.get
-1. Push YetE (($global(z, x) <: admininstr)) to the stack.
+1. Push YetE (($global(z, x).VALUE_globalinst <: admininstr)) to the stack.
 
 table.get
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
@@ -183,7 +183,7 @@ table.get
 3. If YetC (), then:
   a. Trap.
 4. If YetC (), then:
-  a. Push YetE (($table(z, x)[i] <: admininstr)) to the stack.
+  a. Push YetE (($table(z, x).ELEM_tableinst[i] <: admininstr)) to the stack.
 
 table.size
 1. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
@@ -251,7 +251,7 @@ table.init
   a. Do nothing.
 9. If YetC (), then:
   a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (($elem(z, y)[i] <: admininstr)) to the stack.
+  b. Push YetE (($elem(z, y).ELEM_eleminst[i] <: admininstr)) to the stack.
   c. Execute (TABLE.SET YetE (x)).
   d. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
   e. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
@@ -336,7 +336,7 @@ memory.init
   a. Do nothing.
 9. If YetC (), then:
   a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, $data(z, x)[i])) to the stack.
+  b. Push YetE (CONST_admininstr(I32_numtype, $data(z, x).DATA_datainst[i])) to the stack.
   c. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
   d. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
   e. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
@@ -370,8 +370,8 @@ table.grow
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop YetE ((ref <: admininstr)) from the stack.
 5. If YetC (), then:
-  a. YetI: Perform $with_tableext(z, x, ref^n{}).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x)|)) to the stack.
+  a. YetI: Perform $with_tableinst(z, x, ti).
+  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)) to the stack.
 6. If YetC (), then:
   a. YetI: Perform z.
   b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
@@ -399,8 +399,8 @@ memory.grow
 1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
 2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
 3. If YetC (), then:
-  a. YetI: Perform $with_memext(z, 0, 0^((n * 64) * $Ki){}).
-  b. Push YetE (CONST_admininstr(I32_numtype, (|$mem(z, 0)| / (64 * $Ki)))) to the stack.
+  a. YetI: Perform $with_meminst(z, 0, mi).
+  b. Push YetE (CONST_admininstr(I32_numtype, (|$mem(z, 0).DATA_meminst| / (64 * $Ki)))) to the stack.
 4. If YetC (), then:
   a. YetI: Perform z.
   b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
