@@ -207,7 +207,7 @@ let infer_unop = function
   | PlusOp | MinusOp -> NatT
 
 let infer_binop = function
-  | AndOp | OrOp | ImplOp | EquivOp -> BoolT
+  | AndOp | OrOp | ImplOp | EquivOp | InOp -> BoolT
   | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
 
 let infer_cmpop = function

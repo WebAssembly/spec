@@ -25,7 +25,6 @@ let string_of_atom = function
   | SqArrow -> "~>"
   | Tilesturn -> "-|"
   | Turnstile -> "|-"
-  | In -> "<-"
   | LParen -> "("
   | LBrack -> "["
   | LBrace -> "{"
@@ -50,6 +49,7 @@ let string_of_binop = function
   | MulOp -> "*"
   | DivOp -> "/"
   | ExpOp -> "^"
+  | InOp -> "<-"
 
 let string_of_cmpop = function
   | EqOp -> "="

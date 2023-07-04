@@ -278,7 +278,6 @@ let elab_atom = function
   | SqArrow -> Il.SqArrow
   | Turnstile -> Il.Turnstile
   | Tilesturn -> Il.Tilesturn
-  | In -> Il.In
 
 let elab_brack = function
   | Paren -> Il.LParen, Il.RParen
@@ -300,6 +299,7 @@ let elab_binop = function
   | MulOp -> Il.MulOp
   | DivOp -> Il.DivOp
   | ExpOp -> Il.ExpOp
+  | InOp -> Il.InOp
 
 let elab_cmpop = function
   | EqOp -> Il.EqOp
@@ -443,7 +443,7 @@ and infer_unop = function
   | PlusOp | MinusOp -> NatT
 
 and infer_binop = function
-  | AndOp | OrOp | ImplOp | EquivOp -> BoolT
+  | AndOp | OrOp | ImplOp | EquivOp | InOp -> BoolT
   | AddOp | SubOp | MulOp | DivOp | ExpOp -> NatT
 
 and infer_cmpop = function
