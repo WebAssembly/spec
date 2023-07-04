@@ -68,7 +68,7 @@ let to_right_assoc_cat =
   transform_expr rotate_cw
 
 (** Unifying lhs **)
-let unified_prefix = "_x"
+let unified_prefix = "x_"
 let _unified_id = ref 0
 let init_unified_id () = _unified_id := 0
 let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i

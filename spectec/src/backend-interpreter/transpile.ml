@@ -290,7 +290,7 @@ let app_remover algo =
     extra @ [i] in
 
   let call_id = ref 0 in
-  let call_prefix = "_r" in
+  let call_prefix = "r_" in
   let get_fresh () =
     let id = !call_id in
     call_id := id + 1;
