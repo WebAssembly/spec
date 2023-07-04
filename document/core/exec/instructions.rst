@@ -788,23 +788,25 @@ Reference Instructions
 
 11. Pop the value :math:`(\I32.\CONST~s)` from the stack.
 
-12. Let :math:`z` be the :ref:`size <aux-size-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}`.
+12. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`size <aux-size-fieldtype>`.
 
-13. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
+13. Let :math:`z` be the :ref:`size <aux-size-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}`.
+
+14. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
 
     a. Trap.
 
-14. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice n \cdot z]`.
+15. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice n \cdot z]`.
 
-15. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft})`.
+16. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft})`.
 
-16. For each consecutive subsequence :math:`{b'}^n` of :math:`b^\ast`:
+17. For each consecutive subsequence :math:`{b'}^n` of :math:`b^\ast`:
 
     a. Let :math:`k_i` be the integer for which :math:`\bytes_{\X{ft}}(k_i)` is :math:`{b'}^n`.
 
     b. Push the value :math:`(t.\CONST~k_i)` to the stack.
 
-17. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+18. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
 
 .. math::
    ~\\[-1ex]
