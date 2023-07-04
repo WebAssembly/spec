@@ -83,7 +83,6 @@ and binop =
   | MulOp  (* `*` *)
   | DivOp  (* `/` *)
   | ExpOp  (* `^` *)
-  | InOp   (* `<-` *)
 
 and cmpop =
   | EqOp (* `=` *)
@@ -120,6 +119,7 @@ and exp' =
   | CatE of exp * exp            (* exp :: exp *)
   | CaseE of atom * exp          (* atom exp *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
+  | ElementsOfE of exp * exp     (* exp <- exp *)
 
 and expfield = atom * exp        (* atom exp *)
 

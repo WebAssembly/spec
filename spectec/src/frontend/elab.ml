@@ -640,8 +640,11 @@ and elab_exp env e t : Il.exp =
     Il.IterE (e1', iter2') $$ e.at % !!env t
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
-  | ElementsOfE _ ->
-      failwith "TODO: elab_exp ElementsOfE"
+  | ElementsOfE (e1, e2) ->
+      let t' = infer_exp env e2 in
+      let e1' = elab_exp env e1 t' in
+      let e2' = elab_exp env e2 t' in
+      Il.ElementsOfE (e1', e2') $$ e.at % !!env t
 
 and elab_exps env es ts at : Il.exp list =
   if List.length es <> List.length ts then
