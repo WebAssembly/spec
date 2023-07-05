@@ -336,7 +336,11 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN e -> Il.ListN (elab_exp env e (NatT $ e.at))
+  | ListN e ->
+    match e.it with
+    | ParenE ({ it = CmpE _; _}, _) ->
+      Il.ListN (elab_exp env e (BoolT $ e.at))
+    | _ -> Il.ListN (elab_exp env e (NatT $ e.at))
 
 
 (* Types *)

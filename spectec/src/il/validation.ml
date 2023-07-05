@@ -241,7 +241,10 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN e -> valid_exp env e (NatT $ e.at)
+  | ListN e ->
+    match e.it with
+    | CmpE _ -> valid_exp env e (BoolT $ e.at)
+    | _ -> valid_exp env e (NatT $ e.at)
 
 
 (* Types *)
