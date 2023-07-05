@@ -3,6 +3,15 @@ open Printf
 
 (* Helpers *)
 
+(* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
+   such that it is macro-compatible *)
+let escape_macro s = 
+  let escape acc c =
+    if c = '.' || c = '_' then acc
+    else acc ^ (String.make 1 c) 
+  in
+  String.fold_left escape "" s
+
 let indent = "   "
 
 let rec repeat str num =
@@ -77,6 +86,8 @@ let render_al_mathop = function
 (* Names and Iters *)
 
 let rec render_name = function
+  | Al.Ast.N "the label" -> "\\label"
+  | Al.Ast.N "the frame" -> "\\frame"
   | Al.Ast.N s ->
       let sprefix = 
         if String.contains s '_' then (
@@ -121,14 +132,16 @@ let rec render_expr in_math = function
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.AppE (n, es) ->
-      let sn = render_name n in
+      let sn = escape_macro (render_name n) in
       let ses = render_list (render_expr true) "" ", " "" es in
       let s = sprintf "%s(%s)" sn ses in
       if in_math then s else render_math s
-  | Al.Ast.MapE (n, el, iters) ->
-      sprintf "$%s(%s)%s" (render_name n)
-        (render_list (render_expr in_math) "" ", " "" el)
-        (render_iters iters)
+  | Al.Ast.MapE (n, es, iters) ->
+      let sn = escape_macro (render_name n) in
+      let ses = render_list (render_expr true) "" ", " "" es in
+      let siters = render_iters iters in
+      let s = sprintf "(%s(%s))%s" sn ses siters in
+      if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
       sprintf "%s~%s" (render_expr in_math (List.hd e1)) (render_expr in_math (List.hd e2))
@@ -194,12 +207,12 @@ let rec render_expr in_math = function
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.ConstructE (s, []) ->
-      let s = sprintf "\\%s" (String.uppercase_ascii s) in
+      let s = render_name (N (escape_macro (String.uppercase_ascii s))) in
       if in_math then s else render_math s
   | Al.Ast.ConstructE (s, es) ->
-      let s = String.uppercase_ascii s in
+      let s = render_name (N (escape_macro (String.uppercase_ascii s))) in
       let ses = render_list (render_expr true) "" "~" "" es in
-      let s = sprintf "\\%s~%s" s ses in
+      let s = sprintf "%s~%s" s ses in
       if in_math then s else render_math s
   | Al.Ast.OptE (Some e) -> "(" ^ render_expr in_math e ^ ")^?"
   | Al.Ast.OptE None -> "()^?"
