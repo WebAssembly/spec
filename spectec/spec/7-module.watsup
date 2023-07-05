@@ -19,23 +19,56 @@ def $instexport(fa*, ga*, ta*, ma*, EXPORT name (TABLE x)) = { NAME name, VALUE 
 def $instexport(fa*, ga*, ta*, ma*, EXPORT name (MEM x)) = { NAME name, VALUE (MEM ma*[x]) }
 
 
-def $allocfunc(moduleinst, func) : funcinst
-def $allocfunc(m, func) = { MODULE m, CODE func }
+def $allocfunc(store, moduleinst, func) : store
+def $allocfunc(s, m, func) = s[.FUNC =.. fi]
+  --if fi = { MODULE m, CODE func }
 
-def $allocglobal(globaltype, val) : globalinst
-def $allocglobal(globaltype, val) = { TYPE globaltype, VALUE val }
+def $allocfuncs(store, moduleinst, func*) : store
+def $allocfuncs(s, m, epsilon) = s
+def $allocfuncs(s, m, func func'*) = $allocfuncs($allocfunc(s, m, func), m, func'*)
 
-def $alloctable(tabletype) : tableinst
-def $alloctable(`[i .. j] rt) = { TYPE (`[i .. j] rt), ELEM (REF.NULL rt)^i }
+def $allocglobal(store, globaltype, val) : store
+def $allocglobal(s, globaltype, val) = s[.GLOBAL =.. gi]
+  -- if gi = { TYPE globaltype, VALUE val }
 
-def $allocmem(memtype) : meminst
-def $allocmem(`[i .. j] I8) = { TYPE (`[i .. j] I8), DATA 0^(i * 64 * $Ki()) }
+def $allocglobals(store, globaltype*, val*) : store
+def $allocglobals(s, epsilon, epsilon) = s
+def $allocglobals(s, globaltype globaltype'*, val val'*) =
+  $allocglobals($allocglobal(s, globaltype, val), globaltype'*, val'*)
 
-def $allocelem(reftype, ref*) : eleminst
-def $allocelem(rt, ref*) = { TYPE rt, ELEM ref* }
+def $alloctable(store, tabletype) : store
+def $alloctable(s, `[i .. j] rt) = s[.TABLE =.. ti]
+  -- if ti = { TYPE (`[i .. j] rt), ELEM (REF.NULL rt)^i }
 
-def $allocdata(byte*) : datainst
-def $allocdata(byte*) = { DATA byte* }
+def $alloctables(store, tabletype*) : store
+def $alloctables(s, epsilon) = s
+def $alloctables(s, tabletype tabletype'*) =
+  $alloctables($alloctable(s, tabletype), tabletype'*)
+
+def $allocmem(store, memtype) : store
+def $allocmem(s, `[i .. j] I8) = s[.MEM =.. mi]
+  -- if mi = { TYPE (`[i .. j] I8), DATA 0^(i * 64 * $Ki()) }
+
+def $allocmems(store, memtype*) : store
+def $allocmems(s, epsilon) = s
+def $allocmems(s, memtype memtype'*) = $allocmems($allocmem(s, memtype), memtype'*)
+
+def $allocelem(store, reftype, ref*) : store
+def $allocelem(s, rt, ref*) = s[.ELEM =.. ei]
+  -- if ei = { TYPE rt, ELEM ref* }
+
+def $allocelems(store, reftype*, (ref*)*) : store
+def $allocelems(s, epsilon, epsilon) = s
+def $allocelems(s, rt rt'*, ref* ref'**) =
+  $allocelems($allocelem(s, rt, ref*), rt'*, ref'**)
+
+def $allocdata(store, byte*) : store
+def $allocdata(s, byte*) = s[.DATA =.. di]
+  -- if di = { DATA byte* }
+
+def $allocdatas(store, byte**) : store
+def $allocdatas(s, epsilon) = s
+def $allocdatas(s, byte* byte'**) = $allocdatas($allocdata(s, byte*), byte'**)
 
 
 def $allocmodule(store, module, externval*, val*, (ref*)*) : (store, moduleinst)
@@ -43,24 +76,24 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if module =
     MODULE
       import*
-      func*
-      (GLOBAL globaltype expr)*
-      (TABLE tabletype)*
-      (MEMORY memtype)*
-      (ELEM rt expr* elemmode?)*
-      (DATA byte* datamode?)*
+      func^n_func
+      (GLOBAL globaltype expr)^n_global
+      (TABLE tabletype)^n_table
+      (MEMORY memtype)^n_mem
+      (ELEM rt expr'* elemmode?)^n_elem
+      (DATA byte* datamode?)^n_data
       start?
       export*
   -- if fa_ex* = $funcs(externval*)
   -- if ga_ex* = $globals(externval*)
   -- if ta_ex* = $tables(externval*)
   -- if ma_ex* = $mems(externval*)
-  -- if fa* = |s.FUNC| ... $(|s.FUNC| + |func*| - 1)
-  -- if ga* = |s.GLOBAL| ... $(|s.GLOBAL| + |global*| - 1)
-  -- if ta* = |s.TABLE| ... $(|s.TABLE| + |table*| - 1)
-  -- if ma* = |s.MEM| ... $(|s.MEM| + |mem*| - 1)
-  -- if ea* = |s.ELEM| ... $(|s.ELEM| + |elem*| - 1)
-  -- if da* = |s.DATA| ... $(|s.DATA| + |data*| - 1)
+  -- if fa* = $(|s.FUNC|+i)^(i<n_func)
+  -- if ga* = $(|s.GLOBAL|+i)^(i<n_global)
+  -- if ta* = $(|s.TABLE|+i)^(i<n_table)
+  -- if ma* = $(|s.MEM|+i)^(i<n_mem)
+  -- if ea* = $(|s.ELEM|+i)^(i<n_elem)
+  -- if da* = $(|s.DATA|+i)^(i<n_data)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if m = {
       FUNC fa_ex* fa*,
@@ -71,31 +104,36 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
       DATA da*,
       EXPORT xi*
     }
-  -- if s_1 = s[.FUNC =.. $allocfunc(m, func)*]
-  -- if s_2 = s_1[.GLOBAL =.. $allocglobal(globaltype, val)*]
-  -- if s_3 = s_2[.TABLE =.. $alloctable(tabletype)*]
-  -- if s_4 = s_3[.MEM =.. $allocmem(memtype)*]
-  -- if s_5 = s_4[.ELEM =.. $allocelem(rt, ref*)*]
-  -- if s_6 = s_5[.DATA =.. $allocdata(byte*)*]
+  -- if s_1 = $allocfuncs(s, m, func^n_func)
+  -- if s_2 = $allocglobals(s_1, globaltype^n_global, val*)
+  -- if s_3 = $alloctables(s_2, tabletype^n_table)
+  -- if s_4 = $allocmems(s_3, memtype^n_mem)
+  -- if s_5 = $allocelems(s_4, rt^n_elem, (ref*)*)
+  -- if s_6 = $allocdatas(s_5, (byte*)^n_data)
 
 
-def $runelem(state, elem, idx) : instr*
-def $runelem((s; f), ELEM reftype expr*, i) = epsilon
-def $runelem((s; f), ELEM reftype expr* (DECLARE), i) = (ELEM.DROP i)
-def $runelem((s; f), ELEM reftype expr* (TABLE x instr*), i) =
+def $runelem(elem, idx) : instr*
+def $runelem(ELEM reftype expr*, i) = epsilon
+def $runelem(ELEM reftype expr* (DECLARE), i) = (ELEM.DROP i)
+def $runelem(ELEM reftype expr* (TABLE x instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (TABLE.INIT x i) (ELEM.DROP i)
   -- if n = |expr*|
 
-def $rundata(state, data, idx) : instr*
-def $rundata((s; f), DATA byte*, i) = epsilon
-def $rundata((s; f), DATA byte* (MEMORY 0 instr*), i) =
+def $rundata(data, idx) : instr*
+def $rundata(DATA byte*, i) = epsilon
+def $rundata(DATA byte* (MEMORY 0 instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT i) (DATA.DROP i)
   -- if n = |byte*|
 
 
+def $concat_instr(instr**) : instr*
+def $concat_instr(epsilon) = epsilon
+def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
+
+
 def $instantiation(store, module, externval*) : config
 def $instantiation(s, module, externval*) =
-  s'; f; ...$runelem(elem*[i], i)* ...$rundata(data*[j], j)* (CALL x)?
+  s'; f; $concat_instr(instr_elem**) $concat_instr(instr_data**) (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
@@ -113,8 +151,10 @@ def $instantiation(s, module, externval*) =
   -- (Step_read : s; f_init; instr'* ~> ref)**
   -- if (s', m) = $allocmodule(s, module, externval*, val*, (ref*)*)
   -- if f = { LOCAL epsilon, MODULE m }
-  -- if i* = 0 ... $(|elem*| - 1)
-  -- if j* = 0 ... $(|data*| - 1)
+  -- if n_elem = |elem*|
+  -- if instr_elem** = $runelem(elem*[i], i)^(i<n_elem)
+  -- if n_data = |data*|
+  -- if instr_data** = $rundata(data*[j], j)^(j<n_data)
   -- if start? = (START x)?
 
 
