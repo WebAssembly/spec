@@ -188,11 +188,11 @@ rule Step_read/table.get-val:
   -- if i < |$table(z, x).ELEM|
 
 rule Step/table.set-trap:
-  z; (CONST I32 i) ref (TABLE.GET x)  ~>  z; TRAP
+  z; (CONST I32 i) ref (TABLE.SET x)  ~>  z; TRAP
   -- if i >= |$table(z, x).ELEM|
 
 rule Step/table.set-val:
-  z; (CONST I32 i) ref (TABLE.GET x)  ~>  $with_table(z, x, i, ref); epsilon
+  z; (CONST I32 i) ref (TABLE.SET x)  ~>  $with_table(z, x, i, ref); epsilon
   -- if i < |$table(z, x).ELEM|
 
 
