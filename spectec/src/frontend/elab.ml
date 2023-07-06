@@ -654,9 +654,10 @@ and elab_exp env e t : Il.exp =
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
   | ElementsOfE (e1, e2) ->
-      let t' = infer_exp env e2 in
-      let e1' = elab_exp env e1 t' in
-      let e2' = elab_exp env e2 t' in
+      let t2 = infer_exp env e2 in
+      let t1, _ = as_iter_typ "iteration" env Check t2 e1.at in
+      let e1' = elab_exp env e1 t1 in
+      let e2' = elab_exp env e2 t2 in
       Il.ElementsOfE (e1', e2') $$ e.at % !!env t
 
 and elab_exps env es ts at : Il.exp list =
