@@ -732,19 +732,19 @@ Reference Instructions
 
 6. Pop the :math:`n` values :math:`\val^\ast` from the stack.
 
-8. For every value :math:`\val_i` in :math:`\val^\ast`:
+7. For every value :math:`\val_i` in :math:`\val^\ast`:
 
    a. Let :math:`\fieldval_i` be the result of computing :math:`\packval_{\X{ft}}(\val_i))`.
 
-9. Let :math:`\fieldval^\ast` be the concatenation of all field values :math:`\fieldval_i`.
+8. Let :math:`\fieldval^\ast` be the concatenation of all field values :math:`\fieldval_i`.
 
-10. Let :math:`\X{ai}` be the :ref:`array instance <syntax-arrayinst>` :math:`\{\AITYPE~\deftype, \AIFIELDS~\fieldval^\ast\}`.
+9. Let :math:`\X{ai}` be the :ref:`array instance <syntax-arrayinst>` :math:`\{\AITYPE~\deftype, \AIFIELDS~\fieldval^\ast\}`.
 
-11. Let :math:`a` be the length of :math:`S.\SARRAYS`.
+10. Let :math:`a` be the length of :math:`S.\SARRAYS`.
 
-12. Append :math:`\X{ai}` to :math:`S.\SARRAYS`.
+11. Append :math:`\X{ai}` to :math:`S.\SARRAYS`.
 
-13. Return the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a`.
+12. Return the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -802,9 +802,9 @@ Reference Instructions
 
 17. For each consecutive subsequence :math:`{b'}^n` of :math:`b^\ast`:
 
-    a. Let :math:`k_i` be the integer for which :math:`\bytes_{\X{ft}}(k_i)` is :math:`{b'}^n`.
+    a. Let :math:`c_i` be the constant for which :math:`\bytes_{\X{ft}}(k_i)` is :math:`{b'}^n`.
 
-    b. Push the value :math:`(t.\CONST~k_i)` to the stack.
+    b. Push the value :math:`(t.\CONST~c_i)` to the stack.
 
 18. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
 
@@ -818,12 +818,12 @@ Reference Instructions
       \land & s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
      \end{array} \\
    \\[1ex]
-   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~i)^n~(\ARRAYNEWFIXED~x~n)
+   S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~c)^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
       \land & t = \unpacktype(\X{ft}) \\
-      \land & (\bytes_{\X{ft}}(i))^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
+      \land & (\bytes_{\X{ft}}(c))^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
      \end{array} \\
    \end{array}
 
@@ -920,11 +920,11 @@ Reference Instructions
 
     a. Trap.
 
-12. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]`.
+14. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]`.
 
-13. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}}(\fieldval))`.
+15. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}}(\fieldval))`.
 
-14. Push the value :math:`\val` to the stack.
+16. Push the value :math:`\val` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -1140,14 +1140,14 @@ Reference Instructions
      \quad\stepto
      \\ \quad S; F;
      \begin{array}[t]{@{}l@{}}
-     (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST i)~(\ARRAYSET~x) \\
+     (\REFARRAYADDR~a)~(\I32.\CONST~d)~(t.\CONST c)~(\ARRAYSET~x) \\
      (\REFARRAYADDR~a)~(\I32.\CONST~d+1)~(\I32.\CONST~s+|\X{ft}|)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \\
      \end{array}
      \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\otherwise, \iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
       \land & t = \unpacktype(\X{ft}) \\
-      \land & \bytes_{\X{ft}}(i) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice |\X{ft}|]
+      \land & \bytes_{\X{ft}}(c) = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice |\X{ft}|]
      \end{array}
    \\[1ex]
    S; F; (\REFNULL~t)~(\I32.\CONST~d)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYINITDATA~x~y) \quad\stepto\quad \TRAP
