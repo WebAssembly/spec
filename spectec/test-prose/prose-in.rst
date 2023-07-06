@@ -85,7 +85,7 @@ Parametric Instructions
 
 \
 
-$${rule+: Step/elem.drop}
+$${rule+: Step/drop}
 
 .. _exec-select:
 
@@ -272,7 +272,7 @@ $${rule+: Step_read/memory.init-*}
 
 .. _exec-data.drop:
 
-%{prose-rule: drop}
+%{prose-rule: data.drop}
 
 \
 
