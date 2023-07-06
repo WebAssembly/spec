@@ -490,7 +490,7 @@ Reference Instructions
 
    a. Let :math:`t_i` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft}_i)`.
 
-   b. Assert: due to ref:`validation <valid-struct.new_default>`, :math:`\default_{t_i}` is defined.
+   b. Assert: due to :ref:`validation <valid-struct.new_default>`, :math:`\default_{t_i}` is defined.
 
    c. Push the :ref:`value <syntax-val>` :math:`\default_{t_i}` to the stack.
 
@@ -644,7 +644,7 @@ Reference Instructions
 
 9. Push the value :math:`\val` to the stack :math:`n` times.
 
-7. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+10. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -685,11 +685,11 @@ Reference Instructions
 
 7. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft})`.
 
-8. Assert: due to ref:`validation <valid-array.new_default>`, :math:`\default_t` is defined.
+8. Assert: due to :ref:`validation <valid-array.new_default>`, :math:`\default_t` is defined.
 
 9. Push the :ref:`value <syntax-val>` :math:`\default_t` to the stack :math:`n` times.
 
-7. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+10. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -736,7 +736,7 @@ Reference Instructions
 
    a. Let :math:`\fieldval_i` be the result of computing :math:`\packval_{\X{ft}}(\val_i))`.
 
-9. Let :math:`\fieldval^\ast` the concatenation of all field values :math:`\fieldval_i`.
+9. Let :math:`\fieldval^\ast` be the concatenation of all field values :math:`\fieldval_i`.
 
 10. Let :math:`\X{ai}` be the :ref:`array instance <syntax-arrayinst>` :math:`\{\AITYPE~\deftype, \AIFIELDS~\fieldval^\ast\}`.
 
@@ -983,7 +983,7 @@ Reference Instructions
 
 16. Let :math:`\fieldval` be the result of computing :math:`\packval_{\X{ft}}(\val))`.
 
-14. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]` with :math:`\fieldval`.
+17. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]` with :math:`\fieldval`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
