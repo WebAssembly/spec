@@ -78,17 +78,6 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \typeidx \ok
    }
 
-:math:`\BOTH`
-.............
-
-* The heap type is valid.
-
-.. math::
-   \frac{
-   }{
-     C \vdashheaptype \BOTH \ok
-   }
-
 
 .. index:: reference type, heap type
    pair: validation; reference type
@@ -115,27 +104,15 @@ Reference Types
    }
 
 
-.. index:: value type, reference type, heap type, bottom type
+.. index:: value type, reference type, number type, vector type
    pair: validation; value type
    single: abstract syntax; value type
 .. _valid-valtype:
-.. _valid-valtype-bot:
 
 Value Types
 ~~~~~~~~~~~
 
-Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-valtype-ext>`.
-
-:math:`\BOT`
-............
-
-* The value type is valid.
-
-.. math::
-   \frac{
-   }{
-     C \vdashvaltype \BOT \ok
-   }
+Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number types <valid-numtype>`, valid :ref:`vector types <valid-vectype>`, or valid :ref:`reference types <valid-reftype>`.
 
 
 .. index:: block type, instruction type
@@ -379,8 +356,6 @@ Recursive Types
 :math:`\TREC~\subtype^\ast`
 ...........................
 
-.. todo:: add version of this for extended type syntax to appendix
-
 * Either the sequence :math:`\subtype^\ast` is empty.
 
 * Or:
@@ -422,7 +397,7 @@ Recursive Types
 
   * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
 
-  * Let :math:`\comptype'_i` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
+  * Let :math:`\comptype'_i` be the :ref:`compound type <syntax-comptype>` in :math:`\subtype_i`.
 
   * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
 
