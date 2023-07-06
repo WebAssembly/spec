@@ -434,7 +434,6 @@ and valid_exp env e t =
     valid_exp env e2 (BoolT $ e2.at);
     let t' = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t';
-    equiv_typ env t' t e.at
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
