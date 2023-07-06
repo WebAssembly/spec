@@ -258,8 +258,8 @@ let try_prose_anchor env src r : bool =
     let algo = List.find (function
       | Backend_prose.Prose.Algo (Al.Ast.Algo (name, _, _)) when name = algo_name -> true
       | _ -> false
-    ) env.render_prose in
-    r := Backend_prose.Render.render_def algo
+    ) env.render_prose.prose in
+    r := Backend_prose.Render.render_def env.render_prose algo
   );
   b
 

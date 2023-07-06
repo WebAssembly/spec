@@ -175,6 +175,8 @@
 
 .. Variables
 
+.. |n| mathdef:: {\X{n}}
+
 .. |nt| mathdef:: {\X{nt}}
 
 .. |sx| mathdef:: {\X{sx}}
