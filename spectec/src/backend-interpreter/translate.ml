@@ -478,7 +478,7 @@ let bound_by binding e =
   | _ -> []
 
 let lhs_id_ref = ref 0
-let lhs_prefix = "_y"
+let lhs_prefix = "y_"
 let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name () =
   let lhs_id = !lhs_id_ref in

@@ -601,67 +601,70 @@ run_elem x_0* i
   a. Return.
 3. Let [elem] ++ elem'* be x_0*.
 4. If elem is of the case ELEM, then:
-  a. Let (ELEM reftype expr* _y0) be elem.
-  b. If _y0 is not defined, then:
+  a. Let (ELEM reftype expr* y_0) be elem.
+  b. If y_0 is not defined, then:
     1) Perform $run_elem(elem'*, (i + 1)).
     2) Return.
-  c. Let ?(elemmode) be _y0.
-  d. If elemmode is of the case TABLE, then:
-    1) Let (TABLE x instr*) be elemmode.
-    2) Let n be |expr*|.
-    3) Execute the sequence (instr*).
-    4) Execute (I32.CONST 0).
-    5) Execute (I32.CONST n).
-    6) Execute (TABLE.INIT x i).
-    7) Execute (ELEM.DROP i).
-    8) Perform $run_elem(elem'*, (i + 1)).
-    9) Return.
-  e. Execute (ELEM.DROP i).
-  f. If elemmode is DECLARE, then:
-    1) Perform $run_elem(elem'*, (i + 1)).
-    2) Return.
+  c. Else:
+    1) Let ?(elemmode) be y_0.
+    2) If elemmode is of the case TABLE, then:
+      a) Let (TABLE x instr*) be elemmode.
+      b) Let n be |expr*|.
+      c) Execute the sequence (instr*).
+      d) Execute (I32.CONST 0).
+      e) Execute (I32.CONST n).
+      f) Execute (TABLE.INIT x i).
+      g) Execute (ELEM.DROP i).
+      h) Perform $run_elem(elem'*, (i + 1)).
+      i) Return.
+    3) Execute (ELEM.DROP i).
+    4) If elemmode is DECLARE, then:
+      a) Perform $run_elem(elem'*, (i + 1)).
+      b) Return.
 
 run_data x_0* i
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return.
 3. Let [data] ++ data'* be x_0*.
-4. If data is of the case DATA, then:
-  a. Let (DATA byte* _y0) be data.
-  b. If _y0 is not defined, then:
-    1) Perform $run_data(data'*, (i + 1)).
-    2) Return.
-  c. Let ?(datamode) be _y0.
-  d. If datamode is of the case MEMORY, then:
-    1) Let (MEMORY _y0 instr*) be datamode.
-    2) Let 0 be _y0.
-    3) Let n be |byte*|.
-    4) Execute the sequence (instr*).
-    5) Execute (I32.CONST 0).
-    6) Execute (I32.CONST n).
-    7) Execute (MEMORY.INIT i).
-    8) Execute (DATA.DROP i).
-    9) Perform $run_data(data'*, (i + 1)).
-    10) Return.
+4. Perform $run_data(data'*, (i + 1)).
+5. If data is of the case DATA, then:
+  a. Let (DATA byte* y_0) be data.
+  b. If y_0 is not defined, then:
+    1) Return.
+  c. Else:
+    1) Let ?(datamode) be y_0.
+    2) Let n be |byte*|.
+    3) If datamode is of the case MEMORY, then:
+      a) Let (MEMORY y_0 instr*) be datamode.
+      b) Let 0 be y_0.
+      c) Execute the sequence (instr*).
+      d) Execute (I32.CONST 0).
+      e) Execute (I32.CONST n).
+      f) Execute (MEMORY.INIT i).
+      g) Execute (DATA.DROP i).
+      h) Perform $run_data(data'*, (i + 1)).
+      i) Return.
 
 instantiation module externval*
 1. If module is of the case MODULE, then:
-  a. Let (MODULE import* func* global* table* mem* elem* data* _y0 export*) be module.
-  b. If _y0 is not defined, then:
-    1) Let m be $alloc_module(module, externval*).
+  a. Let (MODULE import* func* global* table* mem* elem* data* y_0 export*) be module.
+  b. If y_0 is not defined, then:
+    1) Let m be the result of computing $alloc_module(module, externval*).
     2) Let f be { LOCAL: []; MODULE: m; }.
     3) Perform $run_elem(elem*, 0).
     4) Perform $run_data(data*, 0).
     5) Return m.
-  c. Let ?(start) be _y0.
-  d. Let m be $alloc_module(module, externval*).
-  e. Let f be { LOCAL: []; MODULE: m; }.
-  f. If start is of the case START, then:
-    1) Let (START x) be start.
-    2) Perform $run_elem(elem*, 0).
-    3) Perform $run_data(data*, 0).
-    4) Execute (CALL x).
-    5) Return m.
+  c. Else:
+    1) Let ?(start) be y_0.
+    2) Let m be the result of computing $alloc_module(module, externval*).
+    3) Let f be { LOCAL: []; MODULE: m; }.
+    4) If start is of the case START, then:
+      a) Let (START x) be start.
+      b) Perform $run_elem(elem*, 0).
+      c) Perform $run_data(data*, 0).
+      d) Execute (CALL x).
+      e) Return m.
 
 invocation fa val*
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -872,11 +875,13 @@ execution_of_call_indirect x ft
 10. Execute (CALL_ADDR a).
 
 execution_of_call_addr a
-1. If a < |$funcinst()|, then:
-  a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
-  b. If func is of the case FUNC, then:
-    1) Let (FUNC _y0 t* instr*) be func.
-    2) Let [t_1^k]->[t_2^n] be _y0.
+1. Let r_2 be the result of computing $funcinst().
+2. If a < |r_2|, then:
+  a. Let r_0 be the result of computing $funcinst().
+  b. Let { MODULE: m; CODE: func; } be r_0[a].
+  c. If func is of the case FUNC, then:
+    1) Let (FUNC y_0 t* instr*) be func.
+    2) Let [t_1^k]->[t_2^n] be y_0.
     3) Assert: Due to validation, there are at least k values on the top of the stack.
     4) Pop val^k from the stack.
     5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
@@ -978,9 +983,10 @@ execution_of_load nt x_0? n_A n_O
   b. Let c be $inverse_of_bytes_($size(nt), $mem(0).DATA[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
 4. Else:
-  a. Let ?(_y0) be x_0?.
-  b. Let [n, sx] be _y0.
-  c. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
+  a. Let ?(y_0) be x_0?.
+  b. Let [n, sx] be y_0.
+  c. Let r_0 be the result of computing $mem(0).
+  d. If ((i + n_O) + (n / 8)) > |r_0.DATA|, then:
     1) Trap.
   d. Let c be $inverse_of_bytes_(n, $mem(0).DATA[(i + n_O) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
