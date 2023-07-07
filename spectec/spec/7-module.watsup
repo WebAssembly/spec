@@ -139,14 +139,14 @@ def $rundata(DATA byte* (MEMORY 0 instr*), i) =
   -- if n = |byte*|
 
 
-def $concat_instr(instr**) : instr*
-def $concat_instr(epsilon) = epsilon
-def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
+def $concat_admininstr(admininstr**) : admininstr*
+def $concat_admininstr(epsilon) = epsilon
+def $concat_admininstr(admininstr* admininstr'**) = admininstr* $concat_admininstr(admininstr'**)
 
 
 def $instantiation(store, module, externval*) : config
 def $instantiation(s, module, externval*) =
-  s'; f; $concat_instr(instr_elem**) $concat_instr(instr_data**) (CALL x)?
+  s'; f; $concat_admininstr(instr_elem**) $concat_admininstr(instr_data**) (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
