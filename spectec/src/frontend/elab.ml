@@ -781,7 +781,7 @@ and elab_exp_notation' env e t : Il.exp list =
   | (EpsE | SeqE _), IterT (t1, iter) ->
     [elab_exp_notation_iter env (unseq_exp e) (t1, iter) t e.at]
   | IterE (e1, iter1), IterT (t1, iter) ->
-    if (iter = Opt) <> (iter1 = Opt) then
+    if (iter = Opt) && (iter1 <> Opt) then
       error_typ e.at "iteration expression" t;
     let es1' = elab_exp_notation' env e1 t1 in
     let iter1' = elab_iter env iter1 in
