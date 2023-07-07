@@ -169,7 +169,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else match
 let apply_template_to_red_group template (lhs, rhs, prems, binds) =
   let (new_prems, new_binds) = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Middlend.Animate.animate_prems false (Il.Free.free_exp template) new_prems in
+  let animated_prems = Middlend.Animate.animate_prems (Il.Free.free_exp template) new_prems in
   (template, rhs, animated_prems @ prems, binds @ new_binds)
 
 let unify_lhs' reduction_group =
@@ -189,7 +189,7 @@ let unify_lhs (reduction_name, reduction_group) =
 let apply_template_to_def template def =
   let DefD (binds, lhs, rhs, prems) = def.it in
   let (new_prems, new_binds) = collect_unified template lhs in
-  let animated_prems = Middlend.Animate.animate_prems false (Il.Free.free_exp template) new_prems in
+  let animated_prems = Middlend.Animate.animate_prems (Il.Free.free_exp template) new_prems in
   DefD (binds @ new_binds, template, rhs, animated_prems @ prems) $ no_region
 
 let unify_defs defs =

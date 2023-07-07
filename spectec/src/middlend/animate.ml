@@ -17,31 +17,12 @@ let exp_to_args exp =
   | TupE el -> el
   | _ -> [ exp ]
 
-let is_simpler_lhs e1 e2 = match e1.it, e2.it with
-| (VarE _ | IterE _), (VarE _ | IterE _) -> 0
-| (VarE _ | IterE _), _ -> -1
-| _, (VarE _ | IterE _) -> 1
-| _, _ -> 0
+let rec list_count' pred acc = function
+| [] -> acc
+| hd :: tl -> list_count' pred (acc + if pred hd then 1 else 0) tl
+let list_count pred = list_count' pred 0
 
-let is_simpler_assign p1 p2 = match p1.it, p2.it with
-| LetPr (lhs1, _), LetPr (lhs2, _) -> is_simpler_lhs lhs1 lhs2
-| _, LetPr _ -> -1
-| LetPr _, _ -> 1
-| _, _ -> 0
-
-(* for debugging *)
-let debug = 1 (* 1 : print msg, 2 : fail *)
-let fail msg =
-  match debug with
-  | 1 -> Printf.printf "%s\n" msg
-  | 2 -> failwith msg
-  | _ -> ()
-let fail_prem prem =
-  let msg = "Animation failed: " ^ Il.Print.string_of_prem prem in
-  fail msg
-let fail_prems prems =
-  let msg = "Animation failed:\n  " ^ (prems |> List.map Il.Print.string_of_prem |> String.concat "\n  ") in
-  fail msg
+let not_ f x = not (f x)
 
 (* free_lhs_??? are equivalent to free_??? in Il.Free module,
    except k appearing in val^k is not considered free.
@@ -85,122 +66,143 @@ and free_lhs_iterexp (_iter, ids) = free_list free_varid ids
 let subset x y = Set.subset x.varid y.varid
 let disjoint x y = Set.disjoint x.varid y.varid
 
+type tag =
+  | Condition
+  | Assign of exp
+(* type row = tag * premise * int list *)
+let unwrap (_, p, _) = p
+
 (* Check if a given premise is tight:
      all free variables in the premise is known *)
-let is_tight env prem = subset (free_prem prem) env
+let is_tight env (tag, prem, _) = match tag with
+  | Condition -> subset (free_prem prem) env
+  | _ -> false
 
 (* Check if a given premise is an assignment:
-     is eqaulity, and all free variables in one side of equality is known *)
-let rec is_assign env prem = match prem.it with
-| IfPr e -> ( match e.it with
-  | CmpE(EqOp, l, r) ->
-    if subset (free_exp l) env && disjoint (free_exp r) env then
-      Either.Left (LetPr(r, l) $ prem.at)
-    else if subset (free_exp r) env && disjoint (free_exp l) env then
-      Either.Left (LetPr(l, r) $ prem.at)
-    else if subset (free_exp l) env || subset (free_exp r) env then (
-      let lhs, rhs = if subset (free_exp l) env then r, l else l, r in
-      match lhs.it with
-      | CallE (name, args) -> (* Inverse *)
-        let knowns, unknowns = List.partition (fun e -> subset (free_exp e) env) (exp_to_args args) in
-        let type_of_exprs es = TupT (List.map (fun e -> e.note) es) $ no_region in
-        let new_lhs = match unknowns with
-          | [] -> failwith "Impossible"
-          | [e] -> e
-          | es -> ListE es $$ (no_region % type_of_exprs es)
-        in
-        let new_args = knowns @ [rhs] in
-        let new_rhs =
-          CallE ("inverse_of_" ^ name.it $ name.at, TupE new_args $$ no_region % type_of_exprs new_args)
-          $$ (no_region % new_lhs.note)
-        in
-        Either.Left (LetPr(new_lhs, new_rhs) $ prem.at)
-      | _ ->
-        fail_prem prem;
-        Either.Left (LetPr(lhs, rhs) $ prem.at)
-    )
-    else
-      Either.Right prem
-  | _ -> Either.Right prem
-  )
-| RulePr (_, _, { it = TupE args; _ }) ->
-  let r, l = Util.Lib.List.split_last args in
-  if List.for_all (fun e -> subset (free_exp e) env) r && disjoint (free_exp l) env then
-    Either.Left prem (* TODO: Need a way to notate that this is an assignment *)
-  else
-    Either.Right prem
-| IterPr (pr, iter) ->
-  let to_iter p = { prem with it = IterPr (p, iter) } in
-  Either.map ~left:to_iter ~right:to_iter (is_assign env pr)
-| _ -> Either.Right prem
+     all free variables except ones in lhs is known *)
+let is_assign env (tag, prem, _) = match tag with
+  | Assign lhs -> subset (diff (free_prem prem) (free_exp lhs)) env
+  | _ -> false
 
-(* Mutual recursive functions that iteratively select tight and assignment premises,
+(* Mutual recursive functions that iteratively select condition and assignment premises,
    effectively sorting the premises as a result *)
 let rec select_tight prems acc env = ( match prems with
 | [] -> acc
 | _ ->
   let (tights, non_tights) = List.partition (is_tight env) prems in
-  select_assign non_tights (acc @ tights) env
+  select_assign non_tights (acc @ List.map unwrap tights) env
 )
 and select_assign prems acc env = ( match prems with
 | [] -> acc
-| _ -> let (assigns, non_assigns) = List.partition_map (is_assign env) prems in
-  ( match assigns with
-  | [] -> fail_prems non_assigns; ( acc @ prems )
+| _ ->
+  let (assigns, non_assigns) = List.partition (is_assign env) prems in
+  match assigns with
+  | [] -> print_endline "...Animation failed"; acc @ List.map unwrap non_assigns
   | _ ->
-    let new_env = assigns |> List.map free_prem |> List.fold_left union env in
-    (* Sort assigns, so that assignments with complex lhs
-       (which are more likey to also work as condition) comes first *)
-    let sorted_assigns = List.sort is_simpler_assign assigns |> List.rev in
-    select_tight non_assigns (acc @ sorted_assigns) new_env
-  )
+    let assigns' = List.map unwrap assigns in
+    let new_env = assigns' |> List.map free_prem |> List.fold_left union env in
+    select_tight non_assigns (acc @ assigns') new_env
 )
 
-(* Greedy version of mutual recursive functions
-   that iteratively select tight and assignment premises.
-   Select only one assignment at a time that maximizes # of  assigned vars. *)
-exception InvalidGreedy
+let select_target_col rows cols =
+  let count col = list_count (fun (_, _, coverings) -> List.exists ((=) col) coverings) rows in
+  List.fold_left (fun (cand, cnt) c ->
+    let cnt' = count c in
+    if cnt' < cnt then (c, cnt') else (cand, cnt)
+  ) (-1, List.length rows + 1) cols |> fst
 
-let count_lhs = function
-| LetPr (lhs, _) -> Set.cardinal (free_exp lhs).varid
-| _ -> 1
+let covers (_, _, coverings) col = List.exists ((=) col) coverings
+let disjoint_row (_, _, coverings1) (_, _, coverings2) = List.for_all (fun c -> List.for_all ((<>) c) coverings1) coverings2
 
-let rec select_tight_greedy prems acc env = ( match prems with
-| [] -> acc
-| _ ->
-  let (tights, non_tights) = List.partition (is_tight env) prems in
-  select_assign_greedy non_tights (acc @ tights) env
-)
-and select_assign_greedy prems acc env = ( match prems with
-| [] -> acc
-| _ ->
-    let (assigns, non_assigns) = List.partition_map (fun p -> Either.map_left (fun p' -> p, p') (is_assign env p)) prems in
-    let ((_, assign), rest) = match assigns with
-      | [] -> raise InvalidGreedy
-      | hd :: tl ->
-        List.fold_left (fun (best, rest) cur ->
-          if count_lhs (snd best).it < count_lhs (snd cur).it then
-            cur, (fst best :: rest)
-          else
-            best, (fst cur :: rest)
-        ) (hd, []) tl in
-    let new_env = union (free_prem assign) env in
-    select_tight_greedy (non_assigns @ rest) (acc @ [assign]) new_env
-)
+(* Saves best attempt of knuth, to recover from knuth failure.
+   Can be removed when knuth is guaranteeded to be succeed. *)
+let best = ref (0, [])
+
+let rec knuth rows cols selected_rows = match cols with
+  | [] -> Some selected_rows
+  | _ ->
+    if fst !best > List.length cols then best:= (List.length cols, selected_rows @ rows);
+    let target_col = select_target_col rows cols in
+    List.find_map (fun r ->
+      if not (covers r target_col) then None else
+        let new_rows = List.filter (disjoint_row r) rows in
+        let new_cols = List.filter (not_ (covers r)) cols in
+        knuth new_rows new_cols (r :: selected_rows)
+    ) rows
+
+let rec index_of acc xs x = match xs with
+  | [] -> None
+  | h :: t -> if h = x then Some acc else index_of (acc + 1) t x
+
+let free_exp_list e = (free_exp e).varid |> Set.elements
+
+let is_invertible _name = true (* TODO: do this based on hint of DSL? *)
+
+let rows_of_eq vars p_tot_num i l r at =
+  let covering_vars e = List.filter_map (index_of p_tot_num vars) (free_exp_list e) in
+  let rows1 = [ Assign l, LetPr (l, r) $ at, [i] @ covering_vars l] in
+  let rows2 = match l.it with
+  | CallE (name, args) when is_invertible name -> (* Inverse *)
+    (* Assumption: The inverse function is only applied for the last argument *)
+    let rs, l = Util.Lib.List.split_last (exp_to_args args) in
+    let type_of_exprs es = TupT (List.map (fun e -> e.note) es) $ no_region in
+    let new_lhs = l in
+    let new_args = rs @ [r] in
+    let new_rhs =
+      CallE ("inverse_of_" ^ name.it $ name.at, TupE new_args $$ no_region % type_of_exprs new_args)
+      $$ (no_region % new_lhs.note)
+    in
+    [ Assign l, LetPr(new_lhs, new_rhs) $ at, [i] @ covering_vars new_lhs ]
+  | _ -> [] in
+  rows1 @ rows2
+
+let rec rows_of_prem vars p_tot_num i p = match p.it with
+  | IfPr e -> ( match e.it with
+      | CmpE(EqOp, l, r) ->
+        [ Condition, p, [i] ]
+        @ rows_of_eq vars p_tot_num i l r p.at
+        @ rows_of_eq vars p_tot_num i r l p.at
+      | _ ->
+        [ Condition, p, [i] ]
+      )
+  | RulePr (_, _, { it = TupE args; _ }) ->
+    (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
+    let _, l = Util.Lib.List.split_last args in
+    [
+      Condition, p, [i];
+      Assign l, p, [i] @ List.filter_map (index_of p_tot_num vars) (free_exp_list l)
+    ]
+  | IterPr (p', iter) ->
+    let to_iter (tag, p', coverings) = tag, IterPr (p', iter) $ p.at, coverings in
+    List.map to_iter (rows_of_prem vars p_tot_num i p')
+  | _ -> [ Condition, p, [i] ]
+
+let build_matrix prems known_vars =
+  let all_vars = prems |> List.map free_prem |> List.fold_left union empty in
+  let unknown_vars = (diff all_vars known_vars).varid |> Set.elements in
+  let prem_num = List.length prems in
+
+  let rows = List.mapi (rows_of_prem unknown_vars prem_num) prems |> List.concat in
+  let rows' = List.filter (function
+    | Condition, _, _ -> true
+    | Assign lhs, _, _ -> disjoint (free_lhs_exp lhs) known_vars
+  ) rows in
+  let cols = List.init (prem_num + List.length unknown_vars) (fun i -> i) in
+  rows', cols
 
 (* Animate the list of premises *)
-let animate_prems is_greedy known_vars prems =
-  let reorder prems =
-    (* Set --otherwise prem to be the first prem (if any) *)
-    let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
-    if is_greedy then
-      (* Try greedy *)
-      try select_tight_greedy non_other other known_vars
-      with InvalidGreedy -> select_tight non_other other known_vars
-    else
-      select_tight non_other other known_vars
-  in
-  reorder prems
+let animate_prems known_vars prems =
+  (* Set --otherwise prem to be the first prem (if any) *)
+  let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
+  let rows, cols = build_matrix non_other known_vars in
+  best := (List.length cols + 1, []);
+  let tagged_prems = match knuth rows cols [] with
+    | Some x -> x
+    | None ->
+      print_endline "Animation failed.";
+      prems |> List.map Il.Print.string_of_prem |> String.concat "\n" |> print_endline;
+      snd !best in
+  select_tight (List.rev tagged_prems) other known_vars
 
 (* Animate rule *)
 let animate_rule r = match r.it with
@@ -209,7 +211,7 @@ let animate_rule r = match r.it with
     match (mixop, args.it) with
     (* c |- e : t *)
     | ([ [] ; [Turnstile] ; [Colon] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems true (union (free_exp c) (free_exp e)) prems in
+      let new_prems = animate_prems (union (free_exp c) (free_exp e)) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs* ~> rhs* *)
     | ([ [] ; [Star ; SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
@@ -217,7 +219,7 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems true (free_lhs_exp lhs) prems in
+      let new_prems = animate_prems (free_lhs_exp lhs) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
@@ -225,7 +227,7 @@ let animate_rule r = match r.it with
 (* Animate clause *)
 let animate_clause c = match c.it with
   | DefD (binds, e1, e2, prems) ->
-    let new_prems = animate_prems true (free_lhs_exp e1) prems in
+    let new_prems = animate_prems (free_lhs_exp e1) prems in
     DefD (binds, e1, e2, new_prems) $ c.at
 
 (* Animate defs *)

@@ -9,23 +9,39 @@ watsup 0.3 generator
 == Running pass sideconditions
 == IL Validation...
 == Running pass animate
-Animation failed:
-  Valtype_sub: `|-%<:%`(t, t')
-  if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
-Animation failed:
-  (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
-  Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
-Animation failed: if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
-Animation failed:
-  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
-Animation failed:
-  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
-Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
-Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
-Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
+Animation failed.
+Valtype_sub: `|-%<:%`(t, t')
+if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+...Animation failed
+Animation failed.
+(if (l < |C.LABEL_context|))*{l}
+if (l' < |C.LABEL_context|)
+(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+...Animation failed
+Animation failed.
+if (x_1 < |C.TABLE_context|)
+if (x_2 < |C.TABLE_context|)
+if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
+if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+...Animation failed
+Animation failed.
+if (0 < |C.MEM_context|)
+if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+if (C.MEM_context[0] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+...Animation failed
+Animation failed.
+if (0 < |C.MEM_context|)
+if (C.MEM_context[0] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+...Animation failed
 == IL Validation...
 == Translating to AL...
-Animation failed: if (x_1*{x_1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====

@@ -9,23 +9,39 @@ watsup 0.3 generator
 == Running pass sideconditions
 == IL Validation...
 == Running pass animate
-Animation failed:
-  Valtype_sub: `|-%<:%`(t, t')
-  if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
-Animation failed:
-  (Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
-  Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
-Animation failed: if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
-Animation failed:
-  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
-Animation failed:
-  if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
-Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
-Animation failed: if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
-Animation failed: if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
+Animation failed.
+Valtype_sub: `|-%<:%`(t, t')
+if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+...Animation failed
+Animation failed.
+(if (l < |C.LABEL_context|))*{l}
+if (l' < |C.LABEL_context|)
+(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+...Animation failed
+Animation failed.
+if (x_1 < |C.TABLE_context|)
+if (x_2 < |C.TABLE_context|)
+if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
+if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+...Animation failed
+Animation failed.
+if (0 < |C.MEM_context|)
+if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+if (C.MEM_context[0] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+...Animation failed
+Animation failed.
+if (0 < |C.MEM_context|)
+if (C.MEM_context[0] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+...Animation failed
 == IL Validation...
 == Translating to AL...
-Animation failed: if (x_1*{x_1} = (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val})
 =================
  Generated prose
 =================
@@ -42,19 +58,19 @@ validation_of_select ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr*
-- Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - Under the context C with .LABEL prepended by t_2*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
-- Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - Under the context C with .LABEL prepended by t_1*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
+- Under the context C with .LABEL prepended by t_2*, instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - Under the context C with .LABEL prepended by t_2*, instr_1* must be valid with type [t_1*]->[t_2*].
-- Under the context C with .LABEL prepended by t_2*, instr_2* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_br l
@@ -68,12 +84,12 @@ validation_of_br_if l
 - The instruction is valid with type [t* ++ [I32]]->[t*].
 
 validation_of_br_table l* l'
-- For all l in l*,
-  - |C.LABEL| must be greater than l.
 - |C.LABEL| must be greater than l'.
 - For all l in l*,
-  - C.LABEL[l] must match t*.
+  - |C.LABEL| must be greater than l.
 - C.LABEL[l'] must match t*.
+- For all l in l*,
+  - C.LABEL[l] must match t*.
 - The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
 validation_of_return
@@ -87,8 +103,8 @@ validation_of_call x
 
 validation_of_call_indirect x ft
 - |C.TABLE| must be greater than x.
-- Let [t_1*]->[t_2*] be ft.
 - Let (lim, FUNCREF) be C.TABLE[x].
+- Let [t_1*]->[t_2*] be ft.
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_const nt c_nt
@@ -185,7 +201,7 @@ validation_of_table.copy x_1 x_2
 - |C.TABLE| must be greater than x_1.
 - |C.TABLE| must be greater than x_2.
 - Let (lim_1, rt) be C.TABLE[x_1].
-- Let (lim_2, rt) be C.TABLE[x_2].
+- C.TABLE[x_2] must be equal to (lim_2, rt).
 - The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_table.init x_1 x_2
@@ -233,24 +249,26 @@ validation_of_data.drop x
 - The instruction is valid with type []->[].
 
 validation_of_load nt [n, sx]? n_A n_O
-- |C.MEM| must be greater than 0.
-- (sx? is ?()) and (n? is ?()) are equivalent.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
+- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- (sx? is ?()) and (n? is ?()) are equivalent.
+- |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
+- C.MEM[0] must be equal to mt.
 - If n is defined,
   - nt must be equal to in.
 - The instruction is valid with type [I32]->[nt].
 
 validation_of_store nt n? n_A n_O
-- |C.MEM| must be greater than 0.
-- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
+- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
+- C.MEM[0] must be equal to mt.
 - If n is defined,
   - nt must be equal to in.
 - The instruction is valid with type [I32, nt]->[].
@@ -265,10 +283,10 @@ min x_0 x_1
 2. If x_1 is 0, then:
   a. Let i be x_0.
   b. Return 0.
-3. If x_1 ≥ 1, then:
-  a. Let j be (x_1 - 1).
-  b. If x_0 ≥ 1, then:
-    1) Let i be (x_0 - 1).
+3. If x_0 ≥ 1, then:
+  a. Let i be (x_0 - 1).
+  b. If x_1 ≥ 1, then:
+    1) Let j be (x_1 - 1).
     2) Let r_0 be the result of computing $min(i, j).
     3) Return r_0.
 
@@ -411,47 +429,53 @@ alloc_import m x_0* x_1*
   a. Return m.
 2. Let [externval] ++ externval'* be x_1*.
 3. Let [import] ++ import'* be x_0*.
-4. If import is of the case IMPORT, then:
-  a. Let (IMPORT name name' externtype) be import.
-  b. If externtype is of the case FUNC, then:
-    1) Let (FUNC functype) be externtype.
-    2) If externval is of the case FUNC, then:
-      a) Let (FUNC fa) be externval.
+4. If externval is of the case FUNC, then:
+  a. Let (FUNC fa) be externval.
+  b. If import is of the case IMPORT, then:
+    1) Let (IMPORT name name' externtype) be import.
+    2) If externtype is of the case FUNC, then:
+      a) Let (FUNC functype) be externtype.
       b) Let m_new be m with .FUNC appended by [fa].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
-  c. If externtype is of the case GLOBAL, then:
-    1) Let (GLOBAL globaltype) be externtype.
-    2) If externval is of the case GLOBAL, then:
-      a) Let (GLOBAL ga) be externval.
+5. If externval is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be externval.
+  b. If import is of the case IMPORT, then:
+    1) Let (IMPORT name name' externtype) be import.
+    2) If externtype is of the case GLOBAL, then:
+      a) Let (GLOBAL globaltype) be externtype.
       b) Let m_new be m with .GLOBAL appended by [ga].
       c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
-  d. If externtype is of the case TABLE, then:
-    1) Let (TABLE tabletype) be externtype.
-    2) If externval is of the case TABLE, then:
-      a) Let (TABLE ta) be externval.
-      b) Let m_new be m with .TABLE appended by [ta].
-      c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
-      d) Return m_res.
-  e. If externtype is of the case MEM, then:
-    1) Let (MEM memtype) be externtype.
-    2) If externval is of the case MEM, then:
-      a) Let (MEM ma) be externval.
-      b) Let m_new be m with .MEM appended by [ma].
-      c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
-      d) Return m_res.
+6. If import is of the case IMPORT, then:
+  a. Let (IMPORT name name' externtype) be import.
+  b. If externval is of the case TABLE, then:
+    1) Let (TABLE ta) be externval.
+    2) Let m_new be m with .TABLE appended by [ta].
+    3) If externtype is of the case TABLE, then:
+      a) Let (TABLE tabletype) be externtype.
+      b) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      c) Return m_res.
+7. If externval is of the case MEM, then:
+  a. Let (MEM ma) be externval.
+  b. If import is of the case IMPORT, then:
+    1) Let (IMPORT name name' externtype) be import.
+    2) Let m_new be m with .MEM appended by [ma].
+    3) If externtype is of the case MEM, then:
+      a) Let (MEM memtype) be externtype.
+      b) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      c) Return m_res.
 
 alloc_func x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [func] ++ func'* be x_0*.
-4. Let fi be { MODULE: f.MODULE; CODE: func; }.
-5. Append fi to the s.FUNC.
-6. Let fa'* be the result of computing $alloc_func(func'*).
-7. Let r_0 be the result of computing $funcinst().
-8. Let fa be |r_0|.
+4. Let r_0 be the result of computing $funcinst().
+5. Let fa be |r_0|.
+6. Let fi be { MODULE: f.MODULE; CODE: func; }.
+7. Append fi to the s.FUNC.
+8. Let fa'* be the result of computing $alloc_func(func'*).
 9. Return [fa] ++ fa'*.
 
 alloc_global x_0*
@@ -459,79 +483,79 @@ alloc_global x_0*
 2. If x_0* is [], then:
   a. Return [].
 3. Let [global] ++ global'* be x_0*.
-4. If global is of the case GLOBAL, then:
+4. Let r_0 be the result of computing $globalinst().
+5. Let ga be |r_0|.
+6. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
   b. Execute the sequence (instr*).
   c. Pop val from the stack.
   d. Let gi be { TYPE: globaltype; VALUE: val; }.
   e. Append gi to the s.GLOBAL.
   f. Let ga'* be the result of computing $alloc_global(global'*).
-  g. Let r_0 be the result of computing $globalinst().
-  h. Let ga be |r_0|.
-  i. Return [ga] ++ ga'*.
+  g. Return [ga] ++ ga'*.
 
 alloc_table x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [table] ++ table'* be x_0*.
-4. If table is of the case TABLE, then:
+4. Let r_0 be the result of computing $tableinst().
+5. Let ta be |r_0|.
+6. If table is of the case TABLE, then:
   a. Let (TABLE tabletype) be table.
   b. Let ((i, j?), reftype) be tabletype.
   c. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
   d. Append ti to the s.TABLE.
   e. Let ta'* be the result of computing $alloc_table(table'*).
-  f. Let r_0 be the result of computing $tableinst().
-  g. Let ta be |r_0|.
-  h. Return [ta] ++ ta'*.
+  f. Return [ta] ++ ta'*.
 
 alloc_mem x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [mem] ++ mem'* be x_0*.
-4. If mem is of the case MEMORY, then:
+4. Let r_0 be the result of computing $meminst().
+5. Let ma be |r_0|.
+6. If mem is of the case MEMORY, then:
   a. Let (MEMORY memtype) be mem.
   b. If memtype is of the case I8, then:
     1) Let (I8 _y0) be memtype.
     2) Let (i, j?) be _y0.
-    3) Let r_0 be the result of computing $Ki().
-    4) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · r_0); }.
+    3) Let r_1 be the result of computing $Ki().
+    4) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · r_1); }.
     5) Append mi to the s.MEM.
     6) Let ma'* be the result of computing $alloc_mem(mem'*).
-    7) Let r_1 be the result of computing $meminst().
-    8) Let ma be |r_1|.
-    9) Return [ma] ++ ma'*.
+    7) Return [ma] ++ ma'*.
 
 alloc_elem x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [elem] ++ elem'* be x_0*.
-4. If elem is of the case ELEM, then:
+4. Let r_0 be the result of computing $eleminst().
+5. Let ea be |r_0|.
+6. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
   b. Execute the sequence (instr**).
   c. Pop ref* from the stack.
   d. Let ei be { TYPE: reftype; ELEM: ref*; }.
   e. Append ei to the s.ELEM.
   f. Let ea'* be the result of computing $alloc_elem(elem'*).
-  g. Let r_0 be the result of computing $eleminst().
-  h. Let ea be |r_0|.
-  i. Return [ea] ++ ea'*.
+  g. Return [ea] ++ ea'*.
 
 alloc_data x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [data] ++ data'* be x_0*.
-4. If data is of the case DATA, then:
+4. Let r_0 be the result of computing $datainst().
+5. Let da be |r_0|.
+6. If data is of the case DATA, then:
   a. Let (DATA byte* datamode?) be data.
   b. Let di be { DATA: byte*; }.
   c. Append di to the s.DATA.
   d. Let da'* be the result of computing $alloc_data(data'*).
-  e. Let r_0 be the result of computing $datainst().
-  f. Let da be |r_0|.
-  g. Return [da] ++ da'*.
+  e. Return [da] ++ da'*.
 
 replace_moduleinst x_0* m
 1. If x_0* is [], then:
@@ -605,34 +629,34 @@ run_elem x_0* i
       g) Execute (ELEM.DROP i).
       h) Perform $run_elem(elem'*, (i + 1)).
       i) Return.
-    3) If elemmode is DECLARE, then:
-      a) Execute (ELEM.DROP i).
-      b) Perform $run_elem(elem'*, (i + 1)).
-      c) Return.
+    3) Execute (ELEM.DROP i).
+    4) If elemmode is DECLARE, then:
+      a) Perform $run_elem(elem'*, (i + 1)).
+      b) Return.
 
 run_data x_0* i
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return.
 3. Let [data] ++ data'* be x_0*.
-4. Perform $run_data(data'*, (i + 1)).
-5. If data is of the case DATA, then:
+4. If data is of the case DATA, then:
   a. Let (DATA byte* _y0) be data.
   b. If _y0 is not defined, then:
-    1) Return.
+    1) Perform $run_data(data'*, (i + 1)).
+    2) Return.
   c. Else:
     1) Let ?(datamode) be _y0.
-    2) Let n be |byte*|.
-    3) If datamode is of the case MEMORY, then:
+    2) If datamode is of the case MEMORY, then:
       a) Let (MEMORY _y0 instr*) be datamode.
       b) Let 0 be _y0.
-      c) Execute the sequence (instr*).
-      d) Execute (I32.CONST 0).
-      e) Execute (I32.CONST n).
-      f) Execute (MEMORY.INIT i).
-      g) Execute (DATA.DROP i).
-      h) Perform $run_data(data'*, (i + 1)).
-      i) Return.
+      c) Let n be |byte*|.
+      d) Execute the sequence (instr*).
+      e) Execute (I32.CONST 0).
+      f) Execute (I32.CONST n).
+      g) Execute (MEMORY.INIT i).
+      h) Execute (DATA.DROP i).
+      i) Perform $run_data(data'*, (i + 1)).
+      j) Return.
 
 instantiation module externval*
 1. If module is of the case MODULE, then:
@@ -647,27 +671,27 @@ instantiation module externval*
     1) Let ?(start) be _y0.
     2) Let m be the result of computing $alloc_module(module, externval*).
     3) Let f be { LOCAL: []; MODULE: m; }.
-    4) Perform $run_elem(elem*, 0).
-    5) Perform $run_data(data*, 0).
-    6) If start is of the case START, then:
+    4) If start is of the case START, then:
       a) Let (START x) be start.
-      b) Execute (CALL x).
-      c) Return m.
+      b) Perform $run_elem(elem*, 0).
+      c) Perform $run_data(data*, 0).
+      d) Execute (CALL x).
+      e) Return m.
 
 invocation fa val*
-1. Let |valtype*| be |val*|.
-2. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-3. Let f be { LOCAL: []; MODULE: m; }.
-4. Let r_1 be the result of computing $funcinst().
-5. If r_1[fa].CODE is of the case FUNC, then:
+1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+2. Let f be { LOCAL: []; MODULE: m; }.
+3. Let r_1 be the result of computing $funcinst().
+4. If r_1[fa].CODE is of the case FUNC, then:
   a. Let r_0 be the result of computing $funcinst().
   b. Let (FUNC functype valtype* expr) be r_0[fa].CODE.
   c. Push val* to the stack.
   d. Execute (CALL_ADDR fa).
   e. Pop val'* from the stack.
-  f. Let |valtype'*| be |val'*|.
-  g. Let [valtype*]->[valtype'*] be functype.
-  h. Return val'*.
+  f. If |val*| is |valtype*|, then:
+    1) Let |valtype'*| be |val'*|.
+    2) If functype is [valtype*]->[valtype'*], then:
+      a) Return val'*.
 
 execution_of_unreachable
 1. Trap.
