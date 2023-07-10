@@ -69,9 +69,9 @@ and free_exp e =
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
-  | BinE (e1, _, e2) | CmpE (e1, _, e2)
-  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
-  | InfixE (e1, _, e2) | FuseE (e1, e2) ->
+  | BinE (e1, _, e2) | CmpE (e1, _, e2) | IdxE (e1, e2)
+  | CommaE (e1, e2) | CompE (e1, e2) | InfixE (e1, _, e2)
+  | FuseE (e1, e2) | ElementsOfE (e1, e2) | ListBuilderE (e1, e2) ->
     free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | SeqE es | TupE es -> free_list free_exp es

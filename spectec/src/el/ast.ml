@@ -125,6 +125,8 @@ and exp' =
   | IterE of exp * iter          (* exp iter *)
   | HoleE of bool                (* `%` or `%%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
+  | ElementsOfE of exp * exp     (* exp <- exp *)
+  | ListBuilderE of exp * exp    (* ``` [ exp : exp ] *)
 
 and expfield = atom * exp        (* atom exp *)
 

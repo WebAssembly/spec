@@ -43,12 +43,12 @@ let atom_vars = ref VarSet.empty
 type prec = Op | Seq | Post | Prim
 
 let prec_of_exp = function  (* as far as iteration is concerned *)
-  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
-  | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
+  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _ | ParenE _
+  | TupE _ | BrackE _ | ListBuilderE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _
-  | CommaE _ | CompE _ | FuseE _ -> Op
+  | CommaE _ | CompE _ | FuseE _ | ElementsOfE _ -> Op
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -71,7 +71,7 @@ let signify_parens prec = function
 %token EQ NE LT GT LE GE SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH UP COMPOSE
-%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN
+%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN IN
 %token DOLLAR TICK
 %token BOT
 %token HOLE MULTIHOLE FUSE
@@ -92,6 +92,7 @@ let signify_parens prec = function
 %nonassoc TILESTURN
 %right SQARROW
 %left COLON SUB
+%nonassoc IN
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE
 %right ARROW
@@ -285,6 +286,7 @@ exp_prim_ :
   | TICK LPAR exp RPAR { BrackE (Paren, $3) }
   | TICK LBRACK exp RBRACK { BrackE (Brack, $3) }
   | TICK LBRACE exp RBRACE { BrackE (Brace, $3) }
+  | TICK LBRACK exp BAR exp RBRACK { ListBuilderE ($3, $5) }
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
 
@@ -342,6 +344,7 @@ exp_bin_ :
   | exp_bin OR exp_bin { BinE ($1, OrOp, $3) }
   | exp_bin ARROW2 exp_bin { BinE ($1, ImplOp, $3) }
   | exp_bin DARROW2 exp_bin { BinE ($1, EquivOp, $3) }
+  | exp_bin IN exp_bin { ElementsOfE ($1, $3) }
 
 exp_rel : exp_rel_ { $1 $ at $sloc }
 exp_rel_ :

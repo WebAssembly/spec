@@ -241,7 +241,10 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN e -> valid_exp env e (NatT $ e.at)
+  | ListN e ->
+    match e.it with
+    | CmpE _ -> valid_exp env e (BoolT $ e.at)
+    | _ -> valid_exp env e (NatT $ e.at)
 
 
 (* Types *)
@@ -319,6 +322,8 @@ and infer_exp env e : typ =
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
+  | ElementsOfE _ -> BoolT $ e.at
+  | ListBuilderE _ -> error e.at "cannot infer type of list builder"
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
   | SubE _ -> error e.at "cannot infer type of subsumption"
@@ -420,6 +425,15 @@ and valid_exp env e t =
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp env eI t1) es
+  | ElementsOfE (e1, e2) ->
+    let t2' = infer_exp env e2 in
+    valid_exp env e2 t2';
+    let t1' = as_iter_typ List "list" env Check t2' e2.at in
+    valid_exp env e1 t1'
+  | ListBuilderE (e1, e2) ->
+    valid_exp env e2 (BoolT $ e2.at);
+    let t' = as_iter_typ List "list" env Check t e.at in
+    valid_exp env e1 t';
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
@@ -524,9 +538,10 @@ let valid_clause env t1 t2 clause =
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
     env.vars <- Env.empty;
-    let free_prems = Free.(free_list free_prem prems) in
     let free_rh =
-      Free.(Set.diff (Set.diff (free_exp e2).varid (free_exp e1).varid) free_prems.varid) in
+      Free.(Set.diff (Set.diff (free_exp e2).varid
+        (free_exp e1).varid) (free_list free_prem prems).varid)
+    in
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`")

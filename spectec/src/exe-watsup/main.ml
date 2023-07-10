@@ -22,6 +22,7 @@ type pass =
   | Sub
   | Totalize
   | Unthe
+  | Wild
   | Sideconditions
   | Animate
 
@@ -31,7 +32,7 @@ Because passes have dependencies, and because some flags enable multiple
 passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
-let all_passes = [ Sub; Totalize; Unthe; Sideconditions; Animate ]
+let all_passes = [ Sub; Totalize; Unthe; Wild; Sideconditions; Animate ]
 
 let log = ref false  (* log execution steps *)
 let warn = ref false (* warn about unused or reused splices *)
@@ -60,6 +61,7 @@ let pass_flag = function
   | Sub -> "sub"
   | Totalize -> "totalize"
   | Unthe -> "the-elimination"
+  | Wild -> "wildcards"
   | Sideconditions -> "sideconditions"
   | Animate -> "animate"
 
@@ -67,6 +69,7 @@ let pass_desc = function
   | Sub -> "Synthesize explicit subtype coercions"
   | Totalize -> "Run function totalization"
   | Unthe -> "Eliminate the ! operator in relations"
+  | Wild -> "Eliminate wildcards and equivalent expressions"
   | Sideconditions -> "Infer side conditions"
   | Animate -> "Animate equality conditions"
 
@@ -74,6 +77,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Sub -> Middlend.Sub.transform
   | Totalize -> Middlend.Totalize.transform
   | Unthe -> Middlend.Unthe.transform
+  | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
   | Animate -> Middlend.Animate.transform
 

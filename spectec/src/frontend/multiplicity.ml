@@ -86,12 +86,14 @@ and check_exp env ctx e =
   | ParenE (e1, _)
   | BrackE (_, e1)
   | CallE (_, e1) -> check_exp env ctx e1
+  | ListBuilderE (e1, e2)
   | BinE (e1, _, e2)
   | CmpE (e1, _, e2)
   | IdxE (e1, e2)
   | CommaE (e1, e2)
   | CompE (e1, e2)
-  | InfixE (e1, _, e2) ->
+  | InfixE (e1, _, e2)
+  | ElementsOfE (e1, e2) ->
     check_exp env ctx e1;
     check_exp env ctx e2
   | SliceE (e1, e2, e3) ->
@@ -239,6 +241,10 @@ and annot_exp env e : Il.Ast.exp * occur =
     | ListE es ->
       let es', occurs = List.split (List.map (annot_exp env) es) in
       ListE es', List.fold_left union Env.empty occurs
+    | ListBuilderE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      ListBuilderE (e1', e2'), union occur1 occur2
     | CatE (e1, e2) ->
       let e1', occur1 = annot_exp env e1 in
       let e2', occur2 = annot_exp env e2 in
@@ -249,6 +255,10 @@ and annot_exp env e : Il.Ast.exp * occur =
     | SubE (e1, t1, t2) ->
       let e1', occur1 = annot_exp env e1 in
       SubE (e1', t1, t2), occur1
+    | ElementsOfE (e1, e2) ->
+      let e1', occur1 = annot_exp env e1 in
+      let e2', occur2 = annot_exp env e2 in
+      ElementsOfE (e1', e2'), union occur1 occur2
   in {e with it}, occur
 
 and annot_expfield env (atom, e) : Il.Ast.expfield * occur =
