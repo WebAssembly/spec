@@ -131,7 +131,7 @@ let render_al_logop = function
 let render_al_mathop = function
   | Al.Ast.Add -> "+"
   | Al.Ast.Sub -> "-"
-  | Al.Ast.Mul -> "·"
+  | Al.Ast.Mul -> "\\cdot"
   | Al.Ast.Div -> "/"
   | Al.Ast.Exp -> "^"
 
@@ -168,7 +168,7 @@ let rec render_expr env in_math = function
       let sop = render_al_mathop op in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
-      let s = sprintf "%s%s%s" se1 sop se2 in
+      let s = sprintf "%s %s %s" se1 sop se2 in
       if in_math then s else render_math s
   | Al.Ast.PairE (e1, e2) ->
       let se1 = render_expr env true e1 in
