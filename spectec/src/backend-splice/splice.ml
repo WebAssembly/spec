@@ -76,7 +76,7 @@ let env config el il al : env =
   let env =
     { config;
       render_latex = Backend_latex.Render.env config el;
-      render_prose = Backend_prose.Render.env config il al;
+      render_prose = Backend_prose.Render.env config el il al;
       syn = Map.empty;
       rel = Map.empty;
       def = Map.empty

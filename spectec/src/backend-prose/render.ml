@@ -11,21 +11,44 @@ type env =
     keywords: Set.t ref;
   }
 
-let extract_rule_keywords rule = match rule.it with 
-  | Il.Ast.RuleD (id, _, _, _, _) -> id.it
+let extract_elem_keywords = function
+  | El.Ast.Nl -> None
+  | El.Ast.Elem elem -> Some elem.it
 
-let rec extract_def_keywords def =
-  match def.it with
-  | Il.Ast.SynD (id, _) -> [ id.it ] 
-  | Il.Ast.RelD (_, _, _, rules) -> List.map extract_rule_keywords rules
-  | Il.Ast.DecD (id, _, _, _) -> [ id.it ]
-  | Il.Ast.RecD defs -> List.concat_map extract_def_keywords defs 
+let extract_typcase_keywords = function
+  | El.Ast.Nl -> None
+  | El.Ast.Elem (atom, _, _) -> (match atom with
+    | El.Ast.Atom id -> Some id
+    | _ -> None)
+
+let extract_typfield_keywords = function
+  | El.Ast.Nl -> None
+  | El.Ast.Elem (atom, _, _) -> (match atom with
+    | El.Ast.Atom id -> Some id
+    | _ -> None)
+
+let extract_typ_keywords typ =
+  match typ with
+  | El.Ast.CaseT (_, ids, typcases, _) ->
+      let ids = List.filter_map extract_elem_keywords ids in
+      let typcases = List.filter_map extract_typcase_keywords typcases in
+      ids @ typcases
+  | El.Ast.StrT typfields -> List.filter_map extract_typfield_keywords typfields
   | _ -> []
 
-let env _config il al : env = 
+let extract_def_keywords def =
+  match def.it with
+  | El.Ast.SynD (id, _, typ, _) -> 
+      [ id.it ] @ extract_typ_keywords typ.it 
+  | El.Ast.DecD (id, _, _, _) -> [ id.it ]
+  | El.Ast.DefD (id, _, _, _) -> [ id.it ]
+  | _ -> []
+
+let env _config el il al : env = 
   let prose = Gen.gen_prose il al in
-  let keywords = List.concat_map extract_def_keywords il in
+  let keywords = List.concat_map extract_def_keywords el in
   let keywords = List.fold_left (fun s acc -> Set.add acc s) Set.empty keywords in
+  (* Set.iter print_endline keywords; *)
   let env = { prose; keywords =  ref keywords; } in
   env
 
@@ -94,10 +117,10 @@ let render_prose_cmpop = function
 let render_al_cmpop = function
   | Al.Ast.Eq -> "is"
   | Al.Ast.Ne -> "is not"
-  | Al.Ast.Gt -> "greater than"
-  | Al.Ast.Ge -> "greater than or equal to"
-  | Al.Ast.Lt -> "less than"
-  | Al.Ast.Le -> "less than or equal to"
+  | Al.Ast.Gt -> "is greater than"
+  | Al.Ast.Ge -> "is greater than or equal to"
+  | Al.Ast.Lt -> "is less than"
+  | Al.Ast.Le -> "is less than or equal to"
 
 let render_al_logop = function
   | Al.Ast.And -> "and"
@@ -118,15 +141,15 @@ let rec render_name env = function
   | Al.Ast.N "the label" -> "\\label"
   | Al.Ast.N "the frame" -> "\\frame"
   | Al.Ast.N s -> (match Set.find_opt s !(env.keywords) with
-    | Some _ -> sprintf "\\%s" s
+    | Some _ -> sprintf "\\%s" (escape_macro s) 
     | _ -> s)
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
 
 let render_iter env = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
-  | Al.Ast.List1 -> "+"
-  | Al.Ast.ListN name -> "^" ^ render_name env name
+  | Al.Ast.List1 -> "^{+}"
+  | Al.Ast.ListN name -> "^{" ^ render_name env name ^ "}"
 
 let render_iters env iters = List.map (render_iter env) iters |> List.fold_left (^) ""
 
@@ -153,12 +176,12 @@ let rec render_expr env in_math = function
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.AppE (n, es) ->
-      let sn = escape_macro (render_name env n) in
+      let sn = render_name env n in
       let ses = render_list (render_expr env true) "" ", " "" es in
       let s = sprintf "%s(%s)" sn ses in
       if in_math then s else render_math s
   | Al.Ast.MapE (n, es, iters) ->
-      let sn = escape_macro (render_name env n) in
+      let sn = render_name env n in
       let ses = render_list (render_expr env true) "" ", " "" es in
       let siters = render_iters env iters in
       let s = sprintf "(%s(%s))%s" sn ses siters in
@@ -174,8 +197,7 @@ let rec render_expr env in_math = function
       sprintf "%s~%s" (render_expr env in_math e1) (render_expr env in_math e2)
   | Al.Ast.LengthE e ->
       let se = render_expr env true e in
-      "the length of " ^
-      if in_math then se else render_math se
+      if in_math then "|" ^ se ^ "|" else "the length of " ^ render_math se
   | Al.Ast.ArityE e -> sprintf "the arity of %s" (render_expr env in_math e)
   | Al.Ast.GetCurLabelE -> "the current label"
   | Al.Ast.GetCurFrameE -> "the current frame"
@@ -228,10 +250,17 @@ let rec render_expr env in_math = function
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.ConstructE (s, []) ->
-      let s = render_name env (N (escape_macro (String.uppercase_ascii s))) in
+      let s = render_name env (N s) in
+      if in_math then s else render_math s
+  (* TODO a hard-coded hint for CONST *)
+  | Al.Ast.ConstructE (s, [ e1; e2 ]) when s = "CONST" ->
+      let s = render_name env (N s) in
+      let se1 = render_expr env true e1 in
+      let se2 = render_expr env true e2 in
+      let s = sprintf "%s.%s~%s" se1 s se2 in
       if in_math then s else render_math s
   | Al.Ast.ConstructE (s, es) ->
-      let s = render_name env (N (escape_macro (String.uppercase_ascii s))) in
+      let s = render_name env (N s) in
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" s ses in
       if in_math then s else render_math s
@@ -243,7 +272,7 @@ and render_path env in_math = function
   | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env in_math e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr env in_math e1) (render_expr env in_math e2)
-  | Al.Ast.DotP s -> sprintf ".%s" s
+  | Al.Ast.DotP s -> sprintf ".%s" (render_name env (N s))
 
 and render_paths env in_math paths = List.map (render_path env in_math) paths |> List.fold_left (^) ""
 
@@ -436,7 +465,7 @@ let rec render_params env in_math = function
 (* Prose *)
 
 let render_title env name params =
-  render_expr env false (Al.Ast.ConstructE (name, params))
+  render_expr env false (Al.Ast.ConstructE (String.uppercase_ascii name, params))
 
 let render_pred env name params instrs =
   let prefix = "validation_of_" in

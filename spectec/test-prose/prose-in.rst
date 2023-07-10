@@ -85,7 +85,7 @@ Parametric Instructions
 
 \
 
-$${rule+: Step/drop}
+$${rule+: Step_pure/drop}
 
 .. _exec-select:
 

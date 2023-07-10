@@ -93,10 +93,10 @@
 .. |cvtop| mathdef:: {\X{cvtop}}
 
 .. |local| mathdef:: {\X{local}}
-.. |withlocal| mathdef:: {\X{with_local}}
+.. |withlocal| mathdef:: {\X{with\_local}}
 
 .. |global| mathdef:: {\X{global}}
-.. |withglobal| mathdef:: {\X{with_global}}
+.. |withglobal| mathdef:: {\X{with\_global}}
 
 .. |table| mathdef:: {\X{table}}
 .. |withtable| mathdef:: {\X{with\_table}}
@@ -110,6 +110,7 @@
 .. |growmemory| mathdef:: {\X{grow\_memory}}
 .. |withmeminst| mathdef:: {\X{with\_meminst}}
 .. |data| mathdef:: {\X{data}}
+.. |withdata| mathdef:: {\X{with\_data}}
 
 .. |Ki| mathdef:: {\X{Ki}}
 
@@ -177,13 +178,21 @@
 
 .. |n| mathdef:: {\X{n}}
 
-.. |nt| mathdef:: {\X{nt}}
-
 .. |sx| mathdef:: {\X{sx}}
 
-.. |rt| mathdef:: {\X{rt}}
 .. |ft| mathdef:: {\X{ft}}
 
 .. |func| mathdef:: {\X{func}}
 
 
+.. Operators
+
+.. |U| mathdef:: {\K{U}}
+
+
+.. FIELDS
+
+.. |VALUE| mathdef:: {\K{value}}
+.. |ELEM| mathdef:: {\K{elem}}
+.. |TYPE| mathdef:: {\K{type}}
+.. |DATA| mathdef:: {\K{data}}
