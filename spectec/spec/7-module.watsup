@@ -2,18 +2,28 @@
 
 
 def $funcs(externval*) : funcaddr*
-def $globals(externval*) : globaladdr*
-def $tables(externval*) : tableaddr*
-def $mems(externval*) : memaddr*
+def $funcs(epsilon) = epsilon
+def $funcs((FUNC fa) externval'*) = fa $funcs(externval'*)
+def $funcs(externval externval'*) = $funcs(externval'*)
+  -- otherwise
 
-def $funcs(externval*) = fa'*
-  -- if fa'* = `[fa|FUNC fa <- externval*]
-def $globals(externval*) = ga'*
-  -- if ga'* = `[ga|GLOBAL ga <- externval*]
-def $tables(externval*) = ta'*
-  -- if ta'* = `[ta|TABLE ta <- externval*]
-def $mems(externval*) = ma'*
-  -- if ma'* = `[ma|MEM ma <- externval*]
+def $globals(externval*) : globaladdr*
+def $globals(epsilon) = epsilon
+def $globals((GLOBAL ga) externval'*) = ga $globals(externval'*)
+def $globals(externval externval'*) = $globals(externval'*)
+  -- otherwise
+
+def $tables(externval*) : tableaddr*
+def $tables(epsilon) = epsilon
+def $tables((TABLE ta) externval'*) = ta $tables(externval'*)
+def $tables(externval externval'*) = $tables(externval'*)
+  -- otherwise
+
+def $mems(externval*) : memaddr*
+def $mems(epsilon) = epsilon
+def $mems((MEM ma) externval'*) = ma $mems(externval'*)
+def $mems(externval externval'*) = $mems(externval'*)
+  -- otherwise
 
 
 def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
