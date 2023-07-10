@@ -10822,7 +10822,6 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, SELECT_instr(?()), `%->%`([t t I32_valtype], [t]))
     -- if ((t' = $valtype_numtype(numtype)) \/ (t' = $valtype_vectype(vectype)))
     -- Valtype_sub: `|-%<:%`(t, t')
-    -- Valtype_sub: `|-%<:%`(t, t')
 
   ;; 3-typing.watsup:178.1-181.57
   rule block {C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*}:
@@ -11067,31 +11066,25 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
     -- if (0 < |C.MEM_context|)
-    -- where mt = C.MEM_context[0]
-    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
-    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- if (C.MEM_context[0] = mt)
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 
   ;; 3-typing.watsup:357.1-362.32
   rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (0 < |C.MEM_context|)
-    -- where mt = C.MEM_context[0]
-    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
-    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- if (C.MEM_context[0] = mt)
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
 
 ;; 3-typing.watsup:124.1-124.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)

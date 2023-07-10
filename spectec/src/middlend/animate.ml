@@ -121,7 +121,9 @@ let best = ref (0, [])
 let rec knuth rows cols selected_rows = match cols with
   | [] -> Some selected_rows
   | _ ->
-    if fst !best > List.length cols then best:= (List.length cols, selected_rows @ rows);
+    if fst !best > List.length cols then (
+      let is_condition (tag, _, _) = match tag with | Condition -> true | _ -> false in
+      best:= (List.length cols, selected_rows @ List.filter is_condition rows) );
     let target_col = select_target_col rows cols in
     List.find_map (fun r ->
       if not (covers r target_col) then None else

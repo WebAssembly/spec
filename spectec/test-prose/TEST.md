@@ -255,10 +255,9 @@ validation_of_load nt [n, sx]? n_A n_O
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - (sx? is ?()) and (n? is ?()) are equivalent.
 - |C.MEM| must be greater than 0.
-- Let mt be C.MEM[0].
-- C.MEM[0] must be equal to mt.
 - If n is defined,
   - nt must be equal to in.
+- C.MEM[0] must be equal to mt.
 - The instruction is valid with type [I32]->[nt].
 
 validation_of_store nt n? n_A n_O
@@ -267,10 +266,9 @@ validation_of_store nt n? n_A n_O
   - (n / 8) must be less than ($size(nt) / 8).
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - |C.MEM| must be greater than 0.
-- Let mt be C.MEM[0].
-- C.MEM[0] must be equal to mt.
 - If n is defined,
   - nt must be equal to in.
+- C.MEM[0] must be equal to mt.
 - The instruction is valid with type [I32, nt]->[].
 
 Ki
