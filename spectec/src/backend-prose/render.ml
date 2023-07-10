@@ -280,7 +280,9 @@ and render_paths env in_math paths = List.map (render_path env in_math) paths |>
 
 and render_cond env in_math = function
   | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
-      sprintf "%s is not of the case %s" (render_expr env in_math e) c
+      sprintf "%s is not of the case %s" 
+        (render_expr env in_math e) 
+        (render_math (render_name env (N c)))
   | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
       sprintf "%s is not defined" (render_expr env in_math e)
   | Al.Ast.NotC (Al.Ast.ValidC e) ->
@@ -465,6 +467,9 @@ let rec render_params env in_math = function
 (* Prose *)
 
 let render_title env name params =
+  (* TODO a workaround, for algorithms named label or name
+     that are defined as LABEL_ or FRAME_ in the dsl *) 
+  let name = if name = "label" then "label_" else if name = "frame" then "frame_" else name in
   render_expr env false (Al.Ast.ConstructE (String.uppercase_ascii name, params))
 
 let render_pred env name params instrs =
