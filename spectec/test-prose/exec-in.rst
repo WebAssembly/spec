@@ -365,8 +365,7 @@ $${rule+: Step_read/call}
 
 .. _exec-call_indirect:
 
-TODO (the prose is too deeply nested)
-
+%{prose-rule: call_indirect}
 
 \
 
