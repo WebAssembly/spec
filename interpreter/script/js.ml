@@ -180,8 +180,8 @@ function assert_return(action, ...expected) {
         };
         return;
       case "ref.null":
-        if (actual !== null) {
-          throw new Error("Wasm null return value expected, got " + actual);
+        if (actual[i] !== null) {
+          throw new Error("Wasm null return value expected, got " + actual[i]);
         };
         return;
       default:
