@@ -169,7 +169,7 @@ Block Types
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
+     \expand(C.\CTYPES[\typeidx]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }

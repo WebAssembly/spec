@@ -203,7 +203,7 @@ Convention
 .. note::
    This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
    Since the type system does not have general union types,
-   the defnition only affects the presence of null and cannot express the absence of other values.
+   the definition only affects the presence of null and cannot express the absence of other values.
 
 
 .. index:: ! value type, number type, vector type, reference type, ! bottom type

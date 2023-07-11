@@ -226,7 +226,7 @@
 .. |TARRAY| mathdef:: \xref{syntax/types}{syntax-strtype}{\K{array}}
 .. |TSUB| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{sub}}
 .. |TREC| mathdef:: \xref{syntax/types}{syntax-rectype}{\K{rec}}
-.. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{filan}}
+.. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{final}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
