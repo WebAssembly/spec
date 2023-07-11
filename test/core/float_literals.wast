@@ -353,7 +353,7 @@
   "unknown operator"
 )
 (assert_malformed
-  (module quote "(global f32 (f32.const nan:0x800000))")
+  (module quote "(global f32 (f32.const nan:0x80_0000))")
   "constant out of range"
 )
 
