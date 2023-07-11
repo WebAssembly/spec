@@ -901,4 +901,3 @@ let translate il =
   (* Transpile *)
   (* Can be turned off *)
   List.map Transpile.transpiler algos
-  |> List.map Transpile.app_remover

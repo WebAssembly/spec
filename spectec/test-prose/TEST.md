@@ -285,8 +285,7 @@ min x_0 x_1
   a. Let i be (x_0 - 1).
   b. If x_1 ≥ 1, then:
     1) Let j be (x_1 - 1).
-    2) Let r_0 be the result of computing $min(i, j).
-    3) Return r_0.
+    2) Return $min(i, j).
 
 size x_0
 1. If x_0 is I32, then:
@@ -416,11 +415,9 @@ grow_table ti n r
 
 grow_memory mi n
 1. Let { TYPE: (I8 (i, j?)); DATA: b*; } be mi.
-2. Let r_0 be the result of computing $Ki().
-3. Let i' be ((|b*| / (64 · r_0)) + n).
-4. Let r_1 be the result of computing $Ki().
-5. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ 0^((n · 64) · r_1); }.
-6. Return mi'.
+2. Let i' be ((|b*| / (64 · $Ki())) + n).
+3. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ 0^((n · 64) · $Ki()); }.
+4. Return mi'.
 
 alloc_import m x_0* x_1*
 1. If x_0* is [] and x_1* is [], then:
@@ -434,7 +431,7 @@ alloc_import m x_0* x_1*
     2) If externtype is of the case FUNC, then:
       a) Let (FUNC functype) be externtype.
       b) Let m_new be m with .FUNC appended by [fa].
-      c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
 5. If externval is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be externval.
@@ -443,7 +440,7 @@ alloc_import m x_0* x_1*
     2) If externtype is of the case GLOBAL, then:
       a) Let (GLOBAL globaltype) be externtype.
       b) Let m_new be m with .GLOBAL appended by [ga].
-      c) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
 6. If import is of the case IMPORT, then:
   a. Let (IMPORT name name' externtype) be import.
@@ -452,7 +449,7 @@ alloc_import m x_0* x_1*
     2) Let m_new be m with .TABLE appended by [ta].
     3) If externtype is of the case TABLE, then:
       a) Let (TABLE tabletype) be externtype.
-      b) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      b) Let m_res be $alloc_import(m_new, import'*, externval'*).
       c) Return m_res.
 7. If externval is of the case MEM, then:
   a. Let (MEM ma) be externval.
@@ -461,7 +458,7 @@ alloc_import m x_0* x_1*
     2) Let m_new be m with .MEM appended by [ma].
     3) If externtype is of the case MEM, then:
       a) Let (MEM memtype) be externtype.
-      b) Let m_res be the result of computing $alloc_import(m_new, import'*, externval'*).
+      b) Let m_res be $alloc_import(m_new, import'*, externval'*).
       c) Return m_res.
 
 alloc_func x_0*
@@ -469,27 +466,25 @@ alloc_func x_0*
 2. If x_0* is [], then:
   a. Return [].
 3. Let [func] ++ func'* be x_0*.
-4. Let r_0 be the result of computing $funcinst().
-5. Let fa be |r_0|.
-6. Let fi be { MODULE: f.MODULE; CODE: func; }.
-7. Append fi to the s.FUNC.
-8. Let fa'* be the result of computing $alloc_func(func'*).
-9. Return [fa] ++ fa'*.
+4. Let fa be |$funcinst()|.
+5. Let fi be { MODULE: f.MODULE; CODE: func; }.
+6. Append fi to the s.FUNC.
+7. Let fa'* be $alloc_func(func'*).
+8. Return [fa] ++ fa'*.
 
 alloc_global x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [global] ++ global'* be x_0*.
-4. Let r_0 be the result of computing $globalinst().
-5. Let ga be |r_0|.
-6. If global is of the case GLOBAL, then:
+4. Let ga be |$globalinst()|.
+5. If global is of the case GLOBAL, then:
   a. Let (GLOBAL globaltype instr*) be global.
   b. Execute the sequence (instr*).
   c. Pop val from the stack.
   d. Let gi be { TYPE: globaltype; VALUE: val; }.
   e. Append gi to the s.GLOBAL.
-  f. Let ga'* be the result of computing $alloc_global(global'*).
+  f. Let ga'* be $alloc_global(global'*).
   g. Return [ga] ++ ga'*.
 
 alloc_table x_0*
@@ -497,14 +492,13 @@ alloc_table x_0*
 2. If x_0* is [], then:
   a. Return [].
 3. Let [table] ++ table'* be x_0*.
-4. Let r_0 be the result of computing $tableinst().
-5. Let ta be |r_0|.
-6. If table is of the case TABLE, then:
+4. Let ta be |$tableinst()|.
+5. If table is of the case TABLE, then:
   a. Let (TABLE tabletype) be table.
   b. Let ((i, j?), reftype) be tabletype.
   c. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
   d. Append ti to the s.TABLE.
-  e. Let ta'* be the result of computing $alloc_table(table'*).
+  e. Let ta'* be $alloc_table(table'*).
   f. Return [ta] ++ ta'*.
 
 alloc_mem x_0*
@@ -512,33 +506,30 @@ alloc_mem x_0*
 2. If x_0* is [], then:
   a. Return [].
 3. Let [mem] ++ mem'* be x_0*.
-4. Let r_0 be the result of computing $meminst().
-5. Let ma be |r_0|.
-6. If mem is of the case MEMORY, then:
+4. Let ma be |$meminst()|.
+5. If mem is of the case MEMORY, then:
   a. Let (MEMORY memtype) be mem.
   b. If memtype is of the case I8, then:
     1) Let (I8 _y0) be memtype.
     2) Let (i, j?) be _y0.
-    3) Let r_1 be the result of computing $Ki().
-    4) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · r_1); }.
-    5) Append mi to the s.MEM.
-    6) Let ma'* be the result of computing $alloc_mem(mem'*).
-    7) Return [ma] ++ ma'*.
+    3) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
+    4) Append mi to the s.MEM.
+    5) Let ma'* be $alloc_mem(mem'*).
+    6) Return [ma] ++ ma'*.
 
 alloc_elem x_0*
 1. Let f be the current frame.
 2. If x_0* is [], then:
   a. Return [].
 3. Let [elem] ++ elem'* be x_0*.
-4. Let r_0 be the result of computing $eleminst().
-5. Let ea be |r_0|.
-6. If elem is of the case ELEM, then:
+4. Let ea be |$eleminst()|.
+5. If elem is of the case ELEM, then:
   a. Let (ELEM reftype instr** elemmode?) be elem.
   b. Execute the sequence (instr**).
   c. Pop ref* from the stack.
   d. Let ei be { TYPE: reftype; ELEM: ref*; }.
   e. Append ei to the s.ELEM.
-  f. Let ea'* be the result of computing $alloc_elem(elem'*).
+  f. Let ea'* be $alloc_elem(elem'*).
   g. Return [ea] ++ ea'*.
 
 alloc_data x_0*
@@ -546,13 +537,12 @@ alloc_data x_0*
 2. If x_0* is [], then:
   a. Return [].
 3. Let [data] ++ data'* be x_0*.
-4. Let r_0 be the result of computing $datainst().
-5. Let da be |r_0|.
-6. If data is of the case DATA, then:
+4. Let da be |$datainst()|.
+5. If data is of the case DATA, then:
   a. Let (DATA byte* datamode?) be data.
   b. Let di be { DATA: byte*; }.
   c. Append di to the s.DATA.
-  d. Let da'* be the result of computing $alloc_data(data'*).
+  d. Let da'* be $alloc_data(data'*).
   e. Return [da] ++ da'*.
 
 replace_moduleinst x_0* m
@@ -591,16 +581,16 @@ alloc_module module externval*
 1. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-  c. Let m_im be the result of computing $alloc_import(m_init, import*, externval*).
+  c. Let m_im be $alloc_import(m_init, import*, externval*).
   d. Let f be { LOCAL: []; MODULE: m_im; }.
-  e. Let fa* be the result of computing $alloc_func(func*).
-  f. Let ga* be the result of computing $alloc_global(global*).
-  g. Let ta* be the result of computing $alloc_table(table*).
-  h. Let ma* be the result of computing $alloc_mem(mem*).
-  i. Let ea* be the result of computing $alloc_elem(elem*).
-  j. Let da* be the result of computing $alloc_data(data*).
+  e. Let fa* be $alloc_func(func*).
+  f. Let ga* be $alloc_global(global*).
+  g. Let ta* be $alloc_table(table*).
+  h. Let ma* be $alloc_mem(mem*).
+  i. Let ea* be $alloc_elem(elem*).
+  j. Let da* be $alloc_data(data*).
   k. Let m_ex be m_im with .FUNC prepended by fa* with .GLOBAL prepended by ga* with .TABLE prepended by ta* with .MEM prepended by ma* with .ELEM prepended by ea* with .DATA prepended by da*.
-  l. Let xi* be the result of computing $alloc_export(m_ex, export)*.
+  l. Let xi* be $alloc_export(m_ex, export)*.
   m. Let m_res be m_ex with .EXPORT replaced by xi*.
   n. Perform $replace_moduleinst(fa*, m_res).
   o. Return m_res.
@@ -615,22 +605,21 @@ run_elem x_0* i
   b. If _y0 is not defined, then:
     1) Perform $run_elem(elem'*, (i + 1)).
     2) Return.
-  c. Else:
-    1) Let ?(elemmode) be _y0.
-    2) If elemmode is of the case TABLE, then:
-      a) Let (TABLE x instr*) be elemmode.
-      b) Let n be |expr*|.
-      c) Execute the sequence (instr*).
-      d) Execute (I32.CONST 0).
-      e) Execute (I32.CONST n).
-      f) Execute (TABLE.INIT x i).
-      g) Execute (ELEM.DROP i).
-      h) Perform $run_elem(elem'*, (i + 1)).
-      i) Return.
-    3) Execute (ELEM.DROP i).
-    4) If elemmode is DECLARE, then:
-      a) Perform $run_elem(elem'*, (i + 1)).
-      b) Return.
+  c. Let ?(elemmode) be _y0.
+  d. If elemmode is of the case TABLE, then:
+    1) Let (TABLE x instr*) be elemmode.
+    2) Let n be |expr*|.
+    3) Execute the sequence (instr*).
+    4) Execute (I32.CONST 0).
+    5) Execute (I32.CONST n).
+    6) Execute (TABLE.INIT x i).
+    7) Execute (ELEM.DROP i).
+    8) Perform $run_elem(elem'*, (i + 1)).
+    9) Return.
+  e. Execute (ELEM.DROP i).
+  f. If elemmode is DECLARE, then:
+    1) Perform $run_elem(elem'*, (i + 1)).
+    2) Return.
 
 run_data x_0* i
 1. Let f be the current frame.
@@ -642,51 +631,47 @@ run_data x_0* i
   b. If _y0 is not defined, then:
     1) Perform $run_data(data'*, (i + 1)).
     2) Return.
-  c. Else:
-    1) Let ?(datamode) be _y0.
-    2) If datamode is of the case MEMORY, then:
-      a) Let (MEMORY _y0 instr*) be datamode.
-      b) Let 0 be _y0.
-      c) Let n be |byte*|.
-      d) Execute the sequence (instr*).
-      e) Execute (I32.CONST 0).
-      f) Execute (I32.CONST n).
-      g) Execute (MEMORY.INIT i).
-      h) Execute (DATA.DROP i).
-      i) Perform $run_data(data'*, (i + 1)).
-      j) Return.
+  c. Let ?(datamode) be _y0.
+  d. If datamode is of the case MEMORY, then:
+    1) Let (MEMORY _y0 instr*) be datamode.
+    2) Let 0 be _y0.
+    3) Let n be |byte*|.
+    4) Execute the sequence (instr*).
+    5) Execute (I32.CONST 0).
+    6) Execute (I32.CONST n).
+    7) Execute (MEMORY.INIT i).
+    8) Execute (DATA.DROP i).
+    9) Perform $run_data(data'*, (i + 1)).
+    10) Return.
 
 instantiation module externval*
 1. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* _y0 export*) be module.
   b. If _y0 is not defined, then:
-    1) Let m be the result of computing $alloc_module(module, externval*).
+    1) Let m be $alloc_module(module, externval*).
     2) Let f be { LOCAL: []; MODULE: m; }.
     3) Perform $run_elem(elem*, 0).
     4) Perform $run_data(data*, 0).
     5) Return m.
-  c. Else:
-    1) Let ?(start) be _y0.
-    2) Let m be the result of computing $alloc_module(module, externval*).
-    3) Let f be { LOCAL: []; MODULE: m; }.
-    4) If start is of the case START, then:
-      a) Let (START x) be start.
-      b) Perform $run_elem(elem*, 0).
-      c) Perform $run_data(data*, 0).
-      d) Execute (CALL x).
-      e) Return m.
+  c. Let ?(start) be _y0.
+  d. Let m be $alloc_module(module, externval*).
+  e. Let f be { LOCAL: []; MODULE: m; }.
+  f. If start is of the case START, then:
+    1) Let (START x) be start.
+    2) Perform $run_elem(elem*, 0).
+    3) Perform $run_data(data*, 0).
+    4) Execute (CALL x).
+    5) Return m.
 
 invocation fa val*
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. Let r_1 be the result of computing $funcinst().
-4. If r_1[fa].CODE is of the case FUNC, then:
-  a. Let r_0 be the result of computing $funcinst().
-  b. Let (FUNC functype valtype* expr) be r_0[fa].CODE.
-  c. Push val* to the stack.
-  d. Execute (CALL_ADDR fa).
-  e. Pop val'* from the stack.
-  f. If |val*| is |valtype*|, then:
+3. If $funcinst()[fa].CODE is of the case FUNC, then:
+  a. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
+  b. Push val* to the stack.
+  c. Execute (CALL_ADDR fa).
+  d. Pop val'* from the stack.
+  e. If |val*| is |valtype*|, then:
     1) Let |valtype'*| be |val'*|.
     2) If functype is [valtype*]->[valtype'*], then:
       a) Return val'*.
@@ -804,12 +789,10 @@ execution_of_return
 execution_of_unop nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
-3. Let r_0 be the result of computing $unop(unop, nt, c_1).
-4. If |r_0| is 1, then:
-  a. Let [c] be the result of computing $unop(unop, nt, c_1).
+3. If |$unop(unop, nt, c_1)| is 1, then:
+  a. Let [c] be $unop(unop, nt, c_1).
   b. Push (nt.CONST c) to the stack.
-5. Let r_1 be the result of computing $unop(unop, nt, c_1).
-6. If r_1 is [], then:
+4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
 execution_of_binop nt binop
@@ -817,18 +800,16 @@ execution_of_binop nt binop
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop (nt.CONST c_1) from the stack.
-5. Let r_0 be the result of computing $binop(binop, nt, c_1, c_2).
-6. If |r_0| is 1, then:
-  a. Let [c] be the result of computing $binop(binop, nt, c_1, c_2).
+5. If |$binop(binop, nt, c_1, c_2)| is 1, then:
+  a. Let [c] be $binop(binop, nt, c_1, c_2).
   b. Push (nt.CONST c) to the stack.
-7. Let r_1 be the result of computing $binop(binop, nt, c_1, c_2).
-8. If r_1 is [], then:
+6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
 execution_of_testop nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
-3. Let c be the result of computing $testop(testop, nt, c_1).
+3. Let c be $testop(testop, nt, c_1).
 4. Push (I32.CONST c) to the stack.
 
 execution_of_relop nt relop
@@ -836,25 +817,21 @@ execution_of_relop nt relop
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop (nt.CONST c_1) from the stack.
-5. Let c be the result of computing $relop(relop, nt, c_1, c_2).
+5. Let c be $relop(relop, nt, c_1, c_2).
 6. Push (I32.CONST c) to the stack.
 
 execution_of_extend nt n
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
-3. Let r_0 be the result of computing $size(nt).
-4. Let r_1 be the result of computing $ext(n, r_0, S, c).
-5. Push (nt.CONST r_1) to the stack.
+3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
 execution_of_cvtop nt_2 cvtop nt_1 sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop (nt_1.CONST c_1) from the stack.
-3. Let r_0 be the result of computing $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
-4. If |r_0| is 1, then:
-  a. Let [c] be the result of computing $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
+3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
+  a. Let [c] be $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
   b. Push (nt_2.CONST c) to the stack.
-5. Let r_1 be the result of computing $cvtop(nt_1, cvtop, nt_2, sx?, c_1).
-6. If r_1 is [], then:
+4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
 execution_of_ref.is_null
@@ -874,84 +851,60 @@ execution_of_local.tee x
 5. Execute (LOCAL.SET x).
 
 execution_of_call x
-1. Let r_1 be the result of computing $funcaddr().
-2. If x < |r_1|, then:
-  a. Let r_0 be the result of computing $funcaddr().
-  b. Execute (CALL_ADDR r_0[x]).
+1. If x < |$funcaddr()|, then:
+  a. Execute (CALL_ADDR $funcaddr()[x]).
 
 execution_of_call_indirect x ft
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. Let r_5 be the result of computing $table(x).
-4. If i ≥ |r_5.ELEM|, then:
+3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
-5. Else:
-  a. Let r_4 be the result of computing $table(x).
-  b. If r_4.ELEM[i] is not of the case REF.FUNC_ADDR, then:
-    1) Trap.
-  c. Else:
-    1) Let r_0 be the result of computing $table(x).
-    2) Let (REF.FUNC_ADDR a) be r_0.ELEM[i].
-    3) Let r_3 be the result of computing $funcinst().
-    4) If a ≥ |r_3|, then:
-      a) Trap.
-    5) Else:
-      a) Let r_2 be the result of computing $funcinst().
-      b) If r_2[a].CODE is not of the case FUNC, then:
-        1. Trap.
-      c) Else:
-        1. Let r_1 be the result of computing $funcinst().
-        2. Let (FUNC ft' t* instr*) be r_1[a].CODE.
-        3. If ft is ft', then:
-          a. Execute (CALL_ADDR a).
-        4. Else:
-          a. Trap.
+4. If $table(x).ELEM[i] is not of the case REF.FUNC_ADDR, then:
+  a. Trap.
+5. Let (REF.FUNC_ADDR a) be $table(x).ELEM[i].
+6. If a ≥ |$funcinst()|, then:
+  a. Trap.
+7. If $funcinst()[a].CODE is not of the case FUNC, then:
+  a. Trap.
+8. Let (FUNC ft' t* instr*) be $funcinst()[a].CODE.
+9. If ft is not ft', then:
+  a. Trap.
+10. Execute (CALL_ADDR a).
 
 execution_of_call_addr a
-1. Let r_2 be the result of computing $funcinst().
-2. If a < |r_2|, then:
-  a. Let r_0 be the result of computing $funcinst().
-  b. Let { MODULE: m; CODE: func; } be r_0[a].
-  c. If func is of the case FUNC, then:
+1. If a < |$funcinst()|, then:
+  a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
+  b. If func is of the case FUNC, then:
     1) Let (FUNC _y0 t* instr*) be func.
     2) Let [t_1^k]->[t_2^n] be _y0.
     3) Assert: Due to validation, there are at least k values on the top of the stack.
     4) Pop val^k from the stack.
-    5) Let r_1 be the result of computing $default_(t)*.
-    6) Let f be { LOCAL: val^k ++ r_1; MODULE: m; }.
-    7) Push the activation of f with arity n to the stack.
-    8) Let L be the label_n{[]}.
-    9) Push L to the stack.
-    10) Jump to instr*.
+    5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
+    6) Push the activation of f with arity n to the stack.
+    7) Let L be the label_n{[]}.
+    8) Push L to the stack.
+    9) Jump to instr*.
 
 execution_of_ref.func x
-1. Let r_1 be the result of computing $funcaddr().
-2. If x < |r_1|, then:
-  a. Let r_0 be the result of computing $funcaddr().
-  b. Push (REF.FUNC_ADDR r_0[x]) to the stack.
+1. If x < |$funcaddr()|, then:
+  a. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
 execution_of_local.get x
-1. Let r_0 be the result of computing $local(x).
-2. Push r_0 to the stack.
+1. Push $local(x) to the stack.
 
 execution_of_global.get x
-1. Let r_0 be the result of computing $global(x).
-2. Push r_0.VALUE to the stack.
+1. Push $global(x).VALUE to the stack.
 
 execution_of_table.get x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. Let r_1 be the result of computing $table(x).
-4. If i ≥ |r_1.ELEM|, then:
+3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
-5. Else:
-  a. Let r_0 be the result of computing $table(x).
-  b. Push r_0.ELEM[i] to the stack.
+4. Push $table(x).ELEM[i] to the stack.
 
 execution_of_table.size x
-1. Let r_0 be the result of computing $table(x).
-2. Let n be |r_0.ELEM|.
-3. Push (I32.CONST n) to the stack.
+1. Let n be |$table(x).ELEM|.
+2. Push (I32.CONST n) to the stack.
 
 execution_of_table.fill x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -960,10 +913,9 @@ execution_of_table.fill x
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
-7. Let r_0 be the result of computing $table(x).
-8. If (i + n) > |r_0.ELEM|, then:
+7. If (i + n) > |$table(x).ELEM|, then:
   a. Trap.
-9. Else if n is not 0, then:
+8. If n is not 0, then:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
   c. Execute (TABLE.SET x).
@@ -979,11 +931,9 @@ execution_of_table.copy x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. Let r_0 be the result of computing $table(x).
-8. Let r_1 be the result of computing $table(y).
-9. If (i + n) > |r_1.ELEM| or (j + n) > |r_0.ELEM|, then:
+7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
-10. Else if n is not 0, then:
+8. If n is not 0, then:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -1008,52 +958,36 @@ execution_of_table.init x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. Let r_2 be the result of computing $table(x).
-8. Let r_3 be the result of computing $elem(y).
-9. If (i + n) > |r_3.ELEM| or (j + n) > |r_2.ELEM|, then:
+7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
-10. Else:
-  a. Let r_1 be the result of computing $elem(y).
-  b. If n is not 0 and i < |r_1.ELEM|, then:
-    1) Push (I32.CONST j) to the stack.
-    2) Let r_0 be the result of computing $elem(y).
-    3) Push r_0.ELEM[i] to the stack.
-    4) Execute (TABLE.SET x).
-    5) Push (I32.CONST (j + 1)) to the stack.
-    6) Push (I32.CONST (i + 1)) to the stack.
-    7) Push (I32.CONST (n - 1)) to the stack.
-    8) Execute (TABLE.INIT x y).
+8. If n is not 0 and i < |$elem(y).ELEM|, then:
+  a. Push (I32.CONST j) to the stack.
+  b. Push $elem(y).ELEM[i] to the stack.
+  c. Execute (TABLE.SET x).
+  d. Push (I32.CONST (j + 1)) to the stack.
+  e. Push (I32.CONST (i + 1)) to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute (TABLE.INIT x y).
 
 execution_of_load nt x_0? n_A n_O
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If x_0? is not defined, then:
-  a. Let r_4 be the result of computing $mem(0).
-  b. Let r_5 be the result of computing $size(nt).
-  c. If ((i + n_O) + (r_5 / 8)) > |r_4.DATA|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  d. Let r_6 be the result of computing $size(nt).
-  e. Let r_7 be the result of computing $size(nt).
-  f. Let r_8 be the result of computing $mem(0).
-  g. Let c be the result of computing $inverse_of_bytes_(r_6, r_8.DATA[(i + n_O) : (r_7 / 8)]).
-  h. Push (nt.CONST c) to the stack.
+  b. Let c be $inverse_of_bytes_($size(nt), $mem(0).DATA[(i + n_O) : ($size(nt) / 8)]).
+  c. Push (nt.CONST c) to the stack.
 4. Else:
   a. Let ?(_y0) be x_0?.
   b. Let [n, sx] be _y0.
-  c. Let r_0 be the result of computing $mem(0).
-  d. If ((i + n_O) + (n / 8)) > |r_0.DATA|, then:
+  c. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  e. Let r_1 be the result of computing $mem(0).
-  f. Let c be the result of computing $inverse_of_bytes_(n, r_1.DATA[(i + n_O) : (n / 8)]).
-  g. Let r_2 be the result of computing $size(nt).
-  h. Let r_3 be the result of computing $ext(n, r_2, sx, c).
-  i. Push (nt.CONST r_3) to the stack.
+  d. Let c be $inverse_of_bytes_(n, $mem(0).DATA[(i + n_O) : (n / 8)]).
+  e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
 execution_of_memory.size
-1. Let r_0 be the result of computing $mem(0).
-2. Let r_1 be the result of computing $Ki().
-3. Let ((n · 64) · r_1) be |r_0.DATA|.
-4. Push (I32.CONST n) to the stack.
+1. Let ((n · 64) · $Ki()) be |$mem(0).DATA|.
+2. Push (I32.CONST n) to the stack.
 
 execution_of_memory.fill
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -1062,10 +996,9 @@ execution_of_memory.fill
 4. Pop val from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
-7. Let r_0 be the result of computing $mem(0).
-8. If (i + n) > |r_0.DATA|, then:
+7. If (i + n) > |$mem(0).DATA|, then:
   a. Trap.
-9. Else if n is not 0, then:
+8. If n is not 0, then:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
   c. Execute (STORE I32 ?(8) 0 0).
@@ -1081,11 +1014,9 @@ execution_of_memory.copy
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. Let r_0 be the result of computing $mem(0).
-8. Let r_1 be the result of computing $mem(0).
-9. If (i + n) > |r_1.DATA| or (j + n) > |r_0.DATA|, then:
+7. If (i + n) > |$mem(0).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
-10. Else if n is not 0, then:
+8. If n is not 0, then:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -1110,21 +1041,16 @@ execution_of_memory.init x
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. Let r_2 be the result of computing $mem(0).
-8. Let r_3 be the result of computing $data(x).
-9. If (i + n) > |r_3.DATA| or (j + n) > |r_2.DATA|, then:
+7. If (i + n) > |$data(x).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
-10. Else:
-  a. Let r_1 be the result of computing $data(x).
-  b. If n is not 0 and i < |r_1.DATA|, then:
-    1) Push (I32.CONST j) to the stack.
-    2) Let r_0 be the result of computing $data(x).
-    3) Push (I32.CONST r_0.DATA[i]) to the stack.
-    4) Execute (STORE I32 ?(8) 0 0).
-    5) Push (I32.CONST (j + 1)) to the stack.
-    6) Push (I32.CONST (i + 1)) to the stack.
-    7) Push (I32.CONST (n - 1)) to the stack.
-    8) Execute (MEMORY.INIT x).
+8. If n is not 0 and i < |$data(x).DATA|, then:
+  a. Push (I32.CONST j) to the stack.
+  b. Push (I32.CONST $data(x).DATA[i]) to the stack.
+  c. Execute (STORE I32 ?(8) 0 0).
+  d. Push (I32.CONST (j + 1)) to the stack.
+  e. Push (I32.CONST (i + 1)) to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute (MEMORY.INIT x).
 
 execution_of_local.set x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1141,11 +1067,9 @@ execution_of_table.set x
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Let r_0 be the result of computing $table(x).
-6. If i ≥ |r_0.ELEM|, then:
+5. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
-7. Else:
-  a. Perform $with_table(x, i, ref).
+6. Perform $with_table(x, i, ref).
 
 execution_of_table.grow x
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
@@ -1153,14 +1077,13 @@ execution_of_table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Let ti be the result of computing $table(x).
-  b. Let ti' be the result of computing $grow_table(ti, n, ref).
+  a. Let ti be $table(x).
+  b. Let ti' be $grow_table(ti, n, ref).
   c. If ti'.TYPE is not valid, then:
     1) Push (I32.CONST -1) to the stack.
   d. Else:
-    1) Let r_0 be the result of computing $table(x).
-    2) Push (I32.CONST |r_0.ELEM|) to the stack.
-    3) Perform $with_tableinst(x, ti').
+    1) Push (I32.CONST |$table(x).ELEM|) to the stack.
+    2) Perform $with_tableinst(x, ti').
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -1173,37 +1096,28 @@ execution_of_store nt x_0? n_A n_O
 3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If x_0? is not defined, then:
-  a. Let r_3 be the result of computing $mem(0).
-  b. Let r_4 be the result of computing $size(nt).
-  c. If ((i + n_O) + (r_4 / 8)) > |r_3.DATA|, then:
+  a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  d. Let r_5 be the result of computing $size(nt).
-  e. Let b* be the result of computing $bytes_(r_5, c).
-  f. Let r_6 be the result of computing $size(nt).
-  g. Perform $with_mem(0, (i + n_O), (r_6 / 8), b*).
+  b. Let b* be $bytes_($size(nt), c).
+  c. Perform $with_mem(0, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
   a. Let ?(n) be x_0?.
-  b. Let r_0 be the result of computing $mem(0).
-  c. If ((i + n_O) + (n / 8)) > |r_0.DATA|, then:
+  b. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
     1) Trap.
-  d. Let r_1 be the result of computing $size(nt).
-  e. Let r_2 be the result of computing $wrap_([r_1, n], c).
-  f. Let b* be the result of computing $bytes_(n, r_2).
-  g. Perform $with_mem(0, (i + n_O), (n / 8), b*).
+  c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
+  d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Let mi be the result of computing $mem(0).
-  b. Let mi' be the result of computing $grow_memory(mi, n).
+  a. Let mi be $mem(0).
+  b. Let mi' be $grow_memory(mi, n).
   c. If mi'.TYPE is not valid, then:
     1) Push (I32.CONST -1) to the stack.
   d. Else:
-    1) Let r_0 be the result of computing $Ki().
-    2) Let r_1 be the result of computing $mem(0).
-    3) Push (I32.CONST (|r_1.DATA| / (64 · r_0))) to the stack.
-    4) Perform $with_meminst(0, mi').
+    1) Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+    2) Perform $with_meminst(0, mi').
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
