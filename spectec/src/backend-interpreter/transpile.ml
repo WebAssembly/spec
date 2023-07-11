@@ -30,6 +30,7 @@ let rec count_instrs instrs =
        | IfI (_, il1, il2) | EitherI (il1, il2) ->
            1 + count_instrs il1 + count_instrs il2
        | OtherwiseI il | WhileI (_, il) -> 1 + count_instrs il
+       | TrapI | ReturnI _ -> 0
        | _ -> 1)
   |> list_sum
 
@@ -151,6 +152,18 @@ let swap_if =
   | i -> i in
   Walk.walk_instr { Walk.default_action with post_instr = lift transpile_instr }
 
+let rec return_at_last = function
+| [] -> false
+| [ TrapI ] | [ ReturnI _ ] -> true
+| _ :: tl -> return_at_last tl
+
+let early_return = Walk.walk_instr { Walk.default_action with post_instr =
+  function
+  | IfI (c, il1, il2) as i ->
+    if return_at_last il1 then IfI (c, il1, []) :: il2 else [ i ]
+  | i -> [i]
+}
+
 let unify_tail instrs1 instrs2 =
   let rev = List.rev in
   let rh, rt1, rt2 = unify_head [] (rev instrs1) (rev instrs2) in
@@ -184,6 +197,7 @@ let enhance_readability instrs =
   |> List.concat_map if_not_defined
   |> infer_else
   |> List.concat_map swap_if
+  |> List.concat_map early_return
   |> List.concat_map unify_if_tail
 
 (** Walker-based Translpiler **)

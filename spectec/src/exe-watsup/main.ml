@@ -199,9 +199,9 @@ let () =
         failwith "Interpreter generatiron requires `--animate` flag."
       else
       log "Translating to AL...";
-      let al =
-        Backend_interpreter.Translate.translate il
-        @ Backend_interpreter.Manual.manual_algos in
+      let al = Backend_interpreter.(
+        ( Translate.translate il @ Manual.manual_algos ) |> List.map Transpile.app_remover
+      ) in
       if !print_al then
         List.iter (fun algo -> Al.Print.string_of_algorithm algo |> print_endline) al;
       (*log "AL Validation...";
