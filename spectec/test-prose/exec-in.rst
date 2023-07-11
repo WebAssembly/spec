@@ -1,5 +1,5 @@
-Wasm Prose Semantics
-=====================
+Wasm Execution Prose 
+====================
 
 .. _exec-instr:
 

@@ -2,4 +2,6 @@
 *.log
 *.pdf
 prose.rst
+exec.rst
+valid.rst
 _sphinx
