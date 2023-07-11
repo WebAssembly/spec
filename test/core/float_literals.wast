@@ -511,5 +511,5 @@
 )
 (assert_malformed
   (module quote "(global f64 (f64.const nan:0x10_0000_0000_0000))")
-  "invalid literal"
+  "constant out of range"
 )
