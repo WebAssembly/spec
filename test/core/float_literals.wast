@@ -354,7 +354,7 @@
 )
 (assert_malformed
   (module quote "(global f32 (f32.const nan:0x800000))")
-  "invalid literal"
+  "constant out of range"
 )
 
 (assert_malformed
