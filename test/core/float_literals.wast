@@ -352,6 +352,10 @@
   (module quote "(global f32 (f32.const 0x1.0p_+1))")
   "unknown operator"
 )
+(assert_malformed
+  (module quote "(global f32 (f32.const nan:0x80_0000))")
+  "constant out of range"
+)
 
 (assert_malformed
   (module quote "(global f64 (f64.const _100))")
@@ -504,4 +508,8 @@
 (assert_malformed
   (module quote "(global f64 (f64.const 0x1.0p_+1))")
   "unknown operator"
+)
+(assert_malformed
+  (module quote "(global f64 (f64.const nan:0x10_0000_0000_0000))")
+  "constant out of range"
 )
