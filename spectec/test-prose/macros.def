@@ -39,6 +39,9 @@
 .. |RELOP| mathdef:: {\K{relop}}
 .. |CVTOP| mathdef:: {\K{cvtop}}
 
+.. |REINTERPRET| mathdef:: {\K{reinterpret}}
+.. |CONVERT| mathdef:: {\K{convert}}
+
 .. |CONST| mathdef:: {\K{const}}
 
 .. |DROP| mathdef:: {\K{drop}}
@@ -136,6 +139,7 @@
 .. Types, terminals
 
 .. |I32| mathdef:: {\K{i32}}
+.. |FUNCREF| mathdef:: {\K{funcref}}
 
 
 .. Types, non-terminals
@@ -196,3 +200,6 @@
 .. |ELEM| mathdef:: {\K{elem}}
 .. |TYPE| mathdef:: {\K{type}}
 .. |DATA| mathdef:: {\K{data}}
+.. |GLOBAL| mathdef:: {\K{global}}
+.. |TABLE| mathdef:: {\K{table}}
+.. |MEM| mathdef:: {\K{mem}}

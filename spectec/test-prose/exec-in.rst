@@ -15,7 +15,7 @@ Numeric Instructions
 
 .. _exec-unop:
 
-%{prose-rule: unop}
+%{prose-algo: unop}
 
 \
 
@@ -23,7 +23,7 @@ $${rule+: Step_pure/unop-*}
 
 .. _exec-binop:
 
-%{prose-rule: binop}
+%{prose-algo: binop}
 
 \
 
@@ -31,7 +31,7 @@ $${rule+: Step_pure/binop-*}
 
 .. _exec-testop:
 
-%{prose-rule: testop}
+%{prose-algo: testop}
 
 \
 
@@ -39,7 +39,7 @@ $${rule+: Step_pure/testop}
 
 .. _exec-relop:
 
-%{prose-rule: relop}
+%{prose-algo: relop}
 
 \
 
@@ -47,7 +47,7 @@ $${rule+: Step_pure/relop}
 
 .. _exec-cvtop:
 
-%{prose-rule: cvtop}
+%{prose-algo: cvtop}
 
 \
 
@@ -60,7 +60,7 @@ Reference Instructions
 
 .. _exec-ref.is_null:
 
-%{prose-rule: ref.is_null}
+%{prose-algo: ref.is_null}
 
 \
 
@@ -68,7 +68,7 @@ $${rule+: Step_pure/ref.is_null-*}
 
 .. _exec-ref.func:
 
-%{prose-rule: ref.func}
+%{prose-algo: ref.func}
 
 \
 
@@ -81,7 +81,7 @@ Parametric Instructions
 
 .. _exec-drop:
 
-%{prose-rule: drop}
+%{prose-algo: drop}
 
 \
 
@@ -89,7 +89,7 @@ $${rule+: Step_pure/drop}
 
 .. _exec-select:
 
-%{prose-rule: select}
+%{prose-algo: select}
 
 \
 
@@ -102,7 +102,7 @@ Variable Instructions
 
 .. _exec-local.get:
 
-%{prose-rule: local.get}
+%{prose-algo: local.get}
 
 \
 
@@ -110,7 +110,7 @@ $${rule+: Step_read/local.get}
 
 .. _exec-local.set:
 
-%{prose-rule: local.set}
+%{prose-algo: local.set}
 
 \
 
@@ -118,7 +118,7 @@ $${rule+: Step/local.set}
 
 .. _exec-local.tee:
 
-%{prose-rule: local.tee}
+%{prose-algo: local.tee}
 
 \
 
@@ -126,7 +126,7 @@ $${rule+: Step_pure/local.tee}
 
 .. _exec-global.get:
 
-%{prose-rule: global.get}
+%{prose-algo: global.get}
 
 \
 
@@ -134,7 +134,7 @@ $${rule+: Step_read/global.get}
 
 .. _exec-global.set:
 
-%{prose-rule: global.set}
+%{prose-algo: global.set}
 
 \
 
@@ -147,7 +147,7 @@ Table Instructions
 
 .. _exec-table.get:
 
-%{prose-rule: table.get}
+%{prose-algo: table.get}
 
 \
 
@@ -155,7 +155,7 @@ $${rule+: Step_read/table.get-*}
 
 .. _exec-table.set:
 
-%{prose-rule: table.set}
+%{prose-algo: table.set}
 
 \
 
@@ -163,7 +163,7 @@ $${rule+: Step/table.set-*}
 
 .. _exec-table.size:
 
-%{prose-rule: table.size}
+%{prose-algo: table.size}
 
 \
 
@@ -171,7 +171,7 @@ $${rule+: Step_read/table.size}
 
 .. _exec-table.grow:
 
-%{prose-rule: table.grow}
+%{prose-algo: table.grow}
 
 \
 
@@ -179,7 +179,7 @@ $${rule+: Step/table.grow-*}
 
 .. _exec-table.fill:
 
-%{prose-rule: table.fill}
+%{prose-algo: table.fill}
 
 \
 
@@ -187,7 +187,7 @@ $${rule+: Step_read/table.fill-*}
 
 .. _exec-table.copy:
 
-%{prose-rule: table.copy}
+%{prose-algo: table.copy}
 
 \
 
@@ -195,7 +195,7 @@ $${rule+: Step_read/table.copy-*}
 
 .. _exec-table.init:
 
-%{prose-rule: table.init}
+%{prose-algo: table.init}
 
 \
 
@@ -203,7 +203,7 @@ $${rule+: Step_read/table.init-*}
 
 .. _exec-elem.drop:
 
-%{prose-rule: elem.drop}
+%{prose-algo: elem.drop}
 
 \
 
@@ -216,7 +216,7 @@ Memory Instructions
 
 .. _exec-load:
 
-%{prose-rule: load}
+%{prose-algo: load}
 
 \
 
@@ -224,7 +224,7 @@ $${rule+: Step_read/load-*}
 
 .. _exec-store:
 
-%{prose-rule: store}
+%{prose-algo: store}
 
 \
 
@@ -232,7 +232,7 @@ $${rule+: Step/store-*}
 
 .. _exec-memory.size:
 
-%{prose-rule: memory.size}
+%{prose-algo: memory.size}
 
 \
 
@@ -240,7 +240,7 @@ $${rule+: Step_read/memory.size}
 
 .. _exec-memory.grow:
 
-%{prose-rule: memory.grow}
+%{prose-algo: memory.grow}
 
 \
 
@@ -248,7 +248,7 @@ $${rule+: Step/memory.grow-*}
 
 .. _exec-memory.fill:
 
-%{prose-rule: memory.fill}
+%{prose-algo: memory.fill}
 
 \
 
@@ -256,7 +256,7 @@ $${rule+: Step_read/memory.fill-*}
 
 .. _exec-memory.copy:
 
-%{prose-rule: memory.copy}
+%{prose-algo: memory.copy}
 
 \
 
@@ -264,7 +264,7 @@ $${rule+: Step_read/memory.copy-*}
 
 .. _exec-memory.init:
 
-%{prose-rule: memory.init}
+%{prose-algo: memory.init}
 
 \
 
@@ -272,7 +272,7 @@ $${rule+: Step_read/memory.init-*}
 
 .. _exec-data.drop:
 
-%{prose-rule: data.drop}
+%{prose-algo: data.drop}
 
 \
 
@@ -285,7 +285,7 @@ Control Instructions
 
 .. _exec-nop:
 
-%{prose-rule: nop}
+%{prose-algo: nop}
 
 \
 
@@ -293,7 +293,7 @@ $${rule+: Step_pure/nop}
 
 .. _exec-unreachable:
 
-%{prose-rule: unreachable}
+%{prose-algo: unreachable}
 
 \
 
@@ -301,7 +301,7 @@ $${rule+: Step_pure/unreachable}
 
 .. _exec-block:
 
-%{prose-rule: block}
+%{prose-algo: block}
 
 \
 
@@ -309,7 +309,7 @@ $${rule+: Step_pure/block}
 
 .. _exec-loop:
 
-%{prose-rule: loop}
+%{prose-algo: loop}
 
 \
 
@@ -317,7 +317,7 @@ $${rule+: Step_pure/loop}
 
 .. _exec-if:
 
-%{prose-rule: if}
+%{prose-algo: if}
 
 \
 
@@ -325,7 +325,7 @@ $${rule+: Step_pure/if-*}
 
 .. _exec-br:
 
-%{prose-rule: br}
+%{prose-algo: br}
 
 \
 
@@ -333,7 +333,7 @@ $${rule+: Step_pure/br-*}
 
 .. _exec-br_if:
 
-%{prose-rule: br_if}
+%{prose-algo: br_if}
 
 \
 
@@ -341,7 +341,7 @@ $${rule+: Step_pure/br_if-*}
 
 .. _exec-br_table:
 
-%{prose-rule: br_table}
+%{prose-algo: br_table}
 
 \
 
@@ -349,7 +349,7 @@ $${rule+: Step_pure/br_table-*}
 
 .. _exec-return:
 
-%{prose-rule: return}
+%{prose-algo: return}
 
 \
 
@@ -357,7 +357,7 @@ $${rule+: Step_pure/return-*}
 
 .. _exec-call:
 
-%{prose-rule: call}
+%{prose-algo: call}
 
 \
 
@@ -365,7 +365,7 @@ $${rule+: Step_read/call}
 
 .. _exec-call_indirect:
 
-%{prose-rule: call_indirect}
+%{prose-algo: call_indirect}
 
 \
 
@@ -378,7 +378,7 @@ Blocks
 
 .. _exec-label-vals:
 
-%{prose-rule: label}
+%{prose-algo: label}
 
 \
 
@@ -389,7 +389,7 @@ Function Calls
 
 .. _exec-call_addr:
 
-%{prose-rule: call_addr}
+%{prose-algo: call_addr}
 
 \
 
@@ -397,7 +397,7 @@ $${rule+: Step_read/call_addr}
 
 .. _exec-frame-vals:
 
-%{prose-rule: frame}
+%{prose-algo: frame}
 
 \
 

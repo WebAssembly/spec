@@ -244,8 +244,8 @@ let try_exp_anchor env src r : bool =
   );
   b
 
-let try_prose_anchor env src r : bool =
-  let b = try_string src "prose-rule" in
+let try_prose_anchor env src r sort : bool =
+  let b = try_string src sort in
   if b then (
     parse_space src;
     if not (try_string src ":") then
@@ -254,12 +254,18 @@ let try_prose_anchor env src r : bool =
     let instr_name = parse_id src "instrname" in
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
-    let algo_name = "execution_of_" ^ instr_name in
-    let algo = List.find (function
-      | Backend_prose.Prose.Algo (Al.Ast.Algo (name, _, _)) when name = algo_name -> true
+    let prefix = (match sort with
+      | "prose-pred" -> "validation_of_"
+      | "prose-algo" -> "execution_of_"
+      | _ -> failwith "unreachable")
+    in
+    let prose_name = prefix ^ instr_name in
+    let prose = List.find (function
+      | Backend_prose.Prose.Pred (name, _, _) when name = prose_name -> true
+      | Backend_prose.Prose.Algo (Al.Ast.Algo (name, _, _)) when name = prose_name -> true
       | _ -> false
     ) env.render_prose.prose in
-    r := Backend_prose.Render.render_def env.render_prose algo
+    r := Backend_prose.Render.render_def env.render_prose prose 
   );
   b
 
@@ -276,7 +282,8 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
     try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
     try_def_anchor env src r "definition" "definition" "" find_func false ||
-    try_prose_anchor env src r ||
+    try_prose_anchor env src r "prose-pred" ||
+    try_prose_anchor env src r "prose-algo" ||
     error src "unknown definition sort";
   );
   let s =

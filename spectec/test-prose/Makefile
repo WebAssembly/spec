@@ -35,7 +35,7 @@ $(OUTVALID).rst: $(INVALID).rst $(SPECFILES) $(EXE)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
 
 $(OUTPROSE).rst: $(OUTEXEC).rst $(OUTVALID).rst
-	cat $(word 2,$<) >> $@
+	cat $< > $@
 	echo >> $@
 	cat $(word 2,$^) >> $@
 
