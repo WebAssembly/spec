@@ -11,18 +11,18 @@ let harness =
 {|
 'use strict';
 
-let externrefs = {};
-let externsym = Symbol("externref");
-function externref(s) {
-  if (! (s in externrefs)) externrefs[s] = {[externsym]: s};
-  return externrefs[s];
+let hostrefs = {};
+let hostsym = Symbol("hostref");
+function hostref(s) {
+  if (! (s in hostrefs)) hostrefs[s] = {[hostsym]: s};
+  return hostrefs[s];
 }
 function eq_ref(x, y) {
   return x === y ? 1 : 0;
 }
 
 let spectest = {
-  externref: externref,
+  hostref: hostref,
   eq_ref: eq_ref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
@@ -157,6 +157,21 @@ function assert_return(action, ...expected) {
           throw new Error("Wasm return value NaN expected, got " + actual[i]);
         };
         return;
+      case "ref.i31":
+        if (typeof actual[i] !== "number" || (actual[i] & 0x7fffffff) !== actual[i]) {
+          throw new Error("Wasm i31 return value expected, got " + actual[i]);
+        };
+        return;
+      case "ref.any":
+      case "ref.eq":
+      case "ref.struct":
+      case "ref.array":
+        // For now, JS can't distinguish exported Wasm GC values,
+        // so we only test for object.
+        if (typeof actual[i] !== "object") {
+          throw new Error("Wasm function return value expected, got " + actual[i]);
+        };
+        return;
       case "ref.func":
         if (typeof actual[i] !== "function") {
           throw new Error("Wasm function return value expected, got " + actual[i]);
@@ -222,7 +237,7 @@ let lookup (mods : modules) x_opt name at =
 (* Wrappers *)
 
 let subject_idx = 0l
-let externref_idx = 1l
+let hostref_idx = 1l
 let eq_ref_idx = 2l
 let subject_type_idx = 3l
 
@@ -256,7 +271,7 @@ let value v =
   | Vec s -> [VecConst (s @@ v.at) @@ v.at]
   | Ref (NullRef ht) -> [RefNull (Match.bot_of_heap_type [] ht) @@ v.at]
   | Ref (Extern.ExternRef (HostRef n)) ->
-    [Const (I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
+    [Const (I32 n @@ v.at) @@ v.at; Call (hostref_idx @@ v.at) @@ v.at]
   | Ref _ -> assert false
 
 let invoke ft vs at =
@@ -348,7 +363,7 @@ let assert_return ress ts at =
         BrIf (0l @@ at) @@ at ]
     | RefResult (RefPat {it = HostRef n; _}) ->
       [ Const (Value.I32 n @@ at) @@ at;
-        Call (externref_idx @@ at) @@ at;
+        Call (hostref_idx @@ at) @@ at;
         Call (eq_ref_idx @@ at)  @@ at;
         Test (Value.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
@@ -384,10 +399,10 @@ let wrap item_name wrap_action wrap_assertion at =
   in
   let imports =
     [ {module_name = Utf8.decode "module"; item_name; idesc} @@ at;
-      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "externref";
+      {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
-       idesc = FuncImport (3l @@ at) @@ at} @@ at;
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
     ]
   in
   let item =
