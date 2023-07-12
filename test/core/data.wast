@@ -81,9 +81,6 @@
   (data (global.get $g) "a")
 )
 
-(module (memory 1) (global i32 (i32.const 0)) (data (global.get 0) "a"))
-(module (memory 1) (global $g i32 (i32.const 0)) (data (global.get $g) "a"))
-
 
 ;; Corner cases
 
