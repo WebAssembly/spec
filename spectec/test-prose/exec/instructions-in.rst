@@ -1,6 +1,3 @@
-WebAssembly Execution Prose 
-===========================
-
 .. _exec-instr:
 
 Instructions

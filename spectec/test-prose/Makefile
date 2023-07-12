@@ -18,51 +18,62 @@ all: html pdf
 
 HEADER = header
 
-INVALID = valid-in
-OUTVALID = valid
+EXECINDEX = exec/index
 
-INHELPER = helper-in
-OUTHELPER = helper
+EXECINSTRIN = exec/instructions-in
+EXECINSTROUT = exec/instructions
 
-INEXEC = exec-in
-OUTEXEC = exec
+EXECRUNTIMEIN = exec/runtime-in
+EXECRUNTIMEOUT = exec/runtime
 
-INPROSE = prose-in
+EXECAUXIN = exec/auxiliary-in
+EXECAUXOUT = exec/auxiliary
+
+VALIDINDEX = valid/index
+
+VALIDINSTRIN = valid/instructions-in
+VALIDINSTROUT = valid/instructions
+
 OUTPROSE = prose
+
 SPHINXDIR = _sphinx
 
 .PHONY: html pdf
 
-$(OUTVALID).rst: $(INVALID).rst $(SPECFILES) $(EXE)
+$(EXECINSTROUT).rst: $(EXECINSTRIN).rst $(SPECFILES) $(EXE)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
 
-$(OUTHELPER).rst: $(INHELPER).rst $(SPECFILES) $(EXE)
+$(EXECRUNTIMEOUT).rst: $(EXECRUNTIMEIN).rst $(SPECFILES) $(EXE)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
 
-$(OUTEXEC).rst: $(INEXEC).rst $(SPECFILES) $(EXE)
+$(EXECAUXOUT).rst: $(EXECAUXIN).rst $(SPECFILES) $(EXE)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
 
-$(OUTPROSE).rst: $(HEADER).rst $(OUTVALID).rst $(OUTHELPER).rst $(OUTEXEC).rst
-	cat $< > $@
-	echo >> $@
-	cat $(word 2,$^) >> $@
-	echo >> $@
-	cat $(word 3,$^) >> $@
-	echo >> $@
-	cat $(word 4,$^) >> $@
+execs: $(EXECINDEX).rst $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst
+
+$(VALIDINSTROUT).rst: $(VALIDINSTRIN).rst $(SPECFILES) $(EXE)
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
+
+valids: $(VALIDINDEX).rst $(VALIDINSTROUT).rst
 
 sphinx-splice: html pdf
 
-html: $(OUTPROSE).rst conf.py macros.def mathdef.py
+html: $(OUTPROSE).rst $(OUTVALID).rst $(OUTEXEC).rst conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $^ $(SPHINXDIR)
+	cp $(word 2,$^) $(SPHINXDIR) 
+	cp $(word 3,$^) $(SPHINXDIR)
 	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
 	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(OUTPROSE).html >$(OUTPROSE).html.tmp
 	mv -f $(OUTPROSE).html.tmp $(SPHINXDIR)/_build/$(OUTPROSE).html
 
-pdf: $(OUTPROSE).rst conf.py macros.def mathdef.py
+pdf: $(OUTPROSE).rst execs valids conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
-	cp $^ $(SPHINXDIR)
+	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
+	mkdir $(SPHINXDIR)/exec
+	cp $(EXECINDEX).rst $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst $(SPHINXDIR)/exec
+	mkdir $(SPHINXDIR)/valid
+	cp $(VALIDINDEX).rst $(VALIDINSTROUT).rst $(SPHINXDIR)/valid 
 	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(OUTPROSE).tex)
 	cp $(SPHINXDIR)/_build/prose.pdf .
@@ -75,10 +86,9 @@ clean:
 	dune clean
 	rm -f *.aux *.log
 	rm -rf $(SPHINXDIR)
-	rm -f $(OUTPROSE).rst
-	rm -f $(OUTVALID).rst
-	rm -f $(OUTHELPER).rst
-	rm -f $(OUTEXEC).rst
-
+	rm -f $(EXECINSTROUT).rst
+	rm -f $(EXECRUNTIMEOUT).rst
+	rm -f $(EXECAUXOUT).rst
+	rm -f $(VALIDINSTROUT).rst
 
 	rm -f *.pdf

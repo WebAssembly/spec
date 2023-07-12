@@ -3,7 +3,7 @@ import sys
 pwd = os.path.abspath('.')
 sys.path.insert(0, pwd)
 
-name = 'Wasm'
+name = 'WebAssembly Formal Specification'
 project = 'prose'
 title = 'Wasm Formal Specification'
 extensions = [

@@ -2,7 +2,8 @@
 *.log
 *.pdf
 prose.rst
-exec.rst
-valid.rst
-helper.rst
+exec/auxiliary.rst
+exec/runtime.rst
+exec/instructions.rst
+valid/instructions.rst
 _sphinx

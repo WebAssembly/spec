@@ -1,6 +1,3 @@
-WebAssembly Validation Prose 
-============================
-
 .. _valid-instr:
 
 Instructions
