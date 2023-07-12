@@ -48,7 +48,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}}
-\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. {\mathit{u{\scriptstyle32}}^?}] \\[0.8ex]
+\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. \mathit{u{\scriptstyle32}}] \\[0.8ex]
 \mbox{(global type)} & \mathit{globaltype} &::=& {\mathsf{mut}^?}~\mathit{valtype} \\
 \mbox{(function type)} & \mathit{functype} &::=& \mathit{resulttype} \rightarrow \mathit{resulttype} \\
 \mbox{(table type)} & \mathit{tabletype} &::=& \mathit{limits}~\mathit{reftype} \\
@@ -574,39 +574,48 @@ warning: rule `Tabletype_sub` was never spliced
 warning: rule `Valtype_sub/refl` was never spliced
 warning: rule `Valtype_sub/bot` was never spliced
 warning: definition `Ki` was never spliced
-warning: definition `alloc_data` was never spliced
-warning: definition `alloc_elem` was never spliced
-warning: definition `alloc_export` was never spliced
-warning: definition `alloc_func` was never spliced
-warning: definition `alloc_global` was never spliced
-warning: definition `alloc_import` was never spliced
-warning: definition `alloc_mem` was never spliced
-warning: definition `alloc_module` was never spliced
-warning: definition `alloc_table` was never spliced
+warning: definition `allocdata` was never spliced
+warning: definition `allocdatas` was never spliced
+warning: definition `allocelem` was never spliced
+warning: definition `allocelems` was never spliced
+warning: definition `allocfunc` was never spliced
+warning: definition `allocfuncs` was never spliced
+warning: definition `allocglobal` was never spliced
+warning: definition `allocglobals` was never spliced
+warning: definition `allocmem` was never spliced
+warning: definition `allocmems` was never spliced
+warning: definition `allocmodule` was never spliced
+warning: definition `alloctable` was never spliced
+warning: definition `alloctables` was never spliced
 warning: definition `binop` was never spliced
 warning: definition `bytes_` was never spliced
+warning: definition `concat_admininstr` was never spliced
 warning: definition `cvtop` was never spliced
 warning: definition `data` was never spliced
 warning: definition `datainst` was never spliced
 warning: definition `elem` was never spliced
 warning: definition `eleminst` was never spliced
 warning: definition `ext` was never spliced
+warning: definition `funcs` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
+warning: definition `globals` was never spliced
 warning: definition `grow_memory` was never spliced
 warning: definition `grow_table` was never spliced
 warning: definition `instantiation` was never spliced
+warning: definition `instexport` was never spliced
 warning: definition `inverse_of_bytes_` was never spliced
 warning: definition `invocation` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `meminst` was never spliced
+warning: definition `mems` was never spliced
 warning: definition `min` was never spliced
 warning: definition `relop` was never spliced
-warning: definition `replace_moduleinst` was never spliced
-warning: definition `run_data` was never spliced
-warning: definition `run_elem` was never spliced
+warning: definition `rundata` was never spliced
+warning: definition `runelem` was never spliced
 warning: definition `tableinst` was never spliced
+warning: definition `tables` was never spliced
 warning: definition `testop` was never spliced
 warning: definition `unop` was never spliced
 warning: definition `with_data` was never spliced

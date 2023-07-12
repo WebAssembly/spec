@@ -40,8 +40,50 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 ...Animation failed
+Animation failed.
+if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, GLOBAL(globaltype, expr_1)^n_global{expr_1 globaltype}, TABLE(tabletype)^n_table{tabletype}, MEMORY(memtype)^n_mem{memtype}, `ELEM%%*%?`(rt, expr_2*{expr_2}, elemmode?{elemmode})^n_elem{elemmode expr_2 rt}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_data{byte datamode}, start?{start}, export*{export}))
+if (fa_ex*{fa_ex} = $funcs(externval*{externval}))
+if (ga_ex*{ga_ex} = $globals(externval*{externval}))
+if (ta_ex*{ta_ex} = $tables(externval*{externval}))
+if (ma_ex*{ma_ex} = $mems(externval*{externval}))
+if (fa*{fa} = (|s.FUNC_store| + i)^(i < n_func){})
+if (ga*{ga} = (|s.GLOBAL_store| + i)^(i < n_global){})
+if (ta*{ta} = (|s.TABLE_store| + i)^(i < n_table){})
+if (ma*{ma} = (|s.MEM_store| + i)^(i < n_mem){})
+if (ea*{ea} = (|s.ELEM_store| + i)^(i < n_elem){})
+if (da*{da} = (|s.DATA_store| + i)^(i < n_data){})
+if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
+if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
+if ((s_1, fa*{fa}) = $allocfuncs(s, m, func^n_func{func}))
+if ((s_2, ga*{ga}) = $allocglobals(s_1, globaltype^n_global{globaltype}, val*{val}))
+if ((s_3, ta*{ta}) = $alloctables(s_2, tabletype^n_table{tabletype}))
+if ((s_4, ma*{ma}) = $allocmems(s_3, memtype^n_mem{memtype}))
+if ((s_5, ea*{ea}) = $allocelems(s_4, rt^n_elem{rt}, ref*{ref}*{ref}))
+if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_data{byte}))
+...Animation failed
+Animation failed.
+if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+if (f_init = {LOCAL [], MODULE m_init})
+(if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), [(val <: admininstr)]))*{instr_1 val}
+(if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}
+if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
+if (f = {LOCAL [], MODULE m})
+if (n_elem = |elem*{elem}|)
+if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i < n_elem){})
+if (n_data = |data*{data}|)
+if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j < n_data){})
+if (start?{start} = START(x)?{x})
+...Animation failed
 == IL Validation...
 == Translating to AL...
+Invalid premise `(if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}` to be AL instr.
+Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
+Invalid expression `(i < n_elem)` to be AL identifier.
+Invalid expression `(j < n_data)` to be AL identifier.
+Invalid premise `(where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode}) = elem)*{elem elemmode instr_2 reftype}` to be AL instr.
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
