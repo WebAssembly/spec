@@ -112,7 +112,10 @@ let rec exp2expr exp =
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
       MapE (N id.it, exp2args inner_exp, [iter2iter iter])
-  | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
+  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
+      ListFillE (exp2expr inner_exp, exp2expr times)
+  | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
+  (* | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
     when id.it = id'.it -> (* TODO: Somehow remove this hack *)
       let name = N id.it in
       IterE (NameE name, iter2iter iter)
@@ -126,9 +129,7 @@ let rec exp2expr exp =
       List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
       IterE (ListE (List.map exp2expr inner_exps), Opt)
   | Ast.IterE (inner_exp, (iter, [ _ ])) ->
-      IterE (exp2expr inner_exp, iter2iter iter)
-  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
-      ListFillE (exp2expr inner_exp, exp2expr times)
+      IterE (exp2expr inner_exp, iter2iter iter) *)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
