@@ -44,34 +44,21 @@ SPHINXDIR = _sphinx
 
 .PHONY: html pdf
 
-$(EXECINSTROUT).rst: $(EXECINSTRIN).rst $(SPECFILES) $(EXE)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
-
-$(EXECRUNTIMEOUT).rst: $(EXECRUNTIMEIN).rst $(SPECFILES) $(EXE)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
-
-$(EXECAUXOUT).rst: $(EXECAUXIN).rst $(SPECFILES) $(EXE)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
-
-execs: $(EXECINDEX).rst $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst
-
-$(VALIDINSTROUT).rst: $(VALIDINSTRIN).rst $(SPECFILES) $(EXE)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
-
-valids: $(VALIDINDEX).rst $(VALIDINSTROUT).rst
+doc: $(EXECINDEX).rst $(EXECINSTRIN).rst $(EXECRUNTIMEIN).rst $(EXECAUXIN).rst $(VALIDINDEX).rst $(VALIDINSTRIN).rst
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst $(VALIDINSTROUT).rst -p $(word 2,$^) $(word 3,$^) $(word 4,$^) $(word 6,$^) 
 
 sphinx-splice: html pdf
 
-html: $(OUTPROSE).rst $(OUTVALID).rst $(OUTEXEC).rst conf.py macros.def mathdef.py
+html: $(OUTPROSE).rst doc conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
-	cp $^ $(SPHINXDIR)
-	cp $(word 2,$^) $(SPHINXDIR) 
-	cp $(word 3,$^) $(SPHINXDIR)
+	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
+	rsync -av --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
+	rsync -av --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
 	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
 	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(OUTPROSE).html >$(OUTPROSE).html.tmp
 	mv -f $(OUTPROSE).html.tmp $(SPHINXDIR)/_build/$(OUTPROSE).html
 
-pdf: $(OUTPROSE).rst execs valids conf.py macros.def mathdef.py
+pdf: $(OUTPROSE).rst doc conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
 	rsync -av --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
