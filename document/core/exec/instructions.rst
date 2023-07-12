@@ -462,7 +462,7 @@ Reference Instructions
    S; F; \val^n~(\STRUCTNEW~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
       \land & \X{si} = \{\SITYPE~F.\AMODULE.\MITYPES[x], \SIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
      \end{array} \\
@@ -501,7 +501,7 @@ Reference Instructions
    F; (\STRUCTNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft})}))^n~(\STRUCTNEW~x)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n)
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n)
      \end{array} \\
    \end{array}
 
@@ -511,7 +511,7 @@ Reference Instructions
       S; F; (\STRUCTNEWDEFAULT~x) &\stepto& S'; F; (\REFSTRUCTADDR~|S.\SSTRUCTS|)
         \\&&
         \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+         (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
          \land & \X{si} = \{\SITYPE~F.\AMODULE.\MITYPES[x], \SIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft})}))^n\} \\
          \land & S' = S \with \SSTRUCTS = S.\SSTRUCTS~\X{si})
         \end{array} \\
@@ -561,7 +561,7 @@ Reference Instructions
    S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^\ast \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}^\ast[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
    S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
@@ -612,7 +612,7 @@ Reference Instructions
    S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^\ast \\
+     (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}^\ast[i]}(\val))
      \end{array} \\
    S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
@@ -657,7 +657,7 @@ Reference Instructions
       S; F; \val~(\I32.\CONST~n)~(\ARRAYNEW~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
         \\&&
         \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
          \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
          \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
         \end{array} \\
@@ -696,7 +696,7 @@ Reference Instructions
    F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& (\default_{\unpacktype(\X{ft}}))^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES.\MITYPES[x] = \TARRAY~\X{ft})
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft})
      \end{array} \\
    \end{array}
 
@@ -706,7 +706,7 @@ Reference Instructions
       S; F; (\I32.\CONST~n)~(\ARRAYNEWDEFAULT~x) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
         \\&&
         \begin{array}[t]{@{}r@{~}l@{}}
-         (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+         (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
          \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\default_{\unpacktype(\X{ft}}))^n\} \\
          \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
         \end{array} \\
@@ -751,7 +751,7 @@ Reference Instructions
    S; F; \val^n~(\ARRAYNEWFIXED~x~n) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
       \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
@@ -814,14 +814,14 @@ Reference Instructions
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& \TRAP
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
       \land & s + n\cdot|\X{ft}| > |S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA|)
      \end{array} \\
    \\[1ex]
    S; F; (\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYNEWDATA~x~y) &\stepto& (t.\CONST~c)^n~(\ARRAYNEWFIXED~x~n)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft}^n \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
       \land & t = \unpacktype(\X{ft}) \\
       \land & (\bytes_{\X{ft}}(c))^n = S.\SDATAS[F.\AMODULE.\MIDATAS[y]].\DIDATA[s \slice n\cdot|\X{ft}|] \\
      \end{array} \\
@@ -931,7 +931,7 @@ Reference Instructions
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & F.\AMODULE.\MITYPES[x] = \TARRAY~\X{ft} \\
+      (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
      \end{array} \\
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
@@ -990,7 +990,7 @@ Reference Instructions
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & F.\AMODULE.\MITYPES[x] = \TSTRUCT~\X{ft}^n \\
+     (\iff & \expand(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
      \end{array} \\
    S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& \TRAP
@@ -3589,9 +3589,9 @@ Control Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\fblocktype_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\fblocktype_{S;F}(\blocktype)`.
 
 4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -3606,7 +3606,7 @@ Control Instructions
    \begin{array}{lcl}
    S; F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
      S; F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
+     \\&&\quad (\iff \fblocktype_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -3617,9 +3617,9 @@ Control Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\fblocktype_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\fblocktype_{S;F}(\blocktype)`.
 
 4. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
@@ -3634,7 +3634,7 @@ Control Instructions
    \begin{array}{lcl}
    S; F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
      S; F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
+     \\&&\quad (\iff \fblocktype_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -3978,9 +3978,9 @@ Control Instructions
 
 5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
-6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` exists.
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` is defined.
 
-7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[y]`.
+7. Let :math:`\X{dt}_{\F{expect}}` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]`.
 
 8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -4004,9 +4004,9 @@ Control Instructions
 
 16. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-17. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+17. Let :math:`\X{dt}_{\F{actual}}` be the :ref:`defined type <syntax-deftype>` :math:`\X{f}.\FITYPE`.
 
-18. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+18. If :math:`\X{dt}_{\F{actual}}` does not :ref:`match <match-deftype>` :math:`\X{dt}_{\F{expect}}`, then:
 
     a. Trap.
 
@@ -4022,7 +4022,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & S \vdashfunctypematch F.\AMODULE.\MITYPES[y] \matchesfunctype f.\FITYPE)
+     \wedge & S \vdashdeftypematch F.\AMODULE.\MITYPES[y] \matchesdeftype f.\FITYPE)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -4099,9 +4099,9 @@ Control Instructions
 
 5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
-6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` exists.
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` is defined.
 
-7. Let :math:`\X{ft}_{\F{expect}}` be the :ref:`function type <syntax-functype>` :math:`F.\AMODULE.\MITYPES[x]`.
+7. Let :math:`\X{dt}_{\F{expect}}` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -4121,9 +4121,9 @@ Control Instructions
 
 14. Let :math:`\X{f}` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-15. Let :math:`\X{ft}_{\F{actual}}` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+15. Let :math:`\X{dt}_{\F{actual}}` be the :ref:`defined type <syntax-functype>` :math:`\X{f}.\FITYPE`.
 
-16. If :math:`\X{ft}_{\F{actual}}` and :math:`\X{ft}_{\F{expect}}` differ, then:
+16. If :math:`\X{dt}_{\F{actual}}` does not :ref:`match <match-functype>` :math:`\X{dt}_{\F{expect}}`, then:
 
     a. Trap.
 
@@ -4210,7 +4210,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
+3. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`structured type <syntax-strtype>` :math:`\expand(\X{f}.\FITYPE)`.
 
 4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
@@ -4237,7 +4237,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & S.f.\FITYPE = [t_1^n] \toF [t_2^m] \\
+     \wedge & \expand(S.f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
@@ -4254,7 +4254,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
-2. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+2. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`structured type <syntax-strtype>` :math:`\expand(S.\SFUNCS[a].\FITYPE)`.
 
 3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
 
@@ -4279,7 +4279,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \begin{array}{lcl@{\qquad}l}
     S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
       \val^n~(\INVOKE~a)
-      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \toF [t_2^m])
+      & (\iff \expand(S.\SFUNCS[a].\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m])
    \end{array}
 
 
@@ -4336,7 +4336,8 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \expand(\deftype) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -4344,7 +4345,8 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~\deftype, \FIHOSTCODE~\X{hf} \} \\
+     \wedge & \expand(\deftype) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}

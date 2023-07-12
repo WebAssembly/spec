@@ -228,7 +228,7 @@
 .. |TARRAY| mathdef:: \xref{syntax/types}{syntax-strtype}{\K{array}}
 .. |TSUB| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{sub}}
 .. |TREC| mathdef:: \xref{syntax/types}{syntax-rectype}{\K{rec}}
-.. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{filan}}
+.. |TFINAL| mathdef:: \xref{syntax/types}{syntax-subtype}{\K{final}}
 
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
@@ -257,6 +257,7 @@
 .. |structtype| mathdef:: \xref{syntax/types}{syntax-structtype}{\X{structtype}}
 .. |arraytype| mathdef:: \xref{syntax/types}{syntax-arraytype}{\X{arraytype}}
 .. |fieldtype| mathdef:: \xref{syntax/types}{syntax-fieldtype}{\X{fieldtype}}
+.. |storagetype| mathdef:: \xref{syntax/types}{syntax-storagetype}{\X{storagetype}}
 .. |packedtype| mathdef:: \xref{syntax/types}{syntax-packedtype}{\X{packedtype}}
 .. |strtype| mathdef:: \xref{syntax/types}{syntax-strtype}{\X{strtype}}
 .. |subtype| mathdef:: \xref{syntax/types}{syntax-subtype}{\X{subtype}}
@@ -277,6 +278,11 @@
 
 
 .. Types, meta functions
+
+.. |reftypediff| mathdef:: \xref{syntax/types}{aux-reftypediff}{\setminus}
+
+.. |unroll| mathdef:: \xref{syntax/types}{aux-unroll}{\F{unroll}}
+.. |expand| mathdef:: \xref{syntax/types}{aux-expand}{\F{expand}}
 
 .. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
@@ -999,6 +1005,10 @@
 .. |matchesresulttype| mathdef:: \xref{valid/matching}{match-resulttype}{\leq}
 .. |matchesinstrtype| mathdef:: \xref{valid/matching}{match-instrtype}{\leq}
 .. |matchesfunctype| mathdef:: \xref{valid/matching}{match-functype}{\leq}
+.. |matchesstructtype| mathdef:: \xref{valid/matching}{match-structtype}{\leq}
+.. |matchesarraytype| mathdef:: \xref{valid/matching}{match-arraytype}{\leq}
+.. |matchesstrtype| mathdef:: \xref{valid/matching}{match-strtype}{\leq}
+.. |matchesdeftype| mathdef:: \xref{valid/matching}{match-deftype}{\leq}
 .. |matchestabletype| mathdef:: \xref{valid/matching}{match-tabletype}{\leq}
 .. |matchesmemtype| mathdef:: \xref{valid/matching}{match-memtype}{\leq}
 .. |matchesglobaltype| mathdef:: \xref{valid/matching}{match-globaltype}{\leq}
@@ -1050,6 +1060,10 @@
 .. |vdashresulttypematch| mathdef:: \xref{valid/matching}{match-resulttype}{\vdash}
 .. |vdashinstrtypematch| mathdef:: \xref{valid/matching}{match-instrtype}{\vdash}
 .. |vdashfunctypematch| mathdef:: \xref{valid/matching}{match-functype}{\vdash}
+.. |vdashstructtypematch| mathdef:: \xref{valid/matching}{match-structtype}{\vdash}
+.. |vdasharraytypematch| mathdef:: \xref{valid/matching}{match-arraytype}{\vdash}
+.. |vdashstrtypematch| mathdef:: \xref{valid/matching}{match-strtype}{\vdash}
+.. |vdashdeftypematch| mathdef:: \xref{valid/matching}{match-deftype}{\vdash}
 .. |vdashtabletypematch| mathdef:: \xref{valid/matching}{match-tabletype}{\vdash}
 .. |vdashmemtypematch| mathdef:: \xref{valid/matching}{match-memtype}{\vdash}
 .. |vdashglobaltypematch| mathdef:: \xref{valid/matching}{match-globaltype}{\vdash}
@@ -1243,7 +1257,7 @@
 
 .. Stack, meta functions
 
-.. |expand| mathdef:: \xref{exec/runtime}{exec-expand}{\F{expand}}
+.. |fblocktype| mathdef:: \xref{exec/runtime}{aux-fblocktype}{\F{instrtype}}
 
 
 .. Administrative Instructions, terminals
