@@ -387,7 +387,7 @@ let wrap item_name wrap_action wrap_assertion at =
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "hostref";
        idesc = FuncImport (1l @@ at) @@ at} @@ at;
       {module_name = Utf8.decode "spectest"; item_name = Utf8.decode "eq_ref";
-       idesc = FuncImport (3l @@ at) @@ at} @@ at;
+       idesc = FuncImport (2l @@ at) @@ at} @@ at;
     ]
   in
   let item =
