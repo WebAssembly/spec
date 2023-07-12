@@ -12,11 +12,6 @@ open Il.Ast
 open Il.Free
 
 (* Helpers *)
-let exp_to_args exp =
-  match exp.it with
-  | TupE el -> el
-  | _ -> [ exp ]
-
 let rec list_count' pred acc = function
 | [] -> acc
 | hd :: tl -> list_count' pred (acc + if pred hd then 1 else 0) tl
@@ -64,7 +59,6 @@ and free_lhs_iterexp (_iter, ids) = free_list free_varid ids
 
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
-let disjoint x y = Set.disjoint x.varid y.varid
 
 type tag =
   | Condition
@@ -138,25 +132,22 @@ let rec index_of acc xs x = match xs with
 
 let free_exp_list e = (free_exp e).varid |> Set.elements
 
-let is_invertible _name = true (* TODO: do this based on hint of DSL? *)
+let rec powset = function
+| [] -> [ [] ]
+| hd :: tl -> List.concat_map (fun pow -> [ hd :: pow ; pow ]) (powset tl)
+
+let non_empty_powset xs = powset xs |> List.filter ( (<) [] )
 
 let rows_of_eq vars p_tot_num i l r at =
-  let covering_vars e = List.filter_map (index_of p_tot_num vars) (free_exp_list e) in
-  let rows1 = [ Assign l, LetPr (l, r) $ at, [i] @ covering_vars l] in
-  let rows2 = match l.it with
-  | CallE (name, args) when is_invertible name -> (* Inverse *)
-    (* Assumption: The inverse function is only applied for the last argument *)
-    let rs, l = Util.Lib.List.split_last (exp_to_args args) in
-    let type_of_exprs es = TupT (List.map (fun e -> e.note) es) $ no_region in
-    let new_lhs = l in
-    let new_args = rs @ [r] in
-    let new_rhs =
-      CallE ("inverse_of_" ^ name.it $ name.at, TupE new_args $$ no_region % type_of_exprs new_args)
-      $$ (no_region % new_lhs.note)
-    in
-    [ Assign l, LetPr(new_lhs, new_rhs) $ at, [i] @ covering_vars new_lhs ]
-  | _ -> [] in
-  rows1 @ rows2
+  free_exp_list l
+  |> non_empty_powset
+  |> List.filter_map (fun frees ->
+    let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
+    if List.length frees = List.length covering_vars then (
+      Some (Assign l, LetPr (l, r) $ at, [i] @ covering_vars) )
+    else
+      None
+  )
 
 let rec rows_of_prem vars p_tot_num i p = match p.it with
   | IfPr e -> ( match e.it with
@@ -185,12 +176,8 @@ let build_matrix prems known_vars =
   let prem_num = List.length prems in
 
   let rows = List.mapi (rows_of_prem unknown_vars prem_num) prems |> List.concat in
-  let rows' = List.filter (function
-    | Condition, _, _ -> true
-    | Assign lhs, _, _ -> disjoint (free_lhs_exp lhs) known_vars
-  ) rows in
   let cols = List.init (prem_num + List.length unknown_vars) (fun i -> i) in
-  rows', cols
+  rows, cols
 
 (* Animate the list of premises *)
 let animate_prems known_vars prems =

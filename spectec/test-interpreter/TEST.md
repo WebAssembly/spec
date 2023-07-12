@@ -20,12 +20,6 @@ if (l' < |C.LABEL_context|)
 Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 ...Animation failed
 Animation failed.
-if (x_1 < |C.TABLE_context|)
-if (x_2 < |C.TABLE_context|)
-if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
-if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
-...Animation failed
-Animation failed.
 if (0 < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[0] = mt)
