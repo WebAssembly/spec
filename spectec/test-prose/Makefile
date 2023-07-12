@@ -18,6 +18,8 @@ all: html pdf
 
 HEADER = header
 
+EXECDIR = exec
+
 EXECINDEX = exec/index
 
 EXECINSTRIN = exec/instructions-in
@@ -28,6 +30,8 @@ EXECRUNTIMEOUT = exec/runtime
 
 EXECAUXIN = exec/auxiliary-in
 EXECAUXOUT = exec/auxiliary
+
+VALIDDIR = valid
 
 VALIDINDEX = valid/index
 
@@ -70,10 +74,8 @@ html: $(OUTPROSE).rst $(OUTVALID).rst $(OUTEXEC).rst conf.py macros.def mathdef.
 pdf: $(OUTPROSE).rst execs valids conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
-	mkdir $(SPHINXDIR)/exec
-	cp $(EXECINDEX).rst $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst $(SPHINXDIR)/exec
-	mkdir $(SPHINXDIR)/valid
-	cp $(VALIDINDEX).rst $(VALIDINSTROUT).rst $(SPHINXDIR)/valid 
+	rsync --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
+	rsync --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
 	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(OUTPROSE).tex)
 	cp $(SPHINXDIR)/_build/prose.pdf .
