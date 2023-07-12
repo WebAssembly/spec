@@ -313,8 +313,13 @@ let rec render_expr env in_math = function
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" s ses in
       if in_math then s else render_math s
-  | Al.Ast.OptE (Some e) -> "(" ^ render_expr env in_math e ^ ")^?"
-  | Al.Ast.OptE None -> "()^?"
+  | Al.Ast.OptE (Some e) -> 
+      let se = render_expr env true e in
+      let s = sprintf "(%s)^?" se in 
+      if in_math then s else render_math s
+  | Al.Ast.OptE None -> 
+      let s = "()^?" in
+      if in_math then s else render_math s
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
 
 and render_path env in_math = function
