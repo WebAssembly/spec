@@ -74,8 +74,8 @@ html: $(OUTPROSE).rst $(OUTVALID).rst $(OUTEXEC).rst conf.py macros.def mathdef.
 pdf: $(OUTPROSE).rst execs valids conf.py macros.def mathdef.py
 	mkdir -p $(SPHINXDIR)/_build
 	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
-	rsync --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
-	rsync --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
+	rsync -av --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
+	rsync -av --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
 	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(OUTPROSE).tex)
 	cp $(SPHINXDIR)/_build/prose.pdf .
