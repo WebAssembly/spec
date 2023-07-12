@@ -16,11 +16,16 @@ all: html pdf
 
 # Sphinx splicing
 
-INEXEC = exec-in
-OUTEXEC = exec
+HEADER = header
 
 INVALID = valid-in
 OUTVALID = valid
+
+INHELPER = helper-in
+OUTHELPER = helper
+
+INEXEC = exec-in
+OUTEXEC = exec
 
 INPROSE = prose-in
 OUTPROSE = prose
@@ -28,16 +33,23 @@ SPHINXDIR = _sphinx
 
 .PHONY: html pdf
 
-$(OUTEXEC).rst: $(INEXEC).rst $(SPECFILES) $(EXE)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
-
 $(OUTVALID).rst: $(INVALID).rst $(SPECFILES) $(EXE)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
 
-$(OUTPROSE).rst: $(OUTEXEC).rst $(OUTVALID).rst
+$(OUTHELPER).rst: $(INHELPER).rst $(SPECFILES) $(EXE)
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
+
+$(OUTEXEC).rst: $(INEXEC).rst $(SPECFILES) $(EXE)
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $@ -p $<
+
+$(OUTPROSE).rst: $(HEADER).rst $(OUTVALID).rst $(OUTHELPER).rst $(OUTEXEC).rst
 	cat $< > $@
 	echo >> $@
 	cat $(word 2,$^) >> $@
+	echo >> $@
+	cat $(word 3,$^) >> $@
+	echo >> $@
+	cat $(word 4,$^) >> $@
 
 sphinx-splice: html pdf
 
@@ -64,4 +76,9 @@ clean:
 	rm -f *.aux *.log
 	rm -rf $(SPHINXDIR)
 	rm -f $(OUTPROSE).rst
+	rm -f $(OUTVALID).rst
+	rm -f $(OUTHELPER).rst
+	rm -f $(OUTEXEC).rst
+
+
 	rm -f *.pdf

@@ -1,5 +1,5 @@
-Wasm Execution Prose 
-====================
+WebAssembly Execution Prose 
+===========================
 
 .. _exec-instr:
 

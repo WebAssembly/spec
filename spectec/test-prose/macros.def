@@ -84,6 +84,11 @@
 
 .. |REFFUNCADDR| mathdef:: {\K{ref}}
 
+.. Helper Functions, terminals
+
+.. |MIN| mathdef:: {\K{min}}
+.. |DEFAULT_| mathdef:: {\K{default}}
+.. |EXTERNREF| mathdef:: {\K{externref}}
 
 .. Helper Functions, non-terminals
 
@@ -95,26 +100,6 @@
 .. |relop| mathdef:: {\X{relop}}
 .. |cvtop| mathdef:: {\X{cvtop}}
 
-.. |local| mathdef:: {\X{local}}
-.. |withlocal| mathdef:: {\X{with\_local}}
-
-.. |global| mathdef:: {\X{global}}
-.. |withglobal| mathdef:: {\X{with\_global}}
-
-.. |table| mathdef:: {\X{table}}
-.. |withtable| mathdef:: {\X{with\_table}}
-.. |growtable| mathdef:: {\X{grow\_table}}
-.. |withtableinst| mathdef:: {\X{with\_tableinst}}
-.. |elem| mathdef:: {\X{elem}}
-.. |withelem| mathdef:: {\X{with\_elem}}
-
-.. |mem| mathdef:: {\X{mem}}
-.. |withmem| mathdef:: {\X{with\_mem}}
-.. |growmemory| mathdef:: {\X{grow\_memory}}
-.. |withmeminst| mathdef:: {\X{with\_meminst}}
-.. |data| mathdef:: {\X{data}}
-.. |withdata| mathdef:: {\X{with\_data}}
-
 .. |Ki| mathdef:: {\X{Ki}}
 
 .. |size| mathdef:: {\X{size}}
@@ -122,6 +107,33 @@
 .. |bytes| mathdef:: {\X{bytes}}
 .. |wrap| mathdef:: {\X{wrap}}
 .. |ext| mathdef:: {\X{ext}}
+
+.. |funcinst| mathdef:: {\X{funcinst}}
+.. |globalinst| mathdef:: {\X{globalinst}}
+.. |tableinst| mathdef:: {\X{tableinst}}
+.. |meminst| mathdef:: {\X{meminst}}
+.. |eleminst| mathdef:: {\X{eleminst}}
+.. |datainst| mathdef:: {\X{datainst}}
+
+.. |func| mathdef:: {\X{func}}
+.. |global| mathdef:: {\X{global}}
+.. |table| mathdef:: {\X{table}}
+.. |mem| mathdef:: {\X{mem}}
+.. |elem| mathdef:: {\X{elem}}
+.. |data| mathdef:: {\X{data}}
+.. |local| mathdef:: {\X{local}}
+
+.. |withlocal| mathdef:: {\X{with\_local}}
+.. |withglobal| mathdef:: {\X{with\_global}}
+.. |withtable| mathdef:: {\X{with\_table}}
+.. |withtableinst| mathdef:: {\X{with\_tableinst}}
+.. |withmem| mathdef:: {\X{with\_mem}}
+.. |withmeminst| mathdef:: {\X{with\_meminst}}
+.. |withelem| mathdef:: {\X{with\_elem}}
+.. |withdata| mathdef:: {\X{with\_data}}
+
+.. |growtable| mathdef:: {\X{grow\_table}}
+.. |growmemory| mathdef:: {\X{grow\_memory}}
 
 
 .. Stack, terminals
@@ -139,13 +151,17 @@
 .. Types, terminals
 
 .. |I32| mathdef:: {\K{i32}}
+.. |I64| mathdef:: {\K{i64}}
+.. |F32| mathdef:: {\K{f32}}
+.. |F64| mathdef:: {\K{f64}}
+.. |V128| mathdef:: {\K{v128}}
 .. |FUNCREF| mathdef:: {\K{funcref}}
 
 
 .. Types, non-terminals
 
 .. |bt| mathdef:: {\X{bt}}
-
+.. |reftype| mathdef:: {\X{reftype}}
 
 .. Addresses, non-terminals
 
@@ -173,11 +189,6 @@
 .. |MODULE| mathdef:: {\K{module}}
 
 
-.. Instances, non-terminals
-
-.. |funcinst| mathdef:: {\X{funcinst}}
-
-
 .. Variables
 
 .. |n| mathdef:: {\X{n}}
@@ -185,8 +196,6 @@
 .. |sx| mathdef:: {\X{sx}}
 
 .. |ft| mathdef:: {\X{ft}}
-
-.. |func| mathdef:: {\X{func}}
 
 
 .. Operators

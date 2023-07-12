@@ -257,6 +257,7 @@ let try_prose_anchor env src r sort : bool =
     let prefix = (match sort with
       | "prose-pred" -> "validation_of_"
       | "prose-algo" -> "execution_of_"
+      | "prose-fctn" -> ""
       | _ -> failwith "unreachable")
     in
     let prose_name = prefix ^ instr_name in
@@ -284,6 +285,7 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "definition" "definition" "" find_func false ||
     try_prose_anchor env src r "prose-pred" ||
     try_prose_anchor env src r "prose-algo" ||
+    try_prose_anchor env src r "prose-fctn" ||
     error src "unknown definition sort";
   );
   let s =

@@ -1,5 +1,5 @@
-Wasm Validation Prose 
-=====================
+WebAssembly Validation Prose 
+============================
 
 .. _valid-instr:
 

@@ -457,43 +457,40 @@ and render_al_instrs env depth instrs =
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_al_instr env index depth i)
     "" instrs
 
-(* Params *)
-
-let rec render_params env in_math = function
-  | [] -> ""
-  | p :: ps ->
-    render_expr env in_math p ^ " " ^ render_params env in_math ps
-
 (* Prose *)
 
-let render_title env name params =
+let render_title env uppercase name params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *) 
-  let name = if name = "label" then "label_" else if name = "frame" then "frame_" else name in
-  render_expr env false (Al.Ast.ConstructE (String.uppercase_ascii name, params))
+  let name = 
+    if name = "label" then "label_" 
+    else if name = "frame" then "frame_" 
+    else if name = "default" then "default_"
+    else name 
+  in
+  let name = if uppercase then String.uppercase_ascii name else name in
+  render_expr env false (Al.Ast.ConstructE (name, params))
 
 let render_pred env name params instrs =
   let prefix = "validation_of_" in
+  assert (String.starts_with ~prefix:prefix name);
   let name =
-    if String.starts_with ~prefix:prefix name then
-      String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
-    else
-      name
+    String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
   in
-  let title = render_title env name params in
+  let title = render_title env true name params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
 let render_algo env name params instrs =
   let prefix = "execution_of_" in
-  let name =
+  let (name, uppercase) =
     if String.starts_with ~prefix:prefix name then
-      String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
+      (String.sub name (String.length prefix) ((String.length name) - (String.length prefix)), true)
     else
-      name
+      (name, false)
   in
-  let title = render_title env name (List.map (fun p -> let (e, _) = p in e) params) in
+  let title = render_title env uppercase name (List.map (fun p -> let (e, _) = p in e) params) in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env 0 instrs
