@@ -89,14 +89,15 @@ let rec exp2name exp =
       gen_fail_msg_of_exp exp "identifier" |> print_endline;
       N "Yet"
 
-let iter2iter = function
+let rec iter2iter = function
   | Ast.Opt -> Opt
   | Ast.List1 -> List1
   | Ast.List -> List
   | Ast.ListN e -> ListN (exp2name e)
+  | Ast.IndexedListN (id, e) -> IndexedListN (N id.it, exp2expr e)
 
 (* `Ast.exp` -> `expr` *)
-let rec exp2expr exp =
+and exp2expr exp =
   match exp.it with
   | Ast.NatE n -> NumE (Int64.of_int n)
   (* List *)

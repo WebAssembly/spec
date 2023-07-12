@@ -161,6 +161,8 @@ and t_iterexp n (iter, vs) =
 
 and t_iter n iter = match iter with
   | ListN e -> unary t_exp n e (fun e' -> ListN e')
+  | IndexedListN (id, e) ->
+    unary t_exp n e (fun e' -> IndexedListN (id, e'))
   | _ -> [], iter
 
 and t_path n = phrase t_path' n

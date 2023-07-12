@@ -56,6 +56,8 @@ let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
   | ListN e -> free_exp e
+  | IndexedListN (id, e) ->
+    union (free_varid id) (free_exp e)
 
 
 (* Types *)

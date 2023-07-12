@@ -42,6 +42,7 @@ type iter =
   | List                         (* `*` *)
   | List1                        (* `+` *)
   | ListN of exp                 (* `^` exp *)
+  | IndexedListN of id * exp     (* `^` exp *)
 
 
 (* Types *)

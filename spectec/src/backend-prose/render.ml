@@ -84,17 +84,20 @@ let rec render_name = function
         s
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name n) s
 
-let render_iter = function
+let rec render_iter in_math = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
   | Al.Ast.List1 -> "+"
   | Al.Ast.ListN name -> "^" ^ render_name name
+  | Al.Ast.IndexedListN (name, expr) ->
+    "^(" ^ render_name name ^ "<" ^ render_expr in_math expr ^ ")"
 
-let render_iters iters = List.map render_iter iters |> List.fold_left (^) ""
+and render_iters in_math iters =
+  List.map (render_iter in_math) iters |> List.fold_left (^) ""
 
 (* Expressions and Paths *)
 
-let rec render_expr in_math = function
+and render_expr in_math = function
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
@@ -122,7 +125,7 @@ let rec render_expr in_math = function
   | Al.Ast.MapE (n, el, iters) ->
       sprintf "$%s(%s)%s" (render_name n)
         (render_list (render_expr in_math) "" ", " "" el)
-        (render_iters iters)
+        (render_iters in_math iters)
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
       sprintf "%s~%s" (render_expr in_math (List.hd e1)) (render_expr in_math (List.hd e2))
@@ -178,10 +181,10 @@ let rec render_expr in_math = function
       if in_math then sn else render_math sn
   | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
       let sn = render_name n in
-      let siter = render_iter iter in
+      let siter = render_iter in_math iter in
       let s = sprintf "%s%s" sn siter in
       if in_math then s else render_math s
-  | Al.Ast.IterE (e, iter) -> render_expr in_math e ^ render_iter iter
+  | Al.Ast.IterE (e, iter) -> render_expr in_math e ^ render_iter in_math iter
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = (match e1 with ListE _ -> render_expr true e1 | _ -> "[" ^ render_expr true e1 ^ "]" ) in
       let se2 = (match e2 with ListE _ -> render_expr true e2 | _ -> "[" ^ render_expr true e2 ^ "]" ) in

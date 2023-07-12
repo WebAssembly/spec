@@ -338,8 +338,8 @@ let rec elab_iter env iter : Il.iter =
   | List1 -> Il.List1
   | ListN e ->
     match e.it with
-    | ParenE ({ it = CmpE _; _}, _) ->
-      Il.ListN (elab_exp env e (BoolT $ e.at))
+    | ParenE ({ it = CmpE ({ it = VarE id; _ }, LtOp, e); _}, _) ->
+      Il.IndexedListN (id, elab_exp env e (NatT $ e.at))
     | _ -> Il.ListN (elab_exp env e (NatT $ e.at))
 
 

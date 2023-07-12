@@ -25,6 +25,8 @@ let rec eq_iter iter1 iter2 =
   iter1 = iter2 ||
   match iter1, iter2 with
   | ListN e1, ListN e2 -> eq_exp e1 e2
+  | IndexedListN (id1, e1), IndexedListN (id2, e2) ->
+    id1.it = id2.it && eq_exp e1 e2
   | _, _ -> false
 
 

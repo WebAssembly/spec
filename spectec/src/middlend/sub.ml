@@ -122,6 +122,7 @@ and t_exp' env = function
 
 and t_iter env = function
   | ListN e -> ListN (t_exp env e)
+  | IndexedListN (id, e) -> IndexedListN (id, t_exp env e)
   | i -> i
 
 and t_iterexp env (iter, vs) = (t_iter env iter, vs)
