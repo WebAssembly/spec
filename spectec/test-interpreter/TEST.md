@@ -46,12 +46,12 @@ if (fa_ex*{fa_ex} = $funcs(externval*{externval}))
 if (ga_ex*{ga_ex} = $globals(externval*{externval}))
 if (ta_ex*{ta_ex} = $tables(externval*{externval}))
 if (ma_ex*{ma_ex} = $mems(externval*{externval}))
-if (fa*{fa} = (|s.FUNC_store| + i)^(i < n_func){})
-if (ga*{ga} = (|s.GLOBAL_store| + i)^(i < n_global){})
-if (ta*{ta} = (|s.TABLE_store| + i)^(i < n_table){})
-if (ma*{ma} = (|s.MEM_store| + i)^(i < n_mem){})
-if (ea*{ea} = (|s.ELEM_store| + i)^(i < n_elem){})
-if (da*{da} = (|s.DATA_store| + i)^(i < n_data){})
+if (fa*{fa} = (|s.FUNC_store| + i)^(i<n_func){})
+if (ga*{ga} = (|s.GLOBAL_store| + i)^(i<n_global){})
+if (ta*{ta} = (|s.TABLE_store| + i)^(i<n_table){})
+if (ma*{ma} = (|s.MEM_store| + i)^(i<n_mem){})
+if (ea*{ea} = (|s.ELEM_store| + i)^(i<n_elem){})
+if (da*{da} = (|s.DATA_store| + i)^(i<n_data){})
 if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
 if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
 if ((s_1, fa*{fa}) = $allocfuncs(s, m, func^n_func{func}))
@@ -72,17 +72,15 @@ if (f_init = {LOCAL [], MODULE m_init})
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
-if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i < n_elem){})
+if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i<n_elem){})
 if (n_data = |data*{data}|)
-if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j < n_data){})
+if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j<n_data){})
 if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
 == Translating to AL...
 Invalid premise `(if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}` to be AL instr.
 Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
-Invalid expression `(i < n_elem)` to be AL identifier.
-Invalid expression `(j < n_data)` to be AL identifier.
 Invalid premise `(where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode}) = elem)*{elem elemmode instr_2 reftype}` to be AL instr.
 == Initializing AL interprter with generated AL...
 == Interpreting AL...

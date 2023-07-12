@@ -46,12 +46,12 @@ if (fa_ex*{fa_ex} = $funcs(externval*{externval}))
 if (ga_ex*{ga_ex} = $globals(externval*{externval}))
 if (ta_ex*{ta_ex} = $tables(externval*{externval}))
 if (ma_ex*{ma_ex} = $mems(externval*{externval}))
-if (fa*{fa} = (|s.FUNC_store| + i)^(i < n_func){})
-if (ga*{ga} = (|s.GLOBAL_store| + i)^(i < n_global){})
-if (ta*{ta} = (|s.TABLE_store| + i)^(i < n_table){})
-if (ma*{ma} = (|s.MEM_store| + i)^(i < n_mem){})
-if (ea*{ea} = (|s.ELEM_store| + i)^(i < n_elem){})
-if (da*{da} = (|s.DATA_store| + i)^(i < n_data){})
+if (fa*{fa} = (|s.FUNC_store| + i)^(i<n_func){})
+if (ga*{ga} = (|s.GLOBAL_store| + i)^(i<n_global){})
+if (ta*{ta} = (|s.TABLE_store| + i)^(i<n_table){})
+if (ma*{ma} = (|s.MEM_store| + i)^(i<n_mem){})
+if (ea*{ea} = (|s.ELEM_store| + i)^(i<n_elem){})
+if (da*{da} = (|s.DATA_store| + i)^(i<n_data){})
 if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
 if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
 if ((s_1, fa*{fa}) = $allocfuncs(s, m, func^n_func{func}))
@@ -72,17 +72,15 @@ if (f_init = {LOCAL [], MODULE m_init})
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
-if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i < n_elem){})
+if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i<n_elem){})
 if (n_data = |data*{data}|)
-if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j < n_data){})
+if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j<n_data){})
 if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
 == Translating to AL...
 Invalid premise `(if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}` to be AL instr.
 Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
-Invalid expression `(i < n_elem)` to be AL identifier.
-Invalid expression `(j < n_data)` to be AL identifier.
 Invalid premise `(where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode}) = elem)*{elem elemmode instr_2 reftype}` to be AL instr.
 =================
  Generated prose
@@ -100,19 +98,19 @@ validation_of_select ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr*
-- Under the context C with .LABEL prepended by t_2*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
-- Under the context C with .LABEL prepended by t_1*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_1]*, instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
-- Under the context C with .LABEL prepended by t_2*, instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C with .LABEL prepended by t_2*, instr_1* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr_1* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_br l
@@ -569,7 +567,7 @@ allocelem rt ref*
 allocelems x_0* x_1*
 1. If x_0* is [] and x_1* is [], then:
   a. Return [].
-2. Let ref* ++ ref'** be x_1*.
+2. Let [ref]* ++ ref'** be x_1*.
 3. Let [rt] ++ rt'* be x_0*.
 4. Let ea be $allocelem(rt, ref*).
 5. Let ea'* be $allocelems(rt'*, ref'**).
@@ -582,13 +580,13 @@ allocdata byte*
 allocdatas x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let byte* ++ byte'** be x_0*.
+2. Let [byte]* ++ byte'** be x_0*.
 3. Let da be $allocdata(byte*).
 4. Let da'* be $allocdatas(byte'**).
 5. Return [da] ++ da'*.
 
 allocmodule module externval* val* ref**
-1. If da* is $allocdatas(byte*^n_data) and ea* is $allocelems(rt^n_elem, ref**) and ma* is $allocmems(memtype^n_mem) and ta* is $alloctables(tabletype^n_table) and ga* is $allocglobals(globaltype^n_global, val*) and fa* is $allocfuncs(m, func^n_func) and m is { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; } and xi* is $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)* and da* is (|s.DATA| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_data")) and ea* is (|s.ELEM| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_elem")) and ma* is (|s.MEM| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_mem")) and ta* is (|s.TABLE| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_table")) and ga* is (|s.GLOBAL| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_global")) and fa* is (|s.FUNC| + i)^YetE (CmpE (VarE "i", LtOp, VarE "n_func")) and ma_ex* is $mems(externval*) and ta_ex* is $tables(externval*) and ga_ex* is $globals(externval*) and fa_ex* is $funcs(externval*) and module is (MODULE import* func^n_func YetE (IterE (MixE ([[Atom "GLOBAL"], [], []], TupE ([VarE "globaltype", VarE "expr_1"])), (ListN (VarE "n_global"), ["expr_1", "globaltype"]))) (TABLE tabletype)^n_table (MEMORY memtype)^n_mem YetE (IterE (MixE ([[Atom "ELEM"], [], [Star], [Quest]], TupE ([VarE "rt", IterE (VarE "expr_2", (List, ["expr_2"])), IterE (VarE "elemmode", (Opt, ["elemmode"]))])), (ListN (VarE "n_elem"), ["elemmode", "expr_2", "rt"]))) YetE (IterE (MixE ([[Atom "DATA"], [Star], [Quest]], TupE ([IterE (VarE "byte", (List, ["byte"])), IterE (VarE "datamode", (Opt, ["datamode"]))])), (ListN (VarE "n_data"), ["byte", "datamode"]))) start? export*), then:
+1. If da* is $allocdatas(byte*^n_data) and ea* is $allocelems(rt^n_elem, ref**) and ma* is $allocmems(memtype^n_mem) and ta* is $alloctables(tabletype^n_table) and ga* is $allocglobals(globaltype^n_global, val*) and fa* is $allocfuncs(m, func^n_func) and m is { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; } and xi* is $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)* and da* is (|s.DATA| + i)^(i>n_data) and ea* is (|s.ELEM| + i)^(i>n_elem) and ma* is (|s.MEM| + i)^(i>n_mem) and ta* is (|s.TABLE| + i)^(i>n_table) and ga* is (|s.GLOBAL| + i)^(i>n_global) and fa* is (|s.FUNC| + i)^(i>n_func) and ma_ex* is $mems(externval*) and ta_ex* is $tables(externval*) and ga_ex* is $globals(externval*) and fa_ex* is $funcs(externval*) and module is (MODULE import* func^n_func (GLOBAL globaltype expr_1)^n_global (TABLE tabletype)^n_table (MEMORY memtype)^n_mem (ELEM rt expr_2* elemmode?)^n_elem (DATA byte* datamode?)^n_data start? export*), then:
   a. Return m.
 
 runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
@@ -616,14 +614,14 @@ rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
 concat_admininstr x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let admininstr* ++ admininstr'** be x_0*.
+2. Let [admininstr]* ++ admininstr'** be x_0*.
 3. Return admininstr* ++ $concat_admininstr(admininstr'**).
 
 instantiation module externval*
 1. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. YetI: (where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode}) = elem)*{elem elemmode instr_2 reftype}.
-  c. If start? is (START x)? and instr_data** is $rundata(data*[j], j)^Yet and n_data is |data*| and instr_elem** is $runelem(elem*[i], i)^Yet and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
+  c. If start? is (START x)? and instr_data** is $rundata(data*[j], j)^(j>n_data) and n_data is |data*| and instr_elem** is $runelem(elem*[i], i)^(i>n_elem) and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
     1) YetI: (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}.
     2) Execute the sequence (instr_1**).
     3) Pop val* from the stack.
