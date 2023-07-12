@@ -411,10 +411,16 @@ let is_js_num_type = function
   | I32T -> true
   | I64T | F32T | F64T -> false
 
+let is_js_heap_type = function
+  | AnyHT | EqHT | I31HT | StructHT | ArrayHT -> false
+  | FuncHT | ExternHT -> true
+  | NoneHT | NoFuncHT | NoExternHT -> assert false
+  | VarHT _ | DefHT _ | BotHT -> assert false
+
 let is_js_val_type = function
   | NumT t -> is_js_num_type t
   | VecT _ -> false
-  | RefT _ -> true
+  | RefT (_, ht) -> is_js_heap_type ht
   | BotT -> assert false
 
 let is_js_global_type = function
