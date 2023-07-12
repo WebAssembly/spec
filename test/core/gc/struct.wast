@@ -18,13 +18,6 @@
   )
   "duplicate field"
 )
-(assert_malformed
-  (module quote
-    "(type (struct (field $x i32)))"
-    "(type (struct (field $x i32)))"
-  )
-  "duplicate field"
-)
 
 
 ;; Binding structure
@@ -50,6 +43,28 @@
 )
 
 
+;; Field names
+
+(module
+  (type (struct (field $x i32)))
+  (type $t1 (struct (field i32) (field $x f32)))
+  (type $t2 (struct (field i32 i32) (field $x i64)))
+
+  (func (param (ref 0)) (result i32) (struct.get 0 $x (local.get 0)))
+  (func (param (ref $t1)) (result f32) (struct.get 1 $x (local.get 0)))
+  (func (param (ref $t2)) (result i64) (struct.get $t2 $x (local.get 0)))
+)
+
+(assert_invalid
+  (module
+    (type (struct (field $x i64)))
+    (type $t (struct (field $x i32)))
+    (func (param (ref 0)) (result i32) (struct.get 0 $x (local.get 0)))
+  )
+  "type mismatch"
+)
+
+
 ;; Basic instructions
 
 (module
@@ -62,11 +77,29 @@
     (struct.new_default $vec)
   )
 
-  (func $get_0 (param $v (ref $vec)) (result f32)
+  (func $get_0_0 (param $v (ref $vec)) (result f32)
+    (struct.get 0 0 (local.get $v))
+  )
+  (func (export "get_0_0") (result f32)
+    (call $get_0_0 (struct.new_default $vec))
+  )
+  (func $get_vec_0 (param $v (ref $vec)) (result f32)
     (struct.get $vec 0 (local.get $v))
   )
-  (func (export "get_0") (result f32)
-    (call $get_0 (struct.new_default $vec))
+  (func (export "get_vec_0") (result f32)
+    (call $get_vec_0 (struct.new_default $vec))
+  )
+  (func $get_0_y (param $v (ref $vec)) (result f32)
+    (struct.get 0 $y (local.get $v))
+  )
+  (func (export "get_0_y") (result f32)
+    (call $get_0_y (struct.new_default $vec))
+  )
+  (func $get_vec_y (param $v (ref $vec)) (result f32)
+    (struct.get $vec $y (local.get $v))
+  )
+  (func (export "get_vec_y") (result f32)
+    (call $get_vec_y (struct.new_default $vec))
   )
 
   (func $set_get_y (param $v (ref $vec)) (param $y f32) (result f32)
@@ -87,7 +120,12 @@
 )
 
 (assert_return (invoke "new") (ref.struct))
-(assert_return (invoke "get_0") (f32.const 0))
+
+(assert_return (invoke "get_0_0") (f32.const 0))
+(assert_return (invoke "get_vec_0") (f32.const 0))
+(assert_return (invoke "get_0_y") (f32.const 0))
+(assert_return (invoke "get_vec_y") (f32.const 0))
+
 (assert_return (invoke "set_get_y" (f32.const 7)) (f32.const 7))
 (assert_return (invoke "set_get_1" (f32.const 7)) (f32.const 7))
 

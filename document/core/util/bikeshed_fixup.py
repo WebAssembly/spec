@@ -59,7 +59,7 @@ def Main():
   )
 
   data = data.replace(
-      """<a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754-2019</a>""",
+      """<a class="reference external" href="https://ieeexplore.ieee.org/document/8766229">IEEE 754</a>""",
       "[[!IEEE-754-2019]]"
   )
 
