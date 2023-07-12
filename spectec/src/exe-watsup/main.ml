@@ -189,6 +189,7 @@ let () =
         let env = Backend_splice.Splice.(env config el il al) in
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
+        if List.length (!odsts) > 0 then Backend_splice.Splice.gen_macro env;
         if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then

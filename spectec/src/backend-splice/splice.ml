@@ -311,6 +311,13 @@ let rec splice_all env src buf =
     splice_all env src buf
   )
 
+(* Macro Generation *)
+
+let gen_macro env =
+  let s = Backend_prose.Render.render_macro env.render_prose in
+  let oc = Out_channel.open_text "macros.def" in
+  Fun.protect (fun () -> Out_channel.output_string oc s) 
+    ~finally:(fun () -> Out_channel.close oc)
 
 (* Entry points *)
 
@@ -330,4 +337,3 @@ let splice_file env file_in file_out =
     let oc = Out_channel.open_text file_out in
     Fun.protect (fun () -> Out_channel.output_string oc s')
       ~finally:(fun () -> Out_channel.close oc)
-

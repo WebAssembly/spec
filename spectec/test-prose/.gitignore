@@ -1,6 +1,7 @@
 *.aux
 *.log
 *.pdf
+macros.def
 prose.rst
 exec/auxiliary.rst
 exec/runtime.rst

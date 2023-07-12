@@ -52,17 +52,66 @@ let env _config el il al : env =
   let env = { prose; keywords =  ref keywords; } in
   env
 
+(* Macro Generation *)
 
-(* Helpers *)
+let macro_template = {|
+.. MATH MACROS
+
+
+.. Generic Stuff
+.. -------------
+
+.. Type-setting of names
+.. X - (multi-letter) variables / non-terminals
+.. F - functions
+.. K - keywords / terminals
+.. B - binary grammar non-terminals
+.. T - textual grammar non-terminals
+
+.. |X| mathdef:: \mathit
+.. |F| mathdef:: \mathrm
+.. |K| mathdef:: \mathsf
+.. |B| mathdef:: \mathtt
+.. |T| mathdef:: \mathtt
+
+|}
 
 (* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
    such that it is macro-compatible *)
-let escape_macro s = 
-  let escape acc c =
+let macroify s = 
+  let del acc c =
     if c = '.' || c = '_' then acc
     else acc ^ (String.make 1 c) 
   in
+  String.fold_left del "" s
+
+let render_macro_keyword s = 
+  let s = String.lowercase_ascii s in
+  let escape acc c =
+    if c = '.' then acc ^ "{.}"
+    else if c = '_' then acc ^ "\\_"
+    else acc ^ (String.make 1 c)
+  in
   String.fold_left escape "" s
+
+let render_macro_def s =
+  (* TODO hardcoded to avoid duplicate macros *)
+  if s = "_F" then ""
+  else if s = "LABEL_" then
+    sprintf ".. |label| mathdef:: {\\X{label}}"
+  else
+    let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
+    sprintf ".. |%s| mathdef:: {\\%s{%s}}"
+      (macroify s) typ (render_macro_keyword s)
+
+let render_macro env =
+  let keywords = env.keywords in
+  macro_template ^
+  Set.fold
+    (fun keyword acc -> acc ^ render_macro_def keyword ^ "\n")
+    (!keywords) ""
+
+(* Helpers *)
 
 let indent = "   "
 
@@ -141,7 +190,7 @@ let rec render_name env = function
   | Al.Ast.N "the label" -> "\\label"
   | Al.Ast.N "the frame" -> "\\frame"
   | Al.Ast.N s -> (match Set.find_opt s !(env.keywords) with
-    | Some _ -> sprintf "\\%s" (escape_macro s) 
+    | Some _ -> sprintf "\\%s" (macroify s) 
     | _ -> s)
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
 
@@ -168,7 +217,7 @@ let rec render_expr env in_math = function
       let sop = render_al_mathop op in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
-      let s = sprintf "%s %s %s" se1 sop se2 in
+      let s = sprintf "{%s} %s {%s}" se1 sop se2 in
       if in_math then s else render_math s
   | Al.Ast.PairE (e1, e2) ->
       let se1 = render_expr env true e1 in
