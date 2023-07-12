@@ -157,6 +157,21 @@ function assert_return(action, ...expected) {
           throw new Error("Wasm return value NaN expected, got " + actual[i]);
         };
         return;
+      case "ref.i31":
+        if (typeof actual[i] !== "number" || (actual[i] & 0x7fffffff) !== actual[i]) {
+          throw new Error("Wasm i31 return value expected, got " + actual[i]);
+        };
+        return;
+      case "ref.any":
+      case "ref.eq":
+      case "ref.struct":
+      case "ref.array":
+        // For now, JS can't distinguish exported Wasm GC values,
+        // so we only test for object.
+        if (typeof actual[i] !== "object") {
+          throw new Error("Wasm function return value expected, got " + actual[i]);
+        };
+        return;
       case "ref.func":
         if (typeof actual[i] !== "function") {
           throw new Error("Wasm function return value expected, got " + actual[i]);
@@ -411,16 +426,10 @@ let is_js_num_type = function
   | I32T -> true
   | I64T | F32T | F64T -> false
 
-let is_js_heap_type = function
-  | AnyHT | EqHT | I31HT | StructHT | ArrayHT -> false
-  | FuncHT | ExternHT -> true
-  | NoneHT | NoFuncHT | NoExternHT -> assert false
-  | VarHT _ | DefHT _ | BotHT -> assert false
-
 let is_js_val_type = function
   | NumT t -> is_js_num_type t
   | VecT _ -> false
-  | RefT (_, ht) -> is_js_heap_type ht
+  | RefT _ -> true
   | BotT -> assert false
 
 let is_js_global_type = function
