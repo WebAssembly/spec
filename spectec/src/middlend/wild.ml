@@ -181,6 +181,8 @@ and t_iterexp env (iter, vs) =
 
 and t_iter env iter = match iter with
   | ListN e -> unary t_exp env e (fun e' -> ListN e')
+  | IndexedListN (id, e) ->
+    unary t_exp env e (fun e' -> IndexedListN (id, e'))
   | _ -> [], iter
 
 and t_path env = phrase t_path' env

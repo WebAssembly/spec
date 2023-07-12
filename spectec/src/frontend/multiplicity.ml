@@ -164,6 +164,9 @@ let rec annot_iter env iter : Il.Ast.iter * occur =
   | ListN e ->
     let e', occur = annot_exp env e in
     ListN e', occur
+  | IndexedListN (id, e) ->
+    let e', occur = annot_exp env e in
+    IndexedListN (id, e'), occur
 
 and annot_exp env e : Il.Ast.exp * occur =
   let it, occur =

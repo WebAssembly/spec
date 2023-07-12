@@ -77,6 +77,8 @@ let rec string_of_iter iter =
   | List -> "*"
   | List1 -> "+"
   | ListN e -> "^" ^ string_of_exp e
+  | IndexedListN (id, e) ->
+    "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
 and string_of_typ t =
   match t.it with
