@@ -398,18 +398,18 @@ let rec eval_cond env cond =
       | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
   | ValidC e -> (
-      let valid_lim lim k = match lim with
-      | PairV (NumV n, OptV (Some (NumV m))) -> n <= m && m <= k
-      | PairV (NumV n, OptV None) -> n <= k
-      | _ -> failwith ("invalid limit: " ^ structured_string_of_value lim) in
+      let valid_lim k = function
+        | PairV (NumV n, NumV m) -> n <= m && m <= k
+        | _ -> false
+      in
       match eval_expr env e with
       (* valid_tabletype *)
-      | PairV (lim, _rt) -> valid_lim lim 0xffffffffL
+      | PairV (lim, _) -> valid_lim 0xffffffffL lim
       (* valid_memtype *)
-      | ConstructV ("I8", [ lim ]) -> valid_lim lim 0x10000L
+      | ConstructV ("I8", [ lim ]) -> valid_lim 0x10000L lim
       (* valid_other *)
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
-      )
+  )
   | c -> structured_string_of_cond c |> failwith
 
 type context = Env.t * instr list * action
@@ -464,7 +464,10 @@ let rec assign lhs rhs env =
 
 let assign_opt lhs_opt rhs env = match lhs_opt with
   | None -> env
-  | Some lhs -> assign lhs rhs env
+  | Some lhs ->
+      if rhs = StringV "Undefined" then
+        raise Exception.MissingReturnValue;
+      assign lhs rhs env
 
 let rec dsl_function_call lhs_opt fname args env il cont action =
   match fname with
@@ -510,8 +513,12 @@ and interp_instrs env il cont action =
         if eval_cond env c then interp (il1 @ icont) else interp (il2 @ icont)
     | WhileI (c, il) ->
         if eval_cond env c then interp (il @ (i :: icont)) else interp icont
-    | EitherI (il1, il2) -> (*TODO: Make EitherI cps *)
-        ( try interp (il1 @ icont) with | Exception.OutOfMemory -> interp (il2 @ icont) )
+    | EitherI (il1, il2) -> (
+        (*TODO: Make EitherI cps *)
+        try interp (il1 @ icont) with
+        | Exception.MissingReturnValue
+        | Exception.OutOfMemory -> interp (il2 @ icont)
+    )
     | ForI (e, il') ->
         let n = eval_expr env e |> value_to_array |> Array.length in
         interp_for n il' env icont cont action
@@ -650,7 +657,7 @@ and leave_algo cont = function
 | JumpToNextWinstr ->
     let winstrs, (env, il, action) = List.hd cont in
     execute_wasm_instrs winstrs env il (List.tl cont) action true
-| Return f -> f (StringV "UNUSED") cont
+| Return f -> f (StringV "Undefined") cont
 | ExecuteWinstrs (winstrs, (env, il, action)) ->
     execute_wasm_instrs winstrs env il cont action false
 

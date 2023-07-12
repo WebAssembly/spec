@@ -325,19 +325,24 @@ let al_of_global wasm_global =
 
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; listV expr ])
 
-let al_of_limits limits =
-  let f opt = NumV (int64_of_int32_u opt) in
-  PairV (NumV (int64_of_int32_u limits.Types.min), OptV (Option.map f limits.Types.max))
+let al_of_limits limits max =
+  let max =
+    match limits.Types.max with
+    | Some v -> int64_of_int32_u v
+    | None -> max
+  in
+  
+  PairV (NumV (int64_of_int32_u limits.Types.min), NumV max)
 
 let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
-  let pair = al_of_limits limits in
+  let pair = al_of_limits limits 4294967295L in
 
   ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
 
 let al_of_memory wasm_memory =
   let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in
-  let pair = al_of_limits limits in
+  let pair = al_of_limits limits 65536L in
 
   ConstructV ("MEMORY", [ pair ])
 
@@ -404,11 +409,11 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
       ConstructV ("FUNC", [ ftype ])
   | Ast.TableImport ty ->
     let Types.TableType (limits, ref_ty) = ty in
-    let pair = al_of_limits limits in
+    let pair = al_of_limits limits 4294967295L in
     ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
   | Ast.MemoryImport ty ->
     let Types.MemoryType (limits) = ty in
-    let pair = al_of_limits limits in
+    let pair = al_of_limits limits 65536L in
     ConstructV ("MEM", [ pair ])
   | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
 

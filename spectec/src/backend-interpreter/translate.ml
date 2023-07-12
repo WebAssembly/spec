@@ -125,10 +125,8 @@ let rec exp2expr exp =
       assert (List.length inner_names = List.length inner_ids);
       List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
       IterE (ListE (List.map exp2expr inner_exps), Opt)
-  | Ast.IterE (inner_exp, (iter, [ id ])) ->
-      let name = exp2name inner_exp in
-      assert (name = N id.it);
-      IterE (NameE name, iter2iter iter)
+  | Ast.IterE (inner_exp, (iter, [ _ ])) ->
+      IterE (exp2expr inner_exp, iter2iter iter)
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
   (* property access *)
@@ -190,7 +188,7 @@ let rec exp2expr exp =
       match (op, exps) with
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
-      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.Quest; Ast.RBrack ]], [ e1; e2 ] ->
+      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
           PairE (exp2expr e1, exp2expr e2)
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
