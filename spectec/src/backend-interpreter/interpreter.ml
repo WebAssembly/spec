@@ -412,13 +412,17 @@ let rec eval_cond env cond =
       )
   | c -> structured_string_of_cond c |> failwith
 
+type map_info = (string * value list * value list * value list)
+
 type context = Env.t * instr list * action
 and wstack = (value list * context) list
 (* Specifies what to do upon leaving algorithm *)
 and action =
+  | Pass
+  | AssignLhs of expr option * context
+  | MapNextArgs of expr option * map_info * context
   | JumpToNextWinstr
   | ExecuteWinstrs of value list * context
-  | Return of (value -> wstack -> value)
 
 let rec assign lhs rhs env =
   match lhs, rhs with
@@ -594,10 +598,8 @@ and interp_instrs env il cont action =
         ( match ctx with
         | LabelV _ -> ( match cont with
           | (_, ctxt) :: rest ->
-            let new_action = Return (fun _ cont' ->
-              let (env', il', action') = ctxt in
-              interp_instrs env' il' cont' action'
-            ) in
+            (* Pretend as if rest of instructions were executed in outter context *)
+            let new_action = AssignLhs (None, ctxt) in
             interp_instrs env icont rest new_action
           | _ -> failwith "Cannot abruptly exit: no context")
         | FrameV _ -> interp_instrs env icont cont action
@@ -643,16 +645,22 @@ and interp_for n body env il cont action =
   interp_instrs env (List.concat unrolled @ il) cont action
 
 and return_some v cont = function
-| Return f -> f v cont
-| _ -> failwith "Impossible return_some"
+| Pass -> v
+| AssignLhs (lhs_opt, (env, il, action)) ->
+    interp_instrs (assign_opt lhs_opt v env) il cont action
+| MapNextArgs (lhs_opt, (name, front_args, last_args, acc), (env, il, action)) ->
+    map_algo lhs_opt name front_args last_args (v :: acc) env il cont action
+| _ -> failwith "Impossible action for return_some"
 
 and leave_algo cont = function
+| AssignLhs (None, (env, il, action)) ->
+    interp_instrs env il cont action
 | JumpToNextWinstr ->
     let winstrs, (env, il, action) = List.hd cont in
     execute_wasm_instrs winstrs env il (List.tl cont) action true
-| Return f -> f (StringV "UNUSED") cont
 | ExecuteWinstrs (winstrs, (env, il, action)) ->
     execute_wasm_instrs winstrs env il cont action false
+| _ -> failwith "Impossible action for leave_algo"
 
 and interp_algo algo args cont action =
   let (Algo (_name, params, body)) = algo in
@@ -681,9 +689,7 @@ and get_algo name = match AlgoMap.find_opt name !algo_map with
 
 and call_algo lhs_opt name args env il cont action =
   let algo = get_algo name in
-  let k = Return ( fun rhs cont' ->
-    interp_instrs (assign_opt lhs_opt rhs env) il cont' action
-  ) in
+  let k = AssignLhs (lhs_opt, (env, il, action)) in
   interp_algo algo args cont k
 
 and map_algo lhs_opt name front_args last_args acc env il cont action =
@@ -693,15 +699,12 @@ and map_algo lhs_opt name front_args last_args acc env il cont action =
     let rhs = listV (List.rev acc) in
     interp_instrs (assign_opt lhs_opt rhs env) il cont action
   | la :: las ->
-    let k = Return ( fun v cont' ->
-      map_algo lhs_opt name front_args las (v :: acc) env il cont' action
-    ) in
+    let k = MapNextArgs (lhs_opt, (name, front_args, las, acc), (env, il, action)) in
     interp_algo algo (front_args @ [la]) cont k
 
 and call_toplevel_algo name args =
   let algo = get_algo name in
-  let k = Return (fun v _ -> v) in
-  interp_algo algo args [] k
+  interp_algo algo args [] Pass
 
 and is_builtin = function
   | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
