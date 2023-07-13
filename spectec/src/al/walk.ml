@@ -78,6 +78,12 @@ let rec walk_cond f c =
   | IsDefinedC e -> IsDefinedC (new_e e)
   | IsTopC _ -> c
   | ValidC e -> ValidC (new_e e)
+  | ContainC _ -> c 
+  | TopLabelC -> c
+  | TopFrameC -> c
+  | TopValueC (Some e) -> TopValueC (Some (new_e e))
+  | TopValueC _ -> c
+  | TopValuesC e -> TopValuesC (new_e e)
   | YetC _ -> c )
   |> post
 
@@ -94,7 +100,7 @@ let rec walk_instr f (instr:instr) : instr list =
   | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
   | ForI (e, il) -> ForI (new_e e, new_ il)
   | ForeachI (e1, e2, il) -> ForeachI (new_e e1, new_e e2, new_ il)
-  | AssertI s -> AssertI s
+  | AssertI c -> AssertI (new_c c)
   | PushI e -> PushI (new_e e)
   | PopI e -> PopI (new_e e)
   | PopAllI e -> PopAllI (new_e e)

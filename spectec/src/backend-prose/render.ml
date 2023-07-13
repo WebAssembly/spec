@@ -383,6 +383,12 @@ and render_cond env in_math = function
   | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env in_math e) c
   | Al.Ast.IsTopC s -> sprintf "the top of the stack is %s" s
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env in_math e)
+  | Al.Ast.ContainC s ->  sprintf "the stack contains at least one %s" s
+  | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
+  | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
+  | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env in_math e)
+  | Al.Ast.TopValueC None -> "a value is on the top of the stack"
+  | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env in_math e)
   | Al.Ast.YetC s -> sprintf "YetC (%s)" s
 
 (* Instructions *)
@@ -487,7 +493,7 @@ let rec render_al_instr env index depth = function
         (render_expr env false e1)
         (render_expr env false e2)
         (render_al_instrs env (depth + 1) il)
-  | Al.Ast.AssertI s -> sprintf "%s Assert: %s." (render_order index depth) s
+  | Al.Ast.AssertI c -> sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env false c)
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)

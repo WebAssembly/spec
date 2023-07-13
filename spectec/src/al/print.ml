@@ -204,6 +204,12 @@ and string_of_cond = function
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | IsTopC s -> sprintf "the top of the stack is %s" s
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
+  | ContainC s -> sprintf "the stack contains at least one %s" s
+  | TopLabelC -> "a label is now on the top of the stack"
+  | TopFrameC -> "a frame is now on the top of the stack"
+  | TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
+  | TopValueC None -> "a value is on the top of the stack"
+  | TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
   | YetC s -> sprintf "YetC (%s)" s
 
 let make_index index depth =
@@ -275,7 +281,7 @@ let rec string_of_instr index depth = function
         (string_of_expr e1)
         (string_of_expr e2)
         (string_of_instrs (depth + 1) il)
-  | AssertI s -> sprintf "%s Assert: %s." (make_index index depth) s
+  | AssertI c -> sprintf "%s Assert: Due to validation, %s." (make_index index depth) (string_of_cond c)
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth)
         (string_of_expr e)
@@ -552,6 +558,11 @@ and structured_string_of_cond = function
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | IsTopC s -> "TopC (" ^ s ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
+  | ContainC s -> "ContainC (" ^ s ^ ")"
+  | TopLabelC -> "TopLabelC"
+  | TopFrameC -> "TopFrameC"
+  | TopValueC e_opt -> "TopValueC" ^ string_of_opt " (" structured_string_of_expr ")" e_opt 
+  | TopValuesC e -> "TopValuesC (" ^ structured_string_of_expr e ^ ")"
   | YetC s -> "YetC (" ^ s ^ ")"
 
 (* instruction *)
@@ -599,7 +610,7 @@ let rec structured_string_of_instr depth = function
       ^ ":\n"
       ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
-  | AssertI s -> "AssertI (" ^ s ^ ")"
+  | AssertI c -> "AssertI (" ^ structured_string_of_cond c ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
   | PopAllI e -> "PopAllI (" ^ structured_string_of_expr e ^ ")"

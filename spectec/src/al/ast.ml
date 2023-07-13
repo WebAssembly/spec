@@ -121,6 +121,12 @@ and cond =
   | IsCaseOfC of expr * string
   | IsTopC of string
   | ValidC of expr
+  (* Conditions used in assertions *)
+  | ContainC of string
+  | TopLabelC
+  | TopFrameC
+  | TopValueC of expr option
+  | TopValuesC of expr
   (* Yet *)
   | YetC of string
 
@@ -133,7 +139,7 @@ type instr =
   | ForI of expr * instr list
   | ForeachI of expr * expr * instr list
   (* Flat instructions *)
-  | AssertI of string
+  | AssertI of cond 
   | PushI of expr
   | PopI of expr
   | PopAllI of expr

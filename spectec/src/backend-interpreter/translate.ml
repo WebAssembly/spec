@@ -251,27 +251,16 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) ->
-      AssertI "Due to validation, the frame F is now on the top of the stack"
-  | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) ->
-      AssertI "Due to validation, the stack contains at least one frame"
-  | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) ->
-      AssertI
-        (sprintf
-           "Due to validation, there are at least %s values on the top of the \
-            stack"
-           n.it)
-  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; _vals ]; _ })
-    ->
-      AssertI "Due to validation, the label L is now on the top of the stack"
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC 
+  | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) -> AssertI (ContainC "a frame")
+  | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
+  | Ast.CaseE 
+      (Ast.Atom "LABEL_", 
+        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE (ty :: _); _ }) ->
-      AssertI (
-        "Due to validation, a value of value type "
-        ^ Print.string_of_exp ty
-        ^ " is on the top of the stack" )
-  | _ -> AssertI "Due to validation, a value is on the top of the stack"
+        { it = Ast.TupE (ty :: _); _ }) -> AssertI (TopValueC (Some (exp2expr ty)))
+  | _ -> AssertI (TopValueC None) 
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
 let handle_lhs_stack =
