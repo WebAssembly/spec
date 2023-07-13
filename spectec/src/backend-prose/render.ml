@@ -189,11 +189,10 @@ let render_al_mathop = function
   | Al.Ast.Exp -> "^"
 
 (* Names and Iters *)
+
 (* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_name env = function
-  | Al.Ast.N "the label" -> "\\label"
-  | Al.Ast.N "the frame" -> "\\frame"
   | Al.Ast.N s -> (match Set.find_opt s !(env.keywords) with
     | Some _ -> sprintf "\\%s" (macroify s) 
     | _ -> s)
@@ -242,13 +241,25 @@ let rec render_expr env in_math = function
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
-      sprintf "%s~%s" (render_expr env in_math (List.hd e1)) (render_expr env in_math (List.hd e2))
+      let se1 = render_expr env true (List.hd e1) in
+      let se2 = render_expr env true (List.hd e2) in
+      let s = sprintf "%s~%s" se1 se2 in 
+      if in_math then s else render_math s
   | Al.Ast.ConcatE (Al.Ast.ListE e1, e2) when List.length e1 = 1 ->
-      sprintf "%s~%s" (render_expr env in_math (List.hd e1)) (render_expr env in_math e2)
+      let se1 = render_expr env true (List.hd e1) in
+      let se2 = render_expr env true e2 in
+      let s = sprintf "%s~%s" se1 se2 in
+      if in_math then s else render_math s
   | Al.Ast.ConcatE (e1, Al.Ast.ListE e2) when List.length e2 = 1 ->
-      sprintf "%s~%s" (render_expr env in_math e1) (render_expr env in_math (List.hd e2))
+      let se1 = render_expr env true e1 in
+      let se2 = render_expr env true (List.hd e2) in
+      let s = sprintf "%s~%s" se1 se2 in
+      if in_math then s else render_math s
   | Al.Ast.ConcatE (e1, e2) ->
-      sprintf "%s~%s" (render_expr env in_math e1) (render_expr env in_math e2)
+      let se1 = render_expr env true e1 in
+      let se2 = render_expr env true e2 in
+      let s = sprintf "%s~%s" se1 se2 in
+      if in_math then s else render_math s
   | Al.Ast.LengthE e ->
       let se = render_expr env true e in
       if in_math then "|" ^ se ^ "|" else "the length of " ^ render_math se
@@ -275,16 +286,16 @@ let rec render_expr env in_math = function
       if in_math then s else render_math s
   | Al.Ast.ExtendE (e1, ps, e2, dir) ->
       let se1 = render_expr env in_math e1 in
-      let sps = render_paths env ps in
-      let sps = if in_math then sps else render_math sps in
+      let sps = render_paths env in_math ps in
       let se2 = render_expr env in_math e2 in
       (match dir with
       | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
       | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.ReplaceE (e1, ps, e2) ->
-      let spath = render_paths env ps in
-      let spath = if in_math then spath else render_math spath in
-      sprintf "%s with %s replaced by %s" (render_expr env in_math e1) spath (render_expr env in_math e2)
+      sprintf "%s with %s replaced by %s" 
+        (render_expr env in_math e1) 
+        (render_paths env in_math ps)
+        (render_expr env in_math e2)
   | Al.Ast.RecordE r ->
       let keys = Al.Record.Record.keys r in
       let sfields =
@@ -305,7 +316,7 @@ let rec render_expr env in_math = function
   | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
       let sn = render_name env n in
       let siter = render_iter env iter in
-      let s = sprintf "%s%s" sn siter in
+      let s = sprintf "{%s}%s" sn siter in
       if in_math then s else render_math s
   | Al.Ast.IterE (e, iter) -> render_expr env in_math e ^ render_iter env iter
   | Al.Ast.ArrowE (e1, e2) ->
@@ -330,7 +341,7 @@ let rec render_expr env in_math = function
       if in_math then s else render_math s
   | Al.Ast.OptE (Some e) -> 
       let se = render_expr env true e in
-      let s = sprintf "(%s)^?" se in 
+      let s = sprintf "{%s}^?" se in 
       if in_math then s else render_math s
   | Al.Ast.OptE None -> 
       let s = "\\epsilon" in
@@ -345,9 +356,13 @@ and render_path env = function
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
   | Al.Ast.DotP s -> sprintf ".%s" (render_name env (N s))
 
-and render_paths env paths = List.map (render_path env) paths |> List.fold_left (^) ""
+and render_paths env in_math paths = 
+  let spaths = List.map (render_path env) paths |> List.fold_left (^) "" in
+  if in_math then spaths else render_math spaths
 
 (* Conditions *)
+
+(* assume Conditions are never embedded in math blocks *)
 
 and render_cond env in_math = function
   | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
@@ -476,6 +491,9 @@ let rec render_al_instr env index depth = function
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
+  (* TODO hardcoded for PopI on label or frame by raw string *)
+  | Al.Ast.PopI (Al.Ast.NameE (Al.Ast.N s)) when s = "the label" || s = "the frame" ->
+      sprintf "%s Pop %s from the stack." (render_order index depth) s
   | Al.Ast.PopI e ->
       sprintf "%s Pop %s from the stack." (render_order index depth)
         (render_expr env false e)
@@ -504,7 +522,7 @@ let rec render_al_instr env index depth = function
   | Al.Ast.ExecuteI e ->
       sprintf "%s Execute %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.ExecuteSeqI e ->
-      sprintf "%s Execute the sequence (%s)." (render_order index depth) (render_expr env false e)
+      sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.JumpI e ->
       sprintf "%s Jump to %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.PerformI (n, es) ->
