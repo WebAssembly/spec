@@ -226,10 +226,10 @@ Each variant of :ref:`memory instruction <syntax-instr-memory>` is encoded with 
      \hex{3E}~~m{:}\Bmemarg &\Rightarrow& \I64.\STORE\K{32}~m \\ &&|&
      \hex{3F}~~x{:}\Bmemidx &\Rightarrow& \MEMORYSIZE~x \\ &&|&
      \hex{40}~~x{:}\Bmemidx &\Rightarrow& \MEMORYGROW~x \\ &&|&
-     \hex{FC}~~8{:}\Bu32~~src{:}\Bdataidx~dst{:}\Bmemidx &\Rightarrow& \MEMORYINIT~dst~src \\ &&|&
-     \hex{FC}~~9{:}\Bu32~~dst{:}\Bdataidx &\Rightarrow& \DATADROP~dst \\ &&|&
-     \hex{FC}~~10{:}\Bu32~~dst{:}\Bmemidx~~src{:}\Bmemidx &\Rightarrow& \MEMORYCOPY~dst~src \\ &&|&
-     \hex{FC}~~11{:}\Bu32~~dst{:}\Bmemidx &\Rightarrow& \MEMORYFILL~dst \\
+     \hex{FC}~~8{:}\Bu32~~y{:}\Bdataidx~x{:}\Bmemidx &\Rightarrow& \MEMORYINIT~x~y \\ &&|&
+     \hex{FC}~~9{:}\Bu32~~x{:}\Bdataidx &\Rightarrow& \DATADROP~x \\ &&|&
+     \hex{FC}~~10{:}\Bu32~~x{:}\Bmemidx~~y{:}\Bmemidx &\Rightarrow& \MEMORYCOPY~x~y \\ &&|&
+     \hex{FC}~~11{:}\Bu32~~x{:}\Bmemidx &\Rightarrow& \MEMORYFILL~x \\
    \end{array}
 
 .. index:: numeric instruction
