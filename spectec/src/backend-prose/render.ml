@@ -318,7 +318,12 @@ let rec render_expr env in_math = function
       let siter = render_iter env iter in
       let s = sprintf "{%s}%s" sn siter in
       if in_math then s else render_math s
-  | Al.Ast.IterE (e, iter) -> render_expr env in_math e ^ render_iter env iter
+  | Al.Ast.IterE (e, iter) -> 
+      let se = render_expr env in_math e in
+      (* TODO need a better way to e should be enclosed in parentheses *)
+      let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
+      let siter = render_iter env iter in
+      se ^ siter
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
@@ -364,31 +369,31 @@ and render_paths env in_math paths =
 
 (* assume Conditions are never embedded in math blocks *)
 
-and render_cond env in_math = function
+and render_cond env = function
   | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" 
-        (render_expr env in_math e) 
+        (render_expr env false e) 
         (render_math (render_name env (N c)))
   | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
-      sprintf "%s is not defined" (render_expr env in_math e)
+      sprintf "%s is not defined" (render_expr env false e)
   | Al.Ast.NotC (Al.Ast.ValidC e) ->
-      sprintf "%s is not valid" (render_expr env in_math e)
-  | Al.Ast.NotC c -> sprintf "not %s" (render_cond env in_math c)
+      sprintf "%s is not valid" (render_expr env false e)
+  | Al.Ast.NotC c -> sprintf "not %s" (render_cond env c)
   | Al.Ast.BinopC (op, c1, c2) ->
-      sprintf "%s %s %s" (render_cond env in_math c1) (render_al_logop op) (render_cond env in_math c2)
+      sprintf "%s %s %s" (render_cond env c1) (render_al_logop op) (render_cond env c2)
   | Al.Ast.CompareC (op, e1, e2) ->
-      sprintf "%s %s %s" (render_expr env in_math e1) (render_al_cmpop op) (render_expr env in_math e2)
-  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env in_math e) s
-  | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env in_math e)
-  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env in_math e) c
+      sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
+  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) s
+  | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
+  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) c
   | Al.Ast.IsTopC s -> sprintf "the top of the stack is %s" s
-  | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env in_math e)
+  | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.ContainC s ->  sprintf "the stack contains at least one %s" s
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
-  | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env in_math e)
+  | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
   | Al.Ast.TopValueC None -> "a value is on the top of the stack"
-  | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env in_math e)
+  | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env false e)
   | Al.Ast.YetC s -> sprintf "YetC (%s)" s
 
 (* Instructions *)
@@ -417,7 +422,7 @@ let rec render_prose_instr env depth = function
         (render_opt " with type " (render_expr env false) "" e)
   | IfI (c, is) ->
       sprintf "* If %s,%s"
-        (render_cond env false c)
+        (render_cond env c)
         (render_prose_instrs env (depth + 1) is)
   | ForallI (e1, e2, is) ->
       sprintf "* For all %s in %s,%s"
@@ -426,8 +431,8 @@ let rec render_prose_instr env depth = function
         (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
-        (String.capitalize_ascii (render_cond env false c1))
-        (render_cond env false c2)
+        (String.capitalize_ascii (render_cond env c1))
+        (render_cond env c2)
   | YetI s ->
       sprintf "* YetI: %s." s
 
@@ -439,17 +444,17 @@ and render_prose_instrs env depth instrs =
 
 let rec render_al_instr env index depth = function
   | Al.Ast.IfI (c, il, []) ->
-      sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env false c)
+      sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
         (render_al_instrs env (depth + 1) il)
   | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, []) ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
         if_index
-        (render_cond env false c)
+        (render_cond env c)
         (render_al_instrs env (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env false inner_c)
+        (render_cond env inner_c)
         (render_al_instrs env (depth + 1) inner_il1)
   | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, inner_il2) ]) ->
       let if_index = render_order index depth in
@@ -457,17 +462,17 @@ let rec render_al_instr env index depth = function
       let else_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n%s Else:%s"
         if_index
-        (render_cond env false c)
+        (render_cond env c)
         (render_al_instrs env (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env false inner_c)
+        (render_cond env inner_c)
         (render_al_instrs env (depth + 1) inner_il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env (depth + 1) inner_il2)
   | Al.Ast.IfI (c, il1, il2) ->
       let if_index = render_order index depth in
       let else_index = render_order index depth in
-      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_cond env false c)
+      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_cond env c)
         (render_al_instrs env (depth + 1) il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env (depth + 1) il2)
@@ -475,7 +480,7 @@ let rec render_al_instr env index depth = function
       sprintf "%s Otherwise:%s" (render_order index depth)
         (render_al_instrs env (depth + 1) il)
   | Al.Ast.WhileI (c, il) ->
-      sprintf "%s While %s, do:%s" (render_order index depth) (render_cond env false c)
+      sprintf "%s While %s, do:%s" (render_order index depth) (render_cond env c)
         (render_al_instrs env (depth + 1) il)
   | Al.Ast.EitherI (il1, il2) ->
       let either_index = render_order index depth in
@@ -493,7 +498,7 @@ let rec render_al_instr env index depth = function
         (render_expr env false e1)
         (render_expr env false e2)
         (render_al_instrs env (depth + 1) il)
-  | Al.Ast.AssertI c -> sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env false c)
+  | Al.Ast.AssertI c -> sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env c)
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
