@@ -6,10 +6,14 @@ def $globals(externval*) : globaladdr*
 def $tables(externval*) : tableaddr*
 def $mems(externval*) : memaddr*
 
-def $funcs(externval*) = `[fa|FUNC fa <- externval]
-def $globals(externval*) = `[ga|GLOBAL ga <- externval]
-def $tables(externval*) = `[ta|TABLE ta <- externval]
-def $mems(externval*) = `[ma|MEM ma <- externval]
+def $funcs(externval*) = fa'*
+  -- if fa'* = `[fa|FUNC fa <- externval*]
+def $globals(externval*) = ga'*
+  -- if ga'* = `[ga|GLOBAL ga <- externval*]
+def $tables(externval*) = ta'*
+  -- if ta'* = `[ta|TABLE ta <- externval*]
+def $mems(externval*) = ma'*
+  -- if ma'* = `[ma|MEM ma <- externval*]
 
 
 def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
@@ -141,8 +145,7 @@ def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
 
 
 def $instantiation(store, module, externval*) : config
-def $instantiation(s, module, externval*) =
-  s'; f; $concat_instr(instr_elem**) $concat_instr(instr_data**) (CALL x)?
+def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
@@ -161,9 +164,9 @@ def $instantiation(s, module, externval*) =
   -- if (s', m) = $allocmodule(s, module, externval*, val*, (ref*)*)
   -- if f = { LOCAL epsilon, MODULE m }
   -- if n_elem = |elem*|
-  -- if instr_elem** = $runelem(elem*[i], i)^(i<n_elem)
+  -- if instr_elem* = $concat_instr($runelem(elem*[i], i)^(i<n_elem))
   -- if n_data = |data*|
-  -- if instr_data** = $rundata(data*[j], j)^(j<n_data)
+  -- if instr_data* = $concat_instr($rundata(data*[j], j)^(j<n_data))
   -- if start? = (START x)?
 
 
