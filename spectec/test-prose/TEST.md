@@ -20,12 +20,6 @@ if (l' < |C.LABEL_context|)
 Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 ...Animation failed
 Animation failed.
-if (x_1 < |C.TABLE_context|)
-if (x_2 < |C.TABLE_context|)
-if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
-if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
-...Animation failed
-Animation failed.
 if (0 < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[0] = mt)
@@ -201,7 +195,7 @@ validation_of_table.copy x_1 x_2
 - |C.TABLE| must be greater than x_1.
 - |C.TABLE| must be greater than x_2.
 - Let (lim_1, rt) be C.TABLE[x_1].
-- C.TABLE[x_2] must be equal to (lim_2, rt).
+- Let (lim_2, rt) be C.TABLE[x_2].
 - The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_table.init x_1 x_2
@@ -442,10 +436,10 @@ alloc_import m x_0* x_1*
       b) Let m_new be m with .GLOBAL appended by [ga].
       c) Let m_res be $alloc_import(m_new, import'*, externval'*).
       d) Return m_res.
-6. If import is of the case IMPORT, then:
-  a. Let (IMPORT name name' externtype) be import.
-  b. If externval is of the case TABLE, then:
-    1) Let (TABLE ta) be externval.
+6. If externval is of the case TABLE, then:
+  a. Let (TABLE ta) be externval.
+  b. If import is of the case IMPORT, then:
+    1) Let (IMPORT name name' externtype) be import.
     2) Let m_new be m with .TABLE appended by [ta].
     3) If externtype is of the case TABLE, then:
       a) Let (TABLE tabletype) be externtype.
@@ -578,22 +572,22 @@ alloc_export m export
     4) Return xi.
 
 alloc_module module externval*
-1. If module is of the case MODULE, then:
+1. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+2. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
-  b. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-  c. Let m_im be $alloc_import(m_init, import*, externval*).
-  d. Let f be { LOCAL: []; MODULE: m_im; }.
-  e. Let fa* be $alloc_func(func*).
-  f. Let ga* be $alloc_global(global*).
-  g. Let ta* be $alloc_table(table*).
-  h. Let ma* be $alloc_mem(mem*).
-  i. Let ea* be $alloc_elem(elem*).
-  j. Let da* be $alloc_data(data*).
-  k. Let m_ex be m_im with .FUNC prepended by fa* with .GLOBAL prepended by ga* with .TABLE prepended by ta* with .MEM prepended by ma* with .ELEM prepended by ea* with .DATA prepended by da*.
-  l. Let xi* be $alloc_export(m_ex, export)*.
-  m. Let m_res be m_ex with .EXPORT replaced by xi*.
-  n. Perform $replace_moduleinst(fa*, m_res).
-  o. Return m_res.
+  b. Let m_im be $alloc_import(m_init, import*, externval*).
+  c. Let f be { LOCAL: []; MODULE: m_im; }.
+  d. Let fa* be $alloc_func(func*).
+  e. Let ga* be $alloc_global(global*).
+  f. Let ta* be $alloc_table(table*).
+  g. Let ma* be $alloc_mem(mem*).
+  h. Let ea* be $alloc_elem(elem*).
+  i. Let da* be $alloc_data(data*).
+  j. Let m_ex be m_im with .FUNC prepended by fa* with .GLOBAL prepended by ga* with .TABLE prepended by ta* with .MEM prepended by ma* with .ELEM prepended by ea* with .DATA prepended by da*.
+  k. Let xi* be $alloc_export(m_ex, export)*.
+  l. Let m_res be m_ex with .EXPORT replaced by xi*.
+  m. Perform $replace_moduleinst(fa*, m_res).
+  n. Return m_res.
 
 run_elem x_0* i
 1. Let f be the current frame.
@@ -669,14 +663,14 @@ instantiation module externval*
 invocation fa val*
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. If $funcinst()[fa].CODE is of the case FUNC, then:
+3. Push val* to the stack.
+4. Execute (CALL_ADDR fa).
+5. Pop val'* from the stack.
+6. If $funcinst()[fa].CODE is of the case FUNC, then:
   a. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
-  b. Push val* to the stack.
-  c. Execute (CALL_ADDR fa).
-  d. Pop val'* from the stack.
-  e. If |val*| is |valtype*|, then:
-    1) Let |valtype'*| be |val'*|.
-    2) If functype is [valtype*]->[valtype'*], then:
+  b. If |val*| is |valtype*|, then:
+    1) Let [valtype*]->[valtype'*] be functype.
+    2) If |val'*| is |valtype'*|, then:
       a) Return val'*.
 
 execution_of_unreachable

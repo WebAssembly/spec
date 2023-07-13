@@ -546,6 +546,12 @@ let rec letI lhs rhs cont =
           LetI (a, BinopE (Sub, rhs, b)) :: cont,
           [] );
     ]
+  (* TODO: Remove this ad-hoc case for inverse_of_bytes *)
+  | AppE (N f, args) ->
+    let front_args, last_arg = Util.Lib.List.split_last args in
+    let new_lhs = last_arg in
+    let new_rhs = AppE (N ("inverse_of_" ^ f), front_args @ [ rhs ]) in
+    LetI (new_lhs, new_rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)

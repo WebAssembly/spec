@@ -10234,12 +10234,6 @@ if (l' < |C.LABEL_context|)
 Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 ...Animation failed
 Animation failed.
-if (x_1 < |C.TABLE_context|)
-if (x_2 < |C.TABLE_context|)
-if (C.TABLE_context[x_1] = `%%`(lim_1, rt))
-if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
-...Animation failed
-Animation failed.
 if (0 < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
@@ -11007,7 +11001,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (x_1 < |C.TABLE_context|)
     -- if (x_2 < |C.TABLE_context|)
     -- where `%%`(lim_1, rt) = C.TABLE_context[x_1]
-    -- if (C.TABLE_context[x_2] = `%%`(lim_2, rt))
+    -- where `%%`(lim_2, rt) = C.TABLE_context[x_2]
 
   ;; 3-typing.watsup:315.1-318.25
   rule table.init {C : context, lim : limits, rt : reftype, x_1 : idx, x_2 : idx}:
@@ -11849,8 +11843,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$funcinst(z)|)
     -- where {MODULE m, CODE func} = $funcinst(z)[a]
     -- where `FUNC%%*%`(`%->%`(t_1^k{t_1}, t_2^n{t_2}), t*{t}, instr*{instr}) = func
-    -- (where ?(o0) = $default_(t))*{t o0}
-    -- if (|t*{t}| = |o0*{o0}|)
+    -- where |o0*{o0}| = |t*{t}|
+    -- (if ($default_(t) = ?(o0)))*{t o0}
     -- where f = {LOCAL val^k{val} :: o0*{o0}, MODULE m}
 
   ;; 6-reduction.watsup:152.1-153.53
@@ -11957,7 +11951,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 6-reduction.watsup:285.1-287.55
   rule load-pack-val {c : c_numtype, i : nat, n : n, n_A : n, n_O : n, nt : numtype, sx : sx, z : state, o0 : nat}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), n_A, n_O)]), [CONST_admininstr(nt, $ext(n, o0, sx, c))])
-    -- where c = $inverse_of_bytes_(n, $mem(z, 0).DATA_meminst[(i + n_O) : (n / 8)])
+    -- where $bytes_(n, c) = $mem(z, 0).DATA_meminst[(i + n_O) : (n / 8)]
     -- where ?(o0) = $size($valtype_numtype(nt))
 
   ;; 6-reduction.watsup:307.1-309.44
@@ -12127,8 +12121,8 @@ def alloc_import : (moduleinst, import*, externval*) -> moduleinst
     -- where m_res = $alloc_import(m_new, import'*{import'}, externval'*{externval'})
   ;; 7-module.watsup:21.1-26.60
   def {externtype : externtype, externval : externval, externval'* : externval*, import : import, import'* : import*, m : moduleinst, m_new : moduleinst, m_res : moduleinst, name : name, name' : name, ta : tableaddr, tabletype : tabletype} alloc_import(m, [import] :: import'*{import'}, [externval] :: externval'*{externval'}) = m_res
-    -- where IMPORT(name, name', externtype) = import
     -- where TABLE_externval(ta) = externval
+    -- where IMPORT(name, name', externtype) = import
     -- where m_new = m[TABLE_moduleinst =.. [ta]]
     -- where TABLE_externtype(tabletype) = externtype
     -- where m_res = $alloc_import(m_new, import'*{import'}, externval'*{externval'})
@@ -12284,8 +12278,8 @@ def alloc_export : (moduleinst, export) -> exportinst
 def alloc_module : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:149.1-163.56
   def {da* : dataaddr*, data* : data*, ea* : elemaddr*, elem* : elem*, export* : export*, externval* : externval*, f : frame, fa* : funcaddr*, func* : func*, ga* : globaladdr*, global* : global*, import* : import*, m_ex : moduleinst, m_im : moduleinst, m_init : moduleinst, m_res : moduleinst, ma* : memaddr*, mem* : mem*, module : module, s : store, s_data : store, s_elem : store, s_func : store, s_global : store, s_mem : store, s_res : store, s_table : store, start? : start?, ta* : tableaddr*, table* : table*, xi* : exportinst*} alloc_module(s, module, externval*{externval}) = (s_res, m_res)
-    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
     -- where m_init = {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
+    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
     -- where m_im = $alloc_import(m_init, import*{import}, externval*{externval})
     -- where f = {LOCAL [], MODULE m_im}
     -- where (s_func, fa*{fa}) = $alloc_func(`%;%`(s, f), func*{func})
@@ -12313,14 +12307,14 @@ def run_elem : (state, elem*, idx) -> state
   ;; 7-module.watsup:174.1-179.67
   def {elem : elem, elem'* : elem*, elemmode : elemmode, expr* : expr*, f : frame, f_new : frame, f_res : frame, i : nat, instr* : instr*, n : n, reftype : reftype, s : store, s_new : store, s_res : store, x : idx} run_elem(`%;%`(s, f), [elem] :: elem'*{elem'}, i) = `%;%`(s_res, f_res)
     -- where `ELEM%%*%?`(reftype, expr*{expr}, ?(elemmode)) = elem
-    -- where TABLE_elemmode(x, instr*{instr}) = elemmode
     -- where n = |expr*{expr}|
+    -- where TABLE_elemmode(x, instr*{instr}) = elemmode
     -- Step: `%~>%`(`%;%*`(`%;%`(s, f), $admininstr_instr(instr)*{instr} :: [CONST_admininstr(I32_numtype, 0) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, i) ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))
     -- where `%;%`(s_res, f_res) = $run_elem(`%;%`(s_new, f_new), elem'*{elem'}, (i + 1))
   ;; 7-module.watsup:181.1-185.67
   def {elem : elem, elem'* : elem*, elemmode : elemmode, expr* : expr*, f : frame, f_new : frame, f_res : frame, i : nat, reftype : reftype, s : store, s_new : store, s_res : store} run_elem(`%;%`(s, f), [elem] :: elem'*{elem'}, i) = `%;%`(s_res, f_res)
-    -- where `ELEM%%*%?`(reftype, expr*{expr}, ?(elemmode)) = elem
     -- Step: `%~>%`(`%;%*`(`%;%`(s, f), [ELEM.DROP_admininstr(i)]), `%;%*`(`%;%`(s_new, f_new), []))
+    -- where `ELEM%%*%?`(reftype, expr*{expr}, ?(elemmode)) = elem
     -- if (elemmode = DECLARE_elemmode)
     -- where `%;%`(s_res, f_res) = $run_elem(`%;%`(s_new, f_new), elem'*{elem'}, (i + 1))
 }
@@ -12349,17 +12343,17 @@ def run_data : (state, data*, idx) -> state
 def instantiation : (store, module, externval*) -> (store, moduleinst)
   ;; 7-module.watsup:206.1-211.61
   def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_elem : store, s_res : store, table* : table*} instantiation(s, module, externval*{externval}) = (s_res, m)
-    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}) = module
     -- where (s_alloc, m) = $alloc_module(s, module, externval*{externval})
+    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(), export*{export}) = module
     -- where f = {LOCAL [], MODULE m}
     -- where `%;%`(s_elem, f_elem) = $run_elem(`%;%`(s_alloc, f), elem*{elem}, 0)
     -- where `%;%`(s_res, f_res) = $run_data(`%;%`(s_elem, f_elem), data*{data}, 0)
   ;; 7-module.watsup:213.1-220.62
   def {data* : data*, elem* : elem*, export* : export*, externval* : externval*, f : frame, f_data : frame, f_elem : frame, f_res : frame, func* : func*, global* : global*, import* : import*, m : moduleinst, mem* : mem*, module : module, s : store, s_alloc : store, s_data : store, s_elem : store, s_res : store, start : start, table* : table*, x : idx} instantiation(s, module, externval*{externval}) = (s_res, m)
-    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}) = module
     -- where (s_alloc, m) = $alloc_module(s, module, externval*{externval})
-    -- where f = {LOCAL [], MODULE m}
+    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, ?(start), export*{export}) = module
     -- where START(x) = start
+    -- where f = {LOCAL [], MODULE m}
     -- where `%;%`(s_elem, f_elem) = $run_elem(`%;%`(s_alloc, f), elem*{elem}, 0)
     -- where `%;%`(s_data, f_data) = $run_data(`%;%`(s_elem, f_elem), data*{data}, 0)
     -- Step: `%~>%`(`%;%*`(`%;%`(s_data, f_data), [CALL_admininstr(x)]), `%;%*`(`%;%`(s_res, f_res), []))
@@ -12370,11 +12364,11 @@ def invocation : (store, funcaddr, val*) -> (store, val*)
   def {expr : expr, f : frame, f' : frame, fa : funcaddr, functype : functype, m : moduleinst, s : store, s' : store, val* : val*, val'* : val*, valtype* : valtype*, valtype'* : valtype*} invocation(s, fa, val*{val}) = (s', val'*{val'})
     -- where m = {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
     -- where f = {LOCAL [], MODULE m}
-    -- where `FUNC%%*%`(functype, valtype*{valtype}, expr) = $funcinst(`%;%`(s, f))[fa].CODE_funcinst
     -- Step: `%~>%`(`%;%*`(`%;%`(s, f), $admininstr_val(val)*{val} :: [CALL_ADDR_admininstr(fa)]), `%;%*`(`%;%`(s', f'), $admininstr_val(val')*{val'}))
+    -- where `FUNC%%*%`(functype, valtype*{valtype}, expr) = $funcinst(`%;%`(s, f))[fa].CODE_funcinst
     -- if (|val*{val}| = |valtype*{valtype}|)
-    -- where |valtype'*{valtype'}| = |val'*{val'}|
-    -- if (functype = `%->%`(valtype*{valtype}, valtype'*{valtype'}))
+    -- where `%->%`(valtype*{valtype}, valtype'*{valtype'}) = functype
+    -- if (|val'*{val'}| = |valtype'*{valtype'}|)
 
 == IL Validation...
 == Complete.
