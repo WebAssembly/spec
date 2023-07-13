@@ -2395,9 +2395,9 @@ $$
   \mathsf{export}~\epsilon \}\end{array} \\
  &&&\quad {\land}~\mathit{f}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m}_{\mathit{init}} \}\end{array} \\
- &&&\quad {\land}~(\mathit{global} = \mathsf{global}~\mathit{globaltype}~{\mathit{instr}_{1}^\ast})^\ast \\
+ &&&\quad {\land}~{\mathit{global}^\ast} = {(\mathsf{global}~\mathit{globaltype}~{\mathit{instr}_{1}^\ast})^\ast} \\
  &&&\quad {\land}~(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{1}^\ast} \hookrightarrow \mathit{val})^\ast \\
- &&&\quad {\land}~(\mathit{elem} = \mathsf{elem}~\mathit{reftype}~{({\mathit{instr}_{2}^\ast})^\ast}~{\mathit{elemmode}^?})^\ast \\
+ &&&\quad {\land}~{\mathit{elem}^\ast} = {(\mathsf{elem}~\mathit{reftype}~{({\mathit{instr}_{2}^\ast})^\ast}~{\mathit{elemmode}^?})^\ast} \\
  &&&\quad {\land}~{(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{2}^\ast} \hookrightarrow \mathit{ref})^\ast}^\ast \\
  &&&\quad {\land}~({\mathit{s}'},\, \mathit{m}) = \mathrm{allocmodule}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast},\, {\mathit{val}^\ast},\, {({\mathit{ref}^\ast})^\ast}) \\
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}

@@ -1924,9 +1924,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), [(val <: admininstr)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -3953,9 +3953,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -5986,9 +5986,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -8040,9 +8040,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -10094,9 +10094,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -12204,9 +12204,9 @@ def instantiation : (store, module, externval*) -> config
     -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- if (f = {LOCAL [], MODULE m})
@@ -12289,9 +12289,9 @@ Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
 if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
 if (f_init = {LOCAL [], MODULE m_init})
-(if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
 (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-(if (elem = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})))*{elem elemmode instr_2 reftype}
+if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
 (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
@@ -14386,7 +14386,7 @@ def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-181.28
   def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i : nat, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data** : instr**, instr_elem** : instr**, j : nat, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $concat_admininstr($admininstr_instr(instr_elem)*{instr_elem}*{instr_elem}) :: $concat_admininstr($admininstr_instr(instr_data)*{instr_data}*{instr_data}) :: CALL_admininstr(x)?{x})
     -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
-    -- (where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode}) = elem)*{elem elemmode instr_2 reftype}
+    -- where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype} = elem*{elem}
     -- if (start?{start} = START(x)?{x})
     -- if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j<n_data){})
     -- if (n_data = |data*{data}|)
@@ -14396,7 +14396,7 @@ def instantiation : (store, module, externval*) -> config
     -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), [$admininstr_ref(ref)]))*{instr_2 ref}*{instr_2 ref}
     -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), [$admininstr_val(val)]))*{instr_1 val}
-    -- (if (global = GLOBAL(globaltype, instr_1*{instr_1})))*{global globaltype instr_1}
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
 

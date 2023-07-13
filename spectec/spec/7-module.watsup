@@ -168,9 +168,9 @@ def $instantiation(s, module, externval*) =
       EXPORT epsilon
     }
   -- if f_init = { LOCAL epsilon, MODULE m_init }
-  -- (if global = GLOBAL globaltype instr_1*)*
+  -- if global* = (GLOBAL globaltype instr_1*)*
   -- (Step_read : s; f_init; instr_1* ~> val)*
-  -- (if elem = ELEM reftype (instr_2*)* elemmode?)*
+  -- if elem* = (ELEM reftype (instr_2*)* elemmode?)*
   -- (Step_read : s; f_init; instr_2* ~> ref)**
   -- if (s', m) = $allocmodule(s, module, externval*, val*, (ref*)*)
   -- if f = { LOCAL epsilon, MODULE m }
