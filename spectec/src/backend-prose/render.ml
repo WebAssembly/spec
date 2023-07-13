@@ -11,35 +11,39 @@ type env =
     keywords: Set.t ref;
   }
 
-let extract_elem_keywords = function
+let extract_ids_keywords = function
   | El.Ast.Nl -> None
   | El.Ast.Elem elem -> Some elem.it
 
-let extract_typcase_keywords = function
+let extract_typcases_keywords = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom with
     | El.Ast.Atom id -> Some id
     | _ -> None)
 
-let extract_typfield_keywords = function
+let extract_typfields_keywords = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom with
     | El.Ast.Atom id -> Some id
     | _ -> None)
 
-let extract_typ_keywords typ =
+let rec extract_typ_keywords typ =
   match typ with
+  | El.Ast.AtomT atom -> (match atom with
+    | El.Ast.Atom id -> [ id ]
+    | _ -> [])
+  | El.Ast.IterT (typ_inner, _) -> extract_typ_keywords typ_inner.it
+  | El.Ast.StrT typfields -> List.filter_map extract_typfields_keywords typfields
   | El.Ast.CaseT (_, ids, typcases, _) ->
-      let ids = List.filter_map extract_elem_keywords ids in
-      let typcases = List.filter_map extract_typcase_keywords typcases in
+      let ids = List.filter_map extract_ids_keywords ids in
+      let typcases = List.filter_map extract_typcases_keywords typcases in
       ids @ typcases
-  | El.Ast.StrT typfields -> List.filter_map extract_typfield_keywords typfields
+  | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_keywords t.it) tl
   | _ -> []
 
 let extract_def_keywords def =
   match def.it with
-  | El.Ast.SynD (id, _, typ, _) -> 
-      [ id.it ] @ extract_typ_keywords typ.it 
+  | El.Ast.SynD (id, _, typ, _) -> [ id.it ] @ extract_typ_keywords typ.it 
   | El.Ast.DecD (id, _, _, _) -> [ id.it ]
   | El.Ast.DefD (id, _, _, _) -> [ id.it ]
   | _ -> []
@@ -86,7 +90,7 @@ let macroify s =
   String.fold_left del "" s
 
 let render_macro_keyword s = 
-  let s = String.lowercase_ascii s in
+  let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
   let escape acc c =
     if c = '.' then acc ^ "{.}"
     else if c = '_' then acc ^ "\\_"
@@ -185,6 +189,7 @@ let render_al_mathop = function
   | Al.Ast.Exp -> "^"
 
 (* Names and Iters *)
+(* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_name env = function
   | Al.Ast.N "the label" -> "\\label"
@@ -254,22 +259,32 @@ let rec render_expr env in_math = function
   | Al.Ast.FrameE (e1, e2) ->
       sprintf "the activation of %s with arity %s" (render_expr env in_math e2)
         (render_expr env in_math e1)
-  | Al.Ast.ListE el -> render_list (render_expr env in_math) "[" "~" "]" el
+  | Al.Ast.ListE el -> 
+      let sel = 
+        if List.length el > 0 then
+          render_list (render_expr env true) "" "~" "" el
+        else
+          "\\epsilon"
+      in
+      if in_math then sel else render_math sel
   | Al.Ast.ListFillE (e1, e2) -> render_expr env in_math e1 ^ "^" ^ render_expr env in_math e2
   | Al.Ast.AccessE (e, p) ->
       let se = render_expr env true e in
-      let sp = render_path env true p in
+      let sp = render_path env p in
       let s = sprintf "%s%s" se sp in
       if in_math then s else render_math s
   | Al.Ast.ExtendE (e1, ps, e2, dir) ->
       let se1 = render_expr env in_math e1 in
-      let sps = render_paths env in_math ps in
+      let sps = render_paths env ps in
+      let sps = if in_math then sps else render_math sps in
       let se2 = render_expr env in_math e2 in
       (match dir with
       | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
       | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.ReplaceE (e1, ps, e2) ->
-      sprintf "%s with %s replaced by %s" (render_expr env in_math e1) (render_paths env in_math ps) (render_expr env in_math e2)
+      let spath = render_paths env ps in
+      let spath = if in_math then spath else render_math spath in
+      sprintf "%s with %s replaced by %s" (render_expr env in_math e1) spath (render_expr env in_math e2)
   | Al.Ast.RecordE r ->
       let keys = Al.Record.Record.keys r in
       let sfields =
@@ -294,8 +309,8 @@ let rec render_expr env in_math = function
       if in_math then s else render_math s
   | Al.Ast.IterE (e, iter) -> render_expr env in_math e ^ render_iter env iter
   | Al.Ast.ArrowE (e1, e2) ->
-      let se1 = (match e1 with ListE _ -> render_expr env true e1 | _ -> "[" ^ render_expr env true e1 ^ "]" ) in
-      let se2 = (match e2 with ListE _ -> render_expr env true e2 | _ -> "[" ^ render_expr env true e2 ^ "]" ) in
+      let se1 = render_expr env true e1 in
+      let se2 = render_expr env true e2 in
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.ConstructE (s, []) ->
@@ -318,17 +333,19 @@ let rec render_expr env in_math = function
       let s = sprintf "(%s)^?" se in 
       if in_math then s else render_math s
   | Al.Ast.OptE None -> 
-      let s = "()^?" in
+      let s = "\\epsilon" in
       if in_math then s else render_math s
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
 
-and render_path env in_math = function
-  | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env in_math e)
+(* assume Paths are always embedded in math blocks *)
+
+and render_path env = function
+  | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env true e)
   | Al.Ast.SliceP (e1, e2) ->
-      sprintf "[%s : %s]" (render_expr env in_math e1) (render_expr env in_math e2)
+      sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
   | Al.Ast.DotP s -> sprintf ".%s" (render_name env (N s))
 
-and render_paths env in_math paths = List.map (render_path env in_math) paths |> List.fold_left (^) ""
+and render_paths env paths = List.map (render_path env) paths |> List.fold_left (^) ""
 
 (* Conditions *)
 
@@ -494,8 +511,8 @@ let rec render_al_instr env index depth = function
       sprintf "%s Perform %s." (render_order index depth) (render_expr env false (Al.Ast.AppE (n, es)))
   | Al.Ast.ExitNormalI _ | Al.Ast.ExitAbruptI _ -> render_order index depth ^ " Exit current context."
   | Al.Ast.ReplaceI (e1, p, e2) ->
-      sprintf "%s Replace %s%s with %s." (render_order index depth)
-        (render_expr env false e1) (render_path env false p) (render_expr env false e2)
+      sprintf "%s Replace %s with %s." (render_order index depth)
+        (render_expr env false (Al.Ast.AccessE (e1, p))) (render_expr env false e2)
   | Al.Ast.AppendI (e1, e2) ->
       sprintf "%s Append %s to the %s." (render_order index depth)
         (render_expr env false e2) (render_expr env false e1)

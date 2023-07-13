@@ -16,7 +16,7 @@ all: html pdf
 
 # Sphinx splicing
 
-HEADER = header
+MACRO = macros.def
 
 EXECDIR = exec
 
@@ -79,5 +79,5 @@ clean:
 	rm -f $(EXECRUNTIMEOUT).rst
 	rm -f $(EXECAUXOUT).rst
 	rm -f $(VALIDINSTROUT).rst
-
+	rm -f $(MACRO)
 	rm -f *.pdf
