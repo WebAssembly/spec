@@ -2,7 +2,6 @@
 *.log
 *.pdf
 macros.def
-prose.rst
 exec/auxiliary.rst
 exec/runtime.rst
 exec/instructions.rst
