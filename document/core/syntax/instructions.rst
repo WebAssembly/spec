@@ -601,7 +601,7 @@ The |MEMORYSIZE| instruction returns the current size of a memory.
 The |MEMORYGROW| instruction grows a memory by a given delta and returns the previous size, or :math:`-1` if enough memory cannot be allocated.
 Both instructions operate in units of :ref:`page size <page-size>`.
 The |MEMORYFILL| instruction sets all values in a region of a memory to a given byte.
-The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory.
+The |MEMORYCOPY| instruction copies data from a source memory region to a possibly overlapping destination region in another or the same memory; the first index denotes the destination.
 The |MEMORYINIT| instruction copies data from a :ref:`passive data segment <syntax-data>` into a memory.
 The |DATADROP| instruction prevents further use of a passive data segment. This instruction is intended to be used as an optimization hint. After a data segment is dropped its data can no longer be retrieved, so the memory used by this segment may be freed.
 
