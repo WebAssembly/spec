@@ -827,7 +827,7 @@ let helpers2algo def =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map (find_type binds)
       in
-      let translator = if String.starts_with ~prefix:"with" id.it then writer2instrs else reader2instrs in
+      let translator = reader2instrs in
       let blocks = List.map translator unified_clauses in
       let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
 

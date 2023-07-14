@@ -221,14 +221,23 @@ let hide_state_args = List.filter (function
   | _ -> true)
 
 let hide_state_instr = function
-  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> [ ReturnI None ]
+  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE (N "f"))))
+  | ReturnI (Some (PairE (NameE (N "s"), ReplaceE (e1, pl, e2)))) ->
+      let rpl = List.rev pl in
+      let target =
+        List.tl rpl
+        |> List.fold_right
+          (fun p acc -> AccessE (acc, p))
+      in
+      [ ReplaceI (target e1, List.hd rpl, e2) ]
+  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> []
   | ReturnI (Some (PairE ((NameE (N s)), NameE (N f))))
     when String.starts_with ~prefix:"s_" s
-      && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
+      && String.starts_with ~prefix:"f_" f -> []
 
-  | ReturnI (Some (NameE (N "s"))) -> [ ReturnI None ]
+  | ReturnI (Some (NameE (N "s"))) -> []
   | ReturnI (Some (NameE (N s)))
-    when String.starts_with ~prefix:"s_" s -> [ ReturnI None ]
+    when String.starts_with ~prefix:"s_" s -> []
   (* Perform *)
   | LetI (PairE (NameE (N s), NameE (N f)), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
