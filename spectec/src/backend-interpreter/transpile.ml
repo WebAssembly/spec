@@ -327,3 +327,36 @@ let app_remover algo =
     post_instr = post;
     post_expr = replace_call;
   } algo
+
+let iter_rule names iter =
+  let rec name_of_iter =
+    function
+    | IterE (e, _) -> name_of_iter e
+    | NameE (N name) -> name
+    | _ -> failwith "Not an iter of variable"
+  in
+
+  let post_expr =
+    function
+    | NameE (N name) as e when List.mem name names -> IterE (e, iter)
+    | AppE (fname, el) as e ->
+        begin match List.rev el with
+        | IterE (inner_e, inner_iter) :: t
+          when List.mem (name_of_iter inner_e) names ->
+            MapE (fname, inner_e :: t |> List.rev, [ inner_iter ])
+        | _ -> e
+        end
+    | MapE (fname, el, iters) as e ->
+        begin match List.rev el with
+        | IterE (inner_e, inner_iter) :: t
+          when List.mem (name_of_iter inner_e) names ->
+            MapE (fname, inner_e :: t |> List.rev, inner_iter :: iters)
+        | _ -> e
+        end
+    | e -> e
+  in
+
+  Walk.walk_instr { Walk.default_action with
+    (* pre_expr = pre_expr;*)
+    post_expr = post_expr;
+  }

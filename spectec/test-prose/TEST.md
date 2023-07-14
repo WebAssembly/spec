@@ -79,8 +79,6 @@ if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
 == Translating to AL...
-Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}` to be AL instr.
-Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
 =================
  Generated prose
 =================
@@ -621,8 +619,8 @@ instantiation module externval*
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let (ELEM reftype instr_2** elemmode?)* be elem*.
   c. If start? is (START x)? and instr_data** is $rundata(data*[j], j)^(j>n_data) and n_data is |data*| and instr_elem** is $runelem(elem*[i], i)^(i>n_elem) and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
-    1) YetI: (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}.
-    2) YetI: (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}.
+    1) Let ref** be $exec_expr_const(instr_2*)**.
+    2) Let val* be $exec_expr_const(instr_1*)*.
     3) If global* is (GLOBAL globaltype instr_1*)* and f_init is { LOCAL: []; MODULE: m_init; } and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }, then:
       a) Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_elem", VarT "instr", VarT "admininstr"), (List, ["instr_elem"])), (List, ["instr_elem"]))), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_data", VarT "instr", VarT "admininstr"), (List, ["instr_data"])), (List, ["instr_data"]))), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
 

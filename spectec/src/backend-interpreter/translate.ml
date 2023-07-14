@@ -548,6 +548,32 @@ let rec letI lhs rhs cont =
     ]
   | _ -> LetI (lhs, rhs) :: cont
 
+let rec rulepr2instr pr =
+  match pr.it with
+  (* Inductive case *)
+  | Ast.IterPr (pr, (iter, ids)) ->
+      rulepr2instr pr
+      |> Transpile.iter_rule (List.map it ids) (iter2iter iter)
+      |> List.hd
+  (* Exec_expr_const *)
+  | Ast.RulePr (
+    id,
+    [ []; [ Ast.SqArrow ]; _ ],
+    { it = Ast.TupE [
+      (* s; f; lhs *)
+      { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+        { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+          { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+        ]; _ }); _ };
+        lhs
+      ]; _ }); _ };
+      (* s; f; rhs *)
+        rhs
+    ]; _ }
+  ) when id.it = "Exec_expr_const" ->
+    LetI (exp2expr rhs, AppE (N "exec_expr_const", [ exp2expr lhs ]))
+  | _ -> failwith "We do not allow iter on premises other than `RulePr`"
+
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
 let prems2instrs remain_lhs =
   List.fold_right (fun prem instrs ->
@@ -564,23 +590,8 @@ let prems2instrs remain_lhs =
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
       (* Step_read *)
-      | Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-            rhs
-        ]; _ }
-      ) when id.it = "Exec_expr_const" ->
-        [ LetI (exp2expr rhs, AppE (N "exec_expr_const", [ exp2expr lhs ])) ]
-      (* TODO: | IterPr (pr, (List, ids)) -> *)
+      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
+      | Ast.IterPr _ -> rulepr2instr prem :: instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           YetI (Il.Print.string_of_prem prem) :: instrs)
