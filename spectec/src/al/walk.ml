@@ -76,9 +76,7 @@ let rec walk_cond f c =
   | ContextKindC (s, e) -> ContextKindC (s, new_e e)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
-  | IsTopC _ -> c
   | ValidC e -> ValidC (new_e e)
-  | ContainC _ -> c 
   | TopLabelC -> c
   | TopFrameC -> c
   | TopValueC (Some e) -> TopValueC (Some (new_e e))

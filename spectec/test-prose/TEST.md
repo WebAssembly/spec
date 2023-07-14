@@ -504,8 +504,8 @@ alloc_mem x_0*
 5. If mem is of the case MEMORY, then:
   a. Let (MEMORY memtype) be mem.
   b. If memtype is of the case I8, then:
-    1) Let (I8 _y0) be memtype.
-    2) Let (i, j?) be _y0.
+    1) Let (I8 y_0) be memtype.
+    2) Let (i, j?) be y_0.
     3) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
     4) Append mi to the s.MEM.
     5) Let ma'* be $alloc_mem(mem'*).
@@ -599,20 +599,23 @@ run_elem x_0* i
   b. If y_0 is not defined, then:
     1) Perform $run_elem(elem'*, (i + 1)).
     2) Return.
-  c. Else:
+  c. Let ?(elemmode) be y_0.
+  d. Let n be |expr*|.
+  e. If elemmode is of the case TABLE, then:
+    1) Let (TABLE x instr*) be elemmode.
+    2) Execute the sequence (instr*).
+    3) Execute (I32.CONST 0).
+    4) Execute (I32.CONST n).
+    5) Execute (TABLE.INIT x i).
+    6) Execute (ELEM.DROP i).
+    7) Perform $run_elem(elem'*, (i + 1)).
+    8) Return.
+5. Execute (ELEM.DROP i).
+6. If elem is of the case ELEM, then:
+  a. Let (ELEM reftype expr* y_0) be elem.
+  b. If y_0 is defined, then:
     1) Let ?(elemmode) be y_0.
-    2) If elemmode is of the case TABLE, then:
-      a) Let (TABLE x instr*) be elemmode.
-      b) Let n be |expr*|.
-      c) Execute the sequence (instr*).
-      d) Execute (I32.CONST 0).
-      e) Execute (I32.CONST n).
-      f) Execute (TABLE.INIT x i).
-      g) Execute (ELEM.DROP i).
-      h) Perform $run_elem(elem'*, (i + 1)).
-      i) Return.
-    3) Execute (ELEM.DROP i).
-    4) If elemmode is DECLARE, then:
+    2) If elemmode is DECLARE, then:
       a) Perform $run_elem(elem'*, (i + 1)).
       b) Return.
 
@@ -621,44 +624,41 @@ run_data x_0* i
 2. If x_0* is [], then:
   a. Return.
 3. Let [data] ++ data'* be x_0*.
-4. Perform $run_data(data'*, (i + 1)).
-5. If data is of the case DATA, then:
+4. If data is of the case DATA, then:
   a. Let (DATA byte* y_0) be data.
   b. If y_0 is not defined, then:
-    1) Return.
-  c. Else:
-    1) Let ?(datamode) be y_0.
-    2) Let n be |byte*|.
-    3) If datamode is of the case MEMORY, then:
-      a) Let (MEMORY y_0 instr*) be datamode.
-      b) Let 0 be y_0.
-      c) Execute the sequence (instr*).
-      d) Execute (I32.CONST 0).
-      e) Execute (I32.CONST n).
-      f) Execute (MEMORY.INIT i).
-      g) Execute (DATA.DROP i).
-      h) Perform $run_data(data'*, (i + 1)).
-      i) Return.
+    1) Perform $run_data(data'*, (i + 1)).
+    2) Return.
+  c. Let ?(datamode) be y_0.
+  d. If datamode is of the case MEMORY, then:
+    1) Let (MEMORY y_0 instr*) be datamode.
+    2) Let 0 be y_0.
+    3) Let n be |byte*|.
+    4) Execute the sequence (instr*).
+    5) Execute (I32.CONST 0).
+    6) Execute (I32.CONST n).
+    7) Execute (MEMORY.INIT i).
+    8) Execute (DATA.DROP i).
+    9) Perform $run_data(data'*, (i + 1)).
+    10) Return.
 
 instantiation module externval*
-1. If module is of the case MODULE, then:
+1. Let m be $alloc_module(module, externval*).
+2. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* y_0 export*) be module.
   b. If y_0 is not defined, then:
-    1) Let m be the result of computing $alloc_module(module, externval*).
+    1) Let f be { LOCAL: []; MODULE: m; }.
+    2) Perform $run_elem(elem*, 0).
+    3) Perform $run_data(data*, 0).
+    4) Return m.
+  c. Let ?(start) be y_0.
+  d. If start is of the case START, then:
+    1) Let (START x) be start.
     2) Let f be { LOCAL: []; MODULE: m; }.
     3) Perform $run_elem(elem*, 0).
     4) Perform $run_data(data*, 0).
-    5) Return m.
-  c. Else:
-    1) Let ?(start) be y_0.
-    2) Let m be the result of computing $alloc_module(module, externval*).
-    3) Let f be { LOCAL: []; MODULE: m; }.
-    4) If start is of the case START, then:
-      a) Let (START x) be start.
-      b) Perform $run_elem(elem*, 0).
-      c) Perform $run_data(data*, 0).
-      d) Execute (CALL x).
-      e) Return m.
+    5) Execute (CALL x).
+    6) Return m.
 
 invocation fa val*
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -684,7 +684,7 @@ execution_of_drop
 2. Pop val from the stack.
 
 execution_of_select t?
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val_2 from the stack.
@@ -714,7 +714,7 @@ execution_of_loop bt instr*
 7. Jump to instr*.
 
 execution_of_if bt instr_1* instr_2*
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BLOCK bt instr_1*).
@@ -723,7 +723,7 @@ execution_of_if bt instr_1* instr_2*
 
 execution_of_label
 1. Pop all values val* from the stack.
-2. Assert: Due to validation, the label L is now on the top of the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
@@ -744,13 +744,13 @@ execution_of_br x_0
   d. Execute (BR l).
 
 execution_of_br_if l
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BR l).
 
 execution_of_br_table l* l'
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i < |l*|, then:
   a. Execute (BR l*[i]).
@@ -762,7 +762,7 @@ execution_of_frame
 2. Let n be the arity of f.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop val^n from the stack.
-5. Assert: Due to validation, the frame F is now on the top of the stack.
+5. Assert: Due to validation, a frame is now on the top of the stack.
 6. Pop the frame from the stack.
 7. Push val^n to the stack.
 
@@ -852,7 +852,7 @@ execution_of_call x
   a. Execute (CALL_ADDR $funcaddr()[x]).
 
 execution_of_call_indirect x ft
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
@@ -869,11 +869,9 @@ execution_of_call_indirect x ft
 10. Execute (CALL_ADDR a).
 
 execution_of_call_addr a
-1. Let r_2 be the result of computing $funcinst().
-2. If a < |r_2|, then:
-  a. Let r_0 be the result of computing $funcinst().
-  b. Let { MODULE: m; CODE: func; } be r_0[a].
-  c. If func is of the case FUNC, then:
+1. If a < |$funcinst()|, then:
+  a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
+  b. If func is of the case FUNC, then:
     1) Let (FUNC y_0 t* instr*) be func.
     2) Let [t_1^k]->[t_2^n] be y_0.
     3) Assert: Due to validation, there are at least k values on the top of the stack.
@@ -895,7 +893,7 @@ execution_of_global.get x
 1. Push $global(x).VALUE to the stack.
 
 execution_of_table.get x
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
@@ -906,11 +904,11 @@ execution_of_table.size x
 2. Push (I32.CONST n) to the stack.
 
 execution_of_table.fill x
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$table(x).ELEM|, then:
   a. Trap.
@@ -924,11 +922,11 @@ execution_of_table.fill x
   g. Execute (TABLE.FILL x).
 
 execution_of_table.copy x y
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
@@ -951,11 +949,11 @@ execution_of_table.copy x y
   d. Execute (TABLE.COPY x y).
 
 execution_of_table.init x y
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
@@ -969,7 +967,7 @@ execution_of_table.init x y
   g. Execute (TABLE.INIT x y).
 
 execution_of_load nt x_0? n_A n_O
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If x_0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
@@ -979,8 +977,7 @@ execution_of_load nt x_0? n_A n_O
 4. Else:
   a. Let ?(y_0) be x_0?.
   b. Let [n, sx] be y_0.
-  c. Let r_0 be the result of computing $mem(0).
-  d. If ((i + n_O) + (n / 8)) > |r_0.DATA|, then:
+  c. If ((i + n_O) + (n / 8)) > |$mem(0).DATA|, then:
     1) Trap.
   d. Let c be $inverse_of_bytes_(n, $mem(0).DATA[(i + n_O) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
@@ -990,11 +987,11 @@ execution_of_memory.size
 2. Push (I32.CONST n) to the stack.
 
 execution_of_memory.fill
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop val from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$mem(0).DATA|, then:
   a. Trap.
@@ -1008,11 +1005,11 @@ execution_of_memory.fill
   g. Execute MEMORY.FILL.
 
 execution_of_memory.copy
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$mem(0).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
@@ -1035,11 +1032,11 @@ execution_of_memory.copy
   d. Execute MEMORY.COPY.
 
 execution_of_memory.init x
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$data(x).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
@@ -1065,14 +1062,14 @@ execution_of_global.set x
 execution_of_table.set x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
 6. Perform $with_table(x, i, ref).
 
 execution_of_table.grow x
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
@@ -1093,7 +1090,7 @@ execution_of_elem.drop x
 execution_of_store nt x_0? n_A n_O
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
-3. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
 5. If x_0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(0).DATA|, then:
@@ -1108,7 +1105,7 @@ execution_of_store nt x_0? n_A n_O
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
 execution_of_memory.grow
-1. Assert: Due to validation, a value of value type I32_numtype is on the top of the stack.
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
   a. Let mi be $mem(0).
@@ -1146,7 +1143,7 @@ instantiation module externval*
   a. Let (DATA dinit mode) be data*[i].
   b. If mode is defined, then:
     1) Let ?((MEMORY memidx dinstrs*)) be mode.
-    2) Assert: memidx is 0.
+    2) Assert: Due to validation, memidx is 0.
     3) Execute the sequence (dinstrs*).
     4) Execute (I32.CONST 0).
     5) Execute (I32.CONST |dinit|).
@@ -1284,7 +1281,7 @@ invocation funcaddr val*
 1. Let func be s.FUNC[funcaddr].CODE.
 2. Let (FUNC functype _ _) be func.
 3. Let [_^n]->[_^m] be functype.
-4. Assert: |val*| is n.
+4. Assert: Due to validation, |val*| is n.
 5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
 6. Push f to the stack.
 7. Push val* to the stack.

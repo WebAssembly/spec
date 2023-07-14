@@ -202,9 +202,7 @@ and string_of_cond = function
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) s
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
-  | IsTopC s -> sprintf "the top of the stack is %s" s
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
-  | ContainC s -> sprintf "the stack contains at least one %s" s
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
   | TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
@@ -556,9 +554,7 @@ and structured_string_of_cond = function
   | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" s (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
-  | IsTopC s -> "TopC (" ^ s ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
-  | ContainC s -> "ContainC (" ^ s ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"
   | TopValueC e_opt -> "TopValueC" ^ string_of_opt " (" structured_string_of_expr ")" e_opt 

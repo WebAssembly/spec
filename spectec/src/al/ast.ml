@@ -119,10 +119,8 @@ and cond =
   | ContextKindC of string * expr
   | IsDefinedC of expr
   | IsCaseOfC of expr * string
-  | IsTopC of string
   | ValidC of expr
   (* Conditions used in assertions *)
-  | ContainC of string
   | TopLabelC
   | TopFrameC
   | TopValueC of expr option

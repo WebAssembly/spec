@@ -252,7 +252,6 @@ and path2paths path =
 let insert_assert exp =
   match exp.it with
   | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC 
-  | Ast.CatE (_val', { it = Ast.CatE (_valn, _); _ }) -> AssertI (ContainC "a frame")
   | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
   | Ast.CaseE 
       (Ast.Atom "LABEL_", 

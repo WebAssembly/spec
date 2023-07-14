@@ -388,14 +388,6 @@ let rec eval_cond env cond =
       match eval_expr env e with
       | ConstructV (tag, _) -> expected_tag = tag
       | _ -> false)
-  | IsTopC "value" -> (
-      match !stack with
-      | [] -> false
-      | h :: _ -> ( match h with ConstructV _ -> true | _ -> false))
-  | IsTopC "frame" -> (
-      match !stack with
-      | [] -> false
-      | h :: _ -> ( match h with FrameV _ -> true | _ -> false))
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
   | ValidC e -> (
       let valid_lim lim k = match lim with

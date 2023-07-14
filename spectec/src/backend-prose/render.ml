@@ -386,9 +386,7 @@ and render_cond env = function
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) s
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
   | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) c
-  | Al.Ast.IsTopC s -> sprintf "the top of the stack is %s" s
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
-  | Al.Ast.ContainC s ->  sprintf "the stack contains at least one %s" s
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
   | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
