@@ -198,17 +198,19 @@ let rec render_name env = function
     | _ -> s)
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
 
-let render_iter env = function
+let rec render_iter env in_math = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
   | Al.Ast.List1 -> "^{+}"
   | Al.Ast.ListN name -> "^{" ^ render_name env name ^ "}"
+  | Al.Ast.IndexedListN (name, expr) ->
+    "^(" ^ render_name env name ^ "<" ^ render_expr env in_math expr ^ ")"
 
-let render_iters env iters = List.map (render_iter env) iters |> List.fold_left (^) ""
+and render_iters env in_math iters = List.map (render_iter env in_math) iters |> List.fold_left (^) ""
 
 (* Expressions and Paths *)
 
-let rec render_expr env in_math = function
+and render_expr env in_math = function
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
@@ -236,7 +238,7 @@ let rec render_expr env in_math = function
   | Al.Ast.MapE (n, es, iters) ->
       let sn = render_name env n in
       let ses = render_list (render_expr env true) "" ", " "" es in
-      let siters = render_iters env iters in
+      let siters = render_iters env in_math iters in
       let s = sprintf "(%s(%s))%s" sn ses siters in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
@@ -315,14 +317,14 @@ let rec render_expr env in_math = function
       if in_math then sn else render_math sn
   | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
       let sn = render_name env n in
-      let siter = render_iter env iter in
+      let siter = render_iter env in_math iter in
       let s = sprintf "{%s}%s" sn siter in
       if in_math then s else render_math s
   | Al.Ast.IterE (e, iter) -> 
       let se = render_expr env in_math e in
       (* TODO need a better way to e should be enclosed in parentheses *)
       let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
-      let siter = render_iter env iter in
+      let siter = render_iter env in_math iter in
       se ^ siter
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = render_expr env true e1 in

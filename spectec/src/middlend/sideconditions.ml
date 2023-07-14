@@ -22,7 +22,7 @@ module Env = Map.Make(String)
 
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
-| IterE (_, (ListN ne, _)) -> ne
+| IterE (_, ((ListN ne | IndexedListN (_, ne)), _)) -> ne
 | _ -> LenE e $$ no_region % (NatT $ no_region)
 
 let is_null e = CmpE (EqOp, e, OptE None $$ no_region % e.note) $$ no_region % (BoolT $ e.at)
@@ -39,7 +39,7 @@ let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
   | _, [] -> []
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
   | (List|List1), (e::es) -> List.map (same_len e) es
-  | ListN ne, es -> List.map (has_len ne) es
+  | (ListN ne | IndexedListN (_, ne)), es -> List.map (has_len ne) es
 
 (* Expr traversal *)
 let rec t_exp env e : premise list =
@@ -71,6 +71,8 @@ let rec t_exp env e : premise list =
   | IdxE (exp1, exp2)
   | CompE (exp1, exp2)
   | CatE (exp1, exp2)
+  | ElementsOfE (exp1, exp2)
+  | ListBuilderE (exp1, exp2)
   -> t_exp env exp1 @ t_exp env exp2
   | SliceE (exp1, exp2, exp3)
   -> t_exp env exp1 @ t_exp env exp2 @ t_exp env exp3
@@ -87,7 +89,7 @@ let rec t_exp env e : premise list =
 and t_iterexp env (iter, _) = t_iter env iter
 
 and t_iter env = function
-  | ListN e -> t_exp env e
+  | IndexedListN (_, e) | ListN e -> t_exp env e
   | _ -> []
 
 and t_path env path = match path.it with

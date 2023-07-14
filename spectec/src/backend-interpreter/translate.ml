@@ -89,14 +89,15 @@ let rec exp2name exp =
       gen_fail_msg_of_exp exp "identifier" |> print_endline;
       N "Yet"
 
-let iter2iter = function
+let rec iter2iter = function
   | Ast.Opt -> Opt
   | Ast.List1 -> List1
   | Ast.List -> List
   | Ast.ListN e -> ListN (exp2name e)
+  | Ast.IndexedListN (id, e) -> IndexedListN (N id.it, exp2expr e)
 
 (* `Ast.exp` -> `expr` *)
-let rec exp2expr exp =
+and exp2expr exp =
   match exp.it with
   | Ast.NatE n -> NumE (Int64.of_int n)
   (* List *)
@@ -112,7 +113,10 @@ let rec exp2expr exp =
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
       MapE (N id.it, exp2args inner_exp, [iter2iter iter])
-  | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
+  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
+      ListFillE (exp2expr inner_exp, exp2expr times)
+  | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
+  (* | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
     when id.it = id'.it -> (* TODO: Somehow remove this hack *)
       let name = N id.it in
       IterE (NameE name, iter2iter iter)
@@ -125,12 +129,8 @@ let rec exp2expr exp =
       assert (List.length inner_names = List.length inner_ids);
       List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
       IterE (ListE (List.map exp2expr inner_exps), Opt)
-  | Ast.IterE (inner_exp, (iter, [ id ])) ->
-      let name = exp2name inner_exp in
-      assert (name = N id.it);
-      IterE (NameE name, iter2iter iter)
-  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
-      ListFillE (exp2expr inner_exp, exp2expr times)
+  | Ast.IterE (inner_exp, (iter, [ _ ])) ->
+      IterE (exp2expr inner_exp, iter2iter iter) *)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
@@ -190,7 +190,7 @@ let rec exp2expr exp =
       match (op, exps) with
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
-      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.Quest; Ast.RBrack ]], [ e1; e2 ] ->
+      | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
           PairE (exp2expr e1, exp2expr e2)
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
@@ -359,9 +359,12 @@ let rec rhs2instrs exp =
   | Ast.CaseE (Atom "TRAP", _) -> [ TrapI ]
   (* Execute instrs *) (* TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
   | Ast.IterE ({ it = VarE id; _ }, (Ast.List, _))
-  | Ast.IterE ({ it = Ast.SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
-    when id.it = "instr" || id.it = "instr'" ->
+  | Ast.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
+    when String.starts_with ~prefix:"instr" id.it ->
       [ ExecuteSeqI (exp2expr exp) ]
+  | Ast.IterE ({ it = CaseE (Atom atomid, _); _} as e, (Opt, [ id ]))
+    when atomid = "CALL" ->
+      [ IfI (IsDefinedC (NameE (N id.it)), rhs2instrs e, []) ]
   (* Push *)
   | Ast.SubE _ | IterE _ -> [ PushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _)
@@ -423,6 +426,7 @@ let rec rhs2instrs exp =
         { it = TupE [ state_exp; rhs ]; _ } ) -> (
       let push_instrs = rhs2instrs rhs in
       match state_exp.it with
+      | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], _)
       | Ast.VarE _ -> push_instrs
       | Ast.CallE (f, args) -> push_instrs @ [ PerformI (N f.it, exp2args args) ]
       | _ -> failwith "Invalid new state" )
@@ -542,6 +546,32 @@ let rec letI lhs rhs cont =
     LetI (new_lhs, new_rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
+let rec rulepr2instr pr =
+  match pr.it with
+  (* Inductive case *)
+  | Ast.IterPr (pr, (iter, ids)) ->
+      rulepr2instr pr
+      |> Transpile.iter_rule (List.map it ids) (iter2iter iter)
+      |> List.hd
+  (* Exec_expr_const *)
+  | Ast.RulePr (
+    id,
+    [ []; [ Ast.SqArrow ]; _ ],
+    { it = Ast.TupE [
+      (* s; f; lhs *)
+      { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+        { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+          { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+        ]; _ }); _ };
+        lhs
+      ]; _ }); _ };
+      (* s; f; rhs *)
+        rhs
+    ]; _ }
+  ) when id.it = "Exec_expr_const" ->
+    LetI (exp2expr rhs, AppE (N "exec_expr_const", [ exp2expr lhs ]))
+  | _ -> failwith "We do not allow iter on premises other than `RulePr`"
+
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
 let prems2instrs remain_lhs =
   List.fold_right (fun prem instrs ->
@@ -557,88 +587,9 @@ let prems2instrs remain_lhs =
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
-      (* Step *)
-      | Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _(* s' *); _ }; { it = Ast.VarE _(* f' *); _ }
-            ]; _ }); _ };
-            rhs
-          ]; _ }); _ };
-        ]; _ }
-      )
-      | Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-            rhs
-        ]; _ }
-      ) when String.starts_with ~prefix:"Step" id.it ->
-          let rec lhs_instr lhs =
-            match lhs with
-            | ListE el -> List.map (fun expr -> ExecuteI expr) el
-            | ConcatE (e1, e2) ->
-                lhs_instr e1 @ lhs_instr e2
-            | IterE (NameE (N "val"), _) | IterE (NameE (N "ref"), _) -> [ PushI lhs ]
-            | expr -> [ ExecuteSeqI expr ]
-          in
-          let rhs_instrs =
-            match exp2expr rhs with
-            | ListE [] -> []
-            | ListE [ expr ] -> [ PopI expr ]
-            | expr -> [ PopI expr ]
-          in
-          lhs_instr (exp2expr lhs) @ rhs_instrs @ instrs
-      | Ast.IterPr ({ it = Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-            rhs
-        ]; _ }
-      ); _ }, (Ast.List, [ instr; ref ])) when String.starts_with ~prefix:"Step" id.it ->
-          let lhs_instr =
-            match exp2expr lhs with
-            | IterE (NameE name, iter) when name = N instr.it ->
-                ExecuteSeqI (IterE (IterE (NameE name, iter), List))
-            | _ -> failwith "Invalid IterPr"
-          in
-          let rhs_instr =
-            match exp2expr rhs with
-            | ListE [ NameE name ] when name = N ref.it ->
-                PopI (IterE (NameE name, List))
-            | ListE [ IterE (NameE name, iter) ] when name = N ref.it ->
-                PopI (IterE (IterE (NameE name, iter), List))
-            | _ ->
-                failwith "Invalid IterPr"
-          in
-          [ lhs_instr; rhs_instr ] @ instrs
+      (* Step_read *)
+      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
+      | Ast.IterPr _ -> rulepr2instr prem :: instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           YetI (Il.Print.string_of_prem prem) :: instrs)
@@ -840,26 +791,12 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
-let exp2mutating_instr e =
-  match e.it with
-  | Ast.UpdE (base, path, v) -> (
-      match path2expr base path with
-      | AccessE (e, p) -> [ ReplaceI (e, p, exp2expr v) ]
-      | _ -> failwith "Impossible: path2expr always return AccessE" )
-  | Ast.ExtE (base, path, v) -> [ AppendListI (path2expr base path, exp2expr v) ]
-  | Ast.VarE _ -> []
-  | _ -> failwith ("TODO: exp2mutating_instr" ^ Print.string_of_exp e)
-
-let writer2instrs clause =
+let config_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
+  rhs2instrs e2
+    |> prems2instrs [] prems
 
-  prems2instrs [] prems
-    (match e2.it with
-    | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ new_s; new_f ]; _ }) ->
-        exp2mutating_instr new_s @ exp2mutating_instr new_f
-    | _ -> [])
-
-let reader2instrs clause =
+let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
   prems2instrs [] prems [ ReturnI (Option.some (exp2expr e2)) ]
 
@@ -874,7 +811,13 @@ let helpers2algo def =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map (find_type binds)
       in
-      let translator = if String.starts_with ~prefix:"with" id.it then writer2instrs else reader2instrs in
+      let returning_config = [ "instantiation"; "invocation" ] in
+      let translator =
+        if List.mem id.it returning_config then
+          config_helper2instrs
+        else
+          normal_helper2instrs
+      in
       let blocks = List.map translator unified_clauses in
       let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
 

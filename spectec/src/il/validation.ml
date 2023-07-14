@@ -100,7 +100,7 @@ let as_iter_typ iter phrase env dir t at : typ =
 
 let as_list_typ phrase env dir t at : typ =
   match expand' env t.it with
-  | IterT (t1, (List | List1 | ListN _)) -> t1
+  | IterT (t1, (List | List1 | ListN _ | IndexedListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : typ list =
@@ -241,6 +241,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
+  | IndexedListN (_, e)
   | ListN e -> valid_exp env e (NatT $ e.at)
 
 
@@ -259,6 +260,7 @@ and valid_typ env t =
     List.iter (valid_typ env) ts
   | IterT (t1, iter) ->
     match iter with
+    | IndexedListN (_, e)
     | ListN e -> error e.at "definite iterator not allowed in type"
     | _ -> valid_typ env t1; valid_iter env iter
 
@@ -314,11 +316,18 @@ and infer_exp env e : typ =
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
-    let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
+    let iter' =
+      match fst iter with
+      | IndexedListN _
+      | ListN _ -> List
+      | iter' -> iter'
+    in
     IterT (infer_exp env e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
+  | ElementsOfE _ -> BoolT $ e.at
+  | ListBuilderE _ -> error e.at "cannot infer type of list builder"
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
   | SubE _ -> error e.at "cannot infer type of subsumption"
@@ -420,6 +429,15 @@ and valid_exp env e t =
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp env eI t1) es
+  | ElementsOfE (e1, e2) ->
+    let t2' = infer_exp env e2 in
+    valid_exp env e2 t2';
+    let t1' = as_iter_typ List "list" env Check t2' e2.at in
+    valid_exp env e1 t1'
+  | ListBuilderE (e1, e2) ->
+    valid_exp env e2 (BoolT $ e2.at);
+    let t' = as_iter_typ List "list" env Check t e.at in
+    valid_exp env e1 t';
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;
@@ -524,9 +542,10 @@ let valid_clause env t1 t2 clause =
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
     env.vars <- Env.empty;
-    let free_prems = Free.(free_list free_prem prems) in
     let free_rh =
-      Free.(Set.diff (Set.diff (free_exp e2).varid (free_exp e1).varid) free_prems.varid) in
+      Free.(Set.diff (Set.diff (free_exp e2).varid
+        (free_exp e1).varid) (free_list free_prem prems).varid)
+    in
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`")

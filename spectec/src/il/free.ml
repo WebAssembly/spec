@@ -56,6 +56,8 @@ let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
   | ListN e -> free_exp e
+  | IndexedListN (id, e) ->
+    union (free_varid id) (free_exp e)
 
 
 (* Types *)
@@ -86,8 +88,8 @@ and free_exp e =
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1)
   | DotE (e1, _) | CaseE (_, e1) ->
     free_exp e1
-  | BinE (_, e1, e2) | CmpE (_, e1, e2)
-  | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
+  | BinE (_, e1, e2) | CmpE (_, e1, e2) | ElementsOfE (e1, e2)
+  | ListBuilderE (e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | OptE eo -> free_opt free_exp eo

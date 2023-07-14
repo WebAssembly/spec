@@ -51,21 +51,13 @@ let rec string_of_al_type = function
         (string_of_al_type res)
   | TopT -> "TopT"
 
-let rec string_of_name = function
-  | N s -> s
-  | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
-
-let string_of_iter = function
-  | Opt -> "?"
-  | List -> "*"
-  | List1 -> "+"
-  | ListN name -> "^" ^ string_of_name name
-
-let string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
-
 let string_of_dir = function
   | Front -> "Front"
   | Back -> "Back"
+
+let rec string_of_name = function
+  | N s -> s
+  | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
 
 let depth = ref 0
 let rec string_of_record r =
@@ -122,8 +114,18 @@ let string_of_compare_op = function
   | Lt -> "<"
   | Le -> "≤"
 
+let rec string_of_iter = function
+  | Opt -> "?"
+  | List -> "*"
+  | List1 -> "+"
+  | ListN name -> "^" ^ string_of_name name
+  | IndexedListN (name, expr) ->
+    "^(" ^ string_of_name name ^ ">" ^ string_of_expr expr^ ")"
 
-let rec string_of_record_expr r =
+and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
+
+
+and string_of_record_expr r =
   Record.fold
     (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
@@ -367,14 +369,6 @@ let rec structured_string_of_name = function
   | N s -> "N(" ^ s ^ ")"
   | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
 
-(* iter *)
-
-let structured_string_of_iter = function
-  | Opt -> "?"
-  | List -> "*"
-  | List1 -> "+"
-  | ListN name -> structured_string_of_name name
-
 (* expression *)
 
 let rec structured_string_of_value = function
@@ -403,7 +397,17 @@ let rec structured_string_of_value = function
   | RecordV _r -> "RecordV (TODO)"
   | OptV o -> "OptV " ^ string_of_opt "(" structured_string_of_value ")" o
 
-let rec structured_string_of_record_expr r =
+(* iter *)
+
+let rec structured_string_of_iter = function
+  | Opt -> "?"
+  | List -> "*"
+  | List1 -> "+"
+  | ListN name -> structured_string_of_name name
+  | IndexedListN (name, expr) ->
+    structured_string_of_name name ^ "<" ^ structured_string_of_expr expr
+
+and structured_string_of_record_expr r =
   Record.fold
     (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "

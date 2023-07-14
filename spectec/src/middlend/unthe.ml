@@ -15,7 +15,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "sideconditions" msg
+let error at msg = Source.error at "unthe" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 
@@ -141,6 +141,10 @@ and t_exp' n e : eqns * exp' =
 
   | TupE es -> t_list t_exp n es (fun es' -> TupE es')
   | ListE es -> t_list t_exp n es (fun es' -> ListE es')
+  | ElementsOfE (exp1, exp2) ->
+      t_ee n (exp1, exp2) (fun (e1', e2') -> ElementsOfE (e1', e2'))
+  | ListBuilderE (exp1, exp2) ->
+      t_ee n (exp1, exp2) (fun (e1', e2') -> ListBuilderE (e1', e2'))
 
   | IterE (e, iterexp) ->
     let eqns1, e' = t_exp n e in
@@ -157,6 +161,8 @@ and t_iterexp n (iter, vs) =
 
 and t_iter n iter = match iter with
   | ListN e -> unary t_exp n e (fun e' -> ListN e')
+  | IndexedListN (id, e) ->
+    unary t_exp n e (fun e' -> IndexedListN (id, e'))
   | _ -> [], iter
 
 and t_path n = phrase t_path' n

@@ -42,6 +42,7 @@ type iter =
   | List                         (* `*` *)
   | List1                        (* `+` *)
   | ListN of exp                 (* `^` exp *)
+  | IndexedListN of id * exp     (* `^` exp *)
 
 
 (* Types *)
@@ -119,6 +120,8 @@ and exp' =
   | CatE of exp * exp            (* exp :: exp *)
   | CaseE of atom * exp          (* atom exp *)
   | SubE of exp * typ * typ      (* exp : typ1 <: typ2 *)
+  | ElementsOfE of exp * exp     (* exp <- exp *)
+  | ListBuilderE of exp * exp    (* ``` [ exp : exp ] *)
 
 and expfield = atom * exp        (* atom exp *)
 

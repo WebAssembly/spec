@@ -25,6 +25,8 @@ let rec eq_iter iter1 iter2 =
   iter1 = iter2 ||
   match iter1, iter2 with
   | ListN e1, ListN e2 -> eq_exp e1 e2
+  | IndexedListN (id1, e1), IndexedListN (id2, e2) ->
+    id1.it = id2.it && eq_exp e1 e2
   | _, _ -> false
 
 
@@ -60,7 +62,9 @@ and eq_exp e1 e2 =
   | LenE e11, LenE e21 -> eq_exp e11 e21
   | IdxE (e11, e12), IdxE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)
-  | CatE (e11, e12), CatE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
+  | CatE (e11, e12), CatE (e21, e22)
+  | ElementsOfE (e11, e12), ElementsOfE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
+  | ListBuilderE (e11, e12), ListBuilderE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
     eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23
   | UpdE (e11, p1, e12), UpdE (e21, p2, e22)

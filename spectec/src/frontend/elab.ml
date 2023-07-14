@@ -336,7 +336,11 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN e -> Il.ListN (elab_exp env e (NatT $ e.at))
+  | ListN e ->
+    match e.it with
+    | ParenE ({ it = CmpE ({ it = VarE id; _ }, LtOp, e); _}, _) ->
+      Il.IndexedListN (id, elab_exp env e (NatT $ e.at))
+    | _ -> Il.ListN (elab_exp env e (NatT $ e.at))
 
 
 (* Types *)
@@ -478,11 +482,13 @@ and infer_exp env e : typ =
   | CallE (id, _) -> let _, t2, _ = find "function" env.defs id in t2
   | InfixE _ -> error e.at "cannot infer type of infix expression"
   | BrackE _ -> error e.at "cannot infer type of bracket expression"
+  | ListBuilderE _ -> error e.at "cannot infer type of bracket expression"
   | IterE (e1, iter) ->
     let iter' = match iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token concatenation"
+  | ElementsOfE _ -> BoolT $ e.at
 
 
 and elab_exp env e t : Il.exp =
@@ -628,6 +634,14 @@ and elab_exp env e t : Il.exp =
         (fst (as_variant_typ "" env Check t e.at)) t e.at
     else
       error_typ e.at "expression" t
+  | ListBuilderE (e1, e2) ->
+    let t1, iter = as_iter_typ "iteration" env Check t e.at in
+    if iter <> List then
+      error_typ e.at "iteration expression" t;
+    (* it should be handled in notation *)
+    let e1' = elab_exp env e1 t1 in
+    let e2' = elab_exp env e2 (BoolT $ e2.at) in
+    Il.ListBuilderE (e1', e2') $$ e.at % !!env t
   | IterE (e1, iter2) ->
     (* An iteration expression must match the expected type directly,
      * significant parentheses have to be used otherwise *)
@@ -639,6 +653,12 @@ and elab_exp env e t : Il.exp =
     Il.IterE (e1', iter2') $$ e.at % !!env t
   | HoleE _ -> error e.at "misplaced hole"
   | FuseE _ -> error e.at "misplaced token fuse"
+  | ElementsOfE (e1, e2) ->
+      let t2 = infer_exp env e2 in
+      let t1, _ = as_iter_typ "iteration" env Check t2 e1.at in
+      let e1' = elab_exp env e1 t1 in
+      let e2' = elab_exp env e2 t2 in
+      Il.ElementsOfE (e1', e2') $$ e.at % !!env t
 
 and elab_exps env es ts at : Il.exp list =
   if List.length es <> List.length ts then
@@ -691,8 +711,7 @@ and elab_exp_iter env es (t1, iter) t at : Il.exp =
   | _, _ ->
     error_typ at "expression" t
 
-and elab_exp_notation env e nt t : Il.exp =
-  (*
+and elab_exp_notation env e nt t : Il.exp = (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)
@@ -762,7 +781,7 @@ and elab_exp_notation' env e t : Il.exp list =
   | (EpsE | SeqE _), IterT (t1, iter) ->
     [elab_exp_notation_iter env (unseq_exp e) (t1, iter) t e.at]
   | IterE (e1, iter1), IterT (t1, iter) ->
-    if (iter = Opt) <> (iter1 = Opt) then
+    if (iter = Opt) && (iter1 <> Opt) then
       error_typ e.at "iteration expression" t;
     let es1' = elab_exp_notation' env e1 t1 in
     let iter1' = elab_iter env iter1 in
@@ -1042,11 +1061,10 @@ let elab_def env d : Il.def list =
     let e2' = Multiplicity.annot_exp dims' (elab_exp env e2 t2) in
     let prems' = List.map (Multiplicity.annot_prem dims')
       (map_nl_list (elab_prem env) prems) in
-    let free_prems =
-      List.filter_map (function Nl -> None | Elem e -> Some e) prems
-      |> Free.(free_list free_prem) in
     let free_rh =
-      Free.(Set.diff (Set.diff (free_exp e2).varid (free_exp e1).varid) free_prems.varid) in
+      Free.(Set.diff (Set.diff (free_exp e2).varid
+        (free_exp e1).varid) (free_list free_prem (filter_nl prems)).varid)
+    in
     if free_rh <> Free.Set.empty then
       error d.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`");

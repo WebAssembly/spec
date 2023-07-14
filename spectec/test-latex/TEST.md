@@ -55,7 +55,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}}
 \mbox{(result type)} & \mathit{resulttype} &::=& {\mathit{valtype}^\ast} \\
-\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. {\mathit{u{\scriptstyle32}}^?}] \\
+\mbox{(limits)} & \mathit{limits} &::=& [\mathit{u{\scriptstyle32}} .. \mathit{u{\scriptstyle32}}] \\
 \mbox{(global type)} & \mathit{globaltype} &::=& {\mathsf{mut}^?}~\mathit{valtype} \\
 \mbox{(function type)} & \mathit{functype} &::=& \mathit{resulttype} \rightarrow \mathit{resulttype} \\
 \mbox{(table type)} & \mathit{tabletype} &::=& \mathit{limits}~\mathit{reftype} \\
@@ -1714,10 +1714,11 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{grow}_{\mathit{table}}(\mathit{ti},\, \mathit{n},\, \mathit{r}) &=& {\mathit{ti}'} &\quad
   \mbox{if}~\mathit{ti} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~[\mathit{i} .. {\mathit{j}^?}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast} \}\end{array} \\
+\mathsf{type}~[\mathit{i} .. \mathit{j}]~\mathit{rt},\; \mathsf{elem}~{{\mathit{r}'}^\ast} \}\end{array} \\
  &&&\quad {\land}~{\mathit{i}'} = {|{{\mathit{r}'}^\ast}|} + \mathit{n} \\
  &&&\quad {\land}~{\mathit{ti}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~[{\mathit{i}'} .. {\mathit{j}^?}]~\mathit{reftype},\; \mathsf{elem}~{{\mathit{r}'}^\ast}~{\mathit{r}^{\mathit{n}}} \}\end{array} \\
+\mathsf{type}~[{\mathit{i}'} .. \mathit{j}]~\mathit{rt},\; \mathsf{elem}~{{\mathit{r}'}^\ast}~{\mathit{r}^{\mathit{n}}} \}\end{array} \\
+ &&&\quad {\land}~{ \vdash }\;{\mathit{ti}'}.\mathsf{type} : \mathsf{ok} \\
 \end{array}
 $$
 
@@ -1725,10 +1726,11 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{grow}_{\mathit{memory}}(\mathit{mi},\, \mathit{n}) &=& {\mathit{mi}'} &\quad
   \mbox{if}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~([\mathit{i} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast} \}\end{array} \\
+\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast} \}\end{array} \\
  &&&\quad {\land}~{\mathit{i}'} = {|{\mathit{b}^\ast}|} / (64 \cdot \mathrm{Ki}) + \mathit{n} \\
  &&&\quad {\land}~{\mathit{mi}'} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~([{\mathit{i}'} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast}~{0^{\mathit{n} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
+\mathsf{type}~([{\mathit{i}'} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{\mathit{b}^\ast}~{0^{\mathit{n} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
+ &&&\quad {\land}~{ \vdash }\;{\mathit{mi}'}.\mathsf{type} : \mathsf{ok} \\
 \end{array}
 $$
 
@@ -1761,6 +1763,10 @@ $$
   \mbox{if}~\mathit{z} ; {\mathit{instr}^\ast} \hookrightarrow {{\mathit{instr}'}^\ast} \\
 \end{array}
 $$
+
+\vspace{1ex}
+
+$\boxed{\mathit{config} \hookrightarrow \mathit{val}}$
 
 \vspace{1ex}
 
@@ -2005,10 +2011,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}] = {\mathit{ti}'}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}.\mathsf{elem}|}) &\quad
-  \mbox{if}~{\mathit{z}.\mathsf{table}}{[\mathit{x}]} = \mathit{ti} \\
- &&&&\quad {\land}~\mathrm{grow}_{\mathit{table}}(\mathit{ti},\, \mathit{n},\, \mathit{ref}) = {\mathit{ti}'} \\
- &&&&\quad {\land}~{ \vdash }\;{\mathit{ti}'}.\mathsf{type} : \mathsf{ok} \\
+{[\textsc{\scriptsize E{-}table.grow{-}succeed}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{table}[\mathit{x}] = \mathit{ti}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{table}}{[\mathit{x}]}.\mathsf{elem}|}) &\quad
+  \mbox{if}~\mathrm{grow}_{\mathit{table}}({\mathit{z}.\mathsf{table}}{[\mathit{x}]},\, \mathit{n},\, \mathit{ref}) = \mathit{ti} \\
 {[\textsc{\scriptsize E{-}table.grow{-}fail}]} \quad & \mathit{z} ; \mathit{ref}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.grow}~\mathit{x}) &\hookrightarrow& \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
 \end{array}
 $$
@@ -2105,10 +2109,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}memory.grow{-}succeed}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.grow}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0] = {\mathit{mi}'}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{mem}}{[0]}.\mathsf{data}|} / (64 \cdot \mathrm{Ki})) &\quad
-  \mbox{if}~{\mathit{z}.\mathsf{mem}}{[0]} = \mathit{mi} \\
- &&&&\quad {\land}~\mathrm{grow}_{\mathit{memory}}(\mathit{mi},\, \mathit{n}) = {\mathit{mi}'} \\
- &&&&\quad {\land}~{ \vdash }\;{\mathit{mi}'}.\mathsf{type} : \mathsf{ok} \\
+{[\textsc{\scriptsize E{-}memory.grow{-}succeed}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.grow}) &\hookrightarrow& \mathit{z}[\mathsf{mem}[0] = \mathit{mi}] ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{|{\mathit{z}.\mathsf{mem}}{[0]}.\mathsf{data}|} / (64 \cdot \mathrm{Ki})) &\quad
+  \mbox{if}~\mathrm{grow}_{\mathit{memory}}({\mathit{z}.\mathsf{mem}}{[0]},\, \mathit{n}) = \mathit{mi} \\
 {[\textsc{\scriptsize E{-}memory.grow{-}fail}]} \quad & \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.grow}) &\hookrightarrow& \mathit{z} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~-1) &  \\
 \end{array}
 $$
@@ -2162,33 +2164,41 @@ $$
 \end{array}
 $$
 
+\vspace{1ex}
+
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{import}}(\mathit{m},\, \epsilon,\, \epsilon) &=& \mathit{m} &  \\
-\mathrm{alloc}_{\mathit{import}}(\mathit{m},\, \mathit{import}~{{\mathit{import}'}^\ast},\, \mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathit{m}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{import} = \mathsf{import}~\mathit{name}~{\mathit{name}'}~\mathit{externtype} \\
- &&&\quad {\land}~\mathit{externtype} = \mathsf{func}~\mathit{functype} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{func}~\mathit{fa} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{new}} = \mathit{m}[\mathsf{func} = ..\mathit{fa}] \\
- &&&\quad {\land}~\mathit{m}_{\mathit{res}} = \mathrm{alloc}_{\mathit{import}}(\mathit{m}_{\mathit{new}},\, {{\mathit{import}'}^\ast},\, {{\mathit{externval}'}^\ast}) \\
-\mathrm{alloc}_{\mathit{import}}(\mathit{m},\, \mathit{import}~{{\mathit{import}'}^\ast},\, \mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathit{m}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{import} = \mathsf{import}~\mathit{name}~{\mathit{name}'}~\mathit{externtype} \\
- &&&\quad {\land}~\mathit{externtype} = \mathsf{global}~\mathit{globaltype} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{global}~\mathit{ga} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{new}} = \mathit{m}[\mathsf{global} = ..\mathit{ga}] \\
- &&&\quad {\land}~\mathit{m}_{\mathit{res}} = \mathrm{alloc}_{\mathit{import}}(\mathit{m}_{\mathit{new}},\, {{\mathit{import}'}^\ast},\, {{\mathit{externval}'}^\ast}) \\
-\mathrm{alloc}_{\mathit{import}}(\mathit{m},\, \mathit{import}~{{\mathit{import}'}^\ast},\, \mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathit{m}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{import} = \mathsf{import}~\mathit{name}~{\mathit{name}'}~\mathit{externtype} \\
- &&&\quad {\land}~\mathit{externtype} = \mathsf{table}~\mathit{tabletype} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{table}~\mathit{ta} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{new}} = \mathit{m}[\mathsf{table} = ..\mathit{ta}] \\
- &&&\quad {\land}~\mathit{m}_{\mathit{res}} = \mathrm{alloc}_{\mathit{import}}(\mathit{m}_{\mathit{new}},\, {{\mathit{import}'}^\ast},\, {{\mathit{externval}'}^\ast}) \\
-\mathrm{alloc}_{\mathit{import}}(\mathit{m},\, \mathit{import}~{{\mathit{import}'}^\ast},\, \mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathit{m}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{import} = \mathsf{import}~\mathit{name}~{\mathit{name}'}~\mathit{externtype} \\
- &&&\quad {\land}~\mathit{externtype} = \mathsf{mem}~\mathit{memtype} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{mem}~\mathit{ma} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{new}} = \mathit{m}[\mathsf{mem} = ..\mathit{ma}] \\
- &&&\quad {\land}~\mathit{m}_{\mathit{res}} = \mathrm{alloc}_{\mathit{import}}(\mathit{m}_{\mathit{new}},\, {{\mathit{import}'}^\ast},\, {{\mathit{externval}'}^\ast}) \\
+\mathrm{funcs}(\epsilon) &=& \epsilon &  \\
+\mathrm{funcs}((\mathsf{func}~\mathit{fa})~{{\mathit{externval}'}^\ast}) &=& \mathit{fa}~\mathrm{funcs}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{funcs}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{funcs}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{globals}(\epsilon) &=& \epsilon &  \\
+\mathrm{globals}((\mathsf{global}~\mathit{ga})~{{\mathit{externval}'}^\ast}) &=& \mathit{ga}~\mathrm{globals}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{globals}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{globals}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{tables}(\epsilon) &=& \epsilon &  \\
+\mathrm{tables}((\mathsf{table}~\mathit{ta})~{{\mathit{externval}'}^\ast}) &=& \mathit{ta}~\mathrm{tables}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{tables}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{tables}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{mems}(\epsilon) &=& \epsilon &  \\
+\mathrm{mems}((\mathsf{mem}~\mathit{ma})~{{\mathit{externval}'}^\ast}) &=& \mathit{ma}~\mathrm{mems}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{mems}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{mems}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
 \end{array}
 $$
 
@@ -2196,92 +2206,118 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{func}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{func}}((\mathit{s} ; \mathit{f}),\, \mathit{func}~{{\mathit{func}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{fa}~{{\mathit{fa}'}^\ast}) &\quad
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{func}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{func}~{\mathit{fa}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{global}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{global}~{\mathit{ga}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{table}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{table}~{\mathit{ta}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{mem}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{mem}~{\mathit{ma}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocfunc}(\mathit{s},\, \mathit{m},\, \mathit{func}) &=& (\mathit{s}[\mathsf{func} = ..\mathit{fi}],\, {|\mathit{s}.\mathsf{func}|}) &\quad
   \mbox{if}~\mathit{fi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{module}~\mathit{f}.\mathsf{module},\; \mathsf{code}~\mathit{func} \}\end{array} \\
- &&&\quad {\land}~\mathit{fa} = {|(\mathit{s} ; \mathit{f}).\mathsf{func}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{func} = ..\mathit{fi}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{fa}'}^\ast}) = \mathrm{alloc}_{\mathit{func}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{func}'}^\ast}) \\
+\mathsf{module}~\mathit{m},\; \mathsf{code}~\mathit{func} \}\end{array} \\
 \end{array}
 $$
 
-\vspace{1ex}
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, \mathit{func}~{{\mathit{func}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{fa}~{{\mathit{fa}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{fa}) = \mathrm{allocfunc}(\mathit{s},\, \mathit{m},\, \mathit{func}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{fa}'}^\ast}) = \mathrm{allocfuncs}(\mathit{s}_{1},\, \mathit{m},\, {{\mathit{func}'}^\ast}) \\
+\end{array}
+$$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{global}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{global}}((\mathit{s} ; \mathit{f}),\, \mathit{global}~{{\mathit{global}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{ga}~{{\mathit{ga}'}^\ast}) &\quad
-  \mbox{if}~\mathit{global} = \mathsf{global}~\mathit{globaltype}~{\mathit{instr}^\ast} \\
- &&&\quad {\land}~\mathit{s} ; \mathit{f} ; {\mathit{instr}^\ast} \hookrightarrow \mathit{val} \\
- &&&\quad {\land}~\mathit{gi} = \{ \begin{array}[t]{@{}l@{}}
+\mathrm{allocglobal}(\mathit{s},\, \mathit{globaltype},\, \mathit{val}) &=& (\mathit{s}[\mathsf{global} = ..\mathit{gi}],\, {|\mathit{s}.\mathsf{global}|}) &\quad
+  \mbox{if}~\mathit{gi} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{type}~\mathit{globaltype},\; \mathsf{value}~\mathit{val} \}\end{array} \\
- &&&\quad {\land}~\mathit{ga} = {|(\mathit{s} ; \mathit{f}).\mathsf{global}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{global} = ..\mathit{gi}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{ga}'}^\ast}) = \mathrm{alloc}_{\mathit{global}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{global}'}^\ast}) \\
 \end{array}
 $$
 
-\vspace{1ex}
-
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{table}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{table}}((\mathit{s} ; \mathit{f}),\, \mathit{table}~{{\mathit{table}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{ta}~{{\mathit{ta}'}^\ast}) &\quad
-  \mbox{if}~\mathit{table} = \mathsf{table}~\mathit{tabletype} \\
- &&&\quad {\land}~\mathit{tabletype} = [\mathit{i} .. {\mathit{j}^?}]~\mathit{reftype} \\
- &&&\quad {\land}~\mathit{ti} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~\mathit{tabletype},\; \mathsf{elem}~{(\mathsf{ref.null}~\mathit{reftype})^{\mathit{i}}} \}\end{array} \\
- &&&\quad {\land}~\mathit{ta} = {|(\mathit{s} ; \mathit{f}).\mathsf{table}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{table} = ..\mathit{ti}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{ta}'}^\ast}) = \mathrm{alloc}_{\mathit{table}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{table}'}^\ast}) \\
+\mathrm{allocglobals}(\mathit{s},\, \epsilon,\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocglobals}(\mathit{s},\, \mathit{globaltype}~{{\mathit{globaltype}'}^\ast},\, \mathit{val}~{{\mathit{val}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ga}~{{\mathit{ga}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ga}) = \mathrm{allocglobal}(\mathit{s},\, \mathit{globaltype},\, \mathit{val}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ga}'}^\ast}) = \mathrm{allocglobals}(\mathit{s}_{1},\, {{\mathit{globaltype}'}^\ast},\, {{\mathit{val}'}^\ast}) \\
 \end{array}
 $$
 
-\vspace{1ex}
-
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{mem}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{mem}}((\mathit{s} ; \mathit{f}),\, \mathit{mem}~{{\mathit{mem}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{ma}~{{\mathit{ma}'}^\ast}) &\quad
-  \mbox{if}~\mathit{mem} = \mathsf{memory}~\mathit{memtype} \\
- &&&\quad {\land}~\mathit{memtype} = [\mathit{i} .. {\mathit{j}^?}]~\mathsf{i{\scriptstyle8}} \\
- &&&\quad {\land}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~\mathit{memtype},\; \mathsf{data}~{0^{\mathit{i} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
- &&&\quad {\land}~\mathit{ma} = {|(\mathit{s} ; \mathit{f}).\mathsf{mem}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{mem} = ..\mathit{mi}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{ma}'}^\ast}) = \mathrm{alloc}_{\mathit{mem}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{mem}'}^\ast}) \\
+\mathrm{alloctable}(\mathit{s},\, [\mathit{i} .. \mathit{j}]~\mathit{rt}) &=& (\mathit{s}[\mathsf{table} = ..\mathit{ti}],\, {|\mathit{s}.\mathsf{table}|}) &\quad
+  \mbox{if}~\mathit{ti} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathit{rt}),\; \mathsf{elem}~{(\mathsf{ref.null}~\mathit{rt})^{\mathit{i}}} \}\end{array} \\
 \end{array}
 $$
 
-\vspace{1ex}
-
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \mathit{elem}~{{\mathit{elem}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{ea}~{{\mathit{ea}'}^\ast}) &\quad
-  \mbox{if}~\mathit{elem} = \mathsf{elem}~\mathit{reftype}~{({\mathit{instr}^\ast})^\ast}~{\mathit{elemmode}^?} \\
- &&&\quad {\land}~(\mathit{s} ; \mathit{f} ; {\mathit{instr}^\ast} \hookrightarrow \mathit{ref})^\ast \\
- &&&\quad {\land}~\mathit{ei} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~\mathit{reftype},\; \mathsf{elem}~{\mathit{ref}^\ast} \}\end{array} \\
- &&&\quad {\land}~\mathit{ea} = {|(\mathit{s} ; \mathit{f}).\mathsf{elem}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{elem} = ..\mathit{ei}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{ea}'}^\ast}) = \mathrm{alloc}_{\mathit{elem}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{elem}'}^\ast}) \\
+\mathrm{alloctables}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{alloctables}(\mathit{s},\, \mathit{tabletype}~{{\mathit{tabletype}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ta}~{{\mathit{ta}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ta}) = \mathrm{alloctable}(\mathit{s},\, \mathit{tabletype}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ta}'}^\ast}) = \mathrm{alloctables}(\mathit{s}_{1},\, {{\mathit{tabletype}'}^\ast}) \\
 \end{array}
 $$
 
-\vspace{1ex}
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocmem}(\mathit{s},\, [\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}) &=& (\mathit{s}[\mathsf{mem} = ..\mathit{mi}],\, {|\mathit{s}.\mathsf{mem}|}) &\quad
+  \mbox{if}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{0^{\mathit{i} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
+\end{array}
+$$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{alloc}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, \mathit{data}~{{\mathit{data}'}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{da}~{{\mathit{da}'}^\ast}) &\quad
-  \mbox{if}~\mathit{data} = \mathsf{data}~{\mathit{byte}^\ast}~{\mathit{datamode}^?} \\
- &&&\quad {\land}~\mathit{di} = \{ \begin{array}[t]{@{}l@{}}
+\mathrm{allocmems}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocmems}(\mathit{s},\, \mathit{memtype}~{{\mathit{memtype}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ma}~{{\mathit{ma}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ma}) = \mathrm{allocmem}(\mathit{s},\, \mathit{memtype}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ma}'}^\ast}) = \mathrm{allocmems}(\mathit{s}_{1},\, {{\mathit{memtype}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocelem}(\mathit{s},\, \mathit{rt},\, {\mathit{ref}^\ast}) &=& (\mathit{s}[\mathsf{elem} = ..\mathit{ei}],\, {|\mathit{s}.\mathsf{elem}|}) &\quad
+  \mbox{if}~\mathit{ei} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\mathit{rt},\; \mathsf{elem}~{\mathit{ref}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocelems}(\mathit{s},\, \epsilon,\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocelems}(\mathit{s},\, \mathit{rt}~{{\mathit{rt}'}^\ast},\, {\mathit{ref}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ea}~{{\mathit{ea}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ea}) = \mathrm{allocelem}(\mathit{s},\, \mathit{rt},\, {\mathit{ref}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ea}'}^\ast}) = \mathrm{allocelems}(\mathit{s}_{2},\, {{\mathit{rt}'}^\ast},\, {{{\mathit{ref}'}^\ast}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocdata}(\mathit{s},\, {\mathit{byte}^\ast}) &=& (\mathit{s}[\mathsf{data} = ..\mathit{di}],\, {|\mathit{s}.\mathsf{data}|}) &\quad
+  \mbox{if}~\mathit{di} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{data}~{\mathit{byte}^\ast} \}\end{array} \\
- &&&\quad {\land}~\mathit{da} = {|(\mathit{s} ; \mathit{f}).\mathsf{data}|} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{data} = ..\mathit{di}] \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{res}},\, {{\mathit{da}'}^\ast}) = \mathrm{alloc}_{\mathit{data}}((\mathit{s}_{\mathit{new}} ; \mathit{f}),\, {{\mathit{data}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocdatas}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocdatas}(\mathit{s},\, {\mathit{byte}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{da}~{{\mathit{da}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{da}) = \mathrm{allocdata}(\mathit{s},\, {\mathit{byte}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{da}'}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{1},\, {{{\mathit{byte}'}^\ast}^\ast}) \\
 \end{array}
 $$
 
@@ -2289,10 +2325,33 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{replace}_{\mathit{moduleinst}}(\mathit{s},\, \epsilon,\, \mathit{m}) &=& \mathit{s} &  \\
-\mathrm{replace}_{\mathit{moduleinst}}(\mathit{s},\, \mathit{fa}~{{\mathit{fa}'}^\ast},\, \mathit{m}) &=& \mathit{s}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{s}_{\mathit{new}} = \mathit{s}[\mathsf{func}[\mathit{fa}].\mathsf{module} = \mathit{m}] \\
- &&&\quad {\land}~\mathit{s}_{\mathit{res}} = \mathrm{replace}_{\mathit{moduleinst}}(\mathit{s}_{\mathit{new}},\, {{\mathit{fa}'}^\ast},\, \mathit{m}) \\
+\mathrm{allocmodule}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast},\, {\mathit{val}^\ast},\, {({\mathit{ref}^\ast})^\ast}) &=& (\mathit{s}_{6},\, \mathit{m}) &\quad
+  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^{\mathit{n}_{\mathit{func}}}}~{(\mathsf{global}~\mathit{globaltype}~\mathit{expr}_{1})^{\mathit{n}_{\mathit{global}}}}~{(\mathsf{table}~\mathit{tabletype})^{\mathit{n}_{\mathit{table}}}}~{(\mathsf{memory}~\mathit{memtype})^{\mathit{n}_{\mathit{mem}}}}~{(\mathsf{elem}~\mathit{rt}~{\mathit{expr}_{2}^\ast}~{\mathit{elemmode}^?})^{\mathit{n}_{\mathit{elem}}}}~{(\mathsf{data}~{\mathit{byte}^\ast}~{\mathit{datamode}^?})^{\mathit{n}_{\mathit{data}}}}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
+ &&&\quad {\land}~{\mathit{fa}_{\mathit{ex}}^\ast} = \mathrm{funcs}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ga}_{\mathit{ex}}^\ast} = \mathrm{globals}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ta}_{\mathit{ex}}^\ast} = \mathrm{tables}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ma}_{\mathit{ex}}^\ast} = \mathrm{mems}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{func}}}} \\
+ &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{global}}}} \\
+ &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{table}}}} \\
+ &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{mem}}}} \\
+ &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{elem}}}} \\
+ &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{data}}}} \\
+ &&&\quad {\land}~{\mathit{xi}^\ast} = {\mathrm{instexport}({\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\, {\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\, {\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\, {\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\, \mathit{export})^\ast} \\
+ &&&\quad {\land}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{func}~{\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\; \\
+  \mathsf{global}~{\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\; \\
+  \mathsf{table}~{\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\; \\
+  \mathsf{mem}~{\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\; \\
+  \mathsf{elem}~{\mathit{ea}^\ast},\; \\
+  \mathsf{data}~{\mathit{da}^\ast},\; \\
+  \mathsf{export}~{\mathit{xi}^\ast} \}\end{array} \\
+ &&&\quad {\land}~(\mathit{s}_{1},\, {\mathit{fa}^\ast}) = \mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, {\mathit{func}^{\mathit{n}_{\mathit{func}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {\mathit{ga}^\ast}) = \mathrm{allocglobals}(\mathit{s}_{1},\, {\mathit{globaltype}^{\mathit{n}_{\mathit{global}}}},\, {\mathit{val}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{3},\, {\mathit{ta}^\ast}) = \mathrm{alloctables}(\mathit{s}_{2},\, {\mathit{tabletype}^{\mathit{n}_{\mathit{table}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{4},\, {\mathit{ma}^\ast}) = \mathrm{allocmems}(\mathit{s}_{3},\, {\mathit{memtype}^{\mathit{n}_{\mathit{mem}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{5},\, {\mathit{ea}^\ast}) = \mathrm{allocelems}(\mathit{s}_{4},\, {\mathit{rt}^{\mathit{n}_{\mathit{elem}}}},\, {({\mathit{ref}^\ast})^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{6},\, {\mathit{da}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{5},\, {({\mathit{byte}^\ast})^{\mathit{n}_{\mathit{data}}}}) \\
 \end{array}
 $$
 
@@ -2300,30 +2359,18 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{export}}(\mathit{m},\, \mathit{export}) &=& \mathit{xi} &\quad
-  \mbox{if}~\mathit{export} = \mathsf{export}~\mathit{name}~\mathit{externuse} \\
- &&&\quad {\land}~\mathit{externuse} = \mathsf{func}~\mathit{x} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{func}~\mathit{m}.\mathsf{func}[\mathit{x}] \\
- &&&\quad {\land}~\mathit{xi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~\mathit{name},\; \mathsf{value}~\mathit{externval} \}\end{array} \\
-\mathrm{alloc}_{\mathit{export}}(\mathit{m},\, \mathit{export}) &=& \mathit{xi} &\quad
-  \mbox{if}~\mathit{export} = \mathsf{export}~\mathit{name}~\mathit{externuse} \\
- &&&\quad {\land}~\mathit{externuse} = \mathsf{global}~\mathit{x} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{global}~\mathit{m}.\mathsf{global}[\mathit{x}] \\
- &&&\quad {\land}~\mathit{xi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~\mathit{name},\; \mathsf{value}~\mathit{externval} \}\end{array} \\
-\mathrm{alloc}_{\mathit{export}}(\mathit{m},\, \mathit{export}) &=& \mathit{xi} &\quad
-  \mbox{if}~\mathit{export} = \mathsf{export}~\mathit{name}~\mathit{externuse} \\
- &&&\quad {\land}~\mathit{externuse} = \mathsf{table}~\mathit{x} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{table}~\mathit{m}.\mathsf{table}[\mathit{x}] \\
- &&&\quad {\land}~\mathit{xi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~\mathit{name},\; \mathsf{value}~\mathit{externval} \}\end{array} \\
-\mathrm{alloc}_{\mathit{export}}(\mathit{m},\, \mathit{export}) &=& \mathit{xi} &\quad
-  \mbox{if}~\mathit{export} = \mathsf{export}~\mathit{name}~\mathit{externuse} \\
- &&&\quad {\land}~\mathit{externuse} = \mathsf{mem}~\mathit{x} \\
- &&&\quad {\land}~\mathit{externval} = \mathsf{mem}~\mathit{m}.\mathsf{mem}[\mathit{x}] \\
- &&&\quad {\land}~\mathit{xi} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{name}~\mathit{name},\; \mathsf{value}~\mathit{externval} \}\end{array} \\
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast},\, \mathit{i}) &=& \epsilon &  \\
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~(\mathsf{declare}),\, \mathit{i}) &=& (\mathsf{elem.drop}~\mathit{i}) &  \\
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~(\mathsf{table}~\mathit{x}~{\mathit{instr}^\ast}),\, \mathit{i}) &=& {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{i})~(\mathsf{elem.drop}~\mathit{i}) &\quad
+  \mbox{if}~\mathit{n} = {|{\mathit{expr}^\ast}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{rundata}(\mathsf{data}~{\mathit{byte}^\ast},\, \mathit{i}) &=& \epsilon &  \\
+\mathrm{rundata}(\mathsf{data}~{\mathit{byte}^\ast}~(\mathsf{memory}~0~{\mathit{instr}^\ast}),\, \mathit{i}) &=& {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.init}~\mathit{i})~(\mathsf{data.drop}~\mathit{i}) &\quad
+  \mbox{if}~\mathit{n} = {|{\mathit{byte}^\ast}|} \\
 \end{array}
 $$
 
@@ -2331,86 +2378,39 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{alloc}_{\mathit{module}}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{m}_{\mathit{res}}) &\quad
+\mathrm{concat}_{\mathit{instr}}(\epsilon) &=& \epsilon &  \\
+\mathrm{concat}_{\mathit{instr}}({\mathit{instr}^\ast}~{{{\mathit{instr}'}^\ast}^\ast}) &=& {\mathit{instr}^\ast}~\mathrm{concat}_{\mathit{instr}}({{{\mathit{instr}'}^\ast}^\ast}) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& {\mathit{s}'} ; \mathit{f} ; {\mathit{instr}_{\mathit{elem}}^\ast}~{\mathit{instr}_{\mathit{data}}^\ast}~{(\mathsf{call}~\mathit{x})^?} &\quad
   \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
  &&&\quad {\land}~\mathit{m}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{func}~\epsilon,\; \mathsf{global}~\epsilon,\; \mathsf{table}~\epsilon,\; \mathsf{mem}~\epsilon,\; \mathsf{elem}~\epsilon,\; \mathsf{data}~\epsilon,\; \mathsf{export}~\epsilon \}\end{array} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{im}} = \mathrm{alloc}_{\mathit{import}}(\mathit{m}_{\mathit{init}},\, {\mathit{import}^\ast},\, {\mathit{externval}^\ast}) \\
- &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m}_{\mathit{im}} \}\end{array} \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{func}},\, {\mathit{fa}^\ast}) = \mathrm{alloc}_{\mathit{func}}((\mathit{s} ; \mathit{f}),\, {\mathit{func}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{global}},\, {\mathit{ga}^\ast}) = \mathrm{alloc}_{\mathit{global}}((\mathit{s}_{\mathit{func}} ; \mathit{f}),\, {\mathit{global}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{table}},\, {\mathit{ta}^\ast}) = \mathrm{alloc}_{\mathit{table}}((\mathit{s}_{\mathit{global}} ; \mathit{f}),\, {\mathit{table}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{mem}},\, {\mathit{ma}^\ast}) = \mathrm{alloc}_{\mathit{mem}}((\mathit{s}_{\mathit{table}} ; \mathit{f}),\, {\mathit{mem}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{elem}},\, {\mathit{ea}^\ast}) = \mathrm{alloc}_{\mathit{elem}}((\mathit{s}_{\mathit{mem}} ; \mathit{f}),\, {\mathit{elem}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{data}},\, {\mathit{da}^\ast}) = \mathrm{alloc}_{\mathit{data}}((\mathit{s}_{\mathit{elem}} ; \mathit{f}),\, {\mathit{data}^\ast}) \\
- &&&\quad {\land}~\mathit{m}_{\mathit{ex}} = \mathit{m}_{\mathit{im}} \oplus \{ \begin{array}[t]{@{}l@{}}
-\mathsf{func}~{\mathit{fa}^\ast},\; \mathsf{global}~{\mathit{ga}^\ast},\; \mathsf{table}~{\mathit{ta}^\ast},\; \mathsf{mem}~{\mathit{ma}^\ast},\; \mathsf{elem}~{\mathit{ea}^\ast},\; \mathsf{data}~{\mathit{da}^\ast},\; \mathsf{export}~\epsilon \}\end{array} \\
- &&&\quad {\land}~{\mathit{xi}^\ast} = {\mathrm{alloc}_{\mathit{export}}(\mathit{m}_{\mathit{ex}},\, \mathit{export})^\ast} \\
- &&&\quad {\land}~\mathit{m}_{\mathit{res}} = \mathit{m}_{\mathit{ex}}[\mathsf{export} = {\mathit{xi}^\ast}] \\
- &&&\quad {\land}~\mathit{s}_{\mathit{res}} = \mathrm{replace}_{\mathit{moduleinst}}(\mathit{s}_{\mathit{data}},\, {\mathit{fa}^\ast},\, \mathit{m}_{\mathit{res}}) \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-\mathrm{run}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \epsilon,\, \mathit{i}) &=& \mathit{s} ; \mathit{f} &  \\
-\mathrm{run}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \mathit{elem}~{{\mathit{elem}'}^\ast},\, \mathit{i}) &=& \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{elem} = \mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, {{\mathit{elem}'}^\ast},\, \mathit{i} + 1) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\mathrm{run}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \mathit{elem}~{{\mathit{elem}'}^\ast},\, \mathit{i}) &=& \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{elem} = \mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~\mathit{elemmode} \\
- &&&\quad {\land}~\mathit{n} = {|{\mathit{expr}^\ast}|} \\
- &&&\quad {\land}~\mathit{elemmode} = \mathsf{table}~\mathit{x}~{\mathit{instr}^\ast} \\
- &&&\quad {\land}~\mathit{s} ; \mathit{f} ; {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{i})~(\mathsf{elem.drop}~\mathit{i}) \hookrightarrow \mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}} ; \epsilon \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}}),\, {{\mathit{elem}'}^\ast},\, \mathit{i} + 1) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\mathrm{run}_{\mathit{elem}}((\mathit{s} ; \mathit{f}),\, \mathit{elem}~{{\mathit{elem}'}^\ast},\, \mathit{i}) &=& \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{elem} = \mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~\mathit{elemmode} \\
- &&&\quad {\land}~\mathit{elemmode} = \mathsf{declare} \\
- &&&\quad {\land}~\mathit{s} ; \mathit{f} ; (\mathsf{elem.drop}~\mathit{i}) \hookrightarrow \mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}} ; \epsilon \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}}),\, {{\mathit{elem}'}^\ast},\, \mathit{i} + 1) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-\mathrm{run}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, \epsilon,\, \mathit{i}) &=& \mathit{s} ; \mathit{f} &  \\
-\mathrm{run}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, \mathit{data}~{{\mathit{data}'}^\ast},\, \mathit{i}) &=& \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{data} = \mathsf{data}~{\mathit{byte}^\ast} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, {{\mathit{data}'}^\ast},\, \mathit{i} + 1) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\mathrm{run}_{\mathit{data}}((\mathit{s} ; \mathit{f}),\, \mathit{data}~{{\mathit{data}'}^\ast},\, \mathit{i}) &=& \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} &\quad
-  \mbox{if}~\mathit{data} = \mathsf{data}~{\mathit{byte}^\ast}~\mathit{datamode} \\
- &&&\quad {\land}~\mathit{n} = {|{\mathit{byte}^\ast}|} \\
- &&&\quad {\land}~\mathit{datamode} = \mathsf{memory}~0~{\mathit{instr}^\ast} \\
- &&&\quad {\land}~\mathit{s} ; \mathit{f} ; {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.init}~\mathit{i})~(\mathsf{data.drop}~\mathit{i}) \hookrightarrow \mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}} ; \epsilon \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s}_{\mathit{new}} ; \mathit{f}_{\mathit{new}}),\, {{\mathit{data}'}^\ast},\, \mathit{i} + 1) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lcl@{}l@{}}
-\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{m}) &\quad
-  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{export}^\ast} \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{alloc}},\, \mathit{m}) = \mathrm{alloc}_{\mathit{module}}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) \\
+\mathsf{func}~\mathrm{funcs}({\mathit{externval}^\ast}),\; \\
+  \mathsf{global}~\mathrm{globals}({\mathit{externval}^\ast}),\; \\
+  \mathsf{table}~\epsilon,\; \\
+  \mathsf{mem}~\epsilon,\; \\
+  \mathsf{elem}~\epsilon,\; \\
+  \mathsf{data}~\epsilon,\; \\
+  \mathsf{export}~\epsilon \}\end{array} \\
+ &&&\quad {\land}~\mathit{f}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m}_{\mathit{init}} \}\end{array} \\
+ &&&\quad {\land}~{\mathit{global}^\ast} = {(\mathsf{global}~\mathit{globaltype}~{\mathit{instr}_{1}^\ast})^\ast} \\
+ &&&\quad {\land}~(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{1}^\ast} \hookrightarrow \mathit{val})^\ast \\
+ &&&\quad {\land}~{\mathit{elem}^\ast} = {(\mathsf{elem}~\mathit{reftype}~{({\mathit{instr}_{2}^\ast})^\ast}~{\mathit{elemmode}^?})^\ast} \\
+ &&&\quad {\land}~{(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{2}^\ast} \hookrightarrow \mathit{ref})^\ast}^\ast \\
+ &&&\quad {\land}~({\mathit{s}'},\, \mathit{m}) = \mathrm{allocmodule}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast},\, {\mathit{val}^\ast},\, {({\mathit{ref}^\ast})^\ast}) \\
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}}),\, {\mathit{data}^\ast},\, 0) = \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} \\
-\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& (\mathit{s}_{\mathit{res}},\, \mathit{m}) &\quad
-  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~\mathit{start}~{\mathit{export}^\ast} \\
- &&&\quad {\land}~(\mathit{s}_{\mathit{alloc}},\, \mathit{m}) = \mathrm{alloc}_{\mathit{module}}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) \\
- &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{elem}}((\mathit{s}_{\mathit{alloc}} ; \mathit{f}),\, {\mathit{elem}^\ast},\, 0) = \mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}} \\
- &&&\quad {\land}~\mathrm{run}_{\mathit{data}}((\mathit{s}_{\mathit{elem}} ; \mathit{f}_{\mathit{elem}}),\, {\mathit{data}^\ast},\, 0) = \mathit{s}_{\mathit{data}} ; \mathit{f}_{\mathit{data}} \\
- &&&\quad {\land}~\mathit{start} = \mathsf{start}~\mathit{x} \\
- &&&\quad {\land}~\mathit{s}_{\mathit{data}} ; \mathit{f}_{\mathit{data}} ; (\mathsf{call}~\mathit{x}) \hookrightarrow \mathit{s}_{\mathit{res}} ; \mathit{f}_{\mathit{res}} ; \epsilon \\
+ &&&\quad {\land}~\mathit{n}_{\mathit{elem}} = {|{\mathit{elem}^\ast}|} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^{\mathit{i} < \mathit{n}_{\mathit{elem}}}}) \\
+ &&&\quad {\land}~\mathit{n}_{\mathit{data}} = {|{\mathit{data}^\ast}|} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^{\mathit{j} < \mathit{n}_{\mathit{data}}}}) \\
+ &&&\quad {\land}~{\mathit{start}^?} = {(\mathsf{start}~\mathit{x})^?} \\
 \end{array}
 $$
 
@@ -2418,16 +2418,19 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{invocation}(\mathit{s},\, \mathit{fa},\, {\mathit{val}^\ast}) &=& ({\mathit{s}'},\, {{\mathit{val}'}^\ast}) &\quad
+\mathrm{invocation}(\mathit{s},\, \mathit{fa},\, {\mathit{val}^{\mathit{n}}}) &=& \mathit{s} ; \mathit{f} ; {\mathit{val}^{\mathit{n}}}~(\mathsf{call}~\mathit{fa}) &\quad
   \mbox{if}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{func}~\epsilon,\; \mathsf{global}~\epsilon,\; \mathsf{table}~\epsilon,\; \mathsf{mem}~\epsilon,\; \mathsf{elem}~\epsilon,\; \mathsf{data}~\epsilon,\; \mathsf{export}~\epsilon \}\end{array} \\
+\mathsf{func}~\epsilon,\; \\
+  \mathsf{global}~\epsilon,\; \\
+  \mathsf{table}~\epsilon,\; \\
+  \mathsf{mem}~\epsilon,\; \\
+  \mathsf{elem}~\epsilon,\; \\
+  \mathsf{data}~\epsilon,\; \\
+  \mathsf{export}~\epsilon \}\end{array} \\
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
  &&&\quad {\land}~(\mathit{s} ; \mathit{f}).\mathsf{func}[\mathit{fa}].\mathsf{code} = \mathsf{func}~\mathit{functype}~{\mathit{valtype}^\ast}~\mathit{expr} \\
- &&&\quad {\land}~\mathit{functype} = {\mathit{valtype}^\ast} \rightarrow {{\mathit{valtype}'}^\ast} \\
- &&&\quad {\land}~{|{\mathit{val}^\ast}|} = {|{\mathit{valtype}^\ast}|} \\
- &&&\quad {\land}~{|{{\mathit{val}'}^\ast}|} = {|{{\mathit{valtype}'}^\ast}|} \\
- &&&\quad {\land}~\mathit{s} ; \mathit{f} ; {\mathit{val}^\ast}~(\mathsf{call}~\mathit{fa}) \hookrightarrow {\mathit{s}'} ; {\mathit{f}'} ; {{\mathit{val}'}^\ast} \\
+ &&&\quad {\land}~\mathit{functype} = {\mathit{valtype}_{\mathit{param}}^{\mathit{n}}} \rightarrow {\mathit{valtype}_{\mathit{res}}^{\mathit{k}}} \\
 \end{array}
 $$
 

@@ -39,12 +39,6 @@ and value =
 
 type name = N of string | SubN of name * string
 
-type iter =
-  | Opt
-  | List
-  | List1
-  | ListN of name
-
 type extend_dir =
   | Front
   | Back
@@ -70,7 +64,14 @@ type compare_op =
   | Lt
   | Le
 
-type expr =
+type iter =
+  | Opt
+  | List
+  | List1
+  | ListN of name
+  | IndexedListN of name * expr
+
+and expr =
   (* Value *)
   | NumE of int64
   | StringE of string

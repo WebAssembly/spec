@@ -221,14 +221,23 @@ let hide_state_args = List.filter (function
   | _ -> true)
 
 let hide_state_instr = function
-  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> [ ReturnI None ]
+  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE (N "f"))))
+  | ReturnI (Some (PairE (NameE (N "s"), ReplaceE (e1, pl, e2)))) ->
+      let rpl = List.rev pl in
+      let target =
+        List.tl rpl
+        |> List.fold_right
+          (fun p acc -> AccessE (acc, p))
+      in
+      [ ReplaceI (target e1, List.hd rpl, e2) ]
+  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> []
   | ReturnI (Some (PairE ((NameE (N s)), NameE (N f))))
     when String.starts_with ~prefix:"s_" s
-      && String.starts_with ~prefix:"f_" f -> [ ReturnI None ]
+      && String.starts_with ~prefix:"f_" f -> []
 
-  | ReturnI (Some (NameE (N "s"))) -> [ ReturnI None ]
+  | ReturnI (Some (NameE (N "s"))) -> []
   | ReturnI (Some (NameE (N s)))
-    when String.starts_with ~prefix:"s_" s -> [ ReturnI None ]
+    when String.starts_with ~prefix:"s_" s -> []
   (* Perform *)
   | LetI (PairE (NameE (N s), NameE (N f)), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
@@ -327,3 +336,36 @@ let app_remover algo =
     post_instr = post;
     post_expr = replace_call;
   } algo
+
+let iter_rule names iter =
+  let rec name_of_iter =
+    function
+    | IterE (e, _) -> name_of_iter e
+    | NameE (N name) -> name
+    | _ -> failwith "Not an iter of variable"
+  in
+
+  let post_expr =
+    function
+    | NameE (N name) as e when List.mem name names -> IterE (e, iter)
+    | AppE (fname, el) as e ->
+        begin match List.rev el with
+        | IterE (inner_e, inner_iter) :: t
+          when List.mem (name_of_iter inner_e) names ->
+            MapE (fname, inner_e :: t |> List.rev, [ inner_iter ])
+        | _ -> e
+        end
+    | MapE (fname, el, iters) as e ->
+        begin match List.rev el with
+        | IterE (inner_e, inner_iter) :: t
+          when List.mem (name_of_iter inner_e) names ->
+            MapE (fname, inner_e :: t |> List.rev, inner_iter :: iters)
+        | _ -> e
+        end
+    | e -> e
+  in
+
+  Walk.walk_instr { Walk.default_action with
+    (* pre_expr = pre_expr;*)
+    post_expr = post_expr;
+  }

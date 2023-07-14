@@ -34,6 +34,38 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 ...Animation failed
+Animation failed.
+if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, GLOBAL(globaltype, expr_1)^n_global{expr_1 globaltype}, TABLE(tabletype)^n_table{tabletype}, MEMORY(memtype)^n_mem{memtype}, `ELEM%%*%?`(rt, expr_2*{expr_2}, elemmode?{elemmode})^n_elem{elemmode expr_2 rt}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_data{byte datamode}, start?{start}, export*{export}))
+if (fa_ex*{fa_ex} = $funcs(externval*{externval}))
+if (ga_ex*{ga_ex} = $globals(externval*{externval}))
+if (ta_ex*{ta_ex} = $tables(externval*{externval}))
+if (ma_ex*{ma_ex} = $mems(externval*{externval}))
+if (fa*{fa} = (|s.FUNC_store| + i)^(i<n_func){})
+if (ga*{ga} = (|s.GLOBAL_store| + i)^(i<n_global){})
+if (ta*{ta} = (|s.TABLE_store| + i)^(i<n_table){})
+if (ma*{ma} = (|s.MEM_store| + i)^(i<n_mem){})
+if (ea*{ea} = (|s.ELEM_store| + i)^(i<n_elem){})
+if (da*{da} = (|s.DATA_store| + i)^(i<n_data){})
+if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
+if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
+if (s_6 = s)
+...Animation failed
+Animation failed.
+if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+if (f_init = {LOCAL [], MODULE m_init})
+if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}
+if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}
+if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
+if (f = {LOCAL [], MODULE m})
+if (n_elem = |elem*{elem}|)
+if (instr_elem*{instr_elem} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_elem){}))
+if (n_data = |data*{data}|)
+if (instr_data*{instr_data} = $concat_instr($rundata(data*{data}[j], j)^(j<n_data){}))
+if (start?{start} = START(x)?{x})
+...Animation failed
 == IL Validation...
 == Translating to AL...
 =================
@@ -52,19 +84,19 @@ validation_of_select ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr*
-- Under the context C with .LABEL prepended by t_2*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
-- Under the context C with .LABEL prepended by t_1*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_1]*, instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
-- Under the context C with .LABEL prepended by t_2*, instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C with .LABEL prepended by t_2*, instr_1* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2]*, instr_1* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_br l
@@ -402,276 +434,209 @@ with_data x b*
 2. Replace s.DATA[f.MODULE.DATA[x]].DATA with b*.
 
 grow_table ti n r
-1. Let { TYPE: ((i, j?), reftype); ELEM: r'*; } be ti.
+1. Let { TYPE: ((i, j), rt); ELEM: r'*; } be ti.
 2. Let i' be (|r'*| + n).
-3. Let ti' be { TYPE: ((i', j?), reftype); ELEM: r'* ++ r^n; }.
-4. Return ti'.
+3. Let ti' be { TYPE: ((i', j), rt); ELEM: r'* ++ r^n; }.
+4. If ti'.TYPE is valid, then:
+  a. Return ti'.
 
 grow_memory mi n
-1. Let { TYPE: (I8 (i, j?)); DATA: b*; } be mi.
+1. Let { TYPE: (I8 (i, j)); DATA: b*; } be mi.
 2. Let i' be ((|b*| / (64 · $Ki())) + n).
-3. Let mi' be { TYPE: (I8 (i', j?)); DATA: b* ++ 0^((n · 64) · $Ki()); }.
-4. Return mi'.
+3. Let mi' be { TYPE: (I8 (i', j)); DATA: b* ++ 0^((n · 64) · $Ki()); }.
+4. If mi'.TYPE is valid, then:
+  a. Return mi'.
 
-alloc_import m x_0* x_1*
-1. If x_0* is [] and x_1* is [], then:
-  a. Return m.
-2. Let [externval] ++ externval'* be x_1*.
-3. Let [import] ++ import'* be x_0*.
-4. If externval is of the case FUNC, then:
-  a. Let (FUNC fa) be externval.
-  b. If import is of the case IMPORT, then:
-    1) Let (IMPORT name name' externtype) be import.
-    2) If externtype is of the case FUNC, then:
-      a) Let (FUNC functype) be externtype.
-      b) Let m_new be m with .FUNC appended by [fa].
-      c) Let m_res be $alloc_import(m_new, import'*, externval'*).
-      d) Return m_res.
-5. If externval is of the case GLOBAL, then:
-  a. Let (GLOBAL ga) be externval.
-  b. If import is of the case IMPORT, then:
-    1) Let (IMPORT name name' externtype) be import.
-    2) If externtype is of the case GLOBAL, then:
-      a) Let (GLOBAL globaltype) be externtype.
-      b) Let m_new be m with .GLOBAL appended by [ga].
-      c) Let m_res be $alloc_import(m_new, import'*, externval'*).
-      d) Return m_res.
-6. If externval is of the case TABLE, then:
-  a. Let (TABLE ta) be externval.
-  b. If import is of the case IMPORT, then:
-    1) Let (IMPORT name name' externtype) be import.
-    2) Let m_new be m with .TABLE appended by [ta].
-    3) If externtype is of the case TABLE, then:
-      a) Let (TABLE tabletype) be externtype.
-      b) Let m_res be $alloc_import(m_new, import'*, externval'*).
-      c) Return m_res.
-7. If externval is of the case MEM, then:
-  a. Let (MEM ma) be externval.
-  b. If import is of the case IMPORT, then:
-    1) Let (IMPORT name name' externtype) be import.
-    2) Let m_new be m with .MEM appended by [ma].
-    3) If externtype is of the case MEM, then:
-      a) Let (MEM memtype) be externtype.
-      b) Let m_res be $alloc_import(m_new, import'*, externval'*).
-      c) Return m_res.
-
-alloc_func x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [func] ++ func'* be x_0*.
-4. Let fa be |$funcinst()|.
-5. Let fi be { MODULE: f.MODULE; CODE: func; }.
-6. Append fi to the s.FUNC.
-7. Let fa'* be $alloc_func(func'*).
-8. Return [fa] ++ fa'*.
-
-alloc_global x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [global] ++ global'* be x_0*.
-4. Let ga be |$globalinst()|.
-5. If global is of the case GLOBAL, then:
-  a. Let (GLOBAL globaltype instr*) be global.
-  b. Execute the sequence (instr*).
-  c. Pop val from the stack.
-  d. Let gi be { TYPE: globaltype; VALUE: val; }.
-  e. Append gi to the s.GLOBAL.
-  f. Let ga'* be $alloc_global(global'*).
-  g. Return [ga] ++ ga'*.
-
-alloc_table x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [table] ++ table'* be x_0*.
-4. Let ta be |$tableinst()|.
-5. If table is of the case TABLE, then:
-  a. Let (TABLE tabletype) be table.
-  b. Let ((i, j?), reftype) be tabletype.
-  c. Let ti be { TYPE: tabletype; ELEM: (REF.NULL reftype)^i; }.
-  d. Append ti to the s.TABLE.
-  e. Let ta'* be $alloc_table(table'*).
-  f. Return [ta] ++ ta'*.
-
-alloc_mem x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [mem] ++ mem'* be x_0*.
-4. Let ma be |$meminst()|.
-5. If mem is of the case MEMORY, then:
-  a. Let (MEMORY memtype) be mem.
-  b. If memtype is of the case I8, then:
-    1) Let (I8 y_0) be memtype.
-    2) Let (i, j?) be y_0.
-    3) Let mi be { TYPE: memtype; DATA: 0^((i · 64) · $Ki()); }.
-    4) Append mi to the s.MEM.
-    5) Let ma'* be $alloc_mem(mem'*).
-    6) Return [ma] ++ ma'*.
-
-alloc_elem x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [elem] ++ elem'* be x_0*.
-4. Let ea be |$eleminst()|.
-5. If elem is of the case ELEM, then:
-  a. Let (ELEM reftype instr** elemmode?) be elem.
-  b. Execute the sequence (instr**).
-  c. Pop ref* from the stack.
-  d. Let ei be { TYPE: reftype; ELEM: ref*; }.
-  e. Append ei to the s.ELEM.
-  f. Let ea'* be $alloc_elem(elem'*).
-  g. Return [ea] ++ ea'*.
-
-alloc_data x_0*
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return [].
-3. Let [data] ++ data'* be x_0*.
-4. Let da be |$datainst()|.
-5. If data is of the case DATA, then:
-  a. Let (DATA byte* datamode?) be data.
-  b. Let di be { DATA: byte*; }.
-  c. Append di to the s.DATA.
-  d. Let da'* be $alloc_data(data'*).
-  e. Return [da] ++ da'*.
-
-replace_moduleinst x_0* m
+funcs x_0*
 1. If x_0* is [], then:
-  a. Return.
-2. Let [fa] ++ fa'* be x_0*.
-3. Replace s.FUNC[fa].MODULE with m.
-4. Perform $replace_moduleinst(fa'*, m).
-5. Return.
+  a. Return [].
+2. Let [(FUNC fa)] ++ externval'* be x_0*.
+3. Return [fa] ++ $funcs(externval'*).
+4. Let [externval] ++ externval'* be x_0*.
+5. Otherwise:
+  a. Return $funcs(externval'*).
 
-alloc_export m export
-1. If export is of the case EXPORT, then:
-  a. Let (EXPORT name externuse) be export.
-  b. If externuse is of the case FUNC, then:
-    1) Let (FUNC x) be externuse.
-    2) Let externval be (FUNC m.FUNC[x]).
-    3) Let xi be { NAME: name; VALUE: externval; }.
-    4) Return xi.
-  c. If externuse is of the case GLOBAL, then:
-    1) Let (GLOBAL x) be externuse.
-    2) Let externval be (GLOBAL m.GLOBAL[x]).
-    3) Let xi be { NAME: name; VALUE: externval; }.
-    4) Return xi.
-  d. If externuse is of the case TABLE, then:
-    1) Let (TABLE x) be externuse.
-    2) Let externval be (TABLE m.TABLE[x]).
-    3) Let xi be { NAME: name; VALUE: externval; }.
-    4) Return xi.
-  e. If externuse is of the case MEM, then:
-    1) Let (MEM x) be externuse.
-    2) Let externval be (MEM m.MEM[x]).
-    3) Let xi be { NAME: name; VALUE: externval; }.
-    4) Return xi.
+globals x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [(GLOBAL ga)] ++ externval'* be x_0*.
+3. Return [ga] ++ $globals(externval'*).
+4. Let [externval] ++ externval'* be x_0*.
+5. Otherwise:
+  a. Return $globals(externval'*).
 
-alloc_module module externval*
-1. Let m_init be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-2. If module is of the case MODULE, then:
-  a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
-  b. Let m_im be $alloc_import(m_init, import*, externval*).
-  c. Let f be { LOCAL: []; MODULE: m_im; }.
-  d. Let fa* be $alloc_func(func*).
-  e. Let ga* be $alloc_global(global*).
-  f. Let ta* be $alloc_table(table*).
-  g. Let ma* be $alloc_mem(mem*).
-  h. Let ea* be $alloc_elem(elem*).
-  i. Let da* be $alloc_data(data*).
-  j. Let m_ex be m_im with .FUNC prepended by fa* with .GLOBAL prepended by ga* with .TABLE prepended by ta* with .MEM prepended by ma* with .ELEM prepended by ea* with .DATA prepended by da*.
-  k. Let xi* be $alloc_export(m_ex, export)*.
-  l. Let m_res be m_ex with .EXPORT replaced by xi*.
-  m. Perform $replace_moduleinst(fa*, m_res).
-  n. Return m_res.
+tables x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [(TABLE ta)] ++ externval'* be x_0*.
+3. Return [ta] ++ $tables(externval'*).
+4. Let [externval] ++ externval'* be x_0*.
+5. Otherwise:
+  a. Return $tables(externval'*).
 
-run_elem x_0* i
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return.
-3. Let [elem] ++ elem'* be x_0*.
-4. If elem is of the case ELEM, then:
-  a. Let (ELEM reftype expr* y_0) be elem.
-  b. If y_0 is not defined, then:
-    1) Perform $run_elem(elem'*, (i + 1)).
-    2) Return.
-  c. Let ?(elemmode) be y_0.
-  d. Let n be |expr*|.
-  e. If elemmode is of the case TABLE, then:
-    1) Let (TABLE x instr*) be elemmode.
-    2) Execute the sequence (instr*).
-    3) Execute (I32.CONST 0).
-    4) Execute (I32.CONST n).
-    5) Execute (TABLE.INIT x i).
-    6) Execute (ELEM.DROP i).
-    7) Perform $run_elem(elem'*, (i + 1)).
-    8) Return.
-5. Execute (ELEM.DROP i).
-6. If elem is of the case ELEM, then:
-  a. Let (ELEM reftype expr* y_0) be elem.
-  b. If y_0 is defined, then:
-    1) Let ?(elemmode) be y_0.
-    2) If elemmode is DECLARE, then:
-      a) Perform $run_elem(elem'*, (i + 1)).
-      b) Return.
+mems x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [(MEM ma)] ++ externval'* be x_0*.
+3. Return [ma] ++ $mems(externval'*).
+4. Let [externval] ++ externval'* be x_0*.
+5. Otherwise:
+  a. Return $mems(externval'*).
 
-run_data x_0* i
-1. Let f be the current frame.
-2. If x_0* is [], then:
-  a. Return.
-3. Let [data] ++ data'* be x_0*.
-4. If data is of the case DATA, then:
-  a. Let (DATA byte* y_0) be data.
-  b. If y_0 is not defined, then:
-    1) Perform $run_data(data'*, (i + 1)).
-    2) Return.
-  c. Let ?(datamode) be y_0.
-  d. If datamode is of the case MEMORY, then:
-    1) Let (MEMORY y_0 instr*) be datamode.
-    2) Let 0 be y_0.
-    3) Let n be |byte*|.
-    4) Execute the sequence (instr*).
-    5) Execute (I32.CONST 0).
-    6) Execute (I32.CONST n).
-    7) Execute (MEMORY.INIT i).
-    8) Execute (DATA.DROP i).
-    9) Perform $run_data(data'*, (i + 1)).
-    10) Return.
+instexport fa* ga* ta* ma* EXPORT(name, x_0)
+1. If x_0 is of the case FUNC, then:
+  a. Let (FUNC x) be x_0.
+  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+2. If x_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL x) be x_0.
+  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+3. If x_0 is of the case TABLE, then:
+  a. Let (TABLE x) be x_0.
+  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+4. If x_0 is of the case MEM, then:
+  a. Let (MEM x) be x_0.
+  b. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+
+allocfunc m func
+1. Let fi be { MODULE: m; CODE: func; }.
+2. Return [s with .FUNC appended by [fi], |s.FUNC|].
+
+allocfuncs m x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [func] ++ func'* be x_0*.
+3. Let fa be $allocfunc(m, func).
+4. Let fa'* be $allocfuncs(m, func'*).
+5. Return [fa] ++ fa'*.
+
+allocglobal globaltype val
+1. Let gi be { TYPE: globaltype; VALUE: val; }.
+2. Return [s with .GLOBAL appended by [gi], |s.GLOBAL|].
+
+allocglobals x_0* x_1*
+1. If x_0* is [] and x_1* is [], then:
+  a. Return [].
+2. Let [globaltype] ++ globaltype'* be x_0*.
+3. Let [val] ++ val'* be x_1*.
+4. Let ga be $allocglobal(globaltype, val).
+5. Let ga'* be $allocglobals(globaltype'*, val'*).
+6. Return [ga] ++ ga'*.
+
+alloctable `%%`(`[%..%]`(i, j), rt)
+1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
+2. Return [s with .TABLE appended by [ti], |s.TABLE|].
+
+alloctables x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [tabletype] ++ tabletype'* be x_0*.
+3. Let ta be $alloctable(tabletype).
+4. Let ta'* be $alloctables(tabletype'*).
+5. Return [ta] ++ ta'*.
+
+allocmem `%I8`(`[%..%]`(i, j))
+1. Let mi be { TYPE: (I8 (i, j)); DATA: 0^((i · 64) · $Ki()); }.
+2. Return [s with .MEM appended by [mi], |s.MEM|].
+
+allocmems x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [memtype] ++ memtype'* be x_0*.
+3. Let ma be $allocmem(memtype).
+4. Let ma'* be $allocmems(memtype'*).
+5. Return [ma] ++ ma'*.
+
+allocelem rt ref*
+1. Let ei be { TYPE: rt; ELEM: ref*; }.
+2. Return [s with .ELEM appended by [ei], |s.ELEM|].
+
+allocelems x_0* x_1*
+1. If x_0* is [] and x_1* is [], then:
+  a. Return [].
+2. Let [ref]* ++ ref'** be x_1*.
+3. Let [rt] ++ rt'* be x_0*.
+4. Let ea be $allocelem(rt, ref*).
+5. Let ea'* be $allocelems(rt'*, ref'**).
+6. Return [ea] ++ ea'*.
+
+allocdata byte*
+1. Let di be { DATA: byte*; }.
+2. Return [s with .DATA appended by [di], |s.DATA|].
+
+allocdatas x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [byte]* ++ byte'** be x_0*.
+3. Let da be $allocdata(byte*).
+4. Let da'* be $allocdatas(byte'**).
+5. Return [da] ++ da'*.
+
+allocmodule module externval* val* ref**
+1. Let s_6 be s.
+2. Let fa_ex* be $funcs(externval*).
+3. Let ga_ex* be $globals(externval*).
+4. Let ma_ex* be $mems(externval*).
+5. If ta_ex* is $tables(externval*) and module is (MODULE import* func^n_func (GLOBAL globaltype expr_1)^n_global (TABLE tabletype)^n_table (MEMORY memtype)^n_mem (ELEM rt expr_2* elemmode?)^n_elem (DATA byte* datamode?)^n_data start? export*), then:
+  a. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+  b. Let da* be (|s.DATA| + i)^(i>n_data).
+  c. Let ea* be (|s.ELEM| + i)^(i>n_elem).
+  d. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+  e. Let fa* be (|s.FUNC| + i)^(i>n_func).
+  f. Let ga* be (|s.GLOBAL| + i)^(i>n_global).
+  g. Let ma* be (|s.MEM| + i)^(i>n_mem).
+  h. Let ta* be (|s.TABLE| + i)^(i>n_table).
+  i. Return m.
+
+runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
+1. If x_0? is not defined, then:
+  a. Return [].
+2. If x_0? is ?(DECLARE), then:
+  a. Return [(ELEM.DROP i)].
+3. If x_0? is defined, then:
+  a. Let ?(y_0) be x_0?.
+  b. If y_0 is of the case TABLE, then:
+    1) Let (TABLE x instr*) be y_0.
+    2) Let n be |expr*|.
+    3) Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
+
+rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
+1. If x_0? is not defined, then:
+  a. Return [].
+2. Let ?(y_0) be x_0?.
+3. If y_0 is of the case MEMORY, then:
+  a. Let (MEMORY y_1 instr*) be y_0.
+  b. Let 0 be y_1.
+  c. Let n be |byte*|.
+  d. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+
+concat_instr x_0*
+1. If x_0* is [], then:
+  a. Return [].
+2. Let [instr]* ++ instr'** be x_0*.
+3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
-1. Let m be $alloc_module(module, externval*).
-2. If module is of the case MODULE, then:
-  a. Let (MODULE import* func* global* table* mem* elem* data* y_0 export*) be module.
-  b. If y_0 is not defined, then:
-    1) Let f be { LOCAL: []; MODULE: m; }.
-    2) Perform $run_elem(elem*, 0).
-    3) Perform $run_data(data*, 0).
-    4) Return m.
-  c. Let ?(start) be y_0.
-  d. If start is of the case START, then:
-    1) Let (START x) be start.
-    2) Let f be { LOCAL: []; MODULE: m; }.
-    3) Perform $run_elem(elem*, 0).
-    4) Perform $run_data(data*, 0).
-    5) Execute (CALL x).
-    6) Return m.
+1. If start? is (START x)? and n_data is |data*| and instr_elem* is $concat_instr($runelem(elem*[i], i)^(i>n_elem)) and n_elem is |elem*| and m is $allocmodule(module, externval*, val*, ref**), then:
+  a. Let ref** be $exec_expr_const(instr_2*)**.
+  b. If elem* is (ELEM reftype instr_2** elemmode?)*, then:
+    1) Let val* be $exec_expr_const(instr_1*)*.
+    2) If global* is (GLOBAL globaltype instr_1*)* and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; } and module is (MODULE import* func* global* table* mem* elem* data* start? export*), then:
+      a) Let f be { LOCAL: []; MODULE: m; }.
+      b) Let f_init be { LOCAL: []; MODULE: m_init; }.
+      c) Let instr_data* be $concat_instr($rundata(data*[j], j)^(j>n_data)).
+      d) Execute the sequence (instr_elem*).
+      e) Execute the sequence (instr_data*).
+      f) If x is defined, then:
+        1. Execute (CALL x).
 
-invocation fa val*
+invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. Push val* to the stack.
-4. Execute (CALL_ADDR fa).
-5. Pop val'* from the stack.
-6. If $funcinst()[fa].CODE is of the case FUNC, then:
+3. If $funcinst()[fa].CODE is of the case FUNC, then:
   a. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
-  b. If |val*| is |valtype*|, then:
-    1) Let [valtype*]->[valtype'*] be functype.
-    2) If |val'*| is |valtype'*|, then:
-      a) Return val'*.
+  b. Let [valtype_param^n]->[valtype_res^k] be functype.
+  c. Push val^n to the stack.
+  d. Execute (CALL_ADDR fa).
 
 execution_of_unreachable
 1. Trap.
@@ -1074,13 +1039,9 @@ execution_of_table.grow x
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref from the stack.
 5. Either:
-  a. Let ti be $table(x).
-  b. Let ti' be $grow_table(ti, n, ref).
-  c. If ti'.TYPE is not valid, then:
-    1) Push (I32.CONST -1) to the stack.
-  d. Else:
-    1) Push (I32.CONST |$table(x).ELEM|) to the stack.
-    2) Perform $with_tableinst(x, ti').
+  a. Let ti be $grow_table($table(x), n, ref).
+  b. Push (I32.CONST |$table(x).ELEM|) to the stack.
+  c. Perform $with_tableinst(x, ti).
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
@@ -1108,13 +1069,9 @@ execution_of_memory.grow
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
-  a. Let mi be $mem(0).
-  b. Let mi' be $grow_memory(mi, n).
-  c. If mi'.TYPE is not valid, then:
-    1) Push (I32.CONST -1) to the stack.
-  d. Else:
-    1) Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
-    2) Perform $with_meminst(0, mi').
+  a. Let mi be $grow_memory($mem(0), n).
+  b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(0, mi).
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
