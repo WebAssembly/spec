@@ -47,7 +47,7 @@ let rec if_expr_to_instrs e =
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
-  | Ast.LetPr (e1, e2) ->
+  | Ast.LetPr (e1, e2, _) ->
     [ LetI (exp_to_expr e1, exp_to_expr e2) ]
   | Ast.IfPr e ->
     if_expr_to_instrs e

@@ -62,7 +62,7 @@ let subset x y = Set.subset x.varid y.varid
 
 type tag =
   | Condition
-  | Assign of exp
+  | Assign of string list
 (* type row = tag * premise * int list *)
 let unwrap (_, p, _) = p
 
@@ -73,25 +73,31 @@ let is_tight env (tag, prem, _) = match tag with
   | _ -> false
 
 (* Check if a given premise is an assignment:
-     all free variables except ones in lhs is known *)
+     all free variables except to-be-assigned are known *)
 let is_assign env (tag, prem, _) = match tag with
-  | Assign lhs -> subset (diff (free_prem prem) (free_exp lhs)) env
+  | Assign frees -> subset (diff (free_prem prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
+
+let best' = ref (0, [])
 
 (* Mutual recursive functions that iteratively select condition and assignment premises,
    effectively sorting the premises as a result *)
 let rec select_tight prems acc env = ( match prems with
-| [] -> acc
+| [] -> Some acc
 | _ ->
   let (tights, non_tights) = List.partition (is_tight env) prems in
   select_assign non_tights (acc @ List.map unwrap tights) env
 )
 and select_assign prems acc env = ( match prems with
-| [] -> acc
+| [] -> Some acc
 | _ ->
   let (assigns, non_assigns) = List.partition (is_assign env) prems in
   match assigns with
-  | [] -> print_endline "...Animation failed"; acc @ List.map unwrap non_assigns
+  | [] ->
+    let len = List.length acc in
+    if len > fst !best' then
+      best' := (len, acc @ List.map unwrap non_assigns);
+    None
   | _ ->
     let assigns' = List.map unwrap assigns in
     let new_env = assigns' |> List.map free_prem |> List.fold_left union env in
@@ -113,14 +119,14 @@ let disjoint_row (_, _, coverings1) (_, _, coverings2) = List.for_all (fun c -> 
 let best = ref (0, [])
 
 let rec knuth rows cols selected_rows = match cols with
-  | [] -> Some selected_rows
+  | [] -> [ selected_rows ]
   | _ ->
     if fst !best > List.length cols then (
       let is_condition (tag, _, _) = match tag with | Condition -> true | _ -> false in
       best:= (List.length cols, selected_rows @ List.filter is_condition rows) );
     let target_col = select_target_col rows cols in
-    List.find_map (fun r ->
-      if not (covers r target_col) then None else
+    List.concat_map (fun r ->
+      if not (covers r target_col) then [] else
         let new_rows = List.filter (disjoint_row r) rows in
         let new_cols = List.filter (not_ (covers r)) cols in
         knuth new_rows new_cols (r :: selected_rows)
@@ -136,15 +142,25 @@ let rec powset = function
 | [] -> [ [] ]
 | hd :: tl -> List.concat_map (fun pow -> [ hd :: pow ; pow ]) (powset tl)
 
-let non_empty_powset xs = powset xs |> List.filter ( (<) [] )
+let large_enough_powset xs =
+  let yss = powset xs in
+  let n = List.length xs in
+  (* Assumption: Allowing one variable to be known *)
+  (* TODO: Increase this limit by reducing execution time *)
+  List.filter ( fun ys -> (n - 1) <= List.length ys ) yss
+
+let is_not_lhs = function
+| LenE _ | IterE (_, (IndexedListN _, _)) -> true
+| _ -> false
 
 let rows_of_eq vars p_tot_num i l r at =
+  if (is_not_lhs l.it) then [] else
   free_exp_list l
-  |> non_empty_powset
+  |> large_enough_powset
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
     if List.length frees = List.length covering_vars then (
-      Some (Assign l, LetPr (l, r) $ at, [i] @ covering_vars) )
+      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -161,9 +177,10 @@ let rec rows_of_prem vars p_tot_num i p = match p.it with
   | RulePr (_, _, { it = TupE args; _ }) ->
     (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
     let _, l = Util.Lib.List.split_last args in
+    let frees = (free_exp_list l) in
     [
       Condition, p, [i];
-      Assign l, p, [i] @ List.filter_map (index_of p_tot_num vars) (free_exp_list l)
+      Assign frees, p, [i] @ List.filter_map (index_of p_tot_num vars) (free_exp_list l)
     ]
   | IterPr (p', iter) ->
     let to_iter (tag, p', coverings) = tag, IterPr (p', iter) $ p.at, coverings in
@@ -185,13 +202,18 @@ let animate_prems known_vars prems =
   let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
   let rows, cols = build_matrix non_other known_vars in
   best := (List.length cols + 1, []);
-  let tagged_prems = match knuth rows cols [] with
-    | Some x -> x
-    | None ->
+  let candidates = match knuth rows cols [] with
+    | [] ->
       print_endline "Animation failed.";
       prems |> List.map Il.Print.string_of_prem |> String.concat "\n" |> print_endline;
-      snd !best in
-  select_tight (List.rev tagged_prems) other known_vars
+      [ snd !best ]
+    | xs -> List.map List.rev xs in
+  best' := (0, []);
+  match List.find_map (fun cand -> select_tight cand other known_vars) candidates with
+  | None ->
+    print_endline "...Animation failed";
+    snd !best'
+  | Some x -> x
 
 (* Animate rule *)
 let animate_rule r = match r.it with

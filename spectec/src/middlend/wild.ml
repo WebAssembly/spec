@@ -204,7 +204,7 @@ and t_prem' env prem : binds * premise' =
   | RulePr (a, b, exp) ->
     unary t_exp env exp (fun exp' -> RulePr (a, b, exp'))
   | IfPr e -> unary t_exp env e (fun e' -> IfPr e')
-  | LetPr (e1, e2) -> binary t_exp t_exp env (e1, e2) (fun (e1', e2') -> LetPr (e1', e2'))
+  | LetPr (e1, e2, targets) -> binary t_exp t_exp env (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', targets))
   | ElsePr -> [], prem
   | IterPr (prem, iterexp) ->
     let binds1, prem' = t_prem env prem in

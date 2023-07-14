@@ -97,7 +97,7 @@ and t_path env x = { x with it = t_path' env x.it }
 let rec t_prem' env = function
   | RulePr (id, mixop, exp) -> RulePr (id, mixop, t_exp env exp)
   | IfPr e -> IfPr (t_exp env e)
-  | LetPr (e1, e2) -> LetPr (t_exp env e1, t_exp env e2)
+  | LetPr (e1, e2, targets) -> LetPr (t_exp env e1, t_exp env e2, targets)
   | ElsePr -> ElsePr
   | IterPr (prem, iterexp) -> IterPr (t_prem env prem, t_iterexp env iterexp)
 

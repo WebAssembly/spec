@@ -477,7 +477,42 @@ let get_lhs_name () =
   lhs_id_ref := (lhs_id + 1);
   NameE (N (lhs_prefix ^ (lhs_id |> string_of_int)))
 
-let rec letI lhs rhs cont =
+let extract_bound_names lhs rhs targets cont = match lhs with
+  (* TODO: Make this actually consider the targets *)
+  | AppE (N f, args) ->
+    let front_args, last_arg = Util.Lib.List.split_last args in
+    let new_lhs = last_arg in
+    let new_rhs = AppE (N ("inverse_of_" ^ f), front_args @ [ rhs ]) in
+    new_lhs, new_rhs, cont
+  | _ ->
+    let traverse e =
+      let conds = ref [] in
+      let walker = Al.Walk.walk_expr { Al.Walk.default_action with pre_expr = (fun e ->
+        match e with
+        | NameE (N n) -> if String.starts_with ~prefix:lhs_prefix n then e else (
+          match List.find_opt ((=) n) targets with
+          | Some _ -> e
+          | None ->
+            let new_e = get_lhs_name() in
+            conds := !conds @ [ CompareC (Eq, new_e, e) ];
+            new_e
+          )
+        | IterE (NameE (N n), iter) -> ( match List.find_opt ((=) n) targets with
+          | Some _ -> e
+          | None ->
+            let new_e = IterE (get_lhs_name(), iter) in
+            conds := !conds @ [ CompareC (Eq, new_e, e) ];
+            new_e
+          )
+        | _ -> e
+        )} in
+      let new_e = walker e in
+      new_e, !conds in
+    let new_lhs, conds = traverse lhs in
+    new_lhs, rhs, List.fold_right (fun c il -> [ IfI (c, il, []) ]) conds cont
+
+let rec letI lhs rhs targets cont =
+  let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
     | NameE _ -> true
     | IterE (inner_exp, _) -> has_name inner_exp
@@ -495,18 +530,18 @@ let rec letI lhs rhs cont =
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont,
+          LetI (ConstructE (tag, es'), rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
           [] );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont
+    LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
     else
     [
       IfI
         ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r cont) bindings cont,
+          LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
           [] );
     ]
   | OptE None ->
@@ -528,7 +563,7 @@ let rec letI lhs rhs cont =
     [
       IfI
         ( IsDefinedC rhs,
-          LetI (OptE (Some fresh), rhs) :: letI e fresh cont,
+          LetI (OptE (Some fresh), rhs) :: letI e fresh targets cont,
           [] );
      ]
   | BinopE (Add, a, b) ->
@@ -538,12 +573,6 @@ let rec letI lhs rhs cont =
           LetI (a, BinopE (Sub, rhs, b)) :: cont,
           [] );
     ]
-  (* TODO: Remove this ad-hoc case for inverse_of_bytes *)
-  | AppE (N f, args) ->
-    let front_args, last_arg = Util.Lib.List.split_last args in
-    let new_lhs = last_arg in
-    let new_rhs = AppE (N ("inverse_of_" ^ f), front_args @ [ rhs ]) in
-    LetI (new_lhs, new_rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
 let rec rulepr2instr pr =
@@ -578,10 +607,10 @@ let prems2instrs remain_lhs =
       match prem.it with
       | Ast.IfPr exp -> [ IfI (exp2cond exp, instrs |> check_nop, []) ]
       | Ast.ElsePr -> [ OtherwiseI (instrs |> check_nop) ]
-      | Ast.LetPr (exp1, exp2) ->
+      | Ast.LetPr (exp1, exp2, targets) ->
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
           init_lhs_id();
-          letI (exp2expr exp1) (exp2expr exp2) instrs'
+          letI (exp2expr exp1) (exp2expr exp2) targets instrs'
       | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
         ( match exp2args exp with
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
@@ -656,7 +685,7 @@ let un_unify (_, rhs, prems, binds) =
   let sub, new_prems = Util.Lib.List.split_hd prems in
   let new_binds = binds in (* TODO *)
   match sub.it with
-  | Ast.LetPr (new_lhs, _) -> (new_lhs, rhs, new_prems, new_binds)
+  | Ast.LetPr (new_lhs, _, _) -> (new_lhs, rhs, new_prems, new_binds)
   | _ -> failwith "Unrechable un_unify"
 
 let is_in_same_context (lhs1, _, _, _) (lhs2, _, _, _) =
