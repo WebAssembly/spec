@@ -622,7 +622,10 @@ instantiation module externval*
     1) Let ref** be $exec_expr_const(instr_2*)**.
     2) Let val* be $exec_expr_const(instr_1*)*.
     3) If global* is (GLOBAL globaltype instr_1*)* and f_init is { LOCAL: []; MODULE: m_init; } and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }, then:
-      a) Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_elem", VarT "instr", VarT "admininstr"), (List, ["instr_elem"])), CatE (IterE (SubE (VarE "instr_data", VarT "instr", VarT "admininstr"), (List, ["instr_data"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
+      a) Execute the sequence (instr_elem*).
+      b) Execute the sequence (instr_data*).
+      c) If x is defined, then:
+        1. Execute (CALL x).
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -630,7 +633,8 @@ invocation fa val^n
 3. If $funcinst()[fa].CODE is of the case FUNC, then:
   a. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
   b. Let [valtype_param^n]->[valtype_res^k] be functype.
-  c. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s", VarE "f"])), CatE (IterE (SubE (VarE "val", VarT "val", VarT "admininstr"), (ListN (VarE "n"), ["val"])), ListE ([CaseE (Atom "CALL_ADDR", VarE "fa")]))]))).
+  c. Push val^n to the stack.
+  d. Execute (CALL_ADDR fa).
 
 execution_of_unreachable
 1. Trap.

@@ -371,9 +371,12 @@ let rec rhs2instrs exp =
   | Ast.CaseE (Atom "TRAP", _) -> [ TrapI ]
   (* Execute instrs *) (* TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
   | Ast.IterE ({ it = VarE id; _ }, (Ast.List, _))
-  | Ast.IterE ({ it = Ast.SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
-    when id.it = "instr" || id.it = "instr'" ->
+  | Ast.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
+    when String.starts_with ~prefix:"instr" id.it ->
       [ ExecuteSeqI (exp2expr exp) ]
+  | Ast.IterE ({ it = CaseE (Atom atomid, _); _} as e, (Opt, [ id ]))
+    when atomid = "CALL" ->
+      [ IfI (IsDefinedC (NameE (N id.it)), rhs2instrs e, []) ]
   (* Push *)
   | Ast.SubE _ | IterE _ -> [ PushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _)
@@ -435,6 +438,7 @@ let rec rhs2instrs exp =
         { it = TupE [ state_exp; rhs ]; _ } ) -> (
       let push_instrs = rhs2instrs rhs in
       match state_exp.it with
+      | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], _)
       | Ast.VarE _ -> push_instrs
       | Ast.CallE (f, args) -> push_instrs @ [ PerformI (N f.it, exp2args args) ]
       | _ -> failwith "Invalid new state" )
@@ -793,26 +797,12 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
-let exp2mutating_instr e =
-  match e.it with
-  | Ast.UpdE (base, path, v) -> (
-      match path2expr base path with
-      | AccessE (e, p) -> [ ReplaceI (e, p, exp2expr v) ]
-      | _ -> failwith "Impossible: path2expr always return AccessE" )
-  | Ast.ExtE (base, path, v) -> [ AppendListI (path2expr base path, exp2expr v) ]
-  | Ast.VarE _ -> []
-  | _ -> failwith ("TODO: exp2mutating_instr" ^ Print.string_of_exp e)
-
-let writer2instrs clause =
+let config_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
+  rhs2instrs e2
+    |> prems2instrs [] prems
 
-  prems2instrs [] prems
-    (match e2.it with
-    | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ new_s; new_f ]; _ }) ->
-        exp2mutating_instr new_s @ exp2mutating_instr new_f
-    | _ -> [])
-
-let reader2instrs clause =
+let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
   prems2instrs [] prems [ ReturnI (Option.some (exp2expr e2)) ]
 
@@ -827,7 +817,13 @@ let helpers2algo def =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map (find_type binds)
       in
-      let translator = reader2instrs in
+      let returning_config = [ "instantiation"; "invocation" ] in
+      let translator =
+        if List.mem id.it returning_config then
+          config_helper2instrs
+        else
+          normal_helper2instrs
+      in
       let blocks = List.map translator unified_clauses in
       let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
 
