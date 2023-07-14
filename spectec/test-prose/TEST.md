@@ -72,9 +72,9 @@ if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{el
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
-if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i<n_elem){})
+if (instr_elem*{instr_elem} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_elem){}))
 if (n_data = |data*{data}|)
-if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j<n_data){})
+if (instr_data*{instr_data} = $concat_instr($rundata(data*{data}[j], j)^(j<n_data){}))
 if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
@@ -608,21 +608,21 @@ rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
   c. Let n be |byte*|.
   d. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
-concat_admininstr x_0*
+concat_instr x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [admininstr]* ++ admininstr'** be x_0*.
-3. Return admininstr* ++ $concat_admininstr(admininstr'**).
+2. Let [instr]* ++ instr'** be x_0*.
+3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
 1. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let (ELEM reftype instr_2** elemmode?)* be elem*.
-  c. If start? is (START x)? and instr_data** is $rundata(data*[j], j)^(j>n_data) and n_data is |data*| and instr_elem** is $runelem(elem*[i], i)^(i>n_elem) and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
+  c. If start? is (START x)? and instr_data* is $concat_instr($rundata(data*[j], j)^(j>n_data)) and n_data is |data*| and instr_elem* is $concat_instr($runelem(elem*[i], i)^(i>n_elem)) and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
     1) Let ref** be $exec_expr_const(instr_2*)**.
     2) Let val* be $exec_expr_const(instr_1*)*.
     3) If global* is (GLOBAL globaltype instr_1*)* and f_init is { LOCAL: []; MODULE: m_init; } and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }, then:
-      a) Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_elem", VarT "instr", VarT "admininstr"), (List, ["instr_elem"])), (List, ["instr_elem"]))), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_data", VarT "instr", VarT "admininstr"), (List, ["instr_data"])), (List, ["instr_data"]))), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
+      a) Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_elem", VarT "instr", VarT "admininstr"), (List, ["instr_elem"])), CatE (IterE (SubE (VarE "instr_data", VarT "instr", VarT "admininstr"), (List, ["instr_data"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.

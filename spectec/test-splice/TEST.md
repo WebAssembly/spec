@@ -589,7 +589,7 @@ warning: definition `alloctable` was never spliced
 warning: definition `alloctables` was never spliced
 warning: definition `binop` was never spliced
 warning: definition `bytes_` was never spliced
-warning: definition `concat_admininstr` was never spliced
+warning: definition `concat_instr` was never spliced
 warning: definition `cvtop` was never spliced
 warning: definition `data` was never spliced
 warning: definition `datainst` was never spliced

@@ -72,9 +72,9 @@ if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{el
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
-if (instr_elem*{instr_elem}*{instr_elem} = $runelem(elem*{elem}[i], i)^(i<n_elem){})
+if (instr_elem*{instr_elem} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_elem){}))
 if (n_data = |data*{data}|)
-if (instr_data*{instr_data}*{instr_data} = $rundata(data*{data}[j], j)^(j<n_data){})
+if (instr_data*{instr_data} = $concat_instr($rundata(data*{data}[j], j)^(j<n_data){}))
 if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...

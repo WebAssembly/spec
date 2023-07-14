@@ -149,14 +149,13 @@ def $rundata(DATA byte* (MEMORY 0 instr*), i) =
   -- if n = |byte*|
 
 
-def $concat_admininstr(admininstr**) : admininstr*
-def $concat_admininstr(epsilon) = epsilon
-def $concat_admininstr(admininstr* admininstr'**) = admininstr* $concat_admininstr(admininstr'**)
+def $concat_instr(instr**) : instr*
+def $concat_instr(epsilon) = epsilon
+def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
 
 
 def $instantiation(store, module, externval*) : config
-def $instantiation(s, module, externval*) =
-  s'; f; $concat_admininstr(instr_elem**) $concat_admininstr(instr_data**) (CALL x)?
+def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
@@ -175,9 +174,9 @@ def $instantiation(s, module, externval*) =
   -- if (s', m) = $allocmodule(s, module, externval*, val*, (ref*)*)
   -- if f = { LOCAL epsilon, MODULE m }
   -- if n_elem = |elem*|
-  -- if instr_elem** = $runelem(elem*[i], i)^(i<n_elem)
+  -- if instr_elem* = $concat_instr($runelem(elem*[i], i)^(i<n_elem))
   -- if n_data = |data*|
-  -- if instr_data** = $rundata(data*[j], j)^(j<n_data)
+  -- if instr_data* = $concat_instr($rundata(data*[j], j)^(j<n_data))
   -- if start? = (START x)?
 
 

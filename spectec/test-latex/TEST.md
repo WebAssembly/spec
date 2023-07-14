@@ -2387,7 +2387,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& {\mathit{s}'} ; \mathit{f} ; \mathrm{concat}_{\mathit{instr}}({{\mathit{instr}_{\mathit{elem}}^\ast}^\ast})~\mathrm{concat}_{\mathit{instr}}({{\mathit{instr}_{\mathit{data}}^\ast}^\ast})~{(\mathsf{call}~\mathit{x})^?} &\quad
+\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& {\mathit{s}'} ; \mathit{f} ; {\mathit{instr}_{\mathit{elem}}^\ast}~{\mathit{instr}_{\mathit{data}}^\ast}~{(\mathsf{call}~\mathit{x})^?} &\quad
   \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
  &&&\quad {\land}~\mathit{m}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{func}~\mathrm{funcs}({\mathit{externval}^\ast}),\; \\
@@ -2407,9 +2407,9 @@ $$
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
  &&&\quad {\land}~\mathit{n}_{\mathit{elem}} = {|{\mathit{elem}^\ast}|} \\
- &&&\quad {\land}~{{\mathit{instr}_{\mathit{elem}}^\ast}^\ast} = {\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^{\mathit{i} < \mathit{n}_{\mathit{elem}}}} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^{\mathit{i} < \mathit{n}_{\mathit{elem}}}}) \\
  &&&\quad {\land}~\mathit{n}_{\mathit{data}} = {|{\mathit{data}^\ast}|} \\
- &&&\quad {\land}~{{\mathit{instr}_{\mathit{data}}^\ast}^\ast} = {\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^{\mathit{j} < \mathit{n}_{\mathit{data}}}} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^{\mathit{j} < \mathit{n}_{\mathit{data}}}}) \\
  &&&\quad {\land}~{\mathit{start}^?} = {(\mathsf{start}~\mathit{x})^?} \\
 \end{array}
 $$
