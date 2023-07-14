@@ -48,12 +48,7 @@ if (ea*{ea} = (|s.ELEM_store| + i)^(i<n_elem){})
 if (da*{da} = (|s.DATA_store| + i)^(i<n_data){})
 if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
 if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
-if ((s_1, fa*{fa}) = $allocfuncs(s, m, func^n_func{func}))
-if ((s_2, ga*{ga}) = $allocglobals(s_1, globaltype^n_global{globaltype}, val*{val}))
-if ((s_3, ta*{ta}) = $alloctables(s_2, tabletype^n_table{tabletype}))
-if ((s_4, ma*{ma}) = $allocmems(s_3, memtype^n_mem{memtype}))
-if ((s_5, ea*{ea}) = $allocelems(s_4, rt^n_elem{rt}, ref*{ref}*{ref}))
-if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_data{byte}))
+if (s_6 = s)
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
