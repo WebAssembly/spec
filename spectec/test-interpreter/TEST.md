@@ -66,9 +66,9 @@ if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{gl
 if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
 if (f_init = {LOCAL [], MODULE m_init})
 if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
-(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), [(val <: admininstr)]))*{instr_1 val}
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}
 if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
-(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
@@ -79,7 +79,8 @@ if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
 == Translating to AL...
-Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
+Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}` to be AL instr.
+Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====

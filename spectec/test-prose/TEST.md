@@ -66,9 +66,9 @@ if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{gl
 if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
 if (f_init = {LOCAL [], MODULE m_init})
 if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
-(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), [(val <: admininstr)]))*{instr_1 val}
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}
 if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
-(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}
+(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}
 if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
 if (f = {LOCAL [], MODULE m})
 if (n_elem = |elem*{elem}|)
@@ -79,7 +79,8 @@ if (start?{start} = START(x)?{x})
 ...Animation failed
 == IL Validation...
 == Translating to AL...
-Invalid premise `(Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
+Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}` to be AL instr.
+Invalid premise `(Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}` to be AL instr.
 =================
  Generated prose
 =================
@@ -620,10 +621,9 @@ instantiation module externval*
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let (ELEM reftype instr_2** elemmode?)* be elem*.
   c. If start? is (START x)? and instr_data** is $rundata(data*[j], j)^(j>n_data) and n_data is |data*| and instr_elem** is $runelem(elem*[i], i)^(i>n_elem) and n_elem is |elem*| and f is { LOCAL: []; MODULE: m; } and m is $allocmodule(module, externval*, val*, ref**), then:
-    1) YetI: (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}.
-    2) Execute the sequence (instr_1**).
-    3) Pop val* from the stack.
-    4) If global* is (GLOBAL globaltype instr_1*)* and f_init is { LOCAL: []; MODULE: m_init; } and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }, then:
+    1) YetI: (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), (ref <: val)))*{instr_2 ref}*{instr_2 ref}.
+    2) YetI: (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}.
+    3) If global* is (GLOBAL globaltype instr_1*)* and f_init is { LOCAL: []; MODULE: m_init; } and m_init is { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }, then:
       a) Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_elem", VarT "instr", VarT "admininstr"), (List, ["instr_elem"])), (List, ["instr_elem"]))), CatE (CallE ("concat_admininstr", IterE (IterE (SubE (VarE "instr_data", VarT "instr", VarT "admininstr"), (List, ["instr_data"])), (List, ["instr_data"]))), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
 
 invocation fa val^n

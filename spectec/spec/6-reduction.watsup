@@ -13,6 +13,9 @@ rule Step/read:
   -- Step_read: z; instr* ~> instr'*
 
 
+relation Exec_expr_const: config ~> val
+
+
 rule Step_pure/unreachable:
   UNREACHABLE  ~>  TRAP
 

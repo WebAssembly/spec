@@ -563,27 +563,7 @@ let prems2instrs remain_lhs =
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
-      (* Step *)
-      | Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _(* s' *); _ }; { it = Ast.VarE _(* f' *); _ }
-            ]; _ }); _ };
-            rhs
-          ]; _ }); _ };
-        ]; _ }
-      )
+      (* Step_read *)
       | Ast.RulePr (
         id,
         [ []; [ Ast.SqArrow ]; _ ],
@@ -598,53 +578,9 @@ let prems2instrs remain_lhs =
           (* s; f; rhs *)
             rhs
         ]; _ }
-      ) when String.starts_with ~prefix:"Step" id.it ->
-          let rec lhs_instr lhs =
-            match lhs with
-            | ListE el -> List.map (fun expr -> ExecuteI expr) el
-            | ConcatE (e1, e2) ->
-                lhs_instr e1 @ lhs_instr e2
-            | IterE (NameE (N "val"), _) | IterE (NameE (N "ref"), _) -> [ PushI lhs ]
-            | expr -> [ ExecuteSeqI expr ]
-          in
-          let rhs_instrs =
-            match exp2expr rhs with
-            | ListE [] -> []
-            | ListE [ expr ] -> [ PopI expr ]
-            | expr -> [ PopI expr ]
-          in
-          lhs_instr (exp2expr lhs) @ rhs_instrs @ instrs
-      | Ast.IterPr ({ it = Ast.RulePr (
-        id,
-        [ []; [ Ast.SqArrow ]; _ ],
-        { it = Ast.TupE [
-          (* s; f; lhs *)
-          { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-            { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-              { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
-            ]; _ }); _ };
-            lhs
-          ]; _ }); _ };
-          (* s; f; rhs *)
-            rhs
-        ]; _ }
-      ); _ }, (Ast.List, [ instr; ref ])) when String.starts_with ~prefix:"Step" id.it ->
-          let lhs_instr =
-            match exp2expr lhs with
-            | IterE (NameE name, iter) when name = N instr.it ->
-                ExecuteSeqI (IterE (IterE (NameE name, iter), List))
-            | _ -> failwith "Invalid IterPr"
-          in
-          let rhs_instr =
-            match exp2expr rhs with
-            | ListE [ NameE name ] when name = N ref.it ->
-                PopI (IterE (NameE name, List))
-            | ListE [ IterE (NameE name, iter) ] when name = N ref.it ->
-                PopI (IterE (IterE (NameE name, iter), List))
-            | _ ->
-                failwith "Invalid IterPr"
-          in
-          [ lhs_instr; rhs_instr ] @ instrs
+      ) when id.it = "Exec_expr_const" ->
+        [ LetI (exp2expr rhs, AppE (N "exec_expr_const", [ exp2expr lhs ])) ]
+      (* TODO: | IterPr (pr, (List, ids)) -> *)
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           YetI (Il.Print.string_of_prem prem) :: instrs)

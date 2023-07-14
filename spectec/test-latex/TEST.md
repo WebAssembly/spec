@@ -1766,6 +1766,10 @@ $$
 
 \vspace{1ex}
 
+$\boxed{\mathit{config} \hookrightarrow \mathit{val}}$
+
+\vspace{1ex}
+
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}unreachable}]} \quad & \mathsf{unreachable} &\hookrightarrow& \mathsf{trap} &  \\
