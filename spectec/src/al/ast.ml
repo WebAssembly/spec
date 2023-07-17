@@ -143,9 +143,7 @@ type instr =
   | PopI of expr
   | PopAllI of expr
   | LetI of expr * expr
-  (* TODO: Merge CallI and MapI *)
-  | CallI of expr * name * expr list
-  | MapI of expr * name * expr list * iter list
+  | CallI of expr * name * expr list * iter list
   | TrapI
   | NopI
   | ReturnI of expr option

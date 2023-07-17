@@ -255,8 +255,7 @@ let hide_state_instr = function
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
       | _ -> failwith "Invalid replace"
       end
-  | CallI (lhs, f, args) -> [ CallI (lhs, f, hide_state_args args) ]
-  | MapI (lhs, f, args, iters) -> [ MapI (lhs, f, hide_state_args args, iters) ]
+  | CallI (lhs, f, args, iters) -> [ CallI (lhs, f, hide_state_args args, iters) ]
   | PerformI (f, args) -> [ PerformI (f, hide_state_args args) ]
   | i -> [ i ]
 
@@ -300,8 +299,8 @@ let transpiler algo =
 (* Remove AppE / MapE *)
 let app_remover algo =
   let to_call = function
-    | LetI (lhs, AppE (f, args)) -> CallI (lhs, f, args)
-    | LetI (lhs, MapE (f, args, iters)) -> MapI (lhs, f, args, iters)
+    | LetI (lhs, AppE (f, args)) -> CallI (lhs, f, args, [])
+    | LetI (lhs, MapE (f, args, iters)) -> CallI (lhs, f, args, iters)
     | i -> i in
   let stack = ref [] in
   let pre i =
@@ -322,12 +321,12 @@ let app_remover algo =
     | AppE (f, args) ->
       let fresh = get_fresh () in
       let instrs = List.hd !stack in
-      instrs := CallI (fresh, f, args) :: !instrs;
+      instrs := CallI (fresh, f, args, []) :: !instrs;
       fresh
     | MapE (f, args, iters) ->
       let fresh = get_fresh () in
       let instrs = List.hd !stack in
-      instrs := MapI (fresh, f, args, iters) :: !instrs;
+      instrs := CallI (fresh, f, args, iters) :: !instrs;
       fresh
     | _ -> e in
 

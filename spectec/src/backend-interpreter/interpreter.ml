@@ -571,14 +571,15 @@ and interp_instrs env il cont action =
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
         interp_with new_env icont
-    | CallI (lhs, f, es) ->
+    | CallI (lhs, f, es, iters) ->
         let args = List.map (eval_expr env) es in
-        dsl_function_call (Some lhs) f args env icont cont action
-    | MapI (lhs, f, es, iters) ->
-        (* TODO: handle cases where iteratng argument is not the last *)
-        let args = List.map (eval_expr env) es in
-        let front_args, last_arg = Lib.List.split_last args in
-        dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action
+        ( match iters with
+        | [] ->
+          dsl_function_call (Some lhs) f args env icont cont action
+        | _ ->
+          (* TODO: handle cases where iteratng argument is not the last *)
+          let front_args, last_arg = Lib.List.split_last args in
+          dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action )
     | TrapI -> raise Exception.Trap
     | NopI -> interp icont
     | ReturnI None -> leave_algo cont action

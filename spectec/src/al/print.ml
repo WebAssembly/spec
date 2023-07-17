@@ -294,11 +294,7 @@ let rec string_of_instr index depth = function
   | LetI (n, e) ->
       sprintf "%s Let %s be %s." (make_index index depth) (string_of_expr n)
         (string_of_expr e)
-  | CallI (e1, n, el) ->
-      sprintf "%s Let %s be the result of computing %s." (make_index index depth)
-        (string_of_expr e1)
-        (string_of_expr (AppE(n, el)))
-  | MapI (e1, n, el, il) ->
+  | CallI (e1, n, el, il) ->
       sprintf "%s Let %s be the result of computing %s." (make_index index depth)
         (string_of_expr e1)
         (string_of_expr (MapE(n, el, il)))
@@ -620,16 +616,8 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ structured_string_of_expr e
       ^ ")"
-  | CallI (e1, n, el) ->
+  | CallI (e1, n, el, il) ->
       "CallI ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_name n
-      ^ ", "
-      ^ string_of_list structured_string_of_expr "[ " ", " " ]" el
-      ^ ")"
-  | MapI (e1, n, el, il) ->
-      "MapI ("
       ^ structured_string_of_expr e1
       ^ ", "
       ^ structured_string_of_name n

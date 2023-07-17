@@ -514,11 +514,7 @@ let rec render_al_instr env index depth = function
   | Al.Ast.LetI (n, e) ->
       sprintf "%s Let %s be %s." (render_order index depth) (render_expr env false n)
         (render_expr env false e)
-  | Al.Ast.CallI (e, n, es) ->
-      sprintf "%s Let %s be the result of computing %s." (render_order index depth)
-        (render_expr env false e)
-        (render_expr env false (Al.Ast.AppE(n, es)))
-  | Al.Ast.MapI (e, n, es, its) ->
+  | Al.Ast.CallI (e, n, es, its) ->
       sprintf "%s Let %s be the result of computing %s." (render_order index depth)
         (render_expr env false e)
         (render_expr env false (Al.Ast.MapE(n, es, its)))
