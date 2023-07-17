@@ -408,13 +408,14 @@ type map_info = (string * value list * value list * value list)
 
 type context = Env.t * instr list * action
 and wstack = (value list * context) list
-(* Specifies what to do upon leaving algorithm *)
+(* Specifies what to do upon obtaining a value *)
 and action =
   | Pass
   | AssignLhs of expr option * context
-  | MapNextArgs of expr option * map_info * context
   | JumpToNextWinstr
   | ExecuteWinstrs of value list * context
+  (* TODO: remove all Func *)
+  | Func of (value -> value)
 
 let rec assign_none lhs env =
   match lhs with
@@ -483,15 +484,22 @@ let rec dsl_function_call lhs_opt fname args env il cont action =
       |> Printf.sprintf "Invalid DSL function call: %s"
       |> failwith
 
-and dsl_function_map lhs_opt fname front_args last_args env il cont action =
+and dsl_function_map lhs_opt fname front_args last_arg iters env il cont action =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
-      let rhs = listV (List.map (fun arg -> Numerics.call_numerics name (front_args @ [arg])) last_args) in
+      let rec pure_map f iters x = match iters with
+      | [] -> f x
+      | _iter :: iters' ->
+        let xs = value_to_list x in
+        List.map (pure_map f iters') xs |> listV in
+      let f = (fun arg -> Numerics.call_numerics name (front_args @ [arg])) in
+      let rhs = pure_map f iters last_arg in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
-      map_algo lhs_opt name front_args last_args [] env il cont action
+      let new_action = AssignLhs(lhs_opt, (env, il, action)) in
+      map_algo name front_args last_arg iters cont new_action
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
@@ -566,12 +574,11 @@ and interp_instrs env il cont action =
     | CallI (lhs, f, es) ->
         let args = List.map (eval_expr env) es in
         dsl_function_call (Some lhs) f args env icont cont action
-    | MapI (lhs, f, es, _iters) ->
+    | MapI (lhs, f, es, iters) ->
         (* TODO: handle cases where iteratng argument is not the last *)
         let args = List.map (eval_expr env) es in
         let front_args, last_arg = Lib.List.split_last args in
-        let last_args = value_to_list last_arg in
-        dsl_function_map (Some lhs) f front_args last_args env icont cont action
+        dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action
     | TrapI -> raise Exception.Trap
     | NopI -> interp icont
     | ReturnI None -> leave_algo cont action
@@ -651,8 +658,7 @@ and return_some v cont = function
 | Pass -> v
 | AssignLhs (lhs_opt, (env, il, action)) ->
     interp_instrs (assign_opt lhs_opt v env) il cont action
-| MapNextArgs (lhs_opt, (name, front_args, last_args, acc), (env, il, action)) ->
-    map_algo lhs_opt name front_args last_args (v :: acc) env il cont action
+| Func f -> f v
 | _ -> failwith "Impossible action for return_some"
 
 and leave_algo cont = function
@@ -695,15 +701,28 @@ and call_algo lhs_opt name args env il cont action =
   let k = AssignLhs (lhs_opt, (env, il, action)) in
   interp_algo algo args cont k
 
-and map_algo lhs_opt name front_args last_args acc env il cont action =
+and map_algo name front_args last_arg iters cont action =
   let algo = get_algo name in
-  match last_args with
-  | [] ->
-    let rhs = listV (List.rev acc) in
-    interp_instrs (assign_opt lhs_opt rhs env) il cont action
-  | la :: las ->
-    let k = MapNextArgs (lhs_opt, (name, front_args, las, acc), (env, il, action)) in
-    interp_algo algo (front_args @ [la]) cont k
+  let handle_map_result result = return_some result cont in
+  let rec aux iters xs acc action = match xs with
+    | [] ->
+      let ys = listV (List.rev acc) in
+      handle_map_result ys action
+    | x :: xs' ->
+      let action' = Func (fun y ->
+        aux iters xs' (y :: acc) action
+      ) in
+      aux' iters x action'
+  and aux' iters x action = match iters with
+    | [] ->
+      let args = front_args @ [ x ] in
+      interp_algo algo args cont action
+    | _iter :: iters' ->
+      let xs = value_to_list x in
+      aux iters' xs [] action
+  in
+
+  aux' iters last_arg action
 
 and call_toplevel_algo name args =
   let algo = get_algo name in
