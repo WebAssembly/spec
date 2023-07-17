@@ -416,6 +416,12 @@ and action =
   | JumpToNextWinstr
   | ExecuteWinstrs of value list * context
 
+let rec assign_none lhs env =
+  match lhs with
+  | NameE name -> Env.add name (OptV None) env
+  | ConstructE (_, el) -> List.fold_left (fun acc e -> assign_none e acc) env el
+  | _ -> failwith "TODO: assign none"
+
 let rec assign lhs rhs env =
   match lhs, rhs with
   | IterE (NameE name, ListN n), ListV vs ->
@@ -423,6 +429,7 @@ let rec assign lhs rhs env =
   | NameE name, v
   | IterE (NameE name, _), v ->
       Env.add name v env
+  | IterE (e, Opt), OptV None -> assign_none e env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
