@@ -11,4 +11,3 @@ def $cvtop(numtype, cvtop, numtype, sx?, c) : c_numtype* hint(show $ext_(%,%)^%(
 def $wrap_((nat, nat), c) : nat
 
 def $bytes_(nat, c) : byte*
-def $inverse_of_bytes_(nat, byte*) : c_numtype

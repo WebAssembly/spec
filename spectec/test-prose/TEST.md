@@ -65,7 +65,7 @@ validation_of_if bt instr_1* instr_2*
 - Under the context C with .LABEL prepended by [t_2]*, instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - Under the context C with .LABEL prepended by [t_2]*, instr_1* must be valid with type [t_1*]->[t_2*].
-- The instruction is valid with type [t_1*]->[t_2*].
+- The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_br l
 - |C.LABEL| must be greater than l.
@@ -223,19 +223,19 @@ validation_of_memory.grow
 validation_of_memory.fill
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
-- The instruction is valid with type [I32, I32, I32]->[I32].
+- The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_memory.copy
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
-- The instruction is valid with type [I32, I32, I32]->[I32].
+- The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_memory.init x
 - |C.MEM| must be greater than 0.
 - |C.DATA| must be greater than x.
 - C.DATA[x] must be equal to OK.
 - Let mt be C.MEM[0].
-- The instruction is valid with type [I32, I32, I32]->[I32].
+- The instruction is valid with type [I32, I32, I32]->[].
 
 validation_of_data.drop x
 - |C.DATA| must be greater than x.

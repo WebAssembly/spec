@@ -238,7 +238,7 @@ $$
  \qquad
 \mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
-\mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast}~\mathsf{i{\scriptstyle32}} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
 \qquad
 \end{array}
@@ -604,7 +604,6 @@ warning: definition `grow_memory` was never spliced
 warning: definition `grow_table` was never spliced
 warning: definition `instantiation` was never spliced
 warning: definition `instexport` was never spliced
-warning: definition `inverse_of_bytes_` was never spliced
 warning: definition `invocation` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced

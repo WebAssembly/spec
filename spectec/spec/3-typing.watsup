@@ -186,7 +186,7 @@ rule Instr_ok/loop:
   -- InstrSeq_ok: C, LABEL t_1* |- instr* : t_1* -> t_2*
 
 rule Instr_ok/if:
-  C |- IF bt instr_1* ELSE instr_2* : t_1* -> t_2*
+  C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
   -- InstrSeq_ok: C, LABEL t_2* |- instr_1* : t_1* -> t_2*
   -- InstrSeq_ok: C, LABEL t_2* |- instr_2* : t_1* -> t_2*
@@ -331,15 +331,15 @@ rule Instr_ok/memory.grow:
   -- if C.MEM[0] = mt
 
 rule Instr_ok/memory.fill:
-  C |- MEMORY.FILL : I32 I32 I32 -> I32
+  C |- MEMORY.FILL : I32 I32 I32 -> epsilon
   -- if C.MEM[0] = mt
 
 rule Instr_ok/memory.copy:
-  C |- MEMORY.COPY : I32 I32 I32 -> I32
+  C |- MEMORY.COPY : I32 I32 I32 -> epsilon
   -- if C.MEM[0] = mt
 
 rule Instr_ok/memory.init:
-  C |- MEMORY.INIT x : I32 I32 I32 -> I32
+  C |- MEMORY.INIT x : I32 I32 I32 -> epsilon
   -- if C.MEM[0] = mt
   -- if C.DATA[x] = OK
 
