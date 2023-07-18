@@ -1,5 +1,5 @@
 (library
   (name al)
   (libraries util)
-  (modules ast print walk record)
+  (modules ast print walk record assoc)
 )

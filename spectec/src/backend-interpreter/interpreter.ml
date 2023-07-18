@@ -428,9 +428,24 @@ let rec assign lhs rhs env =
   | IterE (NameE name, ListN n), ListV vs ->
       env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length !vs)))
   | NameE name, v
-  | IterE (NameE name, _), v ->
+  | IterE (NameE name, _), v
+  | IterE (IterE (NameE name, _), _), v
+  | IterE (IterE (IterE (NameE name, _), _), _), v ->
       Env.add name v env
   | IterE (e, Opt), OptV None -> assign_none e env
+  | IterE (_, List), ListV _ ->
+      print_endline "";
+      Printf.sprintf "%s = %s"
+        (string_of_expr lhs)
+        (string_of_value rhs)
+      |> print_endline;
+      let new_lhs = Assoc.distribute_lhs_iter lhs in
+      let new_rhs = Assoc.distribute_rhs_list lhs rhs in
+      Printf.sprintf "%s = %s"
+        (string_of_expr new_lhs)
+        (string_of_value new_rhs)
+      |> print_endline;
+      assign new_lhs new_rhs env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
