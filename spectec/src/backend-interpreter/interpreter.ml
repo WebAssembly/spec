@@ -296,7 +296,15 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
-  | IterE (e, _) -> eval_expr env e
+  | IterE (e, iter) -> ( match iter with
+    | IndexedListN (x, e') ->
+      let n = eval_expr env e' |> value_to_int in
+      List.init n (fun i ->
+        let v_i = NumV (Int64.of_int i) in
+        eval_expr (Env.add x v_i env) e
+      ) |> listV
+    (* TODO: better IterE *)
+    | _ -> eval_expr env e )
   | e -> structured_string_of_expr e |> failwith
 
 and access_path env base path = match path with
