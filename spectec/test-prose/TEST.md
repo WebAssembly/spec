@@ -552,12 +552,12 @@ allocmodule module externval* val* ref**
   d. Let (MEMORY memtype)^n_mem be y_2.
   e. Let (TABLE tabletype)^n_table be y_1.
   f. Let (GLOBAL globaltype expr_1)^n_global be y_0.
-  g. Let da* be (|s.DATA| + i)^(i>n_data).
-  h. Let ea* be (|s.ELEM| + i)^(i>n_elem).
-  i. Let ma* be (|s.MEM| + i)^(i>n_mem).
-  j. Let ta* be (|s.TABLE| + i)^(i>n_table).
-  k. Let ga* be (|s.GLOBAL| + i)^(i>n_global).
-  l. Let fa* be (|s.FUNC| + i)^(i>n_func).
+  g. Let da* be (|s.DATA| + i)^(i<n_data).
+  h. Let ea* be (|s.ELEM| + i)^(i<n_elem).
+  i. Let ma* be (|s.MEM| + i)^(i<n_mem).
+  j. Let ta* be (|s.TABLE| + i)^(i<n_table).
+  k. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
+  l. Let fa* be (|s.FUNC| + i)^(i<n_func).
   m. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
   n. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
   o. Let y_0* be $allocfuncs(m, func^n_func).
@@ -614,8 +614,8 @@ instantiation module externval*
   e. Let (START x)? be start?.
   f. Let (GLOBAL globaltype instr_1*)* be global*.
   g. Let (ELEM reftype instr_2** elemmode?)* be elem*.
-  h. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j>n_data)).
-  i. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i>n_elem)).
+  h. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
+  i. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
   j. Let ref** be $exec_expr_const(instr_2*)**.
   k. Let val* be $exec_expr_const(instr_1*)*.
   l. Let m be $allocmodule(module, externval*, val*, ref**).

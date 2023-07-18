@@ -120,7 +120,7 @@ let rec string_of_iter = function
   | List1 -> "+"
   | ListN name -> "^" ^ string_of_name name
   | IndexedListN (name, expr) ->
-    "^(" ^ string_of_name name ^ ">" ^ string_of_expr expr^ ")"
+    "^(" ^ string_of_name name ^ "<" ^ string_of_expr expr^ ")"
 
 and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
 
