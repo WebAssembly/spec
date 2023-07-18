@@ -439,8 +439,8 @@ let rec assign lhs rhs env =
         (string_of_expr lhs)
         (string_of_value rhs)
       |> print_endline;
-      let new_lhs = Assoc.distribute_lhs_iter lhs in
-      let new_rhs = Assoc.distribute_rhs_list lhs rhs in
+      let new_lhs = Distribute.distribute_lhs_iter lhs in
+      let new_rhs = Distribute.distribute_rhs_list lhs rhs in
       Printf.sprintf "%s = %s"
         (string_of_expr new_lhs)
         (string_of_value new_rhs)
