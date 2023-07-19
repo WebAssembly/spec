@@ -81,11 +81,19 @@ We assume that all types have been *canonicalized*, such that equality on two ty
    However, this distinction does not otherwise affect validation, so is ignored here.
    In the graph representation, all recursive types are effectively infinitely :ref:`unrolled <aux-unroll>`.
 
-We further assume that a :ref:`subtyping <match-valtype>` check is defined on value types:
+We further assume that :ref:`validation <valid-valtype>` and :ref:`subtyping <match-valtype>` checks are defined on value types, as well as a few auxiliary functions on compound types:
 
 .. code-block:: pseudo
 
+   func validate_val_type(t : val_type)
+   func validate_ref_type(t : ref_type)
+
    func matches_val(t1 : val_type, t2 : val_type) : bool
+   func matches_ref(t1 : val_type, t2 : val_type) : bool
+
+   func is_func(t : comp_type) : bool
+   func is_struct(t : comp_type) : bool
+   func is_array(t : comp_type) : bool
 
 Context
 .......
