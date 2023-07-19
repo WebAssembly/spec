@@ -78,7 +78,7 @@ A type of any form is *closed* when it does not contain a heap type that is a :r
 i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll-rectype>`.
 
 .. note::
-   Recursive type indices are internal to a recursive types.
+   Recursive type indices are internal to a recursive type.
    They are distinguished from regular type indices and represented such that two closed types are syntactically equal if and only if they have the same recursive structure.
 
 .. _aux-reftypediff:
@@ -164,20 +164,22 @@ The representation change is performed by two auxiliary operations on the syntax
 These operations are extended to :ref:`defined types <syntax-deftype>` and defined as follows:
 
 .. math::
-   \begin{array}{@{}llll@{}}
-   \rollrt_x(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(x + i)^\ast \subst (\REC~i)^\ast])^\ast \\
-   &&& (\iff i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
-   \unrollrt(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(\REC~i)^\ast \subst ((\TREC~\subtype^\ast).i)^\ast])^\ast \\[2ex]
-   &&& (\iff i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
-   \rolldt_x(\rectype) &=& (\rectype'.i)^\ast & (\iff \rollrt_x(\rectype) = \rectype' = \TREC~\subtype^\ast \\
-   &&& \land i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
-   \unrolldt(\rectype.i) &=& \subtype^\ast[i] & (\iff \unrollrt(\rectype) = \TREC~\subtype^\ast) \\
+   \begin{array}{@{}l@{~}l@{~}l@{~}r@{~}l@{}}
+   \rollrt{x}(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(x + i)^\ast \subst (\REC~i)^\ast])^\ast
+   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\
+   \unrollrt(\TREC~\subtype^\ast) &=& \TREC~(\subtype[(\REC~i)^\ast \subst ((\TREC~\subtype^\ast).i)^\ast])^\ast
+   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1)) \\[2ex]
+   \rolldt{x}(\rectype) &=& ((\TREC~\subtype^\ast).i)^\ast
+   & (\iff & i^\ast = 0 \cdots (|\subtype^\ast| - 1) \\
+   &&& \land & \rollrt{x}(\rectype) = \TREC~\subtype^\ast) \\
+   \unrolldt(\rectype.i) &=& \subtype^\ast[i]
+   & (\iff & \unrollrt(\rectype) = \TREC~\subtype^\ast) \\
    \end{array}
 
 In addition, the following auxiliary function denotes the *expansion* of a :ref:`defined type <syntax-deftype>`:
 
 .. math::
-   \begin{array}{llll}
+   \begin{array}{@{}llll@{}}
    \expanddt(\deftype) &=& \comptype & (\iff \unrolldt(\deftype) = \TSUB~\TFINAL^?~\X{ht}^?~\comptype) \\
    \end{array}
 

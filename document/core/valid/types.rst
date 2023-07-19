@@ -309,8 +309,8 @@ Compound Types
      C \vdashcomptype \TSTRUCT~\X{ft}^\ast \ok
    }
 
-:math:`TARRAY~\fieldtype`
-.........................
+:math:`\TARRAY~\fieldtype`
+..........................
 
 * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
 

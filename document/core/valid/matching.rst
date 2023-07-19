@@ -60,11 +60,11 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Or :math:`\heaptype_1` is one of :math:`\I31`, :math:`\STRUCT`, or :math:`\ARRAY` and :math:`heaptype_2` is :math:`\EQT`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`STRUCT`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`structure type <syntax-structtype>` and :math:`\heaptype_2` is :math:`\STRUCT`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to an :ref:`array type <syntax-arraytype>` and :math:`\heaptype_2` is :math:`ARRAY`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to an :ref:`array type <syntax-arraytype>` and :math:`\heaptype_2` is :math:`\ARRAY`.
 
-* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` which :ref:`expands <aux-expand-deftype>` to a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`\FUNC`.
 
 * Or :math:`\heaptype_1` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_1` and :math:`\heaptype_2` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_2`, and :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`.
 

@@ -283,9 +283,9 @@
 
 .. |reftypediff| mathdef:: \xref{valid/conventions}{aux-reftypediff}{\setminus}
 
-.. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
+.. |rollrt#1| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}_{#1}}
 .. |unrollrt| mathdef:: \xref{valid/conventions}{aux-unroll-rectype}{\F{unroll}}
-.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast}
+.. |rolldt#1| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast_{#1}}
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
 
@@ -1042,7 +1042,7 @@
 .. |vdashpackedtype| mathdef:: \xref{valid/types}{valid-packedtype}{\vdash}
 .. |vdashstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\vdash}
 .. |vdashsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\vdash}
-.. |vdashrectype| mathdef:: \xref{valid/types}{valid-retype}{\vdash}
+.. |vdashrectype| mathdef:: \xref{valid/types}{valid-rectype}{\vdash}
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
