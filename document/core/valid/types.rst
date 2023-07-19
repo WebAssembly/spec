@@ -394,15 +394,15 @@ Recursive Types
 .. math::
    \frac{
    }{
-     C \vdashrectype \TREC~\epsilon \ok(x)
+     C \vdashrectype \TREC~\epsilon ~{\ok}(x)
    }
    \qquad
    \frac{
-     C \vdashsubtype \subtype \ok(x)
+     C \vdashsubtype \subtype ~{\ok}(x)
      \qquad
-     C \vdashrectype \TREC~{\subtype'}^\ast \ok(x + 1)
+     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x + 1)
    }{
-     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast \ok(x)
+     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x)
    }
 
 :math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
@@ -442,7 +442,7 @@ Recursive Types
      (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
      \end{array}
    }{
-     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype \ok(x)
+     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype ~{\ok}(x)
    }
 
 .. note::
@@ -472,7 +472,7 @@ Defined Types
 
 .. math::
    \frac{
-     C \vdashrectype \rectype \ok(x)
+     C \vdashrectype \rectype ~{\ok}(x)
      \qquad
      \rectype = \TREC~\subtype^n
      \qquad
