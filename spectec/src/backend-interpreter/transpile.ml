@@ -170,7 +170,7 @@ let if_not_defined =
   let transpile_cond = function
   | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
   | c -> c in
-  Walk.walk_instr { Walk.default_action with post_cond = transpile_cond }
+  Walk.walk_instr { Walk.default_config with post_cond = transpile_cond }
 
 let lift f x = [f x]
 
@@ -185,14 +185,14 @@ let swap_if =
       else
         IfI (neg c, il2, il1)
   | i -> i in
-  Walk.walk_instr { Walk.default_action with post_instr = lift transpile_instr }
+  Walk.walk_instr { Walk.default_config with post_instr = lift transpile_instr }
 
 let rec return_at_last = function
 | [] -> false
 | [ TrapI ] | [ ReturnI _ ] -> true
 | _ :: tl -> return_at_last tl
 
-let early_return = Walk.walk_instr { Walk.default_action with post_instr =
+let early_return = Walk.walk_instr { Walk.default_config with post_instr =
   function
   | IfI (c, il1, il2) as i ->
     if return_at_last il1 then IfI (c, il1, []) :: il2 else [ i ]
@@ -243,7 +243,7 @@ let push_either =
       | _ -> i )
     | _ -> i in
 
-  Walk.walk_instr { Walk.default_action with pre_instr = lift push_either' }
+  Walk.walk_instr { Walk.default_config with pre_instr = lift push_either' }
 
 let enhance_readability instrs =
   instrs
@@ -338,7 +338,7 @@ let flatten_if = function
 let transpiler algo =
   let walker =
     Walk.walk
-      { Walk.default_action with
+      { Walk.default_config with
         post_instr = composite_instr hide_state_instr (lift flatten_if);
         post_expr = composite hide_state simplify_record_concat
       }
@@ -385,7 +385,7 @@ let app_remover algo =
       fresh
     | _ -> e in
 
-  Walk.walk { Walk.default_action with
+  Walk.walk { Walk.default_config with
     pre_instr = pre;
     post_instr = post;
     post_expr = replace_call;
@@ -419,7 +419,7 @@ let iter_rule names iter =
     | e -> e
   in
 
-  Walk.walk_instr { Walk.default_action with
+  Walk.walk_instr { Walk.default_config with
     (* pre_expr = pre_expr;*)
     post_expr = post_expr;
   }

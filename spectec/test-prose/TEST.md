@@ -569,18 +569,18 @@ allocmodule module externval* val* ref**
   l. Let fa* be (|s.FUNC| + i)^(i<n_func).
   m. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
   n. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
-  o. Let y_0* be $allocfuncs(m, func^n_func).
-  p. If y_0* is fa*, then:
-    1) Let y_0* be $allocglobals(globaltype^n_global, val*).
-    2) If y_0* is ga*, then:
-      a) Let y_0* be $alloctables(tabletype^n_table).
-      b) If y_0* is ta*, then:
-        1. Let y_0* be $allocmems(memtype^n_mem).
-        2. If y_0* is ma*, then:
-          a. Let y_0* be $allocelems(rt^n_elem, ref**).
-          b. If y_0* is ea*, then:
-            1) Let y_0* be $allocdatas(byte*^n_data).
-            2) If y_0* is da*, then:
+  o. Let y_0 be $allocfuncs(m, func^n_func).
+  p. If y_0 is fa*, then:
+    1) Let y_0 be $allocglobals(globaltype^n_global, val*).
+    2) If y_0 is ga*, then:
+      a) Let y_0 be $alloctables(tabletype^n_table).
+      b) If y_0 is ta*, then:
+        1. Let y_0 be $allocmems(memtype^n_mem).
+        2. If y_0 is ma*, then:
+          a. Let y_0 be $allocelems(rt^n_elem, ref**).
+          b. If y_0 is ea*, then:
+            1) Let y_0 be $allocdatas(byte*^n_data).
+            2) If y_0 is da*, then:
               a) Return m.
 
 runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i

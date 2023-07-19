@@ -138,7 +138,7 @@ type instr =
   | ForI of expr * instr list
   | ForeachI of expr * expr * instr list
   (* Flat instructions *)
-  | AssertI of cond 
+  | AssertI of cond
   | PushI of expr
   | PopI of expr
   | PopAllI of expr

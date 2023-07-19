@@ -1,30 +1,42 @@
 open Ast
 open Record
 
-type action = {
+type config = {
   pre_instr: instr -> instr list;
   post_instr: instr -> instr list;
+  stop_cond_instr: instr -> bool;
+
   pre_cond: cond -> cond;
   post_cond: cond -> cond;
+  stop_cond_cond: cond -> bool;
+
   pre_expr: expr -> expr;
   post_expr: expr -> expr;
+  stop_cond_expr: expr -> bool;
 }
 
 let id x = x
 let ids x = [ x ]
-let default_action = {
+let fls _ = false
+let default_config = {
   pre_instr = ids;
   post_instr = ids;
+  stop_cond_instr = fls;
+
   pre_cond = id;
   post_cond = id;
+  stop_cond_cond = fls;
+
   pre_expr = id;
   post_expr = id;
+  stop_cond_expr = fls;
 }
 
 let rec walk_expr f e =
-  let { pre_expr = pre; post_expr = post; _ } = f in
+  let { pre_expr = pre; post_expr = post; stop_cond_expr = stop_cond; _ } = f in
   let new_ = walk_expr f in
-  ( match pre e with
+
+  let super_walk e = match e with
   | NumE _
   | StringE _
   | GetCurFrameE
@@ -51,10 +63,14 @@ let rec walk_expr f e =
   | FrameE (e1, e2) -> FrameE (new_ e1, new_ e2)
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
-  | NameE n -> NameE n 
+  | NameE n -> NameE n
   | IterE (e, iters) -> IterE (new_ e, iters)
-  | YetE _ -> e )
-  |> post
+  | YetE _ -> e in
+
+  let e1 = pre e in
+  let e2 = if stop_cond e1 then e1 else super_walk e1 in
+  let e3 = post e2 in
+  e3
 
 and walk_path f p =
   let pre = id in
@@ -66,10 +82,11 @@ and walk_path f p =
   |> post
 
 let rec walk_cond f c =
-  let { pre_cond = pre; post_cond = post; _ } = f in
+  let { pre_cond = pre; post_cond = post; stop_cond_cond = stop_cond; _ } = f in
   let new_ = walk_cond f in
   let new_e = walk_expr f in
-  ( match pre c with
+
+  let super_walk c = match c with
   | NotC inner_c -> NotC (new_ inner_c)
   | BinopC (op, c1, c2) -> BinopC (op, new_ c1, new_ c2)
   | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
@@ -82,16 +99,20 @@ let rec walk_cond f c =
   | TopValueC (Some e) -> TopValueC (Some (new_e e))
   | TopValueC _ -> c
   | TopValuesC e -> TopValuesC (new_e e)
-  | YetC _ -> c )
-  |> post
+  | YetC _ -> c in
+
+  let c1 = pre c in
+  let c2 = if stop_cond c1 then c1 else super_walk c1 in
+  let c3 = post c2 in
+  c3
 
 let rec walk_instr f (instr:instr) : instr list =
-  let { pre_instr = pre; post_instr = post; _ } = f in
+  let { pre_instr = pre; post_instr = post; stop_cond_instr = stop_cond; _ } = f in
   let new_ = List.concat_map (walk_instr f) in
   let new_c = walk_cond f in
   let new_e = walk_expr f in
-  pre instr
-  |> List.map (function
+
+  let super_walk i = match i with
   | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
   | OtherwiseI il -> OtherwiseI (new_ il)
   | WhileI (c, il) -> WhileI (new_c c, new_ il)
@@ -117,8 +138,12 @@ let rec walk_instr f (instr:instr) : instr list =
   | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
   | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
   | AppendListI (e1, e2) -> AppendListI (new_e e1, new_e e2)
-  | YetI _ -> instr )
-  |> List.concat_map post
+  | YetI _ -> i in
+
+  let il1 = pre instr in
+  let il2 = List.map (fun i -> if stop_cond i then i else super_walk i) il1 in
+  let il3 = List.concat_map post il2 in
+  il3
 
 and walk_instrs f = walk_instr f |> List.concat_map
 

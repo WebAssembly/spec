@@ -15,7 +15,7 @@ let cmpop_to_cmpop = function
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 
 let transpile_expr =
-  Al.Walk.walk_expr { Al.Walk.default_action with
+  Al.Walk.walk_expr { Al.Walk.default_config with
     post_expr = Backend_interpreter.Transpile.simplify_record_concat
   }
 
