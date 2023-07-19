@@ -474,20 +474,30 @@ let rec assign lhs rhs env =
       | Div -> Int64.mul
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
-  (* TODO: Should this be handled by interpreter? animation? translation? *)
-  | ConcatE (e, IterE (NameE n1, ListN n2)), ListV vs ->
-    let len = Array.length !vs in
-    let suffix_len = eval_expr env (NameE n2) |> value_to_int in
-    assert (len >= suffix_len);
-    let prefix = Array.sub !vs 0 (len - suffix_len) in
-    let suffix = Array.sub !vs (len - suffix_len) suffix_len in
-    env |> assign e (ListV (ref prefix)) |> Env.add n1 (ListV (ref suffix))
+  | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | RecordE r1, RecordV r2 when Record.keys r1 = Record.keys r2 ->
       Record.fold (fun k v acc -> (Record.find k r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
         (string_of_expr e) (string_of_value v)
       |> failwith
+
+and assign_split ep es vs env =
+  let len = Array.length vs in
+  let prefix_len, suffix_len =
+    let get_length = function
+    | ListE es -> Some (List.length es)
+    | IterE (_, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)
+    | _ -> None in
+    match get_length ep, get_length es with
+    | None, None -> failwith "Unrecahble: nondeterministic list split"
+    | Some l, None -> l, len - l
+    | None, Some l -> len - l, l
+    | Some l1, Some l2 -> l1, l2 in
+  assert (prefix_len >= 0 && suffix_len >= 0 && prefix_len + suffix_len = len);
+  let prefix = Array.sub vs 0 prefix_len in
+  let suffix = Array.sub vs prefix_len suffix_len in
+  env |> assign ep (ListV (ref prefix)) |> assign es (ListV (ref suffix))
 
 let assign_opt lhs_opt rhs env = match lhs_opt with
   | None -> env

@@ -418,38 +418,42 @@ grow_memory mi n
 funcs x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [(FUNC fa)] ++ externval'* be x_0*.
-3. Return [fa] ++ $funcs(externval'*).
+2. Let [y_0] ++ externval'* be x_0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be y_0.
+  b. Return [fa] ++ $funcs(externval'*).
 4. Let [externval] ++ externval'* be x_0*.
-5. Otherwise:
-  a. Return $funcs(externval'*).
+5. Return $funcs(externval'*).
 
 globals x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [(GLOBAL ga)] ++ externval'* be x_0*.
-3. Return [ga] ++ $globals(externval'*).
+2. Let [y_0] ++ externval'* be x_0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be y_0.
+  b. Return [ga] ++ $globals(externval'*).
 4. Let [externval] ++ externval'* be x_0*.
-5. Otherwise:
-  a. Return $globals(externval'*).
+5. Return $globals(externval'*).
 
 tables x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [(TABLE ta)] ++ externval'* be x_0*.
-3. Return [ta] ++ $tables(externval'*).
+2. Let [y_0] ++ externval'* be x_0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be y_0.
+  b. Return [ta] ++ $tables(externval'*).
 4. Let [externval] ++ externval'* be x_0*.
-5. Otherwise:
-  a. Return $tables(externval'*).
+5. Return $tables(externval'*).
 
 mems x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [(MEM ma)] ++ externval'* be x_0*.
-3. Return [ma] ++ $mems(externval'*).
+2. Let [y_0] ++ externval'* be x_0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM ma) be y_0.
+  b. Return [ma] ++ $mems(externval'*).
 4. Let [externval] ++ externval'* be x_0*.
-5. Otherwise:
-  a. Return $mems(externval'*).
+5. Return $mems(externval'*).
 
 instexport fa* ga* ta* ma* EXPORT(name, x_0)
 1. If x_0 is of the case FUNC, then:
@@ -482,13 +486,16 @@ allocglobal globaltype val
 2. Return [s with .GLOBAL appended by [gi], |s.GLOBAL|].
 
 allocglobals x_0* x_1*
-1. If x_0* is [] and x_1* is [], then:
-  a. Return [].
-2. Let [globaltype] ++ globaltype'* be x_0*.
-3. Let [val] ++ val'* be x_1*.
-4. Let ga be $allocglobal(globaltype, val).
-5. Let ga'* be $allocglobals(globaltype'*, val'*).
-6. Return [ga] ++ ga'*.
+1. If x_0* is [], then:
+  a. If x_1* is [], then:
+    1) Return [].
+2. Else:
+  a. Let [globaltype] ++ globaltype'* be x_0*.
+  b. If |x_1*| ≥ 1, then:
+    1) Let [val] ++ val'* be x_1*.
+    2) Let ga be $allocglobal(globaltype, val).
+    3) Let ga'* be $allocglobals(globaltype'*, val'*).
+    4) Return [ga] ++ ga'*.
 
 alloctable `%%`(`[%..%]`(i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
@@ -521,11 +528,13 @@ allocelem rt ref*
 allocelems x_0* x_1*
 1. If x_0* is [] and x_1* is [], then:
   a. Return [].
-2. Let [ref]* ++ ref'** be x_1*.
-3. Let [rt] ++ rt'* be x_0*.
-4. Let ea be $allocelem(rt, ref*).
-5. Let ea'* be $allocelems(rt'*, ref'**).
-6. Return [ea] ++ ea'*.
+2. If |x_1*| ≥ 1, then:
+  a. Let [ref*] ++ ref'** be x_1*.
+  b. If |x_0*| ≥ 1, then:
+    1) Let [rt] ++ rt'* be x_0*.
+    2) Let ea be $allocelem(rt, ref*).
+    3) Let ea'* be $allocelems(rt'*, ref'**).
+    4) Return [ea] ++ ea'*.
 
 allocdata byte*
 1. Let di be { DATA: byte*; }.
@@ -534,7 +543,7 @@ allocdata byte*
 allocdatas x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [byte]* ++ byte'** be x_0*.
+2. Let [byte*] ++ byte'** be x_0*.
 3. Let da be $allocdata(byte*).
 4. Let da'* be $allocdatas(byte'**).
 5. Return [da] ++ da'*.
@@ -599,7 +608,7 @@ rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
 concat_instr x_0*
 1. If x_0* is [], then:
   a. Return [].
-2. Let [instr]* ++ instr'** be x_0*.
+2. Let [instr*] ++ instr'** be x_0*.
 3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
@@ -694,7 +703,7 @@ execution_of_br x_0
 3. Let instr'* be the continuation of L.
 4. Pop all values x_1* from the stack.
 5. Exit current context.
-6. If x_0 is 0, then:
+6. If x_0 is 0 and |x_1*| ≥ n, then:
   a. Let val'* ++ val^n be x_1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).

@@ -22,6 +22,41 @@ let rec neg cond =
   | CompareC (Le, e1, e2) -> CompareC (Gt, e1, e2)
   | _ -> NotC cond
 
+let both_empty cond1 cond2 =
+  let get_list = function
+  | CompareC (Eq, e, ListE [])
+  | CompareC (Eq, ListE [], e)
+  | CompareC (Eq, LengthE e, NumE 0L)
+  | CompareC (Le, LengthE e, NumE 0L)
+  | CompareC (Lt, LengthE e, NumE 1L)
+  | CompareC (Eq, NumE 0L, LengthE e)
+  | CompareC (Ge, NumE 0L, LengthE e)
+  | CompareC (Ge, NumE 1L, LengthE e) -> Some e
+  | _ -> None in
+  match get_list cond1, get_list cond2 with
+  | Some e1, Some e2 -> e1 = e2
+  | _ -> false
+
+let both_non_empty cond1 cond2 =
+  let get_list = function
+  | CompareC (Ne, e, ListE [])
+  | CompareC (Ne, ListE [], e)
+  | CompareC (Ne, LengthE e, NumE 0L)
+  | CompareC (Gt, LengthE e, NumE 0L)
+  | CompareC (Ge, LengthE e, NumE 1L)
+  | CompareC (Ne, NumE 0L, LengthE e)
+  | CompareC (Lt, NumE 0L, LengthE e)
+  | CompareC (Le, NumE 1L, LengthE e) -> Some e
+  | _ -> None in
+  match get_list cond1, get_list cond2 with
+  | Some e1, Some e2 -> e1 = e2
+  | _ -> false
+
+let eq_cond cond1 cond2 =
+  cond1 = cond2
+  || both_empty cond1 cond2
+  || both_non_empty cond1 cond2
+
 let list_sum = List.fold_left ( + ) 0
 
 let rec count_instrs instrs =
@@ -125,9 +160,9 @@ let rec infer_else instrs =
         | _ -> i
       in
       match (new_i, il) with
-      | IfI (c1, then_body, []), IfI (c2, else_body, []) :: rest
-        when neg c1 = c2 ->
-          IfI (c1, then_body, else_body) :: rest
+      | IfI (c1, then_body1, else_body1), IfI (c2, else_body2, then_body2) :: rest
+        when eq_cond c1 (neg c2) ->
+          IfI (c1, then_body1 @ then_body2, else_body1 @ else_body2) :: rest
       | _ -> new_i :: il)
     instrs []
 
@@ -182,6 +217,25 @@ let rec unify_if_tail instr =
   | ForeachI (e1, e2, il) -> [ ForeachI (e1, e2, new_ il) ]
   | _ -> [ instr ]
 
+let rec remove_unnecessary_branch path_cond instr =
+  let new_ = List.concat_map (remove_unnecessary_branch path_cond) in
+  match instr with
+  | IfI (c, il1, il2) ->
+    if List.exists (eq_cond c) path_cond then
+      il1
+    else if List.exists (eq_cond (neg c)) path_cond then
+      il2
+    else
+      let new_il1 = List.concat_map (remove_unnecessary_branch (c :: path_cond)) il1 in
+      let new_il2 = List.concat_map (remove_unnecessary_branch ((neg c) :: path_cond)) il2 in
+      [ IfI (c, new_il1, new_il2) ]
+  | OtherwiseI il -> [ OtherwiseI (new_ il) ]
+  | WhileI (c, il) -> [ WhileI (c, new_ il) ]
+  | EitherI (il1, il2) -> [ EitherI (new_ il1, new_ il2) ]
+  | ForI (e, il) -> [ ForI (e, new_ il) ]
+  | ForeachI (e1, e2, il) -> [ ForeachI (e1, e2, new_ il) ]
+  | _ -> [ instr ]
+
 let push_either =
   let push_either' = fun i -> match i with
     | EitherI (il1, il2) -> ( match ( Util.Lib.List.split_last il1) with
@@ -196,9 +250,10 @@ let enhance_readability instrs =
   |> unify_if
   |> List.concat_map if_not_defined
   |> infer_else
+  |> List.concat_map unify_if_tail
+  |> List.concat_map (remove_unnecessary_branch [])
   |> List.concat_map swap_if
   |> List.concat_map early_return
-  |> List.concat_map unify_if_tail
 
 (** Walker-based Translpiler **)
 let rec mk_access ps base =

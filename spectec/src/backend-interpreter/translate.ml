@@ -116,21 +116,6 @@ and exp2expr exp =
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
   | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
-  (* | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
-    when id.it = id'.it -> (* TODO: Somehow remove this hack *)
-      let name = N id.it in
-      IterE (NameE name, iter2iter iter)
-  | Ast.IterE ({ it = Ast.IterE (inner_exp, (inner_iter, [ inner_id ])); _ }, (iter, [ id ])) when id.it = inner_id.it ->
-      let name = exp2name inner_exp in
-      assert (name = N id.it);
-      IterE (IterE (NameE name, iter2iter inner_iter), iter2iter iter)
-  | Ast.IterE ({ it = Ast.TupE inner_exps; _ }, (Ast.Opt, inner_ids)) ->
-      let inner_names = List.map exp2name inner_exps in
-      assert (List.length inner_names = List.length inner_ids);
-      List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
-      IterE (ListE (List.map exp2expr inner_exps), Opt)
-  | Ast.IterE (inner_exp, (iter, [ _ ])) ->
-      IterE (exp2expr inner_exp, iter2iter iter) *)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
@@ -251,15 +236,15 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC 
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC
   | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
-  | Ast.CaseE 
-      (Ast.Atom "LABEL_", 
+  | Ast.CaseE
+      (Ast.Atom "LABEL_",
         { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
   | Ast.CaseE
       ( Ast.Atom "CONST",
         { it = Ast.TupE (ty :: _); _ }) -> AssertI (TopValueC (Some (exp2expr ty)))
-  | _ -> AssertI (TopValueC None) 
+  | _ -> AssertI (TopValueC None)
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
 let handle_lhs_stack =
@@ -524,24 +509,27 @@ let rec letI lhs rhs targets cont =
       let fresh = get_lhs_name() in
       [ e, fresh ] @ acc, fresh
   ) [] in
+  let bindings_to_lets bindings =
+    List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+  in
   match lhs with
   | ConstructE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
+          LetI (ConstructE (tag, es'), rhs) :: bindings_to_lets bindings,
           [] );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+    LetI (ListE es', rhs) :: bindings_to_lets bindings
     else
     [
       IfI
         ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
+          LetI (ListE es', rhs) :: bindings_to_lets bindings,
           [] );
     ]
   | OptE None ->
@@ -571,6 +559,31 @@ let rec letI lhs rhs targets cont =
       IfI
         ( CompareC (Ge, rhs, b),
           LetI (a, BinopE (Sub, rhs, b)) :: cont,
+          [] );
+    ]
+  | ConcatE (prefix, suffix) ->
+    let handle_list e = match e with
+      | ListE es ->
+        let bindings', es' = extract_non_names es in
+        Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
+      | IterE (NameE _, ListN n) ->
+        Some (NameE n), [], e
+      | _ ->
+        None, [], e in
+    let length_p, bindings_p, prefix' = handle_list prefix in
+    let length_s, bindings_s, suffix' = handle_list suffix in
+    (* TODO: This condition should be injected by sideconditions pass *)
+    let cond = match length_p, length_s with
+      | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | Some l, None
+      | None, Some l -> CompareC (Ge, LengthE rhs, l)
+      | Some l1, Some l2 -> CompareC (Eq, LengthE rhs, BinopE (Add, l1, l2))
+    in
+    [
+      IfI
+        ( cond,
+          LetI (ConcatE (prefix', suffix'), rhs)
+            :: bindings_to_lets (bindings_p @ bindings_s),
           [] );
     ]
   | _ -> LetI (lhs, rhs) :: cont

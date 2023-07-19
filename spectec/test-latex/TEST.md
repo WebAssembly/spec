@@ -2298,9 +2298,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{allocelems}(\mathit{s},\, \epsilon,\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{allocelems}(\mathit{s},\, \mathit{rt}~{{\mathit{rt}'}^\ast},\, {\mathit{ref}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ea}~{{\mathit{ea}'}^\ast}) &\quad
+\mathrm{allocelems}(\mathit{s},\, \mathit{rt}~{{\mathit{rt}'}^\ast},\, ({\mathit{ref}^\ast})~{({{\mathit{ref}'}^\ast})^\ast}) &=& (\mathit{s}_{2},\, \mathit{ea}~{{\mathit{ea}'}^\ast}) &\quad
   \mbox{if}~(\mathit{s}_{1},\, \mathit{ea}) = \mathrm{allocelem}(\mathit{s},\, \mathit{rt},\, {\mathit{ref}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ea}'}^\ast}) = \mathrm{allocelems}(\mathit{s}_{2},\, {{\mathit{rt}'}^\ast},\, {{{\mathit{ref}'}^\ast}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ea}'}^\ast}) = \mathrm{allocelems}(\mathit{s}_{2},\, {{\mathit{rt}'}^\ast},\, {({{\mathit{ref}'}^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -2315,9 +2315,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{allocdatas}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
-\mathrm{allocdatas}(\mathit{s},\, {\mathit{byte}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{da}~{{\mathit{da}'}^\ast}) &\quad
+\mathrm{allocdatas}(\mathit{s},\, ({\mathit{byte}^\ast})~{({{\mathit{byte}'}^\ast})^\ast}) &=& (\mathit{s}_{2},\, \mathit{da}~{{\mathit{da}'}^\ast}) &\quad
   \mbox{if}~(\mathit{s}_{1},\, \mathit{da}) = \mathrm{allocdata}(\mathit{s},\, {\mathit{byte}^\ast}) \\
- &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{da}'}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{1},\, {{{\mathit{byte}'}^\ast}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{da}'}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{1},\, {({{\mathit{byte}'}^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -2380,7 +2380,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{concat}_{\mathit{instr}}(\epsilon) &=& \epsilon &  \\
-\mathrm{concat}_{\mathit{instr}}({\mathit{instr}^\ast}~{{{\mathit{instr}'}^\ast}^\ast}) &=& {\mathit{instr}^\ast}~\mathrm{concat}_{\mathit{instr}}({{{\mathit{instr}'}^\ast}^\ast}) &  \\
+\mathrm{concat}_{\mathit{instr}}(({\mathit{instr}^\ast})~{({{\mathit{instr}'}^\ast})^\ast}) &=& {\mathit{instr}^\ast}~\mathrm{concat}_{\mathit{instr}}({({{\mathit{instr}'}^\ast})^\ast}) &  \\
 \end{array}
 $$
 

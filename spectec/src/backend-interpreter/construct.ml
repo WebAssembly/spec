@@ -331,7 +331,7 @@ let al_of_limits limits max =
     | Some v -> int64_of_int32_u v
     | None -> max
   in
-  
+
   PairV (NumV (int64_of_int32_u limits.Types.min), NumV max)
 
 let al_of_table wasm_table =
