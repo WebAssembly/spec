@@ -25,8 +25,7 @@ def latex_hyperlink(file, id):
   id = text_type(id).translate(tex_replace_map).\
     encode('ascii', 'backslashreplace').decode('ascii').\
     replace('_', '-').replace('\\', '_')
-  #TODO: return '\\hyperref[%s:%s]' % (file, id)
-  return ''
+  return '\\hyperref[%s:%s]' % (file, id)
 
 def latex_transform_math_xref(node):
   new_text = xref_re.sub(lambda m: latex_hyperlink(m.group(1), m.group(2)), node.astext())
