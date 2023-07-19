@@ -52,7 +52,7 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
      \qquad
      C = C' \with \CTYPES = C'.\CTYPES~\rolldt{|C'.\CTYPES|}(\rectype)
      \qquad
-     C \vdashrectype \rectype \ok(|C'.\CTYPES|)
+     C \vdashrectype \rectype ~{\ok}(|C'.\CTYPES|)
    }{
      C \vdashtypes \type^\ast~\rectype \ok
    }
