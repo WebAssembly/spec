@@ -1,11 +1,11 @@
-.. _exec-instr:
+.. _exec-instructions:
 
 Instructions
 ------------
 
 WebAssembly computation is performed by executing individual instructions.
 
-.. _exec-instr-numeric:
+.. _exec-instructions-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ $${rule+: Step_pure/relop}
 
 $${rule+: Step_pure/cvtop-*}
 
-.. _exec-instr-ref:
+.. _exec-instructions-ref:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -71,7 +71,7 @@ $${rule+: Step_pure/ref.is_null-*}
 
 $${rule+: Step_read/ref.func}
 
-.. _exec-instr-parametric:
+.. _exec-instructions-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +92,7 @@ $${rule+: Step_pure/drop}
 
 $${rule+: Step_pure/select-*}
 
-.. _exec-instr-variable:
+.. _exec-instructions-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -137,7 +137,7 @@ $${rule+: Step_read/global.get}
 
 $${rule+: Step/global.set}
 
-.. _exec-instr-table:
+.. _exec-instructions-table:
 
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
@@ -206,7 +206,7 @@ $${rule+: Step_read/table.init-*}
 
 $${rule+: Step/elem.drop}
 
-.. _exec-instr-memory:
+.. _exec-instructions-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -275,7 +275,7 @@ $${rule+: Step_read/memory.init-*}
 
 $${rule+: Step/data.drop}
 
-.. _exec-instr-control:
+.. _exec-instructions-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -368,7 +368,7 @@ $${rule+: Step_read/call}
 
 $${rule+: Step_read/call_indirect-*}
 
-.. _exec-instr-seq:
+.. _exec-instructions-seq:
 
 Blocks
 ~~~~~~

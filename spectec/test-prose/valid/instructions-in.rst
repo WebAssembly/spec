@@ -1,11 +1,11 @@
-.. _valid-instr:
+.. _valid-instructions:
 
 Instructions
 ------------
 
 WebAssembly computation is performed by validuting individual instructions.
 
-.. _valid-instr-numeric:
+.. _valid-instructions-numeric:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +58,7 @@ $${rule+: Instr_ok/reinterpret}
 
 $${rule+: Instr_ok/convert-*}
 
-.. _valid-instr-ref:
+.. _valid-instructions-ref:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -79,7 +79,7 @@ $${rule+: Instr_ok/ref.is_null}
 
 $${rule+: Instr_ok/ref.func}
 
-.. _valid-instr-parametric:
+.. _valid-instructions-parametric:
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,7 +100,7 @@ $${rule+: Instr_ok/drop}
 
 $${rule+: Instr_ok/select-*}
 
-.. _valid-instr-variable:
+.. _valid-instructions-variable:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -145,7 +145,7 @@ $${rule+: Instr_ok/global.get}
 
 $${rule+: Instr_ok/global.set}
 
-.. _valid-instr-table:
+.. _valid-instructions-table:
 
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
@@ -214,7 +214,7 @@ $${rule+: Instr_ok/table.init}
 
 $${rule+: Instr_ok/elem.drop}
 
-.. _valid-instr-memory:
+.. _valid-instructions-memory:
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -283,7 +283,7 @@ $${rule+: Instr_ok/memory.init}
 
 $${rule+: Instr_ok/data.drop}
 
-.. _valid-instr-control:
+.. _valid-instructions-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~

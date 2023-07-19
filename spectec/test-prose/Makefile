@@ -22,6 +22,14 @@ all: pdf
 
 INDEX = index
 
+SYNTAX = syntax
+
+SYNTAXFILES = $(wildcard $(SYNTAX)/*-in.rst)
+
+SYNTAXINPUT = $(strip $(subst " ", " ", $(SYNTAXFILES)))
+
+SYNTAXOUTPUT = $(strip $(subst -in.rst,.rst,$(SYNTAXFILES)))
+
 EXEC = exec
 
 EXECFILES = $(wildcard $(EXEC)/*-in.rst)
@@ -44,8 +52,8 @@ MACRO = macros.def
 
 .PHONY: splice
 
-splice: $(EXEC) $(VALID) $(UTIL)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(EXECOUTPUT) $(VALIDOUTPUT) -p $(EXECINPUT) $(VALIDINPUT) 
+splice: $(SYNTAX) $(EXEC) $(VALID) $(UTIL)
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SYNTAXOUTPUT) $(EXECOUTPUT) $(VALIDOUTPUT) -p $(SYNTAXINPUT) $(EXECINPUT) $(VALIDINPUT) 
 	mv $(MACRO) $(UTIL)
 
 .PHONY: doc
@@ -62,7 +70,8 @@ pdf: latexpdf
 
 latexpdf: doc
 	mkdir -p $(BUILDDIR)
-	cp -r conf.py $(INDEX).rst $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
+	cp -r conf.py $(INDEX).rst $(SYNTAX) $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
+	rm -f $(SPHINXDIR)/$(SYNTAX)/*-in.rst
 	rm -f $(SPHINXDIR)/$(EXEC)/*-in.rst
 	rm -f $(SPHINXDIR)/$(VALID)/*-in.rst
 	$(SPHINXBUILD) -b latex -d $(SPHINXDIR)/doctrees $(SPHINXDIR) $(BUILDDIR)/latex
@@ -77,6 +86,7 @@ clean:
 	dune clean
 	rm -f *.aux *.log
 	rm -rf $(SPHINXDIR)
+	rm -f $(SYNTAXOUTPUT)
 	rm -f $(EXECOUTPUT) 
 	rm -f $(VALIDOUTPUT)
 	rm -f $(UTIL)/$(MACRO)
