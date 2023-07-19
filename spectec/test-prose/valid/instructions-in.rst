@@ -3,8 +3,6 @@
 Instructions
 ------------
 
-WebAssembly computation is performed by validuting individual instructions.
-
 .. _valid-instructions-numeric:
 
 Numeric Instructions

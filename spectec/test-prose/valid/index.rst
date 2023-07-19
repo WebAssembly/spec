@@ -5,4 +5,6 @@ Validation
 
 .. toctree::
 
+   conventions
+   types
    instructions

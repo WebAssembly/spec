@@ -3,8 +3,6 @@
 Instructions
 ------------
 
-WebAssembly computation is performed by executing individual instructions.
-
 .. _exec-instructions-numeric:
 
 Numeric Instructions
