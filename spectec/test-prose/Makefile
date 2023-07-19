@@ -8,64 +8,66 @@ OWNDIR = $(PWD)
 SPECDIR = ../spec
 SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
+SPHINXBUILD = sphinx-build
+SPHINXDIR = _sphinx
+BUILDDIR = _sphinx/_build
+
 # Main targets
 
 .PHONY: all
 
-all: html pdf
+all: pdf
 
 # Sphinx splicing
 
+INDEX = index
+
+EXEC = exec
+
+EXECFILES = $(wildcard $(EXEC)/*-in.rst)
+
+EXECINPUT = $(strip $(subst " ", " ", $(EXECFILES)))
+
+EXECOUTPUT = $(strip $(subst -in.rst,.rst,$(EXECFILES)))
+
+VALID = valid
+
+VALIDFILES = $(wildcard $(VALID)/*-in.rst)
+
+VALIDINPUT = $(strip $(subst " ", " ", $(VALIDFILES)))
+
+VALIDOUTPUT = $(strip $(subst -in.rst,.rst,$(VALIDFILES)))
+
+UTIL = util
+
 MACRO = macros.def
 
-EXECDIR = exec
+.PHONY: splice
 
-EXECINDEX = exec/index
+splice: $(EXEC) $(VALID) $(UTIL)
+	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(EXECOUTPUT) $(VALIDOUTPUT) -p $(EXECINPUT) $(VALIDINPUT) 
+	mv $(MACRO) $(UTIL)
 
-EXECINSTRIN = exec/instructions-in
-EXECINSTROUT = exec/instructions
+.PHONY: doc
 
-EXECRUNTIMEIN = exec/runtime-in
-EXECRUNTIMEOUT = exec/runtime
+doc: conf.py $(INDEX).rst splice
 
-EXECAUXIN = exec/auxiliary-in
-EXECAUXOUT = exec/auxiliary
+.PHONY: pdf
 
-VALIDDIR = valid
+pdf: latexpdf 
+	cp $(BUILDDIR)/latex/*.pdf .
+	@echo "pdf finished; the PDF files are in the current directory."
 
-VALIDINDEX = valid/index
+.PHONY: latexpdf
 
-VALIDINSTRIN = valid/instructions-in
-VALIDINSTROUT = valid/instructions
-
-OUTPROSE = prose
-
-SPHINXDIR = _sphinx
-
-.PHONY: html pdf
-
-doc: $(EXECINDEX).rst $(EXECINSTRIN).rst $(EXECRUNTIMEIN).rst $(EXECAUXIN).rst $(VALIDINDEX).rst $(VALIDINSTRIN).rst
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(EXECINSTROUT).rst $(EXECRUNTIMEOUT).rst $(EXECAUXOUT).rst $(VALIDINSTROUT).rst -p $(word 2,$^) $(word 3,$^) $(word 4,$^) $(word 6,$^) 
-
-sphinx-splice: html pdf
-
-html: $(OUTPROSE).rst doc conf.py macros.def mathdef.py
-	mkdir -p $(SPHINXDIR)/_build
-	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
-	rsync -av --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
-	rsync -av --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
-	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
-	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(OUTPROSE).html >$(OUTPROSE).html.tmp
-	mv -f $(OUTPROSE).html.tmp $(SPHINXDIR)/_build/$(OUTPROSE).html
-
-pdf: $(OUTPROSE).rst doc conf.py macros.def mathdef.py
-	mkdir -p $(SPHINXDIR)/_build
-	cp $< conf.py macros.def mathdef.py $(SPHINXDIR)
-	rsync -av --exclude='*-in.rst' $(EXECDIR) $(SPHINXDIR)
-	rsync -av --exclude='*-in.rst' $(VALIDDIR) $(SPHINXDIR)
-	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
-	(cd $(SPHINXDIR)/_build; pdflatex $(OUTPROSE).tex)
-	cp $(SPHINXDIR)/_build/prose.pdf .
+latexpdf: doc
+	mkdir -p $(BUILDDIR)
+	cp -r conf.py $(INDEX).rst $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
+	rm -f $(SPHINXDIR)/$(EXEC)/*-in.rst
+	rm -f $(SPHINXDIR)/$(VALID)/*-in.rst
+	$(SPHINXBUILD) -b latex -d $(SPHINXDIR)/doctrees $(SPHINXDIR) $(BUILDDIR)/latex
+	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
+	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
 
 # Cleanup
 
@@ -75,9 +77,7 @@ clean:
 	dune clean
 	rm -f *.aux *.log
 	rm -rf $(SPHINXDIR)
-	rm -f $(EXECINSTROUT).rst
-	rm -f $(EXECRUNTIMEOUT).rst
-	rm -f $(EXECAUXOUT).rst
-	rm -f $(VALIDINSTROUT).rst
+	rm -f $(EXECOUTPUT) 
+	rm -f $(VALIDOUTPUT)
 	rm -f $(MACRO)
 	rm -f *.pdf

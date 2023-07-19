@@ -3,17 +3,17 @@ import sys
 pwd = os.path.abspath('.')
 sys.path.insert(0, pwd)
 
-name = 'WebAssembly Formal Specification'
-project = 'prose'
-title = 'Wasm Formal Specification'
+name = 'WebAssembly Specification'
+project = 'WebAssembly'
+title = 'WebAssembly Specification'
 extensions = [
   'sphinx.ext.mathjax',
-  'mathdef'
+  'util.mathdef'
 ]
-master_doc = 'prose'
+master_doc = 'index'
 
 # Macros
 rst_prolog = """
-.. include:: /""" + os.path.abspath('.') + """/macros.def
+.. include:: /""" + pwd + """/util/macros.def
 """
 

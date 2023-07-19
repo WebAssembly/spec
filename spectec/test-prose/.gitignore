@@ -6,4 +6,6 @@ exec/auxiliary.rst
 exec/runtime.rst
 exec/instructions.rst
 valid/instructions.rst
+util/__pycache__/*
+util/macros.def
 _sphinx
