@@ -325,7 +325,7 @@ and render_expr env in_math = function
       (* TODO need a better way to e should be enclosed in parentheses *)
       let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
       let siter = render_iter env in_math iter in
-      se ^ siter
+      "{" ^ se ^ "}" ^ siter
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
