@@ -191,13 +191,15 @@
 .. |F32| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32}}
 .. |F64| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64}}
 .. |V128| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v128}}
+.. |IN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i}N}
+.. |FN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f}N}
+.. |VN| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{v}N}
 .. |I8X16| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i8x16}}
 .. |I16X8| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i16x8}}
 .. |I32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i32x4}}
 .. |I64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{i64x2}}
 .. |F32X4| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f32x4}}
 .. |F64X2| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{f64x2}}
-.. |I128| mathdef:: \K{i128}
 
 .. |REF| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{ref}}
 .. |NULL| mathdef:: \xref{syntax/types}{syntax-reftype}{\K{null}}
@@ -283,9 +285,9 @@
 
 .. |reftypediff| mathdef:: \xref{valid/conventions}{aux-reftypediff}{\setminus}
 
-.. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
+.. |rollrt#1| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}_{#1}}
 .. |unrollrt| mathdef:: \xref{valid/conventions}{aux-unroll-rectype}{\F{unroll}}
-.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast}
+.. |rolldt#1| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast_{#1}}
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
 
@@ -493,6 +495,10 @@
 .. |ARRAYGETU| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.get\_u}}
 .. |ARRAYSET| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.set}}
 .. |ARRAYLEN| mathdef:: \xref{syntax/instructions}{syntax-instr-array}{\K{array.len}}
+.. |ARRAYFILL| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.fill}}
+.. |ARRAYCOPY| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.copy}}
+.. |ARRAYINITDATA| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_data}}
+.. |ARRAYINITELEM| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_elem}}
 
 .. |I31NEW| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.new}}
 .. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get}}
@@ -702,11 +708,20 @@
 .. |Bnumtype| mathdef:: \xref{binary/types}{binary-numtype}{\B{numtype}}
 .. |Bvectype| mathdef:: \xref{binary/types}{binary-vectype}{\B{vectype}}
 .. |Bheaptype| mathdef:: \xref{binary/types}{binary-heaptype}{\B{heaptype}}
+.. |Babsheaptype| mathdef:: \xref{binary/types}{binary-absheaptype}{\B{absheaptype}}
 .. |Breftype| mathdef:: \xref{binary/types}{binary-reftype}{\B{reftype}}
 .. |Bvaltype| mathdef:: \xref{binary/types}{binary-valtype}{\B{valtype}}
 .. |Bresulttype| mathdef:: \xref{binary/types}{binary-resulttype}{\B{resulttype}}
 .. |Bfunctype| mathdef:: \xref{binary/types}{binary-functype}{\B{functype}}
-.. |Bdeftype| mathdef:: \xref{binary/types}{binary-deftype}{\B{deftype}}
+.. |Bstructtype| mathdef:: \xref{binary/types}{binary-structtype}{\B{structtype}}
+.. |Barraytype| mathdef:: \xref{binary/types}{binary-arraytype}{\B{arraytype}}
+.. |Baggrtype| mathdef:: \xref{binary/types}{binary-aggrtype}{\B{aggrtype}}
+.. |Bfieldtype| mathdef:: \xref{binary/types}{binary-fieldtype}{\B{fieldtype}}
+.. |Bstoragetype| mathdef:: \xref{binary/types}{binary-storagetype}{\B{storagetype}}
+.. |Bpackedtype| mathdef:: \xref{binary/types}{binary-packedtype}{\B{packedtype}}
+.. |Bcomptype| mathdef:: \xref{binary/types}{binary-comptype}{\B{comptype}}
+.. |Bsubtype| mathdef:: \xref{binary/types}{binary-subtype}{\B{subtype}}
+.. |Brectype| mathdef:: \xref{binary/types}{binary-rectype}{\B{rectype}}
 .. |Bglobaltype| mathdef:: \xref{binary/types}{binary-globaltype}{\B{globaltype}}
 .. |Btabletype| mathdef:: \xref{binary/types}{binary-tabletype}{\B{tabletype}}
 .. |Bmemtype| mathdef:: \xref{binary/types}{binary-memtype}{\B{memtype}}
@@ -772,6 +787,7 @@
 
 .. |Bmemarg| mathdef:: \xref{binary/instructions}{binary-memarg}{\B{memarg}}
 .. |Bblocktype| mathdef:: \xref{binary/instructions}{binary-blocktype}{\B{blocktype}}
+.. |Bcastflags| mathdef:: \xref{binary/instructions}{binary-castflags}{\B{castflags}}
 
 .. |Binstr| mathdef:: \xref{binary/instructions}{binary-instr}{\B{instr}}
 .. |Bexpr| mathdef:: \xref{binary/instructions}{binary-expr}{\B{expr}}
@@ -869,10 +885,20 @@
 .. |Tnumtype| mathdef:: \xref{text/types}{text-numtype}{\T{numtype}}
 .. |Tvectype| mathdef:: \xref{text/types}{text-vectype}{\T{vectype}}
 .. |Theaptype| mathdef:: \xref{text/types}{text-heaptype}{\T{heaptype}}
+.. |Tabsheaptype| mathdef:: \xref{text/types}{text-absheaptype}{\T{absheaptype}}
 .. |Treftype| mathdef:: \xref{text/types}{text-reftype}{\T{reftype}}
 .. |Tvaltype| mathdef:: \xref{text/types}{text-valtype}{\T{valtype}}
 .. |Tfunctype| mathdef:: \xref{text/types}{text-functype}{\T{functype}}
+.. |Tstructtype| mathdef:: \xref{text/types}{text-structtype}{\T{structtype}}
+.. |Tarraytype| mathdef:: \xref{text/types}{text-arraytype}{\T{arraytype}}
+.. |Taggrtype| mathdef:: \xref{text/types}{text-aggrype}{\T{aggrtype}}
+.. |Tfieldtype| mathdef:: \xref{text/types}{text-fieldtype}{\T{fieldtype}}
+.. |Tstoragetype| mathdef:: \xref{text/types}{text-storagetype}{\T{storagetype}}
+.. |Tpackedtype| mathdef:: \xref{text/types}{text-packedtype}{\T{packedtype}}
+.. |Tcomptype| mathdef:: \xref{text/types}{text-comptype}{\T{comptype}}
+.. |Tsubtype| mathdef:: \xref{text/types}{text-subtype}{\T{subtype}}
 .. |Tdeftype| mathdef:: \xref{text/types}{text-deftype}{\T{deftype}}
+.. |Trectype| mathdef:: \xref{text/types}{text-rectype}{\T{rectype}}
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
 .. |Ttabletype| mathdef:: \xref{text/types}{text-tabletype}{\T{tabletype}}
@@ -881,6 +907,7 @@
 
 .. |Tparam| mathdef:: \xref{text/types}{text-functype}{\T{param}}
 .. |Tresult| mathdef:: \xref{text/types}{text-functype}{\T{result}}
+.. |Tfield| mathdef:: \xref{text/types}{text-structtype}{\T{field}}
 
 
 .. Indices, non-terminals
@@ -894,14 +921,7 @@
 .. |Tdataidx| mathdef:: \xref{text/modules}{text-dataidx}{\T{dataidx}}
 .. |Tlocalidx| mathdef:: \xref{text/modules}{text-localidx}{\T{localidx}}
 .. |Tlabelidx| mathdef:: \xref{text/modules}{text-labelidx}{\T{labelidx}}
-
-.. |Ttypebind| mathdef:: \xref{text/modules}{text-typebind}{\T{typebind}}
-.. |Tfuncbind| mathdef:: \xref{text/modules}{text-funcbind}{\T{funcbind}}
-.. |Ttablebind| mathdef:: \xref{text/modules}{text-tablebind}{\T{tablebind}}
-.. |Tmembind| mathdef:: \xref{text/modules}{text-membind}{\T{membind}}
-.. |Tglobalbind| mathdef:: \xref{text/modules}{text-globalbind}{\T{globalbind}}
-.. |Tlocalbind| mathdef:: \xref{text/modules}{text-localbind}{\T{localbind}}
-.. |Tlabelbind| mathdef:: \xref{text/modules}{text-labelbind}{\T{labelbind}}
+.. |Tfieldidx| mathdef:: \xref{text/modules}{text-fieldidx}{\T{fieldidx}}
 
 
 .. Modules, non-terminals
@@ -955,6 +975,7 @@
 .. Contexts
 
 .. |ITYPEDEFS| mathdef:: \xref{text/conventions}{text-context}{\K{typedefs}}
+.. |IFIELDS| mathdef:: \xref{text/conventions}{text-context}{\K{fields}}
 .. |ITYPES| mathdef:: \xref{text/conventions}{text-context}{\K{types}}
 .. |IFUNCS| mathdef:: \xref{text/conventions}{text-context}{\K{funcs}}
 .. |ITABLES| mathdef:: \xref{text/conventions}{text-context}{\K{tables}}
@@ -1042,7 +1063,7 @@
 .. |vdashpackedtype| mathdef:: \xref{valid/types}{valid-packedtype}{\vdash}
 .. |vdashstoragetype| mathdef:: \xref{valid/types}{valid-storagetype}{\vdash}
 .. |vdashsubtype| mathdef:: \xref{valid/types}{valid-subtype}{\vdash}
-.. |vdashrectype| mathdef:: \xref{valid/types}{valid-retype}{\vdash}
+.. |vdashrectype| mathdef:: \xref{valid/types}{valid-rectype}{\vdash}
 .. |vdashtabletype| mathdef:: \xref{valid/types}{valid-tabletype}{\vdash}
 .. |vdashmemtype| mathdef:: \xref{valid/types}{valid-memtype}{\vdash}
 .. |vdashglobaltype| mathdef:: \xref{valid/types}{valid-globaltype}{\vdash}
@@ -1196,8 +1217,8 @@
 .. |AITYPE| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{type}}
 .. |AIFIELDS| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{fields}}
 
-.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I8.PACK}}
-.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I16.PACK}}
+.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i8.pack}}
+.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i16.pack}}
 
 
 .. Instances, non-terminals
@@ -1408,13 +1429,13 @@
 .. |bytes| mathdef:: \xref{exec/numerics}{aux-bytes}{\F{bytes}}
 .. |littleendian| mathdef:: \xref{exec/numerics}{aux-littleendian}{\F{littleendian}}
 .. |signed| mathdef:: \xref{exec/numerics}{aux-signed}{\F{signed}}
-.. |bool| mathdef:: \xref{exec/numerics}{aux-bool}{\F{bool}}
+.. |tobool| mathdef:: \xref{exec/numerics}{aux-tobool}{\F{bool}}
 
 .. |ieee| mathdef:: \xref{exec/numerics}{aux-ieee}{\F{float}}
 .. |nans| mathdef:: \xref{exec/numerics}{aux-nans}{\F{nans}}
 .. |trunc| mathdef:: \xref{exec/numerics}{aux-trunc}{\F{trunc}}
-.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat}^{\K{u}}}
-.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat}^{\K{s}}}
+.. |satu| mathdef:: \xref{exec/numerics}{aux-sat_u}{\F{sat\_u}}
+.. |sats| mathdef:: \xref{exec/numerics}{aux-sat_s}{\F{sat\_s}}
 
 .. |lanes| mathdef:: \xref{exec/numerics}{aux-lanes}{\F{lanes}}
 
@@ -1485,6 +1506,10 @@
 
 .. Embedding
 .. ---------
+
+.. |bool| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{bool}}
+.. |TRUE| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{true}}
+.. |FALSE| mathdef:: \xref{appendix/embedding}{embed-bool}{\X{false}}
 
 .. |error| mathdef:: \xref{appendix/embedding}{embed-error}{\X{error}}
 .. |ERROR| mathdef:: \xref{appendix/embedding}{embed-error}{\K{error}}

@@ -34,7 +34,8 @@ They correspond to the respective binary floating-point representations, also kn
 Number types are *transparent*, meaning that their bit patterns can be observed.
 Values of number type can be stored in :ref:`memories <syntax-mem>`.
 
-.. _bitwidth:
+.. _bitwidth-numtype:
+.. _bitwidth-valtype:
 
 Conventions
 ...........
@@ -66,10 +67,12 @@ values, or a single 128 bit type. The interpretation is determined by individual
 Vector types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
 Values of vector type can be stored in :ref:`memories <syntax-mem>`.
 
+.. _bitwidth-vectype:
+
 Conventions
 ...........
 
-* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
 
@@ -228,7 +231,7 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
    \end{array}
 
 
-.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type
+.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type, bit width
    pair: abstract syntax; structure type
    pair: abstract syntax; array type
    pair: abstract syntax; field type
@@ -262,6 +265,13 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
    \production{packed type} & \packedtype &::=&
      \I8 ~|~ \I16 \\
    \end{array}
+
+.. _bitwidth-fieldtype:
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
 
 
 .. index:: ! compound type, function type, aggreagate type, structure type, array type

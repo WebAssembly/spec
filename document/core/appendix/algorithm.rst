@@ -70,16 +70,16 @@ Similarly, :ref:`defined types <syntax-deftype>` :code:`def_type` can be represe
    func expand_def(t : def_type) : comp_type =
      return t.rec.types[t.proj].body
 
-These representations assume that all types have been :ref:`closed <type-closed>` by :ref:`substituting <aux-subst>` all :ref:`type indices <syntax-typeidx>` (in :ref:`concrete heap types <syntax-heaptype>` and in :ref:`sub types <syntax-subtype>`) with their respective :ref:`defined types <syntax-deftype>`.
+These representations assume that all types have been :ref:`closed <type-closed>` by :ref:`substituting <type-subst>` all :ref:`type indices <syntax-typeidx>` (in :ref:`concrete heap types <syntax-heaptype>` and in :ref:`sub types <syntax-subtype>`) with their respective :ref:`defined types <syntax-deftype>`.
 This includes *recursive* references to enclosing :ref:`defined types <syntax-deftype>`,
 such that type representations form graphs and may be *cyclic* for :ref:`recursive types <syntax-rectype>`.
 
-We assume that all types have been *canonicalized*, such that equality on two type representations holds if and only if they are in fact :ref:`equivalent <equiv>`. making it a constant-time check.
+We assume that all types have been *canonicalized*, such that equality on two type representations holds if and only if their :ref:`closures <type-closure>` are syntactically equivalent, making it a constant-time check.
 
 .. note::
    For the purpose of type canonicalization, recursive references from a :ref:`heap type <syntax-heaptype>` to an enclosing :ref:`recursive type <syntax-reftype>` (i.e., forward edges in the graph that form a cycle) need to be distinguished from references to previously defined types.
    However, this distinction does not otherwise affect validation, so is ignored here.
-   In the graph representation, all recursive types are effectively infinitely :ref:`unrolled <aux-unroll>`.
+   In the graph representation, all recursive types are effectively infinitely :ref:`unrolled <aux-unroll-rectype>`.
 
 We further assume that :ref:`validation <valid-valtype>` and :ref:`subtyping <match-valtype>` checks are defined on value types, as well as a few auxiliary functions on compound types:
 

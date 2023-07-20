@@ -159,7 +159,7 @@ Block Types
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
+     \expanddt(C.\CTYPES[\typeidx]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
@@ -309,8 +309,8 @@ Compound Types
      C \vdashcomptype \TSTRUCT~\X{ft}^\ast \ok
    }
 
-:math:`TARRAY~\fieldtype`
-.........................
+:math:`\TARRAY~\fieldtype`
+..........................
 
 * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
 
