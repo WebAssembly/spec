@@ -34,7 +34,8 @@ They correspond to the respective binary floating-point representations, also kn
 Number types are *transparent*, meaning that their bit patterns can be observed.
 Values of number type can be stored in :ref:`memories <syntax-mem>`.
 
-.. _bitwidth:
+.. _bitwidth-numtype:
+.. _bitwidth-valtype:
 
 Conventions
 ...........
@@ -66,10 +67,12 @@ values, or a single 128 bit type. The interpretation is determined by individual
 Vector types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
 Values of vector type can be stored in :ref:`memories <syntax-mem>`.
 
+.. _bitwidth-vectype:
+
 Conventions
 ...........
 
-* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
 
@@ -164,24 +167,6 @@ Other references are *non-null*.
 
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
-
-.. _aux-reftypediff:
-
-Convention
-..........
-
-* The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two reference types is defined as follows:
-
-  .. math::
-     \begin{array}{lll}
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\NULL~\X{ht}_2) &=& (\REF~\X{ht}_1) \\
-     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\X{ht}_2) &=& (\REF~\NULL_1^?~\X{ht}_1) \\
-     \end{array}
-
-.. note::
-   This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
-   Since the type system does not have general union types,
-   the definition only affects the presence of null and cannot express the absence of other values.
 
 
 .. index:: ! value type, number type, vector type, reference type
@@ -281,10 +266,12 @@ Structures are heterogeneous, but require static indexing, while arrays need to 
      \I8 ~|~ \I16 \\
    \end{array}
 
+.. _bitwidth-fieldtype:
+
 Conventions
 ...........
 
-* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
 
 
 .. index:: ! compound type, function type, aggreagate type, structure type, array type

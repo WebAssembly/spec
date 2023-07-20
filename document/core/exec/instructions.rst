@@ -394,12 +394,12 @@ Reference Instructions
    \end{array}
 
 
-.. _exec-i31.get_s:
+.. _exec-i31.get_sx:
 
 :math:`\I31GET\K{\_}\sx`
 ........................
 
-1. Assert: due to :ref:`validation <valid-i31.get_s>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~\I31)` is on the top of the stack.
 
 2. Pop the value :math:`\reff` from the stack.
 
@@ -728,7 +728,7 @@ Reference Instructions
 
 4. Let :math:`\TARRAY~\X{ft}` be the :ref:`array type <syntax-arraytype>` :math:`\deftype`. (todo: unroll)
 
-5. Assert: due to :ref:`validation <valid-struct.new_fixed>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
+5. Assert: due to :ref:`validation <valid-array.new_fixed>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
 
 6. Pop the :math:`n` values :math:`\val^\ast` from the stack.
 
@@ -788,9 +788,9 @@ Reference Instructions
 
 11. Pop the value :math:`(\I32.\CONST~s)` from the stack.
 
-12. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`size <aux-size-fieldtype>`.
+12. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`bit width <bitwidth-fieldtype>`.
 
-13. Let :math:`z` be the :ref:`size <aux-size-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}`.
+13. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}`.
 
 14. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
 

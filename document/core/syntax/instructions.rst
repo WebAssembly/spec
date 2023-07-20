@@ -351,7 +351,7 @@ Operations are performed point-wise on the values of each lane.
 .. note::
    For example, the shape :math:`\K{i32x4}` interprets the operand
    as four |i32| values, packed into an |i128|.
-   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+   The bit width of the numeric type :math:`t` times :math:`N` always is 128.
 
 Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
 

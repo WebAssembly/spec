@@ -571,7 +571,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TFUNC~\functype
+     \expanddt(C.\CTYPES[x]) = \TFUNC~\functype
    }{
      C \vdashimportdesc \IDFUNC~x : \ETFUNC~C.\CTYPES[x]
    }
