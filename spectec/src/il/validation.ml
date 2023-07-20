@@ -100,7 +100,7 @@ let as_iter_typ iter phrase env dir t at : typ =
 
 let as_list_typ phrase env dir t at : typ =
   match expand' env t.it with
-  | IterT (t1, (List | List1 | ListN _ | IndexedListN _)) -> t1
+  | IterT (t1, (List | List1 | ListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : typ list =
@@ -241,8 +241,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | IndexedListN (_, e)
-  | ListN e -> valid_exp env e (NatT $ e.at)
+  | ListN (e, _) -> valid_exp env e (NatT $ e.at)
 
 
 (* Types *)
@@ -260,8 +259,7 @@ and valid_typ env t =
     List.iter (valid_typ env) ts
   | IterT (t1, iter) ->
     match iter with
-    | IndexedListN (_, e)
-    | ListN e -> error e.at "definite iterator not allowed in type"
+    | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ -> valid_typ env t1; valid_iter env iter
 
 and valid_deftyp env dt =
@@ -318,7 +316,6 @@ and infer_exp env e : typ =
   | IterE (e1, iter) ->
     let iter' =
       match fst iter with
-      | IndexedListN _
       | ListN _ -> List
       | iter' -> iter'
     in

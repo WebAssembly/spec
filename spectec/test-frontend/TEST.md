@@ -4270,12 +4270,12 @@ $$
  &&&\quad {\land}~{\mathit{ga}_{\mathit{ex}}^\ast} = \mathrm{globals}({\mathit{externval}^\ast}) \\
  &&&\quad {\land}~{\mathit{ta}_{\mathit{ex}}^\ast} = \mathrm{tables}({\mathit{externval}^\ast}) \\
  &&&\quad {\land}~{\mathit{ma}_{\mathit{ex}}^\ast} = \mathrm{mems}({\mathit{externval}^\ast}) \\
- &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{func}}}} \\
- &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{global}}}} \\
- &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{table}}}} \\
- &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{mem}}}} \\
- &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{elem}}}} \\
- &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{data}}}} \\
+ &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}^(i<\mathit{n}_{\mathit{func}})} \\
+ &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}^(i<\mathit{n}_{\mathit{global}})} \\
+ &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}^(i<\mathit{n}_{\mathit{table}})} \\
+ &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}^(i<\mathit{n}_{\mathit{mem}})} \\
+ &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}^(i<\mathit{n}_{\mathit{elem}})} \\
+ &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}^(i<\mathit{n}_{\mathit{data}})} \\
  &&&\quad {\land}~{\mathit{xi}^\ast} = {\mathrm{instexport}({\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\, {\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\, {\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\, {\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\, \mathit{export})^\ast} \\
  &&&\quad {\land}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{func}~{\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\; \\
@@ -4346,9 +4346,9 @@ $$
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
  &&&\quad {\land}~\mathit{n}_{\mathit{elem}} = {|{\mathit{elem}^\ast}|} \\
- &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^{\mathit{i} < \mathit{n}_{\mathit{elem}}}}) \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^(i<\mathit{n}_{\mathit{elem}})}) \\
  &&&\quad {\land}~\mathit{n}_{\mathit{data}} = {|{\mathit{data}^\ast}|} \\
- &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^{\mathit{j} < \mathit{n}_{\mathit{data}}}}) \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^(j<\mathit{n}_{\mathit{data}})}) \\
  &&&\quad {\land}~{\mathit{start}^?} = {(\mathsf{start}~\mathit{x})^?} \\
 \end{array}
 $$

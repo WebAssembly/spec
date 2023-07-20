@@ -336,11 +336,7 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN e ->
-    match e.it with
-    | ParenE ({ it = CmpE ({ it = VarE id; _ }, LtOp, e); _}, _) ->
-      Il.IndexedListN (id, elab_exp env e (NatT $ e.at))
-    | _ -> Il.ListN (elab_exp env e (NatT $ e.at))
+  | ListN (e, opt) -> Il.ListN (elab_exp env e (NatT $ e.at), opt)
 
 
 (* Types *)

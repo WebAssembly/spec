@@ -20,7 +20,9 @@ let eq_nl_list eq_x xs1 xs2 = eq_list (eq_nl_elem eq_x) xs1 xs2
 let rec eq_iter iter1 iter2 =
   iter1 = iter2 ||
   match iter1, iter2 with
-  | ListN e1, ListN e2 -> eq_exp e1 e2
+  | ListN (e1, None), ListN (e2, None) -> eq_exp e1 e2
+  | ListN (e1, Some id1), ListN (e2, Some id2) ->
+      eq_exp e1 e2 && id1.it = id2.it
   | _, _ -> false
 
 
