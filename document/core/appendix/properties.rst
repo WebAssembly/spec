@@ -167,7 +167,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
      \qquad
      (\X{ht} \prec x,i)^\ast
      \qquad
-     (\unrollht(\X{ht}) = \TSUB~{\X{ht}'}^\ast~\comptype')^\ast
+     (\unrollht{C}(\X{ht}) = \TSUB~{\X{ht}'}^\ast~\comptype')^\ast
      \\
      C \vdashcomptype \comptype \ok
      \qquad
