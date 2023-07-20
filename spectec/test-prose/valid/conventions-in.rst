@@ -3,7 +3,7 @@
 Conventions
 -----------
 
-.. _valid-context:
+.. _syntax-context:
 .. _valid-conventions-contexts:
 
 Contexts

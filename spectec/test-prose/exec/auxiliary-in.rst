@@ -1,14 +1,14 @@
-.. _helper-auxiliary:
+.. _exec-auxiliary:
 
 Auxiliary
 ---------
 
-.. _helper-auxiliary-general-constants:
+.. _exec-auxiliary-general-constants:
 
 General Constants
 ~~~~~~~~~~~~~~~~~
 
-.. _helper_Ki:
+.. _exec_Ki:
 
 %{prose-fctn: Ki}
 
@@ -16,12 +16,12 @@ General Constants
 
 $${definition: Ki}
 
-.. _helper-auxiliary-general-functions:
+.. _exec-auxiliary-general-functions:
 
 General Functions
 ~~~~~~~~~~~~~~~~~
 
-.. _helper_min:
+.. _exec_min:
 
 %{prose-fctn: min}
 
@@ -29,12 +29,12 @@ General Functions
 
 $${definition: min}
 
-.. _helper-auxiliary-types:
+.. _exec-auxiliary-types:
 
 Auxiliary Definitions on Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _helper_size:
+.. _exec_size:
 
 %{prose-fctn: size}
 

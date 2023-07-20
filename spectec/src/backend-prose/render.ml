@@ -129,19 +129,18 @@ let render_macro_keyword s =
   in
   String.fold_left escape "" s
 
-let render_macro_def s =
+let render_macro_def ref s =
   (* TODO hardcoded to avoid duplicate macros *)
   if s = "_F" then ""
   else if s = "LABEL_" then ".. |label| mathdef:: {\\X{label}}"
   else
+    let xref = sprintf "\\xref{%s}{%s}" "" ref in
     let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
-    sprintf ".. |%s| mathdef:: {\\%s{%s}}"
-      (macroify s) typ (render_macro_keyword s)
+    sprintf ".. |%s| mathdef:: {\\%s{%s}}\n.. (%s)"
+      (macroify s) typ (render_macro_keyword s) xref
 
-let render_macro env =
-  let seen = Set.empty in
-  let syn = !(env.syn) in
-  let (ssyn, seen) = Map.fold
+let render_macro_syn syn seen =
+  Map.fold
     (fun parent children acc ->
       let ssyn, seen = acc in
       let schildren, seen = List.fold_left
@@ -149,7 +148,7 @@ let render_macro env =
           let schildren, seen = acc in
           let (skeyword, seen) = 
             if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-            else (render_macro_def keyword, Set.add keyword seen)
+            else (render_macro_def ("syntax-" ^ parent) keyword, Set.add keyword seen)
           in
           (schildren ^ skeyword ^ "\n", seen))
         ("", seen) children
@@ -163,18 +162,21 @@ let render_macro env =
       (ssyn, seen)
     )
     syn ("", seen)
-  in
-  let dec = !(env.dec) in
-  let (sdec, _seen) = Set.fold
+
+let render_macro_dec dec seen =
+  Set.fold
     (fun keyword acc -> 
       let sdec, seen = acc in
       let skeyword, seen =
         if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-        else (render_macro_def keyword, Set.add keyword seen)
+        else (render_macro_def ("exec-" ^ keyword) keyword, Set.add keyword seen)
       in
       (sdec ^ skeyword ^ "\n", seen))
     dec ("", seen)
-  in
+
+let render_macro env =
+  let (ssyn, seen) = render_macro_syn !(env.syn) Set.empty in
+  let (sdec, _seen) = render_macro_dec !(env.dec) seen in
   macro_template
   ^ ".. Syntax\n.. ------\n\n"
   ^ ssyn
