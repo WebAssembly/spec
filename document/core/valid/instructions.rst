@@ -598,6 +598,131 @@ Aggregate Reference Instructions
    }
 
 
+.. _valid-array.fill:
+
+:math:`\ARRAYFILL~x`
+....................
+
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
+
+* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
+
+* The prefix :math:`\mut` must be :math:`\MVAR`.
+
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+
+* Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~t~\I32] \to []`.
+
+.. math::
+   \frac{
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\MVAR~\X{st})
+   }{
+     C \vdashinstr \ARRAYFILL~x : [(\REF~\NULL~x)~\I32~\unpacktype(\X{st})~\I32] \to []
+   }
+
+
+.. _valid-array.copy:
+
+:math:`\ARRAYCOPY~x~y`
+......................
+
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
+
+* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_1`.
+
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut_1~\storagetype_1` be :math:`\fieldtype_1`.
+
+* The prefix :math:`\mut_1` must be :math:`\MVAR`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y]` must exist.
+
+* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[y]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_2`.
+
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut_2~\storagetype_2` be :math:`\fieldtype_2`.
+
+* The :ref:`storage type <syntax-storagetype>` :math:`\storagetype_2` must :ref:`match <match-storagetype>` :math:`\storagetype_1`.
+
+* Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~(\REF~\NULL~y)~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\MVAR~\X{st_1})
+     \qquad
+     \expanddt(C.\CTYPES[y]) = \TARRAY~(\mut~\X{st_2})
+     \qquad
+     C \vdashstoragetypematch \X{st_2} \matchesstoragetype \X{st_1}
+   }{
+     C \vdashinstr \ARRAYCOPY~x~y : [(\REF~\NULL~x)~\I32~(\REF~\NULL~y)~\I32~\I32] \to []
+   }
+
+
+.. _valid-array.init_data:
+
+:math:`\ARRAYINITDATA~x~y`
+..........................
+
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
+
+* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
+
+* The prefix :math:`\mut` must be :math:`\MVAR`.
+
+* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
+
+* The :ref:`value type <syntax-valtype>` :math:`t` must be a :ref:`numeric type <syntax-numtype>` or a :ref:`vector type <syntax-vectype>`.
+
+* The :ref:`data segment <syntax-data>` :math:`C.\CDATAS[y]` must exist.
+
+* Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\MVAR~\X{st})
+     \qquad
+     \unpacktype(\X{st}) = \numtype \lor \unpacktype(\X{st}) = \vectype
+     \qquad
+     C.\CDATAS[y] = {\ok}
+   }{
+     C \vdashinstr \ARRAYINITDATA~x~y : [(\REF~\NULL~x)~\I32~\I32~\I32] \to []
+   }
+
+
+.. _valid-array.init_elem:
+
+:math:`\ARRAYINITELEM~x~y`
+..........................
+
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
+
+* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
+
+* The prefix :math:`\mut` must be :math:`\MVAR`.
+
+* The :ref:`storage type <syntax-storagetype>` :math:`\storagetype` must be a :ref:`reference type <syntax-valtype>` :math:`\X{rt}`.
+
+* The :ref:`element segment <syntax-elem>` :math:`C.\CELEMS[y]` must exist.
+
+* Let :math:`\X{rt}'` be the :ref:`reference type <syntax-reftype>` :math:`C.\CELEMS[y]`.
+
+* The :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` must :ref:`match <match-reftype>` :math:`\X{rt}`.
+
+* Then the instruction is valid with type :math:`[(\REF~\NULL~x)~\I32~\I32~\I32] \to []`.
+
+.. math::
+   \frac{
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\MVAR~\X{rt})
+     \qquad
+     C \vdashreftypematch C.\CELEMS[y] \matchesreftype \X{rt}
+   }{
+     C \vdashinstr \ARRAYINITELEM~x~y : [(\REF~\NULL~x)~\I32~\I32~\I32] \to []
+   }
+
 
 .. index:: scalar reference
 
