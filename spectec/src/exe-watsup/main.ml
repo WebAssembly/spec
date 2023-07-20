@@ -190,10 +190,10 @@ let () =
         let al = if not (PS.mem Animate !selected_passes) then [] else
           Backend_interpreter.Translate.translate il
           @ Backend_interpreter.Manual.manual_algos in
-        let env = Backend_splice.Splice.(env config el il al) in
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
+        let env = Backend_splice.Splice.(env config !pdsts !odsts el il al) in
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
-        if List.length (!odsts) > 0 then Backend_splice.Splice.gen_macro env;
+        if List.length (!odsts) > 0 then Backend_splice.Macro.gen_macro env;
         if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then

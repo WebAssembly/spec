@@ -48,6 +48,7 @@ type env =
     mutable def : definition Map.t;
   }
 
+let env_render_prose env = env.render_prose
 
 let env_def env def =
   match def.it with
@@ -72,11 +73,11 @@ let env_def env def =
   | VarD _ | SepD | HintD _ ->
     ()
 
-let env config el il al : env =
+let env config pdsts odsts el il al : env =
   let env =
     { config;
       render_latex = Backend_latex.Render.env config el;
-      render_prose = Backend_prose.Render.env config el il al;
+      render_prose = Backend_prose.Render.env config pdsts odsts el il al;
       syn = Map.empty;
       rel = Map.empty;
       def = Map.empty
@@ -310,14 +311,6 @@ let rec splice_all env src buf =
       (Buffer.add_char buf (get src); adv src);
     splice_all env src buf
   )
-
-(* Macro Generation *)
-
-let gen_macro env =
-  let s = Backend_prose.Render.render_macro env.render_prose in
-  let oc = Out_channel.open_text "macros.def" in
-  Fun.protect (fun () -> Out_channel.output_string oc s) 
-    ~finally:(fun () -> Out_channel.close oc)
 
 (* Entry points *)
 

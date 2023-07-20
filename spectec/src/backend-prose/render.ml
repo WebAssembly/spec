@@ -1,6 +1,5 @@
 open Prose
 open Printf
-open Util.Source
 
 (* Environment *)
 
@@ -9,6 +8,7 @@ module Map = Map.Make(String)
 
 type env = 
   { prose: prose;
+    sections: string Map.t ref;
     syn: string list Map.t ref;
     dec: Set.t ref;
   }
@@ -29,62 +29,20 @@ let all_keywords env =
 
 let find_keyword env s = Set.find_opt s (all_keywords env)
 
-let extract_ids_keywords = function
-  | El.Ast.Nl -> None
-  | El.Ast.Elem elem -> Some elem.it
-
-let extract_typcases_keywords = function
-  | El.Ast.Nl -> None
-  | El.Ast.Elem (atom, _, _) -> (match atom with
-    | El.Ast.Atom id -> Some id
-    | _ -> None)
-
-let extract_typfields_keywords = function
-  | El.Ast.Nl -> None
-  | El.Ast.Elem (atom, _, _) -> (match atom with
-    | El.Ast.Atom id -> Some id
-    | _ -> None)
-
-let rec extract_typ_keywords typ =
-  match typ with
-  | El.Ast.AtomT atom -> (match atom with
-    | El.Ast.Atom id -> [ id ]
-    | _ -> [])
-  | El.Ast.IterT (typ_inner, _) -> extract_typ_keywords typ_inner.it
-  | El.Ast.StrT typfields -> List.filter_map extract_typfields_keywords typfields
-  | El.Ast.CaseT (_, ids, typcases, _) ->
-      let ids = List.filter_map extract_ids_keywords ids in
-      let typcases = List.filter_map extract_typcases_keywords typcases in
-      ids @ typcases
-  | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_keywords t.it) tl
-  | _ -> []
-
-let extract_syn_keywords def =
-  match def.it with
-  | El.Ast.SynD (id, subid, typ, _) -> 
-      let parent = if subid.it = "" then id.it else id.it ^ "-" ^ subid.it in
-      let children = extract_typ_keywords typ.it in
-      Some (parent, children)
-  | _ -> None
-
-let extract_dec_keywords def =
-  match def.it with
-  | El.Ast.DecD (id, _, _, _) -> [ id.it ]
-  | _ -> []
-
-let env _config el il al : env = 
+let env _config inputs outputs el il al : env = 
   let prose = Gen.gen_prose il al in
+  let sections = Macro.parse_section inputs outputs in
   let syn = 
     List.fold_left 
-      (fun acc def -> match extract_syn_keywords def with
+      (fun acc def -> match Macro.extract_syn_keywords def with
         | Some (parent, children) -> Map.add parent ([ parent ] @ children) acc
         | _ -> acc)
       Map.empty el 
   in
-  let dec = List.concat_map extract_dec_keywords el in
+  let dec = List.concat_map Macro.extract_dec_keywords el in
   let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
   (* Set.iter print_endline keywords; *)
-  let env = { prose; syn = ref syn; dec = ref dec; } in
+  let env = { prose; sections = ref sections; syn = ref syn; dec = ref dec; } in
   env
 
 (* Macro Generation *)
@@ -129,17 +87,21 @@ let render_macro_keyword s =
   in
   String.fold_left escape "" s
 
-let render_macro_def ref s =
+let render_macro_def env ref s =
   (* TODO hardcoded to avoid duplicate macros *)
   if s = "_F" then ""
   else if s = "LABEL_" then ".. |label| mathdef:: {\\X{label}}"
   else
-    let xref = sprintf "\\xref{%s}{%s}" "" ref in
+    let xref = match Map.find_opt ref !(env.sections) with
+      | Some path -> sprintf "\\xref{%s}{%s}" path ref
+      | None -> ""
+    in
     let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
-    sprintf ".. |%s| mathdef:: {\\%s{%s}}\n.. (%s)"
-      (macroify s) typ (render_macro_keyword s) xref
+    sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
+      (macroify s) xref typ (render_macro_keyword s)
 
-let render_macro_syn syn seen =
+let render_macro_syn env seen =
+  let syn = !(env.syn) in
   Map.fold
     (fun parent children acc ->
       let ssyn, seen = acc in
@@ -148,7 +110,7 @@ let render_macro_syn syn seen =
           let schildren, seen = acc in
           let (skeyword, seen) = 
             if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-            else (render_macro_def ("syntax-" ^ parent) keyword, Set.add keyword seen)
+            else (render_macro_def env ("syntax-" ^ parent) keyword, Set.add keyword seen)
           in
           (schildren ^ skeyword ^ "\n", seen))
         ("", seen) children
@@ -163,20 +125,21 @@ let render_macro_syn syn seen =
     )
     syn ("", seen)
 
-let render_macro_dec dec seen =
+let render_macro_dec env seen =
+  let dec = !(env.dec) in
   Set.fold
     (fun keyword acc -> 
       let sdec, seen = acc in
       let skeyword, seen =
         if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-        else (render_macro_def ("exec-" ^ keyword) keyword, Set.add keyword seen)
+        else (render_macro_def env ("exec-" ^ keyword) keyword, Set.add keyword seen)
       in
       (sdec ^ skeyword ^ "\n", seen))
     dec ("", seen)
 
 let render_macro env =
-  let (ssyn, seen) = render_macro_syn !(env.syn) Set.empty in
-  let (sdec, _seen) = render_macro_dec !(env.dec) seen in
+  let (ssyn, seen) = render_macro_syn env Set.empty in
+  let (sdec, _seen) = render_macro_dec env seen in
   macro_template
   ^ ".. Syntax\n.. ------\n\n"
   ^ ssyn

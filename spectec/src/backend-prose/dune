@@ -6,5 +6,6 @@
     print
     gen
     render
+    macro
     )
 )
