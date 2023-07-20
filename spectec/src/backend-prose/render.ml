@@ -235,12 +235,6 @@ and render_expr env in_math = function
       let ses = render_list (render_expr env true) "" ", " "" es in
       let s = sprintf "%s(%s)" sn ses in
       if in_math then s else render_math s
-  | Al.Ast.MapE (n, es, iters) ->
-      let sn = render_name env n in
-      let ses = render_list (render_expr env true) "" ", " "" es in
-      let siters = render_iters env in_math iters in
-      let s = sprintf "(%s(%s))%s" sn ses siters in
-      if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
@@ -315,12 +309,12 @@ and render_expr env in_math = function
   | Al.Ast.NameE n ->
       let sn = render_name env n in
       if in_math then sn else render_math sn
-  | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
+  | Al.Ast.IterE (Al.Ast.NameE n, _, iter) ->
       let sn = render_name env n in
       let siter = render_iter env in_math iter in
       let s = sprintf "{%s}%s" sn siter in
       if in_math then s else render_math s
-  | Al.Ast.IterE (e, iter) -> 
+  | Al.Ast.IterE (e, _, iter) -> 
       let se = render_expr env in_math e in
       (* TODO need a better way to e should be enclosed in parentheses *)
       let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
@@ -514,10 +508,10 @@ let rec render_al_instr env index depth = function
   | Al.Ast.LetI (n, e) ->
       sprintf "%s Let %s be %s." (render_order index depth) (render_expr env false n)
         (render_expr env false e)
-  | Al.Ast.CallI (e, n, es, its) ->
+  | Al.Ast.CallI (e, n, es) ->
       sprintf "%s Let %s be the result of computing %s." (render_order index depth)
         (render_expr env false e)
-        (render_expr env false (Al.Ast.MapE(n, es, its)))
+        (render_expr env false (Al.Ast.AppE(n, es)))
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->

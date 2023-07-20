@@ -215,7 +215,6 @@ let rec eval_expr env expr =
       end
   (* Function Call *)
   | AppE (_fname, _el) -> failwith "AppE should be removed by transpiler"
-  | MapE (_fname, _el, _) -> failwith "MapE should be removed by transpiler"
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
   | ListFillE (e1, e2) ->
@@ -296,7 +295,7 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
-  | IterE (e, iter) -> ( match iter with
+  | IterE _ -> (* match iter with
     | IndexedListN (x, e') ->
       let n = eval_expr env e' |> value_to_int in
       List.init n (fun i ->
@@ -304,7 +303,8 @@ let rec eval_expr env expr =
         eval_expr (Env.add x v_i env) e
       ) |> listV
     (* TODO: better IterE *)
-    | _ -> eval_expr env e )
+    | _ -> eval_expr env e *)
+  failwith "TODO: intepr iter"
   | e -> structured_string_of_expr e |> failwith
 
 and access_path env base path = match path with
@@ -433,7 +433,7 @@ let rec assign_none lhs env =
 
 let rec assign lhs rhs env =
   match lhs, rhs with
-  | IterE (NameE name, ListN n), ListV vs ->
+  (*| IterE (NameE name, ListN n), ListV vs ->
       env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length !vs)))
   | NameE name, v
   | IterE (NameE name, _), v
@@ -454,6 +454,7 @@ let rec assign lhs rhs env =
         (string_of_value new_rhs)
       |> print_endline;
       assign new_lhs new_rhs env
+      *)
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
@@ -487,7 +488,7 @@ and assign_split ep es vs env =
   let prefix_len, suffix_len =
     let get_length = function
     | ListE es -> Some (List.length es)
-    | IterE (_, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)
+    (*| IterE (_, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)*)
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -572,10 +573,12 @@ and interp_instrs env il cont action =
     | PopI e ->
         let new_env = (
           match e with
+          (*
           | IterE (NameE name, ListN n) ->
               let i = Env.find n env |> value_to_int in
               let vs = List.rev (List.init i (fun _ -> pop ())) in
               Env.add name (listV vs) env
+              *)
           | _ -> (
               (* due to Wasm validation *)
               let h = pop () in
@@ -592,7 +595,7 @@ and interp_instrs env il cont action =
         interp_with new_env icont
     | PopAllI e -> (
       match e with
-      | IterE (NameE name, List) ->
+      (*| IterE (NameE name, List) ->
         let is_boundary = function FrameV _ | LabelV _ -> true | _ -> false in
         let rec pop_value acc = match !stack with
         | h :: _  when not (is_boundary h) -> pop_value (pop () :: acc)
@@ -600,11 +603,13 @@ and interp_instrs env il cont action =
         let vs = pop_value [] in
         let new_env = Env.add name (listV vs) env in
         interp_with new_env icont
+        *)
       | _ -> failwith ("Invalid pop: Popall " ^ string_of_expr e))
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
         interp_with new_env icont
-    | CallI (lhs, f, es, iters) ->
+        (*
+    | CallI _ (lhs, f, es, iters) ->
         let args = List.map (eval_expr env) es in
         ( match iters with
         | [] ->
@@ -613,6 +618,7 @@ and interp_instrs env il cont action =
           (* TODO: handle cases where iteratng argument is not the last *)
           let front_args, last_arg = Lib.List.split_last args in
           dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action )
+    *)
     | TrapI -> raise Exception.Trap
     | NopI -> interp icont
     | ReturnI None -> leave_algo cont action
@@ -716,7 +722,7 @@ and interp_algo algo args cont action =
     let pattern, _ = param in
     match (pattern, arg) with
     | NameE n, arg
-    | IterE (NameE n, _), arg -> Env.add n arg acc
+    (*| IterE (NameE n, _), arg*) -> Env.add n arg acc
     | _ -> failwith "Invalid destructuring assignment"
   in
 

@@ -571,7 +571,7 @@ let invocation =
 
 
 let manual_algos =
-  [
+  [(*
     instantiation;
     alloc_module;
     init_global;
@@ -584,4 +584,4 @@ let manual_algos =
     alloc_elem;
     alloc_data;
     invocation
-  ] |> List.map Transpile.app_remover
+  *)] |> List.map Transpile.app_remover

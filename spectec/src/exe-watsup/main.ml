@@ -176,9 +176,7 @@ let () =
         failwith "Prose generatiron requires `--animate` flag."
       else
       log "Translating to AL...";
-      let al =
-        Backend_interpreter.Translate.translate il
-        @ Backend_interpreter.Manual.manual_algos in
+      let al = Backend_interpreter.Translate.translate il in
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
       let prose = Backend_prose.Gen.gen_prose il al in
@@ -188,8 +186,7 @@ let () =
       print_endline (Backend_prose.Print.string_of_prose prose);
     | Splice config ->
         let al = if not (PS.mem Animate !selected_passes) then [] else
-          Backend_interpreter.Translate.translate il
-          @ Backend_interpreter.Manual.manual_algos in
+          Backend_interpreter.Translate.translate il in
         let env = Backend_splice.Splice.(env config el il al) in
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
@@ -201,7 +198,7 @@ let () =
       else
       log "Translating to AL...";
       let al = Backend_interpreter.(
-        ( Translate.translate il @ Manual.manual_algos ) |> List.map Transpile.app_remover
+        Translate.translate il |> List.map Transpile.app_remover
       ) in
       if !print_al then
         List.iter (fun algo -> Al.Print.string_of_algorithm algo |> print_endline) al;

@@ -53,13 +53,12 @@ let rec free_expr = function
   | AppE (_, es)
   | ListE es
   | ConstructE (_, es) -> List.concat_map free_expr es
-  | MapE (_, es, is) -> List.concat_map free_expr es @ List.concat_map free_iter is
   | RecordE _ -> (* TODO *) []
   | AccessE (e, p) -> free_expr e @ free_path p
   | ExtendE (e1, ps, e2, _)
   | ReplaceE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
   | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
-  | IterE (e, i) -> free_expr e @ free_iter i
+  | IterE (e, _, i) -> free_expr e @ free_iter i
 and free_iter = function
   | Opt
   | List
@@ -154,11 +153,11 @@ and exp2expr exp =
   (* Variable *)
   | Ast.VarE id -> NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
-  | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
-      MapE (N id.it, exp2args inner_exp, [iter2iter iter])
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
-  | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
+  | Ast.IterE (inner_exp, (iter, ids)) ->
+      let names = List.map (fun id -> N id.it) ids in
+      IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
@@ -232,7 +231,8 @@ and exp2expr exp =
           PairE (ConstructE ("MUT", []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          PairE (IterE (NameE (N "mut"), Opt), exp2expr t)
+          let mut = N "mut" in
+          PairE (IterE (NameE mut, [mut], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
           ConstructE ("MODULE", List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
@@ -538,7 +538,7 @@ let rec letI lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
     | NameE _ -> true
-    | IterE (inner_exp, _) -> has_name inner_exp
+    | IterE (inner_exp, _, _) -> has_name inner_exp
     | _ -> false
   in
   let extract_non_names = List.fold_left_map (fun acc e ->
@@ -600,11 +600,13 @@ let rec letI lhs rhs targets cont =
           [] );
     ]
   | ConcatE (prefix, suffix) ->
-    let handle_list e = match e with
+    let handle_list e =
+     
+      match e with
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
-      | IterE (NameE _, ListN n) ->
+      | IterE (NameE _, _, ListN n) ->
         Some (NameE n), [], e
       | _ ->
         None, [], e in
@@ -630,9 +632,23 @@ let rec rulepr2instr pr =
   match pr.it with
   (* Inductive case *)
   | Ast.IterPr (pr, (iter, ids)) ->
-      rulepr2instr pr
-      |> Transpile.iter_rule (List.map it ids) (iter2iter iter)
-      |> List.hd
+      begin match rulepr2instr pr with
+      | LetI (lhs, rhs) ->
+          let rec name_of_expr = function
+            | IterE (e, _, _) -> name_of_expr e
+            | NameE n -> n
+            | _ -> failwith "Not a name"
+          in
+          begin match List.map (fun id -> N id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
+          | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
+              LetI (IterE (lhs, lhs_iter_ids, iter2iter iter), IterE (rhs, rhs_iter_ids, iter2iter iter))
+          | _ -> failwith "Invalid IterPr"
+          end
+      | instr ->
+          Al.Print.string_of_instr (ref 0) 0 instr
+          |> Printf.sprintf "Invalid RulePr: %s"
+          |> failwith
+      end
   (* Exec_expr_const *)
   | Ast.RulePr (
     id,
@@ -720,9 +736,9 @@ let rec find_type tenv exp =
       | _ ->
           failwith
             (id.it ^ "'s type is unknown. There must be a problem in the IL."))
-  | Ast.IterE (inner_exp, iter) ->
+  | Ast.IterE (inner_exp, (iter, ids)) ->
       let name, ty = find_type tenv inner_exp in
-      IterE (name, iter2iter (fst iter)), ty
+      IterE (name, List.map (fun id -> N id.it) ids ,iter2iter iter), ty
   | Ast.SubE (inner_exp, _, _) ->
       find_type tenv inner_exp
   | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
