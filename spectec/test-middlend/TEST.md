@@ -1839,8 +1839,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -1851,15 +1851,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -1907,15 +1907,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -3876,8 +3876,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -3888,15 +3888,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -3944,15 +3944,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -5917,8 +5917,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -5929,15 +5929,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -5985,15 +5985,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -7979,8 +7979,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -7991,15 +7991,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -8047,15 +8047,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -10041,8 +10041,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -10053,15 +10053,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -10109,15 +10109,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -12159,8 +12159,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
     -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
 }
@@ -12171,15 +12171,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- if (di = {DATA byte*{byte}})
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- if ((s_1, da) = $allocdata(s, byte*{byte}))
     -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
 }
@@ -12227,15 +12227,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- if (n = |byte*{byte}|)
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55
@@ -14306,8 +14306,8 @@ rec {
 def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
   ;; 7-module.watsup:81.1-81.52
   def {s : store} allocelems(s, [], []) = (s, [])
-  ;; 7-module.watsup:82.1-84.53
-  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+  ;; 7-module.watsup:82.1-84.55
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref*{ref}] :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
     -- where (s_1, ea) = $allocelem(s, rt, ref*{ref})
     -- where (s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'})
 }
@@ -14318,15 +14318,15 @@ def allocdata : (store, byte*) -> (store, dataaddr)
   def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
     -- where di = {DATA byte*{byte}}
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 rec {
 
-;; 7-module.watsup:90.1-90.52
+;; 7-module.watsup:90.1-90.54
 def allocdatas : (store, byte**) -> (store, dataaddr*)
   ;; 7-module.watsup:91.1-91.43
   def {s : store} allocdatas(s, []) = (s, [])
-  ;; 7-module.watsup:92.1-94.48
-  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+  ;; 7-module.watsup:92.1-94.50
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte*{byte}] :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
     -- where (s_1, da) = $allocdata(s, byte*{byte})
     -- where (s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'})
 }
@@ -14374,15 +14374,15 @@ def rundata : (data, idx) -> instr*
   def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
     -- where n = |byte*{byte}|
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 rec {
 
-;; 7-module.watsup:153.1-153.36
+;; 7-module.watsup:153.1-153.38
 def concat_instr : instr** -> instr*
   ;; 7-module.watsup:154.1-154.37
   def concat_instr([]) = []
-  ;; 7-module.watsup:155.1-155.68
-  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+  ;; 7-module.watsup:155.1-155.74
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr*{instr}] :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
 }
 
 ;; 7-module.watsup:158.1-158.55

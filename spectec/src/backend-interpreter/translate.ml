@@ -25,6 +25,49 @@ let list_partition_with pred xs =
   in
   list_partition [] xs |> List.rev
 
+let disjoint xs ys = List.for_all (fun x -> List.for_all ((<>) x) ys) xs
+
+(* TODO: move these to al module *)
+let rec free_name = function
+  | N s -> [ s ]
+  | SubN (n, _) -> free_name n
+let rec free_expr = function
+  | NumE _
+  | StringE _
+  | GetCurLabelE
+  | GetCurContextE
+  | GetCurFrameE
+  | YetE _ -> []
+  | NameE n -> free_name n
+  | MinusE e
+  | LengthE e
+  | ArityE e
+  | ContE e -> free_expr e
+  | BinopE (_, e1, e2)
+  | ListFillE (e1, e2)
+  | ConcatE (e1, e2)
+  | PairE (e1, e2)
+  | ArrowE (e1, e2)
+  | FrameE (e1, e2)
+  | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
+  | AppE (_, es)
+  | ListE es
+  | ConstructE (_, es) -> List.concat_map free_expr es
+  | MapE (_, es, is) -> List.concat_map free_expr es @ List.concat_map free_iter is
+  | RecordE _ -> (* TODO *) []
+  | AccessE (e, p) -> free_expr e @ free_path p
+  | ExtendE (e1, ps, e2, _)
+  | ReplaceE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
+  | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
+  | IterE (e, i) -> free_expr e @ free_iter i
+and free_iter = function
+  | Opt
+  | List
+  | List1 -> []
+  | ListN n -> free_name n
+  | IndexedListN (n, e) -> free_name n @ free_expr e
+and free_path _ = [] (* TODO *)
+
 (* transform z; e into e *)
 let drop_state e = match e.it with
 | Ast.MixE (* z; e *)
@@ -116,21 +159,6 @@ and exp2expr exp =
   | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
   | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
-  (* | Ast.IterE ({ it = Ast.ListE [{ it = Ast.VarE id; _ }]; _ }, (iter, [id']))
-    when id.it = id'.it -> (* TODO: Somehow remove this hack *)
-      let name = N id.it in
-      IterE (NameE name, iter2iter iter)
-  | Ast.IterE ({ it = Ast.IterE (inner_exp, (inner_iter, [ inner_id ])); _ }, (iter, [ id ])) when id.it = inner_id.it ->
-      let name = exp2name inner_exp in
-      assert (name = N id.it);
-      IterE (IterE (NameE name, iter2iter inner_iter), iter2iter iter)
-  | Ast.IterE ({ it = Ast.TupE inner_exps; _ }, (Ast.Opt, inner_ids)) ->
-      let inner_names = List.map exp2name inner_exps in
-      assert (List.length inner_names = List.length inner_ids);
-      List.iter2 (fun name id -> assert (name = N id.it)) inner_names inner_ids;
-      IterE (ListE (List.map exp2expr inner_exps), Opt)
-  | Ast.IterE (inner_exp, (iter, [ _ ])) ->
-      IterE (exp2expr inner_exp, iter2iter iter) *)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
@@ -251,15 +279,15 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC 
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC
   | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
-  | Ast.CaseE 
-      (Ast.Atom "LABEL_", 
+  | Ast.CaseE
+      (Ast.Atom "LABEL_",
         { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
   | Ast.CaseE
       ( Ast.Atom "CONST",
         { it = Ast.TupE (ty :: _); _ }) -> AssertI (TopValueC (Some (exp2expr ty)))
-  | _ -> AssertI (TopValueC None) 
+  | _ -> AssertI (TopValueC None)
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
 let handle_lhs_stack =
@@ -485,27 +513,22 @@ let extract_bound_names lhs rhs targets cont = match lhs with
     let new_rhs = AppE (N ("inverse_of_" ^ f), front_args @ [ rhs ]) in
     new_lhs, new_rhs, cont
   | _ ->
+    let contains_bound_name e =
+      let names = free_expr e in
+      names > [] && disjoint names targets in
     let traverse e =
       let conds = ref [] in
-      let walker = Al.Walk.walk_expr { Al.Walk.default_action with pre_expr = (fun e ->
-        match e with
-        | NameE (N n) -> if String.starts_with ~prefix:lhs_prefix n then e else (
-          match List.find_opt ((=) n) targets with
-          | Some _ -> e
-          | None ->
+      let walker = Al.Walk.walk_expr { Al.Walk.default_config with
+        pre_expr = (fun e ->
+          if not (contains_bound_name e) then
+            e
+          else
             let new_e = get_lhs_name() in
             conds := !conds @ [ CompareC (Eq, new_e, e) ];
             new_e
-          )
-        | IterE (NameE (N n), iter) -> ( match List.find_opt ((=) n) targets with
-          | Some _ -> e
-          | None ->
-            let new_e = IterE (get_lhs_name(), iter) in
-            conds := !conds @ [ CompareC (Eq, new_e, e) ];
-            new_e
-          )
-        | _ -> e
-        )} in
+        );
+        stop_cond_expr = contains_bound_name;
+      } in
       let new_e = walker e in
       new_e, !conds in
     let new_lhs, conds = traverse lhs in
@@ -524,24 +547,27 @@ let rec letI lhs rhs targets cont =
       let fresh = get_lhs_name() in
       [ e, fresh ] @ acc, fresh
   ) [] in
+  let bindings_to_lets bindings =
+    List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+  in
   match lhs with
   | ConstructE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
+          LetI (ConstructE (tag, es'), rhs) :: bindings_to_lets bindings,
           [] );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+    LetI (ListE es', rhs) :: bindings_to_lets bindings
     else
     [
       IfI
         ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont,
+          LetI (ListE es', rhs) :: bindings_to_lets bindings,
           [] );
     ]
   | OptE None ->
@@ -571,6 +597,31 @@ let rec letI lhs rhs targets cont =
       IfI
         ( CompareC (Ge, rhs, b),
           LetI (a, BinopE (Sub, rhs, b)) :: cont,
+          [] );
+    ]
+  | ConcatE (prefix, suffix) ->
+    let handle_list e = match e with
+      | ListE es ->
+        let bindings', es' = extract_non_names es in
+        Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
+      | IterE (NameE _, ListN n) ->
+        Some (NameE n), [], e
+      | _ ->
+        None, [], e in
+    let length_p, bindings_p, prefix' = handle_list prefix in
+    let length_s, bindings_s, suffix' = handle_list suffix in
+    (* TODO: This condition should be injected by sideconditions pass *)
+    let cond = match length_p, length_s with
+      | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | Some l, None
+      | None, Some l -> CompareC (Ge, LengthE rhs, l)
+      | Some l1, Some l2 -> CompareC (Eq, LengthE rhs, BinopE (Add, l1, l2))
+    in
+    [
+      IfI
+        ( cond,
+          LetI (ConcatE (prefix', suffix'), rhs)
+            :: bindings_to_lets (bindings_p @ bindings_s),
           [] );
     ]
   | _ -> LetI (lhs, rhs) :: cont
@@ -830,7 +881,7 @@ let normal_helper2instrs clause =
   prems2instrs [] prems [ ReturnI (Option.some (exp2expr e2)) ]
 
 (** Main translation for helper functions **)
-let helpers2algo def =
+let helpers2algo partial_funcs def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
@@ -848,14 +899,25 @@ let helpers2algo def =
           normal_helper2instrs
       in
       let blocks = List.map translator unified_clauses in
-      let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
+      let algo_body =
+        List.fold_right Transpile.merge blocks []
+        |> Transpile.enhance_readability
+        |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
 
       let algo = Algo (id.it, typed_params, algo_body) in
       Some algo
   | _ -> None
 
+let is_partial_hint hint = hint.Ast.hintid.it = "partial"
+let get_partial_func def = match def.it with
+  | Ast.HintD {it = Ast.DecH (id, hints); _} when List.exists is_partial_hint hints ->
+    Some (id)
+  | _ -> None
+
 (** Entry for translating helper functions **)
-let translate_helpers il = List.filter_map helpers2algo il
+let translate_helpers il =
+  let partial_funcs = List.filter_map get_partial_func il in
+  List.filter_map (helpers2algo partial_funcs) il
 
 (** Entry **)
 
