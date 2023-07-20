@@ -1191,8 +1191,8 @@
 .. |AITYPE| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{type}}
 .. |AIFIELDS| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{fields}}
 
-.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I8.PACK}}
-.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{I16.PACK}}
+.. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i8.pack}}
+.. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i16.pack}}
 
 
 .. Instances, non-terminals
