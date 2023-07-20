@@ -5,6 +5,62 @@ Modules
 Furthermore, most definitions are themselves classified with a suitable type.
 
 
+.. index:: type, type index, defined type, recursive type
+   pair: abstract syntax; type
+   single: abstract syntax; type
+.. _valid-types:
+
+Types
+~~~~~
+
+The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally, yielding a suitable :ref:`context <context>`.
+
+:math:`\type^\ast`
+..................
+
+* If the sequence is empty, then:
+
+  * The :ref:`context <context>` :math:`C` must be empty.
+
+  * Then the type sequence is valid.
+
+* Otherwise:
+
+  * Let the :ref:`recursive type <syntax-rectype>` :math:`\rectype` be the last element in the sequence.
+
+  * The sequence without :math:`\rectype` must be valid for some context :math:`C'`.
+
+  * Let the :ref:`type index <syntax-typeidx>` :math:`x` be the length of :math:`C'.\CTYPES`, i.e., the first type index free in :math:`C'`.
+
+  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt{x}(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
+
+  * The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` under the context :math:`C` for :ref:`type index <syntax-typeidx>` :math:`x`.
+
+  * The current :ref:`context <context>` :math:`C` be the same as :math:`C'`, but with :math:`\deftype^\ast` appended to |CTYPES|.
+
+  * Then the type sequence is valid.
+
+.. math::
+   \frac{
+   }{
+     \{\} \vdashtypes \epsilon \ok
+   }
+
+.. math::
+   \frac{
+     C' \vdashtypes \type^\ast \ok
+     \qquad
+     C = C' \with \CTYPES = C'.\CTYPES~\rolldt{|C'.\CTYPES|}(\rectype)
+     \qquad
+     C \vdashrectype \rectype ~{\ok}(|C'.\CTYPES|)
+   }{
+     C \vdashtypes \type^\ast~\rectype \ok
+   }
+
+.. note::
+   Despite the appearance, the context :math:`C` is effectively an _output_ of this judgement.
+
+
 .. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
@@ -22,7 +78,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
-* Let :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]` be the :ref:`expansion <aux-expand>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`.
+* Let :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`.
 
 * For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
 
@@ -46,7 +102,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
+     \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
      (C \vdashlocal t : \init~t)^\ast
      \qquad
@@ -515,7 +571,7 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 
 .. math::
    \frac{
-     \expand(C.\CTYPES[x]) = \TFUNC~\functype
+     \expanddt(C.\CTYPES[x]) = \TFUNC~\functype
    }{
      C \vdashimportdesc \IDFUNC~x : \ETFUNC~C.\CTYPES[x]
    }
@@ -586,11 +642,11 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\module` be the module to validate.
 
+* The :ref:`types <syntax-type>` :math:`\module.\MTYPES` must be :ref:`valid <valid-type>` yielding a :ref:`context <context>` :math:`C_0`.
+
 * Let :math:`C` be a :ref:`context <context>` where:
 
-  * .. todo:: Adjust type context
-
-  * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
+  * :math:`C.\CTYPES` is :math:`C_0.\CTYPES`,
 
   * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
@@ -615,14 +671,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * :math:`C.\CRETURN` is empty.
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
-
-* For each recursive type :math:`\rectype_i` in :math:`\module.\MTYPES`:
-
-  * .. todo:: expand rectypes
-
-  * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
-
-  * The recursive type :math:`\rectype_i` must be :ref:`valid <valid-rectype>` under context :math:`C_i`.
 
 * Let :math:`C'` be the :ref:`context <context>` where:
 
@@ -690,7 +738,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     \vdashtypes \type^\ast \ok
+     C_0 \vdashtypes \type^\ast \ok
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \quad
@@ -720,7 +768,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\
-     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
+     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
      C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
@@ -746,27 +794,8 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
 
-.. _valid-types:
-
-where:
-
-.. math::
-   \frac{
-     \vdashtypes \type^\ast \ok
-     \qquad
-     \{\CTYPES~\type^\ast\} \vdashtypes \type \ok
-   }{
-     \vdashtypes \type^\ast~\type \ok
-   }
-   \qquad
-   \frac{
-   }{
-     \vdashtypes \epsilon \ok
-   }
-
-
 .. note::
-   Most definitions in a module -- particularly functions -- are mutually recursive.
+   All functions in a module are mutually recursive.
    Consequently, the definition of the :ref:`context <context>` :math:`C` in this rule is recursive:
    it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
    which itself depends on :math:`C`.

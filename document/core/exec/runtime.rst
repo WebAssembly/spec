@@ -506,7 +506,7 @@ Conventions
   .. math::
      \begin{array}{@{}lcl}
      \packval_{\valtype}(\val) &=& \val \\
-     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype\K{.PACK}~(\wrap_{32,|\packtype|}(i))
+     \packval_{\packedtype}(\I32.\CONST~i) &=& \packedtype\K{.pack}~(\wrap_{32,|\packtype|}(i))
      \end{array}
 
 * The inverse conversion of a :ref:`field value <syntax-fieldval>` to a regular :ref:`value <syntax-val>` is defined as follows:
@@ -514,7 +514,7 @@ Conventions
   .. math::
      \begin{array}{@{}lcl}
      \unpackval_{\valtype}(\val) &=& \val \\
-     \unpackval^{\sx}_{\packedtype}(\packedtype\K{.PACK}~i) &=& \I32.\CONST~(\extend^{\sx}_{|\packedtype|,32}(i))
+     \unpackval^{\sx}_{\packedtype}(\packedtype\K{.pack}~i) &=& \I32.\CONST~(\extend^{\sx}_{|\packedtype|,32}(i))
      \end{array}
 
 
@@ -609,7 +609,7 @@ Conventions
 
 .. math::
    \begin{array}{llll}
-   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expand(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
+   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expanddt(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
    \fblocktype_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
    \end{array}
 
