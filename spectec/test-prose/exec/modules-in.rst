@@ -106,7 +106,7 @@ TODO
 
 .. _exec-allocmodule:
 
-TODO (too deeply nested)
+%{prose-fctn: allocmodule}
 
 \
 

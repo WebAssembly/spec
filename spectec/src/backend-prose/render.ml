@@ -259,9 +259,15 @@ let render_al_mathop = function
 (* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_name env = function
+  | Al.Ast.N s when s = "inverse_of_bytes_" -> s 
   | Al.Ast.N s -> (match find_keyword env s with
     | Some _ -> sprintf "\\%s" (macroify s) 
-    | _ -> s)
+    | _ -> (match String.index_opt s '_' with 
+      | Some idx ->
+          let base = String.sub s 0 idx in
+          let subscript = String.sub s (idx + 1) ((String.length s) - idx - 1) in
+          base ^ "_{" ^ subscript ^ "}"
+      | _ -> s))
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
 
 let rec render_iter env in_math = function
@@ -346,7 +352,11 @@ and render_expr env in_math = function
           "\\epsilon"
       in
       if in_math then sel else render_math sel
-  | Al.Ast.ListFillE (e1, e2) -> render_expr env in_math e1 ^ "^" ^ render_expr env in_math e2
+  | Al.Ast.ListFillE (e1, e2) -> 
+      let se1 = render_expr env true e1 in
+      let se2 = render_expr env true e2 in
+      let s = sprintf "%s^%s" se1 se2 in
+      if in_math then s else render_math s
   | Al.Ast.AccessE (e, p) ->
       let se = render_expr env true e in
       let sp = render_path env p in
@@ -566,7 +576,10 @@ let rec render_al_instr env algoname index depth = function
         (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.AssertI c -> 
       (* TODO this is hardcoded for instructions without typing rules *)
-      if algoname = "label" || algoname = "call_addr" || algoname = "frame" then
+      if 
+        algoname = "label" || algoname = "call_addr" || algoname = "frame" 
+        || algoname = "min" || algoname = "allocglobals" || algoname = "allocelems" || algoname = "allocmodule" 
+      then
         sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env c)
       else
         sprintf "%s Assert: Due to :ref:`validation <valid-%s>`, %s." (render_order index depth) (algoname) (render_cond env c)
