@@ -881,7 +881,7 @@ let normal_helper2instrs clause =
   prems2instrs [] prems [ ReturnI (Option.some (exp2expr e2)) ]
 
 (** Main translation for helper functions **)
-let helpers2algo def =
+let helpers2algo partial_funcs def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
@@ -899,14 +899,25 @@ let helpers2algo def =
           normal_helper2instrs
       in
       let blocks = List.map translator unified_clauses in
-      let algo_body = List.fold_right Transpile.merge blocks [] |> Transpile.enhance_readability in
+      let algo_body =
+        List.fold_right Transpile.merge blocks []
+        |> Transpile.enhance_readability
+        |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
 
       let algo = Algo (id.it, typed_params, algo_body) in
       Some algo
   | _ -> None
 
+let is_partial_hint hint = hint.Ast.hintid.it = "partial"
+let get_partial_func def = match def.it with
+  | Ast.HintD {it = Ast.DecH (id, hints); _} when List.exists is_partial_hint hints ->
+    Some (id)
+  | _ -> None
+
 (** Entry for translating helper functions **)
-let translate_helpers il = List.filter_map helpers2algo il
+let translate_helpers il =
+  let partial_funcs = List.filter_map get_partial_func il in
+  List.filter_map (helpers2algo partial_funcs) il
 
 (** Entry **)
 

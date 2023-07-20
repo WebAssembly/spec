@@ -64,7 +64,7 @@ let rec count_instrs instrs =
   |> List.map (function
        | IfI (_, il1, il2) | EitherI (il1, il2) ->
            1 + count_instrs il1 + count_instrs il2
-       | OtherwiseI il | WhileI (_, il) -> 1 + count_instrs il
+       | OtherwiseI il | WhileI (_, il) | ForI (_, il) | ForeachI (_, _, il) -> 1 + count_instrs il
        | TrapI | ReturnI _ -> 0
        | _ -> 1)
   |> list_sum
@@ -103,6 +103,14 @@ let rec insert_otherwise else_body instrs =
           let visit_if2, il2' = walk il2 in
           let visit_if = visit_if || visit_if1 || visit_if2 in
           (visit_if, EitherI (il1', il2'))
+      | ForI (e, il) ->
+          let visit_if', il' = walk il in
+          let visit_if = visit_if || visit_if' in
+          (visit_if, ForI (e, il'))
+      | ForeachI (e1, e2, il) ->
+          let visit_if', il' = walk il in
+          let visit_if = visit_if || visit_if' in
+          (visit_if, ForeachI (e1, e2, il'))
       | _ -> (visit_if, inst))
     false instrs
 
@@ -423,3 +431,45 @@ let iter_rule names iter =
     (* pre_expr = pre_expr;*)
     post_expr = post_expr;
   }
+
+let rec enforce_return_r rinstrs =
+  let rev = List.rev in
+  match rinstrs with
+  | [] -> []
+  | tl :: hd -> match tl with
+    | ReturnI _ | TrapI -> rinstrs
+    | IfI (c, il1, il2) ->
+      ( match enforce_return' il1, enforce_return' il2 with
+      | [], [] -> enforce_return_r hd
+      | new_il, [] -> rev new_il @ (AssertI c :: hd)
+      | [], new_il -> rev new_il @ (AssertI (neg c) :: hd)
+      | new_il1, new_il2 -> IfI (c, new_il1, new_il2) :: hd )
+    | OtherwiseI il -> OtherwiseI (enforce_return' il) :: hd
+    | EitherI (il1, il2) ->
+      ( match enforce_return' il1, enforce_return' il2 with
+      | [], [] -> enforce_return_r hd
+      | new_il, []
+      | [], new_il -> rev new_il @ hd
+      | new_il1, new_il2 -> EitherI (new_il1, new_il2) :: hd )
+    | WhileI (_, il)
+    | ForI (_, il)
+    | ForeachI (_, _, il) ->
+      ( match enforce_return' il with
+      | [] -> enforce_return_r hd
+      | _ -> rinstrs ) (* body of these statements should not change, even if last instr is not return *)
+    | _ -> enforce_return_r hd
+and enforce_return' instrs = instrs |> List.rev |> enforce_return_r |> List.rev
+
+let contains_return il =
+  let ret = ref false in
+  List.map (Walk.walk_instr { Walk.default_config with
+    pre_instr = (fun i ->
+      ( match i with | ReturnI _ | TrapI -> ret := true | _ -> () );
+      [ i ]
+    )
+  }) il |> ignore;
+  !ret
+
+(** If intrs contain a return statement, make sure that every path has return statement in the end **)
+let enforce_return instrs =
+  if contains_return instrs then enforce_return' instrs else instrs

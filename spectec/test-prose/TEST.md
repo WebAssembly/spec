@@ -275,11 +275,11 @@ min x_0 x_1
 2. If x_1 is 0, then:
   a. Let i be x_0.
   b. Return 0.
-3. If x_0 ≥ 1, then:
-  a. Let i be (x_0 - 1).
-  b. If x_1 ≥ 1, then:
-    1) Let j be (x_1 - 1).
-    2) Return $min(i, j).
+3. Assert: Due to validation, x_0 ≥ 1.
+4. Let i be (x_0 - 1).
+5. Assert: Due to validation, x_1 ≥ 1.
+6. Let j be (x_1 - 1).
+7. Return $min(i, j).
 
 size x_0
 1. If x_0 is I32, then:
@@ -465,9 +465,9 @@ instexport fa* ga* ta* ma* EXPORT(name, x_0)
 3. If x_0 is of the case TABLE, then:
   a. Let (TABLE x) be x_0.
   b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
-4. If x_0 is of the case MEM, then:
-  a. Let (MEM x) be x_0.
-  b. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+4. Assert: Due to validation, x_0 is of the case MEM.
+5. Let (MEM x) be x_0.
+6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
 allocfunc m func
 1. Let fi be { MODULE: m; CODE: func; }.
@@ -487,15 +487,15 @@ allocglobal globaltype val
 
 allocglobals x_0* x_1*
 1. If x_0* is [], then:
-  a. If x_1* is [], then:
-    1) Return [].
+  a. Assert: Due to validation, x_1* is [].
+  b. Return [].
 2. Else:
   a. Let [globaltype] ++ globaltype'* be x_0*.
-  b. If |x_1*| ≥ 1, then:
-    1) Let [val] ++ val'* be x_1*.
-    2) Let ga be $allocglobal(globaltype, val).
-    3) Let ga'* be $allocglobals(globaltype'*, val'*).
-    4) Return [ga] ++ ga'*.
+  b. Assert: Due to validation, |x_1*| ≥ 1.
+  c. Let [val] ++ val'* be x_1*.
+  d. Let ga be $allocglobal(globaltype, val).
+  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  f. Return [ga] ++ ga'*.
 
 alloctable `%%`(`[%..%]`(i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
@@ -528,13 +528,13 @@ allocelem rt ref*
 allocelems x_0* x_1*
 1. If x_0* is [] and x_1* is [], then:
   a. Return [].
-2. If |x_1*| ≥ 1, then:
-  a. Let [ref*] ++ ref'** be x_1*.
-  b. If |x_0*| ≥ 1, then:
-    1) Let [rt] ++ rt'* be x_0*.
-    2) Let ea be $allocelem(rt, ref*).
-    3) Let ea'* be $allocelems(rt'*, ref'**).
-    4) Return [ea] ++ ea'*.
+2. Assert: Due to validation, |x_1*| ≥ 1.
+3. Let [ref*] ++ ref'** be x_1*.
+4. Assert: Due to validation, |x_0*| ≥ 1.
+5. Let [rt] ++ rt'* be x_0*.
+6. Let ea be $allocelem(rt, ref*).
+7. Let ea'* be $allocelems(rt'*, ref'**).
+8. Return [ea] ++ ea'*.
 
 allocdata byte*
 1. Let di be { DATA: byte*; }.
@@ -554,56 +554,56 @@ allocmodule module externval* val* ref**
 3. Let ga_ex* be $globals(externval*).
 4. Let ma_ex* be $mems(externval*).
 5. Let ta_ex* be $tables(externval*).
-6. If module is of the case MODULE, then:
-  a. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
-  b. Let (DATA byte* datamode?)^n_data be y_4.
-  c. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
-  d. Let (MEMORY memtype)^n_mem be y_2.
-  e. Let (TABLE tabletype)^n_table be y_1.
-  f. Let (GLOBAL globaltype expr_1)^n_global be y_0.
-  g. Let da* be (|s.DATA| + i)^(i<n_data).
-  h. Let ea* be (|s.ELEM| + i)^(i<n_elem).
-  i. Let ma* be (|s.MEM| + i)^(i<n_mem).
-  j. Let ta* be (|s.TABLE| + i)^(i<n_table).
-  k. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
-  l. Let fa* be (|s.FUNC| + i)^(i<n_func).
-  m. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-  n. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
-  o. Let y_0 be $allocfuncs(m, func^n_func).
-  p. If y_0 is fa*, then:
-    1) Let y_0 be $allocglobals(globaltype^n_global, val*).
-    2) If y_0 is ga*, then:
-      a) Let y_0 be $alloctables(tabletype^n_table).
-      b) If y_0 is ta*, then:
-        1. Let y_0 be $allocmems(memtype^n_mem).
-        2. If y_0 is ma*, then:
-          a. Let y_0 be $allocelems(rt^n_elem, ref**).
-          b. If y_0 is ea*, then:
-            1) Let y_0 be $allocdatas(byte*^n_data).
-            2) If y_0 is da*, then:
-              a) Return m.
+6. Assert: Due to validation, module is of the case MODULE.
+7. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
+8. Let (DATA byte* datamode?)^n_data be y_4.
+9. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
+10. Let (MEMORY memtype)^n_mem be y_2.
+11. Let (TABLE tabletype)^n_table be y_1.
+12. Let (GLOBAL globaltype expr_1)^n_global be y_0.
+13. Let da* be (|s.DATA| + i)^(i<n_data).
+14. Let ea* be (|s.ELEM| + i)^(i<n_elem).
+15. Let ma* be (|s.MEM| + i)^(i<n_mem).
+16. Let ta* be (|s.TABLE| + i)^(i<n_table).
+17. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
+18. Let fa* be (|s.FUNC| + i)^(i<n_func).
+19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+20. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+21. Let y_0 be $allocfuncs(m, func^n_func).
+22. Assert: Due to validation, y_0 is fa*.
+23. Let y_0 be $allocglobals(globaltype^n_global, val*).
+24. Assert: Due to validation, y_0 is ga*.
+25. Let y_0 be $alloctables(tabletype^n_table).
+26. Assert: Due to validation, y_0 is ta*.
+27. Let y_0 be $allocmems(memtype^n_mem).
+28. Assert: Due to validation, y_0 is ma*.
+29. Let y_0 be $allocelems(rt^n_elem, ref**).
+30. Assert: Due to validation, y_0 is ea*.
+31. Let y_0 be $allocdatas(byte*^n_data).
+32. Assert: Due to validation, y_0 is da*.
+33. Return m.
 
 runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
 1. If x_0? is not defined, then:
   a. Return [].
 2. If x_0? is ?(DECLARE), then:
   a. Return [(ELEM.DROP i)].
-3. If x_0? is defined, then:
-  a. Let ?(y_0) be x_0?.
-  b. If y_0 is of the case TABLE, then:
-    1) Let (TABLE x instr*) be y_0.
-    2) Let n be |expr*|.
-    3) Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
+3. Assert: Due to validation, x_0? is defined.
+4. Let ?(y_0) be x_0?.
+5. Assert: Due to validation, y_0 is of the case TABLE.
+6. Let (TABLE x instr*) be y_0.
+7. Let n be |expr*|.
+8. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
 
 rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
 1. If x_0? is not defined, then:
   a. Return [].
 2. Let ?(y_0) be x_0?.
-3. If y_0 is of the case MEMORY, then:
-  a. Let (MEMORY y_1 instr*) be y_0.
-  b. Let 0 be y_1.
-  c. Let n be |byte*|.
-  d. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+3. Assert: Due to validation, y_0 is of the case MEMORY.
+4. Let (MEMORY y_1 instr*) be y_0.
+5. Let 0 be y_1.
+6. Let n be |byte*|.
+7. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
 concat_instr x_0*
 1. If x_0* is [], then:
