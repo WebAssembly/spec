@@ -24,6 +24,19 @@ Hence, these syntactic classes can also be interpreted as types.
 For numeric parameters, notation like :math:`n:\u32` is used to specify a symbolic name in addition to the respective value range.
 
 
+.. _embed-bool:
+
+Booleans
+~~~~~~~~
+
+Interface operation that are predicates return Boolean values:
+
+.. math::
+   \begin{array}{llll}
+   \production{Boolean} & \bool &::=& \FALSE ~|~ \TRUE \\
+   \end{array}
+
+
 .. _embed-error:
 
 Errors
@@ -614,4 +627,69 @@ Globals
    \begin{array}{lclll}
    \F{global\_write}(S, a, v) &=& S' && (\iff S.\SGLOBALS[a].\GITYPE = \MVAR~t \wedge S' = S \with \SGLOBALS[a].\GIVALUE = v) \\
    \F{global\_write}(S, a, v) &=& \ERROR && (\otherwise) \\
+   \end{array}
+
+
+.. index:: reference, reference type
+.. _embed-ref-type:
+
+References
+~~~~~~~~~~
+
+:math:`\F{ref\_type}(\store, \reff) : \reftype`
+...............................................
+
+1. Pre-condition: the :ref:`reference <syntax-ref>` :math:`\reff` is :ref:`valid <valid-val>` under store :math:`S`.
+
+2. Return the :ref:`reference type <syntax-reftype>` :math:`t` with which :math:`\reff` is valid.
+
+3. Post-condition: the returned :ref:`reference type <syntax-reftype>` is :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{ref\_type}(S, r) &=& t && (\iff S \vdashval r : t) \\
+   \end{array}
+
+.. note::
+   In future versions of WebAssembly,
+   not all references may carry precise type information at run time.
+   In such cases, this function may return a less precise supertype.
+
+
+.. index:: value type, external type, subtyping
+.. _embed-match-valtype:
+.. _embed-match-externtype:
+
+Matching
+~~~~~~~~
+
+:math:`\F{match\_valtype}(\valtype_1, \valtype_2) : \bool`
+..........................................................
+
+1. Pre-condition: the :ref:`value types <syntax-valtype>` :math:`\valtype_1` and :math:`\valtype_2` are :ref:`valid <valid-valtype>` under the empty :ref:`context <context>`.
+
+2. If :math:`\valtype_1` :ref:`matches <match-valtype>` :math:`\valtype_2`, then return :math:`\TRUE`.
+
+3. Else, return :math:`\FALSE`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff \vdashvaltypematch t_1 \matchesvaltype t_2) \\
+   \F{match\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
+   \end{array}
+
+
+:math:`\F{match\_externtype}(\externtype_1, \externtype_2) : \bool`
+...................................................................
+
+1. Pre-condition: the :ref:`extern types <syntax-externtype>` :math:`\externtype_1` and :math:`\externtype_2` are :ref:`valid <valid-externtype>` under the empty :ref:`context <context>`.
+
+2. If :math:`\externtype_1` :ref:`matches <match-externtype>` :math:`\externtype_2`, then return :math:`\TRUE`.
+
+3. Else, return :math:`\FALSE`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}

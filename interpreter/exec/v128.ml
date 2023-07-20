@@ -477,7 +477,7 @@ let to_hex_string s =
 
 let of_strings shape ss =
   if List.length ss <> num_lanes shape then
-    raise (Invalid_argument "wrong length");
+    invalid_arg "wrong length";
   let open Bytes in
   let b = create bytewidth in
   (match shape with

@@ -80,13 +80,12 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
         text: f64.const
         text: v128.const
         text: ref.null
-        text: ref.func
-        text: ref.extern
-        <!-- FIXME: correct these links once the GC proposal formal spec is complete -->
         text: ref.i31
         text: ref.array
         text: ref.struct
+        text: ref.func
         text: ref.host
+        text: ref.extern
     text: function index; url: syntax/modules.html#syntax-funcidx
     text: function instance; url: exec/runtime.html#function-instances
     text: store_init; url: appendix/embedding.html#embed-store-init
@@ -115,24 +114,18 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global_type; url: appendix/embedding.html#embed-global-type
     text: global_read; url: appendix/embedding.html#embed-global-read
     text: global_write; url: appendix/embedding.html#embed-global-write
+    text: ref_type; url: appendix/embedding.html#embed-ref-type
+    text: match_valtype; url: appendix/embedding.html#embed-match-valtype
     text: error; url: appendix/embedding.html#embed-error
-    <!-- FIXME: these links should be updated with the GC proposal formal spec -->
-    text: i31_new; url: appendix/embedding.html#embed-gc
-    text: i31_get; url: appendix/embedding.html#embed-gc
-    text: ref_test; url: appendix/embedding.html#embed-gc
-    text: extern_internalize; url: appendix/embedding.html#embed-gc; for: embedder
-    text: extern_externalize; url: appendix/embedding.html#embed-gc; for: embedder
-    text: extern.internalize; url: syntax/instructions.html#reference-instructions
-    text: extern.externalize; url: syntax/instructions.html#reference-instructions
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
     text: table address; url: exec/runtime.html#syntax-tableaddr
     text: function address; url: exec/runtime.html#syntax-funcaddr
     text: memory address; url: exec/runtime.html#syntax-memaddr
     text: global address; url: exec/runtime.html#syntax-globaladdr
-    text: extern address; url: exec/runtime.html#syntax-externaddr
-    <!-- FIXME: Update this link with the GC proposal formal spec -->
-    text: object address; url: exec/runtime.html#syntax-objectaddr
+    text: struct address; url: exec/runtime.html#syntax-structaddr
+    text: array address; url: exec/runtime.html#syntax-arrayaddr
+    text: host address; url: exec/runtime.html#syntax-hostaddr
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -264,9 +257,9 @@ Each [=agent=] is associated with the following [=ordered map=]s:
     * The <dfn>Memory object cache</dfn>, mapping [=memory address=]es to {{Memory}} objects.
     * The <dfn>Table object cache</dfn>, mapping [=table address=]es to {{Table}} objects.
     * The <dfn>Exported Function cache</dfn>, mapping [=function address=]es to [=Exported Function=] objects.
-    * The <dfn>Exported GC Object cache</dfn>, mapping [=object address=]es to [=Exported GC Object=] objects.
+    * The <dfn>Exported GC Object cache</dfn>, mapping [=struct address=]es and [=array address=]es to [=Exported GC Object=] objects.
     * The <dfn>Global object cache</dfn>, mapping [=global address=]es to {{Global}} objects.
-    * The <dfn>Extern value cache</dfn>, mapping [=extern address=]es to values.
+    * The <dfn>Host value cache</dfn>, mapping [=host address=]es to values.
 
 <h2 id="webassembly-namespace">The WebAssembly Namespace</h2>
 
@@ -1099,21 +1092,24 @@ The algorithm <dfn>ToJSValue</dfn>(|w|) coerces a [=WebAssembly value=] to a Jav
     1. If |f64| is [=nan=], return **NaN**.
     1. Return [=𝔽=](|f64| interpreted as a mathematical value).
 1. If |w| is of the form [=ref.null=] <var ignore>t</var>, return null.
+1. If |w| is of the form [=ref.i31=] <var ignore>i</var>, return [=ℤ=](|i|).
+1. If |w| is of the form [=ref.struct=] |structaddr|, return the result of creating [=a new Exported GC Object=] from |structaddr| and "struct".
+1. If |w| is of the form [=ref.array=] |arrayaddr|, return the result of creating [=a new Exported GC Object=] from |arrayaddr| and "array".
 1. If |w| is of the form [=ref.func=] |funcaddr|, return the result of creating [=a new Exported Function=] from |funcaddr|.
-1. If |w| is of the form [=ref.extern=] |externaddr|, return the result of [=retrieving an extern value=] from |externaddr|.
-1. If |w| is of the form [=ref.array=] <var ignore>arrayaddr</var>, [=ref.struct=] <var ignore>structaddr</var>, [=ref.i31=] <var ignore>i31addr</var>, or [=ref.host=] <var ignore>hostaddr</var>,
-    1. Return the result of [=extern_externalize=](|w|).
+1. If |w| is of the form [=ref.host=] |hostaddr|, return the result of [=retrieving a host value=] from |hostaddr|.
+1. If |w| is of the form [=ref.extern=] <var ignore>ref</var>, return [=ToJSValue=](|ref|).
+
 
 Note: Number values which are equal to NaN may have various observable NaN payloads; see [$NumericToRawBytes$] for details.
 </div>
 
 <div algorithm>
 
-For <dfn>retrieving an extern value</dfn> from an [=extern address=] |externaddr|, perform the following steps:
+For <dfn>retrieving a host value</dfn> from an [=host address=] |hostaddr|, perform the following steps:
 
-1. Let |map| be the [=surrounding agent=]'s associated [=extern value cache=].
-1. Assert: |map|[|externaddr|] [=map/exists=].
-1. Return |map|[|externaddr|].
+1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
+1. Assert: |map|[|hostaddr|] [=map/exists=].
+1. Return |map|[|hostaddr|].
 
 </div>
 
@@ -1144,32 +1140,35 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |f64| be |number|.
     1. Return [=f64.const=] |f64|.
 1. If |type| is of the form [=ref=] |null| |heaptype|,
+    1. If [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]),
+        1. Let |r| be [=ToWebAssemblyValue=](|v|, [=ref=] |null| [=heap-type/any=]).
+        1. Return [=ref.extern=] |r|.
     1. If |v| is null,
-        1. If |null| is present,
-            1. Return [=ref.null=] |heaptype|.
-        1. Otherwise,
-            1. Throw a {{TypeError}}.
-    1. If |type| is a subtype of [=ref=] |null| [=heap-type/func=],
-        1. If |v| is an [=Exported Function=],
-            1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
-            1. Let |testresult| be [=ref_test=](|heaptype|, [=ref.func=] |funcaddr|).
-            1. If |testresult| is true,
-                1. Return [=ref.func=] |funcaddr|.
+        1. Let |r| be [=ref.null=] |heaptype|.
+    1. Else if |v| [=is a Number=] and |v| is equal to ? [$ToInt32$](|v|) and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
+        1. Let |r| be [=ref.i31=] |v|.
+    1. Else if |v| is an [=Exported Function=],
+        1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
+        1. Let |r| be [=ref.func=] |funcaddr|.
+    1. Else if |v| is an [=Exported GC Object=],
+        1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
+        1. Let |objectkind| be the value of |v|'s \[[ObjectKind]] internal slot.
+        1. If |objectkind| is "array",
+            1. Let |r| be [=ref.array=] |objectaddr|.
+        1. If |objectkind| is "struct",
+            1. Let |r| be [=ref.struct=] |objectaddr|.
+    1. Else,
+        1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
+        1. If a [=host address=] |hostaddr| exists such that |map|[|hostaddr|] is the same as |v|,
+            1. Return [=ref.host=] |hostaddr|.
+        1. Let [=host address=] |hostaddr| be the smallest address such that |map|[|hostaddr|] [=map/exists=] is false.
+        1. [=map/Set=] |map|[|hostaddr|] to |v|.
+        1. Let |r| be [=ref.host=] |hostaddr|.
+    1. Let |store| be the current agent's [=associated store=].
+    1. Let |actualtype| be [=ref_type=](|store|, |r|).
+    1. If [=match_valtype=](|actualtype|, |type|) is false,
         1. Throw a {{TypeError}}.
-    1. If |heaptype| is [=extern=],
-        1. Let |map| be the [=surrounding agent=]'s associated [=extern value cache=].
-        1. If a [=extern address=] |externaddr| exists such that |map|[|externaddr|] is the same as |v|,
-            1. Return [=ref.extern=] |externaddr|.
-        1. Let [=extern address=] |externaddr| be the smallest address such that |map|[|externaddr|] [=map/exists=] is false.
-        1. [=map/Set=] |map|[|externaddr|] to |v|.
-        1. Return [=ref.extern=] |externaddr|.
-    1. If |type| is a subtype of [=ref=] |null| [=any=],
-        1. Let |externref| be [=ToWebAssemblyValue=](|v|, [=ref=] [=extern=]).
-        1. Let |internref| be [=extern_internalize=](|externref|).
-        1. Let |testresult| be [=ref_test=](|heaptype|, |internref|).
-        1. If |testresult| is true,
-            1. Return |internref|.
-        1. Throw a {{TypeError}}.
+    1. Return |r|.
 1. Assert: This step is not reached.
 
 </div>
@@ -1341,48 +1340,6 @@ Note: ECMAScript doesn't specify any sort of behavior on out-of-memory condition
     See [Issue 879](https://github.com/WebAssembly/spec/issues/879) for further discussion.
 </div>
 
-<h2 id="external-conversion">Requirements on External Conversion Operations in WebAssembly</h2>
-
-The WebAssembly core specification defines the [=extern.externalize=] and [=extern.internalize=] instructions
-(exposed as [=embedder/extern_externalize=] and [=embedder/extern_internalize=] in the embedding API)
-for the purpose of converting internal WebAssembly references to or from an external host representation.
-The behavior of these operations is partially host-defined.
-
-A JavaScript host implementation must implement [=embedder/extern_internalize=] and [=embedder/extern_externalize=] as follows:
-
-<div algorithm>
-The <dfn>extern_internalize</dfn>(|externref|) operation takes one argument |externref| and performs the following steps:
-
-1. Let [=ref.extern=] |externaddr| be |externref|.
-1. Let |v| be the result of [=retrieving an extern value=] from |externaddr|.
-1. If |v| [=is a Number=],
-    1. Let |i32| be ? [=ToInt32=](|v|).
-    1. If |v| is equal to |i32| and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
-        1. Return [=i31_new=]([=i32.const=] |v|).
-1. If |v| is an [=Exported GC Object=],
-    1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
-    1. Let |objecttype| be the value of |v|'s \[[ObjectType]] internal slot.
-    1. If |objecttype| is "array",
-        1. Return [=ref.array=] |objectaddr|.
-    1. If |objecttype| is "struct",
-        1. Return [=ref.struct=] |objectaddr|.
-1. Otherwise,
-    1. Return [=ref.host=] |externaddr|.
-
-</div>
-
-<div algorithm>
-The <dfn>extern_externalize</dfn>(|internref|) operation takes one argument |internref| and performs the following steps:
-
-1. If |internref| is of the form [=ref.i31=] |i31addr|,
-    1. Let |i32| be [=i31_get=](|i31addr|).
-    1. Return [=the Number value=] for |i32|.
-1. If |internref| is of the form [=ref.struct=] |structaddr|, return the result of creating [=a new Exported GC Object=] from |structaddr| and "struct".
-1. If |internref| is of the form [=ref.array=] |arrayaddr|, return the result of creating [=a new Exported GC Object=] from |arrayaddr| and "array".
-1. If |internref| is of the form [=ref.host=] |externaddr|, return the result of [=retrieving an extern value=] from |externaddr|.
-1. Assert: This step is not reached.
-
-</div>
 
 <h2 id="limits">Implementation-defined Limits</h2>
 

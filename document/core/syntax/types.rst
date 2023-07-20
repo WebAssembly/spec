@@ -165,6 +165,24 @@ Other references are *non-null*.
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
+.. _aux-reftypediff:
+
+Convention
+..........
+
+* The *difference* :math:`\X{rt}_1\reftypediff\X{rt}_2` between two reference types is defined as follows:
+
+  .. math::
+     \begin{array}{lll}
+     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\NULL~\X{ht}_2) &=& (\REF~\X{ht}_1) \\
+     (\REF~\NULL_1^?~\X{ht}_1) \reftypediff (\REF~\X{ht}_2) &=& (\REF~\NULL_1^?~\X{ht}_1) \\
+     \end{array}
+
+.. note::
+   This definition computes an approximation of the reference type that is inhabited by all values from :math:`\X{rt}_1` except those from :math:`\X{rt}_2`.
+   Since the type system does not have general union types,
+   the definition only affects the presence of null and cannot express the absence of other values.
+
 
 .. index:: ! value type, number type, vector type, reference type
    pair: abstract syntax; value type

@@ -252,7 +252,7 @@ Reference Instructions
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
-* Then the instruction is valid with type :math:`[\X{rt}'] \to [\I32]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
+* Then the instruction is valid with type :math:`[\X{rt}'] \to [\I32]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` for which :math:`\X{rt}` :ref:`matches <match-reftype>` :math:`\X{rt}'`.
 
 .. math::
    \frac{
@@ -270,7 +270,7 @@ Reference Instructions
 
 * The :ref:`reference type <syntax-reftype>` :math:`\X{rt}` must be :ref:`valid <valid-reftype>`.
 
-* Then the instruction is valid with type :math:`[\X{rt}'] \to [\X{rt}]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` that :ref:`matches <match-reftype>` :math:`\X{rt}`.
+* Then the instruction is valid with type :math:`[\X{rt}'] \to [\X{rt}]` for any :ref:`valid <valid-reftype>` :ref:`reference type <syntax-reftype>` :math:`\X{rt}'` for which :math:`\X{rt}` :ref:`matches <match-reftype>` :math:`\X{rt}'`.
 
 .. math::
    \frac{
@@ -579,7 +579,7 @@ Aggregate Reference Instructions
 
 .. math::
    \frac{
-     \expanddt(C.\CTYPES[x]) = \TSTRUCT~(\MVAR~\X{st})
+     \expanddt(C.\CTYPES[x]) = \TARRAY~(\MVAR~\X{st})
    }{
      C \vdashinstr \ARRAYSET~x : [(\REF~\NULL~x)~\I32~\unpacktype(\X{st})] \to []
    }
