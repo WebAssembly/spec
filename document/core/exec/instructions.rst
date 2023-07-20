@@ -562,7 +562,7 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}^\ast[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
      \end{array} \\
    S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
    \end{array}
@@ -613,7 +613,7 @@ Reference Instructions
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}^\ast[i]}(\val))
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}^n[i]}(\val))
      \end{array} \\
    S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
    \end{array}
