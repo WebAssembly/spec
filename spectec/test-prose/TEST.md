@@ -718,6 +718,8 @@ execution_of_br_if l
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
   a. Execute (BR l).
+4. Else:
+  a. Do nothing.
 
 execution_of_br_table l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -882,7 +884,9 @@ execution_of_table.fill x
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$table(x).ELEM|, then:
   a. Trap.
-8. If n is not 0, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
   c. Execute (TABLE.SET x).
@@ -900,7 +904,9 @@ execution_of_table.copy x y
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
-8. If n is not 0, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -927,7 +933,9 @@ execution_of_table.init x y
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
   a. Trap.
-8. If n is not 0 and i < |$elem(y).ELEM|, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else if i < |$elem(y).ELEM|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push $elem(y).ELEM[i] to the stack.
   c. Execute (TABLE.SET x).
@@ -965,7 +973,9 @@ execution_of_memory.fill
 6. Pop (I32.CONST i) from the stack.
 7. If (i + n) > |$mem(0).DATA|, then:
   a. Trap.
-8. If n is not 0, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
   c. Execute (STORE I32 ?(8) 0 0).
@@ -983,7 +993,9 @@ execution_of_memory.copy
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$mem(0).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
-8. If n is not 0, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -1010,7 +1022,9 @@ execution_of_memory.init x
 6. Pop (I32.CONST j) from the stack.
 7. If (i + n) > |$data(x).DATA| or (j + n) > |$mem(0).DATA|, then:
   a. Trap.
-8. If n is not 0 and i < |$data(x).DATA|, then:
+8. If n is 0, then:
+  a. Do nothing.
+9. Else if i < |$data(x).DATA|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(x).DATA[i]) to the stack.
   c. Execute (STORE I32 ?(8) 0 0).

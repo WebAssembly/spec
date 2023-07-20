@@ -184,9 +184,7 @@ let lift f x = [f x]
 
 let swap_if =
   let transpile_instr = function
-  | IfI (c, il, [ ])
-  | IfI (c, il, [ NopI ]) -> IfI (c, il, [])
-  | IfI (c, [ NopI ], il) -> IfI (neg c, il, [])
+  | IfI (c, il, []) -> IfI (c, il, [])
   | IfI (c, il1, il2) ->
       if count_instrs il1 <= count_instrs il2 then
         IfI (c, il1, il2)
