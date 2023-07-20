@@ -407,7 +407,7 @@ Reference Instructions
 
    a. Trap.
 
-4. Assert: due to validation, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
+4. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
 
 5. Let :math:`(\REFI31~i)` be the reference value :math:`\reff`.
 
@@ -424,14 +424,14 @@ Reference Instructions
 
 .. _exec-struct.new:
 
-:math:`\STRUCTNEW~\typeidx`
-...........................
+:math:`\STRUCTNEW~x`
+....................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-struct.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-struct.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-struct.new>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>`.
 
@@ -439,7 +439,7 @@ Reference Instructions
 
 5. Let :math:`n` be the length of the :ref:`field type <syntax-fieldtype>` sequence :math:`\X{ft}^\ast`.
 
-6. Assert: due to :ref:`validation <valid-struct.set>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
+6. Assert: due to :ref:`validation <valid-struct.new>`, :math:`n` :ref:`values <syntax-val>` are on the top of the stack.
 
 7. Pop the :math:`n` values :math:`\val^\ast` from the stack.
 
@@ -471,14 +471,14 @@ Reference Instructions
 
 .. _exec-struct.new_default:
 
-:math:`\STRUCTNEWDEFAULT~\typeidx`
-..................................
+:math:`\STRUCTNEWDEFAULT~x`
+...........................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-struct.new_default>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>`.
 
@@ -494,7 +494,7 @@ Reference Instructions
 
    c. Push the :ref:`value <syntax-val>` :math:`\default_{t_i}` to the stack.
 
-7. Execute the instruction :math:`(\STRUCTNEW~\typeidx)`.
+7. Execute the instruction :math:`(\STRUCTNEW~x)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -521,14 +521,14 @@ Reference Instructions
 .. _exec-struct.get:
 .. _exec-struct.get_sx:
 
-:math:`\STRUCTGET\K{\_}\sx^?~\typeidx~i`
-........................................
+:math:`\STRUCTGET\K{\_}\sx^?~x~i`
+.................................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-struct.get>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
 
@@ -544,7 +544,7 @@ Reference Instructions
 
    a. Trap.
 
-9. Assert: due to validation, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
+9. Assert: due to :ref:`validation <valid-struct.get>`, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
 
 10. Let :math:`(\REFSTRUCTADDR~a)` be the reference value :math:`\reff`.
 
@@ -570,14 +570,14 @@ Reference Instructions
 
 .. _exec-struct.set:
 
-:math:`\STRUCTSET~\typeidx~i`
-.............................
+:math:`\STRUCTSET~x~i`
+......................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-struct.set>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
 
@@ -597,7 +597,7 @@ Reference Instructions
 
    a. Trap.
 
-11. Assert: due to validation, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
+11. Assert: due to :ref:`validation <valid-struct.set>`, a :math:`\reff` is a :ref:`structure reference <syntax-ref.struct>`.
 
 12. Let :math:`(\REFSTRUCTADDR~a)` be the reference value :math:`\reff`.
 
@@ -621,14 +621,14 @@ Reference Instructions
 
 .. _exec-array.new:
 
-:math:`\ARRAYNEW~\typeidx`
-..........................
+:math:`\ARRAYNEW~x`
+...................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.new>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
@@ -644,7 +644,7 @@ Reference Instructions
 
 9. Push the value :math:`\val` to the stack :math:`n` times.
 
-10. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+10. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -666,14 +666,14 @@ Reference Instructions
 
 .. _exec-array.new_default:
 
-:math:`\ARRAYNEWDEFAULT~\typeidx`
-..................................
+:math:`\ARRAYNEWDEFAULT~x`
+..........................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.new_default>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
@@ -689,7 +689,7 @@ Reference Instructions
 
 9. Push the :ref:`value <syntax-val>` :math:`\default_t` to the stack :math:`n` times.
 
-10. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+10. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -715,14 +715,14 @@ Reference Instructions
 
 .. _exec-array.new_fixed:
 
-:math:`\ARRAYNEWFIXED~\typeidx~n`
-.................................
+:math:`\ARRAYNEWFIXED~x~n`
+..........................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.new_fixed>`, :math:`\deftype` is a :ref:`array type <syntax-arraytype>`.
 
@@ -760,23 +760,23 @@ Reference Instructions
 
 .. _exec-array.new_data:
 
-:math:`\ARRAYNEWDATA~\typeidx~\dataidx`
-.......................................
+:math:`\ARRAYNEWDATA~x~y`
+.........................
 
 .. todo:: extend type size convention to field types
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.new_data>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
 4. Let :math:`\TARRAY~\X{ft}` be the :ref:`array type <syntax-arraytype>` :math:`\deftype`. (todo: unroll)
 
-5. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[\dataidx]` exists.
+5. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]` exists.
 
-6. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[\dataidx]`.
+6. Let :math:`\X{da}` be the :ref:`data address <syntax-dataaddr>` :math:`F.\AMODULE.\MIDATAS[y]`.
 
 7. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`data instance <syntax-datainst>` :math:`S.\SDATAS[\X{da}]` exists.
 
@@ -806,7 +806,7 @@ Reference Instructions
 
     b. Push the value :math:`(t.\CONST~c_i)` to the stack.
 
-18. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+18. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    ~\\[-1ex]
@@ -830,22 +830,22 @@ Reference Instructions
 
 .. _exec-array.new_elem:
 
-:math:`\ARRAYNEWELEM~\typeidx~\elemidx`
-.......................................
+:math:`\ARRAYNEWELEM~x~y`
+.........................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.new_elem>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
 4. Let :math:`\TARRAY~\X{ft}` be the :ref:`array type <syntax-arraytype>` :math:`\deftype`. (todo: unroll)
 
-5. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[\elemidx]` exists.
+5. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]` exists.
 
-6. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[\elemidx]`.
+6. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]`.
 
 7. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\X{ea}]` exists.
 
@@ -865,7 +865,7 @@ Reference Instructions
 
 14. Push the references :math:`\reff^\ast` to the stack.
 
-15. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
+15. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    ~\\[-1ex]
@@ -885,14 +885,14 @@ Reference Instructions
 .. _exec-array.get:
 .. _exec-array.get_sx:
 
-:math:`\ARRAYGET\K{\_}\sx^?~\typeidx`
-.....................................
+:math:`\ARRAYGET\K{\_}\sx^?~x`
+..............................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.get>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
@@ -910,7 +910,7 @@ Reference Instructions
 
    a. Trap.
 
-10. Assert: due to validation, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
+10. Assert: due to :ref:`validation <valid-array.get>`, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
 
 11. Let :math:`(\REFARRAYADDR~a)` be the reference value :math:`\reff`.
 
@@ -942,14 +942,14 @@ Reference Instructions
 
 .. _exec-array.set:
 
-:math:`\ARRAYSET~\typeidx`
-..........................
+:math:`\ARRAYSET~x`
+...................
 
 .. todo:: unroll type
 
-1. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]`.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
 3. Assert: due to :ref:`validation <valid-array.set>`, :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
@@ -959,7 +959,7 @@ Reference Instructions
 
 6. Pop the value :math:`\val` from the stack.
 
-7. Assert: due to :ref:`validation <valid-array.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+7. Assert: due to :ref:`validation <valid-array.set>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
 8. Pop the value :math:`(\I32.\CONST~i)` from the stack.
 
@@ -971,7 +971,7 @@ Reference Instructions
 
    a. Trap.
 
-12. Assert: due to validation, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
+12. Assert: due to :ref:`validation <valid-array.set>`, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
 
 13. Let :math:`(\REFARRAYADDR~a)` be the reference value :math:`\reff`.
 
@@ -1010,7 +1010,7 @@ Reference Instructions
 
    a. Trap.
 
-4. Assert: due to validation, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
+4. Assert: due to :ref:`validation <valid-array.len>`, a :math:`\reff` is an :ref:`array reference <syntax-ref.array>`.
 
 5. Let :math:`(\REFARRAYADDR~a)` be the reference value :math:`\reff`.
 
@@ -1029,8 +1029,8 @@ Reference Instructions
 
 .. _exec-array.fill:
 
-:math:`\ARRAYFILL~\typeidx`
-...........................
+:math:`\ARRAYFILL~x`
+....................
 
 .. todo:: Prose
 
@@ -1063,8 +1063,8 @@ Reference Instructions
 
 .. _exec-array.copy:
 
-:math:`\ARRAYCOPY~\typeidx~\typeidx`
-....................................
+:math:`\ARRAYCOPY~x~y`
+......................
 
 .. todo:: Prose
 
@@ -1115,8 +1115,8 @@ Reference Instructions
 
 .. _exec-array.init_data:
 
-:math:`\ARRAYINITDATA~\typeidx~\dataidx`
-........................................
+:math:`\ARRAYINITDATA~x~y`
+..........................
 
 .. todo:: Prose
 
@@ -1156,8 +1156,8 @@ Reference Instructions
 
 .. _exec-array.init_elem:
 
-:math:`\ARRAYINITELEM~\typeidx~\elemidx`
-........................................
+:math:`\ARRAYINITELEM~x~y`
+..........................
 
 .. todo:: Prose
 
