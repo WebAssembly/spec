@@ -5,11 +5,29 @@ open Util.Source
 (* Environment *)
 
 module Set = Set.Make(String)
+module Map = Map.Make(String)
 
 type env = 
   { prose: prose;
-    keywords: Set.t ref;
+    syn: string list Map.t ref;
+    dec: Set.t ref;
   }
+
+let all_keywords env =
+  let syn = !(env.syn) in
+  let syn = Map.fold
+    (fun _parent children acc -> 
+      List.fold_left (fun acc child -> Set.add child acc) acc children)
+    syn Set.empty
+  in
+  let dec = !(env.dec) in
+  let dec = Set.fold
+    (fun keyword acc -> Set.add keyword acc)
+    dec Set.empty
+  in
+  Set.union syn dec
+
+let find_keyword env s = Set.find_opt s (all_keywords env)
 
 let extract_ids_keywords = function
   | El.Ast.Nl -> None
@@ -41,19 +59,32 @@ let rec extract_typ_keywords typ =
   | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_keywords t.it) tl
   | _ -> []
 
-let extract_def_keywords def =
+let extract_syn_keywords def =
   match def.it with
-  | El.Ast.SynD (id, _, typ, _) -> [ id.it ] @ extract_typ_keywords typ.it 
+  | El.Ast.SynD (id, subid, typ, _) -> 
+      let parent = if subid.it = "" then id.it else id.it ^ "-" ^ subid.it in
+      let children = extract_typ_keywords typ.it in
+      Some (parent, children)
+  | _ -> None
+
+let extract_dec_keywords def =
+  match def.it with
   | El.Ast.DecD (id, _, _, _) -> [ id.it ]
-  | El.Ast.DefD (id, _, _, _) -> [ id.it ]
   | _ -> []
 
 let env _config el il al : env = 
   let prose = Gen.gen_prose il al in
-  let keywords = List.concat_map extract_def_keywords el in
-  let keywords = List.fold_left (fun s acc -> Set.add acc s) Set.empty keywords in
+  let syn = 
+    List.fold_left 
+      (fun acc def -> match extract_syn_keywords def with
+        | Some (parent, children) -> Map.add parent ([ parent ] @ children) acc
+        | _ -> acc)
+      Map.empty el 
+  in
+  let dec = List.concat_map extract_dec_keywords el in
+  let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
   (* Set.iter print_endline keywords; *)
-  let env = { prose; keywords =  ref keywords; } in
+  let env = { prose; syn = ref syn; dec = ref dec; } in
   env
 
 (* Macro Generation *)
@@ -101,19 +132,54 @@ let render_macro_keyword s =
 let render_macro_def s =
   (* TODO hardcoded to avoid duplicate macros *)
   if s = "_F" then ""
-  else if s = "LABEL_" then
-    sprintf ".. |label| mathdef:: {\\X{label}}"
+  else if s = "LABEL_" then ".. |label| mathdef:: {\\X{label}}"
   else
     let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
     sprintf ".. |%s| mathdef:: {\\%s{%s}}"
       (macroify s) typ (render_macro_keyword s)
 
 let render_macro env =
-  let keywords = env.keywords in
-  macro_template ^
-  Set.fold
-    (fun keyword acc -> acc ^ render_macro_def keyword ^ "\n")
-    (!keywords) ""
+  let seen = Set.empty in
+  let syn = !(env.syn) in
+  let (ssyn, seen) = Map.fold
+    (fun parent children acc ->
+      let ssyn, seen = acc in
+      let schildren, seen = List.fold_left
+        (fun acc keyword ->
+          let schildren, seen = acc in
+          let (skeyword, seen) = 
+            if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
+            else (render_macro_def keyword, Set.add keyword seen)
+          in
+          (schildren ^ skeyword ^ "\n", seen))
+        ("", seen) children
+      in
+      let ssyn = ssyn
+        ^ ".. " ^ (String.uppercase_ascii parent) ^ "\n"
+        ^ ".. " ^ (String.make (String.length parent) '-') ^ "\n"
+        ^ schildren
+        ^ "\n"
+      in
+      (ssyn, seen)
+    )
+    syn ("", seen)
+  in
+  let dec = !(env.dec) in
+  let (sdec, _seen) = Set.fold
+    (fun keyword acc -> 
+      let sdec, seen = acc in
+      let skeyword, seen =
+        if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
+        else (render_macro_def keyword, Set.add keyword seen)
+      in
+      (sdec ^ skeyword ^ "\n", seen))
+    dec ("", seen)
+  in
+  macro_template
+  ^ ".. Syntax\n.. ------\n\n"
+  ^ ssyn
+  ^ ".. Functions\n.. ---------\n\n"
+  ^ sdec
 
 (* Helpers *)
 
@@ -193,7 +259,7 @@ let render_al_mathop = function
 (* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_name env = function
-  | Al.Ast.N s -> (match Set.find_opt s !(env.keywords) with
+  | Al.Ast.N s -> (match find_keyword env s with
     | Some _ -> sprintf "\\%s" (macroify s) 
     | _ -> s)
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
@@ -442,20 +508,20 @@ and render_prose_instrs env depth instrs =
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_prose_instr env depth i)
     "" instrs
 
-let rec render_al_instr env index depth = function
+let rec render_al_instr env algoname index depth = function
   | Al.Ast.IfI (c, il, []) ->
       sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
-        (render_al_instrs env (depth + 1) il)
+        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, []) ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
         if_index
         (render_cond env c)
-        (render_al_instrs env (depth + 1) il1)
+        (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
         (render_cond env inner_c)
-        (render_al_instrs env (depth + 1) inner_il1)
+        (render_al_instrs env algoname (depth + 1) inner_il1)
   | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, inner_il2) ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
@@ -463,42 +529,47 @@ let rec render_al_instr env index depth = function
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n%s Else:%s"
         if_index
         (render_cond env c)
-        (render_al_instrs env (depth + 1) il1)
+        (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
         (render_cond env inner_c)
-        (render_al_instrs env (depth + 1) inner_il1)
+        (render_al_instrs env algoname (depth + 1) inner_il1)
         (repeat indent depth ^ else_index)
-        (render_al_instrs env (depth + 1) inner_il2)
+        (render_al_instrs env algoname (depth + 1) inner_il2)
   | Al.Ast.IfI (c, il1, il2) ->
       let if_index = render_order index depth in
       let else_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_cond env c)
-        (render_al_instrs env (depth + 1) il1)
+        (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_index)
-        (render_al_instrs env (depth + 1) il2)
+        (render_al_instrs env algoname (depth + 1) il2)
   | Al.Ast.OtherwiseI il ->
       sprintf "%s Otherwise:%s" (render_order index depth)
-        (render_al_instrs env (depth + 1) il)
+        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.WhileI (c, il) ->
       sprintf "%s While %s, do:%s" (render_order index depth) (render_cond env c)
-        (render_al_instrs env (depth + 1) il)
+        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.EitherI (il1, il2) ->
       let either_index = render_order index depth in
       let or_index = render_order index depth in
       sprintf "%s Either:%s\n\n%s Or:%s" either_index
-        (render_al_instrs env (depth + 1) il1)
+        (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ or_index)
-        (render_al_instrs env (depth + 1) il2)
+        (render_al_instrs env algoname (depth + 1) il2)
   | Al.Ast.ForI (e, il) ->
       sprintf "%s For i in range |%s|:%s" (render_order index depth)
         (render_expr env false e)
-        (render_al_instrs env (depth + 1) il)
+        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ForeachI (e1, e2, il) ->
       sprintf "%s Foreach %s in %s:%s" (render_order index depth)
         (render_expr env false e1)
         (render_expr env false e2)
-        (render_al_instrs env (depth + 1) il)
-  | Al.Ast.AssertI c -> sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env c)
+        (render_al_instrs env algoname (depth + 1) il)
+  | Al.Ast.AssertI c -> 
+      (* TODO this is hardcoded for instructions without typing rules *)
+      if algoname = "label" || algoname = "call_addr" || algoname = "frame" then
+        sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env c)
+      else
+        sprintf "%s Assert: Due to :ref:`validation <valid-%s>`, %s." (render_order index depth) (algoname) (render_cond env c)
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
@@ -546,11 +617,11 @@ let rec render_al_instr env index depth = function
         (render_expr env false e2) (render_expr env false e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 
-and render_al_instrs env depth instrs =
+and render_al_instrs env algoname depth instrs =
   let index = ref 0 in
   List.fold_left
     (fun sinstrs i ->
-      sinstrs ^ "\n\n" ^ repeat indent depth ^ render_al_instr env index depth i)
+      sinstrs ^ "\n\n" ^ repeat indent depth ^ render_al_instr env algoname index depth i)
     "" instrs
 
 (* Prose *)
@@ -589,7 +660,7 @@ let render_algo env name params instrs =
   let title = render_title env uppercase name (List.map (fun p -> let (e, _) = p in e) params) in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
-  render_al_instrs env 0 instrs
+  render_al_instrs env name 0 instrs
 
 let render_def env = function
   | Pred (name, params, instrs) ->
