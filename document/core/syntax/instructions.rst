@@ -351,7 +351,7 @@ Operations are performed point-wise on the values of each lane.
 .. note::
    For example, the shape :math:`\K{i32x4}` interprets the operand
    as four |i32| values, packed into an |i128|.
-   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+   The bit width of the numeric type :math:`t` times :math:`N` always is 128.
 
 Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
 
@@ -451,7 +451,7 @@ while |REFASNONNULL| converts a :ref:`nullable <syntax-reftype>` to a non-null o
 
 The |REFEQ| compares two references.
 
-The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <syntax-type-dyn>` of a reference operand.
+The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <type-inst>` of a reference operand.
 The former merely returns the result of the test,
 while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
 
@@ -495,7 +495,7 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 Aggregate Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-type-aggregate>` types.
+Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-aggrtype>` types.
 
 .. math::
    \begin{array}{llrl}

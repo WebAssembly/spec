@@ -290,6 +290,9 @@ Growing :ref:`memories <syntax-meminst>`
 :ref:`Modules <syntax-moduleinst>`
 ..................................
 
+.. todo:: update prose for types
+.. todo:: change semantics for globals
+
 The allocation function for :ref:`modules <syntax-module>` requires a suitable list of :ref:`external values <syntax-externval>` that are assumed to :ref:`match <match-externtype>` the :ref:`import <syntax-import>` vector of the module,
 a list of initialization :ref:`values <syntax-val>` for the module's :ref:`globals <syntax-global>`,
 and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element segments <syntax-elem>`.
@@ -381,8 +384,6 @@ and list of :ref:`reference <syntax-ref>` vectors for the module's :ref:`element
 
 where:
 
-.. todo:: adjust deftypes
-
 .. math::
    \begin{array}{@{}rlll@{}}
    \table^\ast &=& \module.\MTABLES \\
@@ -403,7 +404,7 @@ where:
      \MIEXPORTS~\exportinst^\ast ~\}
      \end{array} \\[1ex]
    \deftype^\ast &=&
-     \insttype_{\moduleinst}(\module.\MTYPES) \\
+     \alloctype^\ast(\module.\MTYPES) \\
    S_1, \funcaddr^\ast &=&
      \allocfunc^\ast(S, \module.\MFUNCS, \moduleinst) \\
    S_2, \tableaddr^\ast &=&
@@ -450,8 +451,30 @@ Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`alloc
 
 Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals or tables), then the elements of this sequence are passed to the allocation function pointwise.
 
+For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>`:
+
+.. math::
+   \begin{array}{rlll}
+   \alloctype^\ast(\rectype^n) = \deftype^\ast \\[1ex]
+   \mbox{where for all $i < n$:} \hfill \\
+   \deftype^\ast[x_i \slice m_i] &=& \rolldt{x_i}(\rectype^n[i])[\subst \deftype^\ast[0 : \slice x_i]) \\
+   x_{i+1} &=& x_i + m_i \land x_n = |\deftype^\ast| \\
+   \end{array}
+
+.. todo:: unify with type closure somehow?
+
+
+.. scratch
+   \begin{array}{rlll}
+   \alloctype^\ast(\epsilon) = \epsilon \\
+   \alloctype^\ast(\rectype^\ast~\rectype') = \deftype^\ast~{\deftype'}^\ast \\[1ex]
+   \mbox{where:} \hfill \\
+   \deftype^\ast &=& \alloctype^\ast(\reftype^\ast) \\
+   {\deftype'}^\ast &=& \rolldt{|\deftype^\ast|}(\rectype)[\subst \deftype^\ast) \\
+   \end{array}
+
 .. note::
-   The definition of module allocation is mutually recursive with the allocation of its associated types and functions, because the resulting module instance :math:`\moduleinst` is passed to the allocators as an argument, in order to form the necessary closures.
+   The definition of module allocation is mutually recursive with the allocation of its associated functions, because the resulting module instance :math:`\moduleinst` is passed to the allocators as an argument, in order to form the necessary closures.
    In an implementation, this recursion is easily unraveled by mutating one or the other in a secondary step.
 
 
@@ -665,7 +688,7 @@ The following steps are performed:
 
 2. Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[\funcaddr]`.
 
-3. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`structured type <syntax-strtype>` :math:`\expand(\funcinst.\FITYPE)`.
+3. Let :math:`\TFUNC~[t_1^n] \toF [t_2^m]` be the :ref:`compound type <syntax-comptype>` :math:`\expanddt(\funcinst.\FITYPE)`.
 
 4. If the length :math:`|\val^\ast|` of the provided argument values is different from the number :math:`n` of expected arguments, then:
 
@@ -697,7 +720,7 @@ The values :math:`\val_{\F{res}}^m` are returned as the results of the invocatio
    ~\\[-1ex]
    \begin{array}{@{}lcl}
    \invoke(S, \funcaddr, \val^n) &=& S; F; \val^n~(\INVOKE~\funcaddr) \\
-     &(\iff & \expand(S.\SFUNCS[\funcaddr].\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
+     &(\iff & \expanddt(S.\SFUNCS[\funcaddr].\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      &\wedge& (S \vdashval \val : t_1)^n \\
      &\wedge& F = \{ \AMODULE~\{\}, \ALOCALS~\epsilon \}) \\
    \end{array}

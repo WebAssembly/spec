@@ -609,7 +609,7 @@ Conventions
 
 .. math::
    \begin{array}{llll}
-   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expand(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
+   \fblocktype_{S;F}(\typeidx) &=& \functype & (\iff \expanddt(F.\AMODULE.\MITYPES[\typeidx]) = \TFUNC~\functype) \\
    \fblocktype_{S;F}([\valtype^?]) &=& [] \to [\valtype^?] \\
    \end{array}
 
