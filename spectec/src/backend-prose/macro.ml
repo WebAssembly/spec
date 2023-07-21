@@ -117,7 +117,7 @@ let env inputs outputs el =
   let syn = 
     List.fold_left
       (fun acc def -> match extract_syn_keywords def with
-        | Some (parent, children) -> Map.add parent ([ parent ] @ children) acc
+        | Some (parent, children) -> Map.add parent children acc
         | _ -> acc)
       Map.empty el
   in
