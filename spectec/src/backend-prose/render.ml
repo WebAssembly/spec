@@ -15,6 +15,8 @@ let get_macro env = env.macro
 
 let find_keyword env s = Set.find_opt s (Macro.all_keywords env.macro)
 
+let find_section env s = Macro.find_section env.macro s
+
 let env _config inputs outputs el il al : env = 
   let prose = Gen.gen_prose il al in
   let macro = Macro.env inputs outputs el in
@@ -415,14 +417,8 @@ let rec render_al_instr env algoname index depth = function
         (render_expr env false e2)
         (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.AssertI c -> 
-      (* TODO this is hardcoded for instructions without typing rules *)
-      if 
-        algoname = "label" || algoname = "call_addr" || algoname = "frame" 
-        || algoname = "min" || algoname = "allocglobals" || algoname = "allocelems" || algoname = "allocmodule" 
-      then
-        sprintf "%s Assert: Due to validation, %s." (render_order index depth) (render_cond env c)
-      else
-        sprintf "%s Assert: Due to :ref:`validation <valid-%s>`, %s." (render_order index depth) (algoname) (render_cond env c)
+      let vref = if find_section env ("valid-" ^ algoname) then ":ref:`validation <valid-" ^ algoname ^">`" else "validation" in
+      sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_cond env c) 
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)

@@ -16,6 +16,8 @@ let get_section env = !(env.section)
 let get_syn env = !(env.syn)
 let get_dec env = !(env.dec)
 
+let find_section env s = Map.mem s !(env.section)
+
 let all_keywords env =
   let syn = !(env.syn) in
   let syn = Map.fold
