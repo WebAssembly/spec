@@ -549,39 +549,38 @@ allocdatas x_0*
 5. Return [da] ++ da'*.
 
 allocmodule module externval* val* ref**
-1. Let i be 0.
-2. Let fa_ex* be $funcs(externval*).
-3. Let ga_ex* be $globals(externval*).
-4. Let ma_ex* be $mems(externval*).
-5. Let ta_ex* be $tables(externval*).
-6. Assert: Due to validation, module is of the case MODULE.
-7. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
-8. Let (DATA byte* datamode?)^n_data be y_4.
-9. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
-10. Let (MEMORY memtype)^n_mem be y_2.
-11. Let (TABLE tabletype)^n_table be y_1.
-12. Let (GLOBAL globaltype expr_1)^n_global be y_0.
-13. Let da* be (|s.DATA| + i)^(i<n_data).
-14. Let ea* be (|s.ELEM| + i)^(i<n_elem).
-15. Let ma* be (|s.MEM| + i)^(i<n_mem).
-16. Let ta* be (|s.TABLE| + i)^(i<n_table).
-17. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
-18. Let fa* be (|s.FUNC| + i)^(i<n_func).
-19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-20. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
-21. Let y_0 be $allocfuncs(m, func^n_func).
-22. Assert: Due to validation, y_0 is fa*.
-23. Let y_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, y_0 is ga*.
-25. Let y_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, y_0 is ta*.
-27. Let y_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, y_0 is ma*.
-29. Let y_0 be $allocelems(rt^n_elem, ref**).
-30. Assert: Due to validation, y_0 is ea*.
-31. Let y_0 be $allocdatas(byte*^n_data).
-32. Assert: Due to validation, y_0 is da*.
-33. Return m.
+1. Let fa_ex* be $funcs(externval*).
+2. Let ga_ex* be $globals(externval*).
+3. Let ma_ex* be $mems(externval*).
+4. Let ta_ex* be $tables(externval*).
+5. Assert: Due to validation, module is of the case MODULE.
+6. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
+7. Let (DATA byte* datamode?)^n_data be y_4.
+8. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
+9. Let (MEMORY memtype)^n_mem be y_2.
+10. Let (TABLE tabletype)^n_table be y_1.
+11. Let (GLOBAL globaltype expr_1)^n_global be y_0.
+12. Let da* be (|s.DATA| + i)^(i<n_data).
+13. Let ea* be (|s.ELEM| + i)^(i<n_elem).
+14. Let ma* be (|s.MEM| + i)^(i<n_mem).
+15. Let ta* be (|s.TABLE| + i)^(i<n_table).
+16. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
+17. Let fa* be (|s.FUNC| + i)^(i<n_func).
+18. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+19. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+20. Let y_0 be $allocfuncs(m, func^n_func).
+21. Assert: Due to validation, y_0 is fa*.
+22. Let y_0 be $allocglobals(globaltype^n_global, val*).
+23. Assert: Due to validation, y_0 is ga*.
+24. Let y_0 be $alloctables(tabletype^n_table).
+25. Assert: Due to validation, y_0 is ta*.
+26. Let y_0 be $allocmems(memtype^n_mem).
+27. Assert: Due to validation, y_0 is ma*.
+28. Let y_0 be $allocelems(rt^n_elem, ref**).
+29. Assert: Due to validation, y_0 is ea*.
+30. Let y_0 be $allocdatas(byte*^n_data).
+31. Assert: Due to validation, y_0 is da*.
+32. Return m.
 
 runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
 1. If x_0? is not defined, then:
@@ -612,10 +611,8 @@ concat_instr x_0*
 3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
-1. Let i be 0.
-2. Let j be 0.
-3. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-4. If module is of the case MODULE, then:
+1. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+2. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let f_init be { LOCAL: []; MODULE: m_init; }.
   c. Let n_data be |data*|.

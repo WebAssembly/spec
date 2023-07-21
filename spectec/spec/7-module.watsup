@@ -133,7 +133,6 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if (s_4, ma*) = $allocmems(s_3, memtype^n_mem)
   -- if (s_5, ea*) = $allocelems(s_4, rt^n_elem, (ref*)*)
   -- if (s_6, da*) = $allocdatas(s_5, (byte*)^n_data)
-  -- if i = 0 ;; needed for animation, should be removed
 
 
 def $runelem(elem, idx) : instr*
@@ -179,8 +178,6 @@ def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL
   -- if n_data = |data*|
   -- if instr_data* = $concat_instr($rundata(data*[j], j)^(j<n_data))
   -- if start? = (START x)?
-  -- if i = 0 ;; needed for animation, should be removed
-  -- if j = 0
 
 
 def $invocation(store, funcaddr, val*) : config
