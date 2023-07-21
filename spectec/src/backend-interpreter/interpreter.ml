@@ -144,6 +144,7 @@ exception ExitContext of (value Env.Env'.t * value) * instr list
 
 (* Helper functions *)
 
+let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
 let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
 let value_to_array v = v |> value_to_growable_array |> (!)
 let value_to_list v = v |> value_to_array |> Array.to_list
@@ -295,16 +296,41 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
-  | IterE _ -> (* match iter with
-    | IndexedListN (x, e') ->
-      let n = eval_expr env e' |> value_to_int in
-      List.init n (fun i ->
-        let v_i = NumV (Int64.of_int i) in
-        eval_expr (Env.add x v_i env) e
-      ) |> listV
-    (* TODO: better IterE *)
-    | _ -> eval_expr env e *)
-  failwith "TODO: intepr iter"
+  | IterE (inner_e, names, iter) ->
+      let ll =
+        List.map
+          (fun name ->
+            let v = Env.find name env in
+            match iter with
+            | Opt -> value_to_option v |> Option.to_list
+            | _ -> value_to_list v)
+          names
+      in
+
+      let rec transpose = function
+        | [] -> []
+        | [] :: xss -> transpose xss
+        | (x::xs) :: xss ->
+            (x :: List.map List.hd xss) :: transpose (xs :: List.map List.tl xss)
+      in
+
+      transpose ll
+      |> List.map
+        (fun values ->
+          let new_env = List.fold_left2
+            (fun acc name v -> Env.add name v acc)
+            env
+            names
+            values
+          in
+          eval_expr new_env inner_e)
+      |> if (iter = Opt)
+      then
+        (function
+          | [] -> OptV None
+          | [v] -> OptV (Some v)
+          | _ -> failwith "Unreachable")
+      else listV
   | e -> structured_string_of_expr e |> failwith
 
 and access_path env base path = match path with
@@ -488,7 +514,7 @@ and assign_split ep es vs env =
   let prefix_len, suffix_len =
     let get_length = function
     | ListE es -> Some (List.length es)
-    (*| IterE (_, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)*)
+    | IterE (_, _, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -573,12 +599,10 @@ and interp_instrs env il cont action =
     | PopI e ->
         let new_env = (
           match e with
-          (*
-          | IterE (NameE name, ListN n) ->
+          | IterE (NameE name, [name'], ListN n) when name = name' ->
               let i = Env.find n env |> value_to_int in
               let vs = List.rev (List.init i (fun _ -> pop ())) in
               Env.add name (listV vs) env
-              *)
           | _ -> (
               (* due to Wasm validation *)
               let h = pop () in
@@ -595,7 +619,7 @@ and interp_instrs env il cont action =
         interp_with new_env icont
     | PopAllI e -> (
       match e with
-      (*| IterE (NameE name, List) ->
+      | IterE (NameE name, [name'], List) when name = name' ->
         let is_boundary = function FrameV _ | LabelV _ -> true | _ -> false in
         let rec pop_value acc = match !stack with
         | h :: _  when not (is_boundary h) -> pop_value (pop () :: acc)
@@ -603,7 +627,6 @@ and interp_instrs env il cont action =
         let vs = pop_value [] in
         let new_env = Env.add name (listV vs) env in
         interp_with new_env icont
-        *)
       | _ -> failwith ("Invalid pop: Popall " ^ string_of_expr e))
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
@@ -722,7 +745,7 @@ and interp_algo algo args cont action =
     let pattern, _ = param in
     match (pattern, arg) with
     | NameE n, arg
-    (*| IterE (NameE n, _), arg*) -> Env.add n arg acc
+    | IterE (NameE n, _, _), arg -> Env.add n arg acc
     | _ -> failwith "Invalid destructuring assignment"
   in
 
