@@ -55,9 +55,7 @@ let free_defid id = {empty with defid = Set.singleton id.it}
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, None) -> free_exp e
-  | ListN (e, Some id) ->
-    union (free_exp e) (free_varid id)
+  | ListN (e, _) -> free_exp e
 
 
 (* Types *)
