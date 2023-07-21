@@ -48,7 +48,7 @@ type env =
     mutable def : definition Map.t;
   }
 
-let env_render_prose env = env.render_prose
+let get_render_prose env = env.render_prose
 
 let env_def env def =
   match def.it with

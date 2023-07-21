@@ -8,143 +8,18 @@ module Map = Map.Make(String)
 
 type env = 
   { prose: prose;
-    sections: string Map.t ref;
-    syn: string list Map.t ref;
-    dec: Set.t ref;
+    macro: Macro.env;
   }
 
-let all_keywords env =
-  let syn = !(env.syn) in
-  let syn = Map.fold
-    (fun _parent children acc -> 
-      List.fold_left (fun acc child -> Set.add child acc) acc children)
-    syn Set.empty
-  in
-  let dec = !(env.dec) in
-  let dec = Set.fold
-    (fun keyword acc -> Set.add keyword acc)
-    dec Set.empty
-  in
-  Set.union syn dec
+let get_macro env = env.macro
 
-let find_keyword env s = Set.find_opt s (all_keywords env)
+let find_keyword env s = Set.find_opt s (Macro.all_keywords env.macro)
 
 let env _config inputs outputs el il al : env = 
   let prose = Gen.gen_prose il al in
-  let sections = Macro.parse_section inputs outputs in
-  let syn = 
-    List.fold_left 
-      (fun acc def -> match Macro.extract_syn_keywords def with
-        | Some (parent, children) -> Map.add parent ([ parent ] @ children) acc
-        | _ -> acc)
-      Map.empty el 
-  in
-  let dec = List.concat_map Macro.extract_dec_keywords el in
-  let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
-  (* Set.iter print_endline keywords; *)
-  let env = { prose; sections = ref sections; syn = ref syn; dec = ref dec; } in
+  let macro = Macro.env inputs outputs el in
+  let env = { prose; macro; } in
   env
-
-(* Macro Generation *)
-
-let macro_template = {|
-.. MATH MACROS
-
-
-.. Generic Stuff
-.. -------------
-
-.. Type-setting of names
-.. X - (multi-letter) variables / non-terminals
-.. F - functions
-.. K - keywords / terminals
-.. B - binary grammar non-terminals
-.. T - textual grammar non-terminals
-
-.. |X| mathdef:: \mathit
-.. |F| mathdef:: \mathrm
-.. |K| mathdef:: \mathsf
-.. |B| mathdef:: \mathtt
-.. |T| mathdef:: \mathtt
-
-|}
-
-(* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
-   such that it is macro-compatible *)
-let macroify s = 
-  let del acc c =
-    if c = '.' || c = '_' then acc
-    else acc ^ (String.make 1 c) 
-  in
-  String.fold_left del "" s
-
-let render_macro_keyword s = 
-  let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
-  let escape acc c =
-    if c = '.' then acc ^ "{.}"
-    else if c = '_' then acc ^ "\\_"
-    else acc ^ (String.make 1 c)
-  in
-  String.fold_left escape "" s
-
-let render_macro_def env ref s =
-  (* TODO hardcoded to avoid duplicate macros *)
-  if s = "_F" then ""
-  else if s = "LABEL_" then ".. |label| mathdef:: {\\X{label}}"
-  else
-    let xref = match Map.find_opt ref !(env.sections) with
-      | Some path -> sprintf "\\xref{%s}{%s}" path ref
-      | None -> ""
-    in
-    let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
-    sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
-      (macroify s) xref typ (render_macro_keyword s)
-
-let render_macro_syn env seen =
-  let syn = !(env.syn) in
-  Map.fold
-    (fun parent children acc ->
-      let ssyn, seen = acc in
-      let schildren, seen = List.fold_left
-        (fun acc keyword ->
-          let schildren, seen = acc in
-          let (skeyword, seen) = 
-            if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-            else (render_macro_def env ("syntax-" ^ parent) keyword, Set.add keyword seen)
-          in
-          (schildren ^ skeyword ^ "\n", seen))
-        ("", seen) children
-      in
-      let ssyn = ssyn
-        ^ ".. " ^ (String.uppercase_ascii parent) ^ "\n"
-        ^ ".. " ^ (String.make (String.length parent) '-') ^ "\n"
-        ^ schildren
-        ^ "\n"
-      in
-      (ssyn, seen)
-    )
-    syn ("", seen)
-
-let render_macro_dec env seen =
-  let dec = !(env.dec) in
-  Set.fold
-    (fun keyword acc -> 
-      let sdec, seen = acc in
-      let skeyword, seen =
-        if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-        else (render_macro_def env ("exec-" ^ keyword) keyword, Set.add keyword seen)
-      in
-      (sdec ^ skeyword ^ "\n", seen))
-    dec ("", seen)
-
-let render_macro env =
-  let (ssyn, seen) = render_macro_syn env Set.empty in
-  let (sdec, _seen) = render_macro_dec env seen in
-  macro_template
-  ^ ".. Syntax\n.. ------\n\n"
-  ^ ssyn
-  ^ ".. Functions\n.. ---------\n\n"
-  ^ sdec
 
 (* Helpers *)
 
@@ -226,7 +101,7 @@ let render_al_mathop = function
 let rec render_name env = function
   | Al.Ast.N s when s = "inverse_of_bytes_" -> s 
   | Al.Ast.N s -> (match find_keyword env s with
-    | Some _ -> sprintf "\\%s" (macroify s) 
+    | Some _ -> sprintf "\\%s" (Macro.macroify s) 
     | _ -> (match String.index_opt s '_' with 
       | Some idx ->
           let base = String.sub s 0 idx in
