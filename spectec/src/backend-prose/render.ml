@@ -208,9 +208,15 @@ and render_expr env in_math = function
       let se1 = render_expr env in_math e1 in
       let sps = render_paths env in_math ps in
       let se2 = render_expr env in_math e2 in
-      (match dir with
-      | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
-      | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
+      Al.Print.structured_string_of_expr e2 |> print_endline;
+      if in_math then
+        (match dir with
+        | Al.Ast.Front -> sprintf "\\{%s~%s\\}~\\bigoplus~%s" sps se2 se1
+        | Al.Ast.Back -> sprintf "%s~\\bigoplus~\\{%s~%s\\}" se1 sps se2)
+      else
+        (match dir with
+        | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
+        | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.ReplaceE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" 
         (render_expr env in_math e1) 
@@ -305,7 +311,7 @@ and render_cond env = function
       sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) s
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
-  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) c
+  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_name env (N c)))
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
