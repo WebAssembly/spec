@@ -16,10 +16,147 @@ Values
 
 ${definition: default_}
 
-.. _exec-runtime-auxiliary-notation:
+.. _exec-runtime-results:
 
-Auxiliary Notation
+Results
+~~~~~~~
+
+.. _syntax-store:
+.. _exec-runtime-store:
+
+Store
+~~~~~
+
+$${syntax: store}
+
+.. _syntax-addr:
+.. _syntax-funcaddr:
+.. _syntax-globaladdr:
+.. _syntax-tableaddr:
+.. _syntax-memaddr:
+.. _syntax-elemaddr:
+.. _syntax-dataaddr:
+.. _syntax-labeladdr:
+.. _syntax-hostaddr:
+.. _exec-runtime-addresses:
+
+Addresses
+~~~~~~~~~
+
+$${syntax+:
+  addr
+  funcaddr
+  globaladdr
+  tableaddr
+  memaddr
+  elemaddr
+  dataaddr
+  labeladdr
+  hostaddr
+}
+
+.. _syntax-moduleinst:
+.. _exec-runtime-module-instances:
+
+Module Instances
+~~~~~~~~~~~~~~~~
+
+$${syntax: moduleinst}
+
+.. _syntax-funcinst:
+.. _exec-runtime-function-instances:
+
+Function Instances
 ~~~~~~~~~~~~~~~~~~
+
+$${syntax: funcinst}
+
+.. _syntax-tableinst:
+.. _exec-runtime-table-instances:
+
+Table Instances
+~~~~~~~~~~~~~~~
+
+$${syntax: tableinst}
+
+.. _syntax-meminst:
+.. _exec-runtime-memory-instances:
+
+Memory Instances
+~~~~~~~~~~~~~~~~
+
+$${syntax: meminst}
+
+.. _syntax-globalinst:
+.. _exec-runtime-global-instances:
+
+Global Instances
+~~~~~~~~~~~~~~~~
+
+$${syntax: globalinst}
+
+.. _syntax-eleminst:
+.. _exec-runtime-element-instances:
+
+Element Instances
+~~~~~~~~~~~~~~~~~
+
+$${syntax: eleminst}
+
+.. _syntax-datainst:
+.. _exec-runtime-data-instances:
+
+Data Instances
+~~~~~~~~~~~~~~
+
+$${syntax: datainst}
+
+.. _syntax-exportinst:
+.. _exec-runtime-export-instances:
+
+Export Instances
+~~~~~~~~~~~~~~~~
+
+$${syntax: exportinst}
+
+.. _syntax-externval:
+.. _exec-runtime-external-values:
+
+External Values
+~~~~~~~~~~~~~~~
+
+$${syntax: externval}
+
+.. _syntax-admininstr:
+.. _exec-runtime-administrative-instructions:
+
+Administrative Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+$${syntax: admininstr}
+
+.. _syntax-state:
+.. _syntax-config:
+
+Configurations
+..............
+
+$${syntax+:
+  state
+  config
+}
+
+.. _syntax-E:
+
+Evaluation Contexts
+...................
+
+$${syntax: E}
+
+.. _exec-runtime-helper-functions:
+
+Helper Functions
+~~~~~~~~~~~~~~~~
 
 .. _exec-funcaddr:
 
