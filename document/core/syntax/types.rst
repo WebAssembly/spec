@@ -34,7 +34,8 @@ They correspond to the respective binary floating-point representations, also kn
 Number types are *transparent*, meaning that their bit patterns can be observed.
 Values of number type can be stored in :ref:`memories <syntax-mem>`.
 
-.. _bitwidth:
+.. _bitwidth-numtype:
+.. _bitwidth-valtype:
 
 Conventions
 ...........
@@ -66,17 +67,17 @@ values, or a single 128 bit type. The interpretation is determined by individual
 Vector types, like :ref:`number types <syntax-numtype>` are *transparent*, meaning that their bit patterns can be observed.
 Values of vector type can be stored in :ref:`memories <syntax-mem>`.
 
+.. _bitwidth-vectype:
+
 Conventions
 ...........
 
-* The notation :math:`|t|` for :ref:`bit width <bitwidth>` extends to vector types as well, that is, :math:`|\V128| = 128`.
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-numtype>` extends to vector types as well, that is, :math:`|\V128| = 128`.
 
 
 
-.. index:: ! heap type, store, type identifier, ! substitution, ! closed type, ! abstract type, ! concrete type, ! unboxed scalar
+.. index:: ! heap type, store, type index, ! abstract type, ! concrete type, ! unboxed scalar
    pair: abstract syntax; heap type
-.. _type-subst:
-.. _type-closed:
 .. _type-abstract:
 .. _type-concrete:
 .. _syntax-i31:
@@ -97,11 +98,12 @@ That is, both type hierarchies are inhabited by an isomorphic set of values, but
 
 .. math::
    \begin{array}{llrl}
-   \production{heap type} & \heaptype &::=&
+   \production{abstract heap type} & \absheaptype &::=&
      \FUNC ~|~ \NOFUNC \\&&|&
      \EXTERN ~|~ \NOEXTERN \\&&|&
-     \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\&&|&
-     \typeidx ~|~ \deftype ~|~ \BOT \\
+     \ANY ~|~ \EQT ~|~ \I31 ~|~ \STRUCT ~|~ \ARRAY ~|~ \NONE \\
+   \production{heap type} & \heaptype &::=&
+     \absheaptype ~|~ \typeidx \\
    \end{array}
 
 A heap type is either *abstract* or *concrete*.
@@ -132,34 +134,13 @@ Their observable value range is limited to 31 bits.
    Engines need to perform some form of *pointer tagging* to achieve this,
    which is why 1 bit is reserved.
 
-
-A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in some module.
-
-A concrete heap type can also consist of a :ref:`defined type <syntax-deftype>` directly.
-However, this form is representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, such that it cannot be used in a program;
-it only occurs during :ref:`validation <valid>` or :ref:`execution <exec>`, as the result of *substituting* a :ref:`type index <syntax-typeidx>` with its definition.
-
-A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>`,
-i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>`.
-
-The type :math:`\BOT` is a :ref:`subtype <match-heaptype>` of all heap types.
-By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`, as a part of a possible operand type for instructions.
-
-.. note::
    Although the types |NONE|, |NOFUNC|, and |NOEXTERN| are not inhabited by any values,
    they can be used to form the types of all null :ref:`references <syntax-reftype>` in their respective hierarchy.
    For example, :math:`(\REF~\NULL~\NOFUNC)` is the generic type of a null reference compatible with all function reference types.
 
+A concrete heap type consists of a :ref:`type index <syntax-typeidx>` and classifies an object of the respective :ref:`type <syntax-type>` defined in a module.
 
-.. _notation-subst:
-
-Convention
-..........
-
-* :math:`t[x^\ast \subst \X{ft}^\ast]` denotes the parallel *substitution* of :ref:`type indices <syntax-typeidx>` :math:`x^\ast` with :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast`, provided :math:`|x^\ast| = |\X{ft}^\ast|` in type :math:`t`.
-
-* :math:`t[\subst \X{ft}^\ast]` is shorthand for the substitution :math:`t[x^\ast \subst \X{ft}^\ast]` where :math:`x^\ast = 0 \cdots (|\X{ft}^\ast| - 1)` in type :math:`t`.
+The syntax of heap types is :ref:`extended <syntax-heaptype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! reference type, heap type, reference, table, function, function type, null
@@ -188,27 +169,24 @@ Reference types are *opaque*, meaning that neither their size nor their bit patt
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
 
-.. index:: ! value type, number type, vector type, reference type, ! bottom type
+.. index:: ! value type, number type, vector type, reference type
    pair: abstract syntax; value type
    pair: value; type
 .. _syntax-valtype:
-.. _syntax-bottype:
 
 Value Types
 ~~~~~~~~~~~
 
 *Value types* classify the individual values that WebAssembly code can compute with and the values that a variable accepts.
-They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, :ref:`reference types <syntax-reftype>`, or the unique *bottom type*, written :math:`\BOT`.
-
-The type :math:`\BOT` is a :ref:`subtype <match-valtype>` of all other value types.
-By virtue of being representable in neither the :ref:`binary format <binary-valtype>` nor the :ref:`text format <text-valtype>`, it cannot be used in a program;
-it only occurs during :ref:`validation <valid>`, as a possible operand type for instructions.
+They are either :ref:`number types <syntax-numtype>`, :ref:`vector types <syntax-vectype>`, or :ref:`reference types <syntax-reftype>`.
 
 .. math::
    \begin{array}{llrl}
    \production{value type} & \valtype &::=&
-     \numtype ~|~ \vectype ~|~ \reftype ~|~ \BOT \\
+     \numtype ~|~ \vectype ~|~ \reftype \\
    \end{array}
+
+The syntax of value types is :ref:`extended <syntax-valtype-ext>` with additional forms for the purpose of specifying :ref:`validation <valid>`.
 
 Conventions
 ...........
@@ -234,55 +212,6 @@ which is a sequence of values, written with brackets.
    \end{array}
 
 
-.. index:: ! instruction type, value type, result type, instruction, local, local index
-   pair: abstract syntax; instruction type
-   pair: instruction; type
-.. _syntax-instrtype:
-
-Instruction Types
-~~~~~~~~~~~~~~~~~
-
-*Instruction types* classify the behaviour of :ref:`instructions <syntax-instr>` or instruction sequences, by describing how they manipulate the :ref:`operand stack <stack>` and the initialization status of :ref:`locals <syntax-local>`:
-
-.. math::
-   \begin{array}{llrl}
-   \production{instruction type} & \instrtype &::=&
-     \resulttype \toX{\localidx^\ast} \resulttype \\
-   \end{array}
-
-An instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
-and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
-Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction or sequence.
-
-.. note::
-   Instruction types are only used for :ref:`validation <valid>`,
-   they do not occur in programs.
-
-
-.. index:: ! local type, value type, local, local index
-   pair: abstract syntax; local type
-   pair: local; type
-.. _syntax-init:
-.. _syntax-localtype:
-
-Local Types
-~~~~~~~~~~~
-
-*Local types* classify :ref:`locals <syntax-local>`, by describing their :ref:`value type <syntax-valtype>` as well as their *initialization status*:
-
-.. math::
-   \begin{array}{llrl}
-   \production{initialization status} & \init &::=&
-     \SET ~|~ \UNSET \\
-   \production{local type} & \localtype &::=&
-     \init~\valtype \\
-   \end{array}
-
-.. note::
-   Local types are only used for :ref:`validation <valid>`,
-   they do not occur in programs.
-
-
 .. index:: ! function type, value type, vector, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
@@ -298,29 +227,94 @@ They are also used to classify the inputs and outputs of :ref:`instructions <syn
 .. math::
    \begin{array}{llrl}
    \production{function type} & \functype &::=&
-     \resulttype \to \resulttype \\
+     \resulttype \toF \resulttype \\
    \end{array}
 
 
-.. index:: ! defined type, function type
-   pair: abstract syntax; defined type
-.. _syntax-deftype:
+.. index:: ! aggregate type, ! structure type, ! array type, ! field type, ! storage type, ! packed type, bit width
+   pair: abstract syntax; structure type
+   pair: abstract syntax; array type
+   pair: abstract syntax; field type
+   pair: abstract syntax; storage type
+   pair: abstract syntax; packed type
+.. _syntax-aggrtype:
+.. _syntax-structtype:
+.. _syntax-arraytype:
+.. _syntax-fieldtype:
+.. _syntax-storagetype:
+.. _syntax-packedtype:
 
-Defined Types
-~~~~~~~~~~~~~
+Aggregate Types
+~~~~~~~~~~~~~~~
 
-.. todo:: structured types, recrusive types, etc.
-
-*Defined types* are the ones that can be defined in a :ref:`module <syntax-module>`, assigning them a :ref:`type index <syntax-typeidx>`.
+*Aggregate types* describe compound objects consisting of multiple values.
+These are either *structures* or *arrays*,
+which both consist of a list of possibly mutable and possibly packed *fields*.
+Structures are heterogeneous, but require static indexing, while arrays need to be homogeneous, but allow dynamic indexing.
 
 .. math::
    \begin{array}{llrl}
-   \production{defined type} & \deftype &::=&
-     \functype \\
+   \production{structure type} & \structtype &::=&
+     \fieldtype^\ast \\
+   \production{array type} & \arraytype &::=&
+     \fieldtype \\
+   \production{field type} & \fieldtype &::=&
+     \mut~\storagetype \\
+   \production{storage type} & \storagetype &::=&
+     \valtype ~|~ \packedtype \\
+   \production{packed type} & \packedtype &::=&
+     \I8 ~|~ \I16 \\
    \end{array}
 
-.. note::
-   Future versions of WebAssembly may introduce additional forms of defined types.
+.. _bitwidth-fieldtype:
+
+Conventions
+...........
+
+* The notation :math:`|t|` for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
+
+
+.. index:: ! compound type, function type, aggreagate type, structure type, array type
+   pair: abstract syntax; compound type
+.. _syntax-comptype:
+
+Compound Types
+~~~~~~~~~~~~~~
+
+*Compound types* are all types composed from simpler types,
+including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syntax-aggrtype>`.
+
+.. math::
+   \begin{array}{llrl}
+   \production{compound type} & \comptype &::=&
+     \TFUNC~\functype ~|~ \TSTRUCT~\structtype ~|~ \TARRAY~\arraytype \\
+   \end{array}
+
+
+.. index:: ! recursive type, ! sub type, compound type, ! final, subtyping, ! roll, ! unroll, recursive type index
+   pair: abstract syntax; recursive type
+   pair: abstract syntax; sub type
+.. _syntax-rectype:
+.. _syntax-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+*Recursive types* denote a group of mutually recursive :ref:`compound types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
+Each type can also be declared *final*, preventing further subtyping.
+.
+
+.. math::
+   \begin{array}{llrl}
+   \production{recursive type} & \rectype &::=&
+     \TREC~\subtype^\ast \\
+   \production{sub types} & \subtype &::=&
+     \TSUB~\TFINAL^?~\typeidx^\ast~\comptype \\
+   \end{array}
+
+In a :ref:`module <syntax-module>`, each member of a recursive type is assigned a separate :ref:`type index <syntax-typeidx>`.
+
+The syntax of sub types is :ref:`generalized <syntax-heaptype-ext>` for the purpose of specifying :ref:`validation <valid>` and :ref:`execution <exec>`.
 
 
 .. index:: ! limits, memory type, table type
@@ -384,9 +378,6 @@ Table Types
 Like memories, tables are constrained by limits for their minimum and optionally maximum size.
 The limits are given in numbers of entries.
 
-.. note::
-   In future versions of WebAssembly, additional element types may be introduced.
-
 
 .. index:: ! global type, ! mutability, value type, global, mutability
    pair: abstract syntax; global type
@@ -411,7 +402,7 @@ Global Types
    \end{array}
 
 
-.. index:: ! external type, function type, table type, memory type, global type, import, external value
+.. index:: ! external type, defined type, function type, table type, memory type, global type, import, external value
    pair: abstract syntax; external type
    pair: external; type
 .. _syntax-externtype:
@@ -424,7 +415,7 @@ External Types
 .. math::
    \begin{array}{llrl}
    \production{external types} & \externtype &::=&
-     \ETFUNC~\functype ~|~
+     \ETFUNC~\deftype ~|~
      \ETTABLE~\tabletype ~|~
      \ETMEM~\memtype ~|~
      \ETGLOBAL~\globaltype \\

@@ -40,6 +40,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval t.\CONST~c : t
    }
 
+
 .. _valid-ref:
 
 :ref:`Null References <syntax-ref>` :math:`\REFNULL~t`
@@ -65,6 +66,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
    That ensures that it is compatible with any nullable type in that hierarchy.
 
 
+.. _valid-ref.i31:
+
 :ref:`Scalar References <syntax-ref>` :math:`\REFI31~i`
 .......................................................
 
@@ -77,6 +80,8 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
+.. _valid-ref.struct:
+
 :ref:`Structure References <syntax-ref>` :math:`\REFSTRUCTADDR~a`
 .................................................................
 
@@ -84,17 +89,23 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\structinst` be the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]`.
 
-* Let :math:`\structtype` be the :ref:`structure type <syntax-structtype>` :math:`\structinst.\SITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\structinst.\SITYPE`.
 
-* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\structtype)`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`struct type <syntax-structtype>`.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\deftype)`.
 
 .. math::
    \frac{
-     \structtype = S.\SSTRUCTS[a].\SITYPE
+     \deftype = S.\SSTRUCTS[a].\SITYPE
+     \qquad
+     \expanddt(\deftype) = \TSTRUCT~\structtype
    }{
-     S \vdashval \REFSTRUCTADDR~a : \REF~\structtype
+     S \vdashval \REFSTRUCTADDR~a : \REF~\deftype
    }
 
+
+.. _valid-ref.array:
 
 :ref:`Array References <syntax-ref>` :math:`\REFARRAYADDR~a`
 ............................................................
@@ -103,15 +114,19 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\arrayinst` be the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]`.
 
-* Let :math:`\arraytype` be the :ref:`array type <syntax-arraytype>` :math:`\arrayinst.\AITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\arrayinst.\AITYPE`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\arraytype)`.
 
 .. math::
    \frac{
-     \arraytype = S.\SARRAYS[a].\AITYPE
+     \deftype = S.\SARRAYS[a].\AITYPE
+     \qquad
+     \expanddt(\deftype) = \TARRAY~\arraytype
    }{
-     S \vdashval \REFARRAYADDR~a : \REF~\arraytype
+     S \vdashval \REFARRAYADDR~a : \REF~\deftype
    }
 
 
@@ -122,15 +137,19 @@ The following auxiliary typing rules specify this typing relation relative to a 
 
 * Let :math:`\funcinst` be the :ref:`function instance <syntax-funcinst>` :math:`S.\SFUNCS[a]`.
 
-* Let :math:`\functype` be the :ref:`function type <syntax-functype>` :math:`\funcinst.\FITYPE`.
+* Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`\funcinst.\FITYPE`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
 .. math::
    \frac{
-     \functype = S.\SFUNCS[a].\FITYPE
+     \deftype = S.\SFUNCS[a].\FITYPE
+     \qquad
+     \expanddt(\deftype) = \TFUNC~\functype
    }{
-     S \vdashval \REFFUNCADDR~a : \REF~\functype
+     S \vdashval \REFFUNCADDR~a : \REF~\deftype
    }
 
 

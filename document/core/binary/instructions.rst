@@ -122,6 +122,10 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 .. _binary-array.get_u:
 .. _binary-array.set:
 .. _binary-array.len:
+.. _binary-array.fill:
+.. _binary-array.copy:
+.. _binary-array.init_data:
+.. _binary-array.init_elem:
 .. _binary-i31.new:
 .. _binary-i31.get_s:
 .. _binary-i31.get_u:
@@ -144,6 +148,7 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
      \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
      \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \hex{FB}~~16{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYFILL~x \\ &&|&
      \hex{FB}~~17{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
      \hex{FB}~~18{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
      \hex{FB}~~19{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGET~x \\ &&|&
@@ -151,6 +156,7 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~21{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETU~x \\ &&|&
      \hex{FB}~~22{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYSET~x \\ &&|&
      \hex{FB}~~23{:}\Bu32 &\Rightarrow& \ARRAYLEN \\ &&|&
+     \hex{FB}~~24{:}\Bu32~~x{:}\Btypeidx~~y{:}\Btypeidx &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
      \hex{FB}~~25{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
      \hex{FB}~~27{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
      \hex{FB}~~28{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
@@ -161,6 +167,8 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~65{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
      \hex{FB}~~72{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
      \hex{FB}~~73{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~84{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \hex{FB}~~85{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
      \hex{FB}~~112{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
      \hex{FB}~~113{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\
    \end{array}

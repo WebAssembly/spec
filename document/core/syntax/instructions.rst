@@ -171,7 +171,7 @@ Occasionally, it is convenient to group operators together according to the foll
    \end{array}
 
 
-.. index:: ! vector instruction, numeric vectors, number, value, value type, SIMD
+.. index:: ! vector instruction, numeric vector, number, value, value type, SIMD
    pair: abstract syntax; instruction
 .. _syntax-laneidx:
 .. _syntax-shape:
@@ -351,7 +351,7 @@ Operations are performed point-wise on the values of each lane.
 .. note::
    For example, the shape :math:`\K{i32x4}` interprets the operand
    as four |i32| values, packed into an |i128|.
-   The bitwidth of the numeric type :math:`t` times :math:`N` always is 128.
+   The bit width of the numeric type :math:`t` times :math:`N` always is 128.
 
 Instructions prefixed with :math:`\K{v128}` do not involve a specific interpretation, and treat the |V128| as an |i128| value or a vector of 128 individual bits.
 
@@ -451,7 +451,7 @@ while |REFASNONNULL| converts a :ref:`nullable <syntax-reftype>` to a non-null o
 
 The |REFEQ| compares two references.
 
-The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <syntax-type-dyn>` of a reference operand.
+The instructions |REFTEST| and |REFCAST| test the :ref:`dynamic type <type-inst>` of a reference operand.
 The former merely returns the result of the test,
 while the latter performs a downcast and :ref:`traps <trap>` if the operand's type does not match.
 
@@ -478,6 +478,10 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 .. _syntax-array.get_u:
 .. _syntax-array.set:
 .. _syntax-array.len:
+.. _syntax-array.fill:
+.. _syntax-array.copy:
+.. _syntax-array.init_data:
+.. _syntax-array.init_elem:
 .. _syntax-i31.new:
 .. _syntax-i31.get_s:
 .. _syntax-i31.get_u:
@@ -491,7 +495,7 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 Aggregate Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-type-aggregate>` types.
+Instructions in this group are concerned with creating and accessing :ref:`references <syntax-reftype>` to :ref:`aggregate <syntax-aggrtype>` types.
 
 .. math::
    \begin{array}{llrl}
@@ -508,9 +512,13 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \ARRAYNEWDATA~\typeidx~\dataidx \\&&|&
      \ARRAYNEWELEM~\typeidx~\elemidx \\&&|&
      \ARRAYGET~\typeidx \\&&|&
-     \ARRAYGET(\K{\_}\sx~\typeidx \\&&|&
+     \ARRAYGET\K{\_}\sx~\typeidx \\&&|&
      \ARRAYSET~\typeidx \\&&|&
      \ARRAYLEN \\&&|&
+     \ARRAYFILL~\typeidx \\&&|&
+     \ARRAYCOPY~\typeidx~\typeidx \\&&|&
+     \ARRAYINITDATA~\typeidx~\dataidx \\&&|&
+     \ARRAYINITELEM~\typeidx~\elemidx \\&&|&
      \I31NEW \\&&|&
      \I31GET\K{\_}\sx \\&&|&
      \EXTERNINTERNALIZE \\&&|&
@@ -523,10 +531,11 @@ allowing for different sign extension modes in the case of :ref:`packed <syntax-
 
 Similarly, :ref:`arrays <syntax-arraytype>` can be allocated either with an explicit initialization operand or a default value.
 Furthermore, |ARRAYNEWFIXED| allocates an array with statically fixed size,
-and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segement, respectively.
-The remaining array instructions access individual slots,
+and |ARRAYNEWDATA| and |ARRAYNEWELEM| allocate an array and initialize it from a :ref:`data <syntax-data>` or :ref:`element <syntax-elem>` segment, respectively.
+|ARRAYGET|, |ARRAYGETS|, |ARRAYGETU|, and |ARRAYSET| access individual slots,
 again allowing for different sign extension modes in the case of a :ref:`packed <syntax-packedtype>` storage type.
-Last, |ARRAYLEN| produces the length of an array.
+|ARRAYLEN| produces the length of an array.
+|ARRAYFILL| fills a specified slice of an array with a given value and |ARRAYCOPY|, |ARRAYINITDATA|, and |ARRAYINITELEM| copy elements to a specified slice of an array from a given array, data segment, or element segment, respectively.
 
 The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 

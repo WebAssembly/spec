@@ -48,14 +48,17 @@ let grow tab delta r =
   tab.content <- after
 
 let load tab i =
-  try Lib.Array32.get tab.content i with Invalid_argument _ -> raise Bounds
+  if i < 0l || i >= Lib.Array32.length tab.content then raise Bounds;
+  Lib.Array32.get tab.content i
 
 let store tab i r =
   let TableT (lim, t) = tab.ty in
   if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
-  try Lib.Array32.set tab.content i r with Invalid_argument _ -> raise Bounds
+  if i < 0l || i >= Lib.Array32.length tab.content then raise Bounds;
+  Lib.Array32.set tab.content i r
 
 let blit tab offset rs =
   let data = Array.of_list rs in
-  try Lib.Array32.blit data 0l tab.content offset (Lib.Array32.length data)
-  with Invalid_argument _ -> raise Bounds
+  let len = Lib.Array32.length data in
+  if offset < 0l || offset > Int32.sub (Lib.Array32.length tab.content) len then raise Bounds;
+  Lib.Array32.blit data 0l tab.content offset len

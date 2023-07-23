@@ -20,6 +20,24 @@ The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *
 In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>`. [#cite-pldi2017]_
 
 
+.. index:: context, recursive types, recursive type indices
+.. context-rec:
+
+Contexts
+~~~~~~~~
+
+.. todo:: maybe move elsewhere?
+
+In order to check :ref:`rolled up <aux-roll-rectype>` recursive types,
+the :ref:`context <context>` is locally extended with an additional component that records the :ref:`supertypes <syntax-subtype>` of each :ref:`recursive type index <syntax-rectypeidx>`, represented as :ref:`defined types <syntax-deftype>`:
+
+.. math::
+   \begin{array}{llll}
+   \production{context} & C &::=&
+     \{~ \dots, \CRECS ~ (\deftype^\ast)^\ast ~\} \\
+   \end{array}
+
+
 .. index:: value, value type, result, result type, trap
 .. _valid-result:
 

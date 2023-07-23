@@ -5,14 +5,20 @@ type address = Memory.address
 exception Bounds
 
 let alloc bs = ref bs
+
 let size seg = I64.of_int_u (String.length !seg)
+
 let drop seg = seg := ""
 
 let load_byte seg a =
-  try (!seg).[Int64.to_int a] with Invalid_argument _ -> raise Bounds
+  let i = Int64.to_int a in
+  if i < 0 || i >= String.length !seg then raise Bounds;
+  !seg.[i]
 
 let load_bytes seg a n =
-  try String.sub !seg (Int64.to_int a) n with Invalid_argument _ -> raise Bounds
+  let i = Int64.to_int a in
+  if i < 0 || i + n < 0 || i + n > String.length !seg then raise Bounds;
+  String.sub !seg i n
 
 
 (* Typed accessors *)

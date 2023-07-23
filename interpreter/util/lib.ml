@@ -178,7 +178,7 @@ module Array32 =
 struct
   let make n x =
     if n < 0l || Int64.of_int32 n > Int64.of_int max_int then
-      raise (Invalid_argument "Array32.make");
+      invalid_arg "Array32.make";
     Array.make (Int32.to_int n) x
 
   let length a = Int32.of_int (Array.length a)
@@ -201,7 +201,7 @@ struct
   struct
     let create kind layout n =
       if n < 0L || n > Int64.of_int max_int then
-        raise (Invalid_argument "Bigarray.Array1_64.create");
+        invalid_arg "Bigarray.Array1_64.create";
       Array1.create kind layout (Int64.to_int n)
 
     let dim a = Int64.of_int (Array1.dim a)
@@ -226,7 +226,7 @@ struct
   let force o =
     match o with
     | Some y -> y
-    | None -> raise (Invalid_argument "Option.force")
+    | None -> invalid_arg "Option.force"
 
   let map f = function
     | Some x -> Some (f x)

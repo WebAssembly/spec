@@ -688,8 +688,6 @@ where:
   - `(ref null1? ht1)\(ref null ht2) = (ref ht1)`
   - `(ref null1? ht1)\(ref ht2)      = (ref null1? ht1)`
 
-Note: Cast instructions do _not_ require the operand's source type to be a supertype of the target type. It can also be a "sibling" in the same hierarchy, i.e., they only need to have a common supertype (in practice, it is sufficient to test that both types share the same top heap type.). Allowing so is necessary to maintain subtype substitutability, i.e., the ability to maintain well-typedness when operands are replaced by subtypes.
-
 Note: The [reference types](https://github.com/WebAssembly/reference-types) and [typed function references](https://github.com/WebAssembly/function-references)already introduce similar `ref.is_null`, `br_on_null`, and `br_on_non_null` instructions. These can now be interpreted as syntactic sugar:
 
 * `ref.is_null` is equivalent to `ref.test null ht`, where `ht` is the suitable bottom type (`none`, `nofunc`, or `noextern`)
@@ -699,8 +697,6 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 * `br_on_non_null` is equivalent to `(br_on_cast_fail null ht) (drop)`, where `ht` is the suitable bottom type
 
 * finally, `ref.as_non_null` is equivalent to `ref.cast ht`, where `ht` is the heap type of the operand
-
-TODO: Should we remove the latter 3 from the typed function references proposal?
 
 
 #### Constant Expressions
@@ -808,6 +804,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb04 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb05 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
 | 0xfb06 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb0f | `array.fill $t` | `$t : typeidx` |
 | 0xfb11 | `array.new $t` | `$t : typeidx` |
 | 0xfb12 | `array.new_default $t` | `$t : typeidx` |
 | 0xfb13 | `array.get $t` | `$t : typeidx` |
@@ -815,6 +812,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb15 | `array.get_u $t` | `$t : typeidx` |
 | 0xfb16 | `array.set $t` | `$t : typeidx` |
 | 0xfb17 | `array.len` | |
+| 0xfb18 | `array.copy $t1 $t2` | `$t1 : typeidx`, `$t2 : typeidx` |
 | 0xfb19 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
 | 0xfb1b | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
 | 0xfb1c | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
@@ -827,6 +825,8 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb49 | `ref.cast (ref null ht)` | `ht : heaptype` |
 | 0xfb4e | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 | 0xfb4f | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb54 | `array.init_data $t $d` | `$t : typeidx`, `$d: dataidx` |
+| 0xfb55 | `array.init_elem $t $e` | `$t : typeidx`, `$d: elemidx` |
 | 0xfb70 | `extern.internalize` | |
 | 0xfb71 | `extern.externalize` | |
 

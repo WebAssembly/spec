@@ -53,26 +53,15 @@ Heap Types
 
 Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type index <syntax-typeidx>` is.
 
-:math:`\FUNC`
-.............
+:math:`\absheaptype`
+....................
 
 * The heap type is valid.
 
 .. math::
    \frac{
    }{
-     C \vdashheaptype \FUNC \ok
-   }
-
-:math:`\EXTERN`
-...............
-
-* The heap type is valid.
-
-.. math::
-   \frac{
-   }{
-     C \vdashheaptype \EXTERN \ok
+     C \vdashheaptype \absheaptype \ok
    }
 
 :math:`\typeidx`
@@ -89,16 +78,17 @@ Concrete :ref:`Heap types <syntax-heaptype>` are only valid when the :ref:`type 
      C \vdashheaptype \typeidx \ok
    }
 
-:math:`\BOT`
-............
+:math:`\BOTH`
+.............
 
 * The heap type is valid.
 
 .. math::
    \frac{
    }{
-     C \vdashheaptype \BOT \ok
+     C \vdashheaptype \BOTH \ok
    }
+
 
 .. index:: reference type, heap type
    pair: validation; reference type
@@ -129,12 +119,12 @@ Reference Types
    pair: validation; value type
    single: abstract syntax; value type
 .. _valid-valtype:
-.. _valid-bottype:
+.. _valid-valtype-bot:
 
 Value Types
 ~~~~~~~~~~~
 
-Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-bottype>`.
+Valid :ref:`value types <syntax-valtype>` are either valid :ref:`number type <valid-numtype>`,  :ref:`reference type <valid-reftype>`, or the :ref:`bottom type <syntax-valtype-ext>`.
 
 :math:`\BOT`
 ............
@@ -169,7 +159,7 @@ Block Types
 
 .. math::
    \frac{
-     C.\CTYPES[\typeidx] = [t_1^\ast] \toF [t_2^\ast]
+     \expanddt(C.\CTYPES[\typeidx]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashblocktype \typeidx : [t_1^\ast] \to [t_2^\ast]
    }
@@ -248,7 +238,6 @@ Instruction Types
    pair: validation; function type
    single: abstract syntax; function type
 .. _valid-functype:
-.. _valid-deftype:
 
 Function Types
 ~~~~~~~~~~~~~~
@@ -269,6 +258,227 @@ Function Types
      C \vdashvaltype [t_2^\ast] \ok
    }{
      C \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok
+   }
+
+
+.. index:: compound type, function type, aggregate type, structure type, array type, field type
+   pair: validation; compound type
+   pair: validation; aggregate type
+   pair: validation; structure type
+   pair: validation; array type
+   single: abstract syntax; compound type
+   single: abstract syntax; function type
+   single: abstract syntax; structure type
+   single: abstract syntax; array type
+   single: abstract syntax; field type
+.. _valid-comptype:
+.. _valid-aggrtype:
+.. _valid-structtype:
+.. _valid-arraytype:
+
+Compound Types
+~~~~~~~~~~~~~~
+
+:math:`\TFUNC~\functype`
+........................
+
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+
+* Then the compound type is valid.
+
+.. math::
+   \frac{
+     C \vdashfunctype \functype \ok
+   }{
+     C \vdashcomptype \TFUNC~\functype \ok
+   }
+
+:math:`\TSTRUCT~\fieldtype^\ast`
+................................
+
+* For each :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
+
+  * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` must be :ref:`valid <valid-fieldtype>`.
+
+* Then the compound type is valid.
+
+.. math::
+   \frac{
+     (C \vdashfieldtype \X{ft} \ok)^\ast
+   }{
+     C \vdashcomptype \TSTRUCT~\X{ft}^\ast \ok
+   }
+
+:math:`\TARRAY~\fieldtype`
+..........................
+
+* The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
+
+* Then the compound type is valid.
+
+.. math::
+   \frac{
+     C \vdashfieldtype \X{ft} \ok
+   }{
+     C \vdashcomptype \TARRAY~\X{ft} \ok
+   }
+
+
+.. index:: field type, storage type, packed type, value type, mutability
+   pair: validation; field type
+   pair: validation; storage type
+   pair: validation; packed type
+   single: abstract syntax; field type
+   single: abstract syntax; storage type
+   single: abstract syntax; packed type
+   single: abstract syntax; value type
+.. _valid-fieldtype:
+.. _valid-storagetype:
+.. _valid-packedtype:
+
+Field Types
+~~~~~~~~~~~
+
+:math:`\mut~\storagetype`
+.........................
+
+* The :ref:`storage type <syntax-storagetype>` :math:`\storagetype` must be :ref:`valid <valid-storagetype>`.
+
+* Then the field type is valid.
+
+.. math::
+   \frac{
+     C \vdashstoragetype \X{st} \ok
+   }{
+     C \vdashfieldtype \mut~\X{st} \ok
+   }
+
+:math:`\packedtype`
+...................
+
+* The packed type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashpackedtype \packedtype \ok
+   }
+
+
+.. index:: recursive type, sub type, compound type, final, subtyping
+   pair: abstract syntax; recursive type
+   pair: abstract syntax; sub type
+.. _valid-rectype:
+.. _valid-subtype:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+:ref:`Recursive types <syntax-rectype>` are validated for a specific :ref:`type index <syntax-typeidx>` that denotes the index of the type defined by the recursive group.
+
+:math:`\TREC~\subtype^\ast`
+...........................
+
+.. todo:: add version of this for extended type syntax to appendix
+
+* Either the sequence :math:`\subtype^\ast` is empty.
+
+* Or:
+
+  * The first :ref:`sub type <syntax-subtype>` of the sequence :math:`\subtype^\ast` must be :ref:`valid <valid-subtype>` for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+  * The remaining sequence :math:`\subtype^\ast` must be :ref:`valid <valid-rectype>` for the :ref:`type index <syntax-typeidx>` :math:`x + 1`.
+
+* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+.. math::
+   \frac{
+   }{
+     C \vdashrectype \TREC~\epsilon ~{\ok}(x)
+   }
+   \qquad
+   \frac{
+     C \vdashsubtype \subtype ~{\ok}(x)
+     \qquad
+     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x + 1)
+   }{
+     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x)
+   }
+
+:math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
+........................................
+
+* The :ref:`compound type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
+
+* The sequence :math:`y^\ast` may be no longer than :math:`1`.
+
+* For every :ref:`type index <syntax-typeidx>` :math:`y_i` in :math:`y^\ast`:
+
+  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must be smaller than :math:`x`.
+
+  * The :ref:`type index <syntax-typeidx>` :math:`y_i` must exist in the context :math:`C`.
+
+  * Let :math:`\subtype_i` be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
+
+  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
+
+  * Let :math:`\comptype'_i` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
+
+  * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
+
+* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     |y^\ast| \leq 1
+     \qquad
+     (y < x)^\ast
+     \qquad
+     (\unrolldt(C.\CTYPES[y]) = \TSUB~{y'}^\ast~\comptype')^\ast
+     \\
+     C \vdashcomptype \comptype \ok
+     \qquad
+     (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
+     \end{array}
+   }{
+     C \vdashsubtype \TSUB~\TFINAL^?~y^\ast~\comptype ~{\ok}(x)
+   }
+
+.. note::
+   The side condition on the index ensures that a declared supertype is a previously defined types,
+   preventing cyclic subtype hierarchies.
+
+   Future versions of WebAssembly may allow more than one supertype.
+
+
+.. index:: defined type, recursive type, unroll, expand
+   pair: abstract syntax; defined type
+.. _valid-deftype:
+
+Defined Types
+~~~~~~~~~~~~~
+
+:math:`\rectype.i`
+..................
+
+* The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` for some :ref:`type index <syntax-typeidx>` :math:`x`.
+
+* Let :math:`\TREC~\subtype^\ast` be the :ref:`defined type <syntax-rectype>` :math:`\rectype`.
+
+* The number :math:`i` must be smaller than the length of the sequence :math:`\subtype^\ast` of :ref:`sub types <syntax-subtype>`.
+
+* Then the defined type is valid.
+
+.. math::
+   \frac{
+     C \vdashrectype \rectype ~{\ok}(x)
+     \qquad
+     \rectype = \TREC~\subtype^n
+     \qquad
+     i < n
+   }{
+     C \vdashdeftype \rectype.i \ok
    }
 
 
@@ -388,18 +598,22 @@ Global Types
 External Types
 ~~~~~~~~~~~~~~
 
-:math:`\ETFUNC~\typeidx`
+:math:`\ETFUNC~\deftype`
 ........................
 
-* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be a :ref:`function type <syntax-functype>`.
 
 * Then the external type is valid.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = \functype
+     C \vdashdeftype \deftype \ok
+     \qquad
+     \expanddt(\deftype) = \TFUNC~\functype
    }{
-     C \vdashexterntype \ETFUNC~x
+     C \vdashexterntype \ETFUNC~\deftype
    }
 
 :math:`\ETTABLE~\tabletype`
