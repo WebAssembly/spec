@@ -4,16 +4,15 @@ Index of Semantic Rules
 -----------------------
 
 
-.. index:: validation
+.. index:: validation, type
 .. _index-valid:
 
-Typing of Static Constructs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Well-formedness of Types
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Limits <valid-limits>`                     :math:`C \vdashlimits \limits : k`
 :ref:`Numeric type <valid-numtype>`              :math:`C \vdashnumtype \numtype \ok`
 :ref:`Vector type <valid-vectype>`               :math:`C \vdashvectype \vectype \ok`
 :ref:`Heap type <valid-heaptype>`                :math:`C \vdashheaptype \heaptype \ok`
@@ -22,18 +21,30 @@ Construct                                        Judgement
 :ref:`Packed type <valid-packedtype>`            :math:`C \vdashpackedtype \packedtype \ok`
 :ref:`Storage type <valid-storagetype>`          :math:`C \vdashstoragetype \storagetype \ok`
 :ref:`Field type <valid-fieldtype>`              :math:`C \vdashfieldtype \fieldtype \ok`
+:ref:`Result type <valid-resulttype>`            :math:`C \vdashresulttype \resulttype \ok`
+:ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype \ok`
 :ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype \ok`
 :ref:`Structure type <valid-structtype>`         :math:`C \vdashstructtype \structtype \ok`
 :ref:`Array type <valid-arraytype>`              :math:`C \vdasharraytype \arraytype \ok`
 :ref:`Compound type <valid-comptype>`            :math:`C \vdashcomptype \comptype \ok`
 :ref:`Sub type <valid-subtype>`                  :math:`C \vdashsubtype \subtype \ok`
 :ref:`Recursive type <valid-rectype>`            :math:`C \vdashrectype \rectype \ok`
+:ref:`Defined type <valid-deftype>`              :math:`C \vdashdeftype \deftype \ok`
 :ref:`Block type <valid-blocktype>`              :math:`C \vdashblocktype \blocktype : \instrtype`
-:ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype \ok`
 :ref:`Table type <valid-tabletype>`              :math:`C \vdashtabletype \tabletype \ok`
 :ref:`Memory type <valid-memtype>`               :math:`C \vdashmemtype \memtype \ok`
 :ref:`Global type <valid-globaltype>`            :math:`C \vdashglobaltype \globaltype \ok`
 :ref:`External type <valid-externtype>`          :math:`C \vdashexterntype \externtype \ok`
+:ref:`Type definitions <valid-type>`             :math:`C \vdashtypes \type^\ast \ok`
+===============================================  ===============================================================================
+
+
+Typing of Static Constructs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+===============================================  ===============================================================================
+Construct                                        Judgement
+===============================================  ===============================================================================
 :ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
 :ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
@@ -41,6 +52,7 @@ Construct                                        Judgement
 :ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
+:ref:`Limits <valid-limits>`                     :math:`C \vdashlimits \limits : k`
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
 :ref:`Element segment <valid-elem>`              :math:`C \vdashelem \elem : \reftype`
 :ref:`Element mode <valid-elemmode>`             :math:`C \vdashelemmode \elemmode : \reftype`
@@ -109,6 +121,7 @@ Matching
 Construct                                        Judgement
 ===============================================  ==================================================================================
 :ref:`Number type <match-numtype>`               :math:`C \vdashnumtypematch \numtype_1 \matchesnumtype \numtype_2`
+:ref:`Vector type <match-vectype>`               :math:`C \vdashvectypematch \vectype_1 \matchesvectype \vectype_2`
 :ref:`Heap type <match-heaptype>`                :math:`C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2`
 :ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
 :ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
@@ -121,6 +134,7 @@ Construct                                        Judgement
 :ref:`Structure type <match-structtype>`         :math:`C \vdashstructtypematch \structtype_1 \matchesstructtype \structtype_2`
 :ref:`Array type <match-arraytype>`              :math:`C \vdasharraytypematch \arraytype_1 \matchesarraytype \arraytype_2`
 :ref:`Compound type <match-comptype>`            :math:`C \vdashcomptypematch \comptype_1 \matchescomptype \comptype_2`
+:ref:`Defined type <match-deftype>`              :math:`C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2`
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`
 :ref:`Global type <match-globaltype>`            :math:`C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2`
@@ -139,7 +153,7 @@ Construct                                        Judgement
 :ref:`Table instance <extend-tableinst>`         :math:`\vdashtableinstextends \tableinst_1 \extendsto \tableinst_2`
 :ref:`Memory instance <extend-meminst>`          :math:`\vdashmeminstextends \meminst_1 \extendsto \meminst_2`
 :ref:`Global instance <extend-globalinst>`       :math:`\vdashglobalinstextends \globalinst_1 \extendsto \globalinst_2`
-:ref:`Element instance <extend-eleminst>`         :math:`\vdasheleminstextends \eleminst_1 \extendsto \eleminst_2`
+:ref:`Element instance <extend-eleminst>`        :math:`\vdasheleminstextends \eleminst_1 \extendsto \eleminst_2`
 :ref:`Data instance <extend-datainst>`           :math:`\vdashdatainstextends \datainst_1 \extendsto \datainst_2`
 :ref:`Store <extend-store>`                      :math:`\vdashstoreextends \store_1 \extendsto \store_2`
 ===============================================  ===============================================================================

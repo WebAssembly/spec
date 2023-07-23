@@ -33,9 +33,9 @@ Category                                  Constructor                           
 :ref:`Compound type <syntax-comptype>`    :math:`\TSTRUCT~\fieldtype^\ast`                    :math:`\hex{5F}` (-33 as |Bs7|)
 :ref:`Compound type <syntax-comptype>`    :math:`\TARRAY~\fieldtype`                          :math:`\hex{5E}` (-34 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{5D}` .. :math:`\hex{51}`
-:ref:`Sub type <syntax-subtype>`          :math:`\TSUB~\typedx^\ast~\comptype`                :math:`\hex{50}` (-48 as |Bs7|)
+:ref:`Sub type <syntax-subtype>`          :math:`\TSUB~\typeidx^\ast~\comptype`               :math:`\hex{50}` (-48 as |Bs7|)
 :ref:`Recursive type <syntax-rectype>`    :math:`\TREC~\subtype^\ast`                         :math:`\hex{4F}` (-49 as |Bs7|)
-:ref:`Sub type <syntax-subtype>`          :math:`\TSUB~\FINAL~\typedx^\ast~\comptype`         :math:`\hex{4E}` (-50 as |Bs7|)
+:ref:`Sub type <syntax-subtype>`          :math:`\TSUB~\TFINAL~\typeidx^\ast~\comptype`       :math:`\hex{4E}` (-50 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{4D}` .. :math:`\hex{41}`
 :ref:`Result type <syntax-resulttype>`    :math:`[\epsilon]`                                  :math:`\hex{40}` (-64 as |Bs7|)
 :ref:`Table type <syntax-tabletype>`      :math:`\limits~\reftype`                            (none)

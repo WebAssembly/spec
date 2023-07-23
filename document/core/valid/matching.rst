@@ -22,12 +22,12 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashnumtypematch \numtype \matchesvaltype \numtype
+     C \vdashnumtypematch \numtype \matchesnumtype \numtype
    }
 
 
 .. index:: vector type
-.. _match-vectortype:
+.. _match-vectype:
 
 Vector Types
 ~~~~~~~~~~~~
@@ -40,7 +40,7 @@ A :ref:`vector type <syntax-vectype>` :math:`\vectype_1` matches a :ref:`vector 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashvectypematch \vectype \matchesvaltype \vectype
+     C \vdashvectypematch \vectype \matchesvectype \vectype
    }
 
 
