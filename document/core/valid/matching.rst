@@ -1,4 +1,4 @@
-.. index:: ! matching, ! subtyping 
+.. index:: ! matching, ! subtyping
 .. _subtyping:
 .. _match:
 
@@ -124,7 +124,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    \frac{
      \expanddt(\deftype) = \TSTRUCT~\X{st}
    }{
-     C \vdashheaptypematch \deftype \matchesheaptype \FUNC
+     C \vdashheaptypematch \deftype \matchesheaptype \STRUCT
    }
    \qquad
    \frac{
