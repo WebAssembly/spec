@@ -77,6 +77,8 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 :ref:`Value <valid-val>`                         :math:`S \vdashval \val : \valtype`
 :ref:`Result <valid-result>`                     :math:`S \vdashresult \result : \resulttype`
+:ref:`Packed value <valid-packedval>`            :math:`S \vdashpackedval \packedval : \packedtype`
+:ref:`Field value <valid-fieldval>`              :math:`S \vdashfieldval \fieldval : \storagetype`
 :ref:`External value <valid-externval>`          :math:`S \vdashexternval \externval : \externtype`
 :ref:`Function instance <valid-funcinst>`        :math:`S \vdashfuncinst \funcinst : \functype`
 :ref:`Table instance <valid-tableinst>`          :math:`S \vdashtableinst \tableinst : \tabletype`
@@ -84,6 +86,8 @@ Construct                                        Judgement
 :ref:`Global instance <valid-globalinst>`        :math:`S \vdashglobalinst \globalinst : \globaltype`
 :ref:`Element instance <valid-eleminst>`         :math:`S \vdasheleminst \eleminst : t`
 :ref:`Data instance <valid-datainst>`            :math:`S \vdashdatainst \datainst \ok`
+:ref:`Structure instance <valid-structinst>`     :math:`S \vdashstructinst \structinst \ok`
+:ref:`Array instance <valid-arrayinst>`          :math:`S \vdasharrayinst \arrayinst \ok`
 :ref:`Export instance <valid-exportinst>`        :math:`S \vdashexportinst \exportinst \ok`
 :ref:`Module instance <valid-moduleinst>`        :math:`S \vdashmoduleinst \moduleinst : C`
 :ref:`Store <valid-store>`                       :math:`\vdashstore \store \ok`
@@ -155,6 +159,8 @@ Construct                                        Judgement
 :ref:`Global instance <extend-globalinst>`       :math:`\vdashglobalinstextends \globalinst_1 \extendsto \globalinst_2`
 :ref:`Element instance <extend-eleminst>`        :math:`\vdasheleminstextends \eleminst_1 \extendsto \eleminst_2`
 :ref:`Data instance <extend-datainst>`           :math:`\vdashdatainstextends \datainst_1 \extendsto \datainst_2`
+:ref:`Structure instance <extend-structinst>`    :math:`\vdashstructinstextends \structinst_1 \extendsto \structinst_2`
+:ref:`Array instance <extend-arrayinst>`         :math:`\vdasharrayinstextends \arrayinst_1 \extendsto \arrayinst_2`
 :ref:`Store <extend-store>`                      :math:`\vdashstoreextends \store_1 \extendsto \store_2`
 ===============================================  ===============================================================================
 

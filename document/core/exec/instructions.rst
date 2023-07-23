@@ -472,13 +472,7 @@ Reference Instructions
 :math:`\STRUCTNEWDEFAULT~x`
 ...........................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-struct.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -526,13 +520,7 @@ Reference Instructions
 :math:`\STRUCTGET\K{\_}\sx^?~x~i`
 .................................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -579,13 +567,7 @@ Reference Instructions
 :math:`\STRUCTSET~x~i`
 ......................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -636,35 +618,15 @@ Reference Instructions
 
 1. Assert: due to :ref:`validation <valid-array.new>`, a :ref:`value <syntax-val>` of type :math:`\I32` is on the top of the stack.
 
-<<<<<<< HEAD
 2. Pop the value :math:`(\I32.\CONST~n)` from the stack.
 
 3. Assert: due to :ref:`validation <valid-array.new>`, a :ref:`value <syntax-val>` is on the top of the stack.
-=======
-1. Assert: due to :ref:`validation <valid-array.new>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
->>>>>>> main
 
 4. Pop the value :math:`\val` from the stack.
 
 5. Push the value :math:`\val` to the stack :math:`n` times.
 
-<<<<<<< HEAD
-6. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
-=======
-5. Assert: due to :ref:`validation <valid-array.new>`, a :ref:`value <syntax-val>` of type :math:`\I32` is on the top of the stack.
-
-6. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-7. Assert: due to :ref:`validation <valid-array.new>`, a :ref:`value <syntax-val>` is on the top of the stack.
-
-8. Pop the value :math:`\val` from the stack.
-
-9. Push the value :math:`\val` to the stack :math:`n` times.
-
-10. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
->>>>>>> main
+6. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -686,15 +648,8 @@ Reference Instructions
 
 .. _exec-array.new_default:
 
-<<<<<<< HEAD
-:math:`\ARRAYNEWDEFAULT~\typeidx`
-.................................
-=======
 :math:`\ARRAYNEWDEFAULT~x`
 ..........................
-
-.. todo:: unroll type
->>>>>>> main
 
 1. Assert: due to :ref:`validation <valid-array.new_default>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
@@ -743,13 +698,7 @@ Reference Instructions
 :math:`\ARRAYNEWFIXED~x~n`
 ..........................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-array.new_fixed>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -792,14 +741,7 @@ Reference Instructions
 :math:`\ARRAYNEWDATA~x~y`
 .........................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: extend type size convention to field types
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-array.new_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -868,45 +810,21 @@ Reference Instructions
 :math:`\ARRAYNEWELEM~x~y`
 .........................
 
-1. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[\elemidx]` exists.
+1. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]` exists.
 
-<<<<<<< HEAD
-2. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[\elemidx]`.
+2. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]`.
 
 3. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\X{ea}]` exists.
-=======
-1. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
-
-2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
->>>>>>> main
 
 4. Let :math:`\eleminst` be the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\X{ea}]`.
 
 5. Assert: due to :ref:`validation <valid-array.new_elem>`, two :ref:`values <syntax-val>` of type :math:`\I32` are on the top of the stack.
 
-<<<<<<< HEAD
 6. Pop the value :math:`(\I32.\CONST~n)` from the stack.
 
 7. Pop the value :math:`(\I32.\CONST~s)` from the stack.
 
 8. If the sum of :math:`s` and :math:`n` is larger than the length of :math:`\eleminst.\EIELEM`, then:
-=======
-5. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]` exists.
-
-6. Let :math:`\X{ea}` be the :ref:`element address <syntax-elemaddr>` :math:`F.\AMODULE.\MIELEMS[y]`.
-
-7. Assert: due to :ref:`validation <valid-array.new_elem>`, the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\X{ea}]` exists.
-
-8. Let :math:`\eleminst` be the :ref:`element instance <syntax-eleminst>` :math:`S.\SELEMS[\X{ea}]`.
-
-9. Assert: due to :ref:`validation <valid-array.new_elem>`, two :ref:`values <syntax-val>` of type :math:`\I32` are on the top of the stack.
-
-10. Pop the value :math:`\I32.\CONST~n` from the stack.
-
-11. Pop the value :math:`\I32.\CONST~s` from the stack.
-
-12. If the sum of :math:`s` and :math:`n` is larger than the length of :math:`\eleminst.\EIELEM`, then:
->>>>>>> main
 
     a. Trap.
 
@@ -914,11 +832,7 @@ Reference Instructions
 
 10. Push the references :math:`\reff^\ast` to the stack.
 
-<<<<<<< HEAD
-11. Execute the instruction :math:`(\ARRAYNEWFIXED~\typeidx~n)`.
-=======
 15. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
->>>>>>> main
 
 .. math::
    ~\\[-1ex]
@@ -941,13 +855,7 @@ Reference Instructions
 :math:`\ARRAYGET\K{\_}\sx^?~x`
 ..............................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-array.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
@@ -1002,13 +910,7 @@ Reference Instructions
 :math:`\ARRAYSET~x`
 ...................
 
-<<<<<<< HEAD
-1. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[\typeidx]` exists.
-=======
-.. todo:: unroll type
-
 1. Assert: due to :ref:`validation <valid-array.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
->>>>>>> main
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
