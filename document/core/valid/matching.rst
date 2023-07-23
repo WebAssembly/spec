@@ -1,4 +1,4 @@
-.. index:: ! matching, ! subtyping 
+.. index:: ! matching, ! subtyping
 .. _subtyping:
 .. _match:
 
@@ -22,12 +22,12 @@ A :ref:`number type <syntax-numtype>` :math:`\numtype_1` matches a :ref:`number 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashnumtypematch \numtype \matchesvaltype \numtype
+     C \vdashnumtypematch \numtype \matchesnumtype \numtype
    }
 
 
 .. index:: vector type
-.. _match-vectortype:
+.. _match-vectype:
 
 Vector Types
 ~~~~~~~~~~~~
@@ -40,7 +40,7 @@ A :ref:`vector type <syntax-vectype>` :math:`\vectype_1` matches a :ref:`vector 
    ~\\[-1ex]
    \frac{
    }{
-     C \vdashvectypematch \vectype \matchesvaltype \vectype
+     C \vdashvectypematch \vectype \matchesvectype \vectype
    }
 
 
@@ -124,7 +124,7 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    \frac{
      \expanddt(\deftype) = \TSTRUCT~\X{st}
    }{
-     C \vdashheaptypematch \deftype \matchesheaptype \FUNC
+     C \vdashheaptypematch \deftype \matchesheaptype \STRUCT
    }
    \qquad
    \frac{
