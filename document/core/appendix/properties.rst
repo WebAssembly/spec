@@ -274,7 +274,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 
 
-.. index:: store, function instance, table instance, memory instance, global instance, function type, table type, memory type, global type
+.. index:: store, function instance, table instance, memory instance, structure instance, array instance, global instance, function type, table type, memory type, global type, defined type, structure type, array type
 
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
