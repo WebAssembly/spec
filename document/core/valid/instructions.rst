@@ -605,7 +605,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
@@ -630,7 +630,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_1`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_1`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut_1~\storagetype_1` be :math:`\fieldtype_1`.
 
@@ -638,7 +638,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[y]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_2`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[y]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype_2`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut_2~\storagetype_2` be :math:`\fieldtype_2`.
 
@@ -665,7 +665,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
@@ -698,7 +698,7 @@ Aggregate Reference Instructions
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
-* The :ref:`expansion <aux-expand>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
 
 * Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype`.
 
