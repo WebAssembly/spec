@@ -1006,6 +1006,7 @@
 
 .. |matches| mathdef:: \leq
 .. |matchesnumtype| mathdef:: \xref{valid/matching}{match-numtype}{\leq}
+.. |matchesvectype| mathdef:: \xref{valid/matching}{match-vectype}{\leq}
 .. |matchesheaptype| mathdef:: \xref{valid/matching}{match-heaptype}{\leq}
 .. |matchesreftype| mathdef:: \xref{valid/matching}{match-reftype}{\leq}
 .. |matchesvaltype| mathdef:: \xref{valid/matching}{match-valtype}{\leq}
@@ -1058,6 +1059,8 @@
 .. |vdashlimits| mathdef:: \xref{valid/types}{valid-limits}{\vdash}
 .. |vdashblocktype| mathdef:: \xref{valid/types}{valid-blocktype}{\vdash}
 .. |vdashfunctype| mathdef:: \xref{valid/types}{valid-functype}{\vdash}
+.. |vdashstructtype| mathdef:: \xref{valid/types}{valid-structtype}{\vdash}
+.. |vdasharraytype| mathdef:: \xref{valid/types}{valid-arraytype}{\vdash}
 .. |vdashcomptype| mathdef:: \xref{valid/types}{valid-comptype}{\vdash}
 .. |vdashfieldtype| mathdef:: \xref{valid/types}{valid-fieldtype}{\vdash}
 .. |vdashpackedtype| mathdef:: \xref{valid/types}{valid-packedtype}{\vdash}
