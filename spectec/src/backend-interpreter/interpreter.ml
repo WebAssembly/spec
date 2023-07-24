@@ -429,27 +429,30 @@ let rec assign lhs rhs env =
   match lhs, rhs with
   | NameE name, v -> Env.add name v env
   | IterE (e, _, iter), _ ->
-      let default_value =
-        match iter with
-        | List -> listV []
-        | Opt -> OptV None
-        | _ -> failwith "TODO"
+      let new_env, default_rhs, rhs_list =
+        match iter, rhs with
+        | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
+        | ListN name, ListV arr ->
+            let length = Array.length !arr |> Int64.of_int |> Value.num in
+            Env.add name length env, listV [], Array.to_list !arr
+        | Opt, OptV opt -> env, OptV None, Option.to_list opt
+        | _ ->
+            Printf.sprintf "Invalid iter %s with rhs %s"
+              (string_of_iter iter)
+              (string_of_value rhs)
+            |> failwith
       in
 
       let default_env =
         Al.Free.free_expr e
-        |> List.map (fun n -> n, default_value)
+        |> List.map (fun n -> n, default_rhs)
         |> List.to_seq
         |> Env.of_seq
       in
 
-      (match rhs with
-      | ListV arr -> Array.to_list !arr
-      | OptV opt -> Option.to_list opt
-      | _ -> failwith "Unreachable iter rhs value")
-      |> List.map (fun v -> assign e v Env.empty)
+      List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
-      |> Env.union (fun _ _ v -> Some v) env
+      |> Env.union (fun _ _ v -> Some v) new_env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
