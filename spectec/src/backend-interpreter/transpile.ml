@@ -74,6 +74,19 @@ let rec unify_head acc l1 l2 =
   | h1 :: t1, h2 :: t2 when h1 = h2 -> unify_head (h1 :: acc) t1 t2
   | _ -> (List.rev acc, l1, l2)
 
+let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
+
+let dedup l =
+  let rec aux acc = function
+    | [] -> List.rev acc
+    | x :: xs ->
+      if List.mem x acc then
+        aux acc xs
+      else
+        aux (x :: acc) xs
+  in
+  aux [] l
+
 (** AL -> AL transpilers *)
 
 (* Recursively append else block to every empty if *)
@@ -316,7 +329,7 @@ let hide_state_instr = function
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
       | _ -> failwith "Invalid replace"
       end
-  | CallI (lhs, f, args) -> [ CallI (lhs, f, hide_state_args args) ]
+  | CallI (lhs, f, args, nl_iterl) -> [ CallI (lhs, f, hide_state_args args, nl_iterl) ]
   | PerformI (f, args) -> [ PerformI (f, hide_state_args args) ]
   | i -> [ i ]
 
@@ -357,39 +370,122 @@ let transpiler algo =
       Algo (name, tail, body)
   | _ -> Algo(name, params, body)
 
-(* Remove AppE / MapE *)
-let app_remover algo =
-  let to_call = function
-    | LetI (lhs, AppE (f, args)) -> CallI (lhs, f, args)
-    | i -> i in
-  let stack = ref [] in
-  let pre i =
-    stack := ref [] :: !stack;
-    [ to_call i ] in
-  let post i =
-    let extra = List.rev !(List.hd !stack) in
-    stack := List.tl !stack;
-    extra @ [i] in
+let app_remover =
+  let side_effect f e = f e; e in
+
+  let iter_stack = ref [] in
+  let names = ref [ref []] in
+  let calls = ref [] in
+  let requires = ref [] in
+
+  (* Helper *)
+  let add_call x =
+    let cur_calls = List.hd !calls in
+    cur_calls := x :: !cur_calls in
+  let pop_calls _ =
+    let hd, tl = Util.Lib.List.split_hd !calls in
+    calls := tl;
+    hd in
+
+  (* pre_expr *)
+  let push_iter = side_effect (function
+    | IterE (_, ns, i) -> iter_stack := (ns, i) :: !iter_stack
+    | _ -> () ) in
+  let init_names = side_effect (fun _ -> names := ref [] :: !names) in
+
+  let pre_expr = composite init_names push_iter in
+
+  (* post expr *)
+
+  let rewrite_names (names, iter) =
+    let new_names = List.concat_map (fun x ->
+      x :: List.filter_map (fun (y, x') ->
+        if x = x' then Some y else None
+      ) !requires
+    ) names |> dedup in
+    (new_names, iter) in
 
   let call_id = ref 0 in
   let call_prefix = "r_" in
   let get_fresh () =
     let id = !call_id in
     call_id := id + 1;
-    NameE (N (call_prefix ^ (string_of_int id))) in
-  let replace_call e = match e with
+    N (call_prefix ^ (string_of_int id)) in
+
+  let bind_app e = match e with
     | AppE (f, args) ->
-      let fresh = get_fresh () in
-      let instrs = List.hd !stack in
-      instrs := CallI (fresh, f, args) :: !instrs;
-      fresh
+      let fresh_name = get_fresh() in
+      let rec to_fresh_exp iter = match iter with
+      | [] -> NameE fresh_name
+      | (_, i) :: tl -> IterE (to_fresh_exp tl, [fresh_name], i) in
+
+      let iters = !iter_stack |> List.map rewrite_names in
+
+      let fresh_exp = to_fresh_exp iters in
+
+      (* Append new CallI instruction *)
+      add_call (fresh_exp, f, args, iters);
+
+      let required_names = intersect_list (List.concat_map fst iters) (Al.Free.free_expr e) in
+      requires := List.map (fun n -> (fresh_name, n)) required_names @ !requires;
+      (* Discard all names appearing in args *)
+      names := (ref []) :: (List.tl !names);
+      NameE (fresh_name)
     | _ -> e in
 
+  let pop_iter e = match e with
+    | IterE (e, ns, iter) ->
+      iter_stack := List.tl !iter_stack;
+      let new_ns = List.filter (fun n' ->
+        List.exists (fun n -> (n' = n) || List.mem (n', n) !requires) ns
+      ) !(List.hd !names) in
+      let new_e = IterE (e, new_ns, iter) in
+      new_e
+    | _ -> e in
+
+  let pop_names = side_effect (fun e ->
+    let hd1, tl1 = Util.Lib.List.split_hd !names in
+    let hd2, tl2 = Util.Lib.List.split_hd tl1 in
+    match e with
+    | NameE n ->
+      names := (ref (n :: (!hd1 @ !hd2) |> dedup)) :: tl2
+    | _ ->
+      names := (ref (!hd1 @ !hd2 |> dedup)) :: tl2
+  ) in
+
+  let post_expr = composite pop_names (composite pop_iter bind_app) in
+
+  (* pre_instr *)
+  let init i =
+    call_id := 0;
+    calls := (ref []) :: !calls;
+    names := [ref []];
+    [i] in
+
+  (* post_instr *)
+  let rec is_pure_name = function
+  | NameE _ -> true
+  | IterE (e, _, _) -> is_pure_name e
+  | _ -> false in
+
+  let quad_to_call (a, b, c, d) = CallI (a, b, c, d) in
+
+  let remove_redundant_assign i = List.rev (
+    let cur_calls = !(pop_calls ()) in
+    match i with
+    | LetI (lhs, rhs) when List.length cur_calls > 0 && is_pure_name rhs ->
+      let (_, f, args, iters) = List.hd cur_calls in
+      let new_apps = (lhs, f, args, iters) :: List.tl cur_calls in
+      List.map quad_to_call new_apps
+    | _ -> i :: List.map quad_to_call cur_calls
+  ) in
+
   Walk.walk { Walk.default_config with
-    pre_instr = pre;
-    post_instr = post;
-    post_expr = replace_call;
-  } algo
+    pre_instr = init;
+    post_instr = remove_redundant_assign;
+    pre_expr = pre_expr;
+    post_expr = post_expr;
+  }
 
 let rec enforce_return_r rinstrs =
   let rev = List.rev in

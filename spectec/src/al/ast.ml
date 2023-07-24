@@ -142,7 +142,7 @@ type instr =
   | PopI of expr
   | PopAllI of expr
   | LetI of expr * expr
-  | CallI of expr * name * expr list
+  | CallI of expr * name * expr list * (name list * iter) list
   | TrapI
   | NopI
   | ReturnI of expr option
