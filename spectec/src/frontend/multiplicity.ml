@@ -162,9 +162,9 @@ let union = Env.union (fun _ ctx1 ctx2 -> assert (ctx1 = ctx2); Some ctx1)
 let rec annot_iter env iter : Il.Ast.iter * occur =
   match iter with
   | Opt | List | List1 -> iter, Env.empty
-  | ListN (e, opt) ->
+  | ListN (e, id_opt) ->
     let e', occur = annot_exp env e in
-    ListN (e', opt), occur
+    ListN (e', id_opt), occur
 
 and annot_exp env e : Il.Ast.exp * occur =
   let it, occur =

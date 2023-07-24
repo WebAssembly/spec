@@ -314,11 +314,7 @@ and infer_exp env e : typ =
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
-    let iter' =
-      match fst iter with
-      | ListN _ -> List
-      | iter' -> iter'
-    in
+    let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at

@@ -336,7 +336,7 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN (e, opt) -> Il.ListN (elab_exp env e (NatT $ e.at), opt)
+  | ListN (e, id_opt) -> Il.ListN (elab_exp env e (NatT $ e.at), id_opt)
 
 
 (* Types *)

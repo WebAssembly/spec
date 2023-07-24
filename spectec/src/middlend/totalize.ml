@@ -78,7 +78,7 @@ and t_exp' env = function
   | SubE (e, t1, t2) -> SubE (e, t1, t2)
 
 and t_iter env = function
-  | ListN (e, id) -> ListN (t_exp env e, id)
+  | ListN (e, id_opt) -> ListN (t_exp env e, id_opt)
   | i -> i
 
 and t_iterexp env (iter, vs) = (t_iter env iter, vs)

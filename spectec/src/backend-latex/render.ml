@@ -327,7 +327,7 @@ exception Arity_mismatch
 let rec expand_iter args iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN (e, opt) -> ListN (expand_exp args e, opt)
+  | ListN (e, id_opt) -> ListN (expand_exp args e, id_opt)
 
 and expand_exp args e = expand_exp' args e.it $ e.at
 and expand_exp' args e' =
@@ -442,9 +442,9 @@ and render_iter env = function
   | List -> "^\\ast"
   | List1 -> "^{+}"
   | ListN ({it = ParenE (e, _); _}, None) | ListN (e, None) ->
-      "^{" ^ render_exp env e ^ "}"
+    "^{" ^ render_exp env e ^ "}"
   | ListN (e, Some id) ->
-      "^(" ^ id.it ^ "<" ^ render_exp env e ^ ")"
+    "^(" ^ id.it ^ "<" ^ render_exp env e ^ ")"
 
 
 (* Types *)
@@ -687,7 +687,7 @@ let render_ruledef env d =
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
 
-let render_condition env tabs = function
+let render_conditions env tabs = function
   | [] -> " & "
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
   | (Elem {it = ElsePr; _})::prems ->
@@ -708,14 +708,14 @@ let render_reddef env d =
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
-        render_exp env e2 ^ render_condition env "&&&&" prems
+        render_exp env e2 ^ render_conditions env "&&&&" prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env d =
   match d.it with
   | DefD (id1, e1, e2, prems) ->
     render_exp env (CallE (id1, e1) $ d.at) ^ " &=& " ^
-      render_exp env e2 ^ render_condition env "&&&" prems
+      render_exp env e2 ^ render_conditions env "&&&" prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function

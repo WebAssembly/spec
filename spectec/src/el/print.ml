@@ -71,8 +71,7 @@ let rec string_of_iter iter =
   | List -> "*"
   | List1 -> "+"
   | ListN (e, None) -> "^" ^ string_of_exp e
-  | ListN (e, Some (id)) ->
-      "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
+  | ListN (e, Some (id)) -> "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
 
 (* Types *)
