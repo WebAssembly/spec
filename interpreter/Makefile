@@ -206,3 +206,13 @@ install:	_build/$(LIB).cmx _build/$(LIB).cmo
 
 uninstall:
 		ocamlfind remove $(LIB)
+
+opam-release/%:
+		git tag opam-$*
+		git push --tags
+		wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+		cp meta/opam/opam .
+		sed s/@VERSION/$*/g opam >opam.tmp
+		sed s/@MD5/`md5 -q opam-$*.zip`/g opam.tmp >opam
+		rm opam.tmp
+		echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam

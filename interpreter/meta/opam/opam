@@ -1,0 +1,22 @@
+opam-version: "2.0"
+maintainer: "Andreas Rossberg <rossberg@mpi-sws.org>"
+authors: "Andreas Rossberg <rossberg@mpi-sws.org>"
+homepage: "https://github.com/WebAssembly/spec"
+bug-reports: "https://github.com/WebAssembly/spec/issues"
+license: "Apache-2.0"
+dev-repo: "git+https://github.com/WebAssembly/spec.git"
+build: [
+  [make "-C" "interpreter" "opt" "unopt"]
+]
+install: [make "-C" "interpreter" "install"]
+depends: [
+  "ocaml" {>= "4.12.0"}
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+]
+synopsis:
+  "Library to read and write WebAssembly (Wasm) files and manipulate their AST"
+url {
+  src: "https://github.com/WebAssembly/spec/archive/opam-@VERSION.zip"
+  checksum: "md5=@MD5"
+}
