@@ -18,6 +18,7 @@ let union sets1 sets2 =
     defid = Set.union sets1.defid sets2.defid;
   }
 
+let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
 let free_list free_x xs = List.(fold_left union empty (map free_x xs))
 
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
@@ -37,7 +38,7 @@ let free_defid id = {empty with defid = Set.singleton id.it}
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, _) -> free_exp e
+  | ListN (e, id_opt) -> union (free_exp e) (free_opt free_varid id_opt)
 
 
 (* Types *)
