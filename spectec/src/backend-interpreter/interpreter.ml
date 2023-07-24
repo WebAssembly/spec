@@ -49,8 +49,6 @@ module Env = struct include Map.Make (EnvKey)
       (bindings env)
 
   (* Environment API *)
-  let empty = add (N "s") (StoreV store) empty
-
   let find key env =
     try find key env
     with Not_found ->
@@ -415,36 +413,32 @@ and action =
   (* TODO: remove all Func *)
   | Func of (value -> value)
 
-let rec assign_none lhs env =
-  match lhs with
-  | NameE name -> Env.add name (OptV None) env
-  | ConstructE (_, el) -> List.fold_left (fun acc e -> assign_none e acc) env el
-  | _ -> failwith "TODO: assign none"
+let merge_envs_with_grouping default_env envs =
+  let merge env acc =
+    let f _ v1 = function
+      | ListV arr ->
+          v1 :: Array.to_list !arr |> listV |> Option.some
+      | _ -> failwith "Unreachable merge"
+    in
+    Env.union f env acc
+  in
+  List.fold_right merge envs default_env
 
 let rec assign lhs rhs env =
   match lhs, rhs with
-  (*| IterE (NameE name, ListN n), ListV vs ->
-      env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length !vs)))
-  | NameE name, v
-  | IterE (NameE name, _), v
-  | IterE (IterE (NameE name, _), _), v
-  | IterE (IterE (IterE (NameE name, _), _), _), v ->
-      Env.add name v env
-  | IterE (e, Opt), OptV None -> assign_none e env
-  | IterE (_, List), ListV _ ->
-      print_endline "";
-      Printf.sprintf "%s = %s"
-        (string_of_expr lhs)
-        (string_of_value rhs)
-      |> print_endline;
-      let new_lhs = Distribute.distribute_lhs_iter lhs in
-      let new_rhs = Distribute.distribute_rhs_list lhs rhs in
-      Printf.sprintf "%s = %s"
-        (string_of_expr new_lhs)
-        (string_of_value new_rhs)
-      |> print_endline;
-      assign new_lhs new_rhs env
-      *)
+  | NameE name, v -> Env.add name v env
+  | IterE (e, _, List), ListV vs ->
+      let default_env =
+        Al.Free.free_expr e
+        |> List.map (fun n -> (n, listV []))
+        |> List.to_seq
+        |> Env.of_seq
+      in
+
+      Array.to_list !vs
+      |> List.map (fun v -> assign e v Env.empty)
+      |> merge_envs_with_grouping default_env
+      |> Env.union (fun _ _ v -> Some v) env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
@@ -713,7 +707,8 @@ and interp_algo algo args cont action =
     | _ -> failwith "Invalid destructuring assignment"
   in
 
-  let init_env = List.fold_left2 f Env.empty params args in
+  let env_with_store = Env.add (N "s") (StoreV store) Env.empty in
+  let init_env = List.fold_left2 f env_with_store params args in
 
   interp_instrs init_env body cont action
 
