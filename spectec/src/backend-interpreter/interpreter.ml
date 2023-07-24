@@ -118,25 +118,6 @@ let check_i32_const = function
     ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n') ])
   | v -> v
 
-let rec take n l =
-  if n = 0 then [], l
-  else match l with
-  | [] -> raise (Invalid_argument "take")
-  | hd :: tl ->
-    let prefix, suffix = take (n-1) tl in
-    hd :: prefix, suffix
-
-let sublist st len l =
-  let head, rest = take st l in
-  let body, tail = take len rest in
-  (head, body, tail)
-
-let rec list_set l i x =
-  match l, i with
-  | [], _ -> raise (Invalid_argument "list_set")
-  | _ :: tl, 0 -> x :: tl
-  | hd :: tl, _ -> hd :: (list_set tl (i-1) x)
-
 let rec int64_exp base exponent =
   if exponent = 0L then
     1L
@@ -149,6 +130,22 @@ let rec int64_exp base exponent =
       pow
     else
       Int64.mul base pow
+
+let is_matrix matrix =
+  match matrix with
+  | [] -> true  (* Empty matrix is considered a valid matrix *)
+  | row :: rows -> List.for_all (fun r -> List.length row = List.length r) rows
+
+let transpose matrix =
+  assert (is_matrix matrix);
+  let rec transpose' = function
+    | [] -> []
+    | [] :: _ -> []
+    | (x :: xs) :: xss ->
+      let new_row = (x :: List.map List.hd xss) in
+      let new_rows = transpose' (xs :: List.map List.tl xss) in
+      new_row :: new_rows in
+  transpose' matrix
 
 (* Interpreter *)
 
@@ -502,36 +499,29 @@ let assign_opt lhs_opt rhs env = match lhs_opt with
   | None -> env
   | Some lhs -> assign lhs rhs env
 
-let rec dsl_function_call lhs_opt fname args env il cont action =
+let rec dsl_function_call lhs_opt fname args iters env il cont action =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
-      let rhs = Numerics.call_numerics name args in
-      interp_instrs (assign_opt lhs_opt rhs env) il cont action
-  (* Module & Runtime *)
-  | N name when AlgoMap.mem name !algo_map ->
-      call_algo lhs_opt name args env il cont action
-  | n ->
-      string_of_name n
-      |> Printf.sprintf "Invalid DSL function call: %s"
-      |> failwith
-
-and dsl_function_map lhs_opt fname front_args last_arg iters env il cont action =
-  match fname with
-  (* Numerics *)
-  | N name when Numerics.mem name ->
-      let rec pure_map f iters x = match iters with
-      | [] -> f x
-      | _iter :: iters' ->
-        let xs = value_to_list x in
-        List.map (pure_map f iters') xs |> listV in
-      let f = (fun arg -> Numerics.call_numerics name (front_args @ [arg])) in
-      let rhs = pure_map f iters last_arg in
+      let rec aux env = function
+      | [] ->
+        let vs = List.map (eval_expr env) args in
+        Numerics.call_numerics name vs
+      | (names, _dim) :: iters' ->
+        let envs =
+          names
+          |> List.map (fun n -> Env.find n env |> value_to_list)
+          |> transpose
+          |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+        in
+        List.map (fun env' -> aux env' iters') envs |> listV
+      in
+      let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       let new_action = AssignLhs(lhs_opt, (env, il, action)) in
-      map_algo name front_args last_arg iters cont new_action
+      call_algo name args iters env cont new_action
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
@@ -603,24 +593,14 @@ and interp_instrs env il cont action =
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
         interp_with new_env icont
-        (*
-    | CallI _ (lhs, f, es, iters) ->
-        let args = List.map (eval_expr env) es in
-        ( match iters with
-        | [] ->
-          dsl_function_call (Some lhs) f args env icont cont action
-        | _ ->
-          (* TODO: handle cases where iteratng argument is not the last *)
-          let front_args, last_arg = Lib.List.split_last args in
-          dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action )
-    *)
+    | CallI (lhs, f, args, iters) ->
+        dsl_function_call (Some lhs) f args iters env icont cont action
     | TrapI -> raise Exception.Trap
     | NopI -> interp icont
     | ReturnI None -> leave_algo cont action
     | ReturnI (Some e) -> return_some (eval_expr env e) cont action
     | PerformI (f, args) ->
-        let vs = List.map (eval_expr env) args in
-        dsl_function_call None f vs env icont cont action
+        dsl_function_call None f args [] env icont cont action
     | ExecuteI e ->
         let winstrs = [eval_expr env e] in
         execute_wasm_instrs winstrs env icont cont action false
@@ -732,33 +712,33 @@ and get_algo name = match AlgoMap.find_opt name !algo_map with
   | Some v -> v
   | None -> failwith ("Algorithm " ^ name ^ " not found")
 
-and call_algo lhs_opt name args env il cont action =
-  let algo = get_algo name in
-  let k = AssignLhs (lhs_opt, (env, il, action)) in
-  interp_algo algo args cont k
-
-and map_algo name front_args last_arg iters cont action =
+and call_algo name args iters env cont action =
   let algo = get_algo name in
   let handle_map_result result = return_some result cont in
-  let rec aux iters xs acc action = match xs with
+  let rec aux iters envs acc action = match envs with
     | [] ->
       let ys = listV (List.rev acc) in
       handle_map_result ys action
-    | x :: xs' ->
+    | env :: envs' ->
       let action' = Func (fun y ->
-        aux iters xs' (y :: acc) action
+        aux iters envs' (y :: acc) action
       ) in
-      aux' iters x action'
-  and aux' iters x action = match iters with
+      aux' iters env action'
+  and aux' iters env action = match iters with
     | [] ->
-      let args = front_args @ [ x ] in
-      interp_algo algo args cont action
-    | _iter :: iters' ->
-      let xs = value_to_list x in
-      aux iters' xs [] action
+      let vs = List.map (eval_expr env) args in
+      interp_algo algo vs cont action
+    | (names, _dim) :: iters' ->
+      let envs =
+        names
+        |> List.map (fun n -> Env.find n env |> value_to_list)
+        |> transpose
+        |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+      in
+      aux iters' envs [] action
   in
 
-  aux' iters last_arg action
+  aux' iters env action
 
 and call_toplevel_algo name args =
   let algo = get_algo name in

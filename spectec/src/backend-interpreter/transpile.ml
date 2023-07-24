@@ -426,7 +426,7 @@ let app_remover =
       (* Append new CallI instruction *)
       add_call (fresh_exp, f, args, iters);
 
-      let required_names = intersect_list (List.concat_map fst iters) (Al.Free.free_expr e) in
+      let required_names = List.concat_map fst iters in
       requires := List.map (fun n -> (fresh_name, n)) required_names @ !requires;
       (* Discard all names appearing in args *)
       names := (ref []) :: (List.tl !names);
