@@ -29,74 +29,38 @@ let to_map algos =
 
 (* TODO: Perhaps automatically generate this *)
 let store : store ref = ref Record.empty
-let init_store () =
-  store := Record.empty
-    |> Record.add "FUNC" (listV [])
-    |> Record.add "GLOBAL" (listV [])
-    |> Record.add "TABLE" (listV [])
-    |> Record.add "MEM" (listV [])
-    |> Record.add "ELEM" (listV [])
-    |> Record.add "DATA" (listV [])
-
-let add_store s =
-  let concat_listv v1 v2 =
-    match v1, v2 with
-    | ListV l1, ListV l2 -> ListV (ref (Array.append !l1 !l2))
-    | _ -> failwith "Invalid store"
-  in
-
-  let func = concat_listv (Record.find "FUNC" !store) (Record.find "FUNC" s) in
-  let global = concat_listv (Record.find "GLOBAL" !store) (Record.find "GLOBAL" s) in
-  let table = concat_listv (Record.find "TABLE" !store) (Record.find "TABLE" s) in
-  let mem = concat_listv (Record.find "MEM" !store) (Record.find "MEM" s) in
-  let elem = concat_listv (Record.find "ELEM" !store) (Record.find "ELEM" s) in
-  let data = concat_listv (Record.find "DATA" !store) (Record.find "DATA" s) in
-
-  store := Record.empty
-    |> Record.add "FUNC" func
-    |> Record.add "GLOBAL" global
-    |> Record.add "TABLE" table
-    |> Record.add "MEM" mem
-    |> Record.add "ELEM" elem
-    |> Record.add "DATA" data
 
 (* Environmet *)
 
-module Env = struct
-  module EnvKey = struct
-    type t = name
+module EnvKey = struct
+  type t = name
 
-    let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
-  end
+  let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
+end
 
-  module Env' = Map.Make (EnvKey)
-
-  type t = value Env'.t * value
-
-  (* Result *)
-  let get_result (_, res) = res
-  let set_result v (env, _) = (env, v)
+module Env = struct include Map.Make (EnvKey)
 
   (* Printer *)
   let string_of_env env =
     Print.string_of_list
-      (fun (k, v) -> Print.string_of_name k ^ ": " ^ Print.string_of_value v)
-      "\n{" ",\n  " "\n}" (Env'.bindings env)
+      (fun (k, v) ->
+        Print.string_of_name k ^ ": " ^ Print.string_of_value v)
+      "\n{" ",\n  " "\n}"
+      (bindings env)
 
   (* Environment API *)
-  let empty =
-    (Env'.add (N "s") (StoreV store) Env'.empty, StringV "Undefined")
+  let empty = add (N "s") (StoreV store) empty
 
-  let find key (env, _) =
-    try Env'.find key env
+  let find key env =
+    try find key env
     with Not_found ->
       Printf.sprintf "The key '%s' is not in the map: %s."
         (Print.string_of_name key) (string_of_env env)
       |> prerr_endline;
       raise Not_found
-
-  let add key elem (env, res) = (Env'.add key elem env, res)
 end
+
+type env = value Env.t
 
 (* Stack *)
 
@@ -140,7 +104,7 @@ let get_current_context () =
 
 (* Evaluation Context *)
 
-exception ExitContext of (value Env.Env'.t * value) * instr list
+exception ExitContext of (env * value) * instr list
 
 (* Helper functions *)
 
@@ -440,7 +404,7 @@ let rec eval_cond env cond =
 
 type map_info = (string * value list * value list * value list)
 
-type context = Env.t * instr list * action
+type context = env * instr list * action
 and wstack = (value list * context) list
 (* Specifies what to do upon obtaining a value *)
 and action =
