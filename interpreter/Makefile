@@ -43,10 +43,11 @@ smallint.exe:
 
 # Building JavaScript library
 
-$(JSLIB):
-	rm -f $@
-	dune build $@
-	cp $(BUILDDIR)/$@ $@
+$(JSLIB):	$(BUILDDIR)/$(JSLIB)
+	cp $< $@
+
+$(BUILDDIR)/$(JSLIB):
+	dune build $(JSLIB)
 
 # Executing test suite
 
