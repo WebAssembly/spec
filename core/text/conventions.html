@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2023-07-12)</title>
+    <title>Conventions &#8212; WebAssembly 2.0 (Draft 2023-07-24)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -115,7 +115,8 @@ or expressed as <a class="reference external" href="https://www.unicode.org/vers
 (This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \geq 1\)</span>.)</p></li>
 <li><p><span class="math notranslate nohighlight">\(T^?\)</span> is an optional occurrence of <span class="math notranslate nohighlight">\(T\)</span>.
 (This is a shorthand for <span class="math notranslate nohighlight">\(T^n\)</span> where <span class="math notranslate nohighlight">\(n \leq 1\)</span>.)</p></li>
-<li><p><span class="math notranslate nohighlight">\(x{:}T\)</span> denotes the same language as the nonterminal <span class="math notranslate nohighlight">\(T\)</span>, but also binds the variable <span class="math notranslate nohighlight">\(x\)</span> to the attribute synthesized for <span class="math notranslate nohighlight">\(T\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(x{:}T\)</span> denotes the same language as the nonterminal <span class="math notranslate nohighlight">\(T\)</span>, but also binds the variable <span class="math notranslate nohighlight">\(x\)</span> to the attribute synthesized for <span class="math notranslate nohighlight">\(T\)</span>.
+A pattern may also be used instead of a variable, e.g., <span class="math notranslate nohighlight">\((x,y){:}T\)</span>.</p></li>
 <li><p>Productions are written <span class="math notranslate nohighlight">\(\mathtt{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n\)</span>, where each <span class="math notranslate nohighlight">\(A_i\)</span> is the attribute that is synthesized for <span class="math notranslate nohighlight">\(\mathtt{sym}\)</span> in the given case, usually from attribute variables bound in <span class="math notranslate nohighlight">\(T_i\)</span>.</p></li>
 <li><p>Some productions are augmented by side conditions in parentheses, which restrict the applicability of the production. They provide a shorthand for a combinatorial expansion of the production into many separate cases.</p></li>
 <li><p>If the same meta variable or non-terminal symbol appears multiple times in a production (in the syntax or in an attribute), then all those occurrences must have the same instantiation.</p></li>
