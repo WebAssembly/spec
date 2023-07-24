@@ -418,6 +418,7 @@ let merge_envs_with_grouping default_env envs =
     let f _ v1 = function
       | ListV arr ->
           v1 :: Array.to_list !arr |> listV |> Option.some
+      | OptV None -> v1 |> Value.opt |> Option.some
       | _ -> failwith "Unreachable merge"
     in
     Env.union f env acc
@@ -427,15 +428,25 @@ let merge_envs_with_grouping default_env envs =
 let rec assign lhs rhs env =
   match lhs, rhs with
   | NameE name, v -> Env.add name v env
-  | IterE (e, _, List), ListV vs ->
+  | IterE (e, _, iter), _ ->
+      let default_value =
+        match iter with
+        | List -> listV []
+        | Opt -> OptV None
+        | _ -> failwith "TODO"
+      in
+
       let default_env =
         Al.Free.free_expr e
-        |> List.map (fun n -> (n, listV []))
+        |> List.map (fun n -> n, default_value)
         |> List.to_seq
         |> Env.of_seq
       in
 
-      Array.to_list !vs
+      (match rhs with
+      | ListV arr -> Array.to_list !arr
+      | OptV opt -> Option.to_list opt
+      | _ -> failwith "Unreachable iter rhs value")
       |> List.map (fun v -> assign e v Env.empty)
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) env
