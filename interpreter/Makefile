@@ -213,7 +213,7 @@ opam-release/%:
 		rm -f opam-$*.zip
 		wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
 		cp meta/opam/opam .
-		sed -i "tmp" s/@VERSION/$*/g opam
-		sed -i "tmp" s/@MD5/`md5 -q opam-$*.zip`/g opam
-		rm opam-$*.zip
+		sed -i ".tmp" s/@VERSION/$*/g opam
+		sed -i ".tmp" s/@MD5/`md5 -q opam-$*.zip`/g opam
+		rm opam.tmp opam-$*.zip
 		@echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam
