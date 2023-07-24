@@ -208,7 +208,7 @@ uninstall:
 		ocamlfind remove $(LIB)
 
 opam-release/%:
-		#git tag opam-$*
+		git tag opam-$*
 		git push --tags
 		rm -f opam-$*.zip
 		wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
