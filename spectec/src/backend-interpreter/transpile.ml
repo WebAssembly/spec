@@ -403,7 +403,10 @@ let app_remover =
         if x = x' then Some y else None
       ) !requires
     ) names |> dedup in
-    (new_names, iter) in
+    let new_iter = match iter with
+      | IndexedListN _ -> List
+      | _ -> iter in
+    (new_names, new_iter) in
 
   let call_id = ref 0 in
   let call_prefix = "r_" in
