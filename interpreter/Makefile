@@ -91,7 +91,17 @@ install:
 opam-release/%:
 	git tag opam-$*
 	git push --tags
-	opam publish
+	rm -f opam-$*.zip
+	wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
+	cp wasm.opam opam
+	echo 'url {' >> opam
+	echo '  src: "https://github.com/WebAssembly/spec/archive/opam-@VERSION.zip"' >> opam
+	echo '  checksum: "md5=@MD5"' >> opam
+	echo '}' >> opam
+	sed -i ".tmp" s/@VERSION/$*/g opam
+	sed -i ".tmp" s/@MD5/`md5 -q opam-$*.zip`/g opam
+	rm opam.tmp opam-$*.zip
+	@echo Created file ./opam, submit to github opam-repository/packages/wasm/wasm.$*/opam
 
 # Miscellaneous targets
 

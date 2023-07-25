@@ -3,3 +3,4 @@ wasm
 *.install
 *.js
 *.zip
+opam
