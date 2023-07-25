@@ -364,9 +364,9 @@ let transpiler algo =
   in
   let Algo (name, params, body) = walker algo in
   match params with
-  | (PairE (_, f), StateT) :: tail ->
-      Algo (name, tail, LetI (f, GetCurFrameE) :: body)
-  | (NameE (N "s"), _) :: tail ->
+  | PairE (_, NameE (N "f")) :: tail ->
+      Algo (name, tail, LetI (NameE (N "f"), GetCurFrameE) :: body)
+  | NameE (N "s") :: tail ->
       Algo (name, tail, body)
   | _ -> Algo(name, params, body)
 

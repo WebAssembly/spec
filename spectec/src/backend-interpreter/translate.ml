@@ -687,28 +687,6 @@ let rec split_context_winstr name stack =
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
 
-let rec find_type tenv exp =
-  let to_NameE x = NameE (N x) in
-  match exp.it with
-  | Ast.VarE id -> (
-      match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-      | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
-      | Some (_, t, _) -> (id.it |> to_NameE, ListT (il_type2al_type t))
-      | _ ->
-          failwith
-            (id.it ^ "'s type is unknown. There must be a problem in the IL."))
-  | Ast.IterE (inner_exp, (iter, ids)) ->
-      let name, ty = find_type tenv inner_exp in
-      IterE (name, List.map (fun id -> N id.it) ids ,iter2iter iter), ty
-  | Ast.SubE (inner_exp, _, _) ->
-      find_type tenv inner_exp
-  | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
-    -> (
-      match (find_type tenv st, find_type tenv fr) with
-      | (s, StoreT), (f, FrameT) -> (PairE (s, f), StateT)
-      | _ -> (Print.string_of_exp exp |> to_NameE, TopT))
-  | _ -> (Print.string_of_exp exp |> to_NameE, TopT)
-
 let un_unify (_, rhs, prems, binds) =
   let sub, new_prems = Util.Lib.List.split_hd prems in
   let new_binds = binds in (* TODO *)
@@ -730,7 +708,7 @@ let kind_of_context e =
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Algo` *)
 let rec reduction_group2algo (instr_name, reduction_group) =
-  let (lhs, _, _, tenv) = List.hd reduction_group in
+  let (lhs, _, _, _) = List.hd reduction_group in
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let instrs = match context with
@@ -778,17 +756,17 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let name = "execution_of_" ^ instr_name in
   (* params *)
   (* TODO: retieve param for return *)
-  let params =
+  let al_params =
     if instr_name = "frame" || instr_name = "label"
     then []
     else
-      get_params winstr |> List.map (find_type tenv)
+      get_params winstr |> List.map exp2expr
   in
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability in
 
   (* Algo *)
-  Algo (name, params, body)
+  Algo (name, al_params, body)
 
 (** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
 
@@ -863,10 +841,10 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let unified_clauses = Il2il.unify_defs clauses in
-      let Ast.DefD (binds, params, _, _) = (List.hd unified_clauses).it in
-      let typed_params =
+      let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
+      let al_params =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
-        |> List.map (find_type binds)
+        |> List.map exp2expr
       in
       let returning_config = [ "instantiation"; "invocation" ] in
       let translator =
@@ -881,7 +859,7 @@ let helpers2algo partial_funcs def =
         |> Transpile.enhance_readability
         |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
 
-      let algo = Algo (id.it, typed_params, algo_body) in
+      let algo = Algo (id.it, al_params, algo_body) in
       Some algo
   | _ -> None
 

@@ -693,16 +693,9 @@ and interp_algo algo args cont action =
   (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
   (* string_of_stack !stack |> print_endline; *)
 
-  let f acc param arg =
-    let pattern, _ = param in
-    match (pattern, arg) with
-    | NameE n, arg
-    | IterE (NameE n, _, _), arg -> Env.add n arg acc
-    | _ -> failwith "Invalid destructuring assignment"
-  in
 
   let env_with_store = Env.add (N "s") (StoreV store) Env.empty in
-  let init_env = List.fold_left2 f env_with_store params args in
+  let init_env = List.fold_right2 assign params args env_with_store in
 
   interp_instrs init_env body cont action
 

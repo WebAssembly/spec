@@ -338,7 +338,7 @@ let al_of_table wasm_table =
   let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits 4294967295L in
 
-  ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
+  ConstructV ("TABLE", [ PairV(pair, al_of_type (RefType ref_ty)) ])
 
 let al_of_memory wasm_memory =
   let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in

@@ -10,5 +10,6 @@
     tester
     exception
     il2il
+    manual
     )
 )

@@ -160,7 +160,7 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of string * (expr * al_type) list * instr list
+type algorithm = Algo of string * expr list * instr list
 
 (* Smart Constructor *)
 let singleton x = ConstructV (x, [])

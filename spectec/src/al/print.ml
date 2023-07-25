@@ -335,7 +335,7 @@ let string_of_algorithm = function
   | Algo (name, params, instrs) ->
       name
       ^ List.fold_left
-          (fun acc (p, _t) -> acc ^ " " ^ string_of_expr p)
+          (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
       ^ string_of_instrs 0 instrs ^ "\n"
 
@@ -674,11 +674,7 @@ let structured_string_of_algorithm = function
   | Algo (name, params, instrs) ->
       name
       ^ List.fold_left
-          (fun acc (p, t) ->
-            acc ^ " "
-            ^ structured_string_of_expr p
-            ^ ":"
-            ^ structured_string_of_al_type t)
+          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs 1 instrs

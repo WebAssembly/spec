@@ -581,7 +581,7 @@ let render_algo env name params instrs =
     else
       (name, false)
   in
-  let title = render_title env uppercase name (List.map (fun p -> let (e, _) = p in e) params) in
+  let title = render_title env uppercase name (List.map (fun p -> let e = p in e) params) in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env 0 instrs
