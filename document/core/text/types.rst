@@ -217,16 +217,16 @@ Multiple anonymous structure fields may be combined into a single declaration:
    \end{array}
 
 
-.. index:: compound type, structure type, array type, function type
-   pair: text format; compound type
+.. index:: composite type, structure type, array type, function type
+   pair: text format; composite type
 .. _text-comptype:
 
-Compound Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{compound type} & \Tcomptype_I &::=&
+   \production{composite type} & \Tcomptype_I &::=&
      \X{at}{:}\Tarraytype_I
        &\Rightarrow& \TARRAY~\X{at} \\ &&|&
      \X{st}{:}\Tstructtype_I
@@ -236,7 +236,7 @@ Compound Types
    \end{array}
 
 
-.. index:: recursive type, sub type, compound type
+.. index:: recursive type, sub type, composite type
    pair: text format; recursive type
    pair: text format; sub type
 .. _text-rectype:

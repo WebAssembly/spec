@@ -165,7 +165,7 @@ Added more precise types for references [#proposal-typedref]_.
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
 
-.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, compound type, sub type, recrusive type
+.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recrusive type
 
 Garbage Collection
 ~~~~~~~~~~~~~~~~~~

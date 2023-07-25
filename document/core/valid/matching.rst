@@ -315,21 +315,21 @@ A :ref:`function type <syntax-functype>` :math:`[t_{11}^\ast] \toF [t_{12}^\ast]
    }
 
 
-.. index:: compound types, aggregate type, structure type, array type, field type
+.. index:: composite types, aggregate type, structure type, array type, field type
 .. _match-comptype:
 .. _match-structtype:
 .. _match-arraytype:
 
-Compound Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
-A :ref:`compound type <syntax-comptype>` :math:`\comptype_1` matches a type :math:`\comptype_2` if and only if:
+A :ref:`composite type <syntax-comptype>` :math:`\comptype_1` matches a type :math:`\comptype_2` if and only if:
 
-* Either the compound type :math:`\comptype_1` is :math:`\TFUNC~\functype_1` and :math:`\comptype_2` is :math:`\TFUNC~\functype_2` and:
+* Either the composite type :math:`\comptype_1` is :math:`\TFUNC~\functype_1` and :math:`\comptype_2` is :math:`\TFUNC~\functype_2` and:
 
   * The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
-* Or the compound type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
+* Or the composite type :math:`\comptype_1` is :math:`\TSTRUCT~\fieldtype_1^{n_1}` and :math:`\comptype_2` is :math:`\TSTRUCT~\fieldtype_2` and:
 
   * The arity :math:`n_1` is greater than or equal to :math:`n_2`.
 
@@ -337,7 +337,7 @@ A :ref:`compound type <syntax-comptype>` :math:`\comptype_1` matches a type :mat
 
     * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_{1i}` :ref:`matches <match-fieldtype>` :math:`\fieldtype_{2i}`.
 
-* Or the compound type :math:`\comptype_1` is :math:`\TARRAY~\fieldtype_1` and :math:`\comptype_2` is :math:`\TARRAY~\fieldtype_2` and:
+* Or the composite type :math:`\comptype_1` is :math:`\TARRAY~\fieldtype_1` and :math:`\comptype_2` is :math:`\TARRAY~\fieldtype_2` and:
 
   * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_1` :ref:`matches <match-fieldtype>` :math:`\fieldtype_2`.
 

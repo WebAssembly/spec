@@ -111,12 +111,12 @@ New abbreviations are introduced for reference types in binary and text format, 
   - Note that the number of type section entries is now the number of recursion groups rather than the number of individual types.
 
 * `subtype` is a new category of type defining a single type, as a subtype of possible other types
-  - `subtype ::= sub final? <typeidx>* <strtype>`
-  - the preexisting syntax with no `sub` clause is redefined to be a shorthand for a `sub` clause with empty `typeidx` list: `<strtype> == sub final () <strtype>`
+  - `subtype ::= sub final? <typeidx>* <comptype>`
+  - the preexisting syntax with no `sub` clause is redefined to be a shorthand for a `sub` clause with empty `typeidx` list: `<comptype> == sub final () <comptype>`
   - Note: This allows multiple supertypes. For the MVP, it is restricted to at most one supertype.
 
-* `strtype` is a new category of types covering the different forms of concrete structural reference types
-  - `strtype ::= <functype> | <structtype> | <arraytype>`
+* `comptype` is a new category of types covering the different forms of *composite* types
+  - `comptype ::= <functype> | <structtype> | <arraytype>`
 
 * `structtype` describes a structure with statically indexed fields
   - `structtype ::= struct <fieldtype>*`
@@ -155,13 +155,13 @@ In the case of `C.funcs`, it is an invariant that all types [expand](#auxiliary-
 
 * Expanding a type definition unrolls it and returns its plain definition
   - `expand($t)                 = expand(<ctxtype>)`  iff `$t = <ctxtype>`
-  - `expand(<ctxtype>)          = <strtype>`
-    - where `unroll(<ctxttype>) = sub final? x* <strtype>`
+  - `expand(<ctxtype>)          = <comptype>`
+    - where `unroll(<ctxttype>) = sub final? x* <comptype>`
 
 * Finality of a type just checks the flag
   - `final($t)                  = final(<ctxtype>)`  iff `$t = <ctxtype>`
   - `final(<ctxtype>)           = final? =/= empty`
-    - where `unroll(<ctxttype>) = sub final? x* <strtype>`
+    - where `unroll(<ctxttype>) = sub final? x* <comptype>`
 
 
 #### External Types
@@ -195,14 +195,14 @@ Some of the rules define a type as `ok` for a certain index, written `ok(x)`. Th
     - and `<subtype>* ok($t+1)`
 
 * an individual subtype is valid if its definition is valid, matches every supertype, and no supertype is final or has an index higher than its own
-  - `sub final? $t* <strtype> ok($t')`
-    - iff `<strtype> ok`
-    - and `(<strtype> <: expand($t))*`
+  - `sub final? $t* <comptype> ok($t')`
+    - iff `<comptype> ok`
+    - and `(<comptype> <: expand($t))*`
     - and `(not final($t))*`
     - and `($t < $t')*`
   - Note: the upper bound on the supertype indices ensures that subtyping hierarchies are never circular, because definitions need to be ordered.
 
-* as [before](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#types), a strtype is valid if all the occurring value types are valid
+* as [before](https://github.com/WebAssembly/function-references/proposals/function-references/Overview.md#types), a comptype is valid if all the occurring value types are valid
   - specifically, a concrete reference type `(ref $t)` is valid when `$t` is defined in the context
 
 Example: Consider two mutually recursive types:
@@ -260,8 +260,8 @@ With that:
   - Note: This rule is only used on types that have been tied, which prevents looping.
 
 * notably, two subtypes are equivalent if their structure is equivalent, they have equivalent supertypes, and their finality flag matches
-  - `(sub final1? $t* <strtype>) == (sub final2? $t'* <strtype'>)`
-    - iff `<strtype> == <strtype'>`
+  - `(sub final1? $t* <comptype>) == (sub final2? $t'* <comptype'>)`
+    - iff `<comptype> == <comptype'>`
     - and `($t == $t')*`
     - and `final1? = final2?`
 
@@ -318,7 +318,7 @@ In the [existing rules](https://github.com/WebAssembly/function-references/propo
 * Type indices are subtypes if they either define [equivalent](#type-equivalence) types or a suitable (direct or indirect) subtype relation has been declared
   - `$t <: $t'`
     - if `$t = <ctxtype>` and `$t' = <ctxtype'>` and `<ctxtype> == <ctxtype'>`
-    - or `unroll($t) = sub final? $t1* $t'' $t2* strtype` and `$t'' <: $t'`
+    - or `unroll($t) = sub final? $t1* $t'' $t2* comptype` and `$t'' <: $t'`
   - Note: This rule climbs the supertype hierarchy until an equivalent type has been found. Effectively, this means that subtyping is "nominal" modulo type canonicalisation.
 
 
@@ -393,9 +393,9 @@ The interpretation of such values is defined by the host environment, they are o
 Note: In the future, this hierarchy could be refined, e.g., to distinguish aggregate types that are not subtypes of `eq`.
 
 
-##### Structural Types
+##### Composite Types
 
-The subtyping rules for structural types are only invoked during validation of a `sub` [type definition](#type-definitions).
+The subtyping rules for composite types are only invoked during validation of a `sub` [type definition](#type-definitions).
 
 * Function types are covariant on their results and contravariant on their parameters
   - `func <valtype11>* -> <valtype12>* <: func <valtype21>* -> <valtype22>*`
@@ -759,7 +759,7 @@ The opcode for heap types is encoded as an `s33`.
 | -0x1a  | `array`         |            | |
 | -0x1b  | `none`          |            | |
 
-#### Structured Types
+#### Composite Types
 
 | Opcode | Type            | Parameters |
 | ------ | --------------- | ---------- |
@@ -772,8 +772,8 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | --------------- | ---------- | ---- |
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
-| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | |
-| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : strtype` | |
+| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : comptype` | |
+| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | |
 
 #### Defined Types
 
@@ -781,9 +781,9 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | --------------- | ---------- | ---- |
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
-| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : strtype` | shorthand |
+| -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : comptype` | shorthand |
 | -0x31  | `rec dt*`       | `dt* : vec(subtype)` | |
-| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : strtype` | shorthand |
+| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | shorthand |
 
 #### Field Types
 
@@ -880,7 +880,7 @@ C |- ref x ok
 ...and so on.
 
 
-#### Structural Types (`C |- <strtype> ok`)
+#### Composite Types (`C |- <comptype> ok`)
 ```
 (C |- t1 ok)*
 (C |- t2 ok)*
@@ -979,7 +979,7 @@ C |- t == t'
 C |- mut t == mut t'
 ```
 
-#### Structural Types (`C |- <strtype> == <strtype'>`)
+#### Composite Types (`C |- <comptype> == <comptype'>`)
 
 ```
 (C |- t1 == t1')*
@@ -1044,7 +1044,7 @@ C |- t == t'
 C |- mut t <: mut t'
 ```
 
-#### Structural Types (`C |- <strtype> <: <strtype'>`)
+#### Composite Types (`C |- <comptype> <: <comptype'>`)
 
 ```
 (C |- t1' <: t1)*
