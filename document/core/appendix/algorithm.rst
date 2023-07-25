@@ -16,7 +16,7 @@ Consequently, it can be integrated directly into a decoder.
 The algorithm is expressed in typed pseudo code whose semantics is intended to be self-explanatory.
 
 
-.. index:: value type, reference type, vector type, number type, packed type, field type, structure type, array type, function type, compound type, sub type, recursive type, defined type, stack, label, frame, instruction
+.. index:: value type, reference type, vector type, number type, packed type, field type, structure type, array type, function type, composite type, sub type, recursive type, defined type, stack, label, frame, instruction
 
 Data Structures
 ~~~~~~~~~~~~~~~
@@ -81,7 +81,7 @@ We assume that all types have been *canonicalized*, such that equality on two ty
    However, this distinction does not otherwise affect validation, so is ignored here.
    In the graph representation, all recursive types are effectively infinitely :ref:`unrolled <aux-unroll-rectype>`.
 
-We further assume that :ref:`validation <valid-valtype>` and :ref:`subtyping <match-valtype>` checks are defined on value types, as well as a few auxiliary functions on compound types:
+We further assume that :ref:`validation <valid-valtype>` and :ref:`subtyping <match-valtype>` checks are defined on value types, as well as a few auxiliary functions on composite types:
 
 .. code-block:: pseudo
 

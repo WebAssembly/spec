@@ -29,9 +29,9 @@ Category                                  Constructor                           
 :ref:`Heap type <syntax-heaptype>`        |ARRAY|                                             :math:`\hex{66}` (-26 as |Bs7|)
 :ref:`Heap type <syntax-heaptype>`        |NONE|                                              :math:`\hex{65}` (-27 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{64}` .. :math:`\hex{61}`
-:ref:`Compound type <syntax-comptype>`    :math:`\TFUNC~[\valtype^\ast] \toF[\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
-:ref:`Compound type <syntax-comptype>`    :math:`\TSTRUCT~\fieldtype^\ast`                    :math:`\hex{5F}` (-33 as |Bs7|)
-:ref:`Compound type <syntax-comptype>`    :math:`\TARRAY~\fieldtype`                          :math:`\hex{5E}` (-34 as |Bs7|)
+:ref:`Composite type <syntax-comptype>`   :math:`\TFUNC~[\valtype^\ast] \toF[\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
+:ref:`Composite type <syntax-comptype>`   :math:`\TSTRUCT~\fieldtype^\ast`                    :math:`\hex{5F}` (-33 as |Bs7|)
+:ref:`Composite type <syntax-comptype>`   :math:`\TARRAY~\fieldtype`                          :math:`\hex{5E}` (-34 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{5D}` .. :math:`\hex{51}`
 :ref:`Sub type <syntax-subtype>`          :math:`\TSUB~\typeidx^\ast~\comptype`               :math:`\hex{50}` (-48 as |Bs7|)
 :ref:`Recursive type <syntax-rectype>`    :math:`\TREC~\subtype^\ast`                         :math:`\hex{4F}` (-49 as |Bs7|)

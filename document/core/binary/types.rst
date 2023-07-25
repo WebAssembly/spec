@@ -192,18 +192,18 @@ Aggregate Types
    \end{array}
 
 
-.. index:: compound type, structure type, array type, function type
-   pair: binary format; compound type
+.. index:: composite type, structure type, array type, function type
+   pair: binary format; composite type
 .. _binary-comptype:
 
-Compound Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
-:ref:`Compound types <syntax-comptype>` are encoded by a distinct byte followed by a type encoding of the respective form.
+:ref:`Composite types <syntax-comptype>` are encoded by a distinct byte followed by a type encoding of the respective form.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{compound type} & \Bcomptype &::=&
+   \production{composite type} & \Bcomptype &::=&
      \hex{5E}~~\X{at}{:}\Barraytype
        &\Rightarrow& \TARRAY~\X{at} \\ &&|&
      \hex{5F}~~\X{st}{:}\Bstructtype
@@ -213,7 +213,7 @@ Compound Types
    \end{array}
 
 
-.. index:: recursive type, sub type, compound type
+.. index:: recursive type, sub type, composite type
    pair: binary format; recursive type
    pair: binary format; sub type
 .. _binary-rectype:

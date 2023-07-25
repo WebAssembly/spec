@@ -274,24 +274,24 @@ Conventions
 * The notation :math:`|t|` for :ref:`bit width <bitwidth-valtype>` extends to packed types as well, that is, :math:`|\I8| = 8` and :math:`|\I16| = 16`.
 
 
-.. index:: ! compound type, function type, aggreagate type, structure type, array type
-   pair: abstract syntax; compound type
+.. index:: ! composite type, function type, aggreagate type, structure type, array type
+   pair: abstract syntax; composite type
 .. _syntax-comptype:
 
-Compound Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
-*Compound types* are all types composed from simpler types,
+*Composite types* are all types composed from simpler types,
 including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syntax-aggrtype>`.
 
 .. math::
    \begin{array}{llrl}
-   \production{compound type} & \comptype &::=&
+   \production{composite type} & \comptype &::=&
      \TFUNC~\functype ~|~ \TSTRUCT~\structtype ~|~ \TARRAY~\arraytype \\
    \end{array}
 
 
-.. index:: ! recursive type, ! sub type, compound type, ! final, subtyping, ! roll, ! unroll, recursive type index
+.. index:: ! recursive type, ! sub type, composite type, ! final, subtyping, ! roll, ! unroll, recursive type index
    pair: abstract syntax; recursive type
    pair: abstract syntax; sub type
 .. _syntax-rectype:
@@ -300,7 +300,7 @@ including :ref:`function types <syntax-functype>` and :ref:`aggregate types <syn
 Recursive Types
 ~~~~~~~~~~~~~~~
 
-*Recursive types* denote a group of mutually recursive :ref:`compound types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
+*Recursive types* denote a group of mutually recursive :ref:`composite types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
 Each type can also be declared *final*, preventing further subtyping.
 .
 

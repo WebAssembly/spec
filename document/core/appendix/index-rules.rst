@@ -26,7 +26,7 @@ Construct                                        Judgement
 :ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype \ok`
 :ref:`Structure type <valid-structtype>`         :math:`C \vdashstructtype \structtype \ok`
 :ref:`Array type <valid-arraytype>`              :math:`C \vdasharraytype \arraytype \ok`
-:ref:`Compound type <valid-comptype>`            :math:`C \vdashcomptype \comptype \ok`
+:ref:`Composite type <valid-comptype>`           :math:`C \vdashcomptype \comptype \ok`
 :ref:`Sub type <valid-subtype>`                  :math:`C \vdashsubtype \subtype \ok`
 :ref:`Recursive type <valid-rectype>`            :math:`C \vdashrectype \rectype \ok`
 :ref:`Defined type <valid-deftype>`              :math:`C \vdashdeftype \deftype \ok`
@@ -133,7 +133,7 @@ Construct                                        Judgement
 :ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2`
 :ref:`Structure type <match-structtype>`         :math:`C \vdashstructtypematch \structtype_1 \matchesstructtype \structtype_2`
 :ref:`Array type <match-arraytype>`              :math:`C \vdasharraytypematch \arraytype_1 \matchesarraytype \arraytype_2`
-:ref:`Compound type <match-comptype>`            :math:`C \vdashcomptypematch \comptype_1 \matchescomptype \comptype_2`
+:ref:`Composite type <match-comptype>`           :math:`C \vdashcomptypematch \comptype_1 \matchescomptype \comptype_2`
 :ref:`Defined type <match-deftype>`              :math:`C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2`
 :ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
 :ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`

@@ -261,12 +261,12 @@ Function Types
    }
 
 
-.. index:: compound type, function type, aggregate type, structure type, array type, field type
-   pair: validation; compound type
+.. index:: composite type, function type, aggregate type, structure type, array type, field type
+   pair: validation; composite type
    pair: validation; aggregate type
    pair: validation; structure type
    pair: validation; array type
-   single: abstract syntax; compound type
+   single: abstract syntax; composite type
    single: abstract syntax; function type
    single: abstract syntax; structure type
    single: abstract syntax; array type
@@ -276,15 +276,15 @@ Function Types
 .. _valid-structtype:
 .. _valid-arraytype:
 
-Compound Types
-~~~~~~~~~~~~~~
+Composite Types
+~~~~~~~~~~~~~~~
 
 :math:`\TFUNC~\functype`
 ........................
 
 * The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
 
-* Then the compound type is valid.
+* Then the composite type is valid.
 
 .. math::
    \frac{
@@ -300,7 +300,7 @@ Compound Types
 
   * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` must be :ref:`valid <valid-fieldtype>`.
 
-* Then the compound type is valid.
+* Then the composite type is valid.
 
 .. math::
    \frac{
@@ -314,7 +314,7 @@ Compound Types
 
 * The :ref:`field type <syntax-fieldtype>` :math:`\fieldtype` must be :ref:`valid <valid-fieldtype>`.
 
-* Then the compound type is valid.
+* Then the composite type is valid.
 
 .. math::
    \frac{
@@ -365,7 +365,7 @@ Field Types
    }
 
 
-.. index:: recursive type, sub type, compound type, final, subtyping
+.. index:: recursive type, sub type, composite type, final, subtyping
    pair: abstract syntax; recursive type
    pair: abstract syntax; sub type
 .. _valid-rectype:
@@ -408,7 +408,7 @@ Recursive Types
 :math:`\TSUB~\TFINAL^?~y^\ast~\comptype`
 ........................................
 
-* The :ref:`compound type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
+* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
 
 * The sequence :math:`y^\ast` may be no longer than :math:`1`.
 
@@ -424,7 +424,7 @@ Recursive Types
 
   * Let :math:`\comptype'_i` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_i]`.
 
-  * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
+  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
 
 * Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
 
