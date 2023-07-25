@@ -88,6 +88,13 @@ install:
 	dune build -p $(NAME) @install
 	dune install
 
+.PHONY: opam-release
+
+opam-release/%:
+	git tag opam-$*
+	git push --tags
+	opam publish
+
 # Miscellaneous targets
 
 .PHONY:		clean
