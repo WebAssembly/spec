@@ -397,7 +397,7 @@ Recursive Types
 
   * The :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must not contain :math:`\TFINAL`.
 
-  * Let :math:`\comptype'_i` be the :ref:`compound type <syntax-comptype>` in :math:`\subtype_i`.
+  * Let :math:`\comptype'_i` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_i`.
 
   * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_i`.
 

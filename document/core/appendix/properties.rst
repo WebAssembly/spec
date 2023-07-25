@@ -130,7 +130,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 :ref:`Sub types <syntax-subtype>` :math:`\TSUB~\TFINAL^?~\X{ht}^\ast~\comptype`
 ...............................................................................
 
-* The :ref:`compound type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
+* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
 
 * The sequence :math:`\X{ht}^\ast` may be no longer than :math:`1`.
 
@@ -154,9 +154,9 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 
   * The :ref:`sub type <syntax-subtype>` :math:`\subtype_k` must not contain :math:`\TFINAL`.
 
-  * Let :math:`\comptype'_k` be the :ref:`compound type <syntax-comptype>` in :math:`\subtype_k`.
+  * Let :math:`\comptype'_k` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_k`.
 
-  * The :ref:`compound type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_k`.
+  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_k`.
 
 * Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x` and :ref:`recursive type index <syntax-rectypeidx>` :math:`i`.
 
