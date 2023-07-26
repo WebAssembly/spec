@@ -246,7 +246,9 @@ let rec valid_iter env iter =
     valid_exp env e (NatT $ e.at);
     let t', dim = find "variable" env.vars id in
     equiv_typ env t' (NatT $ e.at) e.at;
-    if dim <> [ListN (e, None)] then
+    match dim with
+    | [ListN (e', None)] when Eq.eq_exp e e' -> ()
+    | _ ->
       error e.at ("use of iterated variable `" ^
         id.it ^ String.concat "" (List.map string_of_iter dim) ^
         "` outside suitable iteraton context")
@@ -490,7 +492,7 @@ and valid_path env p t : typ =
 
 and valid_iterexp env (iter, ids) : env =
   valid_iter env iter;
-  let iter =
+  let iter' =
     match iter with
     | ListN (e, Some _) -> ListN (e, None)
     | iter -> iter
@@ -498,14 +500,14 @@ and valid_iterexp env (iter, ids) : env =
   List.fold_left (fun env id ->
     match find "variable" env.vars id with
     | t, iter1::iters
-      when Eq.eq_iter (snd (Lib.List.split_last (iter1::iters))) iter ->
+      when Eq.eq_iter (snd (Lib.List.split_last (iter1::iters))) iter' ->
       {env with vars =
         Env.add id.it (t, fst (Lib.List.split_last (iter1::iters))) env.vars}
     | _, iters ->
       error id.at ("iteration variable `" ^ id.it ^
         "` has incompatible dimension `" ^ id.it ^
         String.concat "" (List.map string_of_iter iters) ^
-        "` in iteration `_" ^ string_of_iter iter ^ "`")
+        "` in iteration `_" ^ string_of_iter iter' ^ "`")
   ) env ids
 
 

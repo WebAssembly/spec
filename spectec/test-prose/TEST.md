@@ -52,19 +52,19 @@ validation_of_select ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr*
-- Under the context C with .LABEL prepended by [t_2]*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
-- Under the context C with .LABEL prepended by [t_1]*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
-- Under the context C with .LABEL prepended by [t_2]*, instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C with .LABEL prepended by [t_2]*, instr_1* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_br l
@@ -560,12 +560,12 @@ allocmodule module externval* val* ref**
 9. Let (MEMORY memtype)^n_mem be y_2.
 10. Let (TABLE tabletype)^n_table be y_1.
 11. Let (GLOBAL globaltype expr_1)^n_global be y_0.
-12. Let da* be (|s.DATA| + i)^(i<n_data).
-13. Let ea* be (|s.ELEM| + i)^(i<n_elem).
-14. Let ma* be (|s.MEM| + i)^(i<n_mem).
-15. Let ta* be (|s.TABLE| + i)^(i<n_table).
-16. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
-17. Let fa* be (|s.FUNC| + i)^(i<n_func).
+12. Let da* be (|s.DATA| + i_data)^(i_data<n_data).
+13. Let ea* be (|s.ELEM| + i_elem)^(i_elem<n_elem).
+14. Let ma* be (|s.MEM| + i_mem)^(i_mem<n_mem).
+15. Let ta* be (|s.TABLE| + i_table)^(i_table<n_table).
+16. Let ga* be (|s.GLOBAL| + i_global)^(i_global<n_global).
+17. Let fa* be (|s.FUNC| + i_func)^(i_func<n_func).
 18. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
 19. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
 20. Let y_0 be $allocfuncs(m, func^n_func).
