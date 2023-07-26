@@ -246,9 +246,7 @@ let rec valid_iter env iter =
     valid_exp env e (NatT $ e.at);
     let t', dim = find "variable" env.vars id in
     equiv_typ env t' (NatT $ e.at) e.at;
-    match dim with
-    | [ListN (e', None)] when Eq.eq_exp e e' -> ()
-    | _ ->
+    if not Eq.(eq_list eq_iter dim [ListN (e, None)]) then
       error e.at ("use of iterated variable `" ^
         id.it ^ String.concat "" (List.map string_of_iter dim) ^
         "` outside suitable iteraton context")
