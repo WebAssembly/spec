@@ -76,7 +76,9 @@ let rec string_of_iter iter =
   | Opt -> "?"
   | List -> "*"
   | List1 -> "+"
-  | ListN e -> "^" ^ string_of_exp e
+  | ListN (e, None) -> "^" ^ string_of_exp e
+  | ListN (e, Some id) ->
+    "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
 and string_of_typ t =
   match t.it with

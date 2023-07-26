@@ -336,7 +336,13 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN e -> Il.ListN (elab_exp env e (NatT $ e.at))
+  | ListN (e, id_opt) ->
+    Option.iter (fun id ->
+      let t = find "variable" env.vars (prefix_id id) in
+      if not (equiv_typ env t (NatT $ id.at)) then
+        error_typ e.at "iteration index" (NatT $ id.at)
+    ) id_opt;
+    Il.ListN (elab_exp env e (NatT $ e.at), id_opt)
 
 
 (* Types *)
@@ -762,7 +768,7 @@ and elab_exp_notation' env e t : Il.exp list =
   | (EpsE | SeqE _), IterT (t1, iter) ->
     [elab_exp_notation_iter env (unseq_exp e) (t1, iter) t e.at]
   | IterE (e1, iter1), IterT (t1, iter) ->
-    if (iter = Opt) <> (iter1 = Opt) then
+    if (iter = Opt) && (iter1 <> Opt) then
       error_typ e.at "iteration expression" t;
     let es1' = elab_exp_notation' env e1 t1 in
     let iter1' = elab_iter env iter1 in

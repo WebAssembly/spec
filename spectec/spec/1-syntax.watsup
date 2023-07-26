@@ -198,7 +198,7 @@ syntax mem hint(desc "memory") =
 syntax elem hint(desc "table segment") =
   ELEM reftype expr* elemmode?
 syntax data hint(desc "memory segment") =
-  DATA (byte*)* datamode?
+  DATA byte* datamode?
 syntax start hint(desc "start function") =
   START funcidx
 

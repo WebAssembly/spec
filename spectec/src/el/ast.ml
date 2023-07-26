@@ -44,7 +44,7 @@ type iter =
   | Opt                          (* `?` *)
   | List                         (* `*` *)
   | List1                        (* `+` *)
-  | ListN of exp                 (* `^` exp *)
+  | ListN of exp * id option     (* `^` exp *)
 
 
 (* Types *)

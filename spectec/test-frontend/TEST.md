@@ -297,8 +297,8 @@ syntax mem = MEMORY(memtype)
 ;; 1-syntax.watsup:198.1-199.31
 syntax elem = `ELEM%%*%?`(reftype, expr*, elemmode?)
 
-;; 1-syntax.watsup:200.1-201.26
-syntax data = `DATA(*)%*%?`(byte**, datamode?)
+;; 1-syntax.watsup:200.1-201.23
+syntax data = `DATA%*%?`(byte*, datamode?)
 
 ;; 1-syntax.watsup:202.1-203.16
 syntax start = START(funcidx)
@@ -886,8 +886,8 @@ relation Datamode_ok: `%|-%:OK`(context, datamode)
 ;; 3-typing.watsup:402.1-402.73
 relation Data_ok: `%|-%:OK`(context, data)
   ;; 3-typing.watsup:433.1-435.40
-  rule _ {C : context, b** : byte**, datamode? : datamode?}:
-    `%|-%:OK`(C, `DATA(*)%*%?`(b*{b}*{b}, datamode?{datamode}))
+  rule _ {C : context, b* : byte*, datamode? : datamode?}:
+    `%|-%:OK`(C, `DATA%*%?`(b*{b}, datamode?{datamode}))
     -- (Datamode_ok: `%|-%:OK`(C, datamode))?{datamode}
 
 ;; 3-typing.watsup:405.1-405.74
@@ -1052,10 +1052,10 @@ syntax frame = {LOCAL val*, MODULE moduleinst}
 ;; 4-runtime.watsup:96.1-96.47
 syntax state = `%;%`(store, frame)
 
-;; 4-runtime.watsup:172.1-179.5
+;; 4-runtime.watsup:183.1-190.5
 rec {
 
-;; 4-runtime.watsup:172.1-179.5
+;; 4-runtime.watsup:183.1-190.5
 syntax admininstr =
   | UNREACHABLE
   | NOP
@@ -1119,106 +1119,131 @@ def funcaddr : state -> funcaddr*
 
 ;; 4-runtime.watsup:118.1-118.52
 def funcinst : state -> funcinst*
-  ;; 4-runtime.watsup:119.1-119.31
+  ;; 4-runtime.watsup:125.1-125.31
   def {f : frame, s : store} funcinst(`%;%`(s, f)) = s.FUNC_store
 
-;; 4-runtime.watsup:121.1-121.67
+;; 4-runtime.watsup:119.1-119.58
+def globalinst : state -> globalinst*
+  ;; 4-runtime.watsup:126.1-126.35
+  def {f : frame, s : store} globalinst(`%;%`(s, f)) = s.GLOBAL_store
+
+;; 4-runtime.watsup:120.1-120.55
+def tableinst : state -> tableinst*
+  ;; 4-runtime.watsup:127.1-127.33
+  def {f : frame, s : store} tableinst(`%;%`(s, f)) = s.TABLE_store
+
+;; 4-runtime.watsup:121.1-121.49
+def meminst : state -> meminst*
+  ;; 4-runtime.watsup:128.1-128.29
+  def {f : frame, s : store} meminst(`%;%`(s, f)) = s.MEM_store
+
+;; 4-runtime.watsup:122.1-122.52
+def eleminst : state -> eleminst*
+  ;; 4-runtime.watsup:129.1-129.31
+  def {f : frame, s : store} eleminst(`%;%`(s, f)) = s.ELEM_store
+
+;; 4-runtime.watsup:123.1-123.52
+def datainst : state -> datainst*
+  ;; 4-runtime.watsup:130.1-130.31
+  def {f : frame, s : store} datainst(`%;%`(s, f)) = s.DATA_store
+
+;; 4-runtime.watsup:132.1-132.67
 def func : (state, funcidx) -> funcinst
-  ;; 4-runtime.watsup:129.1-129.48
+  ;; 4-runtime.watsup:140.1-140.48
   def {f : frame, s : store, x : idx} func(`%;%`(s, f), x) = s.FUNC_store[f.MODULE_frame.FUNC_moduleinst[x]]
 
-;; 4-runtime.watsup:122.1-122.69
+;; 4-runtime.watsup:133.1-133.69
 def global : (state, globalidx) -> globalinst
-  ;; 4-runtime.watsup:130.1-130.54
+  ;; 4-runtime.watsup:141.1-141.54
   def {f : frame, s : store, x : idx} global(`%;%`(s, f), x) = s.GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]]
 
-;; 4-runtime.watsup:123.1-123.68
+;; 4-runtime.watsup:134.1-134.68
 def table : (state, tableidx) -> tableinst
-  ;; 4-runtime.watsup:131.1-131.51
+  ;; 4-runtime.watsup:142.1-142.51
   def {f : frame, s : store, x : idx} table(`%;%`(s, f), x) = s.TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]]
 
-;; 4-runtime.watsup:124.1-124.66
+;; 4-runtime.watsup:135.1-135.66
 def mem : (state, memidx) -> meminst
-  ;; 4-runtime.watsup:132.1-132.45
+  ;; 4-runtime.watsup:143.1-143.45
   def {f : frame, s : store, x : idx} mem(`%;%`(s, f), x) = s.MEM_store[f.MODULE_frame.MEM_moduleinst[x]]
 
-;; 4-runtime.watsup:125.1-125.67
+;; 4-runtime.watsup:136.1-136.67
 def elem : (state, tableidx) -> eleminst
-  ;; 4-runtime.watsup:133.1-133.48
+  ;; 4-runtime.watsup:144.1-144.48
   def {f : frame, s : store, x : idx} elem(`%;%`(s, f), x) = s.ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]]
 
-;; 4-runtime.watsup:126.1-126.67
+;; 4-runtime.watsup:137.1-137.67
 def data : (state, dataidx) -> datainst
-  ;; 4-runtime.watsup:134.1-134.48
+  ;; 4-runtime.watsup:145.1-145.48
   def {f : frame, s : store, x : idx} data(`%;%`(s, f), x) = s.DATA_store[f.MODULE_frame.DATA_moduleinst[x]]
 
-;; 4-runtime.watsup:127.1-127.68
+;; 4-runtime.watsup:138.1-138.68
 def local : (state, localidx) -> val
-  ;; 4-runtime.watsup:135.1-135.35
+  ;; 4-runtime.watsup:146.1-146.35
   def {f : frame, s : store, x : idx} local(`%;%`(s, f), x) = f.LOCAL_frame[x]
 
-;; 4-runtime.watsup:138.1-138.78
+;; 4-runtime.watsup:149.1-149.78
 def with_local : (state, localidx, val) -> state
-  ;; 4-runtime.watsup:147.1-147.52
+  ;; 4-runtime.watsup:158.1-158.52
   def {f : frame, s : store, v : val, x : idx} with_local(`%;%`(s, f), x, v) = `%;%`(s, f[LOCAL_frame[x] = v])
 
-;; 4-runtime.watsup:139.1-139.85
+;; 4-runtime.watsup:150.1-150.85
 def with_global : (state, globalidx, val) -> state
-  ;; 4-runtime.watsup:148.1-148.77
+  ;; 4-runtime.watsup:159.1-159.77
   def {f : frame, s : store, v : val, x : idx} with_global(`%;%`(s, f), x, v) = `%;%`(s[GLOBAL_store[f.MODULE_frame.GLOBAL_moduleinst[x]].VALUE_globalinst = v], f)
 
-;; 4-runtime.watsup:140.1-140.88
+;; 4-runtime.watsup:151.1-151.88
 def with_table : (state, tableidx, nat, ref) -> state
-  ;; 4-runtime.watsup:149.1-149.79
+  ;; 4-runtime.watsup:160.1-160.79
   def {f : frame, i : nat, r : ref, s : store, x : idx} with_table(`%;%`(s, f), x, i, r) = `%;%`(s[TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]].ELEM_tableinst[i] = r], f)
 
-;; 4-runtime.watsup:141.1-141.84
+;; 4-runtime.watsup:152.1-152.84
 def with_tableinst : (state, tableidx, tableinst) -> state
-  ;; 4-runtime.watsup:150.1-150.74
+  ;; 4-runtime.watsup:161.1-161.74
   def {f : frame, s : store, ti : tableinst, x : idx} with_tableinst(`%;%`(s, f), x, ti) = `%;%`(s[TABLE_store[f.MODULE_frame.TABLE_moduleinst[x]] = ti], f)
 
-;; 4-runtime.watsup:142.1-142.93
+;; 4-runtime.watsup:153.1-153.93
 def with_mem : (state, memidx, nat, nat, byte*) -> state
-  ;; 4-runtime.watsup:151.1-151.82
+  ;; 4-runtime.watsup:162.1-162.82
   def {b* : byte*, f : frame, i : nat, j : nat, s : store, x : idx} with_mem(`%;%`(s, f), x, i, j, b*{b}) = `%;%`(s[MEM_store[f.MODULE_frame.MEM_moduleinst[x]].DATA_meminst[i : j] = b*{b}], f)
 
-;; 4-runtime.watsup:143.1-143.77
+;; 4-runtime.watsup:154.1-154.77
 def with_meminst : (state, memidx, meminst) -> state
-  ;; 4-runtime.watsup:152.1-152.68
+  ;; 4-runtime.watsup:163.1-163.68
   def {f : frame, mi : meminst, s : store, x : idx} with_meminst(`%;%`(s, f), x, mi) = `%;%`(s[MEM_store[f.MODULE_frame.MEM_moduleinst[x]] = mi], f)
 
-;; 4-runtime.watsup:144.1-144.82
+;; 4-runtime.watsup:155.1-155.82
 def with_elem : (state, elemidx, ref*) -> state
-  ;; 4-runtime.watsup:153.1-153.72
+  ;; 4-runtime.watsup:164.1-164.72
   def {f : frame, r* : ref*, s : store, x : idx} with_elem(`%;%`(s, f), x, r*{r}) = `%;%`(s[ELEM_store[f.MODULE_frame.ELEM_moduleinst[x]].ELEM_eleminst = r*{r}], f)
 
-;; 4-runtime.watsup:145.1-145.82
+;; 4-runtime.watsup:156.1-156.82
 def with_data : (state, dataidx, byte*) -> state
-  ;; 4-runtime.watsup:154.1-154.72
+  ;; 4-runtime.watsup:165.1-165.72
   def {b* : byte*, f : frame, s : store, x : idx} with_data(`%;%`(s, f), x, b*{b}) = `%;%`(s[DATA_store[f.MODULE_frame.DATA_moduleinst[x]].DATA_datainst = b*{b}], f)
 
-;; 4-runtime.watsup:156.1-156.63
+;; 4-runtime.watsup:167.1-167.63
 def grow_table : (tableinst, nat, ref) -> tableinst
-  ;; 4-runtime.watsup:159.1-163.36
+  ;; 4-runtime.watsup:170.1-174.36
   def {i : nat, i' : nat, j : nat, n : n, r : ref, r'* : ref*, rt : reftype, ti : tableinst, ti' : tableinst} grow_table(ti, n, r) = ti'
     -- if (ti = {TYPE `%%`(`[%..%]`(i, j), rt), ELEM r'*{r'}})
     -- if (i' = (|r'*{r'}| + n))
     -- if (ti' = {TYPE `%%`(`[%..%]`(i', j), rt), ELEM r'*{r'} :: r^n{}})
     -- Tabletype_ok: `|-%:OK`(ti'.TYPE_tableinst)
 
-;; 4-runtime.watsup:157.1-157.55
+;; 4-runtime.watsup:168.1-168.55
 def grow_memory : (meminst, nat) -> meminst
-  ;; 4-runtime.watsup:164.1-168.34
+  ;; 4-runtime.watsup:175.1-179.34
   def {b* : byte*, i : nat, i' : nat, j : nat, mi : meminst, mi' : meminst, n : n} grow_memory(mi, n) = mi'
     -- if (mi = {TYPE `%I8`(`[%..%]`(i, j)), DATA b*{b}})
     -- if (i' = ((|b*{b}| / (64 * $Ki)) + n))
     -- if (mi' = {TYPE `%I8`(`[%..%]`(i', j)), DATA b*{b} :: 0^((n * 64) * $Ki){}})
     -- Memtype_ok: `|-%:OK`(mi'.TYPE_meminst)
 
-;; 4-runtime.watsup:181.1-184.21
+;; 4-runtime.watsup:192.1-195.21
 rec {
 
-;; 4-runtime.watsup:181.1-184.21
+;; 4-runtime.watsup:192.1-195.21
 syntax E =
   | _HOLE
   | _SEQ(val*, E, instr*)
@@ -1656,6 +1681,268 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
+;; 7-module.watsup:4.1-4.35
+rec {
+
+;; 7-module.watsup:4.1-4.35
+def funcs : externval* -> funcaddr*
+  ;; 7-module.watsup:5.1-5.30
+  def funcs([]) = []
+  ;; 7-module.watsup:6.1-6.59
+  def {externval'* : externval*, fa : funcaddr} funcs([FUNC_externval(fa)] :: externval'*{externval'}) = [fa] :: $funcs(externval'*{externval'})
+  ;; 7-module.watsup:7.1-8.15
+  def {externval : externval, externval'* : externval*} funcs([externval] :: externval'*{externval'}) = $funcs(externval'*{externval'})
+    -- otherwise
+}
+
+;; 7-module.watsup:10.1-10.39
+rec {
+
+;; 7-module.watsup:10.1-10.39
+def globals : externval* -> globaladdr*
+  ;; 7-module.watsup:11.1-11.32
+  def globals([]) = []
+  ;; 7-module.watsup:12.1-12.65
+  def {externval'* : externval*, ga : globaladdr} globals([GLOBAL_externval(ga)] :: externval'*{externval'}) = [ga] :: $globals(externval'*{externval'})
+  ;; 7-module.watsup:13.1-14.15
+  def {externval : externval, externval'* : externval*} globals([externval] :: externval'*{externval'}) = $globals(externval'*{externval'})
+    -- otherwise
+}
+
+;; 7-module.watsup:16.1-16.37
+rec {
+
+;; 7-module.watsup:16.1-16.37
+def tables : externval* -> tableaddr*
+  ;; 7-module.watsup:17.1-17.31
+  def tables([]) = []
+  ;; 7-module.watsup:18.1-18.62
+  def {externval'* : externval*, ta : tableaddr} tables([TABLE_externval(ta)] :: externval'*{externval'}) = [ta] :: $tables(externval'*{externval'})
+  ;; 7-module.watsup:19.1-20.15
+  def {externval : externval, externval'* : externval*} tables([externval] :: externval'*{externval'}) = $tables(externval'*{externval'})
+    -- otherwise
+}
+
+;; 7-module.watsup:22.1-22.33
+rec {
+
+;; 7-module.watsup:22.1-22.33
+def mems : externval* -> memaddr*
+  ;; 7-module.watsup:23.1-23.29
+  def mems([]) = []
+  ;; 7-module.watsup:24.1-24.56
+  def {externval'* : externval*, ma : memaddr} mems([MEM_externval(ma)] :: externval'*{externval'}) = [ma] :: $mems(externval'*{externval'})
+  ;; 7-module.watsup:25.1-26.15
+  def {externval : externval, externval'* : externval*} mems([externval] :: externval'*{externval'}) = $mems(externval'*{externval'})
+    -- otherwise
+}
+
+;; 7-module.watsup:29.1-29.83
+def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> exportinst
+  ;; 7-module.watsup:30.1-30.95
+  def {fa* : funcaddr*, ga* : globaladdr*, ma* : memaddr*, name : name, ta* : tableaddr*, x : idx} instexport(fa*{fa}, ga*{ga}, ta*{ta}, ma*{ma}, EXPORT(name, FUNC_externuse(x))) = {NAME name, VALUE FUNC_externval(fa*{fa}[x])}
+  ;; 7-module.watsup:31.1-31.99
+  def {fa* : funcaddr*, ga* : globaladdr*, ma* : memaddr*, name : name, ta* : tableaddr*, x : idx} instexport(fa*{fa}, ga*{ga}, ta*{ta}, ma*{ma}, EXPORT(name, GLOBAL_externuse(x))) = {NAME name, VALUE GLOBAL_externval(ga*{ga}[x])}
+  ;; 7-module.watsup:32.1-32.97
+  def {fa* : funcaddr*, ga* : globaladdr*, ma* : memaddr*, name : name, ta* : tableaddr*, x : idx} instexport(fa*{fa}, ga*{ga}, ta*{ta}, ma*{ma}, EXPORT(name, TABLE_externuse(x))) = {NAME name, VALUE TABLE_externval(ta*{ta}[x])}
+  ;; 7-module.watsup:33.1-33.93
+  def {fa* : funcaddr*, ga* : globaladdr*, ma* : memaddr*, name : name, ta* : tableaddr*, x : idx} instexport(fa*{fa}, ga*{ga}, ta*{ta}, ma*{ma}, EXPORT(name, MEM_externuse(x))) = {NAME name, VALUE MEM_externval(ma*{ma}[x])}
+
+;; 7-module.watsup:36.1-36.60
+def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
+  ;; 7-module.watsup:37.1-38.37
+  def {fi : funcinst, func : func, m : moduleinst, s : store} allocfunc(s, m, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {MODULE m, CODE func})
+
+;; 7-module.watsup:40.1-40.63
+rec {
+
+;; 7-module.watsup:40.1-40.63
+def allocfuncs : (store, moduleinst, func*) -> (store, funcaddr*)
+  ;; 7-module.watsup:41.1-41.46
+  def {m : moduleinst, s : store} allocfuncs(s, m, []) = (s, [])
+  ;; 7-module.watsup:42.1-44.50
+  def {fa : funcaddr, fa'* : funcaddr*, func : func, func'* : func*, m : moduleinst, s : store, s_1 : store, s_2 : store} allocfuncs(s, m, [func] :: func'*{func'}) = (s_2, [fa] :: fa'*{fa'})
+    -- if ((s_1, fa) = $allocfunc(s, m, func))
+    -- if ((s_2, fa'*{fa'}) = $allocfuncs(s_1, m, func'*{func'}))
+}
+
+;; 7-module.watsup:46.1-46.63
+def allocglobal : (store, globaltype, val) -> (store, globaladdr)
+  ;; 7-module.watsup:47.1-48.44
+  def {gi : globalinst, globaltype : globaltype, s : store, val : val} allocglobal(s, globaltype, val) = (s[GLOBAL_store =.. [gi]], |s.GLOBAL_store|)
+    -- if (gi = {TYPE globaltype, VALUE val})
+
+;; 7-module.watsup:50.1-50.67
+rec {
+
+;; 7-module.watsup:50.1-50.67
+def allocglobals : (store, globaltype*, val*) -> (store, globaladdr*)
+  ;; 7-module.watsup:51.1-51.54
+  def {s : store} allocglobals(s, [], []) = (s, [])
+  ;; 7-module.watsup:52.1-54.62
+  def {ga : globaladdr, ga'* : globaladdr*, globaltype : globaltype, globaltype'* : globaltype*, s : store, s_1 : store, s_2 : store, val : val, val'* : val*} allocglobals(s, [globaltype] :: globaltype'*{globaltype'}, [val] :: val'*{val'}) = (s_2, [ga] :: ga'*{ga'})
+    -- if ((s_1, ga) = $allocglobal(s, globaltype, val))
+    -- if ((s_2, ga'*{ga'}) = $allocglobals(s_1, globaltype'*{globaltype'}, val'*{val'}))
+}
+
+;; 7-module.watsup:56.1-56.55
+def alloctable : (store, tabletype) -> (store, tableaddr)
+  ;; 7-module.watsup:57.1-58.59
+  def {i : nat, j : nat, rt : reftype, s : store, ti : tableinst} alloctable(s, `%%`(`[%..%]`(i, j), rt)) = (s[TABLE_store =.. [ti]], |s.TABLE_store|)
+    -- if (ti = {TYPE `%%`(`[%..%]`(i, j), rt), ELEM REF.NULL_ref(rt)^i{}})
+
+;; 7-module.watsup:60.1-60.58
+rec {
+
+;; 7-module.watsup:60.1-60.58
+def alloctables : (store, tabletype*) -> (store, tableaddr*)
+  ;; 7-module.watsup:61.1-61.44
+  def {s : store} alloctables(s, []) = (s, [])
+  ;; 7-module.watsup:62.1-64.53
+  def {s : store, s_1 : store, s_2 : store, ta : tableaddr, ta'* : tableaddr*, tabletype : tabletype, tabletype'* : tabletype*} alloctables(s, [tabletype] :: tabletype'*{tabletype'}) = (s_2, [ta] :: ta'*{ta'})
+    -- if ((s_1, ta) = $alloctable(s, tabletype))
+    -- if ((s_2, ta'*{ta'}) = $alloctables(s_1, tabletype'*{tabletype'}))
+}
+
+;; 7-module.watsup:66.1-66.49
+def allocmem : (store, memtype) -> (store, memaddr)
+  ;; 7-module.watsup:67.1-68.62
+  def {i : nat, j : nat, mi : meminst, s : store} allocmem(s, `%I8`(`[%..%]`(i, j))) = (s[MEM_store =.. [mi]], |s.MEM_store|)
+    -- if (mi = {TYPE `%I8`(`[%..%]`(i, j)), DATA 0^((i * 64) * $Ki){}})
+
+;; 7-module.watsup:70.1-70.52
+rec {
+
+;; 7-module.watsup:70.1-70.52
+def allocmems : (store, memtype*) -> (store, memaddr*)
+  ;; 7-module.watsup:71.1-71.42
+  def {s : store} allocmems(s, []) = (s, [])
+  ;; 7-module.watsup:72.1-74.49
+  def {ma : memaddr, ma'* : memaddr*, memtype : memtype, memtype'* : memtype*, s : store, s_1 : store, s_2 : store} allocmems(s, [memtype] :: memtype'*{memtype'}) = (s_2, [ma] :: ma'*{ma'})
+    -- if ((s_1, ma) = $allocmem(s, memtype))
+    -- if ((s_2, ma'*{ma'}) = $allocmems(s_1, memtype'*{memtype'}))
+}
+
+;; 7-module.watsup:76.1-76.57
+def allocelem : (store, reftype, ref*) -> (store, elemaddr)
+  ;; 7-module.watsup:77.1-78.36
+  def {ei : eleminst, ref* : ref*, rt : reftype, s : store} allocelem(s, rt, ref*{ref}) = (s[ELEM_store =.. [ei]], |s.ELEM_store|)
+    -- if (ei = {TYPE rt, ELEM ref*{ref}})
+
+;; 7-module.watsup:80.1-80.63
+rec {
+
+;; 7-module.watsup:80.1-80.63
+def allocelems : (store, reftype*, ref**) -> (store, elemaddr*)
+  ;; 7-module.watsup:81.1-81.52
+  def {s : store} allocelems(s, [], []) = (s, [])
+  ;; 7-module.watsup:82.1-84.53
+  def {ea : elemaddr, ea'* : elemaddr*, ref* : ref*, ref'** : ref**, rt : reftype, rt'* : reftype*, s : store, s_1 : store, s_2 : store} allocelems(s, [rt] :: rt'*{rt'}, [ref]*{ref} :: ref'*{ref'}*{ref'}) = (s_2, [ea] :: ea'*{ea'})
+    -- if ((s_1, ea) = $allocelem(s, rt, ref*{ref}))
+    -- if ((s_2, ea'*{ea'}) = $allocelems(s_2, rt'*{rt'}, ref'*{ref'}*{ref'}))
+}
+
+;; 7-module.watsup:86.1-86.49
+def allocdata : (store, byte*) -> (store, dataaddr)
+  ;; 7-module.watsup:87.1-88.28
+  def {byte* : byte*, di : datainst, s : store} allocdata(s, byte*{byte}) = (s[DATA_store =.. [di]], |s.DATA_store|)
+    -- if (di = {DATA byte*{byte}})
+
+;; 7-module.watsup:90.1-90.52
+rec {
+
+;; 7-module.watsup:90.1-90.52
+def allocdatas : (store, byte**) -> (store, dataaddr*)
+  ;; 7-module.watsup:91.1-91.43
+  def {s : store} allocdatas(s, []) = (s, [])
+  ;; 7-module.watsup:92.1-94.48
+  def {byte* : byte*, byte'** : byte**, da : dataaddr, da'* : dataaddr*, s : store, s_1 : store, s_2 : store} allocdatas(s, [byte]*{byte} :: byte'*{byte'}*{byte'}) = (s_2, [da] :: da'*{da'})
+    -- if ((s_1, da) = $allocdata(s, byte*{byte}))
+    -- if ((s_2, da'*{da'}) = $allocdatas(s_1, byte'*{byte'}*{byte'}))
+}
+
+;; 7-module.watsup:97.1-97.81
+def allocmodule : (store, module, externval*, val*, ref**) -> (store, moduleinst)
+  ;; 7-module.watsup:98.1-135.54
+  def {byte*^n_data : byte*^n_data, da* : dataaddr*, datamode?^n_data : datamode?^n_data, ea* : elemaddr*, elemmode?^n_elem : elemmode?^n_elem, export* : export*, expr_1^n_global : expr^n_global, expr_2*^n_elem : expr*^n_elem, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_func : func^n_func, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_global : globaltype^n_global, i_data^n_data : nat^n_data, i_elem^n_elem : nat^n_elem, i_func^n_func : nat^n_func, i_global^n_global : nat^n_global, i_mem^n_mem : nat^n_mem, i_table^n_table : nat^n_table, import* : import*, m : moduleinst, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_mem : memtype^n_mem, module : module, n_data : n, n_elem : n, n_func : n, n_global : n, n_mem : n, n_table : n, ref** : ref**, rt^n_elem : reftype^n_elem, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_table : tabletype^n_table, val* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}) = (s_6, m)
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, GLOBAL(globaltype, expr_1)^n_global{expr_1 globaltype}, TABLE(tabletype)^n_table{tabletype}, MEMORY(memtype)^n_mem{memtype}, `ELEM%%*%?`(rt, expr_2*{expr_2}, elemmode?{elemmode})^n_elem{elemmode expr_2 rt}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_data{byte datamode}, start?{start}, export*{export}))
+    -- if (fa_ex*{fa_ex} = $funcs(externval*{externval}))
+    -- if (ga_ex*{ga_ex} = $globals(externval*{externval}))
+    -- if (ta_ex*{ta_ex} = $tables(externval*{externval}))
+    -- if (ma_ex*{ma_ex} = $mems(externval*{externval}))
+    -- if (fa*{fa} = (|s.FUNC_store| + i_func)^(i_func<n_func){i_func})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_global)^(i_global<n_global){i_global})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_table)^(i_table<n_table){i_table})
+    -- if (ma*{ma} = (|s.MEM_store| + i_mem)^(i_mem<n_mem){i_mem})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_elem)^(i_elem<n_elem){i_elem})
+    -- if (da*{da} = (|s.DATA_store| + i_data)^(i_data<n_data){i_data})
+    -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
+    -- if (m = {FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
+    -- if ((s_1, fa*{fa}) = $allocfuncs(s, m, func^n_func{func}))
+    -- if ((s_2, ga*{ga}) = $allocglobals(s_1, globaltype^n_global{globaltype}, val*{val}))
+    -- if ((s_3, ta*{ta}) = $alloctables(s_2, tabletype^n_table{tabletype}))
+    -- if ((s_4, ma*{ma}) = $allocmems(s_3, memtype^n_mem{memtype}))
+    -- if ((s_5, ea*{ea}) = $allocelems(s_4, rt^n_elem{rt}, ref*{ref}*{ref}))
+    -- if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_data{byte}))
+
+;; 7-module.watsup:138.1-138.33
+def runelem : (elem, idx) -> instr*
+  ;; 7-module.watsup:139.1-139.46
+  def {expr* : expr*, i : nat, reftype : reftype} runelem(`ELEM%%*%?`(reftype, expr*{expr}, ?()), i) = []
+  ;; 7-module.watsup:140.1-140.62
+  def {expr* : expr*, i : nat, reftype : reftype} runelem(`ELEM%%*%?`(reftype, expr*{expr}, ?(DECLARE_elemmode)), i) = [ELEM.DROP_instr(i)]
+  ;; 7-module.watsup:141.1-143.20
+  def {expr* : expr*, i : nat, instr* : instr*, n : n, reftype : reftype, x : idx} runelem(`ELEM%%*%?`(reftype, expr*{expr}, ?(TABLE_elemmode(x, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) TABLE.INIT_instr(x, i) ELEM.DROP_instr(i)]
+    -- if (n = |expr*{expr}|)
+
+;; 7-module.watsup:145.1-145.33
+def rundata : (data, idx) -> instr*
+  ;; 7-module.watsup:146.1-146.38
+  def {byte* : byte*, i : nat} rundata(`DATA%*%?`(byte*{byte}, ?()), i) = []
+  ;; 7-module.watsup:147.1-149.20
+  def {byte* : byte*, i : nat, instr* : instr*, n : n} rundata(`DATA%*%?`(byte*{byte}, ?(MEMORY_datamode(0, instr*{instr}))), i) = instr*{instr} :: [CONST_instr(I32_numtype, 0) CONST_instr(I32_numtype, n) MEMORY.INIT_instr(i) DATA.DROP_instr(i)]
+    -- if (n = |byte*{byte}|)
+
+;; 7-module.watsup:152.1-152.36
+rec {
+
+;; 7-module.watsup:152.1-152.36
+def concat_instr : instr** -> instr*
+  ;; 7-module.watsup:153.1-153.37
+  def concat_instr([]) = []
+  ;; 7-module.watsup:154.1-154.68
+  def {instr* : instr*, instr'** : instr**} concat_instr([instr]*{instr} :: instr'*{instr'}*{instr'}) = instr*{instr} :: $concat_instr(instr'*{instr'}*{instr'})
+}
+
+;; 7-module.watsup:157.1-157.55
+def instantiation : (store, module, externval*) -> config
+  ;; 7-module.watsup:158.1-180.28
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_elem <: admininstr)*{instr_elem} :: (instr_data <: admininstr)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (f_init = {LOCAL [], MODULE m_init})
+    -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
+    -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), [(val <: admininstr)]))*{instr_1 val}
+    -- if (elem*{elem} = `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype})
+    -- (Step_read: `%~>%*`(`%;%*`(`%;%`(s, f_init), (instr_2 <: admininstr)*{instr_2}), [(ref <: admininstr)]))*{instr_2 ref}*{instr_2 ref}
+    -- if ((s', m) = $allocmodule(s, module, externval*{externval}, val*{val}, ref*{ref}*{ref}))
+    -- if (f = {LOCAL [], MODULE m})
+    -- if (n_elem = |elem*{elem}|)
+    -- if (instr_elem*{instr_elem} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_elem){i}))
+    -- if (n_data = |data*{data}|)
+    -- if (instr_data*{instr_data} = $concat_instr($rundata(data*{data}[j], j)^(j<n_data){j}))
+    -- if (start?{start} = START(x)?{x})
+
+;; 7-module.watsup:183.1-183.48
+def invocation : (store, funcaddr, val*) -> config
+  ;; 7-module.watsup:184.1-196.52
+  def {expr : expr, f : frame, fa : funcaddr, functype : functype, k : nat, m : moduleinst, n : n, s : store, val^n : val^n, valtype* : valtype*, valtype_param^n : valtype^n, valtype_res^k : valtype^k} invocation(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), (val <: admininstr)^n{val} :: [CALL_ADDR_admininstr(fa)])
+    -- if (m = {FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (f = {LOCAL [], MODULE m})
+    -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
+    -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
+
 == IL Validation...
 == Latex Generation...
 $$
@@ -1820,7 +2107,7 @@ $$
 \mbox{(table)} & \mathit{table} &::=& \mathsf{table}~\mathit{tabletype} \\
 \mbox{(memory)} & \mathit{mem} &::=& \mathsf{memory}~\mathit{memtype} \\
 \mbox{(table segment)} & \mathit{elem} &::=& \mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~{\mathit{elemmode}^?} \\
-\mbox{(memory segment)} & \mathit{data} &::=& \mathsf{data}~{({\mathit{byte}^\ast})^\ast}~{\mathit{datamode}^?} \\
+\mbox{(memory segment)} & \mathit{data} &::=& \mathsf{data}~{\mathit{byte}^\ast}~{\mathit{datamode}^?} \\
 \mbox{(start function)} & \mathit{start} &::=& \mathsf{start}~\mathit{funcidx} \\
 \mbox{(external use)} & \mathit{externuse} &::=& \mathsf{func}~\mathit{funcidx} ~|~ \mathsf{global}~\mathit{globalidx} ~|~ \mathsf{table}~\mathit{tableidx} ~|~ \mathsf{mem}~\mathit{memidx} \\
 \mbox{(export)} & \mathit{export} &::=& \mathsf{export}~\mathit{name}~\mathit{externuse} \\
@@ -2978,7 +3265,7 @@ $$
 \frac{
 (\mathit{C} \vdash \mathit{datamode} : \mathsf{ok})^?
 }{
-\mathit{C} \vdash \mathsf{data}~{({\mathit{b}^\ast})^\ast}~{\mathit{datamode}^?} : \mathsf{ok}
+\mathit{C} \vdash \mathsf{data}~{\mathit{b}^\ast}~{\mathit{datamode}^?} : \mathsf{ok}
 } \, {[\textsc{\scriptsize T{-}data}]}
 \qquad
 \end{array}
@@ -3241,6 +3528,36 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 (\mathit{s} ; \mathit{f}).\mathsf{func} &=& \mathit{s}.\mathsf{func} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f}).\mathsf{global} &=& \mathit{s}.\mathsf{global} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f}).\mathsf{table} &=& \mathit{s}.\mathsf{table} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f}).\mathsf{mem} &=& \mathit{s}.\mathsf{mem} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f}).\mathsf{elem} &=& \mathit{s}.\mathsf{elem} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+(\mathit{s} ; \mathit{f}).\mathsf{data} &=& \mathit{s}.\mathsf{data} &  \\
 \end{array}
 $$
 
@@ -3783,6 +4100,276 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}data.drop}]} \quad & \mathit{z} ; (\mathsf{data.drop}~\mathit{x}) &\hookrightarrow& \mathit{z}[\mathsf{data}[\mathit{x}].\mathsf{data} = \epsilon] ; \epsilon &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{funcs}(\epsilon) &=& \epsilon &  \\
+\mathrm{funcs}((\mathsf{func}~\mathit{fa})~{{\mathit{externval}'}^\ast}) &=& \mathit{fa}~\mathrm{funcs}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{funcs}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{funcs}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{globals}(\epsilon) &=& \epsilon &  \\
+\mathrm{globals}((\mathsf{global}~\mathit{ga})~{{\mathit{externval}'}^\ast}) &=& \mathit{ga}~\mathrm{globals}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{globals}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{globals}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{tables}(\epsilon) &=& \epsilon &  \\
+\mathrm{tables}((\mathsf{table}~\mathit{ta})~{{\mathit{externval}'}^\ast}) &=& \mathit{ta}~\mathrm{tables}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{tables}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{tables}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{mems}(\epsilon) &=& \epsilon &  \\
+\mathrm{mems}((\mathsf{mem}~\mathit{ma})~{{\mathit{externval}'}^\ast}) &=& \mathit{ma}~\mathrm{mems}({{\mathit{externval}'}^\ast}) &  \\
+\mathrm{mems}(\mathit{externval}~{{\mathit{externval}'}^\ast}) &=& \mathrm{mems}({{\mathit{externval}'}^\ast}) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{func}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{func}~{\mathit{fa}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{global}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{global}~{\mathit{ga}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{table}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{table}~{\mathit{ta}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\mathrm{instexport}({\mathit{fa}^\ast},\, {\mathit{ga}^\ast},\, {\mathit{ta}^\ast},\, {\mathit{ma}^\ast},\, \mathsf{export}~\mathit{name}~(\mathsf{mem}~\mathit{x})) &=& \{ \begin{array}[t]{@{}l@{}}
+\mathsf{name}~\mathit{name},\; \mathsf{value}~(\mathsf{mem}~{\mathit{ma}^\ast}[\mathit{x}]) \}\end{array} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocfunc}(\mathit{s},\, \mathit{m},\, \mathit{func}) &=& (\mathit{s}[\mathsf{func} = ..\mathit{fi}],\, {|\mathit{s}.\mathsf{func}|}) &\quad
+  \mbox{if}~\mathit{fi} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{module}~\mathit{m},\; \mathsf{code}~\mathit{func} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, \mathit{func}~{{\mathit{func}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{fa}~{{\mathit{fa}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{fa}) = \mathrm{allocfunc}(\mathit{s},\, \mathit{m},\, \mathit{func}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{fa}'}^\ast}) = \mathrm{allocfuncs}(\mathit{s}_{1},\, \mathit{m},\, {{\mathit{func}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocglobal}(\mathit{s},\, \mathit{globaltype},\, \mathit{val}) &=& (\mathit{s}[\mathsf{global} = ..\mathit{gi}],\, {|\mathit{s}.\mathsf{global}|}) &\quad
+  \mbox{if}~\mathit{gi} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\mathit{globaltype},\; \mathsf{value}~\mathit{val} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocglobals}(\mathit{s},\, \epsilon,\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocglobals}(\mathit{s},\, \mathit{globaltype}~{{\mathit{globaltype}'}^\ast},\, \mathit{val}~{{\mathit{val}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ga}~{{\mathit{ga}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ga}) = \mathrm{allocglobal}(\mathit{s},\, \mathit{globaltype},\, \mathit{val}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ga}'}^\ast}) = \mathrm{allocglobals}(\mathit{s}_{1},\, {{\mathit{globaltype}'}^\ast},\, {{\mathit{val}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{alloctable}(\mathit{s},\, [\mathit{i} .. \mathit{j}]~\mathit{rt}) &=& (\mathit{s}[\mathsf{table} = ..\mathit{ti}],\, {|\mathit{s}.\mathsf{table}|}) &\quad
+  \mbox{if}~\mathit{ti} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathit{rt}),\; \mathsf{elem}~{(\mathsf{ref.null}~\mathit{rt})^{\mathit{i}}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{alloctables}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{alloctables}(\mathit{s},\, \mathit{tabletype}~{{\mathit{tabletype}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ta}~{{\mathit{ta}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ta}) = \mathrm{alloctable}(\mathit{s},\, \mathit{tabletype}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ta}'}^\ast}) = \mathrm{alloctables}(\mathit{s}_{1},\, {{\mathit{tabletype}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocmem}(\mathit{s},\, [\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}) &=& (\mathit{s}[\mathsf{mem} = ..\mathit{mi}],\, {|\mathit{s}.\mathsf{mem}|}) &\quad
+  \mbox{if}~\mathit{mi} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~([\mathit{i} .. \mathit{j}]~\mathsf{i{\scriptstyle8}}),\; \mathsf{data}~{0^{\mathit{i} \cdot 64 \cdot \mathrm{Ki}}} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocmems}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocmems}(\mathit{s},\, \mathit{memtype}~{{\mathit{memtype}'}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ma}~{{\mathit{ma}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ma}) = \mathrm{allocmem}(\mathit{s},\, \mathit{memtype}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ma}'}^\ast}) = \mathrm{allocmems}(\mathit{s}_{1},\, {{\mathit{memtype}'}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocelem}(\mathit{s},\, \mathit{rt},\, {\mathit{ref}^\ast}) &=& (\mathit{s}[\mathsf{elem} = ..\mathit{ei}],\, {|\mathit{s}.\mathsf{elem}|}) &\quad
+  \mbox{if}~\mathit{ei} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{type}~\mathit{rt},\; \mathsf{elem}~{\mathit{ref}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocelems}(\mathit{s},\, \epsilon,\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocelems}(\mathit{s},\, \mathit{rt}~{{\mathit{rt}'}^\ast},\, {\mathit{ref}^\ast}~{{{\mathit{ref}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{ea}~{{\mathit{ea}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{ea}) = \mathrm{allocelem}(\mathit{s},\, \mathit{rt},\, {\mathit{ref}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{ea}'}^\ast}) = \mathrm{allocelems}(\mathit{s}_{2},\, {{\mathit{rt}'}^\ast},\, {{{\mathit{ref}'}^\ast}^\ast}) \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocdata}(\mathit{s},\, {\mathit{byte}^\ast}) &=& (\mathit{s}[\mathsf{data} = ..\mathit{di}],\, {|\mathit{s}.\mathsf{data}|}) &\quad
+  \mbox{if}~\mathit{di} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{data}~{\mathit{byte}^\ast} \}\end{array} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocdatas}(\mathit{s},\, \epsilon) &=& (\mathit{s},\, \epsilon) &  \\
+\mathrm{allocdatas}(\mathit{s},\, {\mathit{byte}^\ast}~{{{\mathit{byte}'}^\ast}^\ast}) &=& (\mathit{s}_{2},\, \mathit{da}~{{\mathit{da}'}^\ast}) &\quad
+  \mbox{if}~(\mathit{s}_{1},\, \mathit{da}) = \mathrm{allocdata}(\mathit{s},\, {\mathit{byte}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {{\mathit{da}'}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{1},\, {{{\mathit{byte}'}^\ast}^\ast}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{allocmodule}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast},\, {\mathit{val}^\ast},\, {({\mathit{ref}^\ast})^\ast}) &=& (\mathit{s}_{6},\, \mathit{m}) &\quad
+  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^{\mathit{n}_{\mathit{func}}}}~{(\mathsf{global}~\mathit{globaltype}~\mathit{expr}_{1})^{\mathit{n}_{\mathit{global}}}}~{(\mathsf{table}~\mathit{tabletype})^{\mathit{n}_{\mathit{table}}}}~{(\mathsf{memory}~\mathit{memtype})^{\mathit{n}_{\mathit{mem}}}}~{(\mathsf{elem}~\mathit{rt}~{\mathit{expr}_{2}^\ast}~{\mathit{elemmode}^?})^{\mathit{n}_{\mathit{elem}}}}~{(\mathsf{data}~{\mathit{byte}^\ast}~{\mathit{datamode}^?})^{\mathit{n}_{\mathit{data}}}}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
+ &&&\quad {\land}~{\mathit{fa}_{\mathit{ex}}^\ast} = \mathrm{funcs}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ga}_{\mathit{ex}}^\ast} = \mathrm{globals}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ta}_{\mathit{ex}}^\ast} = \mathrm{tables}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{ma}_{\mathit{ex}}^\ast} = \mathrm{mems}({\mathit{externval}^\ast}) \\
+ &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}_{\mathit{func}}^(i_func<\mathit{n}_{\mathit{func}})} \\
+ &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}_{\mathit{global}}^(i_global<\mathit{n}_{\mathit{global}})} \\
+ &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}_{\mathit{table}}^(i_table<\mathit{n}_{\mathit{table}})} \\
+ &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}_{\mathit{mem}}^(i_mem<\mathit{n}_{\mathit{mem}})} \\
+ &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}_{\mathit{elem}}^(i_elem<\mathit{n}_{\mathit{elem}})} \\
+ &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}_{\mathit{data}}^(i_data<\mathit{n}_{\mathit{data}})} \\
+ &&&\quad {\land}~{\mathit{xi}^\ast} = {\mathrm{instexport}({\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\, {\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\, {\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\, {\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\, \mathit{export})^\ast} \\
+ &&&\quad {\land}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{func}~{\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\; \\
+  \mathsf{global}~{\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\; \\
+  \mathsf{table}~{\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\; \\
+  \mathsf{mem}~{\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\; \\
+  \mathsf{elem}~{\mathit{ea}^\ast},\; \\
+  \mathsf{data}~{\mathit{da}^\ast},\; \\
+  \mathsf{export}~{\mathit{xi}^\ast} \}\end{array} \\
+ &&&\quad {\land}~(\mathit{s}_{1},\, {\mathit{fa}^\ast}) = \mathrm{allocfuncs}(\mathit{s},\, \mathit{m},\, {\mathit{func}^{\mathit{n}_{\mathit{func}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{2},\, {\mathit{ga}^\ast}) = \mathrm{allocglobals}(\mathit{s}_{1},\, {\mathit{globaltype}^{\mathit{n}_{\mathit{global}}}},\, {\mathit{val}^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{3},\, {\mathit{ta}^\ast}) = \mathrm{alloctables}(\mathit{s}_{2},\, {\mathit{tabletype}^{\mathit{n}_{\mathit{table}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{4},\, {\mathit{ma}^\ast}) = \mathrm{allocmems}(\mathit{s}_{3},\, {\mathit{memtype}^{\mathit{n}_{\mathit{mem}}}}) \\
+ &&&\quad {\land}~(\mathit{s}_{5},\, {\mathit{ea}^\ast}) = \mathrm{allocelems}(\mathit{s}_{4},\, {\mathit{rt}^{\mathit{n}_{\mathit{elem}}}},\, {({\mathit{ref}^\ast})^\ast}) \\
+ &&&\quad {\land}~(\mathit{s}_{6},\, {\mathit{da}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{5},\, {({\mathit{byte}^\ast})^{\mathit{n}_{\mathit{data}}}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast},\, \mathit{i}) &=& \epsilon &  \\
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~(\mathsf{declare}),\, \mathit{i}) &=& (\mathsf{elem.drop}~\mathit{i}) &  \\
+\mathrm{runelem}(\mathsf{elem}~\mathit{reftype}~{\mathit{expr}^\ast}~(\mathsf{table}~\mathit{x}~{\mathit{instr}^\ast}),\, \mathit{i}) &=& {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{table.init}~\mathit{x}~\mathit{i})~(\mathsf{elem.drop}~\mathit{i}) &\quad
+  \mbox{if}~\mathit{n} = {|{\mathit{expr}^\ast}|} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{rundata}(\mathsf{data}~{\mathit{byte}^\ast},\, \mathit{i}) &=& \epsilon &  \\
+\mathrm{rundata}(\mathsf{data}~{\mathit{byte}^\ast}~(\mathsf{memory}~0~{\mathit{instr}^\ast}),\, \mathit{i}) &=& {\mathit{instr}^\ast}~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~0)~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~\mathit{n})~(\mathsf{memory.init}~\mathit{i})~(\mathsf{data.drop}~\mathit{i}) &\quad
+  \mbox{if}~\mathit{n} = {|{\mathit{byte}^\ast}|} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{concat}_{\mathit{instr}}(\epsilon) &=& \epsilon &  \\
+\mathrm{concat}_{\mathit{instr}}({\mathit{instr}^\ast}~{{{\mathit{instr}'}^\ast}^\ast}) &=& {\mathit{instr}^\ast}~\mathrm{concat}_{\mathit{instr}}({{{\mathit{instr}'}^\ast}^\ast}) &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& {\mathit{s}'} ; \mathit{f} ; {\mathit{instr}_{\mathit{elem}}^\ast}~{\mathit{instr}_{\mathit{data}}^\ast}~{(\mathsf{call}~\mathit{x})^?} &\quad
+  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
+ &&&\quad {\land}~\mathit{m}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{func}~\mathrm{funcs}({\mathit{externval}^\ast}),\; \\
+  \mathsf{global}~\mathrm{globals}({\mathit{externval}^\ast}),\; \\
+  \mathsf{table}~\epsilon,\; \\
+  \mathsf{mem}~\epsilon,\; \\
+  \mathsf{elem}~\epsilon,\; \\
+  \mathsf{data}~\epsilon,\; \\
+  \mathsf{export}~\epsilon \}\end{array} \\
+ &&&\quad {\land}~\mathit{f}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m}_{\mathit{init}} \}\end{array} \\
+ &&&\quad {\land}~{\mathit{global}^\ast} = {(\mathsf{global}~\mathit{globaltype}~{\mathit{instr}_{1}^\ast})^\ast} \\
+ &&&\quad {\land}~(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{1}^\ast} \hookrightarrow \mathit{val})^\ast \\
+ &&&\quad {\land}~{\mathit{elem}^\ast} = {(\mathsf{elem}~\mathit{reftype}~{({\mathit{instr}_{2}^\ast})^\ast}~{\mathit{elemmode}^?})^\ast} \\
+ &&&\quad {\land}~{(\mathit{s} ; \mathit{f}_{\mathit{init}} ; {\mathit{instr}_{2}^\ast} \hookrightarrow \mathit{ref})^\ast}^\ast \\
+ &&&\quad {\land}~({\mathit{s}'},\, \mathit{m}) = \mathrm{allocmodule}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast},\, {\mathit{val}^\ast},\, {({\mathit{ref}^\ast})^\ast}) \\
+ &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
+ &&&\quad {\land}~\mathit{n}_{\mathit{elem}} = {|{\mathit{elem}^\ast}|} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^(i<\mathit{n}_{\mathit{elem}})}) \\
+ &&&\quad {\land}~\mathit{n}_{\mathit{data}} = {|{\mathit{data}^\ast}|} \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^(j<\mathit{n}_{\mathit{data}})}) \\
+ &&&\quad {\land}~{\mathit{start}^?} = {(\mathsf{start}~\mathit{x})^?} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+\mathrm{invocation}(\mathit{s},\, \mathit{fa},\, {\mathit{val}^{\mathit{n}}}) &=& \mathit{s} ; \mathit{f} ; {\mathit{val}^{\mathit{n}}}~(\mathsf{call}~\mathit{fa}) &\quad
+  \mbox{if}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{func}~\epsilon,\; \\
+  \mathsf{global}~\epsilon,\; \\
+  \mathsf{table}~\epsilon,\; \\
+  \mathsf{mem}~\epsilon,\; \\
+  \mathsf{elem}~\epsilon,\; \\
+  \mathsf{data}~\epsilon,\; \\
+  \mathsf{export}~\epsilon \}\end{array} \\
+ &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
+\mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
+ &&&\quad {\land}~(\mathit{s} ; \mathit{f}).\mathsf{func}[\mathit{fa}].\mathsf{code} = \mathsf{func}~\mathit{functype}~{\mathit{valtype}^\ast}~\mathit{expr} \\
+ &&&\quad {\land}~\mathit{functype} = {\mathit{valtype}_{\mathit{param}}^{\mathit{n}}} \rightarrow {\mathit{valtype}_{\mathit{res}}^{\mathit{k}}} \\
 \end{array}
 $$
 

@@ -180,7 +180,7 @@ and t_iterexp env (iter, vs) =
   unary t_iter env iter (fun iter' -> (iter', vs))
 
 and t_iter env iter = match iter with
-  | ListN e -> unary t_exp env e (fun e' -> ListN e')
+  | ListN (e, id_opt) -> unary t_exp env e (fun e' -> ListN (e', id_opt))
   | _ -> [], iter
 
 and t_path env = phrase t_path' env

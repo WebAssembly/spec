@@ -135,12 +135,16 @@ check_atom :
 
 
 (* Iteration *)
-
 iter :
   | QUEST { Opt }
   | PLUS { List1 }
   | STAR { List }
-  | UP arith_prim { ListN $2 }
+  | UP arith_prim
+    { match $2.it with
+      | ParenE ({it = CmpE({it = VarE id; _}, LtOp, e); _}, false) ->
+        ListN (e, Some id)
+      | _ -> ListN ($2, None)
+    }
 
 
 (* Types *)
