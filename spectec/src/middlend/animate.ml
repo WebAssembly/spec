@@ -67,8 +67,8 @@ and my_free_path ignore_listN p =
 and my_free_iterexp ignore_listN (iter, _) =
   let f = my_free_exp ignore_listN in
   match iter with
-  | ListN e -> empty, if ignore_listN then empty else f e
-  | IndexedListN (id, e) -> free_varid id, if ignore_listN then empty else f e
+  | ListN (e, None) -> empty, if ignore_listN then empty else f e
+  | ListN (e, Some id) -> free_varid id, if ignore_listN then empty else f e
   | _ -> empty, empty
 
 let rec my_free_prem ignore_listN prem =
@@ -178,7 +178,7 @@ let large_enough_powset xs =
   List.filter ( fun ys -> (n - 1) <= List.length ys ) yss
 
 let is_not_lhs = function
-| LenE _ | IterE (_, (IndexedListN _, _)) -> true
+| LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
 | _ -> false
 
 let rows_of_eq vars p_tot_num i l r at =

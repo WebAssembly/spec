@@ -68,8 +68,7 @@ type iter =
   | Opt
   | List
   | List1
-  | ListN of name
-  | IndexedListN of name * expr
+  | ListN of expr * name option
 
 and expr =
   (* Value *)

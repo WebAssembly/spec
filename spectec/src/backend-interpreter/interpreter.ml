@@ -429,9 +429,9 @@ let rec assign lhs rhs env =
       let new_env, default_rhs, rhs_list =
         match iter, rhs with
         | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
-        | ListN name, ListV arr ->
+        | ListN (expr, None), ListV arr ->
             let length = Array.length !arr |> Int64.of_int |> Value.num in
-            Env.add name length env, listV [], Array.to_list !arr
+            assign expr length env, listV [], Array.to_list !arr
         | Opt, OptV opt -> env, OptV None, Option.to_list opt
         | _ ->
             Printf.sprintf "Invalid iter %s with rhs %s"
@@ -483,7 +483,7 @@ and assign_split ep es vs env =
   let prefix_len, suffix_len =
     let get_length = function
     | ListE es -> Some (List.length es)
-    | IterE (_, _, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)
+    | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -561,8 +561,8 @@ and interp_instrs env il cont action =
     | PopI e ->
         let new_env = (
           match e with
-          | IterE (NameE name, [name'], ListN n) when name = name' ->
-              let i = Env.find n env |> value_to_int in
+          | IterE (NameE name, [name'], ListN (e', None)) when name = name' ->
+              let i = eval_expr env e' |> value_to_int in
               let vs = List.rev (List.init i (fun _ -> pop ())) in
               Env.add name (listV vs) env
           | _ -> (

@@ -32,6 +32,5 @@ and free_iter = function
   | Opt
   | List
   | List1 -> []
-  | ListN n -> [n]
-  | IndexedListN (n, e) -> n :: free_expr e
+  | ListN (e, name_opt) -> Option.to_list name_opt @ free_expr e
 and free_path _ = [] (* TODO *)

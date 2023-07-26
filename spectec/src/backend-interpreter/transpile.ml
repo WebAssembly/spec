@@ -404,7 +404,7 @@ let app_remover =
       ) !requires
     ) names |> dedup in
     let new_iter = match iter with
-      | IndexedListN _ -> List
+      | ListN (e, Some _) -> ListN (e, None)
       | _ -> iter in
     (new_names, new_iter) in
 

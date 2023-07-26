@@ -100,7 +100,7 @@ let as_iter_typ iter phrase env dir t at : typ =
 
 let as_list_typ phrase env dir t at : typ =
   match expand' env t.it with
-  | IterT (t1, (List | List1 | ListN _ | IndexedListN _)) -> t1
+  | IterT (t1, (List | List1 | ListN _)) -> t1
   | _ -> as_error at phrase dir t "(_)*"
 
 let as_tup_typ phrase env dir t at : typ list =
@@ -241,8 +241,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | IndexedListN (_, e)
-  | ListN e -> valid_exp env e (NatT $ e.at)
+  | ListN (e, _) -> valid_exp env e (NatT $ e.at)
 
 
 (* Types *)
@@ -260,8 +259,7 @@ and valid_typ env t =
     List.iter (valid_typ env) ts
   | IterT (t1, iter) ->
     match iter with
-    | IndexedListN (_, e)
-    | ListN e -> error e.at "definite iterator not allowed in type"
+    | ListN (e, _) -> error e.at "definite iterator not allowed in type"
     | _ -> valid_typ env t1; valid_iter env iter
 
 and valid_deftyp env dt =
@@ -316,12 +314,7 @@ and infer_exp env e : typ =
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
-    let iter' =
-      match fst iter with
-      | IndexedListN _
-      | ListN _ -> List
-      | iter' -> iter'
-    in
+    let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
     IterT (infer_exp env e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
@@ -488,6 +481,11 @@ and valid_path env p t : typ =
   t'
 
 and valid_iterexp env (iter, ids) : env =
+  let iter =
+    match iter with
+    | ListN (e, Some _) -> ListN (e, None)
+    | iter -> iter
+  in
   valid_iter env iter;
   List.fold_left (fun env id ->
     match find "variable" env.vars id with

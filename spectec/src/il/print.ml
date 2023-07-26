@@ -76,8 +76,8 @@ let rec string_of_iter iter =
   | Opt -> "?"
   | List -> "*"
   | List1 -> "+"
-  | ListN e -> "^" ^ string_of_exp e
-  | IndexedListN (id, e) ->
+  | ListN (e, None) -> "^" ^ string_of_exp e
+  | ListN (e, Some id) ->
     "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
 and string_of_typ t =
@@ -347,9 +347,9 @@ let rec structured_string_of_iter iter =
   | Opt -> "Opt"
   | List -> "List"
   | List1 -> "List1"
-  | ListN exp -> sprintf "ListN (%s)" (structured_string_of_exp exp)
-  | IndexedListN (id, exp) ->
-    sprintf "ListN (%s, %s)" id.it (structured_string_of_exp exp)
+  | ListN (exp, None) -> sprintf "ListN (%s)" (structured_string_of_exp exp)
+  | ListN (exp, Some id) ->
+    sprintf "ListN (%s, %s)" (structured_string_of_exp exp) id.it
 
 and structured_string_of_typ typ =
   match typ.it with

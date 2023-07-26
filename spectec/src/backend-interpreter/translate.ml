@@ -95,8 +95,8 @@ let rec iter2iter = function
   | Ast.Opt -> Opt
   | Ast.List1 -> List1
   | Ast.List -> List
-  | Ast.ListN e -> ListN (exp2name e)
-  | Ast.IndexedListN (id, e) -> IndexedListN (N id.it, exp2expr e)
+  | Ast.ListN (e, id_opt) ->
+    ListN (exp2expr e, Option.map (fun id -> N id.it) id_opt)
 
 (* `Ast.exp` -> `expr` *)
 and exp2expr exp =
@@ -113,7 +113,7 @@ and exp2expr exp =
   (* Variable *)
   | Ast.VarE id -> NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
-  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
+  | Ast.IterE (inner_exp, (Ast.ListN (times, None), [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
   | Ast.IterE (inner_exp, (iter, ids)) ->
       let names = List.map (fun id -> N id.it) ids in
@@ -240,7 +240,7 @@ and path2paths path =
 let insert_assert exp =
   match exp.it with
   | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC
-  | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
+  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> AssertI (TopValuesC (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
         { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
@@ -451,7 +451,7 @@ let rec exp2cond exp =
 
 let bound_by binding e =
   match e.it with
-  | Ast.IterE (_, (ListN { it = VarE { it = n; _ }; _ }, _)) ->
+  | Ast.IterE (_, (ListN ({ it = VarE { it = n; _ }; _ }, None), _)) ->
       if Free.Set.mem n (Free.free_exp binding).varid then
         [ insert_assert e; PopI (exp2expr e) ]
       else []
@@ -566,8 +566,8 @@ let rec letI lhs rhs targets cont =
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
-      | IterE (NameE _, _, ListN n) ->
-        Some (NameE n), [], e
+      | IterE (NameE _, _, ListN (e', None)) ->
+        Some e', [], e
       | _ ->
         None, [], e in
     let length_p, bindings_p, prefix' = handle_list prefix in

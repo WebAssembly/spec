@@ -202,8 +202,8 @@ let rec render_iter env in_math = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
   | Al.Ast.List1 -> "^{+}"
-  | Al.Ast.ListN name -> "^{" ^ render_name env name ^ "}"
-  | Al.Ast.IndexedListN (name, expr) ->
+  | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env in_math expr ^ "}"
+  | Al.Ast.ListN (expr, Some name) ->
     "^(" ^ render_name env name ^ "<" ^ render_expr env in_math expr ^ ")"
 
 and render_iters env in_math iters = List.map (render_iter env in_math) iters |> List.fold_left (^) ""

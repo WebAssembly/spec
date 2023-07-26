@@ -160,9 +160,7 @@ and t_iterexp n (iter, vs) =
   unary t_iter n iter (fun iter' -> (iter', vs))
 
 and t_iter n iter = match iter with
-  | ListN e -> unary t_exp n e (fun e' -> ListN e')
-  | IndexedListN (id, e) ->
-    unary t_exp n e (fun e' -> IndexedListN (id, e'))
+  | ListN (e, id_opt) -> unary t_exp n e (fun e' -> ListN (e', id_opt))
   | _ -> [], iter
 
 and t_path n = phrase t_path' n
