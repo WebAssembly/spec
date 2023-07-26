@@ -94,7 +94,7 @@ opam-release/%:
 	rm -f opam-$*.zip
 	wget https://github.com/WebAssembly/spec/archive/opam-$*.zip
 	cp wasm.opam opam
-	echo 'url {' >> opam
+	echo "url {" >> opam
 	echo "  src: \"https://github.com/WebAssembly/spec/archive/opam-$*.zip\"" >> opam
 	echo "  checksum: \"md5=`md5 -q opam-$*.zip`\"" >> opam
 	echo "}" >> opam
