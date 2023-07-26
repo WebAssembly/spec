@@ -65,11 +65,15 @@ let check_id env ctx id =
 
 let iter_nl_list f xs = List.iter (function Nl -> () | Elem x -> f x) xs
 
+let strip_index = function
+  | ListN (e, Some _) -> ListN (e, None)
+  | iter -> iter
+
 let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
   | ListN (e, id_opt) ->
-    Option.iter (fun id -> check_id env (iter::ctx) id) id_opt;
+    Option.iter (fun id -> check_id env (strip_index iter::ctx) id) id_opt;
     check_exp env ctx e
 
 and check_exp env ctx e =
@@ -110,7 +114,7 @@ and check_exp env ctx e =
   | StrE efs -> iter_nl_list (fun ef -> check_exp env ctx (snd ef)) efs
   | IterE (e1, iter) ->
     check_iter env ctx iter;
-    check_exp env (iter::ctx) e1
+    check_exp env (strip_index iter::ctx) e1
 
 and check_path env ctx p =
   match p.it with
@@ -132,7 +136,7 @@ let rec check_prem env ctx prem =
   | ElsePr -> ()
   | IterPr (prem', iter) ->
     check_iter env ctx iter;
-    check_prem env (iter::ctx) prem'
+    check_prem env (strip_index iter::ctx) prem'
 
 let check_def d : env =
   match d.it with
@@ -159,6 +163,10 @@ type occur = Il.Ast.iter list Env.t
 
 let union = Env.union (fun _ ctx1 ctx2 -> assert (ctx1 = ctx2); Some ctx1)
 
+
+let strip_index = function
+  | ListN (e, Some _) -> ListN (e, None)
+  | iter -> iter
 
 let rec annot_iter env iter : Il.Ast.iter * occur =
   match iter with
@@ -284,7 +292,8 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
     Env.filter_map (fun _ iters ->
       match iters with
       | [] -> None
-      | iter1::iters' -> assert (Il.Eq.eq_iter iter iter1); Some iters'
+      | iter1::iters' ->
+        assert (Il.Eq.eq_iter (strip_index iter) iter1); Some iters'
     ) occur1
   in
   let ids' = List.map (fun (x, _) -> x $ at) (Env.bindings occur1') in

@@ -241,15 +241,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN (e, None) -> valid_exp env e (NatT $ e.at)
-  | ListN (e, Some id) ->
-    valid_exp env e (NatT $ e.at);
-    let t', dim = find "variable" env.vars id in
-    equiv_typ env t' (NatT $ e.at) e.at;
-    if dim <> [iter] then
-      error e.at ("use of iterated variable `" ^
-        id.it ^ String.concat "" (List.map string_of_iter dim) ^
-        "` outside suitable iteraton context")
+  | ListN (e, _) -> valid_exp env e (NatT $ e.at)
 
 
 (* Types *)
@@ -478,6 +470,11 @@ and valid_path env p t : typ =
   t'
 
 and valid_iterexp env (iter, ids) : env =
+  let iter =
+    match iter with
+    | ListN (e, Some _) -> ListN (e, None)
+    | iter -> iter
+  in
   valid_iter env iter;
   List.fold_left (fun env id ->
     match find "variable" env.vars id with
