@@ -68,9 +68,9 @@ let iter_nl_list f xs = List.iter (function Nl -> () | Elem x -> f x) xs
 let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN (e, opt) ->
-      Option.iter (fun id -> check_id env (iter::ctx) id) opt;
-      check_exp env ctx e
+  | ListN (e, id_opt) ->
+    Option.iter (fun id -> check_id env (iter::ctx) id) id_opt;
+    check_exp env ctx e
 
 and check_exp env ctx e =
   match e.it with
@@ -163,13 +163,11 @@ let union = Env.union (fun _ ctx1 ctx2 -> assert (ctx1 = ctx2); Some ctx1)
 let rec annot_iter env iter : Il.Ast.iter * occur =
   match iter with
   | Opt | List | List1 -> iter, Env.empty
-  | ListN (e, None) ->
-    let e', occur = annot_exp env e in
-    ListN (e', None), occur
-  | ListN (e, Some id) ->
+  | ListN (e, id_opt) ->
     let e', occur1 = annot_exp env e in
-    let occur2 = Env.singleton id.it [] in
-    ListN (e', Some id), union occur1 occur2
+    let occur2 =
+      match id_opt with None -> Env.empty | Some id -> Env.singleton id.it [] in
+    ListN (e', id_opt), union occur1 occur2
 
 and annot_exp env e : Il.Ast.exp * occur =
   let it, occur =
