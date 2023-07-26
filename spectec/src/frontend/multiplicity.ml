@@ -307,7 +307,6 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
     ) occur1
   in
   let ids' = List.map (fun (x, _) -> x $ at) (Env.bindings occur1') in
-
   (iter', ids'), union occur1' occur2
 
 
