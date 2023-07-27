@@ -1013,7 +1013,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. Otherwise,
         1. Let |method| be [=?=] [$GetMethod$](|ret|, {{@@iterator}}).
         1. If |method| is undefined, [=throw=] a {{TypeError}}.
-        1. Let |values| be [=?=] [$IterableToList$](|ret|, |method|).
+        1. Let |values| be [=?=] [$IteratorToList$]([=?=] [$GetIteratorFromMethod$](|ret|, |method|)).
         1. Let |wasmValues| be a new, empty [=list=].
         1. If |values|'s [=list/size=] is not |resultsSize|, throw a {{TypeError}} exception.
         1. For each |value| and |resultType| in |values| and |results|, paired linearly,
