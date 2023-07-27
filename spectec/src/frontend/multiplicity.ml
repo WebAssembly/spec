@@ -168,14 +168,17 @@ let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)
   | iter -> iter
 
-let rec annot_iter env iter : Il.Ast.iter * occur =
+let rec annot_iter env iter : Il.Ast.iter * occur * occur =
   match iter with
-  | Opt | List | List1 -> iter, Env.empty
+  | Opt | List | List1 -> iter, Env.empty, Env.empty
   | ListN (e, id_opt) ->
     let e', occur1 = annot_exp env e in
     let occur2 =
-      match id_opt with None -> Env.empty | Some id -> Env.singleton id.it [] in
-    ListN (e', id_opt), union occur1 occur2
+      match id_opt with
+      | None -> Env.empty
+      | Some id -> Env.singleton id.it (Env.find id.it env)
+    in
+    ListN (e', id_opt), occur1, occur2
 
 and annot_exp env e : Il.Ast.exp * occur =
   let it, occur =
@@ -287,14 +290,14 @@ and annot_path env p : Il.Ast.path * occur =
 
 and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
   assert (ids = []);
-  let iter', occur2 = annot_iter env iter in
+  let iter', occur2, occur3 = annot_iter env iter in
   let occur1' =
     Env.filter_map (fun _ iters ->
       match iters with
       | [] -> None
       | iter1::iters' ->
         assert (Il.Eq.eq_iter (strip_index iter) iter1); Some iters'
-    ) occur1
+    ) (union occur1 occur3)
   in
   let ids' = List.map (fun (x, _) -> x $ at) (Env.bindings occur1') in
   (iter', ids'), union occur1' occur2
