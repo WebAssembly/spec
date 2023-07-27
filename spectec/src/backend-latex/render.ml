@@ -444,7 +444,7 @@ and render_iter env = function
   | ListN ({it = ParenE (e, _); _}, None) | ListN (e, None) ->
     "^{" ^ render_exp env e ^ "}"
   | ListN (e, Some id) ->
-    "^(" ^ id.it ^ "<" ^ render_exp env e ^ ")"
+    "^{" ^ id.it ^ "<" ^ render_exp env e ^ "}"
 
 
 (* Types *)
