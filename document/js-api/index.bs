@@ -433,16 +433,6 @@ The verification of WebAssembly type requirements is deferred to the
     1. Return |promise|.
 </div>
 
-<div algorithm="instantiate">
-  To <dfn>synchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
-    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-    1. Let |instanceObject| be a [=/new=] {{Instance}}.
-    1. [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
-    1. Return |instanceObject|.
-</div>
-
 <div algorithm>
   To <dfn>instantiate a promise of a module</dfn> |promiseOfModule| with imports |importObject|, perform the following steps:
 
