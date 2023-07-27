@@ -154,6 +154,7 @@ spec:ecma-262; type:exception; for:ECMAScript; text:Error
 spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
+spec:ecmascript; type:dfn; text:agent
 spec:webidl; type:dfn; text:resolve
 </pre>
 
@@ -845,7 +846,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     To <dfn>create a global object</dfn> from a [=global address=] |globaladdr|, perform the following steps:
-    1. Let |map| be the current [=agent=]'s associated [=Global object cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
     1. Let |global| be a [=/new=] {{Global}}.
