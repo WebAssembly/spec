@@ -256,18 +256,9 @@ let rec eval_expr env expr =
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
   | IterE (inner_e, names, iter) ->
-      names
-      |> List.map (name_to_values env iter)
-      |> transpose
-      |> List.map
-        (fun values ->
-          let new_env = List.fold_left2
-            (fun acc name v -> Env.add name v acc)
-            env
-            names
-            values
-          in
-          eval_expr new_env inner_e)
+      env
+      |> create_sub_envs names iter
+      |> List.map (fun new_env -> eval_expr new_env inner_e)
       |> if (iter = Opt)
       then
         (function
@@ -277,16 +268,23 @@ let rec eval_expr env expr =
       else listV
   | e -> structured_string_of_expr e |> failwith
 
-and name_to_values env iter name =
-  let get_value _ = Env.find name env in
-  let get_option_as_list _ = get_value () |> value_to_option |> Option.to_list in
-  let get_list _ = get_value () |> value_to_list in
+and create_sub_envs names iter env =
+  let name_to_value name = Env.find name env in
+  let option_name_to_list name = name |> name_to_value |> value_to_option |> Option.to_list in
+  let name_to_list name = name |> name_to_value |> value_to_list in
   let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in
 
-  match iter with
-  | Opt -> get_option_as_list ()
-  | ListN (e_n, Some _) -> eval_expr env e_n |> value_to_int |> length_to_list
-  | _ -> get_list ()
+  let name_to_values name =
+    match iter with
+    | Opt -> option_name_to_list name
+    | ListN (e_n, Some _) -> eval_expr env e_n |> value_to_int |> length_to_list
+    | _ -> name_to_list name
+  in
+
+  names
+  |> List.map name_to_values
+  |> transpose
+  |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
 
 and access_path env base path = match path with
   | IndexP e' ->
@@ -504,13 +502,8 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
         let vs = List.map (eval_expr env) args in
         Numerics.call_numerics name vs
       | (names, dim) :: iters' ->
-        let envs =
-          names
-          |> List.map (name_to_values env dim)
-          |> transpose
-          |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
-        in
-        List.map (fun env' -> aux env' iters') envs |> listV
+        let envs = create_sub_envs names dim env in
+        List.map (fun env' -> aux env' iters') envs |> listV (* TODO: handle case where dim is Opt *)
       in
       let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
@@ -718,12 +711,7 @@ and call_algo name args iters env cont action =
       let vs = List.map (eval_expr env) args in
       interp_algo algo vs cont action
     | (names, dim) :: iters' ->
-      let envs =
-        names
-        |> List.map (name_to_values env dim)
-        |> transpose
-        |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
-      in
+      let envs = create_sub_envs names dim env in
       aux iters' envs [] action
   in
 
