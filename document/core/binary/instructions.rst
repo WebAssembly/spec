@@ -77,8 +77,8 @@ Control Instructions
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
      \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
-     \hex{FB}~~78{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
-     \hex{FB}~~79{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
+     \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
+     \hex{FB}~~25{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
    \production{cast flags} & \Bcastflags &::=&
      0{:}\Bu8 &\Rightarrow& (\epsilon, \epsilon) \\ &&|&
      1{:}\Bu8 &\Rightarrow& (\NULL, \epsilon) \\ &&|&
@@ -142,35 +142,35 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
      \hex{D3} &\Rightarrow& \REFASNONNULL \\ &&|&
      \hex{D5} &\Rightarrow& \REFEQ \\ &&|&
-     \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
-     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
-     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGET~x~i \\ &&|&
-     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
-     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
-     \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \hex{FB}~~0{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGET~x~i \\ &&|&
+     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
+     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
+     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \hex{FB}~~7{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \hex{FB}~~8{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \hex{FB}~~9{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \hex{FB}~~10{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \hex{FB}~~11{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \hex{FB}~~12{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \hex{FB}~~13{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \hex{FB}~~14{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \hex{FB}~~15{:}\Bu32 &\Rightarrow& \ARRAYLEN \\ &&|&
      \hex{FB}~~16{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYFILL~x \\ &&|&
-     \hex{FB}~~17{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
-     \hex{FB}~~18{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
-     \hex{FB}~~19{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGET~x \\ &&|&
-     \hex{FB}~~20{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETS~x \\ &&|&
-     \hex{FB}~~21{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYGETU~x \\ &&|&
-     \hex{FB}~~22{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYSET~x \\ &&|&
-     \hex{FB}~~23{:}\Bu32 &\Rightarrow& \ARRAYLEN \\ &&|&
-     \hex{FB}~~24{:}\Bu32~~x{:}\Btypeidx~~y{:}\Btypeidx &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
-     \hex{FB}~~25{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
-     \hex{FB}~~27{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
-     \hex{FB}~~28{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
-     \hex{FB}~~32{:}\Bu32 &\Rightarrow& \I31NEW \\ &&|&
-     \hex{FB}~~33{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
-     \hex{FB}~~34{:}\Bu32 &\Rightarrow& \I31GETU \\ &&|&
-     \hex{FB}~~64{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\X{ht}) \\ &&|&
-     \hex{FB}~~65{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
-     \hex{FB}~~72{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
-     \hex{FB}~~73{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
-     \hex{FB}~~84{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
-     \hex{FB}~~85{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
-     \hex{FB}~~112{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
-     \hex{FB}~~113{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\
+     \hex{FB}~~17{:}\Bu32~~x{:}\Btypeidx~~y{:}\Btypeidx &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
+     \hex{FB}~~18{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bdataidx &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \hex{FB}~~19{:}\Bu32~~x{:}\Btypeidx~~y{:}\Belemidx &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
+     \hex{FB}~~20{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~21{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~22{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
+     \hex{FB}~~23{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
+     \hex{FB}~~26{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
+     \hex{FB}~~27{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\ &&|&
+     \hex{FB}~~28{:}\Bu32 &\Rightarrow& \I31NEW \\ &&|&
+     \hex{FB}~~29{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
+     \hex{FB}~~30{:}\Bu32 &\Rightarrow& \I31GETU \\
    \end{array}
 
 

@@ -177,16 +177,16 @@ let heap_type s =
     (fun s -> VarHT (var_type s33 s));
     (fun s ->
       match s7 s with
+      | -0x0d -> NoFuncHT
+      | -0x0e -> NoExternHT
+      | -0x0f -> NoneHT
       | -0x10 -> FuncHT
       | -0x11 -> ExternHT
       | -0x12 -> AnyHT
       | -0x13 -> EqHT
-      | -0x16 -> I31HT
-      | -0x17 -> NoFuncHT
-      | -0x18 -> NoExternHT
-      | -0x19 -> StructHT
-      | -0x1a -> ArrayHT
-      | -0x1b -> NoneHT
+      | -0x14 -> I31HT
+      | -0x15 -> StructHT
+      | -0x16 -> ArrayHT
       | _ -> error s pos "malformed heap type"
     )
   ] s
@@ -194,18 +194,18 @@ let heap_type s =
 let ref_type s =
   let pos = pos s in
   match s7 s with
+  | -0x0d -> (Null, NoFuncHT)
+  | -0x0e -> (Null, NoExternHT)
+  | -0x0f -> (Null, NoneHT)
   | -0x10 -> (Null, FuncHT)
   | -0x11 -> (Null, ExternHT)
   | -0x12 -> (Null, AnyHT)
   | -0x13 -> (Null, EqHT)
-  | -0x14 -> (Null, heap_type s)
-  | -0x15 -> (NoNull, heap_type s)
-  | -0x16 -> (Null, I31HT)
-  | -0x17 -> (Null, NoFuncHT)
-  | -0x18 -> (Null, NoExternHT)
-  | -0x19 -> (Null, StructHT)
-  | -0x1a -> (Null, ArrayHT)
-  | -0x1b -> (Null, NoneHT)
+  | -0x14 -> (Null, I31HT)
+  | -0x15 -> (Null, StructHT)
+  | -0x16 -> (Null, ArrayHT)
+  | -0x1c -> (NoNull, heap_type s)
+  | -0x1d -> (Null, heap_type s)
   | _ -> error s pos "malformed reference type"
 
 let val_type s =
@@ -259,7 +259,7 @@ let sub_type s =
     skip 1 s;
     let xs = vec (var_type u32) s in
     SubT (NoFinal, List.map (fun x -> VarHT x) xs, str_type s)
-  | Some i when i = -0x32 land 0x7f ->
+  | Some i when i = -0x31 land 0x7f ->
     skip 1 s;
     let xs = vec (var_type u32) s in
     SubT (Final, List.map (fun x -> VarHT x) xs, str_type s)
@@ -267,7 +267,7 @@ let sub_type s =
 
 let rec_type s =
   match peek s with
-  | Some i when i = -0x31 land 0x7f -> skip 1 s; RecT (vec sub_type s)
+  | Some i when i = -0x32 land 0x7f -> skip 1 s; RecT (vec sub_type s)
   | _ -> RecT [sub_type s]
 
 
@@ -588,48 +588,46 @@ let rec instr s =
 
   | 0xfb as b ->
     (match u32 s with
-    | 0x01l -> struct_new (at var s)
-    | 0x02l -> struct_new_default (at var s)
-    | 0x03l -> let x = at var s in let y = at var s in struct_get x y
-    | 0x04l -> let x = at var s in let y = at var s in struct_get_s x y
-    | 0x05l -> let x = at var s in let y = at var s in struct_get_u x y
-    | 0x06l -> let x = at var s in let y = at var s in struct_set x y
+    | 0x00l -> struct_new (at var s)
+    | 0x01l -> struct_new_default (at var s)
+    | 0x02l -> let x = at var s in let y = at var s in struct_get x y
+    | 0x03l -> let x = at var s in let y = at var s in struct_get_s x y
+    | 0x04l -> let x = at var s in let y = at var s in struct_get_u x y
+    | 0x05l -> let x = at var s in let y = at var s in struct_set x y
 
-    | 0x11l -> array_new (at var s)
-    | 0x12l -> array_new_default (at var s)
-    | 0x13l -> array_get (at var s)
-    | 0x14l -> array_get_s (at var s)
-    | 0x15l -> array_get_u (at var s)
-    | 0x16l -> array_set (at var s)
-    | 0x17l -> array_len
+    | 0x06l -> array_new (at var s)
+    | 0x07l -> array_new_default (at var s)
+    | 0x08l -> let x = at var s in let n = u32 s in array_new_fixed x n
+    | 0x09l -> let x = at var s in let y = at var s in array_new_data x y
+    | 0x0al -> let x = at var s in let y = at var s in array_new_elem x y
+    | 0x0bl -> array_get (at var s)
+    | 0x0cl -> array_get_s (at var s)
+    | 0x0dl -> array_get_u (at var s)
+    | 0x0el -> array_set (at var s)
+    | 0x0fl -> array_len
+    | 0x10l -> array_fill (at var s)
+    | 0x11l -> let x = at var s in let y = at var s in array_copy x y
+    | 0x12l -> let x = at var s in let y = at var s in array_init_data x y
+    | 0x13l -> let x = at var s in let y = at var s in array_init_elem x y
 
-    | 0x18l -> let x = at var s in let y = at var s in array_copy x y
-    | 0x0fl -> array_fill (at var s)
-    | 0x54l -> let x = at var s in let y = at var s in array_init_data x y
-    | 0x55l -> let x = at var s in let y = at var s in array_init_elem x y
-
-    | 0x19l -> let x = at var s in let n = u32 s in array_new_fixed x n
-    | 0x1bl -> let x = at var s in let y = at var s in array_new_data x y
-    | 0x1cl -> let x = at var s in let y = at var s in array_new_elem x y
-
-    | 0x20l -> i31_new
-    | 0x21l -> i31_get_s
-    | 0x22l -> i31_get_u
-
-    | 0x40l -> ref_test (NoNull, heap_type s)
-    | 0x41l -> ref_cast (NoNull, heap_type s)
-    | 0x48l -> ref_test (Null, heap_type s)
-    | 0x49l -> ref_cast (Null, heap_type s)
-    | 0x4el | 0x4fl as opcode ->
+    | 0x14l -> ref_test (NoNull, heap_type s)
+    | 0x15l -> ref_test (Null, heap_type s)
+    | 0x16l -> ref_cast (NoNull, heap_type s)
+    | 0x17l -> ref_cast (Null, heap_type s)
+    | 0x18l | 0x19l as opcode ->
       let flags = byte s in
       require (flags land 0xfc = 0) s (pos + 2) "malformed br_on_cast flags";
       let x = at var s in
       let rt1 = ((if bit 0 flags then Null else NoNull), heap_type s) in
       let rt2 = ((if bit 1 flags then Null else NoNull), heap_type s) in
-      (if opcode = 0x4el then br_on_cast else br_on_cast_fail) x rt1 rt2
+      (if opcode = 0x18l then br_on_cast else br_on_cast_fail) x rt1 rt2
 
-    | 0x70l -> extern_internalize
-    | 0x71l -> extern_externalize
+    | 0x1al -> extern_internalize
+    | 0x1bl -> extern_externalize
+
+    | 0x1cl -> i31_new
+    | 0x1dl -> i31_get_s
+    | 0x1el -> i31_get_u
 
     | n -> illegal2 s pos b n
     )
@@ -848,6 +846,7 @@ let rec instr s =
     | 0x97l -> i16x8_min_u
     | 0x98l -> i16x8_max_s
     | 0x99l -> i16x8_max_u
+    | 0x9al as n -> illegal s pos (I32.to_int_u n)
     | 0x9bl -> i16x8_avgr_u
     | 0x9cl -> i16x8_extmul_low_i8x16_s
     | 0x9dl -> i16x8_extmul_high_i8x16_s
@@ -855,8 +854,10 @@ let rec instr s =
     | 0x9fl -> i16x8_extmul_high_i8x16_u
     | 0xa0l -> i32x4_abs
     | 0xa1l -> i32x4_neg
+    | 0xa2l as n -> illegal s pos (I32.to_int_u n)
     | 0xa3l -> i32x4_all_true
     | 0xa4l -> i32x4_bitmask
+    | 0xa5l | 0xa6l as n -> illegal s pos (I32.to_int_u n)
     | 0xa7l -> i32x4_extend_low_i16x8_s
     | 0xa8l -> i32x4_extend_high_i16x8_s
     | 0xa9l -> i32x4_extend_low_i16x8_u
@@ -865,7 +866,9 @@ let rec instr s =
     | 0xacl -> i32x4_shr_s
     | 0xadl -> i32x4_shr_u
     | 0xael -> i32x4_add
+    | 0xafl | 0xb0l as n -> illegal s pos (I32.to_int_u n)
     | 0xb1l -> i32x4_sub
+    | 0xb2l | 0xb3l | 0xb4l as n -> illegal s pos (I32.to_int_u n)
     | 0xb5l -> i32x4_mul
     | 0xb6l -> i32x4_min_s
     | 0xb7l -> i32x4_min_u
@@ -878,8 +881,10 @@ let rec instr s =
     | 0xbfl -> i32x4_extmul_high_i16x8_u
     | 0xc0l -> i64x2_abs
     | 0xc1l -> i64x2_neg
+    | 0xc2l as n -> illegal s pos (I32.to_int_u n)
     | 0xc3l -> i64x2_all_true
     | 0xc4l -> i64x2_bitmask
+    | 0xc5l | 0xc6l as n -> illegal s pos (I32.to_int_u n)
     | 0xc7l -> i64x2_extend_low_i32x4_s
     | 0xc8l -> i64x2_extend_high_i32x4_s
     | 0xc9l -> i64x2_extend_low_i32x4_u
@@ -888,7 +893,9 @@ let rec instr s =
     | 0xccl -> i64x2_shr_s
     | 0xcdl -> i64x2_shr_u
     | 0xcel -> i64x2_add
+    | 0xcfl | 0xd0l as n -> illegal s pos (I32.to_int_u n)
     | 0xd1l -> i64x2_sub
+    | 0xd2l | 0xd3l | 0xd4l as n -> illegal s pos (I32.to_int_u n)
     | 0xd5l -> i64x2_mul
     | 0xd6l -> i64x2_eq
     | 0xd7l -> i64x2_ne
@@ -902,6 +909,7 @@ let rec instr s =
     | 0xdfl -> i64x2_extmul_high_i32x4_u
     | 0xe0l -> f32x4_abs
     | 0xe1l -> f32x4_neg
+    | 0xe2l as n -> illegal s pos (I32.to_int_u n)
     | 0xe3l -> f32x4_sqrt
     | 0xe4l -> f32x4_add
     | 0xe5l -> f32x4_sub
