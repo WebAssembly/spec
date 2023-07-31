@@ -147,5 +147,5 @@ let rec walk_instr f (instr:instr) : instr list =
 and walk_instrs f = walk_instr f |> List.concat_map
 
 let walk f algo =
-  let Algo (name, params, body) = algo in
-  Algo (name, params, walk_instrs f body)
+  let Algo (name, note, params, body) = algo in
+  Algo (name, note, params, walk_instrs f body)

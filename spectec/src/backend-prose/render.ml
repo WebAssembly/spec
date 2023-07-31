@@ -498,7 +498,7 @@ let render_pred env name params instrs =
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
-let render_algo env name params instrs =
+let render_algo env name _note params instrs =
   let prefix = "execution_of_" in
   let (name, uppercase) =
     if String.starts_with ~prefix:prefix name then
@@ -514,7 +514,7 @@ let render_algo env name params instrs =
 let render_def env = function
   | Pred (name, params, instrs) ->
     "\n" ^ render_pred env name params instrs ^ "\n\n"
-  | Algo (Al.Ast.Algo (name, params, instrs)) ->
-    "\n" ^ render_algo env name params instrs ^ "\n\n"
+  | Algo (Al.Ast.Algo (name, note, params, instrs)) ->
+    "\n" ^ render_algo env name note params instrs ^ "\n\n"
 
 let render_prose env prose = List.map (render_def env) prose |> String.concat ""

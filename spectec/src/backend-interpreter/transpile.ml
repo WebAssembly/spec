@@ -362,13 +362,13 @@ let transpiler algo =
         post_expr = composite hide_state simplify_record_concat
       }
   in
-  let Algo (name, params, body) = walker algo in
+  let Algo (name, note, params, body) = walker algo in
   match params with
   | PairE (_, NameE (N "f")) :: tail ->
-      Algo (name, tail, LetI (NameE (N "f"), GetCurFrameE) :: body)
+      Algo (name, note, tail, LetI (NameE (N "f"), GetCurFrameE) :: body)
   | NameE (N "s") :: tail ->
-      Algo (name, tail, body)
-  | _ -> Algo(name, params, body)
+      Algo (name, note, tail, body)
+  | _ -> Algo(name, note, params, body)
 
 let app_remover =
   let side_effect f e = f e; e in

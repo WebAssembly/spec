@@ -746,7 +746,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
       let lhss = List.map (function _, group -> let lhs, _, _, _ = List.hd group in lhs) unified_sub_groups in
       let sub_algos = List.map reduction_group2algo unified_sub_groups in
-      List.fold_right2 (fun lhs -> function Algo (_, _, body) -> fun acc ->
+      List.fold_right2 (fun lhs -> function Algo (_, _, _, body) -> fun acc ->
         let kind = kind_of_context lhs in
         [ IfI (
           ContextKindC (kind, GetCurContextE),
@@ -758,6 +758,8 @@ let rec reduction_group2algo (instr_name, reduction_group) =
 
   (* name *)
   let name = "execution_of_" ^ instr_name in
+  (* note *)
+  let note = string_of_note winstr.note in
   (* params *)
   (* TODO: retieve param for return *)
   let al_params =
@@ -770,7 +772,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let body = instrs |> check_nop |> Transpile.enhance_readability in
 
   (* Algo *)
-  Algo (name, al_params, body)
+  Algo (name, note, al_params, body)
 
 (** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
 
@@ -844,6 +846,8 @@ let helpers2algo partial_funcs def =
   match def.it with
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
+      let name = id.it in
+      let note = "funcdef" in
       let unified_clauses = Il2il.unify_defs clauses in
       let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
       let al_params =
@@ -858,12 +862,12 @@ let helpers2algo partial_funcs def =
           normal_helper2instrs
       in
       let blocks = List.map translator unified_clauses in
-      let algo_body =
+      let body =
         List.fold_right Transpile.merge blocks []
         |> Transpile.enhance_readability
         |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
 
-      let algo = Algo (id.it, al_params, algo_body) in
+      let algo = Algo (name, note, al_params, body) in
       Some algo
   | _ -> None
 

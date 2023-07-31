@@ -163,7 +163,7 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of string * expr list * instr list
+type algorithm = Algo of string * note * expr list * instr list
 
 (* Smart Constructor *)
 

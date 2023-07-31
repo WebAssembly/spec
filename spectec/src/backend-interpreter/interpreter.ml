@@ -19,7 +19,7 @@ let algo_map = ref AlgoMap.empty
 
 let to_map algos =
   let f acc algo =
-    let (Algo (name, _, _)) = algo in
+    let (Algo (name, _, _, _)) = algo in
     AlgoMap.add name algo acc
   in
 
@@ -687,7 +687,7 @@ and leave_algo cont = function
 | _ -> raise Exception.MissingReturnValue
 
 and interp_algo algo args cont action =
-  let (Algo (_name, params, body)) = algo in
+  let (Algo (_name, _note, params, body)) = algo in
   assert (List.length params = List.length args);
 
   (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)

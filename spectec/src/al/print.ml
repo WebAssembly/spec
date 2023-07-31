@@ -332,7 +332,7 @@ and string_of_instrs depth instrs =
     "" instrs
 
 let string_of_algorithm = function
-  | Algo (name, params, instrs) ->
+  | Algo (name, _, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
@@ -671,7 +671,7 @@ and structured_string_of_instrs depth instrs =
     "" instrs
 
 let structured_string_of_algorithm = function
-  | Algo (name, params, instrs) ->
+  | Algo (name, _, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
