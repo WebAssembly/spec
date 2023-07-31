@@ -113,7 +113,7 @@ and expr =
 and path =
   | IndexP of expr
   | SliceP of expr * expr
-  | DotP of string
+  | DotP of string * note
 
 and cond =
   | NotC of cond

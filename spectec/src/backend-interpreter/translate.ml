@@ -121,7 +121,8 @@ and exp2expr exp =
       let names = List.map (fun id -> N id.it) ids in
       IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
-  | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
+  | Ast.DotE (inner_exp, Atom p) -> 
+      AccessE (exp2expr inner_exp, DotP (p, string_of_note inner_exp.note ))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
@@ -131,7 +132,7 @@ and exp2expr exp =
         | Ast.Atom name, fieldexp ->
             let extend_expr = exp2expr fieldexp in
             if nonempty extend_expr then
-              ExtendE (acc, [ DotP name ], extend_expr, Front)
+              ExtendE (acc, [ DotP (name, string_of_note inner_exp.note) ], extend_expr, Front)
             else
               acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
@@ -233,7 +234,8 @@ and path2paths path =
     | Ast.RootP -> []
     | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
     | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
-    | Ast.DotP (p, Atom a) -> (path2paths' p) @ [ DotP a ]
+    | Ast.DotP (p, Atom a) -> 
+        (path2paths' p) @ [ DotP (a, string_of_note p.note) ]
     | _ -> failwith "unreachable"
   in
   path2paths' path

@@ -181,7 +181,7 @@ and string_of_path = function
   | IndexP e -> sprintf "[%s]" (string_of_expr e)
   | SliceP (e1, e2) ->
       sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
-  | DotP s -> sprintf ".%s" s
+  | DotP (s, _) -> sprintf ".%s" s
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
@@ -521,7 +521,7 @@ and structured_string_of_path = function
       sprintf "SliceP(%s,%s)"
         (structured_string_of_expr e1)
         (structured_string_of_expr e2)
-  | DotP s -> sprintf "DotP(%s)" s
+  | DotP (s, _) -> sprintf "DotP(%s)" s
 
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""

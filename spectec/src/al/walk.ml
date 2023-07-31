@@ -77,7 +77,7 @@ and walk_path f p =
   ( match pre p with
   | IndexP e -> IndexP (walk_expr f e)
   | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
-  | DotP _ -> p )
+  | DotP (s, note) -> DotP (s, note) )
   |> post
 
 let rec walk_cond f c =

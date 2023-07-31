@@ -278,7 +278,7 @@ and render_path env = function
   | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env true e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
-  | Al.Ast.DotP s -> sprintf ".%s" (render_name env (N s))
+  | Al.Ast.DotP (s, _note) -> sprintf ".%s" (render_name env (N s))
 
 and render_paths env in_math paths = 
   let spaths = List.map (render_path env) paths |> List.fold_left (^) "" in

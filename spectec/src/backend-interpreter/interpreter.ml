@@ -303,7 +303,7 @@ and access_path env base path = match path with
       let i2 = eval_expr env e2 |> value_to_int in
       let a' = Array.sub a i1 i2 in
       ListV (ref a')
-  | DotP str -> (
+  | DotP (str, _) -> (
       match base with
       | FrameV (_, RecordV r) -> Record.find str r
       | StoreV s -> Record.find str !s
@@ -327,7 +327,7 @@ and replace_path env base path v_new = match path with
       let i2 = eval_expr env e2 |> value_to_int in
       Array.blit (v_new |> value_to_array) 0 a_new i1 (i2 - i1 + 1);
       ListV (ref a_new)
-  | DotP str ->
+  | DotP (str, _) ->
       let r = (
         match base with
         | FrameV (_, RecordV r) -> r
@@ -643,7 +643,7 @@ and interp_instrs env il cont action =
         assert (Array.length a2 = i2);
         Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
         interp icont
-    | ReplaceI (e1, DotP s, e2) ->
+    | ReplaceI (e1, DotP (s, _), e2) ->
         begin match eval_expr env e1 with
         | RecordV r ->
             let v = eval_expr env e2 in
