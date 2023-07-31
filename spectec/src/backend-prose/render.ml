@@ -101,7 +101,8 @@ let render_al_mathop = function
 (* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_name env = function
-  | Al.Ast.N s when s = "inverse_of_bytes_" -> s 
+  | Al.Ast.N s when s = "inverse_of_bytes_" -> "inverse\\_of\\_bytes"
+  | Al.Ast.N s when s = "exec_expr_const" -> "exec\\_expr\\_const"
   | Al.Ast.N s -> (match find_keyword env s with
     | Some _ -> sprintf "\\%s" (Macro.macroify s) 
     | _ -> (match String.index_opt s '_' with 

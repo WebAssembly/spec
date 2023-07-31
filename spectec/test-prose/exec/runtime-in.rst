@@ -14,7 +14,7 @@ Values
 
 \
 
-$$${definition: default_}
+$${definition: default_}
 
 .. _exec-runtime-results:
 
