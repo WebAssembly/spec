@@ -185,36 +185,36 @@ and exp2expr exp =
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
-          ConstructE ("FUNC", dummy_note, List.map exp2expr exps)
-      | [ [ Ast.Atom tag ] ], [] ->
-          ConstructE (tag, dummy_note, [])
+          ConstructE ("FUNC", "func", List.map exp2expr exps)
+      | [ [ Ast.Atom "OK" ] ], [] ->
+          ConstructE ("OK", "datatype", [])
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
-          PairE (ConstructE ("MUT", dummy_note, []), exp2expr t)
+          PairE (ConstructE ("MUT", "globaltype", []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
           let mut = N "mut" in
           PairE (IterE (NameE mut, [mut], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
-          ConstructE ("MODULE", dummy_note, List.map exp2expr el)
+          ConstructE ("MODULE", "module", List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
-          ConstructE ("IMPORT", dummy_note, List.map exp2expr el)
+          ConstructE ("IMPORT", "import", List.map exp2expr el)
       | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
-          ConstructE ("GLOBAL", dummy_note, List.map exp2expr el)
+          ConstructE ("GLOBAL", "global", List.map exp2expr el)
       | [ [ Ast.Atom "TABLE" ]; [] ], el ->
-          ConstructE ("TABLE", dummy_note, List.map exp2expr el)
+          ConstructE ("TABLE", "table", List.map exp2expr el)
       | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
-          ConstructE ("MEMORY", dummy_note, List.map exp2expr el)
+          ConstructE ("MEMORY", "mem", List.map exp2expr el)
       | [ []; [ Ast.Atom "I8" ] ], el ->
-          ConstructE ("I8", dummy_note, List.map exp2expr el)
+          ConstructE ("I8", "memtype", List.map exp2expr el)
       | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("ELEM", dummy_note, List.map exp2expr el)
+          ConstructE ("ELEM", "elem", List.map exp2expr el)
       | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("DATA", dummy_note, List.map exp2expr el)
+          ConstructE ("DATA", "data", List.map exp2expr el)
       | [ [ Ast.Atom "START" ]; [] ], el ->
-          ConstructE ("START", dummy_note, List.map exp2expr el)
+          ConstructE ("START", "start", List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
-          ConstructE ("EXPORT", dummy_note, List.map exp2expr el)
+          ConstructE ("EXPORT", "export", List.map exp2expr el)
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
   (* Yet *)
