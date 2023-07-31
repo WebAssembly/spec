@@ -14,7 +14,7 @@ Values
 
 \
 
-${definition: default_}
+$$${definition: default_}
 
 .. _exec-runtime-results:
 
@@ -164,7 +164,7 @@ Helper Functions
 
 \
 
-${definition: funcaddr}
+$${definition: funcaddr}
 
 .. _exec-funcinst:
 
@@ -172,7 +172,7 @@ ${definition: funcaddr}
 
 \
 
-${definition: funcinst}
+$${definition: funcinst}
 
 .. _exec-globalinst:
 
@@ -180,7 +180,7 @@ ${definition: funcinst}
 
 \
 
-${definition: globalinst}
+$${definition: globalinst}
 
 .. _exec-tableinst:
 
@@ -188,7 +188,7 @@ ${definition: globalinst}
 
 \
 
-${definition: tableinst}
+$${definition: tableinst}
 
 .. _exec-meminst:
 
@@ -196,7 +196,7 @@ ${definition: tableinst}
 
 \
 
-${definition: meminst}
+$${definition: meminst}
 
 .. _exec-eleminst:
 
@@ -204,7 +204,7 @@ ${definition: meminst}
 
 \
 
-${definition: eleminst}
+$${definition: eleminst}
 
 .. _exec-datainst:
 
@@ -212,7 +212,7 @@ ${definition: eleminst}
 
 \
 
-${definition: datainst}
+$${definition: datainst}
 
 .. _exec-func:
 
@@ -220,7 +220,7 @@ ${definition: datainst}
 
 \
 
-${definition: func}
+$${definition: func}
 
 .. _exec-global:
 
@@ -228,7 +228,7 @@ ${definition: func}
 
 \
 
-${definition: global}
+$${definition: global}
 
 .. _exec-table:
 
@@ -236,7 +236,7 @@ ${definition: global}
 
 \
 
-${definition: table}
+$${definition: table}
 
 .. _exec-mem:
 
@@ -244,7 +244,7 @@ ${definition: table}
 
 \
 
-${definition: mem}
+$${definition: mem}
 
 .. _exec-elem:
 
@@ -252,7 +252,7 @@ ${definition: mem}
 
 \
 
-${definition: elem}
+$${definition: elem}
 
 .. _exec-data:
 
@@ -260,7 +260,7 @@ ${definition: elem}
 
 \
 
-${definition: data}
+$${definition: data}
 
 .. _exec-local:
 
@@ -268,7 +268,7 @@ ${definition: data}
 
 \
 
-${definition: local}
+$${definition: local}
 
 .. _exec-with_local:
 
@@ -276,7 +276,7 @@ ${definition: local}
 
 \
 
-${definition: with_local}
+$${definition: with_local}
 
 .. _exec-with_global:
 
@@ -284,7 +284,7 @@ ${definition: with_local}
 
 \
 
-${definition: with_global}
+$${definition: with_global}
 
 .. _exec-with_table:
 
@@ -292,7 +292,7 @@ ${definition: with_global}
 
 \
 
-${definition: with_table}
+$${definition: with_table}
 
 .. _exec-with_tableinst:
 
@@ -300,7 +300,7 @@ ${definition: with_table}
 
 \
 
-${definition: with_tableinst}
+$${definition: with_tableinst}
 
 .. _exec-with_mem:
 
@@ -308,7 +308,7 @@ ${definition: with_tableinst}
 
 \
 
-${definition: with_mem}
+$${definition: with_mem}
 
 .. _exec-with_meminst:
 
@@ -316,7 +316,7 @@ ${definition: with_mem}
 
 \
 
-${definition: with_meminst}
+$${definition: with_meminst}
 
 .. _exec-with_elem:
 
@@ -324,7 +324,7 @@ ${definition: with_meminst}
 
 \
 
-${definition: with_elem}
+$${definition: with_elem}
 
 .. _exec-with_data:
 
@@ -332,7 +332,7 @@ ${definition: with_elem}
 
 \
 
-${definition: with_data}
+$${definition: with_data}
 
 .. _exec-grow_table:
 
@@ -340,7 +340,7 @@ ${definition: with_data}
 
 \
 
-TODO (unexpected indentation)
+$${definition: grow_table}
 
 .. _exec-grow_memory:
 
@@ -348,4 +348,4 @@ TODO (unexpected indentation)
 
 \
 
-TODO (unexpected indentation)
+$${definition: grow_memory}

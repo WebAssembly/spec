@@ -59,9 +59,28 @@ $${rule+:
   Externtype_ok/global
 }
 
+.. _valid-Limits_sub:
+.. _valid-Functype_sub:
+.. _valid-Externtype_sub/func:
+.. _valid-Globaltype_sub:
+.. _valid-Externtype_sub/global:
+.. _valid-Tabletype_sub:
+.. _valid-Externtype_sub/table:
+.. _valid-Memtype_sub:
+.. _valid-Externtype_sub/mem:
 .. _valid-types-import-subtyping:
 
 Import Subtyping
 ~~~~~~~~~~~~~~~~
 
-TODO
+$${rule+:
+  Limits_sub
+  Functype_sub
+  Externtype_sub/func
+  Globaltype_sub
+  Externtype_sub/global
+  Tabletype_sub
+  Externtype_sub/table
+  Memtype_sub
+  Externtype_sub/mem
+}

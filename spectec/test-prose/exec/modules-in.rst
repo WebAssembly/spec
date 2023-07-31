@@ -8,13 +8,45 @@ Modules
 Allocation
 ~~~~~~~~~~
 
+.. _exec-funcs:
+
+%{prose-fctn: funcs}
+
+\
+
+$${definition: funcs}
+
+.. _exec-globals:
+
+%{prose-fctn: globals}
+
+\
+
+$${definition: globals}
+
+.. _exec-tables:
+
+%{prose-fctn: tables}
+
+\
+
+$${definition: tables}
+
+.. _exec-mems:
+
+%{prose-fctn: mems}
+
+\
+
+$${definition: mems}
+
 .. _exec-allocfunc:
 
 %{prose-fctn: allocfunc}
 
 \
 
-TODO
+$${definition: allocfunc}
 
 .. _exec-allocfuncs:
 
@@ -22,7 +54,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocfuncs}
 
 .. _exec-allocglobal:
 
@@ -30,7 +62,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocglobal}
 
 .. _exec-allocglobals:
 
@@ -38,7 +70,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocglobals}
 
 .. _exec-alloctable:
 
@@ -46,7 +78,7 @@ TODO
 
 \
 
-TODO
+$${definition: alloctable}
 
 .. _exec-alloctables:
 
@@ -54,7 +86,7 @@ TODO
 
 \
 
-TODO
+$${definition: alloctables}
 
 .. _exec-allocmem:
 
@@ -62,7 +94,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocmem}
 
 .. _exec-allocmems:
 
@@ -70,7 +102,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocmems}
 
 .. _exec-allocelem:
 
@@ -78,7 +110,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocelem}
 
 .. _exec-allocelems:
 
@@ -86,7 +118,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocelems}
 
 .. _exec-allocdata:
 
@@ -94,7 +126,7 @@ TODO
 
 \
 
-TODO
+$${definition: allocdata}
 
 .. _exec-allocdatas:
 
@@ -102,7 +134,15 @@ TODO
 
 \
 
-TODO
+$${definition: allocdatas}
+
+.. _exec-instexport:
+
+%{prose-fctn: instexport}
+
+\
+
+$${definition: instexport}
 
 .. _exec-allocmodule:
 
@@ -110,20 +150,29 @@ TODO
 
 \
 
-TODO
+$${definition: allocmodule}
 
 .. _exec-modules-instantiation:
 
 Instantiation
 ~~~~~~~~~~~~~
 
-.. _exec-instantiation:
+.. _exec-concat_instr:
 
-TODO (double superscipt)
+%{prose-fctn: concat_instr}
 
 \
 
-TODO
+$${definition: concat_instr}
+
+.. _exec-instantiation:
+
+
+%{prose-fctn: instantiation}
+
+\
+
+$${definition: instantiation}
 
 .. _exec-modules-invocation:
 
@@ -136,4 +185,4 @@ Invocation
 
 \
 
-TODO
+$${definition: invocation}

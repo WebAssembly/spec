@@ -112,15 +112,15 @@ let rec render_name env = function
       | _ -> s))
   | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_name env n) s
 
-let rec render_iter env in_math = function
+let rec render_iter env = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
   | Al.Ast.List1 -> "^{+}"
-  | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env in_math expr ^ "}"
+  | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env true expr ^ "}"
   | Al.Ast.ListN (expr, Some name) ->
-    "^(" ^ render_name env name ^ "<" ^ render_expr env in_math expr ^ ")"
+      "^{(" ^ render_name env name ^ "<" ^ render_expr env true expr ^ ")}"
 
-and render_iters env in_math iters = List.map (render_iter env in_math) iters |> List.fold_left (^) ""
+and render_iters env iters = List.map (render_iter env) iters |> List.fold_left (^) ""
 
 (* Expressions and Paths *)
 
@@ -202,7 +202,6 @@ and render_expr env in_math = function
       let se1 = render_expr env in_math e1 in
       let sps = render_paths env in_math ps in
       let se2 = render_expr env in_math e2 in
-      Al.Print.structured_string_of_expr e2 |> print_endline;
       if in_math then
         (match dir with
         | Al.Ast.Front -> sprintf "\\{%s~%s\\}~\\bigoplus~%s" sps se2 se1
@@ -235,15 +234,14 @@ and render_expr env in_math = function
       if in_math then sn else render_math sn
   | Al.Ast.IterE (Al.Ast.NameE n, _, iter) ->
       let sn = render_name env n in
-      let siter = render_iter env in_math iter in
-      let s = sprintf "{%s}%s" sn siter in
+      let siter = render_iter env iter in
+      let s = sprintf "{%s}{%s}" sn siter in
       if in_math then s else render_math s
   | Al.Ast.IterE (e, _, iter) -> 
-      let se = render_expr env in_math e in
-      (* TODO need a better way to e should be enclosed in parentheses *)
-      let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
-      let siter = render_iter env in_math iter in
-      "{" ^ se ^ "}" ^ siter
+      let se = render_expr env true e in
+      let siter = render_iter env iter in
+      let s = sprintf "{\\{%s\\}}{%s}" se siter in
+      if in_math then s else render_math s
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
@@ -438,7 +436,7 @@ let rec render_al_instr env algoname index depth = function
       sprintf "%s Let %s be the result of computing %s%s." (render_order index depth)
         (render_expr env false e)
         (render_expr env false (Al.Ast.AppE(n, es)))
-        (render_list (fun x -> render_iter env false (snd x)) "" "" "" ns_iters)
+        (render_list (fun x -> render_iter env (snd x)) "" "" "" ns_iters)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->
