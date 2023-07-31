@@ -256,24 +256,9 @@ let rec eval_expr env expr =
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
   | IterE (inner_e, names, iter) ->
-      let ll =
-        List.map
-          (fun name ->
-            let v = Env.find name env in
-            match iter with
-            | Opt -> value_to_option v |> Option.to_list
-            | _ -> value_to_list v)
-          names
-      in
-
-      let rec transpose = function
-        | [] -> []
-        | [] :: xss -> transpose xss
-        | (x::xs) :: xss ->
-            (x :: List.map List.hd xss) :: transpose (xs :: List.map List.tl xss)
-      in
-
-      transpose ll
+      names
+      |> List.map (name_to_values env iter)
+      |> transpose
       |> List.map
         (fun values ->
           let new_env = List.fold_left2
@@ -291,6 +276,17 @@ let rec eval_expr env expr =
           | _ -> failwith "Unreachable")
       else listV
   | e -> structured_string_of_expr e |> failwith
+
+and name_to_values env iter name =
+  let get_value _ = Env.find name env in
+  let get_option_as_list _ = get_value () |> value_to_option |> Option.to_list in
+  let get_list _ = get_value () |> value_to_list in
+  let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in
+
+  match iter with
+  | Opt -> get_option_as_list ()
+  | ListN (e_n, Some _) -> eval_expr env e_n |> value_to_int |> length_to_list
+  | _ -> get_list ()
 
 and access_path env base path = match path with
   | IndexP e' ->
@@ -507,10 +503,10 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       | [] ->
         let vs = List.map (eval_expr env) args in
         Numerics.call_numerics name vs
-      | (names, _dim) :: iters' ->
+      | (names, dim) :: iters' ->
         let envs =
           names
-          |> List.map (fun n -> Env.find n env |> value_to_list)
+          |> List.map (name_to_values env dim)
           |> transpose
           |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
         in
@@ -721,10 +717,10 @@ and call_algo name args iters env cont action =
     | [] ->
       let vs = List.map (eval_expr env) args in
       interp_algo algo vs cont action
-    | (names, _dim) :: iters' ->
+    | (names, dim) :: iters' ->
       let envs =
         names
-        |> List.map (fun n -> Env.find n env |> value_to_list)
+        |> List.map (name_to_values env dim)
         |> transpose
         |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
       in
