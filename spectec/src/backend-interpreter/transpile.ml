@@ -386,6 +386,9 @@ let app_remover =
     let hd, tl = Util.Lib.List.split_hd !calls in
     calls := tl;
     hd in
+  let remove_iter_var = function
+    | ListN (e, Some _) -> ListN (e, None)
+    | iter -> iter in
 
   (* pre_expr *)
   let push_iter = side_effect (function
@@ -403,10 +406,7 @@ let app_remover =
         if x = x' then Some y else None
       ) !requires
     ) names |> dedup in
-    let new_iter = match iter with
-      | ListN (e, Some _) -> ListN (e, None)
-      | _ -> iter in
-    (new_names, new_iter) in
+    (new_names, iter) in
 
   let call_id = ref 0 in
   let call_prefix = "r_" in
@@ -420,7 +420,9 @@ let app_remover =
       let fresh_name = get_fresh() in
       let rec to_fresh_exp iter = match iter with
       | [] -> NameE fresh_name
-      | (_, i) :: tl -> IterE (to_fresh_exp tl, [fresh_name], i) in
+      | (_, i) :: tl ->
+        let new_i = remove_iter_var i in
+        IterE (to_fresh_exp tl, [fresh_name], new_i) in
 
       let iters = !iter_stack |> List.map rewrite_names in
 
