@@ -344,7 +344,7 @@ let al_of_memory wasm_memory =
   let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in
   let pair = al_of_limits limits 65536L in
 
-  ConstructV ("MEMORY", [ pair ])
+  ConstructV ("MEMORY", [ ConstructV ("I8", [ pair]) ])
 
 let al_of_segment wasm_segment active_name = match wasm_segment.it with
   | Ast.Passive -> OptV None
