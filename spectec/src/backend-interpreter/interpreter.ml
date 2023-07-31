@@ -225,7 +225,7 @@ let rec eval_expr env expr =
       in
       let base = eval_expr env e1 in
       replace base ps
-  | ConstructE (tag, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | ConstructE (tag, _, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
   (* Context *)
@@ -456,7 +456,7 @@ let rec assign lhs rhs env =
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
       List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env
-  | ConstructE (lhs_tag, lhs_s), ConstructV (rhs_tag, rhs_s)
+  | ConstructE (lhs_tag, _, lhs_s), ConstructV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
@@ -570,9 +570,9 @@ and interp_instrs env il cont action =
               let h = pop () in
 
               match (e, h) with
-              | ConstructE ("CONST", [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+              | ConstructE ("CONST", _, [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   env |> Env.add nt ty |> Env.add name v
-              | ConstructE ("CONST", [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+              | ConstructE ("CONST", _, [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   assert (eval_expr env tyE = ty);
                   Env.add name v env
               | NameE name, v -> Env.add name v env

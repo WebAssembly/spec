@@ -170,9 +170,9 @@ and string_of_expr = function
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
     ^ (match e2 with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
-  | ConstructE ("CONST", hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
-  | ConstructE (s, []) -> s
-  | ConstructE (s, el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
+  | ConstructE ("CONST", _, hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
+  | ConstructE (s, _, []) -> s
+  | ConstructE (s, _, el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | YetE s -> sprintf "YetE (%s)" s
@@ -503,7 +503,7 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | ConstructE (s, el) ->
+  | ConstructE (s, _, el) ->
       "ConstructE (" ^ s ^ ", "
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"

@@ -21,7 +21,7 @@ let rec free_expr = function
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | AppE (_, es)
   | ListE es
-  | ConstructE (_, es) -> List.concat_map free_expr es
+  | ConstructE (_, _, es) -> List.concat_map free_expr es
   | RecordE _ -> (* TODO *) []
   | AccessE (e, p) -> free_expr e @ free_path p
   | ExtendE (e1, ps, e2, _)

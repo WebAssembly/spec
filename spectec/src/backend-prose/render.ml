@@ -248,17 +248,17 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (s, []) ->
+  | Al.Ast.ConstructE (s, _note, []) ->
       let s = render_name env (N s) in
       if in_math then s else render_math s
   (* TODO a hard-coded hint for CONST *)
-  | Al.Ast.ConstructE (s, [ e1; e2 ]) when s = "CONST" ->
+  | Al.Ast.ConstructE (s, _note, [ e1; e2 ]) when s = "CONST" ->
       let s = render_name env (N s) in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s.%s~%s" se1 s se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (s, es) ->
+  | Al.Ast.ConstructE (s, _note, es) ->
       let s = render_name env (N s) in
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" s ses in
@@ -485,7 +485,7 @@ let render_title env uppercase name params =
     else name 
   in
   let name = if uppercase then String.uppercase_ascii name else name in
-  render_expr env false (Al.Ast.ConstructE (name, params))
+  render_expr env false (Al.Ast.ConstructE (name, Al.Ast.dummy_note, params))
 
 let render_pred env name params instrs =
   let prefix = "validation_of_" in

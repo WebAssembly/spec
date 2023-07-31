@@ -1,5 +1,9 @@
 include Record
 
+(* AL Note *)
+
+type note = string
+
 (* AL Type *)
 
 type al_type =
@@ -88,7 +92,7 @@ and expr =
   | AccessE of expr * path
   | ExtendE of expr * path list * expr * extend_dir
   | ReplaceE of expr * path list * expr
-  | ConstructE of string * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | ConstructE of string * note * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   | OptE of expr option
   | PairE of expr * expr
   | ArrowE of expr * expr
@@ -162,6 +166,9 @@ type instr =
 type algorithm = Algo of string * expr list * instr list
 
 (* Smart Constructor *)
+
+let dummy_note = ""
+
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
 let id str = NameE (N str)
@@ -196,7 +203,7 @@ module Expr = struct
   let extend target paths e direction =
     ExtendE (target, paths, e, direction)
   let replace target paths e = ReplaceE(target, paths, e)
-  let construct tag args = ConstructE (tag, args)
+  let construct tag note args = ConstructE (tag, note, args)
   let opt e = OptE (Some e)
   let none = OptE None
   let pair e1 e2 = PairE (e1, e2)

@@ -54,7 +54,7 @@ let rec walk_expr f e =
   | AccessE (e, p) -> AccessE (new_ e, walk_path f p)
   | ExtendE (e1, ps, e2, dir) -> ExtendE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
   | ReplaceE (e1, ps, e2) -> ReplaceE (new_ e1, List.map (walk_path f) ps, new_ e2)
-  | ConstructE (s, el) -> ConstructE (s, List.map new_ el)
+  | ConstructE (s, note, el) -> ConstructE (s, note, List.map new_ el)
   | OptE e -> OptE (Option.map new_ e)
   | PairE (e1, e2) -> PairE (new_ e1, new_ e2)
   | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)

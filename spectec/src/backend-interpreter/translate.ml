@@ -13,6 +13,8 @@ let gen_fail_msg_of_exp exp =
 let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem |> sprintf "Invalid premise `%s` to be AL %s."
 
+let string_of_note note = Il.Print.string_of_typ note
+
 let list_partition_with pred xs =
   let rec list_partition acc = function
   | [] -> acc
@@ -153,7 +155,7 @@ and exp2expr exp =
       in
       BinopE (op, lhs, rhs)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (cons, exp2args arg)
+  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (cons, string_of_note exp.note, exp2args arg)
   (* Tuple *)
   | Ast.TupE exps -> ListE (List.map exp2expr exps)
   (* Call *)
@@ -183,36 +185,36 @@ and exp2expr exp =
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
-          ConstructE ("FUNC", List.map exp2expr exps)
+          ConstructE ("FUNC", dummy_note, List.map exp2expr exps)
       | [ [ Ast.Atom tag ] ], [] ->
-          ConstructE (tag, [])
+          ConstructE (tag, dummy_note, [])
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
-          PairE (ConstructE ("MUT", []), exp2expr t)
+          PairE (ConstructE ("MUT", dummy_note, []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
           let mut = N "mut" in
           PairE (IterE (NameE mut, [mut], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
-          ConstructE ("MODULE", List.map exp2expr el)
+          ConstructE ("MODULE", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
-          ConstructE ("IMPORT", List.map exp2expr el)
+          ConstructE ("IMPORT", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
-          ConstructE ("GLOBAL", List.map exp2expr el)
+          ConstructE ("GLOBAL", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "TABLE" ]; [] ], el ->
-          ConstructE ("TABLE", List.map exp2expr el)
+          ConstructE ("TABLE", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
-          ConstructE ("MEMORY", List.map exp2expr el)
+          ConstructE ("MEMORY", dummy_note, List.map exp2expr el)
       | [ []; [ Ast.Atom "I8" ] ], el ->
-          ConstructE ("I8", List.map exp2expr el)
+          ConstructE ("I8", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("ELEM", List.map exp2expr el)
+          ConstructE ("ELEM", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("DATA", List.map exp2expr el)
+          ConstructE ("DATA", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "START" ]; [] ], el ->
-          ConstructE ("START", List.map exp2expr el)
+          ConstructE ("START", dummy_note, List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
-          ConstructE ("EXPORT", List.map exp2expr el)
+          ConstructE ("EXPORT", dummy_note, List.map exp2expr el)
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
   (* Yet *)
@@ -407,7 +409,7 @@ let rec rhs2instrs exp =
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ ExecuteI (ConstructE (atomid, exp2args argexp)) ]
+      [ ExecuteI (ConstructE (atomid, string_of_note exp.note, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -511,12 +513,12 @@ let rec letI lhs rhs targets cont =
     List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
   in
   match lhs with
-  | ConstructE (tag, es) ->
+  | ConstructE (tag, note, es) ->
     let bindings, es' = extract_non_names es in
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: bindings_to_lets bindings,
+          LetI (ConstructE (tag, note, es'), rhs) :: bindings_to_lets bindings,
           [] );
     ]
   | ListE es ->

@@ -9,6 +9,7 @@ exec/modules.rst
 valid/instructions.rst
 valid/conventions.rst
 valid/types.rst
+valid/modules.rst
 syntax/instructions.rst
 syntax/modules.rst
 syntax/types.rst
