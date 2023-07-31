@@ -7,9 +7,9 @@
     interpreter
     numerics
     construct
-    manual
     tester
     exception
     il2il
+    manual
     )
 )

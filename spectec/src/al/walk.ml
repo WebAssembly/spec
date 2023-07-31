@@ -46,7 +46,6 @@ let rec walk_expr f e =
   | BinopE (op, e1, e2) -> BinopE (op, new_ e1, new_ e2)
   | AppE (fname, args) -> AppE (fname, List.map new_ args)
   (* TODO: Implement walker for iter *)
-  | MapE (fname, args, iter) -> MapE (fname, List.map new_ args, iter)
   | ListE el -> ListE (List.map (new_) el)
   | ListFillE (e1, e2) -> ListFillE (new_ e1, new_ e2)
   | ConcatE (e1, e2) -> ConcatE (new_ e1, new_ e2)
@@ -64,7 +63,7 @@ let rec walk_expr f e =
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
   | NameE n -> NameE n
-  | IterE (e, iters) -> IterE (new_ e, iters)
+  | IterE (e, names, iter) -> IterE (new_ e, names, iter)
   | YetE _ -> e in
 
   let e1 = pre e in
@@ -124,7 +123,7 @@ let rec walk_instr f (instr:instr) : instr list =
   | PopI e -> PopI (new_e e)
   | PopAllI e -> PopAllI (new_e e)
   | LetI (n, e) -> LetI (new_e n, new_e e)
-  | CallI (e1, n, el, il) -> CallI (new_e e1, n, List.map new_e el, il)
+  | CallI (e1, n, el, nl_iterl) -> CallI (new_e e1, n, List.map new_e el, nl_iterl)
   | TrapI -> TrapI
   | NopI -> NopI
   | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)

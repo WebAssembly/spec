@@ -52,19 +52,19 @@ validation_of_select ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
 validation_of_block bt instr*
-- Under the context C with .LABEL prepended by [t_2]*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_loop bt instr*
-- Under the context C with .LABEL prepended by [t_1]*, instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_if bt instr_1* instr_2*
-- Under the context C with .LABEL prepended by [t_2]*, instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
-- Under the context C with .LABEL prepended by [t_2]*, instr_1* must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_br l
@@ -455,7 +455,7 @@ mems x_0*
 4. Let [externval] ++ externval'* be x_0*.
 5. Return $mems(externval'*).
 
-instexport fa* ga* ta* ma* EXPORT(name, x_0)
+instexport fa* ga* ta* ma* (EXPORT name x_0)
 1. If x_0 is of the case FUNC, then:
   a. Let (FUNC x) be x_0.
   b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
@@ -497,7 +497,7 @@ allocglobals x_0* x_1*
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] ++ ga'*.
 
-alloctable `%%`(`[%..%]`(i, j), rt)
+alloctable ((i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
 2. Return [s with .TABLE appended by [ti], |s.TABLE|].
 
@@ -509,7 +509,7 @@ alloctables x_0*
 4. Let ta'* be $alloctables(tabletype'*).
 5. Return [ta] ++ ta'*.
 
-allocmem `%I8`(`[%..%]`(i, j))
+allocmem (I8 (i, j))
 1. Let mi be { TYPE: (I8 (i, j)); DATA: 0^((i · 64) · $Ki()); }.
 2. Return [s with .MEM appended by [mi], |s.MEM|].
 
@@ -549,41 +549,40 @@ allocdatas x_0*
 5. Return [da] ++ da'*.
 
 allocmodule module externval* val* ref**
-1. Let i be 0.
-2. Let fa_ex* be $funcs(externval*).
-3. Let ga_ex* be $globals(externval*).
-4. Let ma_ex* be $mems(externval*).
-5. Let ta_ex* be $tables(externval*).
-6. Assert: Due to validation, module is of the case MODULE.
-7. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
-8. Let (DATA byte* datamode?)^n_data be y_4.
-9. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
-10. Let (MEMORY memtype)^n_mem be y_2.
-11. Let (TABLE tabletype)^n_table be y_1.
-12. Let (GLOBAL globaltype expr_1)^n_global be y_0.
-13. Let da* be (|s.DATA| + i)^(i<n_data).
-14. Let ea* be (|s.ELEM| + i)^(i<n_elem).
-15. Let ma* be (|s.MEM| + i)^(i<n_mem).
-16. Let ta* be (|s.TABLE| + i)^(i<n_table).
-17. Let ga* be (|s.GLOBAL| + i)^(i<n_global).
-18. Let fa* be (|s.FUNC| + i)^(i<n_func).
-19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-20. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
-21. Let y_0 be $allocfuncs(m, func^n_func).
-22. Assert: Due to validation, y_0 is fa*.
-23. Let y_0 be $allocglobals(globaltype^n_global, val*).
-24. Assert: Due to validation, y_0 is ga*.
-25. Let y_0 be $alloctables(tabletype^n_table).
-26. Assert: Due to validation, y_0 is ta*.
-27. Let y_0 be $allocmems(memtype^n_mem).
-28. Assert: Due to validation, y_0 is ma*.
-29. Let y_0 be $allocelems(rt^n_elem, ref**).
-30. Assert: Due to validation, y_0 is ea*.
-31. Let y_0 be $allocdatas(byte*^n_data).
-32. Assert: Due to validation, y_0 is da*.
-33. Return m.
+1. Let fa_ex* be $funcs(externval*).
+2. Let ga_ex* be $globals(externval*).
+3. Let ma_ex* be $mems(externval*).
+4. Let ta_ex* be $tables(externval*).
+5. Assert: Due to validation, module is of the case MODULE.
+6. Let (MODULE import* func^n_func y_0 y_1 y_2 y_3 y_4 start? export*) be module.
+7. Let (DATA byte* datamode?)^n_data be y_4.
+8. Let (ELEM rt expr_2* elemmode?)^n_elem be y_3.
+9. Let (MEMORY memtype)^n_mem be y_2.
+10. Let (TABLE tabletype)^n_table be y_1.
+11. Let (GLOBAL globaltype expr_1)^n_global be y_0.
+12. Let da* be (|s.DATA| + i_data)^(i_data<n_data).
+13. Let ea* be (|s.ELEM| + i_elem)^(i_elem<n_elem).
+14. Let ma* be (|s.MEM| + i_mem)^(i_mem<n_mem).
+15. Let ta* be (|s.TABLE| + i_table)^(i_table<n_table).
+16. Let ga* be (|s.GLOBAL| + i_global)^(i_global<n_global).
+17. Let fa* be (|s.FUNC| + i_func)^(i_func<n_func).
+18. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+19. Let m be { FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+20. Let y_0 be $allocfuncs(m, func^n_func).
+21. Assert: Due to validation, y_0 is fa*.
+22. Let y_0 be $allocglobals(globaltype^n_global, val*).
+23. Assert: Due to validation, y_0 is ga*.
+24. Let y_0 be $alloctables(tabletype^n_table).
+25. Assert: Due to validation, y_0 is ta*.
+26. Let y_0 be $allocmems(memtype^n_mem).
+27. Assert: Due to validation, y_0 is ma*.
+28. Let y_0 be $allocelems(rt^n_elem, ref**).
+29. Assert: Due to validation, y_0 is ea*.
+30. Let y_0 be $allocdatas(byte*^n_data).
+31. Assert: Due to validation, y_0 is da*.
+32. Return m.
 
-runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
+runelem (ELEM reftype expr* x_0?) i
 1. If x_0? is not defined, then:
   a. Return [].
 2. If x_0? is ?(DECLARE), then:
@@ -595,7 +594,7 @@ runelem `ELEM%%*%?`(reftype, expr*{expr}, x_0?{x_0}) i
 7. Let n be |expr*|.
 8. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
 
-rundata `DATA%*%?`(byte*{byte}, x_0?{x_0}) i
+rundata (DATA byte* x_0?) i
 1. If x_0? is not defined, then:
   a. Return [].
 2. Let ?(y_0) be x_0?.
@@ -612,10 +611,8 @@ concat_instr x_0*
 3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
-1. Let i be 0.
-2. Let j be 0.
-3. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-4. If module is of the case MODULE, then:
+1. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+2. If module is of the case MODULE, then:
   a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
   b. Let f_init be { LOCAL: []; MODULE: m_init; }.
   c. Let n_data be |data*|.
@@ -1097,174 +1094,8 @@ execution_of_memory.grow
 execution_of_data.drop x
 1. Perform $with_data(x, []).
 
-instantiation module externval*
-1. Let (MODULE _ _ _ _ _ elem* data* start? _) be module.
-2. Let moduleinst be the result of computing $alloc_module(module, externval*).
-3. Let f be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
-4. Push f to the stack.
-5. For i in range |elem*|:
-  a. Let (ELEM _ einit mode_opt) be elem*[i].
-  b. If mode_opt is defined, then:
-    1) Let ?(mode) be mode_opt.
-    2) If mode is of the case TABLE, then:
-      a) Let (TABLE tableidx einstrs*) be mode.
-      b) Execute the sequence (einstrs*).
-      c) Execute (I32.CONST 0).
-      d) Execute (I32.CONST |einit|).
-      e) Execute (TABLE.INIT tableidx i).
-      f) Execute (ELEM.DROP i).
-    3) If mode is of the case DECLARE, then:
-      a) Execute (ELEM.DROP i).
-6. For i in range |data*|:
-  a. Let (DATA dinit mode) be data*[i].
-  b. If mode is defined, then:
-    1) Let ?((MEMORY memidx dinstrs*)) be mode.
-    2) Assert: Due to validation, memidx is 0.
-    3) Execute the sequence (dinstrs*).
-    4) Execute (I32.CONST 0).
-    5) Execute (I32.CONST |dinit|).
-    6) Execute (MEMORY.INIT i).
-    7) Execute (DATA.DROP i).
-7. If start? is defined, then:
-  a. Let ?((START start_idx)) be start?.
-  b. Execute (CALL start_idx).
-8. Pop f from the stack.
-9. Return moduleinst.
-
-alloc_module module externval*
-1. Let (MODULE import* func* global* table* memory* elem* data* _ export*) be module.
-2. Let moduleinst be { FUNC: []; TABLE: []; GLOBAL: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-3. For i in range |import*|:
-  a. Let (IMPORT _ _ import_type) be import*[i].
-  b. If import_type is of the case FUNC and externval*[i] is of the case FUNC, then:
-    1) Let (FUNC funcaddr') be externval*[i].
-    2) Append funcaddr' to the moduleinst.FUNC.
-  c. If import_type is of the case TABLE and externval*[i] is of the case TABLE, then:
-    1) Let (TABLE tableaddr') be externval*[i].
-    2) Append tableaddr' to the moduleinst.TABLE.
-  d. If import_type is of the case MEM and externval*[i] is of the case MEM, then:
-    1) Let (MEM memaddr') be externval*[i].
-    2) Append memaddr' to the moduleinst.MEM.
-  e. If import_type is of the case GLOBAL and externval*[i] is of the case GLOBAL, then:
-    1) Let (GLOBAL globaladdr') be externval*[i].
-    2) Append globaladdr' to the moduleinst.GLOBAL.
-4. Let f_init be the activation of { MODULE: moduleinst; LOCAL: []; } with arity 0.
-5. Push f_init to the stack.
-6. Let funcaddr* be the result of computing $alloc_func(func)*.
-7. Append the sequence funcaddr* to the moduleinst.FUNC.
-8. Let tableaddr* be the result of computing $alloc_table(table)*.
-9. Append the sequence tableaddr* to the moduleinst.TABLE.
-10. Let globaladdr* be the result of computing $alloc_global(global)*.
-11. Append the sequence globaladdr* to the moduleinst.GLOBAL.
-12. Let memoryaddr* be the result of computing $alloc_memory(memory)*.
-13. Append the sequence memoryaddr* to the moduleinst.MEM.
-14. Let elemaddr* be the result of computing $alloc_elem(elem)*.
-15. Append the sequence elemaddr* to the moduleinst.ELEM.
-16. Let dataaddr* be the result of computing $alloc_data(data)*.
-17. Append the sequence dataaddr* to the moduleinst.DATA.
-18. Pop f_init from the stack.
-19. For i in range |funcaddr*|:
-  a. Let func' be s.FUNC[funcaddr*[i]].CODE.
-  b. Replace s.FUNC[funcaddr*[i]] with { MODULE: moduleinst; CODE: func'; }.
-20. For i in range |export*|:
-  a. Let (EXPORT name externuse) be export*[i].
-  b. If externuse is of the case FUNC, then:
-    1) Let (FUNC funcidx) be externuse.
-    2) Let funcaddr be moduleinst.FUNC[funcidx].
-    3) Let externval be (FUNC funcaddr).
-    4) Let exportinst be { NAME: name; VALUE: externval; }.
-    5) Append exportinst to the moduleinst.EXPORT.
-  c. If externuse is of the case TABLE, then:
-    1) Let (TABLE tableidx) be externuse.
-    2) Let tableaddr be moduleinst.TABLE[tableidx].
-    3) Let externval be (TABLE tableaddr).
-    4) Let exportinst be { NAME: name; VALUE: externval; }.
-    5) Append exportinst to the moduleinst.EXPORT.
-  d. If externuse is of the case MEM, then:
-    1) Let (MEM memidx) be externuse.
-    2) Let memaddr be moduleinst.MEM[memidx].
-    3) Let externval be (MEM memaddr).
-    4) Let exportinst be { NAME: name; VALUE: externval; }.
-    5) Append exportinst to the moduleinst.EXPORT.
-  e. If externuse is of the case GLOBAL, then:
-    1) Let (GLOBAL globalidx) be externuse.
-    2) Let globaladdr be moduleinst.GLOBAL[globalidx].
-    3) Let externval be (GLOBAL globaladdr).
-    4) Let exportinst be { NAME: name; VALUE: externval; }.
-    5) Append exportinst to the moduleinst.EXPORT.
-21. Return moduleinst.
-
-init_global global
-1. Let (GLOBAL _ instr*) be global.
-2. Execute the sequence (instr*).
-3. Pop val from the stack.
-4. Return val.
-
-init_elem elem
-1. Let (ELEM _ instr* _) be elem.
-2. Let ref* be the result of computing $exec_expr(instr)*.
-3. Return ref*.
-
-exec_expr instr*
-1. Execute the sequence (instr*).
-2. Pop val from the stack.
-3. Return val.
-
-alloc_func func
-1. Let a be |s.FUNC|.
-2. Let dummy_module_inst be { FUNC: []; TABLE: []; }.
-3. Let funcinst be { MODULE: dummy_module_inst; CODE: func; }.
-4. Append funcinst to the s.FUNC.
-5. Return a.
-
-alloc_global global
-1. Let a be |s.GLOBAL|.
-2. Let r_0 be the result of computing $init_global(global).
-3. Let globalinst be { VALUE: r_0; }.
-4. Append globalinst to the s.GLOBAL.
-5. Return a.
-
-alloc_table table
-1. Let (TABLE (n, m?) reftype) be table.
-2. Let a be |s.TABLE|.
-3. Let tableinst be { TYPE: ((n, m?), reftype); ELEM: (REF.NULL reftype)^n; }.
-4. Append tableinst to the s.TABLE.
-5. Return a.
-
-alloc_memory memory
-1. Let (MEMORY (min, max?)) be memory.
-2. Let a be |s.MEM|.
-3. Let r_0 be the result of computing $Ki().
-4. Let memoryinst be { TYPE: (I8 (min, max?)); DATA: 0^((min · 64) · r_0); }.
-5. Append memoryinst to the s.MEM.
-6. Return a.
-
-alloc_elem elem
-1. Let a be |s.ELEM|.
-2. Let r_0 be the result of computing $init_elem(elem).
-3. Let eleminst be { ELEM: r_0; }.
-4. Append eleminst to the s.ELEM.
-5. Return a.
-
-alloc_data data
-1. Let (DATA init _) be data.
-2. Let a be |s.DATA|.
-3. Let datainst be { DATA: init; }.
-4. Append datainst to the s.DATA.
-5. Return a.
-
-invocation funcaddr val*
-1. Let func be s.FUNC[funcaddr].CODE.
-2. Let (FUNC functype _ _) be func.
-3. Let [_^n]->[_^m] be functype.
-4. Assert: Due to validation, |val*| is n.
-5. Let f be the activation of { LOCAL: []; MODULE: { FUNC: []; TABLE: []; }; } with arity 0.
-6. Push f to the stack.
-7. Push val* to the stack.
-8. Execute (CALL_ADDR funcaddr).
-9. Pop val_res^m from the stack.
-10. Pop f from the stack.
-11. Return val_res^m.
+exec_expr_const instr*
+1. Return (I32.CONST 42).
 
 == Complete.
 ```

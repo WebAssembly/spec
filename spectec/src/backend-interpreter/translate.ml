@@ -27,47 +27,6 @@ let list_partition_with pred xs =
 
 let disjoint xs ys = List.for_all (fun x -> List.for_all ((<>) x) ys) xs
 
-(* TODO: move these to al module *)
-let rec free_name = function
-  | N s -> [ s ]
-  | SubN (n, _) -> free_name n
-let rec free_expr = function
-  | NumE _
-  | StringE _
-  | GetCurLabelE
-  | GetCurContextE
-  | GetCurFrameE
-  | YetE _ -> []
-  | NameE n -> free_name n
-  | MinusE e
-  | LengthE e
-  | ArityE e
-  | ContE e -> free_expr e
-  | BinopE (_, e1, e2)
-  | ListFillE (e1, e2)
-  | ConcatE (e1, e2)
-  | PairE (e1, e2)
-  | ArrowE (e1, e2)
-  | FrameE (e1, e2)
-  | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
-  | AppE (_, es)
-  | ListE es
-  | ConstructE (_, es) -> List.concat_map free_expr es
-  | MapE (_, es, is) -> List.concat_map free_expr es @ List.concat_map free_iter is
-  | RecordE _ -> (* TODO *) []
-  | AccessE (e, p) -> free_expr e @ free_path p
-  | ExtendE (e1, ps, e2, _)
-  | ReplaceE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
-  | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
-  | IterE (e, i) -> free_expr e @ free_iter i
-and free_iter = function
-  | Opt
-  | List
-  | List1 -> []
-  | ListN n -> free_name n
-  | IndexedListN (n, e) -> free_name n @ free_expr e
-and free_path _ = [] (* TODO *)
-
 (* transform z; e into e *)
 let drop_state e = match e.it with
 | Ast.MixE (* z; e *)
@@ -136,8 +95,8 @@ let rec iter2iter = function
   | Ast.Opt -> Opt
   | Ast.List1 -> List1
   | Ast.List -> List
-  | Ast.ListN e -> ListN (exp2name e)
-  | Ast.IndexedListN (id, e) -> IndexedListN (N id.it, exp2expr e)
+  | Ast.ListN (e, id_opt) ->
+    ListN (exp2expr e, Option.map (fun id -> N id.it) id_opt)
 
 (* `Ast.exp` -> `expr` *)
 and exp2expr exp =
@@ -154,11 +113,11 @@ and exp2expr exp =
   (* Variable *)
   | Ast.VarE id -> NameE (N id.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
-  | Ast.IterE ({ it = Ast.CallE (id, inner_exp); _ }, (iter, _)) ->
-      MapE (N id.it, exp2args inner_exp, [iter2iter iter])
-  | Ast.IterE (inner_exp, (Ast.ListN times, [])) ->
+  | Ast.IterE (inner_exp, (Ast.ListN (times, None), [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
-  | Ast.IterE (inner_exp, (iter, _)) -> IterE (exp2expr inner_exp, iter2iter iter)
+  | Ast.IterE (inner_exp, (iter, ids)) ->
+      let names = List.map (fun id -> N id.it) ids in
+      IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> AccessE (exp2expr inner_exp, DotP p)
   (* conacatenation of records *)
@@ -232,7 +191,8 @@ and exp2expr exp =
           PairE (ConstructE ("MUT", []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          PairE (IterE (NameE (N "mut"), Opt), exp2expr t)
+          let mut = N "mut" in
+          PairE (IterE (NameE mut, [mut], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
           ConstructE ("MODULE", List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
@@ -280,7 +240,7 @@ and path2paths path =
 let insert_assert exp =
   match exp.it with
   | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC
-  | Ast.IterE (_, (Ast.ListN { it = VarE n; _ }, _)) -> AssertI (TopValuesC (NameE (N n.it)))
+  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> AssertI (TopValuesC (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
         { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
@@ -491,7 +451,7 @@ let rec exp2cond exp =
 
 let bound_by binding e =
   match e.it with
-  | Ast.IterE (_, (ListN { it = VarE { it = n; _ }; _ }, _)) ->
+  | Ast.IterE (_, (ListN ({ it = VarE { it = n; _ }; _ }, None), _)) ->
       if Free.Set.mem n (Free.free_exp binding).varid then
         [ insert_assert e; PopI (exp2expr e) ]
       else []
@@ -514,7 +474,7 @@ let extract_bound_names lhs rhs targets cont = match lhs with
     new_lhs, new_rhs, cont
   | _ ->
     let contains_bound_name e =
-      let names = free_expr e in
+      let names = Al.Free.free_expr e in
       names > [] && disjoint names targets in
     let traverse e =
       let conds = ref [] in
@@ -538,7 +498,7 @@ let rec letI lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
     | NameE _ -> true
-    | IterE (inner_exp, _) -> has_name inner_exp
+    | IterE (inner_exp, _, _) -> has_name inner_exp
     | _ -> false
   in
   let extract_non_names = List.fold_left_map (fun acc e ->
@@ -600,12 +560,14 @@ let rec letI lhs rhs targets cont =
           [] );
     ]
   | ConcatE (prefix, suffix) ->
-    let handle_list e = match e with
+    let handle_list e =
+     
+      match e with
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
-      | IterE (NameE _, ListN n) ->
-        Some (NameE n), [], e
+      | IterE (NameE _, _, ListN (e', None)) ->
+        Some e', [], e
       | _ ->
         None, [], e in
     let length_p, bindings_p, prefix' = handle_list prefix in
@@ -630,9 +592,23 @@ let rec rulepr2instr pr =
   match pr.it with
   (* Inductive case *)
   | Ast.IterPr (pr, (iter, ids)) ->
-      rulepr2instr pr
-      |> Transpile.iter_rule (List.map it ids) (iter2iter iter)
-      |> List.hd
+      begin match rulepr2instr pr with
+      | LetI (lhs, rhs) ->
+          let rec name_of_expr = function
+            | IterE (e, _, _) -> name_of_expr e
+            | NameE n -> n
+            | _ -> failwith "Not a name"
+          in
+          begin match List.map (fun id -> N id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
+          | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
+              LetI (IterE (lhs, lhs_iter_ids, iter2iter iter), IterE (rhs, rhs_iter_ids, iter2iter iter))
+          | _ -> failwith "Invalid IterPr"
+          end
+      | instr ->
+          Al.Print.string_of_instr (ref 0) 0 instr
+          |> Printf.sprintf "Invalid RulePr: %s"
+          |> failwith
+      end
   (* Exec_expr_const *)
   | Ast.RulePr (
     id,
@@ -661,7 +637,8 @@ let prems2instrs remain_lhs =
       | Ast.LetPr (exp1, exp2, targets) ->
           let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
           init_lhs_id();
-          letI (exp2expr exp1) (exp2expr exp2) targets instrs'
+          let al_targets = List.map (fun s -> N s) targets in
+          letI (exp2expr exp1) (exp2expr exp2) al_targets instrs'
       | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
         ( match exp2args exp with
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
@@ -710,28 +687,6 @@ let rec split_context_winstr name stack =
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
 
-let rec find_type tenv exp =
-  let to_NameE x = NameE (N x) in
-  match exp.it with
-  | Ast.VarE id -> (
-      match List.find_opt (fun (id', _, _) -> id'.it = id.it) tenv with
-      | Some (_, t, []) -> (id.it |> to_NameE, il_type2al_type t)
-      | Some (_, t, _) -> (id.it |> to_NameE, ListT (il_type2al_type t))
-      | _ ->
-          failwith
-            (id.it ^ "'s type is unknown. There must be a problem in the IL."))
-  | Ast.IterE (inner_exp, iter) ->
-      let name, ty = find_type tenv inner_exp in
-      IterE (name, iter2iter (fst iter)), ty
-  | Ast.SubE (inner_exp, _, _) ->
-      find_type tenv inner_exp
-  | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], { it = Ast.TupE [ st; fr ]; _ })
-    -> (
-      match (find_type tenv st, find_type tenv fr) with
-      | (s, StoreT), (f, FrameT) -> (PairE (s, f), StateT)
-      | _ -> (Print.string_of_exp exp |> to_NameE, TopT))
-  | _ -> (Print.string_of_exp exp |> to_NameE, TopT)
-
 let un_unify (_, rhs, prems, binds) =
   let sub, new_prems = Util.Lib.List.split_hd prems in
   let new_binds = binds in (* TODO *)
@@ -753,7 +708,7 @@ let kind_of_context e =
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Algo` *)
 let rec reduction_group2algo (instr_name, reduction_group) =
-  let (lhs, _, _, tenv) = List.hd reduction_group in
+  let (lhs, _, _, _) = List.hd reduction_group in
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let instrs = match context with
@@ -801,17 +756,17 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let name = "execution_of_" ^ instr_name in
   (* params *)
   (* TODO: retieve param for return *)
-  let params =
+  let al_params =
     if instr_name = "frame" || instr_name = "label"
     then []
     else
-      get_params winstr |> List.map (find_type tenv)
+      get_params winstr |> List.map exp2expr
   in
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability in
 
   (* Algo *)
-  Algo (name, params, body)
+  Algo (name, al_params, body)
 
 (** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
 
@@ -886,10 +841,10 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let unified_clauses = Il2il.unify_defs clauses in
-      let Ast.DefD (binds, params, _, _) = (List.hd unified_clauses).it in
-      let typed_params =
+      let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
+      let al_params =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
-        |> List.map (find_type binds)
+        |> List.map exp2expr
       in
       let returning_config = [ "instantiation"; "invocation" ] in
       let translator =
@@ -904,7 +859,7 @@ let helpers2algo partial_funcs def =
         |> Transpile.enhance_readability
         |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
 
-      let algo = Algo (id.it, typed_params, algo_body) in
+      let algo = Algo (id.it, al_params, algo_body) in
       Some algo
   | _ -> None
 

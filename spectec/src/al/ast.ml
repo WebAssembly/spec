@@ -68,8 +68,7 @@ type iter =
   | Opt
   | List
   | List1
-  | ListN of name
-  | IndexedListN of name * expr
+  | ListN of expr * name option
 
 and expr =
   (* Value *)
@@ -80,7 +79,6 @@ and expr =
   | BinopE of expr_binop * expr * expr
   (* Function Call *)
   | AppE of name * expr list
-  | MapE of name * expr list * iter list
   (* Data Structure *)
   | ListE of expr list
   | ListFillE of expr * expr
@@ -104,7 +102,7 @@ and expr =
   | ContE of expr
   (* Name *)
   | NameE of name
-  | IterE of expr * iter
+  | IterE of expr * name list * iter
   (* Yet *)
   | YetE of string
 
@@ -143,7 +141,7 @@ type instr =
   | PopI of expr
   | PopAllI of expr
   | LetI of expr * expr
-  | CallI of expr * name * expr list * iter list
+  | CallI of expr * name * expr list * (name list * iter) list
   | TrapI
   | NopI
   | ReturnI of expr option
@@ -161,9 +159,56 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of string * (expr * al_type) list * instr list
+type algorithm = Algo of string * expr list * instr list
 
 (* Smart Constructor *)
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
 let id str = NameE (N str)
+
+module Value = struct
+  let num i = NumV i
+  let string_ s = StringV s
+  let list_ l = ListV (Array.of_list l |> ref)
+  let record r = RecordV r
+  let construct tag args = ConstructV (tag, args)
+  let opt v = OptV (Some v)
+  let nont = OptV None
+  let pair v1 v2 = PairV (v1, v2)
+  let arrow v1 v2 = ArrowV (v1, v2)
+  let frame arity v = FrameV (arity, v)
+  let label arity v = LabelV (arity, v)
+  let store store_ref = StoreV store_ref
+end
+
+module Expr = struct
+  let num i = NumE i
+  let string_ s = StringE s
+  let minus e = MinusE e
+  let binop binop e1 e2 = BinopE (binop, e1, e2)
+  let app fname args = AppE (fname, args)
+  let list_ el = ListE el
+  let list_fill e time = ListFillE (e, time)
+  let concat e1 e2 = ConcatE (e1, e2)
+  let length e = LengthE e
+  let record r = RecordE r
+  let access e path = AccessE (e, path)
+  let extend target paths e direction =
+    ExtendE (target, paths, e, direction)
+  let replace target paths e = ReplaceE(target, paths, e)
+  let construct tag args = ConstructE (tag, args)
+  let opt e = OptE (Some e)
+  let none = OptE None
+  let pair e1 e2 = PairE (e1, e2)
+  let arrow e1 e2 = ArrowE (e1, e2)
+  let arity e = ArityE e
+  let frame arity e = FrameE (arity, e)
+  let get_cur_frame = GetCurFrameE
+  let label arity e = LabelE (arity, e)
+  let get_cur_label = GetCurLabelE
+  let get_cur_context = GetCurContextE
+  let cont e = ContE e
+  let name n = NameE n
+  let iter e names it = IterE (e, names, it)
+  let yet s = YetE s
+end

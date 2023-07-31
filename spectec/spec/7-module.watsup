@@ -111,12 +111,12 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if ga_ex* = $globals(externval*)
   -- if ta_ex* = $tables(externval*)
   -- if ma_ex* = $mems(externval*)
-  -- if fa* = $(|s.FUNC|+i)^(i<n_func)
-  -- if ga* = $(|s.GLOBAL|+i)^(i<n_global)
-  -- if ta* = $(|s.TABLE|+i)^(i<n_table)
-  -- if ma* = $(|s.MEM|+i)^(i<n_mem)
-  -- if ea* = $(|s.ELEM|+i)^(i<n_elem)
-  -- if da* = $(|s.DATA|+i)^(i<n_data)
+  -- if fa* = $(|s.FUNC|+i_func)^(i_func<n_func)
+  -- if ga* = $(|s.GLOBAL|+i_global)^(i_global<n_global)
+  -- if ta* = $(|s.TABLE|+i_table)^(i_table<n_table)
+  -- if ma* = $(|s.MEM|+i_mem)^(i_mem<n_mem)
+  -- if ea* = $(|s.ELEM|+i_elem)^(i_elem<n_elem)
+  -- if da* = $(|s.DATA|+i_data)^(i_data<n_data)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if m = {
       FUNC fa_ex* fa*,
@@ -133,7 +133,6 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if (s_4, ma*) = $allocmems(s_3, memtype^n_mem)
   -- if (s_5, ea*) = $allocelems(s_4, rt^n_elem, (ref*)*)
   -- if (s_6, da*) = $allocdatas(s_5, (byte*)^n_data)
-  -- if i = 0 ;; needed for animation, should be removed
 
 
 def $runelem(elem, idx) : instr*
@@ -179,8 +178,6 @@ def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL
   -- if n_data = |data*|
   -- if instr_data* = $concat_instr($rundata(data*[j], j)^(j<n_data))
   -- if start? = (START x)?
-  -- if i = 0 ;; needed for animation, should be removed
-  -- if j = 0
 
 
 def $invocation(store, funcaddr, val*) : config

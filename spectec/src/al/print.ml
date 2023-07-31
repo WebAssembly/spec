@@ -118,8 +118,8 @@ let rec string_of_iter = function
   | Opt -> "?"
   | List -> "*"
   | List1 -> "+"
-  | ListN name -> "^" ^ string_of_name name
-  | IndexedListN (name, expr) ->
+  | ListN (expr, None) -> "^" ^ string_of_expr expr
+  | ListN (expr, Some name) ->
     "^(" ^ string_of_name name ^ "<" ^ string_of_expr expr^ ")"
 
 and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
@@ -141,10 +141,6 @@ and string_of_expr = function
   | AppE (n, el) ->
       sprintf "$%s(%s)" (string_of_name n)
         (string_of_list string_of_expr "" ", " "" el)
-  | MapE (n, el, iters) ->
-      sprintf "$%s(%s)%s" (string_of_name n)
-        (string_of_list string_of_expr "" ", " "" el)
-        (string_of_iters iters)
   | ConcatE (e1, e2) ->
       sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | LengthE e -> sprintf "|%s|" (string_of_expr e)
@@ -169,7 +165,7 @@ and string_of_expr = function
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> string_of_name n
-  | IterE (e, iter) -> string_of_expr e ^ string_of_iter iter
+  | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
@@ -294,10 +290,12 @@ let rec string_of_instr index depth = function
   | LetI (n, e) ->
       sprintf "%s Let %s be %s." (make_index index depth) (string_of_expr n)
         (string_of_expr e)
-  | CallI (e1, n, el, il) ->
-      sprintf "%s Let %s be the result of computing %s." (make_index index depth)
+  | CallI (e1, n, el, nl_iterl) ->
+      sprintf "%s Let %s be the result of computing %s%s."
+        (make_index index depth)
         (string_of_expr e1)
-        (string_of_expr (MapE(n, el, il)))
+        (string_of_expr (AppE (n, el)))
+        (string_of_list (fun x -> string_of_iter (snd x)) "" "" "" nl_iterl)
   | TrapI -> sprintf "%s Trap." (make_index index depth)
   | NopI -> sprintf "%s Do nothing." (make_index index depth)
   | ReturnI e_opt ->
@@ -337,7 +335,7 @@ let string_of_algorithm = function
   | Algo (name, params, instrs) ->
       name
       ^ List.fold_left
-          (fun acc (p, _t) -> acc ^ " " ^ string_of_expr p)
+          (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
       ^ string_of_instrs 0 instrs ^ "\n"
 
@@ -364,6 +362,9 @@ let structured_string_of_al_type = function
 let rec structured_string_of_name = function
   | N s -> "N(" ^ s ^ ")"
   | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
+
+let structured_string_of_names name = 
+  List.map string_of_name name |> List.fold_left (^) ""
 
 (* expression *)
 
@@ -399,8 +400,8 @@ let rec structured_string_of_iter = function
   | Opt -> "?"
   | List -> "*"
   | List1 -> "+"
-  | ListN name -> structured_string_of_name name
-  | IndexedListN (name, expr) ->
+  | ListN (expr, None) -> structured_string_of_expr expr
+  | ListN (expr, Some name) ->
     structured_string_of_name name ^ "<" ^ structured_string_of_expr expr
 
 and structured_string_of_record_expr r =
@@ -432,14 +433,6 @@ and structured_string_of_expr = function
       ^ structured_string_of_name n
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" nl
-      ^ ")"
-  | MapE (n, nl, iters) ->
-      "MapE ("
-      ^ structured_string_of_name n
-      ^ ", "
-      ^ string_of_list structured_string_of_expr "[ " ", " " ]" nl
-      ^ ", "
-      ^ string_of_iters iters
       ^ ")"
   | ConcatE (e1, e2) ->
       "ConcatE ("
@@ -496,11 +489,12 @@ and structured_string_of_expr = function
       ^ structured_string_of_expr e2
       ^ ")"
   | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
-  | IterE (e, iter) ->
+  | IterE (e, names, iter) ->
       "IterE ("
       ^ structured_string_of_expr e
-      ^
-      ", "
+      ^ ", "
+      ^ structured_string_of_names names
+      ^ ", "
       ^ string_of_iter iter
       ^ ")"
   | ArrowE (e1, e2) ->
@@ -529,7 +523,8 @@ and structured_string_of_path = function
         (structured_string_of_expr e2)
   | DotP s -> sprintf "DotP(%s)" s
 
-and structured_string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
+and structured_string_of_paths paths =
+  List.map string_of_path paths |> List.fold_left (^) ""
 
 (* condition *)
 
@@ -616,7 +611,7 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ structured_string_of_expr e
       ^ ")"
-  | CallI (e1, n, el, il) ->
+  | CallI (e1, n, el, nl_iterl) ->
       "CallI ("
       ^ structured_string_of_expr e1
       ^ ", "
@@ -624,7 +619,7 @@ let rec structured_string_of_instr depth = function
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" el
       ^ ", "
-      ^ string_of_iters il
+      ^ string_of_list (fun x -> structured_string_of_names (fst x) ^ string_of_iter (snd x)) "" "" "" nl_iterl
       ^ ")"
   | TrapI -> "TrapI"
   | NopI -> "NopI"
@@ -679,11 +674,7 @@ let structured_string_of_algorithm = function
   | Algo (name, params, instrs) ->
       name
       ^ List.fold_left
-          (fun acc (p, t) ->
-            acc ^ " "
-            ^ structured_string_of_expr p
-            ^ ":"
-            ^ structured_string_of_al_type t)
+          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params
       ^ ":\n"
       ^ structured_string_of_instrs 1 instrs

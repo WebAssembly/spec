@@ -39,7 +39,7 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI (IterE (NameE (N name), Opt), Eq, OptE None) ] ->
+      | [ CmpI (IterE (NameE (N name), _, Opt), Eq, OptE None) ] ->
           IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N name)), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
@@ -67,7 +67,7 @@ let rec prem_to_instrs prem = match prem.it with
     | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N id.it)), prem_to_instrs prem) ]
     | Ast.List, [id] ->
         let name = Al.Ast.NameE (Al.Ast.N id.it) in
-        [ ForallI (name, Al.Ast.IterE (name, Al.Ast.List), prem_to_instrs prem) ]
+        [ ForallI (name, Al.Ast.IterE (name, [N id.it], Al.Ast.List), prem_to_instrs prem) ]
     | _ -> failwith "prem_to_instr: Invalid prem")
   | _ ->
     let s = Il.Print.string_of_prem prem in

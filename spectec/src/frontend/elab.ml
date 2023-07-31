@@ -336,11 +336,13 @@ let rec elab_iter env iter : Il.iter =
   | Opt -> Il.Opt
   | List -> Il.List
   | List1 -> Il.List1
-  | ListN e ->
-    match e.it with
-    | ParenE ({ it = CmpE ({ it = VarE id; _ }, LtOp, e); _}, _) ->
-      Il.IndexedListN (id, elab_exp env e (NatT $ e.at))
-    | _ -> Il.ListN (elab_exp env e (NatT $ e.at))
+  | ListN (e, id_opt) ->
+    Option.iter (fun id ->
+      let t = find "variable" env.vars (prefix_id id) in
+      if not (equiv_typ env t (NatT $ id.at)) then
+        error_typ e.at "iteration index" (NatT $ id.at)
+    ) id_opt;
+    Il.ListN (elab_exp env e (NatT $ e.at), id_opt)
 
 
 (* Types *)

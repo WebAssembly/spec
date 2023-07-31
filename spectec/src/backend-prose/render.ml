@@ -116,8 +116,8 @@ let rec render_iter env in_math = function
   | Al.Ast.Opt -> "^?"
   | Al.Ast.List -> "^\\ast"
   | Al.Ast.List1 -> "^{+}"
-  | Al.Ast.ListN name -> "^{" ^ render_name env name ^ "}"
-  | Al.Ast.IndexedListN (name, expr) ->
+  | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env in_math expr ^ "}"
+  | Al.Ast.ListN (expr, Some name) ->
     "^(" ^ render_name env name ^ "<" ^ render_expr env in_math expr ^ ")"
 
 and render_iters env in_math iters = List.map (render_iter env in_math) iters |> List.fold_left (^) ""
@@ -148,12 +148,6 @@ and render_expr env in_math = function
       let sn = render_name env n in
       let ses = render_list (render_expr env true) "" ", " "" es in
       let s = sprintf "%s(%s)" sn ses in
-      if in_math then s else render_math s
-  | Al.Ast.MapE (n, es, iters) ->
-      let sn = render_name env n in
-      let ses = render_list (render_expr env true) "" ", " "" es in
-      let siters = render_iters env in_math iters in
-      let s = sprintf "(%s(%s))%s" sn ses siters in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
@@ -239,12 +233,12 @@ and render_expr env in_math = function
   | Al.Ast.NameE n ->
       let sn = render_name env n in
       if in_math then sn else render_math sn
-  | Al.Ast.IterE (Al.Ast.NameE n, iter) ->
+  | Al.Ast.IterE (Al.Ast.NameE n, _, iter) ->
       let sn = render_name env n in
       let siter = render_iter env in_math iter in
       let s = sprintf "{%s}%s" sn siter in
       if in_math then s else render_math s
-  | Al.Ast.IterE (e, iter) -> 
+  | Al.Ast.IterE (e, _, iter) -> 
       let se = render_expr env in_math e in
       (* TODO need a better way to e should be enclosed in parentheses *)
       let se = if String.contains se '~' then "(" ^ se ^ ")" else se in
@@ -440,10 +434,11 @@ let rec render_al_instr env algoname index depth = function
   | Al.Ast.LetI (n, e) ->
       sprintf "%s Let %s be %s." (render_order index depth) (render_expr env false n)
         (render_expr env false e)
-  | Al.Ast.CallI (e, n, es, its) ->
-      sprintf "%s Let %s be the result of computing %s." (render_order index depth)
+  | Al.Ast.CallI (e, n, es, ns_iters) ->
+      sprintf "%s Let %s be the result of computing %s%s." (render_order index depth)
         (render_expr env false e)
-        (render_expr env false (Al.Ast.MapE(n, es, its)))
+        (render_expr env false (Al.Ast.AppE(n, es)))
+        (render_list (fun x -> render_iter env false (snd x)) "" "" "" ns_iters)
   | Al.Ast.TrapI -> sprintf "%s Trap." (render_order index depth)
   | Al.Ast.NopI -> sprintf "%s Do nothing." (render_order index depth)
   | Al.Ast.ReturnI e_opt ->
@@ -512,7 +507,7 @@ let render_algo env name params instrs =
     else
       (name, false)
   in
-  let title = render_title env uppercase name (List.map (fun p -> let (e, _) = p in e) params) in
+  let title = render_title env uppercase name (List.map (fun p -> let e = p in e) params) in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env name 0 instrs

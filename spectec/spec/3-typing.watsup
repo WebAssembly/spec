@@ -178,18 +178,18 @@ rule Blocktype_ok:
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- InstrSeq_ok: C, LABEL t_2* |- instr* : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL (t_2*) |- instr* : t_1* -> t_2*
 
 rule Instr_ok/loop:
   C |- LOOP bt instr* : t_1* -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- InstrSeq_ok: C, LABEL t_1* |- instr* : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL (t_1*) |- instr* : t_1* -> t_2*
 
 rule Instr_ok/if:
   C |- IF bt instr_1* ELSE instr_2* : t_1* I32 -> t_2*
   -- Blocktype_ok: C |- bt : t_1* -> t_2*
-  -- InstrSeq_ok: C, LABEL t_2* |- instr_1* : t_1* -> t_2*
-  -- InstrSeq_ok: C, LABEL t_2* |- instr_2* : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL (t_2*) |- instr_1* : t_1* -> t_2*
+  -- InstrSeq_ok: C, LABEL (t_2*) |- instr_2* : t_1* -> t_2*
 
 
 rule Instr_ok/br:

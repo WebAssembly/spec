@@ -208,7 +208,7 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{block}~\mathit{bt}~{\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
@@ -221,7 +221,7 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{1}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{1}^\ast}) \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{loop}~\mathit{bt}~{\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -234,9 +234,9 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{1}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}_{1}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast}~\mathsf{i{\scriptstyle32}} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}

@@ -29,74 +29,36 @@ let to_map algos =
 
 (* TODO: Perhaps automatically generate this *)
 let store : store ref = ref Record.empty
-let init_store () =
-  store := Record.empty
-    |> Record.add "FUNC" (listV [])
-    |> Record.add "GLOBAL" (listV [])
-    |> Record.add "TABLE" (listV [])
-    |> Record.add "MEM" (listV [])
-    |> Record.add "ELEM" (listV [])
-    |> Record.add "DATA" (listV [])
-
-let add_store s =
-  let concat_listv v1 v2 =
-    match v1, v2 with
-    | ListV l1, ListV l2 -> ListV (ref (Array.append !l1 !l2))
-    | _ -> failwith "Invalid store"
-  in
-
-  let func = concat_listv (Record.find "FUNC" !store) (Record.find "FUNC" s) in
-  let global = concat_listv (Record.find "GLOBAL" !store) (Record.find "GLOBAL" s) in
-  let table = concat_listv (Record.find "TABLE" !store) (Record.find "TABLE" s) in
-  let mem = concat_listv (Record.find "MEM" !store) (Record.find "MEM" s) in
-  let elem = concat_listv (Record.find "ELEM" !store) (Record.find "ELEM" s) in
-  let data = concat_listv (Record.find "DATA" !store) (Record.find "DATA" s) in
-
-  store := Record.empty
-    |> Record.add "FUNC" func
-    |> Record.add "GLOBAL" global
-    |> Record.add "TABLE" table
-    |> Record.add "MEM" mem
-    |> Record.add "ELEM" elem
-    |> Record.add "DATA" data
 
 (* Environmet *)
 
-module Env = struct
-  module EnvKey = struct
-    type t = name
+module EnvKey = struct
+  type t = name
 
-    let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
-  end
+  let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
+end
 
-  module Env' = Map.Make (EnvKey)
-
-  type t = value Env'.t * value
-
-  (* Result *)
-  let get_result (_, res) = res
-  let set_result v (env, _) = (env, v)
+module Env = struct include Map.Make (EnvKey)
 
   (* Printer *)
   let string_of_env env =
     Print.string_of_list
-      (fun (k, v) -> Print.string_of_name k ^ ": " ^ Print.string_of_value v)
-      "\n{" ",\n  " "\n}" (Env'.bindings env)
+      (fun (k, v) ->
+        Print.string_of_name k ^ ": " ^ Print.string_of_value v)
+      "\n{" ",\n  " "\n}"
+      (bindings env)
 
   (* Environment API *)
-  let empty =
-    (Env'.add (N "s") (StoreV store) Env'.empty, StringV "Undefined")
-
-  let find key (env, _) =
-    try Env'.find key env
+  let find key env =
+    try find key env
     with Not_found ->
       Printf.sprintf "The key '%s' is not in the map: %s."
         (Print.string_of_name key) (string_of_env env)
       |> prerr_endline;
       raise Not_found
-
-  let add key elem (env, res) = (Env'.add key elem env, res)
 end
+
+type env = value Env.t
 
 (* Stack *)
 
@@ -140,10 +102,11 @@ let get_current_context () =
 
 (* Evaluation Context *)
 
-exception ExitContext of (value Env.Env'.t * value) * instr list
+exception ExitContext of (env * value) * instr list
 
 (* Helper functions *)
 
+let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
 let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
 let value_to_array v = v |> value_to_growable_array |> (!)
 let value_to_list v = v |> value_to_array |> Array.to_list
@@ -154,25 +117,6 @@ let check_i32_const = function
     let n' = Int64.logand 0xFFFFFFFFL n in
     ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n') ])
   | v -> v
-
-let rec take n l =
-  if n = 0 then [], l
-  else match l with
-  | [] -> raise (Invalid_argument "take")
-  | hd :: tl ->
-    let prefix, suffix = take (n-1) tl in
-    hd :: prefix, suffix
-
-let sublist st len l =
-  let head, rest = take st l in
-  let body, tail = take len rest in
-  (head, body, tail)
-
-let rec list_set l i x =
-  match l, i with
-  | [], _ -> raise (Invalid_argument "list_set")
-  | _ :: tl, 0 -> x :: tl
-  | hd :: tl, _ -> hd :: (list_set tl (i-1) x)
 
 let rec int64_exp base exponent =
   if exponent = 0L then
@@ -186,6 +130,22 @@ let rec int64_exp base exponent =
       pow
     else
       Int64.mul base pow
+
+let is_matrix matrix =
+  match matrix with
+  | [] -> true  (* Empty matrix is considered a valid matrix *)
+  | row :: rows -> List.for_all (fun r -> List.length row = List.length r) rows
+
+let transpose matrix =
+  assert (is_matrix matrix);
+  let rec transpose' = function
+    | [] -> []
+    | [] :: _ -> []
+    | (x :: xs) :: xss ->
+      let new_row = (x :: List.map List.hd xss) in
+      let new_rows = transpose' (xs :: List.map List.tl xss) in
+      new_row :: new_rows in
+  transpose' matrix
 
 (* Interpreter *)
 
@@ -215,7 +175,6 @@ let rec eval_expr env expr =
       end
   (* Function Call *)
   | AppE (_fname, _el) -> failwith "AppE should be removed by transpiler"
-  | MapE (_fname, _el, _) -> failwith "MapE should be removed by transpiler"
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
   | ListFillE (e1, e2) ->
@@ -296,15 +255,41 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
-  | IterE (e, iter) -> ( match iter with
-    | IndexedListN (x, e') ->
-      let n = eval_expr env e' |> value_to_int in
-      List.init n (fun i ->
-        let v_i = NumV (Int64.of_int i) in
-        eval_expr (Env.add x v_i env) e
-      ) |> listV
-    (* TODO: better IterE *)
-    | _ -> eval_expr env e )
+  | IterE (inner_e, names, iter) ->
+      let ll =
+        List.map
+          (fun name ->
+            let v = Env.find name env in
+            match iter with
+            | Opt -> value_to_option v |> Option.to_list
+            | _ -> value_to_list v)
+          names
+      in
+
+      let rec transpose = function
+        | [] -> []
+        | [] :: xss -> transpose xss
+        | (x::xs) :: xss ->
+            (x :: List.map List.hd xss) :: transpose (xs :: List.map List.tl xss)
+      in
+
+      transpose ll
+      |> List.map
+        (fun values ->
+          let new_env = List.fold_left2
+            (fun acc name v -> Env.add name v acc)
+            env
+            names
+            values
+          in
+          eval_expr new_env inner_e)
+      |> if (iter = Opt)
+      then
+        (function
+          | [] -> OptV None
+          | [v] -> OptV (Some v)
+          | _ -> failwith "Unreachable")
+      else listV
   | e -> structured_string_of_expr e |> failwith
 
 and access_path env base path = match path with
@@ -414,7 +399,7 @@ let rec eval_cond env cond =
 
 type map_info = (string * value list * value list * value list)
 
-type context = Env.t * instr list * action
+type context = env * instr list * action
 and wstack = (value list * context) list
 (* Specifies what to do upon obtaining a value *)
 and action =
@@ -425,35 +410,46 @@ and action =
   (* TODO: remove all Func *)
   | Func of (value -> value)
 
-let rec assign_none lhs env =
-  match lhs with
-  | NameE name -> Env.add name (OptV None) env
-  | ConstructE (_, el) -> List.fold_left (fun acc e -> assign_none e acc) env el
-  | _ -> failwith "TODO: assign none"
+let merge_envs_with_grouping default_env envs =
+  let merge env acc =
+    let f _ v1 = function
+      | ListV arr ->
+          v1 :: Array.to_list !arr |> listV |> Option.some
+      | OptV None -> v1 |> Value.opt |> Option.some
+      | _ -> failwith "Unreachable merge"
+    in
+    Env.union f env acc
+  in
+  List.fold_right merge envs default_env
 
 let rec assign lhs rhs env =
   match lhs, rhs with
-  | IterE (NameE name, ListN n), ListV vs ->
-      env |> Env.add name rhs |> Env.add n (NumV (Int64.of_int (Array.length !vs)))
-  | NameE name, v
-  | IterE (NameE name, _), v
-  | IterE (IterE (NameE name, _), _), v
-  | IterE (IterE (IterE (NameE name, _), _), _), v ->
-      Env.add name v env
-  | IterE (e, Opt), OptV None -> assign_none e env
-  | IterE (_, List), ListV _ ->
-      print_endline "";
-      Printf.sprintf "%s = %s"
-        (string_of_expr lhs)
-        (string_of_value rhs)
-      |> print_endline;
-      let new_lhs = Distribute.distribute_lhs_iter lhs in
-      let new_rhs = Distribute.distribute_rhs_list lhs rhs in
-      Printf.sprintf "%s = %s"
-        (string_of_expr new_lhs)
-        (string_of_value new_rhs)
-      |> print_endline;
-      assign new_lhs new_rhs env
+  | NameE name, v -> Env.add name v env
+  | IterE (e, _, iter), _ ->
+      let new_env, default_rhs, rhs_list =
+        match iter, rhs with
+        | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
+        | ListN (expr, None), ListV arr ->
+            let length = Array.length !arr |> Int64.of_int |> Value.num in
+            assign expr length env, listV [], Array.to_list !arr
+        | Opt, OptV opt -> env, OptV None, Option.to_list opt
+        | _ ->
+            Printf.sprintf "Invalid iter %s with rhs %s"
+              (string_of_iter iter)
+              (string_of_value rhs)
+            |> failwith
+      in
+
+      let default_env =
+        Al.Free.free_expr e
+        |> List.map (fun n -> n, default_rhs)
+        |> List.to_seq
+        |> Env.of_seq
+      in
+
+      List.map (fun v -> assign e v Env.empty) rhs_list
+      |> merge_envs_with_grouping default_env
+      |> Env.union (fun _ _ v -> Some v) new_env
   | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
@@ -487,7 +483,7 @@ and assign_split ep es vs env =
   let prefix_len, suffix_len =
     let get_length = function
     | ListE es -> Some (List.length es)
-    | IterE (_, ListN n) -> Some (eval_expr env (NameE n) |> value_to_int)
+    | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -503,36 +499,29 @@ let assign_opt lhs_opt rhs env = match lhs_opt with
   | None -> env
   | Some lhs -> assign lhs rhs env
 
-let rec dsl_function_call lhs_opt fname args env il cont action =
+let rec dsl_function_call lhs_opt fname args iters env il cont action =
   match fname with
   (* Numerics *)
   | N name when Numerics.mem name ->
-      let rhs = Numerics.call_numerics name args in
-      interp_instrs (assign_opt lhs_opt rhs env) il cont action
-  (* Module & Runtime *)
-  | N name when AlgoMap.mem name !algo_map ->
-      call_algo lhs_opt name args env il cont action
-  | n ->
-      string_of_name n
-      |> Printf.sprintf "Invalid DSL function call: %s"
-      |> failwith
-
-and dsl_function_map lhs_opt fname front_args last_arg iters env il cont action =
-  match fname with
-  (* Numerics *)
-  | N name when Numerics.mem name ->
-      let rec pure_map f iters x = match iters with
-      | [] -> f x
-      | _iter :: iters' ->
-        let xs = value_to_list x in
-        List.map (pure_map f iters') xs |> listV in
-      let f = (fun arg -> Numerics.call_numerics name (front_args @ [arg])) in
-      let rhs = pure_map f iters last_arg in
+      let rec aux env = function
+      | [] ->
+        let vs = List.map (eval_expr env) args in
+        Numerics.call_numerics name vs
+      | (names, _dim) :: iters' ->
+        let envs =
+          names
+          |> List.map (fun n -> Env.find n env |> value_to_list)
+          |> transpose
+          |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+        in
+        List.map (fun env' -> aux env' iters') envs |> listV
+      in
+      let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
   | N name when AlgoMap.mem name !algo_map ->
       let new_action = AssignLhs(lhs_opt, (env, il, action)) in
-      map_algo name front_args last_arg iters cont new_action
+      call_algo name args iters env cont new_action
   | n ->
       string_of_name n
       |> Printf.sprintf "Invalid DSL function call: %s"
@@ -572,8 +561,8 @@ and interp_instrs env il cont action =
     | PopI e ->
         let new_env = (
           match e with
-          | IterE (NameE name, ListN n) ->
-              let i = Env.find n env |> value_to_int in
+          | IterE (NameE name, [name'], ListN (e', None)) when name = name' ->
+              let i = eval_expr env e' |> value_to_int in
               let vs = List.rev (List.init i (fun _ -> pop ())) in
               Env.add name (listV vs) env
           | _ -> (
@@ -592,7 +581,7 @@ and interp_instrs env il cont action =
         interp_with new_env icont
     | PopAllI e -> (
       match e with
-      | IterE (NameE name, List) ->
+      | IterE (NameE name, [name'], List) when name = name' ->
         let is_boundary = function FrameV _ | LabelV _ -> true | _ -> false in
         let rec pop_value acc = match !stack with
         | h :: _  when not (is_boundary h) -> pop_value (pop () :: acc)
@@ -604,22 +593,14 @@ and interp_instrs env il cont action =
     | LetI (pattern, e) ->
         let new_env = assign pattern (eval_expr env e) env in
         interp_with new_env icont
-    | CallI (lhs, f, es, iters) ->
-        let args = List.map (eval_expr env) es in
-        ( match iters with
-        | [] ->
-          dsl_function_call (Some lhs) f args env icont cont action
-        | _ ->
-          (* TODO: handle cases where iteratng argument is not the last *)
-          let front_args, last_arg = Lib.List.split_last args in
-          dsl_function_map (Some lhs) f front_args last_arg (List.rev iters) env icont cont action )
+    | CallI (lhs, f, args, iters) ->
+        dsl_function_call (Some lhs) f args iters env icont cont action
     | TrapI -> raise Exception.Trap
     | NopI -> interp icont
     | ReturnI None -> leave_algo cont action
     | ReturnI (Some e) -> return_some (eval_expr env e) cont action
     | PerformI (f, args) ->
-        let vs = List.map (eval_expr env) args in
-        dsl_function_call None f vs env icont cont action
+        dsl_function_call None f args [] env icont cont action
     | ExecuteI e ->
         let winstrs = [eval_expr env e] in
         execute_wasm_instrs winstrs env icont cont action false
@@ -712,15 +693,9 @@ and interp_algo algo args cont action =
   (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
   (* string_of_stack !stack |> print_endline; *)
 
-  let f acc param arg =
-    let pattern, _ = param in
-    match (pattern, arg) with
-    | NameE n, arg
-    | IterE (NameE n, _), arg -> Env.add n arg acc
-    | _ -> failwith "Invalid destructuring assignment"
-  in
 
-  let init_env = List.fold_left2 f Env.empty params args in
+  let env_with_store = Env.add (N "s") (StoreV store) Env.empty in
+  let init_env = List.fold_right2 assign params args env_with_store in
 
   interp_instrs init_env body cont action
 
@@ -730,33 +705,33 @@ and get_algo name = match AlgoMap.find_opt name !algo_map with
   | Some v -> v
   | None -> failwith ("Algorithm " ^ name ^ " not found")
 
-and call_algo lhs_opt name args env il cont action =
-  let algo = get_algo name in
-  let k = AssignLhs (lhs_opt, (env, il, action)) in
-  interp_algo algo args cont k
-
-and map_algo name front_args last_arg iters cont action =
+and call_algo name args iters env cont action =
   let algo = get_algo name in
   let handle_map_result result = return_some result cont in
-  let rec aux iters xs acc action = match xs with
+  let rec aux iters envs acc action = match envs with
     | [] ->
       let ys = listV (List.rev acc) in
       handle_map_result ys action
-    | x :: xs' ->
+    | env :: envs' ->
       let action' = Func (fun y ->
-        aux iters xs' (y :: acc) action
+        aux iters envs' (y :: acc) action
       ) in
-      aux' iters x action'
-  and aux' iters x action = match iters with
+      aux' iters env action'
+  and aux' iters env action = match iters with
     | [] ->
-      let args = front_args @ [ x ] in
-      interp_algo algo args cont action
-    | _iter :: iters' ->
-      let xs = value_to_list x in
-      aux iters' xs [] action
+      let vs = List.map (eval_expr env) args in
+      interp_algo algo vs cont action
+    | (names, _dim) :: iters' ->
+      let envs =
+        names
+        |> List.map (fun n -> Env.find n env |> value_to_list)
+        |> transpose
+        |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+      in
+      aux iters' envs [] action
   in
 
-  aux' iters last_arg action
+  aux' iters env action
 
 and call_toplevel_algo name args =
   let algo = get_algo name in

@@ -653,7 +653,7 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{block}~\mathit{bt}~{\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}block}]}
@@ -666,7 +666,7 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{1}^\ast} \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{1}^\ast}) \vdash {\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{loop}~\mathit{bt}~{\mathit{instr}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}loop}]}
@@ -679,9 +679,9 @@ $$
 \frac{
 \mathit{C} \vdash \mathit{bt} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{1}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}_{1}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
  \qquad
-\mathit{C}, \mathsf{label}~{\mathit{t}_{2}^\ast} \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
+\mathit{C}, \mathsf{label}~({\mathit{t}_{2}^\ast}) \vdash {\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast} \rightarrow {\mathit{t}_{2}^\ast}
 }{
 \mathit{C} \vdash \mathsf{if}~\mathit{bt}~{\mathit{instr}_{1}^\ast}~\mathsf{else}~{\mathit{instr}_{2}^\ast} : {\mathit{t}_{1}^\ast}~\mathsf{i{\scriptstyle32}} \rightarrow {\mathit{t}_{2}^\ast}
 } \, {[\textsc{\scriptsize T{-}if}]}
@@ -2331,12 +2331,12 @@ $$
  &&&\quad {\land}~{\mathit{ga}_{\mathit{ex}}^\ast} = \mathrm{globals}({\mathit{externval}^\ast}) \\
  &&&\quad {\land}~{\mathit{ta}_{\mathit{ex}}^\ast} = \mathrm{tables}({\mathit{externval}^\ast}) \\
  &&&\quad {\land}~{\mathit{ma}_{\mathit{ex}}^\ast} = \mathrm{mems}({\mathit{externval}^\ast}) \\
- &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{func}}}} \\
- &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{global}}}} \\
- &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{table}}}} \\
- &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{mem}}}} \\
- &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{elem}}}} \\
- &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}^{\mathit{i} < \mathit{n}_{\mathit{data}}}} \\
+ &&&\quad {\land}~{\mathit{fa}^\ast} = {{|\mathit{s}.\mathsf{func}|} + \mathit{i}_{\mathit{func}}^(i_func<\mathit{n}_{\mathit{func}})} \\
+ &&&\quad {\land}~{\mathit{ga}^\ast} = {{|\mathit{s}.\mathsf{global}|} + \mathit{i}_{\mathit{global}}^(i_global<\mathit{n}_{\mathit{global}})} \\
+ &&&\quad {\land}~{\mathit{ta}^\ast} = {{|\mathit{s}.\mathsf{table}|} + \mathit{i}_{\mathit{table}}^(i_table<\mathit{n}_{\mathit{table}})} \\
+ &&&\quad {\land}~{\mathit{ma}^\ast} = {{|\mathit{s}.\mathsf{mem}|} + \mathit{i}_{\mathit{mem}}^(i_mem<\mathit{n}_{\mathit{mem}})} \\
+ &&&\quad {\land}~{\mathit{ea}^\ast} = {{|\mathit{s}.\mathsf{elem}|} + \mathit{i}_{\mathit{elem}}^(i_elem<\mathit{n}_{\mathit{elem}})} \\
+ &&&\quad {\land}~{\mathit{da}^\ast} = {{|\mathit{s}.\mathsf{data}|} + \mathit{i}_{\mathit{data}}^(i_data<\mathit{n}_{\mathit{data}})} \\
  &&&\quad {\land}~{\mathit{xi}^\ast} = {\mathrm{instexport}({\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\, {\mathit{ga}_{\mathit{ex}}^\ast}~{\mathit{ga}^\ast},\, {\mathit{ta}_{\mathit{ex}}^\ast}~{\mathit{ta}^\ast},\, {\mathit{ma}_{\mathit{ex}}^\ast}~{\mathit{ma}^\ast},\, \mathit{export})^\ast} \\
  &&&\quad {\land}~\mathit{m} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{func}~{\mathit{fa}_{\mathit{ex}}^\ast}~{\mathit{fa}^\ast},\; \\
@@ -2352,7 +2352,6 @@ $$
  &&&\quad {\land}~(\mathit{s}_{4},\, {\mathit{ma}^\ast}) = \mathrm{allocmems}(\mathit{s}_{3},\, {\mathit{memtype}^{\mathit{n}_{\mathit{mem}}}}) \\
  &&&\quad {\land}~(\mathit{s}_{5},\, {\mathit{ea}^\ast}) = \mathrm{allocelems}(\mathit{s}_{4},\, {\mathit{rt}^{\mathit{n}_{\mathit{elem}}}},\, {({\mathit{ref}^\ast})^\ast}) \\
  &&&\quad {\land}~(\mathit{s}_{6},\, {\mathit{da}^\ast}) = \mathrm{allocdatas}(\mathit{s}_{5},\, {({\mathit{byte}^\ast})^{\mathit{n}_{\mathit{data}}}}) \\
- &&&\quad {\land}~\mathit{i} = 0 \\
 \end{array}
 $$
 
@@ -2408,12 +2407,10 @@ $$
  &&&\quad {\land}~\mathit{f} = \{ \begin{array}[t]{@{}l@{}}
 \mathsf{local}~\epsilon,\; \mathsf{module}~\mathit{m} \}\end{array} \\
  &&&\quad {\land}~\mathit{n}_{\mathit{elem}} = {|{\mathit{elem}^\ast}|} \\
- &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^{\mathit{i} < \mathit{n}_{\mathit{elem}}}}) \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{elem}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{runelem}({\mathit{elem}^\ast}[\mathit{i}],\, \mathit{i})^(i<\mathit{n}_{\mathit{elem}})}) \\
  &&&\quad {\land}~\mathit{n}_{\mathit{data}} = {|{\mathit{data}^\ast}|} \\
- &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^{\mathit{j} < \mathit{n}_{\mathit{data}}}}) \\
+ &&&\quad {\land}~{\mathit{instr}_{\mathit{data}}^\ast} = \mathrm{concat}_{\mathit{instr}}({\mathrm{rundata}({\mathit{data}^\ast}[\mathit{j}],\, \mathit{j})^(j<\mathit{n}_{\mathit{data}})}) \\
  &&&\quad {\land}~{\mathit{start}^?} = {(\mathsf{start}~\mathit{x})^?} \\
- &&&\quad {\land}~\mathit{i} = 0 \\
- &&&\quad {\land}~\mathit{j} = 0 \\
 \end{array}
 $$
 

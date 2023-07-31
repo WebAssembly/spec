@@ -327,7 +327,7 @@ exception Arity_mismatch
 let rec expand_iter args iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN e -> ListN (expand_exp args e)
+  | ListN (e, id_opt) -> ListN (expand_exp args e, id_opt)
 
 and expand_exp args e = expand_exp' args e.it $ e.at
 and expand_exp' args e' =
@@ -446,7 +446,10 @@ and render_iter env = function
   | Opt -> "^?"
   | List -> "^\\ast"
   | List1 -> "^{+}"
-  | ListN {it = ParenE (e, _); _} | ListN e -> "^{" ^ render_exp env e ^ "}"
+  | ListN ({it = ParenE (e, _); _}, None) | ListN (e, None) ->
+    "^{" ^ render_exp env e ^ "}"
+  | ListN (e, Some id) ->
+    "^(" ^ id.it ^ "<" ^ render_exp env e ^ ")"
 
 
 (* Types *)
@@ -693,25 +696,16 @@ let render_ruledef env d =
     render_rule_deco env " \\, " id1 id2 ""
   | _ -> failwith "render_ruledef"
 
-let render_red_conditions env = function
+let render_conditions env tabs = function
   | [] -> " & "
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
   | (Elem {it = ElsePr; _})::prems ->
     " &\\quad\n  " ^ word "otherwise, if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_prem env) prems
+    concat_map_nl (" \\\\\n " ^ tabs ^ "\\quad {\\land}~") "" (render_prem env) prems
   | prems ->
     " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&&\\quad {\\land}~" "" (render_prem env) prems
+    concat_map_nl (" \\\\\n " ^ tabs ^ "\\quad {\\land}~") "" (render_prem env) prems
 
-let render_func_conditions env = function
-  | [] -> " & "
-  | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
-  | (Elem {it = ElsePr; _})::prems ->
-    " &\\quad\n  " ^ word "otherwise, if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&\\quad {\\land}~" "" (render_prem env) prems
-  | prems ->
-    " &\\quad\n  " ^ word "if" ^ "~" ^
-    concat_map_nl " \\\\\n &&&\\quad {\\land}~" "" (render_prem env) prems
 
 let render_reddef env d =
   match d.it with
@@ -723,14 +717,14 @@ let render_reddef env d =
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
       render_exp env e1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
-        render_exp env e2 ^ render_red_conditions env prems
+        render_exp env e2 ^ render_conditions env "&&&&" prems
   | _ -> failwith "render_reddef"
 
 let render_funcdef env d =
   match d.it with
   | DefD (id1, e1, e2, prems) ->
     render_exp env (CallE (id1, e1) $ d.at) ^ " &=& " ^
-      render_exp env e2 ^ render_func_conditions env prems
+      render_exp env e2 ^ render_conditions env "&&&" prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
