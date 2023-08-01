@@ -487,13 +487,13 @@ let render_title env uppercase name note params =
   let name = if uppercase then String.uppercase_ascii name else name in
   render_expr env false (Al.Ast.ConstructE (name, note, params))
 
-let render_pred env name params instrs =
+let render_pred env name note params instrs =
   let prefix = "validation_of_" in
   assert (String.starts_with ~prefix:prefix name);
   let name =
     String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
   in
-  let title = render_title env true name Al.Ast.dummy_note params in
+  let title = render_title env true name note params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
@@ -512,8 +512,8 @@ let render_algo env name note params instrs =
   render_al_instrs env name 0 instrs
 
 let render_def env = function
-  | Pred (name, params, instrs) ->
-    "\n" ^ render_pred env name params instrs ^ "\n\n"
+  | Pred (name, note, params, instrs) ->
+    "\n" ^ render_pred env name note params instrs ^ "\n\n"
   | Algo (Al.Ast.Algo (name, note, params, instrs)) ->
     "\n" ^ render_algo env name note params instrs ^ "\n\n"
 

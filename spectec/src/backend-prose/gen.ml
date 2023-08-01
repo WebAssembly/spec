@@ -83,13 +83,15 @@ let vrule_group_to_prose ((instr_name, vrules): vrule_group) =
 
   (* name *)
   let name = "validation_of_" ^ instr_name in
+  (* note *)
+  let note = syn_of_note e.note in
   (* params *)
   let params = get_params e |> List.map exp_to_expr in
   (* body *)
   let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (Some (exp_to_expr t)) ] in
 
   (* Predicate *)
-  Pred (name, params, body)
+  Pred (name, note, params, body)
 
 let rec extract_vrules def =
   match def.it with

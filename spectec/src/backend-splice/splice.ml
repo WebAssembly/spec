@@ -263,7 +263,7 @@ let try_prose_anchor env src r sort : bool =
     in
     let prose_name = prefix ^ instr_name in
     let prose = List.find (function
-      | Backend_prose.Prose.Pred (name, _, _) when name = prose_name -> true
+      | Backend_prose.Prose.Pred (name, _, _, _) when name = prose_name -> true
       | Backend_prose.Prose.Algo (Al.Ast.Algo (name, _, _, _)) when name = prose_name -> true
       | _ -> false
     ) env.render_prose.prose in

@@ -70,7 +70,7 @@ and indented_string_of_instr i =
   result
 
 let string_of_def = function
-| Pred (name, params, instrs) ->
+| Pred (name, _, params, instrs) ->
     name
     ^ string_of_list string_of_expr " " " " "\n" params
     ^ string_of_list string_of_instr "" "\n" "\n" instrs
