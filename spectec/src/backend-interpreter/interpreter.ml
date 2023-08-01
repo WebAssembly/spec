@@ -377,7 +377,7 @@ let rec eval_cond env cond =
       | OptV (_) -> false
       | _ -> structured_string_of_cond cond |> failwith
       end
-  | IsCaseOfC (e, expected_tag) -> (
+  | IsCaseOfC (e, expected_tag, _) -> (
       match eval_expr env e with
       | ConstructV (tag, _) -> expected_tag = tag
       | _ -> false)

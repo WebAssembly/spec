@@ -186,7 +186,7 @@ and string_of_path = function
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 and string_of_cond = function
-  | NotC (IsCaseOfC (e, c)) ->
+  | NotC (IsCaseOfC (e, c, _)) ->
       sprintf "%s is not of the case %s" (string_of_expr e) c
   | NotC (IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
@@ -199,7 +199,7 @@ and string_of_cond = function
       sprintf "%s %s %s" (string_of_expr e1) (string_of_compare_op op) (string_of_expr e2)
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) s
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) c
+  | IsCaseOfC (e, c, _) -> sprintf "%s is of the case %s" (string_of_expr e) c
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
@@ -548,7 +548,7 @@ and structured_string_of_cond = function
       ^ ")"
   | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" s (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
-  | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
+  | IsCaseOfC (e, c, _) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"

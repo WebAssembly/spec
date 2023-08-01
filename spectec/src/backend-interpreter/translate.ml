@@ -520,7 +520,7 @@ let rec letI lhs rhs targets cont =
     let bindings, es' = extract_non_names es in
     [
       IfI
-        ( IsCaseOfC (rhs, tag),
+        ( IsCaseOfC (rhs, tag, note),
           LetI (ConstructE (tag, note, es'), rhs) :: bindings_to_lets bindings,
           [] );
     ]

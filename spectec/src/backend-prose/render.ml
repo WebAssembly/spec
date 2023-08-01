@@ -289,10 +289,10 @@ and render_paths env in_math paths =
 (* assume Conditions are never embedded in math blocks *)
 
 and render_cond env = function
-  | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
+  | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c, note)) ->
       sprintf "%s is not of the case %s" 
         (render_expr env false e) 
-        (render_math (render_var (N c)))
+        (render_math (render_keyword env (N c) note))
   | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
       sprintf "%s is not defined" (render_expr env false e)
   | Al.Ast.NotC (Al.Ast.ValidC e) ->
@@ -304,7 +304,7 @@ and render_cond env = function
       sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) s
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
-  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_var (N c)))
+  | Al.Ast.IsCaseOfC (e, c, note) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_keyword env (N c) note))
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"

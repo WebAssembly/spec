@@ -123,7 +123,7 @@ and cond =
   | CompareC of compare_op * expr * expr
   | ContextKindC of string * expr
   | IsDefinedC of expr
-  | IsCaseOfC of expr * string
+  | IsCaseOfC of expr * string * note
   | ValidC of expr
   (* Conditions used in assertions *)
   | TopLabelC
