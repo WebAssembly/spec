@@ -277,7 +277,7 @@ and create_sub_envs names iter env =
   let name_to_values name =
     match iter with
     | Opt -> option_name_to_list name
-    | ListN (e_n, Some _) -> eval_expr env e_n |> value_to_int |> length_to_list
+    | ListN (e_n, Some n') when name = n' -> eval_expr env e_n |> value_to_int |> length_to_list
     | _ -> name_to_list name
   in
 
