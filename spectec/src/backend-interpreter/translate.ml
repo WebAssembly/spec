@@ -13,7 +13,7 @@ let gen_fail_msg_of_exp exp =
 let gen_fail_msg_of_prem prem =
   Print.string_of_prem prem |> sprintf "Invalid premise `%s` to be AL %s."
 
-let string_of_note note = Il.Print.string_of_typ note
+let syn_of_note note = SynN (Il.Print.string_of_typ note)
 
 let list_partition_with pred xs =
   let rec list_partition acc = function
@@ -122,7 +122,7 @@ and exp2expr exp =
       IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> 
-      AccessE (exp2expr inner_exp, DotP (p, string_of_note inner_exp.note ))
+      AccessE (exp2expr inner_exp, DotP (p, syn_of_note inner_exp.note ))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
@@ -132,7 +132,7 @@ and exp2expr exp =
         | Ast.Atom name, fieldexp ->
             let extend_expr = exp2expr fieldexp in
             if nonempty extend_expr then
-              ExtendE (acc, [ DotP (name, string_of_note inner_exp.note) ], extend_expr, Front)
+              ExtendE (acc, [ DotP (name, syn_of_note inner_exp.note) ], extend_expr, Front)
             else
               acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
@@ -156,7 +156,7 @@ and exp2expr exp =
       in
       BinopE (op, lhs, rhs)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (cons, string_of_note exp.note, exp2args arg)
+  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (cons, syn_of_note exp.note, exp2args arg)
   (* Tuple *)
   | Ast.TupE exps -> ListE (List.map exp2expr exps)
   (* Call *)
@@ -186,36 +186,36 @@ and exp2expr exp =
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
-          ConstructE ("FUNC", "func", List.map exp2expr exps)
+          ConstructE ("FUNC", SynN "func", List.map exp2expr exps)
       | [ [ Ast.Atom "OK" ] ], [] ->
-          ConstructE ("OK", "datatype", [])
+          ConstructE ("OK", SynN "datatype", [])
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
-          PairE (ConstructE ("MUT", "globaltype", []), exp2expr t)
+          PairE (ConstructE ("MUT", SynN "globaltype", []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
           let mut = N "mut" in
           PairE (IterE (NameE mut, [mut], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
-          ConstructE ("MODULE", "module", List.map exp2expr el)
+          ConstructE ("MODULE", SynN "module", List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
-          ConstructE ("IMPORT", "import", List.map exp2expr el)
+          ConstructE ("IMPORT", SynN "import", List.map exp2expr el)
       | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
-          ConstructE ("GLOBAL", "global", List.map exp2expr el)
+          ConstructE ("GLOBAL", SynN "global", List.map exp2expr el)
       | [ [ Ast.Atom "TABLE" ]; [] ], el ->
-          ConstructE ("TABLE", "table", List.map exp2expr el)
+          ConstructE ("TABLE", SynN "table", List.map exp2expr el)
       | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
-          ConstructE ("MEMORY", "mem", List.map exp2expr el)
+          ConstructE ("MEMORY", SynN "mem", List.map exp2expr el)
       | [ []; [ Ast.Atom "I8" ] ], el ->
-          ConstructE ("I8", "memtype", List.map exp2expr el)
+          ConstructE ("I8", SynN "memtype", List.map exp2expr el)
       | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("ELEM", "elem", List.map exp2expr el)
+          ConstructE ("ELEM", SynN "elem", List.map exp2expr el)
       | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE ("DATA", "data", List.map exp2expr el)
+          ConstructE ("DATA", SynN "data", List.map exp2expr el)
       | [ [ Ast.Atom "START" ]; [] ], el ->
-          ConstructE ("START", "start", List.map exp2expr el)
+          ConstructE ("START", SynN "start", List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
-          ConstructE ("EXPORT", "export", List.map exp2expr el)
+          ConstructE ("EXPORT", SynN "export", List.map exp2expr el)
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
   (* Yet *)
@@ -235,7 +235,7 @@ and path2paths path =
     | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
     | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
     | Ast.DotP (p, Atom a) -> 
-        (path2paths' p) @ [ DotP (a, string_of_note p.note) ]
+        (path2paths' p) @ [ DotP (a, syn_of_note p.note) ]
     | _ -> failwith "unreachable"
   in
   path2paths' path
@@ -411,7 +411,7 @@ let rec rhs2instrs exp =
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ ExecuteI (ConstructE (atomid, string_of_note exp.note, exp2args argexp)) ]
+      [ ExecuteI (ConstructE (atomid, syn_of_note exp.note, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -759,7 +759,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   (* name *)
   let name = "execution_of_" ^ instr_name in
   (* note *)
-  let note = string_of_note winstr.note in
+  let note = syn_of_note winstr.note in
   (* params *)
   (* TODO: retieve param for return *)
   let al_params =
@@ -847,7 +847,7 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let name = id.it in
-      let note = "funcdef" in
+      let note = DecN in
       let unified_clauses = Il2il.unify_defs clauses in
       let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
       let al_params =

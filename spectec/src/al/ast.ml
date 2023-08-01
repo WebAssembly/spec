@@ -2,7 +2,9 @@ include Record
 
 (* AL Note *)
 
-type note = string
+type note = 
+  | SynN of string
+  | DecN
 
 (* AL Type *)
 
@@ -167,7 +169,7 @@ type algorithm = Algo of string * note * expr list * instr list
 
 (* Smart Constructor *)
 
-let dummy_note = ""
+let dummy_note = SynN ""
 
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
