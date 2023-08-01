@@ -8,7 +8,7 @@ Modules
 Allocation
 ~~~~~~~~~~
 
-.. _exec-funcs:
+.. _def-funcs:
 
 %{prose-fctn: funcs}
 
@@ -16,7 +16,7 @@ Allocation
 
 $${definition: funcs}
 
-.. _exec-globals:
+.. _def-globals:
 
 %{prose-fctn: globals}
 
@@ -24,7 +24,7 @@ $${definition: funcs}
 
 $${definition: globals}
 
-.. _exec-tables:
+.. _def-tables:
 
 %{prose-fctn: tables}
 
@@ -32,7 +32,7 @@ $${definition: globals}
 
 $${definition: tables}
 
-.. _exec-mems:
+.. _def-mems:
 
 %{prose-fctn: mems}
 
@@ -40,7 +40,7 @@ $${definition: tables}
 
 $${definition: mems}
 
-.. _exec-allocfunc:
+.. _def-allocfunc:
 
 %{prose-fctn: allocfunc}
 
@@ -48,7 +48,7 @@ $${definition: mems}
 
 $${definition: allocfunc}
 
-.. _exec-allocfuncs:
+.. _def-allocfuncs:
 
 %{prose-fctn: allocfuncs}
 
@@ -56,7 +56,7 @@ $${definition: allocfunc}
 
 $${definition: allocfuncs}
 
-.. _exec-allocglobal:
+.. _def-allocglobal:
 
 %{prose-fctn: allocglobal}
 
@@ -64,7 +64,7 @@ $${definition: allocfuncs}
 
 $${definition: allocglobal}
 
-.. _exec-allocglobals:
+.. _def-allocglobals:
 
 %{prose-fctn: allocglobals}
 
@@ -72,7 +72,7 @@ $${definition: allocglobal}
 
 $${definition: allocglobals}
 
-.. _exec-alloctable:
+.. _def-alloctable:
 
 %{prose-fctn: alloctable}
 
@@ -80,7 +80,7 @@ $${definition: allocglobals}
 
 $${definition: alloctable}
 
-.. _exec-alloctables:
+.. _def-alloctables:
 
 %{prose-fctn: alloctables}
 
@@ -88,7 +88,7 @@ $${definition: alloctable}
 
 $${definition: alloctables}
 
-.. _exec-allocmem:
+.. _def-allocmem:
 
 %{prose-fctn: allocmem}
 
@@ -96,7 +96,7 @@ $${definition: alloctables}
 
 $${definition: allocmem}
 
-.. _exec-allocmems:
+.. _def-allocmems:
 
 %{prose-fctn: allocmems}
 
@@ -104,7 +104,7 @@ $${definition: allocmem}
 
 $${definition: allocmems}
 
-.. _exec-allocelem:
+.. _def-allocelem:
 
 %{prose-fctn: allocelem}
 
@@ -112,7 +112,7 @@ $${definition: allocmems}
 
 $${definition: allocelem}
 
-.. _exec-allocelems:
+.. _def-allocelems:
 
 %{prose-fctn: allocelems}
 
@@ -120,7 +120,7 @@ $${definition: allocelem}
 
 $${definition: allocelems}
 
-.. _exec-allocdata:
+.. _def-allocdata:
 
 %{prose-fctn: allocdata}
 
@@ -128,7 +128,7 @@ $${definition: allocelems}
 
 $${definition: allocdata}
 
-.. _exec-allocdatas:
+.. _def-allocdatas:
 
 %{prose-fctn: allocdatas}
 
@@ -136,7 +136,7 @@ $${definition: allocdata}
 
 $${definition: allocdatas}
 
-.. _exec-instexport:
+.. _def-instexport:
 
 %{prose-fctn: instexport}
 
@@ -144,7 +144,7 @@ $${definition: allocdatas}
 
 $${definition: instexport}
 
-.. _exec-allocmodule:
+.. _def-allocmodule:
 
 %{prose-fctn: allocmodule}
 
@@ -157,7 +157,7 @@ $${definition: allocmodule}
 Instantiation
 ~~~~~~~~~~~~~
 
-.. _exec-concat_instr:
+.. _def-concat_instr:
 
 %{prose-fctn: concat_instr}
 
@@ -165,7 +165,7 @@ Instantiation
 
 $${definition: concat_instr}
 
-.. _exec-instantiation:
+.. _def-instantiation:
 
 
 %{prose-fctn: instantiation}
@@ -179,7 +179,7 @@ $${definition: instantiation}
 Invocation
 ~~~~~~~~~~
 
-.. _exec-invocation:
+.. _def-invocation:
 
 %{prose-fctn: invocation}
 

@@ -226,7 +226,7 @@ let gen_macro_dec env =
   let dec = !(env.dec) in
   Set.fold
     (fun keyword sdec -> 
-      let skeyword = gen_macro_def env ("exec-" ^ keyword) keyword "F" "funcdef" in
+      let skeyword = gen_macro_def env ("def-" ^ keyword) keyword "F" "funcdef" in
       sdec ^ skeyword ^ "\n")
     dec "" 
 

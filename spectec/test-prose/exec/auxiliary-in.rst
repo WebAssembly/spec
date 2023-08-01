@@ -8,7 +8,7 @@ Auxiliary
 General Constants
 ~~~~~~~~~~~~~~~~~
 
-.. _exec-Ki:
+.. _def-Ki:
 
 %{prose-fctn: Ki}
 
@@ -21,7 +21,7 @@ $${definition: Ki}
 General Functions
 ~~~~~~~~~~~~~~~~~
 
-.. _exec-min:
+.. _def-min:
 
 %{prose-fctn: min}
 
@@ -34,7 +34,7 @@ $${definition: min}
 Auxiliary Definitions on Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-size:
+.. _def-size:
 
 %{prose-fctn: size}
 
