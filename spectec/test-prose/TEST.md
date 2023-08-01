@@ -600,7 +600,7 @@ rundata (DATA byte* x_0?) i
 2. Let ?(y_0) be x_0?.
 3. Assert: Due to validation, y_0 is of the case MEMORY.
 4. Let (MEMORY y_1 instr*) be y_0.
-5. Let 0 be y_1.
+5. Assert: Due to validation, y_1 is 0.
 6. Let n be |byte*|.
 7. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 

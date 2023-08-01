@@ -507,8 +507,12 @@ let rec letI lhs rhs targets cont =
       let fresh = get_lhs_name() in
       [ e, fresh ] @ acc, fresh
   ) [] in
-  let bindings_to_lets bindings =
-    List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+  let translate_bindings bindings =
+    List.fold_right (fun (l, r) cont ->
+      match l with
+      | _ when Al.Free.free_expr l = [] -> [ IfI (CompareC (Eq, r, l), cont, []) ]
+      | _ -> letI l r targets cont
+    ) bindings cont
   in
   match lhs with
   | ConstructE (tag, es) ->
@@ -516,18 +520,18 @@ let rec letI lhs rhs targets cont =
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: bindings_to_lets bindings,
+          LetI (ConstructE (tag, es'), rhs) :: translate_bindings bindings,
           [] );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: bindings_to_lets bindings
+    LetI (ListE es', rhs) :: translate_bindings bindings
     else
     [
       IfI
         ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: bindings_to_lets bindings,
+          LetI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
@@ -583,7 +587,7 @@ let rec letI lhs rhs targets cont =
       IfI
         ( cond,
           LetI (ConcatE (prefix', suffix'), rhs)
-            :: bindings_to_lets (bindings_p @ bindings_s),
+            :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
   | NameE (N s) when s = "f" || String.starts_with ~prefix:"f_" s ->
