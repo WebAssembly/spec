@@ -170,7 +170,8 @@ and exp2expr exp =
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
       let record = List.fold_left f Record.empty expfields in
-      RecordE record
+      let note = syn_of_note exp.note in
+      RecordE (record, note)
   | Ast.MixE (op, e) -> (
       let exps =
         match e.it with

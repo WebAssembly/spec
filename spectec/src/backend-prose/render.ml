@@ -216,7 +216,7 @@ and render_expr env in_math = function
         (render_expr env in_math e1) 
         (render_paths env in_math ps)
         (render_expr env in_math e2)
-  | Al.Ast.RecordE r ->
+  | Al.Ast.RecordE (r, _) ->
       let keys = Al.Record.Record.keys r in
       let sfields =
         List.map

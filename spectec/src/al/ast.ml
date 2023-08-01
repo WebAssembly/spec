@@ -90,7 +90,7 @@ and expr =
   | ListFillE of expr * expr
   | ConcatE of expr * expr
   | LengthE of expr
-  | RecordE of expr record
+  | RecordE of expr record * note
   | AccessE of expr * path
   | ExtendE of expr * path list * expr * extend_dir
   | ReplaceE of expr * path list * expr
@@ -200,7 +200,7 @@ module Expr = struct
   let list_fill e time = ListFillE (e, time)
   let concat e1 e2 = ConcatE (e1, e2)
   let length e = LengthE e
-  let record r = RecordE r
+  let record r note = RecordE (r, note)
   let access e path = AccessE (e, path)
   let extend target paths e direction =
     ExtendE (target, paths, e, direction)

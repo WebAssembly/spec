@@ -191,7 +191,7 @@ let rec eval_expr env expr =
   | LengthE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> RecordV (Record.map (fun e -> eval_expr env e) r)
+  | RecordE (r, _) -> RecordV (Record.map (fun e -> eval_expr env e) r)
   | AccessE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
@@ -471,7 +471,7 @@ let rec assign lhs rhs env =
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
   | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
-  | RecordE r1, RecordV r2 when Record.keys r1 = Record.keys r2 ->
+  | RecordE (r1, _), RecordV r2 when Record.keys r1 = Record.keys r2 ->
       Record.fold (fun k v acc -> (Record.find k r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
