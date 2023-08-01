@@ -9,18 +9,22 @@ module Map = Map.Make(String)
 
 (* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
    such that it is macro-compatible *)
-let macroify s = 
-  let del acc c =
-    if c = '.' || c = '_' then acc
-    else acc ^ (String.make 1 c) 
+let macroify s note = 
+  let is_alphanumeric c = match c with
+    | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' -> true
+    | _ -> false
   in
-  String.fold_left del "" s
+  let del acc c =
+    if is_alphanumeric c then acc ^ (String.make 1 c)
+    else acc 
+  in
+  String.fold_left del "" (s ^ "" ^ note)
 
 (* Environment *)
 
 type env =
   { section: string Map.t ref;
-    syn: Set.t Map.t ref;
+    syn: (Set.t * Set.t) Map.t ref;
     dec: Set.t ref;
   }
 
@@ -30,11 +34,21 @@ let get_dec env = !(env.dec)
 
 let find_section env s = Map.mem s !(env.section)
 
-let find_syn env parent child = match Map.find_opt parent !(env.syn) with
-  | Some children when Set.mem child children -> Some (macroify child)
+let rec find_syn' env nonterminals variant = match nonterminals with
+  | nonterminal :: rest -> (match find_syn env nonterminal variant with
+    | Some s -> Some s
+    | None -> find_syn' env rest variant)
   | _ -> None
 
-let find_dec env s = Option.map macroify (Set.find_opt s !(env.dec))
+and find_syn env syntax variant = match Map.find_opt syntax !(env.syn) with
+  | Some (terminals, nonterminals) ->
+      if Set.mem variant terminals then
+        Some (macroify variant syntax)
+      else
+        find_syn' env (Set.elements nonterminals) variant
+  | _ -> None
+
+let find_dec env s = Option.map (fun s -> macroify s "funcdef") (Set.find_opt s !(env.dec))
 
 let find_keyword env s note = match note with
   | SynN parent -> find_syn env parent s
@@ -108,10 +122,11 @@ let rec extract_typ_keywords typ =
 let extract_syn_keywords def =
   match def.it with
   | El.Ast.SynD (id, subid, typ, _) -> 
-      let parent = if subid.it = "" then id.it else id.it ^ "/" ^ subid.it in
-      let children = extract_typ_keywords typ.it in
-      let children = List.fold_left (fun acc child -> Set.add child acc) Set.empty children in
-      Some (parent, children)
+      let syntax = if subid.it = "" then id.it else id.it ^ "/" ^ subid.it in
+      let variants = extract_typ_keywords typ.it in
+      let variants = List.fold_left (fun acc child -> Set.add child acc) Set.empty variants in
+      let (terminals, nonterminals) = Set.partition (fun word -> String.uppercase_ascii word = word) variants in
+      Some (syntax, terminals, nonterminals)
   | _ -> None
 
 let extract_dec_keywords def =
@@ -126,7 +141,7 @@ let env inputs outputs el =
   let syn = 
     List.fold_left
       (fun acc def -> match extract_syn_keywords def with
-        | Some (parent, children) -> Map.add parent children acc
+        | Some (syntax, terminals, nonterminals) -> Map.add syntax (terminals, nonterminals) acc
         | _ -> acc)
       Map.empty el
   in
@@ -168,59 +183,43 @@ let gen_macro_keyword s =
   in
   String.fold_left escape "" s
 
-let gen_macro_def env ref s =
-  (* TODO hardcoded to avoid duplicate macros *)
-  if s = "_F" then ""
-  else if s = "LABEL_" then ".. |label| mathdef:: {\\X{label}}"
-  else
-    let xref = match Map.find_opt ref !(env.section) with
-      | Some path -> sprintf "\\xref{%s}{%s}" path ref
-      | None -> ""
-    in
-    let typ = if s = (String.uppercase_ascii s) then "K" else "X" in
-    sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
-      (macroify s) xref typ (gen_macro_keyword s)
+let gen_macro_def env ref s typ note =
+  let xref = match Map.find_opt ref !(env.section) with
+    | Some path -> sprintf "\\xref{%s}{%s}" path ref
+    | None -> ""
+  in
+  sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
+    (macroify s note) xref typ (gen_macro_keyword s)
 
-let gen_macro_syn env seen =
+let gen_macro_syn env =
   let syn = !(env.syn) in
   Map.fold
-    (fun parent children acc ->
-      let ssyn, seen = acc in
-      let schildren, seen = Set.fold
-        (fun keyword acc ->
-          let schildren, seen = acc in
-          let (skeyword, seen) = 
-            if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-            else (gen_macro_def env ("syntax-" ^ parent) keyword, Set.add keyword seen)
-          in
-          (schildren ^ skeyword ^ "\n", seen))
-        children ("", seen) 
+    (fun syntax variants ssyn ->
+      let terminals, _ = variants in
+      let svariants = Set.fold
+        (fun keyword svariants ->
+          let svariant = gen_macro_def env ("syntax-" ^ syntax) keyword "K" syntax in
+          svariants ^ svariant ^ "\n")
+        terminals "" 
       in
-      let ssyn = ssyn
-        ^ ".. " ^ (String.uppercase_ascii parent) ^ "\n"
-        ^ ".. " ^ (String.make (String.length parent) '-') ^ "\n"
-        ^ schildren
-        ^ "\n"
-      in
-      (ssyn, seen)
-    )
-    syn ("", seen)
+      ssyn
+      ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
+      ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
+      ^ svariants
+      ^ "\n")
+    syn "" 
 
-let gen_macro_dec env seen =
+let gen_macro_dec env =
   let dec = !(env.dec) in
   Set.fold
-    (fun keyword acc -> 
-      let sdec, seen = acc in
-      let skeyword, seen =
-        if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
-        else (gen_macro_def env ("exec-" ^ keyword) keyword, Set.add keyword seen)
-      in
-      (sdec ^ skeyword ^ "\n", seen))
-    dec ("", seen)
+    (fun keyword sdec -> 
+      let skeyword = gen_macro_def env ("exec-" ^ keyword) keyword "F" "funcdef" in
+      sdec ^ skeyword ^ "\n")
+    dec "" 
 
 let gen_macro' env =
-  let (ssyn, seen) = gen_macro_syn env Set.empty in
-  let (sdec, _seen) = gen_macro_dec env seen in
+  let ssyn = gen_macro_syn env in
+  let sdec = gen_macro_dec env in
   macro_template
   ^ ".. Syntax\n.. ------\n\n"
   ^ ssyn
