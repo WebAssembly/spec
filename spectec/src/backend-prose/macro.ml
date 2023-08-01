@@ -108,7 +108,7 @@ let rec extract_typ_keywords typ =
 let extract_syn_keywords def =
   match def.it with
   | El.Ast.SynD (id, subid, typ, _) -> 
-      let parent = if subid.it = "" then id.it else id.it ^ "-" ^ subid.it in
+      let parent = if subid.it = "" then id.it else id.it ^ "/" ^ subid.it in
       let children = extract_typ_keywords typ.it in
       let children = List.fold_left (fun acc child -> Set.add child acc) Set.empty children in
       Some (parent, children)

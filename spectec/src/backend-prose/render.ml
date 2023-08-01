@@ -97,6 +97,8 @@ let render_al_mathop = function
 (* assume Names and Iters are always embedded in math blocks *)
 
 let rec render_var = function
+  | Al.Ast.N s when s = "inverse_of_bytes_" -> "inverse\\_of\\_bytes"
+  | Al.Ast.N s when s = "exec_expr_const" -> "exec\\_expr\\_const"
   | Al.Ast.N s -> (match String.index_opt s '_' with 
     | Some idx ->
         let base = String.sub s 0 idx in
@@ -473,7 +475,7 @@ and render_al_instrs env algoname depth instrs =
 
 (* Prose *)
 
-let render_title env uppercase name params =
+let render_title env uppercase name note params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *) 
   let name = 
@@ -483,7 +485,7 @@ let render_title env uppercase name params =
     else name 
   in
   let name = if uppercase then String.uppercase_ascii name else name in
-  render_expr env false (Al.Ast.ConstructE (name, Al.Ast.dummy_note, params))
+  render_expr env false (Al.Ast.ConstructE (name, note, params))
 
 let render_pred env name params instrs =
   let prefix = "validation_of_" in
@@ -491,12 +493,12 @@ let render_pred env name params instrs =
   let name =
     String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
   in
-  let title = render_title env true name params in
+  let title = render_title env true name Al.Ast.dummy_note params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
-let render_algo env name _note params instrs =
+let render_algo env name note params instrs =
   let prefix = "execution_of_" in
   let (name, uppercase) =
     if String.starts_with ~prefix:prefix name then
@@ -504,7 +506,7 @@ let render_algo env name _note params instrs =
     else
       (name, false)
   in
-  let title = render_title env uppercase name (List.map (fun p -> let e = p in e) params) in
+  let title = render_title env uppercase name note (List.map (fun p -> let e = p in e) params) in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env name 0 instrs

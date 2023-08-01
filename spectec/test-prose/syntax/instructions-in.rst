@@ -4,7 +4,7 @@ Instructions
 ------------
 
 .. _syntax-sx:
-.. _syntax-instr-numeric:
+.. _syntax-instr/numeric:
 .. _syntax-unop_IXX:
 .. _syntax-unop_FXX:
 .. _syntax-binop_IXX:
@@ -44,7 +44,7 @@ $${syntax+:
   cvtop}
 }
 
-.. _syntax-instr-reference:
+.. _syntax-instr/reference:
 .. _syntax-instructions-reference:
 
 Reference Instructions
@@ -52,7 +52,7 @@ Reference Instructions
 
 $${syntax: instr/reference}
 
-.. _syntax-instr-state:
+.. _syntax-instr/state:
 .. _syntax-instructions-state:
 
 State Instructions
@@ -60,7 +60,7 @@ State Instructions
 
 $${syntax: instr/state}
 
-.. _syntax-instr-control:
+.. _syntax-instr/control:
 .. _syntax-instructions-control:
 
 Control Instructions
