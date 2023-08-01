@@ -127,6 +127,18 @@ External Values
 
 $${syntax: externval}
 
+.. _exec-runtime-stack:
+
+Stack
+~~~~~
+
+.. _syntax-frame:
+
+Activation Frames
+.................
+
+$${syntax: frame}
+
 .. _syntax-admininstr:
 .. _exec-runtime-administrative-instructions:
 

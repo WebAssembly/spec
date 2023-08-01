@@ -122,11 +122,14 @@ let rec extract_typ_keywords typ =
 let extract_syn_keywords def =
   match def.it with
   | El.Ast.SynD (id, subid, typ, _) -> 
-      let syntax = if subid.it = "" then id.it else id.it ^ "/" ^ subid.it in
+      let topsyntax, syntax = 
+        if subid.it = "" then (None, id.it) 
+        else (Some id.it, id.it ^ "-" ^ subid.it) 
+      in
       let variants = extract_typ_keywords typ.it in
       let variants = List.fold_left (fun acc child -> Set.add child acc) Set.empty variants in
       let (terminals, nonterminals) = Set.partition (fun word -> String.uppercase_ascii word = word) variants in
-      Some (syntax, terminals, nonterminals)
+      Some (topsyntax, syntax, terminals, nonterminals)
   | _ -> None
 
 let extract_dec_keywords def =
@@ -141,7 +144,17 @@ let env inputs outputs el =
   let syn = 
     List.fold_left
       (fun acc def -> match extract_syn_keywords def with
-        | Some (syntax, terminals, nonterminals) -> Map.add syntax (terminals, nonterminals) acc
+        | Some (topsyntax, syntax, terminals, nonterminals) -> 
+            let acc = Map.add syntax (terminals, nonterminals) acc in
+            (match topsyntax with
+            | Some topsyntax -> 
+                let terminals, nonterminals = 
+                  (match Map.find_opt topsyntax acc with
+                  | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
+                  | None -> (Set.empty, Set.singleton syntax))
+                in
+                Map.add topsyntax (terminals, nonterminals) acc
+            | None -> acc)
         | _ -> acc)
       Map.empty el
   in
