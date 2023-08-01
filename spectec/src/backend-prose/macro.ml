@@ -1,14 +1,26 @@
 open Printf
 open Util.Source
+open Al.Ast
 
 module Set = Set.Make(String)
 module Map = Map.Make(String)
+
+(* Helpers *)
+
+(* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
+   such that it is macro-compatible *)
+let macroify s = 
+  let del acc c =
+    if c = '.' || c = '_' then acc
+    else acc ^ (String.make 1 c) 
+  in
+  String.fold_left del "" s
 
 (* Environment *)
 
 type env =
   { section: string Map.t ref;
-    syn: string list Map.t ref;
+    syn: Set.t Map.t ref;
     dec: Set.t ref;
   }
 
@@ -18,19 +30,15 @@ let get_dec env = !(env.dec)
 
 let find_section env s = Map.mem s !(env.section)
 
-let all_keywords env =
-  let syn = !(env.syn) in
-  let syn = Map.fold
-    (fun _parent children acc -> 
-      List.fold_left (fun acc child -> Set.add child acc) acc children)
-    syn Set.empty
-  in
-  let dec = !(env.dec) in
-  let dec = Set.fold
-    (fun keyword acc -> Set.add keyword acc)
-    dec Set.empty
-  in
-  Set.union syn dec
+let find_syn env parent child = match Map.find_opt parent !(env.syn) with
+  | Some children when Set.mem child children -> Some (macroify child)
+  | _ -> None
+
+let find_dec env s = Option.map macroify (Set.find_opt s !(env.dec))
+
+let find_keyword env s note = match note with
+  | SynN parent -> find_syn env parent s
+  | DecN -> find_dec env s
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
@@ -102,6 +110,7 @@ let extract_syn_keywords def =
   | El.Ast.SynD (id, subid, typ, _) -> 
       let parent = if subid.it = "" then id.it else id.it ^ "-" ^ subid.it in
       let children = extract_typ_keywords typ.it in
+      let children = List.fold_left (fun acc child -> Set.add child acc) Set.empty children in
       Some (parent, children)
   | _ -> None
 
@@ -150,15 +159,6 @@ let macro_template = {|
 
 |}
 
-(* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
-   such that it is macro-compatible *)
-let macroify s = 
-  let del acc c =
-    if c = '.' || c = '_' then acc
-    else acc ^ (String.make 1 c) 
-  in
-  String.fold_left del "" s
-
 let gen_macro_keyword s = 
   let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
   let escape acc c =
@@ -186,15 +186,15 @@ let gen_macro_syn env seen =
   Map.fold
     (fun parent children acc ->
       let ssyn, seen = acc in
-      let schildren, seen = List.fold_left
-        (fun acc keyword ->
+      let schildren, seen = Set.fold
+        (fun keyword acc ->
           let schildren, seen = acc in
           let (skeyword, seen) = 
             if Set.mem keyword seen then (".. (duplicate) " ^ keyword, seen)
             else (gen_macro_def env ("syntax-" ^ parent) keyword, Set.add keyword seen)
           in
           (schildren ^ skeyword ^ "\n", seen))
-        ("", seen) children
+        children ("", seen) 
       in
       let ssyn = ssyn
         ^ ".. " ^ (String.uppercase_ascii parent) ^ "\n"
