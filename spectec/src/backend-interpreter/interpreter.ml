@@ -255,6 +255,8 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
+  | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
+      Env.find name env
   | IterE (inner_e, names, iter) ->
       env
       |> create_sub_envs names iter
@@ -419,6 +421,8 @@ let merge_envs_with_grouping default_env envs =
 let rec assign lhs rhs env =
   match lhs, rhs with
   | NameE name, v -> Env.add name v env
+  | IterE (NameE n, _, List), ListV _ -> (* Optimized assign for simple IterE(NameE, ...) *)
+      Env.add n rhs env
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
         match iter, rhs with
@@ -517,7 +521,7 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       |> failwith
 
 and interp_instrs env il cont action =
-  (* if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1; *)
+  if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
   (* Printexc.get_callstack 1000 |> Printexc.raw_backtrace_length |> print_int; print_endline ""; *)
   match il with
   | [] -> leave_algo cont action
