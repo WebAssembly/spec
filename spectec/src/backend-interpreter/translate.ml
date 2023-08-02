@@ -662,11 +662,13 @@ let reduction2instrs remain_lhs (_, rhs, prems, _) =
   prems2instrs remain_lhs prems (rhs2instrs rhs)
 
 (* TODO: Perhaps this should be tail recursion *)
-let rec split_context_winstr name stack =
-  let wrap e = e $$ no_region % (Ast.VarT ("TOP" $ no_region) $ no_region) in
+let rec split_context_winstr ?(note : Ast.typ option) name stack =
+  let top = Ast.VarT ("TOP" $ no_region) $ no_region in
+  let wrap typ e = e $$ no_region % typ in
   match stack with
   | [] ->
-    [ ([], []), None ], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.TupE []) |> wrap) |> wrap
+    let typ = Option.get note in
+    [ ([], []), None ], Ast.CaseE (Ast.Atom (String.uppercase_ascii name), (Ast.TupE []) |> wrap top) |> wrap typ
   | hd :: tl ->
     match hd.it with
     | Ast.CaseE (Ast.Atom name', _)
@@ -681,13 +683,13 @@ let rec split_context_winstr name stack =
 
       let context, winstr = split_context_winstr name inner_stack in
 
-      let hole = Ast.TextE "_" |> wrap in
+      let hole = Ast.TextE "_" |> wrap top in
       let holed_args = List.map (fun x -> if x = list_arg then hole else x) args in
       let ctx = { hd with it = Ast.CaseE (a, { e with it = Ast.TupE holed_args }) } in
       let new_context = ((tl, []), Some ctx) :: context in
       new_context, winstr
     | _ ->
-      let context, winstr = split_context_winstr name tl in
+      let context, winstr = split_context_winstr ~note:(hd.note) name tl in
       let ((vs, is), c), inners = Util.Lib.List.split_hd context in
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
