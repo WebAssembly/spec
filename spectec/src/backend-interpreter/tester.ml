@@ -167,7 +167,7 @@ let builtin () =
     |> append_tables
     |> append_memories in
 
-  let wraped_store = Record.map Fun.id listV sto in
+  let wraped_store = Record.map listV sto in
   let module_inst =
     Record.empty
     |> Record.add "FUNC" (listV [])

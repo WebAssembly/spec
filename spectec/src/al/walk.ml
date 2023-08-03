@@ -50,7 +50,7 @@ let rec walk_expr f e =
   | ListFillE (e1, e2) -> ListFillE (new_ e1, new_ e2)
   | ConcatE (e1, e2) -> ConcatE (new_ e1, new_ e2)
   | LengthE e' -> LengthE (new_ e')
-  | RecordE r -> RecordE (Record.map Fun.id new_ r)
+  | RecordE r -> RecordE (Record.map new_ r)
   | AccessE (e, p) -> AccessE (new_ e, walk_path f p)
   | ExtendE (e1, ps, e2, dir) -> ExtendE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
   | ReplaceE (e1, ps, e2) -> ReplaceE (new_ e1, List.map (walk_path f) ps, new_ e2)

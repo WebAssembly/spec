@@ -28,13 +28,17 @@ module Record = struct include List
     let ref = assoc k r in
     ref := v
 
-  let map fk fv =
-    map (fun (k, v) -> fk k, !v |> fv |> ref)
+  let map fv =
+    map (fun (k, v) -> k, !v |> fv |> ref)
 
   let fold f r acc =
     fold_left (fun acc (k, v) -> f k !v acc) acc r
 
   let filter f =
     filter (fun (k, v) -> f k !v)
+
+  let to_list r = r
+
+  let of_list r = r
 
 end

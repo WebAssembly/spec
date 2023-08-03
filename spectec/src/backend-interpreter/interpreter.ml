@@ -150,6 +150,12 @@ let transpose matrix =
       new_row :: new_rows in
   transpose' matrix
 
+(* (keyword, 'b) Record -> (string, b') Record -> bool *) 
+let has_same_keys r1 r2 =
+  let k1 = List.sort String.compare (List.map string_of_keyword (Record.keys r1)) in
+  let k2 = List.sort String.compare (Record.keys r2) in
+  k1 = k2
+
 (* Interpreter *)
 
 let cnt = ref 0
@@ -194,7 +200,10 @@ let rec eval_expr env expr =
   | LengthE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> RecordV (Record.map (fun k -> string_of_keyword k) (fun e -> eval_expr env e) r)
+  | RecordE r -> 
+      let elist = Record.to_list r in
+      let vlist = List.map (fun (k, e) -> ((string_of_keyword k), !e |> eval_expr env |> ref)) elist in
+      RecordV (Record.of_list vlist)
   | AccessE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
@@ -472,7 +481,7 @@ let rec assign lhs rhs env =
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
   | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
-  | RecordE r1, RecordV r2 when List.sort String.compare (List.map string_of_keyword (Record.keys r1)) = List.sort String.compare (Record.keys r2) ->
+  | RecordE r1, RecordV r2 when has_same_keys r1 r2 ->
       Record.fold (fun k v acc -> (Record.find (string_of_keyword k) r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
