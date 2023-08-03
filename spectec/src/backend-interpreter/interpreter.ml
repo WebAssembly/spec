@@ -255,34 +255,12 @@ let rec eval_expr env expr =
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
+  | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
+      Env.find name env
   | IterE (inner_e, names, iter) ->
-      let ll =
-        List.map
-          (fun name ->
-            let v = Env.find name env in
-            match iter with
-            | Opt -> value_to_option v |> Option.to_list
-            | _ -> value_to_list v)
-          names
-      in
-
-      let rec transpose = function
-        | [] -> []
-        | [] :: xss -> transpose xss
-        | (x::xs) :: xss ->
-            (x :: List.map List.hd xss) :: transpose (xs :: List.map List.tl xss)
-      in
-
-      transpose ll
-      |> List.map
-        (fun values ->
-          let new_env = List.fold_left2
-            (fun acc name v -> Env.add name v acc)
-            env
-            names
-            values
-          in
-          eval_expr new_env inner_e)
+      env
+      |> create_sub_envs names iter
+      |> List.map (fun new_env -> eval_expr new_env inner_e)
       |> if (iter = Opt)
       then
         (function
@@ -291,6 +269,24 @@ let rec eval_expr env expr =
           | _ -> failwith "Unreachable")
       else listV
   | e -> structured_string_of_expr e |> failwith
+
+and create_sub_envs names iter env =
+  let name_to_value name = Env.find name env in
+  let option_name_to_list name = name |> name_to_value |> value_to_option |> Option.to_list in
+  let name_to_list name = name |> name_to_value |> value_to_list in
+  let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in
+
+  let name_to_values name =
+    match iter with
+    | Opt -> option_name_to_list name
+    | ListN (e_n, Some n') when name = n' -> eval_expr env e_n |> value_to_int |> length_to_list
+    | _ -> name_to_list name
+  in
+
+  names
+  |> List.map name_to_values
+  |> transpose
+  |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
 
 and access_path env base path = match path with
   | IndexP e' ->
@@ -425,6 +421,8 @@ let merge_envs_with_grouping default_env envs =
 let rec assign lhs rhs env =
   match lhs, rhs with
   | NameE name, v -> Env.add name v env
+  | IterE (NameE n, _, List), ListV _ -> (* Optimized assign for simple IterE(NameE, ...) *)
+      Env.add n rhs env
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
         match iter, rhs with
@@ -507,14 +505,9 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       | [] ->
         let vs = List.map (eval_expr env) args in
         Numerics.call_numerics name vs
-      | (names, _dim) :: iters' ->
-        let envs =
-          names
-          |> List.map (fun n -> Env.find n env |> value_to_list)
-          |> transpose
-          |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
-        in
-        List.map (fun env' -> aux env' iters') envs |> listV
+      | (names, dim) :: iters' ->
+        let envs = create_sub_envs names dim env in
+        List.map (fun env' -> aux env' iters') envs |> listV (* TODO: handle case where dim is Opt *)
       in
       let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
@@ -528,7 +521,7 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       |> failwith
 
 and interp_instrs env il cont action =
-  (* if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1; *)
+  if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
   (* Printexc.get_callstack 1000 |> Printexc.raw_backtrace_length |> print_int; print_endline ""; *)
   match il with
   | [] -> leave_algo cont action
@@ -721,13 +714,8 @@ and call_algo name args iters env cont action =
     | [] ->
       let vs = List.map (eval_expr env) args in
       interp_algo algo vs cont action
-    | (names, _dim) :: iters' ->
-      let envs =
-        names
-        |> List.map (fun n -> Env.find n env |> value_to_list)
-        |> transpose
-        |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
-      in
+    | (names, dim) :: iters' ->
+      let envs = create_sub_envs names dim env in
       aux iters' envs [] action
   in
 

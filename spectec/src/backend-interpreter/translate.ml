@@ -512,8 +512,12 @@ let rec letI lhs rhs targets cont =
       let fresh = get_lhs_name() in
       [ e, fresh ] @ acc, fresh
   ) [] in
-  let bindings_to_lets bindings =
-    List.fold_right (fun (l, r) cont -> letI l r targets cont) bindings cont
+  let translate_bindings bindings =
+    List.fold_right (fun (l, r) cont ->
+      match l with
+      | _ when Al.Free.free_expr l = [] -> [ IfI (CompareC (Eq, r, l), cont, []) ]
+      | _ -> letI l r targets cont
+    ) bindings cont
   in
   match lhs with
   | ConstructE (tag, note, es) ->
@@ -521,18 +525,18 @@ let rec letI lhs rhs targets cont =
     [
       IfI
         ( IsCaseOfC (rhs, tag, note),
-          LetI (ConstructE (tag, note, es'), rhs) :: bindings_to_lets bindings,
+          LetI (ConstructE (tag, note, es'), rhs) :: translate_bindings bindings,
           [] );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: bindings_to_lets bindings
+    LetI (ListE es', rhs) :: translate_bindings bindings
     else
     [
       IfI
         ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: bindings_to_lets bindings,
+          LetI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
@@ -588,9 +592,12 @@ let rec letI lhs rhs targets cont =
       IfI
         ( cond,
           LetI (ConcatE (prefix', suffix'), rhs)
-            :: bindings_to_lets (bindings_p @ bindings_s),
+            :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
+  | NameE (N s) when s = "f" || String.starts_with ~prefix:"f_" s ->
+      Al.Print.string_of_expr rhs |> print_endline;
+      LetI (lhs, rhs) :: PushI (FrameE (NumE 0L, lhs)) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
 let rec rulepr2instr pr =
@@ -835,10 +842,9 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
-let config_helper2instrs clause =
+let config_helper2instrs return clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  rhs2instrs e2
-    |> prems2instrs [] prems
+  rhs2instrs e2 @ return |> prems2instrs [] prems
 
 let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
@@ -857,10 +863,12 @@ let helpers2algo partial_funcs def =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map exp2expr
       in
-      let returning_config = [ "instantiation"; "invocation" ] in
+      (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
-        if List.mem id.it returning_config then
-          config_helper2instrs
+        if id.it = "instantiation" then
+          [ReturnI (Some (NameE (N "m")))] |> config_helper2instrs
+        else if id.it = "invocation" then
+          [PopI (NameE (N "val")); ReturnI (Some (ListE ([NameE (N "val")])))] |> config_helper2instrs
         else
           normal_helper2instrs
       in

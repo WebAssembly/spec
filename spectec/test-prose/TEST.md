@@ -36,6 +36,10 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 ...Animation failed
 == IL Validation...
 == Translating to AL...
+{ LOCAL: val^k ++ $default_(t)*; MODULE: m; }
+{ LOCAL: []; MODULE: m; }
+{ LOCAL: []; MODULE: m_init; }
+{ LOCAL: []; MODULE: m; }
 =================
  Generated prose
 =================
@@ -600,7 +604,7 @@ rundata (DATA byte* x_0?) i
 2. Let ?(y_0) be x_0?.
 3. Assert: Due to validation, y_0 is of the case MEMORY.
 4. Let (MEMORY y_1 instr*) be y_0.
-5. Let 0 be y_1.
+5. Assert: Due to validation, y_1 is 0.
 6. Let n be |byte*|.
 7. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
 
@@ -612,33 +616,39 @@ concat_instr x_0*
 
 instantiation module externval*
 1. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-2. If module is of the case MODULE, then:
-  a. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
-  b. Let f_init be { LOCAL: []; MODULE: m_init; }.
-  c. Let n_data be |data*|.
-  d. Let n_elem be |elem*|.
-  e. Let (START x)? be start?.
-  f. Let (GLOBAL globaltype instr_1*)* be global*.
-  g. Let (ELEM reftype instr_2** elemmode?)* be elem*.
-  h. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
-  i. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
-  j. Let ref** be $exec_expr_const(instr_2*)**.
-  k. Let val* be $exec_expr_const(instr_1*)*.
-  l. Let m be $allocmodule(module, externval*, val*, ref**).
-  m. Let f be { LOCAL: []; MODULE: m; }.
-  n. Execute the sequence (instr_elem*).
-  o. Execute the sequence (instr_data*).
-  p. If x is defined, then:
-    1) Execute (CALL x).
+2. Assert: Due to validation, module is of the case MODULE.
+3. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
+4. Let f_init be { LOCAL: []; MODULE: m_init; }.
+5. Push the activation of f_init with arity 0 to the stack.
+6. Let n_data be |data*|.
+7. Let n_elem be |elem*|.
+8. Let (START x)? be start?.
+9. Let (GLOBAL globaltype instr_1*)* be global*.
+10. Let (ELEM reftype instr_2** elemmode?)* be elem*.
+11. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
+12. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
+13. Let ref** be $exec_expr_const(instr_2*)**.
+14. Let val* be $exec_expr_const(instr_1*)*.
+15. Let m be $allocmodule(module, externval*, val*, ref**).
+16. Let f be { LOCAL: []; MODULE: m; }.
+17. Push the activation of f with arity 0 to the stack.
+18. Execute the sequence (instr_elem*).
+19. Execute the sequence (instr_data*).
+20. If x is defined, then:
+  a. Execute (CALL x).
+21. Return m.
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. If $funcinst()[fa].CODE is of the case FUNC, then:
-  a. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
-  b. Let [valtype_param^n]->[valtype_res^k] be functype.
-  c. Push val^n to the stack.
-  d. Execute (CALL_ADDR fa).
+3. Push the activation of f with arity 0 to the stack.
+4. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
+5. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
+6. Let [valtype_param^n]->[valtype_res^k] be functype.
+7. Push val^n to the stack.
+8. Execute (CALL_ADDR fa).
+9. Pop val from the stack.
+10. Return [val].
 
 execution_of_unreachable
 1. Trap.
@@ -846,10 +856,11 @@ execution_of_call_addr a
     3) Assert: Due to validation, there are at least k values on the top of the stack.
     4) Pop val^k from the stack.
     5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-    6) Push the activation of f with arity n to the stack.
-    7) Let L be the label_n{[]}.
-    8) Push L to the stack.
-    9) Jump to instr*.
+    6) Push the activation of f with arity 0 to the stack.
+    7) Push the activation of f with arity n to the stack.
+    8) Let L be the label_n{[]}.
+    9) Push L to the stack.
+    10) Jump to instr*.
 
 execution_of_ref.func x
 1. If x < |$funcaddr()|, then:
@@ -1095,7 +1106,9 @@ execution_of_data.drop x
 1. Perform $with_data(x, []).
 
 exec_expr_const instr*
-1. Return (I32.CONST 42).
+1. Execute the sequence (instr*).
+2. Pop val from the stack.
+3. Return val.
 
 == Complete.
 ```

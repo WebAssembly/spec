@@ -374,7 +374,7 @@ let app_remover =
   let side_effect f e = f e; e in
 
   let iter_stack = ref [] in
-  let names = ref [ref []] in
+  let names = ref [ref []] in (* Upon leavaing an expr, the head contains all names apearing in it *)
   let calls = ref [] in
   let requires = ref [] in
 
@@ -386,6 +386,9 @@ let app_remover =
     let hd, tl = Util.Lib.List.split_hd !calls in
     calls := tl;
     hd in
+  let remove_iter_var = function
+    | ListN (e, Some _) -> ListN (e, None)
+    | iter -> iter in
 
   (* pre_expr *)
   let push_iter = side_effect (function
@@ -403,10 +406,7 @@ let app_remover =
         if x = x' then Some y else None
       ) !requires
     ) names |> dedup in
-    let new_iter = match iter with
-      | ListN (e, Some _) -> ListN (e, None)
-      | _ -> iter in
-    (new_names, new_iter) in
+    (new_names, iter) in
 
   let call_id = ref 0 in
   let call_prefix = "r_" in
@@ -420,30 +420,45 @@ let app_remover =
       let fresh_name = get_fresh() in
       let rec to_fresh_exp iter = match iter with
       | [] -> NameE fresh_name
-      | (_, i) :: tl -> IterE (to_fresh_exp tl, [fresh_name], i) in
+      | (_, i) :: tl ->
+        let new_i = remove_iter_var i in
+        IterE (to_fresh_exp tl, [fresh_name], new_i) in
 
       let iters = !iter_stack |> List.map rewrite_names in
 
-      let fresh_exp = to_fresh_exp iters in
-
       (* Append new CallI instruction *)
+      let fresh_exp = to_fresh_exp iters in
       add_call (fresh_exp, f, args, iters);
 
-      let required_names = List.concat_map fst iters in
+      (* Find all required names for this new fresh variable *)
+      let required_names = intersect_list
+        (List.concat_map fst iters)
+        !(List.hd !names)
+      in
       requires := List.map (fun n -> (fresh_name, n)) required_names @ !requires;
+
       (* Discard all names appearing in args *)
       names := (ref []) :: (List.tl !names);
+
       NameE (fresh_name)
     | _ -> e in
 
   let pop_iter e = match e with
     | IterE (e, ns, iter) ->
+      (* Pop iter from the stack *)
       iter_stack := List.tl !iter_stack;
+
+      (* Rewrite itered names *)
       let new_ns = List.filter (fun n' ->
         List.exists (fun n -> (n' = n) || List.mem (n', n) !requires) ns
       ) !(List.hd !names) in
-      let new_e = IterE (e, new_ns, iter) in
-      new_e
+
+      (* Rewrite dim *)
+      let new_iter = match iter with
+      | ListN (e, Some n) -> if List.mem n new_ns then iter else ListN (e, None)
+      | _ -> iter in
+
+      IterE (e, new_ns, new_iter)
     | _ -> e in
 
   let pop_names = side_effect (fun e ->

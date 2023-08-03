@@ -36,10 +36,14 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 ...Animation failed
 == IL Validation...
 == Translating to AL...
+{ LOCAL: val^k ++ $default_(t)*; MODULE: m; }
+{ LOCAL: []; MODULE: m; }
+{ LOCAL: []; MODULE: m_init; }
+{ LOCAL: []; MODULE: m; }
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 27/27 (100.00%)
+- 24/27 (88.89%)
 
 ===== forward.wast =====
 - 4/4 (100.00%)
@@ -48,7 +52,8 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 440/440 (100.00%)
 
 ===== table_copy.wast =====
-- 1649/1649 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/1649 (0.00%)
 
 ===== ref_null.wast =====
 - 2/2 (100.00%)
@@ -57,28 +62,30 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 45/45 (100.00%)
 
 ===== unwind.wast =====
-- 49/49 (100.00%)
+- 46/49 (93.88%)
 
 ===== call.wast =====
-- 70/70 (100.00%)
+- 47/70 (67.14%)
 
 ===== local_get.wast =====
-- 19/19 (100.00%)
+- 18/19 (94.74%)
 
 ===== fac.wast =====
-- 6/6 (100.00%)
+- 3/6 (50.00%)
 
 ===== func.wast =====
-- 96/96 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 53/96 (55.21%)
 
 ===== exports.wast =====
 - 9/9 (100.00%)
 
 ===== local_set.wast =====
-- 19/19 (100.00%)
+- 1/19 (5.26%)
 
 ===== linking.wast =====
-- 90/90 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 18/90 (20.00%)
 
 ===== float_literals.wast =====
 - 83/83 (100.00%)
@@ -87,7 +94,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 48/48 (100.00%)
 
 ===== if.wast =====
-- 123/123 (100.00%)
+- 78/123 (63.41%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -96,7 +103,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 52/52 (100.00%)
+- 39/52 (75.00%)
 
 ===== labels.wast =====
 - 25/25 (100.00%)
@@ -108,92 +115,88 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- 4338/4338 (100.00%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 4100/4338 (94.51%)
 
 ===== stack.wast =====
-- 5/5 (100.00%)
+- 3/5 (60.00%)
 
 ===== loop.wast =====
-- 77/77 (100.00%)
+- 64/77 (83.12%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
 
 ===== endianness.wast =====
-- 68/68 (100.00%)
+- 40/68 (58.82%)
 
 ===== return.wast =====
-- 63/63 (100.00%)
+- 48/63 (76.19%)
 
 ===== store.wast =====
-- 9/9 (100.00%)
+- 0/9 (0.00%)
 
 ===== memory_redundancy.wast =====
-- 4/4 (100.00%)
+- 3/4 (75.00%)
 
 ===== i32.wast =====
 - 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- 63/63 (100.00%)
+- 61/63 (96.83%)
 
 ===== bulk.wast =====
-- 66/66 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/66 (0.00%)
 
 ===== traps.wast =====
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 55/55 (100.00%)
+- 38/55 (69.09%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 84/84 (100.00%)
+- 64/84 (76.19%)
 
 ===== call_indirect.wast =====
-- 132/132 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/132 (0.00%)
 
 ===== load.wast =====
-- 37/37 (100.00%)
+- 25/37 (67.57%)
 
 ===== memory_fill.wast =====
-- 20/20 (100.00%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
+- 4/20 (20.00%)
 
 ===== memory_size.wast =====
-- 36/36 (100.00%)
+- 20/36 (55.56%)
 
 ===== imports.wast =====
 - print_i32: 13
-- print_i32_f32: 14 42
 - print_i32: 13
-- print_i32: 13
-- print_f32: 13
-- print_i32: 13
-- print_i64: 24
-- print_f64_f64: 25 53
-- print_i64: 24
-- print_f64: 24
-- print_f64: 24
-- print_f64: 24
-- print_i32: 13
-- 34/34 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 5/34 (14.71%)
 
 ===== left-to-right.wast =====
-- 95/95 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/95 (0.00%)
 
 ===== ref_is_null.wast =====
-- 11/11 (100.00%)
+- 10/11 (90.91%)
 
 ===== memory_trap.wast =====
-- 180/180 (100.00%)
+- 167/180 (92.78%)
 
 ===== br_table.wast =====
-- 149/149 (100.00%)
+- 138/149 (92.62%)
 
 ===== select.wast =====
-- 118/118 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/118 (0.00%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -202,7 +205,8 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 140/140 (100.00%)
 
 ===== elem.wast =====
-- 37/37 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/37 (0.00%)
 
 ===== table_get.wast =====
 - 9/9 (100.00%)
@@ -211,42 +215,39 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 2500/2500 (100.00%)
 
 ===== start.wast =====
-- print_i32: 1
-- print_i32: 2
-- print: ()
-- 7/7 (100.00%)
+- 0/7 (0.00%)
 
 ===== float_exprs.wast =====
-- 794/794 (100.00%)
+- 792/794 (99.75%)
 
 ===== float_memory.wast =====
 - 60/60 (100.00%)
 
 ===== table_size.wast =====
-- 36/36 (100.00%)
+- 20/36 (55.56%)
 
 ===== table_set.wast =====
-- 18/18 (100.00%)
+- 14/18 (77.78%)
 
 ===== f32_cmp.wast =====
 - 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- 88/88 (100.00%)
+- 62/88 (70.45%)
 
 ===== ref_func.wast =====
-- 8/8 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/8 (0.00%)
 
 ===== names.wast =====
 - print_i32: 42
-- print_i32: 123
-- 482/482 (100.00%)
+- 481/482 (99.79%)
 
 ===== unreached-valid.wast =====
 - 5/5 (100.00%)
 
 ===== table_fill.wast =====
-- 35/35 (100.00%)
+- 29/35 (82.86%)
 
 ===== data.wast =====
 - 14/14 (100.00%)
@@ -258,17 +259,20 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- 38/38 (100.00%)
+- 35/38 (92.11%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
-- 25/25 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 3/25 (12.00%)
 
 ===== table_init.wast =====
-- 662/662 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/662 (0.00%)
 
 ===== global.wast =====
-- 58/58 (100.00%)
+- Uncaught exception: Module Instantiation failed due to No frame
+- 0/58 (0.00%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -277,11 +281,11 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 2500/2500 (100.00%)
 
 ===== br.wast =====
-- 76/76 (100.00%)
+- 58/76 (76.32%)
 
 ===== nop.wast =====
-- 83/83 (100.00%)
+- 65/83 (78.31%)
 
-Total [23778/23778] (100.00%; Normalized 100.00%)
+Total [20163/23778] (84.80%; Normalized 70.43%)
 == Complete.
 ```
