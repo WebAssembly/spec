@@ -78,17 +78,13 @@ type vrule_group =
   string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
 (** Main translation for typing rules **)
-let vrule_group_to_prose ((_name, vrules): vrule_group) =
-  let (winstr, t, prems, _tenv) = vrules |> List.hd in
+let vrule_group_to_prose ((instr_name, vrules): vrule_group) =
+  let (e, t, prems, _tenv) = vrules |> List.hd in
 
   (* name *)
-  let winstr_name = match winstr.it with
-  | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
-  | _ -> failwith "unreachable"
-  in
-  let name = name2keyword winstr_name winstr.note in
+  let name = name2keyword ("validation_of_" ^ instr_name) e.note in
   (* params *)
-  let params = get_params winstr |> List.map exp_to_expr in
+  let params = get_params e |> List.map exp_to_expr in
   (* body *)
   let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (Some (exp_to_expr t)) ] in
 

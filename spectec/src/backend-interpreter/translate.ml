@@ -767,11 +767,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       [ YetI "TODO" ] in
 
   (* name *)
-  let winstr_name = match winstr.it with
-  | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
-  | _ -> failwith "unreachable"
-  in
-  let name = name2keyword winstr_name winstr.note in
+  let name = name2keyword ("execution_of_" ^ instr_name) winstr.note in
   (* params *)
   (* TODO: retieve param for return *)
   let al_params =

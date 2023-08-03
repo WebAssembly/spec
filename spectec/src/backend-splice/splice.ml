@@ -255,11 +255,18 @@ let try_prose_anchor env src r sort : bool =
     let instr_name = parse_id src "instrname" in
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
+    let prefix = (match sort with
+      | "prose-pred" -> "validation_of_"
+      | "prose-algo" -> "execution_of_"
+      | "prose-fctn" -> ""
+      | _ -> failwith "unreachable")
+    in
+    let prose_name = prefix ^ instr_name in
     let prose = List.find (function
-      | Backend_prose.Prose.Pred ((name, _), _, _) when name = instr_name -> true
+      | Backend_prose.Prose.Pred ((name, _), _, _) when name = prose_name -> true
       | Backend_prose.Prose.Algo algo -> (match algo with
-        | Al.Ast.RuleA ((name, _), _, _) when name = instr_name -> true
-        | Al.Ast.FuncA (name, _, _) when name = instr_name -> true
+        | Al.Ast.RuleA ((name, _), _, _) when name = prose_name -> true
+        | Al.Ast.FuncA (name, _, _) when name = prose_name -> true
         | _ -> false)
       | _ -> false)
       env.render_prose.prose in

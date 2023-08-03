@@ -489,6 +489,11 @@ let render_funcname_title env fname params =
 
 let render_pred env name params instrs =
   let (pname, syntax) = name in
+  let prefix = "validation_of_" in
+  assert (String.starts_with ~prefix:prefix pname);
+  let pname =
+    String.sub pname (String.length prefix) ((String.length pname) - (String.length prefix))
+  in
   let keyword = (String.uppercase_ascii pname, syntax) in
   let title = render_keyword_title env keyword params in
   title ^ "\n" ^
@@ -497,6 +502,11 @@ let render_pred env name params instrs =
 
 let render_rule env name params instrs =
   let (rname, syntax) = name in
+  let prefix = "execution_of_" in
+  assert (String.starts_with ~prefix:prefix rname);
+  let rname =
+    String.sub rname (String.length prefix) ((String.length rname) - (String.length prefix))
+  in
   let keyword = (String.uppercase_ascii rname, syntax) in
   let title = render_keyword_title env keyword params in
   title ^ "\n" ^
