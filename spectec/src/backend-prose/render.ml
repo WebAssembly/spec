@@ -96,22 +96,23 @@ let render_al_mathop = function
 
 (* assume Names and Iters are always embedded in math blocks *)
 
-let rec render_var = function
-  | Al.Ast.N s when s = "inverse_of_bytes_" -> "inverse\\_of\\_bytes"
-  | Al.Ast.N s when s = "exec_expr_const" -> "exec\\_expr\\_const"
-  | Al.Ast.N s -> (match String.index_opt s '_' with 
+let rec render_name name = match name with
+  | "inverse_of_bytes_" -> "inverse\\_of\\_bytes"
+  | "exec_expr_const" -> "exec\\_expr\\_const"
+  | _ -> (match String.index_opt name '_' with 
     | Some idx ->
-        let base = String.sub s 0 idx in
-        let subscript = String.sub s (idx + 1) ((String.length s) - idx - 1) in
+        let base = String.sub name 0 idx in
+        let subscript = String.sub name (idx + 1) ((String.length name) - idx - 1) in
         base ^ "_{" ^ subscript ^ "}"
-    | _ -> s)
-  | Al.Ast.SubN (n, s) -> sprintf "%s_%s" (render_var n) s
+    | _ -> name)
 
-and render_keyword env name note = match name with
-  | Al.Ast.N s -> (match Macro.find_keyword env.macro s note with
-    | Some sn -> "\\" ^ sn
-    | None -> render_var name)
-  | Al.Ast.SubN _ -> render_var name
+and render_keyword env keyword = match Macro.find_keyword env.macro keyword with
+  | Some sn -> "\\" ^ sn
+  | None -> render_name (Al.Print.string_of_keyword keyword)
+
+and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
+  | Some sfn -> "\\" ^ sfn
+  | None -> render_name funcname 
 
 let rec render_iter env = function
   | Al.Ast.Opt -> "^?"
@@ -119,7 +120,7 @@ let rec render_iter env = function
   | Al.Ast.List1 -> "^{+}"
   | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env true expr ^ "}"
   | Al.Ast.ListN (expr, Some name) ->
-      "^{(" ^ render_var name ^ "<" ^ render_expr env true expr ^ ")}"
+      "^{(" ^ render_name name ^ "<" ^ render_expr env true expr ^ ")}"
 
 and render_iters env iters = List.map (render_iter env) iters |> List.fold_left (^) ""
 
@@ -145,10 +146,10 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.AppE (n, es) ->
-      let sn = render_keyword env n Al.Ast.DecN in
+  | Al.Ast.AppE (fn, es) ->
+      let sfn = render_funcname env fn in
       let ses = render_list (render_expr env true) "" ", " "" es in
-      let s = sprintf "%s(%s)" sn ses in
+      let s = sprintf "%s(%s)" sfn ses in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
@@ -216,25 +217,22 @@ and render_expr env in_math = function
         (render_expr env in_math e1) 
         (render_paths env in_math ps)
         (render_expr env in_math e2)
-  | Al.Ast.RecordE (r, note) ->
-      let keys = Al.Record.Record.keys r in
-      let sfields =
-        List.map
-          (fun k ->
-            let v = Al.Record.Record.find k r in
-            render_keyword env (Al.Ast.N k) note ^ "~" ^ render_expr env true v)
-          keys
+  | Al.Ast.RecordE r ->
+      let sr = 
+        Al.Record.Record.fold
+          (fun k v acc -> acc @ [ render_keyword env k ^ "~" ^ render_expr env true v ])
+          r []
       in
-      let sr = render_list Fun.id "\\{ " ", " " \\}" sfields in
+      let sr = render_list Fun.id "\\{" ", " "\\}" sr in
       if in_math then sr else render_math sr
   | Al.Ast.ContE e -> sprintf "the continuation of %s" (render_expr env in_math e)
   | Al.Ast.LabelE (e1, e2) ->
       sprintf "the label whose arity is %s and whose continuation is %s" (render_expr env in_math e1) (render_expr env in_math e2)
   | Al.Ast.NameE n ->
-      let sn = render_var n in
+      let sn = render_name n in
       if in_math then sn else render_math sn
   | Al.Ast.IterE (Al.Ast.NameE n, _, iter) ->
-      let sn = render_var n in
+      let sn = render_name n in
       let siter = render_iter env iter in
       let s = sprintf "{%s}{%s}" sn siter in
       if in_math then s else render_math s
@@ -248,20 +246,20 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (s, note, []) ->
-      let s = render_keyword env (Al.Ast.N s) note in
-      if in_math then s else render_math s
+  | Al.Ast.ConstructE (tag, []) ->
+      let stag = render_keyword env tag in
+      if in_math then stag else render_math stag
   (* TODO a hard-coded hint for CONST *)
-  | Al.Ast.ConstructE (s, note, [ e1; e2 ]) when s = "CONST" ->
-      let s = render_keyword env (Al.Ast.N s) note in
+  | Al.Ast.ConstructE (("CONST", _) as tag, [ e1; e2 ])->
+      let stag = render_keyword env tag in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
-      let s = sprintf "%s.%s~%s" se1 s se2 in
+      let s = sprintf "%s.%s~%s" se1 stag se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (s, note, es) ->
-      let s = render_keyword env (Al.Ast.N s) note in
+  | Al.Ast.ConstructE (tag, es) ->
+      let stag = render_keyword env tag in
       let ses = render_list (render_expr env true) "" "~" "" es in
-      let s = sprintf "%s~%s" s ses in
+      let s = sprintf "%s~%s" stag ses in
       if in_math then s else render_math s
   | Al.Ast.OptE (Some e) -> 
       let se = render_expr env true e in
@@ -278,7 +276,7 @@ and render_path env = function
   | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env true e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
-  | Al.Ast.DotP (s, note) -> sprintf ".%s" (render_keyword env (Al.Ast.N s) note)
+  | Al.Ast.DotP s -> sprintf ".%s" (render_keyword env s)
 
 and render_paths env in_math paths = 
   let spaths = List.map (render_path env) paths |> List.fold_left (^) "" in
@@ -289,10 +287,10 @@ and render_paths env in_math paths =
 (* assume Conditions are never embedded in math blocks *)
 
 and render_cond env = function
-  | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c, note)) ->
+  | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" 
         (render_expr env false e) 
-        (render_math (render_keyword env (N c) note))
+        (render_math (render_keyword env c))
   | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
       sprintf "%s is not defined" (render_expr env false e)
   | Al.Ast.NotC (Al.Ast.ValidC e) ->
@@ -302,9 +300,9 @@ and render_cond env = function
       sprintf "%s %s %s" (render_cond env c1) (render_al_logop op) (render_cond env c2)
   | Al.Ast.CompareC (op, e1, e2) ->
       sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
-  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) s
+  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_keyword env s)
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
-  | Al.Ast.IsCaseOfC (e, c, note) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_keyword env (N c) note))
+  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_keyword env c))
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
@@ -422,7 +420,7 @@ let rec render_al_instr env algoname index depth = function
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
   (* TODO hardcoded for PopI on label or frame by raw string *)
-  | Al.Ast.PopI (Al.Ast.NameE (Al.Ast.N s)) when s = "the label" || s = "the frame" ->
+  | Al.Ast.PopI (Al.Ast.NameE s) when s = "the label" || s = "the frame" ->
       sprintf "%s Pop %s from the stack." (render_order index depth) s
   | Al.Ast.PopI e ->
       sprintf "%s Pop %s from the stack." (render_order index depth)
@@ -475,46 +473,59 @@ and render_al_instrs env algoname depth instrs =
 
 (* Prose *)
 
-let render_title env uppercase name note params =
+let render_keyword_title env keyword params =
   (* TODO a workaround, for algorithms named label or name
      that are defined as LABEL_ or FRAME_ in the dsl *) 
-  let name = 
-    if name = "label" then "label_" 
-    else if name = "frame" then "frame_" 
-    else if name = "default" then "default_"
-    else name 
+  let (name, syntax) = keyword in 
+  let keyword = 
+    if name = "LABEL" then ("LABEL_", syntax)
+    else if name = "FRAME" then ("FRAME_", syntax)
+    else keyword 
   in
-  let name = if uppercase then String.uppercase_ascii name else name in
-  render_expr env false (Al.Ast.ConstructE (name, note, params))
+  render_expr env false (Al.Ast.ConstructE (keyword, params))
 
-let render_pred env name note params instrs =
+let render_funcname_title env fname params =
+  render_expr env false (Al.Ast.AppE (fname, params))
+
+let render_pred env name params instrs =
+  let (pname, syntax) = name in
   let prefix = "validation_of_" in
-  assert (String.starts_with ~prefix:prefix name);
-  let name =
-    String.sub name (String.length prefix) ((String.length name) - (String.length prefix))
+  assert (String.starts_with ~prefix:prefix pname);
+  let pname =
+    String.sub pname (String.length prefix) ((String.length pname) - (String.length prefix))
   in
-  let title = render_title env true name note params in
+  let keyword = (String.uppercase_ascii pname, syntax) in
+  let title = render_keyword_title env keyword params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_prose_instrs env 0 instrs
 
-let render_algo env name note params instrs =
+let render_rule env name params instrs =
+  let (rname, syntax) = name in
   let prefix = "execution_of_" in
-  let (name, uppercase) =
-    if String.starts_with ~prefix:prefix name then
-      (String.sub name (String.length prefix) ((String.length name) - (String.length prefix)), true)
-    else
-      (name, false)
+  assert (String.starts_with ~prefix:prefix rname);
+  let rname =
+    String.sub rname (String.length prefix) ((String.length rname) - (String.length prefix))
   in
-  let title = render_title env uppercase name note (List.map (fun p -> let e = p in e) params) in
+  let keyword = (String.uppercase_ascii rname, syntax) in
+  let title = render_keyword_title env keyword params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
-  render_al_instrs env name 0 instrs
+  render_al_instrs env rname 0 instrs
+
+let render_func env fname params instrs =
+  let title = render_funcname_title env fname params in 
+  title ^ "\n" ^
+  String.make (String.length title) '.' ^ "\n" ^
+  render_al_instrs env fname 0 instrs
 
 let render_def env = function
-  | Pred (name, note, params, instrs) ->
-    "\n" ^ render_pred env name note params instrs ^ "\n\n"
-  | Algo (Al.Ast.Algo (name, note, params, instrs)) ->
-    "\n" ^ render_algo env name note params instrs ^ "\n\n"
+  | Pred (name, params, instrs) ->
+    "\n" ^ render_pred env name params instrs ^ "\n\n"
+  | Algo algo -> (match algo with 
+    | Al.Ast.RuleA (name, params, instrs) ->
+      "\n" ^ render_rule env name params instrs ^ "\n\n"
+    | Al.Ast.FuncA (name, params, instrs) ->
+      "\n" ^ render_func env name params instrs ^ "\n\n")
 
 let render_prose env prose = List.map (render_def env) prose |> String.concat ""

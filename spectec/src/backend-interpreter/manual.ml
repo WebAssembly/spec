@@ -1,11 +1,11 @@
 open Al.Ast
 
 let exec_expr_const =
-  let instrs = IterE (NameE (N "instr"), [N "instr"], List) in
-  let result = NameE (N "val") in
+  let instrs = IterE (NameE "instr", ["instr"], List) in
+  let result = NameE "val" in
 
-  Algo (
-    "exec_expr_const", DecN,
+  FuncA (
+    "exec_expr_const",
     [instrs],
     [
       ExecuteSeqI instrs;

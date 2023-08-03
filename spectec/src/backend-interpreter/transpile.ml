@@ -282,21 +282,21 @@ let rec mk_access ps base =
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_args = List.filter (function
-  | PairE (NameE (N "s"), NameE (N "f"))
-  | NameE (N "z") -> false
-  | PairE (NameE (N s), NameE (N "f"))
+  | PairE (NameE "s", NameE "f")
+  | NameE "z" -> false
+  | PairE (NameE s, NameE "f")
     when String.starts_with ~prefix:"s_" s -> false
-  | PairE (NameE (N s), NameE (N f))
+  | PairE (NameE s, NameE f)
     when String.starts_with ~prefix:"s_" s
     && String.starts_with ~prefix:"f_" f
       -> false
-  | NameE (N "s") -> false
-  | NameE (N s) when String.starts_with ~prefix:"s_" s -> false
+  | NameE "s" -> false
+  | NameE s when String.starts_with ~prefix:"s_" s -> false
   | _ -> true)
 
 let hide_state_instr = function
-  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE (N "f"))))
-  | ReturnI (Some (PairE (NameE (N "s"), ReplaceE (e1, pl, e2)))) ->
+  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE "f")))
+  | ReturnI (Some (PairE (NameE "s", ReplaceE (e1, pl, e2)))) ->
       let rpl = List.rev pl in
       let target =
         List.tl rpl
@@ -304,26 +304,26 @@ let hide_state_instr = function
           (fun p acc -> AccessE (acc, p))
       in
       [ ReplaceI (target e1, List.hd rpl, e2) ]
-  | ReturnI (Some (PairE (NameE (N "s"), NameE (N "f")))) -> []
-  | ReturnI (Some (PairE ((NameE (N s)), NameE (N f))))
+  | ReturnI (Some (PairE (NameE "s", NameE "f"))) -> []
+  | ReturnI (Some (PairE ((NameE s), NameE f)))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> []
 
-  | ReturnI (Some (NameE (N "s"))) -> []
-  | ReturnI (Some (NameE (N s)))
+  | ReturnI (Some (NameE "s")) -> []
+  | ReturnI (Some (NameE s))
     when String.starts_with ~prefix:"s_" s -> []
   (* Perform *)
-  | LetI (PairE (NameE (N s), NameE (N f)), AppE (fname, el))
+  | LetI (PairE (NameE s, NameE f), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ PerformI (fname, el) ]
-  | LetI (NameE (N s), AppE (fname, el))
+  | LetI (NameE s, AppE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (fname, el) ]
   (* Append *)
-  | LetI (NameE (N s), ExtendE (e1, ps, ListE [ e2 ], Back) )
+  | LetI (NameE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Replace *)
-  | LetI (NameE (N s), ReplaceE (e1, ps, e2))
+  | LetI (NameE s, ReplaceE (e1, ps, e2))
     when String.starts_with ~prefix:"s_" s ->
       begin match List.rev ps with
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
@@ -336,16 +336,16 @@ let hide_state_instr = function
 
 let hide_state = function
   | AppE (f, args) -> AppE (f, hide_state_args args)
-  | ListE [ NameE (N "s"); e ]
-  | ListE [ NameE (N "s'"); e ] -> e
-  | ListE [ NameE (N s); e ] when String.starts_with ~prefix:"s_" s -> e
+  | ListE [ NameE "s"; e ]
+  | ListE [ NameE "s'"; e ] -> e
+  | ListE [ NameE s; e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
 let simplify_record_concat = function
   | ConcatE (e1, e2) ->
     let nonempty = function ListE [] | OptE None -> false | _ -> true in
     let remove_empty_field = function
-      | RecordE (r, note) -> RecordE (Record.filter (fun _ v -> nonempty v) r, note)
+      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty v) r)
       | e -> e in
     ConcatE (remove_empty_field e1, remove_empty_field e2)
   | e -> e
@@ -362,13 +362,19 @@ let transpiler algo =
         post_expr = composite hide_state simplify_record_concat
       }
   in
-  let Algo (name, note, params, body) = walker algo in
-  match params with
-  | PairE (_, NameE (N "f")) :: tail ->
-      Algo (name, note, tail, LetI (NameE (N "f"), GetCurFrameE) :: body)
-  | NameE (N "s") :: tail ->
-      Algo (name, note, tail, body)
-  | _ -> Algo(name, note, params, body)
+  match walker algo with
+  | RuleA (name, params, body) -> (match params with
+    | PairE (_, NameE "f") :: tail ->
+        RuleA (name, tail, LetI (NameE "f", GetCurFrameE) :: body)
+    | NameE "s" :: tail ->
+        RuleA (name, tail, body)
+    | _ -> RuleA(name, params, body))
+  | FuncA (name, params, body) -> (match params with
+    | PairE (_, NameE "f") :: tail ->
+        FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body)
+    | NameE "s" :: tail ->
+        FuncA (name, tail, body)
+    | _ -> FuncA(name, params, body))
 
 let app_remover =
   let side_effect f e = f e; e in
@@ -413,7 +419,7 @@ let app_remover =
   let get_fresh () =
     let id = !call_id in
     call_id := id + 1;
-    N (call_prefix ^ (string_of_int id)) in
+    call_prefix ^ (string_of_int id) in
 
   let bind_app e = match e with
     | AppE (f, args) ->

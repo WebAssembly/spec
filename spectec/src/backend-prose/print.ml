@@ -70,8 +70,8 @@ and indented_string_of_instr i =
   result
 
 let string_of_def = function
-| Pred (name, _, params, instrs) ->
-    name
+| Pred (name, params, instrs) ->
+    string_of_keyword name
     ^ string_of_list string_of_expr " " " " "\n" params
     ^ string_of_list string_of_instr "" "\n" "\n" instrs
 | Algo algo -> string_of_algorithm algo

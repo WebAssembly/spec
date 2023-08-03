@@ -50,11 +50,11 @@ let rec walk_expr f e =
   | ListFillE (e1, e2) -> ListFillE (new_ e1, new_ e2)
   | ConcatE (e1, e2) -> ConcatE (new_ e1, new_ e2)
   | LengthE e' -> LengthE (new_ e')
-  | RecordE (r, note) -> RecordE (Record.map new_ r, note)
+  | RecordE r -> RecordE (Record.map Fun.id new_ r)
   | AccessE (e, p) -> AccessE (new_ e, walk_path f p)
   | ExtendE (e1, ps, e2, dir) -> ExtendE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
   | ReplaceE (e1, ps, e2) -> ReplaceE (new_ e1, List.map (walk_path f) ps, new_ e2)
-  | ConstructE (s, note, el) -> ConstructE (s, note, List.map new_ el)
+  | ConstructE (t, el) -> ConstructE (t, List.map new_ el)
   | OptE e -> OptE (Option.map new_ e)
   | PairE (e1, e2) -> PairE (new_ e1, new_ e2)
   | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
@@ -90,7 +90,7 @@ let rec walk_cond f c =
   | BinopC (op, c1, c2) -> BinopC (op, new_ c1, new_ c2)
   | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
   | ContextKindC (s, e) -> ContextKindC (s, new_e e)
-  | IsCaseOfC (e, s, note) -> IsCaseOfC (new_e e, s, note)
+  | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
   | ValidC e -> ValidC (new_e e)
   | TopLabelC -> c
@@ -146,6 +146,6 @@ let rec walk_instr f (instr:instr) : instr list =
 
 and walk_instrs f = walk_instr f |> List.concat_map
 
-let walk f algo =
-  let Algo (name, note, params, body) = algo in
-  Algo (name, note, params, walk_instrs f body)
+let walk f algo = match algo with
+  | RuleA (name, params, body) -> RuleA (name, params, walk_instrs f body)
+  | FuncA (name, params, body) -> FuncA (name, params, walk_instrs f body)

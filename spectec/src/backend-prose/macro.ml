@@ -1,6 +1,5 @@
 open Printf
 open Util.Source
-open Al.Ast
 
 module Set = Set.Make(String)
 module Map = Map.Make(String)
@@ -50,9 +49,11 @@ and find_syn env syntax variant = match Map.find_opt syntax !(env.syn) with
 
 let find_dec env s = Option.map (fun s -> macroify s "funcdef") (Set.find_opt s !(env.dec))
 
-let find_keyword env s note = match note with
-  | SynN parent -> find_syn env parent s
-  | DecN -> find_dec env s
+let find_keyword env keyword = 
+  let variant, syntax = keyword in
+  find_syn env syntax variant
+
+let find_funcname env funcname = find_dec env funcname
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 

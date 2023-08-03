@@ -1,10 +1,13 @@
 include Record
 
-(* AL Note *)
+(* AL Name *)
 
-type note = 
-  | SynN of string
-  | DecN
+type keyword = keyword' * string
+and keyword' = string
+
+type funcname = string
+
+type name = string
 
 (* AL Type *)
 
@@ -24,9 +27,9 @@ type al_type =
 
 type 'a growable_array = 'a array ref
 
-type 'a record = (string * 'a ref) list
+type ('a, 'b) record = ('a * 'b ref) list
 
-and store = value record
+and store = (keyword', value) record
 and stack = value list
 
 (* AL AST *)
@@ -34,16 +37,14 @@ and value =
   | NumV of int64
   | StringV of string
   | ListV of value growable_array
-  | RecordV of value record
-  | ConstructV of string * value list
+  | RecordV of (keyword', value) record
+  | ConstructV of keyword' * value list
   | OptV of value option
   | PairV of value * value
   | ArrowV of value * value
   | FrameV of value * value
   | LabelV of value * value
   | StoreV of store ref
-
-type name = N of string | SubN of name * string
 
 type extend_dir =
   | Front
@@ -84,17 +85,17 @@ and expr =
   | MinusE of expr
   | BinopE of expr_binop * expr * expr
   (* Function Call *)
-  | AppE of name * expr list
+  | AppE of funcname * expr list
   (* Data Structure *)
   | ListE of expr list
   | ListFillE of expr * expr
   | ConcatE of expr * expr
   | LengthE of expr
-  | RecordE of expr record * note
+  | RecordE of (keyword, expr) record
   | AccessE of expr * path
   | ExtendE of expr * path list * expr * extend_dir
   | ReplaceE of expr * path list * expr
-  | ConstructE of string * note * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | ConstructE of keyword * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
   | OptE of expr option
   | PairE of expr * expr
   | ArrowE of expr * expr
@@ -115,15 +116,15 @@ and expr =
 and path =
   | IndexP of expr
   | SliceP of expr * expr
-  | DotP of string * note
+  | DotP of keyword 
 
 and cond =
   | NotC of cond
   | BinopC of cond_binop * cond * cond
   | CompareC of compare_op * expr * expr
-  | ContextKindC of string * expr
+  | ContextKindC of keyword * expr
   | IsDefinedC of expr
-  | IsCaseOfC of expr * string * note
+  | IsCaseOfC of expr * keyword 
   | ValidC of expr
   (* Conditions used in assertions *)
   | TopLabelC
@@ -165,15 +166,15 @@ type instr =
   (* Yet *)
   | YetI of string
 
-type algorithm = Algo of string * note * expr list * instr list
+type algorithm = 
+  | RuleA of keyword * expr list * instr list
+  | FuncA of funcname * expr list * instr list
 
 (* Smart Constructor *)
 
-let dummy_note = SynN ""
-
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
-let id str = NameE (N str)
+let id str = NameE str 
 
 module Value = struct
   let num i = NumV i
@@ -200,12 +201,12 @@ module Expr = struct
   let list_fill e time = ListFillE (e, time)
   let concat e1 e2 = ConcatE (e1, e2)
   let length e = LengthE e
-  let record r note = RecordE (r, note)
+  let record r = RecordE r 
   let access e path = AccessE (e, path)
   let extend target paths e direction =
     ExtendE (target, paths, e, direction)
   let replace target paths e = ReplaceE(target, paths, e)
-  let construct tag note args = ConstructE (tag, note, args)
+  let construct tag args = ConstructE (tag, args)
   let opt e = OptE (Some e)
   let none = OptE None
   let pair e1 e2 = PairE (e1, e2)

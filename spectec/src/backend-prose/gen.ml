@@ -39,8 +39,8 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI (IterE (NameE (N name), _, Opt), Eq, OptE None) ] ->
-          IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N name)), body)
+      | [ CmpI (IterE (NameE name, _, Opt), Eq, OptE None) ] ->
+          IfI (Al.Ast.IsDefinedC (Al.Ast.NameE name), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp2cond e1, exp2cond e2) ]
@@ -64,10 +64,10 @@ let rec prem_to_instrs prem = match prem.it with
     )
   | Ast.IterPr (prem, iter) ->
     ( match iter with
-    | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.NameE (Al.Ast.N id.it)), prem_to_instrs prem) ]
+    | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.NameE id.it), prem_to_instrs prem) ]
     | Ast.List, [id] ->
-        let name = Al.Ast.NameE (Al.Ast.N id.it) in
-        [ ForallI (name, Al.Ast.IterE (name, [N id.it], Al.Ast.List), prem_to_instrs prem) ]
+        let name = Al.Ast.NameE id.it in
+        [ ForallI (name, Al.Ast.IterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
     | _ -> failwith "prem_to_instr: Invalid prem")
   | _ ->
     let s = Il.Print.string_of_prem prem in
@@ -82,16 +82,14 @@ let vrule_group_to_prose ((instr_name, vrules): vrule_group) =
   let (e, t, prems, _tenv) = vrules |> List.hd in
 
   (* name *)
-  let name = "validation_of_" ^ instr_name in
-  (* note *)
-  let note = syn_of_note e.note in
+  let name = name2keyword ("validation_of_" ^ instr_name) e.note in
   (* params *)
   let params = get_params e |> List.map exp_to_expr in
   (* body *)
   let body = (List.concat_map prem_to_instrs prems) @ [ IsValidI (Some (exp_to_expr t)) ] in
 
   (* Predicate *)
-  Pred (name, note, params, body)
+  Pred (name, params, body)
 
 let rec extract_vrules def =
   match def.it with

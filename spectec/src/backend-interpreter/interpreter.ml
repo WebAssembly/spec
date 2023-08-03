@@ -19,7 +19,10 @@ let algo_map = ref AlgoMap.empty
 
 let to_map algos =
   let f acc algo =
-    let (Algo (name, _, _, _)) = algo in
+    let name = match algo with
+      | RuleA ((name, _), _, _) -> name
+      | FuncA (name, _, _) -> name
+    in
     AlgoMap.add name algo acc
   in
 
@@ -35,7 +38,7 @@ let store : store ref = ref Record.empty
 module EnvKey = struct
   type t = name
 
-  let compare a b = Stdlib.compare (string_of_name a) (string_of_name b)
+  let compare = Stdlib.compare
 end
 
 module Env = struct include Map.Make (EnvKey)
@@ -44,7 +47,7 @@ module Env = struct include Map.Make (EnvKey)
   let string_of_env env =
     Print.string_of_list
       (fun (k, v) ->
-        Print.string_of_name k ^ ": " ^ Print.string_of_value v)
+        k ^ ": " ^ Print.string_of_value v)
       "\n{" ",\n  " "\n}"
       (bindings env)
 
@@ -53,7 +56,7 @@ module Env = struct include Map.Make (EnvKey)
     try find key env
     with Not_found ->
       Printf.sprintf "The key '%s' is not in the map: %s."
-        (Print.string_of_name key) (string_of_env env)
+        key (string_of_env env)
       |> prerr_endline;
       raise Not_found
 end
@@ -191,7 +194,7 @@ let rec eval_expr env expr =
   | LengthE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE (r, _) -> RecordV (Record.map (fun e -> eval_expr env e) r)
+  | RecordE r -> RecordV (Record.map (fun k -> string_of_keyword k) (fun e -> eval_expr env e) r)
   | AccessE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
@@ -225,7 +228,7 @@ let rec eval_expr env expr =
       in
       let base = eval_expr env e1 in
       replace base ps
-  | ConstructE (tag, _, el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | ConstructE ((tag, _), el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
   | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
   (* Context *)
@@ -361,7 +364,7 @@ let rec eval_cond env cond =
       | Gt -> v1 > v2
       | Ge -> v1 >= v2
       end
-  | ContextKindC (kind, e) ->
+  | ContextKindC ((kind, _), e) ->
       begin match kind, eval_expr env e with
       | "frame", FrameV _ -> true
       | "label", LabelV _ -> true
@@ -373,7 +376,7 @@ let rec eval_cond env cond =
       | OptV (_) -> false
       | _ -> structured_string_of_cond cond |> failwith
       end
-  | IsCaseOfC (e, expected_tag, _) -> (
+  | IsCaseOfC (e, (expected_tag, _)) -> (
       match eval_expr env e with
       | ConstructV (tag, _) -> expected_tag = tag
       | _ -> false)
@@ -454,7 +457,7 @@ let rec assign lhs rhs env =
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
       List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env
-  | ConstructE (lhs_tag, _, lhs_s), ConstructV (rhs_tag, rhs_s)
+  | ConstructE ((lhs_tag, _), lhs_s), ConstructV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
@@ -469,8 +472,8 @@ let rec assign lhs rhs env =
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
   | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
-  | RecordE (r1, _), RecordV r2 when Record.keys r1 = Record.keys r2 ->
-      Record.fold (fun k v acc -> (Record.find k r2 |> assign v) acc) r1 env
+  | RecordE r1, RecordV r2 when List.sort String.compare (List.map string_of_keyword (Record.keys r1)) = List.sort String.compare (Record.keys r2) ->
+      Record.fold (fun k v acc -> (Record.find (string_of_keyword k) r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
         (string_of_expr e) (string_of_value v)
@@ -498,13 +501,12 @@ let assign_opt lhs_opt rhs env = match lhs_opt with
   | Some lhs -> assign lhs rhs env
 
 let rec dsl_function_call lhs_opt fname args iters env il cont action =
-  match fname with
   (* Numerics *)
-  | N name when Numerics.mem name ->
+  if Numerics.mem fname then
       let rec aux env = function
       | [] ->
         let vs = List.map (eval_expr env) args in
-        Numerics.call_numerics name vs
+        Numerics.call_numerics fname vs
       | (names, dim) :: iters' ->
         let envs = create_sub_envs names dim env in
         List.map (fun env' -> aux env' iters') envs |> listV (* TODO: handle case where dim is Opt *)
@@ -512,13 +514,11 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
-  | N name when AlgoMap.mem name !algo_map ->
+  else if AlgoMap.mem fname !algo_map then
       let new_action = AssignLhs(lhs_opt, (env, il, action)) in
-      call_algo name args iters env cont new_action
-  | n ->
-      string_of_name n
-      |> Printf.sprintf "Invalid DSL function call: %s"
-      |> failwith
+      call_algo fname args iters env cont new_action
+  else
+      Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
 and interp_instrs env il cont action =
   if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
@@ -563,9 +563,9 @@ and interp_instrs env il cont action =
               let h = pop () in
 
               match (e, h) with
-              | ConstructE ("CONST", _, [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+              | ConstructE (("CONST", _), [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   env |> Env.add nt ty |> Env.add name v
-              | ConstructE ("CONST", _, [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+              | ConstructE (("CONST", _), [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
                   assert (eval_expr env tyE = ty);
                   Env.add name v env
               | NameE name, v -> Env.add name v env
@@ -658,7 +658,7 @@ and interp_instrs env il cont action =
 
 and interp_for n body env il cont action =
   let unrolled = List.init n (fun i ->
-    LetI (NameE (N "i"), NumE (Int64.of_int i)) :: body
+    LetI (NameE "i", NumE (Int64.of_int i)) :: body
   ) in
   interp_instrs env (List.concat unrolled @ il) cont action
 
@@ -680,14 +680,17 @@ and leave_algo cont = function
 | _ -> raise Exception.MissingReturnValue
 
 and interp_algo algo args cont action =
-  let (Algo (_name, _note, params, body)) = algo in
+  let params, body = match algo with
+    | RuleA (_, params, body) -> (params, body)
+    | FuncA (_, params, body) -> (params, body)
+  in
   assert (List.length params = List.length args);
 
   (* (name ^ string_of_list string_of_value "(" "," ")" args) |> print_endline; *)
   (* string_of_stack !stack |> print_endline; *)
 
 
-  let env_with_store = Env.add (N "s") (StoreV store) Env.empty in
+  let env_with_store = Env.add "s" (StoreV store) Env.empty in
   let init_env = List.fold_right2 assign params args env_with_store in
 
   interp_instrs init_env body cont action

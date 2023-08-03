@@ -8,7 +8,7 @@ Runtime
 Values
 ~~~~~~
 
-.. _def-default:
+.. _def-default_:
 
 %{prose-fctn: default_}
 

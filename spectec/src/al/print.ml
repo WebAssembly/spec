@@ -32,6 +32,8 @@ let rec repeat str num =
 
 (* AL stringifier *)
 
+let string_of_keyword keyword = let name, _ = keyword in name
+
 let rec string_of_al_type = function
   | WasmValueTopT -> "WasmValueTopT"
   | EmptyListT -> "EmptyListT"
@@ -54,10 +56,6 @@ let rec string_of_al_type = function
 let string_of_dir = function
   | Front -> "Front"
   | Back -> "Back"
-
-let rec string_of_name = function
-  | N s -> s
-  | SubN (n, s) -> sprintf "%s_%s" (string_of_name n) s
 
 let depth = ref 0
 let rec string_of_record r =
@@ -120,14 +118,14 @@ let rec string_of_iter = function
   | List1 -> "+"
   | ListN (expr, None) -> "^" ^ string_of_expr expr
   | ListN (expr, Some name) ->
-    "^(" ^ string_of_name name ^ "<" ^ string_of_expr expr^ ")"
+    "^(" ^ name ^ "<" ^ string_of_expr expr^ ")"
 
 and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) ""
 
 
 and string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ string_of_keyword k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -139,8 +137,8 @@ and string_of_expr = function
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_expr_binop op) (string_of_expr e2)
   | PairE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | AppE (n, el) ->
-      sprintf "$%s(%s)" (string_of_name n)
-        (string_of_list string_of_expr "" ", " "" el)
+      sprintf "$%s(%s)" 
+        n (string_of_list string_of_expr "" ", " "" el)
   | ConcatE (e1, e2) ->
       sprintf "%s ++ %s" (string_of_expr e1) (string_of_expr e2)
   | LengthE e -> sprintf "|%s|" (string_of_expr e)
@@ -160,19 +158,19 @@ and string_of_expr = function
       | Back -> sprintf "%s with %s appended by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2))
   | ReplaceE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" (string_of_expr e1) (string_of_paths ps) (string_of_expr e2)
-  | RecordE (r, _) -> string_of_record_expr r
+  | RecordE r -> string_of_record_expr r
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | NameE n -> string_of_name n
+  | NameE n -> n
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
     ^ (match e2 with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
-  | ConstructE ("CONST", _, hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
-  | ConstructE (s, _, []) -> s
-  | ConstructE (s, _, el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
+  | ConstructE (("CONST", _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
+  | ConstructE ((s, _), []) -> s
+  | ConstructE ((s, _), el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
   | YetE s -> sprintf "YetE (%s)" s
@@ -186,8 +184,8 @@ and string_of_path = function
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 and string_of_cond = function
-  | NotC (IsCaseOfC (e, c, _)) ->
-      sprintf "%s is not of the case %s" (string_of_expr e) c
+  | NotC (IsCaseOfC (e, c)) ->
+      sprintf "%s is not of the case %s" (string_of_expr e) (string_of_keyword c)
   | NotC (IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
   | NotC (ValidC e) ->
@@ -197,9 +195,9 @@ and string_of_cond = function
       sprintf "%s %s %s" (string_of_cond c1) (string_of_cond_binop op) (string_of_cond c2)
   | CompareC (op, e1, e2) ->
       sprintf "%s %s %s" (string_of_expr e1) (string_of_compare_op op) (string_of_expr e2)
-  | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) s
+  | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_keyword s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfC (e, c, _) -> sprintf "%s is of the case %s" (string_of_expr e) c
+  | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_keyword c)
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
@@ -332,7 +330,13 @@ and string_of_instrs depth instrs =
     "" instrs
 
 let string_of_algorithm = function
-  | Algo (name, _, params, instrs) ->
+  | RuleA (name, params, instrs) ->
+      string_of_keyword name
+      ^ List.fold_left
+          (fun acc p -> acc ^ " " ^ string_of_expr p)
+          "" params
+      ^ string_of_instrs 0 instrs ^ "\n"
+  | FuncA (name, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
@@ -359,12 +363,9 @@ let structured_string_of_al_type = function
 
 (* name *)
 
-let rec structured_string_of_name = function
-  | N s -> "N(" ^ s ^ ")"
-  | SubN (n, s) -> "SubN(" ^ structured_string_of_name n ^ ", " ^ s ^ ")"
+let structured_string_of_keyword keyword = let name, note = keyword in sprintf "%s_%s" name note
 
-let structured_string_of_names name = 
-  List.map string_of_name name |> List.fold_left (^) ""
+let structured_string_of_names names = List.fold_left (^) "" names
 
 (* expression *)
 
@@ -402,11 +403,11 @@ let rec structured_string_of_iter = function
   | List1 -> "+"
   | ListN (expr, None) -> structured_string_of_expr expr
   | ListN (expr, Some name) ->
-    structured_string_of_name name ^ "<" ^ structured_string_of_expr expr
+    name ^ "<" ^ structured_string_of_expr expr
 
 and structured_string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ structured_string_of_keyword k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -430,7 +431,7 @@ and structured_string_of_expr = function
       ^ ")"
   | AppE (n, nl) ->
       "AppE ("
-      ^ structured_string_of_name n
+      ^ n
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" nl
       ^ ")"
@@ -480,7 +481,7 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | RecordE (r, _) -> "RecordE (" ^ structured_string_of_record_expr r ^ ")"
+  | RecordE r -> "RecordE (" ^ structured_string_of_record_expr r ^ ")"
   | ContE e1 -> "ContE (" ^ structured_string_of_expr e1 ^ ")"
   | LabelE (e1, e2) ->
       "LabelE ("
@@ -488,7 +489,7 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | NameE n -> "NameE (" ^ structured_string_of_name n ^ ")"
+  | NameE n -> "NameE (" ^ n ^ ")"
   | IterE (e, names, iter) ->
       "IterE ("
       ^ structured_string_of_expr e
@@ -503,8 +504,8 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | ConstructE (s, _, el) ->
-      "ConstructE (" ^ s ^ ", "
+  | ConstructE (s, el) ->
+      "ConstructE (" ^ structured_string_of_keyword s ^ ", "
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"
   | OptE o -> "OptE " ^ string_of_opt "(" structured_string_of_expr ")" o
@@ -546,9 +547,9 @@ and structured_string_of_cond = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" s (structured_string_of_expr e)
+  | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" (structured_string_of_keyword s) (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
-  | IsCaseOfC (e, c, _) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ c ^ ")"
+  | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_keyword c ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"
@@ -615,7 +616,7 @@ let rec structured_string_of_instr depth = function
       "CallI ("
       ^ structured_string_of_expr e1
       ^ ", "
-      ^ structured_string_of_name n
+      ^ n
       ^ ", "
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" el
       ^ ", "
@@ -636,12 +637,12 @@ let rec structured_string_of_instr depth = function
   | JumpI e -> "JumpI (" ^ structured_string_of_expr e ^ ")"
   | PerformI (n, el) ->
       "PerformI ("
-      ^ structured_string_of_name n
+      ^ n
       ^ ","
       ^ string_of_list structured_string_of_expr "[ " ", " " ]" el
       ^ ")"
-  | ExitNormalI n -> "ExitNormalI (" ^ structured_string_of_name n ^ ")"
-  | ExitAbruptI n -> "ExitAbruptI (" ^ structured_string_of_name n ^ ")"
+  | ExitNormalI n -> "ExitNormalI (" ^ n ^ ")"
+  | ExitAbruptI n -> "ExitAbruptI (" ^ n ^ ")"
   | ReplaceI (e1, p, e2) ->
       "ReplaceI ("
       ^ structured_string_of_expr e1
@@ -671,7 +672,14 @@ and structured_string_of_instrs depth instrs =
     "" instrs
 
 let structured_string_of_algorithm = function
-  | Algo (name, _, params, instrs) ->
+  | RuleA (name, params, instrs) ->
+      structured_string_of_keyword name
+      ^ List.fold_left
+          (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
+          "" params
+      ^ ":\n"
+      ^ structured_string_of_instrs 1 instrs
+  | FuncA (name, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)

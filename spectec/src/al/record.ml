@@ -1,7 +1,7 @@
 
 (* Helper functions for record *)
 module Record = struct include List
-  (* Record is finite mapping whose key is string *)
+  (* Record implements finite mapping *)
 
   let empty = []
 
@@ -9,7 +9,7 @@ module Record = struct include List
     map (fun (k, v) -> (k, v)) r
 
   let keys r =
-    map (fun (k, _) -> k) r |> sort String.compare
+    map (fun (k, _) -> k) r
   
   let size = length
 
@@ -28,8 +28,8 @@ module Record = struct include List
     let ref = assoc k r in
     ref := v
 
-  let map f =
-    map (fun (k, v) -> k, !v |> f |> ref)
+  let map fk fv =
+    map (fun (k, v) -> fk k, !v |> fv |> ref)
 
   let fold f r acc =
     fold_left (fun acc (k, v) -> f k !v acc) acc r
