@@ -43,45 +43,45 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 =================
  Generated prose
 =================
-validation_of_unreachable
+validation_of_UNREACHABLE
 - The instruction is valid with type [t_1*]->[t_2*].
 
-validation_of_nop
+validation_of_NOP
 - The instruction is valid with type []->[].
 
-validation_of_drop
+validation_of_DROP
 - The instruction is valid with type [t]->[].
 
-validation_of_select ?(t)
+validation_of_SELECT ?(t)
 - The instruction is valid with type [t, t, I32]->[t].
 
-validation_of_block bt instr*
+validation_of_BLOCK bt instr*
 - Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
-validation_of_loop bt instr*
+validation_of_LOOP bt instr*
 - Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1*]->[t_2*].
 
-validation_of_if bt instr_1* instr_2*
+validation_of_IF bt instr_1* instr_2*
 - Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type [t_1*]->[t_2*].
 - Under the context C, bt must be valid with type [t_1*]->[t_2*].
 - Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type [t_1*]->[t_2*].
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
-validation_of_br l
+validation_of_BR l
 - |C.LABEL| must be greater than l.
 - Let t* be C.LABEL[l].
 - The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
-validation_of_br_if l
+validation_of_BR_IF l
 - |C.LABEL| must be greater than l.
 - Let t* be C.LABEL[l].
 - The instruction is valid with type [t* ++ [I32]]->[t*].
 
-validation_of_br_table l* l'
+validation_of_BR_TABLE l* l'
 - For all l in l*,
   - |C.LABEL| must be greater than l.
 - |C.LABEL| must be greater than l'.
@@ -90,163 +90,163 @@ validation_of_br_table l* l'
 - C.LABEL[l'] must match t*.
 - The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
-validation_of_return
+validation_of_RETURN
 - Let ?(t*) be C.RETURN.
 - The instruction is valid with type [t_1* ++ t*]->[t_2*].
 
-validation_of_call x
+validation_of_CALL x
 - |C.FUNC| must be greater than x.
 - Let [t_1*]->[t_2*] be C.FUNC[x].
 - The instruction is valid with type [t_1*]->[t_2*].
 
-validation_of_call_indirect x ft
+validation_of_CALL_INDIRECT x ft
 - |C.TABLE| must be greater than x.
 - Let (lim, FUNCREF) be C.TABLE[x].
 - Let [t_1*]->[t_2*] be ft.
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
-validation_of_const nt c_nt
+validation_of_CONST nt c_nt
 - The instruction is valid with type []->[nt].
 
-validation_of_unop nt unop
+validation_of_UNOP nt unop
 - The instruction is valid with type [nt]->[nt].
 
-validation_of_binop nt binop
+validation_of_BINOP nt binop
 - The instruction is valid with type [nt, nt]->[nt].
 
-validation_of_testop nt testop
+validation_of_TESTOP nt testop
 - The instruction is valid with type [nt]->[I32].
 
-validation_of_relop nt relop
+validation_of_RELOP nt relop
 - The instruction is valid with type [nt, nt]->[I32].
 
-validation_of_extend nt n
+validation_of_EXTEND nt n
 - n must be less than or equal to $size(nt).
 - The instruction is valid with type [nt]->[nt].
 
-validation_of_reinterpret nt_1 REINTERPRET nt_2 ?()
+validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
 - nt_1 must be different with nt_2.
 - $size(nt_1) must be equal to $size(nt_2).
 - The instruction is valid with type [nt_2]->[nt_1].
 
-validation_of_convert in_1 CONVERT in_2 sx?
+validation_of_CVTOP in_1 CONVERT in_2 sx?
 - in_1 must be different with in_2.
 - ($size(in_1) > $size(in_2)) and (sx? is ?()) are equivalent.
 - The instruction is valid with type [in_2]->[in_1].
 
-validation_of_ref.null rt
+validation_of_REF.NULL rt
 - The instruction is valid with type []->[rt].
 
-validation_of_ref.func x
+validation_of_REF.FUNC x
 - |C.FUNC| must be greater than x.
 - Let ft be C.FUNC[x].
 - The instruction is valid with type []->[FUNCREF].
 
-validation_of_ref.is_null
+validation_of_REF.IS_NULL
 - The instruction is valid with type [rt]->[I32].
 
-validation_of_local.get x
+validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
 - Let t be C.LOCAL[x].
 - The instruction is valid with type []->[t].
 
-validation_of_local.set x
+validation_of_LOCAL.SET x
 - |C.LOCAL| must be greater than x.
 - Let t be C.LOCAL[x].
 - The instruction is valid with type [t]->[].
 
-validation_of_local.tee x
+validation_of_LOCAL.TEE x
 - |C.LOCAL| must be greater than x.
 - Let t be C.LOCAL[x].
 - The instruction is valid with type [t]->[t].
 
-validation_of_global.get x
+validation_of_GLOBAL.GET x
 - |C.GLOBAL| must be greater than x.
 - Let (mut?, t) be C.GLOBAL[x].
 - The instruction is valid with type []->[t].
 
-validation_of_global.set x
+validation_of_GLOBAL.SET x
 - |C.GLOBAL| must be greater than x.
 - Let (MUT, t) be C.GLOBAL[x].
 - The instruction is valid with type [t]->[].
 
-validation_of_table.get x
+validation_of_TABLE.GET x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type [I32]->[rt].
 
-validation_of_table.set x
+validation_of_TABLE.SET x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type [I32, rt]->[].
 
-validation_of_table.size x
+validation_of_TABLE.SIZE x
 - |C.TABLE| must be greater than x.
 - Let tt be C.TABLE[x].
 - The instruction is valid with type []->[I32].
 
-validation_of_table.grow x
+validation_of_TABLE.GROW x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type [rt, I32]->[I32].
 
-validation_of_table.fill x
+validation_of_TABLE.FILL x
 - |C.TABLE| must be greater than x.
 - Let (lim, rt) be C.TABLE[x].
 - The instruction is valid with type [I32, rt, I32]->[].
 
-validation_of_table.copy x_1 x_2
+validation_of_TABLE.COPY x_1 x_2
 - |C.TABLE| must be greater than x_1.
 - |C.TABLE| must be greater than x_2.
 - Let (lim_1, rt) be C.TABLE[x_1].
 - Let (lim_2, rt) be C.TABLE[x_2].
 - The instruction is valid with type [I32, I32, I32]->[].
 
-validation_of_table.init x_1 x_2
+validation_of_TABLE.INIT x_1 x_2
 - |C.TABLE| must be greater than x_1.
 - |C.ELEM| must be greater than x_2.
 - Let (lim, rt) be C.TABLE[x_1].
 - C.ELEM[x_2] must be equal to rt.
 - The instruction is valid with type [I32, I32, I32]->[].
 
-validation_of_elem.drop x
+validation_of_ELEM.DROP x
 - |C.ELEM| must be greater than x.
 - Let rt be C.ELEM[x].
 - The instruction is valid with type []->[].
 
-validation_of_memory.size
+validation_of_MEMORY.SIZE
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
 - The instruction is valid with type []->[I32].
 
-validation_of_memory.grow
+validation_of_MEMORY.GROW
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
 - The instruction is valid with type [I32]->[I32].
 
-validation_of_memory.fill
+validation_of_MEMORY.FILL
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
 - The instruction is valid with type [I32, I32, I32]->[].
 
-validation_of_memory.copy
+validation_of_MEMORY.COPY
 - |C.MEM| must be greater than 0.
 - Let mt be C.MEM[0].
 - The instruction is valid with type [I32, I32, I32]->[].
 
-validation_of_memory.init x
+validation_of_MEMORY.INIT x
 - |C.MEM| must be greater than 0.
 - |C.DATA| must be greater than x.
 - C.DATA[x] must be equal to OK.
 - Let mt be C.MEM[0].
 - The instruction is valid with type [I32, I32, I32]->[].
 
-validation_of_data.drop x
+validation_of_DATA.DROP x
 - |C.DATA| must be greater than x.
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type []->[].
 
-validation_of_load nt [n, sx]? n_A n_O
+validation_of_LOAD nt [n, sx]? n_A n_O
 - |C.MEM| must be greater than 0.
 - (sx? is ?()) and (n? is ?()) are equivalent.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
@@ -258,7 +258,7 @@ validation_of_load nt [n, sx]? n_A n_O
   - nt must be equal to in.
 - The instruction is valid with type [I32]->[nt].
 
-validation_of_store nt n? n_A n_O
+validation_of_STORE nt n? n_A n_O
 - |C.MEM| must be greater than 0.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
@@ -650,17 +650,17 @@ invocation fa val^n
 9. Pop val from the stack.
 10. Return [val].
 
-execution_of_unreachable
+execution_of_UNREACHABLE
 1. Trap.
 
-execution_of_nop
+execution_of_NOP
 1. Do nothing.
 
-execution_of_drop
+execution_of_DROP
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 
-execution_of_select t?
+execution_of_SELECT t?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -672,7 +672,7 @@ execution_of_select t?
 8. Else:
   a. Push val_2 to the stack.
 
-execution_of_block bt instr*
+execution_of_BLOCK bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -681,7 +681,7 @@ execution_of_block bt instr*
 6. Push val^k to the stack.
 7. Jump to instr*.
 
-execution_of_loop bt instr*
+execution_of_LOOP bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
@@ -690,7 +690,7 @@ execution_of_loop bt instr*
 6. Push val^k to the stack.
 7. Jump to instr*.
 
-execution_of_if bt instr_1* instr_2*
+execution_of_IF bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
@@ -698,13 +698,13 @@ execution_of_if bt instr_1* instr_2*
 4. Else:
   a. Execute (BLOCK bt instr_2*).
 
-execution_of_label
+execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
 3. Pop the label from the stack.
 4. Push val* to the stack.
 
-execution_of_br x_0
+execution_of_BR x_0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
@@ -720,7 +720,7 @@ execution_of_br x_0
   c. Push val* to the stack.
   d. Execute (BR l).
 
-execution_of_br_if l
+execution_of_BR_IF l
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST c) from the stack.
 3. If c is not 0, then:
@@ -728,7 +728,7 @@ execution_of_br_if l
 4. Else:
   a. Do nothing.
 
-execution_of_br_table l* l'
+execution_of_BR_TABLE l* l'
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i < |l*|, then:
@@ -736,7 +736,7 @@ execution_of_br_table l* l'
 4. Else:
   a. Execute (BR l').
 
-execution_of_frame
+execution_of_FRAME_
 1. Let f be the current frame.
 2. Let n be the arity of f.
 3. Assert: Due to validation, there are at least n values on the top of the stack.
@@ -745,7 +745,7 @@ execution_of_frame
 6. Pop the frame from the stack.
 7. Push val^n to the stack.
 
-execution_of_return
+execution_of_RETURN
 1. If the current context is frame, then:
   a. Let F be the current frame.
   b. Let n be the arity of F.
@@ -762,7 +762,7 @@ execution_of_return
   f. Push val* to the stack.
   g. Execute RETURN.
 
-execution_of_unop nt unop
+execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. If |$unop(unop, nt, c_1)| is 1, then:
@@ -771,7 +771,7 @@ execution_of_unop nt unop
 4. If $unop(unop, nt, c_1) is [], then:
   a. Trap.
 
-execution_of_binop nt binop
+execution_of_BINOP nt binop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -782,13 +782,13 @@ execution_of_binop nt binop
 6. If $binop(binop, nt, c_1, c_2) is [], then:
   a. Trap.
 
-execution_of_testop nt testop
+execution_of_TESTOP nt testop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. Let c be $testop(testop, nt, c_1).
 4. Push (I32.CONST c) to the stack.
 
-execution_of_relop nt relop
+execution_of_RELOP nt relop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -796,12 +796,12 @@ execution_of_relop nt relop
 5. Let c be $relop(relop, nt, c_1, c_2).
 6. Push (I32.CONST c) to the stack.
 
-execution_of_extend nt n
+execution_of_EXTEND nt n
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
 
-execution_of_cvtop nt_2 cvtop nt_1 sx?
+execution_of_CVTOP nt_2 cvtop nt_1 sx?
 1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
 2. Pop (nt_1.CONST c_1) from the stack.
 3. If |$cvtop(nt_1, cvtop, nt_2, sx?, c_1)| is 1, then:
@@ -810,7 +810,7 @@ execution_of_cvtop nt_2 cvtop nt_1 sx?
 4. If $cvtop(nt_1, cvtop, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
-execution_of_ref.is_null
+execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. If val is not of the case REF.NULL, then:
@@ -819,18 +819,18 @@ execution_of_ref.is_null
   a. Let (REF.NULL rt) be val.
   b. Push (I32.CONST 1) to the stack.
 
-execution_of_local.tee x
+execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Push val to the stack.
 4. Push val to the stack.
 5. Execute (LOCAL.SET x).
 
-execution_of_call x
+execution_of_CALL x
 1. If x < |$funcaddr()|, then:
   a. Execute (CALL_ADDR $funcaddr()[x]).
 
-execution_of_call_indirect x ft
+execution_of_CALL_INDIRECT x ft
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x).ELEM|, then:
@@ -847,7 +847,7 @@ execution_of_call_indirect x ft
   a. Trap.
 10. Execute (CALL_ADDR a).
 
-execution_of_call_addr a
+execution_of_CALL_ADDR a
 1. If a < |$funcinst()|, then:
   a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
   b. If func is of the case FUNC, then:
@@ -862,28 +862,28 @@ execution_of_call_addr a
     9) Push L to the stack.
     10) Jump to instr*.
 
-execution_of_ref.func x
+execution_of_REF.FUNC x
 1. If x < |$funcaddr()|, then:
   a. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
-execution_of_local.get x
+execution_of_LOCAL.GET x
 1. Push $local(x) to the stack.
 
-execution_of_global.get x
+execution_of_GLOBAL.GET x
 1. Push $global(x).VALUE to the stack.
 
-execution_of_table.get x
+execution_of_TABLE.GET x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If i ≥ |$table(x).ELEM|, then:
   a. Trap.
 4. Push $table(x).ELEM[i] to the stack.
 
-execution_of_table.size x
+execution_of_TABLE.SIZE x
 1. Let n be |$table(x).ELEM|.
 2. Push (I32.CONST n) to the stack.
 
-execution_of_table.fill x
+execution_of_TABLE.FILL x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -903,7 +903,7 @@ execution_of_table.fill x
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.FILL x).
 
-execution_of_table.copy x y
+execution_of_TABLE.COPY x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -932,7 +932,7 @@ execution_of_table.copy x y
   c. Push (I32.CONST (n - 1)) to the stack.
   d. Execute (TABLE.COPY x y).
 
-execution_of_table.init x y
+execution_of_TABLE.INIT x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -952,7 +952,7 @@ execution_of_table.init x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_load nt x_0? n_A n_O
+execution_of_LOAD nt x_0? n_A n_O
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. If x_0? is not defined, then:
@@ -968,11 +968,11 @@ execution_of_load nt x_0? n_A n_O
   d. Let c be $inverse_of_bytes_(n, $mem(0).DATA[(i + n_O) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
-execution_of_memory.size
+execution_of_MEMORY.SIZE
 1. Let ((n · 64) · $Ki()) be |$mem(0).DATA|.
 2. Push (I32.CONST n) to the stack.
 
-execution_of_memory.fill
+execution_of_MEMORY.FILL
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -992,7 +992,7 @@ execution_of_memory.fill
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute MEMORY.FILL.
 
-execution_of_memory.copy
+execution_of_MEMORY.COPY
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1021,7 +1021,7 @@ execution_of_memory.copy
   c. Push (I32.CONST (n - 1)) to the stack.
   d. Execute MEMORY.COPY.
 
-execution_of_memory.init x
+execution_of_MEMORY.INIT x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1041,17 +1041,17 @@ execution_of_memory.init x
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (MEMORY.INIT x).
 
-execution_of_local.set x
+execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_local(x, val).
 
-execution_of_global.set x
+execution_of_GLOBAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Perform $with_global(x, val).
 
-execution_of_table.set x
+execution_of_TABLE.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop ref from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1060,7 +1060,7 @@ execution_of_table.set x
   a. Trap.
 6. Perform $with_table(x, i, ref).
 
-execution_of_table.grow x
+execution_of_TABLE.GROW x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -1072,10 +1072,10 @@ execution_of_table.grow x
 6. Or:
   a. Push (I32.CONST -1) to the stack.
 
-execution_of_elem.drop x
+execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
 
-execution_of_store nt x_0? n_A n_O
+execution_of_STORE nt x_0? n_A n_O
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1092,7 +1092,7 @@ execution_of_store nt x_0? n_A n_O
   c. Let b* be $bytes_(n, $wrap_([$size(nt), n], c)).
   d. Perform $with_mem(0, (i + n_O), (n / 8), b*).
 
-execution_of_memory.grow
+execution_of_MEMORY.GROW
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
 3. Either:
@@ -1102,7 +1102,7 @@ execution_of_memory.grow
 4. Or:
   a. Push (I32.CONST -1) to the stack.
 
-execution_of_data.drop x
+execution_of_DATA.DROP x
 1. Perform $with_data(x, []).
 
 exec_expr_const instr*
