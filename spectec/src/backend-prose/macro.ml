@@ -22,7 +22,9 @@ let macroify s note =
 (* Environment *)
 
 type env =
-  { section: string Map.t ref;
+  { 
+    legal: bool;
+    section: string Map.t ref;
     syn: (Set.t * Set.t) Map.t ref;
     dec: Set.t ref;
   }
@@ -83,7 +85,6 @@ let parse_section pdsts odsts =
   List.fold_left2
     (fun acc input output -> 
       let suffix = ".rst" in
-      assert (String.ends_with ~suffix:suffix output);
       let output = String.sub output 0 ((String.length output) - (String.length suffix)) in
       parse_file input output acc)
     Map.empty pdsts odsts
@@ -140,29 +141,36 @@ let extract_dec_keywords def =
 
 (* Environment Construction *)
 
+let check_legal odsts =
+  List.for_all (String.ends_with ~suffix:".rst") odsts
+
 let env inputs outputs el =
-  let section = parse_section inputs outputs in
-  let syn = 
-    List.fold_left
-      (fun acc def -> match extract_syn_keywords def with
-        | Some (topsyntax, syntax, terminals, nonterminals) -> 
-            let acc = Map.add syntax (terminals, nonterminals) acc in
-            (match topsyntax with
-            | Some topsyntax -> 
-                let terminals, nonterminals = 
-                  (match Map.find_opt topsyntax acc with
-                  | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
-                  | None -> (Set.empty, Set.singleton syntax))
-                in
-                Map.add topsyntax (terminals, nonterminals) acc
-            | None -> acc)
-        | _ -> acc)
-      Map.empty el
-  in
-  let dec = List.concat_map extract_dec_keywords el in
-  let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
-  let env = { section = ref section; syn = ref syn; dec = ref dec; } in
-  env
+  let legal = check_legal outputs in
+  if legal then
+    let section = parse_section inputs outputs in
+    let syn = 
+      List.fold_left
+        (fun acc def -> match extract_syn_keywords def with
+          | Some (topsyntax, syntax, terminals, nonterminals) -> 
+              let acc = Map.add syntax (terminals, nonterminals) acc in
+              (match topsyntax with
+              | Some topsyntax -> 
+                  let terminals, nonterminals = 
+                    (match Map.find_opt topsyntax acc with
+                    | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
+                    | None -> (Set.empty, Set.singleton syntax))
+                  in
+                  Map.add topsyntax (terminals, nonterminals) acc
+              | None -> acc)
+          | _ -> acc)
+        Map.empty el
+    in
+    let dec = List.concat_map extract_dec_keywords el in
+    let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
+    let env = { legal; section = ref section; syn = ref syn; dec = ref dec; } in
+    env
+  else
+    { legal; section = ref Map.empty; syn = ref Map.empty; dec = ref Set.empty }
 
 (* Macro Generation *)
 
@@ -241,7 +249,8 @@ let gen_macro' env =
   ^ sdec
 
 let gen_macro env =
-  let s = gen_macro' env in
-  let oc = Out_channel.open_text "macros.def" in
-  Fun.protect (fun () -> Out_channel.output_string oc s) 
-    ~finally:(fun () -> Out_channel.close oc)
+  if env.legal then
+    let s = gen_macro' env in
+    let oc = Out_channel.open_text "macros.def" in
+    Fun.protect (fun () -> Out_channel.output_string oc s) 
+      ~finally:(fun () -> Out_channel.close oc)
