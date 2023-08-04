@@ -60,6 +60,17 @@ splice: $(SYNTAX) $(EXEC) $(VALID) $(UTIL)
 
 doc: conf.py $(INDEX).rst splice
 
+.PHONY: html
+
+html: doc
+	mkdir -p $(BUILDDIR)
+	cp -r conf.py $(INDEX).rst $(SYNTAX) $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
+	rm -f $(SPHINXDIR)/$(SYNTAX)/*-in.rst
+	rm -f $(SPHINXDIR)/$(EXEC)/*-in.rst
+	rm -f $(SPHINXDIR)/$(VALID)/*-in.rst
+	$(SPHINXBUILD) -b html -d $(SPHINXDIR)/doctrees $(SPHINXDIR) $(BUILDDIR)/html
+	@echo "html finished; the HTML pages are in $(BUILDDIR)/html."
+
 .PHONY: pdf
 
 pdf: latexpdf 
