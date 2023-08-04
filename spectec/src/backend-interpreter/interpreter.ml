@@ -7,26 +7,22 @@ open Reference_interpreter
 
 (* Algorithm Map *)
 
-module AlgoMapKey = struct
-  type t = string
+module RuleMap = Map.Make (String)
 
-  let compare = Stdlib.compare
-end
+module FuncMap = Map.Make (String)
 
-module AlgoMap = Map.Make (AlgoMapKey)
+let rule_map = ref RuleMap.empty
 
-let algo_map = ref AlgoMap.empty
+let func_map = ref FuncMap.empty
 
 let to_map algos =
   let f acc algo =
-    let name = match algo with
-      | RuleA ((name, _), _, _) -> name
-      | FuncA (name, _, _) -> name
-    in
-    AlgoMap.add name algo acc
+    let rmap, fmap = acc in
+    match algo with
+    | RuleA ((name, _), _, _) -> (RuleMap.add name algo rmap, fmap)
+    | FuncA (name, _, _) -> (rmap, FuncMap.add name algo fmap)
   in
-
-  List.fold_left f AlgoMap.empty algos
+  List.fold_left f (RuleMap.empty, FuncMap.empty) algos
 
 (* Store *)
 
@@ -35,13 +31,7 @@ let store : store ref = ref Record.empty
 
 (* Environmet *)
 
-module EnvKey = struct
-  type t = name
-
-  let compare = Stdlib.compare
-end
-
-module Env = struct include Map.Make (EnvKey)
+module Env = struct include Map.Make (String)
 
   (* Printer *)
   let string_of_env env =
@@ -523,9 +513,9 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       let rhs = aux env iters in
       interp_instrs (assign_opt lhs_opt rhs env) il cont action
   (* Module & Runtime *)
-  else if AlgoMap.mem fname !algo_map then
+  else if FuncMap.mem fname !func_map then
       let new_action = AssignLhs(lhs_opt, (env, il, action)) in
-      call_algo fname args iters env cont new_action
+      call_func fname args iters env cont new_action
   else
       Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
@@ -706,12 +696,16 @@ and interp_algo algo args cont action =
 
 (* Search AL Algorithm *)
 
-and get_algo name = match AlgoMap.find_opt name !algo_map with
+and get_rule name = match RuleMap.find_opt name !rule_map with
   | Some v -> v
-  | None -> failwith ("Algorithm " ^ name ^ " not found")
+  | None -> failwith ("Algorithm for rule " ^ name ^ " not found")
 
-and call_algo name args iters env cont action =
-  let algo = get_algo name in
+and get_func fname = match FuncMap.find_opt fname !func_map with
+  | Some v -> v
+  | None -> failwith ("Algorithm for function " ^ fname ^ " not found")
+
+and call_rule name args iters env cont action =
+  let rule = get_rule name in
   let handle_map_result result = return_some result cont in
   let rec aux iters envs acc action = match envs with
     | [] ->
@@ -725,7 +719,7 @@ and call_algo name args iters env cont action =
   and aux' iters env action = match iters with
     | [] ->
       let vs = List.map (eval_expr env) args in
-      interp_algo algo vs cont action
+      interp_algo rule vs cont action
     | (names, dim) :: iters' ->
       let envs = create_sub_envs names dim env in
       aux iters' envs [] action
@@ -733,16 +727,39 @@ and call_algo name args iters env cont action =
 
   aux' iters env action
 
-and call_toplevel_algo name args =
-  let algo = get_algo name in
-  interp_algo algo args [] Pass
+and call_func name args iters env cont action =
+  let func = get_func name in
+  let handle_map_result result = return_some result cont in
+  let rec aux iters envs acc action = match envs with
+    | [] ->
+      let ys = listV (List.rev acc) in
+      handle_map_result ys action
+    | env :: envs' ->
+      let action' = Func (fun y ->
+        aux iters envs' (y :: acc) action
+      ) in
+      aux' iters env action'
+  and aux' iters env action = match iters with
+    | [] ->
+      let vs = List.map (eval_expr env) args in
+      interp_algo func vs cont action
+    | (names, dim) :: iters' ->
+      let envs = create_sub_envs names dim env in
+      aux iters' envs [] action
+  in
+
+  aux' iters env action
+
+and call_toplevel_func name args =
+  let func = get_func name in
+  interp_algo func args [] Pass
 
 and is_builtin = function
   | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
   | _ -> false
 
 and call_builtin name =
-  let local x = call_toplevel_algo "local" [ NumV (Int64.of_int x) ] in
+  let local x = call_toplevel_func "local" [ NumV (Int64.of_int x) ] in
   let as_const ty = function
   | ConstructV ("CONST", [ ConstructV (ty', []) ; n ]) when ty = ty' -> n
   | _ -> failwith ("Not " ^ ty ^ ".CONST") in
@@ -803,13 +820,16 @@ and execute_wasm_instrs winstrs env il cont action is_jump =
       call_builtin name;
       execute_wasm_instrs rest_winstr env il cont action is_jump
     | ConstructV (name, args) ->
-      let algo_name = ("execution_of_" ^ String.lowercase_ascii name) in
-      let algo = get_algo algo_name in
+      let rule = get_rule name in
       if is_jump then
-        interp_algo algo args ((rest_winstr, (env, il, action)) :: cont) JumpToNextWinstr
+        interp_algo rule args ((rest_winstr, (env, il, action)) :: cont) JumpToNextWinstr
       else
-        interp_algo algo args cont (ExecuteWinstrs (rest_winstr, (env, il, action)))
+        interp_algo rule args cont (ExecuteWinstrs (rest_winstr, (env, il, action)))
     | _ -> failwith (string_of_value winstr ^ " is not a wasm instruction")
 
 (* Entry *)
-let init algos = algo_map := to_map algos;
+let init algos = 
+  let rmap, fmap = to_map algos in
+  rule_map := rmap;
+  func_map := fmap;
+

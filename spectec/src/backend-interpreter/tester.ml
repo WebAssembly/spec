@@ -225,7 +225,7 @@ let do_invoke act = match act.it with
     Interpreter.init_stack();
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Al.Print.string_of_value args);
 
-    Interpreter.call_toplevel_algo "invocation" [funcaddr; args]
+    Interpreter.call_toplevel_func "invocation" [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let exports = find_export module_name in
@@ -331,7 +331,7 @@ let test_assertion assertion =
       Interpreter.cnt := 0;
       Interpreter.init_stack();
       Printf.eprintf "[Trying instantiating module...]\n";
-      ignore (Interpreter.call_toplevel_algo "instantiation" [ al_module ; externvals ]);
+      ignore (Interpreter.call_toplevel_func "instantiation" [ al_module ; externvals ]);
 
       fail expected"Module instantiation success"
     with
@@ -354,7 +354,7 @@ let test_module module_name m =
 
     (* Instantiate and store exports *)
     Printf.eprintf "[Instantiating module...]\n";
-    let module_inst = Interpreter.call_toplevel_algo "instantiation" [ al_module ; externvals ] in
+    let module_inst = Interpreter.call_toplevel_func "instantiation" [ al_module ; externvals ] in
 
     (* Store module instance in the register *)
     (match module_name with

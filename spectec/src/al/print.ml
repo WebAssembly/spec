@@ -331,7 +331,7 @@ and string_of_instrs depth instrs =
 
 let string_of_algorithm = function
   | RuleA (name, params, instrs) ->
-      string_of_keyword name
+      "execution_of_" ^ string_of_keyword name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
@@ -673,7 +673,7 @@ and structured_string_of_instrs depth instrs =
 
 let structured_string_of_algorithm = function
   | RuleA (name, params, instrs) ->
-      structured_string_of_keyword name
+      "execution_of_" ^ structured_string_of_keyword name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params
