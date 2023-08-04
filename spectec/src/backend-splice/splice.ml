@@ -252,14 +252,14 @@ let try_prose_anchor env src r sort : bool =
     if not (try_string src ":") then
       error src "colon `:` expected";
     parse_space src;
-    let instr_name = parse_id src "instrname" in
+    let prose_name = parse_id src "prose name" in
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
     let prose = List.find (function
-      | Backend_prose.Prose.Pred ((name, _), _, _) when name = instr_name -> true
+      | Backend_prose.Prose.Pred ((name, _), _, _) when name = prose_name -> true
       | Backend_prose.Prose.Algo algo -> (match algo with
-        | Al.Ast.RuleA ((name, _), _, _) when name = instr_name -> true
-        | Al.Ast.FuncA (name, _, _) when name = instr_name -> true
+        | Al.Ast.RuleA ((name, _), _, _) when name = prose_name -> true
+        | Al.Ast.FuncA (name, _, _) when name = prose_name -> true
         | _ -> false)
       | _ -> false)
       env.render_prose.prose in
@@ -282,7 +282,7 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "definition" "definition" "" find_func false ||
     try_prose_anchor env src r "prose-pred" ||
     try_prose_anchor env src r "prose-algo" ||
-    try_prose_anchor env src r "prose-fctn" ||
+    try_prose_anchor env src r "prose-func" ||
     error src "unknown definition sort";
   );
   let s =

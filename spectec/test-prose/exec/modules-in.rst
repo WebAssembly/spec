@@ -10,7 +10,7 @@ Allocation
 
 .. _def-funcs:
 
-%{prose-fctn: funcs}
+%{prose-func: funcs}
 
 \
 
@@ -18,7 +18,7 @@ $${definition: funcs}
 
 .. _def-globals:
 
-%{prose-fctn: globals}
+%{prose-func: globals}
 
 \
 
@@ -26,7 +26,7 @@ $${definition: globals}
 
 .. _def-tables:
 
-%{prose-fctn: tables}
+%{prose-func: tables}
 
 \
 
@@ -34,7 +34,7 @@ $${definition: tables}
 
 .. _def-mems:
 
-%{prose-fctn: mems}
+%{prose-func: mems}
 
 \
 
@@ -42,7 +42,7 @@ $${definition: mems}
 
 .. _def-allocfunc:
 
-%{prose-fctn: allocfunc}
+%{prose-func: allocfunc}
 
 \
 
@@ -50,7 +50,7 @@ $${definition: allocfunc}
 
 .. _def-allocfuncs:
 
-%{prose-fctn: allocfuncs}
+%{prose-func: allocfuncs}
 
 \
 
@@ -58,7 +58,7 @@ $${definition: allocfuncs}
 
 .. _def-allocglobal:
 
-%{prose-fctn: allocglobal}
+%{prose-func: allocglobal}
 
 \
 
@@ -66,7 +66,7 @@ $${definition: allocglobal}
 
 .. _def-allocglobals:
 
-%{prose-fctn: allocglobals}
+%{prose-func: allocglobals}
 
 \
 
@@ -74,7 +74,7 @@ $${definition: allocglobals}
 
 .. _def-alloctable:
 
-%{prose-fctn: alloctable}
+%{prose-func: alloctable}
 
 \
 
@@ -82,7 +82,7 @@ $${definition: alloctable}
 
 .. _def-alloctables:
 
-%{prose-fctn: alloctables}
+%{prose-func: alloctables}
 
 \
 
@@ -90,7 +90,7 @@ $${definition: alloctables}
 
 .. _def-allocmem:
 
-%{prose-fctn: allocmem}
+%{prose-func: allocmem}
 
 \
 
@@ -98,7 +98,7 @@ $${definition: allocmem}
 
 .. _def-allocmems:
 
-%{prose-fctn: allocmems}
+%{prose-func: allocmems}
 
 \
 
@@ -106,7 +106,7 @@ $${definition: allocmems}
 
 .. _def-allocelem:
 
-%{prose-fctn: allocelem}
+%{prose-func: allocelem}
 
 \
 
@@ -114,7 +114,7 @@ $${definition: allocelem}
 
 .. _def-allocelems:
 
-%{prose-fctn: allocelems}
+%{prose-func: allocelems}
 
 \
 
@@ -122,7 +122,7 @@ $${definition: allocelems}
 
 .. _def-allocdata:
 
-%{prose-fctn: allocdata}
+%{prose-func: allocdata}
 
 \
 
@@ -130,7 +130,7 @@ $${definition: allocdata}
 
 .. _def-allocdatas:
 
-%{prose-fctn: allocdatas}
+%{prose-func: allocdatas}
 
 \
 
@@ -138,7 +138,7 @@ $${definition: allocdatas}
 
 .. _def-instexport:
 
-%{prose-fctn: instexport}
+%{prose-func: instexport}
 
 \
 
@@ -146,7 +146,7 @@ $${definition: instexport}
 
 .. _def-allocmodule:
 
-%{prose-fctn: allocmodule}
+%{prose-func: allocmodule}
 
 \
 
@@ -159,7 +159,7 @@ Instantiation
 
 .. _def-concat_instr:
 
-%{prose-fctn: concat_instr}
+%{prose-func: concat_instr}
 
 \
 
@@ -168,7 +168,7 @@ $${definition: concat_instr}
 .. _def-instantiation:
 
 
-%{prose-fctn: instantiation}
+%{prose-func: instantiation}
 
 \
 
@@ -181,7 +181,7 @@ Invocation
 
 .. _def-invocation:
 
-%{prose-fctn: invocation}
+%{prose-func: invocation}
 
 \
 

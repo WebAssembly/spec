@@ -10,7 +10,7 @@ Values
 
 .. _def-default_:
 
-%{prose-fctn: default_}
+%{prose-func: default_}
 
 \
 
@@ -172,7 +172,7 @@ Helper Functions
 
 .. _def-funcaddr:
 
-%{prose-fctn: funcaddr}
+%{prose-func: funcaddr}
 
 \
 
@@ -180,7 +180,7 @@ $${definition: funcaddr}
 
 .. _def-funcinst:
 
-%{prose-fctn: funcinst}
+%{prose-func: funcinst}
 
 \
 
@@ -188,7 +188,7 @@ $${definition: funcinst}
 
 .. _def-globalinst:
 
-%{prose-fctn: globalinst}
+%{prose-func: globalinst}
 
 \
 
@@ -196,7 +196,7 @@ $${definition: globalinst}
 
 .. _def-tableinst:
 
-%{prose-fctn: tableinst}
+%{prose-func: tableinst}
 
 \
 
@@ -204,7 +204,7 @@ $${definition: tableinst}
 
 .. _def-meminst:
 
-%{prose-fctn: meminst}
+%{prose-func: meminst}
 
 \
 
@@ -212,7 +212,7 @@ $${definition: meminst}
 
 .. _def-eleminst:
 
-%{prose-fctn: eleminst}
+%{prose-func: eleminst}
 
 \
 
@@ -220,7 +220,7 @@ $${definition: eleminst}
 
 .. _def-datainst:
 
-%{prose-fctn: datainst}
+%{prose-func: datainst}
 
 \
 
@@ -228,7 +228,7 @@ $${definition: datainst}
 
 .. _def-func:
 
-%{prose-fctn: func}
+%{prose-func: func}
 
 \
 
@@ -236,7 +236,7 @@ $${definition: func}
 
 .. _def-global:
 
-%{prose-fctn: global}
+%{prose-func: global}
 
 \
 
@@ -244,7 +244,7 @@ $${definition: global}
 
 .. _def-table:
 
-%{prose-fctn: table}
+%{prose-func: table}
 
 \
 
@@ -252,7 +252,7 @@ $${definition: table}
 
 .. _def-mem:
 
-%{prose-fctn: mem}
+%{prose-func: mem}
 
 \
 
@@ -260,7 +260,7 @@ $${definition: mem}
 
 .. _def-elem:
 
-%{prose-fctn: elem}
+%{prose-func: elem}
 
 \
 
@@ -268,7 +268,7 @@ $${definition: elem}
 
 .. _def-data:
 
-%{prose-fctn: data}
+%{prose-func: data}
 
 \
 
@@ -276,7 +276,7 @@ $${definition: data}
 
 .. _def-local:
 
-%{prose-fctn: local}
+%{prose-func: local}
 
 \
 
@@ -284,7 +284,7 @@ $${definition: local}
 
 .. _def-with_local:
 
-%{prose-fctn: with_local}
+%{prose-func: with_local}
 
 \
 
@@ -292,7 +292,7 @@ $${definition: with_local}
 
 .. _def-with_global:
 
-%{prose-fctn: with_global}
+%{prose-func: with_global}
 
 \
 
@@ -300,7 +300,7 @@ $${definition: with_global}
 
 .. _def-with_table:
 
-%{prose-fctn: with_table}
+%{prose-func: with_table}
 
 \
 
@@ -308,7 +308,7 @@ $${definition: with_table}
 
 .. _def-with_tableinst:
 
-%{prose-fctn: with_tableinst}
+%{prose-func: with_tableinst}
 
 \
 
@@ -316,7 +316,7 @@ $${definition: with_tableinst}
 
 .. _def-with_mem:
 
-%{prose-fctn: with_mem}
+%{prose-func: with_mem}
 
 \
 
@@ -324,7 +324,7 @@ $${definition: with_mem}
 
 .. _def-with_meminst:
 
-%{prose-fctn: with_meminst}
+%{prose-func: with_meminst}
 
 \
 
@@ -332,7 +332,7 @@ $${definition: with_meminst}
 
 .. _def-with_elem:
 
-%{prose-fctn: with_elem}
+%{prose-func: with_elem}
 
 \
 
@@ -340,7 +340,7 @@ $${definition: with_elem}
 
 .. _def-with_data:
 
-%{prose-fctn: with_data}
+%{prose-func: with_data}
 
 \
 
@@ -348,7 +348,7 @@ $${definition: with_data}
 
 .. _def-grow_table:
 
-%{prose-fctn: grow_table}
+%{prose-func: grow_table}
 
 \
 
@@ -356,7 +356,7 @@ $${definition: grow_table}
 
 .. _def-grow_memory:
 
-%{prose-fctn: grow_memory}
+%{prose-func: grow_memory}
 
 \
 

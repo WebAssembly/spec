@@ -10,7 +10,7 @@ General Constants
 
 .. _def-Ki:
 
-%{prose-fctn: Ki}
+%{prose-func: Ki}
 
 \
 
@@ -23,7 +23,7 @@ General Functions
 
 .. _def-min:
 
-%{prose-fctn: min}
+%{prose-func: min}
 
 \
 
@@ -36,7 +36,7 @@ Auxiliary Definitions on Types
 
 .. _def-size:
 
-%{prose-fctn: size}
+%{prose-func: size}
 
 \
 
