@@ -8,7 +8,7 @@ module Map = Map.Make(String)
 
 (* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
    such that it is macro-compatible *)
-let macroify s note = 
+let macroify ?(note = "") s = 
   let is_alphanumeric c = match c with
     | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' -> true
     | _ -> false
@@ -17,45 +17,45 @@ let macroify s note =
     if is_alphanumeric c then acc ^ (String.make 1 c)
     else acc 
   in
-  String.fold_left del "" (s ^ "" ^ note)
+  String.fold_left del "" (s ^ note)
 
 (* Environment *)
 
 type env =
   { 
     legal: bool;
-    section: string Map.t ref;
-    syn: (Set.t * Set.t) Map.t ref;
-    dec: Set.t ref;
+    sections: string Map.t ref;
+    keywords: (Set.t * Set.t) Map.t ref;
+    funcs: Set.t ref;
   }
 
-let get_section env = !(env.section)
-let get_syn env = !(env.syn)
-let get_dec env = !(env.dec)
+let get_section env = !(env.sections)
+let get_keyword env = !(env.keywords)
+let get_func env = !(env.funcs)
 
-let find_section env s = Map.mem s !(env.section)
+let find_section env s = Map.mem s !(env.sections)
 
-let rec find_syn' env nonterminals variant = match nonterminals with
-  | nonterminal :: rest -> (match find_syn env nonterminal variant with
+let rec find_keyword' env nonterminals variant = match nonterminals with
+  | nonterminal :: rest -> (match find_keyword env nonterminal variant with
     | Some s -> Some s
-    | None -> find_syn' env rest variant)
+    | None -> find_keyword' env rest variant)
   | _ -> None
 
-and find_syn env syntax variant = match Map.find_opt syntax !(env.syn) with
+and find_keyword env syntax variant = match Map.find_opt syntax !(env.keywords) with
   | Some (terminals, nonterminals) ->
       if Set.mem variant terminals then
-        Some (macroify variant syntax)
+        Some (macroify ~note:syntax variant)
       else
-        find_syn' env (Set.elements nonterminals) variant
+        find_keyword' env (Set.elements nonterminals) variant
   | _ -> None
 
-let find_dec env s = Option.map (fun s -> macroify s "funcdef") (Set.find_opt s !(env.dec))
+let find_func env s = Option.map (fun s -> macroify s) (Set.find_opt s !(env.funcs))
 
 let find_keyword env keyword = 
   let variant, syntax = keyword in
-  find_syn env syntax variant
+  find_keyword env syntax variant
 
-let find_funcname env funcname = find_dec env funcname
+let find_funcname env funcname = find_func env funcname
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
@@ -121,7 +121,7 @@ let rec extract_typ_keywords typ =
   | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_keywords t.it) tl
   | _ -> []
 
-let extract_syn_keywords def =
+let extract_keyword_keywords def =
   match def.it with
   | El.Ast.SynD (id, subid, typ, _) -> 
       let topsyntax, syntax = 
@@ -134,7 +134,7 @@ let extract_syn_keywords def =
       Some (topsyntax, syntax, terminals, nonterminals)
   | _ -> None
 
-let extract_dec_keywords def =
+let extract_func_keywords def =
   match def.it with
   | El.Ast.DecD (id, _, _, _) -> [ id.it ]
   | _ -> []
@@ -147,10 +147,10 @@ let check_legal odsts =
 let env inputs outputs el =
   let legal = check_legal outputs in
   if legal then
-    let section = parse_section inputs outputs in
-    let syn = 
+    let sections = parse_section inputs outputs in
+    let keywords = 
       List.fold_left
-        (fun acc def -> match extract_syn_keywords def with
+        (fun acc def -> match extract_keyword_keywords def with
           | Some (topsyntax, syntax, terminals, nonterminals) -> 
               let acc = Map.add syntax (terminals, nonterminals) acc in
               (match topsyntax with
@@ -165,12 +165,12 @@ let env inputs outputs el =
           | _ -> acc)
         Map.empty el
     in
-    let dec = List.concat_map extract_dec_keywords el in
-    let dec = List.fold_left (fun s acc -> Set.add acc s) Set.empty dec in
-    let env = { legal; section = ref section; syn = ref syn; dec = ref dec; } in
+    let funcs = List.concat_map extract_func_keywords el in
+    let funcs = List.fold_left (fun s acc -> Set.add acc s) Set.empty funcs in
+    let env = { legal; sections = ref sections; keywords = ref keywords; funcs = ref funcs; } in
     env
   else
-    { legal; section = ref Map.empty; syn = ref Map.empty; dec = ref Set.empty }
+    { legal; sections = ref Map.empty; keywords = ref Map.empty; funcs = ref Set.empty }
 
 (* Macro Generation *)
 
@@ -196,7 +196,7 @@ let macro_template = {|
 
 |}
 
-let gen_macro_keyword s = 
+let gen_macro_word s = 
   let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
   let escape acc c =
     if c = '.' then acc ^ "{.}"
@@ -205,48 +205,59 @@ let gen_macro_keyword s =
   in
   String.fold_left escape "" s
 
-let gen_macro_def env ref s typ note =
-  let xref = match Map.find_opt ref !(env.section) with
-    | Some path -> sprintf "\\xref{%s}{%s}" path ref
-    | None -> ""
-  in
-  sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
-    (macroify s note) xref typ (gen_macro_keyword s)
+let gen_macro_xref env header = match Map.find_opt header !(env.sections) with
+  | Some path -> sprintf "\\xref{%s}{%s}" path header
+  | None -> ""
 
-let gen_macro_syn env =
-  let syn = !(env.syn) in
+let gen_macro_rule ?(note = "") env header font word =
+  let xref = gen_macro_xref env header in
+  sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
+    (macroify ~note:note word) xref font (gen_macro_word word)
+
+let gen_macro_keyword env syntax keyword =
+  let header = "syntax-" ^ syntax in
+  let font = "K" in
+  gen_macro_rule ~note:syntax env header font keyword
+
+let gen_macro_keywords env =
+  let keyword = !(env.keywords) in
   Map.fold
-    (fun syntax variants ssyn ->
+    (fun syntax variants skeyword ->
       let terminals, _ = variants in
       let svariants = Set.fold
         (fun keyword svariants ->
-          let svariant = gen_macro_def env ("syntax-" ^ syntax) keyword "K" syntax in
+          let svariant = gen_macro_keyword env syntax keyword in
           svariants ^ svariant ^ "\n")
         terminals "" 
       in
-      ssyn
+      skeyword
       ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
       ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
       ^ svariants
       ^ "\n")
-    syn "" 
+    keyword "" 
 
-let gen_macro_dec env =
-  let dec = !(env.dec) in
+let gen_macro_func env fname =
+  let header = "def-" ^ fname in
+  let font = "F" in
+  gen_macro_rule env header font fname
+
+let gen_macro_funcs env =
+  let func = !(env.funcs) in
   Set.fold
-    (fun keyword sdec -> 
-      let skeyword = gen_macro_def env ("def-" ^ keyword) keyword "F" "funcdef" in
-      sdec ^ skeyword ^ "\n")
-    dec "" 
+    (fun fname sfunc -> 
+      let sword = gen_macro_func env fname in
+      sfunc ^ sword ^ "\n")
+    func "" 
 
 let gen_macro' env =
-  let ssyn = gen_macro_syn env in
-  let sdec = gen_macro_dec env in
+  let skeyword = gen_macro_keywords env in
+  let sfunc = gen_macro_funcs env in
   macro_template
-  ^ ".. Syntax\n.. ------\n\n"
-  ^ ssyn
+  ^ ".. syntax\n.. ------\n\n"
+  ^ skeyword
   ^ ".. Functions\n.. ---------\n\n"
-  ^ sdec
+  ^ sfunc
 
 let gen_macro env =
   if env.legal then
