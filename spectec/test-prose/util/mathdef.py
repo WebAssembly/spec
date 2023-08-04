@@ -33,7 +33,7 @@ def latex_transform_math_xref(node):
 
 # Expand mathdef names in math roles and directives
 
-def_re = re.compile('\\\\[A-Za-z][0-9A-Za-z]*', re.M)
+def_re = re.compile('\\\\[A-Za-z][-0-9A-Za-z]*', re.M)
 
 auxcounter = 0
 

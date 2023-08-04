@@ -10,14 +10,14 @@ module Map = Map.Make(String)
    such that it is macro-compatible *)
 let macroify ?(note = "") s = 
   let is_alphanumeric c = match c with
-    | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' -> true
+    | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' -> true
     | _ -> false
   in
   let del acc c =
     if is_alphanumeric c then acc ^ (String.make 1 c)
     else acc 
   in
-  String.fold_left del "" (s ^ note)
+  String.fold_left del "" (s ^ "-" ^ note)
 
 (* Environment *)
 
