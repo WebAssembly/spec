@@ -362,6 +362,9 @@ let transpiler algo =
         post_expr = composite hide_state simplify_record_concat
       }
   in
+
+  let contains_free_f body = List.map Free.free_instr body |> List.concat |> List.mem "f" in
+
   match walker algo with
   | RuleA (name, params, body) -> (match params with
     | PairE (_, NameE "f") :: tail ->
@@ -370,9 +373,9 @@ let transpiler algo =
         RuleA (name, tail, body)
     | _ -> RuleA(name, params, body))
   | FuncA (name, params, body) -> (match params with
-    | PairE (_, NameE "f") :: tail ->
+    | PairE (_, NameE "f") :: tail when contains_free_f body ->
         FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body)
-    | NameE "s" :: tail ->
+    | PairE (_, NameE "f") :: tail | NameE "s" :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
 

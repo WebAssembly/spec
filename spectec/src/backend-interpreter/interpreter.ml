@@ -557,6 +557,11 @@ and interp_instrs env il cont action =
               let i = eval_expr env e' |> value_to_int in
               let vs = List.rev (List.init i (fun _ -> pop ())) in
               Env.add name (listV vs) env
+          | FrameE _ ->
+              begin match pop () with
+              | FrameV _ -> env
+              | h -> failwith (Printf.sprintf "Invalid pop: %s := %s" (structured_string_of_expr e) (structured_string_of_value h))
+              end
           | _ -> (
               (* due to Wasm validation *)
               let h = pop () in

@@ -619,36 +619,41 @@ instantiation module externval*
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
 4. Let f_init be { LOCAL: []; MODULE: m_init; }.
-5. Push the activation of f_init to the stack.
-6. Let n_data be |data*|.
-7. Let n_elem be |elem*|.
-8. Let (START x)? be start?.
-9. Let (GLOBAL globaltype instr_1*)* be global*.
-10. Let (ELEM reftype instr_2** elemmode?)* be elem*.
-11. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
-12. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
+5. Let n_data be |data*|.
+6. Let n_elem be |elem*|.
+7. Let (START x)? be start?.
+8. Let (GLOBAL globaltype instr_1*)* be global*.
+9. Let (ELEM reftype instr_2** elemmode?)* be elem*.
+10. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
+11. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
+12. Push the activation of f_init to the stack.
 13. Let ref** be $exec_expr_const(instr_2*)**.
-14. Let val* be $exec_expr_const(instr_1*)*.
-15. Let m be $allocmodule(module, externval*, val*, ref**).
-16. Let f be { LOCAL: []; MODULE: m; }.
-17. Push the activation of f to the stack.
-18. Execute the sequence (instr_elem*).
-19. Execute the sequence (instr_data*).
-20. If x is defined, then:
+14. Pop the activation of f_init from the stack.
+15. Push the activation of f_init to the stack.
+16. Let val* be $exec_expr_const(instr_1*)*.
+17. Pop the activation of f_init from the stack.
+18. Let m be $allocmodule(module, externval*, val*, ref**).
+19. Let f be { LOCAL: []; MODULE: m; }.
+20. Push the activation of f to the stack.
+21. Execute the sequence (instr_elem*).
+22. Execute the sequence (instr_data*).
+23. If x is defined, then:
   a. Execute (CALL x).
-21. Return m.
+24. Pop the activation of f from the stack.
+25. Return m.
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. Push the activation of f to the stack.
-4. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
-5. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
-6. Let [valtype_param^n]->[valtype_res^k] be functype.
+3. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
+4. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
+5. Let [valtype_param^n]->[valtype_res^k] be functype.
+6. Push the activation of f to the stack.
 7. Push val^n to the stack.
 8. Execute (CALL_ADDR fa).
-9. Pop val from the stack.
-10. Return [val].
+9. Pop val^k from the stack.
+10. Pop the activation of f from the stack.
+11. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -856,11 +861,10 @@ execution_of_CALL_ADDR a
     3) Assert: Due to validation, there are at least k values on the top of the stack.
     4) Pop val^k from the stack.
     5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-    6) Push the activation of f to the stack.
-    7) Push the activation of f with arity n to the stack.
-    8) Let L be the label_n{[]}.
-    9) Push L to the stack.
-    10) Jump to instr*.
+    6) Push the activation of f with arity n to the stack.
+    7) Let L be the label_n{[]}.
+    8) Push L to the stack.
+    9) Jump to instr*.
 
 execution_of_REF.FUNC x
 1. If x < |$funcaddr()|, then:

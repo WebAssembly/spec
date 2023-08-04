@@ -596,7 +596,7 @@ let rec letI lhs rhs targets cont =
     ]
   | NameE s when s = "f" || String.starts_with ~prefix:"f_" s ->
       Al.Print.string_of_expr rhs |> print_endline;
-      LetI (lhs, rhs) :: PushI (FrameE (None, lhs)) :: cont
+      LetI (lhs, rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
 let rec rulepr2instr pr =
@@ -604,7 +604,7 @@ let rec rulepr2instr pr =
   (* Inductive case *)
   | Ast.IterPr (pr, (iter, ids)) ->
       begin match rulepr2instr pr with
-      | LetI (lhs, rhs) ->
+      | [ push; LetI (lhs, rhs); pop ] ->
           let rec name_of_expr = function
             | IterE (e, _, _) -> name_of_expr e
             | NameE n -> n
@@ -612,11 +612,19 @@ let rec rulepr2instr pr =
           in
           begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
           | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
-              LetI (IterE (lhs, lhs_iter_ids, iter2iter iter), IterE (rhs, rhs_iter_ids, iter2iter iter))
+              [
+                push;
+                LetI (
+                  IterE (lhs, lhs_iter_ids, iter2iter iter),
+                  IterE (rhs, rhs_iter_ids, iter2iter iter)
+                );
+                pop
+              ]
           | _ -> failwith "Invalid IterPr"
           end
       | instr ->
-          Al.Print.string_of_instr (ref 0) 0 instr
+          List.hd instr
+          |> Al.Print.string_of_instr (ref 0) 0
           |> Printf.sprintf "Invalid RulePr: %s"
           |> failwith
       end
@@ -628,7 +636,7 @@ let rec rulepr2instr pr =
       (* s; f; lhs *)
       { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
         { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-          { it = Ast.VarE _s; _ }; { it = Ast.VarE _f; _ }
+          { it = Ast.VarE _s; _ }; { it = Ast.VarE f; _ }
         ]; _ }); _ };
         lhs
       ]; _ }); _ };
@@ -636,7 +644,11 @@ let rec rulepr2instr pr =
         rhs
     ]; _ }
   ) when id.it = "Exec_expr_const" ->
-    LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ]))
+    [
+      PushI (FrameE (None, NameE f.it));
+      LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ]));
+      PopI (FrameE (None, NameE f.it))
+    ]
   | _ -> failwith "We do not allow iter on premises other than `RulePr`"
 
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
@@ -655,8 +667,8 @@ let prems2instrs remain_lhs =
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
       (* Step_read *)
-      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
-      | Ast.IterPr _ -> rulepr2instr prem :: instrs
+      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem @ instrs
+      | Ast.IterPr _ -> rulepr2instr prem @ instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           YetI (Il.Print.string_of_prem prem) :: instrs)
@@ -844,9 +856,17 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
-let config_helper2instrs return clause =
+let config_helper2instrs after return clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  rhs2instrs e2 @ return |> prems2instrs [] prems
+  match e2.it with
+  | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+    { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
+      { it = Ast.VarE _s; _ }; { it = Ast.VarE f; _ }
+    ]; _ }); _ };
+    lhs
+  ]; _ }) ->
+    PushI (FrameE (None, NameE f.it)) :: rhs2instrs lhs @ after @ [PopI (FrameE (None, NameE f.it))] @ return |> prems2instrs [] prems
+  | _ -> failwith "unreachable"
 
 let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
@@ -867,9 +887,9 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiation" then
-          [ReturnI (Some (NameE "m"))] |> config_helper2instrs
+          [ReturnI (Some (NameE "m"))] |> config_helper2instrs []
         else if id.it = "invocation" then
-          [PopI (NameE "val"); ReturnI (Some (ListE ([NameE "val"])))] |> config_helper2instrs
+          [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))]
         else
           normal_helper2instrs
       in

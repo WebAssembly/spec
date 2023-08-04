@@ -34,4 +34,12 @@ and free_iter = function
   | List
   | List1 -> []
   | ListN (e, name_opt) -> Option.to_list name_opt @ free_expr e
-and free_path _ = [] (* TODO *)
+and free_path = function
+  | IndexP e -> free_expr e
+  | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
+  | DotP _ -> []
+let free_instr = function
+  | ReturnI (Some e) -> free_expr e
+  | ReplaceI (e1, p, e2) -> free_expr e1 @ free_path p @ free_expr e2
+  | LetI (e1, e2) -> free_expr e1 @ free_expr e2
+  | _ -> [] (* TODO *)
