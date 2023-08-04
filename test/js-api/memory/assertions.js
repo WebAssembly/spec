@@ -27,7 +27,7 @@ function assert_ArrayBuffer(actual, { size=0, shared=false, detached=false }, me
   assert_equals(Object.isExtensible(actual), !shared, "buffer extensibility");
 }
 
-function assert_Memory(memory, { size=0, shared=false }) {
+function assert_Memory(memory, { size=0, shared=false, index="u32" }) {
   assert_equals(Object.getPrototypeOf(memory), WebAssembly.Memory.prototype,
                 "prototype");
   assert_true(Object.isExtensible(memory), "extensible");
@@ -35,4 +35,9 @@ function assert_Memory(memory, { size=0, shared=false }) {
   // https://github.com/WebAssembly/spec/issues/840
   assert_equals(memory.buffer, memory.buffer, "buffer should be idempotent");
   assert_ArrayBuffer(memory.buffer, { size, shared });
+
+  // this depends on js-types proposal implementation
+  if (typeof memory.type == "function") {
+    assert_equals(memory.type().index, index, "memory index");
+  }
 }
