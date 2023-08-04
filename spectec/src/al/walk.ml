@@ -59,7 +59,7 @@ let rec walk_expr f e =
   | PairE (e1, e2) -> PairE (new_ e1, new_ e2)
   | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
   | ArityE e' -> ArityE (new_ e')
-  | FrameE (e1, e2) -> FrameE (new_ e1, new_ e2)
+  | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
   | NameE n -> NameE n

@@ -179,7 +179,9 @@ and render_expr env in_math = function
   | Al.Ast.GetCurLabelE -> "the current label"
   | Al.Ast.GetCurFrameE -> "the current frame"
   | Al.Ast.GetCurContextE -> "the current context"
-  | Al.Ast.FrameE (e1, e2) ->
+  | Al.Ast.FrameE (None, e2) ->
+      sprintf "the activation of %s" (render_expr env in_math e2)
+  | Al.Ast.FrameE (Some e1, e2) ->
       sprintf "the activation of %s with arity %s" (render_expr env in_math e2)
         (render_expr env in_math e1)
   | Al.Ast.ListE el -> 

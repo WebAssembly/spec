@@ -234,13 +234,13 @@ let rec eval_expr env expr =
   | ArityE e -> (
       match eval_expr env e with
       | LabelV (v, _) -> v
-      | FrameV (v, _) -> v
+      | FrameV (Some v, _) -> v
       | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
   | FrameE (e1, e2) -> (
-      let v1 = eval_expr env e1 in
+      let v1 = Option.map (eval_expr env) e1 in
       let v2 = eval_expr env e2 in
       match (v1, v2) with
-      | NumV _, RecordV _ -> FrameV (v1, v2)
+      | (Some (NumV _)|None), RecordV _ -> FrameV (v1, v2)
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)

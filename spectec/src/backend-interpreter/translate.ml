@@ -380,7 +380,7 @@ let rec rhs2instrs exp =
         }) ->
       let push_instr =
         PushI
-          (FrameE (NameE arity.it, NameE fname.it))
+          (FrameE (Some (NameE arity.it), NameE fname.it))
       in
       push_instr :: rhs2instrs labelexp
   (* TODO: Label *)
@@ -596,7 +596,7 @@ let rec letI lhs rhs targets cont =
     ]
   | NameE s when s = "f" || String.starts_with ~prefix:"f_" s ->
       Al.Print.string_of_expr rhs |> print_endline;
-      LetI (lhs, rhs) :: PushI (FrameE (NumE 0L, lhs)) :: cont
+      LetI (lhs, rhs) :: PushI (FrameE (None, lhs)) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
 let rec rulepr2instr pr =

@@ -619,7 +619,7 @@ instantiation module externval*
 2. Assert: Due to validation, module is of the case MODULE.
 3. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
 4. Let f_init be { LOCAL: []; MODULE: m_init; }.
-5. Push the activation of f_init with arity 0 to the stack.
+5. Push the activation of f_init to the stack.
 6. Let n_data be |data*|.
 7. Let n_elem be |elem*|.
 8. Let (START x)? be start?.
@@ -631,7 +631,7 @@ instantiation module externval*
 14. Let val* be $exec_expr_const(instr_1*)*.
 15. Let m be $allocmodule(module, externval*, val*, ref**).
 16. Let f be { LOCAL: []; MODULE: m; }.
-17. Push the activation of f with arity 0 to the stack.
+17. Push the activation of f to the stack.
 18. Execute the sequence (instr_elem*).
 19. Execute the sequence (instr_data*).
 20. If x is defined, then:
@@ -641,7 +641,7 @@ instantiation module externval*
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Let f be { LOCAL: []; MODULE: m; }.
-3. Push the activation of f with arity 0 to the stack.
+3. Push the activation of f to the stack.
 4. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
 5. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
 6. Let [valtype_param^n]->[valtype_res^k] be functype.
@@ -856,7 +856,7 @@ execution_of_CALL_ADDR a
     3) Assert: Due to validation, there are at least k values on the top of the stack.
     4) Pop val^k from the stack.
     5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-    6) Push the activation of f with arity 0 to the stack.
+    6) Push the activation of f to the stack.
     7) Push the activation of f with arity n to the stack.
     8) Let L be the label_n{[]}.
     9) Push L to the stack.

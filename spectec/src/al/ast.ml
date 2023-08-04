@@ -42,7 +42,8 @@ and value =
   | OptV of value option
   | PairV of value * value
   | ArrowV of value * value
-  | FrameV of value * value
+  (* TODO: Remove FrameV and LabelV *)
+  | FrameV of value option * value
   | LabelV of value * value
   | StoreV of store ref
 
@@ -101,7 +102,7 @@ and expr =
   | ArrowE of expr * expr
   (* Context *)
   | ArityE of expr
-  | FrameE of expr * expr
+  | FrameE of expr option * expr
   | GetCurFrameE
   | LabelE of expr * expr
   | GetCurLabelE
