@@ -322,28 +322,22 @@ funcaddr
 2. Return f.MODULE.FUNC.
 
 funcinst
-1. Let f be the current frame.
-2. Return s.FUNC.
+1. Return s.FUNC.
 
 globalinst
-1. Let f be the current frame.
-2. Return s.GLOBAL.
+1. Return s.GLOBAL.
 
 tableinst
-1. Let f be the current frame.
-2. Return s.TABLE.
+1. Return s.TABLE.
 
 meminst
-1. Let f be the current frame.
-2. Return s.MEM.
+1. Return s.MEM.
 
 eleminst
-1. Let f be the current frame.
-2. Return s.ELEM.
+1. Return s.ELEM.
 
 datainst
-1. Let f be the current frame.
-2. Return s.DATA.
+1. Return s.DATA.
 
 func x
 1. Let f be the current frame.
