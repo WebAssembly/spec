@@ -256,10 +256,10 @@ let try_prose_anchor env src r sort : bool =
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
     let prose = List.find (function
-      | Backend_prose.Prose.Pred ((name, _), _, _) when name = prose_name -> true
+      | Backend_prose.Prose.Pred ((name, _), _, _) when name = prose_name && sort = "prose-pred" -> true
       | Backend_prose.Prose.Algo algo -> (match algo with
-        | Al.Ast.RuleA ((name, _), _, _) when name = prose_name -> true
-        | Al.Ast.FuncA (name, _, _) when name = prose_name -> true
+        | Al.Ast.RuleA ((name, _), _, _) when name = prose_name && sort = "prose-algo" -> true
+        | Al.Ast.FuncA (name, _, _) when name = prose_name && sort = "prose-func" -> true
         | _ -> false)
       | _ -> false)
       env.render_prose.prose in
