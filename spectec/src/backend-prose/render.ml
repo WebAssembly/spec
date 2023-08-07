@@ -241,7 +241,7 @@ and render_expr env in_math = function
   | Al.Ast.IterE (e, _, iter) -> 
       let se = render_expr env true e in
       let siter = render_iter env iter in
-      let s = sprintf "{\\{%s\\}}{%s}" se siter in
+      let s = sprintf "{(%s)}{%s}" se siter in
       if in_math then s else render_math s
   | Al.Ast.ArrowE (e1, e2) ->
       let se1 = render_expr env true e1 in
