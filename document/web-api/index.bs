@@ -1,0 +1,304 @@
+<pre class='metadata'>
+Title: WebAssembly Web API
+Shortname: wasm-web-api
+Group: wasm
+Status: ED
+Level: 2
+TR: https://www.w3.org/TR/wasm-web-api-2/
+ED: https://webassembly.github.io/spec/web-api/
+Editor: Ms2ger, Igalia
+Repository: WebAssembly/spec
+Abstract: This document describes the integration of WebAssembly with the broader web platform.
+Markup Shorthands: css no, markdown yes
+Prepare For TR: true
+</pre>
+
+<pre class='biblio'>
+{
+  "ECMA-262": {
+    "href": "https://tc39.github.io/ecma262",
+    "title": "ECMAScript® Language Specification",
+    "publisher": "ECMA TC39",
+    "status": "Current Editor's Draft"
+  },
+  "WEBASSEMBLY": {
+    "href": "https://webassembly.github.io/spec/core/",
+    "title": "WebAssembly Core Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
+  },
+  "WASMJS": {
+    "href": "https://webassembly.github.io/spec/js-api/",
+    "title": "WebAssembly JS Integration Specification",
+    "publisher": "W3C WebAssembly Community Group",
+    "status": "Draft"
+  }
+}
+</pre>
+
+<pre class="anchors">
+urlPrefix: https://tc39.github.io/ecma262/; spec: ECMA-262
+    type: exception; for: ECMAScript
+        text: TypeError; url: sec-native-error-types-used-in-this-standard-typeerror
+    type: interface
+        text: ArrayBuffer; url: sec-arraybuffer-objects
+    type: dfn
+        text: agent cluster; url: sec-agent-clusters
+        text: current Realm; url: current-realm
+urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: dfn
+    text: function index; url: syntax/modules.html#syntax-funcidx
+    text: name section; url: appendix/custom.html?highlight=name%20section#binary-namesec
+urlPrefix: https://webassembly.github.io/spec/js-api/; spec: WASMJS
+    type: namespace
+        text: WebAssembly; url: #namespacedef-webassembly
+    type: exception
+        text: CompileError; url: #exceptiondef-compileerror
+    type: interface
+        text: Module; url: #module
+        text: WebAssemblyInstantiatedSource; url: #dictdef-webassemblyinstantiatedsource
+    type: dfn
+        text: compile a WebAssembly module; url: #compile-a-webassembly-module
+        text: instantiate a WebAssembly module; url: #instantiate-a-webassembly-module
+        text: instantiate; url: #dom-webassembly-instantiate
+        text: asynchronously compile a webassembly module; url: #asynchronously-compile-a-webassembly-module
+        text: instantiate a promise of a module; url: #instantiate-a-promise-of-a-module
+        text: Exported Function; url: #exported-function
+url:https://html.spec.whatwg.org/#cors-same-origin;text:CORS-same-origin;type:dfn;spec:HTML
+url:https://fetch.spec.whatwg.org/#concept-body-consume-body;text:consume body;type:dfn;spec:FETCH
+</pre>
+
+<pre class='link-defaults'>
+spec:ecma-262; type:exception; for:ECMAScript; text:TypeError
+spec:fetch; type:dfn; text:get
+spec:webidl; type:dfn; text:resolve
+</pre>
+
+This document builds off of the WebAssembly specification [[WEBASSEMBLY]] and the WebAssembly JavaScript embedding [[WASMJS]].
+
+<h2 id="streaming-modules">Streaming Module Compilation and Instantiation</h2>
+
+<pre class="idl">
+[Exposed=(Window,Worker)]
+partial namespace WebAssembly {
+  Promise&lt;Module> compileStreaming(Promise&lt;Response> source);
+  Promise&lt;WebAssemblyInstantiatedSource> instantiateStreaming(
+      Promise&lt;Response> source, optional object importObject);
+};
+</pre>
+
+<div algorithm>
+The <dfn method for="WebAssembly">compileStreaming(|source|)</dfn> method, when invoked, returns the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+</div>
+
+<div algorithm>
+The <dfn method for="WebAssembly">instantiateStreaming(|source|, |importObject|)</dfn> method, when invoked, performs the following steps:
+
+    1. Let |promiseOfModule| be the result of [=compile a potential WebAssembly response|compiling a potential WebAssembly response=] with |source|.
+    1. Return the result of [=instantiate a promise of a module|instantiating the promise of a module=] |promiseOfModule| with imports |importObject|.
+</div>
+
+<div algorithm>
+To <dfn>compile a potential WebAssembly response</dfn> with a promise of a {{Response}} |source|, perform the following steps:
+
+Note: This algorithm accepts a {{Response}} object, or a
+    promise for one, and compiles and instantiates the resulting bytes of the response. This compilation
+    can be performed in the background and in a streaming manner. If the {{Response}} is not
+    [=CORS-same-origin=], does not represent an [=ok status=], or does not match the
+    `` `application/wasm` `` MIME type, the returned promise will be rejected with a {{TypeError}}; if
+    compilation or instantiation fails, the returned promise will be rejected with a
+    {{CompileError}} or other relevant error type, depending on the cause of failure.
+
+
+    1. Let |returnValue| be [=a new promise=]
+    1. [=Upon fulfillment=] of |source| with value |unwrappedSource|:
+        1. Let |response| be |unwrappedSource|'s [=Response/response=].
+        1. Let |mimeType| be the result of [=header list/getting=] `` `Content-Type` `` from |response|'s [=response/header list=].
+        1. If |mimeType| is null, reject |returnValue| with a {{TypeError}} and abort these substeps.
+        1. Remove all [=HTTP tab or space byte=] from the start and end of |mimeType|.
+        1. If |mimeType| is not a [=byte-case-insensitive=] match for `` `application/wasm` ``, reject |returnValue| with a {{TypeError}} and abort these substeps.
+
+            Note: extra parameters are not allowed, including the empty `` `application/wasm;` ``.
+
+        1. If |response| is not [=CORS-same-origin=], [=reject=] |returnValue| with a {{TypeError}} and abort these substeps.
+        1. If |response|'s [=response/status=] is not an [=ok status=], [=reject=] |returnValue| with a {{TypeError}} and abort these substeps.
+        1. [=Consume body|Consume=] |response|'s body as an {{ArrayBuffer}}, and let |bodyPromise| be the result.
+
+            Note: Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified. <!-- Using consume is a bit silly as it creates an ArrayBuffer but then we just want the underlying bytes. This is because of how streams is specced in terms of promises and JS objects whereas we want to operate more directly on the underlying concept. We can revisit this if things change in the Streams/Fetch specs. -->
+
+        1. [=Upon fulfillment=] of |bodyPromise| with value |bodyArrayBuffer|:
+            1. Let |stableBytes| be a [=get a copy of the buffer source|copy of the bytes held by the buffer=] |bodyArrayBuffer|.
+            1. [=Asynchronously compile a WebAssembly module|Asynchronously compile the WebAssembly module=] |stableBytes| using the [=networking task source=] and [=resolve=] |returnValue| with the result.
+        1. [=Upon rejection=] of |bodyPromise| with reason |reason|:
+            1. [=Reject=] |returnValue| with |reason|.
+     1. [=Upon rejection=] of |source| with reason |reason|:
+         1. [=Reject=] |returnValue| with |reason|.
+     1. Return |returnValue|.
+</div>
+
+<h2 id="serialization">Serialization</h2>
+
+Web user agents must augment the {{Module}} interface with the <code>[<a extended-attribute>Serializable</a>]</code> extended attribute.
+
+The [=serialization steps=], given |value|, |serialized|, and |forStorage|, are:
+
+    1. If |forStorage| is true, throw a "<a exception>DataCloneError</a>" {{DOMException}}.
+
+    1. Set |serialized|.\[[Bytes]] to the [=sub-serialization=] of |value|.\[[Bytes]].
+
+    1. Set |serialized|.\[[AgentCluster]] to the [=current Realm=]'s corresponding [=agent cluster=].
+
+The [=deserialization steps=], given |serialized|, |value|, and |targetRealm| are:
+
+    1. Let |bytes| be the [=sub-deserialization=] of |serialized|.\[[Bytes]].
+
+    1. Set |value|.\[[Bytes]] to |bytes|.
+
+    1. If |targetRealm|'s corresponding [=agent cluster=] is not |serialized|.\[[AgentCluster]], then throw a "<a exception>DataCloneError</a>" {{DOMException}}.
+
+    1. [=Compile a WebAssembly module=] from |bytes| and set |value|.\[[Module]] to the result.
+
+Engines should attempt to share/reuse internal compiled code when performing
+a structured serialization, although in corner cases like CPU upgrade or browser
+update, this might not be possible and full recompilation may be necessary.
+
+Note: The semantics of a structured serialization is as-if the binary source, from which the
+{{Module}} was compiled, is serialized, then deserialized, and recompiled into the target realm.
+Given the above engine optimizations, structured serialization provides developers
+explicit control over both compiled-code caching and cross-window/worker code
+sharing.
+
+<h2 id="conventions">Developer-Facing Display Conventions</h2>
+
+<em>This section is non-normative.</em>
+
+Browsers, JavaScript engines, and offline tools have common ways of referring to
+JavaScript artifacts and language constructs. For example, locations in
+JavaScript source code are printed in stack traces or error messages, and are
+represented naturally as decimal-format lines and columns in text files. Names
+of functions and variables are taken directly from the sources. Therefore (for
+example) even though the exact format of implementation-dependent stack trace
+strings does not always match, the locations are easily understandable and the
+same across browsers.
+
+To achieve the same goal of a common representation for WebAssembly constructs, the
+following conventions are adopted.
+
+A WebAssembly location is a reference to a particular instruction in the binary, and may be
+displayed by a browser or engine in similar contexts as JavaScript source locations.
+It has the following format:
+
+`${url}:wasm-function[${funcIndex}]:${pcOffset}`
+
+Where
+* `${url}` is the URL associated with the module, if applicable (see notes).
+* `${funcIndex}` is the [=function index=] relative to the module.
+* `${pcOffset}` is the offset in the module binary of the first byte of the instruction, printed in hexadecimal with lower-case digits, with a leading `0x` prefix.
+
+Notes:
+* The URL field may be interpreted differently depending on the
+    context. When the response-based
+    instantiation <a href="#streaming-modules">API</a> is used in a
+    browser, the associated URL should be used; or when the
+    {{ArrayBuffer}}-based instantiation
+    [=instantiate|API=] is used, the browser should represent
+    the location of the API call. This kind of instantiation is analogous to
+    executing JavaScript using `eval`; therefore if the browser has an existing
+    method to represent the location of the `eval` call it can use a similar
+    one for `WebAssembly.instantiate`. For example if the browser uses
+    `foo.js line 10 > eval` or `eval at bar (foo.js:10:3)` for `eval`, it could
+    use `foo.js line 10 > WebAssembly.instantiate` or
+    `WebAssembly.instantiate at bar (foo.js:10:3)`, respectively.
+    Offline tools may use a filename instead.
+* Using hexadecimal for module offsets matches common conventions in native tools
+    such as `objdump` (where addresses are printed in hex) and makes them visually
+    distinct from JavaScript line numbers. Other numbers are represented in decimal.
+
+While the "name" property of an [=Exported Function=] instance
+is specified by the [[WASMJS|JS API]], synthesized function names are also
+displayed in other contexts like call stacks in debuggers and string representations
+of stack traces.
+If a WebAssembly module contains a [=name section=],
+these names should be used to synthesize a function name as follows:
+* If a function name subsection is present, the displayed name should be `${module_name}.${function_name}` or `${function_name}`, depending on whether the module name is present.
+* Otherwise, the output can be context-dependent:
+    * If the function name is shown alongside its location in a stack trace, then just the module name (if present) or an empty string can be used (because the function index is already in the location).
+    * Otherwise, `${module_name}.wasm-function[${funcIndex}]` or `wasm-function[${funcIndex}]` should be used to convey the function index.
+
+Note that this document does not specify the full format of strings such as
+stack frame representations; this allows engines to continue using their
+existing formats for JavaScript (which existing code may already be depending
+on) while still printing WebAssembly frames in a format consistent with
+JavaScript.
+
+<h2 id="mediaType">Media-type Registration</h2>
+
+This section will be submitted to the Internet Engineering Steering Group (IESG) for
+review, approval, and registration with IANA.
+
+application/wasm
+
+<dl>
+<dt>Type Name:</dt>
+ <dd>application</dd>
+<dt>Subtype Name:</dt>
+ <dd>wasm</dd>
+<dt>Required Parameters:</dt>
+ <dd>None</dd>
+<dt>Optional Parameters:</dt>
+ <dd>None</dd>
+<dt>Encoding Considerations:</dt>
+ <dd>binary</dd>
+<dt>Security Considerations:</dt>
+ <dd>
+  <p>WebAssembly is a standard, a safe, portable, low-level code format. The
+  security considerations associated with executing WebAssembly code are
+  described in https://www.w3.org/TR/wasm-core/#security-considerations.</p>
+  <p>The WebAssembly format includes no integrity or privacy protection. If
+  such protection is needed it must be provided externally, e.g., through
+  the use of HTTPS.</p>
+ </dd>
+<dt>Interoperability Considerations:</dt>
+ <dd>See WebAssembly Core Conformance<br/>
+ https://www.w3.org/TR/wasm-core/#conformance</dd>
+<dt>Published specification:</dt>
+ <dd>https://www.w3.org/TR/wasm-core-1/
+ https://www.w3.org/TR/wasm-js-api-1/
+ https://www.w3.org/TR/wasm-web-api-1/</dd>
+<dt>Application Usage:</dt>
+ <dd>The application/wasm media type is intended for use as the type used to
+ describe WebAssembly files when sent over HTTP to be executed by browsers,
+ which is a common scenario. Additionally, the type is used by several
+ WebAssembly runtimes that take advantage of the safety and portability
+ while targeting efficient execution and compact representation.</dd>
+<dt>Fragment Identifier Considerations:</dt>
+ <dd>None</dd>
+<dt>Restrictions on usage:</dt>
+ <dd>None</dd>
+<dt>Provisional Registrations:</dt>
+ <dd>N/A</dd>
+<dt>Additional information:</dt>
+<dd><dl>
+ <dt>Deprecated alias names for this type:</dt>
+ <dd>None</dd>
+ <dt>Magic number(s):</dt>
+ <dd>0x00 0x61 0x73 0x6D</dd>
+ <dt>File extension(s):</dt>
+ <dd>.wasm</dd>
+ <dt>Macintosh file type code(s):</dt>
+ <dd>None</dd>
+ <dt>Object Identifier(s) or OID(s):</dt>
+ <dd>None</dd>
+</dl></dd>
+<dt>Intended usage:</dt>
+ <dd>Common</dd>
+<dt>Other Information &amp; Comments:</dt>
+ <dd>Common</dd>
+<dt>Contact Person:</dt>
+<dd><dl>
+ <dt>Contact Name:</dt>
+ <dd>Eric Prud'hommeaux</dd>
+ <dt>Contact Email Address:</dt>
+ <dd>eric@w3.org</dd>
+ <dt>Author/Change Controller:</dt>
+ <dd>W3C</dd>
+</dl></dd>

@@ -1,0 +1,7 @@
+*.rst linguist-documentation=false
+document/* linguist-documentation=false
+document/*.rst linguist-documentation=false
+document/*/*.rst linguist-documentation=false
+test/harness/wast.js linguist-vendored
+test/harness/testharness* linguist-vendored
+

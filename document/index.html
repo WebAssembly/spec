@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>WebAssembly Specifications</title>
+
+  <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/frameworks-c9193575f18b28be82c0a963e144ff6fa7a809dd8ae003a1d1e5979bed3f7f00.css" integrity="sha256-yRk1dfGLKL6CwKlj4UT/b6eoCd2K4AOh0eWXm+0/fwA=" media="all" rel="stylesheet">
+  <link crossorigin="anonymous" href="https://assets-cdn.github.com/assets/github-8ffe4331a8d2d413bfa465c56c4cc7466b011bcb5a8f74aab9081362ee31f862.css" integrity="sha256-j/5DMajS1BO/pGXFbEzHRmsBG8taj3SquQgTYu4x+GI=" media="all" rel="stylesheet">
+</head>
+
+<body>
+<div id="readme" class="readme blob isntapaper_body">
+<article class="markdown-body entry-content">
+
+<h1>WebAssembly Specifications</h1>
+
+<p>
+To support the <em>embedding</em> of WebAssembly into different environments, its specification is split into <em>layers</em> that are specified in separate documents.
+</p>
+
+<h3>Core specification</h3>
+
+<p>Defines the semantics of WebAssembly modules independent from a concrete embedding.
+  The WebAssembly core is specified in a single document:</p>
+
+  <ul>
+    <li>
+      <p><b>WebAssembly</b>:
+      defines the structure of WebAssembly modules, their instruction set, and their representation
+      in binary and text format, as well as the semantics of validation,
+      instantiation, and execution.
+      </p>
+      <ul>
+        <li><a href="core/">Browser version</a> (multi-page)</li>
+        <li><a href="core/bikeshed/">W3C version</a> (single-page)</li>
+        <li><a href="core/_download/WebAssembly.pdf">PDF version</a></li>
+        <!-- <li><a href="https://github.com/WebAssembly/spec/document/core/">Sources</a></li> -->
+      </ul>
+    </li>
+  </ul>
+
+<h3>Embedder specifications</h3>
+
+<p>Define <em>application programming interfaces</em> (APIs) enabling the use of WebAssembly modules in concrete embedding environments.
+  Currently, two APIs are specified:</p>
+
+  <ul>
+  <li><p><b>JavaScript Embedding</b>: defines JavaScript classes and objects for accessing WebAssembly from within JavaScript, including methods for validation, compilation, instantiation, and classes for representing and manipulating imports and exports as JavaScript objects.</p>
+    <ul>
+      <li><a href="js-api/index.html">W3C version</a></li>
+      <!-- <li><a href="https://github.com/WebAssembly/spec/document/js-api/">Sources</a></li> -->
+    </ul>
+  </li>
+
+  <li><p><b>Web Embedding</b>: defines extensions to the JavaScript API made available specifically in web browsers, in particular, an interface for streaming compilation and instantiation from origin-bound <code>Response</code> types.</p>
+    <ul>
+      <li><a href="web-api/index.html">W3C version</a></li>
+      <!-- <li><a href="https://github.com/WebAssembly/spec/document/web-api/">Sources</a></li> -->
+    </ul>
+  </li>
+  </ul>
+
+<p>
+  Source for these documents is available
+  <a href="https://github.com/WebAssembly/spec/">here</a>.
+</p>
+
+</article>
+</div>
+</body>
+
+</html>
