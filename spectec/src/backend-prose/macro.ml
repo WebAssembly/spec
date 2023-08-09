@@ -19,43 +19,120 @@ let macroify ?(note = "") s =
   in
   String.fold_left del "" (s ^ "-" ^ note)
 
+let font_macro = function
+  | "X" -> "mathit"
+  | "F" -> "mathrm"
+  | "K" -> "mathsf"
+  | _ -> "mathtt"
+
 (* Environment *)
 
 type env =
   { 
-    legal: bool;
+    gen: bool;
     sections: string Map.t ref;
     keywords: (Set.t * Set.t) Map.t ref;
     funcs: Set.t ref;
   }
 
-let get_section env = !(env.sections)
-let get_keyword env = !(env.keywords)
-let get_func env = !(env.funcs)
+(* Macro Generation *)
 
-let find_section env s = Map.mem s !(env.sections)
+let macro_template = {|
+.. MATH MACROS
 
-let rec find_keyword' env nonterminals variant = match nonterminals with
-  | nonterminal :: rest -> (match find_keyword env nonterminal variant with
-    | Some s -> Some s
-    | None -> find_keyword' env rest variant)
-  | _ -> None
 
-and find_keyword env syntax variant = match Map.find_opt syntax !(env.keywords) with
-  | Some (terminals, nonterminals) ->
-      if Set.mem variant terminals then
-        Some (macroify ~note:syntax variant)
-      else
-        find_keyword' env (Set.elements nonterminals) variant
-  | _ -> None
+.. Generic Stuff
+.. -------------
 
-let find_func env s = Option.map (fun s -> macroify s) (Set.find_opt s !(env.funcs))
+.. Type-setting of names
+.. X - (multi-letter) variables / non-terminals
+.. F - functions
+.. K - keywords / terminals
+.. B - binary grammar non-terminals
+.. T - textual grammar non-terminals
 
-let find_keyword env keyword = 
-  let variant, syntax = keyword in
-  find_keyword env syntax variant
+.. |X| mathdef:: \mathit
+.. |F| mathdef:: \mathrm
+.. |K| mathdef:: \mathsf
+.. |B| mathdef:: \mathtt
+.. |T| mathdef:: \mathtt
 
-let find_funcname env funcname = find_func env funcname
+|}
+
+let gen_macro_word s = 
+  let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
+  let escape acc c =
+    if c = '.' then acc ^ "{.}"
+    else if c = '_' then acc ^ "\\_"
+    else acc ^ (String.make 1 c)
+  in
+  String.fold_left escape "" s
+
+let gen_macro_xref env header = match Map.find_opt header !(env.sections) with
+  | Some path -> sprintf "\\xref{%s}{%s}" path header
+  | None -> ""
+
+let gen_macro_rhs env header font word =
+  let xref = gen_macro_xref env header in
+  sprintf "%s{\\%s{%s}}"
+    xref font (gen_macro_word word)
+
+let gen_macro_rule ?(note = "") env header font word =
+  let lhs = macroify ~note:note word in
+  let rhs = gen_macro_rhs env header font word in
+  sprintf ".. |%s| mathdef:: %s" lhs rhs
+
+let gen_macro_keyword env syntax keyword =
+  let header = "syntax-" ^ syntax in
+  let font = "K" in
+  gen_macro_rule ~note:syntax env header font keyword
+
+let gen_macro_keywords env =
+  let keyword = !(env.keywords) in
+  Map.fold
+    (fun syntax variants skeyword ->
+      let terminals, _ = variants in
+      let svariants = Set.fold
+        (fun keyword svariants ->
+          let svariant = gen_macro_keyword env syntax keyword in
+          svariants ^ svariant ^ "\n")
+        terminals "" 
+      in
+      skeyword
+      ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
+      ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
+      ^ svariants
+      ^ "\n")
+    keyword "" 
+
+let gen_macro_func env fname =
+  let header = "def-" ^ fname in
+  let font = "F" in
+  gen_macro_rule env header font fname
+
+let gen_macro_funcs env =
+  let func = !(env.funcs) in
+  Set.fold
+    (fun fname sfunc -> 
+      let sword = gen_macro_func env fname in
+      sfunc ^ sword ^ "\n")
+    func "" 
+
+let gen_macro' env =
+  let skeyword = gen_macro_keywords env in
+  let sfunc = gen_macro_funcs env in
+  macro_template
+  ^ ".. syntax\n.. ------\n\n"
+  ^ skeyword
+  ^ ".. Functions\n.. ---------\n\n"
+  ^ sfunc
+
+let gen_macro env =
+  if env.gen then
+    let s = gen_macro' env in
+    let oc = Out_channel.open_text "macros.def" in
+    Fun.protect (fun () -> Out_channel.output_string oc s) 
+      ~finally:(fun () -> Out_channel.close oc)
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
@@ -141,127 +218,72 @@ let extract_func_keywords def =
 
 (* Environment Construction *)
 
-let check_legal odsts =
+let check_rst odsts =
   List.for_all (String.ends_with ~suffix:".rst") odsts
 
 let env inputs outputs el =
-  let legal = check_legal outputs in
-  if legal then
-    let sections = parse_section inputs outputs in
-    let keywords = 
-      List.fold_left
-        (fun acc def -> match extract_keyword_keywords def with
-          | Some (topsyntax, syntax, terminals, nonterminals) -> 
-              let acc = Map.add syntax (terminals, nonterminals) acc in
-              (match topsyntax with
-              | Some topsyntax -> 
-                  let terminals, nonterminals = 
-                    (match Map.find_opt topsyntax acc with
-                    | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
-                    | None -> (Set.empty, Set.singleton syntax))
-                  in
-                  Map.add topsyntax (terminals, nonterminals) acc
-              | None -> acc)
-          | _ -> acc)
-        Map.empty el
-    in
-    let funcs = List.concat_map extract_func_keywords el in
-    let funcs = List.fold_left (fun s acc -> Set.add acc s) Set.empty funcs in
-    let env = { legal; sections = ref sections; keywords = ref keywords; funcs = ref funcs; } in
-    env
-  else
-    { legal; sections = ref Map.empty; keywords = ref Map.empty; funcs = ref Set.empty }
-
-(* Macro Generation *)
-
-let macro_template = {|
-.. MATH MACROS
-
-
-.. Generic Stuff
-.. -------------
-
-.. Type-setting of names
-.. X - (multi-letter) variables / non-terminals
-.. F - functions
-.. K - keywords / terminals
-.. B - binary grammar non-terminals
-.. T - textual grammar non-terminals
-
-.. |X| mathdef:: \mathit
-.. |F| mathdef:: \mathrm
-.. |K| mathdef:: \mathsf
-.. |B| mathdef:: \mathtt
-.. |T| mathdef:: \mathtt
-
-|}
-
-let gen_macro_word s = 
-  let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
-  let escape acc c =
-    if c = '.' then acc ^ "{.}"
-    else if c = '_' then acc ^ "\\_"
-    else acc ^ (String.make 1 c)
+  let gen = check_rst outputs in
+  let sections = if gen then parse_section inputs outputs else Map.empty in
+  let keywords = 
+    List.fold_left
+      (fun acc def -> match extract_keyword_keywords def with
+        | Some (topsyntax, syntax, terminals, nonterminals) -> 
+            let acc = Map.add syntax (terminals, nonterminals) acc in
+            (match topsyntax with
+            | Some topsyntax -> 
+                let terminals, nonterminals = 
+                  (match Map.find_opt topsyntax acc with
+                  | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
+                  | None -> (Set.empty, Set.singleton syntax))
+                in
+                Map.add topsyntax (terminals, nonterminals) acc
+            | None -> acc)
+        | _ -> acc)
+      Map.empty el
   in
-  String.fold_left escape "" s
+  let funcs = List.concat_map extract_func_keywords el in
+  let funcs = List.fold_left (fun s acc -> Set.add acc s) Set.empty funcs in
+  { gen; sections = ref sections; keywords = ref keywords; funcs = ref funcs; }
 
-let gen_macro_xref env header = match Map.find_opt header !(env.sections) with
-  | Some path -> sprintf "\\xref{%s}{%s}" path header
-  | None -> ""
+(* Environment Lookup *)
 
-let gen_macro_rule ?(note = "") env header font word =
-  let xref = gen_macro_xref env header in
-  sprintf ".. |%s| mathdef:: %s{\\%s{%s}}"
-    (macroify ~note:note word) xref font (gen_macro_word word)
+let get_section env = !(env.sections)
+let get_keyword env = !(env.keywords)
+let get_func env = !(env.funcs)
 
-let gen_macro_keyword env syntax keyword =
+let find_section env s = Map.mem s !(env.sections)
+
+let rec find_keyword' env nonterminals variant = match nonterminals with
+  | nonterminal :: rest -> (match find_keyword env nonterminal variant with
+    | Some s -> Some s
+    | None -> find_keyword' env rest variant)
+  | _ -> None
+
+and find_keyword env syntax variant = 
   let header = "syntax-" ^ syntax in
-  let font = "K" in
-  gen_macro_rule ~note:syntax env header font keyword
+  let font = font_macro "K" in
+  match Map.find_opt syntax !(env.keywords) with
+  | Some (terminals, nonterminals) ->
+      if Set.mem variant terminals then
+        if env.gen then
+          Some ("\\" ^ (macroify ~note:syntax variant))
+        else
+          Some (gen_macro_rhs env header font variant)
+      else
+        find_keyword' env (Set.elements nonterminals) variant
+  | _ -> None
 
-let gen_macro_keywords env =
-  let keyword = !(env.keywords) in
-  Map.fold
-    (fun syntax variants skeyword ->
-      let terminals, _ = variants in
-      let svariants = Set.fold
-        (fun keyword svariants ->
-          let svariant = gen_macro_keyword env syntax keyword in
-          svariants ^ svariant ^ "\n")
-        terminals "" 
-      in
-      skeyword
-      ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
-      ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
-      ^ svariants
-      ^ "\n")
-    keyword "" 
-
-let gen_macro_func env fname =
+let find_func env fname = 
   let header = "def-" ^ fname in
-  let font = "F" in
-  gen_macro_rule env header font fname
+  let font = font_macro "F" in
+  Option.map 
+    (fun s -> 
+      if env.gen then "\\" ^ (macroify s)
+      else gen_macro_rhs env header font fname) 
+    (Set.find_opt fname !(env.funcs))
 
-let gen_macro_funcs env =
-  let func = !(env.funcs) in
-  Set.fold
-    (fun fname sfunc -> 
-      let sword = gen_macro_func env fname in
-      sfunc ^ sword ^ "\n")
-    func "" 
+let find_keyword env keyword = 
+  let variant, syntax = keyword in
+  find_keyword env syntax variant
 
-let gen_macro' env =
-  let skeyword = gen_macro_keywords env in
-  let sfunc = gen_macro_funcs env in
-  macro_template
-  ^ ".. syntax\n.. ------\n\n"
-  ^ skeyword
-  ^ ".. Functions\n.. ---------\n\n"
-  ^ sfunc
-
-let gen_macro env =
-  if env.legal then
-    let s = gen_macro' env in
-    let oc = Out_channel.open_text "macros.def" in
-    Fun.protect (fun () -> Out_channel.output_string oc s) 
-      ~finally:(fun () -> Out_channel.close oc)
+let find_funcname env funcname = find_func env funcname

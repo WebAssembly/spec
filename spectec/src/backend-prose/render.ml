@@ -107,11 +107,11 @@ let rec render_name name = match name with
     | _ -> name)
 
 and render_keyword env keyword = match Macro.find_keyword env.macro keyword with
-  | Some sn -> "\\" ^ sn
+  | Some sn -> sn 
   | None -> render_name (Al.Print.string_of_keyword keyword)
 
 and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
-  | Some sfn -> "\\" ^ sfn
+  | Some sfn -> sfn 
   | None -> render_name funcname 
 
 let rec render_iter env = function
