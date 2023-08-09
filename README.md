@@ -1,6 +1,18 @@
 [![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
 [![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
+# JS String Builtins Proposal for WebAssembly
+
+This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
+It is meant for discussion, prototype specification and implementation of a proposal to
+add support for efficient access to JS string operations to WebAssembly.
+
+* See the [overview](proposals/js-string-builtins/Overview.md) for a summary of the proposal.
+
+* See the [modified spec](https://webassembly.github.io/js-string-builtins/) for details.
+
+Original `README` from upstream repository follows...
+
 # spec
 
 This repository holds the sources for the WebAssembly draft specification

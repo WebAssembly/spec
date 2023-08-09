@@ -31,4 +31,4 @@ jobs:
       - name: Build interpreter
         run: cd interpreter && opam exec make
       - name: Run tests
-        run: cd interpreter && opam exec make JS=node ci
+        run: cd interpreter && opam exec make all
