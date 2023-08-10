@@ -16,7 +16,6 @@ type env =
 
 let gen_macro env = 
   if env.config.macros then
-    print_endline "YES";
     Macro.gen_macro env.macro
 
 let env config inputs outputs el prose : env = 

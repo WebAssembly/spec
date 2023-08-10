@@ -1,8 +1,8 @@
 open Util
 open Source
 open El.Ast
+open Backend_prose.Prose
 open Config
-
 
 (* Errors *)
 
@@ -35,9 +35,12 @@ module Map = Map.Make(String)
 
 type use = int ref
 
-type syntax = {sdef : def; fragments : (string * def * use) list}
-type relation = {rdef : def; rules : (string * def * use) list}
-type definition = {fdef : def; clauses : def list; use : use}
+type syntax = {sdef : El.Ast.def; fragments : (string * El.Ast.def * use) list}
+type relation = {rdef : El.Ast.def; rules : (string * El.Ast.def * use) list}
+type definition = {fdef : El.Ast.def; clauses : El.Ast.def list; use : use}
+type rule_prose = {rdef : Backend_prose.Prose.def; use : use}
+type func_prose = {fdef : Backend_prose.Prose.def; use : use}
+type pred_prose = {pdef : Backend_prose.Prose.def; use : use}
 
 type env =
   { config : Config.config;
@@ -46,11 +49,14 @@ type env =
     mutable syn : syntax Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
+    mutable rprose : rule_prose Map.t;
+    mutable fprose : func_prose Map.t;
+    mutable pprose : pred_prose Map.t;
   }
 
 let get_render_prose env = env.render_prose
 
-let env_def env def =
+let env_el_def env def =
   match def.it with
   | SynD (id1, id2, _, _) ->
     if not (Map.mem id1.it env.syn) then
@@ -73,6 +79,13 @@ let env_def env def =
   | VarD _ | SepD | HintD _ ->
     ()
 
+let env_prose_def env prose =
+  match prose with
+  | Pred ((id, _), _, _) -> env.pprose <- Map.add id {pdef = prose; use = ref 0} env.pprose
+  | Algo algo -> (match algo with
+    | Al.Ast.RuleA ((id, _), _, _) -> env.rprose <- Map.add id {rdef = prose; use = ref 0} env.rprose
+    | Al.Ast.FuncA (id, _, _) -> env.fprose <- Map.add id {fdef = prose; use = ref 0} env.fprose)
+
 let env config pdsts odsts el prose : env =
   let env =
     { config;
@@ -80,10 +93,14 @@ let env config pdsts odsts el prose : env =
       render_prose = Backend_prose.Render.env config.prose pdsts odsts el prose;
       syn = Map.empty;
       rel = Map.empty;
-      def = Map.empty
+      def = Map.empty;
+      rprose = Map.empty;
+      fprose = Map.empty;
+      pprose = Map.empty
     }
   in
-  List.iter (env_def env) el;
+  List.iter (env_el_def env) el;
+  List.iter (env_prose_def env) prose;
   env
 
 
@@ -100,7 +117,10 @@ let warn env =
   Map.iter (fun id1 {rules; _} ->
   	List.iter (fun (id2, _, use) -> warn_use use "rule" id1 id2) rules
   ) env.rel;
-  Map.iter (fun id1 {use; _} -> warn_use use "definition" id1 "") env.def
+  Map.iter (fun id1 ({use; _}: definition) -> warn_use use "definition" id1 "") env.def;
+  Map.iter (fun id1 ({use; _}: rule_prose) -> warn_use use "execution prose" id1 "") env.rprose;
+  Map.iter (fun id1 ({use; _}: func_prose) -> warn_use use "function prose" id1 "") env.fprose;
+  Map.iter (fun id1 ({use; _}: pred_prose) -> warn_use use "validation prose" id1 "") env.pprose
 
 
 let find_nosub space src id1 id2 =
@@ -142,6 +162,17 @@ let find_func env src id1 id2 =
       error src ("definition `" ^ id1 ^ "` has no clauses");
     incr definition.use; definition.clauses
 
+let find_rule_prose env src id = match Map.find_opt id env.rprose with
+  | None -> error src ("unknown execution prose identifier `" ^ id ^ "`")
+  | Some rprose -> incr rprose.use; rprose.rdef
+
+let find_func_prose env src id = match Map.find_opt id env.fprose with
+  | None -> error src ("unknown function prose identifier `" ^ id ^ "`")
+  | Some fprose -> incr fprose.use; fprose.fdef
+
+let find_pred_prose env src id = match Map.find_opt id env.pprose with
+  | None -> error src ("unknown validation prose identifier `" ^ id ^ "`")
+  | Some pprose -> incr pprose.use; pprose.pdef
 
 (* Parsing *)
 
@@ -184,21 +215,21 @@ let parse_id src space : string =
     error {src with i = j} ("expected " ^ space ^ " identifier or `}`");
   str src j
 
-let parse_id_id env src space1 space2 find : def list =
+let parse_id_id env src space1 space2 find : El.Ast.def list =
   let j = src.i in
   let id1 = parse_id src space1 in
   let id2 =
     if space2 <> "" && try_string src "/" then parse_id src space2 else ""
   in find env {src with i = j} id1 id2
 
-let rec parse_id_id_list env src space1 space2 find : def list =
+let rec parse_id_id_list env src space1 space2 find : El.Ast.def list =
   parse_space src;
   if try_string src "}" then [] else
   let defs1 = parse_id_id env src space1 space2 find in
   let defs2 = parse_id_id_list env src space1 space2 find in
   defs1 @ defs2
 
-let rec parse_group_list env src space1 space2 find : def list list =
+let rec parse_group_list env src space1 space2 find : El.Ast.def list list =
   parse_space src;
   if try_string src "}" then [] else
   let groups =
@@ -245,24 +276,17 @@ let try_exp_anchor env src r : bool =
   );
   b
 
-let try_prose_anchor env src r sort : bool =
+let try_prose_anchor env src r sort find : bool =
   let b = try_string src sort in
   if b then (
     parse_space src;
     if not (try_string src ":") then
       error src "colon `:` expected";
     parse_space src;
-    let prose_name = parse_id src "prose name" in
+    let id = parse_id src "prose name" in
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
-    let prose = List.find (function
-      | Backend_prose.Prose.Pred ((name, _), _, _) when name = prose_name && sort = "prose-pred" -> true
-      | Backend_prose.Prose.Algo algo -> (match algo with
-        | Al.Ast.RuleA ((name, _), _, _) when name = prose_name && sort = "prose-algo" -> true
-        | Al.Ast.FuncA (name, _, _) when name = prose_name && sort = "prose-func" -> true
-        | _ -> false)
-      | _ -> false)
-      env.render_prose.prose in
+    let prose = find env src id in
     r := Backend_prose.Render.render_def env.render_prose prose 
   );
   b
@@ -280,9 +304,9 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
     try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
     try_def_anchor env src r "definition" "definition" "" find_func false ||
-    try_prose_anchor env src r "prose-pred" ||
-    try_prose_anchor env src r "prose-algo" ||
-    try_prose_anchor env src r "prose-func" ||
+    try_prose_anchor env src r "prose-pred" find_pred_prose ||
+    try_prose_anchor env src r "prose-algo" find_rule_prose ||
+    try_prose_anchor env src r "prose-func" find_func_prose ||
     error src "unknown definition sort";
   );
   let s =
