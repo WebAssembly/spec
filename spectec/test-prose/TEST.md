@@ -607,15 +607,15 @@ concat_instr x_0*
 3. Return instr* ++ $concat_instr(instr'**).
 
 instantiation module externval*
-1. Let m_init be { FUNC: $funcs(externval*); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-2. Assert: Due to validation, module is of the case MODULE.
-3. Let (MODULE import* func* global* table* mem* elem* data* start? export*) be module.
-4. Let f_init be { LOCAL: []; MODULE: m_init; }.
-5. Let n_data be |data*|.
-6. Let n_elem be |elem*|.
-7. Let (START x)? be start?.
-8. Let (GLOBAL globaltype instr_1*)* be global*.
-9. Let (ELEM reftype instr_2** elemmode?)* be elem*.
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE import* func^n_func global* table* mem* elem* data* start? export*) be module.
+3. Let m_init be { FUNC: $funcs(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+4. Let n_data be |data*|.
+5. Let n_elem be |elem*|.
+6. Let (START x)? be start?.
+7. Let (GLOBAL globaltype instr_1*)* be global*.
+8. Let (ELEM reftype instr_2** elemmode?)* be elem*.
+9. Let f_init be { LOCAL: []; MODULE: m_init; }.
 10. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
 11. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
 12. Push the activation of f_init to the stack.

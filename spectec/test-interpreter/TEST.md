@@ -52,8 +52,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 440/440 (100.00%)
 
 ===== table_copy.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/1649 (0.00%)
+- 1649/1649 (100.00%)
 
 ===== ref_null.wast =====
 - 2/2 (100.00%)
@@ -65,8 +64,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 49/49 (100.00%)
 
 ===== call.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/70 (0.00%)
+- 70/70 (100.00%)
 
 ===== local_get.wast =====
 - 19/19 (100.00%)
@@ -75,8 +73,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 6/6 (100.00%)
 
 ===== func.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 92/96 (95.83%)
+- 96/96 (100.00%)
 
 ===== exports.wast =====
 - 9/9 (100.00%)
@@ -85,8 +82,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 19/19 (100.00%)
 
 ===== linking.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 19/90 (21.11%)
+- 89/90 (98.89%)
 
 ===== float_literals.wast =====
 - 83/83 (100.00%)
@@ -95,8 +91,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 48/48 (100.00%)
 
 ===== if.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/123 (0.00%)
+- 123/123 (100.00%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -105,8 +100,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/52 (0.00%)
+- 52/52 (100.00%)
 
 ===== labels.wast =====
 - 25/25 (100.00%)
@@ -118,15 +112,13 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4100/4338 (94.51%)
+- 4338/4338 (100.00%)
 
 ===== stack.wast =====
 - 5/5 (100.00%)
 
 ===== loop.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/77 (0.00%)
+- 77/77 (100.00%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
@@ -135,8 +127,7 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 68/68 (100.00%)
 
 ===== return.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/63 (0.00%)
+- 63/63 (100.00%)
 
 ===== store.wast =====
 - 9/9 (100.00%)
@@ -148,38 +139,31 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/63 (0.00%)
+- 63/63 (100.00%)
 
 ===== bulk.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/66 (0.00%)
+- 66/66 (100.00%)
 
 ===== traps.wast =====
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/55 (0.00%)
+- 55/55 (100.00%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 41/84 (48.81%)
+- 84/84 (100.00%)
 
 ===== call_indirect.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/132 (0.00%)
+- 132/132 (100.00%)
 
 ===== load.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/37 (0.00%)
+- 37/37 (100.00%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Timeout
-- 4/20 (20.00%)
+- 20/20 (100.00%)
 
 ===== memory_size.wast =====
 - 36/36 (100.00%)
@@ -198,27 +182,22 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - print_f64: 24
 - print_f64: 24
 - print_i32: 13
-- Uncaught exception: Module Instantiation failed due to No frame
-- 8/34 (23.53%)
+- 34/34 (100.00%)
 
 ===== left-to-right.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/95 (0.00%)
+- 95/95 (100.00%)
 
 ===== ref_is_null.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/11 (0.00%)
+- 11/11 (100.00%)
 
 ===== memory_trap.wast =====
 - 180/180 (100.00%)
 
 ===== br_table.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/149 (0.00%)
+- 149/149 (100.00%)
 
 ===== select.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/118 (0.00%)
+- 118/118 (100.00%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -227,12 +206,10 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 140/140 (100.00%)
 
 ===== elem.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/37 (0.00%)
+- 37/37 (100.00%)
 
 ===== table_get.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/9 (0.00%)
+- 9/9 (100.00%)
 
 ===== f32.wast =====
 - 2500/2500 (100.00%)
@@ -250,19 +227,16 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 36/36 (100.00%)
 
 ===== table_set.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/18 (0.00%)
+- 18/18 (100.00%)
 
 ===== f32_cmp.wast =====
 - 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/88 (0.00%)
+- 88/88 (100.00%)
 
 ===== ref_func.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/8 (0.00%)
+- 8/8 (100.00%)
 
 ===== names.wast =====
 - print_i32: 42
@@ -285,21 +259,17 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 255/255 (100.00%)
 
 ===== table_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 21/38 (55.26%)
+- 38/38 (100.00%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
-- Uncaught exception: Module Instantiation failed due to No frame
-- 3/25 (12.00%)
+- 25/25 (100.00%)
 
 ===== table_init.wast =====
-- Uncaught exception: Module Instantiation failed due to No frame
-- 0/662 (0.00%)
+- 662/662 (100.00%)
 
 ===== global.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/58 (0.00%)
+- 58/58 (100.00%)
 
 ===== int_exprs.wast =====
 - 89/89 (100.00%)
@@ -308,13 +278,11 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 - 2500/2500 (100.00%)
 
 ===== br.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/76 (0.00%)
+- 76/76 (100.00%)
 
 ===== nop.wast =====
-- Uncaught exception: Module Instantiation failed due to Pop some values from empty stack
-- 0/83 (0.00%)
+- 83/83 (100.00%)
 
-Total [19535/23778] (82.16%; Normalized 60.95%)
+Total [23770/23778] (99.97%; Normalized 98.65%)
 == Complete.
 ```

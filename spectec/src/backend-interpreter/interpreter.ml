@@ -520,7 +520,7 @@ let rec dsl_function_call lhs_opt fname args iters env il cont action =
       Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
 and interp_instrs env il cont action =
-  if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1;
+  (* if !cnt > 2000000 then raise Exception.Timeout else cnt := !cnt + 1; *)
   (* Printexc.get_callstack 1000 |> Printexc.raw_backtrace_length |> print_int; print_endline ""; *)
   match il with
   | [] -> leave_algo cont action

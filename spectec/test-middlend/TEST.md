@@ -1920,9 +1920,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_elem <: admininstr)*{instr_elem} :: (instr_data <: admininstr)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_elem <: admininstr)*{instr_elem} :: (instr_data <: admininstr)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), (instr_1 <: admininstr)*{instr_1}), val))*{instr_1 val}
@@ -3954,9 +3954,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), val))*{instr_1 val}
@@ -5992,9 +5992,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), val))*{instr_1 val}
@@ -8051,9 +8051,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), val))*{instr_1 val}
@@ -10110,9 +10110,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), val))*{instr_1 val}
@@ -12225,9 +12225,9 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
-    -- if (m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+    -- if (m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f_init = {LOCAL [], MODULE m_init})
     -- if (global*{global} = GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_1)*{instr_1}), val))*{instr_1 val}
@@ -14369,15 +14369,15 @@ def concat_instr : instr** -> instr*
 ;; 7-module.watsup:157.1-157.55
 def instantiation : (store, module, externval*) -> config
   ;; 7-module.watsup:158.1-180.28
-  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
-    -- where m_init = {FUNC $funcs(externval*{externval}), GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
-    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
-    -- where f_init = {LOCAL [], MODULE m_init}
+  def {data* : data*, elem* : elem*, elemmode?* : elemmode?*, export* : export*, externval* : externval*, f : frame, f_init : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_elem : nat^n_elem, i_func^n_func : nat^n_func, import* : import*, instr_1** : instr**, instr_2*** : instr***, instr_data* : instr*, instr_elem* : instr*, j^n_data : nat^n_data, m : moduleinst, m_init : moduleinst, mem* : mem*, module : module, n_data : n, n_elem : n, n_func : n, ref** : ref**, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, val* : val*, x? : idx?} instantiation(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_elem)*{instr_elem} :: $admininstr_instr(instr_data)*{instr_data} :: CALL_admininstr(x)?{x})
+    -- where `MODULE%*%*%*%*%*%*%*%?%*`(import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
+    -- where m_init = {FUNC $funcs(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globals(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
     -- where n_data = |data*{data}|
     -- where n_elem = |elem*{elem}|
     -- where START(x)?{x} = start?{start}
     -- where GLOBAL(globaltype, instr_1*{instr_1})*{globaltype instr_1} = global*{global}
     -- where `ELEM%%*%?`(reftype, instr_2*{instr_2}*{instr_2}, elemmode?{elemmode})*{elemmode instr_2 reftype} = elem*{elem}
+    -- where f_init = {LOCAL [], MODULE m_init}
     -- where instr_data*{instr_data} = $concat_instr($rundata(data*{data}[j], j)^(j<n_data){j})
     -- where instr_elem*{instr_elem} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_elem){i})
     -- (Exec_expr_const: `%~>%`(`%;%*`(`%;%`(s, f_init), $admininstr_instr(instr_2)*{instr_2}), $val_ref(ref)))*{instr_2 ref}*{instr_2 ref}

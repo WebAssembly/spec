@@ -156,9 +156,9 @@ def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*) ;; TOD
 
 def $instantiation(store, module, externval*) : config
 def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL x)?
-  -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
+  -- if module = MODULE import* func^n_func global* table* mem* elem* data* start? export*
   -- if m_init = {
-      FUNC $funcs(externval*),
+      FUNC $funcs(externval*) $(|s.FUNC|+i_func)^(i_func<n_func),
       GLOBAL $globals(externval*),
       TABLE epsilon,
       MEM epsilon,

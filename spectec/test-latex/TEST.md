@@ -2388,9 +2388,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 \mathrm{instantiation}(\mathit{s},\, \mathit{module},\, {\mathit{externval}^\ast}) &=& {\mathit{s}'} ; \mathit{f} ; {\mathit{instr}_{\mathit{elem}}^\ast}~{\mathit{instr}_{\mathit{data}}^\ast}~{(\mathsf{call}~\mathit{x})^?} &\quad
-  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^\ast}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
+  \mbox{if}~\mathit{module} = \mathsf{module}~{\mathit{import}^\ast}~{\mathit{func}^{\mathit{n}_{\mathit{func}}}}~{\mathit{global}^\ast}~{\mathit{table}^\ast}~{\mathit{mem}^\ast}~{\mathit{elem}^\ast}~{\mathit{data}^\ast}~{\mathit{start}^?}~{\mathit{export}^\ast} \\
  &&&\quad {\land}~\mathit{m}_{\mathit{init}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{func}~\mathrm{funcs}({\mathit{externval}^\ast}),\; \\
+\mathsf{func}~\mathrm{funcs}({\mathit{externval}^\ast})~{{|\mathit{s}.\mathsf{func}|} + \mathit{i}_{\mathit{func}}^(i_func<\mathit{n}_{\mathit{func}})},\; \\
   \mathsf{global}~\mathrm{globals}({\mathit{externval}^\ast}),\; \\
   \mathsf{table}~\epsilon,\; \\
   \mathsf{mem}~\epsilon,\; \\
