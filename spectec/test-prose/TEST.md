@@ -630,7 +630,8 @@ instantiation module externval*
 21. Execute the sequence (instr_elem*).
 22. Execute the sequence (instr_data*).
 23. If x is defined, then:
-  a. Execute (CALL x).
+  a. Let ?(x_0) be x.
+  b. Execute (CALL x_0).
 24. Pop the activation of f from the stack.
 25. Return m.
 

@@ -354,9 +354,15 @@ let rec rhs2instrs exp =
   | Ast.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
     when String.starts_with ~prefix:"instr" id.it ->
       [ ExecuteSeqI (exp2expr exp) ]
-  | Ast.IterE ({ it = CaseE (Atom atomid, _); _} as e, (Opt, [ id ]))
+  | Ast.IterE ({ it = CaseE (Atom atomid, _); note = note; _ }, (Opt, [ id ]))
     when atomid = "CALL" ->
-      [ IfI (IsDefinedC (NameE id.it), rhs2instrs e, []) ]
+      let new_name = NameE (id.it ^ "_0") in
+      [ IfI (IsDefinedC (NameE id.it),
+        [
+          LetI (OptE (Some new_name), NameE id.it);
+          ExecuteI (ConstructE (name2keyword atomid note, [ new_name ]))
+        ],
+        []) ]
   (* Push *)
   | Ast.SubE _ | IterE _ -> [ PushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _)
