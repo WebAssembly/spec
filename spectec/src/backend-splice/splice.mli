@@ -1,6 +1,6 @@
 type env
 
-val env : Backend_latex.Config.t -> string list -> string list -> El.Ast.script -> Il.Ast.script -> Al.Ast.algorithm list -> env
+val env : Config.config -> string list -> string list -> El.Ast.script -> Backend_prose.Prose.prose -> env
 
 val get_render_prose : env -> Backend_prose.Render.env
 

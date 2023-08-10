@@ -1,5 +1,6 @@
 open Prose
 open Printf
+open Config
 
 (* Environment *)
 
@@ -7,16 +8,20 @@ module Set = Set.Make(String)
 module Map = Map.Make(String)
 
 type env = 
-  { prose: prose;
+  { 
+    config: config;
+    prose: prose;
     macro: Macro.env;
   }
 
-let get_macro env = env.macro
+let gen_macro env = 
+  if env.config.macros then
+    print_endline "YES";
+    Macro.gen_macro env.macro
 
-let env _config inputs outputs el il al : env = 
-  let prose = Gen.gen_prose il al in
+let env config inputs outputs el prose : env = 
   let macro = Macro.env inputs outputs el in
-  let env = { prose; macro; } in
+  let env = { config; prose; macro; } in
   env
 
 (* Helpers *)
@@ -107,11 +112,11 @@ let rec render_name name = match name with
     | _ -> name)
 
 and render_keyword env keyword = match Macro.find_keyword env.macro keyword with
-  | Some sn -> sn 
+  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs 
   | None -> render_name (Al.Print.string_of_keyword keyword)
 
 and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
-  | Some sfn -> sfn 
+  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
   | None -> render_name funcname 
 
 let rec render_iter env = function

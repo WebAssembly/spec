@@ -1,7 +1,7 @@
 open Util
 open Source
 open El.Ast
-open Backend_latex.Config
+open Config
 
 
 (* Errors *)
@@ -40,7 +40,7 @@ type relation = {rdef : def; rules : (string * def * use) list}
 type definition = {fdef : def; clauses : def list; use : use}
 
 type env =
-  { config : config;
+  { config : Config.config;
     render_latex : Backend_latex.Render.env;
     render_prose : Backend_prose.Render.env;
     mutable syn : syntax Map.t;
@@ -73,11 +73,11 @@ let env_def env def =
   | VarD _ | SepD | HintD _ ->
     ()
 
-let env config pdsts odsts el il al : env =
+let env config pdsts odsts el prose : env =
   let env =
     { config;
-      render_latex = Backend_latex.Render.env config el;
-      render_prose = Backend_prose.Render.env config pdsts odsts el il al;
+      render_latex = Backend_latex.Render.env config.latex el;
+      render_prose = Backend_prose.Render.env config.prose pdsts odsts el prose;
       syn = Map.empty;
       rel = Map.empty;
       def = Map.empty

@@ -29,7 +29,6 @@ let font_macro = function
 
 type env =
   { 
-    gen: bool;
     sections: string Map.t ref;
     keywords: (Set.t * Set.t) Map.t ref;
     funcs: Set.t ref;
@@ -128,11 +127,10 @@ let gen_macro' env =
   ^ sfunc
 
 let gen_macro env =
-  if env.gen then
-    let s = gen_macro' env in
-    let oc = Out_channel.open_text "macros.def" in
-    Fun.protect (fun () -> Out_channel.output_string oc s) 
-      ~finally:(fun () -> Out_channel.close oc)
+  let s = gen_macro' env in
+  let oc = Out_channel.open_text "macros.def" in
+  Fun.protect (fun () -> Out_channel.output_string oc s) 
+    ~finally:(fun () -> Out_channel.close oc)
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
@@ -218,12 +216,11 @@ let extract_func_keywords def =
 
 (* Environment Construction *)
 
-let check_rst odsts =
-  List.for_all (String.ends_with ~suffix:".rst") odsts
+let check_rst outputs =
+  List.for_all (String.ends_with ~suffix:".rst") outputs
 
 let env inputs outputs el =
-  let gen = check_rst outputs in
-  let sections = if gen then parse_section inputs outputs else Map.empty in
+  let sections = if check_rst outputs then parse_section inputs outputs else Map.empty in
   let keywords = 
     List.fold_left
       (fun acc def -> match extract_keyword_keywords def with
@@ -243,7 +240,7 @@ let env inputs outputs el =
   in
   let funcs = List.concat_map extract_func_keywords el in
   let funcs = List.fold_left (fun s acc -> Set.add acc s) Set.empty funcs in
-  { gen; sections = ref sections; keywords = ref keywords; funcs = ref funcs; }
+  { sections = ref sections; keywords = ref keywords; funcs = ref funcs; }
 
 (* Environment Lookup *)
 
@@ -265,10 +262,9 @@ and find_keyword env syntax variant =
   match Map.find_opt syntax !(env.keywords) with
   | Some (terminals, nonterminals) ->
       if Set.mem variant terminals then
-        if env.gen then
-          Some ("\\" ^ (macroify ~note:syntax variant))
-        else
-          Some (gen_macro_rhs env header font variant)
+        Some 
+          (("\\" ^ (macroify ~note:syntax variant)),
+          (gen_macro_rhs env header font variant))
       else
         find_keyword' env (Set.elements nonterminals) variant
   | _ -> None
@@ -278,8 +274,7 @@ let find_func env fname =
   let font = font_macro "F" in
   Option.map 
     (fun s -> 
-      if env.gen then "\\" ^ (macroify s)
-      else gen_macro_rhs env header font fname) 
+      ("\\" ^ (macroify s), gen_macro_rhs env header font fname))
     (Set.find_opt fname !(env.funcs))
 
 let find_keyword env keyword = 

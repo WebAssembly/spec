@@ -54,11 +54,7 @@ MACRO = macros.def
 
 splice: $(SYNTAX) $(EXEC) $(VALID) $(UTIL)
 	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SYNTAXOUTPUT) $(EXECOUTPUT) $(VALIDOUTPUT) -p $(SYNTAXINPUT) $(EXECINPUT) $(VALIDINPUT) 
-ifneq ($(wildcard $(MACRO)),) 
 	mv $(MACRO) $(UTIL)
-else
-	touch $(UTIL)/$(MACRO)
-endif
 
 .PHONY: doc
 
@@ -104,5 +100,6 @@ clean:
 	rm -f $(SYNTAXOUTPUT)
 	rm -f $(EXECOUTPUT) 
 	rm -f $(VALIDOUTPUT)
+	rm -f $(MACRO)
 	rm -f $(UTIL)/$(MACRO)
 	rm -f *.pdf
