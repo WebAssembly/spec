@@ -274,11 +274,9 @@ Ki
 
 min x_0 x_1
 1. If x_0 is 0, then:
-  a. Let j be x_1.
-  b. Return 0.
+  a. Return 0.
 2. If x_1 is 0, then:
-  a. Let i be x_0.
-  b. Return 0.
+  a. Return 0.
 3. Assert: Due to validation, x_0 ≥ 1.
 4. Let i be (x_0 - 1).
 5. Assert: Due to validation, x_1 ≥ 1.
@@ -753,13 +751,10 @@ execution_of_RETURN
   e. Exit current context.
   f. Push val^n to the stack.
 2. Else if the current context is label, then:
-  a. Let L be the current label.
-  b. Let k be the arity of L.
-  c. Let instr'* be the continuation of L.
-  d. Pop all values val* from the stack.
-  e. Exit current context.
-  f. Push val* to the stack.
-  g. Execute RETURN.
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Push val* to the stack.
+  d. Execute RETURN.
 
 execution_of_UNOP nt unop
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
@@ -815,8 +810,7 @@ execution_of_REF.IS_NULL
 3. If val is not of the case REF.NULL, then:
   a. Push (I32.CONST 0) to the stack.
 4. Else:
-  a. Let (REF.NULL rt) be val.
-  b. Push (I32.CONST 1) to the stack.
+  a. Push (I32.CONST 1) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.

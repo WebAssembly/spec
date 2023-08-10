@@ -63,7 +63,7 @@ let rec count_instrs instrs =
   instrs
   |> List.map (function
        | IfI (_, il1, il2) | EitherI (il1, il2) ->
-           1 + count_instrs il1 + count_instrs il2
+           10 + count_instrs il1 + count_instrs il2
        | OtherwiseI il | WhileI (_, il) | ForI (_, il) | ForeachI (_, _, il) -> 1 + count_instrs il
        | TrapI | ReturnI _ -> 0
        | _ -> 1)
@@ -75,6 +75,7 @@ let rec unify_head acc l1 l2 =
   | _ -> (List.rev acc, l1, l2)
 
 let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
+let diff_list xs ys = List.filter (fun x -> not (List.mem x ys)) xs
 
 let dedup l =
   let rec aux acc = function
@@ -264,6 +265,35 @@ let push_either =
 
   Walk.walk_instr { Walk.default_config with pre_instr = lift push_either' }
 
+let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bounds) ->
+  match instr with
+  | IfI (c, il1, il2) ->
+    let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
+    let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
+    IfI (c, il1', il2') :: acc, bounds1 @ bounds2 @ Free.free_cond c
+  | EitherI (il1, il2) ->
+    let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
+    let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
+    EitherI (il1', il2') :: acc, bounds1 @ bounds2
+  | LetI (e1, e2) ->
+    let bindings = (Free.free_expr e1) in
+    if intersect_list bindings bounds = [] then
+      acc, bounds
+    else
+      (instr :: acc), (diff_list bounds bindings) @ Free.free_expr e2
+  | CallI (e1, _, args, nl_iters) ->
+    let bindings = (Free.free_expr e1) in
+    if intersect_list bindings bounds = [] then
+      acc, bounds
+    else
+      let new_bounds = List.concat_map Free.free_expr args @ List.concat_map Free.free_ns_iter nl_iters in
+      (instr :: acc), (diff_list bounds bindings) @ new_bounds
+  | _ ->
+    instr :: acc, bounds @ Free.free_instr instr
+) il pair
+
+let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
+
 let enhance_readability instrs =
   instrs
   |> unify_if
@@ -273,6 +303,7 @@ let enhance_readability instrs =
   |> List.concat_map (remove_unnecessary_branch [])
   |> List.concat_map swap_if
   |> List.concat_map early_return
+  |> remove_dead_assignment
 
 (** Walker-based Translpiler **)
 let rec mk_access ps base =
@@ -363,19 +394,17 @@ let transpiler algo =
       }
   in
 
-  let contains_free_f body = List.map Free.free_instr body |> List.concat |> List.mem "f" in
-
   match walker algo with
   | RuleA (name, params, body) -> (match params with
     | PairE (_, NameE "f") :: tail ->
-        RuleA (name, tail, LetI (NameE "f", GetCurFrameE) :: body)
+        RuleA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
     | NameE "s" :: tail ->
         RuleA (name, tail, body)
     | _ -> RuleA(name, params, body))
   | FuncA (name, params, body) -> (match params with
-    | PairE (_, NameE "f") :: tail when contains_free_f body ->
-        FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body)
-    | PairE (_, NameE "f") :: tail | NameE "s" :: tail ->
+    | PairE (_, NameE "f") :: tail ->
+        FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
+    | NameE "s" :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
 
