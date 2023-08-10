@@ -2,10 +2,10 @@
   (name backend_prose)
   (libraries util il backend_interpreter)
   (modules
+    config
     prose
     print
     gen
     render
-    macro
-    )
+    macro)
 )

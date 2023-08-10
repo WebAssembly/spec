@@ -13,7 +13,7 @@ type target =
  | Check
  | Latex
  | Prose
- | Splice of Backend_latex.Config.config
+ | Splice of Backend_splice.Config.config
  | Interpreter
 
 let target = ref Latex
@@ -109,9 +109,9 @@ let argspec = Arg.align
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
   "--latex", Arg.Unit (fun () -> target := Latex),
     " Generate Latex (default)";
-  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_latex.Config.latex),
+  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
     " Splice Sphinx";
-  "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_latex.Config.sphinx),
+  "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
   "--interpreter", Arg.Unit (fun () -> target := Interpreter), " Generate interpreter";
@@ -190,13 +190,11 @@ let () =
         let al = if not (PS.mem Animate !selected_passes) then [] else
           Backend_interpreter.Translate.translate il
           @ Backend_interpreter.Manual.manual_algos in
+        let prose = Backend_prose.Gen.gen_prose il al in
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
-        let env = Backend_splice.Splice.(env config !pdsts !odsts el il al) in
+        let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
-        if List.length (!odsts) > 0 then 
-          Backend_prose.Macro.gen_macro 
-            (Backend_splice.Splice.get_render_prose env 
-            |> Backend_prose.Render.get_macro);
+        Backend_prose.Render.gen_macro (Backend_splice.Splice.get_render_prose env);
         if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then

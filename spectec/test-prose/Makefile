@@ -100,5 +100,6 @@ clean:
 	rm -f $(SYNTAXOUTPUT)
 	rm -f $(EXECOUTPUT) 
 	rm -f $(VALIDOUTPUT)
+	rm -f $(MACRO)
 	rm -f $(UTIL)/$(MACRO)
 	rm -f *.pdf
