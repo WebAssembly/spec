@@ -427,7 +427,7 @@ let test file_name =
     Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
     let percentage = (float_of_int !success /. float_of_int total) *. 100. in
     Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
-    Some (!success, total, percentage)
+    Some (!success, total, percentage, took)
   else
     None
 
@@ -437,14 +437,15 @@ let test_all () =
 
   let results = List.filter_map test tests in
 
-  let success, total, percentage = List.fold_left
+  let success, total, percentage, time = List.fold_left
     (fun acc result ->
-      let (success_acc, total_acc, percentage_acc) = acc in
-      let (success, total, percentage) = result in
-      (success_acc + success, total_acc + total, percentage_acc +. percentage))
-    (0, 0, 0.) results
+      let (success_acc, total_acc, percentage_acc, time_acc) = acc in
+      let (success, total, percentage, time) = result in
+      (success_acc + success, total_acc + total, percentage_acc +. percentage, time_acc +. time))
+    (0, 0, 0., 0.) results
   in
   let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
   let percentage_norm = percentage /. float_of_int (List.length results) in
 
-  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm
+  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm;
+  Printf.printf "Took %f ms.\n" (time *. 1000.);
