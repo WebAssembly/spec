@@ -182,7 +182,7 @@ let rec eval_expr env expr =
       if i > 1024 * 64 * 1024 then (* 1024 pages *)
         raise Exception.OutOfMemory
       else
-        listV (List.init i (function _ -> v))
+        ListV (ref (Array.make i v))
   | ConcatE (e1, e2) ->
       let a1 = eval_expr env e1 |> value_to_array in
       let a2 = eval_expr env e2 |> value_to_array in
