@@ -54,6 +54,7 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
   (This is a shorthand for :math:`B^n` where :math:`n \leq 1`.)
 
 * :math:`x{:}B` denotes the same language as the nonterminal :math:`B`, but also binds the variable :math:`x` to the attribute synthesized for :math:`B`.
+  A pattern may also be used instead of a variable, e.g., :math:`7{:}B`.
 
 * Productions are written :math:`\B{sym} ::= B_1 \Rightarrow A_1 ~|~ \dots ~|~ B_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\B{sym}` in the given case, usually from attribute variables bound in :math:`B_i`.
 
@@ -63,11 +64,11 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
   (This is a shorthand for a side condition requiring multiple different variables to be equal.)
 
 .. note::
-   For example, the :ref:`binary grammar <binary-valtype>` for :ref:`value types <syntax-valtype>` is given as follows:
+   For example, the :ref:`binary grammar <binary-numtype>` for :ref:`number types <syntax-numtype>` is given as follows:
 
    .. math::
      \begin{array}{llcll@{\qquad\qquad}l}
-     \production{value types} & \Bvaltype &::=&
+     \production{number types} & \Bnumtype &::=&
        \hex{7F} &\Rightarrow& \I32 \\ &&|&
        \hex{7E} &\Rightarrow& \I64 \\ &&|&
        \hex{7D} &\Rightarrow& \F32 \\ &&|&
@@ -76,7 +77,7 @@ In order to distinguish symbols of the binary syntax from symbols of the abstrac
 
    Consequently, the byte :math:`\hex{7F}` encodes the type |I32|,
    :math:`\hex{7E}` encodes the type |I64|, and so forth.
-   No other byte value is allowed as the encoding of a value type.
+   No other byte value is allowed as the encoding of a number type.
 
    The :ref:`binary grammar <binary-limits>` for :ref:`limits <syntax-limits>` is defined as follows:   
 

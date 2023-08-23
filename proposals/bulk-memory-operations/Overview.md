@@ -371,7 +371,7 @@ implemented as follows:
 (import "a" "global" (global i32))  ;; global 0
 (memory 1)
 (data (i32.const 0) "hello")   ;; data segment 0, is active so always copied
-(data passive "goodbye")       ;; data segment 1, is passive
+(data "goodbye")               ;; data segment 1, is passive
 
 (func $start
   (if (global.get 0)
@@ -386,6 +386,7 @@ implemented as follows:
     ;; be dropped.
     (data.drop 1))
 )
+(start $start)
 ```
 
 ### Instruction encoding

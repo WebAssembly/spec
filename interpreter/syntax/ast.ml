@@ -18,6 +18,8 @@
 
 open Types
 
+type void = Lib.void
+
 
 (* Operators *)
 
@@ -38,7 +40,7 @@ module FloatOp =
 struct
   type unop = Neg | Abs | Ceil | Floor | Trunc | Nearest | Sqrt
   type binop = Add | Sub | Mul | Div | Min | Max | CopySign
-  type testop
+  type testop = |
   type relop = Eq | Ne | Lt | Gt | Le | Ge
   type cvtop = ConvertSI32 | ConvertUI32 | ConvertSI64 | ConvertUI64
              | PromoteF32 | DemoteF64
@@ -50,22 +52,85 @@ module I64Op = IntOp
 module F32Op = FloatOp
 module F64Op = FloatOp
 
+module V128Op =
+struct
+  type itestop = AllTrue
+  type iunop = Abs | Neg | Popcnt
+  type funop = Abs | Neg | Sqrt | Ceil | Floor | Trunc | Nearest
+  type ibinop = Add | Sub | Mul | MinS | MinU | MaxS | MaxU | AvgrU
+              | AddSatS | AddSatU | SubSatS | SubSatU | DotS | Q15MulRSatS
+              | ExtMulLowS | ExtMulHighS | ExtMulLowU | ExtMulHighU
+              | Swizzle | Shuffle of int list | NarrowS | NarrowU
+  type fbinop = Add | Sub | Mul | Div | Min | Max | Pmin | Pmax
+  type irelop = Eq | Ne | LtS | LtU | LeS | LeU | GtS | GtU | GeS | GeU
+  type frelop = Eq | Ne | Lt | Le | Gt | Ge
+  type icvtop = ExtendLowS | ExtendLowU | ExtendHighS | ExtendHighU
+              | ExtAddPairwiseS | ExtAddPairwiseU
+              | TruncSatSF32x4 | TruncSatUF32x4
+              | TruncSatSZeroF64x2 | TruncSatUZeroF64x2
+  type fcvtop = DemoteZeroF64x2 | PromoteLowF32x4
+              | ConvertSI32x4 | ConvertUI32x4
+  type ishiftop = Shl | ShrS | ShrU
+  type ibitmaskop = Bitmask
+
+  type vtestop = AnyTrue
+  type vunop = Not
+  type vbinop = And | Or | Xor | AndNot
+  type vternop = Bitselect
+
+  type testop = (itestop, itestop, itestop, itestop, void, void) V128.laneop
+  type unop = (iunop, iunop, iunop, iunop, funop, funop) V128.laneop
+  type binop = (ibinop, ibinop, ibinop, ibinop, fbinop, fbinop) V128.laneop
+  type relop = (irelop, irelop, irelop, irelop, frelop, frelop) V128.laneop
+  type cvtop = (icvtop, icvtop, icvtop, icvtop, fcvtop, fcvtop) V128.laneop
+  type shiftop = (ishiftop, ishiftop, ishiftop, ishiftop, void, void) V128.laneop
+  type bitmaskop = (ibitmaskop, ibitmaskop, ibitmaskop, ibitmaskop, void, void) V128.laneop
+
+  type nsplatop = Splat
+  type 'a nextractop = Extract of int * 'a
+  type nreplaceop = Replace of int
+
+  type splatop = (nsplatop, nsplatop, nsplatop, nsplatop, nsplatop, nsplatop) V128.laneop
+  type extractop = (extension nextractop, extension nextractop, unit nextractop, unit nextractop, unit nextractop, unit nextractop) V128.laneop
+  type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) V128.laneop
+end
+
+type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Values.op
 type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Values.op
-type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
 type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
 type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
 
-type 'a memop = {ty : num_type; align : int; offset : int32; sz : 'a option}
-type loadop = (pack_size * extension) memop
-type storeop = pack_size memop
+type vec_testop = (V128Op.testop) Values.vecop
+type vec_relop = (V128Op.relop) Values.vecop
+type vec_unop = (V128Op.unop) Values.vecop
+type vec_binop = (V128Op.binop) Values.vecop
+type vec_cvtop = (V128Op.cvtop) Values.vecop
+type vec_shiftop = (V128Op.shiftop) Values.vecop
+type vec_bitmaskop = (V128Op.bitmaskop) Values.vecop
+type vec_vtestop = (V128Op.vtestop) Values.vecop
+type vec_vunop = (V128Op.vunop) Values.vecop
+type vec_vbinop = (V128Op.vbinop) Values.vecop
+type vec_vternop = (V128Op.vternop) Values.vecop
+type vec_splatop = (V128Op.splatop) Values.vecop
+type vec_extractop = (V128Op.extractop) Values.vecop
+type vec_replaceop = (V128Op.replaceop) Values.vecop
+
+type ('t, 'p) memop = {ty : 't; align : int; offset : int32; pack : 'p}
+type loadop = (num_type, (pack_size * extension) option) memop
+type storeop = (num_type, pack_size option) memop
+
+type vec_loadop = (vec_type, (pack_size * vec_extension) option) memop
+type vec_storeop = (vec_type, unit) memop
+type vec_laneop = (vec_type, pack_size) memop * int
 
 
 (* Expressions *)
 
 type var = int32 Source.phrase
 type num = Values.num Source.phrase
-type name = int list
+type vec = Values.vec Source.phrase
+type name = Utf8.unicode
 
 type block_type = VarBlockType of var | ValBlockType of value_type option
 
@@ -99,6 +164,10 @@ and instr' =
   | ElemDrop of var                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
+  | VecLoad of vec_loadop             (* read memory at address *)
+  | VecStore of vec_storeop           (* write memory at address *)
+  | VecLoadLane of vec_laneop         (* read single lane at address *)
+  | VecStoreLane of vec_laneop        (* write single lane to address *)
   | MemorySize                        (* size of memory *)
   | MemoryGrow                        (* grow memory *)
   | MemoryFill                        (* fill memory range with value *)
@@ -114,6 +183,21 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
+  | VecConst of vec                   (* constant *)
+  | VecTest of vec_testop             (* vector test *)
+  | VecCompare of vec_relop           (* vector comparison *)
+  | VecUnary of vec_unop              (* unary vector operator *)
+  | VecBinary of vec_binop            (* binary vector operator *)
+  | VecConvert of vec_cvtop           (* vector conversion *)
+  | VecShift of vec_shiftop           (* vector shifts *)
+  | VecBitmask of vec_bitmaskop       (* vector masking *)
+  | VecTestBits of vec_vtestop        (* vector bit test *)
+  | VecUnaryBits of vec_vunop         (* unary bit vector operator *)
+  | VecBinaryBits of vec_vbinop       (* binary bit vector operator *)
+  | VecTernaryBits of vec_vternop     (* ternary bit vector operator *)
+  | VecSplat of vec_splatop           (* number to vector conversion *)
+  | VecExtract of vec_extractop       (* extract lane from vector *)
+  | VecReplace of vec_replaceop       (* replace lane in vector *)
 
 
 (* Globals & Functions *)
@@ -205,6 +289,12 @@ and import' =
   idesc : import_desc;
 }
 
+type start = start' Source.phrase
+and start' =
+{
+  sfunc : var;
+}
+
 type module_ = module_' Source.phrase
 and module_' =
 {
@@ -213,7 +303,7 @@ and module_' =
   tables : table list;
   memories : memory list;
   funcs : func list;
-  start : var option;
+  start : start option;
   elems : elem_segment list;
   datas : data_segment list;
   imports : import list;

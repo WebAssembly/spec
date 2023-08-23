@@ -45,7 +45,7 @@ instr ::= ...
         | 0xC4                  =>  i64.extend32_s
 ```
 
-[future sext]: https://github.com/WebAssembly/design/blob/master/FutureFeatures.md#additional-integer-operators
+[future sext]: https://github.com/WebAssembly/design/blob/main/FutureFeatures.md#additional-integer-operators
 [instruction syntax]: https://webassembly.github.io/spec/syntax/instructions.html
 [instruction binary format]: https://webassembly.github.io/spec/binary/instructions.html
 [spec]: https://webassembly.github.io/sign-extension-ops/

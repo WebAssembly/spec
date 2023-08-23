@@ -11,6 +11,7 @@ Appendix
    algorithm
    custom
    properties
+   changes
 
 .. only:: singlehtml
 

@@ -13,7 +13,7 @@ This language is structured around the following concepts.
 .. _value:
 
 **Values**
-  WebAssembly provides only four basic *value types*.
+  WebAssembly provides only four basic *number types*.
   These are integers and |IEEE754|_ numbers,
   each in 32 and 64 bit width.
   32 bit integers also serve as Booleans and as memory addresses.
@@ -22,6 +22,16 @@ This language is structured around the following concepts.
   There is no distinction between signed and unsigned integer types.
   Instead, integers are interpreted by respective operations
   as either unsigned or signed in two’s complement representation.
+
+  In addition to these basic number types, there is a single 128 bit wide
+  vector type representing different types of packed data.
+  The supported representations are 4 32-bit, or 2 64-bit
+  |IEEE754|_ numbers, or different widths of packed integer values,
+  specifically 2 64-bit integers, 4 32-bit integers, 8
+  16-bit integers, or 16 8-bit integers.
+
+  Finally, values can consist of opaque *references* that represent pointers towards different sorts of entities.
+  Unlike with other types, their size or representation is not observable.
 
 .. _instruction:
 
@@ -50,7 +60,7 @@ This language is structured around the following concepts.
 **Functions**
   Code is organized into separate *functions*.
   Each function takes a sequence of values as parameters
-  and returns a sequence of values as results. [#arity]_
+  and returns a sequence of values as results.
   Functions can call each other, including recursively,
   resulting in an implicit call stack that cannot be accessed directly.
   Functions may also declare mutable *local variables* that are usable as virtual registers.
@@ -60,7 +70,7 @@ This language is structured around the following concepts.
 **Tables**
   A *table* is an array of opaque values of a particular *element type*.
   It allows programs to select such values indirectly through a dynamic index operand.
-  Currently, the only available element type is an untyped function reference.
+  Currently, the only available element type is an untyped function reference or a reference to an external host value.
   Thereby, a program can call functions indirectly through a dynamic index into a table.
   For example, this allows emulating function pointers by way of table indices.
 
@@ -95,8 +105,6 @@ This language is structured around the following concepts.
 
 
 .. [#stackmachine] In practice, implementations need not maintain an actual operand stack. Instead, the stack can be viewed as a set of anonymous registers that are implicitly referenced by instructions. The :ref:`type system <validation>` ensures that the stack height, and thus any referenced register, is always known statically.
-
-.. [#arity] In the current version of WebAssembly, there may be at most one result value.
 
 
 .. index:: phases, decoding, validation, execution, instantiation, invocation

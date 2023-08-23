@@ -65,7 +65,7 @@ let kElementSectionCode = 9;     // Elements section
 let kCodeSectionCode = 10;       // Function code
 let kDataSectionCode = 11;       // Data segments
 let kDataCountSectionCode = 12;  // Data segment count (between Element & Code)
-let kExceptionSectionCode = 13;  // Exception section (between Global & Export)
+let kTagSectionCode = 13;        // Tag section (between Memory & Global)
 
 // Name section types
 let kModuleNameCode = 0;
@@ -99,19 +99,18 @@ let kWasmF64 = 0x7c;
 let kWasmS128 = 0x7b;
 let kWasmAnyRef = 0x6f;
 let kWasmAnyFunc = 0x70;
-let kWasmExnRef = 0x68;
 
 let kExternalFunction = 0;
 let kExternalTable = 1;
 let kExternalMemory = 2;
 let kExternalGlobal = 3;
-let kExternalException = 4;
+let kExternalTag = 4;
 
 let kTableZero = 0;
 let kMemoryZero = 0;
 let kSegmentZero = 0;
 
-let kExceptionAttribute = 0;
+let kTagAttribute = 0;
 
 // Useful signatures
 let kSig_i_i = makeSig([kWasmI32], [kWasmI32]);
@@ -149,17 +148,14 @@ let kSig_f_d = makeSig([kWasmF64], [kWasmF32]);
 let kSig_d_d = makeSig([kWasmF64], [kWasmF64]);
 let kSig_r_r = makeSig([kWasmAnyRef], [kWasmAnyRef]);
 let kSig_a_a = makeSig([kWasmAnyFunc], [kWasmAnyFunc]);
-let kSig_e_e = makeSig([kWasmExnRef], [kWasmExnRef]);
 let kSig_i_r = makeSig([kWasmAnyRef], [kWasmI32]);
 let kSig_v_r = makeSig([kWasmAnyRef], []);
 let kSig_v_a = makeSig([kWasmAnyFunc], []);
-let kSig_v_e = makeSig([kWasmExnRef], []);
 let kSig_v_rr = makeSig([kWasmAnyRef, kWasmAnyRef], []);
 let kSig_v_aa = makeSig([kWasmAnyFunc, kWasmAnyFunc], []);
 let kSig_r_v = makeSig([], [kWasmAnyRef]);
 let kSig_a_v = makeSig([], [kWasmAnyFunc]);
 let kSig_a_i = makeSig([kWasmI32], [kWasmAnyFunc]);
-let kSig_e_v = makeSig([], [kWasmExnRef]);
 
 function makeSig(params, results) {
   return {params: params, results: results};
@@ -194,6 +190,7 @@ let kExprIf = 0x04;
 let kExprElse = 0x05;
 let kExprTry = 0x06;
 let kExprCatch = 0x07;
+let kExprCatchAll = 0x19;
 let kExprThrow = 0x08;
 let kExprRethrow = 0x09;
 let kExprBrOnExn = 0x0a;
@@ -684,7 +681,7 @@ class WasmModuleBuilder {
     this.exports = [];
     this.globals = [];
     this.tables = [];
-    this.exceptions = [];
+    this.tags = [];
     this.functions = [];
     this.element_segments = [];
     this.data_segments = [];
@@ -692,7 +689,7 @@ class WasmModuleBuilder {
     this.num_imported_funcs = 0;
     this.num_imported_globals = 0;
     this.num_imported_tables = 0;
-    this.num_imported_exceptions = 0;
+    this.num_imported_tags = 0;
     return this;
   }
 
@@ -746,9 +743,8 @@ class WasmModuleBuilder {
   }
 
   addTable(type, initial_size, max_size = undefined) {
-    if (type != kWasmAnyRef && type != kWasmAnyFunc && type != kWasmExnRef) {
-      throw new Error(
-          'Tables must be of type kWasmAnyRef, kWasmAnyFunc, or kWasmExnRef');
+    if (type != kWasmAnyRef && type != kWasmAnyFunc) {
+      throw new Error('Tables must be of type kWasmAnyRef or kWasmAnyFunc');
     }
     let table = new WasmTableBuilder(this, type, initial_size, max_size);
     table.index = this.tables.length + this.num_imported_tables;
@@ -756,11 +752,11 @@ class WasmModuleBuilder {
     return table;
   }
 
-  addException(type) {
+  addTag(type) {
     let type_index = (typeof type) == "number" ? type : this.addType(type);
-    let except_index = this.exceptions.length + this.num_imported_exceptions;
-    this.exceptions.push(type_index);
-    return except_index;
+    let tag_index = this.tags.length + this.num_imported_tags;
+    this.tags.push(type_index);
+    return tag_index;
   }
 
   addFunction(name, type) {
@@ -808,14 +804,14 @@ class WasmModuleBuilder {
     return this.num_imported_tables++;
   }
 
-  addImportedException(module, name, type) {
-    if (this.exceptions.length != 0) {
-      throw new Error('Imported exceptions must be declared before local ones');
+  addImportedTag(module, name, type) {
+    if (this.tags.length != 0) {
+      throw new Error('Imported tags must be declared before local ones');
     }
     let type_index = (typeof type) == "number" ? type : this.addType(type);
-    let o = {module: module, name: name, kind: kExternalException, type: type_index};
+    let o = {module: module, name: name, kind: kExternalTag, type: type_index};
     this.imports.push(o);
-    return this.num_imported_exceptions++;
+    return this.num_imported_tags++;
   }
 
   addExport(name, index) {
@@ -942,8 +938,8 @@ class WasmModuleBuilder {
             section.emit_u8(has_max ? 1 : 0); // flags
             section.emit_u32v(imp.initial); // initial
             if (has_max) section.emit_u32v(imp.maximum); // maximum
-          } else if (imp.kind == kExternalException) {
-            section.emit_u32v(kExceptionAttribute);
+          } else if (imp.kind == kExternalTag) {
+            section.emit_u32v(kTagAttribute);
             section.emit_u32v(imp.type);
           } else {
             throw new Error("unknown/unsupported import kind " + imp.kind);
@@ -1029,9 +1025,6 @@ class WasmModuleBuilder {
                 section.emit_u8(kExprRefNull);
               }
               break;
-            case kWasmExnRef:
-              section.emit_u8(kExprRefNull);
-              break;
             }
           } else {
             // Emit a global-index initializer.
@@ -1043,13 +1036,13 @@ class WasmModuleBuilder {
       });
     }
 
-    // Add exceptions.
-    if (wasm.exceptions.length > 0) {
-      if (debug) print("emitting exceptions @ " + binary.length);
-      binary.emit_section(kExceptionSectionCode, section => {
-        section.emit_u32v(wasm.exceptions.length);
-        for (let type of wasm.exceptions) {
-          section.emit_u32v(kExceptionAttribute);
+    // Add tags.
+    if (wasm.tags.length > 0) {
+      if (debug) print("emitting tags @ " + binary.length);
+      binary.emit_section(kTagSectionCode, section => {
+        section.emit_u32v(wasm.tags.length);
+        for (let type of wasm.tags) {
+          section.emit_u32v(kTagAttribute);
           section.emit_u32v(type);
         }
       });
@@ -1172,9 +1165,6 @@ class WasmModuleBuilder {
             }
             if (l.anyfunc_count > 0) {
               local_decls.push({count: l.anyfunc_count, type: kWasmAnyFunc});
-            }
-            if (l.except_count > 0) {
-              local_decls.push({count: l.except_count, type: kWasmExnRef});
             }
           }
 

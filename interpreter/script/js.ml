@@ -37,6 +37,7 @@ let spectest = {
   eq_funcref: eq_funcref,
   print: console.log.bind(console),
   print_i32: console.log.bind(console),
+  print_i64: console.log.bind(console),
   print_i32_f32: console.log.bind(console),
   print_f64_f64: console.log.bind(console),
   print_f32: console.log.bind(console),
@@ -260,7 +261,8 @@ let abs_mask_of = function
 
 let value v =
   match v.it with
-  | Values.Num num -> [Const (num @@ v.at) @@ v.at]
+  | Values.Num n -> [Const (n @@ v.at) @@ v.at]
+  | Values.Vec s -> [VecConst (s @@ v.at) @@ v.at]
   | Values.Ref (Values.NullRef t) -> [RefNull t @@ v.at]
   | Values.Ref (ExternRef n) ->
     [Const (Values.I32 n @@ v.at) @@ v.at; Call (externref_idx @@ v.at) @@ v.at]
@@ -278,8 +280,12 @@ let run ts at =
 
 let assert_return ress ts at =
   let test res =
+    let nan_bitmask_of = function
+      | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
+      | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
+    in
     match res.it with
-    | LitResult {it = Values.Num num; at = at'} ->
+    | NumResult (NumPat {it = num; at = at'}) ->
       let t', reinterpret = reinterpret_of (Values.type_of_num num) in
       [ reinterpret @@ at;
         Const (num @@ at')  @@ at;
@@ -287,39 +293,80 @@ let assert_return ress ts at =
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref (Values.NullRef t); _} ->
-      [ RefIsNull @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref (ExternRef n); _} ->
-      [ Const (Values.I32 n @@ at) @@ at;
-        Call (externref_idx @@ at) @@ at;
-        Call (eq_externref_idx @@ at)  @@ at;
-        Test (Values.I32 I32Op.Eqz) @@ at;
-        BrIf (0l @@ at) @@ at ]
-    | LitResult {it = Values.Ref _; _} ->
-      assert false
-    | NanResult nanop ->
+    | NumResult (NanPat nanop) ->
       let nan =
         match nanop.it with
-        | Values.I32 _ | Values.I64 _ -> assert false
+        | Values.I32 _ | Values.I64 _ -> .
         | Values.F32 n | Values.F64 n -> n
-      in
-      let nan_bitmask_of =
-        match nan with
-        | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
-        | ArithmeticNan -> canonical_nan_of (* can be any NaN that's one everywhere the canonical NaN is one *)
       in
       let t = Values.type_of_num nanop.it in
       let t', reinterpret = reinterpret_of t in
       [ reinterpret @@ at;
-        Const (nan_bitmask_of t' @@ at) @@ at;
+        Const (nan_bitmask_of nan t' @@ at) @@ at;
         Binary (and_of t') @@ at;
         Const (canonical_nan_of t' @@ at) @@ at;
         Compare (eq_of t') @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult t ->
+    | VecResult (VecPat (Values.V128 (shape, pats))) ->
+      let open Values in
+      (* VecResult is a list of NumPat or LitPat. For float shapes, we can have a mix of literals
+       * and NaNs. For NaNs, we need to mask it and compare with a canonical NaN. To simplify
+       * comparison, we build masks even for literals (will just be all set), collect them into
+       * a v128, then compare the entire 128 bits.
+       *)
+      let mask_and_canonical = function
+        | NumPat {it = I32 _ as i; _} -> I32 (Int32.minus_one), i
+        | NumPat {it = I64 _ as i; _} -> I64 (Int64.minus_one), i
+        | NumPat {it = F32 f; _} ->
+          I32 (Int32.minus_one), I32 (I32_convert.reinterpret_f32 f)
+        | NumPat {it = F64 f; _} ->
+          I64 (Int64.minus_one), I64 (I64_convert.reinterpret_f64 f)
+        | NanPat {it = F32 nan; _} ->
+          nan_bitmask_of nan I32Type, canonical_nan_of I32Type
+        | NanPat {it = F64 nan; _} ->
+          nan_bitmask_of nan I64Type, canonical_nan_of I64Type
+        | _ -> .
+      in
+      let masks, canons = List.split (List.map (fun p -> mask_and_canonical p) pats) in
+      let all_ones = V128.I32x4.of_lanes (List.init 4 (fun _ -> Int32.minus_one)) in
+      let mask, expected = match shape with
+        | V128.I8x16 () ->
+          all_ones, V128.I8x16.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I16x8 () ->
+          all_ones, V128.I16x8.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I32x4 () ->
+          all_ones, V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.I64x2 () ->
+          all_ones, V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
+        | V128.F32x4 () ->
+          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) masks),
+          V128.I32x4.of_lanes (List.map (I32Num.of_num 0) canons)
+        | V128.F64x2 () ->
+          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) masks),
+          V128.I64x2.of_lanes (List.map (I64Num.of_num 0) canons)
+      in
+      [ VecConst (V128 mask @@ at) @@ at;
+        VecBinaryBits (V128 V128Op.And) @@ at;
+        VecConst (V128 expected @@ at) @@ at;
+        VecCompare (V128 (V128.I8x16 V128Op.Eq)) @@ at;
+        (* If all lanes are non-zero, then they are equal *)
+        VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
+        Test (I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat {it = Values.NullRef t; _}) ->
+      [ RefIsNull @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat {it = ExternRef n; _}) ->
+      [ Const (Values.I32 n @@ at) @@ at;
+        Call (externref_idx @@ at) @@ at;
+        Call (eq_externref_idx @@ at)  @@ at;
+        Test (Values.I32 I32Op.Eqz) @@ at;
+        BrIf (0l @@ at) @@ at ]
+    | RefResult (RefPat _) ->
+      assert false
+    | RefResult (RefTypePat t) ->
       let is_ref_idx =
         match t with
         | FuncRefType -> is_funcref_idx
@@ -378,6 +425,7 @@ let is_js_num_type = function
 
 let is_js_value_type = function
   | NumType t -> is_js_num_type t
+  | VecType t -> false
   | RefType t -> true
 
 let is_js_global_type = function
@@ -421,30 +469,57 @@ let of_float z =
   | "-inf" -> "-Infinity"
   | s -> s
 
+let of_num n =
+  let open Values in
+  match n with
+  | I32 i -> I32.to_string_s i
+  | I64 i -> "int64(\"" ^ I64.to_string_s i ^ "\")"
+  | F32 z -> of_float (F32.to_float z)
+  | F64 z -> of_float (F64.to_float z)
+
+let of_vec v =
+  let open Values in
+  match v with
+  | V128 v -> "v128(\"" ^ V128.to_string v ^ "\")"
+
+let of_ref r =
+  let open Values in
+  match r with
+  | NullRef _ -> "null"
+  | ExternRef n -> "externref(" ^ Int32.to_string n ^ ")"
+  | _ -> assert false
+
 let of_value v =
   let open Values in
   match v.it with
-  | Num (I32 i) -> I32.to_string_s i
-  | Num (I64 i) -> "int64(\"" ^ I64.to_string_s i ^ "\")"
-  | Num (F32 z) -> of_float (F32.to_float z)
-  | Num (F64 z) -> of_float (F64.to_float z)
-  | Ref (NullRef _) -> "null"
-  | Ref (ExternRef n) -> "externref(" ^ Int32.to_string n ^ ")"
-  | _ -> assert false
+  | Num n -> of_num n
+  | Vec v -> of_vec v
+  | Ref r -> of_ref r
 
 let of_nan = function
   | CanonicalNan -> "\"nan:canonical\""
   | ArithmeticNan -> "\"nan:arithmetic\""
 
+let of_num_pat = function
+  | NumPat num -> of_num num.it
+  | NanPat nanop ->
+    match nanop.it with
+    | Values.I32 _ | Values.I64 _ -> .
+    | Values.F32 n | Values.F64 n -> of_nan n
+
+let of_vec_pat = function
+  | VecPat (Values.V128 (shape, pats)) ->
+    Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
+
+let of_ref_pat = function
+  | RefPat r -> of_ref r.it
+  | RefTypePat t -> "\"ref." ^ string_of_refed_type t ^ "\""
+
 let of_result res =
   match res.it with
-  | LitResult value -> of_value value
-  | NanResult nanop ->
-    (match nanop.it with
-    | Values.I32 _ | Values.I64 _ -> assert false
-    | Values.F32 n | Values.F64 n -> of_nan n
-    )
-  | RefResult t -> "\"ref." ^ string_of_refed_type t ^ "\""
+  | NumResult np -> of_num_pat np
+  | VecResult vp -> of_vec_pat vp
+  | RefResult rp -> of_ref_pat rp
 
 let rec of_definition def =
   match def.it with

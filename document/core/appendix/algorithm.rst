@@ -25,10 +25,13 @@ Types are representable as an enumeration.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | Funcref | Externref
+   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
 
    func is_num(t : val_type | Unknown) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
+
+   func is_vec(t : val_type | Unknown) : bool =
+     return t = V128 || t = Unknown
 
    func is_ref(t : val_type | Unknown) : bool =
      return t = Funcref || t = Externref || t = Unknown
@@ -75,15 +78,13 @@ However, these variables are not manipulated directly by the main checking funct
 
    func pop_val(expect : val_type | Unknown) : val_type | Unknown =
      let actual = pop_val()
-     if (actual = Unknown) return expect
-     if (expect = Unknown) return actual
-     error_if(actual =/= expect)
+     error_if(actual =/= expect && actual =/= Unknown && expect =/= Unknown)
      return actual
 
    func push_vals(types : list(val_type)) = foreach (t in types) push_val(t)
    func pop_vals(types : list(val_type)) : list(val_type) =
      var popped := []
-     foreach (t in reverse(types)) popped.append(pop_val(t))
+     foreach (t in reverse(types)) popped.prepend(pop_val(t))
      return popped
 
 Pushing an operand value simply pushes the respective type to the value stack.
@@ -109,24 +110,24 @@ The control stack is likewise manipulated through auxiliary functions:
 .. code-block:: pseudo
 
    func push_ctrl(opcode : opcode, in : list(val_type), out : list(val_type)) =
-     let frame = ctrl_frame(opcode, in, out, vals.size(), false)
-     ctrls.push(frame)
+     let frame = ctrl_frame(opcode, in, out, vals.size(), false)
+     ctrls.push(frame)
      push_vals(in)
 
    func pop_ctrl() : ctrl_frame =
-     error_if(ctrls.is_empty())
-     let frame = ctrls[0]
-     pop_vals(frame.end_types)
-     error_if(vals.size() =/= frame.height)
+     error_if(ctrls.is_empty())
+     let frame = ctrls[0]
+     pop_vals(frame.end_types)
+     error_if(vals.size() =/= frame.height)
      ctrls.pop()
-     return frame
+     return frame
 
    func label_types(frame : ctrl_frame) : list(val_types) =
      return (if frame.opcode == loop then frame.start_types else frame.end_types)
 
    func unreachable() =
-     vals.resize(ctrls[0].height)
-     ctrls[0].unreachable := true
+     vals.resize(ctrls[0].height)
+     ctrls[0].unreachable := true
 
 Pushing a control frame takes the types of the label and result values.
 It allocates a new frame record recording them along with the current height of the operand stack and marks the block as reachable.
@@ -139,6 +140,8 @@ The type of the :ref:`label <syntax-label>` associated with a control frame is e
 
 Finally, the current frame can be marked as unreachable.
 In that case, all existing operand types are purged from the value stack, in order to allow for the :ref:`stack-polymorphism <polymorphism>` logic in :code:`pop_val` to take effect.
+Because every function has an implicit outermost label that corresponds to an implicit block frame,
+it is an invariant of the validation algorithm that there always is at least one frame on the control stack when validating an instruction, and hence, `ctrls[0]` is always defined.
 
 .. note::
    Even with the unreachable flag set, consecutive operands are still pushed to and popped from the operand stack.
@@ -174,7 +177,7 @@ Other instructions are checked in a similar manner.
          pop_val(I32)
          let t1 = pop_val()
          let t2 = pop_val()
-         error_if(not (is_num(t1) && is_num(t2)))
+         error_if(not ((is_num(t1) && is_num(t2)) || (is_vec(t1) && is_vec(t2))))
          error_if(t1 =/= t2 && t1 =/= Unknown && t2 =/= Unknown)
          push_val(if (t1 = Unknown) t2 else t1)
 
@@ -184,8 +187,8 @@ Other instructions are checked in a similar manner.
          pop_val(t)
          push_val(t)
 
-       case (unreachable)
-         unreachable()
+       case (unreachable)
+         unreachable()
 
        case (block t1*->t2*)
          pop_vals([t1*])
@@ -210,26 +213,26 @@ Other instructions are checked in a similar manner.
          push_ctrl(else, frame.start_types, frame.end_types)
 
        case (br n)
-         error_if(ctrls.size() < n)
-         pop_vals(label_types(ctrls[n]))
-         unreachable()
+         error_if(ctrls.size() < n)
+         pop_vals(label_types(ctrls[n]))
+         unreachable()
 
        case (br_if n)
-         error_if(ctrls.size() < n)
+         error_if(ctrls.size() < n)
          pop_val(I32)
-         pop_vals(label_types(ctrls[n]))
-         push_vals(label_types(ctrls[n]))
+         pop_vals(label_types(ctrls[n]))
+         push_vals(label_types(ctrls[n]))
 
-       case (br_table n* m)
+       case (br_table n* m)
          pop_val(I32)
-         error_if(ctrls.size() < m)
+         error_if(ctrls.size() < m)
          let arity = label_types(ctrls[m]).size()
-         foreach (n in n*)
-           error_if(ctrls.size() < n)
-           error_if(label_types(ctrls[n]).size() =/= arity)
+         foreach (n in n*)
+           error_if(ctrls.size() < n)
+           error_if(label_types(ctrls[n]).size() =/= arity)
            push_vals(pop_vals(label_types(ctrls[n])))
          pop_vals(label_types(ctrls[m]))
-         unreachable()
+         unreachable()
 
 
 .. note::

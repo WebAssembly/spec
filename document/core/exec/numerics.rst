@@ -38,6 +38,28 @@ When several of these placeholders occur in a single clause, then they must be r
       \fcopysign_N(- p_1, + p_2) &=& + p_1 \\
       \end{array}
 
+Numeric operators are lifted to input sequences by applying the operator element-wise, returning a sequence of results. When there are multiple inputs, they must be of equal length.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   op(c_1^n, \dots, c_k^n) &=& op(c_1^n[0], \dots, c_k^n[0])~\dots~op(c_1^n[n-1], \dots, c_k^n[n-1])
+   \end{array}
+
+.. note::
+   For example, the unary operator |fabs|, when given a sequence of floating-point values, return a sequence of floating-point results:
+
+   .. math::
+      \begin{array}{lll@{\qquad}l}
+      \fabs_N(z^n) &=& \fabs_N(z[0])~\dots~\fabs_N(z[n])
+      \end{array}
+
+   The binary operator |iadd|, when given two sequences of integers of the same length, :math:`n`, return a sequence of integer results:
+
+   .. math::
+      \begin{array}{lll@{\qquad}l}
+      \iadd_N(i_1^n, i_2^n) &=& \iadd_N(i_1[0], i_2[0])~\dots~\iadd_N(i_1[n], i_2[n])
+      \end{array}
+
 .. _aux-trunc:
 
 Conventions:
@@ -57,19 +79,44 @@ Conventions:
      \trunc(\pm q) &=& \pm i & (\iff i \in \mathbb{N} \wedge +q - 1 < i \leq +q) \\
      \end{array}
 
+.. _aux-sat_u:
+.. _aux-sat_s:
 
-.. index:: bit, integer, floating-point
+* Saturation of integers is written :math:`\satu_N(i)` and :math:`\sats_N(i)`. The arguments to these two functions range over arbitrary signed integers.
+
+  * Unsigned saturation, :math:`\satu_N(i)` clamps :math:`i` to between :math:`0` and :math:`2^N-1`:
+
+    .. math::
+       \begin{array}{lll@{\qquad}l}
+       \satu_N(i) &=& 2^N-1 & (\iff i > 2^N-1)\\
+       \satu_N(i) &=& 0 & (\iff i < 0) \\
+       \satu_N(i) &=& i & (\otherwise) \\
+       \end{array}
+
+  * Signed saturation, :math:`\sats_N(i)` clamps :math:`i` to between :math:`-2^{N-1}` and :math:`2^{N-1}-1`:
+
+  .. math::
+     \begin{array}{lll@{\qquad}l}
+     \sats_N(i) &=& \signed_N^{-1}(-2^{N-1}) & (\iff i < -2^{N-1})\\
+     \sats_N(i) &=& \signed_N^{-1}(2^{N-1}-1) & (\iff i > 2^{N-1}-1)\\
+     \sats_N(i) &=& i & (\otherwise)
+     \end{array}
+
+
+
+.. index:: bit, integer, floating-point, numeric vector
 .. _aux-bits:
 
 Representations
 ~~~~~~~~~~~~~~~
 
-Numbers have an underlying binary representation as a sequence of bits:
+Numbers and numeric vectors have an underlying binary representation as a sequence of bits:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bits_{\K{i}N}(i) &=& \ibits_N(i) \\
-   \bits_{\K{f}N}(z) &=& \fbits_N(z) \\
+   \bits_{\IN}(i) &=& \ibits_N(i) \\
+   \bits_{\FN}(z) &=& \fbits_N(z) \\
+   \bits_{\VN}(i) &=& \ibits_N(i) \\
    \end{array}
 
 Each of these functions is a bijection, hence they are invertible.
@@ -115,6 +162,33 @@ Floating-Point
 where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
 
+.. index:: numeric vector, shape, lane
+.. _aux-lanes:
+.. _syntax-i128:
+
+Vectors
+.......
+
+Numeric vectors have the same underlying representation as an |i128|.
+They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lll@{\qquad}l}
+   \lanes_{t\K{x}N}(c) &=&
+     c_0~\dots~c_{N-1} \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}l@{~}l@{~}l}
+     (\where & B &=& |t| / 8 \\
+     \wedge & b^{16} &=& \bytes_{\i128}(c) \\
+     \wedge & c_i &=& \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
+     \end{array}
+   \end{array}
+
+These functions are bijections, so they are invertible.
+
+
 .. index:: byte, little endian, memory
 .. _aux-littleendian:
 .. _aux-bytes:
@@ -131,7 +205,7 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
    \littleendian(d^8~{d'}^\ast~) &=& \littleendian({d'}^\ast)~\ibits_8^{-1}(d^8) \\
    \end{array}
 
-Again these functions are invertable bijections.
+Again these functions are invertible bijections.
 
 
 .. index:: integer
@@ -302,6 +376,18 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    it holds that :math:`i_1 = i_2\cdot\idivs(i_1, i_2) + \irems(i_1, i_2)`.
 
 
+.. _op-inot:
+
+:math:`\inot_N(i)`
+..................
+
+* Return the bitwise negation of :math:`i`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \inot_N(i) &=& \ibits_N^{-1}(\ibits_N(i) \veebar \ibits_N(2^N-1))
+   \end{array}
+
 .. _op-iand:
 
 :math:`\iand_N(i_1, i_2)`
@@ -312,6 +398,18 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 .. math::
    \begin{array}{@{}lcll}
    \iand_N(i_1, i_2) &=& \ibits_N^{-1}(\ibits_N(i_1) \wedge \ibits_N(i_2))
+   \end{array}
+
+.. _op-iandnot:
+
+:math:`\iandnot_N(i_1, i_2)`
+............................
+
+* Return the bitwise conjunction of :math:`i_1` and the bitwise negation of :math:`i_2`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \iandnot_N(i_1, i_2) &=& \iand_N(i_1, \inot_N(i_2))
    \end{array}
 
 .. _op-ior:
@@ -625,6 +723,208 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
    \end{array}
 
 
+.. _op-ibitselect:
+
+:math:`\ibitselect_N(i_1, i_2, i_3)`
+....................................
+
+* Let :math:`j_1` be the bitwise conjunction of :math:`i_1` and :math:`i_3`.
+
+* Let :math:`j_3'` be the bitwise negation of :math:`i_3`.
+
+* Let :math:`j_2` be the bitwise conjunction of :math:`i_2` and :math:`j_3'`.
+
+* Return the bitwise disjunction of :math:`j_1` and :math:`j_2`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \ibitselect_N(i_1, i_2, i_3) &=& \ior_N(\iand_N(i_1, i_3), \iand_N(i_2, \inot_N(i_3)))
+   \end{array}
+
+
+.. _op-iabs:
+
+:math:`\iabs_N(i)`
+..................
+
+* Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i`.
+
+* If :math:`j` is greater than or equal to :math:`0`, then return :math:`i`.
+
+* Else return the negation of `j`, modulo :math:`2^N`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \iabs_N(i) &=& i & (\iff \signed_N(i) \ge 0) \\
+   \iabs_N(i) &=& -\signed_N(i) \mod 2^N & (\otherwise) \\
+   \end{array}
+
+
+.. _op-ineg:
+
+:math:`\ineg_N(i)`
+..................
+
+* Return the result of negating :math:`i`, modulo :math:`2^N`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \ineg_N(i) &=& (2^N - i) \mod 2^N
+   \end{array}
+
+
+.. _op-imin_u:
+
+:math:`\iminu_N(i_1, i_2)`
+..........................
+
+* Return :math:`i_1` if :math:`\iltu_N(i_1, i_2)` is :math:`1`, return :math:`i_2` otherwise.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \iminu_N(i_1, i_2) &=& i_1 & (\iff \iltu_N(i_1, i_2) = 1)\\
+   \iminu_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \end{array}
+
+
+.. _op-imin_s:
+
+:math:`\imins_N(i_1, i_2)`
+..........................
+
+* Return :math:`i_1` if :math:`\ilts_N(i_1, i_2)` is :math:`1`, return :math:`i_2` otherwise.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \imins_N(i_1, i_2) &=& i_1 & (\iff \ilts_N(i_1, i_2) = 1)\\
+   \imins_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \end{array}
+
+
+.. _op-imax_u:
+
+:math:`\imaxu_N(i_1, i_2)`
+..........................
+
+* Return :math:`i_1` if :math:`\igtu_N(i_1, i_2)` is :math:`1`, return :math:`i_2` otherwise.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \imaxu_N(i_1, i_2) &=& i_1 & (\iff \igtu_N(i_1, i_2) = 1)\\
+   \imaxu_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \end{array}
+
+
+.. _op-imax_s:
+
+:math:`\imaxs_N(i_1, i_2)`
+..........................
+
+* Return :math:`i_1` if :math:`\igts_N(i_1, i_2)` is :math:`1`, return :math:`i_2` otherwise.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \imaxs_N(i_1, i_2) &=& i_1 & (\iff \igts_N(i_1, i_2) = 1)\\
+   \imaxs_N(i_1, i_2) &=& i_2 & (\otherwise)
+   \end{array}
+
+
+.. _op-iadd_sat_u:
+
+:math:`\iaddsatu_N(i_1, i_2)`
+.............................
+
+* Let :math:`i` be the result of adding :math:`i_1` and :math:`i_2`.
+
+* Return :math:`\satu_N(i)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iaddsatu_N(i_1, i_2) &=& \satu_N(i_1 + i_2)
+   \end{array}
+
+
+.. _op-iadd_sat_s:
+
+:math:`\iaddsats_N(i_1, i_2)`
+.............................
+
+* Let :math:`j_1` be the signed interpretation of :math:`i_1`
+
+* Let :math:`j_2` be the signed interpretation of :math:`i_2`
+
+* Let :math:`j` be the result of adding :math:`j_1` and :math:`j_2`.
+
+* Return :math:`\sats_N(j)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iaddsats_N(i_1, i_2) &=& \sats_N(\signed_N(i_1) + \signed_N(i_2))
+   \end{array}
+
+
+.. _op-isub_sat_u:
+
+:math:`\isubsatu_N(i_1, i_2)`
+.............................
+
+* Let :math:`i` be the result of subtracting :math:`i_2` from :math:`i_1`.
+
+* Return :math:`\satu_N(i)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \isubsatu_N(i_1, i_2) &=& \satu_N(i_1 - i_2)
+   \end{array}
+
+
+.. _op-isub_sat_s:
+
+:math:`\isubsats_N(i_1, i_2)`
+.............................
+
+* Let :math:`j_1` be the signed interpretation of :math:`i_1`
+
+* Let :math:`j_2` be the signed interpretation of :math:`i_2`
+
+* Let :math:`j` be the result of subtracting :math:`j_2` from :math:`j_1`.
+
+* Return :math:`\sats_N(j)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \isubsats_N(i_1, i_2) &=& \sats_N(\signed_N(i_1) - \signed_N(i_2))
+   \end{array}
+
+
+.. _op-iavgr_u:
+
+:math:`\iavgru_N(i_1, i_2)`
+...........................
+
+* Let :math:`j` be the result of adding :math:`i_1`, :math:`i_2`, and :math:`1`.
+
+* Return the result of dividing :math:`j` by :math:`2`, truncated toward zero.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iavgru_N(i_1, i_2) &=& \trunc((i_1 + i_2 + 1) / 2)
+   \end{array}
+
+
+.. _op-iq15mulrsat_s:
+
+:math:`\iq15mulrsats_N(i_1, i_2)`
+.................................
+
+* Return the result of :math:`\sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \iq15mulrsats_N(i_1, i_2) &=& \sats_N(\ishrs_N(i_1 \cdot i_2 + 2^{14}, 15))
+   \end{array}
+
+
 .. index:: floating-point, IEEE 754
 .. _float-ops:
 
@@ -763,13 +1063,13 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of equal sign, then return that infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity, then return that infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity, then return that infinity.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite sign, then return positive zero.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return that zero.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a zero, then return the other operand.
+* Else if either :math:`z_1` or :math:`z_2` is a zero, then return the other operand.
 
 * Else if both :math:`z_1` and :math:`z_2` are values with the same magnitude but opposite signs, then return positive zero.
 
@@ -852,9 +1152,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * Else if both :math:`z_1` and :math:`z_2` are infinities of opposite sign, then return negative infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with equal sign, then return positive infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with equal sign, then return positive infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
+* Else if either :math:`z_1` or :math:`z_2` is an infinity and the other a value with opposite sign, then return negative infinity.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of equal sign, then return positive zero.
 
@@ -938,9 +1238,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a negative infinity, then return negative infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a negative infinity, then return negative infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a positive infinity, then return the other value.
+* Else if either :math:`z_1` or :math:`z_2` is a positive infinity, then return the other value.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite signs, then return negative zero.
 
@@ -967,9 +1267,9 @@ This non-deterministic result is expressed by the following auxiliary function p
 
 * If either :math:`z_1` or :math:`z_2` is a NaN, then return an element of :math:`\nans_N\{z_1, z_2\}`.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a positive infinity, then return positive infinity.
+* Else if either :math:`z_1` or :math:`z_2` is a positive infinity, then return positive infinity.
 
-* Else if one of :math:`z_1` or :math:`z_2` is a negative infinity, then return the other value.
+* Else if either :math:`z_1` or :math:`z_2` is a negative infinity, then return the other value.
 
 * Else if both :math:`z_1` and :math:`z_2` are zeroes of opposite signs, then return positive zero.
 
@@ -1378,6 +1678,38 @@ This non-deterministic result is expressed by the following auxiliary function p
    \end{array}
 
 
+.. _op-fpmin:
+
+:math:`\fpmin_N(z_1, z_2)`
+..........................
+
+* If :math:`z_2` is less than :math:`z_1` then return :math:`z_2`.
+
+* Else return :math:`z_1`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \fpmin_N(z_1, z_2) &=& z_2 & (\iff \flt_N(z_2, z_1) = 1) \\
+   \fpmin_N(z_1, z_2) &=& z_1 & (\otherwise)
+   \end{array}
+
+
+.. _op-fpmax:
+
+:math:`\fpmax_N(z_1, z_2)`
+..........................
+
+* If :math:`z_1` is less than :math:`z_2` then return :math:`z_2`.
+
+* Else return :math:`z_1`.
+
+.. math::
+   \begin{array}{@{}lcll}
+   \fpmax_N(z_1, z_2) &=& z_2 & (\iff \flt_N(z_1, z_2) = 1) \\
+   \fpmax_N(z_1, z_2) &=& z_1 & (\otherwise)
+   \end{array}
+
+
 .. _convert-ops:
 
 Conversions
@@ -1490,20 +1822,14 @@ Conversions
 
 * Else if :math:`z` is positive infinity, then return :math:`2^N - 1`.
 
-* Else if :math:`\trunc(z)` is less than :math:`0`, then return :math:`0`.
-
-* Else if :math:`\trunc(z)` is greater than :math:`2^N - 1`, then return :math:`2^N - 1`.
-
-* Else, return :math:`\trunc(z)`.
+* Else, return :math:`\satu_N(\trunc(z))`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \truncsatu_{M,N}(\pm \NAN(n)) &=& 0 \\
    \truncsatu_{M,N}(- \infty) &=& 0 \\
    \truncsatu_{M,N}(+ \infty) &=& 2^N - 1 \\
-   \truncsatu_{M,N}(- q) &=& 0 & (\iff \trunc(- q) < 0) \\
-   \truncsatu_{M,N}(+ q) &=& 2^N - 1 & (\iff \trunc(+ q) > 2^N - 1) \\
-   \truncsatu_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \truncsatu_{M,N}(z) &=& \satu_N(\trunc(z)) \\
    \end{array}
 
 
@@ -1518,20 +1844,14 @@ Conversions
 
 * Else if :math:`z` is positive infinity, then return :math:`2^{N-1} - 1`.
 
-* Else if :math:`\trunc(z)` is less than :math:`-2^{N-1}`, then return :math:`-2^{N-1}`.
-
-* Else if :math:`\trunc(z)` is greater than :math:`2^{N-1} - 1`, then return :math:`2^{N-1} - 1`.
-
-* Else, return :math:`\trunc(z)`.
+* Else, return :math:`\sats_N(\trunc(z))`.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
    \truncsats_{M,N}(\pm \NAN(n)) &=& 0 \\
    \truncsats_{M,N}(- \infty) &=& -2^{N-1} \\
    \truncsats_{M,N}(+ \infty) &=& 2^{N-1}-1 \\
-   \truncsats_{M,N}(- q) &=& -2^{N-1} & (\iff \trunc(- q) < -2^{N-1}) \\
-   \truncsats_{M,N}(+ q) &=& 2^{N-1} - 1 & (\iff \trunc(+ q) > 2^{N-1} - 1) \\
-   \truncsats_{M,N}(\pm q) &=& \trunc(\pm q) & (otherwise) \\
+   \truncsats_{M,N}(z) &=& \sats_N(\trunc(z)) \\
    \end{array}
 
 
@@ -1619,4 +1939,34 @@ Conversions
 .. math::
    \begin{array}{lll@{\qquad}l}
    \reinterpret_{t_1,t_2}(c) &=& \bits_{t_2}^{-1}(\bits_{t_1}(c)) \\
+   \end{array}
+
+
+.. _op-narrow_s:
+
+:math:`\narrows_{M,N}(i)`
+.........................
+
+* Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i` of size :math:`M`.
+
+* Return :math:`\sats_N(j)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \narrows_{M,N}(i) &=& \sats_N(\signed_M(i))
+   \end{array}
+
+
+.. _op-narrow_u:
+
+:math:`\narrowu_{M,N}(i)`
+.........................
+
+* Let :math:`j` be the :ref:`signed interpretation <aux-signed>` of :math:`i` of size :math:`M`.
+
+* Return :math:`\satu_N(j)`.
+
+.. math::
+   \begin{array}{lll@{\qquad}l}
+   \narrowu_{M,N}(i) &=& \satu_N(\signed_M(i))
    \end{array}
