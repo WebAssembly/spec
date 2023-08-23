@@ -150,7 +150,7 @@ urlPrefix: https://heycam.github.io/webidl/; spec: WebIDL
 urlPrefix: https://tc39.es/proposal-resizablearraybuffer/; spec: ResizableArrayBuffer proposal
     type: dfn
         text: handled; url: sec-hostresizearraybuffer
-        text: IsResizableArrayBuffer; url: sec-isresizablearraybuffer
+        text: IsFixedLengthArrayBuffer; url: sec-isfixedarraybuffer
         text: HostResizeArrayBuffer; url: sec-hostresizearraybuffer
 </pre>
 
@@ -678,7 +678,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Assert: |map|[|memaddr|] [=map/exists=].
     1. Let |memory| be |map|[|memaddr|].
     1. Let |buffer| be |memory|.\[[BufferObject]].
-    1. If [=IsResizableArrayBuffer=](|buffer|) is false,
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true,
         1. Perform ! [=DetachArrayBuffer=](|buffer|, "WebAssembly.Memory").
         1. Let |buffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
         1. Set |memory|.\[[BufferObject]] to |buffer|.
@@ -719,7 +719,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 <div algorithm=dom-Memory-toFixedLengthBuffer>
     The <dfn method for="Memory">toFixedLengthBuffer()</dfn> method, when invoked, performs the following steps:
     1. Let |buffer| be **this**.\[[BufferObject]].
-    1. If [=IsResizableArrayBuffer=](|buffer|) is false, return |buffer|.
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |fixedBuffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
     1. Perform ! [=DetachArrayBuffer=](|buffer|, "WebAssembly.Memory").
@@ -730,7 +730,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
 <div algorithm=dom-Memory-toResizableBuffer>
     The <dfn method for="Memory">toResizableBuffer()</dfn> method, when invoked, performs the following steps:
     1. Let |buffer| be **this**.\[[BufferObject]].
-    1. If [=IsResizableArrayBuffer=](|buffer|) is true, return |buffer|.
+    1. If [=IsFixedLengthArrayBuffer=](|buffer|) is false, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |store| be the [=surrounding agent=]'s [=associated store=].
     1. Let |memtype| be [=mem_type=](|store|, |memaddr|).
