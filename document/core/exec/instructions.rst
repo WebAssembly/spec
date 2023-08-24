@@ -1120,61 +1120,75 @@ Reference Instructions
 :math:`\ARRAYCOPY~x~y`
 ......................
 
-.. todo:: Handle packed fields correctly via array.get_u instead of array.get
+1. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]` exists.
 
-1. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]`.
 
-2. Pop the value :math:`n` from the stack.
+3. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
-3. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+4. Let :math:`\TARRAY~\X{ft}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` :math:`\deftype`.
 
-4. Pop the value :math:`s` from the stack.
+5. If :math:`\X{ft} = \mut~\packedtype`, then:
 
-5. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
+   a. Let :math:`\X{get}` be the instruction :math:`\ARRAYGETU~y`.
 
-6. Pop the value :math:`\reff_2` from the stack.
+6. Else:
+
+   a. Let :math:`\X{get}` be the instruction :math:`\ARRAYGET~y`.
 
 7. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-8. Pop the value :math:`d` from the stack.
+8. Pop the value :math:`n` from the stack.
 
-9. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
+9. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-10. Pop the value :math:`\reff_1` from the stack.
+10. Pop the value :math:`s` from the stack.
 
-11. If :math:`\reff_1` is :math:`\REFNULL~t`, then:
+11. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
+
+12. Pop the value :math:`\reff_2` from the stack.
+
+13. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+
+14. Pop the value :math:`d` from the stack.
+
+15. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
+
+16. Pop the value :math:`\reff_1` from the stack.
+
+17. If :math:`\reff_1` is :math:`\REFNULL~t`, then:
 
    a. Trap.
 
-12. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_1` is an :ref:`array reference <syntax-ref.array>`.
+18. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_1` is an :ref:`array reference <syntax-ref.array>`.
 
-13. Let :math:`\REFARRAYADDR~a_1` be the reference value :math:`\reff_1`.
+19. Let :math:`\REFARRAYADDR~a_1` be the reference value :math:`\reff_1`.
 
-14. If :math:`\reff_2` is :math:`\REFNULL~t`, then:
+20. If :math:`\reff_2` is :math:`\REFNULL~t`, then:
 
    a. Trap.
 
-15. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_2` is an :ref:`array reference <syntax-ref.array>`.
+21. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_2` is an :ref:`array reference <syntax-ref.array>`.
 
-16. Let :math:`\REFARRAYADDR~a_2` be the reference value :math:`\reff_2`.
+22. Let :math:`\REFARRAYADDR~a_2` be the reference value :math:`\reff_2`.
 
-17. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_1]` exists.
+23. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_1]` exists.
 
-18. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
+24. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
 
-19. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
-
-    a. Trap.
-
-20. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+25. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
 
     a. Trap.
 
-21. If :math:`n = 0`, then:
+26. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+
+    a. Trap.
+
+27. If :math:`n = 0`, then:
 
     a. Return.
 
-22. If :math:`d \leq s`, then:
+28. If :math:`d \leq s`, then:
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
@@ -1184,7 +1198,7 @@ Reference Instructions
 
     d. Push the value :math:`\I32.\CONST~s` to the stack.
 
-    e. Execute the instruction :math:`\ARRAYGET~y`.
+    e. Execute :math:`\X{get}`.
 
     f. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1200,7 +1214,7 @@ Reference Instructions
 
     l. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
 
-23. Else:
+29. Else:
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
@@ -1214,7 +1228,7 @@ Reference Instructions
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-    g. Execute the instruction :math:`\ARRAYGET~y`.
+    g. Execute :math:`\X{get}`.
 
     h. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1226,9 +1240,9 @@ Reference Instructions
 
     l. Push the value :math:`\I32.\CONST~s` to the stack.
 
-24. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+30. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-25. Execute the instruction :math:`\ARRAYCOPY~x~y`.
+31. Execute the instruction :math:`\ARRAYCOPY~x~y`.
 
 .. math::
    ~\\[-1ex]
@@ -1248,24 +1262,32 @@ Reference Instructions
      \\ \quad S;
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\ARRAYGET~y) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\X{get} \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d \leq s)
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\otherwise, \iff & d \leq s \\
+                  \land & (\X{get} = \ARRAYGET~y \vee \X{get} = \ARRAYGETU~y) \\
+                  \land & (F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\packedtype \Longleftrightarrow \X{get} = \ARRAYGETU~y))
+     \end{array}
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
      \\ \quad S;
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~(\ARRAYGET~y) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\X{get} \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d > s)
+     \begin{array}[t]{@{}r@{~}l@{}}
+     (\otherwise, \iff & d > s \\
+                  \land & (\X{get} = \ARRAYGET~y \vee \X{get} = \ARRAYGETU~y) \\
+                  \land & (F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\packedtype \Longleftrightarrow \X{get} = \ARRAYGETU~y))
+     \end{array}
    \\[1ex]
    S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
    \\[1ex]
