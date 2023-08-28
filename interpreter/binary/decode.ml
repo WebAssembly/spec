@@ -220,8 +220,8 @@ let result_type s = vec val_type s
 let pack_type s =
   let pos = pos s in
   match s7 s with
-  | -0x06 -> Pack.Pack8
-  | -0x07 -> Pack.Pack16
+  | -0x08 -> Pack.Pack8
+  | -0x09 -> Pack.Pack16
   | _ -> error s pos "malformed storage type"
 
 let storage_type s =

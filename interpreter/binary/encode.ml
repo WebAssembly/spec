@@ -153,8 +153,8 @@ struct
     | BotT -> assert false
 
   let pack_type = function
-    | Pack.Pack8 -> s7 (-0x06)
-    | Pack.Pack16 -> s7 (-0x07)
+    | Pack.Pack8 -> s7 (-0x08)
+    | Pack.Pack16 -> s7 (-0x09)
     | Pack.Pack32 | Pack.Pack64 -> assert false
 
   let storage_type = function

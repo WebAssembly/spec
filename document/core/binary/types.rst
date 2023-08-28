@@ -185,9 +185,9 @@ Aggregate Types
      t{:}\Bpackedtype
        &\Rightarrow& t \\
    \production{packed type} & \Bpackedtype &::=&
-     \hex{7A}
+     \hex{78}
        &\Rightarrow& \I8 \\ &&|&
-     \hex{79}
+     \hex{77}
        &\Rightarrow& \I16 \\
    \end{array}
 
