@@ -75,7 +75,7 @@ Control Instructions
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
-     \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
+     \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \hex{FB}~~24{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCAST~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\ &&|&
      \hex{FB}~~25{:}\Bu32~~(\NULL_1^?,\NULL_2^?){:}\Bcastflags\\&&&~~~~l{:}\Blabelidx~~\X{ht}_1{:}\Bheaptype~~\X{ht}_2{:}\Bheaptype &\Rightarrow& \BRONCASTFAIL~l~(\REF~\NULL_1^?~\X{ht}_1)~(\REF~\NULL_2^?~\X{ht}_2) \\
@@ -140,8 +140,8 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{D0}~~t{:}\Bheaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
-     \hex{D3} &\Rightarrow& \REFASNONNULL \\ &&|&
-     \hex{D5} &\Rightarrow& \REFEQ \\ &&|&
+     \hex{D3} &\Rightarrow& \REFEQ \\ &&|&
+     \hex{D4} &\Rightarrow& \REFASNONNULL \\ &&|&
      \hex{FB}~~0{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
      \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
      \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGET~x~i \\ &&|&

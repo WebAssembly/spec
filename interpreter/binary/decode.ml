@@ -581,9 +581,9 @@ let rec instr s =
   | 0xd0 -> ref_null (heap_type s)
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
-  | 0xd3 -> ref_as_non_null
-  | 0xd4 -> br_on_null (at var s)
-  | 0xd5 -> ref_eq
+  | 0xd3 -> ref_eq
+  | 0xd4 -> ref_as_non_null
+  | 0xd5 -> br_on_null (at var s)
   | 0xd6 -> br_on_non_null (at var s)
 
   | 0xfb as b ->

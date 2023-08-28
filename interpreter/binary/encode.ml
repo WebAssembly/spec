@@ -245,7 +245,7 @@ struct
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrOnNull x -> op 0xd4; var x
+    | BrOnNull x -> op 0xd5; var x
     | BrOnNonNull x -> op 0xd6; var x
     | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
@@ -376,14 +376,14 @@ struct
     | RefNull t -> op 0xd0; heap_type t
     | RefFunc x -> op 0xd2; var x
 
+    | RefEq -> op 0xd3
+
     | RefIsNull -> op 0xd1
-    | RefAsNonNull -> op 0xd3
+    | RefAsNonNull -> op 0xd4
     | RefTest (NoNull, t) -> op 0xfb; op 0x14; heap_type t
     | RefTest (Null, t) -> op 0xfb; op 0x15; heap_type t
     | RefCast (NoNull, t) -> op 0xfb; op 0x16; heap_type t
     | RefCast (Null, t) -> op 0xfb; op 0x17; heap_type t
-
-    | RefEq -> op 0xd5
 
     | I31New -> op 0xfb; op 0x1c
     | I31Get SX -> op 0xfb; op 0x1d
