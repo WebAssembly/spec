@@ -160,6 +160,7 @@ spec:ecma-262; type:exception; for:ECMAScript; text:Error
 spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
+spec:ecmascript; type:dfn; text:agent
 spec:webidl; type:dfn; text:resolve
 </pre>
 
@@ -618,7 +619,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |block| be a [=Data Block=] which is [=identified with=] the underlying memory of |memaddr|.
     1. Let |buffer| be a new {{ArrayBuffer}} with the internal slots \[[ArrayBufferData]], \[[ArrayBufferByteLength]], and \[[ArrayBufferDetachKey]].
     1. Set |buffer|.\[[ArrayBufferData]] to |block|.
-    1. Set |buffer|.\[[ArrayBufferByteLength]] to |length|.
+    1. Set |buffer|.\[[ArrayBufferByteLength]] to the length of |block|.
     1. Set |buffer|.\[[ArrayBufferDetachKey]] to "WebAssembly.Memory".
     1. Return |buffer|.
 </div>
@@ -679,7 +680,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
     1. Let |memory| be |map|[|memaddr|].
     1. Let |buffer| be |memory|.\[[BufferObject]].
     1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true,
-        1. Perform ! [=DetachArrayBuffer=](|buffer|, "WebAssembly.Memory").
+        1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
         1. Let |buffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
         1. Set |memory|.\[[BufferObject]] to |buffer|.
     1. Otherwise,
@@ -722,7 +723,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
     1. If [=IsFixedLengthArrayBuffer=](|buffer|) is true, return |buffer|.
     1. Let |memaddr| be **this**.\[[Memory]].
     1. Let |fixedBuffer| be the result of [=create a fixed length memory buffer|creating a fixed length memory buffer=] from |memaddr|.
-    1. Perform ! [=DetachArrayBuffer=](|buffer|, "WebAssembly.Memory").
+    1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |fixedBuffer|.
     1. Return |fixedBuffer|.
 </div>
@@ -739,7 +740,7 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
     1. Otherwise,
         1. Let |maxsize| be 65536 &times; 65536.
     1. Let |resizableBuffer| be the result of [=create a resizable memory buffer|creating a resizable memory buffer=] from |memaddr| and |maxsize|.
-    1. Perform ! [=DetachArrayBuffer=](|buffer|, "WebAssembly.Memory").
+    1. Perform [=!=] [$DetachArrayBuffer$](|buffer|, "WebAssembly.Memory").
     1. Set **this**.\[[BufferObject]] to |resizableBuffer|.
     1. Return |resizableBuffer|.
 </div>
