@@ -101,6 +101,7 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: memory address; url: exec/runtime.html#syntax-memaddr
     text: global address; url: exec/runtime.html#syntax-globaladdr
     text: extern address; url: exec/runtime.html#syntax-externaddr
+    text: page size; url: exec/runtime.html#page-size
     url: syntax/types.html#syntax-numtype
         text: i32
         text: i64
@@ -745,22 +746,24 @@ Immediately after a WebAssembly [=memory.grow=] instruction executes, perform th
     1. Return |resizableBuffer|.
 </div>
 
-{{ArrayBuffer}} objects returned by a {{Memory}} object must use the following definition of [=HostResizeArrayBuffer=].
+{{ArrayBuffer}} objects returned by a {{Memory}} object must have size that is a  multiple of a WebAssembly [=page size=] (the constant 65536). For this reason [=HostResizeArrayBuffer=] is redefined as follows.
 
 <div algorithm>
-    The <dfn>abstract operation [=HostResizeArrayBuffer=]</dfn> takes arguments |buffer| and |newLength|. It performs the following steps when called.
+    The <dfn>abstract operation [=HostResizeArrayBuffer=]</dfn> takes arguments an {{ArrayBuffer}} |buffer| and |newLength|. It performs the following steps when called.
 
-    1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
-    1. Assert: |buffer| is the \[[BufferObject]] of exactly one value in |map|.
-    1. [=map/iterate|For each=] |memaddr| &rarr; |mem| in |map|,
-        1. If [=SameValue=](mem.\[[BufferObject]], |buffer|) is true,
-            1. Assert: |buffer|.\[[ArrayBufferByteLength]] modulo 65536 is 0.
-            1. Let |lengthDelta| be |newLength| - |buffer|.\[[ArrayBufferByteLength]].
-            1. If |lengthDelta| &lt; 0 or |lengthDelta| modulo 65536 is not 0,
-                1. Throw a {{RangeError}} exception.
-            1. Let |delta| be |lengthDelta| &div; 65536.
-            1. [=grow the memory buffer|Grow the memory buffer=] associated with |memaddr| by |delta|.
-     1. Return handled.
+    1. If |buffer|.\[[ArrayBufferDetachKey]] is "WebAssembly.Memory",
+        1. Let |map| be the [=surrounding agent=]'s associated [=Memory object cache=].
+        1. Assert: |buffer| is the \[[BufferObject]] of exactly one value in |map|.
+        1. [=map/iterate|For each=] |memaddr| &rarr; |mem| in |map|,
+            1. If [=SameValue=](mem.\[[BufferObject]], |buffer|) is true,
+                1. Assert: |buffer|.\[[ArrayBufferByteLength]] modulo 65536 is 0.
+                1. Let |lengthDelta| be |newLength| - |buffer|.\[[ArrayBufferByteLength]].
+                1. If |lengthDelta| &lt; 0 or |lengthDelta| modulo 65536 is not 0,
+                    1. Throw a {{RangeError}} exception.
+                1. Let |delta| be |lengthDelta| &div; 65536.
+                1. [=grow the memory buffer|Grow the memory buffer=] associated with |memaddr| by |delta|.
+         1. Return handled.
+    1. Otherwise, return unhandled.
 </div>
 
 <div algorithm>
