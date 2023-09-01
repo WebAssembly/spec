@@ -34,11 +34,6 @@
   (deps main/main.ml)
   (action (copy main/main.ml wasm.ml)))
 
-(rule
-  (targets wast.js)
-  (deps wast.bc.js)
-  (action (copy wast.bc.js wast.js)))
-
 (subdir
  text
  (rule
