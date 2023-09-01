@@ -24,7 +24,7 @@ JS =		# set to JS shell command to run JS tests, empty to skip
 .PHONY:		default all ci jslib zip
 
 default:	$(NAME)
-all:		default test
+all:		default partest
 ci:		all jslib zip
 
 jslib:		$(JSLIB)
@@ -87,7 +87,7 @@ quiettest/%: $(NAME)
 	  $(TESTDIR)/run.py 2>$(@F).out --wasm `pwd`/$(NAME) $(if $(JS),--js '$(JS)',) $(TESTDIR)/$*.wast && \
 	  rm $(@F).out \
 	) || \
-	cat $(@F).out || rm $(@F).out || exit 1
+	(cat $(@F).out && rm $(@F).out && exit 1)
 
 
 # Packaging
