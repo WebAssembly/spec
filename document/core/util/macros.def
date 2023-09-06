@@ -178,7 +178,10 @@
 
 .. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
 .. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
-.. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
+.. Unfortunately, MathJax somehow barfs on the use of xref in the expansion
+   of a macro with parameters, so we cannot hyperlink the arrow
+   .. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
+.. |toX#1| mathdef:: \rightarrow_{#1}
 
 .. |BOT| mathdef:: \xref{syntax/types}{syntax-valtype}{\K{bot}}
 
