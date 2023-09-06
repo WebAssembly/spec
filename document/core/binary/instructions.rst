@@ -72,7 +72,7 @@ Control Instructions
      \hex{13}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \RETURNCALLINDIRECT~x~y \\ &&|&
      \hex{14}~~x{:}\Btypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \hex{15}~~x{:}\Btypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
-     \hex{D4}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
+     \hex{D5}~~l{:}\Blabelidx &\Rightarrow& \BRONNULL~l \\ &&|&
      \hex{D6}~~l{:}\Blabelidx &\Rightarrow& \BRONNONNULL~l \\
    \end{array}
 
@@ -103,7 +103,7 @@ Reference Instructions
      \hex{D0}~~t{:}\Bheaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \hex{D1} &\Rightarrow& \REFISNULL \\ &&|&
      \hex{D2}~~x{:}\Bfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
-     \hex{D3} &\Rightarrow& \REFASNONNULL \\
+     \hex{D4} &\Rightarrow& \REFASNONNULL \\
    \end{array}
 
 

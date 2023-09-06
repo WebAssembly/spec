@@ -272,7 +272,7 @@ Typing of instruction sequences is updated to account for initialization of loca
   - `epsilon : [] -> [] epsilon`
 
 Note: These typing rules do not try to eliminate duplicate indices, but an implementation could.
- 
+
 A subsumption rule allows to go to a supertype for any instruction:
 
 * `instr`
@@ -302,8 +302,8 @@ Table definitions have an initialiser value:
 | ------ | --------------- | ---------- |
 | -0x10  | `funcref`       |            |
 | -0x11  | `externref`     |            |
-| -0x14  | `(ref null ht)` | `$t : heaptype` |
-| -0x15  | `(ref ht)`      | `$t : heaptype` |
+| -0x1c  | `(ref ht)`      | `$t : heaptype` |
+| -0x1d  | `(ref null ht)` | `$t : heaptype` |
 
 #### Heap Types
 
@@ -321,8 +321,8 @@ The opcode for heap types is encoded as an `s33`.
 | ------ | ------------------------ | ---------- |
 | 0x14   | `call_ref $t`            | `$t : u32` |
 | 0x15   | `return_call_ref $t`     | `$t : u32` |
-| 0xd3   | `ref.as_non_null`        |            |
-| 0xd4   | `br_on_null $l`          | `$l : u32` |
+| 0xd4   | `ref.as_non_null`        |            |
+| 0xd5   | `br_on_null $l`          | `$l : u32` |
 | 0xd6   | `br_on_non_null $l`      | `$l : u32` |
 
 ### Tables

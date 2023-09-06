@@ -75,8 +75,8 @@ Reference Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
-     \hex{6B}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\X{ht} \\ &&|&
-     \hex{6C}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\ &&|&
+     \hex{63}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\ &&|&
+     \hex{64}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\X{ht} \\ &&|&
      \hex{6F} &\Rightarrow& \EXTERNREF \\ &&|&
      \hex{70} &\Rightarrow& \FUNCREF \\
    \end{array}

@@ -116,8 +116,8 @@ struct
   let ref_type = function
     | (Null, FuncHT) -> s7 (-0x10)
     | (Null, ExternHT) -> s7 (-0x11)
-    | (Null, t) -> s7 (-0x14); heap_type t
-    | (NoNull, t) -> s7 (-0x15); heap_type t
+    | (NoNull, t) -> s7 (-0x1c); heap_type t
+    | (Null, t) -> s7 (-0x1d); heap_type t
 
   let val_type = function
     | NumT t -> num_type t
@@ -193,7 +193,7 @@ struct
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrOnNull x -> op 0xd4; var x
+    | BrOnNull x -> op 0xd5; var x
     | BrOnNonNull x -> op 0xd6; var x
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
@@ -318,7 +318,7 @@ struct
     | RefNull t -> op 0xd0; heap_type t
     | RefFunc x -> op 0xd2; var x
     | RefIsNull -> op 0xd1
-    | RefAsNonNull -> op 0xd3
+    | RefAsNonNull -> op 0xd4
 
     | Const {it = I32 c; _} -> op 0x41; s32 c
     | Const {it = I64 c; _} -> op 0x42; s64 c
