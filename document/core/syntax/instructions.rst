@@ -722,7 +722,7 @@ It is guaranteed that no sequence of nested calls using only these instructions 
 Expressions
 ~~~~~~~~~~~
 
-:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>`, and offsets of :ref:`element <syntax-elem>` or :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
+:ref:`Function <syntax-func>` bodies, initialization values for :ref:`globals <syntax-global>`, elements and offsets of :ref:`element <syntax-elem>` segments, and offsets of :ref:`data <syntax-data>` segments are given as expressions, which are sequences of :ref:`instructions <syntax-instr>` terminated by an |END| marker.
 
 .. math::
    \begin{array}{llll}
