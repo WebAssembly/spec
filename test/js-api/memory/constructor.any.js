@@ -73,7 +73,7 @@ test(() => {
     },
     get(o, x) {
       if (x === "index") {
-        return "u32";
+        return "i32";
       }
       return 0;
     },
@@ -135,20 +135,20 @@ test(() => {
 test(() => {
   const argument = { "initial": 1 };
   const memory = new WebAssembly.Memory(argument);
-  assert_Memory(memory, { "size": 1, "index": "u32" });
+  assert_Memory(memory, { "size": 1, "index": "i32" });
 }, "Memory with index parameter omitted");
 
 test(() => {
-  const argument = { "initial": 1, "index": "u32" };
+  const argument = { "initial": 1, "index": "i32" };
   const memory = new WebAssembly.Memory(argument);
-  assert_Memory(memory, { "size": 1, "index": "u32" });
-}, "Memory with u32 index constructor");
+  assert_Memory(memory, { "size": 1, "index": "i32" });
+}, "Memory with i32 index constructor");
 
 test(() => {
-  const argument = { "initial": 1, "index": "u64" };
+  const argument = { "initial": 1, "index": "i64" };
   const memory = new WebAssembly.Memory(argument);
-  assert_Memory(memory, { "size": 1, "index": "u64" });
-}, "Memory with u64 index constructor");
+  assert_Memory(memory, { "size": 1, "index": "i64" });
+}, "Memory with i64 index constructor");
 
 test(() => {
   assert_throws_js(TypeError, () => new WebAssembly.Memory({ "initial": 1, "index": "none" }));
