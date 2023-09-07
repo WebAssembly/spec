@@ -75,6 +75,11 @@ It occurs as the result of :ref:`rolling up <aux-roll-rectype>` the definition o
 Finally, the representation of supertypes in a :ref:`sub type <syntax-subtype>` is generalized from mere :ref:`type indices <syntax-typeidx>` to :ref:`heap types <syntax-heaptype>`.
 They occur as :ref:`defined types <syntax-deftype>` or :ref:`recursive type indices <syntax-rectypeidx>` after :ref:`substituting <notation-subst>` type indices or :ref:`rolling up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
+.. note::
+   It is an invariant of the semantics that sub types occur only in one of two forms:
+   either as "syntactic" types as in a source module, where all supertypes are type indices,
+   or as "semantic" types, where all supertypes are resolved to either defined types or recursive type indices.
+
 A type of any form is *closed* when it does not contain a heap type that is a :ref:`type index <syntax-typeidx>` or a recursive type index without a surrounding :ref:`recursive type <syntax-reftype>`,
 i.e., all :ref:`type indices <syntax-typeidx>` have been :ref:`substituted <notation-subst>` with their :ref:`defined type <syntax-deftype>` and all free recursive type indices have been :ref:`unrolled <aux-unroll-rectype>`.
 
