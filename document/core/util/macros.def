@@ -656,6 +656,11 @@
 .. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
 
 
+.. Instructions, meta functions
+
+.. |getfield| mathdef:: \xref{syntax/instructions}{aux-getfield}{\F{getfield}}
+
+
 
 .. Binary Format
 .. -------------
