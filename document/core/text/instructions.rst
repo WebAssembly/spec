@@ -219,10 +219,10 @@ Reference Instructions
      \text{ref.cast}~~t{:}\Treftype &\Rightarrow& \REFCAST~t \\ &&|&
      \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
      \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
-     \text{struct.get}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~i \\ &&|&
-     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
-     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
-     \text{struct.set}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \text{struct.get}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \text{struct.set}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~y \\ &&|&
      \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
      \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
      \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&

@@ -521,7 +521,7 @@ Reference Instructions
 .. _exec-struct.get:
 .. _exec-struct.get_sx:
 
-:math:`\STRUCTGET\K{\_}\sx^?~x~i`
+:math:`\STRUCTGET\K{\_}\sx^?~x~y`
 .................................
 
 .. todo:: unroll type
@@ -530,11 +530,11 @@ Reference Instructions
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
-3. Assert: due to :ref:`validation <valid-struct.get>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
+3. Assert: due to :ref:`validation <valid-struct.get>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
 
 4. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`structure type <syntax-structtype>` :math:`\deftype`. (todo: unroll)
 
-5. Let :math:`\X{ft}_i` be the :math:`i`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
+5. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
 
 6. Assert: due to :ref:`validation <valid-struct.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
 
@@ -548,29 +548,29 @@ Reference Instructions
 
 10. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
 
-11. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`i + 1` fields.
+11. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
 
-12. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[i]`.
+12. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]`.
 
-13. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}_i}(\fieldval))`.
+13. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}_y}(\fieldval))`.
 
 14. Push the value :math:`\val` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
+   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[y]}(S.\SSTRUCTS[a].\SIFIELDS[y]))
      \end{array} \\
-   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
+   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \TRAP
    \end{array}
 
 
 .. _exec-struct.set:
 
-:math:`\STRUCTSET~x~i`
+:math:`\STRUCTSET~x~y`
 ......................
 
 .. todo:: unroll type
@@ -579,11 +579,11 @@ Reference Instructions
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
-3. Assert: due to :ref:`validation <valid-struct.set>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
+3. Assert: due to :ref:`validation <valid-struct.set>`, :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
 
 4. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`structure type <syntax-structtype>` :math:`\deftype`. (todo: unroll)
 
-5. Let :math:`\X{ft}_i` be the :math:`i`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
+5. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
 
 6. Assert: due to :ref:`validation <valid-struct.set>`, a :ref:`value <syntax-val>` is on the top of the stack.
 
@@ -601,21 +601,21 @@ Reference Instructions
 
 12. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
 
-13. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`i + 1` fields.
+13. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
 
-14. Let :math:`\fieldval` be the result of computing :math:`\packval_{\X{ft}_i}(\val))`.
+14. Let :math:`\fieldval` be the result of computing :math:`\packval_{\X{ft}_y}(\val))`.
 
-15. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[i]` with :math:`\fieldval`.
+15. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]` with :math:`\fieldval`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~y) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}^n[i]}(\val))
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[y] = \packval_{\X{ft}^n[y]}(\val))
      \end{array} \\
-   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
+   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~y) &\stepto& \TRAP
    \end{array}
 
 

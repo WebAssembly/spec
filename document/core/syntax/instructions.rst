@@ -503,9 +503,9 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \dots \\&&|&
      \STRUCTNEW~\typeidx \\&&|&
      \STRUCTNEWDEFAULT~\typeidx \\&&|&
-     \STRUCTGET~\typeidx~\u32 \\&&|&
-     \STRUCTGET\K{\_}\sx~\typeidx~\u32 \\&&|&
-     \STRUCTSET~\typeidx~\u32 \\&&|&
+     \STRUCTGET~\typeidx~\fieldidx \\&&|&
+     \STRUCTGET\K{\_}\sx~\typeidx~\fieldidx \\&&|&
+     \STRUCTSET~\typeidx~\fieldidx \\&&|&
      \ARRAYNEW~\typeidx \\&&|&
      \ARRAYNEWFIXED~\typeidx~\u32 \\&&|&
      \ARRAYNEWDEFAULT~\typeidx \\&&|&

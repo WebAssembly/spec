@@ -144,10 +144,10 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{D4} &\Rightarrow& \REFASNONNULL \\ &&|&
      \hex{FB}~~0{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEW~x \\ &&|&
      \hex{FB}~~1{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
-     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGET~x~i \\ &&|&
-     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
-     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
-     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~i{:}\Bu32 &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \hex{FB}~~2{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \hex{FB}~~3{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \hex{FB}~~4{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \hex{FB}~~5{:}\Bu32~~x{:}\Btypeidx~~y{:}\Bfieldidx &\Rightarrow& \STRUCTSET~x~y \\ &&|&
      \hex{FB}~~6{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEW~x \\ &&|&
      \hex{FB}~~7{:}\Bu32~~x{:}\Btypeidx &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
      \hex{FB}~~8{:}\Bu32~~x{:}\Btypeidx~~n{:}\Bu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&

@@ -9,7 +9,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index, field index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
@@ -19,6 +19,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    pair: binary format; data index
    pair: binary format; local index
    pair: binary format; label index
+   pair: binary format; field index
 .. _binary-typeidx:
 .. _binary-funcidx:
 .. _binary-tableidx:
@@ -28,6 +29,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-dataidx:
 .. _binary-localidx:
 .. _binary-labelidx:
+.. _binary-fieldidx:
 .. _binary-index:
 
 Indices
@@ -46,6 +48,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
+   \production{field index} & \Bfieldidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \end{array}
 
 
