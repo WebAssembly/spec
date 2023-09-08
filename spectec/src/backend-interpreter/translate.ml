@@ -799,7 +799,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       get_params winstr |> List.map exp2expr
   in
   (* body *)
-  let body = instrs |> check_nop |> Transpile.enhance_readability in
+  let body = instrs |> check_nop |> Transpile.enhance_readability |> Transpile.infer_assert in
 
   (* Algo *)
   RuleA (name, al_params, body)

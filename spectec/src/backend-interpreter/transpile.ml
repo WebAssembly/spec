@@ -543,6 +543,19 @@ let app_remover =
     post_expr = post_expr;
   }
 
+(* Applied for reduction rules: infer assert from if *)
+let rec count_if instrs = match instrs with
+  | [] -> 0
+  | IfI _ :: tl -> 1 + count_if tl
+  | _ :: tl -> count_if tl
+let rec infer_assert instrs =
+  if count_if instrs = 1 then
+    let (hd, tl) = Util.Lib.List.split_last instrs in
+    match tl with
+    | IfI (c, il1, []) -> hd @ AssertI(c) :: (il1 |> infer_assert)
+    | _ -> instrs
+  else instrs
+
 let rec enforce_return_r rinstrs =
   let rev = List.rev in
   match rinstrs with

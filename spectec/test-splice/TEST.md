@@ -626,5 +626,49 @@ warning: definition `with_meminst` was never spliced
 warning: definition `with_table` was never spliced
 warning: definition `with_tableinst` was never spliced
 warning: definition `wrap_` was never spliced
+warning: validation prose `BINOP` was never spliced
+warning: validation prose `BLOCK` was never spliced
+warning: validation prose `BR` was never spliced
+warning: validation prose `BR_IF` was never spliced
+warning: validation prose `BR_TABLE` was never spliced
+warning: validation prose `CALL` was never spliced
+warning: validation prose `CALL_INDIRECT` was never spliced
+warning: validation prose `CONST` was never spliced
+warning: validation prose `CVTOP` was never spliced
+warning: validation prose `DATA.DROP` was never spliced
+warning: validation prose `DROP` was never spliced
+warning: validation prose `ELEM.DROP` was never spliced
+warning: validation prose `EXTEND` was never spliced
+warning: validation prose `GLOBAL.GET` was never spliced
+warning: validation prose `GLOBAL.SET` was never spliced
+warning: validation prose `IF` was never spliced
+warning: validation prose `LOAD` was never spliced
+warning: validation prose `LOCAL.GET` was never spliced
+warning: validation prose `LOCAL.SET` was never spliced
+warning: validation prose `LOCAL.TEE` was never spliced
+warning: validation prose `LOOP` was never spliced
+warning: validation prose `MEMORY.COPY` was never spliced
+warning: validation prose `MEMORY.FILL` was never spliced
+warning: validation prose `MEMORY.GROW` was never spliced
+warning: validation prose `MEMORY.INIT` was never spliced
+warning: validation prose `MEMORY.SIZE` was never spliced
+warning: validation prose `NOP` was never spliced
+warning: validation prose `REF.FUNC` was never spliced
+warning: validation prose `REF.IS_NULL` was never spliced
+warning: validation prose `REF.NULL` was never spliced
+warning: validation prose `RELOP` was never spliced
+warning: validation prose `RETURN` was never spliced
+warning: validation prose `SELECT` was never spliced
+warning: validation prose `STORE` was never spliced
+warning: validation prose `TABLE.COPY` was never spliced
+warning: validation prose `TABLE.FILL` was never spliced
+warning: validation prose `TABLE.GET` was never spliced
+warning: validation prose `TABLE.GROW` was never spliced
+warning: validation prose `TABLE.INIT` was never spliced
+warning: validation prose `TABLE.SET` was never spliced
+warning: validation prose `TABLE.SIZE` was never spliced
+warning: validation prose `TESTOP` was never spliced
+warning: validation prose `UNOP` was never spliced
+warning: validation prose `UNREACHABLE` was never spliced
 == Complete.
 ```

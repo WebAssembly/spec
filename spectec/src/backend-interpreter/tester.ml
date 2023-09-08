@@ -448,4 +448,4 @@ let test_all () =
   let percentage_norm = percentage /. float_of_int (List.length results) in
 
   Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm;
-  Printf.printf "Took %f ms.\n" (time *. 1000.);
+  Printf.eprintf "Took %f ms.\n" (time *. 1000.);

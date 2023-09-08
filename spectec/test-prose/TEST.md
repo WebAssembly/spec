@@ -821,8 +821,8 @@ execution_of_LOCAL.TEE x
 5. Execute (LOCAL.SET x).
 
 execution_of_CALL x
-1. If x < |$funcaddr()|, then:
-  a. Execute (CALL_ADDR $funcaddr()[x]).
+1. Assert: Due to validation, x < |$funcaddr()|.
+2. Execute (CALL_ADDR $funcaddr()[x]).
 
 execution_of_CALL_INDIRECT x ft
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -842,22 +842,22 @@ execution_of_CALL_INDIRECT x ft
 10. Execute (CALL_ADDR a).
 
 execution_of_CALL_ADDR a
-1. If a < |$funcinst()|, then:
-  a. Let { MODULE: m; CODE: func; } be $funcinst()[a].
-  b. If func is of the case FUNC, then:
-    1) Let (FUNC y_0 t* instr*) be func.
-    2) Let [t_1^k]->[t_2^n] be y_0.
-    3) Assert: Due to validation, there are at least k values on the top of the stack.
-    4) Pop val^k from the stack.
-    5) Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-    6) Push the activation of f with arity n to the stack.
-    7) Let L be the label_n{[]}.
-    8) Push L to the stack.
-    9) Jump to instr*.
+1. Assert: Due to validation, a < |$funcinst()|.
+2. Let { MODULE: m; CODE: func; } be $funcinst()[a].
+3. Assert: Due to validation, func is of the case FUNC.
+4. Let (FUNC y_0 t* instr*) be func.
+5. Let [t_1^k]->[t_2^n] be y_0.
+6. Assert: Due to validation, there are at least k values on the top of the stack.
+7. Pop val^k from the stack.
+8. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
+9. Push the activation of f with arity n to the stack.
+10. Let L be the label_n{[]}.
+11. Push L to the stack.
+12. Jump to instr*.
 
 execution_of_REF.FUNC x
-1. If x < |$funcaddr()|, then:
-  a. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
+1. Assert: Due to validation, x < |$funcaddr()|.
+2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
 execution_of_LOCAL.GET x
 1. Push $local(x) to the stack.
