@@ -116,18 +116,8 @@ def $funcaddr(state) : funcaddr*  hint(show %.MODULE.FUNC)
 def $funcaddr((s; f)) = f.MODULE.FUNC
 
 def $funcinst(state) : funcinst*  hint(show %.FUNC)
-def $globalinst(state) : globalinst*  hint(show %.GLOBAL)
-def $tableinst(state) : tableinst*  hint(show %.TABLE)
-def $meminst(state) : meminst*  hint(show %.MEM)
-def $eleminst(state) : eleminst*  hint(show %.ELEM)
-def $datainst(state) : datainst*  hint(show %.DATA)
 
 def $funcinst((s; f)) = s.FUNC
-def $globalinst((s; f)) = s.GLOBAL
-def $tableinst((s; f)) = s.TABLE
-def $meminst((s; f)) = s.MEM
-def $eleminst((s; f)) = s.ELEM
-def $datainst((s; f)) = s.DATA
 
 def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
 def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])

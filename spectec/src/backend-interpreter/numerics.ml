@@ -120,7 +120,7 @@ let wrap_f64_binop op f1 f2 =
 let catch_ixx_exception f = try f() with
   | Ixx.DivideByZero
   | Ixx.Overflow
-  | Ixx.InvalidConversion -> raise Exception.Trap
+  | Ixx.InvalidConversion -> listV []
 let wrap_i32_binop_with_trap op i1 i2 = catch_ixx_exception (fun _ -> wrap_i32_binop op i1 i2)
 let wrap_i64_binop_with_trap op i1 i2 = catch_ixx_exception (fun _ -> wrap_i64_binop op i1 i2)
 let binop : numerics =
@@ -298,50 +298,54 @@ let cvtop : numerics =
     name = "cvtop";
     f =
       (function
-      | [ ConstructV (t_from, []); StringV op; ConstructV (t_to, []); OptV sx_opt; v ] -> (
+      | [ ConstructV (t_from, []); StringV op; ConstructV (t_to, []); OptV sx_opt; v ] ->
         let sx = match sx_opt with
           | None -> ""
           | Some (ConstructV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
-        listV ([ catch_ixx_exception (fun _ -> match t_to, op, t_from, sx with
-        (* Conversion to I32 *)
-        | "I32", "Wrap", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
-        | "I32", "Trunc", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
-        | "I32", "Trunc", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_u v
-        | "I32", "Trunc", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_s v
-        | "I32", "Trunc", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_u v
-        | "I32", "TruncSat", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
-        | "I32", "TruncSat", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
-        | "I32", "TruncSat", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
-        | "I32", "TruncSat", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
-        | "I32", "Reinterpret", "F32", "" -> wrap_i32_cvtop_f32 I32_convert.reinterpret_f32 v
-        (* Conversion to I64 *)
-        | "I64", "Extend", "I32", "S" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_s v
-        | "I64", "Extend", "I32", "U" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_u v
-        | "I64", "Trunc", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_s v
-        | "I64", "Trunc", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_u v
-        | "I64", "Trunc", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_s v
-        | "I64", "Trunc", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_u v
-        | "I64", "TruncSat", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_s v
-        | "I64", "TruncSat", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_u v
-        | "I64", "TruncSat", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_s v
-        | "I64", "TruncSat", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_u v
-        | "I64", "Reinterpret", "F64", "" -> wrap_i64_cvtop_f64 I64_convert.reinterpret_f64 v
-        (* Conversion to F32 *)
-        | "F32", "Demote", "F64", "" -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
-        | "F32", "Convert", "I32", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
-        | "F32", "Convert", "I32", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
-        | "F32", "Convert", "I64", "S" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_s v
-        | "F32", "Convert", "I64", "U" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_u v
-        | "F32", "Reinterpret", "I32", "" -> wrap_f32_cvtop_i32 F32_convert.reinterpret_i32 v
-        (* Conversion to F64 *)
-        | "F64", "Promote", "F32", "" -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
-        | "F64", "Convert", "I32", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
-        | "F64", "Convert", "I32", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
-        | "F64", "Convert", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
-        | "F64", "Convert", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
-        | "F64", "Reinterpret", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
-        | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx) ) ]))
+        (fun _ ->
+          begin match t_to, op, t_from, sx with
+          (* Conversion to I32 *)
+          | "I32", "Wrap", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
+          | "I32", "Trunc", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
+          | "I32", "Trunc", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_u v
+          | "I32", "Trunc", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_s v
+          | "I32", "Trunc", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_u v
+          | "I32", "TruncSat", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
+          | "I32", "TruncSat", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
+          | "I32", "TruncSat", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
+          | "I32", "TruncSat", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
+          | "I32", "Reinterpret", "F32", "" -> wrap_i32_cvtop_f32 I32_convert.reinterpret_f32 v
+          (* Conversion to I64 *)
+          | "I64", "Extend", "I32", "S" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_s v
+          | "I64", "Extend", "I32", "U" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_u v
+          | "I64", "Trunc", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_s v
+          | "I64", "Trunc", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_u v
+          | "I64", "Trunc", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_s v
+          | "I64", "Trunc", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_u v
+          | "I64", "TruncSat", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_s v
+          | "I64", "TruncSat", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_u v
+          | "I64", "TruncSat", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_s v
+          | "I64", "TruncSat", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_u v
+          | "I64", "Reinterpret", "F64", "" -> wrap_i64_cvtop_f64 I64_convert.reinterpret_f64 v
+          (* Conversion to F32 *)
+          | "F32", "Demote", "F64", "" -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
+          | "F32", "Convert", "I32", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
+          | "F32", "Convert", "I32", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
+          | "F32", "Convert", "I64", "S" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_s v
+          | "F32", "Convert", "I64", "U" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_u v
+          | "F32", "Reinterpret", "I32", "" -> wrap_f32_cvtop_i32 F32_convert.reinterpret_i32 v
+          (* Conversion to F64 *)
+          | "F64", "Promote", "F32", "" -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
+          | "F64", "Convert", "I32", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
+          | "F64", "Convert", "I32", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
+          | "F64", "Convert", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
+          | "F64", "Convert", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
+          | "F64", "Reinterpret", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
+          | _ -> failwith ("Invalid cvtop: " ^ t_to ^ op ^ t_from ^ sx)
+          end
+          |> (fun v -> listV [v]))
+        |> catch_ixx_exception
       | _ -> failwith "Invalid cvtop");
   }
 
