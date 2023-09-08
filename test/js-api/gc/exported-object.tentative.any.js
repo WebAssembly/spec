@@ -50,14 +50,10 @@ test(() => {
 test(() => {
   const struct = functions.makeStruct();
   const array = functions.makeArray();
-  struct.foo = 5;
-  assert_equals(struct.foo, undefined);
-  array.foo = 5;
-  assert_equals(array.foo, undefined);
-  struct[0] = 5;
-  assert_equals(struct[0], undefined);
-  array[0] = 5;
-  assert_equals(array[0], undefined);
+  assert_throws_js(TypeError, () => { struct.foo = 5; });
+  assert_throws_js(TypeError, () => { array.foo = 5; });
+  assert_throws_js(TypeError, () => { struct[0] = 5; });
+  assert_throws_js(TypeError, () => { array[0] = 5; });
 }, "property assignment (non-strict mode)");
 
 test(() => {
@@ -87,14 +83,10 @@ test(() => {
 test(() => {
   const struct = functions.makeStruct();
   const array = functions.makeArray();
-  const structNamesLength = Object.getOwnPropertyNames(struct).length;
-  const arrayNamesLength = Object.getOwnPropertyNames(array).length;
-  delete struct.foo;
-  delete struct[0];
-  delete array.foo;
-  delete array[0];
-  assert_equals(Object.getOwnPropertyNames(struct), structNamesLength);
-  assert_equals(Object.getOwnPropertyNames(array), arrayNamesLength);
+  assert_throws_js(TypeError, () => delete struct.foo);
+  assert_throws_js(TypeError, () => delete struct[0]);
+  assert_throws_js(TypeError, () => delete array.foo);
+  assert_throws_js(TypeError, () => delete array[0]);
 }, "delete (non-strict mode)");
 
 test(() => {

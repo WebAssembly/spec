@@ -402,45 +402,37 @@ function GCInstr(opcode) {
 }
 
 // GC opcodes
-// Opcodes with "Canon" are opcode numbers from the specification.
-// The non-"Canon" variants such as kExprStructNew are de-facto
-// opcode numbers that are in use in some web engine implementations.
-let kExprStructNewCanon = 0x01;
-let kExprStructNewCanonDefault = 0x02;
-let kExprStructGet = 0x03;
-let kExprStructGetS = 0x04;
-let kExprStructGetU = 0x05;
-let kExprStructSet = 0x06;
-let kExprStructNew = 0x07;
-let kExprStructNewDefault = 0x08;
-let kExprArrayNewCanon = 0x11;
-let kExprArrayNewCanonDefault = 0x12;
-let kExprArrayGet = 0x13;
-let kExprArrayGetS = 0x14;
-let kExprArrayGetU = 0x15;
-let kExprArraySet = 0x16;
-let kExprArrayLen = 0x17;
-let kExprArrayNewCanonFixed = 0x19;
-let kExprArrayNewFixed = 0x1a;
-let kExprArrayNew = 0x1b;
-let kExprArrayNewDefault = 0x1c;
-let kExprArrayNewCanonData = 0x1b;
-let kExprArrayNewCanonElem = 0x1c;
-let kExprArrayNewData = 0x1d;
-let kExprArrayNewElem = 0x1f;
-let kExprI31New = 0x20;
-let kExprI31GetS = 0x21;
-let kExprI31GetU = 0x22;
-let kExprRefTest = 0x40;
-let kExprRefTestNull = 0x48;
-let kExprRefCast = 0x41;
-let kExprRefCastNull = 0x49;
-let kExprBrOnCast = 0x42;
-let kExprBrOnCastNull = 0x4a;
-let kExprBrOnCastFail = 0x43;
-let kExprBrOnCastFailNull = 0x4b;
-let kExprExternInternalize = 0x70;
-let kExprExternExternalize = 0x71;
+let kExprStructNew = 0x00;
+let kExprStructNewDefault = 0x01;
+let kExprStructGet = 0x02;
+let kExprStructGetS = 0x03;
+let kExprStructGetU = 0x04;
+let kExprStructSet = 0x05;
+let kExprArrayNew = 0x06;
+let kExprArrayNewDefault = 0x07;
+let kExprArrayNewFixed = 0x08;
+let kExprArrayNewData = 0x09;
+let kExprArrayNewElem = 0x0a;
+let kExprArrayGet = 0x0b;
+let kExprArrayGetS = 0x0c;
+let kExprArrayGetU = 0x0d;
+let kExprArraySet = 0x0e;
+let kExprArrayLen = 0x0f;
+let kExprArrayFill = 0x10;
+let kExprArrayCopy = 0x11;
+let kExprArrayInitData = 0x12;
+let kExprArrayInitElem = 0x13;
+let kExprRefTest = 0x14;
+let kExprRefTestNull = 0x15;
+let kExprRefCast = 0x16;
+let kExprRefCastNull = 0x17;
+let kExprBrOnCast = 0x18;
+let kExprBrOnCastFail = 0x19;
+let kExprExternInternalize = 0x1a;
+let kExprExternExternalize = 0x1b;
+let kExprI31New = 0x1c;
+let kExprI31GetS = 0x1d;
+let kExprI31GetU = 0x1e;
 
 // Numeric opcodes.
 let kExprMemoryInit = 0x08;
