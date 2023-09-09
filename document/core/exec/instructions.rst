@@ -1259,10 +1259,7 @@ Reference Instructions
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\otherwise, \iff & d \leq s \\
-                  \land & F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st})
-     \end{array}
+     (\otherwise, \iff d \leq s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
@@ -1274,10 +1271,7 @@ Reference Instructions
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\otherwise, \iff & d > s \\
-                  \land & F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st})
-     \end{array}
+     (\otherwise, \iff d > s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
    \\[1ex]
