@@ -658,7 +658,7 @@
 
 .. Instructions, meta functions
 
-.. |getfield| mathdef:: \xref{syntax/instructions}{aux-getfield}{\F{getfield}}
+.. |getfield| mathdef:: \xref{exec/instructions}{aux-getfield}{\F{getfield}}
 
 
 

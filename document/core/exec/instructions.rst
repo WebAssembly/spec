@@ -1284,6 +1284,16 @@ Reference Instructions
    S; \val~(\I32.\CONST~d)~(\REFNULL~t)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
    \end{array}
 
+Where:
+
+.. _aux-getfield:
+
+.. math::
+   \begin{array}{lll}
+   \getfield(\valtype) &=& \ARRAYGET \\
+   \getfield(\packedtype) &=& \ARRAYGETU \\
+   \end{array}
+
 
 .. _exec-array.init_data:
 
