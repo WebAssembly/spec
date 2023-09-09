@@ -719,17 +719,16 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * all other fields are empty.
 
-* Under the context :math:`C'`:
+* Under the context :math:`C'`,
+  the sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+
+* Under the context :math:`C`:
 
   * For each :math:`\table_i` in :math:`\module.\MTABLES`,
     the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
 
   * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
     the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
-
-  * The sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
-
-* Under the context :math:`C`:
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
@@ -749,10 +748,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
-* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
-
-* All export names :math:`\export_i.\ENAME` must be different.
-
 * Let :math:`\X{ft}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{ft}_i`, in index order.
 
 * Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
@@ -765,6 +760,10 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
 
+* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
+
+* All export names :math:`\export_i.\ENAME` must be different.
+
 * Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 
 .. math::
@@ -772,14 +771,14 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \begin{array}{@{}c@{}}
      C_0 \vdashtypes \type^\ast \ok
      \quad
-     (C' \vdashtable \table : \X{tt})^\ast
-     \quad
-     (C' \vdashmem \mem : \X{mt})^\ast
-     \quad
      C' \vdashglobalseq \global^\ast : \X{gt}^\ast
-     \\
-     (C \vdashfunc \func : \X{ft})^\ast
      \quad
+     (C \vdashtable \table : \X{tt})^\ast
+     \quad
+     (C \vdashmem \mem : \X{mt})^\ast
+     \quad
+     (C \vdashfunc \func : \X{ft})^\ast
+     \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
      (C \vdashdata \data \ok)^n
@@ -802,7 +801,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -835,7 +834,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
    Globals, however, are not recursive but eveluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or priviously defined globals.
-   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
