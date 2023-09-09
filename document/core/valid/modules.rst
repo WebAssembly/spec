@@ -279,7 +279,7 @@ Sequences of globals are handled incrementally, such that each definition has ac
    \frac{
      C \vdashglobal \global_1 : \X{gt}_1
      \qquad
-     C, \CGLOBALS~\X{gt}_1 \vdashglobalseq \global^\ast : \X{gt}^\ast
+     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobalseq \global^\ast : \X{gt}^\ast
    }{
      C \vdashglobalseq \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
    }
@@ -833,7 +833,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive but eveluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or priviously defined globals.
+   Globals, however, are not recursive but evaluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or previously defined globals.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
