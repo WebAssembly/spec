@@ -1130,11 +1130,11 @@ Reference Instructions
 
 5. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-6. Pop the value :math:`n` from the stack.
+6. Pop the value :math:`\I32.\CONST~n` from the stack.
 
 7. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-8. Pop the value :math:`s` from the stack.
+8. Pop the value :math:`\I32.\CONST~s` from the stack.
 
 9. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
 
@@ -1142,7 +1142,7 @@ Reference Instructions
 
 11. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-12. Pop the value :math:`d` from the stack.
+12. Pop the value :math:`\I32.\CONST~d` from the stack.
 
 13. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
 
