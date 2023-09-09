@@ -541,7 +541,6 @@ The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31
 
 The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 
-
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction
 .. _syntax-instr-parametric:
