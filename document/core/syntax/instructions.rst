@@ -482,7 +482,7 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 .. _syntax-array.copy:
 .. _syntax-array.init_data:
 .. _syntax-array.init_elem:
-.. _syntax-i31.new:
+.. _syntax-ref.i31:
 .. _syntax-i31.get_s:
 .. _syntax-i31.get_u:
 .. _syntax-extern.internalize:
@@ -519,7 +519,7 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \ARRAYCOPY~\typeidx~\typeidx \\&&|&
      \ARRAYINITDATA~\typeidx~\dataidx \\&&|&
      \ARRAYINITELEM~\typeidx~\elemidx \\&&|&
-     \I31NEW \\&&|&
+     \REFI31 \\&&|&
      \I31GET\K{\_}\sx \\&&|&
      \EXTERNINTERNALIZE \\&&|&
      \EXTERNEXTERNALIZE \\
@@ -537,7 +537,7 @@ again allowing for different sign extension modes in the case of a :ref:`packed 
 |ARRAYLEN| produces the length of an array.
 |ARRAYFILL| fills a specified slice of an array with a given value and |ARRAYCOPY|, |ARRAYINITDATA|, and |ARRAYINITELEM| copy elements to a specified slice of an array from a given array, data segment, or element segment, respectively.
 
-The instructions |I31NEW| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
+The instructions |REFI31| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 
 The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 

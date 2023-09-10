@@ -350,7 +350,7 @@ However, compilation with a uniform representation can still be achieved in this
 (func $new_C (result (ref $C)) ...)
 (func $f
   ...
-  (call $make_pair (i31.new 1) (i31.new 0))
+  (call $make_pair (ref.i31 1) (ref.i31 0))
   ...
   (call $make_pair (call $new_C) (call $new_C))
   ...
@@ -607,7 +607,7 @@ To implement any such language efficiently, Wasm needs to provide such a mechani
 
 There are only three instructions for converting from and to this reference type:
 ```
-i31.new : [i32] -> [i31ref]
+ref.i31 : [i32] -> [i31ref]
 i31.get_u : [i31ref] -> [i32]
 i31.get_s : [i31ref] -> [i32]
 ```

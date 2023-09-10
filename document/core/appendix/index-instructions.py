@@ -348,7 +348,7 @@ INSTRUCTIONS = [
     Instruction(r'\BRONCASTFAIL~t_1~t_2', r'\hex{FB}~\hex{19}', r'[t_1] \to [t_2]', r'valid-br_on_cast_fail', r'exec-br_on_cast_fail'),
     Instruction(r'\EXTERNINTERNALIZE', r'\hex{FB}~\hex{1A}', r'[\EXTERNREF] \to [\ANYREF]', r'valid-extern.internalize', r'exec-extern.internalize'),
     Instruction(r'\EXTERNEXTERNALIZE', r'\hex{FB}~\hex{1B}', r'[\ANYREF] \to [\EXTERNREF]', r'valid-extern.externalize', r'exec-extern.externalize'),
-    Instruction(r'\I31NEW', r'\hex{FB}~\hex{1C}', r'[\I32] \to [\I31REF]', r'valid-i31.new', r'exec-i31.new'),
+    Instruction(r'\REFI31', r'\hex{FB}~\hex{1C}', r'[\I32] \to [\I31REF]', r'valid-ref.i31', r'exec-ref.i31'),
     Instruction(r'\I31GETS', r'\hex{FB}~\hex{1D}', r'[\I31REF] \to [\I32]', r'valid-i31.get_sx', r'exec-i31.get_sx'),
     Instruction(r'\I31GETU', r'\hex{FB}~\hex{1E}', r'[\I31REF] \to [\I32]', r'valid-i31.get_sx', r'exec-i31.get_sx'),
     Instruction(None, r'\hex{FB}~\hex{1E} \dots'),

@@ -609,7 +609,7 @@ let rec step (c : config) : config =
       | RefEq, Ref r1 :: Ref r2 :: vs' ->
         value_of_bool (eq_ref r1 r2) :: vs', []
 
-      | I31New, Num (I32 i) :: vs' ->
+      | RefI31, Num (I32 i) :: vs' ->
         Ref (I31.I31Ref (I31.of_i32 i)) :: vs', []
 
       | I31Get ext, Ref (NullRef _) :: vs' ->

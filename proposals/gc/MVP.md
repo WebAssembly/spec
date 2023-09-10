@@ -630,8 +630,8 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### Unboxed Scalars
 
-* `i31.new` creates an `i31ref` from a 32 bit value, truncating high bit
-  - `i31.new : [i32] -> [(ref i31)]`
+* `ref.i31` creates an `i31ref` from a 32 bit value, truncating high bit
+  - `ref.i31 : [i32] -> [(ref i31)]`
   - this is a *constant instruction*
 
 * `i31.get_<sx>` extracts the value, zero- or sign-extending
@@ -703,7 +703,7 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
-* `i31.new` is a constant instruction
+* `ref.i31` is a constant instruction
 * `struct.new` and `struct.new_default` are constant instructions
 * `array.new`, `array.new_default`, and `array.new_fixed` are constant instructions
   - Note: `array.new_data` and `array.new_elem` are not for the time being, see above
@@ -834,7 +834,7 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb19 | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 | 0xfb1a | `extern.internalize` |
 | 0xfb1b | `extern.externalize` |
-| 0xfb1c | `i31.new` |
+| 0xfb1c | `ref.i31` |
 | 0xfb1d | `i31.get_s` |
 | 0xfb1e | `i31.get_u` |
 

@@ -625,7 +625,7 @@ let rec instr s =
     | 0x1al -> extern_internalize
     | 0x1bl -> extern_externalize
 
-    | 0x1cl -> i31_new
+    | 0x1cl -> ref_i31
     | 0x1dl -> i31_get_s
     | 0x1el -> i31_get_u
 

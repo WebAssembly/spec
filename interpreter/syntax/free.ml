@@ -139,7 +139,7 @@ let rec instr (e : instr) =
   | RefEq -> empty
   | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
-  | I31New | I31Get _ -> empty
+  | RefI31 | I31Get _ -> empty
   | StructNew (x, _) | ArrayNew (x, _) | ArrayNewFixed (x, _) -> types (idx x)
   | ArrayNewElem (x, y) -> types (idx x) ++ elems (idx y)
   | ArrayNewData (x, y) -> types (idx x) ++ datas (idx y)
