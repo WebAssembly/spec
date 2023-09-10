@@ -1,4 +1,6 @@
-;; Instructions
+;;
+;; Configurations
+;;
 
 relation Step: config ~> config                 hint(show "E")
 relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
@@ -12,6 +14,12 @@ rule Step/read:
   z; instr*  ~>  z; instr'*
   -- Step_read: z; instr* ~> instr'*
 
+
+;;
+;; Instructions
+;;
+
+;; Polymorphic instructions
 
 rule Step_pure/unreachable:
   UNREACHABLE  ~>  TRAP
@@ -31,6 +39,8 @@ rule Step_pure/select-false:
   val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_2
   -- if c = 0
 
+
+;; Block instructions
 
 rule Step_pure/block:
   val^k (BLOCK bt instr*)  ~>  (LABEL_ n `{epsilon} val^k instr*)
@@ -52,6 +62,8 @@ rule Step_pure/if-false:
 rule Step_pure/label-vals:
   (LABEL_ n `{instr*} val*)  ~>  val*
 
+
+;; Branch instructions
 
 ;; TODO: may want a label context instead of bubbling up
 rule Step_pure/br-zero:
@@ -78,6 +90,8 @@ rule Step_pure/br_table-ge:
   (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l')
   -- if i >= |l*|
 
+
+;; Function instructions
 
 rule Step_read/call:
   z; (CALL x)  ~>  (CALL_ADDR $funcaddr(z)[x])  ;; TODO
@@ -108,6 +122,8 @@ rule Step_pure/return-frame:
 rule Step_pure/return-label:
   (LABEL_ k `{instr'*} val* RETURN instr*)  ~>  val* RETURN
 
+
+;; Numeric instructions
 
 rule Step_pure/unop-val:
   (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
@@ -149,6 +165,8 @@ rule Step_pure/cvtop-trap:
   -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = epsilon  ;; TODO
 
 
+;; Reference instructions
+
 rule Step_read/ref.func:
   z; (REF.FUNC x) ~> (REF.FUNC_ADDR $funcaddr(z)[x])
 
@@ -162,6 +180,8 @@ rule Step_pure/ref.is_null-false:
   -- otherwise
 
 
+;; Local instructions
+
 rule Step_read/local.get:
   z; (LOCAL.GET x)  ~>  $local(z, x)
 
@@ -172,12 +192,16 @@ rule Step_pure/local.tee:
   val (LOCAL.TEE x)  ~>  val val (LOCAL.SET x)
 
 
+;; Global instructions
+
 rule Step_read/global.get:
   z; (GLOBAL.GET x)  ~>  $global(z, x).VALUE
 
 rule Step/global.set:
   z; val (GLOBAL.SET x)  ~>  $with_global(z, x, val); epsilon
 
+
+;; Table instructions
 
 rule Step_read/table.get-trap:
   z; (CONST I32 i) (TABLE.GET x)  ~>  TRAP
@@ -267,6 +291,8 @@ rule Step_read/table.init-succ:
 rule Step/elem.drop:
   z; (ELEM.DROP x)  ~>  $with_elem(z, x, epsilon); epsilon
 
+
+;; Memory instructions
 
 rule Step_read/load-num-trap:
   z; (CONST I32 i) (LOAD nt n_A n_O)  ~>  TRAP

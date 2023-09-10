@@ -278,9 +278,9 @@ warning: definition `globalinst` was never spliced
 warning: definition `globals` was never spliced
 warning: definition `grow_memory` was never spliced
 warning: definition `grow_table` was never spliced
-warning: definition `instantiation` was never spliced
+warning: definition `instantiate` was never spliced
 warning: definition `instexport` was never spliced
-warning: definition `invocation` was never spliced
+warning: definition `invoke` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
 warning: definition `meminst` was never spliced

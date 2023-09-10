@@ -1,4 +1,6 @@
+;;
 ;; Addresses
+;;
 
 syntax addr hint(desc "address") = nat
 syntax funcaddr hint(desc "function address") = addr
@@ -19,7 +21,11 @@ var ea : elemaddr
 var da : dataaddr
 
 
+;;
 ;; Values
+;;
+
+;; Basic values
 
 syntax num hint(desc "number") =
   | CONST numtype c_numtype
@@ -35,11 +41,16 @@ var r : ref
 var v : val
 var res : result
 
+
+;; External values
+
 syntax externval hint(desc "external value") =
   | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
 
 var xv : externval
 
+
+;; Auxiliary definition: default values
 
 def $default_(valtype) : val  hint(partial)
 def $default_(I32) = (CONST I32 0)
@@ -50,7 +61,11 @@ def $default_(FUNCREF) = (REF.NULL FUNCREF)
 def $default_(EXTERNREF) = (REF.NULL EXTERNREF) ;; TODO: All reference types should be caught by one pattern.
 
 
+;;
 ;; Configurations
+;;
+
+;; Instances
 
 syntax funcinst hint(desc "function instance") =
   { MODULE moduleinst,
@@ -73,14 +88,6 @@ syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
 
-syntax store hint(desc "store") =
-  { FUNC funcinst*,
-    GLOBAL globalinst*,
-    TABLE tableinst*,
-    MEM meminst*,
-    ELEM eleminst*,
-    DATA datainst* }
-
 syntax moduleinst hint(desc "module instance") =
   { FUNC funcaddr*,
     GLOBAL globaladdr*,
@@ -89,16 +96,6 @@ syntax moduleinst hint(desc "module instance") =
     ELEM elemaddr*,
     DATA dataaddr*,
     EXPORT exportinst* }
-
-syntax frame hint(desc "frame") =
-  { LOCAL val*,
-    MODULE moduleinst }
-syntax state hint(desc "state") = store; frame
-syntax config hint(desc "configuration") = state; admininstr*
-
-var s : store
-var f : frame
-var z : state
 
 var m : moduleinst
 var fi : funcinst
@@ -110,7 +107,29 @@ var di : datainst
 var xi : exportinst
 
 
-;; Auxiliary notation
+;; Configurations proper
+
+syntax store hint(desc "store") =
+  { FUNC funcinst*,
+    GLOBAL globalinst*,
+    TABLE tableinst*,
+    MEM meminst*,
+    ELEM eleminst*,
+    DATA datainst* }
+
+syntax frame hint(desc "frame") =
+  { LOCAL val*,
+    MODULE moduleinst }
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; admininstr*
+
+var s : store
+var f : frame
+var z : state
+
+
+;; Auxiliary notation: short-hands
 
 def $funcaddr(state) : funcaddr*  hint(show %.MODULE.FUNC)
 def $funcaddr((s; f)) = f.MODULE.FUNC
@@ -164,6 +183,9 @@ def $with_meminst((s; f), x, mi) = s[.MEM[f.MODULE.MEM[x]] = mi]; f
 def $with_elem((s; f), x, r*) = s[.ELEM[f.MODULE.ELEM[x]].ELEM = r*]; f
 def $with_data((s; f), x, b*) = s[.DATA[f.MODULE.DATA[x]].DATA = b*]; f
 
+
+;; Auxiliary definitions: Growing store objects
+
 def $grow_table(tableinst, nat, ref) : tableinst hint(partial)
 def $grow_memory(meminst, nat) : meminst hint(partial)
 
@@ -172,13 +194,17 @@ def $grow_table(ti, n, r) = ti'
   -- if i' = $(|r'*| + n)
   -- if ti' = { TYPE `[i' .. j] rt, ELEM r'* r^n }
   -- Tabletype_ok: |- ti'.TYPE : OK
+
 def $grow_memory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j] I8), DATA b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
   -- if mi' = { TYPE (`[i' .. j] I8), DATA b* 0^(n * 64 * $Ki) }
   -- Memtype_ok: |- mi'.TYPE : OK
 
+
+;;
 ;; Administrative Instructions
+;;
 
 syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr

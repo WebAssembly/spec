@@ -1,3 +1,7 @@
+;;
+;; General definitions
+;;
+
 ;; General constants
 
 def $Ki : nat
@@ -12,7 +16,11 @@ def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
 
+;;
 ;; Auxiliary Definitions on Types
+;;
+
+;; Size
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
@@ -24,7 +32,10 @@ def $size(F64) = 64
 def $size(V128) = 128
 
 
+;;
 ;; Some notation tests
+;; TODO: remove
+;;
 
 def $test_sub_ATOM_22(n_3_ATOM_y) : nat
 def $test_sub_ATOM_22(n_3_ATOM_y) = 0

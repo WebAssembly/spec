@@ -1,4 +1,6 @@
+;;
 ;; Contexts
+;;
 
 syntax context hint(desc "context") =
   { FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*,
@@ -9,7 +11,9 @@ var C : context
 
 
 
+;;
 ;; Types
+;;
 
 relation Limits_ok: |- limits : nat         hint(show "K-limits")
 relation Functype_ok: |- functype : OK      hint(show "K-func")
@@ -56,7 +60,11 @@ rule Externtype_ok/mem:
 
 
 
+;;
 ;; Subtyping
+;;
+
+;; Value types
 
 relation Valtype_sub: |- valtype <: valtype       hint(show "S")
 relation Resulttype_sub: |- valtype* <: valtype*  hint(show "S-result")
@@ -71,6 +79,8 @@ rule Resulttype_sub:
   |- t_1* <: t_2*
   -- (Valtype_sub: |- t_1 <: t_2)*
 
+
+;; External types
 
 relation Limits_sub: |- limits <: limits             hint(show "S-limits")
 relation Functype_sub: |- functype <: functype       hint(show "S-func")
@@ -118,17 +128,23 @@ rule Externtype_sub/mem:
 
 
 
+;;
 ;; Instructions
+;;
 
 relation Instr_ok: context |- instr : functype     hint(show "T")
 relation InstrSeq_ok: context |- instr* : functype hint(show "T*")
 relation Expr_ok: context |- expr : resulttype     hint(show "T-expr")
 
 
+;; Expressions
+
 rule Expr_ok:
   C |- instr* : t*
   -- InstrSeq_ok: C |- instr* : epsilon -> t*
 
+
+;; Instruction sequences
 
 rule InstrSeq_ok/empty:
   C |- epsilon : epsilon -> epsilon
@@ -150,6 +166,8 @@ rule InstrSeq_ok/frame:
   -- InstrSeq_ok: C |- instr* : t_1* -> t_2*
 
 
+;; Polymorphic instructions
+
 rule Instr_ok/unreachable:
   C |- UNREACHABLE : t_1* -> t_2*
 
@@ -168,6 +186,8 @@ rule Instr_ok/select-impl:
   -- Valtype_sub: |- t <: t'
   -- if t' = numtype \/ t' = vectype
 
+
+;; Block instructions
 
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 
@@ -192,6 +212,8 @@ rule Instr_ok/if:
   -- InstrSeq_ok: C, LABEL (t_2*) |- instr_2* : t_1* -> t_2*
 
 
+;; Branch instructions
+
 rule Instr_ok/br:
   C |- BR l : t_1* t* -> t_2*
   -- if C.LABEL[l] = t*
@@ -204,6 +226,9 @@ rule Instr_ok/br_table:
   C |- BR_TABLE l* l' : t_1* t* -> t_2*
   -- (Resulttype_sub: |- t* <: C.LABEL[l])*
   -- Resulttype_sub: |- t* <: C.LABEL[l']
+
+
+;; Function instructions
 
 rule Instr_ok/return:
   C |- RETURN : t_1* t* -> t_2*
@@ -218,6 +243,8 @@ rule Instr_ok/call_indirect:
   -- if C.TABLE[x] = lim FUNCREF
   -- if ft = t_1* -> t_2*
 
+
+;; Numeric instructions
 
 rule Instr_ok/const:
   C |- CONST nt c_nt : epsilon -> nt
@@ -254,6 +281,8 @@ rule Instr_ok/convert-f:
   -- if fn_1 =/= fn_2
 
 
+;; Reference instructions
+
 rule Instr_ok/ref.null:
   C |- REF.NULL rt : epsilon -> rt
 
@@ -264,6 +293,8 @@ rule Instr_ok/ref.func:
 rule Instr_ok/ref.is_null:
   C |- REF.IS_NULL : rt -> I32
 
+
+;; Local instructions
 
 rule Instr_ok/local.get:
   C |- LOCAL.GET x : epsilon -> t
@@ -278,6 +309,8 @@ rule Instr_ok/local.tee:
   -- if C.LOCAL[x] = t
 
 
+;; Global instructions
+
 rule Instr_ok/global.get:
   C |- GLOBAL.GET x : epsilon -> t
   -- if C.GLOBAL[x] = MUT? t
@@ -286,6 +319,8 @@ rule Instr_ok/global.set:
   C |- GLOBAL.SET x : t -> epsilon
   -- if C.GLOBAL[x] = MUT t
 
+
+;; Table instructions
 
 rule Instr_ok/table.get:
   C |- TABLE.GET x : I32 -> rt
@@ -321,6 +356,8 @@ rule Instr_ok/elem.drop:
   C |- ELEM.DROP x : epsilon -> epsilon
   -- if C.ELEM[x] = rt
 
+
+;; Memory instructions
 
 rule Instr_ok/memory.size:
   C |- MEMORY.SIZE : epsilon -> I32
@@ -362,7 +399,9 @@ rule Instr_ok/store:
   -- if n? = epsilon \/ nt = in
 
 
+;;
 ;; Constant Expressions
+;;
 
 relation Instr_const: context |- instr CONST             hint(show "C-instr")
 relation Expr_const: context |- expr CONST               hint(show "C-expr")
@@ -392,7 +431,9 @@ rule Expr_ok_const:
   -- Expr_const: C |- expr CONST
 
 
+;;
 ;; Modules
+;;
 
 relation Func_ok: context |- func : functype         hint(show "T-func")
 relation Global_ok: context |- global : globaltype   hint(show "T-global")
@@ -404,6 +445,8 @@ relation Elemmode_ok: context |- elemmode : reftype  hint(show "T-elemmode")
 relation Datamode_ok: context |- datamode : OK       hint(show "T-datamode")
 relation Start_ok: context |- start : OK             hint(show "T-start")
 
+
+;; Module definitions
 
 rule Func_ok:
   C |- FUNC ft t* expr : ft
@@ -452,6 +495,8 @@ rule Start_ok:
   -- if C.FUNC[x] = epsilon -> epsilon
 
 
+;; Module im/exports
+
 relation Import_ok: context |- import : externtype        hint(show "T-import")
 relation Export_ok: context |- export : externtype        hint(show "T-export")
 relation Externuse_ok: context |- externuse : externtype  hint(show "T-externuse")
@@ -480,6 +525,8 @@ rule Externuse_ok/mem:
   C |- MEM x : MEM mt
   -- if C.MEM[x] = mt
 
+
+;; Modules proper
 
 relation Module_ok: |- module : OK      hint(show "T-module")
 

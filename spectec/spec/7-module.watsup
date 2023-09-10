@@ -1,5 +1,6 @@
-;; Allocation
-
+;;
+;; Projections
+;;
 
 def $funcs(externval*) : funcaddr*
 def $funcs(epsilon) = epsilon
@@ -26,12 +27,11 @@ def $mems(externval externval'*) = $mems(externval'*)
   -- otherwise
 
 
-def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
-def $instexport(fa*, ga*, ta*, ma*, EXPORT name (FUNC x)) = { NAME name, VALUE (FUNC fa*[x]) }
-def $instexport(fa*, ga*, ta*, ma*, EXPORT name (GLOBAL x)) = { NAME name, VALUE (GLOBAL ga*[x]) }
-def $instexport(fa*, ga*, ta*, ma*, EXPORT name (TABLE x)) = { NAME name, VALUE (TABLE ta*[x]) }
-def $instexport(fa*, ga*, ta*, ma*, EXPORT name (MEM x)) = { NAME name, VALUE (MEM ma*[x]) }
+;;
+;; Allocation
+;;
 
+;; Definitions
 
 def $allocfunc(store, moduleinst, func) : (store, funcaddr)
 def $allocfunc(s, m, func) = (s[.FUNC =.. fi], |s.FUNC|)
@@ -94,6 +94,15 @@ def $allocdatas(s, byte* byte'**) = (s_2, da da'*)
   -- if (s_2, da'*) = $allocdatas(s_1, byte'**)
 
 
+;; Modules
+
+def $instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
+def $instexport(fa*, ga*, ta*, ma*, EXPORT name (FUNC x)) = { NAME name, VALUE (FUNC fa*[x]) }
+def $instexport(fa*, ga*, ta*, ma*, EXPORT name (GLOBAL x)) = { NAME name, VALUE (GLOBAL ga*[x]) }
+def $instexport(fa*, ga*, ta*, ma*, EXPORT name (TABLE x)) = { NAME name, VALUE (TABLE ta*[x]) }
+def $instexport(fa*, ga*, ta*, ma*, EXPORT name (MEM x)) = { NAME name, VALUE (MEM ma*[x]) }
+
+
 def $allocmodule(store, module, externval*, val*, (ref*)*) : (store, moduleinst)
 def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if module =
@@ -135,6 +144,14 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, m)
   -- if (s_6, da*) = $allocdatas(s_5, (byte*)^n_data)
 
 
+;;
+;; Instantiation
+;;
+
+def $concat_instr(instr**) : instr*
+def $concat_instr(epsilon) = epsilon
+def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
+
 def $runelem(elem, idx) : instr*
 def $runelem(ELEM reftype expr*, i) = epsilon
 def $runelem(ELEM reftype expr* (DECLARE), i) = (ELEM.DROP i)
@@ -148,14 +165,8 @@ def $rundata(DATA byte* (MEMORY 0 instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT i) (DATA.DROP i)
   -- if n = |byte*|
 
-
-def $concat_instr(instr**) : instr*
-def $concat_instr(epsilon) = epsilon
-def $concat_instr(instr* instr'**) = instr* $concat_instr(instr'**)
-
-
-def $instantiation(store, module, externval*) : config
-def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL x)?
+def $instantiate(store, module, externval*) : config
+def $instantiate(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL x)?
   -- if module = MODULE import* func* global* table* mem* elem* data* start? export*
   -- if m_init = {
       FUNC $funcs(externval*),
@@ -180,8 +191,12 @@ def $instantiation(s, module, externval*) = s'; f; instr_elem* instr_data* (CALL
   -- if start? = (START x)?
 
 
-def $invocation(store, funcaddr, val*) : config
-def $invocation(s, fa, val^n) = s; f; val^n (CALL_ADDR fa)
+;;
+;; Invocation
+;;
+
+def $invoke(store, funcaddr, val*) : config
+def $invoke(s, fa, val^n) = s; f; val^n (CALL_ADDR fa)
   -- if m = {
       FUNC epsilon,
       GLOBAL epsilon,
