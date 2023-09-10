@@ -523,7 +523,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
      \vdashreftype t \ok
      \qquad
-     (S \vdash \reff : t')^\ast
+     (S \vdashval \reff : t')^\ast
      \qquad
      (\vdashreftypematch t' \matchesvaltype t)^\ast
    }{
