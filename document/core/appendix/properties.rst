@@ -295,6 +295,10 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`array instance <syntax-arrayinst>` :math:`\arrayinst_i` in :math:`S.\SARRAYS` must be :ref:`valid <valid-arrayinst>`.
 
+* No :ref:`reference <syntax-ref>` to a bound :ref:`structure address <syntax-structaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+
+* No :ref:`reference <syntax-ref>` to a bound :ref:`array address <syntax-arrayaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+
 * Then the store is valid.
 
 .. math::
@@ -328,10 +332,35 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \SSTRUCTS~\structinst^\ast,
        \SARRAYS~\arrayinst^\ast \}
        \end{array}
+     \\
+     (S.\SSTRUCTS[a_{\F{s}}] = \structinst)^\ast
+     \qquad
+     ((\REFSTRUCTADDR~a_{\F{s}}) \not\gg^+_S (\REFSTRUCTADDR~a_{\F{s}}))^\ast
+     \\
+     (S.\SARRAYS[a_{\F{a}}] = \arrayinst)^\ast
+     \qquad
+     ((\REFARRAYADDR~a_{\F{a}}) \not\gg^+_S (\REFARRAYADDR~a_{\F{a}}))^\ast
      \end{array}
    }{
      \vdashstore S \ok
    }
+
+.. index:: reachability
+
+where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the following *reachability* relation on :ref:`values <syntax-val>`:
+
+.. math::
+   \begin{array}{@{}lcll@{}}
+   (\REFSTRUCTADDR~a) &\gg_S& S.\SSTRUCTS[a].\SIFIELDS[i]
+     & \iff \expanddt(S.\SSTRUCTS[a].\SITYPE) = \TSTRUCT~\X{ft}_1^i~(\MCONST~\X{st})~\X{ft}_2^\ast \\
+   (\REFARRAYADDR~a) &\gg_S& S.\SARRAYS[a].\AIFIELDS[i]
+     & \iff \expanddt(S.\SARRAYS[a].\AITYPE) = \TARRAY~(\MCONST~\X{st}) \\
+   (\REFEXTERN~\reff) &\gg_S& \reff \\
+   \end{array}
+
+.. note::
+   The constraint on reachability through immutable fields prevents the presence of cyclic data structures that can not be constructed in the language.
+   Cycles can only be formed using mutation.
 
 
 .. index:: function type, function instance
