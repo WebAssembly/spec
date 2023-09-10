@@ -221,11 +221,14 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
    pair: validation; global
    single: abstract syntax; global
 .. _valid-global:
+.. _valid-globalseq:
 
 Globals
 ~~~~~~~
 
 Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>` of the form :math:`\mut~t`.
+
+Sequences of globals are handled incrementally, such that each definition has access to previous definitions.
 
 
 :math:`\{ \GTYPE~\mut~t, \GINIT~\expr \}`
@@ -249,6 +252,38 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
    }{
      C \vdashglobal \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
    }
+
+
+:math:`\global^\ast`
+....................
+
+* If the sequence is empty, then it is valid with the empty sequence of :ref:`global types <syntax-globaltype>`.
+
+* Else:
+
+  * The first global definition must be :ref:`valid <valid-global>` with some type :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1`.
+
+  * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1` apppended to the |CGLOBALS| vector.
+
+  * Under context :math:`C'`, the remainder of the sequence must be valid with some sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+
+  * Then the sequence is valid with the sequence of :ref:`global types <syntax-globaltype>` consisting of :math:`\X{gt}_1` prepended to :math:`\X{gt}^\ast`.
+
+.. math::
+   ~\\
+   \frac{
+   }{
+     C \vdashglobalseq \epsilon : \epsilon
+   }
+   \qquad
+   \frac{
+     C \vdashglobal \global_1 : \X{gt}_1
+     \qquad
+     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobalseq \global^\ast : \X{gt}^\ast
+   }{
+     C \vdashglobalseq \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
+   }
+
 
 
 .. index:: element, table, table index, expression, constant, function index
@@ -684,10 +719,25 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * all other fields are empty.
 
+* Under the context :math:`C'`,
+  the sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+
 * Under the context :math:`C`:
+
+  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
+
+  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
+
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
+
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -698,40 +748,21 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
-* Under the context :math:`C'`:
-
-  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
-
-  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
-
-  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`,
-    the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
-
-  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
-
-  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
-
-* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
-
-* All export names :math:`\export_i.\ENAME` must be different.
-
 * Let :math:`\X{ft}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{ft}_i`, in index order.
 
 * Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
 
 * Let :math:`\X{mt}^\ast` be the concatenation of the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}_i`, in index order.
 
-* Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
-
 * Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
 
 * Let :math:`\X{it}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{it}_i` of the imports, in index order.
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
+
+* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
+
+* All export names :math:`\export_i.\ENAME` must be different.
 
 * Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 
@@ -740,17 +771,17 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \begin{array}{@{}c@{}}
      C_0 \vdashtypes \type^\ast \ok
      \quad
+     C' \vdashglobalseq \global^\ast : \X{gt}^\ast
+     \quad
+     (C \vdashtable \table : \X{tt})^\ast
+     \quad
+     (C \vdashmem \mem : \X{mt})^\ast
+     \quad
      (C \vdashfunc \func : \X{ft})^\ast
-     \quad
-     (C' \vdashtable \table : \X{tt})^\ast
-     \quad
-     (C' \vdashmem \mem : \X{mt})^\ast
-     \quad
-     (C' \vdashglobal \global : \X{gt})^\ast
      \\
-     (C' \vdashelem \elem : \X{rt})^\ast
+     (C \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C' \vdashdata \data \ok)^n
+     (C \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -770,7 +801,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -802,8 +833,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
-   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive but evaluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or previously defined globals.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.
