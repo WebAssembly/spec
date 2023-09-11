@@ -2289,9 +2289,9 @@ Control Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~\reftype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`\reftype` must be |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type :math:`\REF~\NULL~\FUNC`.
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
@@ -2303,7 +2303,9 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
+     C.\CTABLES[x] = \limits~t
+     \qquad
+     C \vdashvaltypematch t \matchesreftype \REF~\NULL~\FUNC
      \qquad
      \expanddt(C.\CTYPES[y]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
