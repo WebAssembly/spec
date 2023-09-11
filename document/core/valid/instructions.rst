@@ -2259,7 +2259,7 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
@@ -2267,7 +2267,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \toF C.\CRETURN
+     \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \CALLREF~x : [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]
    }
@@ -2291,7 +2291,7 @@ Control Instructions
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[y]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
@@ -2301,7 +2301,7 @@ Control Instructions
    \frac{
      C.\CTABLES[x] = \limits~\FUNCREF
      \qquad
-     C.\CTYPES[y] = [t_1^\ast] \toF C.\CRETURN
+     \expanddt(C.\CTYPES[y]) = \TFUNC~[t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
