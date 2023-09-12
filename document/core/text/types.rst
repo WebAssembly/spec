@@ -241,7 +241,7 @@ Composite Types
    pair: text format; sub type
 .. _text-rectype:
 .. _text-subtype:
-.. _text-deftype:
+.. _text-typedef:
 
 Recursive Types
 ~~~~~~~~~~~~~~~
@@ -249,9 +249,9 @@ Recursive Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{recursive type} & \Trectype_I &::=&
-     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tvec(\Tdeftype_I)~\text{)}
+     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tvec(\Ttypedef_I)~\text{)}
        &\Rightarrow& \TREC~\X{st}^\ast \\
-   \production{defined type} & \Tdeftype_I &::=&
+   \production{defined type} & \Ttypedef_I &::=&
      \text{(}~\text{type}~~\Tid^?~~\X{st}{:}\Tsubtype_I~\text{)}
        &\Rightarrow& \X{st} \\
    \production{sub type} & \Tsubtype_I &::=&
@@ -268,8 +268,8 @@ Singular recursive types can omit the :math:`\text{rec}` keyword:
 .. math::
    \begin{array}{llclll}
    \production{recursive type} &
-     \Tsubtype &\equiv&
-     \text{(}~~\text{rec}~~\Tsubtype~~\text{)} \\
+     \Ttypedef &\equiv&
+     \text{(}~~\text{rec}~~\Ttypedef~~\text{)} \\
    \end{array}
 
 Similarly, final sub types with no super-types can omit the |Tsub| keyword and arguments:
