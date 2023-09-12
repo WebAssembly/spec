@@ -126,7 +126,7 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 .. _binary-array.copy:
 .. _binary-array.init_data:
 .. _binary-array.init_elem:
-.. _binary-i31.new:
+.. _binary-ref.i31:
 .. _binary-i31.get_s:
 .. _binary-i31.get_u:
 .. _binary-ref.test:
@@ -168,7 +168,7 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~23{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
      \hex{FB}~~26{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
      \hex{FB}~~27{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\ &&|&
-     \hex{FB}~~28{:}\Bu32 &\Rightarrow& \I31NEW \\ &&|&
+     \hex{FB}~~28{:}\Bu32 &\Rightarrow& \REFI31 \\ &&|&
      \hex{FB}~~29{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
      \hex{FB}~~30{:}\Bu32 &\Rightarrow& \I31GETU \\
    \end{array}

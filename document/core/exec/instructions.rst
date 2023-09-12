@@ -375,22 +375,22 @@ Reference Instructions
 
 
 
-.. _exec-i31.new:
+.. _exec-ref.i31:
 
-:math:`\I31NEW`
+:math:`\REFI31`
 ...............
 
-1. Assert: due to :ref:`validation <valid-i31.new>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-ref.i31>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~i` from the stack.
 
 3. Let :math:`j` be the result of computing :math:`\wrap_{32,31}(i)`.
 
-4. Push the reference value :math:`(\REFI31~j)` to the stack.
+4. Push the reference value :math:`(\REFI31NUM~j)` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~i)~\I31NEW &\stepto& (\REFI31~\wrap_{32,31}(i))
+   (\I32.\CONST~i)~\REFI31 &\stepto& (\REFI31NUM~\wrap_{32,31}(i))
    \end{array}
 
 
@@ -409,7 +409,7 @@ Reference Instructions
 
 4. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
 
-5. Let :math:`\REFI31~i` be the reference value :math:`\reff`.
+5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
 
 6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
 
@@ -417,8 +417,8 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFI31~i)~\I31NEW &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
-   (\REFNULL~t)~\I31NEW &\stepto& \TRAP
+   (\REFI31NUM~i)~\I31GET\K{\_}\sx &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
+   (\REFNULL~t)~\I31GET\K{\_}\sx &\stepto& \TRAP
    \end{array}
 
 

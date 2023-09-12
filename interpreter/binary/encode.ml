@@ -385,7 +385,7 @@ struct
     | RefCast (NoNull, t) -> op 0xfb; op 0x16; heap_type t
     | RefCast (Null, t) -> op 0xfb; op 0x17; heap_type t
 
-    | I31New -> op 0xfb; op 0x1c
+    | RefI31 -> op 0xfb; op 0x1c
     | I31Get SX -> op 0xfb; op 0x1d
     | I31Get ZX -> op 0xfb; op 0x1e
 

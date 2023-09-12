@@ -729,9 +729,9 @@ Aggregate Reference Instructions
 Scalar Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-i31.new:
+.. _valid-ref.i31:
 
-:math:`\I31NEW`
+:math:`\REFI31`
 ...............
 
 * The instruction is valid with type :math:`[\I32] \to [(\REF~\I31)]`.
@@ -739,7 +739,7 @@ Scalar Reference Instructions
 .. math::
    \frac{
    }{
-     C \vdashinstr \I31NEW : [\I32] \to [(\REF~\I31)]
+     C \vdashinstr \REFI31 : [\I32] \to [(\REF~\I31)]
    }
 
 .. _valid-i31.get_sx:

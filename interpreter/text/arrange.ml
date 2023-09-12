@@ -545,7 +545,7 @@ let rec instr e =
     | RefTest t -> "ref.test", [Atom (ref_type t)]
     | RefCast t -> "ref.cast", [Atom (ref_type t)]
     | RefEq -> "ref.eq", []
-    | I31New -> "i31.new", []
+    | RefI31 -> "ref.i31", []
     | I31Get ext -> "i31.get" ^ extension ext, []
     | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
     | StructGet (x, y, exto) ->
