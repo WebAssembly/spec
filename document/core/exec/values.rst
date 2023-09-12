@@ -183,7 +183,7 @@ The following auxiliary typing rules specify this typing relation relative to a 
      \qquad
      \vdashheaptypematch t \matchesheaptype \ANY
    }{
-     S \vdashval \REFEXTERN : \REF~\NULL^?~\EXTERN
+     S \vdashval \REFEXTERN~\reff : \REF~\NULL^?~\EXTERN
    }
 
 

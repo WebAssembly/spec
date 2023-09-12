@@ -20,22 +20,203 @@ The typing rules defining WebAssembly :ref:`validation <valid>` only cover the *
 In order to state and prove soundness precisely, the typing rules must be extended to the *dynamic* components of the abstract :ref:`runtime <syntax-runtime>`, that is, the :ref:`store <syntax-store>`, :ref:`configurations <syntax-config>`, and :ref:`administrative instructions <syntax-instr-admin>`. [#cite-pldi2017]_
 
 
-.. index:: context, recursive types, recursive type indices
+.. index:: context, recursive type, recursive type index
 .. context-rec:
 
 Contexts
 ~~~~~~~~
 
-.. todo:: maybe move elsewhere?
-
 In order to check :ref:`rolled up <aux-roll-rectype>` recursive types,
-the :ref:`context <context>` is locally extended with an additional component that records the :ref:`supertypes <syntax-subtype>` of each :ref:`recursive type index <syntax-rectypeidx>`, represented as :ref:`defined types <syntax-deftype>`:
+the :ref:`context <context>` is locally extended with an additional component that records the :ref:`sub type <syntax-subtype>` corresponding to each :ref:`recursive type index <syntax-rectypeidx>` within the current :ref:`recursive type <syntax-rectype>`:
 
 .. math::
    \begin{array}{llll}
    \production{context} & C &::=&
-     \{~ \dots, \CRECS ~ (\deftype^\ast)^\ast ~\} \\
+     \{~ \dots, \CRECS ~ \subtype^\ast ~\} \\
    \end{array}
+
+
+.. index:: value type, reference type, heap type, bottom type, sub type, recursive type, recursive type index
+.. _valid-types-ext:
+
+Types
+~~~~~
+
+Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
+
+
+.. _valid-heaptype-ext:
+
+:ref:`Heap Type <syntax-heaptype-ext>` :math:`\BOTH`
+....................................................
+
+* The heap type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashheaptype \BOTH \ok
+   }
+
+:ref:`Heap Type <syntax-heaptype-ext>` :math:`\REC~i`
+.....................................................
+
+* The recursive type index :math:`i` must exist in :math:`C.\CRECS`.
+
+* Then the heap type is valid.
+
+.. math::
+   \frac{
+     C.\CRECS[i] = \subtype^\ast
+   }{
+     C \vdashheaptype \REC~i \ok
+   }
+
+
+.. _valid-valtype-ext:
+
+:ref:`Value Type <syntax-valtype-ext>` :math:`\BOT`
+...................................................
+
+* The value type is valid.
+
+.. math::
+   \frac{
+   }{
+     C \vdashvaltype \BOT \ok
+   }
+
+
+.. _valid-rectype-ext:
+
+:ref:`Recursive Types <syntax-rectype>` :math:`\TREC~\subtype^\ast`
+...................................................................
+
+* Let :math:`C'` be the current :ref:`context <context>` :math:`C`, but where |CRECS| is :math:`\subtype^\ast`.
+
+* There must be a :ref:`type index <syntax-typeidx>` :math:`x`, such that for each :ref:`sub type <syntax-subtype>` :math:`\subtype_i` in :math:`\subtype^\ast`:
+
+  * Under the context :math:`C'`, the :ref:`sub type <syntax-subtype>` :math:`\subtype_i` must be :ref:`valid <valid-subtype>` for :ref:`type index <syntax-typeidx>` :math:`x+i` and :ref:`recursive type index <syntax-rectypeidx>` :math:`i`.
+
+* Then the recursive type is valid for the :ref:`type index <syntax-typeidx>` :math:`x`.
+
+.. math::
+   \frac{
+     C,\CRECS~\subtype^\ast \vdashrectype \TREC~\subtype^\ast ~{\ok}(x,0)
+   }{
+     C \vdashrectype \TREC~\subtype^\ast ~{\ok}(x)
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashrectype \TREC~\epsilon ~{\ok}(x,i)
+   }
+   \qquad
+   \frac{
+     C \vdashsubtype \subtype ~{\ok}(x,i)
+     \qquad
+     C \vdashrectype \TREC~{\subtype'}^\ast ~{\ok}(x+1,i+1)
+   }{
+     C \vdashrectype \TREC~\subtype~{\subtype'}^\ast ~{\ok}(x,i)
+   }
+
+.. note::
+   These rules are a generalisation of the ones :ref:`previously given <valid-rectype>`.
+
+
+.. _valid-subtype-ext:
+
+:ref:`Sub types <syntax-subtype>` :math:`\TSUB~\TFINAL^?~\X{ht}^\ast~\comptype`
+...............................................................................
+
+* The :ref:`composite type <syntax-comptype>` :math:`\comptype` must be :ref:`valid <valid-comptype>`.
+
+* The sequence :math:`\X{ht}^\ast` may be no longer than :math:`1`.
+
+* For every :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k` in :math:`\X{ht}^\ast`:
+
+  * The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k` must be ordered before a :ref:`type index <syntax-typeidx>` :math:`x` and :ref:`recursive type index <syntax-rectypeidx>` a :math:`i`, meaning:
+
+    - Either :math:`\X{ht}_k` is a :ref:`defined type <syntax-deftype>`.
+
+    - Or :math:`\X{ht}_k` is a :ref:`type index <syntax-typeidx>` :math:`y_k` that is smaller than :math:`x`.
+
+    - Or :math:`\X{ht}_k` is a :ref:`recursive type index <syntax-rectypeidx>` :math:`\REC~j_k` where :math:`j_k` is smaller than :math:`i`.
+
+  * Let :ref:`sub type <syntax-subtype>` :math:`\subtype_k` be the :ref:`unrolling <aux-unroll-heaptype>` of the :ref:`heap type <syntax-heaptype>` :math:`\X{ht}_k`, meaning:
+
+    - Either :math:`\X{ht}_k` is a :ref:`defined type <syntax-deftype>` :math:`\deftype_k`, then :math:`\subtype_k` must be the :ref:`unrolling <aux-unroll-deftype>` of :math:`\deftype_k`.
+
+    - Or :math:`\X{ht}_k` is a :ref:`type index <syntax-typeidx>` :math:`y_k`, then :math:`\subtype_k` must be the :ref:`unrolling <aux-unroll-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[y_k]`.
+
+    - Or :math:`\X{ht}_k` is a :ref:`recursive type index <syntax-rectypeidx>` :math:`\REC~j_k`, then :math:`\subtype_k` must be :math:`C.\CRECS[j_k]`.
+
+  * The :ref:`sub type <syntax-subtype>` :math:`\subtype_k` must not contain :math:`\TFINAL`.
+
+  * Let :math:`\comptype'_k` be the :ref:`composite type <syntax-comptype>` in :math:`\subtype_k`.
+
+  * The :ref:`composite type <syntax-comptype>` :math:`\comptype` must :ref:`match <match-comptype>` :math:`\comptype'_k`.
+
+* Then the sub type is valid for the :ref:`type index <syntax-typeidx>` :math:`x` and :ref:`recursive type index <syntax-rectypeidx>` :math:`i`.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     |\X{ht}^\ast| \leq 1
+     \qquad
+     (\X{ht} \prec x,i)^\ast
+     \qquad
+     (\unrollht{C}(\X{ht}) = \TSUB~{\X{ht}'}^\ast~\comptype')^\ast
+     \\
+     C \vdashcomptype \comptype \ok
+     \qquad
+     (C \vdashcomptypematch \comptype \matchescomptype \comptype')^\ast
+     \end{array}
+   }{
+     C \vdashsubtype \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype ~{\ok}(x,i)
+   }
+
+.. _aux-unroll-heaptype:
+
+where:
+
+.. math::
+   \begin{array}{@{}lll@{}}
+   (\deftype \prec x,i) &=& {\F{true}} \\
+   (y \prec x,i) &=& y < x \\
+   (\REC~j \prec x,i) &=& j < i \\
+   [2ex]
+   \unrollht{C}(\deftype) &=& \unrolldt(\deftype) \\
+   \unrollht{C}(y) &=& \unrolldt(C.\CTYPES[y]) \\
+   \unrollht{C}(\REC~j) &=& C.\CRECS[j] \\
+   \end{array}
+
+.. note::
+   This rule is a generalisation of the ones :ref:`previously given <valid-subtype>`, which only allowed type indices as supertypes.
+
+
+.. index:: heap type, recursive type, recursive type index
+.. _match-heaptype-ext:
+
+Subtyping
+~~~~~~~~~
+
+In a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`, a :ref:`recursive type indices <syntax-rectypeidx>` :math:`\REC~i` :ref:`matches <match-heaptype>` another :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` if:
+
+* Let :math:`\TSUB~\TFINAL^?~{\X{ht}'}^\ast~\comptype` be the :ref:`sub type <syntax-subtype>` :math:`C.\CRECS[i]`.
+
+* The heap type :math:`\X{ht}` is contained in :math:`{\X{ht}'}^\ast`.
+
+.. math::
+   \frac{
+     C.\CRECS[i] = \TSUB~\TFINAL^?~\X{ht}_1^\ast~\X{ht}~\X{ht}_2^\ast~\comptype
+   }{
+     C \vdashheaptypematch \REC~i \matchesheaptype \X{ht}
+   }
+
+.. note::
+   This rule is only invoked when checking :ref:`validity <valid-rectype-ext>` of :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive types <syntax-rectype>`.
 
 
 .. index:: value, value type, result, result type, trap
@@ -93,7 +274,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 
 
-.. index:: store, function instance, table instance, memory instance, global instance, function type, table type, memory type, global type
+.. index:: store, function instance, table instance, memory instance, structure instance, array instance, global instance, function type, table type, memory type, global type, defined type, structure type, array type
 
 :ref:`Store <syntax-store>` :math:`S`
 .....................................
@@ -110,13 +291,21 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
 
+* Each :ref:`structure instance <syntax-structinst>` :math:`\structinst_i` in :math:`S.\SSTRUCTS` must be :ref:`valid <valid-structinst>`.
+
+* Each :ref:`array instance <syntax-arrayinst>` :math:`\arrayinst_i` in :math:`S.\SARRAYS` must be :ref:`valid <valid-arrayinst>`.
+
+* No :ref:`reference <syntax-ref>` to a bound :ref:`structure address <syntax-structaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+
+* No :ref:`reference <syntax-ref>` to a bound :ref:`array address <syntax-arrayaddr>` must be reachable from itself through a path consisting only of indirections through immutable structure or array :ref:`fields <syntax-fieldtype>`.
+
 * Then the store is valid.
 
 .. math::
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (S \vdashfuncinst \funcinst : \functype)^\ast
+     (S \vdashfuncinst \funcinst : \deftype)^\ast
      \qquad
      (S \vdashtableinst \tableinst : \tabletype)^\ast
      \\
@@ -128,22 +317,50 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      (S \vdashdatainst \datainst \ok)^\ast
      \\
+     (S \vdashstructinst \structinst \ok)^\ast
+     \qquad
+     (S \vdasharrayinst \arrayinst \ok)^\ast
+     \\
      S = \{
        \begin{array}[t]{@{}l@{}}
        \SFUNCS~\funcinst^\ast,
-       \SGLOBALS~\globalinst^\ast, \\
+       \SGLOBALS~\globalinst^\ast,
        \STABLES~\tableinst^\ast,
-       \SMEMS~\meminst^\ast,
+       \SMEMS~\meminst^\ast, \\
        \SELEMS~\eleminst^\ast,
-       \SDATAS~\datainst^\ast \}
+       \SDATAS~\datainst^\ast,
+       \SSTRUCTS~\structinst^\ast,
+       \SARRAYS~\arrayinst^\ast \}
        \end{array}
+     \\
+     (S.\SSTRUCTS[a_{\F{s}}] = \structinst)^\ast
+     \qquad
+     ((\REFSTRUCTADDR~a_{\F{s}}) \not\gg^+_S (\REFSTRUCTADDR~a_{\F{s}}))^\ast
+     \\
+     (S.\SARRAYS[a_{\F{a}}] = \arrayinst)^\ast
+     \qquad
+     ((\REFARRAYADDR~a_{\F{a}}) \not\gg^+_S (\REFARRAYADDR~a_{\F{a}}))^\ast
      \end{array}
    }{
      \vdashstore S \ok
    }
 
+.. index:: reachability
+
+where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the following *reachability* relation on :ref:`values <syntax-val>`:
+
+.. math::
+   \begin{array}{@{}lcll@{}}
+   (\REFSTRUCTADDR~a) &\gg_S& S.\SSTRUCTS[a].\SIFIELDS[i]
+     & \iff \expanddt(S.\SSTRUCTS[a].\SITYPE) = \TSTRUCT~\X{ft}_1^i~(\MCONST~\X{st})~\X{ft}_2^\ast \\
+   (\REFARRAYADDR~a) &\gg_S& S.\SARRAYS[a].\AIFIELDS[i]
+     & \iff \expanddt(S.\SARRAYS[a].\AITYPE) = \TARRAY~(\MCONST~\X{st}) \\
+   (\REFEXTERN~\reff) &\gg_S& \reff \\
+   \end{array}
+
 .. note::
-   The validity condition on type instances ensures the absence of cyclic types.
+   The constraint on reachability through immutable fields prevents the presence of cyclic data structures that can not be constructed in the language.
+   Cycles can only be formed using mutation.
 
 
 .. index:: function type, function instance
@@ -335,7 +552,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
      \vdashreftype t \ok
      \qquad
-     (S \vdash \reff : t')^\ast
+     (S \vdashval \reff : t')^\ast
      \qquad
      (\vdashreftypematch t' \matchesvaltype t)^\ast
    }{
@@ -355,6 +572,94 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
    }{
      S \vdashdatainst \{ \DIDATA~b^\ast \} \ok
+   }
+
+
+.. index:: structure instance, field value, field type, storage type, defined type
+.. _valid-structinst:
+
+:ref:`Structure Instances <syntax-structinst>` :math:`\{ \SITYPE~\deftype, \SIFIELDS~\fieldval^\ast \}`
+.......................................................................................................
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
+
+* The length of the sequence of :ref:`field values <syntax-fieldval>` :math:`\fieldval^\ast` must be the same as the length of the sequence of :ref:`field types <syntax-fieldtype>` :math:`\fieldtype^\ast`.
+
+* For each :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` in :math:`\fieldval^\ast` and corresponding :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
+
+  - Let :math:`\fieldtype_i` be :math:`\mut~\storagetype_i`.
+
+  - The :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` must be :ref:`valid <valid-fieldval>` with :ref:`storage type <syntax-storagetype>` :math:`\storagetype_i`.
+
+* Then the structure instance is valid.
+
+.. math::
+   \frac{
+     \vdashdeftype \X{dt} \ok
+     \qquad
+     \expanddt(\X{dt}) = \TSTRUCT~(\mut~\X{st})^\ast
+     \qquad
+     (S \vdashfieldval \X{fv} : \X{st})^\ast
+   }{
+     S \vdashstructinst \{ \SITYPE~\X{dt}, \SIFIELDS~\X{fv}^\ast \} \ok
+   }
+
+
+.. index:: array instance, field value, field type, storage type, defined type
+.. _valid-arrayinst:
+
+:ref:`Array Instances <syntax-arrayinst>` :math:`\{ \AITYPE~\deftype, \AIFIELDS~\fieldval^\ast \}`
+..................................................................................................
+
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype` must be :ref:`valid <valid-deftype>`.
+
+* The :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` must be an :ref:`array type <syntax-arraytype>` :math:`\TARRAY~\fieldtype`.
+
+* Let :math:`\fieldtype` be :math:`\mut~\storagetype`.
+
+* For each :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` in :math:`\fieldval^\ast`:
+
+  - The :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` must be :ref:`valid <valid-fieldval>` with :ref:`storage type <syntax-storagetype>` :math:`\storagetype`.
+
+* Then the array instance is valid.
+
+.. math::
+   \frac{
+     \vdashdeftype \X{dt} \ok
+     \qquad
+     \expanddt(\X{dt}) = \TARRAY~(\mut~\X{st})
+     \qquad
+     (S \vdashfieldval \X{fv} : \X{st})^\ast
+   }{
+     S \vdasharrayinst \{ \AITYPE~\X{dt}, \AIFIELDS~\X{fv}^\ast \} \ok
+   }
+
+
+.. index:: field value, field type, validation, store, packed value, packed type
+.. _valid-fieldval:
+.. _valid-packedval:
+
+:ref:`Field Values <syntax-fieldval>` :math:`\fieldval`
+.......................................................
+
+* If :math:`\fieldval` is a :ref:`value <syntax-val>` :math:`\val`, then:
+
+  - The value :math:`\val` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t`.
+
+  - Then the field value is valid with :ref:`value type <syntax-valtype>` :math:`t`.
+
+* Else, :math:`\fieldval` is a :ref:`packed value <syntax-packedval>` :math:`\packedval`:
+
+  - Let :math:`\packedtype.\PACK~i` be the field value :math:`\fieldval`.
+
+  - Then the field value is valid with :ref:`packed type <syntax-packedtype>` :math:`\packedtype`.
+
+.. math::
+   \frac{
+   }{
+     S \vdashpackedval \X{pt}.\PACK~i : \X{pt}
    }
 
 
@@ -382,7 +687,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Module Instances <syntax-moduleinst>` :math:`\moduleinst`
 ...............................................................
 
-* Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>`.
+* Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>` under the empty :ref:`context <context>`.
 
 * For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr_i` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_i`.
 
@@ -744,6 +1049,10 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SDATAS` must not shrink.
 
+* The length of :math:`S.\SSTRUCTS` must not shrink.
+
+* The length of :math:`S.\SARRAYS` must not shrink.
+
 * For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
 
 * For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
@@ -752,9 +1061,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
-* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new global instance must be an :ref:`extension <extend-eleminst>` of the old.
+* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
 
-* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new global instance must be an :ref:`extension <extend-datainst>` of the old.
+* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new data instance must be an :ref:`extension <extend-datainst>` of the old.
+
+* For each :ref:`structure instance <syntax-structinst>` :math:`\structinst_i` in the original :math:`S.\SSTRUCTS`, the new structure instance must be an :ref:`extension <extend-structinst>` of the old.
+
+* For each :ref:`array instance <syntax-arrayinst>` :math:`\arrayinst_i` in the original :math:`S.\SARRAYS`, the new array instance must be an :ref:`extension <extend-arrayinst>` of the old.
 
 .. math::
    \frac{
@@ -777,6 +1090,12 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      S_1.\SDATAS = \datainst_1^\ast &
      S_2.\SDATAS = {\datainst'_1}^\ast~\datainst_2^\ast &
      (\vdashdatainstextends \datainst_1 \extendsto \datainst'_1)^\ast \\
+     S_1.\SSTRUCTS = \structinst_1^\ast &
+     S_2.\SSTRUCTS = {\structinst'_1}^\ast~\structinst_2^\ast &
+     (\vdashstructinstextends \structinst_1 \extendsto \structinst'_1)^\ast \\
+     S_1.\SARRAYS = \arrayinst_1^\ast &
+     S_2.\SARRAYS = {\arrayinst'_1}^\ast~\arrayinst_2^\ast &
+     (\vdasharrayinstextends \arrayinst_1 \extendsto \arrayinst'_1)^\ast \\
      \end{array}
    }{
      \vdashstoreextends S_1 \extendsto S_2
@@ -860,6 +1179,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Element Instance <syntax-eleminst>` :math:`\eleminst`
 ...........................................................
 
+* The :ref:`reference type <syntax-reftype>` :math:`\eleminst.\EITYPE` must remain unchanged.
+
 * The vector :math:`\eleminst.\EIELEM` must:
 
   * either remain unchanged,
@@ -869,13 +1190,13 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 .. math::
    \frac{
    }{
-     \vdasheleminstextends \{\EIELEM~a^\ast\} \extendsto \{\EIELEM~a^\ast\}
+     \vdasheleminstextends \{\EITYPE~t, \EIELEM~a^\ast\} \extendsto \{\EITYPE~t, \EIELEM~a^\ast\}
    }
 
 .. math::
    \frac{
    }{
-     \vdasheleminstextends \{\EIELEM~a^\ast\} \extendsto \{\EIELEM~\epsilon\}
+     \vdasheleminstextends \{\EITYPE~t, \EIELEM~a^\ast\} \extendsto \{\EITYPE~t, \EIELEM~\epsilon\}
    }
 
 
@@ -901,6 +1222,62 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
    \frac{
    }{
      \vdashdatainstextends \{\DIDATA~b^\ast\} \extendsto \{\DIDATA~\epsilon\}
+   }
+
+
+.. index:: structure instance, field value, field type
+.. _extend-structinst:
+
+:ref:`Structure Instance <syntax-structinst>` :math:`\structinst`
+.................................................................
+
+* The :ref:`defined type <syntax-deftype>` :math:`\structinst.\SITYPE` must remain unchanged.
+
+* Assert: due to :ref:`store well-formedness <valid-structinst>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\structinst.\SITYPE` is a :ref:`structure type <syntax-structtype>`.
+
+* Let :math:`\TSTRUCT~\fieldtype^\ast` be the :ref:`expansion <aux-expand-deftype>` of :math:`\structinst.\SITYPE`.
+
+* The length of the vector :math:`\structinst.\SIFIELDS` must remain unchanged.
+
+* Assert: due to :ref:`store well-formedness <valid-structinst>`, the length of :math:`\structinst.\SIFIELDS` is the same as the length of :math:`\fieldtype^\ast`.
+
+* For each :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` in :math:`\structinst.\SIFIELDS` and corresponding :ref:`field type <syntax-fieldtype>` :math:`\fieldtype_i` in :math:`\fieldtype^\ast`:
+
+  * Let :math:`\mut_i~\X{st}_i` be the structure of :math:`\fieldtype_i`.
+
+  * If :math:`\mut_i` is |MCONST|, then the :ref:`field value <syntax-fieldval>` :math:`\fieldval_i` must remain unchanged.
+
+.. math::
+   \frac{
+     (\mut = \MVAR \vee \fieldval_1 = \fieldval_2)^\ast
+   }{
+     \vdashstructinstextends \{\SITYPE~(\mut~\X{st})^\ast, \SIFIELDS~\fieldval_1^\ast\} \extendsto \{\SITYPE~(\mut~\X{st})^\ast, \SIFIELDS~\fieldval_2^\ast\}
+   }
+
+
+.. index:: array instance, field value, field type
+.. _extend-arrayinst:
+
+:ref:`Array Instance <syntax-arrayinst>` :math:`\arrayinst`
+...........................................................
+
+* The :ref:`defined type <syntax-deftype>` :math:`\arrayinst.\AITYPE` must remain unchanged.
+
+* Assert: due to :ref:`store well-formedness <valid-arrayinst>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\arrayinst.\AITYPE` is an :ref:`array type <syntax-arraytype>`.
+
+* Let :math:`\TARRAY~\fieldtype` be the :ref:`expansion <aux-expand-deftype>` of :math:`\arrayinst.\AITYPE`.
+
+* The length of the vector :math:`\arrayinst.\AIFIELDS` must remain unchanged.
+
+* Let :math:`\mut~\X{st}` be the structure of :math:`\fieldtype`.
+
+* If :math:`\mut` is |MCONST|, then the sequence of :ref:`field values <syntax-fieldval>` :math:`\arrayinst.\AIFIELDS` must remain unchanged.
+
+.. math::
+   \frac{
+     \mut = \MVAR \vee \fieldval_1^\ast = \fieldval_2^\ast
+   }{
+     \vdasharrayinstextends \{\AITYPE~(\mut~\X{st}), \AIFIELDS~\fieldval_1^\ast\} \extendsto \{\AITYPE~(\mut~\X{st}), \AIFIELDS~\fieldval_2^\ast\}
    }
 
 

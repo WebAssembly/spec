@@ -293,6 +293,7 @@
 .. |rolldt#1| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast_{#1}}
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
+.. |unrollht#1| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}_{#1}}
 
 .. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}
@@ -1055,7 +1056,7 @@
 .. |CLABELS| mathdef:: \xref{valid/conventions}{context}{\K{labels}}
 .. |CRETURN| mathdef:: \xref{valid/conventions}{context}{\K{return}}
 .. |CREFS| mathdef:: \xref{valid/conventions}{context}{\K{refs}}
-.. |CRECS| mathdef:: \xref{valid/matching}{context-rec}{\K{rec}}
+.. |CRECS| mathdef:: \xref{valid/matching}{context-rec}{\K{recs}}
 
 
 .. Judgments
@@ -1231,6 +1232,7 @@
 .. |AITYPE| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{type}}
 .. |AIFIELDS| mathdef:: \xref{exec/runtime}{syntax-arrayinst}{\K{fields}}
 
+.. |PACK| mathdef:: \xref{exec/runtime}{syntax-packedval}{\K{pack}}
 .. |I8PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i8.pack}}
 .. |I16PACK| mathdef:: \xref{exec/runtime}{syntax-packval}{\K{i16.pack}}
 
@@ -1306,8 +1308,8 @@
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
 .. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
 .. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
-.. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref.host}{\K{ref{.}host}}
-.. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref.extern}{\K{ref{.}extern}}
+.. |REFHOSTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}host}}
+.. |REFEXTERN| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}extern}}
 .. |TRAP| mathdef:: \xref{exec/runtime}{syntax-trap}{\K{trap}}
 .. |INVOKE| mathdef:: \xref{exec/runtime}{syntax-invoke}{\K{invoke}}
 .. |RETURNINVOKE| mathdef:: \xref{exec/runtime}{syntax-return_invoke}{\K{return\_invoke}}
@@ -1474,6 +1476,8 @@
 
 .. |vdashval| mathdef:: \xref{appendix/properties}{valid-val}{\vdash}
 .. |vdashresult| mathdef:: \xref{appendix/properties}{valid-result}{\vdash}
+.. |vdashfieldval| mathdef:: \xref{appendix/properties}{valid-fieldval}{\vdash}
+.. |vdashpackedval| mathdef:: \xref{appendix/properties}{valid-packedval}{\vdash}
 
 .. |vdashfuncinst| mathdef:: \xref{appendix/properties}{valid-funcinst}{\vdash}
 .. |vdashtableinst| mathdef:: \xref{appendix/properties}{valid-tableinst}{\vdash}
@@ -1481,6 +1485,8 @@
 .. |vdashglobalinst| mathdef:: \xref{appendix/properties}{valid-globalinst}{\vdash}
 .. |vdasheleminst| mathdef:: \xref{appendix/properties}{valid-eleminst}{\vdash}
 .. |vdashdatainst| mathdef:: \xref{appendix/properties}{valid-datainst}{\vdash}
+.. |vdashstructinst| mathdef:: \xref{appendix/properties}{valid-structinst}{\vdash}
+.. |vdasharrayinst| mathdef:: \xref{appendix/properties}{valid-arrayinst}{\vdash}
 .. |vdashexportinst| mathdef:: \xref{appendix/properties}{valid-exportinst}{\vdash}
 .. |vdashmoduleinst| mathdef:: \xref{appendix/properties}{valid-moduleinst}{\vdash}
 
@@ -1496,6 +1502,8 @@
 .. |vdashglobalinstextends| mathdef:: \xref{appendix/properties}{extend-globalinst}{\vdash}
 .. |vdasheleminstextends| mathdef:: \xref{appendix/properties}{extend-eleminst}{\vdash}
 .. |vdashdatainstextends| mathdef:: \xref{appendix/properties}{extend-datainst}{\vdash}
+.. |vdashstructinstextends| mathdef:: \xref{appendix/properties}{extend-structinst}{\vdash}
+.. |vdasharrayinstextends| mathdef:: \xref{appendix/properties}{extend-arrayinst}{\vdash}
 .. |vdashstoreextends| mathdef:: \xref{appendix/properties}{extend-store}{\vdash}
 
 

@@ -450,14 +450,18 @@ Here, the notation :math:`\F{allocx}^\ast` is shorthand for multiple :ref:`alloc
 
 Moreover, if the dots :math:`\dots` are a sequence :math:`A^n` (as for globals or tables), then the elements of this sequence are passed to the allocation function pointwise.
 
-For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>`:
+For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-rectype>` and :ref:`substitution <notation-subst>` of all preceding types to produce a list of :ref:`closed <type-closed>` :ref:`defined types <syntax-deftype>`:
+
+.. _alloc-type:
 
 .. math::
    \begin{array}{rlll}
    \alloctype^\ast(\rectype^n) = \deftype^\ast \\[1ex]
    \mbox{where for all $i < n$:} \hfill \\
-   \deftype^\ast[x_i \slice m_i] &=& \rolldt{x_i}(\rectype^n[i])[\subst \deftype^\ast[0 : \slice x_i]) \\
-   x_{i+1} &=& x_i + m_i \land x_n = |\deftype^\ast| \\
+   \rectype^n[i] &=& \REC~\subtype_i^{m_i} \\
+   \deftype^\ast[x_i \slice m_i] &=& \rolldt{x_i}(\REC~\subtype_i^{m_i})[\subst \deftype^\ast[0 \slice x_i]) \\
+   x_{i+1} &=& x_i + m_i \\
+   x_n &=& |\deftype^\ast| \\
    \end{array}
 
 
