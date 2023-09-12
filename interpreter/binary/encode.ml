@@ -116,15 +116,15 @@ struct
 
   let heap_type = function
     | AnyHT -> s7 (-0x12)
-    | NoneHT -> s7 (-0x1b)
     | EqHT -> s7 (-0x13)
-    | I31HT -> s7 (-0x16)
-    | StructHT -> s7 (-0x19)
-    | ArrayHT -> s7 (-0x1a)
+    | I31HT -> s7 (-0x14)
+    | StructHT -> s7 (-0x15)
+    | ArrayHT -> s7 (-0x16)
+    | NoneHT -> s7 (-0x0f)
     | FuncHT -> s7 (-0x10)
-    | NoFuncHT -> s7 (-0x17)
+    | NoFuncHT -> s7 (-0x0d)
     | ExternHT -> s7 (-0x11)
-    | NoExternHT -> s7 (-0x18)
+    | NoExternHT -> s7 (-0x0e)
     | VarHT x -> var_type s33 x
     | DefHT _ | BotHT -> assert false
 
@@ -134,17 +134,17 @@ struct
 
   let ref_type = function
     | (Null, AnyHT) -> s7 (-0x12)
-    | (Null, NoneHT) -> s7 (-0x1b)
     | (Null, EqHT) -> s7 (-0x13)
-    | (Null, I31HT) -> s7 (-0x16)
-    | (Null, StructHT) -> s7 (-0x19)
-    | (Null, ArrayHT) -> s7 (-0x1a)
+    | (Null, I31HT) -> s7 (-0x14)
+    | (Null, StructHT) -> s7 (-0x15)
+    | (Null, ArrayHT) -> s7 (-0x16)
+    | (Null, NoneHT) -> s7 (-0x0f)
     | (Null, FuncHT) -> s7 (-0x10)
-    | (Null, NoFuncHT) -> s7 (-0x17)
+    | (Null, NoFuncHT) -> s7 (-0x0d)
     | (Null, ExternHT) -> s7 (-0x11)
-    | (Null, NoExternHT) -> s7 (-0x18)
-    | (Null, t) -> s7 (-0x14); heap_type t
-    | (NoNull, t) -> s7 (-0x15); heap_type t
+    | (Null, NoExternHT) -> s7 (-0x0e)
+    | (Null, t) -> s7 (-0x1d); heap_type t
+    | (NoNull, t) -> s7 (-0x1c); heap_type t
 
   let val_type = function
     | NumT t -> num_type t
@@ -153,8 +153,8 @@ struct
     | BotT -> assert false
 
   let pack_type = function
-    | Pack.Pack8 -> s7 (-0x06)
-    | Pack.Pack16 -> s7 (-0x07)
+    | Pack.Pack8 -> s7 (-0x08)
+    | Pack.Pack16 -> s7 (-0x09)
     | Pack.Pack32 | Pack.Pack64 -> assert false
 
   let storage_type = function
@@ -180,12 +180,12 @@ struct
 
   let sub_type = function
     | SubT (Final, [], st) -> str_type st
-    | SubT (Final, hts, st) -> s7 (-0x32); vec var_heap_type hts; str_type st
+    | SubT (Final, hts, st) -> s7 (-0x31); vec var_heap_type hts; str_type st
     | SubT (NoFinal, hts, st) -> s7 (-0x30); vec var_heap_type hts; str_type st
 
   let rec_type = function
     | RecT [st] -> sub_type st
-    | RecT sts -> s7 (-0x31); vec sub_type sts
+    | RecT sts -> s7 (-0x32); vec sub_type sts
 
   let limits uN {min; max} =
     bool (max <> None); uN min; opt uN max
@@ -245,14 +245,14 @@ struct
     | Br x -> op 0x0c; var x
     | BrIf x -> op 0x0d; var x
     | BrTable (xs, x) -> op 0x0e; vec var xs; var x
-    | BrOnNull x -> op 0xd4; var x
+    | BrOnNull x -> op 0xd5; var x
     | BrOnNonNull x -> op 0xd6; var x
     | BrOnCast (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x4e; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x18; byte flags; var x; heap_type t1; heap_type t2
     | BrOnCastFail (x, (nul1, t1), (nul2, t2)) ->
       let flags = bit 0 (nul1 = Null) + bit 1 (nul2 = Null) in
-      op 0xfb; op 0x4f; byte flags; var x; heap_type t1; heap_type t2
+      op 0xfb; op 0x19; byte flags; var x; heap_type t1; heap_type t2
     | Return -> op 0x0f
     | Call x -> op 0x10; var x
     | CallRef x -> op 0x14; var x
@@ -376,44 +376,43 @@ struct
     | RefNull t -> op 0xd0; heap_type t
     | RefFunc x -> op 0xd2; var x
 
+    | RefEq -> op 0xd3
+
     | RefIsNull -> op 0xd1
-    | RefAsNonNull -> op 0xd3
-    | RefTest (NoNull, t) -> op 0xfb; op 0x40; heap_type t
-    | RefTest (Null, t) -> op 0xfb; op 0x48; heap_type t
-    | RefCast (NoNull, t) -> op 0xfb; op 0x41; heap_type t
-    | RefCast (Null, t) -> op 0xfb; op 0x49; heap_type t
+    | RefAsNonNull -> op 0xd4
+    | RefTest (NoNull, t) -> op 0xfb; op 0x14; heap_type t
+    | RefTest (Null, t) -> op 0xfb; op 0x15; heap_type t
+    | RefCast (NoNull, t) -> op 0xfb; op 0x16; heap_type t
+    | RefCast (Null, t) -> op 0xfb; op 0x17; heap_type t
 
-    | RefEq -> op 0xd5
+    | RefI31 -> op 0xfb; op 0x1c
+    | I31Get SX -> op 0xfb; op 0x1d
+    | I31Get ZX -> op 0xfb; op 0x1e
 
-    | I31New -> op 0xfb; op 0x20
-    | I31Get SX -> op 0xfb; op 0x21
-    | I31Get ZX -> op 0xfb; op 0x22
+    | StructNew (x, Explicit) -> op 0xfb; op 0x00; var x
+    | StructNew (x, Implicit) -> op 0xfb; op 0x01; var x
+    | StructGet (x, y, None) -> op 0xfb; op 0x02; var x; var y
+    | StructGet (x, y, Some SX) -> op 0xfb; op 0x03; var x; var y
+    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x04; var x; var y
+    | StructSet (x, y) -> op 0xfb; op 0x05; var x; var y
 
-    | StructNew (x, Explicit) -> op 0xfb; op 0x01; var x
-    | StructNew (x, Implicit) -> op 0xfb; op 0x02; var x
-    | StructGet (x, y, None) -> op 0xfb; op 0x03; var x; var y
-    | StructGet (x, y, Some SX) -> op 0xfb; op 0x04; var x; var y
-    | StructGet (x, y, Some ZX) -> op 0xfb; op 0x05; var x; var y
-    | StructSet (x, y) -> op 0xfb; op 0x06; var x; var y
+    | ArrayNew (x, Explicit) -> op 0xfb; op 0x06; var x
+    | ArrayNew (x, Implicit) -> op 0xfb; op 0x07; var x
+    | ArrayNewFixed (x, n) -> op 0xfb; op 0x08; var x; u32 n
+    | ArrayNewElem (x, y) -> op 0xfb; op 0x0a; var x; var y
+    | ArrayNewData (x, y) -> op 0xfb; op 0x09; var x; var y
+    | ArrayGet (x, None) -> op 0xfb; op 0x0b; var x
+    | ArrayGet (x, Some SX) -> op 0xfb; op 0x0c; var x
+    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x0d; var x
+    | ArraySet x -> op 0xfb; op 0x0e; var x
+    | ArrayLen -> op 0xfb; op 0x0f
+    | ArrayFill x -> op 0xfb; op 0x10; var x
+    | ArrayCopy (x, y) -> op 0xfb; op 0x11; var x; var y
+    | ArrayInitData (x, y) -> op 0xfb; op 0x12; var x; var y
+    | ArrayInitElem (x, y) -> op 0xfb; op 0x13; var x; var y
 
-    | ArrayNew (x, Explicit) -> op 0xfb; op 0x11; var x
-    | ArrayNew (x, Implicit) -> op 0xfb; op 0x12; var x
-    | ArrayNewFixed (x, n) -> op 0xfb; op 0x19; var x; u32 n
-    | ArrayNewElem (x, y) -> op 0xfb; op 0x1c; var x; var y
-    | ArrayNewData (x, y) -> op 0xfb; op 0x1b; var x; var y
-    | ArrayGet (x, None) -> op 0xfb; op 0x13; var x
-    | ArrayGet (x, Some SX) -> op 0xfb; op 0x14; var x
-    | ArrayGet (x, Some ZX) -> op 0xfb; op 0x15; var x
-    | ArraySet x -> op 0xfb; op 0x16; var x
-    | ArrayLen -> op 0xfb; op 0x17
-
-    | ArrayCopy (x, y) -> op 0xfb; op 0x18; var x; var y
-    | ArrayFill x -> op 0xfb; op 0x0f; var x
-    | ArrayInitData (x, y) -> op 0xfb; op 0x54; var x; var y
-    | ArrayInitElem (x, y) -> op 0xfb; op 0x55; var x; var y
-
-    | ExternConvert Internalize -> op 0xfb; op 0x70
-    | ExternConvert Externalize -> op 0xfb; op 0x71
+    | ExternConvert Internalize -> op 0xfb; op 0x1a
+    | ExternConvert Externalize -> op 0xfb; op 0x1b
 
     | Const {it = I32 c; _} -> op 0x41; s32 c
     | Const {it = I64 c; _} -> op 0x42; s64 c

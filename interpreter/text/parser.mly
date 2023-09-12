@@ -275,7 +275,7 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_I31 REF_STRUCT REF_ARRAY REF_EXTERN REF_HOST
 %token REF_EQ REF_IS_NULL REF_AS_NON_NULL REF_TEST REF_CAST
-%token I31_NEW
+%token REF_I31
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.instr'> STRUCT_NEW ARRAY_NEW ARRAY_GET
 %token STRUCT_SET
@@ -565,7 +565,7 @@ plain_instr :
   | REF_TEST ref_type { fun c -> ref_test ($2 c) }
   | REF_CAST ref_type { fun c -> ref_cast ($2 c) }
   | REF_EQ { fun c -> ref_eq }
-  | I31_NEW { fun c -> i31_new }
+  | REF_I31 { fun c -> ref_i31 }
   | I31_GET { fun c -> $1 }
   | STRUCT_NEW var { fun c -> $1 ($2 c type_) }
   | STRUCT_GET var var { fun c -> let x = $2 c type_ in $1 x ($3 c (field x.it)) }

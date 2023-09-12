@@ -347,14 +347,14 @@ Aggregate Reference Instructions
 .. _valid-struct.get_u:
 .. _valid-struct.get_s:
 
-:math:`\STRUCTGET\K{\_}\sx^?~x~i`
+:math:`\STRUCTGET\K{\_}\sx^?~x~y`
 .................................
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
-* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[i]`.
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[y]`.
 
 * Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\storagetype)`.
 
@@ -366,23 +366,23 @@ Aggregate Reference Instructions
    \frac{
      \expanddt(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
      \qquad
-     \X{ft}^\ast[i] = \mut~\X{st}
+     \X{ft}^\ast[y] = \mut~\X{st}
      \qquad
      \sx = \epsilon \Leftrightarrow \X{st} = \unpacktype(\X{st})
    }{
-     C \vdashinstr \STRUCTGET\K{\_}\sx^?~x~i : [(\REF~\NULL~x)] \to [\unpacktype(\X{st})]
+     C \vdashinstr \STRUCTGET\K{\_}\sx^?~x~y : [(\REF~\NULL~x)] \to [\unpacktype(\X{st})]
    }
 
 .. _valid-struct.set:
 
-:math:`\STRUCTSET~x~i`
+:math:`\STRUCTSET~x~y`
 ......................
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
 * The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CTYPES[x]` must be a :ref:`structure type <syntax-structtype>` :math:`\TSTRUCT~\fieldtype^\ast`.
 
-* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[i]`.
+* Let the :ref:`field type <syntax-fieldtype>` :math:`\mut~\storagetype` be :math:`\fieldtype^\ast[y]`.
 
 * The prefix :math:`\mut` must be :math:`\MVAR`.
 
@@ -394,9 +394,9 @@ Aggregate Reference Instructions
    \frac{
      \expanddt(C.\CTYPES[x]) = \TSTRUCT~\X{ft}^\ast
      \qquad
-     \X{ft}^\ast[i] = \MVAR~\X{st}
+     \X{ft}^\ast[y] = \MVAR~\X{st}
    }{
-     C \vdashinstr \STRUCTSET~x~i : [(\REF~\NULL~x)~\unpacktype(\X{st})] \to []
+     C \vdashinstr \STRUCTSET~x~y : [(\REF~\NULL~x)~\unpacktype(\X{st})] \to []
    }
 
 
@@ -729,9 +729,9 @@ Aggregate Reference Instructions
 Scalar Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-i31.new:
+.. _valid-ref.i31:
 
-:math:`\I31NEW`
+:math:`\REFI31`
 ...............
 
 * The instruction is valid with type :math:`[\I32] \to [(\REF~\I31)]`.
@@ -739,7 +739,7 @@ Scalar Reference Instructions
 .. math::
    \frac{
    }{
-     C \vdashinstr \I31NEW : [\I32] \to [(\REF~\I31)]
+     C \vdashinstr \REFI31 : [\I32] \to [(\REF~\I31)]
    }
 
 .. _valid-i31.get_sx:

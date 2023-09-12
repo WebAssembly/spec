@@ -630,8 +630,8 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### Unboxed Scalars
 
-* `i31.new` creates an `i31ref` from a 32 bit value, truncating high bit
-  - `i31.new : [i32] -> [(ref i31)]`
+* `ref.i31` creates an `i31ref` from a 32 bit value, truncating high bit
+  - `ref.i31 : [i32] -> [(ref i31)]`
   - this is a *constant instruction*
 
 * `i31.get_<sx>` extracts the value, zero- or sign-extending
@@ -703,7 +703,7 @@ Note: The [reference types](https://github.com/WebAssembly/reference-types) and 
 
 In order to allow RTTs to be initialised as globals, the following extensions are made to the definition of *constant expressions*:
 
-* `i31.new` is a constant instruction
+* `ref.i31` is a constant instruction
 * `struct.new` and `struct.new_default` are constant instructions
 * `array.new`, `array.new_default`, and `array.new_fixed` are constant instructions
   - Note: `array.new_data` and `array.new_elem` are not for the time being, see above
@@ -721,25 +721,25 @@ This extends the [encodings](https://github.com/WebAssembly/function-references/
 
 | Opcode | Type            |
 | ------ | --------------- |
-| -0x06  | `i8`            |
-| -0x07  | `i16`           |
+| -0x08  | `i8`            |
+| -0x09  | `i16`           |
 
 #### Reference Types
 
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
+| -0x0d  | `nullfuncref`   |            | shorthand |
+| -0x0e  | `nullexternref` |            | shorthand |
+| -0x0f  | `nullref`       |            | shorthand |
 | -0x10  | `funcref`       |            | shorthand, from reftype proposal |
 | -0x11  | `externref`     |            | shorthand, from reftype proposal |
 | -0x12  | `anyref`        |            | shorthand |
 | -0x13  | `eqref`         |            | shorthand |
-| -0x14  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
-| -0x15  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
-| -0x16  | `i31ref`        |            | shorthand |
-| -0x17  | `nullfuncref`   |            | shorthand |
-| -0x18  | `nullexternref` |            | shorthand |
-| -0x19  | `structref`     |            | shorthand |
-| -0x1a  | `arrayref`      |            | shorthand |
-| -0x1b  | `nullref`       |            | shorthand |
+| -0x14  | `i31ref`        |            | shorthand |
+| -0x15  | `structref`     |            | shorthand |
+| -0x16  | `arrayref`      |            | shorthand |
+| -0x1c  | `(ref ht)`      | `ht : heaptype (s33)` | from funcref proposal |
+| -0x1d  | `(ref null ht)` | `ht : heaptype (s33)` | from funcref proposal |
 
 #### Heap Types
 
@@ -748,42 +748,45 @@ The opcode for heap types is encoded as an `s33`.
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
 | i >= 0 | `(type i)`      |            | from funcref proposal |
+| -0x0d  | `nofunc`        |            | |
+| -0x0e  | `noextern`      |            | |
+| -0x0f  | `none`          |            | |
 | -0x10  | `func`          |            | from funcref proposal |
 | -0x11  | `extern`        |            | from funcref proposal |
 | -0x12  | `any`           |            | |
 | -0x13  | `eq`            |            | |
-| -0x16  | `i31`           |            | |
-| -0x17  | `nofunc`        |            | |
-| -0x18  | `noextern`      |            | |
-| -0x19  | `struct`        |            | |
-| -0x1a  | `array`         |            | |
-| -0x1b  | `none`          |            | |
+| -0x14  | `i31`           |            | |
+| -0x15  | `struct`        |            | |
+| -0x16  | `array`         |            | |
 
 #### Composite Types
 
-| Opcode | Type            | Parameters |
-| ------ | --------------- | ---------- |
-| -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` |
-| -0x22  | `array ft`      | `ft : fieldtype`       |
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| -0x20  | `func t1* t2*`  | `t1* : vec(valtype)`, `t2* : vec(valtype)` | from Wasm 1.0 |
+| -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | |
+| -0x22  | `array ft`      | `ft : fieldtype`       | |
 
 #### Subtypes
 
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
+| -0x20  | `func t1* t2*`  | `t1* : vec(valtype)`, `t2* : vec(valtype)` | shorthand |
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
 | -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : comptype` | |
-| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | |
+| -0x31  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | |
 
 #### Defined Types
 
 | Opcode | Type            | Parameters | Note |
 | ------ | --------------- | ---------- | ---- |
+| -0x20  | `func t1* t2*`  | `t1* : vec(valtype)`, `t2* : vec(valtype)` | shorthand |
 | -0x21  | `struct ft*`    | `ft* : vec(fieldtype)` | shorthand |
 | -0x22  | `array ft`      | `ft : fieldtype`       | shorthand |
 | -0x30  | `sub $t* st`    | `$t* : vec(typeidx)`, `st : comptype` | shorthand |
-| -0x31  | `rec dt*`       | `dt* : vec(subtype)` | |
-| -0x32  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | shorthand |
+| -0x31  | `sub final $t* st` | `$t* : vec(typeidx)`, `st : comptype` | shorthand |
+| -0x32  | `rec dt*`       | `dt* : vec(subtype)` | |
 
 #### Field Types
 
@@ -794,41 +797,46 @@ The opcode for heap types is encoded as an `s33`.
 
 ### Instructions
 
-| Opcode | Type            | Parameters |
-| ------ | --------------- | ---------- |
-| 0xd5   | `ref.eq`        |            |
-| 0xd6   | `br_on_non_null $l` | `$l : labelidx` |
-| 0xfb01 | `struct.new $t` | `$t : typeidx` |
-| 0xfb02 | `struct.new_default $t` | `$t : typeidx` |
-| 0xfb03 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb04 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb05 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb06 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
-| 0xfb0f | `array.fill $t` | `$t : typeidx` |
-| 0xfb11 | `array.new $t` | `$t : typeidx` |
-| 0xfb12 | `array.new_default $t` | `$t : typeidx` |
-| 0xfb13 | `array.get $t` | `$t : typeidx` |
-| 0xfb14 | `array.get_s $t` | `$t : typeidx` |
-| 0xfb15 | `array.get_u $t` | `$t : typeidx` |
-| 0xfb16 | `array.set $t` | `$t : typeidx` |
-| 0xfb17 | `array.len` | |
-| 0xfb18 | `array.copy $t1 $t2` | `$t1 : typeidx`, `$t2 : typeidx` |
-| 0xfb19 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
-| 0xfb1b | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
-| 0xfb1c | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
-| 0xfb20 | `i31.new` |  |
-| 0xfb21 | `i31.get_s` |  |
-| 0xfb22 | `i31.get_u` |  |
-| 0xfb40 | `ref.test (ref ht)` | `ht : heaptype` |
-| 0xfb41 | `ref.cast (ref ht)` | `ht : heaptype` |
-| 0xfb48 | `ref.test (ref null ht)` | `ht : heaptype` |
-| 0xfb49 | `ref.cast (ref null ht)` | `ht : heaptype` |
-| 0xfb4e | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
-| 0xfb4f | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
-| 0xfb54 | `array.init_data $t $d` | `$t : typeidx`, `$d: dataidx` |
-| 0xfb55 | `array.init_elem $t $e` | `$t : typeidx`, `$d: elemidx` |
-| 0xfb70 | `extern.internalize` | |
-| 0xfb71 | `extern.externalize` | |
+| Opcode | Type            | Parameters | Note |
+| ------ | --------------- | ---------- | ---- |
+| 0xd0   | `ref.null ht`   | `ht : heap_type` | from Wasm 2.0 |
+| 0xd1   | `ref.is_null`   |            | from Wasm 2.0 |
+| 0xd2   | `ref.func $f`   | `$f : funcidx` | from Wasm 2.0 |
+| 0xd3   | `ref.eq`        |            |
+| 0xd4   | `ref.as_non_null` |          | from funcref proposal |
+| 0xd5   | `br_on_null $l` | `$l : u32` | from funcref proposal |
+| 0xd6   | `br_on_non_null $l` | `$l : u32` | from funcref proposal |
+| 0xfb00 | `struct.new $t` | `$t : typeidx` |
+| 0xfb01 | `struct.new_default $t` | `$t : typeidx` |
+| 0xfb02 | `struct.get $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb03 | `struct.get_s $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb04 | `struct.get_u $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb05 | `struct.set $t i` | `$t : typeidx`, `i : fieldidx` |
+| 0xfb06 | `array.new $t` | `$t : typeidx` |
+| 0xfb07 | `array.new_default $t` | `$t : typeidx` |
+| 0xfb08 | `array.new_fixed $t N` | `$t : typeidx`, `N : u32` |
+| 0xfb09 | `array.new_data $t $d` | `$t : typeidx`, `$d : dataidx` |
+| 0xfb0a | `array.new_elem $t $e` | `$t : typeidx`, `$e : elemidx` |
+| 0xfb0b | `array.get $t` | `$t : typeidx` |
+| 0xfb0c | `array.get_s $t` | `$t : typeidx` |
+| 0xfb0d | `array.get_u $t` | `$t : typeidx` |
+| 0xfb0e | `array.set $t` | `$t : typeidx` |
+| 0xfb0f | `array.len` |
+| 0xfb10 | `array.fill $t` |
+| 0xfb11 | `array.copy $t1 $t2` |
+| 0xfb12 | `array.init_data $t $d` |
+| 0xfb13 | `array.init_elem $t $e` |
+| 0xfb14 | `ref.test (ref ht)` | `ht : heaptype` |
+| 0xfb15 | `ref.test (ref null ht)` | `ht : heaptype` |
+| 0xfb16 | `ref.cast (ref ht)` | `ht : heaptype` |
+| 0xfb17 | `ref.cast (ref null ht)` | `ht : heaptype` |
+| 0xfb18 | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb19 | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, $l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
+| 0xfb1a | `extern.internalize` |
+| 0xfb1b | `extern.externalize` |
+| 0xfb1c | `ref.i31` |
+| 0xfb1d | `i31.get_s` |
+| 0xfb1e | `i31.get_u` |
 
 Flag byte encoding for `br_on_cast(_fail)?`:
 

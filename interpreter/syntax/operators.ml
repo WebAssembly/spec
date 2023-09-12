@@ -108,7 +108,7 @@ let ref_test t = RefTest t
 let ref_cast t = RefCast t
 let ref_eq = RefEq
 
-let i31_new = I31New
+let ref_i31 = RefI31
 let i31_get_u = I31Get ZX
 let i31_get_s = I31Get SX
 let struct_new x = StructNew (x, Explicit)

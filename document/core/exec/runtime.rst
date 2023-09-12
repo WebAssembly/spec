@@ -12,7 +12,7 @@ Runtime Structure
 .. _syntax-num:
 .. _syntax-vecc:
 .. _syntax-ref:
-.. _syntax-ref.i31:
+.. _syntax-ref.i31num:
 .. _syntax-ref.struct:
 .. _syntax-ref.array:
 .. _syntax-ref.host:
@@ -48,7 +48,7 @@ Any of the aformentioned references can furthermore be wrapped up as an *externa
      \V128.\CONST~\i128 \\
    \production{reference} & \reff &::=&
      \REFNULL~t \\&&|&
-     \REFI31~\u31 \\&&|&
+     \REFI31NUM~\u31 \\&&|&
      \REFSTRUCTADDR~\structaddr \\&&|&
      \REFARRAYADDR~\arrayaddr \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
@@ -634,7 +634,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
    \production{administrative instruction} & \instr &::=&
      \dots \\ &&|&
      \TRAP \\ &&|&
-     \REFI31~\u31 \\&&|&
+     \REFI31NUM~\u31 \\&&|&
      \REFSTRUCTADDR~\structaddr \\&&|&
      \REFARRAYADDR~\arrayaddr \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
@@ -649,7 +649,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
-The |REFI31| instruction represents :ref:`unboxed scalar <syntax-ref.i31>` reference values,
+The |REFI31NUM| instruction represents :ref:`unboxed scalar <syntax-ref.i31>` reference values,
 |REFSTRUCTADDR| and |REFARRAYADDR| represent :ref:`structure <syntax-ref.struct>` and :ref:`array <syntax-ref.array>` reference values, respectively,
 and |REFFUNCADDR| instruction represents :ref:`function reference <syntax-ref.func>` values.
 Similarly, |REFHOSTADDR| represents :ref:`host references <syntax-ref.host>`

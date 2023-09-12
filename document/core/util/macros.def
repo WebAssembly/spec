@@ -179,7 +179,10 @@
 
 .. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
 .. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
-.. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
+.. Unfortunately, MathJax somehow barfs on the use of xref in the expansion
+   of a macro with parameters, so we cannot hyperlink the arrow
+   .. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
+.. |toX#1| mathdef:: \rightarrow_{#1}
 
 .. |BOTH| mathdef:: \xref{valid/conventions}{syntax-heaptype-ext}{\K{bot}}
 .. |BOT| mathdef:: \xref{valid/conventions}{syntax-valtype-ext}{\K{bot}}
@@ -312,6 +315,7 @@
 .. |dataidx| mathdef:: \xref{syntax/modules}{syntax-dataidx}{\X{dataidx}}
 .. |localidx| mathdef:: \xref{syntax/modules}{syntax-localidx}{\X{localidx}}
 .. |labelidx| mathdef:: \xref{syntax/modules}{syntax-labelidx}{\X{labelidx}}
+.. |fieldidx| mathdef:: \xref{syntax/modules}{syntax-fieldidx}{\X{fieldidx}}
 
 
 .. Indices, meta functions
@@ -501,7 +505,7 @@
 .. |ARRAYINITDATA| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_data}}
 .. |ARRAYINITELEM| mathdef:: \xref{syntax/instructions}{syntax-instr-aray}{\K{array.init\_elem}}
 
-.. |I31NEW| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.new}}
+.. |REFI31| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{ref.i31}}
 .. |I31GET| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get}}
 .. |I31GETS| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_s}}
 .. |I31GETU| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_u}}
@@ -657,6 +661,11 @@
 .. |expr| mathdef:: \xref{syntax/instructions}{syntax-expr}{\X{expr}}
 
 
+.. Instructions, meta functions
+
+.. |getfield| mathdef:: \xref{exec/instructions}{aux-getfield}{\F{getfield}}
+
+
 
 .. Binary Format
 .. -------------
@@ -742,6 +751,7 @@
 .. |Bdataidx| mathdef:: \xref{binary/modules}{binary-dataidx}{\B{dataidx}}
 .. |Blocalidx| mathdef:: \xref{binary/modules}{binary-localidx}{\B{localidx}}
 .. |Blabelidx| mathdef:: \xref{binary/modules}{binary-labelidx}{\B{labelidx}}
+.. |Bfieldidx| mathdef:: \xref{binary/modules}{binary-fieldidx}{\B{fieldidx}}
 
 
 .. Modules, non-terminals
@@ -1111,6 +1121,7 @@
 .. |vdashtable| mathdef:: \xref{valid/modules}{valid-table}{\vdash}
 .. |vdashmem| mathdef:: \xref{valid/modules}{valid-mem}{\vdash}
 .. |vdashglobal| mathdef:: \xref{valid/modules}{valid-global}{\vdash}
+.. |vdashglobalseq| mathdef:: \xref{valid/modules}{valid-globalseq}{\vdash}
 .. |vdashelem| mathdef:: \xref{valid/modules}{valid-elem}{\vdash}
 .. |vdashelemmode| mathdef:: \xref{valid/modules}{valid-elemmode}{\vdash}
 .. |vdashdata| mathdef:: \xref{valid/modules}{valid-data}{\vdash}
@@ -1293,7 +1304,7 @@
 
 .. Administrative Instructions, terminals
 
-.. |REFI31| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i31}}
+.. |REFI31NUM| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}i31}}
 .. |REFFUNCADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}func}}
 .. |REFSTRUCTADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}struct}}
 .. |REFARRAYADDR| mathdef:: \xref{exec/runtime}{syntax-ref}{\K{ref{.}array}}
@@ -1513,6 +1524,8 @@
 .. |Bmodulenamesubsec| mathdef:: \xref{appendix/custom}{binary-modulenamesec}{\B{modulenamesubsec}}
 .. |Bfuncnamesubsec| mathdef:: \xref{appendix/custom}{binary-funcnamesec}{\B{funcnamesubsec}}
 .. |Blocalnamesubsec| mathdef:: \xref{appendix/custom}{binary-localnamesec}{\B{localnamesubsec}}
+.. |Btypenamesubsec| mathdef:: \xref{appendix/custom}{binary-typenamesec}{\B{typenamesubsec}}
+.. |Bfieldnamesubsec| mathdef:: \xref{appendix/custom}{binary-fieldnamesec}{\B{fieldnamesubsec}}
 
 
 .. Embedding

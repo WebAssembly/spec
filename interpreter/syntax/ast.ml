@@ -201,7 +201,7 @@ and instr' =
   | RefTest of ref_type               (* type test *)
   | RefCast of ref_type               (* type cast *)
   | RefEq                             (* reference equality *)
-  | I31New                            (* allocate scalar *)
+  | RefI31                            (* scalar reference *)
   | I31Get of extension               (* read scalar *)
   | StructNew of idx * initop         (* allocate structure *)
   | StructGet of idx * idx * extension option  (* read structure field *)

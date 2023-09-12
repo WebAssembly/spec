@@ -375,22 +375,22 @@ Reference Instructions
 
 
 
-.. _exec-i31.new:
+.. _exec-ref.i31:
 
-:math:`\I31NEW`
+:math:`\REFI31`
 ...............
 
-1. Assert: due to :ref:`validation <valid-i31.new>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` |I32| is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-ref.i31>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` |I32| is on the top of the stack.
 
 2. Pop the value :math:`\I32.\CONST~i` from the stack.
 
 3. Let :math:`j` be the result of computing :math:`\wrap_{32,31}(i)`.
 
-4. Push the reference value :math:`(\REFI31~j)` to the stack.
+4. Push the reference value :math:`(\REFI31NUM~j)` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\I32.\CONST~i)~\I31NEW &\stepto& (\REFI31~\wrap_{32,31}(i))
+   (\I32.\CONST~i)~\REFI31 &\stepto& (\REFI31NUM~\wrap_{32,31}(i))
    \end{array}
 
 
@@ -409,7 +409,7 @@ Reference Instructions
 
 4. Assert: due to :ref:`validation <valid-i31.get_sx>`, a :math:`\reff` is a :ref:`scalar reference <syntax-ref.i31>`.
 
-5. Let :math:`\REFI31~i` be the reference value :math:`\reff`.
+5. Let :math:`\REFI31NUM~i` be the reference value :math:`\reff`.
 
 6. Let :math:`j` be the result of computing :math:`\extend^{\sx}_{31,32}(i)`.
 
@@ -417,8 +417,8 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFI31~i)~\I31NEW &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
-   (\REFNULL~t)~\I31NEW &\stepto& \TRAP
+   (\REFI31NUM~i)~\I31GET\K{\_}\sx &\stepto& (\I32.\CONST~\extend^{\sx}_{31,32}(i)) \\
+   (\REFNULL~t)~\I31GET\K{\_}\sx &\stepto& \TRAP
    \end{array}
 
 
@@ -517,18 +517,18 @@ Reference Instructions
 .. _exec-struct.get:
 .. _exec-struct.get_sx:
 
-:math:`\STRUCTGET\K{\_}\sx^?~x~i`
+:math:`\STRUCTGET\K{\_}\sx^?~x~y`
 .................................
 
 1. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
-3. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
+3. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
 
 4. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
 
-5. Let :math:`\X{ft}_i` be the :math:`i`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
+5. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
 
 6. Assert: due to :ref:`validation <valid-struct.get>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
 
@@ -542,40 +542,40 @@ Reference Instructions
 
 10. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
 
-11. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`i + 1` fields.
+11. Assert: due to :ref:`validation <valid-struct.get>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
 
-12. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[i]`.
+12. Let :math:`\fieldval` be the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]`.
 
-13. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}_i}(\fieldval))`.
+13. Let :math:`\val` be the result of computing :math:`\unpackval^{\sx^?}_{\X{ft}_y}(\fieldval))`.
 
 14. Push the value :math:`\val` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \val
+   S; F; (\REFSTRUCTADDR~a)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \val
      &
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[i]}(S.\SSTRUCTS[a].\SIFIELDS[i]))
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}^n[y]}(S.\SSTRUCTS[a].\SIFIELDS[y]))
      \end{array} \\
-   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~i) &\stepto& \TRAP
+   S; F; (\REFNULL~t)~(\STRUCTGET\K{\_}\sx^?~x~y) &\stepto& \TRAP
    \end{array}
 
 
 .. _exec-struct.set:
 
-:math:`\STRUCTSET~x~i`
+:math:`\STRUCTSET~x~y`
 ......................
 
 1. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
 2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
-3. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`i + 1` fields.
+3. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is a :ref:`structure type <syntax-structtype>` with at least :math:`y + 1` fields.
 
 4. Let :math:`\TSTRUCT~\X{ft}^\ast` be the :ref:`expanded <aux-expand-deftype>` :ref:`structure type <syntax-structtype>` of :math:`\deftype`.
 
-5. Let :math:`\X{ft}_i` be the :math:`i`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
+5. Let :math:`\X{ft}_y` be the :math:`y`-th :ref:`field type <syntax-fieldtype>` of :math:`\X{ft}^\ast`.
 
 6. Assert: due to :ref:`validation <valid-struct.set>`, a :ref:`value <syntax-val>` is on the top of the stack.
 
@@ -593,21 +593,21 @@ Reference Instructions
 
 12. Let :math:`\REFSTRUCTADDR~a` be the reference value :math:`\reff`.
 
-13. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`i + 1` fields.
+13. Assert: due to :ref:`validation <valid-struct.set>`, the :ref:`structure instance <syntax-structinst>` :math:`S.\SSTRUCTS[a]` exists and has at least :math:`y + 1` fields.
 
-14. Let :math:`\fieldval` be the result of computing :math:`\packval_{\X{ft}_i}(\val))`.
+14. Let :math:`\fieldval` be the result of computing :math:`\packval_{\X{ft}_y}(\val))`.
 
-15. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[i]` with :math:`\fieldval`.
+15. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SSTRUCTS[a].\SIFIELDS[y]` with :math:`\fieldval`.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~i) &\stepto& S'; \epsilon
+   S; F; (\REFSTRUCTADDR~a)~\val~(\STRUCTSET~x~y) &\stepto& S'; \epsilon
      &
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[i] = \packval_{\X{ft}^n[i]}(\val))
+      \land & S' = S \with \SSTRUCTS[a].\SIFIELDS[y] = \packval_{\X{ft}^n[y]}(\val))
      \end{array} \\
-   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~i) &\stepto& \TRAP
+   S; F; (\REFNULL~t)~\val~(\STRUCTSET~x~y) &\stepto& \TRAP
    \end{array}
 
 
@@ -1081,61 +1081,67 @@ Reference Instructions
 :math:`\ARRAYCOPY~x~y`
 ......................
 
-.. todo:: Handle packed fields correctly via array.get_u instead of array.get
+1. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]` exists.
 
-1. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+2. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]`.
 
-2. Pop the value :math:`n` from the stack.
+3. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`expansion <aux-expand-deftype>` of :math:`\deftype` is an :ref:`array type <syntax-arraytype>`.
 
-3. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+4. Let :math:`\TARRAY~\mut~\X{st}` be the :ref:`expanded <aux-expand-deftype>` :ref:`array type <syntax-arraytype>` :math:`\deftype`.
 
-4. Pop the value :math:`s` from the stack.
+5. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-5. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
-
-6. Pop the value :math:`\reff_2` from the stack.
+6. Pop the value :math:`\I32.\CONST~n` from the stack.
 
 7. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
 
-8. Pop the value :math:`d` from the stack.
+8. Pop the value :math:`\I32.\CONST~s` from the stack.
 
-9. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
+9. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~y)` is on the top of the stack.
 
-10. Pop the value :math:`\reff_1` from the stack.
+10. Pop the value :math:`\reff_2` from the stack.
 
-11. If :math:`\reff_1` is :math:`\REFNULL~t`, then:
+11. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`\I32` is on the top of the stack.
+
+12. Pop the value :math:`\I32.\CONST~d` from the stack.
+
+13. Assert: due to :ref:`validation <valid-array.copy>`, a :ref:`value <syntax-val>` of :ref:`type <syntax-valtype>` :math:`(\REF~\NULL~x)` is on the top of the stack.
+
+14. Pop the value :math:`\reff_1` from the stack.
+
+15. If :math:`\reff_1` is :math:`\REFNULL~t`, then:
 
    a. Trap.
 
-12. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_1` is an :ref:`array reference <syntax-ref.array>`.
+16. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_1` is an :ref:`array reference <syntax-ref.array>`.
 
-13. Let :math:`\REFARRAYADDR~a_1` be the reference value :math:`\reff_1`.
+17. Let :math:`\REFARRAYADDR~a_1` be the reference value :math:`\reff_1`.
 
-14. If :math:`\reff_2` is :math:`\REFNULL~t`, then:
+18. If :math:`\reff_2` is :math:`\REFNULL~t`, then:
 
    a. Trap.
 
-15. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_2` is an :ref:`array reference <syntax-ref.array>`.
+19. Assert: due to :ref:`validation <valid-array.copy>`, :math:`\reff_2` is an :ref:`array reference <syntax-ref.array>`.
 
-16. Let :math:`\REFARRAYADDR~a_2` be the reference value :math:`\reff_2`.
+20. Let :math:`\REFARRAYADDR~a_2` be the reference value :math:`\reff_2`.
 
-17. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_1]` exists.
+21. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_1]` exists.
 
-18. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
+22. Assert: due to :ref:`validation <valid-array.copy>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a_2]` exists.
 
-19. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
-
-    a. Trap.
-
-20. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+23. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_1].\AIFIELDS`, then:
 
     a. Trap.
 
-21. If :math:`n = 0`, then:
+24. If :math:`s + n` is larger than or equal to the length of :math:`S.\SARRAYS[a_2].\AIFIELDS`, then:
+
+    a. Trap.
+
+25. If :math:`n = 0`, then:
 
     a. Return.
 
-22. If :math:`d \leq s`, then:
+26. If :math:`d \leq s`, then:
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
@@ -1145,7 +1151,7 @@ Reference Instructions
 
     d. Push the value :math:`\I32.\CONST~s` to the stack.
 
-    e. Execute the instruction :math:`\ARRAYGET~y`.
+    e. Execute :math:`\getfield(\X{st})`.
 
     f. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1161,7 +1167,7 @@ Reference Instructions
 
     l. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
 
-23. Else:
+27. Else:
 
     a. Push the value :math:`\REFARRAYADDR~a_1` to the stack.
 
@@ -1175,7 +1181,7 @@ Reference Instructions
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-    g. Execute the instruction :math:`\ARRAYGET~y`.
+    g. Execute :math:`\getfield(\X{st})`.
 
     h. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1187,9 +1193,9 @@ Reference Instructions
 
     l. Push the value :math:`\I32.\CONST~s` to the stack.
 
-24. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+28. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-25. Execute the instruction :math:`\ARRAYCOPY~x~y`.
+29. Execute the instruction :math:`\ARRAYCOPY~x~y`.
 
 .. math::
    ~\\[-1ex]
@@ -1209,28 +1215,38 @@ Reference Instructions
      \\ \quad S;
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\ARRAYGET~y) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}) \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d \leq s)
+     (\otherwise, \iff d \leq s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
      \\ \quad S;
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~(\ARRAYGET~y) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}) \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d > s)
+     (\otherwise, \iff d > s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
    \\[1ex]
    S; \val~(\I32.\CONST~d)~(\REFNULL~t)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
+   \end{array}
+
+Where:
+
+.. _aux-getfield:
+
+.. math::
+   \begin{array}{lll}
+   \getfield(\valtype) &=& \ARRAYGET \\
+   \getfield(\packedtype) &=& \ARRAYGETU \\
    \end{array}
 
 

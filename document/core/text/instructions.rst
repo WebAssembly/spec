@@ -199,7 +199,7 @@ Reference Instructions
 .. _text-array.copy:
 .. _text-array.init_data:
 .. _text-array.init_elem:
-.. _text-i31.new:
+.. _text-ref.i31:
 .. _text-i31.get_s:
 .. _text-i31.get_u:
 .. _text-ref.test:
@@ -219,10 +219,10 @@ Reference Instructions
      \text{ref.cast}~~t{:}\Treftype &\Rightarrow& \REFCAST~t \\ &&|&
      \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
      \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
-     \text{struct.get}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~i \\ &&|&
-     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~i \\ &&|&
-     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~i \\ &&|&
-     \text{struct.set}~~x{:}\Ttypeidx_I~~i{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~i \\ &&|&
+     \text{struct.get}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \text{struct.set}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~y \\ &&|&
      \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
      \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
      \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
@@ -237,7 +237,7 @@ Reference Instructions
      \text{array.copy}~~x{:}\Ttypeidx_I~~y{:}\Ttypeidx_I &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
      \text{array.init\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
      \text{array.init\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
-     \text{i31.new} &\Rightarrow& \I31NEW \\ &&|&
+     \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
      \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
      \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
      \text{extern.internalize} &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&

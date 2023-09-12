@@ -5,7 +5,7 @@
     "\05"                     ;; Type section length
     "\01"                     ;; Types vector length
     "\5e"                     ;; Array type, -0x22
-    "\7a"                     ;; Storage type: i8 or -0x06
+    "\78"                     ;; Storage type: i8 or -0x08
     "\02"                     ;; Mutability, should be 0 or 1, but isn't
   )
   "malformed mutability"

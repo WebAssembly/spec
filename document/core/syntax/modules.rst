@@ -29,7 +29,7 @@ and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`el
 Each of the vectors -- and thus the entire module -- may be empty.
 
 
-.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, function, global, table, memory, element, data, local, parameter, import
+.. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, element, data, local, parameter, import, field
    pair: abstract syntax; type index
    pair: abstract syntax; function index
    pair: abstract syntax; table index
@@ -39,6 +39,7 @@ Each of the vectors -- and thus the entire module -- may be empty.
    pair: abstract syntax; data index
    pair: abstract syntax; local index
    pair: abstract syntax; label index
+   pair: abstract syntax; field index
    pair: type; index
    pair: function; index
    pair: table; index
@@ -48,6 +49,7 @@ Each of the vectors -- and thus the entire module -- may be empty.
    pair: data; index
    pair: local; index
    pair: label; index
+   pair: field; index
 .. _syntax-typeidx:
 .. _syntax-funcidx:
 .. _syntax-tableidx:
@@ -57,6 +59,7 @@ Each of the vectors -- and thus the entire module -- may be empty.
 .. _syntax-dataidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
+.. _syntax-fieldidx:
 .. _syntax-index:
 
 Indices
@@ -76,6 +79,7 @@ Each class of definition has its own *index space*, as distinguished by the foll
    \production{data index} & \dataidx &::=& \u32 \\
    \production{local index} & \localidx &::=& \u32 \\
    \production{label index} & \labelidx &::=& \u32 \\
+   \production{field index} & \fieldidx &::=& \u32 \\
    \end{array}
 
 The index space for :ref:`functions <syntax-func>`, :ref:`tables <syntax-table>`, :ref:`memories <syntax-mem>` and :ref:`globals <syntax-global>` includes respective :ref:`imports <syntax-import>` declared in the same module.
@@ -87,6 +91,8 @@ The index space for :ref:`locals <syntax-local>` is only accessible inside a :re
 
 Label indices reference :ref:`structured control instructions <syntax-instr-control>` inside an instruction sequence.
 
+Each :ref:`aggregate type <syntax-aggrtype>` provides an index space for its :ref:`fields <syntax-fieldtype>`.
+
 
 .. _free-typeidx:
 .. _free-funcidx:
@@ -97,6 +103,7 @@ Label indices reference :ref:`structured control instructions <syntax-instr-cont
 .. _free-dataidx:
 .. _free-localidx:
 .. _free-labelidx:
+.. _free-fieldidx:
 .. _free-index:
 
 Conventions

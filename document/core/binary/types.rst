@@ -58,16 +58,16 @@ Heap Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{abstract heap type} & \Babsheaptype &::=&
-     \hex{65} &\Rightarrow& \NONE \\ &&|&
-     \hex{66} &\Rightarrow& \ARRAY \\ &&|&
-     \hex{67} &\Rightarrow& \STRUCT \\ &&|&
-     \hex{68} &\Rightarrow& \NOEXTERN \\ &&|&
-     \hex{69} &\Rightarrow& \NOFUNC \\ &&|&
-     \hex{6A} &\Rightarrow& \I31 \\ &&|&
-     \hex{6D} &\Rightarrow& \EQT \\ &&|&
-     \hex{6E} &\Rightarrow& \ANY \\ &&|&
+     \hex{73} &\Rightarrow& \NOFUNC \\ &&|&
+     \hex{72} &\Rightarrow& \NOEXTERN \\ &&|&
+     \hex{71} &\Rightarrow& \NONE \\ &&|&
+     \hex{70} &\Rightarrow& \FUNC \\ &&|&
      \hex{6F} &\Rightarrow& \EXTERN \\ &&|&
-     \hex{70} &\Rightarrow& \FUNC \\
+     \hex{6E} &\Rightarrow& \ANY \\ &&|&
+     \hex{6D} &\Rightarrow& \EQT \\ &&|&
+     \hex{6C} &\Rightarrow& \I31 \\ &&|&
+     \hex{6B} &\Rightarrow& \STRUCT \\ &&|&
+     \hex{6A} &\Rightarrow& \ARRAY \\
    \production{heap type} & \Bheaptype &::=&
      \X{ht}{:}\Babsheaptype &\Rightarrow& \X{ht} \\ &&|&
      x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
@@ -86,8 +86,8 @@ Reference Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
-     \hex{6B}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\X{ht} \\ &&|&
-     \hex{6C}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\ &&|&
+     \hex{64}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\X{ht} \\ &&|&
+     \hex{63}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\ &&|&
      \X{ht}{:}\Babsheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\
    \end{array}
 
@@ -185,9 +185,9 @@ Aggregate Types
      t{:}\Bpackedtype
        &\Rightarrow& t \\
    \production{packed type} & \Bpackedtype &::=&
-     \hex{7A}
+     \hex{78}
        &\Rightarrow& \I8 \\ &&|&
-     \hex{79}
+     \hex{77}
        &\Rightarrow& \I16 \\
    \end{array}
 

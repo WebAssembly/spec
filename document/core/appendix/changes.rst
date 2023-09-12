@@ -165,7 +165,7 @@ Added more precise types for references [#proposal-typedref]_.
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
 
-.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recrusive type
+.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
 
 Garbage Collection
 ~~~~~~~~~~~~~~~~~~
@@ -182,7 +182,7 @@ Added managed reference types [#proposal-gc]_.
 
 * New generic :ref:`reference instructions <syntax-instr-ref>`: |REFEQ|, |REFTEST|, |REFCAST|, |BRONCAST|, |BRONCASTFAIL|
 
-* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`: |I31NEW|, :math:`\I31GET\K{\_}\sx`
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`: |REFI31|, :math:`\I31GET\K{\_}\sx`
 
 * New :ref:`reference instructions <syntax-instr-ref>` for :ref:`structure types <syntax-structtype>`: |STRUCTNEW|, |STRUCTNEWDEFAULT|, :math:`\STRUCTGET\K{\_}\sx^?`, |STRUCTSET|
 
@@ -190,7 +190,7 @@ Added managed reference types [#proposal-gc]_.
 
 * New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |EXTERNINTERNALIZE|, |EXTERNEXTERNALIZE|
 
-* Extended set of :ref:`constant instructions <valid-const>` with |I31NEW|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |EXTERNINTERNALIZE|, |EXTERNEXTERNALIZE|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
+* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |EXTERNINTERNALIZE|, |EXTERNEXTERNALIZE|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 
 .. [#proposal-signext]
