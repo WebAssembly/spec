@@ -263,7 +263,7 @@ Recursive Types
 Abbreviations
 .............
 
-Singular recursive types can omit the |Trec| keyword:
+Singular recursive types can omit the :math:`\text{rec}` keyword:
 
 .. math::
    \begin{array}{llclll}
