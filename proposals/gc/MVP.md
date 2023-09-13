@@ -366,7 +366,7 @@ In addition to the [existing rules](https://github.com/WebAssembly/function-refe
      - if `$t = <structtype>`
 
 * Any concrete array type is a subtype of `array`
-  - `$t <: struct`
+  - `$t <: array`
      - if `$t = <arraytype>`
 
 * Any concrete function type is a subtype of `func`
