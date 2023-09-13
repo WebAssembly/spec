@@ -670,8 +670,8 @@ The definition of the initial :ref:`identifier context <text-context>` :math:`I`
 
 .. math::
    \begin{array}{@{}lcl@{\qquad\qquad}l}
-   \F{idc}(\text{(}~\text{rec}~~\Tdeftype^\ast~\text{)}) &=&
-     \bigcompose \F{idc}(\Tdeftype)^\ast \\
+   \F{idc}(\text{(}~\text{rec}~~\Ttypedef^\ast~\text{)}) &=&
+     \bigcompose \F{idc}(\Ttypedef)^\ast \\
    \F{idc}(\text{(}~\text{type}~\Tid^?~\Tsubtype~\text{)}) &=&
      \{\ITYPES~(\Tid^?), \IFIELDS~\F{idf}(\Tsubtype), \ITYPEDEFS~\X{st}\} \\
    \F{idc}(\text{(}~\text{func}~\Tid^?~\dots~\text{)}) &=&

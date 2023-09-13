@@ -908,7 +908,7 @@
 .. |Tpackedtype| mathdef:: \xref{text/types}{text-packedtype}{\T{packedtype}}
 .. |Tcomptype| mathdef:: \xref{text/types}{text-comptype}{\T{comptype}}
 .. |Tsubtype| mathdef:: \xref{text/types}{text-subtype}{\T{subtype}}
-.. |Tdeftype| mathdef:: \xref{text/types}{text-deftype}{\T{deftype}}
+.. |Ttypedef| mathdef:: \xref{text/types}{text-typedef}{\T{typedef}}
 .. |Trectype| mathdef:: \xref{text/types}{text-rectype}{\T{rectype}}
 
 .. |Tglobaltype| mathdef:: \xref{text/types}{text-globaltype}{\T{globaltype}}
