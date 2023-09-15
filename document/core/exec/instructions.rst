@@ -331,10 +331,10 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
+   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
      & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
+   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
      & (\otherwise) \\
    \end{array}
 
@@ -368,10 +368,10 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
+   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
+   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
      & (\otherwise) \\
    \end{array}
 
