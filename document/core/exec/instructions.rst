@@ -4520,7 +4520,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & \expanddt(S.f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
+     \wedge & \expanddt(f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
