@@ -1214,7 +1214,7 @@ Reference Instructions
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
-     \\ \quad S;
+     \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
        (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}) \\
@@ -1226,7 +1226,7 @@ Reference Instructions
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
-     \\ \quad S;
+     \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
        (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}) \\
