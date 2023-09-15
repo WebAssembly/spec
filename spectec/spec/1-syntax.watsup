@@ -1,4 +1,6 @@
+;;
 ;; Meta
+;;
 
 syntax n = nat
 
@@ -9,7 +11,9 @@ var k : nat
 syntax name hint(desc "name") = text
 
 
+;;
 ;; Values
+;;
 
 syntax byte hint(desc "byte") = nat  ;; TODO
 syntax u32 hint(desc "32-bit integer") = nat  ;; TODO
@@ -17,7 +21,9 @@ syntax u32 hint(desc "32-bit integer") = nat  ;; TODO
 var b : byte
 
 
+;;
 ;; Indices
+;;
 
 syntax idx hint(desc "index") = nat
 syntax funcidx hint(desc "function index") = idx
@@ -34,14 +40,28 @@ var y : idx
 var l : labelidx
 
 
+;;
 ;; Types
+;;
+
+;; Value types
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
+
 syntax vectype hint(desc "vector type") =
   | V128
+
+syntax absheaptype hint(desc "abstract heap type") =
+  | ANY | EQ | I31 | STRUCT | ARRAY | NONE
+  | FUNC | NOFUNC
+  | EXTERN | NOEXTERN
+syntax heaptype hint(desc "heap type") =
+  | absheaptype | typeidx
+
 syntax reftype hint(desc "reference type") =
-  | FUNCREF | EXTERNREF
+  | REF NULL? heaptype
+
 syntax valtype hint(desc "value type") =
   | numtype | vectype | reftype | BOT
 
@@ -51,10 +71,47 @@ syntax fn hint(show F#n) = | F32 | F64
 var t : valtype
 var nt : numtype
 var vt : vectype
+var ht : heaptype
 var rt : reftype
+
+
+;; Type definitions
 
 syntax resulttype hint(desc "result type") =
   valtype*
+
+syntax packedtype hint(desc "packed type") =
+  | I8 | I16
+
+syntax storagetype hint(desc "storage type") =
+  | valtype | packedtype
+
+syntax fieldtype hint(desc "field type") =
+  | MUT? storagetype
+
+syntax comptype hint(desc "composite type") =
+  | STRUCT fieldtype*
+  | ARRAY fieldtype
+  | FUNC functype
+
+syntax subtype hint(desc "sub type") =
+  | SUB FINAL? typeidx* comptype
+
+syntax rectype hint(desc "recursive type") =
+  | REC subtype*
+
+syntax deftype hint(desc "defined type") =
+  DEF rectype nat hint(show %.%)
+
+var pt : packedtype
+var gt : storagetype
+var ht : fieldtype
+var ct : comptype
+var st : subtype
+var dt : deftype
+
+
+;; External types
 
 syntax limits hint(desc "limits") =
   `[u32 .. u32]
@@ -81,7 +138,9 @@ var mt : memtype
 var xt : externtype
 
 
+;;
 ;; Operators
+;;
 
 syntax sx hint(desc "signedness") = | U | S
 
@@ -112,7 +171,9 @@ var testop : testop_numtype
 var relop : relop_numtype
 
 
+;;
 ;; Instructions
+;;
 
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
@@ -132,9 +193,17 @@ syntax instr/control hint(desc "control instruction") =
   | BR labelidx
   | BR_IF labelidx
   | BR_TABLE labelidx* labelidx
+  | BR_ON_NULL labelidx
+  | BR_ON_NON_NULL labelidx
+  | BR_ON_CAST labelidx reftype reftype
+  | BR_ON_CAST_FAIL labelidx reftype reftype
   | CALL funcidx
-  | CALL_INDIRECT tableidx functype
+  | CALL_REF typeidx
+  | CALL_INDIRECT tableidx typeidx
   | RETURN
+  | RETURN_CALL funcidx
+  | RETURN_CALL_REF typeidx
+  | RETURN_CALL_INDIRECT tableidx typeidx
   | ...
 
 syntax instr/numeric hint(desc "numeric instruction") = ...
@@ -149,8 +218,34 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
 
 syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL reftype
+  | REF.I31
   | REF.FUNC funcidx
   | REF.IS_NULL
+  | REF.EQ
+  | REF.TEST reftype
+  | REF.CAST reftype
+  | ...
+
+syntax instr/heap hint(desc "heap instruction") = ...
+  | I31.GET sx                      hint(show I31.GET#_#%)
+  | STRUCT.NEW typeidx
+  | STRUCT.NEW_DEFAULT typeidx
+  | STRUCT.GET sx? typeidx          hint(show STRUCT.GET#_#% %)
+  | STRUCT.SET typeidx
+  | ARRAY.NEW typeidx
+  | ARRAY.NEW_DEFAULT typeidx
+  | ARRAY.NEW_FIXED typedix nat
+  | ARRAY.NEW_DATA typeidx dataidx
+  | ARRAY.NEW_ELEM typeidx elemidx
+  | ARRAY.GET sx? typeidx           hint(show ARRAY.GET#_#% %)
+  | ARRAY.SET typeidx
+  | ARRAY.LEN
+  | ARRAY.FILL typeidx
+  | ARRAY.COPY typeidx typeidx
+  | ARRAY.INIT_DATA typeidx dataidx
+  | ARRAY.INIT_ELEM typeidx elemidx
+  | EXTERN.INTERNALIZE
+  | EXTERN.EXTERNALIZE
   | ...
 
 syntax instr/state hint(desc "state instruction") = ...
@@ -167,14 +262,14 @@ syntax instr/state hint(desc "state instruction") = ...
   | TABLE.COPY tableidx tableidx
   | TABLE.INIT tableidx elemidx
   | ELEM.DROP elemidx
-  | MEMORY.SIZE
-  | MEMORY.GROW
-  | MEMORY.FILL
-  | MEMORY.COPY
-  | MEMORY.INIT dataidx
+  | MEMORY.SIZE memidx
+  | MEMORY.GROW memidx
+  | MEMORY.FILL memidx
+  | MEMORY.COPY memidx memidx
+  | MEMORY.INIT memidx dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? u32 u32  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
-  | STORE numtype n? u32 u32        hint(show %.STORE % %) hint(show %.STORE#% % %)
+  | LOAD numtype (n _ sx)? memidx u32 u32  hint(show %.LOAD % %)  hint(show %.LOAD#% % % %)
+  | STORE numtype n? memidx u32 u32        hint(show %.STORE % %) hint(show %.STORE#% % % %)
 
 syntax expr hint(desc "expression") =
   instr*
@@ -182,7 +277,9 @@ syntax expr hint(desc "expression") =
 syntax instr hint(desc "instruction")
 
 
+;;
 ;; Modules
+;;
 
 syntax elemmode = | TABLE tableidx expr | DECLARE
 syntax datamode = | MEMORY memidx expr

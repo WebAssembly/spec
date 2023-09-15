@@ -11,6 +11,8 @@ syntax elemaddr hint(desc "elem address") = addr
 syntax dataaddr hint(desc "data address") = addr
 syntax labeladdr hint(desc "label address") = addr
 syntax hostaddr hint(desc "host address") = addr
+syntax structaddr hint(desc "structure address") = addr
+syntax arrayaddr hint(desc "array address") = addr
 
 var a : addr
 var fa : funcaddr
@@ -19,6 +21,8 @@ var ta : tableaddr
 var ma : memaddr
 var ea : elemaddr
 var da : dataaddr
+var sa : structaddr
+var aa : arrayaddr
 
 
 ;;
@@ -52,13 +56,14 @@ var xv : externval
 
 ;; Auxiliary definition: default values
 
-def $default_(valtype) : val  hint(partial)
+def $default_(valtype) : val?
+
 def $default_(I32) = (CONST I32 0)
 def $default_(I64) = (CONST I64 0)
 def $default_(F32) = (CONST F32 0)
 def $default_(F64) = (CONST F64 0)
-def $default_(FUNCREF) = (REF.NULL FUNCREF)
-def $default_(EXTERNREF) = (REF.NULL EXTERNREF) ;; TODO: All reference types should be caught by one pattern.
+def $default_(REF NULL ht) = (REF.NULL ht)
+def $default_(REF ht) = epsilon
 
 
 ;;
@@ -69,6 +74,7 @@ def $default_(EXTERNREF) = (REF.NULL EXTERNREF) ;; TODO: All reference types sho
 
 syntax funcinst hint(desc "function instance") =
   { MODULE moduleinst,
+    TYPE functype,
     CODE func }
 syntax globalinst hint(desc "global instance") =
   { TYPE globaltype,
@@ -88,6 +94,17 @@ syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
 
+syntax structinst hint(desc "structure instance") =
+  { TYPE deftype,
+    FIELD fieldval* }
+syntax arrayinst hint(desc "array instance") =
+  { TYPE deftype,
+    FIELD fieldval* }
+syntax fieldval hint(desc "field value") =
+  | val | packedval
+syntax packedval hint(desc "packed value") =
+  | PACK packedtype c_packedtype     hint(show %.PACK %)
+
 syntax moduleinst hint(desc "module instance") =
   { FUNC funcaddr*,
     GLOBAL globaladdr*,
@@ -106,6 +123,11 @@ var ei : eleminst
 var di : datainst
 var xi : exportinst
 
+var si : structinst
+var ai : arrayinst
+var fv : fieldval
+var pv : packedval
+
 
 ;; Configurations proper
 
@@ -115,10 +137,12 @@ syntax store hint(desc "store") =
     TABLE tableinst*,
     MEM meminst*,
     ELEM eleminst*,
-    DATA datainst* }
+    DATA datainst*,
+    STRUCT structinst*,
+    ARRAY arrayinst* }
 
 syntax frame hint(desc "frame") =
-  { LOCAL val*,
+  { LOCAL (val?)*,
     MODULE moduleinst }
 
 syntax state hint(desc "state") = store; frame
@@ -131,15 +155,17 @@ var z : state
 
 ;; Auxiliary notation: short-hands
 
-def $funcaddr(state) : funcaddr*  hint(show %.MODULE.FUNC)
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
 def $funcaddr((s; f)) = f.MODULE.FUNC
 
-def $funcinst(state) : funcinst*  hint(show %.FUNC)
+def $funcinst(state) : funcinst*      hint(show %.FUNC)
 def $globalinst(state) : globalinst*  hint(show %.GLOBAL)
-def $tableinst(state) : tableinst*  hint(show %.TABLE)
-def $meminst(state) : meminst*  hint(show %.MEM)
-def $eleminst(state) : eleminst*  hint(show %.ELEM)
-def $datainst(state) : datainst*  hint(show %.DATA)
+def $tableinst(state) : tableinst*    hint(show %.TABLE)
+def $meminst(state) : meminst*        hint(show %.MEM)
+def $eleminst(state) : eleminst*      hint(show %.ELEM)
+def $datainst(state) : datainst*      hint(show %.DATA)
+def $structinst(state) : structinst*  hint(show %.STRUCT)
+def $arrayinst(state) : arrayinst*    hint(show %.ARRAY)
 
 def $funcinst((s; f)) = s.FUNC
 def $globalinst((s; f)) = s.GLOBAL
@@ -147,6 +173,8 @@ def $tableinst((s; f)) = s.TABLE
 def $meminst((s; f)) = s.MEM
 def $eleminst((s; f)) = s.ELEM
 def $datainst((s; f)) = s.DATA
+def $structinst((s; f)) = s.STRUCT
+def $arrayinst((s; f)) = s.ARRAY
 
 def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
 def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
@@ -183,6 +211,22 @@ def $with_meminst((s; f), x, mi) = s[.MEM[f.MODULE.MEM[x]] = mi]; f
 def $with_elem((s; f), x, r*) = s[.ELEM[f.MODULE.ELEM[x]].ELEM = r*]; f
 def $with_data((s; f), x, b*) = s[.DATA[f.MODULE.DATA[x]].DATA = b*]; f
 
+def $ext_structinst(state, structinst*) : state  hint(show %.[.STRUCT =.. %])
+def $ext_arrayinst(state, arrayinst*) : state    hint(show %.[.ARRAY =.. %])
+
+def $ext_structinst((s; f), si*) = s.[.STRUCT =.. si*]; f
+def $ext_arrayinst((s; f), ai*) = s.[.ARRAY =.. ai*]; f
+
+
+def $packval(storagetype, val) : fieldval         hint(show $pack_(%)(%))
+def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)(%))
+
+def $packval(valtype, val) = val
+def $packval(packedtype, (CONST I32 i)) = PACK packedtype $wrap(32, $packedsize(packedtype), i)
+
+def $unpackval(valtype, epsilon, val) = val
+def $unpackval(packedtype, sx, (PACK pt i)) = CONST I32 $extend($packedsize(packedtype), 32, sx, i)
+
 
 ;; Auxiliary definitions: Growing store objects
 
@@ -208,9 +252,12 @@ def $grow_memory(mi, n) = mi'
 
 syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr
+  | REF.I31_NUM i31                hint(show REF.I31 %)
+  | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
+  | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
   | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
-  | REF.HOST_ADDR hostaddr         hint(show REF.EXTERN %)
-  | CALL_ADDR funcaddr             hint(show CALL %)
+  | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
+  | REF.EXTERN ref
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP

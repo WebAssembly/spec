@@ -31,6 +31,25 @@ def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
+def $packedsize(packedtype) : nat  hint(show |%|)
+def $packedsize(I8) = 8
+def $packedsize(I16) = 16
+
+def $storagesize(storagetype) : nat  hint(show |%|)
+def $storagesize(valtype) = $size(valtype)
+def $storagesize(packedtype) = $packedsize(packedtype)
+
+
+;; Unpacking
+
+def $unpacktype(storagetype) : valtype  hint(show $unpack(%))
+def $unpacktype(valtype) = valtype
+def $unpacktype(packedtype) = I32
+
+def $sx_field(storagetype) : sx?  hint(show $sx(%))
+def $sx_field(valtype) = epsilon
+def $sx_field(packedtype) = SX
+
 
 ;;
 ;; Some notation tests
