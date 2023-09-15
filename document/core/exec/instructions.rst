@@ -294,9 +294,11 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
+     & (\iff \reff_1 = (\REFNULL~\X{ht}_1) \land \reff_2 = (\REFNULL~\X{ht}_2)) \\
+   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
      & (\iff \reff_1 = \reff_2) \\
    \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~0)
-     & (\iff \reff_1 \neq \reff_2) \\
+     & (\otherwise) \\
    \end{array}
 
 
