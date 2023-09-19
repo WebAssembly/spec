@@ -294,9 +294,11 @@ Reference Instructions
 .. math::
    \begin{array}{lcl@{\qquad}l}
    \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
+     & (\iff \reff_1 = (\REFNULL~\X{ht}_1) \land \reff_2 = (\REFNULL~\X{ht}_2)) \\
+   \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~1)
      & (\iff \reff_1 = \reff_2) \\
    \reff_1~\reff_2~\REFEQ &\stepto& (\I32.\CONST~0)
-     & (\iff \reff_1 \neq \reff_2) \\
+     & (\otherwise) \\
    \end{array}
 
 
@@ -329,10 +331,10 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
+   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~1)
      & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
+   S; F; \reff~(\REFTEST~\X{rt}) &\stepto& (\I32.\CONST~0)
      & (\otherwise) \\
    \end{array}
 
@@ -366,10 +368,10 @@ Reference Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
+   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}'
         \land \vdashreftypematch \X{rt}' \matchesreftype \insttype_{F.\AMODULE}(\X{rt})) \\
-   S; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
+   S; F; \reff~(\REFCAST~\X{rt}) &\stepto& \TRAP
      & (\otherwise) \\
    \end{array}
 
@@ -1212,7 +1214,7 @@ Reference Instructions
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
-     \\ \quad S;
+     \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
        (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}) \\
@@ -1220,11 +1222,11 @@ Reference Instructions
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d \leq s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
+     (\otherwise, \iff d \leq s \land F.\AMODULE.\MITYPES[y] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n+1)~(\ARRAYCOPY~x~y)
      \quad\stepto
-     \\ \quad S;
+     \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
        (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}) \\
@@ -1232,7 +1234,7 @@ Reference Instructions
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
      \\ \qquad
-     (\otherwise, \iff d > s \land F.\AMODULE.\MITYPES[x] = \TARRAY~\mut~\X{st}) \\
+     (\otherwise, \iff d > s \land F.\AMODULE.\MITYPES[y] = \TARRAY~\mut~\X{st}) \\
    \\[1ex]
    S; (\REFNULL~t)~(\I32.\CONST~d)~\val~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \quad\stepto\quad \TRAP
    \\[1ex]
@@ -4520,7 +4522,7 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & \expanddt(S.f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
+     \wedge & \expanddt(f.\FITYPE) = \TFUNC~[t_1^n] \toF [t_2^m] \\
      \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\

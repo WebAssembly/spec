@@ -258,6 +258,8 @@ Reference Instructions
    \frac{
      C \vdashreftype \X{rt} \ok
      \qquad
+     C \vdashreftype \X{rt'} \ok
+     \qquad
      C \vdashreftypematch \X{rt} \matchesreftype \X{rt}'
    }{
      C \vdashinstr \REFTEST~\X{rt} : [\X{rt}'] \to [\I32]
@@ -275,6 +277,8 @@ Reference Instructions
 .. math::
    \frac{
      C \vdashreftype \X{rt} \ok
+     \qquad
+     C \vdashreftype \X{rt'} \ok
      \qquad
      C \vdashreftypematch \X{rt} \matchesreftype \X{rt}'
    }{
