@@ -13,7 +13,7 @@ Category                                  Constructor                           
 :ref:`Number type <syntax-numtype>`       |F32|                                               :math:`\hex{7D}` (-3 as |Bs7|)
 :ref:`Number type <syntax-numtype>`       |F64|                                               :math:`\hex{7C}` (-4 as |Bs7|)
 :ref:`Vector type <syntax-vectype>`       |V128|                                              :math:`\hex{7B}` (-5 as |Bs7|)
-(reserved)                                                                                    :math:`\hex{7a}` .. :math:`\hex{79}`
+(reserved)                                                                                    :math:`\hex{7A}` .. :math:`\hex{79}`
 :ref:`Packed type <syntax-packedtype>`    |I8|                                                :math:`\hex{78}` (-8 as |Bs7|)
 :ref:`Packed type <syntax-packedtype>`    |I16|                                               :math:`\hex{77}` (-9 as |Bs7|)
 (reserved)                                                                                    :math:`\hex{78}` .. :math:`\hex{74}`
