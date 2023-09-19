@@ -625,11 +625,10 @@
   (global $g2 i32 (global.get $g0))
   (global $g3 i32 (global.get $g1))
 
-  (global $gn funcref (ref.null func))
   (global $gf funcref (ref.func $f))
   (func $f)
 
-  (table $t 10 funcref (global.get $gn))
+  (table $t 10 funcref (ref.null func))
   (elem (table $t) (global.get $g2) funcref (ref.func $f))
   (elem (table $t) (global.get $g3) funcref (global.get $gf))
 
@@ -656,6 +655,14 @@
   (module 
     (global $g1 i32 (global.get $g2))
     (global $g2 i32 (i32.const 0))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global $g funcref (ref.null func))
+    (table $t 10 funcref (global.get $g))
   )
   "unknown global"
 )

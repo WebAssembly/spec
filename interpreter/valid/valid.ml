@@ -1055,9 +1055,9 @@ let check_module (m : module_) =
     |> check_list check_type m.it.types
     |> check_list check_import m.it.imports
     |> check_list check_func m.it.funcs
-    |> check_list check_global m.it.globals
     |> check_list check_table m.it.tables
     |> check_list check_memory m.it.memories
+    |> check_list check_global m.it.globals
     |> check_list check_elem m.it.elems
     |> check_list check_data m.it.datas
   in
