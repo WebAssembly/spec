@@ -719,16 +719,17 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * all other fields are empty.
 
-* Under the context :math:`C'`,
-  the sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+* Under the context :math:`C'`:
 
-* Under the context :math:`C`:
+  * The sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
 
   * For each :math:`\table_i` in :math:`\module.\MTABLES`,
     the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
 
   * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
     the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
+
+* Under the context :math:`C`:
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
     the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
@@ -773,9 +774,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      C' \vdashglobalseq \global^\ast : \X{gt}^\ast
      \quad
-     (C \vdashtable \table : \X{tt})^\ast
+     (C' \vdashtable \table : \X{tt})^\ast
      \quad
-     (C \vdashmem \mem : \X{mt})^\ast
+     (C' \vdashmem \mem : \X{mt})^\ast
      \quad
      (C \vdashfunc \func : \X{ft})^\ast
      \\
