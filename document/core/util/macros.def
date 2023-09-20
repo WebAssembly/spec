@@ -178,11 +178,7 @@
 .. Types, terminals
 
 .. |toF| mathdef:: \xref{syntax/types}{syntax-functype}{\rightarrow}
-.. |to| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow}
-.. Unfortunately, MathJax somehow barfs on the use of xref in the expansion
-   of a macro with parameters, so we cannot hyperlink the arrow
-   .. |toX#1| mathdef:: \xref{syntax/types}{syntax-instrtype}{\rightarrow_{#1}}
-.. |toX#1| mathdef:: \rightarrow_{#1}
+.. |to| mathdef:: \mathrel{\xref{syntax/types}{syntax-instrtype}{\rightarrow}}
 
 .. |BOTH| mathdef:: \xref{valid/conventions}{syntax-heaptype-ext}{\K{bot}}
 .. |BOT| mathdef:: \xref{valid/conventions}{syntax-valtype-ext}{\K{bot}}
@@ -288,12 +284,12 @@
 
 .. |reftypediff| mathdef:: \xref{valid/conventions}{aux-reftypediff}{\setminus}
 
-.. |rollrt#1| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}_{#1}}
+.. |rollrt| mathdef:: \xref{valid/conventions}{aux-roll-rectype}{\F{roll}}
 .. |unrollrt| mathdef:: \xref{valid/conventions}{aux-unroll-rectype}{\F{unroll}}
-.. |rolldt#1| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast_{#1}}
+.. |rolldt| mathdef:: \xref{valid/conventions}{aux-roll-deftype}{\F{roll}^\ast}
 .. |unrolldt| mathdef:: \xref{valid/conventions}{aux-unroll-deftype}{\F{unroll}}
 .. |expanddt| mathdef:: \xref{valid/conventions}{aux-expand-deftype}{\F{expand}}
-.. |unrollht#1| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}_{#1}}
+.. |unrollht| mathdef:: \xref{appendix/properties}{aux-unroll-heaptype}{\F{unroll}}
 
 .. |packtype| mathdef:: \xref{syntax/types}{aux-packtype}{\F{pack}}
 .. |unpacktype| mathdef:: \xref{syntax/types}{aux-unpacktype}{\F{unpack}}

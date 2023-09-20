@@ -207,7 +207,7 @@ Instruction Types
      \qquad
      (C.\CLOCALS[x] = \localtype)^\ast
    }{
-     C \vdashfunctype [t_1^\ast] \toX{x^\ast} [t_2^\ast] \ok
+     C \vdashfunctype [t_1^\ast] \to_{x^\ast} [t_2^\ast] \ok
    }
 
 

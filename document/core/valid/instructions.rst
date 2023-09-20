@@ -5,7 +5,7 @@ Instructions
 ------------
 
 :ref:`Instructions <syntax-instr>` are classified by :ref:`instruction types <syntax-instrtype>` that describe how they manipulate the :ref:`operand stack <stack>` and initialize :ref:`locals <syntax-local>`:
-A type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
+A type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
 Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction.
 In most cases, this is empty.
@@ -13,10 +13,10 @@ In most cases, this is empty.
 .. note::
    For example, the instruction :math:`\I32.\ADD` has type :math:`[\I32~\I32] \to [\I32]`,
    consuming two |I32| values and producing one.
-   The instruction :math:`\LOCALSET~x` has type :math:`[t] \toX{x} []`, provided :math:`t` is the type declared for the local :math:`x`.
+   The instruction :math:`\LOCALSET~x` has type :math:`[t] \to_{x} []`, provided :math:`t` is the type declared for the local :math:`x`.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` :math:`\instr^\ast`.
-Such a sequence has an instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack, pushing new values of types :math:`t_2^\ast`, and setting all locals :math:`x^\ast`.
+Such a sequence has an instruction type :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack, pushing new values of types :math:`t_2^\ast`, and setting all locals :math:`x^\ast`.
 
 .. _polymorphism:
 
@@ -1237,13 +1237,13 @@ Variable Instructions
 
 * Let :math:`\init~t` be the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]`.
 
-* Then the instruction is valid with type :math:`[t] \toX{x} []`.
+* Then the instruction is valid with type :math:`[t] \to_{x} []`.
 
 .. math::
    \frac{
      C.\CLOCALS[x] = \init~t
    }{
-     C \vdashinstr \LOCALSET~x : [t] \toX{x} []
+     C \vdashinstr \LOCALSET~x : [t] \to_{x} []
    }
 
 
@@ -1256,13 +1256,13 @@ Variable Instructions
 
 * Let :math:`\init~t` be the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]`.
 
-* Then the instruction is valid with type :math:`[t] \toX{x} [t]`.
+* Then the instruction is valid with type :math:`[t] \to_{x} [t]`.
 
 .. math::
    \frac{
      C.\CLOCALS[x] = \init~t
    }{
-     C \vdashinstr \LOCALTEE~x : [t] \toX{x} [t]
+     C \vdashinstr \LOCALTEE~x : [t] \to_{x} [t]
    }
 
 
@@ -1864,7 +1864,7 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \to_{x^\ast} [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
@@ -2346,30 +2346,30 @@ Empty Instruction Sequence: :math:`\epsilon`
 Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
 .............................................................
 
-* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \toX{x_1^\ast} [t_2^\ast]`.
+* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \to_{x_1^\ast} [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
   but with:
 
   * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` :math:`\SET`.
 
-* Under the context :math:`C'`, the instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[t_2^\ast] \toX{x_2^\ast} [t_3^\ast]`.
+* Under the context :math:`C'`, the instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[t_2^\ast] \to_{x_2^\ast} [t_3^\ast]`.
 
-* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \toX{x_1^\ast x_2^\ast} [t_3^\ast]`.
+* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_3^\ast]`.
 
 .. math::
    \frac{
      \begin{array}{@{}l@{\qquad}l@{}}
-     C \vdashinstr \instr : [t_1^\ast] \toX{x_1^\ast} [t_2^\ast]
+     C \vdashinstr \instr : [t_1^\ast] \to_{x_1^\ast} [t_2^\ast]
      &
      (C.\CLOCALS[x_1] = \init~t)^\ast
      \\
-     C' \vdashinstrseq {\instr'}^\ast : [t_2^\ast] \toX{x_2^\ast} [t_3^\ast]
+     C' \vdashinstrseq {\instr'}^\ast : [t_2^\ast] \to_{x_2^\ast} [t_3^\ast]
      &
      C' = C~(\with C.\CLOCALS[x_1] = \SET~t)^\ast
      \end{array}
    }{
-     C \vdashinstrseq \instr~{\instr'}^\ast : [t_1^\ast] \toX{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]
+     C \vdashinstrseq \instr~{\instr'}^\ast : [t_1^\ast] \to_{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]
    }
 
 

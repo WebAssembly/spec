@@ -32,7 +32,7 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
 
   * Let the :ref:`type index <syntax-typeidx>` :math:`x` be the length of :math:`C'.\CTYPES`, i.e., the first type index free in :math:`C'`.
 
-  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt{x}(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
+  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt_{x}(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
 
   * The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` under the context :math:`C` for :ref:`type index <syntax-typeidx>` :math:`x`.
 
@@ -50,7 +50,7 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
    \frac{
      C' \vdashtypes \type^\ast \ok
      \qquad
-     C = C' \with \CTYPES = C'.\CTYPES~\rolldt{|C'.\CTYPES|}(\rectype)
+     C = C' \with \CTYPES = C'.\CTYPES~\rolldt_{|C'.\CTYPES|}(\rectype)
      \qquad
      C \vdashrectype \rectype ~{\ok}(|C'.\CTYPES|)
    }{
