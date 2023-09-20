@@ -41,16 +41,21 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the number of :ref:`data segments <syntax-data>` in a :ref:`module <syntax-module>`
 * the number of :ref:`imports <syntax-import>` to a :ref:`module <syntax-module>`
 * the number of :ref:`exports <syntax-export>` from a :ref:`module <syntax-module>`
+* the number of :ref:`sub types <syntax-subtype>` in a :ref:`recursive type <syntax-rectype>`
+* the subtyping depth of a :ref:`sub type <syntax-subtype>`
+* the number of fields in a :ref:`structure type <syntax-structtype>`
 * the number of parameters in a :ref:`function type <syntax-functype>`
 * the number of results in a :ref:`function type <syntax-functype>`
 * the number of parameters in a :ref:`block type <syntax-blocktype>`
 * the number of results in a :ref:`block type <syntax-blocktype>`
 * the number of :ref:`locals <syntax-local>` in a :ref:`function <syntax-func>`
-* the size of a :ref:`function <syntax-func>` body
-* the size of a :ref:`structured control instruction <syntax-instr-control>`
+* the number of :ref:`instructions <syntax-instr>` in a :ref:`function <syntax-func>` body
+* the number of :ref:`instructions <syntax-instr>` in  a :ref:`structured control instruction <syntax-instr-control>`
 * the number of :ref:`structured control instructions <syntax-instr-control>` in a :ref:`function <syntax-func>`
 * the nesting depth of :ref:`structured control instructions <syntax-instr-control>`
-* the number of :ref:`label indices <syntax-labelidx>` in a |brtable| instruction
+* the number of :ref:`label indices <syntax-labelidx>` in a |BRTABLE| instruction
+* the number of instructions in a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`
+* the length of the array in a |ARRAYNEWFIXED| instruction
 * the length of an :ref:`element segment <syntax-elem>`
 * the length of a :ref:`data segment <syntax-data>`
 * the length of a :ref:`name <syntax-name>`
@@ -76,7 +81,9 @@ For a module given in :ref:`binary format <binary>`, additional limitations may 
 
 * the size of a :ref:`module <binary-module>`
 * the size of any :ref:`section <binary-section>`
-* the size of an individual function's :ref:`code <binary-code>`
+* the size of an individual :ref:`function<syntax-func>`'s :ref:`code <binary-code>`
+* the size of a :ref:`structured control instruction <syntax-instr-control>`
+* the size of an individual :ref:`constant <valid-constant>` :ref:`expression<syntax-expr>`'s instruction sequence
 * the number of :ref:`sections <binary-section>`
 
 
@@ -124,8 +131,11 @@ Restrictions on the following dimensions may be imposed during :ref:`execution <
 * the number of allocated :ref:`table instances <syntax-tableinst>`
 * the number of allocated :ref:`memory instances <syntax-meminst>`
 * the number of allocated :ref:`global instances <syntax-globalinst>`
+* the number of allocated :ref:`structure instances <syntax-structinst>`
+* the number of allocated :ref:`array instances <syntax-arrayinst>`
 * the size of a :ref:`table instance <syntax-tableinst>`
 * the size of a :ref:`memory instance <syntax-meminst>`
+* the size of an :ref:`array instance <syntax-arrayinst>`
 * the number of :ref:`frames <syntax-frame>` on the :ref:`stack <stack>`
 * the number of :ref:`labels <syntax-label>` on the :ref:`stack <stack>`
 * the number of :ref:`values <syntax-val>` on the :ref:`stack <stack>`
