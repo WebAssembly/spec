@@ -49,12 +49,12 @@ An implementation may impose restrictions on the following dimensions of a modul
 * the number of parameters in a :ref:`block type <syntax-blocktype>`
 * the number of results in a :ref:`block type <syntax-blocktype>`
 * the number of :ref:`locals <syntax-local>` in a :ref:`function <syntax-func>`
-* the size of a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`
-* the size of a :ref:`function <syntax-func>` body
-* the size of a :ref:`structured control instruction <syntax-instr-control>`
+* the number of :ref:`instructions <syntax-instr>` in a :ref:`function <syntax-func>` body
+* the number of :ref:`instructions <syntax-instr>` in  a :ref:`structured control instruction <syntax-instr-control>`
 * the number of :ref:`structured control instructions <syntax-instr-control>` in a :ref:`function <syntax-func>`
 * the nesting depth of :ref:`structured control instructions <syntax-instr-control>`
 * the number of :ref:`label indices <syntax-labelidx>` in a |BRTABLE| instruction
+* the number of instructions in a :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`
 * the length of the array in a |ARRAYNEWFIXED| instruction
 * the length of an :ref:`element segment <syntax-elem>`
 * the length of a :ref:`data segment <syntax-data>`
@@ -81,8 +81,9 @@ For a module given in :ref:`binary format <binary>`, additional limitations may 
 
 * the size of a :ref:`module <binary-module>`
 * the size of any :ref:`section <binary-section>`
-* the size of an individual :ref:`constant <valid-constant>` :ref:`expression<syntax-expr>`'s instruction sequence
 * the size of an individual :ref:`function<syntax-func>`'s :ref:`code <binary-code>`
+* the size of a :ref:`structured control instruction <syntax-instr-control>`
+* the size of an individual :ref:`constant <valid-constant>` :ref:`expression<syntax-expr>`'s instruction sequence
 * the number of :ref:`sections <binary-section>`
 
 
