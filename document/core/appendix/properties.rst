@@ -67,7 +67,7 @@ Well-formedness for :ref:`extended type forms <type-ext>` is defined as follows.
 
 .. math::
    \frac{
-     C.\CRECS[i] = \subtype^\ast
+     C.\CRECS[i] = \subtype
    }{
      C \vdashheaptype \REC~i \ok
    }
@@ -210,7 +210,7 @@ In a :ref:`rolled-up <aux-roll-rectype>` :ref:`recursive type <syntax-rectype>`,
 
 .. math::
    \frac{
-     C.\CRECS[i] = \TSUB~\TFINAL^?~\X{ht}_1^\ast~\X{ht}~\X{ht}_2^\ast~\comptype
+     C.\CRECS[i] = \TSUB~\TFINAL^?~(\X{ht}_1^\ast~\X{ht}~\X{ht}_2^\ast)~\comptype
    }{
      C \vdashheaptypematch \REC~i \matchesheaptype \X{ht}
    }

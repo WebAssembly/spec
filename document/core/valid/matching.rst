@@ -574,16 +574,16 @@ External Types
 Functions
 .........
 
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\deftype_1` matches :math:`\ETFUNC~\deftype_2` if and only if:
 
-* The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+* The :ref:`defined type <syntax-deftype>` :math:`\deftype_1` :ref:`matches <match-deftype>` :math:`\deftype_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
+     C \vdashdeftypematch \deftype_1 \matchesfunctype \deftype_2
    }{
-     C \vdashexterntypematch \ETFUNC~\functype_1 \matchesexterntype \ETFUNC~\functype_2
+     C \vdashexterntypematch \ETFUNC~\deftype_1 \matchesexterntype \ETFUNC~\deftype_2
    }
 
 

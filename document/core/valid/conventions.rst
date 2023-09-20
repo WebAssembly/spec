@@ -186,7 +186,7 @@ In addition, the following auxiliary function denotes the *expansion* of a :ref:
 
 .. math::
    \begin{array}{@{}llll@{}}
-   \expanddt(\deftype) &=& \comptype & (\iff \unrolldt(\deftype) = \TSUB~\TFINAL^?~\X{ht}^?~\comptype) \\
+   \expanddt(\deftype) &=& \comptype & (\iff \unrolldt(\deftype) = \TSUB~\TFINAL^?~\X{ht}^\ast~\comptype) \\
    \end{array}
 
 
@@ -309,7 +309,7 @@ Any form of :ref:`type <syntax-type>` can be *closed* to bring it into :ref:`clo
 
 .. math::
    \begin{array}{@{}lcll@{}}
-   \clostype_C(t) &=& t[\subst clostype^\ast(C.\CTYPES)] \\[2ex]
+   \clostype_C(t) &=& t[\subst \clostype^\ast(C.\CTYPES)] \\[2ex]
    \clostype^\ast(\epsilon) &=& \epsilon \\
    \clostype^\ast(\X{dt}^\ast~\X{dt}_N) &=& {\X{dt}'}^\ast~\X{dt}_N[\subst {\X{dt}'}^\ast] & (\iff {\X{dt}'}^\ast = \clostype^\ast(\X{dt}^\ast)) \\
    \end{array}
