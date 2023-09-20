@@ -81,6 +81,7 @@ For a module given in :ref:`binary format <binary>`, additional limitations may 
 
 * the size of a :ref:`module <binary-module>`
 * the size of any :ref:`section <binary-section>`
+* the size of an individual :ref:`constant <valid-constant>` :ref:`expression <syntax-expr>`
 * the size of an individual function's :ref:`code <binary-code>`
 * the number of :ref:`sections <binary-section>`
 
