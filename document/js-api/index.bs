@@ -1156,9 +1156,6 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
         1. Let |i31| [=?=] [$ToInt32$](|v|).
         1. Let |u31| be the unsigned integer such that |i31| is [=signed_31=](|i31|).
         1. Let |r| be [=ref.i31=] |u31|.
-    1. Else if |v| is an [=Exported Function=],
-        1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
-        1. Let |r| be [=ref.func=] |funcaddr|.
     1. Else if |v| is an [=Exported GC Object=],
         1. Let |objectaddr| be the value of |v|'s \[[ObjectAddress]] internal slot.
         1. Let |objectkind| be the value of |v|'s \[[ObjectKind]] internal slot.
@@ -1166,6 +1163,9 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
             1. Let |r| be [=ref.array=] |objectaddr|.
         1. If |objectkind| is "struct",
             1. Let |r| be [=ref.struct=] |objectaddr|.
+    1. Else if |v| is an [=Exported Function=] and [=match_valtype=](|type|, [=ref=] |null| [=heap-type/func=]),
+        1. Let |funcaddr| be the value of |v|'s \[[FunctionAddress]] internal slot.
+        1. Let |r| be [=ref.func=] |funcaddr|.
     1. Else,
         1. Let |map| be the [=surrounding agent=]'s associated [=host value cache=].
         1. If a [=host address=] |hostaddr| exists such that |map|[|hostaddr|] is the same as |v|,
