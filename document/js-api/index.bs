@@ -1148,9 +1148,9 @@ The algorithm <dfn>ToWebAssemblyValue</dfn>(|v|, |type|) coerces a JavaScript va
     1. Return [=f64.const=] |f64|.
 1. If |type| is of the form [=ref=] |null| |heaptype|,
     1. If [=match_valtype=](|type|, [=ref=] |null| [=heap-type/extern=]),
-        1. Let |r| be [=ToWebAssemblyValue=](|v|, [=ref=] |null| [=heap-type/any=]).
-        1. Return [=ref.extern=] |r|.
-    1. If |v| is null,
+        1. Let |rr| be [=ToWebAssemblyValue=](|v|, [=ref=] |null| [=heap-type/any=]).
+        1. Let |r| be [=ref.extern=] |rr|.
+    1. Else if |v| is null,
         1. Let |r| be [=ref.null=] |heaptype|.
     1. Else if |v| [=is a Number=] and |v| is equal to [=?=] [$ToInt32$](|v|) and [=ℝ=](|v|) < 2<sup>30</sup> and [=ℝ=](|v|) ⩾ -2<sup>30</sup>,
         1. Let |i31| [=?=] [$ToInt32$](|v|).
