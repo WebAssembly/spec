@@ -76,7 +76,7 @@ test/%: $(NAME)
 run/%: $(NAME)
 	./$(NAME) $(TESTDIR)/$*.wast
 
-partest: $(NAME)
+partest: $(NAME) unittest
 	make -j10 quiettest
 
 quiettest: $(TESTS:%=quiettest/%)
