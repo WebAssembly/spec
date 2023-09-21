@@ -47,7 +47,7 @@ $(JSLIB):
 # Unit tests
 
 UNITTESTDIR =	unittest
-UNITTESTFILES =	$(shell cd $(UNITTESTDIR); ls *.ml)
+UNITTESTFILES =	$(shell cd $(UNITTESTDIR) > /dev/null; ls *.ml)
 UNITTESTS =	$(UNITTESTFILES:%.ml=%)
 
 .PHONY: unittest
