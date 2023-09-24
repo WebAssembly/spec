@@ -71,8 +71,8 @@ var xv : externval
 syntax c_packedtype = nat  ;; TODO
 
 syntax funcinst hint(desc "function instance") =
-  { MODULE moduleinst,
-    TYPE deftype,
+  { TYPE deftype,
+    MODULE moduleinst,
     CODE func }
 syntax globalinst hint(desc "global instance") =
   { TYPE globaltype,

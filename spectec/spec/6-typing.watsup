@@ -1090,10 +1090,10 @@ rule Module_ok:
   |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
   -- Types_ok: {} |- type* : dt'*
   -- (Import_ok: {TYPE dt'*} |- import : ixt)*
-  -- if idt* = $funcs(ixt*)
-  -- if igt* = $globals(ixt*)
-  -- if itt* = $tables(ixt*)
-  -- if imt* = $mems(ixt*)
+  -- if idt* = $funcsxt(ixt*)
+  -- if igt* = $globalsxt(ixt*)
+  -- if itt* = $tablesxt(ixt*)
+  -- if imt* = $memsxt(ixt*)
 
   -- if C = {TYPE dt'*, FUNC idt* dt*, GLOBAL igt* gt*, TABLE itt* tt*, MEM imt* mt*, ELEM rt*, DATA OK^n}
   -- if C' = {TYPE dt'*, FUNC idt* dt*, GLOBAL igt*}

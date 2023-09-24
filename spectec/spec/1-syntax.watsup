@@ -321,7 +321,7 @@ syntax func hint(desc "function") =
 syntax global hint(desc "global") =
   GLOBAL globaltype expr
 syntax table hint(desc "table") =
-  TABLE tabletype
+  TABLE tabletype expr
 syntax mem hint(desc "memory") =
   MEMORY memtype
 syntax elem hint(desc "table segment") =

@@ -164,23 +164,23 @@ rule Expand: dt ~~ ct                          -- if $expanddt(dt) = ct
 
 ;; Projections
 
-def $funcs(externtype*) : deftype*
-def $globals(externtype*) : globaltype*
-def $tables(externtype*) : tabletype*
-def $mems(externtype*) : memtype*
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%))
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))
 
-def $funcs(epsilon) = epsilon
-def $funcs((FUNC dt) et*) = dt $funcs(et*)
-def $funcs(externtype et*) = $funcs(et*)  -- otherwise
+def $funcsxt(epsilon) = epsilon
+def $funcsxt((FUNC dt) et*) = dt $funcsxt(et*)
+def $funcsxt(externtype et*) = $funcsxt(et*)  -- otherwise
 
-def $globals(epsilon) = epsilon
-def $globals((GLOBAL gt) et*) = gt $globals(et*)
-def $globals(externtype et*) = $globals(et*)  -- otherwise
+def $globalsxt(epsilon) = epsilon
+def $globalsxt((GLOBAL gt) et*) = gt $globalsxt(et*)
+def $globalsxt(externtype et*) = $globalsxt(et*)  -- otherwise
 
-def $tables(epsilon) = epsilon
-def $tables((TABLE tt) et*) = tt $tables(et*)
-def $tables(externtype et*) = $tables(et*)  -- otherwise
+def $tablesxt(epsilon) = epsilon
+def $tablesxt((TABLE tt) et*) = tt $tablesxt(et*)
+def $tablesxt(externtype et*) = $tablesxt(et*)  -- otherwise
 
-def $mems(epsilon) = epsilon
-def $mems((MEM mt) et*) = mt $mems(et*)
-def $mems(externtype et*) = $mems(et*)  -- otherwise
+def $memsxt(epsilon) = epsilon
+def $memsxt((MEM mt) et*) = mt $memsxt(et*)
+def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise
