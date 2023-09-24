@@ -10,4 +10,5 @@
 
 (menhir
   (modules parser)
+  (flags --explain)
 )

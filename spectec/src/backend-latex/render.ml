@@ -275,16 +275,23 @@ let render_atom env = function
   | Dot2 -> ".."
   | Dot3 -> "\\dots"
   | Semicolon -> ";"
+  | Backslash -> "\\setminus"
   | Arrow -> "\\rightarrow"
   | Colon -> ":"
   | Sub -> "\\leq"
+  | Assign -> ":="
+  | Approx -> "\\approx"
   | SqArrow -> "\\hookrightarrow"
+  | Prec -> "\\prec"
+  | Succ -> "\\succ"
   | Tilesturn -> "\\dashv"
   | Turnstile ->
     if env.config.macros_for_vdash then
       "\\vdash" ^ env.current_rel
     else
       "\\vdash"
+  | Quest -> "{}^?"
+  | Star -> "{}^\\ast"
 
 let render_brack = function
   | Paren -> "(", ")"

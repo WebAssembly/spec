@@ -2,6 +2,15 @@
 ;; General definitions
 ;;
 
+;; General variables
+
+var i : nat
+var j : nat
+var k : nat
+
+syntax n = nat
+
+
 ;; General constants
 
 def $Ki : nat
@@ -15,40 +24,10 @@ def $min(0, j) = 0
 def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
-
-;;
-;; Auxiliary Definitions on Types
-;;
-
-;; Size
-
-;; def |I n| = |F n| = |V n| = n        ;; ????
-
-def $size(valtype) : nat  hint(partial) hint(show |%|)
-def $size(I32) = 32
-def $size(I64) = 64
-def $size(F32) = 32
-def $size(F64) = 64
-def $size(V128) = 128
-
-def $packedsize(packedtype) : nat  hint(show |%|)
-def $packedsize(I8) = 8
-def $packedsize(I16) = 16
-
-def $storagesize(storagetype) : nat  hint(show |%|)
-def $storagesize(valtype) = $size(valtype)
-def $storagesize(packedtype) = $packedsize(packedtype)
-
-
-;; Unpacking
-
-def $unpacktype(storagetype) : valtype  hint(show $unpack(%))
-def $unpacktype(valtype) = valtype
-def $unpacktype(packedtype) = I32
-
-def $sx_field(storagetype) : sx?  hint(show $sx(%))
-def $sx_field(valtype) = epsilon
-def $sx_field(packedtype) = SX
+;; TODO: use ^(x<n)
+def $enum(nat) : nat*
+def $enum(0) = epsilon
+def $enum($(n+1)) = $enum(n) n
 
 
 ;;

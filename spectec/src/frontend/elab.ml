@@ -183,7 +183,7 @@ let as_tup_typ phrase env dir t at : typ list =
 
 let as_notation_typid' phrase env id at : typ =
   match as_defined_typid' env id at with
-  | (AtomT _ | SeqT _ | InfixT _ | BrackT _) as t, _ -> t $ at
+  | (AtomT _ | SeqT _ | InfixT _ | BrackT _ | IterT _) as t, _ -> t $ at
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "_ ... _"
 
 let as_notation_typ phrase env dir t at : typ =
@@ -272,12 +272,19 @@ let elab_atom = function
   | Dot2 -> Il.Dot2
   | Dot3 -> Il.Dot3
   | Semicolon -> Il.Semicolon
+  | Backslash -> Il.Backslash
   | Arrow -> Il.Arrow
   | Colon -> Il.Colon
   | Sub -> Il.Sub
+  | Assign -> Il.Assign
+  | Approx -> Il.Approx
   | SqArrow -> Il.SqArrow
+  | Prec -> Il.Prec
+  | Succ -> Il.Succ
   | Turnstile -> Il.Turnstile
   | Tilesturn -> Il.Tilesturn
+  | Quest -> Il.Quest
+  | Star -> Il.Star
 
 let elab_brack = function
   | Paren -> Il.LParen, Il.RParen
@@ -618,8 +625,7 @@ and elab_exp env e t : Il.exp =
   | EpsE | SeqE _ when is_iter_typ env t ->
     let e1 = unseq_exp e in
     elab_exp_iter env e1 (as_iter_typ "" env Check t e.at) t e.at
-  | EpsE ->
-    error_typ e.at "empty expression" t
+  | EpsE
   | AtomE _
   | InfixE _
   | BrackE _

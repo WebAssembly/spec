@@ -145,7 +145,9 @@ rule token = parse
   | ">" { GT }
   | "<=" { LE }
   | ">=" { GE }
+  | "~~" { APPROX }
   | "<:" { SUB }
+  | ":=" { ASSIGN }
   | "=.." { EQDOT2 }
 
   | "~" { NOT }
@@ -157,6 +159,7 @@ rule token = parse
   | "-" { MINUS }
   | "*" { STAR }
   | "/" { SLASH }
+  | "\\" { BACKSLASH }
   | "^" { UP }
   | "++" { COMPOSE }
 
@@ -164,6 +167,8 @@ rule token = parse
   | "=>" { ARROW2 }
   | "<=>" { DARROW2 }
   | "~>" { SQARROW }
+  | "<<" { PREC }
+  | ">>" { SUCC }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
 
@@ -191,6 +196,8 @@ rule token = parse
   | "hint" { HINT }
 
   | "epsilon" { EPSILON }
+  | "true" { BOOLLIT true }
+  | "false" { BOOLLIT false }
   | nat as s { NATLIT (nat lexbuf s) }
   | text as s { TEXTLIT (text lexbuf s) }
   | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }

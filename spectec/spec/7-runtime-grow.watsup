@@ -1,0 +1,18 @@
+;;
+;; Growing State
+;;
+
+def $grow_table(tableinst, nat, ref) : tableinst hint(partial)
+def $grow_memory(meminst, nat) : meminst hint(partial)
+
+def $grow_table(ti, n, r) = ti'
+  -- if ti = { TYPE `[i .. j] rt, ELEM r'* }
+  -- if i' = $(|r'*| + n)
+  -- if ti' = { TYPE `[i' .. j] rt, ELEM r'* r^n }
+  -- Tabletype_ok: |- ti'.TYPE : OK
+
+def $grow_memory(mi, n) = mi'
+  -- if mi = { TYPE (`[i .. j] I8), DATA b* }
+  -- if i' = $(|b*| / (64 * $Ki) + n)
+  -- if mi' = { TYPE (`[i' .. j] I8), DATA b* 0^(n * 64 * $Ki) }
+  -- Memtype_ok: |- mi'.TYPE : OK
