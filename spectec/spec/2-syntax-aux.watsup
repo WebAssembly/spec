@@ -59,29 +59,29 @@ def $sx_field(packedtype) = S
 syntax typevar = | _IDX typeidx | REC nat
 var xx : typevar
 
-def $subst_typevar(typevar, typevar*, heaptype*) : heaptype            hint(show %`[%:=%])
+def $subst_typevar(typevar, typevar*, heaptype*) : heaptype            hint(show %#`[%:=%])
 
-def $subst_numtype(numtype, typevar*, heaptype*) : numtype             hint(show %`[%:=%])
-def $subst_vectype(vectype, typevar*, heaptype*) : vectype             hint(show %`[%:=%])
-def $subst_heaptype(heaptype, typevar*, heaptype*) : heaptype          hint(show %`[%:=%])
-def $subst_reftype(reftype, typevar*, heaptype*) : reftype             hint(show %`[%:=%])
-def $subst_valtype(valtype, typevar*, heaptype*) : valtype             hint(show %`[%:=%])
+def $subst_numtype(numtype, typevar*, heaptype*) : numtype             hint(show %#`[%:=%])
+def $subst_vectype(vectype, typevar*, heaptype*) : vectype             hint(show %#`[%:=%])
+def $subst_heaptype(heaptype, typevar*, heaptype*) : heaptype          hint(show %#`[%:=%])
+def $subst_reftype(reftype, typevar*, heaptype*) : reftype             hint(show %#`[%:=%])
+def $subst_valtype(valtype, typevar*, heaptype*) : valtype             hint(show %#`[%:=%])
 
-def $subst_packedtype(packedtype, typevar*, heaptype*) : packedtype    hint(show %`[%:=%])
-def $subst_storagetype(storagetype, typevar*, heaptype*) : storagetype hint(show %`[%:=%])
-def $subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype       hint(show %`[%:=%])
+def $subst_packedtype(packedtype, typevar*, heaptype*) : packedtype    hint(show %#`[%:=%])
+def $subst_storagetype(storagetype, typevar*, heaptype*) : storagetype hint(show %#`[%:=%])
+def $subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype       hint(show %#`[%:=%])
 
-def $subst_comptype(comptype, typevar*, heaptype*) : comptype          hint(show %`[%:=%])
-def $subst_subtype(subtype, typevar*, heaptype*) : subtype             hint(show %`[%:=%])
-def $subst_rectype(rectype, typevar*, heaptype*) : rectype             hint(show %`[%:=%])
-def $subst_deftype(deftype, typevar*, heaptype*) : deftype             hint(show %`[%:=%])
+def $subst_comptype(comptype, typevar*, heaptype*) : comptype          hint(show %#`[%:=%])
+def $subst_subtype(subtype, typevar*, heaptype*) : subtype             hint(show %#`[%:=%])
+def $subst_rectype(rectype, typevar*, heaptype*) : rectype             hint(show %#`[%:=%])
+def $subst_deftype(deftype, typevar*, heaptype*) : deftype             hint(show %#`[%:=%])
 
-def $subst_globaltype(globaltype, typevar*, heaptype*) : globaltype    hint(show %`[%:=%])
-def $subst_functype(functype, typevar*, heaptype*) : functype          hint(show %`[%:=%])
-def $subst_tabletype(tabletype, typevar*, heaptype*) : tabletype       hint(show %`[%:=%])
-def $subst_memtype(memtype, typevar*, heaptype*) : memtype             hint(show %`[%:=%])
+def $subst_globaltype(globaltype, typevar*, heaptype*) : globaltype    hint(show %#`[%:=%])
+def $subst_functype(functype, typevar*, heaptype*) : functype          hint(show %#`[%:=%])
+def $subst_tabletype(tabletype, typevar*, heaptype*) : tabletype       hint(show %#`[%:=%])
+def $subst_memtype(memtype, typevar*, heaptype*) : memtype             hint(show %#`[%:=%])
 
-def $subst_externtype(externtype, typevar*, heaptype*) : externtype    hint(show %`[%:=%])
+def $subst_externtype(externtype, typevar*, heaptype*) : externtype    hint(show %#`[%:=%])
 
 
 def $subst_typevar(xx, epsilon, epsilon) = xx
@@ -133,8 +133,8 @@ def $subst_externtype(TABLE tt, xx*, ht*) = TABLE $subst_tabletype(tt, xx*, ht*)
 def $subst_externtype(MEM mt, xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
 
 
-def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %`[:=%])
-def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %`[:=%])
+def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
+def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
 
 def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
 def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
@@ -142,9 +142,9 @@ def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, (_IDX x)^n, ht^n) -- if x^
 
 ;; Rolling and Unrolling
 
-def $rollrt(typeidx, rectype) : rectype  hint(show $roll_%(%))
+def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))
 def $unrollrt(rectype) : rectype         hint(show $unroll(%))
-def $rolldt(typeidx, rectype) : deftype* hint(show $roll_%*(%))
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%, %))
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))
 def $expanddt(deftype) : comptype        hint(show $expand(%))
 

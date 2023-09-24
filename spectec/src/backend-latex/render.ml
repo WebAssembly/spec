@@ -14,7 +14,7 @@ let error at msg = Source.error at "latex generation" msg
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
-type rel_sort = TypingRel | ReductionRel
+type rel_sort = TypingRel | ReductionRel | ExpansionRel
 
 type env =
   { config : config;
@@ -649,7 +649,7 @@ let rec render_prem env prem =
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     "{" ^ render_prem env prem' ^ "}" ^ render_iter env iter
   | IterPr (prem', iter) ->
-    "(" ^ render_prem env prem' ^ ")" ^ render_iter env iter
+    render_prem env prem' ^ render_iter env iter
 
 
 let merge_typ t1 t2 =
@@ -709,13 +709,13 @@ let render_conditions env tabs = function
 let render_reddef env d =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
-    let e1, e2 =
+    let e1, op, e2 =
       match e.it with
-      | InfixE (e1, SqArrow, e2) -> e1, e2
+      | InfixE (e1, op, e2) -> e1, op, e2
       | _ -> error e.at "unrecognized format for reduction rule"
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
-      render_exp env e1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+      render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
         render_exp env e2 ^ render_conditions env "&&&&" prems
   | _ -> failwith "render_reddef"
 
@@ -736,7 +736,8 @@ let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
 let rec classify_rel e : rel_sort option =
   match e.it with
   | InfixE (_, Turnstile, _) -> Some TypingRel
-  | InfixE (_, SqArrow, _) -> Some ReductionRel
+  | InfixE (_, (SqArrow | SqArrowStar), _) -> Some ReductionRel
+  | InfixE (_, Approx, _) -> Some ExpansionRel
   | InfixE (e1, _, e2) ->
     (match classify_rel e1 with
     | None -> classify_rel e2
@@ -768,6 +769,10 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
+        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
+          render_sep_defs (render_reddef env) ds ^
+        "\\end{array}"
+      | Some ExpansionRel ->
         "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
@@ -827,6 +832,10 @@ let rec render_script env = function
         "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
         render_script env ds
       | Some ReductionRel ->
+        let reddefs, ds' = split_reddefs id1.it [d] ds in
+        "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
+        render_script env ds'
+      | Some ExpansionRel ->
         let reddefs, ds' = split_reddefs id1.it [d] ds in
         "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
         render_script env ds'

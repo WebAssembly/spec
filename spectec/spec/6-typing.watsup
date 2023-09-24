@@ -106,15 +106,18 @@ rule Instrtype_ok:
 
 ;; Type definitions
 
+syntax oktypeidx hint(show OK#((typeidx)))    = | OK(typeidx)     hint(show OK#(%))
+syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %))
+
 relation Packedtype_ok: context |- packedtype : OK    hint(show "K-packed")
 relation Fieldtype_ok: context |- fieldtype : OK      hint(show "K-field")
 relation Storagetype_ok: context |- storagetype : OK  hint(show "K-storage")
 relation Comptype_ok: context |- comptype : OK        hint(show "K-comp")
-relation Functype_ok: context |- functype : OK      hint(show "K-func")
-relation Subtype_ok: context |- subtype : OK(typeidx) hint(show "K-sub")
-relation Rectype_ok: context |- rectype : OK(typeidx) hint(show "K-rect")
-relation Subtype_ok2: context |- subtype : OK(typeidx nat) hint(show "K-sub2")
-relation Rectype_ok2: context |- rectype : OK(typeidx nat) hint(show "K-rec2")
+relation Functype_ok: context |- functype : OK        hint(show "K-func")
+relation Subtype_ok: context |- subtype : oktypeidx   hint(show "K-sub")
+relation Rectype_ok: context |- rectype : oktypeidx   hint(show "K-rect")
+relation Subtype_ok2: context |- subtype : oktypeidxnat hint(show "K-sub2")
+relation Rectype_ok2: context |- rectype : oktypeidxnat hint(show "K-rec2")
 relation Deftype_ok: context |- deftype : OK          hint(show "K-def")
 
 ;; Forward declaration
@@ -164,13 +167,13 @@ def $before(deftype, x, i) = true
 def $before(_IDX typeidx, x, i) = typeidx < x
 def $before(REC j, x, i) = j < i
 
-def $unrollht(context, heaptype) : subtype  hint(show $unroll_%(%))
+def $unrollht(context, heaptype) : subtype  hint(show $unroll_(%,%))
 def $unrollht(C, deftype) = $unrolldt(deftype)
 def $unrollht(C, _IDX typeidx) = $unrolldt(C.TYPE[typeidx])
 def $unrollht(C, REC i) = C.REC[i]
 
 rule Subtype_ok2:
-  C |- SUBD fin ht* ct : OK(x i)
+  C |- SUBD fin ht* ct : OK x i
   -- if |y*| <= 1
   -- if ($before(ht, x, i))*
   -- if ($unrollht(C, ht) = SUBD epsilon ht'* ct')*
@@ -188,15 +191,15 @@ rule Rectype_ok/cons:
 
 rule Rectype_ok/rec2:
   C |- REC st* : OK(x)
-  -- Rectype_ok2: C, REC st* |- REC st* : OK(x 0)
+  -- Rectype_ok2: C, REC st* |- REC st* : OK x 0
 
 rule Rectype_ok2/empty:
-  C |- REC epsilon : OK(x i)
+  C |- REC epsilon : OK x i
 
 rule Rectype_ok2/cons:
-  C |- REC st_1 st* : OK(x i)
-  -- Subtype_ok2: C |- st_1 : OK(x i)
-  -- Rectype_ok2: C |- REC st* : OK(($(x+1)) ($(i+1)))
+  C |- REC st_1 st* : OK x i
+  -- Subtype_ok2: C |- st_1 : OK x i
+  -- Rectype_ok2: C |- REC st* : OK $(x+1) $(i+1)
 
 
 rule Deftype_ok:

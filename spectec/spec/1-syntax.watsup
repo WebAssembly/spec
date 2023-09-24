@@ -104,7 +104,7 @@ syntax subtype hint(desc "sub type") =
   | SUB fin typeidx* comptype | ...
 syntax subtype =
   | ...
-  | SUBD fin heaptype* comptype
+  | SUBD fin heaptype* comptype  hint(show SUB % % %)
 
 syntax rectype hint(desc "recursive type") =
   | REC subtype*
