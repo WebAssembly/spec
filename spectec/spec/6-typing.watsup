@@ -32,7 +32,7 @@ def $with_locals(C, x_1 x*, lt_1 lt*) = $with_locals(C[.LOCAL[x_1] = lt_1], x*, 
 def $clostype(context, deftype) : deftype  hint(show $clos_%(%))
 def $clostypes(deftype*) : deftype*        hint(show $clos`*(%))
 
-def $clostype(C, dt) = $subst_all_deftype(dt, $clostypes(C.TYPE))
+def $clostype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clostypes(C.TYPE)
 
 def $clostypes(epsilon) = epsilon
 def $clostypes(dt* dt_N) = dt'* $subst_all_deftype(dt_N, dt'*)  -- if dt'* = $clostypes(dt*)

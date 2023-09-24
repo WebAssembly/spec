@@ -24,6 +24,7 @@ type atom =
   | Assign                       (* `:=` *)
   | Approx                       (* `~~` *)
   | SqArrow                      (* `~>` *)
+  | SqArrowStar                  (* `~>*` *)
   | Prec                         (* << *)
   | Succ                         (* >> *)
   | Turnstile                    (* `|-` *)

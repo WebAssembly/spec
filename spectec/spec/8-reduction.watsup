@@ -15,6 +15,24 @@ rule Step/read:
   -- Step_read: z; instr* ~> instr'*
 
 
+;; Expressions
+
+relation Eval: config ~>* state; val*  hint(show "E-expr")
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
+
+rule Eval/done:
+  z; val* ~>* z; val*
+
+rule Eval/step:
+  z; admininstr*  ~>*  z''; val*
+  -- Step: z; admininstr*  ~>  z'; admininstr'*
+  -- Eval: z'; admininstr'  ~>*  z''; val*
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Eval: z; instr*  ~>*  z; val*
+
+
 ;;
 ;; Instructions
 ;;
@@ -255,8 +273,9 @@ rule Step/struct.new:
   -- if si = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
 
 rule Step_read/struct.new_default:
-  z; (STRUCT.NEW_DEFAULT x)  ~>  $default($unpacktype(zt))* (STRUCT.NEW x)
+  z; (STRUCT.NEW_DEFAULT x)  ~>  val* (STRUCT.NEW x)
   -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
+  -- if ($default($unpacktype(zt)) = val)*
 
 
 rule Step_read/struct.get-null:
@@ -283,8 +302,9 @@ rule Step_read/array.new:
   z; val (CONST I32 n) (ARRAY.NEW x)  ~>  val^n (ARRAY.NEW_FIXED x n)
 
 rule Step_read/array.new_default:
-  z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  $default($unpacktype(zt))^n (ARRAY.NEW_FIXED x n)
+  z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  val^n (ARRAY.NEW_FIXED x n)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $default($unpacktype(zt)) = val
 
 rule Step/array.new_fixed:
   z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR $(|$arrayinst(z)|))
@@ -463,7 +483,8 @@ rule Step_pure/extern.internalize/addr:
 ;; Local instructions
 
 rule Step_read/local.get:
-  z; (LOCAL.GET x)  ~>  $local(z, x)
+  z; (LOCAL.GET x)  ~>  val
+  -- if $local(z, x) = val
 
 rule Step/local.set:
   z; val (LOCAL.SET x)  ~>  $with_local(z, x, val); epsilon

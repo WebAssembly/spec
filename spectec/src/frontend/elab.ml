@@ -279,6 +279,7 @@ let elab_atom = function
   | Assign -> Il.Assign
   | Approx -> Il.Approx
   | SqArrow -> Il.SqArrow
+  | SqArrowStar -> Il.SqArrowStar
   | Prec -> Il.Prec
   | Succ -> Il.Succ
   | Turnstile -> Il.Turnstile

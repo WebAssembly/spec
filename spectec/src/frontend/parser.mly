@@ -76,7 +76,7 @@ let signify_parens prec = function
 %token EQ NE LT GT LE GE APPROX ASSIGN SUB EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE
-%token ARROW ARROW2 DARROW2 SQARROW PREC SUCC TURNSTILE TILESTURN
+%token ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT
 %token HOLE MULTIHOLE FUSE
@@ -95,7 +95,7 @@ let signify_parens prec = function
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW PREC SUCC
+%right SQARROW SQARROWSTAR PREC SUCC
 %left COLON SUB ASSIGN APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE
@@ -249,6 +249,7 @@ nottyp_rel_ :
   | ASSIGN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Assign, $2) }
   | APPROX nottyp_rel { InfixT (SeqT [] $ at $loc($1), Approx, $2) }
   | SQARROW nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrow, $2) }
+  | SQARROWSTAR nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrowStar, $2) }
   | PREC nottyp_rel { InfixT (SeqT [] $ at $loc($1), Prec, $2) }
   | SUCC nottyp_rel { InfixT (SeqT [] $ at $loc($1), Succ, $2) }
   | TILESTURN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Tilesturn, $2) }
@@ -258,6 +259,7 @@ nottyp_rel_ :
   | nottyp_rel ASSIGN nottyp_rel { InfixT ($1, Assign, $3) }
   | nottyp_rel APPROX nottyp_rel { InfixT ($1, Approx, $3) }
   | nottyp_rel SQARROW nottyp_rel { InfixT ($1, SqArrow, $3) }
+  | nottyp_rel SQARROWSTAR nottyp_rel { InfixT ($1, SqArrowStar, $3) }
   | nottyp_rel PREC nottyp_rel { InfixT ($1, Prec, $3) }
   | nottyp_rel SUCC nottyp_rel { InfixT ($1, Succ, $3) }
   | nottyp_rel TILESTURN nottyp_rel { InfixT ($1, Tilesturn, $3) }
@@ -382,6 +384,7 @@ exp_rel_ :
   | ASSIGN exp_rel { InfixE (SeqE [] $ at $loc($1), Assign, $2) }
   | APPROX exp_rel { InfixE (SeqE [] $ at $loc($1), Approx, $2) }
   | SQARROW exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrow, $2) }
+  | SQARROWSTAR exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrowStar, $2) }
   | PREC exp_rel { InfixE (SeqE [] $ at $loc($1), Prec, $2) }
   | SUCC exp_rel { InfixE (SeqE [] $ at $loc($1), Succ, $2) }
   | TILESTURN exp_rel { InfixE (SeqE [] $ at $loc($1), Tilesturn, $2) }
@@ -393,6 +396,7 @@ exp_rel_ :
   | exp_rel ASSIGN exp_rel { InfixE ($1, Assign, $3) }
   | exp_rel APPROX exp_rel { InfixE ($1, Approx, $3) }
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
+  | exp_rel SQARROWSTAR exp_rel { InfixE ($1, SqArrowStar, $3) }
   | exp_rel PREC exp_rel { InfixE ($1, Prec, $3) }
   | exp_rel SUCC exp_rel { InfixE ($1, Succ, $3) }
   | exp_rel TILESTURN exp_rel { InfixE ($1, Tilesturn, $3) }

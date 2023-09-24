@@ -6,7 +6,8 @@
 
 def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_%(%))
 
-def $inst_reftype(mm, rt) = $subst_all_reftype(rt, mm.TYPE)
+def $inst_reftype(mm, rt) = $subst_all_reftype(rt, dt*)
+  -- if dt* = mm.TYPE
 
 
 ;;
@@ -96,7 +97,7 @@ def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
 def $mem(state, memidx) : meminst           hint(show %.MEM#`[%])
 def $elem(state, tableidx) : eleminst       hint(show %.ELEM#`[%])
 def $data(state, dataidx) : datainst        hint(show %.DATA#`[%])
-def $local(state, localidx) : val           hint(show %.LOCAL#`[%])
+def $local(state, localidx) : val?          hint(show %.LOCAL#`[%])
 
 def $type((s; f), x) = f.MODULE.TYPE[x]
 def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]

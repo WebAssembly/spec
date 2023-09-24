@@ -140,6 +140,12 @@ def $rundata(DATA byte* (MEMORY x instr*), y) =
 def $instantiate(store, module, externval*) : config
 def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
+  -- if global* = (GLOBAL globaltype expr_g)*
+  -- if table* = (TABLE tabletype expr_t)*
+  -- if elem* = (ELEM reftype expr_e* elemmode?)*
+  -- if start? = (START x)?
+  -- if n_e = |elem*|
+  -- if n_d = |data*|
   -- if mm_init = {
       TYPE mm.TYPE,
       FUNC $funcsxv(externval*),
@@ -150,16 +156,10 @@ def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
       DATA epsilon,
       EXPORT epsilon
     }
-  -- if f_init = { MODULE mm_init }
-  -- if global* = (GLOBAL globaltype expr_g)*
-  -- if table* = (TABLE tabletype expr_t)*
-  -- if elem* = (ELEM reftype (expr_e*)* elemmode?)*
-  -- if start? = (START x)?
-  -- if n_e = |elem*|
-  -- if n_d = |data*|
-  -- (Step_read : s; f_init; expr_g ~> val_g)*
-  -- (Step_read : s; f_init; expr_t ~> ref_t)*
-  -- (Step_read : s; f_init; expr_e ~> ref_e)**
+  -- if z = s; { MODULE mm_init }
+  -- (Eval_expr : z; expr_g ~>* z; val_g)*
+  -- (Eval_expr : z; expr_t ~>* z; ref_t)*
+  -- (Eval_expr : z; expr_e ~>* z; ref_e)**
   -- if (s', mm) = $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*)
   -- if f = { MODULE mm }
   -- if instr_e* = $concat_instr($runelem(elem*[i], i)^(i<n_e))

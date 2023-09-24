@@ -334,8 +334,11 @@ and infer_exp env e : typ =
 
 and valid_exp env e t =
   (*
-  Printf.printf "[valid %s] %s  :  %s  ==  %s\n%!"
-    (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t);
+  Printf.printf "[valid %s] %s  :  %s  ==  %s  {%s}\n%!"
+    (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t)
+    (String.concat ", " (List.map (fun (x, (t, iters)) ->
+      x ^ " : " ^ string_of_typ t ^ (String.concat "" (List.map string_of_iter iters))
+    ) (Env.bindings env.vars)));
   *)
   equiv_typ env e.note t e.at;
   match e.it with

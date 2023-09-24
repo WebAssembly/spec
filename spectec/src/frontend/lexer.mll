@@ -167,6 +167,7 @@ rule token = parse
   | "=>" { ARROW2 }
   | "<=>" { DARROW2 }
   | "~>" { SQARROW }
+  | "~>*" { SQARROWSTAR }
   | "<<" { PREC }
   | ">>" { SUCC }
   | "|-" { TURNSTILE }

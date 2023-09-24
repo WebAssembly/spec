@@ -26,6 +26,7 @@ let string_of_atom = function
   | Assign -> ":="
   | Approx -> "~~"
   | SqArrow -> "~>"
+  | SqArrowStar -> "~>*"
   | Prec -> "<<"
   | Succ -> ">>"
   | Tilesturn -> "-|"

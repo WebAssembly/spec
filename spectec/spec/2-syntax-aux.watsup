@@ -148,10 +148,14 @@ def $rolldt(typeidx, rectype) : deftype* hint(show $roll_%*(%))
 def $unrolldt(deftype) : subtype         hint(show $unroll(%))
 def $expanddt(deftype) : comptype        hint(show $expand(%))
 
-def $rollrt(x, REC st^n) = REC ($subst_subtype(st, (_IDX $(x + i))^n, (REC i)^n))^n
-  -- if i^n = $enum(n)
-def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^n, (DEF (REC st^n) i)^n))^n
-  -- if i^n = $enum(n)
+;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
+;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
+;; For now, we avoid to reuse the dimension var and introduce a separate one (although m = n)
+def $rollrt(x, REC st^n) = REC ($subst_subtype(st, (_IDX $(x + i))^m, (REC i)^m))^n
+  -- if i^m = $enum(n)
+def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^m, (DEF qt i)^m))^n
+  -- if i^m = $enum(n)
+  -- if qt = REC st^n
 
 def $rolldt(x, qt) = (DEF (REC st^n) i)^n      -- if $rollrt(x, qt) = REC st^n -- if i^n = $enum(n)
 def $unrolldt(DEF qt i) = st*[i]               -- if $unrollrt(qt) = REC st*

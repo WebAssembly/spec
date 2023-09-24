@@ -282,6 +282,7 @@ let render_atom env = function
   | Assign -> ":="
   | Approx -> "\\approx"
   | SqArrow -> "\\hookrightarrow"
+  | SqArrowStar -> "\\hookrightarrow^\\ast"
   | Prec -> "\\prec"
   | Succ -> "\\succ"
   | Tilesturn -> "\\dashv"
