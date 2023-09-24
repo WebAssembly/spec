@@ -1051,8 +1051,8 @@ rule Elemmode_ok/declare:
   C |- DECLARE : rt
 
 rule Datamode_ok:
-  C |- MEMORY 0 expr : OK
-  -- if C.MEM[0] = mt
+  C |- MEMORY x expr : OK
+  -- if C.MEM[x] = mt
   -- (Expr_ok_const: C |- expr : I32 CONST)*
 
 rule Start_ok:

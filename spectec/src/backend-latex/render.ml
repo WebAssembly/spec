@@ -652,7 +652,7 @@ let rec render_prem env prem =
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     "{" ^ render_prem env prem' ^ "}" ^ render_iter env iter
   | IterPr (prem', iter) ->
-    render_prem env prem' ^ render_iter env iter
+    "(" ^ render_prem env prem' ^ ")" ^ render_iter env iter
 
 
 let merge_typ t1 t2 =
