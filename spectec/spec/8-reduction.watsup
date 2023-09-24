@@ -102,28 +102,28 @@ rule Step_read/call_ref-null:
 rule Step_read/call_ref-func:
   z; val^n (REF.FUNC_ADDR a) (CALL_REF x)  ~>  (FRAME_ m `{f} (LABEL_ m `{epsilon} instr*))
   -- if $funcinst(z)[a] = fi
-  -- if fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
-  -- if fi.CODE = {TYPE x, LOCALS {TYPE t}*, BODY instr*}
-  -- if f = {LOCAL val^n ($default_(t))*, MODULE fi.MODULE}
+  -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
+  -- if fi.CODE = FUNC x (LOCAL t)* (instr*)
+  -- if f = {LOCAL val^n ($default(t))*, MODULE fi.MODULE}
 
 
 rule Step_read/return_call:
   z; (RETURN_CALL x)  ~>  (RETURN_CALL_REF $funcaddr(z)[x])
 
 rule Step_read/return_call_ref-frame:
-  z; (FRAME_ k `{f} val* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (CALL_REF x)
-  -- if $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
+  z; (FRAME_ k `{f} val'* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (CALL_REF x)
+  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
 
 rule Step_read/return_call_ref-label:
-  z; (LABEL_ k `{f} val* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (RETURN_CALL_REF x)
-  -- if $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
+  z; (LABEL_ k `{instr'*} val'* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (RETURN_CALL_REF x)
+  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
 
 
 rule Step_pure/call_indirect-call:
-  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL y)) (CALL_REF y)
+  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL (_IDX y))) (CALL_REF y)
 
 rule Step_pure/return_call_indirect:
-  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL y)) (RETURN_CALL_REF y)
+  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL (_IDX y))) (RETURN_CALL_REF y)
 
 
 rule Step_pure/frame-vals:
@@ -171,11 +171,11 @@ rule Step_pure/extend:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
-  -- if $cvtop(nt_1, cvtop, nt_2, sx?, c_1) = epsilon  ;; TODO
+  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = epsilon  ;; TODO
 
 
 ;; Reference instructions
@@ -189,7 +189,7 @@ rule Step_pure/ref.i31:
 
 rule Step_pure/ref.is_null-true:
   val REF.IS_NULL  ~>  (CONST I32 1)
-  -- if val = (REF.NULL rt)
+  -- if val = (REF.NULL ht)
 
 rule Step_pure/ref.is_null-false:
   val REF.IS_NULL  ~>  (CONST I32 0)
@@ -206,22 +206,22 @@ rule Step_pure/ref.as_non_null-null:
 
 
 rule Step_pure/ref.eq-null:
-  ref1 ref2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref1 = (REF.NULL ht1) /\ ref2 = (REF.NULL ht2)
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- if ref_1 = (REF.NULL ht_1) /\ ref_2 = (REF.NULL ht_2)
 
 rule Step_pure/ref.eq-true:
-  ref1 ref2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref1 = ref2
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- if ref_1 = ref_2
 
 rule Step_pure/ref.eq-false:
-  ref1 ref2 REF.EQ  ~>  (CONST I32 0)
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 0)
   -- otherwise
 
 
 rule Step_read/ref.test-true:
   (s; f); ref (REF.TEST rt)  ~>  (CONST I32 1)
   -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: |- rt' <: $insttype(f.MODULE, rt)
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.test-false:
   (s; f); ref (REF.TEST rt)  ~>  (CONST I32 0)
@@ -231,7 +231,7 @@ rule Step_read/ref.test-false:
 rule Step_read/ref.cast-true:
   (s; f); ref (REF.CAST rt)  ~>  ref
   -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: |- rt' <: $insttype(f.MODULE, rt)
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
 rule Step_read/ref.cast-false:
   (s; f); ref (REF.CAST rt)  ~>  TRAP
@@ -251,30 +251,30 @@ rule Step_pure/i31.get-num:
 
 rule Step/struct.new:
   z; val^n (STRUCT.NEW x)  ~>  $ext_structinst(z, si); (REF.STRUCT_ADDR $(|$structinst(z)|))
-  -- if $type(z, x) ~~ STRUCT (mut gt)^n
-  -- if si = {TYPE $type(z, x), FIELD ($packval(gt, val))^n}
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)^n
+  -- if si = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
 
 rule Step_read/struct.new_default:
-  z; (STRUCT.NEW_DEFAULT x)  ~>  $default($unpacktype(gt))* (STRUCT.NEW x)
-  -- if $type(z, x) ~~ STRUCT (mut gt)*
+  z; (STRUCT.NEW_DEFAULT x)  ~>  $default($unpacktype(zt))* (STRUCT.NEW x)
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
 
 
 rule Step_read/struct.get-null:
-  z; (REF.NULL ht) (STRUCT.GET sx? x)  ~>  TRAP
+  z; (REF.NULL ht) (STRUCT.GET sx? x i)  ~>  TRAP
 
 rule Step_read/struct.get-struct:
-  z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackval(gt*[i], sx?, si.FIELD[i])
+  z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackval(zt*[i], sx?, si.FIELD[i])
   -- if $structinst(z)[a] = si
-  -- if si.TYPE ~~ STRUCT (mut gt)*
+  -- Expand: si.TYPE ~~ STRUCT (mut zt)*
 
 
 rule Step/struct.set-null:
-  z; (REF.NULL ht) val (STRUCT.SET x)  ~>  z; TRAP
+  z; (REF.NULL ht) val (STRUCT.SET x i)  ~>  z; TRAP
 
 rule Step/struct.set-struct:
-  z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $structinst(z)[a][.FIELD[i] = pv]; epsilon
-  -- if $structinst(z)[a].TYPE ~~ STRUCT (mut gt)*
-  -- if pv = $packval(gt*[i], val)
+  z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, fv); epsilon
+  -- Expand: $structinst(z)[a].TYPE ~~ STRUCT (mut zt)*
+  -- if fv = $packval(zt*[i], val)
 
 
 ;; Array instructions
@@ -283,13 +283,13 @@ rule Step_read/array.new:
   z; val (CONST I32 n) (ARRAY.NEW x)  ~>  val^n (ARRAY.NEW_FIXED x n)
 
 rule Step_read/array.new_default:
-  z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  $default($unpacktype(gt))^n (ARRAY.NEW_FIXED x n)
-  -- if $type(z, x) ~~ ARRAY (mut gt)
+  z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  $default($unpacktype(zt))^n (ARRAY.NEW_FIXED x n)
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
 
 rule Step/array.new_fixed:
   z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR $(|$arrayinst(z)|))
-  -- if $type(z, x) ~~ ARRAY (mut gt)
-  -- if ai = {TYPE $type(z, x), FIELD ($packval(gt, val))^n}
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if ai = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
 
 
 rule Step_read/array.new_elem-oob:
@@ -303,32 +303,32 @@ rule Step_read/array.new_elem-alloc:
 
 rule Step_read/array.new_data-oob:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  TRAP
-  -- if $type(z, x) ~~ ARRAY (mut gt)
-  -- if $(i + n * $storagesize(gt)/8 > |$data(z, y).DATA|)
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $(i + n * $storagesize(zt)/8 > |$data(z, y).DATA|)
 
 rule Step_read/array.new_data-alloc:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  (CONST nt c)^n (ARRAY.NEW_FIXED x n)
-  -- if $type(z, x) ~~ ARRAY (mut gt)
-  -- if nt = $unpacktype(gt)
-  -- if $bytes($storagesize(gt), c)^n = $data(z, y).DATA[i : n * $storagesize(gt)/8]
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if nt = $unpacknumtype(zt)
+  -- if $bytes($storagesize(zt), c)^n = $data(z, y).DATA[i : n * $storagesize(zt)/8]
 
 
 rule Step_read/array.get-null:
   z; (REF.NULL ht) (CONST I32 i) (ARRAY.GET sx? x)  ~>  TRAP
 
 rule Step_read/array.get-array:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(gt, sx?, ai.FIELD[i])
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(zt, sx?, ai.FIELD[i])
   -- if $arrayinst(z)[a] = ai
-  -- if ai.TYPE ~~ ARRAY (mut gt)
+  -- Expand: ai.TYPE ~~ ARRAY (mut zt)
 
 
 rule Step/array.set-null:
   z; (REF.NULL ht) val (ARRAY.SET x)  ~>  z; TRAP
 
 rule Step/array.set-array:
-  z; (REF.ARRAY_ADDR a) val (ARRAY.SET x i)  ~>  $arrayinst(z)[a][.FIELD[i] = pv]; epsilon
-  -- if $arrayinst(z)[a].TYPE ~~ ARRAY (mut gt)
-  -- if pv = $packval(gt, val)
+  z; (REF.ARRAY_ADDR a) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); epsilon
+  -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
+  -- if fv = $packval(zt, val)
 
 
 rule Step_read/array.len-null:
@@ -351,9 +351,9 @@ rule Step_read/array.fill-zero:
   -- otherwise
 
 rule Step_read/array.fill-succ:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 (n+1)) (ARRAY.FILL x)  ~>
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 $(n + 1)) (ARRAY.FILL x)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 (i + 1)) val (CONST I32 n) (ARRAY.FILL x)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) val (CONST I32 n) (ARRAY.FILL x)
 
 
 rule Step_read/array.copy-null1:
@@ -379,10 +379,10 @@ rule Step_read/array.copy-le:
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1)
     (REF.ARRAY_ADDR a_2) (CONST I32 i_2)
     (ARRAY.GET sx? x) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a_1) (CONST I32 (i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2+1)) (CONST I32 n) (ARRAY.COPY x_1 x_2)
+    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 n) (ARRAY.COPY x_1 x_2)
   -- if i_1 <= i_2
-  -- if $type(z, x_2) ~~ ARRAY (mut gt_2)
-  -- if sx? = $sx_field(gt_2)
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- if sx? = $sx_field(zt_2)
 
 rule Step_read/array.copy-gt:
   z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n+1)) (ARRAY.COPY x_1 x_2)  ~>
@@ -391,8 +391,8 @@ rule Step_read/array.copy-gt:
     (ARRAY.GET sx? x) (ARRAY.SET x)
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)
   -- if i_1 > i_2
-  -- if $type(z, x_2) ~~ ARRAY (mut gt_2)
-  -- if sx? = $sx_field(gt_2)
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- if sx? = $sx_field(zt_2)
 
 
 rule Step_read/array.init_elem-null:
@@ -411,9 +411,9 @@ rule Step_read/array.init_elem-zero:
   -- otherwise
 
 rule Step_read/array.init_elem-succ:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 (n + 1)) (ARRAY.INIT_ELEM x y)  ~>
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_ELEM x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) ref (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 (i + 1)) (CONST I32 j + 1) (CONST I32 n) (ARRAY.INIT_ELEM x y)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_ELEM x y)
   -- otherwise
   -- if ref = $elem(z, y).ELEM[j]
 
@@ -427,8 +427,8 @@ rule Step_read/array.init_data-oob1:
 
 rule Step_read/array.init_data-oob2:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  TRAP
-  -- if $type(z, x) ~~ ARRAY (mut gt)
-  -- if $(j + n * $storagesize(gt)/8 > |$data(z, y).ELEM|)
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $(j + n * $storagesize(zt)/8 > |$data(z, y).DATA|)
 
 rule Step_read/array.init_data-zero:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 0) (ARRAY.INIT_DATA x y)  ~>  epsilon
@@ -437,20 +437,27 @@ rule Step_read/array.init_data-zero:
 rule Step_read/array.init_data-succ:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_DATA x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) (CONST nt c) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 (i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_DATA x y)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_DATA x y)
   -- otherwise
-  -- if $type(z, x) ~~ ARRAY (mut gt)
-  -- if nt = $unpacktype(gt)
-  -- if $bytes($storagesize(gt), c) = $data(z, y).DATA[j : $storagesize(gt)/8]
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if nt = $unpacknumtype(zt)
+  -- if $bytes($storagesize(zt), c) = $data(z, y).DATA[j : $storagesize(zt)/8]
 
 
 ;; External reference instructions
 
-rule Step_pure/extern.externalize:
-  ref REF.EXTERNALIZE  ~>  (REF.EXTERN ref)
+rule Step_pure/extern.externalize/null:
+  (REF.NULL ht) EXTERN.EXTERNALIZE  ~>  (REF.NULL EXTERN)
 
-rule Step_pure/extern.internalize:
-  (REF.EXTERN ref) REF.INTERNALIZE  ~>  ref
+rule Step_pure/extern.externalize/addr:
+  addrref EXTERN.EXTERNALIZE  ~>  (REF.EXTERN addrref)
+
+
+rule Step_pure/extern.internalize/null:
+  (REF.NULL ht) EXTERN.INTERNALIZE  ~>  (REF.NULL ANY)
+
+rule Step_pure/extern.internalize/addr:
+  (REF.EXTERN addrref) EXTERN.INTERNALIZE  ~>  addrref
 
 
 ;; Local instructions
@@ -642,7 +649,7 @@ rule Step_read/memory.copy-zero:
 rule Step_read/memory.copy-le:
   z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
     (CONST I32 i_1) (CONST I32 i_2) (LOAD I32 (8 _ U) x_2 0 0) (STORE I32 8 x_1 0 0)
-    (CONST I32 $(i_1+1)) (CONST I32 $(i_2+1)) (CONST I32 $(n-1)) (MEMORY.COPY)
+    (CONST I32 $(i_1 + 1)) (CONST I32 $(i_2 + 1)) (CONST I32 $(n - 1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
   -- if i_1 <= i_2
 

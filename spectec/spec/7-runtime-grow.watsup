@@ -1,4 +1,35 @@
 ;;
+;; Typing values
+;;
+
+relation Ref_ok: store |- ref : reftype
+
+rule Ref_ok/null:
+  s |- REF.NULL ht : (REF NULL ht)
+
+rule Ref_ok/i31:
+  s |- REF.I31_NUM i : (REF epsilon I31)
+
+rule Ref_ok/struct:
+  s |- REF.STRUCT_ADDR a : (REF epsilon dt)
+  -- if s.STRUCT[a].TYPE = dt
+
+rule Ref_ok/array:
+  s |- REF.ARRAY_ADDR a : (REF epsilon dt)
+  -- if s.ARRAY[a].TYPE = dt
+
+rule Ref_ok/func:
+  s |- REF.FUNC_ADDR a : (REF epsilon dt)
+  -- if s.FUNC[a].TYPE = dt
+
+rule Ref_ok/host:
+  s |- REF.HOST_ADDR a : (REF epsilon ANY)
+
+rule Ref_ok/extern:
+  s |- REF.EXTERN addrref : (REF epsilon EXTERN)
+
+
+;;
 ;; Growing State
 ;;
 
@@ -9,10 +40,10 @@ def $grow_table(ti, n, r) = ti'
   -- if ti = { TYPE `[i .. j] rt, ELEM r'* }
   -- if i' = $(|r'*| + n)
   -- if ti' = { TYPE `[i' .. j] rt, ELEM r'* r^n }
-  -- Tabletype_ok: |- ti'.TYPE : OK
+  -- Tabletype_ok: {} |- ti'.TYPE : OK
 
 def $grow_memory(mi, n) = mi'
   -- if mi = { TYPE (`[i .. j] I8), DATA b* }
   -- if i' = $(|b*| / (64 * $Ki) + n)
   -- if mi' = { TYPE (`[i' .. j] I8), DATA b* 0^(n * 64 * $Ki) }
-  -- Memtype_ok: |- mi'.TYPE : OK
+  -- Memtype_ok: {} |- mi'.TYPE : OK

@@ -45,6 +45,10 @@ def $unpacktype(storagetype) : valtype  hint(show $unpack(%))
 def $unpacktype(valtype) = valtype
 def $unpacktype(packedtype) = I32
 
+def $unpacknumtype(storagetype) : numtype  hint(show $unpack(%))
+def $unpacknumtype(numtype) = numtype
+def $unpacknumtype(packedtype) = I32
+
 def $sx_field(storagetype) : sx?  hint(show $sx(%))
 def $sx_field(valtype) = epsilon
 def $sx_field(packedtype) = S
@@ -129,9 +133,11 @@ def $subst_externtype(TABLE tt, xx*, ht*) = TABLE $subst_tabletype(tt, xx*, ht*)
 def $subst_externtype(MEM mt, xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
 
 
-def $subst_all(deftype, heaptype*) : deftype  hint(show %`[:=%])
-def $subst_all(dt, ht^n) = $subst_deftype(dt, (_IDX x)^n, ht^n)
-  -- if x^n = $enum(n)
+def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %`[:=%])
+def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %`[:=%])
+
+def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
+def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
 
 
 ;; Rolling and Unrolling

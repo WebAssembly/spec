@@ -33,8 +33,16 @@ var aa : arrayaddr
 
 syntax num hint(desc "number") =
   | CONST numtype c_numtype
+syntax addrref hint(desc "address reference") =
+  | REF.I31_NUM i31                hint(show REF.I31 %)
+  | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
+  | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
+  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
+  | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
+  | REF.EXTERN addrref
 syntax ref hint(desc "reference") =
-  | REF.NULL heaptype | REF.FUNC_ADDR funcaddr | REF.HOST_ADDR hostaddr
+  | REF.NULL heaptype
+  | addrref
 syntax val hint(desc "value") =
   | num | ref
 
@@ -64,7 +72,7 @@ syntax c_packedtype = nat  ;; TODO
 
 syntax funcinst hint(desc "function instance") =
   { MODULE moduleinst,
-    TYPE functype,
+    TYPE deftype,
     CODE func }
 syntax globalinst hint(desc "global instance") =
   { TYPE globaltype,
@@ -96,7 +104,8 @@ syntax arrayinst hint(desc "array instance") =
     FIELD fieldval* }
 
 syntax moduleinst hint(desc "module instance") =
-  { FUNC funcaddr*,
+  { TYPE deftype*,
+    FUNC funcaddr*,
     GLOBAL globaladdr*,
     TABLE tableaddr*,
     MEM memaddr*,
@@ -104,7 +113,7 @@ syntax moduleinst hint(desc "module instance") =
     DATA dataaddr*,
     EXPORT exportinst* }
 
-var m : moduleinst
+var mm : moduleinst
 var fi : funcinst
 var gi : globalinst
 var ti : tableinst
@@ -149,12 +158,7 @@ var z : state
 
 syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr
-  | REF.I31_NUM i31                hint(show REF.I31 %)
-  | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
-  | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
-  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
-  | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
-  | REF.EXTERN ref
+  | addrref
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP
