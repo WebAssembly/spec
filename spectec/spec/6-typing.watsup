@@ -610,6 +610,22 @@ rule Instr_ok/br_on_non_null:
   -- if C.LABEL[l] = t* (REF epsilon ht)
   -- Heaptype_ok: C |- ht : OK
 
+rule Instr_ok/br_on_cast:
+  C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* ($diffrt(rt_1, rt_2))
+  -- if C.LABEL[l] = t* rt
+  -- Reftype_ok: C |- rt_1 : OK
+  -- Reftype_ok: C |- rt_2 : OK
+  -- Reftype_sub: C |- rt_2 <: rt_1
+  -- Reftype_sub: C |- rt_2 <: rt
+
+rule Instr_ok/br_on_cast_fail:
+  C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* rt_2
+  -- if C.LABEL[l] = t* rt
+  -- Reftype_ok: C |- rt_1 : OK
+  -- Reftype_ok: C |- rt_2 : OK
+  -- Reftype_sub: C |- rt_2 <: rt_1
+  -- Reftype_sub: C |- $diffrt(rt_1, rt_2) <: rt
+
 
 ;; Function instructions
 

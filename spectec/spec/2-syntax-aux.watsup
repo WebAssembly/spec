@@ -49,9 +49,17 @@ def $unpacknumtype(storagetype) : numtype  hint(show $unpack(%))
 def $unpacknumtype(numtype) = numtype
 def $unpacknumtype(packedtype) = I32
 
-def $sx_field(storagetype) : sx?  hint(show $sx(%))
-def $sx_field(valtype) = epsilon
-def $sx_field(packedtype) = S
+def $sxfield(storagetype) : sx?  hint(show $sx(%))
+def $sxfield(valtype) = epsilon
+def $sxfield(packedtype) = S
+
+
+;; Type difference
+
+def $diffrt(reftype, reftype) : reftype  hint(show $(%-%))
+
+def $diffrt(REF nul_1 ht_1, REF NULL ht_2) = (REF epsilon ht_1)
+def $diffrt(REF nul_1 ht_1, REF epsilon ht_2) = (REF nul_1 ht_1)
 
 
 ;; Injection

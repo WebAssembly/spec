@@ -109,6 +109,26 @@ rule Step_pure/br_table-ge:
   -- if i >= |l*|
 
 
+rule Step_read/br_on_cast-succeed:
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
+  -- Ref_ok: s |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+
+rule Step_read/br_on_cast-fail:
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
+  -- otherwise
+
+
+rule Step_read/br_on_cast_fail-succeed:
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
+  -- Ref_ok: s |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+
+rule Step_read/br_on_cast_fail-fail:
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
+  -- otherwise
+
+
 ;; Function instructions
 
 rule Step_read/call:
@@ -246,12 +266,12 @@ rule Step_read/ref.test-false:
   -- otherwise
 
 
-rule Step_read/ref.cast-true:
+rule Step_read/ref.cast-succeed:
   (s; f); ref (REF.CAST rt)  ~>  ref
   -- Ref_ok: s |- ref : rt'
   -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
 
-rule Step_read/ref.cast-false:
+rule Step_read/ref.cast-fail:
   (s; f); ref (REF.CAST rt)  ~>  TRAP
   -- otherwise
 
@@ -402,7 +422,7 @@ rule Step_read/array.copy-le:
     (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 n) (ARRAY.COPY x_1 x_2)
   -- if i_1 <= i_2
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
-  -- if sx? = $sx_field(zt_2)
+  -- if sx? = $sxfield(zt_2)
 
 rule Step_read/array.copy-gt:
   z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n+1)) (ARRAY.COPY x_1 x_2)  ~>
@@ -412,7 +432,7 @@ rule Step_read/array.copy-gt:
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)
   -- if i_1 > i_2
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
-  -- if sx? = $sx_field(zt_2)
+  -- if sx? = $sxfield(zt_2)
 
 
 rule Step_read/array.init_elem-null:

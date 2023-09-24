@@ -4,7 +4,7 @@
 
 ;; Instantiation
 
-def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_%(%))
+def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_(%,%))
 
 def $inst_reftype(mm, rt) = $subst_all_reftype(rt, dt*)
   -- if dt* = mm.TYPE
