@@ -187,6 +187,9 @@ let lower = String.lowercase_ascii
 
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
+let rec chop_tick id =
+  if id.[String.length id - 1] <> '\'' then id else
+  chop_tick (String.sub id 0 (String.length id - 1))
 
 let rec chop_sub_exp e =
   match e.it with
@@ -219,7 +222,7 @@ let render_id' env style id =
 let rec render_id_sub env style show at = function
   | [] -> ""
   | ""::ss -> render_id_sub env style show at ss
-  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem s !(env.vars)) ->
+  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
     render_id_sub env `Atom show at (lower s ::ss)  (* subscripts may be atoms *)
   | s1::""::ss -> render_id_sub env style show at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->

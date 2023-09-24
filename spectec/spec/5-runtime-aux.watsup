@@ -138,3 +138,19 @@ def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAY =.. %])
 
 def $ext_structinst((s; f), si*) = s[.STRUCT =.. si*]; f
 def $ext_arrayinst((s; f), ai*) = s[.ARRAY =.. ai*]; f
+
+
+;; Growing
+
+def $growtable(tableinst, nat, ref) : tableinst hint(partial)
+def $growmemory(meminst, nat) : meminst hint(partial)
+
+def $growtable(ti, n, r) = { TYPE tt', ELEM r'* r^n }
+  -- if ti = { TYPE (`[i .. j] rt), ELEM r'* }
+  -- if tt' = `[($(i + n)) .. j] rt
+  -- if $(i + n <= j)
+
+def $growmemory(mi, n) = { TYPE mt', DATA b* 0^(n * 64 * $Ki) }
+  -- if mi = { TYPE (`[i .. j] I8), DATA b* }
+  -- if mt' = `[($(i + n)) .. j] I8
+  -- if $(i + n <= j)

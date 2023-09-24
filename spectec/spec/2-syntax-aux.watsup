@@ -54,10 +54,16 @@ def $sx_field(valtype) = epsilon
 def $sx_field(packedtype) = S
 
 
-;; Substitution
+;; Injection
 
 syntax typevar = | _IDX typeidx | REC nat
 var xx : typevar
+
+def $idx(typeidx) : typevar  hint(show %)
+def $idx(x) = _IDX x
+
+
+;; Substitution
 
 def $subst_typevar(typevar, typevar*, heaptype*) : heaptype            hint(show %#`[%:=%])
 
@@ -136,8 +142,8 @@ def $subst_externtype(MEM mt, xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
 def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
 
-def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
-def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, (_IDX x)^n, ht^n) -- if x^n = $enum(n)
+def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^n, ht^n) -- if x^n = $enum(n)
+def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^n, ht^n) -- if x^n = $enum(n)
 
 
 ;; Rolling and Unrolling
@@ -151,7 +157,7 @@ def $expanddt(deftype) : comptype        hint(show $expand(%))
 ;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
 ;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
 ;; For now, we avoid to reuse the dimension var and introduce a separate one (although m = n)
-def $rollrt(x, REC st^n) = REC ($subst_subtype(st, (_IDX $(x + i))^m, (REC i)^m))^n
+def $rollrt(x, REC st^n) = REC ($subst_subtype(st, ($idx($(x + i)))^m, (REC i)^m))^n
   -- if i^m = $enum(n)
 def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^m, (DEF qt i)^m))^n
   -- if i^m = $enum(n)

@@ -181,8 +181,9 @@ let as_tup_typ phrase env dir t at : typ list =
   | _ -> error_dir_typ at phrase dir t "(_,...,_)"
 
 
-let as_notation_typid' phrase env id at : typ =
+let rec as_notation_typid' phrase env id at : typ =
   match as_defined_typid' env id at with
+  | VarT id', `Alias -> as_notation_typid' phrase env id' at
   | (AtomT _ | SeqT _ | InfixT _ | BrackT _ | IterT _) as t, _ -> t $ at
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "_ ... _"
 
@@ -191,8 +192,9 @@ let as_notation_typ phrase env dir t at : typ =
   | VarT id -> as_notation_typid' phrase env id at
   | _ -> error_dir_typ at phrase dir t "_ ... _"
 
-let as_struct_typid' phrase env id at : typfield list =
+let rec as_struct_typid' phrase env id at : typfield list =
   match as_defined_typid' env id at with
+  | VarT id', `Alias -> as_struct_typid' phrase env id' at
   | StrT tfs, _ -> filter_nl tfs
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "| ..."
 
@@ -203,6 +205,7 @@ let as_struct_typ phrase env dir t at : typfield list =
 
 let rec as_variant_typid' phrase env id at : typcase list * dots =
   match as_defined_typid' env id at with
+  | VarT id', `Alias -> as_variant_typid' phrase env id' at
   | CaseT (_dots1, ids, cases, dots2), _ ->
     let casess = map_nl_list (as_variant_typid "" env) ids in
     List.concat (filter_nl cases :: List.map fst casess), dots2

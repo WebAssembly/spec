@@ -138,10 +138,10 @@ rule Step_read/return_call_ref-label:
 
 
 rule Step_pure/call_indirect-call:
-  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL (_IDX y))) (CALL_REF y)
+  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (CALL_REF y)
 
 rule Step_pure/return_call_indirect:
-  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL (_IDX y))) (RETURN_CALL_REF y)
+  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (RETURN_CALL_REF y)
 
 
 rule Step_pure/frame-vals:
@@ -189,11 +189,11 @@ rule Step_pure/extend:
 
 rule Step_pure/cvtop-val:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
-  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(cvtop, sx?, nt_1, nt_2, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
   (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
-  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = epsilon  ;; TODO
+  -- if $cvtop(cvtop, sx?, nt_1, nt_2, c_1) = epsilon  ;; TODO
 
 
 ;; Reference instructions
@@ -528,7 +528,7 @@ rule Step_read/table.size:
 
 rule Step/table.grow-succeed:
   z; ref (CONST I32 n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti); (CONST I32 $(|$table(z, x).ELEM|))
-  -- if $grow_table($table(z, x), n, ref) = ti
+  -- if $growtable($table(z, x), n, ref) = ti
 
 rule Step/table.grow-fail:
   z; ref (CONST I32 n) (TABLE.GROW x)  ~>  z; (CONST I32 $(-1))
@@ -636,7 +636,7 @@ rule Step_read/memory.size:
 
 rule Step/memory.grow-succeed:
   z; (CONST I32 n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
-  -- if $grow_memory($mem(z, x), n) = mi
+  -- if $growmemory($mem(z, x), n) = mi
 
 rule Step/memory.grow-fail:
   z; (CONST I32 n) (MEMORY.GROW x)  ~>  z; (CONST I32 $(-1))
