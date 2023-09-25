@@ -28,14 +28,14 @@ def $default(REF epsilon ht) = epsilon
 
 ;; Packed fields
 
-def $packval(storagetype, val) : fieldval         hint(show $pack_(%)(%))
-def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)(%))
+def $packval(storagetype, val) : fieldval         hint(show $pack_(%,%))
+def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
 
-def $packval(valtype, val) = val
-def $packval(packedtype, (CONST I32 i)) = PACK packedtype $wrap(32, $packedsize(packedtype), i)
+def $packval(t, val) = val
+def $packval(pt, CONST I32 i) = PACK pt $wrap(32, $packedsize(pt), i)
 
-def $unpackval(valtype, epsilon, val) = val
-def $unpackval(packedtype, sx, (PACK pt i)) = CONST I32 $ext($packedsize(packedtype), 32, sx, i)
+def $unpackval(t, epsilon, val) = val
+def $unpackval(pt, sx, PACK pt i) = CONST I32 $ext($packedsize(pt), 32, sx, i)
 
 
 ;; Projections

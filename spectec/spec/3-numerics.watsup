@@ -4,9 +4,9 @@ def $unop(unop_numtype, numtype, c) : c_numtype*         hint(show %#_%#((%)))
 def $binop(binop_numtype, numtype, c, c) : c_numtype*    hint(show %#_%#(%, %))
 def $testop(testop_numtype, numtype, c) : c_numtype      hint(show %#_%#((%)))
 def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%#(%, %))
-def $cvtop(cvtop_numtype, sx?, numtype, numtype, c) : c_numtype* hint(show %^(%)#_(%,%)#((%)))  ;; TODO
+def $cvtop(cvtop_numtype, numtype, numtype, sx?, c) : c_numtype* hint(show %#$_((%,%))^(%)#((%)))
 
-def $wrap(nat, nat, c) : nat                             hint(show $wrap_(%,%)#(%))
-def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_(%,%)^(%)#(%))
+def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
+def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^(%)#((%)))
 
 def $bytes(nat, c) : byte*                               hint(show $bytes_(%)#(%))

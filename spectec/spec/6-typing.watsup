@@ -696,13 +696,13 @@ rule Instr_ok/reinterpret:
   -- if $size(nt_1) = $size(nt_2)
 
 rule Instr_ok/convert-i:
-  C |- CVTOP in_1 CONVERT in_2 sx? : in_2 -> in_1
-  -- if in_1 =/= in_2
-  -- if sx? = epsilon <=> $size(in_1) > $size(in_2)
+  C |- CVTOP iN_1 CONVERT iN_2 sx? : iN_2 -> iN_1
+  -- if iN_1 =/= iN_2
+  -- if sx? = epsilon <=> $size(iN_1) > $size(iN_2)
 
 rule Instr_ok/convert-f:
-  C |- CVTOP fn_1 CONVERT fn_2 : fn_2 -> fn_1
-  -- if fn_1 =/= fn_2
+  C |- CVTOP fN_1 CONVERT fN_2 : fN_2 -> fN_1
+  -- if fN_1 =/= fN_2
 
 
 ;; Reference instructions
@@ -939,14 +939,14 @@ rule Instr_ok/load:
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = in
+  -- if n? = epsilon \/ nt = iN
 
 rule Instr_ok/store:
   C |- STORE nt n? x n_A n_O : I32 nt -> epsilon
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = in
+  -- if n? = epsilon \/ nt = iN
 
 
 ;;
@@ -969,6 +969,18 @@ rule Instr_const/ref.func:
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBAL[x] = epsilon t
+
+def $in_numtype(numtype, numtype*) : bool    hint(show % in %)
+def $in_numtype(nt, epsilon) = false
+def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*) 
+def $in_binop(binop, binopIXX*) : bool  hint(show % in %)
+def $in_binop(binop, epsilon) = false
+def $in_binop(binop, binopIXX_1 binopIXX'*) = binop = _I binopIXX_1 \/ $in_binop(binop, binopIXX'*) 
+
+rule Instr_const/binop:
+  C |- (BINOP nt binop) CONST
+  -- if $in_numtype(nt, I32 I64)
+  -- if $in_binop(binop, ADD SUB MUL)
 
 
 rule Expr_const: C |- instr* CONST

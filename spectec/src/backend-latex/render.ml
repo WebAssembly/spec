@@ -223,22 +223,22 @@ let rec render_id_sub env style show at = function
   | [] -> ""
   | ""::ss -> render_id_sub env style show at ss
   | s::ss when style = `Var && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
-    render_id_sub env `Atom show at (lower s ::ss)  (* subscripts may be atoms *)
+    render_id_sub env `Atom show at (lower s :: ss)  (* subscripts may be atoms *)
   | s1::""::ss -> render_id_sub env style show at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
     render_id_sub env `Atom show at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
-    let rec find_primes i =
-      if i > 0 && s.[i - 1] = '\'' then find_primes (i - 1) else i
+    let rec find_ticks i =
+      if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
     in
     let n = String.length s in
-    let i = find_primes n in
+    let i = find_ticks n in
     let s' = String.sub s 0 i in
     let s'' =
       if String.for_all is_digit s' then s' else
       !render_expand_fwd env show (s' $ at) [] (fun () -> render_id' env style s')
     in
-    (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
+    "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
     (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var at ss ^ "}")
 
 let render_id env style show id =
@@ -279,6 +279,7 @@ let render_atom env = function
   | Dot3 -> "\\dots"
   | Semicolon -> ";"
   | Backslash -> "\\setminus"
+  | In -> "\\in"
   | Arrow -> "\\rightarrow"
   | Colon -> ":"
   | Sub -> "\\leq"

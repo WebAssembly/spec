@@ -276,6 +276,7 @@ let elab_atom = function
   | Dot3 -> Il.Dot3
   | Semicolon -> Il.Semicolon
   | Backslash -> Il.Backslash
+  | In -> Il.In
   | Arrow -> Il.Arrow
   | Colon -> Il.Colon
   | Sub -> Il.Sub
@@ -1058,15 +1059,17 @@ let elab_def env d : Il.def list =
     let e2' = Multiplicity.annot_exp dims' (elab_exp env e2 t2) in
     let prems' = List.map (Multiplicity.annot_prem dims')
       (map_nl_list (elab_prem env) prems) in
+(*
     let free_rh =
       Free.(Set.diff (Set.diff (free_exp e2).varid
-        (free_exp e1).varid) (free_list free_prem (filter_nl prems)).varid)
+        (free_exp e1).varid) (free_nl_list free_prem prems).varid)
     in
     if free_rh <> Free.Set.empty then
       error d.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`");
-    let free = Free.(Set.union
-      (free_exp e1).varid (free_nl_list free_prem prems).varid) in
+*)
+    let free = Free.(Set.union (Set.union
+      (free_exp e1).varid (free_exp e2).varid) (free_nl_list free_prem prems).varid) in
     let binds' = make_binds env free dims d.at in
     let clause' = Il.DefD (binds', e1', e2', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (t1, t2, clause'::clauses');

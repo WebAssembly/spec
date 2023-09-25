@@ -24,6 +24,7 @@ type atom =
   | Dot3                         (* `...` *)
   | Semicolon                    (* `;` *)
   | Backslash                    (* `\` *)
+  | In                           (* `in` *)
   | Arrow                        (* `->` *)
   | Colon                        (* `:` *)
   | Sub                          (* `<:` *)

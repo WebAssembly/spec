@@ -20,6 +20,7 @@ let string_of_atom = function
   | Dot3 -> "..."
   | Semicolon -> ";"
   | Backslash -> "\\"
+  | In -> "in"
   | Arrow -> "->"
   | Colon -> ":"
   | Sub -> "<:"

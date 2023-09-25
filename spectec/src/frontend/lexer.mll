@@ -163,6 +163,7 @@ rule token = parse
   | "^" { UP }
   | "++" { COMPOSE }
 
+  | "in" { IN }
   | "->" { ARROW }
   | "=>" { ARROW2 }
   | "<=>" { DARROW2 }

@@ -25,11 +25,6 @@ def $min(0, j) = 0
 def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
-;; TODO: use ^(x<n)
-def $enum(nat) : nat*
-def $enum(0) = epsilon
-def $enum($(n+1)) = $enum(n) n
-
 
 ;;
 ;; Some notation tests

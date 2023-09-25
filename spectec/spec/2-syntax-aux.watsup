@@ -58,8 +58,8 @@ def $sxfield(packedtype) = S
 
 def $diffrt(reftype, reftype) : reftype  hint(show $(%-%))
 
-def $diffrt(REF nul_1 ht_1, REF NULL ht_2) = (REF epsilon ht_1)
-def $diffrt(REF nul_1 ht_1, REF epsilon ht_2) = (REF nul_1 ht_1)
+def $diffrt((REF nul_1 ht_1), (REF NULL ht_2)) = (REF epsilon ht_1)
+def $diffrt((REF nul_1 ht_1), (REF epsilon ht_2)) = (REF nul_1 ht_1)
 
 
 ;; Injection
@@ -107,9 +107,9 @@ def $subst_vectype(vt, xx*, ht*) = vt
 
 def $subst_heaptype(xx', xx*, ht*) = $subst_typevar(xx', xx*, ht*)
 def $subst_heaptype(dt, xx*, ht*) = $subst_deftype(dt, xx*, ht*)
-def $subst_heaptype(heaptype, xx*, ht*) = heaptype  -- otherwise
+def $subst_heaptype(ht, xx*, ht*) = ht  -- otherwise
 
-def $subst_reftype(REF nul ht, xx*, ht*) = REF nul $subst_heaptype(ht, xx*, ht*)
+def $subst_reftype((REF nul ht), xx*, ht*) = REF nul $subst_heaptype(ht, xx*, ht*)
 
 def $subst_valtype(nt, xx*, ht*) = $subst_numtype(nt, xx*, ht*)
 def $subst_valtype(vt, xx*, ht*) = $subst_vectype(vt, xx*, ht*)
@@ -121,37 +121,37 @@ def $subst_packedtype(pt, xx*, ht*) = pt
 def $subst_storagetype(t, xx*, ht*) = $subst_valtype(t, xx*, ht*)
 def $subst_storagetype(pt, xx*, ht*) = $subst_packedtype(pt, xx*, ht*)
 
-def $subst_fieldtype(mut zt, xx*, ht*) = mut $subst_storagetype(zt, xx*, ht*)
+def $subst_fieldtype((mut zt), xx*, ht*) = mut $subst_storagetype(zt, xx*, ht*)
 
-def $subst_comptype(STRUCT yt*, xx*, ht*) = STRUCT $subst_fieldtype(yt, xx*, ht*)*
-def $subst_comptype(ARRAY yt, xx*, ht*) = ARRAY $subst_fieldtype(yt, xx*, ht*)
-def $subst_comptype(FUNC ft, xx*, ht*) = FUNC $subst_functype(ft, xx*, ht*)
+def $subst_comptype((STRUCT yt*), xx*, ht*) = STRUCT $subst_fieldtype(yt, xx*, ht*)*
+def $subst_comptype((ARRAY yt), xx*, ht*) = ARRAY $subst_fieldtype(yt, xx*, ht*)
+def $subst_comptype((FUNC ft), xx*, ht*) = FUNC $subst_functype(ft, xx*, ht*)
 
-def $subst_subtype(SUB fin y* ct, xx*, ht*) =
+def $subst_subtype((SUB fin y* ct), xx*, ht*) =
   SUBD fin $subst_heaptype(_IDX y, xx*, ht*)* $subst_comptype(ct, xx*, ht*)
-def $subst_subtype(SUBD fin ht'* ct, xx*, ht*) =
+def $subst_subtype((SUBD fin ht'* ct), xx*, ht*) =
   SUBD fin $subst_heaptype(ht', xx*, ht*)* $subst_comptype(ct, xx*, ht*)
 
-def $subst_rectype(REC st*, xx*, ht*) = REC $subst_subtype(st, xx*, ht*)*
+def $subst_rectype((REC st*), xx*, ht*) = REC $subst_subtype(st, xx*, ht*)*
 
-def $subst_deftype(DEF qt i, xx*, ht*) = DEF $subst_rectype(qt, xx*, ht*) i
+def $subst_deftype((DEF qt i), xx*, ht*) = DEF $subst_rectype(qt, xx*, ht*) i
 
-def $subst_globaltype(mut t, xx*, ht*) = mut $subst_valtype(t, xx*, ht*)
-def $subst_functype(t_1* -> t_2*, xx*, ht*) = $subst_valtype(t_1, xx*, ht*)* -> $subst_valtype(t_2, xx*, ht*)*
-def $subst_memtype(lim I8, xx*, ht*) = lim I8
-def $subst_tabletype(lim rt, xx*, ht*) = lim $subst_reftype(rt, xx*, ht*)
+def $subst_globaltype((mut t), xx*, ht*) = mut $subst_valtype(t, xx*, ht*)
+def $subst_functype((t_1* -> t_2*), xx*, ht*) = $subst_valtype(t_1, xx*, ht*)* -> $subst_valtype(t_2, xx*, ht*)*
+def $subst_memtype((lim I8), xx*, ht*) = lim I8
+def $subst_tabletype((lim rt), xx*, ht*) = lim $subst_reftype(rt, xx*, ht*)
 
-def $subst_externtype(FUNC dt, xx*, ht*) = FUNC $subst_deftype(dt, xx*, ht*)
-def $subst_externtype(GLOBAL gt, xx*, ht*) = GLOBAL $subst_globaltype(gt, xx*, ht*)
-def $subst_externtype(TABLE tt, xx*, ht*) = TABLE $subst_tabletype(tt, xx*, ht*)
-def $subst_externtype(MEM mt, xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
+def $subst_externtype((FUNC dt), xx*, ht*) = FUNC $subst_deftype(dt, xx*, ht*)
+def $subst_externtype((GLOBAL gt), xx*, ht*) = GLOBAL $subst_globaltype(gt, xx*, ht*)
+def $subst_externtype((TABLE tt), xx*, ht*) = TABLE $subst_tabletype(tt, xx*, ht*)
+def $subst_externtype((MEM mt), xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
 
 
 def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
 def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
 
-def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^n, ht^n) -- if x^n = $enum(n)
-def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^n, ht^n) -- if x^n = $enum(n)
+def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^(x<n), ht^n)
+def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^(x<n), ht^n)
 
 
 ;; Rolling and Unrolling
@@ -164,14 +164,12 @@ def $expanddt(deftype) : comptype        hint(show $expand(%))
 
 ;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
 ;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
-;; For now, we avoid to reuse the dimension var and introduce a separate one (although m = n)
-def $rollrt(x, REC st^n) = REC ($subst_subtype(st, ($idx($(x + i)))^m, (REC i)^m))^n
-  -- if i^m = $enum(n)
-def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^m, (DEF qt i)^m))^n
-  -- if i^m = $enum(n)
+;; For now, we avoid to reuse the dimension var in exact same form
+def $rollrt(x, REC st^n) = REC ($subst_subtype(st, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
+def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n)))^n
   -- if qt = REC st^n
 
-def $rolldt(x, qt) = (DEF (REC st^n) i)^n      -- if $rollrt(x, qt) = REC st^n -- if i^n = $enum(n)
+def $rolldt(x, qt) = (DEF (REC st^n) i)^(i<n)  -- if $rollrt(x, qt) = REC st^n
 def $unrolldt(DEF qt i) = st*[i]               -- if $unrollrt(qt) = REC st*
 
 def $expanddt(dt) = ct                         -- if $unrolldt(dt) = SUBD fin ht* ct
