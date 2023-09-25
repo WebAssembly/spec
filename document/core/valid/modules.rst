@@ -273,15 +273,15 @@ Sequences of globals are handled incrementally, such that each definition has ac
    ~\\
    \frac{
    }{
-     C \vdashglobalseq \epsilon : \epsilon
+     C \vdashglobals \epsilon : \epsilon
    }
    \qquad
    \frac{
      C \vdashglobal \global_1 : \X{gt}_1
      \qquad
-     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobalseq \global^\ast : \X{gt}^\ast
+     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobals \global^\ast : \X{gt}^\ast
    }{
-     C \vdashglobalseq \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
+     C \vdashglobals \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
    }
 
 
@@ -772,7 +772,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \begin{array}{@{}c@{}}
      C_0 \vdashtypes \type^\ast \ok
      \quad
-     C' \vdashglobalseq \global^\ast : \X{gt}^\ast
+     C' \vdashglobals \global^\ast : \X{gt}^\ast
      \quad
      (C' \vdashtable \table : \X{tt})^\ast
      \quad

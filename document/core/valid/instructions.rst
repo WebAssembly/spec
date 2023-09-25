@@ -2078,7 +2078,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast~\X{rt}']
+     C.\CLABELS[l] = [t^\ast~\X{rt}]
      \qquad
      C \vdashreftype \X{rt}_1 \ok
      \qquad
@@ -2086,9 +2086,9 @@ Control Instructions
      \qquad
      C \vdashreftypematch \X{rt}_2 \matchesreftype \X{rt}_1
      \qquad
-     C \vdashreftypematch \X{rt}_2 \matchesreftype \X{rt}'
+     C \vdashreftypematch \X{rt}_2 \matchesreftype \X{rt}
    }{
-     C \vdashinstr \BRONCAST~l~\X{rt}_1~\X{rt}_2` : [t^\ast~\X{rt}_1] \to [t^\ast~\X{rt}_1\reftypediff\X{rt}_2]
+     C \vdashinstr \BRONCAST~l~\X{rt}_1~\X{rt}_2 : [t^\ast~\X{rt}_1] \to [t^\ast~\X{rt}_1\reftypediff\X{rt}_2]
    }
 
 
@@ -2117,7 +2117,7 @@ Control Instructions
 
 .. math::
    \frac{
-     C.\CLABELS[l] = [t^\ast~\X{rt}']
+     C.\CLABELS[l] = [t^\ast~\X{rt}]
      \qquad
      C \vdashreftype \X{rt}_1 \ok
      \qquad
@@ -2125,9 +2125,9 @@ Control Instructions
      \qquad
      C \vdashreftypematch \X{rt}_2 \matchesreftype \X{rt}_1
      \qquad
-     C \vdashreftypematch \X{rt}_1\reftypediff\X{rt}_2 \matchesreftype \X{rt}'
+     C \vdashreftypematch \X{rt}_1\reftypediff\X{rt}_2 \matchesreftype \X{rt}
    }{
-     C \vdashinstr \BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2` : [t^\ast~\X{rt}_1] \to [t^\ast~\X{rt}_2]
+     C \vdashinstr \BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2 : [t^\ast~\X{rt}_1] \to [t^\ast~\X{rt}_2]
    }
 
 
