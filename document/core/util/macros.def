@@ -700,6 +700,7 @@
 .. |Tchar| mathdef:: \xref{text/lexical}{text-char}{\T{char}}
 .. |Tspace| mathdef:: \xref{text/lexical}{text-space}{\T{space}}
 .. |Tformat| mathdef:: \xref{text/lexical}{text-format}{\T{format}}
+.. |Tnewline| mathdef:: \xref{text/lexical}{text-newline}{\T{newline}}
 
 .. |Ttoken| mathdef:: \xref{text/lexical}{text-token}{\T{token}}
 .. |Tkeyword| mathdef:: \xref{text/lexical}{text-keyword}{\T{keyword}}
