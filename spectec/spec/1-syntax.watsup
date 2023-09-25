@@ -45,8 +45,8 @@ syntax reftype hint(desc "reference type") =
 syntax valtype hint(desc "value type") =
   | numtype | vectype | reftype | BOT
 
-syntax in hint(show I#n) = | I32 | I64
-syntax fn hint(show F#n) = | F32 | F64
+syntax iN hint(show I#n) = | I32 | I64
+syntax fN hint(show F#n) = | F32 | F64
 
 var t : valtype
 var nt : numtype

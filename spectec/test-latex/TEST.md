@@ -35,7 +35,7 @@ warning: syntax `export` was never spliced
 warning: syntax `exportinst` was never spliced
 warning: syntax `externuse` was never spliced
 warning: syntax `externval` was never spliced
-warning: syntax `fn` was never spliced
+warning: syntax `fN` was never spliced
 warning: syntax `frame` was never spliced
 warning: syntax `func` was never spliced
 warning: syntax `funcaddr` was never spliced
@@ -46,9 +46,9 @@ warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
 warning: syntax `globalinst` was never spliced
 warning: syntax `hostaddr` was never spliced
+warning: syntax `iN` was never spliced
 warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
-warning: syntax `in` was never spliced
 warning: syntax `labeladdr` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `localidx` was never spliced

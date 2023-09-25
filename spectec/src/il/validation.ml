@@ -334,8 +334,11 @@ and infer_exp env e : typ =
 
 and valid_exp env e t =
   (*
-  Printf.printf "[valid %s] %s  :  %s  ==  %s\n%!"
-    (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t);
+  Printf.printf "[valid %s] %s  :  %s  ==  %s  {%s}\n%!"
+    (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t)
+    (String.concat ", " (List.map (fun (x, (t, iters)) ->
+      x ^ " : " ^ string_of_typ t ^ (String.concat "" (List.map string_of_iter iters))
+    ) (Env.bindings env.vars)));
   *)
   equiv_typ env e.note t e.at;
   match e.it with
@@ -536,7 +539,8 @@ let valid_clause env t1 t2 clause =
     valid_exp env e1 t1;
     valid_exp env e2 t2;
     List.iter (valid_prem env) prems;
-    env.vars <- Env.empty;
+    env.vars <- Env.empty
+(*
     let free_rh =
       Free.(Set.diff (Set.diff (free_exp e2).varid
         (free_exp e1).varid) (free_list free_prem prems).varid)
@@ -544,6 +548,7 @@ let valid_clause env t1 t2 clause =
     if free_rh <> Free.Set.empty then
       error clause.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`")
+*)
 
 
 let infer_def env d =

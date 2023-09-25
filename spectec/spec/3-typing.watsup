@@ -272,13 +272,13 @@ rule Instr_ok/reinterpret:
   -- if $size(nt_1) = $size(nt_2)
 
 rule Instr_ok/convert-i:
-  C |- CVTOP in_1 CONVERT in_2 sx? : in_2 -> in_1
-  -- if in_1 =/= in_2
-  -- if sx? = epsilon <=> $size(in_1) > $size(in_2)
+  C |- CVTOP iN_1 CONVERT iN_2 sx? : iN_2 -> iN_1
+  -- if iN_1 =/= iN_2
+  -- if sx? = epsilon <=> $size(iN_1) > $size(iN_2)
 
 rule Instr_ok/convert-f:
-  C |- CVTOP fn_1 CONVERT fn_2 : fn_2 -> fn_1
-  -- if fn_1 =/= fn_2
+  C |- CVTOP fN_1 CONVERT fN_2 : fN_2 -> fN_1
+  -- if fN_1 =/= fN_2
 
 
 ;; Reference instructions
@@ -389,14 +389,14 @@ rule Instr_ok/load:
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = in
+  -- if n? = epsilon \/ nt = iN
 
 rule Instr_ok/store:
   C |- STORE nt n? n_A n_O : I32 nt -> epsilon
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = in
+  -- if n? = epsilon \/ nt = iN
 
 
 ;;

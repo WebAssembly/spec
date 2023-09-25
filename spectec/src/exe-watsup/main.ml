@@ -4,7 +4,7 @@ open Util
 (* Configuration *)
 
 let name = "watsup"
-let version = "0.3"
+let version = "0.4"
 
 
 (* Flags and parameters *)
@@ -49,6 +49,7 @@ module PS = Set.Make(struct type t = pass let compare = compare; end)
 let selected_passes = ref (PS.empty)
 let enable_pass pass = selected_passes := PS.add pass !selected_passes
 
+
 (* Il pass metadata *)
 
 let pass_flag = function
@@ -74,6 +75,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
   | Animate -> Middlend.Animate.transform
+
 
 (* Argument parsing *)
 
@@ -121,6 +123,7 @@ let log s = if !log then Printf.printf "== %s\n%!" s
 
 let () =
   Printexc.record_backtrace true;
+  let last_pass = ref "" in
   try
     Arg.parse argspec add_arg usage;
     log "Parsing...";
@@ -132,17 +135,20 @@ let () =
     log "IL Validation...";
     Il.Validation.valid il;
 
-    let il = List.fold_left (fun il pass ->
-      if PS.mem pass !selected_passes
-      then (
-        log ("Running pass " ^ pass_flag pass);
-        let il = run_pass pass il in
-        if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
-        log "IL Validation...";
-        Il.Validation.valid il;
-        il
-      ) else il
-    ) il all_passes in
+    let il =
+      List.fold_left (fun il pass ->
+        if not (PS.mem pass !selected_passes) then il else
+        (
+          last_pass := pass_flag pass;
+          log ("Running pass " ^ pass_flag pass ^ "...");
+          let il = run_pass pass il in
+          if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
+          log ("IL Validation after pass " ^ pass_flag pass ^ "...");
+          Il.Validation.valid il;
+          il
+        )
+      ) il all_passes
+    in
 
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
@@ -175,7 +181,8 @@ let () =
     log "Complete."
   with
   | Source.Error (at, msg) ->
-    prerr_endline (Source.string_of_region at ^ ": " ^ msg);
+    let pass = if !last_pass = "" then "" else "(pass " ^ !last_pass ^ ") " in
+    prerr_endline (Source.string_of_region at ^ ": " ^ pass ^ msg);
     exit 1
   | exn ->
     flush_all ();

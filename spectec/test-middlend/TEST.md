@@ -72,12 +72,12 @@ syntax valtype =
   | BOT
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
@@ -619,15 +619,15 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if ($size(nt_1 <: valtype) = $size(nt_2 <: valtype))
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?}:
-    `%|-%:%`(C, CVTOP_instr((in_1 <: numtype), CONVERT_cvtop, (in_2 <: numtype), sx?{sx}), `%->%`([(in_2 <: valtype)], [(in_1 <: valtype)]))
-    -- if (in_1 =/= in_2)
-    -- if ((sx?{sx} = ?()) <=> ($size(in_1 <: valtype) > $size(in_2 <: valtype)))
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?}:
+    `%|-%:%`(C, CVTOP_instr((iN_1 <: numtype), CONVERT_cvtop, (iN_2 <: numtype), sx?{sx}), `%->%`([(iN_2 <: valtype)], [(iN_1 <: valtype)]))
+    -- if (iN_1 =/= iN_2)
+    -- if ((sx?{sx} = ?()) <=> ($size(iN_1 <: valtype) > $size(iN_2 <: valtype)))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr((fn_1 <: numtype), CONVERT_cvtop, (fn_2 <: numtype), ?()), `%->%`([(fn_2 <: valtype)], [(fn_1 <: valtype)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr((fN_1 <: numtype), CONVERT_cvtop, (fN_2 <: numtype), ?()), `%->%`([(fN_2 <: valtype)], [(fN_1 <: valtype)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -741,20 +741,20 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [(nt <: valtype)]))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+    -- if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype (nt <: valtype)], []))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
+    -- if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -1943,7 +1943,7 @@ def invoke : (store, funcaddr, val*) -> config
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
 == IL Validation...
-== Running pass sub
+== Running pass sub...
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -2025,30 +2025,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -2588,15 +2588,15 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if ($size($valtype_numtype(nt_1)) = $size($valtype_numtype(nt_2)))
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if (in_1 =/= in_2)
-    -- if ((sx?{sx} = ?()) <=> ($size($valtype_in(in_1)) > $size($valtype_in(in_2))))
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if (iN_1 =/= iN_2)
+    -- if ((sx?{sx} = ?()) <=> ($size($valtype_iN(iN_1)) > $size($valtype_iN(iN_2))))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -2710,20 +2710,20 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= ($size($valtype_numtype(nt)) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size($valtype_numtype(nt)) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= ($size($valtype_numtype(nt)) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size($valtype_numtype(nt)) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -3968,8 +3968,8 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
-== Running pass totalize
+== IL Validation after pass sub...
+== Running pass totalize...
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -4051,30 +4051,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -4615,15 +4615,15 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (!($size($valtype_numtype(nt_1))) = !($size($valtype_numtype(nt_2))))
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if (in_1 =/= in_2)
-    -- if ((sx?{sx} = ?()) <=> (!($size($valtype_in(in_1))) > !($size($valtype_in(in_2)))))
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if (iN_1 =/= iN_2)
+    -- if ((sx?{sx} = ?()) <=> (!($size($valtype_iN(iN_1))) > !($size($valtype_iN(iN_2)))))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -4737,20 +4737,20 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (!($size($valtype_numtype(nt))) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size($valtype_numtype(nt))) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (!($size($valtype_numtype(nt))) / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size($valtype_numtype(nt))) / 8))))?{n}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -5998,8 +5998,8 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
-== Running pass the-elimination
+== IL Validation after pass totalize...
+== Running pass the-elimination...
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -6081,30 +6081,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -6648,17 +6648,17 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (o0 = o1)
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if ($size($valtype_in(in_1)) = ?(o0))
-    -- if ($size($valtype_in(in_2)) = ?(o1))
-    -- if (in_1 =/= in_2)
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?, o0 : nat, o1 : nat}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if ($size($valtype_iN(iN_1)) = ?(o0))
+    -- if ($size($valtype_iN(iN_2)) = ?(o1))
+    -- if (iN_1 =/= iN_2)
     -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -6772,24 +6772,24 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -8049,8 +8049,8 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
-== Running pass wildcards
+== IL Validation after pass the-elimination...
+== Running pass wildcards...
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -8132,30 +8132,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -8699,17 +8699,17 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (o0 = o1)
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if ($size($valtype_in(in_1)) = ?(o0))
-    -- if ($size($valtype_in(in_2)) = ?(o1))
-    -- if (in_1 =/= in_2)
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?, o0 : nat, o1 : nat}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if ($size($valtype_iN(iN_1)) = ?(o0))
+    -- if ($size($valtype_iN(iN_2)) = ?(o1))
+    -- if (iN_1 =/= iN_2)
     -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -8823,24 +8823,24 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if ($size($valtype_numtype(nt)) = ?(o0))
     -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -10100,8 +10100,8 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
-== Running pass sideconditions
+== IL Validation after pass wildcards...
+== Running pass sideconditions...
 
 ;; 1-syntax.watsup:3.1-3.15
 syntax n = nat
@@ -10183,30 +10183,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -10757,17 +10757,17 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (o0 = o1)
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if ($size($valtype_in(in_1)) = ?(o0))
-    -- if ($size($valtype_in(in_2)) = ?(o1))
-    -- if (in_1 =/= in_2)
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?, o0 : nat, o1 : nat}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if ($size($valtype_iN(iN_1)) = ?(o0))
+    -- if ($size($valtype_iN(iN_2)) = ?(o1))
+    -- if (iN_1 =/= iN_2)
     -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -10904,7 +10904,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
@@ -10914,10 +10914,10 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
@@ -10926,7 +10926,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -12207,8 +12207,8 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
-== Running pass animate
+== IL Validation after pass sideconditions...
+== Running pass animate...
 Animation failed:if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(ft', t*{t}, instr*{instr}))
 Animation failed:if ($bytes_(o0, c) = $mem(z, 0).DATA_meminst[(i + n_O) : (o1 / 8)])
 Animation failed:if ($bytes_(n, c) = $mem(z, 0).DATA_meminst[(i + n_O) : (n / 8)])
@@ -12293,30 +12293,30 @@ def valtype_vectype : vectype -> valtype
   def valtype_vectype(V128_vectype) = V128_valtype
 
 ;; 1-syntax.watsup:48.1-48.39
-syntax in =
+syntax iN =
   | I32
   | I64
 
-def numtype_in : in -> numtype
-  def numtype_in(I32_in) = I32_numtype
-  def numtype_in(I64_in) = I64_numtype
+def numtype_iN : iN -> numtype
+  def numtype_iN(I32_iN) = I32_numtype
+  def numtype_iN(I64_iN) = I64_numtype
 
-def valtype_in : in -> valtype
-  def valtype_in(I32_in) = I32_valtype
-  def valtype_in(I64_in) = I64_valtype
+def valtype_iN : iN -> valtype
+  def valtype_iN(I32_iN) = I32_valtype
+  def valtype_iN(I64_iN) = I64_valtype
 
 ;; 1-syntax.watsup:49.1-49.39
-syntax fn =
+syntax fN =
   | F32
   | F64
 
-def numtype_fn : fn -> numtype
-  def numtype_fn(F32_fn) = F32_numtype
-  def numtype_fn(F64_fn) = F64_numtype
+def numtype_fN : fN -> numtype
+  def numtype_fN(F32_fN) = F32_numtype
+  def numtype_fN(F64_fN) = F64_numtype
 
-def valtype_fn : fn -> valtype
-  def valtype_fn(F32_fn) = F32_valtype
-  def valtype_fn(F64_fn) = F64_valtype
+def valtype_fN : fN -> valtype
+  def valtype_fN(F32_fN) = F32_valtype
+  def valtype_fN(F64_fN) = F64_valtype
 
 ;; 1-syntax.watsup:56.1-57.11
 syntax resulttype = valtype*
@@ -12867,17 +12867,17 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (o0 = o1)
 
   ;; 3-typing.watsup:274.1-277.52
-  rule convert-i {C : context, in_1 : in, in_2 : in, sx? : sx?, o0 : nat, o1 : nat}:
-    `%|-%:%`(C, CVTOP_instr($numtype_in(in_1), CONVERT_cvtop, $numtype_in(in_2), sx?{sx}), `%->%`([$valtype_in(in_2)], [$valtype_in(in_1)]))
-    -- if ($size($valtype_in(in_1)) = ?(o0))
-    -- if ($size($valtype_in(in_2)) = ?(o1))
-    -- if (in_1 =/= in_2)
+  rule convert-i {C : context, iN_1 : iN, iN_2 : iN, sx? : sx?, o0 : nat, o1 : nat}:
+    `%|-%:%`(C, CVTOP_instr($numtype_iN(iN_1), CONVERT_cvtop, $numtype_iN(iN_2), sx?{sx}), `%->%`([$valtype_iN(iN_2)], [$valtype_iN(iN_1)]))
+    -- if ($size($valtype_iN(iN_1)) = ?(o0))
+    -- if ($size($valtype_iN(iN_2)) = ?(o1))
+    -- if (iN_1 =/= iN_2)
     -- if ((sx?{sx} = ?()) <=> (o0 > o1))
 
   ;; 3-typing.watsup:279.1-281.22
-  rule convert-f {C : context, fn_1 : fn, fn_2 : fn}:
-    `%|-%:%`(C, CVTOP_instr($numtype_fn(fn_1), CONVERT_cvtop, $numtype_fn(fn_2), ?()), `%->%`([$valtype_fn(fn_2)], [$valtype_fn(fn_1)]))
-    -- if (fn_1 =/= fn_2)
+  rule convert-f {C : context, fN_1 : fN, fN_2 : fN}:
+    `%|-%:%`(C, CVTOP_instr($numtype_fN(fN_1), CONVERT_cvtop, $numtype_fN(fN_2), ?()), `%->%`([$valtype_fN(fN_2)], [$valtype_fN(fN_1)]))
+    -- if (fN_1 =/= fN_2)
 
   ;; 3-typing.watsup:286.1-287.35
   rule ref.null {C : context, rt : reftype}:
@@ -13014,7 +13014,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 3-typing.watsup:387.1-392.32
-  rule load {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
+  rule load {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, n_A, n_O), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
@@ -13024,10 +13024,10 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
   ;; 3-typing.watsup:394.1-399.32
-  rule store {C : context, in : in, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
+  rule store {C : context, iN : iN, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, n_A, n_O), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (0 < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
@@ -13036,7 +13036,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.MEM_context[0] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_in(in)))
+    -- if ((n?{n} = ?()) \/ (nt = $numtype_iN(iN)))
 
 ;; 3-typing.watsup:136.1-136.67
 relation InstrSeq_ok: `%|-%*:%`(context, instr*, functype)
@@ -14317,6 +14317,6 @@ def invoke : (store, funcaddr, val*) -> config
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(functype, valtype*{valtype}, expr))
     -- if (functype = `%->%`(valtype_param^n{valtype_param}, valtype_res^k{valtype_res}))
 
-== IL Validation...
+== IL Validation after pass animate...
 == Complete.
 ```
