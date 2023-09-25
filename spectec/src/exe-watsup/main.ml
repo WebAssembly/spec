@@ -4,7 +4,7 @@ open Util
 (* Configuration *)
 
 let name = "watsup"
-let version = "0.5"
+let version = "0.4"
 
 
 (* Flags and parameters *)
