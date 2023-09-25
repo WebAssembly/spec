@@ -112,7 +112,7 @@ class RunTests(unittest.TestCase):
 
 if __name__ == "__main__":
   if not os.path.exists(outputDir):
-    os.makedirs(outputDir)
+    os.makedirs(outputDir, exists_ok=True)
   for fileName in inputFiles:
     testName = 'test ' + os.path.basename(fileName)
     setattr(RunTests, testName, lambda self, file=fileName: self._runTestFile(file))
