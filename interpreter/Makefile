@@ -33,6 +33,8 @@ zip:		$(ZIP)
 
 # Building
 
+.PHONY:                $(NAME) $(JSLIB)
+
 $(NAME):
 	rm -f $@
 	dune build $@.exe
