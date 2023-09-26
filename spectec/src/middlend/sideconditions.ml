@@ -30,11 +30,19 @@ let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.a
 let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
 let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at
 
+(* Takes bound variable and its binding type (type plus iter) and fully wrapps it in IterE *)
+let rec fully_iterated v t = function
+  | [] -> VarE v $$ v.at % t
+  | (i::is) ->
+    let e = fully_iterated v t is in
+    IterE (e, (i, [v])) $$ v.at % (IterT (e.note, i) $ v.at)
+
 let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
-  let iter' = if iter = Opt then Opt else List in
+  (* let iter' = if iter = Opt then Opt else List in *)
   let ves = List.map (fun v ->
-    let t = Env.find v.it env in
-    IterE (VarE v $$ v.at % t, (iter, [v])) $$ v.at % (IterT (t, iter') $ v.at)) vs in
+    let (t,is) = Env.find v.it env in
+    fully_iterated v t is
+  ) vs in
  match iter, ves with
   | _, [] -> []
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
@@ -129,7 +137,7 @@ let reduce_prems prems = prems
 
 let t_rule' = function
   | RuleD (id, binds, mixop, exp, prems) ->
-    let env = List.fold_left (fun env (v, t, _) -> Env.add v.it t env) Env.empty binds in
+    let env = List.fold_left (fun env (v, t, i) -> Env.add v.it (t, i) env) Env.empty binds in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in
     RuleD (id, binds, mixop, exp, prems')
