@@ -1,0 +1,13 @@
+;;
+;; some tricky definitions to test the transformations
+;;
+
+relation HasSize: nat |- nat
+relation TestNestedIter: nat*** |- nat**
+
+var n : nat
+var m : nat
+
+rule TestNestedIter:
+  n**+ |- m*+
+  -- if (|n*| = m)*+

@@ -14320,3 +14320,105 @@ def invoke : (store, funcaddr, val*) -> config
 == IL Validation after pass animate...
 == Complete.
 ```
+# More tricky tests
+
+```sh
+$ (cd ../test-middlend; ../src/exe-watsup/main.exe test.watsup -l --print-all-il --all-passes --check)
+== Parsing...
+== Elaboration...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation...
+== Running pass sub...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass sub...
+== Running pass totalize...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass totalize...
+== Running pass the-elimination...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass the-elimination...
+== Running pass wildcards...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass wildcards...
+== Running pass sideconditions...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- if (|m*{m}+{m}| = |n*{n}*{n}+{n}|)
+    -- (if (|m*{m}| = |n*{n}*{n}|))+{m n}
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass sideconditions...
+== Running pass animate...
+
+;; test.watsup:5.1-5.29
+relation HasSize: `%|-%`(nat, nat)
+
+;; test.watsup:6.1-6.41
+relation TestNestedIter: `**%*|-*%*`(nat***, nat**)
+  ;; test.watsup:11.1-13.21
+  rule _ {m*+ : nat*+, n**+ : nat**+}:
+    `**%*|-*%*`(n*{n}*{n}+{n}, m*{m}+{m})
+    -- if (|m*{m}+{m}| = |n*{n}*{n}+{n}|)
+    -- (if (|m*{m}| = |n*{n}*{n}|))+{m n}
+    -- (if (|n*{n}| = m))*{m n}+{m n}
+
+== IL Validation after pass animate...
+== Complete.
+```
