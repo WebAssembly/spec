@@ -9,404 +9,133 @@ watsup 0.4 generator
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed:if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(ft', t*{t}, instr*{instr}))
-Animation failed:if ($bytes_($size(nt <: valtype), c) = $mem(z, 0).DATA_meminst[(i + n_O) : ($size(nt <: valtype) / 8)])
-Animation failed:if ($bytes_(n, c) = $mem(z, 0).DATA_meminst[(i + n_O) : (n / 8)])
+Animation failed:if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
+Animation failed:Ref_ok: `%|-%:%`(s, ref, rt)
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
+Animation failed:Ref_ok: `%|-%:%`(s, ref, rt)
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
+Animation failed:if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
+Animation failed:Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Animation failed:if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
+Animation failed:if (a < |$funcinst(z)|)
+Animation failed:Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Animation failed:if (a < |$funcinst(z)|)
+Animation failed:Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Animation failed:Ref_ok: `%|-%:%`(s, ref, rt')
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))
+Animation failed:Ref_ok: `%|-%:%`(s, ref, rt')
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))
+Animation failed:if (|mut*{mut}| = |zt*{zt}|)
+Animation failed:if (|val*{val}| = |zt*{zt}|)
+Animation failed:Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+Animation failed:(if ($default($unpacktype(zt)) = ?(val)))*{val zt}
+Animation failed:if (|mut*{mut}| = |zt*{zt}|)
+Animation failed:if (i < |zt*{zt}|)
+Animation failed:Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if ($default($unpacktype(zt)) = ?(val))
+Animation failed:if (ref^n{ref} = $elem(z, y).ELEM_eleminst[i : n])
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if ((i + ((n * $storagesize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if (nt = $unpacknumtype(zt))
+Animation failed:if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)])
+Animation failed:Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
+Animation failed:if (sx?{sx} = $sxfield(zt_2))
+Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
+Animation failed:if (sx?{sx} = $sxfield(zt_2))
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if ((j + ((n * $storagesize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if (nt = $unpacknumtype(zt))
+Animation failed:if ($bytes($storagesize(zt), c) = $data(z, y).DATA_datainst[j : ($storagesize(zt) / 8)])
+Animation failed:if ($bytes($size(nt <: valtype), c) = $mem(z, x).DATA_meminst[(i + n_O) : ($size(nt <: valtype) / 8)])
+Animation failed:if ($bytes(n, c) = $mem(z, x).DATA_meminst[(i + n_O) : (n / 8)])
+Animation failed:Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt}))
+Animation failed:if (si = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val zt}})
+Animation failed:if (|mut*{mut}| = |zt*{zt}|)
+Animation failed:if (i < |zt*{zt}|)
+Animation failed:Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+Animation failed:if (fv = $packval(zt*{zt}[i], val))
+Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
+Animation failed:Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
+Animation failed:if (fv = $packval(zt, val))
 == IL Validation after pass animate...
 == Prose Generation...
-unreachable
-1. Trap.
-
-nop
-1. Do nothing.
-
-drop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-
-select
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((val_2 <: admininstr)) from the stack.
-5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop YetE ((val_1 <: admininstr)) from the stack.
-7. If YetC (), then:
-  a. Push YetE ((val_1 <: admininstr)) to the stack.
-8. If YetC (), then:
-  a. Push YetE ((val_2 <: admininstr)) to the stack.
-
-block
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let L be YetE ().
-4. Enter the block Yet with label YetE ().
-
-loop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let L be YetE ().
-4. Enter the block Yet with label YetE ().
-
-if
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. If YetC (), then:
-  a. Execute (BLOCK YetE (bt) YetE (instr_1*{instr_1})).
-4. If YetC (), then:
-  a. Execute (BLOCK YetE (bt) YetE (instr_2*{instr_2})).
-
-label
-1. Push YetE ((val <: admininstr)*{val}) to the stack.
-
-br
-1. If YetC (), then:
-  a. Push YetE ((val <: admininstr)^n{val}) to the stack.
-  b. Push YetE ((instr' <: admininstr)*{instr'}) to the stack.
-2. If YetC (), then:
-  a. Push YetE ((val <: admininstr)*{val}) to the stack.
-  b. Execute (BR YetE (l)).
-
-br_if
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, c)) from the stack.
-3. If YetC (), then:
-  a. Execute (BR YetE (l)).
-4. If YetC (), then:
-  a. Do nothing.
-
-br_table
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Execute (BR YetE (l*{l}[i])).
-4. If YetC (), then:
-  a. Execute (BR YetE (l')).
-
-frame
-1. Push YetE ((val <: admininstr)^n{val}) to the stack.
-
-return
-1. If YetC (), then:
-  a. Push YetE ((val <: admininstr)^n{val}) to the stack.
-2. If YetC (), then:
-  a. Push YetE ((val <: admininstr)*{val}) to the stack.
-  b. Execute (RETURN).
-
-unop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-4. If YetC (), then:
-  a. Trap.
-
-binop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_2)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-5. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-6. If YetC (), then:
-  a. Trap.
-
-testop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-3. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
-
-relop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c_2)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE (CONST_admininstr(nt, c_1)) from the stack.
-5. Push YetE (CONST_admininstr(I32_numtype, c)) to the stack.
-
-extend
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c)) from the stack.
-3. Push YetE (CONST_admininstr(nt, $ext(n, $size(nt <: valtype), S_sx, c))) to the stack.
-
-cvtop
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt_1, c_1)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt_2, c)) to the stack.
-4. If YetC (), then:
-  a. Trap.
-
-ref.is_null
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, 1)) to the stack.
-4. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, 0)) to the stack.
-
-local.tee
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. Push YetE ((val <: admininstr)) to the stack.
-4. Push YetE ((val <: admininstr)) to the stack.
-5. Execute (LOCAL.SET YetE (x)).
-
-call
-1. Execute (CALL_ADDR YetE ($funcaddr(z)[x])).
-
-call_indirect
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Execute (CALL_ADDR YetE (a)).
-4. If YetC (), then:
-  a. Trap.
-
-call_addr
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)^k{val}) from the stack.
-3. Let F be the current frame.
-4. Push YetE ((n, f, [LABEL__admininstr(n, [], (instr <: admininstr)*{instr})])) to the stack.
-
-ref.func
-1. Push YetE (REF.FUNC_ADDR_admininstr($funcaddr(z)[x])) to the stack.
-
-local.get
-1. Push YetE (($local(z, x) <: admininstr)) to the stack.
-
-global.get
-1. Push YetE (($global(z, x).VALUE_globalinst <: admininstr)) to the stack.
-
-table.get
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Trap.
-4. If YetC (), then:
-  a. Push YetE (($table(z, x).ELEM_tableinst[i] <: admininstr)) to the stack.
-
-table.size
-1. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
-
-table.fill
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((val <: admininstr)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  b. Push YetE ((val <: admininstr)) to the stack.
-  c. Execute (TABLE.SET YetE (x)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  e. Push YetE ((val <: admininstr)) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (TABLE.FILL YetE (x)).
-
-table.copy
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  c. Execute (TABLE.GET YetE (y)).
-  d. Execute (TABLE.SET YetE (x)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (TABLE.COPY YetE (x) YetE (y)).
-10. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, ((j + n) - 1))) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, ((i + n) - 1))) to the stack.
-  c. Execute (TABLE.GET YetE (y)).
-  d. Execute (TABLE.SET YetE (x)).
-  e. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (TABLE.COPY YetE (x) YetE (y)).
-
-table.init
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (($elem(z, y).ELEM_eleminst[i] <: admininstr)) to the stack.
-  c. Execute (TABLE.SET YetE (x)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  e. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (TABLE.INIT YetE (x) YetE (y)).
-
-load
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-3. If YetC (), then:
-  a. Trap.
-4. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, c)) to the stack.
-5. If YetC (), then:
-  a. Trap.
-6. If YetC (), then:
-  a. Push YetE (CONST_admininstr(nt, $ext(n, $size(nt <: valtype), sx, c))) to the stack.
-
-memory.size
-1. Push YetE (CONST_admininstr(I32_numtype, n)) to the stack.
-
-memory.fill
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((val <: admininstr)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  b. Push YetE ((val <: admininstr)) to the stack.
-  c. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  e. Push YetE ((val <: admininstr)) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (MEMORY.FILL).
-
-memory.copy
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  c. Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) YetE (0) YetE (0)).
-  d. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
-  e. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (MEMORY.COPY).
-10. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, ((j + n) - 1))) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, ((i + n) - 1))) to the stack.
-  c. Execute (LOAD YetE (I32_numtype) YetE (?((8, U_sx))) YetE (0) YetE (0)).
-  d. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
-  e. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, i)) to the stack.
-  g. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  h. Execute (MEMORY.COPY).
-
-memory.init
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-6. Pop YetE (CONST_admininstr(I32_numtype, j)) from the stack.
-7. If YetC (), then:
-  a. Trap.
-8. If YetC (), then:
-  a. Do nothing.
-9. If YetC (), then:
-  a. Push YetE (CONST_admininstr(I32_numtype, j)) to the stack.
-  b. Push YetE (CONST_admininstr(I32_numtype, $data(z, x).DATA_datainst[i])) to the stack.
-  c. Execute (STORE YetE (I32_numtype) YetE (?(8)) YetE (0) YetE (0)).
-  d. Push YetE (CONST_admininstr(I32_numtype, (j + 1))) to the stack.
-  e. Push YetE (CONST_admininstr(I32_numtype, (i + 1))) to the stack.
-  f. Push YetE (CONST_admininstr(I32_numtype, (n - 1))) to the stack.
-  g. Execute (MEMORY.INIT YetE (x)).
-
-local.set
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. YetI: Perform $with_local(z, x, val).
-
-global.set
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((val <: admininstr)) from the stack.
-3. YetI: Perform $with_global(z, x, val).
-
-table.set
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE ((ref <: admininstr)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. If YetC (), then:
-  a. YetI: Perform z.
-  b. Trap.
-6. If YetC (), then:
-  a. YetI: Perform $with_table(z, x, i, ref).
-
-table.grow
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop YetE ((ref <: admininstr)) from the stack.
-5. If YetC (), then:
-  a. YetI: Perform $with_tableinst(z, x, ti).
-  b. Push YetE (CONST_admininstr(I32_numtype, |$table(z, x).ELEM_tableinst|)) to the stack.
-6. If YetC (), then:
-  a. YetI: Perform z.
-  b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
-
-elem.drop
-1. YetI: Perform $with_elem(z, x, []).
-
-store
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop YetE (CONST_admininstr(nt, c)) from the stack.
-3. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-4. Pop YetE (CONST_admininstr(I32_numtype, i)) from the stack.
-5. If YetC (), then:
-  a. YetI: Perform z.
-  b. Trap.
-6. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + n_O), ($size(nt <: valtype) / 8), b*{b}).
-7. If YetC (), then:
-  a. YetI: Perform z.
-  b. Trap.
-8. If YetC (), then:
-  a. YetI: Perform $with_mem(z, 0, (i + n_O), (n / 8), b*{b}).
-
-memory.grow
-1. Assert: Due to validation, a value of value type i32 is on the top of the stack.
-2. Pop YetE (CONST_admininstr(I32_numtype, n)) from the stack.
-3. If YetC (), then:
-  a. YetI: Perform $with_meminst(z, 0, mi).
-  b. Push YetE (CONST_admininstr(I32_numtype, (|$mem(z, 0).DATA_meminst| / (64 * $Ki)))) to the stack.
-4. If YetC (), then:
-  a. YetI: Perform z.
-  b. Push YetE (CONST_admininstr(I32_numtype, - 1)) to the stack.
-
-data.drop
-1. YetI: Perform $with_data(z, x, []).
-
-== Complete.
+/Users/me/Desktop/Work/Software/wasm/spec.tec/spectec/_build/default/spec/../src/exe-watsup/main.exe: uncaught exception Failure("Unreachable")
+Raised at Stdlib.failwith in file "stdlib.ml", line 29, characters 17-33
+Called from Stdlib__List.map in file "list.ml", line 92, characters 20-23
+Called from Backend_prose__Il2ir.rhs2instrs in file "src/backend-prose/il2ir.ml", line 72, characters 26-54
+Called from Backend_prose__Il2ir.rhs2instrs in file "src/backend-prose/il2ir.ml", line 70, characters 24-38
+Called from Backend_prose__Il2ir.reduction_group2program in file "src/backend-prose/il2ir.ml", line 119, characters 26-40
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
+Called from Dune__exe__Main in file "src/exe-watsup/main.ml", line 173, characters 22-54
+[2]
 ```
