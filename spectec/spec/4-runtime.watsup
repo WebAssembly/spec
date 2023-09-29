@@ -68,7 +68,8 @@ def $default_(EXTERNREF) = (REF.NULL EXTERNREF) ;; TODO: All reference types sho
 ;; Instances
 
 syntax funcinst hint(desc "function instance") =
-  { MODULE moduleinst,
+  { TYPE functype,
+    MODULE moduleinst,
     CODE func }
 syntax globalinst hint(desc "global instance") =
   { TYPE globaltype,
@@ -89,7 +90,8 @@ syntax exportinst hint(desc "export instance") =
     VALUE externval }
 
 syntax moduleinst hint(desc "module instance") =
-  { FUNC funcaddr*,
+  { TYPE functype*,
+    FUNC funcaddr*,
     GLOBAL globaladdr*,
     TABLE tableaddr*,
     MEM memaddr*,
@@ -148,6 +150,7 @@ def $meminst((s; f)) = s.MEM
 def $eleminst((s; f)) = s.ELEM
 def $datainst((s; f)) = s.DATA
 
+def $type(state, typeidx) : functype        hint(show %.TYPE#`[%])
 def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
 def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
 def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
@@ -156,6 +159,7 @@ def $elem(state, tableidx) : eleminst       hint(show %.ELEM#`[%])
 def $data(state, dataidx) : datainst        hint(show %.DATA#`[%])
 def $local(state, localidx) : val           hint(show %.LOCAL#`[%])
 
+def $type((s; f), x) = f.MODULE.TYPE[x]
 def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
 def $global((s; f), x) = s.GLOBAL[f.MODULE.GLOBAL[x]]
 def $table((s; f), x) = s.TABLE[f.MODULE.TABLE[x]]

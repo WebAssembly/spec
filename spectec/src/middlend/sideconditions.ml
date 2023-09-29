@@ -23,7 +23,7 @@ module Env = Map.Make(String)
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
-| _ -> LenE e $$ e.at % (NatT $ e.at)
+| _ -> LenE e $$ e.at % (NumT NatT $ e.at)
 
 let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
@@ -64,7 +64,7 @@ let rec t_exp env e : premise list =
   (* First the conditions to be generated here *)
   begin match e.it with
   | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (LtOp, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (LtOp NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
     [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp

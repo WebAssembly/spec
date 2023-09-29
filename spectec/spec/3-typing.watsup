@@ -3,7 +3,7 @@
 ;;
 
 syntax context hint(desc "context") =
-  { FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*,
+  { TYPE functype*, FUNC functype*, GLOBAL globaltype*, TABLE tabletype*, MEM memtype*,
     ELEM elemtype*, DATA datatype*,
     LOCAL valtype*, LABEL resulttype*, RETURN resulttype? }
 
@@ -191,9 +191,16 @@ rule Instr_ok/select-impl:
 
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 
-rule Blocktype_ok:
-  C |- ft : ft
-  -- Functype_ok: |- ft : OK
+rule Blocktype_ok/void:
+  C |- _RESULT epsilon : epsilon -> epsilon
+
+rule Blocktype_ok/result:
+  C |- _RESULT t : epsilon -> t
+
+rule Blocktype_ok/typeidx:
+  C |- _IDX x : ft
+  -- if C.TYPE[x] = ft
+
 
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
@@ -239,9 +246,9 @@ rule Instr_ok/call:
   -- if C.FUNC[x] = t_1* -> t_2*
 
 rule Instr_ok/call_indirect:
-  C |- CALL_INDIRECT x ft : t_1* I32 -> t_2*
+  C |- CALL_INDIRECT x y : t_1* I32 -> t_2*
   -- if C.TABLE[x] = lim FUNCREF
-  -- if ft = t_1* -> t_2*
+  -- if C.TYPE[y] = t_1* -> t_2*
 
 
 ;; Numeric instructions
@@ -313,7 +320,7 @@ rule Instr_ok/local.tee:
 
 rule Instr_ok/global.get:
   C |- GLOBAL.GET x : epsilon -> t
-  -- if C.GLOBAL[x] = MUT? t
+  -- if C.GLOBAL[x] = mut t
 
 rule Instr_ok/global.set:
   C |- GLOBAL.SET x : t -> epsilon
@@ -385,14 +392,14 @@ rule Instr_ok/data.drop:
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? n_A n_O : I32 -> nt
+  C |- LOAD nt (n _ sx)? {ALIGN n_A, OFFSET n_O} : I32 -> nt
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
   -- if n? = epsilon \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? n_A n_O : I32 nt -> epsilon
+  C |- STORE nt n? {ALIGN n_A, OFFSET n_O} : I32 nt -> epsilon
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
@@ -435,6 +442,7 @@ rule Expr_ok_const:
 ;; Modules
 ;;
 
+relation Type_ok: |- type : functype                 hint(show "T-type")
 relation Func_ok: context |- func : functype         hint(show "T-func")
 relation Global_ok: context |- global : globaltype   hint(show "T-global")
 relation Table_ok: context |- table : tabletype      hint(show "T-table")
@@ -448,16 +456,20 @@ relation Start_ok: context |- start : OK             hint(show "T-start")
 
 ;; Module definitions
 
+rule Type_ok:
+  |- TYPE ft : ft
+  -- Functype_ok: |- ft : OK
+
 rule Func_ok:
-  C |- FUNC ft (LOCAL t)* expr : ft
-  -- if ft = t_1* -> t_2*
+  C |- FUNC x (LOCAL t)* expr : ft
+  -- if C.TYPE[x] = t_1* -> t_2*
   -- Functype_ok: |- ft : OK
   -- Expr_ok: C, LOCAL t_1* t*, LABEL (t_2*), RETURN (t_2*) |- expr : t_2*
 
 rule Global_ok:
   C |- GLOBAL gt expr : gt
   -- Globaltype_ok: |- gt : OK
-  -- if gt = MUT? t
+  -- if gt = mut t
   -- Expr_ok_const: C |- expr : t CONST
 
 rule Table_ok:
@@ -538,10 +550,11 @@ rule Externidx_ok/mem:
 relation Module_ok: |- module : OK      hint(show "T-module")
 
 rule Module_ok:
-  |- MODULE import* func* global* table* mem* elem* data^n start? export* : OK
+  |- MODULE type* import* func* global* table* mem* elem* data^n start? export* : OK
   ;; TODO: incremental contexts for globals
-  -- if C = {FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
+  -- if C = {TYPE ft'*, FUNC ft*, GLOBAL gt*, TABLE tt*, MEM mt*, ELEM rt*, DATA OK^n}
 
+  -- (Type_ok: |- type : ft')*
   -- (Func_ok: C |- func : ft)*
   -- (Global_ok: C |- global : gt)*
   -- (Table_ok: C |- table : tt)*

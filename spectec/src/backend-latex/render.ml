@@ -20,12 +20,14 @@ type env =
   { config : config;
     vars : Set.t ref;
     show_syn : exp list Map.t ref;
+    show_gram : exp list Map.t ref;
     show_var : exp list Map.t ref;
     show_rel : exp list Map.t ref;
     show_def : exp list Map.t ref;
     show_case : exp list Map.t ref;
     show_field : exp list Map.t ref;
     desc_syn : exp list Map.t ref;
+    desc_gram : exp list Map.t ref;
     deco_syn : bool;
     deco_rule : bool;
     current_rel : string;
@@ -35,12 +37,14 @@ let new_env config =
   { config;
     vars = ref Set.empty;
     show_syn = ref Map.empty;
+    show_gram = ref Map.empty;
     show_var = ref Map.empty;
     show_rel = ref Map.empty;
     show_def = ref Map.empty;
     show_case = ref Map.empty;
     show_field = ref Map.empty;
     desc_syn = ref Map.empty;
+    desc_gram = ref Map.empty;
     deco_syn = false;
     deco_rule = false;
     current_rel = "";
@@ -81,6 +85,10 @@ let env_hintdef env hd =
     env_hints "desc" env.desc_syn id hints;
     env_hints "show" env.show_syn id1.it hints;
     env_hints "show" env.show_var id1.it hints
+  | GramH (id1, id2, hints) ->
+    let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
+    env_hints "desc" env.desc_gram id hints;
+    env_hints "show" env.show_gram id1.it hints
   | RelH (id, hints) -> env_hints "show" env.show_rel id.it hints
   | VarH (id, hints) -> env_hints "show" env.show_var id.it hints
   | DecH (id, hints) -> env_hints "show" env.show_def id.it hints
@@ -91,6 +99,8 @@ let env_def env d =
     env.vars := Set.add id1.it !(env.vars);
     env_hintdef env (SynH (id1, id2, hints) $ d.at);
     env_typ env t
+  | GramD (id1, id2, _ps, _t, _gram, hints) ->
+    env_hintdef env (GramH (id1, id2, hints) $ d.at)
   | RelD (id, _, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
   | VarD (id, _, hints) ->
     env.vars := Set.add id.it !(env.vars);
@@ -162,7 +172,10 @@ let rec exp_of_typ t = exp_of_typ' t.it $ t.at
 and exp_of_typ' = function
   | VarT id -> VarE id
   | BoolT -> VarE ("bool" $ no_region)
-  | NatT -> VarE ("nat" $ no_region)
+  | NumT NatT -> VarE ("nat" $ no_region)
+  | NumT IntT -> VarE ("int" $ no_region)
+  | NumT RatT -> VarE ("rat" $ no_region)
+  | NumT RealT -> VarE ("real" $ no_region)
   | TextT -> VarE ("text" $ no_region)
   | ParenT t -> ParenE (exp_of_typ t, false)
   | TupT ts -> TupE (List.map exp_of_typ ts)
@@ -247,6 +260,10 @@ let render_id env style show id =
 let render_synid env id = render_id env `Var env.show_syn id
 let render_varid env id = render_id env `Var env.show_var id
 let render_defid env id = render_id env `Func (ref Map.empty) id
+let render_gramid env id = render_id env `Token env.show_syn
+  (* TODO: HACK for now *)
+  (let len = String.length id.it in
+  if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
 
 let render_atomid env id =
   render_id' env `Atom (quote_id (lower id))
@@ -386,6 +403,7 @@ and expand_exp' args e' =
     let e2' = expand_exp args e2 in
     CompE (e1', e2')
   | LenE e -> LenE (expand_exp args e)
+  | SizeE id -> SizeE id
   | ParenE (e, b) -> ParenE (expand_exp args e, b)
   | TupE es -> TupE (List.map (expand_exp args) es)
   | InfixE (e1, atom, e2) ->
@@ -466,7 +484,10 @@ and render_typ env t =
   match t.it with
   | VarT id -> render_synid env id
   | BoolT -> render_synid env ("bool" $ t.at)
-  | NatT -> render_synid env ("nat" $ t.at)
+  | NumT NatT -> render_synid env ("nat" $ t.at)
+  | NumT IntT -> render_synid env ("int" $ t.at)
+  | NumT RatT -> render_synid env ("rat" $ t.at)
+  | NumT RealT -> render_synid env ("real" $ t.at)
   | TextT -> render_synid env ("text" $ t.at)
   | ParenT t -> "(" ^ render_typ env t ^ ")"
   | TupT ts -> "(" ^ render_typs ",\\; " env ts ^ ")"
@@ -591,7 +612,10 @@ and render_exp env e =
   | CommaE (e1, e2) -> render_exp env e1 ^ ", " ^ render_exp env e2
   | CompE (e1, e2) -> render_exp env e1 ^ " \\oplus " ^ render_exp env e2
   | LenE e1 -> "{|" ^ render_exp env e1 ^ "|}"
-  | ParenE (e, _) -> "(" ^ render_exp env e ^ ")"
+  | SizeE id -> "||" ^ render_gramid env id ^ "||"
+  | ParenE ({it = SeqE [{it = AtomE atom; _}; _]; _} as e1, _) when render_atom env atom = "" ->
+    render_exp env e1
+  | ParenE (e1, _) -> "(" ^ render_exp env e1 ^ ")"
   | TupE es -> "(" ^ render_exps ",\\, " env es ^ ")"
   | InfixE ({it = SeqE []; _}, atom, e2) ->
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env e2
@@ -686,15 +710,87 @@ and render_conditions env tabs = function
     concat_map_nl (" \\\\\n " ^ tabs ^ "\\quad {\\land}~") "" (render_prem env) prems
 
 
+(* Grammars *)
+
+let rec render_sym env g =
+  match g.it with
+  | VarG (id, []) -> render_gramid env id
+  | VarG (id, g::gs) ->
+    if not (ends_sub id.it) then
+      render_gramid env id ^
+        "(" ^ concat ", " (List.map (render_sym env) (g::gs)) ^ ")"
+    else
+      (* Handle subscripting *)
+      "{" ^ render_gramid env id ^ "}_{" ^ render_sym env g ^ "}" ^
+        ( if gs = [] then "" else
+          "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")" )
+
+  | NatG n -> string_of_int n
+  | HexG n ->
+    let fmt : (_, _, _) format =
+      if n < 0x100 then "%02X" else
+      if n < 0x10000 then "%04X" else
+      "%X"
+    in "\\mathtt{0x" ^ Printf.sprintf fmt n ^ "}"
+  | CharG n ->
+    let fmt : (_, _, _) format =
+      if n < 0x100 then "%02X" else
+      if n < 0x10000 then "%04X" else
+      "%X"
+    in "\\mathrm{U{+}" ^ Printf.sprintf fmt n ^ "}"
+  | TextG t -> "`" ^ t ^ "'"
+  | EpsG -> "\\epsilon"
+  | SeqG gs -> render_syms "~" env gs
+  | AltG gs -> render_syms " ~|~ " env gs
+  | RangeG (g1, g2) ->
+    render_sym env g1 ^ " ~|~ \\dots ~|~ " ^ render_sym env g2
+  | ParenG g1 -> "(" ^ render_sym env g1 ^ ")"
+  | TupG gs -> "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")"
+  | IterG (g1, iter) -> "{" ^ render_sym env g1 ^ render_iter env iter ^ "}"
+  | ArithG e -> render_exp env e
+  | AttrG (g1, e) -> render_exp env e ^ "{:}" ^ render_sym env g1
+
+and render_syms sep env gs =
+  altern_map_nl sep " \\\\ &&&" (render_sym env) gs
+
+let render_prod env prod =
+  let (g, e, prems) = prod.it in
+  render_sym env g ^ " &\\Rightarrow& " ^ render_exp env e ^
+    if prems = [] then "" else render_conditions env "&&&&&&" prems
+
+let render_gram env gram =
+  let (dots1, prods, dots2) = gram.it in
+  altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
+    ( render_dots dots1 @
+      map_nl_list (render_prod env) prods @
+      render_dots dots2
+    )
+
+
 (* Definitions *)
 
 let () = render_expand_fwd := render_expand
 
+let render_param env p =
+  match p.it with
+  | VarP id -> render_varid env id
+  | GramP (id1, _id2, _iters) -> render_gramid env id1
+
+let render_params env = function
+  | [] -> ""
+  | ps -> "(" ^ concat ", " (List.map (render_param env) ps) ^ ")"
+
+
 let merge_typ t1 t2 =
   match t1.it, t2.it with
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
-    CaseT( dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
+    CaseT (dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
   | _, _ -> assert false
+
+let merge_gram gram1 gram2 =
+  match gram1.it, gram2.it with
+  | (dots1, prods1, _), (_, prods2, dots2) ->
+    (dots1, prods1 @ strip_nl prods2, dots2) $ gram1.at
 
 let rec merge_syndefs = function
   | [] -> []
@@ -704,6 +800,15 @@ let rec merge_syndefs = function
     merge_syndefs (d'::ds)
   | d::ds ->
     d :: merge_syndefs ds
+
+let rec merge_gramdefs = function
+  | [] -> []
+  | {it = GramD (id1, _, ps, t, gram1, _); at; _}::
+    {it = GramD (id2, _, _ps, _t, gram2, _); _}::ds when id1.it = id2.it ->
+    let d' = GramD (id1, "" $ no_region, ps, t, merge_gram gram1 gram2, []) $ at in
+    merge_gramdefs (d'::ds)
+  | d::ds ->
+    d :: merge_gramdefs ds
 
 let string_of_desc = function
   | Some ({it = TextE s; _}::_) -> Some s
@@ -718,6 +823,16 @@ let render_syndef env d =
     | _ -> "& "
     ) ^
     render_synid env id1 ^ " &::=& " ^ render_typ env t
+  | _ -> assert false
+
+let render_gramdef env d =
+  match d.it with
+  | GramD (id1, _id2, p::ps, _t, gram, _) when ends_sub id1.it ->
+    "& " ^ "{" ^ render_gramid env id1 ^ "}_{" ^ render_param env p ^ "}" ^
+      render_params env ps ^ " &::=& " ^ render_gram env gram
+  | GramD (id1, _id2, ps, _t, gram, _) ->
+    "& " ^ render_gramid env id1 ^ render_params env ps ^
+      " &::=& " ^ render_gram env gram
   | _ -> assert false
 
 let render_ruledef env d =
@@ -784,6 +899,11 @@ let rec render_defs env = function
       "\\begin{array}{@{}" ^ deco ^ "rrl@{}l@{}}\n" ^
         render_sep_defs (render_syndef env) ds' ^
       "\\end{array}"
+    | GramD _ ->
+      let ds' = merge_gramdefs ds in
+      "\\begin{array}{@{}l@{}rrlll@{}l@{}}\n" ^
+        render_sep_defs (render_gramdef env) ds' ^
+      "\\end{array}"
     | RelD (id, t, _hints) ->
       "\\boxed{" ^
         render_typ {env with current_rel = id.it} t ^
@@ -828,6 +948,13 @@ let rec split_syndefs syndefs = function
     | SynD _ -> split_syndefs (d::syndefs) ds
     | _ -> List.rev syndefs, d::ds
 
+let rec split_gramdefs gramdefs = function
+  | [] -> List.rev gramdefs, []
+  | d::ds ->
+    match d.it with
+    | GramD _ -> split_gramdefs (d::gramdefs) ds
+    | _ -> List.rev gramdefs, d::ds
+
 let rec split_reddefs id reddefs = function
   | [] -> List.rev reddefs, []
   | d::ds ->
@@ -850,6 +977,10 @@ let rec render_script env = function
     | SynD _ ->
       let syndefs, ds' = split_syndefs [d] ds in
       "$$\n" ^ render_defs env syndefs ^ "\n$$\n\n" ^
+      render_script env ds'
+    | GramD _ ->
+      let gramdefs, ds' = split_gramdefs [d] ds in
+      "$$\n" ^ render_defs env gramdefs ^ "\n$$\n\n" ^
       render_script env ds'
     | RelD _ ->
       "$" ^ render_def env d ^ "$\n\n" ^

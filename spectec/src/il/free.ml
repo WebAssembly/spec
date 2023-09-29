@@ -63,7 +63,7 @@ let rec free_iter iter =
 and free_typ t =
   match t.it with
   | VarT id -> free_synid id
-  | BoolT | NatT | TextT -> empty
+  | BoolT | NumT _ | TextT -> empty
   | TupT ts -> free_list free_typ ts
   | IterT (t1, iter) -> union (free_typ t1) (free_iter iter)
 

@@ -44,27 +44,27 @@ let string_of_atom = function
 
 let string_of_unop = function
   | NotOp -> "~"
-  | PlusOp -> "+"
-  | MinusOp -> "-"
+  | PlusOp _ -> "+"
+  | MinusOp _ -> "-"
 
 let string_of_binop = function
   | AndOp -> "/\\"
   | OrOp -> "\\/"
   | ImplOp -> "=>"
   | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "*"
-  | DivOp -> "/"
-  | ExpOp -> "^"
+  | AddOp _ -> "+"
+  | SubOp _ -> "-"
+  | MulOp _ -> "*"
+  | DivOp _ -> "/"
+  | ExpOp _ -> "^"
 
 let string_of_cmpop = function
   | EqOp -> "="
   | NeOp -> "=/="
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "<="
-  | GeOp -> ">="
+  | LtOp _ -> "<"
+  | GtOp _ -> ">"
+  | LeOp _ -> "<="
+  | GeOp _ -> ">="
 
 let string_of_mixop = function
   | [Atom a]::tail when List.for_all ((=) []) tail -> a
@@ -88,11 +88,18 @@ let rec string_of_iter iter =
   | ListN (e, Some id) ->
     "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
+and string_of_numtyp t =
+  match t with
+  | NatT -> "nat"
+  | IntT -> "int"
+  | RatT -> "rat"
+  | RealT -> "real"
+
 and string_of_typ t =
   match t.it with
   | VarT id -> id.it
   | BoolT -> "bool"
-  | NatT -> "nat"
+  | NumT t -> string_of_numtyp t
   | TextT -> "text"
   | TupT ts -> "(" ^ string_of_typs ", " ts ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter

@@ -6,16 +6,25 @@ open Ast
 
 module Set = Set.Make(String)
 
-type sets = {synid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
+type sets = {synid : Set.t; gramid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
 
 let empty =
-  {synid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+  {synid = Set.empty; gramid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
 
 let union sets1 sets2 =
   { synid = Set.union sets1.synid sets2.synid;
+    gramid = Set.union sets1.gramid sets2.gramid;
     relid = Set.union sets1.relid sets2.relid;
     varid = Set.union sets1.varid sets2.varid;
     defid = Set.union sets1.defid sets2.defid;
+  }
+
+let diff sets1 sets2 =
+  { synid = Set.diff sets1.synid sets2.synid;
+    gramid = Set.diff sets1.gramid sets2.gramid;
+    relid = Set.diff sets1.relid sets2.relid;
+    varid = Set.diff sets1.varid sets2.varid;
+    defid = Set.diff sets1.defid sets2.defid;
   }
 
 let free_opt free_x xo = Option.(value (map free_x xo) ~default:empty)
@@ -28,6 +37,7 @@ let free_nl_list free_x xs = List.(fold_left union empty (map (free_nl_elem free
 (* Identifiers *)
 
 let free_synid id = {empty with synid = Set.singleton id.it}
+let free_gramid id = {empty with gramid = Set.singleton id.it}
 let free_relid id = {empty with relid = Set.singleton id.it}
 let free_varid id = {empty with varid = Set.singleton id.it}
 let free_defid id = {empty with defid = Set.singleton id.it}
@@ -46,7 +56,7 @@ let rec free_iter iter =
 and free_typ t =
   match t.it with
   | VarT id -> free_synid id
-  | BoolT | NatT | TextT -> empty
+  | BoolT | NumT _ | TextT -> empty
   | ParenT t1 -> free_typ t1
   | TupT ts -> free_list free_typ ts
   | IterT (t1, iter) -> union (free_typ t1) (free_iter iter)
@@ -86,6 +96,7 @@ and free_exp e =
   | StrE efs -> free_nl_list free_expfield efs
   | CallE (id, e1) -> union (free_defid id) (free_exp e1)
   | IterE (e1, iter) -> union (free_exp e1) (free_iter iter)
+  | SizeE id -> free_gramid id
 
 and free_expfield (_, e) = free_exp e
 
@@ -108,11 +119,44 @@ and free_prem prem =
   | IterPr (prem', iter) -> union (free_prem prem') (free_iter iter)
 
 
+(* Grammars *)
+
+let rec free_sym g =
+  match g.it with
+  | VarG (id, gs) -> union (free_gramid id) (free_list free_sym gs)
+  | NatG _ | HexG _ | CharG _ | TextG _ | EpsG -> empty
+  | SeqG gs | AltG gs -> free_nl_list free_sym gs
+  | RangeG (g1, g2) -> union (free_sym g1) (free_sym g2)
+  | ParenG g1 -> free_sym g1
+  | TupG gs -> free_list free_sym gs
+  | IterG (g1, iter) -> union (free_sym g1) (free_iter iter)
+  | ArithG e -> free_exp e
+  | AttrG (g1, e) -> union (free_sym g1) (free_exp e)
+
+let free_prod prod =
+  let (g, e, prems) = prod.it in
+  union (union (free_sym g) (free_exp e)) (free_nl_list free_prem prems)
+
+let free_gram gram =
+  let (_dots1, prods, _dots2) = gram.it in
+  free_nl_list free_prod prods
+
+
 (* Definitions *)
+
+let bound_param p =
+  match p.it with
+  | VarP id -> free_varid id
+  | GramP (id1, id2, iters) ->
+    union (union (free_gramid id1) (free_varid id2)) (free_list free_iter iters)
+
+let bound_params ps = free_list bound_param ps
 
 let free_def d =
   match d.it with
   | SynD (_id1, _id2, t, _hints) -> free_typ t
+  | GramD (_id1, _id2, ps, t, gram, _hints) ->
+    diff (union (free_typ t) (free_gram gram)) (bound_params ps)
   | VarD _ | SepD -> empty
   | RelD (_id, t, _hints) -> free_typ t
   | RuleD (id1, _id2, e, prems) ->

@@ -2,7 +2,7 @@ open Ast
 
 module Set : Set.S with type elt = string
 
-type sets = {synid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
+type sets = {synid : Set.t; gramid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
 
 val free_list : ('a -> sets) -> 'a list -> sets
 val free_nl_list : ('a -> sets) -> 'a nl_list -> sets

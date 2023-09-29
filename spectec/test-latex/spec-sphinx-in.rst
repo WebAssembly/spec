@@ -55,6 +55,6 @@ $${definition: {funcaddr funcinst} {func table}}
 
 $${rule: Step/pure Step/read}
 
-$${rule+: {Step_pure/block Step_pure/loop} {Step_pure/if-*}}
+$${rule+: {Step_read/block Step_read/loop} {Step_pure/if-*}}
 
 $${rule+: Step_pure/if-*}

@@ -35,7 +35,8 @@ module Map = Map.Make(String)
 
 type use = int ref
 
-type syntax = {sdef : def; fragments : (string * def * use) list}
+type syntax = {sdef : def; sfragments : (string * def * use) list}
+type grammar = {gdef : def; gfragments : (string * def * use) list}
 type relation = {rdef : def; rules : (string * def * use) list}
 type definition = {fdef : def; clauses : def list; use : use}
 
@@ -43,6 +44,7 @@ type env =
   { config : config;
     render : Render.env;
     mutable syn : syntax Map.t;
+    mutable gram : grammar Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
   }
@@ -52,10 +54,16 @@ let env_def env def =
   match def.it with
   | SynD (id1, id2, _, _) ->
     if not (Map.mem id1.it env.syn) then
-      env.syn <- Map.add id1.it {sdef = def; fragments = []} env.syn;
+      env.syn <- Map.add id1.it {sdef = def; sfragments = []} env.syn;
     let syntax = Map.find id1.it env.syn in
-    let fragments = syntax.fragments @ [(id2.it, def, ref 0)] in
-    env.syn <- Map.add id1.it {syntax with fragments} env.syn
+    let sfragments = syntax.sfragments @ [(id2.it, def, ref 0)] in
+    env.syn <- Map.add id1.it {syntax with sfragments} env.syn
+  | GramD (id1, id2, _, _, _, _) ->
+    if not (Map.mem id1.it env.gram) then
+      env.gram <- Map.add id1.it {gdef = def; gfragments = []} env.gram;
+    let grammar = Map.find id1.it env.gram in
+    let gfragments = grammar.gfragments @ [(id2.it, def, ref 0)] in
+    env.gram <- Map.add id1.it {grammar with gfragments} env.gram
   | RelD (id, _, _) ->
     env.rel <- Map.add id.it {rdef = def; rules = []} env.rel
   | RuleD (id1, id2, _, _) ->
@@ -76,6 +84,7 @@ let env config script : env =
     { config;
       render = Render.env config script;
       syn = Map.empty;
+      gram = Map.empty;
       rel = Map.empty;
       def = Map.empty
     }
@@ -91,9 +100,12 @@ let warn_use use space id1 id2 =
     prerr_endline ("warning: " ^ space ^ " `" ^ id ^ "` was " ^ msg)
 
 let warn env =
-  Map.iter (fun id1 {fragments; _} ->
-  	List.iter (fun (id2, _, use) -> warn_use use "syntax" id1 id2) fragments
+  Map.iter (fun id1 {sfragments; _} ->
+    List.iter (fun (id2, _, use) -> warn_use use "syntax" id1 id2) sfragments
   ) env.syn;
+  Map.iter (fun id1 {gfragments; _} ->
+    List.iter (fun (id2, _, use) -> warn_use use "grammar" id1 id2) gfragments
+  ) env.gram;
   Map.iter (fun id1 {rules; _} ->
   	List.iter (fun (id2, _, use) -> warn_use use "rule" id1 id2) rules
   ) env.rel;
@@ -117,7 +129,12 @@ let find_entries space src id1 id2 entries =
 let find_syntax env src id1 id2 =
   match Map.find_opt id1 env.syn with
   | None -> error src ("unknown syntax identifier `" ^ id1 ^ "`")
-  | Some syntax -> find_entries "syntax" src id1 id2 syntax.fragments
+  | Some syntax -> find_entries "syntax" src id1 id2 syntax.sfragments
+
+let find_grammar env src id1 id2 =
+  match Map.find_opt id1 env.gram with
+  | None -> error src ("unknown grammar identifier `" ^ id1 ^ "`")
+  | Some grammar -> find_entries "grammar" src id1 id2 grammar.gfragments
 
 let find_relation env src id1 id2 =
   find_nosub "relation" src id1 id2;
@@ -253,6 +270,7 @@ let splice_anchor env src anchor buf =
     try_exp_anchor env src r ||
     try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax true ||
     try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax false ||
+    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar false ||
     try_def_anchor env src r "relation" "relation" "" find_relation false ||
     try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
     try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
