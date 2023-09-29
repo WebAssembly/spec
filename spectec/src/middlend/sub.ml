@@ -197,7 +197,7 @@ let insert_injections env (def : def) : def list =
     let sub_ty = VarT sub $ no_region in
     let sup_ty = VarT sup $ no_region in
     let (real_id, cases) = lookup env sub in
-    let clauses = List.map (fun (a, arg_typ, _hints) ->
+    let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
         let binds = List.mapi (fun i arg_typ_i -> ("x" ^ string_of_int i $ no_region, arg_typ_i, [])) ts in

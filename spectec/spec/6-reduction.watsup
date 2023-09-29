@@ -99,7 +99,7 @@ rule Step_read/call:
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x ft)  ~>  (CALL_ADDR a)
   -- if $table(z, x).ELEM[i] = (REF.FUNC_ADDR a)
-  -- if $funcinst(z)[a].CODE = FUNC ft' t* instr*
+  -- if $funcinst(z)[a].CODE = FUNC ft' (LOCAL t)* instr*
   -- if ft = ft'
 
 rule Step_read/call_indirect-trap:
@@ -108,9 +108,9 @@ rule Step_read/call_indirect-trap:
 
 rule Step_read/call_addr:
   z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{epsilon} instr*))
-  -- if $funcinst(z)[a] = {MODULE m, CODE func}
-  -- if func = FUNC (t_1^k -> t_2^n) t* instr*
-  -- if f = {LOCAL val^k ($default_(t))*, MODULE m}
+  -- if $funcinst(z)[a] = {MODULE mm, CODE func}
+  -- if func = FUNC (t_1^k -> t_2^n) (LOCAL t)* instr*
+  -- if f = {LOCAL val^k ($default_(t))*, MODULE mm}
 
 
 rule Step_pure/frame-vals:

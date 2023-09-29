@@ -21,7 +21,7 @@ $${syntax+:
 
 $${syntax: {instr/control instr/reference}}
 
-$${syntax: {instr/numeric instr/state} expr}
+$${syntax: {instr/numeric instr/local instr/global instr/table instr/memory} expr}
 
 
 

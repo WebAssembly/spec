@@ -75,6 +75,14 @@ sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
 	(cd $(SPHINXDIR)/_build; pdflatex $(SPHINXOUTNAME).tex)
 
 
+# Executable
+
+$(EXE): exe
+
+exe:
+	@(cd ..; make exe)
+
+
 # Test
 
 .PHONY: test

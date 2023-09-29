@@ -12,6 +12,7 @@ type id = string phrase
 
 type atom =
   | Atom of string               (* atomid *)
+  | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
@@ -69,8 +70,8 @@ and deftyp' =
   | StructT of typfield list            (* record type *)
   | VariantT of typcase list            (* variant type *)
 
-and typfield = atom * typ * hint list   (* record field *)
-and typcase = atom * typ * hint list    (* variant case *)
+and typfield = atom * (binds * typ * premise list) * hint list   (* record field *)
+and typcase = atom * (binds * typ * premise list) * hint list    (* variant case *)
 
 
 (* Expressions *)

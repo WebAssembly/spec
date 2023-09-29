@@ -53,13 +53,18 @@ and free_typ t =
   | StrT tfs -> free_nl_list free_typfield tfs
   | CaseT (_, ids, tcases, _) ->
     union (free_nl_list free_synid ids) (free_nl_list free_typcase tcases)
+  | RangeT tes -> free_nl_list free_typenum tes
   | AtomT _ -> empty
   | SeqT ts -> free_list free_typ ts
   | InfixT (t1, _, t2) -> free_list free_typ [t1; t2]
   | BrackT (_, t1) -> free_typ t1
 
-and free_typfield (_, t, _) = free_typ t
-and free_typcase (_, ts, _) = free_list free_typ ts
+and free_typfield (_, (t, prems), _) =
+  union (free_typ t) (free_nl_list free_prem prems)
+and free_typcase (_, (ts, prems), _) =
+  union (free_list free_typ ts) (free_nl_list free_prem prems)
+and free_typenum (e, eo) =
+  union (free_exp e) (free_opt free_exp eo)
 
 
 (* Expressions *)
@@ -67,7 +72,7 @@ and free_typcase (_, ts, _) = free_list free_typ ts
 and free_exp e =
   match e.it with
   | VarE id -> free_varid id
-  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
+  | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE | HoleE _ -> empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
@@ -93,14 +98,17 @@ and free_path p =
   | DotP (p1, _) -> free_path p1
 
 
-(* Definitions *)
+(* Premises *)
 
-let rec free_prem prem =
+and free_prem prem =
   match prem.it with
   | RulePr (id, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iter iter)
+
+
+(* Definitions *)
 
 let free_def d =
   match d.it with

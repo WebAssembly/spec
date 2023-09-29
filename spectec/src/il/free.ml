@@ -73,9 +73,11 @@ and free_deftyp dt =
   | StructT tfs -> free_list free_typfield tfs
   | VariantT tcs -> free_list free_typcase tcs
 
-and free_typfield (_, t, _) = free_typ t
-and free_typcase (_, t, _) = free_typ t
-
+and free_typfield (_, (binds, t, prems), _) =
+  diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
+and free_typcase (_, (binds, t, prems), _) =
+  diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
+  
 
 (* Expressions *)
 
@@ -113,21 +115,24 @@ and free_iterexp (iter, ids) =
     union (free_iter iter) (free_list free_varid ids)
 
 
-(* Definitions *)
+(* Premises *)
 
-let bound_bind (id, _typ, _dim) = free_varid id
-let bound_binds binds = free_list bound_bind binds
-
-let free_bind (_id, t, _dim) = free_typ t
-let free_binds binds = free_list free_bind binds
-
-let rec free_prem prem =
+and free_prem prem =
   match prem.it with
   | RulePr (id, _op, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
   | LetPr (e1, e2) -> union (free_exp e1) (free_exp e2)
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
+
+
+(* Definitions *)
+
+and bound_bind (id, _typ, _dim) = free_varid id
+and bound_binds binds = free_list bound_bind binds
+
+let free_bind (_id, t, _dim) = free_typ t
+let free_binds binds = free_list free_bind binds
 
 let free_rule rule =
   match rule.it with

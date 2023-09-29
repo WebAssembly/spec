@@ -17,6 +17,7 @@ let map_nl_list f xs = List.map f (filter_nl xs)
 
 let string_of_atom = function
   | Atom atomid -> atomid
+  | Infinity -> "infinity"
   | Bot -> "_|_"
   | Dot -> "."
   | Dot2 -> ".."
@@ -100,6 +101,7 @@ and string_of_typ t =
     "\n  | " ^ concat "\n  | "
       (strings_of_dots dots1 @ map_nl_list it ids @
         map_nl_list string_of_typcase tcases @ strings_of_dots dots2)
+  | RangeT tes -> concat " | " (map_nl_list string_of_typenum tes)
   | AtomT atom -> string_of_atom atom
   | SeqT ts -> "{" ^ string_of_typs " " ts ^ "}"
   | InfixT (t1, atom, t2) ->
@@ -111,14 +113,22 @@ and string_of_typ t =
 and string_of_typs sep ts =
   concat sep (List.map string_of_typ ts)
 
-and string_of_typfield (atom, t, _hints) =
-  string_of_atom atom ^ " " ^ string_of_typ t
+and string_of_typfield (atom, (t, prems), _hints) =
+  string_of_atom atom ^ " " ^ string_of_typ t ^
+    concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcase (atom, ts, _hints) =
-  if ts = [] then
+and string_of_typcase (atom, (ts, prems), _hints) =
+  (if ts = [] then
     string_of_atom atom
   else
     string_of_atom atom ^ " " ^ string_of_typs " " ts
+  ) ^concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
+
+and string_of_typenum (e, eo) =
+  string_of_exp e ^
+  match eo with
+  | None -> ""
+  | Some e2 -> " | ... | " ^ string_of_exp e2
 
 
 (* Expressions *)
@@ -129,6 +139,8 @@ and string_of_exp e =
   | AtomE atom -> string_of_atom atom
   | BoolE b -> string_of_bool b
   | NatE n -> string_of_int n
+  | HexE n -> Printf.sprintf "0x%X" n
+  | CharE n -> Printf.sprintf "U+%X" n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (e1, op, e2) ->
@@ -182,9 +194,9 @@ and string_of_path p =
   | DotP (p1, atom) -> string_of_path p1 ^ "." ^ string_of_atom atom
 
 
-(* Definitions *)
+(* Premises *)
 
-let rec string_of_prem prem =
+and string_of_prem prem =
   match prem.it with
   | RulePr (id, e) -> id.it ^ ": " ^ string_of_exp e
   | IfPr e -> "if " ^ string_of_exp e
@@ -194,6 +206,8 @@ let rec string_of_prem prem =
   | IterPr (prem', iter) ->
     "(" ^ string_of_prem prem' ^ ")" ^ string_of_iter iter
 
+
+(* Definitions *)
 
 let string_of_def d =
   match d.it with

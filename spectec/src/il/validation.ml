@@ -180,13 +180,17 @@ let sub_typ' env t1 t2 =
   | VarT id1, VarT id2 ->
     (match (find "" env.typs id1).it, (find "" env.typs id2).it with
     | StructT tfs1, StructT tfs2 ->
-      List.for_all (fun (atom, t2, _) ->
-        try let t1 = find_field tfs1 atom t2.at in Eq.eq_typ t1 t2
+      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
+        try
+          let _binds1, t1, prems1 = find_field tfs1 atom t2.at in
+          Eq.eq_typ t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         with Error _ -> false
       ) tfs2
     | VariantT tcs1, VariantT tcs2 ->
-      List.for_all (fun (atom, t1, _) ->
-        try let t2 = find_case tcs2 atom t1.at in Eq.eq_typ t1 t2
+      List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
+        try
+          let _binds2, t2, prems2 = find_case tcs2 atom t1.at in
+          Eq.eq_typ t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         with Error _ -> false
       ) tcs1
     | _, _ -> false
@@ -294,8 +298,17 @@ and valid_typ_mix env mixop t at =
       "` applied to " ^ string_of_typ t);
   valid_typ env t
 
-and valid_typfield env (_atom, t, _hints) = valid_typ env t
-and valid_typcase env (_atom, t, _hints) = valid_typ env t
+and valid_typfield env (_atom, (binds, t, prems), _hints) =
+  valid_binds env binds;
+  valid_typ env t;
+  List.iter (valid_prem env) prems;
+  env.vars <- Env.empty
+
+and valid_typcase env (_atom, (binds, t, prems), _hints) =
+  valid_binds env binds;
+  valid_typ env t;
+  List.iter (valid_prem env) prems;
+  env.vars <- Env.empty
 
 
 (* Expressions *)
@@ -317,7 +330,8 @@ and infer_exp env e : typ =
   | StrE _ -> error e.at "cannot infer type of record"
   | DotE (e1, atom) ->
     let tfs = as_struct_typ "expression" env Infer (infer_exp env e1) e1.at in
-    find_field tfs atom e1.at
+    let _binds, t, _prems = find_field tfs atom e1.at in
+    t
   | TupE es -> TupT (List.map (infer_exp env) es) $ e.at
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
@@ -398,7 +412,7 @@ and valid_exp env e t =
     let t1 = infer_exp env e1 in
     valid_exp env e1 t1;
     let tfs = as_struct_typ "expression" env Check t1 e1.at in
-    let t' = find_field tfs atom e1.at in
+    let _binds, t', _prems = find_field tfs atom e1.at in
     equiv_typ env t' t e.at
   | CompE (e1, e2) ->
     let _ = as_struct_typ "record" env Check t e.at in
@@ -437,7 +451,7 @@ and valid_exp env e t =
     valid_exp env e2 t
   | CaseE (atom, e1) ->
     let cases = as_variant_typ "case" env Check t e.at in
-    let t1 = find_case cases atom e1.at in
+    let _binds, t1, _prems = find_case cases atom e1.at in
     valid_exp env e1 t1
   | SubE (e1, t1, t2) ->
     valid_typ env t1;
@@ -454,7 +468,7 @@ and valid_expmix env mixop e (mixop', t) at =
     );
   valid_exp env e t
 
-and valid_expfield env (atom1, e) (atom2, t, _) =
+and valid_expfield env (atom1, e) (atom2, (_binds, t, _prems), _) =
   if atom1 <> atom2 then error e.at "unexpected record field";
   valid_exp env e t
 
@@ -475,7 +489,8 @@ and valid_path env p t : typ =
     | DotP (p1, atom) ->
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
-      find_field tfs atom p1.at
+      let _binds, t, _prems = find_field tfs atom p1.at in
+      t
   in
   equiv_typ env p.note t' p.at;
   t'
@@ -501,15 +516,9 @@ and valid_iterexp env (iter, ids) : env =
   ) env ids
 
 
-(* Definitions *)
+(* Premises *)
 
-let valid_binds env binds =
-  List.iter (fun (id, t, dim) ->
-    valid_typ env t;
-    env.vars <- bind "variable" env.vars id (t, dim)
-  ) binds
-
-let rec valid_prem env prem =
+and valid_prem env prem =
   match prem.it with
   | RulePr (id, mixop, e) ->
     valid_expmix env mixop e (find "relation" env.rels id) e.at
@@ -522,6 +531,15 @@ let rec valid_prem env prem =
   | IterPr (prem', iter) ->
     let env' = valid_iterexp env iter in
     valid_prem env' prem'
+
+
+(* Definitions *)
+
+and valid_binds env binds =
+  List.iter (fun (id, t, dim) ->
+    valid_typ env t;
+    env.vars <- bind "variable" env.vars id (t, dim)
+  ) binds
 
 
 let valid_rule env mixop t rule =

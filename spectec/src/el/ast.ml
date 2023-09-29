@@ -18,6 +18,7 @@ type id = string phrase
 
 type atom =
   | Atom of string               (* atomid *)
+  | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
@@ -70,13 +71,15 @@ and typ' =
   (* The forms below are only allowed in type definitions *)
   | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
   | CaseT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
+  | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)
   | AtomT of atom                (* atom *)
   | SeqT of typ list             (* `epsilon` / typ typ *)
   | InfixT of typ * atom * typ   (* typ atom typ *)
   | BrackT of brack * typ        (* ``` ([{ typ }]) *)
 
-and typfield = atom * typ * hint list        (* atom typ hint* *)
-and typcase = atom * typ list * hint list    (* atom typ* hint* *)
+and typfield = atom * (typ * premise nl_list) * hint list     (* atom typ prem* hint* *)
+and typcase = atom * (typ list * premise nl_list) * hint list (* atom typ* prem* hint* *)
+and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` exp)?)* *)
 
 
 (* Expressions *)
@@ -111,6 +114,8 @@ and exp' =
   | AtomE of atom                (* atom *)
   | BoolE of bool                (* bool *)
   | NatE of nat                  (* nat *)
+  | HexE of nat                  (* 0xhex *)
+  | CharE of nat                 (* 0uhex *)
   | TextE of text                (* text *)
   | UnE of unop * exp            (* unop exp *)
   | BinE of exp * binop * exp    (* exp binop exp *)

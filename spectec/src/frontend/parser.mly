@@ -48,7 +48,7 @@ let strip_ticks id =
 type prec = Op | Seq | Post | Prim
 
 let prec_of_exp = function  (* as far as iteration is concerned *)
-  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
+  | VarE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE | StrE _
   | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
@@ -83,9 +83,9 @@ let signify_parens prec = function
 %token BOOL NAT TEXT
 %token SYNTAX RELATION RULE VAR DEF
 %token IF OTHERWISE HINT
-%token EPSILON
+%token EPSILON INFINITY
 %token<bool> BOOLLIT
-%token<int> NATLIT
+%token<int> NATLIT HEXLIT CHARLIT
 %token<string> TEXTLIT
 %token<string> UPID LOID DOTID
 %token EOF
@@ -118,7 +118,7 @@ id : UPID { $1 } | LOID { $1 }
 
 atomid_ : UPID { $1 }
 varid : LOID { $1 $ at $sloc }
-defid : id { $1 $ at $sloc } | IN { "in" $ at $sloc } | IF { "if" $ at $sloc }
+defid : id { $1 $ at $sloc } | IF { "if" $ at $sloc }
 relid : id { $1 $ at $sloc }
 hintid : id { $1 }
 fieldid : atomid_ { Atom $1 }
@@ -141,6 +141,7 @@ atom :
   | TICK QUEST { Quest }
   | TICK STAR { Star }
   | BOT { Bot }
+  | INFINITY { Infinity }
 
 atom_as_varid :
   | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
@@ -150,6 +151,7 @@ check_atom :
 
 
 (* Iteration *)
+
 iter :
   | QUEST { Opt }
   | PLUS { List1 }
@@ -197,6 +199,7 @@ deftyp_ :
   | NL_BAR casetyp_list { let x, y, z = $2 in CaseT (NoDots, x, y, z) }
   | dots BAR casetyp_list { let x, y, z = $3 in CaseT (Dots, x, y, z) }
   | dots NL_BAR casetyp_list { let x, y, z = $3 in CaseT (Dots, x, Nl::y, z) }
+  | enumtyp_list1 { RangeT $1 }
 
 dots :
   | DOTDOTDOT {}
@@ -276,9 +279,12 @@ nottyps :
 
 fieldtyp_list :
   | (* empty *) { [] }
-  | fieldid typ hint_list { (Elem ($1, $2, $3))::[] }
-  | fieldid typ hint_list COMMA fieldtyp_list { (Elem ($1, $2, $3))::$5 }
-  | fieldid typ hint_list COMMA_NL fieldtyp_list { (Elem ($1, $2, $3))::Nl::$5 }
+  | fieldid typ hint_list premise_bin_list
+    { (Elem ($1, ($2, $4), $3))::[] }
+  | fieldid typ hint_list premise_bin_list COMMA fieldtyp_list
+    { (Elem ($1, ($2, $4), $3))::$6 }
+  | fieldid typ hint_list premise_bin_list COMMA_NL fieldtyp_list
+    { (Elem ($1, ($2, $4), $3))::Nl::$6 }
 
 casetyp_list :
   | (* empty *) { [], [], NoDots }
@@ -286,11 +292,40 @@ casetyp_list :
   | varid { [Elem $1], [], NoDots }
   | varid BAR casetyp_list { let x, y, z = $3 in (Elem $1)::x, y, z }
   | varid NL_BAR casetyp_list { let x, y, z = $3 in (Elem $1)::Nl::x, y, z }
-  | atom nottyps hint_list { [], (Elem ($1, $2, $3))::[], NoDots }
-  | atom nottyps hint_list BAR casetyp_list
-    { let x, y, z = $5 in x, (Elem ($1, $2, $3))::y, z }
-  | atom nottyps hint_list NL_BAR casetyp_list
-    { let x, y, z = $5 in x, (Elem ($1, $2, $3))::Nl::y, z }
+  | atom nottyps hint_list premise_list
+    { [], (Elem ($1, ($2, $4), $3))::[], NoDots }
+  | atom nottyps hint_list premise_list BAR casetyp_list
+    { let x, y, z = $6 in x, (Elem ($1, ($2, $4), $3))::y, z }
+  | atom nottyps hint_list premise_list NL_BAR casetyp_list
+    { let x, y, z = $6 in x, (Elem ($1, ($2, $4), $3))::Nl::y, z }
+
+enumtyp_list :
+  | arith { Elem ($1, None) :: [] }
+  | arith BAR enumtyp_list { Elem ($1, None) :: $3 }
+  | arith NL_BAR enumtyp_list { Elem ($1, None) :: $3 }
+  | arith BAR DOTDOTDOT BAR arith { Elem ($1, Some $5) :: [] }
+  | arith BAR DOTDOTDOT BAR arith BAR enumtyp_list { Elem ($1, Some $5) :: $7 }
+  | arith BAR DOTDOTDOT BAR arith NL_BAR enumtyp_list { Elem ($1, Some $5) :: Nl :: $7 }
+
+enumtyp_list1 :
+  | arith_lit { Elem ($1, None) :: [] }
+  | arith_lit BAR enumtyp_list { Elem ($1, None) :: $3 }
+  | arith_lit NL_BAR enumtyp_list { Elem ($1, None) :: Nl :: $3 }
+  | arith_lit BAR DOTDOTDOT BAR arith { Elem ($1, Some $5) :: [] }
+  | arith_lit BAR DOTDOTDOT BAR arith BAR enumtyp_list { Elem ($1, Some $5) :: $7 }
+  | arith_lit BAR DOTDOTDOT BAR arith NL_BAR enumtyp_list { Elem ($1, Some $5) :: $7 }
+  | PLUS arith_un { Elem (UnE (PlusOp, $2) $ $2.at, None) :: [] }
+  | PLUS arith_un BAR enumtyp_list { Elem (UnE (PlusOp, $2) $ $2.at, None) :: $4 }
+  | PLUS arith_un NL_BAR enumtyp_list { Elem (UnE (PlusOp, $2) $ $2.at, None) :: Nl :: $4 }
+  | PLUS arith_un BAR DOTDOTDOT BAR arith { Elem (UnE (PlusOp, $2) $ $2.at, Some $6) :: [] }
+  | PLUS arith_un BAR DOTDOTDOT BAR arith BAR enumtyp_list { Elem (UnE (PlusOp, $2) $ $2.at, Some $6) :: $8 }
+  | PLUS arith_un BAR DOTDOTDOT BAR arith NL_BAR enumtyp_list { Elem (UnE (PlusOp, $2) $ $2.at, Some $6) :: $8 }
+  | MINUS arith_un { Elem (UnE (MinusOp, $2) $ $2.at, None) :: [] }
+  | MINUS arith_un BAR enumtyp_list { Elem (UnE (MinusOp, $2) $ $2.at, None) :: $4 }
+  | MINUS arith_un NL_BAR enumtyp_list { Elem (UnE (MinusOp, $2) $ $2.at, None) :: Nl :: $4 }
+  | MINUS arith_un BAR DOTDOTDOT BAR arith { Elem (UnE (MinusOp, $2) $ $2.at, Some $6) :: [] }
+  | MINUS arith_un BAR DOTDOTDOT BAR arith BAR enumtyp_list { Elem (UnE (MinusOp, $2) $ $2.at, Some $6) :: $8 }
+  | MINUS arith_un BAR DOTDOTDOT BAR arith NL_BAR enumtyp_list { Elem (UnE (MinusOp, $2) $ $2.at, Some $6) :: $8 }
 
 
 (* Expressions *)
@@ -303,6 +338,8 @@ exp_prim_ :
   | TEXT { VarE ("text" $ at $sloc) }
   | BOOLLIT { BoolE $1 }
   | NATLIT { NatE $1 }
+  | HEXLIT { HexE $1 }
+  | CHARLIT { CharE $1 }
   | TEXTLIT { TextE $1 }
   | EPSILON { EpsE }
   | LBRACE fieldexp_list RBRACE { StrE $2 }
@@ -426,15 +463,22 @@ exps1 :
   | exp_post exps1 { SeqE ($1 :: as_seq_exp $2) $ at $sloc }
 
 
+arith_lit : arith_lit_ { $1 $ at $sloc }
+arith_lit_ :
+  | BOOLLIT { BoolE $1 }
+  | NATLIT { NatE $1 }
+  | HEXLIT { HexE $1 }
+  | CHARLIT { CharE $1 }
+  | HOLE { HoleE false }
+  | MULTIHOLE { HoleE true }
+
 arith_prim : arith_prim_ { $1 $ at $sloc }
 arith_prim_ :
+  | arith_lit_ { $1 }
   | varid { VarE $1 }
   | BOOL { VarE ("bool" $ at $sloc) }
   | NAT { VarE ("nat" $ at $sloc) }
   | TEXT { VarE ("text" $ at $sloc) }
-  | NATLIT { NatE $1 }
-  | HOLE { HoleE false }
-  | MULTIHOLE { HoleE true }
   | LPAR arith RPAR { ParenE ($2, false) }
 
 arith_post : arith_post_ { $1 $ at $sloc }
@@ -546,8 +590,34 @@ premise_list :
   | DASH premise premise_list { (Elem $2)::$3 }
   | NL_NL_DASH premise premise_list { Nl::(Elem $2)::$3 }
 
+premise_bin_list :
+  | (* empty *) { [] }
+  | DASH premise_bin premise_bin_list { (Elem $2)::$3 }
+  | NL_NL_DASH premise_bin premise_bin_list { Nl::(Elem $2)::$3 }
+
+(*premise_post : premise_post_ { $1 $ at $sloc }*)
+premise_post_ :
+  | OTHERWISE { ElsePr }
+  | LPAR premise RPAR iter_list
+    { let rec iters prem = function
+        | [] -> prem
+        | iter::iters' -> iters (IterPr (prem, iter) $ at $sloc) iters'
+      in (iters $2 $4).it }
+
+premise_bin : premise_bin_ { $1 $ at $sloc }
+premise_bin_ :
+  | premise_post_ { $1 }
+  | relid COLON exp_bin { RulePr ($1, $3) }
+  | IF exp_bin
+    { let rec iters e =
+        match e.it with
+        | IterE (e1, iter) -> IterPr (iters e1 $ e1.at, iter)
+        | _ -> IfPr e
+      in iters $2 }
+
 premise : premise_ { $1 $ at $sloc }
 premise_ :
+  | premise_post_ { $1 }
   | relid COLON exp { RulePr ($1, $3) }
   | IF exp
     { let rec iters e =
@@ -555,17 +625,6 @@ premise_ :
         | IterE (e1, iter) -> IterPr (iters e1 $ e1.at, iter)
         | _ -> IfPr e
       in iters $2 }
-  | OTHERWISE { ElsePr }
-  | LPAR relid COLON exp RPAR iter_list
-    { let rec iters prem = function
-        | [] -> prem
-        | iter::iters' -> iters (IterPr (prem $ at $sloc, iter)) iters'
-      in iters (RulePr ($2, $4)) $6 }
-  | LPAR IF exp RPAR iter_list
-    { let rec iters prem = function
-        | [] -> prem
-        | iter::iters' -> iters (IterPr (prem $ at $sloc, iter)) iters'
-      in iters (IfPr $3) $5 }
 
 iter_list :
   | (* empty *) { [] }

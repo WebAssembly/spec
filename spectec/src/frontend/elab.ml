@@ -221,7 +221,8 @@ let as_variant_typ phrase env dir t at : typcase list * dots =
 
 let case_has_args env t atom at : bool =
   let cases, _ = as_variant_typ "" env Check t at in
-  find_case cases atom at <> []
+  let ts, _prems = find_case cases atom at in
+  ts <> []
 
 
 let is_x_typ as_x_typ env t =
@@ -240,9 +241,10 @@ let equiv_list equiv_x xs1 xs2 =
 
 let rec equiv_typ env t1 t2 =
   (*
-  Printf.printf "[equiv] (%s) == (%s)  eq=%b\n%!"
+  Printf.printf "[equiv] (%s) == (%s)  eq=%b  (expanded (%s) == (%s))\n%!"
     (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
+    (t1.it = t2.it)
+    (Print.string_of_typ (expand env t1 $ t1.at)) (Print.string_of_typ (expand env t2 $ t2.at));
   *)
   t1.it = t2.it ||
   match expand env t1, expand env t2 with
@@ -250,6 +252,7 @@ let rec equiv_typ env t1 t2 =
   | TupT ts1, TupT ts2 -> equiv_list (equiv_typ env) ts1 ts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     equiv_typ env t11 t21 && Eq.eq_iter iter1 iter2
+  | RangeT _, NatT | NatT, RangeT _ -> true
   | t1', t2' -> Eq.eq_typ (t1' $ t1.at) (t2' $ t2.at)
 
 
@@ -270,6 +273,7 @@ let elab_hints = List.map elab_hint
 
 let elab_atom = function
   | Atom s -> Il.Atom s
+  | Infinity -> Il.Infinity
   | Bot -> Il.Bot
   | Dot -> Il.Dot
   | Dot2 -> Il.Dot2
@@ -376,7 +380,7 @@ and elab_typ env t : Il.typ =
     | List1 | ListN _ -> error t.at "illegal iterator in syntax type"
     | _ -> Il.IterT (elab_typ env t1, elab_iter env iter) $ t.at
     )
-  | StrT _ | CaseT _ | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
+  | StrT _ | CaseT _ | RangeT _ | AtomT _ | SeqT _ | InfixT _ | BrackT _ ->
     failwith(*error t.at*) "this type is only allowed in type definitions"
 
 and elab_typ_definition env id t : Il.deftyp =
@@ -394,6 +398,9 @@ and elab_typ_definition env id t : Il.deftyp =
     let tcs' = List.map (elab_typcase env t.at) cases' in
     check_atoms "variant" "case" cases' t.at;
     Il.VariantT tcs'
+  | RangeT tes ->
+    let _ = map_nl_list (elab_typenum env) tes in
+    Il.AliasT (Il.NatT $ t.at)
   | _ ->
     match elab_typ_notation env t with
     | false, _mixop, ts' -> Il.AliasT (tup_typ' ts' t.at)
@@ -439,15 +446,38 @@ and elab_typ_notation env t : bool * Il.mixop * Il.typ list =
     false, [[]; []], [elab_typ env t]
 
 
-and elab_typfield env (atom, t, hints) : Il.typfield =
+and elab_typfield env (atom, (t, prems), hints) : Il.typfield =
   let _, _, ts' = elab_typ_notation env t in
-  (elab_atom atom, tup_typ' ts' t.at, elab_hints hints)
+  let dims = Multiplicity.check_typdef [t] prems in
+  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
+  let prems' = List.map (Multiplicity.annot_prem dims')
+    (map_nl_list (elab_prem env) prems) in
+  let free = Free.(free_nl_list free_prem prems).varid in
+  let binds' = make_binds env free dims t.at in
+  ( elab_atom atom,
+    (binds', tup_typ' ts' t.at, prems'),
+    elab_hints hints
+  )
 
-and elab_typcase env at (atom, ts, hints) : Il.typcase =
+and elab_typcase env at (atom, (ts, prems), hints) : Il.typcase =
   let tss' =
     List.map (fun (_, _, ts) -> ts) (List.map (elab_typ_notation env) ts) in
-  (elab_atom atom, tup_typ' (List.concat tss') at, elab_hints hints)
+  let dims = Multiplicity.check_typdef ts prems in
+  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
+  let prems' = List.map (Multiplicity.annot_prem dims')
+    (map_nl_list (elab_prem env) prems) in
+  let free = Free.(free_nl_list free_prem prems).varid in
+  let binds' = make_binds env free dims at in
+  ( elab_atom atom,
+    (binds', tup_typ' (List.concat tss') at, prems'),
+    elab_hints hints
+  )
 
+and elab_typenum env (e, eo) =
+  (* TODO: for now, we simplify ranges to nat *)
+  let _e' = elab_exp env e (NatT $ e.at) in
+  let _eo' = Option.map (fun e2 -> elab_exp env e2 (NatT $ e2.at)) eo in
+  ()
 
 and (!!) env t = elab_typ env t
 and (!!!) env t = let _, _, ts' = elab_typ_notation env t in tup_typ' ts' t.at
@@ -473,7 +503,7 @@ and infer_exp env e : typ =
   | VarE id -> find "variable" env.vars (prefix_id id)
   | AtomE _ -> error e.at "cannot infer type of atom"
   | BoolE _ -> BoolT $ e.at
-  | NatE _ | LenE _ -> NatT $ e.at
+  | NatE _ | HexE _ | CharE _ | LenE _ -> NatT $ e.at
   | TextE _ -> TextT $ e.at
   | UnE (op, _) -> infer_unop op $ e.at
   | BinE (_, op, _) -> infer_binop op $ e.at
@@ -488,7 +518,8 @@ and infer_exp env e : typ =
   | DotE (e1, atom) ->
     let t1 = infer_exp env e1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
-    find_field tfs atom e1.at
+    let t, _prems = find_field tfs atom e1.at in
+    t
   | EpsE -> error e.at "cannot infer type of empty sequence"
   | SeqE _ -> error e.at "cannot infer type of expression sequence"
   | TupE es -> TupT (List.map (infer_exp env) es) $ e.at
@@ -515,7 +546,7 @@ and elab_exp env e t : Il.exp =
   | BoolE b ->
     let t' = infer_exp env e in
     cast_exp "boolean" env (Il.BoolE b $$ e.at % !!env t') t' t
-  | NatE n ->
+  | NatE n | HexE n | CharE n ->
     let t' = infer_exp env e in
     cast_exp "number" env (Il.NatE n $$ e.at % !!env t') t' t
   | TextE s ->
@@ -584,7 +615,7 @@ and elab_exp env e t : Il.exp =
     let t1 = infer_exp env e1 in
     let e1' = elab_exp env e1 t1 in
     let tfs = as_struct_typ "expression" env Infer t1 e1.at in
-    let t' = find_field tfs atom e1.at in
+    let t', _prems = find_field tfs atom e1.at in
     let e' = Il.DotE (e1', elab_atom atom) $$ e.at % !!env t' in
     cast_exp "field" env e' t' t
   | CommaE (e1, e2) ->
@@ -665,11 +696,11 @@ and elab_exps env es ts at : Il.exp list =
 and elab_expfields env efs tfs at : Il.expfield list =
   match efs, tfs with
   | [], [] -> []
-  | (atom1, e)::efs2, (atom2, t, _)::tfs2 when atom1 = atom2 ->
+  | (atom1, e)::efs2, (atom2, (t, _prems), _)::tfs2 when atom1 = atom2 ->
     let es' = elab_exp_notation' env e t in
     let efs2' = elab_expfields env efs2 tfs2 at in
     (elab_atom atom1, tup_exp' es' e.at) :: efs2'
-  | _, (atom, t, _)::tfs2 ->
+  | _, (atom, (t, _prems), _)::tfs2 ->
     let atom' = string_of_atom atom in
     let e' =
       cast_empty ("omitted record field `" ^ atom' ^ "`") env t at (!!env t) in
@@ -853,7 +884,7 @@ and elab_exp_variant env es cases t at : Il.exp =
   *)
   match es with
   | {it = AtomE atom; _}::es ->
-    let ts = find_case cases atom at in
+    let ts, _prems = find_case cases atom at in
     (* TODO: this is a bit hacky *)
     let e2 = SeqE es $ at in
     let es' = elab_exp_notation' env e2 (SeqT ts $ t.at) in
@@ -882,7 +913,7 @@ and elab_path env p t : Il.path * typ =
   | DotP (p1, atom) ->
     let p1', t1 = elab_path env p1 t in
     let tfs = as_struct_typ "path" env Check t1 p1.at in
-    let t' = find_field tfs atom p1.at in
+    let t', _prems = find_field tfs atom p1.at in
     Il.DotP (p1', elab_atom atom) $$ p.at % !!env t', t'
 
 
@@ -918,8 +949,8 @@ and cast_exp_variant phrase env e' t1 t2 : Il.exp =
     if dots1 = Dots then
       error e'.at "used variant type is only partially defined at this point";
     (try
-      List.iter (fun (atom, ts1, _) ->
-        let ts2 = find_case cases2 atom t1.at in
+      List.iter (fun (atom, (ts1, _prems1), _) ->
+        let ts2, _prems2 = find_case cases2 atom t1.at in
         (* Shallow subtyping on variants *)
         if List.length ts1 <> List.length ts2
         || not (List.for_all2 Eq.eq_typ ts1 ts2) then
@@ -936,18 +967,9 @@ and elab_iterexp env iter =
   (elab_iter env iter, [])
 
 
-(* Definitions *)
+(* Premises *)
 
-let make_binds env free dims at : Il.binds =
-  List.map (fun id' ->
-    let id = id' $ at in
-    let t = elab_typ env (find "variable" env.vars (prefix_id id)) in
-    let ctx = List.map (elab_iter env) (Multiplicity.Env.find id.it dims) in
-    (id, t, ctx)
-  ) (Set.elements free)
-
-
-let rec elab_prem env prem : Il.premise =
+and elab_prem env prem : Il.premise =
   match prem.it with
   | RulePr (id, e) ->
     let t, _ = find "relation" env.rels id in
@@ -963,6 +985,17 @@ let rec elab_prem env prem : Il.premise =
     let prem1' = elab_prem env prem1 in
     let iter' = elab_iterexp env iter in
     Il.IterPr (prem1', iter') $ prem.at
+
+
+(* Definitions *)
+
+and make_binds env free dims at : Il.binds =
+  List.map (fun id' ->
+    let id = id' $ at in
+    let t = elab_typ env (find "variable" env.vars (prefix_id id)) in
+    let ctx = List.map (elab_iter env) (Multiplicity.Env.find id.it dims) in
+    (id, t, ctx)
+  ) (Set.elements free)
 
 
 let infer_typ_definition _env t : syn_typ =

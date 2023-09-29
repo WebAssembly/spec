@@ -49,6 +49,7 @@ ruleid ::= id
 
 atom ::=
   atomid
+  "infinity"
   "_|_"
 
 atomop ::=
@@ -83,9 +84,9 @@ In addition to type expressions, custom _notation_ types can be defined:
 
 ```
 deftyp ::=
-  nottyp                                    free notation
-  "{" list(atom typ hint*, ",") "}"         record
-  "..."? "|" list(varid | atom nottyp hint*, "|") "|" "..."  variant
+  nottyp                                                              free notation
+  "{" list(atom typ hint* premise*, ",") "}"                          record
+  "..."? "|" list(varid | atom nottyp hint* premise*, "|") "|" "..."  variant
 
 nottyp ::=
   typ                                       plain type
@@ -187,8 +188,7 @@ premise ::=
   relid ":" exp                                               relational premise
   "if" exp                                                    side condition
   "otherwise"                                                 fallback side condition
-  "(" relid ":" exp ")" iter*                                 iterated relational premise
-  "(" "if" exp ")" iter*                                      iterated side condition
+  "(" premise ")" iter*                                       iterated relational premise
 
 hint ::=
   "hint" "(" hintid exp ")"                                   hint

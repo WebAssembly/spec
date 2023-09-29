@@ -97,7 +97,7 @@ syntax moduleinst hint(desc "module instance") =
     DATA dataaddr*,
     EXPORT exportinst* }
 
-var m : moduleinst
+var mm : moduleinst
 var fi : funcinst
 var gi : globalinst
 var ti : tableinst

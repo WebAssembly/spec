@@ -76,12 +76,47 @@ let rec check_iter env ctx iter =
     Option.iter (fun id -> check_id env (strip_index iter::ctx) id) id_opt;
     check_exp env ctx e
 
+and check_typ env ctx t =
+  match t.it with
+  | VarT id -> check_id env ctx id
+  | BoolT
+  | NatT
+  | TextT
+  | AtomT _ -> ()
+  | ParenT t1
+  | BrackT (_, t1) -> check_typ env ctx t1
+  | TupT ts
+  | SeqT ts -> List.iter (check_typ env ctx) ts
+  | IterT (t1, iter) ->
+    check_iter env ctx iter;
+    check_typ env (strip_index iter::ctx) t1
+  | StrT tfs ->
+    iter_nl_list (fun (_, (tI, prems), _) ->
+      check_typ env ctx tI;
+      iter_nl_list (check_prem env ctx) prems
+    ) tfs
+  | CaseT (_, _, tcs, _) ->
+    iter_nl_list (fun (_, (tsI, prems), _) ->
+      List.iter (check_typ env ctx) tsI;
+      iter_nl_list (check_prem env ctx) prems
+    ) tcs
+  | RangeT tes ->
+    iter_nl_list (fun (eI1, eoI2) ->
+      check_exp env ctx eI1;
+      Option.iter (check_exp env ctx) eoI2;
+    ) tes
+  | InfixT (t1, _, t2) ->
+    check_typ env ctx t1;
+    check_typ env ctx t2
+
 and check_exp env ctx e =
   match e.it with
   | VarE id -> check_id env ctx id
   | AtomE _
   | BoolE _
   | NatE _
+  | HexE _
+  | CharE _
   | TextE _
   | EpsE
   | HoleE _
@@ -111,7 +146,7 @@ and check_exp env ctx e =
     check_exp env ctx e2
   | SeqE es
   | TupE es -> List.iter (check_exp env ctx) es
-  | StrE efs -> iter_nl_list (fun ef -> check_exp env ctx (snd ef)) efs
+  | StrE efs -> iter_nl_list (fun (_, eI) -> check_exp env ctx eI) efs
   | IterE (e1, iter) ->
     check_iter env ctx iter;
     check_exp env (strip_index iter::ctx) e1
@@ -129,7 +164,7 @@ and check_path env ctx p =
   | DotP (p1, _) ->
     check_path env ctx p1
 
-let rec check_prem env ctx prem =
+and check_prem env ctx prem =
   match prem.it with
   | RulePr (_id, e) -> check_exp env ctx e
   | IfPr e -> check_exp env ctx e
@@ -152,6 +187,12 @@ let check_def d : env =
     check_exp env [] e2;
     iter_nl_list (check_prem env []) prems;
     check_env env
+
+let check_typdef ts prems : env =
+  let env = ref Env.empty in
+  List.iter (check_typ env []) ts;
+  iter_nl_list (check_prem env []) prems;
+  check_env env
 
 
 (* Annotating iterations *)
