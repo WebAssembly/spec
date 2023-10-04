@@ -43,13 +43,13 @@ document: doc $(CONF) $(MATHDEF) $(INDEX)
 .PHONY: setup
 
 setup: document
-	cp -r doc $(SPHINXDIR)
 	mkdir -p $(BUILDDIR)
+	cp -r doc/* $(SPHINXDIR)
 
 .PHONY: splice
 
 splice: setup 
-	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)&& mv $(MACRO) $(UTIL)
+	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) && mv $(MACRO) $(UTIL)
 	rm -f $(INPUTFILES)
 	cd ..
 
