@@ -16,58 +16,46 @@ BUILDDIR = _sphinx/_build
 
 .PHONY: all
 
-all: pdf
+all: pdf html
 
 # Sphinx splicing
 
-INDEX = index
+CONF = doc/conf.py
 
-SYNTAX = syntax
+INDEX = doc/index.rst
 
-SYNTAXFILES = $(wildcard $(SYNTAX)/*-in.rst)
+MATHDEF = doc/util/mathdef.py
 
-SYNTAXINPUT = $(strip $(subst " ", " ", $(SYNTAXFILES)))
+INPUTFILES = $(wildcard $(SPHINXDIR)/*/*-in.rst)
 
-SYNTAXOUTPUT = $(strip $(subst -in.rst,.rst,$(SYNTAXFILES)))
+SPLICEINPUT = $(strip $(patsubst $(SPHINXDIR)/%,%,$(subst " ", " ", $(INPUTFILES))))
 
-EXEC = exec
-
-EXECFILES = $(wildcard $(EXEC)/*-in.rst)
-
-EXECINPUT = $(strip $(subst " ", " ", $(EXECFILES)))
-
-EXECOUTPUT = $(strip $(subst -in.rst,.rst,$(EXECFILES)))
-
-VALID = valid
-
-VALIDFILES = $(wildcard $(VALID)/*-in.rst)
-
-VALIDINPUT = $(strip $(subst " ", " ", $(VALIDFILES)))
-
-VALIDOUTPUT = $(strip $(subst -in.rst,.rst,$(VALIDFILES)))
+SPLICEOUTPUT = $(strip $(subst -in.rst,.rst,$(SPLICEINPUT)))
 
 UTIL = util
 
 MACRO = macros.def
 
+.PHONY: document
+
+document: doc $(CONF) $(MATHDEF) $(INDEX)
+
+.PHONY: setup
+
+setup: document
+	cp -r doc $(SPHINXDIR)
+	mkdir -p $(BUILDDIR)
+
 .PHONY: splice
 
-splice: $(SYNTAX) $(EXEC) $(VALID) $(UTIL)
-	$(EXE) $(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SYNTAXOUTPUT) $(EXECOUTPUT) $(VALIDOUTPUT) -p $(SYNTAXINPUT) $(EXECINPUT) $(VALIDINPUT) 
-	mv $(MACRO) $(UTIL)
-
-.PHONY: doc
-
-doc: conf.py $(INDEX).rst splice
+splice: setup 
+	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)&& mv $(MACRO) $(UTIL)
+	rm -f $(INPUTFILES)
+	cd ..
 
 .PHONY: html
 
-html: doc
-	mkdir -p $(BUILDDIR)
-	cp -r conf.py $(INDEX).rst $(SYNTAX) $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
-	rm -f $(SPHINXDIR)/$(SYNTAX)/*-in.rst
-	rm -f $(SPHINXDIR)/$(EXEC)/*-in.rst
-	rm -f $(SPHINXDIR)/$(VALID)/*-in.rst
+html: splice
 	$(SPHINXBUILD) -b html -d $(SPHINXDIR)/doctrees $(SPHINXDIR) $(BUILDDIR)/html
 	@echo "html finished; the HTML pages are in $(BUILDDIR)/html."
 
@@ -79,12 +67,7 @@ pdf: latexpdf
 
 .PHONY: latexpdf
 
-latexpdf: doc
-	mkdir -p $(BUILDDIR)
-	cp -r conf.py $(INDEX).rst $(SYNTAX) $(EXEC) $(VALID) $(UTIL) $(SPHINXDIR)
-	rm -f $(SPHINXDIR)/$(SYNTAX)/*-in.rst
-	rm -f $(SPHINXDIR)/$(EXEC)/*-in.rst
-	rm -f $(SPHINXDIR)/$(VALID)/*-in.rst
+latexpdf: splice
 	$(SPHINXBUILD) -b latex -d $(SPHINXDIR)/doctrees $(SPHINXDIR) $(BUILDDIR)/latex
 	$(MAKE) -C $(BUILDDIR)/latex LATEXMKOPTS=" </dev/null" all-pdf >$(BUILDDIR)/latex/LOG 2>&1 || cat $(BUILDDIR)/latex/LOG
 	@echo "pdflatex finished; the PDF files are in $(BUILDDIR)/latex."
@@ -95,11 +78,5 @@ latexpdf: doc
 
 clean:
 	dune clean
-	rm -f *.aux *.log
 	rm -rf $(SPHINXDIR)
-	rm -f $(SYNTAXOUTPUT)
-	rm -f $(EXECOUTPUT) 
-	rm -f $(VALIDOUTPUT)
-	rm -f $(MACRO)
-	rm -f $(UTIL)/$(MACRO)
 	rm -f *.pdf
