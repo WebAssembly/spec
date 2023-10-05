@@ -188,9 +188,9 @@ Added managed reference types [#proposal-gc]_.
 
 * New :ref:`reference instructions <syntax-instr-ref>` for :ref:`array types <syntax-structtype>`: |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ARRAYNEWDATA|, |ARRAYNEWELEM|, :math:`\ARRAYGET\K{\_}\sx^?`, |ARRAYSET|, |ARRAYLEN|, |ARRAYFILL|, |ARRAYCOPY|, |ARRAYINITDATA|, |ARRAYINITELEM|
 
-* New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |EXTERNINTERNALIZE|, |EXTERNEXTERNALIZE|
+* New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
 
-* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |EXTERNINTERNALIZE|, |EXTERNEXTERNALIZE|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
+* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
 
 
 .. [#proposal-signext]

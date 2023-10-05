@@ -1475,12 +1475,40 @@ Where:
    \end{array}
 
 
-.. _exec-extern.externalize:
+.. _exec-any.convert_extern:
 
-:math:`\EXTERNEXTERNALIZE`
-..........................
+:math:`\ANYCONVERTEXTERN`
+.........................
 
-1. Assert: due to :ref:`validation <valid-extern.externalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\reff` from the stack.
+
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Push the reference value :math:`(\REFNULL~\ANY)` to the stack.
+
+4. Else:
+
+   a. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
+
+   b. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
+
+   c. Push the reference value :math:`\reff'` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\REFNULL \X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
+   (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff \\
+   \end{array}
+
+
+.. _exec-extern.convert_any:
+
+:math:`\EXTERNCONVERTANY`
+.........................
+
+1. Assert: due to :ref:`validation <valid-extern.convert_any>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 2. Pop the value :math:`\reff` from the stack.
 
@@ -1496,36 +1524,8 @@ Where:
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\EXTERNEXTERNALIZE &\stepto& (\REFNULL~\EXTERN) \\
-   \reff~\EXTERNEXTERNALIZE &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL \X{ht})) \\
-   \end{array}
-
-
-.. _exec-extern.internalize:
-
-:math:`\EXTERNINTERNALIZE`
-..........................
-
-1. Assert: due to :ref:`validation <valid-extern.internalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-2. Pop the value :math:`\reff` from the stack.
-
-3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
-
-   a. Push the reference value :math:`(\REFNULL~\ANY)` to the stack.
-
-4. Else:
-
-   a. Assert: due to :ref:`validation <valid-extern.internalize>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
-
-   b. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
-
-   c. Push the reference value :math:`\reff'` to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\REFNULL \X{ht})~\EXTERNINTERNALIZE &\stepto& (\REFNULL~\ANY) \\
-   (\REFEXTERN~\reff)~\EXTERNINTERNALIZE &\stepto& \reff \\
+   (\REFNULL \X{ht})~\EXTERNCONVERTANY &\stepto& (\REFNULL~\EXTERN) \\
+   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL \X{ht})) \\
    \end{array}
 
 
