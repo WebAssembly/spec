@@ -2453,7 +2453,23 @@ Constant Expressions
 
   * or of the form :math:`\REFNULL`,
 
+  * or of the form :math:`\REFI31`,
+
   * or of the form :math:`\REFFUNC~x`,
+
+  * or of the form :math:`\STRUCTNEW~x`,
+
+  * or of the form :math:`\STRUCTNEWDEFAULT~x`,
+
+  * or of the form :math:`\ARRAYNEW~x`,
+
+  * or of the form :math:`\ARRAYNEWDEFAULT~x`,
+
+  * or of the form :math:`\ARRAYNEWFIXED~x`,
+
+  * or of the form :math:`\EXTERNINTERNALIZE`,
+
+  * or of the form :math:`\EXTERNEXTERNALIZE`,
 
   * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
@@ -2471,8 +2487,20 @@ Constant Expressions
    }
    \qquad
    \frac{
+     C.\CGLOBALS[x] = \CONST~t
+   }{
+     C \vdashinstrconst \GLOBALGET~x \const
+   }
+
+.. math::
+   \frac{
    }{
      C \vdashinstrconst \REFNULL~t \const
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \REFI31 \const
    }
    \qquad
    \frac{
@@ -2482,10 +2510,42 @@ Constant Expressions
 
 .. math::
    \frac{
-     C.\CGLOBALS[x] = \CONST~t
    }{
-     C \vdashinstrconst \GLOBALGET~x \const
+     C \vdashinstrconst \STRUCTNEW~x \const
    }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \STRUCTNEWDEFAULT~x \const
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstrconst \ARRAYNEW~x \const
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \ARRAYNEWDEFAULT~x \const
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \ARRAYNEWFIXED~x \const
+   }
+
+.. math::
+   \frac{
+   }{
+     C \vdashinstrconst \EXTERNINTERNALIZE \const
+   }
+   \qquad
+   \frac{
+   }{
+     C \vdashinstrconst \EXTERNEXTERNALIZE \const
+   }
+
 
 .. note::
    Currently, constant expressions occurring in :ref:`globals <syntax-global>`, :ref:`element <syntax-elem>`, or :ref:`data <syntax-data>` segments are further constrained in that contained |GLOBALGET| instructions are only allowed to refer to *imported* globals.
