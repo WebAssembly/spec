@@ -485,8 +485,8 @@ while the latter performs a downcast and :ref:`traps <trap>` if the operand's ty
 .. _syntax-ref.i31:
 .. _syntax-i31.get_s:
 .. _syntax-i31.get_u:
-.. _syntax-extern.internalize:
-.. _syntax-extern.externalize:
+.. _syntax-any.convert_extern:
+.. _syntax-extern.convert_any:
 .. _syntax-instr-struct:
 .. _syntax-instr-array:
 .. _syntax-instr-i31:
@@ -521,8 +521,8 @@ Instructions in this group are concerned with creating and accessing :ref:`refer
      \ARRAYINITELEM~\typeidx~\elemidx \\&&|&
      \REFI31 \\&&|&
      \I31GET\K{\_}\sx \\&&|&
-     \EXTERNINTERNALIZE \\&&|&
-     \EXTERNEXTERNALIZE \\
+     \ANYCONVERTEXTERN \\&&|&
+     \EXTERNCONVERTANY \\
    \end{array}
 
 The instructions |STRUCTNEW| and |STRUCTNEWDEFAULT| allocate a new :ref:`structure <syntax-structtype>`, initializing them either with operands or with default values.
@@ -539,7 +539,7 @@ again allowing for different sign extension modes in the case of a :ref:`packed 
 
 The instructions |REFI31| and :math:`\I31GET\K{\_}\sx` convert between type |I31| and an unboxed :ref:`scalar <syntax-i31>`.
 
-The instructions |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
+The instructions |ANYCONVERTEXTERN| and |EXTERNCONVERTANY| allow lossless conversion between references represented as type :math:`(\REF~\NULL~\EXTERN)`| and as :math:`(\REF~\NULL~\ANY)`.
 
 .. index:: ! parametric instruction, value type
    pair: abstract syntax; instruction

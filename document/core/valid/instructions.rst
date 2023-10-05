@@ -765,10 +765,10 @@ Scalar Reference Instructions
 External Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-extern.internalize:
+.. _valid-any.convert_extern:
 
-:math:`\EXTERNINTERNALIZE`
-..........................
+:math:`\ANYCONVERTEXTERN`
+.........................
 
 * The instruction is valid with type :math:`[(\REF~\NULL_1^?~\EXTERN)] \to [(\REF~\NULL_2^?~\ANY)]` for any :math:`\NULL_1^?` that equals :math:`\NULL_2^?`.
 
@@ -776,13 +776,13 @@ External Reference Instructions
    \frac{
      \NULL_1^? = \NULL_2^?
    }{
-     C \vdashinstr \EXTERNINTERNALIZE : [(\REF~\NULL_1^?~\EXTERN)] \to [(\REF~\NULL_2^?~\ANY)]
+     C \vdashinstr \ANYCONVERTEXTERN : [(\REF~\NULL_1^?~\EXTERN)] \to [(\REF~\NULL_2^?~\ANY)]
    }
 
-.. _valid-extern.externalize:
+.. _valid-extern.convert_any:
 
-:math:`\EXTERNEXTERNALIZE`
-..........................
+:math:`\EXTERNCONVERTANY`
+.........................
 
 * The instruction is valid with type :math:`[(\REF~\NULL_1^?~\ANY)] \to [(\REF~\NULL_2^?~\EXTERN)]` for any :math:`\NULL_1^?` that equals :math:`\NULL_2^?`.
 
@@ -790,7 +790,7 @@ External Reference Instructions
    \frac{
      \NULL_1^? = \NULL_2^?
    }{
-     C \vdashinstr \EXTERNEXTERNALIZE : [(\REF~\NULL_1^?~\ANY)] \to [(\REF~\NULL_2^?~\EXTERN)]
+     C \vdashinstr \EXTERNCONVERTANY : [(\REF~\NULL_1^?~\ANY)] \to [(\REF~\NULL_2^?~\EXTERN)]
    }
 
 

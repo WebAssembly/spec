@@ -204,8 +204,8 @@ Reference Instructions
 .. _text-i31.get_u:
 .. _text-ref.test:
 .. _text-ref.cast:
-.. _text-extern.internalize:
-.. _text-extern.externalize:
+.. _text-any.convert_extern:
+.. _text-extern.convert_any:
 
 .. math::
    \begin{array}{llclll}
@@ -240,8 +240,8 @@ Reference Instructions
      \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
      \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
      \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
-     \text{extern.internalize} &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
-     \text{extern.externalize} &\Rightarrow& \EXTERNEXTERNALIZE \\
+     \text{any.convert_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \text{extern.convert_any} &\Rightarrow& \EXTERNCONVERTANY \\
    \end{array}
 
 

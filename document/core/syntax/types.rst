@@ -93,7 +93,7 @@ There are three disjoint hierarchies of heap types:
 - *aggregate types* classify dynamically allocated *managed* data, such as *structures*, *arrays*, or *unboxed scalars*,
 - *external types* classify *external* references possibly owned by the :ref:`embedder <embedder>`.
 
-The values from the latter two hierarchies are interconvertible by ways of the |EXTERNINTERNALIZE| and |EXTERNEXTERNALIZE| instructions.
+The values from the latter two hierarchies are interconvertible by ways of the |EXTERNCONVERTANY| and |ANYCONVERTEXTERN| instructions.
 That is, both type hierarchies are inhabited by an isomorphic set of values, but may have different, incompatible representations in practice.
 
 .. math::

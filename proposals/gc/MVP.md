@@ -641,17 +641,17 @@ In particular, `ref.null` is typed as before, despite the introduction of `none`
 
 #### External conversion
 
-* `extern.internalize` converts an external value into the internal representation
-  - `extern.internalize : [(ref null1? extern)] -> [(ref null2? any)]`
+* `any.convert_extern` converts an external value into the internal representation
+  - `any.convert_extern : [(ref null1? extern)] -> [(ref null2? any)]`
     - iff `null1? = null2?`
   - this is a *constant instruction*
-  - note: this succeeds for all values, composing this with `extern.externalize` (in either order) yields the original value
+  - note: this succeeds for all values, composing this with `extern.convert_any` (in either order) yields the original value
 
-* `extern.externalize` converts an internal value into the external representation
-  - `extern.externalize : [(ref null1? any)] -> [(ref null2? extern)]`
+* `extern.convert_any` converts an internal value into the external representation
+  - `extern.convert_any : [(ref null1? any)] -> [(ref null2? extern)]`
     - iff `null1? = null2?`
   - this is a *constant instruction*
-  - note: this succeeds for all values; moreover, composing this with `extern.internalize` (in either order) yields the original value
+  - note: this succeeds for all values; moreover, composing this with `any.convert_extern` (in either order) yields the original value
 
 
 #### Casts
@@ -707,7 +707,7 @@ In order to allow RTTs to be initialised as globals, the following extensions ar
 * `struct.new` and `struct.new_default` are constant instructions
 * `array.new`, `array.new_default`, and `array.new_fixed` are constant instructions
   - Note: `array.new_data` and `array.new_elem` are not for the time being, see above
-* `extern.internalize` and `extern.externalize` are constant instructions
+* `any.convert_extern` and `extern.convert_any` are constant instructions
 * `global.get` is a constant instruction and can access preceding (immutable) global definitions, not just imports as in the MVP
 
 
@@ -832,8 +832,8 @@ The opcode for heap types is encoded as an `s33`.
 | 0xfb17 | `ref.cast (ref null ht)` | `ht : heaptype` |
 | 0xfb18 | `br_on_cast $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, `$l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
 | 0xfb19 | `br_on_cast_fail $l (ref null1? ht1) (ref null2? ht2)` | `flags : u8`, `$l : labelidx`, `ht1 : heaptype`, `ht2 : heaptype` |
-| 0xfb1a | `extern.internalize` |
-| 0xfb1b | `extern.externalize` |
+| 0xfb1a | `any.convert_extern` |
+| 0xfb1b | `extern.convert_any` |
 | 0xfb1c | `ref.i31` |
 | 0xfb1d | `i31.get_s` |
 | 0xfb1e | `i31.get_u` |

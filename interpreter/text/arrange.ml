@@ -464,8 +464,8 @@ let initop = function
   | Implicit -> "_default"
 
 let externop = function
-  | Internalize -> "internalize"
-  | Externalize -> "externalize"
+  | Internalize -> "any.convert_extern"
+  | Externalize -> "extern.convert_any"
 
 
 (* Expressions *)
@@ -562,7 +562,7 @@ let rec instr e =
     | ArrayFill x -> "array.fill " ^ var x, []
     | ArrayInitData (x, y) -> "array.init_data " ^ var x ^ " " ^ var y, []
     | ArrayInitElem (x, y) -> "array.init_elem " ^ var x ^ " " ^ var y, []
-    | ExternConvert op -> "extern." ^ externop op, []
+    | ExternConvert op -> externop op, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []

@@ -1475,12 +1475,33 @@ Where:
    \end{array}
 
 
-.. _exec-extern.externalize:
+.. _exec-any.convert_extern:
 
-:math:`\EXTERNEXTERNALIZE`
-..........................
+:math:`\ANYCONVERTEXTERN`
+.........................
 
-1. Assert: due to :ref:`validation <valid-extern.externalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+1. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\reff` from the stack.
+
+3. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
+
+4. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
+
+5. Push the reference value :math:`\reff'` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff
+   \end{array}
+
+
+.. _exec-extern.convert_any:
+
+:math:`\EXTERNCONVERTANY`
+.........................
+
+1. Assert: due to :ref:`validation <valid-extern.convert_any>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
 
 2. Pop the value :math:`\reff` from the stack.
 
@@ -1490,28 +1511,7 @@ Where:
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \reff~\EXTERNEXTERNALIZE &\stepto& (\REFEXTERN~\reff)
-   \end{array}
-
-
-.. _exec-extern.internalize:
-
-:math:`\EXTERNINTERNALIZE`
-..........................
-
-1. Assert: due to :ref:`validation <valid-extern.internalize>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-2. Pop the value :math:`\reff` from the stack.
-
-3. Assert: due to :ref:`validation <valid-extern.internalize>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
-
-4. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
-
-5. Push the reference value :math:`\reff'` to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   (\REFEXTERN~\reff)~\EXTERNINTERNALIZE &\stepto& \reff
+   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff)
    \end{array}
 
 

@@ -131,8 +131,8 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
 .. _binary-i31.get_u:
 .. _binary-ref.test:
 .. _binary-ref.cast:
-.. _binary-extern.internalize:
-.. _binary-extern.externalize:
+.. _binary-any.convert_extern:
+.. _binary-extern.convert_any:
 
 .. math::
    \begin{array}{llclll}
@@ -166,8 +166,8 @@ Generic :ref:`reference instructions <syntax-instr-ref>` are represented by sing
      \hex{FB}~~21{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFTEST~(\REF~\NULL~\X{ht}) \\ &&|&
      \hex{FB}~~22{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\X{ht}) \\ &&|&
      \hex{FB}~~23{:}\Bu32~~\X{ht}{:}\Bheaptype &\Rightarrow& \REFCAST~(\REF~\NULL~\X{ht}) \\ &&|&
-     \hex{FB}~~26{:}\Bu32 &\Rightarrow& \EXTERNINTERNALIZE \\ &&|&
-     \hex{FB}~~27{:}\Bu32 &\Rightarrow& \EXTERNEXTERNALIZE \\ &&|&
+     \hex{FB}~~26{:}\Bu32 &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \hex{FB}~~27{:}\Bu32 &\Rightarrow& \EXTERNCONVERTANY \\ &&|&
      \hex{FB}~~28{:}\Bu32 &\Rightarrow& \REFI31 \\ &&|&
      \hex{FB}~~29{:}\Bu32 &\Rightarrow& \I31GETS \\ &&|&
      \hex{FB}~~30{:}\Bu32 &\Rightarrow& \I31GETU \\
