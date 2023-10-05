@@ -622,8 +622,8 @@ let rec instr s =
       let rt2 = ((if bit 1 flags then Null else NoNull), heap_type s) in
       (if opcode = 0x18l then br_on_cast else br_on_cast_fail) x rt1 rt2
 
-    | 0x1al -> extern_internalize
-    | 0x1bl -> extern_externalize
+    | 0x1al -> any_convert_extern
+    | 0x1bl -> extern_convert_any
 
     | 0x1cl -> ref_i31
     | 0x1dl -> i31_get_s

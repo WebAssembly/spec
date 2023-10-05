@@ -345,8 +345,8 @@ rule token = parse
       | "array.init_data" -> ARRAY_INIT_DATA
       | "array.init_elem" -> ARRAY_INIT_ELEM
 
-      | "extern.internalize" -> EXTERN_CONVERT extern_internalize
-      | "extern.externalize" -> EXTERN_CONVERT extern_externalize
+      | "any.convert_extern" -> EXTERN_CONVERT any_convert_extern
+      | "extern.convert_any" -> EXTERN_CONVERT extern_convert_any
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz
