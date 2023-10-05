@@ -1484,15 +1484,22 @@ Where:
 
 2. Pop the value :math:`\reff` from the stack.
 
-3. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
-4. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
+   a. Push the reference value :math:`(\REFNULL~\ANY)` to the stack.
 
-5. Push the reference value :math:`\reff'` to the stack.
+4. Else:
+
+   a. Assert: due to :ref:`validation <valid-any.convert_extern>`, a :math:`\reff` is an :ref:`external reference <syntax-ref.extern>`.
+
+   b. Let :math:`\REFEXTERN~\reff'` be the reference value :math:`\reff`.
+
+   c. Push the reference value :math:`\reff'` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff
+   (\REFNULL \X{ht})~\ANYCONVERTEXTERN &\stepto& (\REFNULL~\ANY) \\
+   (\REFEXTERN~\reff)~\ANYCONVERTEXTERN &\stepto& \reff \\
    \end{array}
 
 
@@ -1505,13 +1512,20 @@ Where:
 
 2. Pop the value :math:`\reff` from the stack.
 
-3. Let :math:`\reff'` be the reference value :math:`(\REFEXTERN~\reff)`.
+3. If :math:`\reff` is :math:`\REFNULL~\X{ht}`, then:
 
-5. Push the reference value :math:`\reff'` to the stack.
+   a. Push the reference value :math:`(\REFNULL~\EXTERN)` to the stack.
+
+4. Else:
+
+   a. Let :math:`\reff'` be the reference value :math:`(\REFEXTERN~\reff)`.
+
+   b. Push the reference value :math:`\reff'` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff)
+   (\REFNULL \X{ht})~\EXTERNCONVERTANY &\stepto& (\REFNULL~\EXTERN) \\
+   \reff~\EXTERNCONVERTANY &\stepto& (\REFEXTERN~\reff) & (\iff \reff \neq (\REFNULL \X{ht})) \\
    \end{array}
 
 
@@ -4125,7 +4139,7 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& (\BR~l)
+   S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
    S; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
@@ -4163,7 +4177,7 @@ Control Instructions
    S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~X{rt}_2) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& (\BR~l)
+   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\otherwise) \\
    \end{array}
 
