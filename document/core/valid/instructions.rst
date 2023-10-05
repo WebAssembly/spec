@@ -2467,9 +2467,9 @@ Constant Expressions
 
   * or of the form :math:`\ARRAYNEWFIXED~x`,
 
-  * or of the form :math:`\EXTERNINTERNALIZE`,
+  * or of the form :math:`\ANYCONVERTEXTERN`,
 
-  * or of the form :math:`\EXTERNEXTERNALIZE`,
+  * or of the form :math:`\EXTERNCONVERTANY`,
 
   * or of the form :math:`\GLOBALGET~x`, in which case :math:`C.\CGLOBALS[x]` must be a :ref:`global type <syntax-globaltype>` of the form :math:`\CONST~t`.
 
@@ -2538,12 +2538,12 @@ Constant Expressions
 .. math::
    \frac{
    }{
-     C \vdashinstrconst \EXTERNINTERNALIZE \const
+     C \vdashinstrconst \ANYCONVERTEXTERN \const
    }
    \qquad
    \frac{
    }{
-     C \vdashinstrconst \EXTERNEXTERNALIZE \const
+     C \vdashinstrconst \EXTERNCONVERTANY \const
    }
 
 
