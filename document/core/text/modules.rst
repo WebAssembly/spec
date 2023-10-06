@@ -246,7 +246,7 @@ Functions can be defined as :ref:`imports <text-import>` or :ref:`exports <text-
    Consequently, a function declaration can contain any number of exports, possibly followed by an import.
 
 
-.. index:: table, table type, identifier
+.. index:: table, table type, identifier, expression
    pair: text format; table
 .. _text-table:
 
@@ -258,11 +258,12 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 .. math::
    \begin{array}{llclll}
    \production{table} & \Ttable_I &::=&
-     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~\text{)}
-       &\Rightarrow& \{ \TTYPE~\X{tt} \} \\
+     \text{(}~\text{table}~~\Tid^?~~\X{tt}{:}\Ttabletype_I~~e{:}\Texpr_I~\text{)}
+       &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
 
 
+.. index:: reference type, heap type
 .. index:: import, name
    pair: text format; import
 .. index:: export, name, index, table index
@@ -275,6 +276,18 @@ Table definitions can bind a symbolic :ref:`table identifier <text-id>`.
 
 Abbreviations
 .............
+
+A table's initialization :ref:`expression <text-expr>` can be omitted, in which case it defaults to :math:`\REFNULL`:
+
+.. math::
+   \begin{array}{llclll}
+   \production{module field} &
+     \text{(}~\text{table}~~\Tid^?~~\Ttabletype~\text{)}
+       &\equiv&
+       \text{(}~\text{table}~~\Tid^?~~\Ttabletype~~\text{(}~\REFNULL~\X{ht}~\text{)}~\text{)}
+       \\ &&& \qquad\qquad
+       (\iff \Ttabletype = \Tlimits~\text{(}~\text{ref}~\text{null}^?~\X{ht}~\text{)}) \\
+   \end{array}
 
 An :ref:`element segment <text-elem>` can be given inline with a table definition, in which case its offset is :math:`0` and the :ref:`limits <text-limits>` of the :ref:`table type <text-tabletype>` are inferred from the length of the given segment:
 
