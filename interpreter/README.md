@@ -17,15 +17,14 @@ The text format defines modules in S-expression syntax. Moreover, it is generali
 
 You'll need OCaml 4.12 or higher. Instructions for installing a recent version of OCaml on multiple platforms are available [here](https://ocaml.org/docs/install.html). On most platforms, the recommended way is through [OPAM](https://ocaml.org/docs/install.html#OPAM).
 
+You'll also need to install the dune build system. See the [installation instructions](https://github.com/ocaml/dune#installation-1).
+
 Once you have OCaml, simply do
 
 ```
 make
 ```
-You'll get an executable named `./wasm`. This is a byte code executable. If you want a (faster) native code executable, do
-```
-make opt
-```
+You'll get an executable named `./wasm`.
 To run the test suite,
 ```
 make test
@@ -34,12 +33,6 @@ To do everything:
 ```
 make all
 ```
-Before committing changes, you should do
-```
-make land
-```
-That builds `all`, plus updates `winmake.bat`.
-
 
 #### Building on Windows
 
@@ -48,12 +41,6 @@ The instructions depend on how you [installed OCaml on Windows](https://ocaml.or
 1. *Cygwin*: If you want to build a native code executable, or want to hack on the interpreter (i.e., use incremental compilation), then you need to install the Cygwin core that is included with the OCaml installer. Then you can build the interpreter using `make` in the Cygwin terminal, as described above.
 
 2. *Windows Subsystem for Linux* (WSL): You can build the interpreter using `make`, as described above.
-
-3. *From source*: If you just want to build the interpreter and don't care about modifying it, you don't need to install the Cygwin core that comes with the installer. Just install OCaml itself and run
-```
-winmake.bat
-```
-in a Windows shell, which creates a program named `wasm`. Note that this will be a byte code executable only, i.e., somewhat slower.
 
 In any way, in order to run the test suite you'll need to have Python installed. If you used Option 3, you can invoke the test runner `runtests.py` directly instead of doing it through `make`.
 

@@ -1,6 +1,7 @@
 (* Implements a wrapper library that allows the use of the reference
  * interpreter's encode/decode functionality in JavaScript.
  *)
+open Wasm
 open Js_of_ocaml
 
 let _ =

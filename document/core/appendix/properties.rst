@@ -535,8 +535,8 @@ where :math:`\val_1 \gg^+_S \val_2` denotes the transitive closure of the follow
 .. index:: element instance, reference
 .. _valid-eleminst:
 
-:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EIELEM~\X{fa}^\ast \}`
-............................................................................
+:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIELEM~\reff^\ast \}`
+......................................................................................
 
 * The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
 
