@@ -650,6 +650,11 @@ class Binary {
     }
   }
 
+  emit_init_expr(expr) {
+    this.emit_bytes(expr);
+    this.emit_u8(kExprEnd);
+  }
+
   emit_header() {
     this.emit_bytes([
       kWasmH0, kWasmH1, kWasmH2, kWasmH3, kWasmV0, kWasmV1, kWasmV2, kWasmV3
@@ -740,11 +745,11 @@ class WasmFunctionBuilder {
 }
 
 class WasmGlobalBuilder {
-  constructor(module, type, mutable) {
+  constructor(module, type, mutable, init) {
     this.module = module;
     this.type = type;
     this.mutable = mutable;
-    this.init = 0;
+    this.init = init;
   }
 
   exportAs(name) {
@@ -754,13 +759,24 @@ class WasmGlobalBuilder {
   }
 }
 
+function checkExpr(expr) {
+  for (let b of expr) {
+    if (typeof b !== 'number' || (b & (~0xFF)) !== 0) {
+      throw new Error(
+          'invalid body (entries must be 8 bit numbers): ' + expr);
+    }
+  }
+}
+
 class WasmTableBuilder {
-  constructor(module, type, initial_size, max_size) {
+  constructor(module, type, initial_size, max_size, init_expr) {
     this.module = module;
     this.type = type;
     this.initial_size = initial_size;
     this.has_max = max_size != undefined;
     this.max_size = max_size;
+    this.init_expr = init_expr;
+    this.has_init = init_expr !== undefined;
   }
 
   exportAs(name) {
@@ -875,18 +891,44 @@ class WasmModuleBuilder {
     return this.types.length - 1;
   }
 
-  addGlobal(local_type, mutable) {
-    let glob = new WasmGlobalBuilder(this, local_type, mutable);
+  static defaultFor(type) {
+    switch (type) {
+      case kWasmI32:
+        return wasmI32Const(0);
+      case kWasmI64:
+        return wasmI64Const(0);
+      case kWasmF32:
+        return wasmF32Const(0.0);
+      case kWasmF64:
+        return wasmF64Const(0.0);
+      case kWasmS128:
+        return [kSimdPrefix, kExprS128Const, ...(new Array(16).fill(0))];
+      default:
+        if ((typeof type) != 'number' && type.opcode != kWasmRefNull) {
+          throw new Error("Non-defaultable type");
+        }
+        let heap_type = (typeof type) == 'number' ? type : type.heap_type;
+        return [kExprRefNull, ...wasmSignedLeb(heap_type, kMaxVarInt32Size)];
+    }
+  }
+
+  addGlobal(type, mutable, init) {
+    if (init === undefined) init = WasmModuleBuilder.defaultFor(type);
+    checkExpr(init);
+    let glob = new WasmGlobalBuilder(this, type, mutable, init);
     glob.index = this.globals.length + this.num_imported_globals;
     this.globals.push(glob);
     return glob;
   }
 
-  addTable(type, initial_size, max_size = undefined) {
-    if (type != kWasmExternRef && type != kWasmAnyFunc) {
-      throw new Error('Tables must be of type kWasmExternRef or kWasmAnyFunc');
+  addTable(type, initial_size, max_size = undefined, init_expr = undefined) {
+    if (type == kWasmI32 || type == kWasmI64 || type == kWasmF32 ||
+        type == kWasmF64 || type == kWasmS128 || type == kWasmStmt) {
+      throw new Error('Tables must be of a reference type');
     }
-    let table = new WasmTableBuilder(this, type, initial_size, max_size);
+    if (init_expr != undefined) checkExpr(init_expr);
+    let table = new WasmTableBuilder(
+        this, type, initial_size, max_size, init_expr);
     table.index = this.tables.length + this.num_imported_tables;
     this.tables.push(table);
     return table;
@@ -1161,6 +1203,7 @@ class WasmModuleBuilder {
           section.emit_u8(table.has_max);
           section.emit_u32v(table.initial_size);
           if (table.has_max) section.emit_u32v(table.max_size);
+          if (table.has_init) section.emit_init_expr(table.init_expr);
         }
       });
     }
@@ -1191,39 +1234,7 @@ class WasmModuleBuilder {
         for (let global of wasm.globals) {
           section.emit_type(global.type);
           section.emit_u8(global.mutable);
-          if ((typeof global.init_index) == "undefined") {
-            // Emit a constant initializer.
-            switch (global.type) {
-            case kWasmI32:
-              section.emit_u8(kExprI32Const);
-              section.emit_u32v(global.init);
-              break;
-            case kWasmI64:
-              section.emit_u8(kExprI64Const);
-              section.emit_u64v(global.init);
-              break;
-            case kWasmF32:
-              section.emit_bytes(wasmF32Const(global.init));
-              break;
-            case kWasmF64:
-              section.emit_bytes(wasmF64Const(global.init));
-              break;
-            case kWasmAnyFunc:
-            case kWasmExternRef:
-              if (global.function_index !== undefined) {
-                section.emit_u8(kExprRefFunc);
-                section.emit_u32v(global.function_index);
-              } else {
-                section.emit_u8(kExprRefNull);
-              }
-              break;
-            }
-          } else {
-            // Emit a global-index initializer.
-            section.emit_u8(kExprGlobalGet);
-            section.emit_u32v(global.init_index);
-          }
-          section.emit_u8(kExprEnd);  // end of init expression
+          section.emit_init_expr(global.init);
         }
       });
     }
