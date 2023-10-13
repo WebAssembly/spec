@@ -59,10 +59,7 @@ let free_ns_iter (_, iter) = free_iter iter
 let rec free_instr = function
   | IfI (c, il1, il2) -> free_cond c @ List.concat_map free_instr il1 @ List.concat_map free_instr il2
   | OtherwiseI il -> List.concat_map free_instr il
-  | WhileI (c, il) -> free_cond c @ List.concat_map free_instr il
   | EitherI (il1, il2) -> List.concat_map free_instr il1 @ List.concat_map free_instr il2
-  | ForI (e, il) -> free_expr e @ List.concat_map free_instr il
-  | ForeachI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il
   (* empty *)
   | TrapI
   | NopI
@@ -80,10 +77,10 @@ let rec free_instr = function
   | JumpI e -> free_expr e
   (* Two e *)
   | LetI (e1, e2)
-  | EnterI (e1, e2)
   | AppendI (e1, e2)
   | AppendListI (e1, e2) -> free_expr e1 @ free_expr e2
   (* Others *)
+  | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il
   | AssertI c -> free_cond c
   | CallI (e, _, el, iters) -> free_expr e @ List.concat_map free_expr el @ List.concat_map free_ns_iter iters
   | PerformI (_, el) -> List.concat_map free_expr el

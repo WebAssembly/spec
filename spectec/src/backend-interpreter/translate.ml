@@ -267,58 +267,26 @@ let handle_lhs_stack =
 let handle_context_winstr winstr =
   match winstr.it with
   (* Frame *)
-  | Ast.CaseE
-      ( Ast.Atom "FRAME_",
-        {
-          it =
-            Ast.TupE
-              [
-                { it = Ast.VarE arity; _ };
-                { it = Ast.VarE name; _ };
-                inner_exp;
-              ];
-          _;
-        }) ->
-      let let_instrs =
-        [
-          LetI (NameE name.it, GetCurFrameE);
-          LetI
-            (NameE arity.it, ArityE (NameE name.it));
-        ]
-      in
-      let pop_instrs =
-        match inner_exp.it with
-        (* hardcoded pop instructions for "frame" reduction rule *)
-        | Ast.IterE (_, _) ->
-            [ insert_assert inner_exp; PopI (exp2expr inner_exp) ]
-        (* hardcoded pop instructions for "return" reduction rule *)
-        | Ast.CatE (_val', { it = Ast.CatE (valn, _); _ }) ->
-            [
-              insert_assert valn;
-              PopI (exp2expr valn);
-              insert_assert inner_exp;
-              (* While the top of the stack is not a frame, do ... *)
-              WhileI
-                ( NotC
-                    (CompareC
-                       ( Eq, NameE "the top of the stack",
-                         NameE "a frame")),
-                  [ PopI (NameE "the top element") ] );
-            ]
-        | _ -> gen_fail_msg_of_exp inner_exp "Pop instruction" |> failwith
-      in
-      let pop_frame_instrs =
-        [ insert_assert winstr; PopI (NameE "the frame") ]
-      in
-      let_instrs @ pop_instrs @ pop_frame_instrs
+  | Ast.CaseE (Ast.Atom "FRAME_", args) ->
+    ( match args.it with
+    | Ast.TupE [arity; name; inner_exp] ->
+      [
+        LetI (exp2expr name, GetCurFrameE);
+        LetI (exp2expr arity, ArityE (exp2expr name));
+        insert_assert inner_exp;
+        PopI (exp2expr inner_exp);
+        insert_assert winstr; PopI (NameE "the frame");
+        ExitAbruptI "F";
+      ]
+    | _ -> failwith "Invalid frame")
   (* Label *)
-  | Ast.CaseE
-      (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
+  | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
       [
         (* TODO: append Jump instr *)
         PopAllI (exp2expr vals);
         insert_assert winstr;
         PopI (NameE "the label");
+        ExitAbruptI "F";
       ]
   | _ -> []
 
@@ -384,11 +352,10 @@ let rec rhs2instrs exp =
               ];
           _;
         }) ->
-      let push_instr =
-        PushI
-          (FrameE (Some (NameE arity.it), NameE fname.it))
-      in
-      push_instr :: rhs2instrs labelexp
+          [
+            LetI (NameE "F", FrameE (Some (NameE arity.it), NameE fname.it));
+            EnterI (NameE "F", ListE [], rhs2instrs labelexp);
+          ]
   (* TODO: Label *)
   | Ast.CaseE
       ( Atom "LABEL_",
@@ -405,15 +372,12 @@ let rec rhs2instrs exp =
       | Ast.CatE (valexp, instrsexp) ->
           [
             LetI (NameE "L", label_expr);
-            PushI (NameE "L");
-            PushI (exp2expr valexp);
-            JumpI (exp2expr instrsexp);
+            EnterI (NameE "L", exp2expr instrsexp, [PushI (exp2expr valexp)]);
           ]
       | _ ->
           [
             LetI (NameE "L", label_expr);
-            PushI (NameE "L");
-            JumpI (exp2expr instrs_exp2);
+            EnterI (NameE "L", exp2expr instrs_exp2, []);
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->

@@ -259,9 +259,6 @@ let rec string_of_instr index depth = function
   | OtherwiseI il ->
       sprintf "%s Otherwise:%s" (make_index index depth)
         (string_of_instrs (depth + 1) il)
-  | WhileI (c, il) ->
-      sprintf "%s While %s, do:%s" (make_index index depth) (string_of_cond c)
-        (string_of_instrs (depth + 1) il)
   | EitherI (il1, il2) ->
       let either_index = make_index index depth in
       let or_index = make_index index depth in
@@ -269,15 +266,6 @@ let rec string_of_instr index depth = function
         (string_of_instrs (depth + 1) il1)
         (repeat indent depth ^ or_index)
         (string_of_instrs (depth + 1) il2)
-  | ForI (e, il) ->
-      sprintf "%s For i in range |%s|:%s" (make_index index depth)
-        (string_of_expr e)
-        (string_of_instrs (depth + 1) il)
-  | ForeachI (e1, e2, il) ->
-      sprintf "%s Foreach %s in %s:%s" (make_index index depth)
-        (string_of_expr e1)
-        (string_of_expr e2)
-        (string_of_instrs (depth + 1) il)
   | AssertI c -> sprintf "%s Assert: Due to validation, %s." (make_index index depth) (string_of_cond c)
   | PushI e ->
       sprintf "%s Push %s to the stack." (make_index index depth)
@@ -302,9 +290,9 @@ let rec string_of_instr index depth = function
   | ReturnI e_opt ->
       sprintf "%s Return%s." (make_index index depth)
         (string_of_opt " " string_of_expr "" e_opt)
-  | EnterI (e1, e2) ->
-      sprintf "%s Enter %s with label %s." (make_index index depth)
-        (string_of_expr e1) (string_of_expr e2)
+  | EnterI (e1, e2, il) ->
+      sprintf "%s Enter %s with label %s:%s" (make_index index depth)
+        (string_of_expr e1) (string_of_expr e2) (string_of_instrs (depth + 1) il)
   | ExecuteI e ->
       sprintf "%s Execute %s." (make_index index depth) (string_of_expr e)
   | ExecuteSeqI e ->
@@ -576,34 +564,11 @@ let rec structured_string_of_instr depth = function
       "OtherwiseI (\n"
       ^ structured_string_of_instrs (depth + 1) b
       ^ repeat indent depth ^ ")"
-  | WhileI (c, il) ->
-      "WhileI (\n"
-      ^ repeat indent (depth + 1)
-      ^ structured_string_of_cond c
-      ^ ":\n"
-      ^ structured_string_of_instrs (depth + 1) il
-      ^ repeat indent depth ^ ")"
   | EitherI (il1, il2) ->
       "EitherI (\n"
       ^ structured_string_of_instrs (depth + 1) il1
       ^ repeat indent depth ^ "Or\n"
       ^ structured_string_of_instrs (depth + 1) il2
-      ^ repeat indent depth ^ ")"
-  | ForI (e, il) ->
-      "ForI (\n"
-      ^ repeat indent (depth + 1)
-      ^ structured_string_of_expr e
-      ^ ":\n"
-      ^ structured_string_of_instrs (depth + 1) il
-      ^ repeat indent depth ^ ")"
-  | ForeachI (e1, e2, il) ->
-      "ForeachI (\n"
-      ^ repeat indent (depth + 1)
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ":\n"
-      ^ structured_string_of_instrs (depth + 1) il
       ^ repeat indent depth ^ ")"
   | AssertI c -> "AssertI (" ^ structured_string_of_cond c ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
@@ -629,11 +594,13 @@ let rec structured_string_of_instr depth = function
   | NopI -> "NopI"
   | ReturnI e_opt ->
       "ReturnI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
-  | EnterI (e1, e2) ->
+  | EnterI (e1, e2, il) ->
       "EnterI ("
       ^ structured_string_of_expr e1
       ^ ", "
       ^ structured_string_of_expr e2
+      ^ ", "
+      ^ structured_string_of_instrs (depth + 1) il
       ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"

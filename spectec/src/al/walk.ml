@@ -114,10 +114,7 @@ let rec walk_instr f (instr:instr) : instr list =
   let super_walk i = match i with
   | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
   | OtherwiseI il -> OtherwiseI (new_ il)
-  | WhileI (c, il) -> WhileI (new_c c, new_ il)
   | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
-  | ForI (e, il) -> ForI (new_e e, new_ il)
-  | ForeachI (e1, e2, il) -> ForeachI (new_e e1, new_e e2, new_ il)
   | AssertI c -> AssertI (new_c c)
   | PushI e -> PushI (new_e e)
   | PopI e -> PopI (new_e e)
@@ -127,7 +124,7 @@ let rec walk_instr f (instr:instr) : instr list =
   | TrapI -> TrapI
   | NopI -> NopI
   | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
-  | EnterI (e1, e2) -> EnterI (new_e e1, new_e e2)
+  | EnterI (e1, e2, il) -> EnterI (new_e e1, new_e e2, new_ il)
   | ExecuteI e -> ExecuteI (new_e e)
   | ExecuteSeqI e -> ExecuteSeqI (new_e e)
   | JumpI e -> JumpI (new_e e)

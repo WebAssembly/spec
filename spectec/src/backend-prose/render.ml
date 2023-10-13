@@ -400,9 +400,6 @@ let rec render_al_instr env algoname index depth = function
   | Al.Ast.OtherwiseI il ->
       sprintf "%s Otherwise:%s" (render_order index depth)
         (render_al_instrs env algoname (depth + 1) il)
-  | Al.Ast.WhileI (c, il) ->
-      sprintf "%s While %s, do:%s" (render_order index depth) (render_cond env c)
-        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.EitherI (il1, il2) ->
       let either_index = render_order index depth in
       let or_index = render_order index depth in
@@ -410,15 +407,6 @@ let rec render_al_instr env algoname index depth = function
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ or_index)
         (render_al_instrs env algoname (depth + 1) il2)
-  | Al.Ast.ForI (e, il) ->
-      sprintf "%s For i in range |%s|:%s" (render_order index depth)
-        (render_expr env false e)
-        (render_al_instrs env algoname (depth + 1) il)
-  | Al.Ast.ForeachI (e1, e2, il) ->
-      sprintf "%s Foreach %s in %s:%s" (render_order index depth)
-        (render_expr env false e1)
-        (render_expr env false e2)
-        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.AssertI c -> 
       let vref = if Macro.find_section env.macro ("valid-" ^ algoname) then ":ref:`validation <valid-" ^ algoname ^">`" else "validation" in
       sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_cond env c) 
@@ -447,9 +435,10 @@ let rec render_al_instr env algoname index depth = function
   | Al.Ast.ReturnI e_opt ->
       sprintf "%s Return%s." (render_order index depth)
         (render_opt " " (render_expr env false) "" e_opt)
-  | Al.Ast.EnterI (e1, e2) ->
-      sprintf "%s Enter %s with label %s." (render_order index depth)
+  | Al.Ast.EnterI (e1, e2, il) ->
+      sprintf "%s Enter %s with label %s:%s" (render_order index depth)
         (render_expr env false e1) (render_expr env false e2)
+        (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.ExecuteI e ->
       sprintf "%s Execute %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.ExecuteSeqI e ->

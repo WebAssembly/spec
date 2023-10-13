@@ -139,10 +139,7 @@ type instr =
   (* Nested instructions *)
   | IfI of cond * instr list * instr list
   | OtherwiseI of instr list (* This is only for intermideate process durinng il->al *)
-  | WhileI of cond * instr list
   | EitherI of instr list * instr list
-  | ForI of expr * instr list
-  | ForeachI of expr * expr * instr list
   (* Flat instructions *)
   | AssertI of cond
   | PushI of expr
@@ -153,7 +150,7 @@ type instr =
   | TrapI
   | NopI
   | ReturnI of expr option
-  | EnterI of expr * expr
+  | EnterI of expr * expr * instr list
   | ExecuteI of expr
   | ExecuteSeqI of expr
   | JumpI of expr

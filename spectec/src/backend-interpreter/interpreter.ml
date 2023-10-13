@@ -533,17 +533,12 @@ and interp_instrs env il cont action =
     ( match i with
     | IfI (c, il1, il2) ->
         if eval_cond env c then interp (il1 @ icont) else interp (il2 @ icont)
-    | WhileI (c, il) ->
-        if eval_cond env c then interp (il @ (i :: icont)) else interp icont
     | EitherI (il1, il2) -> (
         (*TODO: Make EitherI cps *)
         try interp (il1 @ icont) with
         | Exception.MissingReturnValue
         | Exception.OutOfMemory -> interp (il2 @ icont)
     )
-    | ForI (e, il') ->
-        let n = eval_expr env e |> value_to_array |> Array.length in
-        interp_for n il' env icont cont action
     | AssertI _ -> interp icont (* TODO: insert assertion *)
     | PushI e ->
         (match eval_expr env e with
