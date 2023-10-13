@@ -106,7 +106,7 @@ let s33 s = I32_convert.wrap_i64 (sN 33 s)
 let s64 s = sN 64 s
 let f32 s = F32.of_bits (word32 s)
 let f64 s = F64.of_bits (word64 s)
-let v128 s = V128.of_bits (get_string (Types.vec_size Types.V128Type) s)
+let v128 s = V128.of_bits (get_string 16 s)
 
 let len32 s =
   let pos = pos s in
@@ -146,39 +146,63 @@ open Types
 
 let num_type s =
   match s7 s with
-  | -0x01 -> I32Type
-  | -0x02 -> I64Type
-  | -0x03 -> F32Type
-  | -0x04 -> F64Type
+  | -0x01 -> I32T
+  | -0x02 -> I64T
+  | -0x03 -> F32T
+  | -0x04 -> F64T
   | _ -> error s (pos s - 1) "malformed number type"
 
 let vec_type s =
   match s7 s with
-  | -0x05 -> V128Type
+  | -0x05 -> V128T
   | _ -> error s (pos s - 1) "malformed vector type"
 
-let ref_type s =
-  match s7 s with
-  | -0x10 -> FuncRefType
-  | -0x11 -> ExternRefType
-  | _ -> error s (pos s - 1) "malformed reference type"
+let var_type s =
+  let pos = pos s in
+  match s33 s with
+  | i when i >= 0l -> i
+  | _ -> error s pos "malformed type index"
 
-let value_type s =
+let heap_type s =
+  let pos = pos s in
   either [
-    (fun s -> NumType (num_type s));
-    (fun s -> VecType (vec_type s));
-    (fun s -> RefType (ref_type s));
+    (fun s -> VarHT (StatX (var_type s)));
+    (fun s ->
+      match s7 s with
+      | -0x10 -> FuncHT
+      | -0x11 -> ExternHT
+      | _ -> error s pos "malformed heap type"
+    )
   ] s
 
-let result_type s = vec value_type s
+let ref_type s =
+  let pos = pos s in
+  match s7 s with
+  | -0x10 -> (Null, FuncHT)
+  | -0x11 -> (Null, ExternHT)
+  | -0x1c -> (NoNull, heap_type s)
+  | -0x1d -> (Null, heap_type s)
+  | _ -> error s pos "malformed reference type"
+
+let val_type s =
+  either [
+    (fun s -> NumT (num_type s));
+    (fun s -> VecT (vec_type s));
+    (fun s -> RefT (ref_type s));
+  ] s
+
+let result_type s = vec val_type s
 
 let func_type s =
+  let ts1 = result_type s in
+  let ts2 = result_type s in
+  FuncT (ts1, ts2)
+
+let def_type s =
   match s7 s with
-  | -0x20 ->
-    let ts1 = result_type s in
-    let ts2 = result_type s in
-    FuncType (ts1, ts2)
-  | _ -> error s (pos s - 1) "malformed function type"
+  | -0x20 -> DefFuncT (func_type s)
+  | _ -> error s (pos s - 1) "malformed definition type"
+
 
 let limits uN s =
   let has_max = bool s in
@@ -189,22 +213,22 @@ let limits uN s =
 let table_type s =
   let t = ref_type s in
   let lim = limits u32 s in
-  TableType (lim, t)
+  TableT (lim, t)
 
 let memory_type s =
   let lim = limits u32 s in
-  MemoryType lim
+  MemoryT lim
 
 let mutability s =
   match byte s with
-  | 0 -> Immutable
-  | 1 -> Mutable
+  | 0 -> Cons
+  | 1 -> Var
   | _ -> error s (pos s - 1) "malformed mutability"
 
 let global_type s =
-  let t = value_type s in
+  let t = val_type s in
   let mut = mutability s in
-  GlobalType (t, mut)
+  GlobalT (mut, t)
 
 
 (* Instructions *)
@@ -225,12 +249,25 @@ let memop s =
   Int32.to_int align, offset
 
 let block_type s =
-  let p = pos s in
   either [
-    (fun s -> let x = at s33 s in require (x.it >= 0l) s p ""; VarBlockType x);
+    (fun s -> VarBlockType (at var_type s));
     (fun s -> expect 0x40 s ""; ValBlockType None);
-    (fun s -> ValBlockType (Some (value_type s)));
+    (fun s -> ValBlockType (Some (val_type s)));
   ] s
+
+let local s =
+  let n = u32 s in
+  let t = at val_type s in
+  n, {ltype = t.it} @@ t.at
+
+let locals s =
+  let pos = pos s in
+  let nts = vec local s in
+  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
+  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
+    s pos "too many locals";
+  List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)
+
 
 let rec instr s =
   let pos = pos s in
@@ -284,11 +321,16 @@ let rec instr s =
     let x = at var s in
     return_call_indirect x y
 
-  | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
+  | 0x14 -> call_ref (at var s)
+  | 0x15 -> return_call_ref (at var s)
+
+  | 0x16 as b -> illegal s pos b
+
+  | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
-  | 0x1c -> select (Some (vec value_type s))
+  | 0x1c -> select (Some (vec val_type s))
 
   | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
 
@@ -477,9 +519,13 @@ let rec instr s =
   | 0xc5 | 0xc6 | 0xc7 | 0xc8 | 0xc9 | 0xca | 0xcb
   | 0xcc | 0xcd | 0xce | 0xcf as b -> illegal s pos b
 
-  | 0xd0 -> ref_null (ref_type s)
+  | 0xd0 -> ref_null (heap_type s)
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
+  | 0xd3 as b -> illegal s pos b
+  | 0xd4 -> ref_as_non_null
+  | 0xd5 -> br_on_null (at var s)
+  | 0xd6 -> br_on_non_null (at var s)
 
   | 0xfc as b ->
     (match u32 s with
@@ -830,7 +876,7 @@ let section tag f default s =
 
 (* Type section *)
 
-let type_ s = at func_type s
+let type_ s = at def_type s
 
 let type_section s =
   section `TypeSection (vec type_) [] s
@@ -865,8 +911,20 @@ let func_section s =
 (* Table section *)
 
 let table s =
-  let ttype = table_type s in
-  {ttype}
+  either [
+    (fun s ->
+      expect 0x40 s "";
+      zero s;
+      let ttype = table_type s in
+      let tinit = const s in
+      {ttype; tinit}
+    );
+    (fun s ->
+      let at = region s (pos s) (pos s) in
+      let TableT (_, (_, ht)) as ttype = table_type s in
+      {ttype; tinit = [RefNull ht @@ at] @@ at}
+    );
+  ] s
 
 let table_section s =
   section `TableSection (vec (at table)) [] s
@@ -924,19 +982,6 @@ let start_section s =
 
 (* Code section *)
 
-let local s =
-  let n = u32 s in
-  let t = value_type s in
-  n, t
-
-let locals s =
-  let pos = pos s in
-  let nts = vec local s in
-  let ns = List.map (fun (n, _) -> I64_convert.extend_i32_u n) nts in
-  require (I64.lt_u (List.fold_left I64.add 0L ns) 0x1_0000_0000L)
-    s pos "too many locals";
-  List.flatten (List.map (Lib.Fun.uncurry Lib.List32.make) nts)
-
 let code _ s =
   let locals = locals s in
   let body = instr_block s in
@@ -971,7 +1016,7 @@ let elem_index s =
 
 let elem_kind s =
   match byte s with
-  | 0x00 -> FuncRefType
+  | 0x00 -> (NoNull, FuncHT)
   | _ -> error s (pos s - 1) "malformed element kind"
 
 let elem s =
@@ -979,7 +1024,7 @@ let elem s =
   | 0x00l ->
     let emode = at active_zero s in
     let einit = vec (at elem_index) s in
-    {etype = FuncRefType; einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x01l ->
     let emode = at passive s in
     let etype = elem_kind s in
@@ -998,7 +1043,7 @@ let elem s =
   | 0x04l ->
     let emode = at active_zero s in
     let einit = vec const s in
-    {etype = FuncRefType; einit; emode}
+    {etype = (NoNull, FuncHT); einit; emode}
   | 0x05l ->
     let emode = at passive s in
     let etype = ref_type s in

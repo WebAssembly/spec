@@ -13,17 +13,24 @@ Typing of Static Constructs
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`Limits <valid-limits>`                     :math:`\vdashlimits \limits : k`
-:ref:`Function type <valid-functype>`            :math:`\vdashfunctype \functype \ok`
-:ref:`Block type <valid-blocktype>`              :math:`\vdashblocktype \blocktype \ok`
-:ref:`Table type <valid-tabletype>`              :math:`\vdashtabletype \tabletype \ok`
-:ref:`Memory type <valid-memtype>`               :math:`\vdashmemtype \memtype \ok`
-:ref:`Global type <valid-globaltype>`            :math:`\vdashglobaltype \globaltype \ok`
-:ref:`External type <valid-externtype>`          :math:`\vdashexterntype \externtype \ok`
-:ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \stacktype`
-:ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \stacktype`
+:ref:`Limits <valid-limits>`                     :math:`C \vdashlimits \limits : k`
+:ref:`Numeric type <valid-numtype>`              :math:`C \vdashnumtype \numtype \ok`
+:ref:`Vector type <valid-vectype>`               :math:`C \vdashvectype \vectype \ok`
+:ref:`Heap type <valid-heaptype>`                :math:`C \vdashheaptype \heaptype \ok`
+:ref:`Reference type <valid-reftype>`            :math:`C \vdashreftype \reftype \ok`
+:ref:`Value type <valid-valtype>`                :math:`C \vdashvaltype \valtype \ok`
+:ref:`Function type <valid-functype>`            :math:`C \vdashfunctype \functype \ok`
+:ref:`Block type <valid-blocktype>`              :math:`C \vdashblocktype \blocktype : \instrtype`
+:ref:`Instruction type <valid-instrtype>`        :math:`C \vdashinstrtype \instrtype \ok`
+:ref:`Table type <valid-tabletype>`              :math:`C \vdashtabletype \tabletype \ok`
+:ref:`Memory type <valid-memtype>`               :math:`C \vdashmemtype \memtype \ok`
+:ref:`Global type <valid-globaltype>`            :math:`C \vdashglobaltype \globaltype \ok`
+:ref:`External type <valid-externtype>`          :math:`C \vdashexterntype \externtype \ok`
+:ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \functype`
+:ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \functype`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
+:ref:`Local <valid-local>`                       :math:`C \vdashlocal \local : \localtype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`
 :ref:`Memory <valid-mem>`                        :math:`C \vdashmem \mem : \memtype`
 :ref:`Global <valid-global>`                     :math:`C \vdashglobal \global : \globaltype`
@@ -36,7 +43,7 @@ Construct                                        Judgement
 :ref:`Export description <valid-exportdesc>`     :math:`C \vdashexportdesc \exportdesc : \externtype`
 :ref:`Import <valid-import>`                     :math:`C \vdashimport \import : \externtype`
 :ref:`Import description <valid-importdesc>`     :math:`C \vdashimportdesc \importdesc : \externtype`
-:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \to \externtype^\ast`
+:ref:`Module <valid-module>`                     :math:`\vdashmodule \module : \externtype^\ast \rightarrow \externtype^\ast`
 ===============================================  ===============================================================================
 
 
@@ -66,6 +73,16 @@ Construct                                        Judgement
 ===============================================  ===============================================================================
 
 
+Defaultability
+~~~~~~~~~~~~~~
+
+=================================================  ===============================================================================
+Construct                                          Judgement
+=================================================  ===============================================================================
+:ref:`Defaultable value type <valid-defaultable>`  :math:`C \vdashvaltypedefaultable \valtype \defaultable`
+=================================================  ===============================================================================
+
+
 Constantness
 ~~~~~~~~~~~~
 
@@ -83,8 +100,18 @@ Matching
 ===============================================  ===============================================================================
 Construct                                        Judgement
 ===============================================  ===============================================================================
-:ref:`External type <match-externtype>`          :math:`\vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
-:ref:`Limits <match-limits>`                     :math:`\vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
+:ref:`Number type <match-numtype>`               :math:`C \vdashnumtypematch \numtype_1 \matchesnumtype \numtype_2`
+:ref:`Heap type <match-heaptype>`                :math:`C \vdashheaptypematch \heaptype_1 \matchesheaptype \heaptype_2`
+:ref:`Reference type <match-reftype>`            :math:`C \vdashreftypematch \reftype_1 \matchesreftype \reftype_2`
+:ref:`Value type <match-valtype>`                :math:`C \vdashvaltypematch \valtype_1 \matchesvaltype \valtype_2`
+:ref:`Result type <match-resulttype>`            :math:`C \vdashresulttypematch \resulttype_1 \matchesresulttype \resulttype_2`
+:ref:`Instruction type <match-instrtype>`        :math:`C \vdashinstrtypematch \instrtype_1 \matchesinstrtype \instrtype_2`
+:ref:`Function type <match-functype>`            :math:`C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2`
+:ref:`Table type <match-tabletype>`              :math:`C \vdashtabletypematch \tabletype_1 \matchestabletype \tabletype_2`
+:ref:`Memory type <match-memtype>`               :math:`C \vdashmemtypematch \memtype_1 \matchesmemtype \memtype_2`
+:ref:`Global type <match-globaltype>`            :math:`C \vdashglobaltypematch \globaltype_1 \matchesglobaltype \globaltype_2`
+:ref:`External type <match-externtype>`          :math:`C \vdashexterntypematch \externtype_1 \matchesexterntype \externtype_2`
+:ref:`Limits <match-limits>`                     :math:`C \vdashlimitsmatch \limits_1 \matcheslimits \limits_2`
 ===============================================  ===============================================================================
 
 

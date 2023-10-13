@@ -418,8 +418,9 @@ Occasionally, it is convenient to group operators together according to the foll
 .. index:: ! reference instruction, reference, null
    pair: abstract syntax; instruction
 .. _syntax-ref.null:
-.. _syntax-ref.is_null:
 .. _syntax-ref.func:
+.. _syntax-ref.is_null:
+.. _syntax-ref.as_non_null:
 .. _syntax-instr-ref:
 
 Reference Instructions
@@ -431,12 +432,14 @@ Instructions in this group are concerned with accessing :ref:`references <syntax
    \begin{array}{llcl}
    \production{instruction} & \instr &::=&
      \dots \\&&|&
-     \REFNULL~\reftype \\&&|&
+     \REFNULL~\heaptype \\&&|&
+     \REFFUNC~\funcidx \\&&|&
      \REFISNULL \\&&|&
-     \REFFUNC~\funcidx \\
+     \REFASNONNULL \\
    \end{array}
 
-These instructions produce a null value, check for a null value, or produce a reference to a given function, respectively.
+The first three of these instruction produce a :ref:`null <syntax-null>` value, produce a reference to a given function, or check for a null value, respectively.
+The |REFASNONNULL| casts a :ref:`nullable <syntax-reftype>` to a non-null one, and :ref:`traps <trap>` if it encounters null.
 
 
 .. index:: ! parametric instruction, value type
@@ -649,10 +652,14 @@ Instructions in this group affect the flow of control.
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
+     \BRONNULL~\labelidx \\&&|&
+     \BRONNONNULL~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
-     \CALLINDIRECT~\tableidx~\typeidx \\
+     \CALLREF~\typeidx \\&&|&
+     \CALLINDIRECT~\tableidx~\typeidx \\&&|&
      \RETURNCALL~\funcidx \\&&|&
+     \RETURNCALLREF~\funcidx \\&&|&
      \RETURNCALLINDIRECT~\tableidx~\typeidx \\
    \end{array}
 
@@ -665,7 +672,7 @@ They bracket nested sequences of instructions, called *blocks*, terminated with,
 As the grammar prescribes, they must be well-nested.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
-It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
+It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>` reinterpreted as an :ref:`instruction type <syntax-instrtype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the instruction type :math:`[] \to [\valtype^?]`.
 
 Each structured control instruction introduces an implicit *label*.
 Labels are targets for branch instructions that reference them with :ref:`label indices <syntax-labelidx>`.
@@ -689,6 +696,7 @@ Branch instructions come in several flavors:
 |BR| performs an unconditional branch,
 |BRIF| performs a conditional branch,
 and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
+The |BRONNULL| and |BRONNONNULL| instructions check whether a reference operand is :ref:`null <syntax-null>` and branch if that is the case or not the case, respectively.
 The |RETURN| instruction is a shortcut for an unconditional branch to the outermost block, which implicitly is the body of the current function.
 Taking a branch *unwinds* the operand stack up to the height where the targeted structured control instruction was entered.
 However, branches may additionally consume operands themselves, which they push back on the operand stack after unwinding.
@@ -696,11 +704,12 @@ Forward branches require operands according to the output of the targeted block'
 Backward branches require operands according to the input of the targeted block's type, i.e., represent the values consumed by the restarted block.
 
 The |CALL| instruction invokes another :ref:`function <syntax-func>`, consuming the necessary arguments from the stack and returning the result values of the call.
-The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must have type |FUNCREF|.
+The |CALLREF| instruction invokes a function indirectly through a :ref:`function reference <syntax-reftype>` operand.
+The |CALLINDIRECT| instruction calls a function indirectly through an operand indexing into a :ref:`table <syntax-table>` that is denoted by a :ref:`table index <syntax-tableidx>` and must contain :ref:`function references <syntax-reftype>`.
 Since it may contain functions of heterogeneous type,
 the callee is dynamically checked against the :ref:`function type <syntax-functype>` indexed by the instruction's second immediate, and the call is aborted with a :ref:`trap <trap>` if it does not match.
 
-The |RETURNCALL| and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
+The |RETURNCALL|, |RETURNCALLREF|, and |RETURNCALLINDIRECT| instructions are *tail-call* variants of the previous ones.
 That is, they first return from the current function before actually performing the respective call.
 It is guaranteed that no sequence of nested calls using only these instructions can cause resource exhaustion due to hitting an :ref:`implementation's limit <impl-exec>` on the number of active calls.
 

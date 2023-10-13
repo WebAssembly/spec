@@ -45,6 +45,24 @@ Vector Types
    \end{array}
 
 
+.. index:: heap type
+   pair: binary format; heap type
+.. _binary-heaptype:
+
+Heap Types
+~~~~~~~~~~
+
+:ref:`Heap types <syntax-reftype>` are encoded as either a single byte, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
+
+.. math::
+   \begin{array}{llclll@{\qquad\qquad}l}
+   \production{heap type} & \Bheaptype &::=&
+     \hex{6F} &\Rightarrow& \EXTERN \\ &&|&
+     \hex{70} &\Rightarrow& \FUNC \\ &&|&
+     x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
+   \end{array}
+
+
 .. index:: reference type
    pair: binary format; reference type
 .. _binary-reftype:
@@ -52,13 +70,15 @@ Vector Types
 Reference Types
 ~~~~~~~~~~~~~~~
 
-:ref:`Reference types <syntax-reftype>` are also encoded by a single byte.
+:ref:`Reference types <syntax-reftype>` are either encoded by a single byte followed by a :ref:`heap type <binary-heaptype>`, or, as a short form, directly as a non-index heap type.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{reference type} & \Breftype &::=&
-     \hex{70} &\Rightarrow& \FUNCREF \\ &&|&
-     \hex{6F} &\Rightarrow& \EXTERNREF \\
+     \hex{63}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\NULL~\X{ht} \\ &&|&
+     \hex{64}~~\X{ht}{:}\Bheaptype &\Rightarrow& \REF~\X{ht} \\ &&|&
+     \hex{6F} &\Rightarrow& \EXTERNREF \\ &&|&
+     \hex{70} &\Rightarrow& \FUNCREF \\
    \end{array}
 
 
@@ -80,6 +100,8 @@ Value Types
    \end{array}
 
 .. note::
+   The type :math:`\BOT` cannot occur in a module.
+
    Value types can occur in contexts where :ref:`type indices <syntax-typeidx>` are also allowed, such as in the case of :ref:`block types <binary-blocktype>`.
    Thus, the binary format for types corresponds to the |SignedLEB128|_ :ref:`encoding <binary-sint>` of small negative :math:`\sN` values, so that they can coexist with (positive) type indices in the future.
 

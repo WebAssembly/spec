@@ -1,5 +1,5 @@
 open Types
-open Values
+open Value
 
 type 'inst t = 'inst func
 and 'inst func =
@@ -8,4 +8,5 @@ and 'inst func =
 
 val alloc : func_type -> 'inst -> Ast.func -> 'inst func
 val alloc_host : func_type -> (value list -> value list) -> 'inst func
+
 val type_of : 'inst func -> func_type
