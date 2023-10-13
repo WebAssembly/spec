@@ -234,6 +234,8 @@ op:
   br_if <var>
   br_table <var>+
   return
+  return_call <var>
+  return_call_indirect <func_type>
   call <var>
   call_indirect <var>? <func_type>
   drop

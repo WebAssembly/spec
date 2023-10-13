@@ -149,6 +149,8 @@ and instr' =
   | Return                            (* break from function body *)
   | Call of var                       (* call function *)
   | CallIndirect of var * var         (* call function through table *)
+  | ReturnCall of var                 (* tail-call function *)
+  | ReturnCallIndirect of var * var   (* tail-call function through table *)
   | LocalGet of var                   (* read local variable *)
   | LocalSet of var                   (* write local variable *)
   | LocalTee of var                   (* write local variable and keep value *)

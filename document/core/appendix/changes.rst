@@ -160,3 +160,13 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 Release 3.0
 ~~~~~~~~~~~
 
+Tail calls
+..........
+
+Added instructions to perform tail calls [#proposal-tailcall]_.
+
+* New :ref:`control instructions <syntax-instr-control>`: :math:`RETURNCALL` and :math:`RETURNCALLINDIRECT`
+
+
+.. [#proposal-tailcall]
+   https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
