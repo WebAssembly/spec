@@ -160,6 +160,8 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 Release 3.0
 ~~~~~~~~~~~
 
+.. index: instruction, function, call
+
 Tail calls
 ..........
 
