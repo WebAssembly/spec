@@ -155,3 +155,8 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 
 .. [#proposal-vectype]
    https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+
+Release 3.0
+~~~~~~~~~~~
+
