@@ -240,8 +240,14 @@ op:
   br <var>
   br_if <var>
   br_table <var>+
+<<<<<<< HEAD
   br_on_null <var>
   br_on_non_null <var>
+=======
+  return
+  return_call <var>
+  return_call_indirect <func_type>
+>>>>>>> upstream/wasm-3.0
   call <var>
   call_ref <var>
   call_indirect <var>? (type <var>)? <func_type>

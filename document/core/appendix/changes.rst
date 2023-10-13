@@ -138,8 +138,35 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 * New injection/projection :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.bitmask}`
 
 
-Release 2.?
+.. [#proposal-signext]
+   https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
+
+.. [#proposal-cvtsat]
+   https://github.com/WebAssembly/spec/tree/main/proposals/nontrapping-float-to-int-conversion/
+
+.. [#proposal-multivalue]
+   https://github.com/WebAssembly/spec/tree/main/proposals/multi-value/
+
+.. [#proposal-reftype]
+   https://github.com/WebAssembly/spec/tree/main/proposals/reference-types/
+
+.. [#proposal-bulk]
+   https://github.com/WebAssembly/spec/tree/main/proposals/bulk-memory-operations/
+
+.. [#proposal-vectype]
+   https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+
+
+Release 3.0
 ~~~~~~~~~~~
+
+Tail calls
+..........
+
+Added instructions to perform tail calls [#proposal-tailcall]_.
+
+* New :ref:`control instructions <syntax-instr-control>`: :math:`RETURNCALL` and :math:`RETURNCALLINDIRECT`
+
 
 .. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
 
@@ -165,23 +192,8 @@ Added more precise types for references [#proposal-typedref]_.
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
 
-.. [#proposal-signext]
-   https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
-
-.. [#proposal-cvtsat]
-   https://github.com/WebAssembly/spec/tree/main/proposals/nontrapping-float-to-int-conversion/
-
-.. [#proposal-multivalue]
-   https://github.com/WebAssembly/spec/tree/main/proposals/multi-value/
-
-.. [#proposal-reftype]
-   https://github.com/WebAssembly/spec/tree/main/proposals/reference-types/
-
-.. [#proposal-bulk]
-   https://github.com/WebAssembly/spec/tree/main/proposals/bulk-memory-operations/
-
-.. [#proposal-vectype]
-   https://github.com/WebAssembly/spec/tree/main/proposals/simd/
+.. [#proposal-tailcall]
+   https://github.com/WebAssembly/spec/tree/main/proposals/tail-call/
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
