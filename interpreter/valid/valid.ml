@@ -295,6 +295,17 @@ let rec check_instr (c : context) (e : instr) (s : infer_result_type) : op_type 
        " but table has " ^ string_of_ref_type t);
     (ts1 @ [NumType I32Type]) --> ts2
 
+  | ReturnCall x ->
+    let FuncType (ins, out) = func c x in
+    require (out = c.results) e.at "type mismatch in function result";
+    ins -->... []
+
+  | ReturnCallIndirect (x, y) ->
+    let TableType (lim, t) = table c x in
+    let FuncType (ins, out) = type_ c y in
+    require (out = c.results) e.at "type mismatch in function result";
+    (ins @ [NumType I32Type]) -->... []
+
   | LocalGet x ->
     [] --> [local c x]
 
