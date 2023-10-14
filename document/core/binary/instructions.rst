@@ -44,6 +44,7 @@ Control Instructions
 .. _binary-call_ref:
 .. _binary-call_indirect:
 .. _binary-return_call:
+.. _binary-return_call_ref:
 .. _binary-return_call_indirect:
 
 .. math::

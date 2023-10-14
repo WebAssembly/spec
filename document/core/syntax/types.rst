@@ -168,6 +168,13 @@ Other references are *non-null*.
 Reference types are *opaque*, meaning that neither their size nor their bit pattern can be observed.
 Values of reference type can be stored in :ref:`tables <syntax-table>`.
 
+Conventions
+...........
+
+* The reference type |FUNCREF| is an abbreviation for :math:`\REF~\NULL~\FUNC`.
+
+* The reference type |EXTERNREF| is an abbreviation for :math:`\REF~\NULL~\EXTERN`.
+
 
 .. index:: ! value type, number type, vector type, reference type
    pair: abstract syntax; value type
