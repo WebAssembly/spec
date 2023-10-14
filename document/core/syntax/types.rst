@@ -171,9 +171,25 @@ Values of reference type can be stored in :ref:`tables <syntax-table>`.
 Conventions
 ...........
 
+* The reference type |ANYREF| is an abbreviation for :math:`\REF~\NULL~\ANY`.
+
+* The reference type |EQREF| is an abbreviation for :math:`\REF~\NULL~\EQT`.
+
+* The reference type |I31REF| is an abbreviation for :math:`\REF~\NULL~\I31`.
+
+* The reference type |STRUCTREF| is an abbreviation for :math:`\REF~\NULL~\STRUCT`.
+
+* The reference type |ARRAYREF| is an abbreviation for :math:`\REF~\NULL~\ARRAY`.
+
 * The reference type |FUNCREF| is an abbreviation for :math:`\REF~\NULL~\FUNC`.
 
 * The reference type |EXTERNREF| is an abbreviation for :math:`\REF~\NULL~\EXTERN`.
+
+* The reference type |NULLREF| is an abbreviation for :math:`\REF~\NULL~\NONE`.
+
+* The reference type |NULLFUNCREF| is an abbreviation for :math:`\REF~\NULL~\NOFUNC`.
+
+* The reference type |NULLEXTERNREF| is an abbreviation for :math:`\REF~\NULL~\NOEXTERN`.
 
 
 .. index:: ! value type, number type, vector type, reference type
