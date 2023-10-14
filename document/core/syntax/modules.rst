@@ -142,7 +142,9 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
 .. math::
    \begin{array}{llll}
    \production{function} & \func &::=&
-     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\valtype), \FBODY~\expr \} \\
+     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\local), \FBODY~\expr \} \\
+   \production{local} & \local &::=&
+     \{ \LTYPE~\valtype \} \\
    \end{array}
 
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
@@ -170,13 +172,14 @@ The |MTABLES| component of a module defines a vector of *tables* described by th
 .. math::
    \begin{array}{llll}
    \production{table} & \table &::=&
-     \{ \TTYPE~\tabletype \} \\
+     \{ \TTYPE~\tabletype, \TINIT~\expr \} \\
    \end{array}
 
-A table is a vector of opaque values of a particular :ref:`reference type <syntax-reftype>`.
-The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
+A table is an array of opaque values of a particular :ref:`reference type <syntax-reftype>`.
+Moreover, each table slot is initialized with the |TINIT| value given by a :ref:`constant <valid-constant>` initializer :ref:`expression <syntax-expr>`.
+Tables can further be initialized through :ref:`element segments <syntax-elem>`.
 
-Tables can be initialized through :ref:`element segments <syntax-elem>`.
+The |LMIN| size in the :ref:`limits <syntax-limits>` of the table type specifies the initial size of that table, while its |LMAX|, if present, restricts the size to which it can grow later.
 
 Tables are referenced through :ref:`table indices <syntax-tableidx>`,
 starting with the smallest index not referencing a table :ref:`import <syntax-import>`.

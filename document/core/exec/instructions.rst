@@ -193,39 +193,13 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL~t`
-..................
+:math:`\REFNULL~\X{ht}`
+.......................
 
-1. Push the value :math:`\REFNULL~t` to the stack.
+1. Push the value :math:`\REFNULL~\X{ht}` to the stack.
 
 .. note::
    No formal reduction rule is required for this instruction, since the |REFNULL| instruction is already a :ref:`value <syntax-val>`.
-
-
-.. _exec-ref.is_null:
-
-:math:`\REFISNULL`
-..................
-
-1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
-
-2. Pop the value :math:`\val` from the stack.
-
-3. If :math:`\val` is :math:`\REFNULL~t`, then:
-
-   a. Push the value :math:`\I32.\CONST~1` to the stack.
-
-4. Else:
-
-   a. Push the value :math:`\I32.\CONST~0` to the stack.
-
-.. math::
-   \begin{array}{lcl@{\qquad}l}
-   \val~\REFISNULL &\stepto& (\I32.\CONST~1)
-     & (\iff \val = \REFNULL~t) \\
-   \val~\REFISNULL &\stepto& (\I32.\CONST~0)
-     & (\otherwise) \\
-   \end{array}
 
 
 .. _exec-ref.func:
@@ -245,6 +219,56 @@ Reference Instructions
    \begin{array}{lcl@{\qquad}l}
    F; (\REFFUNC~x) &\stepto& F; (\REFFUNCADDR~a)
      & (\iff a = F.\AMODULE.\MIFUNCS[x]) \\
+   \end{array}
+
+
+.. _exec-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Push the value :math:`\I32.\CONST~1` to the stack.
+
+4. Else:
+
+   a. Push the value :math:`\I32.\CONST~0` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~\REFISNULL &\stepto& \I32.\CONST~1
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~\REFISNULL &\stepto& \I32.\CONST~0
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-ref.as_non_null:
+
+:math:`\REFASNONNULL`
+.....................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Trap.
+
+4. Push the value :math:`\val` back to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~\REFASNONNULL &\stepto& \TRAP
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~\REFASNONNULL &\stepto& \val
+     & (\otherwise) \\
    \end{array}
 
 
@@ -1070,7 +1094,7 @@ Variable Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-local.get>`, :math:`F.\ALOCALS[x]` exists.
+2. Assert: due to :ref:`validation <valid-local.get>`, :math:`F.\ALOCALS[x]` exists and is non-empty.
 
 3. Let :math:`\val` be the value :math:`F.\ALOCALS[x]`.
 
@@ -2606,9 +2630,9 @@ Control Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 4. Let :math:`L` be the label whose arity is :math:`n` and whose continuation is the end of the block.
 
@@ -2621,9 +2645,9 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
-     F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+   S; F; \val^m~\BLOCK~\X{bt}~\instr^\ast~\END &\stepto&
+     S; F; \LABEL_n\{\epsilon\}~\val^m~\instr^\ast~\END
+     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -2634,9 +2658,9 @@ Control Instructions
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_F(\blocktype)` is defined.
+2. Assert: due to :ref:`validation <valid-blocktype>`, :math:`\expand_{S;F}(\blocktype)` is defined.
 
-3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`function type <syntax-functype>` :math:`\expand_F(\blocktype)`.
+3. Let :math:`[t_1^m] \to [t_2^n]` be the :ref:`instruction type <syntax-instrtype>` :math:`\expand_{S;F}(\blocktype)`.
 
 4. Let :math:`L` be the label whose arity is :math:`m` and whose continuation is the start of the loop.
 
@@ -2649,9 +2673,9 @@ Control Instructions
 .. math::
    ~\\[-1ex]
    \begin{array}{lcl}
-   F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
-     F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
-     \\&&\quad (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n])
+   S; F; \val^m~\LOOP~\X{bt}~\instr^\ast~\END &\stepto&
+     S; F; \LABEL_m\{\LOOP~\X{bt}~\instr^\ast~\END\}~\val^m~\instr^\ast~\END
+     \\&&\quad (\iff \expand_{S;F}(\X{bt}) = [t_1^m] \to [t_2^n])
    \end{array}
 
 
@@ -2776,6 +2800,60 @@ Control Instructions
    \end{array}
 
 
+.. _exec-br_on_null:
+
+:math:`\BRONNULL~l`
+...................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+4. Else:
+
+   a. Push the value :math:`\val` back to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\BRONNULL~l) &\stepto& (\BR~l)
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~(\BRONNULL~l) &\stepto& \val
+     & (\otherwise) \\
+   \end{array}
+
+
+.. _exec-br_on_non_null:
+
+:math:`\BRONNONNULL~l`
+......................
+
+1. Assert: due to :ref:`validation <valid-ref.is_null>`, a :ref:`reference value <syntax-ref>` is on the top of the stack.
+
+2. Pop the value :math:`\val` from the stack.
+
+3. If :math:`\val` is :math:`\REFNULL~\X{ht}`, then:
+
+   a. Do nothing.
+
+4. Else:
+
+   a. Push the value :math:`\val` back to the stack.
+
+   b. :ref:`Execute <exec-br>` the instruction :math:`(\BR~l)`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\BRONNONNULL~l) &\stepto& \epsilon
+     & (\iff \val = \REFNULL~\X{ht}) \\
+   \val~(\BRONNONNULL~l) &\stepto& \val~(\BR~l)
+     & (\otherwise) \\
+   \end{array}
+
+
 .. _exec-return:
 
 :math:`\RETURN`
@@ -2830,6 +2908,32 @@ Control Instructions
    \end{array}
 
 
+.. _exec-call_ref:
+
+:math:`\CALLREF~x`
+..................
+
+1. Assert: due to :ref:`validation <valid-call_ref>`, a null or :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the reference value :math:`r` from the stack.
+
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Invoke <exec-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\REFFUNCADDR~a)~(\CALLREF~x) &\stepto& F; (\INVOKE~a) \\
+   F; (\REFNULL~\X{ht})~(\CALLREF~x) &\stepto& F; \TRAP \\
+   \end{array}
+
+
 .. _exec-call_indirect:
 
 :math:`\CALLINDIRECT~x~y`
@@ -2859,7 +2963,7 @@ Control Instructions
 
 11. Let :math:`r` be the :ref:`reference <syntax-ref>` :math:`\X{tab}.\TIELEM[i]`.
 
-12. If :math:`r` is :math:`\REFNULL~t`, then:
+12. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
 
     a. Trap.
 
@@ -2889,7 +2993,7 @@ Control Instructions
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\STABLES[F.\AMODULE.\MITABLES[x]].\TIELEM[i] = \REFFUNCADDR~a \\
      \wedge & S.\SFUNCS[a] = f \\
-     \wedge & F.\AMODULE.\MITYPES[y] = f.\FITYPE)
+     \wedge & S \vdashfunctypematch F.\AMODULE.\MITYPES[y] \matchesfunctype f.\FITYPE)
      \end{array}
    \\[1ex]
    \begin{array}{lcl@{\qquad}l}
@@ -2920,6 +3024,34 @@ Control Instructions
    \begin{array}{lcl@{\qquad}l}
    (\RETURNCALL~x) &\stepto& (\RETURNINVOKE~a)
      & (\iff (\CALL~x) \stepto (\INVOKE~a))
+   \end{array}
+
+
+.. _exec-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+1. Assert: due to :ref:`validation <valid-return_call_ref>`, a :ref:`function reference <syntax-ref>` is on the top of the stack.
+
+2. Pop the reference value :math:`r` from the stack.
+
+3. If :math:`r` is :math:`\REFNULL~\X{ht}`, then:
+
+    a. Trap.
+
+4. Assert: due to :ref:`validation <valid-call_ref>`, :math:`r` is a :ref:`function reference <syntax-ref>`.
+
+5. Let :math:`\REFFUNCADDR~a` be the reference :math:`r`.
+
+6. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   \val~(\RETURNCALLREF~x) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLREF~x) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLREF~x) &\stepto& \TRAP
+     & (\iff \val~(\CALLREF~x) \stepto \TRAP) \\
    \end{array}
 
 
@@ -2967,7 +3099,6 @@ Control Instructions
     a. Trap.
 
 17. :ref:`Tail-invoke <exec-return-invoke>` the function instance at address :math:`a`.
-
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -3049,9 +3180,9 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 2. Let :math:`f` be the :ref:`function instance <syntax-funcinst>`, :math:`S.\SFUNCS[a]`.
 
-3. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`f.\FITYPE`.
+3. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`\X{f}.\FITYPE`.
 
-4. Let :math:`t^\ast` be the list of :ref:`value types <syntax-valtype>` :math:`f.\FICODE.\FLOCALS`.
+4. Let :math:`\local^\ast` be the list of :ref:`locals <syntax-local>` :math:`f.\FICODE.\FLOCALS`.
 
 5. Let :math:`\instr^\ast~\END` be the :ref:`expression <syntax-expr>` :math:`f.\FICODE.\FBODY`.
 
@@ -3076,11 +3207,14 @@ Invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & S.\SFUNCS[a] = f \\
-     \wedge & f.\FITYPE = [t_1^n] \to [t_2^m] \\
-     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~t^k, \FBODY~\instr^\ast~\END \} \\
+     \wedge & S.f.\FITYPE = [t_1^n] \toF [t_2^m] \\
+     \wedge & f.\FICODE = \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^k, \FBODY~\instr^\ast~\END \} \\
      \wedge & F = \{ \AMODULE~f.\FIMODULE, ~\ALOCALS~\val^n~(\default_t)^k \})
      \end{array} \\
    \end{array}
+
+.. note::
+   For non-defaultable types, the respective local is left uninitialized by these rules.
 
 
 .. _exec-return-invoke:
@@ -3090,7 +3224,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
 
 1. Assert: due to :ref:`validation <valid-call>`, :math:`S.\SFUNCS[a]` exists.
 
-2. Let :math:`[t_1^n] \to [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
+2. Let :math:`[t_1^n] \toF [t_2^m]` be the :ref:`function type <syntax-functype>` :math:`S.\SFUNCS[a].\FITYPE`.
 
 3. Assert: due to :ref:`validation <valid-return_call>`, there are at least :math:`n` values on the top of the stack.
 
@@ -3115,7 +3249,7 @@ Tail-invocation of :ref:`function address <syntax-funcaddr>` :math:`a`
    \begin{array}{lcl@{\qquad}l}
     S; \FRAME_m\{F\}~B^\ast[\val^n~(\RETURNINVOKE~a)]~\END &\stepto&
       \val^n~(\INVOKE~a)
-      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \to [t_2^m])
+      & (\iff S.\SFUNCS[a].\FITYPE = [t_1^n] \toF [t_2^m])
    \end{array}
 
 
@@ -3172,7 +3306,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & (S'; \result) \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \begin{array}{lcl@{\qquad}l}
@@ -3180,7 +3314,7 @@ Furthermore, the resulting store must be :ref:`valid <valid-store>`, i.e., all d
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \to [t_2^m], \FIHOSTCODE~\X{hf} \} \\
+     (\iff & S.\SFUNCS[a] = \{ \FITYPE~[t_1^n] \toF [t_2^m], \FIHOSTCODE~\X{hf} \} \\
      \wedge & \bot \in \X{hf}(S; \val^n)) \\
      \end{array} \\
    \end{array}

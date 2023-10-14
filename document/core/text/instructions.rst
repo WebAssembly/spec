@@ -75,7 +75,7 @@ However, the special case of a type use that is syntactically empty or consists 
    \begin{array}[t]{@{}c@{}} ::= \\ | \\ \end{array}
    &
    \begin{array}[t]{@{}lcll@{}}
-     (t{:}\Tresult)^? &\Rightarrow& t^? \\
+     (t{:}\Tresult_I)^? &\Rightarrow& t^? \\
      x,I'{:}\Ttypeuse_I &\Rightarrow& x & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array} \\
    \production{block instruction} & \Tblockinstr_I &::=&
@@ -100,8 +100,11 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-br:
 .. _text-br_if:
 .. _text-br_table:
+.. _text-br_on_null:
+.. _text-br_on_non_null:
 .. _text-return:
 .. _text-call:
+.. _text-call_ref:
 .. _text-call_indirect:
 .. _text-return_call:
 .. _text-return_call_indirect:
@@ -117,11 +120,15 @@ All other control instruction are represented verbatim.
      \text{br\_if}~~l{:}\Tlabelidx_I &\Rightarrow& \BRIF~l \\ &&|&
      \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
+     \text{br\_on\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNULL~l \\ &&|&
+     \text{br\_on\_non\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNONNULL~l \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
+     \text{call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \CALLREF~x \\ &&|&
      \text{call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \CALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\&&|&
      \text{return\_call}~~x{:}\Tfuncidx_I &\Rightarrow& \RETURNCALL~x \\ &&|&
+     \text{return\_call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \RETURNCALLREF~x \\ &&|&
      \text{return\_call\_indirect}~~x{:}\Ttableidx~~y,I'{:}\Ttypeuse_I &\Rightarrow& \RETURNCALLINDIRECT~x~y
        & (\iff I' = \{\ILOCALS~(\epsilon)^\ast\}) \\
    \end{array}
@@ -138,9 +145,9 @@ The :math:`\text{else}` keyword of an :math:`\text{if}` instruction can be omitt
 .. math::
    \begin{array}{llclll}
    \production{block instruction} &
-     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{end}
        &\equiv&
-     \text{if}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~~\text{else}~~\text{end}
+     \text{if}~~\Tlabel~~\Tblocktype_I~~\Tinstr^\ast~~\text{else}~~\text{end}
    \end{array}
 
 Also, for backwards compatibility, the table index to :math:`\text{call\_indirect}` and :math:`\text{return\_call\_indirect}` can be omitted, defaulting to :math:`0`.
@@ -165,15 +172,17 @@ Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. _text-ref.null:
-.. _text-ref.is_null:
 .. _text-ref.func:
+.. _text-ref.is_null:
+.. _text-ref.as_non_null:
 
 .. math::
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
+     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
      \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\
+     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\
    \end{array}
 
 
@@ -191,7 +200,7 @@ Parametric Instructions
    \begin{array}{llclll}
    \production{instruction} & \Tplaininstr_I &::=& \dots \\ &&|&
      \text{drop} &\Rightarrow& \DROP \\ &&|&
-     \text{select}~((t{:}\Tresult)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
+     \text{select}~((t{:}\Tresult_I)^\ast)^? &\Rightarrow& \SELECT~(t^\ast)^? \\
    \end{array}
 
 

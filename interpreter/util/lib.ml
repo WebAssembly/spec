@@ -3,11 +3,12 @@ type void = |
 module Fun =
 struct
   let id x = x
+  let flip f x y = f y x
   let curry f x y = f (x, y)
   let uncurry f (x, y) = f x y
 
   let rec repeat n f x =
-    if n = 0 then () else (f x; repeat (n - 1) f x)
+    if n = 0 then x else repeat (n - 1) f (f x)
 end
 
 module Int =
@@ -63,10 +64,6 @@ struct
   and make' n x xs =
     if n = 0 then xs else make' (n - 1) x (x::xs)
 
-  let rec table n f = table' n f []
-  and table' n f xs =
-    if n = 0 then xs else table' (n - 1) f (f (n - 1) :: xs)
-
   let rec take n xs =
     match n, xs with
     | 0, _ -> []
@@ -78,6 +75,13 @@ struct
     | 0, _ -> xs
     | n, _::xs' when n > 0 -> drop (n - 1) xs'
     | _ -> failwith "drop"
+
+  let rec split n xs = split' n [] xs
+  and split' n xs ys =
+    match n, ys with
+    | 0, _ -> List.rev xs, ys
+    | n, y::ys' when n > 0 -> split' (n - 1) (y::xs) ys'
+    | _ -> failwith "split"
 
   let rec last = function
     | x::[] -> x
@@ -134,6 +138,12 @@ struct
     | n, _::xs' when n > 0l -> nth xs' (Int32.sub n 1l)
     | _ -> failwith "nth"
 
+  let rec replace xs n y =
+    match n, xs with
+    | 0l, _::xs' -> y::xs'
+    | n, x::xs' when n > 0l -> x :: replace xs' (Int32.sub n 1l) y
+    | _ -> failwith "replace"
+
   let rec take n xs =
     match n, xs with
     | 0l, _ -> []
@@ -150,6 +160,15 @@ struct
   and mapi' f i = function
     | [] -> []
     | x::xs -> f i x :: mapi' f (Int32.add i 1l) xs
+
+  let rec index_where p xs = index_where' p xs 0l
+  and index_where' p xs i =
+    match xs with
+    | [] -> None
+    | x::xs' when p x -> Some i
+    | x::xs' -> index_where' p xs' (Int32.add i 1l)
+
+  let index_of x = index_where ((=) x)
 end
 
 module Array32 =
@@ -213,4 +232,16 @@ struct
   let app f = function
     | Some x -> f x
     | None -> ()
+end
+
+module Promise =
+struct
+  type 'a t = 'a option ref
+
+  exception Promise
+
+  let make () = ref None
+  let fulfill p x = if !p = None then p := Some x else raise Promise
+  let value_opt p = !p
+  let value p = match !p with Some x -> x | None -> raise Promise
 end

@@ -1,54 +1,22 @@
-.. index:: instruction, function type, context, value, operand stack, ! polymorphism, ! bottom type
+.. index:: instruction, ! instruction type, context, value, operand stack, ! polymorphism
 .. _valid-instr:
-.. _syntax-stacktype:
-.. _syntax-opdtype:
 
 Instructions
 ------------
 
-:ref:`Instructions <syntax-instr>` are classified by *stack types* :math:`[t_1^\ast] \to [t_2^\ast]` that describe how instructions manipulate the :ref:`operand stack <stack>`.
-
-.. math::
-   \begin{array}{llll}
-   \production{stack type} & \stacktype &::=&
-     [\opdtype^\ast] \to [\opdtype^\ast] \\
-   \production{operand type} & \opdtype &::=&
-     \valtype ~|~ \bot \\
-   \end{array}
-
-The types describe the required input stack with *operand types* :math:`t_1^\ast` that an instruction pops off
+:ref:`Instructions <syntax-instr>` are classified by :ref:`instruction types <syntax-instrtype>` that describe how they manipulate the :ref:`operand stack <stack>` and initialize :ref:`locals <syntax-local>`:
+A type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` describes the required input stack with argument values of types :math:`t_1^\ast` that an instruction pops off
 and the provided output stack with result values of types :math:`t_2^\ast` that it pushes back.
-Stack types are akin to :ref:`function types <syntax-functype>`,
-except that they allow individual operands to be classified as :math:`\bot` (*bottom*), indicating that the type is unconstrained.
-As an auxiliary notion, an operand type :math:`t_1` *matches* another operand type :math:`t_2`, if :math:`t_1` is either :math:`\bot` or equal to :math:`t_2`.
-This is extended to stack types in a point-wise manner.
-
-.. _match-opdtype:
-
-.. math::
-   \frac{
-   }{
-     \vdash t \leq t
-   }
-   \qquad
-   \frac{
-   }{
-     \vdash \bot \leq t
-   }
-
-.. math::
-   \frac{
-     (\vdash t \leq t')^\ast
-   }{
-     \vdash [t^\ast] \leq [{t'}^\ast]
-   }
+Moreover, it enumerates the :ref:`indices <syntax-localidx>` :math:`x^\ast` of locals that have been set by the instruction.
+In most cases, this is empty.
 
 .. note::
    For example, the instruction :math:`\I32.\ADD` has type :math:`[\I32~\I32] \to [\I32]`,
    consuming two |I32| values and producing one.
+   The instruction :math:`\LOCALSET~x` has type :math:`[t] \toX{x} []`, provided :math:`t` is the type declared for the local :math:`x`.
 
 Typing extends to :ref:`instruction sequences <valid-instr-seq>` :math:`\instr^\ast`.
-Such a sequence has a :ref:`stack type <syntax-stacktype>` :math:`[t_1^\ast] \to [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack and pushing new values of types :math:`t_2^\ast`.
+Such a sequence has an instruction type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` if the accumulative effect of executing the instructions is consuming values of types :math:`t_1^\ast` off the operand stack, pushing new values of types :math:`t_2^\ast`, and setting all locals :math:`x^\ast`.
 
 .. _polymorphism:
 
@@ -61,9 +29,8 @@ Two degrees of polymorphism can be distinguished:
   the :ref:`value type <syntax-valtype>` :math:`t` of one or several individual operands is unconstrained.
   That is the case for all :ref:`parametric instructions <valid-instr-parametric>` like |DROP| and |SELECT|.
 
-
 * *stack-polymorphic*:
-  the entire (or most of the) :ref:`stack type <syntax-stacktype>` :math:`[t_1^\ast] \to [t_2^\ast]` of the instruction is unconstrained.
+  the entire (or most of the) :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]` of the instruction is unconstrained.
   That is the case for all :ref:`control instructions <valid-instr-control>` that perform an *unconditional control transfer*, such as |UNREACHABLE|, |BR|, |BRTABLE|, and |RETURN|.
 
 In both cases, the unconstrained types or type sequences can be chosen arbitrarily, as long as they meet the constraints imposed for the surrounding parts of the program.
@@ -81,13 +48,14 @@ In both cases, the unconstrained types or type sequences can be chosen arbitrari
 
    are valid, with :math:`t` in the typing of |SELECT| being instantiated to |I32| or |F64|, respectively.
 
-   The |UNREACHABLE| instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]` for any possible sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+   The |UNREACHABLE| instruction is stack-polymorphic,
+   and hence valid with type :math:`[t_1^\ast] \to [t_2^\ast]` for any possible sequences of value types :math:`t_1^\ast` and :math:`t_2^\ast`.
    Consequently,
 
    .. math::
       \UNREACHABLE~~\I32.\ADD
 
-   is valid by assuming type :math:`[] \to [\I32~\I32]` for the |UNREACHABLE| instruction.
+   is valid by assuming type :math:`[] \to [\I32]` for the |UNREACHABLE| instruction.
    In contrast,
 
    .. math::
@@ -200,32 +168,18 @@ Reference Instructions
 
 .. _valid-ref.null:
 
-:math:`\REFNULL~t`
-..................
+:math:`\REFNULL~\X{ht}`
+.......................
 
-* The instruction is valid with type :math:`[] \to [t]`.
+* The :ref:`heap type <syntax-heaptype>` :math:`\X{ht}` must be :ref:`valid <valid-heaptype>`.
 
-.. math::
-   \frac{
-   }{
-     C \vdashinstr \REFNULL~t : [] \to [t]
-   }
-
-.. note::
-   In future versions of WebAssembly, there may be reference types for which no null reference is allowed.
-
-.. _valid-ref.is_null:
-
-:math:`\REFISNULL`
-..................
-
-* The instruction is valid with type :math:`[t] \to [\I32]`, for any :ref:`reference type <syntax-reftype>` :math:`t`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~\NULL~\X{ht})]`.
 
 .. math::
    \frac{
-     t = \reftype
+     C \vdashheaptype \X{ht} \ok
    }{
-     C \vdashinstr \REFISNULL : [t] \to [\I32]
+     C \vdashinstr \REFNULL~\X{ht} : [] \to [(\REF~\NULL~\X{ht})]
    }
 
 .. _valid-ref.func:
@@ -235,17 +189,47 @@ Reference Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
+* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
+
 * The :ref:`function index <syntax-funcidx>` :math:`x` must be contained in :math:`C.\CREFS`.
 
-* The instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* The instruction is valid with type :math:`[] \to [(\REF~y)]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \functype
+     C.\CFUNCS[x] = y
      \qquad
      x \in C.\CREFS
    }{
-     C \vdashinstr \REFFUNC~x : [] \to [\FUNCREF]
+     C \vdashinstr \REFFUNC~x : [] \to [(\REF~y)]
+   }
+
+.. _valid-ref.is_null:
+
+:math:`\REFISNULL`
+..................
+
+* The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [\I32]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \REFISNULL : [(\REF~\NULL~\X{ht})] \to [\I32]
+   }
+
+.. _valid-ref.as_non_null:
+
+:math:`\REFASNONNULL`
+.....................
+
+* The instruction is valid with type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]`, for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \REFASNONNULL : [(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]
    }
 
 .. index:: vector instruction
@@ -598,17 +582,17 @@ Parametric Instructions
 :math:`\DROP`
 .............
 
-* The instruction is valid with type :math:`[t] \to []`, for any :ref:`operand type <syntax-opdtype>` :math:`t`.
+* The instruction is valid with type :math:`[t] \to []`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t`.
 
 .. math::
    \frac{
+     C \vdashvaltype t \ok
    }{
      C \vdashinstr \DROP : [t] \to []
    }
 
 .. note::
    Both |DROP| and |SELECT| without annotation are :ref:`value-polymorphic <polymorphism>` instructions.
-
 
 
 .. _valid-select:
@@ -618,22 +602,27 @@ Parametric Instructions
 
 * If :math:`t^\ast` is present, then:
 
+  * The :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` must be :ref:`valid <valid-resulttype>`.
+
   * The length of :math:`t^\ast` must be :math:`1`.
 
   * Then the instruction is valid with type :math:`[t^\ast~t^\ast~\I32] \to [t^\ast]`.
 
 * Else:
 
-  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`operand type <syntax-opdtype>` :math:`t` that :ref:`matches <match-opdtype>` some :ref:`number type <syntax-numtype>` or :ref:`vector type <syntax-vectype>`.
+  * The instruction is valid with type :math:`[t~t~\I32] \to [t]`, for any :ref:`valid <valid-valtype>` :ref:`value type <syntax-valtype>` :math:`t` that :ref:`matches <match-valtype>` some :ref:`number type <syntax-numtype>` or :ref:`vector type <syntax-vectype>`.
 
 .. math::
    \frac{
+     C \vdashresulttype [t] \ok
    }{
      C \vdashinstr \SELECT~t : [t~t~\I32] \to [t]
    }
    \qquad
    \frac{
-     \vdash t \leq \numtype
+     C \vdashresulttype [t] \ok
+     \qquad
+     C \vdashresulttypematch [t] \matchesresulttype [\numtype]
    }{
      C \vdashinstr \SELECT : [t~t~\I32] \to [t]
    }
@@ -663,13 +652,15 @@ Variable Instructions
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
+* Let :math:`\init~t` be the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]`.
+
+* The :ref:`initialization status <syntax-init>` :math:`\init` must be :math:`\SET`.
 
 * Then the instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
-     C.\CLOCALS[x] = t
+     C.\CLOCALS[x] = \SET~t
    }{
      C \vdashinstr \LOCALGET~x : [] \to [t]
    }
@@ -682,15 +673,15 @@ Variable Instructions
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
+* Let :math:`\init~t` be the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]`.
 
-* Then the instruction is valid with type :math:`[t] \to []`.
+* Then the instruction is valid with type :math:`[t] \toX{x} []`.
 
 .. math::
    \frac{
-     C.\CLOCALS[x] = t
+     C.\CLOCALS[x] = \init~t
    }{
-     C \vdashinstr \LOCALSET~x : [t] \to []
+     C \vdashinstr \LOCALSET~x : [t] \toX{x} []
    }
 
 
@@ -701,15 +692,15 @@ Variable Instructions
 
 * The local :math:`C.\CLOCALS[x]` must be defined in the context.
 
-* Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`C.\CLOCALS[x]`.
+* Let :math:`\init~t` be the :ref:`local type <syntax-localtype>` :math:`C.\CLOCALS[x]`.
 
-* Then the instruction is valid with type :math:`[t] \to [t]`.
+* Then the instruction is valid with type :math:`[t] \toX{x} [t]`.
 
 .. math::
    \frac{
-     C.\CLOCALS[x] = t
+     C.\CLOCALS[x] = \init~t
    }{
-     C \vdashinstr \LOCALTEE~x : [t] \to [t]
+     C \vdashinstr \LOCALTEE~x : [t] \toX{x} [t]
    }
 
 
@@ -867,15 +858,17 @@ Table Instructions
 
 * Let :math:`\limits_2~t_2` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[y]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
+* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits_1~t
+     C.\CTABLES[x] = \limits_1~t_1
      \qquad
-     C.\CTABLES[y] = \limits_2~t
+     C.\CTABLES[y] = \limits_2~t_2
+     \qquad
+     C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
      C \vdashinstr \TABLECOPY~x~y : [\I32~\I32~\I32] \to []
    }
@@ -894,15 +887,17 @@ Table Instructions
 
 * Let :math:`t_2` be the :ref:`reference type <syntax-reftype>` :math:`C.\CELEMS[y]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t_1` must be the same as :math:`t_2`.
+* The :ref:`reference type <syntax-reftype>` :math:`t_2` must :ref:`match <match-reftype>` :math:`t_1`.
 
 * Then the instruction is valid with type :math:`[\I32~\I32~\I32] \to []`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~t
+     C.\CTABLES[x] = \limits~t_1
      \qquad
-     C.\CELEMS[y] = t
+     C.\CELEMS[y] = t_2
+     \qquad
+     C \vdashreftypematch t_2 \matchesvaltype t_1
    }{
      C \vdashinstr \TABLEINIT~x~y : [\I32~\I32~\I32] \to []
    }
@@ -1262,10 +1257,11 @@ Control Instructions
 :math:`\UNREACHABLE`
 ....................
 
-* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
+     C \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
    }{
      C \vdashinstr \UNREACHABLE : [t_1^\ast] \to [t_2^\ast]
    }
@@ -1279,7 +1275,7 @@ Control Instructions
 :math:`\BLOCK~\blocktype~\instr^\ast~\END`
 ..........................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
@@ -1306,7 +1302,7 @@ Control Instructions
 :math:`\LOOP~\blocktype~\instr^\ast~\END`
 .........................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-functype>` :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^\ast]` prepended to the |CLABELS| vector.
 
@@ -1333,7 +1329,7 @@ Control Instructions
 :math:`\IF~\blocktype~\instr_1^\ast~\ELSE~\instr_2^\ast~\END`
 .............................................................
 
-* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`function type <syntax-functype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
+* The :ref:`block type <syntax-blocktype>` must be :ref:`valid <valid-blocktype>` as some :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
 
@@ -1369,11 +1365,13 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
      C.\CLABELS[l] = [t^\ast]
+     \qquad
+     C \vdashinstrtype [t_1^\ast~t^\ast] \to [t_2^\ast] \ok
    }{
      C \vdashinstr \BR~l : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
@@ -1417,20 +1415,22 @@ Control Instructions
 * For all :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
-* There must be a sequence :math:`t^\ast` of :ref:`operand types <syntax-opdtype>`, such that:
+* There must be a sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`, such that:
 
-  * For each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{Nj}` in :math:`C.\CLABELS[l_N]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{Nj}`.
+  * The result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_N]`.
 
   * For all :math:`l_i` in :math:`l^\ast`,
-    and for each :ref:`operand type <syntax-opdtype>` :math:`t_j` in :math:`t^\ast` and corresponding type :math:`t'_{ij}` in :math:`C.\CLABELS[l_i]`, :math:`t_j` :ref:`matches <match-opdtype>` :math:`t'_{ij}`.
+    the result type :math:`[t^\ast]` :ref:`matches <match-resulttype>` :math:`C.\CLABELS[l_i]`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`, for any sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast~t^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     (\vdash [t^\ast] \leq C.\CLABELS[l])^\ast
+     (C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l])^\ast
      \qquad
-     \vdash [t^\ast] \leq C.\CLABELS[l_N]
+     C \vdashresulttypematch [t^\ast] \matchesresulttype C.\CLABELS[l_N]
+     \qquad
+     C \vdashinstrtype [t_1^\ast~t^\ast~\I32] \to [t_2^\ast] \ok
    }{
      C \vdashinstr \BRTABLE~l^\ast~l_N : [t_1^\ast~t^\ast~\I32] \to [t_2^\ast]
    }
@@ -1439,6 +1439,56 @@ Control Instructions
    The :ref:`label index <syntax-labelidx>` space in the :ref:`context <context>` :math:`C` contains the most recent label first, so that :math:`C.\CLABELS[l_i]` performs a relative lookup as expected.
 
    The |BRTABLE| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+   Furthermore, the :ref:`result type <syntax-resulttype>` :math:`[t^\ast]` is also chosen non-deterministically in this rule.
+   Although it may seem necessary to compute :math:`[t^\ast]` as the greatest lower bound of all label types in practice,
+   a simple :ref:`linear algorithm <algo-valid>` does not require this.
+
+
+.. _valid-br_on_null:
+
+:math:`\BRONNULL~l`
+...................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+
+* Then the instruction is valid with type :math:`[t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast~(\REF~\X{ht})]` for any :ref:`valid <valid-heaptype>` :ref:`heap type <syntax-heaptype>` :math:`\X{ht}`.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = [t^\ast]
+     \qquad
+     C \vdashheaptype \X{ht} \ok
+   }{
+     C \vdashinstr \BRONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast~(\REF~\X{ht})]
+   }
+
+
+.. _valid-br_on_non_null:
+
+:math:`\BRONNONNULL~l`
+......................
+
+* The label :math:`C.\CLABELS[l]` must be defined in the context.
+
+* Let :math:`[{t'}^\ast]` be the :ref:`result type <syntax-resulttype>` :math:`C.\CLABELS[l]`.
+
+* The result type :math:`[{t'}^\ast]` must contain at least one type.
+
+* Let the :ref:`value type <syntax-valtype>` :math:`t_l` be the last element in the sequence :math:`{t'}^\ast`, and :math:`[t^\ast]` the remainder of the sequence preceding it.
+
+* The value type :math:`t_l` must be a reference type of the form :math:`\REF~\NULL^?~\X{ht}`.
+
+* Then the instruction is valid with type :math:`[t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]`.
+
+.. math::
+   \frac{
+     C.\CLABELS[l] = [t^\ast~(\REF~\X{ht})]
+   }{
+     C \vdashinstr \BRONNONNULL~l : [t^\ast~(\REF~\NULL~\X{ht})] \to [t^\ast]
+   }
 
 
 .. _valid-return:
@@ -1450,11 +1500,13 @@ Control Instructions
 
 * Let :math:`[t^\ast]` be the :ref:`result type <syntax-resulttype>` of :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_1^\ast~t^\ast] \to [t_2^\ast]`, for any sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
      C.\CRETURN = [t^\ast]
+     \qquad
+     C \vdashinstrtype [t_1^\ast~t^\ast] \to [t_2^\ast] \ok
    }{
      C \vdashinstr \RETURN : [t_1^\ast~t^\ast] \to [t_2^\ast]
    }
@@ -1474,13 +1526,38 @@ Control Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Then the instruction is valid with type :math:`C.\CFUNCS[x]`.
+* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
+
+* Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
+
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
+     C.\CTYPES[C.\CFUNCS[x]] = [t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashinstr \CALL~x : [t_1^\ast] \to [t_2^\ast]
+   }
+
+
+.. _valid-call_ref:
+
+:math:`\CALLREF~x`
+..................
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* Then the instruction is valid with type :math:`[t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
+   }{
+     C \vdashinstr \CALLREF~x : [t_1^\ast~(\REF~\NULL~x)] \to [t_2^\ast]
    }
 
 
@@ -1493,19 +1570,21 @@ Control Instructions
 
 * Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`t` must be |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type :math:`\REF~\NULL~\FUNC`.
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast~\I32] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
+     C.\CTABLES[x] = \limits~t
      \qquad
-     C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
+     C \vdashvaltypematch t \matchesreftype \REF~\NULL~\FUNC
+     \qquad
+     C.\CTYPES[y] = [t_1^\ast] \toF [t_2^\ast]
    }{
      C \vdashinstr \CALLINDIRECT~x~y : [t_1^\ast~\I32] \to [t_2^\ast]
    }
@@ -1520,23 +1599,45 @@ Control Instructions
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CFUNCS[x]`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CFUNCS[x]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
-* Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type :math:`[t_3^\ast~t_1^\ast] \to [t_4^\ast]`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = [t_1^\ast] \to [t_2^\ast]
-     \qquad
-     C.\CRETURN = [t_2^\ast]
+     C.\CFUNCS[x] = [t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \RETURNCALL~x : [t_3^\ast~t_1^\ast] \to [t_4^\ast]
    }
 
 .. note::
    The |RETURNCALL| instruction is :ref:`stack-polymorphic <polymorphism>`.
+
+
+.. _valid-return_call_ref:
+
+:math:`\RETURNCALLREF~x`
+........................
+
+* The type :math:`C.\CTYPES[x]` must be defined in the context.
+
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
+
+* Then the instruction is valid with any :ref:`valid <valid-instrtype>` type :math:`[t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]`.
+
+.. math::
+   \frac{
+     C.\CTYPES[x] = [t_1^\ast] \toF C.\CRETURN
+   }{
+     C \vdashinstr \CALLREF~x : [t_3^\ast~t_1^\ast~(\REF~\NULL~x)] \to [t_4^\ast]
+   }
+
+.. note::
+   The |RETURNCALLREF| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
 .. _valid-return_call_indirect:
@@ -1548,26 +1649,25 @@ Control Instructions
 
 * The table :math:`C.\CTABLES[x]` must be defined in the context.
 
-* Let :math:`\limits~\reftype` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
+* Let :math:`\limits~t` be the :ref:`table type <syntax-tabletype>` :math:`C.\CTABLES[x]`.
 
-* The :ref:`reference type <syntax-reftype>` :math:`\reftype` must be |FUNCREF|.
+* The :ref:`reference type <syntax-reftype>` :math:`t` must :ref:`match <match-reftype>` type :math:`\REF~\NULL~\FUNC`.
 
 * The type :math:`C.\CTYPES[y]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[y]`.
 
 * The :ref:`result type <syntax-resulttype>` :math:`[t_2^\ast]` must be the same as :math:`C.\CRETURN`.
 
 * Then the instruction is valid with type :math:`[t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_3^\ast` and :math:`t_4^\ast`.
 
-
 .. math::
    \frac{
-     C.\CTABLES[x] = \limits~\FUNCREF
+     C.\CTABLES[x] = \limits~t
      \qquad
-     C.\CTYPES[y] = [t_1^\ast] \to [t_2^\ast]
+     C \vdashvaltypematch t \matchesreftype \REF~\NULL~\FUNC
      \qquad
-     C.\CRETURN = [t_2^\ast]
+     C.\CTYPES[y] = [t_1^\ast] \toF C.\CRETURN
    }{
      C \vdashinstr \RETURNCALLINDIRECT~x~y : [t_3^\ast~t_1^\ast~\I32] \to [t_4^\ast]
    }
@@ -1576,7 +1676,7 @@ Control Instructions
    The |RETURNCALLINDIRECT| instruction is :ref:`stack-polymorphic <polymorphism>`.
 
 
-.. index:: instruction, instruction sequence
+.. index:: instruction, instruction sequence, local type
 .. _valid-instr-seq:
 
 Instruction Sequences
@@ -1588,42 +1688,82 @@ Typing of instruction sequences is defined recursively.
 Empty Instruction Sequence: :math:`\epsilon`
 ............................................
 
-* The empty instruction sequence is valid with type :math:`[t^\ast] \to [t^\ast]`,
-  for any sequence of :ref:`operand types <syntax-opdtype>` :math:`t^\ast`.
+* The empty instruction sequence is valid with type :math:`[] \to []`.
 
 .. math::
    \frac{
    }{
-     C \vdashinstrseq \epsilon : [t^\ast] \to [t^\ast]
+     C \vdashinstrseq \epsilon : [] \to []
    }
 
 
-Non-empty Instruction Sequence: :math:`\instr^\ast~\instr_N`
-............................................................
+Non-empty Instruction Sequence: :math:`\instr~{\instr'}^\ast`
+.............................................................
 
-* The instruction sequence :math:`\instr^\ast` must be valid with type :math:`[t_1^\ast] \to [t_2^\ast]`,
-  for some sequences of :ref:`operand types <syntax-opdtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction :math:`\instr` must be valid with some type :math:`[t_1^\ast] \toX{x_1^\ast} [t_2^\ast]`.
 
-* The instruction :math:`\instr_N` must be valid with type :math:`[t^\ast] \to [t_3^\ast]`,
-  for some sequences of :ref:`operand types <syntax-opdtype>` :math:`t^\ast` and :math:`t_3^\ast`.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`,
+  but with:
 
-* There must be a sequence of :ref:`operand types <syntax-opdtype>` :math:`t_0^\ast`,
-  such that :math:`t_2^\ast = t_0^\ast~{t'}^\ast` where the type sequence :math:`{t'}^\ast` is as long as :math:`t^\ast`.
+  * |CLOCALS| the same as in C, except that for every :ref:`local index <syntax-localidx>` :math:`x` in :math:`x_1^\ast`, the :ref:`local type <syntax-localtype>` :math:`\CLOCALS[x]` has been updated to :ref:`initialization status <syntax-init>` :math:`\SET`.
 
-* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding type :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
+* Under the context :math:`C'`, the instruction sequence :math:`{\instr'}^\ast` must be valid with some type :math:`[t_2^\ast] \toX{x_2^\ast} [t_3^\ast]`.
 
-* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \to [t_0^\ast~t_3^\ast]`.
+* Then the combined instruction sequence is valid with type :math:`[t_1^\ast] \toX{x_1^\ast x_2^\ast} [t_3^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_0^\ast~{t'}^\ast]
-     \qquad
-     \vdash [{t'}^\ast] \leq [t^\ast]
-     \qquad
-     C \vdashinstr \instr_N : [t^\ast] \to [t_3^\ast]
+     \begin{array}{@{}l@{\qquad}l@{}}
+     C \vdashinstr \instr : [t_1^\ast] \toX{x_1^\ast} [t_2^\ast]
+     &
+     (C.\CLOCALS[x_1] = \init~t)^\ast
+     \\
+     C' \vdashinstrseq {\instr'}^\ast : [t_2^\ast] \toX{x_2^\ast} [t_3^\ast]
+     &
+     C' = C~(\with C.\CLOCALS[x_1] = \SET~t)^\ast
+     \end{array}
    }{
-     C \vdashinstrseq \instr^\ast~\instr_N : [t_1^\ast] \to [t_0^\ast~t_3^\ast]
+     C \vdashinstrseq \instr~{\instr'}^\ast : [t_1^\ast] \toX{x_1^\ast x_2^\ast} [t_2^\ast~t_3^\ast]
    }
+
+
+Subsumption for :math:`\instr^\ast`
+...................................
+
+* The instruction sequence :math:`\instr^\ast` must be valid with some type :math:`\instrtype`.
+
+* The instruction type :math:`\instrtype'`: must be a :ref:`valid <valid-instrtype>`
+
+* The instruction type :math:`\instrtype` must :ref:`match <match-instrtype>` the type :math:`\instrtype'`.
+
+* Then the instruction sequence :math:`\instr^\ast` is also valid with type :math:`\instrtype'`.
+
+.. math::
+   \frac{
+     \begin{array}{@{}c@{}}
+     C \vdashinstr \instr : \instrtype
+     \qquad
+     C \vdashinstrtype \instrtype' \ok
+     \qquad
+     C \vdashinstrtypematch \instrtype \matchesinstrtype \instrtype'
+     \end{array}
+   }{
+     C \vdashinstrseq \instr^\ast : \instrtype'
+   }
+
+.. note::
+   In combination with the previous rule,
+   subsumption allows to compose instructions whose types would not directly fit otherwise.
+   For example, consider the instruction sequence
+
+   .. math::
+      (\I32.\CONST~1)~(\I32.\CONST~1)~\I32.\ADD
+
+   To type this sequence, its subsequence :math:`(\I32.\CONST~1)~\I32.\ADD` needs to be valid with an intermediate type.
+   But the direct type of :math:`(\I32.\CONST~1)` is :math:`[] \to [\I32]`, not matching the two inputs expected by :math:`\I32.\ADD`.
+   The subsumption rule allows to weaken the type of :math:`(\I32.\CONST~1)` to the supertype :math:`[\I32] \to [\I32~\I32]`, such that it can be composed with :math:`\I32.\ADD` and yields the intermediate type :math:`[\I32] \to [\I32]` for the subsequence. That can in turn be composed with the first constant.
+
+   Furthermore, subsumption allows to drop init variables :math:`x^\ast` from the instruction type in a context where they are not needed, for example, at the end of the body of a :ref:`block <valid-block>`.
 
 
 .. index:: expression, result type
@@ -1641,17 +1781,13 @@ Expressions :math:`\expr` are classified by :ref:`result types <syntax-resulttyp
 :math:`\instr^\ast~\END`
 ........................
 
-* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some :ref:`stack type <syntax-stacktype>` :math:`[] \to [{t'}^\ast]`.
-
-* For each :ref:`operand type <syntax-opdtype>` :math:`t'_i` in :math:`{t'}^\ast` and corresponding :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t^\ast`, :math:`t'_i` :ref:`matches <match-opdtype>` :math:`t_i`.
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with :ref:`type <syntax-instrtype>` :math:`[] \to [t^\ast]`.
 
 * Then the expression is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`.
 
 .. math::
    \frac{
-     C \vdashinstrseq \instr^\ast : [] \to [{t'}^\ast]
-     \qquad
-     \vdash [{t'}^\ast] \leq [t^\ast]
+     C \vdashinstrseq \instr^\ast : [] \to [t^\ast]
    }{
      C \vdashexpr \instr^\ast~\END : [t^\ast]
    }

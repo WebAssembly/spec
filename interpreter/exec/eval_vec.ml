@@ -1,5 +1,5 @@
-open Types
-open Values
+open Pack
+open Value
 
 module V128Op =
 struct
@@ -281,7 +281,7 @@ struct
     | F32x4 (Extract (i, ())) -> F32 (V128.F32x4.extract_lane i v128)
     | F64x2 (Extract (i, ())) -> F64 (V128.F64x2.extract_lane i v128)
 
-  let replaceop (op : replaceop) v (n : Values.num) =
+  let replaceop (op : replaceop) v (n : num) =
     let v128 = of_vec 1 v in
     let v128' = match op with
       | I8x16 (Replace i) -> V128.I8x16.replace_lane i v128 (I32Num.of_num 1 n)

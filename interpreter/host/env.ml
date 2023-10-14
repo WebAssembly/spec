@@ -4,8 +4,8 @@
  * we have agreement on what libc should look like.
  *)
 
-open Values
 open Types
+open Value
 open Instance
 
 
@@ -13,8 +13,8 @@ let error msg = raise (Eval.Crash (Source.no_region, msg))
 
 let type_error v t =
   error
-    ("type error, expected " ^ string_of_value_type t ^
-     ", got " ^ string_of_value_type (type_of_value v))
+    ("type error, expected " ^ string_of_val_type t ^
+     ", got " ^ string_of_val_type (type_of_value v))
 
 let empty = function
   | [] -> ()
@@ -27,7 +27,7 @@ let single = function
 
 let int = function
   | Num (I32 i) -> Int32.to_int i
-  | v -> type_error v (NumType I32Type)
+  | v -> type_error v (NumT I32T)
 
 
 let abort vs =
@@ -39,8 +39,8 @@ let exit vs =
   exit (int (single vs))
 
 
-let lookup name t =
-  match Utf8.encode name, t with
-  | "abort", ExternFuncType t -> ExternFunc (Func.alloc_host t abort)
-  | "exit", ExternFuncType t -> ExternFunc (Func.alloc_host t exit)
+let lookup name et =
+  match Utf8.encode name, et with
+  | "abort", ExternFuncT ft -> ExternFunc (Func.alloc_host ft abort)
+  | "exit", ExternFuncT ft -> ExternFunc (Func.alloc_host ft exit)
   | _ -> raise Not_found

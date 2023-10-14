@@ -1100,7 +1100,7 @@
     "\02"                                   ;; break depth for default
     "\0b\0b\0b"                             ;; end
   )
-  "unexpected end"
+  "unexpected end of section or function"
 )
 
 ;; Start section

@@ -33,4 +33,5 @@ val start : Ast.start -> t
 
 val module_ : Ast.module_ -> t
 
+val opt : ('a -> t) -> 'a option -> t
 val list : ('a -> t) -> 'a list -> t
