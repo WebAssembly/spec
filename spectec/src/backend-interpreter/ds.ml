@@ -84,25 +84,6 @@ module AL_Context = struct
     | h :: _ -> h
     | _ -> failwith "AL context stack underflow"
 
-  (* Environment *)
-  let get_env () =
-    let ctx = get_context () in
-    let env, _, _ = ctx in
-    env
-
-  let lookup name =
-    get_env () |> Env.find name
-
-  let update_env name v =
-    let env, return_value, i = pop_context () in
-    push_context (Env.add name v env, return_value, i)
-
-  (* Return value *)
-  let get_return_value () =
-    let ctx = get_context () in
-    let _, return_value, _ = ctx in
-    return_value
-
   (* Depth *)
 
   let rec decrease_depth () =

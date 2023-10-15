@@ -557,7 +557,7 @@ and interp_instrs (al_context: AL_Context.t) (il: instr list): AL_Context.t =
   | [] -> al_context
   | h :: t ->
     match interp_instr al_context h with
-    | (_, Bot, _) -> interp_instrs al_context t
+    | (_, Bot, _) as new_al_context -> interp_instrs new_al_context t
     | new_al_context -> new_al_context
       
 
@@ -569,7 +569,7 @@ and create_al_context (algo: algorithm) (args: value list) =
   let params = get_param algo in
   assert (List.length params = List.length args);
 
-  (Env.empty, AL_Context.Bot, 0)
+  (Env.add_store Env.empty, AL_Context.Bot, 0)
   |> List.fold_right2 assign params args
 
 and interp_algo (algo: algorithm) (args: value list): AL_Context.return_value =
@@ -584,7 +584,6 @@ and interp_algo (algo: algorithm) (args: value list): AL_Context.return_value =
   return_value
 
 and call_algo (al_context: AL_Context.t) (name: string) (args: value list): AL_Context.return_value =
-  print_endline name;
   (* Push AL context *)
   AL_Context.push_context al_context;
 
