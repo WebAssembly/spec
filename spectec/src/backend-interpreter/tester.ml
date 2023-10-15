@@ -221,11 +221,10 @@ let do_invoke act = match act.it with
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
     ) in
-    Interpreter.cnt := 0;
     Interpreter.init_stack();
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Al.Print.string_of_value args);
 
-    Interpreter.call_toplevel_func "invocation" [funcaddr; args]
+    Interpreter_new.invocation [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let exports = find_export module_name in
@@ -235,7 +234,7 @@ let do_invoke act = match act.it with
 
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
     let got =
-      match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
+      match Array.get (Interpreter_new.value_to_array globals) (Interpreter_new.value_to_int addr) with
       | RecordV r -> Record.find "VALUE" r
       | _ -> failwith "Not a Record"
     in
@@ -328,10 +327,9 @@ let test_assertion assertion =
     begin try
       let al_module = Construct.al_of_module (extract_module def) in
       let externvals = get_externvals al_module in
-      Interpreter.cnt := 0;
       Interpreter.init_stack();
       Printf.eprintf "[Trying instantiating module...]\n";
-      ignore (Interpreter.call_toplevel_func "instantiation" [ al_module ; externvals ]);
+      Interpreter_new.instantiation [ al_module ; externvals ] |> ignore;
 
       fail expected"Module instantiation success"
     with
@@ -343,7 +341,6 @@ let test_assertion assertion =
 let test_module module_name m =
 
   (* Initialize *)
-  Interpreter.cnt := 0;
   Interpreter.init_stack();
 
   try
@@ -354,7 +351,7 @@ let test_module module_name m =
 
     (* Instantiate and store exports *)
     Printf.eprintf "[Instantiating module...]\n";
-    let module_inst = Interpreter.call_toplevel_func "instantiation" [ al_module ; externvals ] in
+    let module_inst = Interpreter_new.instantiation [ al_module ; externvals ] in
 
     (* Store module instance in the register *)
     (match module_name with

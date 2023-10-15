@@ -202,14 +202,14 @@ let () =
       else
       log "Translating to AL...";
       let al = Backend_interpreter.(
-        ( Translate.translate il @ Manual.manual_algos ) |> List.map Transpile.app_remover
+        Translate.translate il @ Manual.manual_algos
       ) in
       if !print_al then
         List.iter (fun algo -> Al.Print.string_of_algorithm algo |> print_endline) al;
       (*log "AL Validation...";
       Backend_interpreter.Validation.valid al;*)
       log "Initializing AL interprter with generated AL...";
-      Backend_interpreter.Interpreter.init al;
+      Backend_interpreter.Ds.init al;
       log "Interpreting AL...";
       Backend_interpreter.Tester.test_all ()
     );

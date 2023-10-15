@@ -220,3 +220,11 @@ module Expr = struct
   let iter e names it = IterE (e, names, it)
   let yet s = YetE s
 end
+
+let get_param = function
+  | RuleA (_, params, _) -> params
+  | FuncA (_, params, _) -> params
+
+let get_body = function
+  | RuleA (_, _, body) -> body
+  | FuncA (_, _, body) -> body
