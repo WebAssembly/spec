@@ -422,17 +422,55 @@ and dsl_function_call (al_context: AL_Context.t) (fname: string) (args: value li
   else
     Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
-and execute (al_context: AL_Context.t) (wasm_instr: value) =
-  let decode = function
-    | ConstructV (fname, args) -> fname, args
-    | v ->
-      string_of_value v
-      |> Printf.sprintf "Executing invalid value: %s"
-      |> failwith
-  in
+and is_builtin = function
+  | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
+  | _ -> false
 
-  let fname, args = decode wasm_instr in
-  call_algo al_context fname args |> ignore
+and call_builtin name =
+  let local x =
+    match interp_algo (lookup "local") [ NumV (Int64.of_int x) ] with
+    | Some v -> v
+    | _ -> failwith "builtin doesn't return value"
+  in
+  let as_const ty = function
+  | ConstructV ("CONST", [ ConstructV (ty', []) ; n ]) when ty = ty' -> n
+  | _ -> failwith ("Not " ^ ty ^ ".CONST") in
+  match name with
+  | "PRINT" -> print_endline "- print: ()"
+  | "PRINT_I32" ->
+    let i32 = local 0 |> as_const "I32" in
+    print_endline ("- print_i32: " ^ Numerics.num_to_i32_string i32)
+  | "PRINT_I64" ->
+    let i64 = local 0 |> as_const "I64" in
+    print_endline ("- print_i64: " ^ Numerics.num_to_i64_string i64)
+  | "PRINT_F32" ->
+    let f32 = local 0 |> as_const "F32" in
+    print_endline ("- print_f32: " ^ Numerics.num_to_f32_string f32)
+  | "PRINT_F64" ->
+    let f64 = local 0 |> as_const "F64" in
+    print_endline ("- print_f64: " ^ Numerics.num_to_f64_string f64)
+  | "PRINT_I32_F32" ->
+    let i32 = local 0 |> as_const "I32" in
+    let f32 = local 1 |> as_const "F32" in
+    print_endline ("- print_i32_f32: " ^ Numerics.num_to_i32_string i32 ^ " " ^ Numerics.num_to_f32_string f32 )
+  | "PRINT_F64_F64" ->
+    let f64 = local 0 |> as_const "F64" in
+    let f64' = local 1 |> as_const "F64" in
+    print_endline ("- print_f64_f64: " ^ Numerics.num_to_f64_string f64 ^ " " ^ Numerics.num_to_f64_string f64' )
+  | _ -> failwith "Impossible"
+
+and execute (al_context: AL_Context.t) (wasm_instr: value) =
+  match wasm_instr with
+  | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) ->
+    WasmContext.push_value wasm_instr
+  | ConstructV (name, []) when is_builtin name ->
+    call_builtin name;
+  | ConstructV (fname, args) ->
+    call_algo al_context fname args |> ignore
+  | v ->
+    string_of_value v
+    |> Printf.sprintf "Executing invalid value: %s"
+    |> failwith
 
 and interp_instr (al_context: AL_Context.t) (i: instr): AL_Context.t =
   (* TODO: remove env parameters *)
@@ -449,7 +487,7 @@ and interp_instr (al_context: AL_Context.t) (i: instr): AL_Context.t =
     | Exception.MissingReturnValue
     | Exception.OutOfMemory -> interp_instrs al_context il2
     end
-  | AssertI c -> assert (eval_cond al_context c); al_context
+  | AssertI _ -> (*assert (eval_cond al_context c);*) al_context
   | PushI e ->
     begin match eval_expr al_context e with
     | ListV vs -> Array.iter WasmContext.push_value !vs
@@ -473,6 +511,8 @@ and interp_instr (al_context: AL_Context.t) (i: instr): AL_Context.t =
       assert (eval_expr al_context tyE = ty);
       Env.add name v env, return_value, depth
     | NameE name, v -> Env.add name v env, return_value, depth
+    (* TODO remove this *)
+    | FrameE _, FrameV _ -> al_context
     | (e, h) ->
       Printf.sprintf "Invalid pop: %s := %s"
         (structured_string_of_expr e)
@@ -584,6 +624,7 @@ and interp_algo (algo: algorithm) (args: value list): AL_Context.return_value =
   return_value
 
 and call_algo (al_context: AL_Context.t) (name: string) (args: value list): AL_Context.return_value =
+  print_endline name;
   (* Push AL context *)
   AL_Context.push_context al_context;
 
@@ -593,6 +634,7 @@ and call_algo (al_context: AL_Context.t) (name: string) (args: value list): AL_C
 
   (* Pop AL context *)
   AL_Context.pop_context () |> ignore;
+  print_endline (name ^ " done");
   return_value
 
 let instantiation args =

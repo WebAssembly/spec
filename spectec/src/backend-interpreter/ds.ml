@@ -100,7 +100,7 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let context_stack: t list ref = ref []
+  let context_stack: t list ref = ref [ConstructV ("Frame", []), [], []]
 
   let get_context () =
     match !context_stack with
@@ -112,7 +112,7 @@ module WasmContext = struct
   let pop_context () =
     match !context_stack with
     | h :: t -> context_stack := t; h
-    | _ -> failwith "AL context stack underflow"
+    | _ -> failwith "Wasm context stack underflow"
 
   (* Value stack *)
 
@@ -128,5 +128,13 @@ module WasmContext = struct
     let v_ctx, vs, vs_instr = pop_context () in
     match vs with
     | h :: t -> push_context (v_ctx, t, vs_instr); h
+    | _ -> failwith "Wasm value stack underflow"
+
+  (* Instr stack *)
+
+  let pop_instr () =
+    let v_ctx, vs, vs_instr = pop_context () in
+    match vs_instr with
+    | h :: t -> push_context (v_ctx, vs, t); h
     | _ -> failwith "Wasm value stack underflow"
 end
