@@ -675,18 +675,16 @@ execution_of_BLOCK bt instr*
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
 4. Let L be the label_n{[]}.
-5. Push L to the stack.
-6. Push val^k to the stack.
-7. Jump to instr*.
+5. Enter L with label instr* ++ [LABEL_]:
+  a. Push val^k to the stack.
 
 execution_of_LOOP bt instr*
 1. Let [t_1^k]->[t_2^n] be bt.
 2. Assert: Due to validation, there are at least k values on the top of the stack.
 3. Pop val^k from the stack.
 4. Let L be the label_k{[(LOOP bt instr*)]}.
-5. Push L to the stack.
-6. Push val^k to the stack.
-7. Jump to instr*.
+5. Enter L with label instr* ++ [LABEL_]:
+  a. Push val^k to the stack.
 
 execution_of_IF bt instr_1* instr_2*
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -700,7 +698,8 @@ execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
 3. Pop the label from the stack.
-4. Push val* to the stack.
+4. Exit current context.
+5. Push val* to the stack.
 
 execution_of_BR x_0
 1. Let L be the current label.
@@ -741,7 +740,8 @@ execution_of_FRAME_
 4. Pop val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
 6. Pop the frame from the stack.
-7. Push val^n to the stack.
+7. Exit current context.
+8. Push val^n to the stack.
 
 execution_of_RETURN
 1. If the current context is frame, then:
@@ -850,10 +850,10 @@ execution_of_CALL_ADDR a
 6. Assert: Due to validation, there are at least k values on the top of the stack.
 7. Pop val^k from the stack.
 8. Let f be { LOCAL: val^k ++ $default_(t)*; MODULE: m; }.
-9. Push the activation of f with arity n to the stack.
-10. Let L be the label_n{[]}.
-11. Push L to the stack.
-12. Jump to instr*.
+9. Let F be the activation of f with arity n.
+10. Enter F with label [FRAME_]:
+  a. Let L be the label_n{[]}.
+  b. Enter L with label instr*:
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.
