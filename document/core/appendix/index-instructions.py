@@ -335,7 +335,7 @@ INSTRUCTIONS = [
     Instruction(r'\ARRAYGETS~x', r'\hex{FB}~\hex{0C}', r'[(\REF~\NULL~x)~\I32] \to [\I32]', r'valid-array.get', r'exec-array.get'),
     Instruction(r'\ARRAYGETU~x', r'\hex{FB}~\hex{0D}', r'[(\REF~\NULL~x)~\I32] \to [\I32]', r'valid-array.get', r'exec-array.get'),
     Instruction(r'\ARRAYSET~x', r'\hex{FB}~\hex{0E}', r'[(\REF~\NULL~x)~\I32~t] \to []', r'valid-array.set', r'exec-array.set'),
-    Instruction(r'\ARRAYLEN', r'\hex{FB}~\hex{0F}', r'[\ARRAYREF] \to [\I32]', r'valid-array.len', r'exec-array.len'),
+    Instruction(r'\ARRAYLEN', r'\hex{FB}~\hex{0F}', r'[(\REF~\NULL~\ARRAY)] \to [\I32]', r'valid-array.len', r'exec-array.len'),
     Instruction(r'\ARRAYFILL~x', r'\hex{FB}~\hex{10}', r'[(\REF~\NULL~x)~\I32~t~\I32] \to []', r'valid-array.fill', r'exec-array.fill'),
     Instruction(r'\ARRAYCOPY~x~y', r'\hex{FB}~\hex{11}', r'[(\REF~\NULL~x)~\I32~(\REF~\NULL~y)~\I32~\I32] \to []', r'valid-array.copy', r'exec-array.copy'),
     Instruction(r'\ARRAYINITDATA~x~y', r'\hex{FB}~\hex{12}', r'[(\REF~\NULL~x)~\I32~\I32~\I32] \to []', r'valid-array.init_data', r'exec-array.init_data'),
