@@ -464,9 +464,8 @@ and execute (wasm_instr: value): unit =
     |> Printf.sprintf "Executing invalid value: %s"
     |> failwith
 
-and interp_instr (env: env) (i: instr): env =
-  string_of_instr (ref 0) 0 i |> print_endline;
-  match i with
+and interp_instr (env: env) (instr: instr): env =
+  match instr with
   (* Block instruction *)
   | IfI (c, il1, il2) ->
     if eval_cond env c then
@@ -553,8 +552,6 @@ and interp_instr (env: env) (i: instr): env =
       WasmContext.pop_instr () |> execute;
       if AL_Context.get_depth () > 0 then
         cleanup ()
-      else
-        ()
     in
 
     (* NOTE: doesn't have variable scope *)

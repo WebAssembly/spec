@@ -86,6 +86,10 @@ module AL_Context = struct
     | h :: _ -> h
     | _ -> failwith "AL context stack underflow"
 
+  let get_name () =
+    let name, _, _ = get_context () in
+    name
+
   (* Return value *)
   let set_return_value v =
     let name, return_value, depth = pop_context () in
@@ -103,16 +107,17 @@ module AL_Context = struct
     depth
 
   let increase_depth () =
-    let env, return_value, depth = pop_context () in
-    push_context (env, return_value, depth + 1)
+    let name, return_value, depth = pop_context () in
+    push_context (name, return_value, depth + 1)
 
   let rec decrease_depth () =
-    let env, return_value, depth = pop_context () in
+    let name, return_value, depth = pop_context () in
     if depth > 0 then
-      push_context (env, return_value, depth - 1)
-    else
+      push_context (name, return_value, depth - 1)
+    else (
       decrease_depth ();
-      push_context (env, return_value, depth)
+      push_context (name, return_value, depth)
+    )
 
 end
 
