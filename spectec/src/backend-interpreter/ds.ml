@@ -145,6 +145,10 @@ module WasmContext = struct
     | _ -> failwith "Wasm context stack underflow"
 
   (* Context *)
+  let get_current_context () =
+    let ctx, _, _ = get_context () in
+    ctx
+
   let get_current_frame () =
     let rec get_current_frame' n =
       match get_nth_context n with
@@ -152,6 +156,14 @@ module WasmContext = struct
       | _ -> get_current_frame' (n+1)
     in
     get_current_frame' 0
+
+  let get_current_label () =
+    let rec get_current_label' n =
+      match get_nth_context n with
+      | (LabelV _ as l, _, _) -> l
+      | _ -> get_current_label' (n+1)
+    in
+    get_current_label' 0
 
   (* Value stack *)
 

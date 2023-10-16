@@ -223,13 +223,13 @@ and eval_expr env expr =
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       LabelV (v1, v2)
-  (*| GetCurLabelE -> get_current_label ()
-  | GetCurContextE -> get_current_context ()
+  | GetCurLabelE -> WasmContext.get_current_label ()
+  | GetCurContextE -> WasmContext.get_current_context ()
   | ContE e -> (
       let v = eval_expr env e in
       match v with
       | LabelV (_, vs) -> vs
-      | _ -> failwith "Not a label") *)
+      | _ -> failwith "Not a label")
   | NameE name -> Env.find name env
   | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
       Env.find name env
