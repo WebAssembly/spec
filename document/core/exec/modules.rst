@@ -798,6 +798,8 @@ Once the function has returned, the following steps are executed:
 
 2. Pop :math:`\val_{\F{res}}^m` from the stack.
 
+3. Pop the frame :math:`F` from the stack.
+
 The values :math:`\val_{\F{res}}^m` are returned as the results of the invocation.
 
 .. math::
