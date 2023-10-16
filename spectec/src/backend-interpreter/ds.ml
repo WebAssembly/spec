@@ -120,12 +120,17 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let context_stack: t list ref = ref [ConstructV ("Frame", []), [], []]
+  let context_stack: t list ref = ref []
 
   let get_context () =
     match !context_stack with
     | h :: _ -> h
     | _ -> failwith "Wasm context stack underflow"
+
+  let get_nth_context n =
+    match List.nth_opt !context_stack n with
+    | Some ctx -> ctx
+    | None -> failwith "Wasm context stack underflow"
 
   let push_context ctx = context_stack := ctx :: !context_stack
 
@@ -133,6 +138,15 @@ module WasmContext = struct
     match !context_stack with
     | h :: t -> context_stack := t; h
     | _ -> failwith "Wasm context stack underflow"
+
+  (* Context *)
+  let get_current_frame () =
+    let rec get_current_frame' n =
+      match get_nth_context n with
+      | (FrameV _ as f, _, _) -> f
+      | _ -> get_current_frame' (n+1)
+    in
+    get_current_frame' 0
 
   (* Value stack *)
 

@@ -208,7 +208,8 @@ and eval_expr env expr =
       match eval_expr env e with
       | LabelV (v, _) -> v
       | FrameV (Some v, _) -> v
-      | _ -> failwith "Not a label" (* Due to AL validation, unreachable *))
+      | FrameV _ -> NumV 0L
+      | _ -> failwith "Not a context" (* Due to AL validation, unreachable *))
   | FrameE (e1, e2) -> (
       let v1 = Option.map (eval_expr env) e1 in
       let v2 = eval_expr env e2 in
@@ -217,7 +218,7 @@ and eval_expr env expr =
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
-  (*| GetCurFrameE -> get_current_frame () *)
+  | GetCurFrameE -> WasmContext.get_current_frame ()
   | LabelE (e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
@@ -464,6 +465,7 @@ and execute (wasm_instr: value): unit =
     |> failwith
 
 and interp_instr (env: env) (i: instr): env =
+  string_of_instr (ref 0) 0 i |> print_endline;
   match i with
   (* Block instruction *)
   | IfI (c, il1, il2) ->
@@ -547,6 +549,7 @@ and interp_instr (env: env) (i: instr): env =
     AL_Context.increase_depth ();
 
     let rec cleanup () =
+      (* TODO: handle bug *)
       WasmContext.pop_instr () |> execute;
       if AL_Context.get_depth () > 0 then
         cleanup ()
