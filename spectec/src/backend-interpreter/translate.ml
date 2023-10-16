@@ -574,12 +574,21 @@ let rec rulepr2instr pr =
   | Ast.IterPr (pr, (iter, ids)) ->
     begin match rulepr2instr pr with
     | EnterI (ctx, instrs, [ LetI (lhs, rhs) ]) ->
-      EnterI (ctx, instrs, [
-        LetI (
-          IterE (lhs, List.map (fun id -> id.it) ids, iter2iter iter),
-          IterE (rhs, List.map (fun id -> id.it) ids, iter2iter iter)
-        )
-      ])
+      let rec name_of_expr = function
+        | IterE (e, _, _) -> name_of_expr e
+        | NameE n -> n
+        | _ -> failwith "Not a name"
+      in
+      begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
+      | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
+        EnterI (ctx, instrs, [
+          LetI (
+            IterE (lhs, lhs_iter_ids, iter2iter iter),
+            IterE (rhs, rhs_iter_ids, iter2iter iter)
+          )
+        ])
+      | _ -> failwith "Invalid IterPr"
+      end
     | instr ->
       instr
       |> Al.Print.string_of_instr (ref 0) 0
