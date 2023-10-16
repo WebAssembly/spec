@@ -275,7 +275,7 @@ let handle_context_winstr winstr =
         LetI (exp2expr arity, ArityE (exp2expr name));
         insert_assert inner_exp;
         PopI (exp2expr inner_exp);
-        insert_assert winstr; PopI (NameE "the frame");
+        insert_assert winstr;
         ExitAbruptI "F";
       ]
     | _ -> failwith "Invalid frame")
@@ -285,8 +285,7 @@ let handle_context_winstr winstr =
         (* TODO: append Jump instr *)
         PopAllI (exp2expr vals);
         insert_assert winstr;
-        PopI (NameE "the label");
-        ExitAbruptI "F";
+        ExitAbruptI "L";
       ]
   | _ -> []
 

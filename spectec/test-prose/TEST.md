@@ -695,9 +695,8 @@ execution_of_IF bt instr_1* instr_2*
 execution_of_LABEL_
 1. Pop all values val* from the stack.
 2. Assert: Due to validation, a label is now on the top of the stack.
-3. Pop the label from the stack.
-4. Exit current context.
-5. Push val* to the stack.
+3. Exit current context.
+4. Push val* to the stack.
 
 execution_of_BR x_0
 1. Let L be the current label.
@@ -737,9 +736,8 @@ execution_of_FRAME_
 3. Assert: Due to validation, there are at least n values on the top of the stack.
 4. Pop val^n from the stack.
 5. Assert: Due to validation, a frame is now on the top of the stack.
-6. Pop the frame from the stack.
-7. Exit current context.
-8. Push val^n to the stack.
+6. Exit current context.
+7. Push val^n to the stack.
 
 execution_of_RETURN
 1. If the current context is frame, then:
