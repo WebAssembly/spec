@@ -847,7 +847,7 @@ execution_of_CALL_ADDR a
 9. Let F be the activation of f with arity n.
 10. Enter F with label [FRAME_]:
   a. Let L be the label_n{[]}.
-  b. Enter L with label instr*:
+  b. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.

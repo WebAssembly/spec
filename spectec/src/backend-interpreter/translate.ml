@@ -371,12 +371,12 @@ let rec rhs2instrs exp =
       | Ast.CatE (valexp, instrsexp) ->
           [
             LetI (NameE "L", label_expr);
-            EnterI (NameE "L", ConcatE(exp2expr instrsexp, ListE ([ConstructE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
+            EnterI (NameE "L", ConcatE (exp2expr instrsexp, ListE ([ConstructE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
           ]
       | _ ->
           [
             LetI (NameE "L", label_expr);
-            EnterI (NameE "L", exp2expr instrs_exp2, []);
+            EnterI (NameE "L", ConcatE(exp2expr instrs_exp2, ListE ([ConstructE (("LABEL_", ""), [])])), []);
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
