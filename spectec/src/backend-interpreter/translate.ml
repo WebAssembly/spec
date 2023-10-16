@@ -835,7 +835,10 @@ let config_helper2instrs after return clause =
     ]; _ }); _ };
     lhs
   ]; _ }) ->
-    PushI (FrameE (None, NameE f.it)) :: rhs2instrs lhs @ after @ [PopI (FrameE (None, NameE f.it))] @ return |> prems2instrs [] prems
+    let enter =
+      EnterI (FrameE (None, NameE f.it), ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs lhs)
+    in
+    enter :: after @ return |> prems2instrs [] prems
   | _ -> failwith "unreachable"
 
 let normal_helper2instrs clause =

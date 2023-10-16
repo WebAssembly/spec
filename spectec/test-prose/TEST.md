@@ -626,14 +626,13 @@ instantiation module externval*
 17. Pop the activation of f_init from the stack.
 18. Let m be $allocmodule(module, externval*, val*, ref**).
 19. Let f be { LOCAL: []; MODULE: m; }.
-20. Push the activation of f to the stack.
-21. Execute the sequence (instr_elem*).
-22. Execute the sequence (instr_data*).
-23. If x is defined, then:
-  a. Let ?(x_0) be x.
-  b. Execute (CALL x_0).
-24. Pop the activation of f from the stack.
-25. Return m.
+20. Enter the activation of f with label [FRAME_]:
+  a. Execute the sequence (instr_elem*).
+  b. Execute the sequence (instr_data*).
+  c. If x is defined, then:
+    1) Let ?(x_0) be x.
+    2) Execute (CALL x_0).
+21. Return m.
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -641,12 +640,11 @@ invocation fa val^n
 3. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
 4. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
 5. Let [valtype_param^n]->[valtype_res^k] be functype.
-6. Push the activation of f to the stack.
-7. Push val^n to the stack.
-8. Execute (CALL_ADDR fa).
-9. Pop val^k from the stack.
-10. Pop the activation of f from the stack.
-11. Return val^k.
+6. Enter the activation of f with label [FRAME_]:
+  a. Push val^n to the stack.
+  b. Execute (CALL_ADDR fa).
+7. Pop val^k from the stack.
+8. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
