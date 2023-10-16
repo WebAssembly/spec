@@ -618,21 +618,19 @@ instantiation module externval*
 9. Let f_init be { LOCAL: []; MODULE: m_init; }.
 10. Let instr_data* be $concat_instr($rundata(data*[j], j)^(j<n_data)).
 11. Let instr_elem* be $concat_instr($runelem(elem*[i], i)^(i<n_elem)).
-12. Push the activation of f_init to the stack.
-13. Let ref** be $exec_expr_const(instr_2*)**.
-14. Pop the activation of f_init from the stack.
-15. Push the activation of f_init to the stack.
-16. Let val* be $exec_expr_const(instr_1*)*.
-17. Pop the activation of f_init from the stack.
-18. Let m be $allocmodule(module, externval*, val*, ref**).
-19. Let f be { LOCAL: []; MODULE: m; }.
-20. Enter the activation of f with label [FRAME_]:
+12. Enter the activation of f_init with label [FRAME_]:
+  a. Let ref** be $exec_expr_const(instr_2*)**.
+13. Enter the activation of f_init with label [FRAME_]:
+  a. Let val* be $exec_expr_const(instr_1*)*.
+14. Let m be $allocmodule(module, externval*, val*, ref**).
+15. Let f be { LOCAL: []; MODULE: m; }.
+16. Enter the activation of f with label [FRAME_]:
   a. Execute the sequence (instr_elem*).
   b. Execute the sequence (instr_data*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-21. Return m.
+17. Return m.
 
 invocation fa val^n
 1. Let m be { FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.

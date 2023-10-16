@@ -572,31 +572,29 @@ let rec rulepr2instr pr =
   match pr.it with
   (* Inductive case *)
   | Ast.IterPr (pr, (iter, ids)) ->
-      begin match rulepr2instr pr with
-      | [ push; LetI (lhs, rhs); pop ] ->
-          let rec name_of_expr = function
-            | IterE (e, _, _) -> name_of_expr e
-            | NameE n -> n
-            | _ -> failwith "Not a name"
-          in
-          begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
-          | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
-              [
-                push;
-                LetI (
-                  IterE (lhs, lhs_iter_ids, iter2iter iter),
-                  IterE (rhs, rhs_iter_ids, iter2iter iter)
-                );
-                pop
-              ]
-          | _ -> failwith "Invalid IterPr"
-          end
-      | instr ->
-          List.hd instr
-          |> Al.Print.string_of_instr (ref 0) 0
-          |> Printf.sprintf "Invalid RulePr: %s"
-          |> failwith
+    begin match rulepr2instr pr with
+    | EnterI (ctx, instrs, [ LetI (lhs, rhs) ]) ->
+      let rec name_of_expr = function
+        | IterE (e, _, _) -> name_of_expr e
+        | NameE n -> n
+        | _ -> failwith "Not a name"
+      in
+      begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
+      | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
+        EnterI (ctx, instrs, [
+          LetI (
+            IterE (lhs, lhs_iter_ids, iter2iter iter),
+            IterE (rhs, rhs_iter_ids, iter2iter iter)
+          )
+        ])
+      | _ -> failwith "Invalid IterPr"
       end
+    | instr ->
+      instr
+      |> Al.Print.string_of_instr (ref 0) 0
+      |> Printf.sprintf "Invalid RulePr: %s"
+      |> failwith
+    end
   (* Exec_expr_const *)
   | Ast.RulePr (
     id,
@@ -613,11 +611,11 @@ let rec rulepr2instr pr =
         rhs
     ]; _ }
   ) when id.it = "Exec_expr_const" ->
-    [
-      PushI (FrameE (None, NameE f.it));
-      LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ]));
-      PopI (FrameE (None, NameE f.it))
-    ]
+    EnterI (
+      FrameE (None, NameE f.it),
+      ListE [ConstructE (("FRAME_", ""), [])],
+      [ LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ])) ]
+    )
   | _ -> failwith "We do not allow iter on premises other than `RulePr`"
 
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
@@ -636,8 +634,8 @@ let prems2instrs remain_lhs =
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
       (* Step_read *)
-      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem @ instrs
-      | Ast.IterPr _ -> rulepr2instr prem @ instrs
+      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
+      | Ast.IterPr _ -> rulepr2instr prem :: instrs
       | _ ->
           gen_fail_msg_of_prem prem "instr" |> print_endline;
           YetI (Il.Print.string_of_prem prem) :: instrs)
