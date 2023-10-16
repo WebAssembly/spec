@@ -98,6 +98,14 @@ module AL_Context = struct
 
   (* Depth *)
 
+  let get_depth () =
+    let _, _, depth = get_context () in
+    depth
+
+  let increase_depth () =
+    let env, return_value, depth = pop_context () in
+    push_context (env, return_value, depth + 1)
+
   let rec decrease_depth () =
     let env, return_value, depth = pop_context () in
     if depth > 0 then

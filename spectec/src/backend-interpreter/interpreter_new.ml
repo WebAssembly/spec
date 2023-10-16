@@ -539,6 +539,25 @@ and interp_instr (env: env) (i: instr): env =
     |> value_to_list
     |> List.iter execute;
     env
+  | EnterI (e1, e2, il) ->
+    let v1 = eval_expr env e1 in
+    let v2 = eval_expr env e2 in
+
+    WasmContext.push_context (v1, [], value_to_list v2);
+    AL_Context.increase_depth ();
+
+    let rec cleanup () =
+      WasmContext.pop_instr () |> execute;
+      if AL_Context.get_depth () > 0 then
+        cleanup ()
+      else
+        ()
+    in
+
+    (* NOTE: doesn't have variable scope *)
+    let new_env = interp_instrs env il in
+    cleanup ();
+    new_env
   | ExitAbruptI _ ->
     WasmContext.pop_context () |> ignore;
     AL_Context.decrease_depth ();
