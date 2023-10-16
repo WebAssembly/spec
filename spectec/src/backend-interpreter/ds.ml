@@ -68,9 +68,11 @@ module AL_Context = struct
     | None
     | Some of value
 
-  type t = env * return_value * int
+  type t = string * return_value * int
 
   let context_stack: t list ref = ref []
+
+  let create_context name = (name, Bot, 0)
 
   let push_context ctx = context_stack := ctx :: !context_stack
 
@@ -83,6 +85,16 @@ module AL_Context = struct
     match !context_stack with
     | h :: _ -> h
     | _ -> failwith "AL context stack underflow"
+
+  (* Return value *)
+  let set_return_value v =
+    let name, return_value, depth = pop_context () in
+    assert (return_value = Bot);
+    push_context (name, Some v, depth)
+
+  let get_return_value () =
+    let _, return_value, _ = get_context () in
+    return_value
 
   (* Depth *)
 
