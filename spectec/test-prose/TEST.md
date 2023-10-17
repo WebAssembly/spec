@@ -624,7 +624,7 @@ instantiation module externval*
   a. Let val* be $exec_expr_const(instr_1*)*.
 14. Let m be $allocmodule(module, externval*, val*, ref**).
 15. Let f be { LOCAL: []; MODULE: m; }.
-16. Enter the activation of f with label [FRAME_]:
+16. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_elem*).
   b. Execute the sequence (instr_data*).
   c. If x is defined, then:
@@ -638,7 +638,7 @@ invocation fa val^n
 3. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
 4. Let (FUNC functype valtype* expr) be $funcinst()[fa].CODE.
 5. Let [valtype_param^n]->[valtype_res^k] be functype.
-6. Enter the activation of f with label [FRAME_]:
+6. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
   b. Execute (CALL_ADDR fa).
 7. Pop val^k from the stack.
