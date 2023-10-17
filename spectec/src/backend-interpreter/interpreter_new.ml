@@ -155,8 +155,10 @@ and eval_expr env expr =
   | ListFillE (e1, e2) ->
       let v = eval_expr env e1 in
       let i = eval_expr env e2 |> value_to_int in
-      if i > 1024 * 64 * 1024 then (* 1024 pages *)
+      if i > 1024 * 64 * 1024 then (* 1024 pages *) (
+        AL_Context.pop_context () |> ignore;
         raise Exception.OutOfMemory
+      )
       else
         ListV (ref (Array.make i v))
   | ConcatE (e1, e2) ->
@@ -561,10 +563,11 @@ and interp_instr (env: env) (instr: instr): env =
     (* TODO: refactor cleanup *)
     let previous_depth = AL_Context.get_depth () in
     let rec cleanup () =
-      WasmContext.pop_instr () |> execute;
       let current_depth = AL_Context.get_depth () in
-      if current_depth = previous_depth then
+      if current_depth = previous_depth then (
+        WasmContext.pop_instr () |> execute;
         cleanup ()
+      )
     in
 
     (* NOTE: doesn't have variable scope *)
@@ -675,8 +678,8 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
-  assert (depth = 0);
 
+  assert (depth = 0);
   return_value
 
 (* Entry *)

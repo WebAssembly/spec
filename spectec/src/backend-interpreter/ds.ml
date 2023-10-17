@@ -223,5 +223,5 @@ module WasmContext = struct
     let v_ctx, vs, vs_instr = pop_context () in
     match vs_instr with
     | h :: t -> push_context (v_ctx, vs, t); h
-    | _ -> failwith "Wasm value stack underflow"
+    | _ -> failwith "Wasm instr stack underflow"
 end
