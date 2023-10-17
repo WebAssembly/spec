@@ -43,7 +43,8 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 27/27 (100.00%)
+- print_i32: 10
+- 28/28 (100.00%)
 
 ===== forward.wast =====
 - 4/4 (100.00%)
@@ -286,6 +287,6 @@ if ((n?{n} = ?()) \/ (nt = (in <: numtype)))
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23778/23778] (100.00%; Normalized 100.00%)
+Total [23779/23779] (100.00%; Normalized 100.00%)
 == Complete.
 ```
