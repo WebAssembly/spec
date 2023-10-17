@@ -1,5 +1,6 @@
 open Al
 open Ast
+open Print
 
 module RuleMap = Map.Make (String)
 type rule_map = algorithm RuleMap.t ref
@@ -90,6 +91,25 @@ module AL_Context = struct
     let name, _, _ = get_context () in
     name
 
+  (* Print *)
+
+  let string_of_return_value = function
+    | Bot -> "⊥"
+    | None -> "None"
+    | Some v -> string_of_value v
+
+  let string_of_context ctx =
+    let name, return_value, depth = ctx in
+    Printf.sprintf "(%s, %s, %s)"
+      name
+      (string_of_return_value return_value)
+      (string_of_int depth)
+
+  let string_of_context_stack () =
+    List.fold_left
+      (fun acc ctx -> (string_of_context ctx) ^ " :: " ^ acc)
+      "[]" !context_stack
+
   (* Return value *)
   let set_return_value v =
     let name, return_value, depth = pop_context () in
@@ -125,7 +145,8 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let context_stack: t list ref = ref []
+  let top_level_context = StringV "TopLevelContexet", [], []
+  let context_stack: t list ref = ref [top_level_context]
 
   let get_context () =
     match !context_stack with
@@ -143,6 +164,20 @@ module WasmContext = struct
     match !context_stack with
     | h :: t -> context_stack := t; h
     | _ -> failwith "Wasm context stack underflow"
+
+  (* Print *)
+
+  let string_of_context ctx =
+    let v, vs, vs_instr = ctx in
+    Printf.sprintf "(%s, %s, %s)"
+      (string_of_value v)
+      (string_of_value (listV vs))
+      (string_of_value (listV vs_instr))
+
+  let string_of_context_stack () =
+    List.fold_left
+      (fun acc ctx -> (string_of_context ctx) ^ " :: " ^ acc)
+      "[]" !context_stack
 
   (* Context *)
   let get_current_context () =
