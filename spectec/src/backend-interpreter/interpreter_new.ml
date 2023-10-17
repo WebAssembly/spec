@@ -465,6 +465,14 @@ and execute (wasm_instr: value): unit =
     |> failwith
 
 and interp_instr (env: env) (instr: instr): env =
+  (*
+  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
+  WasmContext.string_of_context_stack () |> print_endline;
+  AL_Context.string_of_context_stack () |> print_endline;
+  print_endline "";
+  *)
+
+  let res =
   match instr with
   (* Block instruction *)
   | IfI (c, il1, il2) ->
@@ -513,8 +521,8 @@ and interp_instr (env: env) (instr: instr): env =
       else 
         acc
     in
-    let vs = pop_all [] in
-    Env.add name (listV vs) env
+    let vs = pop_all [] |> listV in
+    Env.add name vs env
   | PopAllI e ->
     string_of_expr e
     |> Printf.sprintf "Invalid pop: Popall %s"
@@ -547,10 +555,12 @@ and interp_instr (env: env) (instr: instr): env =
     WasmContext.push_context (v1, [], value_to_list v2);
     AL_Context.increase_depth ();
 
+    (* TODO: refactor cleanup *)
+    let previous_depth = AL_Context.get_depth () in
     let rec cleanup () =
-      (* TODO: handle bug *)
       WasmContext.pop_instr () |> execute;
-      if AL_Context.get_depth () > 0 then
+      let current_depth = AL_Context.get_depth () in
+      if current_depth = previous_depth then
         cleanup ()
     in
 
@@ -598,6 +608,16 @@ and interp_instr (env: env) (instr: instr): env =
     structured_string_of_instr 0 i
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
     |> failwith
+  in
+
+  (*
+  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[END INSTR]: %s" |> print_endline;
+  WasmContext.string_of_context_stack () |> print_endline;
+  AL_Context.string_of_context_stack () |> print_endline;
+  print_endline "";
+  *)
+
+  res
 
 and interp_instrs (env: env) (il: instr list): env =
   match il with
@@ -627,7 +647,11 @@ and interp_algo (algo: algorithm) (args: value list): unit =
   get_body algo |> interp_instrs env |> ignore
 
 and call_algo (name: string) (args: value list): AL_Context.return_value =
-  print_endline name;
+  print_endline "**************************************";
+  Printf.sprintf "[ALGO]: %s" name |> print_endline;
+  WasmContext.string_of_context_stack () |> print_endline;
+  AL_Context.string_of_context_stack () |> print_endline;
+  print_endline "";
 
   (* Push AL context *)
   let al_context = AL_Context.create_context name in
@@ -639,8 +663,13 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 
   (* Pop AL context *)
   let (_, return_value, depth) = AL_Context.pop_context () in
+
+  Printf.sprintf "[END ALGO]: %s" name |> print_endline;
+  WasmContext.string_of_context_stack () |> print_endline;
+  AL_Context.string_of_context_stack () |> print_endline;
+  print_endline "";
   assert (depth = 0);
-  print_endline (name ^ " done");
+
   return_value
 
 (* Entry *)
