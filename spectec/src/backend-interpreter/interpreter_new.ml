@@ -647,11 +647,13 @@ and interp_algo (algo: algorithm) (args: value list): unit =
   get_body algo |> interp_instrs env |> ignore
 
 and call_algo (name: string) (args: value list): AL_Context.return_value =
+  (*
   print_endline "**************************************";
   Printf.sprintf "[ALGO]: %s" name |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
+  *)
 
   (* Push AL context *)
   let al_context = AL_Context.create_context name in
@@ -664,10 +666,12 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   (* Pop AL context *)
   let (_, return_value, depth) = AL_Context.pop_context () in
 
+  (*
   Printf.sprintf "[END ALGO]: %s" name |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
+  *)
   assert (depth = 0);
 
   return_value
