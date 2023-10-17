@@ -142,10 +142,13 @@ and eval_expr env expr =
     let args = List.map (eval_expr env) el in
     begin match dsl_function_call fname args with
     | Some v -> v
+    | _ -> raise Exception.MissingReturnValue
+    (*
     | _ ->
       string_of_expr expr
      |> Printf.sprintf "%s doesn't have return value"
      |> failwith
+    *)
     end
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
