@@ -1,4 +1,5 @@
 (module
+  (import "spectest" "print_i32" (func $print_i32 (param i32)))
   (global f32 (f32.const 1.4))
   (global f32 (f32.const 5.2))
   (global (mut i32) (i32.const 42))
@@ -246,7 +247,15 @@
       call $fib
       i32.add
     end)
+
+  (func $foo (param i32) (br 0))
+  (func $check_exit (export "check_exit") (param i32) (result i32)
+    (call $foo (i32.const 42))
+    (call $print_i32 (local.get 0))
+    (local.get 0)
+  )
 )
+
 
 (assert_return (invoke "binop") (i32.const 46))
 (assert_return (invoke "testop") (i32.const 1))
@@ -274,6 +283,7 @@
 (assert_return (invoke "if_false") (i32.const 45))
 (assert_return (invoke "loop") (i32.const 42))
 (assert_return (invoke "fib" (i32.const 10)) (i32.const 55))
+(assert_return (invoke "check_exit" (i32.const 10)) (i32.const 10))
 
 ;;second module
 (module (func (export "f")))
