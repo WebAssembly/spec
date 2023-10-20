@@ -234,10 +234,10 @@
   (rec (type $t1 (func (param i32 (ref $t1)))))
   (func (export "f") (param (ref $t1)))
 )
-(register "M")
+(register "Mr1")
 (module
   (rec (type $t2 (func (param i32 (ref $t2)))))
-  (func (import "M" "f") (param (ref $t2)))
+  (func (import "Mr1" "f") (param (ref $t2)))
 )
 
 
@@ -253,16 +253,16 @@
   (func (export "f2") (param (ref $t2)))
   (func (export "f3") (param (ref $t3)))
 )
-(register "M")
+(register "Mr2")
 (module
   (rec
     (type $t1 (func (param i32 (ref $t1))))
     (type $t2 (func (param i32 (ref $t3))))
     (type $t3 (func (param i32 (ref $t2))))
   )
-  (func (import "M" "f1") (param (ref $t1)))
-  (func (import "M" "f2") (param (ref $t2)))
-  (func (import "M" "f3") (param (ref $t3)))
+  (func (import "Mr2" "f1") (param (ref $t1)))
+  (func (import "Mr2" "f2") (param (ref $t2)))
+  (func (import "Mr2" "f3") (param (ref $t3)))
 )
 
 (module
@@ -275,16 +275,16 @@
   (func (export "f2") (param (ref $t2)))
   (func (export "f3") (param (ref $t3)))
 )
-(register "M")
+(register "Mr3")
 (module
   (rec
     (type $t1 (func (param i32 (ref $t3))))
     (type $t2 (func (param i32 (ref $t1))))
     (type $t3 (func (param i32 (ref $t2))))
   )
-  (func (import "M" "f1") (param (ref $t1)))
-  (func (import "M" "f2") (param (ref $t2)))
-  (func (import "M" "f3") (param (ref $t3)))
+  (func (import "Mr3" "f1") (param (ref $t1)))
+  (func (import "Mr3" "f2") (param (ref $t2)))
+  (func (import "Mr3" "f3") (param (ref $t3)))
 )
 
 (module
@@ -304,7 +304,7 @@
   (func (export "f2") (param (ref $t2)))
   (func (export "f3") (param (ref $t3)))
 )
-(register "M")
+(register "Mr4")
 (module
   (rec
     (type $t1 (func (param i32 (ref $u1))))
@@ -318,7 +318,7 @@
     (type $u3 (func (param f32 (ref $t2))))
   )
 
-  (func (import "M" "f1") (param (ref $t1)))
-  (func (import "M" "f2") (param (ref $t2)))
-  (func (import "M" "f3") (param (ref $t3)))
+  (func (import "Mr4" "f1") (param (ref $t1)))
+  (func (import "Mr4" "f2") (param (ref $t2)))
+  (func (import "Mr4" "f3") (param (ref $t3)))
 )
