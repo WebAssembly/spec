@@ -11,7 +11,6 @@
     exception
     il2il
     manual
-    interpreter_new
     ds
     )
 )

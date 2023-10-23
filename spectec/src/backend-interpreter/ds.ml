@@ -57,7 +57,7 @@ module Env = struct include Map.Make (String)
       |> prerr_endline;
       raise Not_found
 
-  let add_store = add "s" (Ast.StoreV Interpreter.store)
+  let add_store = add "s" (Ast.StoreV store)
 end
 
 type env = value Env.t

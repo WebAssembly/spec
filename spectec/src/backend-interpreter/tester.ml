@@ -33,7 +33,7 @@ let fail expected actual =
   Printf.eprintf " Actual  : %s\n\n" actual;
   let print_stack = false in
   if print_stack then
-    Printf.eprintf " Stack: %s\n\n" (Al.Print.string_of_stack !Interpreter.stack);
+    Printf.eprintf " Stack: %s\n\n" (Ds.WasmContext.string_of_context_stack ());
   Fail
 
 let not_supported_msg = "We only support the test script with modules and assertions."
@@ -221,20 +221,19 @@ let do_invoke act = match act.it with
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
     ) in
-    Interpreter.init_stack();
     Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Al.Print.string_of_value args);
 
-    Interpreter_new.invocation [funcaddr; args]
+    Interpreter.invocation [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let exports = find_export module_name in
 
     let addr = Array.find_map (extract_addr_of "GLOBAL" name) exports |> Option.get in
-    let globals = (Record.find "GLOBAL" !Interpreter.store) in
+    let globals = (Record.find "GLOBAL" !Ds.store) in
 
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
     let got =
-      match Array.get (Interpreter_new.value_to_array globals) (Interpreter_new.value_to_int addr) with
+      match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
       | RecordV r -> Record.find "VALUE" r
       | _ -> failwith "Not a Record"
     in
@@ -327,9 +326,8 @@ let test_assertion assertion =
     begin try
       let al_module = Construct.al_of_module (extract_module def) in
       let externvals = get_externvals al_module in
-      Interpreter.init_stack();
       Printf.eprintf "[Trying instantiating module...]\n";
-      Interpreter_new.instantiation [ al_module ; externvals ] |> ignore;
+      Interpreter.instantiation [ al_module ; externvals ] |> ignore;
 
       fail expected"Module instantiation success"
     with
@@ -341,7 +339,6 @@ let test_assertion assertion =
 let test_module module_name m =
 
   (* Initialize *)
-  Interpreter.init_stack();
 
   try
 
@@ -351,7 +348,7 @@ let test_module module_name m =
 
     (* Instantiate and store exports *)
     Printf.eprintf "[Instantiating module...]\n";
-    let module_inst = Interpreter_new.instantiation [ al_module ; externvals ] in
+    let module_inst = Interpreter.instantiation [ al_module ; externvals ] in
 
     (* Store module instance in the register *)
     (match module_name with
@@ -386,7 +383,7 @@ let test_cmd success cmd =
 (* Intialize store and registered modules *)
 let init_tester () =
   let builtin_inst = builtin() in
-  Interpreter.store := fst builtin_inst;
+  Ds.store := fst builtin_inst;
   register := Register.add "spectest" (snd builtin_inst) Register.empty
 
 (** Entry **)
