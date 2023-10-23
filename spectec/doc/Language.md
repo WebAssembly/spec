@@ -75,6 +75,7 @@ iter ::=
   "*"                                  list
   "+"                                  non-empty list
   "^" arith                            list of specific length
+  "^" "(" id "<" arith ")"             list of specific length with index (only in expressions)
 ```
 Iterated types essentially describe options or lists of phrases.
 
