@@ -276,7 +276,7 @@ let handle_context_winstr winstr =
         insert_assert inner_exp;
         PopI (exp2expr inner_exp);
         insert_assert winstr;
-        ExitAbruptI "F";
+        ExitI
       ]
     | _ -> failwith "Invalid frame")
   (* Label *)
@@ -285,7 +285,7 @@ let handle_context_winstr winstr =
         (* TODO: append Jump instr *)
         PopAllI (exp2expr vals);
         insert_assert winstr;
-        ExitAbruptI "L";
+        ExitI
       ]
   | _ -> []
 
@@ -298,7 +298,7 @@ let handle_context ctx values = match ctx.it, values with
         LetI (exp2expr instrs, ContE (NameE "L"));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
-        ExitAbruptI "L";
+        ExitI
       ]
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
@@ -307,7 +307,7 @@ let handle_context ctx values = match ctx.it, values with
         LetI (exp2expr n, ArityE (NameE "F"));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
-        ExitAbruptI "F";
+        ExitI
       ]
   | _ -> [ YetI "TODO: handle_context" ]
 

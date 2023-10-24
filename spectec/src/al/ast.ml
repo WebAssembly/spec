@@ -146,17 +146,14 @@ type instr =
   | PopI of expr
   | PopAllI of expr
   | LetI of expr * expr
-  | CallI of expr * name * expr list * (name list * iter) list
   | TrapI
   | NopI
   | ReturnI of expr option
   | EnterI of expr * expr * instr list
   | ExecuteI of expr
   | ExecuteSeqI of expr
-  | JumpI of expr
   | PerformI of name * expr list
-  | ExitNormalI of name
-  | ExitAbruptI of name
+  | ExitI
   (* Mutations *)
   | ReplaceI of expr * path * expr
   | AppendI of expr * expr

@@ -535,7 +535,6 @@ and interp_instr (env: env) (instr: instr): env =
     |> failwith
   | LetI (pattern, e) ->
     assign pattern (eval_expr env e) env
-  | CallI _ -> failwith "No CallI"
   | PerformI (f, el) ->
     let args = List.map (eval_expr env) el in
     dsl_function_call f args |> ignore;
@@ -575,7 +574,7 @@ and interp_instr (env: env) (instr: instr): env =
     let new_env = interp_instrs env il in
     cleanup ();
     new_env
-  | ExitAbruptI _ ->
+  | ExitI ->
     WasmContext.pop_context () |> ignore;
     AL_Context.decrease_depth ();
     env

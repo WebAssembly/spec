@@ -15,4 +15,4 @@ let exec_expr_const =
   )
 
 let manual_algos =
-  [exec_expr_const] |> List.map Transpile.app_remover
+  [exec_expr_const]

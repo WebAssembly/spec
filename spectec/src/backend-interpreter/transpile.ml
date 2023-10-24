@@ -257,13 +257,6 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
       acc, bounds
     else
       (instr :: acc), (diff_list bounds bindings) @ Free.free_expr e2
-  | CallI (e1, _, args, nl_iters) ->
-    let bindings = (Free.free_expr e1) in
-    if intersect_list bindings bounds = [] then
-      acc, bounds
-    else
-      let new_bounds = List.concat_map Free.free_expr args @ List.concat_map Free.free_ns_iter nl_iters in
-      (instr :: acc), (diff_list bounds bindings) @ new_bounds
   | _ ->
     instr :: acc, bounds @ Free.free_instr instr
 ) il pair
@@ -336,7 +329,6 @@ let hide_state_instr = function
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
       | _ -> failwith "Invalid replace"
       end
-  | CallI (lhs, f, args, nl_iterl) -> [ CallI (lhs, f, hide_state_args args, nl_iterl) ]
   | PerformI (f, args) -> [ PerformI (f, hide_state_args args) ]
   | i -> [ i ]
 
@@ -383,141 +375,6 @@ let transpiler algo =
     | NameE "s" :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
-
-let app_remover =
-  let side_effect f e = f e; e in
-
-  let iter_stack = ref [] in
-  let names = ref [ref []] in (* Upon leavaing an expr, the head contains all names apearing in it *)
-  let calls = ref [] in
-  let requires = ref [] in
-
-  (* Helper *)
-  let add_call x =
-    let cur_calls = List.hd !calls in
-    cur_calls := x :: !cur_calls in
-  let pop_calls _ =
-    let hd, tl = Util.Lib.List.split_hd !calls in
-    calls := tl;
-    hd in
-  let remove_iter_var = function
-    | ListN (e, Some _) -> ListN (e, None)
-    | iter -> iter in
-
-  (* pre_expr *)
-  let push_iter = side_effect (function
-    | IterE (_, ns, i) -> iter_stack := (ns, i) :: !iter_stack
-    | _ -> () ) in
-  let init_names = side_effect (fun _ -> names := ref [] :: !names) in
-
-  let pre_expr = composite init_names push_iter in
-
-  (* post expr *)
-
-  let rewrite_names (names, iter) =
-    let new_names = List.concat_map (fun x ->
-      x :: List.filter_map (fun (y, x') ->
-        if x = x' then Some y else None
-      ) !requires
-    ) names |> dedup in
-    (new_names, iter) in
-
-  let call_id = ref 0 in
-  let call_prefix = "r_" in
-  let get_fresh () =
-    let id = !call_id in
-    call_id := id + 1;
-    call_prefix ^ (string_of_int id) in
-
-  let bind_app e = match e with
-    | AppE (f, args) ->
-      let fresh_name = get_fresh() in
-      let rec to_fresh_exp iter = match iter with
-      | [] -> NameE fresh_name
-      | (_, i) :: tl ->
-        let new_i = remove_iter_var i in
-        IterE (to_fresh_exp tl, [fresh_name], new_i) in
-
-      let iters = !iter_stack |> List.map rewrite_names in
-
-      (* Append new CallI instruction *)
-      let fresh_exp = to_fresh_exp iters in
-      add_call (fresh_exp, f, args, iters);
-
-      (* Find all required names for this new fresh variable *)
-      let required_names = intersect_list
-        (List.concat_map fst iters)
-        !(List.hd !names)
-      in
-      requires := List.map (fun n -> (fresh_name, n)) required_names @ !requires;
-
-      (* Discard all names appearing in args *)
-      names := (ref []) :: (List.tl !names);
-
-      NameE (fresh_name)
-    | _ -> e in
-
-  let pop_iter e = match e with
-    | IterE (e, ns, iter) ->
-      (* Pop iter from the stack *)
-      iter_stack := List.tl !iter_stack;
-
-      (* Rewrite itered names *)
-      let new_ns = List.filter (fun n' ->
-        List.exists (fun n -> (n' = n) || List.mem (n', n) !requires) ns
-      ) !(List.hd !names) in
-
-      (* Rewrite dim *)
-      let new_iter = match iter with
-      | ListN (e, Some n) -> if List.mem n new_ns then iter else ListN (e, None)
-      | _ -> iter in
-
-      IterE (e, new_ns, new_iter)
-    | _ -> e in
-
-  let pop_names = side_effect (fun e ->
-    let hd1, tl1 = Util.Lib.List.split_hd !names in
-    let hd2, tl2 = Util.Lib.List.split_hd tl1 in
-    match e with
-    | NameE n ->
-      names := (ref (n :: (!hd1 @ !hd2) |> dedup)) :: tl2
-    | _ ->
-      names := (ref (!hd1 @ !hd2 |> dedup)) :: tl2
-  ) in
-
-  let post_expr = composite pop_names (composite pop_iter bind_app) in
-
-  (* pre_instr *)
-  let init i =
-    call_id := 0;
-    calls := (ref []) :: !calls;
-    names := [ref []];
-    [i] in
-
-  (* post_instr *)
-  let rec is_pure_name = function
-  | NameE _ -> true
-  | IterE (e, _, _) -> is_pure_name e
-  | _ -> false in
-
-  let quad_to_call (a, b, c, d) = CallI (a, b, c, d) in
-
-  let remove_redundant_assign i = List.rev (
-    let cur_calls = !(pop_calls ()) in
-    match i with
-    | LetI (lhs, rhs) when List.length cur_calls > 0 && is_pure_name rhs ->
-      let (_, f, args, iters) = List.hd cur_calls in
-      let new_apps = (lhs, f, args, iters) :: List.tl cur_calls in
-      List.map quad_to_call new_apps
-    | _ -> i :: List.map quad_to_call cur_calls
-  ) in
-
-  Walk.walk { Walk.default_config with
-    pre_instr = init;
-    post_instr = remove_redundant_assign;
-    pre_expr = pre_expr;
-    post_expr = post_expr;
-  }
 
 (* Applied for reduction rules: infer assert from if *)
 let rec count_if instrs = match instrs with

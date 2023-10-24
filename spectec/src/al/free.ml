@@ -64,8 +64,7 @@ let rec free_instr = function
   | TrapI
   | NopI
   | ReturnI None
-  | ExitNormalI _
-  | ExitAbruptI _
+  | ExitI
   | YetI _ -> []
   (* One e *)
   | PushI e
@@ -73,8 +72,7 @@ let rec free_instr = function
   | PopAllI e
   | ReturnI (Some e)
   | ExecuteI e
-  | ExecuteSeqI e
-  | JumpI e -> free_expr e
+  | ExecuteSeqI e -> free_expr e
   (* Two e *)
   | LetI (e1, e2)
   | AppendI (e1, e2)
@@ -82,6 +80,5 @@ let rec free_instr = function
   (* Others *)
   | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il
   | AssertI c -> free_cond c
-  | CallI (e, _, el, iters) -> free_expr e @ List.concat_map free_expr el @ List.concat_map free_ns_iter iters
   | PerformI (_, el) -> List.concat_map free_expr el
   | ReplaceI (e1, p, e2) -> free_expr e1 @ free_path p @ free_expr e2
