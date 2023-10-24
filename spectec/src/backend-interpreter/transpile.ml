@@ -1,5 +1,6 @@
 open Al
 open Al.Ast
+open Util.Record
 
 (** helper *)
 let composite_instr g f x = f x |> List.map g |> List.flatten

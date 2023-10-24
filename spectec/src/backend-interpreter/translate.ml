@@ -1,6 +1,7 @@
 open Il
 open Printf
 open Util.Source
+open Util.Record
 open Al.Ast
 
 (** helper functions **)

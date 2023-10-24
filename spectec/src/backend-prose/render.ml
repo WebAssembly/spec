@@ -225,7 +225,7 @@ and render_expr env in_math = function
         (render_expr env in_math e2)
   | Al.Ast.RecordE r ->
       let sr = 
-        Al.Record.Record.fold
+        Util.Record.Record.fold
           (fun k v acc -> acc @ [ render_keyword env k ^ "~" ^ render_expr env true v ])
           r []
       in

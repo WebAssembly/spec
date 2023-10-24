@@ -1,13 +1,13 @@
-include Record
-
 (* AL Name *)
 
+(* Identifier derived from the syntax terminals defined in the DSL.
+   The second in the tuple denotes its IL-type (for disambiguation).*)
 type keyword = keyword' * string
 and keyword' = string
 
-type funcname = string
+type funcname = string (* name of a helper function defined in the DSL *)
 
-type name = string
+type name = string     (* name of meta-variables in the DSL, which are variables in AL *)
 
 (* AL Type *)
 
@@ -51,32 +51,38 @@ type extend_dir =
   | Front
   | Back
 
+(* Operators *)
+
 type expr_binop =
-  | Add
-  | Sub
-  | Mul
-  | Div
-  | Exp
+  | Add    (* `+` *)
+  | Sub    (* `-` *)
+  | Mul    (* `*` *)
+  | Div    (* `/` *)
+  | Exp    (* `^` *)
 
 type cond_binop =
-  | And
-  | Or
-  | Impl
-  | Equiv
+  | And    (* `/\` *)
+  | Or     (* `\/` *)
+  | Impl   (* `=>` *)
+  | Equiv  (* `<=>` *)
 
 type compare_op =
-  | Eq
-  | Ne
-  | Gt
-  | Ge
-  | Lt
-  | Le
+  | Eq     (* `=` *)
+  | Ne     (* `=/=` *)
+  | Lt     (* `<` *)
+  | Gt     (* `>` *)
+  | Le     (* `<=` *)
+  | Ge     (* `>=` *)
+
+(* Iteration *)
 
 type iter =
-  | Opt
-  | List
-  | List1
-  | ListN of expr * name option
+  | Opt                          (* `?` *)
+  | List                         (* `*` *)
+  | List1                        (* `+` *)
+  | ListN of expr * name option  (* `^` exp *)
+
+(* Expressions *)
 
 and expr =
   (* Value *)
@@ -123,44 +129,50 @@ and cond =
   | NotC of cond
   | BinopC of cond_binop * cond * cond
   | CompareC of compare_op * expr * expr
-  | ContextKindC of keyword * expr
-  | IsDefinedC of expr
   | IsCaseOfC of expr * keyword 
   | ValidC of expr
+
+  | ContextKindC of keyword * expr (* can be desugared using IsCaseOf? *)
+  | IsDefinedC of expr             (* can be desugared? *)
+
   (* Conditions used in assertions *)
   | TopLabelC
   | TopFrameC
   | TopValueC of expr option
   | TopValuesC of expr
+
   (* Yet *)
   | YetC of string
 
+(* Instructions *)
+
 type instr =
-  (* Nested instructions *)
-  | IfI of cond * instr list * instr list
-  | OtherwiseI of instr list (* This is only for intermideate process durinng il->al *)
-  | EitherI of instr list * instr list
-  (* Flat instructions *)
-  | AssertI of cond
-  | PushI of expr
-  | PopI of expr
-  | PopAllI of expr
-  | LetI of expr * expr
-  | TrapI
-  | NopI
-  | ReturnI of expr option
-  | EnterI of expr * expr * instr list
-  | ExecuteI of expr
-  | ExecuteSeqI of expr
-  | PerformI of name * expr list
+  | IfI of cond * instr list * instr list (* `if` cond `then` instr* `else` instr* *)
+  | EitherI of instr list * instr list    (* `either` instr* `or` instr* *)
+  | EnterI of expr * expr * instr list    (* `enter` expr`:` expr `after` instr* *)
+  | AssertI of cond                       (* `assert` cond *)
+  | PushI of expr                         (* `push` expr *)
+  | PopI of expr                          (* `pop` expr *)
+  | PopAllI of expr                       (* `pop all` expr *)
+  | LetI of expr * expr                   (* `let` expr `=` expr *)
+  | TrapI                                 (* `trap` *)
+  | NopI                                  (* `nop` *)
+  | ReturnI of expr option                (* `return` expr? *)
+  | ExecuteI of expr                      (* `execute` expr *)
+  | ExecuteSeqI of expr                   (* `execute' 'seq` expr *)
+  | PerformI of name * expr list          (* `perform` name expr* *)
   | ExitI
   (* Mutations *)
   | ReplaceI of expr * path * expr
   | AppendI of expr * expr
   | AppendListI of expr * expr
-  (* Yet *)
-  | YetI of string
 
-type algorithm = 
-  | RuleA of keyword * expr list * instr list
-  | FuncA of funcname * expr list * instr list
+  (* Administrative Instructions *)
+  | OtherwiseI of instr list (* only during the intermediate processing of il->al *)
+  | YetI of string           (* for future not yet implemented feature *)
+
+(* Algorithms *)
+
+type algorithm =             (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
+  | RuleA of keyword * expr list * instr list         (* inference rule *)
+  | FuncA of funcname * expr list * instr list        (* helper function *)

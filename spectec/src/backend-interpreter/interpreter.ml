@@ -4,6 +4,7 @@ open Print
 open Construct
 open Ds
 open Reference_interpreter
+open Util.Record
 
 let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
 let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")

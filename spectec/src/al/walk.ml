@@ -1,5 +1,5 @@
 open Ast
-open Record
+open Util.Record
 
 type config = {
   pre_instr: instr -> instr list;

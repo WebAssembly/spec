@@ -1,4 +1,4 @@
 (library
   (name util)
-  (modules lib utf8 scc source)
+  (modules lib utf8 scc source record)
 )

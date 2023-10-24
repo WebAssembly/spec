@@ -1,6 +1,6 @@
 open Ast
-open Record
 open Printf
+open Util.Record
 
 (* helper functions *)
 
@@ -67,8 +67,6 @@ let rec string_of_record r =
   ^ (base_indent ^ "}") in
   depth := !depth - 1;
   str
-
-and string_of_frame (_, f) = string_of_record f
 
 and string_of_stack st =
   let f acc e = acc ^ "*" ^ string_of_value e ^ "\n" in
@@ -494,9 +492,6 @@ and structured_string_of_expr = function
       ^ ")"
   | OptE o -> "OptE " ^ string_of_opt "(" structured_string_of_expr ")" o
   | YetE s -> "YetE (" ^ s ^ ")"
-
-and structured_string_of_field (n, e) =
-  "(" ^ n ^ ", " ^ structured_string_of_expr e ^ ")"
 
 (* path*)
 

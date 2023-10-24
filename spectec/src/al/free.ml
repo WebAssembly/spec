@@ -1,4 +1,5 @@
 open Ast
+open Util.Record
 
 let rec free_expr = function
   | NumE _

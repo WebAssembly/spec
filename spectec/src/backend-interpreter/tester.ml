@@ -3,6 +3,7 @@ open Source
 open Ast
 open Al.Ast
 open Construct
+open Util.Record
 
 (** flag **)
 let test_name = ref ""
