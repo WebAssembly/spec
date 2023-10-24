@@ -719,7 +719,7 @@ The integer result of predicates -- i.e., :ref:`tests <syntax-testop>` and :ref:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \iextendMs_{N}(i) &=& \extends_{M,N}(i) \\
+   \iextendMs_{N}(i) &=& \extends_{M,N}(\wrap_{N,M}(i)) \\
    \end{array}
 
 
