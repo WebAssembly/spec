@@ -34,25 +34,6 @@ let rec repeat str num =
 
 let string_of_keyword keyword = let name, _ = keyword in name
 
-let rec string_of_al_type = function
-  | WasmValueTopT -> "WasmValueTopT"
-  | EmptyListT -> "EmptyListT"
-  | PairT _ -> "PairT" (* TODO *)
-  | ListT ty -> "ListT (" ^ string_of_al_type ty ^ ")"
-  | StringT -> "StringT"
-  | IntT -> "IntT"
-  | AddrT -> "AddrT"
-  | FrameT -> "FrameT"
-  | StoreT -> "StoreT"
-  | StateT -> "StateT"
-  | FunT (params, res) ->
-      sprintf "[%s] -> %s"
-        (List.fold_left
-           (fun acc ty -> acc ^ string_of_al_type ty ^ ", ")
-           "" params)
-        (string_of_al_type res)
-  | TopT -> "TopT"
-
 let string_of_dir = function
   | Front -> "Front"
   | Back -> "Back"
@@ -67,10 +48,6 @@ let rec string_of_record r =
   ^ (base_indent ^ "}") in
   depth := !depth - 1;
   str
-
-and string_of_stack st =
-  let f acc e = acc ^ "*" ^ string_of_value e ^ "\n" in
-  List.fold_left f "[Stack]\n" st
 
 and string_of_value = function
   | LabelV (v1, v2) ->
@@ -328,20 +305,6 @@ let string_of_algorithm = function
 (* structured stringifier *)
 
 (* wasm type *)
-
-let structured_string_of_al_type = function
-  | WasmValueTopT -> "WasmValueTopT"
-  | PairT _ -> "PairT" (*TODO *)
-  | EmptyListT -> "EmptyListT"
-  | ListT _ -> "ListT(_)" (* TODO *)
-  | FunT _ -> "FunT(_)" (* TODO *)
-  | IntT -> "IntT"
-  | AddrT -> "AddrT"
-  | StringT -> "StringT"
-  | FrameT -> "FrameT"
-  | StoreT -> "StoreT"
-  | StateT -> "StateT"
-  | TopT -> "TopT"
 
 (* name *)
 

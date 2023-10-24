@@ -49,33 +49,6 @@ let flatten_rec def =
 (** Translate keywords **)
 let name2keyword name note = (name, Il.Print.string_of_typ note)
 
-(** Translate `Ast.type` **)
-let rec il_type2al_type t =
-  match t.it with
-  | Ast.VarT id -> (
-      match id.it with
-      | "n" -> IntT
-      | "numtype" -> IntT
-      | idx when String.ends_with ~suffix:"idx" idx -> IntT
-      | numerics when String.ends_with ~suffix:"_numtype" numerics -> StringT
-      | "addr" -> AddrT
-      | "functype" -> TopT
-      | "cvtop" -> StringT
-      | "sx" -> TopT
-      | "val" -> WasmValueTopT
-      | "valtype" -> WasmValueTopT
-      | "frame" -> FrameT
-      | "store" -> StoreT
-      | "state" -> StateT
-      | _ ->
-          (* TODO *)
-          (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
-          TopT)
-  | Ast.NatT -> IntT
-  | Ast.TupT [t1; t2] -> PairT (il_type2al_type t1, il_type2al_type t2)
-  | Ast.IterT (ty, _) -> ListT (il_type2al_type ty)
-  | _ -> failwith ("TODO: translate il_type into al_type of " ^ Print.string_of_typ t)
-
 let get_params winstr =
   match winstr.it with
   | Ast.CaseE (_, { it = Ast.TupE exps; _ }) -> exps

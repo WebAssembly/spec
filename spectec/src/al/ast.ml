@@ -1,55 +1,37 @@
-(* AL Name *)
+(* Names *)
 
-(* Identifier derived from the syntax terminals defined in the DSL.
+(* Identifiers derived from the syntax terminals defined in the DSL.
    The second in the tuple denotes its IL-type (for disambiguation).*)
 type keyword = keyword' * string
 and keyword' = string
 
-type funcname = string (* name of a helper function defined in the DSL *)
+type funcname = string (* name of helper functions defined in the DSL *)
 
 type name = string     (* name of meta-variables in the DSL, which are variables in AL *)
 
-(* AL Type *)
-
-type al_type =
-  | WasmValueTopT
-  | PairT of al_type * al_type
-  | EmptyListT
-  | ListT of al_type
-  | FunT of (al_type list * al_type)
-  | IntT
-  | AddrT
-  | StringT
-  | FrameT
-  | StoreT
-  | StateT
-  | TopT
-
+(* Values *)
 type 'a growable_array = 'a array ref
 
 type ('a, 'b) record = ('a * 'b ref) list
 
 and store = (keyword', value) record
-and stack = value list
 
-(* AL AST *)
 and value =
-  | NumV of int64
-  | StringV of string
-  | ListV of value growable_array
-  | RecordV of (keyword', value) record
-  | ConstructV of keyword' * value list
-  | OptV of value option
-  | PairV of value * value
-  | ArrowV of value * value
-  (* TODO: Remove FrameV and LabelV *)
-  | FrameV of value option * value
-  | LabelV of value * value
-  | StoreV of store ref
+  | NumV of int64                       (* number *)
+  | StringV of string                   (* string *)
+  | ListV of value growable_array       (* list of values *)
+  | RecordV of (keyword', value) record (* key-value mapping *)
+  | ConstructV of keyword' * value list (* constructor *)
+  | OptV of value option                (* optional value *)
+  | PairV of value * value              (* pair of values *)
+  | ArrowV of value * value             (* Wasm function type as an AL value *)
+  | FrameV of value option * value      (* TODO: Desugar using ContructV *)
+  | LabelV of value * value             (* TODO: Desugar using ContructV *)
+  | StoreV of store ref                 (* TODO: Check Wasm specificity *)
 
-type extend_dir =
-  | Front
-  | Back
+type extend_dir =                       (* direction of extension *)
+  | Front                               (* extend from the front *)
+  | Back                                (* extend from the back *)
 
 (* Operators *)
 
@@ -121,9 +103,9 @@ and expr =
   | YetE of string
 
 and path =
-  | IndexP of expr
-  | SliceP of expr * expr
-  | DotP of keyword 
+  | IndexP of expr        (* `[` exp `]` *)
+  | SliceP of expr * expr (* `[` exp `:` exp `]` *)
+  | DotP of keyword       (* `.` atom *)
 
 and cond =
   | NotC of cond
