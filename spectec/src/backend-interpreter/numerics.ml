@@ -1,5 +1,6 @@
 open Al
 open Al.Ast
+open Construct
 open Reference_interpreter
 
 type numerics = { name : string; f : value list -> value }

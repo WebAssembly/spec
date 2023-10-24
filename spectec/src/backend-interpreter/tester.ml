@@ -2,6 +2,7 @@ open Reference_interpreter
 open Source
 open Ast
 open Al.Ast
+open Construct
 
 (** flag **)
 let test_name = ref ""

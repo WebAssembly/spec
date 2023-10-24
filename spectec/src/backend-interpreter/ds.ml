@@ -1,6 +1,7 @@
 open Al
 open Ast
 open Print
+open Construct
 
 module RuleMap = Map.Make (String)
 type rule_map = algorithm RuleMap.t ref
