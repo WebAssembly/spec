@@ -130,11 +130,12 @@ and eval_expr env expr =
       begin match v1, v2 with
       | NumV v1, NumV v2 ->
           let result = match op with
-          | Add -> Int64.add v1 v2
-          | Sub -> Int64.sub v1 v2
-          | Mul -> Int64.mul v1 v2
-          | Div -> Int64.div v1 v2
-          | Exp -> int64_exp v1 v2
+          | AddOp -> Int64.add v1 v2
+          | SubOp -> Int64.sub v1 v2
+          | MulOp -> Int64.mul v1 v2
+          | DivOp -> Int64.div v1 v2
+          | ExpOp -> int64_exp v1 v2
+          | _ -> failwith "Not a mathematical operator"
           in
           NumV result
       | _ -> failwith "Not an integer"
@@ -262,21 +263,22 @@ and eval_cond env cond =
       let b1 = eval_cond env c1 in
       let b2 = eval_cond env c2 in
       begin match op with
-      | And -> b1 && b2
-      | Or -> b1 || b2
-      | Impl -> not b1 || b2
-      | Equiv -> b1 = b2
+      | AndOp -> b1 && b2
+      | OrOp -> b1 || b2
+      | ImplOp -> not b1 || b2
+      | EquivOp -> b1 = b2
+      | _ -> failwith "Unreachable"
       end
   | CompareC (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match op with
-      | Eq -> v1 = v2
-      | Ne -> v1 <> v2
-      | Lt -> v1 < v2
-      | Le -> v1 <= v2
-      | Gt -> v1 > v2
-      | Ge -> v1 >= v2
+      | EqOp -> v1 = v2
+      | NeOp -> v1 <> v2
+      | LtOp -> v1 < v2
+      | GtOp -> v1 > v2
+      | LeOp -> v1 <= v2
+      | GeOp -> v1 >= v2
       end
   | ContextKindC ((kind, _), e) ->
       begin match kind, eval_expr env e with
@@ -373,10 +375,10 @@ and assign lhs rhs env =
   | BinopE (binop, e1, e2), NumV m ->
       let n = eval_expr env e2 |> value_to_num in
       let invop = match binop with
-      | Add -> Int64.sub
-      | Sub -> Int64.add
-      | Mul -> Int64.unsigned_div
-      | Div -> Int64.mul
+      | AddOp -> Int64.sub
+      | SubOp -> Int64.add
+      | MulOp -> Int64.unsigned_div
+      | DivOp -> Int64.mul
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
   | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env

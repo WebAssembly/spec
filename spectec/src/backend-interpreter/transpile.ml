@@ -13,26 +13,26 @@ let take n str =
 let rec neg cond =
   match cond with
   | NotC c -> c
-  | BinopC (And, c1, c2) -> BinopC (Or, neg c1, neg c2)
-  | BinopC (Or, c1, c2) -> BinopC (And, neg c1, neg c2)
-  | CompareC (Eq, e1, e2) -> CompareC (Ne, e1, e2)
-  | CompareC (Ne, e1, e2) -> CompareC (Eq, e1, e2)
-  | CompareC (Gt, e1, e2) -> CompareC (Le, e1, e2)
-  | CompareC (Ge, e1, e2) -> CompareC (Lt, e1, e2)
-  | CompareC (Lt, e1, e2) -> CompareC (Ge, e1, e2)
-  | CompareC (Le, e1, e2) -> CompareC (Gt, e1, e2)
+  | BinopC (AndOp, c1, c2) -> BinopC (OrOp, neg c1, neg c2)
+  | BinopC (OrOp, c1, c2) -> BinopC (AndOp, neg c1, neg c2)
+  | CompareC (EqOp, e1, e2) -> CompareC (NeOp, e1, e2)
+  | CompareC (NeOp, e1, e2) -> CompareC (EqOp, e1, e2)
+  | CompareC (LtOp, e1, e2) -> CompareC (GeOp, e1, e2)
+  | CompareC (GtOp, e1, e2) -> CompareC (LeOp, e1, e2)
+  | CompareC (LeOp, e1, e2) -> CompareC (GtOp, e1, e2)
+  | CompareC (GeOp, e1, e2) -> CompareC (LtOp, e1, e2)
   | _ -> NotC cond
 
 let both_empty cond1 cond2 =
   let get_list = function
-  | CompareC (Eq, e, ListE [])
-  | CompareC (Eq, ListE [], e)
-  | CompareC (Eq, LengthE e, NumE 0L)
-  | CompareC (Le, LengthE e, NumE 0L)
-  | CompareC (Lt, LengthE e, NumE 1L)
-  | CompareC (Eq, NumE 0L, LengthE e)
-  | CompareC (Ge, NumE 0L, LengthE e)
-  | CompareC (Ge, NumE 1L, LengthE e) -> Some e
+  | CompareC (EqOp, e, ListE [])
+  | CompareC (EqOp, ListE [], e)
+  | CompareC (EqOp, LengthE e, NumE 0L)
+  | CompareC (EqOp, NumE 0L, LengthE e)
+  | CompareC (LtOp, LengthE e, NumE 1L)
+  | CompareC (LeOp, LengthE e, NumE 0L)
+  | CompareC (GeOp, NumE 0L, LengthE e)
+  | CompareC (GeOp, NumE 1L, LengthE e) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -40,14 +40,14 @@ let both_empty cond1 cond2 =
 
 let both_non_empty cond1 cond2 =
   let get_list = function
-  | CompareC (Ne, e, ListE [])
-  | CompareC (Ne, ListE [], e)
-  | CompareC (Ne, LengthE e, NumE 0L)
-  | CompareC (Gt, LengthE e, NumE 0L)
-  | CompareC (Ge, LengthE e, NumE 1L)
-  | CompareC (Ne, NumE 0L, LengthE e)
-  | CompareC (Lt, NumE 0L, LengthE e)
-  | CompareC (Le, NumE 1L, LengthE e) -> Some e
+  | CompareC (NeOp, e, ListE [])
+  | CompareC (NeOp, ListE [], e)
+  | CompareC (NeOp, LengthE e, NumE 0L)
+  | CompareC (NeOp, NumE 0L, LengthE e)
+  | CompareC (LtOp, NumE 0L, LengthE e)
+  | CompareC (GtOp, LengthE e, NumE 0L)
+  | CompareC (LeOp, NumE 1L, LengthE e)
+  | CompareC (GeOp, LengthE e, NumE 1L) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -173,7 +173,7 @@ let rec infer_else instrs =
 
 let if_not_defined =
   let transpile_cond = function
-  | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
+  | CompareC (EqOp, e, OptE None) -> NotC (IsDefinedC e)
   | c -> c in
   Walk.walk_instr { Walk.default_config with post_cond = transpile_cond }
 
@@ -351,7 +351,7 @@ let simplify_record_concat = function
   | e -> e
 
 let flatten_if = function
-  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
+  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (AndOp, c1, c2), il1, il2)
   | i -> i
 
 let transpiler algo =

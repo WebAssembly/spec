@@ -122,11 +122,11 @@ and exp2expr exp =
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
       let op = match op with
-      | Ast.AddOp -> Add
-      | Ast.SubOp -> Sub
-      | Ast.MulOp -> Mul
-      | Ast.DivOp -> Div
-      | Ast.ExpOp -> Exp
+      | Ast.AddOp -> AddOp
+      | Ast.SubOp -> SubOp
+      | Ast.MulOp -> MulOp
+      | Ast.DivOp -> DivOp
+      | Ast.ExpOp -> ExpOp
       | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
       in
       BinopE (op, lhs, rhs)
@@ -374,22 +374,22 @@ let rec exp2cond exp =
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
       let compare_op = match op with
-      | Ast.EqOp -> Eq
-      | Ast.NeOp -> Ne
-      | Ast.GtOp -> Gt
-      | Ast.GeOp -> Ge
-      | Ast.LtOp -> Lt
-      | Ast.LeOp -> Le
+      | Ast.EqOp -> EqOp
+      | Ast.NeOp -> NeOp
+      | Ast.LtOp -> LtOp
+      | Ast.GtOp -> GtOp
+      | Ast.LeOp -> LeOp
+      | Ast.GeOp -> GeOp
       in
       CompareC (compare_op, lhs, rhs)
   | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2cond exp1 in
       let rhs = exp2cond exp2 in
       let binop = match op with
-      | Ast.AndOp -> And
-      | Ast.OrOp -> Or
-      | Ast.ImplOp -> Impl
-      | Ast.EquivOp -> Equiv
+      | Ast.AndOp -> AndOp
+      | Ast.OrOp -> OrOp
+      | Ast.ImplOp -> ImplOp
+      | Ast.EquivOp -> EquivOp
       | _ ->
           gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
       in
@@ -431,7 +431,7 @@ let extract_bound_names lhs rhs targets cont = match lhs with
             e
           else
             let new_e = get_lhs_name() in
-            conds := !conds @ [ CompareC (Eq, new_e, e) ];
+            conds := !conds @ [ CompareC (EqOp, new_e, e) ];
             new_e
         );
         stop_cond_expr = contains_bound_name;
@@ -457,7 +457,7 @@ let rec letI lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when Al.Free.free_expr l = [] -> [ IfI (CompareC (Eq, r, l), cont, []) ]
+      | _ when Al.Free.free_expr l = [] -> [ IfI (CompareC (EqOp, r, l), cont, []) ]
       | _ -> letI l r targets cont
     ) bindings cont
   in
@@ -477,7 +477,7 @@ let rec letI lhs rhs targets cont =
     else
     [
       IfI
-        ( CompareC (Eq, LengthE rhs, NumE (Int64.of_int (List.length es))),
+        ( CompareC (EqOp, LengthE rhs, NumE (Int64.of_int (List.length es))),
           LetI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
@@ -503,11 +503,11 @@ let rec letI lhs rhs targets cont =
           LetI (OptE (Some fresh), rhs) :: letI e fresh targets cont,
           [] );
      ]
-  | BinopE (Add, a, b) ->
+  | BinopE (AddOp, a, b) ->
     [
       IfI
-        ( CompareC (Ge, rhs, b),
-          LetI (a, BinopE (Sub, rhs, b)) :: cont,
+        ( CompareC (GeOp, rhs, b),
+          LetI (a, BinopE (SubOp, rhs, b)) :: cont,
           [] );
     ]
   | ConcatE (prefix, suffix) ->
@@ -527,8 +527,8 @@ let rec letI lhs rhs targets cont =
     let cond = match length_p, length_s with
       | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
-      | None, Some l -> CompareC (Ge, LengthE rhs, l)
-      | Some l1, Some l2 -> CompareC (Eq, LengthE rhs, BinopE (Add, l1, l2))
+      | None, Some l -> CompareC (GeOp, LengthE rhs, l)
+      | Some l1, Some l2 -> CompareC (EqOp, LengthE rhs, BinopE (AddOp, l1, l2))
     in
     [
       IfI

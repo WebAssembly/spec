@@ -68,26 +68,24 @@ and string_of_value = function
   | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
   | OptV None -> "?()"
 
-let string_of_expr_binop = function
-  | Add -> "+"
-  | Sub -> "-"
-  | Mul -> "·"
-  | Div -> "/"
-  | Exp -> "^"
+let string_of_binop = function
+  | AndOp -> "and"
+  | OrOp -> "or"
+  | ImplOp -> "=>"
+  | EquivOp -> "<=>"
+  | AddOp -> "+"
+  | SubOp -> "-"
+  | MulOp -> "·"
+  | DivOp -> "/"
+  | ExpOp -> "^"
 
-let string_of_cond_binop = function
-  | And -> "and"
-  | Or -> "or"
-  | Impl -> "=>"
-  | Equiv -> "<=>"
-
-let string_of_compare_op = function
-  | Eq -> "is"
-  | Ne -> "is not"
-  | Gt -> ">"
-  | Ge -> "≥"
-  | Lt -> "<"
-  | Le -> "≤"
+let string_of_cmpop = function
+  | EqOp -> "is"
+  | NeOp -> "is not"
+  | LtOp -> "<"
+  | GtOp -> ">"
+  | LeOp -> "≤"
+  | GeOp -> "≥"
 
 let rec string_of_iter = function
   | Opt -> "?"
@@ -111,7 +109,7 @@ and string_of_expr = function
   | StringE s -> s
   | MinusE e -> sprintf "-%s" (string_of_expr e)
   | BinopE (op, e1, e2) ->
-      sprintf "(%s %s %s)" (string_of_expr e1) (string_of_expr_binop op) (string_of_expr e2)
+      sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | PairE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | AppE (n, el) ->
       sprintf "$%s(%s)" 
@@ -171,9 +169,9 @@ and string_of_cond = function
       sprintf "%s is not valid" (string_of_expr e)
   | NotC c -> sprintf "not %s" (string_of_cond c)
   | BinopC (op, c1, c2) ->
-      sprintf "%s %s %s" (string_of_cond c1) (string_of_cond_binop op) (string_of_cond c2)
+      sprintf "%s %s %s" (string_of_cond c1) (string_of_binop op) (string_of_cond c2)
   | CompareC (op, e1, e2) ->
-      sprintf "%s %s %s" (string_of_expr e1) (string_of_compare_op op) (string_of_expr e2)
+      sprintf "%s %s %s" (string_of_expr e1) (string_of_cmpop op) (string_of_expr e2)
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_keyword s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_keyword c)
@@ -362,7 +360,7 @@ and structured_string_of_expr = function
   | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
   | BinopE (op, e1, e2) ->
       "BinopE ("
-      ^ string_of_expr_binop op
+      ^ string_of_binop op
       ^ ", "
       ^ structured_string_of_expr e1
       ^ ", "
@@ -475,7 +473,7 @@ and structured_string_of_cond = function
   | NotC c -> "NotC (" ^ structured_string_of_cond c ^ ")"
   | BinopC (op, c1, c2) ->
       "BinopC ("
-      ^ string_of_cond_binop op
+      ^ string_of_binop op
       ^ ", "
       ^ structured_string_of_cond c1
       ^ ", "
@@ -483,7 +481,7 @@ and structured_string_of_cond = function
       ^ ")"
   | CompareC (op, e1, e2) ->
       "CompareC ("
-      ^ string_of_compare_op op
+      ^ string_of_cmpop op
       ^ ", "
       ^ structured_string_of_expr e1
       ^ ", "

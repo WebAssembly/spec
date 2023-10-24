@@ -75,26 +75,24 @@ let render_prose_cmpop = function
   | Le -> "less than or equal to"
   | Ge -> "greater than or equal to"
 
+let render_al_binop = function
+  | Al.Ast.AndOp -> "and"
+  | Al.Ast.OrOp -> "or"
+  | Al.Ast.ImplOp -> "=>"
+  | Al.Ast.EquivOp -> "<=>"
+  | Al.Ast.AddOp -> "+"
+  | Al.Ast.SubOp -> "-"
+  | Al.Ast.MulOp -> "\\cdot"
+  | Al.Ast.DivOp -> "/"
+  | Al.Ast.ExpOp -> "^"
+
 let render_al_cmpop = function
-  | Al.Ast.Eq -> "is"
-  | Al.Ast.Ne -> "is not"
-  | Al.Ast.Gt -> "is greater than"
-  | Al.Ast.Ge -> "is greater than or equal to"
-  | Al.Ast.Lt -> "is less than"
-  | Al.Ast.Le -> "is less than or equal to"
-
-let render_al_logop = function
-  | Al.Ast.And -> "and"
-  | Al.Ast.Or -> "or"
-  | Al.Ast.Impl -> "=>"
-  | Al.Ast.Equiv -> "<=>"
-
-let render_al_mathop = function
-  | Al.Ast.Add -> "+"
-  | Al.Ast.Sub -> "-"
-  | Al.Ast.Mul -> "\\cdot"
-  | Al.Ast.Div -> "/"
-  | Al.Ast.Exp -> "^"
+  | Al.Ast.EqOp -> "is"
+  | Al.Ast.NeOp -> "is not"
+  | Al.Ast.LtOp -> "is less than"
+  | Al.Ast.GtOp -> "is greater than"
+  | Al.Ast.LeOp -> "is less than or equal to"
+  | Al.Ast.GeOp -> "is greater than or equal to"
 
 (* Names and Iters *)
 
@@ -140,7 +138,7 @@ and render_expr env in_math = function
       let s = sprintf "-%s" se in
       if in_math then s else render_math s
   | Al.Ast.BinopE (op, e1, e2) ->
-      let sop = render_al_mathop op in
+      let sop = render_al_binop op in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "{%s} %s {%s}" se1 sop se2 in
@@ -303,7 +301,7 @@ and render_cond env = function
       sprintf "%s is not valid" (render_expr env false e)
   | Al.Ast.NotC c -> sprintf "not %s" (render_cond env c)
   | Al.Ast.BinopC (op, c1, c2) ->
-      sprintf "%s %s %s" (render_cond env c1) (render_al_logop op) (render_cond env c2)
+      sprintf "%s %s %s" (render_cond env c1) (render_al_binop op) (render_cond env c2)
   | Al.Ast.CompareC (op, e1, e2) ->
       sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_keyword env s)

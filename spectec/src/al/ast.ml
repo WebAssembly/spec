@@ -35,26 +35,24 @@ type extend_dir =                       (* direction of extension *)
 
 (* Operators *)
 
-type expr_binop =
-  | Add    (* `+` *)
-  | Sub    (* `-` *)
-  | Mul    (* `*` *)
-  | Div    (* `/` *)
-  | Exp    (* `^` *)
+type binop =
+  | AndOp    (* `/\` *)
+  | OrOp     (* `\/` *)
+  | ImplOp   (* `=>` *)
+  | EquivOp  (* `<=>` *)
+  | AddOp    (* `+` *)
+  | SubOp    (* `-` *)
+  | MulOp    (* `*` *)
+  | DivOp    (* `/` *)
+  | ExpOp    (* `^` *)
 
-type cond_binop =
-  | And    (* `/\` *)
-  | Or     (* `\/` *)
-  | Impl   (* `=>` *)
-  | Equiv  (* `<=>` *)
-
-type compare_op =
-  | Eq     (* `=` *)
-  | Ne     (* `=/=` *)
-  | Lt     (* `<` *)
-  | Gt     (* `>` *)
-  | Le     (* `<=` *)
-  | Ge     (* `>=` *)
+type cmpop =
+  | EqOp     (* `=` *)
+  | NeOp     (* `=/=` *)
+  | LtOp     (* `<` *)
+  | GtOp     (* `>` *)
+  | LeOp     (* `<=` *)
+  | GeOp     (* `>=` *)
 
 (* Iteration *)
 
@@ -72,7 +70,7 @@ and expr =
   | StringE of string
   (* Numeric Operation *)
   | MinusE of expr
-  | BinopE of expr_binop * expr * expr
+  | BinopE of binop * expr * expr
   (* Function Call *)
   | AppE of funcname * expr list
   (* Data Structure *)
@@ -109,8 +107,8 @@ and path =
 
 and cond =
   | NotC of cond
-  | BinopC of cond_binop * cond * cond
-  | CompareC of compare_op * expr * expr
+  | BinopC of binop * cond * cond
+  | CompareC of cmpop * expr * expr
   | IsCaseOfC of expr * keyword 
   | ValidC of expr
 
