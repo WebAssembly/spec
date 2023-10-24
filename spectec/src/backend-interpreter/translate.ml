@@ -153,7 +153,7 @@ and exp2expr exp =
       | Ast.MulOp -> Mul
       | Ast.DivOp -> Div
       | Ast.ExpOp -> Exp
-      | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
+      | _ -> Add (* TODO *)
       in
       BinopE (op, lhs, rhs)
   (* ConstructE *)
@@ -593,7 +593,8 @@ let rec rulepr2instr pr =
       instr
       |> Al.Print.string_of_instr (ref 0) 0
       |> Printf.sprintf "Invalid RulePr: %s"
-      |> failwith
+      |> print_endline;
+      instr
     end
   (* Exec_expr_const *)
   | Ast.RulePr (
@@ -616,7 +617,7 @@ let rec rulepr2instr pr =
       ListE [ConstructE (("FRAME_", ""), [])],
       [ LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ])) ]
     )
-  | _ -> failwith "We do not allow iter on premises other than `RulePr`"
+  | _ -> YetI "TODO: We do not support iter on premises other than `RulePr`"
 
 (** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
 let prems2instrs remain_lhs =
@@ -726,8 +727,8 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let head_instrs = handle_context context vs in
       let body_instrs = List.map (reduction2instrs []) reduction_group |> List.concat in
       head_instrs @ body_instrs
-    (* The target ubstruction is inside differnet contexts (i.e. return in both label and frame) *)
-    | [ ([], [ _ ]), None ] ->
+    (* The target instruction is inside differnet contexts (i.e. return in both label and frame) *)
+    | [ ([], [ _ ]), None ] -> ( try
       let orig_group = List.map un_unify reduction_group in
       let sub_groups = list_partition_with is_in_same_context orig_group in
       let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
@@ -742,6 +743,9 @@ let rec reduction_group2algo (instr_name, reduction_group) =
             acc) ]
         | _ -> failwith "unreachable")
       lhss sub_algos []
+      with
+      | _ -> [ YetI "TODO: It is likely that the value stack of two rules are differ" ]
+      )
     | _ ->
       [ YetI "TODO" ] in
 
@@ -848,6 +852,7 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let name = id.it in
+      prerr_endline name;
       let unified_clauses = Il2il.unify_defs clauses in
       let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
       let al_params =

@@ -163,8 +163,8 @@ open Il.Ast
 type env' = iter list Env.t
 type occur = Il.Ast.iter list Env.t
 
-let union = Env.union (fun _ ctx1 ctx2 -> assert (ctx1 = ctx2); Some ctx1)
-
+let union = Env.union (fun _ ctx1 ctx2 ->
+  Some (if List.length ctx1 < List.length ctx2 then ctx1 else ctx2))
 
 let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)

@@ -181,9 +181,10 @@ let as_tup_typ phrase env dir t at : typ list =
   | _ -> error_dir_typ at phrase dir t "(_,...,_)"
 
 
-let as_notation_typid' phrase env id at : typ =
+let rec as_notation_typid' phrase env id at : typ =
   match as_defined_typid' env id at with
-  | (AtomT _ | SeqT _ | InfixT _ | BrackT _) as t, _ -> t $ at
+  | VarT id', `Alias -> as_notation_typid' phrase env id' at
+  | (AtomT _ | SeqT _ | InfixT _ | BrackT _ | IterT _) as t, _ -> t $ at
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "_ ... _"
 
 let as_notation_typ phrase env dir t at : typ =
@@ -191,8 +192,9 @@ let as_notation_typ phrase env dir t at : typ =
   | VarT id -> as_notation_typid' phrase env id at
   | _ -> error_dir_typ at phrase dir t "_ ... _"
 
-let as_struct_typid' phrase env id at : typfield list =
+let rec as_struct_typid' phrase env id at : typfield list =
   match as_defined_typid' env id at with
+  | VarT id', `Alias -> as_struct_typid' phrase env id' at
   | StrT tfs, _ -> filter_nl tfs
   | _ -> error_dir_typ at phrase Infer (VarT id $ id.at) "| ..."
 
@@ -203,6 +205,7 @@ let as_struct_typ phrase env dir t at : typfield list =
 
 let rec as_variant_typid' phrase env id at : typcase list * dots =
   match as_defined_typid' env id at with
+  | VarT id', `Alias -> as_variant_typid' phrase env id' at
   | CaseT (_dots1, ids, cases, dots2), _ ->
     let casess = map_nl_list (as_variant_typid "" env) ids in
     List.concat (filter_nl cases :: List.map fst casess), dots2
@@ -272,12 +275,21 @@ let elab_atom = function
   | Dot2 -> Il.Dot2
   | Dot3 -> Il.Dot3
   | Semicolon -> Il.Semicolon
+  | Backslash -> Il.Backslash
+  | In -> Il.In
   | Arrow -> Il.Arrow
   | Colon -> Il.Colon
   | Sub -> Il.Sub
+  | Assign -> Il.Assign
+  | Approx -> Il.Approx
   | SqArrow -> Il.SqArrow
+  | SqArrowStar -> Il.SqArrowStar
+  | Prec -> Il.Prec
+  | Succ -> Il.Succ
   | Turnstile -> Il.Turnstile
   | Tilesturn -> Il.Tilesturn
+  | Quest -> Il.Quest
+  | Star -> Il.Star
 
 let elab_brack = function
   | Paren -> Il.LParen, Il.RParen
@@ -620,8 +632,7 @@ and elab_exp env e t : Il.exp =
   | EpsE | SeqE _ when is_iter_typ env t ->
     let e1 = unseq_exp e in
     elab_exp_iter env e1 (as_iter_typ "" env Check t e.at) t e.at
-  | EpsE ->
-    error_typ e.at "empty expression" t
+  | EpsE
   | AtomE _
   | InfixE _
   | BrackE _
@@ -1063,15 +1074,17 @@ let elab_def env d : Il.def list =
     let e2' = Multiplicity.annot_exp dims' (elab_exp env e2 t2) in
     let prems' = List.map (Multiplicity.annot_prem dims')
       (map_nl_list (elab_prem env) prems) in
+(*
     let free_rh =
       Free.(Set.diff (Set.diff (free_exp e2).varid
-        (free_exp e1).varid) (free_list free_prem (filter_nl prems)).varid)
+        (free_exp e1).varid) (free_nl_list free_prem prems).varid)
     in
     if free_rh <> Free.Set.empty then
       error d.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`");
-    let free = Free.(Set.union
-      (free_exp e1).varid (free_nl_list free_prem prems).varid) in
+*)
+    let free = Free.(Set.union (Set.union
+      (free_exp e1).varid (free_exp e2).varid) (free_nl_list free_prem prems).varid) in
     let binds' = make_binds env free dims d.at in
     let clause' = Il.DefD (binds', e1', e2', prems') $ d.at in
     env.defs <- rebind "definition" env.defs id (t1, t2, clause'::clauses');

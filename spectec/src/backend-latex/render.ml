@@ -14,7 +14,7 @@ let error at msg = Source.error at "latex generation" msg
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
-type rel_sort = TypingRel | ReductionRel
+type rel_sort = TypingRel | ReductionRel | ExpansionRel
 
 type env =
   { config : config;
@@ -187,6 +187,9 @@ let lower = String.lowercase_ascii
 
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
+let rec chop_tick id =
+  if id.[String.length id - 1] <> '\'' then id else
+  chop_tick (String.sub id 0 (String.length id - 1))
 
 let rec chop_sub_exp e =
   match e.it with
@@ -219,23 +222,23 @@ let render_id' env style id =
 let rec render_id_sub env style show at = function
   | [] -> ""
   | ""::ss -> render_id_sub env style show at ss
-  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem s !(env.vars)) ->
-    render_id_sub env `Atom show at (lower s ::ss)  (* subscripts may be atoms *)
+  | s::ss when style = `Var && is_upper s.[0] && not (Set.mem (chop_tick s) !(env.vars)) ->
+    render_id_sub env `Atom show at (lower s :: ss)  (* subscripts may be atoms *)
   | s1::""::ss -> render_id_sub env style show at (s1::ss)
   | s1::s2::ss when style = `Atom && is_upper s2.[0] ->
     render_id_sub env `Atom show at ((s1 ^ "_" ^ lower s2)::ss)
   | s::ss ->
-    let rec find_primes i =
-      if i > 0 && s.[i - 1] = '\'' then find_primes (i - 1) else i
+    let rec find_ticks i =
+      if i > 0 && s.[i - 1] = '\'' then find_ticks (i - 1) else i
     in
     let n = String.length s in
-    let i = find_primes n in
+    let i = find_ticks n in
     let s' = String.sub s 0 i in
     let s'' =
       if String.for_all is_digit s' then s' else
       !render_expand_fwd env show (s' $ at) [] (fun () -> render_id' env style s')
     in
-    (if i = n then s'' else "{" ^ s'' ^ String.sub s i (n - i) ^ "}") ^
+    "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
     (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var at ss ^ "}")
 
 let render_id env style show id =
@@ -275,16 +278,25 @@ let render_atom env = function
   | Dot2 -> ".."
   | Dot3 -> "\\dots"
   | Semicolon -> ";"
+  | Backslash -> "\\setminus"
+  | In -> "\\in"
   | Arrow -> "\\rightarrow"
   | Colon -> ":"
   | Sub -> "\\leq"
+  | Assign -> ":="
+  | Approx -> "\\approx"
   | SqArrow -> "\\hookrightarrow"
+  | SqArrowStar -> "\\hookrightarrow^\\ast"
+  | Prec -> "\\prec"
+  | Succ -> "\\succ"
   | Tilesturn -> "\\dashv"
   | Turnstile ->
     if env.config.macros_for_vdash then
       "\\vdash" ^ env.current_rel
     else
       "\\vdash"
+  | Quest -> "{}^?"
+  | Star -> "{}^\\ast"
 
 let render_brack = function
   | Paren -> "(", ")"
@@ -710,13 +722,13 @@ let render_conditions env tabs = function
 let render_reddef env d =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
-    let e1, e2 =
+    let e1, op, e2 =
       match e.it with
-      | InfixE (e1, SqArrow, e2) -> e1, e2
+      | InfixE (e1, op, e2) -> e1, op, e2
       | _ -> error e.at "unrecognized format for reduction rule"
     in
     render_rule_deco env "" id1 id2 " \\quad " ^ "& " ^
-      render_exp env e1 ^ " &" ^ render_atom env SqArrow ^ "& " ^
+      render_exp env e1 ^ " &" ^ render_atom env op ^ "& " ^
         render_exp env e2 ^ render_conditions env "&&&&" prems
   | _ -> failwith "render_reddef"
 
@@ -737,7 +749,8 @@ let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
 let rec classify_rel e : rel_sort option =
   match e.it with
   | InfixE (_, Turnstile, _) -> Some TypingRel
-  | InfixE (_, SqArrow, _) -> Some ReductionRel
+  | InfixE (_, (SqArrow | SqArrowStar), _) -> Some ReductionRel
+  | InfixE (_, Approx, _) -> Some ExpansionRel
   | InfixE (e1, _, e2) ->
     (match classify_rel e1 with
     | None -> classify_rel e2
@@ -769,6 +782,10 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
+        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
+          render_sep_defs (render_reddef env) ds ^
+        "\\end{array}"
+      | Some ExpansionRel ->
         "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
@@ -828,6 +845,10 @@ let rec render_script env = function
         "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
         render_script env ds
       | Some ReductionRel ->
+        let reddefs, ds' = split_reddefs id1.it [d] ds in
+        "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
+        render_script env ds'
+      | Some ExpansionRel ->
         let reddefs, ds' = split_reddefs id1.it [d] ds in
         "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
         render_script env ds'

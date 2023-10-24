@@ -55,12 +55,12 @@ let rec prem_to_instrs prem = match prem.it with
     ( match exp_to_args exp with
     | [c; e; t] -> [ MustValidI (c, e, Some t) ]
     | [c; e] -> [ MustValidI (c, e, None) ]
-    | _ -> failwith "prem_to_instr: Invalid prem"
+    | _ -> failwith "prem_to_instr: Invalid prem 1"
     )
   | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_sub" id.it ->
     ( match exp_to_args exp with
     | [t1; t2] -> [ MustMatchI (t1, t2) ]
-    | _ -> failwith "prem_to_instr: Invalid prem"
+    | _ -> print_endline "prem_to_instr: Invalid prem 2"; [ YetI "TODO: prem_to_instrs 2" ]
     )
   | Ast.IterPr (prem, iter) ->
     ( match iter with
@@ -68,7 +68,7 @@ let rec prem_to_instrs prem = match prem.it with
     | Ast.List, [id] ->
         let name = Al.Ast.NameE id.it in
         [ ForallI (name, Al.Ast.IterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
-    | _ -> failwith "prem_to_instr: Invalid prem")
+    | _ -> print_endline "prem_to_instr: Invalid prem 3"; [ YetI "TODO: prem_to_intrs 3" ])
   | _ ->
     let s = Il.Print.string_of_prem prem in
     print_endline ("prem_to_instrs: Invalid prem (" ^ s ^ ")");

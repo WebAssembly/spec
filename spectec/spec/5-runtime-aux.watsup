@@ -1,0 +1,156 @@
+;;
+;; Auxiliary definitions on Types
+;;
+
+;; Instantiation
+
+def $inst_reftype(moduleinst, reftype) : reftype  hint(show $inst_(%,%))
+
+def $inst_reftype(mm, rt) = $subst_all_reftype(rt, dt*)
+  -- if dt* = mm.TYPE
+
+
+;;
+;; Auxiliary definitions on Values
+;;
+
+;; Default values
+
+def $default(valtype) : val?  hint(show $default_%)
+
+def $default(I32) = (CONST I32 0)
+def $default(I64) = (CONST I64 0)
+def $default(F32) = (CONST F32 0)
+def $default(F64) = (CONST F64 0)
+def $default(REF NULL ht) = (REF.NULL ht)
+def $default(REF epsilon ht) = epsilon
+
+
+;; Packed fields
+
+def $packval(storagetype, val) : fieldval         hint(show $pack_(%,%))
+def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
+
+def $packval(t, val) = val
+def $packval(pt, CONST I32 i) = PACK pt $wrap(32, $packedsize(pt), i)
+
+def $unpackval(t, epsilon, val) = val
+def $unpackval(pt, sx, PACK pt i) = CONST I32 $ext($packedsize(pt), 32, sx, i)
+
+
+;; Projections
+
+def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))
+def $globalsxv(externval*) : globaladdr* hint(show $globals(%))
+def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))
+def $memsxv(externval*) : memaddr*       hint(show $mems(%))
+
+def $funcsxv(epsilon) = epsilon
+def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
+def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
+
+def $globalsxv(epsilon) = epsilon
+def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
+def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
+
+def $tablesxv(epsilon) = epsilon
+def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
+def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
+
+def $memsxv(epsilon) = epsilon
+def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
+def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
+
+
+
+;;
+;; Auxiliary definitions on State
+;;
+
+;; Short-hands
+
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
+def $funcaddr((s; f)) = f.MODULE.FUNC
+
+def $funcinst(state) : funcinst*      hint(show %.FUNC)
+def $globalinst(state) : globalinst*  hint(show %.GLOBAL)
+def $tableinst(state) : tableinst*    hint(show %.TABLE)
+def $meminst(state) : meminst*        hint(show %.MEM)
+def $eleminst(state) : eleminst*      hint(show %.ELEM)
+def $datainst(state) : datainst*      hint(show %.DATA)
+def $structinst(state) : structinst*  hint(show %.STRUCT)
+def $arrayinst(state) : arrayinst*    hint(show %.ARRAY)
+
+def $funcinst((s; f)) = s.FUNC
+def $globalinst((s; f)) = s.GLOBAL
+def $tableinst((s; f)) = s.TABLE
+def $meminst((s; f)) = s.MEM
+def $eleminst((s; f)) = s.ELEM
+def $datainst((s; f)) = s.DATA
+def $structinst((s; f)) = s.STRUCT
+def $arrayinst((s; f)) = s.ARRAY
+
+def $type(state, typeidx) : deftype         hint(show %.TYPE`[%])
+def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
+def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
+def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
+def $mem(state, memidx) : meminst           hint(show %.MEM#`[%])
+def $elem(state, tableidx) : eleminst       hint(show %.ELEM#`[%])
+def $data(state, dataidx) : datainst        hint(show %.DATA#`[%])
+def $local(state, localidx) : val?          hint(show %.LOCAL#`[%])
+
+def $type((s; f), x) = f.MODULE.TYPE[x]
+def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
+def $global((s; f), x) = s.GLOBAL[f.MODULE.GLOBAL[x]]
+def $table((s; f), x) = s.TABLE[f.MODULE.TABLE[x]]
+def $mem((s; f), x) = s.MEM[f.MODULE.MEM[x]]
+def $elem((s; f), x) = s.ELEM[f.MODULE.ELEM[x]]
+def $data((s; f), x) = s.DATA[f.MODULE.DATA[x]]
+def $local((s; f), x) = f.LOCAL[x]
+
+
+;; Update
+
+def $with_local(state, localidx, val) : state               hint(show %[.LOCAL[%] = %])
+def $with_global(state, globalidx, val) : state             hint(show %[.GLOBAL[%].VALUE = %])
+def $with_table(state, tableidx, nat, ref) : state          hint(show %[.TABLE[%].ELEM[%] = %])
+def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLE[%] = %])
+def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEM[%].DATA[% : %] = %])
+def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEM[%] = %])
+def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEM[%].ELEM = %])
+def $with_data(state, dataidx, byte*) : state               hint(show %[.DATA[%].DATA = %])
+def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCT[%].FIELD[i] = %])
+def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.STRUCT[%].FIELD[i] = %])
+
+def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
+def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]].VALUE = v]; f
+def $with_table((s; f), x, i, r) = s[.TABLE[f.MODULE.TABLE[x]].ELEM[i] = r]; f
+def $with_tableinst((s; f), x, ti) = s[.TABLE[f.MODULE.TABLE[x]] = ti]; f
+def $with_mem((s; f), x, i, j, b*) = s[.MEM[f.MODULE.MEM[x]].DATA[i : j] = b*]; f
+def $with_meminst((s; f), x, mi) = s[.MEM[f.MODULE.MEM[x]] = mi]; f
+def $with_elem((s; f), x, r*) = s[.ELEM[f.MODULE.ELEM[x]].ELEM = r*]; f
+def $with_data((s; f), x, b*) = s[.DATA[f.MODULE.DATA[x]].DATA = b*]; f
+def $with_struct((s; f), a, i, fv) = s[.STRUCT[a].FIELD[i] = fv]; f
+def $with_array((s; f), a, i, fv) = s[.ARRAY[a].FIELD[i] = fv]; f
+
+def $ext_structinst(state, structinst*) : state  hint(show %[.STRUCT =.. %])
+def $ext_arrayinst(state, arrayinst*) : state    hint(show %[.ARRAY =.. %])
+
+def $ext_structinst((s; f), si*) = s[.STRUCT =.. si*]; f
+def $ext_arrayinst((s; f), ai*) = s[.ARRAY =.. ai*]; f
+
+
+;; Growing
+
+def $growtable(tableinst, nat, ref) : tableinst hint(partial)
+def $growmemory(meminst, nat) : meminst hint(partial)
+
+def $growtable(ti, n, r) = { TYPE tt', ELEM r'* r^n }
+  -- if ti = { TYPE (`[i .. j] rt), ELEM r'* }
+  -- if tt' = `[($(i + n)) .. j] rt
+  -- if $(i + n <= j)
+
+def $growmemory(mi, n) = { TYPE mt', DATA b* 0^(n * 64 * $Ki) }
+  -- if mi = { TYPE (`[i .. j] I8), DATA b* }
+  -- if mt' = `[($(i + n)) .. j] I8
+  -- if $(i + n <= j)

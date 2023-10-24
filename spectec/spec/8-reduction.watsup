@@ -1,0 +1,721 @@
+;;
+;; Configurations
+;;
+
+relation Step: config ~> config                 hint(show "E")
+relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
+relation Step_read: config ~> admininstr*       hint(show "E")
+
+rule Step/pure:
+  z; instr*  ~>  z; instr'*
+  -- Step_pure: instr* ~> instr'*
+
+rule Step/read:
+  z; instr*  ~>  z; instr'*
+  -- Step_read: z; instr* ~> instr'*
+
+
+;; Expressions
+
+relation Eval: config ~>* state; val*  hint(show "E-expr")
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
+
+rule Eval/done:
+  z; val* ~>* z; val*
+
+rule Eval/step:
+  z; admininstr*  ~>*  z''; val*
+  -- Step: z; admininstr*  ~>  z'; admininstr'*
+  -- Eval: z'; admininstr'  ~>*  z''; val*
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Eval: z; instr*  ~>*  z; val*
+
+
+;;
+;; Instructions
+;;
+
+;; Polymorphic instructions
+
+rule Step_pure/unreachable:
+  UNREACHABLE  ~>  TRAP
+
+rule Step_pure/nop:
+  NOP  ~>  epsilon
+
+rule Step_pure/drop:
+  val DROP  ~>  epsilon
+
+
+rule Step_pure/select-true:
+  val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_1
+  -- if c =/= 0
+
+rule Step_pure/select-false:
+  val_1 val_2 (CONST I32 c) (SELECT t?)  ~>  val_2
+  -- if c = 0
+
+
+;; Block instructions
+
+rule Step_pure/block:
+  val^k (BLOCK bt instr*)  ~>  (LABEL_ n `{epsilon} val^k instr*)
+  -- if bt = t_1^k -> t_2^n
+
+rule Step_pure/loop:
+  val^k (LOOP bt instr*)  ~>  (LABEL_ k `{LOOP bt instr*} val^k instr*)
+  -- if bt = t_1^k -> t_2^n
+
+rule Step_pure/if-true:
+  (CONST I32 c) (IF bt instr_1* ELSE instr_2*)  ~>  (BLOCK bt instr_1*)
+  -- if c =/= 0
+
+rule Step_pure/if-false:
+  (CONST I32 c) (IF bt instr_1* ELSE instr_2*)  ~>  (BLOCK bt instr_2*)
+  -- if c = 0
+
+
+rule Step_pure/label-vals:
+  (LABEL_ n `{instr*} val*)  ~>  val*
+
+
+;; Branch instructions
+
+;; TODO: may want a label context instead of bubbling up
+rule Step_pure/br-zero:
+  (LABEL_ n `{instr'*} val'* val^n (BR 0) instr*)  ~>  val^n instr'*
+
+rule Step_pure/br-succ:
+  (LABEL_ n `{instr'*} val* (BR $(l+1)) instr*)  ~>  val* (BR l)
+
+
+rule Step_pure/br_if-true:
+  (CONST I32 c) (BR_IF l)  ~>  (BR l)
+  -- if c =/= 0
+
+rule Step_pure/br_if-false:
+  (CONST I32 c) (BR_IF l)  ~>  epsilon
+  -- if c = 0
+
+
+rule Step_pure/br_table-lt:
+  (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l*[i])
+  -- if i < |l*|
+
+rule Step_pure/br_table-ge:
+  (CONST I32 i) (BR_TABLE l* l')  ~>  (BR l')
+  -- if i >= |l*|
+
+
+rule Step_read/br_on_cast-succeed:
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
+  -- Ref_ok: s |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+
+rule Step_read/br_on_cast-fail:
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
+  -- otherwise
+
+
+rule Step_read/br_on_cast_fail-succeed:
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
+  -- Ref_ok: s |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+
+rule Step_read/br_on_cast_fail-fail:
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
+  -- otherwise
+
+
+;; Function instructions
+
+rule Step_read/call:
+  z; (CALL x)  ~>  (CALL_REF $funcaddr(z)[x])
+
+rule Step_read/call_ref-null:
+  z; (REF.NULL ht) (CALL_REF x)  ~>  TRAP
+
+rule Step_read/call_ref-func:
+  z; val^n (REF.FUNC_ADDR a) (CALL_REF x)  ~>  (FRAME_ m `{f} (LABEL_ m `{epsilon} instr*))
+  -- if $funcinst(z)[a] = fi
+  -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
+  -- if fi.CODE = FUNC x (LOCAL t)* (instr*)
+  -- if f = {LOCAL val^n ($default(t))*, MODULE fi.MODULE}
+
+
+rule Step_read/return_call:
+  z; (RETURN_CALL x)  ~>  (RETURN_CALL_REF $funcaddr(z)[x])
+
+rule Step_read/return_call_ref-frame:
+  z; (FRAME_ k `{f} val'* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (CALL_REF x)
+  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
+
+rule Step_read/return_call_ref-label:
+  z; (LABEL_ k `{instr'*} val'* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (RETURN_CALL_REF x)
+  -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
+
+
+rule Step_pure/call_indirect-call:
+  (CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (CALL_REF y)
+
+rule Step_pure/return_call_indirect:
+  (RETURN_CALL_INDIRECT x y)  ~>  (TABLE.GET x) (REF.CAST (REF NULL $idx(y))) (RETURN_CALL_REF y)
+
+
+rule Step_pure/frame-vals:
+  (FRAME_ n `{f} val^n)  ~>  val^n
+
+rule Step_pure/return-frame:
+  (FRAME_ n `{f} val'* val^n RETURN instr*)  ~>  val^n
+
+rule Step_pure/return-label:
+  (LABEL_ k `{instr'*} val* RETURN instr*)  ~>  val* RETURN
+
+
+;; Numeric instructions
+
+rule Step_pure/unop-val:
+  (CONST nt c_1) (UNOP nt unop)  ~>  (CONST nt c)
+  -- if $unop(unop, nt, c_1) = c  ;; TODO
+
+rule Step_pure/unop-trap:
+  (CONST nt c_1) (UNOP nt unop)  ~>  TRAP
+  -- if $unop(unop, nt, c_1) = epsilon  ;; TODO
+
+
+rule Step_pure/binop-val:
+  (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  (CONST nt c)
+  -- if $binop(binop, nt, c_1, c_2) = c  ;; TODO
+
+rule Step_pure/binop-trap:
+  (CONST nt c_1) (CONST nt c_2) (BINOP nt binop)  ~>  TRAP
+  -- if $binop(binop, nt, c_1, c_2) = epsilon  ;; TODO
+
+
+rule Step_pure/testop:
+  (CONST nt c_1) (TESTOP nt testop)  ~>  (CONST I32 c)
+  -- if c = $testop(testop, nt, c_1)
+
+rule Step_pure/relop:
+  (CONST nt c_1) (CONST nt c_2) (RELOP nt relop)  ~>  (CONST I32 c)
+  -- if c = $relop(relop, nt, c_1, c_2)
+
+
+rule Step_pure/extend:
+  (CONST nt c) (EXTEND nt n)  ~>  (CONST nt $ext(n, $size(nt), S, c))
+
+
+rule Step_pure/cvtop-val:
+  (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  (CONST nt_2 c)
+  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = c  ;; TODO
+
+rule Step_pure/cvtop-trap:
+  (CONST nt_1 c_1) (CVTOP nt_2 cvtop nt_1 sx?)  ~>  TRAP
+  -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = epsilon  ;; TODO
+
+
+;; Reference instructions
+
+rule Step_read/ref.func:
+  z; (REF.FUNC x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x])
+
+rule Step_pure/ref.i31:
+  (CONST I32 i) REF.I31  ~>  (REF.I31_NUM $wrap(32, 31, i))
+
+
+rule Step_pure/ref.is_null-true:
+  val REF.IS_NULL  ~>  (CONST I32 1)
+  -- if val = (REF.NULL ht)
+
+rule Step_pure/ref.is_null-false:
+  val REF.IS_NULL  ~>  (CONST I32 0)
+  -- otherwise
+
+
+rule Step_pure/ref.as_non_null-null:
+  ref REF.AS_NON_NULL  ~>  TRAP
+  -- if ref = (REF.NULL ht)
+
+rule Step_pure/ref.as_non_null-null:
+  ref REF.AS_NON_NULL  ~>  ref
+  -- otherwise
+
+
+rule Step_pure/ref.eq-null:
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- if ref_1 = (REF.NULL ht_1) /\ ref_2 = (REF.NULL ht_2)
+
+rule Step_pure/ref.eq-true:
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- if ref_1 = ref_2
+
+rule Step_pure/ref.eq-false:
+  ref_1 ref_2 REF.EQ  ~>  (CONST I32 0)
+  -- otherwise
+
+
+rule Step_read/ref.test-true:
+  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 1)
+  -- Ref_ok: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+
+rule Step_read/ref.test-false:
+  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 0)
+  -- otherwise
+
+
+rule Step_read/ref.cast-succeed:
+  (s; f); ref (REF.CAST rt)  ~>  ref
+  -- Ref_ok: s |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+
+rule Step_read/ref.cast-fail:
+  (s; f); ref (REF.CAST rt)  ~>  TRAP
+  -- otherwise
+
+
+;; Scalar reference instructions
+
+rule Step_pure/i31.get-null:
+  (REF.NULL ht) (I31.GET sx)  ~>  TRAP
+
+rule Step_pure/i31.get-num:
+  (REF.I31_NUM i) (I31.GET sx)  ~>  (CONST I32 $ext(31, 32, sx, i))
+
+
+;; Structure instructions
+
+rule Step/struct.new:
+  z; val^n (STRUCT.NEW x)  ~>  $ext_structinst(z, si); (REF.STRUCT_ADDR $(|$structinst(z)|))
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)^n
+  -- if si = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
+
+rule Step_read/struct.new_default:
+  z; (STRUCT.NEW_DEFAULT x)  ~>  val* (STRUCT.NEW x)
+  -- Expand: $type(z, x) ~~ STRUCT (mut zt)*
+  -- if ($default($unpacktype(zt)) = val)*
+
+
+rule Step_read/struct.get-null:
+  z; (REF.NULL ht) (STRUCT.GET sx? x i)  ~>  TRAP
+
+rule Step_read/struct.get-struct:
+  z; (REF.STRUCT_ADDR a) (STRUCT.GET sx? x i)  ~>  $unpackval(zt*[i], sx?, si.FIELD[i])
+  -- if $structinst(z)[a] = si
+  -- Expand: si.TYPE ~~ STRUCT (mut zt)*
+
+
+rule Step/struct.set-null:
+  z; (REF.NULL ht) val (STRUCT.SET x i)  ~>  z; TRAP
+
+rule Step/struct.set-struct:
+  z; (REF.STRUCT_ADDR a) val (STRUCT.SET x i)  ~>  $with_struct(z, a, i, fv); epsilon
+  -- Expand: $structinst(z)[a].TYPE ~~ STRUCT (mut zt)*
+  -- if fv = $packval(zt*[i], val)
+
+
+;; Array instructions
+
+rule Step_read/array.new:
+  z; val (CONST I32 n) (ARRAY.NEW x)  ~>  val^n (ARRAY.NEW_FIXED x n)
+
+rule Step_read/array.new_default:
+  z; (CONST I32 n) (ARRAY.NEW_DEFAULT x)  ~>  val^n (ARRAY.NEW_FIXED x n)
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $default($unpacktype(zt)) = val
+
+rule Step/array.new_fixed:
+  z; val^n (ARRAY.NEW_FIXED x n)  ~>  $ext_arrayinst(z, ai); (REF.ARRAY_ADDR $(|$arrayinst(z)|))
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if ai = {TYPE $type(z, x), FIELD ($packval(zt, val))^n}
+
+
+rule Step_read/array.new_elem-oob:
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_ELEM x y)  ~>  TRAP
+  -- if $(i + n > |$elem(z, y).ELEM|)
+
+rule Step_read/array.new_elem-alloc:
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_ELEM x y)  ~>  ref^n (ARRAY.NEW_FIXED x n)
+  -- if ref^n = $elem(z, y).ELEM[i : n]
+
+
+rule Step_read/array.new_data-oob:
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  TRAP
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $(i + n * $storagesize(zt)/8 > |$data(z, y).DATA|)
+
+rule Step_read/array.new_data-alloc:
+  z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  (CONST nt c)^n (ARRAY.NEW_FIXED x n)
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if nt = $unpacknumtype(zt)
+  -- if $bytes($storagesize(zt), c)^n = $data(z, y).DATA[i : n * $storagesize(zt)/8]
+
+
+rule Step_read/array.get-null:
+  z; (REF.NULL ht) (CONST I32 i) (ARRAY.GET sx? x)  ~>  TRAP
+
+rule Step_read/array.get-array:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(zt, sx?, ai.FIELD[i])
+  -- if $arrayinst(z)[a] = ai
+  -- Expand: ai.TYPE ~~ ARRAY (mut zt)
+
+
+rule Step/array.set-null:
+  z; (REF.NULL ht) val (ARRAY.SET x)  ~>  z; TRAP
+
+rule Step/array.set-array:
+  z; (REF.ARRAY_ADDR a) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); epsilon
+  -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
+  -- if fv = $packval(zt, val)
+
+
+rule Step_read/array.len-null:
+  z; (REF.NULL ht) ARRAY.LEN  ~>  TRAP
+
+rule Step_read/array.len-array:
+  z; (REF.ARRAY_ADDR a) ARRAY.LEN  ~>  (CONST I32 n)
+  -- if n = |$arrayinst(z)[a].FIELD|
+
+
+rule Step_read/array.fill-null:
+  z; (REF.NULL ht) (CONST I32 i) val (CONST I32 n) (ARRAY.FILL x)  ~>  TRAP
+
+rule Step_read/array.fill-oob:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 n) (ARRAY.FILL x)  ~>  TRAP
+  -- if $(i + n > |$arrayinst(z)[a].FIELD|)
+
+rule Step_read/array.fill-zero:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 0) (ARRAY.FILL x)  ~>  epsilon
+  -- otherwise
+
+rule Step_read/array.fill-succ:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 $(n + 1)) (ARRAY.FILL x)  ~>
+    (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) val (CONST I32 n) (ARRAY.FILL x)
+
+
+rule Step_read/array.copy-null1:
+  z; (REF.NULL ht_1) (CONST I32 i_1) ref (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  TRAP
+
+rule Step_read/array.copy-null2:
+  z; ref (CONST I32 i_1) (REF.NULL ht_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  TRAP
+
+rule Step_read/array.copy-oob1:
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  TRAP
+  -- if $(i_1 + n > |$arrayinst(z)[a_1].FIELD|)
+
+rule Step_read/array.copy-oob2:
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  TRAP
+  -- if $(i_2 + n > |$arrayinst(z)[a_2].FIELD|)
+
+rule Step_read/array.copy-zero:
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 0) (ARRAY.COPY x_1 x_2)  ~>  epsilon
+  -- otherwise
+
+rule Step_read/array.copy-le:
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n + 1)) (ARRAY.COPY x_1 x_2)  ~>
+    (REF.ARRAY_ADDR a_1) (CONST I32 i_1)
+    (REF.ARRAY_ADDR a_2) (CONST I32 i_2)
+    (ARRAY.GET sx? x) (ARRAY.SET x)
+    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 n) (ARRAY.COPY x_1 x_2)
+  -- if i_1 <= i_2
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- if sx? = $sxfield(zt_2)
+
+rule Step_read/array.copy-gt:
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n+1)) (ARRAY.COPY x_1 x_2)  ~>
+    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + n))
+    (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + n))
+    (ARRAY.GET sx? x) (ARRAY.SET x)
+    (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)
+  -- if i_1 > i_2
+  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
+  -- if sx? = $sxfield(zt_2)
+
+
+rule Step_read/array.init_elem-null:
+  z; (REF.NULL ht) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_ELEM x y)  ~>  TRAP
+
+rule Step_read/array.init_elem-oob1:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_ELEM x y)  ~>  TRAP
+  -- if $(i + n > |$arrayinst(z)[a].FIELD|)
+
+rule Step_read/array.init_elem-oob2:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_ELEM x y)  ~>  TRAP
+  -- if $(j + n > |$elem(z, y).ELEM|)
+
+rule Step_read/array.init_elem-zero:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 0) (ARRAY.INIT_ELEM x y)  ~>  epsilon
+  -- otherwise
+
+rule Step_read/array.init_elem-succ:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_ELEM x y)  ~>
+    (REF.ARRAY_ADDR a) (CONST I32 i) ref (ARRAY.SET x)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_ELEM x y)
+  -- otherwise
+  -- if ref = $elem(z, y).ELEM[j]
+
+
+rule Step_read/array.init_data-null:
+  z; (REF.NULL ht) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  TRAP
+
+rule Step_read/array.init_data-oob1:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  TRAP
+  -- if $(i + n > |$arrayinst(z)[a].FIELD|)
+
+rule Step_read/array.init_data-oob2:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  TRAP
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if $(j + n * $storagesize(zt)/8 > |$data(z, y).DATA|)
+
+rule Step_read/array.init_data-zero:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 0) (ARRAY.INIT_DATA x y)  ~>  epsilon
+  -- otherwise
+
+rule Step_read/array.init_data-succ:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_DATA x y)  ~>
+    (REF.ARRAY_ADDR a) (CONST I32 i) (CONST nt c) (ARRAY.SET x)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_DATA x y)
+  -- otherwise
+  -- Expand: $type(z, x) ~~ ARRAY (mut zt)
+  -- if nt = $unpacknumtype(zt)
+  -- if $bytes($storagesize(zt), c) = $data(z, y).DATA[j : $storagesize(zt)/8]
+
+
+;; External reference instructions
+
+rule Step_pure/extern.externalize-null:
+  (REF.NULL ht) EXTERN.EXTERNALIZE  ~>  (REF.NULL EXTERN)
+
+rule Step_pure/extern.externalize-addr:
+  addrref EXTERN.EXTERNALIZE  ~>  (REF.EXTERN addrref)
+
+
+rule Step_pure/extern.internalize-null:
+  (REF.NULL ht) EXTERN.INTERNALIZE  ~>  (REF.NULL ANY)
+
+rule Step_pure/extern.internalize-addr:
+  (REF.EXTERN addrref) EXTERN.INTERNALIZE  ~>  addrref
+
+
+;; Local instructions
+
+rule Step_read/local.get:
+  z; (LOCAL.GET x)  ~>  val
+  -- if $local(z, x) = val
+
+rule Step/local.set:
+  z; val (LOCAL.SET x)  ~>  $with_local(z, x, val); epsilon
+
+rule Step_pure/local.tee:
+  val (LOCAL.TEE x)  ~>  val val (LOCAL.SET x)
+
+
+;; Global instructions
+
+rule Step_read/global.get:
+  z; (GLOBAL.GET x)  ~>  $global(z, x).VALUE
+
+rule Step/global.set:
+  z; val (GLOBAL.SET x)  ~>  $with_global(z, x, val); epsilon
+
+
+;; Table instructions
+
+rule Step_read/table.get-oob:
+  z; (CONST I32 i) (TABLE.GET x)  ~>  TRAP
+  -- if i >= |$table(z, x).ELEM|
+
+rule Step_read/table.get-val:
+  z; (CONST I32 i) (TABLE.GET x)  ~>  $table(z,x).ELEM[i]
+  -- if i < |$table(z, x).ELEM|
+
+rule Step/table.set-oob:
+  z; (CONST I32 i) ref (TABLE.SET x)  ~>  z; TRAP
+  -- if i >= |$table(z, x).ELEM|
+
+rule Step/table.set-val:
+  z; (CONST I32 i) ref (TABLE.SET x)  ~>  $with_table(z, x, i, ref); epsilon
+  -- if i < |$table(z, x).ELEM|
+
+
+rule Step_read/table.size:
+  z; (TABLE.SIZE x)  ~>  (CONST I32 n)
+  -- if |$table(z, x).ELEM| = n  ;; TODO: inline this
+
+
+rule Step/table.grow-succeed:
+  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  $with_tableinst(z, x, ti); (CONST I32 $(|$table(z, x).ELEM|))
+  -- if $growtable($table(z, x), n, ref) = ti
+
+rule Step/table.grow-fail:
+  z; ref (CONST I32 n) (TABLE.GROW x)  ~>  z; (CONST I32 $(-1))
+
+
+rule Step_read/table.fill-oob:
+  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>  TRAP
+  -- if $(i + n) > |$table(z, x).ELEM|
+
+rule Step_read/table.fill-zero:
+  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/table.fill-succ:
+  z; (CONST I32 i) val (CONST I32 n) (TABLE.FILL x)  ~>
+    (CONST I32 i) val (TABLE.SET x)
+    (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (TABLE.FILL x)
+  -- otherwise
+
+
+rule Step_read/table.copy-oob:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>  TRAP
+  -- if $(i + n) > |$table(z, y).ELEM| \/ $(j + n) > |$table(z, x).ELEM|
+
+rule Step_read/table.copy-zero:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/table.copy-le:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>
+    (CONST I32 j) (CONST I32 i) (TABLE.GET y) (TABLE.SET x)
+    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (TABLE.COPY x y)
+  -- otherwise
+  -- if j <= i
+
+rule Step_read/table.copy-gt:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.COPY x y)  ~>
+    (CONST I32 $(j+n-1)) (CONST I32 $(i+n-1)) (TABLE.GET y) (TABLE.SET x)
+    (CONST I32 j) (CONST I32 i) (CONST I32 $(n-1)) (TABLE.COPY x y)
+  -- otherwise
+
+
+rule Step_read/table.init-oob:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>  TRAP
+  -- if $(i + n) > |$elem(z, y).ELEM| \/ $(j + n) > |$table(z, x).ELEM|
+
+rule Step_read/table.init-zero:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/table.init-succ:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (TABLE.INIT x y)  ~>
+    (CONST I32 j) $elem(z,y).ELEM[i] (TABLE.SET x)
+    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (TABLE.INIT x y)
+  -- otherwise
+
+
+rule Step/elem.drop:
+  z; (ELEM.DROP x)  ~>  $with_elem(z, x, epsilon); epsilon
+
+
+;; Memory instructions
+
+rule Step_read/load-num-oob:
+  z; (CONST I32 i) (LOAD nt x n_A n_O)  ~>  TRAP
+  -- if $(i + n_O + $size(nt)/8 > |$mem(z, x).DATA|)
+
+rule Step_read/load-num-val:
+  z; (CONST I32 i) (LOAD nt x n_A n_O)  ~>  (CONST nt c)
+  -- if $bytes($size(nt), c) = $mem(z, x).DATA[i + n_O : $size(nt)/8]
+
+rule Step_read/load-pack-oob:
+  z; (CONST I32 i) (LOAD nt (n _ sx) x n_A n_O)  ~>  TRAP
+  -- if $(i + n_O + n/8 > |$mem(z, x).DATA|)
+
+rule Step_read/load-pack-val:
+  z; (CONST I32 i) (LOAD nt (n _ sx) x n_A n_O)  ~>  (CONST nt $ext(n, $size(nt), sx, c))
+  -- if $bytes(n, c) = $mem(z, x).DATA[i + n_O : n/8]
+
+
+rule Step/store-num-oob:
+  z; (CONST I32 i) (CONST nt c) (STORE nt x n_A n_O)  ~>  z; TRAP
+  -- if $(i + n_O + $size(nt)/8) > |$mem(z, x).DATA|
+
+rule Step/store-num-val:
+  z; (CONST I32 i) (CONST nt c) (STORE nt x n_A n_O)  ~>  $with_mem(z, x, $(i + n_O), $($size(nt)/8), b*); epsilon
+  -- if b* = $bytes($size(nt), c)
+
+rule Step/store-pack-oob:
+  z; (CONST I32 i) (CONST nt c) (STORE nt n x n_A n_O)  ~>  z; TRAP
+  -- if $(i + n_O + n/8) > |$mem(z, x).DATA|
+
+rule Step/store-pack-val:
+  z; (CONST I32 i) (CONST nt c) (STORE nt n x n_A n_O)  ~>  $with_mem(z, x, $(i + n_O), $(n/8), b*); epsilon
+  -- if b* = $bytes(n, $wrap($size(nt), n, c))
+
+
+rule Step_read/memory.size:
+  z; (MEMORY.SIZE x)  ~>  (CONST I32 n)
+  -- if $(n * 64 * $Ki) = |$mem(z, x).DATA|
+
+
+rule Step/memory.grow-succeed:
+  z; (CONST I32 n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
+  -- if $growmemory($mem(z, x), n) = mi
+
+rule Step/memory.grow-fail:
+  z; (CONST I32 n) (MEMORY.GROW x)  ~>  z; (CONST I32 $(-1))
+
+
+rule Step_read/memory.fill-oob:
+  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>  TRAP
+  -- if $(i + n) > |$mem(z, x).DATA|
+
+rule Step_read/memory.fill-zero:
+  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/memory.fill-succ:
+  z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>
+    (CONST I32 i) val (STORE I32 8 x 0 0)
+    (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (MEMORY.FILL x)
+  -- otherwise
+
+
+rule Step_read/memory.copy-oob:
+  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>  TRAP
+  -- if $(i_1 + n) > |$mem(z, x_1).DATA| \/ $(i_2 + n) > |$mem(z, x_2).DATA|
+
+rule Step_read/memory.copy-zero:
+  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/memory.copy-le:
+  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
+    (CONST I32 i_1) (CONST I32 i_2) (LOAD I32 (8 _ U) x_2 0 0) (STORE I32 8 x_1 0 0)
+    (CONST I32 $(i_1 + 1)) (CONST I32 $(i_2 + 1)) (CONST I32 $(n - 1)) (MEMORY.COPY x_1 x_2)
+  -- otherwise
+  -- if i_1 <= i_2
+
+rule Step_read/memory.copy-gt:
+  z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
+    (CONST I32 $(i_1+n-1)) (CONST I32 $(i_2+n-1)) (LOAD I32 (8 _ U) x_2 0 0) (STORE I32 8 x_1 0 0)
+    (CONST I32 i_1) (CONST I32 i_2) (CONST I32 $(n-1)) (MEMORY.COPY x_1 x_2)
+  -- otherwise
+
+
+rule Step_read/memory.init-oob:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>  TRAP
+  -- if $(i + n) > |$data(z, y).DATA| \/ $(j + n) > |$mem(z, x).DATA|
+
+rule Step_read/memory.init-zero:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>  epsilon
+  -- otherwise
+  -- if n = 0
+
+rule Step_read/memory.init-succ:
+  z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>
+    (CONST I32 j) (CONST I32 $data(z,y).DATA[i]) (STORE I32 8 x 0 0)
+    (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
+  -- otherwise
+
+
+rule Step/data.drop:
+  z; (DATA.DROP x)  ~>  $with_data(z, x, epsilon); epsilon

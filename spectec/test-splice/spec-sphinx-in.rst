@@ -30,8 +30,8 @@ $${syntax: {instr/numeric instr/state} expr}
 An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${: instr* : t_1* -> t_2*}, according to the following rules:
 
 $${rule:
-  {InstrSeq_ok/empty InstrSeq_ok/seq}
-  {InstrSeq_ok/weak InstrSeq_ok/frame}
+  {Instrs_ok/empty Instrs_ok/seq}
+  {Instrs_ok/sub Instrs_ok/frame}
 }
 
 
@@ -46,7 +46,7 @@ $${rule+: Instr_ok/if}
 
 **Runtime**
 
-$${definition: default_}
+$${definition: default}
 
 $${definition: {funcaddr funcinst} {func table}}
 

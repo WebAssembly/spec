@@ -1,0 +1,202 @@
+;;
+;; Auxiliary definitions on indices
+;;
+
+;; Sequence difference
+
+def $setminus(idx*, idx*) : idx*  hint(show %\%)
+def $setminus1(idx, idx*) : idx*
+
+def $setminus(epsilon, y*) = epsilon
+def $setminus(x_1 x*, y*) = $setminus1(x_1, y*) $setminus(x*, y*)
+
+def $setminus1(x, epsilon) = x
+def $setminus1(x, y_1 y*) = epsilon            -- if x = y_1
+def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
+
+
+;;
+;; Auxiliary Definitions on Types
+;;
+
+;; Size
+
+;; def |I n| = |F n| = |V n| = n        ;; ????
+
+def $size(valtype) : nat  hint(partial) hint(show |%|)
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+def $size(V128) = 128
+
+def $packedsize(packedtype) : nat  hint(show |%|)
+def $packedsize(I8) = 8
+def $packedsize(I16) = 16
+
+def $storagesize(storagetype) : nat  hint(show |%|)
+def $storagesize(valtype) = $size(valtype)
+def $storagesize(packedtype) = $packedsize(packedtype)
+
+
+;; Unpacking
+
+def $unpacktype(storagetype) : valtype  hint(show $unpack(%))
+def $unpacktype(valtype) = valtype
+def $unpacktype(packedtype) = I32
+
+def $unpacknumtype(storagetype) : numtype  hint(show $unpack(%))
+def $unpacknumtype(numtype) = numtype
+def $unpacknumtype(packedtype) = I32
+
+def $sxfield(storagetype) : sx?  hint(show $sx(%))
+def $sxfield(valtype) = epsilon
+def $sxfield(packedtype) = S
+
+
+;; Type difference
+
+def $diffrt(reftype, reftype) : reftype  hint(show $(%-%))
+
+def $diffrt((REF nul_1 ht_1), (REF NULL ht_2)) = (REF epsilon ht_1)
+def $diffrt((REF nul_1 ht_1), (REF epsilon ht_2)) = (REF nul_1 ht_1)
+
+
+;; Injection
+
+syntax typevar = | _IDX typeidx | REC nat
+var xx : typevar
+
+def $idx(typeidx) : typevar  hint(show %)
+def $idx(x) = _IDX x
+
+
+;; Substitution
+
+def $subst_typevar(typevar, typevar*, heaptype*) : heaptype            hint(show %#`[%:=%])
+
+def $subst_numtype(numtype, typevar*, heaptype*) : numtype             hint(show %#`[%:=%])
+def $subst_vectype(vectype, typevar*, heaptype*) : vectype             hint(show %#`[%:=%])
+def $subst_heaptype(heaptype, typevar*, heaptype*) : heaptype          hint(show %#`[%:=%])
+def $subst_reftype(reftype, typevar*, heaptype*) : reftype             hint(show %#`[%:=%])
+def $subst_valtype(valtype, typevar*, heaptype*) : valtype             hint(show %#`[%:=%])
+
+def $subst_packedtype(packedtype, typevar*, heaptype*) : packedtype    hint(show %#`[%:=%])
+def $subst_storagetype(storagetype, typevar*, heaptype*) : storagetype hint(show %#`[%:=%])
+def $subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype       hint(show %#`[%:=%])
+
+def $subst_comptype(comptype, typevar*, heaptype*) : comptype          hint(show %#`[%:=%])
+def $subst_subtype(subtype, typevar*, heaptype*) : subtype             hint(show %#`[%:=%])
+def $subst_rectype(rectype, typevar*, heaptype*) : rectype             hint(show %#`[%:=%])
+def $subst_deftype(deftype, typevar*, heaptype*) : deftype             hint(show %#`[%:=%])
+
+def $subst_globaltype(globaltype, typevar*, heaptype*) : globaltype    hint(show %#`[%:=%])
+def $subst_functype(functype, typevar*, heaptype*) : functype          hint(show %#`[%:=%])
+def $subst_tabletype(tabletype, typevar*, heaptype*) : tabletype       hint(show %#`[%:=%])
+def $subst_memtype(memtype, typevar*, heaptype*) : memtype             hint(show %#`[%:=%])
+
+def $subst_externtype(externtype, typevar*, heaptype*) : externtype    hint(show %#`[%:=%])
+
+
+def $subst_typevar(xx, epsilon, epsilon) = xx
+def $subst_typevar(xx, xx_1 xx'*, ht_1 ht'*) = ht_1                            -- if xx = xx_1
+def $subst_typevar(xx, xx_1 xx'*, ht_1 ht'*) = $subst_typevar(xx, xx'*, ht'*)  -- otherwise
+
+def $subst_numtype(nt, xx*, ht*) = nt
+def $subst_vectype(vt, xx*, ht*) = vt
+
+def $subst_heaptype(xx', xx*, ht*) = $subst_typevar(xx', xx*, ht*)
+def $subst_heaptype(dt, xx*, ht*) = $subst_deftype(dt, xx*, ht*)
+def $subst_heaptype(ht, xx*, ht*) = ht  -- otherwise
+
+def $subst_reftype((REF nul ht), xx*, ht*) = REF nul $subst_heaptype(ht, xx*, ht*)
+
+def $subst_valtype(nt, xx*, ht*) = $subst_numtype(nt, xx*, ht*)
+def $subst_valtype(vt, xx*, ht*) = $subst_vectype(vt, xx*, ht*)
+def $subst_valtype(rt, xx*, ht*) = $subst_reftype(rt, xx*, ht*)
+def $subst_valtype(BOT, xx*, ht*) = BOT
+
+def $subst_packedtype(pt, xx*, ht*) = pt
+
+def $subst_storagetype(t, xx*, ht*) = $subst_valtype(t, xx*, ht*)
+def $subst_storagetype(pt, xx*, ht*) = $subst_packedtype(pt, xx*, ht*)
+
+def $subst_fieldtype((mut zt), xx*, ht*) = mut $subst_storagetype(zt, xx*, ht*)
+
+def $subst_comptype((STRUCT yt*), xx*, ht*) = STRUCT $subst_fieldtype(yt, xx*, ht*)*
+def $subst_comptype((ARRAY yt), xx*, ht*) = ARRAY $subst_fieldtype(yt, xx*, ht*)
+def $subst_comptype((FUNC ft), xx*, ht*) = FUNC $subst_functype(ft, xx*, ht*)
+
+def $subst_subtype((SUB fin y* ct), xx*, ht*) =
+  SUBD fin $subst_heaptype(_IDX y, xx*, ht*)* $subst_comptype(ct, xx*, ht*)
+def $subst_subtype((SUBD fin ht'* ct), xx*, ht*) =
+  SUBD fin $subst_heaptype(ht', xx*, ht*)* $subst_comptype(ct, xx*, ht*)
+
+def $subst_rectype((REC st*), xx*, ht*) = REC $subst_subtype(st, xx*, ht*)*
+
+def $subst_deftype((DEF qt i), xx*, ht*) = DEF $subst_rectype(qt, xx*, ht*) i
+
+def $subst_globaltype((mut t), xx*, ht*) = mut $subst_valtype(t, xx*, ht*)
+def $subst_functype((t_1* -> t_2*), xx*, ht*) = $subst_valtype(t_1, xx*, ht*)* -> $subst_valtype(t_2, xx*, ht*)*
+def $subst_memtype((lim I8), xx*, ht*) = lim I8
+def $subst_tabletype((lim rt), xx*, ht*) = lim $subst_reftype(rt, xx*, ht*)
+
+def $subst_externtype((FUNC dt), xx*, ht*) = FUNC $subst_deftype(dt, xx*, ht*)
+def $subst_externtype((GLOBAL gt), xx*, ht*) = GLOBAL $subst_globaltype(gt, xx*, ht*)
+def $subst_externtype((TABLE tt), xx*, ht*) = TABLE $subst_tabletype(tt, xx*, ht*)
+def $subst_externtype((MEM mt), xx*, ht*) = MEM $subst_memtype(mt, xx*, ht*)
+
+
+def $subst_all_reftype(reftype, heaptype*) : reftype  hint(show %#`[:=%])
+def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
+
+def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^(x<n), ht^n)
+def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^(x<n), ht^n)
+
+
+;; Rolling and Unrolling
+
+def $rollrt(typeidx, rectype) : rectype  hint(show $roll_(%, %))
+def $unrollrt(rectype) : rectype         hint(show $unroll(%))
+def $rolldt(typeidx, rectype) : deftype* hint(show $roll_(%, %))
+def $unrolldt(deftype) : subtype         hint(show $unroll(%))
+def $expanddt(deftype) : comptype        hint(show $expand(%))
+
+;; TODO: in general, multi-dimensional use of dimensioned vars is ambiguous;
+;; for example, x** with dimension x* could be x1 x2 x1 x2 of x1 x1 x2 x2.
+;; For now, we avoid to reuse the dimension var in exact same form
+def $rollrt(x, REC st^n) = REC ($subst_subtype(st, ($idx($(x + i)))^(i<n), (REC i)^(i<n)))^n
+def $unrollrt(REC st^n) = REC ($subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n)))^n
+  -- if qt = REC st^n
+
+def $rolldt(x, qt) = (DEF (REC st^n) i)^(i<n)  -- if $rollrt(x, qt) = REC st^n
+def $unrolldt(DEF qt i) = st*[i]               -- if $unrollrt(qt) = REC st*
+
+def $expanddt(dt) = ct                         -- if $unrolldt(dt) = SUBD fin ht* ct
+
+relation Expand: deftype ~~ comptype
+rule Expand: dt ~~ ct                          -- if $expanddt(dt) = ct
+
+
+;; Projections
+
+def $funcsxt(externtype*) : deftype*       hint(show $funcs(%))
+def $globalsxt(externtype*) : globaltype*  hint(show $globals(%))
+def $tablesxt(externtype*) : tabletype*    hint(show $tables(%))
+def $memsxt(externtype*) : memtype*        hint(show $mems(%))
+
+def $funcsxt(epsilon) = epsilon
+def $funcsxt((FUNC dt) et*) = dt $funcsxt(et*)
+def $funcsxt(externtype et*) = $funcsxt(et*)  -- otherwise
+
+def $globalsxt(epsilon) = epsilon
+def $globalsxt((GLOBAL gt) et*) = gt $globalsxt(et*)
+def $globalsxt(externtype et*) = $globalsxt(et*)  -- otherwise
+
+def $tablesxt(epsilon) = epsilon
+def $tablesxt((TABLE tt) et*) = tt $tablesxt(et*)
+def $tablesxt(externtype et*) = $tablesxt(et*)  -- otherwise
+
+def $memsxt(epsilon) = epsilon
+def $memsxt((MEM mt) et*) = mt $memsxt(et*)
+def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise

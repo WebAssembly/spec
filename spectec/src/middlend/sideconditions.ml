@@ -23,18 +23,26 @@ module Env = Map.Make(String)
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
-| _ -> LenE e $$ no_region % (NatT $ no_region)
+| _ -> LenE e $$ e.at % (NatT $ e.at)
 
-let is_null e = CmpE (EqOp, e, OptE None $$ no_region % e.note) $$ no_region % (BoolT $ e.at)
-let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ no_region % (BoolT $ no_region)) $ no_region
-let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ no_region % (BoolT $ no_region)) $ no_region
-let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ no_region % (BoolT $ no_region)) $ no_region
+let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
+let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
+let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at
+
+(* Takes bound variable and its binding type (type plus iter) and fully wrapps it in IterE *)
+let rec fully_iterated v t = function
+  | [] -> VarE v $$ v.at % t
+  | (i::is) ->
+    let e = fully_iterated v t is in
+    IterE (e, (i, [v])) $$ v.at % (IterT (e.note, i) $ v.at)
 
 let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
-  let iter' = if iter = Opt then Opt else List in
+  (* let iter' = if iter = Opt then Opt else List in *)
   let ves = List.map (fun v ->
-    let t = Env.find v.it env in
-    IterE (VarE v $$ no_region % t, (iter, [v])) $$ no_region % (IterT (t, iter') $ no_region)) vs in
+    let (t,is) = Env.find v.it env in
+    fully_iterated v t is
+  ) vs in
  match iter, ves with
   | _, [] -> []
   | Opt, (e::es) -> List.map (fun e' -> iffE (is_null e) (is_null e')) es
@@ -46,9 +54,9 @@ let rec t_exp env e : premise list =
   (* First the conditions to be generated here *)
   begin match e.it with
   | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (LtOp, exp2, LenE exp1 $$ no_region % exp2.note) $$ no_region % (BoolT $ no_region)) $ no_region]
+    [IfPr (CmpE (LtOp, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
-    [IfPr (CmpE (NeOp, exp, OptE None $$ no_region % exp.note) $$ no_region % (BoolT $ no_region)) $ no_region]
+    [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp
   | _ -> []
   end @
@@ -83,8 +91,8 @@ let rec t_exp env e : premise list =
   -> List.concat_map (fun (_, e) -> t_exp env e) fields
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es
-  | IterE (e, iterexp)
-  -> List.map (fun pr -> IterPr (pr, iterexp) $ no_region) (t_exp env e) @ t_iterexp env iterexp
+  | IterE (e1, iterexp)
+  -> List.map (fun pr -> IterPr (pr, iterexp) $ e.at) (t_exp env e1) @ t_iterexp env iterexp
 
 and t_iterexp env (iter, _) = t_iter env iter
 
@@ -106,7 +114,7 @@ let rec t_prem env prem = match prem.it with
   | ElsePr -> []
   | IterPr (prem, iterexp)
   -> iter_side_conditions env iterexp @
-     List.map (fun pr -> IterPr (pr, iterexp) $ no_region) (t_prem env prem) @ t_iterexp env iterexp
+     List.map (fun pr -> IterPr (pr, iterexp) $ prem.at) (t_prem env prem) @ t_iterexp env iterexp
 
 let t_prems env = List.concat_map (t_prem env)
 
@@ -131,7 +139,7 @@ let reduce_prems prems = prems
 
 let t_rule' = function
   | RuleD (id, binds, mixop, exp, prems) ->
-    let env = List.fold_left (fun env (v, t, _) -> Env.add v.it t env) Env.empty binds in
+    let env = List.fold_left (fun env (v, t, i) -> Env.add v.it (t, i) env) Env.empty binds in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in
     RuleD (id, binds, mixop, exp, prems')

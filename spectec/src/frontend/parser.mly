@@ -37,6 +37,11 @@ module VarSet = Set.Make(String)
 
 let atom_vars = ref VarSet.empty
 
+let strip_ticks id =
+  let i = ref (String.length id) in
+  while !i > 0 && id.[!i - 1] = '\'' do decr i done;
+  String.sub id 0 !i
+
 
 (* Parentheses Role *)
 
@@ -68,10 +73,10 @@ let signify_parens prec = function
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR DASH
 %token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
-%token EQ NE LT GT LE GE SUB EQDOT2
+%token EQ NE LT GT LE GE APPROX ASSIGN SUB EQDOT2
 %token NOT AND OR
-%token QUEST PLUS MINUS STAR SLASH UP COMPOSE
-%token ARROW ARROW2 DARROW2 SQARROW TURNSTILE TILESTURN IN
+%token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE
+%token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT
 %token HOLE MULTIHOLE FUSE
@@ -90,16 +95,15 @@ let signify_parens prec = function
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW
-%left COLON SUB
-%nonassoc IN
+%right SQARROW SQARROWSTAR PREC SUCC
+%left COLON SUB ASSIGN APPROX
 %left COMMA COMMA_NL
-%right EQ NE LT GT LE GE
+%right EQ NE LT GT LE GE IN
 %right ARROW
 %left SEMICOLON
 %left DOT DOTDOT DOTDOTDOT
 %left PLUS MINUS COMPOSE
-%left STAR SLASH
+%left STAR SLASH BACKSLASH
 
 %start script expression check_atom
 %type<El.Ast.script> script
@@ -114,25 +118,35 @@ id : UPID { $1 } | LOID { $1 }
 
 atomid_ : UPID { $1 }
 varid : LOID { $1 $ at $sloc }
-defid : id { $1 $ at $sloc }
+defid : id { $1 $ at $sloc } | IN { "in" $ at $sloc } | IF { "if" $ at $sloc }
 relid : id { $1 $ at $sloc }
 hintid : id { $1 }
 fieldid : atomid_ { Atom $1 }
 dotid : DOTID { Atom $1 }
 
 ruleid : ruleid_ { $1 }
-ruleid_ : id { $1 } | IF { "if" } | ruleid_ DOTID { $1 ^ "." ^ $2 }
+ruleid_ :
+  | id { $1 }
+  | NATLIT { Int.to_string $1 }
+  | BOOLLIT { Bool.to_string $1 }
+  | IN { "in" }
+  | IF { "if" }
+  | VAR { "var" }
+  | DEF { "def" }
+  | ruleid_ DOTID { $1 ^ "." ^ $2 }
 atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 
 atom :
   | atomid { Atom $1 }
+  | TICK QUEST { Quest }
+  | TICK STAR { Star }
   | BOT { Bot }
 
 atom_as_varid :
   | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
 
 check_atom :
-  | UPID EOF { VarSet.mem $1 !atom_vars }
+  | UPID EOF { VarSet.mem (strip_ticks $1) !atom_vars }
 
 
 (* Iteration *)
@@ -225,6 +239,7 @@ nottyp_bin_ :
   | nottyp_bin DOTDOT nottyp_bin { InfixT ($1, Dot2, $3) }
   | nottyp_bin DOTDOTDOT nottyp_bin { InfixT ($1, Dot3, $3) }
   | nottyp_bin SEMICOLON nottyp_bin { InfixT ($1, Semicolon, $3) }
+  | nottyp_bin BACKSLASH nottyp_bin { InfixT ($1, Backslash, $3) }
   | nottyp_bin ARROW nottyp_bin { InfixT ($1, Arrow, $3) }
 
 nottyp_rel : nottyp_rel_ { $1 $ at $sloc }
@@ -232,14 +247,26 @@ nottyp_rel_ :
   | nottyp_bin_ { $1 }
   | COLON nottyp_rel { InfixT (SeqT [] $ at $loc($1), Colon, $2) }
   | SUB nottyp_rel { InfixT (SeqT [] $ at $loc($1), Sub, $2) }
+  | ASSIGN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Assign, $2) }
+  | APPROX nottyp_rel { InfixT (SeqT [] $ at $loc($1), Approx, $2) }
   | SQARROW nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrow, $2) }
+  | SQARROWSTAR nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrowStar, $2) }
+  | PREC nottyp_rel { InfixT (SeqT [] $ at $loc($1), Prec, $2) }
+  | SUCC nottyp_rel { InfixT (SeqT [] $ at $loc($1), Succ, $2) }
   | TILESTURN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Tilesturn, $2) }
   | TURNSTILE nottyp_rel { InfixT (SeqT [] $ at $loc($1), Turnstile, $2) }
+  | IN nottyp_rel { InfixT (SeqT [] $ at $loc($1), In, $2) }
   | nottyp_rel COLON nottyp_rel { InfixT ($1, Colon, $3) }
   | nottyp_rel SUB nottyp_rel { InfixT ($1, Sub, $3) }
+  | nottyp_rel ASSIGN nottyp_rel { InfixT ($1, Assign, $3) }
+  | nottyp_rel APPROX nottyp_rel { InfixT ($1, Approx, $3) }
   | nottyp_rel SQARROW nottyp_rel { InfixT ($1, SqArrow, $3) }
+  | nottyp_rel SQARROWSTAR nottyp_rel { InfixT ($1, SqArrowStar, $3) }
+  | nottyp_rel PREC nottyp_rel { InfixT ($1, Prec, $3) }
+  | nottyp_rel SUCC nottyp_rel { InfixT ($1, Succ, $3) }
   | nottyp_rel TILESTURN nottyp_rel { InfixT ($1, Tilesturn, $3) }
   | nottyp_rel TURNSTILE nottyp_rel { InfixT ($1, Turnstile, $3) }
+  | nottyp_rel IN nottyp_rel { InfixT ($1, In, $3) }
 
 nottyp : nottyp_rel { $1 }
 
@@ -293,6 +320,7 @@ exp_prim_ :
   | TICK LBRACK exp BAR exp RBRACK { ListBuilderE ($3, $5) }
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid exp_prim { CallE ($2, $3) }
+  | DOLLAR defid TICK STAR { CallE ($2, AtomE Star $ at $loc($3)) }
 
 exp_post : exp_post_ { $1 $ at $sloc }
 exp_post_ :
@@ -337,6 +365,7 @@ exp_bin_ :
   | exp_bin DOTDOT exp_bin { InfixE ($1, Dot2, $3) }
   | exp_bin DOTDOTDOT exp_bin { InfixE ($1, Dot3, $3) }
   | exp_bin SEMICOLON exp_bin { InfixE ($1, Semicolon, $3) }
+  | exp_bin BACKSLASH exp_bin { InfixE ($1, Backslash, $3) }
   | exp_bin ARROW exp_bin { InfixE ($1, Arrow, $3) }
   | exp_bin EQ exp_bin { CmpE ($1, EqOp, $3) }
   | exp_bin NE exp_bin { CmpE ($1, NeOp, $3) }
@@ -357,16 +386,28 @@ exp_rel_ :
   | COMMA_NL exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
   | COLON exp_rel { InfixE (SeqE [] $ at $loc($1), Colon, $2) }
   | SUB exp_rel { InfixE (SeqE [] $ at $loc($1), Sub, $2) }
+  | ASSIGN exp_rel { InfixE (SeqE [] $ at $loc($1), Assign, $2) }
+  | APPROX exp_rel { InfixE (SeqE [] $ at $loc($1), Approx, $2) }
   | SQARROW exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrow, $2) }
+  | SQARROWSTAR exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrowStar, $2) }
+  | PREC exp_rel { InfixE (SeqE [] $ at $loc($1), Prec, $2) }
+  | SUCC exp_rel { InfixE (SeqE [] $ at $loc($1), Succ, $2) }
   | TILESTURN exp_rel { InfixE (SeqE [] $ at $loc($1), Tilesturn, $2) }
   | TURNSTILE exp_rel { InfixE (SeqE [] $ at $loc($1), Turnstile, $2) }
+  | IN exp_rel { InfixE (SeqE [] $ at $loc($1), In, $2) }
   | exp_rel COMMA exp_rel { CommaE ($1, $3) }
   | exp_rel COMMA_NL exp_rel { CommaE ($1, $3) }
   | exp_rel COLON exp_rel { InfixE ($1, Colon, $3) }
   | exp_rel SUB exp_rel { InfixE ($1, Sub, $3) }
+  | exp_rel ASSIGN exp_rel { InfixE ($1, Assign, $3) }
+  | exp_rel APPROX exp_rel { InfixE ($1, Approx, $3) }
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
+  | exp_rel SQARROWSTAR exp_rel { InfixE ($1, SqArrowStar, $3) }
+  | exp_rel PREC exp_rel { InfixE ($1, Prec, $3) }
+  | exp_rel SUCC exp_rel { InfixE ($1, Succ, $3) }
   | exp_rel TILESTURN exp_rel { InfixE ($1, Tilesturn, $3) }
   | exp_rel TURNSTILE exp_rel { InfixE ($1, Turnstile, $3) }
+  | exp_rel IN exp_rel { InfixE ($1, In, $3) }
 
 exp : exp_rel { $1 }
 
