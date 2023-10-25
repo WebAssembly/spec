@@ -27,9 +27,9 @@ let string s =
   while !i < String.length s - 1 do
     let c = if s.[!i] <> '\\' then s.[!i] else
       match (incr i; s.[!i]) with
-      | 'n' -> '\n'
-      | 'r' -> '\r'
-      | 't' -> '\t'
+      | 'n' -> '\x0a'
+      | 'r' -> '\x0d'
+      | 't' -> '\x09'
       | '\\' -> '\\'
       | '\'' -> '\''
       | '\"' -> '\"'
@@ -61,10 +61,12 @@ let letter = ['a'-'z''A'-'Z']
 let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
-let space = [' ''\t''\n''\r']
+let ascii_newline = ['\x0a''\x0d']
+let newline = ascii_newline | "\x0a\x0d"
+let space = [' ''\x09''\x0a''\x0d']
 let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
-let ascii_no_nl = ascii # '\x0a'
+let ascii_no_nl = ascii # ascii_newline
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
     ['\xc2'-'\xdf'] utf8cont
@@ -127,8 +129,8 @@ rule token = parse
   | float as s { FLOAT s }
 
   | string as s { STRING (string s) }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
-  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
+  | '"'character*(newline|eof) { error lexbuf "unclosed string literal" }
+  | '"'character*(control#ascii_newline)
     { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
@@ -698,11 +700,11 @@ rule token = parse
   | id as s { VAR s }
 
   | ";;"utf8_no_nl*eof { EOF }
-  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl*newline { Lexing.new_line lexbuf; token lexbuf }
   | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
-  | space#'\n' { token lexbuf }
-  | '\n' { Lexing.new_line lexbuf; token lexbuf }
+  | space#ascii_newline { token lexbuf }
+  | newline { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
   | reserved { unknown lexbuf }
@@ -713,7 +715,7 @@ rule token = parse
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
-  | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | newline { Lexing.new_line lexbuf; comment start lexbuf }
   | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
   | _ { error lexbuf "malformed UTF-8 encoding" }

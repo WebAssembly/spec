@@ -33,7 +33,7 @@ zip:		$(ZIP)
 
 # Building
 
-.PHONY:                $(NAME) $(JSLIB)
+.PHONY:		$(NAME) $(JSLIB)
 
 $(NAME):
 	rm -f $@
