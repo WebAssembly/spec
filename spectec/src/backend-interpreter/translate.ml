@@ -33,6 +33,13 @@ let drop_state e = match e.it with
     ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
       { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; e' ]; _ } )
   -> e'
+| Ast.MixE (* (s; f); e *)
+    ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
+      { it = Ast.TupE [ { it = Ast.MixE (
+        [[]; [ Ast.Semicolon ]; []],
+        { it = Ast.TupE [ { it = Ast.VarE { it = "s"; _}; _}; { it = Ast.VarE { it = "f"; _} ; _}]; _ }
+      ); _ }; e' ]; _ } )
+  -> e'
 | _ -> e
 
 (* Ast.exp -> Ast.exp list *)
@@ -632,7 +639,7 @@ let prems2instrs remain_lhs =
       | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
         ( match exp2args exp with
         | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
-        | _ -> failwith "prem_to_instr: Invalid prem"
+        | _ -> [ YetI "TODO: prem_to_instr: Unsupported rule prem" ]
         )
       (* Step_read *)
       | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
@@ -852,7 +859,6 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (_, _, _, []) -> None
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let name = id.it in
-      prerr_endline name;
       let unified_clauses = Il2il.unify_defs clauses in
       let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
       let al_params =

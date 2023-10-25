@@ -139,6 +139,14 @@ Warning: No corresponding if for
   b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
 Invalid premise `Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))` to be AL instr.
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
+Warning: No corresponding if for
+1. Otherwise:
+  a. Push (I32.CONST 0) to the stack.
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
+Warning: No corresponding if for
+1. Otherwise:
+  a. Trap.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
 Invalid premise `Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
@@ -154,124 +162,16 @@ Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut
 Invalid premise `Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
 Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
 Invalid premise `Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Ki
-min
-test_sub_ATOM_22
-curried_
-setminus1
-setminus
-size
-packedsize
-storagesize
-unpacktype
-unpacknumtype
-sxfield
-diffrt
-idx
-subst_typevar
-subst_numtype
-subst_vectype
-subst_packedtype
-subst_heaptype
 Warning: No corresponding if for
 1. Otherwise:
   a. Let ht be fresh_0.
   b. If fresh_1* is ht*, then:
     1) Return ht.
-subst_reftype
-subst_valtype
-subst_storagetype
-subst_fieldtype
-subst_comptype
-subst_subtype
-subst_rectype
-subst_deftype
-subst_functype
-subst_globaltype
-subst_tabletype
-subst_memtype
-subst_externtype
-subst_all_reftype
-subst_all_deftype
-rollrt
-unrollrt
-rolldt
-unrolldt
-expanddt
-funcsxt
-globalsxt
-tablesxt
-memsxt
-inst_reftype
-default
-packval
-unpackval
-funcsxv
-globalsxv
-tablesxv
-memsxv
-funcaddr
-funcinst
-globalinst
-tableinst
-meminst
-eleminst
-datainst
-structinst
-arrayinst
-type
-func
-global
-table
-mem
-elem
-data
-local
-with_local
-with_global
-with_table
-with_tableinst
-with_mem
-with_meminst
-with_elem
-with_data
-with_struct
-with_array
-ext_structinst
-ext_arrayinst
-growtable
-growmemory
-with_locals
-clostypes
-clostype
-before
-unrollht
-in_binop
-in_numtype
-allocfunc
-allocfuncs
-allocglobal
-allocglobals
-alloctable
-alloctables
-allocmem
-allocmems
-allocelem
-allocelems
-allocdata
-allocdatas
-instexport
-allocmodule
-concat_instr
-runelem
-rundata
-instantiate
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 { LOCAL: []; MODULE: mm; }
-invoke
 { LOCAL: []; MODULE: mm; }
 Invalid premise `Expand: `%~~%`(s.FUNC_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2})))` to be AL instr.
 prem_to_instr: Invalid prem 2
@@ -1651,11 +1551,15 @@ execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.
 2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
-execution_of_REF.TEST
-1. YetI: TODO: It is likely that the value stack of two rules are differ.
+execution_of_REF.TEST rt
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. YetI: TODO: prem_to_instr: Unsupported rule prem.
 
-execution_of_REF.CAST
-1. YetI: TODO: It is likely that the value stack of two rules are differ.
+execution_of_REF.CAST rt
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. YetI: TODO: prem_to_instr: Unsupported rule prem.
 
 execution_of_STRUCT.NEW_DEFAULT x
 1. YetI: Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt})).
