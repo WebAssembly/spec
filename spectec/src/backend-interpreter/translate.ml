@@ -193,6 +193,7 @@ and exp2expr exp =
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
+      (* TODO: Need a better way to convert these CaseE into ConsturctE *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
           ConstructE (("FUNC", "func"), List.map exp2expr exps)
       | [ [ Ast.Atom "OK" ] ], [] ->
@@ -223,6 +224,8 @@ and exp2expr exp =
           ConstructE (("START", "start"), List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
           ConstructE (("EXPORT", "export"), List.map exp2expr el)
+      | [ [ Ast.Atom "NULL" ]; [ Ast.Quest ] ], _ ->
+          ConstructE (("NULL", "nul"), [])
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
   (* Yet *)
