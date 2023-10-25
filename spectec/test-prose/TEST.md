@@ -1361,6 +1361,22 @@ execution_of_BR_TABLE l* l'
 4. Else:
   a. Execute (BR l').
 
+execution_of_BR_ON_NULL l
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. If val is not of the case REF.NULL, then:
+  a. Push val to the stack.
+4. Else:
+  a. Execute (BR l).
+
+execution_of_BR_ON_NON_NULL l
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. If val is of the case REF.NULL, then:
+4. Else:
+  a. Push val to the stack.
+  b. Execute (BR l).
+
 execution_of_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
 2. Execute (REF.CAST (REF NULL $idx(y))).

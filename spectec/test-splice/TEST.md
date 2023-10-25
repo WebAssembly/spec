@@ -712,6 +712,10 @@ warning: rule `Step_pure/br_if-true` was never spliced
 warning: rule `Step_pure/br_if-false` was never spliced
 warning: rule `Step_pure/br_table-lt` was never spliced
 warning: rule `Step_pure/br_table-ge` was never spliced
+warning: rule `Step_pure/br_on_null-null` was never spliced
+warning: rule `Step_pure/br_on_null-non-null` was never spliced
+warning: rule `Step_pure/br_on_non_null-null` was never spliced
+warning: rule `Step_pure/br_on_non_null-non-null` was never spliced
 warning: rule `Step_pure/call_indirect-call` was never spliced
 warning: rule `Step_pure/return_call_indirect` was never spliced
 warning: rule `Step_pure/frame-vals` was never spliced

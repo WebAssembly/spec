@@ -109,6 +109,24 @@ rule Step_pure/br_table-ge:
   -- if i >= |l*|
 
 
+rule Step_pure/br_on_null-null:
+  val (BR_ON_NULL l) ~> (BR l)
+  -- if val = REF.NULL ht
+
+rule Step_pure/br_on_null-non-null:
+  val (BR_ON_NULL l) ~> val
+  -- otherwise
+
+
+rule Step_pure/br_on_non_null-null:
+  val (BR_ON_NON_NULL l) ~> epsilon
+  -- if val = REF.NULL ht
+
+rule Step_pure/br_on_non_null-non-null:
+  val (BR_ON_NON_NULL l) ~> val (BR l)
+  -- otherwise
+
+
 rule Step_read/br_on_cast-succeed:
   z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
   -- Ref_ok: s |- ref : rt
