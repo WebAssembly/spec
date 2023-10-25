@@ -62,7 +62,7 @@ let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
 let ascii_newline = ['\x0a''\x0d']
-let newline = ascii_newline | "\x0a\x0d" | "\xc2\x85"
+let newline = ascii_newline | "\x0a\x0d"
 let space = [' ''\x09''\x0a''\x0d']
 let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
