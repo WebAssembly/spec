@@ -35,6 +35,10 @@ type extend_dir =                       (* direction of extension *)
 
 (* Operators *)
 
+type unop =
+  | NotOp    (* `~` *)
+  | MinusOp  (* `-` *)
+
 type binop =
   | AndOp    (* `/\` *)
   | OrOp     (* `\/` *)
@@ -65,64 +69,59 @@ type iter =
 (* Expressions *)
 
 and expr =
-  (* Value *)
-  | NumE of int64
-  | StringE of string
-  (* Numeric Operation *)
+  | NameE of name                       (* varid *)
+  | NumE of int64                       (* number *)
+  | StringE of string                   (* string *)
   | MinusE of expr
   | BinopE of binop * expr * expr
-  (* Function Call *)
-  | AppE of funcname * expr list
-  (* Data Structure *)
-  | ListE of expr list
-  | ListFillE of expr * expr
-  | ConcatE of expr * expr
-  | LengthE of expr
-  | RecordE of (keyword, expr) record
-  | AccessE of expr * path
-  | ExtendE of expr * path list * expr * extend_dir
-  | ReplaceE of expr * path list * expr
-  | ConstructE of keyword * expr list (* CaseE? StructE? TaggedE? NamedTupleE? *)
-  | OptE of expr option
-  | PairE of expr * expr
-  | ArrowE of expr * expr
-  (* Context *)
-  | ArityE of expr
-  | FrameE of expr option * expr
-  | GetCurFrameE
-  | LabelE of expr * expr
-  | GetCurLabelE
-  | GetCurContextE
-  | ContE of expr
-  (* Name *)
-  | NameE of name
-  | IterE of expr * name list * iter
-  (* Yet *)
-  | YetE of string
+(*
+  | UnE of unop * expr                  (* unop expr *)
+  | BinE of binop * expr * expr         (* expr binop expr *)
+ *)
+  | IterE of expr * name list * iter    (* *)
+  | AppE of funcname * expr list        (* Function Call *)
+  | ListE of expr list                  (*  *)
+  | ListFillE of expr * expr            (*  *)
+  | ConcatE of expr * expr              (*  *)
+  | LengthE of expr                     (*  *)
+  | RecordE of (keyword, expr) record   (*  *)
+  | AccessE of expr * path              (*  *)
+  | ExtendE of expr * path list * expr * extend_dir (*  *)
+  | ReplaceE of expr * path list * expr (*  *)
+  | ConstructE of keyword * expr list   (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | OptE of expr option                 (*  *)
+  | PairE of expr * expr                (*  *)
+  | ArrowE of expr * expr               (*  *)
+  | ArityE of expr                      (*  *)
+  | FrameE of expr option * expr        (*  *)
+  | GetCurFrameE                        (*  *)
+  | LabelE of expr * expr               (*  *)
+  | GetCurLabelE                        (*  *)
+  | GetCurContextE                      (*  *)
+  | ContE of expr                       (*  *)
+  (* Administrative Instructions *)
+  | YetE of string                      (* for future not yet implemented feature *)
 
 and path =
-  | IndexP of expr        (* `[` exp `]` *)
-  | SliceP of expr * expr (* `[` exp `:` exp `]` *)
-  | DotP of keyword       (* `.` atom *)
+  | IdxP of expr             (* `[` exp `]` *)
+  | SliceP of expr * expr    (* `[` exp `:` exp `]` *)
+  | DotP of keyword          (* `.` atom *)
 
 and cond =
-  | NotC of cond
-  | BinopC of binop * cond * cond
-  | CompareC of cmpop * expr * expr
-  | IsCaseOfC of expr * keyword 
-  | ValidC of expr
-
-  | ContextKindC of keyword * expr (* can be desugared using IsCaseOf? *)
-  | IsDefinedC of expr             (* can be desugared? *)
-
+  | UnC of unop * cond              (* unop expr *)
+  | BinC of binop * cond * cond     (* expr binop expr *)
+  | CmpC of cmpop * expr * expr     (* expr cmpop expr *)
+  | IsCaseOfC of expr * keyword     (* expr is of the case keyword *)
+  | ValidC of expr                  (* expr is valid *)
+  | ContextKindC of keyword * expr  (* TODO: Desugar using IsCaseOf? *)
+  | IsDefinedC of expr              (* expr is defined *)
   (* Conditions used in assertions *)
-  | TopLabelC
-  | TopFrameC
-  | TopValueC of expr option
-  | TopValuesC of expr
-
-  (* Yet *)
-  | YetC of string
+  | TopLabelC                       (* a label is now on the top of the stack *)
+  | TopFrameC                       (* a frame is now on the top of the stack *)
+  | TopValueC of expr option        (* a value (of type expr)? is now on the top of the stack *)
+  | TopValuesC of expr              (* at least expr number of values on the top of the stack *)
+  (* Administrative instructions *)
+  | YetC of string                  (* for future not yet implemented feature *)
 
 (* Instructions *)
 
@@ -133,23 +132,20 @@ type instr =
   | AssertI of cond                       (* `assert` cond *)
   | PushI of expr                         (* `push` expr *)
   | PopI of expr                          (* `pop` expr *)
-  | PopAllI of expr                       (* `pop all` expr *)
+  | PopAllI of expr                       (* `popall` expr *)
   | LetI of expr * expr                   (* `let` expr `=` expr *)
   | TrapI                                 (* `trap` *)
   | NopI                                  (* `nop` *)
   | ReturnI of expr option                (* `return` expr? *)
   | ExecuteI of expr                      (* `execute` expr *)
-  | ExecuteSeqI of expr                   (* `execute' 'seq` expr *)
+  | ExecuteSeqI of expr                   (* `executeseq` expr *)
   | PerformI of name * expr list          (* `perform` name expr* *)
-  | ExitI
-  (* Mutations *)
-  | ReplaceI of expr * path * expr
-  | AppendI of expr * expr
-  | AppendListI of expr * expr
-
-  (* Administrative Instructions *)
-  | OtherwiseI of instr list (* only during the intermediate processing of il->al *)
-  | YetI of string           (* for future not yet implemented feature *)
+  | ExitI                                 (* `exit` *)
+  | ReplaceI of expr * path * expr        (* `replace` expr `->` path `with` expr *)
+  | AppendI of expr * expr                (* `append` expr expr *)
+  (* Administrative instructions *)
+  | OtherwiseI of instr list              (* only during the intermediate processing of il->al *)
+  | YetI of string                        (* for future not yet implemented feature *)
 
 (* Algorithms *)
 

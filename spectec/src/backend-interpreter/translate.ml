@@ -83,7 +83,7 @@ and exp2expr exp =
   | Ast.LenE inner_exp -> LengthE (exp2expr inner_exp)
   | Ast.ListE exps -> ListE (List.map exp2expr exps)
   | Ast.IdxE (exp1, exp2) ->
-      AccessE (exp2expr exp1, IndexP (exp2expr exp2))
+      AccessE (exp2expr exp1, IdxP (exp2expr exp2))
   | Ast.SliceE (exp1, exp2, exp3) ->
       AccessE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
@@ -206,7 +206,7 @@ and path2paths path =
   let rec path2paths' path =
     match path.it with
     | Ast.RootP -> []
-    | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
+    | Ast.IdxP (p, e) -> (path2paths' p) @ [ IdxP (exp2expr e) ]
     | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
     | Ast.DotP (p, Atom a) -> 
         (path2paths' p) @ [ DotP (name2keyword a p.note) ]
@@ -381,7 +381,7 @@ let rec exp2cond exp =
       | Ast.LeOp -> LeOp
       | Ast.GeOp -> GeOp
       in
-      CompareC (compare_op, lhs, rhs)
+      CmpC (compare_op, lhs, rhs)
   | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2cond exp1 in
       let rhs = exp2cond exp2 in
@@ -393,7 +393,7 @@ let rec exp2cond exp =
       | _ ->
           gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
       in
-      BinopC (binop, lhs, rhs)
+      BinC (binop, lhs, rhs)
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
 let bound_by binding e =
@@ -431,7 +431,7 @@ let extract_bound_names lhs rhs targets cont = match lhs with
             e
           else
             let new_e = get_lhs_name() in
-            conds := !conds @ [ CompareC (EqOp, new_e, e) ];
+            conds := !conds @ [ CmpC (EqOp, new_e, e) ];
             new_e
         );
         stop_cond_expr = contains_bound_name;
@@ -457,7 +457,7 @@ let rec letI lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when Al.Free.free_expr l = [] -> [ IfI (CompareC (EqOp, r, l), cont, []) ]
+      | _ when Al.Free.free_expr l = [] -> [ IfI (CmpC (EqOp, r, l), cont, []) ]
       | _ -> letI l r targets cont
     ) bindings cont
   in
@@ -477,14 +477,14 @@ let rec letI lhs rhs targets cont =
     else
     [
       IfI
-        ( CompareC (EqOp, LengthE rhs, NumE (Int64.of_int (List.length es))),
+        ( CmpC (EqOp, LengthE rhs, NumE (Int64.of_int (List.length es))),
           LetI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
     [
       IfI
-        ( NotC (IsDefinedC rhs),
+        ( UnC (NotOp, IsDefinedC rhs),
           cont,
           [] );
     ]
@@ -506,7 +506,7 @@ let rec letI lhs rhs targets cont =
   | BinopE (AddOp, a, b) ->
     [
       IfI
-        ( CompareC (GeOp, rhs, b),
+        ( CmpC (GeOp, rhs, b),
           LetI (a, BinopE (SubOp, rhs, b)) :: cont,
           [] );
     ]
@@ -527,8 +527,8 @@ let rec letI lhs rhs targets cont =
     let cond = match length_p, length_s with
       | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
-      | None, Some l -> CompareC (GeOp, LengthE rhs, l)
-      | Some l1, Some l2 -> CompareC (EqOp, LengthE rhs, BinopE (AddOp, l1, l2))
+      | None, Some l -> CmpC (GeOp, LengthE rhs, l)
+      | Some l1, Some l2 -> CmpC (EqOp, LengthE rhs, BinopE (AddOp, l1, l2))
     in
     [
       IfI

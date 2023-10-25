@@ -68,7 +68,7 @@ let rec create_sub_al_context names iter env =
   |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
 
 and access_path env base path = match path with
-  | IndexP e' ->
+  | IdxP e' ->
       let a = base |> value_to_array in
       let i = eval_expr env e' |> value_to_int in
       ( try Array.get a i with Invalid_argument _ -> failwith ("Failed Array.get during ReplaceE") )
@@ -89,7 +89,7 @@ and access_path env base path = match path with
           |> failwith)
 
 and replace_path env base path v_new = match path with
-  | IndexP e' ->
+  | IdxP e' ->
       let a = base |> value_to_array in
       let a_new = Array.copy a in
       let i = eval_expr env e' |> value_to_int in
@@ -258,8 +258,8 @@ and eval_expr env expr =
 
 and eval_cond env cond =
   match cond with
-  | NotC c -> eval_cond env c |> not
-  | BinopC (op, c1, c2) ->
+  | UnC (NotOp, c) -> eval_cond env c |> not
+  | BinC (op, c1, c2) ->
       let b1 = eval_cond env c1 in
       let b2 = eval_cond env c2 in
       begin match op with
@@ -269,7 +269,7 @@ and eval_cond env cond =
       | EquivOp -> b1 = b2
       | _ -> failwith "Unreachable"
       end
-  | CompareC (op, e1, e2) ->
+  | CmpC (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match op with
@@ -581,7 +581,7 @@ and interp_instr (env: env) (instr: instr): env =
     WasmContext.pop_context () |> ignore;
     AL_Context.decrease_depth ();
     env
-  | ReplaceI (e1, IndexP e2, e3) ->
+  | ReplaceI (e1, IdxP e2, e3) ->
     let a = eval_expr env e1 |> value_to_array in
     let i = eval_expr env e2 |> value_to_int in
     let v = eval_expr env e3 in
@@ -607,11 +607,6 @@ and interp_instr (env: env) (instr: instr): env =
     let a = eval_expr env e1 |> value_to_growable_array in
     let v = eval_expr env e2 in
     a := Array.append (!a) [|v|];
-    env
-  | AppendListI (e1, e2) ->
-    let a1 = eval_expr env e1 |> value_to_growable_array in
-    let a2 = eval_expr env e2 |> value_to_array in
-    a1 := Array.append (!a1) a2;
     env
   | i ->
     structured_string_of_instr 0 i

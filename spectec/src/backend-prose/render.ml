@@ -75,6 +75,10 @@ let render_prose_cmpop = function
   | Le -> "less than or equal to"
   | Ge -> "greater than or equal to"
 
+let render_al_unop = function
+  | Al.Ast.NotOp -> "not"
+  | Al.Ast.MinusOp -> "-"
+
 let render_al_binop = function
   | Al.Ast.AndOp -> "and"
   | Al.Ast.OrOp -> "or"
@@ -277,7 +281,7 @@ and render_expr env in_math = function
 (* assume Paths are always embedded in math blocks *)
 
 and render_path env = function
-  | Al.Ast.IndexP e -> sprintf "[%s]" (render_expr env true e)
+  | Al.Ast.IdxP e -> sprintf "[%s]" (render_expr env true e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
   | Al.Ast.DotP s -> sprintf ".%s" (render_keyword env s)
@@ -291,18 +295,19 @@ and render_paths env in_math paths =
 (* assume Conditions are never embedded in math blocks *)
 
 and render_cond env = function
-  | Al.Ast.NotC (Al.Ast.IsCaseOfC (e, c)) ->
+  | Al.Ast.UnC (NotOp, Al.Ast.IsCaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" 
         (render_expr env false e) 
         (render_math (render_keyword env c))
-  | Al.Ast.NotC (Al.Ast.IsDefinedC e) ->
+  | Al.Ast.UnC (NotOp, Al.Ast.IsDefinedC e) ->
       sprintf "%s is not defined" (render_expr env false e)
-  | Al.Ast.NotC (Al.Ast.ValidC e) ->
+  | Al.Ast.UnC (NotOp, Al.Ast.ValidC e) ->
       sprintf "%s is not valid" (render_expr env false e)
-  | Al.Ast.NotC c -> sprintf "not %s" (render_cond env c)
-  | Al.Ast.BinopC (op, c1, c2) ->
+  | Al.Ast.UnC (op, c) ->
+      sprintf "%s %s" (render_al_unop op) (render_cond env c)
+  | Al.Ast.BinC (op, c1, c2) ->
       sprintf "%s %s %s" (render_cond env c1) (render_al_binop op) (render_cond env c2)
-  | Al.Ast.CompareC (op, e1, e2) ->
+  | Al.Ast.CmpC (op, e1, e2) ->
       sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_keyword env s)
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
@@ -444,9 +449,6 @@ let rec render_al_instr env algoname index depth = function
         (render_expr env false (Al.Ast.AccessE (e1, p))) (render_expr env false e2)
   | Al.Ast.AppendI (e1, e2) ->
       sprintf "%s Append %s to the %s." (render_order index depth)
-        (render_expr env false e2) (render_expr env false e1)
-  | Al.Ast.AppendListI (e1, e2) ->
-      sprintf "%s Append the sequence %s to the %s." (render_order index depth)
         (render_expr env false e2) (render_expr env false e1)
   | Al.Ast.YetI s -> sprintf "%s YetI: %s." (render_order index depth) s
 

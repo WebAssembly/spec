@@ -68,6 +68,10 @@ and string_of_value = function
   | OptV (Some e) -> "?(" ^ string_of_value e ^ ")"
   | OptV None -> "?()"
 
+let string_of_unop = function
+  | NotOp -> "not"
+  | MinusOp -> "-"
+
 let string_of_binop = function
   | AndOp -> "and"
   | OrOp -> "or"
@@ -153,7 +157,7 @@ and string_of_expr = function
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_path = function
-  | IndexP e -> sprintf "[%s]" (string_of_expr e)
+  | IdxP e -> sprintf "[%s]" (string_of_expr e)
   | SliceP (e1, e2) ->
       sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
   | DotP (s, _) -> sprintf ".%s" s
@@ -161,16 +165,17 @@ and string_of_path = function
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
 and string_of_cond = function
-  | NotC (IsCaseOfC (e, c)) ->
+  | UnC (NotOp, IsCaseOfC (e, c)) ->
       sprintf "%s is not of the case %s" (string_of_expr e) (string_of_keyword c)
-  | NotC (IsDefinedC e) ->
+  | UnC (NotOp, IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
-  | NotC (ValidC e) ->
+  | UnC (NotOp, ValidC e) ->
       sprintf "%s is not valid" (string_of_expr e)
-  | NotC c -> sprintf "not %s" (string_of_cond c)
-  | BinopC (op, c1, c2) ->
+  | UnC (NotOp, c) -> sprintf "not %s" (string_of_cond c)
+  | UnC _ -> failwith "Unreachable condition"
+  | BinC (op, c1, c2) ->
       sprintf "%s %s %s" (string_of_cond c1) (string_of_binop op) (string_of_cond c2)
-  | CompareC (op, e1, e2) ->
+  | CmpC (op, e1, e2) ->
       sprintf "%s %s %s" (string_of_expr e1) (string_of_cmpop op) (string_of_expr e2)
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_keyword s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
@@ -273,9 +278,6 @@ let rec string_of_instr index depth = function
         (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
       sprintf "%s Append %s to the %s." (make_index index depth)
-        (string_of_expr e2) (string_of_expr e1)
-  | AppendListI (e1, e2) ->
-      sprintf "%s Append the sequence %s to the %s." (make_index index depth)
         (string_of_expr e2) (string_of_expr e1)
   | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
 
@@ -457,7 +459,7 @@ and structured_string_of_expr = function
 (* path*)
 
 and structured_string_of_path = function
-  | IndexP e -> sprintf "IndexP(%s)" (structured_string_of_expr e)
+  | IdxP e -> sprintf "IdxP(%s)" (structured_string_of_expr e)
   | SliceP (e1, e2) ->
       sprintf "SliceP(%s,%s)"
         (structured_string_of_expr e1)
@@ -470,17 +472,22 @@ and structured_string_of_paths paths =
 (* condition *)
 
 and structured_string_of_cond = function
-  | NotC c -> "NotC (" ^ structured_string_of_cond c ^ ")"
-  | BinopC (op, c1, c2) ->
-      "BinopC ("
+  | UnC (op, c) ->
+      "UnC ("
+      ^ string_of_unop op
+      ^ ", "
+      ^ structured_string_of_cond c
+      ^ ")"
+  | BinC (op, c1, c2) ->
+      "BinC ("
       ^ string_of_binop op
       ^ ", "
       ^ structured_string_of_cond c1
       ^ ", "
       ^ structured_string_of_cond c2
       ^ ")"
-  | CompareC (op, e1, e2) ->
-      "CompareC ("
+  | CmpC (op, e1, e2) ->
+      "CmpC ("
       ^ string_of_cmpop op
       ^ ", "
       ^ structured_string_of_expr e1
@@ -560,12 +567,6 @@ let rec structured_string_of_instr depth = function
       ^ ")"
   | AppendI (e1, e2) ->
       "AppendI ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ")"
-  | AppendListI (e1, e2) ->
-      "AppendListI ("
       ^ structured_string_of_expr e1
       ^ ", "
       ^ structured_string_of_expr e2

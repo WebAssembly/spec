@@ -75,7 +75,7 @@ and walk_path f p =
   let pre = id in
   let post = id in
   ( match pre p with
-  | IndexP e -> IndexP (walk_expr f e)
+  | IdxP e -> IdxP (walk_expr f e)
   | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
   | DotP (s, note) -> DotP (s, note) )
   |> post
@@ -86,9 +86,9 @@ let rec walk_cond f c =
   let new_e = walk_expr f in
 
   let super_walk c = match c with
-  | NotC inner_c -> NotC (new_ inner_c)
-  | BinopC (op, c1, c2) -> BinopC (op, new_ c1, new_ c2)
-  | CompareC (op, e1, e2) -> CompareC (op, new_e e1, new_e e2)
+  | UnC (op, inner_c) -> UnC (op, new_ inner_c)
+  | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
+  | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
   | ContextKindC (s, e) -> ContextKindC (s, new_e e)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
@@ -130,7 +130,6 @@ let rec walk_instr f (instr:instr) : instr list =
   | ExitI -> ExitI
   | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
   | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
-  | AppendListI (e1, e2) -> AppendListI (new_e e1, new_e e2)
   | YetI _ -> i in
 
   let il1 = pre instr in
