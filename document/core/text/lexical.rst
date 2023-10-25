@@ -78,7 +78,7 @@ White Space
 ~~~~~~~~~~~
 
 *White space* is any sequence of literal space characters, formatting characters, or :ref:`comments <text-comment>`.
-The allowed formatting characters correspond to a subset of the |ASCII|_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`), extended with the |Unicode|_ *next line* character (:math:`\unicode{85}`).
+The allowed formatting characters correspond to a subset of the |ASCII|_ *format effectors*, namely, *horizontal tabulation* (:math:`\unicode{09}`), *line feed* (:math:`\unicode{0A}`), and *carriage return* (:math:`\unicode{0D}`).
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -87,7 +87,7 @@ The allowed formatting characters correspond to a subset of the |ASCII|_ *format
    \production{format} & \Tformat &::=&
      \Tnewline ~|~ \unicode{09} \\
    \production{newline} & \Tnewline &::=&
-     \unicode{0A} ~|~ \unicode{0D} ~|~ \unicode{0D}~\unicode{0A} ~|~ \unicode{85} \\
+     \unicode{0A} ~|~ \unicode{0D} ~|~ \unicode{0D}~\unicode{0A} \\
    \end{array}
 
 The only relevance of white space is to separate :ref:`tokens <text-token>`. It is otherwise ignored.
@@ -111,7 +111,7 @@ Block comments can be nested.
    \production{line comment} & \Tlinecomment &::=&
      \Tcommentd~~\Tlinechar^\ast~~(\Tnewline ~|~ \T{eof}) \\
    \production{line character} & \Tlinechar &::=&
-     c{:}\Tchar & (\iff c \neq \unicode{0A} \land c \neq \unicode{0D} \land c \neq \unicode{85}) \\
+     c{:}\Tchar & (\iff c \neq \unicode{0A} \land c \neq \unicode{0D}) \\
    \production{block comment} & \Tblockcomment &::=&
      \Tcommentl~~\Tblockchar^\ast~~\Tcommentr \\
    \production{block character} & \Tblockchar &::=&

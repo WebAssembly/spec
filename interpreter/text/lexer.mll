@@ -68,18 +68,16 @@ let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
 let ascii_no_nl = ascii # ascii_newline
 let utf8cont = ['\x80'-'\xbf']
-let utf8enc_no_nl =
-    ['\xc2'] utf8cont#['\x85']
-  | ['\xc3'-'\xdf'] utf8cont
+let utf8enc =
+    ['\xc2'-'\xdf'] utf8cont
   | ['\xe0'] ['\xa0'-'\xbf'] utf8cont
   | ['\xed'] ['\x80'-'\x9f'] utf8cont
   | ['\xe1'-'\xec''\xee'-'\xef'] utf8cont utf8cont
   | ['\xf0'] ['\x90'-'\xbf'] utf8cont utf8cont
   | ['\xf4'] ['\x80'-'\x8f'] utf8cont utf8cont
   | ['\xf1'-'\xf3'] utf8cont utf8cont utf8cont
-let utf8enc = utf8enc_no_nl | "\xc2\x85"
 let utf8 = ascii | utf8enc
-let utf8_no_nl = ascii_no_nl | utf8enc_no_nl
+let utf8_no_nl = ascii_no_nl | utf8enc
 
 let escape = ['n''r''t''\\''\'''\"']
 let character =
