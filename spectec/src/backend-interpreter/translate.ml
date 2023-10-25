@@ -342,9 +342,17 @@ let rec rhs2instrs exp =
         []) ]
   (* Push *)
   | Ast.SubE _ | IterE _ -> [ PushI (exp2expr exp) ]
-  | Ast.CaseE (Atom atomid, _)
-    when atomid = "CONST" || atomid = "REF.FUNC_ADDR" ->
-      [ PushI (exp2expr exp) ]
+  | Ast.CaseE (Atom atomid, _) when List.mem atomid [
+      (* TODO: Consider automating this *)
+      "CONST";
+      "REF.I31_NUM";
+      "REF.STRUCT_ADDR";
+      "REF.ARRAY_ADDR";
+      "REF.FUNC_ADDR";
+      "REF.HOST_ADDR";
+      "REF.EXTERN";
+      "REF.NULL"
+    ] -> [ PushI (exp2expr exp) ]
   (* multiple rhs' *)
   | Ast.CatE (exp1, exp2) -> rhs2instrs exp1 @ rhs2instrs exp2
   | Ast.ListE exps -> List.concat_map rhs2instrs exps

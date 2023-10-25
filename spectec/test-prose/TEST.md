@@ -1461,7 +1461,7 @@ execution_of_CVTOP nt_2 cvtop nt_1 sx?
 execution_of_REF.I31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. Execute (REF.I31_NUM $wrap(32, 31, i)).
+3. Push (REF.I31_NUM $wrap(32, 31, i)) to the stack.
 
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1502,15 +1502,15 @@ execution_of_EXTERN.EXTERNALIZE
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop fresh_0 from the stack.
 3. If fresh_0 is of the case REF.NULL, then:
-  a. Execute (REF.NULL EXTERN).
+  a. Push (REF.NULL EXTERN) to the stack.
 4. Let addrref be fresh_0.
-5. Execute (REF.EXTERN addrref).
+5. Push (REF.EXTERN addrref) to the stack.
 
 execution_of_EXTERN.INTERNALIZE
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop fresh_0 from the stack.
 3. If fresh_0 is of the case REF.NULL, then:
-  a. Execute (REF.NULL ANY).
+  a. Push (REF.NULL ANY) to the stack.
 4. If fresh_0 is of the case REF.EXTERN, then:
   a. Let (REF.EXTERN addrref) be fresh_0.
   b. Push addrref to the stack.
@@ -1689,11 +1689,11 @@ execution_of_ARRAY.FILL x
   a. Let (REF.ARRAY_ADDR a) be fresh_0.
   b. If fresh_1 ≥ 1, then:
     1) Let n be (fresh_1 - 1).
-    2) Execute (REF.ARRAY_ADDR a).
+    2) Push (REF.ARRAY_ADDR a) to the stack.
     3) Push (I32.CONST i) to the stack.
     4) Push val to the stack.
     5) Execute (ARRAY.SET x).
-    6) Execute (REF.ARRAY_ADDR a).
+    6) Push (REF.ARRAY_ADDR a) to the stack.
     7) Push (I32.CONST (i + 1)) to the stack.
     8) Push val to the stack.
     9) Push (I32.CONST n) to the stack.
@@ -1737,28 +1737,28 @@ execution_of_ARRAY.COPY x_1 x_2
       b) If i_1 ≤ i_2, then:
         1. YetI: Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2))).
         2. Let sx? be $sxfield(zt_2).
-        3. Execute (REF.ARRAY_ADDR a_1).
+        3. Push (REF.ARRAY_ADDR a_1) to the stack.
         4. Push (I32.CONST i_1) to the stack.
-        5. Execute (REF.ARRAY_ADDR a_2).
+        5. Push (REF.ARRAY_ADDR a_2) to the stack.
         6. Push (I32.CONST i_2) to the stack.
         7. Execute (ARRAY.GET sx? x).
         8. Execute (ARRAY.SET x).
-        9. Execute (REF.ARRAY_ADDR a_1).
+        9. Push (REF.ARRAY_ADDR a_1) to the stack.
         10. Push (I32.CONST (i_1 + 1)) to the stack.
-        11. Execute (REF.ARRAY_ADDR a_2).
+        11. Push (REF.ARRAY_ADDR a_2) to the stack.
         12. Push (I32.CONST (i_2 + 1)) to the stack.
       c) Else:
         1. YetI: Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2))).
         2. Let sx? be $sxfield(zt_2).
-        3. Execute (REF.ARRAY_ADDR a_1).
+        3. Push (REF.ARRAY_ADDR a_1) to the stack.
         4. Push (I32.CONST (i_1 + n)) to the stack.
-        5. Execute (REF.ARRAY_ADDR a_2).
+        5. Push (REF.ARRAY_ADDR a_2) to the stack.
         6. Push (I32.CONST (i_2 + n)) to the stack.
         7. Execute (ARRAY.GET sx? x).
         8. Execute (ARRAY.SET x).
-        9. Execute (REF.ARRAY_ADDR a_1).
+        9. Push (REF.ARRAY_ADDR a_1) to the stack.
         10. Push (I32.CONST i_1) to the stack.
-        11. Execute (REF.ARRAY_ADDR a_2).
+        11. Push (REF.ARRAY_ADDR a_2) to the stack.
         12. Push (I32.CONST i_2) to the stack.
       d) Push (I32.CONST n) to the stack.
       e) Execute (ARRAY.COPY x_1 x_2).
@@ -1786,11 +1786,11 @@ execution_of_ARRAY.INIT_ELEM x y
       a) Let n be (fresh_1 - 1).
       b) If j < |$elem(y).ELEM|, then:
         1. Let ref be $elem(y).ELEM[j].
-        2. Execute (REF.ARRAY_ADDR a).
+        2. Push (REF.ARRAY_ADDR a) to the stack.
         3. Push (I32.CONST i) to the stack.
         4. Push ref to the stack.
         5. Execute (ARRAY.SET x).
-        6. Execute (REF.ARRAY_ADDR a).
+        6. Push (REF.ARRAY_ADDR a) to the stack.
         7. Push (I32.CONST (i + 1)) to the stack.
         8. Push (I32.CONST (j + 1)) to the stack.
         9. Push (I32.CONST n) to the stack.
@@ -1806,11 +1806,11 @@ execution_of_ARRAY.INIT_ELEM x y
       a) Let n be (fresh_1 - 1).
       b) If j < |$elem(y).ELEM|, then:
         1. Let ref be $elem(y).ELEM[j].
-        2. Execute (REF.ARRAY_ADDR a).
+        2. Push (REF.ARRAY_ADDR a) to the stack.
         3. Push (I32.CONST i) to the stack.
         4. Push ref to the stack.
         5. Execute (ARRAY.SET x).
-        6. Execute (REF.ARRAY_ADDR a).
+        6. Push (REF.ARRAY_ADDR a) to the stack.
         7. Push (I32.CONST (i + 1)) to the stack.
         8. Push (I32.CONST (j + 1)) to the stack.
         9. Push (I32.CONST n) to the stack.
@@ -1840,11 +1840,11 @@ execution_of_ARRAY.INIT_DATA x y
       b) YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
       c) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
       d) Let nt be $unpacknumtype(zt).
-      e) Execute (REF.ARRAY_ADDR a).
+      e) Push (REF.ARRAY_ADDR a) to the stack.
       f) Push (I32.CONST i) to the stack.
       g) Push (nt.CONST c) to the stack.
       h) Execute (ARRAY.SET x).
-      i) Execute (REF.ARRAY_ADDR a).
+      i) Push (REF.ARRAY_ADDR a) to the stack.
       j) Push (I32.CONST (i + 1)) to the stack.
       k) Push (I32.CONST (j + 1)) to the stack.
       l) Push (I32.CONST n) to the stack.
@@ -1862,11 +1862,11 @@ execution_of_ARRAY.INIT_DATA x y
       b) YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
       c) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
       d) Let nt be $unpacknumtype(zt).
-      e) Execute (REF.ARRAY_ADDR a).
+      e) Push (REF.ARRAY_ADDR a) to the stack.
       f) Push (I32.CONST i) to the stack.
       g) Push (nt.CONST c) to the stack.
       h) Execute (ARRAY.SET x).
-      i) Execute (REF.ARRAY_ADDR a).
+      i) Push (REF.ARRAY_ADDR a) to the stack.
       j) Push (I32.CONST (i + 1)) to the stack.
       k) Push (I32.CONST (j + 1)) to the stack.
       l) Push (I32.CONST n) to the stack.
@@ -2052,7 +2052,7 @@ execution_of_MEMORY.INIT x y
 execution_of_STRUCT.NEW x
 1. YetI: Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt})).
 2. Let si be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
-3. Execute (REF.STRUCT_ADDR |$structinst()|).
+3. Push (REF.STRUCT_ADDR |$structinst()|) to the stack.
 4. Perform $ext_structinst([si]).
 
 execution_of_STRUCT.SET x i
@@ -2073,7 +2073,7 @@ execution_of_STRUCT.SET x i
 execution_of_ARRAY.NEW_FIXED x n
 1. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
 2. Let ai be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
-3. Execute (REF.ARRAY_ADDR |$arrayinst()|).
+3. Push (REF.ARRAY_ADDR |$arrayinst()|) to the stack.
 4. Perform $ext_arrayinst([ai]).
 
 execution_of_ARRAY.SET x
