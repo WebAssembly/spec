@@ -139,6 +139,14 @@ Warning: No corresponding if for
   b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
 Invalid premise `Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))` to be AL instr.
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
+Warning: No corresponding if for
+1. Otherwise:
+  a. Push (I32.CONST 0) to the stack.
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
+Warning: No corresponding if for
+1. Otherwise:
+  a. Trap.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
 Invalid premise `Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
