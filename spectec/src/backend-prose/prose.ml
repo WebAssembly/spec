@@ -15,7 +15,7 @@ type instr =
 | YetI of string
 
 type def =
-| Pred of Al.Ast.keyword * Al.Ast.expr list * instr list
+| Pred of Al.Ast.kwd * Al.Ast.expr list * instr list
 | Algo of Al.Ast.algorithm
 
 type prose = def list

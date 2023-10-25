@@ -32,7 +32,7 @@ let rec repeat str num =
 
 (* AL stringifier *)
 
-let string_of_keyword keyword = let name, _ = keyword in name
+let string_of_kwd kwd = let name, _ = kwd in name
 
 let string_of_dir = function
   | Front -> "Front"
@@ -104,7 +104,7 @@ and string_of_iters iters = List.map string_of_iter iters |> List.fold_left (^) 
 
 and string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ string_of_keyword k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ string_of_kwd k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -143,7 +143,7 @@ and string_of_expr = function
   | ContE e -> sprintf "the continuation of %s" (string_of_expr e)
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
-  | NameE n -> n
+  | VarE n -> n
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
@@ -166,7 +166,7 @@ and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) 
 
 and string_of_cond = function
   | UnC (NotOp, IsCaseOfC (e, c)) ->
-      sprintf "%s is not of the case %s" (string_of_expr e) (string_of_keyword c)
+      sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd c)
   | UnC (NotOp, IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
   | UnC (NotOp, ValidC e) ->
@@ -177,9 +177,9 @@ and string_of_cond = function
       sprintf "%s %s %s" (string_of_cond c1) (string_of_binop op) (string_of_cond c2)
   | CmpC (op, e1, e2) ->
       sprintf "%s %s %s" (string_of_expr e1) (string_of_cmpop op) (string_of_expr e2)
-  | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_keyword s)
+  | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_kwd s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_keyword c)
+  | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_kwd c)
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
@@ -290,7 +290,7 @@ and string_of_instrs depth instrs =
 
 let string_of_algorithm = function
   | RuleA (name, params, instrs) ->
-      "execution_of_" ^ string_of_keyword name
+      "execution_of_" ^ string_of_kwd name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
@@ -308,7 +308,7 @@ let string_of_algorithm = function
 
 (* name *)
 
-let structured_string_of_keyword keyword = let name, note = keyword in sprintf "%s_%s" name note
+let structured_string_of_kwd kwd = let name, note = kwd in sprintf "%s_%s" name note
 
 let structured_string_of_names names = List.fold_left (^) "" names
 
@@ -352,7 +352,7 @@ let rec structured_string_of_iter = function
 
 and structured_string_of_record_expr r =
   Record.fold
-    (fun k v acc -> acc ^ structured_string_of_keyword k ^ ": " ^ string_of_expr v ^ "; ")
+    (fun k v acc -> acc ^ structured_string_of_kwd k ^ ": " ^ string_of_expr v ^ "; ")
     r "{ "
   ^ "}"
 
@@ -438,7 +438,7 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | NameE n -> "NameE (" ^ n ^ ")"
+  | VarE n -> "VarE (" ^ n ^ ")"
   | IterE (e, names, iter) ->
       "IterE ("
       ^ structured_string_of_expr e
@@ -454,7 +454,7 @@ and structured_string_of_expr = function
       ^ structured_string_of_expr e2
       ^ ")"
   | ConstructE (s, el) ->
-      "ConstructE (" ^ structured_string_of_keyword s ^ ", "
+      "ConstructE (" ^ structured_string_of_kwd s ^ ", "
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
       ^ ")"
   | OptE o -> "OptE " ^ string_of_opt "(" structured_string_of_expr ")" o
@@ -498,9 +498,9 @@ and structured_string_of_cond = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" (structured_string_of_keyword s) (structured_string_of_expr e)
+  | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" (structured_string_of_kwd s) (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
-  | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_keyword c ^ ")"
+  | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_kwd c ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"
@@ -585,7 +585,7 @@ and structured_string_of_instrs depth instrs =
 
 let structured_string_of_algorithm = function
   | RuleA (name, params, instrs) ->
-      "execution_of_" ^ structured_string_of_keyword name
+      "execution_of_" ^ structured_string_of_kwd name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params

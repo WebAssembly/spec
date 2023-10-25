@@ -6,7 +6,7 @@ open Al.Ast
 
 let singleton x = ConstructV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
-let id str = NameE str 
+let id str = VarE str 
 
 module Value = struct
   let num i = NumV i
@@ -50,7 +50,7 @@ module Expr = struct
   let get_cur_label = GetCurLabelE
   let get_cur_context = GetCurContextE
   let cont e = ContE e
-  let name n = NameE n
+  let id n = VarE n
   let iter e names it = IterE (e, names, it)
   let yet s = YetE s
 end

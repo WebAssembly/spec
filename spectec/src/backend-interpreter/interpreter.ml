@@ -173,7 +173,7 @@ and eval_expr env expr =
       NumV (I64.of_int_u (Array.length a))
   | RecordE r -> 
       let elist = Record.to_list r in
-      let vlist = List.map (fun (k, e) -> ((string_of_keyword k), !e |> eval_expr env |> ref)) elist in
+      let vlist = List.map (fun (k, e) -> ((string_of_kwd k), !e |> eval_expr env |> ref)) elist in
       RecordV (Record.of_list vlist)
   | AccessE (e, p) ->
       let base = eval_expr env e in
@@ -238,8 +238,8 @@ and eval_expr env expr =
       match v with
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
-  | NameE name -> Env.find name env
-  | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
+  | VarE name -> Env.find name env
+  | IterE (VarE name, _, List) -> (* Optimized getter for simple IterE(VarE, ...) *)
       Env.find name env
   | IterE (inner_e, names, iter) ->
       env
@@ -315,7 +315,7 @@ and eval_cond env cond =
 (* Assignment *)
 
 and has_same_keys r1 r2 =
-  let k1 = Record.keys r1 |> List.map string_of_keyword |> List.sort String.compare in
+  let k1 = Record.keys r1 |> List.map string_of_kwd |> List.sort String.compare in
   let k2 = Record.keys r2 |> List.sort String.compare in
   k1 = k2
 
@@ -333,8 +333,8 @@ and merge_envs_with_grouping default_env envs =
 
 and assign lhs rhs env =
   match lhs, rhs with
-  | NameE name, v -> Env.add name v env
-  | IterE (NameE n, _, List), ListV _ -> (* Optimized assign for simple IterE(NameE, ...) *)
+  | VarE name, v -> Env.add name v env
+  | IterE (VarE n, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
       Env.add n rhs env
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
@@ -383,7 +383,7 @@ and assign lhs rhs env =
       env |> assign e1 (NumV (invop m n))
   | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | RecordE r1, RecordV r2 when has_same_keys r1 r2 ->
-      Record.fold (fun k v acc -> (Record.find (string_of_keyword k) r2 |> assign v) acc) r1 env
+      Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
         (string_of_expr e) (string_of_value v)
@@ -501,20 +501,20 @@ and interp_instr (env: env) (instr: instr): env =
     | v -> WasmContext.push_value v
     end;
     env
-  | PopI (IterE (NameE name, [name'], ListN (e', None))) when name = name' ->
+  | PopI (IterE (VarE name, [name'], ListN (e', None))) when name = name' ->
     let i = eval_expr env e' |> value_to_int in
     let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
     Env.add name (listV vs) env
   | PopI e ->
     begin match (e, WasmContext.pop_value ()) with
-    | ConstructE (("CONST", _), [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | ConstructE (("CONST", _), [VarE nt; VarE name]), ConstructV ("CONST", [ ty; v ]) ->
       env
       |> Env.add nt ty
       |> Env.add name v
-    | ConstructE (("CONST", _), [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | ConstructE (("CONST", _), [tyE; VarE name]), ConstructV ("CONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       Env.add name v env
-    | NameE name, v -> Env.add name v env
+    | VarE name, v -> Env.add name v env
     (* TODO remove this *)
     | FrameE _, FrameV _ -> env
     | (e, h) ->
@@ -523,7 +523,7 @@ and interp_instr (env: env) (instr: instr): env =
         (structured_string_of_value h)
       |> failwith
     end
-  | PopAllI (IterE (NameE name, [name'], List)) when name = name' ->
+  | PopAllI (IterE (VarE name, [name'], List)) when name = name' ->
     let rec pop_all acc =
       if WasmContext.get_value_stack () |> List.length > 0 then
         WasmContext.pop_value () :: acc |> pop_all

@@ -8,7 +8,7 @@ let rec free_expr = function
   | GetCurContextE
   | GetCurFrameE
   | YetE _ -> []
-  | NameE n -> [n]
+  | VarE n -> [n]
   | UnE (_, e)
   | LengthE e
   | ArityE e
@@ -34,7 +34,7 @@ and free_iter = function
   | Opt
   | List
   | List1 -> []
-  | ListN (e, name_opt) -> Option.to_list name_opt @ free_expr e
+  | ListN (e, id_opt) -> Option.to_list id_opt @ free_expr e
 and free_path = function
   | IdxP e -> free_expr e
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2

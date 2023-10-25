@@ -39,8 +39,8 @@ let rec if_expr_to_instrs e =
     let neg_cond = if_expr_to_instrs e1 in
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
-      | [ CmpI (IterE (NameE name, _, Opt), Eq, OptE None) ] ->
-          IfI (Al.Ast.IsDefinedC (Al.Ast.NameE name), body)
+      | [ CmpI (IterE (VarE name, _, Opt), Eq, OptE None) ] ->
+          IfI (Al.Ast.IsDefinedC (Al.Ast.VarE name), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
       [ EquivI (exp2cond e1, exp2cond e2) ]
@@ -64,9 +64,9 @@ let rec prem_to_instrs prem = match prem.it with
     )
   | Ast.IterPr (prem, iter) ->
     ( match iter with
-    | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.NameE id.it), prem_to_instrs prem) ]
+    | Ast.Opt, [id] -> [ IfI (Al.Ast.IsDefinedC (Al.Ast.VarE id.it), prem_to_instrs prem) ]
     | Ast.List, [id] ->
-        let name = Al.Ast.NameE id.it in
+        let name = Al.Ast.VarE id.it in
         [ ForallI (name, Al.Ast.IterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]
     | _ -> failwith "prem_to_instr: Invalid prem")
   | _ ->
@@ -86,7 +86,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
-  let name = name2keyword winstr_name winstr.note in
+  let name = name2kwd winstr_name winstr.note in
   (* params *)
   let params = get_params winstr |> List.map exp_to_expr in
   (* body *)

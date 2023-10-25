@@ -62,7 +62,7 @@ let rec walk_expr f e =
   | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
-  | NameE n -> NameE n
+  | VarE n -> VarE n
   | IterE (e, names, iter) -> IterE (new_ e, names, iter)
   | YetE _ -> e in
 

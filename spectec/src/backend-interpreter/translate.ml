@@ -46,8 +46,8 @@ let rec flatten e =
 let flatten_rec def =
   match def.it with Ast.RecD defs -> defs | _ -> [def]
 
-(** Translate keywords **)
-let name2keyword name note = (name, Il.Print.string_of_typ note)
+(** Translate kwds **)
+let name2kwd name note = (name, Il.Print.string_of_typ note)
 
 let get_params winstr =
   match winstr.it with
@@ -88,7 +88,7 @@ and exp2expr exp =
       AccessE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
-  | Ast.VarE id -> NameE id.it
+  | Ast.VarE id -> VarE id.it
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE (inner_exp, (Ast.ListN (times, None), [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
@@ -97,7 +97,7 @@ and exp2expr exp =
       IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> 
-      AccessE (exp2expr inner_exp, DotP (name2keyword p inner_exp.note))
+      AccessE (exp2expr inner_exp, DotP (name2kwd p inner_exp.note))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
@@ -107,7 +107,7 @@ and exp2expr exp =
         | Ast.Atom name, fieldexp ->
             let extend_expr = exp2expr fieldexp in
             if nonempty extend_expr then
-              ExtendE (acc, [ DotP (name2keyword name inner_exp.note) ], extend_expr, Front)
+              ExtendE (acc, [ DotP (name2kwd name inner_exp.note) ], extend_expr, Front)
             else
               acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
@@ -138,7 +138,7 @@ and exp2expr exp =
       in
       BinE (op, lhs, rhs)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (name2keyword cons exp.note, exp2args arg)
+  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (name2kwd cons exp.note, exp2args arg)
   (* Tuple *)
   | Ast.TupE exps -> ListE (List.map exp2expr exps)
   (* Call *)
@@ -148,7 +148,7 @@ and exp2expr exp =
       let f acc = function
         | Ast.Atom name, fieldexp ->
             let expr = exp2expr fieldexp in
-            Record.add (name2keyword name exp.note) expr acc
+            Record.add (name2kwd name exp.note) expr acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
       let record = List.fold_left f Record.empty expfields in
@@ -176,7 +176,7 @@ and exp2expr exp =
           PairE (ConstructE (("MUT", "globaltype"), []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          PairE (IterE (NameE "mut", ["mut"], Opt), exp2expr t)
+          PairE (IterE (VarE "mut", ["mut"], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
           ConstructE (("MODULE", "module"), List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
@@ -216,7 +216,7 @@ and path2paths path =
     | Ast.IdxP (p, e) -> (path2paths' p) @ [ IdxP (exp2expr e) ]
     | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
     | Ast.DotP (p, Atom a) -> 
-        (path2paths' p) @ [ DotP (name2keyword a p.note) ]
+        (path2paths' p) @ [ DotP (name2kwd a p.note) ]
     | _ -> failwith "unreachable"
   in
   path2paths' path
@@ -274,9 +274,9 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (NameE "L", GetCurLabelE);
-        LetI (exp2expr n, ArityE (NameE "L"));
-        LetI (exp2expr instrs, ContE (NameE "L"));
+        LetI (VarE "L", GetCurLabelE);
+        LetI (exp2expr n, ArityE (VarE "L"));
+        LetI (exp2expr instrs, ContE (VarE "L"));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
         ExitI
@@ -284,8 +284,8 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (NameE "F", GetCurFrameE);
-        LetI (exp2expr n, ArityE (NameE "F"));
+        LetI (VarE "F", GetCurFrameE);
+        LetI (exp2expr n, ArityE (VarE "F"));
         ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
         PopAllI (exp2expr last_v);
         ExitI
@@ -304,11 +304,11 @@ let rec rhs2instrs exp =
       [ ExecuteSeqI (exp2expr exp) ]
   | Ast.IterE ({ it = CaseE (Atom atomid, _); note = note; _ }, (Opt, [ id ]))
     when atomid = "CALL" ->
-      let new_name = NameE (id.it ^ "_0") in
-      [ IfI (IsDefinedC (NameE id.it),
+      let new_name = VarE (id.it ^ "_0") in
+      [ IfI (IsDefinedC (VarE id.it),
         [
-          LetI (OptE (Some new_name), NameE id.it);
-          ExecuteI (ConstructE (name2keyword atomid note, [ new_name ]))
+          LetI (OptE (Some new_name), VarE id.it);
+          ExecuteI (ConstructE (name2kwd atomid note, [ new_name ]))
         ],
         []) ]
   (* Push *)
@@ -333,8 +333,8 @@ let rec rhs2instrs exp =
           _;
         }) ->
           [
-            LetI (NameE "F", FrameE (Some (NameE arity.it), NameE fname.it));
-            EnterI (NameE "F", ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs labelexp);
+            LetI (VarE "F", FrameE (Some (VarE arity.it), VarE fname.it));
+            EnterI (VarE "F", ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs labelexp);
           ]
   (* TODO: Label *)
   | Ast.CaseE
@@ -346,22 +346,22 @@ let rec rhs2instrs exp =
           _;
         }) -> (
       let label_expr =
-        LabelE (NameE label_arity.it, exp2expr instrs_exp1)
+        LabelE (VarE label_arity.it, exp2expr instrs_exp1)
       in
       match instrs_exp2.it with
       | Ast.CatE (valexp, instrsexp) ->
           [
-            LetI (NameE "L", label_expr);
-            EnterI (NameE "L", ConcatE (exp2expr instrsexp, ListE ([ConstructE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
+            LetI (VarE "L", label_expr);
+            EnterI (VarE "L", ConcatE (exp2expr instrsexp, ListE ([ConstructE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
           ]
       | _ ->
           [
-            LetI (NameE "L", label_expr);
-            EnterI (NameE "L", ConcatE(exp2expr instrs_exp2, ListE ([ConstructE (("LABEL_", ""), [])])), []);
+            LetI (VarE "L", label_expr);
+            EnterI (VarE "L", ConcatE(exp2expr instrs_exp2, ListE ([ConstructE (("LABEL_", ""), [])])), []);
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ ExecuteI (ConstructE (name2keyword atomid exp.note, exp2args argexp)) ]
+      [ ExecuteI (ConstructE (name2kwd atomid exp.note, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -417,7 +417,7 @@ let init_lhs_id () = lhs_id_ref := 0
 let get_lhs_name () =
   let lhs_id = !lhs_id_ref in
   lhs_id_ref := (lhs_id + 1);
-  NameE (lhs_prefix ^ (lhs_id |> string_of_int))
+  VarE (lhs_prefix ^ (lhs_id |> string_of_int))
 
 let extract_bound_names lhs rhs targets cont = match lhs with
   (* TODO: Make this actually consider the targets *)
@@ -451,7 +451,7 @@ let extract_bound_names lhs rhs targets cont = match lhs with
 let rec letI lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
-    | NameE _ -> true
+    | VarE _ -> true
     | IterE (inner_exp, _, _) -> has_name inner_exp
     | _ -> false
   in
@@ -495,7 +495,7 @@ let rec letI lhs rhs targets cont =
           cont,
           [] );
     ]
-  | OptE (Some (NameE _)) ->
+  | OptE (Some (VarE _)) ->
     [
       IfI
         ( IsDefinedC rhs,
@@ -524,7 +524,7 @@ let rec letI lhs rhs targets cont =
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
-      | IterE (NameE _, _, ListN (e', None)) ->
+      | IterE (VarE _, _, ListN (e', None)) ->
         Some e', [], e
       | _ ->
         None, [], e in
@@ -544,7 +544,7 @@ let rec letI lhs rhs targets cont =
             :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
-  | NameE s when s = "f" || String.starts_with ~prefix:"f_" s ->
+  | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
       Al.Print.string_of_expr rhs |> print_endline;
       LetI (lhs, rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
@@ -557,7 +557,7 @@ let rec rulepr2instr pr =
     | EnterI (ctx, instrs, [ LetI (lhs, rhs) ]) ->
       let rec name_of_expr = function
         | IterE (e, _, _) -> name_of_expr e
-        | NameE n -> n
+        | VarE n -> n
         | _ -> failwith "Not a name"
       in
       begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
@@ -593,7 +593,7 @@ let rec rulepr2instr pr =
     ]; _ }
   ) when id.it = "Exec_expr_const" ->
     EnterI (
-      FrameE (None, NameE f.it),
+      FrameE (None, VarE f.it),
       ListE [ConstructE (("FRAME_", ""), [])],
       [ LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ])) ]
     )
@@ -731,7 +731,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
-  let name = name2keyword winstr_name winstr.note in
+  let name = name2kwd winstr_name winstr.note in
   (* params *)
   (* TODO: retieve param for return *)
   let al_params =
@@ -814,7 +814,7 @@ let config_helper2instrs after arity return clause =
     lhs
   ]; _ }) ->
     let enter =
-      EnterI (FrameE (Some arity, NameE f.it), ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs lhs)
+      EnterI (FrameE (Some arity, VarE f.it), ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs lhs)
     in
     enter :: after @ return |> prems2instrs [] prems
   | _ -> failwith "unreachable"
@@ -838,9 +838,9 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiation" then
-          [ReturnI (Some (NameE "m"))] |> config_helper2instrs [] (NumE 0L)
+          [ReturnI (Some (VarE "m"))] |> config_helper2instrs [] (NumE 0L)
         else if id.it = "invocation" then
-          [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))] (NameE "k")
+          [ReturnI (Some (IterE (VarE "val", ["val"], ListN (VarE "k", None))))] |> config_helper2instrs [PopI (IterE (VarE "val", ["val"], ListN (VarE "k", None)))] (VarE "k")
         else
           normal_helper2instrs
       in
