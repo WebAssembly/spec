@@ -730,7 +730,7 @@ warning: rule `Step_pure/ref.i31` was never spliced
 warning: rule `Step_pure/ref.is_null-true` was never spliced
 warning: rule `Step_pure/ref.is_null-false` was never spliced
 warning: rule `Step_pure/ref.as_non_null-null` was never spliced
-warning: rule `Step_pure/ref.as_non_null-null` was never spliced
+warning: rule `Step_pure/ref.as_non_null-non_null` was never spliced
 warning: rule `Step_pure/ref.eq-null` was never spliced
 warning: rule `Step_pure/ref.eq-true` was never spliced
 warning: rule `Step_pure/ref.eq-false` was never spliced

@@ -238,7 +238,7 @@ rule Step_pure/ref.as_non_null-null:
   ref REF.AS_NON_NULL  ~>  TRAP
   -- if ref = (REF.NULL ht)
 
-rule Step_pure/ref.as_non_null-null:
+rule Step_pure/ref.as_non_null-non_null:
   ref REF.AS_NON_NULL  ~>  ref
   -- otherwise
 

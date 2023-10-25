@@ -2844,7 +2844,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (ref = REF.NULL_ref(ht))
 
   ;; 8-reduction.watsup:241.1-243.15
-  rule ref.as_non_null-null {ref : ref}:
+  rule ref.as_non_null-non_null {ref : ref}:
     `%*~>%*`([(ref <: admininstr) REF.AS_NON_NULL_admininstr], [(ref <: admininstr)])
     -- otherwise
 
