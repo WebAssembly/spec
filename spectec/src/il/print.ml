@@ -151,10 +151,6 @@ and string_of_exp e =
   | OptE eo -> "?(" ^ string_of_exps "" (Option.to_list eo) ^ ")"
   | TheE e1 -> "!(" ^ string_of_exp e1 ^ ")"
   | ListE es -> "[" ^ string_of_exps " " es ^ "]"
-  | ElementsOfE (e1, e2) ->
-    string_of_exp e1 ^ "<-" ^ string_of_exp e2
-  | ListBuilderE (e1, e2) ->
-    "[" ^ string_of_exp e1 ^ "|" ^ string_of_exp e2 ^ "]"
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
   | CaseE (atom, e1) ->
     string_of_atom atom ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1
@@ -478,14 +474,6 @@ and structured_string_of_exp exp =
         (structured_string_of_exp exp1)
         (structured_string_of_typ typ1)
         (structured_string_of_typ typ2)
-  | ElementsOfE (exp1, exp2) ->
-      sprintf "ElementsOfE (%s, %s)"
-        (structured_string_of_exp exp1)
-        (structured_string_of_exp exp2)
-  | ListBuilderE (exp1, exp2) ->
-      sprintf "ListBuilderE (%s, %s)"
-        (structured_string_of_exp exp1)
-        (structured_string_of_exp exp2)
 
 and structured_string_of_exps exps =
   structured_string_of_list structured_string_of_exp exps

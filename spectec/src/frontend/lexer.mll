@@ -166,7 +166,6 @@ rule token = parse
   | "~>" { SQARROW }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
-  | "<-" { IN }
 
   | "$" { DOLLAR }
 

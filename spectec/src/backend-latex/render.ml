@@ -380,7 +380,6 @@ and expand_exp' args e' =
     let e2' = expand_exp args e2 in
     InfixE (e1', atom, e2')
   | BrackE (brack, e) -> BrackE (brack, expand_exp args e)
-  | ListBuilderE (e1, e2) -> ListBuilderE (expand_exp args e1, expand_exp args e2)
   | CallE (id, e) -> CallE (id, expand_exp args e)
   | IterE (e1, iter) ->
     let e1' = expand_exp args e1 in
@@ -396,10 +395,6 @@ and expand_exp' args e' =
     let e1' = expand_exp args e1 in
     let e2' = expand_exp args e2 in
     FuseE (e1', e2')
-  | ElementsOfE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    ElementsOfE (e1', e2')
 
 and expand_expfield args (atom, e) = (atom, expand_exp args e)
 
@@ -569,8 +564,6 @@ and render_exp env e =
     render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
   | BrackE (brack, e) ->
     let l, r = render_brack brack in l ^ render_exp env e ^ r
-  | ListBuilderE (e1, e2) ->
-      "[" ^ render_exp env e1 ^ "|" ^ render_exp env e2 ^ "]"
   | CallE (id, e1) ->
     render_expand env env.show_def id (untup_exp e1)
       (fun () ->
@@ -594,8 +587,6 @@ and render_exp env e =
     (* Hack for printing t.LOADn_sx *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2' ^ "}"
-  | ElementsOfE (e1, e2) ->
-    render_exp env e1 ^ "\\in" ^ render_exp env e2
   | HoleE _ -> assert false
 
 and render_exps sep env es =

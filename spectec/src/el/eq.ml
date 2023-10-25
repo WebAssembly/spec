@@ -65,9 +65,7 @@ and eq_exp e1 e2 =
   | IdxE (e11, e12), IdxE (e21, e22)
   | CommaE (e11, e12), CommaE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)
-  | FuseE (e11, e12), FuseE (e21, e22)
-  | ElementsOfE (e11, e12), ElementsOfE (e21, e22)
-  | ListBuilderE (e11, e12), ListBuilderE (e21, e22) ->
+  | FuseE (e11, e12), FuseE (e21, e22) ->
     eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
     eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23

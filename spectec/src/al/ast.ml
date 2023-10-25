@@ -1,13 +1,17 @@
-(* Names *)
+(* Terminals *)
+
+type nat = int
+type text = string
+type id = string    (* name of meta-variables in the DSL, which are variables in AL *)
 
 (* Identifiers derived from the syntax terminals defined in the DSL.
    The second in the tuple denotes its IL-type (for disambiguation).*)
 type keyword = keyword' * string
 and keyword' = string
 
-type funcname = string (* name of helper functions defined in the DSL *)
+(* type funcname = string (* name of helper functions defined in the DSL *) *)
 
-type name = string     (* name of meta-variables in the DSL, which are variables in AL *)
+type name = string    
 
 (* Values *)
 type 'a growable_array = 'a array ref
@@ -25,9 +29,9 @@ and value =
   | OptV of value option                (* optional value *)
   | PairV of value * value              (* pair of values *)
   | ArrowV of value * value             (* Wasm function type as an AL value *)
-  | FrameV of value option * value      (* TODO: Desugar using ContructV *)
-  | LabelV of value * value             (* TODO: Desugar using ContructV *)
-  | StoreV of store ref                 (* TODO: Check Wasm specificity *)
+  | FrameV of value option * value      (* TODO: desugar using ContructV? *)
+  | LabelV of value * value             (* TODO: desugar using ContructV? *)
+  | StoreV of store ref                 (* TODO: check Wasm specificity? *)
 
 type extend_dir =                       (* direction of extension *)
   | Front                               (* extend from the front *)
@@ -72,40 +76,38 @@ and expr =
   | NameE of name                       (* varid *)
   | NumE of int64                       (* number *)
   | StringE of string                   (* string *)
-  | MinusE of expr
-  | BinopE of binop * expr * expr
-(*
   | UnE of unop * expr                  (* unop expr *)
   | BinE of binop * expr * expr         (* expr binop expr *)
- *)
-  | IterE of expr * name list * iter    (* *)
-  | AppE of funcname * expr list        (* Function Call *)
-  | ListE of expr list                  (*  *)
-  | ListFillE of expr * expr            (*  *)
-  | ConcatE of expr * expr              (*  *)
-  | LengthE of expr                     (*  *)
-  | RecordE of (keyword, expr) record   (*  *)
-  | AccessE of expr * path              (*  *)
-  | ExtendE of expr * path list * expr * extend_dir (*  *)
-  | ReplaceE of expr * path list * expr (*  *)
-  | ConstructE of keyword * expr list   (* CaseE? StructE? TaggedE? NamedTupleE? *)
+  | AccessE of expr * path              (* expr `[` path `]` -- IdxE/SliceE/DotE *)
+  | ReplaceE of expr * path list * expr (* expr `[` path* `]` `:=` expr *)
+  | ExtendE of expr * path list * expr * extend_dir (* expr `[` path* `]` `:+` expr *)
+  | RecordE of (keyword, expr) record   (* `{` (keyword `->` expr)* `}` *)
+  | ConcatE of expr * expr              (* expr `++` expr -- CompE/CatE *)
+  | LengthE of expr                     (* `|` expr `|` *)
+  | PairE of expr * expr                (* `(` expr `,` expr `)` *)
+  | ConstructE of keyword * expr list   (* keyword `(` expr* `)` -- MixE/CaseE *)
+  | AppE of name * expr list            (* name `(` expr* `)` *)
+  | IterE of expr * name list * iter    (* expr (`{` name* `}`)* *)
   | OptE of expr option                 (*  *)
-  | PairE of expr * expr                (*  *)
-  | ArrowE of expr * expr               (*  *)
-  | ArityE of expr                      (*  *)
-  | FrameE of expr option * expr        (*  *)
-  | GetCurFrameE                        (*  *)
-  | LabelE of expr * expr               (*  *)
-  | GetCurLabelE                        (*  *)
-  | GetCurContextE                      (*  *)
-  | ContE of expr                       (*  *)
+  | ListE of expr list                  (* `[` expr* `]` *)
+  | ListFillE of expr * expr            (* expr `^` expr -- IterE w/ constant exponent *)
+  | ArrowE of expr * expr               (* expr "->" expr *)
+  | ArityE of expr                      (* "the arity of " expr *)
+  | FrameE of expr option * expr        (* "the activation of " expr ("with arity " expr)?  *)
+  | LabelE of expr * expr               (* "the label whose arity is " expr " and whose continuation is " expr *)
+  | GetCurFrameE                        (* "the current frame" *)
+  | GetCurLabelE                        (* "the current lbael" *)
+  | GetCurContextE                      (* "the current context" *)
+  | ContE of expr                       (* "the continuation of " expr *)
+
+
   (* Administrative Instructions *)
   | YetE of string                      (* for future not yet implemented feature *)
 
 and path =
-  | IdxP of expr             (* `[` exp `]` *)
-  | SliceP of expr * expr    (* `[` exp `:` exp `]` *)
-  | DotP of keyword          (* `.` atom *)
+  | IdxP of expr                    (* `[` expr `]` *)
+  | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
+  | DotP of keyword                 (* `.` atom *)
 
 and cond =
   | UnC of unop * cond              (* unop expr *)
@@ -113,7 +115,7 @@ and cond =
   | CmpC of cmpop * expr * expr     (* expr cmpop expr *)
   | IsCaseOfC of expr * keyword     (* expr is of the case keyword *)
   | ValidC of expr                  (* expr is valid *)
-  | ContextKindC of keyword * expr  (* TODO: Desugar using IsCaseOf? *)
+  | ContextKindC of keyword * expr  (* TODO: desugar using IsCaseOf? *)
   | IsDefinedC of expr              (* expr is defined *)
   (* Conditions used in assertions *)
   | TopLabelC                       (* a label is now on the top of the stack *)
@@ -149,6 +151,6 @@ type instr =
 
 (* Algorithms *)
 
-type algorithm =             (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
-  | RuleA of keyword * expr list * instr list         (* inference rule *)
-  | FuncA of funcname * expr list * instr list        (* helper function *)
+type algorithm =  (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
+  | RuleA of keyword * expr list * instr list   (* inference rule *)
+  | FuncA of name * expr list * instr list      (* helper function *)

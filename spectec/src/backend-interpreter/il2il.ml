@@ -37,9 +37,7 @@ let rec transform_expr f e =
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
     | CaseE (atom, e1) -> CaseE (atom, new_ e1)
-    | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2)
-    | ElementsOfE (e1, e2) -> ElementsOfE (new_ e1, new_ e2)
-    | ListBuilderE (e1, e2) -> ListBuilderE (new_ e1, new_ e2) }
+    | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2) }
 
 (** Change right_assoc cat into left_assoc cat **)
 let to_left_assoc_cat =

@@ -71,8 +71,6 @@ let rec t_exp env e : premise list =
   | IdxE (exp1, exp2)
   | CompE (exp1, exp2)
   | CatE (exp1, exp2)
-  | ElementsOfE (exp1, exp2)
-  | ListBuilderE (exp1, exp2)
   -> t_exp env exp1 @ t_exp env exp2
   | SliceE (exp1, exp2, exp3)
   -> t_exp env exp1 @ t_exp env exp2 @ t_exp env exp3

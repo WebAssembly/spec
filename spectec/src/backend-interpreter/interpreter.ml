@@ -123,8 +123,8 @@ and eval_expr env expr =
   | NumE i -> NumV i
   | StringE s -> StringV s
   (* Numeric Operation *)
-  | MinusE inner_e -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
-  | BinopE (op, e1, e2) ->
+  | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
+  | BinE (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match v1, v2 with
@@ -372,7 +372,7 @@ and assign lhs rhs env =
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
-  | BinopE (binop, e1, e2), NumV m ->
+  | BinE (binop, e1, e2), NumV m ->
       let n = eval_expr env e2 |> value_to_num in
       let invop = match binop with
       | AddOp -> Int64.sub

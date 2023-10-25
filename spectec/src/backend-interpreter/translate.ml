@@ -117,7 +117,14 @@ and exp2expr exp =
   (* update of record field *)
   | Ast.UpdE (base, path, v) -> ReplaceE (exp2expr base, path2paths path, exp2expr v)
   (* Binary / Unary operation *)
-  | Ast.UnE (Ast.MinusOp, inner_exp) -> MinusE (exp2expr inner_exp)
+  | Ast.UnE (op, exp) ->
+      let exp' = exp2expr exp in
+      let op = match op with
+      | Ast.NotOp -> NotOp
+      | Ast.MinusOp -> MinusOp
+      | _ -> gen_fail_msg_of_exp exp "unary expression" |> failwith
+      in
+      UnE (op, exp')
   | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
@@ -129,7 +136,7 @@ and exp2expr exp =
       | Ast.ExpOp -> ExpOp
       | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
       in
-      BinopE (op, lhs, rhs)
+      BinE (op, lhs, rhs)
   (* ConstructE *)
   | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (name2keyword cons exp.note, exp2args arg)
   (* Tuple *)
@@ -503,11 +510,11 @@ let rec letI lhs rhs targets cont =
           LetI (OptE (Some fresh), rhs) :: letI e fresh targets cont,
           [] );
      ]
-  | BinopE (AddOp, a, b) ->
+  | BinE (AddOp, a, b) ->
     [
       IfI
         ( CmpC (GeOp, rhs, b),
-          LetI (a, BinopE (SubOp, rhs, b)) :: cont,
+          LetI (a, BinE (SubOp, rhs, b)) :: cont,
           [] );
     ]
   | ConcatE (prefix, suffix) ->
@@ -528,7 +535,7 @@ let rec letI lhs rhs targets cont =
       | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
       | None, Some l -> CmpC (GeOp, LengthE rhs, l)
-      | Some l1, Some l2 -> CmpC (EqOp, LengthE rhs, BinopE (AddOp, l1, l2))
+      | Some l1, Some l2 -> CmpC (EqOp, LengthE rhs, BinE (AddOp, l1, l2))
     in
     [
       IfI

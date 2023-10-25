@@ -111,8 +111,8 @@ and string_of_record_expr r =
 and string_of_expr = function
   | NumE i -> Int64.to_string i
   | StringE s -> s
-  | MinusE e -> sprintf "-%s" (string_of_expr e)
-  | BinopE (op, e1, e2) ->
+  | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
+  | BinE (op, e1, e2) ->
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
   | PairE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
   | AppE (n, el) ->
@@ -359,8 +359,12 @@ and structured_string_of_record_expr r =
 and structured_string_of_expr = function
   | NumE i -> Int64.to_string i
   | StringE s -> s
-  | MinusE e -> "MinusE (" ^ structured_string_of_expr e ^ ")"
-  | BinopE (op, e1, e2) ->
+  | UnE (op, e) ->
+     "UnE ("
+      ^ string_of_unop op
+      ^ structured_string_of_expr e
+      ^ ")"
+  | BinE (op, e1, e2) ->
       "BinopE ("
       ^ string_of_binop op
       ^ ", "

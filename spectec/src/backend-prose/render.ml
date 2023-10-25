@@ -137,11 +137,11 @@ and render_expr env in_math = function
       let si = Int64.to_string i in
       if in_math then si else render_math si
   | Al.Ast.StringE s -> s
-  | Al.Ast.MinusE e ->
+  | Al.Ast.UnE (MinusOp, e) ->
       let se = render_expr env in_math e in
       let s = sprintf "-%s" se in
       if in_math then s else render_math s
-  | Al.Ast.BinopE (op, e1, e2) ->
+  | Al.Ast.BinE (op, e1, e2) ->
       let sop = render_al_binop op in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
@@ -277,6 +277,7 @@ and render_expr env in_math = function
       let s = "\\epsilon" in
       if in_math then s else render_math s
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
+  | _ -> failwith "unreachable"
 
 (* assume Paths are always embedded in math blocks *)
 

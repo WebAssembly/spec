@@ -9,11 +9,11 @@ let rec free_expr = function
   | GetCurFrameE
   | YetE _ -> []
   | NameE n -> [n]
-  | MinusE e
+  | UnE (_, e)
   | LengthE e
   | ArityE e
   | ContE e -> free_expr e
-  | BinopE (_, e1, e2)
+  | BinE (_, e1, e2)
   | ListFillE (e1, e2)
   | ConcatE (e1, e2)
   | PairE (e1, e2)

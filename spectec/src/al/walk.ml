@@ -42,8 +42,8 @@ let rec walk_expr f e =
   | GetCurFrameE
   | GetCurLabelE
   | GetCurContextE -> e
-  | MinusE e' -> MinusE (new_ e')
-  | BinopE (op, e1, e2) -> BinopE (op, new_ e1, new_ e2)
+  | UnE (op, e') -> UnE (op, new_ e')
+  | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
   | AppE (fname, args) -> AppE (fname, List.map new_ args)
   (* TODO: Implement walker for iter *)
   | ListE el -> ListE (List.map (new_) el)
