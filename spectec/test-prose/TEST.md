@@ -2071,10 +2071,12 @@ execution_of_STRUCT.SET x i
       b) Perform $with_struct(a, i, fv).
 
 execution_of_ARRAY.NEW_FIXED x n
-1. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-2. Let ai be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
-3. Push (REF.ARRAY_ADDR |$arrayinst()|) to the stack.
-4. Perform $ext_arrayinst([ai]).
+1. Assert: Due to validation, there are at least n values on the top of the stack.
+2. Pop val^n from the stack.
+3. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
+4. Let ai be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
+5. Push (REF.ARRAY_ADDR |$arrayinst()|) to the stack.
+6. Perform $ext_arrayinst([ai]).
 
 execution_of_ARRAY.SET x
 1. Assert: Due to validation, a value is on the top of the stack.

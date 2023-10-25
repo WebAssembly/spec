@@ -264,13 +264,13 @@ let insert_assert exp =
   | _ -> AssertI (TopValueC None)
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
-let handle_lhs_stack =
+let handle_lhs_stack bounds =
   List.fold_left
     (fun (instrs, rest) e ->
       if List.length rest > 0 then (instrs, rest @ [ e ])
       else
         match e.it with
-        | Ast.IterE (_, (ListN _, _)) -> (instrs, [ e ])
+        | Ast.IterE (_, (ListN (n, _), _)) when not (Il.Free.subset (Il.Free.free_exp n) bounds) -> (instrs, [ e ])
         | _ -> (instrs @ [ insert_assert e; PopI (exp2expr e) ], rest))
     ([], [])
 
@@ -721,9 +721,10 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let (lhs, _, _, _) = List.hd reduction_group in
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
+  let bounds = Il.Free.free_exp winstr in
   let instrs = match context with
     | [(vs, []), None ] ->
-      let pop_instrs, remain = handle_lhs_stack vs in
+      let pop_instrs, remain = handle_lhs_stack bounds vs in
       let inner_pop_instrs = handle_context_winstr winstr in
 
       let instrs = match reduction_group |> Util.Lib.List.split_last with
