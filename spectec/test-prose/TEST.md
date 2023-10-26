@@ -1063,7 +1063,9 @@ allocfunc mm func
 1. Assert: Due to validation, func is of the case FUNC.
 2. Let (FUNC x local* expr) be func.
 3. Let fi be { TYPE: mm.TYPE[x]; MODULE: mm; CODE: func; }.
-4. Return [s with .FUNC appended by [fi], |s.FUNC|].
+4. Let a be |s.FUNC|.
+5. Append fi to the s.FUNC.
+6. Return a.
 
 allocfuncs mm fresh_0*
 1. If fresh_0* is [], then:
@@ -1075,7 +1077,9 @@ allocfuncs mm fresh_0*
 
 allocglobal globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Return [s with .GLOBAL appended by [gi], |s.GLOBAL|].
+2. Let a be |s.GLOBAL|.
+3. Append gi to the s.GLOBAL.
+4. Return a.
 
 allocglobals fresh_0* fresh_1*
 1. If fresh_0* is [], then:
@@ -1091,7 +1095,9 @@ allocglobals fresh_0* fresh_1*
 
 alloctable ((i, j), rt) ref
 1. Let ti be { TYPE: ((i, j), rt); ELEM: ref^i; }.
-2. Return [s with .TABLE appended by [ti], |s.TABLE|].
+2. Let a be |s.TABLE|.
+3. Append ti to the s.TABLE.
+4. Return a.
 
 alloctables fresh_0* fresh_1*
 1. If fresh_0* is [] and fresh_1* is [], then:
@@ -1106,7 +1112,9 @@ alloctables fresh_0* fresh_1*
 
 allocmem (I8 (i, j))
 1. Let mi be { TYPE: (I8 (i, j)); DATA: 0^((i · 64) · $Ki()); }.
-2. Return [s with .MEM appended by [mi], |s.MEM|].
+2. Let a be |s.MEM|.
+3. Append mi to the s.MEM.
+4. Return a.
 
 allocmems fresh_0*
 1. If fresh_0* is [], then:
@@ -1118,7 +1126,9 @@ allocmems fresh_0*
 
 allocelem rt ref*
 1. Let ei be { TYPE: rt; ELEM: ref*; }.
-2. Return [s with .ELEM appended by [ei], |s.ELEM|].
+2. Let a be |s.ELEM|.
+3. Append ei to the s.ELEM.
+4. Return a.
 
 allocelems fresh_0* fresh_1*
 1. If fresh_0* is [] and fresh_1* is [], then:
@@ -1133,7 +1143,9 @@ allocelems fresh_0* fresh_1*
 
 allocdata byte*
 1. Let di be { DATA: byte*; }.
-2. Return [s with .DATA appended by [di], |s.DATA|].
+2. Let a be |s.DATA|.
+3. Append di to the s.DATA.
+4. Return a.
 
 allocdatas fresh_0*
 1. If fresh_0* is [], then:

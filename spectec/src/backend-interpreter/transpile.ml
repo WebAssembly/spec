@@ -315,6 +315,7 @@ let hide_state_args = List.filter (function
   | _ -> true)
 
 let hide_state_instr = function
+  (* Return *)
   | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE "f")))
   | ReturnI (Some (PairE (NameE "s", ReplaceE (e1, pl, e2)))) ->
       let rpl = List.rev pl in
@@ -332,6 +333,15 @@ let hide_state_instr = function
   | ReturnI (Some (NameE "s")) -> []
   | ReturnI (Some (NameE s))
     when String.starts_with ~prefix:"s_" s -> []
+  (* Append *)
+  | LetI (NameE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
+    when String.starts_with ~prefix:"s_" s ->
+      [ AppendI (mk_access ps e1, e2) ]
+  (* Append + Return *)
+  | ReturnI (Some (ListE [ExtendE (e1, ps, ListE [ e2 ], Back); e3]))
+    when NameE "s" = e1 ->
+      let addr = NameE "a" in
+      [ LetI (addr, e3); AppendI (mk_access ps e1, e2); ReturnI (Some addr) ]
   (* Perform *)
   | LetI (PairE (NameE s, NameE f), AppE (fname, el))
     when String.starts_with ~prefix:"s_" s
