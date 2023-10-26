@@ -455,7 +455,7 @@ Reference Instructions
 
 12. Append :math:`\X{si}` to :math:`S.\SSTRUCTS`.
 
-13. Return the :ref:`structure reference <syntax-ref.struct>` :math:`\REFSTRUCTADDR~a`.
+13. Push the :ref:`structure reference <syntax-ref.struct>` :math:`\REFSTRUCTADDR~a` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
@@ -724,14 +724,14 @@ Reference Instructions
 
 11. Append :math:`\X{ai}` to :math:`S.\SARRAYS`.
 
-12. Return the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a`.
+12. Push the :ref:`array reference <syntax-ref.array>` :math:`\REFARRAYADDR~a` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    S; F; \val^n~(\ARRAYNEWFIXED~x~n) &\stepto& S'; F; (\REFARRAYADDR~|S.\SARRAYS|)
      \\&&
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft}^n \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & \X{ai} = \{\AITYPE~F.\AMODULE.\MITYPES[x], \AIFIELDS~(\packval_{\X{ft}}(\val))^n\} \\
       \land & S' = S \with \SARRAYS = S.\SARRAYS~\X{ai})
      \end{array} \\
@@ -4139,10 +4139,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& \reff~(\BR~l)
+   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
+   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\otherwise) \\
    \end{array}
 
@@ -4174,10 +4174,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~X{rt}_2) &\stepto& \reff
+   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
+   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\otherwise) \\
    \end{array}
 
