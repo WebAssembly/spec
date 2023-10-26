@@ -4139,10 +4139,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\BRONCAST~l~\X{rt}_1~X{rt}_2) &\stepto& \reff~(\BR~l)
+   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
+   S; F; \reff~(\BRONCAST~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\otherwise) \\
    \end{array}
 
@@ -4174,10 +4174,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~X{rt}_2) &\stepto& \reff
+   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff
      & (\iff S \vdashval \reff : \X{rt}
         \land \vdashreftypematch \X{rt} \matchesreftype \insttype_{F.\AMODULE}(\X{rt}_2)) \\
-   S; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
+   S; F; \reff~(\BRONCASTFAIL~l~\X{rt}_1~\X{rt}_2) &\stepto& \reff~(\BR~l)
      & (\otherwise) \\
    \end{array}
 
