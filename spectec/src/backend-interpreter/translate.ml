@@ -722,7 +722,8 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let bounds = Il.Free.free_exp winstr in
-  let instrs = match context with
+  let state_instrs = if (lhs != drop_state lhs) then [ LetI (NameE "f", GetCurFrameE) ] else [] in
+  let instrs = state_instrs @ match context with
     | [(vs, []), None ] ->
       let pop_instrs, remain = handle_lhs_stack bounds vs in
       let inner_pop_instrs = handle_context_winstr winstr in

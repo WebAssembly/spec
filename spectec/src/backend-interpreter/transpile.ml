@@ -371,18 +371,13 @@ let transpiler algo =
   in
 
   match walker algo with
-  | RuleA (name, params, body) -> (match params with
-    | PairE (_, NameE "f") :: tail ->
-        RuleA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
-    | NameE "s" :: tail ->
-        RuleA (name, tail, body)
-    | _ -> RuleA(name, params, body))
   | FuncA (name, params, body) -> (match params with
     | PairE (_, NameE "f") :: tail ->
         FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
     | NameE "s" :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
+  | RuleA _ as a -> a
 
 let app_remover =
   let side_effect f e = f e; e in
