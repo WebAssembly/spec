@@ -224,10 +224,23 @@ let build_matrix prems known_vars =
   let cols = List.init (prem_num + List.length unknown_vars) (fun i -> i) in
   rows, cols
 
+(* Pre-process a premise *)
+(* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
+let pre_process prem = match prem.it with
+  | RulePr (
+      { it = "Expand"; _ },
+      [[]; [Approx]; []],
+      { it = TupE [dt; ct]; _ }
+    ) ->
+      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
+      { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) }
+  | _ -> prem
+
 (* Animate the list of premises *)
 let animate_prems known_vars prems =
+  let pp_prems = List.map pre_process prems in
   (* Set --otherwise prem to be the first prem (if any) *)
-  let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) prems in
+  let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) pp_prems in
   let rows, cols = build_matrix non_other known_vars in
   best := (List.length cols + 1, []);
   let candidates = match knuth rows cols [] with
@@ -242,18 +255,6 @@ let animate_prems known_vars prems =
     print_endline "...Animation failed";
     snd !best'
   | Some x -> x
-
-(* Pre-process a premise *)
-(* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
-let pre_process prem = match prem.it with
-  | RulePr (
-      { it = "Expand"; _ },
-      [[]; [Approx]; []],
-      { it = TupE [dt; ct]; _ }
-    ) ->
-      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
-      { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) }
-  | _ -> prem
 
 (* Animate rule *)
 let animate_rule r = match r.it with
@@ -270,9 +271,8 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let prems1 = List.map pre_process prems in
-      let prems2 = animate_prems (my_free_exp true lhs) prems1 in
-      RuleD(id, binds, mixop, args, prems2) $ r.at
+      let new_prems = animate_prems (my_free_exp true lhs) prems in
+      RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
 

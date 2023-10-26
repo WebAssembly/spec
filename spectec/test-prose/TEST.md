@@ -87,11 +87,11 @@ if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -117,77 +117,32 @@ if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_d{byte}))
 ...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push ref to the stack.
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push ref to the stack.
-  b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push (I32.CONST 0) to the stack.
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Trap.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Warning: No corresponding if for
 1. Otherwise:
   a. Let ht be fresh_0.
   b. If fresh_1* is ht*, then:
     1) Return ht.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 { LOCAL: []; MODULE: mm; }
 { LOCAL: []; MODULE: mm; }
-Invalid premise `Expand: `%~~%`(s.FUNC_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2})))` to be AL instr.
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt})))
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 3
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (rt <: storagetype)))))
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype)))))
 if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x_2], ARRAY_comptype(`%%`(mut, zt_2))))
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x_1], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt_1))))
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
 if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
@@ -277,42 +232,42 @@ validation_of_RETURN
 
 validation_of_CALL x
 - |C.FUNC| must be greater than x.
-- Yet: Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.FUNC[x]).
 - The instruction is valid with type [t_1*]->[t_2*].
 
 validation_of_CALL_REF x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [t_1* ++ [(REF NULL $idx(x))]]->[t_2*].
 
 validation_of_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
 - |C.TYPE| must be greater than y.
-- Yet: Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 - Let (lim, rt) be C.TABLE[x].
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
 
 validation_of_RETURN_CALL x
 - |C.FUNC| must be greater than x.
-- Yet: Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 - Let ?(t'_2*) be C.RETURN.
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.FUNC[x]).
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type [t_3* ++ t_1*]->[t_4*].
 
 validation_of_RETURN_CALL_REF x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 - Let ?(t'_2*) be C.RETURN.
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type [t_3* ++ t_1* ++ [(REF NULL $idx(x))]]->[t_4*].
 
 validation_of_RETURN_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
 - |C.TYPE| must be greater than y.
-- Yet: Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 - Let ?(t'_2*) be C.RETURN.
 - Let (lim, rt) be C.TABLE[x].
+- Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[y]).
 - Yet: TODO: prem_to_instrs 2
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type [t_3* ++ t_1* ++ [I32]]->[t_4*].
@@ -385,13 +340,13 @@ validation_of_I31.GET sx
 
 validation_of_STRUCT.NEW x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+- Let (STRUCT (mut, zt)*) be $expanddt(C.TYPE[x]).
 - |zt*| must be equal to |mut*|.
 - The instruction is valid with type [$unpacktype(zt)*]->[(REF NULL $idx(x))].
 
 validation_of_STRUCT.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+- Let (STRUCT (mut, zt)*) be $expanddt(C.TYPE[x]).
 - |zt*| must be equal to |mut*|.
 - Yet: TODO: prem_to_intrs 3
 - |zt*| must be equal to |val*|.
@@ -399,7 +354,7 @@ validation_of_STRUCT.NEW_DEFAULT x
 
 validation_of_STRUCT.GET sx? x i
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt}))
+- Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
 - Let (mut, zt) be yt*[i].
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
@@ -407,31 +362,31 @@ validation_of_STRUCT.GET sx? x i
 
 validation_of_STRUCT.SET x i
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt}))
+- Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
 - Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt) be yt*[i].
 - The instruction is valid with type [(REF NULL $idx(x)), $unpacktype(zt)]->[].
 
 validation_of_ARRAY.NEW x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+- Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [$unpacktype(zt), I32]->[(REF NULL $idx(x))].
 
 validation_of_ARRAY.NEW_DEFAULT x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+- Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - Let ?(val) be $default($unpacktype(zt)).
 - The instruction is valid with type [I32]->[(REF NULL $idx(x))].
 
 validation_of_ARRAY.NEW_FIXED x n
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+- Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [$unpacktype(zt)]->[(REF NULL $idx(x))].
 
 validation_of_ARRAY.NEW_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (rt <: storagetype))))
+- Let (ARRAY (mut, rt)) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - The instruction is valid with type [I32, I32]->[(REF NULL $idx(x))].
 
@@ -439,19 +394,19 @@ validation_of_ARRAY.NEW_DATA x y
 - |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype))))
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY (mut, t)).
 - Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 - The instruction is valid with type [I32, I32]->[(REF NULL $idx(x))].
 
 validation_of_ARRAY.GET sx? x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+- Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
 - The instruction is valid with type [(REF NULL $idx(x)), I32]->[$unpacktype(zt)].
 
 validation_of_ARRAY.SET x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [(REF NULL $idx(x)), I32, $unpacktype(zt)]->[].
 
 validation_of_ARRAY.LEN
@@ -459,29 +414,29 @@ validation_of_ARRAY.LEN
 
 validation_of_ARRAY.FILL x
 - |C.TYPE| must be greater than x.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [(REF NULL $idx(x)), I32, $unpacktype(zt), I32]->[].
 
 validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_1.
 - |C.TYPE| must be greater than x_2.
-- Yet: Expand: `%~~%`(C.TYPE_context[x_2], ARRAY_comptype(`%%`(mut, zt_2)))
+- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt_1)) be $expanddt(C.TYPE[x_1]).
+- Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
 - Yet: TODO: prem_to_instrs 2
-- Yet: Expand: `%~~%`(C.TYPE_context[x_1], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt_1)))
 - The instruction is valid with type [(REF NULL $idx(x_1)), I32, (REF NULL $idx(x_2)), I32, I32]->[].
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
+- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 - The instruction is valid with type [(REF NULL $idx(x)), I32, I32, I32]->[].
 
 validation_of_ARRAY.INIT_DATA x y
 - |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- Yet: Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
 - Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 - The instruction is valid with type [(REF NULL $idx(x)), I32, I32, I32]->[].
 
@@ -1239,14 +1194,21 @@ rundata (DATA byte* fresh_0?) y
 5. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
 
 instantiate module externval*
-1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-2. YetI: TODO: We do not support iter on premises other than `RulePr`.
-3. YetI: TODO: We do not support iter on premises other than `RulePr`.
+1. YetI: Repeat:
+  a. YetI: Repeat:
+  a. Enter the activation of z with label [FRAME_]:
+    1) Let [ref_e] be $eval_expr(expr_e)...
+2. YetI: Repeat:
+  a. Enter the activation of z with label [FRAME_]:
+    1) Let [ref_t] be $eval_expr(expr_t)..
+3. YetI: Repeat:
+  a. Enter the activation of z with label [FRAME_]:
+    1) Let [val_g] be $eval_expr(expr_g)..
 4. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_e", VarT "instr", VarT "admininstr"), (List, ["instr_e"])), CatE (IterE (SubE (VarE "instr_d", VarT "instr", VarT "admininstr"), (List, ["instr_d"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-2. YetI: Expand: `%~~%`(s.FUNC_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2}))).
+2. Assert: Due to validation, $expanddt(s.FUNC[fa].TYPE) is of the case FUNC.
 3. Let f be { LOCAL: []; MODULE: mm; }.
 4. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
 5. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s", VarE "f"])), CatE (IterE (SubE (VarE "val", VarT "val", VarT "admininstr"), (ListN (VarE "n"), ["val"])), ListE ([CaseE (Atom "REF.FUNC_ADDR", VarE "fa"), CaseE (Atom "CALL_REF", NatE 0)]))]))).
@@ -1497,14 +1459,26 @@ execution_of_LOCAL.TEE x
 5. Execute (LOCAL.SET x).
 
 execution_of_BR_ON_CAST l rt_1 rt_2
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop ref from the stack.
-3. YetI: TODO: prem_to_instr: Unsupported rule prem.
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop ref from the stack.
+4. Let rt be $ref_type_of(ref).
+5. If rt > $inst_reftype(f.MODULE, rt_2), then:
+  a. Push ref to the stack.
+6. Else:
+  a. Push ref to the stack.
+  b. Execute (BR l).
 
 execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop ref from the stack.
-3. YetI: TODO: prem_to_instr: Unsupported rule prem.
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop ref from the stack.
+4. Let rt be $ref_type_of(ref).
+5. If rt ≤ $inst_reftype(f.MODULE, rt_2), then:
+  a. Push ref to the stack.
+6. Else:
+  a. Push ref to the stack.
+  b. Execute (BR l).
 
 execution_of_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
@@ -1540,21 +1514,32 @@ execution_of_REF.FUNC x
 2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
 execution_of_REF.TEST rt
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop ref from the stack.
-3. YetI: TODO: prem_to_instr: Unsupported rule prem.
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop ref from the stack.
+4. Let rt' be $ref_type_of(ref).
+5. If rt' ≤ $inst_reftype(f.MODULE, rt), then:
+  a. Push (I32.CONST 1) to the stack.
+6. Else:
+  a. Push (I32.CONST 0) to the stack.
 
 execution_of_REF.CAST rt
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop ref from the stack.
-3. YetI: TODO: prem_to_instr: Unsupported rule prem.
+1. Let f be the current frame.
+2. Assert: Due to validation, a value is on the top of the stack.
+3. Pop ref from the stack.
+4. Let rt' be $ref_type_of(ref).
+5. If rt' > $inst_reftype(f.MODULE, rt), then:
+  a. Trap.
+6. Push ref to the stack.
 
 execution_of_STRUCT.NEW_DEFAULT x
 1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
 2. Let (STRUCT y_0) be $expanddt($type(x)).
 3. Let (mut, zt)* be y_0.
 4. Assert: Due to validation, |mut*| is |zt*|.
-5. YetI: TODO: We do not support iter on premises other than `RulePr`.
+5. YetI: Repeat:
+  a. If $default($unpacktype(zt)) is defined, then:
+    1) Let ?(val) be $default($unpacktype(zt))..
 6. Assert: Due to validation, |val*| is |zt*|.
 7. Push val* to the stack.
 8. Execute (STRUCT.NEW x).

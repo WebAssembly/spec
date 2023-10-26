@@ -23235,11 +23235,11 @@ if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -25500,37 +25500,37 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule call {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
     `%|-%:%`(C, CALL_instr(x), `%->%`(t_1*{t_1}, t_2*{t_2}))
     -- if (x < |C.FUNC_context|)
-    -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.FUNC_context[x])
 
   ;; 6-typing.watsup:640.1-642.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
     `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.TYPE_context[x])
 
   ;; 6-typing.watsup:644.1-648.46
   rule call_indirect {C : context, lim : limits, rt : reftype, t_1* : valtype*, t_2* : valtype*, x : idx, y : idx}:
     `%|-%:%`(C, CALL_INDIRECT_instr(x, y), `%->%`(t_1*{t_1} :: [I32_valtype], t_2*{t_2}))
     -- if (x < |C.TABLE_context|)
     -- if (y < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- where `%%`(lim, rt) = C.TABLE_context[x]
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.TYPE_context[y])
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`(?(())), FUNC_heaptype))
 
   ;; 6-typing.watsup:650.1-654.40
   rule return_call {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
     `%|-%:%`(C, RETURN_CALL_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1}, t_4*{t_4}))
     -- if (x < |C.FUNC_context|)
-    -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- where ?(t'_2*{t'_2}) = C.RETURN_context
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.FUNC_context[x])
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
 
   ;; 6-typing.watsup:656.1-660.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
     `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- where ?(t'_2*{t'_2}) = C.RETURN_context
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.TYPE_context[x])
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
 
   ;; 6-typing.watsup:662.1-668.40
@@ -25538,9 +25538,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, RETURN_CALL_INDIRECT_instr(x, y), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [I32_valtype], t_4*{t_4}))
     -- if (x < |C.TABLE_context|)
     -- if (y < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- where ?(t'_2*{t'_2}) = C.RETURN_context
     -- where `%%`(lim, rt) = C.TABLE_context[x]
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.TYPE_context[y])
     -- Reftype_sub: `%|-%<:%`(C, rt, REF_reftype(`NULL%?`(?(())), FUNC_heaptype))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
 
@@ -25641,14 +25641,14 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule struct.new {C : context, mut* : mut*, x : idx, zt* : storagetype*}:
     `%|-%:%`(C, STRUCT.NEW_instr(x), `%->%`($unpacktype(zt)*{zt}, [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)*{mut zt}) = $expanddt(C.TYPE_context[x])
     -- if (|mut*{mut}| = |zt*{zt}|)
 
   ;; 6-typing.watsup:757.1-760.43
   rule struct.new_default {C : context, mut* : mut*, val* : val*, x : idx, zt* : storagetype*}:
     `%|-%:%`(C, STRUCT.NEW_DEFAULT_instr(x), `%->%`($unpacktype(zt)*{zt}, [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)*{mut zt}) = $expanddt(C.TYPE_context[x])
     -- if (|mut*{mut}| = |zt*{zt}|)
     -- (where ?(val) = $default($unpacktype(zt)))*{val zt}
     -- if (|val*{val}| = |zt*{zt}|)
@@ -25657,7 +25657,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule struct.get {C : context, i : nat, mut : mut, sx? : sx?, x : idx, yt* : fieldtype*, zt : storagetype}:
     `%|-%:%`(C, STRUCT.GET_instr(sx?{sx}, x, i), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], [$unpacktype(zt)]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt}))
+    -- where STRUCT_comptype(yt*{yt}) = $expanddt(C.TYPE_context[x])
     -- if (i < |yt*{yt}|)
     -- where `%%`(mut, zt) = yt*{yt}[i]
     -- if ((sx?{sx} = ?()) <=> (zt = $storagetype_valtype($unpacktype(zt))))
@@ -25666,7 +25666,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule struct.set {C : context, i : nat, x : idx, yt* : fieldtype*, zt : storagetype}:
     `%|-%:%`(C, STRUCT.SET_instr(x, i), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) $unpacktype(zt)], []))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt}))
+    -- where STRUCT_comptype(yt*{yt}) = $expanddt(C.TYPE_context[x])
     -- if (i < |yt*{yt}|)
     -- where `%%`(`MUT%?`(?(())), zt) = yt*{yt}[i]
 
@@ -25674,27 +25674,27 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule array.new {C : context, mut : mut, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_instr(x), `%->%`([$unpacktype(zt) I32_valtype], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt(C.TYPE_context[x])
 
   ;; 6-typing.watsup:780.1-783.40
   rule array.new_default {C : context, mut : mut, val : val, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_DEFAULT_instr(x), `%->%`([I32_valtype], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt(C.TYPE_context[x])
     -- where ?(val) = $default($unpacktype(zt))
 
   ;; 6-typing.watsup:785.1-787.41
   rule array.new_fixed {C : context, mut : mut, n : n, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.NEW_FIXED_instr(x, n), `%->%`([$unpacktype(zt)], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt(C.TYPE_context[x])
 
   ;; 6-typing.watsup:789.1-792.39
   rule array.new_elem {C : context, mut : mut, rt : reftype, x : idx, y : idx}:
     `%|-%:%`(C, ARRAY.NEW_ELEM_instr(x, y), `%->%`([I32_valtype I32_valtype], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
     -- if (y < |C.ELEM_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, $storagetype_reftype(rt))))
+    -- where ARRAY_comptype(`%%`(mut, $storagetype_reftype(rt))) = $expanddt(C.TYPE_context[x])
     -- Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y], rt)
 
   ;; 6-typing.watsup:794.1-798.23
@@ -25703,21 +25703,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (x < |C.TYPE_context|)
     -- if (y < |C.DATA_context|)
     -- if (C.DATA_context[y] = OK)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))))
+    -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))))
     -- if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
 
   ;; 6-typing.watsup:800.1-803.47
   rule array.get {C : context, mut : mut, sx? : sx?, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.GET_instr(sx?{sx}, x), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype], [$unpacktype(zt)]))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt(C.TYPE_context[x])
     -- if ((sx?{sx} = ?()) <=> (zt = $storagetype_valtype($unpacktype(zt))))
 
   ;; 6-typing.watsup:805.1-807.41
   rule array.set {C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.SET_instr(x), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype $unpacktype(zt)], []))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+    -- where ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)) = $expanddt(C.TYPE_context[x])
 
   ;; 6-typing.watsup:809.1-811.41
   rule array.len {C : context, x : idx, zt : storagetype}:
@@ -25727,24 +25727,24 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule array.fill {C : context, x : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.FILL_instr(x), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype $unpacktype(zt) I32_valtype], []))
     -- if (x < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+    -- where ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)) = $expanddt(C.TYPE_context[x])
 
   ;; 6-typing.watsup:817.1-821.40
   rule array.copy {C : context, mut : mut, x_1 : idx, x_2 : idx, zt_1 : storagetype, zt_2 : storagetype}:
     `%|-%:%`(C, ARRAY.COPY_instr(x_1, x_2), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x_1))) I32_valtype REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x_2))) I32_valtype I32_valtype], []))
     -- if (x_1 < |C.TYPE_context|)
     -- if (x_2 < |C.TYPE_context|)
-    -- Expand: `%~~%`(C.TYPE_context[x_2], ARRAY_comptype(`%%`(mut, zt_2)))
+    -- where ARRAY_comptype(`%%`(`MUT%?`(?(())), zt_1)) = $expanddt(C.TYPE_context[x_1])
+    -- where ARRAY_comptype(`%%`(mut, zt_2)) = $expanddt(C.TYPE_context[x_2])
     -- Storagetype_sub: `%|-%<:%`(C, zt_2, zt_1)
-    -- Expand: `%~~%`(C.TYPE_context[x_1], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt_1)))
 
   ;; 6-typing.watsup:823.1-826.43
   rule array.init_elem {C : context, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_ELEM_instr(x, y), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype I32_valtype I32_valtype], []))
     -- if (x < |C.TYPE_context|)
     -- if (y < |C.ELEM_context|)
+    -- where ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)) = $expanddt(C.TYPE_context[x])
     -- Storagetype_sub: `%|-%<:%`(C, $storagetype_elemtype(C.ELEM_context[y]), zt)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 
   ;; 6-typing.watsup:828.1-832.23
   rule array.init_data {C : context, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx, zt : storagetype}:
@@ -25752,7 +25752,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (x < |C.TYPE_context|)
     -- if (y < |C.DATA_context|)
     -- if (C.DATA_context[y] = OK)
-    -- Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+    -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
     -- if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
 
   ;; 6-typing.watsup:837.1-838.62
@@ -26046,7 +26046,7 @@ relation Func_ok: `%|-%:%`(context, func, deftype)
     `%|-%:%`(C, `FUNC%%*%`(x, local*{local}, expr), C.TYPE_context[x])
     -- if (x < |C.TYPE_context|)
     -- (Local_ok: `%|-%:%`(C, local, lt))*{local lt}
-    -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
+    -- where FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})) = $expanddt(C.TYPE_context[x])
     -- if (|local*{local}| = |lt*{lt}|)
     -- Expr_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL `%%`(SET_init, t_1)*{t_1} :: lt*{lt}, LABEL [], RETURN ?()} ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()} ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?(t_2*{t_2})}, expr, t_2*{t_2})
 
@@ -27242,7 +27242,7 @@ def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:174.1-187.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
     -- where mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
-    -- Expand: `%~~%`(s.FUNC_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2})))
+    -- where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2})) = $expanddt(s.FUNC_store[fa].TYPE_funcinst)
     -- where f = {LOCAL [], MODULE mm}
     -- where `FUNC%%*%`(x, local*{local}, expr) = $funcinst(`%;%`(s, f))[fa].CODE_funcinst
 

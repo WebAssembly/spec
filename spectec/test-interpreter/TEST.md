@@ -87,11 +87,11 @@ if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -117,37 +117,14 @@ if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_d{byte}))
 ...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push ref to the stack.
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push ref to the stack.
-  b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Push (I32.CONST 0) to the stack.
-Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
-Warning: No corresponding if for
-1. Otherwise:
-  a. Trap.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 Warning: No corresponding if for
 1. Otherwise:
   a. Let ht be fresh_0.
   b. If fresh_1* is ht*, then:
     1) Return ht.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
 { LOCAL: []; MODULE: mm; }
 { LOCAL: []; MODULE: mm; }
-Invalid premise `Expand: `%~~%`(s.FUNC_store[fa].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2*{t_2})))` to be AL instr.
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====

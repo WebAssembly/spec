@@ -586,9 +586,8 @@ let rec letI lhs rhs targets cont =
       LetI (lhs, rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
-let rec rulepr2instr pr =
-  match pr.it with
-  (* Inductive case *)
+(*
+let iterpr2instrs pr instrs = match pr.it with
   | Ast.IterPr (pr, (iter, ids)) ->
     begin match rulepr2instr pr with
     | EnterI (ctx, instrs, [ LetI (lhs, rhs) ]) ->
@@ -613,51 +612,42 @@ let rec rulepr2instr pr =
       |> Printf.sprintf "Invalid RulePr: %s"
       |> print_endline;
       instr
-    end
-  (* Exec_expr_const *)
-  | Ast.RulePr (
-    id,
-    [ []; [ Ast.SqArrow ]; _ ],
-    { it = Ast.TupE [
-      (* s; f; lhs *)
-      { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-        { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-          { it = Ast.VarE _s; _ }; { it = Ast.VarE f; _ }
-        ]; _ }); _ };
-        lhs
-      ]; _ }); _ };
-      (* s; f; rhs *)
-        rhs
-    ]; _ }
-  ) when id.it = "Exec_expr_const" ->
-    EnterI (
-      FrameE (None, NameE f.it),
-      ListE [ConstructE (("FRAME_", ""), [])],
-      [ LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ])) ]
-    )
-  | _ -> YetI "TODO: We do not support iter on premises other than `RulePr`"
+  | _ -> failwith "Unreachable"
+*)
 
-(** `Il.instr expr list` -> `prems -> `instr list` -> `instr list` **)
-let prems2instrs remain_lhs =
-  List.fold_right (fun prem instrs ->
-      match prem.it with
-      | Ast.IfPr exp -> [ IfI (exp2cond exp, instrs |> check_nop, []) ]
-      | Ast.ElsePr -> [ OtherwiseI (instrs |> check_nop) ]
-      | Ast.LetPr (exp1, exp2, targets) ->
-          let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
-          init_lhs_id();
-          letI (exp2expr exp1) (exp2expr exp2) targets instrs'
-      | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
-        ( match exp2args exp with
-        | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
-        | _ -> [ YetI "TODO: prem_to_instr: Unsupported rule prem" ]
-        )
-      (* Step_read *)
-      | Ast.RulePr (id, _, _) when id.it = "Exec_expr_const" -> rulepr2instr prem :: instrs
-      | Ast.IterPr _ -> rulepr2instr prem :: instrs
-      | _ ->
-          gen_fail_msg_of_prem prem "instr" |> print_endline;
-          YetI (Il.Print.string_of_prem prem) :: instrs)
+(* HARDCODE: Translate each RulePr manually based on their names *)
+let rulepr2instrs id exp instrs = match id.it, exp2args exp with
+  | "Eval_expr", [z; lhs; _z; rhs] ->
+    (* TODO: Name of f..? *)
+    let f = z in
+    EnterI (
+      FrameE (None, f),
+      ListE [ConstructE (("FRAME_", ""), [])],
+      [ LetI (rhs, AppE ("eval_expr", [ lhs ])) ]
+    ) :: instrs
+  | "Ref_ok", [_s; ref; rt] ->
+    LetI (rt, AppE ("ref_type_of", [ ref ])) :: instrs
+  | "Reftype_sub", [_C; rt1; rt2] ->
+    (* TODO: This is an abuse of notation of `Le` for subtype. Need to grow language. *)
+    [ IfI (CompareC (Le, rt1, rt2), instrs |> check_nop, []) ]
+  | _ -> YetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
+
+(** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)
+let rec prem2instrs remain_lhs prem instrs =
+  match prem.it with
+  | Ast.IfPr exp -> [ IfI (exp2cond exp, instrs |> check_nop, []) ]
+  | Ast.ElsePr -> [ OtherwiseI (instrs |> check_nop) ]
+  | Ast.LetPr (exp1, exp2, targets) ->
+      let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
+      init_lhs_id();
+      letI (exp2expr exp1) (exp2expr exp2) targets instrs'
+  | Ast.RulePr (id, _, exp) -> rulepr2instrs id exp instrs
+  | Ast.IterPr (inner_prem, _) ->
+    (* TODO: Handle IterPr correctly*)
+    YetI ("Repeat: " ^ (Al.Print.string_of_instrs 1 (prem2instrs remain_lhs inner_prem []))) :: instrs
+
+(** `Il.instr expr list` -> `prem list` -> `instr list` -> `instr list` **)
+let prems2instrs remain_lhs = List.fold_right (prem2instrs remain_lhs)
 
 (** reduction -> `instr list` **)
 
