@@ -212,7 +212,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
-         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\ &&|&
      \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
