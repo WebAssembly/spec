@@ -2914,25 +2914,25 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 ;; 8-reduction.watsup:7.1-7.63
 relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:130.1-133.60
-  rule br_on_cast-succeed {f : frame, l : labelidx, ref : ref, rt : reftype, rt_1 : reftype, rt_2 : reftype, s : store, z : state}:
-    `%~>%*`(`%;%*`(z, [(ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast-succeed {f : frame, l : labelidx, ref : ref, rt : reftype, rt_1 : reftype, rt_2 : reftype, s : store}:
+    `%~>%*`(`%;%*`(`%;%`(s, f), [(ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr) BR_admininstr(l)])
     -- Ref_ok: `%|-%:%`(s, ref, rt)
     -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup:135.1-137.15
-  rule br_on_cast-fail {l : labelidx, ref : ref, rt_1 : reftype, rt_2 : reftype, z : state}:
-    `%~>%*`(`%;%*`(z, [(ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr)])
+  rule br_on_cast-fail {f : frame, l : labelidx, ref : ref, rt_1 : reftype, rt_2 : reftype, s : store}:
+    `%~>%*`(`%;%*`(`%;%`(s, f), [(ref <: admininstr) BR_ON_CAST_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr)])
     -- otherwise
 
   ;; 8-reduction.watsup:140.1-143.60
-  rule br_on_cast_fail-succeed {f : frame, l : labelidx, ref : ref, rt : reftype, rt_1 : reftype, rt_2 : reftype, s : store, z : state}:
-    `%~>%*`(`%;%*`(z, [(ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr)])
+  rule br_on_cast_fail-succeed {f : frame, l : labelidx, ref : ref, rt : reftype, rt_1 : reftype, rt_2 : reftype, s : store}:
+    `%~>%*`(`%;%*`(`%;%`(s, f), [(ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr)])
     -- Ref_ok: `%|-%:%`(s, ref, rt)
     -- Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
 
   ;; 8-reduction.watsup:145.1-147.15
-  rule br_on_cast_fail-fail {l : labelidx, ref : ref, rt_1 : reftype, rt_2 : reftype, z : state}:
-    `%~>%*`(`%;%*`(z, [(ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr) BR_admininstr(l)])
+  rule br_on_cast_fail-fail {f : frame, l : labelidx, ref : ref, rt_1 : reftype, rt_2 : reftype, s : store}:
+    `%~>%*`(`%;%*`(`%;%`(s, f), [(ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
   ;; 8-reduction.watsup:152.1-153.46

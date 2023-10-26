@@ -86,14 +86,6 @@ Animation failed.
 if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
 ...Animation failed
 Animation failed.
-Ref_ok: `%|-%:%`(s, ref, rt)
-Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
-...Animation failed
-Animation failed.
-Ref_ok: `%|-%:%`(s, ref, rt)
-Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
-...Animation failed
-Animation failed.
 if (a < |$funcinst(z)|)
 if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
@@ -125,9 +117,11 @@ if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_d{byte}))
 ...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
   a. Push ref to the stack.
+Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
   a. Push ref to the stack.

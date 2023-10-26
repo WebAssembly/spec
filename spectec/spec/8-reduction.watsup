@@ -128,22 +128,22 @@ rule Step_pure/br_on_non_null-non-null:
 
 
 rule Step_read/br_on_cast-succeed:
-  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
+  (s; f); ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
   -- Ref_ok: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast-fail:
-  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
+  (s; f); ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
   -- otherwise
 
 
 rule Step_read/br_on_cast_fail-succeed:
-  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
+  (s; f); ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
   -- Ref_ok: s |- ref : rt
   -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
 
 rule Step_read/br_on_cast_fail-fail:
-  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
+  (s; f); ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
   -- otherwise
 
 
