@@ -95,16 +95,11 @@ Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], E
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-...Animation failed
-Animation failed.
-Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
-if (nt = $unpacknumtype(zt))
-if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)])
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -138,7 +133,6 @@ Warning: No corresponding if for
   a. Push ref to the stack.
   b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Invalid premise `Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))` to be AL instr.
 Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
@@ -148,20 +142,6 @@ Warning: No corresponding if for
 1. Otherwise:
   a. Trap.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
   a. Let ht be fresh_0.

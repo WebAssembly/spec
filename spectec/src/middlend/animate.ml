@@ -243,6 +243,18 @@ let animate_prems known_vars prems =
     snd !best'
   | Some x -> x
 
+(* Pre-process a premise *)
+(* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
+let pre_process prem = match prem.it with
+  | RulePr (
+      { it = "Expand"; _ },
+      [[]; [Approx]; []],
+      { it = TupE [dt; ct]; _ }
+    ) ->
+      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
+      { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) }
+  | _ -> prem
+
 (* Animate rule *)
 let animate_rule r = match r.it with
   | RuleD(id, _ , _, _, _) when id.it = "pure" || id.it = "read" -> r (* TODO: remove this line *)
@@ -258,8 +270,9 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems (my_free_exp true lhs) prems in
-      RuleD(id, binds, mixop, args, new_prems) $ r.at
+      let prems1 = List.map pre_process prems in
+      let prems2 = animate_prems (my_free_exp true lhs) prems1 in
+      RuleD(id, binds, mixop, args, prems2) $ r.at
     | _ -> r
   )
 

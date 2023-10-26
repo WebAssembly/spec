@@ -95,16 +95,11 @@ Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], E
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-...Animation failed
-Animation failed.
-Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
-if (nt = $unpacknumtype(zt))
-if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)])
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -138,7 +133,6 @@ Warning: No corresponding if for
   a. Push ref to the stack.
   b. Execute (BR l).
 { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Invalid premise `Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))` to be AL instr.
 Invalid premise `Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
@@ -148,20 +142,6 @@ Warning: No corresponding if for
 1. Otherwise:
   a. Trap.
 Invalid RulePr: 1. YetI: TODO: We do not support iter on premises other than `RulePr`.
-Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))` to be AL instr.
-Invalid premise `Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
-Invalid premise `Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))` to be AL instr.
 Warning: No corresponding if for
 1. Otherwise:
   a. Let ht be fresh_0.
@@ -1577,12 +1557,14 @@ execution_of_REF.CAST rt
 3. YetI: TODO: prem_to_instr: Unsupported rule prem.
 
 execution_of_STRUCT.NEW_DEFAULT x
-1. YetI: Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt})).
-2. Assert: Due to validation, |mut*| is |zt*|.
-3. YetI: TODO: We do not support iter on premises other than `RulePr`.
-4. Assert: Due to validation, |val*| is |zt*|.
-5. Push val* to the stack.
-6. Execute (STRUCT.NEW x).
+1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
+2. Let (STRUCT y_0) be $expanddt($type(x)).
+3. Let (mut, zt)* be y_0.
+4. Assert: Due to validation, |mut*| is |zt*|.
+5. YetI: TODO: We do not support iter on premises other than `RulePr`.
+6. Assert: Due to validation, |val*| is |zt*|.
+7. Push val* to the stack.
+8. Execute (STRUCT.NEW x).
 
 execution_of_STRUCT.GET sx? x i
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1593,9 +1575,10 @@ execution_of_STRUCT.GET sx? x i
   a. Let (REF.STRUCT_ADDR a) be fresh_0.
   b. If a < |$structinst()|, then:
     1) Let si be $structinst()[a].
-    2) If i < |si.FIELD|, then:
-      a) YetI: Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt})).
-      b) If |mut*| is |zt*| and i < |zt*|, then:
+    2) If i < |si.FIELD| and $expanddt(si.TYPE) is of the case STRUCT, then:
+      a) Let (STRUCT y_0) be $expanddt(si.TYPE).
+      b) Let (mut, zt)* be y_0.
+      c) If |mut*| is |zt*| and i < |zt*|, then:
         1. Push $unpackval(zt*[i], sx?, si.FIELD[i]) to the stack.
 
 execution_of_ARRAY.NEW x
@@ -1609,11 +1592,13 @@ execution_of_ARRAY.NEW x
 execution_of_ARRAY.NEW_DEFAULT x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST n) from the stack.
-3. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-4. Assert: Due to validation, $default($unpacktype(zt)) is defined.
-5. Let ?(val) be $default($unpacktype(zt)).
-6. Push val^n to the stack.
-7. Execute (ARRAY.NEW_FIXED x n).
+3. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
+4. Let (ARRAY y_0) be $expanddt($type(x)).
+5. Let (mut, zt) be y_0.
+6. Assert: Due to validation, $default($unpacktype(zt)) is defined.
+7. Let ?(val) be $default($unpacktype(zt)).
+8. Push val^n to the stack.
+9. Execute (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.NEW_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1631,14 +1616,19 @@ execution_of_ARRAY.NEW_DATA x y
 2. Pop (I32.CONST n) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-6. If (i + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
-  a. Trap.
-7. Let $bytes($storagesize(zt), c)^n be [$data(y).DATA][i : ((n · $storagesize(zt)) / 8)].
-8. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-9. If nt is $unpacknumtype(zt), then:
-  a. Push (nt.CONST c)^n to the stack.
-  b. Execute (ARRAY.NEW_FIXED x n).
+5. If $expanddt($type(x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(x)).
+  b. Let (mut, zt) be y_0.
+  c. If (i + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
+    1) Trap.
+6. Let $bytes($storagesize(zt), c)^n be [$data(y).DATA][i : ((n · $storagesize(zt)) / 8)].
+7. If $expanddt($type(x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_1) be $expanddt($type(x)).
+  b. Let (mut, y_2) be y_1.
+  c. If y_2 is y_0 and y_0 is zt, then:
+    1) Let nt be $unpacknumtype(zt).
+    2) Push (nt.CONST c)^n to the stack.
+    3) Execute (ARRAY.NEW_FIXED x n).
 
 execution_of_ARRAY.GET sx? x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1651,9 +1641,10 @@ execution_of_ARRAY.GET sx? x
   a. Let (REF.ARRAY_ADDR a) be fresh_0.
   b. If a < |$arrayinst()|, then:
     1) Let ai be $arrayinst()[a].
-    2) If i < |ai.FIELD|, then:
-      a) YetI: Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt))).
-      b) Push $unpackval(zt, sx?, ai.FIELD[i]) to the stack.
+    2) If i < |ai.FIELD| and $expanddt(ai.TYPE) is of the case ARRAY, then:
+      a) Let (ARRAY y_0) be $expanddt(ai.TYPE).
+      b) Let (mut, zt) be y_0.
+      c) Push $unpackval(zt, sx?, ai.FIELD[i]) to the stack.
 
 execution_of_ARRAY.LEN
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1735,33 +1726,38 @@ execution_of_ARRAY.COPY x_1 x_2
     2) If fresh_2 ≥ 1, then:
       a) Let n be (fresh_2 - 1).
       b) If i_1 ≤ i_2, then:
-        1. YetI: Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2))).
-        2. Let sx? be $sxfield(zt_2).
-        3. Push (REF.ARRAY_ADDR a_1) to the stack.
-        4. Push (I32.CONST i_1) to the stack.
-        5. Push (REF.ARRAY_ADDR a_2) to the stack.
-        6. Push (I32.CONST i_2) to the stack.
-        7. Execute (ARRAY.GET sx? x).
-        8. Execute (ARRAY.SET x).
-        9. Push (REF.ARRAY_ADDR a_1) to the stack.
-        10. Push (I32.CONST (i_1 + 1)) to the stack.
-        11. Push (REF.ARRAY_ADDR a_2) to the stack.
-        12. Push (I32.CONST (i_2 + 1)) to the stack.
-      c) Else:
-        1. YetI: Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2))).
-        2. Let sx? be $sxfield(zt_2).
-        3. Push (REF.ARRAY_ADDR a_1) to the stack.
-        4. Push (I32.CONST (i_1 + n)) to the stack.
-        5. Push (REF.ARRAY_ADDR a_2) to the stack.
-        6. Push (I32.CONST (i_2 + n)) to the stack.
-        7. Execute (ARRAY.GET sx? x).
-        8. Execute (ARRAY.SET x).
-        9. Push (REF.ARRAY_ADDR a_1) to the stack.
-        10. Push (I32.CONST i_1) to the stack.
-        11. Push (REF.ARRAY_ADDR a_2) to the stack.
-        12. Push (I32.CONST i_2) to the stack.
-      d) Push (I32.CONST n) to the stack.
-      e) Execute (ARRAY.COPY x_1 x_2).
+        1. If $expanddt($type(x_2)) is of the case ARRAY, then:
+          a. Let (ARRAY y_0) be $expanddt($type(x_2)).
+          b. Let (mut, zt_2) be y_0.
+          c. Let sx? be $sxfield(zt_2).
+          d. Push (REF.ARRAY_ADDR a_1) to the stack.
+          e. Push (I32.CONST i_1) to the stack.
+          f. Push (REF.ARRAY_ADDR a_2) to the stack.
+          g. Push (I32.CONST i_2) to the stack.
+          h. Execute (ARRAY.GET sx? x).
+          i. Execute (ARRAY.SET x).
+          j. Push (REF.ARRAY_ADDR a_1) to the stack.
+          k. Push (I32.CONST (i_1 + 1)) to the stack.
+          l. Push (REF.ARRAY_ADDR a_2) to the stack.
+          m. Push (I32.CONST (i_2 + 1)) to the stack.
+          n. Push (I32.CONST n) to the stack.
+          o. Execute (ARRAY.COPY x_1 x_2).
+      c) Else if $expanddt($type(x_2)) is of the case ARRAY, then:
+        1. Let (ARRAY y_0) be $expanddt($type(x_2)).
+        2. Let (mut, zt_2) be y_0.
+        3. Let sx? be $sxfield(zt_2).
+        4. Push (REF.ARRAY_ADDR a_1) to the stack.
+        5. Push (I32.CONST (i_1 + n)) to the stack.
+        6. Push (REF.ARRAY_ADDR a_2) to the stack.
+        7. Push (I32.CONST (i_2 + n)) to the stack.
+        8. Execute (ARRAY.GET sx? x).
+        9. Execute (ARRAY.SET x).
+        10. Push (REF.ARRAY_ADDR a_1) to the stack.
+        11. Push (I32.CONST i_1) to the stack.
+        12. Push (REF.ARRAY_ADDR a_2) to the stack.
+        13. Push (I32.CONST i_2) to the stack.
+        14. Push (I32.CONST n) to the stack.
+        15. Execute (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1837,40 +1833,69 @@ execution_of_ARRAY.INIT_DATA x y
     1) Let (REF.ARRAY_ADDR a) be fresh_0.
     2) If fresh_1 ≥ 1, then:
       a) Let n be (fresh_1 - 1).
-      b) YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-      c) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
-      d) Let nt be $unpacknumtype(zt).
-      e) Push (REF.ARRAY_ADDR a) to the stack.
-      f) Push (I32.CONST i) to the stack.
-      g) Push (nt.CONST c) to the stack.
-      h) Execute (ARRAY.SET x).
-      i) Push (REF.ARRAY_ADDR a) to the stack.
-      j) Push (I32.CONST (i + 1)) to the stack.
-      k) Push (I32.CONST (j + 1)) to the stack.
-      l) Push (I32.CONST n) to the stack.
-      m) Execute (ARRAY.INIT_DATA x y).
+      b) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
+      c) Let nt be $unpacknumtype(zt).
+      d) If $expanddt($type(x)) is of the case ARRAY, then:
+        1. Let (ARRAY y_1) be $expanddt($type(x)).
+        2. Let (mut, y_2) be y_1.
+        3. If y_2 is y_0 and y_0 is zt, then:
+          a. Push (REF.ARRAY_ADDR a) to the stack.
+          b. Push (I32.CONST i) to the stack.
+          c. Push (nt.CONST c) to the stack.
+          d. Execute (ARRAY.SET x).
+          e. Push (REF.ARRAY_ADDR a) to the stack.
+          f. Push (I32.CONST (i + 1)) to the stack.
+          g. Push (I32.CONST (j + 1)) to the stack.
+          h. Push (I32.CONST n) to the stack.
+          i. Execute (ARRAY.INIT_DATA x y).
 12. Else:
   a. Let n be fresh_1.
-  b. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-  c. If (j + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
-    1) Trap.
-  d. If fresh_1 is 0, then:
-  e. Else:
-    1) Let (REF.ARRAY_ADDR a) be fresh_0.
-    2) If fresh_1 ≥ 1, then:
-      a) Let n be (fresh_1 - 1).
-      b) YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-      c) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
-      d) Let nt be $unpacknumtype(zt).
-      e) Push (REF.ARRAY_ADDR a) to the stack.
-      f) Push (I32.CONST i) to the stack.
-      g) Push (nt.CONST c) to the stack.
-      h) Execute (ARRAY.SET x).
-      i) Push (REF.ARRAY_ADDR a) to the stack.
-      j) Push (I32.CONST (i + 1)) to the stack.
-      k) Push (I32.CONST (j + 1)) to the stack.
-      l) Push (I32.CONST n) to the stack.
-      m) Execute (ARRAY.INIT_DATA x y).
+  b. If $expanddt($type(x)) is not of the case ARRAY, then:
+    1) If fresh_1 is 0, then:
+    2) Else:
+      a) Let (REF.ARRAY_ADDR a) be fresh_0.
+      b) If fresh_1 ≥ 1, then:
+        1. Let n be (fresh_1 - 1).
+        2. Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
+        3. Let nt be $unpacknumtype(zt).
+        4. If $expanddt($type(x)) is of the case ARRAY, then:
+          a. Let (ARRAY y_1) be $expanddt($type(x)).
+          b. Let (mut, y_2) be y_1.
+          c. If y_2 is y_0 and y_0 is zt, then:
+            1) Push (REF.ARRAY_ADDR a) to the stack.
+            2) Push (I32.CONST i) to the stack.
+            3) Push (nt.CONST c) to the stack.
+            4) Execute (ARRAY.SET x).
+            5) Push (REF.ARRAY_ADDR a) to the stack.
+            6) Push (I32.CONST (i + 1)) to the stack.
+            7) Push (I32.CONST (j + 1)) to the stack.
+            8) Push (I32.CONST n) to the stack.
+            9) Execute (ARRAY.INIT_DATA x y).
+  c. Else:
+    1) Let (ARRAY y_0) be $expanddt($type(x)).
+    2) Let (mut, zt) be y_0.
+    3) If (j + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
+      a) Trap.
+    4) If fresh_1 is 0, then:
+    5) Else:
+      a) Let (REF.ARRAY_ADDR a) be fresh_0.
+      b) If fresh_1 ≥ 1, then:
+        1. Let n be (fresh_1 - 1).
+        2. Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
+        3. Let nt be $unpacknumtype(zt).
+        4. If $expanddt($type(x)) is of the case ARRAY, then:
+          a. Let (ARRAY y_1) be $expanddt($type(x)).
+          b. Let (mut, y_2) be y_1.
+          c. If y_2 is y_0 and y_0 is zt, then:
+            1) Push (REF.ARRAY_ADDR a) to the stack.
+            2) Push (I32.CONST i) to the stack.
+            3) Push (nt.CONST c) to the stack.
+            4) Execute (ARRAY.SET x).
+            5) Push (REF.ARRAY_ADDR a) to the stack.
+            6) Push (I32.CONST (i + 1)) to the stack.
+            7) Push (I32.CONST (j + 1)) to the stack.
+            8) Push (I32.CONST n) to the stack.
+            9) Execute (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
 1. Assert: Due to validation, $local(x) is defined.
@@ -2050,10 +2075,14 @@ execution_of_MEMORY.INIT x y
   g. Execute (MEMORY.INIT x y).
 
 execution_of_STRUCT.NEW x
-1. YetI: Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt})).
-2. Let si be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
-3. Push (REF.STRUCT_ADDR |$structinst()|) to the stack.
-4. Perform $ext_structinst([si]).
+1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.
+2. Let (STRUCT y_0) be $expanddt($type(x)).
+3. Let (mut, zt)^n be y_0.
+4. Assert: Due to validation, there are at least n values on the top of the stack.
+5. Pop val^n from the stack.
+6. Let si be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
+7. Push (REF.STRUCT_ADDR |$structinst()|) to the stack.
+8. Perform $ext_structinst([si]).
 
 execution_of_STRUCT.SET x i
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -2064,19 +2093,22 @@ execution_of_STRUCT.SET x i
   a. Trap.
 6. If fresh_0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be fresh_0.
-  b. If a < |$structinst()|, then:
-    1) YetI: Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt})).
-    2) If |mut*| is |zt*| and i < |zt*|, then:
+  b. If a < |$structinst()| and $expanddt($structinst()[a].TYPE) is of the case STRUCT, then:
+    1) Let (STRUCT y_0) be $expanddt($structinst()[a].TYPE).
+    2) Let (mut, zt)* be y_0.
+    3) If |mut*| is |zt*| and i < |zt*|, then:
       a) Let fv be $packval(zt*[i], val).
       b) Perform $with_struct(a, i, fv).
 
 execution_of_ARRAY.NEW_FIXED x n
 1. Assert: Due to validation, there are at least n values on the top of the stack.
 2. Pop val^n from the stack.
-3. YetI: Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt))).
-4. Let ai be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
-5. Push (REF.ARRAY_ADDR |$arrayinst()|) to the stack.
-6. Perform $ext_arrayinst([ai]).
+3. Assert: Due to validation, $expanddt($type(x)) is of the case ARRAY.
+4. Let (ARRAY y_0) be $expanddt($type(x)).
+5. Let (mut, zt) be y_0.
+6. Let ai be { TYPE: $type(x); FIELD: $packval(zt, val)^n; }.
+7. Push (REF.ARRAY_ADDR |$arrayinst()|) to the stack.
+8. Perform $ext_arrayinst([ai]).
 
 execution_of_ARRAY.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -2087,10 +2119,11 @@ execution_of_ARRAY.SET x
   a. Trap.
 6. If fresh_0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be fresh_0.
-  b. If a < |$arrayinst()|, then:
-    1) YetI: Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt))).
-    2) Let fv be $packval(zt, val).
-    3) Perform $with_array(a, i, fv).
+  b. If a < |$arrayinst()| and $expanddt($arrayinst()[a].TYPE) is of the case ARRAY, then:
+    1) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+    2) Let (mut, zt) be y_0.
+    3) Let fv be $packval(zt, val).
+    4) Perform $with_array(a, i, fv).
 
 execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.

@@ -23243,16 +23243,11 @@ Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], E
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-...Animation failed
-Animation failed.
-Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
-if (nt = $unpacknumtype(zt))
-if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)])
+if ($expanddt($funcinst(z)[a].TYPE_funcinst) = FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
 Animation failed.
 if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
@@ -26529,7 +26524,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$funcinst(z)|)
     -- where fi = $funcinst(z)[a]
     -- where `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
-    -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+    -- where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt(fi.TYPE_funcinst)
     -- where f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst}
 
   ;; 8-reduction.watsup:166.1-167.60
@@ -26575,7 +26570,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:313.1-316.43
   rule struct.new_default {mut* : mut*, val* : val*, x : idx, z : state, zt* : storagetype*}:
     `%~>%*`(`%;%*`(z, [STRUCT.NEW_DEFAULT_admininstr(x)]), $admininstr_val(val)*{val} :: [STRUCT.NEW_admininstr(x)])
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)*{mut zt}) = $expanddt($type(z, x))
     -- if (|mut*{mut}| = |zt*{zt}|)
     -- (where ?(val) = $default($unpacktype(zt)))*{val zt}
     -- if (|val*{val}| = |zt*{zt}|)
@@ -26590,7 +26585,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$structinst(z)|)
     -- where si = $structinst(z)[a]
     -- if (i < |si.FIELD_structinst|)
-    -- Expand: `%~~%`(si.TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)*{mut zt}) = $expanddt(si.TYPE_structinst)
     -- if (|mut*{mut}| = |zt*{zt}|)
     -- if (i < |zt*{zt}|)
 
@@ -26601,7 +26596,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:342.1-345.40
   rule array.new_default {mut : mut, n : n, val : val, x : idx, z : state, zt : storagetype}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, n) ARRAY.NEW_DEFAULT_admininstr(x)]), $admininstr_val(val)^n{} :: [ARRAY.NEW_FIXED_admininstr(x, n)])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
     -- where ?(val) = $default($unpacktype(zt))
 
   ;; 8-reduction.watsup:353.1-355.38
@@ -26617,15 +26612,15 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:362.1-365.59
   rule array.new_data-oob {i : nat, mut : mut, n : n, x : idx, y : idx, z : state, zt : storagetype}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) ARRAY.NEW_DATA_admininstr(x, y)]), [TRAP_admininstr])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
     -- if ((i + ((n * $storagesize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup:367.1-371.85
   rule array.new_data-alloc {c^n : c_numtype^n, i : nat, mut : mut, n : n, nt : numtype, x : idx, y : idx, z : state, zt : storagetype}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) ARRAY.NEW_DATA_admininstr(x, y)]), CONST_admininstr(nt, c)^n{c} :: [ARRAY.NEW_FIXED_admininstr(x, n)])
     -- where $bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)]
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
-    -- if (nt = $unpacknumtype(zt))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
+    -- where nt = $unpacknumtype(zt)
 
   ;; 8-reduction.watsup:374.1-375.61
   rule array.get-null {ht : heaptype, i : nat, sx? : sx?, x : idx, z : state}:
@@ -26637,7 +26632,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (a < |$arrayinst(z)|)
     -- where ai = $arrayinst(z)[a]
     -- if (i < |ai.FIELD_arrayinst|)
-    -- Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt(ai.TYPE_arrayinst)
 
   ;; 8-reduction.watsup:392.1-393.39
   rule array.len-null {ht : heaptype, z : state}:
@@ -26697,14 +26692,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x : idx, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n + 1)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)])
     -- if (i_1 <= i_2)
-    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
+    -- where ARRAY_comptype(`%%`(mut, zt_2)) = $expanddt($type(z, x_2))
     -- where sx?{sx} = $sxfield(zt_2)
 
   ;; 8-reduction.watsup:445.1-453.29
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x : idx, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n + 1)) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + n)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + n)) ARRAY.GET_admininstr(sx?{sx}, x) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)])
     -- if (i_1 > i_2)
-    -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
+    -- where ARRAY_comptype(`%%`(mut, zt_2)) = $expanddt($type(z, x_2))
     -- where sx?{sx} = $sxfield(zt_2)
 
   ;; 8-reduction.watsup:456.1-457.93
@@ -26747,7 +26742,7 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:486.1-489.59
   rule array.init_data-oob2 {a : addr, i : nat, j : nat, mut : mut, n : n, x : idx, y : idx, z : state, zt : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, n) ARRAY.INIT_DATA_admininstr(x, y)]), [TRAP_admininstr])
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
     -- if ((j + ((n * $storagesize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 
   ;; 8-reduction.watsup:491.1-493.15
@@ -26759,9 +26754,9 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule array.init_data-succ {a : addr, c : c_numtype, i : nat, j : nat, mut : mut, n : n, nt : numtype, x : idx, y : idx, z : state, zt : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, (n + 1)) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (j + 1)) CONST_admininstr(I32_numtype, n) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- where $bytes($storagesize(zt), c) = $data(z, y).DATA_datainst[j : ($storagesize(zt) / 8)]
     -- where nt = $unpacknumtype(zt)
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
 
   ;; 8-reduction.watsup:523.1-525.27
   rule local.get {val : val, x : idx, z : state}:
@@ -26941,7 +26936,7 @@ relation Step: `%~>%`(config, config)
   ;; 8-reduction.watsup:308.1-311.61
   rule struct.new {mut^n : mut^n, n : n, si : structinst, val^n : val^n, x : idx, z : state, zt^n : storagetype^n}:
     `%~>%`(`%;%*`(z, $admininstr_val(val)^n{val} :: [STRUCT.NEW_admininstr(x)]), `%;%*`($ext_structinst(z, [si]), [REF.STRUCT_ADDR_admininstr(|$structinst(z)|)]))
-    -- Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)^n{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)^n{mut zt}) = $expanddt($type(z, x))
     -- where si = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val zt}}
 
   ;; 8-reduction.watsup:328.1-329.53
@@ -26952,7 +26947,7 @@ relation Step: `%~>%`(config, config)
   rule struct.set-struct {a : addr, fv : fieldval, i : nat, mut* : mut*, val : val, x : idx, z : state, zt* : storagetype*}:
     `%~>%`(`%;%*`(z, [REF.STRUCT_ADDR_admininstr(a) $admininstr_val(val) STRUCT.SET_admininstr(x, i)]), `%;%*`($with_struct(z, a, i, fv), []))
     -- if (a < |$structinst(z)|)
-    -- Expand: `%~~%`($structinst(z)[a].TYPE_structinst, STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
+    -- where STRUCT_comptype(`%%`(mut, zt)*{mut zt}) = $expanddt($structinst(z)[a].TYPE_structinst)
     -- if (|mut*{mut}| = |zt*{zt}|)
     -- if (i < |zt*{zt}|)
     -- where fv = $packval(zt*{zt}[i], val)
@@ -26960,7 +26955,7 @@ relation Step: `%~>%`(config, config)
   ;; 8-reduction.watsup:347.1-350.61
   rule array.new_fixed {ai : arrayinst, mut : mut, n : n, val^n : val^n, x : idx, z : state, zt : storagetype}:
     `%~>%`(`%;%*`(z, $admininstr_val(val)^n{val} :: [ARRAY.NEW_FIXED_admininstr(x, n)]), `%;%*`($ext_arrayinst(z, [ai]), [REF.ARRAY_ADDR_admininstr(|$arrayinst(z)|)]))
-    -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
     -- where ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}}
 
   ;; 8-reduction.watsup:383.1-384.50
@@ -26971,7 +26966,7 @@ relation Step: `%~>%`(config, config)
   rule array.set-array {a : addr, fv : fieldval, i : nat, mut : mut, val : val, x : idx, z : state, zt : storagetype}:
     `%~>%`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`($with_array(z, a, i, fv), []))
     -- if (a < |$arrayinst(z)|)
-    -- Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
+    -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($arrayinst(z)[a].TYPE_arrayinst)
     -- where fv = $packval(zt, val)
 
   ;; 8-reduction.watsup:527.1-528.60
