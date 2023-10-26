@@ -269,6 +269,15 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
     instr :: acc, bounds @ Free.free_instr instr
 ) il pair
 
+let rec merge_three_branches i =
+  let new_ = List.map merge_three_branches in
+  match i with
+  | IfI (c1, il1, [ IfI (c2, il2, il3) ]) when il1 = il3 ->
+    IfI ( BinopC (And, neg c1, c2), new_ il2, new_ il1)
+  | IfI (c, il1, il2) -> IfI (c, new_ il1, new_ il2)
+  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
+  | _ -> i
+
 let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
 let rec enhance_readability instrs =
@@ -280,6 +289,7 @@ let rec enhance_readability instrs =
   |> List.concat_map (remove_unnecessary_branch [])
   |> List.concat_map swap_if
   |> List.concat_map early_return
+  |> List.map merge_three_branches
   |> remove_dead_assignment
   in
   if instrs = new_instrs then instrs else enhance_readability new_instrs

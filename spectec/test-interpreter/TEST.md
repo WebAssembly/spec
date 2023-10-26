@@ -83,9 +83,6 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ...Animation failed
 Animation failed.
-if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
-...Animation failed
-Animation failed.
 if (a < |$funcinst(z)|)
 Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed

@@ -263,10 +263,12 @@ rule Step_pure/ref.as_non_null-non_null:
 
 rule Step_pure/ref.eq-null:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref_1 = (REF.NULL ht_1) /\ ref_2 = (REF.NULL ht_2)
+  -- if ref_1 = REF.NULL ht_1
+  -- if ref_2 = REF.NULL ht_2
 
 rule Step_pure/ref.eq-true:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- otherwise
   -- if ref_1 = ref_2
 
 rule Step_pure/ref.eq-false:

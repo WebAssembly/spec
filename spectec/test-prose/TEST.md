@@ -83,9 +83,6 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ...Animation failed
 Animation failed.
-if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
-...Animation failed
-Animation failed.
 if (a < |$funcinst(z)|)
 Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
@@ -1413,8 +1410,9 @@ execution_of_REF.EQ
 2. Pop ref_2 from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop ref_1 from the stack.
-5. Push (I32.CONST 1) to the stack.
-6. If ref_1 is ref_2, then:
+5. If ref_1 is of the case REF.NULL and ref_2 is of the case REF.NULL, then:
+  a. Push (I32.CONST 1) to the stack.
+6. Else if ref_1 is ref_2, then:
   a. Push (I32.CONST 1) to the stack.
 7. Else:
   a. Push (I32.CONST 0) to the stack.
@@ -1681,12 +1679,13 @@ execution_of_ARRAY.COPY x_1 x_2
     2) Let (REF.ARRAY_ADDR a_2) be fresh_1.
     3) If a_2 < |$arrayinst()| and (i_2 + n) > |$arrayinst()[a_2].FIELD|, then:
       a) Trap.
-    4) If n is 0, then:
-      a) Do nothing.
-    5) Else:
-      a) Let (REF.ARRAY_ADDR a_1) be fresh_0.
-      b) Let (REF.ARRAY_ADDR a_2) be fresh_1.
-      c) If i_1 > i_2, then:
+  c. If fresh_1 is of the case REF.ARRAY_ADDR and n is 0, then:
+    1) Do nothing.
+  d. Else:
+    1) Let (REF.ARRAY_ADDR a_1) be fresh_0.
+    2) If fresh_1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be fresh_1.
+      b) If i_1 > i_2 or $expanddt($type(x_2)) is not of the case ARRAY, then:
         1. Let (REF.ARRAY_ADDR a_1) be fresh_0.
         2. Let (REF.ARRAY_ADDR a_2) be fresh_1.
         3. Push (REF.ARRAY_ADDR a_1) to the stack.
@@ -1699,20 +1698,7 @@ execution_of_ARRAY.COPY x_1 x_2
         10. Push (I32.CONST i_1) to the stack.
         11. Push (REF.ARRAY_ADDR a_2) to the stack.
         12. Push (I32.CONST i_2) to the stack.
-      d) Else if $expanddt($type(x_2)) is not of the case ARRAY, then:
-        1. Let (REF.ARRAY_ADDR a_1) be fresh_0.
-        2. Let (REF.ARRAY_ADDR a_2) be fresh_1.
-        3. Push (REF.ARRAY_ADDR a_1) to the stack.
-        4. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
-        5. Push (REF.ARRAY_ADDR a_2) to the stack.
-        6. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-        7. Execute (ARRAY.GET sx? x).
-        8. Execute (ARRAY.SET x).
-        9. Push (REF.ARRAY_ADDR a_1) to the stack.
-        10. Push (I32.CONST i_1) to the stack.
-        11. Push (REF.ARRAY_ADDR a_2) to the stack.
-        12. Push (I32.CONST i_2) to the stack.
-      e) Else:
+      c) Else:
         1. Let (ARRAY y_0) be $expanddt($type(x_2)).
         2. Let (mut, zt_2) be y_0.
         3. Let sx? be $sxfield(zt_2).
@@ -1726,8 +1712,8 @@ execution_of_ARRAY.COPY x_1 x_2
         11. Push (I32.CONST (i_1 + 1)) to the stack.
         12. Push (REF.ARRAY_ADDR a_2) to the stack.
         13. Push (I32.CONST (i_2 + 1)) to the stack.
-      f) Push (I32.CONST (n - 1)) to the stack.
-      g) Execute (ARRAY.COPY x_1 x_2).
+      d) Push (I32.CONST (n - 1)) to the stack.
+      e) Execute (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
