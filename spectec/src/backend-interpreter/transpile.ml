@@ -181,6 +181,7 @@ let lift f x = [f x]
 let swap_if =
   let transpile_instr = function
   | IfI (c, il, []) -> IfI (c, il, [])
+  | IfI (c, [], il) -> IfI (neg c, il, [])
   | IfI (c, il1, il2) ->
       if count_instrs il1 <= count_instrs il2 then
         IfI (c, il1, il2)
@@ -270,8 +271,8 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
 
 let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
-let enhance_readability instrs =
-  instrs
+let rec enhance_readability instrs =
+  let new_instrs = instrs
   |> unify_if
   |> List.concat_map if_not_defined
   |> infer_else
@@ -280,6 +281,8 @@ let enhance_readability instrs =
   |> List.concat_map swap_if
   |> List.concat_map early_return
   |> remove_dead_assignment
+  in
+  if instrs = new_instrs then instrs else enhance_readability new_instrs
 
 (** Walker-based Translpiler **)
 let rec mk_access ps base =
