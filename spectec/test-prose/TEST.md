@@ -467,8 +467,9 @@ instexport fa* ga* ta* ma* (EXPORT name x_0)
 
 allocfunc m func
 1. Let fi be { MODULE: m; CODE: func; }.
-2. Append fi to the s.FUNC.
-3. Return |s.FUNC|.
+2. Let a be |s.FUNC|.
+3. Append fi to the s.FUNC.
+4. Return a.
 
 allocfuncs m x_0*
 1. If x_0* is [], then:
@@ -480,8 +481,9 @@ allocfuncs m x_0*
 
 allocglobal globaltype val
 1. Let gi be { TYPE: globaltype; VALUE: val; }.
-2. Append gi to the s.GLOBAL.
-3. Return |s.GLOBAL|.
+2. Let a be |s.GLOBAL|.
+3. Append gi to the s.GLOBAL.
+4. Return a.
 
 allocglobals x_0* x_1*
 1. If x_0* is [], then:
@@ -497,8 +499,9 @@ allocglobals x_0* x_1*
 
 alloctable ((i, j), rt)
 1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
-2. Append ti to the s.TABLE.
-3. Return |s.TABLE|.
+2. Let a be |s.TABLE|.
+3. Append ti to the s.TABLE.
+4. Return a.
 
 alloctables x_0*
 1. If x_0* is [], then:
@@ -510,8 +513,9 @@ alloctables x_0*
 
 allocmem (I8 (i, j))
 1. Let mi be { TYPE: (I8 (i, j)); DATA: 0^((i · 64) · $Ki()); }.
-2. Append mi to the s.MEM.
-3. Return |s.MEM|.
+2. Let a be |s.MEM|.
+3. Append mi to the s.MEM.
+4. Return a.
 
 allocmems x_0*
 1. If x_0* is [], then:
@@ -523,8 +527,9 @@ allocmems x_0*
 
 allocelem rt ref*
 1. Let ei be { TYPE: rt; ELEM: ref*; }.
-2. Append ei to the s.ELEM.
-3. Return |s.ELEM|.
+2. Let a be |s.ELEM|.
+3. Append ei to the s.ELEM.
+4. Return a.
 
 allocelems x_0* x_1*
 1. If x_0* is [] and x_1* is [], then:
@@ -539,8 +544,9 @@ allocelems x_0* x_1*
 
 allocdata byte*
 1. Let di be { DATA: byte*; }.
-2. Append di to the s.DATA.
-3. Return |s.DATA|.
+2. Let a be |s.DATA|.
+3. Append di to the s.DATA.
+4. Return a.
 
 allocdatas x_0*
 1. If x_0* is [], then:
