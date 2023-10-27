@@ -133,13 +133,49 @@ Lowering from EL into IL infers additional information and makes it explicit in 
 
 ## Building
 
-* You will need `ocaml` installed with `dune`, `menhir`, and `mdx`.
+### Prerequisites
 
-* To run tests, you will also need `pdflatex` and `sphinx-build`.
+You will need `ocaml` installed with `dune`, `menhir`, and `mdx` using `opam`.
 
-* Invoke `make` to build the executable.
+* Install `opam` version 2.0.5 or higher.
+  ```
+  $ apt-get install opam
+  $ opam init
+  ```
+
+* Set `ocaml` as version 5.0.0 or higher.
+  ```
+  $ opam switch create 5.0.0
+  $ opam install dune menhir mdx
+  ```
+  
+* Install `dune` version 3.11.0, `menhir` version 20230608, and `mdx` version 2.3.1 via `opam` (default versions)
+  ```
+  $ opam install dune menhir mdx
+  ```
+
+### Building the Project
+
+* Invoke `make` to build the `watsup` executable.
 
 * In the same place, invoke `make test` to run it on the demo files from the `spec` directory.
+
+
+### Prerequisites for Latex and Sphinx Backends
+
+To generate a specification document in Latex or Sphinx (to be built into pdf or html), you will also need `pdflatex` and `sphinx-build`.
+
+* Have `python3` version 3.7 or higher with `pip3` installed.
+
+* Install `sphinx` version 7.1.2 and `six` version 1.16.0 via `pip3` (default versions).
+  ```
+  $ pip3 install sphinx six
+  ```
+
+* Install `texlive-full` via your package manager.
+  ```
+  $ apt-get install texlive-full
+  ```
 
 
 ## Running Latex Backend
@@ -177,3 +213,41 @@ There are two forms of splices:
 2. _definition splice_ (`@@{sort: id id ...}`): inserts the named definitions or rules of the indicated sort `sort` as defined in the DSL sources.
 
 See the [documentation](doc/Latex.md) for more details.
+
+
+## Running Sphinx Backend (WIP)
+
+The full pdf/html document generation via Sphinx currently resides in the [`al`](https://github.com/Wasm-DSL/spectec/tree/al) branch.
+
+To build both pdf and html specification document,
+```
+$ git checkout al
+$ make
+$ cd test-prose
+$ make all
+```
+
+It splices Latex formulas and typesetted prose into the template `rst` document at `test-prose/doc`.
+Then, Sphinx builds the `rst` files into desired formats such as pdf or html.
+
+
+## Running Interpreter Backend (WIP)
+
+The interpreter backend can be found in the [`al`](https://github.com/Wasm-DSL/spectec/tree/al) branch at the moment. It currently passes all tests in the official WebAssembly test suite.
+
+To run our interpreter backend against all of the official test suite,
+```
+$ git checkout al
+$ make
+$ ./watsup spec/* --animate --sideconditions --interpreter
+```
+
+You may also run custom Wasm programs on our interpreter backend.
+
+This feature is yet under construction, as our interpreter accepts `wast` format programs only.
+For convenience, modify [test-interpreter/sample.wast](https://github.com/Wasm-DSL/spectec/blob/al/spectec/test-interpreter/sample.wast) as you like and run,
+```
+$ git checkout al
+$ make
+$ ./watsup spec/* --animate --sideconditions --interpreter --test-interpreter test-interpreter/sample
+```
