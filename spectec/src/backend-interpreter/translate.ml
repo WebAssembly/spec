@@ -642,9 +642,27 @@ let rec prem2instrs remain_lhs prem instrs =
       init_lhs_id();
       letI (exp2expr exp1) (exp2expr exp2) targets instrs'
   | Ast.RulePr (id, _, exp) -> rulepr2instrs id exp instrs
-  | Ast.IterPr (inner_prem, _) ->
-    (* TODO: Handle IterPr correctly*)
-    YetI ("Repeat: " ^ (Al.Print.string_of_instrs 1 (prem2instrs remain_lhs inner_prem []))) :: instrs
+  | Ast.IterPr _ -> iterpr2instr remain_lhs prem instrs
+
+and iterpr2instr remain_lhs pr next_il =
+  match pr.it with
+  (* Inductive case *)
+  | Ast.IterPr (pr, (iter, ids)) ->
+    let instrs = prem2instrs remain_lhs pr next_il in
+
+    let iter' = iter2iter iter in
+    let ids' = List.map (fun id -> id.it) ids in
+    let f = Al.Free.(
+      function
+      | LetI (lhs, rhs) when List.length (intersection (free_expr lhs) ids') > 0 ->
+          let lhs_ids = intersection (free_expr lhs) ids' in
+          let rhs_ids = intersection (free_expr rhs) ids' in
+          [ LetI (IterE (lhs, lhs_ids, iter'), IterE (rhs, rhs_ids, iter')) ]
+      | i -> [i]
+    ) in
+    let walk_config = { Al.Walk.default_config with post_instr = f } in
+    Al.Walk.walk_instrs walk_config instrs
+  | _ -> failwith "Unreachable: not an IterPr"
 
 (** `Il.instr expr list` -> `prem list` -> `instr list` -> `instr list` **)
 let prems2instrs remain_lhs = List.fold_right (prem2instrs remain_lhs)

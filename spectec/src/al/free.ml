@@ -1,5 +1,14 @@
 open Ast
 
+(* TODO: Change list to set *)
+module IdSet = Set.Make (String)
+
+(* intersection between id list *)
+let intersection l1 l2 =
+  let s1 = IdSet.of_list l1 in
+  let s2 = IdSet.of_list l2 in
+  IdSet.inter s1 s2 |> IdSet.elements
+
 let rec free_expr = function
   | NumE _
   | StringE _

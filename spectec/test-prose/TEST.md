@@ -1186,17 +1186,15 @@ rundata (DATA byte* fresh_0?) y
 5. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
 
 instantiate module externval*
-1. YetI: Repeat:
-  a. YetI: Repeat:
-  a. Enter the activation of z with label [FRAME_]:
-    1) Let [ref_e] be $eval_expr(expr_e)...
-2. YetI: Repeat:
-  a. Enter the activation of z with label [FRAME_]:
-    1) Let [ref_t] be $eval_expr(expr_t)..
-3. YetI: Repeat:
-  a. Enter the activation of z with label [FRAME_]:
-    1) Let [val_g] be $eval_expr(expr_g)..
-4. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_e", VarT "instr", VarT "admininstr"), (List, ["instr_e"])), CatE (IterE (SubE (VarE "instr_d", VarT "instr", VarT "admininstr"), (List, ["instr_d"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
+1. Let (GLOBAL globaltype expr_g)* be global*.
+2. Let (ELEM reftype expr_e* elemmode?)* be elem*.
+3. Enter the activation of z with label [FRAME_]:
+  a. Let [ref_e]** be $eval_expr(expr_e)**.
+4. Enter the activation of z with label [FRAME_]:
+  a. Let [ref_t]* be $eval_expr(expr_t)*.
+5. Enter the activation of z with label [FRAME_]:
+  a. Let [val_g]* be $eval_expr(expr_g)*.
+6. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_e", VarT "instr", VarT "admininstr"), (List, ["instr_e"])), CatE (IterE (SubE (VarE "instr_d", VarT "instr", VarT "admininstr"), (List, ["instr_d"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -1529,12 +1527,11 @@ execution_of_STRUCT.NEW_DEFAULT x
 2. Let (STRUCT y_0) be $expanddt($type(x)).
 3. Let (mut, zt)* be y_0.
 4. Assert: Due to validation, |mut*| is |zt*|.
-5. YetI: Repeat:
-  a. If $default($unpacktype(zt)) is defined, then:
-    1) Let ?(val) be $default($unpacktype(zt))..
-6. Assert: Due to validation, |val*| is |zt*|.
-7. Push val* to the stack.
-8. Execute (STRUCT.NEW x).
+5. Assert: Due to validation, $default($unpacktype(zt)) is defined.
+6. Let ?(val)* be $default($unpacktype(zt))*.
+7. Assert: Due to validation, |val*| is |zt*|.
+8. Push val* to the stack.
+9. Execute (STRUCT.NEW x).
 
 execution_of_STRUCT.GET sx? x i
 1. Assert: Due to validation, a value is on the top of the stack.
