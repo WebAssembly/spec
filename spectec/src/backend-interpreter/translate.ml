@@ -629,6 +629,7 @@ and iterpr2instr remain_lhs pr next_il =
           let lhs_ids = intersection (free_expr lhs) ids' in
           let rhs_ids = intersection (free_expr rhs) ids' in
           [ LetI (IterE (lhs, lhs_ids, iter'), IterE (rhs, rhs_ids, iter')) ]
+      (* TODO: iter for IfI *)
       | i -> [i]
     ) in
     let walk_config = { Al.Walk.default_config with post_instr = f } in
