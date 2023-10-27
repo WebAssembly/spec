@@ -20,9 +20,9 @@ The mapping of numeric instructions to their underlying operators is expressed b
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{op}_{\IN}(i_1,\dots,i_k) &=& \F{i}\X{op}_N(i_1,\dots,i_k) \\
-   \X{op}_{\FN}(z_1,\dots,z_k) &=& \F{f}\X{op}_N(z_1,\dots,z_k) \\
-   \X{op}_{\VN}(i_1,\dots,i_k) &=& \F{i}\X{op}_N(i_1,\dots,i_k) \\
+   \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{exec/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
+   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
    \end{array}
 
 And for :ref:`conversion operators <exec-cvtop>`:
@@ -64,9 +64,9 @@ Where the underlying operators are non-deterministic, because they may return on
 
 2. Pop the value :math:`t.\CONST~c_1` from the stack.
 
-3. If :math:`\unop_t(c_1)` is defined, then:
+3. If :math:`\unopF_t(c_1)` is defined, then:
 
-   a. Let :math:`c` be a possible result of computing :math:`\unop_t(c_1)`.
+   a. Let :math:`c` be a possible result of computing :math:`\unopF_t(c_1)`.
 
    b. Push the value :math:`t.\CONST~c` to the stack.
 
@@ -77,9 +77,9 @@ Where the underlying operators are non-deterministic, because they may return on
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& (t\K{.}\CONST~c)
-     & (\iff c \in \unop_t(c_1)) \\
+     & (\iff c \in \unopF_t(c_1)) \\
    (t\K{.}\CONST~c_1)~t\K{.}\unop &\stepto& \TRAP
-     & (\iff \unop_{t}(c_1) = \{\})
+     & (\iff \unopF_{t}(c_1) = \{\})
    \end{array}
 
 
@@ -94,9 +94,9 @@ Where the underlying operators are non-deterministic, because they may return on
 
 3. Pop the value :math:`t.\CONST~c_1` from the stack.
 
-4. If :math:`\binop_t(c_1, c_2)` is defined, then:
+4. If :math:`\binopF_t(c_1, c_2)` is defined, then:
 
-   a. Let :math:`c` be a possible result of computing :math:`\binop_t(c_1, c_2)`.
+   a. Let :math:`c` be a possible result of computing :math:`\binopF_t(c_1, c_2)`.
 
    b. Push the value :math:`t.\CONST~c` to the stack.
 
@@ -107,9 +107,9 @@ Where the underlying operators are non-deterministic, because they may return on
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& (t\K{.}\CONST~c)
-     & (\iff c \in \binop_t(c_1,c_2)) \\
+     & (\iff c \in \binopF_t(c_1,c_2)) \\
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\binop &\stepto& \TRAP
-     & (\iff \binop_{t}(c_1,c_2) = \{\})
+     & (\iff \binopF_{t}(c_1,c_2) = \{\})
    \end{array}
 
 
@@ -122,14 +122,14 @@ Where the underlying operators are non-deterministic, because they may return on
 
 2. Pop the value :math:`t.\CONST~c_1` from the stack.
 
-3. Let :math:`c` be the result of computing :math:`\testop_t(c_1)`.
+3. Let :math:`c` be the result of computing :math:`\testopF_t(c_1)`.
 
 4. Push the value :math:`\I32.\CONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~t\K{.}\testop &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \testop_t(c_1)) \\
+     & (\iff c = \testopF_t(c_1)) \\
    \end{array}
 
 
@@ -144,14 +144,14 @@ Where the underlying operators are non-deterministic, because they may return on
 
 3. Pop the value :math:`t.\CONST~c_1` from the stack.
 
-4. Let :math:`c` be the result of computing :math:`\relop_t(c_1, c_2)`.
+4. Let :math:`c` be the result of computing :math:`\relopF_t(c_1, c_2)`.
 
 5. Push the value :math:`\I32.\CONST~c` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (t\K{.}\CONST~c_1)~(t\K{.}\CONST~c_2)~t\K{.}\relop &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \relop_t(c_1,c_2)) \\
+     & (\iff c = \relopF_t(c_1,c_2)) \\
    \end{array}
 
 
@@ -261,7 +261,7 @@ Most vector instructions are defined in terms of generic numeric operators appli
 .. math::
    \begin{array}{lll@{\qquad}l}
    \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \lanes^{-1}_{t\K{x}N}(op_t(\lanes_{t\K{x}N}(n_1) ~\dots~ \lanes_{t\K{x}N}(n_k))
+     \lanes^{-1}_{t\K{x}N}(\X{op}_t(\lanes_{t\K{x}N}(n_1) ~\dots~ \lanes_{t\K{x}N}(n_k))
    \end{array}
 
 .. note::

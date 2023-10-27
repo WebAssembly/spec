@@ -500,6 +500,12 @@
 .. |relop| mathdef:: \xref{syntax/instructions}{syntax-relop}{\X{relop}}
 .. |cvtop| mathdef:: \xref{syntax/instructions}{syntax-cvtop}{\X{cvtop}}
 
+.. |unopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{unop}}
+.. |binopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{binop}}
+.. |testopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{testop}}
+.. |relopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{relop}}
+.. |cvtopF| mathdef:: \xref{exec/instructions}{exec-instr-numeric}{\X{cvtop}}
+
 .. |iunop| mathdef:: \xref{syntax/instructions}{syntax-iunop}{\X{iunop}}
 .. |ibinop| mathdef:: \xref{syntax/instructions}{syntax-ibinop}{\X{ibinop}}
 .. |itestop| mathdef:: \xref{syntax/instructions}{syntax-itestop}{\X{itestop}}
