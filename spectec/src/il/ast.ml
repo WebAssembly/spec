@@ -54,11 +54,17 @@ type iter =
 
 (* Types *)
 
+and numtyp =
+  | NatT                         (* `nat` *)
+  | IntT                         (* `int` *)
+  | RatT                         (* `rat` *)
+  | RealT                        (* `real` *)
+
 and typ = typ' phrase
 and typ' =
   | VarT of id                   (* varid *)
   | BoolT                        (* `bool` *)
-  | NatT                         (* `nat` *)
+  | NumT of numtyp               (* numtyp *)
   | TextT                        (* `text` *)
   | TupT of typ list             (* typ * ... * typ *)
   | IterT of typ * iter          (* typ iter *)
@@ -77,28 +83,28 @@ and typcase = atom * (binds * typ * premise list) * hint list    (* variant case
 (* Expressions *)
 
 and unop =
-  | NotOp   (* `~` *)
-  | PlusOp  (* `+` *)
-  | MinusOp (* `-` *)
+  | NotOp             (* `~` *)
+  | PlusOp of numtyp  (* `+` *)
+  | MinusOp of numtyp (* `-` *)
 
 and binop =
-  | AndOp  (* `/\` *)
-  | OrOp   (* `\/` *)
-  | ImplOp (* `=>` *)
-  | EquivOp (* `<=>` *)
-  | AddOp  (* `+` *)
-  | SubOp  (* `-` *)
-  | MulOp  (* `*` *)
-  | DivOp  (* `/` *)
-  | ExpOp  (* `^` *)
+  | AndOp            (* `/\` *)
+  | OrOp             (* `\/` *)
+  | ImplOp           (* `=>` *)
+  | EquivOp          (* `<=>` *)
+  | AddOp of numtyp  (* `+` *)
+  | SubOp of numtyp  (* `-` *)
+  | MulOp of numtyp  (* `*` *)
+  | DivOp of numtyp  (* `/` *)
+  | ExpOp of numtyp  (* `^` *)
 
 and cmpop =
-  | EqOp (* `=` *)
-  | NeOp (* `=/=` *)
-  | LtOp (* `<` *)
-  | GtOp (* `>` *)
-  | LeOp (* `<=` *)
-  | GeOp (* `>=` *)
+  | EqOp             (* `=` *)
+  | NeOp             (* `=/=` *)
+  | LtOp of numtyp   (* `<` *)
+  | GtOp of numtyp   (* `>` *)
+  | LeOp of numtyp   (* `<=` *)
+  | GeOp of numtyp   (* `>=` *)
 
 and exp = (exp', typ) note_phrase
 and exp' =

@@ -28,7 +28,7 @@ $(GENNAME).tex: $(SPECFILES) $(EXE)
 
 gen: $(GENNAME).tex
 
-latex-gen: $(GENOUTNAME).tex gen
+latex-gen: $(GENOUTNAME).tex $(EXE) gen
 	pdflatex $<
 
 

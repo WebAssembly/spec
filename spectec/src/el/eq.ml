@@ -119,3 +119,13 @@ and eq_prem prem1 prem2 =
   | IterPr (prem11, iter1), IterPr (prem21, iter2) ->
     eq_prem prem11 prem21 && eq_iter iter1 iter2
   | _, _ -> prem1.it = prem2.it
+
+
+(* Grammars *)
+
+let eq_param p1 p2 =
+  match p1.it, p2.it with
+  | VarP id1, VarP id2 -> id1.it = id2.it
+  | GramP (id11, id12, iters1), GramP (id21, id22, iters2) ->
+    id11.it = id21.it && id12.it = id22.it && eq_list eq_iter iters1 iters2
+  | _, _ -> false

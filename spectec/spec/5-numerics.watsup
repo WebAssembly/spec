@@ -10,4 +10,12 @@ def $cvtop(numtype, cvtop, numtype, sx?, c) : c_numtype* hint(show $ext_(%,%)^%(
 
 def $wrap_((nat, nat), c) : nat
 
-def $bytes_(nat, c) : byte*
+def $ibytes(N, iN) : byte*        hint(show $bytes_(f#%,%))
+def $fbytes(N, fN) : byte*        hint(show $bytes_(f#%,%))
+def $ntbytes(numtype, c) : byte*  hint(show $bytes_(%,%))
+
+def $invibytes(N, byte*) : iN
+def $invfbytes(N, byte*) : fN
+
+def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
+def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*

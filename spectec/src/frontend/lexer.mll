@@ -128,15 +128,8 @@ rule after_nl = parse
 and after_nl_nl = parse
   | indent* "|"[' ''\t'] { NL_BAR }
   | indent* "--" { NL_NL_DASH }
-  | indent* '\n' { Lexing.new_line lexbuf; after_nl_nl_nl lexbuf }
-  | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl_nl lexbuf }
-  | "" { token lexbuf }
-
-and after_nl_nl_nl = parse
-  | indent* "|"[' ''\t'] { NL_BAR }
-  | indent* "--" { NL_NL_DASH }
   | indent* '\n' { Lexing.new_line lexbuf; NL_NL_NL }
-  | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl_nl lexbuf }
+  | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl lexbuf }
   | "" { token lexbuf }
 
 and token = parse
@@ -153,6 +146,7 @@ and token = parse
   | ".." { DOTDOT }
   | "..." { DOTDOTDOT }
   | "|" { BAR }
+  | "||" { BARBAR }
   | "--" { DASH }
 
   | "," indent* line_comment? '\n' { Lexing.new_line lexbuf; COMMA_NL }
@@ -214,9 +208,13 @@ and token = parse
 
   | "bool" { BOOL }
   | "nat" { NAT }
+  | "int" { INT }
+  | "rat" { RAT }
+  | "real" { REAL }
   | "text" { TEXT }
 
   | "syntax" { SYNTAX }
+  | "grammar" { GRAMMAR }
   | "relation" { RELATION }
   | "rule" { RULE }
   | "var" { VAR }
@@ -224,7 +222,7 @@ and token = parse
 
   | "if" { IF }
   | "otherwise" { OTHERWISE }
-  | "hint" { HINT }
+  | "hint(" { HINT_LPAR }
 
   | "epsilon" { EPSILON }
   | "true" { BOOLLIT true }
@@ -242,6 +240,8 @@ and token = parse
 
   | upid as s { if is_var s then LOID s else UPID s }
   | loid as s { LOID s }
+  | (upid as s) "(" { if is_var s then LOID_LPAR s else UPID_LPAR s }
+  | (loid as s) "(" { LOID_LPAR s }
   | "."(id as s) { DOTID s }
 
   | ";;"utf8_no_nl*eof { EOF }

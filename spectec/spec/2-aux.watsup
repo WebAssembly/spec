@@ -15,6 +15,10 @@ def $min(0, j) = 0
 def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
+def $sum(nat*) : nat  ;; TODO: hint
+def $sum(epsilon) = 0
+def $sum(n n'*) = $(n + $sum(n'*))
+
 
 ;;
 ;; Auxiliary Definitions on Types
@@ -30,6 +34,48 @@ def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
+
+
+;;
+;; Numeric functions
+;;
+
+def $signed(N, nat) : int       hint(show $signed_(%,%))
+def $signed(N, i) = i           -- if $(0 <= 2^(N-1))
+def $signed(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
+
+def $invsigned(N, int) : nat    hint(show $signed^(-1)#_%#(%))
+def $invsigned(N, i) = j        -- if $signed(N, j) = i
+
+
+;;
+;; Shorthands for instructions
+;;
+
+def $memop0 : memop  hint(show )
+def $memop0 = {ALIGN 0, OFFSET 0}
+
+
+;; Free indices
+
+def $free_dataidx_instr(instr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instr(MEMORY.INIT x) = x
+def $free_dataidx_instr(DATA.DROP x) = x
+def $free_dataidx_instr(in) = epsilon
+
+def $free_dataidx_instrs(instr*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instrs(epsilon) = epsilon
+def $free_dataidx_instrs(instr instr'*) = $free_dataidx_instr(instr) $free_dataidx_instrs(instr'*)
+
+def $free_dataidx_expr(expr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_expr(in*) = $free_dataidx_instrs(in*)
+
+def $free_dataidx_func(func) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_func(FUNC x loc* e) = $free_dataidx_expr(e)
+
+def $free_dataidx_funcs(func*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_funcs(epsilon) = epsilon
+def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_funcs(func'*)
 
 
 ;;

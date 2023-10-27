@@ -23,7 +23,10 @@ list(x, sep) ::=
 ### Literals
 
 ```
-nat ::= digit+
+digit ::= "0" | ... | "9"
+hex ::= digit | "A" | ... | "F"
+
+num ::= digit+ | "0x" hex+ | "U+" hex+
 text ::= """ utf8* """
 ```
 
@@ -31,11 +34,8 @@ text ::= """ utf8* """
 ### Identifiers and Atoms
 
 ```
-digit ::= "0" | ... | "9"
 upletter ::= "A" | ... | "Z"
 loletter ::= "a" | ... | "z"
-
-nat ::= digit+
 
 upid ::= (upletter | "_") (upletter | digit | "_" | "." | "'")*
 loid ::= (loletter | "`") (loletter | digit | "_" | "'")*
@@ -43,6 +43,7 @@ id ::= upid | loid
 
 atomid ::= upid
 varid ::= loid
+gramid ::= id
 defid ::= id
 relid ::= id
 ruleid ::= id
@@ -67,6 +68,9 @@ typ ::=
   varid                                type name
   "bool"                               booleans
   "nat"                                natural numbers
+  "int"                                integer numbers
+  "rat"                                rational numbers
+  "real"                               real numbers
   "text"                               text strings
   typ iter                             iteration
   "(" list(typ, ",") ")"               parentheses or tupling
@@ -130,6 +134,7 @@ exp ::=
   exp "," exp                          record extension
   exp "++" exp                         record composition
   "|" exp "|"                          list length
+  "||" gramid "||"                     expansion length
   "(" list(exp, ",") ")"               parentheses or tupling
   "$" defid exp?                       function invocation
   atom                                 custom token
@@ -168,17 +173,55 @@ Arithmetic expressions are a subset of general expressions, but with different p
 To use arithmetic operators in a place that is not naturally arithmetic, the subexpression must be escaped as `$( ... )`.
 
 
+### Grammars
+
+```
+sym ::=
+  gramid
+  gramid"(" list(sym, ",") ")"
+  num
+  text
+  "epsilon"
+  "(" list(sym, ",") ")"
+  "$" "(" arith ")"
+  sym iter
+  exp ":" sym
+  sym sym
+  sym "|" sym
+  sym "|" "..." "|" sym
+
+prod ::=
+  sym "=>" exp ("--" premise)*
+
+prod_list :
+  | (* empty *) { [], NoDots }
+  | DOTDOTDOT { [], Dots }
+  | prod { (Elem $1)::[], NoDots }
+  | prod BAR prod_list { let x, y = $3 in (Elem $1)::x, y }
+  | prod NL_BAR prod_list { let x, y = $3 in (Elem $1)::Nl::x, y }
+
+gram ::=
+  "..."? ("|" prod)+ ("|" "...")?
+```
+
+
 ### Definitions
 
 ```
+param ::=
+  varid
+  "grammar" gramid ":" varid iter*
+
 def ::=
-  "syntax" varid (("/" | "-") ruleid)* hint* "=" deftyp       syntax definition
-  "relation" relid hint* ":" typ                              relation declaration
+  "syntax" varid (("/" | "-") ruleid)* hint* "=" deftyp             syntax definition
+  "grammar" gramid ("(" list(param ",") ")")? (("/" | "-") ruleid)* ":" typ hint* "=" gram     grammar definition
+  "relation" relid hint* ":" typ                                    relation declaration
   "rule" relid (("/" | "-") ruleid)* hint* ":" exp ("--" premise)*  rule
-  "var" varid ":" typ hint*                                   variable declaration
-  "def" "$" defid exp? ":" typ hint*                          function declaration
-  "def" "$" defid exp? "=" exp ("--" premise)*                function clause
-  "syntax" varid (("/" | "-") ruleid)* atom? hint+            outline hints
+  "var" varid ":" typ hint*                                         variable declaration
+  "def" "$" defid exp? ":" typ hint*                                function declaration
+  "def" "$" defid exp? "=" exp ("--" premise)*                      function clause
+  "syntax" varid (("/" | "-") ruleid)* atom? hint+                  outline hints
+  "grammar" gramid (("/" | "-") ruleid)* hint*
   "relation" relid hint+
   "rule" relid (("/" | "-") ruleid)* hint+
   "var" varid hint+
@@ -194,7 +237,12 @@ hint ::=
   "hint" "(" hintid exp ")"                                   hint
 ```
 
-Syntax defines grammar for abstract syntax. Relations define the notation and type template for typing or reduction relations. Rules define rules for the refered relation. Variable declarations specify the type (globally) of uses of meta-variables of the respective name. Function definitions enable the definition of auxiliary constants or functions.
+Syntax defines an abstract syntax type.
+Grammars define an attribute grammar for parsing input into abstract syntax.
+Relations define the notation and type template for typing or reduction relations.
+Rules define rules for the refered relation.
+Variable declarations specify the type (globally) of uses of meta-variables of the respective name.
+Function definitions enable the definition of auxiliary constants or functions.
 
 Syntax and variable declarations can also change the status of an uppercase identifier from `atom` to `varid` when used as their declared name.
 
