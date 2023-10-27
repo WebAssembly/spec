@@ -22,14 +22,13 @@ The mapping of numeric instructions to their underlying operators is expressed b
    \begin{array}{lll@{\qquad}l}
    \X{op}_{\IN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
    \X{op}_{\FN}(z_1,\dots,z_k) &=& \xref{exec/numerics}{float-ops}{\F{f}\X{op}}_N(z_1,\dots,z_k) \\
-   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
    \end{array}
 
 And for :ref:`conversion operators <exec-cvtop>`:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \X{cvtop}^{\sx^?}_{t_1,t_2}(c) &=& \X{cvtop}^{\sx^?}_{|t_1|,|t_2|}(c) \\
+   \cvtop^{\sx^?}_{t_1,t_2}(c) &=& \xref{exec/numerics}{convert-ops}{\X{cvtop}}^{\sx^?}_{|t_1|,|t_2|}(c) \\
    \end{array}
 
 Where the underlying operators are partial, the corresponding instruction will :ref:`trap <trap>` when the result is not defined.
@@ -256,20 +255,27 @@ Reference Instructions
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-Most vector instructions are defined in terms of generic numeric operators applied lane-wise based on the :ref:`shape <syntax-vec-shape>`.
+Vector instructions that operate bitwise are handled as integer operations of respective width.
 
 .. math::
    \begin{array}{lll@{\qquad}l}
+   \X{op}_{\VN}(i_1,\dots,i_k) &=& \xref{exec/numerics}{int-ops}{\F{i}\X{op}}_N(i_1,\dots,i_k) \\
+   \end{array}
+
+Most other vector instructions are defined in terms of numeric operators that are applied lane-wise according to the given :ref:`shape <syntax-vec-shape>`.
+
+.. math::
+   \begin{array}{llll}
    \X{op}_{t\K{x}N}(n_1,\dots,n_k) &=&
-     \lanes^{-1}_{t\K{x}N}(\X{op}_t(\lanes_{t\K{x}N}(n_1) ~\dots~ \lanes_{t\K{x}N}(n_k))
+     \lanes^{-1}_{t\K{x}N}(\xref{exec/instructions}{exec-instr-numeric}{\X{op}}_t(i_1,\dots,i_k)^\ast) & \qquad(\iff i_1^\ast = \lanes_{t\K{x}N}(n_1) \land \dots \land i_k^\ast = \lanes_{t\K{x}N}(n_k) \\
    \end{array}
 
 .. note::
-   For example, the result of instruction :math:`\K{i32x4}.\ADD` applied to operands :math:`i_1, i_2`
-   invokes :math:`\ADD_{\K{i32x4}}(i_1, i_2)`, which maps to
-   :math:`\lanes^{-1}_{\K{i32x4}}(\ADD_{\I32}(i_1^+, i_2^+))`,
-   where :math:`i_1^+` and :math:`i_2^+` are sequences resulting from invoking
-   :math:`\lanes_{\K{i32x4}}(i_1)` and :math:`\lanes_{\K{i32x4}}(i_2)`
+   For example, the result of instruction :math:`\K{i32x4}.\ADD` applied to operands :math:`v_1, v_2`
+   invokes :math:`\ADD_{\K{i32x4}}(v_1, v_2)`, which maps to
+   :math:`\lanes^{-1}_{\K{i32x4}}(\ADD_{\I32}(i_1, i_2)^\ast)`,
+   where :math:`i_1^\ast` and :math:`i_2^\ast` are sequences resulting from invoking
+   :math:`\lanes_{\K{i32x4}}(v_1)` and :math:`\lanes_{\K{i32x4}}(v_2)`
    respectively.
 
 
