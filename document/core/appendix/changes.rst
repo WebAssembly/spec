@@ -147,9 +147,9 @@ Added tag definitions, imports, and exports, and instructions to throw and catch
 
 * Modules may :ref:`define <syntax-tagtype>`, :ref:`import <syntax-import>`, and :ref:`export <syntax-export>` tags.
 
-* New exception throwing :ref:`control instructions <syntax-instr-control>`: :math:`\THROW` and :math:`\RETHROW`.
+* New :ref:`reference type <syntax-reftype>` |EXNREF|.
 
-* New handler :ref:`control instructions <syntax-instr-control>`: :math:`(\TRY~\X{bt}~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?\END)` and :math:`(\TRY~\X{bt}~\instr^\ast~\DELEGATE~l)`.
+* New :ref:`control instructions <syntax-instr-control>`: |THROW|, |THROWREF|, and |TRYTABLE|.
 
 * New :ref:`tag section <binary-tagsec>` in binary format.
 

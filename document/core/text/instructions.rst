@@ -62,11 +62,11 @@ Control Instructions
 .. _text-loop:
 .. _text-if:
 .. _text-instr-block:
-.. _text-try:
+.. _text-try_table:
+.. _text-catch:
 
 :ref:`Structured control instructions <syntax-instr-control>` can bind an optional symbolic :ref:`label identifier <text-label>`.
-The same label identifier may optionally be repeated after the corresponding :math:`\T{end}`, :math:`\T{else}`, :math:`\T{catch}`, :math:`\T{catch\_all}`, and :math:`\T{delegate}`
-pseudo instructions, to indicate the matching delimiters.
+The same label identifier may optionally be repeated after the corresponding :math:`\T{end}` or :math:`\T{else}` keywords, to indicate the matching delimiters.
 
 Their :ref:`block type <syntax-blocktype>` is given as a :ref:`type use <text-typeuse>`, analogous to the type of :ref:`functions <text-func>`.
 However, the special case of a type use that is syntactically empty or consists of only a single :ref:`result <text-result>` is not regarded as an :ref:`abbreviation <text-typeuse-abbrev>` for an inline :ref:`function type <syntax-functype>`, but is parsed directly into an optional :ref:`value type <syntax-valtype>`.
@@ -91,15 +91,22 @@ However, the special case of a type use that is syntactically empty or consists 
        \text{else}~~\Tid_1^?~~(\X{in}_2{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid_2^?
        \\ &&&\qquad \Rightarrow\quad \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END
        \qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
-     \text{try}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast~~
-       (\text{catch}~~\Tid_1^?~~x{:}\Ttagidx_I~~(\X{in}_2{:}\Tinstr_{I'})^\ast)^\ast~~
-       \\ &&&\qquad\qquad (\text{catch\_all}~~\Tid_1^?~~(\X{in}_3{:}\Tinstr_{I'})^\ast)^?~~\text{end}~~\Tid_2^?
-       \\ &&&\qquad \Rightarrow\quad \TRY~\X{bt}~\X{in}_1^\ast~(\CATCH~x~\X{in}_2^\ast)^\ast~(\CATCHALL~\X{in}_3^\ast)^?~\END
-       \\ &&&\qquad\qquad (\iff \Tid_1^? = \epsilon \vee \Tid_1^? = \Tlabel, \Tid_2^? = \epsilon \vee \Tid_2^? = \Tlabel) \\ &&|&
-     \text{try}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(\X{in}_1{:}\Tinstr_{I'})^\ast
-       ~~\text{delegate}~~l{:}\Tlabelidx_I~~\X{l}{:}\Tlabelidx_I
-       \\ &&&\qquad \Rightarrow\quad \TRY~\X{bt}~\X{in}_1^\ast~\DELEGATE~l
-       \qquad\quad~~ (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\
+     \text{try\_table}~~I'{:}\Tlabel_I~~\X{bt}{:}\Tblocktype~~(c{:}\Tcatch_I)^\ast~~(\X{in}{:}\Tinstr_{I'})^\ast~~\text{end}~~\Tid^?
+       \\ &&&\qquad \Rightarrow\quad \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~~\END
+       \qquad\qquad (\iff \Tid^? = \epsilon \vee \Tid^? = \Tlabel) \\
+   \production{catch clause} & \Tcatch_I &
+   \begin{array}[t]{@{}c@{}} ::= \\ | \\ | \\ | \\ \end{array}
+   &
+   \begin{array}[t]{@{}lcll@{}}
+     \text{(}~\text{catch}~~x{:}\Ttagidx_I~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCH~x~l \\
+     \text{(}~\text{catch\_ref}~~x{:}\Ttagidx_I~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHREF~x~l \\
+     \text{(}~\text{catch\_all}~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHALL~l \\
+     \text{(}~\text{catch\_all\_ref}~~l{:}\Tlabelidx_I~\text{)}
+       &\Rightarrow& \CATCHALLREF~l \\
+   \end{array} \\
    \end{array}
 
 .. note::
@@ -109,7 +116,7 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-nop:
 .. _text-unreachable:
 .. _text-throw:
-.. _text-rethrow:
+.. _text-throw_ref:
 .. _text-br:
 .. _text-br_if:
 .. _text-br_table:
@@ -125,7 +132,7 @@ All other control instruction are represented verbatim.
      \text{unreachable} &\Rightarrow& \UNREACHABLE \\ &&|&
      \text{nop} &\Rightarrow& \NOP \\ &&|&
      \text{throw}~~x{:}\Ttagidx_I &\Rightarrow& \THROW~x \\ &&|&
-     \text{rethrow}~~l{:}\Tlabelidx_I &\Rightarrow& \RETHROW~l \\ &&|&
+     \text{throw\_ref} &\Rightarrow& \THROWREF \\ &&|&
      \text{br}~~l{:}\Tlabelidx_I &\Rightarrow& \BR~l \\ &&|&
      \text{br\_if}~~l{:}\Tlabelidx_I &\Rightarrow& \BRIF~l \\ &&|&
      \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
@@ -940,16 +947,9 @@ Such a folded instruction can appear anywhere a regular instruction can.
        \quad\equiv \\ &\qquad
        \Tfoldedinstr^\ast~~\text{if}~~\Tlabel
        &\hspace{-12ex} \Tblocktype~~\Tinstr_1^\ast~~\text{else}~~(\Tinstr_2^\ast)^?~\text{end} \\ &
-     \text{(}~\text{try}~~\Tlabel~~\Tblocktype~~\text{(}~\text{do} &\hspace{-8ex} \Tinstr_1^\ast~\text{)}~~
-       (\text{(}~\text{catch}~~x{:}\Ttagidx_I~~\Tinstr_2^\ast~\text{)})^\ast \\ &\quad
-       (\text{(}~\text{catch\_all}~~\Tinstr_3^\ast~\text{)})^?~\text{)}
+     \text{(}~\text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~\text{)}
        \quad\equiv \\ &\qquad
-         \text{try}~~\Tlabel~~\Tblocktype~~\Tinstr_1^\ast
-       &\hspace{-5ex} (\text{catch}~~x{:}\Ttagidx_I~~\Tinstr_2^\ast)^\ast~~(\text{catch\_all}~~\Tinstr_3^\ast)^?~~\text{end} \\ &
-     \text{(}~\text{try}~~\Tlabel~~\Tblocktype~~\text{(}~\text{do} &\hspace{-8ex} \Tinstr^\ast~\text{)}~~
-       \text{(}~\text{delegate}~~l{:}\Tlabelidx~~\text{)}~\text{)}
-       \quad\equiv \\ &\qquad
-         \text{try}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast &\hspace{-5ex} \text{delegate}~~l{:}\Tlabelidx \\
+       \text{try\_table}~~\Tlabel~~\Tblocktype~~\Tcatch^\ast~~\Tinstr^\ast~~\text{end} \\
    \end{array}
 
 

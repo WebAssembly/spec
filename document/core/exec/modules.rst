@@ -157,8 +157,23 @@ The following auxiliary typing rules specify this typing relation relative to a 
    }
 
 
-:ref:`External References <syntax-ref.extern>` :math:`\REFEXTERNADDR~a`
-.......................................................................
+:ref:`Exception References <syntax-ref>` :math:`\REFEXNADDR~a`
+..............................................................
+
+* The store entry :math:`S.\SEXNS[a]` must exist.
+
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXNREF`.
+
+.. math::
+   \frac{
+     S.\SEXNS[a] = \exninst
+   }{
+     S \vdashval \REFEXNADDR : \EXNREF
+   }
+
+
+:ref:`External References <syntax-ref.extern-addr>` :math:`\REFEXTERNADDR~a`
+............................................................................
 
 * The value is valid with :ref:`reference type <syntax-reftype>` :math:`\EXTERNREF`.
 

@@ -164,6 +164,7 @@ let ref_type s =
   match s7 s with
   | -0x10 -> FuncRefType
   | -0x11 -> ExternRefType
+  | -0x17 -> ExnRefType
   | _ -> error s (pos s - 1) "malformed reference type"
 
 let value_type s =
@@ -264,30 +265,10 @@ let rec instr s =
     end
 
   | 0x05 -> error s pos "misplaced ELSE opcode"
-  | 0x06 ->
-    let bt = block_type s in
-    let es = instr_block s in
-    let ct = catch_list s in
-    let ca =
-      if peek s = Some 0x19 then begin
-        ignore (byte s);
-        Some (instr_block s)
-      end else
-        None
-    in
-    if ct <> [] || ca <> None then begin
-      end_ s;
-      try_catch bt es ct ca
-    end else begin
-      match op s with
-      | 0x0b -> try_catch bt es [] None
-      | 0x18 -> try_delegate bt es (at var s)
-      | b -> illegal s pos b
-    end
-  | 0x07 -> error s pos "misplaced CATCH opcode"
+  | 0x06 | 0x07 as b -> illegal s pos b
   | 0x08 -> throw (at var s)
-  | 0x09 -> rethrow (at var s)
-  | 0x0a as b -> illegal s pos b
+  | 0x09 as b -> illegal s pos b
+  | 0x0a -> throw_ref
   | 0x0b -> error s pos "misplaced END opcode"
 
   | 0x0c -> br (at var s)
@@ -309,16 +290,20 @@ let rec instr s =
     let x = at var s in
     return_call_indirect x y
 
-  | 0x14 | 0x15 | 0x16 | 0x17 as b -> illegal s pos b
-
-  | 0x18 -> error s pos "misplaced DELEGATE opcode"
-  | 0x19 -> error s pos "misplaced CATCH_ALL opcode"
+  | 0x14 | 0x15 | 0x16 | 0x17 | 0x18 | 0x19 as b -> illegal s pos b
 
   | 0x1a -> drop
   | 0x1b -> select None
   | 0x1c -> select (Some (vec value_type s))
 
-  | 0x1d | 0x1e | 0x1f as b -> illegal s pos b
+  | 0x1d | 0x1e as b -> illegal s pos b
+
+  | 0x1f ->
+    let bt = block_type s in
+    let cs = vec (at catch) s in
+    let es = instr_block s in
+    end_ s;
+    try_table bt cs es
 
   | 0x20 -> local_get (at var s)
   | 0x21 -> local_set (at var s)
@@ -813,19 +798,25 @@ let rec instr s =
 and instr_block s = List.rev (instr_block' s [])
 and instr_block' s es =
   match peek s with
-  | None | Some (0x05 | 0x07 | 0x0a | 0x0b | 0x18 | 0x19) -> es
+  | None | Some (0x05 | 0x0b) -> es
   | _ ->
     let pos = pos s in
     let e' = instr s in
     instr_block' s ((e' @@ region s pos pos) :: es)
-and catch_list s =
-  if peek s = Some 0x07 then begin
-    ignore (byte s);
-    let tag = at var s in
-    let instrs = instr_block s in
-    (tag, instrs) :: catch_list s
-  end else
-    []
+
+and catch s =
+  match byte s with
+  | 0x00 ->
+    let x1 = at var s in
+    let x2 = at var s in
+    Operators.catch x1 x2
+  | 0x01 ->
+    let x1 = at var s in
+    let x2 = at var s in
+    catch_ref x1 x2
+  | 0x02 -> catch_all (at var s)
+  | 0x03 -> catch_all_ref (at var s)
+  | _ -> error s (pos s - 1) "malformed catch clause"
 
 let const s =
   let c = at instr_block s in

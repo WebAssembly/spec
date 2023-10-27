@@ -23,6 +23,7 @@ Construct                                        Judgement
 :ref:`External type <valid-externtype>`          :math:`\vdashexterntype \externtype \ok`
 :ref:`Instruction <valid-instr>`                 :math:`S;C \vdashinstr \instr : \stacktype`
 :ref:`Instruction sequence <valid-instr-seq>`    :math:`S;C \vdashinstrseq \instr^\ast : \stacktype`
+:ref:`Catch clause <valid-catch>`                :math:`C \vdashcatch \catch \ok`
 :ref:`Expression <valid-expr>`                   :math:`C \vdashexpr \expr : \resulttype`
 :ref:`Function <valid-func>`                     :math:`C \vdashfunc \func : \functype`
 :ref:`Table <valid-table>`                       :math:`C \vdashtable \table : \tabletype`

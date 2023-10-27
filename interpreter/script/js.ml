@@ -375,6 +375,7 @@ let assert_return ress ts at =
       let is_ref_idx =
         match t with
         | FuncRefType -> is_funcref_idx
+        | ExnRefType -> assert false
         | ExternRefType -> is_externref_idx
       in
       [ Call (is_ref_idx @@ at) @@ at;

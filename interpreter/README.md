@@ -232,8 +232,7 @@ expr:
   ( loop <name>? <block_type> <instr>* )
   ( if <name>? <block_type> ( then <instr>* ) ( else <instr>* )? )
   ( if <name>? <block_type> <expr>+ ( then <instr>* ) ( else <instr>* )? ) ;; = <expr>+ (if <name>? <block_type> (then <instr>*) (else <instr>*)?)
-  ( try <name>? <block_type> ( do <instr>* ) ( catch <instr>* )* ( catch_all <instr>* )? )
-  ( try <name>? <block_type> ( do <instr>* ) ( delegate <var> ) )
+  ( try_table <name>? <block_type>  <catch>* <instr>* )
 
 instr:
   <expr>
@@ -242,9 +241,7 @@ instr:
   loop <name>? <block_type> <instr>* end <name>?                     ;; = (loop <name>? <block_type> <instr>*)
   if <name>? <block_type> <instr>* end <name>?                       ;; = (if <name>? <block_type> (then <instr>*))
   if <name>? <block_type> <instr>* else <name>? <instr>* end <name>? ;; = (if <name>? <block_type> (then <instr>*) (else <instr>*))
-  try <name>? <block_type> <instr>* (catch <name>? <instr>*)* (catch_all <name>? <instr>*)? end <name>?
-                                                                     ;; = (try <name>? <block_type> (do <instr>*) (catch <instr>*)* (catch_all <instr>*)?)
-  try <name>? <block_type> <instr>* delegate <var>                   ;; = (try <name>? <block_type> (do <instr>*) (delegate <var>))
+  try_table <name>? <block_type> <catch>* <instr>* end <name>?       ;; = (try_table <name>? <block_type> <catch>* <instr>*)
 
 op:
   unreachable
@@ -286,7 +283,7 @@ op:
   ref.is_null <ref_kind>
   ref.func <var>
   throw <tag_type>
-  rethrow <var>
+  throw_ref
   <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
@@ -305,6 +302,12 @@ op:
   <vec_shape>.splat
   <vec_shape>.extract_lane(_<sign>)? <nat>
   <vec_shape>.replace_lane <nat>
+
+catch:
+  catch <var> <var>
+  catch_ref <var> <var>
+  catch_all <var>
+  catch_all_ref <var>
 
 func:    ( func <name>? <func_type> <local>* <instr>* )
          ( func <name>? ( export <string> ) <...> )                         ;; = (export <string> (func <N>)) (func <name>? <...>)

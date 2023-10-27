@@ -634,6 +634,7 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-call_indirect:
 .. _syntax-instr-seq:
 .. _syntax-instr-control:
+.. _syntax-catch:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -651,32 +652,35 @@ Instructions in this group affect the flow of control.
      \BLOCK~\blocktype~\instr^\ast~\END \\&&|&
      \LOOP~\blocktype~\instr^\ast~\END \\&&|&
      \IF~\blocktype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
-     \TRY~\blocktype~\instr^\ast~(\CATCH~\tagidx~\instr^\ast)^\ast~(\CATCHALL~\instr^\ast)^?~\END \\ &&|&
-     \TRY~\blocktype~\instr^\ast~\DELEGATE~\labelidx \\ &&|&
+     \TRYTABLE~\blocktype~\catch^\ast~\instr^\ast~\END \\ &&|&
      \THROW~\tagidx \\&&|&
-     \RETHROW~\labelidx \\ &&|&
+     \THROWREF \\ &&|&
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
      \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
      \RETURN \\&&|&
      \CALL~\funcidx \\&&|&
      \CALLINDIRECT~\tableidx~\typeidx \\
+   \production{catch clause} & \catch &::=&
+     \CATCH~\tagidx~\labelidx \\ &&|&
+     \CATCHREF~\tagidx~\labelidx \\ &&|&
+     \CATCHALL~\labelidx \\ &&|&
+     \CATCHALLREF~\labelidx \\
    \end{array}
 
 The |NOP| instruction does nothing.
 
 The |UNREACHABLE| instruction causes an unconditional :ref:`trap <trap>`.
 
-The |BLOCK|, |LOOP|, |IF|, and |TRY| instructions are *structured* instructions.
+The |BLOCK|, |LOOP|, |IF|, and |TRYTABLE| instructions are *structured* instructions.
 They bracket nested sequences of instructions, called *blocks*,
-separated by either |ELSE|, |CATCH|, or |CATCHALL| pseudo-instructions,
-and terminated with either an |END| or a |DELEGATE| pseudo-instruction.
+separated by the |ELSE| pseudo-instruction,
+and terminated with an |END| pseudo-instruction.
 As the grammar prescribes, they must be well-nested.
 
-The instructions |TRY|, |THROW|, and |RETHROW|, are concerned with handling exceptions.
-The |TRY| instruction installs an exception handler, and may either handle exceptions in the case of |CATCH| and |CATCHALL|,
-or rethrow them in an outer block in the case of |DELEGATE|.
-The |THROW| and |RETHROW| instructions alter control flow by searching for a matching handler in one of the enclosing |TRY| blocks, if any.
+The instructions |TRYTABLE|, |THROW|, and |THROWREF| are concerned with *exceptions*.
+The |TRYTABLE| instruction installs an exception handler that handles exceptions as specified by its catch clauses..
+The |THROW| and |THROWREF| instructions raise and reraise an exception, repsectively, and transfers control to the innermost enclosing exception handler that has a matching catch clause.
 
 A structured instruction can consume *input* and produce *output* on the operand stack according to its annotated *block type*.
 It is given either as a :ref:`type index <syntax-funcidx>` that refers to a suitable :ref:`function type <syntax-functype>`, or as an optional :ref:`value type <syntax-valtype>` inline, which is a shorthand for the function type :math:`[] \to [\valtype^?]`.
@@ -693,9 +697,6 @@ The exact effect depends on that control construct.
 In case of |BLOCK| or |IF| it is a *forward jump*,
 resuming execution after the matching |END|.
 In case of |LOOP| it is a *backward jump* to the beginning of the loop.
-
-When |TRY|--|DELEGATE| handles an exception, it also behaves similar to a forward jump,
-effectively rethrowing the caught exception right before the matching |END|.
 
 .. note::
    This enforces *structured control flow*.

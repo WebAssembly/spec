@@ -13,9 +13,11 @@ type num = (I32.t, I64.t, F32.t, F64.t) op
 type vec = (V128.t) vecop
 
 type ref_ = ..
-type ref_ += NullRef of ref_type
 
 type value = Num of num | Vec of vec | Ref of ref_
+
+type ref_ += NullRef of ref_type
+type ref_ += ExnRef of Tag.t * value list
 
 
 (* Injection & projection *)
@@ -96,7 +98,8 @@ let type_of_num = function
 let type_of_vec = function
   | V128 _ -> V128Type
 
-let type_of_ref' = ref (function NullRef t -> t | _ -> assert false)
+let type_of_ref' =
+  ref (function NullRef t -> t | ExnRef _ -> ExnRefType | _ -> assert false)
 let type_of_ref r = !type_of_ref' r
 
 let type_of_value = function
@@ -114,6 +117,7 @@ let eq_vec v1 v2 = v1 = v2
 let eq_ref' = ref (fun r1 r2 ->
   match r1, r2 with
   | NullRef _, NullRef _ -> true
+  | ExnRef _, ExnRef _ -> r1 == r2
   | _, _ -> false
 )
 
@@ -169,7 +173,8 @@ let string_of_vec = function
 let hex_string_of_vec = function
   | V128 v -> V128.to_hex_string v
 
-let string_of_ref' = ref (function NullRef t -> "null" | _ -> "ref")
+let string_of_ref' =
+  ref (function NullRef t -> "null" | ExnRef _ -> "exn" | _ -> "ref")
 let string_of_ref r = !string_of_ref' r
 
 let string_of_value = function

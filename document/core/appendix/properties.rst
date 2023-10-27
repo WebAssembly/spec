@@ -59,16 +59,12 @@ Results
    }
 
 
-:ref:`Results <syntax-result>` :math:`\val^\ast~(\THROWadm~\tagaddr)`
+:ref:`Results <syntax-result>` :math:`\XT[(\REFEXNADDR~a)~\THROWREF]`
 .....................................................................
 
-* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t^\ast]\to[]`.
+* The value :math:`\REFEXNADDR~a` must be :ref:`valid <valid-val>`.
 
-* For each :ref:`value <syntax-val>` :math:`\val_i` in :math:`\val^\ast` and corresponding :ref:`value type <syntax-valtype>` :math:`t_i` in :math:`t_i`:
-
-  * The value :math:`\val_i` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t_i`.
-
-* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]`, for any sequence :math:`{t'}^\ast` of :ref:`value types <syntax-valtype>`.
+* Then the result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`{t'}^\ast` of :ref:`value types <syntax-valtype>`.
 
 
 .. math::
@@ -77,7 +73,7 @@ Results
      \qquad
      (S \vdashval \val : t)^\ast
    }{
-     S \vdashresult \val^\ast~(\THROWadm~\tagaddr) : [{t'}^\ast]
+     S \vdashresult \XT[(\REFEXNADDR~a)~\THROWREF] : [{t'}^\ast]
    }
 
 
@@ -115,6 +111,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * Each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in :math:`S.\SDATAS` must be :ref:`valid <valid-datainst>`.
 
+* Each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in :math:`S.\SEXNS` must be :ref:`valid <valid-exninst>`.
+
 * Then the store is valid.
 
 .. math::
@@ -134,6 +132,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      (S \vdasheleminst \eleminst : \reftype)^\ast
      \qquad
      (S \vdashdatainst \datainst \ok)^\ast
+     \qquad
+     (S \vdashexninst \exninst \ok)^\ast
      \\
      S = \{
        \SFUNCS~\funcinst^\ast,
@@ -143,7 +143,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \\
        \SGLOBALS~\globalinst^\ast,
        \SELEMS~\eleminst^\ast,
-       \SDATAS~\datainst^\ast \}
+       \SDATAS~\datainst^\ast,
+       \SEXNS~\exninst^\ast \}
      \end{array}
    }{
      \vdashstore S \ok
@@ -353,6 +354,34 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
    }{
      S \vdashdatainst \{ \DIDATA~b^\ast \} \ok
+   }
+
+
+.. index:: exception instance, tag, tag address
+.. _valid-exninst:
+
+:ref:`Exception Instances <syntax-exninst>` :math:`\{ \EITAG~a, \EIFIELDS~\val^\ast \}`
+.......................................................................................
+
+* The store entry :math:`S.\STAGS[a]` must exist.
+
+* Let :math:`[t^\ast] \toF [{t'}^\ast]` be the :ref:`tag type <syntax-tagtype>` :math:`S.\STAGS[a].\TAGITYPE`.
+
+* The :ref:`result type <syntax-resulttype>` :math:`[{t'}^\ast]` must be empty.
+
+* The sequence :math:`\val^ast` of :ref:`values <syntax-val>` must have the same length as the sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+
+* For each value :math:`\val_i` in :math:`\val^ast` and corresponding value type :math:`t_i` in :math:`t^\ast`, the value :math:`\val_i` must be valid with type :math:`t_i`.
+
+* Then the exception instance is valid.
+
+.. math::
+   \frac{
+     S.\STAGS[a] = \{\TAGITYPE = [t^\ast] \toF []\}
+     \qquad
+     (S \vdashval \val : t)^\ast
+   }{
+     S \vdashexninst \{ \EITAG~a, \EIFIELDS~\val^\ast \} \ok
    }
 
 
@@ -583,147 +612,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
    }
 
 
-.. index:: extern address
+.. index:: value, reference
 
-:math:`\REFEXTERNADDR~\externaddr`
-..................................
+:math:`\reff`
+.............
 
-* The instruction is valid with type :math:`[] \to [\EXTERNREF]`.
+* The reference :math:`\reff` must be :ref:`valid <valid-val>` with some type :math:`t`.
 
-.. math::
-   \frac{
-   }{
-     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [\EXTERNREF]
-   }
-
-
-.. index:: function address, extern value, extern type, function type
-
-:math:`\REFFUNCADDR~\funcaddr`
-..............................
-
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC~\functype`.
-
-* Then the instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* Then the instruction is valid with type :math:`[] \to [t]`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype
+     S \vdashval \reff : t
    }{
-     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [\FUNCREF]
-   }
-
-
-.. index:: throw, throw context, tag address
-
-:math:`\THROWadm~\tagaddr`
-..........................
-
-* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t^\ast]\to[]`.
-
-* Then the instruction is valid with type :math:`[t_1^\ast t^\ast] \to [t_2^\ast]` for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t^\ast]\to[]
-   }{
-     S; C \vdashadmininstr \THROWadm~\tagaddr : [t_1^\ast t^\ast] \to [t_2^\ast]
-   }
-
-
-.. index:: handler, throw context
-
-:math:`\HANDLERadm_n\{(\tagaddr^?~\instr_1^\ast)^\ast\}~\instr_2^\ast~\END`
-...........................................................................
-
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_2^\ast]` prepended to the |CLABELS| vector.
-
-* Under context :math:`C'`,
-  the instruction sequence :math:`\instr_2^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^n]`.
-
-* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`(\LCATCH~[t_2^n])` prepended to the |CLABELS| vector.
-
-* Under context :math:`C''`,
-  for every :math:`\tagaddr^?` and associated instruction sequence :math:`\instr_1^\ast`:
-
-  * If :math:`\tagaddr^? = \epsilon`, then :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^n]`.
-
-  * Else:
-
-    * The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with some :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t_1^\ast] \to []`.
-
-    * The instruction sequence :math:`\instr_1^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[t_1^\ast] \to [t_2^n]`.
-
-* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t_2^n]`.
-
-.. math::
-   \frac{
-     \begin{array}{@{}c@{}}
-     ((S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t_1^\ast]\to[])^? \\
-     ~~S; C,\CLABELS\,(\LCATCH~[t_2^n]) \vdashinstrseq \instr_1^\ast : [(t_1^\ast)^?] \to [t_2^n])^\ast \\
-     S; C,\CLABELS\,[t_2^n] \vdashinstrseq \instr_2^\ast : [] \to [t_2^n] \\
-   \end{array}
-   }{
-     S; C,\CLABELS\,[t_2^n] \vdashadmininstr \HANDLERadm_n\{(\tagaddr^?~{\instr_1}^\ast)^\ast\}~\instr_2^\ast~\END : [] \to [t_2^n]
-   }
-
-
-.. index:: handler, throw context
-.. _valid-handleradm:
-
-:math:`\HANDLERadm_n\{l\}~\instr^\ast~\END`
-...........................................
-
-* The label :math:`C.\CLABELS[l]` must be defined in the context.
-
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the label :math:`[t^\ast]` prepended to the |CLABELS| vector.
-
-* Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[]\to[t^n]`.
-
-* Then the compound instruction is valid under context :math:`C'` with type :math:`[] \to [t^n]`.
-
-.. math::
-   \frac{
-     S; C,\CLABELS\,[t^n] \vdashinstrseq \instr^\ast : [] \to [t^n]
-     \qquad
-     C.\CLABELS[l] = \LCATCH^?~[t_0^\ast]
-   }{
-     S; C,\CLABELS\,[t^n] \vdashadmininstr \HANDLERadm_n\{l\}~\instr^\ast~\END : [] \to [t^n]
-   }
-
-
-.. index:: caught, throw context
-
-:math:`\CAUGHTadm_n\{\tagaddr~\val^\ast\}~\instr^\ast~\END`
-...........................................................
-
-* The :ref:`external tag value <syntax-externval>` :math:`\EVTAG~\tagaddr` must be :ref:`valid <valid-externval-tag>` with some :ref:`external tag type <syntax-externtype>` :math:`\ETTAG~[t_0^\ast] \to []`.
-
-* The :ref:`values <syntax-val>` :math:`\val^\ast` must be of type :math:`[t_0^\ast]`.
-
-* The label :math:`C.\CLABELS[0]` must be defined in the context.
-
-* Let :math:`(\LCATCH^?~[t^n])` be the :ref:`label type <syntax-labeltype>` :math:`C.\CLABELS[0]`.
-
-* The |LCATCH| must not be present in the label type :math:`C.\CLABELS[0]`.
-
-* Let :math:`C''` be the same :ref:`context <context>` as :math:`C`, but with the label type :math:`(\LCATCH~[t^n])` replacing the first element of the |CLABELS| vector.
-
-* Under context :math:`C''`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t^n]`.
-
-* Then the compound instruction is valid with type :math:`[] \to [t^n]`.
-
-.. math::
-   \frac{
-     S \vdashexternval \EVTAG~\tagaddr : \ETTAG~[t_0^\ast]\to[]
-     \qquad
-     (val : t_0)^\ast
-     \qquad
-     S; C',\CLABELS\,(\LCATCH~[t^n]) \vdashinstrseq \instr^\ast : [] \to [t^n]
-   }{
-     S; C',\CLABELS\,[t^n] \vdashadmininstr \CAUGHTadm_n\{\tagaddr~\val^\ast\}~\instr^\ast~\END : [] \to [t^n]
+     S; C \vdashadmininstr \reff : [] \to [t]
    }
 
 
@@ -751,7 +653,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`label type <syntax-labeltype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.
@@ -765,6 +667,29 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
      S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
+   }
+
+
+.. index:: handler, throw context
+
+:math:`\HANDLER_n\{\catch^\ast\}~\instr^\ast~\END`
+..................................................
+
+* For every :ref:`catch clause <syntax-catch>` :math:`\catch_i` in :math:`\catch^\ast`, :math:`\catch_i` must be :ref:`valid <valid-catch>`.
+
+* The instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+* Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
+
+.. math::
+   \frac{
+     \begin{array}{c}
+     (C \vdashcatch \catch \ok)^\ast
+     \qquad
+     S; C \vdashinstrseq \instr^\ast : [t_1^\ast] \to [t_2^\ast] \\
+     \end{array}
+   }{
+     S; C \vdashadmininstr \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END : [t_1^\ast] \to [t_2^\ast]
    }
 
 
@@ -825,6 +750,8 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The length of :math:`S.\SDATAS` must not shrink.
 
+* The length of :math:`S.\SEXNS` must not shrink.
+
 * For each :ref:`function instance <syntax-funcinst>` :math:`\funcinst_i` in the original :math:`S.\SFUNCS`, the new function instance must be an :ref:`extension <extend-funcinst>` of the old.
 
 * For each :ref:`table instance <syntax-tableinst>` :math:`\tableinst_i` in the original :math:`S.\STABLES`, the new table instance must be an :ref:`extension <extend-tableinst>` of the old.
@@ -835,9 +762,11 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * For each :ref:`global instance <syntax-globalinst>` :math:`\globalinst_i` in the original :math:`S.\SGLOBALS`, the new global instance must be an :ref:`extension <extend-globalinst>` of the old.
 
-* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new global instance must be an :ref:`extension <extend-eleminst>` of the old.
+* For each :ref:`element instance <syntax-eleminst>` :math:`\eleminst_i` in the original :math:`S.\SELEMS`, the new element instance must be an :ref:`extension <extend-eleminst>` of the old.
 
-* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new global instance must be an :ref:`extension <extend-datainst>` of the old.
+* For each :ref:`data instance <syntax-datainst>` :math:`\datainst_i` in the original :math:`S.\SDATAS`, the new data instance must be an :ref:`extension <extend-datainst>` of the old.
+
+* For each :ref:`exception instance <syntax-exninst>` :math:`\exninst_i` in the original :math:`S.\SEXNS`, the new exception instance must be an :ref:`extension <extend-datainst>` of the old.
 
 .. math::
    \frac{
@@ -863,6 +792,9 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      S_1.\SDATAS = \datainst_1^\ast &
      S_2.\SDATAS = {\datainst'_1}^\ast~\datainst_2^\ast &
      (\vdashdatainstextends \datainst_1 \extendsto \datainst'_1)^\ast \\
+     S_1.\SEXNS = \exninst_1^\ast &
+     S_2.\SEXNS = {\exninst'_1}^\ast~\exninst_2^\ast &
+     (\vdashexninstextends \exninst_1 \extendsto \exninst'_1)^\ast \\
      \end{array}
    }{
      \vdashstoreextends S_1 \extendsto S_2
@@ -984,6 +916,21 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
      b_1^\ast = b_2^\ast \vee b_2^\ast = \epsilon
    }{
      \vdashdatainstextends \{\DIDATA~b_1^\ast\} \extendsto \{\DIDATA~b_2^\ast\}
+   }
+
+
+.. index:: exception instance
+.. _extend-exninst:
+
+:ref:`Exception Instance <syntax-exninst>` :math:`\exninst`
+...........................................................
+
+* An exception instance must remain unchanged.
+
+.. math::
+   \frac{
+   }{
+     \vdashexninstextends \exninst \extendsto \exninst
    }
 
 

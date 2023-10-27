@@ -82,6 +82,10 @@ let rec instr (e : instr) =
   | Call x | ReturnCall x -> funcs (var x)
   | CallIndirect (x, y) | ReturnCallIndirect (x, y) ->
     tables (var x) ++ types (var y)
+  | Throw x -> tags (var x)
+  | ThrowRef -> empty
+  | TryTable (bt, cs, es) ->
+    block_type bt ++ list catch cs ++ block es
   | LocalGet x | LocalSet x | LocalTee x -> locals (var x)
   | GlobalGet x | GlobalSet x -> globals (var x)
   | TableGet x | TableSet x | TableSize x | TableGrow x | TableFill x ->
@@ -100,18 +104,14 @@ let rec instr (e : instr) =
     memories zero
   | MemoryInit x -> memories zero ++ datas (var x)
   | DataDrop x -> datas (var x)
-  | TryCatch (bt, es, ct, ca) ->
-    let catch (tag, es) = tags (var tag) ++ block es in
-    let catch_all = function
-      | None -> empty
-      | Some es -> block es in
-    block es ++ (list catch ct) ++ catch_all ca
-  | TryDelegate (bt, es, x) -> block es ++ tags (var x)
-  | Throw x -> tags (var x)
-  | Rethrow x -> labels (var x)
 
 and block (es : instr list) =
   let free = list instr es in {free with labels = shift free.labels}
+
+and catch (c : catch) =
+  match c.it with
+  | Catch (x1, x2) | CatchRef (x1, x2) -> tags (var x1) ++ labels (var x2)
+  | CatchAll x | CatchAllRef x -> labels (var x)
 
 let const (c : const) = block c.it
 

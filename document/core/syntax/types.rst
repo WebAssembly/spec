@@ -85,10 +85,12 @@ Reference Types
 .. math::
    \begin{array}{llll}
    \production{reference type} & \reftype &::=&
-     \FUNCREF ~|~ \EXTERNREF \\
+     \FUNCREF ~|~ \EXNREF ~|~ \EXTERNREF \\
    \end{array}
 
 The type |FUNCREF| denotes the infinite union of all references to :ref:`functions <syntax-func>`, regardless of their :ref:`function types <syntax-functype>`.
+
+The type |EXNREF| denotes the infinite union of all references to :ref:`exceptions <syntax-exninst>`, regardless of their associated :ref:`tag types <syntax-tagtype>`.
 
 The type |EXTERNREF| denotes the infinite union of all references to objects owned by the :ref:`embedder <embedder>` and that can be passed into WebAssembly under this type.
 

@@ -2,7 +2,7 @@
 
 type num_type = I32Type | I64Type | F32Type | F64Type
 type vec_type = V128Type
-type ref_type = FuncRefType | ExternRefType
+type ref_type = FuncRefType | ExnRefType | ExternRefType
 type value_type = NumType of num_type | VecType of vec_type | RefType of ref_type
 type result_type = value_type list
 type func_type = FuncType of result_type * result_type
@@ -119,10 +119,12 @@ let string_of_vec_type = function
 
 let string_of_ref_type = function
   | FuncRefType -> "funcref"
+  | ExnRefType -> "exnref"
   | ExternRefType -> "externref"
 
 let string_of_refed_type = function
   | FuncRefType -> "func"
+  | ExnRefType -> "exn"
   | ExternRefType -> "extern"
 
 let string_of_value_type = function

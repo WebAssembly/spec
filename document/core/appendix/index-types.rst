@@ -16,7 +16,9 @@ Category                                  Constructor                           
 (reserved)                                                                             :math:`\hex{7A}` .. :math:`\hex{71}`
 :ref:`Reference type <syntax-reftype>`    |FUNCREF|                                    :math:`\hex{70}` (-16 as |Bs7|)
 :ref:`Reference type <syntax-reftype>`    |EXTERNREF|                                  :math:`\hex{6F}` (-17 as |Bs7|)
-(reserved)                                                                             :math:`\hex{6E}` .. :math:`\hex{61}`
+(reserved)                                                                             :math:`\hex{6E}` .. :math:`\hex{6A}`
+:ref:`Reference type <syntax-reftype>`    |EXNREF|                                     :math:`\hex{69}` (-23 as |Bs7|)
+(reserved)                                                                             :math:`\hex{68}` .. :math:`\hex{61}`
 :ref:`Function type <syntax-functype>`    :math:`[\valtype^\ast] \to [\valtype^\ast]`  :math:`\hex{60}` (-32 as |Bs7|)
 (reserved)                                                                             :math:`\hex{5F}` .. :math:`\hex{41}`
 :ref:`Result type <syntax-resulttype>`    :math:`[\epsilon]`                           :math:`\hex{40}` (-64 as |Bs7|)

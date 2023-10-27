@@ -26,7 +26,6 @@ The skeleton of a sound and complete algorithm for type-checking instruction seq
 
 .. index:: ! context, function type, table type, memory type, tag type, global type, value type, result type, index space, module, function, tag, label type
 .. _context:
-.. _syntax-labeltype:
 
 Contexts
 ~~~~~~~~
@@ -43,7 +42,7 @@ which collects relevant information about the surrounding :ref:`module <syntax-m
 * *Element Segments*: the list of element segments declared in the current module, represented by their element type.
 * *Data Segments*: the list of data segments declared in the current module, each represented by an |ok| entry.
 * *Locals*: the list of locals declared in the current function (including parameters), represented by their value type.
-* *Labels*: the stack of labels accessible from the current position, represented by their |labeltype|, which is a result type, possibly prepended by a |LCATCH| entry, if the label is surrounding the instructions inside a |CATCH| or |CATCHALL|.
+* *Labels*: the stack of :ref:`labels <syntax-label>` accessible from the current position, represented by their :ref:`result type <syntax-resulttype>`.
 * *Return*: the return type of the current function, represented as an optional result type that is absent when no return is allowed, as in free-standing expressions.
 * *References*: the list of :ref:`function indices <syntax-funcidx>` that occur in the module outside functions and can hence be used to form references inside them.
 
@@ -56,19 +55,18 @@ More concretely, contexts are defined as :ref:`records <notation-record>` :math:
 
 .. math::
    \begin{array}{llll}
-   \production{labeltype} & \labeltype & ::= & \LCATCH^?~\resulttype\\
    \production{context} & C &::=&
      \begin{array}[t]{l@{~}ll}
      \{ & \CTYPES & \functype^\ast, \\
         & \CFUNCS & \functype^\ast, \\
         & \CTABLES & \tabletype^\ast, \\
         & \CMEMS & \memtype^\ast, \\
-	& \CTAGS & \tagtype^\ast, \\
+        & \CTAGS & \tagtype^\ast, \\
         & \CGLOBALS & \globaltype^\ast, \\
         & \CELEMS & \reftype^\ast, \\
         & \CDATAS & {\ok}^\ast, \\
         & \CLOCALS & \valtype^\ast, \\
-        & \CLABELS & \labeltype^\ast, \\
+        & \CLABELS & \resulttype^\ast, \\
         & \CRETURN & \resulttype^?, \\
         & \CREFS & \funcidx^\ast ~\} \\
      \end{array}

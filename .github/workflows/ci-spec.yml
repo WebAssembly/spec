@@ -32,8 +32,9 @@ jobs:
         run: pip install six && pip install sphinx==5.1.0
       - name: Build main spec
         run: cd document/core && make main
-      - name: Run Bikeshed
-        run: cd document/core && make bikeshed
+      # Deactivate broken Bikeshed build for the time being
+      #- name: Run Bikeshed
+      #  run: cd document/core && make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:

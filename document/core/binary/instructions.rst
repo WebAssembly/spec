@@ -21,7 +21,7 @@ The only exception are :ref:`structured control instructions <binary-instr-contr
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are separated or terminated with explicit opcodes for |END|, |ELSE|, |CATCH|, |CATCHALL|, and |DELEGATE|.
+:ref:`Control instructions <syntax-instr-control>` have varying encodings. For structured instructions, the instruction sequences forming nested blocks are delimited with explicit opcodes for |END| and |ELSE|.
 
 :ref:`Block types <syntax-blocktype>` are encoded in special compressed form, by either the byte :math:`\hex{40}` indicating the empty type, as a single :ref:`value type <binary-valtype>`, or as a :ref:`type index <binary-typeidx>` encoded as a positive :ref:`signed integer <binary-sint>`.
 
@@ -31,22 +31,23 @@ Control Instructions
 .. _binary-block:
 .. _binary-loop:
 .. _binary-if:
-.. _binary-try:
+.. _binary-try_table:
 .. _binary-throw:
-.. _binary-rethrow:
+.. _binary-throw_ref:
 .. _binary-br:
 .. _binary-br_if:
 .. _binary-br_table:
 .. _binary-return:
 .. _binary-call:
 .. _binary-call_indirect:
+.. _binary-catch:
 
 .. math::
-   \begin{array}{llcllll}
+   \begin{array}{@{}l@{}lclll@{}}
    \production{block type} & \Bblocktype &::=&
      \hex{40} &\Rightarrow& \epsilon \\ &&|&
      t{:}\Bvaltype &\Rightarrow& t \\ &&|&
-     x{:}\Bs33 &\Rightarrow& x & (\iff x \geq 0) \\
+     x{:}\Bs33 &\Rightarrow& x \qquad\qquad (\iff x \geq 0) \\
    \production{instruction} & \Binstr &::=&
      \hex{00} &\Rightarrow& \UNREACHABLE \\ &&|&
      \hex{01} &\Rightarrow& \NOP \\ &&|&
@@ -59,22 +60,22 @@ Control Instructions
      \hex{04}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
        \hex{05}~~(\X{in}_2{:}\Binstr)^\ast~~\hex{0B}
        &\Rightarrow& \IF~\X{bt}~\X{in}_1^\ast~\ELSE~\X{in}_2^\ast~\END \\ &&|&
-     \hex{06}~~\X{bt}{:}\Bblocktype~~(\X{in}_1{:}\Binstr)^\ast~~
-       (\hex{07}~~x{:}\Btagidx~~(\X{in}_2{:}\Binstr)^\ast)^\ast~~
-       (\hex{19}~~(\X{in}_3{:}\Binstr)^\ast)^?~~\hex{0B}
-       &\Rightarrow& \TRY~\X{bt}~\X{in}_1^\ast~(\CATCH~x~\X{in}_2^\ast)^\ast~
-       (\CATCHALL~\X{in}_3^\ast)^?\END \\ &&|&
-     \hex{06}~~\X{bt}{:}\Bblocktype~~(\X{in}{:}\Binstr)^\ast~~\hex{18}~~l{:}\Blabelidx
-       &\Rightarrow& \TRY~\X{bt}~\X{in}^\ast~\DELEGATE~l \\ &&|&
      \hex{08}~~x{:}\Btagidx &\Rightarrow& \THROW~x \\ &&|&
-     \hex{09}~~l{:}\Blabelidx &\Rightarrow& \RETHROW~l \\ &&|&
+     \hex{0A} &\Rightarrow& \THROWREF \\ &&|&
      \hex{0C}~~l{:}\Blabelidx &\Rightarrow& \BR~l \\ &&|&
      \hex{0D}~~l{:}\Blabelidx &\Rightarrow& \BRIF~l \\ &&|&
      \hex{0E}~~l^\ast{:}\Bvec(\Blabelidx)~~l_N{:}\Blabelidx
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \hex{0F} &\Rightarrow& \RETURN \\ &&|&
      \hex{10}~~x{:}\Bfuncidx &\Rightarrow& \CALL~x \\ &&|&
-     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\
+     \hex{11}~~y{:}\Btypeidx~~x{:}\Btableidx &\Rightarrow& \CALLINDIRECT~x~y \\ &&|&
+     \hex{1F}~~\X{bt}{:}\Bblocktype~~c^\ast{:}\Bvec(\Bcatch)~~(\X{in}{:}\Binstr)^\ast~~\hex{0B}
+       &\Rightarrow& \TRYTABLE~\X{bt}~c^\ast~\X{in}^\ast~\END \\
+   \production{catch clause} & \Bcatch &::=&
+     \hex{00}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCH~x~l \\ &&|&
+     \hex{01}~~x{:}\Btagidx~~l{:}\Blabelidx &\Rightarrow& \CATCHREF~x~l \\ &&|&
+     \hex{02}~~l{:}\Blabelidx &\Rightarrow& \CATCHALL~l \\ &&|&
+     \hex{03}~~l{:}\Blabelidx &\Rightarrow& \CATCHALLREF~l \\
    \end{array}
 
 .. note::

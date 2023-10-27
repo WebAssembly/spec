@@ -185,13 +185,9 @@ and instr' =
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
-  | TryCatch of block_type * instr list * (* try *)
-                (var * instr list) list * (* catch exception with tag *)
-                instr list option     (* catch_all *)
-  | TryDelegate of block_type * instr list * (* try *)
-                   var                (* delegate to outer handler *)
+  | TryTable of block_type * catch list * instr list  (* handle exceptions *)
   | Throw of var                      (* throw exception *)
-  | Rethrow of var                    (* rethrow exception *)
+  | ThrowRef                          (* rethrow exception *)
   | VecConst of vec                   (* constant *)
   | VecTest of vec_testop             (* vector test *)
   | VecCompare of vec_relop           (* vector comparison *)
@@ -207,6 +203,13 @@ and instr' =
   | VecSplat of vec_splatop           (* number to vector conversion *)
   | VecExtract of vec_extractop       (* extract lane from vector *)
   | VecReplace of vec_replaceop       (* replace lane in vector *)
+
+and catch = catch' Source.phrase
+and catch' =
+  | Catch of var * var
+  | CatchRef of var * var
+  | CatchAll of var
+  | CatchAllRef of var
 
 
 (* Globals & Functions *)

@@ -409,6 +409,7 @@ let assert_ref_pat r p =
   match r, p with
   | r, RefPat r' -> r = r'.it
   | Instance.FuncRef _, RefTypePat Types.FuncRefType
+  | Values.ExnRef _, RefTypePat Types.ExnRefType
   | ExternRef _, RefTypePat Types.ExternRefType -> true
   | _ -> false
 

@@ -144,9 +144,6 @@ let func_type (c : context) x =
   try (Lib.List32.nth c.types.list x.it).it
   with Failure _ -> error x.at ("unknown type " ^ Int32.to_string x.it)
 
-let handlers (c : context) h =
-  List.map (fun (l, i) -> (l c tag, i c)) h
-
 let anon category space n =
   let i = space.count in
   space.count <- Int32.add i n;
@@ -214,10 +211,10 @@ let inline_type_explicit (c : context) x ft at =
 %token<Types.num_type> NUM_TYPE
 %token<Types.vec_type> VEC_TYPE
 %token<V128.shape> VEC_SHAPE
-%token FUNCREF EXTERNREF EXTERN MUT
+%token FUNCREF EXNREF EXTERNREF EXN EXTERN MUT
 %token UNREACHABLE NOP DROP SELECT
-%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE TRY DO CATCH CATCH_ALL
-%token DELEGATE
+%token BLOCK END IF THEN ELSE LOOP BR BR_IF BR_TABLE
+%token TRY_TABLE CATCH CATCH_REF CATCH_ALL CATCH_ALL_REF THROW THROW_REF
 %token CALL CALL_INDIRECT RETURN RETURN_CALL RETURN_CALL_INDIRECT
 %token LOCAL_GET LOCAL_SET LOCAL_TEE GLOBAL_GET GLOBAL_SET
 %token TABLE_GET TABLE_SET
@@ -227,8 +224,7 @@ let inline_type_explicit (c : context) x ft at =
 %token<string> OFFSET_EQ_NAT ALIGN_EQ_NAT
 %token<string Source.phrase -> Ast.instr' * Values.num> CONST
 %token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
-%token REF_NULL REF_FUNC REF_EXTERN REF_IS_NULL
-%token THROW RETHROW
+%token REF_NULL REF_FUNC REF_EXN REF_EXTERN REF_IS_NULL
 %token<int option -> Memory.offset -> Ast.instr'> VEC_LOAD VEC_STORE
 %token<int option -> Memory.offset -> int -> Ast.instr'> VEC_LOAD_LANE VEC_STORE_LANE
 %token<V128.shape -> string Source.phrase list -> Source.region -> Ast.instr' * Values.vec> VEC_CONST
@@ -267,10 +263,12 @@ string_list :
 
 ref_kind :
   | FUNC { FuncRefType }
+  | EXN { ExnRefType }
   | EXTERN { ExternRefType }
 
 ref_type :
   | FUNCREF { FuncRefType }
+  | EXNREF { ExnRefType }
   | EXTERNREF { ExternRefType }
 
 value_type :
@@ -397,7 +395,7 @@ plain_instr :
   | CALL var { fun c -> call ($2 c func) }
   | RETURN_CALL var { fun c -> return_call ($2 c func) }
   | THROW var { fun c -> throw ($2 c tag) }
-  | RETHROW var { fun c -> rethrow ($2 c label)  }
+  | THROW_REF { fun c -> throw_ref }
   | LOCAL_GET var { fun c -> local_get ($2 c local) }
   | LOCAL_SET var { fun c -> local_set ($2 c local) }
   | LOCAL_TEE var { fun c -> local_tee ($2 c local) }
@@ -522,12 +520,9 @@ block_instr :
   | IF labeling_opt block ELSE labeling_end_opt instr_list END labeling_end_opt
     { fun c -> let c' = $2 c ($5 @ $8) in
       let ts, es1 = $3 c' in if_ ts es1 ($6 c') }
-  | TRY labeling_opt block handler_instr
-    { fun c -> let c' = $2 c [] in
-      let ts, es = $3 c' in  $4 ts es c' }
-  | TRY labeling_opt block DELEGATE var
-    { fun c -> let c' = $2 c [] in
-      let ts, es = $3 c' in try_delegate ts es ($5 c label) }
+  | TRY_TABLE labeling_opt handler_block END labeling_end_opt
+    { fun c -> let c' = $2 c $5 in
+      let bt, (cs, es) = $3 c c' in try_table bt cs es }
 
 block :
   | type_use block_param_body
@@ -557,43 +552,49 @@ block_result_body :
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
 
-handler_instr :
-  | catch_list_instr END
-    { fun bt es c -> try_catch bt es (handlers c $1) None }
-  | catch_list_instr catch_all END
-    { fun bt es c -> try_catch bt es (handlers c $1) (Some ($2 c)) }
-  | catch_all END
-    { fun bt es c -> try_catch bt es [] (Some ($1 c)) }
-  | END { fun bt es c -> try_catch bt es [] None }
 
-catch_list_instr :
-  | catch catch_list_instr { $1 :: $2 }
-  | catch { [$1] }
+handler_block :
+  | type_use handler_block_param_body
+    { let at1 = ati 1 in
+      fun c c' -> let ft, esh = $2 c c' in
+      VarBlockType (inline_type_explicit c ($1 c type_) ft at1), esh }
+  | handler_block_param_body  /* Sugar */
+    { let at = at () in
+      fun c c' -> let ft, esh = $1 c c' in
+      let bt =
+        match ft with
+        | FuncType ([], []) -> ValBlockType None
+        | FuncType ([], [t]) -> ValBlockType (Some t)
+        | ft ->  VarBlockType (inline_type c ft at)
+      in bt, esh }
 
-handler :
-  | catch_list
-      { fun bt es _ c' ->
-        let cs = (List.map (fun (l, i) -> (l c' tag, i c')) $1) in
-        try_catch bt es cs None }
-  | catch_list LPAR catch_all RPAR
-    { fun bt es _ c' ->
-      let cs = (List.map (fun (l, i) -> (l c' tag, i c')) $1) in
-      try_catch bt es cs (Some ($3 c')) }
-  | LPAR catch_all RPAR
-    { fun bt es _ c' -> try_catch bt es [] (Some ($2 c')) }
-  | LPAR DELEGATE var RPAR
-    { fun bt es c _ -> try_delegate bt es ($3 c label) }
-  | /* empty */ { fun bt es c _ -> try_catch bt es [] None }
+handler_block_param_body :
+  | handler_block_result_body { $1 }
+  | LPAR PARAM value_type_list RPAR handler_block_param_body
+    { fun c c' -> let FuncType (ins, out), esh = $5 c c' in
+      FuncType ($3 @ ins, out), esh }
 
-catch_list :
-  | catch_list LPAR catch RPAR { $1 @ [$3] }
-  | LPAR catch RPAR { [$2] }
+handler_block_result_body :
+  | handler_block_body { fun c c' -> FuncType ([], []), $1 c c' }
+  | LPAR RESULT value_type_list RPAR handler_block_result_body
+    { fun c c' -> let FuncType (ins, out), esh = $5 c c' in
+      FuncType (ins, $3 @ out), esh }
 
-catch :
-  | CATCH var instr_list { ($2, $3) }
-
-catch_all :
-  | CATCH_ALL instr_list { $2 }
+handler_block_body :
+  | instr_list
+    { fun c c' -> [], $1 c' }
+  | LPAR CATCH var var RPAR handler_block_body
+    { fun c c' -> let cs, es = $6 c c' in
+      (catch ($3 c tag) ($4 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_REF var var RPAR handler_block_body
+    { fun c c' -> let cs, es = $6 c c' in
+      (catch_ref ($3 c tag) ($4 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_ALL var RPAR handler_block_body
+    { fun c c' -> let cs, es = $5 c c' in
+      (catch_all ($3 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_ALL_REF var RPAR handler_block_body
+    { fun c c' -> let cs, es = $5 c c' in
+      (catch_all_ref ($3 c label) @@ ati 2) :: cs, es }
 
 
 expr :  /* Sugar */
@@ -621,8 +622,9 @@ expr1 :  /* Sugar */
   | IF labeling_opt if_block
     { fun c -> let c' = $2 c [] in
       let bt, (es, es1, es2) = $3 c c' in es, if_ bt es1 es2 }
-  | TRY labeling_opt try_block
-    { fun c -> let c' = $2 c [] in [], $3 c c' }
+  | TRY_TABLE labeling_opt try_block
+    { fun c -> let c' = $2 c [] in 
+      let bt, (cs, es) = $3 c c' in [], try_table bt cs es }
 
 select_expr_results :
   | LPAR RESULT value_type_list RPAR select_expr_results
@@ -692,37 +694,53 @@ if_ :
   | LPAR THEN instr_list RPAR  /* Sugar */
     { fun c c' -> [], $3 c', [] }
 
+
 try_block :
   | type_use try_block_param_body
     { let at = at () in
       fun c c' ->
-      let bt = VarBlockType (inline_type_explicit c' ($1 c' type_) (fst $2) at) in
-      snd $2 bt c c' }
+      let ft, esh = $2 c c' in
+      let bt = VarBlockType (inline_type_explicit c' ($1 c' type_) ft at) in
+      bt, esh }
   | try_block_param_body  /* Sugar */
     { let at = at () in
       fun c c' ->
+      let ft, esh = $1 c c' in
       let bt =
-        match fst $1 with
+        match ft with
         | FuncType ([], []) -> ValBlockType None
         | FuncType ([], [t]) -> ValBlockType (Some t)
-        | ft ->  VarBlockType (inline_type c' ft at)
-      in snd $1 bt c c' }
+        | _ ->  VarBlockType (inline_type c' ft at)
+      in bt, esh }
 
 try_block_param_body :
   | try_block_result_body { $1 }
   | LPAR PARAM value_type_list RPAR try_block_param_body
-    { let FuncType (ins, out) = fst $5 in
-      FuncType ($3 @ ins, out), snd $5 }
+    { fun c c' -> let FuncType (ins, out), esh = $5 c c' in
+      FuncType ($3 @ ins, out), esh }
 
 try_block_result_body :
-  | try_ { FuncType ([], []), $1 }
+  | try_block_handler_body { fun c c' -> FuncType ([], []), $1 c c' }
   | LPAR RESULT value_type_list RPAR try_block_result_body
-    { let FuncType (ins, out) = fst $5 in
-      FuncType (ins, $3 @ out), snd $5 }
+    { fun c c' -> let FuncType (ins, out), esh = $5 c c' in
+      FuncType (ins, $3 @ out), esh }
 
-try_ :
-  | LPAR DO instr_list RPAR handler
-    { fun bt c c' -> $5 bt ($3 c') c c' }
+try_block_handler_body :
+  | instr_list
+    { fun c c' -> [], $1 c' }
+  | LPAR CATCH var var RPAR try_block_handler_body
+    { fun c c' -> let cs, es = $6 c c' in
+      (catch ($3 c tag) ($4 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_REF var var RPAR try_block_handler_body
+    { fun c c' -> let cs, es = $6 c c' in
+      (catch_ref ($3 c tag) ($4 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_ALL var RPAR try_block_handler_body
+    { fun c c' -> let cs, es = $5 c c' in
+      (catch_all ($3 c label) @@ ati 2) :: cs, es }
+  | LPAR CATCH_ALL_REF var RPAR try_block_handler_body
+    { fun c c' -> let cs, es = $5 c c' in
+      (catch_all_ref ($3 c label) @@ ati 2) :: cs, es }
+
 
 expr_list :
   | /* empty */ { fun c -> [] }
@@ -1242,6 +1260,7 @@ result :
   | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
   | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncRefType) @@ at () }
+/*| LPAR REF_EXN RPAR { RefResult (RefTypePat ExnRefType) @@ at () }*/
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternRefType) @@ at () }
   | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR {
     if V128.num_lanes $3 <> List.length $4 then

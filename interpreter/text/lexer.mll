@@ -147,7 +147,9 @@ rule token = parse
       | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
       | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
 
+      | "exn" -> EXN
       | "extern" -> EXTERN
+      | "exnref" -> EXNREF
       | "externref" -> EXTERNREF
       | "funcref" -> FUNCREF
       | "mut" -> MUT
@@ -170,6 +172,13 @@ rule token = parse
       | "call_indirect" -> CALL_INDIRECT
       | "return_call" -> RETURN_CALL
       | "return_call_indirect" -> RETURN_CALL_INDIRECT
+      | "try_table" -> TRY_TABLE
+      | "catch" -> CATCH
+      | "catch_ref" -> CATCH_REF
+      | "catch_all" -> CATCH_ALL
+      | "catch_all_ref" -> CATCH_ALL_REF
+      | "throw" -> THROW
+      | "throw_ref" -> THROW_REF
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET
@@ -276,6 +285,7 @@ rule token = parse
 
       | "ref.null" -> REF_NULL
       | "ref.func" -> REF_FUNC
+      | "ref.exn" -> REF_EXN
       | "ref.extern" -> REF_EXTERN
       | "ref.is_null" -> REF_IS_NULL
 
@@ -654,14 +664,6 @@ rule token = parse
       | "i64x2.replace_lane" -> VEC_REPLACE i64x2_replace_lane
       | "f32x4.replace_lane" -> VEC_REPLACE f32x4_replace_lane
       | "f64x2.replace_lane" -> VEC_REPLACE f64x2_replace_lane
-
-      | "try" -> TRY
-      | "do" -> DO
-      | "catch" -> CATCH
-      | "catch_all" -> CATCH_ALL
-      | "delegate" -> DELEGATE
-      | "throw" -> THROW
-      | "rethrow" -> RETHROW
 
       | "type" -> TYPE
       | "func" -> FUNC

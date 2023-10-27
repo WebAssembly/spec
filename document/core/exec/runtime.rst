@@ -12,7 +12,9 @@ Runtime Structure
 .. _syntax-num:
 .. _syntax-vecc:
 .. _syntax-ref:
-.. _syntax-ref.extern:
+.. _syntax-ref.func-addr:
+.. _syntax-ref.exn-addr:
+.. _syntax-ref.extern-addr:
 .. _syntax-val:
 
 Values
@@ -26,7 +28,8 @@ It is convenient to reuse the same notation as for the |CONST| :ref:`instruction
 
 References other than null are represented with additional :ref:`administrative instructions <syntax-instr-admin>`.
 They either are *function references*, pointing to a specific :ref:`function address <syntax-funcaddr>`,
-or *external references* pointing to an uninterpreted form of :ref:`extern address <syntax-externaddr>` that can be defined by the :ref:`embedder <embedder>` to represent its own objects.
+*exception references*, pointing to a specific :ref:`exception address <syntax-exnaddr>`,
+or *external references* pointing to an uninterpreted form of :ref:`external address <syntax-externaddr>` that can be defined by the :ref:`embedder <embedder>` to represent its own objects.
 
 .. math::
    \begin{array}{llcl}
@@ -40,6 +43,7 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
    \production{reference} & \reff &::=&
      \REFNULL~t \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
+     \REFEXNADDR~\exnaddr \\&&|&
      \REFEXTERNADDR~\externaddr \\
    \production{value} & \val &::=&
      \num ~|~ \vecc ~|~ \reff \\
@@ -67,7 +71,7 @@ Convention
 * The meta variable :math:`r` ranges over reference values where clear from context.
 
 
-.. index:: ! result, value, trap, exception
+.. index:: ! result, value, trap, exception, exception address
    pair: abstract syntax; result
 .. _syntax-result:
 
@@ -75,15 +79,16 @@ Results
 ~~~~~~~
 
 A *result* is the outcome of a computation.
-It is either a sequence of :ref:`values <syntax-val>`, a :ref:`trap <syntax-trap>`, or an :ref:`exception <exec-throwadm>`.
+It is either a sequence of :ref:`values <syntax-val>`, a :ref:`trap <syntax-trap>`, or a thrown :ref:`exception <exec-throw_ref>`.
 
 .. math::
    \begin{array}{llcl}
    \production{result} & \result &::=&
      \val^\ast \\&&|&
      \TRAP  \\&&|&
-     \XT[(\THROWadm~\tagaddr)]
+     \XT[(\REFEXNADDR~\exnaddr)~\THROWREF]
    \end{array}
+
 
 .. index:: ! store, function instance, table instance, memory instance, tag instance, global instance, module, allocation
    pair: abstract syntax; store
@@ -94,7 +99,7 @@ Store
 ~~~~~
 
 The *store* represents all global state that can be manipulated by WebAssembly programs.
-It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, :ref:`tags <syntax-taginst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, and :ref:`data segments <syntax-datainst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
+It consists of the runtime representation of all *instances* of :ref:`functions <syntax-funcinst>`, :ref:`tables <syntax-tableinst>`, :ref:`memories <syntax-meminst>`, :ref:`tags <syntax-taginst>`, and :ref:`globals <syntax-globalinst>`, :ref:`element segments <syntax-eleminst>`, :ref:`data segments <syntax-datainst>`, and :ref:`exceptions <syntax-exninst>` that have been :ref:`allocated <alloc>` during the life time of the abstract machine. [#gc]_
 
 It is an invariant of the semantics that no element or data instance is :ref:`addressed <syntax-addr>` from anywhere else but the owning module instances.
 
@@ -110,12 +115,13 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
      \STAGS & \taginst^\ast, \\
      \SGLOBALS & \globalinst^\ast, \\
      \SELEMS & \eleminst^\ast, \\
-     \SDATAS & \datainst^\ast ~\} \\
+     \SDATAS & \datainst^\ast, \\
+     \SEXNS & \exninst^\ast ~\} \\
      \end{array}
    \end{array}
 
 .. [#gc]
-   In practice, implementations may apply techniques like garbage collection to remove objects from the store that are no longer referenced.
+   In practice, implementations may apply techniques like garbage collection or reference counting to remove objects from the store that are no longer referenced.
    However, such techniques are not semantically observable,
    and hence outside the scope of this specification.
 
@@ -134,6 +140,7 @@ Convention
    pair: abstract syntax; global address
    pair: abstract syntax; element address
    pair: abstract syntax; data address
+   pair: abstract syntax; exception address
    pair: abstract syntax; host address
    pair: function; address
    pair: table; address
@@ -142,6 +149,7 @@ Convention
    pair: global; address
    pair: element; address
    pair: data; address
+   pair: exception; address
    pair: host; address
 .. _syntax-funcaddr:
 .. _syntax-tableaddr:
@@ -150,13 +158,14 @@ Convention
 .. _syntax-globaladdr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
+.. _syntax-exnaddr:
 .. _syntax-externaddr:
 .. _syntax-addr:
 
 Addresses
 ~~~~~~~~~
 
-:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, :ref:`tag instances <syntax-taginst>`, :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, and :ref:`data instances <syntax-datainst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
+:ref:`Function instances <syntax-funcinst>`, :ref:`table instances <syntax-tableinst>`, :ref:`memory instances <syntax-meminst>`, :ref:`tag instances <syntax-taginst>`, :ref:`global instances <syntax-globalinst>`, :ref:`element instances <syntax-eleminst>`, :ref:`data instances <syntax-datainst>`, and :ref:`exception instances <syntax-exninst>` in the :ref:`store <syntax-store>` are referenced with abstract *addresses*.
 These are simply indices into the respective store component.
 In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *host addresses*.
 
@@ -177,6 +186,8 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
    \production{element address} & \elemaddr &::=&
      \addr \\
    \production{data address} & \dataaddr &::=&
+     \addr \\
+   \production{exception address} & \exnaddr &::=&
      \addr \\
    \production{extern address} & \externaddr &::=&
      \addr \\
@@ -444,6 +455,24 @@ It filters out entries of a specific kind in an order-preserving fashion:
 * :math:`\evglobals(\externval^\ast) = [\globaladdr ~|~ (\EVGLOBAL~\globaladdr) \in \externval^\ast]`
 
 
+.. index:: ! exception instance, tag, tag address,
+   pair: abstract syntax; exception instance
+   pair: exception; instance
+.. _syntax-exninst:
+
+Exception Instances
+~~~~~~~~~~~~~~~~~~~
+
+An *exception instance* is the runtime representation of an _exception_ produced by a |THROW| instruction.
+It holds the :ref:`address <syntax-tagaddr>` of the respective :ref:`tag <syntax-tag>` and the argument :ref:`values <syntax-val>`.
+
+.. math::
+   \begin{array}{llcl}
+   \production{exception instance} & \exninst &::=&
+     \{ \EITAG~\tagaddr, \EIFIELDS~\vec(\val) \} \\
+   \end{array}
+
+
 
 .. index:: ! stack, ! frame, ! label, ! handler, instruction, store, activation, function, call, local, module instance, exception handler, exception
    pair: abstract syntax; frame
@@ -451,17 +480,17 @@ It filters out entries of a specific kind in an order-preserving fashion:
    pair: abstract syntax; handler
 .. _syntax-frame:
 .. _syntax-label:
+.. _syntax-handler:
 .. _frame:
 .. _label:
 .. _handler:
-.. _exn:
 .. _stack:
 
 Stack
 ~~~~~
 
 Besides the :ref:`store <store>`, most :ref:`instructions <syntax-instr>` interact with an implicit *stack*.
-The stack contains five kinds of entries:
+The stack contains the following kinds of entries:
 
 * *Values*: the *operands* of instructions.
 
@@ -470,8 +499,6 @@ The stack contains five kinds of entries:
 * *Activations*: the *call frames* of active :ref:`function <syntax-func>` calls.
 
 * *Handlers*: active exception handlers.
-
-* *Exceptions*: caught exceptions.
 
 These entries can occur on the stack in any order during the execution of a program.
 Stack entries are described by abstract syntax as follows.
@@ -528,38 +555,18 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 
 The values of the locals are mutated by respective :ref:`variable instructions <syntax-instr-variable>`.
 
-.. _syntax-handler:
-.. _syntax-exn:
+Exception Handlers
+..................
 
-Exception handlers and exceptions
-.................................
-
-Exception handlers are installed by |TRY| instructions and are either a list of handlers or a label index.
-
-A list of handlers is a mapping from :ref:`tag addresses <syntax-tagaddr>`
-to their associated branch *targets*. A single handler is expressed syntactically as a possibly empty sequence of
-:ref:`instructions <syntax-instr>` possibly following a :ref:`tag address <syntax-tagaddr>`.
-If there is no :ref:`tag address <syntax-tagaddr>`, the instructions of that handler correspond to a |CATCHALL| clause.
-
-An exception may be temporarily pushed onto the stack when it is :ref:`thrown and caught <exec-throwadm>` by a handler.
-
-A handler can also consist of a single |labelidx|, which denotes an outer block to which every caught exception will be delegated, by implicitly rethrowing inside that block.
-This handler does not catch exceptions, but only rethrows them.
+Exception handlers are installed by |TRYTABLE| instructions and record the corresponding list of :ref:`catch clauses <syntax-catch>`:
 
 .. math::
    \begin{array}{llllll}
-     \production{handler} & \handler &::=& (\tagaddr^?~\instr^\ast)^\ast &|& \labelidx\\
-     \production{exception} & \exn   &::=& \tagaddr~\val^\ast &&
+     \production{handler} & \handler &::=&
+       \HANDLER_n\{\catch^\ast\}
    \end{array}
 
-Intuitively, for each individual handler :math:`(\tagaddr^?~\instr^\ast)`, the instruction block  :math:`\instr^\ast` is the *continuation* to execute
-when the handler catches a thrown exception with tag |tagaddr|, or for any exception, when that handler specifies no tag address.
-If the list of handlers is empty, or if the tag address of the thrown exception is not in any of the handlers in the list, and there is no |CATCHALL| clause, then the exception will be rethrown.
-
-When a thrown exception is caught by a handler, the caught exception is pushed onto the stack and the block of that handler's target is :ref:`entered <exec-caughtadm-enter>`.
-When exiting a block with a caught exception, the exception is discarded.
-
-A handler consisting of a |labelidx| :math:`l` can be thought of as a branch to that label that happens in case an exception occurs, immediately followed by a rethrow of the exception at the target site.
+The handlers on the stack are searched when an exception is :ref:`thrown <syntax-throw>`.
 
 
 .. _exec-expand:
@@ -585,11 +592,7 @@ Conventions
 .. index:: ! administrative instructions, function, function instance, function address, label, frame, instruction, trap, call, memory, memory instance, table, table instance, element, data, segment, tag, tag instance, tag address, exception, reftype, handler, caught, caught exception
    pair:: abstract syntax; administrative instruction
 .. _syntax-trap:
-.. _syntax-reffuncaddr:
 .. _syntax-invoke:
-.. _syntax-throwadm:
-.. _syntax-handleradm:
-.. _syntax-caughtadm:
 .. _syntax-instr-admin:
 
 Administrative Instructions
@@ -607,27 +610,24 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \TRAP \\ &&|&
      \REFFUNCADDR~\funcaddr \\ &&|&
      \REFEXTERNADDR~\externaddr \\ &&|&
+     \REFEXNADDR~\exnaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
-     \THROWadm~\tagaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
-     \HANDLERadm_n\{\handler\}~\instr^\ast~\END \\ &&|&
-     \CAUGHTadm_n\{\exn\}~\instr^\ast~\END \\ &&|&
+     \HANDLER_n\{\catch^\ast\}~\instr^\ast~\END \\ &&|&
      \FRAME_n\{\frame\}~\instr^\ast~\END \\
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single |TRAP| instruction, signalling abrupt termination.
 
-The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax-ref.func>`. Similarly, |REFEXTERNADDR| represents :ref:`external references <syntax-ref.extern>`.
+The |REFFUNCADDR| instruction represents :ref:`function reference values <syntax-ref.func-addr>`.
+Similarly, |REFEXTERNADDR| represents :ref:`external references <syntax-ref.extern-addr>`.
+The |REFEXNADDR| instruction represents an :ref:`exception reference <syntax-ref.exn-addr>`.
 
 The |INVOKE| instruction represents the imminent invocation of a :ref:`function instance <syntax-funcinst>`, identified by its :ref:`address <syntax-funcaddr>`.
 It unifies the handling of different forms of calls.
 
-The |THROWadm| instruction represents the imminent throw of an exception based on a :ref:`tag instance <syntax-taginst>`, identified by its :ref:`address <syntax-tagaddr>`.
-The values it will consume depend on its :ref:`tag type <syntax-tagtype>`.
-It unifies the different forms of throwing exceptions.
-
-The |LABEL|, |FRAME|, |HANDLERadm|, and |CAUGHTadm| instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, active :ref:`exception handlers <syntax-handleradm>`, and :ref:`caught exceptions <syntax-caughtadm>`, respectively, :ref:`"on the stack" <exec-notation>`.
+The |LABEL|, |FRAME|, and |HANDLER| instructions model :ref:`labels <syntax-label>`, :ref:`frames <syntax-frame>`, and active :ref:`exception handlers <syntax-handler>`, respectively, :ref:`"on the stack" <exec-notation>`.
 Moreover, the administrative syntax maintains the nesting structure of the original :ref:`structured control instruction <syntax-instr-control>` or :ref:`function body <syntax-func>` and their :ref:`instruction sequences <syntax-instr-seq>` with an |END| marker.
 That way, the end of the inner instruction sequence is known when part of an outer sequence.
 
@@ -670,23 +670,15 @@ In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the
 
 .. math::
    \begin{array}{llll}
-   \production{block contexts} & \XB^0 &::=&
-     \val^\ast~[\_]~\instr^\ast \\
-   \production{block contexts} & \XB^{k+1} &::=&
-     \val^\ast~\LABEL_n\{\instr^\ast\}~\XB^k~\END~\instr^\ast \\
+   \production{block contexts} & \XB^k &::=&
+     \val~\XB^k ~|~ \XB^k~\instr ~|~ \HANDLER_n\{\catch^\ast\}~\XB^k~\END ~|~ \XC^k \\
+   \production{label contexts} & \XC^0 &::=&
+     [\_] \\
+   \production{label contexts} & \XC^{k+1} &::=&
+     \LABEL_n\{\instr^\ast\}~\XB^k~\END \\
    \end{array}
 
 This definition allows to index active labels surrounding a :ref:`branch <syntax-br>` or :ref:`return <syntax-return>` instruction.
-
-In order to be able to break jumping over exception handlers and caught exceptions, these new structured administrative control instructions are allowed to appear after labels in block contexts, by extending block context as follows.
-
-.. math::
-   \begin{array}{llll}
-   \production{control contexts} & \XC^{k} &::=& \HANDLERadm_n\{\handler\}~\XB^k~\END \\
-   & & | & \CAUGHTadm_n~\{\exn\}~\XB^k~\END \\
-   \production{block contexts} & \XB^0 &::=& \dots ~|~  \val^\ast~\XC^0~\instr^\ast\\
-   \production{block contexts} & \XB^{k+1} &::=& \dots ~|~ \val^\ast~\XC^{k+1}~\instr^\ast \\
-   \end{array}
 
 .. note::
    For example, the :ref:`reduction <exec-br>` of a simple branch can be defined as follows:
@@ -696,18 +688,17 @@ In order to be able to break jumping over exception handlers and caught exceptio
 
    Here, the hole :math:`[\_]` of the context is instantiated with a branch instruction.
    When a branch occurs,
-   this rule replaces the targeted label and associated instruction sequence with the label's continuation.
+   this rule replaces the target label and associated instruction sequence with the label's continuation.
    The selected label is identified through the :ref:`label index <syntax-labelidx>` :math:`l`, which corresponds to the number of surrounding |LABEL| instructions that must be hopped over -- which is exactly the count encoded in the index of a block context.
 
 
-.. index:: ! throw context, tag, throw address, catch block, handler, exception
+.. index:: ! throw context, tag, throw address, catch clause, handler, exception
 .. _syntax-ctxt-throw:
 
 Throw Contexts
 ..............
 
-In order to specify the reduction of |TRY| blocks
-with the help of the administrative instructions |THROWadm|, |HANDLERadm|, and |CAUGHTadm|,
+In order to specify the reduction of |TRYTABLE| blocks,
 the following syntax of *throw contexts* is defined, as well as associated structural rules:
 
 .. math::
@@ -716,48 +707,13 @@ the following syntax of *throw contexts* is defined, as well as associated struc
      [\_] \\ &&|&
      \val^\ast~\XT~\instr^\ast \\ &&|&
      \LABEL_n\{\instr^\ast\}~\XT~\END \\ &&|&
-     \CAUGHTadm_n\{\exn\}~\XT~\END \\ &&|&
      \FRAME_n\{F\}~\XT~\END \\
    \end{array}
 
-Throw contexts allow matching the program context around a throw instruction up to the innermost enclosing |HANDLERadm|, thereby selecting the exception |handler| responsible for an exception, if one exists.
-If no exception :ref:`handler that catches the exception <syntax-handler>` is found, the computation :ref:`results <syntax-result>` in an uncaught exception result value.
+Throw contexts allow matching the program context around a throw instruction up to the innermost enclosing :ref:`exception handler <syntax-handler>`, if one exists.
 
 .. note::
-   Contrary to block contexts, throw contexts don't skip over handlers.
-
-   |CAUGHTadm| blocks do not represent active handlers. Instead, they delimit the continuation of a handler that has already been selected. Their sole purpose is to record the exception that has been caught, such that |RETHROW| can access it inside such a block.
-
-.. note::
-   For example, catching a simple :ref:`throw <syntax-throw>` in a :ref:`try block <syntax-try-catch>` would be as follows.
-
-   Assume that :math:`\expand_F(bt) = [\I32~\F32~\I64] \to [\F32~\I64]`,
-   and that the tag address `a` of :math:`x` has tag type :math:`[\F32~\I64] \to []`.
-   Let :math:`\val_{i32}`, :math:`\val_{f32}`, and :math:`\val_{i64}` be values of type |I32|, |F32|, and |I64| respectively.
-
-   .. math::
-      \begin{array}{ll}
-      & \hspace{-5ex} F;~\val_{i32}~\val_{f32}~\val_{i64}~(\TRY~\X{bt}~(\THROW~x)~\CATCH~x~\END) \\
-      \stepto & F;~\LABEL_2\{\} (\HANDLERadm_2\{(a~\epsilon)\}~\val_{i32}~\val_{f32}~\val_{i64}~(\THROW~x)~\END)~\END \\
-      \end{array}
-
-   :ref:`Handling the thrown exception <exec-throwadm>` with tag address :math:`a` in the throw context
-   :math:`T=[\val_{i32}\_]`, with the exception handler :math:`H=(a~\epsilon)` gives:
-
-   .. math::
-      \begin{array}{lll}
-      \stepto & F;~\LABEL_2\{\}~(\CAUGHTadm_2\{a~\val_{f32}~\val_{i64}\}~\val_{f32}~\val_{i64}~\END)~\END & \hspace{9ex}\ \\
-      \stepto & F;~\LABEL_2\{\}~\val_{f32}~\val_{i64}~\END & \hspace{9ex}\ \\
-      \stepto & \val_{f32}~\val_{i64} & \\
-      \end{array}
-
-
-   When a throw of the form :math:`\val^m (\THROWadm~a)` occurs, search for an enclosing exception handler is performed,
-   which means any throw context (that is any other values, labels, frames, and |CAUGHTadm| instructions) surrounding the throw :math:`\val^m (\THROWadm~a)` is popped,
-   until a :ref:`handler <syntax-handler>` for the exception tag :math:`a` is found.
-   Then the :ref:`caught exception <syntax-exn>` containing the tag address :math:`a` and the values :math:`\val^m`, is pushed onto the stack.
-
-   In this particular case, the exception is caught by the exception handler :math:`H` and its values are returned.
+   Contrary to block contexts, throw contexts do not skip over handlers.
 
 
 .. index:: ! configuration, ! thread, store, frame, instruction, module instruction

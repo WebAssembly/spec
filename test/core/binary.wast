@@ -118,7 +118,7 @@
     ;; Missing end marker here
     "\0a\04\01\02\00\0b"       ;; Code section: 1 function
   )
-  "illegal opcode"
+  "unexpected end of section or function"
 )
 
 ;; memory.grow reserved byte equal to zero.
