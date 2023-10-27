@@ -1668,6 +1668,7 @@
 (assert_trap (invoke "check_t1" (i32.const 28)) "uninitialized element")
 (assert_trap (invoke "check_t1" (i32.const 29)) "uninitialized element")
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1692,7 +1693,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1717,7 +1720,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1742,7 +1747,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1767,7 +1774,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1792,7 +1801,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1817,7 +1828,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1842,7 +1855,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1867,7 +1882,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1892,7 +1909,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1917,7 +1936,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1942,7 +1963,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1967,7 +1990,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -1992,7 +2017,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2017,7 +2044,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2042,7 +2071,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2067,7 +2098,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2092,7 +2125,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2117,7 +2152,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2142,7 +2179,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2167,7 +2206,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2192,7 +2233,9 @@
     ))
 
 (invoke "test")
+)
 
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -2217,7 +2260,9 @@
     ))
 
 (assert_trap (invoke "test") "out of bounds table access")
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2278,7 +2323,9 @@
 (assert_trap (invoke "test" (i32.const 29)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 30)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 31)) "uninitialized element")
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2339,7 +2386,9 @@
 (assert_trap (invoke "test" (i32.const 29)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 30)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 31)) "uninitialized element")
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2400,7 +2449,9 @@
 (assert_return (invoke "test" (i32.const 29)) (i32.const 5))
 (assert_return (invoke "test" (i32.const 30)) (i32.const 6))
 (assert_return (invoke "test" (i32.const 31)) (i32.const 7))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2461,7 +2512,9 @@
 (assert_return (invoke "test" (i32.const 29)) (i32.const 6))
 (assert_return (invoke "test" (i32.const 30)) (i32.const 7))
 (assert_return (invoke "test" (i32.const 31)) (i32.const 8))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2522,7 +2575,9 @@
 (assert_trap (invoke "test" (i32.const 29)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 30)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 31)) "uninitialized element")
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2583,7 +2638,9 @@
 (assert_return (invoke "test" (i32.const 29)) (i32.const 5))
 (assert_return (invoke "test" (i32.const 30)) (i32.const 6))
 (assert_return (invoke "test" (i32.const 31)) (i32.const 7))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2644,7 +2701,9 @@
 (assert_trap (invoke "test" (i32.const 29)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 30)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 31)) "uninitialized element")
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2705,7 +2764,9 @@
 (assert_return (invoke "test" (i32.const 29)) (i32.const 5))
 (assert_return (invoke "test" (i32.const 30)) (i32.const 6))
 (assert_return (invoke "test" (i32.const 31)) (i32.const 7))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 32 64 funcref)
@@ -2766,7 +2827,9 @@
 (assert_return (invoke "test" (i32.const 29)) (i32.const 8))
 (assert_return (invoke "test" (i32.const 30)) (i32.const 9))
 (assert_return (invoke "test" (i32.const 31)) (i32.const 10))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 128 128 funcref)
@@ -2923,7 +2986,9 @@
 (assert_return (invoke "test" (i32.const 125)) (i32.const 13))
 (assert_return (invoke "test" (i32.const 126)) (i32.const 14))
 (assert_return (invoke "test" (i32.const 127)) (i32.const 15))
+)
 
+(script
 (module
   (type (func (result i32)))
   (table 128 128 funcref)
@@ -3080,3 +3145,4 @@
 (assert_trap (invoke "test" (i32.const 125)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 126)) "uninitialized element")
 (assert_trap (invoke "test" (i32.const 127)) "uninitialized element")
+)

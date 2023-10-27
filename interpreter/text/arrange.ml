@@ -765,12 +765,17 @@ let assertion mode ass =
   | AssertExhaustion (act, re) ->
     [Node ("assert_exhaustion", [action mode act; Atom (string re)])]
 
-let command mode cmd =
+let rec command mode cmd =
   match cmd.it with
   | Module (x_opt, def) -> [definition mode x_opt def]
   | Register (n, x_opt) -> [Node ("register " ^ name n ^ var_opt x_opt, [])]
   | Action act -> [action mode act]
   | Assertion ass -> assertion mode ass
-  | Meta _ -> assert false
+  | Meta met -> meta mode met
 
-let script mode scr = Lib.List.concat_map (command mode) scr
+and meta mode cmd =
+  match cmd.it with
+  | Script (x_opt, scr) -> [Node ("script" ^ var_opt x_opt, script mode scr)]
+  | _ -> assert false
+
+and script mode scr = Lib.List.concat_map (command mode) scr

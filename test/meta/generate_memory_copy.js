@@ -8,6 +8,7 @@ print_origin("generate_memory_copy.js");
 function mem_test(instruction, expected_result_vector) {
     print(
 `
+(script
 (module
   (memory (export "memory0") 1 1)
   (data (i32.const 2) "\\03\\01\\04\\01")
@@ -22,6 +23,7 @@ function mem_test(instruction, expected_result_vector) {
     for (let i = 0; i < expected_result_vector.length; i++) {
         print(`(assert_return (invoke "load8_u" (i32.const ${i})) (i32.const ${expected_result_vector[i]}))`);
     }
+    print(')');
 }
 
 const e = 0;
@@ -94,6 +96,7 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
 
     print(
 `
+(script
 (module
   (memory (export "mem") ${min} ${max} ${shared})
   (data (i32.const ${srcOffs}) "${initializers(srcLim - srcOffs, 0)}")
@@ -122,6 +125,7 @@ function mem_copy(min, max, shared, srcOffs, targetOffs, len) {
             k = 0;
         }
     }
+    print(')');
 }
 
 // OOB target address, nonoverlapping
@@ -192,6 +196,7 @@ print(
 // result = 0x00--(09) 0x55--(11) 0x00--(pagesize-20)
 print(
 `
+(script
 (module
   (memory 1 1)
   (func (export "test")
@@ -203,11 +208,13 @@ print(
 checkRange(0,    0+9,     0x00);
 checkRange(9,    9+11,    0x55);
 checkRange(9+11, 0x10000, 0x00);
+print(')');
 
 // Both ranges valid.  Copy 5 bytes forwards by 1 (overlapping).
 // result = 0x00--(10) 0x55--(11) 0x00--(pagesize-19)
 print(
 `
+(script
 (module
   (memory 1 1)
   (func (export "test")
@@ -219,47 +226,57 @@ print(
 checkRange(0,     0+10,    0x00);
 checkRange(10,    10+11,   0x55);
 checkRange(10+11, 0x10000, 0x00);
+print(')');
 
 // Destination range invalid
 print(
 `
+(script
 (module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFF00) (i32.const 0x8000) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Destination wraparound the end of 32-bit offset space
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0xFFFFFF00) (i32.const 0x4000) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Source range invalid
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x8000) (i32.const 0xFF00) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Source wraparound the end of 32-bit offset space
 print(
-`(module
+`(script
+(module
  (memory 1 1)
  (func (export "test")
    (memory.copy (i32.const 0x4000) (i32.const 0xFFFFFF00) (i32.const 257))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Zero len with both offsets in-bounds is a no-op
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.fill (i32.const 0x0000) (i32.const 0x55) (i32.const 0x8000))
@@ -270,65 +287,79 @@ print(
 `);
 checkRange(0x00000, 0x08000, 0x55);
 checkRange(0x08000, 0x10000, 0xAA);
+print(')');
 
 // Zero len with dest offset out-of-bounds at the end of memory is allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x10000) (i32.const 0x7000) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // Zero len with dest offset out-of-bounds past the end of memory is not allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x7000) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Zero len with src offset out-of-bounds at the end of memory is allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x10000) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // Zero len with src offset out-of-bounds past the end of memory is not allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x9000) (i32.const 0x20000) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // Zero len with both dest and src offsets out-of-bounds at the end of memory is allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x10000) (i32.const 0x10000) (i32.const 0))))
 (invoke "test")
+)
 `);
 
 // Zero len with both dest and src offsets out-of-bounds past the end of memory is not allowed
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.copy (i32.const 0x20000) (i32.const 0x20000) (i32.const 0))))
 (assert_trap (invoke "test") "out of bounds memory access")
+)
 `);
 
 // 100 random fills followed by 100 random copies, in a single-page buffer,
 // followed by verification of the (now heavily mashed-around) buffer.
 print(
-`(module
+`(script
+(module
   (memory 1 1)
   (func (export "test")
     (memory.fill (i32.const 17767) (i32.const 1) (i32.const 1344))
@@ -766,3 +797,4 @@ checkRange(64331, 64518, 92);
 checkRange(64518, 64827, 11);
 checkRange(64827, 64834, 26);
 checkRange(64834, 65536, 0);
+print(')');

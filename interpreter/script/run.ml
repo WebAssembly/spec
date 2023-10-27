@@ -555,6 +555,7 @@ let rec run_command cmd =
 and run_meta cmd =
   match cmd.it with
   | Script (x_opt, script) ->
+    quote := (Meta cmd @@ cmd.at) :: !quote;
     run_quote_script script;
     bind scripts x_opt (lookup_script None cmd.at)
 
@@ -589,7 +590,7 @@ and run_quote_script script =
   quote := [];
   (try run_script script with exn -> quote := save_quote; raise exn);
   bind scripts None (List.rev !quote);
-  quote := !quote @ save_quote
+  quote := save_quote
 
 let run_file file = input_file file run_script
 let run_string string = input_string string run_script

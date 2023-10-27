@@ -585,7 +585,7 @@ let of_assertion mods ass =
   | AssertExhaustion (act, _) ->
     of_assertion' mods act "assert_exhaustion" [] None
 
-let of_command mods cmd =
+let rec of_command mods cmd =
   "\n// " ^ Filename.basename cmd.at.left.file ^
     ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
   match cmd.it with
@@ -605,8 +605,20 @@ let of_command mods cmd =
     of_assertion' mods act "run" [] None ^ "\n"
   | Assertion ass ->
     of_assertion mods ass ^ "\n"
-  | Meta _ -> assert false
+  | Meta meta ->
+    of_meta meta
 
-let of_script scr =
-  (if !Flags.harness then harness else "") ^
+and of_meta cmd =
+  match cmd.it with
+  | Script (_, scr) ->
+    "\n// " ^ Filename.basename cmd.at.left.file ^
+      ":" ^ string_of_int cmd.at.left.line ^ "\n" ^
+    "{" ^ of_script' scr ^ "}\n"
+  | _ -> assert false
+
+and of_script' scr =
   String.concat "" (List.map (of_command (modules ())) scr)
+
+and of_script scr =
+  (if !Flags.harness then harness else "") ^
+  of_script' scr

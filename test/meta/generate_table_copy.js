@@ -157,6 +157,7 @@ for ( let table of [0,1] ) {
 function do_test(insn1, insn2, errText)
 {
     print(`
+(script
 (module
   (table $t0 30 30 funcref)
   (table $t1 30 30 funcref)
@@ -186,6 +187,7 @@ function do_test(insn1, insn2, errText)
     } else {
         print(`(invoke "test")`);
     }
+    print(')');
 }
 
 function tab_test2(insn1, insn2, errKind, errText) {
@@ -285,6 +287,7 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
 
     print(
         `
+(script
 (module
   (type (func (result i32)))
   (table ${min} ${max} funcref)
@@ -331,6 +334,7 @@ function tbl_copy(min, max, srcOffs, targetOffs, len) {
         }
         print(`(assert_trap (invoke "test" (i32.const ${i})) "uninitialized element")`);
     }
+    print(')');
 }
 
 // OOB target address, nonoverlapping
