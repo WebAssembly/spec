@@ -586,35 +586,6 @@ let rec letI lhs rhs targets cont =
       LetI (lhs, rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 
-(*
-let iterpr2instrs pr instrs = match pr.it with
-  | Ast.IterPr (pr, (iter, ids)) ->
-    begin match rulepr2instr pr with
-    | EnterI (ctx, instrs, [ LetI (lhs, rhs) ]) ->
-      let rec name_of_expr = function
-        | IterE (e, _, _) -> name_of_expr e
-        | NameE n -> n
-        | _ -> failwith "Not a name"
-      in
-      begin match List.map (fun id -> id.it) ids |> List.partition (fun id -> id = name_of_expr lhs) with
-      | [ _ ] as lhs_iter_ids, rhs_iter_ids ->
-        EnterI (ctx, instrs, [
-          LetI (
-            IterE (lhs, lhs_iter_ids, iter2iter iter),
-            IterE (rhs, rhs_iter_ids, iter2iter iter)
-          )
-        ])
-      | _ -> failwith "Invalid IterPr"
-      end
-    | instr ->
-      instr
-      |> Al.Print.string_of_instr (ref 0) 0
-      |> Printf.sprintf "Invalid RulePr: %s"
-      |> print_endline;
-      instr
-  | _ -> failwith "Unreachable"
-*)
-
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
   | "Eval_expr", [z; lhs; _z; rhs] ->
