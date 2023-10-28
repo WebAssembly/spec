@@ -114,6 +114,7 @@ let input_from get_script run =
   | Eval.Crash (at, msg) -> error at "runtime crash" msg
   | Encode.Code (at, msg) -> error at "encoding error" msg
   | Script.Error (at, msg) -> error at "script error" msg
+  | Js.Error (at, msg) -> error at "script error" msg
   | IO (at, msg) -> error at "i/o error" msg
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
@@ -340,25 +341,25 @@ let rec run_definition def : Ast.module_ =
     let def' = Parse.string_to_module s in
     run_definition def'
 
-let run_action act : Values.value list =
+let rec run_action act : Values.value list =
   match act.it with
-  | Invoke (x_opt, name, vs) ->
+  | Invoke (x_opt, name, args) ->
     trace ("Invoking function \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
     (match Instance.export inst name with
     | Some (Instance.ExternFunc f) ->
-      let Types.FuncType (ins, out) = Func.type_of f in
-      if List.length vs <> List.length ins then
+      let Types.FuncType (ts1, _) = Func.type_of f in
+      let vs = List.concat_map run_argument args in
+      if List.length vs <> List.length ts1 then
         Script.error act.at "wrong number of arguments";
-      List.iter2 (fun v t ->
-        if Values.type_of_value v.it <> t then
-          Script.error v.at "wrong type of argument"
-      ) vs ins;
-      Eval.invoke f (List.map (fun v -> v.it) vs)
+      List.iteri (fun i (v, t) ->
+        if Values.type_of_value v <> t then
+          Script.error act.at ("type mismatch for argument " ^ string_of_int i)
+      ) (List.combine vs ts1);
+      Eval.invoke f vs
     | Some _ -> Assert.error act.at "export is not a function"
     | None -> Assert.error act.at "undefined export"
     )
-
  | Get (x_opt, name) ->
     trace ("Getting global \"" ^ Ast.string_of_name name ^ "\"...");
     let inst = lookup_instance x_opt act.at in
@@ -367,7 +368,24 @@ let run_action act : Values.value list =
     | Some _ -> Assert.error act.at "export is not a global"
     | None -> Assert.error act.at "undefined export"
     )
+ | Set (x_opt, name, arg) ->
+    trace ("Setting global \"" ^ Ast.string_of_name name ^ "\"...");
+    let inst = lookup_instance x_opt act.at in
+    let v =
+      match run_argument arg with
+      | [v] -> v
+      | _ -> Assert.error act.at "wrong number of arguments"
+    in
+    (match Instance.export inst name with
+    | Some (Instance.ExternGlobal gl) -> Global.store gl v; []
+    | Some _ -> Assert.error act.at "export is not a global"
+    | None -> Assert.error act.at "undefined export"
+    )
 
+and run_argument arg : Values.value list =
+  match arg.it with
+  | LiteralArg lit -> [lit.it]
+  | ActionArg act -> run_action act
 
 let assert_nan_pat n nan =
   let open Values in

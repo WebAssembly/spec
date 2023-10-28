@@ -699,12 +699,19 @@ let definition mode x_opt def =
 let access x_opt n =
   String.concat " " [var_opt x_opt; name n]
 
-let action mode act =
+let rec action mode act =
   match act.it with
-  | Invoke (x_opt, name, lits) ->
-    Node ("invoke" ^ access x_opt name, List.map (literal mode) lits)
+  | Invoke (x_opt, name, args) ->
+    Node ("invoke" ^ access x_opt name, List.map (argument mode) args)
   | Get (x_opt, name) ->
     Node ("get" ^ access x_opt name, [])
+  | Set (x_opt, name, arg) ->
+    Node ("set" ^ access x_opt name, [argument mode arg])
+
+and argument mode arg =
+  match arg.it with
+  | LiteralArg lit -> literal mode lit
+  | ActionArg act -> action mode act
 
 let nan = function
   | CanonicalNan -> "nan:canonical"

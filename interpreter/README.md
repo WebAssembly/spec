@@ -378,10 +378,15 @@ module:
   ( module <name>? quote <string>* )         ;; module quoted in text (may be malformed)
 
 action:
-  ( invoke <name>? <string> <const>* )       ;; invoke function export
+  ( invoke <name>? <string> <arg>* )         ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
+  ( set <name>? <string> <arg> )             ;; set global export
 
-const:
+arg:
+  <literal>                                  ;; literal argument
+  <action>                                   ;; expression argument
+
+literal:
   ( <num_type>.const <num> )                 ;; number value
   ( <vec_type> <vec_shape> <num>+ )          ;; vector value
   ( ref.null <ref_kind> )                    ;; null reference
@@ -397,7 +402,7 @@ assertion:
   ( assert_trap <module> <failure> )         ;; assert module traps on instantiation
 
 result:
-  <const>
+  <literal>
   ( <num_type>.const <num_pat> )
   ( <vec_type>.const <vec_shape> <num_pat>+ )
   ( ref.extern )

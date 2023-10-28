@@ -680,6 +680,7 @@ rule token = parse
       | "register" -> REGISTER
       | "invoke" -> INVOKE
       | "get" -> GET
+      | "set" -> SET
       | "assert_malformed" -> ASSERT_MALFORMED
       | "assert_invalid" -> ASSERT_INVALID
       | "assert_unlinkable" -> ASSERT_UNLINKABLE

@@ -232,7 +232,7 @@ let inline_type_explicit (c : context) x ft at =
 %token FUNC START TYPE PARAM RESULT LOCAL GLOBAL
 %token TABLE ELEM MEMORY DATA DECLARE OFFSET ITEM IMPORT EXPORT
 %token MODULE BIN QUOTE
-%token SCRIPT REGISTER INVOKE GET
+%token SCRIPT REGISTER INVOKE GET SET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
 %token<Script.nan> NAN
@@ -1015,10 +1015,12 @@ script_module :
     { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
 
 action :
-  | LPAR INVOKE module_var_opt name literal_list RPAR
+  | LPAR INVOKE module_var_opt name arg_list RPAR
     { Invoke ($3, $4, $5) @@ at () }
   | LPAR GET module_var_opt name RPAR
     { Get ($3, $4) @@ at() }
+  | LPAR SET module_var_opt name arg RPAR
+    { Set ($3, $4, $5) @@ at() }
 
 assertion :
   | LPAR ASSERT_MALFORMED script_module STRING RPAR
@@ -1065,9 +1067,13 @@ literal :
   | literal_vec { Values.Vec $1 @@ at () }
   | literal_ref { Values.Ref $1 @@ at () }
 
-literal_list :
+arg :
+  | literal { LiteralArg $1 @@ at () }
+  | action { ActionArg $1 @@ at () }
+
+arg_list :
   | /* empty */ { [] }
-  | literal literal_list { $1 :: $2 }
+  | arg arg_list { $1 :: $2 }
 
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
