@@ -186,6 +186,26 @@ The following auxiliary typing rules specify this typing relation relative to a 
      S \vdashval \REFEXTERN~\reff : \REF~\NULL^?~\EXTERN
    }
 
+Subsumption
+...........
+
+* The value must be valid with some value type :math:`t`.
+
+* The value type :math:`t` :ref:`matches <match-valtype>` another :ref:`valid <valid-valtype>` type :math:`t'`.
+
+* Then the value is valid with type :math:`t'`.
+
+.. math::
+   \frac{
+     S \vdashval \val : t
+     \qquad
+     \vdashvaltype t' \ok
+     \qquad
+     \vdashvaltypematch t \matchesvaltype t'
+   }{
+     S \vdashval \val : t'
+   }
+
 
 .. index:: external value, external type, validation, import, store
 .. _valid-externval:
@@ -263,4 +283,24 @@ The following auxiliary typing rules specify this typing relation relative to a 
    \frac{
    }{
      S \vdashexternval \EVGLOBAL~a : \ETGLOBAL~S.\SGLOBALS[a].\GITYPE
+   }
+
+Subsumption
+...........
+
+* The external value must be valid with some external type :math:`\X{et}`.
+
+* The external type :math:`\X{et}` :ref:`matches <match-externtype>` another :ref:`valid <valid-externtype>` type :math:`\X{et'}`.
+
+* Then the external value is valid with type :math:`\X{et'}`.
+
+.. math::
+   \frac{
+     S \vdashexternval \externval : \X{et}
+     \qquad
+     \vdashexterntype \X{et'} \ok
+     \qquad
+     \vdashexterntypematch \X{et} \matchesexterntype \X{et'}
+   }{
+     S \vdashexternval \externval : \X{et'}
    }

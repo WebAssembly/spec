@@ -70,7 +70,7 @@ The sequence of :ref:`types <syntax-type>` defined in a module is validated incr
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` referring to :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \toF [t_2^\ast]`.
+Functions :math:`\func` are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
@@ -98,7 +98,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`[t_2^\ast]`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \toF [t_2^\ast]`.
+* Then the function definition is valid with type :math:`C.\CTYPES[x]`.
 
 .. math::
    \frac{
@@ -108,7 +108,7 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
      \qquad
      C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : x
+     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : C.\CTYPES[x]
    }
 
 
@@ -466,18 +466,14 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
-
-* Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
-
-* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`\TFUNC~[] \toF []`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[] \toF []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\CTYPES[C.\CFUNCS[x]] = \TFUNC~[] \toF []
+     \expanddt(C.\CFUNCS[x]) = \TFUNC~[] \toF []
    }{
      C \vdashstart \{ \SFUNC~x \} \ok
    }
@@ -515,13 +511,15 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~C.\CFUNCS[x]`.
+* Let :math:`\X{dt}` be the :ref:`defined type <syntax-deftype>` :math:`C.\CFUNCS[x]`.
+
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{dt}`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \functype
+     C.\CFUNCS[x] = \X{dt}
    }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~(\TFUNC~\functype)
+     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\X{dt}
    }
 
 
@@ -683,8 +681,8 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CTYPES` is :math:`C_0.\CTYPES`,
 
-  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
+  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{dt}^\ast`,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` as determined below,
 
   * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
@@ -732,7 +730,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 * Under the context :math:`C`:
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
-    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
+    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`defined type <syntax-deftype>` :math:`\X{dt}_i`.
 
   * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
     the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
@@ -749,7 +747,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
-* Let :math:`\X{ft}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{ft}_i`, in index order.
+* Let :math:`\X{dt}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{dt}_i`, in index order.
 
 * Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
 
@@ -778,7 +776,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      (C' \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C \vdashfunc \func : \X{ft})^\ast
+     (C \vdashfunc \func : \X{dt})^\ast
      \\
      (C \vdashelem \elem : \X{rt})^\ast
      \quad
@@ -790,7 +788,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      (C \vdashexport \export : \X{et})^\ast
      \\
-     \X{ift}^\ast = \etfuncs(\X{it}^\ast)
+     \X{idt}^\ast = \etfuncs(\X{it}^\ast)
      \qquad
      \X{itt}^\ast = \ettables(\X{it}^\ast)
      \qquad
@@ -800,7 +798,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\
-     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
+     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{idt}^\ast\,\X{dt}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
      C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
