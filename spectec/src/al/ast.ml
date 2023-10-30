@@ -69,10 +69,8 @@ type iter =
 and expr =
   | VarE of id                          (* varid *)
   | NumE of int64                       (* number *)
-  | StringE of string                   (* string *)
   | UnE of unop * expr                  (* unop expr *)
   | BinE of binop * expr * expr         (* expr binop expr *)
-
   | AccessE of expr * path              (* expr `[` path `]` *)
   | ReplaceE of expr * path list * expr (* expr `[` path* `]` `:=` expr *)
   | ExtendE of expr * path list * expr * extend_dir (* expr `[` path* `]` `:+` expr *)
@@ -107,7 +105,7 @@ and cond =
   | BinC of binop * cond * cond     (* expr binop expr *)
   | CmpC of cmpop * expr * expr     (* expr cmpop expr *)
   | IsCaseOfC of expr * kwd         (* expr is of the case kwd *)
-  | ValidC of expr                  (* expr is valid *)
+  | IsValidC of expr                (* expr is valid *)
   | ContextKindC of kwd * expr      (* TODO: desugar using IsCaseOf? *)
   | IsDefinedC of expr              (* expr is defined *)
   (* Conditions used in assertions *)
@@ -145,5 +143,5 @@ type instr =
 (* Algorithms *)
 
 type algorithm =                          (* `algorithm` x`(`expr*`)` `{`instr*`}` *)
-  | RuleA of kwd * expr list * instr list (* inference rule *)
+  | RuleA of kwd * expr list * instr list (* reduction rule *)
   | FuncA of id * expr list * instr list  (* helper function *)

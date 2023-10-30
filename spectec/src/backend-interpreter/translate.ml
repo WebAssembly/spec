@@ -611,7 +611,7 @@ let prems2instrs remain_lhs =
           letI (exp2expr exp1) (exp2expr exp2) targets instrs'
       | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
         ( match exp2args exp with
-        | [ lim ] -> [ IfI (ValidC lim, instrs |> check_nop, []) ]
+        | [ lim ] -> [ IfI (IsValidC lim, instrs |> check_nop, []) ]
         | _ -> failwith "prem_to_instr: Invalid prem"
         )
       (* Step_read *)

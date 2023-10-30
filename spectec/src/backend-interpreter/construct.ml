@@ -25,7 +25,6 @@ end
 
 module Expr = struct
   let num i = NumE i
-  let string_ s = StringE s
   let unop unop e = UnE (unop, e)
   let binop binop e1 e2 = BinE (binop, e1, e2)
   let app fname args = AppE (fname, args)

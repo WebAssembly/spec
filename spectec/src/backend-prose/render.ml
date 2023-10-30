@@ -136,7 +136,6 @@ and render_expr env in_math = function
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
-  | Al.Ast.StringE s -> s
   | Al.Ast.UnE (MinusOp, e) ->
       let se = render_expr env in_math e in
       let s = sprintf "-%s" se in
@@ -302,7 +301,7 @@ and render_cond env = function
         (render_math (render_kwd env c))
   | Al.Ast.UnC (NotOp, Al.Ast.IsDefinedC e) ->
       sprintf "%s is not defined" (render_expr env false e)
-  | Al.Ast.UnC (NotOp, Al.Ast.ValidC e) ->
+  | Al.Ast.UnC (NotOp, Al.Ast.IsValidC e) ->
       sprintf "%s is not valid" (render_expr env false e)
   | Al.Ast.UnC (op, c) ->
       sprintf "%s %s" (render_al_unop op) (render_cond env c)
@@ -313,7 +312,7 @@ and render_cond env = function
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_kwd env s)
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
   | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_kwd env c))
-  | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
+  | Al.Ast.IsValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
   | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)

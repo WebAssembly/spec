@@ -121,7 +121,6 @@ and eval_expr env expr =
   match expr with
   (* Value *)
   | NumE i -> NumV i
-  | StringE s -> StringV s
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
   | BinE (op, e1, e2) ->
@@ -297,7 +296,7 @@ and eval_cond env cond =
       | ConstructV (tag, _) -> expected_tag = tag
       | _ -> false)
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
-  | ValidC e -> (
+  | IsValidC e -> (
       let valid_lim k = function
         | PairV (NumV n, NumV m) -> n <= m && m <= k
         | _ -> false

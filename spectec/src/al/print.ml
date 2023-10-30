@@ -110,7 +110,6 @@ and string_of_record_expr r =
 
 and string_of_expr = function
   | NumE i -> Int64.to_string i
-  | StringE s -> s
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -169,7 +168,7 @@ and string_of_cond = function
       sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd c)
   | UnC (NotOp, IsDefinedC e) ->
       sprintf "%s is not defined" (string_of_expr e)
-  | UnC (NotOp, ValidC e) ->
+  | UnC (NotOp, IsValidC e) ->
       sprintf "%s is not valid" (string_of_expr e)
   | UnC (NotOp, c) -> sprintf "not %s" (string_of_cond c)
   | UnC _ -> failwith "Unreachable condition"
@@ -180,7 +179,7 @@ and string_of_cond = function
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_kwd s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_kwd c)
-  | ValidC e -> sprintf "%s is valid" (string_of_expr e)
+  | IsValidC e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
   | TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
@@ -358,7 +357,6 @@ and structured_string_of_record_expr r =
 
 and structured_string_of_expr = function
   | NumE i -> Int64.to_string i
-  | StringE s -> s
   | UnE (op, e) ->
      "UnE ("
       ^ string_of_unop op
@@ -501,7 +499,7 @@ and structured_string_of_cond = function
   | ContextKindC (s, e) -> sprintf "ContextKindC (%s, %s)" (structured_string_of_kwd s) (structured_string_of_expr e)
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_kwd c ^ ")"
-  | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
+  | IsValidC e -> "IsValidC (" ^ structured_string_of_expr e ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"
   | TopValueC e_opt -> "TopValueC" ^ string_of_opt " (" structured_string_of_expr ")" e_opt 

@@ -38,7 +38,6 @@ let rec walk_expr f e =
 
   let super_walk e = match e with
   | NumE _
-  | StringE _
   | GetCurFrameE
   | GetCurLabelE
   | GetCurContextE -> e
@@ -92,7 +91,7 @@ let rec walk_cond f c =
   | ContextKindC (s, e) -> ContextKindC (s, new_e e)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
-  | ValidC e -> ValidC (new_e e)
+  | IsValidC e -> IsValidC (new_e e)
   | TopLabelC -> c
   | TopFrameC -> c
   | TopValueC (Some e) -> TopValueC (Some (new_e e))

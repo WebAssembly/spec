@@ -3,7 +3,6 @@ open Util.Record
 
 let rec free_expr = function
   | NumE _
-  | StringE _
   | GetCurLabelE
   | GetCurContextE
   | GetCurFrameE
@@ -51,7 +50,7 @@ let rec free_cond = function
   | ContextKindC (_, e)
   | IsDefinedC e
   | IsCaseOfC (e, _)
-  | ValidC e
+  | IsValidC e
   | TopValueC (Some e)
   | TopValuesC e -> free_expr e
 
