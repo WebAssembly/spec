@@ -459,7 +459,7 @@ For types, however, allocation is defined in terms of :ref:`rolling <aux-roll-re
    \alloctype^\ast(\rectype^n) = \deftype^\ast \\[1ex]
    \mbox{where for all $i < n$:} \hfill \\
    \rectype^n[i] &=& \REC~\subtype_i^{m_i} \\
-   \deftype^\ast[x_i \slice m_i] &=& \rolldt_{x_i}(\REC~\subtype_i^{m_i})[\subst \deftype^\ast[0 \slice x_i]) \\
+   \deftype^\ast[x_i \slice m_i] &=& \rolldt_{x_i}(\REC~\subtype_i^{m_i})[\subst \deftype^\ast[0 \slice x_i]] \\
    x_{i+1} &=& x_i + m_i \\
    x_n &=& |\deftype^\ast| \\
    \end{array}
