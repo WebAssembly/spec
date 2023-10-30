@@ -13,9 +13,9 @@ let value_to_list v = v |> value_to_array |> Array.to_list
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
 let check_i32_const = function
-  | ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n) ]) ->
+  | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
     let n' = Int64.logand 0xFFFFFFFFL n in
-    ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n') ])
+    CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
   | v -> v
 
 let rec int64_exp base exponent =
@@ -80,9 +80,9 @@ and access_path env base path = match path with
       ListV (ref a')
   | DotP (str, _) -> (
       match base with
-      | FrameV (_, RecordV r) -> Record.find str r
+      | FrameV (_, StrV r) -> Record.find str r
       | StoreV s -> Record.find str !s
-      | RecordV r -> Record.find str r
+      | StrV r -> Record.find str r
       | v ->
           string_of_value v
           |> Printf.sprintf "Not a record: %s"
@@ -105,9 +105,9 @@ and replace_path env base path v_new = match path with
   | DotP (str, _) ->
       let r = (
         match base with
-        | FrameV (_, RecordV r) -> r
+        | FrameV (_, StrV r) -> r
         | StoreV s -> !s
-        | RecordV r -> r
+        | StrV r -> r
         | v ->
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
@@ -115,7 +115,7 @@ and replace_path env base path v_new = match path with
       in
       let r_new = Record.clone r in
       Record.replace str v_new r_new;
-      RecordV r_new
+      StrV r_new
 
 and eval_expr env expr =
   match expr with
@@ -140,7 +140,7 @@ and eval_expr env expr =
       | _ -> failwith "Not an integer"
       end
   (* Function Call *)
-  | AppE (fname, el) ->
+  | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
     begin match dsl_function_call fname args with
     | Some v -> v
@@ -154,21 +154,21 @@ and eval_expr env expr =
     end
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
-  | ConcatE (e1, e2) ->
+  | CatE (e1, e2) ->
       let a1 = eval_expr env e1 |> value_to_array in
       let a2 = eval_expr env e2 |> value_to_array in
       ListV (Array.append a1 a2 |> ref)
-  | LengthE e ->
+  | LenE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> 
+  | StrE r -> 
       let elist = Record.to_list r in
       let vlist = List.map (fun (k, e) -> ((string_of_kwd k), !e |> eval_expr env |> ref)) elist in
-      RecordV (Record.of_list vlist)
-  | AccessE (e, p) ->
+      StrV (Record.of_list vlist)
+  | AccE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
-  | ExtendE (e1, ps, e2, dir) ->
+  | ExtE (e1, ps, e2, dir) ->
       let v_new = eval_expr env e2 |> value_to_array in
       let rec extend base ps = (
         match ps with
@@ -187,7 +187,7 @@ and eval_expr env expr =
       in
       let base = eval_expr env e1 in
       extend base ps
-  | ReplaceE (e1, ps, e2) ->
+  | UpdE (e1, ps, e2) ->
       let v_new = eval_expr env e2 in
       let rec replace base ps = (
         match ps with
@@ -198,9 +198,9 @@ and eval_expr env expr =
       in
       let base = eval_expr env e1 in
       replace base ps
-  | ConstructE ((tag, _), el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | CaseE ((tag, _), el) -> CaseV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
-  | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
+  | TupE (e1, e2) -> TupV (eval_expr env e1, eval_expr env e2)
   (* Context *)
   | ArityE e -> (
       match eval_expr env e with
@@ -212,7 +212,7 @@ and eval_expr env expr =
       let v1 = Option.map (eval_expr env) e1 in
       let v2 = eval_expr env e2 in
       match (v1, v2) with
-      | (Some (NumV _)|None), RecordV _ -> FrameV (v1, v2)
+      | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
@@ -224,10 +224,10 @@ and eval_expr env expr =
   | GetCurLabelE -> WasmContext.get_current_label ()
   | GetCurContextE -> WasmContext.get_current_context ()
   | ContE e -> (
-    let v = eval_expr env e in
-    match v with
-    | LabelV (_, vs) -> vs
-    | _ -> failwith "Not a label")
+      let v = eval_expr env e in
+      match v with
+      | LabelV (_, vs) -> vs
+      | _ -> failwith "Not a label")
   | VarE name -> Env.find name env
   (* Optimized getter for simple IterE(VarE, ...) *)
   | IterE (VarE name, [name'], _) when name = name' -> Env.find name env
@@ -246,6 +246,7 @@ and eval_expr env expr =
       env
       |> create_sub_al_context names iter
       |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
+
     in
 
     begin match vs, iter with
@@ -295,19 +296,19 @@ and eval_cond env cond =
       end
   | IsCaseOfC (e, (expected_tag, _)) -> (
       match eval_expr env e with
-      | ConstructV (tag, _) -> expected_tag = tag
+      | CaseV (tag, _) -> expected_tag = tag
       | _ -> false)
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
   | IsValidC e -> (
       let valid_lim k = function
-        | PairV (NumV n, NumV m) -> n <= m && m <= k
+        | TupV (NumV n, NumV m) -> n <= m && m <= k
         | _ -> false
       in
       match eval_expr env e with
       (* valid_tabletype *)
-      | PairV (lim, _) -> valid_lim 0xffffffffL lim
+      | TupV (lim, _) -> valid_lim 0xffffffffL lim
       (* valid_memtype *)
-      | ConstructV ("I8", [ lim ]) -> valid_lim 0x10000L lim
+      | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim
       (* valid_other *)
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
   )
@@ -362,13 +363,13 @@ and assign lhs rhs env =
       List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) new_env
-  | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
+  | TupE (lhs1, lhs2), TupV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
       List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env
-  | ConstructE ((lhs_tag, _), lhs_s), ConstructV (rhs_tag, rhs_s)
+  | CaseE ((lhs_tag, _), lhs_s), CaseV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
@@ -382,8 +383,8 @@ and assign lhs rhs env =
       | DivOp -> Int64.mul
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
-  | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
-  | RecordE r1, RecordV r2 when has_same_keys r1 r2 ->
+  | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
+  | StrE r1, StrV r2 when has_same_keys r1 r2 ->
       Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
@@ -435,7 +436,7 @@ and call_builtin name =
     | _ -> failwith "builtin doesn't return value"
   in
   let as_const ty = function
-  | ConstructV ("CONST", [ ConstructV (ty', []) ; n ]) when ty = ty' -> n
+  | CaseV ("CONST", [ CaseV (ty', []) ; n ]) when ty = ty' -> n
   | _ -> failwith ("Not " ^ ty ^ ".CONST") in
   match name with
   | "PRINT" -> print_endline "- print: ()"
@@ -463,11 +464,11 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) ->
+  | CaseV ("CONST", _) | CaseV ("REF.NULL", _) ->
     WasmContext.push_value wasm_instr
-  | ConstructV (name, []) when is_builtin name ->
+  | CaseV (name, []) when is_builtin name ->
     call_builtin name;
-  | ConstructV (fname, args) ->
+  | CaseV (fname, args) ->
     call_algo fname args |> ignore
   | v ->
     string_of_value v
@@ -508,11 +509,11 @@ and interp_instr (env: env) (instr: instr): env =
     Env.add name (listV vs) env
   | PopI e ->
     begin match (e, WasmContext.pop_value ()) with
-    | ConstructE (("CONST", _), [VarE nt; VarE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | CaseE (("CONST", _), [VarE nt; VarE name]), CaseV ("CONST", [ ty; v ]) ->
       env
       |> Env.add nt ty
       |> Env.add name v
-    | ConstructE (("CONST", _), [tyE; VarE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | CaseE (("CONST", _), [tyE; VarE name]), CaseV ("CONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       Env.add name v env
     | VarE name, v -> Env.add name v env
@@ -598,7 +599,7 @@ and interp_instr (env: env) (instr: instr): env =
     env
   | ReplaceI (e1, DotP (s, _), e2) ->
     begin match eval_expr env e1 with
-    | RecordV r ->
+    | StrV r ->
         let v = eval_expr env e2 in
         Record.replace s v r
     | _ -> failwith "Not a Record"

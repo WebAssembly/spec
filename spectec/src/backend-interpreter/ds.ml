@@ -148,7 +148,7 @@ end
 module WasmContext = struct
   type t = value * value list * value list
 
-  let top_level_context = StringV "TopLevelContexet", [], []
+  let top_level_context = TextV "TopLevelContexet", [], []
   let context_stack: t list ref = ref [top_level_context]
 
   let get_context () =

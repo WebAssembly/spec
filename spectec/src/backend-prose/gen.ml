@@ -32,7 +32,7 @@ let rec if_expr_to_instrs e =
     let op = cmpop_to_cmpop op in
     let e1 = exp_to_expr e1 in
     let e2 = exp_to_expr e2 in
-    [ match e2 with LengthE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
+    [ match e2 with LenE _ -> CmpI (e2, swap op, e1) | _ -> CmpI (e1, op, e2) ]
   | Ast.BinE (Ast.AndOp, e1, e2) ->
     if_expr_to_instrs e1 @ if_expr_to_instrs e2
   | Ast.BinE (Ast.OrOp, e1, e2) ->

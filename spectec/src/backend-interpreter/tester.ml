@@ -66,7 +66,7 @@ let al_of_result result = match result.it with
   | Script.NumResult (Script.NanPat {it = (Values.F32 Script.ArithmeticNan); _}) -> arithmetic_nan "F32"
   | Script.NumResult (Script.NanPat {it = (Values.F64 Script.ArithmeticNan); _}) -> arithmetic_nan "F64"
   | Script.RefResult (Script.RefPat r) -> Construct.al_of_value (Values.Ref r.it)
-  | _ -> StringV "TODO"
+  | _ -> TextV "TODO"
 
 (** End of helpers **)
 
@@ -91,22 +91,22 @@ let builtin () =
     let code = singleton winstr_tag in
     let ptype = List.map singleton type_tags in
     let ftype = ArrowV (listV ptype, listV []) in
-    name, RecordV [
-      "MODULE", ref (RecordV Record.empty); (* dummy module *)
-      "CODE", ref (ConstructV ("FUNC", [ ftype; listV []; listV [ code ] ]))
+    name, StrV [
+      "MODULE", ref (StrV Record.empty); (* dummy module *)
+      "CODE", ref (CaseV ("FUNC", [ ftype; listV []; listV [ code ] ]))
     ] in
 
-  let create_global_inst t v = RecordV [
+  let create_global_inst t v = StrV [
     "TYPE", t |> ref;
     "VALUE", v |> ref
   ] in
 
-  let create_table_inst t elems = RecordV [
+  let create_table_inst t elems = StrV [
     "TYPE", t |> ref;
     "ELEM", elems |> ref
   ] in
 
-  let create_mem_inst t bytes_ = RecordV [
+  let create_mem_inst t bytes_ = StrV [
     "TYPE", t |> ref;
     "DATA", bytes_ |> ref
   ] in
@@ -123,24 +123,24 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_global_inst (StringV "global_type");
-    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_global_inst (StringV "global_type");
-    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_global_inst (StringV "global_type");
-    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (StringV "global_type");
+    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_global_inst (TextV "global_type");
+    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_global_inst (TextV "global_type");
+    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_global_inst (TextV "global_type");
+    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (TextV "global_type");
   ] in
   (* Builtin tables *)
-  let nulls = List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNCREF" ])) in
+  let nulls = List.init 10 (fun _ -> CaseV ("REF.NULL", [ singleton "FUNCREF" ])) in
   let tables = [
     "table",
     listV nulls
-    |> create_table_inst (PairV (PairV (NumV 10L, NumV 20L), singleton "FUNCREF"));
+    |> create_table_inst (TupV (TupV (NumV 10L, NumV 20L), singleton "FUNCREF"));
   ] in
   (* Builtin memories *)
   let zeros = List.init 0x10000 (fun _ -> NumV 0L) in
   let memories = [
     "memory",
     listV zeros
-  |> create_mem_inst (ConstructV ("I8", [ PairV (NumV 1L, NumV 2L) ]));
+  |> create_mem_inst (CaseV ("I8", [ TupV (NumV 1L, NumV 2L) ]));
   ] in
 
   let append kind (name, inst) (sto, extern) =
@@ -152,7 +152,7 @@ let builtin () =
     (* Generate ExternFunc *)
     let addr = List.length insts |> Int64.of_int in
     let new_extern =
-      RecordV [ "NAME", ref (StringV name); "VALUE", ref (ConstructV (kind, [ NumV addr ])) ]
+      StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ NumV addr ])) ]
     in
 
     (new_sto, new_extern :: extern) in
@@ -181,7 +181,7 @@ let builtin () =
     |> Record.add "EXPORT" (listV extern)
   in
 
-  wraped_store, RecordV module_inst
+  wraped_store, StrV module_inst
 
 
 let latest = ""
@@ -191,7 +191,7 @@ let get_module_name = function
 let find_module_inst name = Register.find name !register
 let find_export name =
     match find_module_inst name with
-    | RecordV r ->
+    | StrV r ->
         begin match Record.find "EXPORT" r with
         | ListV exs -> !exs
         | _ -> failwith "Invaild module inst"
@@ -200,7 +200,7 @@ let find_export name =
 
 let extract_addr_of tag name (export: value) =
   match export with
-  | RecordV [ "NAME", { contents = StringV (export_name) }; "VALUE", { contents = ConstructV (export_tag, [ addr ]) } ]
+  | StrV [ "NAME", { contents = TextV (export_name) }; "VALUE", { contents = CaseV (export_tag, [ addr ]) } ]
     when export_name = Ast.string_of_name name && export_tag = tag -> Some (addr)
   | _ -> None
 
@@ -209,7 +209,7 @@ let do_invoke act = match act.it with
     let module_name = get_module_name module_name_opt in
     let module_inst = find_module_inst module_name in
     let export_insts = match module_inst with
-    | RecordV r ->
+    | StrV r ->
         begin match Record.find "EXPORT" r with
         | ListV exs -> !exs
         | _ -> failwith "Invaild module inst"
@@ -236,7 +236,7 @@ let do_invoke act = match act.it with
     Printf.eprintf "[Getting %s...]\n" (string_of_name name);
     let got =
       match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
-      | RecordV r -> Record.find "VALUE" r
+      | StrV r -> Record.find "VALUE" r
       | _ -> failwith "Not a Record"
     in
     listV [ got ]
@@ -248,7 +248,7 @@ let f64_neg_nan = F64.to_bits F64.neg_nan
 
 let is_canonical_nan t v =
   v = canonical_nan t || match v with
-  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
+  | CaseV ("CONST", [CaseV (t', []); NumV bits]) when t = t' ->
     t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
     ||
     t = "F64" && (bits = f64_pos_nan || bits = f64_neg_nan)
@@ -256,7 +256,7 @@ let is_canonical_nan t v =
 
 let is_arithmetic_nan t v =
   v = arithmetic_nan t || match v with
-  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
+  | CaseV ("CONST", [CaseV (t', []); NumV bits]) when t = t' ->
     t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
     ||
     t = "F64" && Int64.logand bits f64_pos_nan = f64_pos_nan
@@ -278,14 +278,14 @@ let assert_return actual expect =
     fail (Al.Print.string_of_value expect) (Al.Print.string_of_value actual)
 
 let get_externval = function
-  | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
+  | CaseV ("IMPORT", [ TextV import_module_name; TextV extern_name; _ty ]) ->
 
       let export = find_export import_module_name in
 
       (* Get extern *)
       let is_matching_export export =
         match export with
-        | RecordV [ "NAME", { contents = StringV export_name }; "VALUE", value ]
+        | StrV [ "NAME", { contents = TextV export_name }; "VALUE", value ]
           when export_name = extern_name -> Some !value
         | _ -> None
       in
@@ -293,7 +293,7 @@ let get_externval = function
   | _ -> failwith "Invalid import"
 
 let get_externvals = function
-  | ConstructV ("MODULE", (ListV imports) :: _) ->
+  | CaseV ("MODULE", (ListV imports) :: _) ->
       ListV (Array.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
@@ -308,11 +308,11 @@ let rec extract_module def = match def.it with
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
-    let result = try do_invoke invoke with e -> StringV (msg_of e) in
+    let result = try do_invoke invoke with e -> TextV (msg_of e) in
     let expected_result = try
       listV (expected |> List.map al_of_result)
     with
-      e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
+      e -> TextV ("Failed during al_of_result: " ^ msg_of e) in
     assert_return result expected_result
   | Script.AssertTrap (invoke, msg) ->
     let expected = "Trap due to " ^ msg in

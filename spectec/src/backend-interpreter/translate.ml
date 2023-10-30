@@ -80,13 +80,13 @@ and exp2expr exp =
   match exp.it with
   | Ast.NatE n -> NumE (Int64.of_int n)
   (* List *)
-  | Ast.LenE inner_exp -> LengthE (exp2expr inner_exp)
+  | Ast.LenE inner_exp -> LenE (exp2expr inner_exp)
   | Ast.ListE exps -> ListE (List.map exp2expr exps)
   | Ast.IdxE (exp1, exp2) ->
-      AccessE (exp2expr exp1, IdxP (exp2expr exp2))
+      AccE (exp2expr exp1, IdxP (exp2expr exp2))
   | Ast.SliceE (exp1, exp2, exp3) ->
-      AccessE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
-  | Ast.CatE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
+      AccE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
+  | Ast.CatE (exp1, exp2) -> CatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
   | Ast.VarE id -> VarE id.it
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
@@ -95,7 +95,7 @@ and exp2expr exp =
       IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) -> 
-      AccessE (exp2expr inner_exp, DotP (name2kwd p inner_exp.note))
+      AccE (exp2expr inner_exp, DotP (name2kwd p inner_exp.note))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
@@ -105,15 +105,15 @@ and exp2expr exp =
         | Ast.Atom name, fieldexp ->
             let extend_expr = exp2expr fieldexp in
             if nonempty extend_expr then
-              ExtendE (acc, [ DotP (name2kwd name inner_exp.note) ], extend_expr, Front)
+              ExtE (acc, [ DotP (name2kwd name inner_exp.note) ], extend_expr, Front)
             else
               acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
         (exp2expr inner_exp) expfields
   (* extension of record field *)
-  | Ast.ExtE (base, path, v) -> ExtendE (exp2expr base, path2paths path, exp2expr v, Back)
+  | Ast.ExtE (base, path, v) -> ExtE (exp2expr base, path2paths path, exp2expr v, Back)
   (* update of record field *)
-  | Ast.UpdE (base, path, v) -> ReplaceE (exp2expr base, path2paths path, exp2expr v)
+  | Ast.UpdE (base, path, v) -> UpdE (exp2expr base, path2paths path, exp2expr v)
   (* Binary / Unary operation *)
   | Ast.UnE (op, exp) ->
       let exp' = exp2expr exp in
@@ -136,11 +136,11 @@ and exp2expr exp =
       in
       BinE (op, lhs, rhs)
   (* ConstructE *)
-  | Ast.CaseE (Ast.Atom cons, arg) -> ConstructE (name2kwd cons exp.note, exp2args arg)
+  | Ast.CaseE (Ast.Atom cons, arg) -> CaseE (name2kwd cons exp.note, exp2args arg)
   (* Tuple *)
   | Ast.TupE exps -> ListE (List.map exp2expr exps)
   (* Call *)
-  | Ast.CallE (id, inner_exp) -> AppE (id.it, exp2args inner_exp)
+  | Ast.CallE (id, inner_exp) -> CallE (id.it, exp2args inner_exp)
   (* Record expression *)
   | Ast.StrE expfields ->
       let f acc = function
@@ -150,7 +150,7 @@ and exp2expr exp =
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith
       in
       let record = List.fold_left f Record.empty expfields in
-      RecordE record
+      StrE record
   | Ast.MixE (op, e) -> (
       let exps =
         match e.it with
@@ -161,40 +161,40 @@ and exp2expr exp =
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
       | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
-          PairE (exp2expr e1, exp2expr e2)
+          TupE (exp2expr e1, exp2expr e2)
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
-          ConstructE (("FUNC", "func"), List.map exp2expr exps)
+          CaseE (("FUNC", "func"), List.map exp2expr exps)
       | [ [ Ast.Atom "OK" ] ], [] ->
-          ConstructE (("OK", "datatype"), [])
+          CaseE (("OK", "datatype"), [])
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
-          PairE (ConstructE (("MUT", "globaltype"), []), exp2expr t)
+          TupE (CaseE (("MUT", "globaltype"), []), exp2expr t)
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          PairE (IterE (VarE "mut", ["mut"], Opt), exp2expr t)
+          TupE (IterE (VarE "mut", ["mut"], Opt), exp2expr t)
       | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
-          ConstructE (("MODULE", "module"), List.map exp2expr el)
+          CaseE (("MODULE", "module"), List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
-          ConstructE (("IMPORT", "import"), List.map exp2expr el)
+          CaseE (("IMPORT", "import"), List.map exp2expr el)
       | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
-          ConstructE (("GLOBAL", "global"), List.map exp2expr el)
+          CaseE (("GLOBAL", "global"), List.map exp2expr el)
       | [ [ Ast.Atom "TABLE" ]; [] ], el ->
-          ConstructE (("TABLE", "table"), List.map exp2expr el)
+          CaseE (("TABLE", "table"), List.map exp2expr el)
       | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
-          ConstructE (("MEMORY", "mem"), List.map exp2expr el)
+          CaseE (("MEMORY", "mem"), List.map exp2expr el)
       | [ []; [ Ast.Atom "I8" ] ], el ->
-          ConstructE (("I8", "memtype"), List.map exp2expr el)
+          CaseE (("I8", "memtype"), List.map exp2expr el)
       | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE (("ELEM", "elem"), List.map exp2expr el)
+          CaseE (("ELEM", "elem"), List.map exp2expr el)
       | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
-          ConstructE (("DATA", "data"), List.map exp2expr el)
+          CaseE (("DATA", "data"), List.map exp2expr el)
       | [ [ Ast.Atom "START" ]; [] ], el ->
-          ConstructE (("START", "start"), List.map exp2expr el)
+          CaseE (("START", "start"), List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
-          ConstructE (("EXPORT", "export"), List.map exp2expr el)
+          CaseE (("EXPORT", "export"), List.map exp2expr el)
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
   (* Yet *)
@@ -306,7 +306,7 @@ let rec rhs2instrs exp =
       [ IfI (IsDefinedC (VarE id.it),
         [
           LetI (OptE (Some new_name), VarE id.it);
-          ExecuteI (ConstructE (name2kwd atomid note, [ new_name ]))
+          ExecuteI (CaseE (name2kwd atomid note, [ new_name ]))
         ],
         []) ]
   (* Push *)
@@ -332,7 +332,7 @@ let rec rhs2instrs exp =
         }) ->
           [
             LetI (VarE "F", FrameE (Some (VarE arity.it), VarE fname.it));
-            EnterI (VarE "F", ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs labelexp);
+            EnterI (VarE "F", ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs labelexp);
           ]
   (* TODO: Label *)
   | Ast.CaseE
@@ -350,16 +350,16 @@ let rec rhs2instrs exp =
       | Ast.CatE (valexp, instrsexp) ->
           [
             LetI (VarE "L", label_expr);
-            EnterI (VarE "L", ConcatE (exp2expr instrsexp, ListE ([ConstructE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
+            EnterI (VarE "L", CatE (exp2expr instrsexp, ListE ([CaseE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
           ]
       | _ ->
           [
             LetI (VarE "L", label_expr);
-            EnterI (VarE "L", ConcatE(exp2expr instrs_exp2, ListE ([ConstructE (("LABEL_", ""), [])])), []);
+            EnterI (VarE "L", CatE(exp2expr instrs_exp2, ListE ([CaseE (("LABEL_", ""), [])])), []);
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ ExecuteI (ConstructE (name2kwd atomid exp.note, exp2args argexp)) ]
+      [ ExecuteI (CaseE (name2kwd atomid exp.note, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -419,10 +419,10 @@ let get_lhs_name () =
 
 let extract_bound_names lhs rhs targets cont = match lhs with
   (* TODO: Make this actually consider the targets *)
-  | AppE (f, args) ->
+  | CallE (f, args) ->
     let front_args, last_arg = Util.Lib.List.split_last args in
     let new_lhs = last_arg in
-    let new_rhs = AppE ("inverse_of_" ^ f, front_args @ [ rhs ]) in
+    let new_rhs = CallE ("inverse_of_" ^ f, front_args @ [ rhs ]) in
     new_lhs, new_rhs, cont
   | _ ->
     let contains_bound_name e =
@@ -467,12 +467,12 @@ let rec letI lhs rhs targets cont =
     ) bindings cont
   in
   match lhs with
-  | ConstructE (tag, es) ->
+  | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
       IfI
         ( IsCaseOfC (rhs, tag),
-          LetI (ConstructE (tag, es'), rhs) :: translate_bindings bindings,
+          LetI (CaseE (tag, es'), rhs) :: translate_bindings bindings,
           [] );
     ]
   | ListE es ->
@@ -482,7 +482,7 @@ let rec letI lhs rhs targets cont =
     else
     [
       IfI
-        ( CmpC (EqOp, LengthE rhs, NumE (Int64.of_int (List.length es))),
+        ( CmpC (EqOp, LenE rhs, NumE (Int64.of_int (List.length es))),
           LetI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
@@ -515,7 +515,7 @@ let rec letI lhs rhs targets cont =
           LetI (a, BinE (SubOp, rhs, b)) :: cont,
           [] );
     ]
-  | ConcatE (prefix, suffix) ->
+  | CatE (prefix, suffix) ->
     let handle_list e =
      
       match e with
@@ -532,13 +532,13 @@ let rec letI lhs rhs targets cont =
     let cond = match length_p, length_s with
       | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
-      | None, Some l -> CmpC (GeOp, LengthE rhs, l)
-      | Some l1, Some l2 -> CmpC (EqOp, LengthE rhs, BinE (AddOp, l1, l2))
+      | None, Some l -> CmpC (GeOp, LenE rhs, l)
+      | Some l1, Some l2 -> CmpC (EqOp, LenE rhs, BinE (AddOp, l1, l2))
     in
     [
       IfI
         ( cond,
-          LetI (ConcatE (prefix', suffix'), rhs)
+          LetI (CatE (prefix', suffix'), rhs)
             :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
@@ -592,8 +592,8 @@ let rec rulepr2instr pr =
   ) when id.it = "Exec_expr_const" ->
     EnterI (
       FrameE (None, VarE f.it),
-      ListE [ConstructE (("FRAME_", ""), [])],
-      [ LetI (exp2expr rhs, AppE ("exec_expr_const", [ exp2expr lhs ])) ]
+      ListE [CaseE (("FRAME_", ""), [])],
+      [ LetI (exp2expr rhs, CallE ("exec_expr_const", [ exp2expr lhs ])) ]
     )
   | _ -> failwith "We do not allow iter on premises other than `RulePr`"
 
@@ -812,7 +812,7 @@ let config_helper2instrs after arity return clause =
     lhs
   ]; _ }) ->
     let enter =
-      EnterI (FrameE (Some arity, VarE f.it), ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs lhs)
+      EnterI (FrameE (Some arity, VarE f.it), ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs lhs)
     in
     enter :: after @ return |> prems2instrs [] prems
   | _ -> failwith "unreachable"

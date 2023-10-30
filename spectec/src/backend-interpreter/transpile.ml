@@ -27,12 +27,12 @@ let both_empty cond1 cond2 =
   let get_list = function
   | CmpC (EqOp, e, ListE [])
   | CmpC (EqOp, ListE [], e)
-  | CmpC (EqOp, LengthE e, NumE 0L)
-  | CmpC (EqOp, NumE 0L, LengthE e)
-  | CmpC (LtOp, LengthE e, NumE 1L)
-  | CmpC (LeOp, LengthE e, NumE 0L)
-  | CmpC (GeOp, NumE 0L, LengthE e)
-  | CmpC (GeOp, NumE 1L, LengthE e) -> Some e
+  | CmpC (EqOp, LenE e, NumE 0L)
+  | CmpC (EqOp, NumE 0L, LenE e)
+  | CmpC (LtOp, LenE e, NumE 1L)
+  | CmpC (LeOp, LenE e, NumE 0L)
+  | CmpC (GeOp, NumE 0L, LenE e)
+  | CmpC (GeOp, NumE 1L, LenE e) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -42,12 +42,12 @@ let both_non_empty cond1 cond2 =
   let get_list = function
   | CmpC (NeOp, e, ListE [])
   | CmpC (NeOp, ListE [], e)
-  | CmpC (NeOp, LengthE e, NumE 0L)
-  | CmpC (NeOp, NumE 0L, LengthE e)
-  | CmpC (LtOp, NumE 0L, LengthE e)
-  | CmpC (GtOp, LengthE e, NumE 0L)
-  | CmpC (LeOp, NumE 1L, LengthE e)
-  | CmpC (GeOp, LengthE e, NumE 1L) -> Some e
+  | CmpC (NeOp, LenE e, NumE 0L)
+  | CmpC (NeOp, NumE 0L, LenE e)
+  | CmpC (LtOp, NumE 0L, LenE e)
+  | CmpC (GtOp, LenE e, NumE 0L)
+  | CmpC (LeOp, NumE 1L, LenE e)
+  | CmpC (GeOp, LenE e, NumE 1L) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -278,16 +278,16 @@ let enhance_readability instrs =
 (** Walker-based Translpiler **)
 let rec mk_access ps base =
   match ps with
-  | h :: t -> AccessE (base, h) |> mk_access t
+  | h :: t -> AccE (base, h) |> mk_access t
   | [] -> base
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_args = List.filter (function
-  | PairE (VarE "s", VarE "f")
+  | TupE (VarE "s", VarE "f")
   | VarE "z" -> false
-  | PairE (VarE s, VarE "f")
+  | TupE (VarE s, VarE "f")
     when String.starts_with ~prefix:"s_" s -> false
-  | PairE (VarE s, VarE f)
+  | TupE (VarE s, VarE f)
     when String.starts_with ~prefix:"s_" s
     && String.starts_with ~prefix:"f_" f
       -> false
@@ -297,17 +297,17 @@ let hide_state_args = List.filter (function
 
 let hide_state_instr = function
   (* Return *)
-  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), VarE "f")))
-  | ReturnI (Some (PairE (VarE "s", ReplaceE (e1, pl, e2)))) ->
+  | ReturnI (Some (TupE (UpdE (e1, pl, e2), VarE "f")))
+  | ReturnI (Some (TupE (VarE "s", UpdE (e1, pl, e2)))) ->
       let rpl = List.rev pl in
       let target =
         List.tl rpl
         |> List.fold_right
-          (fun p acc -> AccessE (acc, p))
+          (fun p acc -> AccE (acc, p))
       in
       [ ReplaceI (target e1, List.hd rpl, e2) ]
-  | ReturnI (Some (PairE (VarE "s", VarE "f"))) -> []
-  | ReturnI (Some (PairE ((VarE s), VarE f)))
+  | ReturnI (Some (TupE (VarE "s", VarE "f"))) -> []
+  | ReturnI (Some (TupE ((VarE s), VarE f)))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> []
 
@@ -315,26 +315,26 @@ let hide_state_instr = function
   | ReturnI (Some (VarE s))
     when String.starts_with ~prefix:"s_" s -> []
   (* Append *)
-  | LetI (VarE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
+  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Append + Return *)
-  | ReturnI (Some (ListE [ExtendE (e1, ps, ListE [ e2 ], Back); e3]))
+  | ReturnI (Some (ListE [ExtE (e1, ps, ListE [ e2 ], Back); e3]))
     when VarE "s" = e1 ->
       let addr = VarE "a" in
       [ LetI (addr, e3); AppendI (mk_access ps e1, e2); ReturnI (Some addr) ]
   (* Perform *)
-  | LetI (PairE (VarE s, VarE f), AppE (fname, el))
+  | LetI (TupE (VarE s, VarE f), CallE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ PerformI (fname, el) ]
-  | LetI (VarE s, AppE (fname, el))
+  | LetI (VarE s, CallE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (fname, el) ]
   (* Append *)
-  | LetI (VarE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
+  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Replace *)
-  | LetI (VarE s, ReplaceE (e1, ps, e2))
+  | LetI (VarE s, UpdE (e1, ps, e2))
     when String.starts_with ~prefix:"s_" s ->
       begin match List.rev ps with
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
@@ -345,19 +345,19 @@ let hide_state_instr = function
 
 
 let hide_state = function
-  | AppE (f, args) -> AppE (f, hide_state_args args)
+  | CallE (f, args) -> CallE (f, hide_state_args args)
   | ListE [ VarE "s"; e ]
   | ListE [ VarE "s'"; e ] -> e
   | ListE [ VarE s; e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
 let simplify_record_concat = function
-  | ConcatE (e1, e2) ->
+  | CatE (e1, e2) ->
     let nonempty = function ListE [] | OptE None -> false | _ -> true in
     let remove_empty_field = function
-      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty v) r)
+      | StrE r -> StrE (Record.filter (fun _ v -> nonempty v) r)
       | e -> e in
-    ConcatE (remove_empty_field e1, remove_empty_field e2)
+    CatE (remove_empty_field e1, remove_empty_field e2)
   | e -> e
 
 let flatten_if = function
@@ -375,13 +375,13 @@ let transpiler algo =
 
   match walker algo with
   | RuleA (name, params, body) -> (match params with
-    | PairE (_, VarE "f") :: tail ->
+    | TupE (_, VarE "f") :: tail ->
         RuleA (name, tail, LetI (VarE "f", GetCurFrameE) :: body |> remove_dead_assignment)
     | VarE "s" :: tail ->
         RuleA (name, tail, body)
     | _ -> RuleA(name, params, body))
   | FuncA (name, params, body) -> (match params with
-    | PairE (_, VarE "f") :: tail ->
+    | TupE (_, VarE "f") :: tail ->
         FuncA (name, tail, LetI (VarE "f", GetCurFrameE) :: body |> remove_dead_assignment)
     | VarE "s" :: tail ->
         FuncA (name, tail, body)

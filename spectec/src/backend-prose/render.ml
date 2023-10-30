@@ -146,38 +146,38 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "{%s} %s {%s}" se1 sop se2 in
       if in_math then s else render_math s
-  | Al.Ast.PairE (e1, e2) ->
+  | Al.Ast.TupE (e1, e2) ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.AppE (fn, es) ->
+  | Al.Ast.CallE (fn, es) ->
       let sfn = render_funcname env fn in
       let ses = render_list (render_expr env true) "" ", " "" es in
       let s = sprintf "%s(%s)" sfn ses in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
-  | Al.Ast.ConcatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
+  | Al.Ast.CatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
       let se2 = render_expr env true (List.hd e2) in
       let s = sprintf "%s~%s" se1 se2 in 
       if in_math then s else render_math s
-  | Al.Ast.ConcatE (Al.Ast.ListE e1, e2) when List.length e1 = 1 ->
+  | Al.Ast.CatE (Al.Ast.ListE e1, e2) when List.length e1 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConcatE (e1, Al.Ast.ListE e2) when List.length e2 = 1 ->
+  | Al.Ast.CatE (e1, Al.Ast.ListE e2) when List.length e2 = 1 ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true (List.hd e2) in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConcatE (e1, e2) ->
+  | Al.Ast.CatE (e1, e2) ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.LengthE e ->
+  | Al.Ast.LenE e ->
       let se = render_expr env true e in
       if in_math then "|" ^ se ^ "|" else "the length of " ^ render_math se
   | Al.Ast.ArityE e -> sprintf "the arity of %s" (render_expr env in_math e)
@@ -197,12 +197,12 @@ and render_expr env in_math = function
           "\\epsilon"
       in
       if in_math then sel else render_math sel
-  | Al.Ast.AccessE (e, p) ->
+  | Al.Ast.AccE (e, p) ->
       let se = render_expr env true e in
       let sp = render_path env p in
       let s = sprintf "%s%s" se sp in
       if in_math then s else render_math s
-  | Al.Ast.ExtendE (e1, ps, e2, dir) ->
+  | Al.Ast.ExtE (e1, ps, e2, dir) ->
       let se1 = render_expr env in_math e1 in
       let sps = render_paths env in_math ps in
       let se2 = render_expr env in_math e2 in
@@ -214,12 +214,12 @@ and render_expr env in_math = function
         (match dir with
         | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
         | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.ReplaceE (e1, ps, e2) ->
+  | Al.Ast.UpdE (e1, ps, e2) ->
       sprintf "%s with %s replaced by %s" 
         (render_expr env in_math e1) 
         (render_paths env in_math ps)
         (render_expr env in_math e2)
-  | Al.Ast.RecordE r ->
+  | Al.Ast.StrE r ->
       let sr = 
         Util.Record.Record.fold
           (fun k v acc -> acc @ [ render_kwd env k ^ "~" ^ render_expr env true v ])
@@ -248,17 +248,17 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (tag, []) ->
+  | Al.Ast.CaseE (tag, []) ->
       let stag = render_kwd env tag in
       if in_math then stag else render_math stag
   (* TODO a hard-coded hint for CONST *)
-  | Al.Ast.ConstructE (("CONST", _) as tag, [ e1; e2 ])->
+  | Al.Ast.CaseE (("CONST", _) as tag, [ e1; e2 ])->
       let stag = render_kwd env tag in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s.%s~%s" se1 stag se2 in
       if in_math then s else render_math s
-  | Al.Ast.ConstructE (tag, es) ->
+  | Al.Ast.CaseE (tag, es) ->
       let stag = render_kwd env tag in
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" stag ses in
@@ -437,11 +437,11 @@ let rec render_al_instr env algoname index depth = function
   | Al.Ast.ExecuteSeqI e ->
       sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.PerformI (n, es) ->
-      sprintf "%s Perform %s." (render_order index depth) (render_expr env false (Al.Ast.AppE (n, es)))
+      sprintf "%s Perform %s." (render_order index depth) (render_expr env false (Al.Ast.CallE (n, es)))
   | Al.Ast.ExitI -> render_order index depth ^ " Exit current context."
   | Al.Ast.ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s with %s." (render_order index depth)
-        (render_expr env false (Al.Ast.AccessE (e1, p))) (render_expr env false e2)
+        (render_expr env false (Al.Ast.AccE (e1, p))) (render_expr env false e2)
   | Al.Ast.AppendI (e1, e2) ->
       sprintf "%s Append %s to the %s." (render_order index depth)
         (render_expr env false e2) (render_expr env false e1)
@@ -465,10 +465,10 @@ let render_kwd_title env kwd params =
     else if name = "FRAME" then ("FRAME_", syntax)
     else kwd 
   in
-  render_expr env false (Al.Ast.ConstructE (kwd, params))
+  render_expr env false (Al.Ast.CaseE (kwd, params))
 
 let render_funcname_title env fname params =
-  render_expr env false (Al.Ast.AppE (fname, params))
+  render_expr env false (Al.Ast.CallE (fname, params))
 
 let render_pred env name params instrs =
   let (pname, syntax) = name in

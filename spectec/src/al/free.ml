@@ -9,23 +9,23 @@ let rec free_expr = function
   | YetE _ -> []
   | VarE n -> [n]
   | UnE (_, e)
-  | LengthE e
+  | LenE e
   | ArityE e
   | ContE e -> free_expr e
   | BinE (_, e1, e2)
-  | ConcatE (e1, e2)
-  | PairE (e1, e2)
+  | CatE (e1, e2)
+  | TupE (e1, e2)
   | ArrowE (e1, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) ->
       Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e
-  | AppE (_, es)
+  | CallE (_, es)
   | ListE es
-  | ConstructE (_, es) -> List.concat_map free_expr es
-  | RecordE r -> Record.fold (fun _k e acc -> free_expr e @ acc) r []
-  | AccessE (e, p) -> free_expr e @ free_path p
-  | ExtendE (e1, ps, e2, _)
-  | ReplaceE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
+  | CaseE (_, es) -> List.concat_map free_expr es
+  | StrE r -> Record.fold (fun _k e acc -> free_expr e @ acc) r []
+  | AccE (e, p) -> free_expr e @ free_path p
+  | ExtE (e1, ps, e2, _)
+  | UpdE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
   | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
   | IterE (e, _, i) -> free_expr e @ free_iter i
 and free_iter = function
