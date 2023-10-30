@@ -204,7 +204,7 @@ and exp2expr exp =
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
           PairE (IterE (NameE "mut", ["mut"], Opt), exp2expr t)
-      | [ [ Ast.Atom "MODULE" ]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Star]; [Quest]; [Star] ], el ->
+      | [ Ast.Atom "MODULE" ] :: _, el ->
           ConstructE (("MODULE", "module"), List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
           ConstructE (("IMPORT", "import"), List.map exp2expr el)
@@ -861,7 +861,7 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiate" then
-          [ReturnI (Some (NameE "m"))] |> config_helper2instrs [] (NumE 0L)
+          [ReturnI (Some (NameE "mm"))] |> config_helper2instrs [] (NumE 0L)
         else if id.it = "invoke" then
           [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))] (NameE "k")
         else
