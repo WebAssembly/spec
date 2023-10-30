@@ -731,6 +731,12 @@ subst_all_reftype rt ht^n
 subst_all_deftype dt ht^n
 1. Return $subst_deftype(dt, $idx(x)^(x<n), ht^n).
 
+subst_all_deftypes fresh_0* ht*
+1. If fresh_0* is [], then:
+  a. Return [].
+2. Let [dt_1] ++ dt* be fresh_0*.
+3. Return [$subst_all_deftype(dt_1, ht*)] ++ $subst_all_deftypes(dt*, ht*).
+
 rollrt x (REC st^n)
 1. Return (REC $subst_subtype(st, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
 
@@ -1046,6 +1052,15 @@ in_numtype nt fresh_0*
   a. Return YetE (BoolE false).
 2. Let [nt_1] ++ nt'* be fresh_0*.
 3. Return (YetE (CmpE (VarE "nt", EqOp, VarE "nt_1")) + $in_numtype(nt, nt'*)).
+
+alloctypes fresh_0*
+1. If fresh_0* is [], then:
+  a. Return [].
+2. Let rectype'* ++ [rectype] be fresh_0*.
+3. Let deftype'* be $alloctypes(rectype'*).
+4. Let x be |deftype'*|.
+5. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
+6. Return deftype'* ++ deftype*.
 
 allocfunc mm func
 1. Assert: Due to validation, func is of the case FUNC.
