@@ -807,6 +807,20 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
+({\mathit{s}} ; {\mathit{f}}).\mathsf{store} &=& {\mathit{s}} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+({\mathit{s}} ; {\mathit{f}}).\mathsf{frame} &=& {\mathit{f}} &  \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
 ({\mathit{s}} ; {\mathit{f}}).\mathsf{module}.\mathsf{func} &=& {\mathit{f}}.\mathsf{module}.\mathsf{func} &  \\
 \end{array}
 $$
@@ -856,6 +870,12 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 ({\mathit{s}} ; {\mathit{f}}).\mathsf{array} &=& {\mathit{s}}.\mathsf{array} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+({\mathit{s}} ; {\mathit{f}}).\mathsf{module} &=& {\mathit{f}}.\mathsf{module} &  \\
 \end{array}
 $$
 
@@ -3917,7 +3937,7 @@ $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}br\_on\_null{-}null}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_null}~{\mathit{l}}) &\hookrightarrow& (\mathsf{br}~{\mathit{l}}) &\quad
   \mbox{if}~{\mathit{val}} = \mathsf{ref.null}~{\mathit{ht}} \\
-{[\textsc{\scriptsize E{-}br\_on\_null{-}non{-}null}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_null}~{\mathit{l}}) &\hookrightarrow& {\mathit{val}} &\quad
+{[\textsc{\scriptsize E{-}br\_on\_null{-}addr}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_null}~{\mathit{l}}) &\hookrightarrow& {\mathit{val}} &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -3928,7 +3948,7 @@ $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}br\_on\_non\_null{-}null}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_non\_null}~{\mathit{l}}) &\hookrightarrow& \epsilon &\quad
   \mbox{if}~{\mathit{val}} = \mathsf{ref.null}~{\mathit{ht}} \\
-{[\textsc{\scriptsize E{-}br\_on\_non\_null{-}non{-}null}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_non\_null}~{\mathit{l}}) &\hookrightarrow& {\mathit{val}}~(\mathsf{br}~{\mathit{l}}) &\quad
+{[\textsc{\scriptsize E{-}br\_on\_non\_null{-}addr}]} \quad & {\mathit{val}}~(\mathsf{br\_on\_non\_null}~{\mathit{l}}) &\hookrightarrow& {\mathit{val}}~(\mathsf{br}~{\mathit{l}}) &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -3937,11 +3957,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}br\_on\_cast{-}succeed}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{br\_on\_cast}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}}~(\mathsf{br}~{\mathit{l}}) &\quad
-  \mbox{if}~{\mathit{s}} \vdash {\mathit{ref}} : {\mathit{rt}} \\
+{[\textsc{\scriptsize E{-}br\_on\_cast{-}succeed}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{br\_on\_cast}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}}~(\mathsf{br}~{\mathit{l}}) &\quad
+  \mbox{if}~{\mathit{z}}.\mathsf{store} \vdash {\mathit{ref}} : {\mathit{rt}} \\
  &&&&\quad {\land}~\{ \begin{array}[t]{@{}l@{}}
- \}\end{array} \vdash {\mathit{rt}} \leq {{\mathrm{inst}}}_{{\mathit{f}}.\mathsf{module}}({\mathit{rt}}_{{2}}) \\
-{[\textsc{\scriptsize E{-}br\_on\_cast{-}fail}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{br\_on\_cast}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}} &\quad
+ \}\end{array} \vdash {\mathit{rt}} \leq {{\mathrm{inst}}}_{{\mathit{z}}.\mathsf{module}}({\mathit{rt}}_{{2}}) \\
+{[\textsc{\scriptsize E{-}br\_on\_cast{-}fail}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{br\_on\_cast}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}} &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -3950,11 +3970,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}br\_on\_cast\_fail{-}succeed}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{br\_on\_cast\_fail}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}} &\quad
-  \mbox{if}~{\mathit{s}} \vdash {\mathit{ref}} : {\mathit{rt}} \\
+{[\textsc{\scriptsize E{-}br\_on\_cast\_fail{-}succeed}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{br\_on\_cast\_fail}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}} &\quad
+  \mbox{if}~{\mathit{z}}.\mathsf{store} \vdash {\mathit{ref}} : {\mathit{rt}} \\
  &&&&\quad {\land}~\{ \begin{array}[t]{@{}l@{}}
- \}\end{array} \vdash {\mathit{rt}} \leq {{\mathrm{inst}}}_{{\mathit{f}}.\mathsf{module}}({\mathit{rt}}_{{2}}) \\
-{[\textsc{\scriptsize E{-}br\_on\_cast\_fail{-}fail}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{br\_on\_cast\_fail}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}}~(\mathsf{br}~{\mathit{l}}) &\quad
+ \}\end{array} \vdash {\mathit{rt}} \leq {{\mathrm{inst}}}_{{\mathit{z}}.\mathsf{module}}({\mathit{rt}}_{{2}}) \\
+{[\textsc{\scriptsize E{-}br\_on\_cast\_fail{-}fail}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{br\_on\_cast\_fail}~{\mathit{l}}~{\mathit{rt}}_{{1}}~{\mathit{rt}}_{{2}}) &\hookrightarrow& {\mathit{ref}}~(\mathsf{br}~{\mathit{l}}) &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -4088,7 +4108,7 @@ $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}ref.as\_non\_null{-}null}]} \quad & {\mathit{ref}}~\mathsf{ref.as\_non\_null} &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~{\mathit{ref}} = (\mathsf{ref.null}~{\mathit{ht}}) \\
-{[\textsc{\scriptsize E{-}ref.as\_non\_null{-}non\_null}]} \quad & {\mathit{ref}}~\mathsf{ref.as\_non\_null} &\hookrightarrow& {\mathit{ref}} &\quad
+{[\textsc{\scriptsize E{-}ref.as\_non\_null{-}addr}]} \quad & {\mathit{ref}}~\mathsf{ref.as\_non\_null} &\hookrightarrow& {\mathit{ref}} &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -4098,8 +4118,7 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}ref.eq{-}null}]} \quad & {\mathit{ref}}_{{1}}~{\mathit{ref}}_{{2}}~\mathsf{ref.eq} &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
-  \mbox{if}~{\mathit{ref}}_{{1}} = \mathsf{ref.null}~{\mathit{ht}}_{{1}} \\
- &&&&\quad {\land}~{\mathit{ref}}_{{2}} = \mathsf{ref.null}~{\mathit{ht}}_{{2}} \\
+  \mbox{if}~{\mathit{ref}}_{{1}} = \mathsf{ref.null}~{\mathit{ht}}_{{1}} \land {\mathit{ref}}_{{2}} = \mathsf{ref.null}~{\mathit{ht}}_{{2}} \\
 {[\textsc{\scriptsize E{-}ref.eq{-}true}]} \quad & {\mathit{ref}}_{{1}}~{\mathit{ref}}_{{2}}~\mathsf{ref.eq} &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
   \mbox{otherwise, if}~{\mathit{ref}}_{{1}} = {\mathit{ref}}_{{2}} \\
 {[\textsc{\scriptsize E{-}ref.eq{-}false}]} \quad & {\mathit{ref}}_{{1}}~{\mathit{ref}}_{{2}}~\mathsf{ref.eq} &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &\quad
@@ -4111,11 +4130,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}ref.test{-}true}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{ref.test}~{\mathit{rt}}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
-  \mbox{if}~{\mathit{s}} \vdash {\mathit{ref}} : {\mathit{rt}'} \\
+{[\textsc{\scriptsize E{-}ref.test{-}true}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{ref.test}~{\mathit{rt}}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
+  \mbox{if}~{\mathit{z}}.\mathsf{store} \vdash {\mathit{ref}} : {\mathit{rt}'} \\
  &&&&\quad {\land}~\{ \begin{array}[t]{@{}l@{}}
- \}\end{array} \vdash {\mathit{rt}'} \leq {{\mathrm{inst}}}_{{\mathit{f}}.\mathsf{module}}({\mathit{rt}}) \\
-{[\textsc{\scriptsize E{-}ref.test{-}false}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{ref.test}~{\mathit{rt}}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &\quad
+ \}\end{array} \vdash {\mathit{rt}'} \leq {{\mathrm{inst}}}_{{\mathit{z}}.\mathsf{module}}({\mathit{rt}}) \\
+{[\textsc{\scriptsize E{-}ref.test{-}false}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{ref.test}~{\mathit{rt}}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -4124,11 +4143,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}ref.cast{-}succeed}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{ref.cast}~{\mathit{rt}}) &\hookrightarrow& {\mathit{ref}} &\quad
-  \mbox{if}~{\mathit{s}} \vdash {\mathit{ref}} : {\mathit{rt}'} \\
+{[\textsc{\scriptsize E{-}ref.cast{-}succeed}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{ref.cast}~{\mathit{rt}}) &\hookrightarrow& {\mathit{ref}} &\quad
+  \mbox{if}~{\mathit{z}}.\mathsf{store} \vdash {\mathit{ref}} : {\mathit{rt}'} \\
  &&&&\quad {\land}~\{ \begin{array}[t]{@{}l@{}}
- \}\end{array} \vdash {\mathit{rt}'} \leq {{\mathrm{inst}}}_{{\mathit{f}}.\mathsf{module}}({\mathit{rt}}) \\
-{[\textsc{\scriptsize E{-}ref.cast{-}fail}]} \quad & ({\mathit{s}} ; {\mathit{f}}) ; {\mathit{ref}}~(\mathsf{ref.cast}~{\mathit{rt}}) &\hookrightarrow& \mathsf{trap} &\quad
+ \}\end{array} \vdash {\mathit{rt}'} \leq {{\mathrm{inst}}}_{{\mathit{z}}.\mathsf{module}}({\mathit{rt}}) \\
+{[\textsc{\scriptsize E{-}ref.cast{-}fail}]} \quad & {\mathit{z}} ; {\mathit{ref}}~(\mathsf{ref.cast}~{\mathit{rt}}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
@@ -4642,9 +4661,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{allocelems}}({\mathit{s}},\, \epsilon,\, \epsilon) &=& ({\mathit{s}},\, \epsilon) &  \\
-{\mathrm{allocelems}}({\mathit{s}},\, {\mathit{rt}}~{{\mathit{rt}'}^\ast},\, ({{\mathit{ref}}^\ast})~{{{\mathit{ref}'}^\ast}^\ast}) &=& ({\mathit{s}}_{{2}},\, {\mathit{ea}}~{{\mathit{ea}'}^\ast}) &\quad
+{\mathrm{allocelems}}({\mathit{s}},\, {\mathit{rt}}~{{\mathit{rt}'}^\ast},\, ({{\mathit{ref}}^\ast})~{({{\mathit{ref}'}^\ast})^\ast}) &=& ({\mathit{s}}_{{2}},\, {\mathit{ea}}~{{\mathit{ea}'}^\ast}) &\quad
   \mbox{if}~({\mathit{s}}_{{1}},\, {\mathit{ea}}) = {\mathrm{allocelem}}({\mathit{s}},\, {\mathit{rt}},\, {{\mathit{ref}}^\ast}) \\
- &&&\quad {\land}~({\mathit{s}}_{{2}},\, {{\mathit{ea}'}^\ast}) = {\mathrm{allocelems}}({\mathit{s}}_{{2}},\, {{\mathit{rt}'}^\ast},\, {{{\mathit{ref}'}^\ast}^\ast}) \\
+ &&&\quad {\land}~({\mathit{s}}_{{2}},\, {{\mathit{ea}'}^\ast}) = {\mathrm{allocelems}}({\mathit{s}}_{{2}},\, {{\mathit{rt}'}^\ast},\, {({{\mathit{ref}'}^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -4659,9 +4678,9 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{allocdatas}}({\mathit{s}},\, \epsilon) &=& ({\mathit{s}},\, \epsilon) &  \\
-{\mathrm{allocdatas}}({\mathit{s}},\, ({{\mathit{byte}}^\ast})~{{{\mathit{byte}'}^\ast}^\ast}) &=& ({\mathit{s}}_{{2}},\, {\mathit{da}}~{{\mathit{da}'}^\ast}) &\quad
+{\mathrm{allocdatas}}({\mathit{s}},\, ({{\mathit{byte}}^\ast})~{({{\mathit{byte}'}^\ast})^\ast}) &=& ({\mathit{s}}_{{2}},\, {\mathit{da}}~{{\mathit{da}'}^\ast}) &\quad
   \mbox{if}~({\mathit{s}}_{{1}},\, {\mathit{da}}) = {\mathrm{allocdata}}({\mathit{s}},\, {{\mathit{byte}}^\ast}) \\
- &&&\quad {\land}~({\mathit{s}}_{{2}},\, {{\mathit{da}'}^\ast}) = {\mathrm{allocdatas}}({\mathit{s}}_{{1}},\, {{{\mathit{byte}'}^\ast}^\ast}) \\
+ &&&\quad {\land}~({\mathit{s}}_{{2}},\, {{\mathit{da}'}^\ast}) = {\mathrm{allocdatas}}({\mathit{s}}_{{1}},\, {({{\mathit{byte}'}^\ast})^\ast}) \\
 \end{array}
 $$
 
@@ -4698,7 +4717,7 @@ $$
  &&&\quad {\land}~{{\mathit{da}}^\ast} = {{|{\mathit{s}}.\mathsf{data}|} + {\mathit{i}}_{{\mathit{d}}}^{{\mathit{i}}_{{\mathit{d}}}<{\mathit{n}}_{{\mathit{d}}}}} \\
  &&&\quad {\land}~{{\mathit{xi}}^\ast} = {{\mathrm{instexport}}({{\mathit{fa}}_{{\mathit{ex}}}^\ast}~{{\mathit{fa}}^\ast},\, {{\mathit{ga}}_{{\mathit{ex}}}^\ast}~{{\mathit{ga}}^\ast},\, {{\mathit{ta}}_{{\mathit{ex}}}^\ast}~{{\mathit{ta}}^\ast},\, {{\mathit{ma}}_{{\mathit{ex}}}^\ast}~{{\mathit{ma}}^\ast},\, {\mathit{export}})^\ast} \\
  &&&\quad {\land}~{\mathit{mm}} = \{ \begin{array}[t]{@{}l@{}}
-\mathsf{type}~{{\mathit{dt}}^\ast},\; \\
+\mathsf{type}~{\mathrm{alloctypes}}({{\mathit{rectype}}^\ast}),\; \\
   \mathsf{func}~{{\mathit{fa}}_{{\mathit{ex}}}^\ast}~{{\mathit{fa}}^\ast},\; \\
   \mathsf{global}~{{\mathit{ga}}_{{\mathit{ex}}}^\ast}~{{\mathit{ga}}^\ast},\; \\
   \mathsf{table}~{{\mathit{ta}}_{{\mathit{ex}}}^\ast}~{{\mathit{ta}}^\ast},\; \\
@@ -4720,7 +4739,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{concat}}_{{\mathit{instr}}}(\epsilon) &=& \epsilon &  \\
-{\mathrm{concat}}_{{\mathit{instr}}}(({{\mathit{instr}}^\ast})~{{{\mathit{instr}'}^\ast}^\ast}) &=& {{\mathit{instr}}^\ast}~{\mathrm{concat}}_{{\mathit{instr}}}({{{\mathit{instr}'}^\ast}^\ast}) &  \\
+{\mathrm{concat}}_{{\mathit{instr}}}(({{\mathit{instr}}^\ast})~{({{\mathit{instr}'}^\ast})^\ast}) &=& {{\mathit{instr}}^\ast}~{\mathrm{concat}}_{{\mathit{instr}}}({({{\mathit{instr}'}^\ast})^\ast}) &  \\
 \end{array}
 $$
 

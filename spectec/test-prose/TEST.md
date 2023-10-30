@@ -871,6 +871,12 @@ memsxv fresh_0*
 4. Let [externval] ++ xv* be fresh_0*.
 5. Return $memsxv(xv*).
 
+store
+
+frame
+1. Let f be the current frame.
+2. Return f.
+
 funcaddr
 1. Let f be the current frame.
 2. Return f.MODULE.FUNC.
@@ -898,6 +904,10 @@ structinst
 
 arrayinst
 1. Return s.ARRAY.
+
+moduleinst
+1. Let f be the current frame.
+2. Return f.MODULE.
 
 type x
 1. Let f be the current frame.
@@ -1483,24 +1493,22 @@ execution_of_LOCAL.TEE x
 5. Execute (LOCAL.SET x).
 
 execution_of_BR_ON_CAST l rt_1 rt_2
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop ref from the stack.
-4. Let rt be $ref_type_of(ref).
-5. If rt > $inst_reftype(f.MODULE, rt_2), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. Let rt be $ref_type_of(ref).
+4. If rt > $inst_reftype($moduleinst(), rt_2), then:
   a. Push ref to the stack.
-6. Else:
+5. Else:
   a. Push ref to the stack.
   b. Execute (BR l).
 
 execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop ref from the stack.
-4. Let rt be $ref_type_of(ref).
-5. If rt ≤ $inst_reftype(f.MODULE, rt_2), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. Let rt be $ref_type_of(ref).
+4. If rt ≤ $inst_reftype($moduleinst(), rt_2), then:
   a. Push ref to the stack.
-6. Else:
+5. Else:
   a. Push ref to the stack.
   b. Execute (BR l).
 
@@ -1538,23 +1546,21 @@ execution_of_REF.FUNC x
 2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
 
 execution_of_REF.TEST rt
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop ref from the stack.
-4. Let rt' be $ref_type_of(ref).
-5. If rt' ≤ $inst_reftype(f.MODULE, rt), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. Let rt' be $ref_type_of(ref).
+4. If rt' ≤ $inst_reftype($moduleinst(), rt), then:
   a. Push (I32.CONST 1) to the stack.
-6. Else:
+5. Else:
   a. Push (I32.CONST 0) to the stack.
 
 execution_of_REF.CAST rt
-1. Let f be the current frame.
-2. Assert: Due to validation, a value is on the top of the stack.
-3. Pop ref from the stack.
-4. Let rt' be $ref_type_of(ref).
-5. If rt' > $inst_reftype(f.MODULE, rt), then:
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. Let rt' be $ref_type_of(ref).
+4. If rt' > $inst_reftype($moduleinst(), rt), then:
   a. Trap.
-6. Push ref to the stack.
+5. Push ref to the stack.
 
 execution_of_STRUCT.NEW_DEFAULT x
 1. Assert: Due to validation, $expanddt($type(x)) is of the case STRUCT.

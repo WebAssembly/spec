@@ -113,7 +113,7 @@ rule Step_pure/br_on_null-null:
   val (BR_ON_NULL l) ~> (BR l)
   -- if val = REF.NULL ht
 
-rule Step_pure/br_on_null-non-null:
+rule Step_pure/br_on_null-addr:
   val (BR_ON_NULL l) ~> val
   -- otherwise
 
@@ -122,28 +122,28 @@ rule Step_pure/br_on_non_null-null:
   val (BR_ON_NON_NULL l) ~> epsilon
   -- if val = REF.NULL ht
 
-rule Step_pure/br_on_non_null-non-null:
+rule Step_pure/br_on_non_null-addr:
   val (BR_ON_NON_NULL l) ~> val (BR l)
   -- otherwise
 
 
 rule Step_read/br_on_cast-succeed:
-  (s; f); ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
+  -- Ref_ok: $store(z) |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype($moduleinst(z), rt_2)
 
 rule Step_read/br_on_cast-fail:
-  (s; f); ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
+  z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
   -- otherwise
 
 
 rule Step_read/br_on_cast_fail-succeed:
-  (s; f); ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
+  -- Ref_ok: $store(z) |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype($moduleinst(z), rt_2)
 
 rule Step_read/br_on_cast_fail-fail:
-  (s; f); ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
+  z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
   -- otherwise
 
 
@@ -256,15 +256,14 @@ rule Step_pure/ref.as_non_null-null:
   ref REF.AS_NON_NULL  ~>  TRAP
   -- if ref = (REF.NULL ht)
 
-rule Step_pure/ref.as_non_null-non_null:
+rule Step_pure/ref.as_non_null-addr:
   ref REF.AS_NON_NULL  ~>  ref
   -- otherwise
 
 
 rule Step_pure/ref.eq-null:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref_1 = REF.NULL ht_1
-  -- if ref_2 = REF.NULL ht_2
+  -- if ref_1 = REF.NULL ht_1 /\ ref_2 = REF.NULL ht_2
 
 rule Step_pure/ref.eq-true:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
@@ -277,22 +276,22 @@ rule Step_pure/ref.eq-false:
 
 
 rule Step_read/ref.test-true:
-  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 1)
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  z; ref (REF.TEST rt)  ~>  (CONST I32 1)
+  -- Ref_ok: $store(z) |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
 
 rule Step_read/ref.test-false:
-  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 0)
+  z; ref (REF.TEST rt)  ~>  (CONST I32 0)
   -- otherwise
 
 
 rule Step_read/ref.cast-succeed:
-  (s; f); ref (REF.CAST rt)  ~>  ref
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  z; ref (REF.CAST rt)  ~>  ref
+  -- Ref_ok: $store(z) |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
 
 rule Step_read/ref.cast-fail:
-  (s; f); ref (REF.CAST rt)  ~>  TRAP
+  z; ref (REF.CAST rt)  ~>  TRAP
   -- otherwise
 
 

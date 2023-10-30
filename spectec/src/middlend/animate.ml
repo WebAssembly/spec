@@ -225,20 +225,25 @@ let build_matrix prems known_vars =
   rows, cols
 
 (* Pre-process a premise *)
-(* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
-let pre_process prem = match prem.it with
+let rec pre_process prem = match prem.it with
+  (* HARDCODE: translation of `Expand: dt ~~ ct` into `$expanddt(dt) = ct` *)
   | RulePr (
       { it = "Expand"; _ },
       [[]; [Approx]; []],
       { it = TupE [dt; ct]; _ }
     ) ->
       let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
-      { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) }
-  | _ -> prem
+      [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
+  (* Split -- if e1 /\ e2 *)
+  | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
+      let p1 = { prem with it = IfPr ( e1 ) } in
+      let p2 = { prem with it = IfPr ( e2 ) } in
+      pre_process p1 @ pre_process p2
+  | _ -> [ prem ]
 
 (* Animate the list of premises *)
 let animate_prems known_vars prems =
-  let pp_prems = List.map pre_process prems in
+  let pp_prems = List.concat_map pre_process prems in
   (* Set --otherwise prem to be the first prem (if any) *)
   let (other, non_other) = List.partition (function {it = ElsePr; _} -> true | _ -> false) pp_prems in
   let rows, cols = build_matrix non_other known_vars in

@@ -69,6 +69,13 @@ def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
 
 ;; Short-hands
 
+def $store(state) : store             hint(show %.STORE)
+def $frame(state) : frame             hint(show %.FRAME)
+
+def $store((s; f)) = s
+def $frame((s; f)) = f
+
+
 def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
 def $funcaddr((s; f)) = f.MODULE.FUNC
 
@@ -80,6 +87,7 @@ def $eleminst(state) : eleminst*      hint(show %.ELEM)
 def $datainst(state) : datainst*      hint(show %.DATA)
 def $structinst(state) : structinst*  hint(show %.STRUCT)
 def $arrayinst(state) : arrayinst*    hint(show %.ARRAY)
+def $moduleinst(state) : moduleinst   hint(show %.MODULE)
 
 def $funcinst((s; f)) = s.FUNC
 def $globalinst((s; f)) = s.GLOBAL
@@ -89,6 +97,7 @@ def $eleminst((s; f)) = s.ELEM
 def $datainst((s; f)) = s.DATA
 def $structinst((s; f)) = s.STRUCT
 def $arrayinst((s; f)) = s.ARRAY
+def $moduleinst((s; f)) = f.MODULE
 
 def $type(state, typeidx) : deftype         hint(show %.TYPE`[%])
 def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
