@@ -566,8 +566,8 @@ Aggregate Reference Instructions
 
 .. _valid-array.set:
 
-:math:`\ARRAYSET~x~i`
-.....................
+:math:`\ARRAYSET~x`
+...................
 
 * The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must exist.
 
