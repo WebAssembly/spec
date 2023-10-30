@@ -4,6 +4,8 @@
 
 ;; Definitions
 
+def $alloctypes(rectype*) : deftype*
+
 def $allocfunc(store, moduleinst, func) : (store, funcaddr)
 def $allocfunc(s, mm, func) = (s[.FUNC =.. fi], |s.FUNC|)
   -- if func = FUNC x local* expr
@@ -101,7 +103,7 @@ def $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*) = (s_6, mm)
   -- if da* = $(|s.DATA|+i_d)^(i_d<n_d)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if mm = {
-      TYPE dt*,
+      TYPE $alloctypes(rectype*),
       FUNC fa_ex* fa*,
       GLOBAL ga_ex* ga*,
       TABLE ta_ex* ta*,
