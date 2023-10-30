@@ -90,8 +90,6 @@ and exp2expr exp =
   (* Variable *)
   | Ast.VarE id -> VarE id.it
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
-  | Ast.IterE (inner_exp, (Ast.ListN (times, None), [])) ->
-      ListFillE (exp2expr inner_exp, exp2expr times)
   | Ast.IterE (inner_exp, (iter, ids)) ->
       let names = List.map (fun id -> id.it) ids in
       IterE (exp2expr inner_exp, names, iter2iter iter)

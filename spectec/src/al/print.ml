@@ -130,7 +130,6 @@ and string_of_expr = function
       sprintf "the activation of %s with arity %s" (string_of_expr e2)
         (string_of_expr e1)
   | ListE el -> string_of_list string_of_expr "[" ", " "]" el
-  | ListFillE (e1, e2) -> string_of_expr e1 ^ "^" ^ string_of_expr e2
   | AccessE (e, p) -> sprintf "%s%s" (string_of_expr e) (string_of_path p)
   | ExtendE (e1, ps, e2, dir) -> (
       match dir with
@@ -397,12 +396,6 @@ and structured_string_of_expr = function
   | ListE el ->
       "ListE ("
       ^ string_of_list structured_string_of_expr "[" ", " "]" el
-      ^ ")"
-  | ListFillE (e1, e2) ->
-      "ListFillE ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
       ^ ")"
   | AccessE (e, p) ->
       "AccessE ("

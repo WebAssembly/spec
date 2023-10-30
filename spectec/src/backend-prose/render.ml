@@ -197,11 +197,6 @@ and render_expr env in_math = function
           "\\epsilon"
       in
       if in_math then sel else render_math sel
-  | Al.Ast.ListFillE (e1, e2) -> 
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "%s^%s" se1 se2 in
-      if in_math then s else render_math s
   | Al.Ast.AccessE (e, p) ->
       let se = render_expr env true e in
       let sp = render_path env p in

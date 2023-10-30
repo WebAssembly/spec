@@ -154,15 +154,6 @@ and eval_expr env expr =
     end
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
-  | ListFillE (e1, e2) ->
-      let v = eval_expr env e1 in
-      let i = eval_expr env e2 |> value_to_int in
-      if i > 1024 * 64 * 1024 then (* 1024 pages *) (
-        AL_Context.pop_context () |> ignore;
-        raise Exception.OutOfMemory
-      )
-      else
-        ListV (ref (Array.make i v))
   | ConcatE (e1, e2) ->
       let a1 = eval_expr env e1 |> value_to_array in
       let a2 = eval_expr env e2 |> value_to_array in
@@ -233,24 +224,35 @@ and eval_expr env expr =
   | GetCurLabelE -> WasmContext.get_current_label ()
   | GetCurContextE -> WasmContext.get_current_context ()
   | ContE e -> (
-      let v = eval_expr env e in
-      match v with
-      | LabelV (_, vs) -> vs
-      | _ -> failwith "Not a label")
+    let v = eval_expr env e in
+    match v with
+    | LabelV (_, vs) -> vs
+    | _ -> failwith "Not a label")
   | VarE name -> Env.find name env
-  | IterE (VarE name, _, List) -> (* Optimized getter for simple IterE(VarE, ...) *)
-      Env.find name env
+  (* Optimized getter for simple IterE(VarE, ...) *)
+  | IterE (VarE name, [name'], _) when name = name' -> Env.find name env
+  (* Optimized getter for list init *)
+  | IterE (e1, [], ListN (e2, None)) ->
+    let v = eval_expr env e1 in
+    let i = eval_expr env e2 |> value_to_int in
+    if i > 1024 * 64 * 1024 (* 1024 pages *) then (
+      AL_Context.pop_context () |> ignore;
+      raise Exception.OutOfMemory
+    )
+    else
+      ListV (ref (Array.make i v))
   | IterE (inner_e, names, iter) ->
+    let vs =
       env
       |> create_sub_al_context names iter
       |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
-      |> if (iter = Opt)
-      then
-        (function
-          | [] -> OptV None
-          | [v] -> OptV (Some v)
-          | _ -> failwith "Unreachable")
-      else listV
+    in
+
+    begin match vs, iter with
+    | [], Opt -> OptV None
+    | [v], Opt -> OptV (Some v)
+    | l, _ -> listV l
+    end
   | e -> structured_string_of_expr e |> failwith
 
 (* Condition *)

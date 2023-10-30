@@ -46,7 +46,6 @@ let rec walk_expr f e =
   | AppE (fname, args) -> AppE (fname, List.map new_ args)
   (* TODO: Implement walker for iter *)
   | ListE el -> ListE (List.map (new_) el)
-  | ListFillE (e1, e2) -> ListFillE (new_ e1, new_ e2)
   | ConcatE (e1, e2) -> ConcatE (new_ e1, new_ e2)
   | LengthE e' -> LengthE (new_ e')
   | RecordE r -> RecordE (Record.map new_ r)

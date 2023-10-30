@@ -29,7 +29,6 @@ module Expr = struct
   let binop binop e1 e2 = BinE (binop, e1, e2)
   let app fname args = AppE (fname, args)
   let list_ el = ListE el
-  let list_fill e time = ListFillE (e, time)
   let concat e1 e2 = ConcatE (e1, e2)
   let length e = LengthE e
   let record r = RecordE r 

@@ -83,7 +83,6 @@ and expr =
   | IterE of expr * id list * iter      (* expr (`{` id* `}`)* *)
   | OptE of expr option                 (* expr?  *)
   | ListE of expr list                  (* `[` expr* `]` *)
-  | ListFillE of expr * expr            (* expr `^` expr -- IterE with a constant exponent *)
   | ArrowE of expr * expr               (* "expr -> expr" *)
   | ArityE of expr                      (* "the arity of expr" *)
   | FrameE of expr option * expr        (* "the activation of expr (with arity expr)?" *)

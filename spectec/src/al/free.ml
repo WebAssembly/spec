@@ -13,7 +13,6 @@ let rec free_expr = function
   | ArityE e
   | ContE e -> free_expr e
   | BinE (_, e1, e2)
-  | ListFillE (e1, e2)
   | ConcatE (e1, e2)
   | PairE (e1, e2)
   | ArrowE (e1, e2)
