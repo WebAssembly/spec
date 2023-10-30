@@ -130,7 +130,7 @@ Block Types
 
 * The type :math:`C.\CTYPES[\typeidx]` must be defined in the context.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[\typeidx]`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[\typeidx]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 * Then the block type is valid as :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \to [t_2^\ast]`.
 
