@@ -109,10 +109,28 @@ rule Step_pure/br_table-ge:
   -- if i >= |l*|
 
 
+rule Step_pure/br_on_null-null:
+  val (BR_ON_NULL l) ~> (BR l)
+  -- if val = REF.NULL ht
+
+rule Step_pure/br_on_null-addr:
+  val (BR_ON_NULL l) ~> val
+  -- otherwise
+
+
+rule Step_pure/br_on_non_null-null:
+  val (BR_ON_NON_NULL l) ~> epsilon
+  -- if val = REF.NULL ht
+
+rule Step_pure/br_on_non_null-addr:
+  val (BR_ON_NON_NULL l) ~> val (BR l)
+  -- otherwise
+
+
 rule Step_read/br_on_cast-succeed:
   z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref (BR l)
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: $store(z) |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype($moduleinst(z), rt_2)
 
 rule Step_read/br_on_cast-fail:
   z; ref (BR_ON_CAST l rt_1 rt_2)  ~>  ref
@@ -121,8 +139,8 @@ rule Step_read/br_on_cast-fail:
 
 rule Step_read/br_on_cast_fail-succeed:
   z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref
-  -- Ref_ok: s |- ref : rt
-  -- Reftype_sub: {} |- rt <: $inst_reftype(f.MODULE, rt_2)
+  -- Ref_ok: $store(z) |- ref : rt
+  -- Reftype_sub: {} |- rt <: $inst_reftype($moduleinst(z), rt_2)
 
 rule Step_read/br_on_cast_fail-fail:
   z; ref (BR_ON_CAST_FAIL l rt_1 rt_2)  ~>  ref (BR l)
@@ -238,17 +256,18 @@ rule Step_pure/ref.as_non_null-null:
   ref REF.AS_NON_NULL  ~>  TRAP
   -- if ref = (REF.NULL ht)
 
-rule Step_pure/ref.as_non_null-null:
+rule Step_pure/ref.as_non_null-addr:
   ref REF.AS_NON_NULL  ~>  ref
   -- otherwise
 
 
 rule Step_pure/ref.eq-null:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
-  -- if ref_1 = (REF.NULL ht_1) /\ ref_2 = (REF.NULL ht_2)
+  -- if ref_1 = REF.NULL ht_1 /\ ref_2 = REF.NULL ht_2
 
 rule Step_pure/ref.eq-true:
   ref_1 ref_2 REF.EQ  ~>  (CONST I32 1)
+  -- otherwise
   -- if ref_1 = ref_2
 
 rule Step_pure/ref.eq-false:
@@ -257,22 +276,22 @@ rule Step_pure/ref.eq-false:
 
 
 rule Step_read/ref.test-true:
-  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 1)
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  z; ref (REF.TEST rt)  ~>  (CONST I32 1)
+  -- Ref_ok: $store(z) |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
 
 rule Step_read/ref.test-false:
-  (s; f); ref (REF.TEST rt)  ~>  (CONST I32 0)
+  z; ref (REF.TEST rt)  ~>  (CONST I32 0)
   -- otherwise
 
 
 rule Step_read/ref.cast-succeed:
-  (s; f); ref (REF.CAST rt)  ~>  ref
-  -- Ref_ok: s |- ref : rt'
-  -- Reftype_sub: {} |- rt' <: $inst_reftype(f.MODULE, rt)
+  z; ref (REF.CAST rt)  ~>  ref
+  -- Ref_ok: $store(z) |- ref : rt'
+  -- Reftype_sub: {} |- rt' <: $inst_reftype($moduleinst(z), rt)
 
 rule Step_read/ref.cast-fail:
-  (s; f); ref (REF.CAST rt)  ~>  TRAP
+  z; ref (REF.CAST rt)  ~>  TRAP
   -- otherwise
 
 
@@ -387,14 +406,15 @@ rule Step_read/array.fill-oob:
   -- if $(i + n > |$arrayinst(z)[a].FIELD|)
 
 rule Step_read/array.fill-zero:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 0) (ARRAY.FILL x)  ~>  epsilon
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 n) (ARRAY.FILL x)  ~>  epsilon
   -- otherwise
+  -- if n = 0
 
 rule Step_read/array.fill-succ:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 $(n + 1)) (ARRAY.FILL x)  ~>
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (CONST I32 n) (ARRAY.FILL x)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) val (CONST I32 n) (ARRAY.FILL x)
-
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) val (CONST I32 $(n-1)) (ARRAY.FILL x)
+  -- otherwise
 
 rule Step_read/array.copy-null1:
   z; (REF.NULL ht_1) (CONST I32 i_1) ref (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  TRAP
@@ -411,28 +431,28 @@ rule Step_read/array.copy-oob2:
   -- if $(i_2 + n > |$arrayinst(z)[a_2].FIELD|)
 
 rule Step_read/array.copy-zero:
-  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 0) (ARRAY.COPY x_1 x_2)  ~>  epsilon
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>  epsilon
   -- otherwise
+  -- if n = 0
 
 rule Step_read/array.copy-le:
-  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n + 1)) (ARRAY.COPY x_1 x_2)  ~>
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1)
     (REF.ARRAY_ADDR a_2) (CONST I32 i_2)
     (ARRAY.GET sx? x) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 n) (ARRAY.COPY x_1 x_2)
-  -- if i_1 <= i_2
+    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
+  -- otherwise
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
   -- if sx? = $sxfield(zt_2)
+  -- if i_1 <= i_2
 
 rule Step_read/array.copy-gt:
-  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n+1)) (ARRAY.COPY x_1 x_2)  ~>
-    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + n))
-    (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + n))
+  z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>
+    (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + n - 1))
+    (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + n - 1))
     (ARRAY.GET sx? x) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)
-  -- if i_1 > i_2
-  -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
-  -- if sx? = $sxfield(zt_2)
+    (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
+  -- otherwise
 
 
 rule Step_read/array.init_elem-null:
@@ -447,13 +467,14 @@ rule Step_read/array.init_elem-oob2:
   -- if $(j + n > |$elem(z, y).ELEM|)
 
 rule Step_read/array.init_elem-zero:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 0) (ARRAY.INIT_ELEM x y)  ~>  epsilon
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_ELEM x y)  ~>  epsilon
   -- otherwise
+  -- if n = 0
 
 rule Step_read/array.init_elem-succ:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_ELEM x y)  ~>
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_ELEM x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) ref (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_ELEM x y)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 $(n-1)) (ARRAY.INIT_ELEM x y)
   -- otherwise
   -- if ref = $elem(z, y).ELEM[j]
 
@@ -471,13 +492,14 @@ rule Step_read/array.init_data-oob2:
   -- if $(j + n * $storagesize(zt)/8 > |$data(z, y).DATA|)
 
 rule Step_read/array.init_data-zero:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 0) (ARRAY.INIT_DATA x y)  ~>  epsilon
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>  epsilon
   -- otherwise
+  -- if n = 0
 
 rule Step_read/array.init_data-succ:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 $(n + 1)) (ARRAY.INIT_DATA x y)  ~>
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) (CONST nt c) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 n) (ARRAY.INIT_DATA x y)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
   -- otherwise
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
   -- if nt = $unpacknumtype(zt)
@@ -486,17 +508,17 @@ rule Step_read/array.init_data-succ:
 
 ;; External reference instructions
 
-rule Step_pure/extern.externalize/null:
+rule Step_pure/extern.externalize-null:
   (REF.NULL ht) EXTERN.EXTERNALIZE  ~>  (REF.NULL EXTERN)
 
-rule Step_pure/extern.externalize/addr:
+rule Step_pure/extern.externalize-addr:
   addrref EXTERN.EXTERNALIZE  ~>  (REF.EXTERN addrref)
 
 
-rule Step_pure/extern.internalize/null:
+rule Step_pure/extern.internalize-null:
   (REF.NULL ht) EXTERN.INTERNALIZE  ~>  (REF.NULL ANY)
 
-rule Step_pure/extern.internalize/addr:
+rule Step_pure/extern.internalize-addr:
   (REF.EXTERN addrref) EXTERN.INTERNALIZE  ~>  addrref
 
 

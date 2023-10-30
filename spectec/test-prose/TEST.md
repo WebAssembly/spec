@@ -10,10 +10,10 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Running pass animate...
 Animation failed:if ((ref_1 = REF.NULL_ref(ht_1)) /\ (ref_2 = REF.NULL_ref(ht_2)))
-Animation failed:Ref_ok: `%|-%:%`(s, ref, rt)
-Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
-Animation failed:Ref_ok: `%|-%:%`(s, ref, rt)
-Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype(f.MODULE_frame, rt_2))
+Animation failed:Ref_ok: `%|-%:%`($store(z), ref, rt)
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
+Animation failed:Ref_ok: `%|-%:%`($store(z), ref, rt)
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt, $inst_reftype($moduleinst(z), rt_2))
 Animation failed:if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
 Animation failed:Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 Animation failed:if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
@@ -21,10 +21,10 @@ Animation failed:if (a < |$funcinst(z)|)
 Animation failed:Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 Animation failed:if (a < |$funcinst(z)|)
 Animation failed:Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-Animation failed:Ref_ok: `%|-%:%`(s, ref, rt')
-Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))
-Animation failed:Ref_ok: `%|-%:%`(s, ref, rt')
-Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype(f.MODULE_frame, rt))
+Animation failed:Ref_ok: `%|-%:%`($store(z), ref, rt')
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype($moduleinst(z), rt))
+Animation failed:Ref_ok: `%|-%:%`($store(z), ref, rt')
+Animation failed:Reftype_sub: `%|-%<:%`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, rt', $inst_reftype($moduleinst(z), rt))
 Animation failed:if (|mut*{mut}| = |zt*{zt}|)
 Animation failed:if (|val*{val}| = |zt*{zt}|)
 Animation failed:Expand: `%~~%`($type(z, x), STRUCT_comptype(`%%`(mut, zt)*{mut zt}))
@@ -41,8 +41,6 @@ Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
 Animation failed:if (nt = $unpacknumtype(zt))
 Animation failed:if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datainst][i : ((n * $storagesize(zt)) / 8)])
 Animation failed:Expand: `%~~%`(ai.TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
-Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
-Animation failed:if (sx?{sx} = $sxfield(zt_2))
 Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
 Animation failed:if (sx?{sx} = $sxfield(zt_2))
 Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
@@ -64,7 +62,7 @@ Animation failed:Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(
 Animation failed:if (fv = $packval(zt, val))
 == IL Validation after pass animate...
 == Prose Generation...
-/Users/me/Desktop/Work/Software/wasm/spec.tec/spectec/_build/default/spec/../src/exe-watsup/main.exe: uncaught exception Failure("Unreachable")
+/Users/yundongjun/PLRG/spectec/spectec/_build/default/spec/../src/exe-watsup/main.exe: uncaught exception Failure("Unreachable")
 Raised at Stdlib.failwith in file "stdlib.ml", line 29, characters 17-33
 Called from Stdlib__List.map in file "list.ml", line 92, characters 20-23
 Called from Backend_prose__Il2ir.rhs2instrs in file "src/backend-prose/il2ir.ml", line 72, characters 26-54
