@@ -860,9 +860,9 @@ let helpers2algo partial_funcs def =
       in
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
-        if id.it = "instantiation" then
+        if id.it = "instantiate" then
           [ReturnI (Some (NameE "m"))] |> config_helper2instrs [] (NumE 0L)
-        else if id.it = "invocation" then
+        else if id.it = "invoke" then
           [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))] (NameE "k")
         else
           normal_helper2instrs

@@ -1198,22 +1198,41 @@ rundata (DATA byte* fresh_0?) y
 5. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
 
 instantiate module externval*
-1. Let (GLOBAL globaltype expr_g)* be global*.
-2. Let (ELEM reftype expr_e* elemmode?)* be elem*.
-3. Enter the activation of z with label [FRAME_]:
+1. Let n_d be |data*|.
+2. Let n_e be |elem*|.
+3. Let (START x)? be start?.
+4. Let (GLOBAL globaltype expr_g)* be global*.
+5. Let (ELEM reftype expr_e* elemmode?)* be elem*.
+6. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
+7. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
+8. Let f be { LOCAL: []; MODULE: mm; }.
+9. Enter the activation of z with label [FRAME_]:
   a. Let [ref_e]** be $eval_expr(expr_e)**.
-4. Enter the activation of z with label [FRAME_]:
+10. Enter the activation of z with label [FRAME_]:
   a. Let [ref_t]* be $eval_expr(expr_t)*.
-5. Enter the activation of z with label [FRAME_]:
+11. Enter the activation of z with label [FRAME_]:
   a. Let [val_g]* be $eval_expr(expr_g)*.
-6. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s'", VarE "f"])), CatE (IterE (SubE (VarE "instr_e", VarT "instr", VarT "admininstr"), (List, ["instr_e"])), CatE (IterE (SubE (VarE "instr_d", VarT "instr", VarT "admininstr"), (List, ["instr_d"])), IterE (CaseE (Atom "CALL", VarE "x"), (Opt, ["x"]))))]))).
+12. Enter the activation of f with arity 0 with label [FRAME_]:
+  a. Execute the sequence (instr_e*).
+  b. Execute the sequence (instr_d*).
+  c. If x is defined, then:
+    1) Let ?(x_0) be x.
+    2) Execute (CALL x_0).
+13. Return m.
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 2. Assert: Due to validation, $expanddt(s.FUNC[fa].TYPE) is of the case FUNC.
-3. Let f be { LOCAL: []; MODULE: mm; }.
-4. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
-5. Return YetE (MixE ([[], [Semicolon], [Star]], TupE ([MixE ([[], [Semicolon], []], TupE ([VarE "s", VarE "f"])), CatE (IterE (SubE (VarE "val", VarT "val", VarT "admininstr"), (ListN (VarE "n"), ["val"])), ListE ([CaseE (Atom "REF.FUNC_ADDR", VarE "fa"), CaseE (Atom "CALL_REF", NatE 0)]))]))).
+3. Let (FUNC y_0) be $expanddt(s.FUNC[fa].TYPE).
+4. Let [t_1^n]->[t_2*] be y_0.
+5. Let f be { LOCAL: []; MODULE: mm; }.
+6. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
+7. Enter the activation of f with arity k with label [FRAME_]:
+  a. Push val^n to the stack.
+  b. Push (REF.FUNC_ADDR fa) to the stack.
+  c. Execute (CALL_REF 0).
+8. Pop val^k from the stack.
+9. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
