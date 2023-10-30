@@ -90,27 +90,6 @@ Animation failed.
 if (a < |$funcinst(z)|)
 Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
-Animation failed.
-if (module = `MODULE%*%*%*%*%*%*%*%*%?%*`(TYPE(rectype)*{rectype}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%?`(reftype, expr_e*{expr_e}, elemmode?{elemmode})^n_e{elemmode expr_e reftype}, `DATA%*%?`(byte*{byte}, datamode?{datamode})^n_d{byte datamode}, start?{start}, export*{export}))
-if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
-if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
-if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
-if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
-if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
-if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
-if ((s_1, fa*{fa}) = $allocfuncs(s, mm, func^n_f{func}))
-if ((s_2, ga*{ga}) = $allocglobals(s_1, globaltype^n_g{globaltype}, val_g*{val_g}))
-if ((s_3, ta*{ta}) = $alloctables(s_2, tabletype^n_t{tabletype}, ref_t*{ref_t}))
-if ((s_4, ma*{ma}) = $allocmems(s_3, memtype^n_m{memtype}))
-if ((s_5, ea*{ea}) = $allocelems(s_4, reftype^n_e{reftype}, ref_e*{ref_e}*{ref_e}))
-if ((s_6, da*{da}) = $allocdatas(s_5, byte*{byte}^n_d{byte}))
-...Animation failed
 ...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
@@ -1170,7 +1149,31 @@ instexport fa* ga* ta* ma* (EXPORT name fresh_0)
 6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
 allocmodule module externval* val_g* ref_t* ref_e**
-1. Return mm.
+1. Let fa_ex* be $funcsxv(externval*).
+2. Let ga_ex* be $globalsxv(externval*).
+3. Let ma_ex* be $memsxv(externval*).
+4. Let ta_ex* be $tablesxv(externval*).
+5. Let da* be (|s.DATA| + i_d)^(i_d<n_d).
+6. Let ea* be (|s.ELEM| + i_e)^(i_e<n_e).
+7. Let ma* be (|s.MEM| + i_m)^(i_m<n_m).
+8. Let ta* be (|s.TABLE| + i_t)^(i_t<n_t).
+9. Let ga* be (|s.GLOBAL| + i_g)^(i_g<n_g).
+10. Let fa* be (|s.FUNC| + i_f)^(i_f<n_f).
+11. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+12. Let mm be { TYPE: $alloctypes(rectype*); FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+13. Let y_0 be $allocfuncs(mm, func^n_f).
+14. Assert: Due to validation, y_0 is fa*.
+15. Let y_0 be $allocglobals(globaltype^n_g, val_g*).
+16. Assert: Due to validation, y_0 is ga*.
+17. Let y_0 be $alloctables(tabletype^n_t, ref_t*).
+18. Assert: Due to validation, y_0 is ta*.
+19. Let y_0 be $allocmems(memtype^n_m).
+20. Assert: Due to validation, y_0 is ma*.
+21. Let y_0 be $allocelems(reftype^n_e, ref_e**).
+22. Assert: Due to validation, y_0 is ea*.
+23. Let y_0 be $allocdatas(byte*^n_d).
+24. Assert: Due to validation, y_0 is da*.
+25. Return mm.
 
 concat_instr fresh_0*
 1. If fresh_0* is [], then:
