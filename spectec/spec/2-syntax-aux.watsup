@@ -153,6 +153,11 @@ def $subst_all_deftype(deftype, heaptype*) : deftype  hint(show %#`[:=%])
 def $subst_all_reftype(rt, ht^n) = $subst_reftype(rt, $idx(x)^(x<n), ht^n)
 def $subst_all_deftype(dt, ht^n) = $subst_deftype(dt, $idx(x)^(x<n), ht^n)
 
+def $subst_all_deftypes(deftype*, heaptype*) : deftype*  hint(show %#`[:=%])
+
+def $subst_all_deftypes(epsilon, ht*) = epsilon
+def $subst_all_deftypes(dt_1 dt*, ht*) = $subst_all_deftype(dt_1, ht*) $subst_all_deftypes(dt*, ht*)
+
 
 ;; Rolling and Unrolling
 
