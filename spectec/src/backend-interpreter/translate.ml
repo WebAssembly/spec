@@ -590,9 +590,9 @@ let rec letI lhs rhs targets cont =
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
   | "Eval_expr", [z; lhs; _z; rhs] ->
     (* TODO: Name of f..? *)
-    let f = z in
+    LetI (PairE (NameE "_", NameE "f"), z) ::
     EnterI (
-      FrameE (None, f),
+      FrameE (None, NameE "f"),
       ListE [ConstructE (("FRAME_", ""), [])],
       [ LetI (rhs, AppE ("eval_expr", [ lhs ])) ]
     ) :: instrs
