@@ -271,6 +271,7 @@ and eval_expr env expr =
         | [v] -> OptV (Some v)
         | _ -> failwith "Unreachable")
     else listV
+  | ArrowE (e1, e2) -> ArrowV (eval_expr env e1, eval_expr env e2)
   | e -> structured_string_of_expr e |> failwith
 
 (* Condition *)
