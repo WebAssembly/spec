@@ -340,11 +340,16 @@ and assign lhs rhs env =
             let length = Array.length !arr |> Int64.of_int |> Value.num in
             assign expr length env, listV [], Array.to_list !arr
         | Opt, OptV opt -> env, OptV None, Option.to_list opt
-        | _ ->
+        | ListN (_, Some _), ListV _ ->
             Printf.sprintf "Invalid iter %s with rhs %s"
               (string_of_iter iter)
               (string_of_value rhs)
             |> failwith
+        | _, _ ->
+          Printf.sprintf "Invalid assignment: %s = %s"
+            (string_of_expr lhs)
+            (string_of_value rhs)
+          |> failwith
       in
 
       let default_env =

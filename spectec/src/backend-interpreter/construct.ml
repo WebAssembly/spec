@@ -33,7 +33,8 @@ and al_of_result_type rt = List.map al_of_val_type rt |> listV
 
 and al_of_str_type = function
   | Types.DefStructT (StructT ftl) ->
-    ConstructV ("STRUCT", List.map al_of_field_type ftl)
+    let al_ftl = List.map al_of_field_type ftl |> listV in
+    ConstructV ("STRUCT", [ al_ftl ])
   | Types.DefArrayT (ArrayT ft) ->
     ConstructV ("ARRAY", [ al_of_field_type ft ])
   | Types.DefFuncT (FuncT (rt1, rt2)) ->
@@ -50,7 +51,9 @@ and al_of_sub_type = function
     ])
 
 and al_of_rec_type = function
-  | Types.RecT stl -> ConstructV ("REC", List.map al_of_sub_type stl)
+  | Types.RecT stl ->
+    let al_stl = List.map al_of_sub_type stl |> listV in
+    ConstructV ("REC", [ al_stl ])
 
 and al_of_def_type = function
   | Types.DefT (rt, i) ->
