@@ -99,7 +99,7 @@ let al_of_value = function
 (* Construct type *)
 
 let al_of_val_typeidx types idx =
-  let Ts.FuncT (param_types, result_types) = (Lib.List32.nth types idx.it).it in
+  let Types.FuncT (param_types, result_types) = (Lib.List32.nth types idx.it).it in
   let result_type_to_listV result_type =
     listV (List.map al_of_val_type result_type)
   in
@@ -117,10 +117,10 @@ let al_of_unop_int = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
-  | Ast.IntOp.ExtendS Ts.Pack8 -> StringV "Extend8S"
-  | Ast.IntOp.ExtendS Ts.Pack16 -> StringV "Extend16S"
-  | Ast.IntOp.ExtendS Ts.Pack32 -> StringV "Extend32S"
-  | Ast.IntOp.ExtendS Ts.Pack64 -> StringV "Extend64S"
+  | Ast.IntOp.ExtendS Types.Pack8 -> StringV "Extend8S"
+  | Ast.IntOp.ExtendS Types.Pack16 -> StringV "Extend16S"
+  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extend32S"
+  | Ast.IntOp.ExtendS Types.Pack64 -> StringV "Extend64S"
 let al_of_unop_float = function
   | Ast.FloatOp.Neg -> StringV "Neg"
   | Ast.FloatOp.Abs -> StringV "Abs"
@@ -201,16 +201,16 @@ let al_of_cvtop_float bit_num = function
 
 let al_of_packsize p =
   let s = match p with
-    | Ts.Pack8 -> 8
-    | Ts.Pack16 -> 16
-    | Ts.Pack32 -> 32
-    | Ts.Pack64 -> 64
+    | Types.Pack8 -> 8
+    | Types.Pack16 -> 16
+    | Types.Pack32 -> 32
+    | Types.Pack64 -> 64
   in
   NumV (Int64.of_int s)
 
 let al_of_extension = function
-| Ts.SX -> singleton "S"
-| Ts.ZX -> singleton "U"
+| Types.SX -> singleton "S"
+| Types.ZX -> singleton "U"
 
 let al_of_packsize_with_extension (p, s) =
   listV [ al_of_packsize p; al_of_extension s ]
@@ -323,14 +323,14 @@ let rec al_of_instr types winstr =
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("LOAD", [
-            al_of_val_type (Ts.NumT ty);
+            al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize_with_extension pack);
             NumV (Int64.of_int align);
             NumV (int64_of_int32_u offset) ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("STORE", [
-            al_of_val_type (Ts.NumT ty);
+            al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize pack);
             NumV (Int64.of_int align);
             NumV (int64_of_int32_u offset) ])
@@ -355,7 +355,7 @@ let al_of_func wasm_module wasm_func =
   (* Get function type from module *)
   (* Note: function type will be placed in function in DSL *)
   let wasm_types = wasm_module.it.Ast.types in
-  let Ts.FuncT (wtl1, wtl2) =
+  let Types.FuncT (wtl1, wtl2) =
     Int32.to_int wasm_func.it.Ast.ftype.it
     |> List.nth wasm_types
     |> it
@@ -383,21 +383,21 @@ let al_of_global wasm_global =
 
 let al_of_limits limits max =
   let max =
-    match limits.Ts.max with
+    match limits.Types.max with
     | Some v -> int64_of_int32_u v
     | None -> max
   in
 
-  PairV (NumV (int64_of_int32_u limits.Ts.min), NumV max)
+  PairV (NumV (int64_of_int32_u limits.Types.min), NumV max)
 
 let al_of_table wasm_table =
-  let Ts.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
+  let Types.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits 4294967295L in
 
   ConstructV ("TABLE", [ PairV(pair, al_of_val_type (RefT ref_ty)) ])
 
 let al_of_memory wasm_memory =
-  let Ts.MemoryT (limits) = wasm_memory.it.Ast.mtype in
+  let Types.MemoryT (limits) = wasm_memory.it.Ast.mtype in
   let pair = al_of_limits limits 65536L in
 
   ConstructV ("MEMORY", [ ConstructV ("I8", [ pair]) ])
@@ -421,7 +421,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
 let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
 
 let al_of_elem wasm_elem =
-  let reftype = al_of_val_type (Ts.RefT wasm_elem.it.Ast.etype) in
+  let reftype = al_of_val_type (Types.RefT wasm_elem.it.Ast.etype) in
 
   let al_of_const const = listV (al_of_instrs [] const.it) in
   let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const in
@@ -449,7 +449,7 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
       (* Get function type from module *)
       (* Note: function type will be placed in function in DSL *)
       let wasm_types = wasm_module.it.Ast.types in
-      let Ts.FuncT (wtl1, wtl2) =
+      let Types.FuncT (wtl1, wtl2) =
         Int32.to_int v.it
         |> List.nth wasm_types
         |> it
@@ -464,11 +464,11 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
 
       ConstructV ("FUNC", [ ftype ])
   | Ast.TableImport ty ->
-    let Ts.TableT (limits, ref_ty) = ty in
+    let Types.TableT (limits, ref_ty) = ty in
     let pair = al_of_limits limits 4294967295L in
     ConstructV ("TABLE", [ pair; al_of_val_type (RefT ref_ty) ])
   | Ast.MemoryImport ty ->
-    let Ts.MemoryT (limits) = ty in
+    let Types.MemoryT (limits) = ty in
     let pair = al_of_limits limits 65536L in
     ConstructV ("MEM", [ pair ])
   | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
