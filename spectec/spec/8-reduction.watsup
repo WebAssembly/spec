@@ -19,6 +19,7 @@ rule Step/read:
 
 relation Eval: config ~>* state; val*  hint(show "E-expr")
 relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
+relation Eval_expr_const: state; expr ~>* state; val*  hint(show "E-expr-const")
 
 rule Eval/done:
   z; val* ~>* z; val*
@@ -31,6 +32,10 @@ rule Eval/step:
 rule Eval_expr:
   z; instr*  ~>*  z'; val*
   -- Eval: z; instr*  ~>*  z; val*
+
+rule Eval_expr_const:
+  z; instr^n  ~>*  z'; val^n
+  -- Eval: z; instr^n  ~>*  z; val^n
 
 
 ;;

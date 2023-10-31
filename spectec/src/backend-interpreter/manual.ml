@@ -5,12 +5,12 @@ let exec_expr_const =
   let result = NameE "val" in
 
   FuncA (
-    "eval_expr",
+    "eval_expr_const",
     [instrs],
     [
       ExecuteSeqI instrs;
       PopI result;
-      ReturnI (Some (result))
+      ReturnI (Some (ListE [ result ]))
     ]
   )
 

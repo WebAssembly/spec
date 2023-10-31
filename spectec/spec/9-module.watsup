@@ -165,9 +165,9 @@ def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
       EXPORT epsilon
     }
   -- if z = s; { MODULE mm_init }
-  -- (Eval_expr : z; expr_g ~>* z; val_g)*
-  -- (Eval_expr : z; expr_t ~>* z; ref_t)*
-  -- (Eval_expr : z; expr_e ~>* z; ref_e)**
+  -- (Eval_expr_const : z; expr_g ~>* z; val_g)*
+  -- (Eval_expr_const : z; expr_t ~>* z; ref_t)*
+  -- (Eval_expr_const : z; expr_e ~>* z; ref_e)**
   -- if (s', mm) = $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*)
   -- if f = { MODULE mm }
   -- if instr_e* = $concat_instr($runelem(elem*[i], i)^(i<n_e))

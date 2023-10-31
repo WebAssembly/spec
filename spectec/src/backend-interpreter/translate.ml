@@ -591,13 +591,13 @@ let rec letI lhs rhs targets cont =
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
-  | "Eval_expr", [z; lhs; _z; rhs] ->
+  | "Eval_expr_const", [z; lhs; _z; rhs] ->
     (* TODO: Name of f..? *)
     LetI (PairE (NameE "_", NameE "f"), z) ::
     EnterI (
       FrameE (None, NameE "f"),
       ListE [ConstructE (("FRAME_", ""), [])],
-      [ LetI (rhs, AppE ("eval_expr", [ lhs ])) ]
+      [ LetI (rhs, AppE ("eval_expr_const", [ lhs ])) ]
     ) :: instrs
   | "Ref_ok", [_s; ref; rt] ->
     LetI (rt, AppE ("ref_type_of", [ ref ])) :: instrs
