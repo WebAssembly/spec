@@ -4,19 +4,75 @@ open Al.Ast
 
 (* Construct types *)
 
-let al_of_type t =
-  let open Types in
-  (* num_type *)
-  match t with
-  | NumType I32Type -> singleton "I32"
-  | NumType I64Type -> singleton "I64"
-  | NumType F32Type -> singleton "F32"
-  | NumType F64Type -> singleton "F64"
-  (* vec_type *)
-  | VecType V128Type -> singleton "V128"
-  (* ref_type *)
-  | RefType FuncRefType -> singleton "FUNCREF"
-  | RefType ExternRefType ->singleton "EXTERNREF"
+let al_of_null = function
+  | Types.NoNull -> OptV None
+  | Types.Null -> OptV (Some (singleton "NULL"))
+
+let al_of_final = function
+  | Types.NoFinal -> OptV None
+  | Types.Final -> OptV (Some (singleton "FINAL"))
+
+let al_of_mut = function
+  | Types.Cons -> OptV None
+  | Types.Var -> OptV (Some (singleton "MUT"))
+
+let rec al_of_storage_type = function
+  | Types.ValStorageT vt -> al_of_val_type vt
+  | Types.PackStorageT ps ->
+    Pack.packed_size ps
+    |> string_of_int
+    |> Printf.sprintf "I%s"
+    |> singleton
+
+and al_of_field_type = function
+  | Types.FieldT (mut, st) ->
+    PairV (al_of_mut mut, al_of_storage_type st)
+
+and al_of_result_type rt = List.map al_of_val_type rt |> listV
+
+and al_of_str_type = function
+  | Types.DefStructT (StructT ftl) ->
+    ConstructV ("STRUCT", List.map al_of_field_type ftl)
+  | Types.DefArrayT (ArrayT ft) ->
+    ConstructV ("ARRAY", [ al_of_field_type ft ])
+  | Types.DefFuncT (FuncT (rt1, rt2)) ->
+    ConstructV ("FUNC", [ ArrowV (
+      al_of_result_type rt1,
+      al_of_result_type rt1
+    )])
+and al_of_sub_type = function
+  | Types.SubT (fin, htl, st) ->
+    ConstructV ("SUB", [
+      al_of_final fin;
+      List.map al_of_heap_type htl |> listV;
+      al_of_str_type st
+    ])
+
+and al_of_rec_type = function
+  | Types.RecT stl -> ConstructV ("REC", List.map al_of_sub_type stl)
+
+and al_of_def_type = function
+  | Types.DefT (rt, i) ->
+    ConstructV ("DEF", [al_of_rec_type rt; NumV (Int64.of_int32 i)])
+
+and al_of_heap_type = function
+  | Types.VarHT (StatX i) ->
+    ConstructV ("_IDX", [ NumV (Int64.of_int32 i) ])
+  | Types.VarHT (RecX i) ->
+    ConstructV ("REC", [ NumV (Int64.of_int32 i) ])
+  | Types.DefHT dt -> al_of_def_type dt
+  | ht ->
+    Types.string_of_heap_type ht
+    |> String.uppercase_ascii
+    |> singleton
+
+and al_of_val_type = function
+  | Types.RefT (null, ht) ->
+    ConstructV ("REF", [ al_of_null null; al_of_heap_type ht ])
+  | vt ->
+    Types.string_of_val_type vt
+    |> String.uppercase_ascii
+    |> singleton
 
 (* Construct value *)
 
@@ -35,24 +91,24 @@ let al_of_value = function
 | Values.Vec _v -> failwith "TODO"
 | Values.Ref r ->
     begin match r with
-      | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_type (RefType t) ])
+      | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_val_type (RefT t) ])
       | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u i) ])
       | r -> Values.string_of_ref r |> failwith
     end
 
 (* Construct type *)
 
-let al_of_typeidx types idx =
-  let Types.FuncType (param_types, result_types) = (Lib.List32.nth types idx.it).it in
+let al_of_val_typeidx types idx =
+  let Ts.FuncT (param_types, result_types) = (Lib.List32.nth types idx.it).it in
   let result_type_to_listV result_type =
-    listV (List.map al_of_type result_type)
+    listV (List.map al_of_val_type result_type)
   in
   ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
 
 let al_of_blocktype types = function
-| Ast.VarBlockType idx -> al_of_typeidx types idx
-| Ast.ValBlockType None -> ArrowV(listV [], listV [])
-| Ast.ValBlockType (Some val_type) -> ArrowV(listV [], listV [al_of_type val_type])
+| Ast.VarBlockT idx -> al_of_val_typeidx types idx
+| Ast.ValBlockT None -> ArrowV(listV [], listV [])
+| Ast.ValBlockT (Some val_type) -> ArrowV(listV [], listV [al_of_val_type val_type])
 
 
 (* Construct instruction *)
@@ -61,10 +117,10 @@ let al_of_unop_int = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
-  | Ast.IntOp.ExtendS Types.Pack8 -> StringV "Extend8S"
-  | Ast.IntOp.ExtendS Types.Pack16 -> StringV "Extend16S"
-  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extend32S"
-  | Ast.IntOp.ExtendS Types.Pack64 -> StringV "Extend64S"
+  | Ast.IntOp.ExtendS Ts.Pack8 -> StringV "Extend8S"
+  | Ast.IntOp.ExtendS Ts.Pack16 -> StringV "Extend16S"
+  | Ast.IntOp.ExtendS Ts.Pack32 -> StringV "Extend32S"
+  | Ast.IntOp.ExtendS Ts.Pack64 -> StringV "Extend64S"
 let al_of_unop_float = function
   | Ast.FloatOp.Neg -> StringV "Neg"
   | Ast.FloatOp.Abs -> StringV "Abs"
@@ -145,16 +201,16 @@ let al_of_cvtop_float bit_num = function
 
 let al_of_packsize p =
   let s = match p with
-    | Types.Pack8 -> 8
-    | Types.Pack16 -> 16
-    | Types.Pack32 -> 32
-    | Types.Pack64 -> 64
+    | Ts.Pack8 -> 8
+    | Ts.Pack16 -> 16
+    | Ts.Pack32 -> 32
+    | Ts.Pack64 -> 64
   in
   NumV (Int64.of_int s)
 
 let al_of_extension = function
-| Types.SX -> singleton "S"
-| Types.ZX -> singleton "U"
+| Ts.SX -> singleton "S"
+| Ts.ZX -> singleton "U"
 
 let al_of_packsize_with_extension (p, s) =
   listV [ al_of_packsize p; al_of_extension s ]
@@ -221,7 +277,7 @@ let rec al_of_instr types winstr =
   | Ast.RefIsNull -> f "REF.IS_NULL"
   | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
   | Ast.Select None -> ConstructV ("SELECT", [ OptV None ])
-  | Ast.Select (Some [t]) -> ConstructV ("SELECT", [ OptV (Some (al_of_type t)) ])
+  | Ast.Select (Some [t]) -> ConstructV ("SELECT", [ OptV (Some (al_of_val_type t)) ])
   | Ast.LocalGet i32 -> f_i32 "LOCAL.GET" i32
   | Ast.LocalSet i32 -> f_i32 "LOCAL.SET" i32
   | Ast.LocalTee i32 -> f_i32 "LOCAL.TEE" i32
@@ -240,7 +296,7 @@ let rec al_of_instr types winstr =
       ConstructV
         ("CALL_INDIRECT", [
             to_int i32;
-            al_of_typeidx types i32'])
+            al_of_val_typeidx types i32'])
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
@@ -267,14 +323,14 @@ let rec al_of_instr types winstr =
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("LOAD", [
-            al_of_type (Types.NumType ty);
+            al_of_val_type (Ts.NumT ty);
             OptV (Option.map al_of_packsize_with_extension pack);
             NumV (Int64.of_int align);
             NumV (int64_of_int32_u offset) ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("STORE", [
-            al_of_type (Types.NumType ty);
+            al_of_val_type (Ts.NumT ty);
             OptV (Option.map al_of_packsize pack);
             NumV (Int64.of_int align);
             NumV (int64_of_int32_u offset) ])
@@ -299,7 +355,7 @@ let al_of_func wasm_module wasm_func =
   (* Get function type from module *)
   (* Note: function type will be placed in function in DSL *)
   let wasm_types = wasm_module.it.Ast.types in
-  let Types.FuncType (wtl1, wtl2) =
+  let Ts.FuncT (wtl1, wtl2) =
     Int32.to_int wasm_func.it.Ast.ftype.it
     |> List.nth wasm_types
     |> it
@@ -307,12 +363,12 @@ let al_of_func wasm_module wasm_func =
 
   (* Construct function type *)
   let ftype =
-    let al_tl1 = List.map al_of_type wtl1 in
-    let al_tl2 = List.map al_of_type wtl2 in
+    let al_tl1 = List.map al_of_val_type wtl1 in
+    let al_tl2 = List.map al_of_val_type wtl2 in
     ArrowV (listV al_tl1, listV al_tl2) in
 
   (* Construct locals *)
-  let locals = List.map al_of_type wasm_func.it.Ast.locals in
+  let locals = List.map al_of_val_type wasm_func.it.Ast.locals in
 
   (* Construct code *)
   let code = al_of_instrs wasm_module.it.types wasm_func.it.Ast.body in
@@ -327,21 +383,21 @@ let al_of_global wasm_global =
 
 let al_of_limits limits max =
   let max =
-    match limits.Types.max with
+    match limits.Ts.max with
     | Some v -> int64_of_int32_u v
     | None -> max
   in
 
-  PairV (NumV (int64_of_int32_u limits.Types.min), NumV max)
+  PairV (NumV (int64_of_int32_u limits.Ts.min), NumV max)
 
 let al_of_table wasm_table =
-  let Types.TableType (limits, ref_ty) = wasm_table.it.Ast.ttype in
+  let Ts.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits 4294967295L in
 
-  ConstructV ("TABLE", [ PairV(pair, al_of_type (RefType ref_ty)) ])
+  ConstructV ("TABLE", [ PairV(pair, al_of_val_type (RefT ref_ty)) ])
 
 let al_of_memory wasm_memory =
-  let Types.MemoryType (limits) = wasm_memory.it.Ast.mtype in
+  let Ts.MemoryT (limits) = wasm_memory.it.Ast.mtype in
   let pair = al_of_limits limits 65536L in
 
   ConstructV ("MEMORY", [ ConstructV ("I8", [ pair]) ])
@@ -365,7 +421,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
 let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
 
 let al_of_elem wasm_elem =
-  let reftype = al_of_type (Types.RefType wasm_elem.it.Ast.etype) in
+  let reftype = al_of_val_type (Ts.RefT wasm_elem.it.Ast.etype) in
 
   let al_of_const const = listV (al_of_instrs [] const.it) in
   let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const in
@@ -393,7 +449,7 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
       (* Get function type from module *)
       (* Note: function type will be placed in function in DSL *)
       let wasm_types = wasm_module.it.Ast.types in
-      let Types.FuncType (wtl1, wtl2) =
+      let Ts.FuncT (wtl1, wtl2) =
         Int32.to_int v.it
         |> List.nth wasm_types
         |> it
@@ -401,18 +457,18 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
 
       (* Construct function type *)
       let ftype =
-        let al_tl1 = List.map al_of_type wtl1 in
-        let al_tl2 = List.map al_of_type wtl2 in
+        let al_tl1 = List.map al_of_val_type wtl1 in
+        let al_tl2 = List.map al_of_val_type wtl2 in
         ArrowV (listV al_tl1, listV al_tl2)
       in
 
       ConstructV ("FUNC", [ ftype ])
   | Ast.TableImport ty ->
-    let Types.TableType (limits, ref_ty) = ty in
+    let Ts.TableT (limits, ref_ty) = ty in
     let pair = al_of_limits limits 4294967295L in
-    ConstructV ("TABLE", [ pair; al_of_type (RefType ref_ty) ])
+    ConstructV ("TABLE", [ pair; al_of_val_type (RefT ref_ty) ])
   | Ast.MemoryImport ty ->
-    let Types.MemoryType (limits) = ty in
+    let Ts.MemoryT (limits) = ty in
     let pair = al_of_limits limits 65536L in
     ConstructV ("MEM", [ pair ])
   | Ast.GlobalImport _ -> ConstructV ("GLOBAL", [ StringV "Yet: global type" ])
