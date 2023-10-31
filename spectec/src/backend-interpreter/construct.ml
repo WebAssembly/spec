@@ -2,6 +2,7 @@ open Al.Ast
 open Reference_interpreter
 open Source
 
+
 (* Construct types *)
 
 let al_of_null = function
@@ -546,3 +547,16 @@ let al_of_module wasm_module =
       listV export_list
     ]
   )
+
+(* Nan *)
+
+let canonical_nan t = singleton (t ^ ".NaN(canonical)")
+let arithmetic_nan t = singleton (t ^ ".NaN(arithmetic)")
+let al_of_result result = match result.it with
+  | Script.NumResult (Script.NumPat n) -> al_of_value (Value.Num n.it)
+  | Script.NumResult (Script.NanPat {it = (Value.F32 Script.CanonicalNan); _}) -> canonical_nan "F32"
+  | Script.NumResult (Script.NanPat {it = (Value.F64 Script.CanonicalNan); _}) -> canonical_nan "F64"
+  | Script.NumResult (Script.NanPat {it = (Value.F32 Script.ArithmeticNan); _}) -> arithmetic_nan "F32"
+  | Script.NumResult (Script.NanPat {it = (Value.F64 Script.ArithmeticNan); _}) -> arithmetic_nan "F64"
+  | Script.RefResult (Script.RefPat r) -> al_of_value (Value.Ref r.it)
+  | _ -> StringV "TODO"

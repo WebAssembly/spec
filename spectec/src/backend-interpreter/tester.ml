@@ -1,6 +1,5 @@
 open Reference_interpreter
 open Source
-open Ast
 open Al.Ast
 
 (** flag **)
@@ -54,17 +53,6 @@ let file_to_script file_name =
   let file_path = Filename.concat !root file_name in
   let lexbuf = Lexing.from_channel (open_in file_path) in
   Parse.parse file_path lexbuf Parse.Script
-
-let canonical_nan t = singleton (t ^ ".NaN(canonical)")
-let arithmetic_nan t = singleton (t ^ ".NaN(arithmetic)")
-let al_of_result result = match result.it with
-  | Script.NumResult (Script.NumPat n) -> Construct.al_of_value (Values.Num n.it)
-  | Script.NumResult (Script.NanPat {it = (Values.F32 Script.CanonicalNan); _}) -> canonical_nan "F32"
-  | Script.NumResult (Script.NanPat {it = (Values.F64 Script.CanonicalNan); _}) -> canonical_nan "F64"
-  | Script.NumResult (Script.NanPat {it = (Values.F32 Script.ArithmeticNan); _}) -> arithmetic_nan "F32"
-  | Script.NumResult (Script.NanPat {it = (Values.F64 Script.ArithmeticNan); _}) -> arithmetic_nan "F64"
-  | Script.RefResult (Script.RefPat r) -> Construct.al_of_value (Values.Ref r.it)
-  | _ -> StringV "TODO"
 
 (** End of helpers **)
 
@@ -199,7 +187,7 @@ let find_export name =
 let extract_addr_of tag name (export: value) =
   match export with
   | RecordV [ "NAME", { contents = StringV (export_name) }; "VALUE", { contents = ConstructV (export_tag, [ addr ]) } ]
-    when export_name = Ast.string_of_name name && export_tag = tag -> Some (addr)
+    when export_name = Utf8.encode name && export_tag = tag -> Some (addr)
   | _ -> None
 
 let do_invoke act = match act.it with
@@ -221,7 +209,7 @@ let do_invoke act = match act.it with
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
     ) in
-    Printf.eprintf "[Invoking %s %s...]\n" (string_of_name name) (Al.Print.string_of_value args);
+    Printf.eprintf "[Invoking %s %s...]\n" (Utf8.encode name) (Al.Print.string_of_value args);
 
     Interpreter.invocation [funcaddr; args]
   | Get (module_name_opt, name) ->
@@ -231,7 +219,7 @@ let do_invoke act = match act.it with
     let addr = Array.find_map (extract_addr_of "GLOBAL" name) exports |> Option.get in
     let globals = (Record.find "GLOBAL" !Ds.store) in
 
-    Printf.eprintf "[Getting %s...]\n" (string_of_name name);
+    Printf.eprintf "[Getting %s...]\n" (Utf8.encode name);
     let got =
       match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
       | RecordV r -> Record.find "VALUE" r
@@ -245,7 +233,7 @@ let f64_pos_nan = F64.to_bits F64.pos_nan
 let f64_neg_nan = F64.to_bits F64.neg_nan
 
 let is_canonical_nan t v =
-  v = canonical_nan t || match v with
+  v = Construct.canonical_nan t || match v with
   | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
     t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
     ||
@@ -253,7 +241,7 @@ let is_canonical_nan t v =
   | _ -> false
 
 let is_arithmetic_nan t v =
-  v = arithmetic_nan t || match v with
+  v = Construct.arithmetic_nan t || match v with
   | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
     t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
     ||
@@ -295,20 +283,19 @@ let get_externvals = function
       ListV (Array.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
-let rec extract_module def = match def.it with
+let extract_module def = match def.it with
   | Script.Textual m -> m
   | Script.Encoded (name, bs) ->
     Decode.decode name bs
   | Script.Quoted (_, s) ->
-    let def' = Parse.string_to_module s in
-    extract_module def'
+    Parse.string_to_module s
 
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
     let result = try do_invoke invoke with e -> StringV (msg_of e) in
     let expected_result = try
-      listV (expected |> List.map al_of_result)
+      listV (expected |> List.map Construct.al_of_result)
     with
       e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
     assert_return result expected_result
@@ -362,7 +349,7 @@ let test_cmd success cmd =
   match cmd.it with
   | Script.Module (module_name, def) -> test_module module_name (extract_module def)
   | Script.Register (name, module_name_opt) ->
-      let s = Ast.string_of_name name in
+      let s = Utf8.encode name in
       let module_name = match module_name_opt with
         | Some s -> s.it
         | None -> latest
