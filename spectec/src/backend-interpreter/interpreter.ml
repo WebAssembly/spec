@@ -685,10 +685,10 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 (* Entry *)
 
 let instantiation (args: value list): value =
-  match call_algo "instantiation" args with
+  match call_algo "instantiate" args with
   | AL_Context.Some module_inst -> module_inst
   | _ -> failwith "Instantiation doesn't return module instance"
 let invocation (args: value list): value =
-  match call_algo "invocation" args with
+  match call_algo "invoke" args with
   | AL_Context.Some v -> v
   | _ -> failwith "Invocation doesn't return value"
