@@ -212,8 +212,8 @@
 .. |MVAR| mathdef:: \xref{syntax/types}{syntax-mut}{\K{var}}
 .. |MCONST| mathdef:: \xref{syntax/types}{syntax-mut}{\K{const}}
 
-.. |SET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{set}}}
-.. |UNSET| mathdef:: \xref{syntax/types}{syntax-init}{\mathrel{\mbox{unset}}}
+.. |SET| mathdef:: \xref{syntax/types}{syntax-init}{\K{set}}
+.. |UNSET| mathdef:: \xref{syntax/types}{syntax-init}{\K{unset}}
 
 .. |LMIN| mathdef:: \xref{syntax/types}{syntax-limits}{\K{min}}
 .. |LMAX| mathdef:: \xref{syntax/types}{syntax-limits}{\K{max}}

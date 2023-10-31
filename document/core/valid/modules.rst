@@ -48,11 +48,11 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
    \frac{
      C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
      \qquad
-     (C \vdashlocal t : \init~t)^\ast
+     (C \vdashlocal \{\LTYPE~t\} : \init~t)^\ast
      \qquad
      C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : x
+     C \vdashfunc \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^\ast, \FBODY~\expr \} : x
    }
 
 
@@ -85,14 +85,14 @@ Locals
      \qquad
      C \vdashvaltypedefaultable t \defaultable
    }{
-     C \vdashlocal \{ \LTYPE~t \} : \SET~t \ok
+     C \vdashlocal \{ \LTYPE~t \} : \SET~t
    }
 
 .. math::
    \frac{
      C \vdashvaltype t \ok
    }{
-     C \vdashlocal \{ LTYPE~t \} : \UNSET~t \ok
+     C \vdashlocal \{ \LTYPE~t \} : \UNSET~t
    }
 
 .. note::
