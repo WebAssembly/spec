@@ -1,8 +1,8 @@
+open Reference_interpreter
 open Al
 open Ast
 open Print
 open Ds
-open Reference_interpreter
 
 let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
 let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
