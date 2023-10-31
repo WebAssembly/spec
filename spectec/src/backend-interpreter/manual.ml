@@ -5,7 +5,7 @@ let exec_expr_const =
   let result = NameE "val" in
 
   FuncA (
-    "exec_expr_const",
+    "eval_expr",
     [instrs],
     [
       ExecuteSeqI instrs;
