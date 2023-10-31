@@ -48,7 +48,15 @@ let transpose matrix =
 (* Expression *)
 
 let rec create_sub_al_context names iter env =
-  let name_to_value name = Env.find name env in
+  (*
+    Currently, the index is mistakenly inserted in names due to IL fault.
+    TODO: remove hack
+  *)
+  let name_to_value name =
+    match Env.find_opt name env with
+    | None -> OptV None
+    | Some v -> v
+  in
   let option_name_to_list name = name |> name_to_value |> value_to_option |> Option.to_list in
   let name_to_list name = name |> name_to_value |> value_to_list in
   let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in

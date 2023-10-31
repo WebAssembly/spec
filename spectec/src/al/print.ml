@@ -357,7 +357,8 @@ let structured_string_of_al_type = function
 
 let structured_string_of_keyword keyword = let name, note = keyword in sprintf "%s_%s" name note
 
-let structured_string_of_names names = List.fold_left (^) "" names
+let structured_string_of_names names =
+  "[" ^ String.concat ", " names ^ "]"
 
 (* expression *)
 
