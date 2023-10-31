@@ -210,7 +210,7 @@ and exp2expr exp =
           ConstructE (("IMPORT", "import"), List.map exp2expr el)
       | [ [ Ast.Atom "GLOBAL" ]; []; [] ], el ->
           ConstructE (("GLOBAL", "global"), List.map exp2expr el)
-      | [ [ Ast.Atom "TABLE" ]; [] ], el ->
+      | [ Ast.Atom "TABLE" ] :: _, el ->
           ConstructE (("TABLE", "table"), List.map exp2expr el)
       | [ [ Ast.Atom "MEMORY" ]; [] ], el ->
           ConstructE (("MEMORY", "mem"), List.map exp2expr el)

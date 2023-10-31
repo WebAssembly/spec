@@ -383,10 +383,13 @@ let al_of_limits limits max =
   PairV (NumV (int64_of_int32_u limits.Types.min), NumV max)
 
 let al_of_table wasm_table =
+
   let Types.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits 4294967295L in
 
-  ConstructV ("TABLE", [ PairV(pair, al_of_val_type (RefT ref_ty)) ])
+  let expr = al_of_instrs None wasm_table.it.Ast.tinit.it in
+
+  ConstructV ("TABLE", [ PairV(pair, al_of_val_type (RefT ref_ty)); listV expr ])
 
 let al_of_memory wasm_memory =
   let Types.MemoryT (limits) = wasm_memory.it.Ast.mtype in
