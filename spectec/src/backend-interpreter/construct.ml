@@ -482,7 +482,9 @@ let al_of_module wasm_module =
 
   (* Construct types *)
   let type_list =
-    List.map (fun ty -> al_of_rec_type ty.it) wasm_module.it.Ast.types
+    List.map (fun ty ->
+      ConstructV ("TYPE", [ al_of_rec_type ty.it ])
+    ) wasm_module.it.Ast.types
   in
 
   (* Construct imports *)
