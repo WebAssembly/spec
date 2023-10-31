@@ -276,10 +276,13 @@ let get_externval = function
         | _ -> None
       in
       Array.find_map is_matching_export export |> Option.get
-  | _ -> failwith "Invalid import"
+  | v ->
+    Al.Print.string_of_value v
+    |> Printf.sprintf "Invalid import: %s"
+    |> failwith
 
 let get_externvals = function
-  | ConstructV ("MODULE", (ListV imports) :: _) ->
+  | ConstructV ("MODULE", _ :: (ListV imports) :: _) ->
       ListV (Array.map get_externval !imports |> ref)
   | _ -> failwith "Invalid module"
 
