@@ -156,7 +156,7 @@ rule Step_read/call_ref-null:
   z; (REF.NULL ht) (CALL_REF x)  ~>  TRAP
 
 rule Step_read/call_ref-func:
-  z; val^n (REF.FUNC_ADDR a) (CALL_REF x)  ~> (CALL_ADDR a) 
+  z; (REF.FUNC_ADDR a) (CALL_REF x)  ~> (CALL_ADDR a) 
 
 
 rule Step_read/return_call:
