@@ -13,7 +13,7 @@ let string_of_opt prefix stringifier suffix = function
 let string_of_list stringifier left sep right = function
   | [] -> left ^ right
   | h :: t ->
-      let limit = 16 in
+      let limit = 100 in
       let is_long = List.length t > limit in
       left
       ^ List.fold_left

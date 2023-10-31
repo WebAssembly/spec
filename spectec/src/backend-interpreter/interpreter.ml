@@ -55,7 +55,11 @@ let rec create_sub_al_context names iter env =
     TODO: remove hack
   *)
 
-  let names = List.filter (fun name -> Env.mem name env) names in
+  let names =
+    match iter with
+    | ListN (_, Some _) -> names
+    | _ -> List.filter (fun name -> Env.mem name env) names
+  in
 
   let name_to_value name = Env.find name env in
   let option_name_to_list name = name |> name_to_value |> value_to_option |> Option.to_list in
@@ -65,7 +69,10 @@ let rec create_sub_al_context names iter env =
   let name_to_values name =
     match iter with
     | Opt -> option_name_to_list name
-    | ListN (e_n, Some n') when name = n' -> eval_expr env e_n |> value_to_int |> length_to_list
+    | ListN (e_n, Some n') when name = n' ->
+      eval_expr env e_n
+      |> value_to_int
+      |> length_to_list
     | _ -> name_to_list name
   in
 
@@ -78,7 +85,13 @@ and access_path env base path = match path with
   | IndexP e' ->
       let a = base |> value_to_array in
       let i = eval_expr env e' |> value_to_int in
-      ( try Array.get a i with Invalid_argument _ -> failwith ("Failed Array.get during ReplaceE") )
+      begin try Array.get a i with
+      | Invalid_argument _ ->
+        Printf.sprintf "Failed Array.get during ReplaceE: %s[%s]"
+          (string_of_value base)
+          (string_of_int i)
+        |> failwith
+      end
   | SliceP (e1, e2) ->
       let a = base |> value_to_array in
       let i1 = eval_expr env e1 |> value_to_int in
@@ -248,16 +261,16 @@ and eval_expr env expr =
   | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
       Env.find name env
   | IterE (inner_e, names, iter) ->
-      env
-      |> create_sub_al_context names iter
-      |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
-      |> if (iter = Opt)
-      then
-        (function
-          | [] -> OptV None
-          | [v] -> OptV (Some v)
-          | _ -> failwith "Unreachable")
-      else listV
+    env
+    |> create_sub_al_context names iter
+    |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
+    |> if (iter = Opt)
+    then
+      (function
+        | [] -> OptV None
+        | [v] -> OptV (Some v)
+        | _ -> failwith "Unreachable")
+    else listV
   | e -> structured_string_of_expr e |> failwith
 
 (* Condition *)
