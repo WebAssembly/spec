@@ -110,8 +110,9 @@ let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
 let nxx = ixx | fxx
 let vxxx = "v128"
-let mixx = "i" ("8" | "16" | "32" | "64")
-let mfxx = "f" ("32" | "64")
+let pixx = "i" ("8" | "16")
+let mixx = ixx | pixx
+let mfxx = fxx
 let sign = "s" | "u"
 let mem_size = "8" | "16" | "32"
 let v128_int_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2"
@@ -135,11 +136,13 @@ rule token = parse
 
   | keyword as s
     { match s with
-      | "i32" -> NUM_TYPE Types.I32Type
-      | "i64" -> NUM_TYPE Types.I64Type
-      | "f32" -> NUM_TYPE Types.F32Type
-      | "f64" -> NUM_TYPE Types.F64Type
-      | "v128" -> VEC_TYPE Types.V128Type
+      | "i8" -> PACK_TYPE Pack.Pack8
+      | "i16" -> PACK_TYPE Pack.Pack16
+      | "i32" -> NUM_TYPE Types.I32T
+      | "i64" -> NUM_TYPE Types.I64T
+      | "f32" -> NUM_TYPE Types.F32T
+      | "f64" -> NUM_TYPE Types.F64T
+      | "v128" -> VEC_TYPE Types.V128T
       | "i8x16" -> VEC_SHAPE (V128.I8x16 ())
       | "i16x8" -> VEC_SHAPE (V128.I16x8 ())
       | "i32x4" -> VEC_SHAPE (V128.I32x4 ())
@@ -147,10 +150,33 @@ rule token = parse
       | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
       | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
 
-      | "extern" -> EXTERN
-      | "externref" -> EXTERNREF
+      | "any" -> ANY
+      | "anyref" -> ANYREF
+      | "none" -> NONE
+      | "nullref" -> NULLREF
+      | "eq" -> EQ
+      | "eqref" -> EQREF
+      | "i31" -> I31
+      | "i31ref" -> I31REF
+      | "structref" -> STRUCTREF
+      | "arrayref" -> ARRAYREF
+      | "nofunc" -> NOFUNC
       | "funcref" -> FUNCREF
+      | "nullfuncref" -> NULLFUNCREF
+      | "extern" -> EXTERN
+      | "noextern" -> NOEXTERN
+      | "externref" -> EXTERNREF
+      | "nullexternref" -> NULLEXTERNREF
+      | "ref" -> REF
+      | "null" -> NULL
+
+      | "array" -> ARRAY
+      | "struct" -> STRUCT
+      | "field" -> FIELD
       | "mut" -> MUT
+      | "sub" -> SUB
+      | "final" -> FINAL
+      | "rec" -> REC
 
       | "nop" -> NOP
       | "unreachable" -> UNREACHABLE
@@ -161,13 +187,21 @@ rule token = parse
       | "br" -> BR
       | "br_if" -> BR_IF
       | "br_table" -> BR_TABLE
+      | "br_on_null" -> BR_ON_NULL br_on_null
+      | "br_on_non_null" -> BR_ON_NULL br_on_non_null
+      | "br_on_cast" -> BR_ON_CAST br_on_cast
+      | "br_on_cast_fail" -> BR_ON_CAST br_on_cast_fail
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
       | "else" -> ELSE
       | "select" -> SELECT
       | "call" -> CALL
+      | "call_ref" -> CALL_REF
       | "call_indirect" -> CALL_INDIRECT
+      | "return_call" -> RETURN_CALL
+      | "return_call_ref" -> RETURN_CALL_REF
+      | "return_call_indirect" -> RETURN_CALL_INDIRECT
 
       | "local.get" -> LOCAL_GET
       | "local.set" -> LOCAL_SET
@@ -256,26 +290,63 @@ rule token = parse
 
       | "i32.const" ->
         CONST (fun s ->
-          let n = I32.of_string s.it in i32_const (n @@ s.at), Values.I32 n)
+          let n = I32.of_string s.it in i32_const (n @@ s.at), Value.I32 n)
       | "i64.const" ->
         CONST (fun s ->
-          let n = I64.of_string s.it in i64_const (n @@ s.at), Values.I64 n)
+          let n = I64.of_string s.it in i64_const (n @@ s.at), Value.I64 n)
       | "f32.const" ->
         CONST (fun s ->
-          let n = F32.of_string s.it in f32_const (n @@ s.at), Values.F32 n)
+          let n = F32.of_string s.it in f32_const (n @@ s.at), Value.F32 n)
       | "f64.const" ->
         CONST (fun s ->
-          let n = F64.of_string s.it in f64_const (n @@ s.at), Values.F64 n)
+          let n = F64.of_string s.it in f64_const (n @@ s.at), Value.F64 n)
       | "v128.const" ->
         VEC_CONST
           (fun shape ss at ->
             let v = V128.of_strings shape (List.map (fun s -> s.it) ss) in
-            (v128_const (v @@ at), Values.V128 v))
+            (v128_const (v @@ at), Value.V128 v))
 
       | "ref.null" -> REF_NULL
       | "ref.func" -> REF_FUNC
+      | "ref.struct" -> REF_STRUCT
+      | "ref.array" -> REF_ARRAY
       | "ref.extern" -> REF_EXTERN
+      | "ref.host" -> REF_HOST
+
       | "ref.is_null" -> REF_IS_NULL
+      | "ref.as_non_null" -> REF_AS_NON_NULL
+      | "ref.test" -> REF_TEST
+      | "ref.cast" -> REF_CAST
+      | "ref.eq" -> REF_EQ
+
+      | "ref.i31" -> REF_I31
+      | "i31.get_u" -> I31_GET i31_get_u
+      | "i31.get_s" -> I31_GET i31_get_s
+
+      | "struct.new" -> STRUCT_NEW struct_new
+      | "struct.new_default" -> STRUCT_NEW struct_new_default
+      | "struct.get" -> STRUCT_GET struct_get
+      | "struct.get_u" -> STRUCT_GET struct_get_u
+      | "struct.get_s" -> STRUCT_GET struct_get_s
+      | "struct.set" -> STRUCT_SET
+
+      | "array.new" -> ARRAY_NEW array_new
+      | "array.new_default" -> ARRAY_NEW array_new_default
+      | "array.new_fixed" -> ARRAY_NEW_FIXED
+      | "array.new_elem" -> ARRAY_NEW_ELEM
+      | "array.new_data" -> ARRAY_NEW_DATA
+      | "array.get" -> ARRAY_GET array_get
+      | "array.get_u" -> ARRAY_GET array_get_u
+      | "array.get_s" -> ARRAY_GET array_get_s
+      | "array.set" -> ARRAY_SET
+      | "array.len" -> ARRAY_LEN
+      | "array.copy" -> ARRAY_COPY
+      | "array.fill" -> ARRAY_FILL
+      | "array.init_data" -> ARRAY_INIT_DATA
+      | "array.init_elem" -> ARRAY_INIT_ELEM
+
+      | "any.convert_extern" -> EXTERN_CONVERT any_convert_extern
+      | "extern.convert_any" -> EXTERN_CONVERT extern_convert_any
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz
