@@ -1,6 +1,6 @@
+open Al.Ast
 open Reference_interpreter
 open Source
-open Al.Ast
 
 (* Construct types *)
 
@@ -38,7 +38,7 @@ and al_of_str_type = function
   | Types.DefFuncT (FuncT (rt1, rt2)) ->
     ConstructV ("FUNC", [ ArrowV (
       al_of_result_type rt1,
-      al_of_result_type rt1
+      al_of_result_type rt2
     )])
 and al_of_sub_type = function
   | Types.SubT (fin, htl, st) ->
@@ -79,22 +79,21 @@ and al_of_val_type = function
 let int64_of_int32_u x = x |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let al_of_num n =
   let t, v = match n with
-    | Values.I32 i -> "I32", i |> I32.to_bits |> int64_of_int32_u
-    | Values.I64 i -> "I64", i |> I64.to_bits
-    | Values.F32 f -> "F32", f |> F32.to_bits |> int64_of_int32_u
-    | Values.F64 f -> "F64", f |> F64.to_bits in
+    | Value.I32 i -> "I32", i |> I32.to_bits |> int64_of_int32_u
+    | Value.I64 i -> "I64", i |> I64.to_bits
+    | Value.F32 f -> "F32", f |> F32.to_bits |> int64_of_int32_u
+    | Value.F64 f -> "F64", f |> F64.to_bits in
   let t, v = ConstructV(t, []), NumV v in
   ConstructV ("CONST", [ t; v ])
 
 let al_of_value = function
-| Values.Num n -> al_of_num n
-| Values.Vec _v -> failwith "TODO"
-| Values.Ref r ->
-    begin match r with
-      | Values.NullRef t -> ConstructV ("REF.NULL", [ al_of_val_type (RefT t) ])
-      | Script.ExternRef i -> ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u i) ])
-      | r -> Values.string_of_ref r |> failwith
-    end
+| Value.Num n -> al_of_num n
+| Value.Vec _v -> failwith "TODO"
+| Value.Ref (Value.NullRef ht) ->
+  ConstructV ("REF.NULL", [ al_of_heap_type ht ])
+| Value.Ref (Script.HostRef i) ->
+  ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u i) ])
+| Value.Ref r -> Value.string_of_ref r |> failwith
 
 (* Construct type *)
 
@@ -106,9 +105,9 @@ let al_of_val_typeidx types idx =
   ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
 
 let al_of_blocktype types = function
-| Ast.VarBlockT idx -> al_of_val_typeidx types idx
-| Ast.ValBlockT None -> ArrowV(listV [], listV [])
-| Ast.ValBlockT (Some val_type) -> ArrowV(listV [], listV [al_of_val_type val_type])
+| Ast.VarBlockType idx -> al_of_val_typeidx types idx
+| Ast.ValBlockType None -> ArrowV(listV [], listV [])
+| Ast.ValBlockType (Some val_type) -> ArrowV(listV [], listV [al_of_val_type val_type])
 
 
 (* Construct instruction *)
@@ -117,10 +116,10 @@ let al_of_unop_int = function
   | Ast.IntOp.Clz -> StringV "Clz"
   | Ast.IntOp.Ctz -> StringV "Ctz"
   | Ast.IntOp.Popcnt -> StringV "Popcnt"
-  | Ast.IntOp.ExtendS Types.Pack8 -> StringV "Extend8S"
-  | Ast.IntOp.ExtendS Types.Pack16 -> StringV "Extend16S"
-  | Ast.IntOp.ExtendS Types.Pack32 -> StringV "Extend32S"
-  | Ast.IntOp.ExtendS Types.Pack64 -> StringV "Extend64S"
+  | Ast.IntOp.ExtendS Pack.Pack8 -> StringV "Extend8S"
+  | Ast.IntOp.ExtendS Pack.Pack16 -> StringV "Extend16S"
+  | Ast.IntOp.ExtendS Pack.Pack32 -> StringV "Extend32S"
+  | Ast.IntOp.ExtendS Pack.Pack64 -> StringV "Extend64S"
 let al_of_unop_float = function
   | Ast.FloatOp.Neg -> StringV "Neg"
   | Ast.FloatOp.Abs -> StringV "Abs"
@@ -201,16 +200,16 @@ let al_of_cvtop_float bit_num = function
 
 let al_of_packsize p =
   let s = match p with
-    | Types.Pack8 -> 8
-    | Types.Pack16 -> 16
-    | Types.Pack32 -> 32
-    | Types.Pack64 -> 64
+    | Pack.Pack8 -> 8
+    | Pack.Pack16 -> 16
+    | Pack.Pack32 -> 32
+    | Pack.Pack64 -> 64
   in
   NumV (Int64.of_int s)
 
 let al_of_extension = function
-| Types.SX -> singleton "S"
-| Types.ZX -> singleton "U"
+| Pack.SX -> singleton "S"
+| Pack.ZX -> singleton "U"
 
 let al_of_packsize_with_extension (p, s) =
   listV [ al_of_packsize p; al_of_extension s ]
@@ -225,7 +224,7 @@ let rec al_of_instr types winstr =
   match winstr.it with
   (* wasm values *)
   | Ast.Const num -> al_of_num num.it
-  | Ast.RefNull t -> al_of_value (Values.Ref (Values.NullRef t))
+  | Ast.RefNull t -> al_of_value (Value.Ref (Value.NullRef t))
   (* wasm instructions *)
   | Ast.Unreachable -> f "UNREACHABLE"
   | Ast.Nop -> f "NOP"
@@ -233,45 +232,45 @@ let rec al_of_instr types winstr =
   | Ast.Unary op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> ("I32", al_of_unop_int op)
-      | Values.I64 op -> ("I64", al_of_unop_int op)
-      | Values.F32 op -> ("F32", al_of_unop_float op)
-      | Values.F64 op -> ("F64", al_of_unop_float op))
+      | Value.I32 op -> ("I32", al_of_unop_int op)
+      | Value.I64 op -> ("I64", al_of_unop_int op)
+      | Value.F32 op -> ("F32", al_of_unop_float op)
+      | Value.F64 op -> ("F64", al_of_unop_float op))
     in
     ConstructV ("UNOP", [ singleton ty; op ])
   | Ast.Binary op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> ("I32", al_of_binop_int op)
-      | Values.I64 op -> ("I64", al_of_binop_int op)
-      | Values.F32 op -> ("F32", al_of_binop_float op)
-      | Values.F64 op -> ("F64", al_of_binop_float op))
+      | Value.I32 op -> ("I32", al_of_binop_int op)
+      | Value.I64 op -> ("I64", al_of_binop_int op)
+      | Value.F32 op -> ("F32", al_of_binop_float op)
+      | Value.F64 op -> ("F64", al_of_binop_float op))
     in
     ConstructV ("BINOP", [ singleton ty; op ])
   | Ast.Test op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> ("I32", al_of_testop_int op)
-      | Values.I64 op -> ("I64", al_of_testop_int op)
+      | Value.I32 op -> ("I32", al_of_testop_int op)
+      | Value.I64 op -> ("I64", al_of_testop_int op)
       | _ -> .)
     in
     ConstructV ("TESTOP", [ singleton ty; op ])
   | Ast.Compare op ->
     let (ty, op) = (
       match op with
-      | Values.I32 op -> ("I32", al_of_relop_int op)
-      | Values.I64 op -> ("I64", al_of_relop_int op)
-      | Values.F32 op -> ("F32", al_of_relop_float op)
-      | Values.F64 op -> ("F64", al_of_relop_float op))
+      | Value.I32 op -> ("I32", al_of_relop_int op)
+      | Value.I64 op -> ("I64", al_of_relop_int op)
+      | Value.F32 op -> ("F32", al_of_relop_float op)
+      | Value.F64 op -> ("F64", al_of_relop_float op))
     in
     ConstructV ("RELOP", [ singleton ty; op ])
   | Ast.Convert op ->
     let (ty_to, (op, ty_from, sx_opt)) = (
       match op with
-      | Values.I32 op -> ("I32", al_of_cvtop_int "32" op)
-      | Values.I64 op -> ("I64", al_of_cvtop_int "64" op)
-      | Values.F32 op -> ("F32", al_of_cvtop_float "32" op)
-      | Values.F64 op -> ("F64", al_of_cvtop_float "64" op))
+      | Value.I32 op -> ("I32", al_of_cvtop_int "32" op)
+      | Value.I64 op -> ("I64", al_of_cvtop_int "64" op)
+      | Value.F32 op -> ("F32", al_of_cvtop_float "32" op)
+      | Value.F64 op -> ("F64", al_of_cvtop_float "64" op))
     in
     ConstructV ("CVTOP", [ singleton ty_to; StringV op; singleton ty_from; OptV sx_opt ])
   | Ast.RefIsNull -> f "REF.IS_NULL"
@@ -350,28 +349,21 @@ and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 
 let it phrase = phrase.it
 
-let al_of_func wasm_module wasm_func =
+let al_of_func wasm_func =
 
-  (* Get function type from module *)
-  (* Note: function type will be placed in function in DSL *)
-  let wasm_types = wasm_module.it.Ast.types in
-  let Types.FuncT (wtl1, wtl2) =
-    Int32.to_int wasm_func.it.Ast.ftype.it
-    |> List.nth wasm_types
-    |> it
+  let ftype =
+    NumV (Int64.of_int32 wasm_func.it.Ast.ftype.it)
   in
 
-  (* Construct function type *)
-  let ftype =
-    let al_tl1 = List.map al_of_val_type wtl1 in
-    let al_tl2 = List.map al_of_val_type wtl2 in
-    ArrowV (listV al_tl1, listV al_tl2) in
-
   (* Construct locals *)
-  let locals = List.map al_of_val_type wasm_func.it.Ast.locals in
+  let locals =
+    List.map
+      (fun l -> al_of_val_type l.it.Ast.ltype)
+      wasm_func.it.Ast.locals
+  in
 
   (* Construct code *)
-  let code = al_of_instrs wasm_module.it.types wasm_func.it.Ast.body in
+  let code = al_of_instrs [] wasm_func.it.Ast.body in
 
   (* Construct func *)
   ConstructV ("FUNC", [ftype; listV locals; listV code])
@@ -443,26 +435,11 @@ let al_of_data wasm_data =
 
   ConstructV ("DATA", [ listV byte_list; mode ])
 
-let al_of_import_desc wasm_module import_desc = match import_desc.it with
-  | Ast.FuncImport v ->
-
-      (* Get function type from module *)
-      (* Note: function type will be placed in function in DSL *)
-      let wasm_types = wasm_module.it.Ast.types in
-      let Types.FuncT (wtl1, wtl2) =
-        Int32.to_int v.it
-        |> List.nth wasm_types
-        |> it
-      in
-
-      (* Construct function type *)
-      let ftype =
-        let al_tl1 = List.map al_of_val_type wtl1 in
-        let al_tl2 = List.map al_of_val_type wtl2 in
-        ArrowV (listV al_tl1, listV al_tl2)
-      in
-
-      ConstructV ("FUNC", [ ftype ])
+let al_of_import_desc wasm_module idesc = match idesc.it with
+  | Ast.FuncImport x ->
+      let dts = Ast.def_types_of wasm_module in
+      let dt = Lib.List32.nth dts x.it |> al_of_def_type in
+      ConstructV ("FUNC", [ dt ])
   | Ast.TableImport ty ->
     let Types.TableT (limits, ref_ty) = ty in
     let pair = al_of_limits limits 4294967295L in
@@ -475,8 +452,9 @@ let al_of_import_desc wasm_module import_desc = match import_desc.it with
 
 let al_of_import wasm_module wasm_import =
 
-  let module_name = StringV (wasm_import.it.Ast.module_name |> Ast.string_of_name) in
-  let item_name = StringV (wasm_import.it.Ast.item_name |> Ast.string_of_name) in
+  let module_name = StringV (wasm_import.it.Ast.module_name |> Utf8.encode) in
+  let item_name = StringV (wasm_import.it.Ast.item_name |> Utf8.encode) in
+
   let import_desc = al_of_import_desc wasm_module wasm_import.it.Ast.idesc in
 
   ConstructV ("IMPORT", [ module_name; item_name; import_desc ])
@@ -492,7 +470,7 @@ let al_of_start wasm_start =
 
 let al_of_export wasm_export =
 
-  let name = StringV (wasm_export.it.Ast.name |> Ast.string_of_name) in
+  let name = StringV (wasm_export.it.Ast.name |> Utf8.encode) in
   let export_desc = al_of_export_desc wasm_export.it.Ast.edesc in
 
   ConstructV ("EXPORT", [ name; export_desc ])
@@ -506,7 +484,7 @@ let al_of_module wasm_module =
 
   (* Construct functions *)
   let func_list =
-    List.map (al_of_func wasm_module) wasm_module.it.funcs
+    List.map al_of_func wasm_module.it.funcs
   in
 
   (* Construct global *)
