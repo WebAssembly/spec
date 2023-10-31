@@ -478,6 +478,11 @@ let al_of_export wasm_export =
 
 let al_of_module wasm_module =
 
+  (* Construct types *)
+  let type_list =
+    List.map (fun ty -> al_of_rec_type ty.it) wasm_module.it.Ast.types
+  in
+
   (* Construct imports *)
   let import_list =
     List.map (al_of_import wasm_module) wasm_module.it.imports
@@ -536,6 +541,7 @@ let al_of_module wasm_module =
   ConstructV (
     "MODULE",
     [
+      listV type_list;
       listV import_list;
       listV func_list;
       listV global_list;
