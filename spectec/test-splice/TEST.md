@@ -914,6 +914,7 @@ warning: definition `storagesize` was never spliced
 warning: definition `store` was never spliced
 warning: definition `structinst` was never spliced
 warning: definition `subst_all_deftype` was never spliced
+warning: definition `subst_all_deftypes` was never spliced
 warning: definition `subst_all_reftype` was never spliced
 warning: definition `subst_comptype` was never spliced
 warning: definition `subst_deftype` was never spliced

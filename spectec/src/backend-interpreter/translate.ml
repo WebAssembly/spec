@@ -122,6 +122,7 @@ and exp2expr exp =
   | Ast.CatE (exp1, exp2) -> ConcatE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
   | Ast.VarE id -> NameE id.it
+  | Ast.SubE ({ it = Ast.VarE id; _}, { it = VarT t; _ }, _) -> SubE (id.it, t.it)
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE (inner_exp, (Ast.ListN (times, None), [])) ->
       ListFillE (exp2expr inner_exp, exp2expr times)
@@ -488,7 +489,7 @@ let extract_bound_names lhs rhs targets cont = match lhs with
 let rec letI lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
-    | NameE _ -> true
+    | NameE _ | SubE _ -> true
     | IterE (inner_exp, _, _) -> has_name inner_exp
     | _ -> false
   in
@@ -561,7 +562,7 @@ let rec letI lhs rhs targets cont =
       | ListE es ->
         let bindings', es' = extract_non_names es in
         Some (NumE (Int64.of_int (List.length es))), bindings', ListE es'
-      | IterE (NameE _, _, ListN (e', None)) ->
+      | IterE ((NameE _ | SubE _), _, ListN (e', None)) ->
         Some e', [], e
       | _ ->
         None, [], e in
@@ -581,8 +582,14 @@ let rec letI lhs rhs targets cont =
             :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
+  | SubE (s, t) ->
+    [
+      IfI
+        ( HasTypeC (rhs, t),
+          LetI (NameE s, rhs) :: cont,
+          [] )
+    ]
   | NameE s when s = "f" || String.starts_with ~prefix:"f_" s ->
-      Al.Print.string_of_expr rhs |> print_endline;
       LetI (lhs, rhs) :: cont
   | _ -> LetI (lhs, rhs) :: cont
 

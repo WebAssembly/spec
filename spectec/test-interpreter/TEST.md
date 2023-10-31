@@ -90,17 +90,8 @@ Animation failed.
 if (a < |$funcinst(z)|)
 Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 ...Animation failed
-...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
-{ LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Warning: No corresponding if for
-1. Otherwise:
-  a. Let ht be fresh_0.
-  b. If fresh_1* is ht*, then:
-    1) Return ht.
-{ LOCAL: []; MODULE: mm; }
-{ LOCAL: []; MODULE: mm; }
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====

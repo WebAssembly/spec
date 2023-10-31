@@ -92,14 +92,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 ...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
-{ LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }
-Warning: No corresponding if for
-1. Otherwise:
-  a. Let ht be fresh_0.
-  b. If fresh_1* is ht*, then:
-    1) Return ht.
-{ LOCAL: []; MODULE: mm; }
-{ LOCAL: []; MODULE: mm; }
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
@@ -542,15 +534,15 @@ validation_of_STORE nt n? x n_A n_O
 Ki
 1. Return 1024.
 
-min fresh_0 fresh_1
-1. If fresh_0 is 0, then:
+min u_0 u_1
+1. If u_0 is 0, then:
   a. Return 0.
-2. If fresh_1 is 0, then:
+2. If u_1 is 0, then:
   a. Return 0.
-3. Assert: Due to validation, fresh_0 ≥ 1.
-4. Let i be (fresh_0 - 1).
-5. Assert: Due to validation, fresh_1 ≥ 1.
-6. Let j be (fresh_1 - 1).
+3. Assert: Due to validation, u_0 ≥ 1.
+4. Let i be (u_0 - 1).
+5. Assert: Due to validation, u_1 ≥ 1.
+6. Let j be (u_1 - 1).
 7. Return $min(i, j).
 
 test_sub_ATOM_22 n_3_ATOM_y
@@ -559,80 +551,88 @@ test_sub_ATOM_22 n_3_ATOM_y
 curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
-setminus1 x fresh_0*
-1. If fresh_0* is [], then:
+setminus1 x u_0*
+1. If u_0* is [], then:
   a. Return [x].
-2. Let [y_1] ++ y* be fresh_0*.
+2. Let [y_1] ++ y* be u_0*.
 3. If x is y_1, then:
   a. Return [].
-4. Let [y_1] ++ y* be fresh_0*.
+4. Let [y_1] ++ y* be u_0*.
 5. Return $setminus1(x, y*).
 
-setminus fresh_0* y*
-1. If fresh_0* is [], then:
+setminus u_0* y*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [x_1] ++ x* be fresh_0*.
+2. Let [x_1] ++ x* be u_0*.
 3. Return $setminus1(x_1, y*) ++ $setminus(x*, y*).
 
-size fresh_0
-1. If fresh_0 is I32, then:
+size u_0
+1. If u_0 is I32, then:
   a. Return 32.
-2. If fresh_0 is I64, then:
+2. If u_0 is I64, then:
   a. Return 64.
-3. If fresh_0 is F32, then:
+3. If u_0 is F32, then:
   a. Return 32.
-4. If fresh_0 is F64, then:
+4. If u_0 is F64, then:
   a. Return 64.
-5. If fresh_0 is V128, then:
+5. If u_0 is V128, then:
   a. Return 128.
 
-packedsize fresh_0
-1. If fresh_0 is I8, then:
+packedsize u_0
+1. If u_0 is I8, then:
   a. Return 8.
-2. Assert: Due to validation, fresh_0 is I16.
+2. Assert: Due to validation, u_0 is I16.
 3. Return 16.
 
-storagesize fresh_0
-1. Let valtype be fresh_0.
-2. Return $size(valtype).
-3. Let packedtype be fresh_0.
+storagesize u_0
+1. If the type of u_0 is valtype, then:
+  a. Let valtype be u_0.
+  b. Return $size(valtype).
+2. Assert: Due to validation, the type of u_0 is packedtype.
+3. Let packedtype be u_0.
 4. Return $packedsize(packedtype).
 
-unpacktype fresh_0
-1. Let valtype be fresh_0.
-2. Return valtype.
+unpacktype u_0
+1. If the type of u_0 is valtype, then:
+  a. Let valtype be u_0.
+  b. Return valtype.
+2. Assert: Due to validation, the type of u_0 is packedtype.
 3. Return I32.
 
-unpacknumtype fresh_0
-1. Let numtype be fresh_0.
-2. Return numtype.
+unpacknumtype u_0
+1. If the type of u_0 is numtype, then:
+  a. Let numtype be u_0.
+  b. Return numtype.
+2. Assert: Due to validation, the type of u_0 is packedtype.
 3. Return I32.
 
-sxfield fresh_0
-1. Return ?().
-2. Return ?(S).
+sxfield u_0
+1. If the type of u_0 is valtype, then:
+  a. Return ?().
+2. Assert: Due to validation, the type of u_0 is packedtype.
+3. Return ?(S).
 
 diffrt (REF nul_1 ht_1) (REF NULL ht_2)
-1. If fresh_0? is ?([]), then:
+1. If u_0? is ?([]), then:
   a. Return (REF NULL ht_1).
-2. Assert: Due to validation, fresh_0? is not defined.
+2. Assert: Due to validation, u_0? is not defined.
 3. Return (REF nul_1 ht_1).
 
 idx x
 1. Return (_IDX x).
 
-subst_typevar xx fresh_0* fresh_1*
-1. If fresh_0* is [] and fresh_1* is [], then:
+subst_typevar xx u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
   a. Return xx.
-2. Assert: Due to validation, |fresh_1*| ≥ 1.
-3. Let [ht_1] ++ ht'* be fresh_1*.
-4. If |fresh_0*| ≥ 1, then:
-  a. Let [xx_1] ++ xx'* be fresh_0*.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [ht_1] ++ ht'* be u_1*.
+4. If |u_0*| ≥ 1, then:
+  a. Let [xx_1] ++ xx'* be u_0*.
   b. If xx is xx_1, then:
     1) Return ht_1.
-5. Let [ht_1] ++ ht'* be fresh_1*.
-6. Assert: Due to validation, |fresh_0*| ≥ 1.
-7. Let [xx_1] ++ xx'* be fresh_0*.
+5. Let [ht_1] ++ ht'* be u_1*.
+6. Assert: Due to validation, |u_0*| ≥ 1.
+7. Let [xx_1] ++ xx'* be u_0*.
 8. Return $subst_typevar(xx, xx'*, ht'*).
 
 subst_numtype nt xx* ht*
@@ -644,53 +644,63 @@ subst_vectype vt xx* ht*
 subst_packedtype pt xx* ht*
 1. Return pt.
 
-subst_heaptype fresh_0 xx* fresh_1*
-1. Let ht* be fresh_1*.
-2. Let xx' be fresh_0.
-3. Return $subst_typevar(xx', xx*, ht*).
-4. Let dt be fresh_0.
-5. Let ht* be fresh_1*.
-6. Return $subst_deftype(dt, xx*, ht*).
+subst_heaptype u_0 xx* u_1*
+1. Let ht* be u_1*.
+2. If the type of u_0 is typevar, then:
+  a. Let xx' be u_0.
+  b. Return $subst_typevar(xx', xx*, ht*).
+3. If the type of u_0 is deftype, then:
+  a. Let dt be u_0.
+  b. Let ht* be u_1*.
+  c. Return $subst_deftype(dt, xx*, ht*).
+4. Let ht be u_0.
+5. Assert: Due to validation, u_1* is ht*.
+6. Return ht.
 
 subst_reftype (REF nul ht) xx* ht*
 1. Return (REF nul $subst_heaptype(ht, xx*, ht*)).
 
-subst_valtype fresh_0 xx* ht*
-1. Let nt be fresh_0.
-2. Return $subst_numtype(nt, xx*, ht*).
-3. Let vt be fresh_0.
-4. Return $subst_vectype(vt, xx*, ht*).
-5. Let rt be fresh_0.
-6. Return $subst_reftype(rt, xx*, ht*).
-7. Assert: Due to validation, fresh_0 is BOT.
-8. Return BOT.
+subst_valtype u_0 xx* ht*
+1. If the type of u_0 is numtype, then:
+  a. Let nt be u_0.
+  b. Return $subst_numtype(nt, xx*, ht*).
+2. If the type of u_0 is vectype, then:
+  a. Let vt be u_0.
+  b. Return $subst_vectype(vt, xx*, ht*).
+3. If the type of u_0 is reftype, then:
+  a. Let rt be u_0.
+  b. Return $subst_reftype(rt, xx*, ht*).
+4. Assert: Due to validation, u_0 is BOT.
+5. Return BOT.
 
-subst_storagetype fresh_0 xx* ht*
-1. Let t be fresh_0.
-2. Return $subst_valtype(t, xx*, ht*).
-3. Let pt be fresh_0.
+subst_storagetype u_0 xx* ht*
+1. If the type of u_0 is valtype, then:
+  a. Let t be u_0.
+  b. Return $subst_valtype(t, xx*, ht*).
+2. Assert: Due to validation, the type of u_0 is packedtype.
+3. Let pt be u_0.
 4. Return $subst_packedtype(pt, xx*, ht*).
 
 subst_fieldtype (mut, zt) xx* ht*
 1. Return (mut, $subst_storagetype(zt, xx*, ht*)).
 
-subst_comptype fresh_0 xx* ht*
-1. If fresh_0 is of the case STRUCT, then:
-  a. Let (STRUCT yt*) be fresh_0.
+subst_comptype u_0 xx* ht*
+1. If u_0 is of the case STRUCT, then:
+  a. Let (STRUCT yt*) be u_0.
   b. Return (STRUCT $subst_fieldtype(yt, xx*, ht*)*).
-2. If fresh_0 is of the case ARRAY, then:
-  a. Let (ARRAY yt) be fresh_0.
+2. If u_0 is of the case ARRAY, then:
+  a. Let (ARRAY yt) be u_0.
   b. Return (ARRAY $subst_fieldtype(yt, xx*, ht*)).
-3. Assert: Due to validation, fresh_0 is of the case FUNC.
-4. Let (FUNC ft) be fresh_0.
+3. Assert: Due to validation, u_0 is of the case FUNC.
+4. Let (FUNC ft) be u_0.
 5. Return (FUNC $subst_functype(ft, xx*, ht*)).
 
-subst_subtype fresh_0 xx* ht*
-1. If fresh_0 is of the case SUB, then:
-  a. Let (SUB fin y* ct) be fresh_0.
+subst_subtype u_0 xx* ht*
+1. If u_0 is of the case SUB, then:
+  a. Let (SUB fin y* ct) be u_0.
   b. Return (SUBD fin $subst_heaptype((_IDX y), xx*, ht*)* $subst_comptype(ct, xx*, ht*)).
-2. Assert: Due to validation, fresh_0 is of the case SUBD.
-3. Let (SUBD fin ht'* ct) be fresh_0.
+2. Assert: Due to validation, u_0 is of the case SUBD.
+3. Let (SUBD fin ht'* ct) be u_0.
 4. Return (SUBD fin $subst_heaptype(ht', xx*, ht*)* $subst_comptype(ct, xx*, ht*)).
 
 subst_rectype (REC st*) xx* ht*
@@ -711,18 +721,18 @@ subst_tabletype (lim, rt) xx* ht*
 subst_memtype (I8 lim) xx* ht*
 1. Return (I8 lim).
 
-subst_externtype fresh_0 xx* ht*
-1. If fresh_0 is of the case FUNC, then:
-  a. Let (FUNC dt) be fresh_0.
+subst_externtype u_0 xx* ht*
+1. If u_0 is of the case FUNC, then:
+  a. Let (FUNC dt) be u_0.
   b. Return (FUNC $subst_deftype(dt, xx*, ht*)).
-2. If fresh_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL gt) be fresh_0.
+2. If u_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL gt) be u_0.
   b. Return (GLOBAL $subst_globaltype(gt, xx*, ht*)).
-3. If fresh_0 is of the case TABLE, then:
-  a. Let (TABLE tt) be fresh_0.
+3. If u_0 is of the case TABLE, then:
+  a. Let (TABLE tt) be u_0.
   b. Return (TABLE $subst_tabletype(tt, xx*, ht*)).
-4. Assert: Due to validation, fresh_0 is of the case MEM.
-5. Let (MEM mt) be fresh_0.
+4. Assert: Due to validation, u_0 is of the case MEM.
+5. Let (MEM mt) be u_0.
 6. Return (MEM $subst_memtype(mt, xx*, ht*)).
 
 subst_all_reftype rt ht^n
@@ -731,10 +741,10 @@ subst_all_reftype rt ht^n
 subst_all_deftype dt ht^n
 1. Return $subst_deftype(dt, $idx(x)^(x<n), ht^n).
 
-subst_all_deftypes fresh_0* ht*
-1. If fresh_0* is [], then:
+subst_all_deftypes u_0* ht*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [dt_1] ++ dt* be fresh_0*.
+2. Let [dt_1] ++ dt* be u_0*.
 3. Return [$subst_all_deftype(dt_1, ht*)] ++ $subst_all_deftypes(dt*, ht*).
 
 rollrt x (REC st^n)
@@ -758,122 +768,127 @@ expanddt dt
 2. Let (SUBD fin ht* ct) be $unrolldt(dt).
 3. Return ct.
 
-funcsxt fresh_0*
-1. If fresh_0* is [], then:
+funcsxt u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ et* be fresh_0*.
+2. Let [y_0] ++ et* be u_0*.
 3. If y_0 is of the case FUNC, then:
   a. Let (FUNC dt) be y_0.
   b. Return [dt] ++ $funcsxt(et*).
-4. Let [externtype] ++ et* be fresh_0*.
+4. Let [externtype] ++ et* be u_0*.
 5. Return $funcsxt(et*).
 
-globalsxt fresh_0*
-1. If fresh_0* is [], then:
+globalsxt u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ et* be fresh_0*.
+2. Let [y_0] ++ et* be u_0*.
 3. If y_0 is of the case GLOBAL, then:
   a. Let (GLOBAL gt) be y_0.
   b. Return [gt] ++ $globalsxt(et*).
-4. Let [externtype] ++ et* be fresh_0*.
+4. Let [externtype] ++ et* be u_0*.
 5. Return $globalsxt(et*).
 
-tablesxt fresh_0*
-1. If fresh_0* is [], then:
+tablesxt u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ et* be fresh_0*.
+2. Let [y_0] ++ et* be u_0*.
 3. If y_0 is of the case TABLE, then:
   a. Let (TABLE tt) be y_0.
   b. Return [tt] ++ $tablesxt(et*).
-4. Let [externtype] ++ et* be fresh_0*.
+4. Let [externtype] ++ et* be u_0*.
 5. Return $tablesxt(et*).
 
-memsxt fresh_0*
-1. If fresh_0* is [], then:
+memsxt u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ et* be fresh_0*.
+2. Let [y_0] ++ et* be u_0*.
 3. If y_0 is of the case MEM, then:
   a. Let (MEM mt) be y_0.
   b. Return [mt] ++ $memsxt(et*).
-4. Let [externtype] ++ et* be fresh_0*.
+4. Let [externtype] ++ et* be u_0*.
 5. Return $memsxt(et*).
 
 inst_reftype mm rt
 1. Let dt* be mm.TYPE.
 2. Return $subst_all_reftype(rt, dt*).
 
-default fresh_0
-1. If fresh_0 is I32, then:
+default u_0
+1. If u_0 is I32, then:
   a. Return ?((I32.CONST 0)).
-2. If fresh_0 is I64, then:
+2. If u_0 is I64, then:
   a. Return ?((I64.CONST 0)).
-3. If fresh_0 is F32, then:
+3. If u_0 is F32, then:
   a. Return ?((F32.CONST 0)).
-4. If fresh_0 is F64, then:
+4. If u_0 is F64, then:
   a. Return ?((F64.CONST 0)).
-5. Assert: Due to validation, fresh_0 is of the case REF.
-6. Let (REF y_0 ht) be fresh_0.
+5. Assert: Due to validation, u_0 is of the case REF.
+6. Let (REF y_0 ht) be u_0.
 7. Assert: Due to validation, y_0 is NULL.
 8. Return ?((REF.NULL ht)).
 9. Return ?().
 
-packval fresh_0 fresh_1
-1. Let val be fresh_1.
-2. Return val.
-3. Assert: Due to validation, fresh_1 is of the case CONST.
-4. Let (y_0.CONST i) be fresh_1.
-5. Assert: Due to validation, y_0 is I32.
-6. Let pt be fresh_0.
+packval u_0 u_1
+1. If the type of u_0 is valtype, then:
+  a. Let val be u_1.
+  b. Return val.
+2. Assert: Due to validation, u_1 is of the case CONST.
+3. Let (y_0.CONST i) be u_1.
+4. Assert: Due to validation, y_0 is I32.
+5. Assert: Due to validation, the type of u_0 is packedtype.
+6. Let pt be u_0.
 7. Return (PACK pt $wrap(32, $packedsize(pt), i)).
 
-unpackval fresh_0 fresh_1? fresh_2
-1. If fresh_1? is not defined, then:
-  a. Let val be fresh_2.
-  b. Return val.
-2. Let ?(sx) be fresh_1?.
-3. Assert: Due to validation, fresh_2 is of the case PACK.
-4. Let (PACK pt i) be fresh_2.
-5. Assert: Due to validation, fresh_0 is pt.
-6. Return (I32.CONST $ext($packedsize(pt), 32, sx, i)).
+unpackval u_0 u_1? u_2
+1. If u_1? is not defined, then:
+  a. Assert: Due to validation, the type of u_0 is valtype.
+  b. Assert: Due to validation, the type of u_2 is val.
+  c. Let val be u_2.
+  d. Return val.
+2. Else:
+  a. Let ?(sx) be u_1?.
+  b. Assert: Due to validation, u_2 is of the case PACK.
+  c. Let (PACK pt i) be u_2.
+  d. Assert: Due to validation, u_0 is pt.
+  e. Return (I32.CONST $ext($packedsize(pt), 32, sx, i)).
 
-funcsxv fresh_0*
-1. If fresh_0* is [], then:
+funcsxv u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ xv* be fresh_0*.
+2. Let [y_0] ++ xv* be u_0*.
 3. If y_0 is of the case FUNC, then:
   a. Let (FUNC fa) be y_0.
   b. Return [fa] ++ $funcsxv(xv*).
-4. Let [externval] ++ xv* be fresh_0*.
+4. Let [externval] ++ xv* be u_0*.
 5. Return $funcsxv(xv*).
 
-globalsxv fresh_0*
-1. If fresh_0* is [], then:
+globalsxv u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ xv* be fresh_0*.
+2. Let [y_0] ++ xv* be u_0*.
 3. If y_0 is of the case GLOBAL, then:
   a. Let (GLOBAL ga) be y_0.
   b. Return [ga] ++ $globalsxv(xv*).
-4. Let [externval] ++ xv* be fresh_0*.
+4. Let [externval] ++ xv* be u_0*.
 5. Return $globalsxv(xv*).
 
-tablesxv fresh_0*
-1. If fresh_0* is [], then:
+tablesxv u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ xv* be fresh_0*.
+2. Let [y_0] ++ xv* be u_0*.
 3. If y_0 is of the case TABLE, then:
   a. Let (TABLE ta) be y_0.
   b. Return [ta] ++ $tablesxv(xv*).
-4. Let [externval] ++ xv* be fresh_0*.
+4. Let [externval] ++ xv* be u_0*.
 5. Return $tablesxv(xv*).
 
-memsxv fresh_0*
-1. If fresh_0* is [], then:
+memsxv u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [y_0] ++ xv* be fresh_0*.
+2. Let [y_0] ++ xv* be u_0*.
 3. If y_0 is of the case MEM, then:
   a. Let (MEM ma) be y_0.
   b. Return [ma] ++ $memsxv(xv*).
-4. Let [externval] ++ xv* be fresh_0*.
+4. Let [externval] ++ xv* be u_0*.
 5. Return $memsxv(xv*).
 
 store
@@ -1004,19 +1019,19 @@ growmemory mi n
   a. Let mt' be (I8 ((i + n), j)).
   b. Return { TYPE: mt'; DATA: b* ++ 0^((n · 64) · $Ki()); }.
 
-with_locals C fresh_0* fresh_1*
-1. If fresh_0* is [] and fresh_1* is [], then:
+with_locals C u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
   a. Return C.
-2. Assert: Due to validation, |fresh_1*| ≥ 1.
-3. Let [lt_1] ++ lt* be fresh_1*.
-4. Assert: Due to validation, |fresh_0*| ≥ 1.
-5. Let [x_1] ++ x* be fresh_0*.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [lt_1] ++ lt* be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [x_1] ++ x* be u_0*.
 6. Return $with_locals(C with .LOCAL[x_1] replaced by lt_1, x*, lt*).
 
-clostypes fresh_0*
-1. If fresh_0* is [], then:
+clostypes u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let dt* ++ [dt_N] be fresh_0*.
+2. Let dt* ++ [dt_N] be u_0*.
 3. Let dt'* be $clostypes(dt*).
 4. Return dt'* ++ [$subst_all_deftype(dt_N, dt'*)].
 
@@ -1024,39 +1039,41 @@ clostype C dt
 1. Let dt'* be $clostypes(C.TYPE).
 2. Return $subst_all_deftype(dt, dt'*).
 
-before fresh_0 x i
-1. Return YetE (BoolE true).
-2. If fresh_0 is of the case _IDX, then:
+before u_0 x i
+1. If the type of u_0 is deftype, then:
+  a. Return YetE (BoolE true).
+2. If u_0 is of the case _IDX, then:
   a. Return YetE (CmpE (VarE "typeidx", LtOp, VarE "x")).
-3. Assert: Due to validation, fresh_0 is of the case REC.
+3. Assert: Due to validation, u_0 is of the case REC.
 4. Return YetE (CmpE (VarE "j", LtOp, VarE "i")).
 
-unrollht C fresh_0
-1. Let deftype be fresh_0.
-2. Return $unrolldt(deftype).
-3. If fresh_0 is of the case _IDX, then:
-  a. Let (_IDX typeidx) be fresh_0.
+unrollht C u_0
+1. If the type of u_0 is deftype, then:
+  a. Let deftype be u_0.
+  b. Return $unrolldt(deftype).
+2. If u_0 is of the case _IDX, then:
+  a. Let (_IDX typeidx) be u_0.
   b. Return $unrolldt(C.TYPE[typeidx]).
-4. Assert: Due to validation, fresh_0 is of the case REC.
-5. Let (REC i) be fresh_0.
-6. Return C.REC[i].
+3. Assert: Due to validation, u_0 is of the case REC.
+4. Let (REC i) be u_0.
+5. Return C.REC[i].
 
-in_binop binop fresh_0*
-1. If fresh_0* is [], then:
+in_binop binop u_0*
+1. If u_0* is [], then:
   a. Return YetE (BoolE false).
-2. Let [binopIXX_1] ++ binopIXX'* be fresh_0*.
+2. Let [binopIXX_1] ++ binopIXX'* be u_0*.
 3. Return (YetE (CmpE (VarE "binop", EqOp, CaseE (Atom "_I", VarE "binopIXX_1"))) + $in_binop(binop, binopIXX'*)).
 
-in_numtype nt fresh_0*
-1. If fresh_0* is [], then:
+in_numtype nt u_0*
+1. If u_0* is [], then:
   a. Return YetE (BoolE false).
-2. Let [nt_1] ++ nt'* be fresh_0*.
+2. Let [nt_1] ++ nt'* be u_0*.
 3. Return (YetE (CmpE (VarE "nt", EqOp, VarE "nt_1")) + $in_numtype(nt, nt'*)).
 
-alloctypes fresh_0*
-1. If fresh_0* is [], then:
+alloctypes u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let rectype'* ++ [rectype] be fresh_0*.
+2. Let rectype'* ++ [rectype] be u_0*.
 3. Let deftype'* be $alloctypes(rectype'*).
 4. Let x be |deftype'*|.
 5. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
@@ -1070,10 +1087,10 @@ allocfunc mm func
 5. Append fi to the s.FUNC.
 6. Return a.
 
-allocfuncs mm fresh_0*
-1. If fresh_0* is [], then:
+allocfuncs mm u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [func] ++ func'* be fresh_0*.
+2. Let [func] ++ func'* be u_0*.
 3. Let fa be $allocfunc(mm, func).
 4. Let fa'* be $allocfuncs(mm, func'*).
 5. Return [fa] ++ fa'*.
@@ -1084,14 +1101,14 @@ allocglobal globaltype val
 3. Append gi to the s.GLOBAL.
 4. Return a.
 
-allocglobals fresh_0* fresh_1*
-1. If fresh_0* is [], then:
-  a. Assert: Due to validation, fresh_1* is [].
+allocglobals u_0* u_1*
+1. If u_0* is [], then:
+  a. Assert: Due to validation, u_1* is [].
   b. Return [].
 2. Else:
-  a. Let [globaltype] ++ globaltype'* be fresh_0*.
-  b. Assert: Due to validation, |fresh_1*| ≥ 1.
-  c. Let [val] ++ val'* be fresh_1*.
+  a. Let [globaltype] ++ globaltype'* be u_0*.
+  b. Assert: Due to validation, |u_1*| ≥ 1.
+  c. Let [val] ++ val'* be u_1*.
   d. Let ga be $allocglobal(globaltype, val).
   e. Let ga'* be $allocglobals(globaltype'*, val'*).
   f. Return [ga] ++ ga'*.
@@ -1102,13 +1119,13 @@ alloctable ((i, j), rt) ref
 3. Append ti to the s.TABLE.
 4. Return a.
 
-alloctables fresh_0* fresh_1*
-1. If fresh_0* is [] and fresh_1* is [], then:
+alloctables u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
   a. Return [].
-2. Assert: Due to validation, |fresh_1*| ≥ 1.
-3. Let [ref] ++ ref'* be fresh_1*.
-4. Assert: Due to validation, |fresh_0*| ≥ 1.
-5. Let [tabletype] ++ tabletype'* be fresh_0*.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [ref] ++ ref'* be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [tabletype] ++ tabletype'* be u_0*.
 6. Let ta be $alloctable(tabletype, ref).
 7. Let ta'* be $alloctables(tabletype'*, ref'*).
 8. Return [ta] ++ ta'*.
@@ -1119,10 +1136,10 @@ allocmem (I8 (i, j))
 3. Append mi to the s.MEM.
 4. Return a.
 
-allocmems fresh_0*
-1. If fresh_0* is [], then:
+allocmems u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [memtype] ++ memtype'* be fresh_0*.
+2. Let [memtype] ++ memtype'* be u_0*.
 3. Let ma be $allocmem(memtype).
 4. Let ma'* be $allocmems(memtype'*).
 5. Return [ma] ++ ma'*.
@@ -1133,13 +1150,13 @@ allocelem rt ref*
 3. Append ei to the s.ELEM.
 4. Return a.
 
-allocelems fresh_0* fresh_1*
-1. If fresh_0* is [] and fresh_1* is [], then:
+allocelems u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
   a. Return [].
-2. Assert: Due to validation, |fresh_1*| ≥ 1.
-3. Let [ref*] ++ ref'** be fresh_1*.
-4. Assert: Due to validation, |fresh_0*| ≥ 1.
-5. Let [rt] ++ rt'* be fresh_0*.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [ref*] ++ ref'** be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [rt] ++ rt'* be u_0*.
 6. Let ea be $allocelem(rt, ref*).
 7. Let ea'* be $allocelems(rt'*, ref'**).
 8. Return [ea] ++ ea'*.
@@ -1150,26 +1167,26 @@ allocdata byte*
 3. Append di to the s.DATA.
 4. Return a.
 
-allocdatas fresh_0*
-1. If fresh_0* is [], then:
+allocdatas u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [byte*] ++ byte'** be fresh_0*.
+2. Let [byte*] ++ byte'** be u_0*.
 3. Let da be $allocdata(byte*).
 4. Let da'* be $allocdatas(byte'**).
 5. Return [da] ++ da'*.
 
-instexport fa* ga* ta* ma* (EXPORT name fresh_0)
-1. If fresh_0 is of the case FUNC, then:
-  a. Let (FUNC x) be fresh_0.
+instexport fa* ga* ta* ma* (EXPORT name u_0)
+1. If u_0 is of the case FUNC, then:
+  a. Let (FUNC x) be u_0.
   b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
-2. If fresh_0 is of the case GLOBAL, then:
-  a. Let (GLOBAL x) be fresh_0.
+2. If u_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL x) be u_0.
   b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
-3. If fresh_0 is of the case TABLE, then:
-  a. Let (TABLE x) be fresh_0.
+3. If u_0 is of the case TABLE, then:
+  a. Let (TABLE x) be u_0.
   b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
-4. Assert: Due to validation, fresh_0 is of the case MEM.
-5. Let (MEM x) be fresh_0.
+4. Assert: Due to validation, u_0 is of the case MEM.
+5. Let (MEM x) be u_0.
 6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
 
 allocmodule module externval* val_g* ref_t* ref_e**
@@ -1207,27 +1224,27 @@ allocmodule module externval* val_g* ref_t* ref_e**
 32. Assert: Due to validation, y_0 is da*.
 33. Return mm.
 
-concat_instr fresh_0*
-1. If fresh_0* is [], then:
+concat_instr u_0*
+1. If u_0* is [], then:
   a. Return [].
-2. Let [instr*] ++ instr'** be fresh_0*.
+2. Let [instr*] ++ instr'** be u_0*.
 3. Return instr* ++ $concat_instr(instr'**).
 
-runelem (ELEM reftype expr* fresh_0?) y
-1. If fresh_0? is not defined, then:
+runelem (ELEM reftype expr* u_0?) y
+1. If u_0? is not defined, then:
   a. Return [].
-2. If fresh_0? is ?(DECLARE), then:
+2. If u_0? is ?(DECLARE), then:
   a. Return [(ELEM.DROP y)].
-3. Assert: Due to validation, fresh_0? is defined.
-4. Let ?(y_0) be fresh_0?.
+3. Assert: Due to validation, u_0? is defined.
+4. Let ?(y_0) be u_0?.
 5. Assert: Due to validation, y_0 is of the case TABLE.
 6. Let (TABLE x instr*) be y_0.
 7. Return instr* ++ [(I32.CONST 0), (I32.CONST |expr*|), (TABLE.INIT x y), (ELEM.DROP y)].
 
-rundata (DATA byte* fresh_0?) y
-1. If fresh_0? is not defined, then:
+rundata (DATA byte* u_0?) y
+1. If u_0? is not defined, then:
   a. Return [].
-2. Let ?(y_0) be fresh_0?.
+2. Let ?(y_0) be u_0?.
 3. Assert: Due to validation, y_0 is of the case MEMORY.
 4. Let (MEMORY x instr*) be y_0.
 5. Return instr* ++ [(I32.CONST 0), (I32.CONST |byte*|), (MEMORY.INIT x y), (DATA.DROP y)].
@@ -1326,19 +1343,19 @@ execution_of_LABEL_
 3. Exit current context.
 4. Push val* to the stack.
 
-execution_of_BR fresh_0
+execution_of_BR u_0
 1. Let L be the current label.
 2. Let n be the arity of L.
 3. Let instr'* be the continuation of L.
-4. Pop all values fresh_1* from the stack.
+4. Pop all values u_1* from the stack.
 5. Exit current context.
-6. If fresh_0 is 0 and |fresh_1*| ≥ n, then:
-  a. Let val'* ++ val^n be fresh_1*.
+6. If u_0 is 0 and |u_1*| ≥ n, then:
+  a. Let val'* ++ val^n be u_1*.
   b. Push val^n to the stack.
   c. Execute the sequence (instr'*).
-7. If fresh_0 ≥ 1, then:
-  a. Let l be (fresh_0 - 1).
-  b. Let val* be fresh_1*.
+7. If u_0 ≥ 1, then:
+  a. Let l be (u_0 - 1).
+  b. Let val* be u_1*.
   c. Push val* to the stack.
   d. Execute (BR l).
 
@@ -1488,28 +1505,29 @@ execution_of_REF.EQ
 
 execution_of_I31.GET sx
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop fresh_0 from the stack.
-3. If fresh_0 is of the case REF.NULL, then:
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
   a. Trap.
-4. If fresh_0 is of the case REF.I31_NUM, then:
-  a. Let (REF.I31_NUM i) be fresh_0.
+4. If u_0 is of the case REF.I31_NUM, then:
+  a. Let (REF.I31_NUM i) be u_0.
   b. Push (I32.CONST $ext(31, 32, sx, i)) to the stack.
 
 execution_of_EXTERN.EXTERNALIZE
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop fresh_0 from the stack.
-3. If fresh_0 is of the case REF.NULL, then:
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
   a. Push (REF.NULL EXTERN) to the stack.
-4. Let addrref be fresh_0.
-5. Push (REF.EXTERN addrref) to the stack.
+4. If the type of u_0 is addrref, then:
+  a. Let addrref be u_0.
+  b. Push (REF.EXTERN addrref) to the stack.
 
 execution_of_EXTERN.INTERNALIZE
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop fresh_0 from the stack.
-3. If fresh_0 is of the case REF.NULL, then:
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
   a. Push (REF.NULL ANY) to the stack.
-4. If fresh_0 is of the case REF.EXTERN, then:
-  a. Let (REF.EXTERN addrref) be fresh_0.
+4. If u_0 is of the case REF.EXTERN, then:
+  a. Let (REF.EXTERN addrref) be u_0.
   b. Push addrref to the stack.
 
 execution_of_LOCAL.TEE x
@@ -1602,11 +1620,11 @@ execution_of_STRUCT.NEW_DEFAULT x
 
 execution_of_STRUCT.GET sx? x i
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop fresh_0 from the stack.
-3. If fresh_0 is of the case REF.NULL, then:
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
   a. Trap.
-4. If fresh_0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be fresh_0.
+4. If u_0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be u_0.
   b. If a < |$structinst()|, then:
     1) Let si be $structinst()[a].
     2) If i < |si.FIELD| and $expanddt(si.TYPE) is of the case STRUCT, then:
@@ -1668,11 +1686,11 @@ execution_of_ARRAY.GET sx? x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop fresh_0 from the stack.
-5. If fresh_0 is of the case REF.NULL, then:
+4. Pop u_0 from the stack.
+5. If u_0 is of the case REF.NULL, then:
   a. Trap.
-6. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+6. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()|, then:
     1) Let ai be $arrayinst()[a].
     2) If i < |ai.FIELD| and $expanddt(ai.TYPE) is of the case ARRAY, then:
@@ -1682,11 +1700,11 @@ execution_of_ARRAY.GET sx? x
 
 execution_of_ARRAY.LEN
 1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop fresh_0 from the stack.
-3. If fresh_0 is of the case REF.NULL, then:
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
   a. Trap.
-4. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+4. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()|, then:
     1) Let n be |$arrayinst()[a].FIELD|.
     2) Push (I32.CONST n) to the stack.
@@ -1699,17 +1717,17 @@ execution_of_ARRAY.FILL x
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop fresh_0 from the stack.
-9. If fresh_0 is of the case REF.NULL, then:
+8. Pop u_0 from the stack.
+9. If u_0 is of the case REF.NULL, then:
   a. Trap.
-10. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+10. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
   c. If n is 0, then:
     1) Do nothing.
   d. Else:
-    1) Let (REF.ARRAY_ADDR a) be fresh_0.
+    1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Push (REF.ARRAY_ADDR a) to the stack.
     3) Push (I32.CONST i) to the stack.
     4) Push val to the stack.
@@ -1726,32 +1744,32 @@ execution_of_ARRAY.COPY x_1 x_2
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i_2) from the stack.
 5. Assert: Due to validation, a value is on the top of the stack.
-6. Pop fresh_1 from the stack.
+6. Pop u_1 from the stack.
 7. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 8. Pop (I32.CONST i_1) from the stack.
 9. Assert: Due to validation, a value is on the top of the stack.
-10. Pop fresh_0 from the stack.
-11. If fresh_0 is of the case REF.NULL, then:
+10. Pop u_0 from the stack.
+11. If u_0 is of the case REF.NULL and the type of u_1 is ref, then:
   a. Trap.
-12. If fresh_1 is of the case REF.NULL, then:
+12. If u_1 is of the case REF.NULL and the type of u_0 is ref, then:
   a. Trap.
-13. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a_1) be fresh_0.
-  b. If fresh_1 is of the case REF.ARRAY_ADDR, then:
+13. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a_1) be u_0.
+  b. If u_1 is of the case REF.ARRAY_ADDR, then:
     1) If a_1 < |$arrayinst()| and (i_1 + n) > |$arrayinst()[a_1].FIELD|, then:
       a) Trap.
-    2) Let (REF.ARRAY_ADDR a_2) be fresh_1.
+    2) Let (REF.ARRAY_ADDR a_2) be u_1.
     3) If a_2 < |$arrayinst()| and (i_2 + n) > |$arrayinst()[a_2].FIELD|, then:
       a) Trap.
-  c. If fresh_1 is of the case REF.ARRAY_ADDR and n is 0, then:
+  c. If u_1 is of the case REF.ARRAY_ADDR and n is 0, then:
     1) Do nothing.
   d. Else:
-    1) Let (REF.ARRAY_ADDR a_1) be fresh_0.
-    2) If fresh_1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be fresh_1.
+    1) Let (REF.ARRAY_ADDR a_1) be u_0.
+    2) If u_1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be u_1.
       b) If i_1 > i_2 or $expanddt($type(x_2)) is not of the case ARRAY, then:
-        1. Let (REF.ARRAY_ADDR a_1) be fresh_0.
-        2. Let (REF.ARRAY_ADDR a_2) be fresh_1.
+        1. Let (REF.ARRAY_ADDR a_1) be u_0.
+        2. Let (REF.ARRAY_ADDR a_2) be u_1.
         3. Push (REF.ARRAY_ADDR a_1) to the stack.
         4. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
         5. Push (REF.ARRAY_ADDR a_2) to the stack.
@@ -1787,11 +1805,11 @@ execution_of_ARRAY.INIT_ELEM x y
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop fresh_0 from the stack.
-9. If fresh_0 is of the case REF.NULL, then:
+8. Pop u_0 from the stack.
+9. If u_0 is of the case REF.NULL, then:
   a. Trap.
-10. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+10. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
   c. If (j + n) > |$elem(y).ELEM|, then:
@@ -1799,7 +1817,7 @@ execution_of_ARRAY.INIT_ELEM x y
   d. If n is 0, then:
     1) Do nothing.
   e. Else:
-    1) Let (REF.ARRAY_ADDR a) be fresh_0.
+    1) Let (REF.ARRAY_ADDR a) be u_0.
     2) If j < |$elem(y).ELEM|, then:
       a) Let ref be $elem(y).ELEM[j].
       b) Push (REF.ARRAY_ADDR a) to the stack.
@@ -1820,11 +1838,11 @@ execution_of_ARRAY.INIT_DATA x y
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i) from the stack.
 7. Assert: Due to validation, a value is on the top of the stack.
-8. Pop fresh_0 from the stack.
-9. If fresh_0 is of the case REF.NULL, then:
+8. Pop u_0 from the stack.
+9. If u_0 is of the case REF.NULL, then:
   a. Trap.
-10. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+10. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
   c. If $expanddt($type(x)) is of the case ARRAY, then:
@@ -1835,7 +1853,7 @@ execution_of_ARRAY.INIT_DATA x y
   d. If n is 0, then:
     1) Do nothing.
   e. Else:
-    1) Let (REF.ARRAY_ADDR a) be fresh_0.
+    1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
     3) Let nt be $unpacknumtype(zt).
     4) If $expanddt($type(x)) is of the case ARRAY, then:
@@ -1940,16 +1958,16 @@ execution_of_TABLE.INIT x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_LOAD nt fresh_0? x n_A n_O
+execution_of_LOAD nt u_0? x n_A n_O
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If fresh_0? is not defined, then:
+3. If u_0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(x).DATA|, then:
     1) Trap.
   b. Let c be $inverse_of_bytes($size(nt), $mem(x).DATA[(i + n_O) : ($size(nt) / 8)]).
   c. Push (nt.CONST c) to the stack.
 4. Else:
-  a. Let ?(y_0) be fresh_0?.
+  a. Let ?(y_0) be u_0?.
   b. Let [n, sx] be y_0.
   c. If ((i + n_O) + (n / 8)) > |$mem(x).DATA|, then:
     1) Trap.
@@ -2043,11 +2061,11 @@ execution_of_STRUCT.SET x i
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop fresh_0 from the stack.
-5. If fresh_0 is of the case REF.NULL, then:
+4. Pop u_0 from the stack.
+5. If u_0 is of the case REF.NULL, then:
   a. Trap.
-6. If fresh_0 is of the case REF.STRUCT_ADDR, then:
-  a. Let (REF.STRUCT_ADDR a) be fresh_0.
+6. If u_0 is of the case REF.STRUCT_ADDR, then:
+  a. Let (REF.STRUCT_ADDR a) be u_0.
   b. If a < |$structinst()| and $expanddt($structinst()[a].TYPE) is of the case STRUCT, then:
     1) Let (STRUCT y_0) be $expanddt($structinst()[a].TYPE).
     2) Let (mut, zt)* be y_0.
@@ -2069,11 +2087,11 @@ execution_of_ARRAY.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop fresh_0 from the stack.
-5. If fresh_0 is of the case REF.NULL, then:
+4. Pop u_0 from the stack.
+5. If u_0 is of the case REF.NULL, then:
   a. Trap.
-6. If fresh_0 is of the case REF.ARRAY_ADDR, then:
-  a. Let (REF.ARRAY_ADDR a) be fresh_0.
+6. If u_0 is of the case REF.ARRAY_ADDR, then:
+  a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and $expanddt($arrayinst()[a].TYPE) is of the case ARRAY, then:
     1) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
     2) Let (mut, zt) be y_0.
@@ -2114,18 +2132,18 @@ execution_of_TABLE.GROW x
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
 
-execution_of_STORE nt fresh_0? x n_A n_O
+execution_of_STORE nt u_0? x n_A n_O
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If fresh_0? is not defined, then:
+5. If u_0? is not defined, then:
   a. If ((i + n_O) + ($size(nt) / 8)) > |$mem(x).DATA|, then:
     1) Trap.
   b. Let b* be $bytes($size(nt), c).
   c. Perform $with_mem(x, (i + n_O), ($size(nt) / 8), b*).
 6. Else:
-  a. Let ?(n) be fresh_0?.
+  a. Let ?(n) be u_0?.
   b. If ((i + n_O) + (n / 8)) > |$mem(x).DATA|, then:
     1) Trap.
   c. Let b* be $bytes(n, $wrap($size(nt), n, c)).

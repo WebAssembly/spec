@@ -63,6 +63,7 @@ let rec walk_expr f e =
   | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
   | ContE e' -> ContE (new_ e')
   | NameE n -> NameE n
+  | SubE (n, t) -> SubE (n, t)
   | IterE (e, names, iter) -> IterE (new_ e, names, iter)
   | YetE _ -> e in
 
@@ -92,6 +93,7 @@ let rec walk_cond f c =
   | ContextKindC (s, e) -> ContextKindC (s, new_e e)
   | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
   | IsDefinedC e -> IsDefinedC (new_e e)
+  | HasTypeC (e, t) -> HasTypeC(new_e e, t)
   | ValidC e -> ValidC (new_e e)
   | TopLabelC -> c
   | TopFrameC -> c

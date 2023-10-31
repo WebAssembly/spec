@@ -16,7 +16,8 @@ let rec free_expr = function
   | GetCurContextE
   | GetCurFrameE
   | YetE _ -> []
-  | NameE n -> [n]
+  | NameE n
+  | SubE (n, _) -> [n]
   | MinusE e
   | LengthE e
   | ArityE e
@@ -59,6 +60,7 @@ let rec free_cond = function
   | ContextKindC (_, e)
   | IsDefinedC e
   | IsCaseOfC (e, _)
+  | HasTypeC (e, _)
   | ValidC e
   | TopValueC (Some e)
   | TopValuesC e -> free_expr e

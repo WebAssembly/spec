@@ -167,6 +167,7 @@ and string_of_expr = function
   | LabelE (e1, e2) ->
       sprintf "the label_%s{%s}" (string_of_expr e1) (string_of_expr e2)
   | NameE n -> n
+  | SubE (n, _) -> n
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
     (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
@@ -202,6 +203,7 @@ and string_of_cond = function
   | ContextKindC (s, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_keyword s)
   | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
   | IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_keyword c)
+  | HasTypeC (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
   | ValidC e -> sprintf "%s is valid" (string_of_expr e)
   | TopLabelC -> "a label is now on the top of the stack"
   | TopFrameC -> "a frame is now on the top of the stack"
@@ -482,6 +484,7 @@ and structured_string_of_expr = function
       ^ structured_string_of_expr e2
       ^ ")"
   | NameE n -> "NameE (" ^ n ^ ")"
+  | SubE (n, t) -> "SubE (" ^ n ^ "," ^ t ^ ")"
   | IterE (e, names, iter) ->
       "IterE ("
       ^ structured_string_of_expr e
@@ -543,6 +546,7 @@ and structured_string_of_cond = function
   | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
   | IsCaseOfC (e, c) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_keyword c ^ ")"
   | ValidC e -> "ValidC (" ^ structured_string_of_expr e ^ ")"
+  | HasTypeC (e, t) -> "HasTypeC (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
   | TopLabelC -> "TopLabelC"
   | TopFrameC -> "TopFrameC"
   | TopValueC e_opt -> "TopValueC" ^ string_of_opt " (" structured_string_of_expr ")" e_opt 
