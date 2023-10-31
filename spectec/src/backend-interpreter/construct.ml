@@ -98,15 +98,14 @@ let al_of_value = function
 
 (* Construct type *)
 
-let al_of_val_typeidx types idx =
-  let Types.FuncT (param_types, result_types) = (Lib.List32.nth types idx.it).it in
-  let result_type_to_listV result_type =
-    listV (List.map al_of_val_type result_type)
-  in
-  ArrowV(result_type_to_listV param_types, result_type_to_listV result_types)
+let al_of_val_typeidx wasm_module idx =
+  let dts = Option.get wasm_module |> Ast.def_types_of in
+  match Lib.List32.nth dts idx.it with
+  | DefT (RecT ([SubT (_, _, (DefFuncT _ as ft))]), _) -> al_of_str_type ft
+  | _ -> failwith "hi"
 
-let al_of_blocktype types = function
-| Ast.VarBlockType idx -> al_of_val_typeidx types idx
+let al_of_blocktype wasm_module = function
+| Ast.VarBlockType idx -> al_of_val_typeidx wasm_module idx
 | Ast.ValBlockType None -> ArrowV(listV [], listV [])
 | Ast.ValBlockType (Some val_type) -> ArrowV(listV [], listV [al_of_val_type val_type])
 
@@ -216,7 +215,7 @@ let al_of_packsize_with_extension (p, s) =
   listV [ al_of_packsize p; al_of_extension s ]
 
 
-let rec al_of_instr types winstr =
+let rec al_of_instr wasm_module winstr =
   let to_int i32 = NumV (int64_of_int32_u i32.it) in
   let f name  = ConstructV (name, []) in
   let f_i32 name i32 = ConstructV (name, [to_int i32]) in
@@ -296,23 +295,23 @@ let rec al_of_instr types winstr =
       ConstructV
         ("CALL_INDIRECT", [
             to_int i32;
-            al_of_val_typeidx types i32'])
+            al_of_val_typeidx wasm_module i32'])
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
-            al_of_blocktype types bt;
-            listV (instrs |> al_of_instrs types)])
+            al_of_blocktype wasm_module bt;
+            listV (instrs |> al_of_instrs wasm_module)])
   | Ast.Loop (bt, instrs) ->
       ConstructV
         ("LOOP", [
-            al_of_blocktype types bt;
-            listV (instrs |> al_of_instrs types)])
+            al_of_blocktype wasm_module bt;
+            listV (instrs |> al_of_instrs wasm_module)])
   | Ast.If (bt, instrs1, instrs2) ->
       ConstructV
         ("IF", [
-            al_of_blocktype types bt;
-            listV (instrs1 |> al_of_instrs types);
-            listV (instrs2 |> al_of_instrs types);
+            al_of_blocktype wasm_module bt;
+            listV (instrs1 |> al_of_instrs wasm_module);
+            listV (instrs2 |> al_of_instrs wasm_module);
             ])
   | Ast.Br i32 -> f_i32 "BR" i32
   | Ast.BrIf i32 -> f_i32 "BR_IF" i32
@@ -342,7 +341,7 @@ let rec al_of_instr types winstr =
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
   | _ -> ConstructV ("Untranslated al", [])
 
-and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
+and al_of_instrs wasm_module winstrs = List.map (al_of_instr wasm_module) winstrs
 
 
 
@@ -350,7 +349,7 @@ and al_of_instrs types winstrs = List.map (al_of_instr types) winstrs
 
 let it phrase = phrase.it
 
-let al_of_func wasm_func =
+let al_of_func wasm_module wasm_func =
 
   let ftype =
     NumV (Int64.of_int32 wasm_func.it.Ast.ftype.it)
@@ -364,13 +363,13 @@ let al_of_func wasm_func =
   in
 
   (* Construct code *)
-  let code = al_of_instrs [] wasm_func.it.Ast.body in
+  let code = al_of_instrs (Some wasm_module) wasm_func.it.Ast.body in
 
   (* Construct func *)
   ConstructV ("FUNC", [ftype; listV locals; listV code])
 
 let al_of_global wasm_global =
-  let expr = al_of_instrs [] wasm_global.it.Ast.ginit.it in
+  let expr = al_of_instrs None wasm_global.it.Ast.ginit.it in
 
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; listV expr ])
 
@@ -404,7 +403,7 @@ let al_of_segment wasm_segment active_name = match wasm_segment.it with
             active_name,
             [
               NumV (int64_of_int32_u index.it);
-              listV (al_of_instrs [] offset.it)
+              listV (al_of_instrs None offset.it)
             ]
           )
         )
@@ -416,7 +415,7 @@ let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
 let al_of_elem wasm_elem =
   let reftype = al_of_val_type (Types.RefT wasm_elem.it.Ast.etype) in
 
-  let al_of_const const = listV (al_of_instrs [] const.it) in
+  let al_of_const const = listV (al_of_instrs None const.it) in
   let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const in
 
   let mode = al_of_elem_segment wasm_elem.it.Ast.emode in
@@ -490,7 +489,7 @@ let al_of_module wasm_module =
 
   (* Construct functions *)
   let func_list =
-    List.map al_of_func wasm_module.it.funcs
+    List.map (al_of_func wasm_module) wasm_module.it.funcs
   in
 
   (* Construct global *)
