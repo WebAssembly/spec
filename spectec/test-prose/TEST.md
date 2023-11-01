@@ -1199,9 +1199,9 @@ allocmodule module externval* val_g* ref_t* ref_e**
 7. Let (DATA byte* datamode?)^n_d be y_5.
 8. Let (ELEM reftype expr_e* elemmode?)^n_e be y_4.
 9. Let (MEMORY memtype)^n_m be y_3.
-10. Let YetE (MixE ([[Atom "TABLE"], [], []], TupE ([VarE "tabletype", VarE "expr_t"])))^n_t be y_2.
+10. Let (TABLE tabletype expr_t)^n_t be y_2.
 11. Let (GLOBAL globaltype expr_g)^n_g be y_1.
-12. Assert: Due to validation, y_0 is YetE (MixE ([[Atom "TYPE"], []], VarE "rectype"))*.
+12. Let (TYPE rectype)* be y_0.
 13. Let da* be (|s.DATA| + i_d)^(i_d<n_d).
 14. Let ea* be (|s.ELEM| + i_e)^(i_e<n_e).
 15. Let ma* be (|s.MEM| + i_m)^(i_m<n_m).
@@ -1257,25 +1257,26 @@ instantiate module externval*
 5. Let (START x)? be start?.
 6. Let mm_init be { TYPE: []; FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 7. Let (GLOBAL globaltype expr_g)* be global*.
-8. Let (ELEM reftype expr_e* elemmode?)* be elem*.
-9. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
-10. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
-11. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-12. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_e]** be $eval_expr(expr_e)**.
+8. Let (TABLE tabletype expr_t)* be table*.
+9. Let (ELEM reftype expr_e* elemmode?)* be elem*.
+10. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
+11. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
+12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
 13. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_t]* be $eval_expr(expr_t)*.
+  a. Let [ref_e]** be $eval_expr(expr_e)**.
 14. Enter the activation of z with label [FRAME_]:
+  a. Let [ref_t]* be $eval_expr(expr_t)*.
+15. Enter the activation of z with label [FRAME_]:
   a. Let [val_g]* be $eval_expr(expr_g)*.
-15. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
-16. Let f be { LOCAL: []; MODULE: mm; }.
-17. Enter the activation of f with arity 0 with label [FRAME_]:
+16. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
+17. Let f be { LOCAL: []; MODULE: mm; }.
+18. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_e*).
   b. Execute the sequence (instr_d*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-18. Return mm.
+19. Return mm.
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
