@@ -330,14 +330,27 @@ and eval_cond env cond =
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
   )
   | HasTypeC (e, s) ->
+
+    (* type definition *)
+
+    let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
+    let abs_heap_types = [
+      "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
+      "NOFUNC"; "EXTERN"; "NOEXTERN"
+    ] in
+
+    (* check type *)
+
     begin match eval_expr env e with
     (* numtype *)
-    | ConstructV (ty, [])
-      when List.mem ty [ "I32"; "I64"; "F32"; "F64" ] ->
-        s = "numtype" || s = "valtype"
+    | ConstructV (nt, []) when List.mem nt num_types ->
+      s = "numtype" || s = "valtype"
     (* valtype *)
     | ConstructV ("REF", _) ->
-        s = "reftype" || s = "valtype"
+      s = "reftype" || s = "valtype"
+    (* absheaptype *)
+    | ConstructV (aht, []) when List.mem aht abs_heap_types->
+      aht = "absheaptype" || aht = "heaptype"
     | v ->
       string_of_value v
       |> Printf.sprintf "Invalid %s: %s" s
@@ -513,8 +526,8 @@ and execute (wasm_instr: value): unit =
     |> failwith
 
 and interp_instr (env: env) (instr: instr): env =
-  (*
   string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
+  (*
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
@@ -693,12 +706,14 @@ and interp_algo (algo: algorithm) (args: value list): unit =
     |> Env.add_store
     |> List.fold_right2 assign params args
   in
+  Env.string_of_env env |> print_endline;
+
   get_body algo |> interp_instrs env |> ignore
 
 and call_algo (name: string) (args: value list): AL_Context.return_value =
-  (*
   print_endline "**************************************";
   Printf.sprintf "[ALGO]: %s" name |> print_endline;
+  (*
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
@@ -715,8 +730,8 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   (* Pop AL context *)
   let (_, return_value, depth) = AL_Context.pop_context () in
 
-  (*
   Printf.sprintf "[END ALGO]: %s" name |> print_endline;
+  (*
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
