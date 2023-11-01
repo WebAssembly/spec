@@ -90,14 +90,29 @@ let al_of_num n =
   let t, v = ConstructV(t, []), NumV v in
   ConstructV ("CONST", [ t; v ])
 
+let rec al_of_ref = function
+  | Value.NullRef ht ->
+    ConstructV ("REF.NULL", [ al_of_heap_type ht ])
+  (*
+  | I31.I31Ref i ->
+    ConstructV ("REF.I31_NUM", [ NumV (Int64.of_int i) ])
+  | Aggr.StructRef a ->
+    ConstructV ("REF.STRUCT_ADDR", [ NumV (int64_of_int32_u a) ])
+  | Aggr.ArrayRef a ->
+    ConstructV ("REF.ARRAY_ADDR", [ NumV (int64_of_int32_u a) ])
+  | Instance.FuncRef a ->
+    ConstructV ("REF.FUNC_ADDR", [ NumV (int64_of_int32_u a) ])
+  *)
+  | Script.HostRef a ->
+    ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u a) ])
+  | Extern.ExternRef r ->
+    ConstructV ("REF.EXTERN", [ al_of_ref r ])
+  | r -> Value.string_of_ref r |> failwith
+
 let al_of_value = function
-| Value.Num n -> al_of_num n
-| Value.Vec _v -> failwith "TODO"
-| Value.Ref (Value.NullRef ht) ->
-  ConstructV ("REF.NULL", [ al_of_heap_type ht ])
-| Value.Ref (Script.HostRef i) ->
-  ConstructV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u i) ])
-| Value.Ref r -> Value.string_of_ref r |> failwith
+  | Value.Num n -> al_of_num n
+  | Value.Vec _v -> failwith "TODO"
+  | Value.Ref r -> al_of_ref r
 
 (* Construct type *)
 
@@ -348,7 +363,8 @@ let rec al_of_instr wasm_module winstr =
   | Ast.MemoryGrow -> ConstructV ("MEMORY.GROW", [ NumV 0L ])
   | Ast.MemoryFill -> ConstructV ("MEMORY.FILL", [ NumV 0L ])
   | Ast.MemoryCopy -> ConstructV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
-  | Ast.MemoryInit i32 -> ConstructV ("MEMORY.INIT", [ NumV 0L; NumV (Int64.of_int32 i32.it)])
+  | Ast.MemoryInit i32 ->
+    ConstructV ("MEMORY.INIT", [ NumV 0L; NumV (Int64.of_int32 i32.it)])
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
   | _ -> ConstructV ("Untranslated al", [])
 

@@ -233,18 +233,17 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/95 (0.00%)
 
 ===== ref_is_null.wast =====
-- Uncaught exception: Direct invocation failed due to (extern (host 0))
-- 2/11 (18.18%)
+- 11/11 (100.00%)
 
 ===== memory_trap.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 11/180 (6.11%)
 
 ===== br_table.wast =====
-- 134/149 (89.93%)
+- 137/149 (91.95%)
 
 ===== select.wast =====
-- 101/118 (85.59%)
+- 104/118 (88.14%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -254,11 +253,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/140 (0.00%)
 
 ===== elem.wast =====
-- 18/37 (48.65%)
+- 23/37 (62.16%)
 
 ===== table_get.wast =====
-- Uncaught exception: Direct invocation failed due to (extern (host 1))
-- 0/9 (0.00%)
+- 9/9 (100.00%)
 
 ===== f32.wast =====
 - 2500/2500 (100.00%)
@@ -279,7 +277,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 36/36 (100.00%)
 
 ===== table_set.wast =====
-- 14/18 (77.78%)
+- 18/18 (100.00%)
 
 ===== f32_cmp.wast =====
 - 2400/2400 (100.00%)
@@ -299,7 +297,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 5/5 (100.00%)
 
 ===== table_fill.wast =====
-- 16/35 (45.71%)
+- 35/35 (100.00%)
 
 ===== data.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
@@ -313,7 +311,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/255 (0.00%)
 
 ===== table_grow.wast =====
-- 22/38 (57.89%)
+- 36/38 (94.74%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
@@ -323,7 +321,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 582/662 (87.92%)
 
 ===== global.wast =====
-- 51/58 (87.93%)
+- 53/58 (91.38%)
 
 ===== int_exprs.wast =====
 - 86/89 (96.63%)
@@ -337,6 +335,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 ===== nop.wast =====
 - 71/83 (85.54%)
 
-Total [16139/23779] (67.87%; Normalized 58.16%)
+Total [16207/23779] (68.16%; Normalized 62.38%)
 == Complete.
 ```
