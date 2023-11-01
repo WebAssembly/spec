@@ -1056,6 +1056,7 @@
 
 .. |label| mathdef:: \xref{exec/runtime}{syntax-label}{\X{label}}
 .. |frame| mathdef:: \xref{exec/runtime}{syntax-frame}{\X{frame}}
+.. |framestate| mathdef:: \xref{exec/runtime}{syntax-framestate}{\X{framestate}}
 
 
 .. Stack, meta functions
