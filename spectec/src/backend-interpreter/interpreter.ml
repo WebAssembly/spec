@@ -729,8 +729,8 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   (* Pop AL context *)
   let (_, return_value, depth) = AL_Context.pop_context () in
 
-  Printf.sprintf "[END ALGO]: %s" name |> print_endline;
   (*
+  Printf.sprintf "[END ALGO]: %s" name |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
