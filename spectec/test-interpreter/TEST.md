@@ -115,7 +115,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 49/49 (100.00%)
 
 ===== call.wast =====
-- 62/70 (88.57%)
+- 63/70 (90.00%)
 
 ===== local_get.wast =====
 - 13/19 (68.42%)
@@ -137,7 +137,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 41/90 (45.56%)
 
 ===== float_literals.wast =====
-- 21/83 (25.30%)
+- 83/83 (100.00%)
 
 ===== align.wast =====
 - 1/48 (2.08%)
@@ -174,7 +174,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 36/77 (46.75%)
 
 ===== conversions.wast =====
-- 0/593 (0.00%)
+- 593/593 (100.00%)
 
 ===== endianness.wast =====
 - 0/68 (0.00%)
@@ -200,10 +200,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/66 (0.00%)
 
 ===== traps.wast =====
-- 24/32 (75.00%)
+- 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 35/55 (63.64%)
+- 36/55 (65.45%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
@@ -243,7 +243,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 137/149 (91.95%)
 
 ===== select.wast =====
-- 104/118 (88.14%)
+- 106/118 (89.83%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -267,7 +267,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 ===== float_exprs.wast =====
 - Uncaught exception: Direct invocation failed due to Invalid DSL function call: bytes
-- 241/794 (30.35%)
+- 318/794 (40.05%)
 
 ===== float_memory.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
@@ -324,7 +324,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 53/58 (91.38%)
 
 ===== int_exprs.wast =====
-- 86/89 (96.63%)
+- 89/89 (100.00%)
 
 ===== f64.wast =====
 - 2500/2500 (100.00%)
@@ -335,6 +335,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 ===== nop.wast =====
 - 71/83 (85.54%)
 
-Total [16207/23779] (68.16%; Normalized 62.38%)
+Total [16954/23779] (71.30%; Normalized 65.29%)
 == Complete.
 ```
