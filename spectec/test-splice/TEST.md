@@ -515,6 +515,7 @@ warning: rule `Elemmode_ok/declare` was never spliced
 warning: rule `Eval/done` was never spliced
 warning: rule `Eval/step` was never spliced
 warning: rule `Eval_expr` was never spliced
+warning: rule `Eval_expr_const` was never spliced
 warning: rule `Expand` was never spliced
 warning: rule `Export_ok` was never spliced
 warning: rule `Expr_const` was never spliced

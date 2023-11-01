@@ -409,14 +409,14 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathit{xx}'}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{xx}'}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &  \\
 {{\mathit{dt}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {{\mathit{dt}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &  \\
-{{\mathit{ht}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& {\mathit{ht}} &\quad
+{{\mathit{ht}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}'}^\ast}]} &=& {\mathit{ht}} &\quad
   \mbox{otherwise} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{(\mathsf{ref}~{\mathit{nul}}~{\mathit{ht}})}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &=& \mathsf{ref}~{\mathit{nul}}~{{\mathit{ht}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}}^\ast}]} &  \\
+{(\mathsf{ref}~{\mathit{nul}}~{\mathit{ht}})}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}'}^\ast}]} &=& \mathsf{ref}~{\mathit{nul}}~{{\mathit{ht}}}{[{{\mathit{xx}}^\ast} := {{\mathit{ht}'}^\ast}]} &  \\
 \end{array}
 $$
 
@@ -3848,6 +3848,8 @@ $\boxed{{\mathit{config}} \hookrightarrow^\ast {\mathit{state}} ; {{\mathit{val}
 
 $\boxed{{\mathit{state}} ; {\mathit{expr}} \hookrightarrow^\ast {\mathit{state}} ; {{\mathit{val}}^\ast}}$
 
+$\boxed{{\mathit{state}} ; {\mathit{expr}} \hookrightarrow^\ast {\mathit{state}} ; {{\mathit{val}}^\ast}}$
+
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}expr{-}done}]} \quad & {\mathit{z}} ; {{\mathit{val}}^\ast} &\hookrightarrow^\ast& {\mathit{z}} ; {{\mathit{val}}^\ast} &  \\
@@ -3861,6 +3863,13 @@ $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}expr}]} \quad & {\mathit{z}} ; {{\mathit{instr}}^\ast} &\hookrightarrow^\ast& {\mathit{z}'} ; {{\mathit{val}}^\ast} &\quad
   \mbox{if}~{\mathit{z}} ; {{\mathit{instr}}^\ast} \hookrightarrow^\ast {\mathit{z}} ; {{\mathit{val}}^\ast} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}expr{-}const}]} \quad & {\mathit{z}} ; {{\mathit{instr}}^{{\mathit{n}}}} &\hookrightarrow^\ast& {\mathit{z}'} ; {{\mathit{val}}^{{\mathit{n}}}} &\quad
+  \mbox{if}~{\mathit{z}} ; {{\mathit{instr}}^{{\mathit{n}}}} \hookrightarrow^\ast {\mathit{z}} ; {{\mathit{val}}^{{\mathit{n}}}} \\
 \end{array}
 $$
 

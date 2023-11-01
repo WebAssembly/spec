@@ -651,11 +651,10 @@ subst_heaptype u_0 xx* u_1*
   b. Let ht* be u_1*.
   c. Return $subst_deftype(dt, xx*, ht*).
 4. Let ht be u_0.
-5. Assert: Due to validation, u_1* is ht*.
-6. Return ht.
+5. Return ht.
 
-subst_reftype (REF nul ht) xx* ht*
-1. Return (REF nul $subst_heaptype(ht, xx*, ht*)).
+subst_reftype (REF nul ht) xx* ht'*
+1. Return (REF nul $subst_heaptype(ht, xx*, ht'*)).
 
 subst_valtype u_0 xx* ht*
 1. If the type of u_0 is numtype, then:
@@ -1260,21 +1259,24 @@ instantiate module externval*
 10. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
 11. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
 12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-13. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_e]** be $eval_expr(expr_e)**.
-14. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_t]* be $eval_expr(expr_t)*.
-15. Enter the activation of z with label [FRAME_]:
-  a. Let [val_g]* be $eval_expr(expr_g)*.
-16. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
-17. Let f be { LOCAL: []; MODULE: mm; }.
-18. Enter the activation of f with arity 0 with label [FRAME_]:
+13. Let (_, f) be z.
+14. Enter the activation of f with label [FRAME_]:
+  a. Let [ref_e]** be $eval_expr_const(expr_e)**.
+15. Let (_, f) be z.
+16. Enter the activation of f with label [FRAME_]:
+  a. Let [ref_t]* be $eval_expr_const(expr_t)*.
+17. Let (_, f) be z.
+18. Enter the activation of f with label [FRAME_]:
+  a. Let [val_g]* be $eval_expr_const(expr_g)*.
+19. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
+20. Let f be { LOCAL: []; MODULE: mm; }.
+21. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_e*).
   b. Execute the sequence (instr_d*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-19. Return mm.
+22. Return mm.
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -1283,12 +1285,13 @@ invoke fa val^n
 4. Let [t_1^n]->[t_2*] be y_0.
 5. Let f be { LOCAL: []; MODULE: mm; }.
 6. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
-7. Enter the activation of f with arity k with label [FRAME_]:
+7. Let k be |t_2*|.
+8. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
   b. Push (REF.FUNC_ADDR fa) to the stack.
   c. Execute (CALL_REF 0).
-8. Pop val^k from the stack.
-9. Return val^k.
+9. Pop val^k from the stack.
+10. Return val^k.
 
 execution_of_UNREACHABLE
 1. Trap.
@@ -2184,10 +2187,10 @@ execution_of_MEMORY.GROW x
 execution_of_DATA.DROP x
 1. Perform $with_data(x, []).
 
-exec_expr_const instr*
+eval_expr_const instr*
 1. Execute the sequence (instr*).
 2. Pop val from the stack.
-3. Return val.
+3. Return [val].
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.

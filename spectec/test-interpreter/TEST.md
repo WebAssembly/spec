@@ -92,305 +92,248 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/28 (0.00%)
+- 21/28 (75.00%)
 
 ===== forward.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/4 (0.00%)
+- 4/4 (100.00%)
 
 ===== float_misc.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/440 (0.00%)
+- 440/440 (100.00%)
 
 ===== table_copy.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/1649 (0.00%)
+- 25/1649 (1.52%)
 
 ===== ref_null.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/2 (0.00%)
+- 2/2 (100.00%)
 
 ===== memory.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/45 (0.00%)
 
 ===== unwind.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/49 (0.00%)
+- 49/49 (100.00%)
 
 ===== call.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/70 (0.00%)
+- 61/70 (87.14%)
 
 ===== local_get.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/19 (0.00%)
+- 13/19 (68.42%)
 
 ===== fac.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/6 (0.00%)
+- 2/6 (33.33%)
 
 ===== func.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/96 (0.00%)
+- 69/96 (71.88%)
 
 ===== exports.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/9 (0.00%)
+- 9/9 (100.00%)
 
 ===== local_set.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/19 (0.00%)
+- 13/19 (68.42%)
 
 ===== linking.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/90 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
+- 28/90 (31.11%)
 
 ===== float_literals.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/83 (0.00%)
+- 21/83 (25.30%)
 
 ===== align.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/48 (0.00%)
 
 ===== if.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/123 (0.00%)
+- 67/123 (54.47%)
 
 ===== const.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/300 (0.00%)
+- 300/300 (100.00%)
 
 ===== f64_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/2400 (0.00%)
+- 2400/2400 (100.00%)
 
 ===== block.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/52 (0.00%)
+- 29/52 (55.77%)
 
 ===== labels.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/25 (0.00%)
+- 17/25 (68.00%)
 
 ===== switch.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/26 (0.00%)
+- 10/26 (38.46%)
 
 ===== i64.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/384 (0.00%)
+- 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/4338 (0.00%)
 
 ===== stack.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/5 (0.00%)
 
 ===== loop.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/77 (0.00%)
+- 25/77 (32.47%)
 
 ===== conversions.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/593 (0.00%)
 
 ===== endianness.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/68 (0.00%)
 
 ===== return.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/63 (0.00%)
+- 61/63 (96.83%)
 
 ===== store.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/9 (0.00%)
 
 ===== memory_redundancy.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
 - 0/4 (0.00%)
 
 ===== i32.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/374 (0.00%)
+- 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/63 (0.00%)
+- 61/63 (96.83%)
 
 ===== bulk.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
 - 0/66 (0.00%)
 
 ===== traps.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/32 (0.00%)
+- 10/32 (31.25%)
 
 ===== local_tee.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/55 (0.00%)
+- 34/55 (61.82%)
 
 ===== f64_bitwise.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/360 (0.00%)
+- 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/84 (0.00%)
 
 ===== call_indirect.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/132 (0.00%)
+- 20/132 (15.15%)
 
 ===== load.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/37 (0.00%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
 - 0/20 (0.00%)
 
 ===== memory_size.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/36 (0.00%)
 
 ===== imports.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/34 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
+- 7/34 (20.59%)
 
 ===== left-to-right.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
 - 0/95 (0.00%)
 
 ===== ref_is_null.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/11 (0.00%)
+- Uncaught exception: Direct invocation failed due to (extern (host 0))
+- 2/11 (18.18%)
 
 ===== memory_trap.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/180 (0.00%)
 
 ===== br_table.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/149 (0.00%)
+- 134/149 (89.93%)
 
 ===== select.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/118 (0.00%)
+- 99/118 (83.90%)
 
 ===== f32_bitwise.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/360 (0.00%)
+- 360/360 (100.00%)
 
 ===== memory_init.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/140 (0.00%)
 
 ===== elem.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/37 (0.00%)
+- 17/37 (45.95%)
 
 ===== table_get.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Direct invocation failed due to (extern (host 1))
 - 0/9 (0.00%)
 
 ===== f32.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/2500 (0.00%)
+- 2500/2500 (100.00%)
 
 ===== start.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/7 (0.00%)
 
 ===== float_exprs.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/794 (0.00%)
+- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
+- 241/794 (30.35%)
 
 ===== float_memory.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/60 (0.00%)
 
 ===== table_size.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/36 (0.00%)
+- 36/36 (100.00%)
 
 ===== table_set.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/18 (0.00%)
+- 14/18 (77.78%)
 
 ===== f32_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/2400 (0.00%)
+- 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/88 (0.00%)
+- 86/88 (97.73%)
 
 ===== ref_func.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/8 (0.00%)
+- 3/8 (37.50%)
 
 ===== names.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/482 (0.00%)
+- 481/482 (99.79%)
 
 ===== unreached-valid.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/5 (0.00%)
+- 5/5 (100.00%)
 
 ===== table_fill.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/35 (0.00%)
+- 16/35 (45.71%)
 
 ===== data.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/14 (0.00%)
 
 ===== int_literals.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/30 (0.00%)
+- 30/30 (100.00%)
 
 ===== address.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
+- Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 0/255 (0.00%)
 
 ===== table_grow.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/38 (0.00%)
+- 22/38 (57.89%)
 
 ===== func_ptrs.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/25 (0.00%)
+- Uncaught exception: Direct invocation failed due to No field name: TYPE
+
+- 3/25 (12.00%)
 
 ===== table_init.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/662 (0.00%)
+- 18/662 (2.72%)
 
 ===== global.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/58 (0.00%)
+- 50/58 (86.21%)
 
 ===== int_exprs.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/89 (0.00%)
+- 86/89 (96.63%)
 
 ===== f64.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/2500 (0.00%)
+- 2500/2500 (100.00%)
 
 ===== br.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/76 (0.00%)
+- 73/76 (96.05%)
 
 ===== nop.wast =====
-- Uncaught exception: Module Instantiation failed due to Algorithm not found: instantiation
-- 0/83 (0.00%)
+- 68/83 (81.93%)
 
-Total [0/23779] (0.00%; Normalized 0.00%)
+Total [14160/23779] (59.55%; Normalized 50.59%)
 == Complete.
 ```
