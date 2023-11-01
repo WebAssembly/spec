@@ -329,7 +329,21 @@ and eval_cond env cond =
       (* valid_other *)
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
   )
-  | c -> structured_string_of_cond c |> failwith
+  | HasTypeC (e, s) ->
+    let hastype ty = function
+      | "numtype" -> List.mem ty [ "I32"; "I64"; "F32"; "F64" ]
+      | _ -> failwith "Not implemented"
+    in
+
+    begin match eval_expr env e with
+    | ConstructV (ty, []) -> hastype ty s
+    | v ->
+      string_of_value v
+      |> Printf.sprintf "Invalid type: %s"
+      |> failwith
+    end
+  | c ->
+    structured_string_of_cond c |> failwith
 
 (* Assignment *)
 
