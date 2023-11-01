@@ -526,8 +526,8 @@ and execute (wasm_instr: value): unit =
     |> failwith
 
 and interp_instr (env: env) (instr: instr): env =
-  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
   (*
+  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
@@ -706,14 +706,13 @@ and interp_algo (algo: algorithm) (args: value list): unit =
     |> Env.add_store
     |> List.fold_right2 assign params args
   in
-  Env.string_of_env env |> print_endline;
 
   get_body algo |> interp_instrs env |> ignore
 
 and call_algo (name: string) (args: value list): AL_Context.return_value =
+  (*
   print_endline "**************************************";
   Printf.sprintf "[ALGO]: %s" name |> print_endline;
-  (*
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
