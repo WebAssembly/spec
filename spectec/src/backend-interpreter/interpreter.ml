@@ -472,7 +472,76 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
   (* Module & Runtime *)
   else if FuncMap.mem fname !func_map then
     call_algo fname args
-  else
+  else if fname = "ref_type_of" then (
+    assert (List.length args = 1);
+
+    let rt =
+      match List.hd args with
+      (* null *)
+      | ConstructV ("REF.NULL", [ ht ]) ->
+        ConstructV ("REF", [ OptV (Some (singleton "NULL")); ht])
+      (* i31 *)
+      | ConstructV ("REF.I31_NUM", [ _ ]) ->
+        ConstructV ("REF", [ OptV (None); singleton "I31"])
+      (* struct *)
+      | ConstructV ("REF.STRUCT_ADDR", [ NumV i ]) ->
+        let e =
+          AccessE (
+            AccessE (
+              AccessE (
+                NameE "s",
+                DotP ("STRUCT", "struct")
+              ),
+              IndexP (NumE i)
+            ),
+            DotP ("TYPE", "type")
+          )
+        in
+        let dt = eval_expr (Env.add_store Env.empty) e in
+        ConstructV ("REF", [ OptV (None); dt])
+      (* array *)
+      | ConstructV ("REF.ARRAY_ADDR", [ NumV i ]) ->
+        let e =
+          AccessE (
+            AccessE (
+              AccessE (
+                NameE "s",
+                DotP ("ARRAY", "struct")
+              ),
+              IndexP (NumE i)
+            ),
+            DotP ("TYPE", "type")
+          )
+        in
+        let dt = eval_expr (Env.add_store Env.empty) e in
+        ConstructV ("REF", [ OptV (None); dt])
+      (* func *)
+      | ConstructV ("REF.FUNC_ADDR", [ NumV i ]) ->
+        let e =
+          AccessE (
+            AccessE (
+              AccessE (
+                NameE "s",
+                DotP ("FUNC", "struct")
+              ),
+              IndexP (NumE i)
+            ),
+            DotP ("TYPE", "type")
+          )
+        in
+        let dt = eval_expr (Env.add_store Env.empty) e in
+        ConstructV ("REF", [ OptV (None); dt])
+      (* host *)
+      | ConstructV ("REF.HOST_ADDR", [ _ ]) ->
+        ConstructV ("REF", [ OptV (None); singleton "ANY"])
+      (* extern *)
+      | ConstructV ("REF.EXTERN", [ _ ]) ->
+        ConstructV ("REF", [ OptV (None); singleton "EXTERN"])
+      | _ -> failwith "Invalid arguments for $ref_type_of"
+    in
+
+    AL_Context.Some rt
+  ) else
     Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
 and is_builtin = function
