@@ -110,6 +110,7 @@ and expr =
   | ContE of expr
   (* Name *)
   | NameE of name
+  | SubE of name * string
   | IterE of expr * name list * iter
   (* Yet *)
   | YetE of string
@@ -127,6 +128,7 @@ and cond =
   | IsDefinedC of expr
   | IsCaseOfC of expr * keyword 
   | ValidC of expr
+  | HasTypeC of expr * string
   (* Conditions used in assertions *)
   | TopLabelC
   | TopFrameC

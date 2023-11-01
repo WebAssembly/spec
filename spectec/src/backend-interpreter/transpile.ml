@@ -280,6 +280,11 @@ let rec merge_three_branches i =
 
 let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
+let remove_sub = Walk.walk_instr { Walk.default_config with pre_expr = function
+  | SubE (n, _) -> NameE n
+  | e -> e
+}
+
 let rec enhance_readability instrs =
   let new_instrs = instrs
   |> unify_if
@@ -291,6 +296,7 @@ let rec enhance_readability instrs =
   |> List.concat_map early_return
   |> List.map merge_three_branches
   |> remove_dead_assignment
+  |> List.concat_map remove_sub
   in
   if instrs = new_instrs then instrs else enhance_readability new_instrs
 

@@ -234,7 +234,7 @@ and render_expr env in_math = function
   | Al.Ast.ContE e -> sprintf "the continuation of %s" (render_expr env in_math e)
   | Al.Ast.LabelE (e1, e2) ->
       sprintf "the label whose arity is %s and whose continuation is %s" (render_expr env in_math e1) (render_expr env in_math e2)
-  | Al.Ast.NameE n ->
+  | Al.Ast.NameE n | Al.Ast.SubE (n, _) ->
       let sn = render_name n in
       if in_math then sn else render_math sn
   | Al.Ast.IterE (Al.Ast.NameE n, _, iter) ->
@@ -309,6 +309,7 @@ and render_cond env = function
   | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_keyword env s)
   | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
   | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_keyword env c))
+  | Al.Ast.HasTypeC (e, t) -> sprintf "the type of %s is %s" (render_expr env false e) t
   | Al.Ast.ValidC e -> sprintf "%s is valid" (render_expr env false e)
   | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
   | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
