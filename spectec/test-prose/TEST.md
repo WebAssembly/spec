@@ -2191,5 +2191,28 @@ exec_expr_const instr*
 2. Pop val from the stack.
 3. Return val.
 
+group_bytes_by n byte*
+1. Let n' be |byte*|.
+2. If n' ≥ n, then:
+  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
+3. Return [].
+
+execution_of_ARRAY.NEW_DATA x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If $expanddt($type(x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(x)).
+  b. Let (mut, zt) be y_0.
+  c. If (i + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
+    1) Trap.
+  d. Let nt be $unpacknumtype(zt).
+  e. Let b* be $data(y).DATA[i : ((n · $storagesize(zt)) / 8)].
+  f. Let gb* be $group_bytes_by(($storagesize(zt) / 8), b*).
+  g. Let c^n be $inverse_of_bytes_($storagesize(zt), gb)*.
+  h. Push (nt.CONST c)^n to the stack.
+  i. Execute (ARRAY.NEW_FIXED x n).
+
 == Complete.
 ```
