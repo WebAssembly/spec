@@ -837,7 +837,7 @@ let path2expr exp path =
   in
   path2expr' path |> exp2expr
 
-let config_helper2instrs after arity return clause =
+let config_helper2instrs before after arity return clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
   match e2.it with
   | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
@@ -849,7 +849,7 @@ let config_helper2instrs after arity return clause =
     let enter =
       EnterI (FrameE (Some arity, NameE f.it), ListE ([ConstructE (("FRAME_", ""), [])]), rhs2instrs lhs)
     in
-    enter :: after @ return |> prems2instrs [] prems
+    before @ enter :: after @ return |> prems2instrs [] prems
   | _ -> failwith "unreachable"
 
 let normal_helper2instrs clause =
@@ -871,9 +871,9 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiate" then
-          [ReturnI (Some (NameE "mm"))] |> config_helper2instrs [] (NumE 0L)
+          [ReturnI (Some (NameE "mm"))] |> config_helper2instrs [] [] (NumE 0L)
         else if id.it = "invoke" then
-          [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))] (NameE "k")
+          [ReturnI (Some (IterE (NameE "val", ["val"], ListN (NameE "k", None))))] |> config_helper2instrs [LetI (NameE "k", LengthE (IterE (NameE "t_2", ["t_2"], List)))] [PopI (IterE (NameE "val", ["val"], ListN (NameE "k", None)))] (NameE "k")
         else
           normal_helper2instrs
       in
