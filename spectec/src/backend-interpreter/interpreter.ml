@@ -486,8 +486,8 @@ and call_builtin name =
     | _ -> failwith "builtin doesn't return value"
   in
   let as_const ty = function
-  | ConstructV ("CONST", [ ConstructV (ty', []) ; n ]) when ty = ty' -> n
-  | _ -> failwith ("Not " ^ ty ^ ".CONST") in
+  | OptV (Some (ConstructV ("CONST", [ ConstructV (ty', []) ; n ]))) when ty = ty' -> n
+  | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
   match name with
   | "PRINT" -> print_endline "- print: ()"
   | "PRINT_I32" ->

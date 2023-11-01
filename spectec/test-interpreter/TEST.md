@@ -92,7 +92,8 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 27/28 (96.43%)
+- print_i32: 10
+- 28/28 (100.00%)
 
 ===== forward.wast =====
 - 4/4 (100.00%)
@@ -224,8 +225,9 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/36 (0.00%)
 
 ===== imports.wast =====
+- print_i32: 13
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
-- 7/34 (20.59%)
+- 8/34 (23.53%)
 
 ===== left-to-right.wast =====
 - 0/95 (0.00%)
@@ -289,7 +291,9 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 3/8 (37.50%)
 
 ===== names.wast =====
-- 481/482 (99.79%)
+- print_i32: 42
+- print_i32: 123
+- 482/482 (100.00%)
 
 ===== unreached-valid.wast =====
 - 5/5 (100.00%)
@@ -312,9 +316,8 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 22/38 (57.89%)
 
 ===== func_ptrs.wast =====
-- Uncaught exception: Direct invocation failed due to No field name: TYPE
-
-- 3/25 (12.00%)
+- print_i32: 83
+- 9/25 (36.00%)
 
 ===== table_init.wast =====
 - 18/662 (2.72%)
@@ -334,6 +337,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 ===== nop.wast =====
 - 68/83 (81.93%)
 
-Total [14222/23779] (59.81%; Normalized 51.96%)
+Total [14231/23779] (59.85%; Normalized 52.37%)
 == Complete.
 ```
