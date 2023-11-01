@@ -368,8 +368,8 @@ and eval_cond env cond =
     begin match v1, v2 with
     | v1, v2 ->
       Printf.sprintf "%s <: %s"
-        (structured_string_of_value v1)
-        (structured_string_of_value v2)
+        (string_of_value v1)
+        (string_of_value v2)
       |> failwith
     end
   | c ->
@@ -494,13 +494,15 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       (List.hd args) |> (string_of_value )
     |> prerr_endline;
     let rt =
+      let null = ConstructV ("NULL", [ OptV (Some (listV [])) ]) in
+      let nonull = ConstructV ("NULL", [ OptV None ]) in
       match List.hd args with
       (* null *)
       | ConstructV ("REF.NULL", [ ht ]) ->
-        ConstructV ("REF", [ OptV (Some (singleton "NULL")); ht])
+        ConstructV ("REF", [ null; ht])
       (* i31 *)
       | ConstructV ("REF.I31_NUM", [ _ ]) ->
-        ConstructV ("REF", [ OptV (None); singleton "I31"])
+        ConstructV ("REF", [ nonull; singleton "I31"])
       (* struct *)
       | ConstructV ("REF.STRUCT_ADDR", [ NumV i ]) ->
         let e =
@@ -516,7 +518,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ OptV (None); dt])
+        ConstructV ("REF", [ nonull; dt])
       (* array *)
       | ConstructV ("REF.ARRAY_ADDR", [ NumV i ]) ->
         let e =
@@ -532,7 +534,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ OptV (None); dt])
+        ConstructV ("REF", [ nonull; dt])
       (* func *)
       | ConstructV ("REF.FUNC_ADDR", [ NumV i ]) ->
         let e =
@@ -548,13 +550,13 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ OptV (None); dt])
+        ConstructV ("REF", [ nonull; dt])
       (* host *)
       | ConstructV ("REF.HOST_ADDR", [ _ ]) ->
-        ConstructV ("REF", [ OptV (None); singleton "ANY"])
+        ConstructV ("REF", [ nonull; singleton "ANY"])
       (* extern *)
       | ConstructV ("REF.EXTERN", [ _ ]) ->
-        ConstructV ("REF", [ OptV (None); singleton "EXTERN"])
+        ConstructV ("REF", [ nonull; singleton "EXTERN"])
       | _ -> failwith "Invalid arguments for $ref_type_of"
     in
 

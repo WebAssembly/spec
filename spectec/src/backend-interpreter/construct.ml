@@ -6,8 +6,8 @@ open Source
 (* Construct types *)
 
 let al_of_null = function
-  | Types.NoNull -> OptV None
-  | Types.Null -> OptV (Some (singleton "NULL"))
+  | Types.NoNull -> ConstructV ("NULL", [ OptV None ])
+  | Types.Null -> ConstructV ("NULL", [ OptV (Some (listV [])) ])
 
 let al_of_final = function
   | Types.NoFinal -> OptV None

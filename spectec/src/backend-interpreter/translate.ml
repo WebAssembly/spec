@@ -225,8 +225,8 @@ and exp2expr exp =
           ConstructE (("START", "start"), List.map exp2expr el)
       | [ [ Ast.Atom "EXPORT" ]; []; [] ], el ->
           ConstructE (("EXPORT", "export"), List.map exp2expr el)
-      | [ [ Ast.Atom "NULL" ]; [ Ast.Quest ] ], _ ->
-          ConstructE (("NULL", "nul"), [])
+      | [ [ Ast.Atom "NULL" ]; [ Ast.Quest ] ], el ->
+          ConstructE (("NULL", "nul"), List.map exp2expr el)
       | [ Ast.Atom name ] :: ll, el
         when List.for_all (fun l -> List.length l = 0) ll ->
           ConstructE ((name, String.lowercase_ascii name), List.map exp2expr el)
