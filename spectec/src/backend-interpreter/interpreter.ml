@@ -339,7 +339,7 @@ and eval_cond env cond =
     | ConstructV (ty, []) -> hastype ty s
     | v ->
       string_of_value v
-      |> Printf.sprintf "Invalid type: %s"
+      |> Printf.sprintf "Invalid %s: %s" s
       |> failwith
     end
   | c ->
