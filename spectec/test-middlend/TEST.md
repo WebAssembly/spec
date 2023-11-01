@@ -23458,9 +23458,6 @@ def invoke : (store, funcaddr, val*) -> config
 == IL Validation after pass sideconditions...
 == Running pass animate...
 Animation failed.
-if (qt = REC_rectype(st^n{st}))
-...Animation failed
-Animation failed.
 if (|ct'*{ct'}| = |y*{y}|)
 if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
 (if (y < |C.TYPE_context|))*{ct' y y'}
@@ -24347,6 +24344,7 @@ def rollrt : (typeidx, rectype) -> rectype
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:174.1-175.22
   def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+    -- where qt = REC_rectype(st^n{st})
 
 ;; 2-syntax-aux.watsup:166.1-166.65
 def rolldt : (typeidx, rectype) -> deftype*

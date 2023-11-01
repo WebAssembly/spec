@@ -10,9 +10,6 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Running pass animate...
 Animation failed.
-if (qt = REC_rectype(st^n{st}))
-...Animation failed
-Animation failed.
 if (|ct'*{ct'}| = |y*{y}|)
 if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
 (if (y < |C.TYPE_context|))*{ct' y y'}

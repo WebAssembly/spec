@@ -284,7 +284,7 @@ let animate_rule r = match r.it with
 (* Animate clause *)
 let animate_clause c = match c.it with
   | DefD (binds, e1, e2, prems) ->
-    let new_prems = animate_prems (my_free_exp true e1) prems in
+    let new_prems = animate_prems (my_free_exp false e1) prems in
     DefD (binds, e1, e2, new_prems) $ c.at
 
 (* Animate defs *)

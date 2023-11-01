@@ -10,9 +10,6 @@ watsup 0.4 generator
 == IL Validation after pass sideconditions...
 == Running pass animate...
 Animation failed.
-if (qt = REC_rectype(st^n{st}))
-...Animation failed
-Animation failed.
 if (|ct'*{ct'}| = |y*{y}|)
 if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
 (if (y < |C.TYPE_context|))*{ct' y y'}
@@ -751,7 +748,8 @@ rollrt x (REC st^n)
 1. Return (REC $subst_subtype(st, $idx((x + i))^(i<n), (REC i)^(i<n))^n).
 
 unrollrt (REC st^n)
-1. Return (REC $subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n))^n).
+1. Let qt be (REC st^n).
+2. Return (REC $subst_subtype(st, (REC i)^(i<n), (DEF qt i)^(i<n))^n).
 
 rolldt x qt
 1. Assert: Due to validation, $rollrt(x, qt) is of the case REC.
