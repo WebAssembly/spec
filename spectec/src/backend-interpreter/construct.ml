@@ -331,20 +331,24 @@ let rec al_of_instr wasm_module winstr =
         ("LOAD", [
             al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize_with_extension pack);
+            NumV 0L;
             NumV (Int64.of_int align);
-            NumV (int64_of_int32_u offset) ])
+            NumV (int64_of_int32_u offset)
+        ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("STORE", [
             al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize pack);
+            NumV 0L;
             NumV (Int64.of_int align);
-            NumV (int64_of_int32_u offset) ])
-  | Ast.MemorySize -> f "MEMORY.SIZE"
-  | Ast.MemoryGrow -> f "MEMORY.GROW"
-  | Ast.MemoryFill -> f "MEMORY.FILL"
-  | Ast.MemoryCopy -> f "MEMORY.COPY"
-  | Ast.MemoryInit i32 -> f_i32 "MEMORY.INIT" i32
+            NumV (int64_of_int32_u offset)
+        ])
+  | Ast.MemorySize -> ConstructV ("MEMORY.SIZE", [ NumV 0L ])
+  | Ast.MemoryGrow -> ConstructV ("MEMORY.GROW", [ NumV 0L ])
+  | Ast.MemoryFill -> ConstructV ("MEMORY.FILL", [ NumV 0L ])
+  | Ast.MemoryCopy -> ConstructV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
+  | Ast.MemoryInit i32 -> ConstructV ("MEMORY.INIT", [ NumV 0L; NumV (Int64.of_int32 i32.it)])
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
   | _ -> ConstructV ("Untranslated al", [])
 

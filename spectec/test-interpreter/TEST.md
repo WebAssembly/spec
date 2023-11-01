@@ -109,13 +109,13 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 ===== memory.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
-- 0/45 (0.00%)
+- 2/45 (4.44%)
 
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
 ===== call.wast =====
-- 61/70 (87.14%)
+- 62/70 (88.57%)
 
 ===== local_get.wast =====
 - 13/19 (68.42%)
@@ -140,10 +140,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 21/83 (25.30%)
 
 ===== align.wast =====
-- 0/48 (0.00%)
+- 1/48 (2.08%)
 
 ===== if.wast =====
-- 92/123 (74.80%)
+- 94/123 (76.42%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -152,7 +152,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 41/52 (78.85%)
+- 42/52 (80.77%)
 
 ===== labels.wast =====
 - 17/25 (68.00%)
@@ -171,7 +171,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/5 (0.00%)
 
 ===== loop.wast =====
-- 35/77 (45.45%)
+- 36/77 (46.75%)
 
 ===== conversions.wast =====
 - 0/593 (0.00%)
@@ -186,7 +186,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/9 (0.00%)
 
 ===== memory_redundancy.wast =====
-- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
+- Uncaught exception: Direct invocation failed due to Invalid DSL function call: bytes
 - 0/4 (0.00%)
 
 ===== i32.wast =====
@@ -196,20 +196,20 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 61/63 (96.83%)
 
 ===== bulk.wast =====
-- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
+- Uncaught exception: Direct invocation failed due to Invalid DSL function call: wrap
 - 0/66 (0.00%)
 
 ===== traps.wast =====
-- 10/32 (31.25%)
+- 24/32 (75.00%)
 
 ===== local_tee.wast =====
-- 34/55 (61.82%)
+- 35/55 (63.64%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 0/84 (0.00%)
+- 57/84 (67.86%)
 
 ===== call_indirect.wast =====
 - 32/132 (24.24%)
@@ -218,11 +218,11 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/37 (0.00%)
 
 ===== memory_fill.wast =====
-- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
+- Uncaught exception: Direct invocation failed due to Invalid DSL function call: wrap
 - 0/20 (0.00%)
 
 ===== memory_size.wast =====
-- 0/36 (0.00%)
+- 36/36 (100.00%)
 
 ===== imports.wast =====
 - print_i32: 13
@@ -238,13 +238,13 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 ===== memory_trap.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
-- 0/180 (0.00%)
+- 11/180 (6.11%)
 
 ===== br_table.wast =====
 - 134/149 (89.93%)
 
 ===== select.wast =====
-- 99/118 (83.90%)
+- 101/118 (85.59%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -268,7 +268,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/7 (0.00%)
 
 ===== float_exprs.wast =====
-- Uncaught exception: Direct invocation failed due to Invalid_argument("List.fold_right2")
+- Uncaught exception: Direct invocation failed due to Invalid DSL function call: bytes
 - 241/794 (30.35%)
 
 ===== float_memory.wast =====
@@ -323,7 +323,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 582/662 (87.92%)
 
 ===== global.wast =====
-- 50/58 (86.21%)
+- 51/58 (87.93%)
 
 ===== int_exprs.wast =====
 - 86/89 (96.63%)
@@ -335,8 +335,8 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 74/76 (97.37%)
 
 ===== nop.wast =====
-- 68/83 (81.93%)
+- 71/83 (85.54%)
 
-Total [16006/23779] (67.31%; Normalized 54.97%)
+Total [16139/23779] (67.87%; Normalized 58.16%)
 == Complete.
 ```
