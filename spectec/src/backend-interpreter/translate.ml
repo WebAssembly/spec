@@ -610,7 +610,7 @@ let rulepr2instrs id exp instrs = match id.it, exp2args exp with
     LetI (rt, AppE ("ref_type_of", [ ref ])) :: instrs
   | "Reftype_sub", [_C; rt1; rt2] ->
     (* TODO: This is an abuse of notation of `Le` for subtype. Need to grow language. *)
-    [ IfI (CompareC (Le, rt1, rt2), instrs |> check_nop, []) ]
+    [ IfI (MatchC (rt1, rt2), instrs |> check_nop, []) ]
   | _ -> YetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
 
 (** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)

@@ -316,6 +316,10 @@ and render_cond env = function
   | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
   | Al.Ast.TopValueC None -> "a value is on the top of the stack"
   | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env false e)
+  | Al.Ast.MatchC (e1, e2) ->
+    sprintf "%s matches %s"
+      (render_expr env false e1)
+      (render_expr env false e2)
   | Al.Ast.YetC s -> sprintf "YetC (%s)" s
 
 (* Instructions *)

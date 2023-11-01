@@ -134,6 +134,7 @@ and cond =
   | TopFrameC
   | TopValueC of expr option
   | TopValuesC of expr
+  | MatchC of expr * expr
   (* Yet *)
   | YetC of string
 

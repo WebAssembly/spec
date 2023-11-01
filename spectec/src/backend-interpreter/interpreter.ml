@@ -362,6 +362,16 @@ and eval_cond env cond =
       |> Printf.sprintf "Invalid %s: %s" s
       |> failwith
     end
+  | MatchC (e1, e2) ->
+    let v1 = eval_expr env e1 in
+    let v2 = eval_expr env e2 in
+    begin match v1, v2 with
+    | v1, v2 ->
+      Printf.sprintf "%s <: %s"
+        (structured_string_of_value v1)
+        (structured_string_of_value v2)
+      |> failwith
+    end
   | c ->
     structured_string_of_cond c |> failwith
 
@@ -481,6 +491,8 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
   else if fname = "ref_type_of" then (
     assert (List.length args = 1);
 
+      (List.hd args) |> (string_of_value )
+    |> prerr_endline;
     let rt =
       match List.hd args with
       (* null *)
@@ -512,7 +524,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
             AccessE (
               AccessE (
                 NameE "s",
-                DotP ("ARRAY", "struct")
+                DotP ("ARRAY", "array")
               ),
               IndexP (NumE i)
             ),
@@ -528,7 +540,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
             AccessE (
               AccessE (
                 NameE "s",
-                DotP ("FUNC", "struct")
+                DotP ("FUNC", "func")
               ),
               IndexP (NumE i)
             ),

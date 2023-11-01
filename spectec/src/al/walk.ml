@@ -100,6 +100,7 @@ let rec walk_cond f c =
   | TopValueC (Some e) -> TopValueC (Some (new_e e))
   | TopValueC _ -> c
   | TopValuesC e -> TopValuesC (new_e e)
+  | MatchC (e1, e2) -> MatchC (new_e e1, new_e e2)
   | YetC _ -> c in
 
   let c1 = pre c in

@@ -52,7 +52,8 @@ and free_path = function
 let rec free_cond = function
   | NotC c -> free_cond c
   | BinopC (_, c1, c2) -> free_cond c1 @ free_cond c2
-  | CompareC (_, e1, e2) -> free_expr e1 @ free_expr e2
+  | CompareC (_, e1, e2)
+  | MatchC (e1, e2) -> free_expr e1 @ free_expr e2
   | TopLabelC
   | TopFrameC
   | TopValueC None

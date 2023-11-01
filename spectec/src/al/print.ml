@@ -210,6 +210,10 @@ and string_of_cond = function
   | TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
   | TopValueC None -> "a value is on the top of the stack"
   | TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
+  | MatchC (e1, e2) ->
+    sprintf "%s matches %s"
+      (string_of_expr e1)
+      (string_of_expr e2)
   | YetC s -> sprintf "YetC (%s)" s
 
 let make_index index depth =
@@ -552,6 +556,10 @@ and structured_string_of_cond = function
   | TopFrameC -> "TopFrameC"
   | TopValueC e_opt -> "TopValueC" ^ string_of_opt " (" structured_string_of_expr ")" e_opt 
   | TopValuesC e -> "TopValuesC (" ^ structured_string_of_expr e ^ ")"
+  | MatchC (e1, e2) ->
+    Printf.sprintf "Matches (%s, %s)"
+      (structured_string_of_expr e1)
+      (structured_string_of_expr e2)
   | YetC s -> "YetC (" ^ s ^ ")"
 
 (* instruction *)
