@@ -1560,10 +1560,16 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 
 execution_of_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
-2. Execute (CALL_REF $funcaddr()[x]).
+2. Execute (CALL_ADDR $funcaddr()[x]).
 
-execution_of_CALL_REF
-1. YetI: TODO: It is likely that the value stack of two rules are differ.
+execution_of_CALL_REF x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
+  a. Trap.
+4. If u_0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be u_0.
+  b. Execute (CALL_ADDR a).
 
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
@@ -1586,6 +1592,23 @@ execution_of_RETURN_CALL_REF
   e. Push val^n to the stack.
   f. Push ref to the stack.
   g. Execute (RETURN_CALL_REF x).
+
+execution_of_CALL_ADDR a
+1. Assert: Due to validation, a < |$funcinst()|.
+2. Let fi be $funcinst()[a].
+3. Assert: Due to validation, fi.CODE is of the case FUNC.
+4. Let (FUNC x y_0 instr*) be fi.CODE.
+5. Let (LOCAL t)* be y_0.
+6. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+7. Let (FUNC y_0) be $expanddt(fi.TYPE).
+8. Let [t_1^n]->[t_2^m] be y_0.
+9. Assert: Due to validation, there are at least n values on the top of the stack.
+10. Pop val^n from the stack.
+11. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+12. Let F be the activation of f with arity m.
+13. Enter F with label [FRAME_]:
+  a. Let L be the label_m{[]}.
+  b. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.

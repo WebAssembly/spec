@@ -755,6 +755,7 @@ warning: rule `Step_read/call_ref-func` was never spliced
 warning: rule `Step_read/return_call` was never spliced
 warning: rule `Step_read/return_call_ref-frame` was never spliced
 warning: rule `Step_read/return_call_ref-label` was never spliced
+warning: rule `Step_read/call_addr` was never spliced
 warning: rule `Step_read/ref.func` was never spliced
 warning: rule `Step_read/ref.test-true` was never spliced
 warning: rule `Step_read/ref.test-false` was never spliced
