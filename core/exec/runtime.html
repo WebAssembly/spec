@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Runtime Structure &#8212; WebAssembly 2.0 (Draft 2023-10-25)</title>
+    <title>Runtime Structure &#8212; WebAssembly 2.0 (Draft 2023-11-01)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -352,7 +352,7 @@ It filters out entries of a specific kind in an order-preserving fashion:</p>
 </section>
 </section>
 <section id="stack">
-<span id="label"></span><span id="frame"></span><span id="syntax-label"></span><span id="syntax-frame"></span><span id="index-14"></span><span id="id4"></span><h2>Stack<a class="headerlink" href="#stack" title="Permalink to this heading">¶</a></h2>
+<span id="label"></span><span id="frame"></span><span id="syntax-label"></span><span id="syntax-framestate"></span><span id="syntax-frame"></span><span id="index-14"></span><span id="id4"></span><h2>Stack<a class="headerlink" href="#stack" title="Permalink to this heading">¶</a></h2>
 <p>Besides the <a class="reference internal" href="#store"><span class="std std-ref">store</span></a>, most <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a> interact with an implicit <em>stack</em>.
 The stack contains three kinds of entries:</p>
 <ul class="simple">
@@ -401,6 +401,8 @@ and a reference to the function’s own <a class="reference internal" href="#syn
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llll}
 \def\mathdef2246#1{{}}\mathdef2246{frame} &amp; \href{../exec/runtime.html#syntax-frame}{\mathit{frame}} &amp;::=&amp;
+  \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{ \href{../exec/runtime.html#syntax-framestate}{\mathit{framestate}} \} \\
+\def\mathdef2246#1{{}}\mathdef2246{frame state} &amp; \href{../exec/runtime.html#syntax-framestate}{\mathit{framestate}} &amp;::=&amp;
   \{ \href{../exec/runtime.html#syntax-frame}{\mathsf{locals}}~\href{../exec/runtime.html#syntax-val}{\mathit{val}}^\ast, \href{../exec/runtime.html#syntax-frame}{\mathsf{module}}~\href{../exec/runtime.html#syntax-moduleinst}{\mathit{moduleinst}} \} \\
 \end{array}\end{split}\]</div>
 <p>The values of the locals are mutated by respective <a class="reference internal" href="../syntax/instructions.html#syntax-instr-variable"><span class="std std-ref">variable instructions</span></a>.</p>
@@ -409,7 +411,7 @@ and a reference to the function’s own <a class="reference internal" href="#syn
 <span id="id6"></span><h3>Conventions<a class="headerlink" href="#exec-expand" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>The meta variable <span class="math notranslate nohighlight">\(L\)</span> ranges over labels where clear from context.</p></li>
-<li><p>The meta variable <span class="math notranslate nohighlight">\(F\)</span> ranges over frames where clear from context.</p></li>
+<li><p>The meta variable <span class="math notranslate nohighlight">\(F\)</span> ranges over frame states where clear from context.</p></li>
 <li><p>The following auxiliary definition takes a <a class="reference internal" href="../syntax/instructions.html#syntax-blocktype"><span class="std std-ref">block type</span></a> and looks up the <a class="reference internal" href="../syntax/types.html#syntax-functype"><span class="std std-ref">function type</span></a> that it denotes in the current frame:</p></li>
 </ul>
 <div class="math notranslate nohighlight">
@@ -435,7 +437,7 @@ and a reference to the function’s own <a class="reference internal" href="#syn
   \href{../exec/runtime.html#syntax-ref.extern}{\mathsf{ref{.}extern}}~\href{../exec/runtime.html#syntax-externaddr}{\mathit{externaddr}} \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-invoke}{\mathsf{invoke}}~\href{../exec/runtime.html#syntax-funcaddr}{\mathit{funcaddr}} \\ &amp;&amp;|&amp;
   \href{../exec/runtime.html#syntax-label}{\mathsf{label}}_n\{\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\ &amp;&amp;|&amp;
-  \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{\href{../exec/runtime.html#syntax-frame}{\mathit{frame}}\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
+  \href{../exec/runtime.html#syntax-frame}{\mathsf{frame}}_n\{\href{../exec/runtime.html#syntax-framestate}{\mathit{framestate}}\}~\href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast~\href{../syntax/instructions.html#syntax-instr-control}{\mathsf{end}} \\
 \end{array}\end{split}\]</div>
 <p>The <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span> instruction represents the occurrence of a trap.
 Traps are bubbled up through nested instruction sequences, ultimately reducing the entire program to a single <span class="math notranslate nohighlight">\(\href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}\)</span> instruction, signalling abrupt termination.</p>
@@ -484,13 +486,13 @@ The selected label is identified through the <a class="reference internal" href=
 <span id="syntax-config"></span><span id="syntax-thread"></span><span id="index-17"></span><h3>Configurations<a class="headerlink" href="#configurations" title="Permalink to this heading">¶</a></h3>
 <p>A <em>configuration</em> consists of the current <a class="reference internal" href="#syntax-store"><span class="std std-ref">store</span></a> and an executing <em>thread</em>.</p>
 <p>A thread is a computation over <a class="reference internal" href="../syntax/instructions.html#syntax-instr"><span class="std std-ref">instructions</span></a>
-that operates relative to a current <a class="reference internal" href="#syntax-frame"><span class="std std-ref">frame</span></a> referring to the <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> in which the computation runs, i.e., where the current function originates from.</p>
+that operates relative to the state of a current <a class="reference internal" href="#syntax-framestate"><span class="std std-ref">frame</span></a> referring to the <a class="reference internal" href="#syntax-moduleinst"><span class="std std-ref">module instance</span></a> in which the computation runs, i.e., where the current function originates from.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{llcl}
 \def\mathdef2246#1{{}}\mathdef2246{configuration} &amp; \href{../exec/runtime.html#syntax-config}{\mathit{config}} &amp;::=&amp;
   \href{../exec/runtime.html#syntax-store}{\mathit{store}}; \href{../exec/runtime.html#syntax-thread}{\mathit{thread}} \\
 \def\mathdef2246#1{{}}\mathdef2246{thread} &amp; \href{../exec/runtime.html#syntax-thread}{\mathit{thread}} &amp;::=&amp;
-  \href{../exec/runtime.html#syntax-frame}{\mathit{frame}}; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
+  \href{../exec/runtime.html#syntax-framestate}{\mathit{framestate}}; \href{../syntax/instructions.html#syntax-instr}{\mathit{instr}}^\ast \\
 \end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
