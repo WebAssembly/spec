@@ -1199,9 +1199,9 @@ allocmodule module externval* val_g* ref_t* ref_e**
 7. Let (DATA byte* datamode?)^n_d be y_5.
 8. Let (ELEM reftype expr_e* elemmode?)^n_e be y_4.
 9. Let (MEMORY memtype)^n_m be y_3.
-10. Let YetE (MixE ([[Atom "TABLE"], [], []], TupE ([VarE "tabletype", VarE "expr_t"])))^n_t be y_2.
+10. Let (TABLE tabletype expr_t)^n_t be y_2.
 11. Let (GLOBAL globaltype expr_g)^n_g be y_1.
-12. Assert: Due to validation, y_0 is YetE (MixE ([[Atom "TYPE"], []], VarE "rectype"))*.
+12. Let (TYPE rectype)* be y_0.
 13. Let da* be (|s.DATA| + i_d)^(i_d<n_d).
 14. Let ea* be (|s.ELEM| + i_e)^(i_e<n_e).
 15. Let ma* be (|s.MEM| + i_m)^(i_m<n_m).
@@ -1257,25 +1257,26 @@ instantiate module externval*
 5. Let (START x)? be start?.
 6. Let mm_init be { TYPE: []; FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
 7. Let (GLOBAL globaltype expr_g)* be global*.
-8. Let (ELEM reftype expr_e* elemmode?)* be elem*.
-9. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
-10. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
-11. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-12. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_e]** be $eval_expr(expr_e)**.
+8. Let (TABLE tabletype expr_t)* be table*.
+9. Let (ELEM reftype expr_e* elemmode?)* be elem*.
+10. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
+11. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
+12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
 13. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_t]* be $eval_expr(expr_t)*.
+  a. Let [ref_e]** be $eval_expr(expr_e)**.
 14. Enter the activation of z with label [FRAME_]:
+  a. Let [ref_t]* be $eval_expr(expr_t)*.
+15. Enter the activation of z with label [FRAME_]:
   a. Let [val_g]* be $eval_expr(expr_g)*.
-15. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
-16. Let f be { LOCAL: []; MODULE: mm; }.
-17. Enter the activation of f with arity 0 with label [FRAME_]:
+16. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
+17. Let f be { LOCAL: []; MODULE: mm; }.
+18. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_e*).
   b. Execute the sequence (instr_d*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-18. Return mm.
+19. Return mm.
 
 invoke fa val^n
 1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
@@ -1559,10 +1560,16 @@ execution_of_BR_ON_CAST_FAIL l rt_1 rt_2
 
 execution_of_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
-2. Execute (CALL_REF $funcaddr()[x]).
+2. Execute (CALL_ADDR $funcaddr()[x]).
 
-execution_of_CALL_REF
-1. YetI: TODO: It is likely that the value stack of two rules are differ.
+execution_of_CALL_REF x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
+  a. Trap.
+4. If u_0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be u_0.
+  b. Execute (CALL_ADDR a).
 
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
@@ -1585,6 +1592,23 @@ execution_of_RETURN_CALL_REF
   e. Push val^n to the stack.
   f. Push ref to the stack.
   g. Execute (RETURN_CALL_REF x).
+
+execution_of_CALL_ADDR a
+1. Assert: Due to validation, a < |$funcinst()|.
+2. Let fi be $funcinst()[a].
+3. Assert: Due to validation, fi.CODE is of the case FUNC.
+4. Let (FUNC x y_0 instr*) be fi.CODE.
+5. Let (LOCAL t)* be y_0.
+6. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+7. Let (FUNC y_0) be $expanddt(fi.TYPE).
+8. Let [t_1^n]->[t_2^m] be y_0.
+9. Assert: Due to validation, there are at least n values on the top of the stack.
+10. Pop val^n from the stack.
+11. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+12. Let F be the activation of f with arity m.
+13. Enter F with label [FRAME_]:
+  a. Let L be the label_m{[]}.
+  b. Enter L with label instr* ++ [LABEL_]:
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.
