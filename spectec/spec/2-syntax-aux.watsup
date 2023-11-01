@@ -107,9 +107,9 @@ def $subst_vectype(vt, xx*, ht*) = vt
 
 def $subst_heaptype(xx', xx*, ht*) = $subst_typevar(xx', xx*, ht*)
 def $subst_heaptype(dt, xx*, ht*) = $subst_deftype(dt, xx*, ht*)
-def $subst_heaptype(ht, xx*, ht*) = ht  -- otherwise
+def $subst_heaptype(ht', xx*, ht*) = ht'  -- otherwise
 
-def $subst_reftype((REF nul ht), xx*, ht*) = REF nul $subst_heaptype(ht, xx*, ht*)
+def $subst_reftype((REF nul ht'), xx*, ht*) = REF nul $subst_heaptype(ht', xx*, ht*)
 
 def $subst_valtype(nt, xx*, ht*) = $subst_numtype(nt, xx*, ht*)
 def $subst_valtype(vt, xx*, ht*) = $subst_vectype(vt, xx*, ht*)
