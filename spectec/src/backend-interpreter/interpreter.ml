@@ -349,8 +349,14 @@ and eval_cond env cond =
     | ConstructV ("REF", _) ->
       s = "reftype" || s = "valtype"
     (* absheaptype *)
-    | ConstructV (aht, []) when List.mem aht abs_heap_types->
-      aht = "absheaptype" || aht = "heaptype"
+    | ConstructV (aht, []) when List.mem aht abs_heap_types ->
+      s = "absheaptype" || s = "heaptype"
+    (* deftype *)
+    | ConstructV ("DEF", [ _; _ ]) ->
+      s = "deftype" || s = "heaptype"
+    (* heaptype *)
+    | ConstructV (("_IDX" | "REC"), [ _ ]) ->
+      s = "heaptype"
     | v ->
       string_of_value v
       |> Printf.sprintf "Invalid %s: %s" s
