@@ -354,8 +354,11 @@ and eval_cond env cond =
     (* deftype *)
     | ConstructV ("DEF", [ _; _ ]) ->
       s = "deftype" || s = "heaptype"
+    (* typevar *)
+    | ConstructV ("_IDX", [ _ ]) ->
+      s = "heaptype" || s = "typevar"
     (* heaptype *)
-    | ConstructV (("_IDX" | "REC"), [ _ ]) ->
+    | ConstructV ("REC", [ _ ]) ->
       s = "heaptype"
     | v ->
       string_of_value v
@@ -363,15 +366,25 @@ and eval_cond env cond =
       |> failwith
     end
   | MatchC (e1, e2) ->
+    let rec matches =
+      function
+      | ConstructV ("REF", [ _; ht1 ]),
+        ConstructV ("REF", [
+          ConstructV ("NULL", [ OptV (Some (_)) ]);
+          ht2
+        ]) -> matches (ht1, ht2)
+      | v1, v2 when v1 = v2 -> true
+      | _, ConstructV ("DEF", _) -> false
+      | v1, v2 ->
+        Printf.sprintf "%s <: %s"
+          (string_of_value v1)
+          (string_of_value v2)
+        |> failwith
+    in
+
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
-    begin match v1, v2 with
-    | v1, v2 ->
-      Printf.sprintf "%s <: %s"
-        (string_of_value v1)
-        (string_of_value v2)
-      |> failwith
-    end
+    matches (v1, v2)
   | c ->
     structured_string_of_cond c |> failwith
 
@@ -491,8 +504,6 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
   else if fname = "ref_type_of" then (
     assert (List.length args = 1);
 
-      (List.hd args) |> (string_of_value )
-    |> prerr_endline;
     let rt =
       let null = ConstructV ("NULL", [ OptV (Some (listV [])) ]) in
       let nonull = ConstructV ("NULL", [ OptV None ]) in
@@ -802,6 +813,7 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   (*
   print_endline "**************************************";
   Printf.sprintf "[ALGO]: %s" name |> print_endline;
+  Print.string_of_list Print.string_of_value "[" ", " "]"args |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";

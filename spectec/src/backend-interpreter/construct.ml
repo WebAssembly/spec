@@ -317,7 +317,7 @@ let rec al_of_instr wasm_module winstr =
       ConstructV
         ("CALL_INDIRECT", [
             to_int i32;
-            al_of_val_typeidx wasm_module i32'])
+            NumV (Int64.of_int32 i32'.it)])
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
