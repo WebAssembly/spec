@@ -115,22 +115,22 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 49/49 (100.00%)
 
 ===== call.wast =====
-- 63/70 (90.00%)
+- 65/70 (92.86%)
 
 ===== local_get.wast =====
-- 13/19 (68.42%)
+- 19/19 (100.00%)
 
 ===== fac.wast =====
-- 3/6 (50.00%)
+- 6/6 (100.00%)
 
 ===== func.wast =====
-- 76/96 (79.17%)
+- 92/96 (95.83%)
 
 ===== exports.wast =====
 - 9/9 (100.00%)
 
 ===== local_set.wast =====
-- 13/19 (68.42%)
+- 19/19 (100.00%)
 
 ===== linking.wast =====
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
@@ -143,7 +143,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 1/48 (2.08%)
 
 ===== if.wast =====
-- 94/123 (76.42%)
+- 112/123 (91.06%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -152,13 +152,13 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 42/52 (80.77%)
+- 46/52 (88.46%)
 
 ===== labels.wast =====
-- 17/25 (68.00%)
+- 25/25 (100.00%)
 
 ===== switch.wast =====
-- 10/26 (38.46%)
+- 26/26 (100.00%)
 
 ===== i64.wast =====
 - 384/384 (100.00%)
@@ -168,10 +168,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/4338 (0.00%)
 
 ===== stack.wast =====
-- 0/5 (0.00%)
+- 5/5 (100.00%)
 
 ===== loop.wast =====
-- 36/77 (46.75%)
+- 71/77 (92.21%)
 
 ===== conversions.wast =====
 - 593/593 (100.00%)
@@ -180,7 +180,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/68 (0.00%)
 
 ===== return.wast =====
-- 61/63 (96.83%)
+- 63/63 (100.00%)
 
 ===== store.wast =====
 - 0/9 (0.00%)
@@ -193,7 +193,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 374/374 (100.00%)
 
 ===== unreachable.wast =====
-- 61/63 (96.83%)
+- 63/63 (100.00%)
 
 ===== bulk.wast =====
 - Uncaught exception: Direct invocation failed due to Invalid DSL function call: wrap
@@ -203,13 +203,13 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 32/32 (100.00%)
 
 ===== local_tee.wast =====
-- 36/55 (65.45%)
+- 45/55 (81.82%)
 
 ===== f64_bitwise.wast =====
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 57/84 (67.86%)
+- 60/84 (71.43%)
 
 ===== call_indirect.wast =====
 - 32/132 (24.24%)
@@ -226,6 +226,16 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 ===== imports.wast =====
 - print_i32: 13
+- print_i32_f32: 14 42
+- print_i32: 13
+- print_i32: 13
+- print_f32: 13
+- print_i64: 24
+- print_f64_f64: 25 53
+- print_i64: 24
+- print_f64: 24
+- print_f64: 24
+- print_i32: 13
 - Uncaught exception: Module Instantiation failed due to Invalid DSL function call: wrap
 - 12/34 (35.29%)
 
@@ -240,10 +250,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 11/180 (6.11%)
 
 ===== br_table.wast =====
-- 137/149 (91.95%)
+- 149/149 (100.00%)
 
 ===== select.wast =====
-- 106/118 (89.83%)
+- 108/118 (91.53%)
 
 ===== f32_bitwise.wast =====
 - 360/360 (100.00%)
@@ -283,7 +293,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2400/2400 (100.00%)
 
 ===== br_if.wast =====
-- 86/88 (97.73%)
+- 88/88 (100.00%)
 
 ===== ref_func.wast =====
 - 3/8 (37.50%)
@@ -311,7 +321,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/255 (0.00%)
 
 ===== table_grow.wast =====
-- 36/38 (94.74%)
+- 38/38 (100.00%)
 
 ===== func_ptrs.wast =====
 - print_i32: 83
@@ -330,11 +340,11 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2500/2500 (100.00%)
 
 ===== br.wast =====
-- 74/76 (97.37%)
+- 76/76 (100.00%)
 
 ===== nop.wast =====
 - 71/83 (85.54%)
 
-Total [16954/23779] (71.30%; Normalized 65.29%)
+Total [17109/23779] (71.95%; Normalized 71.15%)
 == Complete.
 ```

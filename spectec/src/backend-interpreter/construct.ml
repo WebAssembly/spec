@@ -385,7 +385,8 @@ let al_of_func wasm_module wasm_func =
   (* Construct locals *)
   let locals =
     List.map
-      (fun l -> al_of_val_type l.it.Ast.ltype)
+      (fun l ->
+        ConstructV ("LOCAL", [ al_of_val_type l.it.Ast.ltype ]))
       wasm_func.it.Ast.locals
   in
 
