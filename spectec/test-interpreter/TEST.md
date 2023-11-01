@@ -92,7 +92,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
-- 21/28 (75.00%)
+- 27/28 (96.43%)
 
 ===== forward.wast =====
 - 4/4 (100.00%)
@@ -120,10 +120,10 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 13/19 (68.42%)
 
 ===== fac.wast =====
-- 2/6 (33.33%)
+- 3/6 (50.00%)
 
 ===== func.wast =====
-- 69/96 (71.88%)
+- 76/96 (79.17%)
 
 ===== exports.wast =====
 - 9/9 (100.00%)
@@ -142,7 +142,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/48 (0.00%)
 
 ===== if.wast =====
-- 67/123 (54.47%)
+- 92/123 (74.80%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -151,7 +151,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2400/2400 (100.00%)
 
 ===== block.wast =====
-- 29/52 (55.77%)
+- 41/52 (78.85%)
 
 ===== labels.wast =====
 - 17/25 (68.00%)
@@ -170,7 +170,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/5 (0.00%)
 
 ===== loop.wast =====
-- 25/77 (32.47%)
+- 35/77 (45.45%)
 
 ===== conversions.wast =====
 - 0/593 (0.00%)
@@ -329,11 +329,11 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 2500/2500 (100.00%)
 
 ===== br.wast =====
-- 73/76 (96.05%)
+- 74/76 (97.37%)
 
 ===== nop.wast =====
 - 68/83 (81.93%)
 
-Total [14160/23779] (59.55%; Normalized 50.59%)
+Total [14222/23779] (59.81%; Normalized 51.96%)
 == Complete.
 ```

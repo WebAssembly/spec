@@ -104,8 +104,12 @@ let al_of_value = function
 let al_of_val_typeidx wasm_module idx =
   let dts = Option.get wasm_module |> Ast.def_types_of in
   match Lib.List32.nth dts idx.it with
-  | DefT (RecT ([SubT (_, _, (DefFuncT _ as ft))]), _) -> al_of_str_type ft
-  | _ -> failwith "hi"
+  | DefT (RecT ([SubT (_, _, (DefFuncT _ as ft))]), _) ->
+    begin match al_of_str_type ft with
+    | ConstructV ("FUNC", [ at ]) -> at
+    | _ -> failwith "Invalid deftype for block type"
+    end
+  | _ -> failwith "Invalid deftype for block type"
 
 let al_of_blocktype wasm_module = function
 | Ast.VarBlockType idx -> al_of_val_typeidx wasm_module idx
