@@ -330,13 +330,14 @@ and eval_cond env cond =
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
   )
   | HasTypeC (e, s) ->
-    let hastype ty = function
-      | "numtype" -> List.mem ty [ "I32"; "I64"; "F32"; "F64" ]
-      | _ -> failwith "Not implemented"
-    in
-
     begin match eval_expr env e with
-    | ConstructV (ty, []) -> hastype ty s
+    (* numtype *)
+    | ConstructV (ty, [])
+      when List.mem ty [ "I32"; "I64"; "F32"; "F64" ] ->
+        s = "numtype" || s = "valtype"
+    (* valtype *)
+    | ConstructV ("REF", _) ->
+        s = "reftype" || s = "valtype"
     | v ->
       string_of_value v
       |> Printf.sprintf "Invalid %s: %s" s
