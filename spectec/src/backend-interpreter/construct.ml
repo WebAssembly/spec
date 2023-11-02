@@ -20,7 +20,7 @@ let al_of_mut = function
 let rec al_of_storage_type = function
   | Types.ValStorageT vt -> al_of_val_type vt
   | Types.PackStorageT ps ->
-    Pack.packed_size ps
+    (Pack.packed_size ps * 8)
     |> string_of_int
     |> Printf.sprintf "I%s"
     |> singleton
