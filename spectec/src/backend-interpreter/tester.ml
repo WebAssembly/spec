@@ -463,6 +463,8 @@ let test_all () =
   let tests =  [ sample ]
     @ (readdir_with_path "test-interpreter/spec-test")
     @ (readdir_with_path "test-interpreter/spec-test/gc")
+    @ (readdir_with_path "test-interpreter/spec-test/tail-call")
+    @ (readdir_with_path "test-interpreter/spec-test/function-references")
   in
 
   let results = List.filter_map test tests in

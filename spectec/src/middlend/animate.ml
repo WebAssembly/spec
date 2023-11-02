@@ -106,7 +106,7 @@ let is_assign env (tag, prem, _) = match tag with
   | Assign frees -> subset (diff (my_free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
-let best' = ref (0, [])
+let best' = ref (-1, [])
 
 (* Mutual recursive functions that iteratively select condition and assignment premises,
    effectively sorting the premises as a result *)
@@ -175,7 +175,8 @@ let large_enough_powset xs =
   let n = List.length xs in
   (* Assumption: Allowing one variable to be known *)
   (* TODO: Increase this limit by reducing execution time *)
-  List.filter ( fun ys -> (n - 1) <= List.length ys ) yss
+  let min = if n >= 2 then n-1 else n in
+  List.filter ( fun ys -> min <= List.length ys ) yss
 
 let is_not_lhs = function
 | LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
@@ -202,6 +203,9 @@ let rec rows_of_prem vars p_tot_num i p = match p.it with
       | _ ->
         [ Condition, p, [i] ]
       )
+  | LetPr (_, _, targets) ->
+    let covering_vars = List.filter_map (index_of p_tot_num vars) targets in
+    [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, { it = TupE args; _ }) ->
     (* Assumpton: the only possible assigned-value is the last arg (i.e. ... |- lhs ) *)
     let _, l = Util.Lib.List.split_last args in
@@ -250,14 +254,15 @@ let animate_prems known_vars prems =
   best := (List.length cols + 1, []);
   let candidates = match knuth rows cols [] with
     | [] ->
-      print_endline "Animation failed.";
-      prems |> List.map Il.Print.string_of_prem |> String.concat "\n" |> print_endline;
+      print_endline "Animation failed (binding inference).";
+      prems |> List.map Il.Print.string_of_prem |> List.iter print_endline;
       [ snd !best ]
     | xs -> List.map List.rev xs in
-  best' := (0, []);
+  best' := (-1, []);
   match List.find_map (fun cand -> select_tight cand other known_vars) candidates with
   | None ->
-    print_endline "...Animation failed";
+    print_endline "...Animation failed (reorder)";
+    (List.hd candidates) |> List.map unwrap |> List.map Il.Print.string_of_prem |> List.iter print_endline;
     snd !best'
   | Some x -> x
 

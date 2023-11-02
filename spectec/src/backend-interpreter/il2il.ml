@@ -76,12 +76,13 @@ let init_unified_id () = _unified_id := 0
 let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
 let gen_new_unified () = unified_prefix ^ (string_of_int (get_unified_id())) $ no_region
 let to_iter e iterexp = IterE (e, iterexp)
+let is_unified_id = String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   ( match e1.it, e2.it with
   | VarE id, _
   | IterE ({ it = VarE id; _}, _) , _
-    when String.starts_with ~prefix:unified_prefix id.it -> e1.it
+    when is_unified_id id.it -> e1.it
   | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
       UnE (unop1, overlap e1 e2)
   | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
@@ -136,7 +137,7 @@ let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 let rec collect_unified template e = if eq_exp template e then [], [] else match template.it, e.it with
   | VarE id, _
   | IterE ({ it = VarE id; _}, _) , _
-    when String.starts_with ~prefix:unified_prefix id.it ->
+    when is_unified_id id.it ->
     [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
     [id, template.note, []]
   (* one e *)
@@ -176,8 +177,8 @@ let prioritize_else prems =
 let apply_template_to_red_group template (lhs, rhs, prems, binds) =
   let (new_prems, new_binds) = collect_unified template lhs in
   (* TODO: Remove this depedency on animation. Perhaps this should be moved as a middle end before animation path *)
-  let animated_prems = Middlend.Animate.animate_prems (Il.Free.free_exp template) new_prems in
-  (template, rhs, (animated_prems @ prems) |> prioritize_else, binds @ new_binds)
+  let animated_prems = Middlend.Animate.animate_prems (Il.Free.free_exp template) (new_prems @ prems) in
+  (template, rhs, animated_prems |> prioritize_else, binds @ new_binds)
 
 let unify_lhs' reduction_group =
   init_unified_id();

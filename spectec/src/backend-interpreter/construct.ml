@@ -355,8 +355,8 @@ let rec al_of_instr wasm_module winstr =
   | Ast.Call i32 -> f_i32 "CALL" i32
   | Ast.CallRef i32 -> f_i32 "CALL_REF" i32
   | Ast.CallIndirect (i32, i32') -> f_i32_i32 "CALL_INDIRECT" i32 i32'
-  | Ast.ReturnCall i32 -> f_i32 "RETRUN_CALL"i32
-  | Ast.ReturnCallRef i32 -> f_i32 "RETRUN_CALL_REF" i32
+  | Ast.ReturnCall i32 -> f_i32 "RETURN_CALL"i32
+  | Ast.ReturnCallRef i32 -> f_i32 "RETURN_CALL_REF" i32
   | Ast.ReturnCallIndirect (i32, i32') -> f_i32_i32 "RETURN_CALL_INDIRECT" i32 i32'
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV

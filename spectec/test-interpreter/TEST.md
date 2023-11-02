@@ -9,7 +9,7 @@ watsup 0.4 generator
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed.
+Animation failed (binding inference).
 if (|ct'*{ct'}| = |y*{y}|)
 if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
 (if (y < |C.TYPE_context|))*{ct' y y'}
@@ -18,8 +18,16 @@ if (|y*{y}| <= 1)
 (if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
 Comptype_ok: `%|-%:OK`(C, ct)
 (Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (|ct'*{ct'}| = |y*{y}|)
+if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
+(if (y < |C.TYPE_context|))*{ct' y y'}
+if (|y*{y}| <= 1)
+(if (y < x))*{y}
+(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
+Comptype_ok: `%|-%:OK`(C, ct)
+(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
+Animation failed (binding inference).
 if (|ct'*{ct'}| = |ht*{ht}|)
 if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
 if (|y*{y}| <= 1)
@@ -27,68 +35,105 @@ if (|y*{y}| <= 1)
 (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
 Comptype_ok: `%|-%:OK`(C, ct)
 (Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (|ct'*{ct'}| = |ht*{ht}|)
+if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
+if (|y*{y}| <= 1)
+(if $before(ht, x, i))*{ht}
+(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
+Comptype_ok: `%|-%:OK`(C, ct)
+(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
+Animation failed (binding inference).
 if ((n_1 <= n_2) /\ (n_2 <= k))
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (n_1 <= n_2)
+if (n_2 <= k)
+Animation failed (binding inference).
 Valtype_sub: `%|-%<:%`(C, t, t')
 if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+Valtype_sub: `%|-%<:%`(C, t, t')
+if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+Animation failed (binding inference).
 Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
+Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
+Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
+Animation failed (binding inference).
 (if (l < |C.LABEL_context|))*{l}
 if (l' < |C.LABEL_context|)
 (Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
 Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+(if (l < |C.LABEL_context|))*{l}
+if (l' < |C.LABEL_context|)
+(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
+Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype))))
 if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 if (C.DATA_context[y] = OK)
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (x < |C.TYPE_context|)
+if (y < |C.DATA_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, (t <: storagetype))))
+if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+if (C.DATA_context[y] = OK)
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+where $expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))
+if (x < |C.TYPE_context|)
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 if (C.DATA_context[y] = OK)
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (x < |C.TYPE_context|)
+if (y < |C.DATA_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+if (C.DATA_context[y] = OK)
+Animation failed (binding inference).
 if (x < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
-...Animation failed
-Animation failed.
+...Animation failed (reorder)
+if (x < |C.MEM_context|)
+if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+if (C.MEM_context[x] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+Animation failed (binding inference).
 if (x < |C.MEM_context|)
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
-...Animation failed
-Animation failed.
-if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-...Animation failed
-Animation failed.
-if (a < |$funcinst(z)|)
-Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
-...Animation failed
+...Animation failed (reorder)
+if (x < |C.MEM_context|)
+if (C.MEM_context[x] = mt)
+if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
+(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
+if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 == IL Validation after pass animate...
 == Translating to AL...
+...Animation failed (reorder)
+if (a < |$funcinst(z)|)
+where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
+where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x)] :: (instr <: admininstr)*{instr}) = u_2
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
@@ -396,6 +441,27 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 - 0/66 (0.00%)
 
-Total [23807/24214] (98.32%; Normalized 85.84%)
+===== return_call_indirect.wast =====
+- 9/47 (19.15%)
+
+===== return_call.wast =====
+- 4/31 (12.90%)
+
+===== call_ref.wast =====
+- 27/27 (100.00%)
+
+===== br_on_non_null.wast =====
+- 4/6 (66.67%)
+
+===== ref_as_non_null.wast =====
+- 4/4 (100.00%)
+
+===== br_on_null.wast =====
+- 6/6 (100.00%)
+
+===== return_call_ref.wast =====
+- 8/35 (22.86%)
+
+Total [23869/24370] (97.94%; Normalized 83.97%)
 == Complete.
 ```

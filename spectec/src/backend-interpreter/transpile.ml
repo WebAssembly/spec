@@ -210,6 +210,7 @@ let unify_tail instrs1 instrs2 =
 let rec unify_if_tail instr =
   let new_ = List.concat_map unify_if_tail in
   match instr with
+  | IfI (_, [], []) -> []
   | IfI (c, il1, il2) ->
       let then_il, else_il, finally_il = unify_tail (new_ il1) (new_ il2) in
       IfI (c, then_il, else_il) :: finally_il

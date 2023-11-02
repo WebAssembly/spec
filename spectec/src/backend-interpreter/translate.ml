@@ -27,6 +27,10 @@ let list_partition_with pred xs =
 
 let disjoint xs ys = List.for_all (fun x -> List.for_all ((<>) x) ys) xs
 
+let update_opt v opt_ref = match !opt_ref with
+  | None -> opt_ref := Some v
+  | Some _ -> ()
+
 (* transform z; e into e *)
 let drop_state e = match e.it with
 | Ast.MixE (* z; e *)
@@ -130,7 +134,7 @@ and exp2expr exp =
       let names = List.map (fun id -> id.it) ids in
       IterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
-  | Ast.DotE (inner_exp, Atom p) -> 
+  | Ast.DotE (inner_exp, Atom p) ->
       AccessE (exp2expr inner_exp, DotP (name2keyword p inner_exp.note))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
@@ -248,7 +252,7 @@ and path2paths path =
     | Ast.RootP -> []
     | Ast.IdxP (p, e) -> (path2paths' p) @ [ IndexP (exp2expr e) ]
     | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
-    | Ast.DotP (p, Atom a) -> 
+    | Ast.DotP (p, Atom a) ->
         (path2paths' p) @ [ DotP (name2keyword a p.note) ]
     | _ -> failwith "unreachable"
   in
@@ -560,7 +564,7 @@ let rec letI lhs rhs targets cont =
     ]
   | ConcatE (prefix, suffix) ->
     let handle_list e =
-     
+
       match e with
       | ListE es ->
         let bindings', es' = extract_non_names es in
@@ -687,23 +691,28 @@ let rec split_context_winstr ?(note : Ast.typ option) name stack =
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
 
-let un_unify (_, rhs, prems, binds) =
-  let sub, new_prems = Util.Lib.List.split_hd prems in
-  let new_binds = binds in (* TODO *)
-  match sub.it with
-  | Ast.LetPr (new_lhs, _, _) -> (new_lhs, rhs, new_prems, new_binds)
-  | _ -> failwith "Unrechable un_unify"
+let un_unify (lhs, rhs, prems, binds) =
+  let new_lhs, new_prems = List.fold_left (fun (lhs, pl) p -> match p.it with
+  | Ast.LetPr (sub, ({ it = Ast.VarE uvar; _} as u), _) when Il2il.is_unified_id uvar.it ->
+    let new_lhs = Il2il.transform_expr (fun e -> if Il.Eq.eq_exp e u then sub else e) lhs in
+    new_lhs, pl
+  | _ ->
+    lhs, pl @ [p]
+  ) (lhs, []) prems in
 
-let is_in_same_context (lhs1, _, _, _) (lhs2, _, _, _) =
-  match lhs1.it, lhs2.it with
-  | Ast.CaseE (atom1, _), Ast.CaseE (atom2, _) -> atom1 = atom2
-  | _, _ -> false
+  (new_lhs, rhs, new_prems, binds)
 
-let kind_of_context e =
+let rec kind_of_context e =
   match e.it with
   | Ast.CaseE (Ast.Atom "FRAME_", _) -> ("frame", "admininstr")
   | Ast.CaseE (Ast.Atom "LABEL_", _) -> ("label", "admininstr")
+  | Ast.ListE [ e' ]
+  | Ast.MixE (_ (* ; *), e')
+  | Ast.TupE [_ (* z *); e'] -> kind_of_context e'
   | _ -> "Could not get kind_of_context" ^ Print.string_of_exp e |> failwith
+
+let is_in_same_context (lhs1, _, _, _) (lhs2, _, _, _) =
+  kind_of_context lhs1 = kind_of_context lhs2
 
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Algo` *)
@@ -713,6 +722,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let bounds = Il.Free.free_exp winstr in
   let state_instrs = if (lhs != drop_state lhs) then [ LetI (NameE "f", GetCurFrameE) ] else [] in
+  let inner_params = ref None in
   let instrs = state_instrs @ match context with
     | [(vs, []), None ] ->
       let pop_instrs, remain = handle_lhs_stack bounds vs in
@@ -737,15 +747,16 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let head_instrs = handle_context context vs in
       let body_instrs = List.map (reduction2instrs []) reduction_group |> List.concat in
       head_instrs @ body_instrs
-    (* The target instruction is inside differnet contexts (i.e. return in both label and frame) *)
+    (* The target instruction is inside different contexts (i.e. return in both label and frame) *)
     | [ ([], [ _ ]), None ] -> ( try
       let orig_group = List.map un_unify reduction_group in
       let sub_groups = list_partition_with is_in_same_context orig_group in
       let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
       let lhss = List.map (function _, group -> let lhs, _, _, _ = List.hd group in lhs) unified_sub_groups in
       let sub_algos = List.map reduction_group2algo unified_sub_groups in
-      List.fold_right2 (fun lhs -> function 
-        | RuleA (_, _, body) -> fun acc ->
+      List.fold_right2 (fun lhs -> function
+        | RuleA (_, params, body) -> fun acc ->
+          inner_params |> update_opt params;
           let kind = kind_of_context lhs in
           [ IfI (
             ContextKindC (kind, GetCurContextE),
@@ -766,12 +777,13 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   in
   let name = name2keyword winstr_name winstr.note in
   (* params *)
-  (* TODO: retieve param for return *)
-  let al_params =
+  let al_params = match !inner_params with
+  | None ->
     if instr_name = "frame" || instr_name = "label"
     then []
     else
       get_params winstr |> List.map exp2expr
+  | Some params -> params
   in
   (* body *)
   let body = instrs |> check_nop |> Transpile.enhance_readability |> Transpile.infer_assert in
