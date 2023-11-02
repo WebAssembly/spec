@@ -363,7 +363,7 @@ let ext : numerics =
 
 let bytes_ : numerics =
   {
-    name = "bytes_";
+    name = "bytes";
     (* TODO: Handle the case where n > 16 (i.e. for v128 ) *)
     f =
       (function
@@ -381,7 +381,7 @@ let bytes_ : numerics =
   }
 let inverse_of_bytes_ : numerics =
   {
-    name = "inverse_of_bytes_";
+    name = "inverse_of_bytes";
     f =
       (function
       | [ NumV n; ListV bs] ->
@@ -397,17 +397,12 @@ let inverse_of_bytes_ : numerics =
 
 let wrap_ : numerics =
   {
-    name = "wrap_";
+    name = "wrap";
     f =
       (function
-      | [ ListV mn; NumV i ] -> (
-          match !mn with
-          | [| _; NumV n |] ->
-            NumV (
-              let mask = Int64.sub (Int64.shift_right 1L (Int64.to_int n)) 1L in
-              Int64.logand i mask
-            )
-        | _ -> failwith "Invalid wrap_" )
+        | [ NumV _m; NumV n; NumV i ] -> 
+            let mask = Int64.sub (Int64.shift_right 1L (Int64.to_int n)) 1L in
+            NumV (Int64.logand i mask)
       | _ -> failwith "Invalid wrap_"
       );
   }

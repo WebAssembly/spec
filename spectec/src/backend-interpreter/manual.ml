@@ -71,7 +71,7 @@ let array_new_data =
   (* include z or not ??? *)
   let data = AppE ("data", [y]) in
   let group_bytes_by = AppE ("group_bytes_by", [BinopE (Div, storagesize, NumE 8L); bstar]) in
-  let inverse_of_bytes_ = IterE (AppE ("inverse_of_bytes_", [storagesize; gb]), ["gb"], List) in
+  let inverse_of_bytes_ = IterE (AppE ("inverse_of_bytes", [storagesize; gb]), ["gb"], List) in
 
   RuleA (
     ("ARRAY.NEW_DATA", "admininstr"),
