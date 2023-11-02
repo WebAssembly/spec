@@ -70,9 +70,10 @@ and al_of_heap_type = function
     |> String.uppercase_ascii
     |> singleton
 
+and al_of_ref_type (null, ht) = ConstructV ("REF", [ al_of_null null; al_of_heap_type ht ])
+
 and al_of_val_type = function
-  | Types.RefT (null, ht) ->
-    ConstructV ("REF", [ al_of_null null; al_of_heap_type ht ])
+  | Types.RefT rt -> al_of_ref_type rt
   | vt ->
     Types.string_of_val_type vt
     |> String.uppercase_ascii
@@ -312,12 +313,6 @@ let rec al_of_instr wasm_module winstr =
   | Ast.TableCopy (i32, i32') -> f_i32_i32 "TABLE.COPY" i32 i32'
   | Ast.TableInit (i32, i32') -> f_i32_i32 "TABLE.INIT" i32 i32'
   | Ast.ElemDrop i32 -> f_i32 "ELEM.DROP" i32
-  | Ast.Call i32 -> f_i32 "CALL" i32
-  | Ast.CallIndirect (i32, i32') ->
-      ConstructV
-        ("CALL_INDIRECT", [
-            to_int i32;
-            NumV (Int64.of_int32 i32'.it)])
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
@@ -340,7 +335,29 @@ let rec al_of_instr wasm_module winstr =
   | Ast.BrTable (i32s, i32) ->
       ConstructV
         ("BR_TABLE", [ listV (i32s |> List.map to_int); to_int i32 ])
+  | Ast.BrOnNull i32 -> f_i32 "BR_ON_NULL" i32
+  | Ast.BrOnNonNull i32 -> f_i32 "BR_ON_NON_NULL" i32
+  | Ast.BrOnCast (i32, rt1, rt2) ->
+      ConstructV
+        ("BR_ON_CAST", [
+            to_int i32;
+            al_of_ref_type rt1;
+            al_of_ref_type rt2;
+            ])
+  | Ast.BrOnCastFail (i32, rt1, rt2) ->
+      ConstructV
+        ("BR_ON_CAST_FAIL", [
+            to_int i32;
+            al_of_ref_type rt1;
+            al_of_ref_type rt2;
+            ])
   | Ast.Return -> f "RETURN"
+  | Ast.Call i32 -> f_i32 "CALL" i32
+  | Ast.CallRef i32 -> f_i32 "CALL_REF" i32
+  | Ast.CallIndirect (i32, i32') -> f_i32_i32 "CALL_INDIRECT" i32 i32'
+  | Ast.ReturnCall i32 -> f_i32 "RETRUN_CALL"i32
+  | Ast.ReturnCallRef i32 -> f_i32 "RETRUN_CALL_REF" i32
+  | Ast.ReturnCallIndirect (i32, i32') -> f_i32_i32 "RETURN_CALL_INDIRECT" i32 i32'
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
         ("LOAD", [
@@ -364,9 +381,44 @@ let rec al_of_instr wasm_module winstr =
   | Ast.MemoryFill -> ConstructV ("MEMORY.FILL", [ NumV 0L ])
   | Ast.MemoryCopy -> ConstructV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
   | Ast.MemoryInit i32 ->
-    ConstructV ("MEMORY.INIT", [ NumV 0L; NumV (Int64.of_int32 i32.it)])
+    ConstructV ("MEMORY.INIT", [ NumV 0L; to_int i32 ])
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
-  | _ -> ConstructV ("Untranslated al", [])
+  | Ast.RefAsNonNull -> f "REF.AS_NON_NULL"
+  | Ast.RefTest rt -> ConstructV ("REF.TEST", [ al_of_ref_type rt ])
+  | Ast.RefCast rt -> ConstructV ("REF.CONST", [ al_of_ref_type rt ])
+  | Ast.RefEq -> f "REF.EQ"
+  | Ast.RefI31 -> f "REF.I31"
+  | Ast.I31Get sx -> ConstructV ("I32.GET", [ al_of_extension sx ])
+  | Ast.StructNew (i32, Ast.Explicit) -> f_i32 "STRUCT.NEW" i32
+  | Ast.StructNew (i32, Ast.Implicit) -> f_i32 "STRUCT.NEW_DEFAULT" i32
+  | Ast.StructGet (i32, i32', sx_opt) ->
+      ConstructV
+        ("STRUCT.GET", [
+            to_int i32;
+            to_int i32';
+            OptV (Option.map al_of_extension sx_opt)
+        ])
+  | Ast.StructSet (i32, i32') -> f_i32_i32 "STRUCT.SET" i32 i32'
+  | Ast.ArrayNew (i32, Ast.Explicit) -> f_i32 "ARRAY.NEW" i32
+  | Ast.ArrayNew (i32, Ast.Implicit) -> f_i32 "ARRAY.NEW_DEFAULT" i32
+  | Ast.ArrayNewFixed (i32, n) -> ConstructV ("ARRAY.NEW_FIXED", [ to_int i32; NumV (int64_of_int32_u n) ])
+  | Ast.ArrayNewElem (i32, i32') -> f_i32_i32 "ARRAY.NEW_ELEM" i32 i32'
+  | Ast.ArrayNewData (i32, i32') -> f_i32_i32 "ARRAY.NEW_DATA" i32 i32'
+  | Ast.ArrayGet (i32, sx_opt) ->
+      ConstructV
+        ("ARRAY.GET", [
+            to_int i32;
+            OptV (Option.map al_of_extension sx_opt)
+        ])
+  | Ast.ArraySet i32 -> f_i32 "ARRAY.SET" i32
+  | Ast.ArrayLen -> f "ARRAY.LEN"
+  | Ast.ArrayCopy (i32, i32') -> f_i32_i32 "ARRAY.COPTY" i32 i32'
+  | Ast.ArrayFill i32 -> f_i32 "ARRAY.FILL" i32
+  | Ast.ArrayInitData (i32, i32') -> f_i32_i32 "ARRAY.INIT_DATA" i32 i32'
+  | Ast.ArrayInitElem (i32, i32') -> f_i32_i32 "ARRAY.INIT_ELEM" i32 i32'
+  | Ast.ExternConvert Ast.Internalize -> f "EXTERN.INTERNALIZE"
+  | Ast.ExternConvert Ast.Externalize -> f "EXTERN.EXTERNALIZE"
+  | _ -> ConstructV ("TODO: Unconstructed Wasm instruction (al_of_instr)", [])
 
 and al_of_instrs wasm_module winstrs = List.map (al_of_instr wasm_module) winstrs
 

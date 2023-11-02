@@ -20,6 +20,7 @@ let readdir_with_path path =
   Sys.readdir (Filename.concat !root path)
   |> Array.map (Filename.concat path)
   |> Array.to_list
+  |> List.filter (String.ends_with ~suffix:".wast")
 
 type result =
   | Success
@@ -424,7 +425,10 @@ let test file_name =
 
 let test_all () =
   let sample = "test-interpreter/sample.wast" in
-  let tests = sample :: (readdir_with_path "test-interpreter/spec-test") in
+  let tests =  [ sample ]
+    @ (readdir_with_path "test-interpreter/spec-test")
+    @ (readdir_with_path "test-interpreter/spec-test/gc")
+  in
 
   let results = List.filter_map test tests in
 
