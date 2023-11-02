@@ -1,4 +1,5 @@
 open Reference_interpreter
+open Script
 open Source
 open Al.Ast
 
@@ -235,41 +236,58 @@ let do_invoke act = match act.it with
     in
     listV [ got ]
 
+
+
+(* Check invocation result *)
+
 let f32_pos_nan = F32.to_bits F32.pos_nan |> Int64.of_int32
 let f32_neg_nan = F32.to_bits F32.neg_nan |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let f64_pos_nan = F64.to_bits F64.pos_nan
 let f64_neg_nan = F64.to_bits F64.neg_nan
 
-let is_canonical_nan t v =
-  v = Construct.canonical_nan t || match v with
-  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
-    t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
-    ||
-    t = "F64" && (bits = f64_pos_nan || bits = f64_neg_nan)
+let check_nanop no actual =
+  match actual with
+  | ConstructV ("CONST", [ConstructV (t, []); NumV bits]) ->
+    begin match no.it with
+    | Reference_interpreter.Value.F32 Script.CanonicalNan ->
+      t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
+    | Reference_interpreter.Value.F64 Script.CanonicalNan ->
+      t = "F64" && (bits = f64_pos_nan || bits = f64_neg_nan)
+    | Reference_interpreter.Value.F32 Script.ArithmeticNan ->
+      t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
+    | Reference_interpreter.Value.F64 Script.ArithmeticNan ->
+      t = "F64" && Int64.logand bits f64_pos_nan = f64_pos_nan
+    | _ -> failwith "NaN of int is not defined"
+    end
   | _ -> false
 
-let is_arithmetic_nan t v =
-  v = Construct.arithmetic_nan t || match v with
-  | ConstructV ("CONST", [ConstructV (t', []); NumV bits]) when t = t' ->
-    t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
-    ||
-    t = "F64" && Int64.logand bits f64_pos_nan = f64_pos_nan
+let check_reftype expected = function
+  | ConstructV (tag, _) ->
+    begin match expected, tag with
+    | Types.AnyHT, "REF.FUNC_ADDR" -> false
+    | Types.ExternHT, ref
+    | Types.AnyHT, ref when String.starts_with ~prefix:"REF" ref -> true
+    | Types.EqHT, ("REF.I31_NUM" | "REF.STRUCT_ADDR" | "REF.ARRAY_ADDR")
+    | Types.I31HT, "REF.I31_NUM"
+    | Types.StructHT, "REF.STRUCT_ADDR"
+    | Types.ArrayHT, "REF.ARRAY_ADDR"
+    | Types.FuncHT, "REF.FUNC_ADDR" -> true
+    | _ -> false
+    end
   | _ -> false
 
-let assert_nan actuals expects =
-  match actuals, expects with
-  | ListV {contents = [|actual|]}, ListV {contents = [|expect|]} ->
-    is_canonical_nan "F32" expect && is_canonical_nan "F32" actual
-    || is_canonical_nan "F64" expect && is_canonical_nan "F64" actual
-    || is_arithmetic_nan "F32" expect && is_arithmetic_nan "F32" actual
-    || is_arithmetic_nan "F64" expect && is_arithmetic_nan "F64" actual
+let check_null = function
+  | ConstructV ("REF.NULL", _) -> true
   | _ -> false
 
-let assert_return actual expect =
-  if actual = expect || assert_nan actual expect then
-    Success
-  else
-    fail (Al.Print.string_of_value expect) (Al.Print.string_of_value actual)
+let check expected actual =
+  match expected.it with
+  | NumResult (NumPat n) -> Construct.al_of_num n.it = actual
+  | NumResult (NanPat no) -> check_nanop no actual
+  | RefResult (RefPat r) -> Construct.al_of_ref r.it = actual
+  | RefResult (RefTypePat ht) -> check_reftype ht actual
+  | RefResult NullPat -> check_null actual
+  | VecResult _ -> failwith "VecResult not implemented"
 
 let get_externval = function
   | ConstructV ("IMPORT", [ StringV import_module_name; StringV extern_name; _ty ]) ->
@@ -304,12 +322,29 @@ let extract_module def = match def.it with
 let test_assertion assertion =
   match assertion.it with
   | Script.AssertReturn (invoke, expected) ->
-    let result = try do_invoke invoke with e -> StringV (msg_of e) in
-    let expected_result = try
-      listV (expected |> List.map Construct.al_of_result)
-    with
-      e -> StringV ("Failed during al_of_result: " ^ msg_of e) in
-    assert_return result expected_result
+
+    let fail_with =
+      List.map (fun r -> r.it) expected
+      |> Run.string_of_results
+      |> fail
+    in
+
+    begin try
+      (* Invoke *)
+      match do_invoke invoke with
+      | ListV arr ->
+        let actual = Array.to_list !arr in
+        assert (List.length actual = List.length expected);
+        if List.for_all2 check expected actual then
+          Success
+        else
+          listV actual |> Al.Print.string_of_value |> fail_with
+      | v ->
+        Al.Print.string_of_value v
+        |> Printf.sprintf "Invalid result: %s"
+        |> failwith
+    with e -> msg_of e |> fail_with
+    end
   | Script.AssertTrap (invoke, msg) ->
     let expected = "Trap due to " ^ msg in
     begin try

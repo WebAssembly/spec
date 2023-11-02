@@ -380,7 +380,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/25 (0.00%)
 
 ===== i31.wast =====
-- 0/20 (0.00%)
+- 16/20 (80.00%)
 
 ===== array_copy.wast =====
 - Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
@@ -396,6 +396,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 
 - 0/66 (0.00%)
 
-Total [23791/24214] (98.25%; Normalized 84.94%)
+Total [23807/24214] (98.32%; Normalized 85.84%)
 == Complete.
 ```
