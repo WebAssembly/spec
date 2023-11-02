@@ -333,6 +333,7 @@ and eval_cond env cond =
 
     (* type definition *)
 
+    let packed_types = [ "I8"; "I16" ] in
     let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
     let abs_heap_types = [
       "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
@@ -360,6 +361,9 @@ and eval_cond env cond =
     (* heaptype *)
     | ConstructV ("REC", [ _ ]) ->
       s = "heaptype"
+    (* packedtype *)
+    | ConstructV (pt, []) when List.mem pt packed_types ->
+      s = "packedtype" || s = "storagetype"
     | v ->
       string_of_value v
       |> Printf.sprintf "Invalid %s: %s" s
