@@ -2212,7 +2212,7 @@ execution_of_ARRAY.NEW_DATA x y
   d. Let nt be $unpacknumtype(zt).
   e. Let b* be $data(y).DATA[i : ((n · $storagesize(zt)) / 8)].
   f. Let gb* be $group_bytes_by(($storagesize(zt) / 8), b*).
-  g. Let c^n be $inverse_of_bytes_($storagesize(zt), gb)*.
+  g. Let c^n be $inverse_of_bytes($storagesize(zt), gb)*.
   h. Push (nt.CONST c)^n to the stack.
   i. Execute (ARRAY.NEW_FIXED x n).
 
