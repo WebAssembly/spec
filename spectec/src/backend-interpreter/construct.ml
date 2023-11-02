@@ -385,7 +385,7 @@ let rec al_of_instr wasm_module winstr =
   | Ast.DataDrop i32 -> f_i32 "DATA.DROP" i32
   | Ast.RefAsNonNull -> f "REF.AS_NON_NULL"
   | Ast.RefTest rt -> ConstructV ("REF.TEST", [ al_of_ref_type rt ])
-  | Ast.RefCast rt -> ConstructV ("REF.CONST", [ al_of_ref_type rt ])
+  | Ast.RefCast rt -> ConstructV ("REF.CAST", [ al_of_ref_type rt ])
   | Ast.RefEq -> f "REF.EQ"
   | Ast.RefI31 -> f "REF.I31"
   | Ast.I31Get sx -> ConstructV ("I32.GET", [ al_of_extension sx ])
