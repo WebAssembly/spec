@@ -224,13 +224,15 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - print_i32: 13
 - print_i32: 13
 - print_f32: 13
+- print_i32: 13
 - print_i64: 24
 - print_f64_f64: 25 53
 - print_i64: 24
 - print_f64: 24
 - print_f64: 24
+- print_f64: 24
 - print_i32: 13
-- 32/34 (94.12%)
+- 34/34 (100.00%)
 
 ===== left-to-right.wast =====
 - 95/95 (100.00%)
@@ -334,6 +336,6 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 ===== nop.wast =====
 - 83/83 (100.00%)
 
-Total [23777/23779] (99.99%; Normalized 99.92%)
+Total [23779/23779] (100.00%; Normalized 100.00%)
 == Complete.
 ```

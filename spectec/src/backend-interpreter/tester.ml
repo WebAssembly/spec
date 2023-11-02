@@ -80,7 +80,7 @@ let builtin () =
     let dt =
       ConstructV ("DEF", [
         ConstructV ("REC", [
-          [ ConstructV ("SUB", [OptV (Some (singleton "FIN")); [] |> listV; ftype]) ] |> listV
+          [ ConstructV ("SUBD", [OptV (Some (singleton "FINAL")); [] |> listV; ftype]) ] |> listV
         ]); NumV 0L
       ]) in
     name, RecordV [
