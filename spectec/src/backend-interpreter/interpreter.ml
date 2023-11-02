@@ -370,8 +370,9 @@ and eval_cond env cond =
       |> failwith
     end
   | MatchC (e1, e2) ->
-    let rec matches =
-      function
+    let rec matches v1 v2 =
+      match v1, v2 with
+      | v1, v2 when Eq.eq_value v1 v2 -> true
       | ConstructV ("REF", [ _; ht1 ]),
         ConstructV ("REF", [
           ConstructV ("NULL", [ OptV (Some (_)) ]);
@@ -384,8 +385,7 @@ and eval_cond env cond =
         ConstructV ("REF", [
           ConstructV ("NULL", [ OptV None ]);
           ht2
-        ]) -> matches (ht1, ht2)
-      | v1, v2 when v1 = v2 -> true
+        ]) -> matches ht1 ht2
       | _, ConstructV ("DEF", _) -> false
       | v1, v2 ->
         Printf.sprintf "%s <: %s"
@@ -396,7 +396,7 @@ and eval_cond env cond =
 
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
-    matches (v1, v2)
+    matches v1 v2
   | c ->
     structured_string_of_cond c |> failwith
 

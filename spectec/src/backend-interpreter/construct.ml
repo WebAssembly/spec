@@ -44,7 +44,7 @@ and al_of_str_type = function
     )])
 and al_of_sub_type = function
   | Types.SubT (fin, htl, st) ->
-    ConstructV ("SUB", [
+    ConstructV ("SUBD", [
       al_of_final fin;
       List.map al_of_heap_type htl |> listV;
       al_of_str_type st
