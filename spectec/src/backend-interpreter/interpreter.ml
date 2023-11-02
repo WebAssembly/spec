@@ -376,6 +376,14 @@ and eval_cond env cond =
         ConstructV ("REF", [
           ConstructV ("NULL", [ OptV (Some (_)) ]);
           ht2
+        ])
+      | ConstructV ("REF", [
+          ConstructV ("NULL", [ OptV None ]);
+          ht1
+        ]),
+        ConstructV ("REF", [
+          ConstructV ("NULL", [ OptV None ]);
+          ht2
         ]) -> matches (ht1, ht2)
       | v1, v2 when v1 = v2 -> true
       | _, ConstructV ("DEF", _) -> false

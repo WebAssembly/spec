@@ -337,14 +337,15 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 83/83 (100.00%)
 
 ===== extern.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/16 (0.00%)
 
 ===== type-subtyping.wast =====
-- 5/20 (25.00%)
+- 12/20 (60.00%)
 
 ===== array.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
 - 0/31 (0.00%)
 
 ===== array_init_data.wast =====
@@ -352,7 +353,7 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/30 (0.00%)
 
 ===== struct.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
 - 0/19 (0.00%)
 
 ===== array_init_elem.wast =====
@@ -360,11 +361,13 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/19 (0.00%)
 
 ===== ref_eq.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/81 (0.00%)
 
 ===== br_on_cast_fail.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I2
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/25 (0.00%)
 
 ===== array_fill.wast =====
@@ -372,7 +375,8 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/13 (0.00%)
 
 ===== br_on_cast.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I2
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/25 (0.00%)
 
 ===== i31.wast =====
@@ -383,13 +387,15 @@ Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t
 - 0/30 (0.00%)
 
 ===== ref_cast.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/40 (0.00%)
 
 ===== ref_test.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid valtype: I1
+- Uncaught exception: Direct invocation failed due to No field name: STRUCT
+
 - 0/66 (0.00%)
 
-Total [23784/24214] (98.22%; Normalized 84.55%)
+Total [23791/24214] (98.25%; Normalized 84.94%)
 == Complete.
 ```
