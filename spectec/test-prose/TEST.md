@@ -130,10 +130,6 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 == IL Validation after pass animate...
 == Translating to AL...
-...Animation failed (reorder)
-if (a < |$funcinst(z)|)
-where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
-where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x)] :: (instr <: admininstr)*{instr}) = u_2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
@@ -1440,6 +1436,15 @@ execution_of_BR_ON_NON_NULL l
 4. Push val to the stack.
 5. Execute (BR l).
 
+execution_of_RETURN_CALL_REF x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop u_0 from the stack.
+3. If u_0 is of the case REF.NULL, then:
+  a. Trap.
+4. If u_0 is of the case REF.FUNC_ADDR, then:
+  a. Let (REF.FUNC_ADDR a) be u_0.
+  b. Execute (RETURN_CALL_ADDR a).
+
 execution_of_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
 2. Execute (REF.CAST (REF (NULL ?([])) $idx(y))).
@@ -1622,50 +1627,42 @@ execution_of_CALL_REF x
 
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, x < |$funcaddr()|.
-2. Execute (RETURN_CALL_REF $funcaddr()[x]).
-
-execution_of_RETURN_CALL_REF x
-1. If not the current context is frame, then:
-  a. If the current context is label, then:
-    1) Pop ref from the stack.
-    2) Pop all values val* from the stack.
-    3) Exit current context.
-    4) Push val* to the stack.
-    5) Push ref to the stack.
-    6) Execute (RETURN_CALL_REF x).
-2. Else:
-  a. Pop u_0 from the stack.
-  b. Pop all values u_1* from the stack.
-  c. Exit current context.
-  d. If u_0 is of the case REF.FUNC_ADDR, then:
-    1) Let (REF.FUNC_ADDR a) be u_0.
-    2) If a < |$funcinst()| and $expanddt($funcinst()[a].TYPE) is of the case FUNC, then:
-      a) Let (FUNC y_0) be $expanddt($funcinst()[a].TYPE).
-      b) Let [t_1^n]->[t_2^m] be y_0.
-      c) If |u_1*| ≥ n, then:
-        1. Let val'* ++ val^n be u_1*.
-        2. Push val^n to the stack.
-        3. Push ref to the stack.
-        4. Execute (CALL_REF x).
-  e. If u_0 is of the case REF.NULL, then:
-    1) Trap.
+2. Execute (RETURN_CALL_ADDR $funcaddr()[x]).
 
 execution_of_CALL_ADDR a
 1. Assert: Due to validation, a < |$funcinst()|.
 2. Let fi be $funcinst()[a].
-3. Assert: Due to validation, fi.CODE is of the case FUNC.
-4. Let (FUNC x y_0 instr*) be fi.CODE.
-5. Let (LOCAL t)* be y_0.
-6. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
-7. Let (FUNC y_0) be $expanddt(fi.TYPE).
-8. Let [t_1^n]->[t_2^m] be y_0.
-9. Assert: Due to validation, there are at least n values on the top of the stack.
-10. Pop val^n from the stack.
+3. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+4. Let (FUNC y_0) be $expanddt(fi.TYPE).
+5. Let [t_1^n]->[t_2^m] be y_0.
+6. Assert: Due to validation, there are at least n values on the top of the stack.
+7. Pop val^n from the stack.
+8. Assert: Due to validation, fi.CODE is of the case FUNC.
+9. Let (FUNC x y_0 instr*) be fi.CODE.
+10. Let (LOCAL t)* be y_0.
 11. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
 12. Let F be the activation of f with arity m.
 13. Enter F with label [FRAME_]:
   a. Let L be the label_m{[]}.
   b. Enter L with label instr* ++ [LABEL_]:
+
+execution_of_RETURN_CALL_ADDR a
+1. If the current context is frame, then:
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Assert: Due to validation, a < |$funcinst()|.
+  d. Assert: Due to validation, $expanddt($funcinst()[a].TYPE) is of the case FUNC.
+  e. Let (FUNC y_0) be $expanddt($funcinst()[a].TYPE).
+  f. Let [t_1^n]->[t_2^m] be y_0.
+  g. Assert: Due to validation, |val*| ≥ n.
+  h. Let val''* ++ val'^n be val*.
+  i. Push val'^n to the stack.
+  j. Execute (CALL_ADDR a).
+2. Else if the current context is label, then:
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Push val* to the stack.
+  d. Execute (RETURN_CALL_ADDR a).
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, x < |$funcaddr()|.

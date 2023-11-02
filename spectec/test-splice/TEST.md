@@ -717,6 +717,8 @@ warning: rule `Step_pure/br_on_null-null` was never spliced
 warning: rule `Step_pure/br_on_null-addr` was never spliced
 warning: rule `Step_pure/br_on_non_null-null` was never spliced
 warning: rule `Step_pure/br_on_non_null-addr` was never spliced
+warning: rule `Step_pure/return_call_ref-frame-null` was never spliced
+warning: rule `Step_pure/return_call_ref-frame-addr` was never spliced
 warning: rule `Step_pure/call_indirect-call` was never spliced
 warning: rule `Step_pure/return_call_indirect` was never spliced
 warning: rule `Step_pure/frame-vals` was never spliced
@@ -754,10 +756,9 @@ warning: rule `Step_read/call` was never spliced
 warning: rule `Step_read/call_ref-null` was never spliced
 warning: rule `Step_read/call_ref-func` was never spliced
 warning: rule `Step_read/return_call` was never spliced
-warning: rule `Step_read/return_call_ref-frame-null` was never spliced
-warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
-warning: rule `Step_read/return_call_ref-label` was never spliced
 warning: rule `Step_read/call_addr` was never spliced
+warning: rule `Step_read/return_call_addr-frame` was never spliced
+warning: rule `Step_read/return_call_addr-label` was never spliced
 warning: rule `Step_read/ref.func` was never spliced
 warning: rule `Step_read/ref.test-true` was never spliced
 warning: rule `Step_read/ref.test-false` was never spliced

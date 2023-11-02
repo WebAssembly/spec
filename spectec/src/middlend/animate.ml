@@ -182,10 +182,15 @@ let is_not_lhs = function
 | LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
 | _ -> false
 
+(* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
+let is_atomic_lhs e = match e.it with
+| CaseE (Atom "FUNC", { it = MixE ([ []; [Arrow]; [] ], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
+| _ -> false
+
 let rows_of_eq vars p_tot_num i l r at =
   if (is_not_lhs l.it) then [] else
   free_exp_list l
-  |> large_enough_powset
+  |> (if is_atomic_lhs l then (fun xs -> [xs]) else large_enough_powset)
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
     if List.length frees = List.length covering_vars then (

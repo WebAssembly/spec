@@ -160,6 +160,7 @@ syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr
   | addrref
   | CALL_ADDR funcaddr             hint(show INVOKE %)
+  | RETURN_CALL_ADDR funcaddr      hint(show RETURN_INVOKE %)
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP

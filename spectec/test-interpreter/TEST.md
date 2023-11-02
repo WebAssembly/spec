@@ -130,10 +130,6 @@ if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 == IL Validation after pass animate...
 == Translating to AL...
-...Animation failed (reorder)
-if (a < |$funcinst(z)|)
-where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
-where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x)] :: (instr <: admininstr)*{instr}) = u_2
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
@@ -442,10 +438,10 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 0/66 (0.00%)
 
 ===== return_call_indirect.wast =====
-- 9/47 (19.15%)
+- 43/43 (100.00%)
 
 ===== return_call.wast =====
-- 4/31 (12.90%)
+- 26/26 (100.00%)
 
 ===== call_ref.wast =====
 - 27/27 (100.00%)
@@ -460,8 +456,8 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 6/6 (100.00%)
 
 ===== return_call_ref.wast =====
-- 8/35 (22.86%)
+- 30/30 (100.00%)
 
-Total [23869/24370] (97.94%; Normalized 83.97%)
+Total [23947/24356] (98.32%; Normalized 86.53%)
 == Complete.
 ```
