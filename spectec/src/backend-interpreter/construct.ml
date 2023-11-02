@@ -388,7 +388,7 @@ let rec al_of_instr wasm_module winstr =
   | Ast.RefCast rt -> ConstructV ("REF.CAST", [ al_of_ref_type rt ])
   | Ast.RefEq -> f "REF.EQ"
   | Ast.RefI31 -> f "REF.I31"
-  | Ast.I31Get sx -> ConstructV ("I32.GET", [ al_of_extension sx ])
+  | Ast.I31Get sx -> ConstructV ("I31.GET", [ al_of_extension sx ])
   | Ast.StructNew (i32, Ast.Explicit) -> f_i32 "STRUCT.NEW" i32
   | Ast.StructNew (i32, Ast.Implicit) -> f_i32 "STRUCT.NEW_DEFAULT" i32
   | Ast.StructGet (i32, i32', sx_opt) ->
