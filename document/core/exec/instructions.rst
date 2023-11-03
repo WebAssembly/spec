@@ -903,7 +903,7 @@ Reference Instructions
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \val
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\otherwise, \iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
+      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i])) \\
      \end{array}
    \\[1ex]
@@ -964,7 +964,7 @@ Reference Instructions
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto S'; \epsilon
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\otherwise, \iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
+     (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val)) \\
      \end{array}
    \\[1ex]
