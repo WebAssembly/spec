@@ -418,6 +418,13 @@ and eval_cond env cond =
           | Some v1' -> matches v1' v2
           | _ -> raise Exception.MissingReturnValue
           end
+      | ConstructV ("DEF", _), ConstructV ("DEF", _) ->
+        begin match dsl_function_call "unrolldt" [ v1 ] with
+        | Some (ConstructV ("SUBD", [ _; ListV htl; _ ])) ->
+          Array.exists (fun ht -> matches ht v2) !htl
+        | Some _ -> failwith "Invalid result of unrolldt"
+        | _ -> raise Exception.MissingReturnValue
+        end
       | _, ConstructV ("DEF", _) -> false
       | v1, v2 ->
         Printf.sprintf "%s <: %s"
