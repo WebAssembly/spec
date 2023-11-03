@@ -9,7 +9,7 @@ watsup 0.4 generator
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed (binding inference).
+Animation failed.
 if (|ct'*{ct'}| = |y*{y}|)
 if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
 (if (y < |C.TYPE_context|))*{ct' y y'}
@@ -18,16 +18,8 @@ if (|y*{y}| <= 1)
 (if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
 Comptype_ok: `%|-%:OK`(C, ct)
 (Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |y*{y}|)
-if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
-(if (y < |C.TYPE_context|))*{ct' y y'}
-if (|y*{y}| <= 1)
-(if (y < x))*{y}
-(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (|ct'*{ct'}| = |ht*{ht}|)
 if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
 if (|y*{y}| <= 1)
@@ -35,99 +27,66 @@ if (|y*{y}| <= 1)
 (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
 Comptype_ok: `%|-%:OK`(C, ct)
 (Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |ht*{ht}|)
-if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|y*{y}| <= 1)
-(if $before(ht, x, i))*{ht}
-(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if ((n_1 <= n_2) /\ (n_2 <= k))
-...Animation failed (reorder)
-if (n_1 <= n_2)
-if (n_2 <= k)
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 Valtype_sub: `%|-%<:%`(C, t, t')
 if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
-...Animation failed (reorder)
-Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-...Animation failed (reorder)
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
-Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 (if (l < |C.LABEL_context|))*{l}
 if (l' < |C.LABEL_context|)
 (Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
 Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-...Animation failed (reorder)
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype))))
 if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, (t <: storagetype))))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (x < |C.TYPE_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-...Animation failed (reorder)
-where $expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))
-if (x < |C.TYPE_context|)
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
 if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (x < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
-...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
-Animation failed (binding inference).
+...Animation failed
+Animation failed.
 if (x < |C.MEM_context|)
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
-...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+...Animation failed
+Animation failed.
+if (a < |$funcinst(z)|)
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+...Animation failed
+Animation failed.
+if (a < |$funcinst(z)|)
+Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
+...Animation failed
 == IL Validation after pass animate...
 == Translating to AL...
 == Initializing AL interprter with generated AL...
@@ -383,22 +342,26 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 0/16 (0.00%)
 
 ===== type-subtyping.wast =====
-- 12/20 (60.00%)
+- 16/20 (80.00%)
 
 ===== array.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
+- Uncaught exception: Module Instantiation failed due to No field name: ARRAY
+
 - 0/31 (0.00%)
 
 ===== array_init_data.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
+- Uncaught exception: Module Instantiation failed due to No field name: ARRAY
+
 - 0/30 (0.00%)
 
 ===== struct.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
+- Uncaught exception: Module Instantiation failed due to No field name: STRUCT
+
 - 0/19 (0.00%)
 
 ===== array_init_elem.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][1]
+- Uncaught exception: Module Instantiation failed due to No field name: ARRAY
+
 - 0/19 (0.00%)
 
 ===== ref_eq.wast =====
@@ -412,7 +375,8 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 0/25 (0.00%)
 
 ===== array_fill.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
+- Uncaught exception: Module Instantiation failed due to No field name: ARRAY
+
 - 0/13 (0.00%)
 
 ===== br_on_cast.wast =====
@@ -424,7 +388,8 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 16/20 (80.00%)
 
 ===== array_copy.wast =====
-- Uncaught exception: Module Instantiation failed due to Failed Array.get during ReplaceE: [][0]
+- Uncaught exception: Module Instantiation failed due to No field name: ARRAY
+
 - 0/30 (0.00%)
 
 ===== ref_cast.wast =====
@@ -437,27 +402,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
 - 0/66 (0.00%)
 
-===== return_call_indirect.wast =====
-- 43/43 (100.00%)
-
-===== return_call.wast =====
-- 26/26 (100.00%)
-
-===== call_ref.wast =====
-- 27/27 (100.00%)
-
-===== br_on_non_null.wast =====
-- 4/6 (66.67%)
-
-===== ref_as_non_null.wast =====
-- 4/4 (100.00%)
-
-===== br_on_null.wast =====
-- 6/6 (100.00%)
-
-===== return_call_ref.wast =====
-- 30/30 (100.00%)
-
-Total [23947/24356] (98.32%; Normalized 86.53%)
+Total [23811/24214] (98.34%; Normalized 86.07%)
 == Complete.
 ```
