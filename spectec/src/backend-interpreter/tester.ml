@@ -126,11 +126,11 @@ let builtin () =
     "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (StringV "global_type");
   ] in
   (* Builtin tables *)
-  let nulls = List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNCREF" ])) in
+  let nulls = List.init 10 (fun _ -> ConstructV ("REF.NULL", [ singleton "FUNC" ])) in
   let tables = [
     "table",
     listV nulls
-    |> create_table_inst (PairV (PairV (NumV 10L, NumV 20L), singleton "FUNCREF"));
+    |> create_table_inst (PairV (PairV (NumV 10L, NumV 20L), singleton "FUNC"));
   ] in
   (* Builtin memories *)
   let zeros = List.init 0x10000 (fun _ -> NumV 0L) in

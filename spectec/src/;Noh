@@ -49,9 +49,9 @@ let transpose matrix =
 
 let null = ConstructV ("NULL", [ OptV (Some (listV [])) ])
 let nonull = ConstructV ("NULL", [ OptV None ])
-let none = singleton "NONE"
-let nofunc = singleton "NOFUNC"
-let noextern = singleton "NOEXTERN"
+let none = singleton "NONE" in
+let nofunc = singleton "NOFUNC" in
+let noextern = singleton "NOEXTERN" in
 
 let abstract_heap_types = [
    "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE";
@@ -62,20 +62,17 @@ let is_abstract_heap_type aht = List.mem aht abstract_heap_types
 let rec matches_abstract_heap_type aht1 = function
   (* aht <: aht *)
   | aht2 when aht1 = aht2 -> true
-  (* EQ <: ANY *)
+  (* ANY <: EQ <: (I31 STRUCT ARRAY) <: NONE *)
   | "ANY" -> matches_abstract_heap_type aht1 "EQ"
-  (* I31, STRUCT, ARRAY <: EQ *)
   | "EQ" ->
     matches_abstract_heap_type aht1 "I31" ||
     matches_abstract_heap_type aht1 "STRUCT" ||
     matches_abstract_heap_type aht1 "ARRAY"
-  (* NONE <: I31, STRUCT, ARRAY *)
-  | ("I31" | "STRUCT" | "ARRAY") ->
-    matches_abstract_heap_type aht1 "NONE"
-  (* NOFUNC <: FUNC *)
-  | "FUNC" -> matches_abstract_heap_type aht1 "NOFUNC"
-  (* NOEXTERN <: EXTERN *)
-  | "EXTERN" -> matches_abstract_heap_type aht1 "NOEXTERN"
+  | ("I31" | "STRUCT" | "ARRAY") -> matches_abstract_heap_type aht1 "NONE"
+  (* FUNC <: NOFUNC *)
+  | "FUNC" -> matches_abstract_heap_type "NOFUNC"
+  (* EXTERN <: NOEXTERN *)
+  | "EXTERN" -> matches_abstract_heap_type "NOEXTERN"
   | _ -> false
 
 let rec matches v1 v2 =
