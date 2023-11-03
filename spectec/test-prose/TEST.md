@@ -1863,7 +1863,7 @@ execution_of_ARRAY.COPY x_1 x_2
         4. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
         5. Push (REF.ARRAY_ADDR a_2) to the stack.
         6. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-        7. Execute (ARRAY.GET sx? x_1).
+        7. Execute (ARRAY.GET sx? x_2).
         8. Execute (ARRAY.SET x_1).
         9. Push (REF.ARRAY_ADDR a_1) to the stack.
         10. Push (I32.CONST i_1) to the stack.
@@ -1883,7 +1883,7 @@ execution_of_ARRAY.COPY x_1 x_2
         4. Push (I32.CONST i_1) to the stack.
         5. Push (REF.ARRAY_ADDR a_2) to the stack.
         6. Push (I32.CONST i_2) to the stack.
-        7. Execute (ARRAY.GET sx? x_1).
+        7. Execute (ARRAY.GET sx? x_2).
         8. Execute (ARRAY.SET x_1).
         9. Push (REF.ARRAY_ADDR a_1) to the stack.
         10. Push (I32.CONST (i_1 + 1)) to the stack.
