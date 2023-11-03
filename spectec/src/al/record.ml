@@ -10,6 +10,8 @@ module Record = struct include List
 
   let keys r =
     map (fun (k, _) -> k) r
+
+  let mem = mem_assoc
   
   let size = length
 

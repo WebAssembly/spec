@@ -711,7 +711,19 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | ConstructV ("CONST", _) | ConstructV ("REF.NULL", _) ->
+  | ConstructV ("REF.NULL", [ ht ]) ->
+    (* substitute heap type*)
+    let dummy_rt = ConstructV ("REF", [ null; ht ]) in
+    let mm =
+      AppE ("moduleinst", [])
+      |> eval_expr (Env.add_store Env.empty)
+    in
+    begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
+    | AL_Context.Some (ConstructV ("REF", [ n; ht' ])) when n = null ->
+      ConstructV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
+    | _ -> raise Exception.MissingReturnValue
+    end
+  | ConstructV ("CONST", _) ->
     WasmContext.push_value wasm_instr
   | ConstructV (name, []) when is_builtin name ->
     call_builtin name;
@@ -724,6 +736,7 @@ and execute (wasm_instr: value): unit =
 
 and interp_instr (env: env) (instr: instr): env =
   (*
+  AL_Context.get_name () |> print_endline;
   string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;

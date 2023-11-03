@@ -193,6 +193,11 @@ module WasmContext = struct
     in
     get_current_frame' 0
 
+  let get_module_instance () =
+    match get_current_frame () with
+    | FrameV (_, mm) -> mm
+    | _ -> failwith "Invalid frame"
+
   let get_current_label () =
     let rec get_current_label' n =
       match get_nth_context n with
