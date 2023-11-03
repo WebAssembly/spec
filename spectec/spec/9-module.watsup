@@ -147,7 +147,18 @@ def $rundata(DATA byte* (MEMORY x instr*), y) =
 
 def $instantiate(store, module, externval*) : config
 def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
-  -- if module = MODULE type* import* func^n_func global* table* mem* elem* data* start? export*
+  -- if module =
+      MODULE
+        (TYPE rectype)*
+        import*
+        func^n_func
+        global*
+        table*
+        mem*
+        elem*
+        data*
+        start?
+        export*
   -- if global* = (GLOBAL globaltype expr_g)*
   -- if table* = (TABLE tabletype expr_t)*
   -- if elem* = (ELEM reftype expr_e* elemmode?)*
@@ -155,7 +166,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
   -- if n_e = |elem*|
   -- if n_d = |data*|
   -- if mm_init = {
-      TYPE epsilon,
+      TYPE $alloctypes(rectype*),
       FUNC $funcsxv(externval*) $(|s.FUNC|+i_func)^(i_func<n_func),
       GLOBAL $globalsxv(externval*),
       TABLE epsilon,
