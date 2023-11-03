@@ -403,7 +403,7 @@ and eval_cond env cond =
       (* bot *)
       | ConstructV ("BOT", _), _ -> true
       (* abstract heaptype *)
-      | ConstructV (aht1, []), ConstructV(aht2, [])
+      | ConstructV (aht1, _), ConstructV(aht2, _)
         when is_abstract_heap_type aht1
         && is_abstract_heap_type aht2 ->
           matches_abstract_heap_type aht1 aht2
@@ -412,6 +412,12 @@ and eval_cond env cond =
         ConstructV ("REF", [ no2; ht2 ]) ->
         ((no2 = null) || (no1 = nonull && no2 = nonull))
         && matches ht1 ht2
+      | ConstructV ("DEF", _), ConstructV (aht, [])
+        when is_abstract_heap_type aht ->
+          begin match dsl_function_call "expanddt" [ v1 ] with
+          | Some v1' -> matches v1' v2
+          | _ -> raise Exception.MissingReturnValue
+          end
       | _, ConstructV ("DEF", _) -> false
       | v1, v2 ->
         Printf.sprintf "%s <: %s"
