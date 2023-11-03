@@ -400,14 +400,13 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
 ===== br_on_cast_fail.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 5/25 (20.00%)
+- 15/25 (60.00%)
 
 ===== array_fill.wast =====
 - 5/13 (38.46%)
 
 ===== br_on_cast.wast =====
-- Uncaught exception: Direct invocation failed due to (REF (NULL ?([])) STRUCT) <: (REF (NULL ?()) (DEF (REC [(SUBD ?() [] (STRUCT []))]) 0x0))
-- 6/25 (24.00%)
+- 16/25 (64.00%)
 
 ===== i31.wast =====
 - 16/20 (80.00%)
@@ -417,11 +416,11 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
 ===== ref_cast.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 6/40 (15.00%)
+- 25/40 (62.50%)
 
 ===== ref_test.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 8/66 (12.12%)
+- 27/66 (40.91%)
 
 ===== return_call_indirect.wast =====
 - 43/43 (100.00%)
@@ -444,6 +443,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24123/24356] (99.04%; Normalized 91.77%)
+Total [24181/24356] (99.28%; Normalized 93.40%)
 == Complete.
 ```

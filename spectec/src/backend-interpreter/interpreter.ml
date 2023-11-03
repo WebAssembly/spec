@@ -380,22 +380,38 @@ and eval_cond env cond =
       |> failwith
     end
   | MatchC (e1, e2) ->
+    let null = ConstructV ("NULL", [ OptV (Some (listV [])) ]) in
+    let nonull = ConstructV ("NULL", [ OptV None ]) in
+    let abstract_heap_types = [
+       "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE";
+       "FUNC"; "NOFUNC"; "EXTERN"; "NOEXTERN"; "BOT"
+    ] in
+    let is_abstract_heap_type aht =
+      List.mem aht abstract_heap_types
+    in
+    let rec matches_abstract_heap_type aht1 aht2 =
+      match aht1, aht2 with
+      | aht1, aht2 when aht1 = aht2 -> true
+      | _, "ANY" -> matches_abstract_heap_type aht1 "EQ"
+      | ("I32" | "STRUCT" | "ARRAY"), "EQ" -> true
+      | _ -> false
+    in
     let rec matches v1 v2 =
       match v1, v2 with
+      (* reflexive case *)
       | v1, v2 when Eq.eq_value v1 v2 -> true
-      | ConstructV ("REF", [ _; ht1 ]),
-        ConstructV ("REF", [
-          ConstructV ("NULL", [ OptV (Some (_)) ]);
-          ht2
-        ])
-      | ConstructV ("REF", [
-          ConstructV ("NULL", [ OptV None ]);
-          ht1
-        ]),
-        ConstructV ("REF", [
-          ConstructV ("NULL", [ OptV None ]);
-          ht2
-        ]) -> matches ht1 ht2
+      (* bot *)
+      | ConstructV ("BOT", _), _ -> true
+      (* abstract heaptype *)
+      | ConstructV (aht1, []), ConstructV(aht2, [])
+        when is_abstract_heap_type aht1
+        && is_abstract_heap_type aht2 ->
+          matches_abstract_heap_type aht1 aht2
+      (* reftype *)
+      | ConstructV ("REF", [ no1; ht1 ]),
+        ConstructV ("REF", [ no2; ht2 ]) ->
+        ((no2 = null) || (no1 = nonull && no2 = nonull))
+        && matches ht1 ht2
       | _, ConstructV ("DEF", _) -> false
       | v1, v2 ->
         Printf.sprintf "%s <: %s"
