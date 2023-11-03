@@ -15,7 +15,8 @@ and eq_value v1 v2 =
       List.for_all2 eq_value l1 l2
   | RecordV r1, RecordV r2 -> List.for_all2 eq_field r1 r2
   | ConstructV (tag1, vl1), ConstructV (tag2, vl2) ->
-    tag1 = tag2 && List.for_all2 eq_value vl1 vl2
+    List.length vl1 = List.length vl2 &&
+      tag1 = tag2 && List.for_all2 eq_value vl1 vl2
   | PairV (v1, v2), PairV (v3, v4)
   | LabelV (v1, v2), LabelV (v3, v4)
   | ArrowV (v1, v2), ArrowV (v3, v4) ->
