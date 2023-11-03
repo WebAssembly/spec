@@ -326,5 +326,5 @@
   )
 )
 
-(invoke "test-sub")
-(invoke "test-canon")
+(assert_return (invoke "test-sub"))
+(assert_return (invoke "test-canon"))
