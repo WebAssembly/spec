@@ -203,13 +203,24 @@ module WasmContext = struct
 
   (* Value stack *)
 
+  let is_value = function
+    | ConstructV ("CONST", _) -> true
+    | ConstructV (ref, _)
+      when String.starts_with ~prefix:"REF." ref -> true
+    | _ -> false
+
   let get_value_stack () =
     let _, vs, _ = get_context () in
     vs
 
   let push_value v =
     let v_ctx, vs, vs_instr = pop_context () in
-    push_context (v_ctx, v :: vs, vs_instr)
+    if is_value v then
+      push_context (v_ctx, v :: vs, vs_instr)
+    else
+      string_of_value v
+      |> Printf.sprintf "%s is not a Wasm value"
+      |> failwith
 
   let pop_value () =
     let v_ctx, vs, vs_instr = pop_context () in
