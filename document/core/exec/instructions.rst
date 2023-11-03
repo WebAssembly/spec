@@ -1153,7 +1153,7 @@ Reference Instructions
 
     d. Push the value :math:`\I32.\CONST~s` to the stack.
 
-    e. Execute :math:`\getfield(\X{st})`.
+    e. Execute :math:`\getfield(\X{st}, x)`.
 
     f. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1183,7 +1183,7 @@ Reference Instructions
 
     f. Push the value :math:`\I32.\CONST~(s+n-1)` to the stack.
 
-    g. Execute :math:`\getfield(\X{st})`.
+    g. Execute :math:`\getfield(\X{st}, x)`.
 
     h. Execute the instruction :math:`\ARRAYSET~x`.
 
@@ -1217,7 +1217,7 @@ Reference Instructions
      \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s)~\getfield(\X{st}, x) \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+1)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s+1)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
@@ -1229,7 +1229,7 @@ Reference Instructions
      \\ \quad
        \begin{array}[t]{@{}l@{}}
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d+n) \\
-       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}) \\
+       (\REFARRAYADDR~a_2)~(\I32.\CONST~s+n)~\getfield(\X{st}, x) \\
        (\ARRAYSET~x) \\
        (\REFARRAYADDR~a_1)~(\I32.\CONST~d)~(\REFARRAYADDR~a_2)~(\I32.\CONST~s)~(\I32.\CONST~n)~(\ARRAYCOPY~x~y) \\
        \end{array}
@@ -1247,8 +1247,8 @@ Where:
 
 .. math::
    \begin{array}{lll}
-   \getfield(\valtype) &=& \ARRAYGET \\
-   \getfield(\packedtype) &=& \ARRAYGETU \\
+   \getfield(\valtype, x) &=& \ARRAYGET~x \\
+   \getfield(\packedtype, x) &=& \ARRAYGETU~x \\
    \end{array}
 
 
