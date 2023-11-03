@@ -384,26 +384,26 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 19/20 (95.00%)
 
 ===== array.wast =====
-- 18/31 (58.06%)
+- 27/31 (87.10%)
 
 ===== array_init_data.wast =====
-- 24/30 (80.00%)
+- 26/30 (86.67%)
 
 ===== struct.wast =====
 - 18/19 (94.74%)
 
 ===== array_init_elem.wast =====
-- 16/19 (84.21%)
+- 19/19 (100.00%)
 
 ===== ref_eq.wast =====
 - 81/81 (100.00%)
 
 ===== br_on_cast_fail.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 23/25 (92.00%)
+- 24/25 (96.00%)
 
 ===== array_fill.wast =====
-- 10/13 (76.92%)
+- 13/13 (100.00%)
 
 ===== br_on_cast.wast =====
 - 24/25 (96.00%)
@@ -412,7 +412,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 16/20 (80.00%)
 
 ===== array_copy.wast =====
-- 10/30 (33.33%)
+- 23/30 (76.67%)
 
 ===== ref_cast.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
@@ -432,7 +432,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 27/27 (100.00%)
 
 ===== br_on_non_null.wast =====
-- 4/6 (66.67%)
+- 6/6 (100.00%)
 
 ===== ref_as_non_null.wast =====
 - 4/4 (100.00%)
@@ -443,6 +443,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24270/24356] (99.65%; Normalized 96.94%)
+Total [24303/24356] (99.78%; Normalized 98.56%)
 == Complete.
 ```

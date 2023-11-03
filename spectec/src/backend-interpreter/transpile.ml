@@ -243,6 +243,15 @@ let push_either =
 
   Walk.walk_instr { Walk.default_config with pre_instr = lift push_either' }
 
+let rec merge_three_branches i =
+  let new_ = List.map merge_three_branches in
+  match i with
+  | IfI (c1, il1, [ IfI (c2, il2, il3) ]) when il1 = il3 ->
+    IfI ( BinopC (And, neg c1, c2), new_ il2, new_ il1)
+  | IfI (c, il1, il2) -> IfI (c, new_ il1, new_ il2)
+  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
+  | _ -> i
+
 let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bounds) ->
   match instr with
   | IfI (c, il1, il2) ->
@@ -270,21 +279,24 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
     instr :: acc, bounds @ Free.free_instr instr
 ) il pair
 
-let rec merge_three_branches i =
-  let new_ = List.map merge_three_branches in
-  match i with
-  | IfI (c1, il1, [ IfI (c2, il2, il3) ]) when il1 = il3 ->
-    IfI ( BinopC (And, neg c1, c2), new_ il2, new_ il1)
-  | IfI (c, il1, il2) -> IfI (c, new_ il1, new_ il2)
-  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
-  | _ -> i
-
 let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
 let remove_sub = Walk.walk_instr { Walk.default_config with pre_expr = function
   | SubE (n, _) -> NameE n
   | e -> e
 }
+
+let rec remove_nop acc il = match il with
+| [] -> List.rev acc
+| i :: il' ->
+  let new_ = remove_nop [] in
+  let i' = match i with
+  | IfI (c, il1, il2) -> IfI (c, new_ il1, new_ il2)
+  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
+  | _ -> i in
+  match acc with
+  | NopI :: acc' -> remove_nop (i' :: acc') il'
+  | _ -> remove_nop (i' :: acc) il'
 
 let rec enhance_readability instrs =
   let new_instrs = instrs
@@ -298,6 +310,7 @@ let rec enhance_readability instrs =
   |> List.map merge_three_branches
   |> remove_dead_assignment
   |> List.concat_map remove_sub
+  |> remove_nop []
   in
   if instrs = new_instrs then instrs else enhance_readability new_instrs
 

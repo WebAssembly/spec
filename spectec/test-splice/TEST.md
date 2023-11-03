@@ -685,6 +685,7 @@ warning: rule `Step/struct.set-struct` was never spliced
 warning: rule `Step/array.new_fixed` was never spliced
 warning: rule `Step/array.set-null` was never spliced
 warning: rule `Step/array.set-array` was never spliced
+warning: rule `Step/array.set-trap` was never spliced
 warning: rule `Step/local.set` was never spliced
 warning: rule `Step/global.set` was never spliced
 warning: rule `Step/table.set-oob` was never spliced
@@ -775,6 +776,7 @@ warning: rule `Step_read/array.new_data-oob` was never spliced
 warning: rule `Step_read/array.new_data-alloc` was never spliced
 warning: rule `Step_read/array.get-null` was never spliced
 warning: rule `Step_read/array.get-array` was never spliced
+warning: rule `Step_read/array.get-trap` was never spliced
 warning: rule `Step_read/array.len-null` was never spliced
 warning: rule `Step_read/array.len-array` was never spliced
 warning: rule `Step_read/array.fill-null` was never spliced

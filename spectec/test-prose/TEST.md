@@ -1347,6 +1347,7 @@ execution_of_NOP
 execution_of_DROP
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
+3. Do nothing.
 
 execution_of_SELECT t?
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1433,9 +1434,11 @@ execution_of_BR_ON_NULL l
 execution_of_BR_ON_NON_NULL l
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. Assert: Due to validation, val is not of the case REF.NULL.
-4. Push val to the stack.
-5. Execute (BR l).
+3. If val is of the case REF.NULL, then:
+  a. Do nothing.
+4. Else:
+  a. Push val to the stack.
+  b. Execute (BR l).
 
 execution_of_RETURN_CALL_REF x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1770,12 +1773,17 @@ execution_of_ARRAY.GET sx? x
   a. Trap.
 6. If u_0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be u_0.
-  b. If a < |$arrayinst()|, then:
-    1) Let ai be $arrayinst()[a].
-    2) If i < |ai.FIELD| and $expanddt(ai.TYPE) is of the case ARRAY, then:
-      a) Let (ARRAY y_0) be $expanddt(ai.TYPE).
-      b) Let (mut, zt) be y_0.
-      c) Push $unpackval(zt, sx?, ai.FIELD[i]) to the stack.
+  b. If a ≥ |$arrayinst()|, then:
+    1) Let (REF.ARRAY_ADDR a) be u_0.
+    2) Trap.
+  c. Let ai be $arrayinst()[a].
+  d. If i ≥ |ai.FIELD|, then:
+    1) Trap.
+  e. If $expanddt(ai.TYPE) is not of the case ARRAY, then:
+    1) Trap.
+  f. Let (ARRAY y_0) be $expanddt(ai.TYPE).
+  g. Let (mut, zt) be y_0.
+  h. Push $unpackval(zt, sx?, ai.FIELD[i]) to the stack.
 
 execution_of_ARRAY.LEN
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1803,7 +1811,9 @@ execution_of_ARRAY.FILL x
   a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
-  c. If n is not 0, then:
+  c. If n is 0, then:
+    1) Do nothing.
+  d. Else:
     1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Push (REF.ARRAY_ADDR a) to the stack.
     3) Push (I32.CONST i) to the stack.
@@ -1838,7 +1848,10 @@ execution_of_ARRAY.COPY x_1 x_2
     2) Let (REF.ARRAY_ADDR a_2) be u_1.
     3) If a_2 < |$arrayinst()| and (i_2 + n) > |$arrayinst()[a_2].FIELD|, then:
       a) Trap.
-  c. If n is not 0 and i_1 > i_2, then:
+  c. If n is 0, then:
+    1) If u_1 is of the case REF.ARRAY_ADDR, then:
+      a) Do nothing.
+  d. Else if i_1 > i_2, then:
     1) Let (REF.ARRAY_ADDR a_1) be u_0.
     2) If u_1 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a_2) be u_1.
@@ -1846,24 +1859,8 @@ execution_of_ARRAY.COPY x_1 x_2
       c) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
       d) Push (REF.ARRAY_ADDR a_2) to the stack.
       e) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-      f) Execute (ARRAY.GET sx? x).
-      g) Execute (ARRAY.SET x).
-      h) Push (REF.ARRAY_ADDR a_1) to the stack.
-      i) Push (I32.CONST i_1) to the stack.
-      j) Push (REF.ARRAY_ADDR a_2) to the stack.
-      k) Push (I32.CONST i_2) to the stack.
-      l) Push (I32.CONST (n - 1)) to the stack.
-      m) Execute (ARRAY.COPY x_1 x_2).
-  d. Else if $expanddt($type(x_2)) is not of the case ARRAY, then:
-    1) Let (REF.ARRAY_ADDR a_1) be u_0.
-    2) If u_1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be u_1.
-      b) Push (REF.ARRAY_ADDR a_1) to the stack.
-      c) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
-      d) Push (REF.ARRAY_ADDR a_2) to the stack.
-      e) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-      f) Execute (ARRAY.GET sx? x).
-      g) Execute (ARRAY.SET x).
+      f) Execute (ARRAY.GET sx? x_1).
+      g) Execute (ARRAY.SET x_1).
       h) Push (REF.ARRAY_ADDR a_1) to the stack.
       i) Push (I32.CONST i_1) to the stack.
       j) Push (REF.ARRAY_ADDR a_2) to the stack.
@@ -1871,24 +1868,41 @@ execution_of_ARRAY.COPY x_1 x_2
       l) Push (I32.CONST (n - 1)) to the stack.
       m) Execute (ARRAY.COPY x_1 x_2).
   e. Else:
-    1) Let (ARRAY y_0) be $expanddt($type(x_2)).
-    2) Let (mut, zt_2) be y_0.
-    3) Let (REF.ARRAY_ADDR a_1) be u_0.
-    4) If u_1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be u_1.
-      b) Let sx? be $sxfield(zt_2).
-      c) Push (REF.ARRAY_ADDR a_1) to the stack.
-      d) Push (I32.CONST i_1) to the stack.
-      e) Push (REF.ARRAY_ADDR a_2) to the stack.
-      f) Push (I32.CONST i_2) to the stack.
-      g) Execute (ARRAY.GET sx? x).
-      h) Execute (ARRAY.SET x).
-      i) Push (REF.ARRAY_ADDR a_1) to the stack.
-      j) Push (I32.CONST (i_1 + 1)) to the stack.
-      k) Push (REF.ARRAY_ADDR a_2) to the stack.
-      l) Push (I32.CONST (i_2 + 1)) to the stack.
-      m) Push (I32.CONST (n - 1)) to the stack.
-      n) Execute (ARRAY.COPY x_1 x_2).
+    1) If $expanddt($type(x_2)) is not of the case ARRAY, then:
+      a) Let (REF.ARRAY_ADDR a_1) be u_0.
+      b) If u_1 is of the case REF.ARRAY_ADDR, then:
+        1. Let (REF.ARRAY_ADDR a_2) be u_1.
+        2. Push (REF.ARRAY_ADDR a_1) to the stack.
+        3. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
+        4. Push (REF.ARRAY_ADDR a_2) to the stack.
+        5. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
+        6. Execute (ARRAY.GET sx? x_1).
+        7. Execute (ARRAY.SET x_1).
+        8. Push (REF.ARRAY_ADDR a_1) to the stack.
+        9. Push (I32.CONST i_1) to the stack.
+        10. Push (REF.ARRAY_ADDR a_2) to the stack.
+        11. Push (I32.CONST i_2) to the stack.
+        12. Push (I32.CONST (n - 1)) to the stack.
+        13. Execute (ARRAY.COPY x_1 x_2).
+    2) Else:
+      a) Let (ARRAY y_0) be $expanddt($type(x_2)).
+      b) Let (mut, zt_2) be y_0.
+      c) Let (REF.ARRAY_ADDR a_1) be u_0.
+      d) If u_1 is of the case REF.ARRAY_ADDR, then:
+        1. Let (REF.ARRAY_ADDR a_2) be u_1.
+        2. Let sx? be $sxfield(zt_2).
+        3. Push (REF.ARRAY_ADDR a_1) to the stack.
+        4. Push (I32.CONST i_1) to the stack.
+        5. Push (REF.ARRAY_ADDR a_2) to the stack.
+        6. Push (I32.CONST i_2) to the stack.
+        7. Execute (ARRAY.GET sx? x_1).
+        8. Execute (ARRAY.SET x_1).
+        9. Push (REF.ARRAY_ADDR a_1) to the stack.
+        10. Push (I32.CONST (i_1 + 1)) to the stack.
+        11. Push (REF.ARRAY_ADDR a_2) to the stack.
+        12. Push (I32.CONST (i_2 + 1)) to the stack.
+        13. Push (I32.CONST (n - 1)) to the stack.
+        14. Execute (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -1905,8 +1919,10 @@ execution_of_ARRAY.INIT_ELEM x y
   a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
-11. If (j + n) ≤ |$elem(y).ELEM|, then:
-  a. If n is not 0 and j < |$elem(y).ELEM|, then:
+11. If (j + n) > |$elem(y).ELEM|, then:
+  a. If u_0 is of the case REF.ARRAY_ADDR, then:
+    1) Trap.
+  b. If n is 0 and j < |$elem(y).ELEM|, then:
     1) Let ref be $elem(y).ELEM[j].
     2) If u_0 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a) be u_0.
@@ -1919,10 +1935,11 @@ execution_of_ARRAY.INIT_ELEM x y
       h) Push (I32.CONST (j + 1)) to the stack.
       i) Push (I32.CONST (n - 1)) to the stack.
       j) Execute (ARRAY.INIT_ELEM x y).
-12. Else:
+12. Else if n is 0, then:
   a. If u_0 is of the case REF.ARRAY_ADDR, then:
-    1) Trap.
-  b. If n is 0 and j < |$elem(y).ELEM|, then:
+    1) Do nothing.
+13. Else:
+  a. If j < |$elem(y).ELEM|, then:
     1) Let ref be $elem(y).ELEM[j].
     2) If u_0 is of the case REF.ARRAY_ADDR, then:
       a) Let (REF.ARRAY_ADDR a) be u_0.
@@ -1951,13 +1968,18 @@ execution_of_ARRAY.INIT_DATA x y
   a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a < |$arrayinst()| and (i + n) > |$arrayinst()[a].FIELD|, then:
     1) Trap.
-11. If $expanddt($type(x)) is of the case ARRAY, then:
+11. If $expanddt($type(x)) is not of the case ARRAY, then:
+  a. If n is 0 and u_0 is of the case REF.ARRAY_ADDR, then:
+    1) Do nothing.
+12. Else:
   a. Let (ARRAY y_0) be $expanddt($type(x)).
   b. Let (mut, zt) be y_0.
   c. If u_0 is of the case REF.ARRAY_ADDR, then:
     1) If (j + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
       a) Trap.
-    2) If n is not 0, then:
+    2) If n is 0, then:
+      a) Do nothing.
+    3) Else:
       a) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
       b) Let (REF.ARRAY_ADDR a) be u_0.
       c) Let nt be $unpacknumtype(zt).
@@ -2190,17 +2212,24 @@ execution_of_ARRAY.NEW_FIXED x n
 execution_of_ARRAY.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop u_0 from the stack.
-5. If u_0 is of the case REF.NULL, then:
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop u_0 from the stack.
+7. If u_0 is of the case REF.NULL, then:
   a. Trap.
-6. If u_0 is of the case REF.ARRAY_ADDR, then:
+8. If u_0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be u_0.
-  b. If a < |$arrayinst()| and $expanddt($arrayinst()[a].TYPE) is of the case ARRAY, then:
-    1) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
-    2) Let (mut, zt) be y_0.
-    3) Let fv be $packval(zt, val).
-    4) Perform $with_array(a, i, fv).
+  b. If a ≥ |$arrayinst()|, then:
+    1) Let (REF.ARRAY_ADDR a) be u_0.
+    2) Trap.
+  c. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
+    1) Let (REF.ARRAY_ADDR a) be u_0.
+    2) Trap.
+  d. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+  e. Let (mut, zt) be y_0.
+  f. Let fv be $packval(zt, val).
+  g. Perform $with_array(a, i, fv).
 
 execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.

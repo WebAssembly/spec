@@ -656,7 +656,7 @@ let prems2instrs remain_lhs = List.fold_right (prem2instrs remain_lhs)
 (** reduction -> `instr list` **)
 
 let reduction2instrs remain_lhs (_, rhs, prems, _) =
-  prems2instrs remain_lhs prems (rhs2instrs rhs)
+  prems2instrs remain_lhs prems (rhs2instrs rhs |> check_nop)
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec split_context_winstr ?(note : Ast.typ option) name stack =
