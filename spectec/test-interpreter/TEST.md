@@ -378,7 +378,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 83/83 (100.00%)
 
 ===== extern.wast =====
-- 2/16 (12.50%)
+- 16/16 (100.00%)
 
 ===== type-subtyping.wast =====
 - 16/20 (80.00%)
@@ -420,8 +420,8 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 6/40 (15.00%)
 
 ===== ref_test.wast =====
-- Uncaught exception: Direct invocation failed due to Invalid addrref: (REF.I31_NUM 0x8)
-- 0/66 (0.00%)
+- Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
+- 8/66 (12.12%)
 
 ===== return_call_indirect.wast =====
 - 43/43 (100.00%)
@@ -444,6 +444,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24095/24356] (98.93%; Normalized 90.53%)
+Total [24117/24356] (99.02%; Normalized 91.56%)
 == Complete.
 ```

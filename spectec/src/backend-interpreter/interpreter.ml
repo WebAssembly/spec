@@ -333,6 +333,10 @@ and eval_cond env cond =
 
     (* type definition *)
 
+    let addr_refs = [
+      "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
+      "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
+    ] in
     let packed_types = [ "I8"; "I16" ] in
     let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
     let abs_heap_types = [
@@ -343,6 +347,12 @@ and eval_cond env cond =
     (* check type *)
 
     begin match eval_expr env e with
+    (* addrref *)
+    | ConstructV (ar, _) when List.mem ar addr_refs->
+      s = "addrref" || s = "ref" || s = "val"
+    (* nul *)
+    | ConstructV ("REF.NULL", _) ->
+      s = "nul" || s = "ref" || s = "val"
     (* numtype *)
     | ConstructV (nt, []) when List.mem nt num_types ->
       s = "numtype" || s = "valtype"
