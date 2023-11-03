@@ -384,7 +384,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 19/20 (95.00%)
 
 ===== array.wast =====
-- 27/31 (87.10%)
+- 31/31 (100.00%)
 
 ===== array_init_data.wast =====
 - 26/30 (86.67%)
@@ -443,6 +443,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24315/24356] (99.83%; Normalized 99.07%)
+Total [24319/24356] (99.85%; Normalized 99.20%)
 == Complete.
 ```

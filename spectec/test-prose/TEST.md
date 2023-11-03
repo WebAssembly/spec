@@ -1773,17 +1773,21 @@ execution_of_ARRAY.GET sx? x
   a. Trap.
 6. If u_0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be u_0.
-  b. If a ≥ |$arrayinst()|, then:
+  b. If a < |$arrayinst()| and i ≥ |$arrayinst()[a].FIELD|, then:
+    1) Trap.
+  c. If i ≥ |$arrayinst()[a].FIELD|, then:
     1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Trap.
-  c. Let ai be $arrayinst()[a].
-  d. If i ≥ |ai.FIELD|, then:
-    1) Trap.
-  e. If $expanddt(ai.TYPE) is not of the case ARRAY, then:
-    1) Trap.
-  f. Let (ARRAY y_0) be $expanddt(ai.TYPE).
-  g. Let (mut, zt) be y_0.
-  h. Push $unpackval(zt, sx?, ai.FIELD[i]) to the stack.
+  d. If a ≥ |$arrayinst()|, then:
+    1) Let (REF.ARRAY_ADDR a) be u_0.
+    2) Trap.
+  e. Let fv be $arrayinst()[a].FIELD[i].
+  f. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
+    1) Let (REF.ARRAY_ADDR a) be u_0.
+    2) Trap.
+  g. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+  h. Let (mut, zt) be y_0.
+  i. Push $unpackval(zt, sx?, fv) to the stack.
 
 execution_of_ARRAY.LEN
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -2211,13 +2215,15 @@ execution_of_ARRAY.SET x
   b. If a ≥ |$arrayinst()|, then:
     1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Trap.
-  c. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
+  c. If i ≥ |$arrayinst()[a].FIELD|, then:
+    1) Trap.
+  d. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
     1) Let (REF.ARRAY_ADDR a) be u_0.
     2) Trap.
-  d. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
-  e. Let (mut, zt) be y_0.
-  f. Let fv be $packval(zt, val).
-  g. Perform $with_array(a, i, fv).
+  e. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+  f. Let (mut, zt) be y_0.
+  g. Let fv be $packval(zt, val).
+  h. Perform $with_array(a, i, fv).
 
 execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.
