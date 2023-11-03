@@ -397,10 +397,10 @@ rule Step_read/array.get-array:
 
 
 rule Step/array.set-null:
-  z; (REF.NULL ht) val (ARRAY.SET x)  ~>  z; TRAP
+  z; (REF.NULL ht) (CONST I32 i) val (ARRAY.SET x)  ~>  z; TRAP
 
 rule Step/array.set-array:
-  z; (REF.ARRAY_ADDR a) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); epsilon
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); epsilon
   -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
   -- if fv = $packval(zt, val)
 
