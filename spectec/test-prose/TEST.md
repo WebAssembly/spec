@@ -1852,39 +1852,27 @@ execution_of_ARRAY.COPY x_1 x_2
     1) If u_1 is of the case REF.ARRAY_ADDR, then:
       a) Do nothing.
   d. Else if i_1 > i_2, then:
-    1) Let (REF.ARRAY_ADDR a_1) be u_0.
-    2) If u_1 is of the case REF.ARRAY_ADDR, then:
-      a) Let (REF.ARRAY_ADDR a_2) be u_1.
-      b) Push (REF.ARRAY_ADDR a_1) to the stack.
-      c) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
-      d) Push (REF.ARRAY_ADDR a_2) to the stack.
-      e) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-      f) Execute (ARRAY.GET sx? x_1).
-      g) Execute (ARRAY.SET x_1).
-      h) Push (REF.ARRAY_ADDR a_1) to the stack.
-      i) Push (I32.CONST i_1) to the stack.
-      j) Push (REF.ARRAY_ADDR a_2) to the stack.
-      k) Push (I32.CONST i_2) to the stack.
-      l) Push (I32.CONST (n - 1)) to the stack.
-      m) Execute (ARRAY.COPY x_1 x_2).
-  e. Else:
-    1) If $expanddt($type(x_2)) is not of the case ARRAY, then:
-      a) Let (REF.ARRAY_ADDR a_1) be u_0.
-      b) If u_1 is of the case REF.ARRAY_ADDR, then:
+    1) If $expanddt($type(x_2)) is of the case ARRAY, then:
+      a) Let (ARRAY y_0) be $expanddt($type(x_2)).
+      b) Let (mut, zt_2) be y_0.
+      c) Let (REF.ARRAY_ADDR a_1) be u_0.
+      d) If u_1 is of the case REF.ARRAY_ADDR, then:
         1. Let (REF.ARRAY_ADDR a_2) be u_1.
-        2. Push (REF.ARRAY_ADDR a_1) to the stack.
-        3. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
-        4. Push (REF.ARRAY_ADDR a_2) to the stack.
-        5. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-        6. Execute (ARRAY.GET sx? x_1).
-        7. Execute (ARRAY.SET x_1).
-        8. Push (REF.ARRAY_ADDR a_1) to the stack.
-        9. Push (I32.CONST i_1) to the stack.
-        10. Push (REF.ARRAY_ADDR a_2) to the stack.
-        11. Push (I32.CONST i_2) to the stack.
-        12. Push (I32.CONST (n - 1)) to the stack.
-        13. Execute (ARRAY.COPY x_1 x_2).
-    2) Else:
+        2. Let sx? be $sxfield(zt_2).
+        3. Push (REF.ARRAY_ADDR a_1) to the stack.
+        4. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
+        5. Push (REF.ARRAY_ADDR a_2) to the stack.
+        6. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
+        7. Execute (ARRAY.GET sx? x_1).
+        8. Execute (ARRAY.SET x_1).
+        9. Push (REF.ARRAY_ADDR a_1) to the stack.
+        10. Push (I32.CONST i_1) to the stack.
+        11. Push (REF.ARRAY_ADDR a_2) to the stack.
+        12. Push (I32.CONST i_2) to the stack.
+        13. Push (I32.CONST (n - 1)) to the stack.
+        14. Execute (ARRAY.COPY x_1 x_2).
+  e. Else:
+    1) If $expanddt($type(x_2)) is of the case ARRAY, then:
       a) Let (ARRAY y_0) be $expanddt($type(x_2)).
       b) Let (mut, zt_2) be y_0.
       c) Let (REF.ARRAY_ADDR a_1) be u_0.
