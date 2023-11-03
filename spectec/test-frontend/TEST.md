@@ -1758,9 +1758,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -3135,7 +3135,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -3143,7 +3147,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -3394,7 +3402,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) (val <: admininstr) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -5101,7 +5113,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{|{{\mathit{y}}^\ast}|} \leq 1
+{|{{\mathit{ht}}^\ast}|} \leq 1
  \qquad
 (({\mathit{ht}} \prec {\mathit{x}}, {\mathit{i}}))^\ast
  \qquad
@@ -7990,8 +8002,11 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}array.set{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &  \\
+<<<<<<< HEAD
 {[\textsc{\scriptsize E{-}array.set{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &\quad
   \mbox{if}~{\mathit{i}} \geq {|{\mathit{z}}.\mathsf{array}[{\mathit{a}}].\mathsf{field}|} \\
+=======
+>>>>>>> wasm3.bind
 {[\textsc{\scriptsize E{-}array.set{-}array}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathrm{with}}_{{\mathit{array}}}({\mathit{z}},\, {\mathit{a}},\, {\mathit{i}},\, {\mathit{fv}}) ; \epsilon &\quad
   \mbox{if}~{\mathit{z}}.\mathsf{array}[{\mathit{a}}].\mathsf{type} \approx \mathsf{array}~({\mathit{mut}}~{\mathit{zt}}) \\
  &&&&\quad {\land}~{\mathit{fv}} = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}}) \\

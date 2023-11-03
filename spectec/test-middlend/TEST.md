@@ -1757,9 +1757,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -3134,7 +3134,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -3142,7 +3146,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -3393,7 +3401,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) (val <: admininstr) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -5669,9 +5681,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -7046,7 +7058,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -7054,7 +7070,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -7305,7 +7325,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -9584,9 +9608,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -10961,7 +10985,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -10969,7 +10997,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -11220,7 +11252,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -13499,9 +13535,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -14886,7 +14922,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -14894,7 +14934,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -15149,7 +15193,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -17434,9 +17482,9 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -18821,7 +18869,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -18829,7 +18881,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -19084,7 +19140,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -21380,11 +21440,11 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
     -- if (|ct'*{ct'}| = |ht*{ht}|)
     -- if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -22884,7 +22944,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -22892,7 +22956,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- if (sx?{sx} = $sxfield(zt_2))
     -- if (i_1 <= i_2)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -23155,7 +23223,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 
@@ -25504,11 +25576,11 @@ def unrollht : (context, heaptype) -> subtype
 ;; 6-typing.watsup:119.1-119.76
 relation Subtype_ok2: `%|-%:%`(context, subtype, oktypeidxnat)
   ;; 6-typing.watsup:175.1-181.37
-  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx, y* : idx*}:
+  rule _ {C : context, ct : comptype, ct'* : comptype*, fin : fin, ht* : heaptype*, ht'** : heaptype**, i : nat, x : idx}:
     `%|-%:%`(C, SUBD_subtype(fin, ht*{ht}, ct), OK_oktypeidxnat(x, i))
     -- if (|ct'*{ct'}| = |ht*{ht}|)
     -- if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-    -- if (|y*{y}| <= 1)
+    -- if (|ht*{ht}| <= 1)
     -- (if $before(ht, x, i))*{ht}
     -- (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
     -- Comptype_ok: `%|-%:OK`(C, ct)
@@ -27008,7 +27080,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
     -- if (n = 0)
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:446.1-455.19
+=======
+  ;; 8-reduction.watsup:438.1-447.19
+>>>>>>> wasm3.bind
   rule array.copy-le {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, mut : mut, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state, zt_2 : storagetype}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, (i_1 + 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, (i_2 + 1)) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -27016,7 +27092,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
     -- if (sx?{sx} = $sxfield(zt_2))
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:457.1-463.15
+=======
+  ;; 8-reduction.watsup:449.1-455.15
+>>>>>>> wasm3.bind
   rule array.copy-gt {a_1 : addr, a_2 : addr, i_1 : nat, i_2 : nat, n : n, sx? : sx?, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) ARRAY.COPY_admininstr(x_1, x_2)]), [REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, ((i_1 + n) - 1)) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, ((i_2 + n) - 1)) ARRAY.GET_admininstr(sx?{sx}, x_2) ARRAY.SET_admininstr(x_1) REF.ARRAY_ADDR_admininstr(a_1) CONST_admininstr(I32_numtype, i_1) REF.ARRAY_ADDR_admininstr(a_2) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.COPY_admininstr(x_1, x_2)])
     -- otherwise
@@ -27279,7 +27359,11 @@ relation Step: `%~>%`(config, config)
     -- Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
     -- if (ai = {TYPE $type(z, x), FIELD $packval(zt, val)^n{val}})
 
+<<<<<<< HEAD
   ;; 8-reduction.watsup:388.1-389.64
+=======
+  ;; 8-reduction.watsup:384.1-385.64
+>>>>>>> wasm3.bind
   rule array.set-null {ht : heaptype, i : nat, val : val, x : idx, z : state}:
     `%~>%`(`%;%*`(z, [REF.NULL_admininstr(ht) CONST_admininstr(I32_numtype, i) $admininstr_val(val) ARRAY.SET_admininstr(x)]), `%;%*`(z, [TRAP_admininstr]))
 

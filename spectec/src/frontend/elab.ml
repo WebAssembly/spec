@@ -1034,6 +1034,18 @@ let elab_def env d : Il.def list =
     let es' = List.map (Multiplicity.annot_exp dims') (elab_exp_notation' env e t) in
     let prems' = List.map (Multiplicity.annot_prem dims')
       (map_nl_list (elab_prem env) prems) in
+    let free_rh =
+      Free.(Set.diff
+        (free_nl_list free_prem prems).varid
+        (Set.union
+          (pat_exp e).varid
+          (free_nl_list bound_prem prems).varid
+        )
+      )
+    in
+    if free_rh <> Free.Set.empty then
+      error d.at ("rule contains unbound variable(s) `" ^
+        String.concat "`, `" (Free.Set.elements free_rh) ^ "`");
     let free = (Free.free_def d).Free.varid in
     let binds' = make_binds env free dims d.at in
     let rule' = Il.RuleD (id2, binds', mixop, tup_exp' es' e.at, prems') $ d.at in
@@ -1059,15 +1071,24 @@ let elab_def env d : Il.def list =
     let e2' = Multiplicity.annot_exp dims' (elab_exp env e2 t2) in
     let prems' = List.map (Multiplicity.annot_prem dims')
       (map_nl_list (elab_prem env) prems) in
-(*
     let free_rh =
-      Free.(Set.diff (Set.diff (free_exp e2).varid
-        (free_exp e1).varid) (free_nl_list free_prem prems).varid)
+      Free.(Set.diff
+        (Set.union
+          (free_exp e2).varid
+          (free_nl_list free_prem prems).varid
+        )
+        (Set.union
+          (Set.union
+            (pat_exp e1).varid
+            (bound_exp e2).varid
+          )
+          (free_nl_list bound_prem prems).varid
+        )
+      )
     in
     if free_rh <> Free.Set.empty then
       error d.at ("definition contains unbound variable(s) `" ^
         String.concat "`, `" (Free.Set.elements free_rh) ^ "`");
-*)
     let free = Free.(Set.union (Set.union
       (free_exp e1).varid (free_exp e2).varid) (free_nl_list free_prem prems).varid) in
     let binds' = make_binds env free dims d.at in
