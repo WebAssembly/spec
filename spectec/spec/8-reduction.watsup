@@ -375,14 +375,22 @@ rule Step_read/array.new_data-alloc:
 rule Step_read/array.get-null:
   z; (REF.NULL ht) (CONST I32 i) (ARRAY.GET sx? x)  ~>  TRAP
 
+rule Step_read/array.get-oob:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  TRAP
+  -- if i >= |$arrayinst(z)[a].FIELD|
+
 rule Step_read/array.get-array:
-  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(zt, sx?, ai.FIELD[i])
-  -- if $arrayinst(z)[a] = ai
-  -- Expand: ai.TYPE ~~ ARRAY (mut zt)
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) (ARRAY.GET sx? x)  ~>  $unpackval(zt, sx?, fv)
+  -- if fv = $arrayinst(z)[a].FIELD[i]
+  -- Expand: $arrayinst(z)[a].TYPE ~~ ARRAY (mut zt)
 
 
 rule Step/array.set-null:
   z; (REF.NULL ht) (CONST I32 i) val (ARRAY.SET x)  ~>  z; TRAP
+
+rule Step/array.set-oob:
+  z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  z; TRAP
+  -- if i >= |$arrayinst(z)[a].FIELD|
 
 rule Step/array.set-array:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) val (ARRAY.SET x)  ~>  $with_array(z, a, i, fv); epsilon
