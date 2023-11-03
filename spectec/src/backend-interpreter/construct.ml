@@ -407,8 +407,8 @@ let rec al_of_instr wasm_module winstr =
   | Ast.ArrayGet (i32, sx_opt) ->
       ConstructV
         ("ARRAY.GET", [
-            to_int i32;
-            OptV (Option.map al_of_extension sx_opt)
+            OptV (Option.map al_of_extension sx_opt);
+            to_int i32
         ])
   | Ast.ArraySet i32 -> f_i32 "ARRAY.SET" i32
   | Ast.ArrayLen -> f "ARRAY.LEN"
