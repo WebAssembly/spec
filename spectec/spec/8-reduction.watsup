@@ -439,7 +439,7 @@ rule Step_read/array.copy-le:
   z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1)
     (REF.ARRAY_ADDR a_2) (CONST I32 i_2)
-    (ARRAY.GET sx? x_1) (ARRAY.SET x_1)
+    (ARRAY.GET sx? x_2) (ARRAY.SET x_1)
     (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + 1)) (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + 1)) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   -- otherwise
   -- Expand: $type(z, x_2) ~~ ARRAY (mut zt_2)
@@ -450,7 +450,7 @@ rule Step_read/array.copy-gt:
   z; (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 n) (ARRAY.COPY x_1 x_2)  ~>
     (REF.ARRAY_ADDR a_1) (CONST I32 $(i_1 + n - 1))
     (REF.ARRAY_ADDR a_2) (CONST I32 $(i_2 + n - 1))
-    (ARRAY.GET sx? x_1) (ARRAY.SET x_1)
+    (ARRAY.GET sx? x_2) (ARRAY.SET x_1)
     (REF.ARRAY_ADDR a_1) (CONST I32 i_1) (REF.ARRAY_ADDR a_2) (CONST I32 i_2) (CONST I32 $(n-1)) (ARRAY.COPY x_1 x_2)
   -- otherwise
 
