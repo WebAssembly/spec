@@ -201,8 +201,8 @@ let extract_addr_of tag name (export: value) =
     when export_name = Utf8.encode name && export_tag = tag -> Some (addr)
   | _ -> None
 
-let do_invoke act = match act.it with
-  | Script.Invoke (module_name_opt, name, literals) ->
+let do_action act = match act.it with
+  | Invoke (module_name_opt, name, literals) ->
     let module_name = get_module_name module_name_opt in
     let module_inst = find_module_inst module_name in
     let export_insts = match module_inst with
@@ -251,13 +251,13 @@ let check_nanop no actual =
   match actual with
   | ConstructV ("CONST", [ConstructV (t, []); NumV bits]) ->
     begin match no.it with
-    | Reference_interpreter.Value.F32 Script.CanonicalNan ->
+    | Reference_interpreter.Value.F32 CanonicalNan ->
       t = "F32" && (bits = f32_pos_nan || bits = f32_neg_nan)
-    | Reference_interpreter.Value.F64 Script.CanonicalNan ->
+    | Reference_interpreter.Value.F64 CanonicalNan ->
       t = "F64" && (bits = f64_pos_nan || bits = f64_neg_nan)
-    | Reference_interpreter.Value.F32 Script.ArithmeticNan ->
+    | Reference_interpreter.Value.F32 ArithmeticNan ->
       t = "F32" && Int64.logand bits f32_pos_nan = f32_pos_nan
-    | Reference_interpreter.Value.F64 Script.ArithmeticNan ->
+    | Reference_interpreter.Value.F64 ArithmeticNan ->
       t = "F64" && Int64.logand bits f64_pos_nan = f64_pos_nan
     | _ -> failwith "NaN of int is not defined"
     end
@@ -315,15 +315,15 @@ let get_externvals = function
   | _ -> failwith "Invalid module"
 
 let extract_module def = match def.it with
-  | Script.Textual m -> m
-  | Script.Encoded (name, bs) ->
+  | Textual m -> m
+  | Encoded (name, bs) ->
     Decode.decode name bs
-  | Script.Quoted (_, s) ->
+  | Quoted (_, s) ->
     Parse.string_to_module s
 
 let test_assertion assertion =
   match assertion.it with
-  | Script.AssertReturn (invoke, expected) ->
+  | AssertReturn (invoke, expected) ->
 
     let fail_with =
       List.map (fun r -> r.it) expected
@@ -333,7 +333,7 @@ let test_assertion assertion =
 
     begin try
       (* Invoke *)
-      match do_invoke invoke with
+      match do_action invoke with
       | ListV arr ->
         let actual = Array.to_list !arr in
         assert (List.length actual = List.length expected);
@@ -347,16 +347,16 @@ let test_assertion assertion =
         |> failwith
     with e -> msg_of e |> fail_with
     end
-  | Script.AssertTrap (invoke, msg) ->
+  | AssertTrap (invoke, msg) ->
     let expected = "Trap due to " ^ msg in
     begin try
-      let result = do_invoke invoke in
+      let result = do_action invoke in
       fail expected (Al.Print.string_of_value result)
     with
       | Exception.Trap -> Success
       | e -> fail expected (Printexc.to_string e)
     end
-  | Script.AssertUninstantiable (def, msg) ->
+  | AssertUninstantiable (def, msg) ->
     let expected = "Module instantiation failure due to " ^ msg in
     begin try
       let al_module = Construct.al_of_module (extract_module def) in
@@ -395,8 +395,8 @@ let test_module module_name m =
 
 let test_cmd success cmd =
   match cmd.it with
-  | Script.Module (module_name, def) -> test_module module_name (extract_module def)
-  | Script.Register (name, module_name_opt) ->
+  | Module (module_name, def) -> test_module module_name (extract_module def)
+  | Register (name, module_name_opt) ->
       let s = Utf8.encode name in
       let module_name = match module_name_opt with
         | Some s -> s.it
@@ -404,16 +404,18 @@ let test_cmd success cmd =
       in
       let module_inst = find_module_inst module_name in
       register := Register.add s module_inst !register
-  | Script.Action a -> (
-    try do_invoke a |> ignore with
-    | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
+  | Action a -> (
+      try
+        do_action a |> ignore;
+        success := !success + 1
+      with | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
   )
-  | Script.Assertion a ->
+  | Assertion a ->
       begin match test_assertion a with
         | Success -> success := !success + 1
         | _ -> ()
       end
-  | Script.Meta _ -> failwith not_supported_msg
+  | Meta _ -> failwith not_supported_msg
 
 (* Intialize store and registered modules *)
 let init_tester () =
@@ -430,9 +432,10 @@ let test file_name =
 
   let script = file_to_script file_name in
   let total = script |> List.filter (fun x -> match x.it with
-    | Script.Assertion {it = Script.AssertReturn _; _}
-    | Script.Assertion {it = Script.AssertTrap _ ; _}
-    | Script.Assertion {it = Script.AssertUninstantiable _ ; _}-> true
+    | Assertion {it = AssertReturn _; _}
+    | Assertion {it = AssertTrap _ ; _}
+    | Assertion {it = AssertUninstantiable _ ; _}
+    | Action _ -> true
     | _ -> false
   ) |> List.length in
 
