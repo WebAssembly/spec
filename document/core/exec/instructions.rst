@@ -959,7 +959,7 @@ Reference Instructions
    \begin{array}{lcl@{\qquad}l}
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto \TRAP
    \\ \qquad
-    (\iff |\SARRAYS[a].\AIFIELDS| \leq i)
+    (\iff i \geq |\SARRAYS[a].\AIFIELDS|)
    \\[1ex]
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto S'; \epsilon
    \\ \qquad
