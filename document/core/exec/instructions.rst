@@ -1249,8 +1249,8 @@ Where:
 
 .. math::
    \begin{array}{lll}
-   \getfield(\valtype) &=& \ARRAYGET \\
-   \getfield(\packedtype) &=& \ARRAYGETU \\
+   \getfield(\valtype) &=& \ARRAYGET~y \\
+   \getfield(\packedtype) &=& \ARRAYGETU~y \\
    \end{array}
 
 
