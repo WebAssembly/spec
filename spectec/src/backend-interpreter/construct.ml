@@ -412,7 +412,7 @@ let rec al_of_instr wasm_module winstr =
         ])
   | Ast.ArraySet i32 -> f_i32 "ARRAY.SET" i32
   | Ast.ArrayLen -> f "ARRAY.LEN"
-  | Ast.ArrayCopy (i32, i32') -> f_i32_i32 "ARRAY.COPTY" i32 i32'
+  | Ast.ArrayCopy (i32, i32') -> f_i32_i32 "ARRAY.COPY" i32 i32'
   | Ast.ArrayFill i32 -> f_i32 "ARRAY.FILL" i32
   | Ast.ArrayInitData (i32, i32') -> f_i32_i32 "ARRAY.INIT_DATA" i32 i32'
   | Ast.ArrayInitElem (i32, i32') -> f_i32_i32 "ARRAY.INIT_ELEM" i32 i32'

@@ -413,7 +413,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 16/20 (80.00%)
 
 ===== array_copy.wast =====
-- 0/30 (0.00%)
+- 6/30 (20.00%)
 
 ===== ref_cast.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
@@ -444,6 +444,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24117/24356] (99.02%; Normalized 91.56%)
+Total [24123/24356] (99.04%; Normalized 91.77%)
 == Complete.
 ```
