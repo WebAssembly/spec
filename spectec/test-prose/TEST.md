@@ -43,6 +43,8 @@ Animation failed:if ($bytes($storagesize(zt), c)^n{c} = [$data(z, y).DATA_datain
 Animation failed:Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(`%%`(mut, zt)))
 Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
 Animation failed:if (sx?{sx} = $sxfield(zt_2))
+Animation failed:Expand: `%~~%`($type(z, x_2), ARRAY_comptype(`%%`(mut, zt_2)))
+Animation failed:if (sx?{sx} = $sxfield(zt_2))
 Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
 Animation failed:if ((j + ((n * $storagesize(zt)) / 8)) > |$data(z, y).DATA_datainst|)
 Animation failed:Expand: `%~~%`($type(z, x), ARRAY_comptype(`%%`(mut, zt)))
@@ -62,78 +64,5 @@ Animation failed:Expand: `%~~%`($arrayinst(z)[a].TYPE_arrayinst, ARRAY_comptype(
 Animation failed:if (fv = $packval(zt, val))
 == IL Validation after pass animate...
 == Prose Generation...
-/Users/me/Desktop/Work/Software/wasm/spec.tec/spectec/_build/default/spec/../src/exe-watsup/main.exe: uncaught exception Failure("Unreachable")
-Raised at Stdlib.failwith in file "stdlib.ml", line 29, characters 17-33
-Called from Stdlib__List.map in file "list.ml", line 92, characters 20-23
-Called from Backend_prose__Il2ir.rhs2instrs in file "src/backend-prose/il2ir.ml", line 72, characters 26-54
-Called from Backend_prose__Il2ir.rhs2instrs in file "src/backend-prose/il2ir.ml", line 70, characters 24-38
-Called from Backend_prose__Il2ir.reduction_group2program in file "src/backend-prose/il2ir.ml", line 119, characters 26-40
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Stdlib__List.fold_right in file "list.ml", line 126, characters 16-37
-Called from Dune__exe__Main in file "src/exe-watsup/main.ml", line 173, characters 22-54
-[2]
+== Complete.
 ```

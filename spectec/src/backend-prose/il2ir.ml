@@ -174,8 +174,9 @@ let rec group = function
 (** Entry **)
 
 (* `Ast.script` -> `Ir.Program` *)
-let translate il =
+let translate il = try
   let rules = List.fold_right extract_rules il [] |> List.flatten in
   let reduction_groups: reduction_group list = group rules in
 
   List.fold_right reduction_group2program reduction_groups []
+with | _ -> []
