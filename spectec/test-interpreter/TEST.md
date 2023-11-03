@@ -416,11 +416,11 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 
 ===== ref_cast.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 35/40 (87.50%)
+- 36/40 (90.00%)
 
 ===== ref_test.wast =====
 - Uncaught exception: Direct invocation failed due to Backend_interpreter.Exception.Trap
-- 41/66 (62.12%)
+- 43/66 (65.15%)
 
 ===== return_call_indirect.wast =====
 - 43/43 (100.00%)
@@ -443,6 +443,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24319/24356] (99.85%; Normalized 99.20%)
+Total [24322/24356] (99.86%; Normalized 99.26%)
 == Complete.
 ```

@@ -393,7 +393,7 @@ and eval_cond env cond =
       match aht1, aht2 with
       | aht1, aht2 when aht1 = aht2 -> true
       | _, "ANY" -> matches_abstract_heap_type aht1 "EQ"
-      | ("I32" | "STRUCT" | "ARRAY"), "EQ" -> true
+      | ("I31" | "STRUCT" | "ARRAY"), "EQ" -> true
       | _ -> false
     in
     let rec matches v1 v2 =
