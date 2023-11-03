@@ -71,7 +71,9 @@ let builtin () =
     |> Record.add "TABLE" []
     |> Record.add "MEM" []
     |> Record.add "ELEM" []
-    |> Record.add "DATA" [] in
+    |> Record.add "DATA" []
+    |> Record.add "STRUCT" []
+    |> Record.add "ARRAY" [] in
 
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
   let create_func_inst (name, type_tags) =
