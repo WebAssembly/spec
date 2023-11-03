@@ -384,7 +384,7 @@ let inverse_of_bytes_ : numerics =
     name = "inverse_of_bytes";
     f =
       (function
-      | [ NumV n; ListV bs] ->
+      | [ NumV n; ListV bs ] ->
           assert (n = Int64.of_int (Array.length !bs * 8));
           NumV (Array.fold_right (fun b acc ->
             match b with

@@ -532,7 +532,7 @@ rule Step_read/array.init_data-zero:
 rule Step_read/array.init_data-succ:
   z; (REF.ARRAY_ADDR a) (CONST I32 i) (CONST I32 j) (CONST I32 n) (ARRAY.INIT_DATA x y)  ~>
     (REF.ARRAY_ADDR a) (CONST I32 i) (CONST nt c) (ARRAY.SET x)
-    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + 1)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
+    (REF.ARRAY_ADDR a) (CONST I32 $(i + 1)) (CONST I32 $(j + $storagesize(zt)/8)) (CONST I32 $(n-1)) (ARRAY.INIT_DATA x y)
   -- otherwise
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
   -- if nt = $unpacknumtype(zt)

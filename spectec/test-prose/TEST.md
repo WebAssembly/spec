@@ -1306,13 +1306,13 @@ instantiate module externval*
 13. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
 14. Let (_, f) be z.
 15. Enter the activation of f with label [FRAME_]:
-  a. Let [ref_e]** be $eval_expr_const(expr_e)**.
+  a. Let [val_g]* be $eval_expr_const(expr_g)*.
 16. Let (_, f) be z.
 17. Enter the activation of f with label [FRAME_]:
   a. Let [ref_t]* be $eval_expr_const(expr_t)*.
 18. Let (_, f) be z.
 19. Enter the activation of f with label [FRAME_]:
-  a. Let [val_g]* be $eval_expr_const(expr_g)*.
+  a. Let [ref_e]** be $eval_expr_const(expr_e)**.
 20. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
 21. Let f be { LOCAL: []; MODULE: mm; }.
 22. Enter the activation of f with arity 0 with label [FRAME_]:
@@ -1972,21 +1972,20 @@ execution_of_ARRAY.INIT_DATA x y
     2) If n is 0, then:
       a) Do nothing.
     3) Else:
-      a) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
-      b) Let (REF.ARRAY_ADDR a) be u_0.
-      c) Let nt be $unpacknumtype(zt).
-      d) Let (ARRAY y_1) be $expanddt($type(x)).
-      e) Let (mut, y_2) be y_1.
-      f) If y_2 is y_0 and y_0 is zt, then:
-        1. Push (REF.ARRAY_ADDR a) to the stack.
-        2. Push (I32.CONST i) to the stack.
-        3. Push (nt.CONST c) to the stack.
-        4. Execute (ARRAY.SET x).
-        5. Push (REF.ARRAY_ADDR a) to the stack.
-        6. Push (I32.CONST (i + 1)) to the stack.
-        7. Push (I32.CONST (j + 1)) to the stack.
-        8. Push (I32.CONST (n - 1)) to the stack.
-        9. Execute (ARRAY.INIT_DATA x y).
+      a) Let (ARRAY y_0) be $expanddt($type(x)).
+      b) Let (mut, zt) be y_0.
+      c) Let (REF.ARRAY_ADDR a) be u_0.
+      d) Let c be $inverse_of_bytes($storagesize(zt), $data(y).DATA[j : ($storagesize(zt) / 8)]).
+      e) Let nt be $unpacknumtype(zt).
+      f) Push (REF.ARRAY_ADDR a) to the stack.
+      g) Push (I32.CONST i) to the stack.
+      h) Push (nt.CONST c) to the stack.
+      i) Execute (ARRAY.SET x).
+      j) Push (REF.ARRAY_ADDR a) to the stack.
+      k) Push (I32.CONST (i + 1)) to the stack.
+      l) Push (I32.CONST (j + ($storagesize(zt) / 8))) to the stack.
+      m) Push (I32.CONST (n - 1)) to the stack.
+      n) Execute (ARRAY.INIT_DATA x y).
 
 execution_of_LOCAL.GET x
 1. Assert: Due to validation, $local(x) is defined.

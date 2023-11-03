@@ -170,7 +170,11 @@ let rec powset = function
 | [] -> [ [] ]
 | hd :: tl -> List.concat_map (fun pow -> [ hd :: pow ; pow ]) (powset tl)
 
-let large_enough_powset xs =
+let wrap x = [x]
+
+let singletons = List.map wrap
+
+let large_enough_subsets xs =
   let yss = powset xs in
   let n = List.length xs in
   (* Assumption: Allowing one variable to be known *)
@@ -178,7 +182,7 @@ let large_enough_powset xs =
   let min = if n >= 2 then n-1 else n in
   List.filter ( fun ys -> min <= List.length ys ) yss
 
-let is_not_lhs = function
+let is_not_lhs e = match e.it with
 | LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
 | _ -> false
 
@@ -187,10 +191,20 @@ let is_atomic_lhs e = match e.it with
 | CaseE (Atom "FUNC", { it = MixE ([ []; [Arrow]; [] ], { it = TupE [ { it = IterE (_, (ListN _, _)); _} ; { it = IterE (_, (ListN _, _)); _} ] ; _} ); _ }) -> true
 | _ -> false
 
+(* Hack to handle ARRAY.INIT_DATA, eventually should be removed *)
+let is_call e = match e.it with
+| CallE _ -> true
+| _ -> false
+
+let subset_selector e =
+  if is_not_lhs e then (fun _ -> [])
+  else if is_call e then singletons
+  else if is_atomic_lhs e then wrap
+  else large_enough_subsets
+
 let rows_of_eq vars p_tot_num i l r at =
-  if (is_not_lhs l.it) then [] else
   free_exp_list l
-  |> (if is_atomic_lhs l then (fun xs -> [xs]) else large_enough_powset)
+  |> subset_selector l
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
     if List.length frees = List.length covering_vars then (
