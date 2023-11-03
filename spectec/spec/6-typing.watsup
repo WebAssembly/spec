@@ -174,7 +174,7 @@ def $unrollht(C, REC i) = C.REC[i]
 
 rule Subtype_ok2:
   C |- SUBD fin ht* ct : OK x i
-  -- if |y*| <= 1
+  -- if |ht*| <= 1
   -- if ($before(ht, x, i))*
   -- if ($unrollht(C, ht) = SUBD epsilon ht'* ct')*
   -- Comptype_ok: C |- ct : OK

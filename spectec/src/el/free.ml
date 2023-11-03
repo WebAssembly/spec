@@ -24,6 +24,10 @@ let free_list free_x xs = List.(fold_left union empty (map free_x xs))
 let free_nl_elem free_x = function Nl -> empty | Elem x -> free_x x
 let free_nl_list free_x xs = List.(fold_left union empty (map (free_nl_elem free_x) xs))
 
+let bound_opt = free_opt
+let bound_list = free_list
+let bound_nl_list = free_nl_list
+
 
 (* Identifiers *)
 
@@ -31,6 +35,8 @@ let free_synid id = {empty with synid = Set.singleton id.it}
 let free_relid id = {empty with relid = Set.singleton id.it}
 let free_varid id = {empty with varid = Set.singleton id.it}
 let free_defid id = {empty with defid = Set.singleton id.it}
+
+let bound_varid = free_varid
 
 
 (* Iterations *)
@@ -72,8 +78,7 @@ and free_exp e =
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
-  | InfixE (e1, _, e2) | FuseE (e1, e2) ->
-    free_list free_exp [e1; e2]
+  | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | SeqE es | TupE es -> free_list free_exp es
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
@@ -92,8 +97,69 @@ and free_path p =
     union (free_path p1) (union (free_exp e1) (free_exp e2))
   | DotP (p1, _) -> free_path p1
 
+(* We consider all variables "bound" that occur as iteration variable
+ * or in an equation in "pattern" position. *)
+and bound_exp e =
+  match e.it with
+  | CmpE (e1, EqOp, e2) -> union (pat_exp e1) (pat_exp e2)
+  | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE | HoleE _ -> empty
+  | UnE (_, e1) | DotE (e1, _) | LenE e1
+  | ParenE (e1, _) | BrackE (_, e1) -> bound_exp e1
+  | BinE (e1, _, e2) | CmpE (e1, _, e2) -> union (bound_exp e1) (bound_exp e2)
+  | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
+  | InfixE (e1, _, e2) | FuseE (e1, e2) -> bound_list bound_exp [e1; e2]
+  | SliceE (e1, e2, e3) -> bound_list bound_exp [e1; e2; e3]
+  | SeqE es | TupE es -> bound_list bound_exp es
+  | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
+    union (bound_list bound_exp [e1; e2]) (bound_path p)
+  | StrE efs -> bound_nl_list bound_expfield efs
+  | CallE (_, e1) -> bound_exp e1
+  | IterE (e1, iter) -> union (bound_exp e1) (bound_iter iter)
 
-(* Definitions *)
+and bound_expfield (_, e) = bound_exp e
+
+and bound_path p =
+  match p.it with
+  | RootP -> empty
+  | IdxP (p1, e) -> union (bound_path p1) (bound_exp e)
+  | SliceP (p1, e1, e2) ->
+    union (bound_path p1) (union (bound_exp e1) (bound_exp e2))
+  | DotP (p1, _) -> bound_path p1
+
+and bound_iter iter =
+  match iter with
+  | Opt | List | List1 -> empty
+  | ListN (e, id_opt) -> union (bound_exp e) (bound_opt bound_varid id_opt)
+
+and pat_exp e =
+  match e.it with
+  | VarE id -> bound_varid id
+  | UnE ((PlusOp | MinusOp), e1)
+  | ParenE (e1, _) | BrackE (_, e1) -> pat_exp e1
+  (* We consider all arithmetic expressions patterns,
+   * since we sometimes need to use invertible formulas. *)
+  | BinE (e1, (AddOp | SubOp | MulOp | DivOp | ExpOp), e2)
+  | InfixE (e1, _, e2) | FuseE (e1, e2) -> bound_list pat_exp [e1; e2]
+  | SeqE es | TupE es -> bound_list pat_exp es
+  | StrE efs -> bound_nl_list pat_expfield efs
+  | IterE (e1, iter) -> union (pat_exp e1) (pat_iter iter)
+  (* As a special hack to work with bijective functions,
+   * we treat last position of a call as a pattern, too. *)
+  | CallE (_, {it = TupE (_::_ as es); _}) ->
+    let es', eN = Util.Lib.List.split_last es in
+    union (bound_list bound_exp es') (pat_exp eN)
+  | CallE (_, e1) -> pat_exp e1
+  | _ -> bound_exp e
+
+and pat_expfield (_, e) = pat_exp e
+
+and pat_iter iter =
+  match iter with
+  | Opt | List | List1 -> empty
+  | ListN (e, id_opt) -> union (pat_exp e) (bound_opt bound_varid id_opt)
+
+
+(* Premises *)
 
 let rec free_prem prem =
   match prem.it with
@@ -101,6 +167,18 @@ let rec free_prem prem =
   | IfPr e -> free_exp e
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iter iter)
+
+(* We consider all variables "bound" that occur in a judgement
+ * or are bound in a condition. *)
+and bound_prem prem =
+  match prem.it with
+  | RulePr (_id, e) -> free_exp e
+  | IfPr e -> bound_exp e
+  | ElsePr -> empty
+  | IterPr (prem', _iter) -> bound_prem prem'
+
+
+(* Definitions *)
 
 let free_def d =
   match d.it with
