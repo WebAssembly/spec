@@ -1647,12 +1647,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -1961,8 +1961,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -3942,12 +3942,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -4256,8 +4256,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -6241,12 +6241,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -6555,8 +6555,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -8550,12 +8550,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -8873,8 +8873,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -10868,12 +10868,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule call {x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -11191,8 +11191,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -13239,16 +13239,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
     -- if (x < |$funcaddr(z)|)
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if (i < |$table(z, x).ELEM_tableinst|)
     -- if (a < |$funcinst(z)|)
-    -- if (y < |C.TYPE_context|)
-    -- if (y' < |C.TYPE_context|)
     -- if ($table(z, x).ELEM_tableinst[i] = REF.FUNC_ADDR_ref(a))
     -- if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
+    -- if ($type(z, y) = $type(z, y'))
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -13571,8 +13569,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63
@@ -13823,9 +13821,8 @@ syntax code = (local*, expr)
 
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed:if (y < |C.TYPE_context|)
-Animation failed:if (y' < |C.TYPE_context|)
-Animation failed:if (C.TYPE_context[y] = C.TYPE_context[y'])
+Animation failed:if ($type(z, y) = $type(z, y'))
+Animation failed:if ($funcinst(z)[a].CODE_funcinst = `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}))
 Animation failed:if ($ntbytes(nt, c) = $mem(z, 0).DATA_meminst[(i + mo.OFFSET_memop) : (o0 / 8)])
 Animation failed:if ($ibytes(n, c) = $mem(z, 0).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
 
@@ -15624,16 +15621,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_ADDR_admininstr($funcaddr(z)[x])])
     -- if (x < |$funcaddr(z)|)
 
-  ;; 6-reduction.watsup:104.1-108.31
-  rule call_indirect-call {C : context, a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
+  ;; 6-reduction.watsup:104.1-108.35
+  rule call_indirect-call {a : addr, i : nat, instr* : instr*, t* : valtype*, x : idx, y : idx, y' : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) CALL_INDIRECT_admininstr(x, y)]), [CALL_ADDR_admininstr(a)])
     -- if (i < |$table(z, x).ELEM_tableinst|)
     -- where REF.FUNC_ADDR_ref(a) = $table(z, x).ELEM_tableinst[i]
+    -- where $type(z, y') = $type(z, y)
     -- if (a < |$funcinst(z)|)
     -- where `FUNC%%*%`(y', LOCAL(t)*{t}, instr*{instr}) = $funcinst(z)[a].CODE_funcinst
-    -- if (y < |C.TYPE_context|)
-    -- if (y' < |C.TYPE_context|)
-    -- if (C.TYPE_context[y] = C.TYPE_context[y'])
 
   ;; 6-reduction.watsup:110.1-112.15
   rule call_indirect-trap {i : nat, x : idx, y : idx, z : state}:
@@ -15956,8 +15951,8 @@ def mems : externval* -> memaddr*
 ;; 7-module.watsup:36.1-36.60
 def allocfunc : (store, moduleinst, func) -> (store, funcaddr)
   ;; 7-module.watsup:37.1-39.34
-  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, moduleinst : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
-    -- if (fi = {TYPE moduleinst.TYPE_moduleinst[x], MODULE mm, CODE func})
+  def {expr : expr, fi : funcinst, func : func, local* : local*, mm : moduleinst, s : store, x : idx} allocfunc(s, mm, func) = (s[FUNC_store =.. [fi]], |s.FUNC_store|)
+    -- if (fi = {TYPE mm.TYPE_moduleinst[x], MODULE mm, CODE func})
     -- if (func = `FUNC%%*%`(x, local*{local}, expr))
 
 ;; 7-module.watsup:41.1-41.63

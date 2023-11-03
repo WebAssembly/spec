@@ -35,7 +35,7 @@ def $mems(externval externval'*) = $mems(externval'*)
 
 def $allocfunc(store, moduleinst, func) : (store, funcaddr)
 def $allocfunc(s, mm, func) = (s[.FUNC =.. fi], |s.FUNC|)
-  -- if fi = { TYPE moduleinst.TYPE[x], MODULE mm, CODE func }
+  -- if fi = { TYPE mm.TYPE[x], MODULE mm, CODE func }
   -- if func = FUNC x local* expr
 
 def $allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
