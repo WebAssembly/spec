@@ -894,16 +894,20 @@ Reference Instructions
 16. Push the value :math:`\val` to the stack.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \val
-     &
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \TRAP
+   \\ \qquad
+    (\iff i \geq |\SARRAYS[a].\AIFIELDS|)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \val
+   \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
       (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
-      \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i]))
-     \end{array} \\
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \TRAP
-     & (\otherwise) \\
-   S; F; (\REFNULL~t)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) &\stepto& \TRAP
+      \land & \val = \unpackval^{\sx^?}_{\X{ft}}(S.\SARRAYS[a].\AIFIELDS[i])) \\
+     \end{array}
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~(\ARRAYGET\K{\_}\sx^?~x) \stepto \TRAP
    \end{array}
 
 
@@ -951,16 +955,20 @@ Reference Instructions
 17. Replace the :ref:`field value <syntax-fieldval>` :math:`S.\SARRAYS[a].\AIFIELDS[i]` with :math:`\fieldval`.
 
 .. math::
+   ~\\[-1ex]
    \begin{array}{lcl@{\qquad}l}
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& S'; \epsilon
-     &
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto \TRAP
+   \\ \qquad
+    (\iff i \geq |\SARRAYS[a].\AIFIELDS|)
+   \\[1ex]
+   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto S'; \epsilon
+   \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
-      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val))
-     \end{array} \\
-   S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& \TRAP
-     & (\otherwise) \\
-   S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) &\stepto& \TRAP
+      \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val)) \\
+     \end{array}
+   \\[1ex]
+   S; F; (\REFNULL~t)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto \TRAP
    \end{array}
 
 
