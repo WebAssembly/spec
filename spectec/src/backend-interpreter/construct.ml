@@ -392,12 +392,11 @@ let rec al_of_instr wasm_module winstr =
   | Ast.StructNew (i32, Ast.Explicit) -> f_i32 "STRUCT.NEW" i32
   | Ast.StructNew (i32, Ast.Implicit) -> f_i32 "STRUCT.NEW_DEFAULT" i32
   | Ast.StructGet (i32, i32', sx_opt) ->
-      ConstructV
-        ("STRUCT.GET", [
-            to_int i32;
-            to_int i32';
-            OptV (Option.map al_of_extension sx_opt)
-        ])
+      ConstructV ("STRUCT.GET", [
+        OptV (Option.map al_of_extension sx_opt);
+        to_int i32;
+        to_int i32'
+      ])
   | Ast.StructSet (i32, i32') -> f_i32_i32 "STRUCT.SET" i32 i32'
   | Ast.ArrayNew (i32, Ast.Explicit) -> f_i32 "ARRAY.NEW" i32
   | Ast.ArrayNew (i32, Ast.Implicit) -> f_i32 "ARRAY.NEW_DEFAULT" i32
