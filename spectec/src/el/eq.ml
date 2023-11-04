@@ -92,7 +92,7 @@ and eq_exp e1 e2 =
   | InfixE (e11, atom1, e12), InfixE (e21, atom2, e22) ->
     eq_exp e11 e21 && atom1 = atom2 && eq_exp e12 e22
   | BrackE (brack1, e1), BrackE (brack2, e2) -> brack1 = brack2 && eq_exp e1 e2
-  | CallE (id1, e1), CallE (id2, e2) -> id1 = id2 && eq_exp e1 e2
+  | CallE (id1, e1), CallE (id2, e2) -> id1.it = id2.it && eq_exp e1 e2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iter iter1 iter2
   | _, _ -> e1.it = e2.it

@@ -154,7 +154,6 @@ ruleid_ :
   | id { $1 }
   | NATLIT { Int.to_string $1 }
   | BOOLLIT { Bool.to_string $1 }
-  | IN { "in" }
   | IF { "if" }
   | VAR { "var" }
   | DEF { "def" }

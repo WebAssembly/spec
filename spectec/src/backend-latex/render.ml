@@ -489,7 +489,7 @@ and render_typ env t =
   | NumT RatT -> render_synid env ("rat" $ t.at)
   | NumT RealT -> render_synid env ("real" $ t.at)
   | TextT -> render_synid env ("text" $ t.at)
-  | ParenT t -> "(" ^ render_typ env t ^ ")"
+  | ParenT t1 -> "(" ^ render_typ env t1 ^ ")"
   | TupT ts -> "(" ^ render_typs ",\\; " env ts ^ ")"
   | IterT (t1, iter) -> "{" ^ render_typ env t1 ^ render_iter env iter ^ "}"
   | StrT tfs ->
@@ -1000,10 +1000,6 @@ let rec render_script env = function
         render_script env ds'
       | None -> error d.at "unrecognized form of relation"
       )
-    | VarD _ ->
-      render_script env ds
-    | DecD _ ->
-      render_script env ds
     | DefD (id, _, _, _) ->
       let funcdefs, ds' = split_funcdefs id.it [d] ds in
       "$$\n" ^ render_defs env funcdefs ^ "\n$$\n\n" ^
@@ -1011,5 +1007,5 @@ let rec render_script env = function
     | SepD ->
       "\\vspace{1ex}\n\n" ^
       render_script env ds
-    | HintD _ ->
+    | VarD _ | DecD _ | HintD _ ->
       render_script env ds
