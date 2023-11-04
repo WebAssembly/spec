@@ -112,7 +112,9 @@ let rec matches v1 v2 =
   | ConstructV ("DEF", _), ConstructV (aht, [])
     when is_abstract_heap_type aht ->
       begin match dsl_function_call "expanddt" [ v1 ] with
-      | Some v1' -> matches v1' v2
+      | Some (ConstructV (tag1, _)) ->
+        matches (singleton tag1) v2
+      | Some _ -> failwith "Invalid result of expand"
       | _ -> raise Exception.MissingReturnValue
       end
   (* nullable abstract heap types <: deftype *)
