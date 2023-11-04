@@ -461,7 +461,7 @@ and eval_cond env cond =
       s = "heaptype" || s = "typevar"
     (* heaptype *)
     | ConstructV ("REC", [ _ ]) ->
-      s = "heaptype"
+      s = "heaptype" || s = "typevar"
     (* packedtype *)
     | ConstructV (pt, []) when List.mem pt packed_types ->
       s = "packedtype" || s = "storagetype"
@@ -663,6 +663,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       | ConstructV ("REF.HOST_ADDR", [ _ ]) ->
         ConstructV ("REF", [ nonull; singleton "ANY"])
       (* extern *)
+      (* TODO: check null *)
       | ConstructV ("REF.EXTERN", [ _ ]) ->
         ConstructV ("REF", [ nonull; singleton "EXTERN"])
       | _ -> failwith "Invalid arguments for $ref_type_of"
