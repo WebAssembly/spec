@@ -55,92 +55,20 @@ let none = singleton "NONE"
 let nofunc = singleton "NOFUNC"
 let noextern = singleton "NOEXTERN"
 
-let abstract_heap_types = [
-   "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE";
-   "FUNC"; "NOFUNC"; "EXTERN"; "NOEXTERN"; "BOT"
-]
-let is_abstract_heap_type aht = List.mem aht abstract_heap_types
 
-let is_nullable_aht = function
-  | "NONE" | "NOFUNC" | "NOEXTERN" -> true
-  | _ -> false
+let match_ref_type v1 v2 =
+  let rt1 = Construct.al_to_ref_type v1 in
+  let rt2 = Construct.al_to_ref_type v2 in
+  Match.match_ref_type [] rt1 rt2
 
-let top_of_chain = function
-  | "NONE" | "I31" | "STRUCT" | "ARRAY" | "EQ" | "ANY" -> "ANY"
-  | "NOFUNC" | "FUNC" -> "FUNC"
-  | "NOEXTERN" | "EXTERN" -> "EXTERN"
-  | n ->
-    Printf.sprintf "Invalid nullable abstract heap type: %s" n
-    |> failwith
-
-let rec matches_abstract_heap_type aht1 = function
-  (* aht <: aht *)
-  | aht2 when aht1 = aht2 -> true
-  (* EQ <: ANY *)
-  | "ANY" -> matches_abstract_heap_type aht1 "EQ"
-  (* I31, STRUCT, ARRAY <: EQ *)
-  | "EQ" ->
-    matches_abstract_heap_type aht1 "I31" ||
-    matches_abstract_heap_type aht1 "STRUCT" ||
-    matches_abstract_heap_type aht1 "ARRAY"
-  (* NONE <: I31, STRUCT, ARRAY *)
-  | ("I31" | "STRUCT" | "ARRAY") ->
-    matches_abstract_heap_type aht1 "NONE"
-  (* NOFUNC <: FUNC *)
-  | "FUNC" -> matches_abstract_heap_type aht1 "NOFUNC"
-  (* NOEXTERN <: EXTERN *)
-  | "EXTERN" -> matches_abstract_heap_type aht1 "NOEXTERN"
-  | _ -> false
-
-let rec matches v1 v2 =
-  match v1, v2 with
-  (* reflexive case *)
-  | v1, v2 when Eq.eq_value v1 v2 -> true
-  (* bot *)
-  | ConstructV ("BOT", _), _ -> true
-  (* abstract heaptype *)
-  | ConstructV (aht1, _), ConstructV(aht2, _)
-    when is_abstract_heap_type aht1
-    && is_abstract_heap_type aht2 ->
-      matches_abstract_heap_type aht1 aht2
-  (* reftype *)
-  | ConstructV ("REF", [ no1; ht1 ]),
-    ConstructV ("REF", [ no2; ht2 ]) ->
-    ((no2 = null) || (no1 = nonull && no2 = nonull))
-    && matches ht1 ht2
-  (* deftype <: abstract heap types *)
-  | ConstructV ("DEF", _), ConstructV (aht, [])
-    when is_abstract_heap_type aht ->
-      begin match dsl_function_call "expanddt" [ v1 ] with
-      | Some (ConstructV (tag1, _)) ->
-        matches (singleton tag1) v2
-      | Some _ -> failwith "Invalid result of expand"
-      | _ -> raise Exception.MissingReturnValue
-      end
-  (* nullable abstract heap types <: deftype *)
-  | ConstructV (naht, []), ConstructV ("DEF", _)
-    when is_nullable_aht naht ->
-      begin match dsl_function_call "expanddt" [ v2 ] with
-      | Some v2' -> top_of_chain naht |> singleton |> matches v2'
-      | _ -> raise Exception.MissingReturnValue
-      end
-  (* deftype <: deftype *)
-  | ConstructV ("DEF", _), ConstructV ("DEF", _) ->
-    begin match dsl_function_call "unrolldt" [ v1 ] with
-    | Some (ConstructV ("SUBD", [ _; ListV htl; _ ])) ->
-      Array.exists (fun ht -> matches ht v2) !htl
-    | Some _ -> failwith "Invalid result of unrolldt"
-    | _ -> raise Exception.MissingReturnValue
-    end
-  | v1, v2 ->
-    Printf.sprintf "%s <: %s"
-      (string_of_value v1)
-      (string_of_value v2)
-    |> failwith
+let match_heap_type v1 v2 =
+  let rt1 = Construct.al_to_heap_type v1 in
+  let rt2 = Construct.al_to_heap_type v2 in
+  Match.match_heap_type [] rt1 rt2
 
 (* Expression *)
 
-and create_sub_al_context names iter env =
+let rec create_sub_al_context names iter env =
 
   (*
     Currently, the index is mistakenly inserted in names
@@ -475,7 +403,7 @@ and eval_cond env cond =
   | MatchC (e1, e2) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
-    matches v1 v2
+    match_ref_type v1 v2
   | c ->
     structured_string_of_cond c |> failwith
 
@@ -599,11 +527,11 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       match List.hd args with
       (* null *)
       | ConstructV ("REF.NULL", [ ht ]) ->
-        if matches none ht then
+        if match_heap_type none ht then
           ConstructV ("REF", [ null; none])
-        else if matches nofunc ht then
+        else if match_heap_type nofunc ht then
           ConstructV ("REF", [ null; nofunc])
-        else if matches noextern ht then
+        else if match_heap_type noextern ht then
           ConstructV ("REF", [ null; noextern])
         else
           List.hd args

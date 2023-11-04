@@ -381,7 +381,7 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 - 17/17 (100.00%)
 
 ===== type-subtyping.wast =====
-- 19/20 (95.00%)
+- 20/20 (100.00%)
 
 ===== array.wast =====
 - 31/31 (100.00%)
@@ -440,6 +440,6 @@ if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
 ===== return_call_ref.wast =====
 - 30/30 (100.00%)
 
-Total [24524/24525] (100.00%; Normalized 99.95%)
+Total [24525/24525] (100.00%; Normalized 100.00%)
 == Complete.
 ```

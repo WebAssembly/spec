@@ -42,6 +42,7 @@ and al_of_str_type = function
       al_of_result_type rt1,
       al_of_result_type rt2
     )])
+
 and al_of_sub_type = function
   | Types.SubT (fin, htl, st) ->
     ConstructV ("SUBD", [
@@ -65,12 +66,14 @@ and al_of_heap_type = function
   | Types.VarHT (RecX i) ->
     ConstructV ("REC", [ NumV (Int64.of_int32 i) ])
   | Types.DefHT dt -> al_of_def_type dt
+  | Types.BotHT -> singleton "BOT"
   | ht ->
     Types.string_of_heap_type ht
     |> String.uppercase_ascii
     |> singleton
 
-and al_of_ref_type (null, ht) = ConstructV ("REF", [ al_of_null null; al_of_heap_type ht ])
+and al_of_ref_type (null, ht) =
+  ConstructV ("REF", [ al_of_null null; al_of_heap_type ht ])
 
 and al_of_val_type = function
   | Types.RefT rt -> al_of_ref_type rt
@@ -636,3 +639,112 @@ let al_of_module wasm_module =
       listV export_list
     ]
   )
+
+let fail ty v =
+  Al.Print.string_of_value v
+  |> Printf.sprintf "Invalid %s: %s" ty
+  |> failwith
+
+open Types
+
+let al_to_null: value -> null = function
+  | ConstructV ("NULL", [ OptV None ]) -> NoNull
+  | ConstructV ("NULL", [ OptV _ ]) -> Null
+  | v -> fail "null" v
+
+let al_to_final: value -> final = function
+  | OptV None -> NoFinal
+  | OptV (Some (ConstructV ("FINAL", []))) -> Final
+  | v -> fail "final" v
+
+let al_to_mut: value -> mut = function
+  | OptV None -> Cons
+  | OptV (Some (ConstructV ("MUT", []))) -> Var
+  | v -> fail "mut" v
+
+let rec al_to_storage_type: value -> storage_type = function
+  | ConstructV ("I8", []) -> PackStorageT Pack8
+  | ConstructV ("I16", []) -> PackStorageT Pack16
+  | v -> ValStorageT (al_to_val_type v)
+
+and al_to_field_type: value -> field_type = function
+  | PairV (mut, st) ->
+    FieldT (al_to_mut mut, al_to_storage_type st)
+  | v -> fail "field type" v
+
+and al_to_result_type: value -> result_type = function
+  | ListV vtl ->
+    let vtl' = Array.to_list !vtl in
+    List.map al_to_val_type vtl'
+  | v -> fail "result type" v
+
+and al_to_str_type: value -> str_type = function
+  | ConstructV ("STRUCT", [ ListV ftl ]) ->
+    let ftl' = Array.to_list !ftl in
+    DefStructT (StructT (List.map al_to_field_type ftl'))
+  | ConstructV ("ARRAY", [ ft ]) ->
+    DefArrayT (ArrayT (al_to_field_type ft))
+  | ConstructV ("FUNC", [ ArrowV (rt1, rt2) ]) ->
+    DefFuncT (FuncT (al_to_result_type rt1, (al_to_result_type rt2)))
+  | v -> fail "str type" v
+
+and al_to_sub_type: value -> sub_type = function
+  | ConstructV ("SUBD", [ fin; ListV htl; st ]) ->
+    let htl' = Array.to_list !htl in
+    SubT (
+      al_to_final fin,
+      List.map al_to_heap_type htl',
+      al_to_str_type st
+    )
+  | v -> fail "sub type" v
+
+and al_to_rec_type: value -> rec_type = function
+  | ConstructV ("REC", [ ListV stl ]) ->
+    let stl' = Array.to_list !stl in
+    RecT (List.map al_to_sub_type stl')
+  | v -> fail "rec type" v
+
+and al_to_def_type: value -> def_type = function
+  | ConstructV ("DEF", [ rt; NumV i ]) ->
+    DefT (al_to_rec_type rt, Int64.to_int32 i)
+  | v -> fail "def type" v
+
+and al_to_heap_type: value -> heap_type = function
+  | ConstructV ("_IDX", [ NumV i ]) ->
+    VarHT (StatX (Int64.to_int32 i))
+  | ConstructV ("REC", [ NumV i ]) ->
+    VarHT (RecX (Int64.to_int32 i))
+  | ConstructV ("DEF", _) as v ->
+    DefHT (al_to_def_type v)
+  | ConstructV (tag, []) as v ->
+    begin match tag with
+    | "BOT" -> BotHT
+    | "ANY" -> AnyHT
+    | "NONE" -> NoneHT
+    | "EQ" -> EqHT
+    | "I31" -> I31HT
+    | "STRUCT" -> StructHT
+    | "ARRAY" -> ArrayHT
+    | "FUNC" -> FuncHT
+    | "NOFUNC" -> NoFuncHT
+    | "EXTERN" -> ExternHT
+    | "NOEXTERN" -> NoExternHT
+    | _ -> fail "abstract heap type" v
+    end
+  | v -> fail "heap type" v
+
+and al_to_ref_type: value -> ref_type = function
+  | ConstructV ("REF", [ n; ht ]) ->
+    al_to_null n, al_to_heap_type ht
+  | v -> fail "ref type" v
+
+and al_to_val_type: value -> val_type = function
+  | ConstructV ("I32", []) -> NumT I32T
+  | ConstructV ("I64", []) -> NumT I64T
+  | ConstructV ("F32", []) -> NumT F32T
+  | ConstructV ("F64", []) -> NumT F64T
+  | ConstructV ("V128", []) -> VecT V128T
+  | ConstructV ("REF", _) as v ->
+    RefT (al_to_ref_type v)
+  | ConstructV ("BOT", []) -> BotT
+  | v -> fail "val type" v
