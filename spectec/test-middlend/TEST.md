@@ -1062,7 +1062,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -3300,7 +3300,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -5596,7 +5596,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -7904,7 +7904,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -10222,7 +10222,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -12580,7 +12580,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (0 < |C.MEM_context|)
     -- if (C.MEM_context[0] = mt)
@@ -14962,7 +14962,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (0 < |C.MEM_context|)
     -- if (C.MEM_context[0] = mt)

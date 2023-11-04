@@ -500,7 +500,7 @@ rule Elemmode_ok/passive:
 rule Elemmode_ok/declare:
   C |- DECLARE : rt
 
-rule Datamode_ok:
+rule Datamode_ok/active:
   C |- ACTIVE 0 expr : OK
   -- if C.MEM[0] = mt
   -- (Expr_ok_const: C |- expr : I32 CONST)*

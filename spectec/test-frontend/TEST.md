@@ -1063,7 +1063,7 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 ;; 3-typing.watsup:453.1-453.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
   ;; 3-typing.watsup:503.1-506.45
-  rule _ {C : context, expr : expr, mt : memtype}:
+  rule active {C : context, expr : expr, mt : memtype}:
     `%|-%:OK`(C, ACTIVE_datamode(0, expr))
     -- if (C.MEM_context[0] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
@@ -3776,7 +3776,7 @@ $$
 ({\mathit{C}} \vdash {\mathit{expr}} : \mathsf{i{\scriptstyle32}}~\mathsf{const})^\ast
 }{
 {\mathit{C}} \vdash \mathsf{active}~0~{\mathit{expr}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize T{-}datamode}]}
+} \, {[\textsc{\scriptsize T{-}datamode{-}active}]}
 \qquad
 \end{array}
 $$
@@ -5032,8 +5032,8 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{mut}} &::=& \mathtt{0x00} &\Rightarrow& \mathsf{mut} \\ &&|&
-\mathtt{0x01} &\Rightarrow& \epsilon \\
+& {\mathtt{mut}} &::=& \mathtt{0x00} &\Rightarrow& \epsilon \\ &&|&
+\mathtt{0x01} &\Rightarrow& \mathsf{mut} \\
 & {\mathtt{limits}} &::=& \mathtt{0x00}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& [{\mathit{n}} .. {2^{32}} - 1] \\ &&|&
 \mathtt{0x01}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{m}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& [{\mathit{n}} .. {\mathit{m}}] \\
 & {\mathtt{globaltype}} &::=& {\mathit{t}}{:}{\mathtt{valtype}}~{\mathit{mut}}{:}{\mathtt{mut}} &\Rightarrow& {\mathit{mut}}~{\mathit{t}} \\

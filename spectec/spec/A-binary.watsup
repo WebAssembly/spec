@@ -97,8 +97,8 @@ grammar Bfunctype : functype =
 ;; External types
 
 grammar Bmut : mut =
-  | 0x00 => MUT
-  | 0x01 => epsilon
+  | 0x00 => epsilon
+  | 0x01 => MUT
 
 grammar Blimits : limits =
   | 0x00 n:Bu32 => `[n .. $(2^32-1)]

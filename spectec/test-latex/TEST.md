@@ -194,7 +194,7 @@ warning: rule `Blocktype_ok/void` was never spliced
 warning: rule `Blocktype_ok/result` was never spliced
 warning: rule `Blocktype_ok/typeidx` was never spliced
 warning: rule `Data_ok` was never spliced
-warning: rule `Datamode_ok` was never spliced
+warning: rule `Datamode_ok/active` was never spliced
 warning: rule `Datamode_ok/passive` was never spliced
 warning: rule `Elem_ok` was never spliced
 warning: rule `Elemmode_ok/active` was never spliced
