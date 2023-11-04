@@ -92,8 +92,8 @@ def $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*) = (s_6, mm)
       (GLOBAL globaltype expr_g)^n_g
       (TABLE tabletype expr_t)^n_t
       (MEMORY memtype)^n_m
-      (ELEM reftype expr_e* elemmode?)^n_e
-      (DATA byte* datamode?)^n_d
+      (ELEM reftype expr_e* elemmode)^n_e
+      (DATA byte* datamode)^n_d
       start?
       export*
   -- if fa_ex* = $funcsxv(externval*)
@@ -135,14 +135,14 @@ def $concat_instr(epsilon) = epsilon
 def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
 
 def $runelem(elem, idx) : instr*
-def $runelem(ELEM reftype expr*, y) = epsilon
+def $runelem(ELEM reftype expr* (PASSIVE), y) = epsilon
 def $runelem(ELEM reftype expr* (DECLARE), y) = (ELEM.DROP y)
-def $runelem(ELEM reftype expr* (TABLE x instr*), y) =
+def $runelem(ELEM reftype expr* (ACTIVE x instr*), y) =
   instr* (CONST I32 0) (CONST I32 $(|expr*|)) (TABLE.INIT x y) (ELEM.DROP y)
 
 def $rundata(data, idx) : instr*
-def $rundata(DATA byte*, y) = epsilon
-def $rundata(DATA byte* (MEMORY x instr*), y) =
+def $rundata(DATA byte* (PASSIVE), y) = epsilon
+def $rundata(DATA byte* (ACTIVE x instr*), y) =
   instr* (CONST I32 0) (CONST I32 $(|byte*|)) (MEMORY.INIT x y) (DATA.DROP y)
 
 def $instantiate(store, module, externval*) : config
@@ -150,7 +150,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
   -- if module = MODULE type* import* func^n_func global* table* mem* elem* data* start? export*
   -- if global* = (GLOBAL globaltype expr_g)*
   -- if table* = (TABLE tabletype expr_t)*
-  -- if elem* = (ELEM reftype expr_e* elemmode?)*
+  -- if elem* = (ELEM reftype expr_e* elemmode)*
   -- if start? = (START x)?
   -- if n_e = |elem*|
   -- if n_d = |data*|
@@ -190,6 +190,6 @@ def $invoke(s, fa, val^n) = s; f; val^n (REF.FUNC_ADDR fa) (CALL_REF 0)
       DATA epsilon,
       EXPORT epsilon
     }
-  -- if f = { LOCAL epsilon, MODULE mm }
+  -- if f = { MODULE mm }
   -- if $funcinst((s; f))[fa].CODE = FUNC x local* expr
   -- Expand: s.FUNC[fa].TYPE ~~ FUNC (t_1^n -> t_2*)

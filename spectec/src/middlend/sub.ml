@@ -73,8 +73,9 @@ let register_alias (env : env) (id : id) (id2 : id) =
 let injection_name (sub : id) (sup : id) = sup.it ^ "_" ^ sub.it $ no_region
 
 let var_of_typ typ = match typ.it with
-  | VarT id -> id
-  | _ -> error typ.at ("Non-variable type expression not supported:\n" ^ Il.Print.string_of_typ typ)
+  | VarT id -> Some id
+  | NumT _ -> None
+  | _ -> error typ.at ("Non-variable or number type expression not supported:\n" ^ Il.Print.string_of_typ typ)
 
 (* Step 1 and 4: Collect SubE occurrences, and replace with function *)
 
@@ -83,10 +84,12 @@ let rec t_exp env exp =
   let exp' = t_exp2 env exp in
   match exp'.it with
   | SubE (e, sub_ty, sup_ty) ->
-    let sub = var_of_typ sub_ty in
-    let sup = var_of_typ sup_ty in
-    env.pairs <- S.add (sub, sup) env.pairs;
-    { exp' with it = CallE (injection_name sub sup, e)}
+    begin match var_of_typ sub_ty, var_of_typ sup_ty with
+    | Some sub, Some sup ->
+      env.pairs <- S.add (sub, sup) env.pairs;
+      { exp' with it = CallE (injection_name sub sup, e)}
+    | _, _ -> exp'
+  end
   | _ -> exp'
 
 (* Traversal boilerplate *)
@@ -197,7 +200,7 @@ let insert_injections env (def : def) : def list =
     let sub_ty = VarT sub $ no_region in
     let sup_ty = VarT sup $ no_region in
     let (real_id, cases) = lookup env sub in
-    let clauses = List.map (fun (a, arg_typ, _hints) ->
+    let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
         let binds = List.mapi (fun i arg_typ_i -> ("x" ^ string_of_int i $ no_region, arg_typ_i, [])) ts in

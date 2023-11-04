@@ -2,25 +2,75 @@
 ;; Names
 ;;
 
-syntax name hint(desc "name") = text
+syntax char hint(desc "character") = U+0000 | ... | U+D7FF | U+E000 | ... | U+10FFFF
+
+syntax name hint(desc "name") = char*
+
+var nm : name
 
 
 ;;
 ;; Values
 ;;
 
-syntax byte hint(desc "byte") = nat  ;; TODO
-syntax i31 hint(desc "31-bit integer") = nat  ;; TODO
-syntax i32 hint(desc "32-bit integer") = nat  ;; TODO
+syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
+
+;; TODO: make u(N), s(N), i(N)
+syntax uN hint(desc "unsigned integer") = 0 | ... | 2^N-1
+syntax sN hint(desc "signed integer") = -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
+syntax iN hint(desc "integer") = uN
+
+;; TODO: use u(N), s(N)
+syntax u31 hint(desc "31-bit integer") = 0 | ... | 2^31-1
+syntax u32 hint(desc "32-bit integer") = 0 | ... | 2^32-1
+syntax u64 hint(desc "64-bit integer") = 0 | ... | 2^64-1
+syntax u128 hint(desc "128-bit integer") = 0 | ... | 2^128-1
+syntax s33 hint(desc "33-bit signed integer") = -2^32 | ... | 2^32-1
 
 var b : byte
+
+
+def $signif(N) : nat
+def $signif(32) = 23
+def $signif(64) = 52
+
+def $expon(N) : nat
+def $expon(32) = 8
+def $expon(64) = 11
+
+def $M(N) : nat  hint(show $M_(%))
+def $M(N) = $signif(N)
+
+def $E(N) : nat  hint(show $E_(%))
+def $E(N) = $expon(N)
+
+;; TODO: make f(N), fmag(N)
+syntax fN hint(desc "floating-point number") = | POS fNmag  hint(show $(+%)) | NEG fNmag  hint(show $(-%))
+
+syntax fNmag hint(desc "floating-point magnitude") =
+  | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
+  | SUBNORM m n  hint(show $((0 + %*2^(-$M(N))) * 2^%))  -- if $(2-2^($E(N)-1) = n)
+  | INF          hint(show infinity)
+  | NAN n        hint(show NAN#((%)))                    -- if $(1 <= n < $M(N))
+
+;; TODO: use f(N)
+def $fNzero : fN  hint(show $(+0))
+def $fNzero = POS (NORM 0 0)
+
+;; TODO: use f(N)
+syntax f32 hint(desc "32-bit floating-point") = fN
+syntax f64 hint(desc "64-bit floating-point") = fN
+
+var p : fN
+var q : fN
 
 
 ;;
 ;; Indices
 ;;
 
-syntax idx hint(desc "index") = i32
+syntax idx hint(desc "index") = u32
+
 syntax typeidx hint(desc "type index") = idx
 syntax funcidx hint(desc "function index") = idx
 syntax globalidx hint(desc "global index") = idx
@@ -34,6 +84,7 @@ syntax localidx hint(desc "local index") = idx
 var x : idx
 var y : idx
 var l : labelidx
+var x33 : s33 hint(show x)
 
 
 ;;
@@ -70,8 +121,8 @@ syntax valtype hint(desc "value type") =
 syntax valtype =
   | ... | BOT
 
-syntax iN hint(show I#n) = | I32 | I64
-syntax fN hint(show F#n) = | F32 | F64
+syntax inn hint(show I#n) = | I32 | I64
+syntax fnn hint(show F#n) = | F32 | F64
 
 
 syntax resulttype hint(desc "result type") =
@@ -121,7 +172,8 @@ syntax heaptype =
 ;; External types
 
 syntax limits hint(desc "limits") =
-  `[i32 .. i32]
+  `[u32 .. u32]
+
 syntax globaltype hint(desc "global type") =
   mut valtype
 syntax tabletype hint(desc "table type") =
@@ -134,7 +186,6 @@ syntax datatype hint(desc "data type") =
   OK
 syntax externtype hint(desc "external type") =
   | FUNC deftype | GLOBAL globaltype | TABLE tabletype | MEM memtype
-
 
 
 ;; Meta variables
@@ -190,7 +241,7 @@ syntax unop_numtype = | _I unopIXX | _F unopFXX
 syntax binop_numtype = | _I binopIXX | _F binopFXX
 syntax testop_numtype = | _I testopIXX | _F testopFXX
 syntax relop_numtype = | _I relopIXX | _F relopFXX
-syntax cvtop = | CONVERT | REINTERPRET
+syntax cvtop = | CONVERT | REINTERPRET | CONVERT_SAT
 
 var unop : unop_numtype
 var binop : binop_numtype
@@ -198,22 +249,31 @@ var testop : testop_numtype
 var relop : relop_numtype
 
 
+syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
+
+var mo : memop
+
+
 ;;
 ;; Instructions
 ;;
 
+;; TODO: do c(numtype)?
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
 var c : c_numtype
 
-syntax blocktype hint(desc "block type") = functype  ;; TODO
+syntax blocktype hint(desc "block type") =
+  | _RESULT valtype?
+  | _IDX funcidx
+
 var bt : blocktype
 
 syntax instr/control hint(desc "control instruction") =
   | UNREACHABLE
   | NOP
   | DROP
-  | SELECT valtype?
+  | SELECT (valtype*)?
   | BLOCK blocktype instr*
   | LOOP blocktype instr*
   | IF blocktype instr* ELSE instr*
@@ -258,8 +318,8 @@ syntax instr/heap hint(desc "heap instruction") = ...
   | I31.GET sx                      hint(show I31.GET#_#%)
   | STRUCT.NEW typeidx
   | STRUCT.NEW_DEFAULT typeidx
-  | STRUCT.GET sx? typeidx i32      hint(show STRUCT.GET#_#% % %)
-  | STRUCT.SET typeidx i32
+  | STRUCT.GET sx? typeidx u32      hint(show STRUCT.GET#_#% % %)
+  | STRUCT.SET typeidx u32
   | ARRAY.NEW typeidx
   | ARRAY.NEW_DEFAULT typeidx
   | ARRAY.NEW_FIXED typeidx nat
@@ -272,16 +332,22 @@ syntax instr/heap hint(desc "heap instruction") = ...
   | ARRAY.COPY typeidx typeidx
   | ARRAY.INIT_DATA typeidx dataidx
   | ARRAY.INIT_ELEM typeidx elemidx
-  | EXTERN.INTERNALIZE
-  | EXTERN.EXTERNALIZE
+  | EXTERN.CONVERT_ANY
+  | ANY.CONVERT_EXTERN
   | ...
 
-syntax instr/state hint(desc "state instruction") = ...
+syntax instr/local hint(desc "local instruction") = ...
   | LOCAL.GET localidx
   | LOCAL.SET localidx
   | LOCAL.TEE localidx
+  | ...
+
+syntax instr/global hint(desc "global instruction") = ...
   | GLOBAL.GET globalidx
   | GLOBAL.SET globalidx
+  | ...
+
+syntax instr/table hint(desc "table instruction") = ...
   | TABLE.GET tableidx
   | TABLE.SET tableidx
   | TABLE.SIZE tableidx
@@ -290,27 +356,33 @@ syntax instr/state hint(desc "state instruction") = ...
   | TABLE.COPY tableidx tableidx
   | TABLE.INIT tableidx elemidx
   | ELEM.DROP elemidx
+  | ...
+
+syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
   | MEMORY.FILL memidx
   | MEMORY.COPY memidx memidx
   | MEMORY.INIT memidx dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memidx i32 i32  hint(show %.LOAD % %)  hint(show %.LOAD#% % % %)
-  | STORE numtype n? memidx i32 i32        hint(show %.STORE % %) hint(show %.STORE#% % % %)
+  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
+  | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
 
 syntax expr hint(desc "expression") =
   instr*
 
 syntax instr hint(desc "instruction")
 
+var in : instr
+var e : expr
+
 
 ;;
 ;; Modules
 ;;
 
-syntax elemmode = | TABLE tableidx expr | DECLARE
-syntax datamode = | MEMORY memidx expr
+syntax elemmode = | ACTIVE tableidx expr | PASSIVE | DECLARE
+syntax datamode = | ACTIVE memidx expr | PASSIVE
 
 syntax type hint(desc "type definition") =
   TYPE rectype
@@ -325,18 +397,27 @@ syntax table hint(desc "table") =
 syntax mem hint(desc "memory") =
   MEMORY memtype
 syntax elem hint(desc "table segment") =
-  ELEM reftype expr* elemmode?
+  ELEM reftype expr* elemmode
 syntax data hint(desc "memory segment") =
-  DATA byte* datamode?
+  DATA byte* datamode
 syntax start hint(desc "start function") =
   START funcidx
 
-syntax externuse hint(desc "external use") =
+syntax externidx hint(desc "external index") =
   | FUNC funcidx | GLOBAL globalidx | TABLE tableidx | MEM memidx
 syntax export hint(desc "export") =
-  EXPORT name externuse
+  EXPORT name externidx
 syntax import hint(desc "import") =
   IMPORT name name externtype
 
 syntax module hint(desc "module") =
-  MODULE type* import* func* global* table* mem* elem* data* start? export*
+  MODULE type* import* func* global* table* mem* elem* data* start* export*
+
+
+var ty : type
+var loc : local
+var glob : global
+var tab : table
+var im : import
+var ex : export
+var ux : externidx

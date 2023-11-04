@@ -28,7 +28,7 @@ $(GENNAME).tex: $(SPECFILES) $(EXE)
 
 gen: $(GENNAME).tex
 
-latex-gen: $(GENOUTNAME).tex gen
+latex-gen: $(GENOUTNAME).tex $(EXE) gen
 	pdflatex $<
 
 
@@ -73,6 +73,14 @@ sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
 	cp $(SPHINXOUTNAME).rst conf.py $(SPHINXDIR)
 	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
 	(cd $(SPHINXDIR)/_build; pdflatex $(SPHINXOUTNAME).tex)
+
+
+# Executable
+
+$(EXE): exe
+
+exe:
+	@(cd ..; make exe)
 
 
 # Test

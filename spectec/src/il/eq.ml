@@ -22,12 +22,11 @@ let eq_id i1 i2 =
 (* Iteration *)
 
 let rec eq_iter iter1 iter2 =
-  iter1 = iter2 ||
   match iter1, iter2 with
   | ListN (e1, None), ListN (e2, None) -> eq_exp e1 e2
   | ListN (e1, Some id1), ListN (e2, Some id2) ->
     eq_exp e1 e2 && id1.it = id2.it
-  | _, _ -> false
+  | _, _ -> iter1 = iter2
 
 
 (* Types *)
@@ -44,14 +43,12 @@ and eq_typ t1 t2 =
   | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
-  | _, _ ->
-    false
+  | _, _ -> t1.it = t2.it
 
 
 (* Expressions *)
 
 and eq_exp e1 e2 =
-  e1.it = e2.it ||
   match e1.it, e2.it with
   | VarE id1, VarE id2 -> eq_id id1 id2
   | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
@@ -81,7 +78,7 @@ and eq_exp e1 e2 =
   | CaseE (atom1, e1), CaseE (atom2, e2) -> atom1 = atom2 && eq_exp e1 e2
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
-  | _, _ -> false
+  | _, _ -> e1.it = e2.it
 
 and eq_expfield (atom1, e1) (atom2, e2) =
   atom1 = atom2 && eq_exp e1 e2
@@ -93,18 +90,20 @@ and eq_path p1 p2 =
   | SliceP (p11, e11, e12), SliceP (p21, e21, e22) ->
     eq_path p11 p21 && eq_exp e11 e21 && eq_exp e12 e22
   | DotP (p11, atom1), DotP (p21, atom2) -> eq_path p11 p21 && atom1 = atom2
-  | _, _ -> false
+  | _, _ -> p1.it = p2.it
 
 and eq_iterexp (iter1, ids1) (iter2, ids2) =
   eq_iter iter1 iter2 && eq_list eq_id ids1 ids2
 
-let rec eq_prem prem1 prem2 =
+
+(* Premises *)
+
+and eq_prem prem1 prem2 =
   prem1.it = prem2.it ||
   match prem1.it, prem2.it with
   | RulePr (id1, op1, e1), RulePr (id2, op2, e2) ->
     eq_id id1 id2 && op1 = op2 && eq_exp e1 e2
   | IfPr e1, IfPr e2 -> eq_exp e1 e2
-  | ElsePr, ElsePr -> true
   | IterPr (prem1, e1), IterPr (prem2, e2) ->
     eq_prem prem1 prem2 && eq_iterexp e1 e2
-  | _, _ -> false
+  | _, _ -> prem1.it = prem2.it

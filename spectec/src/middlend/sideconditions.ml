@@ -23,7 +23,7 @@ module Env = Map.Make(String)
 (* Smart constructor for LenE that optimizes |x^n| into n *)
 let lenE e = match e.it with
 | IterE (_, (ListN (ne, _), _)) -> ne
-| _ -> LenE e $$ e.at % (NatT $ e.at)
+| _ -> LenE e $$ e.at % (NumT NatT $ e.at)
 
 let is_null e = CmpE (EqOp, e, OptE None $$ e.at % e.note) $$ e.at % (BoolT $ e.at)
 let iffE e1 e2 = IfPr (BinE (EquivOp, e1, e2) $$ e1.at % (BoolT $ e1.at)) $ e1.at
@@ -31,11 +31,21 @@ let same_len e1 e2 = IfPr (CmpE (EqOp, lenE e1, lenE e2) $$ e1.at % (BoolT $ e1.
 let has_len ne e = IfPr (CmpE (EqOp, lenE e, ne) $$ e.at % (BoolT $ e.at)) $ e.at
 
 (* Takes bound variable and its binding type (type plus iter) and fully wrapps it in IterE *)
-let rec fully_iterated v t = function
-  | [] -> VarE v $$ v.at % t
-  | (i::is) ->
-    let e = fully_iterated v t is in
-    IterE (e, (i, [v])) $$ v.at % (IterT (e.note, i) $ v.at)
+let fully_iterated v t is =
+  let rec go = function
+    | [] -> VarE v $$ v.at % t
+    | (i::is) ->
+      let e = go is in
+      IterE (e, (i, [v])) $$ v.at % (IterT (e.note, i) $ v.at)
+  in
+  go (List.rev is)
+
+(* updates the types in the environment as we go under iteras *)
+let env_under_iter env ((_, vs) : iterexp) =
+  let vs' = List.map (fun v -> v.it) vs in
+  Env.mapi (fun v (t,is) ->
+    if List.mem v vs' then (t, fst (Lib.List.split_last is)) else (t, is)
+  ) env
 
 let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
   (* let iter' = if iter = Opt then Opt else List in *)
@@ -54,7 +64,7 @@ let rec t_exp env e : premise list =
   (* First the conditions to be generated here *)
   begin match e.it with
   | IdxE (exp1, exp2) ->
-    [IfPr (CmpE (LtOp, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
+    [IfPr (CmpE (LtOp NatT, exp2, LenE exp1 $$ e.at % exp2.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | TheE exp ->
     [IfPr (CmpE (NeOp, exp, OptE None $$ e.at % exp.note) $$ e.at % (BoolT $ e.at)) $ e.at]
   | IterE (_exp, iterexp) -> iter_side_conditions env iterexp
@@ -90,7 +100,10 @@ let rec t_exp env e : premise list =
   | TupE es | ListE es
   -> List.concat_map (t_exp env) es
   | IterE (e1, iterexp)
-  -> List.map (fun pr -> IterPr (pr, iterexp) $ e.at) (t_exp env e1) @ t_iterexp env iterexp
+  ->
+    t_iterexp env iterexp @
+    let env' = env_under_iter env iterexp in
+    List.map (fun pr -> IterPr (pr, iterexp) $ e.at) (t_exp env' e1)
 
 and t_iterexp env (iter, _) = t_iter env iter
 
@@ -112,7 +125,9 @@ let rec t_prem env prem = match prem.it with
   | ElsePr -> []
   | IterPr (prem, iterexp)
   -> iter_side_conditions env iterexp @
-     List.map (fun pr -> IterPr (pr, iterexp) $ prem.at) (t_prem env prem) @ t_iterexp env iterexp
+     t_iterexp env iterexp @
+     let env' = env_under_iter env iterexp in
+     List.map (fun pr -> IterPr (pr, iterexp) $ prem.at) (t_prem env' prem)
 
 let t_prems env = List.concat_map (t_prem env)
 

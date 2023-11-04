@@ -24,6 +24,7 @@ OUTDIR = _build/default/src
 .PHONY: exe
 
 exe:
+	rm -f ./$(NAME)
 	dune build $(SRCDIR)/$(EXE)
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
@@ -40,7 +41,7 @@ latex: exe
 
 .PHONY: test testpromote $(TESTDIRS)
 
-test:
+test: exe
 	@dune runtest && echo OK || (echo Failure. Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:
