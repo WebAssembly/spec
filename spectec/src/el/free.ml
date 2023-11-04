@@ -6,10 +6,21 @@ open Ast
 
 module Set = Set.Make(String)
 
-type sets = {synid : Set.t; gramid : Set.t; relid : Set.t; varid : Set.t; defid : Set.t}
+type sets =
+  { synid : Set.t;
+    gramid : Set.t;
+    relid : Set.t;
+    varid : Set.t;
+    defid : Set.t;
+  }
 
 let empty =
-  {synid = Set.empty; gramid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+  { synid = Set.empty;
+    gramid = Set.empty;
+    relid = Set.empty;
+    varid = Set.empty;
+    defid = Set.empty;
+  }
 
 let union sets1 sets2 =
   { synid = Set.union sets1.synid sets2.synid;
@@ -92,6 +103,7 @@ and free_exp e =
     empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
   | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
+  | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
   | InfixE (e1, _, e2) | FuseE (e1, e2) -> free_list free_exp [e1; e2]
@@ -102,7 +114,6 @@ and free_exp e =
   | StrE efs -> free_nl_list free_expfield efs
   | CallE (id, e1) -> union (free_defid id) (free_exp e1)
   | IterE (e1, iter) -> union (free_exp e1) (free_iter iter)
-  | SizeE id -> free_gramid id
 
 and free_expfield (_, e) = free_exp e
 
