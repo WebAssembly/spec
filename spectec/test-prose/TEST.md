@@ -814,10 +814,10 @@ execution_of_CVTOP nt_2 cvtop nt_1 sx?
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. If val is not of the case REF.NULL, then:
-  a. Push (I32.CONST 0) to the stack.
-4. Else:
+3. If val is of the case REF.NULL, then:
   a. Push (I32.CONST 1) to the stack.
+4. Else:
+  a. Push (I32.CONST 0) to the stack.
 
 execution_of_LOCAL.TEE x
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1069,7 +1069,7 @@ execution_of_TABLE.GROW x
   b. Push (I32.CONST |$table(x).ELEM|) to the stack.
   c. Perform $with_tableinst(x, ti).
 6. Or:
-  a. Push (I32.CONST -1) to the stack.
+  a. Push (I32.CONST (- 1)) to the stack.
 
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
@@ -1099,7 +1099,7 @@ execution_of_MEMORY.GROW
   b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
   c. Perform $with_meminst(0, mi).
 4. Or:
-  a. Push (I32.CONST -1) to the stack.
+  a. Push (I32.CONST (- 1)) to the stack.
 
 execution_of_DATA.DROP x
 1. Perform $with_data(x, []).

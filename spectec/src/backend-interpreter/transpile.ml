@@ -266,6 +266,7 @@ let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
 let enhance_readability instrs =
   instrs
+  |> remove_dead_assignment
   |> unify_if
   |> List.concat_map if_not_defined
   |> infer_else
@@ -273,7 +274,6 @@ let enhance_readability instrs =
   |> List.concat_map (remove_unnecessary_branch [])
   |> List.concat_map swap_if
   |> List.concat_map early_return
-  |> remove_dead_assignment
 
 (** Walker-based Translpiler **)
 let rec mk_access ps base =
