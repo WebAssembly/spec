@@ -40,7 +40,7 @@ def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
 def $group_bytes_by(nat, byte*): (byte*)*
-def $group_bytes_by(n, byte*) = (byte*[0:n]) $group_bytes_by(n, byte*[n:|byte*| - n])
+def $group_bytes_by(n, byte*) = (byte*[0 : n]) $group_bytes_by(n, byte*[n : |byte*| - n])
   -- if n >= |byte*|
 def $group_bytes_by(n, byte*) = epsilon
   -- otherwise
