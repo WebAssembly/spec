@@ -300,6 +300,7 @@ let rec remove_nop acc il = match il with
 
 let rec enhance_readability instrs =
   let new_instrs = instrs
+  |> remove_dead_assignment
   |> unify_if
   |> List.concat_map if_not_defined
   |> infer_else
@@ -308,7 +309,6 @@ let rec enhance_readability instrs =
   |> List.concat_map swap_if
   |> List.concat_map early_return
   |> List.map merge_three_branches
-  |> remove_dead_assignment
   |> List.concat_map remove_sub
   |> remove_nop []
   in

@@ -689,12 +689,12 @@ subst_heaptype u_0 xx* u_1*
 2. If the type of u_0 is typevar, then:
   a. Let xx' be u_0.
   b. Return $subst_typevar(xx', xx*, ht*).
-3. If the type of u_0 is deftype, then:
-  a. Let dt be u_0.
-  b. Let ht* be u_1*.
-  c. Return $subst_deftype(dt, xx*, ht*).
-4. Let ht be u_0.
-5. Return ht.
+3. If not the type of u_0 is deftype, then:
+  a. Let ht be u_0.
+  b. Return ht.
+4. Let dt be u_0.
+5. Let ht* be u_1*.
+6. Return $subst_deftype(dt, xx*, ht*).
 
 subst_reftype (REF nul ht) xx* ht'*
 1. Return (REF nul $subst_heaptype(ht, xx*, ht'*)).
@@ -1426,10 +1426,10 @@ execution_of_BR_TABLE l* l'
 execution_of_BR_ON_NULL l
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. If val is not of the case REF.NULL, then:
-  a. Push val to the stack.
-4. Else:
+3. If val is of the case REF.NULL, then:
   a. Execute (BR l).
+4. Else:
+  a. Push val to the stack.
 
 execution_of_BR_ON_NON_NULL l
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1538,10 +1538,10 @@ execution_of_REF.I31
 execution_of_REF.IS_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop val from the stack.
-3. If val is not of the case REF.NULL, then:
-  a. Push (I32.CONST 0) to the stack.
-4. Else:
+3. If val is of the case REF.NULL, then:
   a. Push (I32.CONST 1) to the stack.
+4. Else:
+  a. Push (I32.CONST 0) to the stack.
 
 execution_of_REF.AS_NON_NULL
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1776,15 +1776,12 @@ execution_of_ARRAY.GET sx? x
   b. If a < |$arrayinst()| and i ≥ |$arrayinst()[a].FIELD|, then:
     1) Trap.
   c. If i ≥ |$arrayinst()[a].FIELD|, then:
-    1) Let (REF.ARRAY_ADDR a) be u_0.
-    2) Trap.
+    1) Trap.
   d. If a ≥ |$arrayinst()|, then:
-    1) Let (REF.ARRAY_ADDR a) be u_0.
-    2) Trap.
+    1) Trap.
   e. Let fv be $arrayinst()[a].FIELD[i].
   f. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
-    1) Let (REF.ARRAY_ADDR a) be u_0.
-    2) Trap.
+    1) Trap.
   g. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
   h. Let (mut, zt) be y_0.
   i. Push $unpackval(zt, sx?, fv) to the stack.
@@ -2212,13 +2209,11 @@ execution_of_ARRAY.SET x
 8. If u_0 is of the case REF.ARRAY_ADDR, then:
   a. Let (REF.ARRAY_ADDR a) be u_0.
   b. If a ≥ |$arrayinst()|, then:
-    1) Let (REF.ARRAY_ADDR a) be u_0.
-    2) Trap.
+    1) Trap.
   c. If i ≥ |$arrayinst()[a].FIELD|, then:
     1) Trap.
   d. If $expanddt($arrayinst()[a].TYPE) is not of the case ARRAY, then:
-    1) Let (REF.ARRAY_ADDR a) be u_0.
-    2) Trap.
+    1) Trap.
   e. Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
   f. Let (mut, zt) be y_0.
   g. Let fv be $packval(zt, val).
