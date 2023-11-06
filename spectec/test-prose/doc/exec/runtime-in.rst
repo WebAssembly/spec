@@ -8,6 +8,16 @@ Runtime
 Values
 ~~~~~~
 
+.. _syntax-num:
+.. _syntax-ref:
+.. _syntax-val:
+
+$${syntax+:
+  num
+  ref
+  val
+}
+
 .. _def-default_:
 
 %{prose-func: default_}
@@ -20,6 +30,10 @@ $${definition: default_}
 
 Results
 ~~~~~~~
+
+.. _syntax-result:
+
+$${syntax: result}
 
 .. _syntax-store:
 .. _exec-runtime-store:
