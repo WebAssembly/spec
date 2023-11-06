@@ -361,10 +361,12 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
             1. Let |externfunc| be the [=external value=] [=external value|func=] |funcaddr|.
             1. [=list/Append=] |externfunc| to |imports|.
         1. If |externtype| is of the form [=global=] <var ignore>mut</var> |valtype|,
-            1. If [=Type=](|v|) is Number or BigInt,
-                1. If |valtype| is [=i64=] and [=Type=](|v|) is Number,
+            1. If |v| [=implements=] {{Global}},
+                1. Let |globaladdr| be |v|.\[[Global]].
+            1. Otherwise,
+                1. If |valtype| is [=i64=] and [=Type=](|v|) is not BigInt,
                     1. Throw a {{LinkError}} exception.
-                1. If |valtype| is not [=i64=] and [=Type=](|v|) is BigInt,
+                1. If |valtype| is one of [=i32=], [=f32=] or [=f64=] and [=Type=](|v|) is not Number,
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
@@ -372,10 +374,6 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
                 1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
-            1. Otherwise, if |v| [=implements=] {{Global}},
-                1. Let |globaladdr| be |v|.\[[Global]].
-            1. Otherwise,
-                1. Throw a {{LinkError}} exception.
             1. Let |externglobal| be [=external value|global=] |globaladdr|.
             1. [=list/Append=] |externglobal| to |imports|.
         1. If |externtype| is of the form [=mem=] <var ignore>memtype</var>,
