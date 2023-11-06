@@ -32,7 +32,7 @@ It seems that creating new importable definitions that adapt existing JS primiti
 
 There is a variety of execution techniques for WebAssembly. Some WebAssembly engines compile modules eagerly (at WebAssembly.compile), some use interpreters and dynamic tiering, and some use on-demand compilation (after instantiation) and dynamic tiering.
 
-If we just have builtin functions, it would be possible to normally import then without any work to add builtin modules. The main issue is that imported values are not known until instantiation, and so engines that compile eagerly would be unable to generate specialized code to these imports.
+If we just have builtin functions, it would be possible to normally import them without any work to add builtin modules. The main issue is that imported values are not known until instantiation, and so engines that compile eagerly would be unable to generate specialized code to these imports.
 
 It seems desirable to support a variety of execution techniques, especially because engines may support multiple depending on heuristics or change them over time.
 
@@ -121,9 +121,10 @@ TODO: formalize these better.
 ```
 function cast(
   string: externref
-) {
+) -> externref {
   if (typeof string !== "string")
     trap;
+  return string;
 }
 ```
 
@@ -428,7 +429,7 @@ Another option to do this would be to extend the JS-API to inspect the function 
 
 There are no JS builtins available to get a UTF-8 or WTF-8 view of a JS String.
 
-One option would be to specify wasm builtins in term of the Web TextEncoder and TextDecoder interfaces. But this is probably a 'layering' violation, and is not clear what this means on JS runtimes outside the web.
+One option would be to specify wasm builtins in terms of the Web TextEncoder and TextDecoder interfaces. But this is probably a 'layering' violation, and is not clear what this means on JS runtimes outside the web.
 
 Another option around this would be to directly refer to the UTF-8/WTF-8 specs in the JS-API and write out the algorithms we need. However, this probably violates the goal of not creating a new String API.
 
