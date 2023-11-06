@@ -639,7 +639,7 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
      \REFARRAYADDR~\arrayaddr \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
      \REFHOSTADDR~\hostaddr \\&&|&
-     \REFEXTERN~\reff \\
+     \REFEXTERN~\reff \\&&|&
      \INVOKE~\funcaddr \\ &&|&
      \RETURNINVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
