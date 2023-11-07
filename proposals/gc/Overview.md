@@ -118,7 +118,7 @@ function g() {
 
 function h() {
   let b : nullable buf = {pos = 0, chars = "AAAA"}
-  b.buf[b.pos]
+  b.chars[b.pos]
 }
 ```
 
