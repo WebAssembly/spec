@@ -1349,6 +1349,9 @@ In practice, an implementation may run out of resources for valid modules below 
 <ul>
 <li>The maximum size of a module is 1,073,741,824 bytes (1 GiB).</li>
 <li>The maximum number of types defined in the types section is 1,000,000.</li>
+<li>The maximum number of recursion groups defined in the types sections is 1,000,000.</li>
+<li>The maximum number of types defined in a recursion group is 1,000,000.</li>
+<li>The maximum depth of a defined subtype hierarchy is 63 (where a type defined with no supertype has depth 0).
 <li>The maximum number of functions defined in a module is 1,000,000.</li>
 <li>The maximum number of imports declared in a module is 100,000.</li>
 <li>The maximum number of exports declared in a module is 100,000.</li>
@@ -1356,7 +1359,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of data segments defined in a module is 100,000.</li>
 
 <li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
-<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum size of a table is 10000000.</li>
 <li>The maximum number of table entries in any table initialization is 10,000,000.</li>
 <li>The maximum number of memories, including declared or imported memories, is 1.</li>
 
@@ -1364,6 +1367,8 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of return values for any function or block is 1,000.</li>
 <li>The maximum size of a function body, including locals declarations, is 7,654,321 bytes.</li>
 <li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50,000.</li>
+<li>The maximum number of fields in a struct is 10,000.</li>
+<li>The maximum number of operands to `array.new_fixed` is 10,000.</li>
 </ul>
 
 An implementation must throw a {{RuntimeError}} if one of the following limits is exceeded during runtime:

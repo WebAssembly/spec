@@ -69,3 +69,16 @@ internal reference value that is being externalized:
 
 _TODO: avoid having to patch the behavior of `extern.internalize` and
 `extern.internalize` by converting to/from JS numbers separately._
+
+## Implementation-defined Limits
+
+The following limits will be added to the Implementation-defined Limits
+[section](https://webassembly.github.io/spec/js-api/index.html#limits) of the JS
+API.
+
+ - The maximum number of recursion groups is 1000000. (The maximum number of
+   individual types remains unchanged and is also 1000000.)
+ - The maximum number of struct fields is 10000.
+ - The maximum number of operands to `array.new_fixed` is 10000.
+ - The maximum length of a supertype chain is 63. (A type declared with no
+   supertypes has a supertype chain of length 0)

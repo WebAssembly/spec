@@ -848,8 +848,7 @@ Flag byte encoding for `br_on_cast(_fail)?`:
 
 ## JS API
 
-See [GC JS API document](MVP-JS.md) .
-
+See [GC JS API document](MVP-JS.md).
 
 ## Questions
 
