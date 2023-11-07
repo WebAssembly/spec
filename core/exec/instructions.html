@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2023-11-01)</title>
+    <title>Instructions &#8212; WebAssembly 2.0 (Draft 2023-11-07)</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
@@ -93,14 +93,13 @@
 The mapping of numeric instructions to their underlying operators is expressed by the following definition:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i}N}}(i_1,\dots,i_k) &amp;=&amp; \mathrm{i}\mathit{op}_N(i_1,\dots,i_k) \\
-\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{f}N}}(z_1,\dots,z_k) &amp;=&amp; \mathrm{f}\mathit{op}_N(z_1,\dots,z_k) \\
-\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{v}N}}(i_1,\dots,i_k) &amp;=&amp; \mathrm{i}\mathit{op}_N(i_1,\dots,i_k) \\
+\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i}N}}(i_1,\dots,i_k) &amp;=&amp; \href{../exec/numerics.html#int-ops}{\mathrm{i}\mathit{op}}_N(i_1,\dots,i_k) \\
+\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{f}N}}(z_1,\dots,z_k) &amp;=&amp; \href{../exec/numerics.html#float-ops}{\mathrm{f}\mathit{op}}_N(z_1,\dots,z_k) \\
 \end{array}\end{split}\]</div>
 <p>And for <a class="reference internal" href="#exec-cvtop"><span class="std std-ref">conversion operators</span></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lll&#64;{\qquad}l}
-\mathit{cvtop}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?}_{t_1,t_2}(c) &amp;=&amp; \mathit{cvtop}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?}_{|t_1|,|t_2|}(c) \\
+\href{../syntax/instructions.html#syntax-cvtop}{\mathit{cvtop}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?}_{t_1,t_2}(c) &amp;=&amp; \href{../exec/numerics.html#convert-ops}{\mathit{cvtop}}^{\href{../syntax/instructions.html#syntax-sx}{\mathit{sx}}^?}_{|t_1|,|t_2|}(c) \\
 \end{array}\end{split}\]</div>
 <p>Where the underlying operators are partial, the corresponding instruction will <a class="reference internal" href="../intro/overview.html#trap"><span class="std std-ref">trap</span></a> when the result is not defined.
 Where the underlying operators are non-deterministic, because they may return one of multiple possible <a class="reference internal" href="../syntax/values.html#syntax-nan"><span class="std std-ref">NaN</span></a> values, so are the corresponding instructions.</p>
@@ -128,9 +127,9 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <ol class="arabic simple">
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-unop"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t\)</span> is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1\)</span> from the stack.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1)\)</span> is defined, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{unop}}_t(c_1)\)</span> is defined, then:</p>
 <ol class="loweralpha simple">
-<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be a possible result of computing <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1)\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be a possible result of computing <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{unop}}_t(c_1)\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> to the stack.</p></li>
 </ol>
 </li>
@@ -143,9 +142,9 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mathrel{\mbox{if}} c \in \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_t(c_1)) \\
+  &amp; (\mathrel{\mbox{if}} c \in \href{../exec/instructions.html#exec-instr-numeric}{\mathit{unop}}_t(c_1)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-unop}{\mathit{unop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-unop}{\mathit{unop}}_{t}(c_1) = \{\})
+  &amp; (\mathrel{\mbox{if}} \href{../exec/instructions.html#exec-instr-numeric}{\mathit{unop}}_{t}(c_1) = \{\})
 \end{array}\end{split}\]</div>
 </section>
 <section id="t-mathsf-xref-syntax-instructions-syntax-binop-mathit-binop">
@@ -154,9 +153,9 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-binop"><span class="std std-ref">validation</span></a>, two values of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t\)</span> are on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2\)</span> from the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1\)</span> from the stack.</p></li>
-<li><p>If <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1, c_2)\)</span> is defined, then:</p>
+<li><p>If <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{binop}}_t(c_1, c_2)\)</span> is defined, then:</p>
 <ol class="loweralpha simple">
-<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be a possible result of computing <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1, c_2)\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be a possible result of computing <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{binop}}_t(c_1, c_2)\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> to the stack.</p></li>
 </ol>
 </li>
@@ -169,9 +168,9 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mathrel{\mbox{if}} c \in \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_t(c_1,c_2)) \\
+  &amp; (\mathrel{\mbox{if}} c \in \href{../exec/instructions.html#exec-instr-numeric}{\mathit{binop}}_t(c_1,c_2)) \\
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-binop}{\mathit{binop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; \href{../exec/runtime.html#syntax-trap}{\mathsf{trap}}
-  &amp; (\mathrel{\mbox{if}} \href{../syntax/instructions.html#syntax-binop}{\mathit{binop}}_{t}(c_1,c_2) = \{\})
+  &amp; (\mathrel{\mbox{if}} \href{../exec/instructions.html#exec-instr-numeric}{\mathit{binop}}_{t}(c_1,c_2) = \{\})
 \end{array}\end{split}\]</div>
 </section>
 <section id="t-mathsf-xref-syntax-instructions-syntax-testop-mathit-testop">
@@ -179,13 +178,13 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <ol class="arabic simple">
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-testop"><span class="std std-ref">validation</span></a>, a value of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t\)</span> is on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1\)</span> from the stack.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}_t(c_1)\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{testop}}_t(c_1)\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> to the stack.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~t\mathsf{.}\href{../syntax/instructions.html#syntax-testop}{\mathit{testop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mathrel{\mbox{if}} c = \href{../syntax/instructions.html#syntax-testop}{\mathit{testop}}_t(c_1)) \\
+  &amp; (\mathrel{\mbox{if}} c = \href{../exec/instructions.html#exec-instr-numeric}{\mathit{testop}}_t(c_1)) \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="t-mathsf-xref-syntax-instructions-syntax-relop-mathit-relop">
@@ -194,13 +193,13 @@ which maps to the generic <span class="math notranslate nohighlight">\(\href{../
 <li><p>Assert: due to <a class="reference internal" href="../valid/instructions.html#valid-relop"><span class="std std-ref">validation</span></a>, two values of <a class="reference internal" href="../syntax/types.html#syntax-valtype"><span class="std std-ref">value type</span></a> <span class="math notranslate nohighlight">\(t\)</span> are on the top of the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2\)</span> from the stack.</p></li>
 <li><p>Pop the value <span class="math notranslate nohighlight">\(t.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1\)</span> from the stack.</p></li>
-<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}_t(c_1, c_2)\)</span>.</p></li>
+<li><p>Let <span class="math notranslate nohighlight">\(c\)</span> be the result of computing <span class="math notranslate nohighlight">\(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{relop}}_t(c_1, c_2)\)</span>.</p></li>
 <li><p>Push the value <span class="math notranslate nohighlight">\(\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c\)</span> to the stack.</p></li>
 </ol>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{array}{lcl&#64;{\qquad}l}
 (t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_1)~(t\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c_2)~t\mathsf{.}\href{../syntax/instructions.html#syntax-relop}{\mathit{relop}} &amp;\href{../exec/conventions.html#formal-notation}{\hookrightarrow}&amp; (\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}\mathsf{.}\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{const}}~c)
-  &amp; (\mathrel{\mbox{if}} c = \href{../syntax/instructions.html#syntax-relop}{\mathit{relop}}_t(c_1,c_2)) \\
+  &amp; (\mathrel{\mbox{if}} c = \href{../exec/instructions.html#exec-instr-numeric}{\mathit{relop}}_t(c_1,c_2)) \\
 \end{array}\end{split}\]</div>
 </section>
 <section id="t-2-mathsf-xref-syntax-instructions-syntax-cvtop-mathit-cvtop-mathsf-t-1-mathsf-xref-syntax-instructions-syntax-sx-mathit-sx">
@@ -282,19 +281,24 @@ F; (\href{../syntax/instructions.html#syntax-instr-ref}{\mathsf{ref{.}func}}~x) 
 </section>
 <section id="vector-instructions">
 <span id="exec-instr-vec"></span><span id="index-3"></span><h2>Vector Instructions<a class="headerlink" href="#vector-instructions" title="Permalink to this heading">¶</a></h2>
-<p>Most vector instructions are defined in terms of generic numeric operators applied lane-wise based on the <a class="reference internal" href="../syntax/instructions.html#syntax-vec-shape"><span class="std std-ref">shape</span></a>.</p>
+<p>Vector instructions that operate bitwise are handled as integer operations of respective width.</p>
 <div class="math notranslate nohighlight">
-\[\begin{array}{lll&#64;{\qquad}l}
+\[\begin{split}\begin{array}{lll&#64;{\qquad}l}
+\mathit{op}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{v}N}}(i_1,\dots,i_k) &amp;=&amp; \href{../exec/numerics.html#int-ops}{\mathrm{i}\mathit{op}}_N(i_1,\dots,i_k) \\
+\end{array}\end{split}\]</div>
+<p>Most other vector instructions are defined in terms of numeric operators that are applied lane-wise according to the given <a class="reference internal" href="../syntax/instructions.html#syntax-vec-shape"><span class="std std-ref">shape</span></a>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{array}{llll}
 \mathit{op}_{t\mathsf{x}N}(n_1,\dots,n_k) &amp;=&amp;
-  \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}^{-1}_{t\mathsf{x}N}(op_t(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{t\mathsf{x}N}(n_1) ~\dots~ \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{t\mathsf{x}N}(n_k))
-\end{array}\]</div>
+  \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}^{-1}_{t\mathsf{x}N}(\href{../exec/instructions.html#exec-instr-numeric}{\mathit{op}}_t(i_1,\dots,i_k)^\ast) &amp; \qquad(\mathrel{\mbox{if}} i_1^\ast = \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{t\mathsf{x}N}(n_1) \land \dots \land i_k^\ast = \href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{t\mathsf{x}N}(n_k) \\
+\end{array}\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For example, the result of instruction <span class="math notranslate nohighlight">\(\mathsf{i32x4}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> applied to operands <span class="math notranslate nohighlight">\(i_1, i_2\)</span>
-invokes <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}_{\mathsf{i32x4}}(i_1, i_2)\)</span>, which maps to
-<span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}^{-1}_{\mathsf{i32x4}}(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}}(i_1^+, i_2^+))\)</span>,
-where <span class="math notranslate nohighlight">\(i_1^+\)</span> and <span class="math notranslate nohighlight">\(i_2^+\)</span> are sequences resulting from invoking
-<span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i32x4}}(i_1)\)</span> and <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i32x4}}(i_2)\)</span>
+<p>For example, the result of instruction <span class="math notranslate nohighlight">\(\mathsf{i32x4}.\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}\)</span> applied to operands <span class="math notranslate nohighlight">\(v_1, v_2\)</span>
+invokes <span class="math notranslate nohighlight">\(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}_{\mathsf{i32x4}}(v_1, v_2)\)</span>, which maps to
+<span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}^{-1}_{\mathsf{i32x4}}(\href{../syntax/instructions.html#syntax-instr-numeric}{\mathsf{add}}_{\href{../syntax/types.html#syntax-valtype}{\mathsf{i32}}}(i_1, i_2)^\ast)\)</span>,
+where <span class="math notranslate nohighlight">\(i_1^\ast\)</span> and <span class="math notranslate nohighlight">\(i_2^\ast\)</span> are sequences resulting from invoking
+<span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i32x4}}(v_1)\)</span> and <span class="math notranslate nohighlight">\(\href{../exec/numerics.html#aux-lanes}{\mathrm{lanes}}_{\mathsf{i32x4}}(v_2)\)</span>
 respectively.</p>
 </div>
 <section id="xref-syntax-types-syntax-valtype-mathsf-v128-mathsf-xref-syntax-instructions-syntax-instr-vec-mathsf-const-c">
