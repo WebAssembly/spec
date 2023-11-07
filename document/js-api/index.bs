@@ -1359,7 +1359,7 @@ In practice, an implementation may run out of resources for valid modules below 
 <li>The maximum number of data segments defined in a module is 100,000.</li>
 
 <li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
-<li>The maximum size of a table is 10000000.</li>
+<li>The maximum size of a table is 10,000,000.</li>
 <li>The maximum number of table entries in any table initialization is 10,000,000.</li>
 <li>The maximum number of memories, including declared or imported memories, is 1.</li>
 
