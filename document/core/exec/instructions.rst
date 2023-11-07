@@ -964,7 +964,7 @@ Reference Instructions
    S; F; (\REFARRAYADDR~a)~(\I32.\CONST~i)~\val~(\ARRAYSET~x) \stepto S'; \epsilon
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TSTRUCT~\X{ft}^n \\
+     (\iff & \expanddt(F.\AMODULE.\MITYPES[x]) = \TARRAY~\X{ft} \\
       \land & S' = S \with \SARRAYS[a].\AIFIELDS[i] = \packval_{\X{ft}}(\val)) \\
      \end{array}
    \\[1ex]
