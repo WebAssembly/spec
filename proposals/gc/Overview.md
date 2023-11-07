@@ -153,7 +153,7 @@ The above could map to
 )
 
 (func $h
-  (local $b (optref $buf))
+  (local $b (ref null $buf))
   (local.set $b
     (struct.new $buf
       (i64.const 0)
@@ -408,7 +408,7 @@ For example:
 )
 ```
 All accesses are type-checked at validation time.
-The structure operand of `struct.get/set` may either be a `ref` or an `optref` for a structure type
+The structure operand of `struct.get/set` may either be a `ref` or an `ref null` for a structure type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 
 Structures are *allocated* with the `struct.new` instruction that accepts initialization values for each field.
@@ -440,7 +440,7 @@ Elements are accessed with generic load/store instructions that take a reference
 )
 ```
 The element type of every access is checked at validation time.
-The array operand of `array.get/set` may either be a `ref` or an `optref` for an array type
+The array operand of `array.get/set` may either be a `ref` or an `ref null` for an array type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 The index is checked against the array's length at execution time.
 A trap occurs if the index is out of bounds.
@@ -505,7 +505,7 @@ These notions are already introduced by [typed function references](https://gith
 
 Plain references cannot be null,
 avoiding any runtime overhead for null checks when accessing a struct or array.
-Nullable references are available as separate types called `optref`, as per the .
+Nullable references are available as separate types called `ref null`, as per the .
 
 Most value types, including all numeric types and nullable references are *defaultable*, which means that they have 0 or null as a default value.
 Other reference types are not defaultable.
