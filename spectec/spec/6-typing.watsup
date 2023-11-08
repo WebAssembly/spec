@@ -626,7 +626,7 @@ rule Instr_ok/br_on_cast:
   -- Reftype_sub: C |- rt_2 <: rt
 
 rule Instr_ok/br_on_cast_fail:
-  C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* rt_2
+  C |- BR_ON_CAST_FAIL l rt_1 rt_2 : t* rt_1 -> t* rt_2
   -- if C.LABEL[l] = t* rt
   -- Reftype_ok: C |- rt_1 : OK
   -- Reftype_ok: C |- rt_2 : OK
