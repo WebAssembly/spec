@@ -238,3 +238,11 @@ def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise
 
 def $memop0 : memop  hint(show )
 def $memop0 = {ALIGN 0, OFFSET 0}
+
+;;
+;; Auxiliary definitions on Bytes
+;;
+
+def $concat_bytes(byte**) : byte*  hint(show $concat(%))
+def $concat_bytes(epsilon) = epsilon
+def $concat_bytes(b* b'**) = b* $concat_bytes(b'**)

@@ -374,7 +374,7 @@ rule Step_read/array.new_data-alloc:
   z; (CONST I32 i) (CONST I32 n) (ARRAY.NEW_DATA x y)  ~>  (CONST nt c)^n (ARRAY.NEW_FIXED x n)
   -- Expand: $type(z, x) ~~ ARRAY (mut zt)
   -- if nt = $unpacknumtype(zt)
-  -- if $ztbytes(zt, c)^n = $data(z, y).DATA[i : n * $storagesize(zt)/8]
+  -- if $concat_bytes($ztbytes(zt, c)^n) = $data(z, y).DATA[i : n * $storagesize(zt)/8]
 
 
 rule Step_read/array.get-null:
