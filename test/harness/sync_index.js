@@ -191,6 +191,18 @@ function assert_invalid(bytes) {
 
 const assert_malformed = assert_invalid;
 
+function assert_invalid_custom(bytes) {
+    uniqueTest(() => {
+        try {
+            module(bytes, /* valid */ true);
+        } catch(e) {
+            throw new Error('failed on custom section error');
+        }
+    }, "A wast module that should have an invalid or malformed custom section.");
+}
+
+const assert_malformed_custom = assert_invalid_custom;
+
 function instance(bytes, imports = registry, valid = true) {
     if (imports instanceof Result) {
         if (imports.isError())

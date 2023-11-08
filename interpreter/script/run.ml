@@ -450,9 +450,15 @@ let run_assertion ass =
     (match ignore (run_definition def) with
     | exception Decode.Code (_, msg) -> assert_message ass.at "decoding" msg re
     | exception Parse.Syntax (_, msg) -> assert_message ass.at "parsing" msg re
+    | _ -> Assert.error ass.at "expected decoding/parsing error"
+    )
+
+  | AssertMalformedCustom (def, re) ->
+    trace "Asserting malformed custom...";
+    (match ignore (run_definition def) with
     | exception Custom.Syntax (_, msg) ->
       assert_message ass.at "annotation parsing" msg re
-    | _ -> Assert.error ass.at "expected decoding/parsing error"
+    | _ -> Assert.error ass.at "expected custom decoding/parsing error"
     )
 
   | AssertInvalid (def, re) ->
@@ -463,9 +469,18 @@ let run_assertion ass =
     with
     | exception Valid.Invalid (_, msg) ->
       assert_message ass.at "validation" msg re
+    | _ -> Assert.error ass.at "expected validation error"
+    )
+
+  | AssertInvalidCustom (def, re) ->
+    trace "Asserting invalid custom...";
+    (match
+      let m, cs = run_definition def in
+      Valid.check_module_with_custom (m, cs)
+    with
     | exception Custom.Invalid (_, msg) ->
       assert_message ass.at "custom validation" msg re
-    | _ -> Assert.error ass.at "expected validation error"
+    | _ -> Assert.error ass.at "expected custom validation error"
     )
 
   | AssertUnlinkable (def, re) ->

@@ -107,11 +107,19 @@ function assert_malformed(bytes) {
   throw new Error("Wasm decoding failure expected");
 }
 
+function assert_malformed_custom(bytes) {
+  return;
+}
+
 function assert_invalid(bytes) {
   try { module(bytes, false) } catch (e) {
     if (e instanceof WebAssembly.CompileError) return;
   }
   throw new Error("Wasm validation failure expected");
+}
+
+function assert_invalid_custom(bytes) {
+  return;
 }
 
 function assert_unlinkable(bytes) {
@@ -571,8 +579,12 @@ let of_assertion mods ass =
   match ass.it with
   | AssertMalformed (def, _) ->
     "assert_malformed(" ^ of_definition def ^ ");"
+  | AssertMalformedCustom (def, _) ->
+    "assert_malformed_custom(" ^ of_definition def ^ ");"
   | AssertInvalid (def, _) ->
     "assert_invalid(" ^ of_definition def ^ ");"
+  | AssertInvalidCustom (def, _) ->
+    "assert_invalid_custom(" ^ of_definition def ^ ");"
   | AssertUnlinkable (def, _) ->
     "assert_unlinkable(" ^ of_definition def ^ ");"
   | AssertUninstantiable (def, _) ->
