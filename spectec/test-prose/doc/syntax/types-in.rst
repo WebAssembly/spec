@@ -4,8 +4,8 @@ Types
 -----
 
 .. _syntax-numtype:
-.. _syntax-in:
-.. _syntax-fn:
+.. _syntax-iN:
+.. _syntax-fN:
 .. _syntax-types-number-types:
 
 Number Types
@@ -13,8 +13,8 @@ Number Types
 
 $${syntax+: 
   numtype
-  {in
-  fn}
+  {iN
+  fN}
 }
 
 .. _syntax-vectype:
@@ -24,6 +24,18 @@ Vector Types
 ~~~~~~~~~~~~
 
 $${syntax: vectype}
+
+.. _syntax-absheaptype:
+.. _syntax-heaptype:
+.. _syntax-types-heap-types:
+
+Heap Types
+~~~~~~~~~~
+
+$${syntax+: 
+  absheaptype
+  heaptype
+}
 
 .. _syntax-reftype:
 .. _syntax-types-reference-types:
@@ -48,6 +60,50 @@ Result Types
 ~~~~~~~~~~~~
 
 $${syntax: resulttype}
+
+.. _syntax-functype:
+.. _syntax-types-function-types:
+
+Function Types
+~~~~~~~~~~~~~~
+
+$${syntax: functype}
+
+.. _syntax-packedtype:
+.. _syntax-storagetype:
+.. _syntax-fieldtype:
+.. _syntax-types-aggregate-types:
+
+Aggregate Types
+~~~~~~~~~~~~~~~
+
+$${syntax+: 
+  packedtype
+  storagetype
+  fieldtype
+}
+
+.. _syntax-comptype:
+.. _syntax-types-composite-types:
+
+Composite Types
+~~~~~~~~~~~~~~~
+
+$${syntax: comptype}
+
+.. _syntax-rectype:
+.. _syntax-subtype:
+.. _syntax-fin:
+.. _syntax-types-recursive-types:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+$${syntax+:
+  rectype
+  subtype
+  fin
+}
 
 .. _syntax-limits:
 .. _syntax-types-limits:
@@ -82,17 +138,21 @@ $${syntax+:
 }
 
 .. _syntax-globaltype:
+.. _syntax-mut:
 .. _syntax-types-global-types:
 
 Global Types
 ~~~~~~~~~~~~
 
-$${syntax: globaltype}
+$${syntax+: 
+  globaltype
+  mut
+}
 
-.. _syntax-functype:
-.. _syntax-types-function-types:
+.. _syntax-externtype:
+.. _syntax-types-external-types:
 
-Function Types
+External Types
 ~~~~~~~~~~~~~~
 
-$${syntax: functype}
+$${syntax: externtype}

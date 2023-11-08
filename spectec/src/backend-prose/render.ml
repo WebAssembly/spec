@@ -386,7 +386,7 @@ let rec render_al_instr env algoname index depth = function
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       let else_index = render_order index depth in
-      sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n%s Else:%s"
+      sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n\n%s Else:%s"
         if_index
         (render_cond env c)
         (render_al_instrs env algoname (depth + 1) il1)

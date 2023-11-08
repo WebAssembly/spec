@@ -5,13 +5,13 @@ Instructions
 
 .. _syntax-sx:
 .. _syntax-instr-numeric:
-.. _syntax-unop_IXX:
-.. _syntax-unop_FXX:
-.. _syntax-binop_IXX:
-.. _syntax-binop_FXX:
-.. _syntax-testop_IXX:
-.. _syntax-testop_FXX:
-.. _syntax-relop_IXX:
+.. _syntax-unopIXX:
+.. _syntax-unopFXX:
+.. _syntax-binopIXX:
+.. _syntax-binopFXX:
+.. _syntax-testopIXX:
+.. _syntax-testopFXX:
+.. _syntax-relopIXX:
 .. _syntax-unop_numtype:
 .. _syntax-binop_numtype:
 .. _syntax-relop_numtype:
@@ -24,13 +24,13 @@ Numeric Instructions
 $${syntax+: 
   sx
   instr/numeric
-  {unop_IXX
-  unop_FXX
-  binop_IXX
-  binop_FXX
-  testop_IXX
-  testop_FXX
-  relop_IXX}
+  {unopIXX
+  unopFXX
+  binopIXX
+  binopFXX
+  testopIXX
+  testopFXX
+  relopIXX}
 }
 
 \
@@ -51,6 +51,14 @@ Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 $${syntax: instr/reference}
+
+.. _syntax-instr-heap:
+.. _syntax-instructions-heap:
+
+Heap Instructions
+~~~~~~~~~~~~~~~~~
+
+$${syntax: instr/heap}
 
 .. _syntax-instr-state:
 .. _syntax-instructions-state:

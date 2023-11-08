@@ -11,10 +11,14 @@ Bytes
 
 $${syntax: byte}
 
-.. _syntax-u32:
+.. _syntax-i31:
+.. _syntax-i32:
 .. _syntax-values-integers:
 
 Integers
 ~~~~~~~~
 
-$${syntax: u32}
+$${syntax+: 
+  i31
+  i32
+}

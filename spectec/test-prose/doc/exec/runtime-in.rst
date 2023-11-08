@@ -8,13 +8,13 @@ Runtime
 Values
 ~~~~~~
 
-.. _def-default_:
+.. _def-default:
 
-%{prose-func: default_}
+%{prose-func: default}
 
 \
 
-$${definition: default_}
+$${definition: default}
 
 .. _exec-runtime-results:
 
@@ -346,18 +346,18 @@ $${definition: with_elem}
 
 $${definition: with_data}
 
-.. _def-grow_table:
+.. _def-growtable:
 
-%{prose-func: grow_table}
-
-\
-
-$${definition: grow_table}
-
-.. _def-grow_memory:
-
-%{prose-func: grow_memory}
+%{prose-func: growtable}
 
 \
 
-$${definition: grow_memory}
+$${definition: growtable}
+
+.. _def-growmemory:
+
+%{prose-func: growmemory}
+
+\
+
+$${definition: growmemory}

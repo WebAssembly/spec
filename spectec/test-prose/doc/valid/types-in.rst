@@ -3,13 +3,73 @@
 Types
 -----
 
-.. _valid-Limits_ok:
-.. _valid-types-limits:
+.. _valid-Numtype_ok:
+.. _valid-types-number-types:
 
-Limits
-~~~~~~
+Number Types
+~~~~~~~~~~~~
 
-$${rule: Limits_ok}
+$${rule: Numtype_ok}
+
+.. _valid-Vectype_ok:
+.. _valid-types-vector-types:
+
+Vector Types
+~~~~~~~~~~~~
+
+$${rule: Vectype_ok}
+
+.. _valid-Heaptype_ok:
+.. _valid-types-heap-types:
+
+Heap Types
+~~~~~~~~~~
+
+$${rule+: 
+  Heaptype_ok/*
+}
+
+.. _valid-Reftype_ok:
+.. _valid-types-reference-types:
+
+Reference Types
+~~~~~~~~~~~~~~~
+
+$${rule: Reftype_ok}
+
+.. _valid-Valtype_ok:
+.. _valid-types-value-types:
+
+Value Types
+~~~~~~~~~~~
+
+$${rule+:
+  Valtype_ok/*
+}
+
+.. _valid-Blocktype_ok:
+.. _valid-types-block-types:
+
+Block Types
+~~~~~~~~~~~
+
+$${rule: Blocktype_ok}
+
+.. _valid-Resulttype_ok:
+.. _valid-types-result-types:
+
+Result Types
+~~~~~~~~~~~~
+
+$${rule: Resulttype_ok}
+
+.. _valid-Instrtype_ok:
+.. _valid-types-instruction-types:
+
+Instruction Types
+~~~~~~~~~~~~~~~~~
+
+$${rule: Instrtype_ok}
 
 .. _valid-Functype_ok:
 .. _valid-types-function-types:
@@ -18,6 +78,62 @@ Function Types
 ~~~~~~~~~~~~~~
 
 $${rule: Functype_ok}
+
+.. _valid-Comptype_ok:
+.. _valid-types-composite-types:
+
+Composite Types
+~~~~~~~~~~~~~~~
+
+$${rule+:
+  Comptype_ok/*
+}
+
+.. _valid-Packedtype_ok:
+.. _valid-Storagetype_ok:
+.. _valid-Fieldtype_ok:
+.. _valid-types-field-types:
+
+Field Types
+~~~~~~~~~~~
+
+$${rule+: 
+  Packedtype_ok
+  Storagetype_ok/*
+  Fieldtype_ok
+}
+
+.. _valid-Rectype_ok:
+.. _valid-Rectype_ok2:
+.. _valid-Subtype_ok:
+.. _valid-Subtype_ok2:
+.. _valid-types-recursive-types:
+
+Recursive Types
+~~~~~~~~~~~~~~~
+
+$${rule+:
+  Rectype_ok/*
+  Rectype_ok2/*
+  Subtype_ok
+  Subtype_ok2
+}
+
+.. _valid-Deftype_ok:
+.. _valid-types-defined-types:
+
+Defined Types
+~~~~~~~~~~~~~
+
+$${rule: Deftype_ok}
+
+.. _valid-Limits_ok:
+.. _valid-types-limits:
+
+Limits
+~~~~~~
+
+$${rule: Limits_ok}
 
 .. _valid-Tabletype_ok:
 .. _valid-types-table-types:
@@ -43,44 +159,12 @@ Global Types
 
 $${rule: Globaltype_ok}
 
-.. _valid-Externtype_ok-func:
-.. _valid-Externtype_ok-table:
-.. _valid-Externtype_ok-mem:
-.. _valid-Externtype_ok-global:
+.. _valid-Externtype_ok:
 .. _valid-types-external-types:
 
 External Types
 ~~~~~~~~~~~~~~
 
 $${rule+:
-  Externtype_ok/func
-  Externtype_ok/table
-  Externtype_ok/mem
-  Externtype_ok/global
-}
-
-.. _valid-Limits_sub:
-.. _valid-Functype_sub:
-.. _valid-Externtype_sub/func:
-.. _valid-Globaltype_sub:
-.. _valid-Externtype_sub/global:
-.. _valid-Tabletype_sub:
-.. _valid-Externtype_sub/table:
-.. _valid-Memtype_sub:
-.. _valid-Externtype_sub/mem:
-.. _valid-types-import-subtyping:
-
-Import Subtyping
-~~~~~~~~~~~~~~~~
-
-$${rule+:
-  Limits_sub
-  Functype_sub
-  Externtype_sub/func
-  Globaltype_sub
-  Externtype_sub/global
-  Tabletype_sub
-  Externtype_sub/table
-  Memtype_sub
-  Externtype_sub/mem
+  Externtype_ok/*
 }

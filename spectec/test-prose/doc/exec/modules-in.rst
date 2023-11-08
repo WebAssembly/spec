@@ -8,37 +8,37 @@ Modules
 Allocation
 ~~~~~~~~~~
 
-.. _def-funcs:
+.. _def-funcsxv:
 
-%{prose-func: funcs}
-
-\
-
-$${definition: funcs}
-
-.. _def-globals:
-
-%{prose-func: globals}
+%{prose-func: funcsxv}
 
 \
 
-$${definition: globals}
+$${definition: funcsxv}
 
-.. _def-tables:
+.. _def-globalsxv:
 
-%{prose-func: tables}
-
-\
-
-$${definition: tables}
-
-.. _def-mems:
-
-%{prose-func: mems}
+%{prose-func: globalsxv}
 
 \
 
-$${definition: mems}
+$${definition: globalsxv}
+
+.. _def-tablesxv:
+
+%{prose-func: tablesxv}
+
+\
+
+$${definition: tablesxv}
+
+.. _def-memsxv:
+
+%{prose-func: memsxv}
+
+\
+
+$${definition: memsxv}
 
 .. _def-allocfunc:
 
@@ -165,24 +165,24 @@ Instantiation
 
 $${definition: concat_instr}
 
-.. _def-instantiation:
+.. _def-instantiate:
 
 
-%{prose-func: instantiation}
+%{prose-func: instantiate}
 
 \
 
-$${definition: instantiation}
+$${definition: instantiate}
 
 .. _exec-modules-invocation:
 
 Invocation
 ~~~~~~~~~~
 
-.. _def-invocation:
+.. _def-invoke:
 
-%{prose-func: invocation}
+%{prose-func: invoke}
 
 \
 
-$${definition: invocation}
+$${definition: invoke}

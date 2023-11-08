@@ -53,6 +53,14 @@ $${rule+: Step_pure/cvtop-*}
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
+.. _exec-REF.FUNC:
+
+%{prose-algo: REF.FUNC}
+
+\
+
+$${rule+: Step_read/ref.func}
+
 .. _exec-REF.IS_NULL:
 
 %{prose-algo: REF.IS_NULL}
@@ -61,13 +69,181 @@ Reference Instructions
 
 $${rule+: Step_pure/ref.is_null-*}
 
-.. _exec-REF.FUNC:
+.. _exec-REF.AS_NON_NULL:
 
-%{prose-algo: REF.FUNC}
+%{prose-algo: REF.AS_NON_NULL}
 
 \
 
-$${rule+: Step_read/ref.func}
+$${rule+: Step_pure/ref.as_non_null-*}
+
+.. _exec-REF.EQ:
+
+%{prose-algo: REF.EQ}
+
+\
+
+$${rule+: Step_pure/ref.eq-*}
+
+.. _exec-REF.TEST:
+
+%{prose-algo: REF.TEST}
+
+\
+
+$${rule+: Step_read/ref.test-*}
+
+.. _exec-REF.CAST:
+
+%{prose-algo: REF.CAST}
+
+\
+
+$${rule+: Step_read/ref.cast-*}
+
+.. _exec-I31.GET:
+
+%{prose-algo: I31.GET}
+
+\
+
+$${rule+: Step_pure/i31.get-*}
+
+.. _exec-STRUCT.NEW:
+
+%{prose-algo: STRUCT.NEW}
+
+\
+
+$${rule+: Step/struct.new}
+
+.. _exec-STRUCT.NEW_DEFAULT:
+
+%{prose-algo: STRUCT.NEW_DEFAULT}
+
+\
+
+$${rule+: Step_read/struct.new_default}
+
+.. _exec-STRUCT.GET:
+
+STRUCT.GET
+^^^^^^^^^^
+
+TODO (too deeply nested)
+
+\
+
+$${rule+: Step_read/struct.get-*}
+
+.. _exec-STRUCT.SET:
+
+%{prose-algo: STRUCT.SET}
+
+\
+
+$${rule+: Step/struct.set-*}
+
+.. _exec-ARRAY.NEW:
+
+%{prose-algo: ARRAY.NEW}
+
+\
+
+$${rule+: Step_read/array.new}
+
+.. _exec-ARRAY.NEW_DEFAULT:
+
+%{prose-algo: ARRAY.NEW_DEFAULT}
+
+\
+
+$${rule+: Step_read/array.new_default}
+
+.. _exec-ARRAY.NEW_FIXED:
+
+%{prose-algo: ARRAY.NEW_FIXED}
+
+\
+
+$${rule+: Step/array.new_fixed}
+
+.. _exec-ARRAY.NEW_ELEM:
+
+%{prose-algo: ARRAY.NEW_ELEM}
+
+\
+
+$${rule+: Step_read/array.new_elem-*}
+
+.. _exec-ARRAY.NEW_DATA:
+
+%{prose-algo: ARRAY.NEW_DATA}
+
+\
+
+$${rule+: Step_read/array.new_data-*}
+
+.. _exec-ARRAY.GET:
+
+%{prose-algo: ARRAY.GET}
+
+\
+
+$${rule+: Step_read/array.get-*}
+
+.. _exec-ARRAY.SET:
+
+%{prose-algo: ARRAY.SET}
+
+\
+
+$${rule+: Step/array.set-*}
+
+.. _exec-ARRAY.LEN:
+
+%{prose-algo: ARRAY.LEN}
+
+\
+
+$${rule+: Step_read/array.len-*}
+
+.. _exec-ARRAY.FILL:
+
+%{prose-algo: ARRAY.FILL}
+
+\
+
+$${rule+: Step_read/array.fill-*}
+
+.. _exec-ARRAY.COPY:
+
+ARRAY.COPY
+^^^^^^^^^^
+
+TODO (too deeply nested)
+
+\
+
+$${rule+: Step_read/array.copy-*}
+
+.. _exec-ARRAY.INIT_ELEM:
+
+%{prose-algo: ARRAY.INIT_ELEM}
+
+\
+
+$${rule+: Step_read/array.init_elem-*}
+
+.. _exec-ARRAY.INIT_DATA:
+
+%{prose-algo: ARRAY.INIT_DATA}
+
+\
+
+$${rule+: Step_read/array.init_data-*}
+
+
 
 .. _exec-instructions-parametric:
 
@@ -358,13 +534,45 @@ $${rule+: Step_pure/return-*}
 
 $${rule+: Step_read/call}
 
+.. _exec-CALL_REF:
+
+%{prose-algo: CALL_REF}
+
+\
+
+$${rule+: Step_read/call_ref-*}
+
 .. _exec-CALL_INDIRECT:
 
 %{prose-algo: CALL_INDIRECT}
 
 \
 
-$${rule+: Step_read/call_indirect-*}
+$${rule+: Step_pure/call_indirect-*}
+
+.. _exec-RETURN_CALL:
+
+%{prose-algo: RETURN_CALL}
+
+\
+
+$${rule+: Step_read/return_call}
+
+.. _exec-RETURN_CALL_REF:
+
+%{prose-algo: RETURN_CALL_REF}
+
+\
+
+$${rule+: Step_pure/return_call_ref-*}
+
+.. _exec-RETURN_CALL_INDIRECT:
+
+%{prose-algo: RETURN_CALL_INDIRECT}
+
+\
+
+$${rule+: Step_pure/return_call_indirect}
 
 .. _exec-instructions-seq:
 

@@ -8,6 +8,10 @@ Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+.. _valid-CONST:
+
+$${rule: Instr_ok/const}
+
 .. _valid-UNOP:
 
 %{prose-pred: UNOP}
@@ -22,7 +26,7 @@ $${rule+: Instr_ok/unop}
 
 \
 
-$${rule+: Instr_ok/binop}
+$${rule: Instr_ok/binop}
 
 .. _valid-TESTOP:
 
@@ -30,7 +34,7 @@ $${rule+: Instr_ok/binop}
 
 \
 
-$${rule+: Instr_ok/testop}
+$${rule: Instr_ok/testop}
 
 .. _valid-RELOP:
 
@@ -38,7 +42,7 @@ $${rule+: Instr_ok/testop}
 
 \
 
-$${rule+: Instr_ok/relop}
+$${rule: Instr_ok/relop}
 
 .. _valid-REINTERPRET:
 
@@ -46,7 +50,7 @@ TODO (should change the rule name to cvtop-)
 
 \
 
-$${rule+: Instr_ok/reinterpret}
+$${rule: Instr_ok/reinterpret}
 
 .. _valid-CONVERT:
 
@@ -61,13 +65,13 @@ $${rule+: Instr_ok/convert-*}
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-REF.IS_NULL:
+.. _valid-REF.NULL:
 
-%{prose-pred: REF.IS_NULL}
+%{prose-pred: REF.NULL}
 
 \
 
-$${rule+: Instr_ok/ref.is_null}
+$${rule: Instr_ok/ref.null}
 
 .. _valid-REF.FUNC:
 
@@ -75,7 +79,222 @@ $${rule+: Instr_ok/ref.is_null}
 
 \
 
-$${rule+: Instr_ok/ref.func}
+$${rule: Instr_ok/ref.func}
+
+.. _valid-REF.IS_NULL:
+
+%{prose-pred: REF.IS_NULL}
+
+\
+
+$${rule: Instr_ok/ref.is_null}
+
+.. _valid-REF.AS_NON_NULL:
+
+%{prose-pred: REF.AS_NON_NULL}
+
+\
+
+$${rule: Instr_ok/ref.as_non_null}
+
+.. _valid-REF.IS_NULL:
+
+%{prose-pred: REF.IS_NULL}
+
+\
+
+$${rule: Instr_ok/ref.is_null}
+
+.. _valid-REF.EQ:
+
+%{prose-pred: REF.EQ}
+
+\
+
+$${rule: Instr_ok/ref.eq}
+
+.. _valid-REF.TEST:
+
+%{prose-pred: REF.TEST}
+
+\
+
+$${rule: Instr_ok/ref.test}
+
+.. _valid-REF.CAST:
+
+%{prose-pred: REF.CAST}
+
+\
+
+$${rule: Instr_ok/ref.cast}
+
+.. _valid-instructions-aggregate-reference:
+
+Aggregate Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-STRUCT.NEW:
+
+%{prose-pred: STRUCT.NEW}
+
+\
+
+$${rule: Instr_ok/struct.new}
+
+.. _valid-STRUCT.NEW_DEFAULT:
+
+%{prose-pred: STRUCT.NEW_DEFAULT}
+
+\
+
+$${rule: Instr_ok/struct.new_default}
+
+.. _valid-STRUCT.GET:
+
+%{prose-pred: STRUCT.GET}
+
+\
+
+$${rule: Instr_ok/struct.get}
+
+.. _valid-STRUCT.SET:
+
+%{prose-pred: STRUCT.SET}
+
+\
+
+$${rule: Instr_ok/struct.set}
+
+.. _valid-ARRAY.NEW:
+
+%{prose-pred: ARRAY.NEW}
+
+\
+
+$${rule: Instr_ok/array.new}
+
+.. _valid-ARRAY.NEW_DEFAULT:
+
+%{prose-pred: ARRAY.NEW_DEFAULT}
+
+\
+
+$${rule: Instr_ok/array.new_default}
+
+.. _valid-ARRAY.NEW_FIXED:
+
+%{prose-pred: ARRAY.NEW_FIXED}
+
+\
+
+$${rule: Instr_ok/array.new_fixed}
+
+.. _valid-ARRAY.NEW_ELEM:
+
+%{prose-pred: ARRAY.NEW_ELEM}
+
+\
+
+$${rule: Instr_ok/array.new_elem}
+
+.. _valid-ARRAY.NEW_DATA:
+
+%{prose-pred: ARRAY.NEW_DATA}
+
+\
+
+$${rule: Instr_ok/array.new_data}
+
+.. _valid-ARRAY.GET:
+
+%{prose-pred: ARRAY.GET}
+
+\
+
+$${rule: Instr_ok/array.get}
+
+.. _valid-ARRAY.SET:
+
+%{prose-pred: ARRAY.SET}
+
+\
+
+$${rule: Instr_ok/array.set}
+
+.. _valid-ARRAY.LEN:
+
+%{prose-pred: ARRAY.LEN}
+
+\
+
+$${rule: Instr_ok/array.len}
+
+.. _valid-ARRAY.FILL:
+
+%{prose-pred: ARRAY.FILL}
+
+\
+
+$${rule: Instr_ok/array.fill}
+
+.. _valid-ARRAY.COPY:
+
+%{prose-pred: ARRAY.COPY}
+
+\
+
+$${rule: Instr_ok/array.copy}
+
+.. _valid-ARRAY.INIT_DATA:
+
+%{prose-pred: ARRAY.INIT_DATA}
+
+\
+
+$${rule: Instr_ok/array.init_data}
+
+.. _valid-ARRAY.INIT_ELEM:
+
+%{prose-pred: ARRAY.INIT_ELEM}
+
+\
+
+$${rule: Instr_ok/array.init_elem}
+
+.. _valid-instructions-scalar-reference:
+
+Scalar Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-REF.I31:
+
+%{prose-pred: REF.I31}
+
+\
+
+$${rule: Instr_ok/ref.i31}
+
+.. _valid-I31.GET:
+
+%{prose-pred: I31.GET}
+
+\
+
+$${rule: Instr_ok/i31.get}
+
+.. _valid-instructions-external-reference:
+
+External Reference Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-EXTERN.EXTERNALIZE:
+
+$${rule: Instr_ok/extern.externalize}
+
+.. _valid-EXTERN.INTERNALIZE:
+
+$${rule: Instr_ok/extern.internalize}
 
 .. _valid-instructions-parametric:
 
@@ -113,19 +332,25 @@ $${rule+: Instr_ok/local.get}
 
 .. _valid-LOCAL.SET:
 
-%{prose-pred: LOCAL.SET}
+LOCAL.SET
+^^^^^^^^^
+
+TODO (not found) 
 
 \
 
-$${rule+: Instr_ok/local.set}
+$${rule+: Instrf_ok/local.set}
 
 .. _valid-LOCAL.TEE:
 
-%{prose-pred: LOCAL.TEE}
+LOCAL.TEE
+^^^^^^^^^
+
+TODO (not found)
 
 \
 
-$${rule+: Instr_ok/local.tee}
+$${rule+: Instrf_ok/local.tee}
 
 .. _valid-GLOBAL.GET:
 
@@ -350,6 +575,38 @@ $${rule+: Instr_ok/br_if}
 
 $${rule+: Instr_ok/br_table}
 
+.. _valid-BR_ON_NULL:
+
+%{prose-pred: BR_ON_NULL}
+
+\
+
+$${rule: Instr_ok/br_on_null}
+
+.. _valid-BR_ON_NON_NULL:
+
+%{prose-pred: BR_ON_NON_NULL}
+
+\
+
+$${rule: Instr_ok/br_on_non_null}
+
+.. _valid-BR_ON_CAST:
+
+%{prose-pred: BR_ON_CAST}
+
+\
+
+$${rule: Instr_ok/br_on_cast}
+
+.. _valid-BR_ON_CAST_FAIL:
+
+TODO (typo in DSL typing rule)
+
+\
+
+$${rule: Instr_ok/br_on_cast_fail}
+
 .. _valid-RETURN:
 
 %{prose-pred: RETURN}
@@ -366,6 +623,15 @@ $${rule+: Instr_ok/return}
 
 $${rule+: Instr_ok/call}
 
+.. _valid-CALL_REF:
+
+%{prose-pred: CALL_REF}
+
+\
+
+$${rule+: Instr_ok/call_ref}
+
+
 .. _valid-CALL_INDIRECT:
 
 %{prose-pred: CALL_INDIRECT}
@@ -373,3 +639,59 @@ $${rule+: Instr_ok/call}
 \
 
 $${rule+: Instr_ok/call_indirect}
+
+.. _valid-RETURN_CALL:
+
+%{prose-pred: RETURN_CALL}
+
+\
+
+$${rule+: Instr_ok/return_call}
+
+.. _valid-RETURN_CALL_REF:
+
+%{prose-pred: RETURN_CALL_REF}
+
+\
+
+$${rule+: Instr_ok/return_call_ref}
+
+.. _valid-RETURN_CALL_INDIRECT:
+
+%{prose-pred: RETURN_CALL_INDIRECT}
+
+\
+
+$${rule+: Instr_ok/return_call_indirect}
+
+.. _valid-Instrf_ok-instr:
+.. _valid-Instrs_ok-empty:
+.. _valid-Instrs_ok-seq:
+.. _valid-Instrs_ok-sub:
+.. _valid-instructions-sequences:
+
+Instruction Sequences
+~~~~~~~~~~~~~~~~~~~~~
+
+$${rule+:
+  Instrf_ok/instr
+  Instrs_ok/empty
+  Instrs_ok/seq
+  Instrs_ok/sub
+}
+
+.. _valid-Expr_ok:
+.. _valid-Instr_const:
+.. _valid-Expr_const:
+.. _valid-Expr_ok_const:
+.. _valid-instructions-expressions:
+
+Expressions
+~~~~~~~~~~~
+
+$${rule+: 
+  Expr_ok
+  Instr_const/*
+  Expr_const
+  Expr_ok_const
+}
