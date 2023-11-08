@@ -120,20 +120,10 @@ let al_of_value = function
 
 (* Construct type *)
 
-let al_of_val_typeidx wasm_module idx =
-  let dts = Option.get wasm_module |> Ast.def_types_of in
-  match Lib.List32.nth dts idx.it with
-  | DefT (RecT ([SubT (_, _, (DefFuncT _ as ft))]), _) ->
-    begin match al_of_str_type ft with
-    | ConstructV ("FUNC", [ at ]) -> at
-    | _ -> failwith "Invalid deftype for block type"
-    end
-  | _ -> failwith "Invalid deftype for block type"
-
-let al_of_blocktype wasm_module = function
-| Ast.VarBlockType idx -> al_of_val_typeidx wasm_module idx
-| Ast.ValBlockType None -> ArrowV(listV [], listV [])
-| Ast.ValBlockType (Some val_type) -> ArrowV(listV [], listV [al_of_val_type val_type])
+let al_of_blocktype = function
+| Ast.VarBlockType idx -> ConstructV ("_IDX", [ NumV (Int64.of_int32 idx.it) ])
+| Ast.ValBlockType None -> ConstructV ("_RESULT", [ OptV None ])
+| Ast.ValBlockType (Some val_type) -> ConstructV ("_RESULT", [ OptV (Some (al_of_val_type val_type)) ])
 
 
 (* Construct instruction *)
@@ -241,9 +231,10 @@ let al_of_packsize_with_extension (p, s) =
   listV [ al_of_packsize p; al_of_extension s ]
 
 
-let rec al_of_instr wasm_module winstr =
+let rec al_of_instr winstr =
   let to_int i32 = NumV (int64_of_int32_u i32.it) in
   let f name  = ConstructV (name, []) in
+  let f_v name v = ConstructV (name, [v]) in
   let f_i32 name i32 = ConstructV (name, [to_int i32]) in
   let f_i32_i32 name i32 i32' = ConstructV (name, [to_int i32; to_int i32']) in
 
@@ -302,7 +293,7 @@ let rec al_of_instr wasm_module winstr =
   | Ast.RefIsNull -> f "REF.IS_NULL"
   | Ast.RefFunc i32 -> f_i32 "REF.FUNC" i32
   | Ast.Select None -> ConstructV ("SELECT", [ OptV None ])
-  | Ast.Select (Some [t]) -> ConstructV ("SELECT", [ OptV (Some (al_of_val_type t)) ])
+  | Ast.Select (Some ts) -> ConstructV ("SELECT", [ OptV (Some (listV (List.map al_of_val_type ts))) ])
   | Ast.LocalGet i32 -> f_i32 "LOCAL.GET" i32
   | Ast.LocalSet i32 -> f_i32 "LOCAL.SET" i32
   | Ast.LocalTee i32 -> f_i32 "LOCAL.TEE" i32
@@ -319,19 +310,19 @@ let rec al_of_instr wasm_module winstr =
   | Ast.Block (bt, instrs) ->
       ConstructV
         ("BLOCK", [
-            al_of_blocktype wasm_module bt;
-            listV (instrs |> al_of_instrs wasm_module)])
+            al_of_blocktype bt;
+            listV (instrs |> al_of_instrs)])
   | Ast.Loop (bt, instrs) ->
       ConstructV
         ("LOOP", [
-            al_of_blocktype wasm_module bt;
-            listV (instrs |> al_of_instrs wasm_module)])
+            al_of_blocktype bt;
+            listV (instrs |> al_of_instrs)])
   | Ast.If (bt, instrs1, instrs2) ->
       ConstructV
         ("IF", [
-            al_of_blocktype wasm_module bt;
-            listV (instrs1 |> al_of_instrs wasm_module);
-            listV (instrs2 |> al_of_instrs wasm_module);
+            al_of_blocktype bt;
+            listV (instrs1 |> al_of_instrs);
+            listV (instrs2 |> al_of_instrs);
             ])
   | Ast.Br i32 -> f_i32 "BR" i32
   | Ast.BrIf i32 -> f_i32 "BR_IF" i32
@@ -356,10 +347,10 @@ let rec al_of_instr wasm_module winstr =
             ])
   | Ast.Return -> f "RETURN"
   | Ast.Call i32 -> f_i32 "CALL" i32
-  | Ast.CallRef i32 -> f_i32 "CALL_REF" i32
+  | Ast.CallRef i32 -> f_v "CALL_REF" (OptV (Some (to_int i32)))
   | Ast.CallIndirect (i32, i32') -> f_i32_i32 "CALL_INDIRECT" i32 i32'
   | Ast.ReturnCall i32 -> f_i32 "RETURN_CALL"i32
-  | Ast.ReturnCallRef i32 -> f_i32 "RETURN_CALL_REF" i32
+  | Ast.ReturnCallRef i32 -> f_v "RETURN_CALL_REF" (OptV (Some (to_int i32)))
   | Ast.ReturnCallIndirect (i32, i32') -> f_i32_i32 "RETURN_CALL_INDIRECT" i32 i32'
   | Ast.Load {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
@@ -367,8 +358,10 @@ let rec al_of_instr wasm_module winstr =
             al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize_with_extension pack);
             NumV 0L;
-            NumV (Int64.of_int align);
-            NumV (int64_of_int32_u offset)
+            RecordV (Record.empty
+              |> Record.add "ALIGN" (NumV (Int64.of_int align))
+              |> Record.add "OFFSET" (NumV (int64_of_int32_u offset))
+            )
         ])
   | Ast.Store {ty = ty; align = align; offset = offset; pack = pack} ->
       ConstructV
@@ -376,8 +369,10 @@ let rec al_of_instr wasm_module winstr =
             al_of_val_type (Types.NumT ty);
             OptV (Option.map al_of_packsize pack);
             NumV 0L;
-            NumV (Int64.of_int align);
-            NumV (int64_of_int32_u offset)
+            RecordV (Record.empty
+              |> Record.add "ALIGN" (NumV (Int64.of_int align))
+              |> Record.add "OFFSET" (NumV (int64_of_int32_u offset))
+            )
         ])
   | Ast.MemorySize -> ConstructV ("MEMORY.SIZE", [ NumV 0L ])
   | Ast.MemoryGrow -> ConstructV ("MEMORY.GROW", [ NumV 0L ])
@@ -418,11 +413,11 @@ let rec al_of_instr wasm_module winstr =
   | Ast.ArrayFill i32 -> f_i32 "ARRAY.FILL" i32
   | Ast.ArrayInitData (i32, i32') -> f_i32_i32 "ARRAY.INIT_DATA" i32 i32'
   | Ast.ArrayInitElem (i32, i32') -> f_i32_i32 "ARRAY.INIT_ELEM" i32 i32'
-  | Ast.ExternConvert Ast.Internalize -> f "EXTERN.INTERNALIZE"
-  | Ast.ExternConvert Ast.Externalize -> f "EXTERN.EXTERNALIZE"
+  | Ast.ExternConvert Ast.Internalize -> f "ANY.CONVERT_EXTERN"
+  | Ast.ExternConvert Ast.Externalize -> f "EXTERN.CONVERT_ANY"
   | _ -> ConstructV ("TODO: Unconstructed Wasm instruction (al_of_instr)", [])
 
-and al_of_instrs wasm_module winstrs = List.map (al_of_instr wasm_module) winstrs
+and al_of_instrs winstrs = List.map al_of_instr winstrs
 
 
 
@@ -430,7 +425,7 @@ and al_of_instrs wasm_module winstrs = List.map (al_of_instr wasm_module) winstr
 
 let it phrase = phrase.it
 
-let al_of_func wasm_module wasm_func =
+let al_of_func wasm_func =
 
   let ftype =
     NumV (Int64.of_int32 wasm_func.it.Ast.ftype.it)
@@ -445,13 +440,13 @@ let al_of_func wasm_module wasm_func =
   in
 
   (* Construct code *)
-  let code = al_of_instrs (Some wasm_module) wasm_func.it.Ast.body in
+  let code = al_of_instrs wasm_func.it.Ast.body in
 
   (* Construct func *)
   ConstructV ("FUNC", [ftype; listV locals; listV code])
 
 let al_of_global wasm_global =
-  let expr = al_of_instrs None wasm_global.it.Ast.ginit.it in
+  let expr = al_of_instrs wasm_global.it.Ast.ginit.it in
 
   ConstructV ("GLOBAL", [ StringV "Yet: global type"; listV expr ])
 
@@ -469,7 +464,7 @@ let al_of_table wasm_table =
   let Types.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
   let pair = al_of_limits limits 4294967295L in
 
-  let expr = al_of_instrs None wasm_table.it.Ast.tinit.it in
+  let expr = al_of_instrs wasm_table.it.Ast.tinit.it in
 
   ConstructV ("TABLE", [ PairV(pair, al_of_val_type (RefT ref_ty)); listV expr ])
 
@@ -479,35 +474,27 @@ let al_of_memory wasm_memory =
 
   ConstructV ("MEMORY", [ ConstructV ("I8", [ pair]) ])
 
-let al_of_segment wasm_segment active_name = match wasm_segment.it with
-  | Ast.Passive -> OptV None
+let al_of_segment wasm_segment = match wasm_segment.it with
+  | Ast.Passive -> singleton "PASSIVE"
   | Ast.Active { index = index; offset = offset } ->
-      OptV (
-        Some (
-          ConstructV (
-            active_name,
-            [
-              NumV (int64_of_int32_u index.it);
-              listV (al_of_instrs None offset.it)
-            ]
-          )
-        )
+      ConstructV (
+        "ACTIVE",
+        [
+          NumV (int64_of_int32_u index.it);
+          listV (al_of_instrs offset.it)
+        ]
       )
-  | Ast.Declarative -> OptV (Some (singleton "DECLARE"))
-
-let al_of_elem_segment wasm_segment = al_of_segment wasm_segment "TABLE"
+  | Ast.Declarative -> singleton "DECLARE"
 
 let al_of_elem wasm_elem =
   let reftype = al_of_val_type (Types.RefT wasm_elem.it.Ast.etype) in
 
-  let al_of_const const = listV (al_of_instrs None const.it) in
+  let al_of_const const = listV (al_of_instrs const.it) in
   let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const in
 
-  let mode = al_of_elem_segment wasm_elem.it.Ast.emode in
+  let mode = al_of_segment wasm_elem.it.Ast.emode in
 
   ConstructV ("ELEM", [ reftype; listV instrs; mode ])
-
-let al_of_data_segment wasm_segment = al_of_segment wasm_segment "MEMORY"
 
 let al_of_data wasm_data =
   (* TODO: byte list list *)
@@ -516,7 +503,7 @@ let al_of_data wasm_data =
   let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
   let byte_list = String.fold_right f init [] in
 
-  let mode = al_of_data_segment wasm_data.it.Ast.dmode in
+  let mode = al_of_segment wasm_data.it.Ast.dmode in
 
   ConstructV ("DATA", [ listV byte_list; mode ])
 
@@ -576,7 +563,7 @@ let al_of_module wasm_module =
 
   (* Construct functions *)
   let func_list =
-    List.map (al_of_func wasm_module) wasm_module.it.funcs
+    List.map al_of_func wasm_module.it.funcs
   in
 
   (* Construct global *)

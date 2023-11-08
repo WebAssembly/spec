@@ -14,6 +14,7 @@ let space f x = " " ^ f x ^ " "
 
 let string_of_atom = function
   | Atom atomid -> atomid
+  | Infinity -> "infinity"
   | Bot -> "_|_"
   | Dot -> "."
   | Dot2 -> ".."
@@ -43,27 +44,27 @@ let string_of_atom = function
 
 let string_of_unop = function
   | NotOp -> "~"
-  | PlusOp -> "+"
-  | MinusOp -> "-"
+  | PlusOp _ -> "+"
+  | MinusOp _ -> "-"
 
 let string_of_binop = function
   | AndOp -> "/\\"
   | OrOp -> "\\/"
   | ImplOp -> "=>"
   | EquivOp -> "<=>"
-  | AddOp -> "+"
-  | SubOp -> "-"
-  | MulOp -> "*"
-  | DivOp -> "/"
-  | ExpOp -> "^"
+  | AddOp _ -> "+"
+  | SubOp _ -> "-"
+  | MulOp _ -> "*"
+  | DivOp _ -> "/"
+  | ExpOp _ -> "^"
 
 let string_of_cmpop = function
   | EqOp -> "="
   | NeOp -> "=/="
-  | LtOp -> "<"
-  | GtOp -> ">"
-  | LeOp -> "<="
-  | GeOp -> ">="
+  | LtOp _ -> "<"
+  | GtOp _ -> ">"
+  | LeOp _ -> "<="
+  | GeOp _ -> ">="
 
 let string_of_mixop = function
   | [Atom a]::tail when List.for_all ((=) []) tail -> a
@@ -87,11 +88,18 @@ let rec string_of_iter iter =
   | ListN (e, Some id) ->
     "^(" ^ id.it ^ "<" ^ string_of_exp e ^ ")"
 
+and string_of_numtyp t =
+  match t with
+  | NatT -> "nat"
+  | IntT -> "int"
+  | RatT -> "rat"
+  | RealT -> "real"
+
 and string_of_typ t =
   match t.it with
   | VarT id -> id.it
   | BoolT -> "bool"
-  | NatT -> "nat"
+  | NumT t -> string_of_numtyp t
   | TextT -> "text"
   | TupT ts -> "(" ^ string_of_typs ", " ts ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
@@ -116,11 +124,15 @@ and string_of_typ_mix mixop t =
   if mixop = [[]; []] then string_of_typ t else
   string_of_mixop mixop ^ string_of_typ_args t
 
-and string_of_typfield (atom, t, _hints) =
-  string_of_atom atom ^ " " ^ string_of_typ t
+and string_of_typfield (atom, (binds, t, prems), _hints) =
+  string_of_binds binds ^
+  string_of_atom atom ^ " " ^ string_of_typ t ^
+    concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase (atom, t, _hints) =
-  string_of_atom atom ^ string_of_typ_args t
+and string_of_typcase (atom, (binds, t, prems), _hints) =
+  string_of_binds binds ^
+  string_of_atom atom ^ string_of_typ_args t ^
+    concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 
 (* Expressions *)
@@ -196,18 +208,9 @@ and string_of_iterexp (iter, ids) =
   string_of_iter iter ^ "{" ^ String.concat " " (List.map Source.it ids) ^ "}"
 
 
-(* Definitions *)
+(* Premises *)
 
-let string_of_bind (id, t, iters) =
-  let dim = String.concat "" (List.map string_of_iter iters) in
-  id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
-
-let string_of_binds = function
-  | [] -> ""
-  | binds -> " {" ^ concat ", " (List.map string_of_bind binds) ^ "}"
-
-
-let rec string_of_prem prem =
+and string_of_prem prem =
   match prem.it with
   | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp {e with it = MixE (op, e)}
   | IfPr e -> "if " ^ string_of_exp e
@@ -217,6 +220,17 @@ let rec string_of_prem prem =
     string_of_prem prem' ^ string_of_iterexp iter
   | IterPr (prem', iter) ->
     "(" ^ string_of_prem prem' ^ ")" ^ string_of_iterexp iter
+
+
+(* Definitions *)
+
+and string_of_bind (id, t, iters) =
+  let dim = String.concat "" (List.map string_of_iter iters) in
+  id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
+
+and string_of_binds = function
+  | [] -> ""
+  | binds -> " {" ^ concat ", " (List.map string_of_bind binds) ^ "}"
 
 let region_comment indent at =
   if at = no_region then "" else
@@ -297,6 +311,7 @@ let structured_string_of_hintdef hintdef =
 
 let structured_string_of_atom = function
   | Atom atomid -> sprintf "Atom \"%s\"" atomid
+  | Infinity -> "Infinity"
   | Bot -> "Bot"
   | Dot -> "Dot"
   | Dot2 -> "Dot2"
@@ -326,27 +341,27 @@ let structured_string_of_atom = function
 
 let structured_string_of_unop = function
   | NotOp -> "NotOp"
-  | PlusOp -> "PlusOp"
-  | MinusOp -> "MinusOp"
+  | PlusOp _ -> "PlusOp"
+  | MinusOp _ -> "MinusOp"
 
 let structured_string_of_binop = function
   | AndOp -> "AndOp"
   | OrOp -> "OrOp"
   | ImplOp -> "ImplOp"
   | EquivOp -> "EquivOp"
-  | AddOp -> "AddOp"
-  | SubOp -> "SubOp"
-  | MulOp -> "MulOp"
-  | DivOp -> "DivOp"
-  | ExpOp -> "ExpOp"
+  | AddOp _ -> "AddOp"
+  | SubOp _ -> "SubOp"
+  | MulOp _ -> "MulOp"
+  | DivOp _ -> "DivOp"
+  | ExpOp _ -> "ExpOp"
 
 let structured_string_of_cmpop = function
   | EqOp -> "EqOp"
   | NeOp -> "NeOp"
-  | LtOp -> "LtOp"
-  | GtOp -> "GtOp"
-  | LeOp -> "LeOp"
-  | GeOp -> "GeOp"
+  | LtOp _ -> "LtOp"
+  | GtOp _ -> "GtOp"
+  | LeOp _ -> "LeOp"
+  | GeOp _ -> "GeOp"
 
 let structured_string_of_mixop mixop =
   structured_string_of_list
@@ -369,7 +384,7 @@ and structured_string_of_typ typ =
   match typ.it with
   | VarT id -> sprintf "VarT \"%s\"" id.it
   | BoolT -> "BoolT"
-  | NatT -> "NatT"
+  | NumT _ -> "NumT"
   | TextT -> "TextT"
   | TupT typs -> sprintf "TupT (%s)" (structured_string_of_typs typs)
   | IterT (typ1, iter) ->
@@ -377,8 +392,9 @@ and structured_string_of_typ typ =
         (structured_string_of_typ typ1)
         (structured_string_of_iter iter)
 
-and structured_string_of_typs typs =
-  structured_string_of_list structured_string_of_typ typs
+and structured_string_of_typs _typs =
+  (* structured_string_of_list structured_string_of_typ typs *)
+  "TODO: structured_string_of_typs"
 
 and structured_string_of_deftyp deftyp =
   match deftyp.it with
@@ -393,19 +409,21 @@ and structured_string_of_deftyp deftyp =
       sprintf "VariantT (%s)"
         (structured_string_of_list structured_string_of_typcase typcases)
 
-and structured_string_of_typfield (atom, typ, hints) =
+and _structured_string_of_typfield (atom, typ, hints) =
   sprintf "(%s, %s, %s)"
     (structured_string_of_atom atom)
     (structured_string_of_typ typ)
     (structured_string_of_hints hints)
 
-and structured_string_of_typfields typfields =
-  structured_string_of_list structured_string_of_typfield typfields
+and structured_string_of_typfields _typfields =
+  (* structured_string_of_list structured_string_of_typfield typfields *)
+  "TODO: structured_string_of_typs"
 
-and structured_string_of_typcase (atom, typ, hints) =
+and structured_string_of_typcase (atom, _typ, hints) =
   sprintf "(%s, %s, %s)"
     (structured_string_of_atom atom)
-    (structured_string_of_typ typ)
+    (* (structured_string_of_typ typ) *)
+    "TODO: structured_string_of_typcases"
     (structured_string_of_hints hints)
 
 

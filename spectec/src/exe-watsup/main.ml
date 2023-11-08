@@ -46,6 +46,7 @@ let srcs = ref []    (* spec src file arguments *)
 let pdsts = ref []   (* patch file arguments *)
 let odsts = ref []   (* output file arguments *)
 
+let print_el = ref false
 let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
@@ -118,9 +119,10 @@ let argspec = Arg.align
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
   "--interpreter", Arg.Unit (fun () -> target := Interpreter), " Generate interpreter";
 
-  "--print-il", Arg.Set print_elab_il, " Print il (after elaboration)";
-  "--print-final-il", Arg.Set print_final_il, " Print final il";
-  "--print-all-il", Arg.Set print_all_il, " Print il after each step";
+  "--print-el", Arg.Set print_el, " Print EL";
+  "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
+  "--print-final-il", Arg.Set print_final_il, " Print final IL";
+  "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
   "--print-al", Arg.Set print_al, " Print al";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
@@ -144,6 +146,8 @@ let () =
     Arg.parse argspec add_arg usage;
     log "Parsing...";
     let el = List.concat_map Frontend.Parse.parse_file !srcs in
+    if !print_el then
+      Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
     let il = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then

@@ -30,7 +30,7 @@ Comptype_ok: `%|-%:OK`(C, ct)
 Animation failed (binding inference).
 if (|ct'*{ct'}| = |ht*{ht}|)
 if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|y*{y}| <= 1)
+if (|ht*{ht}| <= 1)
 (if $before(ht, x, i))*{ht}
 (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
 Comptype_ok: `%|-%:OK`(C, ct)
@@ -38,7 +38,7 @@ Comptype_ok: `%|-%:OK`(C, ct)
 ...Animation failed (reorder)
 if (|ct'*{ct'}| = |ht*{ht}|)
 if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|y*{y}| <= 1)
+if (|ht*{ht}| <= 1)
 (if $before(ht, x, i))*{ht}
 (if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
 Comptype_ok: `%|-%:OK`(C, ct)
@@ -108,28 +108,39 @@ if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 ...Animation failed (reorder)
 if (x < |C.MEM_context|)
 if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 Animation failed (binding inference).
 if (x < |C.MEM_context|)
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 ...Animation failed (reorder)
 if (x < |C.MEM_context|)
 if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (iN <: numtype)))
+if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 == IL Validation after pass animate...
 == Translating to AL...
+...Animation failed (reorder)
+if (a < |$funcinst(z)|)
+where fi = $funcinst(z)[a]
+where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt(fi.TYPE_funcinst)
+where `FUNC%%*%`(x', LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
+where f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst}
+where (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x})] = u_0*{u_0}
+...Animation failed (reorder)
+if (a < |$funcinst(z)|)
+where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
+where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr <: admininstr)*{instr}) = u_2
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====

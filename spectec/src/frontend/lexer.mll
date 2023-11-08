@@ -25,6 +25,12 @@ let nat lexbuf s =
     if n >= 0 then n else raise (Failure "")
   with Failure _ -> error lexbuf "nat literal out of range"
 
+let hex lexbuf s =
+  try
+    let n = int_of_string s in
+    if n >= 0 then n else raise (Failure "")
+  with Failure _ -> error lexbuf "hex literal out of range"
+
 let text _lexbuf s =
   let b = Buffer.create (String.length s) in
   let i = ref 1 in
@@ -62,11 +68,10 @@ let is_var s =
 
 let sign = '+' | '-'
 let digit = ['0'-'9']
-let hexdigit = ['0'-'9''a'-'f''A'-'F']
-let num = digit ('_'? digit)*
-let hexnum = hexdigit ('_'? hexdigit)*
-let nat = num | "0x" hexnum
+let hexdigit = ['0'-'9''A'-'F']
+let nat = digit ('_'? digit)*
 let int = sign nat
+let hex = hexdigit ('_'? hexdigit)*
 
 let upletter = ['A'-'Z']
 let loletter = ['a'-'z']
@@ -107,13 +112,27 @@ let character =
   | utf8enc
   | '\\'escape
   | '\\'hexdigit hexdigit
-  | "\\u{" hexnum '}'
+  | "\\u{" hex '}'
 let text = '"' character* '"'
 
 let indent = [' ''\t']
 let line_comment = ";;"utf8_no_nl*
 
-rule token = parse
+(* Need to factor this out so that we can invoke Lexing.new_line
+   at the right points; otherwise columns would be off *)
+rule after_nl = parse
+  | indent* "|"[' ''\t'] { NL_BAR }
+  | indent* '\n' { Lexing.new_line lexbuf; after_nl_nl lexbuf }
+  | "" { token lexbuf }
+
+and after_nl_nl = parse
+  | indent* "|"[' ''\t'] { NL_BAR }
+  | indent* "--" { NL_NL_DASH }
+  | indent* '\n' { Lexing.new_line lexbuf; NL_NL_NL }
+  | indent* line_comment '\n' { Lexing.new_line lexbuf; after_nl_nl lexbuf }
+  | "" { token lexbuf }
+
+and token = parse
   | "(" { LPAR }
   | ")" { RPAR }
   | "[" { LBRACK }
@@ -127,10 +146,13 @@ rule token = parse
   | ".." { DOTDOT }
   | "..." { DOTDOTDOT }
   | "|" { BAR }
+  | "||" { BARBAR }
   | "--" { DASH }
 
-  | "," indent* line_comment? '\n'
-    { Lexing.new_line lexbuf; COMMA_NL }
+  | "," indent* line_comment? '\n' { Lexing.new_line lexbuf; COMMA_NL }
+  | line_comment? '\n' { Lexing.new_line lexbuf; after_nl lexbuf }
+
+(*
   | line_comment? '\n' indent* "|"[' ''\t']
     { Lexing.new_line lexbuf; NL_BAR }
   | line_comment? '\n' indent* '\n' (indent* line_comment '\n')* indent* "--"
@@ -138,6 +160,7 @@ rule token = parse
   | line_comment? '\n' indent* '\n' indent* '\n'
     { Lexing.new_line lexbuf; Lexing.new_line lexbuf; Lexing.new_line lexbuf;
       NL_NL_NL }
+*)
 
   | "=" { EQ }
   | "=/=" { NE }
@@ -163,7 +186,7 @@ rule token = parse
   | "^" { UP }
   | "++" { COMPOSE }
 
-  | "in" { IN }
+  | "<-" { IN }
   | "->" { ARROW }
   | "=>" { ARROW2 }
   | "<=>" { DARROW2 }
@@ -186,9 +209,13 @@ rule token = parse
 
   | "bool" { BOOL }
   | "nat" { NAT }
+  | "int" { INT }
+  | "rat" { RAT }
+  | "real" { REAL }
   | "text" { TEXT }
 
   | "syntax" { SYNTAX }
+  | "grammar" { GRAMMAR }
   | "relation" { RELATION }
   | "rule" { RULE }
   | "var" { VAR }
@@ -196,12 +223,15 @@ rule token = parse
 
   | "if" { IF }
   | "otherwise" { OTHERWISE }
-  | "hint" { HINT }
+  | "hint(" { HINT_LPAR }
 
   | "epsilon" { EPSILON }
   | "true" { BOOLLIT true }
   | "false" { BOOLLIT false }
+  | "infinity" { INFINITY }
   | nat as s { NATLIT (nat lexbuf s) }
+  | ("0x" hex) as s { HEXLIT (hex lexbuf s) }
+  | "U+" (hex as s) { CHARLIT (hex lexbuf ("0x" ^ s)) }
   | text as s { TEXTLIT (text lexbuf s) }
   | '"'character*('\n'|eof) { error lexbuf "unclosed text literal" }
   | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
@@ -211,6 +241,8 @@ rule token = parse
 
   | upid as s { if is_var s then LOID s else UPID s }
   | loid as s { LOID s }
+  | (upid as s) "(" { if is_var s then LOID_LPAR s else UPID_LPAR s }
+  | (loid as s) "(" { LOID_LPAR s }
   | "."(id as s) { DOTID s }
 
   | ";;"utf8_no_nl*eof { EOF }

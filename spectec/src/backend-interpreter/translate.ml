@@ -81,7 +81,7 @@ let rec il_type2al_type t =
           (* TODO *)
           (*sprintf "%s -> %s" debug (Print.string_of_typ t) |> print_endline;*)
           TopT)
-  | Ast.NatT -> IntT
+  | Ast.NumT _ -> IntT
   | Ast.TupT [t1; t2] -> PairT (il_type2al_type t1, il_type2al_type t2)
   | Ast.IterT (ty, _) -> ListT (il_type2al_type ty)
   | _ -> failwith ("TODO: translate il_type into al_type of " ^ Print.string_of_typ t)
@@ -155,16 +155,16 @@ and exp2expr exp =
   (* update of record field *)
   | Ast.UpdE (base, path, v) -> ReplaceE (exp2expr base, path2paths path, exp2expr v)
   (* Binary / Unary operation *)
-  | Ast.UnE (Ast.MinusOp, inner_exp) -> MinusE (exp2expr inner_exp)
+  | Ast.UnE (Ast.MinusOp _, inner_exp) -> MinusE (exp2expr inner_exp)
   | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2expr exp1 in
       let rhs = exp2expr exp2 in
       let op = match op with
-      | Ast.AddOp -> Add
-      | Ast.SubOp -> Sub
-      | Ast.MulOp -> Mul
-      | Ast.DivOp -> Div
-      | Ast.ExpOp -> Exp
+      | Ast.AddOp _ -> Add
+      | Ast.SubOp _ -> Sub
+      | Ast.MulOp _ -> Mul
+      | Ast.DivOp _ -> Div
+      | Ast.ExpOp _ -> Exp
       | _ -> Add (* TODO *)
       in
       BinopE (op, lhs, rhs)
@@ -221,9 +221,9 @@ and exp2expr exp =
           ConstructE (("MEMORY", "mem"), List.map exp2expr el)
       | [ []; [ Ast.Atom "I8" ] ], el ->
           ConstructE (("I8", "memtype"), List.map exp2expr el)
-      | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [ Ast.Quest ] ], el ->
+      | [ [ Ast.Atom "ELEM" ]; []; [ Ast.Star ]; [] ], el ->
           ConstructE (("ELEM", "elem"), List.map exp2expr el)
-      | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [ Ast.Quest ] ], el ->
+      | [ [ Ast.Atom "DATA" ]; [ Ast.Star ]; [] ], el ->
           ConstructE (("DATA", "data"), List.map exp2expr el)
       | [ [ Ast.Atom "START" ]; [] ], el ->
           ConstructE (("START", "start"), List.map exp2expr el)
@@ -428,10 +428,10 @@ let rec exp2cond exp =
       let compare_op = match op with
       | Ast.EqOp -> Eq
       | Ast.NeOp -> Ne
-      | Ast.GtOp -> Gt
-      | Ast.GeOp -> Ge
-      | Ast.LtOp -> Lt
-      | Ast.LeOp -> Le
+      | Ast.GtOp _ -> Gt
+      | Ast.GeOp _ -> Ge
+      | Ast.LtOp _ -> Lt
+      | Ast.LeOp _ -> Le
       in
       CompareC (compare_op, lhs, rhs)
   | Ast.BinE (op, exp1, exp2) ->
@@ -602,13 +602,13 @@ let rec letI lhs rhs targets cont =
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
-  | "Eval_expr_const", [z; lhs; _z; rhs] ->
+  | "Eval_expr", [z; lhs; _z; rhs] ->
     (* TODO: Name of f..? *)
     LetI (PairE (NameE "_", NameE "f"), z) ::
     EnterI (
       FrameE (None, NameE "f"),
       ListE [ConstructE (("FRAME_", ""), [])],
-      [ LetI (rhs, AppE ("eval_expr_const", [ lhs ])) ]
+      [ LetI (rhs, AppE ("eval_expr", [ lhs ])) ]
     ) :: instrs
   | "Ref_ok", [_s; ref; rt] ->
     LetI (rt, AppE ("ref_type_of", [ ref ])) :: instrs
@@ -919,4 +919,4 @@ let translate il =
 
   (* Transpile *)
   (* Can be turned off *)
-  List.map Transpile.transpiler algos
+  List.map Transpile.state_remover algos

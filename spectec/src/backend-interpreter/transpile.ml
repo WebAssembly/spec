@@ -404,7 +404,7 @@ let flatten_if = function
   | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
   | i -> i
 
-let transpiler algo =
+let state_remover algo =
   let walker =
     Walk.walk
       { Walk.default_config with
@@ -417,7 +417,7 @@ let transpiler algo =
   | FuncA (name, params, body) -> (match params with
     | PairE (_, NameE "f") :: tail ->
         FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
-    | NameE "s" :: tail ->
+    | NameE ("s" | "z") :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
   | RuleA _ as a -> a

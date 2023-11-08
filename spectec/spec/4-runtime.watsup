@@ -34,7 +34,7 @@ var aa : arrayaddr
 syntax num hint(desc "number") =
   | CONST numtype c_numtype
 syntax addrref hint(desc "address reference") =
-  | REF.I31_NUM i31                hint(show REF.I31 %)
+  | REF.I31_NUM u31                hint(show REF.I31 %)
   | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
   | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
   | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
@@ -159,8 +159,6 @@ var z : state
 syntax admininstr hint(show instr) hint(desc "administrative instruction") =
   | instr
   | addrref
-  | CALL_ADDR funcaddr             hint(show INVOKE %)
-  | RETURN_CALL_ADDR funcaddr      hint(show RETURN_INVOKE %)
   | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
   | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
   | TRAP

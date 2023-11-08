@@ -1,5 +1,5 @@
 ;;
-;; Auxiliary definitions on indices
+;; Auxiliary definitions on Indices
 ;;
 
 ;; Sequence difference
@@ -15,8 +15,30 @@ def $setminus1(x, y_1 y*) = epsilon            -- if x = y_1
 def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
 
 
+;; Free indices
+
+def $free_dataidx_instr(instr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instr(MEMORY.INIT x y) = y
+def $free_dataidx_instr(DATA.DROP x) = x
+def $free_dataidx_instr(in) = epsilon
+
+def $free_dataidx_instrs(instr*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instrs(epsilon) = epsilon
+def $free_dataidx_instrs(instr instr'*) = $free_dataidx_instr(instr) $free_dataidx_instrs(instr'*)
+
+def $free_dataidx_expr(expr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_expr(in*) = $free_dataidx_instrs(in*)
+
+def $free_dataidx_func(func) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_func(FUNC x loc* e) = $free_dataidx_expr(e)
+
+def $free_dataidx_funcs(func*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_funcs(epsilon) = epsilon
+def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_funcs(func'*)
+
+
 ;;
-;; Auxiliary Definitions on Types
+;; Auxiliary definitions on Types
 ;;
 
 ;; Size
@@ -107,9 +129,9 @@ def $subst_vectype(vt, xx*, ht*) = vt
 
 def $subst_heaptype(xx', xx*, ht*) = $subst_typevar(xx', xx*, ht*)
 def $subst_heaptype(dt, xx*, ht*) = $subst_deftype(dt, xx*, ht*)
-def $subst_heaptype(ht, xx*, ht'*) = ht  -- otherwise
+def $subst_heaptype(ht', xx*, ht*) = ht'  -- otherwise
 
-def $subst_reftype((REF nul ht), xx*, ht'*) = REF nul $subst_heaptype(ht, xx*, ht'*)
+def $subst_reftype((REF nul ht'), xx*, ht*) = REF nul $subst_heaptype(ht', xx*, ht*)
 
 def $subst_valtype(nt, xx*, ht*) = $subst_numtype(nt, xx*, ht*)
 def $subst_valtype(vt, xx*, ht*) = $subst_vectype(vt, xx*, ht*)
@@ -205,3 +227,22 @@ def $tablesxt(externtype et*) = $tablesxt(et*)  -- otherwise
 def $memsxt(epsilon) = epsilon
 def $memsxt((MEM mt) et*) = mt $memsxt(et*)
 def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise
+
+
+
+;;
+;; Auxiliary definitions on Instructions
+;;
+
+;; Shorthands for instructions
+
+def $memop0 : memop  hint(show )
+def $memop0 = {ALIGN 0, OFFSET 0}
+
+;;
+;; Auxiliary definitions on Bytes
+;;
+
+def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
+def $concat_bytes(epsilon) = epsilon
+def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)

@@ -361,9 +361,9 @@ let ext : numerics =
       );
   }
 
-let bytes_ : numerics =
+let ibytes : numerics =
   {
-    name = "bytes";
+    name = "ibytes";
     (* TODO: Handle the case where n > 16 (i.e. for v128 ) *)
     f =
       (function
@@ -379,9 +379,9 @@ let bytes_ : numerics =
       | _ -> failwith "Invalid bytes"
       );
   }
-let inverse_of_bytes_ : numerics =
+let inverse_of_ibytes : numerics =
   {
-    name = "inverse_of_bytes";
+    name = "inverse_of_ibytes";
     f =
       (function
       | [ NumV n; ListV bs ] ->
@@ -389,13 +389,49 @@ let inverse_of_bytes_ : numerics =
           NumV (Array.fold_right (fun b acc ->
             match b with
             | NumV b when 0L <= b && b < 256L -> Int64.add b (Int64.shift_left acc 8)
-            | _ -> failwith ("Invalid inverse_of_bytes: " ^ Print.string_of_value b ^ " is not a valid byte.")
+            | _ -> failwith ("Invalid inverse_of_ibytes: " ^ Print.string_of_value b ^ " is not a valid byte.")
           ) !bs 0L)
-      | _ -> failwith "Invalid argument for inverse_of_bytes."
+      | _ -> failwith "Invalid argument for inverse_of_ibytes."
       );
   }
 
-let wrap_ : numerics =
+let ntbytes : numerics =
+  {
+    name = "ntbytes";
+    f =
+      (function
+      | [ ConstructV ("I32", []); n ] -> ibytes.f [ NumV 32L; n ]
+      | [ ConstructV ("I64", []); n ] -> ibytes.f [ NumV 64L; n ]
+      | [ ConstructV ("F32", []); f ] -> ibytes.f [ NumV 32L; f ] (* TODO *)
+      | [ ConstructV ("F64", []); f ] -> ibytes.f [ NumV 64L; f ] (* TODO *)
+      | _ -> failwith "Invalid ntbytes"
+      );
+  }
+let inverse_of_ntbytes : numerics =
+  {
+    name = "inverse_of_ntbytes";
+    f =
+      (function
+      | [ ConstructV ("I32", []); l ] -> inverse_of_ibytes.f [ NumV 32L; l ]
+      | [ ConstructV ("I64", []); l ] -> inverse_of_ibytes.f [ NumV 64L; l ]
+      | [ ConstructV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV 32L; l ] (* TODO *)
+      | [ ConstructV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV 64L; l ] (* TODO *)
+      | _ -> failwith "Invalid inverse_of_ntbytes"
+      );
+  }
+
+let inverse_of_ztbytes : numerics =
+  {
+    name = "inverse_of_ztbytes";
+    f =
+      (function
+      | [ ConstructV ("I8", []); l ] -> inverse_of_ibytes.f [ NumV 8L; l ]
+      | [ ConstructV ("I16", []); l ] -> inverse_of_ibytes.f [ NumV 16L; l ]
+      | args -> inverse_of_ntbytes.f args
+      );
+  }
+
+let wrap : numerics =
   {
     name = "wrap";
     f =
@@ -407,6 +443,16 @@ let wrap_ : numerics =
       );
   }
 
+let inverse_of_signed : numerics =
+  {
+    name = "inverse_of_signed";
+    f =
+      (function
+      | [ n; i ] -> wrap.f [ NumV 64L; n; i ]
+      | _ -> failwith "Invalid inverse_of_signed"
+      );
+  }
+
 let numerics_list : numerics list = [
   unop;
   binop;
@@ -414,9 +460,13 @@ let numerics_list : numerics list = [
   relop;
   cvtop;
   ext;
-  bytes_;
-  inverse_of_bytes_;
-  wrap_ ]
+  ibytes;
+  inverse_of_ibytes;
+  ntbytes;
+  inverse_of_ntbytes;
+  inverse_of_ztbytes;
+  inverse_of_signed;
+  wrap ]
 
 let call_numerics fname args =
   let numerics =

@@ -7,10 +7,10 @@ open Util.Source
 let cmpop_to_cmpop = function
 | Ast.EqOp -> Eq
 | Ast.NeOp -> Ne
-| Ast.LtOp -> Lt
-| Ast.GtOp -> Gt
-| Ast.LeOp -> Le
-| Ast.GeOp -> Ge
+| Ast.LtOp _ -> Lt
+| Ast.GtOp _ -> Gt
+| Ast.LeOp _ -> Le
+| Ast.GeOp _ -> Ge
 
 let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 

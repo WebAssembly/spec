@@ -106,7 +106,7 @@ rule Instrtype_ok:
 
 ;; Type definitions
 
-syntax oktypeidx hint(show OK#((typeidx)))    = | OK(typeidx)     hint(show OK#(%))
+syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))
 syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %))
 
 relation Packedtype_ok: context |- packedtype : OK    hint(show "K-packed")
@@ -174,7 +174,7 @@ def $unrollht(C, REC i) = C.REC[i]
 
 rule Subtype_ok2:
   C |- SUBD fin ht* ct : OK x i
-  -- if |y*| <= 1
+  -- if |ht*| <= 1
   -- if ($before(ht, x, i))*
   -- if ($unrollht(C, ht) = SUBD epsilon ht'* ct')*
   -- Comptype_ok: C |- ct : OK
@@ -564,9 +564,16 @@ rule Instr_ok/select-impl:
 
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 
-rule Blocktype_ok:
-  C |- ft : ft
-  -- Functype_ok: C |- ft : OK
+rule Blocktype_ok/void:
+  C |- _RESULT epsilon : epsilon -> epsilon
+
+rule Blocktype_ok/result:
+  C |- _RESULT t : epsilon -> t
+
+rule Blocktype_ok/typeidx:
+  C |- _IDX x : ft
+  -- Expand: C.TYPE[x] ~~ FUNC ft
+
 
 rule Instr_ok/block:
   C |- BLOCK bt instr* : t_1* -> t_2*
@@ -619,7 +626,7 @@ rule Instr_ok/br_on_cast:
   -- Reftype_sub: C |- rt_2 <: rt
 
 rule Instr_ok/br_on_cast_fail:
-  C |- BR_ON_CAST l rt_1 rt_2 : t* rt_1 -> t* rt_2
+  C |- BR_ON_CAST_FAIL l rt_1 rt_2 : t* rt_1 -> t* rt_2
   -- if C.LABEL[l] = t* rt
   -- Reftype_ok: C |- rt_1 : OK
   -- Reftype_ok: C |- rt_2 : OK
@@ -696,13 +703,13 @@ rule Instr_ok/reinterpret:
   -- if $size(nt_1) = $size(nt_2)
 
 rule Instr_ok/convert-i:
-  C |- CVTOP iN_1 CONVERT iN_2 sx? : iN_2 -> iN_1
-  -- if iN_1 =/= iN_2
-  -- if sx? = epsilon <=> $size(iN_1) > $size(iN_2)
+  C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
+  -- if inn_1 =/= inn_2
+  -- if sx? = epsilon <=> $size(inn_1) > $size(inn_2)
 
 rule Instr_ok/convert-f:
-  C |- CVTOP fN_1 CONVERT fN_2 : fN_2 -> fN_1
-  -- if fN_1 =/= fN_2
+  C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
+  -- if fnn_1 =/= fnn_2
 
 
 ;; Reference instructions
@@ -834,11 +841,11 @@ rule Instr_ok/array.init_data:
 
 ;; External reference instructions
 
-rule Instr_ok/extern.externalize:
-  C |- EXTERN.EXTERNALIZE : (REF nul ANY) -> (REF nul EXTERN)
+rule Instr_ok/extern.convert_any:
+  C |- EXTERN.CONVERT_ANY : (REF nul ANY) -> (REF nul EXTERN)
 
-rule Instr_ok/extern.internalize:
-  C |- EXTERN.INTERNALIZE : (REF nul EXTERN) -> (REF nul ANY)
+rule Instr_ok/any.convert_extern:
+  C |- ANY.CONVERT_EXTERN : (REF nul EXTERN) -> (REF nul ANY)
 
 
 ;; Local instructions
@@ -935,18 +942,18 @@ rule Instr_ok/data.drop:
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
-  C |- LOAD nt (n _ sx)? x n_A n_O : I32 -> nt
+  C |- LOAD nt (n _ sx)? x {ALIGN n_A, OFFSET n_O} : I32 -> nt
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = iN
+  -- if n? = epsilon \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? x n_A n_O : I32 nt -> epsilon
+  C |- STORE nt n? x {ALIGN n_A, OFFSET n_O} : I32 nt -> epsilon
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = iN
+  -- if n? = epsilon \/ nt = inn
 
 
 ;;
@@ -1046,26 +1053,32 @@ rule Mem_ok:
   -- Memtype_ok: C |- mt : OK
 
 rule Elem_ok:
-  C |- ELEM rt expr* elemmode? : rt
+  C |- ELEM rt expr* elemmode : rt
   -- (Expr_ok: C |- expr : rt)*
-  -- (Elemmode_ok: C |- elemmode : rt)?
+  -- Elemmode_ok: C |- elemmode : rt
 
 rule Data_ok:
-  C |- DATA b* datamode? : OK
-  -- (Datamode_ok: C |- datamode : OK)?
+  C |- DATA b* datamode : OK
+  -- Datamode_ok: C |- datamode : OK
 
 rule Elemmode_ok/active:
-  C |- TABLE x expr : rt
+  C |- ACTIVE x expr : rt
   -- if C.TABLE[x] = lim rt
   -- (Expr_ok_const: C |- expr : I32 CONST)*
+
+rule Elemmode_ok/passive:
+  C |- PASSIVE : rt
 
 rule Elemmode_ok/declare:
   C |- DECLARE : rt
 
-rule Datamode_ok:
-  C |- MEMORY x expr : OK
+rule Datamode_ok/active:
+  C |- ACTIVE x expr : OK
   -- if C.MEM[x] = mt
   -- (Expr_ok_const: C |- expr : I32 CONST)*
+
+rule Datamode_ok/passive:
+  C |- PASSIVE : OK
 
 rule Start_ok:
   C |- START x : OK
@@ -1076,30 +1089,30 @@ rule Start_ok:
 
 relation Import_ok: context |- import : externtype        hint(show "T-import")
 relation Export_ok: context |- export : externtype        hint(show "T-export")
-relation Externuse_ok: context |- externuse : externtype  hint(show "T-externuse")
+relation Externidx_ok: context |- externidx : externtype  hint(show "T-externidx")
 
 rule Import_ok:
   C |- IMPORT name_1 name_2 xt : xt
   -- Externtype_ok: C |- xt : OK
 
 rule Export_ok:
-  C |- EXPORT name externuse : xt
-  -- Externuse_ok: C |- externuse : xt
+  C |- EXPORT name externidx : xt
+  -- Externidx_ok: C |- externidx : xt
 
 
-rule Externuse_ok/func:
+rule Externidx_ok/func:
   C |- FUNC x : FUNC dt
   -- if C.FUNC[x] = dt
 
-rule Externuse_ok/global:
+rule Externidx_ok/global:
   C |- GLOBAL x : GLOBAL gt
   -- if C.GLOBAL[x] = gt
 
-rule Externuse_ok/table:
+rule Externidx_ok/table:
   C |- TABLE x : TABLE tt
   -- if C.TABLE[x] = tt
 
-rule Externuse_ok/mem:
+rule Externidx_ok/mem:
   C |- MEM x : MEM mt
   -- if C.MEM[x] = mt
 

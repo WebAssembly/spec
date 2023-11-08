@@ -839,7 +839,6 @@ and interp_instrs (env: env) (il: instr list): env =
 (* TODO: move to ds.ml *)
 
 and interp_algo (algo: algorithm) (args: value list): unit =
-
   let params = get_param algo in
 
   let env =
@@ -866,6 +865,8 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 
   (* Interp algorithm *)
   let algo = lookup name in
+  if (List.length args) <> (List.length (get_param algo)) then
+    failwith ("Argument number mismatch for algorithm " ^ name);
   interp_algo algo args;
 
   (* Pop AL context *)
