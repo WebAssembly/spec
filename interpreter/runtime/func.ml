@@ -3,14 +3,12 @@ open Value
 
 type 'inst t = 'inst func
 and 'inst func =
-  | AstFunc of type_addr * 'inst * Ast.func
-  | HostFunc of type_addr * (value list -> value list)
+  | AstFunc of func_type * 'inst * Ast.func
+  | HostFunc of func_type * (value list -> value list)
 
-let alloc x inst f = AstFunc (x, inst, f)
-let alloc_host x f = HostFunc (x, f)
+let alloc ft inst f = AstFunc (ft, inst, f)
+let alloc_host ft f = HostFunc (ft, f)
 
-let type_inst_of = function
-  | AstFunc (x, _, _) -> x
-  | HostFunc (x, _) -> x
-
-let type_of f = as_func_def_type (def_of (type_inst_of f))
+let type_of = function
+  | AstFunc (ft, _, _) -> ft
+  | HostFunc (ft, _) -> ft

@@ -1,16 +1,16 @@
 (include_subdirs unqualified)
 
 (library
- (name wasm)
- ; The 'main' module shall not be part of the library, as it would start the
+ (public_name wasm)
+ ; The 'wasm' module shall not be part of the library, as it would start the
  ; Wasm REPL every time in all the dependencies.
  ; We exclude the 'wast' module as it is only used for the JS build.
  ; 'smallint' is a separate test module.
- (modules :standard \ main smallint wast))
+ (modules :standard \ main wasm smallint wast))
 
 (executable
- (name main)
- (modules main)
+ (public_name wasm)
+ (modules wasm)
  (libraries wasm)
  (flags
   (-open Wasm)))
@@ -21,6 +21,18 @@
  (libraries wasm)
  (flags
   (-open Wasm)))
+
+(executable
+  (name wast)
+  (modules wast)
+  (modes js)
+  (libraries js_of_ocaml wasm)
+  (preprocess (pps js_of_ocaml-ppx)))
+
+(rule
+  (targets wasm.ml)
+  (deps main/main.ml)
+  (action (copy main/main.ml wasm.ml)))
 
 (subdir
  text
@@ -42,10 +54,10 @@
 (rule
  (alias runtest)
  (deps
-  ./main.exe
+  ./wasm.exe
   ./smallint.exe
   (source_tree ../test))
  (action
   (progn
-   (run ../test/core/run.py --wasm ./main.exe)
+   (run ../test/core/run.py --wasm ./wasm.exe)
    (run ./smallint.exe))))

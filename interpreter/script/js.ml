@@ -180,8 +180,8 @@ function assert_return(action, ...expected) {
         };
         return;
       case "ref.null":
-        if (actual !== null) {
-          throw new Error("Wasm null return value expected, got " + actual);
+        if (actual[i] !== null) {
+          throw new Error("Wasm null return value expected, got " + actual[i]);
         };
         return;
       default:
@@ -203,7 +203,7 @@ type exports = extern_type NameMap.t
 type modules = {mutable env : exports Map.t; mutable current : int}
 
 let exports m : exports =
-  let ets = List.map (export_type_of m) m.it.exports in
+  let ModuleT (_, ets) = module_type_of m in
   List.fold_left (fun map (ExportT (et, name)) -> NameMap.add name et map)
     NameMap.empty ets
 
@@ -268,11 +268,8 @@ let abs_mask_of = function
 let null_heap_type_of = function
   | Types.FuncHT -> FuncHT
   | Types.ExternHT -> ExternHT
-  | Types.BotHT -> assert false
-  | Types.DefHT (Stat _) -> assert false
-  | Types.DefHT (Dyn a) ->
-    match Types.def_of a with
-    | Types.DefFuncT _ -> FuncHT
+  | Types.DefHT (Types.DefFuncT _) -> FuncHT
+  | Types.VarHT _ | Types.BotHT -> assert false
 
 let value v =
   match v.it with
@@ -382,8 +379,7 @@ let assert_return ress ts at =
         match t with
         | FuncHT -> is_funcref_idx
         | ExternHT -> is_externref_idx
-        | DefHT _ -> is_funcref_idx
-        | BotHT -> assert false
+        | DefHT _ | VarHT _ | BotHT -> assert false
       in
       [ Call (is_ref_idx @@ at) @@ at;
         Test (I32 I32Op.Eqz) @@ at;

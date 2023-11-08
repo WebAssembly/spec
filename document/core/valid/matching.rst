@@ -54,9 +54,13 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
 
 * Either both :math:`\heaptype_1` and :math:`\heaptype_2` are the same.
 
-* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type and :math:`\heaptype_2` is :math:`FUNC`.
+* Or :math:`\heaptype_1` is a :ref:`function type <syntax-functype>` and :math:`\heaptype_2` is :math:`FUNC`.
 
-* Or :math:`\heaptype_1` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_1`, and :math:`\heaptype_2` is a :ref:`type identifier <syntax-typeid>` that defines a function type :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+* Or :math:`\heaptype_1` is a :ref:`function type <syntax-functype>` :math:`\functype_1` and :math:`\heaptype_2` is a :ref:`function type <syntax-functype>` :math:`\functype_2`, and :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
+
+* Or :math:`\heaptype_1` is a :ref:`type index <syntax-typeidx>` :math:`x_1`, and :math:`C.\CTYPES[x_1]` :ref:`matches <match-heaptype>` :math:`\heaptype_2`.
+
+* Or :math:`\heaptype_2` is a :ref:`type index <syntax-typeidx>` :math:`x_2`, and :math:`\heaptype_1` :ref:`matches <match-heaptype>` :math:`C.\CTYPES[x_2]`.
 
 .. math::
    ~\\[-1ex]
@@ -66,22 +70,32 @@ A :ref:`heap type <syntax-heaptype>` :math:`\heaptype_1` matches a :ref:`heap ty
    }
    \qquad
    \frac{
-     C \vdashtypeid \typeid : \functype
    }{
-     C \vdashheaptypematch \typeid \matchesheaptype \FUNC
+     C \vdashheaptypematch \functype \matchesheaptype \FUNC
    }
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashtypeid \typeid_1 : \functype_1
-     \qquad
-     C \vdashtypeid \typeid_2 : \functype_2
-     \qquad
      C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
    }{
-     C \vdashheaptypematch \typeid_1 \matchesheaptype \typeid_2
+     C \vdashheaptypematch \functype_1 \matchesheaptype \functype_2
    }
+
+.. math::
+   ~\\[-1ex]
+   \frac{
+     C \vdashheaptypematch C.\CTYPES[\typeidx_1] \matchesheaptype \heaptype_2
+   }{
+     C \vdashheaptypematch \typeidx_1 \matchesheaptype \heaptype_2
+   }
+   \qquad
+   \frac{
+     C \vdashheaptypematch \heaptype_1 \matchesheaptype C.\CTYPES[\typeidx_2]
+   }{
+     C \vdashheaptypematch \heaptype_1 \matchesheaptype \typeidx_2
+   }
+
 
 
 .. index:: reference type
@@ -348,16 +362,16 @@ External Types
 Functions
 .........
 
-An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\typeid_1` matches :math:`\ETFUNC~\typeid_2` if and only if:
+An :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_1` matches :math:`\ETFUNC~\functype_2` if and only if:
 
-* The :ref:`heap type <syntax-heaptype>` :math:`\typeid_1` :ref:`matches <match-heaptype>` :math:`\typeid_2`.
+* The :ref:`function type <syntax-functype>` :math:`\functype_1` :ref:`matches <match-functype>` :math:`\functype_2`.
 
 .. math::
    ~\\[-1ex]
    \frac{
-     C \vdashheaptypematch \typeid_1 \matchesheaptype \typeid_2
+     C \vdashfunctypematch \functype_1 \matchesfunctype \functype_2
    }{
-     C \vdashexterntypematch \ETFUNC~\typeid_1 \matchesexterntype \ETFUNC~\typeid_2
+     C \vdashexterntypematch \ETFUNC~\functype_1 \matchesexterntype \ETFUNC~\functype_2
    }
 
 

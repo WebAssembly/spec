@@ -60,7 +60,7 @@ Each section consists of
 
 * a one-byte section *id*,
 * the |U32| *size* of the contents, in bytes,
-* the actual *contents*, whose structure is depended on the section id.
+* the actual *contents*, whose structure is dependent on the section id.
 
 Every section is optional; an omitted section is equivalent to the section being present with empty contents.
 
@@ -212,7 +212,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
-         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\ &&|&
      \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
@@ -338,7 +338,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
    \production{element segment} & \Belem &::=&
      0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
@@ -350,7 +350,7 @@ It decodes into a vector of :ref:`element segments <syntax-elem>` that represent
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
      4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
-       \{ \ETYPE~\FUNCREF, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
+       \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
      5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&

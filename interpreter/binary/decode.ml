@@ -166,7 +166,7 @@ let var_type s =
 let heap_type s =
   let pos = pos s in
   either [
-    (fun s -> DefHT (Stat (var_type s)));
+    (fun s -> VarHT (StatX (var_type s)));
     (fun s ->
       match s7 s with
       | -0x10 -> FuncHT
@@ -180,8 +180,8 @@ let ref_type s =
   match s7 s with
   | -0x10 -> (Null, FuncHT)
   | -0x11 -> (Null, ExternHT)
-  | -0x14 -> (Null, heap_type s)
-  | -0x15 -> (NoNull, heap_type s)
+  | -0x1c -> (NoNull, heap_type s)
+  | -0x1d -> (Null, heap_type s)
   | _ -> error s pos "malformed reference type"
 
 let val_type s =
@@ -522,9 +522,9 @@ let rec instr s =
   | 0xd0 -> ref_null (heap_type s)
   | 0xd1 -> ref_is_null
   | 0xd2 -> ref_func (at var s)
-  | 0xd3 -> ref_as_non_null
-  | 0xd4 -> br_on_null (at var s)
-  | 0xd5 as b -> illegal s pos b
+  | 0xd3 as b -> illegal s pos b
+  | 0xd4 -> ref_as_non_null
+  | 0xd5 -> br_on_null (at var s)
   | 0xd6 -> br_on_non_null (at var s)
 
   | 0xfc as b ->

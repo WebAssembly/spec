@@ -11,7 +11,7 @@ Value Typing
 ~~~~~~~~~~~~
 
 For the purpose of checking argument :ref:`values <syntax-externval>` against the parameter types of exported :ref:`functions <syntax-func>`,
-values are classified by :ref:`dynamic <syntax-type-dyn>` :ref:`value types <syntax-valtype>`.
+values are classified by :ref:`value types <syntax-valtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which possibly referenced addresses live.
 
 .. _valid-num:
@@ -45,13 +45,13 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :ref:`Null References <syntax-ref>` :math:`\REFNULL~t`
 ......................................................
 
-* The :ref:`dynamic <syntax-type-dyn>` :ref:`heap type <syntax-heaptype>` must be :ref:`valid <valid-heaptype>`.
+* The :ref:`heap type <syntax-heaptype>` must be :ref:`valid <valid-heaptype>` under the empty :ref:`context <context>`.
 
 * Then value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\NULL~t)`.
 
 .. math::
    \frac{
-     S \vdashheaptype t \ok
+     \vdashheaptype t \ok
    }{
      S \vdashval \REFNULL~t : (\REF~\NULL~t)
    }
@@ -60,15 +60,15 @@ The following auxiliary typing rules specify this typing relation relative to a 
 :ref:`Function References <syntax-ref>` :math:`\REFFUNCADDR~a`
 ..............................................................
 
-* The :ref:`external value <syntax-externval>` :math:`\EVFUNC~a` must be :ref:`valid <valid-externval>` with :ref:`dynamic <syntax-type-dyn>` :ref:`external type <syntax-externtype>` :math:`\ETFUNC~a'`.
+* The :ref:`external value <syntax-externval>` :math:`\EVFUNC~a` must be :ref:`valid <valid-externval>` with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype`.
 
-* Then the value is valid with :ref:`dynamic <syntax-type-dyn>` :ref:`reference type <syntax-reftype>` :math:`(\REF~a')`.
+* Then the value is valid with :ref:`reference type <syntax-reftype>` :math:`(\REF~\functype)`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~a : \ETFUNC~a'
+     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
    }{
-     S \vdashval \REFFUNCADDR~a : \REF~a'
+     S \vdashval \REFFUNCADDR~a : \REF~\functype
    }
 
 
@@ -92,7 +92,7 @@ External Typing
 ~~~~~~~~~~~~~~~
 
 For the purpose of checking :ref:`external values <syntax-externval>` against :ref:`imports <syntax-import>`,
-such values are classified by :ref:`dynamic <syntax-type-dyn>` :ref:`external types <syntax-externtype>`.
+such values are classified by :ref:`external types <syntax-externtype>`.
 The following auxiliary typing rules specify this typing relation relative to a :ref:`store <syntax-store>` :math:`S` in which the referenced instances live.
 
 

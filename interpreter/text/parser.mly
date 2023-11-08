@@ -287,7 +287,7 @@ null_opt :
 heap_type :
   | FUNC { fun c -> FuncHT }
   | EXTERN { fun c -> ExternHT }
-  | var { fun c -> DefHT (Stat ($1 c type_).it) }
+  | var { fun c -> VarHT (StatX ($1 c type_).it) }
 
 ref_type :
   | LPAR REF null_opt heap_type RPAR { fun c -> ($3, $4 c) }
@@ -797,11 +797,11 @@ elem_expr_list :
 elem_var_list :
   | var_list
     { let f = function {at; _} as x -> [ref_func x @@ at] @@ at in
-      fun c lookup -> List.map f ($1 c lookup) }
+      fun c -> List.map f ($1 c func) }
 
 elem_list :
   | elem_kind elem_var_list
-    { fun c -> $1, $2 c func }
+    { fun c -> $1, $2 c }
   | ref_type elem_expr_list
     { fun c -> $1 c, $2 c }
 
@@ -833,7 +833,7 @@ elem :
     { let at = at () in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
-      { etype = (NoNull, FuncHT); einit = $5 c func;
+      { etype = (NoNull, FuncHT); einit = $5 c;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
 
 table :
@@ -856,10 +856,10 @@ table_fields :
   | inline_export table_fields  /* Sugar */
     { fun c x at -> let tabs, elems, ims, exs = $2 c x at in
       tabs, elems, ims, $1 (TableExport x) c :: exs }
-  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
+  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let einit = $4 c func in
+      let einit = $4 c :: $5 c in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let (_, ht) as etype = $1 c in
@@ -867,10 +867,10 @@ table_fields :
       [{ttype = TableT ({min = size; max = Some size}, etype); tinit} @@ at],
       [{etype; einit; emode} @@ at],
       [], [] }
-  | ref_type LPAR ELEM elem_expr elem_expr_list RPAR  /* Sugar */
+  | ref_type LPAR ELEM elem_var_list RPAR  /* Sugar */
     { fun c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
-      let einit = (fun c -> $4 c :: $5 c) c in
+      let einit = $4 c in
       let size = Lib.List32.length einit in
       let emode = Active {index = x; offset} @@ at in
       let (_, ht) as etype = $1 c in
@@ -1141,8 +1141,7 @@ literal_vec :
   | LPAR VEC_CONST VEC_SHAPE num_list RPAR { snd (vec $2 $3 $4 (at ())) }
 
 literal_ref :
-  | LPAR REF_NULL heap_type RPAR
-    { Value.NullRef (Types.dyn_heap_type [] ($3 (empty_context ()))) }
+  | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
   | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
 
 literal :

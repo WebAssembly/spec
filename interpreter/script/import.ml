@@ -17,5 +17,5 @@ let lookup (ImportT (et, module_name, item_name)) at : Instance.extern =
         "\".\"" ^ Types.string_of_name item_name ^ "\"")
 
 let link m =
-  let ModuleT (_, its, _) = Types.dyn_module_type (module_type_of m) in
+  let ModuleT (its, _) = module_type_of m in
   List.map2 lookup its (List.map Source.at m.it.imports)

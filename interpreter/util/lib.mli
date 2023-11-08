@@ -15,7 +15,6 @@ end
 module List :
 sig
   val make : int -> 'a -> 'a list
-  val table : int -> (int -> 'a) -> 'a list
   val take : int -> 'a list -> 'a list (* raises Failure *)
   val drop : int -> 'a list -> 'a list (* raises Failure *)
   val split : int -> 'a list -> 'a list * 'a list (* raises Failure *)
