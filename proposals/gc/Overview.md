@@ -168,7 +168,7 @@ The above could map to
 )
 ```
 These functions `$f` and `$g` code introduces local with the `let` instruction (see the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md)) because the defined types cannot be null, such that locals of these types cannot be default-initialised.
-In the case of `$h` the local is declared as nullable, however, mapping to an optional reference.
+In the case of `$b` the local is declared as nullable, however, mapping to an optional reference.
 The respective access via `struct.get` may hence trap.
 
 
