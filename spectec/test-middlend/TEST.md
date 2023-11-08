@@ -456,11 +456,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -1179,11 +1179,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -2238,7 +2238,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), ($idx(x) <: heaptype))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), ($idx(x) <: heaptype))], t_2*{t_2}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
   ;; 6-typing.watsup:651.1-655.46
@@ -2257,7 +2257,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), ($idx(x) <: heaptype))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), ($idx(x) <: heaptype))], t_4*{t_4}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
@@ -2993,11 +2993,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), ($idx(y) <: heaptype))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), ($idx(y) <: heaptype))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), ($idx(y) <: heaptype))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), ($idx(y) <: heaptype))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -3167,34 +3167,34 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [(ref <: admininstr) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [(ref <: admininstr) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], (instr <: admininstr)*{instr})])])
+    `%~>%*`(`%;%*`(z, (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], (instr <: admininstr)*{instr})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [(ref <: admininstr)] :: [RETURN_CALL_REF_admininstr(x)] :: (instr <: admininstr)*{instr})]), (val <: admininstr)^n{val} :: [(ref <: admininstr) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [(ref <: admininstr)] :: [RETURN_CALL_REF_admininstr(?(x))] :: (instr <: admininstr)*{instr})]), (val <: admininstr)^n{val} :: [(ref <: admininstr) CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [(ref <: admininstr)] :: [RETURN_CALL_REF_admininstr(x)] :: (instr <: admininstr)*{instr})]), (val <: admininstr)^n{val} :: [(ref <: admininstr) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [(ref <: admininstr)] :: [RETURN_CALL_REF_admininstr(?(x))] :: (instr <: admininstr)*{instr})]), (val <: admininstr)^n{val} :: [(ref <: admininstr) RETURN_CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:244.1-245.55
@@ -3919,7 +3919,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -4500,11 +4500,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -5246,11 +5246,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -5342,11 +5342,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -6410,7 +6410,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
   ;; 6-typing.watsup:651.1-655.46
@@ -6429,7 +6429,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
@@ -7165,11 +7165,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -7339,34 +7339,34 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:244.1-245.55
@@ -8091,7 +8091,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -8672,11 +8672,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -9419,11 +9419,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -9515,11 +9515,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -10585,7 +10585,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
   ;; 6-typing.watsup:651.1-655.46
@@ -10604,7 +10604,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
@@ -11340,11 +11340,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -11514,34 +11514,34 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:244.1-245.55
@@ -12266,7 +12266,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -12847,11 +12847,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -13594,11 +13594,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -13690,11 +13690,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -14760,7 +14760,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
   ;; 6-typing.watsup:651.1-655.46
@@ -14779,7 +14779,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
@@ -15524,11 +15524,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -15699,34 +15699,34 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:244.1-245.55
@@ -16459,7 +16459,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -17040,11 +17040,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -17787,11 +17787,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -17883,11 +17883,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -18953,7 +18953,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
   ;; 6-typing.watsup:651.1-655.46
@@ -18972,7 +18972,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
     -- Resulttype_sub: `%|-%*<:%*`(C, t_2*{t_2}, t'_2*{t'_2})
@@ -19717,11 +19717,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -19892,34 +19892,34 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:244.1-245.55
@@ -20652,7 +20652,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -21233,11 +21233,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -21980,11 +21980,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -22076,11 +22076,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -23172,7 +23172,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- if (x < |C.TYPE_context|)
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
@@ -23195,7 +23195,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- if (x < |C.TYPE_context|)
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
@@ -24020,11 +24020,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -24195,38 +24195,38 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
     -- if (x < |$funcaddr(z)|)
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if (a < |$funcinst(z)|)
     -- if ($funcinst(z)[a] = fi)
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (fi.CODE_funcinst = `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
     -- if (x < |$funcaddr(z)|)
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- if (a < |$funcinst(z)|)
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- if (a < |$funcinst(z)|)
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
@@ -24984,7 +24984,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -25618,11 +25618,11 @@ syntax instr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -26365,11 +26365,11 @@ syntax admininstr =
   | BR_ON_CAST(labelidx, reftype, reftype)
   | BR_ON_CAST_FAIL(labelidx, reftype, reftype)
   | CALL(funcidx)
-  | CALL_REF(typeidx)
+  | CALL_REF(typeidx?)
   | CALL_INDIRECT(tableidx, typeidx)
   | RETURN
   | RETURN_CALL(funcidx)
-  | RETURN_CALL_REF(typeidx)
+  | RETURN_CALL_REF(typeidx?)
   | RETURN_CALL_INDIRECT(tableidx, typeidx)
   | CONST(numtype, c_numtype)
   | UNOP(numtype, unop_numtype)
@@ -26461,11 +26461,11 @@ def admininstr_instr : instr -> admininstr
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_instr(x0, x1, x2)) = BR_ON_CAST_admininstr(x0, x1, x2)
   def {x0 : labelidx, x1 : reftype, x2 : reftype} admininstr_instr(BR_ON_CAST_FAIL_instr(x0, x1, x2)) = BR_ON_CAST_FAIL_admininstr(x0, x1, x2)
   def {x : funcidx} admininstr_instr(CALL_instr(x)) = CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(CALL_REF_instr(x)) = CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(CALL_INDIRECT_instr(x0, x1)) = CALL_INDIRECT_admininstr(x0, x1)
   def admininstr_instr(RETURN_instr) = RETURN_admininstr
   def {x : funcidx} admininstr_instr(RETURN_CALL_instr(x)) = RETURN_CALL_admininstr(x)
-  def {x : typeidx} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
+  def {x : typeidx?} admininstr_instr(RETURN_CALL_REF_instr(x)) = RETURN_CALL_REF_admininstr(x)
   def {x0 : tableidx, x1 : typeidx} admininstr_instr(RETURN_CALL_INDIRECT_instr(x0, x1)) = RETURN_CALL_INDIRECT_admininstr(x0, x1)
   def {x0 : numtype, x1 : c_numtype} admininstr_instr(CONST_instr(x0, x1)) = CONST_admininstr(x0, x1)
   def {x0 : numtype, x1 : unop_numtype} admininstr_instr(UNOP_instr(x0, x1)) = UNOP_admininstr(x0, x1)
@@ -27557,7 +27557,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:647.1-649.46
   rule call_ref {C : context, t_1* : valtype*, t_2* : valtype*, x : idx}:
-    `%|-%:%`(C, CALL_REF_instr(x), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
+    `%|-%:%`(C, CALL_REF_instr(?(x)), `%->%`(t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_2*{t_2}))
     -- if (x < |C.TYPE_context|)
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
 
@@ -27580,7 +27580,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:663.1-667.40
   rule return_call_ref {C : context, t'_2* : valtype*, t_1* : valtype*, t_2* : valtype*, t_3* : valtype*, t_4* : valtype*, x : idx}:
-    `%|-%:%`(C, RETURN_CALL_REF_instr(x), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
+    `%|-%:%`(C, RETURN_CALL_REF_instr(?(x)), `%->%`(t_3*{t_3} :: t_1*{t_1} :: [REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x)))], t_4*{t_4}))
     -- if (x < |C.TYPE_context|)
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- if (C.RETURN_context = ?(t'_2*{t'_2}))
@@ -28405,11 +28405,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
 
   ;; 8-reduction.watsup:183.1-184.84
   rule call_indirect-call {x : idx, y : idx}:
-    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(y)])
+    `%*~>%*`([CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:186.1-187.98
   rule return_call_indirect {x : idx, y : idx}:
-    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(y)])
+    `%*~>%*`([RETURN_CALL_INDIRECT_admininstr(x, y)], [TABLE.GET_admininstr(x) REF.CAST_admininstr(REF_reftype(`NULL%?`(?(())), $heaptype_typevar($idx(y)))) RETURN_CALL_REF_admininstr(?(y))])
 
   ;; 8-reduction.watsup:190.1-191.35
   rule frame-vals {f : frame, n : n, val^n : val^n}:
@@ -28580,38 +28580,38 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [$admininstr_ref(ref) BR_ON_CAST_FAIL_admininstr(l, rt_1, rt_2)]), [$admininstr_ref(ref) BR_admininstr(l)])
     -- otherwise
 
-  ;; 8-reduction.watsup:157.1-158.46
+  ;; 8-reduction.watsup:157.1-158.62
   rule call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) CALL_REF_admininstr(?())])
     -- if (x < |$funcaddr(z)|)
 
   ;; 8-reduction.watsup:160.1-161.42
   rule call_ref-null {ht : heaptype, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [REF.NULL_admininstr(ht) CALL_REF_admininstr(?(x))]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:163.1-168.59
   rule call_ref-func {a : addr, f : frame, fi : funcinst, instr* : instr*, m : m, n : n, t* : valtype*, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x)]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
+    `%~>%*`(`%;%*`(z, $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(?(x))]), [FRAME__admininstr(m, f, [LABEL__admininstr(m, [], $admininstr_instr(instr)*{instr})])])
     -- if (a < |$funcinst(z)|)
     -- where fi = $funcinst(z)[a]
     -- where `FUNC%%*%`(x, LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
     -- Expand: `%~~%`(fi.TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
     -- if (f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst})
 
-  ;; 8-reduction.watsup:171.1-172.60
+  ;; 8-reduction.watsup:171.1-172.76
   rule return_call {x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [RETURN_CALL_REF_admininstr($funcaddr(z)[x])])
+    `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[x]) RETURN_CALL_REF_admininstr(?())])
     -- if (x < |$funcaddr(z)|)
 
   ;; 8-reduction.watsup:174.1-176.59
   rule return_call_ref-frame {a : addr, f : frame, instr* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) CALL_REF_admininstr(?(x))])
     -- if (a < |$funcinst(z)|)
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-label {a : addr, instr* : instr*, instr'* : instr*, k : nat, m : m, n : n, ref : ref, t_1^n : valtype^n, t_2^m : valtype^m, val^n : val^n, val'* : val*, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(x)] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(x)])
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, $admininstr_val(val')*{val'} :: $admininstr_val(val)^n{val} :: [$admininstr_ref(ref)] :: [RETURN_CALL_REF_admininstr(?(x))] :: $admininstr_instr(instr)*{instr})]), $admininstr_val(val)^n{val} :: [$admininstr_ref(ref) RETURN_CALL_REF_admininstr(?(x))])
     -- if (a < |$funcinst(z)|)
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
@@ -29369,7 +29369,7 @@ def instantiate : (store, module, externval*) -> config
 ;; 9-module.watsup:181.1-181.44
 def invoke : (store, funcaddr, val*) -> config
   ;; 9-module.watsup:182.1-195.53
-  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(0)])
+  def {expr : expr, f : frame, fa : funcaddr, local* : local*, mm : moduleinst, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (mm = {TYPE [s.FUNC_store[fa].TYPE_funcinst], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (f = {LOCAL [], MODULE mm})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))

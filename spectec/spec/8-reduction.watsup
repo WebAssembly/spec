@@ -155,7 +155,7 @@ rule Step_read/br_on_cast_fail-fail:
 ;; Function instructions
 
 rule Step_read/call:
-  z; (CALL x)  ~>  (CALL_REF $funcaddr(z)[x])
+  z; (CALL x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x]) (CALL_REF)
 
 rule Step_read/call_ref-null:
   z; (REF.NULL ht) (CALL_REF x)  ~>  TRAP
@@ -169,7 +169,7 @@ rule Step_read/call_ref-func:
 
 
 rule Step_read/return_call:
-  z; (RETURN_CALL x)  ~>  (RETURN_CALL_REF $funcaddr(z)[x])
+  z; (RETURN_CALL x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x]) (RETURN_CALL_REF)
 
 rule Step_read/return_call_ref-frame:
   z; (FRAME_ k `{f} val'* val^n ref (RETURN_CALL_REF x) instr*)  ~>  val^n ref (CALL_REF x)
