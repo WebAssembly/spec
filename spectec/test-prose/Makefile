@@ -49,7 +49,7 @@ setup: document
 .PHONY: splice
 
 splice: setup 
-	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) && mv $(MACRO) $(UTIL)
+	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) -w && mv $(MACRO) $(UTIL)
 	rm -f $(INPUTFILES)
 	cd ..
 

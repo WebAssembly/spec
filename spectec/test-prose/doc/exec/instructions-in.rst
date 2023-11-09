@@ -99,7 +99,15 @@ $${rule+: Step_read/ref.test-*}
 
 \
 
-$${rule+: Step_read/ref.cast-*}
+$${rule: Step_read/ref.cast-*}
+
+.. _exec-REF.I31:
+
+%{prose-algo: REF.I31}
+
+\
+
+$${rule+: Step_pure/ref.i31}
 
 .. _exec-I31.GET:
 
@@ -108,6 +116,14 @@ $${rule+: Step_read/ref.cast-*}
 \
 
 $${rule+: Step_pure/i31.get-*}
+
+.. _def-ext_structinst:
+
+%{prose-func: ext_structinst}
+
+\
+
+$${definition: ext_structinst}
 
 .. _exec-STRUCT.NEW:
 
@@ -159,6 +175,14 @@ $${rule+: Step_read/array.new}
 \
 
 $${rule+: Step_read/array.new_default}
+
+.. _def-ext_arrayinst:
+
+%{prose-func: ext_arrayinst}
+
+\
+
+$${definition: ext_arrayinst}
 
 .. _exec-ARRAY.NEW_FIXED:
 
@@ -243,7 +267,21 @@ $${rule+: Step_read/array.init_elem-*}
 
 $${rule+: Step_read/array.init_data-*}
 
+.. _exec-EXTERN.EXTERNALIZE:
 
+%{prose-algo: EXTERN.EXTERNALIZE}
+
+\
+
+$${rule+: Step_pure/extern.externalize-*}
+
+.. _exec-EXTERN.INTERNALIZE:
+
+%{prose-algo: EXTERN.INTERNALIZE}
+
+\
+
+$${rule+: Step_pure/extern.internalize-*}
 
 .. _exec-instructions-parametric:
 
@@ -518,6 +556,38 @@ $${rule+: Step_pure/br_if-*}
 
 $${rule+: Step_pure/br_table-*}
 
+.. _exec-BR_ON_NULL:
+
+%{prose-algo: BR_ON_NULL}
+
+\
+
+$${rule+: Step_pure/br_on_null-*}
+
+.. _exec-BR_ON_NON_NULL:
+
+%{prose-algo: BR_ON_NON_NULL}
+
+\
+
+$${rule+: Step_pure/br_on_non_null-*}
+
+.. _exec-BR_ON_CAST:
+
+%{prose-algo: BR_ON_CAST}
+
+\
+
+$${rule+: Step_read/br_on_cast-*}
+
+.. _exec-BR_ON_CAST_FAIL:
+
+%{prose-algo: BR_ON_CAST_FAIL}
+
+\
+
+$${rule+: Step_read/br_on_cast_fail-*}
+
 .. _exec-RETURN:
 
 %{prose-algo: RETURN}
@@ -598,6 +668,14 @@ Function Calls
 
 $${rule+: Step_read/call_addr}
 
+.. _exec-RETURN_CALL_ADDR:
+
+%{prose-algo: RETURN_CALL_ADDR}
+
+\
+
+$${rule+: Step_read/return_call_addr-*}
+
 .. _exec-FRAME_:
 
 %{prose-algo: FRAME_}
@@ -605,3 +683,13 @@ $${rule+: Step_read/call_addr}
 \
 
 $${rule+: Step_pure/frame-vals}
+
+.. _exec-instructions-expressions:
+
+Expressions
+~~~~~~~~~~~
+
+$${rule+:
+  Eval/*
+  Eval_expr
+}

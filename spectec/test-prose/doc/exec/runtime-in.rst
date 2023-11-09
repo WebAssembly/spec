@@ -8,6 +8,18 @@ Runtime
 Values
 ~~~~~~
 
+.. _syntax-num:
+.. _syntax-addrref:
+.. _syntax-ref:
+.. _syntax-val:
+
+$${syntax+:
+  num
+  {addrref
+  ref}
+  val
+}
+
 .. _def-default:
 
 %{prose-func: default}
@@ -21,6 +33,10 @@ $${definition: default}
 Results
 ~~~~~~~
 
+.. _syntax-result:
+
+$${syntax: result}
+
 .. _syntax-store:
 .. _exec-runtime-store:
 
@@ -31,11 +47,13 @@ $${syntax: store}
 
 .. _syntax-addr:
 .. _syntax-funcaddr:
-.. _syntax-globaladdr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
+.. _syntax-globaladdr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
+.. _syntax-structaddr:
+.. _syntax-arrayaddr:
 .. _syntax-labeladdr:
 .. _syntax-hostaddr:
 .. _exec-runtime-addresses:
@@ -46,11 +64,13 @@ Addresses
 $${syntax+:
   addr
   funcaddr
-  globaladdr
   tableaddr
   memaddr
+  globaladdr
   elemaddr
   dataaddr
+  structaddr
+  arrayaddr
   labeladdr
   hostaddr
 }
@@ -127,6 +147,54 @@ External Values
 
 $${syntax: externval}
 
+.. _def-funcsxv:
+
+%{prose-func: funcsxv}
+
+\
+
+$${definition: funcsxv}
+
+.. _def-tablesxv:
+
+%{prose-func: tablesxv}
+
+\
+
+$${definition: tablesxv}
+
+.. _def-memsxv:
+
+%{prose-func: memsxv}
+
+\
+
+$${definition: memsxv}
+
+.. _def-globalsxv:
+
+%{prose-func: globalsxv}
+
+\
+
+$${definition: globalsxv}
+
+.. _syntax-structinst:
+.. _syntax-arrayinst:
+.. _syntax-fieldval:
+.. _syntax-packedval:
+.. _exec-runtime-aggregate-instances:
+
+Aggregate Instances
+~~~~~~~~~~~~~~~~~~~
+
+$${syntax+:
+  structinst
+  arrayinst
+  fieldval
+  packedval
+}
+
 .. _exec-runtime-stack:
 
 Stack
@@ -149,9 +217,10 @@ $${syntax: admininstr}
 
 .. _syntax-state:
 .. _syntax-config:
+.. _exec-runtime-configurations:
 
 Configurations
-..............
+~~~~~~~~~~~~~~
 
 $${syntax+:
   state
@@ -159,16 +228,42 @@ $${syntax+:
 }
 
 .. _syntax-E:
+.. _exec-runtime-evaluation-contexts:
 
 Evaluation Contexts
-...................
+~~~~~~~~~~~~~~~~~~~
 
 $${syntax: E}
 
-.. _exec-runtime-helper-functions:
+.. _exec-runtime-typing:
 
-Helper Functions
-~~~~~~~~~~~~~~~~
+Typing
+~~~~~~
+
+$${rule+:
+  Ref_ok/*
+}
+
+.. _exec-runtime-auxiliary-functions:
+
+Auxiliary Functions
+~~~~~~~~~~~~~~~~~~~
+
+.. _def-store:
+
+%{prose-func: store}
+
+\
+
+$${definition: store}
+
+.. _def-frame:
+
+%{prose-func: frame}
+
+\
+
+$${definition: frame}
 
 .. _def-funcaddr:
 
@@ -225,6 +320,38 @@ $${definition: eleminst}
 \
 
 $${definition: datainst}
+
+.. _def-structinst:
+
+%{prose-func: structinst}
+
+\
+
+$${definition: structinst}
+
+.. _def-arrayinst:
+
+%{prose-func: arrayinst}
+
+\
+
+$${definition: arrayinst}
+
+.. _def-moduleinst:
+
+%{prose-func: moduleinst}
+
+\
+
+$${definition: moduleinst}
+
+.. _def-type:
+
+%{prose-func: type}
+
+\
+
+$${definition: type}
 
 .. _def-func:
 
@@ -290,6 +417,14 @@ $${definition: local}
 
 $${definition: with_local}
 
+.. _def-with_locals:
+
+%{prose-func: with_locals}
+
+\
+
+$${definition: with_locals}
+
 .. _def-with_global:
 
 %{prose-func: with_global}
@@ -345,6 +480,22 @@ $${definition: with_elem}
 \
 
 $${definition: with_data}
+
+.. _def-with_array:
+
+%{prose-func: with_array}
+
+\
+
+$${definition: with_array}
+
+.. _def-with_struct:
+
+%{prose-func: with_struct}
+
+\
+
+$${definition: with_struct}
 
 .. _def-growtable:
 

@@ -12,8 +12,10 @@ Instructions
 .. _syntax-testopIXX:
 .. _syntax-testopFXX:
 .. _syntax-relopIXX:
+.. _syntax-relopFXX:
 .. _syntax-unop_numtype:
 .. _syntax-binop_numtype:
+.. _syntax-testop-numtype:
 .. _syntax-relop_numtype:
 .. _syntax-cvtop:
 .. _syntax-instructions-numeric:
@@ -30,7 +32,8 @@ $${syntax+:
   binopFXX
   testopIXX
   testopFXX
-  relopIXX}
+  relopIXX
+  relopFXX}
 }
 
 \
@@ -40,6 +43,7 @@ Occasionally, it is convenient to group operators together according to the foll
 $${syntax+:
   {unop_numtype
   binop_numtype
+  testop_numtype
   relop_numtype
   cvtop}
 }
@@ -68,13 +72,17 @@ State Instructions
 
 $${syntax: instr/state}
 
+.. _syntax-blocktype:
 .. _syntax-instr-control:
 .. _syntax-instructions-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/control}
+$${syntax+: 
+  blocktype
+  instr/control
+}
 
 .. _syntax-instr-expr:
 .. _syntax-instructions-expr:

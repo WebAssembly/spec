@@ -103,14 +103,31 @@ $${rule+:
   Fieldtype_ok
 }
 
-.. _valid-Rectype_ok:
-.. _valid-Rectype_ok2:
-.. _valid-Subtype_ok:
-.. _valid-Subtype_ok2:
 .. _valid-types-recursive-types:
 
 Recursive Types
 ~~~~~~~~~~~~~~~
+
+.. _def-before:
+
+%{prose-func: before}
+
+\
+
+$${definition: before}
+
+.. _syntax-oktypeidx:
+.. _syntax-oktypeidxnat:
+
+$${syntax+:
+  oktypeidx
+  oktypeidxnat
+}
+
+.. _valid-Rectype_ok:
+.. _valid-Rectype_ok2:
+.. _valid-Subtype_ok:
+.. _valid-Subtype_ok2:
 
 $${rule+:
   Rectype_ok/*

@@ -4,6 +4,7 @@ Types
 -----
 
 .. _syntax-numtype:
+.. _syntax-c_numtype:
 .. _syntax-iN:
 .. _syntax-fN:
 .. _syntax-types-number-types:
@@ -13,17 +14,22 @@ Number Types
 
 $${syntax+: 
   numtype
+  c_numtype
   {iN
   fN}
 }
 
 .. _syntax-vectype:
+.. _syntax-c_vectype:
 .. _syntax-types-vector-types:
 
 Vector Types
 ~~~~~~~~~~~~
 
-$${syntax: vectype}
+$${syntax+: 
+  vectype
+  c_vectype
+}
 
 .. _syntax-absheaptype:
 .. _syntax-heaptype:
@@ -37,13 +43,17 @@ $${syntax+:
   heaptype
 }
 
+.. _syntax nul:
 .. _syntax-reftype:
 .. _syntax-types-reference-types:
 
 Reference Types
 ~~~~~~~~~~~~~~~
 
-$${syntax: reftype}
+$${syntax: 
+  nul
+  reftype
+}
 
 .. _syntax-valtype:
 .. _syntax-types-value-types:
@@ -70,6 +80,7 @@ Function Types
 $${syntax: functype}
 
 .. _syntax-packedtype:
+.. _syntax-c_packedtype:
 .. _syntax-storagetype:
 .. _syntax-fieldtype:
 .. _syntax-types-aggregate-types:
@@ -79,6 +90,7 @@ Aggregate Types
 
 $${syntax+: 
   packedtype
+  c_packedtype
   storagetype
   fieldtype
 }

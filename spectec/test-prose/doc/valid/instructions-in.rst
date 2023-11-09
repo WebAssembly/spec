@@ -97,14 +97,6 @@ $${rule: Instr_ok/ref.is_null}
 
 $${rule: Instr_ok/ref.as_non_null}
 
-.. _valid-REF.IS_NULL:
-
-%{prose-pred: REF.IS_NULL}
-
-\
-
-$${rule: Instr_ok/ref.is_null}
-
 .. _valid-REF.EQ:
 
 %{prose-pred: REF.EQ}
@@ -290,9 +282,17 @@ External Reference Instructions
 
 .. _valid-EXTERN.EXTERNALIZE:
 
+%{prose-pred: EXTERN.EXTERNALIZE}
+
+\
+
 $${rule: Instr_ok/extern.externalize}
 
 .. _valid-EXTERN.INTERNALIZE:
+
+%{prose-pred: EXTERN.INTERNALIZE}
+
+\
 
 $${rule: Instr_ok/extern.internalize}
 
@@ -665,9 +665,7 @@ $${rule+: Instr_ok/return_call_ref}
 $${rule+: Instr_ok/return_call_indirect}
 
 .. _valid-Instrf_ok-instr:
-.. _valid-Instrs_ok-empty:
-.. _valid-Instrs_ok-seq:
-.. _valid-Instrs_ok-sub:
+.. _valid-Instrs_ok:
 .. _valid-instructions-sequences:
 
 Instruction Sequences
@@ -675,9 +673,7 @@ Instruction Sequences
 
 $${rule+:
   Instrf_ok/instr
-  Instrs_ok/empty
-  Instrs_ok/seq
-  Instrs_ok/sub
+  Instrs_ok/*
 }
 
 .. _valid-Expr_ok:
@@ -695,3 +691,19 @@ $${rule+:
   Expr_const
   Expr_ok_const
 }
+
+.. _def-in_binop:
+
+%{prose-func: in_binop}
+
+\
+
+$${definition: in_binop}
+
+.. _def-in_numtype:
+
+%{prose-func: in_numtype}
+
+\
+
+$${definition: in_numtype}

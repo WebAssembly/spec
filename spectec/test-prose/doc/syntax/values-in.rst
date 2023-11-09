@@ -22,3 +22,11 @@ $${syntax+:
   i31
   i32
 }
+
+.. _syntax-name:
+.. _syntax-values-names:
+
+Names
+~~~~~
+
+$${syntax: name}

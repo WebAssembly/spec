@@ -8,37 +8,13 @@ Modules
 Allocation
 ~~~~~~~~~~
 
-.. _def-funcsxv:
+.. _def-alloctypes:
 
-%{prose-func: funcsxv}
-
-\
-
-$${definition: funcsxv}
-
-.. _def-globalsxv:
-
-%{prose-func: globalsxv}
+%{prose-func: alloctypes}
 
 \
 
-$${definition: globalsxv}
-
-.. _def-tablesxv:
-
-%{prose-func: tablesxv}
-
-\
-
-$${definition: tablesxv}
-
-.. _def-memsxv:
-
-%{prose-func: memsxv}
-
-\
-
-$${definition: memsxv}
+$${definition: alloctypes}
 
 .. _def-allocfunc:
 
@@ -157,6 +133,14 @@ $${definition: allocmodule}
 Instantiation
 ~~~~~~~~~~~~~
 
+.. _def-inst_reftype:
+
+%{prose-func: inst_reftype}
+
+\
+
+$${definition: inst_reftype}
+
 .. _def-concat_instr:
 
 %{prose-func: concat_instr}
@@ -165,8 +149,23 @@ Instantiation
 
 $${definition: concat_instr}
 
-.. _def-instantiate:
+.. _def-rundata:
 
+%{prose-func: rundata}
+
+\
+
+$${definition: rundata}
+
+.. _def-runelem:
+
+%{prose-func: runelem}
+
+\
+
+$${definition: runelem}
+
+.. _def-instantiate:
 
 %{prose-func: instantiate}
 
