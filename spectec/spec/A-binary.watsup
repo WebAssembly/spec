@@ -662,9 +662,9 @@ grammar Belemkind : reftype hint(desc "element kind") =
 
 ;; Code section
 
-def $concat_locals(local**) : local*  hint(show $concat(%))
+def $concat_locals((local*)*) : local*  hint(show $concat(%))
 def $concat_locals(epsilon) = epsilon
-def $concat_locals(loc* loc'**) = loc* $concat_locals(loc'**)
+def $concat_locals((loc*) (loc'*)*) = loc* $concat_locals((loc'*)*)
 
 
 syntax code = (local*, expr)

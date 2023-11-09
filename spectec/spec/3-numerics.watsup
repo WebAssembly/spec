@@ -28,7 +28,7 @@ def $cvtop(cvtop_numtype, numtype, numtype, sx?, c) : c_numtype* hint(show %#$_(
 def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
 def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^(%)#((%)))
 
-def $ibytes(N, iN) : byte*            hint(show $bytes_(f#%,%))
+def $ibytes(N, iN) : byte*            hint(show $bytes_(i#%,%))
 def $fbytes(N, fN) : byte*            hint(show $bytes_(f#%,%))
 def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
 def $ztbytes(storagetype, c) : byte*  hint(show $bytes_(%,%))

@@ -482,7 +482,7 @@ warning: rule `Step_pure/i31.get-num` was never spliced
 warning: rule `Step_pure/extern.convert_any-null` was never spliced
 warning: rule `Step_pure/extern.convert_any-addr` was never spliced
 warning: rule `Step_pure/any.convert_extern-null` was never spliced
-warning: rule `Step_pure/any.covnert_extern-addr` was never spliced
+warning: rule `Step_pure/any.convert_extern-addr` was never spliced
 warning: rule `Step_pure/local.tee` was never spliced
 warning: rule `Step_read/br_on_cast-succeed` was never spliced
 warning: rule `Step_read/br_on_cast-fail` was never spliced
@@ -492,7 +492,8 @@ warning: rule `Step_read/call` was never spliced
 warning: rule `Step_read/call_ref-null` was never spliced
 warning: rule `Step_read/call_ref-func` was never spliced
 warning: rule `Step_read/return_call` was never spliced
-warning: rule `Step_read/return_call_ref-frame` was never spliced
+warning: rule `Step_read/return_call_ref-frame-null` was never spliced
+warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
 warning: rule `Step_read/return_call_ref-label` was never spliced
 warning: rule `Step_read/ref.func` was never spliced
 warning: rule `Step_read/ref.test-true` was never spliced

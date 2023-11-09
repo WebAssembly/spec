@@ -4,10 +4,11 @@
 
 ;; Definitions
 
-def $alloctypes(rectype*) : deftype*
+def $alloctypes(type*) : deftype*
 def $alloctypes(epsilon) = epsilon
-def $alloctypes(rectype'* rectype) = deftype'* deftype*
-  -- if deftype'* = $alloctypes(rectype'*)
+def $alloctypes(type'* type) = deftype'* deftype*
+  -- if deftype'* = $alloctypes(type'*)
+  -- if type = TYPE rectype
   -- if deftype* = $subst_all_deftypes($rolldt(x, rectype), deftype'*)
   -- if x = |deftype'*|
 
@@ -86,7 +87,7 @@ def $allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, modul
 def $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*) = (s_6, mm)
   -- if module =
     MODULE
-      (TYPE rectype)*
+      type*
       import*
       func^n_f
       (GLOBAL globaltype expr_g)^n_g
@@ -117,7 +118,7 @@ def $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*) = (s_6, mm)
       DATA da*,
       EXPORT xi*
     }
-  -- if dt* = $alloctypes(rectype*)
+  -- if dt* = $alloctypes(type*)
   -- if (s_1, fa*) = $allocfuncs(s, mm, func^n_f)
   -- if (s_2, ga*) = $allocglobals(s_1, globaltype^n_g, val_g*)
   -- if (s_3, ta*) = $alloctables(s_2, tabletype^n_t, ref_t*)
@@ -155,7 +156,7 @@ def $instantiate(s, module, externval*) = s'; f; instr_e* instr_d* (CALL x)?
   -- if n_e = |elem*|
   -- if n_d = |data*|
   -- if mm_init = {
-      TYPE mm.TYPE,
+      TYPE $alloctypes(type*),
       FUNC $funcsxv(externval*) $(|s.FUNC|+i_func)^(i_func<n_func),
       GLOBAL $globalsxv(externval*),
       TABLE epsilon,
