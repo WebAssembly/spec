@@ -280,21 +280,21 @@ $${rule: Instr_ok/i31.get}
 External Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-EXTERN.EXTERNALIZE:
+.. _valid-EXTERN.CONVERT_ANY:
 
-%{prose-pred: EXTERN.EXTERNALIZE}
-
-\
-
-$${rule: Instr_ok/extern.externalize}
-
-.. _valid-EXTERN.INTERNALIZE:
-
-%{prose-pred: EXTERN.INTERNALIZE}
+%{prose-pred: EXTERN.CONVERT_ANY}
 
 \
 
-$${rule: Instr_ok/extern.internalize}
+$${rule: Instr_ok/extern.convert_any}
+
+.. _valid-ANY.CONVERT_EXTERN:
+
+%{prose-pred: ANY.CONVERT_EXTERN}
+
+\
+
+$${rule: Instr_ok/any.convert_extern}
 
 .. _valid-instructions-parametric:
 

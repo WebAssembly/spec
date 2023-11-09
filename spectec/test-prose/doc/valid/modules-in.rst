@@ -70,7 +70,7 @@ Data Segments
 
 $${rule+: 
   Data_ok
-  Datamode_ok
+  Datamode_ok/*
 }
 
 .. _valid-modules-start-function:
@@ -85,10 +85,7 @@ $${rule: Start_ok}
 Exports
 ~~~~~~~
 
-$${rule+: 
-  Export_ok
-  Externuse_ok/*
-}
+$${rule: Export_ok}
 
 .. _valid-modules-imports:
 

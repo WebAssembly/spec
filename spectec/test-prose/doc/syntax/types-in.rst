@@ -5,8 +5,6 @@ Types
 
 .. _syntax-numtype:
 .. _syntax-c_numtype:
-.. _syntax-iN:
-.. _syntax-fN:
 .. _syntax-types-number-types:
 
 Number Types
@@ -15,8 +13,6 @@ Number Types
 $${syntax+: 
   numtype
   c_numtype
-  {iN
-  fN}
 }
 
 .. _syntax-vectype:

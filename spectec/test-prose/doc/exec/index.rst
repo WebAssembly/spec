@@ -6,6 +6,7 @@ Execution
 .. toctree::
 
    conventions
+   numerics
    runtime
    instructions
    modules

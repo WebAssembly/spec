@@ -47,7 +47,9 @@ $${rule+:
 Block Types
 ~~~~~~~~~~~
 
-$${rule: Blocktype_ok}
+$${rule+: 
+  Blocktype_ok/*
+}
 
 .. _valid-types-result-types:
 

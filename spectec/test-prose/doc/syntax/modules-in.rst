@@ -112,7 +112,7 @@ Start Function
 $${syntax: start}
 
 .. _syntax-export:
-.. _syntax-externuse:
+.. _syntax-externidx:
 .. _syntax-modules-exports:
 
 Exports
@@ -120,7 +120,7 @@ Exports
 
 $${syntax+: 
   export
-  externuse
+  externidx
 }
 
 .. _syntax-import:

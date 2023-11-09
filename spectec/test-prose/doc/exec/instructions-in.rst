@@ -200,6 +200,14 @@ $${rule+: Step/array.new_fixed}
 
 $${rule+: Step_read/array.new_elem-*}
 
+.. _def-concat_bytes:
+
+%{prose-func: concat_bytes}
+
+\
+
+$${definition: concat_bytes}
+
 .. _exec-ARRAY.NEW_DATA:
 
 %{prose-algo: ARRAY.NEW_DATA}
@@ -267,21 +275,21 @@ $${rule+: Step_read/array.init_elem-*}
 
 $${rule+: Step_read/array.init_data-*}
 
-.. _exec-EXTERN.EXTERNALIZE:
+.. _exec-EXTERN.CONVERT_ANY:
 
-%{prose-algo: EXTERN.EXTERNALIZE}
-
-\
-
-$${rule+: Step_pure/extern.externalize-*}
-
-.. _exec-EXTERN.INTERNALIZE:
-
-%{prose-algo: EXTERN.INTERNALIZE}
+%{prose-algo: EXTERN.CONVERT_ANY}
 
 \
 
-$${rule+: Step_pure/extern.internalize-*}
+$${rule+: Step_pure/extern.convert_any-*}
+
+.. _exec-ANY.CONVERT_EXTERN:
+
+%{prose-algo: ANY.CONVERT_EXTERN}
+
+\
+
+$${rule+: Step_pure/any.convert_extern-*}
 
 .. _exec-instructions-parametric:
 
@@ -508,13 +516,21 @@ $${rule+: Step_pure/nop}
 
 $${rule+: Step_pure/unreachable}
 
+.. _def-blocktype:
+
+%{prose-func: blocktype}
+
+\
+
+$${definition: blocktype}
+
 .. _exec-BLOCK:
 
 %{prose-algo: BLOCK}
 
 \
 
-$${rule+: Step_pure/block}
+$${rule+: Step_read/block}
 
 .. _exec-LOOP:
 
@@ -522,7 +538,7 @@ $${rule+: Step_pure/block}
 
 \
 
-$${rule+: Step_pure/loop}
+$${rule+: Step_read/loop}
 
 .. _exec-IF:
 
@@ -604,9 +620,10 @@ $${rule+: Step_pure/return-*}
 
 $${rule+: Step_read/call}
 
-.. _exec-CALL_REF:
+CALL_REF
+^^^^^^^^
 
-%{prose-algo: CALL_REF}
+TODO (too deeply nested)
 
 \
 
@@ -628,13 +645,14 @@ $${rule+: Step_pure/call_indirect-*}
 
 $${rule+: Step_read/return_call}
 
-.. _exec-RETURN_CALL_REF:
+RETURN_CALL_REF
+^^^^^^^^^^^^^^^
 
-%{prose-algo: RETURN_CALL_REF}
+TODO (too deeply nested)
 
 \
 
-$${rule+: Step_pure/return_call_ref-*}
+$${rule+: Step_read/return_call_ref-*}
 
 .. _exec-RETURN_CALL_INDIRECT:
 
@@ -659,22 +677,6 @@ $${rule+: Step_pure/label-vals}
 
 Function Calls
 ~~~~~~~~~~~~~~
-
-.. _exec-CALL_ADDR:
-
-%{prose-algo: CALL_ADDR}
-
-\
-
-$${rule+: Step_read/call_addr}
-
-.. _exec-RETURN_CALL_ADDR:
-
-%{prose-algo: RETURN_CALL_ADDR}
-
-\
-
-$${rule+: Step_read/return_call_addr-*}
 
 .. _exec-FRAME_:
 

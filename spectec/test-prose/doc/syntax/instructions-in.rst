@@ -3,11 +3,13 @@
 Instructions
 ------------
 
-.. _syntax-instructions-numeric:
+.. _syntax-instructions-numeric-instructions:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
+.. _syntax-inn:
+.. _syntax-fnn:
 .. _syntax-sx:
 .. _syntax-instr-numeric:
 .. _syntax-unopIXX:
@@ -20,6 +22,8 @@ Numeric Instructions
 .. _syntax-relopFXX:
 
 $${syntax+: 
+  {inn
+  fnn}
   sx
   instr/numeric
   {unopIXX
@@ -51,7 +55,7 @@ $${syntax+:
 }
 
 .. _syntax-instr-reference:
-.. _syntax-instructions-reference:
+.. _syntax-instructions-reference-instructions:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -59,24 +63,57 @@ Reference Instructions
 $${syntax: instr/reference}
 
 .. _syntax-instr-heap:
-.. _syntax-instructions-heap:
+.. _syntax-instructions-aggregate-instructions:
 
-Heap Instructions
-~~~~~~~~~~~~~~~~~
+Aggregate Instructions
+~~~~~~~~~~~~~~~~~~~~~~
 
 $${syntax: instr/heap}
 
-.. _syntax-instr-state:
-.. _syntax-instructions-state:
+.. _syntax-instr-local:
+.. _syntax-instr-global:
+.. _syntax-instructions-variable-instructions:
 
-State Instructions
+Variable Instructions
+~~~~~~~~~~~~~~~~~~~~~
+
+$${syntax+: 
+  instr/local
+  instr/global
+}
+
+.. _syntax-instr-table:
+.. _syntax-instructions-table-instructions:
+
+Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/state}
+$${syntax: instr/table}
+
+.. _syntax-instructions-memory-instructions:
+
+Memory Instructions
+~~~~~~~~~~~~~~~~~~~
+
+.. _syntax-instr-memory:
+.. _syntax-memop:
+
+$${syntax+: 
+  instr/memory
+  memop
+}
+
+.. _def-memop0:
+
+%{prose-func: memop0}
+
+\
+
+$${definition: memop0}
 
 .. _syntax-blocktype:
 .. _syntax-instr-control:
-.. _syntax-instructions-control:
+.. _syntax-instructions-control-instructions:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +124,7 @@ $${syntax+:
 }
 
 .. _syntax-instr-expr:
-.. _syntax-instructions-expr:
+.. _syntax-instructions-expressions:
 
 Expressions
 ~~~~~~~~~~~
