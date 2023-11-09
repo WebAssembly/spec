@@ -288,8 +288,6 @@ $${definition: unrollht}
 
 $${definition: expanddt}
 
-.. _valid-Expand:
-
 $${rule: Expand}
 
 .. _syntax-instrtype:

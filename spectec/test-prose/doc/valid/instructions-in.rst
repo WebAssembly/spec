@@ -664,8 +664,6 @@ $${rule+: Instr_ok/return_call_ref}
 
 $${rule+: Instr_ok/return_call_indirect}
 
-.. _valid-Instrf_ok-instr:
-.. _valid-Instrs_ok:
 .. _valid-instructions-sequences:
 
 Instruction Sequences
@@ -676,10 +674,6 @@ $${rule+:
   Instrs_ok/*
 }
 
-.. _valid-Expr_ok:
-.. _valid-Instr_const:
-.. _valid-Expr_const:
-.. _valid-Expr_ok_const:
 .. _valid-instructions-expressions:
 
 Expressions

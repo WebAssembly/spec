@@ -3,8 +3,6 @@
 Modules
 -------
 
-.. _valid-Type_ok:
-.. _valid-Types_ok:
 .. _valid-modules-types:
 
 Types
@@ -15,7 +13,6 @@ $${rule+:
   Types_ok/*
 }
 
-.. _valid-Func_ok:
 .. _valid-modules-functions:
 
 Functions
@@ -23,7 +20,6 @@ Functions
 
 $${rule: Func_ok}
 
-.. _valid-Local_ok:
 .. _valid-modules-locals:
 
 Locals
@@ -33,7 +29,6 @@ $${rule+:
   Local_ok/*
 }
 
-.. _valid-Table_ok:
 .. _valid-modules-tables:
 
 Tables
@@ -41,7 +36,6 @@ Tables
 
 $${rule: Table_ok}
 
-.. _valid-Mem_ok:
 .. _valid-modules-memories:
 
 Memories
@@ -49,8 +43,6 @@ Memories
 
 $${rule: Mem_ok}
 
-.. _valid-Global_ok:
-.. _valid-Globals_ok:
 .. _valid-modules-globals:
 
 Globals
@@ -61,8 +53,6 @@ $${rule+:
   Globals_ok/*
 }
 
-.. _valid-Elem_ok:
-.. _valid-Elemmode_ok:
 .. _valid-modules-element-segments:
 
 Element Segments
@@ -73,7 +63,6 @@ $${rule+:
   Elemmode_ok/*
 }
 
-.. _valid-Data_ok:
 .. _valid-modules-data-segments:
 
 Data Segments
@@ -84,7 +73,6 @@ $${rule+:
   Datamode_ok
 }
 
-.. _valid-Start_ok:
 .. _valid-modules-start-function:
 
 Start Function
@@ -92,8 +80,6 @@ Start Function
 
 $${rule: Start_ok}
 
-.. _valid-Export_ok:
-.. _valid-Externuse_ok:
 .. _valid-modules-exports:
 
 Exports
@@ -104,7 +90,6 @@ $${rule+:
   Externuse_ok/*
 }
 
-.. _valid-Import_ok:
 .. _valid-modules-imports:
 
 Imports
@@ -112,7 +97,6 @@ Imports
 
 $${rule: Import_ok}
 
-.. _valid-Module_ok:
 .. _valid-modules-modules:
 
 Modules

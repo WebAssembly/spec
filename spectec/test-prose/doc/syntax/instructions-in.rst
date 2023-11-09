@@ -3,6 +3,11 @@
 Instructions
 ------------
 
+.. _syntax-instructions-numeric:
+
+Numeric Instructions
+~~~~~~~~~~~~~~~~~~~~
+
 .. _syntax-sx:
 .. _syntax-instr-numeric:
 .. _syntax-unopIXX:
@@ -13,15 +18,6 @@ Instructions
 .. _syntax-testopFXX:
 .. _syntax-relopIXX:
 .. _syntax-relopFXX:
-.. _syntax-unop_numtype:
-.. _syntax-binop_numtype:
-.. _syntax-testop-numtype:
-.. _syntax-relop_numtype:
-.. _syntax-cvtop:
-.. _syntax-instructions-numeric:
-
-Numeric Instructions
-~~~~~~~~~~~~~~~~~~~~
 
 $${syntax+: 
   sx
@@ -39,6 +35,12 @@ $${syntax+:
 \
 
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
+
+.. _syntax-unop_numtype:
+.. _syntax-binop_numtype:
+.. _syntax-testop-numtype:
+.. _syntax-relop_numtype:
+.. _syntax-cvtop:
 
 $${syntax+:
   {unop_numtype
