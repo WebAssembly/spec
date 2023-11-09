@@ -40,7 +40,9 @@ and result' =
 type assertion = assertion' Source.phrase
 and assertion' =
   | AssertMalformed of definition * string
+  | AssertMalformedCustom of definition * string
   | AssertInvalid of definition * string
+  | AssertInvalidCustom of definition * string
   | AssertUnlinkable of definition * string
   | AssertUninstantiable of definition * string
   | AssertReturn of action * result list

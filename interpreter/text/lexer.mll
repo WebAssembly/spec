@@ -680,6 +680,8 @@ rule token = parse
       | "get" -> GET
       | "assert_malformed" -> ASSERT_MALFORMED
       | "assert_invalid" -> ASSERT_INVALID
+      | "assert_malformed_custom" -> ASSERT_MALFORMED_CUSTOM
+      | "assert_invalid_custom" -> ASSERT_INVALID_CUSTOM
       | "assert_unlinkable" -> ASSERT_UNLINKABLE
       | "assert_return" -> ASSERT_RETURN
       | "assert_trap" -> ASSERT_TRAP

@@ -11,9 +11,9 @@ type section_kind =
   | Export
   | Start
   | Elem
+  | DataCount
   | Code
   | Data
-  | DataCount
 
 type place =
   | Before of section_kind

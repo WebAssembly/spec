@@ -258,6 +258,7 @@ let parse_annots (m : module_) : Custom.section list =
 %token MODULE BIN QUOTE
 %token SCRIPT REGISTER INVOKE GET
 %token ASSERT_MALFORMED ASSERT_INVALID ASSERT_UNLINKABLE
+%token ASSERT_MALFORMED_CUSTOM ASSERT_INVALID_CUSTOM
 %token ASSERT_RETURN ASSERT_TRAP ASSERT_EXHAUSTION
 %token<Script.nan> NAN
 %token INPUT OUTPUT
@@ -1062,6 +1063,10 @@ assertion :
     { AssertMalformed (snd $3, $4) @@ at () }
   | LPAR ASSERT_INVALID script_module STRING RPAR
     { AssertInvalid (snd $3, $4) @@ at () }
+  | LPAR ASSERT_MALFORMED_CUSTOM script_module STRING RPAR
+    { AssertMalformedCustom (snd $3, $4) @@ at () }
+  | LPAR ASSERT_INVALID_CUSTOM script_module STRING RPAR
+    { AssertInvalidCustom (snd $3, $4) @@ at () }
   | LPAR ASSERT_UNLINKABLE script_module STRING RPAR
     { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_TRAP script_module STRING RPAR

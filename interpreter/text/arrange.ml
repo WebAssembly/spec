@@ -758,8 +758,16 @@ let assertion mode ass =
     | _ ->
       [Node ("assert_malformed", [definition `Original None def; Atom (string re)])]
     )
+  | AssertMalformedCustom (def, re) ->
+    (match mode, def.it with
+    | `Binary, Quoted _ -> []
+    | _ ->
+      [Node ("assert_malformed_custom", [definition `Original None def; Atom (string re)])]
+    )
   | AssertInvalid (def, re) ->
     [Node ("assert_invalid", [definition mode None def; Atom (string re)])]
+  | AssertInvalidCustom (def, re) ->
+    [Node ("assert_invalid_custom", [definition mode None def; Atom (string re)])]
   | AssertUnlinkable (def, re) ->
     [Node ("assert_unlinkable", [definition mode None def; Atom (string re)])]
   | AssertUninstantiable (def, re) ->
