@@ -47,7 +47,7 @@
   )
 )
 
-(assert_malformed
+(assert_malformed_custom
   (module quote
     "(func $test2 (type 0)"
     "  (local i32)"
@@ -64,7 +64,7 @@
   )
   "@metadata.code.branch_hint annotation: duplicate annotation"
 )
-(assert_malformed
+(assert_malformed_custom
   (module quote
     "(module"
     "  (@metadata.code.branch_hint \"\\01\" )"
@@ -82,7 +82,7 @@
   "@metadata.code.branch_hint annotation: not in a function"
 )
 
-(assert_invalid
+(assert_invalid_custom
   (module
     (type (;0;) (func (param i32)))
     (memory (;0;) 1 1)
