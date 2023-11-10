@@ -27,7 +27,7 @@ Existing typing rules are adjusted as follows:
 
 * All rules that extend the context with new labels use an absent |LCATCH| flag.
 
-* All rules that inspect the context for a label ignore the presence of an |LCATCH| flag.
+* All rules that inspect the context for a label ignore the presence of a |LCATCH| flag.
 
 .. note::
    This flag is used to distinguish labels bound by catch clauses, which can be targeted by |RETHROW|.
@@ -74,6 +74,7 @@ Control Instructions
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
+   ~\\
    \frac{
    \begin{array}{c}
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
@@ -89,7 +90,7 @@ Control Instructions
 
 
 .. note::
-   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,(\LCATCH^?~[t^\ast])` inserts the new label type at index :math:`0`, shifting all others.
+   The :ref:`notation <notation-extend>` :math:`C,\CLABELS\,(\LCATCH~[t^\ast])` inserts the new label type at index :math:`0`, shifting all others.
 
 
 .. _valid-try-delegate:
@@ -109,6 +110,7 @@ Control Instructions
 * Then the compound instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
+   ~\\
    \frac{
      C \vdashblocktype \blocktype : [t_1^\ast] \to [t_2^\ast]
      \qquad
@@ -138,6 +140,7 @@ Control Instructions
 
 
 .. math::
+   ~\\
    \frac{
      C.\CLABELS[l] = \LCATCH~[t^\ast]
    }{

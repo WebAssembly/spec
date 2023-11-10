@@ -126,7 +126,7 @@ Control Instructions
    \begin{array}{l}
    F; \val^m~(\TRY~\X{bt}~\instr_1^\ast~(\CATCH~x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?~\END
    \quad \stepto \\
-   \qquad F; \LABEL_n\{\epsilon\}~(\HANDLER_n\{(\CATCH~a_x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?\}~\val^m~\instr_1^\ast~\END)~\END \\
+   \qquad F; \LABEL_n\{\epsilon\}~(\HANDLER_n\{(\CATCH~a_x~\instr_2^\ast)^\ast~(\CATCHALL~\instr_3^\ast)^?\}~\val^m~\instr_1^\ast~\END)~\END \\ \qquad
    (\iff \expand_F(\X{bt}) = [t_1^m] \to [t_2^n] \land (F.\AMODULE.\MITAGS[x]=a_x)^\ast)
    \end{array}
 
