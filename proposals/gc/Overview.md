@@ -411,7 +411,7 @@ For example:
 )
 ```
 All accesses are type-checked at validation time.
-The structure operand of `struct.get/set` may either be a `ref` or an `ref null` for a structure type
+The structure operand of `struct.get/set` may either be a `ref` or a `ref null` for a structure type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 
 Structures are *allocated* with the `struct.new` instruction that accepts initialization values for each field.
