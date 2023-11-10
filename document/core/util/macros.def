@@ -506,8 +506,8 @@
 .. |I31GETS| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_s}}
 .. |I31GETU| mathdef:: \xref{syntax/instructions}{syntax-instr-i31}{\K{i31.get\_u}}
 
-.. |ANYCONVERTEXTERN| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{any.convert_extern}}
-.. |EXTERNCONVERTANY| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{extern.convert_any}}
+.. |ANYCONVERTEXTERN| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{any.convert\_extern}}
+.. |EXTERNCONVERTANY| mathdef:: \xref{syntax/instructions}{syntax-instr-extern}{\K{extern.convert\_any}}
 
 .. |CONST| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{const}}
 .. |EQZ| mathdef:: \xref{syntax/instructions}{syntax-instr-numeric}{\K{eqz}}
