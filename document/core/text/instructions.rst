@@ -240,8 +240,8 @@ Reference Instructions
      \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
      \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
      \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
-     \text{any.convert_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
-     \text{extern.convert_any} &\Rightarrow& \EXTERNCONVERTANY \\
+     \text{any.convert\_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \text{extern.convert\_any} &\Rightarrow& \EXTERNCONVERTANY \\
    \end{array}
 
 
@@ -989,7 +989,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
 
 .. math::
    \begin{array}{lllll}
-   \production{instruction} & 
+   \production{instruction} &
      \text{(}~\Tplaininstr~~\Tfoldedinstr^\ast~\text{)}
        &\equiv\quad \Tfoldedinstr^\ast~~\Tplaininstr \\ &
      \text{(}~\text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}
