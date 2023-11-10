@@ -3,7 +3,6 @@
 Binary Format
 =============
 
-.. index:: instruction
 .. _binary-instr:
 
 Instructions

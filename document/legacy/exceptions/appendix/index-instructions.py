@@ -19,7 +19,6 @@ HEADER = """\
 Appendix
 ========
 
-.. index:: instruction
 .. _index-instr:
 
 Index of Instructions

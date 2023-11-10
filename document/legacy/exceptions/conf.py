@@ -76,7 +76,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.0'
+version = ''
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -153,7 +153,6 @@ html_theme_options = {
   'sidebar_collapse': True,
   'show_powered_by': False,
   'extra_nav_links': {
-    'Index': 'BASEDIR/genindex.html',
     'Download as PDF': 'BASEDIR/_download/' + name + '.pdf'
   },
 }
@@ -224,7 +223,7 @@ html_domain_indices = False
 
 # If false, no index is generated.
 #
-html_use_index = True
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #
