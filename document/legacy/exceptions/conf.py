@@ -59,7 +59,7 @@ master_doc = 'index'
 # General information about the project.
 name = 'WebAssembly-Legacy-Exceptions'
 project = u'WebAssembly-Legacy-Exceptions'
-title = u'WebAssembly Specification Addendum: Legacy Exception Handling'
+title = u'WebAssembly Spec Addendum: Legacy Exception Handling'
 copyright = u'2023, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'

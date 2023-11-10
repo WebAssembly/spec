@@ -1,11 +1,10 @@
-WebAssembly Specification Addendum: Legacy Exception Handling
-=============================================================
+WebAssembly Addendum: Legacy Exception Handling
+===============================================
 
 .. only:: html
 
    | Editor: Andreas Rossberg
 
-   | Latest Draft: |WasmDraft|
    | Issue Tracker: |WasmIssues|
 
 .. toctree::
