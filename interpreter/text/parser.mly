@@ -275,7 +275,6 @@ let inline_func_type_explicit (c : context) x ft at =
 %token<Ast.instr'> UNARY BINARY TEST COMPARE CONVERT
 %token REF_NULL REF_FUNC REF_I31 REF_STRUCT REF_ARRAY REF_EXTERN REF_HOST
 %token REF_EQ REF_IS_NULL REF_AS_NON_NULL REF_TEST REF_CAST
-%token REF_I31
 %token<Ast.instr'> I31_GET
 %token<Ast.idx -> Ast.instr'> STRUCT_NEW ARRAY_NEW ARRAY_GET
 %token STRUCT_SET
