@@ -26,11 +26,6 @@ Index of Instructions
 """
 
 FOOTER = """\
-
-.. note::
-   Multi-byte opcodes are given with the shortest possible encoding in the table.
-   However, what is following the first byte is actually a :ref:`u32 <binary-uint>` with variable-length encoding
-   and consequently has multiple possible representations.\
 """
 
 COLUMNS = [

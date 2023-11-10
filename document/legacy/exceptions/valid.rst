@@ -36,7 +36,6 @@ Existing typing rules are adjusted as follows:
 Instructions
 ------------
 
-
 .. _valid-instr-control:
 
 Control Instructions

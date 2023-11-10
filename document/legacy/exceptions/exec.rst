@@ -16,8 +16,7 @@ Stack
 
 .. _syntax-handler:
 
-Exception Handlers
-..................
+**Exception Handlers**
 
 Legacy exception handlers are installed by |TRY| instructions.
 Instead of branch labels, their catch clauses have instruction blocks associated with them.

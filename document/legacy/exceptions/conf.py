@@ -301,6 +301,9 @@ latex_elements = {
 
    # Fancy chapters [Bjarne, Sonny, Lenny, Glenn, Conny, Rejne]
    'fncychap': '\\usepackage[Sonny]{fncychap}',
+
+   # Allow chapters to start on even pages
+   'extraclassoptions': 'openany'
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -311,7 +314,7 @@ latex_documents = [
     name + '.tex',
     title,
     author + '\\\\ \\hfill\\large ' + editor,
-    'manual'
+    'howto'
   ),
 ]
 
