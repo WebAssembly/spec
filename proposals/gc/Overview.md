@@ -443,7 +443,7 @@ Elements are accessed with generic load/store instructions that take a reference
 )
 ```
 The element type of every access is checked at validation time.
-The array operand of `array.get/set` may either be a `ref` or an `ref null` for an array type
+The array operand of `array.get/set` may either be a `ref` or a `ref null` for an array type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 The index is checked against the array's length at execution time.
 A trap occurs if the index is out of bounds.
