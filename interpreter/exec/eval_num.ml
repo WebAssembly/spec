@@ -89,7 +89,7 @@ struct
       | CopySign -> FXX.copysign
     in fun v1 v2 -> to_num (f (of_num 1 v1) (of_num 2 v2))
 
-  let testop op = assert false
+  let testop _op = assert false
 
   let relop op =
     let f = match op with

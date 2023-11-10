@@ -322,16 +322,16 @@ num_list:
   | num num_list { $1 :: $2 }
 
 var :
-  | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
+  | NAT { let at = at () in fun _c _lookup -> nat32 $1 at @@ at }
   | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
 
 var_list :
-  | /* empty */ { fun c lookup -> [] }
+  | /* empty */ { fun _c _lookup -> [] }
   | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
 
 bind_var_opt :
-  | /* empty */ { fun c anon bind -> anon c }
-  | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
+  | /* empty */ { fun c anon _bind -> anon c }
+  | bind_var { fun c _anon bind -> bind c $1 }  /* Sugar */
 
 bind_var :
   | VAR { $1 @@ at () }
@@ -367,7 +367,7 @@ align_opt :
 /* Instructions & Expressions */
 
 instr_list :
-  | /* empty */ { fun c -> [] }
+  | /* empty */ { fun _c -> [] }
   | instr1 instr_list { fun c -> $1 c @ $2 c }
   | select_instr_instr_list { $1 }
   | call_instr_instr_list { $1 }
@@ -378,15 +378,15 @@ instr1 :
   | expr { $1 }  /* Sugar */
 
 plain_instr :
-  | UNREACHABLE { fun c -> unreachable }
-  | NOP { fun c -> nop }
-  | DROP { fun c -> drop }
+  | UNREACHABLE { fun _c -> unreachable }
+  | NOP { fun _c -> nop }
+  | DROP { fun _c -> drop }
   | BR var { fun c -> br ($2 c label) }
   | BR_IF var { fun c -> br_if ($2 c label) }
   | BR_TABLE var var_list
     { fun c -> let xs, x = Lib.List.split_last ($2 c label :: $3 c label) in
       br_table xs x }
-  | RETURN { fun c -> return }
+  | RETURN { fun _c -> return }
   | CALL var { fun c -> call ($2 c func) }
   | LOCAL_GET var { fun c -> local_get ($2 c local) }
   | LOCAL_SET var { fun c -> local_set ($2 c local) }
@@ -400,50 +400,50 @@ plain_instr :
   | TABLE_FILL var { fun c -> table_fill ($2 c table) }
   | TABLE_COPY var var { fun c -> table_copy ($2 c table) ($3 c table) }
   | TABLE_INIT var var { fun c -> table_init ($2 c table) ($3 c elem) }
-  | TABLE_GET { let at = at () in fun c -> table_get (0l @@ at) }  /* Sugar */
-  | TABLE_SET { let at = at () in fun c -> table_set (0l @@ at) }  /* Sugar */
-  | TABLE_SIZE { let at = at () in fun c -> table_size (0l @@ at) }  /* Sugar */
-  | TABLE_GROW { let at = at () in fun c -> table_grow (0l @@ at) }  /* Sugar */
-  | TABLE_FILL { let at = at () in fun c -> table_fill (0l @@ at) }  /* Sugar */
+  | TABLE_GET { let at = at () in fun _c -> table_get (0l @@ at) }  /* Sugar */
+  | TABLE_SET { let at = at () in fun _c -> table_set (0l @@ at) }  /* Sugar */
+  | TABLE_SIZE { let at = at () in fun _c -> table_size (0l @@ at) }  /* Sugar */
+  | TABLE_GROW { let at = at () in fun _c -> table_grow (0l @@ at) }  /* Sugar */
+  | TABLE_FILL { let at = at () in fun _c -> table_fill (0l @@ at) }  /* Sugar */
   | TABLE_COPY  /* Sugar */
-    { let at = at () in fun c -> table_copy (0l @@ at) (0l @@ at) }
+    { let at = at () in fun _c -> table_copy (0l @@ at) (0l @@ at) }
   | TABLE_INIT var  /* Sugar */
     { let at = at () in fun c -> table_init (0l @@ at) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
-  | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
-  | VEC_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
-  | VEC_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
+  | LOAD offset_opt align_opt { fun _c -> $1 $3 $2 }
+  | STORE offset_opt align_opt { fun _c -> $1 $3 $2 }
+  | VEC_LOAD offset_opt align_opt { fun _c -> $1 $3 $2 }
+  | VEC_STORE offset_opt align_opt { fun _c -> $1 $3 $2 }
   | VEC_LOAD_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
+    { let at = at () in fun _c -> $1 $3 $2 (vec_lane_index $4 at) }
   | VEC_STORE_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
-  | MEMORY_SIZE { fun c -> memory_size }
-  | MEMORY_GROW { fun c -> memory_grow }
-  | MEMORY_FILL { fun c -> memory_fill }
-  | MEMORY_COPY { fun c -> memory_copy }
+    { let at = at () in fun _c -> $1 $3 $2 (vec_lane_index $4 at) }
+  | MEMORY_SIZE { fun _c -> memory_size }
+  | MEMORY_GROW { fun _c -> memory_grow }
+  | MEMORY_FILL { fun _c -> memory_fill }
+  | MEMORY_COPY { fun _c -> memory_copy }
   | MEMORY_INIT var { fun c -> memory_init ($2 c data) }
   | DATA_DROP var { fun c -> data_drop ($2 c data) }
-  | REF_NULL ref_kind { fun c -> ref_null $2 }
-  | REF_IS_NULL { fun c -> ref_is_null }
+  | REF_NULL ref_kind { fun _c -> ref_null $2 }
+  | REF_IS_NULL { fun _c -> ref_is_null }
   | REF_FUNC var { fun c -> ref_func ($2 c func) }
-  | CONST num { fun c -> fst (num $1 $2) }
-  | TEST { fun c -> $1 }
-  | COMPARE { fun c -> $1 }
-  | UNARY { fun c -> $1 }
-  | BINARY { fun c -> $1 }
-  | CONVERT { fun c -> $1 }
-  | VEC_CONST VEC_SHAPE num_list { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
-  | VEC_UNARY { fun c -> $1 }
-  | VEC_BINARY { fun c -> $1 }
-  | VEC_TERNARY { fun c -> $1 }
-  | VEC_TEST { fun c -> $1 }
-  | VEC_SHIFT { fun c -> $1 }
-  | VEC_BITMASK { fun c -> $1 }
-  | VEC_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
-  | VEC_SPLAT { fun c -> $1 }
-  | VEC_EXTRACT NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
-  | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
+  | CONST num { fun _c -> fst (num $1 $2) }
+  | TEST { fun _c -> $1 }
+  | COMPARE { fun _c -> $1 }
+  | UNARY { fun _c -> $1 }
+  | BINARY { fun _c -> $1 }
+  | CONVERT { fun _c -> $1 }
+  | VEC_CONST VEC_SHAPE num_list { let at = at () in fun _c -> fst (vec $1 $2 $3 at) }
+  | VEC_UNARY { fun _c -> $1 }
+  | VEC_BINARY { fun _c -> $1 }
+  | VEC_TERNARY { fun _c -> $1 }
+  | VEC_TEST { fun _c -> $1 }
+  | VEC_SHIFT { fun _c -> $1 }
+  | VEC_BITMASK { fun _c -> $1 }
+  | VEC_SHUFFLE num_list { let at = at () in fun _c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | VEC_SPLAT { fun _c -> $1 }
+  | VEC_EXTRACT NAT { let at = at () in fun _c -> $1 (vec_lane_index $2 at) }
+  | VEC_REPLACE NAT { let at = at () in fun _c -> $1 (vec_lane_index $2 at) }
 
 
 select_instr_instr_list :
@@ -619,12 +619,12 @@ if_ :
     { fun c c' -> let es = $1 c in let es0, es1, es2 = $2 c c' in
       es @ es0, es1, es2 }
   | LPAR THEN instr_list RPAR LPAR ELSE instr_list RPAR  /* Sugar */
-    { fun c c' -> [], $3 c', $7 c' }
+    { fun _c c' -> [], $3 c', $7 c' }
   | LPAR THEN instr_list RPAR  /* Sugar */
-    { fun c c' -> [], $3 c', [] }
+    { fun _c c' -> [], $3 c', [] }
 
 expr_list :
-  | /* empty */ { fun c -> [] }
+  | /* empty */ { fun _c -> [] }
   | expr expr_list { fun c -> $1 c @ $2 c }
 
 const_expr :
@@ -640,23 +640,23 @@ func :
 
 func_fields :
   | type_use func_fields_body
-    { fun c x at ->
+    { fun c _x at ->
       let c' = enter_func c in
       let y = inline_type_explicit c' ($1 c' type_) (fst $2) at in
       [{(snd $2 c') with ftype = y} @@ at], [], [] }
   | func_fields_body  /* Sugar */
-    { fun c x at ->
+    { fun c _x at ->
       let c' = enter_func c in
       let y = inline_type c' (fst $1) at in
       [{(snd $1 c') with ftype = y} @@ at], [], [] }
   | inline_import type_use func_fields_import  /* Sugar */
-    { fun c x at ->
+    { fun c _x at ->
       let y = inline_type_explicit c ($2 c type_) $3 at in
       [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = FuncImport y @@ at } @@ at ], [] }
   | inline_import func_fields_import  /* Sugar */
-    { fun c x at ->
+    { fun c _x at ->
       let y = inline_type c $2 at in
       [],
       [{ module_name = fst $1; item_name = snd $1;
@@ -726,7 +726,7 @@ elem_expr :
   | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_expr_list :
-  | /* empty */ { fun c -> [] }
+  | /* empty */ { fun _c -> [] }
   | elem_expr elem_expr_list { fun c -> $1 c :: $2 c }
 
 elem_var_list :
@@ -779,9 +779,9 @@ table :
 
 table_fields :
   | table_type
-    { fun c x at -> [{ttype = $1} @@ at], [], [], [] }
+    { fun _c _x at -> [{ttype = $1} @@ at], [], [], [] }
   | inline_import table_type  /* Sugar */
-    { fun c x at ->
+    { fun _c _x at ->
       [], [],
       [{ module_name = fst $1; item_name = snd $1;
         idesc = TableImport $2 @@ at } @@ at], [] }
@@ -831,9 +831,9 @@ memory :
 
 memory_fields :
   | memory_type
-    { fun c x at -> [{mtype = $1} @@ at], [], [], [] }
+    { fun _c _x at -> [{mtype = $1} @@ at], [], [], [] }
   | inline_import memory_type  /* Sugar */
-    { fun c x at ->
+    { fun _c _x at ->
       [], [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = MemoryImport $2 @@ at } @@ at], [] }
@@ -841,7 +841,7 @@ memory_fields :
     { fun c x at -> let mems, data, ims, exs = $2 c x at in
       mems, data, ims, $1 (MemoryExport x) c :: exs }
   | LPAR DATA string_list RPAR  /* Sugar */
-    { fun c x at ->
+    { fun _c x at ->
       let offset = [i32_const (0l @@ at) @@ at] @@ at in
       let size = Int32.(div (add (of_int (String.length $3)) 65535l) 65536l) in
       [{mtype = MemoryType {min = size; max = Some size}} @@ at],
@@ -856,9 +856,9 @@ global :
 
 global_fields :
   | global_type const_expr
-    { fun c x at -> [{gtype = $1; ginit = $2 c} @@ at], [], [] }
+    { fun c _x at -> [{gtype = $1; ginit = $2 c} @@ at], [], [] }
   | inline_import global_type  /* Sugar */
-    { fun c x at ->
+    { fun _c _x at ->
       [],
       [{ module_name = fst $1; item_name = snd $1;
          idesc = GlobalImport $2 @@ at } @@ at], [] }
@@ -909,7 +909,7 @@ export :
 
 inline_export :
   | LPAR EXPORT name RPAR
-    { let at = at () in fun d c -> {name = $3; edesc = d @@ at} @@ at }
+    { let at = at () in fun d _c -> {name = $3; edesc = d @@ at} @@ at }
 
 
 /* Modules */

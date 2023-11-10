@@ -944,7 +944,7 @@ let code_section s =
 
 (* Element section *)
 
-let passive s =
+let passive _s =
   Passive
 
 let active s =
@@ -957,7 +957,7 @@ let active_zero s =
   let offset = const s in
   Active {index; offset}
 
-let declarative s =
+let declarative _s =
   Declarative
 
 let elem_index s =

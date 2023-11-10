@@ -217,7 +217,7 @@ let bind (mods : modules) x_opt m =
 let lookup (mods : modules) x_opt name at =
   let exports =
     try Map.find (of_var_opt mods x_opt) mods.env with Not_found ->
-      raise (Eval.Crash (at, 
+      raise (Eval.Crash (at,
         if x_opt = None then "no module defined within script"
         else "unknown module " ^ of_var_opt mods x_opt ^ " within script"))
   in try NameMap.find name exports with Not_found ->
@@ -275,10 +275,10 @@ let invoke ft vs at =
 let get t at =
   [], GlobalImport t @@ at, [GlobalGet (subject_idx @@ at) @@ at]
 
-let run ts at =
+let run _ts _at =
   [], []
 
-let assert_return ress ts at =
+let assert_return ress _ts at =
   let test res =
     let nan_bitmask_of = function
       | CanonicalNan -> abs_mask_of (* must only differ from the canonical NaN in its sign bit *)
@@ -354,7 +354,7 @@ let assert_return ress ts at =
         VecTest (V128 (V128.I8x16 V128Op.AllTrue)) @@ at;
         Test (I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
-    | RefResult (RefPat {it = Values.NullRef t; _}) ->
+    | RefResult (RefPat {it = Values.NullRef _t; _}) ->
       [ RefIsNull @@ at;
         Test (Values.I32 I32Op.Eqz) @@ at;
         BrIf (0l @@ at) @@ at ]
@@ -425,8 +425,8 @@ let is_js_num_type = function
 
 let is_js_value_type = function
   | NumType t -> is_js_num_type t
-  | VecType t -> false
-  | RefType t -> true
+  | VecType _t -> false
+  | RefType _t -> true
 
 let is_js_global_type = function
   | GlobalType (t, mut) -> is_js_value_type t && mut = Immutable
@@ -508,7 +508,7 @@ let of_num_pat = function
     | Values.F32 n | Values.F64 n -> of_nan n
 
 let of_vec_pat = function
-  | VecPat (Values.V128 (shape, pats)) ->
+  | VecPat (Values.V128 (_shape, pats)) ->
     Printf.sprintf "v128(\"%s\")" (String.concat " " (List.map of_num_pat pats))
 
 let of_ref_pat = function

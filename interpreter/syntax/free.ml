@@ -103,8 +103,8 @@ let const (c : const) = block c.it
 
 let global (g : global) = const g.it.ginit
 let func (f : func) = {(block f.it.body) with locals = Set.empty}
-let table (t : table) = empty
-let memory (m : memory) = empty
+let table (_t : table) = empty
+let memory (_m : memory) = empty
 
 let segment_mode f (m : segment_mode) =
   match m.it with
@@ -117,7 +117,7 @@ let elem (s : elem_segment) =
 let data (s : data_segment) =
   segment_mode memories s.it.dmode
 
-let type_ (t : type_) = empty
+let type_ (_t : type_) = empty
 
 let export_desc (d : export_desc) =
   match d.it with
@@ -129,9 +129,9 @@ let export_desc (d : export_desc) =
 let import_desc (d : import_desc) =
   match d.it with
   | FuncImport x -> types (var x)
-  | TableImport tt -> empty
-  | MemoryImport mt -> empty
-  | GlobalImport gt -> empty
+  | TableImport _tt -> empty
+  | MemoryImport _mt -> empty
+  | GlobalImport _gt -> empty
 
 let export (e : export) = export_desc e.it.edesc
 let import (i : import) = import_desc i.it.idesc

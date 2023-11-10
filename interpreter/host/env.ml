@@ -18,12 +18,12 @@ let type_error v t =
 
 let empty = function
   | [] -> ()
-  | vs -> error "type error, too many arguments"
+  | _vs -> error "type error, too many arguments"
 
 let single = function
   | [] -> error "type error, missing arguments"
   | [v] -> v
-  | vs -> error "type error, too many arguments"
+  | _vs -> error "type error, too many arguments"
 
 let int = function
   | Num (I32 i) -> Int32.to_int i
