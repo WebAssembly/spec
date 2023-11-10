@@ -118,7 +118,7 @@ function g() {
 
 function h() {
   let b : nullable buf = {pos = 0, chars = "AAAA"}
-  b.buf[b.pos]
+  b.chars[b.pos]
 }
 ```
 
@@ -126,7 +126,7 @@ Needs:
 
 * user-defined structures and arrays as heap objects
 * references to those as first-class values
-* let
+* locals of these types
 
 The above could map to
 ```
@@ -136,24 +136,26 @@ The above could map to
 (type $buf (struct (field $pos (mut i64)) (field $chars (ref $char-array))))
 
 (func $f
-  (struct.new $tup (i64.const 1) (i64.const 2) (i64.const 1))
-  (let (local $t (ref $tup))
-    (struct.get $tup 1 (local.get $t))
-    (drop)
+  (local $t (ref $tup))
+  (local.set $t
+    (struct.new $tup (i64.const 1) (i64.const 2) (i64.const 1))
   )
+  (struct.get $tup 1 (local.get $t))
+  (drop)
 )
 
 (func $g
-  (array.new $vec3d (f64.const 1) (i32.const 3))
-  (let (local $v (ref $vec3d))
-    (array.set $vec3d (local.get $v) (i32.const 2) (i32.const 5))
-    (array.get $vec3d (local.get $v) (i32.const 1))
-    (drop)
+  (local $v (ref $vec3d))
+  (local.set $v
+    (array.new $vec3d (f64.const 1) (i32.const 3))
   )
+  (array.set $vec3d (local.get $v) (i32.const 2) (i32.const 5))
+  (array.get $vec3d (local.get $v) (i32.const 1))
+  (drop)
 )
 
 (func $h
-  (local $b (optref $buf))
+  (local $b (ref null $buf))
   (local.set $b
     (struct.new $buf
       (i64.const 0)
@@ -167,8 +169,8 @@ The above could map to
   (drop)
 )
 ```
-These functions `$f` and `$g` code introduces local with the `let` instruction (see the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md)) because the defined types cannot be null, such that locals of these types cannot be default-initialised.
-In the case of `$h` the local is declared as nullable, however, mapping to an optional reference.
+These functions `$f` and `$g` code introduces locals which cannot be null, so they must be set before their first get (see the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md)).
+In the case of `$b` the local is declared as nullable, however, mapping to an optional reference.
 The respective access via `struct.get` may hence trap.
 
 
@@ -217,10 +219,11 @@ To emulate the covariance of the `this` parameter, one down cast on `this` is ne
 For example, `D.g`:
 ```
 (func $D.g (param $Cthis (ref $C))
-  (ref.cast (local.get $Cthis) (rtt.get (ref $D)))
-  (let (local $this (ref $D))
-    ...
+  (local $this (ref $D))
+  (local.set $this
+    (ref.cast (local.get $Cthis) (rtt.get (ref $D)))
   )
+  ...
 )
 ```
 The addition of [type fields](Post-MVP.md#type-parameters) may later avoid this cast.
@@ -260,24 +263,24 @@ function caller() {
 )
 
 (func $inner (param $clos (ref $clos-f64-f64)) (param $y f64) (result f64)
-  (ref.cast (local.get $clos) (rtt.get (ref $inner-clos)))
-  (let (result f64) (local $env (ref $inner-clos))
-    (local.get $y)
-    (struct.get $inner-clos $a (local.get $env))
-    (f64.add)
-    (struct.get $inner-clos $x (local.get $env))
-    (f64.add)
+  (local $env (ref $inner-clos))
+  (local.set $env
+    (ref.cast (local.get $clos) (rtt.get (ref $inner-clos)))
   )
+  (local.get $y)
+  (struct.get $inner-clos $a (local.get $env))
+  (f64.add)
+  (struct.get $inner-clos $x (local.get $env))
+  (f64.add)
 )
 
 (func $caller (result f64)
-  (call $outer (f64.const 1))
-  (let (result f64) (local $clos (ref $clos-f64-f64))
-    (call_ref
-      (local.get $clos)
-      (f64.const 2)
-      (struct.get $clos-f64-f64 $code (local.get $clos))
-    )
+  (local $clos (ref $clos-f64-f64))
+  (local.set $clos (call $outer (f64.const 1)))
+  (call_ref
+    (local.get $clos)
+    (f64.const 2)
+    (struct.get $clos-f64-f64 $code (local.get $clos))
   )
 )
 ```
@@ -408,7 +411,7 @@ For example:
 )
 ```
 All accesses are type-checked at validation time.
-The structure operand of `struct.get/set` may either be a `ref` or an `optref` for a structure type
+The structure operand of `struct.get/set` may either be a `ref` or a `ref null` for a structure type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 
 Structures are *allocated* with the `struct.new` instruction that accepts initialization values for each field.
@@ -440,7 +443,7 @@ Elements are accessed with generic load/store instructions that take a reference
 )
 ```
 The element type of every access is checked at validation time.
-The array operand of `array.get/set` may either be a `ref` or an `optref` for an array type
+The array operand of `array.get/set` may either be a `ref` or a `ref null` for an array type
 In the latter case, the access involves a runtime null check that will trap upon failure.
 The index is checked against the array's length at execution time.
 A trap occurs if the index is out of bounds.
@@ -505,7 +508,7 @@ These notions are already introduced by [typed function references](https://gith
 
 Plain references cannot be null,
 avoiding any runtime overhead for null checks when accessing a struct or array.
-Nullable references are available as separate types called `optref`, as per the .
+Nullable references are available as separate types called `ref null`, as per the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md).
 
 Most value types, including all numeric types and nullable references are *defaultable*, which means that they have 0 or null as a default value.
 Other reference types are not defaultable.
