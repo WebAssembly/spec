@@ -10,11 +10,6 @@ open Script
 
 let error at msg = raise (Script.Syntax (at, msg))
 
-let parse_error msg =
-  error Source.no_region
-    (if msg = "syntax error" then "unexpected token" else msg)
-
-
 (* Position handling *)
 
 let position_to_pos position =
@@ -700,10 +695,10 @@ func_body :
       {ftype = -1l @@ at(); locals = []; body = $1 c'} }
   | LPAR LOCAL value_type_list RPAR func_body
     { fun c -> anon_locals c (lazy $3); let f = $5 c in
-      {f with locals = $3 @ f.locals} }
+      {f with locals = $3 @ f.Ast.locals} }
   | LPAR LOCAL bind_var value_type RPAR func_body  /* Sugar */
     { fun c -> ignore (bind_local c $3); let f = $6 c in
-      {f with locals = $4 :: f.locals} }
+      {f with locals = $4 :: f.Ast.locals} }
 
 
 /* Tables, Memories & Globals */
@@ -966,11 +961,11 @@ module_fields1 :
   | elem module_fields
     { fun c -> let ef = $1 c in let mf = $2 c in
       fun () -> let elems = ef () in let m = mf () in
-      {m with elems = elems :: m.elems} }
+      {m with elems = elems :: m.Ast.elems} }
   | data module_fields
     { fun c -> let df = $1 c in let mf = $2 c in
       fun () -> let data = df () in let m = mf () in
-      {m with datas = data :: m.datas} }
+      {m with datas = data :: m.Ast.datas} }
   | start module_fields
     { fun c -> let mf = $2 c in
       fun () -> let m = mf () in let x = $1 c in

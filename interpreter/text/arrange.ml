@@ -679,21 +679,25 @@ let definition mode x_opt def =
         match def.it with
         | Textual m -> m
         | Encoded (_, bs) -> Decode.decode "" bs
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Quoted (_, s) ->
+            let _v, m = Parse.Module.from_string s in
+            unquote m
       in module_with_var_opt x_opt (unquote def)
     | `Binary ->
       let rec unquote def =
         match def.it with
         | Textual m -> Encode.encode m
         | Encoded (_, bs) -> Encode.encode (Decode.decode "" bs)
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Quoted (_, s) ->
+            let _v, m = Parse.Module.from_string s in
+            unquote m
       in binary_module_with_var_opt x_opt (unquote def)
     | `Original ->
       match def.it with
       | Textual m -> module_with_var_opt x_opt m
       | Encoded (_, bs) -> binary_module_with_var_opt x_opt bs
       | Quoted (_, s) -> quoted_module_with_var_opt x_opt s
-  with Parse.Syntax _ ->
+  with Script.Syntax _ ->
     quoted_module_with_var_opt x_opt "<invalid module>"
 
 let access x_opt n =
