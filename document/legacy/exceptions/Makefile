@@ -8,7 +8,7 @@ PAPER         = a4
 BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
-NAME          = WebAssembly
+NAME          = WebAssembly-Legacy-Exceptions
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4

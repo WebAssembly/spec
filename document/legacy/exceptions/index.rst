@@ -3,8 +3,6 @@ WebAssembly Specification Addendum: Legacy Exception Handling
 
 .. only:: html
 
-   | Release |release|
-
    | Editor: Andreas Rossberg
 
    | Latest Draft: |WasmDraft|

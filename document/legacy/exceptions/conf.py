@@ -57,8 +57,8 @@ source_suffix = ['.rst']
 master_doc = 'index'
 
 # General information about the project.
-name = 'WebAssembly'
-project = u'WebAssembly'
+name = 'WebAssembly-Legacy-Exceptions'
+project = u'WebAssembly-Legacy-Exceptions'
 title = u'WebAssembly Specification Addendum: Legacy Exception Handling'
 copyright = u'2023, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
@@ -76,7 +76,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'0.1'
+version = u'1.0'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -174,7 +174,7 @@ html_sidebars = {
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-html_title = project + u' ' + release
+html_title = u'WebAssembly Legacy Exceptions'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #

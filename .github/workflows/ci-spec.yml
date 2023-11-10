@@ -41,6 +41,25 @@ jobs:
           name: core-rendered
           path: document/core/_build/html
 
+  build-legacy-exceptions-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          submodules: "recursive"
+      - name: Setup TexLive
+        run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Setup Sphinx
+        run: pip install six && pip install sphinx==5.1.0
+      - name: Build main spec
+        run: cd document/legacy/exceptions && make main
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: legacy-exceptions-rendered
+          path: document/core/_build/html
+
   build-js-api-spec:
     runs-on: ubuntu-latest
     steps:
@@ -83,6 +102,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: core-rendered
+          path: _output/core
+      - name: Download legacy exceptions spec artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: legacy-exceptions-rendered
           path: _output/core
       - name: Download JS API spec artifact
         uses: actions/download-artifact@v2
