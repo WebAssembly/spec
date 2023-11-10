@@ -508,7 +508,7 @@ These notions are already introduced by [typed function references](https://gith
 
 Plain references cannot be null,
 avoiding any runtime overhead for null checks when accessing a struct or array.
-Nullable references are available as separate types called `ref null`, as per the .
+Nullable references are available as separate types called `ref null`, as per the [typed function references proposal](https://github.com/WebAssembly/function-references/blob/master/proposals/function-references/Overview.md).
 
 Most value types, including all numeric types and nullable references are *defaultable*, which means that they have 0 or null as a default value.
 Other reference types are not defaultable.
