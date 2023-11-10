@@ -266,10 +266,6 @@ value_type :
   | VEC_TYPE { VecType $1 }
   | ref_type { RefType $1 }
 
-value_type_list :
-  | /* empty */ { [] }
-  | value_type value_type_list { $1 :: $2 }
-
 global_type :
   | value_type { GlobalType ($1, Immutable) }
   | LPAR MUT value_type RPAR { GlobalType ($3, Mutable) }
@@ -280,7 +276,7 @@ def_type :
 func_type :
   | func_type_result
     { FuncType ([], $1) }
-  | LPAR PARAM value_type_list RPAR func_type
+  | LPAR PARAM list(value_type) RPAR func_type
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var value_type RPAR func_type  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
@@ -288,7 +284,7 @@ func_type :
 func_type_result :
   | /* empty */
     { [] }
-  | LPAR RESULT value_type_list RPAR func_type_result
+  | LPAR RESULT list(value_type) RPAR func_type_result
     { $3 @ $5 }
 
 table_type :
@@ -311,10 +307,6 @@ num :
   | NAT { $1 @@ at () }
   | INT { $1 @@ at () }
   | FLOAT { $1 @@ at () }
-
-num_list:
-  | /* empty */ { [] }
-  | num num_list { $1 :: $2 }
 
 var :
   | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
@@ -428,14 +420,14 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | VEC_CONST VEC_SHAPE num_list { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
+  | VEC_CONST VEC_SHAPE list(num) { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
   | VEC_UNARY { fun c -> $1 }
   | VEC_BINARY { fun c -> $1 }
   | VEC_TERNARY { fun c -> $1 }
   | VEC_TEST { fun c -> $1 }
   | VEC_SHIFT { fun c -> $1 }
   | VEC_BITMASK { fun c -> $1 }
-  | VEC_SHUFFLE num_list { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | VEC_SHUFFLE list(num) { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
   | VEC_SPLAT { fun c -> $1 }
   | VEC_EXTRACT NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
   | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
@@ -448,7 +440,7 @@ select_instr_instr_list :
       (select (if b then (Some ts) else None) @@ at1) :: es }
 
 select_instr_results_instr_list :
-  | LPAR RESULT value_type_list RPAR select_instr_results_instr_list
+  | LPAR RESULT list(value_type) RPAR select_instr_results_instr_list
     { fun c -> let _, ts, es = $5 c in true, $3 @ ts, es }
   | instr_list
     { fun c -> false, [], $1 c }
@@ -476,14 +468,14 @@ call_instr_type_instr_list :
       fun c -> let ft, es = $1 c in inline_type c ft at, es }
 
 call_instr_params_instr_list :
-  | LPAR PARAM value_type_list RPAR call_instr_params_instr_list
+  | LPAR PARAM list(value_type) RPAR call_instr_params_instr_list
     { fun c ->
       let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
   | call_instr_results_instr_list
     { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
 
 call_instr_results_instr_list :
-  | LPAR RESULT value_type_list RPAR call_instr_results_instr_list
+  | LPAR RESULT list(value_type) RPAR call_instr_results_instr_list
     { fun c -> let ts, es = $5 c in $3 @ ts, es }
   | instr_list
     { fun c -> [], $1 c }
@@ -518,13 +510,13 @@ block :
 
 block_param_body :
   | block_result_body { $1 }
-  | LPAR PARAM value_type_list RPAR block_param_body
+  | LPAR PARAM list(value_type) RPAR block_param_body
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out), snd $5 }
 
 block_result_body :
   | instr_list { FuncType ([], []), $1 }
-  | LPAR RESULT value_type_list RPAR block_result_body
+  | LPAR RESULT list(value_type) RPAR block_result_body
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
 
@@ -551,7 +543,7 @@ expr1 :  /* Sugar */
       let bt, (es, es1, es2) = $3 c c' in es, if_ bt es1 es2 }
 
 select_expr_results :
-  | LPAR RESULT value_type_list RPAR select_expr_results
+  | LPAR RESULT list(value_type) RPAR select_expr_results
     { fun c -> let _, ts, es = $5 c in true, $3 @ ts, es }
   | expr_list
     { fun c -> false, [], $1 c }
@@ -568,14 +560,14 @@ call_expr_type :
       fun c -> let ft, es = $1 c in inline_type c ft at1, es }
 
 call_expr_params :
-  | LPAR PARAM value_type_list RPAR call_expr_params
+  | LPAR PARAM list(value_type) RPAR call_expr_params
     { fun c ->
       let FuncType (ts1, ts2), es = $5 c in FuncType ($3 @ ts1, ts2), es }
   | call_expr_results
     { fun c -> let ts, es = $1 c in FuncType ([], ts), es }
 
 call_expr_results :
-  | LPAR RESULT value_type_list RPAR call_expr_results
+  | LPAR RESULT list(value_type) RPAR call_expr_results
     { fun c -> let ts, es = $5 c in $3 @ ts, es }
   | expr_list
     { fun c -> [], $1 c }
@@ -599,13 +591,13 @@ if_block :
 
 if_block_param_body :
   | if_block_result_body { $1 }
-  | LPAR PARAM value_type_list RPAR if_block_param_body
+  | LPAR PARAM list(value_type) RPAR if_block_param_body
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out), snd $5 }
 
 if_block_result_body :
   | if_ { FuncType ([], []), $1 }
-  | LPAR RESULT value_type_list RPAR if_block_result_body
+  | LPAR RESULT list(value_type) RPAR if_block_result_body
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
 
@@ -662,19 +654,19 @@ func_fields :
 
 func_fields_import :  /* Sugar */
   | func_fields_import_result { $1 }
-  | LPAR PARAM value_type_list RPAR func_fields_import
+  | LPAR PARAM list(value_type) RPAR func_fields_import
     { let FuncType (ins, out) = $5 in FuncType ($3 @ ins, out) }
   | LPAR PARAM bind_var value_type RPAR func_fields_import  /* Sugar */
     { let FuncType (ins, out) = $6 in FuncType ($4 :: ins, out) }
 
 func_fields_import_result :  /* Sugar */
   | /* empty */ { FuncType ([], []) }
-  | LPAR RESULT value_type_list RPAR func_fields_import_result
+  | LPAR RESULT list(value_type) RPAR func_fields_import_result
     { let FuncType (ins, out) = $5 in FuncType (ins, $3 @ out) }
 
 func_fields_body :
   | func_result_body { $1 }
-  | LPAR PARAM value_type_list RPAR func_fields_body
+  | LPAR PARAM list(value_type) RPAR func_fields_body
     { let FuncType (ins, out) = fst $5 in
       FuncType ($3 @ ins, out),
       fun c -> anon_locals c (lazy $3); snd $5 c }
@@ -685,7 +677,7 @@ func_fields_body :
 
 func_result_body :
   | func_body { FuncType ([], []), $1 }
-  | LPAR RESULT value_type_list RPAR func_result_body
+  | LPAR RESULT list(value_type) RPAR func_result_body
     { let FuncType (ins, out) = fst $5 in
       FuncType (ins, $3 @ out), snd $5 }
 
@@ -693,7 +685,7 @@ func_body :
   | instr_list
     { fun c -> let c' = anon_label c in
       {ftype = -1l @@ at(); locals = []; body = $1 c'} }
-  | LPAR LOCAL value_type_list RPAR func_body
+  | LPAR LOCAL list(value_type) RPAR func_body
     { fun c -> anon_locals c (lazy $3); let f = $5 c in
       {f with locals = $3 @ f.Ast.locals} }
   | LPAR LOCAL bind_var value_type RPAR func_body  /* Sugar */
@@ -981,12 +973,11 @@ module_fields1 :
       fun () -> let m = mf () in
       {m with exports = $1 c :: m.exports} }
 
-module_var_opt :
-  | /* empty */ { None }
-  | VAR { Some ($1 @@ at ()) }  /* Sugar */
+module_var :
+  | VAR { $1 @@ at () }  /* Sugar */
 
 module_ :
-  | LPAR MODULE module_var_opt module_fields RPAR
+  | LPAR MODULE option(module_var) module_fields RPAR
     { $3, Textual ($4 (empty_context ()) () @@ at ()) @@ at () }
 
 inline_module :  /* Sugar */
@@ -998,21 +989,20 @@ inline_module1 :  /* Sugar */
 
 /* Scripts */
 
-script_var_opt :
-  | /* empty */ { None }
-  | VAR { Some ($1 @@ at ()) }  /* Sugar */
+script_var :
+  | VAR { $1 @@ at () }  /* Sugar */
 
 script_module :
   | module_ { $1 }
-  | LPAR MODULE module_var_opt BIN string_list RPAR
+  | LPAR MODULE option(module_var) BIN string_list RPAR
     { $3, Encoded ("binary:" ^ string_of_pos (at()).left, $5) @@ at() }
-  | LPAR MODULE module_var_opt QUOTE string_list RPAR
+  | LPAR MODULE option(module_var) QUOTE string_list RPAR
     { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
 
 action :
-  | LPAR INVOKE module_var_opt name literal_list RPAR
+  | LPAR INVOKE option(module_var) name list(literal) RPAR
     { Invoke ($3, $4, $5) @@ at () }
-  | LPAR GET module_var_opt name RPAR
+  | LPAR GET option(module_var) name RPAR
     { Get ($3, $4) @@ at() }
 
 assertion :
@@ -1024,7 +1014,7 @@ assertion :
     { AssertUnlinkable (snd $3, $4) @@ at () }
   | LPAR ASSERT_TRAP script_module STRING RPAR
     { AssertUninstantiable (snd $3, $4) @@ at () }
-  | LPAR ASSERT_RETURN action result_list RPAR { AssertReturn ($3, $4) @@ at () }
+  | LPAR ASSERT_RETURN action list(result) RPAR { AssertReturn ($3, $4) @@ at () }
   | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
   | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
 
@@ -1032,24 +1022,20 @@ cmd :
   | action { Action $1 @@ at () }
   | assertion { Assertion $1 @@ at () }
   | script_module { Module (fst $1, snd $1) @@ at () }
-  | LPAR REGISTER name module_var_opt RPAR { Register ($3, $4) @@ at () }
+  | LPAR REGISTER name option(module_var) RPAR { Register ($3, $4) @@ at () }
   | meta { Meta $1 @@ at () }
 
-cmd_list :
-  | /* empty */ { [] }
-  | cmd cmd_list { $1 :: $2 }
-
 meta :
-  | LPAR SCRIPT script_var_opt cmd_list RPAR { Script ($3, $4) @@ at () }
-  | LPAR INPUT script_var_opt STRING RPAR { Input ($3, $4) @@ at () }
-  | LPAR OUTPUT script_var_opt STRING RPAR { Output ($3, Some $4) @@ at () }
-  | LPAR OUTPUT script_var_opt RPAR { Output ($3, None) @@ at () }
+  | LPAR SCRIPT option(script_var) list(cmd) RPAR { Script ($3, $4) @@ at () }
+  | LPAR INPUT option(script_var) STRING RPAR { Input ($3, $4) @@ at () }
+  | LPAR OUTPUT option(script_var) STRING RPAR { Output ($3, Some $4) @@ at () }
+  | LPAR OUTPUT option(script_var) RPAR { Output ($3, None) @@ at () }
 
 literal_num :
   | LPAR CONST num RPAR { snd (num $2 $3) }
 
 literal_vec :
-  | LPAR VEC_CONST VEC_SHAPE num_list RPAR { snd (vec $2 $3 $4 (at ())) }
+  | LPAR VEC_CONST VEC_SHAPE list(num) RPAR { snd (vec $2 $3 $4 (at ())) }
 
 literal_ref :
   | LPAR REF_NULL ref_kind RPAR { Values.NullRef $3 }
@@ -1060,17 +1046,9 @@ literal :
   | literal_vec { Values.Vec $1 @@ at () }
   | literal_ref { Values.Ref $1 @@ at () }
 
-literal_list :
-  | /* empty */ { [] }
-  | literal literal_list { $1 :: $2 }
-
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
   | NAN { fun sh -> vec_lane_nan sh $1 (ati 3) }
-
-numpat_list:
-  | /* empty */ { [] }
-  | numpat numpat_list { $1 :: $2 }
 
 result :
   | literal_num { NumResult (NumPat ($1 @@ at())) @@ at () }
@@ -1078,18 +1056,14 @@ result :
   | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
   | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncRefType) @@ at () }
   | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternRefType) @@ at () }
-  | LPAR VEC_CONST VEC_SHAPE numpat_list RPAR {
+  | LPAR VEC_CONST VEC_SHAPE list(numpat) RPAR {
     if V128.num_lanes $3 <> List.length $4 then
       error (at ()) "wrong number of lane literals";
     VecResult (VecPat (Values.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
   }
 
-result_list :
-  | /* empty */ { [] }
-  | result result_list { $1 :: $2 }
-
 script :
-  | cmd_list EOF { $1 }
+  | list(cmd) EOF { $1 }
   | inline_module1 EOF { [Module (None, $1) @@ at ()] }  /* Sugar */
 
 script1 :
