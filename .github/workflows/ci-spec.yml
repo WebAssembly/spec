@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: legacy-exceptions-rendered
-          path: document/core/_build/html
+          path: document/legacy/exceptions/_build/html
 
   build-js-api-spec:
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: legacy-exceptions-rendered
-          path: _output/core
+          path: _output/legacy/exceptions
       - name: Download JS API spec artifact
         uses: actions/download-artifact@v2
         with:
