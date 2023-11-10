@@ -827,13 +827,13 @@ Reference Instructions
 
 8. If the sum of :math:`s` and :math:`n` is larger than the length of :math:`\eleminst.\EIELEM`, then:
 
-    a. Trap.
+   a. Trap.
 
 9. Let :math:`\reff^\ast` be the :ref:`reference <syntax-ref>` sequence :math:`\eleminst.\EIELEM[s \slice n]`.
 
 10. Push the references :math:`\reff^\ast` to the stack.
 
-15. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
+11. Execute the instruction :math:`(\ARRAYNEWFIXED~x~n)`.
 
 .. math::
    ~\\[-1ex]
