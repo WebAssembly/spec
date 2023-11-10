@@ -195,10 +195,23 @@ Reference Instructions
 :math:`\REFNULL~\X{ht}`
 .......................
 
-1. Push the value :math:`\REFNULL~\X{ht}` to the stack.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-.. note::
-   No formal reduction rule is required for this instruction, since the |REFNULL| instruction is already a :ref:`value <syntax-val>`.
+2. If :math:`\X{ht}` is :math:`\typeidx`, then:
+
+  a. Let :math:`\X{ht}_1` be the :ref:`heap type <syntax-heaptype>` :math:`\insttype_{F.\AMODULE}(\X{ht})`.
+
+  b. Push the value :math:`\REFNULL~\X{ht}_1` to the stack.
+
+3. Else:
+
+  a. Push the value :math:`\REFNULL~\X{ht}` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\REFNULL~x) &\stepto& F; (\REFNULL~\X{ht})
+     & (\iff \X{ht} = \insttype_{F.\AMODULE}(\X{x})) \\
+   \end{array}
 
 
 .. _exec-ref.func:
