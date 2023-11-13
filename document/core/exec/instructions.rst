@@ -192,25 +192,21 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL~\X{ht}`
+:math:`\REFNULL~x`
 .......................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. If :math:`\X{ht}` is :math:`\typeidx`, then:
+2. Assert: due to :ref:`validation <valid-ref.null>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
 
-  a. Let :math:`\X{ht}_1` be the :ref:`heap type <syntax-heaptype>` :math:`\insttype_{F.\AMODULE}(\X{ht})`.
+3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
 
-  b. Push the value :math:`\REFNULL~\X{ht}_1` to the stack.
-
-3. Else:
-
-  a. Push the value :math:`\REFNULL~\X{ht}` to the stack.
+4. Push the value :math:`\REFNULL~\deftype` to the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   F; (\REFNULL~x) &\stepto& F; (\REFNULL~\X{ht})
-     & (\iff \X{ht} = \insttype_{F.\AMODULE}(\X{x})) \\
+   F; (\REFNULL~x) &\stepto& F; (\REFNULL~\deftype)
+     & (\iff \deftype = F.\AMODULE.\MITYPES[x]) \\
    \end{array}
 
 
