@@ -3,8 +3,6 @@
 Instructions
 ------------
 
-.. _exec-instructions-numeric:
-
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -30,7 +28,7 @@ $${rule+: Step_pure/binop-*}
 
 \
 
-$${rule+: Step_pure/testop}
+$${rule: Step_pure/testop}
 
 .. _exec-RELOP:
 
@@ -38,7 +36,15 @@ $${rule+: Step_pure/testop}
 
 \
 
-$${rule+: Step_pure/relop}
+$${rule: Step_pure/relop}
+
+.. _exec-EXTEND:
+
+%{prose-algo: EXTEND}
+
+\
+
+$${rule: Step_pure/extend}
 
 .. _exec-CVTOP:
 
@@ -47,8 +53,6 @@ $${rule+: Step_pure/relop}
 \
 
 $${rule+: Step_pure/cvtop-*}
-
-.. _exec-instructions-ref:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -67,9 +71,7 @@ $${rule+: Step_pure/ref.is_null-*}
 
 \
 
-$${rule+: Step_read/ref.func}
-
-.. _exec-instructions-parametric:
+$${rule: Step_read/ref.func}
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +82,7 @@ Parametric Instructions
 
 \
 
-$${rule+: Step_pure/drop}
+$${rule: Step_pure/drop}
 
 .. _exec-SELECT:
 
@@ -95,47 +97,45 @@ $${rule+: Step_pure/select-*}
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-local.get:
+.. _exec-LOCAL.GET:
 
 %{prose-algo: LOCAL.GET}
 
 \
 
-$${rule+: Step_read/local.get}
+$${rule: Step_read/local.get}
 
-.. _exec-local.set:
+.. _exec-LOCAL.SET:
 
 %{prose-algo: LOCAL.SET}
 
 \
 
-$${rule+: Step/local.set}
+$${rule: Step/local.set}
 
-.. _exec-local.tee:
+.. _exec-LOCAL.TEE:
 
 %{prose-algo: LOCAL.TEE}
 
 \
 
-$${rule+: Step_pure/local.tee}
+$${rule: Step_pure/local.tee}
 
-.. _exec-global.get:
+.. _exec-GLOBAL.GET:
 
 %{prose-algo: GLOBAL.GET}
 
 \
 
-$${rule+: Step_read/global.get}
+$${rule: Step_read/global.get}
 
-.. _exec-global.set:
+.. _exec-GLOBAL.SET:
 
 %{prose-algo: GLOBAL.SET}
 
 \
 
-$${rule+: Step/global.set}
-
-.. _exec-instructions-table:
+$${rule: Step/global.set}
 
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
@@ -162,7 +162,7 @@ $${rule+: Step/table.set-*}
 
 \
 
-$${rule+: Step_read/table.size}
+$${rule: Step_read/table.size}
 
 .. _exec-TABLE.GROW:
 
@@ -170,7 +170,7 @@ $${rule+: Step_read/table.size}
 
 \
 
-$${rule+: Step/table.grow-*}
+$${rule: Step/table.grow-*}
 
 .. _exec-TABLE.FILL:
 
@@ -202,9 +202,7 @@ $${rule+: Step_read/table.init-*}
 
 \
 
-$${rule+: Step/elem.drop}
-
-.. _exec-instructions-memory:
+$${rule: Step/elem.drop}
 
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
@@ -231,7 +229,7 @@ $${rule+: Step/store-*}
 
 \
 
-$${rule+: Step_read/memory.size}
+$${rule: Step_read/memory.size}
 
 .. _exec-MEMORY.GROW:
 
@@ -271,7 +269,7 @@ $${rule+: Step_read/memory.init-*}
 
 \
 
-$${rule+: Step/data.drop}
+$${rule: Step/data.drop}
 
 .. _exec-instructions-control:
 
@@ -284,7 +282,7 @@ Control Instructions
 
 \
 
-$${rule+: Step_pure/nop}
+$${rule: Step_pure/nop}
 
 .. _exec-UNREACHABLE:
 
@@ -292,7 +290,7 @@ $${rule+: Step_pure/nop}
 
 \
 
-$${rule+: Step_pure/unreachable}
+$${rule: Step_pure/unreachable}
 
 .. _exec-BLOCK:
 
@@ -300,7 +298,7 @@ $${rule+: Step_pure/unreachable}
 
 \
 
-$${rule+: Step_pure/block}
+$${rule: Step_pure/block}
 
 .. _exec-LOOP:
 
@@ -308,7 +306,7 @@ $${rule+: Step_pure/block}
 
 \
 
-$${rule+: Step_pure/loop}
+$${rule: Step_pure/loop}
 
 .. _exec-IF:
 
@@ -356,7 +354,7 @@ $${rule+: Step_pure/return-*}
 
 \
 
-$${rule+: Step_read/call}
+$${rule: Step_read/call}
 
 .. _exec-CALL_INDIRECT:
 
@@ -365,8 +363,6 @@ $${rule+: Step_read/call}
 \
 
 $${rule+: Step_read/call_indirect-*}
-
-.. _exec-instructions-seq:
 
 Blocks
 ~~~~~~

@@ -1,22 +1,21 @@
 .. _syntax-modules:
 
+.. _syntax-module:
+
 Modules
 -------
-
-.. _syntax-module:
 
 $${syntax: module}
 
 .. _syntax-idx:
 .. _syntax-funcidx:
-.. _syntax-globalidx:
 .. _syntax-tableidx:
 .. _syntax-memidx:
+.. _syntax-globalidx:
 .. _syntax-elemidx:
 .. _syntax-dataidx:
-.. _syntax-labelidx:
 .. _syntax-localidx:
-.. _syntax-modules-indices:
+.. _syntax-labelidx:
 
 Indices
 ~~~~~~~
@@ -24,17 +23,16 @@ Indices
 $${syntax+:
   idx 
   funcidx
-  globalidx
   tableidx
   memidx
+  globalidx
   elemidx
   dataidx
-  labelidx
   localidx
+  labelidx
 }
 
 .. _syntax-func:
-.. _syntax-modules-functions:
 
 Functions
 ~~~~~~~~~
@@ -42,7 +40,6 @@ Functions
 $${syntax: func}
 
 .. _syntax-table:
-.. _syntax-modules-tables:
 
 Tables
 ~~~~~~
@@ -50,7 +47,6 @@ Tables
 $${syntax: table}
 
 .. _syntax-mem:
-.. _syntax-modules-memories:
 
 Memories
 ~~~~~~~~
@@ -58,7 +54,6 @@ Memories
 $${syntax: mem}
 
 .. _syntax-global:
-.. _syntax-modules-globals:
 
 Globals
 ~~~~~~~
@@ -66,23 +61,28 @@ Globals
 $${syntax: global}
 
 .. _syntax-elem:
-.. _syntax-modules-element-segments:
+.. _syntax-elemmode:
 
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-$${syntax: elem}
+$${syntax+: 
+  elem
+  elemmode
+}
 
 .. _syntax-data:
-.. _syntax-modules-data-segments:
+.. _syntax-datamode:
 
 Data Segments
 ~~~~~~~~~~~~~
 
-$${syntax: data}
+$${syntax+: 
+  data
+  datamode
+}
 
 .. _syntax-start:
-.. _syntax-modules-start-function:
 
 Start Function
 ~~~~~~~~~~~~~~
@@ -91,7 +91,6 @@ $${syntax: start}
 
 .. _syntax-export:
 .. _syntax-externuse:
-.. _syntax-modules-exports:
 
 Exports
 ~~~~~~~
@@ -102,7 +101,6 @@ $${syntax+:
 }
 
 .. _syntax-import:
-.. _syntax-modules-imports:
 
 Imports
 ~~~~~~~

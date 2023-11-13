@@ -12,11 +12,7 @@ Instructions
 .. _syntax-testop_IXX:
 .. _syntax-testop_FXX:
 .. _syntax-relop_IXX:
-.. _syntax-unop_numtype:
-.. _syntax-binop_numtype:
-.. _syntax-relop_numtype:
-.. _syntax-cvtop:
-.. _syntax-instructions-numeric:
+.. _syntax-relop_FXX:
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
@@ -30,22 +26,29 @@ $${syntax+:
   binop_FXX
   testop_IXX
   testop_FXX
-  relop_IXX}
+  relop_IXX
+  relop_FXX}
 }
 
 \
 
 Occasionally, it is convenient to group operators together according to the following grammar shorthands:
 
+.. _syntax-unop_numtype:
+.. _syntax-binop_numtype:
+.. _syntax-testop_numtype:
+.. _syntax-relop_numtype:
+.. _syntax-cvtop:
+
 $${syntax+:
-  {unop_numtype
+  unop_numtype
   binop_numtype
+  testop_numtype
   relop_numtype
-  cvtop}
+  cvtop
 }
 
 .. _syntax-instr-reference:
-.. _syntax-instructions-reference:
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -53,23 +56,24 @@ Reference Instructions
 $${syntax: instr/reference}
 
 .. _syntax-instr-state:
-.. _syntax-instructions-state:
 
-State Instructions
-~~~~~~~~~~~~~~~~~~
+Variable, Table, and Memory Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 $${syntax: instr/state}
 
+.. _syntax-blocktype:
 .. _syntax-instr-control:
-.. _syntax-instructions-control:
 
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-$${syntax: instr/control}
+$${syntax+: 
+  blocktype
+  instr/control
+}
 
 .. _syntax-instr-expr:
-.. _syntax-instructions-expr:
 
 Expressions
 ~~~~~~~~~~~

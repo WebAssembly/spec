@@ -5,7 +5,7 @@ Execution
 
 .. toctree::
 
-   auxiliary
+   conventions
    runtime
    instructions
    modules

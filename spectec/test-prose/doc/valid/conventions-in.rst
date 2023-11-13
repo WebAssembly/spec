@@ -4,7 +4,6 @@ Conventions
 -----------
 
 .. _syntax-context:
-.. _valid-conventions-contexts:
 
 Contexts
 ~~~~~~~~

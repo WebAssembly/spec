@@ -1,9 +1,7 @@
 .. _exec-runtime:
 
-Runtime
--------
-
-.. _exec-runtime-values:
+Runtime Structure
+-----------------
 
 Values
 ~~~~~~
@@ -26,7 +24,13 @@ $${syntax+:
 
 $${definition: default_}
 
-.. _exec-runtime-results:
+.. _def-size:
+
+%{prose-func: size}
+
+\
+
+$${definition: size}
 
 Results
 ~~~~~~~
@@ -36,7 +40,6 @@ Results
 $${syntax: result}
 
 .. _syntax-store:
-.. _exec-runtime-store:
 
 Store
 ~~~~~
@@ -45,14 +48,13 @@ $${syntax: store}
 
 .. _syntax-addr:
 .. _syntax-funcaddr:
-.. _syntax-globaladdr:
 .. _syntax-tableaddr:
 .. _syntax-memaddr:
+.. _syntax-globaladdr:
 .. _syntax-elemaddr:
 .. _syntax-dataaddr:
 .. _syntax-labeladdr:
 .. _syntax-hostaddr:
-.. _exec-runtime-addresses:
 
 Addresses
 ~~~~~~~~~
@@ -60,9 +62,9 @@ Addresses
 $${syntax+:
   addr
   funcaddr
-  globaladdr
   tableaddr
   memaddr
+  globaladdr
   elemaddr
   dataaddr
   labeladdr
@@ -70,7 +72,6 @@ $${syntax+:
 }
 
 .. _syntax-moduleinst:
-.. _exec-runtime-module-instances:
 
 Module Instances
 ~~~~~~~~~~~~~~~~
@@ -78,55 +79,104 @@ Module Instances
 $${syntax: moduleinst}
 
 .. _syntax-funcinst:
-.. _exec-runtime-function-instances:
 
 Function Instances
 ~~~~~~~~~~~~~~~~~~
 
 $${syntax: funcinst}
 
+.. _def-funcinst:
+
+%{prose-func: funcinst}
+
+\
+
+$${definition: funcinst}
+
 .. _syntax-tableinst:
-.. _exec-runtime-table-instances:
 
 Table Instances
 ~~~~~~~~~~~~~~~
 
 $${syntax: tableinst}
 
+.. _def-tableinst:
+
+%{prose-func: tableinst}
+
+\
+
+$${definition: tableinst}
+
 .. _syntax-meminst:
-.. _exec-runtime-memory-instances:
 
 Memory Instances
 ~~~~~~~~~~~~~~~~
 
 $${syntax: meminst}
 
+.. _def-Ki:
+
+%{prose-func: Ki}
+
+\
+
+$${definition: Ki}
+
+.. _def-meminst:
+
+%{prose-func: meminst}
+
+\
+
+$${definition: meminst}
+
 .. _syntax-globalinst:
-.. _exec-runtime-global-instances:
 
 Global Instances
 ~~~~~~~~~~~~~~~~
 
 $${syntax: globalinst}
 
+.. _def-globalinst:
+
+%{prose-func: globalinst}
+
+\
+
+$${definition: globalinst}
+
 .. _syntax-eleminst:
-.. _exec-runtime-element-instances:
 
 Element Instances
 ~~~~~~~~~~~~~~~~~
 
 $${syntax: eleminst}
 
+.. _def-eleminst:
+
+%{prose-func: eleminst}
+
+\
+
+$${definition: eleminst}
+
 .. _syntax-datainst:
-.. _exec-runtime-data-instances:
 
 Data Instances
 ~~~~~~~~~~~~~~
 
 $${syntax: datainst}
 
+.. _def-datainst:
+
+%{prose-func: datainst}
+
+\
+
+$${definition: datainst}
+
 .. _syntax-exportinst:
-.. _exec-runtime-export-instances:
 
 Export Instances
 ~~~~~~~~~~~~~~~~
@@ -134,14 +184,43 @@ Export Instances
 $${syntax: exportinst}
 
 .. _syntax-externval:
-.. _exec-runtime-external-values:
 
 External Values
 ~~~~~~~~~~~~~~~
 
 $${syntax: externval}
 
-.. _exec-runtime-stack:
+.. _def-funcs:
+
+%{prose-func: funcs}
+
+\
+
+$${definition: funcs}
+
+.. _def-tables:
+
+%{prose-func: tables}
+
+\
+
+$${definition: tables}
+
+.. _def-mems:
+
+%{prose-func: mems}
+
+\
+
+$${definition: mems}
+
+.. _def-globals:
+
+%{prose-func: globals}
+
+\
+
+$${definition: globals}
 
 Stack
 ~~~~~
@@ -154,7 +233,6 @@ Activation Frames
 $${syntax: frame}
 
 .. _syntax-admininstr:
-.. _exec-runtime-administrative-instructions:
 
 Administrative Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,8 +257,6 @@ Evaluation Contexts
 
 $${syntax: E}
 
-.. _exec-runtime-helper-functions:
-
 Helper Functions
 ~~~~~~~~~~~~~~~~
 
@@ -191,54 +267,6 @@ Helper Functions
 \
 
 $${definition: funcaddr}
-
-.. _def-funcinst:
-
-%{prose-func: funcinst}
-
-\
-
-$${definition: funcinst}
-
-.. _def-globalinst:
-
-%{prose-func: globalinst}
-
-\
-
-$${definition: globalinst}
-
-.. _def-tableinst:
-
-%{prose-func: tableinst}
-
-\
-
-$${definition: tableinst}
-
-.. _def-meminst:
-
-%{prose-func: meminst}
-
-\
-
-$${definition: meminst}
-
-.. _def-eleminst:
-
-%{prose-func: eleminst}
-
-\
-
-$${definition: eleminst}
-
-.. _def-datainst:
-
-%{prose-func: datainst}
-
-\
-
-$${definition: datainst}
 
 .. _def-func:
 
@@ -359,19 +387,3 @@ $${definition: with_elem}
 \
 
 $${definition: with_data}
-
-.. _def-grow_table:
-
-%{prose-func: grow_table}
-
-\
-
-$${definition: grow_table}
-
-.. _def-grow_memory:
-
-%{prose-func: grow_memory}
-
-\
-
-$${definition: grow_memory}

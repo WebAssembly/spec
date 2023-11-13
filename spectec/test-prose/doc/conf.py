@@ -39,7 +39,7 @@ latex_documents = [
   ( master_doc,
     name + '.tex',
     title,
-    'author',
+    'Anonymous Authors',
     'manual'
   ),
 ]

@@ -4,29 +4,32 @@ Types
 -----
 
 .. _syntax-numtype:
+.. _syntax-c_numtype:
 .. _syntax-in:
 .. _syntax-fn:
-.. _syntax-types-number-types:
 
 Number Types
 ~~~~~~~~~~~~
 
 $${syntax+: 
   numtype
+  c_numtype
   {in
   fn}
 }
 
 .. _syntax-vectype:
-.. _syntax-types-vector-types:
+.. _syntax-c_vectype:
 
 Vector Types
 ~~~~~~~~~~~~
 
-$${syntax: vectype}
+$${syntax+: 
+  vectype
+  c_vectype
+}
 
 .. _syntax-reftype:
-.. _syntax-types-reference-types:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -34,7 +37,6 @@ Reference Types
 $${syntax: reftype}
 
 .. _syntax-valtype:
-.. _syntax-types-value-types:
 
 Value Types
 ~~~~~~~~~~~
@@ -42,15 +44,20 @@ Value Types
 $${syntax: valtype}
 
 .. _syntax-resulttype:
-.. _syntax-types-result-types:
 
 Result Types
 ~~~~~~~~~~~~
 
 $${syntax: resulttype}
 
+.. _syntax-functype:
+
+Function Types
+~~~~~~~~~~~~~~
+
+$${syntax: functype}
+
 .. _syntax-limits:
-.. _syntax-types-limits:
 
 Limits
 ~~~~~~
@@ -58,41 +65,43 @@ Limits
 $${syntax: limits}
 
 .. _syntax-memtype:
-.. _syntax-datatype:
-.. _syntax-types-memory-types:
 
 Memory Types
 ~~~~~~~~~~~~
 
-$${syntax+: 
-  memtype
-  datatype
-}
+$${syntax: memtype}
 
 .. _syntax-tabletype:
-.. _syntax-elemtype:
-.. _syntax-types-table-types:
 
 Table Types
 ~~~~~~~~~~~
 
-$${syntax+: 
-  tabletype
-  elemtype
-}
+$${syntax: tabletype}
 
 .. _syntax-globaltype:
-.. _syntax-types-global-types:
 
 Global Types
 ~~~~~~~~~~~~
 
 $${syntax: globaltype}
 
-.. _syntax-functype:
-.. _syntax-types-function-types:
+.. _syntax-datatype:
 
-Function Types
+Data Types
+~~~~~~~~~~
+
+$${syntax: datatype}
+
+.. _syntax-elemtype:
+
+Elem Types
+~~~~~~~~~~
+
+$${syntax: elemtype}
+
+.. _syntax-externtype:
+
+External Types
 ~~~~~~~~~~~~~~
 
-$${syntax: functype}
+$${syntax: externtype}

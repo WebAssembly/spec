@@ -4,7 +4,6 @@ Values
 ------
 
 .. _syntax-byte:
-.. _syntax-values-bytes:
 
 Bytes
 ~~~~~
@@ -12,9 +11,15 @@ Bytes
 $${syntax: byte}
 
 .. _syntax-u32:
-.. _syntax-values-integers:
 
 Integers
 ~~~~~~~~
 
 $${syntax: u32}
+
+.. _syntax-name:
+
+Names
+~~~~~
+
+$${syntax: name}
