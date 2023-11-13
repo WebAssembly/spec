@@ -47,7 +47,8 @@ Any of the aformentioned references can furthermore be wrapped up as an *externa
    \production{vector} & \vecc &::=&
      \V128.\CONST~\i128 \\
    \production{reference} & \reff &::=&
-     \REFNULL~t & (\iff t \neq \typeidx) \\&&|&
+     \REFNULL~\absheaptype \\&&|&
+     \REFNULL~\deftype \\&&|&
      \REFI31NUM~\u31 \\&&|&
      \REFSTRUCTADDR~\structaddr \\&&|&
      \REFARRAYADDR~\arrayaddr \\&&|&
