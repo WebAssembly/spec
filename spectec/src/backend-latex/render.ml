@@ -14,7 +14,7 @@ let error at msg = Source.error at "latex generation" msg
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
-type rel_sort = TypingRel | ReductionRel | ExpansionRel
+type rel_sort = TypingRel | ReductionRel
 
 type env =
   { config : config;
@@ -879,8 +879,7 @@ let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
 let rec classify_rel e : rel_sort option =
   match e.it with
   | InfixE (_, Turnstile, _) -> Some TypingRel
-  | InfixE (_, (SqArrow | SqArrowStar), _) -> Some ReductionRel
-  | InfixE (_, Approx, _) -> Some ExpansionRel
+  | InfixE (_, (SqArrow | SqArrowStar | Approx), _) -> Some ReductionRel
   | InfixE (e1, _, e2) ->
     (match classify_rel e1 with
     | None -> classify_rel e2
@@ -917,10 +916,6 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
-          render_sep_defs (render_reddef env) ds ^
-        "\\end{array}"
-      | Some ExpansionRel ->
         "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
@@ -991,10 +986,6 @@ let rec render_script env = function
         "$$\n" ^ render_def env d ^ "\n$$\n\n" ^
         render_script env ds
       | Some ReductionRel ->
-        let reddefs, ds' = split_reddefs id1.it [d] ds in
-        "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
-        render_script env ds'
-      | Some ExpansionRel ->
         let reddefs, ds' = split_reddefs id1.it [d] ds in
         "$$\n" ^ render_defs env reddefs ^ "\n$$\n\n" ^
         render_script env ds'
