@@ -37,7 +37,7 @@ end) = struct
       (fun () ->
         let lb = Lexing.from_channel ~with_positions:true chan in
         Lexing.set_filename lb filename;
-      from_lexbuf lb)
+        from_lexbuf lb)
 
   let from_string s = from_lexbuf (Lexing.from_string ~with_positions:true s)
 
