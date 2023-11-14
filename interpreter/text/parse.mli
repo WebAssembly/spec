@@ -1,11 +1,14 @@
-type 'a start =
-  | Module : (Script.var option * Script.definition) start
-  | Script : Script.script start
-  | Script1 : Script.script start
-
 exception Syntax of Source.region * string
 
-val parse : string -> Lexing.lexbuf -> 'a start -> 'a (* raises Syntax *)
+module type S =
+sig
+  type t
+  val from_lexbuf : Lexing.lexbuf -> t
+  val from_file : string -> t
+  val from_string : string -> t
+  val from_channel : in_channel -> t
+end
 
-val string_to_script : string -> Script.script (* raises Syntax *)
-val string_to_module : string -> Script.definition (* raises Syntax *)
+module Module : S with type t = Script.var option * Script.definition
+module Script1 : S with type t = Script.script
+module Script : S with type t = Script.script
