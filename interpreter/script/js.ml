@@ -526,9 +526,7 @@ let rec of_definition def =
   | Textual m -> of_bytes (Encode.encode m)
   | Encoded (_, bs) -> of_bytes bs
   | Quoted (_, s) ->
-    try
-      let _v, m = Parse.Module.from_string s in
-      of_definition m
+    try of_definition (snd (Parse.Module.from_string s))
     with Script.Syntax _ ->
       of_bytes "<malformed quote>"
 

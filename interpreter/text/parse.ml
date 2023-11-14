@@ -1,47 +1,53 @@
-module Make (M : sig
+exception Syntax = Script.Syntax
+
+module type S =
+sig
   type t
+  val from_lexbuf : Lexing.lexbuf -> t
+  val from_file : string -> t
+  val from_string : string -> t
+  val from_channel : in_channel -> t
+end
 
+module type Rule =
+sig
+  type t
   val rule : (Lexing.lexbuf -> Parser.token) -> Lexing.lexbuf -> t
+end
 
-end) = struct
+module Make (M : Rule) : S with type t = M.t =
+struct
+  type t = M.t
 
-  type nonrec t = M.t
+  let provider buf () =
+    let tok = Lexer.token buf in
+    let start = Lexing.lexeme_start_p buf in
+    let stop = Lexing.lexeme_end_p buf in
+    tok, start, stop
 
-  let from_lexbuf =
-    let parser = MenhirLib.Convert.Simplified.traditional2revised M.rule in
-    fun buf ->
-      let provider () =
-        let tok = Lexer.token buf in
-        let start = Lexing.lexeme_start_p buf in
-        let stop = Lexing.lexeme_end_p buf in
-        tok, start, stop
-      in
-      try parser provider with
-      | Parser.Error ->
-          let left = Lexer.convert_pos buf.Lexing.lex_start_p in
-          let right = Lexer.convert_pos buf.Lexing.lex_curr_p in
-          let region = { Source.left; right } in
-          raise (Script.Syntax (region, "unexpected token"))
-      | Script.Syntax (region, s) as exn ->
-          if region <> Source.no_region then raise exn
-          else
-            let region' = {
-              Source.left = Lexer.convert_pos buf.Lexing.lex_start_p;
-              Source.right = Lexer.convert_pos buf.Lexing.lex_curr_p }
-            in
-            raise (Script.Syntax (region', s))
+  let convert_pos buf =
+    { Source.left = Lexer.convert_pos buf.Lexing.lex_start_p;
+      Source.right = Lexer.convert_pos buf.Lexing.lex_curr_p
+    }
 
-  let from_file filename =
-    let chan = open_in filename in
-    Fun.protect ~finally:(fun () -> close_in chan)
-      (fun () ->
-        let lb = Lexing.from_channel ~with_positions:true chan in
-        Lexing.set_filename lb filename;
-        from_lexbuf lb)
+  let from_lexbuf buf =
+    try
+      MenhirLib.Convert.Simplified.traditional2revised M.rule (provider buf)
+    with
+    | Parser.Error ->
+      raise (Syntax (convert_pos buf, "unexpected token"))
+    | Syntax (region, s) when region <> Source.no_region ->
+      raise (Syntax (convert_pos buf, s))
 
   let from_string s = from_lexbuf (Lexing.from_string ~with_positions:true s)
-
   let from_channel c = from_lexbuf (Lexing.from_channel ~with_positions:true c)
+  let from_file name =
+    let chan = open_in name in
+    Fun.protect ~finally:(fun () -> close_in chan) (fun () ->
+      let buf = Lexing.from_channel ~with_positions:true chan in
+      Lexing.set_filename buf name;
+      from_lexbuf buf
+    )
 end
 
 module Module = Make (struct

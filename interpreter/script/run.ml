@@ -105,7 +105,7 @@ let input_from get_script run =
     true
   with
   | Decode.Code (at, msg) -> error at "decoding error" msg
-  | Syntax (at, msg) -> error at "syntax error" msg
+  | Parse.Syntax (at, msg) -> error at "syntax error" msg
   | Valid.Invalid (at, msg) -> error at "invalid module" msg
   | Import.Unknown (at, msg) -> error at "link failure" msg
   | Eval.Link (at, msg) -> error at "link failure" msg
@@ -121,14 +121,12 @@ let input_from get_script run =
 let input_script name lexbuf run =
   input_from (fun () ->
     Lexing.set_filename lexbuf name;
-    Parse.Script.from_lexbuf lexbuf)
-  run
+    Parse.Script.from_lexbuf lexbuf) run
 
 let input_script1 name lexbuf run =
   input_from (fun () ->
     Lexing.set_filename lexbuf name;
-    Parse.Script1.from_lexbuf lexbuf)
-  run
+    Parse.Script1.from_lexbuf lexbuf) run
 
 let input_sexpr name lexbuf run =
   input_from (fun () ->
