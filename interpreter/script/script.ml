@@ -63,8 +63,6 @@ and meta' =
 
 and script = command list
 
-exception Syntax of Source.region * string
-
 
 let () =
   let type_of_ref' = !Values.type_of_ref' in

@@ -119,18 +119,14 @@ let input_from get_script run =
   | Abort _ -> false
 
 let input_script name lexbuf run =
-  input_from (fun () ->
-    Lexing.set_filename lexbuf name;
-    Parse.Script.from_lexbuf lexbuf) run
+  input_from (fun () -> Parse.Script.parse name lexbuf) run
 
 let input_script1 name lexbuf run =
-  input_from (fun () ->
-    Lexing.set_filename lexbuf name;
-    Parse.Script1.from_lexbuf lexbuf) run
+  input_from (fun () -> Parse.Script1.parse name lexbuf) run
 
 let input_sexpr name lexbuf run =
   input_from (fun () ->
-    let var_opt, def = Parse.Module.from_lexbuf lexbuf in
+    let var_opt, def = Parse.Module.parse name lexbuf in
     [Module (var_opt, def) @@ no_region]) run
 
 let input_binary name buf run =
@@ -344,7 +340,7 @@ let rec run_definition def : Ast.module_ =
     Decode.decode name bs
   | Quoted (_, s) ->
     trace "Parsing quote...";
-    let _, def' = Parse.Module.from_string s in
+    let _, def' = Parse.Module.parse_string s in
     run_definition def'
 
 let run_action act : Values.value list =
@@ -450,7 +446,7 @@ let run_assertion ass =
     trace "Asserting malformed...";
     (match ignore (run_definition def) with
     | exception Decode.Code (_, msg) -> assert_message ass.at "decoding" msg re
-    | exception Syntax (_, msg) -> assert_message ass.at "parsing" msg re
+    | exception Parse.Syntax (_, msg) -> assert_message ass.at "parsing" msg re
     | _ -> Assert.error ass.at "expected decoding/parsing error"
     )
 

@@ -8,7 +8,7 @@ open Script
 
 (* Error handling *)
 
-let error at msg = raise (Script.Syntax (at, msg))
+let error at msg = raise (Parse_error.Syntax (at, msg))
 
 
 (* Position handling *)

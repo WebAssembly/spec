@@ -14,7 +14,7 @@ let region lexbuf =
   let right = convert_pos (Lexing.lexeme_end_p lexbuf) in
   {left = left; right = right}
 
-let error lexbuf msg = raise (Script.Syntax (region lexbuf, msg))
+let error lexbuf msg = raise (Parse_error.Syntax (region lexbuf, msg))
 let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
