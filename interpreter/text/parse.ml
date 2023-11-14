@@ -33,7 +33,7 @@ end) = struct
 
   let from_file filename =
     let chan = open_in filename in
-      Fun.protect ~finally:(fun () -> close_in chan)
+    Fun.protect ~finally:(fun () -> close_in chan)
       (fun () ->
         let lb = Lexing.from_channel ~with_positions:true chan in
         Lexing.set_filename lb filename;
