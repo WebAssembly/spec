@@ -597,9 +597,7 @@ let of_command mods cmd =
       match def.it with
       | Textual m -> m
       | Encoded (_, bs) -> Decode.decode "binary" bs
-      | Quoted (_, s) ->
-          let _v, m = Parse.Module.from_string s in
-          unquote m
+      | Quoted (_, s) -> unquote (snd (Parse.Module.from_string s))
     in bind mods x_opt (unquote def);
     "let " ^ current_var mods ^ " = instance(" ^ of_definition def ^ ");\n" ^
     (if x_opt = None then "" else
