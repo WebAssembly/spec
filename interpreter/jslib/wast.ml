@@ -9,7 +9,7 @@ let () =
     (object%js (_self)
 
       method encode (s : Js.js_string Js.t) : (Typed_array.arrayBuffer Js.t) =
-        let def = snd @@ Parse.Module.from_string (Js.to_string s) in
+        let _, def = Parse.Module.from_string (Js.to_string s) in
         let bs =
           match def.Source.it with
           | Script.Textual m -> (Encode.encode m)
