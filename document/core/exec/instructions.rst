@@ -209,6 +209,11 @@ Reference Instructions
      & (\iff \deftype = F.\AMODULE.\MITYPES[x]) \\
    \end{array}
 
+.. note::
+   This is the reduction rule for |REFNULL| |TYPEIDX|.
+   No formal reduction rule is required for |REFNULL| |ABSHEAPTYPE|,
+   since the instruction is already a :ref:`value <syntax-val>`.
+
 
 .. _exec-ref.func:
 
