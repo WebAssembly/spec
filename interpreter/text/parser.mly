@@ -10,6 +10,7 @@ open Script
 
 let error at msg = raise (Script.Syntax (at, msg))
 
+
 (* Position handling *)
 
 let position_to_pos position =
