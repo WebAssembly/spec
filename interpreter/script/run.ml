@@ -346,8 +346,8 @@ let rec run_definition def : Ast.module_ =
     Decode.decode name bs
   | Quoted (_, s) ->
     trace "Parsing quote...";
-    let def' = Parse.Module.from_string s in
-    run_definition (snd def')
+    let _, def' = Parse.Module.from_string s in
+    run_definition def'
 
 let run_action act : Values.value list =
   match act.it with
