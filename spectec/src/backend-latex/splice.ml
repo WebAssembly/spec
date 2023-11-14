@@ -268,7 +268,6 @@ let try_exp_anchor env src r : bool =
 
 let splice_anchor env src anchor buf =
   parse_space src;
-  Buffer.add_string buf anchor.prefix;
   let r = ref "" in
   ignore (
     try_exp_anchor env src r ||
@@ -286,12 +285,15 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "definition" "definition" "" find_func Undecorated ||
     error src "unknown definition sort";
   );
-  let s =
-    if anchor.indent = "" then !r else
-    Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
-  in
-  Buffer.add_string buf s;
-  Buffer.add_string buf anchor.suffix
+  if !r <> "" then
+  ( let s =
+      if anchor.indent = "" then !r else
+      Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
+    in
+    Buffer.add_string buf anchor.prefix;
+    Buffer.add_string buf s;
+    Buffer.add_string buf anchor.suffix;
+  )
 
 let rec try_anchors env src buf = function
   | [] -> false
