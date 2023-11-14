@@ -171,8 +171,8 @@ let input_file file run =
   dispatch_file_ext
     input_binary_file
     (input_sexpr_file input_sexpr)
-    (input_sexpr_file (input_script))
-    (input_sexpr_file (input_script))
+    (input_sexpr_file input_script)
+    (input_sexpr_file input_script)
     input_js_file
     file run
 
