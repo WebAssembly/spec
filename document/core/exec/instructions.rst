@@ -192,13 +192,26 @@ Reference Instructions
 
 .. _exec-ref.null:
 
-:math:`\REFNULL~\X{ht}`
+:math:`\REFNULL~x`
 .......................
 
-1. Push the value :math:`\REFNULL~\X{ht}` to the stack.
+1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
+
+2. Assert: due to :ref:`validation <valid-ref.null>`, the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]` exists.
+
+3. Let :math:`\deftype` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
+
+4. Push the value :math:`\REFNULL~\deftype` to the stack.
+
+.. math::
+   \begin{array}{lcl@{\qquad}l}
+   F; (\REFNULL~x) &\stepto& F; (\REFNULL~\deftype)
+     & (\iff \deftype = F.\AMODULE.\MITYPES[x]) \\
+   \end{array}
 
 .. note::
-   No formal reduction rule is required for this instruction, since the |REFNULL| instruction is already a :ref:`value <syntax-val>`.
+   No formal reduction rule is required for the case |REFNULL| |ABSHEAPTYPE|,
+   since the instruction form is already a :ref:`value <syntax-val>`.
 
 
 .. _exec-ref.func:
