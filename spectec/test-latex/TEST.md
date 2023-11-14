@@ -229,8 +229,6 @@ warning: rule `Instr_const/const` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced
 warning: rule `Instr_const/global.get` was never spliced
-warning: rule `Instr_ok/select-expl` was never spliced
-warning: rule `Instr_ok/select-impl` was never spliced
 warning: rule `Instr_ok/br` was never spliced
 warning: rule `Instr_ok/br_if` was never spliced
 warning: rule `Instr_ok/br_table` was never spliced

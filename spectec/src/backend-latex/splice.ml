@@ -223,18 +223,22 @@ let rec parse_group_list env src space1 space2 find : def list list =
   in
   groups @ parse_group_list env src space1 space2 find
 
-let try_def_anchor env src r sort space1 space2 find deco : bool =
+type mode = Decorated | Undecorated | Ignored
+
+let try_def_anchor env src r sort space1 space2 find mode : bool =
   let b = try_string src sort in
-  if b then (
-    parse_space src;
+  if b then
+  ( parse_space src;
     if not (try_string src ":") then
       error src "colon `:` expected";
     let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
-    let env' = env.render
-      |> Render.with_syntax_decoration deco
-      |> Render.with_rule_decoration deco
-    in r := Render.render_defs env' defs
+    if mode <> Ignored then
+    ( let env' = env.render
+        |> Render.with_syntax_decoration (mode = Decorated)
+        |> Render.with_rule_decoration (mode = Decorated)
+      in r := Render.render_defs env' defs
+    )
   );
   b
 
@@ -268,13 +272,18 @@ let splice_anchor env src anchor buf =
   let r = ref "" in
   ignore (
     try_exp_anchor env src r ||
-    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax true ||
-    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax false ||
-    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar false ||
-    try_def_anchor env src r "relation" "relation" "" find_relation false ||
-    try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
-    try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
-    try_def_anchor env src r "definition" "definition" "" find_func false ||
+    try_def_anchor env src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
+    try_def_anchor env src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
+    try_def_anchor env src r "relation-ignore" "relation" "" find_relation Ignored ||
+    try_def_anchor env src r "rule-ignore" "relation" "rule" find_rule Ignored ||
+    try_def_anchor env src r "definition-ignore" "definition" "" find_func Ignored ||
+    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
+    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
+    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
+    try_def_anchor env src r "relation" "relation" "" find_relation Undecorated ||
+    try_def_anchor env src r "rule+" "relation" "rule" find_rule Decorated ||
+    try_def_anchor env src r "rule" "relation" "rule" find_rule Undecorated ||
+    try_def_anchor env src r "definition" "definition" "" find_func Undecorated ||
     error src "unknown definition sort";
   );
   let s =
