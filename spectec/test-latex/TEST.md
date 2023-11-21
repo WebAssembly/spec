@@ -75,7 +75,6 @@ warning: syntax `instr/reference` was never spliced
 warning: syntax `instr/heap` was never spliced
 warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
-warning: syntax `labeladdr` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
@@ -339,8 +338,6 @@ warning: rule `Instr_ok/testop` was never spliced
 warning: rule `Instr_ok/relop` was never spliced
 warning: rule `Instr_ok/extend` was never spliced
 warning: rule `Instr_ok/reinterpret` was never spliced
-warning: rule `Instr_ok/convert-i` was never spliced
-warning: rule `Instr_ok/convert-f` was never spliced
 warning: rule `Instr_ok/ref.null` was never spliced
 warning: rule `Instr_ok/ref.func` was never spliced
 warning: rule `Instr_ok/ref.i31` was never spliced
