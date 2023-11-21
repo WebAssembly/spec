@@ -1,9 +1,9 @@
 .. _syntax-modules:
 
+.. _syntax-module:
+
 Modules
 -------
-
-.. _syntax-module:
 
 $${syntax: module}
 
@@ -17,7 +17,10 @@ $${syntax: module}
 .. _syntax-dataidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
+<<<<<<< HEAD
 .. _syntax-modules-indices:
+=======
+>>>>>>> al
 
 Indices
 ~~~~~~~
@@ -44,8 +47,11 @@ Types
 $${syntax: type}
 
 .. _syntax-func:
+<<<<<<< HEAD
 .. _syntax-local:
 .. _syntax-modules-functions:
+=======
+>>>>>>> al
 
 Functions
 ~~~~~~~~~
@@ -56,7 +62,6 @@ $${syntax+:
 }
 
 .. _syntax-table:
-.. _syntax-modules-tables:
 
 Tables
 ~~~~~~
@@ -64,7 +69,6 @@ Tables
 $${syntax: table}
 
 .. _syntax-mem:
-.. _syntax-modules-memories:
 
 Memories
 ~~~~~~~~
@@ -72,7 +76,6 @@ Memories
 $${syntax: mem}
 
 .. _syntax-global:
-.. _syntax-modules-globals:
 
 Globals
 ~~~~~~~
@@ -81,7 +84,10 @@ $${syntax: global}
 
 .. _syntax-elem:
 .. _syntax-elemmode:
+<<<<<<< HEAD
 .. _syntax-modules-element-segments:
+=======
+>>>>>>> al
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -93,7 +99,10 @@ $${syntax+:
 
 .. _syntax-data:
 .. _syntax-datamode:
+<<<<<<< HEAD
 .. _syntax-modules-data-segments:
+=======
+>>>>>>> al
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -104,7 +113,6 @@ $${syntax+:
 }
 
 .. _syntax-start:
-.. _syntax-modules-start-function:
 
 Start Function
 ~~~~~~~~~~~~~~
@@ -112,8 +120,12 @@ Start Function
 $${syntax: start}
 
 .. _syntax-export:
+<<<<<<< HEAD
 .. _syntax-externidx:
 .. _syntax-modules-exports:
+=======
+.. _syntax-externuse:
+>>>>>>> al
 
 Exports
 ~~~~~~~
@@ -124,7 +136,6 @@ $${syntax+:
 }
 
 .. _syntax-import:
-.. _syntax-modules-imports:
 
 Imports
 ~~~~~~~

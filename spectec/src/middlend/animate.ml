@@ -38,8 +38,7 @@ let rec my_free_exp ignore_listN e =
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _)
   | CallE (_, e1) | DotE (e1, _) | CaseE (_, e1) ->
     f e1
-  | BinE (_, e1, e2) | CmpE (_, e1, e2) | ElementsOfE (e1, e2)
-  | ListBuilderE (e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
+  | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
   | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
   | OptE eo -> free_opt f eo

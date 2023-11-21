@@ -102,20 +102,20 @@
 
 (assert_return (invoke "count" (i64.const 0)) (i64.const 0))
 (assert_return (invoke "count" (i64.const 1000)) (i64.const 0))
-;;(assert_return (invoke "count" (i64.const 1_000_000)) (i64.const 0))
+(assert_return (invoke "count" (i64.const 1_000_000)) (i64.const 0))
 
 (assert_return (invoke "even" (i64.const 0)) (i32.const 44))
 (assert_return (invoke "even" (i64.const 1)) (i32.const 99))
 (assert_return (invoke "even" (i64.const 100)) (i32.const 44))
 (assert_return (invoke "even" (i64.const 77)) (i32.const 99))
-;;(assert_return (invoke "even" (i64.const 1_000_000)) (i32.const 44))
-;;(assert_return (invoke "even" (i64.const 1_000_001)) (i32.const 99))
+(assert_return (invoke "even" (i64.const 1_000_000)) (i32.const 44))
+(assert_return (invoke "even" (i64.const 1_000_001)) (i32.const 99))
 (assert_return (invoke "odd" (i64.const 0)) (i32.const 99))
 (assert_return (invoke "odd" (i64.const 1)) (i32.const 44))
 (assert_return (invoke "odd" (i64.const 200)) (i32.const 99))
 (assert_return (invoke "odd" (i64.const 77)) (i32.const 44))
-;;(assert_return (invoke "odd" (i64.const 1_000_000)) (i32.const 99))
-;;(assert_return (invoke "odd" (i64.const 999_999)) (i32.const 44))
+(assert_return (invoke "odd" (i64.const 1_000_000)) (i32.const 99))
+(assert_return (invoke "odd" (i64.const 999_999)) (i32.const 44))
 
 
 ;; Invalid typing

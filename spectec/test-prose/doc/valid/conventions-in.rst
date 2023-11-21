@@ -311,7 +311,6 @@ $${syntax+:
 }
 
 .. _syntax-context:
-.. _valid-conventions-contexts:
 
 Contexts
 ~~~~~~~~

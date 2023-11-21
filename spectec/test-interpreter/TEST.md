@@ -214,7 +214,7 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 384/384 (100.00%)
 
 ===== memory_copy.wast =====
-- 4353/4353 (100.00%)
+- 4349/4353 (99.91%)
 
 ===== stack.wast =====
 - 5/5 (100.00%)
@@ -256,7 +256,7 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 360/360 (100.00%)
 
 ===== memory_grow.wast =====
-- 84/84 (100.00%)
+- 78/84 (92.86%)
 
 ===== call_indirect.wast =====
 - 132/132 (100.00%)
@@ -265,7 +265,7 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 37/37 (100.00%)
 
 ===== memory_fill.wast =====
-- 25/25 (100.00%)
+- 21/25 (84.00%)
 
 ===== memory_size.wast =====
 - 36/36 (100.00%)
@@ -431,10 +431,10 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 69/69 (100.00%)
 
 ===== return_call_indirect.wast =====
-- 43/43 (100.00%)
+- 43/47 (91.49%)
 
 ===== return_call.wast =====
-- 26/26 (100.00%)
+- 26/31 (83.87%)
 
 ===== call_ref.wast =====
 - 27/27 (100.00%)
@@ -449,8 +449,8 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 - 6/6 (100.00%)
 
 ===== return_call_ref.wast =====
-- 30/30 (100.00%)
+- 30/35 (85.71%)
 
-Total [24525/24525] (100.00%; Normalized 100.00%)
+Total [24511/24539] (99.89%; Normalized 99.35%)
 == Complete.
 ```

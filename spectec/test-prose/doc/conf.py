@@ -1,16 +1,34 @@
 import os
 import sys
+from datetime import date
+
 pwd = os.path.abspath('.')
 sys.path.insert(0, pwd)
 
+master_doc = 'index'
+
+# General information about the project
 name = 'WebAssembly'
-project = 'WebAssembly'
-title = 'WebAssembly'
+project = u'WebAssembly'
+title = u'WebAssembly Specification'
+author = u'Anonymous Authors'
+logo = 'static/webassembly.png'
 extensions = [
   'sphinx.ext.mathjax',
   'util.mathdef'
 ]
-master_doc = 'index'
+
+# The draft version string (clear out for release cuts)
+draft = ' (Auto-generated Draft ' + date.today().strftime("%Y-%m-%d") + ')'
+
+# The version info for the project you're documenting, acts as replacement for
+# |version| and |release|, also used in various other places throughout the
+# built documents.
+#
+# The short X.Y version.
+version = u'2.0'
+# The full version, including alpha/beta/rc tags.
+release = version + draft
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -39,7 +57,7 @@ latex_documents = [
   ( master_doc,
     name + '.tex',
     title,
-    'author',
+    'Anonymous Authors',
     'manual'
   ),
 ]
@@ -47,7 +65,7 @@ latex_documents = [
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
 #
-#latex_logo = logo
+latex_logo = logo
 
 # For "manual" documents [part, chapter, or section].
 #

@@ -3,11 +3,10 @@
 Modules
 -------
 
-.. _exec-modules-allocation:
-
 Allocation
 ~~~~~~~~~~
 
+<<<<<<< HEAD
 .. _def-alloctypes:
 
 %{prose-func: alloctypes}
@@ -16,6 +15,8 @@ Allocation
 
 $${definition: alloctypes}
 
+=======
+>>>>>>> al
 .. _def-allocfunc:
 
 %{prose-func: allocfunc}
@@ -31,22 +32,6 @@ $${definition: allocfunc}
 \
 
 $${definition: allocfuncs}
-
-.. _def-allocglobal:
-
-%{prose-func: allocglobal}
-
-\
-
-$${definition: allocglobal}
-
-.. _def-allocglobals:
-
-%{prose-func: allocglobals}
-
-\
-
-$${definition: allocglobals}
 
 .. _def-alloctable:
 
@@ -80,6 +65,22 @@ $${definition: allocmem}
 
 $${definition: allocmems}
 
+.. _def-allocglobal:
+
+%{prose-func: allocglobal}
+
+\
+
+$${definition: allocglobal}
+
+.. _def-allocglobals:
+
+%{prose-func: allocglobals}
+
+\
+
+$${definition: allocglobals}
+
 .. _def-allocelem:
 
 %{prose-func: allocelem}
@@ -111,6 +112,22 @@ $${definition: allocdata}
 \
 
 $${definition: allocdatas}
+
+.. _def-grow_table:
+
+%{prose-func: grow_table}
+
+\
+
+$${definition: grow_table}
+
+.. _def-grow_memory:
+
+%{prose-func: grow_memory}
+
+\
+
+$${definition: grow_memory}
 
 .. _def-instexport:
 
@@ -149,7 +166,27 @@ $${definition: inst_reftype}
 
 $${definition: concat_instr}
 
+<<<<<<< HEAD
 .. _def-rundata:
+=======
+.. _def-runelem:
+
+%{prose-func: runelem}
+
+\
+
+$${definition: runelem}
+
+.. _def-rundata:
+
+%{prose-func: rundata}
+
+\
+
+$${definition: rundata}
+
+.. _def-instantiation:
+>>>>>>> al
 
 %{prose-func: rundata}
 

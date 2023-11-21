@@ -1,5 +1,6 @@
 open Al
 open Al.Ast
+open Util.Record
 
 (** helper *)
 let composite_instr g f x = f x |> List.map g |> List.flatten
@@ -11,27 +12,27 @@ let take n str =
 
 let rec neg cond =
   match cond with
-  | NotC c -> c
-  | BinopC (And, c1, c2) -> BinopC (Or, neg c1, neg c2)
-  | BinopC (Or, c1, c2) -> BinopC (And, neg c1, neg c2)
-  | CompareC (Eq, e1, e2) -> CompareC (Ne, e1, e2)
-  | CompareC (Ne, e1, e2) -> CompareC (Eq, e1, e2)
-  | CompareC (Gt, e1, e2) -> CompareC (Le, e1, e2)
-  | CompareC (Ge, e1, e2) -> CompareC (Lt, e1, e2)
-  | CompareC (Lt, e1, e2) -> CompareC (Ge, e1, e2)
-  | CompareC (Le, e1, e2) -> CompareC (Gt, e1, e2)
-  | _ -> NotC cond
+  | UnC (NotOp, c) -> c
+  | BinC (AndOp, c1, c2) -> BinC (OrOp, neg c1, neg c2)
+  | BinC (OrOp, c1, c2) -> BinC (AndOp, neg c1, neg c2)
+  | CmpC (EqOp, e1, e2) -> CmpC (NeOp, e1, e2)
+  | CmpC (NeOp, e1, e2) -> CmpC (EqOp, e1, e2)
+  | CmpC (LtOp, e1, e2) -> CmpC (GeOp, e1, e2)
+  | CmpC (GtOp, e1, e2) -> CmpC (LeOp, e1, e2)
+  | CmpC (LeOp, e1, e2) -> CmpC (GtOp, e1, e2)
+  | CmpC (GeOp, e1, e2) -> CmpC (LtOp, e1, e2)
+  | _ -> UnC (NotOp, cond)
 
 let both_empty cond1 cond2 =
   let get_list = function
-  | CompareC (Eq, e, ListE [])
-  | CompareC (Eq, ListE [], e)
-  | CompareC (Eq, LengthE e, NumE 0L)
-  | CompareC (Le, LengthE e, NumE 0L)
-  | CompareC (Lt, LengthE e, NumE 1L)
-  | CompareC (Eq, NumE 0L, LengthE e)
-  | CompareC (Ge, NumE 0L, LengthE e)
-  | CompareC (Ge, NumE 1L, LengthE e) -> Some e
+  | CmpC (EqOp, e, ListE [])
+  | CmpC (EqOp, ListE [], e)
+  | CmpC (EqOp, LenE e, NumE 0L)
+  | CmpC (EqOp, NumE 0L, LenE e)
+  | CmpC (LtOp, LenE e, NumE 1L)
+  | CmpC (LeOp, LenE e, NumE 0L)
+  | CmpC (GeOp, NumE 0L, LenE e)
+  | CmpC (GeOp, NumE 1L, LenE e) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -39,14 +40,14 @@ let both_empty cond1 cond2 =
 
 let both_non_empty cond1 cond2 =
   let get_list = function
-  | CompareC (Ne, e, ListE [])
-  | CompareC (Ne, ListE [], e)
-  | CompareC (Ne, LengthE e, NumE 0L)
-  | CompareC (Gt, LengthE e, NumE 0L)
-  | CompareC (Ge, LengthE e, NumE 1L)
-  | CompareC (Ne, NumE 0L, LengthE e)
-  | CompareC (Lt, NumE 0L, LengthE e)
-  | CompareC (Le, NumE 1L, LengthE e) -> Some e
+  | CmpC (NeOp, e, ListE [])
+  | CmpC (NeOp, ListE [], e)
+  | CmpC (NeOp, LenE e, NumE 0L)
+  | CmpC (NeOp, NumE 0L, LenE e)
+  | CmpC (LtOp, NumE 0L, LenE e)
+  | CmpC (GtOp, LenE e, NumE 0L)
+  | CmpC (LeOp, NumE 1L, LenE e)
+  | CmpC (GeOp, LenE e, NumE 1L) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -172,7 +173,7 @@ let rec infer_else instrs =
 
 let if_not_defined =
   let transpile_cond = function
-  | CompareC (Eq, e, OptE None) -> NotC (IsDefinedC e)
+  | CmpC (EqOp, e, OptE None) -> UnC (NotOp, IsDefinedC e)
   | c -> c in
   Walk.walk_instr { Walk.default_config with post_cond = transpile_cond }
 
@@ -247,7 +248,7 @@ let rec merge_three_branches i =
   let new_ = List.map merge_three_branches in
   match i with
   | IfI (c1, il1, [ IfI (c2, il2, il3) ]) when il1 = il3 ->
-    IfI ( BinopC (And, neg c1, c2), new_ il2, new_ il1)
+    IfI (BinC (AndOp, neg c1, c2), new_ il2, new_ il1)
   | IfI (c, il1, il2) -> IfI (c, new_ il1, new_ il2)
   | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
   | _ -> i
@@ -268,13 +269,6 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
       acc, bounds
     else
       (instr :: acc), (diff_list bounds bindings) @ Free.free_expr e2
-  | CallI (e1, _, args, nl_iters) ->
-    let bindings = (Free.free_expr e1) in
-    if intersect_list bindings bounds = [] then
-      acc, bounds
-    else
-      let new_bounds = List.concat_map Free.free_expr args @ List.concat_map Free.free_ns_iter nl_iters in
-      (instr :: acc), (diff_list bounds bindings) @ new_bounds
   | _ ->
     instr :: acc, bounds @ Free.free_instr instr
 ) il pair
@@ -282,7 +276,7 @@ let rec remove_dead_assignment' il pair = List.fold_right (fun instr (acc, bound
 let remove_dead_assignment il = remove_dead_assignment' il ([], []) |> fst
 
 let remove_sub = Walk.walk_instr { Walk.default_config with pre_expr = function
-  | SubE (n, _) -> NameE n
+  | SubE (n, _) -> VarE n
   | e -> e
 }
 
@@ -317,91 +311,90 @@ let rec enhance_readability instrs =
 (** Walker-based Translpiler **)
 let rec mk_access ps base =
   match ps with
-  | h :: t -> AccessE (base, h) |> mk_access t
+  | h :: t -> AccE (base, h) |> mk_access t
   | [] -> base
 
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_args = List.filter (function
-  | PairE (NameE "s", NameE "f")
-  | NameE "z" -> false
-  | PairE (NameE s, NameE "f")
+  | TupE (VarE "s", VarE "f")
+  | VarE "z" -> false
+  | TupE (VarE s, VarE "f")
     when String.starts_with ~prefix:"s_" s -> false
-  | PairE (NameE s, NameE f)
+  | TupE (VarE s, VarE f)
     when String.starts_with ~prefix:"s_" s
     && String.starts_with ~prefix:"f_" f
       -> false
-  | NameE "s" -> false
-  | NameE s when String.starts_with ~prefix:"s_" s -> false
+  | VarE "s" -> false
+  | VarE s when String.starts_with ~prefix:"s_" s -> false
   | _ -> true)
 
 let hide_state_instr = function
   (* Return *)
-  | ReturnI (Some (PairE (ReplaceE (e1, pl, e2), NameE "f")))
-  | ReturnI (Some (PairE (NameE "s", ReplaceE (e1, pl, e2)))) ->
+  | ReturnI (Some (TupE (UpdE (e1, pl, e2), VarE "f")))
+  | ReturnI (Some (TupE (VarE "s", UpdE (e1, pl, e2)))) ->
       let rpl = List.rev pl in
       let target =
         List.tl rpl
         |> List.fold_right
-          (fun p acc -> AccessE (acc, p))
+          (fun p acc -> AccE (acc, p))
       in
       [ ReplaceI (target e1, List.hd rpl, e2) ]
-  | ReturnI (Some (PairE (NameE "s", NameE "f"))) -> []
-  | ReturnI (Some (PairE ((NameE s), NameE f)))
+  | ReturnI (Some (TupE (VarE "s", VarE "f"))) -> []
+  | ReturnI (Some (TupE ((VarE s), VarE f)))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> []
 
-  | ReturnI (Some (NameE "s")) -> []
-  | ReturnI (Some (NameE s))
+  | ReturnI (Some (VarE "s")) -> []
+  | ReturnI (Some (VarE s))
     when String.starts_with ~prefix:"s_" s -> []
   (* Append *)
-  | LetI (NameE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
+  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Append + Return *)
-  | ReturnI (Some (ListE [ExtendE (e1, ps, ListE [ e2 ], Back); e3]))
-    when NameE "s" = e1 ->
-      let addr = NameE "a" in
+  | ReturnI (Some (ListE [ExtE (e1, ps, ListE [ e2 ], Back); e3]))
+    when VarE "s" = e1 ->
+      let addr = VarE "a" in
       [ LetI (addr, e3); AppendI (mk_access ps e1, e2); ReturnI (Some addr) ]
   (* Perform *)
-  | LetI (PairE (NameE s, NameE f), AppE (fname, el))
+  | LetI (TupE (VarE s, VarE f), CallE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ PerformI (fname, el) ]
-  | LetI (NameE s, AppE (fname, el))
+  | LetI (VarE s, CallE (fname, el))
     when String.starts_with ~prefix:"s_" s -> [ PerformI (fname, el) ]
   (* Append *)
-  | LetI (NameE s, ExtendE (e1, ps, ListE [ e2 ], Back) )
+  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
       [ AppendI (mk_access ps e1, e2) ]
   (* Replace *)
-  | LetI (NameE s, ReplaceE (e1, ps, e2))
+  | LetI (VarE s, UpdE (e1, ps, e2))
     when String.starts_with ~prefix:"s_" s ->
       begin match List.rev ps with
       | h :: t -> [ ReplaceI (mk_access (List.rev t) e1, h, e2) ]
       | _ -> failwith "Invalid replace"
       end
-  | CallI (lhs, f, args, nl_iterl) -> [ CallI (lhs, f, hide_state_args args, nl_iterl) ]
   | PerformI (f, args) -> [ PerformI (f, hide_state_args args) ]
   | i -> [ i ]
 
 
 let hide_state = function
-  | AppE (f, args) -> AppE (f, hide_state_args args)
-  | ListE [ NameE "s"; e ]
-  | ListE [ NameE "s'"; e ] -> e
-  | ListE [ NameE s; e ] when String.starts_with ~prefix:"s_" s -> e
+  | CallE (f, args) -> CallE (f, hide_state_args args)
+  | ListE [ VarE "s"; e ]
+  | ListE [ VarE "s'"; e ] -> e
+  | ListE [ VarE s; e ] when String.starts_with ~prefix:"s_" s -> e
   | e -> e
 
 let simplify_record_concat = function
-  | ConcatE (e1, e2) ->
+  | CatE (e1, e2) ->
     let nonempty = function ListE [] | OptE None -> false | _ -> true in
     let remove_empty_field = function
-      | RecordE r -> RecordE (Record.filter (fun _ v -> nonempty v) r)
+      | StrE r -> StrE (Record.filter (fun _ v -> nonempty v) r)
       | e -> e in
-    ConcatE (remove_empty_field e1, remove_empty_field e2)
+    CatE (remove_empty_field e1, remove_empty_field e2)
   | e -> e
 
 let flatten_if = function
-  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinopC (And, c1, c2), il1, il2)
+  | IfI (c1, [IfI (c2, il1, il2)], []) -> IfI (BinC (AndOp, c1, c2), il1, il2)
   | i -> i
 
 let state_remover algo =
@@ -415,147 +408,12 @@ let state_remover algo =
 
   match walker algo with
   | FuncA (name, params, body) -> (match params with
-    | PairE (_, NameE "f") :: tail ->
-        FuncA (name, tail, LetI (NameE "f", GetCurFrameE) :: body |> remove_dead_assignment)
-    | NameE ("s" | "z") :: tail ->
+    | TupE (_, VarE "f") :: tail ->
+        FuncA (name, tail, LetI (VarE "f", GetCurFrameE) :: body |> remove_dead_assignment)
+    | VarE ("s" | "z") :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
   | RuleA _ as a -> a
-
-let app_remover =
-  let side_effect f e = f e; e in
-
-  let iter_stack = ref [] in
-  let names = ref [ref []] in (* Upon leavaing an expr, the head contains all names apearing in it *)
-  let calls = ref [] in
-  let requires = ref [] in
-
-  (* Helper *)
-  let add_call x =
-    let cur_calls = List.hd !calls in
-    cur_calls := x :: !cur_calls in
-  let pop_calls _ =
-    let hd, tl = Util.Lib.List.split_hd !calls in
-    calls := tl;
-    hd in
-  let remove_iter_var = function
-    | ListN (e, Some _) -> ListN (e, None)
-    | iter -> iter in
-
-  (* pre_expr *)
-  let push_iter = side_effect (function
-    | IterE (_, ns, i) -> iter_stack := (ns, i) :: !iter_stack
-    | _ -> () ) in
-  let init_names = side_effect (fun _ -> names := ref [] :: !names) in
-
-  let pre_expr = composite init_names push_iter in
-
-  (* post expr *)
-
-  let rewrite_names (names, iter) =
-    let new_names = List.concat_map (fun x ->
-      x :: List.filter_map (fun (y, x') ->
-        if x = x' then Some y else None
-      ) !requires
-    ) names |> dedup in
-    (new_names, iter) in
-
-  let call_id = ref 0 in
-  let call_prefix = "r_" in
-  let get_fresh () =
-    let id = !call_id in
-    call_id := id + 1;
-    call_prefix ^ (string_of_int id) in
-
-  let bind_app e = match e with
-    | AppE (f, args) ->
-      let fresh_name = get_fresh() in
-      let rec to_fresh_exp iter = match iter with
-      | [] -> NameE fresh_name
-      | (_, i) :: tl ->
-        let new_i = remove_iter_var i in
-        IterE (to_fresh_exp tl, [fresh_name], new_i) in
-
-      let iters = !iter_stack |> List.map rewrite_names in
-
-      (* Append new CallI instruction *)
-      let fresh_exp = to_fresh_exp iters in
-      add_call (fresh_exp, f, args, iters);
-
-      (* Find all required names for this new fresh variable *)
-      let required_names = intersect_list
-        (List.concat_map fst iters)
-        !(List.hd !names)
-      in
-      requires := List.map (fun n -> (fresh_name, n)) required_names @ !requires;
-
-      (* Discard all names appearing in args *)
-      names := (ref []) :: (List.tl !names);
-
-      NameE (fresh_name)
-    | _ -> e in
-
-  let pop_iter e = match e with
-    | IterE (e, ns, iter) ->
-      (* Pop iter from the stack *)
-      iter_stack := List.tl !iter_stack;
-
-      (* Rewrite itered names *)
-      let new_ns = List.filter (fun n' ->
-        List.exists (fun n -> (n' = n) || List.mem (n', n) !requires) ns
-      ) !(List.hd !names) in
-
-      (* Rewrite dim *)
-      let new_iter = match iter with
-      | ListN (e, Some n) -> if List.mem n new_ns then iter else ListN (e, None)
-      | _ -> iter in
-
-      IterE (e, new_ns, new_iter)
-    | _ -> e in
-
-  let pop_names = side_effect (fun e ->
-    let hd1, tl1 = Util.Lib.List.split_hd !names in
-    let hd2, tl2 = Util.Lib.List.split_hd tl1 in
-    match e with
-    | NameE n ->
-      names := (ref (n :: (!hd1 @ !hd2) |> dedup)) :: tl2
-    | _ ->
-      names := (ref (!hd1 @ !hd2 |> dedup)) :: tl2
-  ) in
-
-  let post_expr = composite pop_names (composite pop_iter bind_app) in
-
-  (* pre_instr *)
-  let init i =
-    call_id := 0;
-    calls := (ref []) :: !calls;
-    names := [ref []];
-    [i] in
-
-  (* post_instr *)
-  let rec is_pure_name = function
-  | NameE _ -> true
-  | IterE (e, _, _) -> is_pure_name e
-  | _ -> false in
-
-  let quad_to_call (a, b, c, d) = CallI (a, b, c, d) in
-
-  let remove_redundant_assign i = List.rev (
-    let cur_calls = !(pop_calls ()) in
-    match i with
-    | LetI (lhs, rhs) when List.length cur_calls > 0 && is_pure_name rhs ->
-      let (_, f, args, iters) = List.hd cur_calls in
-      let new_apps = (lhs, f, args, iters) :: List.tl cur_calls in
-      List.map quad_to_call new_apps
-    | _ -> i :: List.map quad_to_call cur_calls
-  ) in
-
-  Walk.walk { Walk.default_config with
-    pre_instr = init;
-    post_instr = remove_redundant_assign;
-    pre_expr = pre_expr;
-    post_expr = post_expr;
-  }
 
 (* Applied for reduction rules: infer assert from if *)
 let rec count_if instrs = match instrs with

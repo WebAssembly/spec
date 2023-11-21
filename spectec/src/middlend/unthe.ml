@@ -141,11 +141,6 @@ and t_exp' n e : eqns * exp' =
 
   | TupE es -> t_list t_exp n es (fun es' -> TupE es')
   | ListE es -> t_list t_exp n es (fun es' -> ListE es')
-  | ElementsOfE (exp1, exp2) ->
-      t_ee n (exp1, exp2) (fun (e1', e2') -> ElementsOfE (e1', e2'))
-  | ListBuilderE (exp1, exp2) ->
-      t_ee n (exp1, exp2) (fun (e1', e2') -> ListBuilderE (e1', e2'))
-
   | IterE (e, iterexp) ->
     let eqns1, e' = t_exp n e in
     let iterexp', eqns1' = under_iterexp iterexp eqns1 in

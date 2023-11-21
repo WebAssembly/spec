@@ -5,7 +5,12 @@ Types
 
 .. _syntax-numtype:
 .. _syntax-c_numtype:
+<<<<<<< HEAD
 .. _syntax-types-number-types:
+=======
+.. _syntax-in:
+.. _syntax-fn:
+>>>>>>> al
 
 Number Types
 ~~~~~~~~~~~~
@@ -13,11 +18,19 @@ Number Types
 $${syntax+: 
   numtype
   c_numtype
+<<<<<<< HEAD
+=======
+  {in
+  fn}
+>>>>>>> al
 }
 
 .. _syntax-vectype:
 .. _syntax-c_vectype:
+<<<<<<< HEAD
 .. _syntax-types-vector-types:
+=======
+>>>>>>> al
 
 Vector Types
 ~~~~~~~~~~~~
@@ -41,7 +54,6 @@ $${syntax+:
 
 .. _syntax nul:
 .. _syntax-reftype:
-.. _syntax-types-reference-types:
 
 Reference Types
 ~~~~~~~~~~~~~~~
@@ -52,7 +64,6 @@ $${syntax:
 }
 
 .. _syntax-valtype:
-.. _syntax-types-value-types:
 
 Value Types
 ~~~~~~~~~~~
@@ -60,7 +71,6 @@ Value Types
 $${syntax: valtype}
 
 .. _syntax-resulttype:
-.. _syntax-types-result-types:
 
 Result Types
 ~~~~~~~~~~~~
@@ -68,13 +78,17 @@ Result Types
 $${syntax: resulttype}
 
 .. _syntax-functype:
+<<<<<<< HEAD
 .. _syntax-types-function-types:
+=======
+>>>>>>> al
 
 Function Types
 ~~~~~~~~~~~~~~
 
 $${syntax: functype}
 
+<<<<<<< HEAD
 .. _syntax-packedtype:
 .. _syntax-c_packedtype:
 .. _syntax-storagetype:
@@ -113,8 +127,9 @@ $${syntax+:
   fin
 }
 
+=======
+>>>>>>> al
 .. _syntax-limits:
-.. _syntax-types-limits:
 
 Limits
 ~~~~~~
@@ -122,32 +137,25 @@ Limits
 $${syntax: limits}
 
 .. _syntax-memtype:
-.. _syntax-datatype:
-.. _syntax-types-memory-types:
 
 Memory Types
 ~~~~~~~~~~~~
 
-$${syntax+: 
-  memtype
-  datatype
-}
+$${syntax: memtype}
 
 .. _syntax-tabletype:
-.. _syntax-elemtype:
-.. _syntax-types-table-types:
 
 Table Types
 ~~~~~~~~~~~
 
-$${syntax+: 
-  tabletype
-  elemtype
-}
+$${syntax: tabletype}
 
 .. _syntax-globaltype:
+<<<<<<< HEAD
 .. _syntax-mut:
 .. _syntax-types-global-types:
+=======
+>>>>>>> al
 
 Global Types
 ~~~~~~~~~~~~
@@ -157,9 +165,28 @@ $${syntax+:
   mut
 }
 
+<<<<<<< HEAD
 .. _syntax-externtype:
 .. _syntax-types-external-types:
 
+=======
+.. _syntax-datatype:
+
+Data Types
+~~~~~~~~~~
+
+$${syntax: datatype}
+
+.. _syntax-elemtype:
+
+Elem Types
+~~~~~~~~~~
+
+$${syntax: elemtype}
+
+.. _syntax-externtype:
+
+>>>>>>> al
 External Types
 ~~~~~~~~~~~~~~
 

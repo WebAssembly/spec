@@ -3,13 +3,23 @@
 Instructions
 ------------
 
-.. _valid-instructions-numeric:
+$${rule+:
+  Valtype_sub/*
+  Resulttype_sub
+}
 
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
 .. _valid-CONST:
 
+<<<<<<< HEAD
+=======
+%{prose-pred: CONST}
+
+\
+
+>>>>>>> al
 $${rule: Instr_ok/const}
 
 .. _valid-UNOP:
@@ -18,7 +28,7 @@ $${rule: Instr_ok/const}
 
 \
 
-$${rule+: Instr_ok/unop}
+$${rule: Instr_ok/unop}
 
 .. _valid-BINOP:
 
@@ -44,34 +54,54 @@ $${rule: Instr_ok/testop}
 
 $${rule: Instr_ok/relop}
 
-.. _valid-REINTERPRET:
+.. _valid-EXTEND:
 
-TODO (should change the rule name to cvtop-)
+%{prose-pred: EXTEND}
 
 \
 
+<<<<<<< HEAD
 $${rule: Instr_ok/reinterpret}
+=======
+$${rule: Instr_ok/extend}
+>>>>>>> al
 
-.. _valid-CONVERT:
+.. _valid-CVTOP:
 
-TODO (should change the rule name to cvtop-)
+%{prose-pred: CVTOP}
 
 \
 
-$${rule+: Instr_ok/convert-*}
-
-.. _valid-instructions-ref:
+$${rule+: 
+  Instr_ok/reinterpret
+  Instr_ok/convert-*
+}
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. _valid-REF.NULL:
+<<<<<<< HEAD
+=======
 
 %{prose-pred: REF.NULL}
 
 \
 
 $${rule: Instr_ok/ref.null}
+
+.. _valid-REF.IS_NULL:
+>>>>>>> al
+
+%{prose-pred: REF.NULL}
+
+\
+
+<<<<<<< HEAD
+$${rule: Instr_ok/ref.null}
+=======
+$${rule: Instr_ok/ref.is_null}
+>>>>>>> al
 
 .. _valid-REF.FUNC:
 
@@ -80,6 +110,7 @@ $${rule: Instr_ok/ref.null}
 \
 
 $${rule: Instr_ok/ref.func}
+<<<<<<< HEAD
 
 .. _valid-REF.IS_NULL:
 
@@ -297,6 +328,8 @@ $${rule: Instr_ok/extern.convert_any}
 $${rule: Instr_ok/any.convert_extern}
 
 .. _valid-instructions-parametric:
+=======
+>>>>>>> al
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -307,7 +340,7 @@ Parametric Instructions
 
 \
 
-$${rule+: Instr_ok/drop}
+$${rule: Instr_ok/drop}
 
 .. _valid-SELECT:
 
@@ -328,7 +361,7 @@ Variable Instructions
 
 \
 
-$${rule+: Instr_ok/local.get}
+$${rule: Instr_ok/local.get}
 
 .. _valid-LOCAL.SET:
 
@@ -339,7 +372,11 @@ TODO (not found)
 
 \
 
+<<<<<<< HEAD
 $${rule+: Instrf_ok/local.set}
+=======
+$${rule: Instr_ok/local.set}
+>>>>>>> al
 
 .. _valid-LOCAL.TEE:
 
@@ -350,7 +387,11 @@ TODO (not found)
 
 \
 
+<<<<<<< HEAD
 $${rule+: Instrf_ok/local.tee}
+=======
+$${rule: Instr_ok/local.tee}
+>>>>>>> al
 
 .. _valid-GLOBAL.GET:
 
@@ -358,7 +399,7 @@ $${rule+: Instrf_ok/local.tee}
 
 \
 
-$${rule+: Instr_ok/global.get}
+$${rule: Instr_ok/global.get}
 
 .. _valid-GLOBAL.SET:
 
@@ -366,9 +407,7 @@ $${rule+: Instr_ok/global.get}
 
 \
 
-$${rule+: Instr_ok/global.set}
-
-.. _valid-instructions-table:
+$${rule: Instr_ok/global.set}
 
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
@@ -379,7 +418,7 @@ Table Instructions
 
 \
 
-$${rule+: Instr_ok/table.get}
+$${rule: Instr_ok/table.get}
 
 .. _valid-TABLE.SET:
 
@@ -387,7 +426,7 @@ $${rule+: Instr_ok/table.get}
 
 \
 
-$${rule+: Instr_ok/table.set}
+$${rule: Instr_ok/table.set}
 
 .. _valid-TABLE.SIZE:
 
@@ -395,7 +434,7 @@ $${rule+: Instr_ok/table.set}
 
 \
 
-$${rule+: Instr_ok/table.size}
+$${rule: Instr_ok/table.size}
 
 .. _valid-TABLE.GROW:
 
@@ -403,7 +442,7 @@ $${rule+: Instr_ok/table.size}
 
 \
 
-$${rule+: Instr_ok/table.grow}
+$${rule: Instr_ok/table.grow}
 
 .. _valid-TABLE.FILL:
 
@@ -411,7 +450,7 @@ $${rule+: Instr_ok/table.grow}
 
 \
 
-$${rule+: Instr_ok/table.fill}
+$${rule: Instr_ok/table.fill}
 
 .. _valid-TABLE.COPY:
 
@@ -419,7 +458,7 @@ $${rule+: Instr_ok/table.fill}
 
 \
 
-$${rule+: Instr_ok/table.copy}
+$${rule: Instr_ok/table.copy}
 
 .. _valid-TABLE.INIT:
 
@@ -427,7 +466,7 @@ $${rule+: Instr_ok/table.copy}
 
 \
 
-$${rule+: Instr_ok/table.init}
+$${rule: Instr_ok/table.init}
 
 .. _valid-ELEM.DROP:
 
@@ -435,7 +474,7 @@ $${rule+: Instr_ok/table.init}
 
 \
 
-$${rule+: Instr_ok/elem.drop}
+$${rule: Instr_ok/elem.drop}
 
 .. _valid-instructions-memory:
 
@@ -448,7 +487,7 @@ Memory Instructions
 
 \
 
-$${rule+: Instr_ok/load}
+$${rule: Instr_ok/load}
 
 .. _valid-STORE:
 
@@ -456,7 +495,7 @@ $${rule+: Instr_ok/load}
 
 \
 
-$${rule+: Instr_ok/store}
+$${rule: Instr_ok/store}
 
 .. _valid-MEMORY.SIZE:
 
@@ -464,7 +503,7 @@ $${rule+: Instr_ok/store}
 
 \
 
-$${rule+: Instr_ok/memory.size}
+$${rule: Instr_ok/memory.size}
 
 .. _valid-MEMORY.GROW:
 
@@ -472,7 +511,7 @@ $${rule+: Instr_ok/memory.size}
 
 \
 
-$${rule+: Instr_ok/memory.grow}
+$${rule: Instr_ok/memory.grow}
 
 .. _valid-MEMORY.FILL:
 
@@ -480,7 +519,7 @@ $${rule+: Instr_ok/memory.grow}
 
 \
 
-$${rule+: Instr_ok/memory.fill}
+$${rule: Instr_ok/memory.fill}
 
 .. _valid-MEMORY.COPY:
 
@@ -488,7 +527,7 @@ $${rule+: Instr_ok/memory.fill}
 
 \
 
-$${rule+: Instr_ok/memory.copy}
+$${rule: Instr_ok/memory.copy}
 
 .. _valid-MEMORY.INIT:
 
@@ -496,7 +535,7 @@ $${rule+: Instr_ok/memory.copy}
 
 \
 
-$${rule+: Instr_ok/memory.init}
+$${rule: Instr_ok/memory.init}
 
 .. _valid-DATA.DROP:
 
@@ -504,7 +543,7 @@ $${rule+: Instr_ok/memory.init}
 
 \
 
-$${rule+: Instr_ok/data.drop}
+$${rule: Instr_ok/data.drop}
 
 .. _valid-instructions-control:
 
@@ -517,7 +556,7 @@ Control Instructions
 
 \
 
-$${rule+: Instr_ok/nop}
+$${rule: Instr_ok/nop}
 
 .. _valid-UNREACHABLE:
 
@@ -525,7 +564,7 @@ $${rule+: Instr_ok/nop}
 
 \
 
-$${rule+: Instr_ok/unreachable}
+$${rule: Instr_ok/unreachable}
 
 .. _valid-BLOCK:
 
@@ -533,7 +572,7 @@ $${rule+: Instr_ok/unreachable}
 
 \
 
-$${rule+: Instr_ok/block}
+$${rule: Instr_ok/block}
 
 .. _valid-LOOP:
 
@@ -541,7 +580,7 @@ $${rule+: Instr_ok/block}
 
 \
 
-$${rule+: Instr_ok/loop}
+$${rule: Instr_ok/loop}
 
 .. _valid-IF:
 
@@ -549,7 +588,7 @@ $${rule+: Instr_ok/loop}
 
 \
 
-$${rule+: Instr_ok/if}
+$${rule: Instr_ok/if}
 
 .. _valid-BR:
 
@@ -557,7 +596,7 @@ $${rule+: Instr_ok/if}
 
 \
 
-$${rule+: Instr_ok/br}
+$${rule: Instr_ok/br}
 
 .. _valid-BR_IF:
 
@@ -565,7 +604,7 @@ $${rule+: Instr_ok/br}
 
 \
 
-$${rule+: Instr_ok/br_if}
+$${rule: Instr_ok/br_if}
 
 .. _valid-BR_TABLE:
 
@@ -573,7 +612,7 @@ $${rule+: Instr_ok/br_if}
 
 \
 
-$${rule+: Instr_ok/br_table}
+$${rule: Instr_ok/br_table}
 
 .. _valid-BR_ON_NULL:
 
@@ -613,7 +652,7 @@ $${rule: Instr_ok/br_on_cast_fail}
 
 \
 
-$${rule+: Instr_ok/return}
+$${rule: Instr_ok/return}
 
 .. _valid-CALL:
 
@@ -621,7 +660,7 @@ $${rule+: Instr_ok/return}
 
 \
 
-$${rule+: Instr_ok/call}
+$${rule: Instr_ok/call}
 
 .. _valid-CALL_REF:
 
@@ -638,6 +677,7 @@ $${rule+: Instr_ok/call_ref}
 
 \
 
+<<<<<<< HEAD
 $${rule+: Instr_ok/call_indirect}
 
 .. _valid-RETURN_CALL:
@@ -665,22 +705,32 @@ $${rule+: Instr_ok/return_call_ref}
 $${rule+: Instr_ok/return_call_indirect}
 
 .. _valid-instructions-sequences:
+=======
+$${rule: Instr_ok/call_indirect}
+>>>>>>> al
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
 $${rule+:
+<<<<<<< HEAD
   Instrf_ok/instr
   Instrs_ok/*
 }
 
 .. _valid-instructions-expressions:
 
+=======
+  InstrSeq_ok/*
+}
+
+>>>>>>> al
 Expressions
 ~~~~~~~~~~~
 
 $${rule+: 
   Expr_ok
+<<<<<<< HEAD
   Instr_const/*
   Expr_const
   Expr_ok_const
@@ -701,3 +751,9 @@ $${definition: in_binop}
 \
 
 $${definition: in_numtype}
+=======
+  Expr_const
+  Expr_ok_const
+  Instr_const/*
+}
+>>>>>>> al

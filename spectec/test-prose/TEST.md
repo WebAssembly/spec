@@ -1196,13 +1196,13 @@ in_binop binop u_0*
 1. If u_0* is [], then:
   a. Return YetE (BoolE false).
 2. Let [binopIXX_1] ++ binopIXX'* be u_0*.
-3. Return (YetE (CmpE (VarE "binop", EqOp, CaseE (Atom "_I", VarE "binopIXX_1"))) + $in_binop(binop, binopIXX'*)).
+3. Return (YetE (CmpE (VarE "binop", EqOp, CaseE (Atom "_I", VarE "binopIXX_1"))) or $in_binop(binop, binopIXX'*)).
 
 in_numtype nt u_0*
 1. If u_0* is [], then:
   a. Return YetE (BoolE false).
 2. Let [nt_1] ++ nt'* be u_0*.
-3. Return (YetE (CmpE (VarE "nt", EqOp, VarE "nt_1")) + $in_numtype(nt, nt'*)).
+3. Return (YetE (CmpE (VarE "nt", EqOp, VarE "nt_1")) or $in_numtype(nt, nt'*)).
 
 blocktype u_1
 1. If u_1 is (_RESULT ?()), then:
@@ -2343,7 +2343,7 @@ execution_of_TABLE.GROW x
   b. Push (I32.CONST |$table(x).ELEM|) to the stack.
   c. Perform $with_tableinst(x, ti).
 6. Or:
-  a. Push (I32.CONST $invsigned(32, -1)) to the stack.
+  a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
@@ -2373,7 +2373,7 @@ execution_of_MEMORY.GROW x
   b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
   c. Perform $with_meminst(x, mi).
 4. Or:
-  a. Push (I32.CONST $invsigned(32, -1)) to the stack.
+  a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.
 
 execution_of_DATA.DROP x
 1. Perform $with_data(x, []).

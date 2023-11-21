@@ -343,8 +343,6 @@ and infer_exp env e : typ =
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
-  | ElementsOfE _ -> BoolT $ e.at
-  | ListBuilderE _ -> error e.at "cannot infer type of list builder"
   | CatE _ -> error e.at "cannot infer type of concatenation"
   | CaseE _ -> error e.at "cannot infer type of case constructor"
   | SubE _ -> error e.at "cannot infer type of subsumption"
@@ -449,15 +447,6 @@ and valid_exp env e t =
   | ListE es ->
     let t1 = as_iter_typ List "list" env Check t e.at in
     List.iter (fun eI -> valid_exp env eI t1) es
-  | ElementsOfE (e1, e2) ->
-    let t2' = infer_exp env e2 in
-    valid_exp env e2 t2';
-    let t1' = as_iter_typ List "list" env Check t2' e2.at in
-    valid_exp env e1 t1'
-  | ListBuilderE (e1, e2) ->
-    valid_exp env e2 (BoolT $ e2.at);
-    let t' = as_iter_typ List "list" env Check t e.at in
-    valid_exp env e1 t';
   | CatE (e1, e2) ->
     let _typ1 = as_iter_typ List "list" env Check t e.at in
     valid_exp env e1 t;

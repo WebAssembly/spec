@@ -196,7 +196,6 @@ and token = parse
   | ">>" { SUCC }
   | "|-" { TURNSTILE }
   | "-|" { TILESTURN }
-  | "<-" { IN }
 
   | "$" { DOLLAR }
 

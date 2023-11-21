@@ -1,7 +1,7 @@
 .. _syntax:
 
-Syntax
-======
+Structure
+=========
 
 .. toctree::
 

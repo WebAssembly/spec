@@ -1,8 +1,9 @@
 open Al.Ast
+open Util.Record
 
 let eval_expr =
-  let instrs = IterE (NameE "instr", ["instr"], List) in
-  let result = NameE "val" in
+  let instrs = IterE (VarE "instr", ["instr"], List) in
+  let result = VarE "val" in
 
   FuncA (
     "eval_expr",
@@ -42,7 +43,7 @@ execution_of_CALL_REF ?(x)
 
 let call_ref =
   (* names *)
-  let name x = NameE x in
+  let name x = VarE x in
   let x = name "x" in
   let ref = name "ref" in
   let a = name "a" in
@@ -72,36 +73,36 @@ let call_ref =
         []
       );
       AssertI (IsCaseOfC (ref, ("REF.FUNC_ADDR", "admininstr")));
-      LetI (ConstructE (("REF.FUNC_ADDR", "admininstr"), [a]), ref);
+      LetI (CaseE (("REF.FUNC_ADDR", "admininstr"), [a]), ref);
       IfI (
-        CompareC (Lt, a, LengthE (AppE ("funcinst", []))),
+        CmpC (LtOp, a, LenE (CallE ("funcinst", []))),
         [
-        LetI (fi, AccessE (AppE ("funcinst", []), IndexP(a)));
+        LetI (fi, AccE (CallE ("funcinst", []), IdxP a));
         IfI (
-          IsCaseOfC (AccessE (fi, DotP("CODE", "code")), ("FUNC", "func")),
+          IsCaseOfC (AccE (fi, DotP("CODE", "code")), ("FUNC", "func")),
           [
-          LetI (ConstructE (("FUNC", "func"), [y0 ; y1 ; IterE (instr, ["instr"], List)]), AccessE (fi, DotP ("CODE", "code")));
-          LetI (IterE (ConstructE (("LOCAL","local"), [t]), ["t"], List), y1);
+          LetI (CaseE (("FUNC", "func"), [y0 ; y1 ; IterE (instr, ["instr"], List)]), AccE (fi, DotP ("CODE", "code")));
+          LetI (IterE (CaseE (("LOCAL","local"), [t]), ["t"], List), y1);
           IfI (
-            IsCaseOfC (AppE ("expanddt", [ AccessE (fi, DotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
+            IsCaseOfC (CallE ("expanddt", [ AccE (fi, DotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
             [
-            LetI (ConstructE (("FUNC", "comptype"), [y0]), AppE ("expanddt", [ AccessE (fi, DotP ("TYPE", "type")) ]));
+            LetI (CaseE (("FUNC", "comptype"), [y0]), CallE ("expanddt", [ AccE (fi, DotP ("TYPE", "type")) ]));
             LetI (ArrowE (IterE (t1, ["t_1"], ListN (n, None)), IterE (t2, ["t_2"], ListN (m, None))), y0);
             AssertI (TopValuesC n);
             PopI (IterE (v, ["val"], ListN(n, None)));
-            LetI (f, RecordE (Record.empty
+            LetI (f, StrE (Record.empty
               |> Record.add
                 ("LOCAL", "frame")
-                (ConcatE (IterE (OptE (Some v), ["val"], ListN (n, None)), IterE (AppE("default", [t]), ["t"], List)))
+                (CatE (IterE (OptE (Some v), ["val"], ListN (n, None)), IterE (CallE("default", [t]), ["t"], List)))
               |> Record.add
                 ("MODULE", "frame")
-                (AccessE (fi, DotP ("MODULE", "module")))
+                (AccE (fi, DotP ("MODULE", "module")))
             ));
             LetI (ff, FrameE (Some m, f));
-            EnterI (ff, ListE ([ConstructE (("FRAME_", ""), [])]),
+            EnterI (ff, ListE ([CaseE (("FRAME_", ""), [])]),
               [
               LetI (ll, LabelE (m, ListE []));
-              EnterI (ll, ConcatE (IterE (instr, ["instr"], List), ListE ([ConstructE (("LABEL_", ""), [])])), []);
+              EnterI (ll, CatE (IterE (instr, ["instr"], List), ListE ([CaseE (("LABEL_", ""), [])])), []);
               ]
             );
             ], []);
@@ -113,15 +114,15 @@ let call_ref =
 (* Helper for the manual array_new.data algorithm *)
 
 let group_bytes_by =
-  let n = NameE "n" in
-  let n' = NameE "n'" in
+  let n = VarE "n" in
+  let n' = VarE "n'" in
 
-  let bytes_ = IterE (NameE "byte", ["byte"], List) in
-  let bytes_left = ListE [AccessE (bytes_, SliceP (NumE 0L, n))] in
-  let bytes_right = AppE 
+  let bytes_ = IterE (VarE "byte", ["byte"], List) in
+  let bytes_left = ListE [AccE (bytes_, SliceP (NumE 0L, n))] in
+  let bytes_right = CallE 
     (
       "group_bytes_by", 
-      [ n; AccessE (bytes_, SliceP (n, BinopE (Sub, n', n))) ]
+      [ n; AccE (bytes_, SliceP (n, BinE (SubOp, n', n))) ]
     ) 
   in
 
@@ -129,10 +130,10 @@ let group_bytes_by =
     "group_bytes_by",
     [n; bytes_],
     [
-      LetI (n', LengthE bytes_);
+      LetI (n', LenE bytes_);
       IfI (
-        CompareC (Ge, n', n),
-        [ ReturnI (Some (ConcatE (bytes_left, bytes_right))) ],
+        CmpC (GeOp, n', n),
+        [ ReturnI (Some (CatE (bytes_left, bytes_right))) ],
         []
       );
       ReturnI (Some (ListE []));
@@ -140,53 +141,53 @@ let group_bytes_by =
   )
 
 let array_new_data =
-  let i32 = ConstructE (("I32", "numtype"), []) in
+  let i32 = CaseE (("I32", "numtype"), []) in
 
-  let x = NameE "x" in
-  let y = NameE "y" in
+  let x = VarE "x" in
+  let y = VarE "y" in
 
-  let n = NameE "n" in
-  let i = NameE "i" in
+  let n = VarE "n" in
+  let i = VarE "i" in
 
-  let y_0 = NameE "y_0" in
-  let mut = NameE "mut" in
-  let zt = NameE "zt" in
+  let y_0 = VarE "y_0" in
+  let mut = VarE "mut" in
+  let zt = VarE "zt" in
 
-  let nt = NameE "nt" in
+  let nt = VarE "nt" in
 
-  let c = NameE "c" in
+  let c = VarE "c" in
 
-  let bstar = IterE (NameE "b", ["b"], List) in
-  let gb = NameE "gb" in
+  let bstar = IterE (VarE "b", ["b"], List) in
+  let gb = VarE "gb" in
   let gbstar = IterE (gb, ["gb"], List) in
   let cn = IterE (c, ["c"], ListN (n, None)) in
 
-  let expanddt_with_type = AppE ("expanddt", [AppE ("type", [x])]) in
-  let storagesize = AppE ("storagesize", [zt]) in
-  let unpacknumtype = AppE ("unpacknumtype", [zt]) in
+  let expanddt_with_type = CallE ("expanddt", [CallE ("type", [x])]) in
+  let storagesize = CallE ("storagesize", [zt]) in
+  let unpacknumtype = CallE ("unpacknumtype", [zt]) in
   (* include z or not ??? *)
-  let data = AppE ("data", [y]) in
-  let group_bytes_by = AppE ("group_bytes_by", [BinopE (Div, storagesize, NumE 8L); bstar]) in
-  let inverse_of_bytes_ = IterE (AppE ("inverse_of_ibytes", [storagesize; gb]), ["gb"], List) in
+  let data = CallE ("data", [y]) in
+  let group_bytes_by = CallE ("group_bytes_by", [BinE (DivOp, storagesize, NumE 8L); bstar]) in
+  let inverse_of_bytes_ = IterE (CallE ("inverse_of_ibytes", [storagesize; gb]), ["gb"], List) in
 
   RuleA (
     ("ARRAY.NEW_DATA", "admininstr"),
     [x; y],
     [
       AssertI (TopValueC (Some i32));
-      PopI (ConstructE (("CONST", "admininstr"), [i32; n]));
+      PopI (CaseE (("CONST", "admininstr"), [i32; n]));
       AssertI (TopValueC (Some i32));
-      PopI (ConstructE (("CONST", "admininstr"), [i32; i]));
+      PopI (CaseE (("CONST", "admininstr"), [i32; i]));
       IfI (
         IsCaseOfC (expanddt_with_type, ("ARRAY", "comptype")),
         [
-          LetI (ConstructE (("ARRAY", "comptype"), [y_0]), expanddt_with_type);
-          LetI (PairE (mut, zt), y_0);
+          LetI (CaseE (("ARRAY", "comptype"), [y_0]), expanddt_with_type);
+          LetI (TupE (mut, zt), y_0);
           IfI (
-            CompareC (
-              Gt,
-              BinopE (Add, i, BinopE (Div, BinopE (Mul, n, storagesize), NumE 8L)),
-              LengthE (AccessE (AppE ("data", [y]), DotP ("DATA", "datainst")))
+            CmpC (
+              GtOp,
+              BinE (AddOp, i, BinE (DivOp, BinE (MulOp, n, storagesize), NumE 8L)),
+              LenE (AccE (CallE ("data", [y]), DotP ("DATA", "datainst")))
             ),
             [TrapI],
             []
@@ -194,15 +195,15 @@ let array_new_data =
           LetI (nt, unpacknumtype);
           LetI (
             bstar, 
-            AccessE (
-              AccessE (data, DotP ("DATA", "datainst")),
-              SliceP (i, BinopE (Div, BinopE (Mul, n, storagesize), NumE 8L))
+            AccE (
+              AccE (data, DotP ("DATA", "datainst")),
+              SliceP (i, BinE (DivOp, BinE (MulOp, n, storagesize), NumE 8L))
             )
           );
           LetI (gbstar, group_bytes_by);
           LetI (cn, inverse_of_bytes_);
-          PushI (IterE (ConstructE (("CONST", "admininstr"), [nt; c]), ["c"], ListN (n, None)));
-          ExecuteI (ConstructE (("ARRAY.NEW_FIXED", "admininstr"), [x; n]));
+          PushI (IterE (CaseE (("CONST", "admininstr"), [nt; c]), ["c"], ListN (n, None)));
+          ExecuteI (CaseE (("ARRAY.NEW_FIXED", "admininstr"), [x; n]));
         ],
         []
       );

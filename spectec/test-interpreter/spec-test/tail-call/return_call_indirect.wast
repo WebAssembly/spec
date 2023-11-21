@@ -257,14 +257,14 @@
 (assert_return (invoke "even" (i32.const 1)) (i32.const 99))
 (assert_return (invoke "even" (i32.const 100)) (i32.const 44))
 (assert_return (invoke "even" (i32.const 77)) (i32.const 99))
-;;(assert_return (invoke "even" (i32.const 100_000)) (i32.const 44))
-;;(assert_return (invoke "even" (i32.const 111_111)) (i32.const 99))
+(assert_return (invoke "even" (i32.const 100_000)) (i32.const 44))
+(assert_return (invoke "even" (i32.const 111_111)) (i32.const 99))
 (assert_return (invoke "odd" (i32.const 0)) (i32.const 99))
 (assert_return (invoke "odd" (i32.const 1)) (i32.const 44))
 (assert_return (invoke "odd" (i32.const 200)) (i32.const 99))
 (assert_return (invoke "odd" (i32.const 77)) (i32.const 44))
-;;(assert_return (invoke "odd" (i32.const 200_002)) (i32.const 99))
-;;(assert_return (invoke "odd" (i32.const 300_003)) (i32.const 44))
+(assert_return (invoke "odd" (i32.const 200_002)) (i32.const 99))
+(assert_return (invoke "odd" (i32.const 300_003)) (i32.const 44))
 
 
 ;; Invalid syntax

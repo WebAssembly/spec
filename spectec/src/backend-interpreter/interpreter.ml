@@ -2,7 +2,9 @@ open Reference_interpreter
 open Al
 open Ast
 open Print
+open Construct
 open Ds
+open Util.Record
 
 let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
 let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
@@ -11,9 +13,9 @@ let value_to_list v = v |> value_to_array |> Array.to_list
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
 let value_to_int v = v |> value_to_num |> Int64.to_int
 let check_i32_const = function
-  | ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n) ]) ->
+  | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
     let n' = Int64.logand 0xFFFFFFFFL n in
-    ConstructV ("CONST", [ ConstructV ("I32", []); NumV (n') ])
+    CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
   | v -> v
 
 let rec int64_exp base exponent =
@@ -48,8 +50,8 @@ let transpose matrix =
 (* helper functions for recursive type *)
 
 (* null *)
-let null = ConstructV ("NULL", [ OptV (Some (listV [])) ])
-let nonull = ConstructV ("NULL", [ OptV None ])
+let null = CaseV ("NULL", [ OptV (Some (listV [])) ])
+let nonull = CaseV ("NULL", [ OptV None ])
 (* abstract heap types for null *)
 let none = singleton "NONE"
 let nofunc = singleton "NOFUNC"
@@ -103,7 +105,7 @@ let rec create_sub_al_context names iter env =
   |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
 
 and access_path env base path = match path with
-  | IndexP e' ->
+  | IdxP e' ->
       let a = base |> value_to_array in
       let i = eval_expr env e' |> value_to_int in
       begin try Array.get a i with
@@ -121,16 +123,16 @@ and access_path env base path = match path with
       ListV (ref a')
   | DotP (str, _) -> (
       match base with
-      | FrameV (_, RecordV r) -> Record.find str r
+      | FrameV (_, StrV r) -> Record.find str r
       | StoreV s -> Record.find str !s
-      | RecordV r -> Record.find str r
+      | StrV r -> Record.find str r
       | v ->
           string_of_value v
           |> Printf.sprintf "Not a record: %s"
           |> failwith)
 
 and replace_path env base path v_new = match path with
-  | IndexP e' ->
+  | IdxP e' ->
       let a = base |> value_to_array in
       let a_new = Array.copy a in
       let i = eval_expr env e' |> value_to_int in
@@ -146,9 +148,9 @@ and replace_path env base path v_new = match path with
   | DotP (str, _) ->
       let r = (
         match base with
-        | FrameV (_, RecordV r) -> r
+        | FrameV (_, StrV r) -> r
         | StoreV s -> !s
-        | RecordV r -> r
+        | StrV r -> r
         | v ->
             string_of_value v
             |> Printf.sprintf "Not a record: %s"
@@ -156,32 +158,32 @@ and replace_path env base path v_new = match path with
       in
       let r_new = Record.clone r in
       Record.replace str v_new r_new;
-      RecordV r_new
+      StrV r_new
 
 and eval_expr env expr =
   match expr with
   (* Value *)
   | NumE i -> NumV i
-  | StringE s -> StringV s
   (* Numeric Operation *)
-  | MinusE inner_e -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
-  | BinopE (op, e1, e2) ->
+  | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
+  | BinE (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match v1, v2 with
       | NumV v1, NumV v2 ->
           let result = match op with
-          | Add -> Int64.add v1 v2
-          | Sub -> Int64.sub v1 v2
-          | Mul -> Int64.mul v1 v2
-          | Div -> Int64.div v1 v2
-          | Exp -> int64_exp v1 v2
+          | AddOp -> Int64.add v1 v2
+          | SubOp -> Int64.sub v1 v2
+          | MulOp -> Int64.mul v1 v2
+          | DivOp -> Int64.div v1 v2
+          | ExpOp -> int64_exp v1 v2
+          | _ -> failwith "Not a mathematical operator"
           in
           NumV result
       | _ -> failwith "Not an integer"
       end
   (* Function Call *)
-  | AppE (fname, el) ->
+  | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
     begin match dsl_function_call fname args with
     | Some v -> v
@@ -195,30 +197,21 @@ and eval_expr env expr =
     end
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
-  | ListFillE (e1, e2) ->
-      let v = eval_expr env e1 in
-      let i = eval_expr env e2 |> value_to_int in
-      if i > 1024 * 64 * 1024 then (* 1024 pages *) (
-        AL_Context.pop_context () |> ignore;
-        raise Exception.OutOfMemory
-      )
-      else
-        ListV (ref (Array.make i v))
-  | ConcatE (e1, e2) ->
+  | CatE (e1, e2) ->
       let a1 = eval_expr env e1 |> value_to_array in
       let a2 = eval_expr env e2 |> value_to_array in
       ListV (Array.append a1 a2 |> ref)
-  | LengthE e ->
+  | LenE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | RecordE r -> 
+  | StrE r -> 
       let elist = Record.to_list r in
-      let vlist = List.map (fun (k, e) -> ((string_of_keyword k), !e |> eval_expr env |> ref)) elist in
-      RecordV (Record.of_list vlist)
-  | AccessE (e, p) ->
+      let vlist = List.map (fun (k, e) -> ((string_of_kwd k), !e |> eval_expr env |> ref)) elist in
+      StrV (Record.of_list vlist)
+  | AccE (e, p) ->
       let base = eval_expr env e in
       access_path env base p
-  | ExtendE (e1, ps, e2, dir) ->
+  | ExtE (e1, ps, e2, dir) ->
       let v_new = eval_expr env e2 |> value_to_array in
       let rec extend base ps = (
         match ps with
@@ -237,7 +230,7 @@ and eval_expr env expr =
       in
       let base = eval_expr env e1 in
       extend base ps
-  | ReplaceE (e1, ps, e2) ->
+  | UpdE (e1, ps, e2) ->
       let v_new = eval_expr env e2 in
       let rec replace base ps = (
         match ps with
@@ -248,9 +241,9 @@ and eval_expr env expr =
       in
       let base = eval_expr env e1 in
       replace base ps
-  | ConstructE ((tag, _), el) -> ConstructV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | CaseE ((tag, _), el) -> CaseV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
-  | PairE (e1, e2) -> PairV (eval_expr env e1, eval_expr env e2)
+  | TupE (e1, e2) -> TupV (eval_expr env e1, eval_expr env e2)
   (* Context *)
   | ArityE e -> (
       match eval_expr env e with
@@ -262,7 +255,7 @@ and eval_expr env expr =
       let v1 = Option.map (eval_expr env) e1 in
       let v2 = eval_expr env e2 in
       match (v1, v2) with
-      | (Some (NumV _)|None), RecordV _ -> FrameV (v1, v2)
+      | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
       | _ ->
           (* Due to AL validation unreachable *)
           "Invalid frame: " ^ string_of_expr expr |> failwith)
@@ -278,20 +271,32 @@ and eval_expr env expr =
       match v with
       | LabelV (_, vs) -> vs
       | _ -> failwith "Not a label")
-  | NameE name -> Env.find name env
-  | IterE (NameE name, _, List) -> (* Optimized getter for simple IterE(NameE, ...) *)
-      Env.find name env
+  | VarE name -> Env.find name env
+  (* Optimized getter for simple IterE(VarE, ...) *)
+  | IterE (VarE name, [name'], _) when name = name' -> Env.find name env
+  (* Optimized getter for list init *)
+  | IterE (e1, [], ListN (e2, None)) ->
+    let v = eval_expr env e1 in
+    let i = eval_expr env e2 |> value_to_int in
+    if i > 1024 * 64 * 1024 (* 1024 pages *) then (
+      AL_Context.pop_context () |> ignore;
+      raise Exception.OutOfMemory
+    )
+    else
+      ListV (ref (Array.make i v))
   | IterE (inner_e, names, iter) ->
-    env
-    |> create_sub_al_context names iter
-    |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
-    |> if (iter = Opt)
-    then
-      (function
-        | [] -> OptV None
-        | [v] -> OptV (Some v)
-        | _ -> failwith "Unreachable")
-    else listV
+    let vs =
+      env
+      |> create_sub_al_context names iter
+      |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
+
+    in
+
+    begin match vs, iter with
+    | [], Opt -> OptV None
+    | [v], Opt -> OptV (Some v)
+    | l, _ -> listV l
+    end
   | ArrowE (e1, e2) -> ArrowV (eval_expr env e1, eval_expr env e2)
   | e -> structured_string_of_expr e |> failwith
 
@@ -299,26 +304,27 @@ and eval_expr env expr =
 
 and eval_cond env cond =
   match cond with
-  | NotC c -> eval_cond env c |> not
-  | BinopC (op, c1, c2) ->
+  | UnC (NotOp, c) -> eval_cond env c |> not
+  | BinC (op, c1, c2) ->
       let b1 = eval_cond env c1 in
       let b2 = eval_cond env c2 in
       begin match op with
-      | And -> b1 && b2
-      | Or -> b1 || b2
-      | Impl -> not b1 || b2
-      | Equiv -> b1 = b2
+      | AndOp -> b1 && b2
+      | OrOp -> b1 || b2
+      | ImplOp -> not b1 || b2
+      | EquivOp -> b1 = b2
+      | _ -> failwith "Unreachable"
       end
-  | CompareC (op, e1, e2) ->
+  | CmpC (op, e1, e2) ->
       let v1 = eval_expr env e1 in
       let v2 = eval_expr env e2 in
       begin match op with
-      | Eq -> v1 = v2
-      | Ne -> v1 <> v2
-      | Lt -> v1 < v2
-      | Le -> v1 <= v2
-      | Gt -> v1 > v2
-      | Ge -> v1 >= v2
+      | EqOp -> v1 = v2
+      | NeOp -> v1 <> v2
+      | LtOp -> v1 < v2
+      | GtOp -> v1 > v2
+      | LeOp -> v1 <= v2
+      | GeOp -> v1 >= v2
       end
   | ContextKindC ((kind, _), e) ->
       begin match kind, eval_expr env e with
@@ -334,19 +340,19 @@ and eval_cond env cond =
       end
   | IsCaseOfC (e, (expected_tag, _)) -> (
       match eval_expr env e with
-      | ConstructV (tag, _) -> expected_tag = tag
+      | CaseV (tag, _) -> expected_tag = tag
       | _ -> false)
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
-  | ValidC e -> (
+  | IsValidC e -> (
       let valid_lim k = function
-        | PairV (NumV n, NumV m) -> n <= m && m <= k
+        | TupV (NumV n, NumV m) -> n <= m && m <= k
         | _ -> false
       in
       match eval_expr env e with
       (* valid_tabletype *)
-      | PairV (lim, _) -> valid_lim 0xffffffffL lim
+      | TupV (lim, _) -> valid_lim 0xffffffffL lim
       (* valid_memtype *)
-      | ConstructV ("I8", [ lim ]) -> valid_lim 0x10000L lim
+      | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim
       (* valid_other *)
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
   )
@@ -369,31 +375,31 @@ and eval_cond env cond =
 
     begin match eval_expr env e with
     (* addrref *)
-    | ConstructV (ar, _) when List.mem ar addr_refs->
+    | CaseV (ar, _) when List.mem ar addr_refs->
       s = "addrref" || s = "ref" || s = "val"
     (* nul *)
-    | ConstructV ("REF.NULL", _) ->
+    | CaseV ("REF.NULL", _) ->
       s = "nul" || s = "ref" || s = "val"
     (* numtype *)
-    | ConstructV (nt, []) when List.mem nt num_types ->
+    | CaseV (nt, []) when List.mem nt num_types ->
       s = "numtype" || s = "valtype"
     (* valtype *)
-    | ConstructV ("REF", _) ->
+    | CaseV ("REF", _) ->
       s = "reftype" || s = "valtype"
     (* absheaptype *)
-    | ConstructV (aht, []) when List.mem aht abs_heap_types ->
+    | CaseV (aht, []) when List.mem aht abs_heap_types ->
       s = "absheaptype" || s = "heaptype"
     (* deftype *)
-    | ConstructV ("DEF", [ _; _ ]) ->
+    | CaseV ("DEF", [ _; _ ]) ->
       s = "deftype" || s = "heaptype"
     (* typevar *)
-    | ConstructV ("_IDX", [ _ ]) ->
+    | CaseV ("_IDX", [ _ ]) ->
       s = "heaptype" || s = "typevar"
     (* heaptype *)
-    | ConstructV ("REC", [ _ ]) ->
+    | CaseV ("REC", [ _ ]) ->
       s = "heaptype" || s = "typevar"
     (* packedtype *)
-    | ConstructV (pt, []) when List.mem pt packed_types ->
+    | CaseV (pt, []) when List.mem pt packed_types ->
       s = "packedtype" || s = "storagetype"
     | v ->
       string_of_value v
@@ -410,7 +416,7 @@ and eval_cond env cond =
 (* Assignment *)
 
 and has_same_keys r1 r2 =
-  let k1 = Record.keys r1 |> List.map string_of_keyword |> List.sort String.compare in
+  let k1 = Record.keys r1 |> List.map string_of_kwd |> List.sort String.compare in
   let k2 = Record.keys r2 |> List.sort String.compare in
   k1 = k2
 
@@ -419,7 +425,7 @@ and merge_envs_with_grouping default_env envs =
     let f _ v1 = function
       | ListV arr ->
           v1 :: Array.to_list !arr |> listV |> Option.some
-      | OptV None -> v1 |> Value.opt |> Option.some
+      | OptV None -> OptV (Option.some v1) |> Option.some
       | _ -> failwith "Unreachable merge"
     in
     Env.union f env acc
@@ -428,15 +434,15 @@ and merge_envs_with_grouping default_env envs =
 
 and assign lhs rhs env =
   match lhs, rhs with
-  | NameE name, v -> Env.add name v env
-  | IterE (NameE n, _, List), ListV _ -> (* Optimized assign for simple IterE(NameE, ...) *)
+  | VarE name, v -> Env.add name v env
+  | IterE (VarE n, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
       Env.add n rhs env
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
         match iter, rhs with
         | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
         | ListN (expr, None), ListV arr ->
-            let length = Array.length !arr |> Int64.of_int |> Value.num in
+            let length = NumV (Array.length !arr |> Int64.of_int) in
             assign expr length env, listV [], Array.to_list !arr
         | Opt, OptV opt -> env, OptV None, Option.to_list opt
         | ListN (_, Some _), ListV _ ->
@@ -461,29 +467,29 @@ and assign lhs rhs env =
       List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) new_env
-  | PairE (lhs1, lhs2), PairV (rhs1, rhs2)
+  | TupE (lhs1, lhs2), TupV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
       List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env
-  | ConstructE ((lhs_tag, _), lhs_s), ConstructV (rhs_tag, rhs_s)
+  | CaseE ((lhs_tag, _), lhs_s), CaseV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
-  | BinopE (binop, e1, e2), NumV m ->
+  | BinE (binop, e1, e2), NumV m ->
       let n = eval_expr env e2 |> value_to_num in
       let invop = match binop with
-      | Add -> Int64.sub
-      | Sub -> Int64.add
-      | Mul -> Int64.unsigned_div
-      | Div -> Int64.mul
+      | AddOp -> Int64.sub
+      | SubOp -> Int64.add
+      | MulOp -> Int64.unsigned_div
+      | DivOp -> Int64.mul
       | _ -> failwith "Invvalid binop for lhs of assignment" in
       env |> assign e1 (NumV (invop m n))
-  | ConcatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
-  | RecordE r1, RecordV r2 when has_same_keys r1 r2 ->
-      Record.fold (fun k v acc -> (Record.find (string_of_keyword k) r2 |> assign v) acc) r1 env
+  | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
+  | StrE r1, StrV r2 when has_same_keys r1 r2 ->
+      Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | e, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
         (string_of_expr e) (string_of_value v)
@@ -520,82 +526,83 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
   (* Module & Runtime *)
   else if FuncMap.mem fname !func_map then
     call_algo fname args
+  (* HARDCODE: hardcoded validation rule *)
   else if fname = "ref_type_of" then (
     assert (List.length args = 1);
 
     let rt =
       match List.hd args with
       (* null *)
-      | ConstructV ("REF.NULL", [ ht ]) ->
+      | CaseV ("REF.NULL", [ ht ]) ->
         if match_heap_type none ht then
-          ConstructV ("REF", [ null; none])
+          CaseV ("REF", [ null; none])
         else if match_heap_type nofunc ht then
-          ConstructV ("REF", [ null; nofunc])
+          CaseV ("REF", [ null; nofunc])
         else if match_heap_type noextern ht then
-          ConstructV ("REF", [ null; noextern])
+          CaseV ("REF", [ null; noextern])
         else
           List.hd args
           |> string_of_value
           |> Printf.sprintf "Invalid null reference: %s"
           |> failwith
       (* i31 *)
-      | ConstructV ("REF.I31_NUM", [ _ ]) ->
-        ConstructV ("REF", [ nonull; singleton "I31"])
+      | CaseV ("REF.I31_NUM", [ _ ]) ->
+        CaseV ("REF", [ nonull; singleton "I31"])
       (* struct *)
-      | ConstructV ("REF.STRUCT_ADDR", [ NumV i ]) ->
+      | CaseV ("REF.STRUCT_ADDR", [ NumV i ]) ->
         let e =
-          AccessE (
-            AccessE (
-              AccessE (
-                NameE "s",
+          AccE (
+            AccE (
+              AccE (
+                VarE "s",
                 DotP ("STRUCT", "struct")
               ),
-              IndexP (NumE i)
+              IdxP (NumE i)
             ),
             DotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ nonull; dt])
+        CaseV ("REF", [ nonull; dt])
       (* array *)
-      | ConstructV ("REF.ARRAY_ADDR", [ NumV i ]) ->
+      | CaseV ("REF.ARRAY_ADDR", [ NumV i ]) ->
         let e =
-          AccessE (
-            AccessE (
-              AccessE (
-                NameE "s",
+          AccE (
+            AccE (
+              AccE (
+                VarE "s",
                 DotP ("ARRAY", "array")
               ),
-              IndexP (NumE i)
+              IdxP (NumE i)
             ),
             DotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ nonull; dt])
+        CaseV ("REF", [ nonull; dt])
       (* func *)
-      | ConstructV ("REF.FUNC_ADDR", [ NumV i ]) ->
+      | CaseV ("REF.FUNC_ADDR", [ NumV i ]) ->
         let e =
-          AccessE (
-            AccessE (
-              AccessE (
-                NameE "s",
+          AccE (
+            AccE (
+              AccE (
+                VarE "s",
                 DotP ("FUNC", "func")
               ),
-              IndexP (NumE i)
+              IdxP (NumE i)
             ),
             DotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
-        ConstructV ("REF", [ nonull; dt])
+        CaseV ("REF", [ nonull; dt])
       (* host *)
-      | ConstructV ("REF.HOST_ADDR", [ _ ]) ->
-        ConstructV ("REF", [ nonull; singleton "ANY"])
+      | CaseV ("REF.HOST_ADDR", [ _ ]) ->
+        CaseV ("REF", [ nonull; singleton "ANY"])
       (* extern *)
       (* TODO: check null *)
-      | ConstructV ("REF.EXTERN", [ _ ]) ->
-        ConstructV ("REF", [ nonull; singleton "EXTERN"])
+      | CaseV ("REF.EXTERN", [ _ ]) ->
+        CaseV ("REF", [ nonull; singleton "EXTERN"])
       | _ -> failwith "Invalid arguments for $ref_type_of"
     in
 
@@ -614,7 +621,7 @@ and call_builtin name =
     | _ -> failwith "builtin doesn't return value"
   in
   let as_const ty = function
-  | OptV (Some (ConstructV ("CONST", [ ConstructV (ty', []) ; n ]))) when ty = ty' -> n
+  | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
   | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
   match name with
   | "PRINT" -> print_endline "- print: ()"
@@ -642,23 +649,23 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | ConstructV ("REF.NULL", [ ht ]) ->
+  | CaseV ("REF.NULL", [ ht ]) ->
     (* substitute heap type*)
-    let dummy_rt = ConstructV ("REF", [ null; ht ]) in
+    let dummy_rt = CaseV ("REF", [ null; ht ]) in
     let mm =
-      AppE ("moduleinst", [])
+      CallE ("moduleinst", [])
       |> eval_expr (Env.add_store Env.empty)
     in
     begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
-    | AL_Context.Some (ConstructV ("REF", [ n; ht' ])) when n = null ->
-      ConstructV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
+    | AL_Context.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
+      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
     | _ -> raise Exception.MissingReturnValue
     end
-  | ConstructV ("CONST", _) ->
+  | CaseV ("CONST", _) ->
     WasmContext.push_value wasm_instr
-  | ConstructV (name, []) when is_builtin name ->
+  | CaseV (name, []) when is_builtin name ->
     call_builtin name;
-  | ConstructV (fname, args) ->
+  | CaseV (fname, args) ->
     call_algo fname args |> ignore
   | v ->
     string_of_value v
@@ -694,20 +701,20 @@ and interp_instr (env: env) (instr: instr): env =
     | v -> WasmContext.push_value v
     end;
     env
-  | PopI (IterE (NameE name, [name'], ListN (e', None))) when name = name' ->
+  | PopI (IterE (VarE name, [name'], ListN (e', None))) when name = name' ->
     let i = eval_expr env e' |> value_to_int in
     let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
     Env.add name (listV vs) env
   | PopI e ->
     begin match (e, WasmContext.pop_value ()) with
-    | ConstructE (("CONST", _), [NameE nt; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | CaseE (("CONST", _), [VarE nt; VarE name]), CaseV ("CONST", [ ty; v ]) ->
       env
       |> Env.add nt ty
       |> Env.add name v
-    | ConstructE (("CONST", _), [tyE; NameE name]), ConstructV ("CONST", [ ty; v ]) ->
+    | CaseE (("CONST", _), [tyE; VarE name]), CaseV ("CONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       Env.add name v env
-    | NameE name, v -> Env.add name v env
+    | VarE name, v -> Env.add name v env
     (* TODO remove this *)
     | FrameE _, FrameV _ -> env
     | (e, h) ->
@@ -716,7 +723,7 @@ and interp_instr (env: env) (instr: instr): env =
         (structured_string_of_value h)
       |> failwith
     end
-  | PopAllI (IterE (NameE name, [name'], List)) when name = name' ->
+  | PopAllI (IterE (VarE name, [name'], List)) when name = name' ->
     let rec pop_all acc =
       if WasmContext.get_value_stack () |> List.length > 0 then
         WasmContext.pop_value () :: acc |> pop_all
@@ -731,7 +738,6 @@ and interp_instr (env: env) (instr: instr): env =
     |> failwith
   | LetI (pattern, e) ->
     assign pattern (eval_expr env e) env
-  | CallI _ -> failwith "No CallI"
   | PerformI (f, el) ->
     let args = List.map (eval_expr env) el in
     dsl_function_call f args |> ignore;
@@ -771,11 +777,11 @@ and interp_instr (env: env) (instr: instr): env =
     let new_env = interp_instrs env il in
     cleanup ();
     new_env
-  | ExitAbruptI _ ->
+  | ExitI ->
     WasmContext.pop_context () |> ignore;
     AL_Context.decrease_depth ();
     env
-  | ReplaceI (e1, IndexP e2, e3) ->
+  | ReplaceI (e1, IdxP e2, e3) ->
     let a = eval_expr env e1 |> value_to_array in
     let i = eval_expr env e2 |> value_to_int in
     let v = eval_expr env e3 in
@@ -791,7 +797,7 @@ and interp_instr (env: env) (instr: instr): env =
     env
   | ReplaceI (e1, DotP (s, _), e2) ->
     begin match eval_expr env e1 with
-    | RecordV r ->
+    | StrV r ->
         let v = eval_expr env e2 in
         Record.replace s v r
     | _ -> failwith "Not a Record"
@@ -801,11 +807,6 @@ and interp_instr (env: env) (instr: instr): env =
     let a = eval_expr env e1 |> value_to_growable_array in
     let v = eval_expr env e2 in
     a := Array.append (!a) [|v|];
-    env
-  | AppendListI (e1, e2) ->
-    let a1 = eval_expr env e1 |> value_to_growable_array in
-    let a2 = eval_expr env e2 |> value_to_array in
-    a1 := Array.append (!a1) a2;
     env
   | i ->
     structured_string_of_instr 0 i
@@ -858,6 +859,9 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
+  let depth = !AL_Context.context_stack_length in
+  if depth > 70_000 then
+    failwith "Stack overflow";
 
   (* Push AL context *)
   let al_context = AL_Context.create_context name in
@@ -884,11 +888,17 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 
 (* Entry *)
 
+let init_context () =
+  AL_Context.init_context ();
+  WasmContext.init_context ()
+
 let instantiation (args: value list): value =
+  init_context();
   match call_algo "instantiate" args with
   | AL_Context.Some module_inst -> module_inst
   | _ -> failwith "Instantiation doesn't return module instance"
 let invocation (args: value list): value =
+  init_context();
   match call_algo "invoke" args with
   | AL_Context.Some v -> v
   | _ -> failwith "Invocation doesn't return value"
