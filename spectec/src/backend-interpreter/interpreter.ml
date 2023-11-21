@@ -660,6 +660,9 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
+  let depth = !AL_Context.context_stack_length in
+  if depth > 70_000 then
+    failwith "Stack overflow";
 
   (* Push AL context *)
   let al_context = AL_Context.create_context name in
@@ -684,11 +687,17 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 
 (* Entry *)
 
+let init_context () =
+  AL_Context.init_context ();
+  WasmContext.init_context ()
+
 let instantiation (args: value list): value =
+  init_context();
   match call_algo "instantiation" args with
   | AL_Context.Some module_inst -> module_inst
   | _ -> failwith "Instantiation doesn't return module instance"
 let invocation (args: value list): value =
+  init_context();
   match call_algo "invocation" args with
   | AL_Context.Some v -> v
   | _ -> failwith "Invocation doesn't return value"

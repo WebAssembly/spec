@@ -23,7 +23,7 @@ let to_map algos =
   in
   List.fold_left f (RuleMap.empty, FuncMap.empty) algos
 
-let init algos = 
+let init algos =
   let rmap, fmap = to_map algos in
   rule_map := rmap;
   func_map := fmap
@@ -75,12 +75,20 @@ module AL_Context = struct
   type t = string * return_value * int
 
   let context_stack: t list ref = ref []
+  let context_stack_length = ref 0
 
   let create_context name = (name, Bot, 0)
 
-  let push_context ctx = context_stack := ctx :: !context_stack
+  let init_context () =
+    context_stack := [];
+    context_stack_length := 0
+
+  let push_context ctx =
+    context_stack := ctx :: !context_stack;
+    context_stack_length := 1 + !context_stack_length
 
   let pop_context () =
+    context_stack_length := !context_stack_length - 1;
     match !context_stack with
     | h :: t -> context_stack := t; h
     | _ -> failwith "AL context stack underflow"
@@ -160,6 +168,8 @@ module WasmContext = struct
     match List.nth_opt !context_stack n with
     | Some ctx -> ctx
     | None -> failwith "Wasm context stack underflow"
+
+  let init_context () = context_stack := [top_level_context]
 
   let push_context ctx = context_stack := ctx :: !context_stack
 
