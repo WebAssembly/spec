@@ -6,7 +6,8 @@ EXT = $(NAME)
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec
-SPECFILES = $(sh ls $(SPECDIR)/*.$(EXT))
+SPECS = $(shell ls $(SPECDIR))
+TESTS = $(SPECS:%=test-%)
 
 
 # Main targets
@@ -18,10 +19,20 @@ all: test
 
 # Test
 
-.PHONY: test
+.PHONY: test $(TESTS)
 
-test: $(EXE)
-	(cd $(SPECDIR) && $(EXE) *.$(EXT))
+test: $(TESTS)
+
+$(TESTS): test-%: $(EXE)
+	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT))
+
+
+# Executable
+
+$(EXE): exe
+
+exe:
+	@(cd ..; make exe)
 
 
 # Cleanup

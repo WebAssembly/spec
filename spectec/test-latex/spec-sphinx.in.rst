@@ -3,8 +3,6 @@ Wasm Formal Semantics
 
 **Syntax**
 
-$${syntax+: {numtype vectype reftype valtype} resulttype}
-
 $${definition: size}
 
 $${syntax+:
@@ -12,16 +10,14 @@ $${syntax+:
   {globaltype
   functype
   tabletype
-  memtype
-  elemtype
-  datatype}
+  memtype}
   {}
   externtype
 }
 
-$${syntax: {instr/control instr/reference}}
+$${syntax: {instr/control}}
 
-$${syntax: {instr/numeric instr/local instr/global instr/table instr/memory} expr}
+$${syntax: {instr/numeric instr/local instr/global instr/memory} expr}
 
 
 
@@ -31,7 +27,7 @@ An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_
 
 $${rule:
   {Instrs_ok/empty Instrs_ok/seq}
-  {Instrs_ok/sub Instrs_ok/frame}
+  {Instrs_ok/frame}
 }
 
 

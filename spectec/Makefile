@@ -3,8 +3,6 @@
 NAME = watsup
 EXT = $(NAME)
 
-TESTDIRS = test-frontend test-latex
-
 
 # Main targets
 
@@ -12,7 +10,7 @@ TESTDIRS = test-frontend test-latex
 
 default: exe
 all: exe latex test
-ci: all test-frontend test-latex
+ci: all
 
 
 # Executable
@@ -39,16 +37,18 @@ latex: exe
 
 # Test
 
+TESTDIRS = $(shell ls -d test-*)
+
 .PHONY: test testpromote $(TESTDIRS)
 
-test: exe
+test: exe $(TESTDIRS)
 	@dune runtest && echo OK || (echo Failure. Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:
 	dune promote
 
 $(TESTDIRS): test-%: exe
-	(cd $@ && make test)
+	(cd $@ && make test >/dev/null)
 
 
 # Cleanup

@@ -1,0 +1,115 @@
+;;
+;; Auxiliary definitions on Values
+;;
+
+;; Default values
+
+def $default(valtype) : val  hint(show $default_%)
+
+def $default(I32) = (CONST I32 0)
+def $default(I64) = (CONST I64 0)
+def $default(F32) = (CONST F32 0)
+def $default(F64) = (CONST F64 0)
+
+
+;; Projections
+
+def $funcsxv(externval*) : funcaddr*     hint(show $funcs(%))
+def $globalsxv(externval*) : globaladdr* hint(show $globals(%))
+def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))
+def $memsxv(externval*) : memaddr*       hint(show $mems(%))
+
+def $funcsxv(epsilon) = epsilon
+def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
+def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
+
+def $globalsxv(epsilon) = epsilon
+def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
+def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
+
+def $tablesxv(epsilon) = epsilon
+def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
+def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
+
+def $memsxv(epsilon) = epsilon
+def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
+def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
+
+
+
+;;
+;; Auxiliary definitions on State
+;;
+
+;; Short-hands
+
+def $store(state) : store             hint(show %.STORE)
+def $frame(state) : frame             hint(show %.FRAME)
+
+def $store((s; f)) = s
+def $frame((s; f)) = f
+
+
+def $funcaddr(state) : funcaddr*      hint(show %.MODULE.FUNC)
+def $funcaddr((s; f)) = f.MODULE.FUNC
+
+def $funcinst(state) : funcinst*      hint(show %.FUNC)
+def $globalinst(state) : globalinst*  hint(show %.GLOBAL)
+def $tableinst(state) : tableinst*    hint(show %.TABLE)
+def $meminst(state) : meminst*        hint(show %.MEM)
+def $moduleinst(state) : moduleinst   hint(show %.MODULE)
+
+def $funcinst((s; f)) = s.FUNC
+def $globalinst((s; f)) = s.GLOBAL
+def $tableinst((s; f)) = s.TABLE
+def $meminst((s; f)) = s.MEM
+def $moduleinst((s; f)) = f.MODULE
+
+def $type(state, typeidx) : functype        hint(show %.TYPE`[%])
+def $func(state, funcidx) : funcinst        hint(show %.FUNC#`[%])
+def $global(state, globalidx) : globalinst  hint(show %.GLOBAL#`[%])
+def $table(state, tableidx) : tableinst     hint(show %.TABLE#`[%])
+def $mem(state, memidx) : meminst           hint(show %.MEM#`[%])
+def $local(state, localidx) : val           hint(show %.LOCAL#`[%])
+
+def $type((s; f), x) = f.MODULE.TYPE[x]
+def $func((s; f), x) = s.FUNC[f.MODULE.FUNC[x]]
+def $global((s; f), x) = s.GLOBAL[f.MODULE.GLOBAL[x]]
+def $table((s; f), x) = s.TABLE[f.MODULE.TABLE[x]]
+def $mem((s; f), x) = s.MEM[f.MODULE.MEM[x]]
+def $local((s; f), x) = f.LOCAL[x]
+
+
+;; Update
+
+def $with_local(state, localidx, val) : state               hint(show %[.LOCAL[%] = %])
+def $with_global(state, globalidx, val) : state             hint(show %[.GLOBAL[%].VALUE = %])
+def $with_table(state, tableidx, nat, funcaddr) : state     hint(show %[.TABLE[%].ELEM[%] = %])
+def $with_tableinst(state, tableidx, tableinst) : state     hint(show %[.TABLE[%] = %])
+def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEM[%].DATA[% : %] = %])
+def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEM[%] = %])
+
+def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
+def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]].VALUE = v]; f
+def $with_table((s; f), x, i, a) = s[.TABLE[f.MODULE.TABLE[x]].ELEM[i] = a]; f
+def $with_tableinst((s; f), x, ti) = s[.TABLE[f.MODULE.TABLE[x]] = ti]; f
+def $with_mem((s; f), x, i, j, b*) = s[.MEM[f.MODULE.MEM[x]].DATA[i : j] = b*]; f
+def $with_meminst((s; f), x, mi) = s[.MEM[f.MODULE.MEM[x]] = mi]; f
+
+
+;; Growing
+
+def $growtable(tableinst, nat) : tableinst  hint(partial)
+def $growmemory(meminst, nat) : meminst     hint(partial)
+
+def $growtable(ti, n) = ti'
+  -- if ti = { TYPE `[i .. j], ELEM a* }
+  -- if i' = $(|a*| + n)
+  -- if ti' = { TYPE `[i' .. j], ELEM a* epsilon^n }
+  -- if $(i' <= j)
+
+def $growmemory(mi, n) = mi'
+  -- if mi = { TYPE `[i .. j], DATA b* }
+  -- if i' = $(|b*| / (64 * $Ki) + n)
+  -- if mi' = { TYPE `[i' .. j], DATA b* 0^(n * 64 * $Ki) }
+  -- if $(i' <= j)

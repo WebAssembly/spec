@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- ../spec/*.watsup -l -p -d spec-splice-in.tex -w)
+$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l -p -d spec-splice.in.tex -w)
 == Parsing...
 == Elaboration...
 == IL Validation...
@@ -71,7 +71,9 @@ warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
 warning: syntax `inn` was never spliced
+warning: syntax `instr/reference` was never spliced
 warning: syntax `instr/heap` was never spliced
+warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
 warning: syntax `labeladdr` was never spliced
 warning: syntax `labelidx` was never spliced
@@ -92,16 +94,19 @@ warning: syntax `n` was never spliced
 warning: syntax `name` was never spliced
 warning: syntax `nul` was never spliced
 warning: syntax `num` was never spliced
+warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `packedtype` was never spliced
 warning: syntax `packedval` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
+warning: syntax `reftype` was never spliced
 warning: syntax `relopFXX` was never spliced
 warning: syntax `relopIXX` was never spliced
 warning: syntax `relop_numtype` was never spliced
 warning: syntax `result` was never spliced
+warning: syntax `resulttype` was never spliced
 warning: syntax `s33` was never spliced
 warning: syntax `sN` was never spliced
 warning: syntax `start` was never spliced
@@ -132,6 +137,9 @@ warning: syntax `unopFXX` was never spliced
 warning: syntax `unopIXX` was never spliced
 warning: syntax `unop_numtype` was never spliced
 warning: syntax `val` was never spliced
+warning: syntax `valtype` was never spliced
+warning: syntax `valtype` was never spliced
+warning: syntax `vectype` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
 warning: grammar `Bbyte` was never spliced
@@ -383,6 +391,7 @@ warning: rule `Instrf_ok/instr` was never spliced
 warning: rule `Instrf_ok/local.set` was never spliced
 warning: rule `Instrf_ok/local.tee` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
+warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrtype_ok` was never spliced
 warning: rule `Instrtype_sub` was never spliced

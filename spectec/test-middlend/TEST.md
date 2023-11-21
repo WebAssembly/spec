@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (cd ../spec && ../src/exe-watsup/main.exe *.watsup -l --print-all-il --all-passes --check)
+$ (cd ../spec/wasm-3.0 && ../../src/exe-watsup/main.exe *.watsup -l --print-all-il --all-passes --check)
 == Parsing...
 == Elaboration...
 

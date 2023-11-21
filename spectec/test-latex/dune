@@ -2,8 +2,8 @@
   (libraries spectec)
   (deps
     (file ../src/exe-watsup/main.exe)
-    (glob_files ../spec/*.watsup)
-    (file spec-splice-in.tex)
+    (glob_files ../spec/*)
+    (file spec-splice.in.tex)
   )
   (files TEST.md)
 )

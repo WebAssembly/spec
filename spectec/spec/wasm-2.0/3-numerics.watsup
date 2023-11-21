@@ -1,0 +1,39 @@
+;;
+;; Numerics
+;;
+
+;; Conversions
+
+def $s33_to_u32(s33) : u32  hint(show %)
+
+
+;; Signed numbers
+
+def $signed(N, nat) : int       hint(show $signed_(%,%))
+def $signed(N, i) = i           -- if $(0 <= 2^(N-1))
+def $signed(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
+
+def $invsigned(N, int) : nat    hint(show $signed^(-1)#_%#(%))
+def $invsigned(N, i) = j        -- if $signed(N, j) = i
+
+
+;; TODO
+
+def $unop(unop_numtype, numtype, c) : c_numtype*         hint(show %#_%#((%)))
+def $binop(binop_numtype, numtype, c, c) : c_numtype*    hint(show %#_%#(%, %))
+def $testop(testop_numtype, numtype, c) : c_numtype      hint(show %#_%#((%)))
+def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%#(%, %))
+def $cvtop(cvtop_numtype, numtype, numtype, sx?, c) : c_numtype* hint(show %#$_((%,%))^(%)#((%)))
+
+def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
+def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^(%)#((%)))
+
+def $ibytes(N, iN) : byte*            hint(show $bytes_(i#%,%))
+def $fbytes(N, fN) : byte*            hint(show $bytes_(f#%,%))
+def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
+
+def $invibytes(N, byte*) : iN
+def $invfbytes(N, byte*) : fN
+
+def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
+def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
