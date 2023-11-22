@@ -1054,7 +1054,7 @@ rule Mem_ok:
 
 rule Elem_ok:
   C |- ELEM rt expr* elemmode : rt
-  -- (Expr_ok: C |- expr : rt)*
+  -- (Expr_ok_const: C |- expr : rt CONST)*
   -- Elemmode_ok: C |- elemmode : rt
 
 rule Data_ok:

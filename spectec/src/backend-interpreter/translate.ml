@@ -173,8 +173,10 @@ and exp2expr exp =
       match (op, exps) with
       | [ []; []; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
+      | [ []; [ Ast.Semicolon ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
           TupE (exp2expr e1, exp2expr e2)
+      | [ []; [ Ast.Star; Ast.Arrow ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
       (* Constructor *)
@@ -557,7 +559,7 @@ let rec letI lhs rhs targets cont =
     let length_s, bindings_s, suffix' = handle_list suffix in
     (* TODO: This condition should be injected by sideconditions pass *)
     let cond = match length_p, length_s with
-      | None, None -> failwith ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | None, None -> YetC ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
       | None, Some l -> CmpC (GeOp, LenE rhs, l)
       | Some l1, Some l2 -> CmpC (EqOp, LenE rhs, BinE (AddOp, l1, l2))
@@ -590,12 +592,17 @@ let rulepr2instrs id exp instrs = match id.it, exp2args exp with
       ListE [CaseE (("FRAME_", ""), [])],
       [ LetI (rhs, CallE ("eval_expr", [ lhs ])) ]
     ) :: instrs
+  | "Step_read", [TupE (TupE (_s, f), lhs); rhs] ->
+    EnterI (
+      FrameE (None, f),
+      ListE [CaseE (("FRAME_", ""), [])],
+      [ LetI (rhs, CallE ("eval_expr", [ lhs ])) ]
+    ) :: instrs
   | "Ref_ok", [_s; ref; rt] ->
     LetI (rt, CallE ("ref_type_of", [ ref ])) :: instrs
   | "Reftype_sub", [_C; rt1; rt2] ->
-    (* TODO: This is an abuse of notation of `Le` for subtype. Need to grow language. *)
     [ IfI (MatchC (rt1, rt2), instrs |> check_nop, []) ]
-  | _ -> YetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
+  | _ -> prerr_endline (Il.Print.string_of_exp exp); YetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
 
 (** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)
 let rec prem2instrs remain_lhs prem instrs =

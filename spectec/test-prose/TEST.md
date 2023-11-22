@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (cd ../spec && dune exec ../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose)
+$ (cd ../spec/wasm-3.0 && dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose)
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -134,7 +134,7 @@ if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 if (a < |$funcinst(z)|)
 where fi = $funcinst(z)[a]
 where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt(fi.TYPE_funcinst)
-where `FUNC%%*%`(x', LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
+where `FUNC%%*%`(y, LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
 where f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst}
 where (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x})] = u_0*{u_0}
 ...Animation failed (reorder)
@@ -671,6 +671,12 @@ free_dataidx_funcs u_0*
 2. Let [func] ++ func'* be u_0*.
 3. Return $free_dataidx_func(func) ++ $free_dataidx_funcs(func'*).
 
+concat_bytes u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [b*] ++ b'** be u_0*.
+3. Return b* ++ $concat_bytes(b'**).
+
 size u_0
 1. If u_0 is I32, then:
   a. Return 32.
@@ -913,12 +919,6 @@ memsxt u_0*
 
 memop0
 1. Return { ALIGN: 0; OFFSET: 0; }.
-
-concat_bytes u_0*
-1. If u_0* is [], then:
-  a. Return [].
-2. Let [b*] ++ b'** be u_0*.
-3. Return b* ++ $concat_bytes(b'**).
 
 signed N i
 1. If 0 ≤ (2 ^ (N - 1)), then:
@@ -1221,11 +1221,13 @@ blocktype u_1
 alloctypes u_0*
 1. If u_0* is [], then:
   a. Return [].
-2. Let rectype'* ++ [rectype] be u_0*.
-3. Let deftype'* be $alloctypes(rectype'*).
-4. Let x be |deftype'*|.
-5. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
-6. Return deftype'* ++ deftype*.
+2. Let type'* ++ [type] be u_0*.
+3. Let deftype'* be $alloctypes(type'*).
+4. Assert: Due to validation, type is of the case TYPE.
+5. Let (TYPE rectype) be type.
+6. Let x be |deftype'*|.
+7. Let deftype* be $subst_all_deftypes($rolldt(x, rectype), deftype'*).
+8. Return deftype'* ++ deftype*.
 
 allocfunc mm func
 1. Assert: Due to validation, func is of the case FUNC.
@@ -1343,35 +1345,34 @@ allocmodule module externval* val_g* ref_t* ref_e**
 3. Let ma_ex* be $memsxv(externval*).
 4. Let ta_ex* be $tablesxv(externval*).
 5. Assert: Due to validation, module is of the case MODULE.
-6. Let (MODULE y_0 import* func^n_f y_1 y_2 y_3 y_4 y_5 start? export*) be module.
-7. Let (DATA byte* datamode)^n_d be y_5.
-8. Let (ELEM reftype expr_e* elemmode)^n_e be y_4.
-9. Let (MEMORY memtype)^n_m be y_3.
-10. Let (TABLE tabletype expr_t)^n_t be y_2.
-11. Let (GLOBAL globaltype expr_g)^n_g be y_1.
-12. Let (TYPE rectype)* be y_0.
-13. Let dt* be $alloctypes(rectype*).
-14. Let fa* be (|s.FUNC| + i_f)^(i_f<n_f).
-15. Let ga* be (|s.GLOBAL| + i_g)^(i_g<n_g).
-16. Let ta* be (|s.TABLE| + i_t)^(i_t<n_t).
-17. Let ma* be (|s.MEM| + i_m)^(i_m<n_m).
-18. Let ea* be (|s.ELEM| + i_e)^(i_e<n_e).
-19. Let da* be (|s.DATA| + i_d)^(i_d<n_d).
-20. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
-21. Let mm be { TYPE: dt*; FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
-22. Let y_0 be $allocfuncs(mm, func^n_f).
-23. Assert: Due to validation, y_0 is fa*.
-24. Let y_0 be $allocglobals(globaltype^n_g, val_g*).
-25. Assert: Due to validation, y_0 is ga*.
-26. Let y_0 be $alloctables(tabletype^n_t, ref_t*).
-27. Assert: Due to validation, y_0 is ta*.
-28. Let y_0 be $allocmems(memtype^n_m).
-29. Assert: Due to validation, y_0 is ma*.
-30. Let y_0 be $allocelems(reftype^n_e, ref_e**).
-31. Assert: Due to validation, y_0 is ea*.
-32. Let y_0 be $allocdatas(byte*^n_d).
-33. Assert: Due to validation, y_0 is da*.
-34. Return mm.
+6. Let (MODULE type* import* func^n_f y_0 y_1 y_2 y_3 y_4 start? export*) be module.
+7. Let (DATA byte* datamode)^n_d be y_4.
+8. Let (ELEM reftype expr_e* elemmode)^n_e be y_3.
+9. Let (MEMORY memtype)^n_m be y_2.
+10. Let (TABLE tabletype expr_t)^n_t be y_1.
+11. Let (GLOBAL globaltype expr_g)^n_g be y_0.
+12. Let dt* be $alloctypes(type*).
+13. Let fa* be (|s.FUNC| + i_f)^(i_f<n_f).
+14. Let ga* be (|s.GLOBAL| + i_g)^(i_g<n_g).
+15. Let ta* be (|s.TABLE| + i_t)^(i_t<n_t).
+16. Let ma* be (|s.MEM| + i_m)^(i_m<n_m).
+17. Let ea* be (|s.ELEM| + i_e)^(i_e<n_e).
+18. Let da* be (|s.DATA| + i_d)^(i_d<n_d).
+19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+20. Let mm be { TYPE: dt*; FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+21. Let y_0 be $allocfuncs(mm, func^n_f).
+22. Assert: Due to validation, y_0 is fa*.
+23. Let y_0 be $allocglobals(globaltype^n_g, val_g*).
+24. Assert: Due to validation, y_0 is ga*.
+25. Let y_0 be $alloctables(tabletype^n_t, ref_t*).
+26. Assert: Due to validation, y_0 is ta*.
+27. Let y_0 be $allocmems(memtype^n_m).
+28. Assert: Due to validation, y_0 is ma*.
+29. Let y_0 be $allocelems(reftype^n_e, ref_e**).
+30. Assert: Due to validation, y_0 is ea*.
+31. Let y_0 be $allocdatas(byte*^n_d).
+32. Assert: Due to validation, y_0 is da*.
+33. Return mm.
 
 concat_instr u_0*
 1. If u_0* is [], then:
@@ -1397,51 +1398,49 @@ rundata (DATA byte* u_0) y
 
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE y_0 import* func^n_func global* table* mem* elem* data* start? export*) be module.
-3. Let (TYPE rectype)* be y_0.
-4. Let n_d be |data*|.
-5. Let n_e be |elem*|.
-6. Let (START x)? be start?.
-7. Let mm_init be { TYPE: $alloctypes(rectype*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
-8. Let (GLOBAL globaltype expr_g)* be global*.
-9. Let (TABLE tabletype expr_t)* be table*.
-10. Let (ELEM reftype expr_e* elemmode)* be elem*.
-11. Let instr_d* be $concat_instr($rundata(data*[j], j)^(j<n_d)).
-12. Let instr_e* be $concat_instr($runelem(elem*[i], i)^(i<n_e)).
-13. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-14. Let (_, f) be z.
-15. Enter the activation of f with label [FRAME_]:
-  a. Let [val_g]* be $eval_expr(expr_g)*.
-16. Let (_, f) be z.
-17. Enter the activation of f with label [FRAME_]:
-  a. Let [ref_t]* be $eval_expr(expr_t)*.
-18. Let (_, f) be z.
-19. Enter the activation of f with label [FRAME_]:
-  a. Let [ref_e]** be $eval_expr(expr_e)**.
-20. Let mm be $allocmodule(module, externval*, val_g*, ref_t*, ref_e**).
-21. Let f be { LOCAL: []; MODULE: mm; }.
-22. Enter the activation of f with arity 0 with label [FRAME_]:
-  a. Execute the sequence (instr_e*).
-  b. Execute the sequence (instr_d*).
+2. Let (MODULE type* import* func^n_func global* table* mem* elem* data* start? export*) be module.
+3. Let n_D be |data*|.
+4. Let n_E be |elem*|.
+5. Let (START x)? be start?.
+6. Let mm_init be { TYPE: $alloctypes(type*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+7. Let (GLOBAL globaltype expr_G)* be global*.
+8. Let (TABLE tabletype expr_T)* be table*.
+9. Let (ELEM reftype expr_E* elemmode)* be elem*.
+10. Let instr_D* be $concat_instr($rundata(data*[j], j)^(j<n_D)).
+11. Let instr_E* be $concat_instr($runelem(elem*[i], i)^(i<n_E)).
+12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
+13. Let (_, f) be z.
+14. Enter the activation of f with label [FRAME_]:
+  a. Let [val_G]* be $eval_expr(expr_G)*.
+15. Let (_, f) be z.
+16. Enter the activation of f with label [FRAME_]:
+  a. Let [ref_T]* be $eval_expr(expr_T)*.
+17. Let (_, f) be z.
+18. Enter the activation of f with label [FRAME_]:
+  a. Let [ref_E]** be $eval_expr(expr_E)**.
+19. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+20. Let f be { LOCAL: []; MODULE: mm; }.
+21. Enter the activation of f with arity 0 with label [FRAME_]:
+  a. Execute the sequence (instr_E*).
+  b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-23. Return mm.
+22. Return mm.
 
 invoke fa val^n
-1. Let mm be { TYPE: [s.FUNC[fa].TYPE]; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }; }.
 2. Assert: Due to validation, $expanddt(s.FUNC[fa].TYPE) is of the case FUNC.
 3. Let (FUNC y_0) be $expanddt(s.FUNC[fa].TYPE).
 4. Let [t_1^n]->[t_2*] be y_0.
-5. Let f be { LOCAL: []; MODULE: mm; }.
-6. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
-7. Let k be |t_2*|.
-8. Enter the activation of f with arity k with label [FRAME_]:
+5. Assert: Due to validation, $funcinst()[fa].CODE is of the case FUNC.
+6. Let k be |t_2*|.
+7. Enter the activation of f with arity k with label [FRAME_]:
   a. Push val^n to the stack.
   b. Push (REF.FUNC_ADDR fa) to the stack.
   c. Execute (CALL_REF ?(0)).
-9. Pop val^k from the stack.
-10. Return val^k.
+8. Pop val^k from the stack.
+9. Return val^k.
 
 utf8 u_0
 1. If |u_0| is 1, then:
@@ -2370,7 +2369,7 @@ execution_of_MEMORY.GROW x
 2. Pop (I32.CONST n) from the stack.
 3. Either:
   a. Let mi be $growmemory($mem(x), n).
-  b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+  b. Push (I32.CONST (|$mem(x).DATA| / (64 · $Ki()))) to the stack.
   c. Perform $with_meminst(x, mi).
 4. Or:
   a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.

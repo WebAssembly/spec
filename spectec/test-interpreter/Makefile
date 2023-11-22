@@ -5,7 +5,7 @@ EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
 OWNDIR = $(PWD)
-SPECDIR = ../spec
+SPECDIR = ../spec/wasm-3.0
 SPECFILES = $(sh ls $(SPECDIR)/*.$(EXT))
 
 

@@ -1,0 +1,50 @@
+;;
+;; Auxiliary Definitions on Types
+;;
+
+;; Size
+
+;; def |I n| = |F n| = |V n| = n        ;; ????
+
+def $size(valtype) : nat  hint(partial) hint(show |%|)
+def $size(I32) = 32
+def $size(I64) = 64
+def $size(F32) = 32
+def $size(F64) = 64
+def $size(V128) = 128
+
+
+;;
+;; Auxiliary definitions on Indices
+;;
+
+;; Free indices
+
+def $free_dataidx_instr(instr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instr(MEMORY.INIT x) = x
+def $free_dataidx_instr(DATA.DROP x) = x
+def $free_dataidx_instr(in) = epsilon
+
+def $free_dataidx_instrs(instr*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_instrs(epsilon) = epsilon
+def $free_dataidx_instrs(instr instr'*) = $free_dataidx_instr(instr) $free_dataidx_instrs(instr'*)
+
+def $free_dataidx_expr(expr) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_expr(in*) = $free_dataidx_instrs(in*)
+
+def $free_dataidx_func(func) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_func(FUNC x loc* e) = $free_dataidx_expr(e)
+
+def $free_dataidx_funcs(func*) : dataidx*  hint(show $free_dataidx)
+def $free_dataidx_funcs(epsilon) = epsilon
+def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_funcs(func'*)
+
+
+;;
+;; Auxiliary definitions on Instructions
+;;
+
+;; Shorthands for Instructions
+
+def $memop0 : memop  hint(show )
+def $memop0 = {ALIGN 0, OFFSET 0}

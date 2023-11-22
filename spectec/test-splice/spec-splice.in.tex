@@ -19,8 +19,6 @@
 
 \subsection*{Syntax}
 
-@@@{syntax+: {numtype vectype reftype valtype} resulttype}
-
 @@@{definition: size}
 
 @@@{syntax+:
@@ -33,9 +31,9 @@
   externtype
 }
 
-@@@{syntax: {instr/control instr/reference}}
+@@@{syntax: {instr/control}}
 
-@@@{syntax: {instr/numeric instr/local instr/global instr/table instr/memory} expr}
+@@@{syntax: {instr/numeric instr/local instr/global instr/memory} expr}
 
 
 \subsection*{Typing @@{relation: Instr_ok}}
@@ -44,7 +42,7 @@ An instruction sequence @@{:instr*} is well-typed with an instruction type @@{: 
 
 @@@{rule:
   {Instrs_ok/empty Instrs_ok/seq}
-  {Instrs_ok/sub Instrs_ok/frame}
+  {Instrs_ok/frame}
 }
 
 @@@{rule+: Instrs_ok/*m* {Instrs_ok/*m*}}
@@ -56,6 +54,9 @@ An instruction sequence @@{:instr*} is well-typed with an instruction type @@{: 
 @@@{rule+: Instr_ok/loop}
 
 @@@{rule+: Instr_ok/if}
+
+
+@@@{rule-ignore: Instr_ok/convert-*}
 
 
 \subsection*{Runtime}

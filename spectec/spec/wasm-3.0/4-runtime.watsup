@@ -1,0 +1,168 @@
+;;
+;; Addresses
+;;
+
+syntax addr hint(desc "address") = nat
+syntax funcaddr hint(desc "function address") = addr
+syntax globaladdr hint(desc "global address") = addr
+syntax tableaddr hint(desc "table address") = addr
+syntax memaddr hint(desc "memory address") = addr
+syntax elemaddr hint(desc "elem address") = addr
+syntax dataaddr hint(desc "data address") = addr
+syntax hostaddr hint(desc "host address") = addr
+syntax structaddr hint(desc "structure address") = addr
+syntax arrayaddr hint(desc "array address") = addr
+
+var a : addr
+var fa : funcaddr
+var ga : globaladdr
+var ta : tableaddr
+var ma : memaddr
+var ea : elemaddr
+var da : dataaddr
+var sa : structaddr
+var aa : arrayaddr
+
+
+;;
+;; Values
+;;
+
+;; Basic values
+
+syntax num hint(desc "number") =
+  | CONST numtype c_numtype
+syntax addrref hint(desc "address reference") =
+  | REF.I31_NUM u31                hint(show REF.I31 %)
+  | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
+  | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
+  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
+  | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
+  | REF.EXTERN addrref
+syntax ref hint(desc "reference") =
+  | REF.NULL heaptype
+  | addrref
+syntax val hint(desc "value") =
+  | num | ref
+
+syntax result hint(desc "result") =
+  | _VALS val* | TRAP
+
+var r : ref
+var v : val
+var res : result
+
+
+;; External values
+
+syntax externval hint(desc "external value") =
+  | FUNC funcaddr | GLOBAL globaladdr | TABLE tableaddr | MEM memaddr
+
+var xv : externval
+
+
+;;
+;; Configurations
+;;
+
+;; Instances
+
+syntax c_packedtype = nat  ;; TODO
+
+syntax funcinst hint(desc "function instance") =
+  { TYPE deftype,
+    MODULE moduleinst,
+    CODE func }
+syntax globalinst hint(desc "global instance") =
+  { TYPE globaltype,
+    VALUE val }
+syntax tableinst hint(desc "table instance") =
+  { TYPE tabletype,
+    ELEM ref* }
+syntax meminst hint(desc "memory instance") =
+  { TYPE memtype,
+    DATA byte* }
+syntax eleminst hint(desc "element instance") =
+  { TYPE elemtype,
+    ELEM ref* }
+syntax datainst hint(desc "data instance") =
+  { DATA byte* }
+syntax exportinst hint(desc "export instance") =
+  { NAME name,
+    VALUE externval }
+
+syntax packedval hint(desc "packed value") =
+  | PACK packedtype c_packedtype     hint(show %.PACK %)
+syntax fieldval hint(desc "field value") =
+  | val | packedval
+syntax structinst hint(desc "structure instance") =
+  { TYPE deftype,
+    FIELD fieldval* }
+syntax arrayinst hint(desc "array instance") =
+  { TYPE deftype,
+    FIELD fieldval* }
+
+syntax moduleinst hint(desc "module instance") =
+  { TYPE deftype*,
+    FUNC funcaddr*,
+    GLOBAL globaladdr*,
+    TABLE tableaddr*,
+    MEM memaddr*,
+    ELEM elemaddr*,
+    DATA dataaddr*,
+    EXPORT exportinst* }
+
+var mm : moduleinst
+var fi : funcinst
+var gi : globalinst
+var ti : tableinst
+var mi : meminst
+var ei : eleminst
+var di : datainst
+var xi : exportinst
+
+var si : structinst
+var ai : arrayinst
+var fv : fieldval
+var pv : packedval
+
+
+;; Configurations proper
+
+syntax store hint(desc "store") =
+  { FUNC funcinst*,
+    GLOBAL globalinst*,
+    TABLE tableinst*,
+    MEM meminst*,
+    ELEM eleminst*,
+    DATA datainst*,
+    STRUCT structinst*,
+    ARRAY arrayinst* }
+
+syntax frame hint(desc "frame") =
+  { LOCAL (val?)*,
+    MODULE moduleinst }
+
+syntax state hint(desc "state") = store; frame
+syntax config hint(desc "configuration") = state; admininstr*
+
+var s : store
+var f : frame
+var z : state
+
+
+;;
+;; Administrative Instructions
+;;
+
+syntax admininstr hint(show instr) hint(desc "administrative instruction") =
+  | instr
+  | addrref
+  | LABEL_ n `{instr*} admininstr* hint(show LABEL_%#% %%)
+  | FRAME_ n `{frame} admininstr*  hint(show FRAME_%#% %%)
+  | TRAP
+
+syntax E hint(desc "evaluation context") =
+  | _HOLE `[ _ ]
+  | _SEQ val* E instr*
+  | LABEL_ n `{instr*} E

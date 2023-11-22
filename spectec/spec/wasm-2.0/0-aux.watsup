@@ -1,0 +1,58 @@
+;;
+;; General definitions
+;;
+
+;; General variables
+
+var i : nat
+var j : nat
+var k : nat
+
+var N : nat
+var M : nat
+
+syntax n = nat  ;; hack
+syntax m = nat  ;; hack
+
+var ii : int hint(show i)  ;; hack
+
+
+;; General constants
+
+def $Ki : nat
+def $Ki = 1024
+
+
+;; General functions
+
+def $min(nat, nat) : nat
+def $min(0, j) = 0
+def $min(i, 0) = 0
+def $min($(i+1), $(j+1)) = $min(i, j)
+
+def $sum(nat*) : nat  ;; TODO: hint
+def $sum(epsilon) = 0
+def $sum(n n'*) = $(n + $sum(n'*))
+
+
+;;
+;; Some notation tests
+;; TODO: remove
+;;
+
+def $test_sub_ATOM_22(n_3_ATOM_y) : nat
+def $test_sub_ATOM_22(n_3_ATOM_y) = 0
+
+def $curried_(n, n) : nat
+def $curried_(n_1, n_2) = $(n_1 + n_2)
+
+syntax testfuse =
+  | AB_ nat nat nat
+  | CD nat nat nat  hint(show CD_% % %)
+  | EF nat nat nat  hint(show EF_#% % %)
+  | GH nat nat nat  hint(show GH_%#% %)
+  | IJ nat nat nat  hint(show IJ_%#% %)
+  | KL nat nat nat  hint(show KL_AB#% % %)
+  | MN nat nat nat  hint(show MN_#AB % % %)
+  | OP nat nat nat  hint(show OP_#AB#% % %)
+  | QR nat nat nat  hint(show QR_%#AB % %)

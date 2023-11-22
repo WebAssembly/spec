@@ -5,8 +5,9 @@ EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
 OWNDIR = $(PWD)
-SPECDIR = ../spec
-SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
+SPECDIR = ../spec/wasm-3.0
+SPECS = $(shell ls $(SPECDIR)/*.$(EXT))
+TESTS = $(SPECS:%=test-%)
 
 SPHINXBUILD = sphinx-build
 SPHINXDIR = _sphinx
@@ -80,3 +81,6 @@ clean:
 	dune clean
 	rm -rf $(SPHINXDIR)
 	rm -f *.pdf
+
+# TODO
+test:

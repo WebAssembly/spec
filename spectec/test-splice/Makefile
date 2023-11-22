@@ -5,7 +5,7 @@ EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
 OWNDIR = $(PWD)
-SPECDIR = ../spec
+SPECDIR = ../spec/wasm-3.0
 SPECFILES = $(shell ls $(SPECDIR)/*.$(EXT))
 
 
@@ -18,7 +18,7 @@ all: latex-splice sphinx-splice
 
 # Latex splicing
 
-SPLICEINNAME = spec-splice-in
+SPLICEINNAME = spec-splice.in
 SPLICEOUTNAME = spec-splice
 
 .PHONY: latex-splice
@@ -32,7 +32,7 @@ latex-splice: $(SPLICEOUTNAME).tex
 
 # Sphinx splicing
 
-SPHINXINNAME = spec-sphinx-in
+SPHINXINNAME = spec-sphinx.in
 SPHINXOUTNAME = spec-sphinx
 SPHINXDIR = _sphinx
 
@@ -61,7 +61,7 @@ sphinx-pdf: $(SPHINXOUTNAME).rst conf.py
 
 .PHONY: test
 
-test: latex-gen latex-splice sphinx-splice
+test: latex-splice sphinx-splice
 
 
 # Cleanup

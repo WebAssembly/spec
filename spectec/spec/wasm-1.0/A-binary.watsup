@@ -1,0 +1,578 @@
+;;
+;; Auxiliaries
+;;
+
+;; Vectors
+
+grammar Bvec(grammar BX : X) : X* =
+  | n:Bu32 (X:BX)^n => X^n
+
+
+
+;;
+;; Values
+;;
+
+;; Numbers
+
+grammar Bbyte : byte = | b:0x00 | ... | b:0xFF => b
+
+grammar Bu(N) : nat hint(show Bu#N) =
+  | n:Bbyte                => n                       -- if $(n < 2^7 /\ n < 2^N)
+  | n:Bbyte m:Bu(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+
+grammar Bs(N) : int hint(show Bs#N) =
+  | n:Bbyte                => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
+  | n:Bbyte                => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
+  | n:Bbyte i:Bu(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+
+grammar Bi(N) : int hint(show Bi#N) =
+  | i:Bs(N)                => $invsigned(N, i)
+
+
+grammar Bf(N) : fN hint(show Bf#N) =
+  | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
+
+
+grammar Bu32 : u32 = | n:Bu(32) => n
+grammar Bu64 : u64 = | n:Bu(64) => n
+
+grammar Bf32 : f32 = | p:Bf(32) => p
+grammar Bf64 : f64 = | p:Bf(64) => p
+
+
+;; Names
+
+def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
+def $concat_bytes(epsilon) = epsilon
+def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
+
+def $utf8(name) : byte*
+def $utf8(c) = b  -- if c < U+0080 /\ c = b
+def $utf8(c) = b_1 b_2  -- if U+0080 <= c < U+0800 /\ c = $(2^6*(b_1 - 0xC0) + (b_2 - 0x80))
+def $utf8(c) = b_1 b_2 b_3  -- if (U+0800 <= c < U+D800 \/ U+E000 <= c < U+10000) /\ c = $(2^12*(b_1 - 0xE0) + 2^6*(b_2 - 0x80) + (b_3 - 0x80))
+def $utf8(c) = b_1 b_2 b_3 b_4  -- if (U+10000 <= c < U+11000) /\ c = $(2^18*(b_1 - 0xF0) + 2^12*(b_2 - 0x80) + 2^6*(b_3 - 0x80) + (b_4 - 0x80))
+def $utf8(c*) = $concat_bytes($utf8(c)*)
+
+grammar Bname : name =
+  | b*:Bvec(Bbyte) => name  -- if $utf8(name) = b*
+
+
+;;
+;; Types
+;;
+
+;; Value types
+
+grammar Bvaltype : valtype =
+  | 0x7F => I32
+  | 0x7E => I64
+  | 0x7D => F32
+  | 0x7C => F64
+
+
+grammar Bresulttype : valtype* =
+  | t*:Bvec(Bvaltype) => t*
+
+
+;; Type definitions
+
+grammar Bfunctype : functype =
+  | 0x60 t_1*:Bresulttype t_2*:Bresulttype => t_1* -> t_2*
+
+
+;; External types
+
+grammar Bmut : mut =
+  | 0x00 => epsilon
+  | 0x01 => MUT
+
+grammar Blimits : limits =
+  | 0x00 n:Bu32 => `[n .. $(2^32-1)]
+  | 0x01 n:Bu32 m:Bu32 => `[n .. m]
+
+grammar Bglobaltype : globaltype =
+  | t:Bvaltype mut:Bmut => mut t
+
+grammar Btabletype : tabletype =
+  | 0x70 lim:Blimits => lim
+
+grammar Bmemtype : memtype =
+  | lim:Blimits => lim
+
+
+grammar Bexterntype : externtype =
+  | 0x00 ft:Bfunctype => FUNC ft  ;; TODO: typeidx
+  | 0x01 tt:Btabletype => TABLE tt
+  | 0x02 mt:Bmemtype => MEM mt
+  | 0x03 gt:Bglobaltype => GLOBAL gt
+
+
+;;
+;; Instructions
+;;
+
+;; Block types
+
+grammar Bblocktype : blocktype =
+  | 0x40 => epsilon
+  | t:Bvaltype => t
+
+
+;; Control instructions
+
+grammar Binstr/control : instr =
+  | 0x00 => UNREACHABLE
+  | 0x01 => NOP
+  | 0x02 bt:Bblocktype (in:Binstr)* 0x0B => BLOCK bt in*
+  | 0x03 bt:Bblocktype (in:Binstr)* 0x0B => LOOP bt in*
+  | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE epsilon
+  | 0x04 bt:Bblocktype (in_1:Binstr)* 0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
+  | 0x0C l:Blabelidx => BR l
+  | 0x0D l:Blabelidx => BR_IF l
+  | 0x0E l*:Bvec(Blabelidx) l_N:Blabelidx => BR_TABLE l* l_N
+  | 0x0F => RETURN
+  | 0x10 x:Bfuncidx => CALL x
+  | 0x11 x:Btypeidx 0x00 => CALL_INDIRECT x
+  | ...
+
+
+;; Parametric instructions
+
+grammar Binstr/parametric : instr = ...
+  | 0x1A => DROP
+  | 0x1B => SELECT
+  | ...
+
+
+;; Variable instructions
+
+grammar Binstr/variable : instr = ...
+  | 0x20 x:Blocalidx => LOCAL.GET x
+  | 0x21 x:Blocalidx => LOCAL.SET x
+  | 0x22 x:Blocalidx => LOCAL.TEE x
+  | 0x23 x:Bglobalidx => GLOBAL.GET x
+  | 0x24 x:Bglobalidx => GLOBAL.SET x
+  | ...
+
+
+;; Memory instructions
+
+grammar Bmemop : memop =
+  | n:Bu32 m:Bu32 => {ALIGN n, OFFSET m}
+
+grammar Binstr/memory : instr = ...
+  | 0x28 mo:Bmemop => LOAD I32 mo
+  | 0x29 mo:Bmemop => LOAD I64 mo
+  | 0x2A mo:Bmemop => LOAD F32 mo
+  | 0x2B mo:Bmemop => LOAD F64 mo
+  | 0x2C mo:Bmemop => LOAD I32 (8 _ S) mo
+  | 0x2D mo:Bmemop => LOAD I32 (8 _ U) mo
+  | 0x2E mo:Bmemop => LOAD I32 (16 _ S) mo
+  | 0x2F mo:Bmemop => LOAD I32 (16 _ U) mo
+  | 0x30 mo:Bmemop => LOAD I64 (8 _ S) mo
+  | 0x31 mo:Bmemop => LOAD I64 (8 _ U) mo
+  | 0x32 mo:Bmemop => LOAD I64 (16 _ S) mo
+  | 0x33 mo:Bmemop => LOAD I64 (16 _ U) mo
+  | 0x34 mo:Bmemop => LOAD I64 (32 _ S) mo
+  | 0x35 mo:Bmemop => LOAD I64 (32 _ U) mo
+  | 0x36 mo:Bmemop => STORE I32 mo
+  | 0x37 mo:Bmemop => STORE I64 mo
+  | 0x38 mo:Bmemop => STORE F32 mo
+  | 0x39 mo:Bmemop => STORE F64 mo
+  | 0x3A mo:Bmemop => STORE I32 8 mo
+  | 0x3B mo:Bmemop => STORE I32 16 mo
+  | 0x3C mo:Bmemop => STORE I64 8 mo
+  | 0x3D mo:Bmemop => STORE I64 16 mo
+  | 0x3E mo:Bmemop => STORE I64 32 mo
+  | 0x3F 0x00 => MEMORY.SIZE
+  | 0x40 0x00 => MEMORY.GROW
+  | ...
+
+
+
+;; Numeric instructions
+
+grammar Binstr/numeric-const : instr = ...
+  | 0x41 n:Bu32 => CONST I32 n
+  | 0x42 n:Bu64 => CONST I64 n
+;;  | 0x43 p:Bf32 => CONST F32 p    ;; TODO
+;;  | 0x44 p:Bf64 => CONST F64 p    ;; TODO
+  | ...
+
+grammar Binstr/numeric-test-i32 : instr = ...
+  | 0x45 => TESTOP I32 (_I EQZ)
+  | ...
+
+grammar Binstr/numeric-rel-i32 : instr = ...
+  | 0x46 => RELOP I32 (_I EQ)
+  | 0x47 => RELOP I32 (_I NE)
+  | 0x48 => RELOP I32 (_I (LT S))
+  | 0x49 => RELOP I32 (_I (LT U))
+  | 0x4A => RELOP I32 (_I (GT S))
+  | 0x4B => RELOP I32 (_I (GT U))
+  | 0x4C => RELOP I32 (_I (LE S))
+  | 0x4D => RELOP I32 (_I (LE U))
+  | 0x4E => RELOP I32 (_I (GE S))
+  | 0x4F => RELOP I32 (_I (GE U))
+  | ...
+
+grammar Binstr/numeric-test-i64 : instr = ...
+  | 0x50 => TESTOP I64 (_I EQZ)
+  | ...
+
+grammar Binstr/numeric-rel-i64 : instr = ...
+  | 0x51 => RELOP I64 (_I EQ)
+  | 0x52 => RELOP I64 (_I NE)
+  | 0x53 => RELOP I64 (_I (LT S))
+  | 0x54 => RELOP I64 (_I (LT U))
+  | 0x55 => RELOP I64 (_I (GT S))
+  | 0x56 => RELOP I64 (_I (GT U))
+  | 0x57 => RELOP I64 (_I (LE S))
+  | 0x58 => RELOP I64 (_I (LE U))
+  | 0x59 => RELOP I64 (_I (GE S))
+  | 0x5A => RELOP I64 (_I (GE U))
+  | ...
+
+grammar Binstr/numeric-rel-f32 : instr = ...
+  | 0x5B => RELOP F32 (_F EQ)
+  | 0x5C => RELOP F32 (_F NE)
+  | 0x5D => RELOP F32 (_F LT)
+  | 0x5E => RELOP F32 (_F GT)
+  | 0x5F => RELOP F32 (_F LE)
+  | 0x60 => RELOP F32 (_F GE)
+  | ...
+
+grammar Binstr/numeric-rel-f64 : instr = ...
+  | 0x61 => RELOP F64 (_F EQ)
+  | 0x62 => RELOP F64 (_F NE)
+  | 0x63 => RELOP F64 (_F LT)
+  | 0x64 => RELOP F64 (_F GT)
+  | 0x65 => RELOP F64 (_F LE)
+  | 0x66 => RELOP F64 (_F GE)
+  | ...
+
+grammar Binstr/numeric-un-i32 : instr = ...
+  | 0x67 => UNOP I32 (_I CLZ)
+  | 0x68 => UNOP I32 (_I CTZ)
+  | 0x69 => UNOP I32 (_I POPCNT)
+  | ...
+
+grammar Binstr/numeric-bin-i32 : instr = ...
+  | 0x6A => BINOP I32 (_I ADD)
+  | 0x6B => BINOP I32 (_I SUB)
+  | 0x6C => BINOP I32 (_I MUL)
+  | 0x6D => BINOP I32 (_I (DIV S))
+  | 0x6E => BINOP I32 (_I (DIV U))
+  | 0x6F => BINOP I32 (_I (REM S))
+  | 0x70 => BINOP I32 (_I (REM U))
+  | 0x71 => BINOP I32 (_I AND)
+  | 0x72 => BINOP I32 (_I OR)
+  | 0x73 => BINOP I32 (_I XOR)
+  | 0x74 => BINOP I32 (_I SHL)
+  | 0x75 => BINOP I32 (_I (SHR S))
+  | 0x76 => BINOP I32 (_I (SHR U))
+  | 0x77 => BINOP I32 (_I ROTL)
+  | 0x78 => BINOP I32 (_I ROTR)
+  | ...
+
+grammar Binstr/numeric-un-i64 : instr = ...
+  | 0x79 => UNOP I64 (_I CLZ)
+  | 0x7A => UNOP I64 (_I CTZ)
+  | 0x7B => UNOP I64 (_I POPCNT)
+  | ...
+
+grammar Binstr/numeric-bin-i64 : instr = ...
+  | 0x7C => BINOP I64 (_I ADD)
+  | 0x7D => BINOP I64 (_I SUB)
+  | 0x7E => BINOP I64 (_I MUL)
+  | 0x7F => BINOP I64 (_I (DIV S))
+  | 0x80 => BINOP I64 (_I (DIV U))
+  | 0x81 => BINOP I64 (_I (REM S))
+  | 0x82 => BINOP I64 (_I (REM U))
+  | 0x83 => BINOP I64 (_I AND)
+  | 0x84 => BINOP I64 (_I OR)
+  | 0x85 => BINOP I64 (_I XOR)
+  | 0x86 => BINOP I64 (_I SHL)
+  | 0x87 => BINOP I64 (_I (SHR S))
+  | 0x88 => BINOP I64 (_I (SHR U))
+  | 0x89 => BINOP I64 (_I ROTL)
+  | 0x8A => BINOP I64 (_I ROTR)
+  | ...
+
+grammar Binstr/numeric-un-f32 : instr = ...
+  | 0x8B => UNOP F32 (_F ABS)
+  | 0x8C => UNOP F32 (_F NEG)
+  | 0x8D => UNOP F32 (_F CEIL)
+  | 0x8E => UNOP F32 (_F FLOOR)
+  | 0x8F => UNOP F32 (_F TRUNC)
+  | 0x90 => UNOP F32 (_F NEAREST)
+  | 0x91 => UNOP F32 (_F SQRT)
+  | ...
+
+grammar Binstr/numeric-bin-f32 : instr = ...
+  | 0x92 => BINOP F32 (_F ADD)
+  | 0x93 => BINOP F32 (_F SUB)
+  | 0x94 => BINOP F32 (_F MUL)
+  | 0x95 => BINOP F32 (_F DIV)
+  | 0x96 => BINOP F32 (_F MIN)
+  | 0x97 => BINOP F32 (_F MAX)
+  | 0x98 => BINOP F32 (_F COPYSIGN)
+  | ...
+
+grammar Binstr/numeric-un-f64 : instr = ...
+  | 0x99 => UNOP F64 (_F ABS)
+  | 0x9A => UNOP F64 (_F NEG)
+  | 0x9B => UNOP F64 (_F CEIL)
+  | 0x9C => UNOP F64 (_F FLOOR)
+  | 0x9D => UNOP F64 (_F TRUNC)
+  | 0x9E => UNOP F64 (_F NEAREST)
+  | 0x9F => UNOP F64 (_F SQRT)
+  | ...
+
+grammar Binstr/numeric-bin-f64 : instr = ...
+  | 0xA0 => BINOP F64 (_F ADD)
+  | 0xA1 => BINOP F64 (_F SUB)
+  | 0xA2 => BINOP F64 (_F MUL)
+  | 0xA3 => BINOP F64 (_F DIV)
+  | 0xA4 => BINOP F64 (_F MIN)
+  | 0xA5 => BINOP F64 (_F MAX)
+  | 0xA6 => BINOP F64 (_F COPYSIGN)
+  | ...
+
+
+grammar Binstr/numeric-cvt : instr = ...
+  | 0xA7 => CVTOP I32 CONVERT I64
+  | 0xA8 => CVTOP I32 CONVERT F32 S
+  | 0xA9 => CVTOP I32 CONVERT F32 U
+  | 0xAA => CVTOP I32 CONVERT F64 S
+  | 0xAB => CVTOP I32 CONVERT F64 U
+  | 0xAC => CVTOP I64 CONVERT I32 S
+  | 0xAD => CVTOP I64 CONVERT I32 U
+  | 0xAE => CVTOP I64 CONVERT F32 S
+  | 0xAF => CVTOP I64 CONVERT F32 U
+  | 0xB0 => CVTOP I64 CONVERT F64 S
+  | 0xB1 => CVTOP I64 CONVERT F64 U
+  | 0xB2 => CVTOP F32 CONVERT I32 S
+  | 0xB3 => CVTOP F32 CONVERT I32 U
+  | 0xB4 => CVTOP F32 CONVERT I64 S
+  | 0xB5 => CVTOP F32 CONVERT I64 U
+  | 0xB6 => CVTOP F32 CONVERT F64
+  | 0xB7 => CVTOP F64 CONVERT I32 S
+  | 0xB8 => CVTOP F64 CONVERT I32 U
+  | 0xB9 => CVTOP F64 CONVERT I64 S
+  | 0xBA => CVTOP F64 CONVERT I64 U
+  | 0xBB => CVTOP F64 CONVERT F32
+  | 0xBC => CVTOP I32 REINTERPRET F32
+  | 0xBD => CVTOP I64 REINTERPRET F64
+  | 0xBE => CVTOP F32 REINTERPRET I32
+  | 0xBF => CVTOP F64 REINTERPRET I64
+  | ...
+
+
+;; Expressions
+
+grammar Bexpr : expr =
+  | (in:Binstr)* 0x0B => in*
+
+
+
+;;
+;; Modules
+;;
+
+;; Indices
+
+grammar Btypeidx : typeidx = | x:Bu32 => x
+grammar Bfuncidx : funcidx = | x:Bu32 => x
+grammar Bglobalidx : globalidx = | x:Bu32 => x
+grammar Btableidx : tableidx = | x:Bu32 => x
+grammar Bmemidx : memidx = | x:Bu32 => x
+grammar Blocalidx : localidx = | x:Bu32 => x
+grammar Blabelidx : labelidx = | x:Bu32 => x
+
+grammar Bexternidx : externidx =
+  | 0x00 x:Bfuncidx => FUNC x
+  | 0x01 x:Btableidx => TABLE x
+  | 0x02 x:Bmemidx => MEM x
+  | 0x03 x:Bglobalidx => GLOBAL x
+
+
+;; Sections
+
+var sz : nat
+
+grammar Bsection_(N, grammar B : S*) : S*  hint(desc "section") =
+  | N:Bbyte sz:Bu32 S*:B => S*  -- if sz = ||B||
+  | epsilon => epsilon
+
+
+;; Custom sections
+
+grammar Bcustomsec : () hint(desc "custom section") =
+  | Bsection_(0, Bcustom) => ()
+
+grammar Bcustom : ()* hint(desc "custom data") =
+  | Bname Bbyte* => ()
+
+
+;; Type section
+
+grammar Btypesec : type* hint(desc "type section") =
+  | ty*:Bsection_(1, Bvec(Btype)) => ty*
+
+grammar Btype : type =
+  | ft:Bfunctype => TYPE ft
+
+
+;; Import section
+
+grammar Bimportsec : import* hint(desc "import section") =
+  | im*:Bsection_(2, Bvec(Bimport)) => im*
+
+grammar Bimport : import =
+  | nm_1:Bname nm_2:Bname xt:Bexterntype => IMPORT nm_1 nm_2 xt
+
+
+;; Function section
+
+grammar Bfuncsec : typeidx* hint(desc "function section") =
+  | x*:Bsection_(3, Bvec(Btypeidx)) => x*
+
+
+;; Table section
+
+grammar Btablesec : table* hint(desc "table section") =
+  | tab*:Bsection_(4, Bvec(Btable)) => tab*
+
+grammar Btable : table =
+  | tt:Btabletype => TABLE tt
+
+
+;; Memory section
+
+grammar Bmemsec : mem* hint(desc "memory section") =
+  | mem*:Bsection_(5, Bvec(Bmem)) => mem*
+
+grammar Bmem : mem =
+  | mt:Bmemtype => MEMORY mt
+
+
+;; Global section
+
+grammar Bglobalsec : global* hint(desc "global section") =
+  | glob*:Bsection_(6, Bvec(Bglobal)) => glob*
+
+grammar Bglobal : global =
+  | gt:Bglobaltype e:Bexpr => GLOBAL gt e
+
+
+;; Export section
+
+grammar Bexportsec : export* hint(desc "export section") =
+  | ex*:Bsection_(7, Bvec(Bexport)) => ex*
+
+grammar Bexport : export =
+  | nm:Bname xx:Bexternidx => EXPORT nm xx
+
+
+;; Start section
+
+grammar Bstartsec : start* hint(desc "start section") =
+  | st*:Bsection_(8, Bstart) => st*
+
+grammar Bstart : start* =
+  | x:Bfuncidx => (START x)
+
+
+;; Element section
+
+grammar Belemsec : elem* hint(desc "element section") =
+  | elem*:Bsection_(9, Bvec(Belem)) => elem*
+
+grammar Belem : elem =
+  | 0x00 e:Bexpr x*:Bvec(Bfuncidx) => ELEM e x*
+
+
+;; Code section
+
+def $concat_locals((local*)*) : local*  hint(show $concat(%))
+def $concat_locals(epsilon) = epsilon
+def $concat_locals((loc*) (loc'*)*) = loc* $concat_locals((loc'*)*)
+
+
+syntax code = (local*, expr)
+
+grammar Bcodesec : code* hint(desc "code section") =
+  | code*:Bsection_(10, Bvec(Bcode)) => code*
+
+grammar Bcode : code =
+  | sz:Bu32 code:Bfunc => code  -- if sz = ||Bfunc||
+
+grammar Bfunc : code =
+  | local**:Bvec(Blocals) expr:Bexpr => ($concat_locals(local**), expr)
+
+grammar Blocals : local* hint(desc "local") =
+  | n:Bu32 t:Bvaltype => (LOCAL t)^n
+
+
+;; Data section
+
+grammar Bdatasec : data* hint(desc "data section") =
+  | data*:Bsection_(11, Bvec(Bdata)) => data*
+
+grammar Bdata : data =
+  | 0x00 e:Bexpr b*:Bvec(Bbyte) => DATA e b*
+
+
+;; Modules
+
+grammar Bmodule : module =
+  | 0x00 0x61 0x73 0x6D 1:Bu32
+    Bcustomsec*
+
+
+    type*:Btypesec
+    Bcustomsec*
+
+
+    import*:Bimportsec
+    Bcustomsec*
+
+
+    typeidx^n:Bfuncsec
+    Bcustomsec*
+
+
+    table*:Btablesec
+    Bcustomsec*
+
+
+    mem*:Bmemsec
+    Bcustomsec*
+
+
+    global*:Bglobalsec
+    Bcustomsec*
+
+
+    export*:Bexportsec
+    Bcustomsec*
+
+
+    start*:Bstartsec
+    Bcustomsec*
+
+
+    elem*:Belemsec
+    Bcustomsec*
+
+
+    (local*, expr)^n:Bcodesec
+    Bcustomsec*
+
+
+    data^m:Bdatasec
+    Bcustomsec* =>
+      MODULE type* import* func^n global* table* mem* elem* data* start* export*
+    -- if (func = FUNC typeidx local* expr)*

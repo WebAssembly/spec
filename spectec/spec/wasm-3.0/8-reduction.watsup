@@ -164,7 +164,7 @@ rule Step_read/call_ref-func:
   z; val^n (REF.FUNC_ADDR a) (CALL_REF x?)  ~>  (FRAME_ m `{f} (LABEL_ m `{epsilon} instr*))
   -- if $funcinst(z)[a] = fi
   -- Expand: fi.TYPE ~~ FUNC (t_1^n -> t_2^m)
-  -- if fi.CODE = FUNC x' (LOCAL t)* (instr*)
+  -- if fi.CODE = FUNC y (LOCAL t)* (instr*)
   -- if f = {LOCAL val^n ($default(t))*, MODULE fi.MODULE}
 
 
@@ -695,7 +695,7 @@ rule Step_read/memory.size:
 
 
 rule Step/memory.grow-succeed:
-  z; (CONST I32 n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST I32 $(|$mem(z, 0).DATA| / (64 * $Ki)))
+  z; (CONST I32 n) (MEMORY.GROW x)  ~>  $with_meminst(z, x, mi); (CONST I32 $(|$mem(z, x).DATA| / (64 * $Ki)))
   -- if mi = $growmemory($mem(z, x), n)
 
 rule Step/memory.grow-fail:
