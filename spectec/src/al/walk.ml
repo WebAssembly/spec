@@ -112,26 +112,30 @@ let rec walk_instr f (instr:instr) : instr list =
   let new_c = walk_cond f in
   let new_e = walk_expr f in
 
-  let super_walk i = match i with
-  | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
-  | OtherwiseI il -> OtherwiseI (new_ il)
-  | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
-  | AssertI c -> AssertI (new_c c)
-  | PushI e -> PushI (new_e e)
-  | PopI e -> PopI (new_e e)
-  | PopAllI e -> PopAllI (new_e e)
-  | LetI (n, e) -> LetI (new_e n, new_e e)
-  | TrapI -> TrapI
-  | NopI -> NopI
-  | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
-  | EnterI (e1, e2, il) -> EnterI (new_e e1, new_e e2, new_ il)
-  | ExecuteI e -> ExecuteI (new_e e)
-  | ExecuteSeqI e -> ExecuteSeqI (new_e e)
-  | PerformI (n, el) -> PerformI (n, List.map new_e el)
-  | ExitI -> ExitI
-  | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
-  | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
-  | YetI _ -> i in
+  let super_walk i =
+    let i' =
+      match i.it with
+      | IfI (c, il1, il2) -> IfI (new_c c, new_ il1, new_ il2)
+      | OtherwiseI il -> OtherwiseI (new_ il)
+      | EitherI (il1, il2) -> EitherI (new_ il1, new_ il2)
+      | AssertI c -> AssertI (new_c c)
+      | PushI e -> PushI (new_e e)
+      | PopI e -> PopI (new_e e)
+      | PopAllI e -> PopAllI (new_e e)
+      | LetI (n, e) -> LetI (new_e n, new_e e)
+      | TrapI -> TrapI
+      | NopI -> NopI
+      | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
+      | EnterI (e1, e2, il) -> EnterI (new_e e1, new_e e2, new_ il)
+      | ExecuteI e -> ExecuteI (new_e e)
+      | ExecuteSeqI e -> ExecuteSeqI (new_e e)
+      | PerformI (n, el) -> PerformI (n, List.map new_e el)
+      | ExitI -> ExitI
+      | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
+      | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
+      | YetI _ -> i.it in
+    { i with it = i' }
+  in
 
   let il1 = pre instr in
   let il2 = List.map (fun i -> if stop_cond i then i else super_walk i) il1 in

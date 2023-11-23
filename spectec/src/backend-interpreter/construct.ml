@@ -6,6 +6,36 @@ open Util.Record
 
 (* Smart Constructor *)
 
+let _nid_count = ref 0
+let gen_nid () =
+  let nid = !_nid_count in
+  _nid_count := nid + 1;
+  nid
+
+let (%) it nid = { it; nid }
+let ($) (instr: instr) it = { instr with it }
+let update_node f (node: 'a node) = f node.it % node.nid
+
+let ifI (c, il1, il2) = IfI (c, il1, il2) % gen_nid ()
+let eitherI (il1, il2) = EitherI (il1, il2) % gen_nid ()
+let enterI (e1, e2, il) = EnterI (e1, e2, il) % gen_nid ()
+let assertI c = AssertI c % gen_nid ()
+let pushI e = PushI e % gen_nid ()
+let popI e = PopI e % gen_nid ()
+let popallI e = PopAllI e % gen_nid ()
+let letI (e1, e2) = LetI (e1, e2) % gen_nid ()
+let trapI = TrapI % gen_nid ()
+let nopI = NopI % gen_nid ()
+let returnI e_opt = ReturnI e_opt % gen_nid ()
+let executeI e = ExecuteI e % gen_nid ()
+let executeseqI e = ExecuteSeqI e % gen_nid ()
+let performI (id, el) = PerformI (id, el) % gen_nid ()
+let exitI = ExitI % gen_nid ()
+let replaceI (e1, p, e2) = ReplaceI (e1, p, e2) % gen_nid ()
+let appendI (e1, e2) = AppendI (e1, e2) % gen_nid ()
+let otherwiseI il = OtherwiseI il % gen_nid ()
+let yetI s = YetI s % gen_nid ()
+
 let singleton x = CaseV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
 let id str = VarE str 

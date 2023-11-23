@@ -1,3 +1,8 @@
+(* Note *)
+
+(* TODO: type ('a, 'b) note = { it : 'a; nid : int; note : 'b } *)
+type 'a node = { it : 'a; nid : int }
+
 (* Types *)
 
 type ty = string (* TODO *)
@@ -124,7 +129,8 @@ and cond =
 
 (* Instructions *)
 
-type instr =
+type instr = instr' node
+and instr' =
   | IfI of cond * instr list * instr list (* `if` cond `then` instr* `else` instr* *)
   | EitherI of instr list * instr list    (* `either` instr* `or` instr* *)
   | EnterI of expr * expr * instr list    (* `enter` expr`:` expr `after` instr* *)

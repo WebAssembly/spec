@@ -1,12 +1,13 @@
 open Il
 open Printf
+open Al.Ast
+open Construct
 open Util.Source
 open Util.Record
-open Al.Ast
 
 (** helper functions **)
 
-let check_nop instrs = match instrs with [] -> [ NopI ] | _ -> instrs
+let check_nop instrs = match instrs with [] -> [ nopI ] | _ -> instrs
 
 let gen_fail_msg_of_exp exp =
   Print.string_of_exp exp |> sprintf "Invalid expression `%s` to be AL %s."
@@ -33,19 +34,20 @@ let update_opt v opt_ref = match !opt_ref with
   | Some _ -> ()
 
 (* transform z; e into e *)
-let drop_state e = match e.it with
-| Ast.MixE (* z; e *)
-    ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
-      { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; e' ]; _ } )
-  -> e'
-| Ast.MixE (* (s; f); e *)
-    ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
-      { it = Ast.TupE [ { it = Ast.MixE (
-        [[]; [ Ast.Semicolon ]; []],
-        { it = Ast.TupE [ { it = Ast.VarE { it = "s"; _}; _}; { it = Ast.VarE { it = "f"; _} ; _}]; _ }
-      ); _ }; e' ]; _ } )
-  -> e'
-| _ -> e
+let drop_state e =
+  match e.it with
+  | Ast.MixE (* z; e *)
+      ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
+        { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; e' ]; _ } )
+    -> e'
+  | Ast.MixE (* (s; f); e *)
+      ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
+        { it = Ast.TupE [ { it = Ast.MixE (
+          [[]; [ Ast.Semicolon ]; []],
+          { it = Ast.TupE [ { it = Ast.VarE { it = "s"; _}; _}; { it = Ast.VarE { it = "f"; _} ; _}]; _ }
+        ); _ }; e' ]; _ } )
+    -> e'
+  | _ -> e
 
 (* Ast.exp -> Ast.exp list *)
 let rec flatten e =
@@ -243,15 +245,15 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> AssertI TopFrameC
-  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> AssertI (TopValuesC (exp2expr e))
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI TopFrameC
+  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (TopValuesC (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
-        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> AssertI TopLabelC
+        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI TopLabelC
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE (ty :: _); _ }) -> AssertI (TopValueC (Some (exp2expr ty)))
-  | _ -> AssertI (TopValueC None)
+        { it = Ast.TupE (ty :: _); _ }) -> assertI (TopValueC (Some (exp2expr ty)))
+  | _ -> assertI (TopValueC None)
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
 let handle_lhs_stack bounds =
@@ -261,7 +263,7 @@ let handle_lhs_stack bounds =
       else
         match e.it with
         | Ast.IterE (_, (ListN (n, _), _)) when not (Il.Free.subset (Il.Free.free_exp n) bounds) -> (instrs, [ e ])
-        | _ -> (instrs @ [ insert_assert e; PopI (exp2expr e) ], rest))
+        | _ -> (instrs @ [ insert_assert e; popI (exp2expr e) ], rest))
     ([], [])
 
 let handle_context_winstr winstr =
@@ -271,21 +273,21 @@ let handle_context_winstr winstr =
     ( match args.it with
     | Ast.TupE [arity; name; inner_exp] ->
       [
-        LetI (exp2expr name, GetCurFrameE);
-        LetI (exp2expr arity, ArityE (exp2expr name));
+        letI (exp2expr name, GetCurFrameE);
+        letI (exp2expr arity, ArityE (exp2expr name));
         insert_assert inner_exp;
-        PopI (exp2expr inner_exp);
+        popI (exp2expr inner_exp);
         insert_assert winstr;
-        ExitI
+        exitI
       ]
     | _ -> failwith "Invalid frame")
   (* Label *)
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ _n; _instrs; vals ]; _ }) ->
       [
         (* TODO: append Jump instr *)
-        PopAllI (exp2expr vals);
+        popallI (exp2expr vals);
         insert_assert winstr;
-        ExitI
+        exitI
       ]
   | _ -> []
 
@@ -293,45 +295,45 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (VarE "L", GetCurLabelE);
-        LetI (exp2expr n, ArityE (VarE "L"));
-        LetI (exp2expr instrs, ContE (VarE "L"));
-        ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
-        PopAllI (exp2expr last_v);
-        ExitI
+        letI (VarE "L", GetCurLabelE);
+        letI (exp2expr n, ArityE (VarE "L"));
+        letI (exp2expr instrs, ContE (VarE "L"));
+        ]@ List.map (fun v -> popI (exp2expr v)) first_vs @[
+        popallI (exp2expr last_v);
+        exitI
       ]
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        LetI (VarE "F", GetCurFrameE);
-        LetI (exp2expr n, ArityE (VarE "F"));
-        ]@ List.map (fun v -> PopI (exp2expr v)) first_vs @[
-        PopAllI (exp2expr last_v);
-        ExitI
+        letI (VarE "F", GetCurFrameE);
+        letI (exp2expr n, ArityE (VarE "F"));
+        ]@ List.map (fun v -> popI (exp2expr v)) first_vs @[
+        popallI (exp2expr last_v);
+        exitI
       ]
-  | _ -> [ YetI "TODO: handle_context" ]
+  | _ -> [ yetI "TODO: handle_context" ]
 
 (* `Ast.exp` -> `instr list` *)
 let rec rhs2instrs exp =
   match exp.it with
   (* Trap *)
-  | Ast.CaseE (Atom "TRAP", _) -> [ TrapI ]
+  | Ast.CaseE (Atom "TRAP", _) -> [ trapI ]
   (* Execute instrs *) (* TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
   | Ast.IterE ({ it = VarE id; _ }, (Ast.List, _))
   | Ast.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
     when String.starts_with ~prefix:"instr" id.it ->
-      [ ExecuteSeqI (exp2expr exp) ]
+      [ executeseqI (exp2expr exp) ]
   | Ast.IterE ({ it = CaseE (Atom atomid, _); note = note; _ }, (Opt, [ id ]))
     when atomid = "CALL" ->
       let new_name = VarE (id.it ^ "_0") in
-      [ IfI (IsDefinedC (VarE id.it),
+      [ ifI (IsDefinedC (VarE id.it),
         [
-          LetI (OptE (Some new_name), VarE id.it);
-          ExecuteI (CaseE (name2kwd atomid note, [ new_name ]))
+          letI (OptE (Some new_name), VarE id.it);
+          executeI (CaseE (name2kwd atomid note, [ new_name ]))
         ],
         []) ]
   (* Push *)
-  | Ast.SubE _ | IterE _ -> [ PushI (exp2expr exp) ]
+  | Ast.SubE _ | IterE _ -> [ pushI (exp2expr exp) ]
   | Ast.CaseE (Atom atomid, _) when List.mem atomid [
       (* TODO: Consider automating this *)
       "CONST";
@@ -342,7 +344,7 @@ let rec rhs2instrs exp =
       "REF.HOST_ADDR";
       "REF.EXTERN";
       "REF.NULL"
-    ] -> [ PushI (exp2expr exp) ]
+    ] -> [ pushI (exp2expr exp) ]
   (* multiple rhs' *)
   | Ast.CatE (exp1, exp2) -> rhs2instrs exp1 @ rhs2instrs exp2
   | Ast.ListE exps -> List.concat_map rhs2instrs exps
@@ -360,8 +362,8 @@ let rec rhs2instrs exp =
           _;
         }) ->
           [
-            LetI (VarE "F", FrameE (Some (VarE arity.it), VarE fname.it));
-            EnterI (VarE "F", ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs labelexp);
+            letI (VarE "F", FrameE (Some (VarE arity.it), VarE fname.it));
+            enterI (VarE "F", ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs labelexp);
           ]
   (* TODO: Label *)
   | Ast.CaseE
@@ -378,17 +380,17 @@ let rec rhs2instrs exp =
       match instrs_exp2.it with
       | Ast.CatE (valexp, instrsexp) ->
           [
-            LetI (VarE "L", label_expr);
-            EnterI (VarE "L", CatE (exp2expr instrsexp, ListE ([CaseE (("LABEL_", ""), [])])), [PushI (exp2expr valexp)]);
+            letI (VarE "L", label_expr);
+            enterI (VarE "L", CatE (exp2expr instrsexp, ListE ([CaseE (("LABEL_", ""), [])])), [pushI (exp2expr valexp)]);
           ]
       | _ ->
           [
-            LetI (VarE "L", label_expr);
-            EnterI (VarE "L", CatE(exp2expr instrs_exp2, ListE ([CaseE (("LABEL_", ""), [])])), []);
+            letI (VarE "L", label_expr);
+            enterI (VarE "L", CatE(exp2expr instrs_exp2, ListE ([CaseE (("LABEL_", ""), [])])), []);
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ ExecuteI (CaseE (name2kwd atomid exp.note, exp2args argexp)) ]
+      [ executeI (CaseE (name2kwd atomid exp.note, exp2args argexp)) ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -397,7 +399,7 @@ let rec rhs2instrs exp =
       match state_exp.it with
       | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], _)
       | Ast.VarE _ -> push_instrs
-      | Ast.CallE (f, args) -> push_instrs @ [ PerformI (f.it, exp2args args) ]
+      | Ast.CallE (f, args) -> push_instrs @ [ performI (f.it, exp2args args) ]
       | _ -> failwith "Invalid new state" )
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
@@ -434,7 +436,7 @@ let bound_by binding e =
   match e.it with
   | Ast.IterE (_, (ListN ({ it = VarE { it = n; _ }; _ }, None), _)) ->
       if Free.Set.mem n (Free.free_exp binding).varid then
-        [ insert_assert e; PopI (exp2expr e) ]
+        [ insert_assert e; popI (exp2expr e) ]
       else []
   | _ -> []
 
@@ -473,9 +475,9 @@ let extract_bound_names lhs rhs targets cont = match lhs with
       let new_e = walker e in
       new_e, !conds in
     let new_lhs, conds = traverse lhs in
-    new_lhs, rhs, List.fold_right (fun c il -> [ IfI (c, il, []) ]) conds cont
+    new_lhs, rhs, List.fold_right (fun c il -> [ ifI (c, il, []) ]) conds cont
 
-let rec letI lhs rhs targets cont =
+let rec expr2let lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
   let rec has_name = function
     | VarE _ | SubE _ -> true
@@ -491,57 +493,58 @@ let rec letI lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when Al.Free.free_expr l = [] -> [ IfI (CmpC (EqOp, r, l), cont, []) ]
-      | _ -> letI l r targets cont
+      | _ when Al.Free.free_expr l = [] -> [ ifI (CmpC (EqOp, r, l), cont, []) ]
+      | _ -> expr2let l r targets cont
     ) bindings cont
   in
   match lhs with
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
-      IfI
-        ( IsCaseOfC (rhs, tag),
-          LetI (CaseE (tag, es'), rhs) :: translate_bindings bindings,
-          [] );
+      ifI (
+        IsCaseOfC (rhs, tag),
+        letI (CaseE (tag, es'), rhs) :: translate_bindings bindings,
+        []
+      );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    LetI (ListE es', rhs) :: translate_bindings bindings
+    letI (ListE es', rhs) :: translate_bindings bindings
     else
     [
-      IfI
+      ifI
         ( CmpC (EqOp, LenE rhs, NumE (Int64.of_int (List.length es))),
-          LetI (ListE es', rhs) :: translate_bindings bindings,
+          letI (ListE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
     [
-      IfI
+      ifI
         ( UnC (NotOp, IsDefinedC rhs),
           cont,
           [] );
     ]
   | OptE (Some (VarE _)) ->
     [
-      IfI
+      ifI
         ( IsDefinedC rhs,
-          LetI (lhs, rhs) :: cont,
+          letI (lhs, rhs) :: cont,
           [] );
      ]
   | OptE (Some e) ->
     let fresh = get_lhs_name() in
     [
-      IfI
+      ifI
         ( IsDefinedC rhs,
-          LetI (OptE (Some fresh), rhs) :: letI e fresh targets cont,
+          letI (OptE (Some fresh), rhs) :: expr2let e fresh targets cont,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
-      IfI
+      ifI
         ( CmpC (GeOp, rhs, b),
-          LetI (a, BinE (SubOp, rhs, b)) :: cont,
+          letI (a, BinE (SubOp, rhs, b)) :: cont,
           [] );
     ]
   | CatE (prefix, suffix) ->
@@ -565,48 +568,54 @@ let rec letI lhs rhs targets cont =
       | Some l1, Some l2 -> CmpC (EqOp, LenE rhs, BinE (AddOp, l1, l2))
     in
     [
-      IfI
+      ifI
         ( cond,
-          LetI (CatE (prefix', suffix'), rhs)
+          letI (CatE (prefix', suffix'), rhs)
             :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
   | SubE (s, t) ->
     [
-      IfI
+      ifI
         ( HasTypeC (rhs, t),
-          LetI (VarE s, rhs) :: cont,
+          letI (VarE s, rhs) :: cont,
           [] )
     ]
   | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
-      LetI (lhs, rhs) :: cont
-  | _ -> LetI (lhs, rhs) :: cont
+      letI (lhs, rhs) :: cont
+  | _ -> letI (lhs, rhs) :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
   | "Eval_expr", [z; lhs; _z; rhs] ->
     (* TODO: Name of f..? *)
-    LetI (TupE (VarE "_", VarE "f"), z) ::
-    EnterI (
+    letI (TupE (VarE "_", VarE "f"), z) ::
+    enterI (
       FrameE (None, VarE "f"),
       ListE [CaseE (("FRAME_", ""), [])],
-      [ LetI (rhs, CallE ("eval_expr", [ lhs ])) ]
+      [ letI (rhs, CallE ("eval_expr", [ lhs ])) ]
+    ) :: instrs
+  | "Step_read", [TupE (TupE (_s, f), lhs); rhs] ->
+    enterI (
+      FrameE (None, f),
+      ListE [CaseE (("FRAME_", ""), [])],
+      [ letI (rhs, CallE ("eval_expr", [ lhs ])) ]
     ) :: instrs
   | "Ref_ok", [_s; ref; rt] ->
-    LetI (rt, CallE ("ref_type_of", [ ref ])) :: instrs
+    letI (rt, CallE ("ref_type_of", [ ref ])) :: instrs
   | "Reftype_sub", [_C; rt1; rt2] ->
-    [ IfI (MatchC (rt1, rt2), instrs |> check_nop, []) ]
-  | _ -> prerr_endline (Il.Print.string_of_exp exp); YetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
+    [ ifI (MatchC (rt1, rt2), instrs |> check_nop, []) ]
+  | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
 
 (** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)
 let rec prem2instrs remain_lhs prem instrs =
   match prem.it with
-  | Ast.IfPr exp -> [ IfI (exp2cond exp, instrs |> check_nop, []) ]
-  | Ast.ElsePr -> [ OtherwiseI (instrs |> check_nop) ]
+  | Ast.IfPr exp -> [ ifI (exp2cond exp, instrs |> check_nop, []) ]
+  | Ast.ElsePr -> [ otherwiseI (instrs |> check_nop) ]
   | Ast.LetPr (exp1, exp2, targets) ->
       let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
       init_lhs_id();
-      letI (exp2expr exp1) (exp2expr exp2) targets instrs'
+      expr2let (exp2expr exp1) (exp2expr exp2) targets instrs'
   | Ast.RulePr (id, _, exp) -> rulepr2instrs id exp instrs
   | Ast.IterPr _ -> iterpr2instr remain_lhs prem instrs
 
@@ -620,10 +629,10 @@ and iterpr2instr remain_lhs pr next_il =
     let ids' = List.map (fun id -> id.it) ids in
     let f = Al.Free.(
       function
-      | LetI (lhs, rhs) when List.length (intersection (free_expr lhs) ids') > 0 ->
+      | { it = LetI (lhs, rhs); nid = _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
           let lhs_ids = intersection (free_expr lhs) ids' in
           let rhs_ids = intersection (free_expr rhs) ids' in
-          [ LetI (IterE (lhs, lhs_ids, iter'), IterE (rhs, rhs_ids, iter')) ]
+          [ letI (IterE (lhs, lhs_ids, iter'), IterE (rhs, rhs_ids, iter')) ]
       (* TODO: iter for IfI *)
       | i -> [i]
     ) in
@@ -702,7 +711,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let bounds = Il.Free.free_exp winstr in
-  let state_instrs = if (lhs != drop_state lhs) then [ LetI (VarE "f", GetCurFrameE) ] else [] in
+  let state_instrs = if (lhs != drop_state lhs) then [ letI (VarE "f", GetCurFrameE) ] else [] in
   let inner_params = ref None in
   let instrs = state_instrs @ match context with
     | [(vs, []), None ] ->
@@ -716,7 +725,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
           let blocks = List.map (reduction2instrs []) hds in
           let either_body1 = List.fold_right Transpile.merge blocks [] in
           let either_body2 = rhs2instrs rhs |> check_nop in
-          EitherI (either_body1, either_body2) |> Transpile.push_either
+          eitherI (either_body1, either_body2) |> Transpile.push_either
       (* Normal case *)
       | _ ->
           let blocks = List.map (reduction2instrs remain) reduction_group in
@@ -739,17 +748,17 @@ let rec reduction_group2algo (instr_name, reduction_group) =
         | RuleA (_, params, body) -> fun acc ->
           inner_params |> update_opt params;
           let kind = kind_of_context lhs in
-          [ IfI (
+          [ ifI (
             ContextKindC (kind, GetCurContextE),
             body,
             acc) ]
         | _ -> failwith "unreachable")
       lhss sub_algos []
       with
-      | _ -> [ YetI "TODO: It is likely that the value stack of two rules are differ" ]
+      | _ -> [ yetI "TODO: It is likely that the value stack of two rules are differ" ]
       )
     | _ ->
-      [ YetI "TODO" ] in
+      [ yetI "TODO" ] in
 
   (* name *)
   let winstr_name = match winstr.it with
@@ -840,14 +849,14 @@ let config_helper2instrs before after arity return clause =
     lhs
   ]; _ }) ->
     let enter =
-      EnterI (FrameE (Some arity, VarE f.it), ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs lhs)
+      enterI (FrameE (Some arity, VarE f.it), ListE ([CaseE (("FRAME_", ""), [])]), rhs2instrs lhs)
     in
     before @ enter :: after @ return |> prems2instrs [] prems
   | _ -> failwith "unreachable"
 
 let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  prems2instrs [] prems [ ReturnI (Option.some (exp2expr e2)) ]
+  prems2instrs [] prems [ returnI (Option.some (exp2expr e2)) ]
 
 (** Main translation for helper functions **)
 let helpers2algo partial_funcs def =
@@ -864,9 +873,9 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiate" then
-          [ReturnI (Some (VarE "mm"))] |> config_helper2instrs [] [] (NumE 0L)
+          [returnI (Some (VarE "mm"))] |> config_helper2instrs [] [] (NumE 0L)
         else if id.it = "invoke" then
-          [ReturnI (Some (IterE (VarE "val", ["val"], ListN (VarE "k", None))))] |> config_helper2instrs [LetI (VarE "k", LenE (IterE (VarE "t_2", ["t_2"], List)))] [PopI (IterE (VarE "val", ["val"], ListN (VarE "k", None)))] (VarE "k")
+          [returnI (Some (IterE (VarE "val", ["val"], ListN (VarE "k", None))))] |> config_helper2instrs [letI (VarE "k", LenE (IterE (VarE "t_2", ["t_2"], List)))] [popI (IterE (VarE "val", ["val"], ListN (VarE "k", None)))] (VarE "k")
         else
           normal_helper2instrs
       in

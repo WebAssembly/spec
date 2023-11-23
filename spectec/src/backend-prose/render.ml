@@ -366,11 +366,12 @@ and render_prose_instrs env depth instrs =
       sinstrs ^ "\n\n" ^ repeat indent depth ^ render_prose_instr env depth i)
     "" instrs
 
-let rec render_al_instr env algoname index depth = function
+let rec render_al_instr env algoname index depth instr =
+  match instr.Al.Ast.it with
   | Al.Ast.IfI (c, il, []) ->
       sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
         (render_al_instrs env algoname (depth + 1) il)
-  | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, []) ]) ->
+  | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
@@ -380,7 +381,7 @@ let rec render_al_instr env algoname index depth = function
         (repeat indent depth ^ else_if_index)
         (render_cond env inner_c)
         (render_al_instrs env algoname (depth + 1) inner_il1)
-  | Al.Ast.IfI (c, il1, [ IfI (inner_c, inner_il1, inner_il2) ]) ->
+  | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       let else_index = render_order index depth in

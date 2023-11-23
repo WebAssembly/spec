@@ -205,11 +205,12 @@ let make_index index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
 
-let rec string_of_instr index depth = function
+let rec string_of_instr index depth instr =
+  match instr.it with
   | IfI (c, il, []) ->
       sprintf "%s If %s, then:%s" (make_index index depth) (string_of_cond c)
         (string_of_instrs (depth + 1) il)
-  | IfI (c, il1, [ IfI (inner_c, inner_il1, []) ]) ->
+  | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
       let if_index = make_index index depth in
       let else_if_index = make_index index depth in
       sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
@@ -219,7 +220,7 @@ let rec string_of_instr index depth = function
         (repeat indent depth ^ else_if_index)
         (string_of_cond inner_c)
         (string_of_instrs (depth + 1) inner_il1)
-  | IfI (c, il1, [ IfI (inner_c, inner_il1, inner_il2) ]) ->
+  | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
       let if_index = make_index index depth in
       let else_if_index = make_index index depth in
       let else_index = make_index index depth in
@@ -514,7 +515,8 @@ and structured_string_of_cond = function
 
 (* instruction *)
 
-let rec structured_string_of_instr depth = function
+let rec structured_string_of_instr depth instr =
+  match instr.it with
   | IfI (c, t, e) ->
       "IfI (\n"
       ^ repeat indent (depth + 1)

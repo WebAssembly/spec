@@ -682,7 +682,7 @@ and interp_instr (env: env) (instr: instr): env =
   *)
 
   let res =
-  match instr with
+  match instr.it with
   (* Block instruction *)
   | IfI (c, il1, il2) ->
     if eval_cond env c then
@@ -808,8 +808,8 @@ and interp_instr (env: env) (instr: instr): env =
     let v = eval_expr env e2 in
     a := Array.append (!a) [|v|];
     env
-  | i ->
-    structured_string_of_instr 0 i
+  | _ ->
+    structured_string_of_instr 0 instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
     |> failwith
   in

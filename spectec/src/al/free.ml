@@ -67,7 +67,8 @@ let rec free_cond = function
 
 let free_ns_iter (_, iter) = free_iter iter
 
-let rec free_instr = function
+let rec free_instr instr =
+  match instr.it with
   | IfI (c, il1, il2) -> free_cond c @ List.concat_map free_instr il1 @ List.concat_map free_instr il2
   | OtherwiseI il -> List.concat_map free_instr il
   | EitherI (il1, il2) -> List.concat_map free_instr il1 @ List.concat_map free_instr il2
