@@ -66,17 +66,6 @@ let register: register ref = ref Register.empty
 
 let builtin () =
 
-  let initial_store: (string, value list) record =
-    Record.empty
-    |> Record.add "FUNC" []
-    |> Record.add "GLOBAL" []
-    |> Record.add "TABLE" []
-    |> Record.add "MEM" []
-    |> Record.add "ELEM" []
-    |> Record.add "DATA" []
-    |> Record.add "STRUCT" []
-    |> Record.add "ARRAY" [] in
-
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
   let create_func_inst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
@@ -142,33 +131,40 @@ let builtin () =
   |> create_mem_inst (CaseV ("I8", [ TupV (NumV 1L, NumV 2L) ]));
   ] in
 
-  let append kind (name, inst) (sto, extern) =
-    (* Update Store *)
-    let insts = Record.find kind sto in
-    let new_sto = Record.add kind (insts @ [inst]) sto in
-
+  let append kind (name, inst) extern =
 
     (* Generate ExternFunc *)
-    let addr = List.length insts |> Int64.of_int in
+
+    let addr =
+      match Record.find kind !Ds.store with
+      | ListV a -> Array.length !a |> Int64.of_int
+      | _ -> failwith "Unreachable"
+    in
     let new_extern =
       StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ NumV addr ])) ]
     in
 
-    (new_sto, new_extern :: extern) in
+    (* Update Store *)
 
-  (* (sto, extern) -> (new_sto, new_extern) *)
-  let append_funcs = List.fold_right (append "FUNC") funcs in
-  let append_globals = List.fold_right (append "GLOBAL") globals in
-  let append_tables = List.fold_right (append "TABLE") tables in
-  let append_memories = List.fold_right (append "MEM") memories in
+    (match Record.find kind !Ds.store with
+    | ListV a -> a := Array.append !a [|inst|]
+    | _ -> failwith "Invalid store field");
 
-  let (sto, extern) = (initial_store, [])
-    |> append_funcs
-    |> append_globals
-    |> append_tables
-    |> append_memories in
+    new_extern :: extern in
 
-  let wraped_store = Record.map listV sto in
+  (* extern -> new_extern *)
+  let func_extern = List.fold_right (append "FUNC") funcs in
+  let global_extern = List.fold_right (append "GLOBAL") globals in
+  let table_extern = List.fold_right (append "TABLE") tables in
+  let memory_extern = List.fold_right (append "MEM") memories in
+
+  let extern =
+    []
+    |> func_extern
+    |> global_extern
+    |> table_extern
+    |> memory_extern in
+
   let module_inst =
     Record.empty
     |> Record.add "FUNC" (listV [])
@@ -180,7 +176,7 @@ let builtin () =
     |> Record.add "EXPORT" (listV extern)
   in
 
-  wraped_store, StrV module_inst
+  StrV module_inst
 
 
 let latest = ""
@@ -421,9 +417,7 @@ let test_cmd success cmd =
 
 (* Intialize store and registered modules *)
 let init_tester () =
-  let builtin_inst = builtin() in
-  Ds.store := fst builtin_inst;
-  register := Register.add "spectest" (snd builtin_inst) Register.empty
+  register := Register.add "spectest" (builtin ()) Register.empty
 
 (** Entry **)
 let test file_name =

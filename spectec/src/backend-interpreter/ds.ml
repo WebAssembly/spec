@@ -314,4 +314,16 @@ let init algos =
 
   let rmap, fmap = to_map algos in
   rule_map := rmap;
-  func_map := fmap
+  func_map := fmap;
+
+  (* Initialize store *)
+  store :=
+    Record.empty
+    |> Record.add "FUNC" (listV [])
+    |> Record.add "GLOBAL" (listV [])
+    |> Record.add "TABLE" (listV [])
+    |> Record.add "MEM" (listV [])
+    |> Record.add "ELEM" (listV [])
+    |> Record.add "DATA" (listV [])
+    |> Record.add "STRUCT" (listV [])
+    |> Record.add "ARRAY" (listV [])
