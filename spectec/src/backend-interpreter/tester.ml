@@ -486,5 +486,13 @@ let test_all () =
   let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
   let percentage_norm = percentage /. float_of_int (List.length results) in
 
+  (* Coverage *)
+  (*
+  Ds.(
+    InfoMap.uncovered !info_map
+    |> InfoMap.print
+  );
+  *)
+
   Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm;
   Printf.eprintf "Took %f ms.\n" (time *. 1000.);

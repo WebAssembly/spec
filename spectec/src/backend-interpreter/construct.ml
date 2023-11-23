@@ -40,6 +40,10 @@ let singleton x = CaseV (x, [])
 let listV l = ListV (l |> Array.of_list |> ref)
 let id str = VarE str 
 
+let get_name = function
+  | RuleA ((name, _), _, _) -> name
+  | FuncA (name, _, _) -> name
+
 let get_param = function
   | RuleA (_, params, _) -> params
   | FuncA (_, params, _) -> params

@@ -681,6 +681,8 @@ and interp_instr (env: env) (instr: instr): env =
   print_endline "";
   *)
 
+  (InfoMap.find instr.nid !info_map).covered <- true;
+
   let res =
   match instr.it with
   (* Block instruction *)

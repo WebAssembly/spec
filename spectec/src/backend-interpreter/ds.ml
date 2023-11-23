@@ -4,6 +4,8 @@ open Print
 open Construct
 open Util.Record
 
+(* Program *)
+
 module RuleMap = Map.Make (String)
 type rule_map = algorithm RuleMap.t ref
 
@@ -23,11 +25,6 @@ let to_map algos =
   in
   List.fold_left f (RuleMap.empty, FuncMap.empty) algos
 
-let init algos =
-  let rmap, fmap = to_map algos in
-  rule_map := rmap;
-  func_map := fmap
-
 let lookup name =
   if RuleMap.mem name !rule_map then
     RuleMap.find name !rule_map
@@ -35,6 +32,44 @@ let lookup name =
     FuncMap.find name !func_map
   else failwith ("Algorithm not found: " ^ name)
 
+
+(* Info *)
+
+type info = { algo_name: string; instr: instr; mutable covered: bool }
+module InfoMap = struct include Map.Make (Int)
+  type t = int * info
+
+  let make_info algo_name instr =
+    { algo_name; instr; covered = false }
+
+  let uncovered =
+    filter (fun _ info -> not info.covered)
+
+  let rec partition_by_algo info_map =
+    match choose_opt info_map with
+    | None -> []
+    | Some (_, info) ->
+      let f _ v = v.algo_name = info.algo_name in
+      let im1, im2 = partition f info_map in
+      im1 :: partition_by_algo im2
+
+  let print info_map =
+    partition_by_algo info_map
+    |> List.iter
+      (fun im ->
+        let _, v = choose im in
+        Printf.printf "\n[%s]\n" v.algo_name;
+        iter
+          (fun _ v' ->
+            Al.Print.string_of_instr (ref 0) 0 v'.instr
+            |> print_endline)
+          im)
+end
+
+let info_map = ref InfoMap.empty
+
+
+(* Store *)
 
 let store : store ref = ref Record.empty
 
@@ -65,6 +100,7 @@ end
 type env = value Env.t
 
 (* AL Context *)
+
 module AL_Context = struct
   (* TODO: Change name *)
   type return_value =
@@ -153,6 +189,7 @@ module AL_Context = struct
 end
 
 (* Wasm Context *)
+
 module WasmContext = struct
   type t = value * value list * value list
 
@@ -253,3 +290,28 @@ module WasmContext = struct
     | h :: t -> push_context (v_ctx, vs, t); h
     | _ -> failwith "Wasm instr stack underflow"
 end
+
+(* Initialization *)
+
+let init algos =
+
+  (* Initialize info_map *)
+
+  let init_info algo =
+    let algo_name = get_name algo in
+    let config = {
+      Walk.default_config with pre_instr =
+        (fun i ->
+          let info = InfoMap.make_info algo_name i in
+          info_map := InfoMap.add i.nid info !info_map;
+          [i])
+    } in
+    Walk.walk config algo
+  in
+  List.map init_info algos |> ignore;
+
+  (* Initialize algo_map *)
+
+  let rmap, fmap = to_map algos in
+  rule_map := rmap;
+  func_map := fmap
