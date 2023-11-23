@@ -3580,12 +3580,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z, (instr' <: admininstr)*{instr'}))
     -- Step_pure: `%*~>%*`((instr <: admininstr)*{instr}, (instr' <: admininstr)*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z, (instr' <: admininstr)*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, (instr <: admininstr)*{instr}), (instr' <: admininstr)*{instr'})
@@ -3691,28 +3691,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, (val <: admininstr)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, (instr <: admininstr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z', (val <: admininstr)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -7752,12 +7752,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -7863,28 +7863,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -11927,12 +11927,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -12038,28 +12038,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -16115,12 +16115,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -16231,28 +16231,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -20308,12 +20308,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -20424,28 +20424,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -24634,12 +24634,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -24755,28 +24755,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -29014,12 +29014,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -29135,28 +29135,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
