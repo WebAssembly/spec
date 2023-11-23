@@ -18,8 +18,12 @@ val free_typ : typ -> sets
 val free_exp : exp -> sets
 val free_path : path -> sets
 val free_prem : premise -> sets
+val free_arg : arg -> sets
 val free_def : def -> sets
 
 val pat_exp : exp -> sets
+val pat_arg : arg -> sets
+
 val bound_exp : exp -> sets
+val bound_arg : arg -> sets
 val bound_prem : premise -> sets

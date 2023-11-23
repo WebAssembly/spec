@@ -4,8 +4,8 @@
 
 ;; Vectors
 
-grammar Bvec(grammar BX : X) : X* =
-  | n:Bu32 (X:BX)^n => X^n
+grammar Bvec(grammar BX : el) : el* =
+  | n:Bu32 (el:BX)^n => el^n
 
 
 
@@ -17,29 +17,29 @@ grammar Bvec(grammar BX : X) : X* =
 
 grammar Bbyte : byte = | b:0x00 | ... | b:0xFF => b
 
-grammar Bu(N) : nat hint(show Bu#N) =
-  | n:Bbyte                => n                       -- if $(n < 2^7 /\ n < 2^N)
-  | n:Bbyte m:Bu(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+grammar BuN(N) : uN(N) hint(show Bu#N) =
+  | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)
+  | n:Bbyte m:BuN(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar Bs(N) : int hint(show Bs#N) =
-  | n:Bbyte                => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
-  | n:Bbyte                => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
-  | n:Bbyte i:Bu(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
+grammar BsN(N) : sN(N) hint(show Bs#N) =
+  | n:Bbyte                 => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
+  | n:Bbyte                 => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
+  | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar Bi(N) : int hint(show Bi#N) =
-  | i:Bs(N)                => $invsigned(N, i)
+grammar BiN(N) : iN(N) hint(show Bi#N) =
+  | i:BsN(N)                => $invsigned(N, i)
 
 
-grammar Bf(N) : fN hint(show Bf#N) =
+grammar BfN(N) : fN(N) hint(show Bf#N) =
   | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
 
 
-grammar Bu32 : u32 = | n:Bu(32) => n
-grammar Bu64 : u64 = | n:Bu(64) => n
-grammar Bs33 : s33 = | i:Bs(33) => i
+grammar Bu32 : u32 = | n:BuN(32) => n
+grammar Bu64 : u64 = | n:BuN(64) => n
+grammar Bs33 : s33 = | i:BsN(33) => i
 
-grammar Bf32 : f32 = | p:Bf(32) => p
-grammar Bf64 : f64 = | p:Bf(64) => p
+grammar Bf32 : f32 = | p:BfN(32) => p
+grammar Bf64 : f64 = | p:BfN(64) => p
 
 
 ;; Names
@@ -57,6 +57,25 @@ def $utf8(c*) = $concat_bytes($utf8(c)*)
 
 grammar Bname : name =
   | b*:Bvec(Bbyte) => name  -- if $utf8(name) = b*
+
+
+;; Indices
+
+grammar Btypeidx : typeidx = | x:Bu32 => x
+grammar Bfuncidx : funcidx = | x:Bu32 => x
+grammar Bglobalidx : globalidx = | x:Bu32 => x
+grammar Btableidx : tableidx = | x:Bu32 => x
+grammar Bmemidx : memidx = | x:Bu32 => x
+grammar Belemidx : elemidx = | x:Bu32 => x
+grammar Bdataidx : dataidx = | x:Bu32 => x
+grammar Blocalidx : localidx = | x:Bu32 => x
+grammar Blabelidx : labelidx = | x:Bu32 => x
+
+grammar Bexternidx : externidx =
+  | 0x00 x:Bfuncidx => FUNC x
+  | 0x01 x:Btableidx => TABLE x
+  | 0x02 x:Bmemidx => MEM x
+  | 0x03 x:Bglobalidx => GLOBAL x
 
 
 ;;
@@ -439,59 +458,40 @@ grammar Bexpr : expr =
 ;; Modules
 ;;
 
-;; Indices
-
-grammar Btypeidx : typeidx = | x:Bu32 => x
-grammar Bfuncidx : funcidx = | x:Bu32 => x
-grammar Bglobalidx : globalidx = | x:Bu32 => x
-grammar Btableidx : tableidx = | x:Bu32 => x
-grammar Bmemidx : memidx = | x:Bu32 => x
-grammar Belemidx : elemidx = | x:Bu32 => x
-grammar Bdataidx : dataidx = | x:Bu32 => x
-grammar Blocalidx : localidx = | x:Bu32 => x
-grammar Blabelidx : labelidx = | x:Bu32 => x
-
-grammar Bexternidx : externidx =
-  | 0x00 x:Bfuncidx => FUNC x
-  | 0x01 x:Btableidx => TABLE x
-  | 0x02 x:Bmemidx => MEM x
-  | 0x03 x:Bglobalidx => GLOBAL x
-
-
 ;; Sections
 
 var sz : nat
 
-grammar Bsection_(N, grammar B : S*) : S*  hint(desc "section") =
-  | N:Bbyte sz:Bu32 S*:B => S*  -- if sz = ||B||
+grammar Bsection_(N, grammar BX : en*) : en*  hint(desc "section") =
+  | N:Bbyte sz:Bu32 en*:BX => en*  -- if sz = ||BX||
   | epsilon => epsilon
 
 
 ;; Custom sections
 
-grammar Bcustomsec : () hint(desc "custom section") =
-  | Bsection_(0, Bcustom) => ()
-
 grammar Bcustom : ()* hint(desc "custom data") =
   | Bname Bbyte* => ()
+
+grammar Bcustomsec : () hint(desc "custom section") =
+  | Bsection_(0, Bcustom) => ()
 
 
 ;; Type section
 
-grammar Btypesec : type* hint(desc "type section") =
-  | ty*:Bsection_(1, Bvec(Btype)) => ty*
-
 grammar Btype : type =
   | ft:Bfunctype => TYPE ft
+
+grammar Btypesec : type* hint(desc "type section") =
+  | ty*:Bsection_(1, Bvec(Btype)) => ty*
 
 
 ;; Import section
 
-grammar Bimportsec : import* hint(desc "import section") =
-  | im*:Bsection_(2, Bvec(Bimport)) => im*
-
 grammar Bimport : import =
   | nm_1:Bname nm_2:Bname xt:Bexterntype => IMPORT nm_1 nm_2 xt
+
+grammar Bimportsec : import* hint(desc "import section") =
+  | im*:Bsection_(2, Bvec(Bimport)) => im*
 
 
 ;; Function section
@@ -502,53 +502,53 @@ grammar Bfuncsec : typeidx* hint(desc "function section") =
 
 ;; Table section
 
-grammar Btablesec : table* hint(desc "table section") =
-  | tab*:Bsection_(4, Bvec(Btable)) => tab*
-
 grammar Btable : table =
   | tt:Btabletype => TABLE tt
+
+grammar Btablesec : table* hint(desc "table section") =
+  | tab*:Bsection_(4, Bvec(Btable)) => tab*
 
 
 ;; Memory section
 
-grammar Bmemsec : mem* hint(desc "memory section") =
-  | mem*:Bsection_(5, Bvec(Bmem)) => mem*
-
 grammar Bmem : mem =
   | mt:Bmemtype => MEMORY mt
+
+grammar Bmemsec : mem* hint(desc "memory section") =
+  | mem*:Bsection_(5, Bvec(Bmem)) => mem*
 
 
 ;; Global section
 
-grammar Bglobalsec : global* hint(desc "global section") =
-  | glob*:Bsection_(6, Bvec(Bglobal)) => glob*
-
 grammar Bglobal : global =
   | gt:Bglobaltype e:Bexpr => GLOBAL gt e
+
+grammar Bglobalsec : global* hint(desc "global section") =
+  | glob*:Bsection_(6, Bvec(Bglobal)) => glob*
 
 
 ;; Export section
 
-grammar Bexportsec : export* hint(desc "export section") =
-  | ex*:Bsection_(7, Bvec(Bexport)) => ex*
-
 grammar Bexport : export =
   | nm:Bname xx:Bexternidx => EXPORT nm xx
+
+grammar Bexportsec : export* hint(desc "export section") =
+  | ex*:Bsection_(7, Bvec(Bexport)) => ex*
 
 
 ;; Start section
 
-grammar Bstartsec : start* hint(desc "start section") =
-  | st*:Bsection_(8, Bstart) => st*
-
 grammar Bstart : start* =
   | x:Bfuncidx => (START x)
+
+grammar Bstartsec : start* hint(desc "start section") =
+  | st*:Bsection_(8, Bstart) => st*
 
 
 ;; Element section
 
-grammar Belemsec : elem* hint(desc "element section") =
-  | elem*:Bsection_(9, Bvec(Belem)) => elem*
+grammar Belemkind : reftype hint(desc "element kind") =
+  | 0x00 => FUNCREF
 
 grammar Belem : elem =
   | 0:Bu32 e_o:Bexpr y*:Bvec(Bfuncidx) =>
@@ -568,8 +568,8 @@ grammar Belem : elem =
   | 7:Bu32 rt:Breftype e*:Bvec(Bexpr) =>
       ELEM rt e* DECLARE
 
-grammar Belemkind : reftype hint(desc "element kind") =
-  | 0x00 => FUNCREF
+grammar Belemsec : elem* hint(desc "element section") =
+  | elem*:Bsection_(9, Bvec(Belem)) => elem*
 
 
 ;; Code section
@@ -581,37 +581,37 @@ def $concat_locals(loc* loc'**) = loc* $concat_locals(loc'**)
 
 syntax code = (local*, expr)
 
-grammar Bcodesec : code* hint(desc "code section") =
-  | code*:Bsection_(10, Bvec(Bcode)) => code*
-
-grammar Bcode : code =
-  | sz:Bu32 code:Bfunc => code  -- if sz = ||Bfunc||
+grammar Blocals : local* hint(desc "local") =
+  | n:Bu32 t:Bvaltype => (LOCAL t)^n
 
 grammar Bfunc : code =
   | local**:Bvec(Blocals) expr:Bexpr => ($concat_locals(local**), expr)
 
-grammar Blocals : local* hint(desc "local") =
-  | n:Bu32 t:Bvaltype => (LOCAL t)^n
+grammar Bcode : code =
+  | sz:Bu32 code:Bfunc => code  -- if sz = ||Bfunc||
+
+grammar Bcodesec : code* hint(desc "code section") =
+  | code*:Bsection_(10, Bvec(Bcode)) => code*
 
 
 ;; Data section
-
-grammar Bdatasec : data* hint(desc "data section") =
-  | data*:Bsection_(11, Bvec(Bdata)) => data*
 
 grammar Bdata : data =
   | 0:Bu32 e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE 0 e)
   | 1:Bu32 b*:Bvec(Bbyte) => DATA b* PASSIVE
   | 2:Bu32 x:Bmemidx e:Bexpr b*:Bvec(Bbyte) => DATA b* (ACTIVE x e)
 
+grammar Bdatasec : data* hint(desc "data section") =
+  | data*:Bsection_(11, Bvec(Bdata)) => data*
+
 
 ;; Data count section
 
-grammar Bdatacntsec : u32* hint(desc "data count section") =
-  | n*:Bsection_(12, Bdatacnt) => n*
-
 grammar Bdatacnt : u32* hint(desc "data count") =
   | n:Bu32 => n
+
+grammar Bdatacntsec : u32* hint(desc "data count section") =
+  | n*:Bsection_(12, Bdatacnt) => n*
 
 
 ;; Modules

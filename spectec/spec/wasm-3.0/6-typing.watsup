@@ -977,12 +977,14 @@ rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
   -- if C.GLOBAL[x] = epsilon t
 
-def $in_numtype(numtype, numtype*) : bool    hint(show % in %)
+;; TODO: builtin elemof
+def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
 def $in_numtype(nt, epsilon) = false
 def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*) 
-def $in_binop(binop, binopIXX*) : bool  hint(show % in %)
+
+def $in_binop(binop_numtype, ibinop*) : bool  hint(show % <- %)
 def $in_binop(binop, epsilon) = false
-def $in_binop(binop, binopIXX_1 binopIXX'*) = binop = _I binopIXX_1 \/ $in_binop(binop, binopIXX'*) 
+def $in_binop(binop, ibinop_1 ibinop'*) = binop = _I ibinop_1 \/ $in_binop(binop, ibinop'*)
 
 rule Instr_const/binop:
   C |- (BINOP nt binop) CONST

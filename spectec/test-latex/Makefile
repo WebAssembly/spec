@@ -8,9 +8,7 @@ OWNDIR = $(PWD)
 SPECDIR = ../spec
 SPECS = $(shell ls $(SPECDIR))
 SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
-
-SPEC = 
-TEST = $(SPEC:%=test-%)
+TESTFILES = $(shell ls *.$(EXT))
 
 
 # Main targets
@@ -32,12 +30,12 @@ test: test-gen test-latex test-sphinx
 GENINNAME = spec-gen.include
 GENOUTNAME = spec-gen
 
-.PHONY: gen test-gen
-.INTERMEDIATE: $(SPECS:%=$(GENINNAME)-%.tex)
+.PHONY: gen test-gen test-test
+.INTERMEDIATE: $(SPECS:%=$(GENINNAME)-%.tex) $(TESTFILES:%.$(EXT)=%.tex)
 
 gen: $(SPECS:%=$(GENINNAME)-%.tex)
 
-test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf)
+test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf) test-test
 
 $(GENINNAME)-%.tex: $(SPECFILES) $(EXE)
 	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) -o $(OWNDIR)/$@)
@@ -49,6 +47,17 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 	ln -f $(GENINNAME)-$*.tex $(GENINNAME).tex
 	pdflatex $<
 	rm $(GENINNAME).tex
+
+test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
+
+test-%.tex: %.$(EXT) $(EXE)
+	$(EXE) $< -o $@
+
+test-%.pdf: test-%.tex $(GENOUTNAME).tex
+	ln -f $< $(GENINNAME).tex
+	ln -f $(GENOUTNAME).tex $<
+	pdflatex $<
+	rm $(GENINNAME).tex $<
 
 
 # Latex splicing
@@ -119,5 +128,5 @@ clean:
 	rm -rf $(SPHINXDIR)
 
 distclean: clean
-	rm -f $(GENINNAME)-*.tex $(SPLICEOUTNAME)-*.tex $(SPHINXOUTNAME)-*.rst
+	rm -f $(GENINNAME)-*.tex test-*.tex $(SPLICEOUTNAME)-*.tex $(SPHINXOUTNAME)-*.rst
 	rm -f *.pdf

@@ -47,6 +47,7 @@ gramid ::= id
 defid ::= id
 relid ::= id
 ruleid ::= id
+subid ::= ("/" | "-") ruleid
 
 atom ::=
   atomid
@@ -68,7 +69,7 @@ atomop ::=
 
 ```
 typ ::=
-  varid                                type name
+  varid args                           type name
   "bool"                               booleans
   "nat"                                natural numbers
   "int"                                integer numbers
@@ -147,7 +148,7 @@ exp ::=
   "`" "[" list(exp, ",") "]"
   "`" "{" list(exp, ",") "}"
   "$" "(" arith ")"                    escape to arithmetic syntax
-  "%"                                  hole (for syntax rewrites in hints)
+  hole                                 hole (for syntax rewrites in hints)
   exp "#" exp                          token concatenation (for syntax rewrites in hints)
 
 unop  ::= notop | "+" | "-"
@@ -168,6 +169,13 @@ path ::=
   path? "[" arith "]"                  list element
   path? "[" arith ":" arith "]"        list slice
   path? "." atom                       record element
+
+
+hole ::=
+  "%"                                  use one operand
+  "%%"                                 use all operands
+  "!%"                                 skip one operand
+  "!%%"                                skip all operands
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.
@@ -180,8 +188,7 @@ To use arithmetic operators in a place that is not naturally arithmetic, the sub
 
 ```
 sym ::=
-  gramid
-  gramid"(" list(sym, ",") ")"
+  gramid args
   num
   text
   "epsilon"
@@ -211,33 +218,41 @@ gram ::=
 ### Definitions
 
 ```
+args ::= ("(" list(arg ",") ")")?
+arg ::=
+  exp
+  "syntax" typ
+  "grammar" sym
+
+params ::= ("(" list(param ",") ")")?
 param ::=
-  varid
-  "grammar" gramid ":" varid iter*
+  (varid ":") typ
+  "syntax" synid
+  "grammar" gramid ":" typ
 
 def ::=
-  "syntax" varid (("/" | "-") ruleid)* hint* "=" deftyp             syntax definition
-  "grammar" gramid ("(" list(param ",") ")")? (("/" | "-") ruleid)* ":" typ hint* "=" gram     grammar definition
-  "relation" relid hint* ":" typ                                    relation declaration
-  "rule" relid (("/" | "-") ruleid)* hint* ":" exp ("--" premise)*  rule
-  "var" varid ":" typ hint*                                         variable declaration
-  "def" "$" defid exp? ":" typ hint*                                function declaration
-  "def" "$" defid exp? "=" exp ("--" premise)*                      function clause
-  "syntax" varid (("/" | "-") ruleid)* atom? hint+                  outline hints
-  "grammar" gramid (("/" | "-") ruleid)* hint*
+  "syntax" varid params subid* hint* "=" deftyp             syntax definition
+  "grammar" gramid params subid* ":" typ hint* "=" gram     grammar definition
+  "relation" relid hint* ":" typ                            relation declaration
+  "rule" relid subid* hint* ":" exp ("--" premise)*  rule
+  "var" varid ":" typ hint*                                 variable declaration
+  "def" "$" defid params ":" typ hint*                      function declaration
+  "def" "$" defid args "=" exp ("--" premise)*              function clause
+  "syntax" varid subid* atom? hint+                         outlined hints
+  "grammar" gramid subid* hint*
   "relation" relid hint+
-  "rule" relid (("/" | "-") ruleid)* hint+
+  "rule" relid subid* hint+
   "var" varid hint+
   "def" "$" defid hint+
 
 premise ::=
-  relid ":" exp                                               relational premise
-  "if" exp                                                    side condition
-  "otherwise"                                                 fallback side condition
-  "(" premise ")" iter*                                       iterated relational premise
+  relid ":" exp                                             relational premise
+  "if" exp                                                  side condition
+  "otherwise"                                               fallback side condition
+  "(" premise ")" iter*                                     iterated relational premise
 
 hint ::=
-  "hint" "(" hintid exp ")"                                   hint
+  "hint" "(" hintid exp ")"                                 hint
 ```
 
 Syntax defines an abstract syntax type.

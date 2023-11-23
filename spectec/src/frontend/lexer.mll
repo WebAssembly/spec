@@ -202,6 +202,8 @@ and token = parse
   | "_|_" { BOT }
   | "%" { HOLE }
   | "%%" { MULTIHOLE }
+  | "!%" { SKIP }
+  | "!%%" { MULTISKIP }
   | "#" { FUSE }
 
   | "`" { TICK }

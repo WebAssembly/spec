@@ -13,22 +13,24 @@ var nm : name
 ;; Values
 ;;
 
+;; Integers
+
 syntax byte hint(desc "byte") = 0x00 | ... | 0xFF
 
-;; TODO: make u(N), s(N), i(N)
-syntax uN hint(desc "unsigned integer") = 0 | ... | 2^N-1
-syntax sN hint(desc "signed integer") = -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
-syntax iN hint(desc "integer") = uN
+syntax uN(N) hint(desc "unsigned integer") = 0 | ... | 2^N-1
+syntax sN(N) hint(desc "signed integer") = -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
+syntax iN(N) hint(desc "integer") = uN(N)
 
-;; TODO: use u(N), s(N)
-syntax u31 hint(desc "31-bit integer") = 0 | ... | 2^31-1
-syntax u32 hint(desc "32-bit integer") = 0 | ... | 2^32-1
-syntax u64 hint(desc "64-bit integer") = 0 | ... | 2^64-1
-syntax u128 hint(desc "128-bit integer") = 0 | ... | 2^128-1
-syntax s33 hint(desc "33-bit signed integer") = -2^32 | ... | 2^32-1
+syntax u31 = uN(31)
+syntax u32 = uN(32)
+syntax u64 = uN(64)
+syntax u128 = uN(128)
+syntax s33 = sN(33)
 
 var b : byte
 
+
+;; Floating-point
 
 def $signif(N) : nat
 def $signif(32) = 23
@@ -44,25 +46,21 @@ def $M(N) = $signif(N)
 def $E(N) : nat  hint(show $E_(%))
 def $E(N) = $expon(N)
 
-;; TODO: make f(N), fmag(N)
-syntax fN hint(desc "floating-point number") = | POS fNmag  hint(show $(+%)) | NEG fNmag  hint(show $(-%))
+syntax fN(N) hint(desc "floating-point number") =
+  | POS fmag(N)  hint(show $(+%))
+  | NEG fmag(N)  hint(show $(-%))
 
-syntax fNmag hint(desc "floating-point magnitude") =
+syntax fmag(N) hint(desc "floating-point magnitude") =
   | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
   | SUBNORM m n  hint(show $((0 + %*2^(-$M(N))) * 2^%))  -- if $(2-2^($E(N)-1) = n)
   | INF          hint(show infinity)
   | NAN n        hint(show NAN#((%)))                    -- if $(1 <= n < $M(N))
 
-;; TODO: use f(N)
-def $fNzero : fN  hint(show $(+0))
-def $fNzero = POS (NORM 0 0)
+def $fzero(N) : fN(N)  hint(show $(+0))
+def $fzero(N) = POS (NORM 0 0)
 
-;; TODO: use f(N)
-syntax f32 hint(desc "32-bit floating-point") = fN
-syntax f64 hint(desc "64-bit floating-point") = fN
-
-var p : fN
-var q : fN
+syntax f32 = fN(32)
+syntax f64 = fN(64)
 
 
 ;;
@@ -222,25 +220,26 @@ var zt : storagetype
 
 syntax sx hint(desc "signedness") = | U | S
 
-syntax unopIXX hint(show unop_IXX) = | CLZ | CTZ | POPCNT
-syntax unopFXX hint(show unop_FXX) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax iunop = | CLZ | CTZ | POPCNT
+syntax funop = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
-syntax binopIXX hint(show binop_IXX) =
+syntax ibinop =
   | ADD | SUB | MUL | DIV sx hint(show DIV_#%) | REM sx hint(show REM_#%)
   | AND | OR | XOR | SHL | SHR sx hint(show SHR_#%) | ROTL | ROTR
-syntax binopFXX hint(show binop_FXX) = | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
+syntax fbinop = | ADD | SUB | MUL | DIV | MIN | MAX | COPYSIGN
 
-syntax testopIXX hint(show testop_IXX) = | EQZ
-syntax testopFXX hint(show testop_FXX) = |      ;; uninhabited
+syntax itestop = | EQZ
+syntax ftestop = |      ;; uninhabited
 
-syntax relopIXX hint(show relop_IXX) =
+syntax irelop =
   | EQ | NE | LT sx hint(show LT_#%) | GT sx hint(show GT_#%) | LE sx hint(show LE_#%) | GE sx hint(show GE_#%)
-syntax relopFXX hint(show refop_FXX) = | EQ | NE | LT | GT | LE | GE
+syntax frelop = | EQ | NE | LT | GT | LE | GE
 
-syntax unop_numtype = | _I unopIXX | _F unopFXX
-syntax binop_numtype = | _I binopIXX | _F binopFXX
-syntax testop_numtype = | _I testopIXX | _F testopFXX
-syntax relop_numtype = | _I relopIXX | _F relopFXX
+;; TODO: type index
+syntax unop_numtype = | _I iunop | _F funop
+syntax binop_numtype = | _I ibinop | _F fbinop
+syntax testop_numtype = | _I itestop | _F ftestop
+syntax relop_numtype = | _I irelop | _F frelop
 syntax cvtop = | CONVERT | REINTERPRET | CONVERT_SAT
 
 var unop : unop_numtype
@@ -259,9 +258,9 @@ var mo : memop
 ;;
 
 ;; TODO: do c(numtype)?
+syntax c = nat
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
-var c : c_numtype
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?

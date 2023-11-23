@@ -10,5 +10,7 @@ val string_of_typ : typ -> string
 val string_of_exp : exp -> string
 val string_of_exps : string -> exp list -> string
 val string_of_prem : premise -> string
+val string_of_param : param -> string
+val string_of_arg : arg -> string
 val string_of_def : def -> string
 val string_of_script : script -> string
