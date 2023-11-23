@@ -592,12 +592,6 @@ let rulepr2instrs id exp instrs = match id.it, exp2args exp with
       ListE [CaseE (("FRAME_", ""), [])],
       [ LetI (rhs, CallE ("eval_expr", [ lhs ])) ]
     ) :: instrs
-  | "Step_read", [TupE (TupE (_s, f), lhs); rhs] ->
-    EnterI (
-      FrameE (None, f),
-      ListE [CaseE (("FRAME_", ""), [])],
-      [ LetI (rhs, CallE ("eval_expr", [ lhs ])) ]
-    ) :: instrs
   | "Ref_ok", [_s; ref; rt] ->
     LetI (rt, CallE ("ref_type_of", [ ref ])) :: instrs
   | "Reftype_sub", [_C; rt1; rt2] ->

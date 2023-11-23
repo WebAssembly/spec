@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- ../spec/*.watsup -l --splice-latex -p spec-splice-in.tex -w)
+$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l --splice-latex -p spec-splice.in.tex -w)
 == Parsing...
 == Elaboration...
 == IL Validation...
@@ -71,16 +71,6 @@ prem_to_instr: Invalid prem 2
 \subsection*{Syntax}
 
 $$
-\begin{array}{@{}lrrl@{}l@{}}
-\mbox{(number type)} & {\mathit{numtype}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} ~|~ \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
-\mbox{(vector type)} & {\mathit{vectype}} &::=& \mathsf{v{\scriptstyle128}} \\
-\mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
-\mbox{(value type)} & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\[0.8ex]
-\mbox{(result type)} & {\mathit{resulttype}} &::=& {{\mathit{valtype}}^\ast} \\
-\end{array}
-$$
-
-$$
 \begin{array}{@{}lcl@{}l@{}}
 {|\mathsf{i{\scriptstyle32}}|} &=& 32 &  \\[0.8ex]
 {|\mathsf{i{\scriptstyle64}}|} &=& 64 &  \\[0.8ex]
@@ -125,14 +115,6 @@ $$
 \mathsf{return\_call}~{\mathit{funcidx}} \\ &&|&
 \mathsf{return\_call\_ref}~{{\mathit{typeidx}}^?} \\ &&|&
 \mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
-\mathsf{ref.null}~{\mathit{heaptype}} \\ &&|&
-\mathsf{ref.i{\scriptstyle31}} \\ &&|&
-\mathsf{ref.func}~{\mathit{funcidx}} \\ &&|&
-\mathsf{ref.is\_null} \\ &&|&
-\mathsf{ref.as\_non\_null} \\ &&|&
-\mathsf{ref.eq} \\ &&|&
-\mathsf{ref.test}~{\mathit{reftype}} \\ &&|&
-\mathsf{ref.cast}~{\mathit{reftype}} \\ &&|&
 ... \\
 \end{array}
 $$
@@ -152,14 +134,6 @@ $$
 \mathsf{local.tee}~{\mathit{localidx}} \\ &&|&
 \mathsf{global.get}~{\mathit{globalidx}} \\ &&|&
 \mathsf{global.set}~{\mathit{globalidx}} \\ &&|&
-\mathsf{table.get}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.set}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.size}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.grow}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.fill}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.copy}~{\mathit{tableidx}}~{\mathit{tableidx}} \\ &&|&
-\mathsf{table.init}~{\mathit{tableidx}}~{\mathit{elemidx}} \\ &&|&
-\mathsf{elem.drop}~{\mathit{elemidx}} \\ &&|&
 \mathsf{memory.size}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.grow}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.fill}~{\mathit{memidx}} \\ &&|&
@@ -196,14 +170,6 @@ $$
 {\mathit{C}} \vdash {\mathit{instr}}_{{1}}~{{\mathit{instr}}_{{2}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{1}}^\ast}~{{\mathit{x}}_{{2}}^\ast})~{{\mathit{t}}_{{3}}^\ast}
 }
 \\[3ex]\displaystyle
-\frac{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {\mathit{it}}
- \qquad
-{\mathit{C}} \vdash {\mathit{it}} \leq {\mathit{it}'}
-}{
-{\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {\mathit{it}'}
-}
-\qquad
 \frac{
 {\mathit{C}} \vdash {{\mathit{instr}}^\ast} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}^\ast})~{{\mathit{t}}_{{2}}^\ast}
 }{
@@ -300,6 +266,9 @@ $$
 \qquad
 \end{array}
 $$
+
+
+
 
 
 \subsection*{Runtime}
@@ -452,9 +421,10 @@ warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
 warning: syntax `inn` was never spliced
+warning: syntax `instr/reference` was never spliced
 warning: syntax `instr/heap` was never spliced
+warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
-warning: syntax `labeladdr` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
@@ -473,16 +443,19 @@ warning: syntax `n` was never spliced
 warning: syntax `name` was never spliced
 warning: syntax `nul` was never spliced
 warning: syntax `num` was never spliced
+warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `packedtype` was never spliced
 warning: syntax `packedval` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
+warning: syntax `reftype` was never spliced
 warning: syntax `relopFXX` was never spliced
 warning: syntax `relopIXX` was never spliced
 warning: syntax `relop_numtype` was never spliced
 warning: syntax `result` was never spliced
+warning: syntax `resulttype` was never spliced
 warning: syntax `s33` was never spliced
 warning: syntax `sN` was never spliced
 warning: syntax `start` was never spliced
@@ -513,6 +486,9 @@ warning: syntax `unopFXX` was never spliced
 warning: syntax `unopIXX` was never spliced
 warning: syntax `unop_numtype` was never spliced
 warning: syntax `val` was never spliced
+warning: syntax `valtype` was never spliced
+warning: syntax `valtype` was never spliced
+warning: syntax `vectype` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
 warning: grammar `Bbyte` was never spliced
@@ -712,8 +688,6 @@ warning: rule `Instr_ok/testop` was never spliced
 warning: rule `Instr_ok/relop` was never spliced
 warning: rule `Instr_ok/extend` was never spliced
 warning: rule `Instr_ok/reinterpret` was never spliced
-warning: rule `Instr_ok/convert-i` was never spliced
-warning: rule `Instr_ok/convert-f` was never spliced
 warning: rule `Instr_ok/ref.null` was never spliced
 warning: rule `Instr_ok/ref.func` was never spliced
 warning: rule `Instr_ok/ref.i31` was never spliced
@@ -764,6 +738,7 @@ warning: rule `Instrf_ok/instr` was never spliced
 warning: rule `Instrf_ok/local.set` was never spliced
 warning: rule `Instrf_ok/local.tee` was never spliced
 warning: rule `Instrs_ok/empty` was spliced more than once
+warning: rule `Instrs_ok/sub` was never spliced
 warning: rule `Instrs_ok/frame` was spliced more than once
 warning: rule `Instrtype_ok` was never spliced
 warning: rule `Instrtype_sub` was never spliced

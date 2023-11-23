@@ -141,15 +141,16 @@ def $instantiate(store, module, externval*) : config
 def $instantiate(s, module, externval*) = s'; f; (CALL x')?
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if type* = (TYPE functype)*
-  -- if global* = (GLOBAL globaltype instr_G*)*  ;; TODO: expr_G
-  -- if elem* = (ELEM instr_E* x*)*              ;; TODO: expr_E
-  -- if data* = (DATA instr_D* b*)*              ;; TODO: expr_D
+  -- if global* = (GLOBAL globaltype expr_G)*
+  -- if elem* = (ELEM expr_E x*)*
+  -- if data* = (DATA expr_D b*)*
   -- if start? = (START x')?
   -- if mm_init = {TYPE functype*, FUNC $funcs(externval*), GLOBAL $globals(externval*)}
   -- if f_init = { LOCAL epsilon, MODULE mm_init }
-  -- (Step_read : s; f_init; instr_G* ~> val)*
-  -- (Step_read : s; f_init; instr_E* ~> (CONST I32 i_E))*
-  -- (Step_read : s; f_init; instr_D* ~> (CONST I32 i_D))*
+  -- if z = s; f_init
+  -- (Eval_expr : z; expr_G ~>* z; val)*
+  -- (Eval_expr : z; expr_E ~>* z; (CONST I32 i_E))*
+  -- (Eval_expr : z; expr_D ~>* z; (CONST I32 i_D))*
   -- if (s', mm) = $allocmodule(s, module, externval*, val*)
   -- if s'' = $initelem(s', mm.TABLE[0], i_E*, mm.FUNC[x]**)
   -- if s''' = $initdata(s'', mm.MEM[0], i_D*, b**)
