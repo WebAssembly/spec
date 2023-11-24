@@ -685,7 +685,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & i_1^\ast = \lanes_{\shape}(c) \\
+     (\iff & i_1^\ast = \lanes_{\shape}(c_1) \\
      \wedge & i = \bool(\bigwedge(i_1 \neq 0)^\ast))
      \end{array}
    \end{array}
