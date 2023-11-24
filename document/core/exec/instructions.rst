@@ -700,7 +700,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-3. Let :math:`i_1^N` be the result of computing :math:`\lanes_{t\K{x}N}(c)`.
+3. Let :math:`i_1^N` be the result of computing :math:`\lanes_{t\K{x}N}(c_1)`.
 
 4. Let :math:`B` be the :ref:`bit width <syntax-valtype>` :math:`|t|` of :ref:`value type <syntax-valtype>` :math:`t`.
 
@@ -715,7 +715,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 .. math::
    \begin{array}{lcl@{\qquad}l}
    (\V128\K{.}\VCONST~c_1)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
+     & (\iff c = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c_1), 0^N)))
      \\
    \end{array}
 
