@@ -1633,6 +1633,82 @@ execution_of_CVTOP nt_2 cvtop nt_1 sx?
 4. If $cvtop(cvtop, nt_1, nt_2, sx?, c_1) is [], then:
   a. Trap.
 
+execution_of_VVUNOP V128 vvunop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_1) from the stack.
+3. Let cv be $vvunop(vvunop, V128, cv_1).
+4. Execute (VVCONST V128 cv).
+
+execution_of_VVBINOP V128 vvbinop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Assert: Due to validation, |$vvbinop(vvbinop, V128, cv_1, cv_2)| is 1.
+6. Let [cv] be $vvbinop(vvbinop, V128, cv_1, cv_2).
+7. Execute (VVCONST V128 cv).
+
+execution_of_VVTERNOP V128 vvternop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_3) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_2) from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop (VVCONST V128 cv_1) from the stack.
+7. Assert: Due to validation, |$vvternop(vvternop, V128, cv_1, cv_2, cv_3)| is 1.
+8. Let [cv] be $vvternop(vvternop, V128, cv_1, cv_2, cv_3).
+9. Execute (VVCONST V128 cv).
+
+execution_of_V128.ANY_TRUE
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_1) from the stack.
+3. Let i be $ine_128(cv_1, 0).
+4. Push (I32.CONST i) to the stack.
+
+execution_of_I8X16.SWIZZLE
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Let c* be [$concat($lanes((SHAPE I8 16), cv_1), $exp(0, 240))].
+6. Let i* be $lanes((SHAPE I8 16), cv_2).
+7. Assert: Due to validation, k < |i*|.
+8. Let i'* be i*[k]^(k<16).
+9. Assert: Due to validation, i' < |c*|.
+10. Let c' be $inverse_of_lanes((SHAPE I8 16), c*[i']*).
+11. Execute (VVCONST V128 c').
+
+execution_of_SPLAT shape
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_1) from the stack.
+3. Assert: Due to validation, nt is $unpacked(shape).
+4. Let c be $inverse_of_lanes(shape, [$exp(c_1, $dim(shape))]).
+5. Execute (VVCONST V128 c).
+
+execution_of_EXTRACT_LANE vu vc sx? idx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_1) from the stack.
+3. Let nt be $unpacked($shapeof(vu, vc)).
+4. Let c_2 be $extend(vu, nt, sx?, $index($lanes($shapeof(vu, vc), c_1), idx)).
+5. Push (nt.CONST c_2) to the stack.
+
+execution_of_REPLACE_LANE shape idx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value of value type nt is on the top of the stack.
+4. Pop (nt.CONST c_1) from the stack.
+5. Let i* be $lanes(shape, c_2).
+6. Let c be $inverse_of_lanes(shape, i* with [idx] replaced by c_1).
+7. Execute (VVCONST V128 c).
+
+execution_of_VCVTOP_HALF vu_2 vc_2 vcvtop hf vu_1 vc_1 sx?
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_1) from the stack.
+3. Let i* be $lanes($shapeof(vu_1, vc_1), c_1)[$halfop(hf, 0, vc_2) : vc_2].
+4. Let sh be $shapeof(vu_2, vc_2).
+5. Let c be $inverse_of_lanes(sh, $vcvtop(vcvtop, $width(vu_1), $width(vu_2), sx?, i*)).
+6. Execute (VVCONST V128 c).
+
 execution_of_REF.I31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.

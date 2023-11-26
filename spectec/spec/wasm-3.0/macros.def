@@ -1,0 +1,969 @@
+
+.. MATH MACROS
+
+
+.. Generic Stuff
+.. -------------
+
+.. Type-setting of names
+.. X - (multi-letter) variables / non-terminals
+.. F - functions
+.. K - kwds / terminals
+.. B - binary grammar non-terminals
+.. T - textual grammar non-terminals
+
+.. |X| mathdef:: \mathit
+.. |F| mathdef:: \mathrm
+.. |K| mathdef:: \mathsf
+.. |B| mathdef:: \mathtt
+.. |T| mathdef:: \mathtt
+
+.. syntax
+.. ------
+
+.. E
+.. -
+.. |LABEL-E| mathdef:: {\K{label\_}}
+.. |HOLE-E| mathdef:: {\K{\_hole}}
+.. |SEQ-E| mathdef:: {\K{\_seq}}
+
+.. ABSHEAPTYPE
+.. -----------
+.. |BOT-absheaptype| mathdef:: {\K{bot}}
+
+.. ADDR
+.. ----
+
+.. ADDRREF
+.. -------
+.. |REFARRAYADDR-addrref| mathdef:: {\K{ref{.}array\_addr}}
+.. |REFEXTERN-addrref| mathdef:: {\K{ref{.}extern}}
+.. |REFFUNCADDR-addrref| mathdef:: {\K{ref{.}func\_addr}}
+.. |REFHOSTADDR-addrref| mathdef:: {\K{ref{.}host\_addr}}
+.. |REFI31NUM-addrref| mathdef:: {\K{ref{.}i31\_num}}
+.. |REFSTRUCTADDR-addrref| mathdef:: {\K{ref{.}struct\_addr}}
+
+.. ADMININSTR
+.. ----------
+.. |FRAME-admininstr| mathdef:: {\K{frame\_}}
+.. |LABEL-admininstr| mathdef:: {\K{label\_}}
+.. |TRAP-admininstr| mathdef:: {\K{trap}}
+
+.. ARRAYADDR
+.. ---------
+
+.. ARRAYINST
+.. ---------
+.. |FIELD-arrayinst| mathdef:: {\K{field}}
+.. |TYPE-arrayinst| mathdef:: {\K{type}}
+
+.. BINOPFXX
+.. --------
+.. |ADD-binopFXX| mathdef:: {\K{add}}
+.. |COPYSIGN-binopFXX| mathdef:: {\K{copysign}}
+.. |DIV-binopFXX| mathdef:: {\K{div}}
+.. |MAX-binopFXX| mathdef:: {\K{max}}
+.. |MIN-binopFXX| mathdef:: {\K{min}}
+.. |MUL-binopFXX| mathdef:: {\K{mul}}
+.. |SUB-binopFXX| mathdef:: {\K{sub}}
+
+.. BINOPIXX
+.. --------
+.. |ADD-binopIXX| mathdef:: {\K{add}}
+.. |AND-binopIXX| mathdef:: {\K{and}}
+.. |DIV-binopIXX| mathdef:: {\K{div}}
+.. |MUL-binopIXX| mathdef:: {\K{mul}}
+.. |OR-binopIXX| mathdef:: {\K{or}}
+.. |REM-binopIXX| mathdef:: {\K{rem}}
+.. |ROTL-binopIXX| mathdef:: {\K{rotl}}
+.. |ROTR-binopIXX| mathdef:: {\K{rotr}}
+.. |SHL-binopIXX| mathdef:: {\K{shl}}
+.. |SHR-binopIXX| mathdef:: {\K{shr}}
+.. |SUB-binopIXX| mathdef:: {\K{sub}}
+.. |XOR-binopIXX| mathdef:: {\K{xor}}
+
+.. BINOP_VXX
+.. ---------
+.. |AND-binopVXX| mathdef:: {\K{and}}
+.. |ANDNOT-binopVXX| mathdef:: {\K{andnot}}
+.. |OR-binopVXX| mathdef:: {\K{or}}
+.. |XOR-binopVXX| mathdef:: {\K{xor}}
+
+.. BINOP_NUMTYPE
+.. -------------
+.. |F-binopnumtype| mathdef:: {\K{\_f}}
+.. |I-binopnumtype| mathdef:: {\K{\_i}}
+
+.. BINOP_VECTYPE
+.. -------------
+.. |V-binopvectype| mathdef:: {\K{\_v}}
+
+.. BLOCKTYPE
+.. ---------
+.. |IDX-blocktype| mathdef:: {\K{\_idx}}
+.. |RESULT-blocktype| mathdef:: {\K{\_result}}
+
+.. BYTE
+.. ----
+
+.. C_NUMTYPE
+.. ---------
+
+.. C_PACKEDTYPE
+.. ------------
+
+.. C_VECTYPE
+.. ---------
+
+.. CASTOP
+.. ------
+
+.. CHAR
+.. ----
+
+.. CODE
+.. ----
+
+.. COMPTYPE
+.. --------
+.. |ARRAY-comptype| mathdef:: {\K{array}}
+.. |FUNC-comptype| mathdef:: {\K{func}}
+.. |STRUCT-comptype| mathdef:: {\K{struct}}
+
+.. CONFIG
+.. ------
+
+.. CONTEXT
+.. -------
+.. |DATA-context| mathdef:: {\K{data}}
+.. |ELEM-context| mathdef:: {\K{elem}}
+.. |FUNC-context| mathdef:: {\K{func}}
+.. |GLOBAL-context| mathdef:: {\K{global}}
+.. |LABEL-context| mathdef:: {\K{label}}
+.. |LOCAL-context| mathdef:: {\K{local}}
+.. |MEM-context| mathdef:: {\K{mem}}
+.. |REC-context| mathdef:: {\K{rec}}
+.. |RETURN-context| mathdef:: {\K{return}}
+.. |TABLE-context| mathdef:: {\K{table}}
+.. |TYPE-context| mathdef:: {\K{type}}
+
+.. CVTOP
+.. -----
+.. |CONVERT-cvtop| mathdef:: {\K{convert}}
+.. |CONVERTSAT-cvtop| mathdef:: {\K{convert\_sat}}
+.. |REINTERPRET-cvtop| mathdef:: {\K{reinterpret}}
+
+.. CVTOP_VXX
+.. ---------
+.. |CONVERT-cvtopVXX| mathdef:: {\K{convert}}
+.. |DEMOTE-cvtopVXX| mathdef:: {\K{demote}}
+.. |EXTEND-cvtopVXX| mathdef:: {\K{extend}}
+.. |PROMOTE-cvtopVXX| mathdef:: {\K{promote}}
+.. |TRUNCSAT-cvtopVXX| mathdef:: {\K{trunc\_sat}}
+
+.. CVTOP_VECTYPE
+.. -------------
+.. |V-cvtopvectype| mathdef:: {\K{\_v}}
+
+.. DATA
+.. ----
+.. |DATA-data| mathdef:: {\K{data}}
+
+.. DATAADDR
+.. --------
+
+.. DATAIDX
+.. -------
+
+.. DATAINST
+.. --------
+.. |DATA-datainst| mathdef:: {\K{data}}
+
+.. DATAMODE
+.. --------
+.. |ACTIVE-datamode| mathdef:: {\K{active}}
+.. |PASSIVE-datamode| mathdef:: {\K{passive}}
+
+.. DATATYPE
+.. --------
+.. |OK-datatype| mathdef:: {\K{ok}}
+
+.. DEFTYPE
+.. -------
+.. |DEF-deftype| mathdef:: {\K{def}}
+
+.. ELEM
+.. ----
+.. |ELEM-elem| mathdef:: {\K{elem}}
+
+.. ELEMADDR
+.. --------
+
+.. ELEMIDX
+.. -------
+
+.. ELEMINST
+.. --------
+.. |ELEM-eleminst| mathdef:: {\K{elem}}
+.. |TYPE-eleminst| mathdef:: {\K{type}}
+
+.. ELEMMODE
+.. --------
+.. |ACTIVE-elemmode| mathdef:: {\K{active}}
+.. |DECLARE-elemmode| mathdef:: {\K{declare}}
+.. |PASSIVE-elemmode| mathdef:: {\K{passive}}
+
+.. ELEMTYPE
+.. --------
+
+.. EXPORT
+.. ------
+.. |EXPORT-export| mathdef:: {\K{export}}
+
+.. EXPORTINST
+.. ----------
+.. |NAME-exportinst| mathdef:: {\K{name}}
+.. |VALUE-exportinst| mathdef:: {\K{value}}
+
+.. EXPR
+.. ----
+
+.. EXTERNIDX
+.. ---------
+.. |FUNC-externidx| mathdef:: {\K{func}}
+.. |GLOBAL-externidx| mathdef:: {\K{global}}
+.. |MEM-externidx| mathdef:: {\K{mem}}
+.. |TABLE-externidx| mathdef:: {\K{table}}
+
+.. EXTERNTYPE
+.. ----------
+.. |FUNC-externtype| mathdef:: {\K{func}}
+.. |GLOBAL-externtype| mathdef:: {\K{global}}
+.. |MEM-externtype| mathdef:: {\K{mem}}
+.. |TABLE-externtype| mathdef:: {\K{table}}
+
+.. EXTERNVAL
+.. ---------
+.. |FUNC-externval| mathdef:: {\K{func}}
+.. |GLOBAL-externval| mathdef:: {\K{global}}
+.. |MEM-externval| mathdef:: {\K{mem}}
+.. |TABLE-externval| mathdef:: {\K{table}}
+
+.. F32
+.. ---
+
+.. F64
+.. ---
+
+.. FN
+.. --
+.. |NEG-fN| mathdef:: {\K{neg}}
+.. |POS-fN| mathdef:: {\K{pos}}
+
+.. FNMAG
+.. -----
+.. |INF-fNmag| mathdef:: {\K{inf}}
+.. |NAN-fNmag| mathdef:: {\K{nan}}
+.. |NORM-fNmag| mathdef:: {\K{norm}}
+.. |SUBNORM-fNmag| mathdef:: {\K{subnorm}}
+
+.. FIELDTYPE
+.. ---------
+
+.. FIELDVAL
+.. --------
+
+.. FIN
+.. ---
+.. |FINAL-fin| mathdef:: {\K{final}}
+
+.. FNN
+.. ---
+.. |F32-fnn| mathdef:: {\K{f32}}
+.. |F64-fnn| mathdef:: {\K{f64}}
+
+.. FRAME
+.. -----
+.. |LOCAL-frame| mathdef:: {\K{local}}
+.. |MODULE-frame| mathdef:: {\K{module}}
+
+.. FSHAPE
+.. ------
+.. |F32X4-fshape| mathdef:: {\K{f32x4}}
+.. |F64X2-fshape| mathdef:: {\K{f64x2}}
+
+.. FUNC
+.. ----
+.. |FUNC-func| mathdef:: {\K{func}}
+
+.. FUNCADDR
+.. --------
+
+.. FUNCIDX
+.. -------
+
+.. FUNCINST
+.. --------
+.. |CODE-funcinst| mathdef:: {\K{code}}
+.. |MODULE-funcinst| mathdef:: {\K{module}}
+.. |TYPE-funcinst| mathdef:: {\K{type}}
+
+.. FUNCTYPE
+.. --------
+
+.. GLOBAL
+.. ------
+.. |GLOBAL-global| mathdef:: {\K{global}}
+
+.. GLOBALADDR
+.. ----------
+
+.. GLOBALIDX
+.. ---------
+
+.. GLOBALINST
+.. ----------
+.. |TYPE-globalinst| mathdef:: {\K{type}}
+.. |VALUE-globalinst| mathdef:: {\K{value}}
+
+.. GLOBALTYPE
+.. ----------
+
+.. HALF
+.. ----
+.. |HIGH-half| mathdef:: {\K{high}}
+.. |LOW-half| mathdef:: {\K{low}}
+
+.. HEAPTYPE
+.. --------
+.. |REC-heaptype| mathdef:: {\K{rec}}
+
+.. HOSTADDR
+.. --------
+
+.. IN
+.. --
+
+.. IDX
+.. ---
+
+.. IMPORT
+.. ------
+.. |IMPORT-import| mathdef:: {\K{import}}
+
+.. INIT
+.. ----
+.. |SET-init| mathdef:: {\K{set}}
+.. |UNSET-init| mathdef:: {\K{unset}}
+
+.. INN
+.. ---
+.. |I32-inn| mathdef:: {\K{i32}}
+.. |I64-inn| mathdef:: {\K{i64}}
+
+.. INSTR
+.. -----
+
+.. INSTR-CONTROL
+.. -------------
+.. |BLOCK-instr-control| mathdef:: {\K{block}}
+.. |BR-instr-control| mathdef:: {\K{br}}
+.. |BRIF-instr-control| mathdef:: {\K{br\_if}}
+.. |BRONCAST-instr-control| mathdef:: {\K{br\_on\_cast}}
+.. |BRONCASTFAIL-instr-control| mathdef:: {\K{br\_on\_cast\_fail}}
+.. |BRONNONNULL-instr-control| mathdef:: {\K{br\_on\_non\_null}}
+.. |BRONNULL-instr-control| mathdef:: {\K{br\_on\_null}}
+.. |BRTABLE-instr-control| mathdef:: {\K{br\_table}}
+.. |CALL-instr-control| mathdef:: {\K{call}}
+.. |CALLINDIRECT-instr-control| mathdef:: {\K{call\_indirect}}
+.. |CALLREF-instr-control| mathdef:: {\K{call\_ref}}
+.. |DROP-instr-control| mathdef:: {\K{drop}}
+.. |IF-instr-control| mathdef:: {\K{if}}
+.. |LOOP-instr-control| mathdef:: {\K{loop}}
+.. |NOP-instr-control| mathdef:: {\K{nop}}
+.. |RETURN-instr-control| mathdef:: {\K{return}}
+.. |RETURNCALL-instr-control| mathdef:: {\K{return\_call}}
+.. |RETURNCALLINDIRECT-instr-control| mathdef:: {\K{return\_call\_indirect}}
+.. |RETURNCALLREF-instr-control| mathdef:: {\K{return\_call\_ref}}
+.. |SELECT-instr-control| mathdef:: {\K{select}}
+.. |UNREACHABLE-instr-control| mathdef:: {\K{unreachable}}
+
+.. INSTR-GLOBAL
+.. ------------
+.. |GLOBALGET-instr-global| mathdef:: {\K{global{.}get}}
+.. |GLOBALSET-instr-global| mathdef:: {\K{global{.}set}}
+
+.. INSTR-HEAP
+.. ----------
+.. |ANYCONVERTEXTERN-instr-heap| mathdef:: {\K{any{.}convert\_extern}}
+.. |ARRAYCOPY-instr-heap| mathdef:: {\K{array{.}copy}}
+.. |ARRAYFILL-instr-heap| mathdef:: {\K{array{.}fill}}
+.. |ARRAYGET-instr-heap| mathdef:: {\K{array{.}get}}
+.. |ARRAYINITDATA-instr-heap| mathdef:: {\K{array{.}init\_data}}
+.. |ARRAYINITELEM-instr-heap| mathdef:: {\K{array{.}init\_elem}}
+.. |ARRAYLEN-instr-heap| mathdef:: {\K{array{.}len}}
+.. |ARRAYNEW-instr-heap| mathdef:: {\K{array{.}new}}
+.. |ARRAYNEWDATA-instr-heap| mathdef:: {\K{array{.}new\_data}}
+.. |ARRAYNEWDEFAULT-instr-heap| mathdef:: {\K{array{.}new\_default}}
+.. |ARRAYNEWELEM-instr-heap| mathdef:: {\K{array{.}new\_elem}}
+.. |ARRAYNEWFIXED-instr-heap| mathdef:: {\K{array{.}new\_fixed}}
+.. |ARRAYSET-instr-heap| mathdef:: {\K{array{.}set}}
+.. |EXTERNCONVERTANY-instr-heap| mathdef:: {\K{extern{.}convert\_any}}
+.. |I31GET-instr-heap| mathdef:: {\K{i31{.}get}}
+.. |STRUCTGET-instr-heap| mathdef:: {\K{struct{.}get}}
+.. |STRUCTNEW-instr-heap| mathdef:: {\K{struct{.}new}}
+.. |STRUCTNEWDEFAULT-instr-heap| mathdef:: {\K{struct{.}new\_default}}
+.. |STRUCTSET-instr-heap| mathdef:: {\K{struct{.}set}}
+
+.. INSTR-LOCAL
+.. -----------
+.. |LOCALGET-instr-local| mathdef:: {\K{local{.}get}}
+.. |LOCALSET-instr-local| mathdef:: {\K{local{.}set}}
+.. |LOCALTEE-instr-local| mathdef:: {\K{local{.}tee}}
+
+.. INSTR-MEMORY
+.. ------------
+.. |DATADROP-instr-memory| mathdef:: {\K{data{.}drop}}
+.. |LOAD-instr-memory| mathdef:: {\K{load}}
+.. |MEMORYCOPY-instr-memory| mathdef:: {\K{memory{.}copy}}
+.. |MEMORYFILL-instr-memory| mathdef:: {\K{memory{.}fill}}
+.. |MEMORYGROW-instr-memory| mathdef:: {\K{memory{.}grow}}
+.. |MEMORYINIT-instr-memory| mathdef:: {\K{memory{.}init}}
+.. |MEMORYSIZE-instr-memory| mathdef:: {\K{memory{.}size}}
+.. |STORE-instr-memory| mathdef:: {\K{store}}
+
+.. INSTR-NUMERIC
+.. -------------
+.. |BINOP-instr-numeric| mathdef:: {\K{binop}}
+.. |CONST-instr-numeric| mathdef:: {\K{const}}
+.. |CVTOP-instr-numeric| mathdef:: {\K{cvtop}}
+.. |EXTEND-instr-numeric| mathdef:: {\K{extend}}
+.. |RELOP-instr-numeric| mathdef:: {\K{relop}}
+.. |TESTOP-instr-numeric| mathdef:: {\K{testop}}
+.. |UNOP-instr-numeric| mathdef:: {\K{unop}}
+
+.. INSTR-REFERENCE
+.. ---------------
+.. |REFASNONNULL-instr-reference| mathdef:: {\K{ref{.}as\_non\_null}}
+.. |REFCAST-instr-reference| mathdef:: {\K{ref{.}cast}}
+.. |REFEQ-instr-reference| mathdef:: {\K{ref{.}eq}}
+.. |REFFUNC-instr-reference| mathdef:: {\K{ref{.}func}}
+.. |REFI31-instr-reference| mathdef:: {\K{ref{.}i31}}
+.. |REFISNULL-instr-reference| mathdef:: {\K{ref{.}is\_null}}
+.. |REFNULL-instr-reference| mathdef:: {\K{ref{.}null}}
+.. |REFTEST-instr-reference| mathdef:: {\K{ref{.}test}}
+
+.. INSTR-TABLE
+.. -----------
+.. |ELEMDROP-instr-table| mathdef:: {\K{elem{.}drop}}
+.. |TABLECOPY-instr-table| mathdef:: {\K{table{.}copy}}
+.. |TABLEFILL-instr-table| mathdef:: {\K{table{.}fill}}
+.. |TABLEGET-instr-table| mathdef:: {\K{table{.}get}}
+.. |TABLEGROW-instr-table| mathdef:: {\K{table{.}grow}}
+.. |TABLEINIT-instr-table| mathdef:: {\K{table{.}init}}
+.. |TABLESET-instr-table| mathdef:: {\K{table{.}set}}
+.. |TABLESIZE-instr-table| mathdef:: {\K{table{.}size}}
+
+.. INSTR-VECTOR
+.. ------------
+.. |EXTRACTLANE-instr-vector| mathdef:: {\K{extract\_lane}}
+.. |I8X16SWIZZLE-instr-vector| mathdef:: {\K{i8x16{.}swizzle}}
+.. |REPLACELANE-instr-vector| mathdef:: {\K{replace\_lane}}
+.. |SPLAT-instr-vector| mathdef:: {\K{splat}}
+.. |V128ANYTRUE-instr-vector| mathdef:: {\K{v128{.}any\_true}}
+.. |VCVTOPHALF-instr-vector| mathdef:: {\K{vcvtop\_half}}
+.. |VVBINOP-instr-vector| mathdef:: {\K{vvbinop}}
+.. |VVCONST-instr-vector| mathdef:: {\K{vvconst}}
+.. |VVTERNOP-instr-vector| mathdef:: {\K{vvternop}}
+.. |VVUNOP-instr-vector| mathdef:: {\K{vvunop}}
+
+.. INSTRTYPE
+.. ---------
+
+.. ISHAPE
+.. ------
+.. |I16X8-ishape| mathdef:: {\K{i16x8}}
+.. |I32X4-ishape| mathdef:: {\K{i32x4}}
+.. |I64X2-ishape| mathdef:: {\K{i64x2}}
+.. |I8X16-ishape| mathdef:: {\K{i8x16}}
+
+.. LABELIDX
+.. --------
+
+.. LIMITS
+.. ------
+
+.. LOCAL
+.. -----
+.. |LOCAL-local| mathdef:: {\K{local}}
+
+.. LOCALIDX
+.. --------
+
+.. LOCALTYPE
+.. ---------
+
+.. M
+.. -
+
+.. MEM
+.. ---
+.. |MEMORY-mem| mathdef:: {\K{memory}}
+
+.. MEMADDR
+.. -------
+
+.. MEMIDX
+.. ------
+
+.. MEMIDXOP
+.. --------
+
+.. MEMINST
+.. -------
+.. |DATA-meminst| mathdef:: {\K{data}}
+.. |TYPE-meminst| mathdef:: {\K{type}}
+
+.. MEMOP
+.. -----
+.. |ALIGN-memop| mathdef:: {\K{align}}
+.. |OFFSET-memop| mathdef:: {\K{offset}}
+
+.. MEMTYPE
+.. -------
+.. |I8-memtype| mathdef:: {\K{i8}}
+
+.. MODULE
+.. ------
+.. |MODULE-module| mathdef:: {\K{module}}
+
+.. MODULEINST
+.. ----------
+.. |DATA-moduleinst| mathdef:: {\K{data}}
+.. |ELEM-moduleinst| mathdef:: {\K{elem}}
+.. |EXPORT-moduleinst| mathdef:: {\K{export}}
+.. |FUNC-moduleinst| mathdef:: {\K{func}}
+.. |GLOBAL-moduleinst| mathdef:: {\K{global}}
+.. |MEM-moduleinst| mathdef:: {\K{mem}}
+.. |TABLE-moduleinst| mathdef:: {\K{table}}
+.. |TYPE-moduleinst| mathdef:: {\K{type}}
+
+.. MUT
+.. ---
+.. |MUT-mut| mathdef:: {\K{mut}}
+
+.. N
+.. -
+
+.. NAME
+.. ----
+
+.. NUL
+.. ---
+.. |NULL-nul| mathdef:: {\K{null}}
+
+.. NUM
+.. ---
+.. |CONST-num| mathdef:: {\K{const}}
+
+.. NUMTYPE
+.. -------
+.. |F32-numtype| mathdef:: {\K{f32}}
+.. |F64-numtype| mathdef:: {\K{f64}}
+.. |I32-numtype| mathdef:: {\K{i32}}
+.. |I64-numtype| mathdef:: {\K{i64}}
+
+.. OKTYPEIDX
+.. ---------
+.. |OK-oktypeidx| mathdef:: {\K{ok}}
+
+.. OKTYPEIDXNAT
+.. ------------
+.. |OK-oktypeidxnat| mathdef:: {\K{ok}}
+
+.. PACKEDTYPE
+.. ----------
+.. |I16-packedtype| mathdef:: {\K{i16}}
+.. |I8-packedtype| mathdef:: {\K{i8}}
+
+.. PACKEDVAL
+.. ---------
+.. |PACK-packedval| mathdef:: {\K{pack}}
+
+.. RECTYPE
+.. -------
+.. |REC-rectype| mathdef:: {\K{rec}}
+
+.. REF
+.. ---
+.. |REFNULL-ref| mathdef:: {\K{ref{.}null}}
+
+.. REFTYPE
+.. -------
+.. |REF-reftype| mathdef:: {\K{ref}}
+
+.. RELOPFXX
+.. --------
+.. |EQ-relopFXX| mathdef:: {\K{eq}}
+.. |GE-relopFXX| mathdef:: {\K{ge}}
+.. |GT-relopFXX| mathdef:: {\K{gt}}
+.. |LE-relopFXX| mathdef:: {\K{le}}
+.. |LT-relopFXX| mathdef:: {\K{lt}}
+.. |NE-relopFXX| mathdef:: {\K{ne}}
+
+.. RELOPIXX
+.. --------
+.. |EQ-relopIXX| mathdef:: {\K{eq}}
+.. |GE-relopIXX| mathdef:: {\K{ge}}
+.. |GT-relopIXX| mathdef:: {\K{gt}}
+.. |LE-relopIXX| mathdef:: {\K{le}}
+.. |LT-relopIXX| mathdef:: {\K{lt}}
+.. |NE-relopIXX| mathdef:: {\K{ne}}
+
+.. RELOP_NUMTYPE
+.. -------------
+.. |F-relopnumtype| mathdef:: {\K{\_f}}
+.. |I-relopnumtype| mathdef:: {\K{\_i}}
+
+.. RESULT
+.. ------
+.. |TRAP-result| mathdef:: {\K{trap}}
+.. |VALS-result| mathdef:: {\K{\_vals}}
+
+.. RESULTTYPE
+.. ----------
+
+.. S33
+.. ---
+
+.. SN
+.. --
+
+.. SHAPE
+.. -----
+.. |SHAPE-shape| mathdef:: {\K{shape}}
+
+.. START
+.. -----
+.. |START-start| mathdef:: {\K{start}}
+
+.. STATE
+.. -----
+
+.. STORAGETYPE
+.. -----------
+
+.. STORE
+.. -----
+.. |ARRAY-store| mathdef:: {\K{array}}
+.. |DATA-store| mathdef:: {\K{data}}
+.. |ELEM-store| mathdef:: {\K{elem}}
+.. |FUNC-store| mathdef:: {\K{func}}
+.. |GLOBAL-store| mathdef:: {\K{global}}
+.. |MEM-store| mathdef:: {\K{mem}}
+.. |STRUCT-store| mathdef:: {\K{struct}}
+.. |TABLE-store| mathdef:: {\K{table}}
+
+.. STRUCTADDR
+.. ----------
+
+.. STRUCTINST
+.. ----------
+.. |FIELD-structinst| mathdef:: {\K{field}}
+.. |TYPE-structinst| mathdef:: {\K{type}}
+
+.. SUBTYPE
+.. -------
+.. |SUBD-subtype| mathdef:: {\K{subd}}
+
+.. SX
+.. --
+.. |S-sx| mathdef:: {\K{s}}
+.. |U-sx| mathdef:: {\K{u}}
+
+.. TABLE
+.. -----
+.. |TABLE-table| mathdef:: {\K{table}}
+
+.. TABLEADDR
+.. ---------
+
+.. TABLEIDX
+.. --------
+
+.. TABLEINST
+.. ---------
+.. |ELEM-tableinst| mathdef:: {\K{elem}}
+.. |TYPE-tableinst| mathdef:: {\K{type}}
+
+.. TABLETYPE
+.. ---------
+
+.. TERNOP_VXX
+.. ----------
+.. |BITSELECT-ternopVXX| mathdef:: {\K{bitselect}}
+
+.. TERNOP_VECTYPE
+.. --------------
+.. |V-ternopvectype| mathdef:: {\K{\_v}}
+
+.. TESTFUSE
+.. --------
+.. |AB-testfuse| mathdef:: {\K{ab\_}}
+.. |CD-testfuse| mathdef:: {\K{cd}}
+.. |EF-testfuse| mathdef:: {\K{ef}}
+.. |GH-testfuse| mathdef:: {\K{gh}}
+.. |IJ-testfuse| mathdef:: {\K{ij}}
+.. |KL-testfuse| mathdef:: {\K{kl}}
+.. |MN-testfuse| mathdef:: {\K{mn}}
+.. |OP-testfuse| mathdef:: {\K{op}}
+.. |QR-testfuse| mathdef:: {\K{qr}}
+
+.. TESTOPFXX
+.. ---------
+
+.. TESTOPIXX
+.. ---------
+.. |EQZ-testopIXX| mathdef:: {\K{eqz}}
+
+.. TESTOP_NUMTYPE
+.. --------------
+.. |F-testopnumtype| mathdef:: {\K{\_f}}
+.. |I-testopnumtype| mathdef:: {\K{\_i}}
+
+.. TYPE
+.. ----
+.. |TYPE-type| mathdef:: {\K{type}}
+
+.. TYPEIDX
+.. -------
+
+.. TYPEVAR
+.. -------
+.. |REC-typevar| mathdef:: {\K{rec}}
+.. |IDX-typevar| mathdef:: {\K{\_idx}}
+
+.. U128
+.. ----
+
+.. U31
+.. ---
+
+.. U32
+.. ---
+
+.. U64
+.. ---
+
+.. UN
+.. --
+
+.. UNOPFXX
+.. -------
+.. |ABS-unopFXX| mathdef:: {\K{abs}}
+.. |CEIL-unopFXX| mathdef:: {\K{ceil}}
+.. |FLOOR-unopFXX| mathdef:: {\K{floor}}
+.. |NEAREST-unopFXX| mathdef:: {\K{nearest}}
+.. |NEG-unopFXX| mathdef:: {\K{neg}}
+.. |SQRT-unopFXX| mathdef:: {\K{sqrt}}
+.. |TRUNC-unopFXX| mathdef:: {\K{trunc}}
+
+.. UNOPIXX
+.. -------
+.. |CLZ-unopIXX| mathdef:: {\K{clz}}
+.. |CTZ-unopIXX| mathdef:: {\K{ctz}}
+.. |POPCNT-unopIXX| mathdef:: {\K{popcnt}}
+
+.. UNOP_VXX
+.. --------
+.. |NOT-unopVXX| mathdef:: {\K{not}}
+
+.. UNOP_NUMTYPE
+.. ------------
+.. |F-unopnumtype| mathdef:: {\K{\_f}}
+.. |I-unopnumtype| mathdef:: {\K{\_i}}
+
+.. UNOP_VECTYPE
+.. ------------
+.. |V-unopvectype| mathdef:: {\K{\_v}}
+
+.. VAL
+.. ---
+
+.. VALTYPE
+.. -------
+.. |BOT-valtype| mathdef:: {\K{bot}}
+
+.. VECCOUNT
+.. --------
+
+.. VECTYPE
+.. -------
+.. |V128-vectype| mathdef:: {\K{v128}}
+
+.. VECUNIT
+.. -------
+
+.. Functions
+.. ---------
+
+.. |E-| mathdef:: {\F{e}}
+.. |Ki-| mathdef:: {\F{Ki}}
+.. |M-| mathdef:: {\F{m}}
+.. |allocdata-| mathdef:: {\F{allocdata}}
+.. |allocdatas-| mathdef:: {\F{allocdatas}}
+.. |allocelem-| mathdef:: {\F{allocelem}}
+.. |allocelems-| mathdef:: {\F{allocelems}}
+.. |allocfunc-| mathdef:: {\F{allocfunc}}
+.. |allocfuncs-| mathdef:: {\F{allocfuncs}}
+.. |allocglobal-| mathdef:: {\F{allocglobal}}
+.. |allocglobals-| mathdef:: {\F{allocglobals}}
+.. |allocmem-| mathdef:: {\F{allocmem}}
+.. |allocmems-| mathdef:: {\F{allocmems}}
+.. |allocmodule-| mathdef:: {\F{allocmodule}}
+.. |alloctable-| mathdef:: {\F{alloctable}}
+.. |alloctables-| mathdef:: {\F{alloctables}}
+.. |alloctypes-| mathdef:: {\F{alloctypes}}
+.. |arrayinst-| mathdef:: {\F{arrayinst}}
+.. |before-| mathdef:: {\F{before}}
+.. |binop-| mathdef:: {\F{binop}}
+.. |blocktype-| mathdef:: {\F{blocktype}}
+.. |clostype-| mathdef:: {\F{clostype}}
+.. |clostypes-| mathdef:: {\F{clostypes}}
+.. |concat-| mathdef:: {\F{concat}}
+.. |concatbytes-| mathdef:: {\F{concat\_bytes}}
+.. |concatinstr-| mathdef:: {\F{concat\_instr}}
+.. |concatlocals-| mathdef:: {\F{concat\_locals}}
+.. |curried-| mathdef:: {\F{curried\_}}
+.. |cvtop-| mathdef:: {\F{cvtop}}
+.. |data-| mathdef:: {\F{data}}
+.. |datainst-| mathdef:: {\F{datainst}}
+.. |default-| mathdef:: {\F{default}}
+.. |diffrt-| mathdef:: {\F{diffrt}}
+.. |dim-| mathdef:: {\F{dim}}
+.. |elem-| mathdef:: {\F{elem}}
+.. |eleminst-| mathdef:: {\F{eleminst}}
+.. |exp-| mathdef:: {\F{exp}}
+.. |expanddt-| mathdef:: {\F{expanddt}}
+.. |expon-| mathdef:: {\F{expon}}
+.. |ext-| mathdef:: {\F{ext}}
+.. |extarrayinst-| mathdef:: {\F{ext\_arrayinst}}
+.. |extstructinst-| mathdef:: {\F{ext\_structinst}}
+.. |extend-| mathdef:: {\F{extend}}
+.. |fNzero-| mathdef:: {\F{fNzero}}
+.. |fbytes-| mathdef:: {\F{fbytes}}
+.. |frame-| mathdef:: {\F{frame}}
+.. |freedataidxexpr-| mathdef:: {\F{free\_dataidx\_expr}}
+.. |freedataidxfunc-| mathdef:: {\F{free\_dataidx\_func}}
+.. |freedataidxfuncs-| mathdef:: {\F{free\_dataidx\_funcs}}
+.. |freedataidxinstr-| mathdef:: {\F{free\_dataidx\_instr}}
+.. |freedataidxinstrs-| mathdef:: {\F{free\_dataidx\_instrs}}
+.. |func-| mathdef:: {\F{func}}
+.. |funcaddr-| mathdef:: {\F{funcaddr}}
+.. |funcinst-| mathdef:: {\F{funcinst}}
+.. |funcsxt-| mathdef:: {\F{funcsxt}}
+.. |funcsxv-| mathdef:: {\F{funcsxv}}
+.. |global-| mathdef:: {\F{global}}
+.. |globalinst-| mathdef:: {\F{globalinst}}
+.. |globalsxt-| mathdef:: {\F{globalsxt}}
+.. |globalsxv-| mathdef:: {\F{globalsxv}}
+.. |growmemory-| mathdef:: {\F{growmemory}}
+.. |growtable-| mathdef:: {\F{growtable}}
+.. |halfop-| mathdef:: {\F{halfop}}
+.. |ibytes-| mathdef:: {\F{ibytes}}
+.. |idx-| mathdef:: {\F{idx}}
+.. |inbinop-| mathdef:: {\F{in\_binop}}
+.. |innumtype-| mathdef:: {\F{in\_numtype}}
+.. |index-| mathdef:: {\F{index}}
+.. |ine128-| mathdef:: {\F{ine\_128}}
+.. |instreftype-| mathdef:: {\F{inst\_reftype}}
+.. |instantiate-| mathdef:: {\F{instantiate}}
+.. |instexport-| mathdef:: {\F{instexport}}
+.. |invfbytes-| mathdef:: {\F{invfbytes}}
+.. |invibytes-| mathdef:: {\F{invibytes}}
+.. |invoke-| mathdef:: {\F{invoke}}
+.. |invsigned-| mathdef:: {\F{invsigned}}
+.. |lanes-| mathdef:: {\F{lanes}}
+.. |local-| mathdef:: {\F{local}}
+.. |mem-| mathdef:: {\F{mem}}
+.. |meminst-| mathdef:: {\F{meminst}}
+.. |memop0-| mathdef:: {\F{memop0}}
+.. |memsxt-| mathdef:: {\F{memsxt}}
+.. |memsxv-| mathdef:: {\F{memsxv}}
+.. |min-| mathdef:: {\F{min}}
+.. |moduleinst-| mathdef:: {\F{moduleinst}}
+.. |ntbytes-| mathdef:: {\F{ntbytes}}
+.. |packedsize-| mathdef:: {\F{packedsize}}
+.. |packval-| mathdef:: {\F{packval}}
+.. |relop-| mathdef:: {\F{relop}}
+.. |rolldt-| mathdef:: {\F{rolldt}}
+.. |rollrt-| mathdef:: {\F{rollrt}}
+.. |rundata-| mathdef:: {\F{rundata}}
+.. |runelem-| mathdef:: {\F{runelem}}
+.. |s33tou32-| mathdef:: {\F{s33\_to\_u32}}
+.. |setminus-| mathdef:: {\F{setminus}}
+.. |setminus1-| mathdef:: {\F{setminus1}}
+.. |shapeof-| mathdef:: {\F{shapeof}}
+.. |signed-| mathdef:: {\F{signed}}
+.. |signif-| mathdef:: {\F{signif}}
+.. |size-| mathdef:: {\F{size}}
+.. |storagesize-| mathdef:: {\F{storagesize}}
+.. |store-| mathdef:: {\F{store}}
+.. |structinst-| mathdef:: {\F{structinst}}
+.. |substalldeftype-| mathdef:: {\F{subst\_all\_deftype}}
+.. |substalldeftypes-| mathdef:: {\F{subst\_all\_deftypes}}
+.. |substallreftype-| mathdef:: {\F{subst\_all\_reftype}}
+.. |substcomptype-| mathdef:: {\F{subst\_comptype}}
+.. |substdeftype-| mathdef:: {\F{subst\_deftype}}
+.. |substexterntype-| mathdef:: {\F{subst\_externtype}}
+.. |substfieldtype-| mathdef:: {\F{subst\_fieldtype}}
+.. |substfunctype-| mathdef:: {\F{subst\_functype}}
+.. |substglobaltype-| mathdef:: {\F{subst\_globaltype}}
+.. |substheaptype-| mathdef:: {\F{subst\_heaptype}}
+.. |substmemtype-| mathdef:: {\F{subst\_memtype}}
+.. |substnumtype-| mathdef:: {\F{subst\_numtype}}
+.. |substpackedtype-| mathdef:: {\F{subst\_packedtype}}
+.. |substrectype-| mathdef:: {\F{subst\_rectype}}
+.. |substreftype-| mathdef:: {\F{subst\_reftype}}
+.. |subststoragetype-| mathdef:: {\F{subst\_storagetype}}
+.. |substsubtype-| mathdef:: {\F{subst\_subtype}}
+.. |substtabletype-| mathdef:: {\F{subst\_tabletype}}
+.. |substtypevar-| mathdef:: {\F{subst\_typevar}}
+.. |substvaltype-| mathdef:: {\F{subst\_valtype}}
+.. |substvectype-| mathdef:: {\F{subst\_vectype}}
+.. |sum-| mathdef:: {\F{sum}}
+.. |sxfield-| mathdef:: {\F{sxfield}}
+.. |table-| mathdef:: {\F{table}}
+.. |tableinst-| mathdef:: {\F{tableinst}}
+.. |tablesxt-| mathdef:: {\F{tablesxt}}
+.. |tablesxv-| mathdef:: {\F{tablesxv}}
+.. |testsubATOM22-| mathdef:: {\F{test\_sub\_ATOM\_22}}
+.. |testop-| mathdef:: {\F{testop}}
+.. |type-| mathdef:: {\F{type}}
+.. |unop-| mathdef:: {\F{unop}}
+.. |unpacked-| mathdef:: {\F{unpacked}}
+.. |unpacknumtype-| mathdef:: {\F{unpacknumtype}}
+.. |unpacktype-| mathdef:: {\F{unpacktype}}
+.. |unpackval-| mathdef:: {\F{unpackval}}
+.. |unrolldt-| mathdef:: {\F{unrolldt}}
+.. |unrollht-| mathdef:: {\F{unrollht}}
+.. |unrollrt-| mathdef:: {\F{unrollrt}}
+.. |utf8-| mathdef:: {\F{utf8}}
+.. |vcvtop-| mathdef:: {\F{vcvtop}}
+.. |vvbinop-| mathdef:: {\F{vvbinop}}
+.. |vvternop-| mathdef:: {\F{vvternop}}
+.. |vvunop-| mathdef:: {\F{vvunop}}
+.. |width-| mathdef:: {\F{width}}
+.. |witharray-| mathdef:: {\F{with\_array}}
+.. |withdata-| mathdef:: {\F{with\_data}}
+.. |withelem-| mathdef:: {\F{with\_elem}}
+.. |withglobal-| mathdef:: {\F{with\_global}}
+.. |withlocal-| mathdef:: {\F{with\_local}}
+.. |withlocals-| mathdef:: {\F{with\_locals}}
+.. |withmem-| mathdef:: {\F{with\_mem}}
+.. |withmeminst-| mathdef:: {\F{with\_meminst}}
+.. |withstruct-| mathdef:: {\F{with\_struct}}
+.. |withtable-| mathdef:: {\F{with\_table}}
+.. |withtableinst-| mathdef:: {\F{with\_tableinst}}
+.. |wrap-| mathdef:: {\F{wrap}}
+.. |ztbytes-| mathdef:: {\F{ztbytes}}

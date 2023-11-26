@@ -253,6 +253,39 @@ syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
 
 var mo : memop
 
+syntax vecunit hint(desc "vector unit") =
+  | packedtype | numtype
+syntax veccount hint(desc "vector count") = nat
+syntax ishape hint(desc "int shape") =
+  | I8X16 | I16X8 | I32X4 | I64X2
+syntax fshape hint(desc "float shape") =
+  | F32X4 | F64X2
+
+var vu : vecunit
+var vc : veccount
+syntax shape hint(desc "shape") =
+  | SHAPE vecunit veccount      hint(show %X%)
+
+syntax half = | LOW | HIGH
+var hf : half
+
+var sh : shape
+
+syntax unop_VXX = | NOT
+syntax binop_VXX = | AND | ANDNOT | OR | XOR
+syntax ternop_VXX = | BITSELECT
+syntax cvtop_VXX = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
+syntax unop_vectype = | _V unop_VXX
+syntax binop_vectype = | _V binop_VXX
+syntax ternop_vectype = | _V ternop_VXX
+syntax cvtop_vectype = | _V cvtop_VXX
+
+
+var vvunop : unop_vectype
+var vvbinop : binop_vectype
+var vvternop : ternop_vectype
+var vcvtop : cvtop_vectype
+
 
 ;;
 ;; Instructions
@@ -262,6 +295,7 @@ var mo : memop
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
 var c : c_numtype
+var cv : c_numtype
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
@@ -303,6 +337,19 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
   | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
   | ...
 
+syntax instr/vector hint(desc "vector instruction") = ...
+  | VVCONST vectype c_vectype                                       hint(show %.CONST %)
+  | VVUNOP vectype unop_vectype                                     hint(show %.%)
+  | VVBINOP vectype binop_vectype                                   hint(show %.%)
+  | VVTERNOP vectype ternop_vectype                                 hint(show %.%)
+  | V128.ANY_TRUE
+  | I8X16.SWIZZLE
+  | SPLAT shape                                                     hint(show %.SPLAT)
+  | EXTRACT_LANE vecunit veccount sx? idx                           hint(show %X%.EXTRACT#_#LANE#_#% %)
+  | REPLACE_LANE shape idx                                          hint(show %.REPLACE#_#LANE %)
+  | VCVTOP_HALF vecunit veccount cvtop_vectype half vecunit veccount sx?        hint(show %X%.%#_#%#_#%X%#_#%)
+  | ...
+  
 syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL heaptype
   | REF.I31

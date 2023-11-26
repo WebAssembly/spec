@@ -38,3 +38,20 @@ def $invfbytes(N, byte*) : fN
 
 def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
+
+def $ine_128(cv, cv) : nat
+def $unpacked(sh) : numtype
+def $exp(c, i) : nat                                hint(show %^%)
+def $dim(sh) : nat
+def $width(vu) : nat                                hint(show |%|)
+def $lanes(sh, cv) : nat*
+def $concat(i*, j) : nat                            hint(show % %)
+def $index(i*, j) : nat                             hint(show %[%])
+def $shapeof(vu, vc) : shape                        hint(show %X%)
+def $extend(vu, vu, sx?, j) : c_numtype             hint(show $ext_((%,%))^%(%))
+
+def $vvunop(vvunop, vectype, cv) : c_vectype                hint(show %#_%#((%)))
+def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype*         hint(show %#_%#(%, %))
+def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype*   hint(show %#_%#(%, %, %))
+def $vcvtop(vcvtop, i, j, sx?, k*) : c_vectype*   hint(show %#_%#(%, %, %))
+def $halfop(hf, i, j) : nat

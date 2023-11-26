@@ -253,6 +253,37 @@ $$
 \end{array}
 $$
 
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(vector unit)} & {\mathit{vecunit}} &::=& {\mathit{packedtype}} ~|~ {\mathit{numtype}} \\
+\mbox{(vector count)} & {\mathit{veccount}} &::=& {\mathit{nat}} \\
+\mbox{(int shape)} & {\mathit{ishape}} &::=& \mathsf{i{\scriptstyle8}x{\scriptstyle16}} ~|~ \mathsf{i{\scriptstyle16}x{\scriptstyle8}} ~|~ \mathsf{i{\scriptstyle32}x{\scriptstyle4}} ~|~ \mathsf{i{\scriptstyle64}x{\scriptstyle2}} \\
+\mbox{(float shape)} & {\mathit{fshape}} &::=& \mathsf{f{\scriptstyle32}x{\scriptstyle4}} ~|~ \mathsf{f{\scriptstyle64}x{\scriptstyle2}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(shape)} & {\mathit{shape}} &::=& {\mathit{vecunit}}~\mathsf{x}~{\mathit{veccount}} \\
+& {\mathit{half}} &::=& \mathsf{low} ~|~ \mathsf{high} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{unop}}_{{\mathsf{vxx}}} &::=& \mathsf{not} \\
+& {\mathit{binop}}_{{\mathsf{vxx}}} &::=& \mathsf{and} ~|~ \mathsf{andnot} ~|~ \mathsf{or} ~|~ \mathsf{xor} \\
+& {\mathit{ternop}}_{{\mathsf{vxx}}} &::=& \mathsf{bitselect} \\
+& {\mathit{cvtop}}_{{\mathsf{vxx}}} &::=& \mathsf{extend} ~|~ \mathsf{trunc\_sat} ~|~ \mathsf{convert} ~|~ \mathsf{demote} ~|~ \mathsf{promote} \\
+& {\mathit{unop}}_{{\mathit{vectype}}} &::=& {\mathit{unop}}_{{\mathsf{vxx}}} \\
+& {\mathit{binop}}_{{\mathit{vectype}}} &::=& {\mathit{binop}}_{{\mathsf{vxx}}} \\
+& {\mathit{ternop}}_{{\mathit{vectype}}} &::=& {\mathit{ternop}}_{{\mathsf{vxx}}} \\
+& {\mathit{cvtop}}_{{\mathit{vectype}}} &::=& {\mathit{cvtop}}_{{\mathsf{vxx}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
 \vspace{1ex}
 
 $$
@@ -299,6 +330,16 @@ $$
 {\mathit{numtype}} . {\mathit{relop}}_{{\mathit{numtype}}} \\ &&|&
 {{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}} \\ &&|&
 {\mathit{numtype}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} \\ &&|&
+{\mathit{vectype}}.\mathsf{const}~{\mathit{c}}_{{\mathit{vectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{unop}}_{{\mathit{vectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{binop}}_{{\mathit{vectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{ternop}}_{{\mathit{vectype}}} \\ &&|&
+\mathsf{v{\scriptstyle128}.any\_true} \\ &&|&
+\mathsf{i{\scriptstyle8}x{\scriptstyle16}.swizzle} \\ &&|&
+{\mathit{shape}}.\mathsf{splat} \\ &&|&
+{{{{{\mathit{vecunit}}~\mathsf{x}~{\mathit{veccount}}.\mathsf{extract}}{\mathsf{\_}}}{\mathsf{lane}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}~{\mathit{idx}} \\ &&|&
+{{{\mathit{shape}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{idx}} \\ &&|&
+{\mathit{vecunit}}~\mathsf{x}~{\mathit{veccount}} . {{{{{{{\mathit{cvtop}}_{{\mathit{vectype}}}}{\mathsf{\_}}}{{\mathit{half}}}}{\mathsf{\_}}}{{\mathit{vecunit}}}~\mathsf{x}~{\mathit{veccount}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} \\ &&|&
 \mathsf{ref.null}~{\mathit{heaptype}} \\ &&|&
 \mathsf{ref.i{\scriptstyle31}} \\ &&|&
 \mathsf{ref.func}~{\mathit{funcidx}} \\ &&|&
@@ -4348,6 +4389,95 @@ $$
   \mbox{if}~{{{\mathit{cvtop}}}{{{}_{{\mathit{nt}}_{{1}},{\mathit{nt}}_{{2}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = {\mathit{c}} \\
 {[\textsc{\scriptsize E{-}cvtop{-}trap}]} \quad & ({\mathit{nt}}_{{1}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{nt}}_{{2}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{nt}}_{{1}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& \mathsf{trap} &\quad
   \mbox{if}~{{{\mathit{cvtop}}}{{{}_{{\mathit{nt}}_{{1}},{\mathit{nt}}_{{2}}}^{{{\mathit{sx}}^?}}}}}{({\mathit{c}}_{{1}})} = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvunop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvbinop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvbinop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvternop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{3}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvternop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvternop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}},\, {\mathit{cv}}_{{3}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}v128.any\_true}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}.any\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}}) &\quad
+  \mbox{if}~{\mathit{i}} = {\mathrm{ine}}_{{128}}({\mathit{cv}}_{{1}},\, 0) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}i8x16.swizzle}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{i{\scriptstyle8}x{\scriptstyle16}.swizzle}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}'}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}(\mathsf{i{\scriptstyle8}}~\mathsf{x}~16,\, {\mathit{cv}}_{{2}}) \\
+ &&&&\quad {\land}~{{\mathit{c}}^\ast} = {\mathrm{lanes}}(\mathsf{i{\scriptstyle8}}~\mathsf{x}~16,\, {\mathit{cv}}_{{1}})~{0^{240}} \\
+ &&&&\quad {\land}~{{\mathit{i}'}^\ast} = {({{\mathit{i}}^\ast}[{\mathit{k}}])^{{\mathit{k}}<16}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}(\mathsf{i{\scriptstyle8}}~\mathsf{x}~16,\, {\mathit{c}'}) = {{{\mathit{c}}^\ast}[{\mathit{i}'}]^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}splat}]} \quad & ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{shape}}.\mathsf{splat}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{nt}} = {\mathrm{unpacked}}({\mathit{shape}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{shape}},\, {\mathit{c}}) = {{\mathit{c}}_{{1}}^{{\mathrm{dim}}({\mathit{shape}})}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}extract\_lane}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({{{{{\mathit{vu}}~\mathsf{x}~{\mathit{vc}}.\mathsf{extract}}{\mathsf{\_}}}{\mathsf{lane}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}~{\mathit{idx}}) &\hookrightarrow& ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{2}}) &\quad
+  \mbox{if}~{\mathit{nt}} = {\mathrm{unpacked}}({\mathit{vu}}~\mathsf{x}~{\mathit{vc}}) \\
+ &&&&\quad {\land}~{\mathit{c}}_{{2}} = {{{\mathrm{ext}}}_{{\mathit{vu}},{\mathit{nt}}}^{{{\mathit{sx}}^?}}}~({\mathrm{lanes}}({\mathit{vu}}~\mathsf{x}~{\mathit{vc}},\, {\mathit{c}}_{{1}})[{\mathit{idx}}]) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}replace\_lane}]} \quad & ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({{{\mathit{shape}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{idx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{shape}},\, {\mathit{c}}_{{2}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{shape}},\, {\mathit{c}}) = ({{\mathit{i}}^\ast})[[{\mathit{idx}}] = {\mathit{c}}_{{1}}] \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vcvtop\_half}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{vu}}_{{2}}~\mathsf{x}~{\mathit{vc}}_{{2}} . {{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{{\mathit{hf}}}}{\mathsf{\_}}}{{\mathit{vu}}_{{1}}}~\mathsf{x}~{\mathit{vc}}_{{1}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{vu}}_{{1}}~\mathsf{x}~{\mathit{vc}}_{{1}},\, {\mathit{c}}_{{1}})[{\mathrm{halfop}}({\mathit{hf}},\, 0,\, {\mathit{vc}}_{{2}}) : {\mathit{vc}}_{{2}}] \\
+ &&&&\quad {\land}~{\mathit{sh}} = {\mathit{vu}}_{{2}}~\mathsf{x}~{\mathit{vc}}_{{2}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {{{{\mathit{vcvtop}}}{}}_{{|{\mathit{vu}}_{{1}}|}}}{({|{\mathit{vu}}_{{2}}|},\, {{\mathit{sx}}^?},\, {{\mathit{i}}^\ast})} \\
 \end{array}
 $$
 

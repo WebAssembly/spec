@@ -242,6 +242,61 @@ rule Step_pure/cvtop-trap:
   -- if $cvtop(cvtop, nt_1, nt_2, sx?, c_1) = epsilon  ;; TODO
 
 
+;; Vector instructions
+
+rule Step_pure/vvunop:
+  (VVCONST V128 cv_1) (VVUNOP V128 vvunop)  ~>  (VVCONST V128 cv)
+  -- if $vvunop(vvunop, V128, cv_1) = cv ;; TODO
+
+
+rule Step_pure/vvbinop:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (VVBINOP V128 vvbinop)  ~>  (VVCONST V128 cv)
+  -- if $vvbinop(vvbinop, V128, cv_1, cv_2) = cv ;; TODO
+
+
+rule Step_pure/vvternop:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (VVCONST V128 cv_3) (VVTERNOP V128 vvternop)  ~>  (VVCONST V128 cv)
+  -- if $vvternop(vvternop, V128, cv_1, cv_2, cv_3) = cv ;; TODO
+
+
+rule Step_pure/v128.any_true:
+  (VVCONST V128 cv_1) (V128.ANY_TRUE) ~> (CONST I32 i)
+  -- if i = $ine_128(cv_1, 0)
+
+
+rule Step_pure/i8x16.swizzle:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (I8X16.SWIZZLE) ~> (VVCONST V128 c')
+  -- if i* = $lanes(SHAPE I8 16, cv_2)
+  -- if c* = $concat($lanes(SHAPE I8 16, cv_1), $exp(0, 240))
+  -- if i'* = (i*[k])^(k<16)
+  -- if $lanes(SHAPE I8 16, c') = c*[i']*
+
+
+rule Step_pure/splat:
+  (CONST nt c_1) (SPLAT shape) ~> (VVCONST V128 c)
+  -- if nt = $unpacked(shape)
+  -- if $lanes(shape, c) = $exp(c_1, $dim(shape))
+
+
+rule Step_pure/extract_lane:
+  (VVCONST V128 c_1) (EXTRACT_LANE vu vc sx? idx) ~> (CONST nt c_2)
+  -- if nt = $unpacked($shapeof(vu, vc))
+  -- if c_2 = $extend(vu, nt, sx?, $index($lanes($shapeof(vu, vc), c_1), idx))
+
+
+rule Step_pure/replace_lane:
+  (CONST nt c_1) (VVCONST V128 c_2) (REPLACE_LANE shape idx) ~> (VVCONST V128 c)
+  -- if i* = $lanes(shape, c_2)
+  -- if $lanes(shape, c) = (i*)[[idx] = c_1]
+
+
+rule Step_pure/vcvtop_half:
+  (VVCONST V128 c_1) (VCVTOP_HALF vu_2 vc_2 vcvtop hf vu_1 vc_1 sx?) ~> (VVCONST V128 c)
+  -- if i* = $lanes($shapeof(vu_1, vc_1), c_1)[$halfop(hf, 0, vc_2) : vc_2]
+  -- if sh = $shapeof(vu_2, vc_2)
+  -- if $lanes(sh, c) = $vcvtop(vcvtop, $width(vu_1), $width(vu_2), sx?, i*)
+
+
 ;; Reference instructions
 
 rule Step_read/ref.func:
