@@ -594,7 +594,7 @@ grammar Btablesec : table* hint(desc "table section") =
   | tab*:Bsection_(4, Bvec(Btable)) => tab*
 
 grammar Btable : table =
-  | tt:Btabletype => TABLE tt
+  | tt:Btabletype e:Bexpr => TABLE tt e
 
 
 ;; Memory section
