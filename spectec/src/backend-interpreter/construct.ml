@@ -6,6 +6,11 @@ open Al.Ast
 open Source
 open Util.Record
 
+(* Constant *)
+
+let default_table_max = 4294967295L
+let default_memory_max = 65536L
+
 
 (* Smart Constructor *)
 
@@ -54,20 +59,33 @@ let get_body = function
   | FuncA (_, _, body) -> body
 
 
+(* Failure *)
+
+let fail ty v =
+  Al.Print.string_of_value v
+  |> Printf.sprintf "Invalid %s: %s" ty
+  |> failwith
+
+
 (* Construct datastructure *)
 
 let al_of_list f l = List.map f l |> listV
-
+let al_of_seq f s = List.of_seq s |> al_of_list f
 let al_of_opt f opt = OptV (Option.map f opt)
 
-(* Construct integer *)
+
+(* Construct minor *)
 
 let al_of_int i = NumV (Int64.of_int i)
-let int64_of_int32_u i32 = Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL
-let al_of_int32 i32 = NumV (int64_of_int32_u i32)
+let al_of_int32 i32 =
+  (* NOTE: int32 is considered to be unsigned *)
+  let i64 = Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL in
+  NumV i64
 let al_of_int64 i64 = NumV i64
 let al_of_idx idx = al_of_int32 idx.it
-
+let al_of_name name = TextV (Utf8.encode name)
+let al_of_byte byte = Char.code byte |> al_of_int
+let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 
 (* Construct type *)
 
@@ -85,10 +103,9 @@ let al_of_mut = function
 
 let rec al_of_storage_type = function
   | ValStorageT vt -> al_of_val_type vt
-  | PackStorageT ps ->
-    (Pack.packed_size ps * 8)
-    |> string_of_int
-    |> Printf.sprintf "I%s"
+  | PackStorageT _ as st ->
+    string_of_storage_type st
+    |> String.uppercase_ascii
     |> singleton
 
 and al_of_field_type = function
@@ -141,10 +158,29 @@ and al_of_val_type = function
   | BotT -> singleton "BOT"
 
 let al_of_blocktype = function
-  | VarBlockType idx -> CaseV ("_IDX", [ NumV (Int64.of_int32 idx.it) ])
+  | VarBlockType idx -> CaseV ("_IDX", [ al_of_idx idx ])
   | ValBlockType None -> CaseV ("_RESULT", [ OptV None ])
   | ValBlockType (Some val_type) ->
     CaseV ("_RESULT", [ OptV (Some (al_of_val_type val_type)) ])
+
+let al_of_limits limits default =
+  let max =
+    match limits.max with
+    | Some v -> al_of_int32 v
+    | None -> al_of_int64 default
+  in
+
+  TupV (al_of_int32 limits.min, max)
+
+let al_of_global_type = function
+  | GlobalT (mut, vt) -> TupV (al_of_mut mut, al_of_val_type vt)
+
+let al_of_table_type = function
+  | TableT (limits, rt) ->
+    TupV (al_of_limits limits default_table_max, al_of_ref_type rt)
+
+let al_of_memory_type = function
+  | MemoryT limits -> CaseV ("I8", [ al_of_limits limits default_memory_max ])
 
 
 (* Construct value *)
@@ -173,7 +209,7 @@ let rec al_of_ref = function
 
 let al_of_value = function
   | Num n -> al_of_num n
-  | Vec _v -> failwith "TODO"
+  | Vec _ -> failwith "TODO"
   | Ref r -> al_of_ref r
 
 
@@ -323,8 +359,8 @@ let al_of_storeop = al_of_memop al_of_pack_size
 
 (* Construct instruction *)
 
-let rec al_of_instr winstr =
-  match winstr.it with
+let rec al_of_instr instr =
+  match instr.it with
   (* wasm values *)
   | Const num -> al_of_num num.it
   | RefNull ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
@@ -428,194 +464,91 @@ let rec al_of_instr winstr =
   | ExternConvert Externalize -> singleton "EXTERN.CONVERT_ANY"
   | _ -> CaseV ("TODO: Unconstructed Wasm instruction (al_of_instr)", [])
 
+let al_of_const const = al_of_list al_of_instr const.it
+
+
 (* Construct module *)
+
+let al_of_type ty = CaseV ("TYPE", [ al_of_rec_type ty.it ])
 
 let al_of_local l = CaseV ("LOCAL", [ al_of_val_type l.it.ltype ])
 
-let al_of_func wasm_func =
+let al_of_func func =
   CaseV ("FUNC", [
-    al_of_int32 wasm_func.it.ftype.it;
-    al_of_list al_of_local wasm_func.it.locals;
-    al_of_list al_of_instr wasm_func.it.body;
+    al_of_int32 func.it.ftype.it;
+    al_of_list al_of_local func.it.locals;
+    al_of_list al_of_instr func.it.body;
   ])
 
-let al_of_global wasm_global =
+let al_of_global global =
   CaseV ("GLOBAL", [
-    TextV "Yet: global type";
-    al_of_list al_of_instr wasm_global.it.ginit.it
+    al_of_global_type global.it.gtype;
+    al_of_const global.it.ginit;
   ])
 
-let al_of_limits limits default =
-  let max =
-    match limits.max with
-    | Some v -> al_of_int32 v
-    | None -> al_of_int64 default
-  in
+let al_of_table table =
+  CaseV ("TABLE", [ al_of_table_type table.it.ttype; al_of_const table.it.tinit ])
 
-  TupV (al_of_int32 limits.min, max)
+let al_of_memory memory = CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype ])
 
-let al_of_table wasm_table =
-
-  let TableT (limits, ref_ty) = wasm_table.it.ttype in
-  let pair = al_of_limits limits 4294967295L in
-
-  let expr = al_of_list al_of_instr wasm_table.it.tinit.it in
-
-  CaseV ("TABLE", [ TupV(pair, al_of_val_type (RefT ref_ty)); expr ])
-
-let al_of_memory wasm_memory =
-  let MemoryT (limits) = wasm_memory.it.mtype in
-  let pair = al_of_limits limits 65536L in
-
-  CaseV ("MEMORY", [ CaseV ("I8", [ pair]) ])
-
-let al_of_segment wasm_segment = match wasm_segment.it with
+let al_of_segment segment =
+  match segment.it with
   | Passive -> singleton "PASSIVE"
-  | Active { index = index; offset = offset } ->
-      CaseV (
-        "ACTIVE",
-        [
-          NumV (int64_of_int32_u index.it);
-          al_of_list al_of_instr offset.it
-        ]
-      )
+  | Active { index; offset } ->
+    CaseV ("ACTIVE", [ al_of_idx index; al_of_list al_of_instr offset.it ])
   | Declarative -> singleton "DECLARE"
 
-let al_of_elem wasm_elem =
-  let reftype = al_of_val_type (RefT wasm_elem.it.etype) in
+let al_of_elem elem =
+  CaseV ("ELEM", [
+    al_of_ref_type elem.it.etype;
+    al_of_list al_of_const elem.it.einit;
+    al_of_segment elem.it.emode;
+  ])
 
-  let al_of_const const = al_of_list al_of_instr const.it in
-  let instrs = al_of_list al_of_const wasm_elem.it.einit in
+let al_of_data data =
+  CaseV ("DATA", [ al_of_bytes data.it.dinit; al_of_segment data.it.dmode ])
 
-  let mode = al_of_segment wasm_elem.it.emode in
-
-  CaseV ("ELEM", [ reftype; instrs; mode ])
-
-let al_of_data wasm_data =
-  (* TODO: byte list list *)
-  let init = wasm_data.it.dinit in
-
-  let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
-  let byte_list = String.fold_right f init [] in
-
-  let mode = al_of_segment wasm_data.it.dmode in
-
-  CaseV ("DATA", [ listV byte_list; mode ])
-
-let al_of_import_desc wasm_module idesc = match idesc.it with
+let al_of_import_desc module_ idesc =
+  match idesc.it with
   | FuncImport x ->
-      let dts = def_types_of wasm_module in
+      let dts = def_types_of module_ in
       let dt = Lib.List32.nth dts x.it |> al_of_def_type in
       CaseV ("FUNC", [ dt ])
-  | TableImport ty ->
-    let TableT (limits, ref_ty) = ty in
-    let pair = al_of_limits limits 4294967295L in
-    CaseV ("TABLE", [ pair; al_of_val_type (RefT ref_ty) ])
-  | MemoryImport ty ->
-    let MemoryT (limits) = ty in
-    let pair = al_of_limits limits 65536L in
-    CaseV ("MEM", [ pair ])
-  | GlobalImport _ -> CaseV ("GLOBAL", [ TextV "Yet: global type" ])
+  | TableImport tt -> CaseV ("TABLE", [ al_of_table_type tt ])
+  | MemoryImport mt -> CaseV ("MEM", [ al_of_memory_type mt ])
+  | GlobalImport gt -> CaseV ("GLOBAL", [ al_of_global_type gt ])
 
-let al_of_import wasm_module wasm_import =
-
-  let module_name = TextV (wasm_import.it.module_name |> Utf8.encode) in
-  let item_name = TextV (wasm_import.it.item_name |> Utf8.encode) in
-
-  let import_desc = al_of_import_desc wasm_module wasm_import.it.idesc in
-
-  CaseV ("IMPORT", [ module_name; item_name; import_desc ])
+let al_of_import module_ import =
+  CaseV ("IMPORT", [
+    al_of_name import.it.module_name;
+    al_of_name import.it.item_name;
+    al_of_import_desc module_ import.it.idesc;
+  ])
 
 let al_of_export_desc export_desc = match export_desc.it with
-  | FuncExport n -> CaseV ("FUNC", [ NumV (int64_of_int32_u n.it) ])
-  | TableExport n -> CaseV ("TABLE", [ NumV (int64_of_int32_u n.it) ])
-  | MemoryExport n -> CaseV ("MEM", [ NumV (int64_of_int32_u n.it) ])
-  | GlobalExport n -> CaseV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
+  | FuncExport idx -> CaseV ("FUNC", [ al_of_idx idx ])
+  | TableExport idx -> CaseV ("TABLE", [ al_of_idx idx ])
+  | MemoryExport idx -> CaseV ("MEM", [ al_of_idx idx ])
+  | GlobalExport idx -> CaseV ("GLOBAL", [ al_of_idx idx ])
 
-let al_of_start wasm_start =
-  CaseV ("START", [ NumV (int64_of_int32_u wasm_start.it.sfunc.it) ])
+let al_of_start start = CaseV ("START", [ al_of_idx start.it.sfunc ])
 
-let al_of_export wasm_export =
+let al_of_export export =
+  CaseV ("EXPORT", [ al_of_name export.it.name; al_of_export_desc export.it.edesc ])
 
-  let name = TextV (wasm_export.it.name |> Utf8.encode) in
-  let export_desc = al_of_export_desc wasm_export.it.edesc in
-
-  CaseV ("EXPORT", [ name; export_desc ])
-
-let al_of_module wasm_module =
-
-  (* Construct types *)
-  let type_list =
-    List.map (fun ty ->
-      CaseV ("TYPE", [ al_of_rec_type ty.it ])
-    ) wasm_module.it.types
-  in
-
-  (* Construct imports *)
-  let import_list =
-    List.map (al_of_import wasm_module) wasm_module.it.imports
-  in
-
-  (* Construct functions *)
-  let func_list =
-    List.map al_of_func wasm_module.it.funcs
-  in
-
-  (* Construct global *)
-  let global_list =
-    List.map al_of_global wasm_module.it.globals
-  in
-
-  (* Construct table *)
-  let table_list =
-    List.map al_of_table wasm_module.it.tables
-  in
-
-  (* Construct memory *)
-  let memory_list =
-    List.map al_of_memory wasm_module.it.memories
-  in
-
-  (* Construct elem *)
-  let elem_list =
-    List.map al_of_elem wasm_module.it.elems
-  in
-
-  (* Construct data *)
-  let data_list =
-    List.map al_of_data wasm_module.it.datas
-  in
-
-  (* Construct start *)
-  let start_opt =
-    al_of_opt al_of_start wasm_module.it.start
-  in
-
-  (* Construct export *)
-  let export_list =
-    List.map al_of_export wasm_module.it.exports
-  in
-
-  CaseV (
-    "MODULE",
-    [
-      listV type_list;
-      listV import_list;
-      listV func_list;
-      listV global_list;
-      listV table_list;
-      listV memory_list;
-      listV elem_list;
-      listV data_list;
-      start_opt;
-      listV export_list
-    ]
-  )
-
-let fail ty v =
-  Al.Print.string_of_value v
-  |> Printf.sprintf "Invalid %s: %s" ty
-  |> failwith
+let al_of_module module_ =
+  CaseV ("MODULE", [
+    al_of_list al_of_type module_.it.types;
+    al_of_list (al_of_import module_) module_.it.imports;
+    al_of_list al_of_func module_.it.funcs;
+    al_of_list al_of_global module_.it.globals;
+    al_of_list al_of_table module_.it.tables;
+    al_of_list al_of_memory module_.it.memories;
+    al_of_list al_of_elem module_.it.elems;
+    al_of_list al_of_data module_.it.datas;
+    al_of_opt al_of_start module_.it.start;
+    al_of_list al_of_export module_.it.exports;
+  ])
 
 let al_to_idx: value -> Ast.idx = function
   | NumV i -> Int64.to_int32 i @@ no_region
