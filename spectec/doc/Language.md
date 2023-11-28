@@ -161,8 +161,10 @@ arith ::=
   arith cmpop arith                    comparison
   exp "[" arith "]"                    list indexing
   "(" arith ")"                        parentheses
+  "(" arith iter ")"                   iteration (must not be "^exp")
   "|" exp "|"                          list length
   "$" defid exp?                       function invocation
+  "$" "(" exp ")"                      escape back to general expression syntax
 
 path ::=
   path? "[" arith "]"                  list element
