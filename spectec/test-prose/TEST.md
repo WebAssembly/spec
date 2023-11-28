@@ -1398,32 +1398,33 @@ rundata (DATA byte* u_0) y
 
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func^n_func global* table* mem* elem* data* start? export*) be module.
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Let n_D be |data*|.
 4. Let n_E be |elem*|.
-5. Let (START x)? be start?.
-6. Let mm_init be { TYPE: $alloctypes(type*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+5. Let n_F be |func*|.
+6. Let (START x)? be start?.
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
 10. Let instr_D* be $concat_instr($rundata(data*[j], j)^(j<n_D)).
 11. Let instr_E* be $concat_instr($runelem(elem*[i], i)^(i<n_E)).
-12. Let z be { LOCAL: []; MODULE: mm_init; }.
-13. Enter the activation of z with label [FRAME_]:
-  a. Let [val_G]* be $eval_expr(expr_G)*.
+12. Let mm_init be { TYPE: $alloctypes(type*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_F)^(i_F<n_F); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+13. Let z be { LOCAL: []; MODULE: mm_init; }.
 14. Enter the activation of z with label [FRAME_]:
-  a. Let [ref_T]* be $eval_expr(expr_T)*.
+  a. Let [val_G]* be $eval_expr(expr_G)*.
 15. Enter the activation of z with label [FRAME_]:
+  a. Let [ref_T]* be $eval_expr(expr_T)*.
+16. Enter the activation of z with label [FRAME_]:
   a. Let [ref_E]** be $eval_expr(expr_E)**.
-16. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-17. Let f be { LOCAL: []; MODULE: mm; }.
-18. Enter the activation of f with arity 0 with label [FRAME_]:
+17. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+18. Let f be { LOCAL: []; MODULE: mm; }.
+19. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_E*).
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-19. Return mm.
+20. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }; }.

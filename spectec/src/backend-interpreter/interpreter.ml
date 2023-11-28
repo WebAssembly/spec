@@ -204,7 +204,7 @@ and eval_expr env expr =
   | LenE e ->
       let a = eval_expr env e |> value_to_array in
       NumV (I64.of_int_u (Array.length a))
-  | StrE r -> 
+  | StrE r ->
       let elist = Record.to_list r in
       let vlist = List.map (fun (k, e) -> ((string_of_kwd k), !e |> eval_expr env |> ref)) elist in
       StrV (Record.of_list vlist)
@@ -623,6 +623,7 @@ and call_builtin name =
     | _ -> failwith "builtin doesn't return value"
   in
   let as_const ty = function
+  | CaseV ("CONST", [ CaseV (ty', []) ; n ])
   | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
   | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
   match name with
@@ -651,18 +652,20 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | CaseV ("REF.NULL", [ ht ]) ->
-    (* substitute heap type*)
-    let dummy_rt = CaseV ("REF", [ null; ht ]) in
-    let mm =
-      CallE ("moduleinst", [])
-      |> eval_expr (Env.add_store Env.empty)
-    in
-    begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
-    | AL_Context.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
-      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise Exception.MissingReturnValue
-    end
+  | CaseV ("REF.NULL", [ ht ]) -> ( match !version with
+    | 3 ->
+      (* substitute heap type*)
+      let dummy_rt = CaseV ("REF", [ null; ht ]) in
+      let mm =
+        CallE ("moduleinst", [])
+        |> eval_expr (Env.add_store Env.empty)
+      in
+      begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
+      | AL_Context.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
+        CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
+      | _ -> raise Exception.MissingReturnValue
+      end
+    | _ -> WasmContext.push_value wasm_instr )
   | CaseV ("CONST", _) ->
     WasmContext.push_value wasm_instr
   | CaseV (name, []) when is_builtin name ->
@@ -731,7 +734,7 @@ and interp_instr (env: env) (instr: instr): env =
     let rec pop_all acc =
       if WasmContext.get_value_stack () |> List.length > 0 then
         WasmContext.pop_value () :: acc |> pop_all
-      else 
+      else
         acc
     in
     let vs = pop_all [] |> listV in
@@ -836,7 +839,7 @@ and interp_instrs (env: env) (il: instr list): env =
       interp_instrs new_env t
     else
       new_env
-      
+
 
 
 (* Algorithm *)

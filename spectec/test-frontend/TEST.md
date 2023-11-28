@@ -3910,16 +3910,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [(ref_T <: val)]))*{expr_T ref_T}
@@ -3929,9 +3930,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))

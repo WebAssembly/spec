@@ -182,7 +182,7 @@ let large_enough_subsets xs =
   List.filter ( fun ys -> min <= List.length ys ) yss
 
 let is_not_lhs e = match e.it with
-| LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
+| LenE _ | IterE (_, (ListN (_, Some _), _)) | DotE _ -> true
 | _ -> false
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)

@@ -129,6 +129,7 @@ let argspec = Arg.align
 
   "--root", Arg.String (fun s -> Backend_interpreter.Tester.root := s), " Set the root of watsup. Defaults to current directory";
   "--test-interpreter", Arg.String (fun s -> Backend_interpreter.Tester.test_name := s), " The name of .wast test file for interpreter";
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";

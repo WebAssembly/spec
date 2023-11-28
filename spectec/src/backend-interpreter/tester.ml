@@ -71,7 +71,8 @@ let builtin () =
     let winstr_tag = String.uppercase_ascii name in
     let code = singleton winstr_tag in
     let ptype = List.map singleton type_tags in
-    let ftype = CaseV ("FUNC", [ ArrowV (listV ptype, listV []) ]) in
+    let arrow = ArrowV (listV ptype, listV []) in
+    let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [
         CaseV ("REC", [
@@ -79,7 +80,7 @@ let builtin () =
         ]); NumV 0L
       ]) in
     name, StrV [
-      "TYPE", dt |> ref;
+      "TYPE", ref (if !Construct.version = 3 then dt else arrow);
       "MODULE", ref (StrV Record.empty); (* dummy module *)
       "CODE", ref (CaseV ("FUNC", [ ftype; listV []; listV [ code ] ]))
     ] in
