@@ -104,10 +104,7 @@ let al_of_mut = function
 
 let rec al_of_storage_type = function
   | ValStorageT vt -> al_of_val_type vt
-  | PackStorageT _ as st ->
-    string_of_storage_type st
-    |> String.uppercase_ascii
-    |> singleton
+  | PackStorageT _ as st -> string_of_storage_type st |> singleton
 
 and al_of_field_type = function
   | FieldT (mut, st) -> TupV (al_of_mut mut, al_of_storage_type st)
@@ -135,22 +132,13 @@ and al_of_heap_type = function
   | VarHT (RecX i) -> CaseV ("REC", [ al_of_int32 i ])
   | DefHT dt -> al_of_def_type dt
   | BotHT -> singleton "BOT"
-  | ht ->
-    string_of_heap_type ht
-    |> String.uppercase_ascii
-    |> singleton
+  | ht -> string_of_heap_type ht |> singleton
 
 and al_of_ref_type (null, ht) = CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
 
-and al_of_num_type nt =
-  string_of_num_type nt
-  |> String.uppercase_ascii
-  |> singleton
+and al_of_num_type nt = string_of_num_type nt |> singleton
 
-and al_of_vec_type vt =
-  string_of_vec_type vt
-  |> String.uppercase_ascii
-  |> singleton
+and al_of_vec_type vt = string_of_vec_type vt |> singleton
 
 and al_of_val_type = function
   | RefT rt -> al_of_ref_type rt
@@ -336,18 +324,14 @@ let al_of_extension = function
   | Pack.SX -> singleton "S"
   | Pack.ZX -> singleton "U"
 
-let al_of_memop al_of_pack memop =
+let al_of_memop f memop =
   let str =
     Record.empty
     |> Record.add "ALIGN" (al_of_int memop.align)
     |> Record.add "OFFSET" (al_of_int32 memop.offset)
   in
-  [
-    al_of_num_type memop.ty;
-    al_of_opt al_of_pack memop.pack;
-    NumV 0L;
-    StrV str;
-  ]
+
+  [ al_of_num_type memop.ty; al_of_opt f memop.pack; NumV 0L; StrV str ]
 
 let al_of_pack_size_extension (p, s) = listV [ al_of_pack_size p; al_of_extension s ]
 
