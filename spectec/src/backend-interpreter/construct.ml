@@ -1,5 +1,8 @@
-open Al.Ast
 open Reference_interpreter
+open Ast
+open Types
+open Value
+open Al.Ast
 open Source
 open Util.Record
 
@@ -12,32 +15,30 @@ let gen_nid () =
   _nid_count := nid + 1;
   nid
 
-let (%) it nid = { it; nid }
-let ($) (instr: instr) it = { instr with it }
-let update_node f (node: 'a node) = f node.it % node.nid
+let mk_node it = { it; nid = gen_nid () }
 
-let ifI (c, il1, il2) = IfI (c, il1, il2) % gen_nid ()
-let eitherI (il1, il2) = EitherI (il1, il2) % gen_nid ()
-let enterI (e1, e2, il) = EnterI (e1, e2, il) % gen_nid ()
-let assertI c = AssertI c % gen_nid ()
-let pushI e = PushI e % gen_nid ()
-let popI e = PopI e % gen_nid ()
-let popallI e = PopAllI e % gen_nid ()
-let letI (e1, e2) = LetI (e1, e2) % gen_nid ()
-let trapI = TrapI % gen_nid ()
-let nopI = NopI % gen_nid ()
-let returnI e_opt = ReturnI e_opt % gen_nid ()
-let executeI e = ExecuteI e % gen_nid ()
-let executeseqI e = ExecuteSeqI e % gen_nid ()
-let performI (id, el) = PerformI (id, el) % gen_nid ()
-let exitI = ExitI % gen_nid ()
-let replaceI (e1, p, e2) = ReplaceI (e1, p, e2) % gen_nid ()
-let appendI (e1, e2) = AppendI (e1, e2) % gen_nid ()
-let otherwiseI il = OtherwiseI il % gen_nid ()
-let yetI s = YetI s % gen_nid ()
+let ifI (c, il1, il2) = IfI (c, il1, il2) |> mk_node
+let eitherI (il1, il2) = EitherI (il1, il2) |> mk_node
+let enterI (e1, e2, il) = EnterI (e1, e2, il) |> mk_node
+let assertI c = AssertI c |> mk_node
+let pushI e = PushI e |> mk_node
+let popI e = PopI e |> mk_node
+let popallI e = PopAllI e |> mk_node
+let letI (e1, e2) = LetI (e1, e2) |> mk_node
+let trapI = TrapI |> mk_node
+let nopI = NopI |> mk_node
+let returnI e_opt = ReturnI e_opt |> mk_node
+let executeI e = ExecuteI e |> mk_node
+let executeseqI e = ExecuteSeqI e |> mk_node
+let performI (id, el) = PerformI (id, el) |> mk_node
+let exitI = ExitI |> mk_node
+let replaceI (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_node
+let appendI (e1, e2) = AppendI (e1, e2) |> mk_node
+let otherwiseI il = OtherwiseI il |> mk_node
+let yetI s = YetI s |> mk_node
 
 let singleton x = CaseV (x, [])
-let listV l = ListV (l |> Array.of_list |> ref)
+let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 
 
 let get_name = function
@@ -52,121 +53,110 @@ let get_body = function
   | RuleA (_, _, body) -> body
   | FuncA (_, _, body) -> body
 
+
+(* Construct datastructure *)
+
+let al_of_list f l = List.map f l |> listV
+
+let al_of_opt f opt = OptV (Option.map f opt)
+
+(* Construct integer *)
+
 let al_of_int i = NumV (Int64.of_int i)
 let int64_of_int32_u i32 = Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL
 let al_of_int32 i32 = NumV (int64_of_int32_u i32)
-let al_of_idx (idx: Ast.idx) = al_of_int32 idx.it
+let al_of_int64 i64 = NumV i64
+let al_of_idx idx = al_of_int32 idx.it
 
 
 (* Construct type *)
 
 let al_of_null = function
-  | Types.NoNull -> CaseV ("NULL", [ OptV None ])
-  | Types.Null -> CaseV ("NULL", [ OptV (Some (listV [])) ])
+  | NoNull -> CaseV ("NULL", [ OptV None ])
+  | Null -> CaseV ("NULL", [ OptV (Some (listV [])) ])
 
 let al_of_final = function
-  | Types.NoFinal -> OptV None
-  | Types.Final -> OptV (Some (singleton "FINAL"))
+  | NoFinal -> OptV None
+  | Final -> OptV (Some (singleton "FINAL"))
 
 let al_of_mut = function
-  | Types.Cons -> OptV None
-  | Types.Var -> OptV (Some (singleton "MUT"))
+  | Cons -> OptV None
+  | Var -> OptV (Some (singleton "MUT"))
 
 let rec al_of_storage_type = function
-  | Types.ValStorageT vt -> al_of_val_type vt
-  | Types.PackStorageT ps ->
+  | ValStorageT vt -> al_of_val_type vt
+  | PackStorageT ps ->
     (Pack.packed_size ps * 8)
     |> string_of_int
     |> Printf.sprintf "I%s"
     |> singleton
 
 and al_of_field_type = function
-  | Types.FieldT (mut, st) ->
-    TupV (al_of_mut mut, al_of_storage_type st)
+  | FieldT (mut, st) -> TupV (al_of_mut mut, al_of_storage_type st)
 
-and al_of_result_type rt = List.map al_of_val_type rt |> listV
+and al_of_result_type rt = al_of_list al_of_val_type rt
 
 and al_of_str_type = function
-  | Types.DefStructT (StructT ftl) ->
-    let al_ftl = List.map al_of_field_type ftl |> listV in
-    CaseV ("STRUCT", [ al_ftl ])
-  | Types.DefArrayT (ArrayT ft) ->
-    CaseV ("ARRAY", [ al_of_field_type ft ])
-  | Types.DefFuncT (FuncT (rt1, rt2)) ->
-    CaseV ("FUNC", [ ArrowV (
-      al_of_result_type rt1,
-      al_of_result_type rt2
-    )])
+  | DefStructT (StructT ftl) -> CaseV ("STRUCT", [ al_of_list al_of_field_type ftl ])
+  | DefArrayT (ArrayT ft) -> CaseV ("ARRAY", [ al_of_field_type ft ])
+  | DefFuncT (FuncT (rt1, rt2)) ->
+    CaseV ("FUNC", [ ArrowV (al_of_result_type rt1, al_of_result_type rt2) ])
 
 and al_of_sub_type = function
-  | Types.SubT (fin, htl, st) ->
-    CaseV ("SUBD", [
-      al_of_final fin;
-      List.map al_of_heap_type htl |> listV;
-      al_of_str_type st
-    ])
+  | SubT (fin, htl, st) ->
+    CaseV ("SUBD", [ al_of_final fin; al_of_list al_of_heap_type htl; al_of_str_type st ])
 
 and al_of_rec_type = function
-  | Types.RecT stl ->
-    let al_stl = List.map al_of_sub_type stl |> listV in
-    CaseV ("REC", [ al_stl ])
+  | RecT stl -> CaseV ("REC", [ al_of_list al_of_sub_type stl ])
 
 and al_of_def_type = function
-  | Types.DefT (rt, i) ->
-    CaseV ("DEF", [al_of_rec_type rt; NumV (Int64.of_int32 i)])
+  | DefT (rt, i) -> CaseV ("DEF", [al_of_rec_type rt; al_of_int32 i])
 
 and al_of_heap_type = function
-  | Types.VarHT (StatX i) ->
-    CaseV ("_IDX", [ NumV (Int64.of_int32 i) ])
-  | Types.VarHT (RecX i) ->
-    CaseV ("REC", [ NumV (Int64.of_int32 i) ])
-  | Types.DefHT dt -> al_of_def_type dt
-  | Types.BotHT -> singleton "BOT"
+  | VarHT (StatX i) -> CaseV ("_IDX", [ al_of_int32 i ])
+  | VarHT (RecX i) -> CaseV ("REC", [ al_of_int32 i ])
+  | DefHT dt -> al_of_def_type dt
+  | BotHT -> singleton "BOT"
   | ht ->
-    Types.string_of_heap_type ht
+    string_of_heap_type ht
     |> String.uppercase_ascii
     |> singleton
 
-and al_of_ref_type (null, ht) =
-  CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
+and al_of_ref_type (null, ht) = CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
 
 and al_of_num_type nt =
-  Types.string_of_num_type nt
+  string_of_num_type nt
   |> String.uppercase_ascii
   |> singleton
 
 and al_of_vec_type vt =
-  Types.string_of_vec_type vt
+  string_of_vec_type vt
   |> String.uppercase_ascii
   |> singleton
 
 and al_of_val_type = function
-  | Types.RefT rt -> al_of_ref_type rt
-  | Types.NumT nt -> al_of_num_type nt
-  | Types.VecT vt -> al_of_vec_type vt
-  | Types.BotT -> singleton "BOT"
+  | RefT rt -> al_of_ref_type rt
+  | NumT nt -> al_of_num_type nt
+  | VecT vt -> al_of_vec_type vt
+  | BotT -> singleton "BOT"
 
 let al_of_blocktype = function
-  | Ast.VarBlockType idx -> CaseV ("_IDX", [ NumV (Int64.of_int32 idx.it) ])
-  | Ast.ValBlockType None -> CaseV ("_RESULT", [ OptV None ])
-  | Ast.ValBlockType (Some val_type) ->
+  | VarBlockType idx -> CaseV ("_IDX", [ NumV (Int64.of_int32 idx.it) ])
+  | ValBlockType None -> CaseV ("_RESULT", [ OptV None ])
+  | ValBlockType (Some val_type) ->
     CaseV ("_RESULT", [ OptV (Some (al_of_val_type val_type)) ])
 
 
 (* Construct value *)
 
-let al_of_num n =
-  let t, v = match n with
-    | Value.I32 i -> "I32", i |> I32.to_bits |> int64_of_int32_u
-    | Value.I64 i -> "I64", i |> I64.to_bits
-    | Value.F32 f -> "F32", f |> F32.to_bits |> int64_of_int32_u
-    | Value.F64 f -> "F64", f |> F64.to_bits in
-  let t, v = CaseV(t, []), NumV v in
-  CaseV ("CONST", [ t; v ])
+let al_of_num = function
+  | I32 i -> CaseV ("CONST", [ singleton "I32"; i |> I32.to_bits |> al_of_int32 ])
+  | I64 i -> CaseV ("CONST", [ singleton "I64"; i |> I64.to_bits |> al_of_int64 ])
+  | F32 f -> CaseV ("CONST", [ singleton "F32"; f |> F32.to_bits |> al_of_int32 ])
+  | F64 f -> CaseV ("CONST", [ singleton "F64"; f |> F64.to_bits |> al_of_int64 ])
 
 let rec al_of_ref = function
-  | Value.NullRef ht ->
-    CaseV ("REF.NULL", [ al_of_heap_type ht ])
+  | NullRef ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
   (*
   | I31.I31Ref i ->
     CaseV ("REF.I31_NUM", [ NumV (Int64.of_int i) ])
@@ -177,129 +167,127 @@ let rec al_of_ref = function
   | Instance.FuncRef a ->
     CaseV ("REF.FUNC_ADDR", [ NumV (int64_of_int32_u a) ])
   *)
-  | Script.HostRef a ->
-    CaseV ("REF.HOST_ADDR", [ NumV (int64_of_int32_u a) ])
-  | Extern.ExternRef r ->
-    CaseV ("REF.EXTERN", [ al_of_ref r ])
-  | r -> Value.string_of_ref r |> failwith
+  | Script.HostRef i32 -> CaseV ("REF.HOST_ADDR", [ al_of_int32 i32 ])
+  | Extern.ExternRef r -> CaseV ("REF.EXTERN", [ al_of_ref r ])
+  | r -> string_of_ref r |> failwith
 
 let al_of_value = function
-  | Value.Num n -> al_of_num n
-  | Value.Vec _v -> failwith "TODO"
-  | Value.Ref r -> al_of_ref r
+  | Num n -> al_of_num n
+  | Vec _v -> failwith "TODO"
+  | Ref r -> al_of_ref r
 
 
 (* Construct operation *)
 
 let al_of_op f1 f2 = function
-  | Value.I32 op -> [ singleton "I32"; f1 op ]
-  | Value.I64 op -> [ singleton "I64"; f1 op ]
-  | Value.F32 op -> [ singleton "F32"; f2 op ]
-  | Value.F64 op -> [ singleton "F64"; f2 op ]
+  | I32 op -> [ singleton "I32"; f1 op ]
+  | I64 op -> [ singleton "I64"; f1 op ]
+  | F32 op -> [ singleton "F32"; f2 op ]
+  | F64 op -> [ singleton "F64"; f2 op ]
 
 let al_of_int_unop = function
-  | Ast.IntOp.Clz -> TextV "Clz"
-  | Ast.IntOp.Ctz -> TextV "Ctz"
-  | Ast.IntOp.Popcnt -> TextV "Popcnt"
-  | Ast.IntOp.ExtendS Pack.Pack8 -> TextV "Extend8S"
-  | Ast.IntOp.ExtendS Pack.Pack16 -> TextV "Extend16S"
-  | Ast.IntOp.ExtendS Pack.Pack32 -> TextV "Extend32S"
-  | Ast.IntOp.ExtendS Pack.Pack64 -> TextV "Extend64S"
+  | IntOp.Clz -> TextV "Clz"
+  | IntOp.Ctz -> TextV "Ctz"
+  | IntOp.Popcnt -> TextV "Popcnt"
+  | IntOp.ExtendS Pack.Pack8 -> TextV "Extend8S"
+  | IntOp.ExtendS Pack.Pack16 -> TextV "Extend16S"
+  | IntOp.ExtendS Pack.Pack32 -> TextV "Extend32S"
+  | IntOp.ExtendS Pack.Pack64 -> TextV "Extend64S"
 let al_of_float_unop = function
-  | Ast.FloatOp.Neg -> TextV "Neg"
-  | Ast.FloatOp.Abs -> TextV "Abs"
-  | Ast.FloatOp.Ceil -> TextV "Ceil"
-  | Ast.FloatOp.Floor -> TextV "Floor"
-  | Ast.FloatOp.Trunc -> TextV "Trunc"
-  | Ast.FloatOp.Nearest -> TextV "Nearest"
-  | Ast.FloatOp.Sqrt -> TextV "Sqrt"
+  | FloatOp.Neg -> TextV "Neg"
+  | FloatOp.Abs -> TextV "Abs"
+  | FloatOp.Ceil -> TextV "Ceil"
+  | FloatOp.Floor -> TextV "Floor"
+  | FloatOp.Trunc -> TextV "Trunc"
+  | FloatOp.Nearest -> TextV "Nearest"
+  | FloatOp.Sqrt -> TextV "Sqrt"
 let al_of_unop = al_of_op al_of_int_unop al_of_float_unop
 
 let al_of_int_binop = function
-  | Ast.IntOp.Add -> TextV "Add"
-  | Ast.IntOp.Sub -> TextV "Sub"
-  | Ast.IntOp.Mul -> TextV "Mul"
-  | Ast.IntOp.DivS -> TextV "DivS"
-  | Ast.IntOp.DivU -> TextV "DivU"
-  | Ast.IntOp.RemS -> TextV "RemS"
-  | Ast.IntOp.RemU -> TextV "RemU"
-  | Ast.IntOp.And -> TextV "And"
-  | Ast.IntOp.Or -> TextV "Or"
-  | Ast.IntOp.Xor -> TextV "Xor"
-  | Ast.IntOp.Shl -> TextV "Shl"
-  | Ast.IntOp.ShrS -> TextV "ShrS"
-  | Ast.IntOp.ShrU -> TextV "ShrU"
-  | Ast.IntOp.Rotl -> TextV "Rotl"
-  | Ast.IntOp.Rotr -> TextV "Rotr"
+  | IntOp.Add -> TextV "Add"
+  | IntOp.Sub -> TextV "Sub"
+  | IntOp.Mul -> TextV "Mul"
+  | IntOp.DivS -> TextV "DivS"
+  | IntOp.DivU -> TextV "DivU"
+  | IntOp.RemS -> TextV "RemS"
+  | IntOp.RemU -> TextV "RemU"
+  | IntOp.And -> TextV "And"
+  | IntOp.Or -> TextV "Or"
+  | IntOp.Xor -> TextV "Xor"
+  | IntOp.Shl -> TextV "Shl"
+  | IntOp.ShrS -> TextV "ShrS"
+  | IntOp.ShrU -> TextV "ShrU"
+  | IntOp.Rotl -> TextV "Rotl"
+  | IntOp.Rotr -> TextV "Rotr"
 let al_of_float_binop = function
-  | Ast.FloatOp.Add -> TextV "Add"
-  | Ast.FloatOp.Sub -> TextV "Sub"
-  | Ast.FloatOp.Mul -> TextV "Mul"
-  | Ast.FloatOp.Div -> TextV "Div"
-  | Ast.FloatOp.Min -> TextV "Min"
-  | Ast.FloatOp.Max -> TextV "Max"
-  | Ast.FloatOp.CopySign -> TextV "CopySign"
+  | FloatOp.Add -> TextV "Add"
+  | FloatOp.Sub -> TextV "Sub"
+  | FloatOp.Mul -> TextV "Mul"
+  | FloatOp.Div -> TextV "Div"
+  | FloatOp.Min -> TextV "Min"
+  | FloatOp.Max -> TextV "Max"
+  | FloatOp.CopySign -> TextV "CopySign"
 let al_of_binop = al_of_op al_of_int_binop al_of_float_binop
 
 let al_of_int_testop = function
-  | Ast.IntOp.Eqz -> TextV "Eqz"
-let al_of_testop: Ast.testop -> value list = function
-  | Value.I32 op -> [ singleton "I32"; al_of_int_testop op ]
-  | Value.I64 op -> [ singleton "I64"; al_of_int_testop op ]
+  | IntOp.Eqz -> TextV "Eqz"
+let al_of_testop: testop -> value list = function
+  | I32 op -> [ singleton "I32"; al_of_int_testop op ]
+  | I64 op -> [ singleton "I64"; al_of_int_testop op ]
   | _ -> .
 
 let al_of_int_relop = function
-  | Ast.IntOp.Eq -> TextV "Eq"
-  | Ast.IntOp.Ne -> TextV "Ne"
-  | Ast.IntOp.LtS -> TextV "LtS"
-  | Ast.IntOp.LtU -> TextV "LtU"
-  | Ast.IntOp.GtS -> TextV "GtS"
-  | Ast.IntOp.GtU -> TextV "GtU"
-  | Ast.IntOp.LeS -> TextV "LeS"
-  | Ast.IntOp.LeU -> TextV "LeU"
-  | Ast.IntOp.GeS -> TextV "GeS"
-  | Ast.IntOp.GeU -> TextV "GeU"
+  | IntOp.Eq -> TextV "Eq"
+  | IntOp.Ne -> TextV "Ne"
+  | IntOp.LtS -> TextV "LtS"
+  | IntOp.LtU -> TextV "LtU"
+  | IntOp.GtS -> TextV "GtS"
+  | IntOp.GtU -> TextV "GtU"
+  | IntOp.LeS -> TextV "LeS"
+  | IntOp.LeU -> TextV "LeU"
+  | IntOp.GeS -> TextV "GeS"
+  | IntOp.GeU -> TextV "GeU"
 let al_of_float_relop = function
-  | Ast.FloatOp.Eq -> TextV "Eq"
-  | Ast.FloatOp.Ne -> TextV "Ne"
-  | Ast.FloatOp.Lt -> TextV "Lt"
-  | Ast.FloatOp.Gt -> TextV "Gt"
-  | Ast.FloatOp.Le -> TextV "Le"
-  | Ast.FloatOp.Ge -> TextV "Ge"
+  | FloatOp.Eq -> TextV "Eq"
+  | FloatOp.Ne -> TextV "Ne"
+  | FloatOp.Lt -> TextV "Lt"
+  | FloatOp.Gt -> TextV "Gt"
+  | FloatOp.Le -> TextV "Le"
+  | FloatOp.Ge -> TextV "Ge"
 let al_of_relop = al_of_op al_of_int_relop al_of_float_relop
 
 let al_of_int_cvtop num_bits = function
-  | Ast.IntOp.ExtendSI32 -> "Extend", "I32", Some (singleton "S")
-  | Ast.IntOp.ExtendUI32 -> "Extend", "I32", Some (singleton "U")
-  | Ast.IntOp.WrapI64 -> "Wrap", "I64", None
-  | Ast.IntOp.TruncSF32 -> "Trunc", "F32", Some (singleton "S")
-  | Ast.IntOp.TruncUF32 -> "Trunc", "F32", Some (singleton "U")
-  | Ast.IntOp.TruncSF64 -> "Trunc", "F64", Some (singleton "S")
-  | Ast.IntOp.TruncUF64 -> "Trunc", "F64", Some (singleton "U")
-  | Ast.IntOp.TruncSatSF32 -> "TruncSat", "F32", Some (singleton "S")
-  | Ast.IntOp.TruncSatUF32 -> "TruncSat", "F32", Some (singleton "U")
-  | Ast.IntOp.TruncSatSF64 -> "TruncSat", "F64", Some (singleton "S")
-  | Ast.IntOp.TruncSatUF64 -> "TruncSat", "F64", Some (singleton "U")
-  | Ast.IntOp.ReinterpretFloat -> "Reinterpret", "F" ^ num_bits, None
+  | IntOp.ExtendSI32 -> "Extend", "I32", Some (singleton "S")
+  | IntOp.ExtendUI32 -> "Extend", "I32", Some (singleton "U")
+  | IntOp.WrapI64 -> "Wrap", "I64", None
+  | IntOp.TruncSF32 -> "Trunc", "F32", Some (singleton "S")
+  | IntOp.TruncUF32 -> "Trunc", "F32", Some (singleton "U")
+  | IntOp.TruncSF64 -> "Trunc", "F64", Some (singleton "S")
+  | IntOp.TruncUF64 -> "Trunc", "F64", Some (singleton "U")
+  | IntOp.TruncSatSF32 -> "TruncSat", "F32", Some (singleton "S")
+  | IntOp.TruncSatUF32 -> "TruncSat", "F32", Some (singleton "U")
+  | IntOp.TruncSatSF64 -> "TruncSat", "F64", Some (singleton "S")
+  | IntOp.TruncSatUF64 -> "TruncSat", "F64", Some (singleton "U")
+  | IntOp.ReinterpretFloat -> "Reinterpret", "F" ^ num_bits, None
 let al_of_float_cvtop num_bits = function
-  | Ast.FloatOp.ConvertSI32 -> "Convert", "I32", Some (singleton ("S"))
-  | Ast.FloatOp.ConvertUI32 -> "Convert", "I32", Some (singleton ("U"))
-  | Ast.FloatOp.ConvertSI64 -> "Convert", "I64", Some (singleton ("S"))
-  | Ast.FloatOp.ConvertUI64 -> "Convert", "I64", Some (singleton ("U"))
-  | Ast.FloatOp.PromoteF32 -> "Promote", "F32", None
-  | Ast.FloatOp.DemoteF64 -> "Demote", "F64", None
-  | Ast.FloatOp.ReinterpretInt -> "Reinterpret", "I" ^ num_bits, None
+  | FloatOp.ConvertSI32 -> "Convert", "I32", Some (singleton ("S"))
+  | FloatOp.ConvertUI32 -> "Convert", "I32", Some (singleton ("U"))
+  | FloatOp.ConvertSI64 -> "Convert", "I64", Some (singleton ("S"))
+  | FloatOp.ConvertUI64 -> "Convert", "I64", Some (singleton ("U"))
+  | FloatOp.PromoteF32 -> "Promote", "F32", None
+  | FloatOp.DemoteF64 -> "Demote", "F64", None
+  | FloatOp.ReinterpretInt -> "Reinterpret", "I" ^ num_bits, None
 let al_of_cvtop = function
-  | Value.I32 op ->
+  | I32 op ->
     let op', to_, sx = al_of_int_cvtop "32" op in
     [ singleton "I32"; TextV op'; singleton to_; OptV sx ]
-  | Value.I64 op ->
+  | I64 op ->
     let op', to_, sx = al_of_int_cvtop "64" op in
     [ singleton "I64"; TextV op'; singleton to_; OptV sx ]
-  | Value.F32 op ->
+  | F32 op ->
     let op', to_, sx = al_of_float_cvtop "32" op in
     [ singleton "F32"; TextV op'; singleton to_; OptV sx ]
-  | Value.F64 op ->
+  | F64 op ->
     let op', to_, sx = al_of_float_cvtop "64" op in
     [ singleton "F64"; TextV op'; singleton to_; OptV sx ]
 
@@ -316,12 +304,12 @@ let al_of_extension = function
 let al_of_memop al_of_pack memop =
   let str =
     Record.empty
-    |> Record.add "ALIGN" (al_of_int memop.Ast.align)
-    |> Record.add "OFFSET" (al_of_int32 memop.Ast.offset)
+    |> Record.add "ALIGN" (al_of_int memop.align)
+    |> Record.add "OFFSET" (al_of_int32 memop.offset)
   in
   [
-    al_of_num_type memop.Ast.ty;
-    OptV (Option.map al_of_pack memop.Ast.pack);
+    al_of_num_type memop.ty;
+    al_of_opt al_of_pack memop.pack;
     NumV 0L;
     StrV str;
   ]
@@ -336,237 +324,221 @@ let al_of_storeop = al_of_memop al_of_pack_size
 (* Construct instruction *)
 
 let rec al_of_instr winstr =
-
   match winstr.it with
   (* wasm values *)
-  | Ast.Const num -> al_of_num num.it
-  | Ast.RefNull ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
+  | Const num -> al_of_num num.it
+  | RefNull ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
   (* wasm instructions *)
-  | Ast.Unreachable -> singleton "UNREACHABLE"
-  | Ast.Nop -> singleton "NOP"
-  | Ast.Drop -> singleton "DROP"
-  | Ast.Unary op -> CaseV ("UNOP", al_of_unop op)
-  | Ast.Binary op -> CaseV ("BINOP", al_of_binop op)
-  | Ast.Test op -> CaseV ("TESTOP", al_of_testop op)
-  | Ast.Compare op -> CaseV ("RELOP", al_of_relop op)
-  | Ast.Convert op -> CaseV ("CVTOP", al_of_cvtop op)
-  | Ast.RefIsNull -> singleton "REF.IS_NULL"
-  | Ast.RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
-  | Ast.Select None -> CaseV ("SELECT", [ OptV None ])
-  | Ast.Select (Some ts) ->
-    CaseV ("SELECT", [ OptV (Some (listV (List.map al_of_val_type ts))) ])
-  | Ast.LocalGet idx -> CaseV ("LOCAL.GET", [ al_of_idx idx ])
-  | Ast.LocalSet idx -> CaseV ("LOCAL.SET", [ al_of_idx idx ])
-  | Ast.LocalTee idx -> CaseV ("LOCAL.TEE", [ al_of_idx idx ])
-  | Ast.GlobalGet idx -> CaseV ("GLOBAL.GET", [ al_of_idx idx ])
-  | Ast.GlobalSet idx -> CaseV ("GLOBAL.SET", [ al_of_idx idx ])
-  | Ast.TableGet idx -> CaseV ("TABLE.GET", [ al_of_idx idx ])
-  | Ast.TableSet idx -> CaseV ("TABLE.SET", [ al_of_idx idx ])
-  | Ast.TableSize idx -> CaseV ("TABLE.SIZE", [ al_of_idx idx ])
-  | Ast.TableGrow idx -> CaseV ("TABLE.GROW", [ al_of_idx idx ])
-  | Ast.TableFill idx -> CaseV ("TABLE.FILL", [ al_of_idx idx ])
-  | Ast.TableCopy (idx1, idx2) ->
-    CaseV ("TABLE.COPY", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.TableInit (idx1, idx2) ->
-    CaseV ("TABLE.INIT", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ElemDrop idx -> CaseV ("ELEM.DROP", [ al_of_idx idx ])
-  | Ast.Block (bt, instrs) ->
-    CaseV ("BLOCK", [ al_of_blocktype bt; listV (al_of_instrs instrs) ])
-  | Ast.Loop (bt, instrs) ->
-    CaseV ("LOOP", [ al_of_blocktype bt; listV (al_of_instrs instrs) ])
-  | Ast.If (bt, instrs1, instrs2) ->
+  | Unreachable -> singleton "UNREACHABLE"
+  | Nop -> singleton "NOP"
+  | Drop -> singleton "DROP"
+  | Unary op -> CaseV ("UNOP", al_of_unop op)
+  | Binary op -> CaseV ("BINOP", al_of_binop op)
+  | Test op -> CaseV ("TESTOP", al_of_testop op)
+  | Compare op -> CaseV ("RELOP", al_of_relop op)
+  | Convert op -> CaseV ("CVTOP", al_of_cvtop op)
+  | RefIsNull -> singleton "REF.IS_NULL"
+  | RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
+  | Select None -> CaseV ("SELECT", [ OptV None ])
+  | Select (Some ts) -> CaseV ("SELECT", [ OptV (Some (al_of_list al_of_val_type ts)) ])
+  | LocalGet idx -> CaseV ("LOCAL.GET", [ al_of_idx idx ])
+  | LocalSet idx -> CaseV ("LOCAL.SET", [ al_of_idx idx ])
+  | LocalTee idx -> CaseV ("LOCAL.TEE", [ al_of_idx idx ])
+  | GlobalGet idx -> CaseV ("GLOBAL.GET", [ al_of_idx idx ])
+  | GlobalSet idx -> CaseV ("GLOBAL.SET", [ al_of_idx idx ])
+  | TableGet idx -> CaseV ("TABLE.GET", [ al_of_idx idx ])
+  | TableSet idx -> CaseV ("TABLE.SET", [ al_of_idx idx ])
+  | TableSize idx -> CaseV ("TABLE.SIZE", [ al_of_idx idx ])
+  | TableGrow idx -> CaseV ("TABLE.GROW", [ al_of_idx idx ])
+  | TableFill idx -> CaseV ("TABLE.FILL", [ al_of_idx idx ])
+  | TableCopy (idx1, idx2) -> CaseV ("TABLE.COPY", [ al_of_idx idx1; al_of_idx idx2 ])
+  | TableInit (idx1, idx2) -> CaseV ("TABLE.INIT", [ al_of_idx idx1; al_of_idx idx2 ])
+  | ElemDrop idx -> CaseV ("ELEM.DROP", [ al_of_idx idx ])
+  | Block (bt, instrs) ->
+    CaseV ("BLOCK", [ al_of_blocktype bt; al_of_list al_of_instr instrs ])
+  | Loop (bt, instrs) ->
+    CaseV ("LOOP", [ al_of_blocktype bt; al_of_list al_of_instr instrs ])
+  | If (bt, instrs1, instrs2) ->
     CaseV ("IF", [
       al_of_blocktype bt;
-      listV (al_of_instrs instrs1);
-      listV (al_of_instrs instrs2);
+      al_of_list al_of_instr instrs1;
+      al_of_list al_of_instr instrs2;
     ])
-  | Ast.Br idx -> CaseV ("BR", [ al_of_idx idx ])
-  | Ast.BrIf idx -> CaseV ("BR_IF", [ al_of_idx idx ])
-  | Ast.BrTable (idxs, idx) ->
-    CaseV ("BR_TABLE", [ listV (List.map al_of_idx idxs); al_of_idx idx ])
-  | Ast.BrOnNull idx -> CaseV ("BR_ON_NULL", [ al_of_idx idx ])
-  | Ast.BrOnNonNull idx -> CaseV ("BR_ON_NON_NULL", [ al_of_idx idx ])
-  | Ast.BrOnCast (idx, rt1, rt2) ->
+  | Br idx -> CaseV ("BR", [ al_of_idx idx ])
+  | BrIf idx -> CaseV ("BR_IF", [ al_of_idx idx ])
+  | BrTable (idxs, idx) ->
+    CaseV ("BR_TABLE", [ al_of_list al_of_idx idxs; al_of_idx idx ])
+  | BrOnNull idx -> CaseV ("BR_ON_NULL", [ al_of_idx idx ])
+  | BrOnNonNull idx -> CaseV ("BR_ON_NON_NULL", [ al_of_idx idx ])
+  | BrOnCast (idx, rt1, rt2) ->
     CaseV ("BR_ON_CAST", [ al_of_idx idx; al_of_ref_type rt1; al_of_ref_type rt2 ])
-  | Ast.BrOnCastFail (idx, rt1, rt2) ->
+  | BrOnCastFail (idx, rt1, rt2) ->
     CaseV ("BR_ON_CAST_FAIL", [ al_of_idx idx; al_of_ref_type rt1; al_of_ref_type rt2 ])
-  | Ast.Return -> singleton "RETURN"
-  | Ast.Call idx -> CaseV ("CALL", [ al_of_idx idx ])
-  | Ast.CallRef idx -> CaseV ("CALL_REF", [ OptV (Some (al_of_idx idx)) ])
-  | Ast.CallIndirect (idx1, idx2) ->
+  | Return -> singleton "RETURN"
+  | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
+  | CallRef idx -> CaseV ("CALL_REF", [ OptV (Some (al_of_idx idx)) ])
+  | CallIndirect (idx1, idx2) ->
     CaseV ("CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
-  | Ast.ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ OptV (Some (al_of_idx idx)) ])
-  | Ast.ReturnCallIndirect (idx1, idx2) ->
+  | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
+  | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ OptV (Some (al_of_idx idx)) ])
+  | ReturnCallIndirect (idx1, idx2) ->
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
-  | Ast.Store storeop -> CaseV ("STORE", al_of_storeop storeop)
-  | Ast.MemorySize -> CaseV ("MEMORY.SIZE", [ NumV 0L ])
-  | Ast.MemoryGrow -> CaseV ("MEMORY.GROW", [ NumV 0L ])
-  | Ast.MemoryFill -> CaseV ("MEMORY.FILL", [ NumV 0L ])
-  | Ast.MemoryCopy -> CaseV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
-  | Ast.MemoryInit i32 -> CaseV ("MEMORY.INIT", [ NumV 0L; al_of_idx i32 ])
-  | Ast.DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
-  | Ast.RefAsNonNull -> singleton "REF.AS_NON_NULL"
-  | Ast.RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
-  | Ast.RefCast rt -> CaseV ("REF.CAST", [ al_of_ref_type rt ])
-  | Ast.RefEq -> singleton "REF.EQ"
-  | Ast.RefI31 -> singleton "REF.I31"
-  | Ast.I31Get sx -> CaseV ("I31.GET", [ al_of_extension sx ])
-  | Ast.StructNew (idx, Ast.Explicit) -> CaseV ("STRUCT.NEW", [ al_of_idx idx ])
-  | Ast.StructNew (idx, Ast.Implicit) -> CaseV ("STRUCT.NEW_DEFAULT", [ al_of_idx idx ])
-  | Ast.StructGet (idx1, idx2, sx_opt) ->
+  | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
+  | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
+  | MemorySize -> CaseV ("MEMORY.SIZE", [ NumV 0L ])
+  | MemoryGrow -> CaseV ("MEMORY.GROW", [ NumV 0L ])
+  | MemoryFill -> CaseV ("MEMORY.FILL", [ NumV 0L ])
+  | MemoryCopy -> CaseV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
+  | MemoryInit i32 -> CaseV ("MEMORY.INIT", [ NumV 0L; al_of_idx i32 ])
+  | DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
+  | RefAsNonNull -> singleton "REF.AS_NON_NULL"
+  | RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
+  | RefCast rt -> CaseV ("REF.CAST", [ al_of_ref_type rt ])
+  | RefEq -> singleton "REF.EQ"
+  | RefI31 -> singleton "REF.I31"
+  | I31Get sx -> CaseV ("I31.GET", [ al_of_extension sx ])
+  | StructNew (idx, Explicit) -> CaseV ("STRUCT.NEW", [ al_of_idx idx ])
+  | StructNew (idx, Implicit) -> CaseV ("STRUCT.NEW_DEFAULT", [ al_of_idx idx ])
+  | StructGet (idx1, idx2, sx_opt) ->
     CaseV ("STRUCT.GET", [
-      OptV (Option.map al_of_extension sx_opt);
+      al_of_opt al_of_extension sx_opt;
       al_of_idx idx1;
       al_of_idx idx2;
     ])
-  | Ast.StructSet (idx1, idx2) -> CaseV ("STRUCT.SET", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ArrayNew (idx, Ast.Explicit) -> CaseV ("ARRAY.NEW", [ al_of_idx idx ])
-  | Ast.ArrayNew (idx, Ast.Implicit) -> CaseV ("ARRAY.NEW_DEFAULT", [ al_of_idx idx ])
-  | Ast.ArrayNewFixed (idx, i32) ->
+  | StructSet (idx1, idx2) -> CaseV ("STRUCT.SET", [ al_of_idx idx1; al_of_idx idx2 ])
+  | ArrayNew (idx, Explicit) -> CaseV ("ARRAY.NEW", [ al_of_idx idx ])
+  | ArrayNew (idx, Implicit) -> CaseV ("ARRAY.NEW_DEFAULT", [ al_of_idx idx ])
+  | ArrayNewFixed (idx, i32) ->
     CaseV ("ARRAY.NEW_FIXED", [ al_of_idx idx; al_of_int32 i32 ])
-  | Ast.ArrayNewElem (idx1, idx2) ->
+  | ArrayNewElem (idx1, idx2) ->
     CaseV ("ARRAY.NEW_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ArrayNewData (idx1, idx2) ->
+  | ArrayNewData (idx1, idx2) ->
     CaseV ("ARRAY.NEW_DATA", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ArrayGet (idx, sx_opt) ->
-    CaseV ("ARRAY.GET", [ OptV (Option.map al_of_extension sx_opt); al_of_idx idx ])
-  | Ast.ArraySet idx -> CaseV ("ARRAY.SET", [ al_of_idx idx ])
-  | Ast.ArrayLen -> singleton "ARRAY.LEN"
-  | Ast.ArrayCopy (idx1, idx2) -> CaseV ("ARRAY.COPY", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ArrayFill idx -> CaseV ("ARRAY.FILL", [ al_of_idx idx ])
-  | Ast.ArrayInitData (idx1, idx2) -> CaseV ("ARRAY.INIT_DATA", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ArrayInitElem (idx1, idx2) -> CaseV ("ARRAY.INIT_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
-  | Ast.ExternConvert Ast.Internalize -> singleton "ANY.CONVERT_EXTERN"
-  | Ast.ExternConvert Ast.Externalize -> singleton "EXTERN.CONVERT_ANY"
+  | ArrayGet (idx, sx_opt) ->
+    CaseV ("ARRAY.GET", [ al_of_opt al_of_extension sx_opt; al_of_idx idx ])
+  | ArraySet idx -> CaseV ("ARRAY.SET", [ al_of_idx idx ])
+  | ArrayLen -> singleton "ARRAY.LEN"
+  | ArrayCopy (idx1, idx2) -> CaseV ("ARRAY.COPY", [ al_of_idx idx1; al_of_idx idx2 ])
+  | ArrayFill idx -> CaseV ("ARRAY.FILL", [ al_of_idx idx ])
+  | ArrayInitData (idx1, idx2) ->
+    CaseV ("ARRAY.INIT_DATA", [ al_of_idx idx1; al_of_idx idx2 ])
+  | ArrayInitElem (idx1, idx2) ->
+    CaseV ("ARRAY.INIT_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
+  | ExternConvert Internalize -> singleton "ANY.CONVERT_EXTERN"
+  | ExternConvert Externalize -> singleton "EXTERN.CONVERT_ANY"
   | _ -> CaseV ("TODO: Unconstructed Wasm instruction (al_of_instr)", [])
-
-and al_of_instrs winstrs = List.map al_of_instr winstrs
 
 (* Construct module *)
 
-let it phrase = phrase.it
+let al_of_local l = CaseV ("LOCAL", [ al_of_val_type l.it.ltype ])
 
 let al_of_func wasm_func =
-
-  let ftype =
-    NumV (Int64.of_int32 wasm_func.it.Ast.ftype.it)
-  in
-
-  (* Construct locals *)
-  let locals =
-    List.map
-      (fun l ->
-        CaseV ("LOCAL", [ al_of_val_type l.it.Ast.ltype ]))
-      wasm_func.it.Ast.locals
-  in
-
-  (* Construct code *)
-  let code = al_of_instrs wasm_func.it.Ast.body in
-
-  (* Construct func *)
-  CaseV ("FUNC", [ftype; listV locals; listV code])
+  CaseV ("FUNC", [
+    al_of_int32 wasm_func.it.ftype.it;
+    al_of_list al_of_local wasm_func.it.locals;
+    al_of_list al_of_instr wasm_func.it.body;
+  ])
 
 let al_of_global wasm_global =
-  let expr = al_of_instrs wasm_global.it.Ast.ginit.it in
+  CaseV ("GLOBAL", [
+    TextV "Yet: global type";
+    al_of_list al_of_instr wasm_global.it.ginit.it
+  ])
 
-  CaseV ("GLOBAL", [ TextV "Yet: global type"; listV expr ])
-
-let al_of_limits limits max =
+let al_of_limits limits default =
   let max =
-    match limits.Types.max with
-    | Some v -> int64_of_int32_u v
-    | None -> max
+    match limits.max with
+    | Some v -> al_of_int32 v
+    | None -> al_of_int64 default
   in
 
-  TupV (NumV (int64_of_int32_u limits.Types.min), NumV max)
+  TupV (al_of_int32 limits.min, max)
 
 let al_of_table wasm_table =
 
-  let Types.TableT (limits, ref_ty) = wasm_table.it.Ast.ttype in
+  let TableT (limits, ref_ty) = wasm_table.it.ttype in
   let pair = al_of_limits limits 4294967295L in
 
-  let expr = al_of_instrs wasm_table.it.Ast.tinit.it in
+  let expr = al_of_list al_of_instr wasm_table.it.tinit.it in
 
-  CaseV ("TABLE", [ TupV(pair, al_of_val_type (RefT ref_ty)); listV expr ])
+  CaseV ("TABLE", [ TupV(pair, al_of_val_type (RefT ref_ty)); expr ])
 
 let al_of_memory wasm_memory =
-  let Types.MemoryT (limits) = wasm_memory.it.Ast.mtype in
+  let MemoryT (limits) = wasm_memory.it.mtype in
   let pair = al_of_limits limits 65536L in
 
   CaseV ("MEMORY", [ CaseV ("I8", [ pair]) ])
 
 let al_of_segment wasm_segment = match wasm_segment.it with
-  | Ast.Passive -> singleton "PASSIVE"
-  | Ast.Active { index = index; offset = offset } ->
+  | Passive -> singleton "PASSIVE"
+  | Active { index = index; offset = offset } ->
       CaseV (
         "ACTIVE",
         [
           NumV (int64_of_int32_u index.it);
-          listV (al_of_instrs offset.it)
+          al_of_list al_of_instr offset.it
         ]
       )
-  | Ast.Declarative -> singleton "DECLARE"
+  | Declarative -> singleton "DECLARE"
 
 let al_of_elem wasm_elem =
-  let reftype = al_of_val_type (Types.RefT wasm_elem.it.Ast.etype) in
+  let reftype = al_of_val_type (RefT wasm_elem.it.etype) in
 
-  let al_of_const const = listV (al_of_instrs const.it) in
-  let instrs = wasm_elem.it.Ast.einit |> List.map al_of_const in
+  let al_of_const const = al_of_list al_of_instr const.it in
+  let instrs = al_of_list al_of_const wasm_elem.it.einit in
 
-  let mode = al_of_segment wasm_elem.it.Ast.emode in
+  let mode = al_of_segment wasm_elem.it.emode in
 
-  CaseV ("ELEM", [ reftype; listV instrs; mode ])
+  CaseV ("ELEM", [ reftype; instrs; mode ])
 
 let al_of_data wasm_data =
   (* TODO: byte list list *)
-  let init = wasm_data.it.Ast.dinit in
+  let init = wasm_data.it.dinit in
 
   let f chr acc = NumV (Int64.of_int (Char.code chr)) :: acc in
   let byte_list = String.fold_right f init [] in
 
-  let mode = al_of_segment wasm_data.it.Ast.dmode in
+  let mode = al_of_segment wasm_data.it.dmode in
 
   CaseV ("DATA", [ listV byte_list; mode ])
 
 let al_of_import_desc wasm_module idesc = match idesc.it with
-  | Ast.FuncImport x ->
-      let dts = Ast.def_types_of wasm_module in
+  | FuncImport x ->
+      let dts = def_types_of wasm_module in
       let dt = Lib.List32.nth dts x.it |> al_of_def_type in
       CaseV ("FUNC", [ dt ])
-  | Ast.TableImport ty ->
-    let Types.TableT (limits, ref_ty) = ty in
+  | TableImport ty ->
+    let TableT (limits, ref_ty) = ty in
     let pair = al_of_limits limits 4294967295L in
     CaseV ("TABLE", [ pair; al_of_val_type (RefT ref_ty) ])
-  | Ast.MemoryImport ty ->
-    let Types.MemoryT (limits) = ty in
+  | MemoryImport ty ->
+    let MemoryT (limits) = ty in
     let pair = al_of_limits limits 65536L in
     CaseV ("MEM", [ pair ])
-  | Ast.GlobalImport _ -> CaseV ("GLOBAL", [ TextV "Yet: global type" ])
+  | GlobalImport _ -> CaseV ("GLOBAL", [ TextV "Yet: global type" ])
 
 let al_of_import wasm_module wasm_import =
 
-  let module_name = TextV (wasm_import.it.Ast.module_name |> Utf8.encode) in
-  let item_name = TextV (wasm_import.it.Ast.item_name |> Utf8.encode) in
+  let module_name = TextV (wasm_import.it.module_name |> Utf8.encode) in
+  let item_name = TextV (wasm_import.it.item_name |> Utf8.encode) in
 
-  let import_desc = al_of_import_desc wasm_module wasm_import.it.Ast.idesc in
+  let import_desc = al_of_import_desc wasm_module wasm_import.it.idesc in
 
   CaseV ("IMPORT", [ module_name; item_name; import_desc ])
 
 let al_of_export_desc export_desc = match export_desc.it with
-  | Ast.FuncExport n -> CaseV ("FUNC", [ NumV (int64_of_int32_u n.it) ])
-  | Ast.TableExport n -> CaseV ("TABLE", [ NumV (int64_of_int32_u n.it) ])
-  | Ast.MemoryExport n -> CaseV ("MEM", [ NumV (int64_of_int32_u n.it) ])
-  | Ast.GlobalExport n -> CaseV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
+  | FuncExport n -> CaseV ("FUNC", [ NumV (int64_of_int32_u n.it) ])
+  | TableExport n -> CaseV ("TABLE", [ NumV (int64_of_int32_u n.it) ])
+  | MemoryExport n -> CaseV ("MEM", [ NumV (int64_of_int32_u n.it) ])
+  | GlobalExport n -> CaseV ("GLOBAL", [ NumV (int64_of_int32_u n.it) ])
 
 let al_of_start wasm_start =
-  CaseV ("START", [ NumV (int64_of_int32_u wasm_start.it.Ast.sfunc.it) ])
+  CaseV ("START", [ NumV (int64_of_int32_u wasm_start.it.sfunc.it) ])
 
 let al_of_export wasm_export =
 
-  let name = TextV (wasm_export.it.Ast.name |> Utf8.encode) in
-  let export_desc = al_of_export_desc wasm_export.it.Ast.edesc in
+  let name = TextV (wasm_export.it.name |> Utf8.encode) in
+  let export_desc = al_of_export_desc wasm_export.it.edesc in
 
   CaseV ("EXPORT", [ name; export_desc ])
 
@@ -576,7 +548,7 @@ let al_of_module wasm_module =
   let type_list =
     List.map (fun ty ->
       CaseV ("TYPE", [ al_of_rec_type ty.it ])
-    ) wasm_module.it.Ast.types
+    ) wasm_module.it.types
   in
 
   (* Construct imports *)
@@ -616,23 +588,13 @@ let al_of_module wasm_module =
 
   (* Construct start *)
   let start_opt =
-    Option.map al_of_start wasm_module.it.start
+    al_of_opt al_of_start wasm_module.it.start
   in
 
   (* Construct export *)
   let export_list =
     List.map al_of_export wasm_module.it.exports
   in
-
-  (* print_endline "";
-  Print.string_of_value (listV import_list) |> print_endline;
-  Print.string_of_value (listV func_list) |> print_endline;
-  Print.string_of_value (listV global_list) |> print_endline;
-  Print.string_of_value (listV table_list) |> print_endline;
-  Print.string_of_value (listV memory_list) |> print_endline;
-  Print.string_of_value (listV elem_list) |> print_endline;
-  Print.string_of_value (listV data_list) |> print_endline;
-  Print.string_of_value (listV export_list) |> print_endline;*)
 
   CaseV (
     "MODULE",
@@ -645,7 +607,7 @@ let al_of_module wasm_module =
       listV memory_list;
       listV elem_list;
       listV data_list;
-      OptV  start_opt;
+      start_opt;
       listV export_list
     ]
   )
