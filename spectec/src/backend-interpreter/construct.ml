@@ -42,7 +42,7 @@ let appendI (e1, e2) = AppendI (e1, e2) |> mk_node
 let otherwiseI il = OtherwiseI il |> mk_node
 let yetI s = YetI s |> mk_node
 
-let singleton x = CaseV (x, [])
+let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 
 
@@ -67,7 +67,7 @@ let fail ty v =
   |> failwith
 
 
-(* Construct datastructure *)
+(* Construct data structure *)
 
 let al_of_list f l = List.map f l |> listV
 let al_of_seq f s = List.of_seq s |> al_of_list f
@@ -86,6 +86,7 @@ let al_of_idx idx = al_of_int32 idx.it
 let al_of_name name = TextV (Utf8.encode name)
 let al_of_byte byte = Char.code byte |> al_of_int
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
+
 
 (* Construct type *)
 
@@ -159,9 +160,7 @@ and al_of_val_type = function
 
 let al_of_blocktype = function
   | VarBlockType idx -> CaseV ("_IDX", [ al_of_idx idx ])
-  | ValBlockType None -> CaseV ("_RESULT", [ OptV None ])
-  | ValBlockType (Some val_type) ->
-    CaseV ("_RESULT", [ OptV (Some (al_of_val_type val_type)) ])
+  | ValBlockType vt_opt -> CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
 
 let al_of_limits limits default =
   let max =
@@ -375,8 +374,7 @@ let rec al_of_instr instr =
   | Convert op -> CaseV ("CVTOP", al_of_cvtop op)
   | RefIsNull -> singleton "REF.IS_NULL"
   | RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
-  | Select None -> CaseV ("SELECT", [ OptV None ])
-  | Select (Some ts) -> CaseV ("SELECT", [ OptV (Some (al_of_list al_of_val_type ts)) ])
+  | Select vtl_opt -> CaseV ("SELECT", [ al_of_opt (al_of_list al_of_val_type) vtl_opt ])
   | LocalGet idx -> CaseV ("LOCAL.GET", [ al_of_idx idx ])
   | LocalSet idx -> CaseV ("LOCAL.SET", [ al_of_idx idx ])
   | LocalTee idx -> CaseV ("LOCAL.TEE", [ al_of_idx idx ])
