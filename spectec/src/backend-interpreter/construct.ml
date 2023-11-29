@@ -662,7 +662,7 @@ let al_to_block_type: value -> block_type = function
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_val_type vt_opt)
   | v -> fail "block type" v
 
-let al_to_limits (default: int64): value -> Int32.t limits = function
+let al_to_limits (default: int64): value -> int32 limits = function
   | TupV [ min; max ] ->
     let max' =
       match al_to_int64 max with
@@ -772,57 +772,57 @@ let al_to_testop: value list -> Ast.testop = function
   | l -> fail_list "testop" l
 
 let al_to_int_relop: value -> IntOp.relop = function
-  | TextV "Eq" -> Ast.IntOp.Eq
-  | TextV "Ne" -> Ast.IntOp.Ne
-  | TextV "LtS" -> Ast.IntOp.LtS
-  | TextV "LtU" -> Ast.IntOp.LtU
-  | TextV "GtS" -> Ast.IntOp.GtS
-  | TextV "GtU" -> Ast.IntOp.GtU
-  | TextV "LeS" -> Ast.IntOp.LeS
-  | TextV "LeU" -> Ast.IntOp.LeU
-  | TextV "GeS" -> Ast.IntOp.GeS
-  | TextV "GeU" -> Ast.IntOp.GeU
+  | TextV "Eq" -> IntOp.Eq
+  | TextV "Ne" -> IntOp.Ne
+  | TextV "LtS" -> IntOp.LtS
+  | TextV "LtU" -> IntOp.LtU
+  | TextV "GtS" -> IntOp.GtS
+  | TextV "GtU" -> IntOp.GtU
+  | TextV "LeS" -> IntOp.LeS
+  | TextV "LeU" -> IntOp.LeU
+  | TextV "GeS" -> IntOp.GeS
+  | TextV "GeU" -> IntOp.GeU
   | v -> fail "integer relop" v
 let al_to_float_relop: value -> FloatOp.relop = function
-  | TextV "Eq" -> Ast.FloatOp.Eq
-  | TextV "Ne" -> Ast.FloatOp.Ne
-  | TextV "Lt" -> Ast.FloatOp.Lt
-  | TextV "Gt" -> Ast.FloatOp.Gt
-  | TextV "Le" -> Ast.FloatOp.Le
-  | TextV "Ge" -> Ast.FloatOp.Ge
+  | TextV "Eq" -> FloatOp.Eq
+  | TextV "Ne" -> FloatOp.Ne
+  | TextV "Lt" -> FloatOp.Lt
+  | TextV "Gt" -> FloatOp.Gt
+  | TextV "Le" -> FloatOp.Le
+  | TextV "Ge" -> FloatOp.Ge
   | v -> fail "float relop" v
 let al_to_relop: value list -> relop = al_to_op al_to_int_relop al_to_float_relop
 
 let al_to_int_cvtop: value list -> IntOp.cvtop = function
   | TextV "Extend" :: args ->
     (match args with
-    | [ CaseV ("I32", []); OptV (Some (CaseV ("S", []))) ] -> Ast.IntOp.ExtendSI32
-    | [ CaseV ("I32", []); OptV (Some (CaseV ("U", []))) ] -> Ast.IntOp.ExtendUI32
+    | [ CaseV ("I32", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.ExtendSI32
+    | [ CaseV ("I32", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.ExtendUI32
     | l -> fail_list "extend" l)
   | [ TextV "Wrap"; CaseV ("I64", []); OptV None ] -> IntOp.WrapI64
   | TextV "Trunc" :: args ->
     (match args with
-    | [ CaseV ("F32", []); OptV (Some (CaseV ("S", []))) ] -> Ast.IntOp.TruncSF32
-    | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> Ast.IntOp.TruncUF32
-    | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> Ast.IntOp.TruncSF64
-    | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> Ast.IntOp.TruncUF64
+    | [ CaseV ("F32", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSF32
+    | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncUF32
+    | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSF64
+    | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncUF64
     | l -> fail_list "trunc" l)
   | TextV "TruncSat" :: args ->
     (match args with
-    | [ CaseV ("F32", []); OptV (Some (CaseV ("S", []))) ] -> Ast.IntOp.TruncSatSF32
-    | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> Ast.IntOp.TruncSatUF32
-    | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> Ast.IntOp.TruncSatSF64
-    | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> Ast.IntOp.TruncSatUF64
+    | [ CaseV ("F32", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSatSF32
+    | [ CaseV ("F32", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncSatUF32
+    | [ CaseV ("F64", []); OptV (Some (CaseV ("S", []))) ] -> IntOp.TruncSatSF64
+    | [ CaseV ("F64", []); OptV (Some (CaseV ("U", []))) ] -> IntOp.TruncSatUF64
     | l -> fail_list "truncsat" l)
   | [ TextV "Reinterpret"; _; OptV None ] -> IntOp.ReinterpretFloat
   | l -> fail_list "integer cvtop" l
 let al_to_float_cvtop : value list -> FloatOp.cvtop = function
   | TextV "Convert" :: args ->
     (match args with
-    | [ CaseV ("I32", []); OptV (Some (CaseV (("S", [])))) ] -> Ast.FloatOp.ConvertSI32
-    | [ CaseV ("I32", []); OptV (Some (CaseV (("U", [])))) ] -> Ast.FloatOp.ConvertUI32
-    | [ CaseV ("I64", []); OptV (Some (CaseV (("S", [])))) ] -> Ast.FloatOp.ConvertSI64
-    | [ CaseV ("I64", []); OptV (Some (CaseV (("U", [])))) ] -> Ast.FloatOp.ConvertUI64
+    | [ CaseV ("I32", []); OptV (Some (CaseV (("S", [])))) ] -> FloatOp.ConvertSI32
+    | [ CaseV ("I32", []); OptV (Some (CaseV (("U", [])))) ] -> FloatOp.ConvertUI32
+    | [ CaseV ("I64", []); OptV (Some (CaseV (("S", [])))) ] -> FloatOp.ConvertSI64
+    | [ CaseV ("I64", []); OptV (Some (CaseV (("U", [])))) ] -> FloatOp.ConvertUI64
     | l -> fail_list "convert" l)
   | [ TextV "Promote"; CaseV ("F32", []); OptV None ] -> FloatOp.PromoteF32
   | [ TextV "Demote"; CaseV ("F64", []); OptV None ] -> FloatOp.DemoteF64
