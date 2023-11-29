@@ -45,7 +45,7 @@ let yetI s = YetI s |> mk_node
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 
-let zero = NumV 0
+let zero = NumV 0L
 
 let get_name = function
   | RuleA ((name, _), _, _) -> name
@@ -412,7 +412,7 @@ let rec al_of_instr instr =
   | MemoryGrow -> CaseV ("MEMORY.GROW", [ zero ])
   | MemoryFill -> CaseV ("MEMORY.FILL", [ zero ])
   | MemoryCopy -> CaseV ("MEMORY.COPY", [ zero; zero ])
-  | MemoryInit i32 -> CaseV ("MEMORY.INIT", [ zero; al_of_idx i32 ])
+  | MemoryInit idx -> CaseV ("MEMORY.INIT", [ zero; al_of_idx idx ])
   | DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
   | RefAsNonNull -> singleton "REF.AS_NON_NULL"
   | RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
@@ -907,4 +907,16 @@ and al_to_instr': value -> Ast.instr' = function
     ReturnCallIndirect (al_to_idx idx1, al_to_idx idx2)
   | CaseV ("LOAD", loadop) -> Load (al_to_loadop loadop)
   | CaseV ("STORE", storeop) -> Store (al_to_storeop storeop)
+  | CaseV ("MEMORY.SIZE", [ NumV 0L ]) -> MemorySize
+  | CaseV ("MEMORY.GROW", [ NumV 0L ]) -> MemoryGrow
+  | CaseV ("MEMORY.FILL", [ NumV 0L ]) -> MemoryFill
+  | CaseV ("MEMORY.COPY", [ NumV 0L; NumV 0L ]) -> MemoryCopy
+  | CaseV ("MEMORY.INIT", [ NumV 0L; idx ]) -> MemoryInit (al_to_idx idx)
+  | CaseV ("DATA.DROP", [ idx ]) -> DataDrop (al_to_idx idx)
+  | CaseV ("REF.AS_NON_NULL", []) -> RefAsNonNull
+  | CaseV ("REF.TEST", [ rt ]) -> RefTest (al_to_ref_type rt)
+  | CaseV ("REF.CAST", [ rt ]) -> RefCast (al_to_ref_type rt)
+  | CaseV ("REF.EQ", []) -> RefEq
+  | CaseV ("REF.I31", []) -> RefI31
+  | CaseV ("I31.GET", [ sx ]) -> I31Get (al_to_extension sx)
   | v -> fail "instrunction" v
