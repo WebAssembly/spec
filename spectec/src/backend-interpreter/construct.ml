@@ -100,6 +100,9 @@ let al_of_name name = TextV (Utf8.encode name)
 let arg_of_case case i = function
 | CaseV (case', args) when case = case' -> List.nth args i
 | _ -> failwith "invalid arg_of_case"
+let arg_of_tup i = function
+| TupV args -> List.nth args i
+| _ -> failwith "invalid arg_of_tup"
 let case_v case v = CaseV (case, [ v ])
 let al_to_list = function
 | ListV a -> Array.to_list !a
@@ -171,7 +174,9 @@ and al_of_val_type = function
 
 let al_of_blocktype = function
   | VarBlockType idx -> CaseV ("_IDX", [ al_of_idx idx ])
-  | ValBlockType vt_opt -> CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
+  | ValBlockType vt_opt -> match !version with
+    | 1 -> al_of_opt al_of_val_type vt_opt
+    | _ -> CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
 
 let al_of_limits default limits =
   let max =
@@ -190,7 +195,6 @@ let al_of_table_type = function
 
 let al_of_memory_type = function
   | MemoryT limits -> CaseV ("I8", [ al_of_limits default_memory_max limits ])
-
 
 (* Construct value *)
 
@@ -422,7 +426,7 @@ let rec al_of_instr instr =
   | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
   | CallRef idx -> CaseV ("CALL_REF", [ OptV (Some (al_of_idx idx)) ])
   | CallIndirect (idx1, idx2) ->
-    CaseV ("CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
+    CaseV ("CALL_INDIRECT", (if !version = 1 then [] else [ al_of_idx idx1 ]) @ [ al_of_idx idx2 ])
   | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
   | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ OptV (Some (al_of_idx idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
@@ -509,10 +513,15 @@ let al_of_global global =
 
 let al_of_table table =
   match !version with
+  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_tup 1 ])
+  | 2 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype ])
   | 3 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype; al_of_const table.it.tinit ])
-  | _ -> CaseV ("TABLE", [ al_of_table_type table.it.ttype ])
+  | _ -> failwith "Unsupported version"
 
-let al_of_memory memory = CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype ])
+let al_of_memory memory =
+  match !version with
+  | 1 -> CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype |> arg_of_case "I8" 0 ])
+  | _ -> CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype ])
 
 let al_of_segment segment =
   match segment.it with
@@ -521,15 +530,26 @@ let al_of_segment segment =
     CaseV ("ACTIVE", [ al_of_idx index; al_of_const offset ])
   | Declarative -> singleton "DECLARE"
 
-let al_of_elem elem =
-  CaseV ("ELEM", [
-    al_of_ref_type elem.it.etype;
-    al_of_list al_of_const elem.it.einit;
-    al_of_segment elem.it.emode;
-  ])
+let al_of_elem elem = match !version with
+  | 1 -> 
+    CaseV ("ELEM", [
+      al_of_segment elem.it.emode
+        |> arg_of_case "ACTIVE" 1;
+      al_of_list al_of_const elem.it.einit
+        |> al_to_list
+        |> List.map (fun expr -> expr |> al_to_list |> List.hd |> (arg_of_case "REF.FUNC" 0))
+        |> listV;
+    ])
+  | _ ->
+    CaseV ("ELEM", [
+      al_of_ref_type elem.it.etype;
+      al_of_list al_of_const elem.it.einit;
+      al_of_segment elem.it.emode;
+    ])
 
-let al_of_data data =
-  CaseV ("DATA", [ al_of_bytes data.it.dinit; al_of_segment data.it.dmode ])
+let al_of_data data = match !version with
+  | 1 -> CaseV ("DATA", [ al_of_segment data.it.dmode |> arg_of_case "ACTIVE" 1; al_of_bytes data.it.dinit; ])
+  | _ -> CaseV ("DATA", [ al_of_bytes data.it.dinit; al_of_segment data.it.dmode ])
 
 let al_of_import_desc module_ idesc =
   match idesc.it with

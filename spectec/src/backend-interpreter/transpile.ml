@@ -272,6 +272,9 @@ let rec remove_dead_assignment' il pair =
         let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
         let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
         eitherI (il1', il2') :: acc, bounds1 @ bounds2
+      | EnterI (e1, e2, il) ->
+        let il', bounds = remove_dead_assignment' il ([], bounds) in
+        enterI (e1, e2, il') :: acc, bounds @ Free.free_expr e1 @ Free.free_expr e2
       | LetI (e1, e2) ->
         let bindings = (Free.free_expr e1) in
         if intersect_list bindings bounds = [] then
@@ -348,6 +351,7 @@ let hide_state_args = List.filter (function
       -> false
   | VarE "s" -> false
   | VarE s when String.starts_with ~prefix:"s_" s -> false
+  | VarE s when String.starts_with ~prefix:"s'" s -> false
   | _ -> true)
 
 let hide_state_instr instr =
@@ -367,9 +371,9 @@ let hide_state_instr instr =
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> []
 
-  | ReturnI (Some (VarE "s")) -> []
+  | ReturnI (Some (VarE "s")) -> [ returnI None ]
   | ReturnI (Some (VarE s))
-    when String.starts_with ~prefix:"s_" s -> []
+    when String.starts_with ~prefix:"s_" s -> [ returnI None ]
   (* Append *)
   | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
     when String.starts_with ~prefix:"s_" s ->
@@ -394,6 +398,13 @@ let hide_state_instr instr =
     when String.starts_with ~prefix:"s_" s ->
       begin match List.rev ps with
       | h :: t -> [ replaceI (mk_access (List.rev t) e1, h, e2) ]
+      | _ -> failwith "Invalid replace"
+      end
+  (* Replace + Return *)
+  | ReturnI (Some (UpdE (e1, ps, e2)))
+    when VarE "s" = e1 ->
+      begin match List.rev ps with
+      | h :: t -> [ replaceI (mk_access (List.rev t) e1, h, e2); returnI None ]
       | _ -> failwith "Invalid replace"
       end
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ]

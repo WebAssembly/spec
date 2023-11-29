@@ -163,6 +163,11 @@ module AL_Context = struct
     assert (return_value = Bot);
     push_context (name, Some v, depth)
 
+  let set_return () =
+    let name, return_value, depth = pop_context () in
+    assert (return_value = Bot);
+    push_context (name, None, depth)
+
   let get_return_value () =
     let _, return_value, _ = get_context () in
     return_value

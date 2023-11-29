@@ -108,7 +108,7 @@ def $allocmodule(s, module, externval*, val*) = (s_4, mm)
   -- if ma* = $(|s.MEM|+i_mem)^(i_mem<n_mem)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if mm = {
-      TYPE ft,
+      TYPE ft*,
       FUNC fa_ex* fa*,
       GLOBAL ga_ex* ga*,
       TABLE ta_ex* ta*,
@@ -129,31 +129,40 @@ def $concat_instr((instr*)*) : instr*
 def $concat_instr(epsilon) = epsilon
 def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
 
-def $initelem(store, tableaddr, u32*, (funcaddr*)*) : store
-def $initelem(s, ta, epsilon, epsilon) = s
-def $initelem(s, ta, i i'*, (a*) (a'*)*) = s[.TABLE[ta].ELEM[i:|a*|] = a*]
+def $initelem(store, moduleinst, u32*, (funcaddr*)*) : store
+def $initelem(s, mm, epsilon, epsilon) = s
+def $initelem(s, mm, i i'*, (a*) (a'*)*) = s_2
+  -- if s_1 = s[.TABLE[mm.TABLE[0]].ELEM[i:|a*|] = a*]
+  -- if s_2 = $initelem(s_1, mm, i'*, (a'*)*)
 
-def $initdata(store, memaddr, u32*, (byte*)*) : store
-def $initdata(s, ma, epsilon, epsilon) = s
-def $initdata(s, ma, i i'*, (b*) (b'*)*) = s[.MEM[ma].DATA[i:|b*|] = b*]
+def $initdata(store, moduleinst, u32*, (byte*)*) : store
+def $initdata(s, mm, epsilon, epsilon) = s
+def $initdata(s, mm, i i'*, (b*) (b'*)*) = s_2
+  -- if s_1 = s[.MEM[mm.MEM[0]].DATA[i:|b*|] = b*]
+  -- if s_2 = $initdata(s_1, mm, i'*, (b'*)*)
 
 def $instantiate(store, module, externval*) : config
-def $instantiate(s, module, externval*) = s'; f; (CALL x')?
+def $instantiate(s, module, externval*) = s'''; f; (CALL x')?
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if type* = (TYPE functype)*
   -- if global* = (GLOBAL globaltype expr_G)*
   -- if elem* = (ELEM expr_E x*)*
   -- if data* = (DATA expr_D b*)*
   -- if start? = (START x')?
-  -- if mm_init = {TYPE functype*, FUNC $funcs(externval*), GLOBAL $globals(externval*)}
+  -- if n_F = |func*|
+  -- if mm_init = {
+      TYPE functype*,
+      FUNC $funcs(externval*) $(|s.FUNC|+i_F)^(i_F<n_F),
+      GLOBAL $globals(externval*)
+    }
   -- if f_init = { LOCAL epsilon, MODULE mm_init }
   -- if z = s; f_init
   -- (Eval_expr : z; expr_G ~>* z; val)*
   -- (Eval_expr : z; expr_E ~>* z; (CONST I32 i_E))*
   -- (Eval_expr : z; expr_D ~>* z; (CONST I32 i_D))*
   -- if (s', mm) = $allocmodule(s, module, externval*, val*)
-  -- if s'' = $initelem(s', mm.TABLE[0], i_E*, mm.FUNC[x]**)
-  -- if s''' = $initdata(s'', mm.MEM[0], i_D*, b**)
+  -- if s'' = $initelem(s', mm, i_E*, mm.FUNC[x]**)
+  -- if s''' = $initdata(s'', mm, i_D*, b**)
   -- if f = { LOCAL epsilon, MODULE mm }
 
 

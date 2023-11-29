@@ -427,7 +427,7 @@ let test file_name =
   let length = String.length file_name - start_idx in
   let name = String.sub file_name start_idx length in
 
-  let script = file_to_script file_name in
+  let script = try file_to_script file_name with | _ -> print_endline ("Failed to parse " ^ file_name); [] in
   let total = script |> List.filter (fun x -> match x.it with
     | Assertion {it = AssertReturn _; _}
     | Assertion {it = AssertTrap _ ; _}

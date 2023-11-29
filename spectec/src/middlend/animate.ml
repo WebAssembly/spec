@@ -19,6 +19,32 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
+(* Remove or *)
+let remove_or_exp e = match e.it with (* TODO: recursive *)
+| BinE (OrOp, e1, e2) -> [ e1; e2 ]
+| _ -> [ e ]
+
+let remove_or_prem prem = match prem.it with (* TODO: iterPr *)
+| IfPr e -> remove_or_exp e |> List.map (fun e' -> { prem with it = IfPr e' })
+| _ -> [ prem ]
+
+let remove_or rule = match rule.it with
+| RuleD(id, binds, mixop, args, prems) ->
+  let premss = List.map remove_or_prem prems in
+  let premss' = List.fold_right (fun ps pss ->
+    (* Duplice pss *)
+    List.concat_map (fun cur ->
+      List.map (fun p -> p :: cur) ps
+    ) pss
+  ) premss [[]] in
+
+  if List.length premss' = 1 then [ rule ] else
+
+  List.mapi (fun i prems' ->
+    let id' = { id with it = id.it ^ "-" ^ string_of_int i } in
+    { rule with it = RuleD (id', binds, mixop, args, prems') }
+  ) premss'
+
 (* my_free_??? are equivalent to free_??? in Il.Free module, except
    1. i in e^(i<n) is not considered free.
    2. n in e^n can be not considered free, depending on flag.
@@ -313,8 +339,9 @@ let animate_clause c = match c.it with
 (* Animate defs *)
 let rec animate_def d = match d.it with
   | RelD (id, mixop, t, rules) ->
-    let new_rules = List.map animate_rule rules in
-    RelD (id, mixop, t, new_rules) $ d.at
+    let rules1 = List.concat_map remove_or rules in
+    let rules2 = List.map animate_rule rules1 in
+    RelD (id, mixop, t, rules2) $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at

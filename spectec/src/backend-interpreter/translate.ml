@@ -216,7 +216,7 @@ and exp2expr exp =
       | [ [ Ast.Atom "NULL" ]; [ Ast.Quest ] ], el ->
           CaseE (("NULL", "nul"), List.map exp2expr el)
       | [ Ast.Atom name ] :: ll, el
-        when List.for_all (fun l -> List.length l = 0) ll ->
+        when List.for_all (fun l -> l = [] || l = [ Ast.Star ] || l = [ Ast.Quest ]) ll ->
           CaseE ((name, String.lowercase_ascii name), List.map exp2expr el)
       | _ -> YetE (Print.structured_string_of_exp exp))
   | Ast.OptE inner_exp -> OptE (Option.map exp2expr inner_exp)
@@ -371,11 +371,11 @@ let rec rhs2instrs exp =
         {
           it =
             Ast.TupE
-              [ { it = Ast.VarE label_arity; _ }; instrs_exp1; instrs_exp2 ];
+              [ label_arity; instrs_exp1; instrs_exp2 ];
           _;
         }) -> (
       let label_expr =
-        LabelE (VarE label_arity.it, exp2expr instrs_exp1)
+        LabelE (exp2expr label_arity, exp2expr instrs_exp1)
       in
       match instrs_exp2.it with
       | Ast.CatE (valexp, instrsexp) ->
@@ -583,6 +583,10 @@ let rec expr2let lhs rhs targets cont =
     ]
   | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
       letI (lhs, rhs) :: cont
+  | VarE s when s = "s" || String.starts_with ~prefix:"s'" s -> (* HARDCODE: hide state *)
+      ( match rhs with
+      | CallE (func, args) -> performI (func, args) :: cont
+      | _ -> letI (lhs, rhs) :: cont )
   | _ -> letI (lhs, rhs) :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)

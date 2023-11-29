@@ -50,10 +50,16 @@ if (n_1 <= n_2)
 if (n_2 <= k)
 Animation failed (binding inference).
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+if (t' = (numtype <: valtype))
 ...Animation failed (reorder)
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+if (t' = (numtype <: valtype))
+Animation failed (binding inference).
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = (vectype <: valtype))
+...Animation failed (reorder)
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = (vectype <: valtype))
 Animation failed (binding inference).
 Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
@@ -72,18 +78,6 @@ Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
 if (l' < |C.LABEL_context|)
 (Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
 Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype))))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, (t <: storagetype))))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
 Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
@@ -94,40 +88,26 @@ Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+if (t = (numtype <: valtype))
 if (C.DATA_context[y] = OK)
 ...Animation failed (reorder)
+where (numtype <: valtype) = t
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (t = (vectype <: valtype))
 if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 ...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
-...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
+where t = (vectype <: valtype)
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
 == IL Validation after pass animate...
 == Translating to AL...
 ...Animation failed (reorder)
@@ -156,10 +136,8 @@ prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 3
 prem_to_instr: Invalid prem 2
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 =================
@@ -380,7 +358,7 @@ validation_of_STRUCT.SET x i
 - |C.TYPE| must be greater than x.
 - Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
-- Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt) be yt*[i].
+- Let ((MUT ?(())), zt) be yt*[i].
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x)), $unpacktype(zt)]->[].
 
 validation_of_ARRAY.NEW x
@@ -410,8 +388,8 @@ validation_of_ARRAY.NEW_DATA x y
 - |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (mut, t)).
-- Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+- Let (ARRAY (mut, t)) be $expanddt(C.TYPE[x]).
+- Let numtype be t.
 - The instruction is valid with type [I32, I32]->[(REF (NULL ?()) $idx(x))].
 
 validation_of_ARRAY.GET sx? x
@@ -422,17 +400,17 @@ validation_of_ARRAY.GET sx? x
 
 validation_of_ARRAY.SET x
 - |C.TYPE| must be greater than x.
-- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
+- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt)]->[].
 
 validation_of_ARRAY.LEN
-- Let $expanddt(C.TYPE[x]) be (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
+- Let $expanddt(C.TYPE[x]) be (ARRAY ((MUT ?(())), zt)).
 - |C.TYPE| must be greater than x.
 - The instruction is valid with type [(REF (NULL ?(())) ARRAY)]->[I32].
 
 validation_of_ARRAY.FILL x
 - |C.TYPE| must be greater than x.
-- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
+- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt), I32]->[].
 
 validation_of_ARRAY.COPY x_1 x_2
@@ -440,22 +418,22 @@ validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_2.
 - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
 - Yet: TODO: prem_to_instrs 2
-- $expanddt(C.TYPE[x_1]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt_1)).
+- $expanddt(C.TYPE[x_1]) must be equal to (ARRAY ((MUT ?(())), zt_1)).
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32]->[].
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Yet: TODO: prem_to_instrs 2
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_ARRAY.INIT_DATA x y
-- |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
+- |C.TYPE| must be greater than x.
 - C.DATA[y] must be equal to OK.
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
-- Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+- Let numtype be t.
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
 - The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_EXTERN.CONVERT_ANY
@@ -476,7 +454,7 @@ validation_of_GLOBAL.GET x
 
 validation_of_GLOBAL.SET x
 - |C.GLOBAL| must be greater than x.
-- Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), t) be C.GLOBAL[x].
+- Let ((MUT ?(())), t) be C.GLOBAL[x].
 - The instruction is valid with type [t]->[].
 
 validation_of_TABLE.GET x
@@ -566,9 +544,8 @@ validation_of_LOAD nt (n, sx)? x { ALIGN: n_A; OFFSET: n_O; }
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- C.MEM[x] must be equal to mt.
-- If n is defined,
-  - nt must be equal to inn.
+- n? must be equal to ?().
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32]->[nt].
 
 validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
@@ -577,9 +554,8 @@ validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- C.MEM[x] must be equal to mt.
-- If n is defined,
-  - nt must be equal to inn.
+- n? must be equal to ?().
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32, nt]->[].
 
 Ki
@@ -1024,6 +1000,7 @@ memsxv u_0*
 5. Return $memsxv(xv*).
 
 store
+1. Return.
 
 frame
 1. Let f be the current frame.
@@ -2124,11 +2101,13 @@ execution_of_TABLE.COPY x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
+7. If (i + n) > |$table(y).ELEM|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -2153,11 +2132,13 @@ execution_of_TABLE.INIT x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
+7. If (i + n) > |$elem(y).ELEM|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else if i < |$elem(y).ELEM|, then:
+10. Else if i < |$elem(y).ELEM|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push $elem(y).ELEM[i] to the stack.
   c. Execute (TABLE.SET x).
@@ -2213,11 +2194,13 @@ execution_of_MEMORY.COPY x_1 x_2
 4. Pop (I32.CONST i_2) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i_1) from the stack.
-7. If (i_1 + n) > |$mem(x_1).DATA| or (i_2 + n) > |$mem(x_2).DATA|, then:
+7. If (i_1 + n) > |$mem(x_1).DATA|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (i_2 + n) > |$mem(x_2).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. If i_1 ≤ i_2, then:
     1) Push (I32.CONST i_1) to the stack.
     2) Push (I32.CONST i_2) to the stack.
@@ -2242,11 +2225,13 @@ execution_of_MEMORY.INIT x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$data(y).DATA| or (j + n) > |$mem(x).DATA|, then:
+7. If (i + n) > |$data(y).DATA|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$mem(x).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else if i < |$data(y).DATA|, then:
+10. Else if i < |$data(y).DATA|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(y).DATA[i]) to the stack.
   c. Execute (STORE I32 ?(8) x $memop0()).

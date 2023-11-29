@@ -25090,10 +25090,16 @@ if (n_1 <= n_2)
 if (n_2 <= k)
 Animation failed (binding inference).
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = $valtype_numtype(numtype)) \/ (t' = $valtype_vectype(vectype)))
+if (t' = $valtype_numtype(numtype))
 ...Animation failed (reorder)
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = $valtype_numtype(numtype)) \/ (t' = $valtype_vectype(vectype)))
+if (t' = $valtype_numtype(numtype))
+Animation failed (binding inference).
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = $valtype_vectype(vectype))
+...Animation failed (reorder)
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = $valtype_vectype(vectype))
 Animation failed (binding inference).
 Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
@@ -25112,18 +25118,6 @@ Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
 if (l' < |C.LABEL_context|)
 (Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
 Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))))
-if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))))
-if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
-if (C.DATA_context[y] = OK)
 Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
@@ -25134,52 +25128,26 @@ Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
+if (t = $valtype_numtype(numtype))
 if (C.DATA_context[y] = OK)
 ...Animation failed (reorder)
+where $valtype_numtype(numtype) = t
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
+Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (t = $valtype_vectype(vectype))
 if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if ($size($valtype_numtype(nt)) = ?(o0))
-(if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= (o0 / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 ...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if ($size($valtype_numtype(nt)) = ?(o0))
-(if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= (o0 / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-if ($size($valtype_numtype(nt)) = ?(o0))
-(if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= (o0 / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
-...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-if ($size($valtype_numtype(nt)) = ?(o0))
-(if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= (o0 / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
+where t = $valtype_vectype(vectype)
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
 
 ;; 0-aux.watsup:14.1-14.15
 syntax n = nat
@@ -27559,10 +27527,16 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, SELECT_instr(?([t])), `%->%`([t t I32_valtype], [t]))
 
   ;; 6-typing.watsup:557.1-560.37
-  rule select-impl {C : context, numtype : numtype, t : valtype, t' : valtype, vectype : vectype}:
+  rule select-impl-0 {C : context, numtype : numtype, t : valtype, t' : valtype, vectype : vectype}:
     `%|-%:%`(C, SELECT_instr(?()), `%->%`([t t I32_valtype], [t]))
     -- Valtype_sub: `%|-%<:%`(C, t, t')
-    -- if ((t' = $valtype_numtype(numtype)) \/ (t' = $valtype_vectype(vectype)))
+    -- if (t' = $valtype_numtype(numtype))
+
+  ;; 6-typing.watsup:557.1-560.37
+  rule select-impl-1 {C : context, numtype : numtype, t : valtype, t' : valtype, vectype : vectype}:
+    `%|-%:%`(C, SELECT_instr(?()), `%->%`([t t I32_valtype], [t]))
+    -- Valtype_sub: `%|-%<:%`(C, t, t')
+    -- if (t' = $valtype_vectype(vectype))
 
   ;; 6-typing.watsup:578.1-581.61
   rule block {C : context, bt : blocktype, instr* : instr*, t_1* : valtype*, t_2* : valtype*, x* : idx*}:
@@ -27844,13 +27818,22 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- Reftype_sub: `%|-%<:%`(C, C.ELEM_context[y], rt)
 
   ;; 6-typing.watsup:801.1-805.23
-  rule array.new_data {C : context, mut : mut, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx}:
+  rule array.new_data-0 {C : context, mut : mut, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx}:
     `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->%`([I32_valtype I32_valtype], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
     -- if (x < |C.TYPE_context|)
     -- if (y < |C.DATA_context|)
     -- if (C.DATA_context[y] = OK)
-    -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))))
-    -- if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
+    -- where ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))) = $expanddt(C.TYPE_context[x])
+    -- where $valtype_numtype(numtype) = t
+
+  ;; 6-typing.watsup:801.1-805.23
+  rule array.new_data-1 {C : context, mut : mut, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx}:
+    `%|-%:%`(C, ARRAY.NEW_DATA_instr(x, y), `%->%`([I32_valtype I32_valtype], [REF_valtype(`NULL%?`(?()), $heaptype_typevar($idx(x)))]))
+    -- if (x < |C.TYPE_context|)
+    -- if (y < |C.DATA_context|)
+    -- if (C.DATA_context[y] = OK)
+    -- where ARRAY_comptype(`%%`(mut, $storagetype_valtype(t))) = $expanddt(C.TYPE_context[x])
+    -- where $valtype_vectype(vectype) = t
 
   ;; 6-typing.watsup:807.1-810.47
   rule array.get {C : context, mut : mut, sx? : sx?, x : idx, zt : storagetype}:
@@ -27895,13 +27878,22 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 
   ;; 6-typing.watsup:835.1-839.23
-  rule array.init_data {C : context, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx, zt : storagetype}:
+  rule array.init_data-0 {C : context, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx, zt : storagetype}:
     `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype I32_valtype I32_valtype], []))
-    -- if (x < |C.TYPE_context|)
     -- if (y < |C.DATA_context|)
+    -- if (x < |C.TYPE_context|)
     -- if (C.DATA_context[y] = OK)
+    -- where $valtype_numtype(numtype) = t
     -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-    -- if ((t = $valtype_numtype(numtype)) \/ (t = $valtype_vectype(vectype)))
+
+  ;; 6-typing.watsup:835.1-839.23
+  rule array.init_data-1 {C : context, numtype : numtype, t : valtype, vectype : vectype, x : idx, y : idx, zt : storagetype}:
+    `%|-%:%`(C, ARRAY.INIT_DATA_instr(x, y), `%->%`([REF_valtype(`NULL%?`(?(())), $heaptype_typevar($idx(x))) I32_valtype I32_valtype I32_valtype], []))
+    -- if (y < |C.DATA_context|)
+    -- if (x < |C.TYPE_context|)
+    -- if (C.DATA_context[y] = OK)
+    -- where t = $valtype_vectype(vectype)
+    -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 
   ;; 6-typing.watsup:844.1-845.62
   rule extern.convert_any {C : context, nul : nul}:
@@ -28024,29 +28016,54 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (C.DATA_context[x] = OK)
 
   ;; 6-typing.watsup:944.1-949.33
-  rule load {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, x : idx, o0 : nat, o1? : nat?}:
+  rule load-0 {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, x : idx, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (x < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+    -- if (n?{n} = ?())
+    -- where mt = C.MEM_context[x]
+    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-    -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
+
+  ;; 6-typing.watsup:944.1-949.33
+  rule load-1 {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, sx? : sx?, x : idx, o0 : nat, o1? : nat?}:
+    `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
+    -- if (x < |C.MEM_context|)
+    -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
+    -- where $numtype_inn(inn) = nt
+    -- where mt = C.MEM_context[x]
+    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
+    -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
 
   ;; 6-typing.watsup:951.1-956.33
-  rule store {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, x : idx, o0 : nat, o1? : nat?}:
+  rule store-0 {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, x : idx, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (x < |C.MEM_context|)
+    -- if (n?{n} = ?())
+    -- where mt = C.MEM_context[x]
+    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
-    -- if ($size($valtype_numtype(nt)) = ?(o0))
-    -- (if ($size($valtype_numtype(nt)) = ?(o1)))?{o1}
-    -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
-    -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
+
+  ;; 6-typing.watsup:951.1-956.33
+  rule store-1 {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, x : idx, o0 : nat, o1? : nat?}:
+    `%|-%:%`(C, STORE_instr(nt, n?{n}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype $valtype_numtype(nt)], []))
+    -- if (x < |C.MEM_context|)
+    -- where $numtype_inn(inn) = nt
+    -- where mt = C.MEM_context[x]
+    -- where ?(o0) = $size($valtype_numtype(nt))
+    -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
+    -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
+    -- if ((2 ^ n_A) <= (o0 / 8))
+    -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
 
 ;; 6-typing.watsup:504.1-504.67
 relation Instrf_ok: `%|-%:%`(context, instr, instrtype)
@@ -28982,9 +28999,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup:613.1-615.73
-  rule table.copy-oob {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule table.copy-oob-0 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)]), [TRAP_admininstr])
-    -- if (((i + n) > |$table(z, y).ELEM_tableinst|) \/ ((j + n) > |$table(z, x).ELEM_tableinst|))
+    -- if ((i + n) > |$table(z, y).ELEM_tableinst|)
+
+  ;; 8-reduction.watsup:613.1-615.73
+  rule table.copy-oob-1 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.COPY_admininstr(x, y)]), [TRAP_admininstr])
+    -- if ((j + n) > |$table(z, x).ELEM_tableinst|)
 
   ;; 8-reduction.watsup:617.1-620.14
   rule table.copy-zero {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
@@ -29004,9 +29026,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup:636.1-638.72
-  rule table.init-oob {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule table.init-oob-0 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [TRAP_admininstr])
-    -- if (((i + n) > |$elem(z, y).ELEM_eleminst|) \/ ((j + n) > |$table(z, x).ELEM_tableinst|))
+    -- if ((i + n) > |$elem(z, y).ELEM_eleminst|)
+
+  ;; 8-reduction.watsup:636.1-638.72
+  rule table.init-oob-1 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) TABLE.INIT_admininstr(x, y)]), [TRAP_admininstr])
+    -- if ((j + n) > |$table(z, x).ELEM_tableinst|)
 
   ;; 8-reduction.watsup:640.1-643.14
   rule table.init-zero {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
@@ -29065,9 +29092,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup:721.1-723.77
-  rule memory.copy-oob {i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx, z : state}:
+  rule memory.copy-oob-0 {i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i_1) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr(x_1, x_2)]), [TRAP_admininstr])
-    -- if (((i_1 + n) > |$mem(z, x_1).DATA_meminst|) \/ ((i_2 + n) > |$mem(z, x_2).DATA_meminst|))
+    -- if ((i_1 + n) > |$mem(z, x_1).DATA_meminst|)
+
+  ;; 8-reduction.watsup:721.1-723.77
+  rule memory.copy-oob-1 {i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i_1) CONST_admininstr(I32_numtype, i_2) CONST_admininstr(I32_numtype, n) MEMORY.COPY_admininstr(x_1, x_2)]), [TRAP_admininstr])
+    -- if ((i_2 + n) > |$mem(z, x_2).DATA_meminst|)
 
   ;; 8-reduction.watsup:725.1-728.14
   rule memory.copy-zero {i_1 : nat, i_2 : nat, n : n, x_1 : idx, x_2 : idx, z : state}:
@@ -29087,9 +29119,14 @@ relation Step_read: `%~>%*`(config, admininstr*)
     -- otherwise
 
   ;; 8-reduction.watsup:744.1-746.70
-  rule memory.init-oob {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+  rule memory.init-oob-0 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x, y)]), [TRAP_admininstr])
-    -- if (((i + n) > |$data(z, y).DATA_datainst|) \/ ((j + n) > |$mem(z, x).DATA_meminst|))
+    -- if ((i + n) > |$data(z, y).DATA_datainst|)
+
+  ;; 8-reduction.watsup:744.1-746.70
+  rule memory.init-oob-1 {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, n) MEMORY.INIT_admininstr(x, y)]), [TRAP_admininstr])
+    -- if ((j + n) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:748.1-751.14
   rule memory.init-zero {i : nat, j : nat, n : n, x : idx, y : idx, z : state}:

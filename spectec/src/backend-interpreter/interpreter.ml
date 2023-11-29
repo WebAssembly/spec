@@ -143,7 +143,7 @@ and replace_path env base path v_new = match path with
       let a_new = Array.copy a in
       let i1 = eval_expr env e1 |> value_to_int in
       let i2 = eval_expr env e2 |> value_to_int in
-      Array.blit (v_new |> value_to_array) 0 a_new i1 (i2 - i1 + 1);
+      Array.blit (v_new |> value_to_array) 0 a_new i1 i2;
       ListV (ref a_new)
   | DotP (str, _) ->
       let r = (
@@ -751,7 +751,9 @@ and interp_instr (env: env) (instr: instr): env =
     env
   | TrapI -> raise Exception.Trap
   | NopI -> env
-  | ReturnI None -> env
+  | ReturnI None ->
+    () |> AL_Context.set_return;
+    env
   | ReturnI (Some e) ->
     eval_expr env e |> AL_Context.set_return_value;
     env
