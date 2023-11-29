@@ -751,6 +751,7 @@ let al_to_int_binop: value -> IntOp.binop = function
   | TextV "ShrS" -> IntOp.ShrS
   | TextV "ShrU" -> IntOp.ShrU
   | TextV "Rotl" -> IntOp.Rotl
+  | TextV "Rotr" -> IntOp.Rotr
   | v -> fail "integer binop" v
 let al_to_float_binop: value -> FloatOp.binop = function
   | TextV "Add" -> FloatOp.Add
