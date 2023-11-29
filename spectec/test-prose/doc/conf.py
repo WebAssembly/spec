@@ -94,6 +94,6 @@ latex_show_urls = 'footnote'
 latex_domain_indices = False
 
 # Macros
-rst_prolog = """
-.. include:: /""" + pwd + """/util/macros.def
-"""
+#rst_prolog = """
+#.. include:: /""" + pwd + """/util/macros.def
+#"""

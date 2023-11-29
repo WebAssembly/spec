@@ -8,4 +8,4 @@ let default = { macros = false; }
 
 let latex = default
 
-let sphinx = { macros = true; }
+let sphinx = default 

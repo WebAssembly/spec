@@ -35,8 +35,6 @@ SPLICEOUTPUT = $(strip $(subst -in.rst,.rst,$(SPLICEINPUT)))
 
 UTIL = util
 
-MACRO = macros.def
-
 .PHONY: document
 
 document: doc $(CONF) $(MATHDEF) $(INDEX)
@@ -50,7 +48,7 @@ setup: document
 .PHONY: splice
 
 splice: setup 
-	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) -w && mv $(MACRO) $(UTIL)
+	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) -w
 	rm -f $(INPUTFILES)
 	cd ..
 
