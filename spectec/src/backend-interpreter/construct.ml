@@ -89,9 +89,9 @@ let al_of_int32 i32 =
 let al_of_float32 f32 = F32.to_bits f32 |> al_of_int32
 let al_of_float64 f64 = F64.to_bits f64 |> al_of_int64
 let al_of_idx idx = al_of_int32 idx.it
-let al_of_name name = TextV (Utf8.encode name)
 let al_of_byte byte = Char.code byte |> al_of_int
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
+let al_of_name name = TextV (Utf8.encode name)
 
 
 (* Construct type *)
@@ -156,7 +156,7 @@ let al_of_blocktype = function
   | VarBlockType idx -> CaseV ("_IDX", [ al_of_idx idx ])
   | ValBlockType vt_opt -> CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
 
-let al_of_limits limits default =
+let al_of_limits default limits =
   let max =
     match limits.max with
     | Some v -> al_of_int32 v
@@ -169,10 +169,10 @@ let al_of_global_type = function
   | GlobalT (mut, vt) -> TupV [ al_of_mut mut; al_of_val_type vt ]
 
 let al_of_table_type = function
-  | TableT (limits, rt) -> TupV [ al_of_limits limits default_table_max; al_of_ref_type rt ]
+  | TableT (limits, rt) -> TupV [ al_of_limits default_table_max limits; al_of_ref_type rt ]
 
 let al_of_memory_type = function
-  | MemoryT limits -> CaseV ("I8", [ al_of_limits limits default_memory_max ])
+  | MemoryT limits -> CaseV ("I8", [ al_of_limits default_memory_max limits ])
 
 
 (* Construct value *)
@@ -307,17 +307,17 @@ let al_of_float_cvtop num_bits = function
   | FloatOp.ReinterpretInt -> "Reinterpret", "I" ^ num_bits, None
 let al_of_cvtop = function
   | I32 op ->
-    let op', to_, sx = al_of_int_cvtop "32" op in
-    [ singleton "I32"; TextV op'; singleton to_; OptV sx ]
+    let op', to_, ext = al_of_int_cvtop "32" op in
+    [ singleton "I32"; TextV op'; singleton to_; OptV ext ]
   | I64 op ->
-    let op', to_, sx = al_of_int_cvtop "64" op in
-    [ singleton "I64"; TextV op'; singleton to_; OptV sx ]
+    let op', to_, ext = al_of_int_cvtop "64" op in
+    [ singleton "I64"; TextV op'; singleton to_; OptV ext ]
   | F32 op ->
-    let op', to_, sx = al_of_float_cvtop "32" op in
-    [ singleton "F32"; TextV op'; singleton to_; OptV sx ]
+    let op', to_, ext = al_of_float_cvtop "32" op in
+    [ singleton "F32"; TextV op'; singleton to_; OptV ext ]
   | F64 op ->
-    let op', to_, sx = al_of_float_cvtop "64" op in
-    [ singleton "F64"; TextV op'; singleton to_; OptV sx ]
+    let op', to_, ext = al_of_float_cvtop "64" op in
+    [ singleton "F64"; TextV op'; singleton to_; OptV ext ]
 
 let al_of_pack_size = function
   | Pack.Pack8 -> al_of_int 8
@@ -340,9 +340,9 @@ let al_of_memop f memop =
 
 let al_of_pack_size_extension (p, s) = TupV [ al_of_pack_size p; al_of_extension s ]
 
-let al_of_loadop = al_of_memop (al_of_opt al_of_pack_size_extension)
+let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
-let al_of_storeop = al_of_memop (al_of_opt al_of_pack_size)
+let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 
 
 (* Construct instruction *)
@@ -419,12 +419,12 @@ let rec al_of_instr instr =
   | RefCast rt -> CaseV ("REF.CAST", [ al_of_ref_type rt ])
   | RefEq -> singleton "REF.EQ"
   | RefI31 -> singleton "REF.I31"
-  | I31Get sx -> CaseV ("I31.GET", [ al_of_extension sx ])
+  | I31Get ext -> CaseV ("I31.GET", [ al_of_extension ext ])
   | StructNew (idx, Explicit) -> CaseV ("STRUCT.NEW", [ al_of_idx idx ])
   | StructNew (idx, Implicit) -> CaseV ("STRUCT.NEW_DEFAULT", [ al_of_idx idx ])
-  | StructGet (idx1, idx2, sx_opt) ->
+  | StructGet (idx1, idx2, ext_opt) ->
     CaseV ("STRUCT.GET", [
-      al_of_opt al_of_extension sx_opt;
+      al_of_opt al_of_extension ext_opt;
       al_of_idx idx1;
       al_of_idx idx2;
     ])
@@ -437,8 +437,8 @@ let rec al_of_instr instr =
     CaseV ("ARRAY.NEW_ELEM", [ al_of_idx idx1; al_of_idx idx2 ])
   | ArrayNewData (idx1, idx2) ->
     CaseV ("ARRAY.NEW_DATA", [ al_of_idx idx1; al_of_idx idx2 ])
-  | ArrayGet (idx, sx_opt) ->
-    CaseV ("ARRAY.GET", [ al_of_opt al_of_extension sx_opt; al_of_idx idx ])
+  | ArrayGet (idx, ext_opt) ->
+    CaseV ("ARRAY.GET", [ al_of_opt al_of_extension ext_opt; al_of_idx idx ])
   | ArraySet idx -> CaseV ("ARRAY.SET", [ al_of_idx idx ])
   | ArrayLen -> singleton "ARRAY.LEN"
   | ArrayCopy (idx1, idx2) -> CaseV ("ARRAY.COPY", [ al_of_idx idx1; al_of_idx idx2 ])
@@ -462,7 +462,7 @@ let al_of_local l = CaseV ("LOCAL", [ al_of_val_type l.it.ltype ])
 
 let al_of_func func =
   CaseV ("FUNC", [
-    al_of_int32 func.it.ftype.it;
+    al_of_idx func.it.ftype;
     al_of_list al_of_local func.it.locals;
     al_of_list al_of_instr func.it.body;
   ])
@@ -482,7 +482,7 @@ let al_of_segment segment =
   match segment.it with
   | Passive -> singleton "PASSIVE"
   | Active { index; offset } ->
-    CaseV ("ACTIVE", [ al_of_idx index; al_of_list al_of_instr offset.it ])
+    CaseV ("ACTIVE", [ al_of_idx index; al_of_const offset ])
   | Declarative -> singleton "DECLARE"
 
 let al_of_elem elem =
@@ -545,37 +545,28 @@ let al_of_module module_ =
 let al_to_list (f: value -> 'a): value -> 'a list = function
   | ListV arr_ref -> Array.to_list !arr_ref |> List.map f
   | v -> fail "list" v
-
+let al_to_seq f s = al_to_list f s |> List.to_seq
 let al_to_opt (f: value -> 'a): value -> 'a option = function
   | OptV opt -> Option.map f opt
   | v -> fail "option" v
+let al_to_phrase (f: value -> 'a) (v: value): 'a phrase = f v @@ no_region
 
 
 (* Destruct minor *)
 
-let al_to_int: value -> int = function
-  | NumV i -> Int64.to_int i
-  | v -> fail "int" v
-
-let al_to_int32: value -> int32 = function
-  | NumV i32 -> Int64.to_int32 i32
-  | v -> fail "int32" v
-
 let al_to_int64: value -> int64 = function
   | NumV i64 -> i64
   | v -> fail "int64" v
-
-let al_to_float32: value -> F32.t = function
-  | NumV i32 -> Int64.to_int32 i32 |> F32.of_bits
-  | v -> fail "float32" v
-
-let al_to_float64: value -> F64.t = function
-  | NumV i64 -> i64 |> F64.of_bits
-  | v -> fail "float64" v
-
-let al_to_idx: value -> idx = function
-  | NumV i -> Int64.to_int32 i @@ no_region
-  | v -> fail "idx" v
+let al_to_int (v: value): int = al_to_int64 v |> Int64.to_int
+let al_to_int32 (v: value): int32 = al_to_int64 v |> Int64.to_int32
+let al_to_float32 (v: value): F32.t = al_to_int32 v |> F32.of_bits
+let al_to_float64 (v: value): F64.t = al_to_int64 v |> F64.of_bits
+let al_to_idx: value -> idx = al_to_phrase al_to_int32
+let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
+let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
+let al_to_name = function
+  | TextV name -> Utf8.decode name
+  | v -> fail "name" v
 
 
 (* Destruct type *)
@@ -670,6 +661,29 @@ let al_to_block_type: value -> block_type = function
   | CaseV ("_IDX", [ idx ]) -> VarBlockType (al_to_idx idx)
   | CaseV ("_RESULT", [ vt_opt ]) -> ValBlockType (al_to_opt al_to_val_type vt_opt)
   | v -> fail "block type" v
+
+let al_to_limits (default: int64): value -> Int32.t limits = function
+  | TupV [ min; max ] ->
+    let max' =
+      match al_to_int64 max with
+      | i64 when default = i64 -> None
+      | _ -> Some (al_to_int32 max)
+    in
+    { min = al_to_int32 min; max = max' }
+  | v -> fail "limits" v
+
+
+let al_to_global_type: value -> global_type = function
+  | TupV [ mut; vt ] -> GlobalT (al_to_mut mut, al_to_val_type vt)
+  | v -> fail "global type" v
+
+let al_to_table_type: value -> table_type = function
+  | TupV [ limits; rt ] -> TableT (al_to_limits default_table_max limits, al_to_ref_type rt)
+  | v -> fail "table type" v
+
+let al_to_memory_type: value -> memory_type = function
+  | CaseV ("I8", [ limits ]) -> MemoryT (al_to_limits default_memory_max limits)
+  | v -> fail "memory type" v
 
 
 (* Destruct value *)
@@ -847,14 +861,14 @@ let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = functi
   | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
   | v -> fail "pack size, extension" v
 
-let al_to_loadop: value list -> loadop = al_to_memop (al_to_opt al_to_pack_size_extension)
+let al_to_loadop: value list -> loadop = al_to_opt al_to_pack_size_extension |> al_to_memop
 
-let al_to_storeop: value list -> storeop = al_to_memop (al_to_opt al_to_pack_size)
+let al_to_storeop: value list -> storeop = al_to_opt al_to_pack_size |> al_to_memop
 
-let rec al_to_instr (v: value): Ast.instr = al_to_instr' v @@ no_region
+let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
 and al_to_instr': value -> Ast.instr' = function
   (* wasm values *)
-  | CaseV ("CONST", _) as v -> Const (al_to_num v @@ no_region)
+  | CaseV ("CONST", _) as v -> Const (al_to_phrase al_to_num v)
   | CaseV ("REF.NULL", [ ht ]) -> RefNull (al_to_heap_type ht)
   (* wasm instructions *)
   | CaseV ("UNREACHABLE", []) -> Unreachable
@@ -918,5 +932,154 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("REF.CAST", [ rt ]) -> RefCast (al_to_ref_type rt)
   | CaseV ("REF.EQ", []) -> RefEq
   | CaseV ("REF.I31", []) -> RefI31
-  | CaseV ("I31.GET", [ sx ]) -> I31Get (al_to_extension sx)
+  | CaseV ("I31.GET", [ ext ]) -> I31Get (al_to_extension ext)
+  | CaseV ("STRUCT.NEW", [ idx ]) -> StructNew (al_to_idx idx, Explicit)
+  | CaseV ("STRUCT.NEW_DEFAULT", [ idx ]) -> StructNew (al_to_idx idx, Implicit)
+  | CaseV ("STRUCT.GET", [ ext_opt; idx1; idx2 ]) ->
+    StructGet (al_to_idx idx1, al_to_idx idx2, al_to_opt al_to_extension ext_opt)
+  | CaseV ("STRUCT.SET", [ idx1; idx2 ]) -> StructSet (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ARRAY.NEW", [ idx ]) -> ArrayNew (al_to_idx idx, Explicit)
+  | CaseV ("ARRAY.NEW_DEFAULT", [ idx ]) -> ArrayNew (al_to_idx idx, Implicit)
+  | CaseV ("ARRAY.NEW_FIXED", [ idx; i32 ]) ->
+    ArrayNewFixed (al_to_idx idx, al_to_int32 i32)
+  | CaseV ("ARRAY.NEW_ELEM", [ idx1; idx2 ]) ->
+    ArrayNewElem (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ARRAY.NEW_DATA", [ idx1; idx2 ]) ->
+    ArrayNewData (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ARRAY.GET", [ ext_opt; idx ]) ->
+    ArrayGet (al_to_idx idx, al_to_opt al_to_extension ext_opt)
+  | CaseV ("ARRAY.SET", [ idx ]) -> ArraySet (al_to_idx idx)
+  | CaseV ("ARRAY.LEN", []) -> ArrayLen
+  | CaseV ("ARRAY.COPY", [ idx1; idx2 ]) -> ArrayCopy (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ARRAY.FILL", [ idx ]) -> ArrayFill (al_to_idx idx)
+  | CaseV ("ARRAY.INIT_DATA", [ idx1; idx2 ]) ->
+    ArrayInitData (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ARRAY.INIT_ELEM", [ idx1; idx2 ]) ->
+    ArrayInitElem (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("ANY.CONVERT_EXTERN", []) -> ExternConvert Internalize
+  | CaseV ("EXTERN.CONVERT_ANY", []) -> ExternConvert Externalize
   | v -> fail "instrunction" v
+
+let al_to_const: value -> const = al_to_list al_to_instr |> al_to_phrase
+
+
+(* Deconstruct module *)
+
+let al_to_type: value -> type_ = function
+  | CaseV ("TYPE", [ rt ]) -> al_to_phrase al_to_rec_type rt
+  | v -> fail "type" v
+
+let al_to_local': value -> local' = function
+  | CaseV ("LOCAL", [ vt ]) -> { ltype = al_to_val_type vt }
+  | v -> fail "local" v
+let al_to_local: value -> local = al_to_phrase al_to_local'
+
+let al_to_func': value -> func' = function
+  | CaseV ("FUNC", [ idx; locals; instrs ]) ->
+    {
+      ftype = al_to_idx idx;
+      locals = al_to_list al_to_local locals;
+      body = al_to_list al_to_instr instrs;
+    }
+  | v -> fail "func" v
+let al_to_func: value -> func = al_to_phrase al_to_func'
+
+let al_to_global': value -> global' = function
+  | CaseV ("GLOBAL", [ gt; const ]) ->
+    { gtype = al_to_global_type gt; ginit = al_to_const const }
+  | v -> fail "global" v
+let al_to_global: value -> global = al_to_phrase al_to_global'
+
+let al_to_table': value -> table' = function
+  | CaseV ("TABLE", [ tt; const ]) ->
+    { ttype = al_to_table_type tt; tinit = al_to_const const }
+  | v -> fail "table" v
+let al_to_table: value -> table = al_to_phrase al_to_table'
+
+let al_to_memory': value -> memory' = function
+  | CaseV ("MEMORY", [ mt ]) -> { mtype = al_to_memory_type mt }
+  | v -> fail "memory" v
+let al_to_memory: value -> memory = al_to_phrase al_to_memory'
+
+let al_to_segment': value -> segment_mode' = function
+  | CaseV ("PASSIVE", []) -> Passive
+  | CaseV ("ACTIVE", [ idx; const ]) ->
+    Active { index = al_to_idx idx; offset = al_to_const const }
+  | CaseV ("DECLARE", []) -> Declarative
+  | v -> fail "segment mode" v
+let al_to_segment: value -> segment_mode = al_to_phrase al_to_segment'
+
+let al_to_elem': value -> elem_segment' = function
+  | CaseV ("ELEM", [ rt; consts; seg ]) ->
+    {
+      etype = al_to_ref_type rt;
+      einit = al_to_list al_to_const consts;
+      emode = al_to_segment seg
+    }
+  | v -> fail "elem segment" v
+let al_to_elem: value -> elem_segment = al_to_phrase al_to_elem'
+
+let al_to_data': value -> data_segment' = function
+  | CaseV ("DATA", [ bytes_; seg ]) ->
+    { dinit = al_to_bytes bytes_; dmode = al_to_segment seg }
+  | v -> fail "data segment" v
+let al_to_data: value -> data_segment = al_to_phrase al_to_data'
+
+  (*
+
+let al_to_import_desc module_ idesc =
+  match idesc.it with
+  | FuncImport x ->
+      let dts = def_types_of module_ in
+      let dt = Lib.List32.nth dts x.it |> al_to_def_type in
+      CaseV ("FUNC", [ dt ])
+  | TableImport tt -> CaseV ("TABLE", [ al_to_table_type tt ])
+  | MemoryImport mt -> CaseV ("MEM", [ al_to_memory_type mt ])
+  | GlobalImport gt -> CaseV ("GLOBAL", [ al_to_global_type gt ])
+
+let al_to_import module_ import =
+  CaseV ("IMPORT", [
+    al_to_name import.it.module_name;
+    al_to_name import.it.item_name;
+    al_to_import_desc module_ import.it.idesc;
+  ])
+  *)
+
+let al_to_export_desc': value -> export_desc' = function
+  | CaseV ("FUNC", [ idx ]) -> FuncExport (al_to_idx idx)
+  | CaseV ("TABLE", [ idx ]) -> TableExport (al_to_idx idx)
+  | CaseV ("MEM", [ idx ]) -> MemoryExport (al_to_idx idx)
+  | CaseV ("GLOBAL", [ idx ]) -> GlobalExport (al_to_idx idx)
+  | v -> fail "export desc" v
+let al_to_export_desc: value -> export_desc = al_to_phrase al_to_export_desc'
+
+let al_to_start': value -> start' = function
+  | CaseV ("START", [ idx ]) -> { sfunc = al_to_idx idx }
+  | v -> fail "start" v
+let al_to_start: value -> start = al_to_phrase al_to_start'
+
+let al_to_export': value -> export' = function
+  | CaseV ("EXPORT", [ name; ed ]) ->
+    { name = al_to_name name; edesc = al_to_export_desc ed }
+  | v -> fail "export" v
+let al_to_export: value -> export = al_to_phrase al_to_export'
+
+let al_to_module': value -> module_' = function
+  | CaseV ("MODULE", [
+    types; _imports; funcs; globals; tables; memories; elems; datas; start; exports
+  ]) ->
+    {
+      types = al_to_list al_to_type types;
+      (* TODO: imports = al_to_list (al_to_import module_) imports;*)
+      imports = [];
+      funcs = al_to_list al_to_func funcs;
+      globals = al_to_list al_to_global globals;
+      tables = al_to_list al_to_table tables;
+      memories = al_to_list al_to_memory memories;
+      elems = al_to_list al_to_elem elems;
+      datas = al_to_list al_to_data datas;
+      start = al_to_opt al_to_start start;
+      exports = al_to_list al_to_export exports;
+    }
+  | v -> fail "module" v
+let al_to_module: value -> module_ = al_to_phrase al_to_module'
