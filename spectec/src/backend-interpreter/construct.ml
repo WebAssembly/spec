@@ -45,6 +45,7 @@ let yetI s = YetI s |> mk_node
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 
+let zero = NumV 0
 
 let get_name = function
   | RuleA ((name, _), _, _) -> name
@@ -80,14 +81,13 @@ let al_of_opt f opt = OptV (Option.map f opt)
 
 (* Construct minor *)
 
-let al_of_int i = NumV (Int64.of_int i)
+let al_of_int64 i64 = NumV i64
+let al_of_int i = Int64.of_int i |> al_of_int64
 let al_of_int32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
-  let i64 = Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL in
-  NumV i64
-let al_of_int64 i64 = NumV i64
+  Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL |> al_of_int64
 let al_of_float32 f32 = F32.to_bits f32 |> al_of_int32
-let al_of_float64 f64 = NumV (F64.to_bits f64)
+let al_of_float64 f64 = F64.to_bits f64 |> al_of_int64
 let al_of_idx idx = al_of_int32 idx.it
 let al_of_name name = TextV (Utf8.encode name)
 let al_of_byte byte = Char.code byte |> al_of_int
@@ -320,10 +320,10 @@ let al_of_cvtop = function
     [ singleton "F64"; TextV op'; singleton to_; OptV sx ]
 
 let al_of_pack_size = function
-  | Pack.Pack8 -> NumV (Int64.of_int 8)
-  | Pack.Pack16 -> NumV (Int64.of_int 16)
-  | Pack.Pack32 -> NumV (Int64.of_int 32)
-  | Pack.Pack64 -> NumV (Int64.of_int 64)
+  | Pack.Pack8 -> al_of_int 8
+  | Pack.Pack16 -> al_of_int 16
+  | Pack.Pack32 -> al_of_int 32
+  | Pack.Pack64 -> al_of_int 64
 
 let al_of_extension = function
   | Pack.SX -> singleton "S"
@@ -336,13 +336,13 @@ let al_of_memop f memop =
     |> Record.add "OFFSET" (al_of_int32 memop.offset)
   in
 
-  [ al_of_num_type memop.ty; al_of_opt f memop.pack; NumV 0L; StrV str ]
+  [ al_of_num_type memop.ty; f memop.pack; zero; StrV str ]
 
 let al_of_pack_size_extension (p, s) = TupV [ al_of_pack_size p; al_of_extension s ]
 
-let al_of_loadop = al_of_memop al_of_pack_size_extension
+let al_of_loadop = al_of_memop (al_of_opt al_of_pack_size_extension)
 
-let al_of_storeop = al_of_memop al_of_pack_size
+let al_of_storeop = al_of_memop (al_of_opt al_of_pack_size)
 
 
 (* Construct instruction *)
@@ -408,11 +408,11 @@ let rec al_of_instr instr =
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
   | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
   | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
-  | MemorySize -> CaseV ("MEMORY.SIZE", [ NumV 0L ])
-  | MemoryGrow -> CaseV ("MEMORY.GROW", [ NumV 0L ])
-  | MemoryFill -> CaseV ("MEMORY.FILL", [ NumV 0L ])
-  | MemoryCopy -> CaseV ("MEMORY.COPY", [ NumV 0L; NumV 0L ])
-  | MemoryInit i32 -> CaseV ("MEMORY.INIT", [ NumV 0L; al_of_idx i32 ])
+  | MemorySize -> CaseV ("MEMORY.SIZE", [ zero ])
+  | MemoryGrow -> CaseV ("MEMORY.GROW", [ zero ])
+  | MemoryFill -> CaseV ("MEMORY.FILL", [ zero ])
+  | MemoryCopy -> CaseV ("MEMORY.COPY", [ zero; zero ])
+  | MemoryInit i32 -> CaseV ("MEMORY.INIT", [ zero; al_of_idx i32 ])
   | DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
   | RefAsNonNull -> singleton "REF.AS_NON_NULL"
   | RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
@@ -553,6 +553,10 @@ let al_to_opt (f: value -> 'a): value -> 'a option = function
 
 (* Destruct minor *)
 
+let al_to_int: value -> int = function
+  | NumV i -> Int64.to_int i
+  | v -> fail "int" v
+
 let al_to_int32: value -> int32 = function
   | NumV i32 -> Int64.to_int32 i32
   | v -> fail "int32" v
@@ -647,11 +651,16 @@ and al_to_ref_type: value -> ref_type = function
   | CaseV ("REF", [ n; ht ]) -> al_to_null n, al_to_heap_type ht
   | v -> fail "ref type" v
 
+and al_to_num_type: value -> num_type = function
+  | CaseV ("I32", []) -> I32T
+  | CaseV ("I64", []) -> I64T
+  | CaseV ("F32", []) -> F32T
+  | CaseV ("F64", []) -> F64T
+  | v -> fail "num type" v
+
 and al_to_val_type: value -> val_type = function
-  | CaseV ("I32", []) -> NumT I32T
-  | CaseV ("I64", []) -> NumT I64T
-  | CaseV ("F32", []) -> NumT F32T
-  | CaseV ("F64", []) -> NumT F64T
+  | CaseV ("I32", _) | CaseV ("I64", _)
+  | CaseV ("F32", _) | CaseV ("F64", _) as v -> NumT (al_to_num_type v)
   | CaseV ("V128", []) -> VecT V128T
   | CaseV ("REF", _) as v -> RefT (al_to_ref_type v)
   | CaseV ("BOT", []) -> BotT
@@ -824,7 +833,23 @@ let al_to_extension: value -> Pack.extension = function
   | CaseV ("U", []) -> Pack.ZX
   | v -> fail "extension" v
 
-let al_to_pack_size_with_extension (_p, _s) = failwith "TODO"
+let al_to_memop (f: value -> 'p) : value list -> (num_type, 'p) memop = function
+  | [ nt; p; NumV 0L; StrV str ] ->
+    {
+      ty = al_to_num_type nt;
+      align = Record.find "ALIGN" str |> al_to_int;
+      offset = Record.find "OFFSET" str |> al_to_int32;
+      pack = f p;
+    }
+  | v -> fail_list "memop" v
+
+let al_to_pack_size_extension: value -> Pack.pack_size * Pack.extension = function
+  | TupV [ p; ext ] -> al_to_pack_size p, al_to_extension ext
+  | v -> fail "pack size, extension" v
+
+let al_to_loadop: value list -> loadop = al_to_memop (al_to_opt al_to_pack_size_extension)
+
+let al_to_storeop: value list -> storeop = al_to_memop (al_to_opt al_to_pack_size)
 
 let rec al_to_instr (v: value): Ast.instr = al_to_instr' v @@ no_region
 and al_to_instr': value -> Ast.instr' = function
@@ -880,4 +905,6 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("RETURN_CALL_REF", [ OptV (Some idx) ]) -> ReturnCallRef (al_to_idx idx)
   | CaseV ("RETURN_CALL_INDIRECT", [ idx1; idx2 ]) ->
     ReturnCallIndirect (al_to_idx idx1, al_to_idx idx2)
+  | CaseV ("LOAD", loadop) -> Load (al_to_loadop loadop)
+  | CaseV ("STORE", storeop) -> Store (al_to_storeop storeop)
   | v -> fail "instrunction" v
