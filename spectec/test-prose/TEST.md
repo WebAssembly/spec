@@ -216,13 +216,13 @@ validation_of_BR_ON_NULL l
 - |C.LABEL| must be greater than l.
 - Under the context C, ht must be valid.
 - Let t* be C.LABEL[l].
-- The instruction is valid with type [t* ++ [(REF (NULL ?([])) ht)]]->[t* ++ [(REF (NULL ?()) ht)]].
+- The instruction is valid with type [t* ++ [(REF (NULL ?(())) ht)]]->[t* ++ [(REF (NULL ?()) ht)]].
 
 validation_of_BR_ON_NON_NULL l
 - |C.LABEL| must be greater than l.
 - Let t* ++ [(REF (NULL ?()) ht)] be C.LABEL[l].
 - Under the context C, ht must be valid.
-- The instruction is valid with type [t* ++ [(REF (NULL ?([])) ht)]]->[t*].
+- The instruction is valid with type [t* ++ [(REF (NULL ?(())) ht)]]->[t*].
 
 validation_of_BR_ON_CAST l rt_1 rt_2
 - |C.LABEL| must be greater than l.
@@ -254,7 +254,7 @@ validation_of_CALL x
 validation_of_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
 - Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [t_1* ++ [(REF (NULL ?([])) $idx(x))]]->[t_2*].
+- The instruction is valid with type [t_1* ++ [(REF (NULL ?(())) $idx(x))]]->[t_2*].
 
 validation_of_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
@@ -276,7 +276,7 @@ validation_of_RETURN_CALL_REF ?(x)
 - Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
-- The instruction is valid with type [t_3* ++ t_1* ++ [(REF (NULL ?([])) $idx(x))]]->[t_4*].
+- The instruction is valid with type [t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))]]->[t_4*].
 
 validation_of_RETURN_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
@@ -319,7 +319,7 @@ validation_of_CVTOP inn_1 CONVERT inn_2 sx?
 
 validation_of_REF.NULL ht
 - Under the context C, ht must be valid.
-- The instruction is valid with type []->[(REF (NULL ?([])) ht)].
+- The instruction is valid with type []->[(REF (NULL ?(())) ht)].
 
 validation_of_REF.FUNC x
 - |C.FUNC| must be greater than x.
@@ -334,10 +334,10 @@ validation_of_REF.IS_NULL
 
 validation_of_REF.AS_NON_NULL
 - Under the context C, ht must be valid.
-- The instruction is valid with type [(REF (NULL ?([])) ht)]->[(REF (NULL ?()) ht)].
+- The instruction is valid with type [(REF (NULL ?(())) ht)]->[(REF (NULL ?()) ht)].
 
 validation_of_REF.EQ
-- The instruction is valid with type [(REF (NULL ?([])) EQ), (REF (NULL ?([])) EQ)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) EQ), (REF (NULL ?(())) EQ)]->[I32].
 
 validation_of_REF.TEST rt
 - Under the context C, rt must be valid.
@@ -352,7 +352,7 @@ validation_of_REF.CAST rt
 - The instruction is valid with type [rt']->[rt].
 
 validation_of_I31.GET sx
-- The instruction is valid with type [(REF (NULL ?([])) I31)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) I31)]->[I32].
 
 validation_of_STRUCT.NEW x
 - |C.TYPE| must be greater than x.
@@ -374,14 +374,14 @@ validation_of_STRUCT.GET sx? x i
 - |yt*| must be greater than i.
 - Let (mut, zt) be yt*[i].
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x))]->[$unpacktype(zt)].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x))]->[$unpacktype(zt)].
 
 validation_of_STRUCT.SET x i
 - |C.TYPE| must be greater than x.
 - Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
 - Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt) be yt*[i].
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), $unpacktype(zt)]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), $unpacktype(zt)]->[].
 
 validation_of_ARRAY.NEW x
 - |C.TYPE| must be greater than x.
@@ -418,22 +418,22 @@ validation_of_ARRAY.GET sx? x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32]->[$unpacktype(zt)].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32]->[$unpacktype(zt)].
 
 validation_of_ARRAY.SET x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, $unpacktype(zt)]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt)]->[].
 
 validation_of_ARRAY.LEN
 - Let $expanddt(C.TYPE[x]) be (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
 - |C.TYPE| must be greater than x.
-- The instruction is valid with type [(REF (NULL ?([])) ARRAY)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) ARRAY)]->[I32].
 
 validation_of_ARRAY.FILL x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, $unpacktype(zt), I32]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt), I32]->[].
 
 validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_1.
@@ -441,14 +441,14 @@ validation_of_ARRAY.COPY x_1 x_2
 - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
 - Yet: TODO: prem_to_instrs 2
 - $expanddt(C.TYPE[x_1]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt_1)).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x_1)), I32, (REF (NULL ?([])) $idx(x_2)), I32, I32]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32]->[].
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Yet: TODO: prem_to_instrs 2
 - $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, I32, I32]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_ARRAY.INIT_DATA x y
 - |C.TYPE| must be greater than x.
@@ -456,7 +456,7 @@ validation_of_ARRAY.INIT_DATA x y
 - C.DATA[y] must be equal to OK.
 - $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
 - Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, I32, I32]->[].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_EXTERN.CONVERT_ANY
 - The instruction is valid with type [(REF nul ANY)]->[(REF nul EXTERN)].
@@ -559,7 +559,7 @@ validation_of_DATA.DROP x
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type []->[].
 
-validation_of_LOAD nt [n, sx]? x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_LOAD nt (n, sx)? x { ALIGN: n_A; OFFSET: n_O; }
 - |C.MEM| must be greater than x.
 - (sx? is ?()) and (n? is ?()) are equivalent.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
@@ -724,7 +724,7 @@ sxfield u_0
 3. Return ?(S).
 
 diffrt (REF nul_1 ht_1) (REF (NULL u_0?) ht_2)
-1. If u_0? is ?([]), then:
+1. If u_0? is ?(()), then:
   a. Return (REF (NULL ?()) ht_1).
 2. Assert: Due to validation, u_0? is not defined.
 3. Return (REF nul_1 ht_1).
@@ -954,7 +954,7 @@ default u_0
   a. Return ?((F64.CONST 0)).
 5. Assert: Due to validation, u_0 is of the case REF.
 6. Let (REF y_0 ht) be u_0.
-7. If y_0 is (NULL ?([])), then:
+7. If y_0 is (NULL ?(())), then:
   a. Return ?((REF.NULL ht)).
 8. Assert: Due to validation, y_0 is (NULL ?()).
 9. Return ?().
@@ -1408,25 +1408,22 @@ instantiate module externval*
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
 10. Let instr_D* be $concat_instr($rundata(data*[j], j)^(j<n_D)).
 11. Let instr_E* be $concat_instr($runelem(elem*[i], i)^(i<n_E)).
-12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-13. Let (_, f) be z.
-14. Enter the activation of f with label [FRAME_]:
+12. Let z be { LOCAL: []; MODULE: mm_init; }.
+13. Enter the activation of z with label [FRAME_]:
   a. Let [val_G]* be $eval_expr(expr_G)*.
-15. Let (_, f) be z.
-16. Enter the activation of f with label [FRAME_]:
+14. Enter the activation of z with label [FRAME_]:
   a. Let [ref_T]* be $eval_expr(expr_T)*.
-17. Let (_, f) be z.
-18. Enter the activation of f with label [FRAME_]:
+15. Enter the activation of z with label [FRAME_]:
   a. Let [ref_E]** be $eval_expr(expr_E)**.
-19. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-20. Let f be { LOCAL: []; MODULE: mm; }.
-21. Enter the activation of f with arity 0 with label [FRAME_]:
+16. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+17. Let f be { LOCAL: []; MODULE: mm; }.
+18. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_E*).
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-22. Return mm.
+19. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }; }.
@@ -1554,12 +1551,12 @@ execution_of_BR_ON_NON_NULL l
 
 execution_of_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?([])) $idx(y))).
+2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
 3. Execute (CALL_REF ?(y)).
 
 execution_of_RETURN_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?([])) $idx(y))).
+2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
 3. Execute (RETURN_CALL_REF ?(y)).
 
 execution_of_FRAME_
@@ -2178,7 +2175,7 @@ execution_of_LOAD nt u_0? x mo
   b. Push (nt.CONST c) to the stack.
 5. Else:
   a. Let ?(y_0) be u_0?.
-  b. Let [n, sx] be y_0.
+  b. Let (n, sx) be y_0.
   c. If ((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|, then:
     1) Trap.
   d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
@@ -2223,14 +2220,14 @@ execution_of_MEMORY.COPY x_1 x_2
   a. If i_1 ≤ i_2, then:
     1) Push (I32.CONST i_1) to the stack.
     2) Push (I32.CONST i_2) to the stack.
-    3) Execute (LOAD I32 ?([8, U]) x_2 $memop0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
     4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST (i_1 + 1)) to the stack.
     6) Push (I32.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
     2) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute (LOAD I32 ?([8, U]) x_2 $memop0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
     4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST i_1) to the stack.
     6) Push (I32.CONST i_2) to the stack.

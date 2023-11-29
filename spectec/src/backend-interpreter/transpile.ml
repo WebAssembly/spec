@@ -324,13 +324,25 @@ let rec mk_access ps base =
   | h :: t -> AccE (base, h) |> mk_access t
   | [] -> base
 
+let is_store = function
+  | VarE "s" -> true
+  | VarE s when String.starts_with ~prefix:"s'" s -> true
+  | VarE s when String.starts_with ~prefix:"s_" s -> true
+  | _ -> false
+
+let is_frame = function
+  | VarE "f" -> true
+  | VarE f when String.starts_with ~prefix:"f'" f -> true
+  | VarE f when String.starts_with ~prefix:"f_" f -> true
+  | _ -> false
+
 (* Hide state and make it implicit from the prose. Can be turned off. *)
 let hide_state_args = List.filter (function
-  | TupE (VarE "s", VarE "f")
+  | TupE [ VarE "s"; VarE "f" ]
   | VarE "z" -> false
-  | TupE (VarE s, VarE "f")
+  | TupE [ VarE s; VarE "f" ]
     when String.starts_with ~prefix:"s_" s -> false
-  | TupE (VarE s, VarE f)
+  | TupE [ VarE s; VarE f ]
     when String.starts_with ~prefix:"s_" s
     && String.starts_with ~prefix:"f_" f
       -> false
@@ -341,8 +353,8 @@ let hide_state_args = List.filter (function
 let hide_state_instr instr =
   match instr.it with
   (* Return *)
-  | ReturnI (Some (TupE (UpdE (e1, pl, e2), VarE "f")))
-  | ReturnI (Some (TupE (VarE "s", UpdE (e1, pl, e2)))) ->
+  | ReturnI (Some (TupE [ UpdE (e1, pl, e2); VarE "f" ]))
+  | ReturnI (Some (TupE [ VarE "s"; UpdE (e1, pl, e2) ])) ->
       let rpl = List.rev pl in
       let target =
         List.tl rpl
@@ -350,8 +362,8 @@ let hide_state_instr instr =
           (fun p acc -> AccE (acc, p))
       in
       [ replaceI (target e1, List.hd rpl, e2) ]
-  | ReturnI (Some (TupE (VarE "s", VarE "f"))) -> []
-  | ReturnI (Some (TupE ((VarE s), VarE f)))
+  | ReturnI (Some (TupE [ VarE "s"; VarE "f" ])) -> []
+  | ReturnI (Some (TupE [ VarE s; VarE f ]))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> []
 
@@ -363,12 +375,12 @@ let hide_state_instr instr =
     when String.starts_with ~prefix:"s_" s ->
       [ appendI (mk_access ps e1, e2) ]
   (* Append + Return *)
-  | ReturnI (Some (ListE [ExtE (e1, ps, ListE [ e2 ], Back); e3]))
+  | ReturnI (Some (TupE [ExtE (e1, ps, ListE [ e2 ], Back); e3]))
     when VarE "s" = e1 ->
       let addr = VarE "a" in
       [ letI (addr, e3); appendI (mk_access ps e1, e2); returnI (Some addr) ]
   (* Perform *)
-  | LetI (TupE (VarE s, VarE f), CallE (fname, el))
+  | LetI (TupE [ VarE s; VarE f ], CallE (fname, el))
     when String.starts_with ~prefix:"s_" s
       && String.starts_with ~prefix:"f_" f -> [ performI (fname, el) ]
   | LetI (VarE s, CallE (fname, el))
@@ -390,9 +402,7 @@ let hide_state_instr instr =
 
 let hide_state = function
   | CallE (f, args) -> CallE (f, hide_state_args args)
-  | ListE [ VarE "s"; e ]
-  | ListE [ VarE "s'"; e ] -> e
-  | ListE [ VarE s; e ] when String.starts_with ~prefix:"s_" s -> e
+  | TupE [ s; e ] when is_store s && not (is_frame e) -> e
   | e -> e
 
 let simplify_record_concat = function
@@ -414,14 +424,15 @@ let state_remover algo =
   let walker =
     Walk.walk
       { Walk.default_config with
-        post_instr = composite_instr hide_state_instr (lift flatten_if);
+        pre_instr = hide_state_instr;
+        post_instr = lift flatten_if;
         post_expr = composite hide_state simplify_record_concat
       }
   in
 
   match walker algo with
   | FuncA (name, params, body) -> (match params with
-    | TupE (_, VarE "f") :: tail ->
+    | TupE [ _; VarE "f" ] :: tail ->
         FuncA (name, tail, letI (VarE "f", GetCurFrameE) :: body |> remove_dead_assignment)
     | VarE ("s" | "z") :: tail ->
         FuncA (name, tail, body)

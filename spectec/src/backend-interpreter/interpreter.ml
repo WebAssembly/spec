@@ -243,7 +243,7 @@ and eval_expr env expr =
       replace base ps
   | CaseE ((tag, _), el) -> CaseV (tag, List.map (eval_expr env) el) |> check_i32_const
   | OptE opt -> OptV (Option.map (eval_expr env) opt)
-  | TupE (e1, e2) -> TupV (eval_expr env e1, eval_expr env e2)
+  | TupE el -> TupV (List.map (eval_expr env) el)
   (* Context *)
   | ArityE e -> (
       match eval_expr env e with
@@ -345,12 +345,12 @@ and eval_cond env cond =
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
   | IsValidC e -> (
       let valid_lim k = function
-        | TupV (NumV n, NumV m) -> n <= m && m <= k
+        | TupV [ NumV n; NumV m ] -> n <= m && m <= k
         | _ -> false
       in
       match eval_expr env e with
       (* valid_tabletype *)
-      | TupV (lim, _) -> valid_lim 0xffffffffL lim
+      | TupV [ lim; _ ] -> valid_lim 0xffffffffL lim
       (* valid_memtype *)
       | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim
       (* valid_other *)
@@ -467,9 +467,11 @@ and assign lhs rhs env =
       List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) new_env
-  | TupE (lhs1, lhs2), TupV (rhs1, rhs2)
   | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
+  | TupE lhs_s, TupV rhs_s
+    when List.length lhs_s = List.length rhs_s ->
+      List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
       List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env

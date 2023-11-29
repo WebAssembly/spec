@@ -183,7 +183,7 @@ let array_new_data =
         IsCaseOfC (expanddt_with_type, ("ARRAY", "comptype")),
         [
           letI (CaseE (("ARRAY", "comptype"), [y_0]), expanddt_with_type);
-          letI (TupE (mut, zt), y_0);
+          letI (TupE [ mut; zt ], y_0);
           ifI (
             CmpC (
               GtOp,

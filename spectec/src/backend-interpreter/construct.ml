@@ -98,7 +98,7 @@ let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 
 let al_of_null = function
   | NoNull -> CaseV ("NULL", [ OptV None ])
-  | Null -> CaseV ("NULL", [ OptV (Some (listV [])) ])
+  | Null -> CaseV ("NULL", [ OptV (Some (TupV [])) ])
 
 let al_of_final = function
   | NoFinal -> OptV None
@@ -113,7 +113,7 @@ let rec al_of_storage_type = function
   | PackStorageT _ as st -> string_of_storage_type st |> singleton
 
 and al_of_field_type = function
-  | FieldT (mut, st) -> TupV (al_of_mut mut, al_of_storage_type st)
+  | FieldT (mut, st) -> TupV [ al_of_mut mut; al_of_storage_type st ]
 
 and al_of_result_type rt = al_of_list al_of_val_type rt
 
@@ -163,14 +163,13 @@ let al_of_limits limits default =
     | None -> al_of_int64 default
   in
 
-  TupV (al_of_int32 limits.min, max)
+  TupV [ al_of_int32 limits.min; max ]
 
 let al_of_global_type = function
-  | GlobalT (mut, vt) -> TupV (al_of_mut mut, al_of_val_type vt)
+  | GlobalT (mut, vt) -> TupV [ al_of_mut mut; al_of_val_type vt ]
 
 let al_of_table_type = function
-  | TableT (limits, rt) ->
-    TupV (al_of_limits limits default_table_max, al_of_ref_type rt)
+  | TableT (limits, rt) -> TupV [ al_of_limits limits default_table_max; al_of_ref_type rt ]
 
 let al_of_memory_type = function
   | MemoryT limits -> CaseV ("I8", [ al_of_limits limits default_memory_max ])
@@ -339,7 +338,7 @@ let al_of_memop f memop =
 
   [ al_of_num_type memop.ty; al_of_opt f memop.pack; NumV 0L; StrV str ]
 
-let al_of_pack_size_extension (p, s) = listV [ al_of_pack_size p; al_of_extension s ]
+let al_of_pack_size_extension (p, s) = TupV [ al_of_pack_size p; al_of_extension s ]
 
 let al_of_loadop = al_of_memop al_of_pack_size_extension
 
@@ -598,7 +597,7 @@ let rec al_to_storage_type: value -> storage_type = function
   | v -> ValStorageT (al_to_val_type v)
 
 and al_to_field_type: value -> field_type = function
-  | TupV (mut, st) -> FieldT (al_to_mut mut, al_to_storage_type st)
+  | TupV [ mut; st ] -> FieldT (al_to_mut mut, al_to_storage_type st)
   | v -> fail "field type" v
 
 and al_to_result_type: value -> result_type = function

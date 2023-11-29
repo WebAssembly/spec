@@ -146,11 +146,9 @@ and render_expr env in_math = function
       let se2 = render_expr env true e2 in
       let s = sprintf "{%s} %s {%s}" se1 sop se2 in
       if in_math then s else render_math s
-  | Al.Ast.TupE (e1, e2) ->
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "%s~%s" se1 se2 in
-      if in_math then s else render_math s
+  | Al.Ast.TupE el ->
+      let sel = render_list (render_expr env true) "(" "~" ")" el in
+      if in_math then sel else render_math sel
   | Al.Ast.CallE (fn, es) ->
       let sfn = render_funcname env fn in
       let ses = render_list (render_expr env true) "" ", " "" es in

@@ -121,14 +121,14 @@ let builtin () =
   let tables = [
     "table",
     listV nulls
-    |> create_table_inst (TupV (TupV (NumV 10L, NumV 20L), singleton "FUNCREF"));
+    |> create_table_inst (TupV [ TupV [ NumV 10L; NumV 20L ]; singleton "FUNCREF" ]);
   ] in
   (* Builtin memories *)
   let zeros = List.init 0x10000 (fun _ -> NumV 0L) in
   let memories = [
     "memory",
     listV zeros
-  |> create_mem_inst (CaseV ("I8", [ TupV (NumV 1L, NumV 2L) ]));
+    |> create_mem_inst (CaseV ("I8", [ TupV [ NumV 1L; NumV 2L ] ]));
   ] in
 
   let append kind (name, inst) extern =

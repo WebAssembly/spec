@@ -59,7 +59,7 @@ and string_of_value = function
   | ListV lv -> string_of_array string_of_value "[" ", " "]" !lv
   | NumV n -> Printf.sprintf "0x%LX" n
   | TextV s -> s
-  | TupV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
+  | TupV vl -> string_of_list string_of_value "(" ", " ")" vl
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
   | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST" ^ string_of_list string_of_value " " " " "" tl ^ ")"
   | CaseV (s, []) -> s
@@ -113,7 +113,7 @@ and string_of_expr = function
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
-  | TupE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
+  | TupE el -> string_of_list string_of_expr "(" ", " ")" el
   | CallE (n, el) ->
       sprintf "$%s(%s)" 
         n (string_of_list string_of_expr "" ", " "" el)
@@ -327,12 +327,7 @@ let rec structured_string_of_value = function
   | ListV _ -> "ListV"
   | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
-  | TupV (v1, v2) ->
-      "TupV("
-      ^ structured_string_of_value v1
-      ^ ", "
-      ^ structured_string_of_value v2
-      ^ ")"
+  | TupV vl -> string_of_list structured_string_of_value "TupV (" ", " ")" vl
   | ArrowV (v1, v2) ->
       "ArrowV("
       ^ structured_string_of_value v1
@@ -377,12 +372,8 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | TupE (e1, e2) ->
-      "TupE ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ")"
+  | TupE el ->
+      string_of_list structured_string_of_expr "TupE (" ", " ")" el
   | CallE (n, nl) ->
       "CallE ("
       ^ n

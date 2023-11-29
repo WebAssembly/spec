@@ -153,7 +153,7 @@ and exp2expr exp =
   (* CaseE *)
   | Ast.CaseE (Ast.Atom cons, arg) -> CaseE (name2kwd cons exp.note, exp2args arg)
   (* Tuple *)
-  | Ast.TupE exps -> ListE (List.map exp2expr exps)
+  | Ast.TupE exps -> TupE (List.map exp2expr exps)
   (* Call *)
   | Ast.CallE (id, inner_exp) -> CallE (id.it, exp2args inner_exp)
   (* Record expression *)
@@ -177,7 +177,7 @@ and exp2expr exp =
       | [ []; [ Ast.Semicolon ]; [] ], [ e1; e2 ]
       | [ []; [ Ast.Semicolon ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
-          TupE (exp2expr e1, exp2expr e2)
+          TupE [ exp2expr e1; exp2expr e2 ]
       | [ []; [ Ast.Star; Ast.Arrow ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
           ArrowE (exp2expr e1, exp2expr e2)
@@ -189,10 +189,10 @@ and exp2expr exp =
           CaseE (("OK", "datatype"), [])
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.OptE (Some { it = Ast.TupE []; _ }); _}; t ] ->
-          TupE (CaseE (("MUT", "globaltype"), []), exp2expr t)
+          TupE [ CaseE (("MUT", "globaltype"), []); exp2expr t ]
       | [ [ Ast.Atom "MUT" ]; [ Ast.Quest ]; [] ],
         [ { it = Ast.IterE ({ it = Ast.TupE []; _ }, (Ast.Opt, [])); _}; t ] ->
-          TupE (IterE (VarE "mut", ["mut"], Opt), exp2expr t)
+          TupE [ IterE (VarE "mut", ["mut"], Opt); exp2expr t ]
       | [ Ast.Atom "MODULE" ] :: _, el ->
           CaseE (("MODULE", "module"), List.map exp2expr el)
       | [ [ Ast.Atom "IMPORT" ]; []; []; [] ], el ->
@@ -587,15 +587,14 @@ let rec expr2let lhs rhs targets cont =
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp instrs = match id.it, exp2args exp with
-  | "Eval_expr", [z; lhs; _z; rhs] ->
+  | "Eval_expr", [_; lhs; _z; rhs] ->
     (* TODO: Name of f..? *)
-    letI (TupE (VarE "_", VarE "f"), z) ::
     enterI (
-      FrameE (None, VarE "f"),
+      FrameE (None, VarE "z"),
       ListE [CaseE (("FRAME_", ""), [])],
       [ letI (rhs, CallE ("eval_expr", [ lhs ])) ]
     ) :: instrs
-  | "Step_read", [TupE (TupE (_s, f), lhs); rhs] ->
+  | "Step_read", [ TupE [ TupE [ _s; f ]; lhs ]; rhs] ->
     enterI (
       FrameE (None, f),
       ListE [CaseE (("FRAME_", ""), [])],

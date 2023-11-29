@@ -24,12 +24,12 @@ let rec free_expr = function
   | ContE e -> free_expr e
   | BinE (_, e1, e2)
   | CatE (e1, e2)
-  | TupE (e1, e2)
   | ArrowE (e1, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) ->
       Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e
   | CallE (_, es)
+  | TupE es
   | ListE es
   | CaseE (_, es) -> List.concat_map free_expr es
   | StrE r -> Record.fold (fun _k e acc -> free_expr e @ acc) r []
