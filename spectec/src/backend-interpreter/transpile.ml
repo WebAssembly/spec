@@ -1,5 +1,6 @@
 open Al
 open Al.Ast
+open Util
 open Util.Record
 open Construct
 
@@ -79,7 +80,7 @@ let rec unify_head acc l1 l2 =
   | _ -> (List.rev acc, l1, l2)
 
 let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
-let diff_list xs ys = List.filter (fun x -> not (List.mem x ys)) xs
+let diff_list xs ys = Lib.List.filter_not (fun x -> List.mem x ys) xs
 
 let dedup l =
   let rec aux acc = function
@@ -243,7 +244,7 @@ let push_either =
   let push_either' i =
     match i.it with
     | EitherI (il1, il2) -> (
-      match Util.Lib.List.split_last il1 with
+      match Lib.List.split_last il1 with
       | hds, { it = IfI (c, then_body, []); _ } ->
         eitherI (hds @ [ ifI (c, then_body, il2) ], il2)
       | _ -> i)
@@ -328,93 +329,53 @@ let rec mk_access ps base =
   | [] -> base
 
 let is_store = function
-  | VarE "s" -> true
-  | VarE s when String.starts_with ~prefix:"s'" s -> true
-  | VarE s when String.starts_with ~prefix:"s_" s -> true
+  | VarE s ->
+    s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
   | _ -> false
 
 let is_frame = function
-  | VarE "f" -> true
-  | VarE f when String.starts_with ~prefix:"f'" f -> true
-  | VarE f when String.starts_with ~prefix:"f_" f -> true
+  | VarE f ->
+    f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
   | _ -> false
 
-(* Hide state and make it implicit from the prose. Can be turned off. *)
-let hide_state_args = List.filter (function
-  | TupE [ VarE "s"; VarE "f" ]
-  | VarE "z" -> false
-  | TupE [ VarE s; VarE "f" ]
-    when String.starts_with ~prefix:"s_" s -> false
-  | TupE [ VarE s; VarE f ]
-    when String.starts_with ~prefix:"s_" s
-    && String.starts_with ~prefix:"f_" f
-      -> false
-  | VarE "s" -> false
-  | VarE s when String.starts_with ~prefix:"s_" s -> false
-  | VarE s when String.starts_with ~prefix:"s'" s -> false
-  | _ -> true)
+let is_state = function
+  | TupE [ s; f ] -> is_store s && is_frame f
+  | VarE z ->
+    z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
+  | _ -> false
 
-let hide_state_instr instr =
-  match instr.it with
-  (* Return *)
-  | ReturnI (Some (TupE [ UpdE (e1, pl, e2); VarE "f" ]))
-  | ReturnI (Some (TupE [ VarE "s"; UpdE (e1, pl, e2) ])) ->
-      let rpl = List.rev pl in
-      let target =
-        List.tl rpl
-        |> List.fold_right
-          (fun p acc -> AccE (acc, p))
-      in
-      [ replaceI (target e1, List.hd rpl, e2) ]
-  | ReturnI (Some (TupE [ VarE "s"; VarE "f" ])) -> []
-  | ReturnI (Some (TupE [ VarE s; VarE f ]))
-    when String.starts_with ~prefix:"s_" s
-      && String.starts_with ~prefix:"f_" f -> []
+let hide_state_args = Lib.List.filter_not (fun arg -> is_state arg || is_store arg)
 
-  | ReturnI (Some (VarE "s")) -> [ returnI None ]
-  | ReturnI (Some (VarE s))
-    when String.starts_with ~prefix:"s_" s -> [ returnI None ]
-  (* Append *)
-  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
-    when String.starts_with ~prefix:"s_" s ->
-      [ appendI (mk_access ps e1, e2) ]
-  (* Append + Return *)
-  | ReturnI (Some (TupE [ExtE (e1, ps, ListE [ e2 ], Back); e3]))
-    when VarE "s" = e1 ->
-      let addr = VarE "a" in
-      [ letI (addr, e3); appendI (mk_access ps e1, e2); returnI (Some addr) ]
-  (* Perform *)
-  | LetI (TupE [ VarE s; VarE f ], CallE (fname, el))
-    when String.starts_with ~prefix:"s_" s
-      && String.starts_with ~prefix:"f_" f -> [ performI (fname, el) ]
-  | LetI (VarE s, CallE (fname, el))
-    when String.starts_with ~prefix:"s_" s -> [ performI (fname, el) ]
-  (* Append *)
-  | LetI (VarE s, ExtE (e1, ps, ListE [ e2 ], Back) )
-    when String.starts_with ~prefix:"s_" s ->
-      [ appendI (mk_access ps e1, e2) ]
-  (* Replace *)
-  | LetI (VarE s, UpdE (e1, ps, e2))
-    when String.starts_with ~prefix:"s_" s ->
-      begin match List.rev ps with
-      | h :: t -> [ replaceI (mk_access (List.rev t) e1, h, e2) ]
-      | _ -> failwith "Invalid replace"
-      end
-  (* Replace + Return *)
-  | ReturnI (Some (UpdE (e1, ps, e2)))
-    when VarE "s" = e1 ->
-      begin match List.rev ps with
-      | h :: t -> [ replaceI (mk_access (List.rev t) e1, h, e2); returnI None ]
-      | _ -> failwith "Invalid replace"
-      end
-  | PerformI (f, args) -> [ performI (f, hide_state_args args) ]
-  | _ -> [ instr ]
-
-
-let hide_state = function
+let hide_state_expr = function
   | CallE (f, args) -> CallE (f, hide_state_args args)
   | TupE [ s; e ] when is_store s && not (is_frame e) -> e
   | e -> e
+
+let hide_state instr =
+  match instr.it with
+  (* Return *)
+  | ReturnI (Some e) when is_state e || is_store e -> []
+  (* Perform *)
+  | LetI (e, CallE (fname, el)) when is_state e || is_store e -> [ performI (fname, el) ]
+  | PerformI (f, args) -> [ performI (f, hide_state_args args) ]
+  (* Append *)
+  | LetI (_, ExtE (s, ps, ListE [ e ], Back) ) when is_store s ->
+    [ appendI (mk_access ps s, e) ]
+  (* Append & Return *)
+  | ReturnI (Some (TupE [ ExtE (s, ps, ListE [ e1 ], Back); e2 ])) when is_store s ->
+    let addr = VarE "a" in
+    [ letI (addr, e2); appendI (mk_access ps s, e1); returnI (Some addr) ]
+  (* Replace store *)
+  | LetI (_, UpdE (s, ps, e))
+  | ReturnI (Some (TupE [ UpdE (s, ps, e); VarE "f" ]))
+  | ReturnI (Some (UpdE (s, ps, e))) when is_store s ->
+    let hs, t = Lib.List.split_last ps in
+    [ replaceI (mk_access hs s, t, e) ]
+  (* Replace frame *)
+  | ReturnI (Some (TupE [ VarE "s"; UpdE (f, ps, e) ])) when is_frame f ->
+    let hs, t = Lib.List.split_last ps in
+    [ replaceI (mk_access hs f, t, e) ]
+  | _ -> [ instr ]
 
 let simplify_record_concat = function
   | CatE (e1, e2) ->
@@ -435,9 +396,10 @@ let state_remover algo =
   let walker =
     Walk.walk
       { Walk.default_config with
-        pre_instr = hide_state_instr;
+        pre_instr = hide_state;
         post_instr = lift flatten_if;
-        post_expr = composite hide_state simplify_record_concat
+        pre_expr = hide_state_expr;
+        post_expr = simplify_record_concat
       }
   in
 
@@ -457,7 +419,7 @@ let rec count_if instrs = match instrs with
   | _ :: tl -> count_if tl
 let rec infer_assert instrs =
   if count_if instrs = 1 then
-    let (hd, tl) = Util.Lib.List.split_last instrs in
+    let (hd, tl) = Lib.List.split_last instrs in
     match tl.it with
     | IfI (c, il1, []) -> hd @ assertI(c) :: (il1 |> infer_assert)
     | _ -> instrs
