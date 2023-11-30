@@ -10,9 +10,6 @@ open Util.Record
 
 let default_table_max = 4294967295L
 let default_memory_max = 65536L
-
-(* Flag *)
-
 let version = ref 3
 
 (* Smart Constructor *)
@@ -95,6 +92,8 @@ let al_of_idx idx = al_of_int32 idx.it
 let al_of_byte byte = Char.code byte |> al_of_int
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 let al_of_name name = TextV (Utf8.encode name)
+let al_with_version vs v = if (List.mem !version vs) then [ v ] else []
+let al_of_memidx () = al_with_version [ 3 ] zero
 
 (* Helper *)
 let arg_of_case case i = function
@@ -155,9 +154,10 @@ and al_of_heap_type = function
   | ht -> string_of_heap_type ht |> singleton
 
 and al_of_ref_type (null, ht) =
-  match !version with
-  | 3 -> CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
-  | _ -> match al_of_heap_type ht with
+  if !version = 3 then
+    CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
+  else
+    match al_of_heap_type ht with
     | CaseV ("FUNC", []) -> singleton "FUNC" (* TODO: "FUNCREF" *)
     | CaseV ("EXTERN", []) -> singleton "EXTERN" (* TODO: "EXTERNREF" *)
     | _ -> failwith "Not supported reftype for wasm <= 2.0"
@@ -174,9 +174,11 @@ and al_of_val_type = function
 
 let al_of_blocktype = function
   | VarBlockType idx -> CaseV ("_IDX", [ al_of_idx idx ])
-  | ValBlockType vt_opt -> match !version with
-    | 1 -> al_of_opt al_of_val_type vt_opt
-    | _ -> CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
+  | ValBlockType vt_opt ->
+    if !version = 1 then
+      al_of_opt al_of_val_type vt_opt
+    else
+      CaseV ("_RESULT", [ al_of_opt al_of_val_type vt_opt ])
 
 let al_of_limits default limits =
   let max =
@@ -356,12 +358,7 @@ let al_of_memop f memop =
     |> Record.add "ALIGN" (al_of_int memop.align)
     |> Record.add "OFFSET" (al_of_int32 memop.offset)
   in
-  [
-    al_of_num_type memop.ty;
-    f memop.pack
-  ] @ (if !version = 3 then [ zero ] else []) @ [
-    StrV str;
-  ]
+  [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx () @ [ StrV str ]
 
 let al_of_pack_size_extension (p, s) = TupV [ al_of_pack_size p; al_of_extension s ]
 
@@ -426,18 +423,19 @@ let rec al_of_instr instr =
   | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
   | CallRef idx -> CaseV ("CALL_REF", [ OptV (Some (al_of_idx idx)) ])
   | CallIndirect (idx1, idx2) ->
-    CaseV ("CALL_INDIRECT", (if !version = 1 then [] else [ al_of_idx idx1 ]) @ [ al_of_idx idx2 ])
+    let args = al_with_version [ 2; 3 ] al_of_idx idx1 @ [ al_of_idx idx2 ] in
+    CaseV ("CALL_INDIRECT", args)
   | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
   | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ OptV (Some (al_of_idx idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
   | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
   | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
-  | MemorySize -> CaseV ("MEMORY.SIZE", if !version = 3 then [ zero ] else [])
-  | MemoryGrow -> CaseV ("MEMORY.GROW", if !version = 3 then [ zero ] else [])
-  | MemoryFill -> CaseV ("MEMORY.FILL", if !version = 3 then [ zero ] else [])
-  | MemoryCopy -> CaseV ("MEMORY.COPY", if !version = 3 then [ zero; zero ] else [])
-  | MemoryInit i32 -> CaseV ("MEMORY.INIT", (if !version = 3 then [ zero ] else []) @ [ al_of_idx i32 ])
+  | MemorySize -> CaseV ("MEMORY.SIZE", al_of_memidx ())
+  | MemoryGrow -> CaseV ("MEMORY.GROW", al_of_memidx ())
+  | MemoryFill -> CaseV ("MEMORY.FILL", al_of_memidx ())
+  | MemoryCopy -> CaseV ("MEMORY.COPY", al_of_memidx () @ al_of_memidx ())
+  | MemoryInit i32 -> CaseV ("MEMORY.INIT", (al_of_memidx ()) @ [ al_of_idx i32 ])
   | DataDrop idx -> CaseV ("DATA.DROP", [ al_of_idx idx ])
   | RefAsNonNull -> singleton "REF.AS_NON_NULL"
   | RefTest rt -> CaseV ("REF.TEST", [ al_of_ref_type rt ])
@@ -481,16 +479,20 @@ let al_of_const const = al_of_list al_of_instr const.it
 
 (* Construct module *)
 
-let al_of_type ty = match !version with
+let al_of_type ty =
+  match !version with
   | 3 ->
     CaseV ("TYPE", [ al_of_rec_type ty.it ])
   | _ ->
-    let sub_types = al_of_rec_type ty.it
-    |> arg_of_case "REC" 0
-    |> al_to_list in
+    let sub_types =
+      al_of_rec_type ty.it
+      |> arg_of_case "REC" 0
+      |> al_to_list
+    in
 
     match sub_types with
-    | [subtype] -> subtype
+    | [ subtype ] ->
+      subtype
       |> arg_of_case "SUBD" 2
       |> arg_of_case "FUNC" 0
       |> case_v "TYPE"
@@ -519,9 +521,13 @@ let al_of_table table =
   | _ -> failwith "Unsupported version"
 
 let al_of_memory memory =
-  match !version with
-  | 1 -> CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype |> arg_of_case "I8" 0 ])
-  | _ -> CaseV ("MEMORY", [ al_of_memory_type memory.it.mtype ])
+  let arg = al_of_memory_type memory.it.mtype in
+  let arg' =
+    if !version = 1 then
+      arg_of_case "I8" 0 arg
+    else arg
+  in
+  CaseV ("MEMORY", [ arg' ])
 
 let al_of_segment segment =
   match segment.it with
@@ -530,7 +536,8 @@ let al_of_segment segment =
     CaseV ("ACTIVE", [ al_of_idx index; al_of_const offset ])
   | Declarative -> singleton "DECLARE"
 
-let al_of_elem elem = match !version with
+let al_of_elem elem =
+  match !version with
   | 1 -> 
     CaseV ("ELEM", [
       al_of_segment elem.it.emode
@@ -547,7 +554,8 @@ let al_of_elem elem = match !version with
       al_of_segment elem.it.emode;
     ])
 
-let al_of_data data = match !version with
+let al_of_data data =
+  match !version with
   | 1 -> CaseV ("DATA", [ al_of_segment data.it.dmode |> arg_of_case "ACTIVE" 1; al_of_bytes data.it.dinit; ])
   | _ -> CaseV ("DATA", [ al_of_bytes data.it.dinit; al_of_segment data.it.dmode ])
 
