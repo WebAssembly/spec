@@ -92,8 +92,8 @@ let al_of_idx idx = al_of_int32 idx.it
 let al_of_byte byte = Char.code byte |> al_of_int
 let al_of_bytes bytes_ = String.to_seq bytes_ |> al_of_seq al_of_byte
 let al_of_name name = TextV (Utf8.encode name)
-let al_with_version vs v = if (List.mem !version vs) then [ v ] else []
-let al_of_memidx () = al_with_version [ 3 ] zero
+let al_with_version vs f a = if (List.mem !version vs) then [ f a ] else []
+let al_of_memidx () = al_with_version [ 3 ] (fun v -> v) zero
 
 (* Helper *)
 let arg_of_case case i = function
@@ -537,17 +537,15 @@ let al_of_segment segment =
   | Declarative -> singleton "DECLARE"
 
 let al_of_elem elem =
-  match !version with
-  | 1 -> 
+  if !version = 1 then
     CaseV ("ELEM", [
-      al_of_segment elem.it.emode
-        |> arg_of_case "ACTIVE" 1;
+      al_of_segment elem.it.emode |> arg_of_case "ACTIVE" 1;
       al_of_list al_of_const elem.it.einit
-        |> al_to_list
-        |> List.map (fun expr -> expr |> al_to_list |> List.hd |> (arg_of_case "REF.FUNC" 0))
-        |> listV;
+      |> al_to_list
+      |> List.map (fun expr -> expr |> al_to_list |> List.hd |> (arg_of_case "REF.FUNC" 0))
+      |> listV;
     ])
-  | _ ->
+  else
     CaseV ("ELEM", [
       al_of_ref_type elem.it.etype;
       al_of_list al_of_const elem.it.einit;
@@ -555,9 +553,12 @@ let al_of_elem elem =
     ])
 
 let al_of_data data =
-  match !version with
-  | 1 -> CaseV ("DATA", [ al_of_segment data.it.dmode |> arg_of_case "ACTIVE" 1; al_of_bytes data.it.dinit; ])
-  | _ -> CaseV ("DATA", [ al_of_bytes data.it.dinit; al_of_segment data.it.dmode ])
+  let seg = al_of_segment data.it.dmode in
+  let bytes_ = al_of_bytes data.it.dinit in
+  if !version = 1 then
+    CaseV ("DATA", [ arg_of_case "ACTIVE" 1 seg; bytes_ ])
+  else
+    CaseV ("DATA", [ bytes_; seg ])
 
 let al_of_import_desc module_ idesc =
   match idesc.it with
