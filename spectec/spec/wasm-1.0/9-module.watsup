@@ -142,7 +142,7 @@ def $initdata(s, mm, i i'*, (b*) (b'*)*) = s_2
   -- if s_2 = $initdata(s_1, mm, i'*, (b'*)*)
 
 def $instantiate(store, module, externval*) : config
-def $instantiate(s, module, externval*) = s'''; f; (CALL x')?
+def $instantiate(s, module, externval*) = s_3; f; (CALL x')?
   -- if module = MODULE type* import* func* global* table* mem* elem* data* start? export*
   -- if type* = (TYPE functype)*
   -- if global* = (GLOBAL globaltype expr_G)*
@@ -160,9 +160,9 @@ def $instantiate(s, module, externval*) = s'''; f; (CALL x')?
   -- (Eval_expr : z; expr_G ~>* z; val)*
   -- (Eval_expr : z; expr_E ~>* z; (CONST I32 i_E))*
   -- (Eval_expr : z; expr_D ~>* z; (CONST I32 i_D))*
-  -- if (s', mm) = $allocmodule(s, module, externval*, val*)
-  -- if s'' = $initelem(s', mm, i_E*, mm.FUNC[x]**)
-  -- if s''' = $initdata(s'', mm, i_D*, b**)
+  -- if (s_1, mm) = $allocmodule(s, module, externval*, val*)
+  -- if s_2 = $initelem(s_1, mm, i_E*, mm.FUNC[x]**)
+  -- if s_3 = $initdata(s_2, mm, i_D*, b**)
   -- if f = { LOCAL epsilon, MODULE mm }
 
 
