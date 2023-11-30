@@ -208,6 +208,12 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 ===== endianness.wast =====
 - 68/68 (100.00%)
 
+===== return_call_indirect.wast =====
+- 43/47 (91.49%)
+
+===== return_call.wast =====
+- 26/31 (83.87%)
+
 ===== return.wast =====
 - 63/63 (100.00%)
 
@@ -287,6 +293,48 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 ===== memory_init.wast =====
 - 149/149 (100.00%)
 
+===== extern.wast =====
+- 17/17 (100.00%)
+
+===== type-subtyping.wast =====
+- 20/20 (100.00%)
+
+===== array.wast =====
+- 31/31 (100.00%)
+
+===== array_init_data.wast =====
+- 30/30 (100.00%)
+
+===== struct.wast =====
+- 19/19 (100.00%)
+
+===== array_init_elem.wast =====
+- 19/19 (100.00%)
+
+===== ref_eq.wast =====
+- 82/82 (100.00%)
+
+===== br_on_cast_fail.wast =====
+- 28/28 (100.00%)
+
+===== array_fill.wast =====
+- 13/13 (100.00%)
+
+===== br_on_cast.wast =====
+- 28/28 (100.00%)
+
+===== i31.wast =====
+- 20/20 (100.00%)
+
+===== array_copy.wast =====
+- 30/30 (100.00%)
+
+===== ref_cast.wast =====
+- 43/43 (100.00%)
+
+===== ref_test.wast =====
+- 69/69 (100.00%)
+
 ===== elem.wast =====
 - 37/37 (100.00%)
 
@@ -295,6 +343,21 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 
 ===== f32.wast =====
 - 2500/2500 (100.00%)
+
+===== call_ref.wast =====
+- 27/27 (100.00%)
+
+===== br_on_non_null.wast =====
+- 6/6 (100.00%)
+
+===== ref_as_non_null.wast =====
+- 4/4 (100.00%)
+
+===== br_on_null.wast =====
+- 6/6 (100.00%)
+
+===== return_call_ref.wast =====
+- 30/35 (85.71%)
 
 ===== start.wast =====
 - print_i32: 1
@@ -367,69 +430,6 @@ where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)
 
 ===== nop.wast =====
 - 83/83 (100.00%)
-
-===== extern.wast =====
-- 17/17 (100.00%)
-
-===== type-subtyping.wast =====
-- 20/20 (100.00%)
-
-===== array.wast =====
-- 31/31 (100.00%)
-
-===== array_init_data.wast =====
-- 30/30 (100.00%)
-
-===== struct.wast =====
-- 19/19 (100.00%)
-
-===== array_init_elem.wast =====
-- 19/19 (100.00%)
-
-===== ref_eq.wast =====
-- 82/82 (100.00%)
-
-===== br_on_cast_fail.wast =====
-- 28/28 (100.00%)
-
-===== array_fill.wast =====
-- 13/13 (100.00%)
-
-===== br_on_cast.wast =====
-- 28/28 (100.00%)
-
-===== i31.wast =====
-- 20/20 (100.00%)
-
-===== array_copy.wast =====
-- 30/30 (100.00%)
-
-===== ref_cast.wast =====
-- 43/43 (100.00%)
-
-===== ref_test.wast =====
-- 69/69 (100.00%)
-
-===== return_call_indirect.wast =====
-- 43/47 (91.49%)
-
-===== return_call.wast =====
-- 26/31 (83.87%)
-
-===== call_ref.wast =====
-- 27/27 (100.00%)
-
-===== br_on_non_null.wast =====
-- 6/6 (100.00%)
-
-===== ref_as_non_null.wast =====
-- 4/4 (100.00%)
-
-===== br_on_null.wast =====
-- 6/6 (100.00%)
-
-===== return_call_ref.wast =====
-- 30/35 (85.71%)
 
 Total [24511/24539] (99.89%; Normalized 99.35%)
 == Complete.

@@ -11,7 +11,9 @@ let root = ref ""
 
 (** Helpers **)
 
-let contains str substring =
+let to_path name = Filename.concat !root name
+
+let contains substring str =
   let regex = Str.regexp_string substring in
   try
     ignore (Str.search_forward regex str 0);
@@ -19,11 +21,16 @@ let contains str substring =
   with Not_found ->
     false
 
-let readdir_with_path path =
-  Sys.readdir (Filename.concat !root path)
+let rec readdir_with_path path =
+  Sys.readdir path
   |> Array.map (Filename.concat path)
   |> Array.to_list
-  |> List.filter (String.ends_with ~suffix:".wast")
+  |> List.concat_map (fun p ->
+    if Sys.is_directory p then
+      readdir_with_path p
+    else
+      [ p ]
+  )
 
 type result =
   | Success
@@ -53,10 +60,12 @@ let time f =
   Sys.time() -. start_time
 
 (* string -> Script.script *)
-let file_to_script file_name =
-  let file_path = Filename.concat !root file_name in
+let file_to_script file_path =
   let lexbuf = Lexing.from_channel (open_in file_path) in
-  Parse.parse file_path lexbuf Parse.Script
+  try
+    Parse.parse file_path lexbuf Parse.Script
+  with
+    | _ -> prerr_endline ("Failed to parse " ^ file_path); []
 
 (** End of helpers **)
 
@@ -423,11 +432,9 @@ let init_tester () =
 (** Entry **)
 let test file_name =
   init_tester ();
-  let start_idx = String.rindex file_name '/' + 1 in
-  let length = String.length file_name - start_idx in
-  let name = String.sub file_name start_idx length in
 
-  let script = try file_to_script file_name with | _ -> print_endline ("Failed to parse " ^ file_name); [] in
+  (* Parse test *)
+  let script = file_to_script file_name in
   let total = script |> List.filter (fun x -> match x.it with
     | Assertion {it = AssertReturn _; _}
     | Assertion {it = AssertTrap _ ; _}
@@ -436,48 +443,44 @@ let test file_name =
     | _ -> false
   ) |> List.length in
 
-  if (contains file_name !test_name) && (total > 0) then
-    let success = ref 0 in
-    Printf.printf "===== %s =====\n%!" name;
-    Printf.eprintf "===========================\n\n%s\n\n" file_name;
+  (* Skip test if there is no applicable assertion *)
+  if total = 0 then None else
 
-    let took = time (fun () ->
-      try
-        List.iter (test_cmd success) script;
-      with
-      | e ->
-        let msg = msg_of e in
-        Printf.eprintf "[Uncaught exception] %s, " msg;
-        Printf.printf
-          "- Uncaught exception: %s\n"
-          msg
-    ) in
+  let name = Filename.basename file_name in
+  Printf.printf "===== %s =====\n%!" name;
+  Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
-    Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
-    let percentage = (float_of_int !success /. float_of_int total) *. 100. in
-    Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
-    Some (!success, total, percentage, took)
-  else
-    None
+  (* Run test *)
+  let success = ref 0 in
+  let took = time (fun () ->
+    try
+      List.iter (test_cmd success) script;
+    with
+    | e ->
+      let msg = msg_of e in
+      Printf.eprintf "[Uncaught exception] %s, " msg;
+      Printf.printf
+        "- Uncaught exception: %s\n"
+        msg
+  ) in
+
+  Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
+  let percentage = (float_of_int !success /. float_of_int total) *. 100. in
+  Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
+  Some (!success, total, percentage, took)
 
 let test_all () =
-  let sample = "test-interpreter/sample.wast" in
-  let tests =  [ sample ]
-    @ (readdir_with_path "test-interpreter/spec-test")
-    @ (readdir_with_path "test-interpreter/spec-test/gc")
-    @ (readdir_with_path "test-interpreter/spec-test/tail-call")
-    @ (readdir_with_path "test-interpreter/spec-test/function-references")
-  in
+  let sample = to_path "test-interpreter/sample.wast" in
+  let test_path = to_path "test-interpreter/spec-test-" ^ string_of_int !Construct.version in
+  let tests =
+    sample :: (readdir_with_path test_path)
+    |> List.filter (fun wast -> Filename.extension wast = ".wast")
+    |> List.filter (contains !test_name) in
 
   let results = List.filter_map test tests in
 
-  let success, total, percentage, time = List.fold_left
-    (fun acc result ->
-      let (success_acc, total_acc, percentage_acc, time_acc) = acc in
-      let (success, total, percentage, time) = result in
-      (success_acc + success, total_acc + total, percentage_acc +. percentage, time_acc +. time))
-    (0, 0, 0., 0.) results
-  in
+  let add_quad (a, b, c, d) (e, f, g, h) = (a + e, b + f, c +. g, d +. h) in
+  let success, total, percentage, time = List.fold_left add_quad (0, 0, 0., 0.) results in
   let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
   let percentage_norm = percentage /. float_of_int (List.length results) in
 
