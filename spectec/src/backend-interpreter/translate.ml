@@ -49,6 +49,17 @@ let drop_state e =
     -> e'
   | _ -> e
 
+(* transform s; f; e into s *)
+let extract_store e = match e.it with
+  | Ast.MixE (* (s; f); e *)
+      ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
+        { it = Ast.TupE [ { it = Ast.MixE (
+          [[]; [ Ast.Semicolon ]; []],
+          { it = Ast.TupE [ s; _f ]; _ }
+        ); _ }; _e' ]; _ } )
+    -> s
+  | _ -> e
+
 (* Ast.exp -> Ast.exp list *)
 let rec flatten e =
   match e.it with
@@ -868,7 +879,7 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (id, _t1, _t2, clauses) ->
       let name = id.it in
       let unified_clauses = Il2il.unify_defs clauses in
-      let Ast.DefD (_, params, _, _) = (List.hd unified_clauses).it in
+      let Ast.DefD (_, params, rhs, _) = (List.hd unified_clauses).it in
       let al_params =
         (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
         |> List.map exp2expr
@@ -876,7 +887,8 @@ let helpers2algo partial_funcs def =
       (* TODO: temporary hack for adding return instruction in instantation & invocation *)
       let translator =
         if id.it = "instantiate" then
-          [returnI (Some (VarE "mm"))] |> config_helper2instrs [] [] (NumE 0L)
+          let final_store = extract_store rhs |> exp2expr in
+          [returnI (Some (TupE [final_store; VarE "mm"]))] |> config_helper2instrs [] [] (NumE 0L)
         else if id.it = "invoke" then
           [returnI (Some (IterE (VarE "val", ["val"], ListN (VarE "k", None))))] |> config_helper2instrs [letI (VarE "k", LenE (IterE (VarE "t_2", ["t_2"], List)))] [popI (IterE (VarE "val", ["val"], ListN (VarE "k", None)))] (VarE "k")
         else

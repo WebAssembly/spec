@@ -1000,6 +1000,7 @@ memsxv u_0*
 5. Return $memsxv(xv*).
 
 store
+1. Return.
 
 frame
 1. Let f be the current frame.

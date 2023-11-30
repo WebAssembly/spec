@@ -361,9 +361,9 @@ let hide_state_expr = function
 let hide_state instr =
   match instr.it with
   (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> []
+  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ]
   (* Perform *)
-  | LetI (e, CallE (fname, el)) when is_state e || is_store e -> [ performI (fname, el) ]
+  | LetI (e, CallE (fname, args)) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ]
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ]
   (* Append *)
   | LetI (_, ExtE (s, ps, ListE [ e ], Back) ) when is_store s ->

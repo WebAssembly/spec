@@ -515,7 +515,7 @@ let al_of_global global =
 
 let al_of_table table =
   match !version with
-  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_tup 1 ])
+  | 1 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype |> arg_of_tup 0 ])
   | 2 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype ])
   | 3 -> CaseV ("TABLE", [ al_of_table_type table.it.ttype; al_of_const table.it.tinit ])
   | _ -> failwith "Unsupported version"
