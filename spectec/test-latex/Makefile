@@ -6,7 +6,7 @@ EXT = $(NAME)
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec
-SPECS = $(shell ls $(SPECDIR))
+SPECS = $(shell cd $(SPECDIR) && ls -d wasm-*)
 SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
 
 SPEC = 

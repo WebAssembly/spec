@@ -5,6 +5,7 @@
 relation Step: config ~> config                 hint(show "E")
 relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
 relation Step_read: config ~> admininstr*       hint(show "E")
+relation Steps: config ~>* config               hint(show "E")
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -14,23 +15,22 @@ rule Step/read:
   z; instr*  ~>  z; instr'*
   -- Step_read: z; instr* ~> instr'*
 
+rule Steps/refl:
+  z; admininstr* ~>* z; admininstr*
+
+rule Steps/trans:
+  z; admininstr*  ~>*  z''; admininstr''*
+  -- Step: z; admininstr*  ~>  z'; admininstr'*
+  -- Steps: z'; admininstr'  ~>*  z''; admininstr''*
+
 
 ;; Expressions
 
-relation Eval: config ~>* state; val*  hint(show "E-expr")
 relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
-
-rule Eval/done:
-  z; val* ~>* z; val*
-
-rule Eval/step:
-  z; admininstr*  ~>*  z''; val*
-  -- Step: z; admininstr*  ~>  z'; admininstr'*
-  -- Eval: z'; admininstr'  ~>*  z''; val*
 
 rule Eval_expr:
   z; instr*  ~>*  z'; val*
-  -- Eval: z; instr*  ~>*  z; val*
+  -- Steps: z; instr*  ~>*  z'; val*
 
 
 ;;

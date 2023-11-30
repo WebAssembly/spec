@@ -607,8 +607,6 @@ warning: rule `Elem_ok` was never spliced
 warning: rule `Elemmode_ok/active` was never spliced
 warning: rule `Elemmode_ok/passive` was never spliced
 warning: rule `Elemmode_ok/declare` was never spliced
-warning: rule `Eval/done` was never spliced
-warning: rule `Eval/step` was never spliced
 warning: rule `Eval_expr` was never spliced
 warning: rule `Expand` was never spliced
 warning: rule `Export_ok` was never spliced
@@ -921,6 +919,8 @@ warning: rule `Step_read/memory.copy-gt` was never spliced
 warning: rule `Step_read/memory.init-oob` was never spliced
 warning: rule `Step_read/memory.init-zero` was never spliced
 warning: rule `Step_read/memory.init-succ` was never spliced
+warning: rule `Steps/refl` was never spliced
+warning: rule `Steps/trans` was never spliced
 warning: rule `Storagetype_ok/val` was never spliced
 warning: rule `Storagetype_ok/packed` was never spliced
 warning: rule `Storagetype_sub/val` was never spliced
