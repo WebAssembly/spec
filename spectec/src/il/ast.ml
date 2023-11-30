@@ -170,7 +170,7 @@ and premise = premise' phrase
 and premise' =
   | RulePr of id * mixop * exp                        (* premise *)
   | IfPr of exp                                       (* side condition *)
-  | LetPr of exp * exp * string list                  (* assignment *)
+  | LetPr of exp * exp * id list                      (* assignment *)
   | ElsePr                                            (* otherwise *)
   | IterPr of premise * iterexp                       (* iteration *)
 

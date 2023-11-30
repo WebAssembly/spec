@@ -865,7 +865,8 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' =
   | _, _ ->
     error_typ at "expression" t
 
-and elab_exp_notation env e nt t : Il.exp = (*
+and elab_exp_notation env e nt t : Il.exp =
+  (*
   Printf.printf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)

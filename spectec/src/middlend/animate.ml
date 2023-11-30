@@ -103,7 +103,7 @@ let rec my_free_prem ignore_listN prem =
   match prem.it with
   | RulePr (_id, _op, e) -> f e
   | IfPr e -> f e
-  | LetPr (e1, e2, _targets) -> union (f e1) (f e2)
+  | LetPr (e1, e2, _ids) -> union (f e1) (f e2)
   | ElsePr -> empty
   | IterPr (prem', iter) ->
     let free1 = fp prem' in
@@ -233,7 +233,8 @@ let rows_of_eq vars p_tot_num i l r at =
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
     if List.length frees = List.length covering_vars then (
-      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
+      let ids = List.map (fun x -> x $ no_region) frees in (* TODO: restore source *)
+      Some (Assign frees, LetPr (l, r, ids) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -247,7 +248,8 @@ let rec rows_of_prem vars p_tot_num i p = match p.it with
       | _ ->
         [ Condition, p, [i] ]
       )
-  | LetPr (_, _, targets) ->
+  | LetPr (_, _, ids) ->
+    let targets = List.map it ids in
     let covering_vars = List.filter_map (index_of p_tot_num vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, { it = TupE args; _ }) ->

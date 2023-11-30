@@ -626,7 +626,8 @@ let rec prem2instrs remain_lhs prem instrs =
   match prem.it with
   | Ast.IfPr exp -> [ ifI (exp2cond exp, instrs |> check_nop, []) ]
   | Ast.ElsePr -> [ otherwiseI (instrs |> check_nop) ]
-  | Ast.LetPr (exp1, exp2, targets) ->
+  | Ast.LetPr (exp1, exp2, ids) ->
+      let targets = List.map it ids in
       let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
       init_lhs_id();
       expr2let (exp2expr exp1) (exp2expr exp2) targets instrs'
