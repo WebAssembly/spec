@@ -116,8 +116,7 @@ rule Step_read/call:
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x)  ~>  (CALL_ADDR a)
   -- if $table(z, 0).ELEM[i] = a
-  -- if $funcinst(z)[a].CODE = FUNC x' (LOCAL t)* instr*
-  -- if $type(z, x) = $type(z, x')
+  -- if $type(z, x) = $funcinst(z)[a].TYPE
 
 rule Step_read/call_indirect-trap:
   z; (CONST I32 i) (CALL_INDIRECT x)  ~>  TRAP

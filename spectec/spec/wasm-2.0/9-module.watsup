@@ -130,7 +130,7 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, mm)
   -- if da* = $(|s.DATA|+i_data)^(i_data<n_data)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if mm = {
-      TYPE ft,
+      TYPE ft*,
       FUNC fa_ex* fa*,
       GLOBAL ga_ex* ga*,
       TABLE ta_ex* ta*,
@@ -175,9 +175,14 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- if global* = (GLOBAL globaltype expr_G)*
   -- if elem* = (ELEM reftype expr_E* elemmode)*
   -- if start? = (START x)?
+  -- if n_F = |func*|
   -- if n_E = |elem*|
   -- if n_D = |data*|
-  -- if mm_init = {TYPE functype*, FUNC $funcs(externval*), GLOBAL $globals(externval*)}
+  -- if mm_init = {
+       TYPE functype*,
+       FUNC $funcs(externval*) $(|s.FUNC|+i_F)^(i_F<n_F),
+       GLOBAL $globals(externval*)
+     }
   -- if f_init = { LOCAL epsilon, MODULE mm_init }
   -- if z = s; f_init
   -- (Eval_expr : z; expr_G ~>* z; val)*
