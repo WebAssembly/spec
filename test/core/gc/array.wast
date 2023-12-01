@@ -100,8 +100,8 @@
 (assert_return (invoke "set_get" (i32.const 1) (f32.const 7)) (f32.const 7))
 (assert_return (invoke "len") (i32.const 3))
 
-(assert_trap (invoke "get" (i32.const 10)) "out of bounds")
-(assert_trap (invoke "set_get" (i32.const 10) (f32.const 7)) "out of bounds")
+(assert_trap (invoke "get" (i32.const 10)) "out of bounds array access")
+(assert_trap (invoke "set_get" (i32.const 10) (f32.const 7)) "out of bounds array access")
 
 (module
   (type $vec (array f32))
@@ -145,8 +145,8 @@
 (assert_return (invoke "set_get" (i32.const 1) (f32.const 7)) (f32.const 7))
 (assert_return (invoke "len") (i32.const 2))
 
-(assert_trap (invoke "get" (i32.const 10)) "out of bounds")
-(assert_trap (invoke "set_get" (i32.const 10) (f32.const 7)) "out of bounds")
+(assert_trap (invoke "get" (i32.const 10)) "out of bounds array access")
+(assert_trap (invoke "set_get" (i32.const 10) (f32.const 7)) "out of bounds array access")
 
 (module
   (type $vec (array i8))
@@ -190,8 +190,8 @@
 (assert_return (invoke "set_get" (i32.const 1) (i32.const 7)) (i32.const 7))
 (assert_return (invoke "len") (i32.const 3))
 
-(assert_trap (invoke "get" (i32.const 10)) "out of bounds")
-(assert_trap (invoke "set_get" (i32.const 10) (i32.const 7)) "out of bounds")
+(assert_trap (invoke "get" (i32.const 10)) "out of bounds array access")
+(assert_trap (invoke "set_get" (i32.const 10) (i32.const 7)) "out of bounds array access")
 
 (module
   (type $bvec (array i8))
@@ -249,8 +249,8 @@
 (assert_return (invoke "set_get" (i32.const 0) (i32.const 1) (i32.const 1)) (i32.const 2))
 (assert_return (invoke "len") (i32.const 2))
 
-(assert_trap (invoke "get" (i32.const 10) (i32.const 0)) "out of bounds")
-(assert_trap (invoke "set_get" (i32.const 10) (i32.const 0) (i32.const 0)) "out of bounds")
+(assert_trap (invoke "get" (i32.const 10) (i32.const 0)) "out of bounds array access")
+(assert_trap (invoke "set_get" (i32.const 10) (i32.const 0) (i32.const 0)) "out of bounds array access")
 
 (assert_invalid
   (module
