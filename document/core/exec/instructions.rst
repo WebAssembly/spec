@@ -669,9 +669,9 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vtestop>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Pop the value :math:`\V128.\VCONST~c` from the stack.
 
-3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
+3. Let :math:`i_1^\ast` be the result of computing :math:`\lanes_{\shape}(c)`.
 
 4. Let :math:`i` be the result of computing :math:`\bool(\bigwedge(i_1 \neq 0)^\ast)`.
 
@@ -681,7 +681,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~\shape\K{.}\ALLTRUE &\stepto& (\I32\K{.}\CONST~i)
+   (\V128\K{.}\VCONST~c)~\shape\K{.}\ALLTRUE &\stepto& (\I32\K{.}\CONST~i)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
@@ -698,7 +698,7 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vec-bitmask>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-2. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
+2. Pop the value :math:`\V128.\VCONST~c` from the stack.
 
 3. Let :math:`i_1^N` be the result of computing :math:`\lanes_{t\K{x}N}(c)`.
 
@@ -708,14 +708,14 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 6. Let :math:`j^\ast` be the concatenation of the two sequences :math:`i_2^N` and :math:`0^{32-N}`.
 
-7. Let :math:`c` be the result of computing :math:`\ibits_{32}^{-1}(j^\ast)`.
+7. Let :math:`i` be the result of computing :math:`\ibits_{32}^{-1}(j^\ast)`.
 
-8. Push the value :math:`\I32.\CONST~c` onto the stack.
+8. Push the value :math:`\I32.\CONST~i` onto the stack.
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~c)
-     & (\iff c = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
+   (\V128\K{.}\VCONST~c)~t\K{x}N\K{.}\BITMASK &\stepto& (\I32\K{.}\CONST~i)
+     & (\iff i = \ibits_{32}^{-1}(\ilts_{|t|}(\lanes_{t\K{x}N}(c), 0^N)))
      \\
    \end{array}
 
