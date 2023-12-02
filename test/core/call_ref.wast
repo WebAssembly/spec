@@ -94,7 +94,7 @@
 (assert_return (invoke "run" (i32.const 0)) (i32.const 0))
 (assert_return (invoke "run" (i32.const 3)) (i32.const -9))
 
-(assert_trap (invoke "null") "null function")
+(assert_trap (invoke "null") "null function reference")
 
 (assert_return (invoke "fac" (i64.const 0)) (i64.const 1))
 (assert_return (invoke "fac" (i64.const 1)) (i64.const 1))
