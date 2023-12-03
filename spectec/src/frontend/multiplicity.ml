@@ -96,8 +96,8 @@ and check_typ env ctx t =
       iter_nl_list (check_prem env ctx) prems
     ) tfs
   | CaseT (_, _, tcs, _) ->
-    iter_nl_list (fun (_, (tsI, prems), _) ->
-      List.iter (check_typ env ctx) tsI;
+    iter_nl_list (fun (_, (tI, prems), _) ->
+      check_typ env ctx tI;
       iter_nl_list (check_prem env ctx) prems
     ) tcs
   | RangeT tes ->
@@ -189,9 +189,9 @@ let check_def d : env =
     iter_nl_list (check_prem env []) prems;
     check_env env
 
-let check_typdef ts prems : env =
+let check_typdef t prems : env =
   let env = ref Env.empty in
-  List.iter (check_typ env []) ts;
+  check_typ env [] t;
   iter_nl_list (check_prem env []) prems;
   check_env env
 

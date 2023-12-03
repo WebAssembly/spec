@@ -4033,7 +4033,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {\mathsf{cd}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {\mathsf{ef\_}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {{\mathsf{gh}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
@@ -9273,7 +9273,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{castop}} &::=& ({\mathit{nul}},\; {\mathit{nul}}) \\
+& {\mathit{castop}} &::=& ({\mathit{nul}},\, {\mathit{nul}}) \\
 \end{array}
 $$
 
@@ -9381,7 +9381,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{memidxop}} &::=& ({\mathit{memidx}},\; {\mathit{memop}}) \\
+& {\mathit{memidxop}} &::=& ({\mathit{memidx}},\, {\mathit{memop}}) \\
 \end{array}
 $$
 
@@ -9733,7 +9733,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{code}} &::=& ({{\mathit{local}}^\ast},\; {\mathit{expr}}) \\
+& {\mathit{code}} &::=& ({{\mathit{local}}^\ast},\, {\mathit{expr}}) \\
 \end{array}
 $$
 

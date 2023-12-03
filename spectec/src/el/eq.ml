@@ -57,8 +57,8 @@ and eq_typ t1 t2 =
 and eq_typfield (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1 = atom2 && eq_typ t1 t2 && eq_nl_list eq_prem prems1 prems2
 
-and eq_typcase (atom1, (ts1, prems1), _) (atom2, (ts2, prems2), _) =
-  atom1 = atom2 && eq_list eq_typ ts1 ts2 && eq_nl_list eq_prem prems1 prems2
+and eq_typcase (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
+  atom1 = atom2 && eq_typ t1 t2 && eq_nl_list eq_prem prems1 prems2
 
 and eq_typenum (e1, eo1) (e2, eo2) =
   eq_exp e1 e2 && eq_opt eq_exp eo1 eo2

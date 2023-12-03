@@ -322,9 +322,11 @@ nottyp_rel_ :
 
 nottyp : nottyp_rel { $1 }
 
+(*
 nottyps :
   | (* empty *) { [] }
   | nottyp_post nottyps { $1::$2 }
+*)
 
 nottyp_list :
   | (* empty *) { [] }
@@ -344,19 +346,18 @@ fieldtyp_list :
 casetyp_list :
   | (* empty *) { [], [], NoDots }
   | DOTDOTDOT { [], [], Dots }
-  | varid casetyp_cont
-    { let x, y, z = $2 `L in (Elem $1)::x, y, z }
-  | atom nottyps hint_list premise_list casetyp_cont
-    { let x, y, z = $5 `R in x, (Elem ($1, ($2, $4), $3))::y, z }
-  | TICK LPAREN nottyps RPAREN hint_list premise_list casetyp_cont
-    { let x, y, z = $7 `R in
-      x, (Elem (LParen, ($3@[AtomT RParen $ at $loc($4)], $6), $5))::y, z }
-  | TICK LBRACK nottyps RBRACK hint_list premise_list casetyp_cont
-    { let x, y, z = $7 `R in
-      x, (Elem (LBrack, ($3@[AtomT RBrack $ at $loc($4)], $6), $5))::y, z }
-  | TICK LBRACE nottyps RBRACE hint_list premise_list casetyp_cont
-    { let x, y, z = $7 `R in
-      x, (Elem (LBrace, ($3@[AtomT RBrace $ at $loc($4)], $6), $5))::y, z }
+  | nottyp hint_list premise_list casetyp_cont
+    { match $1.it with
+      | VarT id when $2 = [] && $3 = [] ->
+        let x, y, z = $4 `L in (Elem id)::x, y, z
+      | AtomT atom
+      | SeqT ({it = AtomT atom; _}::_)
+      | InfixT (_, atom, _)
+      | BrackT (atom, _, _) ->
+        let x, y, z = $4 `R in x, (Elem (atom, ($1, $3), $2))::y, z
+      | _ ->
+        Source.error $1.at "syntax" "misplaced type";
+    }
 
 casetyp_cont :
   | (* empty *) { fun (_side : [`L | `R]) -> [], [], NoDots }

@@ -130,12 +130,9 @@ and string_of_typfield (atom, (t, prems), _hints) =
   string_of_atom atom ^ " " ^ string_of_typ t ^
     concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcase (atom, (ts, prems), _hints) =
-  (if ts = [] then
-    string_of_atom atom
-  else
-    string_of_atom atom ^ " " ^ string_of_typs " " ts
-  ) ^ concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
+and string_of_typcase (_atom, (t, prems), _hints) =
+  string_of_typ t ^
+    concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
 
 and string_of_typenum (e, eo) =
   string_of_exp e ^

@@ -88,8 +88,8 @@ and typ' =
   | InfixT of typ * atom * typ   (* typ atom typ *)
   | BrackT of atom * typ * atom  (* ``` ([{ typ }]) *)
 
-and typfield = atom * (typ * premise nl_list) * hint list     (* atom typ prem* hint* *)
-and typcase = atom * (typ list * premise nl_list) * hint list (* atom typ* prem* hint* *)
+and typfield = atom * (typ * premise nl_list) * hint list (* atom typ prem* hint* *)
+and typcase = atom * (typ * premise nl_list) * hint list  (* atom typ* prem* hint* *)
 and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` exp)?)* *)
 
 

@@ -88,8 +88,8 @@ and free_typ t =
 
 and free_typfield (_, (t, prems), _) =
   union (free_typ t) (free_nl_list free_prem prems)
-and free_typcase (_, (ts, prems), _) =
-  union (free_list free_typ ts) (free_nl_list free_prem prems)
+and free_typcase (_, (t, prems), _) =
+  union (free_typ t) (free_nl_list free_prem prems)
 and free_typenum (e, eo) =
   union (free_exp e) (free_opt free_exp eo)
 
