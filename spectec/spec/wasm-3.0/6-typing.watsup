@@ -1047,8 +1047,10 @@ rule Global_ok:
   -- Expr_ok_const: C |- expr : t CONST
 
 rule Table_ok:
-  C |- TABLE tt : tt
+  C |- TABLE tt expr : tt
   -- Tabletype_ok: C |- tt : OK
+  -- if tt = limits rt
+  -- Expr_ok_const: C |- expr : rt CONST
 
 rule Mem_ok:
   C |- MEMORY mt : mt

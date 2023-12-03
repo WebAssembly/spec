@@ -5,6 +5,7 @@
 relation Step: config ~> config                 hint(show "E")
 relation Step_pure: admininstr* ~> admininstr*  hint(show "E")
 relation Step_read: config ~> admininstr*       hint(show "E")
+relation Steps: config ~>* config               hint(show "E")
 
 rule Step/pure:
   z; instr*  ~>  z; instr'*
@@ -13,6 +14,23 @@ rule Step/pure:
 rule Step/read:
   z; instr*  ~>  z; instr'*
   -- Step_read: z; instr* ~> instr'*
+
+rule Steps/refl:
+  z; admininstr* ~>* z; admininstr*
+
+rule Steps/trans:
+  z; admininstr*  ~>*  z''; admininstr''*
+  -- Step: z; admininstr*  ~>  z'; admininstr'*
+  -- Steps: z'; admininstr'  ~>*  z''; admininstr''*
+
+
+;; Expressions
+
+relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
+
+rule Eval_expr:
+  z; instr*  ~>*  z'; val*
+  -- Steps: z; instr*  ~>*  z'; val*
 
 
 ;;
@@ -104,8 +122,7 @@ rule Step_read/call:
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x y)  ~>  (CALL_ADDR a)
   -- if $table(z, x).ELEM[i] = (REF.FUNC_ADDR a)
-  -- if $funcinst(z)[a].CODE = FUNC y' (LOCAL t)* instr*
-  -- if $type(z, y) = $type(z, y')
+  -- if $type(z, y) = $funcinst(z)[a].TYPE
 
 rule Step_read/call_indirect-trap:
   z; (CONST I32 i) (CALL_INDIRECT x y)  ~>  TRAP

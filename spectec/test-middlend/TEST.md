@@ -2715,37 +2715,39 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt <: valtype))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt <: valtype)))*{expr}
@@ -2753,101 +2755,101 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})
@@ -3567,12 +3569,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z, (instr' <: admininstr)*{instr'}))
     -- Step_pure: `%*~>%*`((instr <: admininstr)*{instr}, (instr' <: admininstr)*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z, (instr' <: admininstr)*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, (instr <: admininstr)*{instr}), (instr' <: admininstr)*{instr'})
@@ -3678,28 +3680,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, (val <: admininstr)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, (instr <: admininstr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, (instr <: admininstr)*{instr}), `%;%*`(z', (val <: admininstr)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -3896,16 +3898,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [(ref_T <: val)]))*{expr_T ref_T}
@@ -3915,9 +3918,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -6874,37 +6877,39 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -6912,101 +6917,101 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})
@@ -7726,12 +7731,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -7837,28 +7842,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -8055,16 +8060,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -8074,9 +8080,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -11036,37 +11042,39 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -11074,101 +11082,101 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})
@@ -11888,12 +11896,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -11999,28 +12007,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -12217,16 +12225,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -12236,9 +12245,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -15207,37 +15216,39 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -15245,101 +15256,101 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})
@@ -16063,12 +16074,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -16179,28 +16190,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -16397,16 +16408,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -16416,9 +16428,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -19387,37 +19399,39 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -19425,101 +19439,101 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})
@@ -20243,12 +20257,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -20359,28 +20373,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -20577,16 +20591,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -20596,9 +20611,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -23661,38 +23676,40 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (x < |C.TABLE_context|)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -23700,107 +23717,107 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- if (x < |C.FUNC_context|)
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (x < |C.FUNC_context|)
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (x < |C.GLOBAL_context|)
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (x < |C.TABLE_context|)
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (|import*{import}| = |ixt*{ixt}|)
@@ -24556,12 +24573,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -24677,28 +24694,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -24895,16 +24912,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -24914,9 +24932,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))
@@ -28028,38 +28046,40 @@ relation Global_ok: `%|-%:%`(context, global, globaltype)
 
 ;; 6-typing.watsup:1015.1-1015.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1049.1-1051.32
-  rule _ {C : context, tt : tabletype}:
-    `%|-%:%`(C, TABLE(tt, []), tt)
+  ;; 6-typing.watsup:1049.1-1053.41
+  rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
+    `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
+    -- if (tt = `%%`(limits, rt))
+    -- Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt))
 
 ;; 6-typing.watsup:1016.1-1016.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1053.1-1055.30
+  ;; 6-typing.watsup:1055.1-1057.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
 ;; 6-typing.watsup:1019.1-1019.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1066.1-1069.45
+  ;; 6-typing.watsup:1068.1-1071.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (x < |C.TABLE_context|)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1071.1-1072.20
+  ;; 6-typing.watsup:1073.1-1074.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1074.1-1075.20
+  ;; 6-typing.watsup:1076.1-1077.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
 ;; 6-typing.watsup:1017.1-1017.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1057.1-1060.37
+  ;; 6-typing.watsup:1059.1-1062.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, $valtype_reftype(rt)))*{expr}
@@ -28067,107 +28087,107 @@ relation Elem_ok: `%|-%:%`(context, elem, reftype)
 
 ;; 6-typing.watsup:1020.1-1020.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1077.1-1080.45
+  ;; 6-typing.watsup:1079.1-1082.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1082.1-1083.20
+  ;; 6-typing.watsup:1084.1-1085.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
 ;; 6-typing.watsup:1018.1-1018.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1062.1-1064.37
+  ;; 6-typing.watsup:1064.1-1066.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
 ;; 6-typing.watsup:1021.1-1021.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1085.1-1087.52
+  ;; 6-typing.watsup:1087.1-1089.52
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- if (x < |C.FUNC_context|)
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1092.1-1092.80
+;; 6-typing.watsup:1094.1-1094.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1096.1-1098.33
+  ;; 6-typing.watsup:1098.1-1100.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1094.1-1094.83
+;; 6-typing.watsup:1096.1-1096.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1105.1-1107.23
+  ;; 6-typing.watsup:1107.1-1109.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (x < |C.FUNC_context|)
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1109.1-1111.25
+  ;; 6-typing.watsup:1111.1-1113.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (x < |C.GLOBAL_context|)
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1113.1-1115.24
+  ;; 6-typing.watsup:1115.1-1117.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (x < |C.TABLE_context|)
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1117.1-1119.22
+  ;; 6-typing.watsup:1119.1-1121.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1093.1-1093.80
+;; 6-typing.watsup:1095.1-1095.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1100.1-1102.39
+  ;; 6-typing.watsup:1102.1-1104.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 rec {
 
-;; 6-typing.watsup:1126.1-1126.77
+;; 6-typing.watsup:1128.1-1128.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1169.1-1170.25
+  ;; 6-typing.watsup:1171.1-1172.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1172.1-1175.54
+  ;; 6-typing.watsup:1174.1-1177.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 rec {
 
-;; 6-typing.watsup:1125.1-1125.75
+;; 6-typing.watsup:1127.1-1127.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1161.1-1162.25
+  ;; 6-typing.watsup:1163.1-1164.25
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1164.1-1167.49
+  ;; 6-typing.watsup:1166.1-1169.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1124.1-1124.76
+;; 6-typing.watsup:1126.1-1126.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1135.1-1158.29
+  ;; 6-typing.watsup:1137.1-1160.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- if (|import*{import}| = |ixt*{ixt}|)
@@ -28923,12 +28943,12 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
 ;; 8-reduction.watsup:5.1-5.63
 relation Step: `%~>%`(config, config)
-  ;; 8-reduction.watsup:9.1-11.34
+  ;; 8-reduction.watsup:10.1-12.34
   rule pure {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_pure: `%*~>%*`($admininstr_instr(instr)*{instr}, $admininstr_instr(instr')*{instr'})
 
-  ;; 8-reduction.watsup:13.1-15.37
+  ;; 8-reduction.watsup:14.1-16.37
   rule read {instr* : instr*, instr'* : instr*, z : state}:
     `%~>%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z, $admininstr_instr(instr')*{instr'}))
     -- Step_read: `%~>%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), $admininstr_instr(instr')*{instr'})
@@ -29044,28 +29064,28 @@ relation Step: `%~>%`(config, config)
   rule data.drop {x : idx, z : state}:
     `%~>%`(`%;%*`(z, [DATA.DROP_admininstr(x)]), `%;%*`($with_data(z, x, []), []))
 
-;; 8-reduction.watsup:20.1-20.59
+;; 8-reduction.watsup:8.1-8.63
 rec {
 
-;; 8-reduction.watsup:20.1-20.59
-relation Eval: `%~>*%;%*`(config, state, val*)
-  ;; 8-reduction.watsup:23.1-24.22
-  rule done {val* : val*, z : state}:
-    `%~>*%;%*`(`%;%*`(z, $admininstr_val(val)*{val}), z, val*{val})
+;; 8-reduction.watsup:8.1-8.63
+relation Steps: `%~>*%`(config, config)
+  ;; 8-reduction.watsup:18.1-19.36
+  rule refl {admininstr* : admininstr*, z : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z, admininstr*{admininstr}))
 
-  ;; 8-reduction.watsup:26.1-29.43
-  rule step {admininstr* : admininstr*, admininstr' : admininstr, val* : val*, z : state, z' : state, z'' : state}:
-    `%~>*%;%*`(`%;%*`(z, admininstr*{admininstr}), z'', val*{val})
+  ;; 8-reduction.watsup:21.1-24.53
+  rule trans {admininstr* : admininstr*, admininstr' : admininstr, admininstr''* : admininstr*, z : state, z' : state, z'' : state}:
+    `%~>*%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z'', admininstr''*{admininstr''}))
     -- Step: `%~>%`(`%;%*`(z, admininstr*{admininstr}), `%;%*`(z', admininstr'*{}))
-    -- Eval: `%~>*%;%*`(`%;%*`(z', [admininstr']), z'', val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z', [admininstr']), `%;%*`(z'', admininstr''*{admininstr''}))
 }
 
-;; 8-reduction.watsup:21.1-21.69
+;; 8-reduction.watsup:29.1-29.69
 relation Eval_expr: `%;%~>*%;%*`(state, expr, state, val*)
-  ;; 8-reduction.watsup:31.1-33.35
+  ;; 8-reduction.watsup:31.1-33.37
   rule _ {instr* : instr*, val* : val*, z : state, z' : state}:
     `%;%~>*%;%*`(z, instr*{instr}, z', val*{val})
-    -- Eval: `%~>*%;%*`(`%;%*`(z, $admininstr_instr(instr)*{instr}), z, val*{val})
+    -- Steps: `%~>*%`(`%;%*`(z, $admininstr_instr(instr)*{instr}), `%;%*`(z', $admininstr_val(val)*{val}))
 
 ;; 9-module.watsup:7.1-7.34
 rec {
@@ -29262,16 +29282,17 @@ def rundata : (data, idx) -> instr*
 
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
-  ;; 9-module.watsup:150.1-170.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func^n_func : func^n_func, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_func^n_func : nat^n_func, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_func : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
-    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_func{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
+  ;; 9-module.watsup:150.1-171.64
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+    -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
     -- if (elem*{elem} = `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype})
     -- if (start?{start} = START(x)?{x})
+    -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_func)^(i_func<n_func){i_func}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
@@ -29281,9 +29302,9 @@ def instantiate : (store, module, externval*) -> config
     -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
     -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
 
-;; 9-module.watsup:177.1-177.44
+;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
-  ;; 9-module.watsup:178.1-181.53
+  ;; 9-module.watsup:179.1-182.53
   def {expr : expr, f : frame, fa : funcaddr, local* : local*, n : n, s : store, t_1^n : valtype^n, t_2* : valtype*, val^n : val^n, x : idx} invoke(s, fa, val^n{val}) = `%;%*`(`%;%`(s, f), $admininstr_val(val)^n{val} :: [REF.FUNC_ADDR_admininstr(fa) CALL_REF_admininstr(?(0))])
     -- if (f = {LOCAL [], MODULE {TYPE [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], EXPORT []}})
     -- if ($funcinst(`%;%`(s, f))[fa].CODE_funcinst = `FUNC%%*%`(x, local*{local}, expr))

@@ -94,7 +94,7 @@ In addition to type expressions, custom _notation_ types can be defined:
 deftyp ::=
   nottyp                                                              free notation
   "{" list(atom typ hint* premise*, ",") "}"                          record
-  "..."? "|" list(varid | atom nottyp hint* premise*, "|") "|" "..."  variant
+  "..."? "|" list(varid | nottyp hint* premise*, "|") "|" "..."       variant
 
 nottyp ::=
   typ                                       plain type
@@ -162,8 +162,10 @@ arith ::=
   arith cmpop arith                    comparison
   exp "[" arith "]"                    list indexing
   "(" arith ")"                        parentheses
+  "(" arith iter ")"                   iteration (must not be "^exp")
   "|" exp "|"                          list length
   "$" defid exp?                       function invocation
+  "$" "(" exp ")"                      escape back to general expression syntax
 
 path ::=
   path? "[" arith "]"                  list element

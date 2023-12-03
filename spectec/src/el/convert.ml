@@ -33,7 +33,7 @@ let rec typ_of_exp e =
   | AtomE atom -> AtomT atom
   | SeqE es -> SeqT (List.map typ_of_exp es)
   | InfixE (e1, atom, e2) -> InfixT (typ_of_exp e1, atom, typ_of_exp e2)
-  | BrackE (brack, e1) -> BrackT (brack, typ_of_exp e1)
+  | BrackE (l, e1, r) -> BrackT (l, typ_of_exp e1, r)
   | _ -> Source.error e.at "syntax" "malformed type"
   ) $ e.at
 
@@ -57,7 +57,7 @@ let rec exp_of_typ t =
   | AtomT atom -> AtomE atom
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
-  | BrackT (brack, t1) -> BrackE (brack, exp_of_typ t1)
+  | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
   | _ -> Source.error t.at "syntax" "malformed expression"
   ) $ t.at
 

@@ -75,13 +75,13 @@ and subst_typ s t =
   | RangeT tes -> RangeT (subst_nl_list subst_typenum s tes)
   | SeqT ts -> SeqT (subst_list subst_typ s ts)
   | InfixT (t1, op, t2) -> InfixT (subst_typ s t1, op, subst_typ s t2)
-  | BrackT (brack, t1) -> BrackT (brack, subst_typ s t1)
+  | BrackT (l, t1, r) -> BrackT (l, subst_typ s t1, r)
   ) $ t.at
 
 and subst_typfield s (atom, (t, prems), hints) =
   (atom, (subst_typ s t, subst_nl_list subst_prem s prems), hints)
-and subst_typcase s (atom, (ts, prems), hints) =
-  (atom, (subst_list subst_typ s ts, subst_nl_list subst_prem s prems), hints)
+and subst_typcase s (atom, (t, prems), hints) =
+  (atom, (subst_typ s t, subst_nl_list subst_prem s prems), hints)
 and subst_typenum s (e, eo) =
   (subst_exp s e, subst_opt subst_exp s eo)
 
@@ -115,7 +115,7 @@ and subst_exp s e =
   | ParenE (e1, b) -> ParenE (subst_exp s e1, b)
   | TupE es -> TupE (subst_list subst_exp s es)
   | InfixE (e1, atom, e2) -> InfixE (subst_exp s e1, atom, subst_exp s e2)
-  | BrackE (brack, e1) -> BrackE (brack, subst_exp s e1)
+  | BrackE (l, e1, r) -> BrackE (l, subst_exp s e1, r)
   | CallE (id, args) -> CallE (id, subst_list subst_arg s args)
   | IterE (e1, iter) -> IterE (subst_exp s e1, subst_iter s iter)
   | TypE (e1, t) -> TypE (subst_exp s e1, subst_typ s t)

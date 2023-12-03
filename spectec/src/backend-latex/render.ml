@@ -146,11 +146,6 @@ let strip_nl = function
   | xs -> xs
 
 
-let as_tup_typ t =
-  match t.it with
-  | TupT ts -> ts
-  | _ -> [t]
-
 let as_paren_exp e =
   match e.it with
   | ParenE (e1, _) -> e1
@@ -233,7 +228,7 @@ and expand_exp args e =
     let e1' = expand_exp args e1 in
     let e2' = expand_exp args e2 in
     InfixE (e1', atom, e2')
-  | BrackE (brack, e) -> BrackE (brack, expand_exp args e)
+  | BrackE (l, e1, r) -> BrackE (l, expand_exp args e1, r)
   | CallE (id, args') -> CallE (id, List.map (expand_arg args) args')
   | IterE (e1, iter) ->
     let e1' = expand_exp args e1 in
@@ -414,6 +409,7 @@ let render_atom env = function
   | Atom id -> render_atomid env id
   | Infinity -> "\\infty"
   | Bot -> "\\bot"
+  | Top -> "\\top"
   | Dot -> "."
   | Dot2 -> ".."
   | Dot3 -> "\\dots"
@@ -421,9 +417,12 @@ let render_atom env = function
   | Backslash -> "\\setminus"
   | In -> "\\in"
   | Arrow -> "\\rightarrow"
+  | Arrow2 -> "\\Rightarrow"
   | Colon -> ":"
   | Sub -> "\\leq"
+  | Sup -> "\\geq"
   | Assign -> ":="
+  | Equiv -> "\\equiv"
   | Approx -> "\\approx"
   | SqArrow -> "\\hookrightarrow"
   | SqArrowStar -> "\\hookrightarrow^\\ast"
@@ -436,12 +435,16 @@ let render_atom env = function
     else
       "\\vdash"
   | Quest -> "{}^?"
+  | Plus -> "{}^+"
   | Star -> "{}^\\ast"
-
-let render_brack = function
-  | Paren -> "(", ")"
-  | Brack -> "[", "]"
-  | Brace -> "\\{", "\\}"
+  | Comma -> ","
+  | Bar -> "\\mid"
+  | LParen -> "("
+  | RParen -> ")"
+  | LBrack -> "["
+  | RBrack -> "]"
+  | LBrace -> "\\{"
+  | RBrace -> "\\}"
 
 let render_unop = function
   | NotOp -> "\\neg"
@@ -488,17 +491,6 @@ let rec render_iter env = function
 
 and render_typ env t =
   match t.it with
-  | VarT (id, args) ->
-    render_apply render_synid render_exp env env.show_syn id args
-  | BoolT -> render_synid env ("bool" $ t.at)
-  | NumT NatT -> render_synid env ("nat" $ t.at)
-  | NumT IntT -> render_synid env ("int" $ t.at)
-  | NumT RatT -> render_synid env ("rat" $ t.at)
-  | NumT RealT -> render_synid env ("real" $ t.at)
-  | TextT -> render_synid env ("text" $ t.at)
-  | ParenT t1 -> "(" ^ render_typ env t1 ^ ")"
-  | TupT ts -> "(" ^ render_typs ",\\; " env ts ^ ")"
-  | IterT (t1, iter) -> "{" ^ render_typ env t1 ^ render_iter env iter ^ "}"
   | StrT tfs ->
     "\\{\\; " ^
     "\\begin{array}[t]{@{}l@{}l@{}}\n" ^
@@ -507,45 +499,20 @@ and render_typ env t =
   | CaseT (dots1, ids, tcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
       (render_dots dots1 @ map_nl_list (render_synid env) ids @
-        map_nl_list (render_typcase env t.at) tcases @ render_dots dots2)
+        map_nl_list (render_typcase env) tcases @ render_dots dots2)
   | RangeT tes ->
     altern_map_nl " ~|~ " "\\\\ &&|&\n" (render_typenum env) tes
-  | AtomT atom -> render_typcase env t.at (atom, ([], []), [])
-  | SeqT [] -> "\\epsilon"
-  | SeqT ({it = AtomT atom; at; _}::ts) -> render_typcase env at (atom, (ts, []), [])
-  | SeqT ts -> render_typs "~" env ts
-  | InfixT ({it = SeqT []; _}, atom, t2) ->
-    "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env t2
-  | InfixT (t1, atom, t2) ->
-    render_typ env t1 ^ space (render_atom env) atom ^ render_typ env t2
-  | BrackT (brack, t1) ->
-    let l, r = render_brack brack in l ^ render_typ env t1 ^ r
-
-and render_typs sep env ts =
-  concat sep (List.filter ((<>) "") (List.map (render_typ env) ts))
+  | _ ->
+    render_exp env (exp_of_typ t)
 
 
 and render_typfield env (atom, (t, prems), _hints) =
   render_fieldname env atom t.at ^ "~" ^ render_typ env t ^
   if prems = [] then "" else render_conditions env "&&&&" prems
 
-and render_typcase env at (atom, (ts, prems), _hints) =
-  let args = List.map (fun t -> arg_of_exp (exp_of_typ t)) ts in
-  render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ at) args
-    (fun () ->
-      match atom, ts with
-      | Atom id, t1::ts2 when ends_sub id ->
-        (* Handle subscripting *)
-        "{" ^ render_atomid env (chop_sub id) ^
-        "}_{" ^ render_typs "," env (as_tup_typ t1) ^ "}\\," ^
-        (if ts2 = [] then "" else "\\," ^ render_typs "~" env ts2)
-      | _ ->
-        let s1 = render_atom env atom in
-        let s2 = render_typs "~" env ts in
-        assert (s1 <> "" || s2 <> "");
-        if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
-    ) ^
-    if prems = [] then "" else render_conditions env "&&&&" prems
+and render_typcase env (_atom, (t, prems), _hints) =
+  render_typ env t ^
+  if prems = [] then "" else render_conditions env "&&&&" prems
 
 and render_typenum env (e, eo) =
   render_exp env e ^
@@ -564,7 +531,6 @@ and render_exp env e =
   match e.it with
   | VarE (id, args) ->
     render_apply render_varid render_exp env env.show_syn id args
-  | AtomE atom -> render_expcase env atom [] e.at
   | BoolE b -> render_atom env (Atom (string_of_bool b))
   | NatE n -> string_of_int n
   | HexE n ->
@@ -588,7 +554,25 @@ and render_exp env e =
   | CmpE (e1, op, e2) ->
     render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
-  | SeqE ({it = AtomE atom; at; _}::es) -> render_expcase env atom es at
+  | AtomE atom ->
+    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ e.at) []
+      (fun () -> render_atom env atom)
+  | SeqE ({it = AtomE atom; at; _}::es) ->
+    let args = List.map arg_of_exp es in
+    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ at) args
+      (fun () ->
+        match atom, es with
+        | Atom id, e1::es2 when ends_sub id ->
+          (* Handle subscripting *)
+          "{" ^ render_atomid env (chop_sub id) ^
+          "}_{" ^ render_exps "," env (as_tup_exp e1) ^ "}" ^
+          (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
+        | _ ->
+          let s1 = render_atom env atom in
+          let s2 = render_exps "~" env es in
+          assert (s1 <> "" || s2 <> "");
+          if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
+      )
   (* Hack for binop_nt *)
   | SeqE (e1::e2::es) when chop_sub_exp e1 <> None ->
     "{" ^ render_exp env (Option.get (chop_sub_exp e1)) ^ "}_{" ^
@@ -623,8 +607,8 @@ and render_exp env e =
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env e2
   | InfixE (e1, atom, e2) ->
     render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
-  | BrackE (brack, e) ->
-    let l, r = render_brack brack in l ^ render_exp env e ^ r
+  | BrackE (l, e1, r) ->
+    render_atom env l ^ render_exp env e1 ^ render_atom env r
   | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
     render_arg env arg
   | CallE (id, args) when id.it = "" ->  (* expansion result only *)
@@ -658,23 +642,6 @@ and render_path env p =
 and render_fieldname env atom at =
   render_expand render_exp env env.show_field (El.Print.string_of_atom atom $ at) []
     (fun () -> render_atom env atom)
-
-and render_expcase env atom es at =
-  let args = List.map arg_of_exp es in
-  render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ at) args
-    (fun () ->
-      match atom, es with
-      | Atom id, e1::es2 when ends_sub id ->
-        (* Handle subscripting *)
-        "{" ^ render_atomid env (chop_sub id) ^
-        "}_{" ^ render_exps "," env (as_tup_exp e1) ^ "}" ^
-        (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
-      | _ ->
-        let s1 = render_atom env atom in
-        let s2 = render_exps "~" env es in
-        assert (s1 <> "" || s2 <> "");
-        if s1 <> "" && s2 <> "" then s1 ^ "~" ^ s2 else s1 ^ s2
-    )
 
 
 (* Premises *)

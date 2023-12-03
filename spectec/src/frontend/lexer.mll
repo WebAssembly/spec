@@ -133,8 +133,8 @@ and after_nl_nl = parse
   | "" { token lexbuf }
 
 and token = parse
-  | "(" { LPAR }
-  | ")" { RPAR }
+  | "(" { LPAREN }
+  | ")" { RPAREN }
   | "[" { LBRACK }
   | "]" { RBRACK }
   | "{" { LBRACE }
@@ -170,7 +170,9 @@ and token = parse
   | ">=" { GE }
   | "~~" { APPROX }
   | "<:" { SUB }
+  | ":>" { SUP }
   | ":=" { ASSIGN }
+  | "==" { EQUIV }
   | "=.." { EQDOT2 }
 
   | "~" { NOT }
@@ -200,6 +202,7 @@ and token = parse
   | "$" { DOLLAR }
 
   | "_|_" { BOT }
+  | "^|^" { TOP }
   | "%" { HOLE }
   | "%%" { MULTIHOLE }
   | "!%" { SKIP }
@@ -224,7 +227,7 @@ and token = parse
 
   | "if" { IF }
   | "otherwise" { OTHERWISE }
-  | "hint(" { HINT_LPAR }
+  | "hint(" { HINT_LPAREN }
 
   | "epsilon" { EPSILON }
   | "true" { BOOLLIT true }
@@ -242,8 +245,8 @@ and token = parse
 
   | upid as s { if is_var s then LOID s else UPID s }
   | loid as s { LOID s }
-  | (upid as s) "(" { if is_var s then LOID_LPAR s else UPID_LPAR s }
-  | (loid as s) "(" { LOID_LPAR s }
+  | (upid as s) "(" { if is_var s then LOID_LPAREN s else UPID_LPAREN s }
+  | (loid as s) "(" { LOID_LPAREN s }
   | "."(id as s) { DOTID s }
 
   | ";;"utf8_no_nl*eof { EOF }
