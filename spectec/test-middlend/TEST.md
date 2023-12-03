@@ -193,7 +193,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -233,16 +233,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -258,6 +253,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 ;; 1-syntax.watsup:114.1-115.21
@@ -279,47 +279,47 @@ syntax packedtype =
   | I8
   | I16
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -329,7 +329,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -344,7 +344,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -354,15 +354,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -371,7 +371,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -380,53 +380,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -506,61 +506,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -1063,7 +1063,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -4158,7 +4158,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -4198,16 +4198,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -4223,6 +4218,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -4307,53 +4307,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -4363,7 +4363,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -4378,7 +4378,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -4388,15 +4388,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -4405,7 +4405,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -4414,53 +4414,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -4540,61 +4540,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -5101,7 +5101,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -8320,7 +8320,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -8360,16 +8360,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -8385,6 +8380,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -8469,53 +8469,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -8525,7 +8525,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -8540,7 +8540,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -8550,15 +8550,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -8567,7 +8567,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -8576,53 +8576,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -8702,61 +8702,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -9264,7 +9264,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -12485,7 +12485,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -12525,16 +12525,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -12550,6 +12545,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -12634,53 +12634,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -12690,7 +12690,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -12705,7 +12705,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -12715,15 +12715,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -12732,7 +12732,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -12741,53 +12741,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -12867,61 +12867,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -13429,7 +13429,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -16668,7 +16668,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -16708,16 +16708,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -16733,6 +16728,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -16817,53 +16817,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -16873,7 +16873,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -16888,7 +16888,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -16898,15 +16898,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -16915,7 +16915,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -16924,53 +16924,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -17050,61 +17050,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -17612,7 +17612,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -20851,7 +20851,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -20891,16 +20891,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -20916,6 +20911,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -21000,53 +21000,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -21056,7 +21056,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -21071,7 +21071,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -21081,15 +21081,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -21098,7 +21098,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -21107,53 +21107,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -21233,61 +21233,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -21795,7 +21795,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
@@ -25221,7 +25221,7 @@ syntax mut = `MUT%?`(()?)
 ;; 1-syntax.watsup:133.1-133.20
 syntax fin = `FINAL%?`(()?)
 
-;; 1-syntax.watsup:119.1-167.12
+;; 1-syntax.watsup:119.1-169.54
 rec {
 
 ;; 1-syntax.watsup:119.1-120.14
@@ -25261,16 +25261,11 @@ syntax comptype =
   | ARRAY(fieldtype)
   | FUNC(functype)
 
-;; 1-syntax.watsup:154.1-156.54
-syntax subtype =
-  | SUB(fin, typeidx*, comptype)
-  | SUBD(fin, heaptype*, comptype)
-
-;; 1-syntax.watsup:158.1-159.17
+;; 1-syntax.watsup:156.1-157.17
 syntax rectype =
   | REC(subtype*)
 
-;; 1-syntax.watsup:164.1-167.12
+;; 1-syntax.watsup:162.1-165.12
 syntax heaptype =
   | _IDX(typeidx)
   | ANY
@@ -25286,6 +25281,11 @@ syntax heaptype =
   | BOT
   | DEF(rectype, nat)
   | REC(nat)
+
+;; 1-syntax.watsup:167.1-169.54
+syntax subtype =
+  | SUB(fin, typeidx*, comptype)
+  | SUBD(fin, heaptype*, comptype)
 }
 
 def heaptype_absheaptype : absheaptype -> heaptype
@@ -25370,53 +25370,53 @@ def storagetype_packedtype : packedtype -> storagetype
   def storagetype_packedtype(I8_packedtype) = I8_storagetype
   def storagetype_packedtype(I16_packedtype) = I16_storagetype
 
-;; 1-syntax.watsup:161.1-162.35
+;; 1-syntax.watsup:159.1-160.35
 syntax deftype =
   | DEF(rectype, nat)
 
 def heaptype_deftype : deftype -> heaptype
   def {x0 : rectype, x1 : nat} heaptype_deftype(DEF_deftype(x0, x1)) = DEF_heaptype(x0, x1)
 
-;; 1-syntax.watsup:172.1-173.16
+;; 1-syntax.watsup:174.1-175.16
 syntax limits = `[%..%]`(u32, u32)
 
-;; 1-syntax.watsup:175.1-176.14
+;; 1-syntax.watsup:177.1-178.14
 syntax globaltype = `%%`(mut, valtype)
 
-;; 1-syntax.watsup:177.1-178.17
+;; 1-syntax.watsup:179.1-180.17
 syntax tabletype = `%%`(limits, reftype)
 
-;; 1-syntax.watsup:179.1-180.12
+;; 1-syntax.watsup:181.1-182.12
 syntax memtype = `%I8`(limits)
 
-;; 1-syntax.watsup:181.1-182.10
+;; 1-syntax.watsup:183.1-184.10
 syntax elemtype = reftype
 
 def storagetype_elemtype : elemtype -> storagetype
   def {x0 : nul, x1 : heaptype} storagetype_elemtype(REF_reftype(x0, x1)) = REF_storagetype(x0, x1)
 
-;; 1-syntax.watsup:183.1-184.5
+;; 1-syntax.watsup:185.1-186.5
 syntax datatype = OK
 
-;; 1-syntax.watsup:185.1-186.69
+;; 1-syntax.watsup:187.1-188.69
 syntax externtype =
   | FUNC(deftype)
   | GLOBAL(globaltype)
   | TABLE(tabletype)
   | MEM(memtype)
 
-;; 1-syntax.watsup:221.1-221.44
+;; 1-syntax.watsup:223.1-223.44
 syntax sx =
   | U
   | S
 
-;; 1-syntax.watsup:223.1-223.36
+;; 1-syntax.watsup:225.1-225.36
 syntax iunop =
   | CLZ
   | CTZ
   | POPCNT
 
-;; 1-syntax.watsup:224.1-224.67
+;; 1-syntax.watsup:226.1-226.67
 syntax funop =
   | ABS
   | NEG
@@ -25426,7 +25426,7 @@ syntax funop =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:226.1-228.66
+;; 1-syntax.watsup:228.1-230.66
 syntax ibinop =
   | ADD
   | SUB
@@ -25441,7 +25441,7 @@ syntax ibinop =
   | ROTL
   | ROTR
 
-;; 1-syntax.watsup:229.1-229.63
+;; 1-syntax.watsup:231.1-231.63
 syntax fbinop =
   | ADD
   | SUB
@@ -25451,15 +25451,15 @@ syntax fbinop =
   | MAX
   | COPYSIGN
 
-;; 1-syntax.watsup:231.1-231.23
+;; 1-syntax.watsup:233.1-233.23
 syntax itestop =
   | EQZ
 
-;; 1-syntax.watsup:232.1-232.19
+;; 1-syntax.watsup:234.1-234.19
 syntax ftestop =
   |
 
-;; 1-syntax.watsup:234.1-235.112
+;; 1-syntax.watsup:236.1-237.112
 syntax irelop =
   | EQ
   | NE
@@ -25468,7 +25468,7 @@ syntax irelop =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:236.1-236.46
+;; 1-syntax.watsup:238.1-238.46
 syntax frelop =
   | EQ
   | NE
@@ -25477,53 +25477,53 @@ syntax frelop =
   | LE
   | GE
 
-;; 1-syntax.watsup:239.1-239.44
+;; 1-syntax.watsup:241.1-241.44
 syntax unop_numtype =
   | _I(iunop)
   | _F(funop)
 
-;; 1-syntax.watsup:240.1-240.47
+;; 1-syntax.watsup:242.1-242.47
 syntax binop_numtype =
   | _I(ibinop)
   | _F(fbinop)
 
-;; 1-syntax.watsup:241.1-241.50
+;; 1-syntax.watsup:243.1-243.50
 syntax testop_numtype =
   | _I(itestop)
   | _F(ftestop)
 
-;; 1-syntax.watsup:242.1-242.47
+;; 1-syntax.watsup:244.1-244.47
 syntax relop_numtype =
   | _I(irelop)
   | _F(frelop)
 
-;; 1-syntax.watsup:243.1-243.53
+;; 1-syntax.watsup:245.1-245.53
 syntax cvtop =
   | CONVERT
   | REINTERPRET
   | CONVERT_SAT
 
-;; 1-syntax.watsup:251.1-251.68
+;; 1-syntax.watsup:253.1-253.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:261.1-261.15
+;; 1-syntax.watsup:263.1-263.15
 syntax c = nat
 
-;; 1-syntax.watsup:262.1-262.23
+;; 1-syntax.watsup:264.1-264.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:263.1-263.23
+;; 1-syntax.watsup:265.1-265.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:265.1-267.17
+;; 1-syntax.watsup:267.1-269.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 rec {
 
-;; 1-syntax.watsup:360.1-368.89
+;; 1-syntax.watsup:362.1-370.89
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -25603,61 +25603,61 @@ syntax instr =
   | STORE(numtype, n?, memidx, memop)
 }
 
-;; 1-syntax.watsup:370.1-371.9
+;; 1-syntax.watsup:372.1-373.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:383.1-383.61
+;; 1-syntax.watsup:385.1-385.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:384.1-384.49
+;; 1-syntax.watsup:386.1-386.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:386.1-387.15
+;; 1-syntax.watsup:388.1-389.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:388.1-389.16
+;; 1-syntax.watsup:390.1-391.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:390.1-391.27
+;; 1-syntax.watsup:392.1-393.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:392.1-393.25
+;; 1-syntax.watsup:394.1-395.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:394.1-395.23
+;; 1-syntax.watsup:396.1-397.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:396.1-397.17
+;; 1-syntax.watsup:398.1-399.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:398.1-399.30
+;; 1-syntax.watsup:400.1-401.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:400.1-401.22
+;; 1-syntax.watsup:402.1-403.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:402.1-403.16
+;; 1-syntax.watsup:404.1-405.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:405.1-406.66
+;; 1-syntax.watsup:407.1-408.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:407.1-408.24
+;; 1-syntax.watsup:409.1-410.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:409.1-410.30
+;; 1-syntax.watsup:411.1-412.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:412.1-413.76
+;; 1-syntax.watsup:414.1-415.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -26165,7 +26165,7 @@ syntax addrref =
   | REF.EXTERN(addrref)
 }
 
-;; 4-runtime.watsup:42.1-44.12
+;; 4-runtime.watsup:42.1-44.22
 syntax ref =
   | REF.I31_NUM(u31)
   | REF.STRUCT_ADDR(structaddr)
