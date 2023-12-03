@@ -19,16 +19,20 @@ let string_of_atom = function
   | Atom atomid -> atomid
   | Infinity -> "infinity"
   | Bot -> "_|_"
+  | Top -> "^|^"
   | Dot -> "."
   | Dot2 -> ".."
   | Dot3 -> "..."
   | Semicolon -> ";"
   | Backslash -> "\\"
-  | In -> "in"
+  | In -> "<-"
   | Arrow -> "->"
+  | Arrow2 -> "`=>"
   | Colon -> ":"
   | Sub -> "<:"
+  | Sup -> ":>"
   | Assign -> ":="
+  | Equiv -> "=="
   | Approx -> "~~"
   | SqArrow -> "~>"
   | SqArrowStar -> "~>*"
@@ -36,13 +40,17 @@ let string_of_atom = function
   | Succ -> ">>"
   | Tilesturn -> "-|"
   | Turnstile -> "|-"
-  | Quest -> "?"
-  | Star -> "*"
-
-let string_of_brack = function
-  | Paren -> "(", ")"
-  | Brack -> "[", "]"
-  | Brace -> "{", "}"
+  | Quest -> "`?"
+  | Plus -> "`+"
+  | Star -> "`*"
+  | Comma -> "`,"
+  | Bar -> "`|"
+  | LParen -> "`("
+  | RParen -> "`)"
+  | LBrack -> "`["
+  | RBrack -> "`]"
+  | LBrace -> "`{"
+  | RBrace -> "`}"
 
 let string_of_unop = function
   | NotOp -> "~"
@@ -112,9 +120,8 @@ and string_of_typ t =
   | SeqT ts -> "{" ^ string_of_typs " " ts ^ "}"
   | InfixT (t1, atom, t2) ->
     string_of_typ t1 ^ space string_of_atom atom ^ string_of_typ t2
-  | BrackT (brack, t1) ->
-    let l, r = string_of_brack brack in
-    "`" ^ l ^ string_of_typ t1 ^ r
+  | BrackT (l, t1, r) ->
+    "`" ^ string_of_atom l ^ string_of_typ t1 ^ string_of_atom r
 
 and string_of_typs sep ts =
   concat sep (List.map string_of_typ ts)
@@ -123,12 +130,9 @@ and string_of_typfield (atom, (t, prems), _hints) =
   string_of_atom atom ^ " " ^ string_of_typ t ^
     concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
 
-and string_of_typcase (atom, (ts, prems), _hints) =
-  (if ts = [] then
-    string_of_atom atom
-  else
-    string_of_atom atom ^ " " ^ string_of_typs " " ts
-  ) ^ concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
+and string_of_typcase (_atom, (t, prems), _hints) =
+  string_of_typ t ^
+    concat "" (map_nl_list (prefix "\n  -- " string_of_prem) prems)
 
 and string_of_typenum (e, eo) =
   string_of_exp e ^
@@ -175,9 +179,8 @@ and string_of_exp e =
   | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | InfixE (e1, atom, e2) ->
     string_of_exp e1 ^ space string_of_atom atom ^ string_of_exp e2
-  | BrackE (brack, e) ->
-    let l, r = string_of_brack brack in
-    "`" ^ l ^ string_of_exp e ^ r
+  | BrackE (l, e1, r) ->
+    "`" ^ string_of_atom l ^ string_of_exp e1 ^ string_of_atom r
   | CallE (id, {it = SeqE []; _}) -> "$" ^ id.it
   | CallE (id, e) -> "$" ^ id.it ^ string_of_exp e
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iter iter

@@ -20,16 +20,20 @@ type atom =
   | Atom of string               (* atomid *)
   | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)
+  | Top                          (* `^|^` *)
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
   | Dot3                         (* `...` *)
   | Semicolon                    (* `;` *)
   | Backslash                    (* `\` *)
-  | In                           (* `in` *)
+  | In                           (* `<-` *)
   | Arrow                        (* `->` *)
+  | Arrow2                       (* ``=>` *)
   | Colon                        (* `:` *)
   | Sub                          (* `<:` *)
+  | Sup                          (* `:>` *)
   | Assign                       (* `:=` *)
+  | Equiv                        (* `==` *)
   | Approx                       (* `~~` *)
   | SqArrow                      (* `~>` *)
   | SqArrowStar                  (* `~>*` *)
@@ -37,15 +41,14 @@ type atom =
   | Succ                         (* `>>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
-  | Quest                        (* `?` *)
-  | Star                         (* `*` *)
-
-type brack =
-  | Paren                        (* ``(` ... `)` *)
-  | Brack                        (* ``[` ... `]` *)
-  | Brace                        (* ``{` ... `}` *)
-
-type dots = Dots | NoDots
+  | Quest                        (* ``?` *)
+  | Plus                         (* ``+` *)
+  | Star                         (* ``*` *)
+  | Comma                        (* ``,` *)
+  | Bar                          (* ``|` *)
+  | LParen | RParen              (* ``(` `)` *)
+  | LBrack | RBrack              (* ``[` `]` *)
+  | LBrace | RBrace              (* ``{` `}` *)
 
 
 (* Iteration *)
@@ -58,6 +61,8 @@ type iter =
 
 
 (* Types *)
+
+and dots = Dots | NoDots
 
 and numtyp =
   | NatT                         (* `nat` *)
@@ -81,10 +86,10 @@ and typ' =
   | AtomT of atom                (* atom *)
   | SeqT of typ list             (* `epsilon` / typ typ *)
   | InfixT of typ * atom * typ   (* typ atom typ *)
-  | BrackT of brack * typ        (* ``` ([{ typ }]) *)
+  | BrackT of atom * typ * atom  (* ``` ([{ typ }]) *)
 
-and typfield = atom * (typ * premise nl_list) * hint list     (* atom typ prem* hint* *)
-and typcase = atom * (typ list * premise nl_list) * hint list (* atom typ* prem* hint* *)
+and typfield = atom * (typ * premise nl_list) * hint list (* atom typ prem* hint* *)
+and typcase = atom * (typ * premise nl_list) * hint list  (* atom typ* prem* hint* *)
 and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` exp)?)* *)
 
 
@@ -141,7 +146,7 @@ and exp' =
   | ParenE of exp * bool         (* `(` exp `)` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | InfixE of exp * atom * exp   (* exp atom exp *)
-  | BrackE of brack * exp        (* ``` ([{ exp }]) *)
+  | BrackE of atom * exp * atom  (* ``` ([{ exp }]) *)
   | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
   | HoleE of bool                (* `%` or `%%` *)

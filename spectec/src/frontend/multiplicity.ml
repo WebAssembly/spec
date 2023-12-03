@@ -84,7 +84,7 @@ and check_typ env ctx t =
   | TextT
   | AtomT _ -> ()
   | ParenT t1
-  | BrackT (_, t1) -> check_typ env ctx t1
+  | BrackT (_, t1, _) -> check_typ env ctx t1
   | TupT ts
   | SeqT ts -> List.iter (check_typ env ctx) ts
   | IterT (t1, iter) ->
@@ -96,8 +96,8 @@ and check_typ env ctx t =
       iter_nl_list (check_prem env ctx) prems
     ) tfs
   | CaseT (_, _, tcs, _) ->
-    iter_nl_list (fun (_, (tsI, prems), _) ->
-      List.iter (check_typ env ctx) tsI;
+    iter_nl_list (fun (_, (tI, prems), _) ->
+      check_typ env ctx tI;
       iter_nl_list (check_prem env ctx) prems
     ) tcs
   | RangeT tes ->
@@ -126,7 +126,7 @@ and check_exp env ctx e =
   | DotE (e1, _)
   | LenE e1
   | ParenE (e1, _)
-  | BrackE (_, e1)
+  | BrackE (_, e1, _)
   | CallE (_, e1) -> check_exp env ctx e1
   | BinE (e1, _, e2)
   | CmpE (e1, _, e2)
@@ -189,9 +189,9 @@ let check_def d : env =
     iter_nl_list (check_prem env []) prems;
     check_env env
 
-let check_typdef ts prems : env =
+let check_typdef t prems : env =
   let env = ref Env.empty in
-  List.iter (check_typ env []) ts;
+  check_typ env [] t;
   iter_nl_list (check_prem env []) prems;
   check_env env
 
