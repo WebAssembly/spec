@@ -852,8 +852,9 @@ and elab_exp_iter' env es (t1, iter) t at : Il.exp' =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1; _}::_, _ when is_variant_typ env t1 &&
-      case_has_args env t1 atom at1 ->
+  | {it = AtomE atom; at = at1; _}::_, _
+  | {it = BrackE (atom, _, _); at = at1; _}::_, _
+    when is_variant_typ env t1 && case_has_args env t1 atom at1 ->
     let cases, _dots = as_variant_typ "" env Check t1 at in
     lift_exp' (elab_exp_variant env es cases t1 at) iter
 
@@ -984,8 +985,9 @@ and elab_exp_notation_iter' env es (t1, iter) t at : Il.exp' =
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
-  | {it = AtomE atom; at = at1; _}::_, iter when is_variant_typ env t1 &&
-      case_has_args env t1 atom at1 ->
+  | {it = AtomE atom; at = at1; _}::_, iter
+  | {it = BrackE (atom, _, _); at = at1; _}::_, iter
+    when is_variant_typ env t1 && case_has_args env t1 atom at1 ->
     let cases, _ = as_variant_typ "expression" env Check t1 at in
     lift_exp' (elab_exp_variant env es cases t1 at) iter
 
@@ -1020,18 +1022,21 @@ and elab_exp_variant env es cases t at : Il.exp =
     );
   *)
   *)
-  match es with
-  | {it = AtomE atom; _}::es ->
-    let ts, _prems = find_case cases atom at t in
-    (* TODO: this is a bit hacky *)
-    let e2 = SeqE es $ at in
-    let es' = elab_exp_notation' env e2 (SeqT ts $ t.at) in
-    let t2 = expand_singular' env t.it $ at in
-    let t2' = elab_typ env t2 in
-    cast_exp "variant case" env
-      (Il.CaseE (elab_atom atom, tup_exp' es' at) $$ at % t2') t2 t
-  | _ ->
-    error_typ at "expression" t
+  let atom, es =
+    match es with
+    | {it = AtomE atom; _}::es -> atom, es
+    | {it = BrackE (l, e, r); at = at1; _}::[] ->
+      l, unseq_exp e @ [AtomE r $ at1]
+    | _ -> error_typ at "expression" t
+  in
+  let ts, _prems = find_case cases atom at t in
+  (* TODO: this is a bit hacky *)
+  let e2 = SeqE es $ at in
+  let es' = elab_exp_notation' env e2 (SeqT ts $ t.at) in
+  let t2 = expand_singular' env t.it $ at in
+  let t2' = elab_typ env t2 in
+  cast_exp "variant case" env
+    (Il.CaseE (elab_atom atom, tup_exp' es' at) $$ at % t2') t2 t
 
 
 and elab_path env p t : Il.path * typ =
