@@ -84,7 +84,7 @@ and free_typ t =
   | AtomT _ -> empty
   | SeqT ts -> free_list free_typ ts
   | InfixT (t1, _, t2) -> free_list free_typ [t1; t2]
-  | BrackT (_, t1) -> free_typ t1
+  | BrackT (_, t1, _) -> free_typ t1
 
 and free_typfield (_, (t, prems), _) =
   union (free_typ t) (free_nl_list free_prem prems)
@@ -102,7 +102,7 @@ and free_exp e =
   | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE | HoleE _ ->
     empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
-  | ParenE (e1, _) | BrackE (_, e1) -> free_exp e1
+  | ParenE (e1, _) | BrackE (_, e1, _) -> free_exp e1
   | SizeE id -> free_gramid id
   | BinE (e1, _, e2) | CmpE (e1, _, e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
@@ -133,7 +133,7 @@ and bound_exp e =
   | VarE _ | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _
   | SizeE _ | EpsE | HoleE _ -> empty
   | UnE (_, e1) | DotE (e1, _) | LenE e1
-  | ParenE (e1, _) | BrackE (_, e1) -> bound_exp e1
+  | ParenE (e1, _) | BrackE (_, e1, _) -> bound_exp e1
   | BinE (e1, _, e2) | CmpE (e1, _, e2) -> union (bound_exp e1) (bound_exp e2)
   | IdxE (e1, e2) | CommaE (e1, e2) | CompE (e1, e2)
   | InfixE (e1, _, e2) | FuseE (e1, e2) -> bound_list bound_exp [e1; e2]
@@ -164,7 +164,7 @@ and pat_exp e =
   match e.it with
   | VarE id -> bound_varid id
   | UnE ((PlusOp | MinusOp), e1)
-  | ParenE (e1, _) | BrackE (_, e1) -> pat_exp e1
+  | ParenE (e1, _) | BrackE (_, e1, _) -> pat_exp e1
   (* We consider all arithmetic expressions patterns,
    * since we sometimes need to use invertible formulas. *)
   | BinE (e1, (AddOp | SubOp | MulOp | DivOp | ExpOp), e2)

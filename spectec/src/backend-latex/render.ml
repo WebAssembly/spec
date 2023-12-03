@@ -185,7 +185,7 @@ and exp_of_typ' = function
   | AtomT atom -> AtomE atom
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
-  | BrackT (brack, t1) -> BrackE (brack, exp_of_typ t1)
+  | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
 
 and expfield_of_typfield (atom, (t, _prems), _) = (atom, exp_of_typ t)
 
@@ -292,6 +292,7 @@ let render_atom env = function
   | Atom id -> render_atomid env id
   | Infinity -> "\\infty"
   | Bot -> "\\bot"
+  | Top -> "\\top"
   | Dot -> "."
   | Dot2 -> ".."
   | Dot3 -> "\\dots"
@@ -299,9 +300,12 @@ let render_atom env = function
   | Backslash -> "\\setminus"
   | In -> "\\in"
   | Arrow -> "\\rightarrow"
+  | Arrow2 -> "\\Rightarrow"
   | Colon -> ":"
   | Sub -> "\\leq"
+  | Sup -> "\\geq"
   | Assign -> ":="
+  | Equiv -> "\\equiv"
   | Approx -> "\\approx"
   | SqArrow -> "\\hookrightarrow"
   | SqArrowStar -> "\\hookrightarrow^\\ast"
@@ -314,12 +318,16 @@ let render_atom env = function
     else
       "\\vdash"
   | Quest -> "{}^?"
+  | Plus -> "{}^+"
   | Star -> "{}^\\ast"
-
-let render_brack = function
-  | Paren -> "(", ")"
-  | Brack -> "[", "]"
-  | Brace -> "\\{", "\\}"
+  | Comma -> ","
+  | Bar -> "\\mid"
+  | LParen -> "("
+  | RParen -> ")"
+  | LBrack -> "["
+  | RBrack -> "]"
+  | LBrace -> "\\{"
+  | RBrace -> "\\}"
 
 let render_unop = function
   | NotOp -> "\\neg"
@@ -410,8 +418,8 @@ and expand_exp' args e' =
     let e1' = expand_exp args e1 in
     let e2' = expand_exp args e2 in
     InfixE (e1', atom, e2')
-  | BrackE (brack, e) -> BrackE (brack, expand_exp args e)
-  | CallE (id, e) -> CallE (id, expand_exp args e)
+  | BrackE (l, e1, r) -> BrackE (l, expand_exp args e1, r)
+  | CallE (id, e1) -> CallE (id, expand_exp args e1)
   | IterE (e1, iter) ->
     let e1' = expand_exp args e1 in
     let iter' = expand_iter args iter in
@@ -505,14 +513,15 @@ and render_typ env t =
     altern_map_nl " ~|~ " "\\\\ &&|&\n" (render_typenum env) tes
   | AtomT atom -> render_typcase env t.at (atom, ([], []), [])
   | SeqT [] -> "\\epsilon"
-  | SeqT ({it = AtomT atom; at; _}::ts) -> render_typcase env at (atom, (ts, []), [])
+  | SeqT ({it = AtomT atom; at; _}::ts) ->
+    render_typcase env at (atom, (ts, []), [])
   | SeqT ts -> render_typs "~" env ts
   | InfixT ({it = SeqT []; _}, atom, t2) ->
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_typ env t2
   | InfixT (t1, atom, t2) ->
     render_typ env t1 ^ space (render_atom env) atom ^ render_typ env t2
-  | BrackT (brack, t1) ->
-    let l, r = render_brack brack in l ^ render_typ env t1 ^ r
+  | BrackT (l, t1, r) ->
+    render_atom env l ^ render_typ env t1 ^ render_atom env r
 
 and render_typs sep env ts =
   concat sep (List.filter ((<>) "") (List.map (render_typ env) ts))
@@ -621,8 +630,8 @@ and render_exp env e =
     "{" ^ space (render_atom env) atom ^ "}\\;" ^ render_exp env e2
   | InfixE (e1, atom, e2) ->
     render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
-  | BrackE (brack, e) ->
-    let l, r = render_brack brack in l ^ render_exp env e ^ r
+  | BrackE (l, e1, r) ->
+    render_atom env l ^ render_exp env e1 ^ render_atom env r
   | CallE (id, e1) ->
     render_expand env env.show_def id (untup_exp e1)
       (fun () ->

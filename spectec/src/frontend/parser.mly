@@ -103,12 +103,12 @@ let is_post_exp e =
 %token LPAR RPAR LBRACK RBRACK LBRACE RBRACE
 %token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
 %token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
-%token EQ NE LT GT LE GE APPROX ASSIGN SUB EQDOT2
+%token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
 %token QUEST PLUS MINUS STAR SLASH BACKSLASH UP COMPOSE
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
-%token BOT
+%token BOT TOP
 %token HOLE MULTIHOLE FUSE
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
@@ -126,7 +126,7 @@ let is_post_exp e =
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
 %right SQARROW SQARROWSTAR PREC SUCC
-%left COLON SUB ASSIGN APPROX
+%left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE IN
 %right ARROW
@@ -175,8 +175,10 @@ atomid : atomid_ { $1 } | atomid DOTID { $1 ^ "." ^ $2 }
 atom :
   | atomid { Atom $1 }
   | TICK QUEST { Quest }
+  | TICK PLUS { Plus }
   | TICK STAR { Star }
   | BOT { Bot }
+  | TOP { Top }
   | INFINITY { Infinity }
 
 atom_as_varid :
@@ -254,9 +256,9 @@ nottyp_prim_ :
   | atom { AtomT $1 }
   | atomid_lpar nottyp RPAR
     { SeqT [AtomT (Atom $1) $ at $loc($1); ParenT $2 $ at $loc($2)] }
-  | TICK LPAR nottyp RPAR { BrackT (Paren, $3) }
-  | TICK LBRACK nottyp RBRACK { BrackT (Brack, $3) }
-  | TICK LBRACE nottyp RBRACE { BrackT (Brace, $3) }
+  | TICK LPAR nottyp RPAR { BrackT (LParen, $3, RParen) }
+  | TICK LBRACK nottyp RBRACK { BrackT (LBrack, $3, RBrack) }
+  | TICK LBRACE nottyp RBRACE { BrackT (LBrace, $3, RBrace) }
   | LPAR nottyp_list RPAR { match $2 with [t] -> ParenT t | ts -> TupT ts }
 
 nottyp_post : nottyp_post_ { $1 $ at $sloc }
@@ -293,7 +295,9 @@ nottyp_rel_ :
   | nottyp_bin_ { $1 }
   | COLON nottyp_rel { InfixT (SeqT [] $ at $loc($1), Colon, $2) }
   | SUB nottyp_rel { InfixT (SeqT [] $ at $loc($1), Sub, $2) }
+  | SUP nottyp_rel { InfixT (SeqT [] $ at $loc($1), Sup, $2) }
   | ASSIGN nottyp_rel { InfixT (SeqT [] $ at $loc($1), Assign, $2) }
+  | EQUIV nottyp_rel { InfixT (SeqT [] $ at $loc($1), Equiv, $2) }
   | APPROX nottyp_rel { InfixT (SeqT [] $ at $loc($1), Approx, $2) }
   | SQARROW nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrow, $2) }
   | SQARROWSTAR nottyp_rel { InfixT (SeqT [] $ at $loc($1), SqArrowStar, $2) }
@@ -304,7 +308,9 @@ nottyp_rel_ :
   | IN nottyp_rel { InfixT (SeqT [] $ at $loc($1), In, $2) }
   | nottyp_rel COLON nottyp_rel { InfixT ($1, Colon, $3) }
   | nottyp_rel SUB nottyp_rel { InfixT ($1, Sub, $3) }
+  | nottyp_rel SUP nottyp_rel { InfixT ($1, Sup, $3) }
   | nottyp_rel ASSIGN nottyp_rel { InfixT ($1, Assign, $3) }
+  | nottyp_rel EQUIV nottyp_rel { InfixT ($1, Equiv, $3) }
   | nottyp_rel APPROX nottyp_rel { InfixT ($1, Approx, $3) }
   | nottyp_rel SQARROW nottyp_rel { InfixT ($1, SqArrow, $3) }
   | nottyp_rel SQARROWSTAR nottyp_rel { InfixT ($1, SqArrowStar, $3) }
@@ -396,9 +402,9 @@ exp_prim_ :
   | HOLE { HoleE false }
   | MULTIHOLE { HoleE true }
   | LPAR exp_list RPAR { (tup_exp $2 $loc($2)).it }
-  | TICK LPAR exp RPAR { BrackE (Paren, $3) }
-  | TICK LBRACK exp RBRACK { BrackE (Brack, $3) }
-  | TICK LBRACE exp RBRACE { BrackE (Brace, $3) }
+  | TICK LPAR exp RPAR { BrackE (LParen, $3, RParen) }
+  | TICK LBRACK exp RBRACK { BrackE (LBrack, $3, RBrack) }
+  | TICK LBRACE exp RBRACE { BrackE (LBrace, $3, RBrace) }
   | DOLLAR LPAR arith RPAR { $3.it }
   | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
   | DOLLAR defid_lpar exp_list RPAR { CallE ($2, tup_exp $3 $loc($3)) }
@@ -469,7 +475,9 @@ exp_rel_ :
   | COMMA_NL exp_rel { CommaE (SeqE [] $ at $loc($1), $2) }
   | COLON exp_rel { InfixE (SeqE [] $ at $loc($1), Colon, $2) }
   | SUB exp_rel { InfixE (SeqE [] $ at $loc($1), Sub, $2) }
+  | SUP exp_rel { InfixE (SeqE [] $ at $loc($1), Sup, $2) }
   | ASSIGN exp_rel { InfixE (SeqE [] $ at $loc($1), Assign, $2) }
+  | EQUIV exp_rel { InfixE (SeqE [] $ at $loc($1), Equiv, $2) }
   | APPROX exp_rel { InfixE (SeqE [] $ at $loc($1), Approx, $2) }
   | SQARROW exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrow, $2) }
   | SQARROWSTAR exp_rel { InfixE (SeqE [] $ at $loc($1), SqArrowStar, $2) }
@@ -482,7 +490,9 @@ exp_rel_ :
   | exp_rel COMMA_NL exp_rel { CommaE ($1, $3) }
   | exp_rel COLON exp_rel { InfixE ($1, Colon, $3) }
   | exp_rel SUB exp_rel { InfixE ($1, Sub, $3) }
+  | exp_rel SUP exp_rel { InfixE ($1, Sup, $3) }
   | exp_rel ASSIGN exp_rel { InfixE ($1, Assign, $3) }
+  | exp_rel EQUIV exp_rel { InfixE ($1, Equiv, $3) }
   | exp_rel APPROX exp_rel { InfixE ($1, Approx, $3) }
   | exp_rel SQARROW exp_rel { InfixE ($1, SqArrow, $3) }
   | exp_rel SQARROWSTAR exp_rel { InfixE ($1, SqArrowStar, $3) }

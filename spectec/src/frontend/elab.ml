@@ -307,6 +307,7 @@ let elab_atom = function
   | Atom s -> Il.Atom s
   | Infinity -> Il.Infinity
   | Bot -> Il.Bot
+  | Top -> Il.Top
   | Dot -> Il.Dot
   | Dot2 -> Il.Dot2
   | Dot3 -> Il.Dot3
@@ -314,9 +315,12 @@ let elab_atom = function
   | Backslash -> Il.Backslash
   | In -> Il.In
   | Arrow -> Il.Arrow
+  | Arrow2 -> Il.Arrow2
   | Colon -> Il.Colon
   | Sub -> Il.Sub
+  | Sup -> Il.Sup
   | Assign -> Il.Assign
+  | Equiv -> Il.Equiv
   | Approx -> Il.Approx
   | SqArrow -> Il.SqArrow
   | SqArrowStar -> Il.SqArrowStar
@@ -325,12 +329,16 @@ let elab_atom = function
   | Turnstile -> Il.Turnstile
   | Tilesturn -> Il.Tilesturn
   | Quest -> Il.Quest
+  | Plus -> Il.Plus
   | Star -> Il.Star
-
-let elab_brack = function
-  | Paren -> Il.LParen, Il.RParen
-  | Brack -> Il.LBrack, Il.RBrack
-  | Brace -> Il.LBrace, Il.RBrace
+  | Comma -> Il.Comma
+  | Bar -> Il.Bar
+  | LParen -> Il.LParen
+  | RParen -> Il.RParen
+  | LBrack -> Il.LBrack
+  | RBrack -> Il.RBrack
+  | LBrace -> Il.LBrace
+  | RBrace -> Il.RBrace
 
 let numtyps = [NatT; IntT; RatT; RealT]
 
@@ -502,10 +510,9 @@ and elab_typ_notation env t : bool * Il.mixop * Il.typ list =
     let _b1, mixop1, ts1' = elab_typ_notation env t1 in
     let _b2, mixop2, ts2' = elab_typ_notation env t2 in
     true, merge_mixop (merge_mixop mixop1 [[elab_atom atom]]) mixop2, ts1' @ ts2'
-  | BrackT (brack, t1) ->
-    let l, r = elab_brack brack in
+  | BrackT (l, t1, r) ->
     let _b1, mixop1, ts' = elab_typ_notation env t1 in
-    true, merge_mixop (merge_mixop [[l]] mixop1) [[r]], ts'
+    true, merge_mixop (merge_mixop [[elab_atom l]] mixop1) [[elab_atom r]], ts'
   | ParenT t1 ->
     let b1, mixop1, ts1' = elab_typ_notation env t1 in
     b1, merge_mixop (merge_mixop [[Il.LParen]] mixop1) [[Il.RParen]], ts1'
@@ -890,8 +897,8 @@ and elab_exp_notation' env e t : Il.exp list =
     let es1' = elab_exp_notation' env e1 t1 in
     let es2' = elab_exp_notation' env e2 t2 in
     es1' @ es2'
-  | BrackE (brack, e1), BrackT (brack', t1) ->
-    if brack <> brack' then error_typ e.at "bracket expression" t;
+  | BrackE (l, e1, r), BrackT (l', t1, r') ->
+    if (l, r) <> (l', r') then error_typ e.at "bracket expression" t;
     elab_exp_notation' env e1 t1
 
   | SeqE [], SeqT [] ->

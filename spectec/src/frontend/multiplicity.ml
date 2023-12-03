@@ -84,7 +84,7 @@ and check_typ env ctx t =
   | TextT
   | AtomT _ -> ()
   | ParenT t1
-  | BrackT (_, t1) -> check_typ env ctx t1
+  | BrackT (_, t1, _) -> check_typ env ctx t1
   | TupT ts
   | SeqT ts -> List.iter (check_typ env ctx) ts
   | IterT (t1, iter) ->
@@ -126,7 +126,7 @@ and check_exp env ctx e =
   | DotE (e1, _)
   | LenE e1
   | ParenE (e1, _)
-  | BrackE (_, e1)
+  | BrackE (_, e1, _)
   | CallE (_, e1) -> check_exp env ctx e1
   | BinE (e1, _, e2)
   | CmpE (e1, _, e2)

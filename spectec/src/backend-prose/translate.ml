@@ -132,7 +132,7 @@ let rec push right = match right.it with
           (Print.string_of_exp n)
           (
             match cont.it with
-            | BrackE(_, {it = EpsE; _}) ->  "end"
+            | BrackE(_, {it = EpsE; _}, _) ->  "end"
             | _ -> "start"
           );
         printf_step

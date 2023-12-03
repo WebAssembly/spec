@@ -170,7 +170,9 @@ and token = parse
   | ">=" { GE }
   | "~~" { APPROX }
   | "<:" { SUB }
+  | ":>" { SUP }
   | ":=" { ASSIGN }
+  | "==" { EQUIV }
   | "=.." { EQDOT2 }
 
   | "~" { NOT }
@@ -200,6 +202,7 @@ and token = parse
   | "$" { DOLLAR }
 
   | "_|_" { BOT }
+  | "^|^" { TOP }
   | "%" { HOLE }
   | "%%" { MULTIHOLE }
   | "#" { FUSE }
