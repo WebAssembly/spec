@@ -184,24 +184,43 @@ let rec expand' env = function
 
 let expand env t = expand' env t.it
 
-let expand_singular' env t' =
-  match expand' env t' with
+let expand_iter_notation env t =
+  match expand env t with
+  | VarT (id, args) as t' ->
+    (match as_defined_typid' env id args t.at with
+    | IterT _ as t'', _ -> t''
+    | _ -> t'
+    )
+  | t' -> t'
+
+let expand_singular env t =
+  match expand env t with
   | IterT (t1, (Opt | List | List1)) -> expand env t1
   | t' -> t'
 
 
 let as_iter_typ phrase env dir t at : typ * iter =
-  match expand' env t.it with
+  match expand env t with
   | IterT (t1, iter) -> t1, iter
   | _ -> error_dir_typ at phrase dir t "(_)*"
 
 let as_list_typ phrase env dir t at : typ =
-  match expand' env t.it with
-  | IterT (t1, (List | List1 | ListN _)) -> t1
+  match expand env t with
+  | IterT (t1, List) -> t1
   | _ -> error_dir_typ at phrase dir t "(_)*"
 
+let as_iter_notation_typ phrase env dir t at : typ * iter =
+  match expand_iter_notation env t with
+  | IterT (t1, iter) -> t1, iter
+  | _ -> error_dir_typ at phrase dir t "(_)*"
+
+let as_opt_notation_typ phrase env dir t at : typ =
+  match expand_iter_notation env t with
+  | IterT (t1, Opt) -> t1
+  | _ -> error_dir_typ at phrase dir t "(_)?"
+
 let as_tup_typ phrase env dir t at : typ list =
-  match expand_singular' env t.it with
+  match expand_singular env t with
   | TupT ts -> ts
   | _ -> error_dir_typ at phrase dir t "(_,...,_)"
 
@@ -213,7 +232,7 @@ let rec as_notation_typid' phrase env id args at : typ =
   | _ -> error_dir_typ at phrase Infer (VarT (id, args) $ id.at) "_ ... _"
 
 let as_notation_typ phrase env dir t at : typ =
-  match expand_singular' env t.it with
+  match expand_singular env t with
   | VarT (id, args) -> as_notation_typid' phrase env id args at
   | _ -> error_dir_typ at phrase dir t "_ ... _"
 
@@ -224,7 +243,7 @@ let rec as_struct_typid' phrase env id args at : typfield list =
   | _ -> error_dir_typ at phrase Infer (VarT (id, args) $ id.at) "| ..."
 
 let as_struct_typ phrase env dir t at : typfield list =
-  match expand_singular' env t.it with
+  match expand_singular env t with
   | VarT (id, args) -> as_struct_typid' phrase env id args at
   | _ -> error_dir_typ at phrase dir t "{...}"
 
@@ -240,7 +259,7 @@ and as_variant_typid phrase env id args : typcase list * dots =
   as_variant_typid' phrase env id args id.at
 
 let as_variant_typ phrase env dir t at : typcase list * dots =
-  match expand_singular' env t.it with
+  match expand_singular env t with
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> error_dir_typ at phrase dir t "| ..."
 
@@ -257,6 +276,8 @@ let is_x_typ as_x_typ env t =
   with Error _ -> false
 
 let is_iter_typ = is_x_typ as_iter_typ
+let is_iter_notation_typ = is_x_typ as_iter_notation_typ
+let is_opt_notation_typ = is_x_typ as_opt_notation_typ
 let is_notation_typ = is_x_typ as_notation_typ
 let is_variant_typ = is_x_typ as_variant_typ
 
@@ -710,8 +731,11 @@ and infer_exp' env e : Il.exp' * typ =
 
 
 and elab_exp env e t : Il.exp =
-  let e' = elab_exp' env e t in
-  e' $$ e.at % elab_typ env t
+  try
+    let e' = elab_exp' env e t in
+    e' $$ e.at % elab_typ env t
+  with Source.Error _ when is_notation_typ env t ->
+    elab_exp_notation env e (as_notation_typ "" env Check t e.at) t
 
 and elab_exp' env e t : Il.exp' =
   (*
@@ -811,8 +835,8 @@ and elab_exp' env e t : Il.exp' =
     let e', t' = infer_exp env e in
     cast_exp' "function application" env e' t' t
   | EpsE | SeqE _ when is_iter_typ env t ->
-    let e1 = unseq_exp e in
-    elab_exp_iter' env e1 (as_iter_typ "" env Check t e.at) t e.at
+    let es = unseq_exp e in
+    elab_exp_iter' env es (as_iter_typ "" env Check t e.at) t e.at
   | EpsE
   | AtomE _
   | InfixE _
@@ -921,11 +945,15 @@ and elab_exp_notation' env e t : Il.exp list =
   | SeqE [], SeqT [] ->
     []
   (* Iterations at the end of a sequence may be inlined *)
-  | _, SeqT [{it = IterT _; _} as t1] ->
+  | _, SeqT [t1] when is_iter_typ env t1 ->
     elab_exp_notation' env e t1
   (* Optional iterations may always be inlined, use backtracking *)
-  | SeqE (e1::es2), SeqT (({it = IterT (_, Opt); _} as t1)::ts2) ->
+  | SeqE (e1::es2), SeqT (t1::ts2) when is_opt_notation_typ env t1 ->
     (try
+      (*
+      Printf.eprintf "[try %s] %s  :  %s\n%!"
+        (string_of_region e.at) (string_of_exp e) (string_of_typ t);
+      *)
       let es1' = [cast_empty "omitted sequence tail" env t1 e.at (!!!env t1)] in
       let es2' = elab_exp_notation' env e (SeqT ts2 $ t.at) in
       es1' @ es2'
@@ -1047,7 +1075,7 @@ and elab_exp_variant env e cases t at : Il.exp =
   in
   let t1, _prems = find_case cases atom at t in
   let es' = elab_exp_notation' env e t1 in
-  let t2 = expand_singular' env t.it $ at in
+  let t2 = expand_singular env t $ at in
   let t2' = elab_typ env t2 in
   cast_exp "variant case" env
     (Il.CaseE (elab_atom atom, tup_exp' es' at) $$ at % t2') t2 t
@@ -1083,6 +1111,16 @@ and cast_empty phrase env t at t' : Il.exp =
   match expand env t with
   | IterT (_, Opt) -> Il.OptE None $$ at % t'
   | IterT (_, List) -> Il.ListE [] $$ at % t'
+  | VarT _ when is_iter_notation_typ env t ->
+    assert (is_notation_typ env t);
+    (match expand_iter_notation env t with
+    | IterT (_, iter) as t1 ->
+      let _, mixop, ts' = elab_typ_notation env (t1 $ t.at) in
+      assert (List.length ts' = 1);
+      let e1' = if iter = Opt then Il.OptE None else Il.ListE [] in
+      Il.MixE (mixop, e1' $$ at % tup_typ' ts' at) $$ at % t'
+    | _ -> error_typ at phrase t
+    )
   | _ -> error_typ at phrase t
 
 and cast_exp phrase env e' t1 t2 : Il.exp =
@@ -1320,6 +1358,9 @@ let infer_typ_definition _env t : kind =
 let infer_syndef env d =
   match d.it with
   | SynD (id1, _id2, ps, t, _hints) ->
+    (*
+    Printf.eprintf "[isyndef %s]\n%!" (string_of_region d.at);
+    *)
     if not (bound env.typs id1) then (
       let _, env' = elab_params (local_env env) ps in
       let k = infer_typ_definition env' t in
@@ -1335,6 +1376,9 @@ let infer_syndef env d =
 let infer_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, t, _gram, _hints) ->
+    (*
+    Printf.eprintf "[igramdef %s]\n%!" (string_of_region d.at);
+    *)
     if not (bound env.syms id1) then (
       let _ts', env' = elab_params env ps in
       let _t' = elab_typ env' t in
@@ -1357,6 +1401,9 @@ let elab_hintdef _env hd : Il.def list =
     []
 
 let elab_def env d : Il.def list =
+  (*
+  Printf.eprintf "[DEF %s]\n%!" (string_of_region d.at);
+  *)
   match d.it with
   | SynD (id1, id2, ps, t, hints) ->
     let _ts', env' = elab_params (local_env env) ps in
@@ -1382,7 +1429,7 @@ let elab_def env d : Il.def list =
         t, true
     in
     (*
-    Printf.eprintf "[def %s] %s ~> %s\n%!" id1.it
+    Printf.eprintf "[syntax %s] %s ~> %s\n%!" id1.it
       (string_of_typ t) (Il.Print.string_of_deftyp dt');
     *)
     (* TODO: for now, we erase type parameters; this checks that it's okay. *)
@@ -1487,6 +1534,9 @@ let elab_def env d : Il.def list =
 let elab_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, t, gram, _hints) ->
+    (*
+    Printf.eprintf "[GRAMDEF %s]\n%!" (string_of_region d.at);
+    *)
     let _ts', env' = elab_params (local_env env) ps in
     let _t' = elab_typ env' t in
     elab_gram env' gram t;

@@ -425,7 +425,7 @@ rule Instr_const/ref.func:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- if C.GLOBAL[x] = epsilon t
+  -- if C.GLOBAL[x] = t
 
 
 rule Expr_const: C |- instr* CONST

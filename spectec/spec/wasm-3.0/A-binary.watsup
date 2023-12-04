@@ -106,7 +106,7 @@ grammar Bheaptype : heaptype =
   | x33:Bs33 => _IDX $s33_to_u32(x33)  -- if x33 >= 0
 
 grammar Breftype : reftype =
-  | 0x64 ht:Bheaptype => REF epsilon ht
+  | 0x64 ht:Bheaptype => REF ht
   | 0x63 ht:Bheaptype => REF NULL ht
   | ht:Babsheaptype => REF NULL ht
 
@@ -143,7 +143,7 @@ grammar Bcomptype : comptype =
   | 0x58 yt:Bfieldtype => ARRAY yt
 
 grammar Bsubtype : subtype =
-  | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB epsilon x* ct
+  | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB x* ct
   | 0x49 x*:Bvec(Btypeidx) ct:Bcomptype => SUB FINAL x* ct
   | ct:Bcomptype => SUB FINAL epsilon ct
 
@@ -223,9 +223,9 @@ grammar Binstr/reference : instr = ...
   | 0xD4 => REF.AS_NON_NULL
   | 0xD5 l:Blabelidx => BR_ON_NULL l
   | 0xD6 l:Blabelidx => BR_ON_NON_NULL l
-  | 0xFB 20:Bu32 ht:Bheaptype => REF.TEST (REF epsilon ht)
+  | 0xFB 20:Bu32 ht:Bheaptype => REF.TEST (REF ht)
   | 0xFB 21:Bu32 ht:Bheaptype => REF.TEST (REF NULL ht)
-  | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF epsilon ht)
+  | 0xFB 22:Bu32 ht:Bheaptype => REF.CAST (REF ht)
   | 0xFB 23:Bu32 ht:Bheaptype => REF.CAST (REF NULL ht)
   | 0xFB 24:Bu32 (nul_1, nul_2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST l (REF nul_1 ht_1) (REF nul_2 ht_2)
   | 0xFB 25:Bu32 (nul_1, nul_2):Bcastop l:Blabelidx ht_1:Bheaptype ht_2:Bheaptype => BR_ON_CAST_FAIL l (REF nul_1 ht_1) (REF nul_2 ht_2)
@@ -238,7 +238,7 @@ grammar Binstr/reference : instr = ...
 grammar Binstr/struct : instr = ...
   | 0xFB 0:Bu32 x:Btypeidx => STRUCT.NEW x
   | 0xFB 1:Bu32 x:Btypeidx => STRUCT.NEW_DEFAULT x
-  | 0xFB 2:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET epsilon x i
+  | 0xFB 2:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET x i
   | 0xFB 3:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET S x i
   | 0xFB 4:Bu32 x:Btypeidx i:Bu32 => STRUCT.GET U x i
   | 0xFB 5:Bu32 x:Btypeidx i:Bu32 => STRUCT.SET x i
@@ -247,7 +247,7 @@ grammar Binstr/struct : instr = ...
   | 0xFB 8:Bu32 x:Btypeidx n:Bu32 => ARRAY.NEW_FIXED x n
   | 0xFB 9:Bu32 x:Btypeidx y:Bdataidx => ARRAY.NEW_DATA x y
   | 0xFB 10:Bu32 x:Btypeidx y:Belemidx => ARRAY.NEW_ELEM x y
-  | 0xFB 11:Bu32 x:Btypeidx => ARRAY.GET epsilon x
+  | 0xFB 11:Bu32 x:Btypeidx => ARRAY.GET x
   | 0xFB 12:Bu32 x:Btypeidx => ARRAY.GET S x
   | 0xFB 13:Bu32 x:Btypeidx => ARRAY.GET U x
   | 0xFB 14:Bu32 x:Btypeidx => ARRAY.SET x
@@ -268,7 +268,7 @@ grammar Binstr/struct : instr = ...
 
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
-  | 0x1B => SELECT epsilon
+  | 0x1B => SELECT
 ;;  | 0x1C t*:Bvec(Bvaltype) => SELECT (t*)    TODO
   | ...
 
