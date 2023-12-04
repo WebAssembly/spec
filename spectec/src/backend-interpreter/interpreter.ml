@@ -4,6 +4,7 @@ open Ast
 open Print
 open Construct
 open Ds
+open Util.Source
 open Util.Record
 
 let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
@@ -686,7 +687,7 @@ and interp_instr (env: env) (instr: instr): env =
   print_endline "";
   *)
 
-  (InfoMap.find instr.nid !info_map).covered <- true;
+  (InfoMap.find instr.note !info_map).covered <- true;
 
   let res =
   match instr.it with

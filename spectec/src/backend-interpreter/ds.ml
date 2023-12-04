@@ -2,6 +2,7 @@ open Al
 open Ast
 open Print
 open Construct
+open Util.Source
 open Util.Record
 
 (* Program *)
@@ -308,7 +309,7 @@ let init algos =
       Walk.default_config with pre_instr =
         (fun i ->
           let info = InfoMap.make_info algo_name i in
-          info_map := InfoMap.add i.nid info !info_map;
+          info_map := InfoMap.add i.note info !info_map;
           [i])
     } in
     Walk.walk config algo

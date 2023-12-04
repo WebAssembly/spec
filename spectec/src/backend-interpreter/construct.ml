@@ -12,7 +12,7 @@ let default_table_max = 4294967295L
 let default_memory_max = 65536L
 let version = ref 3
 
-(* Smart Constructor *)
+(* Constructor Shorthands *)
 
 let _nid_count = ref 0
 let gen_nid () =
@@ -20,7 +20,7 @@ let gen_nid () =
   _nid_count := nid + 1;
   nid
 
-let mk_node it = { it; nid = gen_nid () }
+let mk_node it = Util.Source.($$) it (Util.Source.no_region, gen_nid())
 
 let ifI (c, il1, il2) = IfI (c, il1, il2) |> mk_node
 let eitherI (il1, il2) = EitherI (il1, il2) |> mk_node

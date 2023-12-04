@@ -644,7 +644,7 @@ and iterpr2instr remain_lhs pr next_il =
     let ids' = List.map (fun id -> id.it) ids in
     let f = Al.Free.(
       function
-      | { it = LetI (lhs, rhs); nid = _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
+      | { it = LetI (lhs, rhs); _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
           let lhs_ids = intersection (free_expr lhs) ids' in
           let rhs_ids = intersection (free_expr rhs) ids' in
           [ letI (IterE (lhs, lhs_ids, iter'), IterE (rhs, rhs_ids, iter')) ]

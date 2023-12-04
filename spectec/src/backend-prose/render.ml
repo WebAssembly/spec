@@ -1,6 +1,7 @@
 open Prose
 open Printf
 open Config
+open Util.Source
 
 (* Environment *)
 
@@ -368,7 +369,7 @@ and render_prose_instrs env depth instrs =
     "" instrs
 
 let rec render_al_instr env algoname index depth instr =
-  match instr.Al.Ast.it with
+  match instr.it with
   | Al.Ast.IfI (c, il, []) ->
       sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
         (render_al_instrs env algoname (depth + 1) il)
