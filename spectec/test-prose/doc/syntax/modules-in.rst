@@ -17,10 +17,6 @@ $${syntax: module}
 .. _syntax-dataidx:
 .. _syntax-localidx:
 .. _syntax-labelidx:
-<<<<<<< HEAD
-.. _syntax-modules-indices:
-=======
->>>>>>> al
 
 Indices
 ~~~~~~~
@@ -39,7 +35,6 @@ $${syntax+:
 }
 
 .. _syntax-type:
-.. _syntax-modules-types:
 
 Types
 ~~~~~
@@ -47,11 +42,7 @@ Types
 $${syntax: type}
 
 .. _syntax-func:
-<<<<<<< HEAD
 .. _syntax-local:
-.. _syntax-modules-functions:
-=======
->>>>>>> al
 
 Functions
 ~~~~~~~~~
@@ -84,10 +75,6 @@ $${syntax: global}
 
 .. _syntax-elem:
 .. _syntax-elemmode:
-<<<<<<< HEAD
-.. _syntax-modules-element-segments:
-=======
->>>>>>> al
 
 Element Segments
 ~~~~~~~~~~~~~~~~
@@ -99,10 +86,6 @@ $${syntax+:
 
 .. _syntax-data:
 .. _syntax-datamode:
-<<<<<<< HEAD
-.. _syntax-modules-data-segments:
-=======
->>>>>>> al
 
 Data Segments
 ~~~~~~~~~~~~~
@@ -120,12 +103,7 @@ Start Function
 $${syntax: start}
 
 .. _syntax-export:
-<<<<<<< HEAD
 .. _syntax-externidx:
-.. _syntax-modules-exports:
-=======
-.. _syntax-externuse:
->>>>>>> al
 
 Exports
 ~~~~~~~

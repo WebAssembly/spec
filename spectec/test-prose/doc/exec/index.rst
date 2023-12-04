@@ -5,11 +5,8 @@ Execution
 
 .. toctree::
 
-<<<<<<< HEAD
    conventions
    numerics
-=======
->>>>>>> al
    runtime
    instructions
    modules

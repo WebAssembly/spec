@@ -6,7 +6,6 @@ Modules
 Allocation
 ~~~~~~~~~~
 
-<<<<<<< HEAD
 .. _def-alloctypes:
 
 %{prose-func: alloctypes}
@@ -15,8 +14,6 @@ Allocation
 
 $${definition: alloctypes}
 
-=======
->>>>>>> al
 .. _def-allocfunc:
 
 %{prose-func: allocfunc}
@@ -113,21 +110,21 @@ $${definition: allocdata}
 
 $${definition: allocdatas}
 
-.. _def-grow_table:
+.. _def-growtable:
 
-%{prose-func: grow_table}
-
-\
-
-$${definition: grow_table}
-
-.. _def-grow_memory:
-
-%{prose-func: grow_memory}
+%{prose-func: growtable}
 
 \
 
-$${definition: grow_memory}
+$${definition: growtable}
+
+.. _def-growmemory:
+
+%{prose-func: growmemory}
+
+\
+
+$${definition: growmemory}
 
 .. _def-instexport:
 
@@ -166,27 +163,7 @@ $${definition: inst_reftype}
 
 $${definition: concat_instr}
 
-<<<<<<< HEAD
 .. _def-rundata:
-=======
-.. _def-runelem:
-
-%{prose-func: runelem}
-
-\
-
-$${definition: runelem}
-
-.. _def-rundata:
-
-%{prose-func: rundata}
-
-\
-
-$${definition: rundata}
-
-.. _def-instantiation:
->>>>>>> al
 
 %{prose-func: rundata}
 
@@ -235,85 +212,6 @@ Address Getters
 \
 
 $${definition: funcaddr}
-
-.. _exec-modules-instance-getters:
-
-Instance Getters
-~~~~~~~~~~~~~~~~
-
-.. _def-funcinst:
-
-%{prose-func: funcinst}
-
-\
-
-$${definition: funcinst}
-
-.. _def-globalinst:
-
-%{prose-func: globalinst}
-
-\
-
-$${definition: globalinst}
-
-.. _def-tableinst:
-
-%{prose-func: tableinst}
-
-\
-
-$${definition: tableinst}
-
-.. _def-meminst:
-
-%{prose-func: meminst}
-
-\
-
-$${definition: meminst}
-
-.. _def-eleminst:
-
-%{prose-func: eleminst}
-
-\
-
-$${definition: eleminst}
-
-.. _def-datainst:
-
-%{prose-func: datainst}
-
-\
-
-$${definition: datainst}
-
-.. _def-structinst:
-
-%{prose-func: structinst}
-
-\
-
-$${definition: structinst}
-
-.. _def-arrayinst:
-
-%{prose-func: arrayinst}
-
-\
-
-$${definition: arrayinst}
-
-.. _def-moduleinst:
-
-%{prose-func: moduleinst}
-
-\
-
-$${definition: moduleinst}
-
-
 
 .. _exec-modules-getters:
 
@@ -476,19 +374,3 @@ $${definition: with_array}
 \
 
 $${definition: with_struct}
-
-.. _def-growtable:
-
-%{prose-func: growtable}
-
-\
-
-$${definition: growtable}
-
-.. _def-growmemory:
-
-%{prose-func: growmemory}
-
-\
-
-$${definition: growmemory}

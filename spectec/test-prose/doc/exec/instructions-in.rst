@@ -79,7 +79,6 @@ $${rule+: Step_pure/ref.is_null-*}
 
 \
 
-<<<<<<< HEAD
 $${rule+: Step_pure/ref.as_non_null-*}
 
 .. _exec-REF.EQ:
@@ -296,11 +295,6 @@ $${rule+: Step_pure/extern.convert_any-*}
 
 $${rule+: Step_pure/any.convert_extern-*}
 
-.. _exec-instructions-parametric:
-=======
-$${rule: Step_read/ref.func}
->>>>>>> al
-
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -319,8 +313,6 @@ $${rule: Step_pure/drop}
 \
 
 $${rule+: Step_pure/select-*}
-
-.. _exec-INSTRUCTIONS-VARIABLE:
 
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
@@ -499,8 +491,6 @@ $${rule+: Step_read/memory.init-*}
 
 $${rule: Step/data.drop}
 
-.. _exec-instructions-control:
-
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -534,11 +524,7 @@ $${definition: blocktype}
 
 \
 
-<<<<<<< HEAD
 $${rule+: Step_read/block}
-=======
-$${rule: Step_pure/block}
->>>>>>> al
 
 .. _exec-LOOP:
 
@@ -546,11 +532,7 @@ $${rule: Step_pure/block}
 
 \
 
-<<<<<<< HEAD
 $${rule+: Step_read/loop}
-=======
-$${rule: Step_pure/loop}
->>>>>>> al
 
 .. _exec-IF:
 
@@ -696,12 +678,7 @@ Function Calls
 
 $${rule+: Step_pure/frame-vals}
 
-.. _exec-instructions-expressions:
-
 Expressions
 ~~~~~~~~~~~
 
-$${rule+:
-  Eval/*
-  Eval_expr
-}
+$${rule: Eval_expr}

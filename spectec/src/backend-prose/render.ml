@@ -102,15 +102,12 @@ let render_al_cmpop = function
 
 (* assume Names and Iters are always embedded in math blocks *)
 
-let rec render_name name = match name with
-  | "inverse_of_bytes_" -> "inverse\\_of\\_bytes"
-  | "exec_expr_const" -> "exec\\_expr\\_const"
-  | _ -> (match String.index_opt name '_' with 
-    | Some idx ->
-        let base = String.sub name 0 idx in
-        let subscript = String.sub name (idx + 1) ((String.length name) - idx - 1) in
-        base ^ "_{" ^ subscript ^ "}"
-    | _ -> name)
+let rec render_name name = match String.index_opt name '_' with 
+  | Some idx ->
+      let base = String.sub name 0 idx in
+      let subscript = String.sub name (idx + 1) ((String.length name) - idx - 1) in
+      base ^ "_{" ^ subscript ^ "}"
+  | _ -> name
 
 and render_kwd env kwd = match Macro.find_kwd env.macro kwd with
   | Some (lhs, rhs) -> if env.config.macros then lhs else rhs 
@@ -118,7 +115,13 @@ and render_kwd env kwd = match Macro.find_kwd env.macro kwd with
 
 and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
   | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
-  | None -> render_name funcname 
+  | None -> 
+      let escape acc c =
+        if c = '.' then acc ^ "{.}"
+        else if c = '_' then acc ^ "\\_"
+        else acc ^ (String.make 1 c)
+      in
+      String.fold_left escape "" funcname
 
 let rec render_iter env = function
   | Al.Ast.Opt -> "^?"

@@ -3,15 +3,10 @@
 Types
 -----
 
-<<<<<<< HEAD
 .. _valid-types-number-types:
 
 Number Types
 ~~~~~~~~~~~~
-=======
-Limits
-~~~~~~
->>>>>>> al
 
 $${rule: Numtype_ok}
 
@@ -70,21 +65,13 @@ Instruction Types
 
 $${rule: Instrtype_ok}
 
-<<<<<<< HEAD
 .. _valid-types-function-types:
-=======
-Block Types
-~~~~~~~~~~~
-
-$${rule: Blocktype_ok}
->>>>>>> al
 
 Function Types
 ~~~~~~~~~~~~~~
 
 $${rule: Functype_ok}
 
-<<<<<<< HEAD
 .. _valid-types-composite-types:
 
 Composite Types
@@ -149,56 +136,30 @@ $${rule: Limits_ok}
 
 .. _valid-types-table-types:
 
-=======
->>>>>>> al
 Table Types
 ~~~~~~~~~~~
 
 $${rule: Tabletype_ok}
 
-<<<<<<< HEAD
 .. _valid-types-memory-types:
 
-=======
->>>>>>> al
 Memory Types
 ~~~~~~~~~~~~
 
 $${rule: Memtype_ok}
 
-<<<<<<< HEAD
 .. _valid-types-global-types:
 
-=======
->>>>>>> al
 Global Types
 ~~~~~~~~~~~~
 
 $${rule: Globaltype_ok}
 
-<<<<<<< HEAD
 .. _valid-types-external-types:
 
-=======
->>>>>>> al
 External Types
 ~~~~~~~~~~~~~~
 
 $${rule+:
   Externtype_ok/*
-<<<<<<< HEAD
-=======
-}
-
-Import Subtyping
-~~~~~~~~~~~~~~~~
-
-$${rule+:
-  Limits_sub
-  Functype_sub
-  Tabletype_sub
-  Memtype_sub
-  Globaltype_sub
-  Externtype_sub/*
->>>>>>> al
 }
