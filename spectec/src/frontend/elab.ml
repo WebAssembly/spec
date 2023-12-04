@@ -77,9 +77,13 @@ let cat_exp' e1' e2' =
 
 (* Environment *)
 
-type fwd_typ = Nonrec | Rec
+type kind =
+  | Transp  (* alias types, notation types, type parameters *)
+  | Opaque  (* structures or variants *)
+  | Defined of typ * Il.deftyp
+
 type var_typ = typ
-type syn_typ = param list * (fwd_typ, typ * Il.deftyp) Either.t
+type syn_typ = param list * kind
 type gram_typ = param list * typ * gram option
 type rel_typ = typ * Il.rule list
 type def_typ = param list * typ * Il.clause list
@@ -160,12 +164,12 @@ let rec arg_subst s ps args =
 
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs id with
-  | ps, Either.Right (t, dt') ->
+  | ps, Defined (t, dt') ->
     let t' = if ps = [] then t else  (* optimization *)
       Subst.subst_typ (arg_subst Subst.empty ps args) t in
     t'.it, (match dt'.it with Il.AliasT _ -> `Alias | _ -> `NoAlias)
-  | _ps, Either.Left Rec -> VarT (id, args), `NoAlias
-  | _ps, Either.Left Nonrec ->
+  | _ps, Opaque -> VarT (id, args), `NoAlias
+  | _ps, Transp ->
     error_id (id.it $ at) "invalid forward use of syntax type"
 
 let rec expand' env = function
@@ -481,6 +485,7 @@ and elab_typ_definition env id t : Il.deftyp =
     Il.VariantT tcs'
   | RangeT tes ->
     let _ = map_filter_nl_list (elab_typenum env) tes in
+    (* TODO: for now, erase ranges to nat *)
     Il.AliasT (Il.NumT Il.NatT $ t.at)
   | _ ->
     match elab_typ_notation env t with
@@ -496,7 +501,7 @@ and elab_typ_notation env t : bool * Il.mixop * Il.typ list =
   match t.it with
   | VarT (id, args) ->
     (match find "syntax type" env.typs id with
-    | _, Either.Left Nonrec -> error_id id "invalid forward reference to syntax type"
+    | _, Transp -> error_id id "invalid forward reference to syntax type"
     | ps, _ ->
       let _es', _s = elab_args env ps args t.at in
       (* TODO: for now, erase type arguments *)
@@ -1278,7 +1283,7 @@ let bind_implicit env t : env =
     if Map.mem id' env.typs then env else
     let id = id' $ t.at in
     { env with
-      typs = bind "syntax type" env.typs id ([], Either.Left Nonrec);
+      typs = bind "syntax type" env.typs id ([], Transp);
       vars = bind "variable" env.vars id (VarT (id, []) $ id.at);
     }
   ) free.synid env
@@ -1294,7 +1299,7 @@ let elab_params env ps : Il.typ list * env =
     | SynP id ->
       ts',  (* TODO: for now we erase non-exp params *)
       { env with
-        typs = bind "syntax type" env.typs id ([], Either.Left Nonrec);
+        typs = bind "syntax type" env.typs id ([], Transp);
         vars = bind "variable" env.vars id (VarT (id, []) $ id.at);
       }
     | GramP (id, t) ->
@@ -1307,17 +1312,18 @@ let elab_params env ps : Il.typ list * env =
   ) ([], env) ps
 
 
-let infer_typ_definition _env ps t : syn_typ =
+let infer_typ_definition _env t : kind =
   match t.it with
-  | StrT _ | CaseT _ -> ps, Either.Left Rec
-  | _ -> ps, Either.Left Nonrec
+  | StrT _ | CaseT _ -> Opaque
+  | _ -> Transp
 
 let infer_syndef env d =
   match d.it with
   | SynD (id1, _id2, ps, t, _hints) ->
     if not (bound env.typs id1) then (
       let _, env' = elab_params (local_env env) ps in
-      env.typs <- bind "syntax type" env.typs id1 (infer_typ_definition env' ps t);
+      let k = infer_typ_definition env' t in
+      env.typs <- bind "syntax type" env.typs id1 (ps, k);
       if ps = [] then  (* only types without parameters double as variables *)
         env.vars <- bind "variable" env.vars id1 (VarT (id1, []) $ id1.at);
     )
@@ -1358,22 +1364,22 @@ let elab_def env d : Il.def list =
     let ps1, def1 = find "syntax type" env.typs id1 in
     let t1, closed =
       match def1, t.it with
-      | Either.Left _, CaseT (Dots, _, _, _) ->
+      | Opaque, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of not yet defined syntax type"
-      | Either.Left _, CaseT (NoDots, _, _, dots2) ->
+      | Opaque, CaseT (NoDots, _, _, dots2) ->
         t, dots2 = NoDots
-      | Either.Left _, _ ->
-        t, true
-      | Either.Right ({it = CaseT (dots1, ids1, tcs1, Dots); at; _}, _),
+      | Defined ({it = CaseT (dots1, ids1, tcs1, Dots); at; _}, _),
           CaseT (Dots, ids2, tcs2, dots2) ->
         if not Eq.(eq_list eq_param ps ps1) then
           error d.at "syntax parameters differ from previous fragment";
         CaseT (dots1, ids1 @ ids2, tcs1 @ tcs2, dots2) $ over_region [at; t.at],
           dots2 = NoDots
-      | Either.Right _, CaseT (Dots, _, _, _) ->
+      | Defined _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of non-extensible syntax type"
-      | Either.Right _, _ ->
+      | Defined _, _ ->
         error_id id1 "duplicate declaration for syntax type";
+      | _, _ ->
+        t, true
     in
     (*
     Printf.eprintf "[def %s] %s ~> %s\n%!" id1.it
@@ -1390,7 +1396,7 @@ let elab_def env d : Il.def list =
       then
         error p.at "parameter still occurs on right-hand side after erasure"
     ) ps;
-    env.typs <- rebind "syntax type" env.typs id1 (ps1, Either.Right (t1, dt'));
+    env.typs <- rebind "syntax type" env.typs id1 (ps1, Defined (t1, dt'));
     (if not closed then [] else [Il.SynD (id1, dt') $ d.at])
       @ elab_hintdef env (SynH (id1, id2, hints) $ d.at)
   | GramD _ -> []
