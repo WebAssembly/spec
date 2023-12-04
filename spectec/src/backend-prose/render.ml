@@ -80,10 +80,10 @@ let render_al_unop = function
   | Al.Ast.MinusOp -> "-"
 
 let render_al_binop = function
-  | Al.Ast.AndOp -> "and"
-  | Al.Ast.OrOp -> "or"
-  | Al.Ast.ImplOp -> "=>"
-  | Al.Ast.EquivOp -> "<=>"
+  | Al.Ast.AndOp -> "\\land"
+  | Al.Ast.OrOp -> "\\lor"
+  | Al.Ast.ImplOp -> "\\implies"
+  | Al.Ast.EquivOp -> "\\Leftrightarrow"
   | Al.Ast.AddOp -> "+"
   | Al.Ast.SubOp -> "-"
   | Al.Ast.MulOp -> "\\cdot"
