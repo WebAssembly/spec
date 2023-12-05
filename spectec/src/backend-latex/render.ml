@@ -328,7 +328,7 @@ let render_cmpop = function
   | GeOp -> "\\geq"
 
 let render_dots = function
-  | Dots -> [Elem "..."]
+  | Dots -> [Elem "\\dots"]
   | NoDots -> []
 
 
