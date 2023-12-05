@@ -4149,7 +4149,7 @@ $$
 \mathsf{bot} \\
 \mbox{(heap type)} & {\mathit{heaptype}} &::=& {\mathit{absheaptype}} \\ &&|&
 {\mathit{typeidx}} \\ &&|&
-... \\
+\dots \\
 \mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
 \mbox{(value type)} & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
 & {{\mathsf{i}}{{\mathit{n}}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
@@ -4179,13 +4179,13 @@ $$
 \mathsf{array}~{\mathit{fieldtype}} \\ &&|&
 \mathsf{func}~{\mathit{functype}} \\
 \mbox{(sub type)} & {\mathit{subtype}} &::=& \mathsf{sub}~{\mathit{fin}}~{{\mathit{typeidx}}^\ast}~{\mathit{comptype}} \\ &&|&
-... \\
+\dots \\
 \mbox{(recursive type)} & {\mathit{rectype}} &::=& \mathsf{rec}~{{\mathit{subtype}}^\ast} \\
 \mbox{(defined type)} & {\mathit{deftype}} &::=& {\mathit{rectype}} . {\mathit{nat}} \\
-\mbox{(heap type)} & {\mathit{heaptype}} &::=& ... \\ &&|&
+\mbox{(heap type)} & {\mathit{heaptype}} &::=& \dots \\ &&|&
 {\mathit{deftype}} \\ &&|&
 \mathsf{rec}~{\mathit{nat}} \\
-\mbox{(sub type)} & {\mathit{subtype}} &::=& ... \\ &&|&
+\mbox{(sub type)} & {\mathit{subtype}} &::=& \dots \\ &&|&
 \mathsf{sub}~{\mathit{fin}}~{{\mathit{heaptype}}^\ast}~{\mathit{comptype}} \\
 \end{array}
 $$
@@ -9268,7 +9268,7 @@ $$
 \mathtt{0x0F} &\Rightarrow& \mathsf{return} \\ &&|&
 \mathtt{0x10}~{\mathit{x}}{:}{\mathtt{funcidx}} &\Rightarrow& \mathsf{call}~{\mathit{x}} \\ &&|&
 \mathtt{0x11}~{\mathit{y}}{:}{\mathtt{typeidx}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{call\_indirect}~{\mathit{x}}~{\mathit{y}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9286,7 +9286,7 @@ $$
 \mathtt{0x01} &\Rightarrow& (\mathsf{null},\, \epsilon) \\ &&|&
 \mathtt{0x02} &\Rightarrow& (\epsilon,\, \mathsf{null}) \\ &&|&
 \mathtt{0x03} &\Rightarrow& (\mathsf{null},\, \mathsf{null}) \\
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0xD0}~{\mathit{ht}}{:}{\mathtt{heaptype}} &\Rightarrow& \mathsf{ref.null}~{\mathit{ht}} \\ &&|&
 \mathtt{0xD1} &\Rightarrow& \mathsf{ref.is\_null} \\ &&|&
 \mathtt{0xD2}~{\mathit{x}}{:}{\mathtt{funcidx}} &\Rightarrow& \mathsf{ref.func}~{\mathit{x}} \\ &&|&
@@ -9300,7 +9300,7 @@ $$
 \mathtt{0xFB}~23{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{ht}}{:}{\mathtt{heaptype}} &\Rightarrow& \mathsf{ref.cast}~(\mathsf{ref}~\mathsf{null}~{\mathit{ht}}) \\ &&|&
 \mathtt{0xFB}~24{:}{\mathtt{u{\scriptstyle32}}}~({\mathit{nul}}_{{1}},\, {\mathit{nul}}_{{2}}){:}{\mathtt{castop}}~{\mathit{l}}{:}{\mathtt{labelidx}}~{\mathit{ht}}_{{1}}{:}{\mathtt{heaptype}}~{\mathit{ht}}_{{2}}{:}{\mathtt{heaptype}} &\Rightarrow& \mathsf{br\_on\_cast}~{\mathit{l}}~(\mathsf{ref}~{\mathit{nul}}_{{1}}~{\mathit{ht}}_{{1}})~(\mathsf{ref}~{\mathit{nul}}_{{2}}~{\mathit{ht}}_{{2}}) \\ &&|&
 \mathtt{0xFB}~25{:}{\mathtt{u{\scriptstyle32}}}~({\mathit{nul}}_{{1}},\, {\mathit{nul}}_{{2}}){:}{\mathtt{castop}}~{\mathit{l}}{:}{\mathtt{labelidx}}~{\mathit{ht}}_{{1}}{:}{\mathtt{heaptype}}~{\mathit{ht}}_{{2}}{:}{\mathtt{heaptype}} &\Rightarrow& \mathsf{br\_on\_cast\_fail}~{\mathit{l}}~(\mathsf{ref}~{\mathit{nul}}_{{1}}~{\mathit{ht}}_{{1}})~(\mathsf{ref}~{\mathit{nul}}_{{2}}~{\mathit{ht}}_{{2}}) \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9308,7 +9308,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0xFB}~0{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{typeidx}} &\Rightarrow& \mathsf{struct.new}~{\mathit{x}} \\ &&|&
 \mathtt{0xFB}~1{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{typeidx}} &\Rightarrow& \mathsf{struct.new\_default}~{\mathit{x}} \\ &&|&
 \mathtt{0xFB}~2{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{typeidx}}~{\mathit{i}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& {{\mathsf{struct.get}}{\mathsf{\_}}}{\epsilon}~{\mathit{x}}~{\mathit{i}} \\ &&|&
@@ -9334,7 +9334,7 @@ $$
 \mathtt{0xFB}~28{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{ref.i{\scriptstyle31}} \\ &&|&
 \mathtt{0xFB}~29{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& {{\mathsf{i{\scriptstyle31}.get}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
 \mathtt{0xFB}~30{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& {{\mathsf{i{\scriptstyle31}.get}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9342,10 +9342,10 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x1A} &\Rightarrow& \mathsf{drop} \\ &&|&
 \mathtt{0x1B} &\Rightarrow& \mathsf{select}~\epsilon \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9353,13 +9353,13 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x20}~{\mathit{x}}{:}{\mathtt{localidx}} &\Rightarrow& \mathsf{local.get}~{\mathit{x}} \\ &&|&
 \mathtt{0x21}~{\mathit{x}}{:}{\mathtt{localidx}} &\Rightarrow& \mathsf{local.set}~{\mathit{x}} \\ &&|&
 \mathtt{0x22}~{\mathit{x}}{:}{\mathtt{localidx}} &\Rightarrow& \mathsf{local.tee}~{\mathit{x}} \\ &&|&
 \mathtt{0x23}~{\mathit{x}}{:}{\mathtt{globalidx}} &\Rightarrow& \mathsf{global.get}~{\mathit{x}} \\ &&|&
 \mathtt{0x24}~{\mathit{x}}{:}{\mathtt{globalidx}} &\Rightarrow& \mathsf{global.set}~{\mathit{x}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9367,7 +9367,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x25}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.get}~{\mathit{x}} \\ &&|&
 \mathtt{0x26}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.set}~{\mathit{x}} \\ &&|&
 \mathtt{0xFC}~12{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{y}}{:}{\mathtt{elemidx}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.init}~{\mathit{x}}~{\mathit{y}} \\ &&|&
@@ -9376,7 +9376,7 @@ $$
 \mathtt{0xFC}~15{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.grow}~{\mathit{x}} \\ &&|&
 \mathtt{0xFC}~16{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.size}~{\mathit{x}} \\ &&|&
 \mathtt{0xFC}~17{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{tableidx}} &\Rightarrow& \mathsf{table.fill}~{\mathit{x}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9396,7 +9396,7 @@ $$
 {\mathit{n}}{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{memidx}}~{\mathit{m}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& ({\mathit{x}},\, \{ \begin{array}[t]{@{}l@{}}
 \mathsf{align}~{\mathit{n}},\; \mathsf{offset}~{\mathit{m}} \}\end{array}) &\quad
   \mbox{if}~{2^{6}} \leq {\mathit{n}} < {2^{7}} \\
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x28}~({\mathit{x}},\, {\mathit{mo}}){:}{\mathtt{memop}} &\Rightarrow& \mathsf{i{\scriptstyle32}}.\mathsf{load}~{\mathit{x}}~{\mathit{mo}} \\ &&|&
 \mathtt{0x29}~({\mathit{x}},\, {\mathit{mo}}){:}{\mathtt{memop}} &\Rightarrow& \mathsf{i{\scriptstyle64}}.\mathsf{load}~{\mathit{x}}~{\mathit{mo}} \\ &&|&
 \mathtt{0x2A}~({\mathit{x}},\, {\mathit{mo}}){:}{\mathtt{memop}} &\Rightarrow& \mathsf{f{\scriptstyle32}}.\mathsf{load}~{\mathit{x}}~{\mathit{mo}} \\ &&|&
@@ -9426,7 +9426,7 @@ $$
 \mathtt{0xFC}~9{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{dataidx}} &\Rightarrow& \mathsf{data.drop}~{\mathit{x}} \\ &&|&
 \mathtt{0xFC}~10{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}_{{1}}{:}{\mathtt{memidx}}~{\mathit{x}}_{{2}}{:}{\mathtt{memidx}} &\Rightarrow& \mathsf{memory.copy}~{\mathit{x}}_{{1}}~{\mathit{x}}_{{2}} \\ &&|&
 \mathtt{0xFC}~11{:}{\mathtt{u{\scriptstyle32}}}~{\mathit{x}}{:}{\mathtt{memidx}} &\Rightarrow& \mathsf{memory.fill}~{\mathit{x}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9434,7 +9434,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0x41}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle32}}} &\Rightarrow& \mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}} \\ &&|&
 \mathtt{0x42}~{\mathit{n}}{:}{\mathtt{u{\scriptstyle64}}} &\Rightarrow& \mathsf{i{\scriptstyle64}}.\mathsf{const}~{\mathit{n}} \\ &&|&
 \mathtt{0x45} &\Rightarrow& \mathsf{i{\scriptstyle32}} . \mathsf{eqz} \\ &&|&
@@ -9535,7 +9535,7 @@ $$
 \mathtt{0xA4} &\Rightarrow& \mathsf{f{\scriptstyle64}} . \mathsf{min} \\ &&|&
 \mathtt{0xA5} &\Rightarrow& \mathsf{f{\scriptstyle64}} . \mathsf{max} \\ &&|&
 \mathtt{0xA6} &\Rightarrow& \mathsf{f{\scriptstyle64}} . \mathsf{copysign} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
@@ -9543,7 +9543,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{instr}} &::=& ... \\ &&|&
+& {\mathtt{instr}} &::=& \dots \\ &&|&
 \mathtt{0xA7} &\Rightarrow& \mathsf{cvtop}~\mathsf{i{\scriptstyle32}}~\mathsf{convert}~\mathsf{i{\scriptstyle64}} \\ &&|&
 \mathtt{0xA8} &\Rightarrow& \mathsf{i{\scriptstyle32}} . {{{{\mathsf{convert}}{\mathsf{\_}}}{\mathsf{f{\scriptstyle32}}}}{\mathsf{\_}}}{\mathsf{s}} \\ &&|&
 \mathtt{0xA9} &\Rightarrow& \mathsf{i{\scriptstyle32}} . {{{{\mathsf{convert}}{\mathsf{\_}}}{\mathsf{f{\scriptstyle32}}}}{\mathsf{\_}}}{\mathsf{u}} \\ &&|&
@@ -9582,7 +9582,7 @@ $$
 \mathtt{0xC2} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{8} \\ &&|&
 \mathtt{0xC3} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{16} \\ &&|&
 \mathtt{0xC4} &\Rightarrow& {\mathsf{i{\scriptstyle64}}.\mathsf{extend}}{32} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
