@@ -157,7 +157,7 @@ and string_of_exp e =
     string_of_exp e1 ^ space string_of_binop op ^ string_of_exp e2
   | CmpE (e1, op, e2) ->
     string_of_exp e1 ^ space string_of_cmpop op ^ string_of_exp e2
-  | EpsE -> "epsilon"
+  | EpsE -> "eps"
   | SeqE es -> "{" ^ string_of_exps " " es ^ "}"
   | IdxE (e1, e2) -> string_of_exp e1 ^ "[" ^ string_of_exp e2 ^ "]"
   | SliceE (e1, e2, e3) ->
@@ -227,7 +227,7 @@ let rec string_of_sym g =
   | HexG n -> Printf.sprintf "0x%X" n
   | CharG n -> Printf.sprintf "U+%X" n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
-  | EpsG -> "epsilon"
+  | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_nl_list string_of_sym gs) ^ "}"
   | AltG gs -> concat " | " (map_nl_list string_of_sym gs)
   | RangeG (g1, g2) -> string_of_sym g1 ^ " | ... | " ^ string_of_sym g2

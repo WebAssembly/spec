@@ -14,7 +14,7 @@ Comments are either block (`(;...;)`) or line (`;;...\n`) comments.
 
 ```
 list(x, sep) ::=
-  epsilon
+  eps
   x
   x sep list(x, sep)
 ```
@@ -125,7 +125,7 @@ exp ::=
   notop exp                            logical negation
   exp logop exp                        logical connective
   exp cmpop exp                        comparison
-  "epsilon"                            empty sequence
+  "eps"                                empty sequence
   exp exp                              sequencing
   exp iter                             iteration
   exp "[" arith "]"                    list indexing
@@ -186,7 +186,7 @@ sym ::=
   gramid"(" list(sym, ",") ")"
   num
   text
-  "epsilon"
+  "eps"
   "(" list(sym, ",") ")"
   "$" "(" arith ")"
   sym iter

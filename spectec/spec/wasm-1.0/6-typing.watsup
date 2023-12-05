@@ -124,13 +124,13 @@ relation Expr_ok: context |- expr : resulttype   hint(show "T-expr")
 
 rule Expr_ok:
   C |- instr* : t?
-  -- Instrs_ok: C |- instr* : epsilon -> t?
+  -- Instrs_ok: C |- instr* : eps -> t?
 
 
 ;; Instruction sequences
 
 rule Instrs_ok/empty:
-  C |- epsilon : epsilon -> epsilon
+  C |- eps : eps -> eps
 
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* -> t_3*
@@ -148,10 +148,10 @@ rule Instr_ok/unreachable:
   C |- UNREACHABLE : t_1* -> t_2*
 
 rule Instr_ok/nop:
-  C |- NOP : epsilon -> epsilon
+  C |- NOP : eps -> eps
 
 rule Instr_ok/drop:
-  C |- DROP : t -> epsilon
+  C |- DROP : t -> eps
 
 
 rule Instr_ok/select:
@@ -161,17 +161,17 @@ rule Instr_ok/select:
 ;; Block instructions
 
 rule Instr_ok/block:
-  C |- BLOCK t? instr* : epsilon -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr* : epsilon -> t?
+  C |- BLOCK t? instr* : eps -> t?
+  -- Instrs_ok: C, LABEL (t?) |- instr* : eps -> t?
 
 rule Instr_ok/loop:
-  C |- LOOP t? instr* : epsilon -> t?
-  -- Instrs_ok: C, LABEL (epsilon) |- instr* : epsilon -> epsilon
+  C |- LOOP t? instr* : eps -> t?
+  -- Instrs_ok: C, LABEL (eps) |- instr* : eps -> eps
 
 rule Instr_ok/if:
   C |- IF t? instr_1* ELSE instr_2* : I32 -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr_1* : epsilon -> t?
-  -- Instrs_ok: C, LABEL (t?) |- instr_2* : epsilon -> t?
+  -- Instrs_ok: C, LABEL (t?) |- instr_1* : eps -> t?
+  -- Instrs_ok: C, LABEL (t?) |- instr_2* : eps -> t?
 
 
 ;; Branch instructions
@@ -208,7 +208,7 @@ rule Instr_ok/call_indirect:
 ;; Numeric instructions
 
 rule Instr_ok/const:
-  C |- CONST t c_t : epsilon -> t
+  C |- CONST t c_t : eps -> t
 
 rule Instr_ok/unop:
   C |- UNOP t unop : t -> t
@@ -231,7 +231,7 @@ rule Instr_ok/reinterpret:
 rule Instr_ok/convert-i:
   C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
   -- if inn_1 =/= inn_2
-  -- if sx? = epsilon <=> $size(inn_1) > $size(inn_2)
+  -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
 
 rule Instr_ok/convert-f:
   C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
@@ -241,11 +241,11 @@ rule Instr_ok/convert-f:
 ;; Local instructions
 
 rule Instr_ok/local.get:
-  C |- LOCAL.GET x : epsilon -> t
+  C |- LOCAL.GET x : eps -> t
   -- if C.LOCAL[x] = t
 
 rule Instr_ok/local.set:
-  C |- LOCAL.SET x : t -> epsilon
+  C |- LOCAL.SET x : t -> eps
   -- if C.LOCAL[x] = t
 
 rule Instr_ok/local.tee:
@@ -256,18 +256,18 @@ rule Instr_ok/local.tee:
 ;; Global instructions
 
 rule Instr_ok/global.get:
-  C |- GLOBAL.GET x : epsilon -> t
+  C |- GLOBAL.GET x : eps -> t
   -- if C.GLOBAL[x] = mut t
 
 rule Instr_ok/global.set:
-  C |- GLOBAL.SET x : t -> epsilon
+  C |- GLOBAL.SET x : t -> eps
   -- if C.GLOBAL[x] = MUT t
 
 
 ;; Memory instructions
 
 rule Instr_ok/memory.size:
-  C |- MEMORY.SIZE : epsilon -> I32
+  C |- MEMORY.SIZE : eps -> I32
   -- if C.MEM[0] = mt
 
 rule Instr_ok/memory.grow:
@@ -279,14 +279,14 @@ rule Instr_ok/load:
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(t)/8)
   -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = epsilon \/ t = inn
+  -- if n? = eps \/ t = inn
 
 rule Instr_ok/store:
-  C |- STORE t n? {ALIGN n_A, OFFSET n_O} : I32 t -> epsilon
+  C |- STORE t n? {ALIGN n_A, OFFSET n_O} : I32 t -> eps
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= $size(t)/8)
   -- if $(2^(n_A) <= n/8 < $size(t)/8)?
-  -- if n? = epsilon \/ t = inn
+  -- if n? = eps \/ t = inn
 
 
 ;;
@@ -302,7 +302,7 @@ rule Instr_const/const:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- if C.GLOBAL[x] = epsilon t
+  -- if C.GLOBAL[x] = eps t
 
 
 rule Expr_const: C |- instr* CONST
@@ -369,7 +369,7 @@ rule Data_ok:
 
 rule Start_ok:
   C |- START x : OK
-  -- if C.FUNC[x] = epsilon -> epsilon
+  -- if C.FUNC[x] = eps -> eps
 
 
 ;; Module im/exports

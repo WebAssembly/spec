@@ -920,7 +920,7 @@ and elab_exp_notation' env e t : Il.exp list =
     let es1' = elab_exp_notation' env (unparen_exp e1) t1 in
     let es2' = elab_exp_notation' env (SeqE es2 $ e.at) (SeqT ts2 $ t.at) in
     es1' @ es2'
-  (* Trailing elements can be omitted if they can be epsilon *)
+  (* Trailing elements can be omitted if they can be eps *)
   | SeqE [], SeqT (t1::ts2) ->
     let e1' = cast_empty "omitted sequence tail" env t1 e.at (!!!env t1) in
     let es2' =

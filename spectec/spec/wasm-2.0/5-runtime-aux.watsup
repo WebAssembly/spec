@@ -21,19 +21,19 @@ def $globalsxv(externval*) : globaladdr* hint(show $globals(%))
 def $tablesxv(externval*) : tableaddr*   hint(show $tables(%))
 def $memsxv(externval*) : memaddr*       hint(show $mems(%))
 
-def $funcsxv(epsilon) = epsilon
+def $funcsxv(eps) = eps
 def $funcsxv((FUNC fa) xv*) = fa $funcsxv(xv*)
 def $funcsxv(externval xv*) = $funcsxv(xv*)  -- otherwise
 
-def $globalsxv(epsilon) = epsilon
+def $globalsxv(eps) = eps
 def $globalsxv((GLOBAL ga) xv*) = ga $globalsxv(xv*)
 def $globalsxv(externval xv*) = $globalsxv(xv*)  -- otherwise
 
-def $tablesxv(epsilon) = epsilon
+def $tablesxv(eps) = eps
 def $tablesxv((TABLE ta) xv*) = ta $tablesxv(xv*)
 def $tablesxv(externval xv*) = $tablesxv(xv*)  -- otherwise
 
-def $memsxv(epsilon) = epsilon
+def $memsxv(eps) = eps
 def $memsxv((MEM ma) xv*) = ma $memsxv(xv*)
 def $memsxv(externval xv*) = $memsxv(xv*)  -- otherwise
 

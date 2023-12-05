@@ -113,7 +113,7 @@ let is_post_exp e =
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
 %token IF OTHERWISE HINT_LPAREN
-%token EPSILON INFINITY
+%token EPS INFINITY
 %token<bool> BOOLLIT
 %token<int> NATLIT HEXLIT CHARLIT
 %token<string> TEXTLIT
@@ -440,7 +440,7 @@ exp_prim_ :
   | exp_lit_ { $1 }
   | exp_var_ { $1 }
   | exp_hole_ { $1 }
-  | EPSILON { EpsE }
+  | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
   | LPAREN comma_list(exp_bin) RPAREN { (tup_exp $2 $loc($2)).it }
   | TICK LPAREN exp RPAREN { BrackE (LParen, $3, RParen) }
@@ -615,7 +615,7 @@ sym_prim_ :
   | HEXLIT { HexG $1 }
   | CHARLIT { CharG $1 }
   | TEXTLIT { TextG $1 }
-  | EPSILON { EpsG }
+  | EPS { EpsG }
   | LPAREN comma_list(sym) RPAREN { match fst $2 with [g] -> ParenG g | gs -> TupG gs }
   | DOLLAR LPAREN arith RPAREN { ArithG $3 }
 
