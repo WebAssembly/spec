@@ -102,7 +102,8 @@ and expr' =
   | SubE of id * ty                     (* varid, with specific type *)
   | YetE of string                      (* for future not yet implemented feature *)
 
-and path =
+and path = path' phrase
+and path' =
   | IdxP of expr                    (* `[` expr `]` *)
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of kwd                     (* `.` atom *)

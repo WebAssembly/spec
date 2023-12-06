@@ -71,6 +71,12 @@ let contE e = ContE e |> mk_expr
 let subE (id, ty) = SubE (id, ty) |> mk_expr
 let yetE s = YetE s |> mk_expr
 
+let mk_path it = Util.Source.($) it Util.Source.no_region
+
+let idxP e = IdxP e |> mk_path
+let sliceP (e1, e2) = SliceP (e1, e2) |> mk_path
+let dotP kwd = DotP kwd |> mk_path
+
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 

@@ -66,7 +66,8 @@ let rec walk_expr f e =
       | VarE n -> VarE n
       | SubE (n, t) -> SubE (n, t)
       | IterE (e, names, iter) -> IterE (new_ e, names, iter)
-      | YetE _ -> e.it in
+      | YetE _ -> e.it
+    in
     { e with it = e' }
   in
 
@@ -78,11 +79,16 @@ let rec walk_expr f e =
 and walk_path f p =
   let pre = id in
   let post = id in
-  ( match pre p with
-  | IdxP e -> IdxP (walk_expr f e)
-  | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
-  | DotP (s, note) -> DotP (s, note) )
-  |> post
+
+  let p' =
+    ( match (pre p).it with
+    | IdxP e -> IdxP (walk_expr f e)
+    | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
+    | DotP (s, note) -> DotP (s, note) )
+  in
+  let p = { p with it = p' } in
+
+  post p
 
 let rec walk_cond f c =
   let { pre_cond = pre; post_cond = post; stop_cond_cond = stop_cond; _ } = f in

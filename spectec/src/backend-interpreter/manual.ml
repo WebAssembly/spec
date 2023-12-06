@@ -77,16 +77,16 @@ let call_ref =
       ifI (
         CmpC (LtOp, a, lenE (callE ("funcinst", []))),
         [
-        letI (fi, accE (callE ("funcinst", []), IdxP a));
+        letI (fi, accE (callE ("funcinst", []), idxP a));
         ifI (
-          IsCaseOfC (accE (fi, DotP("CODE", "code")), ("FUNC", "func")),
+          IsCaseOfC (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")),
           [
-          letI (caseE (("FUNC", "func"), [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, DotP ("CODE", "code")));
+          letI (caseE (("FUNC", "func"), [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP ("CODE", "code")));
           letI (iterE (caseE (("LOCAL","local"), [t]), ["t"], List), y1);
           ifI (
-            IsCaseOfC (callE ("expanddt", [ accE (fi, DotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
+            IsCaseOfC (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
             [
-            letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, DotP ("TYPE", "type")) ]));
+            letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
             letI (arrowE (iterE (t1, ["t_1"], ListN (n, None)), iterE (t2, ["t_2"], ListN (m, None))), y0);
             assertI (TopValuesC n);
             popI (iterE (v, ["val"], ListN(n, None)));
@@ -96,7 +96,7 @@ let call_ref =
                 (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default", [t]), ["t"], List)))
               |> Record.add
                 ("MODULE", "frame")
-                (accE (fi, DotP ("MODULE", "module")))
+                (accE (fi, dotP ("MODULE", "module")))
             ));
             letI (ff, frameE (Some m, f));
             enterI (ff, listE ([caseE (("FRAME_", ""), [])]),
@@ -118,11 +118,11 @@ let group_bytes_by =
   let n' = varE "n'" in
 
   let bytes_ = iterE (varE "byte", ["byte"], List) in
-  let bytes_left = listE [accE (bytes_, SliceP (numE 0L, n))] in
+  let bytes_left = listE [accE (bytes_, sliceP (numE 0L, n))] in
   let bytes_right = callE 
     (
       "group_bytes_by", 
-      [ n; accE (bytes_, SliceP (n, binE (SubOp, n', n))) ]
+      [ n; accE (bytes_, sliceP (n, binE (SubOp, n', n))) ]
     ) 
   in
 
@@ -187,7 +187,7 @@ let array_new_data =
             CmpC (
               GtOp,
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L)),
-              lenE (accE (callE ("data", [y]), DotP ("DATA", "datainst")))
+              lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))
             ),
             [trapI],
             []
@@ -196,8 +196,8 @@ let array_new_data =
           letI (
             bstar, 
             accE (
-              accE (data, DotP ("DATA", "datainst")),
-              SliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L))
+              accE (data, dotP ("DATA", "datainst")),
+              sliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L))
             )
           );
           letI (gbstar, group_bytes_by);

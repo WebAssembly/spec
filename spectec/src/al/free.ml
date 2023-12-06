@@ -45,7 +45,8 @@ and free_iter = function
   | List
   | List1 -> []
   | ListN (e, id_opt) -> Option.to_list id_opt @ free_expr e
-and free_path = function
+and free_path path =
+  match path.it with 
   | IdxP e -> free_expr e
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
   | DotP _ -> []

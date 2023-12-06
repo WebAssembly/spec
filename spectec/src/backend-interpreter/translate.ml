@@ -107,9 +107,9 @@ and exp2expr exp =
   | Ast.LenE inner_exp -> lenE (exp2expr inner_exp)
   | Ast.ListE exps -> listE (List.map exp2expr exps)
   | Ast.IdxE (exp1, exp2) ->
-      accE (exp2expr exp1, IdxP (exp2expr exp2))
+      accE (exp2expr exp1, idxP (exp2expr exp2))
   | Ast.SliceE (exp1, exp2, exp3) ->
-      accE (exp2expr exp1, SliceP (exp2expr exp2, exp2expr exp3))
+      accE (exp2expr exp1, sliceP (exp2expr exp2, exp2expr exp3))
   | Ast.CatE (exp1, exp2) -> catE (exp2expr exp1, exp2expr exp2)
   (* Variable *)
   | Ast.VarE id -> varE id.it
@@ -120,7 +120,7 @@ and exp2expr exp =
       iterE (exp2expr inner_exp, names, iter2iter iter)
   (* property access *)
   | Ast.DotE (inner_exp, Atom p) ->
-      accE (exp2expr inner_exp, DotP (name2kwd p inner_exp.note))
+      accE (exp2expr inner_exp, dotP (name2kwd p inner_exp.note))
   (* conacatenation of records *)
   | Ast.CompE (inner_exp, { it = Ast.StrE expfields; _ }) ->
       (* assumption: CompE is only used for prepending to validation context *)
@@ -130,7 +130,7 @@ and exp2expr exp =
         | Ast.Atom name, fieldexp ->
             let extend_expr = exp2expr fieldexp in
             if nonempty extend_expr then
-              extE (acc, [ DotP (name2kwd name inner_exp.note) ], extend_expr, Front)
+              extE (acc, [ dotP (name2kwd name inner_exp.note) ], extend_expr, Front)
             else
               acc
         | _ -> gen_fail_msg_of_exp exp "record expression" |> failwith)
@@ -245,10 +245,10 @@ and path2paths path =
   let rec path2paths' path =
     match path.it with
     | Ast.RootP -> []
-    | Ast.IdxP (p, e) -> (path2paths' p) @ [ IdxP (exp2expr e) ]
-    | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ SliceP (exp2expr e1, exp2expr e2) ]
+    | Ast.IdxP (p, e) -> (path2paths' p) @ [ idxP (exp2expr e) ]
+    | Ast.SliceP (p, e1, e2) -> (path2paths' p) @ [ sliceP (exp2expr e1, exp2expr e2) ]
     | Ast.DotP (p, Atom a) ->
-        (path2paths' p) @ [ DotP (name2kwd a p.note) ]
+        (path2paths' p) @ [ dotP (name2kwd a p.note) ]
     | _ -> failwith "unreachable"
   in
   path2paths' path

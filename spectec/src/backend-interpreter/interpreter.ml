@@ -105,7 +105,8 @@ let rec create_sub_al_context names iter env =
   |> transpose
   |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
 
-and access_path env base path = match path with
+and access_path env base path =
+  match path.it with
   | IdxP e' ->
       let a = base |> value_to_array in
       let i = eval_expr env e' |> value_to_int in
@@ -132,7 +133,8 @@ and access_path env base path = match path with
           |> Printf.sprintf "Not a record: %s"
           |> failwith)
 
-and replace_path env base path v_new = match path with
+and replace_path env base path v_new = 
+  match path.it with
   | IdxP e' ->
       let a = base |> value_to_array in
       let a_new = Array.copy a in
@@ -558,11 +560,11 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
             accE (
               accE (
                 varE "s",
-                DotP ("STRUCT", "struct")
+                dotP ("STRUCT", "struct")
               ),
-              IdxP (numE i)
+              idxP (numE i)
             ),
-            DotP ("TYPE", "type")
+            dotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
@@ -574,11 +576,11 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
             accE (
               accE (
                 varE "s",
-                DotP ("ARRAY", "array")
+                dotP ("ARRAY", "array")
               ),
-              IdxP (numE i)
+              idxP (numE i)
             ),
-            DotP ("TYPE", "type")
+            dotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
@@ -590,11 +592,11 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
             accE (
               accE (
                 varE "s",
-                DotP ("FUNC", "func")
+                dotP ("FUNC", "func")
               ),
-              IdxP (numE i)
+              idxP (numE i)
             ),
-            DotP ("TYPE", "type")
+            dotP ("TYPE", "type")
           )
         in
         let dt = eval_expr (Env.add_store Env.empty) e in
@@ -791,13 +793,13 @@ and interp_instr (env: env) (instr: instr): env =
     WasmContext.pop_context () |> ignore;
     AL_Context.decrease_depth ();
     env
-  | ReplaceI (e1, IdxP e2, e3) ->
+  | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->
     let a = eval_expr env e1 |> value_to_array in
     let i = eval_expr env e2 |> value_to_int in
     let v = eval_expr env e3 in
     Array.set a i v;
     env
-  | ReplaceI (e1, SliceP (e2, e3), e4) ->
+  | ReplaceI (e1, { it = SliceP (e2, e3); _ }, e4) ->
     let a1 = eval_expr env e1 |> value_to_array in (* dest *)
     let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
     let i2 = eval_expr env e3 |> value_to_int in   (* length *)
@@ -805,7 +807,7 @@ and interp_instr (env: env) (instr: instr): env =
     assert (Array.length a2 = i2);
     Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
     env
-  | ReplaceI (e1, DotP (s, _), e2) ->
+  | ReplaceI (e1, { it = DotP (s, _); _ }, e2) ->
     begin match eval_expr env e1 with
     | StrV r ->
         let v = eval_expr env e2 in

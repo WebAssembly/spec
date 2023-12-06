@@ -278,7 +278,8 @@ and render_expr env in_math expr =
 
 (* assume Paths are always embedded in math blocks *)
 
-and render_path env = function
+and render_path env path =
+  match path.it with
   | Al.Ast.IdxP e -> sprintf "[%s]" (render_expr env true e)
   | Al.Ast.SliceP (e1, e2) ->
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)

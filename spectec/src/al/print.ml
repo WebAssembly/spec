@@ -157,7 +157,8 @@ and string_of_expr expr =
   | OptE None -> "?()"
   | YetE s -> sprintf "YetE (%s)" s
 
-and string_of_path = function
+and string_of_path path =
+  match path.it with
   | IdxP e -> sprintf "[%s]" (string_of_expr e)
   | SliceP (e1, e2) ->
       sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
@@ -456,13 +457,14 @@ and structured_string_of_expr expr =
 
 (* path*)
 
-and structured_string_of_path = function
-  | IdxP e -> sprintf "IdxP(%s)" (structured_string_of_expr e)
+and structured_string_of_path path =
+  match path.it with
+  | IdxP e -> sprintf "IdxP (%s)" (structured_string_of_expr e)
   | SliceP (e1, e2) ->
-      sprintf "SliceP(%s,%s)"
+      sprintf "SliceP (%s,%s)"
         (structured_string_of_expr e1)
         (structured_string_of_expr e2)
-  | DotP (s, _) -> sprintf "DotP(%s)" s
+  | DotP (s, _) -> sprintf "DotP (%s)" s
 
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
