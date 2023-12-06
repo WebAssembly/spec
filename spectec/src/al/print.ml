@@ -166,12 +166,13 @@ and string_of_path path =
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
-and string_of_cond = function
-  | UnC (NotOp, IsCaseOfC (e, c)) ->
+and string_of_cond cond =
+  match cond.it with
+  | UnC (NotOp, { it = IsCaseOfC (e, c); _ }) ->
       sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd c)
-  | UnC (NotOp, IsDefinedC e) ->
+  | UnC (NotOp, { it = IsDefinedC e; _ }) ->
       sprintf "%s is not defined" (string_of_expr e)
-  | UnC (NotOp, IsValidC e) ->
+  | UnC (NotOp, { it = IsValidC e; _ }) ->
       sprintf "%s is not valid" (string_of_expr e)
   | UnC (NotOp, c) -> sprintf "not %s" (string_of_cond c)
   | UnC _ -> failwith "Unreachable condition"
@@ -471,7 +472,8 @@ and structured_string_of_paths paths =
 
 (* condition *)
 
-and structured_string_of_cond = function
+and structured_string_of_cond cond =
+  match cond.it with
   | UnC (op, c) ->
       "UnC ("
       ^ string_of_unop op

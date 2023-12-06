@@ -65,30 +65,30 @@ let call_ref =
     ("CALL_REF", "admininstr"),
     [ x ],
     [
-      assertI (TopValueC None);
+      assertI (topValueC None);
       popI ref;
       ifI (
-        IsCaseOfC (ref, ("REF.NULL", "admininstr")),
+        isCaseOfC (ref, ("REF.NULL", "admininstr")),
         [ trapI ],
         []
       );
-      assertI (IsCaseOfC (ref, ("REF.FUNC_ADDR", "admininstr")));
+      assertI (isCaseOfC (ref, ("REF.FUNC_ADDR", "admininstr")));
       letI (caseE (("REF.FUNC_ADDR", "admininstr"), [a]), ref);
       ifI (
-        CmpC (LtOp, a, lenE (callE ("funcinst", []))),
+        cmpC (LtOp, a, lenE (callE ("funcinst", []))),
         [
         letI (fi, accE (callE ("funcinst", []), idxP a));
         ifI (
-          IsCaseOfC (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")),
+          isCaseOfC (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")),
           [
           letI (caseE (("FUNC", "func"), [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP ("CODE", "code")));
           letI (iterE (caseE (("LOCAL","local"), [t]), ["t"], List), y1);
           ifI (
-            IsCaseOfC (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
+            isCaseOfC (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
             [
             letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
             letI (arrowE (iterE (t1, ["t_1"], ListN (n, None)), iterE (t2, ["t_2"], ListN (m, None))), y0);
-            assertI (TopValuesC n);
+            assertI (topValuesC n);
             popI (iterE (v, ["val"], ListN(n, None)));
             letI (f, strE (Record.empty
               |> Record.add
@@ -132,7 +132,7 @@ let group_bytes_by =
     [
       letI (n', lenE bytes_);
       ifI (
-        CmpC (GeOp, n', n),
+        cmpC (GeOp, n', n),
         [ returnI (Some (catE (bytes_left, bytes_right))) ],
         []
       );
@@ -174,17 +174,17 @@ let array_new_data =
     ("ARRAY.NEW_DATA", "admininstr"),
     [x; y],
     [
-      assertI (TopValueC (Some i32));
+      assertI (topValueC (Some i32));
       popI (caseE (("CONST", "admininstr"), [i32; n]));
-      assertI (TopValueC (Some i32));
+      assertI (topValueC (Some i32));
       popI (caseE (("CONST", "admininstr"), [i32; i]));
       ifI (
-        IsCaseOfC (expanddt_with_type, ("ARRAY", "comptype")),
+        isCaseOfC (expanddt_with_type, ("ARRAY", "comptype")),
         [
           letI (caseE (("ARRAY", "comptype"), [y_0]), expanddt_with_type);
           letI (tupE [ mut; zt ], y_0);
           ifI (
-            CmpC (
+            cmpC (
               GtOp,
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L)),
               lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))

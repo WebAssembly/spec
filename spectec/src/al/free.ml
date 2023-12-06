@@ -51,7 +51,8 @@ and free_path path =
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
   | DotP _ -> []
 
-let rec free_cond = function
+let rec free_cond cond =
+  match cond.it with
   | UnC (_, c) -> free_cond c
   | BinC (_, c1, c2) -> free_cond c1 @ free_cond c2
   | CmpC (_, e1, e2) 

@@ -16,50 +16,57 @@ let take n str =
   String.sub str 0 len ^ if len <= n then "" else "..."
 
 let rec neg cond =
-  match cond with
-  | UnC (NotOp, c) -> c
-  | BinC (AndOp, c1, c2) -> BinC (OrOp, neg c1, neg c2)
-  | BinC (OrOp, c1, c2) -> BinC (AndOp, neg c1, neg c2)
-  | CmpC (EqOp, e1, e2) -> CmpC (NeOp, e1, e2)
-  | CmpC (NeOp, e1, e2) -> CmpC (EqOp, e1, e2)
-  | CmpC (LtOp, e1, e2) -> CmpC (GeOp, e1, e2)
-  | CmpC (GtOp, e1, e2) -> CmpC (LeOp, e1, e2)
-  | CmpC (LeOp, e1, e2) -> CmpC (GtOp, e1, e2)
-  | CmpC (GeOp, e1, e2) -> CmpC (LtOp, e1, e2)
-  | _ -> UnC (NotOp, cond)
+  let cond' = 
+    match cond.it with
+    | UnC (NotOp, c) -> c.it
+    | BinC (AndOp, c1, c2) -> BinC (OrOp, neg c1, neg c2)
+    | BinC (OrOp, c1, c2) -> BinC (AndOp, neg c1, neg c2)
+    | CmpC (EqOp, e1, e2) -> CmpC (NeOp, e1, e2)
+    | CmpC (NeOp, e1, e2) -> CmpC (EqOp, e1, e2)
+    | CmpC (LtOp, e1, e2) -> CmpC (GeOp, e1, e2)
+    | CmpC (GtOp, e1, e2) -> CmpC (LeOp, e1, e2)
+    | CmpC (LeOp, e1, e2) -> CmpC (GtOp, e1, e2)
+    | CmpC (GeOp, e1, e2) -> CmpC (LtOp, e1, e2)
+    | _ -> UnC (NotOp, cond)
+  in
+  { cond with it = cond' }
 
 let both_empty cond1 cond2 =
-  let get_list = function
-  | CmpC (EqOp, e, { it = ListE []; _ })
-  | CmpC (EqOp, { it = ListE []; _ }, e)
-  | CmpC (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-  | CmpC (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-  | CmpC (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
-  | CmpC (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-  | CmpC (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-  | CmpC (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
-  | _ -> None in
+  let get_list cond =
+    match cond.it with
+    | CmpC (EqOp, e, { it = ListE []; _ })
+    | CmpC (EqOp, { it = ListE []; _ }, e)
+    | CmpC (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | CmpC (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | CmpC (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
+    | CmpC (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | CmpC (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | CmpC (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
+    | _ -> None
+  in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
   | _ -> false
 
 let both_non_empty cond1 cond2 =
-  let get_list = function
-  | CmpC (NeOp, e, { it = ListE []; _ })
-  | CmpC (NeOp, { it = ListE []; _ }, e)
-  | CmpC (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-  | CmpC (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-  | CmpC (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-  | CmpC (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-  | CmpC (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
-  | CmpC (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
-  | _ -> None in
+  let get_list cond = 
+    match cond.it with
+    | CmpC (NeOp, e, { it = ListE []; _ })
+    | CmpC (NeOp, { it = ListE []; _ }, e)
+    | CmpC (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | CmpC (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | CmpC (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | CmpC (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | CmpC (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
+    | CmpC (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
+    | _ -> None
+  in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
   | _ -> false
 
 let eq_cond cond1 cond2 =
-  cond1 = cond2
+  cond1.it = cond2.it
   || both_empty cond1 cond2
   || both_non_empty cond1 cond2
 
@@ -183,9 +190,10 @@ let rec infer_else instrs =
       | _ -> new_i :: il)
     instrs []
 
-let if_not_defined = function
-  | CmpC (EqOp, e, { it = OptE None; _ }) -> UnC (NotOp, IsDefinedC e)
-  | c -> c
+let if_not_defined cond =
+  match cond.it with
+  | CmpC (EqOp, e, { it = OptE None; _ }) -> unC (NotOp, isDefinedC e)
+  | _ -> cond
 
 let swap_if instr =
   match instr.it with
@@ -246,7 +254,7 @@ let push_either =
 let merge_three_branches i =
   match i.it with
   | IfI (c1, il1, [ { it = IfI (c2, il2, il3); _ } ]) when Eq.instrs il1 il3 ->
-    ifI (BinC (AndOp, neg c1, c2), il2, il1)
+    ifI (binC (AndOp, neg c1, c2), il2, il1)
   | _ -> i
 
 let remove_dead_assignment il =
@@ -301,7 +309,7 @@ let rec remove_nop acc il = match il with
 let flatten_if instr =
   match instr.it with
   | IfI (c1, [ { it = IfI (c2, il1, il2); _ }], []) ->
-    ifI (BinC (AndOp, c1, c2), il1, il2)
+    ifI (binC (AndOp, c1, c2), il1, il2)
   | _ -> instr
 
 let simplify_record_concat expr = 

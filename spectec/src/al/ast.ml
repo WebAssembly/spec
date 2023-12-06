@@ -108,7 +108,8 @@ and path' =
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of kwd                     (* `.` atom *)
 
-and cond =
+and cond = cond' phrase
+and cond' =
   | UnC of unop * cond              (* unop expr *)
   | BinC of binop * cond * cond     (* expr binop expr *)
   | CmpC of cmpop * expr * expr     (* expr cmpop expr *)

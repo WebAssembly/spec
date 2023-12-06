@@ -77,6 +77,23 @@ let idxP e = IdxP e |> mk_path
 let sliceP (e1, e2) = SliceP (e1, e2) |> mk_path
 let dotP kwd = DotP kwd |> mk_path
 
+let mk_cond it = Util.Source.($) it Util.Source.no_region
+
+let unC (unop, c) = UnC (unop, c) |> mk_cond
+let binC (binop, c1, c2) = BinC (binop, c1, c2) |> mk_cond
+let cmpC (cmpop, e1, e2) = CmpC (cmpop, e1, e2) |> mk_cond
+let isCaseOfC (e, kwd) = IsCaseOfC (e, kwd) |> mk_cond
+let isValidC e = IsValidC e |> mk_cond
+let contextKindC (kwd, e) = ContextKindC (kwd, e) |> mk_cond
+let isDefinedC e = IsDefinedC e |> mk_cond
+let matchC (e1, e2) = MatchC (e1, e2) |> mk_cond
+let hasTypeC (e, ty) = HasTypeC (e, ty) |> mk_cond
+let topLabelC = TopLabelC |> mk_cond
+let topFrameC = TopFrameC |> mk_cond
+let topValueC e_opt = TopValueC e_opt |> mk_cond
+let topValuesC e = TopValuesC e |> mk_cond
+let yetC s = YetC s |> mk_cond
+
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str 

@@ -293,14 +293,15 @@ and render_paths env in_math paths =
 
 (* assume Conditions are never embedded in math blocks *)
 
-and render_cond env = function
-  | Al.Ast.UnC (NotOp, Al.Ast.IsCaseOfC (e, c)) ->
+and render_cond env cond =
+  match cond.it with
+  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsCaseOfC (e, c); _ }) ->
       sprintf "%s is not of the case %s" 
         (render_expr env false e) 
         (render_math (render_kwd env c))
-  | Al.Ast.UnC (NotOp, Al.Ast.IsDefinedC e) ->
+  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsDefinedC e; _ }) ->
       sprintf "%s is not defined" (render_expr env false e)
-  | Al.Ast.UnC (NotOp, Al.Ast.IsValidC e) ->
+  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsValidC e; _ }) ->
       sprintf "%s is not valid" (render_expr env false e)
   | Al.Ast.UnC (op, c) ->
       sprintf "%s %s" (render_al_unop op) (render_cond env c)

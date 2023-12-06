@@ -95,22 +95,27 @@ let rec walk_cond f c =
   let new_ = walk_cond f in
   let new_e = walk_expr f in
 
-  let super_walk c = match c with
-  | UnC (op, inner_c) -> UnC (op, new_ inner_c)
-  | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
-  | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
-  | ContextKindC (s, e) -> ContextKindC (s, new_e e)
-  | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
-  | IsDefinedC e -> IsDefinedC (new_e e)
-  | HasTypeC (e, t) -> HasTypeC(new_e e, t)
-  | IsValidC e -> IsValidC (new_e e)
-  | TopLabelC -> c
-  | TopFrameC -> c
-  | TopValueC (Some e) -> TopValueC (Some (new_e e))
-  | TopValueC _ -> c
-  | TopValuesC e -> TopValuesC (new_e e)
-  | MatchC (e1, e2) -> MatchC (new_e e1, new_e e2)
-  | YetC _ -> c in
+  let super_walk c = 
+    let c' =
+      match c.it with
+      | UnC (op, inner_c) -> UnC (op, new_ inner_c)
+      | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
+      | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
+      | ContextKindC (s, e) -> ContextKindC (s, new_e e)
+      | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
+      | IsDefinedC e -> IsDefinedC (new_e e)
+      | HasTypeC (e, t) -> HasTypeC(new_e e, t)
+      | IsValidC e -> IsValidC (new_e e)
+      | TopLabelC -> c.it
+      | TopFrameC -> c.it
+      | TopValueC (Some e) -> TopValueC (Some (new_e e))
+      | TopValueC _ -> c.it
+      | TopValuesC e -> TopValuesC (new_e e)
+      | MatchC (e1, e2) -> MatchC (new_e e1, new_e e2)
+      | YetC _ -> c.it
+    in
+    { c with it = c' }
+  in
 
   let c1 = pre c in
   let c2 = if stop_cond c1 then c1 else super_walk c1 in

@@ -256,15 +256,15 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI TopFrameC
-  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (TopValuesC (exp2expr e))
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI topFrameC
+  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (topValuesC (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
-        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI TopLabelC
+        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI topLabelC
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE (ty :: _); _ }) -> assertI (TopValueC (Some (exp2expr ty)))
-  | _ -> assertI (TopValueC None)
+        { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueC (Some (exp2expr ty)))
+  | _ -> assertI (topValueC None)
 
 (* `Ast.exp list` -> `Ast.exp list * instr list` *)
 let handle_lhs_stack bounds =
@@ -337,7 +337,7 @@ let rec rhs2instrs exp =
   | Ast.IterE ({ it = CaseE (Atom atomid, _); note = note; _ }, (Opt, [ id ]))
     when atomid = "CALL" ->
       let new_name = varE (id.it ^ "_0") in
-      [ ifI (IsDefinedC (varE id.it),
+      [ ifI (isDefinedC (varE id.it),
         [
           letI (optE (Some new_name), varE id.it);
           executeI (caseE (name2kwd atomid note, [ new_name ]))
@@ -428,7 +428,7 @@ let rec exp2cond exp =
       | Ast.LeOp _ -> LeOp
       | Ast.GeOp _ -> GeOp
       in
-      CmpC (compare_op, lhs, rhs)
+      cmpC (compare_op, lhs, rhs)
   | Ast.BinE (op, exp1, exp2) ->
       let lhs = exp2cond exp1 in
       let rhs = exp2cond exp2 in
@@ -440,7 +440,7 @@ let rec exp2cond exp =
       | _ ->
           gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
       in
-      BinC (binop, lhs, rhs)
+      binC (binop, lhs, rhs)
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
 let bound_by binding e =
@@ -478,7 +478,7 @@ let extract_bound_names lhs rhs targets cont = match lhs.it with
             e
           else
             let new_e = get_lhs_name() in
-            conds := !conds @ [ CmpC (EqOp, new_e, e) ];
+            conds := !conds @ [ cmpC (EqOp, new_e, e) ];
             new_e
         );
         stop_cond_expr = contains_bound_name;
@@ -504,7 +504,7 @@ let rec expr2let lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when Al.Free.free_expr l = [] -> [ ifI (CmpC (EqOp, r, l), cont, []) ]
+      | _ when Al.Free.free_expr l = [] -> [ ifI (cmpC (EqOp, r, l), cont, []) ]
       | _ -> expr2let l r targets cont
     ) bindings cont
   in
@@ -513,7 +513,7 @@ let rec expr2let lhs rhs targets cont =
     let bindings, es' = extract_non_names es in
     [
       ifI (
-        IsCaseOfC (rhs, tag),
+        isCaseOfC (rhs, tag),
         letI (caseE (tag, es'), rhs) :: translate_bindings bindings,
         []
       );
@@ -525,21 +525,21 @@ let rec expr2let lhs rhs targets cont =
     else
     [
       ifI
-        ( CmpC (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
+        ( cmpC (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
           letI (listE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
     [
       ifI
-        ( UnC (NotOp, IsDefinedC rhs),
+        ( unC (NotOp, isDefinedC rhs),
           cont,
           [] );
     ]
   | OptE (Some ({ it = VarE _; _ })) ->
     [
       ifI
-        ( IsDefinedC rhs,
+        ( isDefinedC rhs,
           letI (lhs, rhs) :: cont,
           [] );
      ]
@@ -547,14 +547,14 @@ let rec expr2let lhs rhs targets cont =
     let fresh = get_lhs_name() in
     [
       ifI
-        ( IsDefinedC rhs,
+        ( isDefinedC rhs,
           letI (optE (Some fresh), rhs) :: expr2let e fresh targets cont,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
       ifI
-        ( CmpC (GeOp, rhs, b),
+        ( cmpC (GeOp, rhs, b),
           letI (a, binE (SubOp, rhs, b)) :: cont,
           [] );
     ]
@@ -573,10 +573,10 @@ let rec expr2let lhs rhs targets cont =
     let length_s, bindings_s, suffix' = handle_list suffix in
     (* TODO: This condition should be injected by sideconditions pass *)
     let cond = match length_p, length_s with
-      | None, None -> YetC ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | None, None -> yetC ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
-      | None, Some l -> CmpC (GeOp, lenE rhs, l)
-      | Some l1, Some l2 -> CmpC (EqOp, lenE rhs, binE (AddOp, l1, l2))
+      | None, Some l -> cmpC (GeOp, lenE rhs, l)
+      | Some l1, Some l2 -> cmpC (EqOp, lenE rhs, binE (AddOp, l1, l2))
     in
     [
       ifI
@@ -588,7 +588,7 @@ let rec expr2let lhs rhs targets cont =
   | SubE (s, t) ->
     [
       ifI
-        ( HasTypeC (rhs, t),
+        ( hasTypeC (rhs, t),
           letI (varE s, rhs) :: cont,
           [] )
     ]
@@ -618,7 +618,7 @@ let rulepr2instrs id exp instrs = match id.it, exp2args exp with
   | "Ref_ok", [_s; ref; rt] ->
     letI (rt, callE ("ref_type_of", [ ref ])) :: instrs
   | "Reftype_sub", [_C; rt1; rt2] ->
-    [ ifI (MatchC (rt1, rt2), instrs |> check_nop, []) ]
+    [ ifI (matchC (rt1, rt2), instrs |> check_nop, []) ]
   | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
 
 (** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)
@@ -764,7 +764,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
           inner_params |> update_opt params;
           let kind = kind_of_context lhs in
           [ ifI (
-            ContextKindC (kind, getCurContextE),
+            contextKindC (kind, getCurContextE),
             body,
             acc) ]
         | _ -> failwith "unreachable")

@@ -306,7 +306,7 @@ and eval_expr env expr =
 (* Condition *)
 
 and eval_cond env cond =
-  match cond with
+  match cond.it with
   | UnC (NotOp, c) -> eval_cond env c |> not
   | BinC (op, c1, c2) ->
       let b1 = eval_cond env c1 in
@@ -413,8 +413,8 @@ and eval_cond env cond =
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     match_ref_type v1 v2
-  | c ->
-    structured_string_of_cond c |> failwith
+  | _ ->
+    structured_string_of_cond cond |> failwith
 
 (* Assignment *)
 
