@@ -30,14 +30,14 @@ let rec neg cond =
 
 let both_empty cond1 cond2 =
   let get_list = function
-  | CmpC (EqOp, e, ListE [])
-  | CmpC (EqOp, ListE [], e)
-  | CmpC (EqOp, LenE e, NumE 0L)
-  | CmpC (EqOp, NumE 0L, LenE e)
-  | CmpC (LtOp, LenE e, NumE 1L)
-  | CmpC (LeOp, LenE e, NumE 0L)
-  | CmpC (GeOp, NumE 0L, LenE e)
-  | CmpC (GeOp, NumE 1L, LenE e) -> Some e
+  | CmpC (EqOp, e, { it = ListE []; _ })
+  | CmpC (EqOp, { it = ListE []; _ }, e)
+  | CmpC (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+  | CmpC (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+  | CmpC (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
+  | CmpC (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+  | CmpC (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+  | CmpC (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -45,14 +45,14 @@ let both_empty cond1 cond2 =
 
 let both_non_empty cond1 cond2 =
   let get_list = function
-  | CmpC (NeOp, e, ListE [])
-  | CmpC (NeOp, ListE [], e)
-  | CmpC (NeOp, LenE e, NumE 0L)
-  | CmpC (NeOp, NumE 0L, LenE e)
-  | CmpC (LtOp, NumE 0L, LenE e)
-  | CmpC (GtOp, LenE e, NumE 0L)
-  | CmpC (LeOp, NumE 1L, LenE e)
-  | CmpC (GeOp, LenE e, NumE 1L) -> Some e
+  | CmpC (NeOp, e, { it = ListE []; _ })
+  | CmpC (NeOp, { it = ListE []; _ }, e)
+  | CmpC (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+  | CmpC (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+  | CmpC (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+  | CmpC (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+  | CmpC (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
+  | CmpC (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
   | _ -> None in
   match get_list cond1, get_list cond2 with
   | Some e1, Some e2 -> e1 = e2
@@ -184,7 +184,7 @@ let rec infer_else instrs =
     instrs []
 
 let if_not_defined = function
-  | CmpC (EqOp, e, OptE None) -> UnC (NotOp, IsDefinedC e)
+  | CmpC (EqOp, e, { it = OptE None; _ }) -> UnC (NotOp, IsDefinedC e)
   | c -> c
 
 let swap_if instr =
@@ -277,9 +277,13 @@ let remove_dead_assignment il =
   in
   remove_dead_assignment' il ([], []) |> fst
 
-let remove_sub = function
-  | SubE (n, _) -> VarE n
-  | e -> e
+let remove_sub e = 
+  let e' = 
+    match e.it with 
+    | SubE (n, _) -> VarE n
+    | e -> e
+  in
+  { e with it = e' }
 
 let rec remove_nop acc il = match il with
 | [] -> List.rev acc
@@ -300,14 +304,23 @@ let flatten_if instr =
     ifI (BinC (AndOp, c1, c2), il1, il2)
   | _ -> instr
 
-let simplify_record_concat = function
-  | CatE (e1, e2) ->
-    let nonempty = function ListE [] | OptE None -> false | _ -> true in
-    let remove_empty_field = function
-      | StrE r -> StrE (Record.filter (fun _ v -> nonempty v) r)
-      | e -> e in
-    CatE (remove_empty_field e1, remove_empty_field e2)
-  | e -> e
+let simplify_record_concat expr = 
+  let expr' =
+    match expr.it with
+    | CatE (e1, e2) ->
+      let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
+      let remove_empty_field e = 
+        let e' =
+          (match e.it with 
+          | StrE r -> StrE (Record.filter (fun _ v -> nonempty v) r)
+          | e -> e)
+        in
+        { e with it = e' }
+      in
+      CatE (remove_empty_field e1, remove_empty_field e2)
+    | e -> e
+  in
+  { expr with it = expr' }  
 
 let rec enhance_readability instrs =
   let walk_config =
@@ -333,20 +346,20 @@ let rec enhance_readability instrs =
 
 let rec mk_access ps base =
   match ps with
-  | h :: t -> AccE (base, h) |> mk_access t
+  | h :: t -> accE (base, h) |> mk_access t
   | [] -> base
 
-let is_store = function
+let is_store expr = match expr.it with 
   | VarE s ->
     s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
   | _ -> false
 
-let is_frame = function
+let is_frame expr = match expr.it with 
   | VarE f ->
     f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
   | _ -> false
 
-let is_state = function
+let is_state expr = match expr.it with 
   | TupE [ s; f ] -> is_store s && is_frame f
   | VarE z ->
     z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
@@ -354,33 +367,37 @@ let is_state = function
 
 let hide_state_args = Lib.List.filter_not (fun arg -> is_state arg || is_store arg)
 
-let hide_state_expr = function
-  | CallE (f, args) -> CallE (f, hide_state_args args)
-  | TupE [ s; e ] when is_store s -> e
-  | e -> e
+let hide_state_expr expr = 
+  let expr' = 
+    match expr.it with 
+    | CallE (f, args) -> CallE (f, hide_state_args args)
+    | TupE [ s; e ] when is_store s -> e.it
+    | e -> e
+  in
+  { expr with it = expr' }
 
 let hide_state instr =
   match instr.it with
   (* Return *)
   | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ]
   (* Perform *)
-  | LetI (e, CallE (fname, args)) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ]
+  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ]
   | PerformI (f, args) -> [ performI (f, hide_state_args args) ]
   (* Append *)
-  | LetI (_, ExtE (s, ps, ListE [ e ], Back) ) when is_store s ->
+  | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); _ } ) when is_store s ->
     [ appendI (mk_access ps s, e) ]
   (* Append & Return *)
-  | ReturnI (Some (TupE [ ExtE (s, ps, ListE [ e1 ], Back); e2 ])) when is_store s ->
-    let addr = VarE "a" in
+  | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); _ }; e2 ]; _  })) when is_store s ->
+    let addr = varE "a" in
     [ letI (addr, e2); appendI (mk_access ps s, e1); returnI (Some addr) ]
   (* Replace store *)
-  | LetI (_, UpdE (s, ps, e))
-  | ReturnI (Some (TupE [ UpdE (s, ps, e); VarE "f" ]))
-  | ReturnI (Some (UpdE (s, ps, e))) when is_store s ->
+  | LetI (_, { it = UpdE (s, ps, e); _ })
+  | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); _ }; { it = VarE "f"; _ } ]; _ }))
+  | ReturnI (Some ({ it = UpdE (s, ps, e); _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
     [ replaceI (mk_access hs s, t, e) ]
   (* Replace frame *)
-  | ReturnI (Some (TupE [ VarE "s"; UpdE (f, ps, e) ])) when is_frame f ->
+  | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); _ } ]; _ })) when is_frame f ->
     let hs, t = Lib.List.split_last ps in
     [ replaceI (mk_access hs f, t, e) ]
   | _ -> [ instr ]
@@ -398,9 +415,9 @@ let state_remover algo =
 
   match Walk.walk walk_config algo with
   | FuncA (name, params, body) -> (match params with
-    | TupE [ _; VarE "f" ] :: tail ->
-        FuncA (name, tail, letI (VarE "f", GetCurFrameE) :: body |> remove_dead_assignment)
-    | VarE ("s" | "z") :: tail ->
+    | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
+        FuncA (name, tail, letI (varE "f", getCurFrameE) :: body |> remove_dead_assignment)
+    | { it = VarE ("s" | "z"); _ } :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))
   | RuleA _ as a -> a

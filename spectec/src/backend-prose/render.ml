@@ -136,7 +136,8 @@ and render_iters env iters = List.map (render_iter env) iters |> List.fold_left 
 
 (* Expressions and Paths *)
 
-and render_expr env in_math = function
+and render_expr env in_math expr =
+  match expr.it with
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
@@ -159,17 +160,17 @@ and render_expr env in_math = function
       let s = sprintf "%s(%s)" sfn ses in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
-  | Al.Ast.CatE (Al.Ast.ListE e1, Al.Ast.ListE e2) when List.length e1 = 1 && List.length e2 = 1 ->
+  | Al.Ast.CatE ({ it = Al.Ast.ListE e1; _ }, { it = Al.Ast.ListE e2; _ }) when List.length e1 = 1 && List.length e2 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
       let se2 = render_expr env true (List.hd e2) in
       let s = sprintf "%s~%s" se1 se2 in 
       if in_math then s else render_math s
-  | Al.Ast.CatE (Al.Ast.ListE e1, e2) when List.length e1 = 1 ->
+  | Al.Ast.CatE ({ it = Al.Ast.ListE e1; _ }, e2) when List.length e1 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.CatE (e1, Al.Ast.ListE e2) when List.length e2 = 1 ->
+  | Al.Ast.CatE (e1, { it = Al.Ast.ListE e2; _ }) when List.length e2 = 1 ->
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true (List.hd e2) in
       let s = sprintf "%s~%s" se1 se2 in
@@ -235,7 +236,7 @@ and render_expr env in_math = function
   | Al.Ast.VarE n | Al.Ast.SubE (n, _) ->
       let sn = render_name n in
       if in_math then sn else render_math sn
-  | Al.Ast.IterE (Al.Ast.VarE n, _, iter) ->
+  | Al.Ast.IterE ({ it = Al.Ast.VarE n; _ }, _, iter) ->
       let sn = render_name n in
       let siter = render_iter env iter in
       let s = sprintf "{%s}{%s}" sn siter in
@@ -420,7 +421,7 @@ let rec render_al_instr env algoname index depth instr =
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
   (* TODO hardcoded for PopI on label or frame by raw string *)
-  | Al.Ast.PopI (Al.Ast.VarE s) when s = "the label" || s = "the frame" ->
+  | Al.Ast.PopI ({ it = Al.Ast.VarE s; _ }) when s = "the label" || s = "the frame" ->
       sprintf "%s Pop %s from the stack." (render_order index depth) s
   | Al.Ast.PopI e ->
       sprintf "%s Pop %s from the stack." (render_order index depth)
@@ -445,11 +446,11 @@ let rec render_al_instr env algoname index depth instr =
   | Al.Ast.ExecuteSeqI e ->
       sprintf "%s Execute the sequence %s." (render_order index depth) (render_expr env false e)
   | Al.Ast.PerformI (n, es) ->
-      sprintf "%s Perform %s." (render_order index depth) (render_expr env false (Al.Ast.CallE (n, es)))
+      sprintf "%s Perform %s." (render_order index depth) (render_expr env false (Al.Ast.CallE (n, es) $ instr.at))
   | Al.Ast.ExitI -> render_order index depth ^ " Exit current context."
   | Al.Ast.ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s with %s." (render_order index depth)
-        (render_expr env false (Al.Ast.AccE (e1, p))) (render_expr env false e2)
+        (render_expr env false (Al.Ast.AccE (e1, p) $ e1.at)) (render_expr env false e2)
   | Al.Ast.AppendI (e1, e2) ->
       sprintf "%s Append %s to the %s." (render_order index depth)
         (render_expr env false e2) (render_expr env false e1)
@@ -473,10 +474,10 @@ let render_kwd_title env kwd params =
     else if name = "FRAME" then ("FRAME_", syntax)
     else kwd 
   in
-  render_expr env false (Al.Ast.CaseE (kwd, params))
+  render_expr env false (Al.Ast.CaseE (kwd, params) $ no_region)
 
 let render_funcname_title env fname params =
-  render_expr env false (Al.Ast.CallE (fname, params))
+  render_expr env false (Al.Ast.CallE (fname, params) $ no_region)
 
 let render_pred env name params instrs =
   let (pname, syntax) = name in

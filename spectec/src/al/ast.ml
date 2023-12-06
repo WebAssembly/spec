@@ -72,7 +72,8 @@ type iter =
 
 (* Expressions *)
 
-and expr =
+and expr = expr' phrase
+and expr' =
   | VarE of id                          (* varid *)
   | NumE of int64                       (* number *)
   | UnE of unop * expr                  (* unop expr *)

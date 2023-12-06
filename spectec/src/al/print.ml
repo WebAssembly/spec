@@ -109,7 +109,8 @@ and string_of_record_expr r =
     r "{ "
   ^ "}"
 
-and string_of_expr = function
+and string_of_expr expr =
+  match expr.it with
   | NumE i -> Int64.to_string i
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
@@ -146,9 +147,9 @@ and string_of_expr = function
   | SubE (n, _) -> n
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
-    (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
+    (match e1.it with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
-    ^ (match e2 with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
+    ^ (match e2.it with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
   | CaseE (("CONST", _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
@@ -277,7 +278,7 @@ let rec string_of_instr index depth instr =
   | ExecuteSeqI e ->
       sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
   | PerformI (n, el) ->
-      sprintf "%s Perform %s." (make_index index depth) (string_of_expr (CallE (n, el)))
+      sprintf "%s Perform %s." (make_index index depth) (string_of_expr (CallE (n, el) $ instr.at))
   | ExitI -> make_index index depth ^ " Exit current context."
   | ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s%s with %s." (make_index index depth)
@@ -358,7 +359,8 @@ and structured_string_of_record_expr r =
     r "{ "
   ^ "}"
 
-and structured_string_of_expr = function
+and structured_string_of_expr expr = 
+  match expr.it with
   | NumE i -> Int64.to_string i
   | UnE (op, e) ->
      "UnE ("

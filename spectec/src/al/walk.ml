@@ -37,34 +37,38 @@ let rec walk_expr f e =
   let { pre_expr = pre; post_expr = post; stop_cond_expr = stop_cond; _ } = f in
   let new_ = walk_expr f in
 
-  let super_walk e = match e with
-  | NumE _
-  | GetCurFrameE
-  | GetCurLabelE
-  | GetCurContextE -> e
-  | UnE (op, e') -> UnE (op, new_ e')
-  | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
-  | CallE (fname, args) -> CallE (fname, List.map new_ args)
-  (* TODO: Implement walker for iter *)
-  | ListE el -> ListE (List.map new_ el)
-  | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
-  | LenE e' -> LenE (new_ e')
-  | StrE r -> StrE (Record.map new_ r)
-  | AccE (e, p) -> AccE (new_ e, walk_path f p)
-  | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
-  | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
-  | CaseE (t, el) -> CaseE (t, List.map new_ el)
-  | OptE e -> OptE (Option.map new_ e)
-  | TupE es -> TupE (List.map new_ es)
-  | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
-  | ArityE e' -> ArityE (new_ e')
-  | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
-  | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
-  | ContE e' -> ContE (new_ e')
-  | VarE n -> VarE n
-  | SubE (n, t) -> SubE (n, t)
-  | IterE (e, names, iter) -> IterE (new_ e, names, iter)
-  | YetE _ -> e in
+  let super_walk e = 
+    let e' =
+      match e.it with
+      | NumE _
+      | GetCurFrameE
+      | GetCurLabelE
+      | GetCurContextE -> e.it
+      | UnE (op, e') -> UnE (op, new_ e')
+      | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
+      | CallE (fname, args) -> CallE (fname, List.map new_ args)
+      (* TODO: Implement walker for iter *)
+      | ListE el -> ListE (List.map new_ el)
+      | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
+      | LenE e' -> LenE (new_ e')
+      | StrE r -> StrE (Record.map new_ r)
+      | AccE (e, p) -> AccE (new_ e, walk_path f p)
+      | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
+      | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
+      | CaseE (t, el) -> CaseE (t, List.map new_ el)
+      | OptE e -> OptE (Option.map new_ e)
+      | TupE es -> TupE (List.map new_ es)
+      | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
+      | ArityE e' -> ArityE (new_ e')
+      | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
+      | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
+      | ContE e' -> ContE (new_ e')
+      | VarE n -> VarE n
+      | SubE (n, t) -> SubE (n, t)
+      | IterE (e, names, iter) -> IterE (new_ e, names, iter)
+      | YetE _ -> e.it in
+    { e with it = e' }
+  in
 
   let e1 = pre e in
   let e2 = if stop_cond e1 then e1 else super_walk e1 in

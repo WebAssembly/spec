@@ -162,7 +162,7 @@ and replace_path env base path v_new = match path with
       StrV r_new
 
 and eval_expr env expr =
-  match expr with
+  match expr.it with
   (* Value *)
   | NumE i -> NumV i
   (* Numeric Operation *)
@@ -274,7 +274,7 @@ and eval_expr env expr =
       | _ -> failwith "Not a label")
   | VarE name -> Env.find name env
   (* Optimized getter for simple IterE(VarE, ...) *)
-  | IterE (VarE name, [name'], _) when name = name' -> Env.find name env
+  | IterE ({ it = VarE name; _ }, [name'], _) when name = name' -> Env.find name env
   (* Optimized getter for list init *)
   | IterE (e1, [], ListN (e2, None)) ->
     let v = eval_expr env e1 in
@@ -299,7 +299,7 @@ and eval_expr env expr =
     | l, _ -> listV l
     end
   | ArrowE (e1, e2) -> ArrowV (eval_expr env e1, eval_expr env e2)
-  | e -> structured_string_of_expr e |> failwith
+  | _ -> structured_string_of_expr expr |> failwith
 
 (* Condition *)
 
@@ -434,9 +434,9 @@ and merge_envs_with_grouping default_env envs =
   List.fold_right merge envs default_env
 
 and assign lhs rhs env =
-  match lhs, rhs with
+  match lhs.it, rhs with
   | VarE name, v -> Env.add name v env
-  | IterE (VarE n, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
+  | IterE ({ it = VarE n; _ }, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
       Env.add n rhs env
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
@@ -493,15 +493,15 @@ and assign lhs rhs env =
   | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
       Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
-  | e, v ->
+  | _, v ->
       Printf.sprintf "Invalid assignment: %s := %s"
-        (string_of_expr e) (string_of_value v)
+        (string_of_expr lhs) (string_of_value v)
       |> failwith
 
 and assign_split ep es vs env =
   let len = Array.length vs in
   let prefix_len, suffix_len =
-    let get_length = function
+    let get_length e = match e.it with 
     | ListE es -> Some (List.length es)
     | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
     | _ -> None in
@@ -554,13 +554,13 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       (* struct *)
       | CaseV ("REF.STRUCT_ADDR", [ NumV i ]) ->
         let e =
-          AccE (
-            AccE (
-              AccE (
-                VarE "s",
+          accE (
+            accE (
+              accE (
+                varE "s",
                 DotP ("STRUCT", "struct")
               ),
-              IdxP (NumE i)
+              IdxP (numE i)
             ),
             DotP ("TYPE", "type")
           )
@@ -570,13 +570,13 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       (* array *)
       | CaseV ("REF.ARRAY_ADDR", [ NumV i ]) ->
         let e =
-          AccE (
-            AccE (
-              AccE (
-                VarE "s",
+          accE (
+            accE (
+              accE (
+                varE "s",
                 DotP ("ARRAY", "array")
               ),
-              IdxP (NumE i)
+              IdxP (numE i)
             ),
             DotP ("TYPE", "type")
           )
@@ -586,13 +586,13 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       (* func *)
       | CaseV ("REF.FUNC_ADDR", [ NumV i ]) ->
         let e =
-          AccE (
-            AccE (
-              AccE (
-                VarE "s",
+          accE (
+            accE (
+              accE (
+                varE "s",
                 DotP ("FUNC", "func")
               ),
-              IdxP (NumE i)
+              IdxP (numE i)
             ),
             DotP ("TYPE", "type")
           )
@@ -658,7 +658,7 @@ and execute (wasm_instr: value): unit =
       (* substitute heap type*)
       let dummy_rt = CaseV ("REF", [ null; ht ]) in
       let mm =
-        CallE ("moduleinst", [])
+        callE ("moduleinst", [])
         |> eval_expr (Env.add_store Env.empty)
       in
       begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
@@ -709,29 +709,29 @@ and interp_instr (env: env) (instr: instr): env =
     | v -> WasmContext.push_value v
     end;
     env
-  | PopI (IterE (VarE name, [name'], ListN (e', None))) when name = name' ->
+  | PopI ({ it = IterE ({ it = VarE name; _ }, [name'], ListN (e', None)); _ }) when name = name' ->
     let i = eval_expr env e' |> value_to_int in
     let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
     Env.add name (listV vs) env
   | PopI e ->
-    begin match (e, WasmContext.pop_value ()) with
-    | CaseE (("CONST", _), [VarE nt; VarE name]), CaseV ("CONST", [ ty; v ]) ->
+    begin match (e.it, WasmContext.pop_value ()) with
+    | CaseE (("CONST", _), [{ it = VarE nt; _ }; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
       env
       |> Env.add nt ty
       |> Env.add name v
-    | CaseE (("CONST", _), [tyE; VarE name]), CaseV ("CONST", [ ty; v ]) ->
+    | CaseE (("CONST", _), [tyE; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       Env.add name v env
     | VarE name, v -> Env.add name v env
     (* TODO remove this *)
     | FrameE _, FrameV _ -> env
-    | (e, h) ->
+    | (_, h) ->
       Printf.sprintf "Invalid pop: %s := %s"
         (structured_string_of_expr e)
         (structured_string_of_value h)
       |> failwith
     end
-  | PopAllI (IterE (VarE name, [name'], List)) when name = name' ->
+  | PopAllI ({ it = IterE ({ it = VarE name; _ }, [name'], List); _ }) when name = name' ->
     let rec pop_all acc =
       if WasmContext.get_value_stack () |> List.length > 0 then
         WasmContext.pop_value () :: acc |> pop_all
