@@ -76,7 +76,7 @@ syntax byte = nat
 syntax uN = nat
 
 ;; 1-syntax.watsup:20.1-20.87
-syntax sN = nat
+syntax sN = int
 
 ;; 1-syntax.watsup:21.1-21.36
 syntax iN = uN
@@ -94,7 +94,7 @@ syntax u64 = nat
 syntax u128 = nat
 
 ;; 1-syntax.watsup:28.1-28.69
-syntax s33 = nat
+syntax s33 = int
 
 ;; 1-syntax.watsup:33.1-33.21
 def signif : nat -> nat

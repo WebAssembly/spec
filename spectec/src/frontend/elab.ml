@@ -486,13 +486,46 @@ and elab_typ_definition env id t : Il.deftyp =
     check_atoms "variant" "case" cases' t.at;
     Il.VariantT tcs'
   | RangeT tes ->
-    let _ = map_nl_list (elab_typenum env) tes in
-    Il.AliasT (Il.NumT Il.NatT $ t.at)
+    (* TODO: for now, erase ranges to nat or int *)
+    let t = List.hd (map_nl_list (elab_typenum env) tes) in
+    Il.AliasT t
   | _ ->
     match elab_typ_notation env t with
     | false, _mixop, ts' -> Il.AliasT (tup_typ' ts' t.at)
     | true, mixop, ts' -> Il.NotationT (mixop, tup_typ' ts' t.at)
   ) $ t.at
+
+
+and elab_typfield env (atom, (t, prems), hints) : Il.typfield =
+  let _, _, ts' = elab_typ_notation env t in
+  let dims = Multiplicity.check_typdef t prems in
+  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
+  let prems' = List.map (Multiplicity.annot_prem dims')
+    (map_nl_list (elab_prem env) prems) in
+  let free = Free.(free_nl_list free_prem prems).varid in
+  let binds' = make_binds env free dims t.at in
+  ( elab_atom atom,
+    (binds', tup_typ' ts' t.at, prems'),
+    elab_hints hints
+  )
+
+and elab_typcase env at (atom, (t, prems), hints) : Il.typcase =
+  let _, _, ts' = elab_typ_notation env t in
+  let dims = Multiplicity.check_typdef t prems in
+  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
+  let prems' = List.map (Multiplicity.annot_prem dims')
+    (map_nl_list (elab_prem env) prems) in
+  let free = Free.(free_nl_list free_prem prems).varid in
+  let binds' = make_binds env free dims at in
+  ( elab_atom atom,
+    (binds', tup_typ' ts' at, prems'),
+    elab_hints hints
+  )
+
+and elab_typenum env (e1, e2o) : Il.typ =
+  let _e1' = elab_exp env e1 (NumT IntT $ e1.at) in
+  let _e2o' = Option.map (fun e2 -> elab_exp env e2 (NumT IntT $ e2.at)) e2o in
+  elab_typ env (snd (infer_exp env e1))
 
 and elab_typ_notation env t : bool * Il.mixop * Il.typ list =
   (*
@@ -531,38 +564,6 @@ and elab_typ_notation env t : bool * Il.mixop * Il.typ list =
   | _ ->
     false, [[]; []], [elab_typ env t]
 
-
-and elab_typfield env (atom, (t, prems), hints) : Il.typfield =
-  let _, _, ts' = elab_typ_notation env t in
-  let dims = Multiplicity.check_typdef t prems in
-  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
-  let prems' = List.map (Multiplicity.annot_prem dims')
-    (map_nl_list (elab_prem env) prems) in
-  let free = Free.(free_nl_list free_prem prems).varid in
-  let binds' = make_binds env free dims t.at in
-  ( elab_atom atom,
-    (binds', tup_typ' ts' t.at, prems'),
-    elab_hints hints
-  )
-
-and elab_typcase env at (atom, (t, prems), hints) : Il.typcase =
-  let _, _, ts' = elab_typ_notation env t in
-  let dims = Multiplicity.check_typdef t prems in
-  let dims' = Multiplicity.Env.map (List.map (elab_iter env)) dims in
-  let prems' = List.map (Multiplicity.annot_prem dims')
-    (map_nl_list (elab_prem env) prems) in
-  let free = Free.(free_nl_list free_prem prems).varid in
-  let binds' = make_binds env free dims at in
-  ( elab_atom atom,
-    (binds', tup_typ' ts' at, prems'),
-    elab_hints hints
-  )
-
-and elab_typenum env (e, eo) =
-  (* TODO: for now, we simplify ranges to nat or int *)
-  let _e' = elab_exp env e (NumT IntT $ e.at) in
-  let _eo' = Option.map (fun e2 -> elab_exp env e2 (NumT IntT $ e2.at)) eo in
-  ()
 
 and (!!!) env t = let _, _, ts' = elab_typ_notation env t in tup_typ' ts' t.at
 
