@@ -308,10 +308,10 @@ func length(string: externref) -> i32 {
 }
 ```
 
-### "wasm:js-string" "concatenate"
+### "wasm:js-string" "concat"
 
 ```
-func concatenate(
+func concat(
   first: externref,
   second: externref
 ) -> externref
@@ -321,7 +321,7 @@ func concatenate(
   if (typeof second !== "string")
     trap;
 
-  return first + second;
+  return first.concat(second);
 }
 ```
 
