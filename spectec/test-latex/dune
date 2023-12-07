@@ -4,6 +4,7 @@
     (file ../src/exe-watsup/main.exe)
     (glob_files_rec ../spec/*)
     (file spec-splice.in.tex)
+    (file test.watsup)
   )
   (files TEST.md)
 )
