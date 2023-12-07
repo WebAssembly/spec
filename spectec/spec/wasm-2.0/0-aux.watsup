@@ -30,5 +30,5 @@ def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
 def $sum(nat*) : nat  ;; TODO: hint
-def $sum(epsilon) = 0
+def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))

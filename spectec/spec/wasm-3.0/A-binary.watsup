@@ -123,7 +123,7 @@ grammar Bresulttype : resulttype =
 ;; Type definitions
 
 grammar Bmut : mut =
-  | 0x00 => epsilon
+  | 0x00 => eps
   | 0x01 => MUT
 
 grammar Bpackedtype : packedtype =
@@ -145,7 +145,7 @@ grammar Bcomptype : comptype =
 grammar Bsubtype : subtype =
   | 0x50 x*:Bvec(Btypeidx) ct:Bcomptype => SUB x* ct
   | 0x49 x*:Bvec(Btypeidx) ct:Bcomptype => SUB FINAL x* ct
-  | ct:Bcomptype => SUB FINAL epsilon ct
+  | ct:Bcomptype => SUB FINAL eps ct
 
 grammar Brectype : rectype =
   | 0x48 st*:Bvec(Bsubtype) => REC st*
@@ -169,7 +169,7 @@ grammar Bmemtype : memtype =
 
 
 grammar Bexterntype : externtype =
-  | 0x00 ct:Bcomptype => FUNC (DEF (REC (SUB FINAL epsilon ct)) 0)  ;; TODO: typeidx
+  | 0x00 ct:Bcomptype => FUNC (DEF (REC (SUB FINAL eps ct)) 0)  ;; TODO: typeidx
   | 0x01 tt:Btabletype => TABLE tt
   | 0x02 mt:Bmemtype => MEM mt
   | 0x03 gt:Bglobaltype => GLOBAL gt
@@ -182,7 +182,7 @@ grammar Bexterntype : externtype =
 ;; Block types
 
 grammar Bblocktype : blocktype =
-  | 0x40 => _RESULT epsilon
+  | 0x40 => _RESULT eps
   | t:Bvaltype => _RESULT t
   | i:Bs33 => _IDX x  -- if i >= 0 /\ i = x
 
@@ -194,7 +194,7 @@ grammar Binstr/control : instr =
   | 0x01 => NOP
   | 0x02 bt:Bblocktype (in:Binstr)* 0x0B => BLOCK bt in*
   | 0x03 bt:Bblocktype (in:Binstr)* 0x0B => LOOP bt in*
-  | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE epsilon
+  | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE eps
   | 0x04 bt:Bblocktype (in_1:Binstr)* 0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
   | 0x0C l:Blabelidx => BR l
   | 0x0D l:Blabelidx => BR_IF l
@@ -210,9 +210,9 @@ grammar Binstr/control : instr =
 syntax castop = (nul, nul)
 
 grammar Bcastop : castop =
-  | 0x00 => (epsilon, epsilon)
-  | 0x01 => (NULL, epsilon)
-  | 0x02 => (epsilon, NULL)
+  | 0x00 => (eps, eps)
+  | 0x01 => (NULL, eps)
+  | 0x02 => (eps, NULL)
   | 0x03 => (NULL, NULL)
 
 grammar Binstr/reference : instr = ...
@@ -552,7 +552,7 @@ var sz : nat
 
 grammar Bsection_(N, grammar BX : en*) : en*  hint(desc "section") =
   | N:Bbyte sz:Bu32 en*:BX => en*  -- if sz = ||BX||
-  | epsilon => epsilon
+  | eps => eps
 
 
 ;; Custom sections
@@ -663,7 +663,7 @@ grammar Belemsec : elem* hint(desc "element section") =
 ;; Code section
 
 def $concat_locals((local*)*) : local*  hint(show $concat(%))
-def $concat_locals(epsilon) = epsilon
+def $concat_locals(eps) = eps
 def $concat_locals((loc*) (loc'*)*) = loc* $concat_locals((loc'*)*)
 
 
@@ -756,6 +756,6 @@ grammar Bmodule : module =
     data^m:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data^m start* export*
-    -- if m'* = epsilon \/ $free_dataidx_funcs(func^n) = epsilon
+    -- if m'* = eps \/ $free_dataidx_funcs(func^n) = eps
     -- if m = $sum(m'*)
     -- if (func = FUNC typeidx local* expr)*

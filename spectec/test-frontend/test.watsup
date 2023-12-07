@@ -34,64 +34,64 @@ syntax notation6 = text* nat
 
 def $testemptyv1(variant) : nat
 def $testemptyv1(V1 opt 0) = 0
-def $testemptyv1(V1 epsilon 0) = 0
+def $testemptyv1(V1 eps 0) = 0
 def $testemptyv1(V1 0) = 0
 def $testemptyv1(V1 O 0) = 0
 
 def $testemptyv2(variant) : nat
-def $testemptyv2(V2 epsilon 0) = 0
+def $testemptyv2(V2 eps 0) = 0
 def $testemptyv2(V2 0) = 0
 def $testemptyv2(V2 O 0) = 0
 
 def $testemptyv3(variant) : nat
-def $testemptyv3(V3 epsilon 0) = 0
+def $testemptyv3(V3 eps 0) = 0
 def $testemptyv3(V3 0) = 0
 def $testemptyv3(V3 "" 0) = 0
 
 def $testemptyv4(variant) : nat
 def $testemptyv4(V4 list 0) = 0
-def $testemptyv4(V4 epsilon 0) = 0
+def $testemptyv4(V4 eps 0) = 0
 ;;def $testemptyv4(V4 0) = 0
 def $testemptyv4(V4 L 0) = 0
 
 def $testemptyv5(variant) : nat
-def $testemptyv5(V5 epsilon 0) = 0
+def $testemptyv5(V5 eps 0) = 0
 ;;def $testemptyv5(V5 0) = 0
 def $testemptyv5(V5 L 0) = 0
 
 def $testemptyv6(variant) : nat
-def $testemptyv6(V6 epsilon 0) = 0
+def $testemptyv6(V6 eps 0) = 0
 ;;def $testemptyv6(V6 0) = 0
 def $testemptyv6(V6 "" 0) = 0
 
 def $testemptyn1(notation1) : nat
 def $testemptyn1(opt 0) = 0
-def $testemptyn1(epsilon 0) = 0
+def $testemptyn1(eps 0) = 0
 def $testemptyn1(0) = 0
 def $testemptyn1(O 0) = 0
 
 def $testemptyn2(notation2) : nat
-def $testemptyn2(epsilon 0) = 0
+def $testemptyn2(eps 0) = 0
 def $testemptyn2(0) = 0
 def $testemptyn2(O 0) = 0
 
 def $testemptyn3(notation3) : nat
-def $testemptyn3(epsilon 0) = 0
+def $testemptyn3(eps 0) = 0
 def $testemptyn3(0) = 0
 def $testemptyn3("" 0) = 0
 
 def $testemptyn4(notation4) : nat
 def $testemptyn4(list 0) = 0
-def $testemptyn4(epsilon 0) = 0
+def $testemptyn4(eps 0) = 0
 ;;def $testemptyn4(0) = 0
 def $testemptyn4(L 0) = 0
 
 def $testemptyn5(notation5) : nat
-def $testemptyn5(epsilon 0) = 0
+def $testemptyn5(eps 0) = 0
 ;;def $testemptyn5(0) = 0
 def $testemptyn5(L 0) = 0
 
 def $testemptyn6(notation6) : nat
-def $testemptyn6(epsilon 0) = 0
+def $testemptyn6(eps 0) = 0
 ;;def $testemptyn6(0) = 0
 def $testemptyn6("" 0) = 0

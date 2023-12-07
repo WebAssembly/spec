@@ -229,7 +229,7 @@ and token = parse
   | "otherwise" { OTHERWISE }
   | "hint(" { HINT_LPAREN }
 
-  | "epsilon" { EPSILON }
+  | "eps" { EPS }
   | "true" { BOOLLIT true }
   | "false" { BOOLLIT false }
   | "infinity" { INFINITY }
