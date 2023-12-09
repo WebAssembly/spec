@@ -282,8 +282,8 @@ have to support 32-bit memory addresses in their ABI.
             |  0x03 n:u32 m:u32  ⇒ i32, {min n, max m}, 1  ;; from threads proposal
             |  0x04 n:u64        ⇒ i64, {min n, max ϵ}, 0
             |  0x05 n:u64 m:u64  ⇒ i64, {min n, max m}, 0
-            |  0x06 n:u32        ⇒ i64, {min n, max ϵ}, 1  ;; from threads proposal
-            |  0x07 n:u32 m:u32  ⇒ i64, {min n, max m}, 1  ;; from threads proposal
+            |  0x06 n:u64        ⇒ i64, {min n, max ϵ}, 1  ;; from threads proposal
+            |  0x07 n:u64 m:u64  ⇒ i64, {min n, max m}, 1  ;; from threads proposal
     ```
 
 * The [memory type][binary memtype] structure is extended to use this limits
