@@ -30,18 +30,18 @@ or *external references* pointing to an uninterpreted form of :ref:`extern addre
 
 .. math::
    \begin{array}{llcl}
-   \production{(number)} & \num &::=&
+   \production{number} & \num &::=&
      \I32.\CONST~\i32 \\&&|&
      \I64.\CONST~\i64 \\&&|&
      \F32.\CONST~\f32 \\&&|&
      \F64.\CONST~\f64 \\
-   \production{(vector)} & \vecc &::=&
+   \production{vector} & \vecc &::=&
      \V128.\CONST~\i128 \\
-   \production{(reference)} & \reff &::=&
+   \production{reference} & \reff &::=&
      \REFNULL~t \\&&|&
      \REFFUNCADDR~\funcaddr \\&&|&
      \REFEXTERNADDR~\externaddr \\
-   \production{(value)} & \val &::=&
+   \production{value} & \val &::=&
      \num ~|~ \vecc ~|~ \reff \\
    \end{array}
 
@@ -79,7 +79,7 @@ It is either a sequence of :ref:`values <syntax-val>` or a :ref:`trap <syntax-tr
 
 .. math::
    \begin{array}{llcl}
-   \production{(result)} & \result &::=&
+   \production{result} & \result &::=&
      \val^\ast \\&&|&
      \TRAP
    \end{array}
@@ -101,7 +101,7 @@ Syntactically, the store is defined as a :ref:`record <notation-record>` listing
 
 .. math::
    \begin{array}{llll}
-   \production{(store)} & \store &::=& \{~
+   \production{store} & \store &::=& \{~
      \begin{array}[t]{l@{~}ll}
      \SFUNCS & \funcinst^\ast, \\
      \STABLES & \tableinst^\ast, \\
@@ -157,21 +157,21 @@ In addition, an :ref:`embedder <embedder>` may supply an uninterpreted set of *h
 
 .. math::
    \begin{array}{llll}
-   \production{(address)} & \addr &::=&
+   \production{address} & \addr &::=&
      0 ~|~ 1 ~|~ 2 ~|~ \dots \\
-   \production{(function address)} & \funcaddr &::=&
+   \production{function address} & \funcaddr &::=&
      \addr \\
-   \production{(table address)} & \tableaddr &::=&
+   \production{table address} & \tableaddr &::=&
      \addr \\
-   \production{(memory address)} & \memaddr &::=&
+   \production{memory address} & \memaddr &::=&
      \addr \\
-   \production{(global address)} & \globaladdr &::=&
+   \production{global address} & \globaladdr &::=&
      \addr \\
-   \production{(element address)} & \elemaddr &::=&
+   \production{element address} & \elemaddr &::=&
      \addr \\
-   \production{(data address)} & \dataaddr &::=&
+   \production{data address} & \dataaddr &::=&
      \addr \\
-   \production{(extern address)} & \externaddr &::=&
+   \production{extern address} & \externaddr &::=&
      \addr \\
    \end{array}
 
@@ -204,7 +204,7 @@ and collects runtime representations of all entities that are imported, defined,
 
 .. math::
    \begin{array}{llll}
-   \production{(module instance)} & \moduleinst &::=& \{
+   \production{module instance} & \moduleinst &::=& \{
      \begin{array}[t]{l@{~}ll}
      \MITYPES & \functype^\ast, \\
      \MIFUNCS & \funcaddr^\ast, \\
@@ -238,10 +238,10 @@ The module instance is used to resolve references to other definitions during ex
 
 .. math::
    \begin{array}{llll}
-   \production{(function instance)} & \funcinst &::=&
+   \production{function instance} & \funcinst &::=&
      \{ \FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func \} \\ &&|&
      \{ \FITYPE~\functype, \FIHOSTCODE~\hostfunc \} \\
-   \production{(host function)} & \hostfunc &::=& \dots \\
+   \production{host function} & \hostfunc &::=& \dots \\
    \end{array}
 
 A *host function* is a function expressed outside WebAssembly but passed to a :ref:`module <syntax-module>` as an :ref:`import <syntax-import>`.
@@ -268,7 +268,7 @@ It records its :ref:`type <syntax-tabletype>` and holds a vector of :ref:`refere
 
 .. math::
    \begin{array}{llll}
-   \production{(table instance)} & \tableinst &::=&
+   \production{table instance} & \tableinst &::=&
      \{ \TITYPE~\tabletype, \TIELEM~\vec(\reff) \} \\
    \end{array}
 
@@ -292,7 +292,7 @@ It records its :ref:`type <syntax-memtype>` and holds a vector of :ref:`bytes <s
 
 .. math::
    \begin{array}{llll}
-   \production{(memory instance)} & \meminst &::=&
+   \production{memory instance} & \meminst &::=&
      \{ \MITYPE~\memtype, \MIDATA~\vec(\byte) \} \\
    \end{array}
 
@@ -316,7 +316,7 @@ It records its :ref:`type <syntax-globaltype>` and holds an individual :ref:`val
 
 .. math::
    \begin{array}{llll}
-   \production{(global instance)} & \globalinst &::=&
+   \production{global instance} & \globalinst &::=&
      \{ \GITYPE~\globaltype, \GIVALUE~\val \} \\
    \end{array}
 
@@ -338,7 +338,7 @@ It holds a vector of references and their common :ref:`type <syntax-reftype>`.
 
 .. math::
   \begin{array}{llll}
-  \production{(element instance)} & \eleminst &::=&
+  \production{element instance} & \eleminst &::=&
     \{ \EITYPE~\reftype, \EIELEM~\vec(\reff) \} \\
   \end{array}
 
@@ -356,7 +356,7 @@ It holds a vector of :ref:`bytes <syntax-byte>`.
 
 .. math::
   \begin{array}{llll}
-  \production{(data instance)} & \datainst &::=&
+  \production{data instance} & \datainst &::=&
     \{ \DIDATA~\vec(\byte) \} \\
   \end{array}
 
@@ -374,7 +374,7 @@ It defines the export's :ref:`name <syntax-name>` and the associated :ref:`exter
 
 .. math::
    \begin{array}{llll}
-   \production{(export instance)} & \exportinst &::=&
+   \production{export instance} & \exportinst &::=&
      \{ \EINAME~\name, \EIVALUE~\externval \} \\
    \end{array}
 
@@ -392,7 +392,7 @@ It is an :ref:`address <syntax-addr>` denoting either a :ref:`function instance 
 
 .. math::
    \begin{array}{llcl}
-   \production{(external value)} & \externval &::=&
+   \production{external value} & \externval &::=&
      \EVFUNC~\funcaddr \\&&|&
      \EVTABLE~\tableaddr \\&&|&
      \EVMEM~\memaddr \\&&|&
@@ -419,6 +419,7 @@ It filters out entries of a specific kind in an order-preserving fashion:
    pair: abstract syntax; frame
    pair: abstract syntax; label
 .. _syntax-frame:
+.. _syntax-framestate:
 .. _syntax-label:
 .. _frame:
 .. _label:
@@ -456,7 +457,7 @@ Labels carry an argument arity :math:`n` and their associated branch *target*, w
 
 .. math::
    \begin{array}{llll}
-   \production{(label)} & \label &::=&
+   \production{label} & \label &::=&
      \LABEL_n\{\instr^\ast\} \\
    \end{array}
 
@@ -476,8 +477,8 @@ Intuitively, :math:`\instr^\ast` is the *continuation* to execute when the branc
 
    When branching, the empty continuation ends the targeted block, such that execution can proceed with consecutive instructions.
 
-Activations and Frames
-......................
+Activation Frames
+.................
 
 Activation frames carry the return arity :math:`n` of the respective function,
 hold the values of its :ref:`locals <syntax-local>` (including arguments) in the order corresponding to their static :ref:`local indices <syntax-localidx>`,
@@ -485,9 +486,9 @@ and a reference to the function's own :ref:`module instance <syntax-moduleinst>`
 
 .. math::
    \begin{array}{llll}
-   \production{(activation)} & \X{activation} &::=&
-     \FRAME_n\{\frame\} \\
-   \production{(frame)} & \frame &::=&
+   \production{frame} & \frame &::=&
+     \FRAME_n\{ \framestate \} \\
+   \production{frame state} & \framestate &::=&
      \{ \ALOCALS~\val^\ast, \AMODULE~\moduleinst \} \\
    \end{array}
 
@@ -501,7 +502,7 @@ Conventions
 
 * The meta variable :math:`L` ranges over labels where clear from context.
 
-* The meta variable :math:`F` ranges over frames where clear from context.
+* The meta variable :math:`F` ranges over frame states where clear from context.
 
 * The following auxiliary definition takes a :ref:`block type <syntax-blocktype>` and looks up the :ref:`function type <syntax-functype>` that it denotes in the current frame:
 
@@ -529,14 +530,14 @@ In order to express the reduction of :ref:`traps <trap>`, :ref:`calls <syntax-ca
 
 .. math::
    \begin{array}{llcl}
-   \production{(administrative instruction)} & \instr &::=&
+   \production{administrative instruction} & \instr &::=&
      \dots \\ &&|&
      \TRAP \\ &&|&
      \REFFUNCADDR~\funcaddr \\ &&|&
      \REFEXTERNADDR~\externaddr \\ &&|&
      \INVOKE~\funcaddr \\ &&|&
      \LABEL_n\{\instr^\ast\}~\instr^\ast~\END \\ &&|&
-     \FRAME_n\{\frame\}~\instr^\ast~\END \\
+     \FRAME_n\{\framestate\}~\instr^\ast~\END \\
    \end{array}
 
 The |TRAP| instruction represents the occurrence of a trap.
@@ -590,9 +591,9 @@ In order to specify the reduction of :ref:`branches <syntax-instr-control>`, the
 
 .. math::
    \begin{array}{llll}
-   \production{(block contexts)} & \XB^0 &::=&
+   \production{block contexts} & \XB^0 &::=&
      \val^\ast~[\_]~\instr^\ast \\
-   \production{(block contexts)} & \XB^{k+1} &::=&
+   \production{block contexts} & \XB^{k+1} &::=&
      \val^\ast~\LABEL_n\{\instr^\ast\}~\XB^k~\END~\instr^\ast \\
    \end{array}
 
@@ -620,14 +621,14 @@ Configurations
 A *configuration* consists of the current :ref:`store <syntax-store>` and an executing *thread*.
 
 A thread is a computation over :ref:`instructions <syntax-instr>`
-that operates relative to a current :ref:`frame <syntax-frame>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
+that operates relative to the state of a current :ref:`frame <syntax-framestate>` referring to the :ref:`module instance <syntax-moduleinst>` in which the computation runs, i.e., where the current function originates from.
 
 .. math::
    \begin{array}{llcl}
-   \production{(configuration)} & \config &::=&
+   \production{configuration} & \config &::=&
      \store; \thread \\
-   \production{(thread)} & \thread &::=&
-     \frame; \instr^\ast \\
+   \production{thread} & \thread &::=&
+     \framestate; \instr^\ast \\
    \end{array}
 
 .. note::
@@ -645,7 +646,7 @@ Finally, the following definition of *evaluation context* and associated structu
 
 .. math::
    \begin{array}{llll}
-   \production{(evaluation contexts)} & E &::=&
+   \production{evaluation contexts} & E &::=&
      [\_] ~|~
      \val^\ast~E~\instr^\ast ~|~
      \LABEL_n\{\instr^\ast\}~E~\END \\

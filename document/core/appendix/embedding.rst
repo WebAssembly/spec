@@ -33,7 +33,7 @@ Failure of an interface operation is indicated by an auxiliary syntactic class:
 
 .. math::
    \begin{array}{llll}
-   \production{(error)} & \error &::=& \ERROR \\
+   \production{error} & \error &::=& \ERROR \\
    \end{array}
 
 In addition to the error conditions specified explicitly in this section, implementations may also return errors when specific :ref:`implementation limitations <impl>` are reached.
@@ -323,7 +323,7 @@ Tables
 
 .. _embed-table-alloc:
 
-:math:`\F{table\_alloc}(\store, \tabletype) : (\store, \tableaddr, \reff)`
+:math:`\F{table\_alloc}(\store, \tabletype, \reff) : (\store, \tableaddr)`
 ..........................................................................
 
 1. Pre-condition: :math:`\tabletype` is :ref:`valid <valid-tabletype>`.

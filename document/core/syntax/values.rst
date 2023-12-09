@@ -140,13 +140,15 @@ An *arithmetic NaN*  is a floating-point value :math:`\pm\NAN(n)` with :math:`n 
 .. note::
    In the abstract syntax, subnormals are distinguished by the leading 0 of the significand. The exponent of subnormals has the same value as the smallest possible exponent of a normal number. Only in the :ref:`binary representation <binary-float>` the exponent of a subnormal is encoded differently than the exponent of any normal number.
 
+   The notion of canonical NaN defined here is unrelated to the notion of canonical NaN that the |IEEE754|_ standard (Section 3.5.2) defines for decimal interchange formats.
+
 Conventions
 ...........
 
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
 
 
-.. index:: ! numeric vectors, integer, floating-point, lane, SIMD
+.. index:: ! numeric vector, integer, floating-point, lane, SIMD
    pair: abstract syntax; vector
 .. _syntax-vecnum:
 

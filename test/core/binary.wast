@@ -470,7 +470,7 @@
   "section size mismatch"
 )
 
-;; Unsigned LEB128 must not be overlong
+;; Init expression with missing end marker
 (assert_malformed
   (module binary
     "\00asm" "\01\00\00\00"

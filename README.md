@@ -1,4 +1,5 @@
-![Build Status](https://github.com/WebAssembly/memory64/actions/workflows/main.yml/badge.svg)
+[![CI for specs](https://github.com/WebAssembly/memory64/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/memory64/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/memory64/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/memory64/actions/workflows/ci-interpreter.yml)
 
 # Memory64 Proposal for WebAssembly
 
@@ -11,8 +12,6 @@ add support for 64-bit memory indexes to WebAssembly.
 * See the [modified spec](https://webassembly.github.io/memory64/) for details.
 
 Original `README` from upstream repository follows...
-
-![Build Status](https://github.com/WebAssembly/spec/actions/workflows/main.yml/badge.svg)
 
 # spec
 
