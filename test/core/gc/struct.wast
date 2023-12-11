@@ -152,8 +152,8 @@
   )
 )
 
-(assert_trap (invoke "struct.get-null") "null structure")
-(assert_trap (invoke "struct.set-null") "null structure")
+(assert_trap (invoke "struct.get-null") "null structure reference")
+(assert_trap (invoke "struct.set-null") "null structure reference")
 
 ;; Packed field instructions
 
