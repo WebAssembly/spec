@@ -302,5 +302,5 @@
   )
 )
 
-(assert_trap (invoke "array.get-null") "null array")
-(assert_trap (invoke "array.set-null") "null array")
+(assert_trap (invoke "array.get-null") "null array reference")
+(assert_trap (invoke "array.set-null") "null array reference")
