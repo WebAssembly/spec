@@ -54,8 +54,7 @@ def RefWrap(s, kind):
 
 def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None):
     if operator:
-        execution_str = ', '.join([RefWrap(execution, 'execution'),
-                                   RefWrap(operator, 'operator')])
+        execution_str = RefWrap(execution, 'execution') + ' (' + RefWrap(operator, 'operator') + ')'
     else:
         execution_str = RefWrap(execution, 'execution')
 
@@ -431,8 +430,8 @@ INSTRUCTIONS = [
     Instruction(r'\V128.\STORE\K{16\_lane}~\memarg~\laneidx', r'\hex{FD}~~\hex{59}', r'[\I32~\V128] \to []', r'valid-store-lane', r'exec-store-lane'),
     Instruction(r'\V128.\STORE\K{32\_lane}~\memarg~\laneidx', r'\hex{FD}~~\hex{5A}', r'[\I32~\V128] \to []', r'valid-store-lane', r'exec-store-lane'),
     Instruction(r'\V128.\STORE\K{64\_lane}~\memarg~\laneidx', r'\hex{FD}~~\hex{5B}', r'[\I32~\V128] \to []', r'valid-store-lane', r'exec-store-lane'),
-    Instruction(r'\V128.\LOAD\K{32\_zero}~\memarg~\laneidx', r'\hex{FD}~~\hex{5C}', r'[\I32] \to [\V128]', r'valid-load-zero', r'exec-load-zero'),
-    Instruction(r'\V128.\LOAD\K{64\_zero}~\memarg~\laneidx', r'\hex{FD}~~\hex{5D}', r'[\I32] \to [\V128]', r'valid-load-zero', r'exec-load-zero'),
+    Instruction(r'\V128.\LOAD\K{32\_zero}~\memarg', r'\hex{FD}~~\hex{5C}', r'[\I32] \to [\V128]', r'valid-load-zero', r'exec-load-zero'),
+    Instruction(r'\V128.\LOAD\K{64\_zero}~\memarg', r'\hex{FD}~~\hex{5D}', r'[\I32] \to [\V128]', r'valid-load-zero', r'exec-load-zero'),
     Instruction(r'\F32X4.\VDEMOTE\K{\_f64x2\_zero}', r'\hex{FD}~~\hex{5E}', r'[\V128] \to [\V128]', r'valid-vcvtop', r'exec-vcvtop', r'op-demote'),
     Instruction(r'\F64X2.\VPROMOTE\K{\_low\_f32x4}', r'\hex{FD}~~\hex{5F}', r'[\V128] \to [\V128]', r'valid-vcvtop', r'exec-vcvtop', r'op-promote'),
     Instruction(r'\I8X16.\VABS', r'\hex{FD}~~\hex{60}', r'[\V128] \to [\V128]', r'valid-vunop', r'exec-vunop', r'op-iabs'),

@@ -154,6 +154,7 @@ spec:ecma-262; type:exception; for:ECMAScript; text:Error
 spec:ecmascript; type:exception; for:ECMAScript; text:TypeError
 spec:ecmascript; type:exception; for:ECMAScript; text:RangeError
 spec:ecmascript; type:interface; for:ECMAScript; text:ArrayBuffer
+spec:ecmascript; type:dfn; text:agent
 spec:webidl; type:dfn; text:resolve
 </pre>
 
@@ -430,16 +431,6 @@ The verification of WebAssembly type requirements is deferred to the
                 If this throws an exception, catch it, [=reject=] |promise| with the exception, and terminate these substeps.
             1. [=Resolve=] |promise| with |instanceObject|.
     1. Return |promise|.
-</div>
-
-<div algorithm="instantiate">
-  To <dfn>synchronously instantiate a WebAssembly module</dfn> from a {{Module}} |moduleObject| and imports |importObject|, perform the following steps:
-    1. Let |module| be |moduleObject|.\[[Module]].
-    1. [=Read the imports=] of |module| with imports |importObject|, and let |imports| be the result.
-    1. [=Instantiate the core of a WebAssembly module=] |module| with |imports|, and let |instance| be the result.
-    1. Let |instanceObject| be a [=/new=] {{Instance}}.
-    1. [=initialize an instance object|Initialize=] |instanceObject| from |module| and |instance|.
-    1. Return |instanceObject|.
 </div>
 
 <div algorithm>
@@ -845,7 +836,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 
 <div algorithm>
     To <dfn>create a global object</dfn> from a [=global address=] |globaladdr|, perform the following steps:
-    1. Let |map| be the current [=agent=]'s associated [=Global object cache=].
+    1. Let |map| be the [=surrounding agent=]'s associated [=Global object cache=].
     1. If |map|[|globaladdr|] [=map/exists=],
         1. Return |map|[|globaladdr|].
     1. Let |global| be a [=/new=] {{Global}}.
@@ -1012,7 +1003,7 @@ Note: Exported Functions do not have a \[[Construct]] method and thus it is not 
     1. Otherwise,
         1. Let |method| be [=?=] [$GetMethod$](|ret|, {{@@iterator}}).
         1. If |method| is undefined, [=throw=] a {{TypeError}}.
-        1. Let |values| be [=?=] [$IterableToList$](|ret|, |method|).
+        1. Let |values| be [=?=] [$IteratorToList$]([=?=] [$GetIteratorFromMethod$](|ret|, |method|)).
         1. Let |wasmValues| be a new, empty [=list=].
         1. If |values|'s [=list/size=] is not |resultsSize|, throw a {{TypeError}} exception.
         1. For each |value| and |resultType| in |values| and |results|, paired linearly,
@@ -1191,31 +1182,31 @@ An implementation must reject a module that exceeds one of the following limits 
 In practice, an implementation may run out of resources for valid modules below these limits.
 
 <ul>
-<li>The maximum size of a module is 1073741824 bytes (1 GiB).</li>
-<li>The maximum number of types defined in the types section is 1000000.</li>
-<li>The maximum number of functions defined in a module is 1000000.</li>
-<li>The maximum number of imports declared in a module is 100000.</li>
-<li>The maximum number of exports declared in a module is 100000.</li>
-<li>The maximum number of globals defined in a module is 1000000.</li>
-<li>The maximum number of data segments defined in a module is 100000.</li>
+<li>The maximum size of a module is 1,073,741,824 bytes (1 GiB).</li>
+<li>The maximum number of types defined in the types section is 1,000,000.</li>
+<li>The maximum number of functions defined in a module is 1,000,000.</li>
+<li>The maximum number of imports declared in a module is 100,000.</li>
+<li>The maximum number of exports declared in a module is 100,000.</li>
+<li>The maximum number of globals defined in a module is 1,000,000.</li>
+<li>The maximum number of data segments defined in a module is 100,000.</li>
 
-<li>The maximum number of tables, including declared or imported tables, is 100000.</li>
-<li>The maximum size of a table is 10000000.</li>
-<li>The maximum number of table entries in any table initialization is 10000000.</li>
+<li>The maximum number of tables, including declared or imported tables, is 100,000.</li>
+<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum number of table entries in any table initialization is 10,000,000.</li>
 <li>The maximum number of memories, including declared or imported memories, is 1.</li>
 
-<li>The maximum number of parameters to any function or block is 1000.</li>
-<li>The maximum number of return values for any function or block is 1000.</li>
-<li>The maximum size of a function body, including locals declarations, is 7654321 bytes.</li>
-<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50000.</li>
+<li>The maximum number of parameters to any function or block is 1,000.</li>
+<li>The maximum number of return values for any function or block is 1,000.</li>
+<li>The maximum size of a function body, including locals declarations, is 7,654,321 bytes.</li>
+<li>The maximum number of locals declared in a function, including implicitly declared as parameters, is 50,000.</li>
 </ul>
 
 An implementation must throw a {{RuntimeError}} if one of the following limits is exceeded during runtime:
 In practice, an implementation may run out of resources for valid modules below these limits.
 
 <ul>
-<li>The maximum size of a table is 10000000.</li>
-<li>The maximum number of pages of a memory is 65536.</li>
+<li>The maximum size of a table is 10,000,000.</li>
+<li>The maximum number of pages of a memory is 65,536.</li>
 </ul>
 
 <h2 id="security-considerations">Security and Privacy Considerations</h2>

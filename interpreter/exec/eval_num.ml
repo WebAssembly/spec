@@ -195,4 +195,3 @@ let eval_binop = op I32Op.binop I64Op.binop F32Op.binop F64Op.binop
 let eval_testop = op I32Op.testop I64Op.testop F32Op.testop F64Op.testop
 let eval_relop = op I32Op.relop I64Op.relop F32Op.relop F64Op.relop
 let eval_cvtop = op I32CvtOp.cvtop I64CvtOp.cvtop F32CvtOp.cvtop F64CvtOp.cvtop
-
