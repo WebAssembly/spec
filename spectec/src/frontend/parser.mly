@@ -61,7 +61,7 @@ let strip_ticks id =
   String.sub id 0 !i
 
 
-(* Parentheses Role *)
+(* Parentheses Role etc *)
 
 type prec = Op | Seq | Post | Prim
 
@@ -85,6 +85,18 @@ let prec_of_exp = function  (* as far as iteration is concerned *)
 let signify_pars prec = function
   | ParenE (exp, false) -> ParenE (exp, prec < prec_of_exp exp.it)
   | exp' -> exp'
+
+let is_post_exp e =
+  match e.it with
+  | VarE _ | AtomE _
+  | BoolE _ | NatE _ | HexE _ | CharE _
+  | EpsE
+  | ParenE _ | TupE _ | BrackE _
+  | IdxE _ | SliceE _ | ExtE _
+  | StrE _ | DotE _
+  | IterE _ | CallE _
+  | HoleE _ -> true
+  | _ -> false
 
 %}
 
@@ -517,6 +529,22 @@ arith_prim_ :
   | INT { VarE ("int" $ at $sloc) }
   | TEXT { VarE ("text" $ at $sloc) }
   | LPAR arith RPAR { ParenE ($2, false) }
+  | LPAR arith_bin STAR RPAR
+    { (* HACK: to allow "(s*)" as arithmetic expression. *)
+      if not (is_post_exp $2) then
+        Source.error (at $loc($3)) "syntax" "misplaced token";
+      IterE ($2, List) }
+  | LPAR arith_bin PLUS RPAR
+    { (* HACK: to allow "(s+)" as arithmetic expression. *)
+      if not (is_post_exp $2) then
+        Source.error (at $loc($3)) "syntax" "misplaced token";
+      IterE ($2, List1) }
+  | LPAR arith_bin QUEST RPAR
+    { (* HACK: to allow "(s?)" as arithmetic expression. *)
+      if not (is_post_exp $2) then
+        Source.error (at $loc($3)) "syntax" "misplaced token";
+      IterE ($2, Opt) }
+  | DOLLAR LPAR exp RPAR { $3.it }
   | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
   | DOLLAR defid_lpar exp_list RPAR { CallE ($2, tup_exp $3 $loc($3)) }
 

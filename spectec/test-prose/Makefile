@@ -5,8 +5,8 @@ EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
 OWNDIR = $(PWD)
-SPECDIR = ../spec/wasm-3.0
-SPECS = $(shell ls $(SPECDIR)/*.$(EXT))
+SPECDIR = ../spec
+SPECS = $(shell cd $(SPECDIR) && ls -d wasm-*)
 TESTS = $(SPECS:%=test-%)
 
 SPHINXBUILD = sphinx-build
