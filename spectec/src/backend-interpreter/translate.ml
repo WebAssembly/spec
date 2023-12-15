@@ -786,13 +786,13 @@ let rec reduction_group2algo (instr_name, reduction_group) =
 type reduction_group =
   string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
-(* extract rules except Step/pure and Step/read *)
+(* extract rules except Steps/..., Step/pure and Step/read *)
 let extract_rules def =
   match def.it with
   | Ast.RelD (id, _, _, rules) when String.starts_with ~prefix:"Step" id.it ->
       let filter_context rule =
         let (Ast.RuleD (ruleid, _, _, _, _)) = rule.it in
-        ruleid.it <> "pure" && ruleid.it <> "read"
+        id.it <> "Steps" && ruleid.it <> "pure" && ruleid.it <> "read"
       in
       List.filter filter_context rules
   | _ -> []
