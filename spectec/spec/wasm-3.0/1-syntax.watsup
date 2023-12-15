@@ -271,19 +271,43 @@ var hf : half
 
 var sh : shape
 
-syntax unop_VXX = | NOT
-syntax binop_VXX = | AND | ANDNOT | OR | XOR
-syntax ternop_VXX = | BITSELECT
-syntax cvtop_VXX = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
-syntax unop_vectype = | _V unop_VXX
-syntax binop_vectype = | _V binop_VXX
-syntax ternop_vectype = | _V ternop_VXX
-syntax cvtop_vectype = | _V cvtop_VXX
+syntax unopVVXX = | NOT
+syntax binopVVXX = | AND | ANDNOT | OR | XOR
+syntax ternopVVXX = | BITSELECT
+syntax testopVVXX = | ANY_TRUE
+syntax testopVIXX = | ALL_TRUE
+syntax relopVIXX = | EQ | NE | LT sx | GT sx | LE sx | GE sx
+syntax relopVFXX = | EQ | NE | LT | GT | LE | GE
+syntax unopVIXX = | ABS | NEG
+syntax binopVIXX = | ADD | SUB
+syntax minmaxopVIXX = | MIN sx | MAX sx
+syntax satbinopVIXX = | ADD_SAT sx | SUB_SAT sx
+syntax shiftopVIXX = | SHL | SHR sx
+syntax unopVFXX = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax binopVFXX = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 
-var vvunop : unop_vectype
-var vvbinop : binop_vectype
-var vvternop : ternop_vectype
+syntax unop_vvectype = | _VV unopVVXX
+syntax binop_vvectype = | _VV binopVVXX
+syntax ternop_vvectype = | _VV ternopVVXX
+
+syntax shiftop_vectype = | _VI shiftopVIXX
+syntax unop_vectype = | _VI unopVIXX | _VF unopVFXX | POPCNT
+syntax binop_vectype = | _VI binopVIXX minmaxopVIXX satbinopVIXX | _VF binopVFXX | MUL | AVGR_U | Q15MULR_SAT_S
+syntax testop_vectype = | _VI testopVIXX
+syntax relop_vectype = | _VI relopVIXX | _VF relopVFXX
+syntax cvtop_vectype = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
+
+
+var vvunop : unop_vvectype
+var vvbinop : binop_vvectype
+var vvternop : ternop_vvectype
+
+var vishiftop : shiftop_vectype
+var vunop : unop_vectype
+var vbinop : binop_vectype
+var vtestop : testop_vectype
+var vrelop : relop_vectype
 var vcvtop : cvtop_vectype
 
 
@@ -295,7 +319,7 @@ var vcvtop : cvtop_vectype
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
 var c : c_numtype
-var cv : c_numtype
+var cv : c_vectype
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
@@ -339,15 +363,23 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
 
 syntax instr/vector hint(desc "vector instruction") = ...
   | VVCONST vectype c_vectype                                       hint(show %.CONST %)
-  | VVUNOP vectype unop_vectype                                     hint(show %.%)
-  | VVBINOP vectype binop_vectype                                   hint(show %.%)
-  | VVTERNOP vectype ternop_vectype                                 hint(show %.%)
+  | VVUNOP vectype unop_vvectype                                     hint(show %.%)
+  | VVBINOP vectype binop_vvectype                                   hint(show %.%)
+  | VVTERNOP vectype ternop_vvectype                                 hint(show %.%)
   | V128.ANY_TRUE
   | I8X16.SWIZZLE
   | SPLAT shape                                                     hint(show %.SPLAT)
   | EXTRACT_LANE vecunit veccount sx? idx                           hint(show %X%.EXTRACT#_#LANE#_#% %)
   | REPLACE_LANE shape idx                                          hint(show %.REPLACE#_#LANE %)
+  | VUNOP vectype shape unop_vectype
+  | VBINOP vectype shape binop_vectype
+  | VRELOP vecunit veccount relop_vectype
+  | VISHIFTOP vecunit veccount shiftop_vectype                      hint(show %X%.%)
+  | VCVTOP vecunit veccount cvtop_vectype vecunit veccount sx
   | VCVTOP_HALF vecunit veccount cvtop_vectype half vecunit veccount sx?        hint(show %X%.%#_#%#_#%X%#_#%)
+  | VCVTOP_ZERO vecunit veccount cvtop_vectype vecunit veccount sx
+  | EXTMUL_HALF vecunit veccount half vecunit veccount sx
+  | EXTADD_PAIRWISE vecunit veccount vecunit veccount sx
   | ...
   
 syntax instr/reference hint(desc "reference instruction") = ...

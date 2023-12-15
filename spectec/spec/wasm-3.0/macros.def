@@ -82,12 +82,28 @@
 .. |SUB-binopIXX| mathdef:: {\K{sub}}
 .. |XOR-binopIXX| mathdef:: {\K{xor}}
 
-.. BINOP_VXX
+.. BINOPVFXX
 .. ---------
-.. |AND-binopVXX| mathdef:: {\K{and}}
-.. |ANDNOT-binopVXX| mathdef:: {\K{andnot}}
-.. |OR-binopVXX| mathdef:: {\K{or}}
-.. |XOR-binopVXX| mathdef:: {\K{xor}}
+.. |ADD-binopVFXX| mathdef:: {\K{add}}
+.. |DIV-binopVFXX| mathdef:: {\K{div}}
+.. |MAX-binopVFXX| mathdef:: {\K{max}}
+.. |MIN-binopVFXX| mathdef:: {\K{min}}
+.. |MUL-binopVFXX| mathdef:: {\K{mul}}
+.. |PMAX-binopVFXX| mathdef:: {\K{pmax}}
+.. |PMIN-binopVFXX| mathdef:: {\K{pmin}}
+.. |SUB-binopVFXX| mathdef:: {\K{sub}}
+
+.. BINOPVIXX
+.. ---------
+.. |ADD-binopVIXX| mathdef:: {\K{add}}
+.. |SUB-binopVIXX| mathdef:: {\K{sub}}
+
+.. BINOPVVXX
+.. ---------
+.. |AND-binopVVXX| mathdef:: {\K{and}}
+.. |ANDNOT-binopVVXX| mathdef:: {\K{andnot}}
+.. |OR-binopVVXX| mathdef:: {\K{or}}
+.. |XOR-binopVVXX| mathdef:: {\K{xor}}
 
 .. BINOP_NUMTYPE
 .. -------------
@@ -96,7 +112,15 @@
 
 .. BINOP_VECTYPE
 .. -------------
-.. |V-binopvectype| mathdef:: {\K{\_v}}
+.. |VV-binopvectype| mathdef:: {\K{\_vv}}
+
+.. BINOP_VTYPE
+.. -----------
+.. |AVGRU-binopvtype| mathdef:: {\K{avgr\_u}}
+.. |MUL-binopvtype| mathdef:: {\K{mul}}
+.. |Q15MULRSATS-binopvtype| mathdef:: {\K{q15mulr\_sat\_s}}
+.. |VF-binopvtype| mathdef:: {\K{\_vf}}
+.. |VI-binopvtype| mathdef:: {\K{\_vi}}
 
 .. BLOCKTYPE
 .. ---------
@@ -153,17 +177,13 @@
 .. |CONVERTSAT-cvtop| mathdef:: {\K{convert\_sat}}
 .. |REINTERPRET-cvtop| mathdef:: {\K{reinterpret}}
 
-.. CVTOP_VXX
-.. ---------
-.. |CONVERT-cvtopVXX| mathdef:: {\K{convert}}
-.. |DEMOTE-cvtopVXX| mathdef:: {\K{demote}}
-.. |EXTEND-cvtopVXX| mathdef:: {\K{extend}}
-.. |PROMOTE-cvtopVXX| mathdef:: {\K{promote}}
-.. |TRUNCSAT-cvtopVXX| mathdef:: {\K{trunc\_sat}}
-
 .. CVTOP_VECTYPE
 .. -------------
-.. |V-cvtopvectype| mathdef:: {\K{\_v}}
+.. |CONVERT-cvtopvectype| mathdef:: {\K{convert}}
+.. |DEMOTE-cvtopvectype| mathdef:: {\K{demote}}
+.. |EXTEND-cvtopvectype| mathdef:: {\K{extend}}
+.. |PROMOTE-cvtopvectype| mathdef:: {\K{promote}}
+.. |TRUNCSAT-cvtopvectype| mathdef:: {\K{trunc\_sat}}
 
 .. DATA
 .. ----
@@ -466,12 +486,20 @@
 
 .. INSTR-VECTOR
 .. ------------
+.. |EXTADDPAIRWISE-instr-vector| mathdef:: {\K{extadd\_pairwise}}
+.. |EXTMULHALF-instr-vector| mathdef:: {\K{extmul\_half}}
 .. |EXTRACTLANE-instr-vector| mathdef:: {\K{extract\_lane}}
 .. |I8X16SWIZZLE-instr-vector| mathdef:: {\K{i8x16{.}swizzle}}
 .. |REPLACELANE-instr-vector| mathdef:: {\K{replace\_lane}}
 .. |SPLAT-instr-vector| mathdef:: {\K{splat}}
 .. |V128ANYTRUE-instr-vector| mathdef:: {\K{v128{.}any\_true}}
+.. |VBINOP-instr-vector| mathdef:: {\K{vbinop}}
+.. |VCVTOP-instr-vector| mathdef:: {\K{vcvtop}}
 .. |VCVTOPHALF-instr-vector| mathdef:: {\K{vcvtop\_half}}
+.. |VCVTOPZERO-instr-vector| mathdef:: {\K{vcvtop\_zero}}
+.. |VISHIFTOP-instr-vector| mathdef:: {\K{vishiftop}}
+.. |VRELOP-instr-vector| mathdef:: {\K{vrelop}}
+.. |VUNOP-instr-vector| mathdef:: {\K{vunop}}
 .. |VVBINOP-instr-vector| mathdef:: {\K{vvbinop}}
 .. |VVCONST-instr-vector| mathdef:: {\K{vvconst}}
 .. |VVTERNOP-instr-vector| mathdef:: {\K{vvternop}}
@@ -532,6 +560,11 @@
 .. MEMTYPE
 .. -------
 .. |I8-memtype| mathdef:: {\K{i8}}
+
+.. MINMAXOPVIXX
+.. ------------
+.. |MAX-minmaxopVIXX| mathdef:: {\K{max}}
+.. |MIN-minmaxopVIXX| mathdef:: {\K{min}}
 
 .. MODULE
 .. ------
@@ -620,10 +653,33 @@
 .. |LT-relopIXX| mathdef:: {\K{lt}}
 .. |NE-relopIXX| mathdef:: {\K{ne}}
 
+.. RELOPVFXX
+.. ---------
+.. |EQ-relopVFXX| mathdef:: {\K{eq}}
+.. |GE-relopVFXX| mathdef:: {\K{ge}}
+.. |GT-relopVFXX| mathdef:: {\K{gt}}
+.. |LE-relopVFXX| mathdef:: {\K{le}}
+.. |LT-relopVFXX| mathdef:: {\K{lt}}
+.. |NE-relopVFXX| mathdef:: {\K{ne}}
+
+.. RELOPVIXX
+.. ---------
+.. |EQ-relopVIXX| mathdef:: {\K{eq}}
+.. |GE-relopVIXX| mathdef:: {\K{ge}}
+.. |GT-relopVIXX| mathdef:: {\K{gt}}
+.. |LE-relopVIXX| mathdef:: {\K{le}}
+.. |LT-relopVIXX| mathdef:: {\K{lt}}
+.. |NE-relopVIXX| mathdef:: {\K{ne}}
+
 .. RELOP_NUMTYPE
 .. -------------
 .. |F-relopnumtype| mathdef:: {\K{\_f}}
 .. |I-relopnumtype| mathdef:: {\K{\_i}}
+
+.. RELOP_VTYPE
+.. -----------
+.. |VF-relopvtype| mathdef:: {\K{\_vf}}
+.. |VI-relopvtype| mathdef:: {\K{\_vi}}
 
 .. RESULT
 .. ------
@@ -639,9 +695,23 @@
 .. SN
 .. --
 
+.. SATBINOPVIXX
+.. ------------
+.. |ADDSAT-satbinopVIXX| mathdef:: {\K{add\_sat}}
+.. |SUBSAT-satbinopVIXX| mathdef:: {\K{sub\_sat}}
+
 .. SHAPE
 .. -----
 .. |SHAPE-shape| mathdef:: {\K{shape}}
+
+.. SHIFTOPVIXX
+.. -----------
+.. |SHL-shiftopVIXX| mathdef:: {\K{shl}}
+.. |SHR-shiftopVIXX| mathdef:: {\K{shr}}
+
+.. SHIFTOP_VECTYPE
+.. ---------------
+.. |VI-shiftopvectype| mathdef:: {\K{\_vi}}
 
 .. START
 .. -----
@@ -699,13 +769,13 @@
 .. TABLETYPE
 .. ---------
 
-.. TERNOP_VXX
+.. TERNOPVVXX
 .. ----------
-.. |BITSELECT-ternopVXX| mathdef:: {\K{bitselect}}
+.. |BITSELECT-ternopVVXX| mathdef:: {\K{bitselect}}
 
 .. TERNOP_VECTYPE
 .. --------------
-.. |V-ternopvectype| mathdef:: {\K{\_v}}
+.. |VV-ternopvectype| mathdef:: {\K{\_vv}}
 
 .. TESTFUSE
 .. --------
@@ -726,10 +796,22 @@
 .. ---------
 .. |EQZ-testopIXX| mathdef:: {\K{eqz}}
 
+.. TESTOPVIXX
+.. ----------
+.. |ALLTRUE-testopVIXX| mathdef:: {\K{all\_true}}
+
+.. TESTOPVVXX
+.. ----------
+.. |ANYTRUE-testopVVXX| mathdef:: {\K{any\_true}}
+
 .. TESTOP_NUMTYPE
 .. --------------
 .. |F-testopnumtype| mathdef:: {\K{\_f}}
 .. |I-testopnumtype| mathdef:: {\K{\_i}}
+
+.. TESTOP_VTYPE
+.. ------------
+.. |VI-testopvtype| mathdef:: {\K{\_vi}}
 
 .. TYPE
 .. ----
@@ -774,9 +856,24 @@
 .. |CTZ-unopIXX| mathdef:: {\K{ctz}}
 .. |POPCNT-unopIXX| mathdef:: {\K{popcnt}}
 
-.. UNOP_VXX
+.. UNOPVFXX
 .. --------
-.. |NOT-unopVXX| mathdef:: {\K{not}}
+.. |ABS-unopVFXX| mathdef:: {\K{abs}}
+.. |CEIL-unopVFXX| mathdef:: {\K{ceil}}
+.. |FLOOR-unopVFXX| mathdef:: {\K{floor}}
+.. |NEAREST-unopVFXX| mathdef:: {\K{nearest}}
+.. |NEG-unopVFXX| mathdef:: {\K{neg}}
+.. |SQRT-unopVFXX| mathdef:: {\K{sqrt}}
+.. |TRUNC-unopVFXX| mathdef:: {\K{trunc}}
+
+.. UNOPVIXX
+.. --------
+.. |ABS-unopVIXX| mathdef:: {\K{abs}}
+.. |NEG-unopVIXX| mathdef:: {\K{neg}}
+
+.. UNOPVVXX
+.. --------
+.. |NOT-unopVVXX| mathdef:: {\K{not}}
 
 .. UNOP_NUMTYPE
 .. ------------
@@ -785,7 +882,13 @@
 
 .. UNOP_VECTYPE
 .. ------------
-.. |V-unopvectype| mathdef:: {\K{\_v}}
+.. |VV-unopvectype| mathdef:: {\K{\_vv}}
+
+.. UNOP_VTYPE
+.. ----------
+.. |POPCNT-unopvtype| mathdef:: {\K{popcnt}}
+.. |VF-unopvtype| mathdef:: {\K{\_vf}}
+.. |VI-unopvtype| mathdef:: {\K{\_vi}}
 
 .. VAL
 .. ---
@@ -872,9 +975,9 @@
 .. |halfop-| mathdef:: {\F{halfop}}
 .. |ibytes-| mathdef:: {\F{ibytes}}
 .. |idx-| mathdef:: {\F{idx}}
+.. |imul-| mathdef:: {\F{imul}}
 .. |inbinop-| mathdef:: {\F{in\_binop}}
 .. |innumtype-| mathdef:: {\F{in\_numtype}}
-.. |index-| mathdef:: {\F{index}}
 .. |ine128-| mathdef:: {\F{ine\_128}}
 .. |instreftype-| mathdef:: {\F{inst\_reftype}}
 .. |instantiate-| mathdef:: {\F{instantiate}}
@@ -949,7 +1052,10 @@
 .. |unrollht-| mathdef:: {\F{unrollht}}
 .. |unrollrt-| mathdef:: {\F{unrollrt}}
 .. |utf8-| mathdef:: {\F{utf8}}
+.. |vbinop-| mathdef:: {\F{vbinop}}
 .. |vcvtop-| mathdef:: {\F{vcvtop}}
+.. |vishiftop-| mathdef:: {\F{vishiftop}}
+.. |vunop-| mathdef:: {\F{vunop}}
 .. |vvbinop-| mathdef:: {\F{vvbinop}}
 .. |vvternop-| mathdef:: {\F{vvternop}}
 .. |vvunop-| mathdef:: {\F{vvunop}}

@@ -31,25 +31,7 @@ relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
 rule Eval_expr:
   z; instr*  ~>*  z'; val*
   -- Steps: z; instr*  ~>*  z'; val*
-
-
-;; Expressions
-
-relation Eval: config ~>* state; val*  hint(show "E-expr")
-relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
-
-rule Eval/done:
-  z; val* ~>* z; val*
-
-rule Eval/step:
-  z; admininstr*  ~>*  z''; val*
-  -- Step: z; admininstr*  ~>  z'; admininstr'*
-  -- Eval: z'; admininstr'  ~>*  z''; val*
-
-rule Eval_expr:
-  z; instr*  ~>*  z'; val*
-  -- Eval: z; instr*  ~>*  z; val*
-
+  
 
 ;;
 ;; Instructions
