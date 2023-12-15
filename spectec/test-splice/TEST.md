@@ -115,13 +115,13 @@ $$
 \mathsf{return\_call}~{\mathit{funcidx}} \\ &&|&
 \mathsf{return\_call\_ref}~{{\mathit{typeidx}}^?} \\ &&|&
 \mathsf{return\_call\_indirect}~{\mathit{tableidx}}~{\mathit{typeidx}} \\ &&|&
-... \\
+\dots \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{instr}} &::=& ... \\ &&|&
+& {\mathit{instr}} &::=& \dots \\ &&|&
 {\mathit{numtype}}.\mathsf{const}~{\mathit{c}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {\mathit{unop}}_{{\mathit{numtype}}} \\ &&|&
 {\mathit{numtype}} . {\mathit{binop}}_{{\mathit{numtype}}} \\ &&|&
@@ -306,7 +306,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrl@{}l@{}}
-& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {\mathsf{cd}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {\mathsf{ef\_}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
 {{\mathsf{gh}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&

@@ -40,8 +40,8 @@ syntax addrref hint(desc "address reference") =
   | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
   | REF.EXTERN addrref
 syntax ref hint(desc "reference") =
-  | REF.NULL heaptype
   | addrref
+  | REF.NULL heaptype
 syntax val hint(desc "value") =
   | num | ref
 

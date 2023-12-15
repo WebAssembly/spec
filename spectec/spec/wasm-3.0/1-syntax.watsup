@@ -152,10 +152,8 @@ syntax comptype hint(desc "composite type") =
   | FUNC functype
 
 syntax subtype hint(desc "sub type") =
-  | SUB fin typeidx* comptype | ...
-syntax subtype =
+  | SUB fin typeidx* comptype
   | ...
-  | SUBD fin heaptype* comptype  hint(show SUB % % %)
 
 syntax rectype hint(desc "recursive type") =
   | REC subtype*
@@ -167,6 +165,10 @@ syntax heaptype =
   | ...
   | deftype
   | REC nat
+
+syntax subtype =
+  | ...
+  | SUBD fin heaptype* comptype  hint(show SUB % % %)
 
 
 ;; External types

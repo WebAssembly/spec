@@ -184,6 +184,11 @@ test_sub_ATOM_22 n_3_ATOM_y
 curried_ n_1 n_2
 1. Return (n_1 + n_2).
 
+testmixfix u_0
+1. Return nat*.
+2. Return nat*.
+3. Return [nat_1, nat_2].
+
 signif u_0
 1. If u_0 is 32, then:
   a. Return 23.

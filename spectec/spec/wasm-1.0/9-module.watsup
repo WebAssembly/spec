@@ -3,25 +3,25 @@
 ;;
 
 def $funcs(externval*) : funcaddr*
-def $funcs(epsilon) = epsilon
+def $funcs(eps) = eps
 def $funcs((FUNC fa) externval'*) = fa $funcs(externval'*)
 def $funcs(externval externval'*) = $funcs(externval'*)
   -- otherwise
 
 def $globals(externval*) : globaladdr*
-def $globals(epsilon) = epsilon
+def $globals(eps) = eps
 def $globals((GLOBAL ga) externval'*) = ga $globals(externval'*)
 def $globals(externval externval'*) = $globals(externval'*)
   -- otherwise
 
 def $tables(externval*) : tableaddr*
-def $tables(epsilon) = epsilon
+def $tables(eps) = eps
 def $tables((TABLE ta) externval'*) = ta $tables(externval'*)
 def $tables(externval externval'*) = $tables(externval'*)
   -- otherwise
 
 def $mems(externval*) : memaddr*
-def $mems(epsilon) = epsilon
+def $mems(eps) = eps
 def $mems((MEM ma) externval'*) = ma $mems(externval'*)
 def $mems(externval externval'*) = $mems(externval'*)
   -- otherwise
@@ -39,7 +39,7 @@ def $allocfunc(s, mm, func) = (s[.FUNC =.. fi], |s.FUNC|)
   -- if func = FUNC x local* expr
 
 def $allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
-def $allocfuncs(s, mm, epsilon) = (s, epsilon)
+def $allocfuncs(s, mm, eps) = (s, eps)
 def $allocfuncs(s, mm, func func'*) = (s_2, fa fa'*)
   -- if (s_1, fa) = $allocfunc(s, mm, func)
   -- if (s_2, fa'*) = $allocfuncs(s_1, mm, func'*)
@@ -49,17 +49,17 @@ def $allocglobal(s, globaltype, val) = (s[.GLOBAL =.. gi], |s.GLOBAL|)
   -- if gi = { TYPE globaltype, VALUE val }
 
 def $allocglobals(store, globaltype*, val*) : (store, globaladdr*)
-def $allocglobals(s, epsilon, epsilon) = (s, epsilon)
+def $allocglobals(s, eps, eps) = (s, eps)
 def $allocglobals(s, globaltype globaltype'*, val val'*) = (s_2, ga ga'*)
   -- if (s_1, ga) = $allocglobal(s, globaltype, val)
   -- if (s_2, ga'*) = $allocglobals(s_1, globaltype'*, val'*)
 
 def $alloctable(store, tabletype) : (store, tableaddr)
 def $alloctable(s, `[i .. j]) = (s[.TABLE =.. ti], |s.TABLE|)
-  -- if ti = { TYPE `[i .. j], ELEM epsilon^i }
+  -- if ti = { TYPE `[i .. j], ELEM eps^i }
 
 def $alloctables(store, tabletype*) : (store, tableaddr*)
-def $alloctables(s, epsilon) = (s, epsilon)
+def $alloctables(s, eps) = (s, eps)
 def $alloctables(s, tabletype tabletype'*) = (s_2, ta ta'*)
   -- if (s_1, ta) = $alloctable(s, tabletype)
   -- if (s_2, ta'*) = $alloctables(s_1, tabletype'*)
@@ -69,7 +69,7 @@ def $allocmem(s, `[i .. j]) = (s[.MEM =.. mi], |s.MEM|)
   -- if mi = { TYPE `[i .. j], DATA 0^(i * 64 * $Ki()) }
 
 def $allocmems(store, memtype*) : (store, memaddr*)
-def $allocmems(s, epsilon) = (s, epsilon)
+def $allocmems(s, eps) = (s, eps)
 def $allocmems(s, memtype memtype'*) = (s_2, ma ma'*)
   -- if (s_1, ma) = $allocmem(s, memtype)
   -- if (s_2, ma'*) = $allocmems(s_1, memtype'*)
@@ -126,17 +126,17 @@ def $allocmodule(s, module, externval*, val*) = (s_4, mm)
 ;;
 
 def $concat_instr((instr*)*) : instr*
-def $concat_instr(epsilon) = epsilon
+def $concat_instr(eps) = eps
 def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
 
 def $initelem(store, moduleinst, u32*, (funcaddr*)*) : store
-def $initelem(s, mm, epsilon, epsilon) = s
+def $initelem(s, mm, eps, eps) = s
 def $initelem(s, mm, i i'*, (a*) (a'*)*) = s_2
   -- if s_1 = s[.TABLE[mm.TABLE[0]].ELEM[i:|a*|] = a*]
   -- if s_2 = $initelem(s_1, mm, i'*, (a'*)*)
 
 def $initdata(store, moduleinst, u32*, (byte*)*) : store
-def $initdata(s, mm, epsilon, epsilon) = s
+def $initdata(s, mm, eps, eps) = s
 def $initdata(s, mm, i i'*, (b*) (b'*)*) = s_2
   -- if s_1 = s[.MEM[mm.MEM[0]].DATA[i:|b*|] = b*]
   -- if s_2 = $initdata(s_1, mm, i'*, (b'*)*)
@@ -155,7 +155,7 @@ def $instantiate(s, module, externval*) = s_3; f; (CALL x')?
       FUNC $funcs(externval*) $(|s.FUNC|+i_F)^(i_F<n_F),
       GLOBAL $globals(externval*)
     }
-  -- if f_init = { LOCAL epsilon, MODULE mm_init }
+  -- if f_init = { LOCAL eps, MODULE mm_init }
   -- if z = s; f_init
   -- (Eval_expr : z; expr_G ~>* z; val)*
   -- (Eval_expr : z; expr_E ~>* z; (CONST I32 i_E))*
@@ -163,7 +163,7 @@ def $instantiate(s, module, externval*) = s_3; f; (CALL x')?
   -- if (s_1, mm) = $allocmodule(s, module, externval*, val*)
   -- if s_2 = $initelem(s_1, mm, i_E*, mm.FUNC[x]**)
   -- if s_3 = $initdata(s_2, mm, i_D*, b**)
-  -- if f = { LOCAL epsilon, MODULE mm }
+  -- if f = { LOCAL eps, MODULE mm }
 
 
 ;;
@@ -172,5 +172,5 @@ def $instantiate(s, module, externval*) = s_3; f; (CALL x')?
 
 def $invoke(store, funcaddr, val*) : config
 def $invoke(s, fa, val^n) = s; f; val^n (CALL_ADDR fa)
-  -- if f = { LOCAL epsilon, MODULE {} }
+  -- if f = { LOCAL eps, MODULE {} }
   -- if $funcinst((s; f))[fa].TYPE = t_1^n -> t_2*
