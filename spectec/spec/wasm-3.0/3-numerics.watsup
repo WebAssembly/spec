@@ -49,6 +49,21 @@ def $shapeof(vu, vc) : shape                        hint(show %X%)
 def $extend(i, j, sx?, n*) : c_numtype             hint(show $ext_((%,%))^%(%))
 def $imul(sh, c, c) : c_numtype*
 
+def $concat_seq(i*, j*) : nat*
+
+;; TODO Fix \/ to /\
+def $alltrue(nat*) : bool
+
+def $alltrue(epsilon) = true
+def $alltrue(i i'*) = $alltrue(i'*) \/ (i =/= 0) 
+
+def $bool_to_num(bool) : nat
+
+def $ilt_s(nat, nat*) : nat*
+def $ibits(nat, nat) : nat*
+
+def $narrow(nat, nat, sx, nat*) : nat*
+
 def $vvunop(vvunop, vectype, cv) : c_vectype                hint(show %#_%#((%)))
 def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype*         hint(show %#_%#(%, %))
 def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype*   hint(show %#_%#(%, %, %))
