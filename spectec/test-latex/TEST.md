@@ -1,3 +1,36 @@
+# Test
+
+```sh
+$ (dune exec ../src/exe-watsup/main.exe -- test.watsup -o test.tex && cat test.tex)
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{{22}}}}({\mathit{n}}_{{3}_{{\mathsf{atom}}_{{\mathit{y}}}}}) &=& 0 &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{{\mathrm{curried}}}_{{\mathit{n}}_{{1}}}({\mathit{n}}_{{2}}) &=& {\mathit{n}}_{{1}} + {\mathit{n}}_{{2}} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{testfuse}} &::=& {\mathsf{ab}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{cd}}_{{\mathit{nat}}}\,{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{ef\_}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{gh}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{ij}}_{{\mathit{nat}}}}{{\mathit{nat}}}~{\mathit{nat}} \\ &&|&
+{\mathsf{kl\_ab}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{\mathsf{mn\_}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{op\_}}{\mathsf{ab}}}{{\mathit{nat}}}~{\mathit{nat}}~{\mathit{nat}} \\ &&|&
+{{\mathsf{qr}}_{{\mathit{nat}}}}{\mathsf{ab}}~{\mathit{nat}}~{\mathit{nat}} \\
+\end{array}
+$$
+
+```
+
+
 # Preview
 
 ```sh
@@ -7,6 +40,8 @@ $ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l -p -d sp
 == IL Validation...
 == Latex Generation...
 warning: syntax `E` was never spliced
+warning: syntax `M` was never spliced
+warning: syntax `N` was never spliced
 warning: syntax `absheaptype` was never spliced
 warning: syntax `absheaptype` was never spliced
 warning: syntax `addr` was never spliced
@@ -14,11 +49,10 @@ warning: syntax `addrref` was never spliced
 warning: syntax `admininstr` was never spliced
 warning: syntax `arrayaddr` was never spliced
 warning: syntax `arrayinst` was never spliced
-warning: syntax `binopFXX` was never spliced
-warning: syntax `binopIXX` was never spliced
 warning: syntax `binop_numtype` was never spliced
 warning: syntax `blocktype` was never spliced
 warning: syntax `byte` was never spliced
+warning: syntax `c` was never spliced
 warning: syntax `c_numtype` was never spliced
 warning: syntax `c_packedtype` was never spliced
 warning: syntax `c_vectype` was never spliced
@@ -49,16 +83,20 @@ warning: syntax `externval` was never spliced
 warning: syntax `f32` was never spliced
 warning: syntax `f64` was never spliced
 warning: syntax `fN` was never spliced
-warning: syntax `fNmag` was never spliced
+warning: syntax `fbinop` was never spliced
 warning: syntax `fieldtype` was never spliced
 warning: syntax `fieldval` was never spliced
 warning: syntax `fin` was never spliced
+warning: syntax `fmag` was never spliced
 warning: syntax `fnn` was never spliced
 warning: syntax `frame` was never spliced
+warning: syntax `frelop` was never spliced
+warning: syntax `ftestop` was never spliced
 warning: syntax `func` was never spliced
 warning: syntax `funcaddr` was never spliced
 warning: syntax `funcidx` was never spliced
 warning: syntax `funcinst` was never spliced
+warning: syntax `funop` was never spliced
 warning: syntax `global` was never spliced
 warning: syntax `globaladdr` was never spliced
 warning: syntax `globalidx` was never spliced
@@ -67,6 +105,7 @@ warning: syntax `heaptype` was never spliced
 warning: syntax `heaptype` was never spliced
 warning: syntax `hostaddr` was never spliced
 warning: syntax `iN` was never spliced
+warning: syntax `ibinop` was never spliced
 warning: syntax `idx` was never spliced
 warning: syntax `import` was never spliced
 warning: syntax `init` was never spliced
@@ -75,6 +114,9 @@ warning: syntax `instr/reference` was never spliced
 warning: syntax `instr/heap` was never spliced
 warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
+warning: syntax `irelop` was never spliced
+warning: syntax `itestop` was never spliced
+warning: syntax `iunop` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
@@ -101,8 +143,6 @@ warning: syntax `packedval` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
 warning: syntax `reftype` was never spliced
-warning: syntax `relopFXX` was never spliced
-warning: syntax `relopIXX` was never spliced
 warning: syntax `relop_numtype` was never spliced
 warning: syntax `result` was never spliced
 warning: syntax `resulttype` was never spliced
@@ -121,8 +161,6 @@ warning: syntax `table` was never spliced
 warning: syntax `tableaddr` was never spliced
 warning: syntax `tableidx` was never spliced
 warning: syntax `tableinst` was never spliced
-warning: syntax `testopFXX` was never spliced
-warning: syntax `testopIXX` was never spliced
 warning: syntax `testop_numtype` was never spliced
 warning: syntax `type` was never spliced
 warning: syntax `typeidx` was never spliced
@@ -132,8 +170,6 @@ warning: syntax `u31` was never spliced
 warning: syntax `u32` was never spliced
 warning: syntax `u64` was never spliced
 warning: syntax `uN` was never spliced
-warning: syntax `unopFXX` was never spliced
-warning: syntax `unopIXX` was never spliced
 warning: syntax `unop_numtype` was never spliced
 warning: syntax `val` was never spliced
 warning: syntax `valtype` was never spliced
@@ -162,9 +198,9 @@ warning: grammar `Bexportsec` was never spliced
 warning: grammar `Bexpr` was never spliced
 warning: grammar `Bexternidx` was never spliced
 warning: grammar `Bexterntype` was never spliced
-warning: grammar `Bf` was never spliced
 warning: grammar `Bf32` was never spliced
 warning: grammar `Bf64` was never spliced
+warning: grammar `BfN` was never spliced
 warning: grammar `Bfieldtype` was never spliced
 warning: grammar `Bfunc` was never spliced
 warning: grammar `Bfuncidx` was never spliced
@@ -174,7 +210,7 @@ warning: grammar `Bglobalidx` was never spliced
 warning: grammar `Bglobalsec` was never spliced
 warning: grammar `Bglobaltype` was never spliced
 warning: grammar `Bheaptype` was never spliced
-warning: grammar `Bi` was never spliced
+warning: grammar `BiN` was never spliced
 warning: grammar `Bimport` was never spliced
 warning: grammar `Bimportsec` was never spliced
 warning: grammar `Binstr/control` was never spliced
@@ -218,8 +254,8 @@ warning: grammar `Bpackedtype` was never spliced
 warning: grammar `Brectype` was never spliced
 warning: grammar `Breftype` was never spliced
 warning: grammar `Bresulttype` was never spliced
-warning: grammar `Bs` was never spliced
 warning: grammar `Bs33` was never spliced
+warning: grammar `BsN` was never spliced
 warning: grammar `Bsection_` was never spliced
 warning: grammar `Bstart` was never spliced
 warning: grammar `Bstartsec` was never spliced
@@ -232,9 +268,9 @@ warning: grammar `Btabletype` was never spliced
 warning: grammar `Btype` was never spliced
 warning: grammar `Btypeidx` was never spliced
 warning: grammar `Btypesec` was never spliced
-warning: grammar `Bu` was never spliced
 warning: grammar `Bu32` was never spliced
 warning: grammar `Bu64` was never spliced
+warning: grammar `BuN` was never spliced
 warning: grammar `Bvaltype` was never spliced
 warning: grammar `Bvec` was never spliced
 warning: grammar `Bvectype` was never spliced
@@ -630,7 +666,6 @@ warning: definition `expon` was never spliced
 warning: definition `ext` was never spliced
 warning: definition `ext_arrayinst` was never spliced
 warning: definition `ext_structinst` was never spliced
-warning: definition `fNzero` was never spliced
 warning: definition `fbytes` was never spliced
 warning: definition `frame` was never spliced
 warning: definition `free_dataidx_expr` was never spliced
@@ -640,6 +675,7 @@ warning: definition `free_dataidx_instr` was never spliced
 warning: definition `free_dataidx_instrs` was never spliced
 warning: definition `funcsxt` was never spliced
 warning: definition `funcsxv` was never spliced
+warning: definition `fzero` was never spliced
 warning: definition `global` was never spliced
 warning: definition `globalinst` was never spliced
 warning: definition `globalsxt` was never spliced

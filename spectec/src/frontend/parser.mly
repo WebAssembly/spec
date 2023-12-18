@@ -42,18 +42,13 @@ let as_alt_sym sym =
   | AltG (_::_::_ as syms) -> syms
   | _ -> [Elem sym]
 
-let tup_exp exps lr =
-  match exps with
-  | [], false -> ParenE (SeqE [] $ at lr, false) $ at lr
-  | [exp], false -> ParenE (exp, false) $ at lr
-  | exps, _ -> TupE exps $ at lr
-
 
 (* Identifier Status *)
 
 module VarSet = Set.Make(String)
 
 let atom_vars = ref VarSet.empty
+let scopes = ref []
 
 let strip_ticks id =
   let i = ref (String.length id) in
@@ -71,7 +66,7 @@ let prec_of_exp = function  (* as far as iteration is concerned *)
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
   | UnE _ | BinE _ | CmpE _ | InfixE _ | LenE _ | SizeE _
-  | CommaE _ | CompE _ | FuseE _ -> Op
+  | CommaE _ | CompE _ | TypE _ | FuseE _ -> Op
 
 (* Extra parentheses can be inserted to disambiguate the role of elements of
  * an iteration. For example, `( x* )` will be interpreted differently from `x*`
@@ -109,7 +104,7 @@ let is_post_exp e =
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE FUSE
+%token HOLE MULTIHOLE SKIP MULTISKIP FUSE
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
 %token IF OTHERWISE HINT_LPAREN
@@ -152,10 +147,13 @@ let is_post_exp e =
   | COMMA {}
   | COMMA_NL {}
 
-comma_list(X) :
+tup_list(X) :
   | (* empty *) { [], true }
   | X { $1::[], false }
-  | X comma comma_list(X) { $1::(fst $3), true }
+  | X comma tup_list(X) { $1::(fst $3), true }
+
+comma_list(X) :
+  | tup_list(X) { fst $1 }
 
 comma_nl_list(X) :
   | (* empty *) { [] }
@@ -237,6 +235,11 @@ varid_bind_lparen :
   | varid_lparen { $1 }
   | atomid_lparen { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
 
+enter_scope :
+  | (* empty *) { scopes := !atom_vars :: !scopes }
+exit_scope :
+  | (* empty *) { atom_vars := List.hd !scopes; scopes := List.tl !scopes }
+
 check_atom :
   | UPID EOF { VarSet.mem (strip_ticks $1) !atom_vars }
 
@@ -300,7 +303,7 @@ iter :
   | STAR { List }
   | UP arith_prim
     { match $2.it with
-      | ParenE ({it = CmpE({it = VarE id; _}, LtOp, e); _}, false) ->
+      | ParenE ({it = CmpE({it = VarE (id, []); _}, LtOp, e); _}, false) ->
         ListN (e, Some id)
       | _ -> ListN ($2, None)
     }
@@ -310,7 +313,8 @@ iter :
 
 typ_prim : typ_prim_ { $1 $ at $sloc }
 typ_prim_ :
-  | varid { VarT $1 }
+  | varid { VarT ($1, []) }
+  | varid_lparen comma_list(arg) RPAREN { VarT ($1, $2) }
   | BOOL { BoolT }
   | NAT { NumT NatT }
   | INT { NumT IntT }
@@ -321,7 +325,7 @@ typ_prim_ :
 typ_post : typ_post_ { $1 $ at $sloc }
 typ_post_ :
   | typ_prim_ { $1 }
-  | LPAREN comma_list(typ) RPAREN
+  | LPAREN tup_list(typ) RPAREN
     { match $2 with [t], false -> ParenT t | ts, _ -> TupT ts }
   | typ_post iter { IterT ($1, $2) }
 
@@ -341,7 +345,7 @@ deftyp_ :
             | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
             | Elem (t, prems, hints) ->
               match t.it with
-              | VarT id when prems = [] && hints = [] ->
+              | VarT (id, []) when prems = [] && hints = [] ->
                 (Elem id)::y1, y2, Some t.at
               | AtomT atom
               | SeqT ({it = AtomT atom; _}::_)
@@ -365,7 +369,7 @@ nottyp_prim_ :
   | TICK LPAREN nottyp RPAREN { BrackT (LParen, $3, RParen) }
   | TICK LBRACK nottyp RBRACK { BrackT (LBrack, $3, RBrack) }
   | TICK LBRACE nottyp RBRACE { BrackT (LBrace, $3, RBrace) }
-  | LPAREN comma_list(nottyp) RPAREN
+  | LPAREN tup_list(nottyp) RPAREN
     { match $2 with [t], false -> ParenT t | ts, _ -> TupT ts }
 
 nottyp_post : nottyp_post_ { $1 $ at $sloc }
@@ -423,32 +427,39 @@ exp_lit_ :
   | TEXTLIT { TextE $1 }
 
 exp_var_ :
-  | varid { VarE $1 }
-  | BOOL { VarE ("bool" $ at $sloc) }
-  | NAT { VarE ("nat" $ at $sloc) }
-  | INT { VarE ("int" $ at $sloc) }
-  | RAT { VarE ("rat" $ at $sloc) }
-  | REAL { VarE ("real" $ at $sloc) }
-  | TEXT { VarE ("text" $ at $sloc) }
+  | varid { VarE ($1, []) }
+  | varid_lparen comma_list(arg) RPAREN { VarE ($1, $2) }
+  | BOOL { VarE ("bool" $ at $sloc, []) }
+  | NAT { VarE ("nat" $ at $sloc, []) }
+  | INT { VarE ("int" $ at $sloc, []) }
+  | RAT { VarE ("rat" $ at $sloc, []) }
+  | REAL { VarE ("real" $ at $sloc, []) }
+  | TEXT { VarE ("text" $ at $sloc, []) }
+
+exp_call_ :
+  | DOLLAR defid { CallE ($2, []) }
+  | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
 
 exp_hole_ :
-  | HOLE { HoleE false }
-  | MULTIHOLE { HoleE true }
+  | HOLE { HoleE (`Use, `One) }
+  | MULTIHOLE { HoleE (`Use, `All) }
+  | SKIP { HoleE (`Skip, `One) }
+  | MULTISKIP { HoleE (`Skip, `All) }
 
 (*exp_prim : exp_prim_ { $1 $ at $sloc }*)
 exp_prim_ :
   | exp_lit_ { $1 }
   | exp_var_ { $1 }
+  | exp_call_ { $1 }
   | exp_hole_ { $1 }
   | EPS { EpsE }
   | LBRACE comma_nl_list(fieldexp) RBRACE { StrE $2 }
-  | LPAREN comma_list(exp_bin) RPAREN { (tup_exp $2 $loc($2)).it }
+  | LPAREN tup_list(exp_bin) RPAREN
+    { match $2 with [e], false -> ParenE (e, false) | es, _ -> TupE es }
   | TICK LPAREN exp RPAREN { BrackE (LParen, $3, RParen) }
   | TICK LBRACK exp RBRACK { BrackE (LBrack, $3, RBrack) }
   | TICK LBRACE exp RBRACE { BrackE (LBrace, $3, RBrace) }
   | DOLLAR LPAREN arith RPAREN { $3.it }
-  | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
-  | DOLLAR defid_lparen comma_list(exp_bin) RPAREN { CallE ($2, tup_exp $3 $loc($3)) }
 
 exp_post : exp_post_ { $1 $ at $sloc }
 exp_post_ :
@@ -508,6 +519,7 @@ arith_prim : arith_prim_ { $1 $ at $sloc }
 arith_prim_ :
   | exp_lit_ { $1 }
   | exp_var_ { $1 }
+  | exp_call_ { $1 }
   | exp_hole_ { $1 }
   | LPAREN arith RPAREN { ParenE ($2, false) }
   | LPAREN arith_bin STAR RPAREN
@@ -526,8 +538,6 @@ arith_prim_ :
         Source.error (at $loc($3)) "syntax" "misplaced token";
       IterE ($2, Opt) }
   | DOLLAR LPAREN exp RPAREN { $3.it }
-  | DOLLAR defid { CallE ($2, TupE [] $ at $sloc) }
-  | DOLLAR defid_lparen comma_list(exp_bin) RPAREN { CallE ($2, tup_exp $3 $loc($3)) }
 
 arith_post : arith_post_ { $1 $ at $sloc }
 arith_post_ :
@@ -610,13 +620,14 @@ premise_ :
 (*sym_prim : sym_prim_ { $1 $ at $sloc }*)
 sym_prim_ :
   | gramid { VarG ($1, []) }
-  | gramid_lparen comma_list(sym) RPAREN { VarG ($1, fst $2) }
+  | gramid_lparen comma_list(arg) RPAREN { VarG ($1, $2) }
   | NATLIT { NatG $1 }
   | HEXLIT { HexG $1 }
   | CHARLIT { CharG $1 }
   | TEXTLIT { TextG $1 }
   | EPS { EpsG }
-  | LPAREN comma_list(sym) RPAREN { match fst $2 with [g] -> ParenG g | gs -> TupG gs }
+  | LPAREN tup_list(sym) RPAREN
+    { match $2 with [g], false -> ParenG g | gs, _ -> TupG gs }
   | DOLLAR LPAREN arith RPAREN { ArithG $3 }
 
 sym_post : sym_post_ { $1 $ at $sloc }
@@ -627,7 +638,7 @@ sym_post_ :
 sym_attr : sym_attr_ { $1 $ at $sloc }
 sym_attr_ :
   | sym_post_ { $1 }
-  | sym_post COLON sym_post { AttrG ($3, Elab.exp_of_sym $1) }
+  | sym_post COLON sym_post { AttrG (El.Convert.exp_of_sym $1, $3) }
 
 sym_seq : sym_seq_ { $1 $ at $sloc }
 sym_seq_ :
@@ -654,23 +665,34 @@ gram :
 
 (* Definitions *)
 
+arg : arg_ { ref $1 $ at $sloc }
+arg_ :
+  | exp_bin { ExpA $1 }
+  | SYNTAX typ { SynA $2 }
+  | GRAMMAR sym { GramA $2 }
+
 param : param_ { $1 $ at $sloc }
 param_ :
-  | varid { VarP $1 }
-  | GRAMMAR gramid COLON varid_bind iter* { GramP ($2, $4, $5) }
+  | varid_bind COLON typ { ExpP ($1, $3) }
+  | typ { ExpP ("" $ at $sloc, $1) }
+  | SYNTAX varid_bind { SynP $2 }
+  | GRAMMAR gramid COLON typ { GramP ($2, $4) }
 
 
 def : def_ { $1 $ at $sloc }
 def_ :
   | SYNTAX varid_bind ruleid_list hint* EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      SynD ($2, id $ at $loc($3), $6, $4) }
+      SynD ($2, id $ at $loc($3), [], $6, $4) }
+  | SYNTAX varid_bind_lparen enter_scope comma_list(param) RPAREN ruleid_list hint* EQ deftyp exit_scope
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      SynD ($2, id $ at $loc($6), $4, $9, $7) }
   | GRAMMAR varid_bind ruleid_list COLON typ hint* EQ gram
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       GramD ($2, id $ at $loc($3), [], $5, $8, $6) }
-  | GRAMMAR varid_bind_lparen comma_list(param) RPAREN ruleid_list COLON typ hint* EQ gram
-    { let id = if $5 = "" then "" else String.sub $5 1 (String.length $5 - 1) in
-      GramD ($2, id $ at $loc($5), fst $3, $7, $10, $8) }
+  | GRAMMAR varid_bind_lparen enter_scope comma_list(param) RPAREN ruleid_list COLON typ hint* EQ gram exit_scope
+    { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
+      GramD ($2, id $ at $loc($6), $4, $8, $11, $9) }
   | RELATION relid COLON nottyp hint*
     { RelD ($2, $4, $5) }
   | RULE relid ruleid_list COLON exp premise_list
@@ -679,13 +701,13 @@ def_ :
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
-    { DecD ($3, TupE [] $ at $loc($4), $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(exp_bin) RPAREN COLON typ hint*
-    { DecD ($3, tup_exp $4 $loc($4), $7, $8) }
+    { DecD ($3, [], $5, $6) }
+  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN COLON typ hint*
+    { DecD ($3, List.map El.Convert.param_of_arg $4, $7, $8) }
   | DEF DOLLAR defid EQ exp premise_list
-    { DefD ($3, TupE [] $ at $loc($4), $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(exp_bin) RPAREN EQ exp premise_list
-    { DefD ($3, tup_exp $4 $loc($4), $7, $8) }
+    { DefD ($3, [], $5, $6) }
+  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN EQ exp premise_list
+    { DefD ($3, $4, $7, $8) }
   | NL_NL_NL
     { SepD }
   | SYNTAX varid_bind ruleid_list hint*

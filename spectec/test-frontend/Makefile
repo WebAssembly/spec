@@ -6,8 +6,10 @@ EXT = $(NAME)
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec
-SPECS = $(shell ls $(SPECDIR))
-TESTS = $(SPECS:%=test-%)
+SPECFILES = $(shell cd $(SPECDIR) && ls -d wasm-*)
+TESTFILES = $(shell ls *.$(EXT))
+SPECS = $(SPECFILES:%=test-%)
+TESTS = $(TESTFILES:%.$(EXT)=test-%)
 
 
 # Main targets
@@ -19,12 +21,15 @@ all: test
 
 # Test
 
-.PHONY: test $(TESTS)
+.PHONY: test $(SPECS) $(TESTS)
 
-test: $(TESTS)
+test: $(SPECS) $(TESTS)
 
-$(TESTS): test-%: $(EXE)
+$(SPECS): test-%: $(EXE)
 	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT))
+
+$(TESTS): test-%: %.$(EXT) $(EXE)
+	($(EXE) $<)
 
 
 # Executable

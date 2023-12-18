@@ -94,7 +94,7 @@ let bind_atomic e =
   else
     printf_step "Let %s be %s." id (Print.string_of_exp e)
   ;
-  VarE(id $ e.at) $ e.at
+  VarE(id $ e.at, []) $ e.at
 
 let rec bind e = match e.it with
   | VarE _
@@ -155,7 +155,7 @@ let rec push right = match right.it with
         let str = Print.string_of_exps " " args in
         printf_step "Execute the instruction %s %s." name str
     )
-  | VarE(id) -> printf_step "Push the value %s to the stack." id.it
+  | VarE(id, _) -> printf_step "Push the value %s to the stack." id.it
   | IterE({it = VarE _; _}, _) -> printf_step "Push the values %s to the stack." (Print.string_of_exp right)
   | EpsE -> ()
   | _ ->
@@ -173,12 +173,10 @@ let destruct_as_rule r = match r.it with
     | _ -> None)
   | _ -> None
 let string_of_destructed (left, right, prems) =
-  let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs in
-  let map_nl_list f xs = List.map f (filter_nl xs) in
   Print.string_of_exp left ^
   " ~> " ^
   Print.string_of_exp right ^
-  String.concat "" (map_nl_list (fun x -> "\n    -- " ^ Print.string_of_prem x) prems)
+  String.concat "" (Convert.map_filter_nl_list (fun x -> "\n    -- " ^ Print.string_of_prem x) prems)
 
 let handle_reduction_group red_group =
   (* assert: every redunction rule in red_group has same lhs *)

@@ -1,6 +1,7 @@
 open Util
 open Source
 open El.Ast
+open El.Convert
 open Config
 
 
@@ -95,17 +96,18 @@ let env_hintdef env hd =
 
 let env_def env d =
   match d.it with
-  | SynD (id1, id2, t, hints) ->
+  | SynD (id1, id2, _ps, t, hints) ->
     env.vars := Set.add id1.it !(env.vars);
     env_hintdef env (SynH (id1, id2, hints) $ d.at);
+    env_hintdef env (VarH (id1, hints) $ d.at);
     env_typ env t
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
     env_hintdef env (GramH (id1, id2, hints) $ d.at)
-  | RelD (id, _, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
-  | VarD (id, _, hints) ->
+  | RelD (id, _t, hints) -> env_hintdef env (RelH (id, hints) $ d.at)
+  | VarD (id, _t, hints) ->
     env.vars := Set.add id.it !(env.vars);
     env_hintdef env (VarH (id, hints) $ d.at)
-  | DecD (id, _, _, hints) -> env_hintdef env (DecH (id, hints) $ d.at)
+  | DecD (id, _as, _e, hints) -> env_hintdef env (DecH (id, hints) $ d.at)
   | RuleD _ | DefD _ | SepD -> ()
   | HintD hd -> env_hintdef env hd
 
@@ -125,8 +127,6 @@ let rec has_nl = function
   | [] -> false
   | Nl::_ -> true
   | _::xs -> has_nl xs
-
-let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
 
 let rec concat_map_nl sep br f = function
   | [] -> ""
@@ -164,23 +164,165 @@ let rec fuse_exp e deep =
   | _ -> e
 
 
-(* Identifiers *)
+(* Show expansions *)
 
-let render_expand_fwd = ref (fun _ -> assert false)
+exception Arity_mismatch
+
+let render_exp_fwd = ref (fun _ -> assert false)
+let render_arg_fwd = ref (fun _ -> assert false)
+let render_args_fwd = ref (fun _ -> assert false)
+
+let rec expand_iter args iter =
+  match iter with
+  | Opt | List | List1 -> iter
+  | ListN (e, id_opt) -> ListN (expand_exp args e, id_opt)
+
+and expand_exp args e =
+  (match e.it with
+  | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE -> e.it
+  | VarE (id, args') -> VarE (id, List.map (expand_arg args) args')
+  | UnE (op, e) -> UnE (op, expand_exp args e)
+  | BinE (e1, op, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    BinE (e1', op, e2')
+  | CmpE (e1, op, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CmpE (e1', op, e2')
+  | SeqE es -> SeqE (List.map (expand_exp args) es)
+  | IdxE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    IdxE (e1', e2')
+  | SliceE (e1, e2, e3) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    let e3' = expand_exp args e3 in
+    SliceE (e1', e2', e3')
+  | UpdE (e1, p, e2) ->
+    let e1' = expand_exp args e1 in
+    let p' = expand_path args p in
+    let e2' = expand_exp args e2 in
+    UpdE (e1', p', e2')
+  | ExtE (e1, p, e2) ->
+    let e1' = expand_exp args e1 in
+    let p' = expand_path args p in
+    let e2' = expand_exp args e2 in
+    ExtE (e1', p', e2')
+  | StrE efs -> StrE (map_nl_list (expand_expfield args) efs)
+  | DotE (e, atom) -> DotE (expand_exp args e, atom)
+  | CommaE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CommaE (e1', e2')
+  | CompE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    CompE (e1', e2')
+  | LenE e -> LenE (expand_exp args e)
+  | SizeE id -> SizeE id
+  | ParenE (e, b) -> ParenE (expand_exp args e, b)
+  | TupE es -> TupE (List.map (expand_exp args) es)
+  | InfixE (e1, atom, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    InfixE (e1', atom, e2')
+  | BrackE (l, e1, r) -> BrackE (l, expand_exp args e1, r)
+  | CallE (id, args') -> CallE (id, List.map (expand_arg args) args')
+  | IterE (e1, iter) ->
+    let e1' = expand_exp args e1 in
+    let iter' = expand_iter args iter in
+    IterE (e1', iter')
+  | TypE (e1, t) -> TypE (expand_exp args e1, t)
+  | HoleE (u, `One) ->
+    (match !args with
+    | [] -> raise Arity_mismatch
+    | arg::args' -> args := args';
+      if u = `Use then CallE ("" $ e.at, [arg]) else SeqE []
+    )
+  | HoleE (u, `All) ->
+    let args' = !args in args := [];
+    if u = `Use then CallE ("" $ e.at, args') else SeqE []
+  | FuseE (e1, e2) ->
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    FuseE (e1', e2')
+  ) $ e.at
+
+and expand_expfield args (atom, e) =
+  (atom, expand_exp args e)
+
+and expand_path args p =
+  (match p.it with
+  | RootP -> RootP
+  | IdxP (p1, e1) ->
+    let p1' = expand_path args p1 in
+    let e1' = expand_exp args e1 in
+    IdxP (p1', e1')
+  | SliceP (p1, e1, e2) ->
+    let p1' = expand_path args p1 in
+    let e1' = expand_exp args e1 in
+    let e2' = expand_exp args e2 in
+    SliceP (p1', e1', e2')
+  | DotP (p1, atom) -> DotP (expand_path args p1, atom)
+  ) $ p.at
+
+and expand_arg args a =
+  ref (match !(a.it) with
+  | ExpA e -> ExpA (expand_exp args e)
+  | a' -> a'
+  ) $ a.at
+
+
+let render_expand render env (show : exp list Map.t ref) id args f =
+  match Map.find_opt id.it !show with
+  | None -> f ()
+  | Some showexps ->
+    let rec attempt = function
+      | [] -> f ()
+      | showexp::showexps' ->
+        try
+          let rargs = ref args in
+          let e = expand_exp rargs showexp in
+          if !rargs <> [] then raise Arity_mismatch;
+          (* Avoid cyclic expansion *)
+          show := Map.remove id.it !show;
+          Fun.protect (fun () -> render env e)
+            ~finally:(fun () -> show := Map.add id.it showexps !show)
+        with Arity_mismatch -> attempt showexps'
+          (* HACK: Ignore arity mismatches, such that overloading notation works,
+           * e.g., using CONST for both instruction and relation. *)
+    in attempt showexps
+
+let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
+let chop_sub id = String.sub id 0 (String.length id - 1)
+
+let render_apply render_id render_exp env show id args =
+  render_expand render_exp env show id args
+    (fun () ->
+      match args with
+      | arg::args when ends_sub id.it ->
+        (* Handle subscripting *)
+        "{" ^ render_id env (chop_sub id.it $ id.at) ^
+        "}_{" ^ !render_arg_fwd env arg ^ "}" ^ !render_args_fwd env args
+      | args -> render_id env id ^ !render_args_fwd env args
+    )
+
+
+(* Identifiers *)
 
 let is_digit c = '0' <= c && c <= '9'
 let is_upper c = 'A' <= c && c <= 'Z'
 let lower = String.lowercase_ascii
 
-let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
-let chop_sub id = String.sub id 0 (String.length id - 1)
 let rec chop_tick id =
   if id.[String.length id - 1] <> '\'' then id else
   chop_tick (String.sub id 0 (String.length id - 1))
 
 let rec chop_sub_exp e =
   match e.it with
-  | VarE id when ends_sub id.it -> Some (VarE (chop_sub id.it $ id.at) $ e.at)
+  | VarE (id, []) when ends_sub id.it -> Some (VarE (chop_sub id.it $ id.at, []) $ e.at)
   | AtomE (Atom "_") -> Some (SeqE [] $ e.at)
   | AtomE (Atom id) when ends_sub id -> Some (AtomE (Atom (chop_sub id)) $ e.at)
   | FuseE (e1, e2) ->
@@ -223,7 +365,8 @@ let rec render_id_sub env style show at = function
     let s' = String.sub s 0 i in
     let s'' =
       if String.for_all is_digit s' then s' else
-      !render_expand_fwd env show (s' $ at) [] (fun () -> render_id' env style s')
+      render_expand !render_exp_fwd env show
+        (s' $ at) [] (fun () -> render_id' env style s')
     in
     "{" ^ (if i = n then s'' else s'' ^ String.sub s i (n - i)) ^ "}" ^
     (if ss = [] then "" else "_{" ^ render_id_sub env `Var env.show_var at ss ^ "}")
@@ -332,125 +475,9 @@ let render_dots = function
   | NoDots -> []
 
 
-(* Show expansions *)
-
-exception Arity_mismatch
-
-let rec expand_iter args iter =
-  match iter with
-  | Opt | List | List1 -> iter
-  | ListN (e, id_opt) -> ListN (expand_exp args e, id_opt)
-
-and expand_exp args e = expand_exp' args e.it $ e.at
-and expand_exp' args e' =
-  match e' with
-  | VarE _ | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE -> e'
-  | UnE (op, e) -> UnE (op, expand_exp args e)
-  | BinE (e1, op, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    BinE (e1', op, e2')
-  | CmpE (e1, op, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    CmpE (e1', op, e2')
-  | SeqE es -> SeqE (List.map (expand_exp args) es)
-  | IdxE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    IdxE (e1', e2')
-  | SliceE (e1, e2, e3) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    let e3' = expand_exp args e3 in
-    SliceE (e1', e2', e3')
-  | UpdE (e1, p, e2) ->
-    let e1' = expand_exp args e1 in
-    let p' = expand_path args p in
-    let e2' = expand_exp args e2 in
-    UpdE (e1', p', e2')
-  | ExtE (e1, p, e2) ->
-    let e1' = expand_exp args e1 in
-    let p' = expand_path args p in
-    let e2' = expand_exp args e2 in
-    ExtE (e1', p', e2')
-  | StrE efs -> StrE (map_nl_list (expand_expfield args) efs)
-  | DotE (e, atom) -> DotE (expand_exp args e, atom)
-  | CommaE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    CommaE (e1', e2')
-  | CompE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    CompE (e1', e2')
-  | LenE e -> LenE (expand_exp args e)
-  | SizeE id -> SizeE id
-  | ParenE (e, b) -> ParenE (expand_exp args e, b)
-  | TupE es -> TupE (List.map (expand_exp args) es)
-  | InfixE (e1, atom, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    InfixE (e1', atom, e2')
-  | BrackE (l, e1, r) -> BrackE (l, expand_exp args e1, r)
-  | CallE (id, e1) -> CallE (id, expand_exp args e1)
-  | IterE (e1, iter) ->
-    let e1' = expand_exp args e1 in
-    let iter' = expand_iter args iter in
-    IterE (e1', iter')
-  | HoleE false ->
-    (match !args with
-    | [] -> raise Arity_mismatch
-    | arg::args' -> args := args'; arg.it
-    )
-  | HoleE true -> let es = !args in args := []; SeqE es
-  | FuseE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    FuseE (e1', e2')
-
-and expand_expfield args (atom, e) = (atom, expand_exp args e)
-
-and expand_path args p = expand_path' args p.it $ p.at
-and expand_path' args p' =
-  match p' with
-  | RootP -> RootP
-  | IdxP (p1, e1) ->
-    let p1' = expand_path args p1 in
-    let e1' = expand_exp args e1 in
-    IdxP (p1', e1')
-  | SliceP (p1, e1, e2) ->
-    let p1' = expand_path args p1 in
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    SliceP (p1', e1', e2')
-  | DotP (p1, atom) -> DotP (expand_path args p1, atom)
-
-
-and render_expand env (show : exp list Map.t ref) id args f =
-  match Map.find_opt id.it !show with
-  | None -> f ()
-  | Some showexps ->
-    let rec attempt = function
-      | [] -> f ()
-      | showexp::showexps' ->
-        try
-          let rargs = ref args in
-          let e = expand_exp rargs showexp in
-          if !rargs <> [] then raise Arity_mismatch;
-          (* Avoid cyclic expansion *)
-          show := Map.remove id.it !show;
-          Fun.protect (fun () -> render_exp env e)
-            ~finally:(fun () -> show := Map.add id.it showexps !show)
-        with Arity_mismatch -> attempt showexps'
-          (* HACK: Ignore arity mismatches, such that overloading notation works,
-           * e.g., using CONST for both instruction and relation. *)
-    in attempt showexps
-
-
 (* Iteration *)
 
-and render_iter env = function
+let rec render_iter env = function
   | Opt -> "^?"
   | List -> "^\\ast"
   | List1 -> "^{+}"
@@ -461,27 +488,6 @@ and render_iter env = function
 
 
 (* Types *)
-
-and exp_of_typ t = exp_of_typ' t.it $ t.at
-and exp_of_typ' = function
-  | VarT id -> VarE id
-  | BoolT -> VarE ("bool" $ no_region)
-  | NumT NatT -> VarE ("nat" $ no_region)
-  | NumT IntT -> VarE ("int" $ no_region)
-  | NumT RatT -> VarE ("rat" $ no_region)
-  | NumT RealT -> VarE ("real" $ no_region)
-  | TextT -> VarE ("text" $ no_region)
-  | ParenT t -> ParenE (exp_of_typ t, false)
-  | TupT ts -> TupE (List.map exp_of_typ ts)
-  | IterT (t1, iter) -> IterE (exp_of_typ t1, iter)
-  | StrT tfs -> StrE (map_nl_list expfield_of_typfield tfs)
-  | CaseT _ | RangeT _ -> assert false
-  | AtomT atom -> AtomE atom
-  | SeqT ts -> SeqE (List.map exp_of_typ ts)
-  | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
-  | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
-
-and expfield_of_typfield (atom, (t, _prems), _) = (atom, exp_of_typ t)
 
 and render_typ env t =
   match t.it with
@@ -517,19 +523,14 @@ and render_typenum env (e, eo) =
 
 (* Expressions *)
 
-and untup_exp e =
-  match e.it with
-  | TupE es -> es
-  | ParenE (e1, _) -> [e1]
-  | _ -> [e]
-
 and render_exp env e =
   (*
   Printf.printf "[render %s] %s\n%!"
     (string_of_region e.at) (El.Print.string_of_exp e);
   *)
   match e.it with
-  | VarE id -> render_varid env id
+  | VarE (id, args) ->
+    render_apply render_varid render_exp env env.show_syn id args
   | BoolE b -> render_atom env (Atom (string_of_bool b))
   | NatE n -> string_of_int n
   | HexE n ->
@@ -554,17 +555,18 @@ and render_exp env e =
     render_exp env e1 ^ space render_cmpop op ^ render_exp env e2
   | EpsE -> "\\epsilon"
   | AtomE atom ->
-    render_expand env env.show_case (El.Print.string_of_atom atom $ e.at) []
+    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ e.at) []
       (fun () -> render_atom env atom)
   | SeqE ({it = AtomE atom; at; _}::es) ->
-    render_expand env env.show_case (El.Print.string_of_atom atom $ at) es
+    let args = List.map arg_of_exp es in
+    render_expand render_exp env env.show_case (El.Print.string_of_atom atom $ at) args
       (fun () ->
         match atom, es with
         | Atom id, e1::es2 when ends_sub id ->
           (* Handle subscripting *)
-          "{" ^ render_atomid env (chop_sub id) ^ "}_{" ^
-            render_exps "," env (as_tup_exp e1) ^ "}" ^
-            (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
+          "{" ^ render_atomid env (chop_sub id) ^
+          "}_{" ^ render_exps "," env (as_tup_exp e1) ^ "}" ^
+          (if es2 = [] then "" else "\\," ^ render_exps "~" env es2)
         | _ ->
           let s1 = render_atom env atom in
           let s2 = render_exps "~" env es in
@@ -607,25 +609,14 @@ and render_exp env e =
     render_exp env e1 ^ space (render_atom env) atom ^ render_exp env e2
   | BrackE (l, e1, r) ->
     render_atom env l ^ render_exp env e1 ^ render_atom env r
-  | CallE (id, e1) ->
-    render_expand env env.show_def id (untup_exp e1)
-      (fun () ->
-        if not (ends_sub id.it) then
-          match e1.it with
-          | TupE [] -> render_defid env id
-          | _ -> render_defid env id ^ render_exp env e1
-        else
-          (* Handle subscripting *)
-          "{" ^ render_defid env (chop_sub id.it $ id.at) ^
-          let e1', e2' =
-            match untup_exp e1 with
-            | [] -> SeqE [] $ e1.at, SeqE [] $ e1.at
-            | [e1'] -> e1', SeqE [] $ e1.at
-            | e1'::es -> e1', TupE es $ e1.at
-          in
-          "}_{" ^ render_exps "," env (as_tup_exp e1') ^ "}" ^ render_exp env e2'
-      )
+  | CallE (id, [arg]) when id.it = "" -> (* expansion result only *)
+    render_arg env arg
+  | CallE (id, args) when id.it = "" ->  (* expansion result only *)
+    render_args env args
+  | CallE (id, args) ->
+    render_apply render_defid render_exp env env.show_def id args
   | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
+  | TypE (e1, _) -> render_exp env e1
   | FuseE (e1, e2) ->
     (* Hack for printing t.LOADn_sx *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
@@ -649,7 +640,7 @@ and render_path env p =
     render_path env p1 ^ "." ^ render_fieldname env atom p.at
 
 and render_fieldname env atom at =
-  render_expand env env.show_field (El.Print.string_of_atom atom $ at) []
+  render_expand render_exp env env.show_field (El.Print.string_of_atom atom $ at) []
     (fun () -> render_atom env atom)
 
 
@@ -680,19 +671,13 @@ and render_conditions env tabs = function
 
 (* Grammars *)
 
-let rec render_sym env g =
-  match g.it with
-  | VarG (id, []) -> render_gramid env id
-  | VarG (id, g::gs) ->
-    if not (ends_sub id.it) then
-      render_gramid env id ^
-        "(" ^ concat ", " (List.map (render_sym env) (g::gs)) ^ ")"
-    else
-      (* Handle subscripting *)
-      "{" ^ render_gramid env id ^ "}_{" ^ render_sym env g ^ "}" ^
-        ( if gs = [] then "" else
-          "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")" )
+and render_exp_as_sym env e =
+  render_sym env (sym_of_exp e)
 
+and render_sym env g =
+  match g.it with
+  | VarG (id, args) ->
+    render_apply render_gramid render_exp_as_sym env env.show_gram id args
   | NatG n -> string_of_int n
   | HexG n ->
     let fmt : (_, _, _) format =
@@ -716,17 +701,17 @@ let rec render_sym env g =
   | TupG gs -> "(" ^ concat ", " (List.map (render_sym env) gs) ^ ")"
   | IterG (g1, iter) -> "{" ^ render_sym env g1 ^ render_iter env iter ^ "}"
   | ArithG e -> render_exp env e
-  | AttrG (g1, e) -> render_exp env e ^ "{:}" ^ render_sym env g1
+  | AttrG (e, g1) -> render_exp env e ^ "{:}" ^ render_sym env g1
 
 and render_syms sep env gs =
   altern_map_nl sep " \\\\ &&&" (render_sym env) gs
 
-let render_prod env prod =
+and render_prod env prod =
   let (g, e, prems) = prod.it in
   render_sym env g ^ " &\\Rightarrow& " ^ render_exp env e ^
     if prems = [] then "" else render_conditions env "&&&&&&" prems
 
-let render_gram env gram =
+and render_gram env gram =
   let (dots1, prods, dots2) = gram.it in
   altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
     ( render_dots dots1 @
@@ -737,16 +722,30 @@ let render_gram env gram =
 
 (* Definitions *)
 
-let () = render_expand_fwd := render_expand
+and render_arg env arg =
+  match !(arg.it) with
+  | ExpA e -> render_exp env e
+  | SynA t -> render_typ env t
+  | GramA g -> render_sym env g
+
+and render_args env args =
+  match List.map (render_arg env) args with
+  | [] -> ""
+  | ss -> "(" ^ concat ", " ss ^ ")"
 
 let render_param env p =
   match p.it with
-  | VarP id -> render_varid env id
-  | GramP (id1, _id2, _iters) -> render_gramid env id1
+  | ExpP (id, t) -> if id.it = "" then render_typ env t else render_varid env id
+  | SynP id -> render_synid env id
+  | GramP (id, _t) -> render_gramid env id
 
 let render_params env = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map (render_param env) ps) ^ ")"
+
+let () = render_exp_fwd := render_exp
+let () = render_arg_fwd := render_arg
+let () = render_args_fwd := render_args
 
 
 let merge_typ t1 t2 =
@@ -762,9 +761,9 @@ let merge_gram gram1 gram2 =
 
 let rec merge_syndefs = function
   | [] -> []
-  | {it = SynD (id1, _, t1, _); at; _}::
-    {it = SynD (id2, _, t2, _); _}::ds when id1.it = id2.it ->
-    let d' = SynD (id1, "" $ no_region, merge_typ t1 t2, []) $ at in
+  | {it = SynD (id1, _, ps, t1, _); at; _}::
+    {it = SynD (id2, _, _ps, t2, _); _}::ds when id1.it = id2.it ->
+    let d' = SynD (id1, "" $ no_region, ps, merge_typ t1 t2, []) $ at in
     merge_syndefs (d'::ds)
   | d::ds ->
     d :: merge_syndefs ds
@@ -783,14 +782,21 @@ let string_of_desc = function
   | Some ({at; _}::_) -> error at "malformed description hint"
   | _ -> None
 
+let render_syndeco env id =
+  match env.deco_syn, string_of_desc (Map.find_opt id.it !(env.desc_syn)) with
+  | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
+  | _ -> "& "
+
 let render_syndef env d =
   match d.it with
-  | SynD (id1, _id2, t, _) ->
-    (match env.deco_syn, string_of_desc (Map.find_opt id1.it !(env.desc_syn)) with
-    | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
-    | _ -> "& "
-    ) ^
-    render_synid env id1 ^ " &::=& " ^ render_typ env t
+  | SynD (id1, _id2, p::ps, t, _) when ends_sub id1.it ->
+    (* Handle subscripting *)
+    render_syndeco env id1 ^
+    "{" ^ render_synid env id1 ^ "}_{" ^ render_param env p ^ "}" ^
+      render_params env ps ^ " &::=& " ^ render_typ env t
+  | SynD (id1, _id2, ps, t, _) ->
+    render_syndeco env id1 ^
+    render_synid env id1 ^ render_params env ps ^ " &::=& " ^ render_typ env t
   | _ -> assert false
 
 let render_gramdef env d =
