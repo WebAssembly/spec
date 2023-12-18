@@ -46,23 +46,33 @@ def $dim(sh) : nat
 def $lanes(sh, cv) : nat*
 def $concat(i*, j) : nat                            hint(show % %)
 def $shapeof(vu, vc) : shape                        hint(show %X%)
-def $extend(i, j, sx?, n*) : c_numtype             hint(show $ext_((%,%))^%(%))
-def $imul(sh, c, c) : c_numtype*
+def $extend(i, j, sx?, n) : c_numtype             hint(show $ext_((%,%))^%(%))
+def $extendn(i, j, n) : c_numtype             hint(show $ext_((%,%))^%(%))
+def $imul(sh, c, c) : c_numtype
+def $ishape(vc) : vecunit
 
 def $concat_seq(i*, j*) : nat*
 
-;; TODO Fix \/ to /\
+def $concat_seq(i*, j*) = i* j*
+
 def $alltrue(nat*) : bool
 
 def $alltrue(epsilon) = true
-def $alltrue(i i'*) = $alltrue(i'*) \/ (i =/= 0) 
+def $alltrue(i i'*) = true
+    -- if $alltrue(i'*) = true
+    -- if i =/= 0
+def $alltrue(i*) = false
+    -- otherwise
 
 def $bool_to_num(bool) : nat
 
-def $ilt_s(nat, nat*) : nat*
+def $bool_to_num(bool) =  1 -- if bool = true
+def $bool_to_num(bool) =  0 -- otherwise
+
+def $ilt_s(nat, nat, nat) : nat
 def $ibits(nat, nat) : nat*
 
-def $narrow(nat, nat, sx, nat*) : nat*
+def $narrow(nat, nat, sx, nat) : nat
 
 def $vvunop(vvunop, vectype, cv) : c_vectype                hint(show %#_%#((%)))
 def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype*         hint(show %#_%#(%, %))

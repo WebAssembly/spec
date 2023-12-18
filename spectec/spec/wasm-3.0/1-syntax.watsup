@@ -450,6 +450,11 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | DATA.DROP dataidx
   | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
   | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
+  | VLOAD veccount veccount sx memidx memop
+  | VLOAD_SPLAT veccount memidx memop
+  | VLOAD_ZERO veccount memidx memop
+  | VLOAD_LANE veccount memidx memop memidx
+  | VSTORE veccount memidx memop memidx
 
 syntax expr hint(desc "expression") =
   instr*
