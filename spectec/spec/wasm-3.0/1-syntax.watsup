@@ -358,7 +358,7 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
   | ...
 
 syntax instr/vector hint(desc "vector instruction") = ...
-  | VVCONST vectype c_vectype                                       hint(show %.CONST %)
+  | VVCONST vectype c_vectype                                        hint(show %.CONST %)
   | VVUNOP vectype unop_vvectype                                     hint(show %.%)
   | VVBINOP vectype binop_vvectype                                   hint(show %.%)
   | VVTERNOP vectype ternop_vvectype                                 hint(show %.%)
@@ -366,21 +366,21 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | I8X16.SWIZZLE
   | I8X16.SHUFFLE n*
   | SPLAT shape                                                     hint(show %.SPLAT)
-  | EXTRACT_LANE lanetype lanesize sx? idx                           hint(show %X%.EXTRACT#_#LANE#_#% %)
+  | EXTRACT_LANE shape sx? idx                                      hint(show %X%.EXTRACT#_#LANE#_#% %)
   | REPLACE_LANE shape idx                                          hint(show %.REPLACE#_#LANE %)
-  | VUNOP vectype shape unop_vectype
-  | VBINOP vectype shape binop_vectype
-  | VRELOP lanetype lanesize relop_vectype
-  | VISHIFTOP lanetype lanesize shiftop_vectype                      hint(show %X%.%)
+  | VUNOP shape unop_vectype
+  | VBINOP shape binop_vectype
+  | VRELOP shape relop_vectype
+  | VISHIFTOP shape shiftop_vectype
   | ALL_TRUE shape                                                  hint(show %.ALL_TRUE)
-  | BITMASK lanetype lanesize
-  | NARROW lanetype lanesize lanetype lanesize sx
-  | VCVTOP lanetype lanesize cvtop_vectype lanetype lanesize sx
-  | VCVTOP_HALF lanetype lanesize cvtop_vectype half lanetype lanesize sx?        hint(show %X%.%#_#%#_#%X%#_#%)
-  | VCVTOP_ZERO lanetype lanesize cvtop_vectype lanetype lanesize sx
-  | EXTMUL_HALF lanetype lanesize half lanetype lanesize sx
+  | BITMASK shape
+  | NARROW shape shape sx
+  | VCVTOP shape cvtop_vectype shape sx
+  | VCVTOP_HALF shape cvtop_vectype half shape sx?        hint(show %X%.%#_#%#_#%X%#_#%)
+  | VCVTOP_ZERO shape cvtop_vectype shape sx
+  | EXTMUL_HALF shape half shape sx
   | I32X4.DOT_I16X8_S
-  | EXTADD_PAIRWISE lanetype lanesize lanetype lanesize sx
+  | EXTADD_PAIRWISE shape shape sx
   | ...
   
 syntax instr/reference hint(desc "reference instruction") = ...
