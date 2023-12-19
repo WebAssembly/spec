@@ -51,8 +51,17 @@ def $unpacked(sh) : numtype
 def $dim(sh) : nat
 def $dim(sh) = lns
     -- if sh = SHAPE lnt lns
-def $ishape(lns) : lanetype
 def $halfop(hf, i, j) : nat
+
+def $ishape(nat) : lanetype
+def $ishape(nat) = I8
+    -- if nat = 8
+def $ishape(nat) = I16
+    -- if nat = 16
+def $ishape(nat) = I32
+    -- if nat = 32
+def $ishape(nat) = I64
+    -- if nat = 64
 
 def $forall(bool*) : bool
 def $forall(epsilon) = true

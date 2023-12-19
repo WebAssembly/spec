@@ -21,6 +21,7 @@ syntax sN hint(desc "signed integer") = -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(
 syntax iN hint(desc "integer") = uN
 
 ;; TODO: use u(N), s(N)
+syntax u8 hint(desc "8-bit integer") = 0 | ... | 2^8-1
 syntax u31 hint(desc "31-bit integer") = 0 | ... | 2^31-1
 syntax u32 hint(desc "32-bit integer") = 0 | ... | 2^32-1
 syntax u64 hint(desc "64-bit integer") = 0 | ... | 2^64-1
@@ -70,6 +71,7 @@ var q : fN
 ;;
 
 syntax idx hint(desc "index") = u32
+syntax laneidx hint(desc "index") = u8
 
 syntax typeidx hint(desc "type index") = idx
 syntax funcidx hint(desc "function index") = idx
@@ -366,8 +368,8 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | I8X16.SWIZZLE
   | I8X16.SHUFFLE n*
   | SPLAT shape                                                     hint(show %.SPLAT)
-  | EXTRACT_LANE shape sx? idx                                      hint(show %X%.EXTRACT#_#LANE#_#% %)
-  | REPLACE_LANE shape idx                                          hint(show %.REPLACE#_#LANE %)
+  | EXTRACT_LANE shape sx? laneidx                                  hint(show %X%.EXTRACT#_#LANE#_#% %)
+  | REPLACE_LANE shape laneidx                                      hint(show %.REPLACE#_#LANE %)
   | VUNOP shape unop_vectype
   | VBINOP shape binop_vectype
   | VRELOP shape relop_vectype
@@ -447,11 +449,11 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | DATA.DROP dataidx
   | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
   | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
-  | VLOAD lanesize lanesize sx memidx memop
-  | VLOAD_SPLAT lanesize memidx memop
-  | VLOAD_ZERO lanesize memidx memop
-  | VLOAD_LANE lanesize memidx memop memidx
-  | VSTORE lanesize memidx memop memidx
+  | VLOAD n lanesize sx memidx memop
+  | VLOAD_SPLAT n memidx memop
+  | VLOAD_ZERO n memidx memop
+  | VLOAD_LANE n memidx memop laneidx
+  | VSTORE n memidx memop laneidx
 
 syntax expr hint(desc "expression") =
   instr*
