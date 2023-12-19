@@ -40,7 +40,8 @@ def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
 def $ine_128(cv, cv) : nat
-def $imul(sh, c, c) : c_numtype
+def $imul(i, c, c) : c_numtype
+def $iadd(i, c, c) : c_numtype
 def $lanes(sh, cv) : nat*
 def $narrow(nat, nat, sx, nat) : nat
 def $ibits(nat, nat) : nat*

@@ -379,6 +379,7 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VCVTOP_HALF vecunit veccount cvtop_vectype half vecunit veccount sx?        hint(show %X%.%#_#%#_#%X%#_#%)
   | VCVTOP_ZERO vecunit veccount cvtop_vectype vecunit veccount sx
   | EXTMUL_HALF vecunit veccount half vecunit veccount sx
+  | I32X4.DOT_I16X8_S
   | EXTADD_PAIRWISE vecunit veccount vecunit veccount sx
   | ...
   
