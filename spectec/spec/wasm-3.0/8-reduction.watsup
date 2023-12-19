@@ -284,9 +284,9 @@ rule Step_pure/splat:
 
 
 rule Step_pure/extract_lane:
-  (VVCONST V128 c_1) (EXTRACT_LANE vu vc sx? idx) ~> (CONST nt c_2)
-  -- if nt = $unpacked(SHAPE vu vc)
-  -- if c_2 = $extend($storagesize(vu), $storagesize(nt), sx?, $lanes(SHAPE vu vc, c_1)[idx])
+  (VVCONST V128 c_1) (EXTRACT_LANE lnt lnc sx? idx) ~> (CONST nt c_2)
+  -- if nt = $unpacked(SHAPE lnt lnc)
+  -- if c_2 = $extend($storagesize(lnt), $storagesize(nt), sx?, $lanes(SHAPE lnt lnc, c_1)[idx])
 
 
 rule Step_pure/replace_lane:
@@ -310,15 +310,15 @@ rule Step_pure/vbinop-trap:
 
 
 rule Step_pure/vrelop:
-  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (VRELOP vu vc vrelop)  ~>  (VVCONST V128 cv)
-  -- if sh = SHAPE vu vc ;; TODO
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (VRELOP lnt lnc vrelop)  ~>  (VVCONST V128 cv)
+  -- if sh = SHAPE lnt lnc ;; TODO
 
 
 rule Step_pure/vishiftop:
-  (VVCONST V128 c_1) (CONST I32 n) (VISHIFTOP vu vc vishiftop) ~> (VVCONST V128 c)
-  -- if sh = SHAPE vu vc
+  (VVCONST V128 c_1) (CONST I32 n) (VISHIFTOP lnt lnc vishiftop) ~> (VVCONST V128 c)
+  -- if sh = SHAPE lnt lnc
   -- if i* = $lanes(sh, c_1)
-  -- if $lanes(sh, c) = $vishiftop(vishiftop, vu, i*, n^vc)
+  -- if $lanes(sh, c) = $vishiftop(vishiftop, lnt, i*, n^lnc)
 
 
 rule Step_pure/all_true:
@@ -328,37 +328,37 @@ rule Step_pure/all_true:
 
 
 rule Step_pure/bitmask:
-  (VVCONST V128 c) (BITMASK vu vc) ~> (CONST I32 i)
-  -- if i_1^vc = $lanes(SHAPE vu vc, c)
-  -- if $ibits(32, i) = $ilt_s($storagesize(vu), i_1, 0)^vc
+  (VVCONST V128 c) (BITMASK lnt lnc) ~> (CONST I32 i)
+  -- if i_1^lnc = $lanes(SHAPE lnt lnc, c)
+  -- if $ibits(32, i) = $ilt_s($storagesize(lnt), i_1, 0)^lnc
 
 
 rule Step_pure/narrow:
-  (VVCONST V128 c_1) (VVCONST V128 c_2) (NARROW vu_2 vc_2 vu_1 vc_1 sx) ~> (VVCONST V128 c)
-  -- if i_1^vc_1 = $lanes(SHAPE vu_1 vc_1, c_1)
-  -- if i_2^vc_1 = $lanes(SHAPE vu_1 vc_1, c_2)
-  -- if n_1^vc_1 = $narrow($storagesize(vu_1), $storagesize(vu_2), sx, i_1)^vc_1
-  -- if n_2^vc_1 = $narrow($storagesize(vu_1), $storagesize(vu_2), sx, i_2)^vc_1
-  -- if $lanes((SHAPE vu_2 vc_2), c) = n_1^vc_1 n_2^vc_1
+  (VVCONST V128 c_1) (VVCONST V128 c_2) (NARROW lnt_2 lnc_2 lnt_1 lnc_1 sx) ~> (VVCONST V128 c)
+  -- if i_1^lnc_1 = $lanes(SHAPE lnt_1 lnc_1, c_1)
+  -- if i_2^lnc_1 = $lanes(SHAPE lnt_1 lnc_1, c_2)
+  -- if n_1^lnc_1 = $narrow($storagesize(lnt_1), $storagesize(lnt_2), sx, i_1)^lnc_1
+  -- if n_2^lnc_1 = $narrow($storagesize(lnt_1), $storagesize(lnt_2), sx, i_2)^lnc_1
+  -- if $lanes((SHAPE lnt_2 lnc_2), c) = n_1^lnc_1 n_2^lnc_1
 
 
 rule Step_pure/vcvtop:
-  (VVCONST V128 c_1) (VCVTOP vu_2 vc_2 vcvtop vu_1 vc_1 sx) ~> (VVCONST V128 c)
-  -- if sh = SHAPE vu_2 vc_2
-  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(vu_1), $storagesize(vu_2), sx, $lanes(SHAPE vu_1 vc_1, c_1))
+  (VVCONST V128 c_1) (VCVTOP lnt_2 lnc_2 vcvtop lnt_1 lnc_1 sx) ~> (VVCONST V128 c)
+  -- if sh = SHAPE lnt_2 lnc_2
+  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, $lanes(SHAPE lnt_1 lnc_1, c_1))
 
 
 rule Step_pure/vcvtop_half:
-  (VVCONST V128 c_1) (VCVTOP_HALF vu_2 vc_2 vcvtop hf vu_1 vc_1 sx?) ~> (VVCONST V128 c)
-  -- if i* = $lanes(SHAPE vu_1 vc_1, c_1)[$halfop(hf, 0, vc_2) : vc_2]
-  -- if sh = SHAPE vu_2 vc_2
-  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(vu_1), $storagesize(vu_2), sx?, i*)
+  (VVCONST V128 c_1) (VCVTOP_HALF lnt_2 lnc_2 vcvtop hf lnt_1 lnc_1 sx?) ~> (VVCONST V128 c)
+  -- if i* = $lanes(SHAPE lnt_1 lnc_1, c_1)[$halfop(hf, 0, lnc_2) : lnc_2]
+  -- if sh = SHAPE lnt_2 lnc_2
+  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i*)
 
 
 rule Step_pure/vcvtop_zero:
-  (VVCONST V128 c_1) (VCVTOP_ZERO vu_2 vc_2 vcvtop vu_1 vc_1 sx) ~> (VVCONST V128 c)
-  -- if sh = SHAPE vu_2 vc_2
-  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(vu_1), $storagesize(vu_2), sx, $lanes(SHAPE vu_1 vc_1, c_1)) 0^vc_1
+  (VVCONST V128 c_1) (VCVTOP_ZERO lnt_2 lnc_2 vcvtop lnt_1 lnc_1 sx) ~> (VVCONST V128 c)
+  -- if sh = SHAPE lnt_2 lnc_2
+  -- if $lanes(sh, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, $lanes(SHAPE lnt_1 lnc_1, c_1)) 0^lnc_1
 
 
 rule Step_pure/i32x4.dot_i16x8_s:
@@ -372,19 +372,19 @@ rule Step_pure/i32x4.dot_i16x8_s:
 
 
 rule Step_pure/extmul_half:
-  (VVCONST V128 c_1) (VVCONST V128 c_2) (EXTMUL_HALF vu_2 vc_2 hf vu_1 vc_1 sx) ~> (VVCONST V128 c)
-  -- if i^k = $lanes($shapeof(vu_1, vc_1), c_1)[$halfop(hf, 0, vc_2) : vc_2]
-  -- if j^k = $lanes($shapeof(vu_1, vc_1), c_2)[$halfop(hf, 0, vc_2) : vc_2]
-  -- if sh = SHAPE vu_2 vc_2
-  -- if $lanes(sh, c) = $imul($dim(sh), $extend($storagesize(vu_1), $storagesize(vu_2), sx, i), $extend($storagesize(vu_1), $storagesize(vu_2), sx, j))^k
+  (VVCONST V128 c_1) (VVCONST V128 c_2) (EXTMUL_HALF lnt_2 lnc_2 hf lnt_1 lnc_1 sx) ~> (VVCONST V128 c)
+  -- if i^k = $lanes($shapeof(lnt_1, lnc_1), c_1)[$halfop(hf, 0, lnc_2) : lnc_2]
+  -- if j^k = $lanes($shapeof(lnt_1, lnc_1), c_2)[$halfop(hf, 0, lnc_2) : lnc_2]
+  -- if sh = SHAPE lnt_2 lnc_2
+  -- if $lanes(sh, c) = $imul($dim(sh), $extend($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $extend($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k
 
 
 rule Step_pure/extadd_pairwise:
-  (VVCONST V128 c_1) (VVCONST V128 c_2) (EXTADD_PAIRWISE vu_2 vc_2 vu_1 vc_1 sx) ~> (VVCONST V128 c)
-  -- if i^k = $lanes($shapeof(vu_1, vc_1), c_1)
-  -- if $concat_bytes((i_1 i_2)*) = $extend($storagesize(vu_1), $storagesize(vu_2), sx, i)^k
-  -- if j* = $iadd(vc_2, i_1, i_2)*
-  -- if sh = $shapeof(vu_2, vc_2)
+  (VVCONST V128 c_1) (VVCONST V128 c_2) (EXTADD_PAIRWISE lnt_2 lnc_2 lnt_1 lnc_1 sx) ~> (VVCONST V128 c)
+  -- if i^k = $lanes($shapeof(lnt_1, lnc_1), c_1)
+  -- if $concat_bytes((i_1 i_2)*) = $extend($storagesize(lnt_1), $storagesize(lnt_2), sx, i)^k
+  -- if j* = $iadd(lnc_2, i_1, i_2)*
+  -- if sh = $shapeof(lnt_2, lnc_2)
   -- if $lanes(sh, c) = j*
 
 ;; Reference instructions
@@ -818,41 +818,41 @@ rule Step_read/load-pack-val:
 
 
 rule Step_read/vload-oob:
-  z; (CONST I32 i) (VLOAD vc_1 vc_2 sx x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + vc_1 * vc_2/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VLOAD lnc_1 lnc_2 sx x mo)  ~>  TRAP
+  -- if $(i + mo.OFFSET + lnc_1 * lnc_2/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload-val:
-  z; (CONST I32 i) (VLOAD vc_1 vc_2 sx x mo)  ~>  (VVCONST V128 c)
-  -- if $ibytes(vc_1, m)^vc_2 = $mem(z, x).DATA[i + mo.OFFSET + k * vc_1/8 : vc_1/8]^(k<vc_2)
-  -- if $lanes($shapeof($ishape($(vc_1 * 2)), vc_2), c) = $extend(vc_1, vc_2, sx, m)^vc_2
+  z; (CONST I32 i) (VLOAD lnc_1 lnc_2 sx x mo)  ~>  (VVCONST V128 c)
+  -- if $ibytes(lnc_1, m)^lnc_2 = $mem(z, x).DATA[i + mo.OFFSET + k * lnc_1/8 : lnc_1/8]^(k<lnc_2)
+  -- if $lanes($shapeof($ishape($(lnc_1 * 2)), lnc_2), c) = $extend(lnc_1, lnc_2, sx, m)^lnc_2
 
 rule Step_read/vload_splat-oob:
-  z; (CONST I32 i) (VLOAD_SPLAT vc x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + vc/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VLOAD_SPLAT lnc x mo)  ~>  TRAP
+  -- if $(i + mo.OFFSET + lnc/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload_splat-val:
-  z; (CONST I32 i) (VLOAD_SPLAT vc x mo)  ~>  (VVCONST V128 c)
-  -- if $ibytes(vc, n) = $mem(z, x).DATA[i + mo.OFFSET : vc/8]
-  -- if l = $(128/vc)
-  -- if $lanes($shapeof($ishape(vc), l), c) = n^l
+  z; (CONST I32 i) (VLOAD_SPLAT lnc x mo)  ~>  (VVCONST V128 c)
+  -- if $ibytes(lnc, n) = $mem(z, x).DATA[i + mo.OFFSET : lnc/8]
+  -- if l = $(128/lnc)
+  -- if $lanes($shapeof($ishape(lnc), l), c) = n^l
 
 rule Step_read/vload_zero-oob:
-  z; (CONST I32 i) (VLOAD_ZERO vc x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + vc/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VLOAD_ZERO lnc x mo)  ~>  TRAP
+  -- if $(i + mo.OFFSET + lnc/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload_zero-val:
-  z; (CONST I32 i) (VLOAD_ZERO vc x mo)  ~>  (VVCONST V128 c)
-  -- if $ibytes(vc, n) = $mem(z, x).DATA[i + mo.OFFSET : vc/8]
-  -- if c = $extend(vc, 128, epsilon, n)
+  z; (CONST I32 i) (VLOAD_ZERO lnc x mo)  ~>  (VVCONST V128 c)
+  -- if $ibytes(lnc, n) = $mem(z, x).DATA[i + mo.OFFSET : lnc/8]
+  -- if c = $extend(lnc, 128, epsilon, n)
 
 rule Step_read/vload_lane-oob:
-  z; (CONST I32 i) (VVCONST V128 cv) (VLOAD_LANE vc x mo y)  ~>  TRAP
-  -- if $(i + mo.OFFSET + vc/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VVCONST V128 cv) (VLOAD_LANE lnc x mo y)  ~>  TRAP
+  -- if $(i + mo.OFFSET + lnc/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload_lane-val:
-  z; (CONST I32 i) (VVCONST V128 cv) (VLOAD_LANE vc x mo y)  ~>  (VVCONST V128 c)
-  -- if $ibytes(vc, n) = $mem(z, x).DATA[i + mo.OFFSET : vc/8]
-  -- if sh = $shapeof($ishape(vc), $(128/vc))
+  z; (CONST I32 i) (VVCONST V128 cv) (VLOAD_LANE lnc x mo y)  ~>  (VVCONST V128 c)
+  -- if $ibytes(lnc, n) = $mem(z, x).DATA[i + mo.OFFSET : lnc/8]
+  -- if sh = $shapeof($ishape(lnc), $(128/lnc))
   -- if $lanes(sh, c) = $lanes(sh, cv)[[y] = n]
 
 
@@ -874,12 +874,12 @@ rule Step/store-pack-val:
 
 
 rule Step/vstore-oob:
-  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE vc x mo y)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + vc) > |$mem(z, x).DATA|
+  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE lnc x mo y)  ~>  z; TRAP
+  -- if $(i + mo.OFFSET + lnc) > |$mem(z, x).DATA|
 
 rule Step/vstore-val:
-  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE vc x mo y)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $(n/8), b*); epsilon
-  -- if b* = $ibytes(vc, $lanes($shapeof($ishape(vc), $(128/vc)), cv)[y])
+  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE lnc x mo y)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $(n/8), b*); epsilon
+  -- if b* = $ibytes(lnc, $lanes($shapeof($ishape(lnc), $(128/lnc)), cv)[y])
 
 
 rule Step_read/memory.size:

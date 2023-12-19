@@ -49,11 +49,11 @@ def $ilt_s(nat, nat, nat) : nat
 
 def $unpacked(sh) : numtype
 def $dim(sh) : nat
-def $ishape(vc) : vecunit
+def $ishape(lnc) : lanetype
 def $halfop(hf, i, j) : nat
 
 def $pow(c, i) : nat
-def $shapeof(vu, vc) : shape                        hint(show %X%)
+def $shapeof(lnt, lnc) : shape                        hint(show %X%)
 def $extend(i, j, sx?, n) : c_numtype             hint(show $ext_((%,%))^%(%))
 
 def $forall(bool*) : bool
@@ -73,5 +73,5 @@ def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype          hint(show %#_%#(%, %
 def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype    hint(show %#_%#(%, %, %))
 def $vunop(vunop, sh, cv) : c_vectype
 def $vbinop(vbinop, sh, cv, cv) : c_vectype*
-def $vishiftop(vishiftop, vu, k*, n*) : c_vectype*   hint(show %#_%#(%, %))
+def $vishiftop(vishiftop, lnt, k*, n*) : c_vectype*   hint(show %#_%#(%, %))
 def $vcvtop(vcvtop, i, j, sx?, k*) : c_vectype*   hint(show %#_%#(%, %, %))
