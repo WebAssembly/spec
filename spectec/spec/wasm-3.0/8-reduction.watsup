@@ -328,7 +328,7 @@ rule Step_pure/vishiftop:
   (VVCONST V128 c_1) (CONST I32 n) (VISHIFTOP sh vishiftop) ~> (VVCONST V128 c)
   -- if sh = SHAPE lnt lns
   -- if i* = $lanes(sh, c_1)
-  -- if $lanes(sh, c) = $vishiftop(vishiftop, lnt, i*, n^lns)
+  -- if $lanes(sh, c) = $vishiftop(vishiftop, lnt, i, n)*
 
 
 rule Step_pure/all_true:
@@ -359,7 +359,8 @@ rule Step_pure/vcvtop:
   (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop sh_1 sx) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
-  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, $lanes(sh_1, c_1))
+  -- if i* = $lanes(sh_1, c_1)
+  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, i)*
 
 
 rule Step_pure/vcvtop_half:
@@ -367,14 +368,15 @@ rule Step_pure/vcvtop_half:
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i* = $lanes(sh_1, c_1)[$halfop(hf, 0, lns_2) : lns_2]
-  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i*)
+  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)*
 
 
 rule Step_pure/vcvtop_zero:
   (VVCONST V128 c_1) (VCVTOP_ZERO sh_2 vcvtop sh_1 sx) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
-  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, $lanes(sh_1, c_1)) 0^lns_1
+  -- if i* = $lanes(sh_1, c_1)
+  -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, i)* 0^lns_1
 
 
 rule Step_pure/i32x4.dot_i16x8_s:
