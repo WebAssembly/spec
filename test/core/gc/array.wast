@@ -152,17 +152,24 @@
   (type $vec (array i8))
   (type $mvec (array (mut i8)))
 
-  (data $d "\00\01\02\03\04")
+  (data $d "\00\01\02\ff\04")
 
   (func $new (export "new") (result (ref $vec))
     (array.new_data $vec $d (i32.const 1) (i32.const 3))
   )
 
-  (func $get (param $i i32) (param $v (ref $vec)) (result i32)
+  (func $get_u (param $i i32) (param $v (ref $vec)) (result i32)
     (array.get_u $vec (local.get $v) (local.get $i))
   )
-  (func (export "get") (param $i i32) (result i32)
-    (call $get (local.get $i) (call $new))
+  (func (export "get_u") (param $i i32) (result i32)
+    (call $get_u (local.get $i) (call $new))
+  )
+
+  (func $get_s (param $i i32) (param $v (ref $vec)) (result i32)
+    (array.get_s $vec (local.get $v) (local.get $i))
+  )
+  (func (export "get_s") (param $i i32) (result i32)
+    (call $get_s (local.get $i) (call $new))
   )
 
   (func $set_get (param $i i32) (param $v (ref $mvec)) (param $y i32) (result i32)
@@ -186,11 +193,13 @@
 
 (assert_return (invoke "new") (ref.array))
 (assert_return (invoke "new") (ref.eq))
-(assert_return (invoke "get" (i32.const 0)) (i32.const 1))
+(assert_return (invoke "get_u" (i32.const 2)) (i32.const 0xff))
+(assert_return (invoke "get_s" (i32.const 2)) (i32.const -1))
 (assert_return (invoke "set_get" (i32.const 1) (i32.const 7)) (i32.const 7))
 (assert_return (invoke "len") (i32.const 3))
 
-(assert_trap (invoke "get" (i32.const 10)) "out of bounds array access")
+(assert_trap (invoke "get_u" (i32.const 10)) "out of bounds array access")
+(assert_trap (invoke "get_s" (i32.const 10)) "out of bounds array access")
 (assert_trap (invoke "set_get" (i32.const 10) (i32.const 7)) "out of bounds array access")
 
 (module
