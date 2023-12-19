@@ -255,12 +255,12 @@ var mo : memop
 
 syntax lanetype hint(desc "lane type") =
   | packedtype | numtype
-syntax lanecount hint(desc "lane count") = nat
+syntax lanesize hint(desc "lane size") = nat
 
 var lnt : lanetype
-var lnc : lanecount
+var lns : lanesize
 syntax shape hint(desc "shape") =
-  | SHAPE lanetype lanecount      hint(show %X%)
+  | SHAPE lanetype lanesize      hint(show %X%)
 
 syntax half = | LOW | HIGH
 var hf : half
@@ -366,21 +366,21 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | I8X16.SWIZZLE
   | I8X16.SHUFFLE n*
   | SPLAT shape                                                     hint(show %.SPLAT)
-  | EXTRACT_LANE lanetype lanecount sx? idx                           hint(show %X%.EXTRACT#_#LANE#_#% %)
+  | EXTRACT_LANE lanetype lanesize sx? idx                           hint(show %X%.EXTRACT#_#LANE#_#% %)
   | REPLACE_LANE shape idx                                          hint(show %.REPLACE#_#LANE %)
   | VUNOP vectype shape unop_vectype
   | VBINOP vectype shape binop_vectype
-  | VRELOP lanetype lanecount relop_vectype
-  | VISHIFTOP lanetype lanecount shiftop_vectype                      hint(show %X%.%)
+  | VRELOP lanetype lanesize relop_vectype
+  | VISHIFTOP lanetype lanesize shiftop_vectype                      hint(show %X%.%)
   | ALL_TRUE shape                                                  hint(show %.ALL_TRUE)
-  | BITMASK lanetype lanecount
-  | NARROW lanetype lanecount lanetype lanecount sx
-  | VCVTOP lanetype lanecount cvtop_vectype lanetype lanecount sx
-  | VCVTOP_HALF lanetype lanecount cvtop_vectype half lanetype lanecount sx?        hint(show %X%.%#_#%#_#%X%#_#%)
-  | VCVTOP_ZERO lanetype lanecount cvtop_vectype lanetype lanecount sx
-  | EXTMUL_HALF lanetype lanecount half lanetype lanecount sx
+  | BITMASK lanetype lanesize
+  | NARROW lanetype lanesize lanetype lanesize sx
+  | VCVTOP lanetype lanesize cvtop_vectype lanetype lanesize sx
+  | VCVTOP_HALF lanetype lanesize cvtop_vectype half lanetype lanesize sx?        hint(show %X%.%#_#%#_#%X%#_#%)
+  | VCVTOP_ZERO lanetype lanesize cvtop_vectype lanetype lanesize sx
+  | EXTMUL_HALF lanetype lanesize half lanetype lanesize sx
   | I32X4.DOT_I16X8_S
-  | EXTADD_PAIRWISE lanetype lanecount lanetype lanecount sx
+  | EXTADD_PAIRWISE lanetype lanesize lanetype lanesize sx
   | ...
   
 syntax instr/reference hint(desc "reference instruction") = ...
@@ -447,11 +447,11 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | DATA.DROP dataidx
   | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
   | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
-  | VLOAD lanecount lanecount sx memidx memop
-  | VLOAD_SPLAT lanecount memidx memop
-  | VLOAD_ZERO lanecount memidx memop
-  | VLOAD_LANE lanecount memidx memop memidx
-  | VSTORE lanecount memidx memop memidx
+  | VLOAD lanesize lanesize sx memidx memop
+  | VLOAD_SPLAT lanesize memidx memop
+  | VLOAD_ZERO lanesize memidx memop
+  | VLOAD_LANE lanesize memidx memop memidx
+  | VSTORE lanesize memidx memop memidx
 
 syntax expr hint(desc "expression") =
   instr*
