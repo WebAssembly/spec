@@ -256,10 +256,6 @@ var mo : memop
 syntax vecunit hint(desc "vector unit") =
   | packedtype | numtype
 syntax veccount hint(desc "vector count") = nat
-syntax ishape hint(desc "int shape") =
-  | I8X16 | I16X8 | I32X4 | I64X2
-syntax fshape hint(desc "float shape") =
-  | F32X4 | F64X2
 
 var vu : vecunit
 var vc : veccount

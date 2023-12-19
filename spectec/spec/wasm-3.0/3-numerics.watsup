@@ -40,45 +40,37 @@ def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
 def $ine_128(cv, cv) : nat
-def $unpacked(sh) : numtype
-def $pow(c, i) : nat                                hint(show %^%)
-def $dim(sh) : nat
+def $imul(sh, c, c) : c_numtype
 def $lanes(sh, cv) : nat*
-def $concat(i*, j) : nat                            hint(show % %)
+def $narrow(nat, nat, sx, nat) : nat
+def $ibits(nat, nat) : nat*
+def $ilt_s(nat, nat, nat) : nat
+
+def $unpacked(sh) : numtype
+def $dim(sh) : nat
+def $ishape(vc) : vecunit
+def $halfop(hf, i, j) : nat
+
+def $pow(c, i) : nat
 def $shapeof(vu, vc) : shape                        hint(show %X%)
 def $extend(i, j, sx?, n) : c_numtype             hint(show $ext_((%,%))^%(%))
-def $extendn(i, j, n) : c_numtype             hint(show $ext_((%,%))^%(%))
-def $imul(sh, c, c) : c_numtype
-def $ishape(vc) : vecunit
 
-def $concat_seq(i*, j*) : nat*
-
-def $concat_seq(i*, j*) = i* j*
-
-def $alltrue(nat*) : bool
-
-def $alltrue(epsilon) = true
-def $alltrue(i i'*) = true
-    -- if $alltrue(i'*) = true
-    -- if i =/= 0
-def $alltrue(i*) = false
+def $forall(bool*) : bool
+def $forall(epsilon) = true
+def $forall(bool bool'*) = true
+    -- if $forall(bool'*) = true
+    -- if bool = true
+def $forall(bool*) = false
     -- otherwise
 
-def $bool_to_num(bool) : nat
-
-def $bool_to_num(bool) =  1 -- if bool = true
-def $bool_to_num(bool) =  0 -- otherwise
-
-def $ilt_s(nat, nat, nat) : nat
-def $ibits(nat, nat) : nat*
-
-def $narrow(nat, nat, sx, nat) : nat
+def $bool(bool) : nat
+def $bool(bool) =  1 -- if bool = true
+def $bool(bool) =  0 -- otherwise
 
 def $vvunop(vvunop, vectype, cv) : c_vectype                hint(show %#_%#((%)))
-def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype*         hint(show %#_%#(%, %))
-def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype*   hint(show %#_%#(%, %, %))
+def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype          hint(show %#_%#(%, %))
+def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype    hint(show %#_%#(%, %, %))
 def $vunop(vunop, sh, cv) : c_vectype
 def $vbinop(vbinop, sh, cv, cv) : c_vectype*
-def $vishiftop(vishiftop, vu, k*, n) : c_vectype*   hint(show %#_%#(%, %))
+def $vishiftop(vishiftop, vu, k*, n*) : c_vectype*   hint(show %#_%#(%, %))
 def $vcvtop(vcvtop, i, j, sx?, k*) : c_vectype*   hint(show %#_%#(%, %, %))
-def $halfop(hf, i, j) : nat
