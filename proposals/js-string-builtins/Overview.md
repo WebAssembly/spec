@@ -12,13 +12,13 @@ However, the overhead of importing glue code is prohibitive for primitives such 
 
 This proposal aims to provide a minimal and general mechanism for importing specific JavaScript primitives for efficient usage in WebAssembly code.
 
-This is done by first adding a set of builtin functions for performing JavaScript String operations. These builtin functions mirror a subset of the [JavaScript String API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) and adapt it to be efficiently callable without JavaScript glue code.
+This is done by first adding a set of wasm builtin functions for performing JavaScript String operations. These builtin functions mirror a subset of the [JavaScript String API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) and adapt it to be efficiently callable without JavaScript glue code.
 
-Then a mechanism for importing modules containing these builtins (builtin modules) is added to the WebAssembly JS-API. These modules exist in a new reserved import namespace `wasm:` that is enabled at compile-time with a flag.
+Then a mechanism for importing these wasm builtin functions is added to the WebAssembly JS-API. These builtins are grouped in modules and exist in a new reserved import namespace `wasm:` that is enabled at compile-time with a flag.
 
-These two pieces in combination allow runtimes to reliably emit optimal code sequences for JavaScript String operations within WebAssembly modules. In the future, other builtin objects or primitives can be exposed through new builtins.
+These two pieces in combination allow runtimes to reliably emit optimal code sequences for JavaScript String operations within WebAssembly modules. In the future, other JS builtin objects or JS primitives can be exposed through new wasm builtins.
 
-## Do we need builtins?
+## Do we need new wasm builtin functions?
 
 It is already possible today to import JS builtin functions (such as String.prototoype.getCharCodeAt) from wasm modules. Instead of defining new wasm specific-builtins, we could just re-use those directly.
 
@@ -28,15 +28,15 @@ The first problem is that existing API’s require a calling convention conversi
 
 It seems that creating new importable definitions that adapt existing JS primitives to WebAssembly is simpler and more flexible in the future.
 
-## Do we need builtin modules?
+## Do we need a new import mechanism for wasm builtin functions?
 
 There is a variety of execution techniques for WebAssembly. Some WebAssembly engines compile modules eagerly (at WebAssembly.compile), some use interpreters and dynamic tiering, and some use on-demand compilation (after instantiation) and dynamic tiering.
 
-If we just have builtin functions, it would be possible to normally import them without any work to add builtin modules. The main issue is that imported values are not known until instantiation, and so engines that compile eagerly would be unable to generate specialized code to these imports.
+If we just have builtin functions, it would be possible to normally import them normally through instantiation. However this would prevent engines from using eager compilation when builtins are in use.
 
 It seems desirable to support a variety of execution techniques, especially because engines may support multiple depending on heuristics or change them over time.
 
-By adding builtin modules that are in a reserved and known namespace `:wasm`, engines can know that these builtin functions are being used at `WebAssembly.compile` time and generate optimal code for them.
+By adding builtins that are in a reserved and known namespace (`wasm:`), engines can know that these builtin functions are being used at `WebAssembly.compile` time and generate optimal code for them.
 
 ## Goals for builtins
 
@@ -48,7 +48,7 @@ The bar for adding a new builtin would be that it enables significantly better c
 
 ## Function builtins
 
-Function builtins are an instance of `WebAssembly.Function` and have a function type. One conceptualization is that they are a WebAssembly function on the outside and a JavaScript function on the inside. This combination allows efficient adaptation of primitives.
+Function builtins are an instance of `WebAssembly.Function` and have a function type. They are conceptually a WebAssembly function on the outside and a JavaScript function on the inside. This combination allows efficient adaptation of primitives.
 
 Their behavior would be defined using algorithmic steps similar to the WebIDL or EcmaScript standards. If possible, we could define them using equivalent JavaScript source code to emphasize that these do not provide any new abilities.
 
@@ -56,57 +56,82 @@ Their behavior would be defined using algorithmic steps similar to the WebIDL or
 
 Type builtins could be an instance of the `WebAssembly.Type` interface provided by the [type-imports](https://github.com/webassembly/type-imports) proposal. The values contained in a type builtin would be specified with a predicate.
 
-## Builtin modules
+This proposal does not add any type builtins, as the design around type-imports is in flux.
 
-Builtin modules provide a collection of function or type builtins that can be imported. Each builtin module has a name, such as `js-string`, and lives under the `wasm:` namespace. A full import specifier would therefore be `(import "wasm:js-string" "equals" ...)`.
+## Using builtins
 
-The JS-API does not reserve a `wasm:` namespace today, so modules theoretically could already be using this namespace. Additionally, some users may wish to disable this feature for modules they compile so they could polyfill it. This feature is therefore opt-in on an individual builtin-module basis.
+Every builtin has a name, and builtins are grouped into collections with a name that matches the interface they are mirroring.
 
-To just enabled the `js-string` module, a user would compile with:
+An example import specifier could therefore be `(import "wasm:js-string" "equals" ...)`.
+
+The JS-API does not reserve a `wasm:` namespace today, so modules theoretically could already be using this namespace. Additionally, some users may wish to disable this feature for modules they compile so they could polyfill it. This feature is therefore opt-in via flags for each interface.
+
+To just enabled `js-string` builtins, a user would compile with:
 ```
-WebAssembly.compile(bytes, { builtinModules: ['js-string'] });
+WebAssembly.compile(bytes, { builtins: ['js-string'] });
 ```
 
 The full extension to the JS-API WebIDL is:
 ```
 dictionary WebAssemblyCompileOptions {
-    optional sequence<USVString> builtinModules;
+    optional sequence<USVString> builtins;
 }
 
+[LegacyNamespace=WebAssembly, Exposed=*]
 interface Module {
   constructor(BufferSource bytes, optional WebAssemblyCompileOptions options);
   ...
 }
 
+[Exposed=*]
 namespace WebAssembly {
-  Promise<Module> compile(
-    BufferSource bytes,
-    optional WebAssemblyCompileOptions options);
-  ...
+    # Validate accepts compile options for feature detection.
+    # See below for details.
+    boolean validate(
+      BufferSource bytes,
+      optional WebAssemblyCompileOptions options);
+
+    # Async compile accepts compile options.
+    Promise<Module> compile(
+      BufferSource bytes,
+      optional WebAssemblyCompileOptions options);
+
+    # Async instantiate overload with bytes parameters does accept compile
+    # options.
+    Promise<WebAssemblyInstantiatedSource> instantiate(
+      BufferSource bytes,
+      optional object importObject,
+      optional WebAssemblyCompileOptions options
+    );
+
+    # Async instantiate overload with module parameter does not accept compile
+    # options and remains the same.
+    Promise<Instance> instantiate(
+      Module moduleObject,
+      optional object importObject
+    );
 };
 ```
 
-A wasm module that has enabled a wasm builtin module will have the specific import specifier, such as `wasm:js-string` for that module available and eagerly applied.
+A wasm module that has enabled builtins will have the specific import specifier, such as `wasm:js-string` for that interface available and eagerly applied.
 
 Concretely this means that imports that refer to that specifier will be eagerly checked for link errors at compile time, those imports will not show up in `WebAssembly.Module.imports()`, and those imports will not need to be provided at instantiation time.
 
-When the module is instantiated, a unique instantiation of the builtin module is created. This means that re-exports of builtin functions will have different identities if they come from different instances. This is a useful property for future extensions to bind memory to builtins or evolve the types as things like type-imports or a core stringref type are added (see below).
+When the module is instantiated, a unique instantiation of the builtins are created. This means that re-exports of builtin functions will have different identities if they come from different instances. This is a useful property for future extensions to bind memory to builtins or evolve the types as things like type-imports or a core stringref type are added (see below).
 
 ## Feature detection
 
-Users may wish to detect if a specific builtin module is available in their system.
+Users may wish to detect if a specific builtin is available in their system.
 
-A simple option is to add `WebAssembly.hasBuiltinModule(name)` method. This is likely too coarse grained though, users may wish to know if a specific function in a builtin module is available, as new ones may be added over time.
-
-A more general option would then be to extend `WebAssembly.validate` to also take a list of builtin modules to enable, like compile does. After validating the module, the eager link checking that compile does is also performed. This would allow checking for the presence of individual parts of a builtin module.
+For this purpose, `WebAssembly.validate` is extended to take a list of builtins to enable, like compile does. After validating the module, the eager link checking that compile does is also performed. Users can inspect the result of validate on modules importing builtins to see if they are supported.
 
 ## Polyfilling
 
-If a user wishes to polyfill these imports for some reason, or is running on a system without a builtin module, these imports may be provided as normal through instantiation.
+If a user wishes to polyfill these imports for some reason, or is running on a system without a builtin, these imports may be provided as normal through instantiation.
 
 ## JS String Builtin API
 
-The following is an initial set of function builtins for JavaScript String. The builtin module name is `js-string`. Each example includes pseudo-code illustrating their operation and some descriptive text.
+The following is an initial set of function builtins for JavaScript String. The builtin are exposed under `wasm:js-string`. Each example includes pseudo-code illustrating their operation and some descriptive text.
 
 TODO: formalize these better.
 
@@ -404,7 +429,7 @@ A quick example:
   (; memory 0 ;)
   (import ... (memory ...))
 
-  (; bound to memory 0 through the JS-API instantiating the builtin module ;)
+  (; bound to memory 0 through the JS-API instantiating the builtins ;)
   (import "wasm:js-string" "encodeStringToMemoryUTF16" (func ...))
 )
 ```
