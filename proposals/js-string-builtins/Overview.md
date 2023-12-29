@@ -42,6 +42,8 @@ By adding builtins that are in a reserved and known namespace (`wasm:`), engines
 
 Builtins should not provide any new abilities to WebAssembly that JS doesn't already have. They are intended to just wrap existing primitives in such a manner that WebAssembly can efficiently use them. In the cases the primitive already has a name, we should re-use it and not invent a new one.
 
+Most builtins should be simple and do little work outside of calling into the JS functionality to do the operation. The one exception is for operations that convert between a JS primitive and a wasm primitive, such as between JS strings/arrays/linear memory. In this case, the builtin may need some non-trivial code to perform the operation. In these cases, it's still expected that the operation is just semantically copying information and not substantially transforming it into a new interpretation.
+
 The standardization of wasm builtins will be governed by the WebAssembly standards process and would exist in the JS-API document.
 
 The bar for adding a new builtin would be that it enables significantly better code generation for an important use-case beyond what is possible with a normal import. We don't want to add a new builtin for every existing API, only ones where adapting the JavaScript API to WebAssembly and allowing inline code generation results in significantly better codegen than a plain function call.
@@ -133,6 +135,14 @@ For this purpose, `WebAssembly.validate` is extended to take a list of builtins 
 
 If a user wishes to polyfill these imports for some reason, or is running on a system without a builtin, these imports may be provided as normal through instantiation.
 
+## UTF8/WTF8 support
+
+As stated above in 'goals for builtins', builtins are intended to just wrap existing primitives and not invent new functionality.
+
+JS Strings are semantically a sequence of 16-bit code units (referred to as char codes in method naming), and there are no builtin operations on them to acquire a UTF-8 or WTF-8 view. This makes it difficult to write wasm builtins for these encodings without introducing significant new logic to them.
+
+There is however, the Encoding API for `TextEncoder`/`TextDecoder` which can be used for UTF-8 support. However, this is technically a separate spec from JS and may not be available on all JS engines (in practice it's available widely). This proposal exposes UTF-8 data conversions using this API under separate `wasm:text-encoder` `wasm:text-decoder` interfaces which are available when the host implements these interfaces.
+
 ## JS String Builtin API
 
 The following is an initial set of function builtins for JavaScript String. The builtins are exposed under `wasm:js-string`.
@@ -194,7 +204,7 @@ func test(
 }
 ```
 
-### "wasm:js-string" "fromWtf16Array"
+### "wasm:js-string" "fromCharCodeArray"
 
 ```
 /// Convert the specified range of an immutable i16 array into a String,
@@ -208,7 +218,7 @@ func test(
 ///
 /// If this is an issue for toolchains, we can look into how to relax the
 /// function type while still maintaining good performance.
-func fromWtf16Array(
+func fromCharCodeArray(
   array: (ref null (array i16)),
   start: i32,
   end: i32
@@ -236,57 +246,7 @@ func fromWtf16Array(
 }
 ```
 
-### "wasm:js-string" "fromWtf8Array"
-
-```
-/// Convert the specified range of an immutable i8 array into a String,
-/// treating the array as encoded using WTF-8.
-///
-/// The range is given by [start, end). This function traps if the range is
-/// outside the bounds of the array.
-///
-/// NOTE: This function only takes an immutable i8 array defined in its own
-/// recursion group.
-///
-/// If this is an issue for toolchains, we can look into how to relax the
-/// function type while still maintaining good performance.
-func fromWtf8Array(
-  array: (ref null (array i8)),
-  start: i32,
-  end: i32
-) -> (ref extern)
-{
-  // NOTE: `start` and `end` are interpreted as signed 32-bit integers when
-  // converted to JS values using standard conversions. Reinterpret them as
-  // unsigned here.
-  start >>>= 0;
-  end >>>= 0;
-
-  if (array === null)
-    trap();
-
-  if (start > end ||
-      end > array_len(array))
-    trap();
-
-  // This summarizes as: "decode the WTF-8 string stored at array[start:end],
-  // or trap if there is no valid WTF-8 string there".
-  let result = "";
-  while (start < end) {
-    if there is no valid wtf8-encoded code point at array[start]
-      trap();
-    let c be the code point at array[start];
-    // [1]
-    result += String.fromCodePoint(c);
-    increment start by as many bytes as it took to decode c;
-  }
-  return result;
-}
-```
-
-Note to implementers: while this is the only usage of WTF-8 in this document, it shouldn't be very burdensome to implement, because all existing strings in Wasm modules (import/export names, contents of the name section) are already in UTF-8 format, so implementations must already have decoding infrastructure for that. We need the relaxation from UTF-8 to WTF-8 to support WTF-16 based source languages, which may have unpaired surrogates in string constants in existing/legacy code.
-
-### "wasm:js-string" "toWtf16Array"
+### "wasm:js-string" "copyToCharCodeArray"
 
 ```
 /// Copy a string into a pre-allocated mutable i16 array at `start` index.
@@ -295,7 +255,7 @@ Note to implementers: while this is the only usage of WTF-8 in this document, it
 /// the string.
 ///
 /// Traps if the string doesn't fit into the array.
-func toWtf16Array(
+func copyToCharCodeArray(
   string: externref,
   array: (ref null (array (mut i16))),
   start: i32
@@ -510,6 +470,193 @@ function compare(
 }
 ```
 
+## Encoding API
+
+The following is an initial set of function builtins for the [`TextEncoder` interface](https://encoding.spec.whatwg.org/#interface-textencoder) and [`TextDecoder` interface](https://encoding.spec.whatwg.org/#interface-textdecoder) interfaces. These builtins are exposed under `wasm:text-encoder` and `wasm:text-decoder`, respectively.
+
+All below references to builtins on the Global object (e.g. `String.fromCharCode`) refer to the original version on the Global object before any modifications by user code.
+
+The following internal helpers are defined in wasm and used by the below definitions:
+
+```wasm
+(module
+  (type $array_i8 (array i8))
+  (type $array_i8_mut (array (mut i8)))
+
+  (func (export "trap")
+    unreachable
+  )
+  (func (export "array_len") (param arrayref) (result i32)
+    local.get 0
+    array.len
+  )
+  (func (export "array_i8_get") (param (ref $array_i8) i32) (result i32)
+    local.get 0
+    local.get 1
+    array.get_u $array_i8
+  )
+  (func (export "array_i8_mut_new") (param i32) (result (ref $array_i8_mut))
+    local.get 0
+    array.new_default $array_i8_mut
+  )
+  (func (export "array_i8_mut_set") (param (ref $array_i8_mut) i32 i32)
+    local.get 0
+    local.get 1
+    local.get 2
+    array.set $array_i8_mut
+  )
+)
+```
+
+### "wasm:text-decoder" "decodeStringFromUTF8Array"
+
+```
+/// Decode the specified range of an i8 array using UTF-8 into a string.
+///
+/// The range is given by [start, end). This function traps if the range is
+/// outside the bounds of the array.
+///
+/// NOTE: This function only takes an immutable i8 array defined in its own
+/// recursion group.
+///
+/// If this is an issue for toolchains, we can look into how to relax the
+/// function type while still maintaining good performance.
+func decodeStringFromUTF8Array(
+  array: (ref null (array i8)),
+  start: i32,
+  end: i32
+) -> (ref extern)
+{
+  // NOTE: `start` and `end` are interpreted as signed 32-bit integers when
+  // converted to JS values using standard conversions. Reinterpret them as
+  // unsigned here.
+  start >>>= 0;
+  end >>>= 0;
+
+  if (array === null)
+    trap();
+
+  if (start > end ||
+      end > array_len(array))
+    trap();
+
+  // Inialize a UTF-8 decoder with the default options
+  let decoder = new TextDecoder("utf-8", {
+    fatal: false,
+    ignoreBOM: false,
+  });
+
+  // Copy the wasm array into a Uint8Array for decoding
+  let bytesLength = end - start;
+  let bytes = new Uint8Array(bytesLength);
+  for (let i = start; i < end; i++) {
+    bytes[i - start] = array_i8_get(array, i);
+  }
+
+  return decoder.decode(bytes);
+}
+```
+
+### "wasm:text-encoder" "measureStringAsUTF8"
+
+```
+/// Returns the number of bytes string would take when encoded as UTF-8.
+///
+/// Traps if the string doesn't fit into the array.
+func measureStringAsUTF8(
+  string: externref,
+) -> i32
+{
+  // NOTE: `start` is interpreted as a signed 32-bit integer when converted
+  // to a JS value using standard conversions. Reinterpret as unsigned here.
+  start >>>= 0;
+
+  if (array === null)
+    trap();
+
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
+  // Encode the string into bytes using UTF-8
+  let encoder = new TextEncoder();
+  let bytes = encoder.encode(string);
+
+  // Trap if the number of bytes is larger than can fit into an i32
+  if (bytes.length > 0xffff_ffff) {
+    trap();
+  }
+  return bytes.length;
+}
+```
+
+### "wasm:text-encoder" "encodeStringIntoUTF8Array"
+
+```
+/// Encode a string into a pre-allocated mutable i8 array at `start` index using
+/// the UTF-8 encoding.
+///
+/// Returns the number of bytes written.
+///
+/// Traps if the string doesn't fit into the array.
+func encodeStringIntoUTF8Array(
+  string: externref,
+  array: (ref null (array (mut i8))),
+  start: i32
+) -> i32
+{
+  // NOTE: `start` is interpreted as a signed 32-bit integer when converted
+  // to a JS value using standard conversions. Reinterpret as unsigned here.
+  start >>>= 0;
+
+  if (array === null)
+    trap();
+
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
+  // Encode the string into bytes using UTF-8
+  let encoder = new TextEncoder();
+  let bytes = encoder.encode(string);
+
+  // The following addition is safe from overflow as adding two 32-bit integers
+  // cannot overflow Number.MAX_SAFE_INTEGER (2^53-1).
+  if (start + bytes.length > array_len(array))
+    trap();
+
+  for (let i = 0; i < bytes.length; i++) {
+    array_i8_mut_set(array, start + i, bytes[i]);
+  }
+
+  return bytes.length;
+}
+```
+
+### "wasm:text-encoder" "encodeStringToUTF8Array"
+
+```
+/// Encode a string into a new mutable i8 array using UTF-8.
+func encodeStringToUTF8Array(
+  string: externref
+) -> (ref (array (mut i8)))
+{
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
+  // Encode the string into bytes using UTF-8
+  let encoder = new TextEncoder();
+  let bytes = encoder.encode(string);
+
+  let array = array_i8_mut_new(bytes.length);
+  for (let i = 0; i < bytes.length; i++) {
+    array_i8_mut_set(array, i, bytes[i]);
+  }
+  return array;
+}
+```
+
 ## Future extensions
 
 There are several extensions we can make in the future as need arrives.
@@ -548,15 +695,3 @@ The difficulty is how to do this in a backwards compatible way. If we, for examp
 One option would be to version the name of the function builtins, and add a new one for the more advanced type signature.
 
 Another option to do this would be to extend the JS-API to inspect the function types used when importing these builtins to determine whether to provide it the 'advanced type' version or the 'basic type' version. This would be a heuristic, something like checking if the type refers to a type import or not.
-
-### UTF-8 and WTF-8 support
-
-There are no JS builtins available to get a UTF-8 or WTF-8 view of a JS String.
-
-One option would be to specify wasm builtins in terms of the Web TextEncoder and TextDecoder interfaces. But this is probably a 'layering' violation, and is not clear what this means on JS runtimes outside the web.
-
-Another option around this would be to directly refer to the UTF-8/WTF-8 specs in the JS-API and write out the algorithms we need. However, this probably violates the goal of not creating a new String API.
-
-A final option would be to get TC39 to add the methods we need to JS Strings, so that we can use them in wasm builtins. This could take some time though, and may not be possible if TC39 does not find these methods worthwile.
-
-This needs more thought and discussion.
