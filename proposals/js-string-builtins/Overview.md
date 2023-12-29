@@ -48,9 +48,13 @@ The bar for adding a new builtin would be that it enables significantly better c
 
 ## Function builtins
 
-Function builtins are an instance of `WebAssembly.Function` and have a function type. They are conceptually a WebAssembly function on the outside and a JavaScript function on the inside. This combination allows efficient adaptation of primitives.
+Function builtins are defined with an external wasm function type, and internal JS-defined behavior. They have the same semantics as following ['create a host function'](https://webassembly.github.io/spec/js-api/#create-a-host-function) for the wasm function type and JS code given to get a wasm `funcaddr` that can be imported.
 
-Their behavior would be defined using algorithmic steps similar to the WebIDL or EcmaScript standards. If possible, we could define them using equivalent JavaScript source code to emphasize that these do not provide any new abilities.
+There are several implications of this:
+  - Calling a function builtin from wasm will have the wasm parameters converted to JS values, and JS results converted back to wasm values.
+  - Exported function builtins are wrapped using ['create a new Exported function'](https://webassembly.github.io/spec/js-api/#a-new-exported-function).
+  - Function builtins must be imported with the correct type.
+  - Function builtins may become `funcref`, stored in tables, etc.
 
 ## Type builtins
 
@@ -131,24 +135,48 @@ If a user wishes to polyfill these imports for some reason, or is running on a s
 
 ## JS String Builtin API
 
-The following is an initial set of function builtins for JavaScript String. The builtin are exposed under `wasm:js-string`. Each example includes pseudo-code illustrating their operation and some descriptive text.
+The following is an initial set of function builtins for JavaScript String. The builtins are exposed under `wasm:js-string`.
 
-TODO: formalize these better.
+All below references to builtins on the Global object (e.g. `String.fromCharCode`) refer to the original version on the Global object before any modifications by user code.
 
-[1]: This is meant to refer to what the original String.fromCharCode / String.fromCodePoint / String.prototype.charCodeAt / String.prototype.codePointAt / String.prototype.substring would do, in the absence of any monkey-patching. In a final version of this specification, we'll have to use more robust phrasing to express that; in the meantime, the given phrasing is more readable.
+The following internal helpers are defined in wasm and used by the below definitions:
 
-[2]: "array.length" is meant to express "load the array's length", in Wasm terms: (array.len (local.get $array)).
+```wasm
+(module
+  (type $array_i16 (array i16))
+  (type $array_i16_mut (array (mut i16)))
 
-[3]: “trap” is meant to emit a wasm trap. This results in a WebAssembly.RuntimeError with the bit set that it is not catchable by exception handling.
+  (func (export "trap")
+    unreachable
+  )
+  (func (export "array_len") (param arrayref) (result i32)
+    local.get 0
+    array.len
+  )
+  (func (export "array_i16_get") (param (ref $array_i16) i32) (result i32)
+    local.get 0
+    local.get 1
+    array.get_u $array_i16
+  )
+  (func (export "array_i16_mut_set") (param (ref $array_i16_mut) i32 i32)
+    local.get 0
+    local.get 1
+    local.get 2
+    array.set $array_i16_mut
+  )
+)
+```
 
 ### "wasm:js-string" "cast"
 
 ```
-function cast(
+func cast(
   string: externref
-) -> externref {
-  if (typeof string !== "string")
-    trap;
+) -> (ref extern) {
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
   return string;
 }
 ```
@@ -156,64 +184,97 @@ function cast(
 ### "wasm:js-string" "test"
 
 ```
-function test(
+func test(
   string: externref
 ) -> i32 {
-  return typeof string === "string" ? 1 : 0;
+  if (string === null ||
+      typeof string !== "string")
+    return 0;
+  return 1;
 }
 ```
 
 ### "wasm:js-string" "fromWtf16Array"
 
 ```
+/// Convert the specified range of an immutable i16 array into a String,
+/// treating each i16 as an unsigned 16-bit char code.
+///
+/// The range is given by [start, end). This function traps if the range is
+/// outside the bounds of the array.
+///
+/// NOTE: This function only takes an immutable i16 array defined in its own
+/// recursion group.
+///
+/// If this is an issue for toolchains, we can look into how to relax the
+/// function type while still maintaining good performance.
 func fromWtf16Array(
   array: (ref null (array i16)),
   start: i32,
   end: i32
 ) -> (ref extern)
 {
-  start = ToUint32(start);
-  end = ToUint32(end);
+  // NOTE: `start` and `end` are interpreted as signed 32-bit integers when
+  // converted to JS values using standard conversions. Reinterpret them as
+  // unsigned here.
+  start >>>= 0;
+  end >>>= 0;
 
-  // [2]
-  if (end > array.length || start > end)
-    trap;
+  if (array === null)
+    trap();
+
+  if (start > end ||
+      end > array_len(array))
+    trap();
 
   let result = "";
   for(let i = start; i < end; i++) {
-    // [1], [4]
-    result += String.fromCharCode(array[i]);
+    let charCode = array_i16_get(array, i);
+    result += String.fromCharCode(charCode);
   }
   return result;
 }
 ```
 
-[4]: "array[i]" is meant to express "load the i-th element of the array", in Wasm terms: (array.get_u $i16-array-type (local.get $array) (local.get $i)) for an appropriate $i16-array-type.
-
-Note: This function takes an i16 array defined in its own recursion group. If this is an issue for a toolchain, we can look into how to relax the function type while still maintaining good performance.
-
 ### "wasm:js-string" "fromWtf8Array"
 
 ```
+/// Convert the specified range of an immutable i8 array into a String,
+/// treating the array as encoded using WTF-8.
+///
+/// The range is given by [start, end). This function traps if the range is
+/// outside the bounds of the array.
+///
+/// NOTE: This function only takes an immutable i8 array defined in its own
+/// recursion group.
+///
+/// If this is an issue for toolchains, we can look into how to relax the
+/// function type while still maintaining good performance.
 func fromWtf8Array(
   array: (ref null (array i8)),
   start: i32,
   end: i32
 ) -> (ref extern)
 {
-  start = ToUint32(start);
-  end = ToUint32(end);
+  // NOTE: `start` and `end` are interpreted as signed 32-bit integers when
+  // converted to JS values using standard conversions. Reinterpret them as
+  // unsigned here.
+  start >>>= 0;
+  end >>>= 0;
 
-  // [2]
-  if (end > array.length || start > end)
-    trap;
+  if (array === null)
+    trap();
+
+  if (start > end ||
+      end > array_len(array))
+    trap();
 
   // This summarizes as: "decode the WTF-8 string stored at array[start:end],
   // or trap if there is no valid WTF-8 string there".
   let result = "";
   while (start < end) {
     if there is no valid wtf8-encoded code point at array[start]
-      trap;
+      trap();
     let c be the code point at array[start];
     // [1]
     result += String.fromCodePoint(c);
@@ -227,34 +288,42 @@ Note to implementers: while this is the only usage of WTF-8 in this document, it
 
 ### "wasm:js-string" "toWtf16Array"
 
-"start" is the index in the array where the first codeunit of the string will be written.
-
-Returns the number of codeunits written. Traps if the string doesn't fit into the array.
-
 ```
+/// Copy a string into a pre-allocated mutable i16 array at `start` index.
+///
+/// Returns the number of char codes written, which is equal to the length of
+/// the string.
+///
+/// Traps if the string doesn't fit into the array.
 func toWtf16Array(
   string: externref,
   array: (ref null (array (mut i16))),
   start: i32
 ) -> i32
 {
-  if (typeof string !== "string")
-    trap;
+  // NOTE: `start` is interpreted as a signed 32-bit integer when converted
+  // to a JS value using standard conversions. Reinterpret as unsigned here.
+  start >>>= 0;
 
-  start = ToUint32(start);
+  if (array === null)
+    trap();
 
-  if (start + string.length > array.length)
-    trap;
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
+  // The following addition is safe from overflow as adding two 32-bit integers
+  // cannot overflow Number.MAX_SAFE_INTEGER (2^53-1).
+  if (start + string.length > array_len(array))
+    trap();
 
   for (let i = 0; i < string.length; i++) {
-    // [4], [5]
-    array[start + i] = string.charCodeAt(i);
+    let charCode = string.charCodeAt(i);
+    array_i16_mut_set(array, start + i, charCode);
   }
   return string.length;
 }
 ```
-
-[4]: "array[i] = …" is meant to express "store the value … as the i-th element of the array", in Wasm terms: (array.set $i16-array-type (local.get $array) (local.get $i) (…)) for an appropriate $i16-array-type.
 
 ### "wasm:js-string" "fromCharCode"
 
@@ -263,11 +332,13 @@ func fromCharCode(
   charCode: i32
 ) -> (ref extern)
 {
-  charCode = ToUint32(charCode);
-  return String.fromCharCode(charCode);  // [1], [4]
+  // NOTE: `charCode` is interpreted as a signed 32-bit integer when converted
+  // to a JS value using standard conversions. Reinterpret as unsigned here.
+  charCode >>>= 0;
+
+  return String.fromCharCode(charCode);
 }
 ```
-[4]: Any charCode > 0xFFFF values are implicitly truncated.
 
 ### "wasm:js-string" "fromCodePoint"
 
@@ -276,11 +347,16 @@ func fromCodePoint(
   codePoint: i32
 ) -> (ref extern)
 {
-  codePoint = ToUint32(codePoint);
-  if (codePoint > 0x10FFFF)
-    trap;
+  // NOTE: `codePoint` is interpreted as a signed 32-bit integer when converted
+  // to a JS value using standard conversions. Reinterpret as unsigned here.
+  codePoint >>>= 0;
 
-  return String.fromCodePoint(codePoint);  // [1]
+  // fromCodePoint will throw a RangeError for values outside of this range,
+  // eagerly check for this an present as a wasm trap.
+  if (codePoint > 0x10FFFF)
+    trap();
+
+  return String.fromCodePoint(codePoint);
 }
 ```
 
@@ -292,14 +368,18 @@ func charCodeAt(
   index: i32
 ) -> i32
 {
-  if (typeof string !== "string")
-    trap;
+  // NOTE: `index` is interpreted as a signed 32-bit integer when converted to
+  // a JS value using standard conversions. Reinterpret as unsigned here.
+  index >>>= 0;
 
-  index = ToUint32(index);
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
   if (index >= string.length)
-    trap;
+    trap();
 
-  return string.charCodeAt(index);  // [1]
+  return string.charCodeAt(index);
 }
 ```
 
@@ -311,14 +391,18 @@ func codePointAt(
   index: i32
 ) -> i32
 {
-  if (typeof string !== "string")
-    trap;
+  // NOTE: `index` is interpreted as a signed 32-bit integer when converted to
+  // a JS value using standard conversions. Reinterpret as unsigned here.
+  index >>>= 0;
 
-  index = ToUint32(index);
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
   if (index >= string.length)
-    trap;
+    trap();
 
-  return string.codePointAt(index);  // [1]
+  return string.codePointAt(index);
 }
 ```
 
@@ -326,8 +410,9 @@ func codePointAt(
 
 ```
 func length(string: externref) -> i32 {
-  if (typeof string !== "string")
-    trap;
+  if (string === null ||
+      typeof string !== "string")
+    trap();
 
   return string.length;
 }
@@ -341,10 +426,12 @@ func concat(
   second: externref
 ) -> externref
 {
-  if (typeof first !== "string")
-    trap;
-  if (typeof second !== "string")
-    trap;
+  if (first === null ||
+      typeof first !== "string")
+    trap();
+  if (second === null ||
+      typeof second !== "string")
+    trap();
 
   return first.concat(second);
 }
@@ -355,26 +442,30 @@ func concat(
 ```
 func substring(
   string: externref,
-  startIndex: i32,
-  endIndex: i32
+  start: i32,
+  end: i32
 ) -> (ref extern)
 {
-  if (typeof string !== "string")
-    trap;
+  // NOTE: `start` and `end` are interpreted as signed 32-bit integers when
+  // converted to JS values using standard conversions. Reinterpret them as
+  // unsigned here.
+  start >>>= 0;
+  end >>>= 0;
 
-  startIndex = ToUint32(startIndex);
-  endIndex = ToUint32(endIndex);
-  if (startIndex > string.length ||
-      startIndex > endIndex)
+  if (string === null ||
+      typeof string !== "string")
+    trap();
+
+  // Ensure the range is ordered and within bounds to avoid the complex
+  // behavior that `substring` performs when that is not the case.
+  if (start > end ||
+      end > string.length)
     return "";
 
   // [1]
-  return string.substring(startIndex, endIndex);
+  return string.substring(start, end);
 }
 ```
-
-Note: We could consider allowing negative start/end indices, and adding them to the string's length to compute the effective indices, like String.prototype.slice does it. Is one of these behaviors more convenient for common use cases? Arguably it is more fitting with Wasm's style to only accept obviously-valid (i.e. in-bounds) parameters, and leave it to calling code to decide whether other values (positive out-of-bounds and/or negative) can occur at all, and if yes, how to handle them (map into bounds somehow, or reject).
-Note: Taking that thought one step further, we could consider throwing exceptions when startIndex > endIndex or startIndex > string.length or endIndex > string.length. If we do so, we should keep in mind that allowing empty slices (startIndex == endIndex) can be useful when this situation arises dynamically in string-processing algorithms. It is unlikely that throwing instead of returning an empty string in these cases would offer performance benefits.
 
 ### "wasm:js-string" "equals"
 
@@ -384,10 +475,14 @@ func equals(
   second: externref
 ) -> i32
 {
-  if (first !== null && typeof first !== "string")
-    trap;
-  if (second !== null && typeof second !== "string")
-    trap;
+  // Explicitly allow null strings to be compared for equality as that is
+  // meaningful.
+  if (first !== null &&
+      typeof first !== "string")
+    trap();
+  if (second !== null &&
+      typeof second !== "string")
+    trap();
   return first === second ? 1 : 0;
 }
 ```
@@ -400,10 +495,14 @@ function compare(
   second: externref
 ) -> i32
 {
-  if (typeof first !== "string")
-    trap;
-  if (typeof second !== "string")
-    trap;
+  // Explicitly do not allow null strings to be compared, as there is no
+  // meaningful ordering given by the JS `<` operator.
+  if (first === null ||
+      typeof first !== "string")
+    trap();
+  if (second === null ||
+      typeof second !== "string")
+    trap();
 
   if (first === second)
     return 0;
