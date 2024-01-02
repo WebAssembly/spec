@@ -264,17 +264,19 @@ rule Step_pure/v128.any_true:
   -- if i = $ine_128(cv_1, 0)
 
 
-rule Step_pure/i8x16.swizzle:
-  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (I8X16.SWIZZLE) ~> (VVCONST V128 c')
-  -- if i* = $lanes(SHAPE I8 16, cv_2)
-  -- if c* = $lanes(SHAPE I8 16, cv_1) 0^240
-  -- if $lanes(SHAPE I8 16, c') = c*[$(i*[k])]^(k<16)
+rule Step_pure/swizzle:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (SWIZZLE sh) ~> (VVCONST V128 c')
+  -- if sh = SHAPE lnt lns
+  -- if i* = $lanes(sh, cv_2)
+  -- if c* = $lanes(sh, cv_1) 0^(256 - lns)
+  -- if $lanes(sh, c') = c*[$(i*[k])]^(k<lns)
 
  
-rule Step_pure/i8x16.shuffle:
-  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (I8X16.SHUFFLE x*) ~> (VVCONST V128 c)
-  -- if i* = $lanes(SHAPE I8 16, cv_1) $lanes(SHAPE I8 16, cv_2)
-  -- if $lanes(SHAPE I8 16, c) = i*[$(x*[k])]^(k<16)
+rule Step_pure/shuffle:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (SHUFFLE sh laneidx*) ~> (VVCONST V128 c)
+  -- if sh = SHAPE lnt lns
+  -- if i* = $lanes(sh, cv_1) $lanes(sh, cv_2)
+  -- if $lanes(sh, c) = i*[$(laneidx*[k])]^(k<lns)
 
 
 rule Step_pure/splat:

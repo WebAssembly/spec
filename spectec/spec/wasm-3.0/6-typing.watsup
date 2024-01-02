@@ -772,12 +772,13 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- V128.ANY_TRUE : V128 -> I32
 
-rule Instr_ok/i8x16.swizzle:
-  C |- I8X16.SWIZZLE : V128 V128 -> V128
+rule Instr_ok/swizzle:
+  C |- SWIZZLE sh : V128 V128 -> V128
 
-rule Instr_ok/i8x16.shuffle:
-  C |- I8X16.SHUFFLE laneidx^16 : V128 V128 -> V128
-  -- if (laneidx<32)^16
+rule Instr_ok/shuffle:
+  C |- SHUFFLE sh laneidx* : V128 V128 -> V128
+  -- if sh = SHAPE lnt lns
+  -- if $(laneidx<lns * 2)*
 
 rule Instr_ok/splat:
   C |- SPLAT sh : $unpacked(sh) -> V128
