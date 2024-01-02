@@ -1030,6 +1030,32 @@ rule Instr_ok/store:
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
   -- if n? = epsilon \/ nt = inn
 
+rule Instr_ok/vload:
+  C |- VLOAD n lns sx x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  -- if C.MEM[0] = mt
+  -- if $(2^(n_A) <= n/8 * lns)
+
+rule Instr_ok/vload_splat:
+  C |- VLOAD_SPLAT n x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  -- if C.MEM[0] = mt
+  -- if $(2^(n_A) <= n/8)
+
+rule Instr_ok/vload_zero:
+  C |- VLOAD_ZERO n x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  -- if C.MEM[0] = mt
+  -- if $(2^(n_A) < n/8)
+
+rule Instr_ok/vload_lane:
+  C |- VLOAD_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> V128
+  -- if C.MEM[0] = mt
+  -- if $(2^(n_A) < n/8)
+  -- if $(laneidx < 128 / n)
+
+rule Instr_ok/vstore:
+  C |- VSTORE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> epsilon
+  -- if C.MEM[0] = mt
+  -- if $(2^(n_A) < n/8)
+  -- if $(laneidx < 128 / n)
 
 ;;
 ;; Constant Expressions
