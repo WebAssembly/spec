@@ -259,8 +259,8 @@ rule Step_pure/vvternop:
   -- if $vvternop(vvternop, V128, cv_1, cv_2, cv_3) = cv ;; TODO
 
 
-rule Step_pure/v128.any_true:
-  (VVCONST V128 cv_1) (V128.ANY_TRUE) ~> (CONST I32 i)
+rule Step_pure/vvtestop:
+  (VVCONST V128 cv_1) (VVTESTOP V128 (_VV ANY_TRUE)) ~> (CONST I32 i)
   -- if i = $ine_128(cv_1, 0)
 
 
@@ -333,10 +333,15 @@ rule Step_pure/vishiftop:
   -- if $lanes(sh, c) = $vishiftop(vishiftop, lnt, i, n)*
 
 
-rule Step_pure/all_true:
-  (VVCONST V128 c) (ALL_TRUE sh) ~> (CONST I32 i)
+rule Step_pure/all_true-true:
+  (VVCONST V128 c) (ALL_TRUE sh) ~> (CONST I32 1)
   -- if i_1* = $lanes(sh, c)
-  -- if i = $bool($forall((i_1 =/= 0)*))
+  -- (if $(i_1 =/= 0))*
+
+rule Step_pure/all_true-false:
+  (VVCONST V128 c) (ALL_TRUE sh) ~> (CONST I32 0)
+  -- if i_1* = $lanes(sh, c)
+  -- otherwise
 
 
 rule Step_pure/bitmask:
@@ -358,36 +363,40 @@ rule Step_pure/narrow:
 
 
 rule Step_pure/vcvtop:
-  (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop sh_1 sx) ~> (VVCONST V128 c)
+  (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop epsilon sh_1 sx epsilon) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i* = $lanes(sh_1, c_1)
   -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, i)*
 
 
-rule Step_pure/vcvtop_half:
-  (VVCONST V128 c_1) (VCVTOP_HALF sh_2 vcvtop hf sh_1 sx?) ~> (VVCONST V128 c)
+rule Step_pure/vcvtop-half:
+  (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop hf sh_1 sx? epsilon) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i* = $lanes(sh_1, c_1)[$halfop(hf, 0, lns_2) : lns_2]
   -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)*
 
 
-rule Step_pure/vcvtop_zero:
-  (VVCONST V128 c_1) (VCVTOP_ZERO sh_2 vcvtop sh_1 sx) ~> (VVCONST V128 c)
+rule Step_pure/vcvtop-zero:
+  (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop epsilon sh_1 sx zero) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i* = $lanes(sh_1, c_1)
   -- if $lanes(sh_2, c) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, i)* 0^lns_1
 
 
-rule Step_pure/i32x4.dot_i16x8_s:
-  (VVCONST V128 c_1) (VVCONST V128 c_2) (I32X4.DOT_I16X8_S) ~> (VVCONST V128 c)
-  -- if k_1^k' = $lanes(SHAPE I16 8, c_1)
-  -- if k_2^k' = $lanes(SHAPE I16 8, c_2)
-  -- if $concat_bytes((i_1 i_2)*) = $imul(32, $ext(16, 32, S, k_1), $ext(16, 32, S, k_2))^k'
-  -- if j* = $iadd(32, i_1, i_2)*
-  -- if $lanes(SHAPE I32 4, c) = j*
+rule Step_pure/dot:
+  (VVCONST V128 c_1) (VVCONST V128 c_2) (DOT sh_1 sh_2 S) ~> (VVCONST V128 c)
+  -- if sh_1 = SHAPE lnt_1 lns_1
+  -- if sh_2 = SHAPE lnt_2 lns_2
+  -- if i_1 = $storagesize(lnt_1)
+  -- if i_2 = $storagesize(lnt_2)
+  -- if k_1^k' = $lanes(sh_2, c_1)
+  -- if k_2^k' = $lanes(sh_2, c_2)
+  -- if $concat_bytes((j_1 j_2)*) = $imul(i_1, $ext(i_2, i_1, S, k_1), $ext(i_2, i_1, S, k_2))^k'
+  -- if j'* = $iadd(i_1, j_1, j_2)*
+  -- if $lanes(sh_1, c) = j'*
 
 
 rule Step_pure/extmul_half:

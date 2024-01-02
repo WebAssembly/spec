@@ -770,15 +770,14 @@ rule Instr_ok/vvternop:
   C |- VVTERNOP vt vvternop : V128 V128 V128 -> V128
 
 rule Instr_ok/vvtestop:
-  C |- V128.ANY_TRUE : V128 -> I32
+  C |- VVTESTOP vt vvtestop : V128 -> I32
 
 rule Instr_ok/swizzle:
   C |- SWIZZLE sh : V128 V128 -> V128
 
 rule Instr_ok/shuffle:
   C |- SHUFFLE sh laneidx* : V128 V128 -> V128
-  -- if sh = SHAPE lnt lns
-  -- if $(laneidx<lns * 2)*
+  -- (if $(laneidx<$dim(sh) * 2))*
 
 rule Instr_ok/splat:
   C |- SPLAT sh : $unpacked(sh) -> V128
@@ -807,13 +806,7 @@ rule Instr_ok/vtestop:
   C |- ALL_TRUE sh : V128 -> I32
 
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh vcvtop sh sx : V128 -> V128
-
-rule Instr_ok/vcvtop_half:
-  C |- VCVTOP_HALF sh vcvtop hf sh sx? : V128 -> V128
-
-rule Instr_ok/vcvtop_zero:
-  C |- VCVTOP_ZERO sh vcvtop sh sx : V128 -> V128
+  C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
 
 rule Instr_ok/narrow:
   C |- NARROW sh sh sx : V128 V128 -> V128
@@ -822,7 +815,7 @@ rule Instr_ok/bitmask:
   C |- BITMASK sh : V128 -> I32
 
 rule Instr_ok/dot:
-  C |- I32X4.DOT_I16X8_S : V128 V128 -> V128
+  C |- DOT sh sh sx : V128 V128 -> V128
 
 rule Instr_ok/extmul_half:
   C |- EXTMUL_HALF sh half sh sx : V128 V128 -> V128

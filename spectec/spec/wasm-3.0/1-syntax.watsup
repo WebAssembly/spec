@@ -96,6 +96,7 @@ var x33 : s33 hint(show x)
 ;; Value types
 
 syntax nul = NULL?
+syntax zero = ZERO?
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -288,6 +289,7 @@ syntax binopVFXX = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 syntax unop_vvectype = | _VV unopVVXX
 syntax binop_vvectype = | _VV binopVVXX
 syntax ternop_vvectype = | _VV ternopVVXX
+syntax testop_vvectype = | _VV testopVVXX
 
 syntax shiftop_vectype = | _VI shiftopVIXX
 syntax unop_vectype = | _VI unopVIXX | _VF unopVFXX | POPCNT
@@ -300,6 +302,7 @@ syntax cvtop_vectype = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
 var vvunop : unop_vvectype
 var vvbinop : binop_vvectype
 var vvternop : ternop_vvectype
+var vvtestop : testop_vvectype
 
 var vishiftop : shiftop_vectype
 var vunop : unop_vectype
@@ -364,7 +367,7 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VVUNOP vectype unop_vvectype                                     hint(show %.%)
   | VVBINOP vectype binop_vvectype                                   hint(show %.%)
   | VVTERNOP vectype ternop_vvectype                                 hint(show %.%)
-  | V128.ANY_TRUE
+  | VVTESTOP vectype testop_vvectype                                 hint(show %.%)
   | SWIZZLE shape
   | SHUFFLE shape laneidx*
   | SPLAT shape                                                     hint(show %.SPLAT)
@@ -377,11 +380,9 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | ALL_TRUE shape                                                  hint(show %.ALL_TRUE)
   | BITMASK shape
   | NARROW shape shape sx
-  | VCVTOP shape cvtop_vectype shape sx
-  | VCVTOP_HALF shape cvtop_vectype half shape sx?        hint(show %X%.%#_#%#_#%X%#_#%)
-  | VCVTOP_ZERO shape cvtop_vectype shape sx
+  | VCVTOP shape cvtop_vectype half? shape sx? zero
   | EXTMUL_HALF shape half shape sx
-  | I32X4.DOT_I16X8_S
+  | DOT shape shape sx
   | EXTADD_PAIRWISE shape shape sx
   | ...
   
