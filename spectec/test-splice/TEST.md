@@ -503,7 +503,7 @@ warning: syntax `valtype` was never spliced
 warning: syntax `valtype` was never spliced
 warning: syntax `veccount` was never spliced
 warning: syntax `vectype` was never spliced
-warning: syntax `vecunit` was never spliced
+warning: syntax `lanetype` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
 warning: grammar `Bbyte` was never spliced

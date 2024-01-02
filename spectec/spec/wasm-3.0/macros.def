@@ -904,7 +904,7 @@
 .. -------
 .. |V128-vectype| mathdef:: {\K{v128}}
 
-.. VECUNIT
+.. lanetype
 .. -------
 
 .. Functions

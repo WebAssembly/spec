@@ -427,7 +427,7 @@ syntax cvtop =
 syntax memop = {ALIGN u32, OFFSET u32}
 
 ;; 1-syntax.watsup:256.1-257.25
-syntax vecunit =
+syntax lanetype =
   | I8
   | I16
   | I32
@@ -452,7 +452,7 @@ syntax fshape =
 
 ;; 1-syntax.watsup:266.1-267.47
 syntax shape =
-  | SHAPE(vecunit, veccount)
+  | SHAPE(lanetype, veccount)
 
 ;; 1-syntax.watsup:269.1-269.27
 syntax half =
@@ -549,9 +549,9 @@ syntax instr =
   | V128.ANY_TRUE
   | I8X16.SWIZZLE
   | SPLAT(shape)
-  | EXTRACT_LANE(vecunit, veccount, sx?, idx)
+  | EXTRACT_LANE(lanetype, veccount, sx?, idx)
   | REPLACE_LANE(shape, idx)
-  | VCVTOP_HALF(vecunit, veccount, cvtop_vectype, half, vecunit, veccount, sx?)
+  | VCVTOP_HALF(lanetype, veccount, cvtop_vectype, half, lanetype, veccount, sx?)
   | REF.NULL(heaptype)
   | REF.I31
   | REF.FUNC(funcidx)
@@ -1125,7 +1125,7 @@ def exp : (c_numtype, nat) -> nat
 def dim : shape -> nat
 
 ;; 3-numerics.watsup:46.1-46.67
-def width : vecunit -> nat
+def width : lanetype -> nat
 
 ;; 3-numerics.watsup:47.1-47.26
 def lanes : (shape, c_numtype) -> nat*
@@ -1137,10 +1137,10 @@ def concat : (nat*, nat) -> nat
 def index : (nat*, nat) -> nat
 
 ;; 3-numerics.watsup:50.1-50.67
-def shapeof : (vecunit, veccount) -> shape
+def shapeof : (lanetype, veccount) -> shape
 
 ;; 3-numerics.watsup:51.1-51.81
-def extend : (vecunit, vecunit, sx?, nat) -> c_numtype
+def extend : (lanetype, lanetype, sx?, nat) -> c_numtype
 
 ;; 3-numerics.watsup:53.1-53.82
 def vvunop : (unop_vectype, vectype, c_numtype) -> c_vectype
@@ -1335,9 +1335,9 @@ syntax admininstr =
   | V128.ANY_TRUE
   | I8X16.SWIZZLE
   | SPLAT(shape)
-  | EXTRACT_LANE(vecunit, veccount, sx?, idx)
+  | EXTRACT_LANE(lanetype, veccount, sx?, idx)
   | REPLACE_LANE(shape, idx)
-  | VCVTOP_HALF(vecunit, veccount, cvtop_vectype, half, vecunit, veccount, sx?)
+  | VCVTOP_HALF(lanetype, veccount, cvtop_vectype, half, lanetype, veccount, sx?)
   | REF.NULL(heaptype)
   | REF.I31
   | REF.FUNC(funcidx)
@@ -3226,10 +3226,10 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 8-reduction.watsup:267.1-272.42
   rule i8x16.swizzle {c* : c_numtype*, c' : c_numtype, cv_1 : c_numtype, cv_2 : c_numtype, i* : nat*, i'* : nat*, k^16 : nat^16}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) I8X16.SWIZZLE_admininstr], [VVCONST_admininstr(V128_vectype, c')])
-    -- if (i*{i} = $lanes(SHAPE_shape(I8_vecunit, 16), cv_2))
-    -- if (c*{c} = [$concat($lanes(SHAPE_shape(I8_vecunit, 16), cv_1), $exp(0, 240))])
+    -- if (i*{i} = $lanes(SHAPE_shape(I8_lanetype, 16), cv_2))
+    -- if (c*{c} = [$concat($lanes(SHAPE_shape(I8_lanetype, 16), cv_1), $exp(0, 240))])
     -- if (i'*{i'} = i*{i}[k]^(k<16){k})
-    -- if ($lanes(SHAPE_shape(I8_vecunit, 16), c') = c*{c}[i']*{i'})
+    -- if ($lanes(SHAPE_shape(I8_lanetype, 16), c') = c*{c}[i']*{i'})
 
   ;; 8-reduction.watsup:275.1-278.50
   rule splat {c : c_numtype, c_1 : c_numtype, nt : numtype, shape : shape}:
@@ -3238,10 +3238,10 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(shape, c) = [$exp(c_1, $dim(shape))])
 
   ;; 8-reduction.watsup:281.1-284.79
-  rule extract_lane {c_1 : c_numtype, c_2 : c_numtype, idx : idx, nt : numtype, sx? : sx?, vc : veccount, vu : vecunit}:
+  rule extract_lane {c_1 : c_numtype, c_2 : c_numtype, idx : idx, nt : numtype, sx? : sx?, vc : veccount, vu : lanetype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) EXTRACT_LANE_admininstr(vu, vc, sx?{sx}, idx)], [CONST_admininstr(nt, c_2)])
     -- if (nt = $unpacked($shapeof(vu, vc)))
-    -- if (c_2 = $extend(vu, (nt <: vecunit), sx?{sx}, $index($lanes($shapeof(vu, vc), c_1), idx)))
+    -- if (c_2 = $extend(vu, (nt <: lanetype), sx?{sx}, $index($lanes($shapeof(vu, vc), c_1), idx)))
 
   ;; 8-reduction.watsup:287.1-290.45
   rule replace_lane {c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, i* : nat*, idx : idx, nt : numtype, shape : shape}:
@@ -3250,7 +3250,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(shape, c) = i*{i}[[idx] = c_1])
 
   ;; 8-reduction.watsup:293.1-297.77
-  rule vcvtop_half {c : c_numtype, c_1 : c_numtype, hf : half, i* : nat*, sh : shape, sx? : sx?, vc_1 : veccount, vc_2 : veccount, vcvtop : cvtop_vectype, vu_1 : vecunit, vu_2 : vecunit}:
+  rule vcvtop_half {c : c_numtype, c_1 : c_numtype, hf : half, i* : nat*, sh : shape, sx? : sx?, vc_1 : veccount, vc_2 : veccount, vcvtop : cvtop_vectype, vu_1 : lanetype, vu_2 : lanetype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_HALF_admininstr(vu_2, vc_2, vcvtop, hf, vu_1, vc_1, sx?{sx})], [VVCONST_admininstr(V128_vectype, c)])
     -- if (i*{i} = $lanes($shapeof(vu_1, vc_1), c_1)[$halfop(hf, 0, vc_2) : vc_2])
     -- if (sh = $shapeof(vu_2, vc_2))

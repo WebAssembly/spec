@@ -128,8 +128,76 @@ if (C.MEM_context[x] = mt)
 if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
 (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
 if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
+Animation failed (binding inference).
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (k_1^k'{k_1} = $lanes(SHAPE_shape(I16_lanetype, 8), c_1))
+if (k_2^k'{k_2} = $lanes(SHAPE_shape(I16_lanetype, 8), c_2))
+if ($concat_bytes([i_1 i_2]*{i_1 i_2}) = $imul(32, $ext(16, 32, S_sx, k_1), $ext(16, 32, S_sx, k_2))^k'{k_1 k_2})
+if (j*{j} = $iadd(32, i_1, i_2)*{i_1 i_2})
+if ($lanes(SHAPE_shape(I32_lanetype, 4), c) = j*{j})
+...Animation failed (reorder)
+where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $imul(32, $ext(16, 32, S_sx, k_1), $ext(16, 32, S_sx, k_2))^k'{k_1 k_2}
+where j*{j} = $iadd(32, i_1, i_2)*{i_1 i_2}
+where $lanes(SHAPE_shape(I32_lanetype, 4), c) = j*{j}
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (k_1^k'{k_1} = $lanes(SHAPE_shape(I16_lanetype, 8), c_1))
+if (k_2^k'{k_2} = $lanes(SHAPE_shape(I16_lanetype, 8), c_2))
+Animation failed (binding inference).
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (sh_1 = SHAPE_shape(lnt_1, lns_1))
+if (sh_2 = SHAPE_shape(lnt_2, lns_2))
+if (i^k{i} = $lanes(sh_1, c_1))
+if ($concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i)^k{i})
+if (j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2})
+if ($lanes(sh_2, c) = j*{j})
+...Animation failed (reorder)
+where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i)^k{i}
+where j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2}
+where $lanes(sh_2, c) = j*{j}
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (sh_1 = SHAPE_shape(lnt_1, lns_1))
+if (sh_2 = SHAPE_shape(lnt_2, lns_2))
+if (i^k{i} = $lanes(sh_1, c_1))
+Animation failed (binding inference).
+if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
+if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
+...Animation failed (reorder)
+if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
+if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
+Animation failed (binding inference).
+if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
+if (l = (128 / lns))
+if ($lanes(SHAPE_shape($ishape(n), l), c) = m^l{})
+...Animation failed (reorder)
+where l = (128 / lns)
+where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
+if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 == IL Validation after pass animate...
 == Translating to AL...
+Animation failed (binding inference).
+where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $imul(32, $ext(16, 32, S_sx, k_1), $ext(16, 32, S_sx, k_2))^k'{k_1 k_2}
+where j*{j} = $iadd(32, i_1, i_2)*{i_1 i_2}
+where $lanes(SHAPE_shape(I32_lanetype, 4), c) = j*{j}
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (k_1^k'{k_1} = $lanes(SHAPE_shape(I16_lanetype, 8), c_1))
+if (k_2^k'{k_2} = $lanes(SHAPE_shape(I16_lanetype, 8), c_2))
+...Animation failed (reorder)
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (k_1^k'{k_1} = $lanes(SHAPE_shape(I16_lanetype, 8), c_1))
+if (k_2^k'{k_2} = $lanes(SHAPE_shape(I16_lanetype, 8), c_2))
+Animation failed (binding inference).
+where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i)^k{i}
+where j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2}
+where $lanes(sh_2, c) = j*{j}
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (sh_1 = SHAPE_shape(lnt_1, lns_1))
+if (sh_2 = SHAPE_shape(lnt_2, lns_2))
+if (i^k{i} = $lanes(sh_1, c_1))
+...Animation failed (reorder)
+if (|i_1*{i_1}| = |i_2*{i_2}|)
+if (sh_1 = SHAPE_shape(lnt_1, lns_1))
+if (sh_2 = SHAPE_shape(lnt_2, lns_2))
+if (i^k{i} = $lanes(sh_1, c_1))
 ...Animation failed (reorder)
 if (a < |$funcinst(z)|)
 where fi = $funcinst(z)[a]
@@ -141,6 +209,18 @@ where (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admini
 if (a < |$funcinst(z)|)
 where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
 where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr <: admininstr)*{instr}) = u_2
+Animation failed (binding inference).
+if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
+if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
+...Animation failed (reorder)
+if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
+if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
+Animation failed (binding inference).
+where l = (128 / lns)
+where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
+if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
+...Animation failed (reorder)
+if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
@@ -939,6 +1019,52 @@ invfbytes N b*
 1. Let p be $inverse_of_fbytes(N, b*).
 2. Return p.
 
+unpacked sh
+1. Assert: Due to validation, sh is of the case SHAPE.
+2. Let (SHAPE lnt lns) be sh.
+3. If the type of lnt is numtype, then:
+  a. Let nt be lnt.
+  b. Return nt.
+4. Assert: Due to validation, the type of lnt is packedtype.
+5. Return I32.
+
+dim sh
+1. Assert: Due to validation, sh is of the case SHAPE.
+2. Let (SHAPE lnt lns) be sh.
+3. Return lns.
+
+halfop hf i j
+1. If hf is LOW, then:
+  a. Return i.
+2. Assert: Due to validation, hf is HIGH.
+3. Return j.
+
+ishape nat
+1. If nat is 8, then:
+  a. Return I8.
+2. If nat is 16, then:
+  a. Return I16.
+3. If nat is 32, then:
+  a. Return I32.
+4. Assert: Due to validation, nat is 64.
+5. Return I64.
+
+forall u_0*
+1. If u_0* is [], then:
+  a. Return YetE (BoolE true).
+  b. Return YetE (BoolE false).
+2. Let [bool] ++ bool'* be u_0*.
+3. If $forall(bool'*) is not YetE (BoolE true), then:
+  a. Return YetE (BoolE false).
+4. If bool is YetE (BoolE true), then:
+  a. Return YetE (BoolE true).
+5. Return YetE (BoolE false).
+
+bool bool
+1. If bool is YetE (BoolE true), then:
+  a. Return 1.
+2. Return 0.
+
 inst_reftype mm rt
 1. Let dt* be mm.TYPE.
 2. Return $subst_all_reftype(rt, dt*).
@@ -1644,9 +1770,8 @@ execution_of_VVBINOP V128 vvbinop
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VVCONST V128 cv_1) from the stack.
-5. Assert: Due to validation, |$vvbinop(vvbinop, V128, cv_1, cv_2)| is 1.
-6. Let [cv] be $vvbinop(vvbinop, V128, cv_1, cv_2).
-7. Execute (VVCONST V128 cv).
+5. Let cv be $vvbinop(vvbinop, V128, cv_1, cv_2).
+6. Execute (VVCONST V128 cv).
 
 execution_of_VVTERNOP V128 vvternop
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1655,9 +1780,8 @@ execution_of_VVTERNOP V128 vvternop
 4. Pop (VVCONST V128 cv_2) from the stack.
 5. Assert: Due to validation, a value is on the top of the stack.
 6. Pop (VVCONST V128 cv_1) from the stack.
-7. Assert: Due to validation, |$vvternop(vvternop, V128, cv_1, cv_2, cv_3)| is 1.
-8. Let [cv] be $vvternop(vvternop, V128, cv_1, cv_2, cv_3).
-9. Execute (VVCONST V128 cv).
+7. Let cv be $vvternop(vvternop, V128, cv_1, cv_2, cv_3).
+8. Execute (VVCONST V128 cv).
 
 execution_of_V128.ANY_TRUE
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -1670,44 +1794,199 @@ execution_of_I8X16.SWIZZLE
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VVCONST V128 cv_1) from the stack.
-5. Let c* be [$concat($lanes((SHAPE I8 16), cv_1), $exp(0, 240))].
+5. Let c* be $lanes((SHAPE I8 16), cv_1) ++ 0^240.
 6. Let i* be $lanes((SHAPE I8 16), cv_2).
-7. Assert: Due to validation, k < |i*|.
-8. Let i'* be i*[k]^(k<16).
-9. Assert: Due to validation, i' < |c*|.
-10. Let c' be $inverse_of_lanes((SHAPE I8 16), c*[i']*).
-11. Execute (VVCONST V128 c').
+7. Assert: Due to validation, i*[k] < |c*|.
+8. Assert: Due to validation, k < |i*|.
+9. Let c' be $inverse_of_lanes((SHAPE I8 16), c*[i*[k]]^(k<16)).
+10. Execute (VVCONST V128 c').
 
-execution_of_SPLAT shape
+execution_of_I8X16.SHUFFLE x*
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Assert: Due to validation, k < |x*|.
+6. Let i* be $lanes((SHAPE I8 16), cv_1) ++ $lanes((SHAPE I8 16), cv_2).
+7. Assert: Due to validation, x*[k] < |i*|.
+8. Let c be $inverse_of_lanes((SHAPE I8 16), i*[x*[k]]^(k<16)).
+9. Execute (VVCONST V128 c).
+
+execution_of_SPLAT sh
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
-3. Assert: Due to validation, nt is $unpacked(shape).
-4. Let c be $inverse_of_lanes(shape, [$exp(c_1, $dim(shape))]).
+3. Assert: Due to validation, nt is $unpacked(sh).
+4. Let c be $inverse_of_lanes(sh, c_1^$dim(sh)).
 5. Execute (VVCONST V128 c).
 
-execution_of_EXTRACT_LANE vu vc sx? idx
+execution_of_EXTRACT_LANE sh u_0? laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 c_1) from the stack.
-3. Let nt be $unpacked($shapeof(vu, vc)).
-4. Let c_2 be $extend(vu, nt, sx?, $index($lanes($shapeof(vu, vc), c_1), idx)).
-5. Push (nt.CONST c_2) to the stack.
+3. Assert: Due to validation, laneidx < |$lanes(sh, c_1)|.
+4. If u_0? is not defined, then:
+  a. Let nt be $unpacked(sh).
+  b. If sh is of the case SHAPE, then:
+    1) Let (SHAPE lnt lns) be sh.
+    2) Let c_2 be $ext($storagesize(lnt), $storagesize(nt), U, $lanes(sh, c_1)[laneidx]).
+    3) Push (nt.CONST c_2) to the stack.
+5. Let nt be $unpacked(sh).
+6. If sh is of the case SHAPE, then:
+  a. Let (SHAPE lnt lns) be sh.
+  b. If u_0? is defined, then:
+    1) Let ?(sx) be u_0?.
+    2) Let c_2 be $ext($storagesize(lnt), $storagesize(nt), sx, $lanes(sh, c_1)[laneidx]).
+    3) Push (nt.CONST c_2) to the stack.
 
-execution_of_REPLACE_LANE shape idx
+execution_of_REPLACE_LANE sh laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value of value type nt is on the top of the stack.
 4. Pop (nt.CONST c_1) from the stack.
-5. Let i* be $lanes(shape, c_2).
-6. Let c be $inverse_of_lanes(shape, i* with [idx] replaced by c_1).
+5. Let i* be $lanes(sh, c_2).
+6. Let c be $inverse_of_lanes(sh, i* with [laneidx] replaced by c_1).
 7. Execute (VVCONST V128 c).
 
-execution_of_VCVTOP_HALF vu_2 vc_2 vcvtop hf vu_1 vc_1 sx?
+execution_of_VUNOP sh vunop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_1) from the stack.
+3. Let cv be $vunop(vunop, sh, cv_1).
+4. Execute (VVCONST V128 cv).
+
+execution_of_VBINOP sh vbinop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. If |$vbinop(vbinop, sh, cv_1, cv_2)| is 1, then:
+  a. Let [cv] be $vbinop(vbinop, sh, cv_1, cv_2).
+  b. Execute (VVCONST V128 cv).
+6. If $vbinop(vbinop, sh, cv_1, cv_2) is [], then:
+  a. Trap.
+
+execution_of_VRELOP sh vrelop
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Let i* be $lanes(sh, cv_1).
+6. Let j* be $lanes(sh, cv_2).
+7. Assert: Due to validation, sh is of the case SHAPE.
+8. Let (SHAPE lnt lns) be sh.
+9. Assert: Due to validation, |i*| is |j*|.
+10. Let c be $inverse_of_lanes(sh, $ext(1, $storagesize(lnt), S, $vrelop(vrelop, sh, i, j))*).
+11. Execute (VVCONST V128 c).
+
+execution_of_VISHIFTOP sh vishiftop
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 c_1) from the stack.
+5. Let i* be $lanes(sh, c_1).
+6. Assert: Due to validation, sh is of the case SHAPE.
+7. Let (SHAPE lnt lns) be sh.
+8. Let c be $inverse_of_lanes(sh, $vishiftop(vishiftop, lnt, i, n)*).
+9. Execute (VVCONST V128 c).
+
+execution_of_ALL_TRUE sh
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c) from the stack.
+3. Let i be $bool($forall(YetE (CmpE (VarE "i_1", NeOp, NatE 0))*)).
+4. Push (I32.CONST i) to the stack.
+
+execution_of_BITMASK sh
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c) from the stack.
+3. Let i_1^lns be $lanes(sh, c).
+4. Assert: Due to validation, sh is of the case SHAPE.
+5. Let (SHAPE lnt y_0) be sh.
+6. Assert: Due to validation, y_0 is lns.
+7. Let i be $inverse_of_ibits(32, $ilt_s($storagesize(lnt), i_1, 0)^lns).
+8. Push (I32.CONST i) to the stack.
+
+execution_of_NARROW sh_2 sh_1 sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 c_1) from the stack.
+5. Assert: Due to validation, sh_2 is of the case SHAPE.
+6. Let (SHAPE lnt_2 lns_2) be sh_2.
+7. Let i_1^lns_1 be $lanes(sh_1, c_1).
+8. Let i_2^lns_1 be $lanes(sh_1, c_2).
+9. Assert: Due to validation, sh_1 is of the case SHAPE.
+10. Let (SHAPE lnt_1 y_0) be sh_1.
+11. Assert: Due to validation, y_0 is lns_1.
+12. Let n_1^lns_1 be $narrow($storagesize(lnt_1), $storagesize(lnt_2), sx, i_1)^lns_1.
+13. Let n_2^lns_1 be $narrow($storagesize(lnt_1), $storagesize(lnt_2), sx, i_2)^lns_1.
+14. Let c be $inverse_of_lanes(sh_2, n_1^lns_1 ++ n_2^lns_1).
+15. Execute (VVCONST V128 c).
+
+execution_of_VCVTOP sh_2 vcvtop sh_1 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 c_1) from the stack.
-3. Let i* be $lanes($shapeof(vu_1, vc_1), c_1)[$halfop(hf, 0, vc_2) : vc_2].
-4. Let sh be $shapeof(vu_2, vc_2).
-5. Let c be $inverse_of_lanes(sh, $vcvtop(vcvtop, $width(vu_1), $width(vu_2), sx?, i*)).
-6. Execute (VVCONST V128 c).
+3. Let i* be $lanes(sh_1, c_1).
+4. Assert: Due to validation, sh_1 is of the case SHAPE.
+5. Let (SHAPE lnt_1 lns_1) be sh_1.
+6. Assert: Due to validation, sh_2 is of the case SHAPE.
+7. Let (SHAPE lnt_2 lns_2) be sh_2.
+8. Let c be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), ?(sx), i)*).
+9. Execute (VVCONST V128 c).
+
+execution_of_VCVTOP_HALF sh_2 vcvtop hf sh_1 sx?
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_1) from the stack.
+3. Assert: Due to validation, sh_1 is of the case SHAPE.
+4. Let (SHAPE lnt_1 lns_1) be sh_1.
+5. Assert: Due to validation, sh_2 is of the case SHAPE.
+6. Let (SHAPE lnt_2 lns_2) be sh_2.
+7. Let i* be $lanes(sh_1, c_1)[$halfop(hf, 0, lns_2) : lns_2].
+8. Let c be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)*).
+9. Execute (VVCONST V128 c).
+
+execution_of_VCVTOP_ZERO sh_2 vcvtop sh_1 sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_1) from the stack.
+3. Let i* be $lanes(sh_1, c_1).
+4. Assert: Due to validation, sh_1 is of the case SHAPE.
+5. Let (SHAPE lnt_1 lns_1) be sh_1.
+6. Assert: Due to validation, sh_2 is of the case SHAPE.
+7. Let (SHAPE lnt_2 lns_2) be sh_2.
+8. Let c be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), ?(sx), i)* ++ 0^lns_1).
+9. Execute (VVCONST V128 c).
+
+execution_of_I32X4.DOT_I16X8_S
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 c_1) from the stack.
+5. Assert: Due to validation, |i_1*| is |i_2*|.
+6. Assert: Due to validation, k_1^k' is $lanes((SHAPE I16 8), c_1).
+7. Assert: Due to validation, k_2^k' is $lanes((SHAPE I16 8), c_2).
+8. Execute (VVCONST V128 c).
+
+execution_of_EXTMUL_HALF sh_2 hf sh_1 sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 c_1) from the stack.
+5. Assert: Due to validation, sh_1 is of the case SHAPE.
+6. Let (SHAPE lnt_1 lns_1) be sh_1.
+7. Assert: Due to validation, sh_2 is of the case SHAPE.
+8. Let (SHAPE lnt_2 lns_2) be sh_2.
+9. Let i^k be $lanes(sh_1, c_1)[$halfop(hf, 0, lns_2) : lns_2].
+10. Let j^k be $lanes(sh_1, c_2)[$halfop(hf, 0, lns_2) : lns_2].
+11. Let c be $inverse_of_lanes(sh_2, $imul(lns_2, $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k).
+12. Execute (VVCONST V128 c).
+
+execution_of_EXTADD_PAIRWISE sh_2 sh_1 sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 c_1) from the stack.
+5. Assert: Due to validation, |i_1*| is |i_2*|.
+6. Assert: Due to validation, sh_1 is (SHAPE lnt_1 lns_1).
+7. Assert: Due to validation, sh_2 is (SHAPE lnt_2 lns_2).
+8. Assert: Due to validation, i^k is $lanes(sh_1, c_1).
+9. Execute (VVCONST V128 c).
 
 execution_of_REF.I31
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -2260,6 +2539,43 @@ execution_of_LOAD nt u_0? x mo
   d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
+execution_of_VLOAD n lns sx x mo
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If ((i + mo.OFFSET) + ((n · lns) / 8)) > |$mem(x).DATA|, then:
+  a. Trap.
+4. If $ibytes(n, m)^lns is $mem(x).DATA[((i + mo.OFFSET) + ((k · n) / 8)) : (n / 8)]^(k<lns) and $lanes((SHAPE $ishape((n · 2)) lns), c) is $ext(n, lns, sx, m)^lns, then:
+  a. Execute (VVCONST V128 c).
+
+execution_of_VLOAD_SPLAT n x mo
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If ((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|, then:
+  a. Trap.
+4. If $ibytes(n, m) is $mem(x).DATA[(i + mo.OFFSET) : (lns / 8)], then:
+  a. Execute (VVCONST V128 c).
+
+execution_of_VLOAD_ZERO n x mo
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If ((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|, then:
+  a. Trap.
+4. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
+5. Let c be $ext(n, 128, U, m).
+6. Execute (VVCONST V128 c).
+
+execution_of_VLOAD_LANE n x mo laneidx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If ((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|, then:
+  a. Trap.
+6. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
+7. Let sh be (SHAPE $ishape(n) (128 / n)).
+8. Let c be $inverse_of_lanes(sh, $lanes(sh, cv) with [laneidx] replaced by m).
+9. Execute (VVCONST V128 c).
+
 execution_of_MEMORY.SIZE x
 1. Let ((n · 64) · $Ki()) be |$mem(x).DATA|.
 2. Push (I32.CONST n) to the stack.
@@ -2439,6 +2755,17 @@ execution_of_STORE nt u_0? x mo
     1) Trap.
   c. Let b* be $ibytes(n, $wrap($size(nt), n, c)).
   d. Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
+
+execution_of_VSTORE n x mo laneidx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If ((i + mo.OFFSET) + n) > |$mem(x).DATA|, then:
+  a. Trap.
+6. If laneidx < |$lanes((SHAPE $ishape(n) (128 / n)), cv)|, then:
+  a. Let b* be $ibytes(n, $lanes((SHAPE $ishape(n) (128 / n)), cv)[laneidx]).
+  b. Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
 
 execution_of_MEMORY.GROW x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
