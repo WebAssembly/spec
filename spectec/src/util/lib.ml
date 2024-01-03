@@ -11,6 +11,11 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, y
     | [] -> failwith "split_last"
 
+  let split_last_opt = function
+    | x::[] -> [], Some x
+    | x::xs -> let ys, y = split_last xs in x::ys, Some y
+    | [] -> [], None
+
   let rec nub pred = function
     | [] -> []
     | x::xs -> x :: nub pred (List.filter (fun y -> not (pred x y)) xs)

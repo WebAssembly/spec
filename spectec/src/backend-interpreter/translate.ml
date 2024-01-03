@@ -266,7 +266,7 @@ let insert_assert exp =
         { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueC (Some (exp2expr ty)))
   | _ -> assertI (topValueC None)
 
-(* `Ast.exp list` -> `Ast.exp list * instr list` *)
+(* `Ast.exp list` -> `instr list * Ast.exp list` *)
 let handle_lhs_stack bounds =
   List.fold_left
     (fun (instrs, rest) e ->
@@ -444,14 +444,6 @@ let rec exp2cond exp =
       binC (binop, lhs, rhs)
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
-let bound_by binding e =
-  match e.it with
-  | Ast.IterE (_, (ListN ({ it = VarE { it = n; _ }; _ }, None), _)) ->
-      if Free.Set.mem n (Free.free_exp binding).varid then
-        [ insert_assert e; popI (exp2expr e) ]
-      else []
-  | _ -> []
-
 let lhs_id_ref = ref 0
 let lhs_prefix = "y_"
 let init_lhs_id () = lhs_id_ref := 0
@@ -460,7 +452,8 @@ let get_lhs_name () =
   lhs_id_ref := (lhs_id + 1);
   varE (lhs_prefix ^ (lhs_id |> string_of_int))
 
-let extract_bound_names lhs rhs targets cont = match lhs.it with
+let extract_bound_names lhs rhs targets cont =
+  match lhs.it with
   (* TODO: Make this actually consider the targets *)
   | CallE (f, args) ->
     let front_args, last_arg = Util.Lib.List.split_last args in
@@ -472,20 +465,20 @@ let extract_bound_names lhs rhs targets cont = match lhs.it with
       let names = Al.Free.free_expr e in
       names > [] && disjoint names targets in
     let traverse e =
-      let conds = ref [] in
+      let conds_ref = ref [] in
       let walker = Al.Walk.walk_expr { Al.Walk.default_config with
         pre_expr = (fun e ->
           if not (contains_bound_name e) then
             e
           else
             let new_e = get_lhs_name() in
-            conds := !conds @ [ cmpC (EqOp, new_e, e) ];
+            conds_ref := !conds_ref @ [ cmpC (EqOp, new_e, e) ];
             new_e
         );
         stop_cond_expr = contains_bound_name;
       } in
       let new_e = walker e in
-      new_e, !conds in
+      new_e, !conds_ref in
     let new_lhs, conds = traverse lhs in
     new_lhs, rhs, List.fold_right (fun c il -> [ ifI (c, il, []) ]) conds cont
 
@@ -602,67 +595,111 @@ let rec expr2let lhs rhs targets cont =
   | _ -> letI (lhs, rhs) :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
-let rulepr2instrs id exp instrs = match id.it, exp2args exp with
-  | "Eval_expr", [_; lhs; _z; rhs] ->
-    (* TODO: Name of f..? *)
-    enterI (
-      frameE (None, varE "z"),
-      listE [caseE (("FRAME_", ""), [])],
-      [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
-    ) :: instrs
-  | "Step_read", [ { it = TupE [ { it = TupE [ _s; f ]; _ }; lhs ]; _ }; rhs] ->
-    enterI (
-      frameE (None, f),
-      listE [caseE (("FRAME_", ""), [])],
-      [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
-    ) :: instrs
-  | "Ref_ok", [_s; ref; rt] ->
-    letI (rt, callE ("ref_type_of", [ ref ])) :: instrs
-  | "Reftype_sub", [_C; rt1; rt2] ->
-    [ ifI (matchC (rt1, rt2), instrs |> check_nop, []) ]
-  | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it) :: instrs
+let rulepr2instrs id exp =
+  let instr =
+    match id.it, exp2args exp with
+    | "Eval_expr", [_; lhs; _z; rhs] ->
+      (* TODO: Name of f..? *)
+      enterI (
+        frameE (None, varE "z"),
+        listE [caseE (("FRAME_", ""), [])],
+        [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
+      )
+    | "Step_read", [ { it = TupE [ { it = TupE [ _s; f ]; _ }; lhs ]; _ }; rhs] ->
+      enterI (
+        frameE (None, f),
+        listE [caseE (("FRAME_", ""), [])],
+        [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
+      )
+    | "Ref_ok", [_s; ref; rt] ->
+      letI (rt, callE ("ref_type_of", [ ref ]))
+    | "Reftype_sub", [_C; rt1; rt2] ->
+      ifI (matchC (rt1, rt2), [], [])
+    | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it)
+  in
+  [ instr ]
 
-(** `Il.instr expr list` -> `prem` -> `instr list` -> `instr list` **)
-let rec prem2instrs remain_lhs prem instrs =
+let rec iterpr2instrs pr (iter, ids) =
+  let instrs = prem2instrs pr in
+  let iter', ids' = iter2iter iter, List.map it ids in
+
+  let f = Al.Free.(
+    function
+    | { it = LetI (lhs, rhs); _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
+        let lhs_ids = intersection (free_expr lhs) ids' in
+        let rhs_ids = intersection (free_expr rhs) ids' in
+        [ letI (iterE (lhs, lhs_ids, iter'), iterE (rhs, rhs_ids, iter')) ]
+    (* TODO: iter for IfI *)
+    | i -> [i]
+  ) in
+  let walk_config = { Al.Walk.default_config with post_instr = f } in
+  Al.Walk.walk_instrs walk_config instrs
+
+and prem2instrs prem =
   match prem.it with
-  | Ast.IfPr exp -> [ ifI (exp2cond exp, instrs |> check_nop, []) ]
-  | Ast.ElsePr -> [ otherwiseI (instrs |> check_nop) ]
+  | Ast.IfPr exp -> [ ifI (exp2cond exp, [], []) ]
+  | Ast.ElsePr -> [ otherwiseI [] ]
   | Ast.LetPr (exp1, exp2, ids) ->
-      let targets = List.map it ids in
-      let instrs' = List.concat_map (bound_by exp1) remain_lhs @ instrs in
-      init_lhs_id();
-      expr2let (exp2expr exp1) (exp2expr exp2) targets instrs'
-  | Ast.RulePr (id, _, exp) -> rulepr2instrs id exp instrs
-  | Ast.IterPr _ -> iterpr2instr remain_lhs prem instrs
+    init_lhs_id ();
+    let targets = List.map it ids in
+    expr2let (exp2expr exp1) (exp2expr exp2) targets []
+  | Ast.RulePr (id, _, exp) -> rulepr2instrs id exp
+  | Ast.IterPr (pr, iterexp) -> iterpr2instrs pr iterexp
 
-and iterpr2instr remain_lhs pr next_il =
-  match pr.it with
-  (* Inductive case *)
-  | Ast.IterPr (pr, (iter, ids)) ->
-    let instrs = prem2instrs remain_lhs pr next_il in
 
-    let iter' = iter2iter iter in
-    let ids' = List.map (fun id -> id.it) ids in
-    let f = Al.Free.(
-      function
-      | { it = LetI (lhs, rhs); _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
-          let lhs_ids = intersection (free_expr lhs) ids' in
-          let rhs_ids = intersection (free_expr rhs) ids' in
-          [ letI (iterE (lhs, lhs_ids, iter'), iterE (rhs, rhs_ids, iter')) ]
-      (* TODO: iter for IfI *)
-      | i -> [i]
-    ) in
-    let walk_config = { Al.Walk.default_config with post_instr = f } in
-    Al.Walk.walk_instrs walk_config instrs
-  | _ -> failwith "Unreachable: not an IterPr"
+(* Insert `target` at the innermost if instruction *)
+let rec insert_instrs target il =
+  match Util.Lib.List.split_last_opt il with
+  | [], Some { it = OtherwiseI il'; _ } -> [ otherwiseI (il' @ check_nop target) ]
+  | h, Some { it = IfI (cond, il', []); _ } ->
+    h @ [ ifI (cond, insert_instrs (check_nop target) il' , []) ]
+  | _ -> il @ target
 
-(** `Il.instr expr list` -> `prem list` -> `instr list` -> `instr list` **)
-let prems2instrs remain_lhs = List.fold_right (prem2instrs remain_lhs)
+
+(* `premise list` -> `instr list` -> `instr list` *)
+let prems2instrs =
+  List.fold_right (fun prem il -> prem2instrs prem |> insert_instrs il)
+
+(* Assume that only the iter variable is unbound in pop instruction *)
+let get_unbound_variable = function
+  | [ _; { it = PopI ({ it = IterE (_, _, ListN ({ it = VarE x; _ }, _)); _ }); _ } ] -> x
+  | instrs ->
+    Al.Print.string_of_instrs 0 instrs
+    |> Printf.sprintf "Invalid instruction for deferred pop: %s"
+    |> failwith
+
+(* Translate and insert `deferred_exp` right after the unbound variable become bound *)
+let insert_deferred_pop deferred_pop =
+
+  let f instr =
+    let unbound_variable = get_unbound_variable deferred_pop in
+    match instr.it with
+    | LetI (lhs, _) ->
+      if Al.Free.free_expr lhs |> List.exists ((=) unbound_variable) then
+        instr :: deferred_pop
+      else
+        [ instr ]
+    | _ -> [ instr ] in
+
+  let walk_config = { Al.Walk.default_config with post_instr = f } in
+  Al.Walk.walk_instrs walk_config
 
 (** reduction -> `instr list` **)
 
-let reduction2instrs remain_lhs (_, rhs, prems, _) =
-  prems2instrs remain_lhs prems (rhs2instrs rhs |> check_nop)
+let reduction2instrs deferred_lhs reduction_group =
+  let _, rhs, prems, _ = reduction_group in
+
+  (* Translate deferred lhs *)
+  let deferred_pops =
+    List.map (fun exp -> [ insert_assert exp; popI (exp2expr exp) ]) deferred_lhs in 
+
+  (* Translate rhs *)
+  rhs2instrs rhs
+  |> check_nop
+  (* Translate premises *)
+  |> prems2instrs prems
+  (* Insert deferred pop instructions *)
+  |> List.fold_right insert_deferred_pop deferred_pops
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec split_context_winstr ?(note : Ast.typ option) name stack =
@@ -731,20 +768,20 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let inner_params = ref None in
   let instrs = state_instrs @ match context with
     | [(vs, []), None ] ->
-      let pop_instrs, remain = handle_lhs_stack bounds vs in
+      let pop_instrs, deferred_exps = handle_lhs_stack bounds vs in
       let inner_pop_instrs = handle_context_winstr winstr in
 
       let instrs = match reduction_group |> Util.Lib.List.split_last with
       (* No premise for last reduction rule: either *)
       | hds, (_, rhs, [], _) when List.length hds > 0 ->
-          assert (List.length remain = 0);
+          assert (List.length deferred_exps = 0);
           let blocks = List.map (reduction2instrs []) hds in
           let either_body1 = List.fold_right Transpile.merge blocks [] in
           let either_body2 = rhs2instrs rhs |> check_nop in
           eitherI (either_body1, either_body2) |> Transpile.push_either
       (* Normal case *)
       | _ ->
-          let blocks = List.map (reduction2instrs remain) reduction_group in
+          let blocks = List.map (reduction2instrs deferred_exps) reduction_group in
           List.fold_right Transpile.merge blocks [] in
 
       pop_instrs @ inner_pop_instrs @ instrs
@@ -867,12 +904,12 @@ let config_helper2instrs before after arity return clause =
     let enter =
       enterI (frameE (Some arity, varE f.it), listE ([caseE (("FRAME_", ""), [])]), rhs2instrs lhs)
     in
-    before @ enter :: after @ return |> prems2instrs [] prems
+    before @ enter :: after @ return |> prems2instrs prems
   | _ -> failwith "unreachable"
 
 let normal_helper2instrs clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  prems2instrs [] prems [ returnI (Option.some (exp2expr e2)) ]
+  [ returnI (Option.some (exp2expr e2)) ] |> prems2instrs prems
 
 (** Main translation for helper functions **)
 let helpers2algo partial_funcs def =
