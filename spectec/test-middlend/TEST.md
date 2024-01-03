@@ -3611,7 +3611,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -8487,7 +8487,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -13366,7 +13366,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -18255,7 +18255,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -23152,7 +23152,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -28171,7 +28171,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
@@ -29320,7 +29320,7 @@ Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 if (t = $valtype_numtype(numtype))
 if (C.DATA_context[y] = OK)
 ...Animation failed (reorder)
-where $valtype_numtype(numtype) = t
+where t = $valtype_numtype(numtype)
 if (y < |C.DATA_context|)
 if (x < |C.TYPE_context|)
 if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
@@ -29338,44 +29338,6 @@ if (x < |C.TYPE_context|)
 if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 if (C.DATA_context[y] = OK)
 Animation failed (binding inference).
-if (|j_1*{j_1}| = |j_2*{j_2}|)
-if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-if (i_1 = $storagesize($storagetype_lanetype(lnt_1)))
-if (i_2 = $storagesize($storagetype_lanetype(lnt_2)))
-if (k_1^k'{k_1} = $lanes(sh_2, c_1))
-if (k_2^k'{k_2} = $lanes(sh_2, c_2))
-if ($concat_bytes([j_1 j_2]*{j_1 j_2}) = $imul(i_1, $ext(i_2, i_1, S_sx, k_1), $ext(i_2, i_1, S_sx, k_2))^k'{k_1 k_2})
-if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
-if ($lanes(sh_1, c) = j'*{j'})
-...Animation failed (reorder)
-where $concat_bytes([j_1 j_2]*{j_1 j_2}) = $imul(i_1, $ext(i_2, i_1, S_sx, k_1), $ext(i_2, i_1, S_sx, k_2))^k'{k_1 k_2}
-where j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2}
-where $lanes(sh_1, c) = j'*{j'}
-if (|j_1*{j_1}| = |j_2*{j_2}|)
-if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-if (i_1 = $storagesize($storagetype_lanetype(lnt_1)))
-if (i_2 = $storagesize($storagetype_lanetype(lnt_2)))
-if (k_1^k'{k_1} = $lanes(sh_2, c_1))
-if (k_2^k'{k_2} = $lanes(sh_2, c_2))
-Animation failed (binding inference).
-if (|i_1*{i_1}| = |i_2*{i_2}|)
-if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-if (i^k{i} = $lanes(sh_1, c_1))
-if ($concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i)^k{i})
-if (j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2})
-if ($lanes(sh_2, c) = j*{j})
-...Animation failed (reorder)
-where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i)^k{i}
-where j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2}
-where $lanes(sh_2, c) = j*{j}
-if (|i_1*{i_1}| = |i_2*{i_2}|)
-if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-if (i^k{i} = $lanes(sh_1, c_1))
-Animation failed (binding inference).
 if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
 if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
 ...Animation failed (reorder)
@@ -29386,8 +29348,8 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 if (l = (128 / lns))
 if ($lanes(SHAPE_shape($ishape(n), l), c) = m^l{})
 ...Animation failed (reorder)
-where l = (128 / lns)
 where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
+where (128 / lns) = l
 if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 
 ;; 0-aux.watsup:14.1-14.15
@@ -32561,7 +32523,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if (y < |C.DATA_context|)
     -- if (x < |C.TYPE_context|)
     -- if (C.DATA_context[y] = OK)
-    -- where $valtype_numtype(numtype) = t
+    -- where t = $valtype_numtype(numtype)
     -- if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
 
   ;; 6-typing.watsup:904.1-908.23
@@ -32711,10 +32673,10 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, LOAD_instr(nt, (n, sx)?{n sx}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [$valtype_numtype(nt)]))
     -- if (x < |C.MEM_context|)
     -- if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-    -- where $numtype_inn(inn) = nt
     -- where mt = C.MEM_context[x]
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
+    -- where $numtype_inn(inn) = nt
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
@@ -32735,10 +32697,10 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule store-1 {C : context, inn : inn, mt : memtype, n? : n?, n_A : n, n_O : n, nt : numtype, x : idx, o0 : nat, o1? : nat?}:
     `%|-%:%`(C, STORE_instr(nt, n?{n}, x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype $valtype_numtype(nt)], []))
     -- if (x < |C.MEM_context|)
-    -- where $numtype_inn(inn) = nt
     -- where mt = C.MEM_context[x]
     -- where ?(o0) = $size($valtype_numtype(nt))
     -- (where ?(o1) = $size($valtype_numtype(nt)))?{o1}
+    -- where $numtype_inn(inn) = nt
     -- if ((n?{n} = ?()) <=> (o1?{o1} = ?()))
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
@@ -33423,7 +33385,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- where $lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2}
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- where i*{i} = $lanes(sh_1, c_1)
     -- where SHAPE_shape(lnt_1, lns_1) = sh_1
@@ -33449,16 +33411,16 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 8-reduction.watsup:388.1-398.30
   rule dot {c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, i_1 : nat, i_2 : nat, j'* : nat*, j_1* : nat*, j_2* : nat*, k' : nat, k_1^k' : nat^k', k_2^k' : nat^k', lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VVCONST_admininstr(V128_vectype, c_2) DOT_admininstr(sh_1, sh_2, S_sx)], [VVCONST_admininstr(V128_vectype, c)])
+    -- where k_1^k'{k_1} = $lanes(sh_2, c_1)
+    -- where SHAPE_shape(lnt_1, lns_1) = sh_1
+    -- where SHAPE_shape(lnt_2, lns_2) = sh_2
+    -- where i_1 = $storagesize($storagetype_lanetype(lnt_1))
+    -- where i_2 = $storagesize($storagetype_lanetype(lnt_2))
+    -- where k_2^k'{k_2} = $lanes(sh_2, c_2)
     -- where $concat_bytes([j_1 j_2]*{j_1 j_2}) = $imul(i_1, $ext(i_2, i_1, S_sx, k_1), $ext(i_2, i_1, S_sx, k_2))^k'{k_1 k_2}
+    -- if (|j_1*{j_1}| = |j_2*{j_2}|)
     -- where j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2}
     -- where $lanes(sh_1, c) = j'*{j'}
-    -- if (|j_1*{j_1}| = |j_2*{j_2}|)
-    -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-    -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-    -- if (i_1 = $storagesize($storagetype_lanetype(lnt_1)))
-    -- if (i_2 = $storagesize($storagetype_lanetype(lnt_2)))
-    -- if (k_1^k'{k_1} = $lanes(sh_2, c_1))
-    -- if (k_2^k'{k_2} = $lanes(sh_2, c_2))
 
   ;; 8-reduction.watsup:401.1-407.151
   rule extmul_half {c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -33472,13 +33434,13 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
   ;; 8-reduction.watsup:410.1-417.29
   rule extadd_pairwise {c : c_numtype, c_1 : c_numtype, c_2 : c_numtype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VVCONST_admininstr(V128_vectype, c_2) EXTADD_PAIRWISE_admininstr(sh_2, sh_1, sx)], [VVCONST_admininstr(V128_vectype, c)])
+    -- where i^k{i} = $lanes(sh_1, c_1)
+    -- where SHAPE_shape(lnt_1, lns_1) = sh_1
+    -- where SHAPE_shape(lnt_2, lns_2) = sh_2
     -- where $concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i)^k{i}
+    -- if (|i_1*{i_1}| = |i_2*{i_2}|)
     -- where j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2}
     -- where $lanes(sh_2, c) = j*{j}
-    -- if (|i_1*{i_1}| = |i_2*{i_2}|)
-    -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
-    -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
-    -- if (i^k{i} = $lanes(sh_1, c_1))
 
   ;; 8-reduction.watsup:424.1-425.60
   rule ref.i31 {i : nat}:
@@ -33857,8 +33819,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, i) CONST_admininstr(I32_numtype, j) CONST_admininstr(I32_numtype, n) ARRAY.INIT_DATA_admininstr(x, y)]), [REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, i) CONST_admininstr(nt, c) ARRAY.SET_admininstr(x) REF.ARRAY_ADDR_admininstr(a) CONST_admininstr(I32_numtype, (i + 1)) CONST_admininstr(I32_numtype, (j + ($storagesize(zt) / 8))) CONST_admininstr(I32_numtype, (n - 1)) ARRAY.INIT_DATA_admininstr(x, y)])
     -- otherwise
     -- where ARRAY_comptype(`%%`(mut, zt)) = $expanddt($type(z, x))
-    -- where $ztbytes(zt, c) = $data(z, y).DATA_datainst[j : ($storagesize(zt) / 8)]
     -- where nt = $unpacknumtype(zt)
+    -- where $ztbytes(zt, c) = $data(z, y).DATA_datainst[j : ($storagesize(zt) / 8)]
 
   ;; 8-reduction.watsup:719.1-721.27
   rule local.get {val : val, x : idx, z : state}:
@@ -33969,8 +33931,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:844.1-846.61
   rule load-pack-val {c : c_numtype, i : nat, mo : memop, n : n, nt : numtype, sx : sx, x : idx, z : state, o0 : nat}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) LOAD_admininstr(nt, ?((n, sx)), x, mo)]), [CONST_admininstr(nt, $ext(n, o0, sx, c))])
-    -- where $ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
     -- where ?(o0) = $size($valtype_numtype(nt))
+    -- where $ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
 
   ;; 8-reduction.watsup:849.1-851.57
   rule vload-oob {i : nat, lns : lanesize, mo : memop, n : n, sx : sx, x : idx, z : state}:
@@ -33991,8 +33953,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:862.1-866.44
   rule vload_splat-val {c : c_numtype, i : nat, l : labelidx, lns : lanesize, m : m, mo : memop, n : n, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_SPLAT_admininstr(n, x, mo)]), [VVCONST_admininstr(V128_vectype, c)])
-    -- where l = (128 / lns)
     -- where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
+    -- where (128 / lns) = l
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 
   ;; 8-reduction.watsup:868.1-870.51
@@ -34014,8 +33976,8 @@ relation Step_read: `%~>%*`(config, admininstr*)
   ;; 8-reduction.watsup:881.1-885.54
   rule vload_lane-val {c : c_numtype, cv : c_vectype, i : nat, laneidx : laneidx, m : m, mo : memop, n : n, sh : shape, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VVCONST_admininstr(V128_vectype, cv) VLOAD_LANE_admininstr(n, x, mo, laneidx)]), [VVCONST_admininstr(V128_vectype, c)])
-    -- where $ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
     -- where sh = SHAPE_shape($ishape(n), (128 / n))
+    -- where $ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
     -- where $lanes(sh, c) = $lanes(sh, cv)[[laneidx] = m]
 
   ;; 8-reduction.watsup:914.1-916.44

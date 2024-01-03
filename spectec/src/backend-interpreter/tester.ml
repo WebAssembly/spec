@@ -21,8 +21,13 @@ let contains substring str =
   with Not_found ->
     false
 
+let readdir_sorted path =
+  let a = Sys.readdir path in
+  Array.sort compare a;
+  a
+
 let rec readdir_with_path path =
-  Sys.readdir path
+  readdir_sorted path
   |> Array.map (Filename.concat path)
   |> Array.to_list
   |> List.concat_map (fun p ->

@@ -3612,7 +3612,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, c) = n_1^lns_1{n_1} :: n_2^lns_1{n_2})
 
   ;; 8-reduction.watsup:364.1-369.92
-  rule vcvtop {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
+  rule vcvtop-normal {c : c_numtype, c_1 : c_numtype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, c_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), `ZERO%?`(?()))], [VVCONST_admininstr(V128_vectype, c)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))

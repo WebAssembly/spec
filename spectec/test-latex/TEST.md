@@ -1,738 +1,6 @@
 # Preview
 
 ```sh
-<<<<<<< HEAD
-$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l -p -d spec-splice.in.tex -w)
-== Parsing...
-== Elaboration...
-== IL Validation...
-== Latex Generation...
-warning: syntax `E` was never spliced
-warning: syntax `absheaptype` was never spliced
-warning: syntax `absheaptype` was never spliced
-warning: syntax `addr` was never spliced
-warning: syntax `addrref` was never spliced
-warning: syntax `admininstr` was never spliced
-warning: syntax `arrayaddr` was never spliced
-warning: syntax `arrayinst` was never spliced
-warning: syntax `binopFXX` was never spliced
-warning: syntax `binopIXX` was never spliced
-warning: syntax `binop_numtype` was never spliced
-warning: syntax `blocktype` was never spliced
-warning: syntax `byte` was never spliced
-warning: syntax `c_numtype` was never spliced
-warning: syntax `c_packedtype` was never spliced
-warning: syntax `c_vectype` was never spliced
-warning: syntax `castop` was never spliced
-warning: syntax `char` was never spliced
-warning: syntax `code` was never spliced
-warning: syntax `comptype` was never spliced
-warning: syntax `config` was never spliced
-warning: syntax `context` was never spliced
-warning: syntax `cvtop` was never spliced
-warning: syntax `data` was never spliced
-warning: syntax `dataaddr` was never spliced
-warning: syntax `dataidx` was never spliced
-warning: syntax `datainst` was never spliced
-warning: syntax `datamode` was never spliced
-warning: syntax `datatype` was never spliced
-warning: syntax `deftype` was never spliced
-warning: syntax `elem` was never spliced
-warning: syntax `elemaddr` was never spliced
-warning: syntax `elemidx` was never spliced
-warning: syntax `eleminst` was never spliced
-warning: syntax `elemmode` was never spliced
-warning: syntax `elemtype` was never spliced
-warning: syntax `export` was never spliced
-warning: syntax `exportinst` was never spliced
-warning: syntax `externidx` was never spliced
-warning: syntax `externval` was never spliced
-warning: syntax `f32` was never spliced
-warning: syntax `f64` was never spliced
-warning: syntax `fN` was never spliced
-warning: syntax `fNmag` was never spliced
-warning: syntax `fieldtype` was never spliced
-warning: syntax `fieldval` was never spliced
-warning: syntax `fin` was never spliced
-warning: syntax `fnn` was never spliced
-warning: syntax `frame` was never spliced
-warning: syntax `func` was never spliced
-warning: syntax `funcaddr` was never spliced
-warning: syntax `funcidx` was never spliced
-warning: syntax `funcinst` was never spliced
-warning: syntax `global` was never spliced
-warning: syntax `globaladdr` was never spliced
-warning: syntax `globalidx` was never spliced
-warning: syntax `globalinst` was never spliced
-warning: syntax `heaptype` was never spliced
-warning: syntax `heaptype` was never spliced
-warning: syntax `hostaddr` was never spliced
-warning: syntax `iN` was never spliced
-warning: syntax `idx` was never spliced
-warning: syntax `import` was never spliced
-warning: syntax `init` was never spliced
-warning: syntax `inn` was never spliced
-warning: syntax `instr/reference` was never spliced
-warning: syntax `instr/heap` was never spliced
-warning: syntax `instr/table` was never spliced
-warning: syntax `instrtype` was never spliced
-warning: syntax `labelidx` was never spliced
-warning: syntax `local` was never spliced
-warning: syntax `localidx` was never spliced
-warning: syntax `localtype` was never spliced
-warning: syntax `m` was never spliced
-warning: syntax `mem` was never spliced
-warning: syntax `memaddr` was never spliced
-warning: syntax `memidx` was never spliced
-warning: syntax `memidxop` was never spliced
-warning: syntax `meminst` was never spliced
-warning: syntax `memop` was never spliced
-warning: syntax `module` was never spliced
-warning: syntax `moduleinst` was never spliced
-warning: syntax `mut` was never spliced
-warning: syntax `n` was never spliced
-warning: syntax `name` was never spliced
-warning: syntax `nul` was never spliced
-warning: syntax `num` was never spliced
-warning: syntax `numtype` was never spliced
-warning: syntax `oktypeidx` was never spliced
-warning: syntax `oktypeidxnat` was never spliced
-warning: syntax `packedtype` was never spliced
-warning: syntax `packedval` was never spliced
-warning: syntax `rectype` was never spliced
-warning: syntax `ref` was never spliced
-warning: syntax `reftype` was never spliced
-warning: syntax `relopFXX` was never spliced
-warning: syntax `relopIXX` was never spliced
-warning: syntax `relop_numtype` was never spliced
-warning: syntax `result` was never spliced
-warning: syntax `resulttype` was never spliced
-warning: syntax `s33` was never spliced
-warning: syntax `sN` was never spliced
-warning: syntax `start` was never spliced
-warning: syntax `state` was never spliced
-warning: syntax `storagetype` was never spliced
-warning: syntax `store` was never spliced
-warning: syntax `structaddr` was never spliced
-warning: syntax `structinst` was never spliced
-warning: syntax `subtype` was never spliced
-warning: syntax `subtype` was never spliced
-warning: syntax `sx` was never spliced
-warning: syntax `table` was never spliced
-warning: syntax `tableaddr` was never spliced
-warning: syntax `tableidx` was never spliced
-warning: syntax `tableinst` was never spliced
-warning: syntax `testopFXX` was never spliced
-warning: syntax `testopIXX` was never spliced
-warning: syntax `testop_numtype` was never spliced
-warning: syntax `type` was never spliced
-warning: syntax `typeidx` was never spliced
-warning: syntax `typevar` was never spliced
-warning: syntax `u128` was never spliced
-warning: syntax `u31` was never spliced
-warning: syntax `u32` was never spliced
-warning: syntax `u64` was never spliced
-warning: syntax `uN` was never spliced
-warning: syntax `unopFXX` was never spliced
-warning: syntax `unopIXX` was never spliced
-warning: syntax `unop_numtype` was never spliced
-warning: syntax `val` was never spliced
-warning: syntax `valtype` was never spliced
-warning: syntax `valtype` was never spliced
-warning: syntax `vectype` was never spliced
-warning: grammar `Babsheaptype` was never spliced
-warning: grammar `Bblocktype` was never spliced
-warning: grammar `Bbyte` was never spliced
-warning: grammar `Bcastop` was never spliced
-warning: grammar `Bcode` was never spliced
-warning: grammar `Bcodesec` was never spliced
-warning: grammar `Bcomptype` was never spliced
-warning: grammar `Bcustom` was never spliced
-warning: grammar `Bcustomsec` was never spliced
-warning: grammar `Bdata` was never spliced
-warning: grammar `Bdatacnt` was never spliced
-warning: grammar `Bdatacntsec` was never spliced
-warning: grammar `Bdataidx` was never spliced
-warning: grammar `Bdatasec` was never spliced
-warning: grammar `Belem` was never spliced
-warning: grammar `Belemidx` was never spliced
-warning: grammar `Belemkind` was never spliced
-warning: grammar `Belemsec` was never spliced
-warning: grammar `Bexport` was never spliced
-warning: grammar `Bexportsec` was never spliced
-warning: grammar `Bexpr` was never spliced
-warning: grammar `Bexternidx` was never spliced
-warning: grammar `Bexterntype` was never spliced
-warning: grammar `Bf` was never spliced
-warning: grammar `Bf32` was never spliced
-warning: grammar `Bf64` was never spliced
-warning: grammar `Bfieldtype` was never spliced
-warning: grammar `Bfunc` was never spliced
-warning: grammar `Bfuncidx` was never spliced
-warning: grammar `Bfuncsec` was never spliced
-warning: grammar `Bglobal` was never spliced
-warning: grammar `Bglobalidx` was never spliced
-warning: grammar `Bglobalsec` was never spliced
-warning: grammar `Bglobaltype` was never spliced
-warning: grammar `Bheaptype` was never spliced
-warning: grammar `Bi` was never spliced
-warning: grammar `Bimport` was never spliced
-warning: grammar `Bimportsec` was never spliced
-warning: grammar `Binstr/control` was never spliced
-warning: grammar `Binstr/reference` was never spliced
-warning: grammar `Binstr/struct` was never spliced
-warning: grammar `Binstr/parametric` was never spliced
-warning: grammar `Binstr/variable` was never spliced
-warning: grammar `Binstr/table` was never spliced
-warning: grammar `Binstr/memory` was never spliced
-warning: grammar `Binstr/numeric-const` was never spliced
-warning: grammar `Binstr/numeric-test-i32` was never spliced
-warning: grammar `Binstr/numeric-rel-i32` was never spliced
-warning: grammar `Binstr/numeric-test-i64` was never spliced
-warning: grammar `Binstr/numeric-rel-i64` was never spliced
-warning: grammar `Binstr/numeric-rel-f32` was never spliced
-warning: grammar `Binstr/numeric-rel-f64` was never spliced
-warning: grammar `Binstr/numeric-un-i32` was never spliced
-warning: grammar `Binstr/numeric-bin-i32` was never spliced
-warning: grammar `Binstr/numeric-un-i64` was never spliced
-warning: grammar `Binstr/numeric-bin-i64` was never spliced
-warning: grammar `Binstr/numeric-un-f32` was never spliced
-warning: grammar `Binstr/numeric-bin-f32` was never spliced
-warning: grammar `Binstr/numeric-un-f64` was never spliced
-warning: grammar `Binstr/numeric-bin-f64` was never spliced
-warning: grammar `Binstr/numeric-cvt` was never spliced
-warning: grammar `Binstr/numeric-extend` was never spliced
-warning: grammar `Blabelidx` was never spliced
-warning: grammar `Blimits` was never spliced
-warning: grammar `Blocalidx` was never spliced
-warning: grammar `Blocals` was never spliced
-warning: grammar `Bmem` was never spliced
-warning: grammar `Bmemidx` was never spliced
-warning: grammar `Bmemop` was never spliced
-warning: grammar `Bmemsec` was never spliced
-warning: grammar `Bmemtype` was never spliced
-warning: grammar `Bmodule` was never spliced
-warning: grammar `Bmut` was never spliced
-warning: grammar `Bname` was never spliced
-warning: grammar `Bnumtype` was never spliced
-warning: grammar `Bpackedtype` was never spliced
-warning: grammar `Brectype` was never spliced
-warning: grammar `Breftype` was never spliced
-warning: grammar `Bresulttype` was never spliced
-warning: grammar `Bs` was never spliced
-warning: grammar `Bs33` was never spliced
-warning: grammar `Bsection_` was never spliced
-warning: grammar `Bstart` was never spliced
-warning: grammar `Bstartsec` was never spliced
-warning: grammar `Bstoragetype` was never spliced
-warning: grammar `Bsubtype` was never spliced
-warning: grammar `Btable` was never spliced
-warning: grammar `Btableidx` was never spliced
-warning: grammar `Btablesec` was never spliced
-warning: grammar `Btabletype` was never spliced
-warning: grammar `Btype` was never spliced
-warning: grammar `Btypeidx` was never spliced
-warning: grammar `Btypesec` was never spliced
-warning: grammar `Bu` was never spliced
-warning: grammar `Bu32` was never spliced
-warning: grammar `Bu64` was never spliced
-warning: grammar `Bvaltype` was never spliced
-warning: grammar `Bvec` was never spliced
-warning: grammar `Bvectype` was never spliced
-warning: rule `Blocktype_ok/void` was never spliced
-warning: rule `Blocktype_ok/result` was never spliced
-warning: rule `Blocktype_ok/typeidx` was never spliced
-warning: rule `Comptype_ok/struct` was never spliced
-warning: rule `Comptype_ok/array` was never spliced
-warning: rule `Comptype_ok/func` was never spliced
-warning: rule `Comptype_sub/struct` was never spliced
-warning: rule `Comptype_sub/array` was never spliced
-warning: rule `Comptype_sub/func` was never spliced
-warning: rule `Data_ok` was never spliced
-warning: rule `Datamode_ok/active` was never spliced
-warning: rule `Datamode_ok/passive` was never spliced
-warning: rule `Deftype_ok` was never spliced
-warning: rule `Deftype_sub/refl` was never spliced
-warning: rule `Deftype_sub/super` was never spliced
-warning: rule `Elem_ok` was never spliced
-warning: rule `Elemmode_ok/active` was never spliced
-warning: rule `Elemmode_ok/passive` was never spliced
-warning: rule `Elemmode_ok/declare` was never spliced
-warning: rule `Eval_expr` was never spliced
-warning: rule `Expand` was never spliced
-warning: rule `Export_ok` was never spliced
-warning: rule `Expr_const` was never spliced
-warning: rule `Expr_ok` was never spliced
-warning: rule `Expr_ok_const` was never spliced
-warning: rule `Externidx_ok/func` was never spliced
-warning: rule `Externidx_ok/global` was never spliced
-warning: rule `Externidx_ok/table` was never spliced
-warning: rule `Externidx_ok/mem` was never spliced
-warning: rule `Externtype_ok/func` was never spliced
-warning: rule `Externtype_ok/global` was never spliced
-warning: rule `Externtype_ok/table` was never spliced
-warning: rule `Externtype_ok/mem` was never spliced
-warning: rule `Externtype_sub/func` was never spliced
-warning: rule `Externtype_sub/global` was never spliced
-warning: rule `Externtype_sub/table` was never spliced
-warning: rule `Externtype_sub/mem` was never spliced
-warning: rule `Fieldtype_ok` was never spliced
-warning: rule `Fieldtype_sub/const` was never spliced
-warning: rule `Fieldtype_sub/var` was never spliced
-warning: rule `Func_ok` was never spliced
-warning: rule `Functype_ok` was never spliced
-warning: rule `Functype_sub` was never spliced
-warning: rule `Global_ok` was never spliced
-warning: rule `Globals_ok/empty` was never spliced
-warning: rule `Globals_ok/cons` was never spliced
-warning: rule `Globaltype_ok` was never spliced
-warning: rule `Globaltype_sub/const` was never spliced
-warning: rule `Globaltype_sub/var` was never spliced
-warning: rule `Heaptype_ok/abs` was never spliced
-warning: rule `Heaptype_ok/typeidx` was never spliced
-warning: rule `Heaptype_ok/rec` was never spliced
-warning: rule `Heaptype_sub/refl` was never spliced
-warning: rule `Heaptype_sub/trans` was never spliced
-warning: rule `Heaptype_sub/eq-any` was never spliced
-warning: rule `Heaptype_sub/i31-eq` was never spliced
-warning: rule `Heaptype_sub/struct-eq` was never spliced
-warning: rule `Heaptype_sub/array-eq` was never spliced
-warning: rule `Heaptype_sub/struct` was never spliced
-warning: rule `Heaptype_sub/array` was never spliced
-warning: rule `Heaptype_sub/func` was never spliced
-warning: rule `Heaptype_sub/def` was never spliced
-warning: rule `Heaptype_sub/typeidx-l` was never spliced
-warning: rule `Heaptype_sub/typeidx-r` was never spliced
-warning: rule `Heaptype_sub/rec` was never spliced
-warning: rule `Heaptype_sub/none` was never spliced
-warning: rule `Heaptype_sub/nofunc` was never spliced
-warning: rule `Heaptype_sub/noextern` was never spliced
-warning: rule `Heaptype_sub/bot` was never spliced
-warning: rule `Import_ok` was never spliced
-warning: rule `Instr_const/const` was never spliced
-warning: rule `Instr_const/ref.null` was never spliced
-warning: rule `Instr_const/ref.func` was never spliced
-warning: rule `Instr_const/global.get` was never spliced
-warning: rule `Instr_const/binop` was never spliced
-warning: rule `Instr_ok/select-expl` was never spliced
-warning: rule `Instr_ok/select-impl` was never spliced
-warning: rule `Instr_ok/br` was never spliced
-warning: rule `Instr_ok/br_if` was never spliced
-warning: rule `Instr_ok/br_table` was never spliced
-warning: rule `Instr_ok/br_on_null` was never spliced
-warning: rule `Instr_ok/br_on_non_null` was never spliced
-warning: rule `Instr_ok/br_on_cast` was never spliced
-warning: rule `Instr_ok/br_on_cast_fail` was never spliced
-warning: rule `Instr_ok/return` was never spliced
-warning: rule `Instr_ok/call` was never spliced
-warning: rule `Instr_ok/call_ref` was never spliced
-warning: rule `Instr_ok/call_indirect` was never spliced
-warning: rule `Instr_ok/return_call` was never spliced
-warning: rule `Instr_ok/return_call_ref` was never spliced
-warning: rule `Instr_ok/return_call_indirect` was never spliced
-warning: rule `Instr_ok/const` was never spliced
-warning: rule `Instr_ok/unop` was never spliced
-warning: rule `Instr_ok/binop` was never spliced
-warning: rule `Instr_ok/testop` was never spliced
-warning: rule `Instr_ok/relop` was never spliced
-warning: rule `Instr_ok/extend` was never spliced
-warning: rule `Instr_ok/reinterpret` was never spliced
-warning: rule `Instr_ok/ref.null` was never spliced
-warning: rule `Instr_ok/ref.func` was never spliced
-warning: rule `Instr_ok/ref.i31` was never spliced
-warning: rule `Instr_ok/ref.is_null` was never spliced
-warning: rule `Instr_ok/ref.as_non_null` was never spliced
-warning: rule `Instr_ok/ref.eq` was never spliced
-warning: rule `Instr_ok/ref.test` was never spliced
-warning: rule `Instr_ok/ref.cast` was never spliced
-warning: rule `Instr_ok/i31.get` was never spliced
-warning: rule `Instr_ok/struct.new` was never spliced
-warning: rule `Instr_ok/struct.new_default` was never spliced
-warning: rule `Instr_ok/struct.get` was never spliced
-warning: rule `Instr_ok/struct.set` was never spliced
-warning: rule `Instr_ok/array.new` was never spliced
-warning: rule `Instr_ok/array.new_default` was never spliced
-warning: rule `Instr_ok/array.new_fixed` was never spliced
-warning: rule `Instr_ok/array.new_elem` was never spliced
-warning: rule `Instr_ok/array.new_data` was never spliced
-warning: rule `Instr_ok/array.get` was never spliced
-warning: rule `Instr_ok/array.set` was never spliced
-warning: rule `Instr_ok/array.len` was never spliced
-warning: rule `Instr_ok/array.fill` was never spliced
-warning: rule `Instr_ok/array.copy` was never spliced
-warning: rule `Instr_ok/array.init_elem` was never spliced
-warning: rule `Instr_ok/array.init_data` was never spliced
-warning: rule `Instr_ok/extern.convert_any` was never spliced
-warning: rule `Instr_ok/any.convert_extern` was never spliced
-warning: rule `Instr_ok/local.get` was never spliced
-warning: rule `Instr_ok/global.get` was never spliced
-warning: rule `Instr_ok/global.set` was never spliced
-warning: rule `Instr_ok/table.get` was never spliced
-warning: rule `Instr_ok/table.set` was never spliced
-warning: rule `Instr_ok/table.size` was never spliced
-warning: rule `Instr_ok/table.grow` was never spliced
-warning: rule `Instr_ok/table.fill` was never spliced
-warning: rule `Instr_ok/table.copy` was never spliced
-warning: rule `Instr_ok/table.init` was never spliced
-warning: rule `Instr_ok/elem.drop` was never spliced
-warning: rule `Instr_ok/memory.size` was never spliced
-warning: rule `Instr_ok/memory.grow` was never spliced
-warning: rule `Instr_ok/memory.fill` was never spliced
-warning: rule `Instr_ok/memory.copy` was never spliced
-warning: rule `Instr_ok/memory.init` was never spliced
-warning: rule `Instr_ok/data.drop` was never spliced
-warning: rule `Instr_ok/load` was never spliced
-warning: rule `Instr_ok/store` was never spliced
-warning: rule `Instrf_ok/instr` was never spliced
-warning: rule `Instrf_ok/local.set` was never spliced
-warning: rule `Instrf_ok/local.tee` was never spliced
-warning: rule `Instrs_ok/empty` was spliced more than once
-warning: rule `Instrs_ok/sub` was never spliced
-warning: rule `Instrs_ok/frame` was spliced more than once
-warning: rule `Instrtype_ok` was never spliced
-warning: rule `Instrtype_sub` was never spliced
-warning: rule `Limits_ok` was never spliced
-warning: rule `Limits_sub` was never spliced
-warning: rule `Local_ok/set` was never spliced
-warning: rule `Local_ok/unset` was never spliced
-warning: rule `Mem_ok` was never spliced
-warning: rule `Memtype_ok` was never spliced
-warning: rule `Memtype_sub` was never spliced
-warning: rule `Module_ok` was never spliced
-warning: rule `Numtype_ok` was never spliced
-warning: rule `Numtype_sub` was never spliced
-warning: rule `Packedtype_ok` was never spliced
-warning: rule `Packedtype_sub` was never spliced
-warning: rule `Rectype_ok/empty` was never spliced
-warning: rule `Rectype_ok/cons` was never spliced
-warning: rule `Rectype_ok/rec2` was never spliced
-warning: rule `Rectype_ok2/empty` was never spliced
-warning: rule `Rectype_ok2/cons` was never spliced
-warning: rule `Ref_ok/null` was never spliced
-warning: rule `Ref_ok/i31` was never spliced
-warning: rule `Ref_ok/struct` was never spliced
-warning: rule `Ref_ok/array` was never spliced
-warning: rule `Ref_ok/func` was never spliced
-warning: rule `Ref_ok/host` was never spliced
-warning: rule `Ref_ok/extern` was never spliced
-warning: rule `Reftype_ok` was never spliced
-warning: rule `Reftype_sub/nonnull` was never spliced
-warning: rule `Reftype_sub/null` was never spliced
-warning: rule `Resulttype_ok` was never spliced
-warning: rule `Resulttype_sub` was never spliced
-warning: rule `Start_ok` was never spliced
-warning: rule `Step/struct.new` was never spliced
-warning: rule `Step/struct.set-null` was never spliced
-warning: rule `Step/struct.set-struct` was never spliced
-warning: rule `Step/array.new_fixed` was never spliced
-warning: rule `Step/array.set-null` was never spliced
-warning: rule `Step/array.set-oob` was never spliced
-warning: rule `Step/array.set-array` was never spliced
-warning: rule `Step/local.set` was never spliced
-warning: rule `Step/global.set` was never spliced
-warning: rule `Step/table.set-oob` was never spliced
-warning: rule `Step/table.set-val` was never spliced
-warning: rule `Step/table.grow-succeed` was never spliced
-warning: rule `Step/table.grow-fail` was never spliced
-warning: rule `Step/elem.drop` was never spliced
-warning: rule `Step/store-num-oob` was never spliced
-warning: rule `Step/store-num-val` was never spliced
-warning: rule `Step/store-pack-oob` was never spliced
-warning: rule `Step/store-pack-val` was never spliced
-warning: rule `Step/memory.grow-succeed` was never spliced
-warning: rule `Step/memory.grow-fail` was never spliced
-warning: rule `Step/data.drop` was never spliced
-warning: rule `Step_pure/unreachable` was never spliced
-warning: rule `Step_pure/nop` was never spliced
-warning: rule `Step_pure/drop` was never spliced
-warning: rule `Step_pure/select-true` was never spliced
-warning: rule `Step_pure/select-false` was never spliced
-warning: rule `Step_pure/if-true` was spliced more than once
-warning: rule `Step_pure/if-false` was spliced more than once
-warning: rule `Step_pure/label-vals` was never spliced
-warning: rule `Step_pure/br-zero` was never spliced
-warning: rule `Step_pure/br-succ` was never spliced
-warning: rule `Step_pure/br_if-true` was never spliced
-warning: rule `Step_pure/br_if-false` was never spliced
-warning: rule `Step_pure/br_table-lt` was never spliced
-warning: rule `Step_pure/br_table-ge` was never spliced
-warning: rule `Step_pure/br_on_null-null` was never spliced
-warning: rule `Step_pure/br_on_null-addr` was never spliced
-warning: rule `Step_pure/br_on_non_null-null` was never spliced
-warning: rule `Step_pure/br_on_non_null-addr` was never spliced
-warning: rule `Step_pure/call_indirect-call` was never spliced
-warning: rule `Step_pure/return_call_indirect` was never spliced
-warning: rule `Step_pure/frame-vals` was never spliced
-warning: rule `Step_pure/return-frame` was never spliced
-warning: rule `Step_pure/return-label` was never spliced
-warning: rule `Step_pure/unop-val` was never spliced
-warning: rule `Step_pure/unop-trap` was never spliced
-warning: rule `Step_pure/binop-val` was never spliced
-warning: rule `Step_pure/binop-trap` was never spliced
-warning: rule `Step_pure/testop` was never spliced
-warning: rule `Step_pure/relop` was never spliced
-warning: rule `Step_pure/extend` was never spliced
-warning: rule `Step_pure/cvtop-val` was never spliced
-warning: rule `Step_pure/cvtop-trap` was never spliced
-warning: rule `Step_pure/ref.i31` was never spliced
-warning: rule `Step_pure/ref.is_null-true` was never spliced
-warning: rule `Step_pure/ref.is_null-false` was never spliced
-warning: rule `Step_pure/ref.as_non_null-null` was never spliced
-warning: rule `Step_pure/ref.as_non_null-addr` was never spliced
-warning: rule `Step_pure/ref.eq-null` was never spliced
-warning: rule `Step_pure/ref.eq-true` was never spliced
-warning: rule `Step_pure/ref.eq-false` was never spliced
-warning: rule `Step_pure/i31.get-null` was never spliced
-warning: rule `Step_pure/i31.get-num` was never spliced
-warning: rule `Step_pure/extern.convert_any-null` was never spliced
-warning: rule `Step_pure/extern.convert_any-addr` was never spliced
-warning: rule `Step_pure/any.convert_extern-null` was never spliced
-warning: rule `Step_pure/any.convert_extern-addr` was never spliced
-warning: rule `Step_pure/local.tee` was never spliced
-warning: rule `Step_read/br_on_cast-succeed` was never spliced
-warning: rule `Step_read/br_on_cast-fail` was never spliced
-warning: rule `Step_read/br_on_cast_fail-succeed` was never spliced
-warning: rule `Step_read/br_on_cast_fail-fail` was never spliced
-warning: rule `Step_read/call` was never spliced
-warning: rule `Step_read/call_ref-null` was never spliced
-warning: rule `Step_read/call_ref-func` was never spliced
-warning: rule `Step_read/return_call` was never spliced
-warning: rule `Step_read/return_call_ref-frame-null` was never spliced
-warning: rule `Step_read/return_call_ref-frame-addr` was never spliced
-warning: rule `Step_read/return_call_ref-label` was never spliced
-warning: rule `Step_read/ref.func` was never spliced
-warning: rule `Step_read/ref.test-true` was never spliced
-warning: rule `Step_read/ref.test-false` was never spliced
-warning: rule `Step_read/ref.cast-succeed` was never spliced
-warning: rule `Step_read/ref.cast-fail` was never spliced
-warning: rule `Step_read/struct.new_default` was never spliced
-warning: rule `Step_read/struct.get-null` was never spliced
-warning: rule `Step_read/struct.get-struct` was never spliced
-warning: rule `Step_read/array.new` was never spliced
-warning: rule `Step_read/array.new_default` was never spliced
-warning: rule `Step_read/array.new_elem-oob` was never spliced
-warning: rule `Step_read/array.new_elem-alloc` was never spliced
-warning: rule `Step_read/array.new_data-oob` was never spliced
-warning: rule `Step_read/array.new_data-alloc` was never spliced
-warning: rule `Step_read/array.get-null` was never spliced
-warning: rule `Step_read/array.get-oob` was never spliced
-warning: rule `Step_read/array.get-array` was never spliced
-warning: rule `Step_read/array.len-null` was never spliced
-warning: rule `Step_read/array.len-array` was never spliced
-warning: rule `Step_read/array.fill-null` was never spliced
-warning: rule `Step_read/array.fill-oob` was never spliced
-warning: rule `Step_read/array.fill-zero` was never spliced
-warning: rule `Step_read/array.fill-succ` was never spliced
-warning: rule `Step_read/array.copy-null1` was never spliced
-warning: rule `Step_read/array.copy-null2` was never spliced
-warning: rule `Step_read/array.copy-oob1` was never spliced
-warning: rule `Step_read/array.copy-oob2` was never spliced
-warning: rule `Step_read/array.copy-zero` was never spliced
-warning: rule `Step_read/array.copy-le` was never spliced
-warning: rule `Step_read/array.copy-gt` was never spliced
-warning: rule `Step_read/array.init_elem-null` was never spliced
-warning: rule `Step_read/array.init_elem-oob1` was never spliced
-warning: rule `Step_read/array.init_elem-oob2` was never spliced
-warning: rule `Step_read/array.init_elem-zero` was never spliced
-warning: rule `Step_read/array.init_elem-succ` was never spliced
-warning: rule `Step_read/array.init_data-null` was never spliced
-warning: rule `Step_read/array.init_data-oob1` was never spliced
-warning: rule `Step_read/array.init_data-oob2` was never spliced
-warning: rule `Step_read/array.init_data-zero` was never spliced
-warning: rule `Step_read/array.init_data-succ` was never spliced
-warning: rule `Step_read/local.get` was never spliced
-warning: rule `Step_read/global.get` was never spliced
-warning: rule `Step_read/table.get-oob` was never spliced
-warning: rule `Step_read/table.get-val` was never spliced
-warning: rule `Step_read/table.size` was never spliced
-warning: rule `Step_read/table.fill-oob` was never spliced
-warning: rule `Step_read/table.fill-zero` was never spliced
-warning: rule `Step_read/table.fill-succ` was never spliced
-warning: rule `Step_read/table.copy-oob` was never spliced
-warning: rule `Step_read/table.copy-zero` was never spliced
-warning: rule `Step_read/table.copy-le` was never spliced
-warning: rule `Step_read/table.copy-gt` was never spliced
-warning: rule `Step_read/table.init-oob` was never spliced
-warning: rule `Step_read/table.init-zero` was never spliced
-warning: rule `Step_read/table.init-succ` was never spliced
-warning: rule `Step_read/load-num-oob` was never spliced
-warning: rule `Step_read/load-num-val` was never spliced
-warning: rule `Step_read/load-pack-oob` was never spliced
-warning: rule `Step_read/load-pack-val` was never spliced
-warning: rule `Step_read/memory.size` was never spliced
-warning: rule `Step_read/memory.fill-oob` was never spliced
-warning: rule `Step_read/memory.fill-zero` was never spliced
-warning: rule `Step_read/memory.fill-succ` was never spliced
-warning: rule `Step_read/memory.copy-oob` was never spliced
-warning: rule `Step_read/memory.copy-zero` was never spliced
-warning: rule `Step_read/memory.copy-le` was never spliced
-warning: rule `Step_read/memory.copy-gt` was never spliced
-warning: rule `Step_read/memory.init-oob` was never spliced
-warning: rule `Step_read/memory.init-zero` was never spliced
-warning: rule `Step_read/memory.init-succ` was never spliced
-warning: rule `Steps/refl` was never spliced
-warning: rule `Steps/trans` was never spliced
-warning: rule `Storagetype_ok/val` was never spliced
-warning: rule `Storagetype_ok/packed` was never spliced
-warning: rule `Storagetype_sub/val` was never spliced
-warning: rule `Storagetype_sub/packed` was never spliced
-warning: rule `Subtype_ok` was never spliced
-warning: rule `Subtype_ok2` was never spliced
-warning: rule `Table_ok` was never spliced
-warning: rule `Tabletype_ok` was never spliced
-warning: rule `Tabletype_sub` was never spliced
-warning: rule `Type_ok` was never spliced
-warning: rule `Types_ok/empty` was never spliced
-warning: rule `Types_ok/cons` was never spliced
-warning: rule `Valtype_ok/num` was never spliced
-warning: rule `Valtype_ok/vec` was never spliced
-warning: rule `Valtype_ok/ref` was never spliced
-warning: rule `Valtype_ok/bot` was never spliced
-warning: rule `Valtype_sub/num` was never spliced
-warning: rule `Valtype_sub/vec` was never spliced
-warning: rule `Valtype_sub/ref` was never spliced
-warning: rule `Valtype_sub/bot` was never spliced
-warning: rule `Vectype_ok` was never spliced
-warning: rule `Vectype_sub` was never spliced
-warning: definition `E` was never spliced
-warning: definition `Ki` was never spliced
-warning: definition `M` was never spliced
-warning: definition `allocdata` was never spliced
-warning: definition `allocdatas` was never spliced
-warning: definition `allocelem` was never spliced
-warning: definition `allocelems` was never spliced
-warning: definition `allocfunc` was never spliced
-warning: definition `allocfuncs` was never spliced
-warning: definition `allocglobal` was never spliced
-warning: definition `allocglobals` was never spliced
-warning: definition `allocmem` was never spliced
-warning: definition `allocmems` was never spliced
-warning: definition `allocmodule` was never spliced
-warning: definition `alloctable` was never spliced
-warning: definition `alloctables` was never spliced
-warning: definition `alloctypes` was never spliced
-warning: definition `arrayinst` was never spliced
-warning: definition `before` was never spliced
-warning: definition `binop` was never spliced
-warning: definition `blocktype` was never spliced
-warning: definition `clostype` was never spliced
-warning: definition `clostypes` was never spliced
-warning: definition `concat_bytes` was never spliced
-warning: definition `concat_instr` was never spliced
-warning: definition `concat_locals` was never spliced
-warning: definition `cvtop` was never spliced
-warning: definition `data` was never spliced
-warning: definition `datainst` was never spliced
-warning: definition `diffrt` was never spliced
-warning: definition `elem` was never spliced
-warning: definition `eleminst` was never spliced
-warning: definition `expanddt` was never spliced
-warning: definition `expon` was never spliced
-warning: definition `ext` was never spliced
-warning: definition `ext_arrayinst` was never spliced
-warning: definition `ext_structinst` was never spliced
-warning: definition `fNzero` was never spliced
-warning: definition `fbytes` was never spliced
-warning: definition `frame` was never spliced
-warning: definition `free_dataidx_expr` was never spliced
-warning: definition `free_dataidx_func` was never spliced
-warning: definition `free_dataidx_funcs` was never spliced
-warning: definition `free_dataidx_instr` was never spliced
-warning: definition `free_dataidx_instrs` was never spliced
-warning: definition `funcsxt` was never spliced
-warning: definition `funcsxv` was never spliced
-warning: definition `global` was never spliced
-warning: definition `globalinst` was never spliced
-warning: definition `globalsxt` was never spliced
-warning: definition `globalsxv` was never spliced
-warning: definition `growmemory` was never spliced
-warning: definition `growtable` was never spliced
-warning: definition `ibytes` was never spliced
-warning: definition `idx` was never spliced
-warning: definition `in_binop` was never spliced
-warning: definition `in_numtype` was never spliced
-warning: definition `inst_reftype` was never spliced
-warning: definition `instantiate` was never spliced
-warning: definition `instexport` was never spliced
-warning: definition `invfbytes` was never spliced
-warning: definition `invibytes` was never spliced
-warning: definition `invoke` was never spliced
-warning: definition `invsigned` was never spliced
-warning: definition `local` was never spliced
-warning: definition `mem` was never spliced
-warning: definition `meminst` was never spliced
-warning: definition `memop0` was never spliced
-warning: definition `memsxt` was never spliced
-warning: definition `memsxv` was never spliced
-warning: definition `min` was never spliced
-warning: definition `moduleinst` was never spliced
-warning: definition `ntbytes` was never spliced
-warning: definition `packedsize` was never spliced
-warning: definition `packval` was never spliced
-warning: definition `relop` was never spliced
-warning: definition `rolldt` was never spliced
-warning: definition `rollrt` was never spliced
-warning: definition `rundata` was never spliced
-warning: definition `runelem` was never spliced
-warning: definition `s33_to_u32` was never spliced
-warning: definition `setminus` was never spliced
-warning: definition `setminus1` was never spliced
-warning: definition `signed` was never spliced
-warning: definition `signif` was never spliced
-warning: definition `storagesize` was never spliced
-warning: definition `store` was never spliced
-warning: definition `structinst` was never spliced
-warning: definition `subst_all_deftype` was never spliced
-warning: definition `subst_all_deftypes` was never spliced
-warning: definition `subst_all_reftype` was never spliced
-warning: definition `subst_comptype` was never spliced
-warning: definition `subst_deftype` was never spliced
-warning: definition `subst_externtype` was never spliced
-warning: definition `subst_fieldtype` was never spliced
-warning: definition `subst_functype` was never spliced
-warning: definition `subst_globaltype` was never spliced
-warning: definition `subst_heaptype` was never spliced
-warning: definition `subst_memtype` was never spliced
-warning: definition `subst_numtype` was never spliced
-warning: definition `subst_packedtype` was never spliced
-warning: definition `subst_rectype` was never spliced
-warning: definition `subst_reftype` was never spliced
-warning: definition `subst_storagetype` was never spliced
-warning: definition `subst_subtype` was never spliced
-warning: definition `subst_tabletype` was never spliced
-warning: definition `subst_typevar` was never spliced
-warning: definition `subst_valtype` was never spliced
-warning: definition `subst_vectype` was never spliced
-warning: definition `sum` was never spliced
-warning: definition `sxfield` was never spliced
-warning: definition `tableinst` was never spliced
-warning: definition `tablesxt` was never spliced
-warning: definition `tablesxv` was never spliced
-warning: definition `testop` was never spliced
-warning: definition `type` was never spliced
-warning: definition `unop` was never spliced
-warning: definition `unpacknumtype` was never spliced
-warning: definition `unpacktype` was never spliced
-warning: definition `unpackval` was never spliced
-warning: definition `unrolldt` was never spliced
-warning: definition `unrollht` was never spliced
-warning: definition `unrollrt` was never spliced
-warning: definition `utf8` was never spliced
-warning: definition `with_array` was never spliced
-warning: definition `with_data` was never spliced
-warning: definition `with_elem` was never spliced
-warning: definition `with_global` was never spliced
-warning: definition `with_local` was never spliced
-warning: definition `with_locals` was never spliced
-warning: definition `with_mem` was never spliced
-warning: definition `with_meminst` was never spliced
-warning: definition `with_struct` was never spliced
-warning: definition `with_table` was never spliced
-warning: definition `with_tableinst` was never spliced
-warning: definition `wrap` was never spliced
-warning: definition `ztbytes` was never spliced
-== Complete.
-=======
 $ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup)
 \vspace{1ex}
 
@@ -806,6 +74,7 @@ $$
 \mbox{(unsigned integer)} & {\mathit{uN}} &::=& 0 ~|~ \dots ~|~ {2^{{\mathit{N}}}} - 1 \\
 \mbox{(signed integer)} & {\mathit{sN}} &::=& {-{2^{{\mathit{N}} - 1}}} ~|~ \dots ~|~ {-1} ~|~ 0 ~|~ {+1} ~|~ \dots ~|~ {2^{{\mathit{N}} - 1}} - 1 \\
 \mbox{(integer)} & {\mathit{iN}} &::=& {\mathit{uN}} \\
+\mbox{(8-bit integer)} & {\mathit{u{\scriptstyle8}}} &::=& 0 ~|~ \dots ~|~ {2^{8}} - 1 \\
 \mbox{(31-bit integer)} & {\mathit{u{\scriptstyle31}}} &::=& 0 ~|~ \dots ~|~ {2^{31}} - 1 \\
 \mbox{(32-bit integer)} & {\mathit{u{\scriptstyle32}}} &::=& 0 ~|~ \dots ~|~ {2^{32}} - 1 \\
 \mbox{(64-bit integer)} & {\mathit{u{\scriptstyle64}}} &::=& 0 ~|~ \dots ~|~ {2^{64}} - 1 \\
@@ -873,6 +142,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(index)} & {\mathit{idx}} &::=& {\mathit{u{\scriptstyle32}}} \\
+\mbox{(index)} & {\mathit{laneidx}} &::=& {\mathit{u{\scriptstyle8}}} \\
 \mbox{(type index)} & {\mathit{typeidx}} &::=& {\mathit{idx}} \\
 \mbox{(function index)} & {\mathit{funcidx}} &::=& {\mathit{idx}} \\
 \mbox{(global index)} & {\mathit{globalidx}} &::=& {\mathit{idx}} \\
@@ -892,6 +162,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{nul}} &::=& {\mathsf{null}^?} \\
+& {\mathit{zero}} &::=& {\mathsf{zero}^?} \\
 \mbox{(number type)} & {\mathit{numtype}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} ~|~ \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 \mbox{(vector type)} & {\mathit{vectype}} &::=& \mathsf{v{\scriptstyle128}} \\
 \mbox{(abstract heap type)} & {\mathit{absheaptype}} &::=& \mathsf{any} ~|~ \mathsf{eq} ~|~ \mathsf{i{\scriptstyle31}} ~|~ \mathsf{struct} ~|~ \mathsf{array} ~|~ \mathsf{none} \\ &&|&
@@ -988,6 +259,58 @@ $$
 \end{array}
 $$
 
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(lane type)} & {\mathit{lanetype}} &::=& {\mathit{packedtype}} ~|~ {\mathit{numtype}} \\
+\mbox{(lane size)} & {\mathit{lanesize}} &::=& {\mathit{nat}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+\mbox{(shape)} & {\mathit{shape}} &::=& {\mathit{lanetype}}~\mathsf{x}~{\mathit{lanesize}} \\
+& {\mathit{half}} &::=& \mathsf{low} ~|~ \mathsf{high} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{unopVVXX}} &::=& \mathsf{not} \\
+& {\mathit{binopVVXX}} &::=& \mathsf{and} ~|~ \mathsf{andnot} ~|~ \mathsf{or} ~|~ \mathsf{xor} \\
+& {\mathit{ternopVVXX}} &::=& \mathsf{bitselect} \\
+& {\mathit{testopVVXX}} &::=& \mathsf{any\_true} \\
+& {\mathit{testopVIXX}} &::=& \mathsf{all\_true} \\
+& {\mathit{relopVIXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ {\mathsf{lt\_}}{{\mathit{sx}}} ~|~ {\mathsf{gt\_}}{{\mathit{sx}}} ~|~ {\mathsf{le\_}}{{\mathit{sx}}} ~|~ {\mathsf{ge\_}}{{\mathit{sx}}} \\
+& {\mathit{relopVFXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ \mathsf{lt} ~|~ \mathsf{gt} ~|~ \mathsf{le} ~|~ \mathsf{ge} \\
+& {\mathit{unopVIXX}} &::=& \mathsf{abs} ~|~ \mathsf{neg} \\
+& {\mathit{binopVIXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} \\
+& {\mathit{minmaxopVIXX}} &::=& \mathsf{min}~{\mathit{sx}} ~|~ \mathsf{max}~{\mathit{sx}} \\
+& {\mathit{satbinopVIXX}} &::=& \mathsf{add\_sat}~{\mathit{sx}} ~|~ \mathsf{sub\_sat}~{\mathit{sx}} \\
+& {\mathit{shiftopVIXX}} &::=& \mathsf{shl} ~|~ {\mathsf{shr\_}}{{\mathit{sx}}} \\
+& {\mathit{unopVFXX}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{sqrt} ~|~ \mathsf{ceil} ~|~ \mathsf{floor} ~|~ \mathsf{trunc} ~|~ \mathsf{nearest} \\
+& {\mathit{binopVFXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{mul} ~|~ \mathsf{div} ~|~ \mathsf{min} ~|~ \mathsf{max} ~|~ \mathsf{pmin} ~|~ \mathsf{pmax} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{unop}}_{{\mathit{vvectype}}} &::=& {\mathit{unopVVXX}} \\
+& {\mathit{binop}}_{{\mathit{vvectype}}} &::=& {\mathit{binopVVXX}} \\
+& {\mathit{ternop}}_{{\mathit{vvectype}}} &::=& {\mathit{ternopVVXX}} \\
+& {\mathit{testop}}_{{\mathit{vvectype}}} &::=& {\mathit{testopVVXX}} \\
+& {\mathit{shiftop}}_{{\mathit{vectype}}} &::=& {\mathit{shiftopVIXX}} \\
+& {\mathit{unop}}_{{\mathit{vectype}}} &::=& {\mathit{unopVIXX}} ~|~ {\mathit{unopVFXX}} ~|~ \mathsf{popcnt} \\
+& {\mathit{binop}}_{{\mathit{vectype}}} &::=& {\mathit{binopVIXX}}~{\mathit{minmaxopVIXX}}~{\mathit{satbinopVIXX}} ~|~ {\mathit{binopVFXX}} ~|~ \mathsf{mul} ~|~ \mathsf{avgr\_u} ~|~ \mathsf{q{\scriptstyle15}mulr\_sat\_s} \\
+& {\mathit{testop}}_{{\mathit{vectype}}} &::=& {\mathit{testopVIXX}} \\
+& {\mathit{relop}}_{{\mathit{vectype}}} &::=& {\mathit{relopVIXX}} ~|~ {\mathit{relopVFXX}} \\
+& {\mathit{cvtop}}_{{\mathit{vectype}}} &::=& \mathsf{extend} ~|~ \mathsf{trunc\_sat} ~|~ \mathsf{convert} ~|~ \mathsf{demote} ~|~ \mathsf{promote} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
 \vspace{1ex}
 
 $$
@@ -1034,6 +357,27 @@ $$
 {\mathit{numtype}} . {\mathit{relop}}_{{\mathit{numtype}}} \\ &&|&
 {{\mathit{numtype}}.\mathsf{extend}}{{\mathit{n}}} \\ &&|&
 {\mathit{numtype}} . {{{{{\mathit{cvtop}}}{\mathsf{\_}}}{{\mathit{numtype}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}} \\ &&|&
+{\mathit{vectype}}.\mathsf{const}~{\mathit{c}}_{{\mathit{vectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{unop}}_{{\mathit{vvectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{binop}}_{{\mathit{vvectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{ternop}}_{{\mathit{vvectype}}} \\ &&|&
+{\mathit{vectype}} . {\mathit{testop}}_{{\mathit{vvectype}}} \\ &&|&
+\mathsf{swizzle}~{\mathit{shape}} \\ &&|&
+\mathsf{shuffle}~{\mathit{shape}}~{{\mathit{laneidx}}^\ast} \\ &&|&
+{\mathit{shape}}.\mathsf{splat} \\ &&|&
+\mathsf{extract\_lane}~{\mathit{shape}}~{{\mathit{sx}}^?}~{\mathit{laneidx}} \\ &&|&
+{{{\mathit{shape}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{vunop}~{\mathit{shape}}~{\mathit{unop}}_{{\mathit{vectype}}} \\ &&|&
+\mathsf{vbinop}~{\mathit{shape}}~{\mathit{binop}}_{{\mathit{vectype}}} \\ &&|&
+\mathsf{vrelop}~{\mathit{shape}}~{\mathit{relop}}_{{\mathit{vectype}}} \\ &&|&
+\mathsf{vishiftop}~{\mathit{shape}}~{\mathit{shiftop}}_{{\mathit{vectype}}} \\ &&|&
+{\mathit{shape}}.\mathsf{all\_true} \\ &&|&
+\mathsf{bitmask}~{\mathit{shape}} \\ &&|&
+\mathsf{narrow}~{\mathit{shape}}~{\mathit{shape}}~{\mathit{sx}} \\ &&|&
+\mathsf{vcvtop}~{\mathit{shape}}~{\mathit{cvtop}}_{{\mathit{vectype}}}~{{\mathit{half}}^?}~{\mathit{shape}}~{{\mathit{sx}}^?}~{\mathit{zero}} \\ &&|&
+\mathsf{extmul\_half}~{\mathit{shape}}~{\mathit{half}}~{\mathit{shape}}~{\mathit{sx}} \\ &&|&
+\mathsf{dot}~{\mathit{shape}}~{\mathit{shape}}~{\mathit{sx}} \\ &&|&
+\mathsf{extadd\_pairwise}~{\mathit{shape}}~{\mathit{shape}}~{\mathit{sx}} \\ &&|&
 \mathsf{ref.null}~{\mathit{heaptype}} \\ &&|&
 \mathsf{ref.i{\scriptstyle31}} \\ &&|&
 \mathsf{ref.func}~{\mathit{funcidx}} \\ &&|&
@@ -1081,7 +425,12 @@ $$
 \mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
 \mathsf{data.drop}~{\mathit{dataidx}} \\ &&|&
 {{\mathit{numtype}}.\mathsf{load}}{{({{{\mathit{n}}}{\mathsf{\_}}}{{\mathit{sx}}})^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memop}} \\
+{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+\mathsf{vload}~{\mathit{n}}~{\mathit{lanesize}}~{\mathit{sx}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+\mathsf{vload\_splat}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+\mathsf{vload\_zero}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{vstore}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\
 \mbox{(expression)} & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -1527,6 +876,46 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{invfbytes}}({\mathit{N}},\, {{\mathit{b}}^\ast}) &=& {\mathit{p}} &\quad
   \mbox{if}~{{\mathrm{bytes}}}_{{{\mathit{f}}}{{\mathit{N}}}}({\mathit{p}}) = {{\mathit{b}}^\ast} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{unpacked}}({\mathit{sh}}) &=& {\mathit{nt}} &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&\quad {\land}~{\mathit{lnt}} = {\mathit{nt}} \\
+{\mathrm{unpacked}}({\mathit{sh}}) &=& \mathsf{i{\scriptstyle32}} &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&\quad {\land}~{\mathit{lnt}} = {\mathit{pt}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{dim}}({\mathit{sh}}) &=& {\mathit{lns}} &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{halfop}}({\mathit{hf}},\, {\mathit{i}},\, {\mathit{j}}) &=& {\mathit{i}} &\quad
+  \mbox{if}~{\mathit{hf}} = \mathsf{low} \\
+{\mathrm{halfop}}({\mathit{hf}},\, {\mathit{i}},\, {\mathit{j}}) &=& {\mathit{j}} &\quad
+  \mbox{if}~{\mathit{hf}} = \mathsf{high} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle8}} &\quad
+  \mbox{if}~{\mathit{nat}} = 8 \\
+{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle16}} &\quad
+  \mbox{if}~{\mathit{nat}} = 16 \\
+{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle32}} &\quad
+  \mbox{if}~{\mathit{nat}} = 32 \\
+{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle64}} &\quad
+  \mbox{if}~{\mathit{nat}} = 64 \\
 \end{array}
 $$
 
@@ -3751,6 +3140,221 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+}{
+{\mathit{C}} \vdash \mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{\mathit{vt}}} : \epsilon \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vconst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{vt}} . {\mathit{vvunop}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vvunop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{vt}} . {\mathit{vvbinop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vvbinop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{vt}} . {\mathit{vvternop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vvternop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{vt}} . {\mathit{vvtestop}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{i{\scriptstyle32}}
+} \, {[\textsc{\scriptsize T{-}vvtestop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{swizzle}~{\mathit{sh}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}swizzle}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+({\mathit{laneidx}} < {\mathrm{dim}}({\mathit{sh}}) \cdot 2)^\ast
+}{
+{\mathit{C}} \vdash \mathsf{shuffle}~{\mathit{sh}}~{{\mathit{laneidx}}^\ast} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}shuffle}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{sh}}.\mathsf{splat} : {\mathrm{unpacked}}({\mathit{sh}}) \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}splat}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{laneidx}} < {\mathrm{dim}}({\mathit{sh}})
+}{
+{\mathit{C}} \vdash \mathsf{extract\_lane}~{\mathit{sh}}~{{\mathit{sx}}^?}~{\mathit{laneidx}} : \mathsf{v{\scriptstyle128}} \rightarrow {\mathrm{unpacked}}({\mathit{sh}})
+} \, {[\textsc{\scriptsize T{-}extract\_lane}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{laneidx}} < {\mathrm{dim}}({\mathit{sh}})
+}{
+{\mathit{C}} \vdash {{{\mathit{sh}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{laneidx}} : \mathsf{v{\scriptstyle128}}~{\mathrm{unpacked}}({\mathit{sh}}) \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}replace\_lane}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{vunop}~{\mathit{sh}}~{\mathit{vunop}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vunop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{vbinop}~{\mathit{sh}}~{\mathit{vbinop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vbinop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{vrelop}~{\mathit{sh}}~{\mathit{vrelop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vrelop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{vishiftop}~{\mathit{sh}}~{\mathit{vishiftop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vishiftop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash {\mathit{sh}}.\mathsf{all\_true} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{i{\scriptstyle32}}
+} \, {[\textsc{\scriptsize T{-}vtestop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{vcvtop}~{\mathit{sh}}~{\mathit{vcvtop}}~{{\mathit{hf}}^?}~{\mathit{sh}}~{{\mathit{sx}}^?}~{\mathit{zero}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vcvtop}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{narrow}~{\mathit{sh}}~{\mathit{sh}}~{\mathit{sx}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}narrow}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{bitmask}~{\mathit{sh}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{i{\scriptstyle32}}
+} \, {[\textsc{\scriptsize T{-}bitmask}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{dot}~{\mathit{sh}}~{\mathit{sh}}~{\mathit{sx}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}dot}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{extmul\_half}~{\mathit{sh}}~{\mathit{half}}~{\mathit{sh}}~{\mathit{sx}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}extmul\_half}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash \mathsf{extadd\_pairwise}~{\mathit{sh}}~{\mathit{sh}}~{\mathit{sx}} : \mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}extadd\_pairwise}]}
+\qquad
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
 {\mathit{C}}.\mathsf{type}[{\mathit{x}}] \approx \mathsf{struct}~{({\mathit{mut}}~{\mathit{zt}})^\ast}
 }{
 {\mathit{C}} \vdash \mathsf{struct.new}~{\mathit{x}} : {{\mathrm{unpack}}({\mathit{zt}})^\ast} \rightarrow (\mathsf{ref}~\epsilon~{\mathit{x}})
@@ -4237,6 +3841,80 @@ $$
 {\mathit{C}} \vdash {{\mathit{nt}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
 \mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~{\mathit{nt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8 \cdot {\mathit{lns}}
+}{
+{\mathit{C}} \vdash \mathsf{vload}~{\mathit{n}}~{\mathit{lns}}~{\mathit{sx}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vload}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8
+}{
+{\mathit{C}} \vdash \mathsf{vload\_splat}~{\mathit{n}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vload\_splat}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+}{
+{\mathit{C}} \vdash \mathsf{vload\_zero}~{\mathit{n}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vload\_zero}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+ \qquad
+{\mathit{laneidx}} < 128 / {\mathit{n}}
+}{
+{\mathit{C}} \vdash \mathsf{vload\_lane}~{\mathit{n}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}vload\_lane}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+ \qquad
+{\mathit{laneidx}} < 128 / {\mathit{n}}
+}{
+{\mathit{C}} \vdash \mathsf{vstore}~{\mathit{n}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
+} \, {[\textsc{\scriptsize T{-}vstore}]}
 \qquad
 \end{array}
 $$
@@ -5094,6 +4772,261 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvunop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvbinop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvbinop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvternop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{3}})~(\mathsf{v{\scriptstyle128}} . {\mathit{vvternop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{{{\mathit{vvternop}}}{}}_{\mathsf{v{\scriptstyle128}}}}{({\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}},\, {\mathit{cv}}_{{3}})} = {\mathit{cv}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vvtestop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}} . \mathsf{any\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}}) &\quad
+  \mbox{if}~{\mathit{i}} = {\mathrm{ine}}_{{128}}({\mathit{cv}}_{{1}},\, 0) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}swizzle}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{swizzle}~{\mathit{sh}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}'}) &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{2}}) \\
+ &&&&\quad {\land}~{{\mathit{c}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{1}})~{0^{256 - {\mathit{lns}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}'}) = {{{\mathit{c}}^\ast}[{{\mathit{i}}^\ast}[{\mathit{k}}]]^{{\mathit{k}}<{\mathit{lns}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}shuffle}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{shuffle}~{\mathit{sh}}~{{\mathit{laneidx}}^\ast}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{1}})~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{2}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {{{\mathit{i}}^\ast}[{{\mathit{laneidx}}^\ast}[{\mathit{k}}]]^{{\mathit{k}}<{\mathit{lns}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}splat}]} \quad & ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{1}})~({\mathit{sh}}.\mathsf{splat}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{nt}} = {\mathrm{unpacked}}({\mathit{sh}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {{\mathit{c}}_{{1}}^{{\mathrm{dim}}({\mathit{sh}})}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}extract\_lane{-}num}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{extract\_lane}~{\mathit{sh}}~{\mathit{laneidx}}) &\hookrightarrow& ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{2}}) &\quad
+  \mbox{if}~{\mathit{nt}} = {\mathrm{unpacked}}({\mathit{sh}}) \\
+ &&&&\quad {\land}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{\mathit{c}}_{{2}} = {{{{\mathrm{ext}}}_{{|{\mathit{lnt}}|},{|{\mathit{nt}}|}}^{\mathsf{u}}}}{({\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}_{{1}})[{\mathit{laneidx}}])} \\
+{[\textsc{\scriptsize E{-}extract\_lane{-}pack}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{extract\_lane}~{\mathit{sh}}~{\mathit{sx}}~{\mathit{laneidx}}) &\hookrightarrow& ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{2}}) &\quad
+  \mbox{if}~{\mathit{nt}} = {\mathrm{unpacked}}({\mathit{sh}}) \\
+ &&&&\quad {\land}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{\mathit{c}}_{{2}} = {{{{\mathrm{ext}}}_{{|{\mathit{lnt}}|},{|{\mathit{nt}}|}}^{{\mathit{sx}}}}}{({\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}_{{1}})[{\mathit{laneidx}}])} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}replace\_lane}]} \quad & ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~({{{\mathit{sh}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{laneidx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}_{{2}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = ({{\mathit{i}}^\ast})[[{\mathit{laneidx}}] = {\mathit{c}}_{{1}}] \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vunop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{vunop}~{\mathit{sh}}~{\mathit{vunop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{\mathit{cv}} = {\mathrm{vunop}}({\mathit{vunop}},\, {\mathit{sh}},\, {\mathit{cv}}_{{1}}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vbinop{-}val}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{vbinop}~{\mathit{sh}}~{\mathit{vbinop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{\mathrm{vbinop}}({\mathit{vbinop}},\, {\mathit{sh}},\, {\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}}) = {\mathit{cv}} \\
+{[\textsc{\scriptsize E{-}vbinop{-}trap}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{vbinop}~{\mathit{sh}}~{\mathit{vbinop}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathrm{vbinop}}({\mathit{vbinop}},\, {\mathit{sh}},\, {\mathit{cv}}_{{1}},\, {\mathit{cv}}_{{2}}) = \epsilon \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vrelop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{vrelop}~{\mathit{sh}}~{\mathit{vrelop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{1}}) \\
+ &&&&\quad {\land}~{{\mathit{j}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}}_{{2}}) \\
+ &&&&\quad {\land}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {{{{{\mathrm{ext}}}_{1,{|{\mathit{lnt}}|}}^{\mathsf{s}}}}{({\mathrm{vrelop}}({\mathit{vrelop}},\, {\mathit{sh}},\, {\mathit{i}},\, {\mathit{j}}))}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vishiftop}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{n}})~(\mathsf{vishiftop}~{\mathit{sh}}~{\mathit{vishiftop}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {{{{{\mathit{vishiftop}}}{}}_{{\mathit{lnt}}}}{({\mathit{i}},\, {\mathit{n}})}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}all\_true{-}true}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~({\mathit{sh}}.\mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~1) &\quad
+  \mbox{if}~{{\mathit{i}}_{{1}}^\ast} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) \\
+ &&&&\quad {\land}~({\mathit{i}}_{{1}} \neq 0)^\ast \\
+{[\textsc{\scriptsize E{-}all\_true{-}false}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~({\mathit{sh}}.\mathsf{all\_true}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~0) &\quad
+  \mbox{otherwise} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}bitmask}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}})~(\mathsf{bitmask}~{\mathit{sh}}) &\hookrightarrow& (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}}) &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{{\mathit{i}}_{{1}}^{{\mathit{lns}}}} = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) \\
+ &&&&\quad {\land}~{\mathrm{ibits}}(32,\, {\mathit{i}}) = {{\mathrm{ilt}}_{{\mathit{s}}}({|{\mathit{lnt}}|},\, {\mathit{i}}_{{1}},\, 0)^{{\mathit{lns}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}narrow}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{narrow}~{\mathit{sh}}_{{2}}~{\mathit{sh}}_{{1}}~{\mathit{sx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}_{{1}}^{{\mathit{lns}}_{{1}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{{\mathit{i}}_{{2}}^{{\mathit{lns}}_{{1}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{2}}) \\
+ &&&&\quad {\land}~{{\mathit{n}}_{{1}}^{{\mathit{lns}}_{{1}}}} = {{\mathrm{narrow}}({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|},\, {\mathit{sx}},\, {\mathit{i}}_{{1}})^{{\mathit{lns}}_{{1}}}} \\
+ &&&&\quad {\land}~{{\mathit{n}}_{{2}}^{{\mathit{lns}}_{{1}}}} = {{\mathrm{narrow}}({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|},\, {\mathit{sx}},\, {\mathit{i}}_{{2}})^{{\mathit{lns}}_{{1}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{\mathit{n}}_{{1}}^{{\mathit{lns}}_{{1}}}}~{{\mathit{n}}_{{2}}^{{\mathit{lns}}_{{1}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vcvtop{-}normal}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{vcvtop}~{\mathit{sh}}_{{2}}~{\mathit{vcvtop}}~\epsilon~{\mathit{sh}}_{{1}}~{\mathit{sx}}~\epsilon) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{{{{\mathit{vcvtop}}}{}}_{{|{\mathit{lnt}}_{{1}}|}}}{({|{\mathit{lnt}}_{{2}}|},\, {\mathit{sx}},\, {\mathit{i}})}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vcvtop{-}half}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{vcvtop}~{\mathit{sh}}_{{2}}~{\mathit{vcvtop}}~{\mathit{hf}}~{\mathit{sh}}_{{1}}~{{\mathit{sx}}^?}~\epsilon) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}})[{\mathrm{halfop}}({\mathit{hf}},\, 0,\, {\mathit{lns}}_{{2}}) : {\mathit{lns}}_{{2}}] \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{{{{\mathit{vcvtop}}}{}}_{{|{\mathit{lnt}}_{{1}}|}}}{({|{\mathit{lnt}}_{{2}}|},\, {{\mathit{sx}}^?},\, {\mathit{i}})}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{vcvtop}~{\mathit{sh}}_{{2}}~{\mathit{vcvtop}}~\epsilon~{\mathit{sh}}_{{1}}~{\mathit{sx}}~{\mathit{zero}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{{{{\mathit{vcvtop}}}{}}_{{|{\mathit{lnt}}_{{1}}|}}}{({|{\mathit{lnt}}_{{2}}|},\, {\mathit{sx}},\, {\mathit{i}})}^\ast}~{0^{{\mathit{lns}}_{{1}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}dot}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{dot}~{\mathit{sh}}_{{1}}~{\mathit{sh}}_{{2}}~\mathsf{s}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{\mathit{i}}_{{1}} = {|{\mathit{lnt}}_{{1}}|} \\
+ &&&&\quad {\land}~{\mathit{i}}_{{2}} = {|{\mathit{lnt}}_{{2}}|} \\
+ &&&&\quad {\land}~{{\mathit{k}}_{{1}}^{{\mathit{k}'}}} = {\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{{\mathit{k}}_{{2}}^{{\mathit{k}'}}} = {\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}_{{2}}) \\
+ &&&&\quad {\land}~{\mathrm{concat}}({({\mathit{j}}_{{1}}~{\mathit{j}}_{{2}})^\ast}) = {{\mathrm{imul}}({\mathit{i}}_{{1}},\, {{{{\mathrm{ext}}}_{{\mathit{i}}_{{2}},{\mathit{i}}_{{1}}}^{\mathsf{s}}}}{({\mathit{k}}_{{1}})},\, {{{{\mathrm{ext}}}_{{\mathit{i}}_{{2}},{\mathit{i}}_{{1}}}^{\mathsf{s}}}}{({\mathit{k}}_{{2}})})^{{\mathit{k}'}}} \\
+ &&&&\quad {\land}~{{\mathit{j}'}^\ast} = {{\mathrm{iadd}}({\mathit{i}}_{{1}},\, {\mathit{j}}_{{1}},\, {\mathit{j}}_{{2}})^\ast} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}) = {{\mathit{j}'}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}extmul\_half}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{extmul\_half}~{\mathit{sh}}_{{2}}~{\mathit{hf}}~{\mathit{sh}}_{{1}}~{\mathit{sx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}})[{\mathrm{halfop}}({\mathit{hf}},\, 0,\, {\mathit{lns}}_{{2}}) : {\mathit{lns}}_{{2}}] \\
+ &&&&\quad {\land}~{{\mathit{j}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{2}})[{\mathrm{halfop}}({\mathit{hf}},\, 0,\, {\mathit{lns}}_{{2}}) : {\mathit{lns}}_{{2}}] \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{\mathrm{imul}}({\mathit{lns}}_{{2}},\, {{{{\mathrm{ext}}}_{{|{\mathit{lnt}}_{{1}}|},{|{\mathit{lnt}}_{{2}}|}}^{{\mathit{sx}}}}}{({\mathit{i}})},\, {{{{\mathrm{ext}}}_{{|{\mathit{lnt}}_{{1}}|},{|{\mathit{lnt}}_{{2}}|}}^{{\mathit{sx}}}}}{({\mathit{j}})})^{{\mathit{k}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}extadd\_pairwise}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}_{{2}})~(\mathsf{extadd\_pairwise}~{\mathit{sh}}_{{2}}~{\mathit{sh}}_{{1}}~{\mathit{sx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
+ &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}},\, {\mathit{c}}_{{1}}) \\
+ &&&&\quad {\land}~{\mathrm{concat}}({({\mathit{i}}_{{1}}~{\mathit{i}}_{{2}})^\ast}) = {{{{{\mathrm{ext}}}_{{|{\mathit{lnt}}_{{1}}|},{|{\mathit{lnt}}_{{2}}|}}^{{\mathit{sx}}}}}{({\mathit{i}})}^{{\mathit{k}}}} \\
+ &&&&\quad {\land}~{{\mathit{j}}^\ast} = {{\mathrm{iadd}}({\mathit{lns}}_{{2}},\, {\mathit{i}}_{{1}},\, {\mathit{i}}_{{2}})^\ast} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}},\, {\mathit{c}}) = {{\mathit{j}}^\ast} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}ref.func}]} \quad & {\mathit{z}} ; (\mathsf{ref.func}~{\mathit{x}}) &\hookrightarrow& (\mathsf{ref.func}~{\mathit{z}}.\mathsf{module}.\mathsf{func}[{\mathit{x}}]) &  \\
 \end{array}
 $$
@@ -5520,6 +5453,35 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vload{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload}~{\mathit{n}}~{\mathit{lns}}~{\mathit{sx}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} \cdot {\mathit{lns}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
+{[\textsc{\scriptsize E{-}vload{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload}~{\mathit{n}}~{\mathit{lns}}~{\mathit{sx}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathit{m}})^{{\mathit{lns}}}} = {{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{k}} \cdot {\mathit{n}} / 8 : {\mathit{n}} / 8]^{{\mathit{k}}<{\mathit{lns}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathrm{ishape}}({\mathit{n}} \cdot 2)~\mathsf{x}~{\mathit{lns}},\, {\mathit{c}}) = {{{{{\mathrm{ext}}}_{{\mathit{n}},{\mathit{lns}}}^{{\mathit{sx}}}}}{({\mathit{m}})}^{{\mathit{lns}}}} \\
+{[\textsc{\scriptsize E{-}vload\_splat{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload\_splat}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
+{[\textsc{\scriptsize E{-}vload\_splat{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload\_splat}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathit{m}}) = {{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{lns}} / 8] \\
+ &&&&\quad {\land}~{\mathit{l}} = 128 / {\mathit{lns}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathrm{ishape}}({\mathit{n}})~\mathsf{x}~{\mathit{l}},\, {\mathit{c}}) = {{\mathit{m}}^{{\mathit{l}}}} \\
+{[\textsc{\scriptsize E{-}vload\_zero{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload\_zero}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
+{[\textsc{\scriptsize E{-}vload\_zero{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{vload\_zero}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathit{m}}) = {{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] \\
+ &&&&\quad {\land}~{\mathit{c}} = {{{{\mathrm{ext}}}_{{\mathit{n}},128}^{\mathsf{u}}}}{({\mathit{m}})} \\
+{[\textsc{\scriptsize E{-}vload\_lane{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}})~(\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}~{\mathit{laneidx}}) &\hookrightarrow& \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
+{[\textsc{\scriptsize E{-}vload\_lane{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}})~(\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}~{\mathit{laneidx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{c}}) &\quad
+  \mbox{if}~{{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathit{m}}) = {{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] \\
+ &&&&\quad {\land}~{\mathit{sh}} = {\mathrm{ishape}}({\mathit{n}})~\mathsf{x}~128 / {\mathit{n}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}},\, {\mathit{c}}) = {\mathrm{lanes}}({\mathit{sh}},\, {\mathit{cv}})[[{\mathit{laneidx}}] = {\mathit{m}}] \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}store{-}num{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~({\mathit{nt}}.\mathsf{const}~{\mathit{c}})~({\mathit{nt}}.\mathsf{store}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &\quad
   \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {|{\mathit{nt}}|} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
 {[\textsc{\scriptsize E{-}store{-}num{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~({\mathit{nt}}.\mathsf{const}~{\mathit{c}})~({\mathit{nt}}.\mathsf{store}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& {\mathit{z}}[\mathsf{mem}[{\mathit{x}}].\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {|{\mathit{nt}}|} / 8] = {{\mathit{b}}^\ast}] ; \epsilon &\quad
@@ -5528,6 +5490,17 @@ $$
   \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} / 8 > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
 {[\textsc{\scriptsize E{-}store{-}pack{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~({\mathit{nt}}.\mathsf{const}~{\mathit{c}})~({{\mathit{nt}}.\mathsf{store}}{{\mathit{n}}}~{\mathit{x}}~{\mathit{mo}}) &\hookrightarrow& {\mathit{z}}[\mathsf{mem}[{\mathit{x}}].\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] = {{\mathit{b}}^\ast}] ; \epsilon &\quad
   \mbox{if}~{{\mathit{b}}^\ast} = {{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({{{\mathrm{wrap}}}_{{|{\mathit{nt}}|},{\mathit{n}}}}{({\mathit{c}})}) \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}vstore{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}})~(\mathsf{vstore}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}~{\mathit{laneidx}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &\quad
+  \mbox{if}~{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} + {\mathit{n}} > {|{{\mathit{z}}.\mathsf{mem}}{[{\mathit{x}}]}.\mathsf{data}|} \\
+{[\textsc{\scriptsize E{-}vstore{-}val}]} \quad & {\mathit{z}} ; (\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}})~(\mathsf{vstore}~{\mathit{n}}~{\mathit{x}}~{\mathit{mo}}~{\mathit{laneidx}}) &\hookrightarrow& {\mathit{z}}[\mathsf{mem}[{\mathit{x}}].\mathsf{data}[{\mathit{i}} + {\mathit{mo}}.\mathsf{offset} : {\mathit{n}} / 8] = {{\mathit{b}}^\ast}] ; \epsilon &\quad
+  \mbox{if}~{{\mathit{b}}^\ast} = {{\mathrm{bytes}}}_{{{\mathit{i}}}{{\mathit{n}}}}({\mathrm{lanes}}({\mathrm{ishape}}({\mathit{n}})~\mathsf{x}~128 / {\mathit{n}},\, {\mathit{cv}})[{\mathit{laneidx}}]) \\
 \end{array}
 $$
 
@@ -6533,5 +6506,4 @@ $$
 $$
 
 
->>>>>>> al
 ```

@@ -348,6 +348,7 @@ let rec rhs2instrs exp =
   | Ast.CaseE (Atom atomid, _) when List.mem atomid [
       (* TODO: Consider automating this *)
       "CONST";
+      "VVCONST";
       "REF.I31_NUM";
       "REF.STRUCT_ADDR";
       "REF.ARRAY_ADDR";

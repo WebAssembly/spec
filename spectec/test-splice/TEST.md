@@ -907,7 +907,7 @@ warning: rule `Step_pure/all_true-true` was never spliced
 warning: rule `Step_pure/all_true-false` was never spliced
 warning: rule `Step_pure/bitmask` was never spliced
 warning: rule `Step_pure/narrow` was never spliced
-warning: rule `Step_pure/vcvtop` was never spliced
+warning: rule `Step_pure/vcvtop-normal` was never spliced
 warning: rule `Step_pure/vcvtop-half` was never spliced
 warning: rule `Step_pure/vcvtop-zero` was never spliced
 warning: rule `Step_pure/dot` was never spliced
