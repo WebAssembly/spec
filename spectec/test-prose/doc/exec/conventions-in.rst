@@ -3,8 +3,6 @@
 Conventions
 -----------
 
-.. _exec-conventions-general-constants:
-
 General Constants
 ~~~~~~~~~~~~~~~~~
 
@@ -16,17 +14,15 @@ General Constants
 
 $${definition: Ki}
 
-.. _exec-conventions-formal-notation:
-
 Formal Notation
 ~~~~~~~~~~~~~~~
 
 $${rule+:
   Step/pure
   Step/read
+  Steps/refl
+  Steps/trans
 }
-
-.. _exec-conventions-size:
 
 Size
 ~~~~
@@ -54,8 +50,6 @@ $${definition: packedsize}
 \
 
 $${definition: storagesize}
-
-.. _exec-conventions-projections:
 
 Projections
 ~~~~~~~~~~~
@@ -91,8 +85,6 @@ $${definition: tablesxt}
 \
 
 $${definition: memsxt}
-
-.. _exec-conventions-packed-fields:
 
 Packed Fields
 ~~~~~~~~~~~~~

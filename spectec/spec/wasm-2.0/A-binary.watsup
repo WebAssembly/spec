@@ -45,7 +45,7 @@ grammar Bf64 : f64 = | p:Bf(64) => p
 ;; Names
 
 def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
-def $concat_bytes(epsilon) = epsilon
+def $concat_bytes(eps) = eps
 def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 
 def $utf8(name) : byte*
@@ -97,7 +97,7 @@ grammar Bfunctype : functype =
 ;; External types
 
 grammar Bmut : mut =
-  | 0x00 => epsilon
+  | 0x00 => eps
   | 0x01 => MUT
 
 grammar Blimits : limits =
@@ -128,7 +128,7 @@ grammar Bexterntype : externtype =
 ;; Block types
 
 grammar Bblocktype : blocktype =
-  | 0x40 => _RESULT epsilon
+  | 0x40 => _RESULT eps
   | t:Bvaltype => _RESULT t
   | i:Bs33 => _IDX x  -- if i >= 0 /\ i = x
 
@@ -140,7 +140,7 @@ grammar Binstr/control : instr =
   | 0x01 => NOP
   | 0x02 bt:Bblocktype (in:Binstr)* 0x0B => BLOCK bt in*
   | 0x03 bt:Bblocktype (in:Binstr)* 0x0B => LOOP bt in*
-  | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE epsilon
+  | 0x04 bt:Bblocktype (in:Binstr)* 0x0B => IF bt in* ELSE eps
   | 0x04 bt:Bblocktype (in_1:Binstr)* 0x05 (in_2:Binstr)* 0x0B => IF bt in_1* ELSE in_2*
   | 0x0C l:Blabelidx => BR l
   | 0x0D l:Blabelidx => BR_IF l
@@ -164,7 +164,7 @@ grammar Binstr/reference : instr = ...
 
 grammar Binstr/parametric : instr = ...
   | 0x1A => DROP
-  | 0x1B => SELECT epsilon
+  | 0x1B => SELECT eps
 ;;  | 0x1C t*:Bvec(Bvaltype) => SELECT (t*)    TODO
   | ...
 
@@ -464,7 +464,7 @@ var sz : nat
 
 grammar Bsection_(N, grammar B : S*) : S*  hint(desc "section") =
   | N:Bbyte sz:Bu32 S*:B => S*  -- if sz = ||B||
-  | epsilon => epsilon
+  | eps => eps
 
 
 ;; Custom sections
@@ -575,7 +575,7 @@ grammar Belemkind : reftype hint(desc "element kind") =
 ;; Code section
 
 def $concat_locals(local**) : local*  hint(show $concat(%))
-def $concat_locals(epsilon) = epsilon
+def $concat_locals(eps) = eps
 def $concat_locals((loc*) (loc'*)*) = loc* $concat_locals((loc'*)*)
 
 
@@ -668,6 +668,6 @@ grammar Bmodule : module =
     data^m:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data^m start* export*
-    -- if m'* = epsilon \/ $free_dataidx_funcs(func^n) = epsilon
+    -- if m'* = eps \/ $free_dataidx_funcs(func^n) = eps
     -- if m = $sum(m'*)
     -- if (func = FUNC typeidx local* expr)*

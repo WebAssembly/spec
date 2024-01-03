@@ -13,13 +13,10 @@ Numeric Instructions
 
 .. _valid-CONST:
 
-<<<<<<< HEAD
-=======
 %{prose-pred: CONST}
 
 \
 
->>>>>>> al
 $${rule: Instr_ok/const}
 
 .. _valid-UNOP:
@@ -60,11 +57,7 @@ $${rule: Instr_ok/relop}
 
 \
 
-<<<<<<< HEAD
-$${rule: Instr_ok/reinterpret}
-=======
 $${rule: Instr_ok/extend}
->>>>>>> al
 
 .. _valid-CVTOP:
 
@@ -81,27 +74,12 @@ Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. _valid-REF.NULL:
-<<<<<<< HEAD
-=======
 
 %{prose-pred: REF.NULL}
 
 \
 
 $${rule: Instr_ok/ref.null}
-
-.. _valid-REF.IS_NULL:
->>>>>>> al
-
-%{prose-pred: REF.NULL}
-
-\
-
-<<<<<<< HEAD
-$${rule: Instr_ok/ref.null}
-=======
-$${rule: Instr_ok/ref.is_null}
->>>>>>> al
 
 .. _valid-REF.FUNC:
 
@@ -110,7 +88,6 @@ $${rule: Instr_ok/ref.is_null}
 \
 
 $${rule: Instr_ok/ref.func}
-<<<<<<< HEAD
 
 .. _valid-REF.IS_NULL:
 
@@ -328,8 +305,6 @@ $${rule: Instr_ok/extern.convert_any}
 $${rule: Instr_ok/any.convert_extern}
 
 .. _valid-instructions-parametric:
-=======
->>>>>>> al
 
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -372,11 +347,7 @@ TODO (not found)
 
 \
 
-<<<<<<< HEAD
 $${rule+: Instrf_ok/local.set}
-=======
-$${rule: Instr_ok/local.set}
->>>>>>> al
 
 .. _valid-LOCAL.TEE:
 
@@ -387,11 +358,7 @@ TODO (not found)
 
 \
 
-<<<<<<< HEAD
 $${rule+: Instrf_ok/local.tee}
-=======
-$${rule: Instr_ok/local.tee}
->>>>>>> al
 
 .. _valid-GLOBAL.GET:
 
@@ -677,7 +644,6 @@ $${rule+: Instr_ok/call_ref}
 
 \
 
-<<<<<<< HEAD
 $${rule+: Instr_ok/call_indirect}
 
 .. _valid-RETURN_CALL:
@@ -705,32 +671,22 @@ $${rule+: Instr_ok/return_call_ref}
 $${rule+: Instr_ok/return_call_indirect}
 
 .. _valid-instructions-sequences:
-=======
-$${rule: Instr_ok/call_indirect}
->>>>>>> al
 
 Instruction Sequences
 ~~~~~~~~~~~~~~~~~~~~~
 
 $${rule+:
-<<<<<<< HEAD
   Instrf_ok/instr
   Instrs_ok/*
 }
 
 .. _valid-instructions-expressions:
 
-=======
-  InstrSeq_ok/*
-}
-
->>>>>>> al
 Expressions
 ~~~~~~~~~~~
 
 $${rule+: 
   Expr_ok
-<<<<<<< HEAD
   Instr_const/*
   Expr_const
   Expr_ok_const
@@ -751,9 +707,3 @@ $${definition: in_binop}
 \
 
 $${definition: in_numtype}
-=======
-  Expr_const
-  Expr_ok_const
-  Instr_const/*
-}
->>>>>>> al

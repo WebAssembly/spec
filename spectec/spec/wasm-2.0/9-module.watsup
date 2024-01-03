@@ -3,25 +3,25 @@
 ;;
 
 def $funcs(externval*) : funcaddr*
-def $funcs(epsilon) = epsilon
+def $funcs(eps) = eps
 def $funcs((FUNC fa) externval'*) = fa $funcs(externval'*)
 def $funcs(externval externval'*) = $funcs(externval'*)
   -- otherwise
 
 def $globals(externval*) : globaladdr*
-def $globals(epsilon) = epsilon
+def $globals(eps) = eps
 def $globals((GLOBAL ga) externval'*) = ga $globals(externval'*)
 def $globals(externval externval'*) = $globals(externval'*)
   -- otherwise
 
 def $tables(externval*) : tableaddr*
-def $tables(epsilon) = epsilon
+def $tables(eps) = eps
 def $tables((TABLE ta) externval'*) = ta $tables(externval'*)
 def $tables(externval externval'*) = $tables(externval'*)
   -- otherwise
 
 def $mems(externval*) : memaddr*
-def $mems(epsilon) = epsilon
+def $mems(eps) = eps
 def $mems((MEM ma) externval'*) = ma $mems(externval'*)
 def $mems(externval externval'*) = $mems(externval'*)
   -- otherwise
@@ -39,7 +39,7 @@ def $allocfunc(s, mm, func) = (s[.FUNC =.. fi], |s.FUNC|)
   -- if func = FUNC x local* expr
 
 def $allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
-def $allocfuncs(s, mm, epsilon) = (s, epsilon)
+def $allocfuncs(s, mm, eps) = (s, eps)
 def $allocfuncs(s, mm, func func'*) = (s_2, fa fa'*)
   -- if (s_1, fa) = $allocfunc(s, mm, func)
   -- if (s_2, fa'*) = $allocfuncs(s_1, mm, func'*)
@@ -49,7 +49,7 @@ def $allocglobal(s, globaltype, val) = (s[.GLOBAL =.. gi], |s.GLOBAL|)
   -- if gi = { TYPE globaltype, VALUE val }
 
 def $allocglobals(store, globaltype*, val*) : (store, globaladdr*)
-def $allocglobals(s, epsilon, epsilon) = (s, epsilon)
+def $allocglobals(s, eps, eps) = (s, eps)
 def $allocglobals(s, globaltype globaltype'*, val val'*) = (s_2, ga ga'*)
   -- if (s_1, ga) = $allocglobal(s, globaltype, val)
   -- if (s_2, ga'*) = $allocglobals(s_1, globaltype'*, val'*)
@@ -59,7 +59,7 @@ def $alloctable(s, `[i .. j] rt) = (s[.TABLE =.. ti], |s.TABLE|)
   -- if ti = { TYPE (`[i .. j] rt), ELEM (REF.NULL rt)^i }
 
 def $alloctables(store, tabletype*) : (store, tableaddr*)
-def $alloctables(s, epsilon) = (s, epsilon)
+def $alloctables(s, eps) = (s, eps)
 def $alloctables(s, tabletype tabletype'*) = (s_2, ta ta'*)
   -- if (s_1, ta) = $alloctable(s, tabletype)
   -- if (s_2, ta'*) = $alloctables(s_1, tabletype'*)
@@ -69,7 +69,7 @@ def $allocmem(s, `[i .. j] I8) = (s[.MEM =.. mi], |s.MEM|)
   -- if mi = { TYPE (`[i .. j] I8), DATA 0^(i * 64 * $Ki()) }
 
 def $allocmems(store, memtype*) : (store, memaddr*)
-def $allocmems(s, epsilon) = (s, epsilon)
+def $allocmems(s, eps) = (s, eps)
 def $allocmems(s, memtype memtype'*) = (s_2, ma ma'*)
   -- if (s_1, ma) = $allocmem(s, memtype)
   -- if (s_2, ma'*) = $allocmems(s_1, memtype'*)
@@ -79,7 +79,7 @@ def $allocelem(s, rt, ref*) = (s[.ELEM =.. ei], |s.ELEM|)
   -- if ei = { TYPE rt, ELEM ref* }
 
 def $allocelems(store, reftype*, (ref*)*) : (store, elemaddr*)
-def $allocelems(s, epsilon, epsilon) = (s, epsilon)
+def $allocelems(s, eps, eps) = (s, eps)
 def $allocelems(s, rt rt'*, (ref*) (ref'*)*) = (s_2, ea ea'*)
   -- if (s_1, ea) = $allocelem(s, rt, ref*)
   -- if (s_2, ea'*) = $allocelems(s_2, rt'*, (ref'*)*)
@@ -89,7 +89,7 @@ def $allocdata(s, byte*) = (s[.DATA =.. di], |s.DATA|)
   -- if di = { DATA byte* }
 
 def $allocdatas(store, (byte*)*) : (store, dataaddr*)
-def $allocdatas(s, epsilon) = (s, epsilon)
+def $allocdatas(s, eps) = (s, eps)
 def $allocdatas(s, (byte*) (byte'*)*) = (s_2, da da'*)
   -- if (s_1, da) = $allocdata(s, byte*)
   -- if (s_2, da'*) = $allocdatas(s_1, (byte'*)*)
@@ -130,7 +130,7 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, mm)
   -- if da* = $(|s.DATA|+i_data)^(i_data<n_data)
   -- if xi* = $instexport(fa_ex* fa*, ga_ex* ga*, ta_ex* ta*, ma_ex* ma*, export)*
   -- if mm = {
-      TYPE ft,
+      TYPE ft*,
       FUNC fa_ex* fa*,
       GLOBAL ga_ex* ga*,
       TABLE ta_ex* ta*,
@@ -152,18 +152,18 @@ def $allocmodule(s, module, externval*, val*, (ref*)*) = (s_6, mm)
 ;;
 
 def $concat_instr((instr*)*) : instr*
-def $concat_instr(epsilon) = epsilon
+def $concat_instr(eps) = eps
 def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
 
 def $runelem(elem, idx) : instr*
-def $runelem(ELEM reftype expr* (PASSIVE), i) = epsilon
+def $runelem(ELEM reftype expr* (PASSIVE), i) = eps
 def $runelem(ELEM reftype expr* (DECLARE), i) = (ELEM.DROP i)
 def $runelem(ELEM reftype expr* (ACTIVE x instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (TABLE.INIT x i) (ELEM.DROP i)
   -- if n = |expr*|
 
 def $rundata(data, idx) : instr*
-def $rundata(DATA byte* (PASSIVE), i) = epsilon
+def $rundata(DATA byte* (PASSIVE), i) = eps
 def $rundata(DATA byte* (ACTIVE 0 instr*), i) =
   instr* (CONST I32 0) (CONST I32 n) (MEMORY.INIT i) (DATA.DROP i)
   -- if n = |byte*|
@@ -175,15 +175,20 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- if global* = (GLOBAL globaltype expr_G)*
   -- if elem* = (ELEM reftype expr_E* elemmode)*
   -- if start? = (START x)?
+  -- if n_F = |func*|
   -- if n_E = |elem*|
   -- if n_D = |data*|
-  -- if mm_init = {TYPE functype*, FUNC $funcs(externval*), GLOBAL $globals(externval*)}
-  -- if f_init = { LOCAL epsilon, MODULE mm_init }
+  -- if mm_init = {
+       TYPE functype*,
+       FUNC $funcs(externval*) $(|s.FUNC|+i_F)^(i_F<n_F),
+       GLOBAL $globals(externval*)
+     }
+  -- if f_init = { LOCAL eps, MODULE mm_init }
   -- if z = s; f_init
   -- (Eval_expr : z; expr_G ~>* z; val)*
   -- (Eval_expr : z; expr_E ~>* z; ref)**
   -- if (s', mm) = $allocmodule(s, module, externval*, val*, (ref*)*)
-  -- if f = { LOCAL epsilon, MODULE mm }
+  -- if f = { LOCAL eps, MODULE mm }
   -- if instr_E* = $concat_instr($runelem(elem*[i], i)^(i<n_E))
   -- if instr_D* = $concat_instr($rundata(data*[j], j)^(j<n_D))
 
@@ -194,5 +199,5 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
 
 def $invoke(store, funcaddr, val*) : config
 def $invoke(s, fa, val^n) = s; f; val^n (CALL_ADDR fa)
-  -- if f = { LOCAL epsilon, MODULE {} }
+  -- if f = { LOCAL eps, MODULE {} }
   -- if $funcinst((s; f))[fa].TYPE = t_1^n -> t_2*

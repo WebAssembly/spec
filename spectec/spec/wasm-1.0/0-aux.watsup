@@ -31,7 +31,7 @@ def $min(i, 0) = 0
 def $min($(i+1), $(j+1)) = $min(i, j)
 
 def $sum(nat*) : nat  ;; TODO: hint
-def $sum(epsilon) = 0
+def $sum(eps) = 0
 def $sum(n n'*) = $(n + $sum(n'*))
 
 
@@ -56,3 +56,11 @@ syntax testfuse =
   | MN nat nat nat  hint(show MN_#AB % % %)
   | OP nat nat nat  hint(show OP_#AB#% % %)
   | QR nat nat nat  hint(show QR_%#AB % %)
+
+
+syntax testmixfix = | `{ nat* } | `[ nat* ] | nat -> nat
+
+def $testmixfix(testmixfix) : nat*
+def $testmixfix(`{nat*}) = nat*
+def $testmixfix(`[nat*]) = nat*
+def $testmixfix(nat_1 -> nat_2) = nat_1 nat_2

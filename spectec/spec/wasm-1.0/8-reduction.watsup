@@ -31,7 +31,7 @@ relation Eval_expr: state; expr ~>* state; val*  hint(show "E-expr")
 rule Eval_expr:
   z; instr*  ~>*  z'; val*
   -- Steps: z; instr*  ~>*  z'; val*
-  
+
 
 ;;
 ;; Instructions
@@ -43,10 +43,10 @@ rule Step_pure/unreachable:
   UNREACHABLE  ~>  TRAP
 
 rule Step_pure/nop:
-  NOP  ~>  epsilon
+  NOP  ~>  eps
 
 rule Step_pure/drop:
-  val DROP  ~>  epsilon
+  val DROP  ~>  eps
 
 
 rule Step_pure/select-true:
@@ -61,8 +61,8 @@ rule Step_pure/select-false:
 ;; Block instructions
 
 rule Step_read/block:
-  z; (BLOCK t? instr*)  ~>  (LABEL_ n `{epsilon} instr*)
-  -- if t? = epsilon /\ n = 0 \/ t? =/= epsilon /\ n = 1  ;; TODO: allow |t?|
+  z; (BLOCK t? instr*)  ~>  (LABEL_ n `{eps} instr*)
+  -- if t? = eps /\ n = 0 \/ t? =/= eps /\ n = 1  ;; TODO: allow |t?|
 
 rule Step_read/loop:
   z; (LOOP t? instr*)  ~>  (LABEL_ 0 `{LOOP t? instr*} instr*)
@@ -95,7 +95,7 @@ rule Step_pure/br_if-true:
   -- if c =/= 0
 
 rule Step_pure/br_if-false:
-  (CONST I32 c) (BR_IF l)  ~>  epsilon
+  (CONST I32 c) (BR_IF l)  ~>  eps
   -- if c = 0
 
 
@@ -116,15 +116,14 @@ rule Step_read/call:
 rule Step_read/call_indirect-call:
   z; (CONST I32 i) (CALL_INDIRECT x)  ~>  (CALL_ADDR a)
   -- if $table(z, 0).ELEM[i] = a
-  -- if $funcinst(z)[a].CODE = FUNC x' (LOCAL t)* instr*
-  -- if $type(z, x) = $type(z, x')
+  -- if $type(z, x) = $funcinst(z)[a].TYPE
 
 rule Step_read/call_indirect-trap:
   z; (CONST I32 i) (CALL_INDIRECT x)  ~>  TRAP
   -- otherwise
 
 rule Step_read/call_addr:
-  z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{epsilon} instr*))
+  z; val^k (CALL_ADDR a)  ~>  (FRAME_ n `{f} (LABEL_ n `{eps} instr*))
   -- if $funcinst(z)[a] = {TYPE (t_1^k -> t_2^n), MODULE mm, CODE func}
   -- if func = FUNC x (LOCAL t)* instr*
   -- if f = {LOCAL val^k ($default(t))*, MODULE mm}
@@ -148,7 +147,7 @@ rule Step_pure/unop-val:
 
 rule Step_pure/unop-trap:
   (CONST t c_1) (UNOP t unop)  ~>  TRAP
-  -- if $unop(unop, t, c_1) = epsilon  ;; TODO
+  -- if $unop(unop, t, c_1) = eps  ;; TODO
 
 
 rule Step_pure/binop-val:
@@ -157,7 +156,7 @@ rule Step_pure/binop-val:
 
 rule Step_pure/binop-trap:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  TRAP
-  -- if $binop(binop, t, c_1, c_2) = epsilon  ;; TODO
+  -- if $binop(binop, t, c_1, c_2) = eps  ;; TODO
 
 
 rule Step_pure/testop:
@@ -175,7 +174,7 @@ rule Step_pure/cvtop-val:
 
 rule Step_pure/cvtop-trap:
   (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  TRAP
-  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = epsilon  ;; TODO
+  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = eps  ;; TODO
 
 
 ;; Local instructions
@@ -184,7 +183,7 @@ rule Step_read/local.get:
   z; (LOCAL.GET x)  ~>  $local(z, x)
 
 rule Step/local.set:
-  z; val (LOCAL.SET x)  ~>  $with_local(z, x, val); epsilon
+  z; val (LOCAL.SET x)  ~>  $with_local(z, x, val); eps
 
 rule Step_pure/local.tee:
   val (LOCAL.TEE x)  ~>  val val (LOCAL.SET x)
@@ -196,7 +195,7 @@ rule Step_read/global.get:
   z; (GLOBAL.GET x)  ~>  $global(z, x).VALUE
 
 rule Step/global.set:
-  z; val (GLOBAL.SET x)  ~>  $with_global(z, x, val); epsilon
+  z; val (GLOBAL.SET x)  ~>  $with_global(z, x, val); eps
 
 
 ;; Memory instructions
@@ -223,7 +222,7 @@ rule Step/store-num-trap:
   -- if $(i + mo.OFFSET + $size(t)/8) > |$mem(z, 0).DATA|
 
 rule Step/store-num-val:
-  z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(t)/8), b*); epsilon
+  z; (CONST I32 i) (CONST t c) (STORE t mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(t)/8), b*); eps
   -- if b* = $bytes(t, c)
 
 rule Step/store-pack-trap:
@@ -231,7 +230,7 @@ rule Step/store-pack-trap:
   -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).DATA|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST t c) (STORE t n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); epsilon
+  z; (CONST I32 i) (CONST t c) (STORE t n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
   -- if b* = $ibytes(n, $wrap($size(t), n, c))
 
 

@@ -16,6 +16,7 @@ let string_of_atom = function
   | Atom atomid -> atomid
   | Infinity -> "infinity"
   | Bot -> "_|_"
+  | Top -> "^|^"
   | Dot -> "."
   | Dot2 -> ".."
   | Dot3 -> "..."
@@ -23,9 +24,12 @@ let string_of_atom = function
   | Backslash -> "\\"
   | In -> "in"
   | Arrow -> "->"
+  | Arrow2 -> "=>"
   | Colon -> ":"
   | Sub -> "<:"
+  | Sup -> ":>"
   | Assign -> ":="
+  | Equiv -> "=="
   | Approx -> "~~"
   | SqArrow -> "~>"
   | SqArrowStar -> "~>*"
@@ -33,14 +37,17 @@ let string_of_atom = function
   | Succ -> ">>"
   | Tilesturn -> "-|"
   | Turnstile -> "|-"
+  | Quest -> "?"
+  | Plus -> "+"
+  | Star -> "*"
+  | Comma -> ","
+  | Bar -> "|"
   | LParen -> "("
   | LBrack -> "["
   | LBrace -> "{"
   | RParen -> ")"
   | RBrack -> "]"
   | RBrace -> "}"
-  | Quest -> "?"
-  | Star -> "*"
 
 let string_of_unop = function
   | NotOp -> "~"
@@ -210,7 +217,7 @@ and string_of_prem prem =
   match prem.it with
   | RulePr (id, op, e) -> id.it ^ ": " ^ string_of_exp {e with it = MixE (op, e)}
   | IfPr e -> "if " ^ string_of_exp e
-  | LetPr (e1, e2, _targets) -> "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2
+  | LetPr (e1, e2, _ids) -> "where " ^ string_of_exp e1 ^ " = " ^ string_of_exp e2
   | ElsePr -> "otherwise"
   | IterPr ({it = IterPr _; _} as prem', iter) ->
     string_of_prem prem' ^ string_of_iterexp iter
@@ -309,6 +316,7 @@ let structured_string_of_atom = function
   | Atom atomid -> sprintf "Atom \"%s\"" atomid
   | Infinity -> "Infinity"
   | Bot -> "Bot"
+  | Top -> "Top"
   | Dot -> "Dot"
   | Dot2 -> "Dot2"
   | Dot3 -> "Dot3"
@@ -316,9 +324,12 @@ let structured_string_of_atom = function
   | Backslash -> "Backslash"
   | In -> "In"
   | Arrow -> "Arrow"
+  | Arrow2 -> "Arrow2"
   | Colon -> "Colon"
   | Sub -> "Sub"
+  | Sup -> "Sup"
   | Assign -> "Assign"
+  | Equiv -> "Equiv"
   | Approx -> "Approx"
   | SqArrow -> "SqArrow"
   | SqArrowStar ->"SqArrowStar"
@@ -326,15 +337,18 @@ let structured_string_of_atom = function
   | Succ -> "Succ"
   | Tilesturn -> "Tilesturn"
   | Turnstile -> "Turnstile"
+  | Quest -> "Quest"
+  | Plus -> "Plus"
+  | Star -> "Star"
+  | Comma -> "Comma"
+  | Bar -> "Bar"
   | LParen -> "LParen"
   | LBrack -> "LBrack"
   | LBrace -> "LBrace"
   | RParen -> "RParen"
   | RBrack -> "RBrack"
   | RBrace -> "RBrace"
-  | Quest -> "Quest"
-  | Star -> "Star"
-
+  
 let structured_string_of_unop = function
   | NotOp -> "NotOp"
   | PlusOp _ -> "PlusOp"
@@ -557,11 +571,11 @@ let rec structured_string_of_premise prem =
         (structured_string_of_mixop mixop)
         (structured_string_of_exp exp)
   | IfPr (exp) -> sprintf "IfPr (%s)" (structured_string_of_exp exp)
-  | LetPr (exp1, exp2, targets) ->
+  | LetPr (exp1, exp2, ids) ->
       sprintf "LetPr (%s, %s, %s)"
         (structured_string_of_exp exp1)
         (structured_string_of_exp exp2)
-        ("[" ^ String.concat ";" targets ^ "]")
+        (structured_string_of_list Source.it ids)
   | ElsePr -> "ElsePr"
   | IterPr (prem, iterexp) ->
       sprintf "IterPr (%s, %s)"

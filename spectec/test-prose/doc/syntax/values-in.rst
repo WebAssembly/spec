@@ -15,18 +15,13 @@ $${syntax: byte}
 .. _syntax-iN:
 .. _syntax-u31:
 .. _syntax-u32:
-<<<<<<< HEAD
 .. _syntax-u64:
 .. _syntax-u128:
 .. _syntax-s33:
-.. _syntax-values-integers:
-=======
->>>>>>> al
 
 Integers
 ~~~~~~~~
 
-<<<<<<< HEAD
 $${syntax+: 
   uN
   sN
@@ -37,8 +32,6 @@ $${syntax+:
   u128
   s33
 }
-
-.. _syntax-values-floating-point:
 
 Floating-Point
 ~~~~~~~~~~~~~~
@@ -97,17 +90,10 @@ $${definition: E}
 
 .. _syntax-name:
 .. _syntax-char:
-.. _syntax-values-names:
-=======
-$${syntax: u32}
-
-.. _syntax-name:
->>>>>>> al
 
 Names
 ~~~~~
 
-<<<<<<< HEAD
 $${syntax+: 
   name
   char
@@ -120,6 +106,3 @@ $${syntax+:
 \
 
 $${definition: utf8}
-=======
-$${syntax: name}
->>>>>>> al

@@ -1,7 +1,4 @@
-(* Note *)
-
-(* TODO: type ('a, 'b) note = { it : 'a; nid : int; note : 'b } *)
-type 'a node = { it : 'a; nid : int }
+open Util.Source
 
 (* Types *)
 
@@ -30,7 +27,7 @@ and value =
   | StrV of (kwd', value) record       (* key-value mapping *)
   | CaseV of kwd' * value list         (* constructor *)
   | OptV of value option               (* optional value *)
-  | TupV of value * value              (* pair of values *)
+  | TupV of value list                 (* pair of values *)
   | ArrowV of value * value            (* Wasm function type as an AL value *)
   | FrameV of value option * value     (* TODO: desugar using CaseV? *)
   | LabelV of value * value            (* TODO: desugar using CaseV? *)
@@ -75,7 +72,8 @@ type iter =
 
 (* Expressions *)
 
-and expr =
+and expr = expr' phrase
+and expr' =
   | VarE of id                          (* varid *)
   | NumE of int64                       (* number *)
   | UnE of unop * expr                  (* unop expr *)
@@ -86,13 +84,13 @@ and expr =
   | StrE of (kwd, expr) record          (* `{` (kwd `->` expr)* `}` *)
   | CatE of expr * expr                 (* expr `++` expr *)
   | LenE of expr                        (* `|` expr `|` *)
-  | TupE of expr * expr                 (* `(` expr `,` expr `)` *)
+  | TupE of expr list                   (* `(` (expr `,`)* `)` *)
   | CaseE of kwd * expr list            (* kwd `(` expr* `)` -- MixE/CaseE *)
   | CallE of id * expr list             (* id `(` expr* `)` *)
   | IterE of expr * id list * iter      (* expr (`{` id* `}`)* *)
   | OptE of expr option                 (* expr?  *)
   | ListE of expr list                  (* `[` expr* `]` *)
-  | ArrowE of expr * expr               (* "expr -> expr" *)
+  | ArrowE of expr * expr               (* "expr -> expr" *) (* TODO: Remove ArrowE using hint *)
   | ArityE of expr                      (* "the arity of expr" *)
   | FrameE of expr option * expr        (* "the activation of expr (with arity expr)?" *)
   | LabelE of expr * expr               (* "the label whose arity is expr and whose continuation is expr" *)
@@ -104,12 +102,14 @@ and expr =
   | SubE of id * ty                     (* varid, with specific type *)
   | YetE of string                      (* for future not yet implemented feature *)
 
-and path =
+and path = path' phrase
+and path' =
   | IdxP of expr                    (* `[` expr `]` *)
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of kwd                     (* `.` atom *)
 
-and cond =
+and cond = cond' phrase
+and cond' =
   | UnC of unop * cond              (* unop expr *)
   | BinC of binop * cond * cond     (* expr binop expr *)
   | CmpC of cmpop * expr * expr     (* expr cmpop expr *)
@@ -129,7 +129,7 @@ and cond =
 
 (* Instructions *)
 
-type instr = instr' node
+type instr = (instr', int) note_phrase
 and instr' =
   | IfI of cond * instr list * instr list (* `if` cond `then` instr* `else` instr* *)
   | EitherI of instr list * instr list    (* `either` instr* `or` instr* *)

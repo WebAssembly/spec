@@ -73,18 +73,6 @@ def $ishape(nat) = I32
 def $ishape(nat) = I64
     -- if nat = 64
 
-def $forall(bool*) : bool
-def $forall(epsilon) = true
-def $forall(bool bool'*) = true
-    -- if $forall(bool'*) = true
-    -- if bool = true
-def $forall(bool*) = false
-    -- otherwise
-
-def $bool(bool) : nat
-def $bool(bool) =  1 -- if bool = true
-def $bool(bool) =  0 -- otherwise
-
 def $vvunop(vvunop, vectype, cv) : c_vectype                hint(show %#_%#((%)))
 def $vvbinop(vvbinop, vectype, cv, cv) : c_vectype          hint(show %#_%#(%, %))
 def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype    hint(show %#_%#(%, %, %))

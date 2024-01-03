@@ -433,6 +433,9 @@ let inverse_of_ztbytes : numerics =
       );
   }
 
+let bytes_ : numerics = { name = "bytes"; f = ntbytes.f }
+let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_ntbytes.f }
+
 let wrap : numerics =
   {
     name = "wrap";
@@ -468,6 +471,8 @@ let numerics_list : numerics list = [
   inverse_of_ntbytes;
   inverse_of_ztbytes;
   inverse_of_signed;
+  bytes_;
+  inverse_of_bytes_;
   wrap ]
 
 let call_numerics fname args =

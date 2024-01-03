@@ -1,7 +1,2254 @@
 # Preview
 
 ```sh
-$ (cd ../spec/wasm-3.0 && dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose)
+$ for v in 1 2 3; do ( \
+>   echo "Generating prose for Wasm $v.0..." && \
+>   cd ../spec/wasm-$v.0 && \
+>   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose \
+> ) done
+Generating prose for Wasm 1.0...
+watsup 0.4 generator
+== Parsing...
+== Elaboration...
+== IL Validation...
+== Running pass sideconditions...
+== IL Validation after pass sideconditions...
+== Running pass animate...
+== IL Validation after pass animate...
+== Translating to AL...
+=================
+ Generated prose
+=================
+validation_of_UNREACHABLE
+- The instruction is valid with type [t_1*]->[t_2*].
+
+validation_of_NOP
+- The instruction is valid with type []->[].
+
+validation_of_DROP
+- The instruction is valid with type [t]->[].
+
+validation_of_SELECT ?()
+- The instruction is valid with type [t, t, I32]->[t].
+
+validation_of_BLOCK t? instr*
+- Under the context C with .LABEL prepended by [t?], instr* must be valid with type []->[t?].
+- The instruction is valid with type []->[t?].
+
+validation_of_LOOP t? instr*
+- Under the context C with .LABEL prepended by [?()], instr* must be valid with type []->[].
+- The instruction is valid with type []->[t?].
+
+validation_of_IF t? instr_1* instr_2*
+- Under the context C with .LABEL prepended by [t?], instr_1* must be valid with type []->[t?].
+- Under the context C with .LABEL prepended by [t?], instr_2* must be valid with type []->[t?].
+- The instruction is valid with type [I32]->[t?].
+
+validation_of_BR l
+- |C.LABEL| must be greater than l.
+- Let t? be C.LABEL[l].
+- The instruction is valid with type [t_1* ++ t?]->[t_2*].
+
+validation_of_BR_IF l
+- |C.LABEL| must be greater than l.
+- Let t? be C.LABEL[l].
+- The instruction is valid with type [t? ++ [I32]]->[t?].
+
+validation_of_BR_TABLE l* l'
+- |C.LABEL| must be greater than l'.
+- For all l in l*,
+  - |C.LABEL| must be greater than l.
+- For all l in l*,
+  - Let t? be C.LABEL[l].
+- t? must be equal to C.LABEL[l'].
+- The instruction is valid with type [t_1* ++ t?]->[t_2*].
+
+validation_of_RETURN
+- Let ?(t?) be C.RETURN.
+- The instruction is valid with type [t_1* ++ t?]->[t_2*].
+
+validation_of_CALL x
+- |C.FUNC| must be greater than x.
+- Let [t_1*]->[t_2?] be C.FUNC[x].
+- The instruction is valid with type [t_1*]->[t_2?].
+
+validation_of_CALL_INDIRECT x
+- |C.TYPE| must be greater than x.
+- Let [t_1*]->[t_2?] be C.TYPE[x].
+- The instruction is valid with type [t_1* ++ [I32]]->[t_2?].
+
+validation_of_CONST t c_t
+- The instruction is valid with type []->[t].
+
+validation_of_UNOP t unop
+- The instruction is valid with type [t]->[t].
+
+validation_of_BINOP t binop
+- The instruction is valid with type [t, t]->[t].
+
+validation_of_TESTOP t testop
+- The instruction is valid with type [t]->[I32].
+
+validation_of_RELOP t relop
+- The instruction is valid with type [t, t]->[I32].
+
+validation_of_CVTOP t_1 REINTERPRET t_2 ?()
+- t_1 must be different with t_2.
+- $size(t_1) must be equal to $size(t_2).
+- The instruction is valid with type [t_2]->[t_1].
+
+validation_of_CVTOP inn_1 CONVERT inn_2 sx?
+- inn_1 must be different with inn_2.
+- ($size(inn_1) > $size(inn_2)) and (sx? is ?()) are equivalent.
+- The instruction is valid with type [inn_2]->[inn_1].
+
+validation_of_LOCAL.GET x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type []->[t].
+
+validation_of_LOCAL.SET x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type [t]->[].
+
+validation_of_LOCAL.TEE x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type [t]->[t].
+
+validation_of_GLOBAL.GET x
+- |C.GLOBAL| must be greater than x.
+- Let (mut, t) be C.GLOBAL[x].
+- The instruction is valid with type []->[t].
+
+validation_of_GLOBAL.SET x
+- |C.GLOBAL| must be greater than x.
+- Let ((MUT ?(())), t) be C.GLOBAL[x].
+- The instruction is valid with type [t]->[].
+
+validation_of_MEMORY.SIZE
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type []->[I32].
+
+validation_of_MEMORY.GROW
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32]->[I32].
+
+validation_of_LOAD t (n, sx)? { ALIGN: n_A; OFFSET: n_O; }
+- |C.MEM| must be greater than 0.
+- (sx? is ?()) and (n? is ?()) are equivalent.
+- (2 ^ n_A) must be less than or equal to ($size(t) / 8).
+- If n is defined,
+  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(t) / 8).
+- n? must be equal to ?().
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32]->[t].
+
+validation_of_STORE t n? { ALIGN: n_A; OFFSET: n_O; }
+- |C.MEM| must be greater than 0.
+- (2 ^ n_A) must be less than or equal to ($size(t) / 8).
+- If n is defined,
+  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(t) / 8).
+- n? must be equal to ?().
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32, t]->[].
+
+Ki
+1. Return 1024.
+
+min u_0 u_1
+1. If u_0 is 0, then:
+  a. Return 0.
+2. If u_1 is 0, then:
+  a. Return 0.
+3. Assert: Due to validation, u_0 ≥ 1.
+4. Let i be (u_0 - 1).
+5. Assert: Due to validation, u_1 ≥ 1.
+6. Let j be (u_1 - 1).
+7. Return $min(i, j).
+
+sum u_0*
+1. If u_0* is [], then:
+  a. Return 0.
+2. Let [n] ++ n'* be u_0*.
+3. Return (n + $sum(n'*)).
+
+test_sub_ATOM_22 n_3_ATOM_y
+1. Return 0.
+
+curried_ n_1 n_2
+1. Return (n_1 + n_2).
+
+testmixfix u_0
+1. Return nat*.
+2. Return nat*.
+3. Return [nat_1, nat_2].
+
+signif u_0
+1. If u_0 is 32, then:
+  a. Return 23.
+2. Assert: Due to validation, u_0 is 64.
+3. Return 52.
+
+expon u_0
+1. If u_0 is 32, then:
+  a. Return 8.
+2. Assert: Due to validation, u_0 is 64.
+3. Return 11.
+
+M N
+1. Return $signif(N).
+
+E N
+1. Return $expon(N).
+
+fNzero
+1. Return (POS (NORM 0 0)).
+
+size u_0
+1. If u_0 is I32, then:
+  a. Return 32.
+2. If u_0 is I64, then:
+  a. Return 64.
+3. If u_0 is F32, then:
+  a. Return 32.
+4. If u_0 is F64, then:
+  a. Return 64.
+
+memop0
+1. Return { ALIGN: 0; OFFSET: 0; }.
+
+signed N i
+1. If 0 ≤ (2 ^ (N - 1)), then:
+  a. Return i.
+2. Assert: Due to validation, (2 ^ (N - 1)) ≤ i.
+3. Assert: Due to validation, i < (2 ^ N).
+4. Return (i - (2 ^ N)).
+
+invsigned N i
+1. Let j be $inverse_of_signed(N, i).
+2. Return j.
+
+invibytes N b*
+1. Let n be $inverse_of_ibytes(N, b*).
+2. Return n.
+
+invfbytes N b*
+1. Let p be $inverse_of_fbytes(N, b*).
+2. Return p.
+
+default u_0
+1. If u_0 is I32, then:
+  a. Return (I32.CONST 0).
+2. If u_0 is I64, then:
+  a. Return (I64.CONST 0).
+3. If u_0 is F32, then:
+  a. Return (F32.CONST 0).
+4. Assert: Due to validation, u_0 is F64.
+5. Return (F64.CONST 0).
+
+funcsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be y_0.
+  b. Return [fa] ++ $funcsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $funcsxv(xv*).
+
+globalsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be y_0.
+  b. Return [ga] ++ $globalsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $globalsxv(xv*).
+
+tablesxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be y_0.
+  b. Return [ta] ++ $tablesxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $tablesxv(xv*).
+
+memsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM ma) be y_0.
+  b. Return [ma] ++ $memsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $memsxv(xv*).
+
+store
+1. Return.
+
+frame
+1. Let f be the current frame.
+2. Return f.
+
+funcaddr
+1. Let f be the current frame.
+2. Return f.MODULE.FUNC.
+
+funcinst
+1. Return s.FUNC.
+
+globalinst
+1. Return s.GLOBAL.
+
+tableinst
+1. Return s.TABLE.
+
+meminst
+1. Return s.MEM.
+
+moduleinst
+1. Let f be the current frame.
+2. Return f.MODULE.
+
+type x
+1. Let f be the current frame.
+2. Return f.MODULE.TYPE[x].
+
+func x
+1. Let f be the current frame.
+2. Return s.FUNC[f.MODULE.FUNC[x]].
+
+global x
+1. Let f be the current frame.
+2. Return s.GLOBAL[f.MODULE.GLOBAL[x]].
+
+table x
+1. Let f be the current frame.
+2. Return s.TABLE[f.MODULE.TABLE[x]].
+
+mem x
+1. Let f be the current frame.
+2. Return s.MEM[f.MODULE.MEM[x]].
+
+local x
+1. Let f be the current frame.
+2. Return f.LOCAL[x].
+
+with_local x v
+1. Let f be the current frame.
+2. Replace f.LOCAL[x] with v.
+
+with_global x v
+1. Let f be the current frame.
+2. Replace s.GLOBAL[f.MODULE.GLOBAL[x]].VALUE with v.
+
+with_table x i a
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]].ELEM[i] with ?(a).
+
+with_tableinst x ti
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]] with ti.
+
+with_mem x i j b*
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]].DATA[i : j] with b*.
+
+with_meminst x mi
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]] with mi.
+
+growtable ti n
+1. Let { TYPE: (i, j); ELEM: ?(a)*; } be ti.
+2. Let i' be (|a*| + n).
+3. If i' ≤ j, then:
+  a. Let ti' be { TYPE: (i', j); ELEM: ?(a)* ++ ?()^n; }.
+  b. Return ti'.
+
+growmemory mi n
+1. Let { TYPE: (i, j); DATA: b*; } be mi.
+2. Let i' be ((|b*| / (64 · $Ki())) + n).
+3. If i' ≤ j, then:
+  a. Let mi' be { TYPE: (i', j); DATA: b* ++ 0^((n · 64) · $Ki()); }.
+  b. Return mi'.
+
+funcs u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be y_0.
+  b. Return [fa] ++ $funcs(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $funcs(externval'*).
+
+globals u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be y_0.
+  b. Return [ga] ++ $globals(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $globals(externval'*).
+
+tables u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be y_0.
+  b. Return [ta] ++ $tables(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $tables(externval'*).
+
+mems u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM ma) be y_0.
+  b. Return [ma] ++ $mems(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $mems(externval'*).
+
+allocfunc mm func
+1. Assert: Due to validation, func is of the case FUNC.
+2. Let (FUNC x local* expr) be func.
+3. Let fi be { TYPE: mm.TYPE[x]; MODULE: mm; CODE: func; }.
+4. Let a be |s.FUNC|.
+5. Append fi to the s.FUNC.
+6. Return a.
+
+allocfuncs mm u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [func] ++ func'* be u_0*.
+3. Let fa be $allocfunc(mm, func).
+4. Let fa'* be $allocfuncs(mm, func'*).
+5. Return [fa] ++ fa'*.
+
+allocglobal globaltype val
+1. Let gi be { TYPE: globaltype; VALUE: val; }.
+2. Let a be |s.GLOBAL|.
+3. Append gi to the s.GLOBAL.
+4. Return a.
+
+allocglobals u_0* u_1*
+1. If u_0* is [], then:
+  a. Assert: Due to validation, u_1* is [].
+  b. Return [].
+2. Else:
+  a. Let [globaltype] ++ globaltype'* be u_0*.
+  b. Assert: Due to validation, |u_1*| ≥ 1.
+  c. Let [val] ++ val'* be u_1*.
+  d. Let ga be $allocglobal(globaltype, val).
+  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  f. Return [ga] ++ ga'*.
+
+alloctable (i, j)
+1. Let ti be { TYPE: (i, j); ELEM: ?()^i; }.
+2. Let a be |s.TABLE|.
+3. Append ti to the s.TABLE.
+4. Return a.
+
+alloctables u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [tabletype] ++ tabletype'* be u_0*.
+3. Let ta be $alloctable(tabletype).
+4. Let ta'* be $alloctables(tabletype'*).
+5. Return [ta] ++ ta'*.
+
+allocmem (i, j)
+1. Let mi be { TYPE: (i, j); DATA: 0^((i · 64) · $Ki()); }.
+2. Let a be |s.MEM|.
+3. Append mi to the s.MEM.
+4. Return a.
+
+allocmems u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [memtype] ++ memtype'* be u_0*.
+3. Let ma be $allocmem(memtype).
+4. Let ma'* be $allocmems(memtype'*).
+5. Return [ma] ++ ma'*.
+
+instexport fa* ga* ta* ma* (EXPORT name u_0)
+1. If u_0 is of the case FUNC, then:
+  a. Let (FUNC x) be u_0.
+  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+2. If u_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL x) be u_0.
+  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+3. If u_0 is of the case TABLE, then:
+  a. Let (TABLE x) be u_0.
+  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+4. Assert: Due to validation, u_0 is of the case MEM.
+5. Let (MEM x) be u_0.
+6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+
+allocmodule module externval* val*
+1. Let fa_ex* be $funcs(externval*).
+2. Let ga_ex* be $globals(externval*).
+3. Let ma_ex* be $mems(externval*).
+4. Let ta_ex* be $tables(externval*).
+5. Assert: Due to validation, module is of the case MODULE.
+6. Let (MODULE y_0 import* func^n_func y_1 y_2 y_3 elem* data* start? export*) be module.
+7. Let (MEMORY memtype)^n_mem be y_3.
+8. Let (TABLE tabletype)^n_table be y_2.
+9. Let (GLOBAL globaltype expr_1)^n_global be y_1.
+10. Let (TYPE ft)* be y_0.
+11. Let fa* be (|s.FUNC| + i_func)^(i_func<n_func).
+12. Let ga* be (|s.GLOBAL| + i_global)^(i_global<n_global).
+13. Let ta* be (|s.TABLE| + i_table)^(i_table<n_table).
+14. Let ma* be (|s.MEM| + i_mem)^(i_mem<n_mem).
+15. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+16. Let mm be { TYPE: ft*; FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; EXPORT: xi*; }.
+17. Let y_0 be $allocfuncs(mm, func^n_func).
+18. Assert: Due to validation, y_0 is fa*.
+19. Let y_0 be $allocglobals(globaltype^n_global, val*).
+20. Assert: Due to validation, y_0 is ga*.
+21. Let y_0 be $alloctables(tabletype^n_table).
+22. Assert: Due to validation, y_0 is ta*.
+23. Let y_0 be $allocmems(memtype^n_mem).
+24. Assert: Due to validation, y_0 is ma*.
+25. Return mm.
+
+concat_instr u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [instr*] ++ instr'** be u_0*.
+3. Return instr* ++ $concat_instr(instr'**).
+
+initelem mm u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
+  a. Return.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [a*] ++ a'** be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [i] ++ i'* be u_0*.
+6. Replace s.TABLE[mm.TABLE[0]].ELEM[i : |a*|] with ?(a)*.
+7. Perform $initelem(mm, i'*, a'**).
+8. Return.
+
+initdata mm u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
+  a. Return.
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [b*] ++ b'** be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [i] ++ i'* be u_0*.
+6. Replace s.MEM[mm.MEM[0]].DATA[i : |b*|] with b*.
+7. Perform $initdata(mm, i'*, b'**).
+8. Return.
+
+instantiate module externval*
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+3. Let (TYPE functype)* be type*.
+4. Let n_F be |func*|.
+5. Let (START x')? be start?.
+6. Let (DATA expr_D b*)* be data*.
+7. Let (ELEM expr_E x*)* be elem*.
+8. Let (GLOBAL globaltype expr_G)* be global*.
+9. Let mm_init be { TYPE: functype*; FUNC: $funcs(externval*) ++ (|s.FUNC| + i_F)^(i_F<n_F); GLOBAL: $globals(externval*); TABLE: []; MEM: []; EXPORT: []; }.
+10. Let f_init be { LOCAL: []; MODULE: mm_init; }.
+11. Let z be f_init.
+12. Enter the activation of z with label [FRAME_]:
+  a. Let [(I32.CONST i_D)]* be $eval_expr(expr_D)*.
+13. Enter the activation of z with label [FRAME_]:
+  a. Let [(I32.CONST i_E)]* be $eval_expr(expr_E)*.
+14. Enter the activation of z with label [FRAME_]:
+  a. Let [val]* be $eval_expr(expr_G)*.
+15. Let mm be $allocmodule(module, externval*, val*).
+16. Let f be { LOCAL: []; MODULE: mm; }.
+17. Perform $initelem(mm, i_E*, mm.FUNC[x]**).
+18. Perform $initdata(mm, i_D*, b**).
+19. Enter the activation of f with arity 0 with label [FRAME_]:
+  a. If x' is defined, then:
+    1) Let ?(x'_0) be x'.
+    2) Execute (CALL x'_0).
+20. Return mm.
+
+invoke fa val^n
+1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; EXPORT: []; }; }.
+2. Let [t_1^n]->[t_2*] be $funcinst()[fa].TYPE.
+3. Let k be |t_2*|.
+4. Enter the activation of f with arity k with label [FRAME_]:
+  a. Push val^n to the stack.
+  b. Execute (CALL_ADDR fa).
+5. Pop val^k from the stack.
+6. Return val^k.
+
+concat_bytes u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [b*] ++ b'** be u_0*.
+3. Return b* ++ $concat_bytes(b'**).
+
+utf8 u_0
+1. If |u_0| is 1, then:
+  a. Let [c] be u_0.
+  b. If c < 128, then:
+    1) Let b be c.
+    2) Return [b].
+  c. If 128 ≤ c and c < 2048 and c ≥ (b_2 - 128), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (c - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If 2048 ≤ c and c < 55296 or 57344 ≤ c and c < 65536 and c ≥ (b_3 - 128), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (c - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If 65536 ≤ c and c < 69632 and c ≥ (b_4 - 128), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (c - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let c* be u_0.
+3. Return $concat_bytes($utf8([c])*).
+
+concat_locals u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [loc*] ++ loc'** be u_0*.
+3. Return loc* ++ $concat_locals(loc'**).
+
+execution_of_UNREACHABLE
+1. Trap.
+
+execution_of_NOP
+1. Do nothing.
+
+execution_of_DROP
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Do nothing.
+
+execution_of_SELECT t*?
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop val_1 from the stack.
+7. If c is not 0, then:
+  a. Push val_1 to the stack.
+8. Else:
+  a. Push val_2 to the stack.
+
+execution_of_IF t? instr_1* instr_2*
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. If c is not 0, then:
+  a. Execute (BLOCK t? instr_1*).
+4. Else:
+  a. Execute (BLOCK t? instr_2*).
+
+execution_of_LABEL_
+1. Pop all values val* from the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
+3. Exit current context.
+4. Push val* to the stack.
+
+execution_of_BR u_0
+1. Let L be the current label.
+2. Let n be the arity of L.
+3. Let instr'* be the continuation of L.
+4. Pop all values u_1* from the stack.
+5. Exit current context.
+6. If u_0 is 0 and |u_1*| ≥ n, then:
+  a. Let val'* ++ val^n be u_1*.
+  b. Push val^n to the stack.
+  c. Execute the sequence (instr'*).
+7. If u_0 ≥ 1, then:
+  a. Let l be (u_0 - 1).
+  b. Let val* be u_1*.
+  c. Push val* to the stack.
+  d. Execute (BR l).
+
+execution_of_BR_IF l
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. If c is not 0, then:
+  a. Execute (BR l).
+4. Else:
+  a. Do nothing.
+
+execution_of_BR_TABLE l* l'
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If i < |l*|, then:
+  a. Execute (BR l*[i]).
+4. Else:
+  a. Execute (BR l').
+
+execution_of_FRAME_
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Pop val^n from the stack.
+5. Assert: Due to validation, a frame is now on the top of the stack.
+6. Exit current context.
+7. Push val^n to the stack.
+
+execution_of_RETURN
+1. If the current context is frame, then:
+  a. Let F be the current frame.
+  b. Let n be the arity of F.
+  c. Pop val^n from the stack.
+  d. Pop all values val'* from the stack.
+  e. Exit current context.
+  f. Push val^n to the stack.
+2. Else if the current context is label, then:
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Push val* to the stack.
+  d. Execute RETURN.
+
+execution_of_UNOP t unop
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop (t.CONST c_1) from the stack.
+3. If |$unop(unop, t, c_1)| is 1, then:
+  a. Let [c] be $unop(unop, t, c_1).
+  b. Push (t.CONST c) to the stack.
+4. If $unop(unop, t, c_1) is [], then:
+  a. Trap.
+
+execution_of_BINOP t binop
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop (t.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type t is on the top of the stack.
+4. Pop (t.CONST c_1) from the stack.
+5. If |$binop(binop, t, c_1, c_2)| is 1, then:
+  a. Let [c] be $binop(binop, t, c_1, c_2).
+  b. Push (t.CONST c) to the stack.
+6. If $binop(binop, t, c_1, c_2) is [], then:
+  a. Trap.
+
+execution_of_TESTOP t testop
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop (t.CONST c_1) from the stack.
+3. Let c be $testop(testop, t, c_1).
+4. Push (I32.CONST c) to the stack.
+
+execution_of_RELOP t relop
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop (t.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type t is on the top of the stack.
+4. Pop (t.CONST c_1) from the stack.
+5. Let c be $relop(relop, t, c_1, c_2).
+6. Push (I32.CONST c) to the stack.
+
+execution_of_CVTOP t_2 cvtop t_1 sx?
+1. Assert: Due to validation, a value of value type t_1 is on the top of the stack.
+2. Pop (t_1.CONST c_1) from the stack.
+3. If |$cvtop(cvtop, t_1, t_2, sx?, c_1)| is 1, then:
+  a. Let [c] be $cvtop(cvtop, t_1, t_2, sx?, c_1).
+  b. Push (t_2.CONST c) to the stack.
+4. If $cvtop(cvtop, t_1, t_2, sx?, c_1) is [], then:
+  a. Trap.
+
+execution_of_LOCAL.TEE x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Push val to the stack.
+4. Push val to the stack.
+5. Execute (LOCAL.SET x).
+
+execution_of_BLOCK t? instr*
+1. If t? is not defined, then:
+  a. Let n be 0.
+2. Else:
+  a. Let n be 1.
+3. Let L be the label_n{[]}.
+4. Enter L with label instr* ++ [LABEL_]:
+
+execution_of_LOOP t? instr*
+1. Let L be the label_0{[(LOOP t? instr*)]}.
+2. Enter L with label instr* ++ [LABEL_]:
+
+execution_of_CALL x
+1. Assert: Due to validation, x < |$funcaddr()|.
+2. Execute (CALL_ADDR $funcaddr()[x]).
+
+execution_of_CALL_INDIRECT x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If i ≥ |$table(0).ELEM|, then:
+  a. Trap.
+4. If $table(0).ELEM[i] is not defined, then:
+  a. Trap.
+5. Let ?(a) be $table(0).ELEM[i].
+6. If a ≥ |$funcinst()|, then:
+  a. Trap.
+7. If $type(x) is not $funcinst()[a].TYPE, then:
+  a. Trap.
+8. Execute (CALL_ADDR a).
+
+execution_of_CALL_ADDR a
+1. Assert: Due to validation, a < |$funcinst()|.
+2. Let { TYPE: [t_1^k]->[t_2^n]; MODULE: mm; CODE: func; } be $funcinst()[a].
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop val^k from the stack.
+5. Assert: Due to validation, func is of the case FUNC.
+6. Let (FUNC x y_0 instr*) be func.
+7. Let (LOCAL t)* be y_0.
+8. Let f be { LOCAL: val^k ++ $default(t)*; MODULE: mm; }.
+9. Let F be the activation of f with arity n.
+10. Enter F with label [FRAME_]:
+  a. Let L be the label_n{[]}.
+  b. Enter L with label instr* ++ [LABEL_]:
+
+execution_of_LOCAL.GET x
+1. Push $local(x) to the stack.
+
+execution_of_GLOBAL.GET x
+1. Push $global(x).VALUE to the stack.
+
+execution_of_LOAD t u_0? mo
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If ((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).DATA| and u_0? is not defined, then:
+  a. Trap.
+4. If u_0? is not defined, then:
+  a. Let c be $inverse_of_bytes(t, $mem(0).DATA[(i + mo.OFFSET) : ($size(t) / 8)]).
+  b. Push (t.CONST c) to the stack.
+5. Else:
+  a. Let ?(y_0) be u_0?.
+  b. Let (n, sx) be y_0.
+  c. If ((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|, then:
+    1) Trap.
+  d. Let c be $inverse_of_ibytes(n, $mem(0).DATA[(i + mo.OFFSET) : (n / 8)]).
+  e. Push (t.CONST $ext(n, $size(t), sx, c)) to the stack.
+
+execution_of_MEMORY.SIZE
+1. Let ((n · 64) · $Ki()) be |$mem(0).DATA|.
+2. Push (I32.CONST n) to the stack.
+
+execution_of_LOCAL.SET x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Perform $with_local(x, val).
+
+execution_of_GLOBAL.SET x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Perform $with_global(x, val).
+
+execution_of_STORE t u_0? mo
+1. Assert: Due to validation, a value of value type t is on the top of the stack.
+2. Pop (t.CONST c) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If ((i + mo.OFFSET) + ($size(t) / 8)) > |$mem(0).DATA| and u_0? is not defined, then:
+  a. Trap.
+6. If u_0? is not defined, then:
+  a. Let b* be $bytes(t, c).
+  b. Perform $with_mem(0, (i + mo.OFFSET), ($size(t) / 8), b*).
+7. Else:
+  a. Let ?(n) be u_0?.
+  b. If ((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|, then:
+    1) Trap.
+  c. Let b* be $ibytes(n, $wrap($size(t), n, c)).
+  d. Perform $with_mem(0, (i + mo.OFFSET), (n / 8), b*).
+
+execution_of_MEMORY.GROW
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Either:
+  a. Let mi be $growmemory($mem(0), n).
+  b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(0, mi).
+4. Or:
+  a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.
+
+eval_expr instr*
+1. Execute the sequence (instr*).
+2. Pop val from the stack.
+3. Return [val].
+
+execution_of_CALL_REF x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. If ref is of the case REF.NULL, then:
+  a. Trap.
+4. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
+5. Let (REF.FUNC_ADDR a) be ref.
+6. If a < |$funcinst()|, then:
+  a. Let fi be $funcinst()[a].
+  b. If fi.CODE is of the case FUNC, then:
+    1) Let (FUNC y_0 y_1 instr*) be fi.CODE.
+    2) Let (LOCAL t)* be y_1.
+    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
+      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
+      b) Let [t_1^n]->[t_2^m] be y_0.
+      c) Assert: Due to validation, there are at least n values on the top of the stack.
+      d) Pop val^n from the stack.
+      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+      f) Let F be the activation of f with arity m.
+      g) Enter F with label [FRAME_]:
+        1. Let L be the label_m{[]}.
+        2. Enter L with label instr* ++ [LABEL_]:
+
+group_bytes_by n byte*
+1. Let n' be |byte*|.
+2. If n' ≥ n, then:
+  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
+3. Return [].
+
+execution_of_ARRAY.NEW_DATA x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If $expanddt($type(x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(x)).
+  b. Let (mut, zt) be y_0.
+  c. If (i + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
+    1) Trap.
+  d. Let nt be $unpacknumtype(zt).
+  e. Let b* be $data(y).DATA[i : ((n · $storagesize(zt)) / 8)].
+  f. Let gb* be $group_bytes_by(($storagesize(zt) / 8), b*).
+  g. Let c^n be $inverse_of_ibytes($storagesize(zt), gb)*.
+  h. Push (nt.CONST c)^n to the stack.
+  i. Execute (ARRAY.NEW_FIXED x n).
+
+== Complete.
+Generating prose for Wasm 2.0...
+watsup 0.4 generator
+== Parsing...
+== Elaboration...
+== IL Validation...
+== Running pass sideconditions...
+== IL Validation after pass sideconditions...
+== Running pass animate...
+Animation failed (binding inference).
+Valtype_sub: `|-%<:%`(t, t')
+if (t' = (numtype <: valtype))
+...Animation failed (reorder)
+Valtype_sub: `|-%<:%`(t, t')
+if (t' = (numtype <: valtype))
+Animation failed (binding inference).
+Valtype_sub: `|-%<:%`(t, t')
+if (t' = (vectype <: valtype))
+...Animation failed (reorder)
+Valtype_sub: `|-%<:%`(t, t')
+if (t' = (vectype <: valtype))
+Animation failed (binding inference).
+(if (l < |C.LABEL_context|))*{l}
+if (l' < |C.LABEL_context|)
+(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+...Animation failed (reorder)
+(if (l < |C.LABEL_context|))*{l}
+if (l' < |C.LABEL_context|)
+(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
+Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
+== IL Validation after pass animate...
+== Translating to AL...
+=================
+ Generated prose
+=================
+validation_of_UNREACHABLE
+- The instruction is valid with type [t_1*]->[t_2*].
+
+validation_of_NOP
+- The instruction is valid with type []->[].
+
+validation_of_DROP
+- The instruction is valid with type [t]->[].
+
+validation_of_SELECT ?([t])
+- The instruction is valid with type [t, t, I32]->[t].
+
+validation_of_BLOCK bt instr*
+- Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C, bt must be valid with type [t_1*]->[t_2*].
+- The instruction is valid with type [t_1*]->[t_2*].
+
+validation_of_LOOP bt instr*
+- Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type [t_1*]->[t_2*].
+- Under the context C, bt must be valid with type [t_1*]->[t_2*].
+- The instruction is valid with type [t_1*]->[t_2*].
+
+validation_of_IF bt instr_1* instr_2*
+- Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type [t_1*]->[t_2*].
+- Under the context C, bt must be valid with type [t_1*]->[t_2*].
+- Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type [t_1*]->[t_2*].
+- The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
+
+validation_of_BR l
+- |C.LABEL| must be greater than l.
+- Let t* be C.LABEL[l].
+- The instruction is valid with type [t_1* ++ t*]->[t_2*].
+
+validation_of_BR_IF l
+- |C.LABEL| must be greater than l.
+- Let t* be C.LABEL[l].
+- The instruction is valid with type [t* ++ [I32]]->[t*].
+
+validation_of_BR_TABLE l* l'
+- For all l in l*,
+  - |C.LABEL| must be greater than l.
+- |C.LABEL| must be greater than l'.
+- For all l in l*,
+  - C.LABEL[l] must match t*.
+- C.LABEL[l'] must match t*.
+- The instruction is valid with type [t_1* ++ t*]->[t_2*].
+
+validation_of_RETURN
+- Let ?(t*) be C.RETURN.
+- The instruction is valid with type [t_1* ++ t*]->[t_2*].
+
+validation_of_CALL x
+- |C.FUNC| must be greater than x.
+- Let [t_1*]->[t_2*] be C.FUNC[x].
+- The instruction is valid with type [t_1*]->[t_2*].
+
+validation_of_CALL_INDIRECT x y
+- |C.TABLE| must be greater than x.
+- |C.TYPE| must be greater than y.
+- Let (lim, FUNCREF) be C.TABLE[x].
+- Let [t_1*]->[t_2*] be C.TYPE[y].
+- The instruction is valid with type [t_1* ++ [I32]]->[t_2*].
+
+validation_of_CONST nt c_nt
+- The instruction is valid with type []->[nt].
+
+validation_of_UNOP nt unop
+- The instruction is valid with type [nt]->[nt].
+
+validation_of_BINOP nt binop
+- The instruction is valid with type [nt, nt]->[nt].
+
+validation_of_TESTOP nt testop
+- The instruction is valid with type [nt]->[I32].
+
+validation_of_RELOP nt relop
+- The instruction is valid with type [nt, nt]->[I32].
+
+validation_of_EXTEND nt n
+- n must be less than or equal to $size(nt).
+- The instruction is valid with type [nt]->[nt].
+
+validation_of_CVTOP nt_1 REINTERPRET nt_2 ?()
+- nt_1 must be different with nt_2.
+- $size(nt_1) must be equal to $size(nt_2).
+- The instruction is valid with type [nt_2]->[nt_1].
+
+validation_of_CVTOP inn_1 CONVERT inn_2 sx?
+- inn_1 must be different with inn_2.
+- ($size(inn_1) > $size(inn_2)) and (sx? is ?()) are equivalent.
+- The instruction is valid with type [inn_2]->[inn_1].
+
+validation_of_REF.NULL rt
+- The instruction is valid with type []->[rt].
+
+validation_of_REF.FUNC x
+- |C.FUNC| must be greater than x.
+- Let ft be C.FUNC[x].
+- The instruction is valid with type []->[FUNCREF].
+
+validation_of_REF.IS_NULL
+- The instruction is valid with type [rt]->[I32].
+
+validation_of_LOCAL.GET x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type []->[t].
+
+validation_of_LOCAL.SET x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type [t]->[].
+
+validation_of_LOCAL.TEE x
+- |C.LOCAL| must be greater than x.
+- Let t be C.LOCAL[x].
+- The instruction is valid with type [t]->[t].
+
+validation_of_GLOBAL.GET x
+- |C.GLOBAL| must be greater than x.
+- Let (mut, t) be C.GLOBAL[x].
+- The instruction is valid with type []->[t].
+
+validation_of_GLOBAL.SET x
+- |C.GLOBAL| must be greater than x.
+- Let ((MUT ?(())), t) be C.GLOBAL[x].
+- The instruction is valid with type [t]->[].
+
+validation_of_TABLE.GET x
+- |C.TABLE| must be greater than x.
+- Let (lim, rt) be C.TABLE[x].
+- The instruction is valid with type [I32]->[rt].
+
+validation_of_TABLE.SET x
+- |C.TABLE| must be greater than x.
+- Let (lim, rt) be C.TABLE[x].
+- The instruction is valid with type [I32, rt]->[].
+
+validation_of_TABLE.SIZE x
+- |C.TABLE| must be greater than x.
+- Let tt be C.TABLE[x].
+- The instruction is valid with type []->[I32].
+
+validation_of_TABLE.GROW x
+- |C.TABLE| must be greater than x.
+- Let (lim, rt) be C.TABLE[x].
+- The instruction is valid with type [rt, I32]->[I32].
+
+validation_of_TABLE.FILL x
+- |C.TABLE| must be greater than x.
+- Let (lim, rt) be C.TABLE[x].
+- The instruction is valid with type [I32, rt, I32]->[].
+
+validation_of_TABLE.COPY x_1 x_2
+- |C.TABLE| must be greater than x_1.
+- |C.TABLE| must be greater than x_2.
+- Let (lim_1, rt) be C.TABLE[x_1].
+- Let (lim_2, rt) be C.TABLE[x_2].
+- The instruction is valid with type [I32, I32, I32]->[].
+
+validation_of_TABLE.INIT x_1 x_2
+- |C.TABLE| must be greater than x_1.
+- |C.ELEM| must be greater than x_2.
+- Let (lim, rt) be C.TABLE[x_1].
+- C.ELEM[x_2] must be equal to rt.
+- The instruction is valid with type [I32, I32, I32]->[].
+
+validation_of_ELEM.DROP x
+- |C.ELEM| must be greater than x.
+- Let rt be C.ELEM[x].
+- The instruction is valid with type []->[].
+
+validation_of_MEMORY.SIZE
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type []->[I32].
+
+validation_of_MEMORY.GROW
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32]->[I32].
+
+validation_of_MEMORY.FILL
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32, I32, I32]->[].
+
+validation_of_MEMORY.COPY
+- |C.MEM| must be greater than 0.
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32, I32, I32]->[].
+
+validation_of_MEMORY.INIT x
+- |C.MEM| must be greater than 0.
+- |C.DATA| must be greater than x.
+- C.DATA[x] must be equal to OK.
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32, I32, I32]->[].
+
+validation_of_DATA.DROP x
+- |C.DATA| must be greater than x.
+- C.DATA[x] must be equal to OK.
+- The instruction is valid with type []->[].
+
+validation_of_LOAD nt (n, sx)? { ALIGN: n_A; OFFSET: n_O; }
+- |C.MEM| must be greater than 0.
+- (sx? is ?()) and (n? is ?()) are equivalent.
+- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- If n is defined,
+  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(nt) / 8).
+- n? must be equal to ?().
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32]->[nt].
+
+validation_of_STORE nt n? { ALIGN: n_A; OFFSET: n_O; }
+- |C.MEM| must be greater than 0.
+- (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
+- If n is defined,
+  - (2 ^ n_A) must be less than or equal to (n / 8).
+  - (n / 8) must be less than ($size(nt) / 8).
+- n? must be equal to ?().
+- Let mt be C.MEM[0].
+- The instruction is valid with type [I32, nt]->[].
+
+Ki
+1. Return 1024.
+
+min u_0 u_1
+1. If u_0 is 0, then:
+  a. Return 0.
+2. If u_1 is 0, then:
+  a. Return 0.
+3. Assert: Due to validation, u_0 ≥ 1.
+4. Let i be (u_0 - 1).
+5. Assert: Due to validation, u_1 ≥ 1.
+6. Let j be (u_1 - 1).
+7. Return $min(i, j).
+
+sum u_0*
+1. If u_0* is [], then:
+  a. Return 0.
+2. Let [n] ++ n'* be u_0*.
+3. Return (n + $sum(n'*)).
+
+test_sub_ATOM_22 n_3_ATOM_y
+1. Return 0.
+
+curried_ n_1 n_2
+1. Return (n_1 + n_2).
+
+signif u_0
+1. If u_0 is 32, then:
+  a. Return 23.
+2. Assert: Due to validation, u_0 is 64.
+3. Return 52.
+
+expon u_0
+1. If u_0 is 32, then:
+  a. Return 8.
+2. Assert: Due to validation, u_0 is 64.
+3. Return 11.
+
+M N
+1. Return $signif(N).
+
+E N
+1. Return $expon(N).
+
+fNzero
+1. Return (POS (NORM 0 0)).
+
+size u_0
+1. If u_0 is I32, then:
+  a. Return 32.
+2. If u_0 is I64, then:
+  a. Return 64.
+3. If u_0 is F32, then:
+  a. Return 32.
+4. If u_0 is F64, then:
+  a. Return 64.
+5. If u_0 is V128, then:
+  a. Return 128.
+
+free_dataidx_instr u_0
+1. If u_0 is of the case MEMORY.INIT, then:
+  a. Let (MEMORY.INIT x) be u_0.
+  b. Return [x].
+2. If u_0 is of the case DATA.DROP, then:
+  a. Let (DATA.DROP x) be u_0.
+  b. Return [x].
+3. Return [].
+
+free_dataidx_instrs u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [instr] ++ instr'* be u_0*.
+3. Return $free_dataidx_instr(instr) ++ $free_dataidx_instrs(instr'*).
+
+free_dataidx_expr in*
+1. Return $free_dataidx_instrs(in*).
+
+free_dataidx_func (FUNC x loc* e)
+1. Return $free_dataidx_expr(e).
+
+free_dataidx_funcs u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [func] ++ func'* be u_0*.
+3. Return $free_dataidx_func(func) ++ $free_dataidx_funcs(func'*).
+
+memop0
+1. Return { ALIGN: 0; OFFSET: 0; }.
+
+signed N i
+1. If 0 ≤ (2 ^ (N - 1)), then:
+  a. Return i.
+2. Assert: Due to validation, (2 ^ (N - 1)) ≤ i.
+3. Assert: Due to validation, i < (2 ^ N).
+4. Return (i - (2 ^ N)).
+
+invsigned N i
+1. Let j be $inverse_of_signed(N, i).
+2. Return j.
+
+invibytes N b*
+1. Let n be $inverse_of_ibytes(N, b*).
+2. Return n.
+
+invfbytes N b*
+1. Let p be $inverse_of_fbytes(N, b*).
+2. Return p.
+
+default u_0
+1. If u_0 is I32, then:
+  a. Return (I32.CONST 0).
+2. If u_0 is I64, then:
+  a. Return (I64.CONST 0).
+3. If u_0 is F32, then:
+  a. Return (F32.CONST 0).
+4. If u_0 is F64, then:
+  a. Return (F64.CONST 0).
+5. If u_0 is FUNCREF, then:
+  a. Return (REF.NULL FUNCREF).
+6. Assert: Due to validation, u_0 is EXTERNREF.
+7. Return (REF.NULL EXTERNREF).
+
+funcsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be y_0.
+  b. Return [fa] ++ $funcsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $funcsxv(xv*).
+
+globalsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be y_0.
+  b. Return [ga] ++ $globalsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $globalsxv(xv*).
+
+tablesxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be y_0.
+  b. Return [ta] ++ $tablesxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $tablesxv(xv*).
+
+memsxv u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ xv* be u_0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM ma) be y_0.
+  b. Return [ma] ++ $memsxv(xv*).
+4. Let [externval] ++ xv* be u_0*.
+5. Return $memsxv(xv*).
+
+store
+1. Return.
+
+frame
+1. Let f be the current frame.
+2. Return f.
+
+funcaddr
+1. Let f be the current frame.
+2. Return f.MODULE.FUNC.
+
+funcinst
+1. Return s.FUNC.
+
+globalinst
+1. Return s.GLOBAL.
+
+tableinst
+1. Return s.TABLE.
+
+meminst
+1. Return s.MEM.
+
+eleminst
+1. Return s.ELEM.
+
+datainst
+1. Return s.DATA.
+
+moduleinst
+1. Let f be the current frame.
+2. Return f.MODULE.
+
+type x
+1. Let f be the current frame.
+2. Return f.MODULE.TYPE[x].
+
+func x
+1. Let f be the current frame.
+2. Return s.FUNC[f.MODULE.FUNC[x]].
+
+global x
+1. Let f be the current frame.
+2. Return s.GLOBAL[f.MODULE.GLOBAL[x]].
+
+table x
+1. Let f be the current frame.
+2. Return s.TABLE[f.MODULE.TABLE[x]].
+
+mem x
+1. Let f be the current frame.
+2. Return s.MEM[f.MODULE.MEM[x]].
+
+elem x
+1. Let f be the current frame.
+2. Return s.ELEM[f.MODULE.ELEM[x]].
+
+data x
+1. Let f be the current frame.
+2. Return s.DATA[f.MODULE.DATA[x]].
+
+local x
+1. Let f be the current frame.
+2. Return f.LOCAL[x].
+
+with_local x v
+1. Let f be the current frame.
+2. Replace f.LOCAL[x] with v.
+
+with_global x v
+1. Let f be the current frame.
+2. Replace s.GLOBAL[f.MODULE.GLOBAL[x]].VALUE with v.
+
+with_table x i r
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]].ELEM[i] with r.
+
+with_tableinst x ti
+1. Let f be the current frame.
+2. Replace s.TABLE[f.MODULE.TABLE[x]] with ti.
+
+with_mem x i j b*
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]].DATA[i : j] with b*.
+
+with_meminst x mi
+1. Let f be the current frame.
+2. Replace s.MEM[f.MODULE.MEM[x]] with mi.
+
+with_elem x r*
+1. Let f be the current frame.
+2. Replace s.ELEM[f.MODULE.ELEM[x]].ELEM with r*.
+
+with_data x b*
+1. Let f be the current frame.
+2. Replace s.DATA[f.MODULE.DATA[x]].DATA with b*.
+
+growtable ti n r
+1. Let { TYPE: ((i, j), rt); ELEM: r'*; } be ti.
+2. Let i' be (|r'*| + n).
+3. If i' ≤ j, then:
+  a. Let ti' be { TYPE: ((i', j), rt); ELEM: r'* ++ r^n; }.
+  b. Return ti'.
+
+growmemory mi n
+1. Let { TYPE: (I8 (i, j)); DATA: b*; } be mi.
+2. Let i' be ((|b*| / (64 · $Ki())) + n).
+3. If i' ≤ j, then:
+  a. Let mi' be { TYPE: (I8 (i', j)); DATA: b* ++ 0^((n · 64) · $Ki()); }.
+  b. Return mi'.
+
+blocktype u_1
+1. If u_1 is (_RESULT ?()), then:
+  a. Return []->[].
+2. If u_1 is of the case _RESULT, then:
+  a. Let (_RESULT y_0) be u_1.
+  b. If y_0 is defined, then:
+    1) Let ?(t) be y_0.
+    2) Return []->[t].
+3. Assert: Due to validation, u_1 is of the case _IDX.
+4. Let (_IDX x) be u_1.
+5. Return $type(x).
+
+funcs u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case FUNC, then:
+  a. Let (FUNC fa) be y_0.
+  b. Return [fa] ++ $funcs(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $funcs(externval'*).
+
+globals u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL ga) be y_0.
+  b. Return [ga] ++ $globals(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $globals(externval'*).
+
+tables u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case TABLE, then:
+  a. Let (TABLE ta) be y_0.
+  b. Return [ta] ++ $tables(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $tables(externval'*).
+
+mems u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [y_0] ++ externval'* be u_0*.
+3. If y_0 is of the case MEM, then:
+  a. Let (MEM ma) be y_0.
+  b. Return [ma] ++ $mems(externval'*).
+4. Let [externval] ++ externval'* be u_0*.
+5. Return $mems(externval'*).
+
+allocfunc mm func
+1. Assert: Due to validation, func is of the case FUNC.
+2. Let (FUNC x local* expr) be func.
+3. Let fi be { TYPE: mm.TYPE[x]; MODULE: mm; CODE: func; }.
+4. Let a be |s.FUNC|.
+5. Append fi to the s.FUNC.
+6. Return a.
+
+allocfuncs mm u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [func] ++ func'* be u_0*.
+3. Let fa be $allocfunc(mm, func).
+4. Let fa'* be $allocfuncs(mm, func'*).
+5. Return [fa] ++ fa'*.
+
+allocglobal globaltype val
+1. Let gi be { TYPE: globaltype; VALUE: val; }.
+2. Let a be |s.GLOBAL|.
+3. Append gi to the s.GLOBAL.
+4. Return a.
+
+allocglobals u_0* u_1*
+1. If u_0* is [], then:
+  a. Assert: Due to validation, u_1* is [].
+  b. Return [].
+2. Else:
+  a. Let [globaltype] ++ globaltype'* be u_0*.
+  b. Assert: Due to validation, |u_1*| ≥ 1.
+  c. Let [val] ++ val'* be u_1*.
+  d. Let ga be $allocglobal(globaltype, val).
+  e. Let ga'* be $allocglobals(globaltype'*, val'*).
+  f. Return [ga] ++ ga'*.
+
+alloctable ((i, j), rt)
+1. Let ti be { TYPE: ((i, j), rt); ELEM: (REF.NULL rt)^i; }.
+2. Let a be |s.TABLE|.
+3. Append ti to the s.TABLE.
+4. Return a.
+
+alloctables u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [tabletype] ++ tabletype'* be u_0*.
+3. Let ta be $alloctable(tabletype).
+4. Let ta'* be $alloctables(tabletype'*).
+5. Return [ta] ++ ta'*.
+
+allocmem (I8 (i, j))
+1. Let mi be { TYPE: (I8 (i, j)); DATA: 0^((i · 64) · $Ki()); }.
+2. Let a be |s.MEM|.
+3. Append mi to the s.MEM.
+4. Return a.
+
+allocmems u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [memtype] ++ memtype'* be u_0*.
+3. Let ma be $allocmem(memtype).
+4. Let ma'* be $allocmems(memtype'*).
+5. Return [ma] ++ ma'*.
+
+allocelem rt ref*
+1. Let ei be { TYPE: rt; ELEM: ref*; }.
+2. Let a be |s.ELEM|.
+3. Append ei to the s.ELEM.
+4. Return a.
+
+allocelems u_0* u_1*
+1. If u_0* is [] and u_1* is [], then:
+  a. Return [].
+2. Assert: Due to validation, |u_1*| ≥ 1.
+3. Let [ref*] ++ ref'** be u_1*.
+4. Assert: Due to validation, |u_0*| ≥ 1.
+5. Let [rt] ++ rt'* be u_0*.
+6. Let ea be $allocelem(rt, ref*).
+7. Let ea'* be $allocelems(rt'*, ref'**).
+8. Return [ea] ++ ea'*.
+
+allocdata byte*
+1. Let di be { DATA: byte*; }.
+2. Let a be |s.DATA|.
+3. Append di to the s.DATA.
+4. Return a.
+
+allocdatas u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [byte*] ++ byte'** be u_0*.
+3. Let da be $allocdata(byte*).
+4. Let da'* be $allocdatas(byte'**).
+5. Return [da] ++ da'*.
+
+instexport fa* ga* ta* ma* (EXPORT name u_0)
+1. If u_0 is of the case FUNC, then:
+  a. Let (FUNC x) be u_0.
+  b. Return { NAME: name; VALUE: (FUNC fa*[x]); }.
+2. If u_0 is of the case GLOBAL, then:
+  a. Let (GLOBAL x) be u_0.
+  b. Return { NAME: name; VALUE: (GLOBAL ga*[x]); }.
+3. If u_0 is of the case TABLE, then:
+  a. Let (TABLE x) be u_0.
+  b. Return { NAME: name; VALUE: (TABLE ta*[x]); }.
+4. Assert: Due to validation, u_0 is of the case MEM.
+5. Let (MEM x) be u_0.
+6. Return { NAME: name; VALUE: (MEM ma*[x]); }.
+
+allocmodule module externval* val* ref**
+1. Let fa_ex* be $funcs(externval*).
+2. Let ga_ex* be $globals(externval*).
+3. Let ma_ex* be $mems(externval*).
+4. Let ta_ex* be $tables(externval*).
+5. Assert: Due to validation, module is of the case MODULE.
+6. Let (MODULE y_0 import* func^n_func y_1 y_2 y_3 y_4 y_5 start? export*) be module.
+7. Let (DATA byte* datamode)^n_data be y_5.
+8. Let (ELEM rt expr_2* elemmode)^n_elem be y_4.
+9. Let (MEMORY memtype)^n_mem be y_3.
+10. Let (TABLE tabletype)^n_table be y_2.
+11. Let (GLOBAL globaltype expr_1)^n_global be y_1.
+12. Let (TYPE ft)* be y_0.
+13. Let fa* be (|s.FUNC| + i_func)^(i_func<n_func).
+14. Let ga* be (|s.GLOBAL| + i_global)^(i_global<n_global).
+15. Let ta* be (|s.TABLE| + i_table)^(i_table<n_table).
+16. Let ma* be (|s.MEM| + i_mem)^(i_mem<n_mem).
+17. Let ea* be (|s.ELEM| + i_elem)^(i_elem<n_elem).
+18. Let da* be (|s.DATA| + i_data)^(i_data<n_data).
+19. Let xi* be $instexport(fa_ex* ++ fa*, ga_ex* ++ ga*, ta_ex* ++ ta*, ma_ex* ++ ma*, export)*.
+20. Let mm be { TYPE: ft*; FUNC: fa_ex* ++ fa*; GLOBAL: ga_ex* ++ ga*; TABLE: ta_ex* ++ ta*; MEM: ma_ex* ++ ma*; ELEM: ea*; DATA: da*; EXPORT: xi*; }.
+21. Let y_0 be $allocfuncs(mm, func^n_func).
+22. Assert: Due to validation, y_0 is fa*.
+23. Let y_0 be $allocglobals(globaltype^n_global, val*).
+24. Assert: Due to validation, y_0 is ga*.
+25. Let y_0 be $alloctables(tabletype^n_table).
+26. Assert: Due to validation, y_0 is ta*.
+27. Let y_0 be $allocmems(memtype^n_mem).
+28. Assert: Due to validation, y_0 is ma*.
+29. Let y_0 be $allocelems(rt^n_elem, ref**).
+30. Assert: Due to validation, y_0 is ea*.
+31. Let y_0 be $allocdatas(byte*^n_data).
+32. Assert: Due to validation, y_0 is da*.
+33. Return mm.
+
+concat_instr u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [instr*] ++ instr'** be u_0*.
+3. Return instr* ++ $concat_instr(instr'**).
+
+runelem (ELEM reftype expr* u_0) i
+1. If u_0 is PASSIVE, then:
+  a. Return [].
+2. If u_0 is DECLARE, then:
+  a. Return [(ELEM.DROP i)].
+3. Assert: Due to validation, u_0 is of the case ACTIVE.
+4. Let (ACTIVE x instr*) be u_0.
+5. Let n be |expr*|.
+6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (TABLE.INIT x i), (ELEM.DROP i)].
+
+rundata (DATA byte* u_0) i
+1. If u_0 is PASSIVE, then:
+  a. Return [].
+2. Assert: Due to validation, u_0 is of the case ACTIVE.
+3. Let (ACTIVE y_0 instr*) be u_0.
+4. Assert: Due to validation, y_0 is 0.
+5. Let n be |byte*|.
+6. Return instr* ++ [(I32.CONST 0), (I32.CONST n), (MEMORY.INIT i), (DATA.DROP i)].
+
+instantiate module externval*
+1. Assert: Due to validation, module is of the case MODULE.
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
+3. Let (TYPE functype)* be type*.
+4. Let n_D be |data*|.
+5. Let n_E be |elem*|.
+6. Let n_F be |func*|.
+7. Let (START x)? be start?.
+8. Let (GLOBAL globaltype expr_G)* be global*.
+9. Let (ELEM reftype expr_E* elemmode)* be elem*.
+10. Let instr_D* be $concat_instr($rundata(data*[j], j)^(j<n_D)).
+11. Let instr_E* be $concat_instr($runelem(elem*[i], i)^(i<n_E)).
+12. Let mm_init be { TYPE: functype*; FUNC: $funcs(externval*) ++ (|s.FUNC| + i_F)^(i_F<n_F); GLOBAL: $globals(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+13. Let f_init be { LOCAL: []; MODULE: mm_init; }.
+14. Let z be f_init.
+15. Enter the activation of z with label [FRAME_]:
+  a. Let [val]* be $eval_expr(expr_G)*.
+16. Enter the activation of z with label [FRAME_]:
+  a. Let [ref]** be $eval_expr(expr_E)**.
+17. Let mm be $allocmodule(module, externval*, val*, ref**).
+18. Let f be { LOCAL: []; MODULE: mm; }.
+19. Enter the activation of f with arity 0 with label [FRAME_]:
+  a. Execute the sequence (instr_E*).
+  b. Execute the sequence (instr_D*).
+  c. If x is defined, then:
+    1) Let ?(x_0) be x.
+    2) Execute (CALL x_0).
+20. Return mm.
+
+invoke fa val^n
+1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }; }.
+2. Let [t_1^n]->[t_2*] be $funcinst()[fa].TYPE.
+3. Let k be |t_2*|.
+4. Enter the activation of f with arity k with label [FRAME_]:
+  a. Push val^n to the stack.
+  b. Execute (CALL_ADDR fa).
+5. Pop val^k from the stack.
+6. Return val^k.
+
+concat_bytes u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [b*] ++ b'** be u_0*.
+3. Return b* ++ $concat_bytes(b'**).
+
+utf8 u_0
+1. If |u_0| is 1, then:
+  a. Let [c] be u_0.
+  b. If c < 128, then:
+    1) Let b be c.
+    2) Return [b].
+  c. If 128 ≤ c and c < 2048 and c ≥ (b_2 - 128), then:
+    1) Let ((2 ^ 6) · (b_1 - 192)) be (c - (b_2 - 128)).
+    2) Return [b_1, b_2].
+  d. If 2048 ≤ c and c < 55296 or 57344 ≤ c and c < 65536 and c ≥ (b_3 - 128), then:
+    1) Let (((2 ^ 12) · (b_1 - 224)) + ((2 ^ 6) · (b_2 - 128))) be (c - (b_3 - 128)).
+    2) Return [b_1, b_2, b_3].
+  e. If 65536 ≤ c and c < 69632 and c ≥ (b_4 - 128), then:
+    1) Let ((((2 ^ 18) · (b_1 - 240)) + ((2 ^ 12) · (b_2 - 128))) + ((2 ^ 6) · (b_3 - 128))) be (c - (b_4 - 128)).
+    2) Return [b_1, b_2, b_3, b_4].
+2. Let c* be u_0.
+3. Return $concat_bytes($utf8([c])*).
+
+concat_locals u_0*
+1. If u_0* is [], then:
+  a. Return [].
+2. Let [loc*] ++ loc'** be u_0*.
+3. Return loc* ++ $concat_locals(loc'**).
+
+execution_of_UNREACHABLE
+1. Trap.
+
+execution_of_NOP
+1. Do nothing.
+
+execution_of_DROP
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Do nothing.
+
+execution_of_SELECT t*?
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop val_2 from the stack.
+5. Assert: Due to validation, a value is on the top of the stack.
+6. Pop val_1 from the stack.
+7. If c is not 0, then:
+  a. Push val_1 to the stack.
+8. Else:
+  a. Push val_2 to the stack.
+
+execution_of_IF bt instr_1* instr_2*
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. If c is not 0, then:
+  a. Execute (BLOCK bt instr_1*).
+4. Else:
+  a. Execute (BLOCK bt instr_2*).
+
+execution_of_LABEL_
+1. Pop all values val* from the stack.
+2. Assert: Due to validation, a label is now on the top of the stack.
+3. Exit current context.
+4. Push val* to the stack.
+
+execution_of_BR u_0
+1. Let L be the current label.
+2. Let n be the arity of L.
+3. Let instr'* be the continuation of L.
+4. Pop all values u_1* from the stack.
+5. Exit current context.
+6. If u_0 is 0 and |u_1*| ≥ n, then:
+  a. Let val'* ++ val^n be u_1*.
+  b. Push val^n to the stack.
+  c. Execute the sequence (instr'*).
+7. If u_0 ≥ 1, then:
+  a. Let l be (u_0 - 1).
+  b. Let val* be u_1*.
+  c. Push val* to the stack.
+  d. Execute (BR l).
+
+execution_of_BR_IF l
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST c) from the stack.
+3. If c is not 0, then:
+  a. Execute (BR l).
+4. Else:
+  a. Do nothing.
+
+execution_of_BR_TABLE l* l'
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If i < |l*|, then:
+  a. Execute (BR l*[i]).
+4. Else:
+  a. Execute (BR l').
+
+execution_of_FRAME_
+1. Let f be the current frame.
+2. Let n be the arity of f.
+3. Assert: Due to validation, there are at least n values on the top of the stack.
+4. Pop val^n from the stack.
+5. Assert: Due to validation, a frame is now on the top of the stack.
+6. Exit current context.
+7. Push val^n to the stack.
+
+execution_of_RETURN
+1. If the current context is frame, then:
+  a. Let F be the current frame.
+  b. Let n be the arity of F.
+  c. Pop val^n from the stack.
+  d. Pop all values val'* from the stack.
+  e. Exit current context.
+  f. Push val^n to the stack.
+2. Else if the current context is label, then:
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Push val* to the stack.
+  d. Execute RETURN.
+
+execution_of_UNOP nt unop
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_1) from the stack.
+3. If |$unop(unop, nt, c_1)| is 1, then:
+  a. Let [c] be $unop(unop, nt, c_1).
+  b. Push (nt.CONST c) to the stack.
+4. If $unop(unop, nt, c_1) is [], then:
+  a. Trap.
+
+execution_of_BINOP nt binop
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type nt is on the top of the stack.
+4. Pop (nt.CONST c_1) from the stack.
+5. If |$binop(binop, nt, c_1, c_2)| is 1, then:
+  a. Let [c] be $binop(binop, nt, c_1, c_2).
+  b. Push (nt.CONST c) to the stack.
+6. If $binop(binop, nt, c_1, c_2) is [], then:
+  a. Trap.
+
+execution_of_TESTOP nt testop
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_1) from the stack.
+3. Let c be $testop(testop, nt, c_1).
+4. Push (I32.CONST c) to the stack.
+
+execution_of_RELOP nt relop
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value of value type nt is on the top of the stack.
+4. Pop (nt.CONST c_1) from the stack.
+5. Let c be $relop(relop, nt, c_1, c_2).
+6. Push (I32.CONST c) to the stack.
+
+execution_of_EXTEND nt n
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c) from the stack.
+3. Push (nt.CONST $ext(n, $size(nt), S, c)) to the stack.
+
+execution_of_CVTOP nt_2 cvtop nt_1 sx?
+1. Assert: Due to validation, a value of value type nt_1 is on the top of the stack.
+2. Pop (nt_1.CONST c_1) from the stack.
+3. If |$cvtop(cvtop, nt_1, nt_2, sx?, c_1)| is 1, then:
+  a. Let [c] be $cvtop(cvtop, nt_1, nt_2, sx?, c_1).
+  b. Push (nt_2.CONST c) to the stack.
+4. If $cvtop(cvtop, nt_1, nt_2, sx?, c_1) is [], then:
+  a. Trap.
+
+execution_of_REF.IS_NULL
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. If val is of the case REF.NULL, then:
+  a. Push (I32.CONST 1) to the stack.
+4. Else:
+  a. Push (I32.CONST 0) to the stack.
+
+execution_of_LOCAL.TEE x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Push val to the stack.
+4. Push val to the stack.
+5. Execute (LOCAL.SET x).
+
+execution_of_BLOCK bt instr*
+1. Let [t_1^k]->[t_2^n] be $blocktype(bt).
+2. Assert: Due to validation, there are at least k values on the top of the stack.
+3. Pop val^k from the stack.
+4. Let L be the label_n{[]}.
+5. Enter L with label instr* ++ [LABEL_]:
+  a. Push val^k to the stack.
+
+execution_of_LOOP bt instr*
+1. Let [t_1^k]->[t_2^n] be $blocktype(bt).
+2. Assert: Due to validation, there are at least k values on the top of the stack.
+3. Pop val^k from the stack.
+4. Let L be the label_k{[(LOOP bt instr*)]}.
+5. Enter L with label instr* ++ [LABEL_]:
+  a. Push val^k to the stack.
+
+execution_of_CALL x
+1. Assert: Due to validation, x < |$funcaddr()|.
+2. Execute (CALL_ADDR $funcaddr()[x]).
+
+execution_of_CALL_INDIRECT x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If i ≥ |$table(x).ELEM|, then:
+  a. Trap.
+4. If $table(x).ELEM[i] is not of the case REF.FUNC_ADDR, then:
+  a. Trap.
+5. Let (REF.FUNC_ADDR a) be $table(x).ELEM[i].
+6. If a ≥ |$funcinst()|, then:
+  a. Trap.
+7. If $type(y) is not $funcinst()[a].TYPE, then:
+  a. Trap.
+8. Execute (CALL_ADDR a).
+
+execution_of_CALL_ADDR a
+1. Assert: Due to validation, a < |$funcinst()|.
+2. Let { TYPE: [t_1^k]->[t_2^n]; MODULE: mm; CODE: func; } be $funcinst()[a].
+3. Assert: Due to validation, there are at least k values on the top of the stack.
+4. Pop val^k from the stack.
+5. Assert: Due to validation, func is of the case FUNC.
+6. Let (FUNC x y_0 instr*) be func.
+7. Let (LOCAL t)* be y_0.
+8. Let f be { LOCAL: val^k ++ $default(t)*; MODULE: mm; }.
+9. Let F be the activation of f with arity n.
+10. Enter F with label [FRAME_]:
+  a. Let L be the label_n{[]}.
+  b. Enter L with label instr* ++ [LABEL_]:
+
+execution_of_REF.FUNC x
+1. Assert: Due to validation, x < |$funcaddr()|.
+2. Push (REF.FUNC_ADDR $funcaddr()[x]) to the stack.
+
+execution_of_LOCAL.GET x
+1. Push $local(x) to the stack.
+
+execution_of_GLOBAL.GET x
+1. Push $global(x).VALUE to the stack.
+
+execution_of_TABLE.GET x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If i ≥ |$table(x).ELEM|, then:
+  a. Trap.
+4. Push $table(x).ELEM[i] to the stack.
+
+execution_of_TABLE.SIZE x
+1. Let n be |$table(x).ELEM|.
+2. Push (I32.CONST n) to the stack.
+
+execution_of_TABLE.FILL x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop val from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST i) from the stack.
+7. If (i + n) > |$table(x).ELEM|, then:
+  a. Trap.
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
+  a. Push (I32.CONST i) to the stack.
+  b. Push val to the stack.
+  c. Execute (TABLE.SET x).
+  d. Push (I32.CONST (i + 1)) to the stack.
+  e. Push val to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute (TABLE.FILL x).
+
+execution_of_TABLE.COPY x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST j) from the stack.
+7. If (i + n) > |$table(y).ELEM|, then:
+  a. Trap.
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
+  a. Do nothing.
+10. Else:
+  a. If j ≤ i, then:
+    1) Push (I32.CONST j) to the stack.
+    2) Push (I32.CONST i) to the stack.
+    3) Execute (TABLE.GET y).
+    4) Execute (TABLE.SET x).
+    5) Push (I32.CONST (j + 1)) to the stack.
+    6) Push (I32.CONST (i + 1)) to the stack.
+  b. Else:
+    1) Push (I32.CONST ((j + n) - 1)) to the stack.
+    2) Push (I32.CONST ((i + n) - 1)) to the stack.
+    3) Execute (TABLE.GET y).
+    4) Execute (TABLE.SET x).
+    5) Push (I32.CONST j) to the stack.
+    6) Push (I32.CONST i) to the stack.
+  c. Push (I32.CONST (n - 1)) to the stack.
+  d. Execute (TABLE.COPY x y).
+
+execution_of_TABLE.INIT x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST j) from the stack.
+7. If (i + n) > |$elem(y).ELEM|, then:
+  a. Trap.
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
+  a. Do nothing.
+10. Else if i < |$elem(y).ELEM|, then:
+  a. Push (I32.CONST j) to the stack.
+  b. Push $elem(y).ELEM[i] to the stack.
+  c. Execute (TABLE.SET x).
+  d. Push (I32.CONST (j + 1)) to the stack.
+  e. Push (I32.CONST (i + 1)) to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute (TABLE.INIT x y).
+
+execution_of_LOAD nt u_0? mo
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST i) from the stack.
+3. If ((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).DATA| and u_0? is not defined, then:
+  a. Trap.
+4. If u_0? is not defined, then:
+  a. Let c be $inverse_of_ntbytes(nt, $mem(0).DATA[(i + mo.OFFSET) : ($size(nt) / 8)]).
+  b. Push (nt.CONST c) to the stack.
+5. Else:
+  a. Let ?(y_0) be u_0?.
+  b. Let (n, sx) be y_0.
+  c. If ((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|, then:
+    1) Trap.
+  d. Let c be $inverse_of_ibytes(n, $mem(0).DATA[(i + mo.OFFSET) : (n / 8)]).
+  e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
+
+execution_of_MEMORY.SIZE
+1. Let ((n · 64) · $Ki()) be |$mem(0).DATA|.
+2. Push (I32.CONST n) to the stack.
+
+execution_of_MEMORY.FILL
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop val from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST i) from the stack.
+7. If (i + n) > |$mem(0).DATA|, then:
+  a. Trap.
+8. If n is 0, then:
+  a. Do nothing.
+9. Else:
+  a. Push (I32.CONST i) to the stack.
+  b. Push val to the stack.
+  c. Execute (STORE I32 ?(8) $memop0()).
+  d. Push (I32.CONST (i + 1)) to the stack.
+  e. Push val to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute MEMORY.FILL.
+
+execution_of_MEMORY.COPY
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST j) from the stack.
+7. If (i + n) > |$mem(0).DATA|, then:
+  a. Trap.
+8. If (j + n) > |$mem(0).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
+  a. Do nothing.
+10. Else:
+  a. If j ≤ i, then:
+    1) Push (I32.CONST j) to the stack.
+    2) Push (I32.CONST i) to the stack.
+    3) Execute (LOAD I32 ?((8, U)) $memop0()).
+    4) Execute (STORE I32 ?(8) $memop0()).
+    5) Push (I32.CONST (j + 1)) to the stack.
+    6) Push (I32.CONST (i + 1)) to the stack.
+  b. Else:
+    1) Push (I32.CONST ((j + n) - 1)) to the stack.
+    2) Push (I32.CONST ((i + n) - 1)) to the stack.
+    3) Execute (LOAD I32 ?((8, U)) $memop0()).
+    4) Execute (STORE I32 ?(8) $memop0()).
+    5) Push (I32.CONST j) to the stack.
+    6) Push (I32.CONST i) to the stack.
+  c. Push (I32.CONST (n - 1)) to the stack.
+  d. Execute MEMORY.COPY.
+
+execution_of_MEMORY.INIT x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+6. Pop (I32.CONST j) from the stack.
+7. If (i + n) > |$data(x).DATA|, then:
+  a. Trap.
+8. If (j + n) > |$mem(0).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
+  a. Do nothing.
+10. Else if i < |$data(x).DATA|, then:
+  a. Push (I32.CONST j) to the stack.
+  b. Push (I32.CONST $data(x).DATA[i]) to the stack.
+  c. Execute (STORE I32 ?(8) $memop0()).
+  d. Push (I32.CONST (j + 1)) to the stack.
+  e. Push (I32.CONST (i + 1)) to the stack.
+  f. Push (I32.CONST (n - 1)) to the stack.
+  g. Execute (MEMORY.INIT x).
+
+execution_of_LOCAL.SET x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Perform $with_local(x, val).
+
+execution_of_GLOBAL.SET x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop val from the stack.
+3. Perform $with_global(x, val).
+
+execution_of_TABLE.SET x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If i ≥ |$table(x).ELEM|, then:
+  a. Trap.
+6. Perform $with_table(x, i, ref).
+
+execution_of_TABLE.GROW x
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop ref from the stack.
+5. Either:
+  a. Let ti be $growtable($table(x), n, ref).
+  b. Push (I32.CONST |$table(x).ELEM|) to the stack.
+  c. Perform $with_tableinst(x, ti).
+6. Or:
+  a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.
+
+execution_of_ELEM.DROP x
+1. Perform $with_elem(x, []).
+
+execution_of_STORE nt u_0? mo
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If ((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(0).DATA| and u_0? is not defined, then:
+  a. Trap.
+6. If u_0? is not defined, then:
+  a. Let b* be $ntbytes(nt, c).
+  b. Perform $with_mem(0, (i + mo.OFFSET), ($size(nt) / 8), b*).
+7. Else:
+  a. Let ?(n) be u_0?.
+  b. If ((i + mo.OFFSET) + (n / 8)) > |$mem(0).DATA|, then:
+    1) Trap.
+  c. Let b* be $ibytes(n, $wrap($size(nt), n, c)).
+  d. Perform $with_mem(0, (i + mo.OFFSET), (n / 8), b*).
+
+execution_of_MEMORY.GROW
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Either:
+  a. Let mi be $growmemory($mem(0), n).
+  b. Push (I32.CONST (|$mem(0).DATA| / (64 · $Ki()))) to the stack.
+  c. Perform $with_meminst(0, mi).
+4. Or:
+  a. Push (I32.CONST $invsigned(32, (- 1))) to the stack.
+
+execution_of_DATA.DROP x
+1. Perform $with_data(x, []).
+
+eval_expr instr*
+1. Execute the sequence (instr*).
+2. Pop val from the stack.
+3. Return [val].
+
+execution_of_CALL_REF x
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop ref from the stack.
+3. If ref is of the case REF.NULL, then:
+  a. Trap.
+4. Assert: Due to validation, ref is of the case REF.FUNC_ADDR.
+5. Let (REF.FUNC_ADDR a) be ref.
+6. If a < |$funcinst()|, then:
+  a. Let fi be $funcinst()[a].
+  b. If fi.CODE is of the case FUNC, then:
+    1) Let (FUNC y_0 y_1 instr*) be fi.CODE.
+    2) Let (LOCAL t)* be y_1.
+    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
+      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
+      b) Let [t_1^n]->[t_2^m] be y_0.
+      c) Assert: Due to validation, there are at least n values on the top of the stack.
+      d) Pop val^n from the stack.
+      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+      f) Let F be the activation of f with arity m.
+      g) Enter F with label [FRAME_]:
+        1. Let L be the label_m{[]}.
+        2. Enter L with label instr* ++ [LABEL_]:
+
+group_bytes_by n byte*
+1. Let n' be |byte*|.
+2. If n' ≥ n, then:
+  a. Return [byte*[0 : n]] ++ $group_bytes_by(n, byte*[n : (n' - n)]).
+3. Return [].
+
+execution_of_ARRAY.NEW_DATA x y
+1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+2. Pop (I32.CONST n) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If $expanddt($type(x)) is of the case ARRAY, then:
+  a. Let (ARRAY y_0) be $expanddt($type(x)).
+  b. Let (mut, zt) be y_0.
+  c. If (i + ((n · $storagesize(zt)) / 8)) > |$data(y).DATA|, then:
+    1) Trap.
+  d. Let nt be $unpacknumtype(zt).
+  e. Let b* be $data(y).DATA[i : ((n · $storagesize(zt)) / 8)].
+  f. Let gb* be $group_bytes_by(($storagesize(zt) / 8), b*).
+  g. Let c^n be $inverse_of_ibytes($storagesize(zt), gb)*.
+  h. Push (nt.CONST c)^n to the stack.
+  i. Execute (ARRAY.NEW_FIXED x n).
+
+== Complete.
+Generating prose for Wasm 3.0...
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -50,10 +2297,16 @@ if (n_1 <= n_2)
 if (n_2 <= k)
 Animation failed (binding inference).
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+if (t' = (numtype <: valtype))
 ...Animation failed (reorder)
 Valtype_sub: `%|-%<:%`(C, t, t')
-if ((t' = (numtype <: valtype)) \/ (t' = (vectype <: valtype)))
+if (t' = (numtype <: valtype))
+Animation failed (binding inference).
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = (vectype <: valtype))
+...Animation failed (reorder)
+Valtype_sub: `%|-%<:%`(C, t, t')
+if (t' = (vectype <: valtype))
 Animation failed (binding inference).
 Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
 Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
@@ -72,18 +2325,6 @@ Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
 if (l' < |C.LABEL_context|)
 (Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
 Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype))))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(mut, (t <: storagetype))))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-if (C.DATA_context[y] = OK)
 Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
@@ -94,40 +2335,26 @@ Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
 Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+if (t = (numtype <: valtype))
 if (C.DATA_context[y] = OK)
 ...Animation failed (reorder)
+where (numtype <: valtype) = t
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
+Animation failed (binding inference).
 if (x < |C.TYPE_context|)
 if (y < |C.DATA_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (t = (vectype <: valtype))
 if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 ...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if ((n?{n} = ?()) <=> (sx?{sx} = ?()))
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
-Animation failed (binding inference).
-if (x < |C.MEM_context|)
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
-...Animation failed (reorder)
-if (x < |C.MEM_context|)
-if (C.MEM_context[x] = mt)
-if ((2 ^ n_A) <= ($size(nt <: valtype) / 8))
-(if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
-if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
+where t = (vectype <: valtype)
+if (y < |C.DATA_context|)
+if (x < |C.TYPE_context|)
+if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
+if (C.DATA_context[y] = OK)
 Animation failed (binding inference).
 if (|j_1*{j_1}| = |j_2*{j_2}|)
 if (sh_1 = SHAPE_shape(lnt_1, lns_1))
@@ -252,10 +2479,8 @@ prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 3
 prem_to_instr: Invalid prem 2
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 =================
@@ -312,13 +2537,13 @@ validation_of_BR_ON_NULL l
 - |C.LABEL| must be greater than l.
 - Under the context C, ht must be valid.
 - Let t* be C.LABEL[l].
-- The instruction is valid with type [t* ++ [(REF (NULL ?([])) ht)]]->[t* ++ [(REF (NULL ?()) ht)]].
+- The instruction is valid with type [t* ++ [(REF (NULL ?(())) ht)]]->[t* ++ [(REF (NULL ?()) ht)]].
 
 validation_of_BR_ON_NON_NULL l
 - |C.LABEL| must be greater than l.
 - Let t* ++ [(REF (NULL ?()) ht)] be C.LABEL[l].
 - Under the context C, ht must be valid.
-- The instruction is valid with type [t* ++ [(REF (NULL ?([])) ht)]]->[t*].
+- The instruction is valid with type [t* ++ [(REF (NULL ?(())) ht)]]->[t*].
 
 validation_of_BR_ON_CAST l rt_1 rt_2
 - |C.LABEL| must be greater than l.
@@ -350,7 +2575,7 @@ validation_of_CALL x
 validation_of_CALL_REF ?(x)
 - |C.TYPE| must be greater than x.
 - Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [t_1* ++ [(REF (NULL ?([])) $idx(x))]]->[t_2*].
+- The instruction is valid with type [t_1* ++ [(REF (NULL ?(())) $idx(x))]]->[t_2*].
 
 validation_of_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
@@ -372,7 +2597,7 @@ validation_of_RETURN_CALL_REF ?(x)
 - Let (FUNC [t_1*]->[t_2*]) be $expanddt(C.TYPE[x]).
 - Yet: TODO: prem_to_instrs 2
 - C.RETURN must be equal to ?(t'_2*).
-- The instruction is valid with type [t_3* ++ t_1* ++ [(REF (NULL ?([])) $idx(x))]]->[t_4*].
+- The instruction is valid with type [t_3* ++ t_1* ++ [(REF (NULL ?(())) $idx(x))]]->[t_4*].
 
 validation_of_RETURN_CALL_INDIRECT x y
 - |C.TABLE| must be greater than x.
@@ -415,7 +2640,7 @@ validation_of_CVTOP inn_1 CONVERT inn_2 sx?
 
 validation_of_REF.NULL ht
 - Under the context C, ht must be valid.
-- The instruction is valid with type []->[(REF (NULL ?([])) ht)].
+- The instruction is valid with type []->[(REF (NULL ?(())) ht)].
 
 validation_of_REF.FUNC x
 - |C.FUNC| must be greater than x.
@@ -430,10 +2655,10 @@ validation_of_REF.IS_NULL
 
 validation_of_REF.AS_NON_NULL
 - Under the context C, ht must be valid.
-- The instruction is valid with type [(REF (NULL ?([])) ht)]->[(REF (NULL ?()) ht)].
+- The instruction is valid with type [(REF (NULL ?(())) ht)]->[(REF (NULL ?()) ht)].
 
 validation_of_REF.EQ
-- The instruction is valid with type [(REF (NULL ?([])) EQ), (REF (NULL ?([])) EQ)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) EQ), (REF (NULL ?(())) EQ)]->[I32].
 
 validation_of_REF.TEST rt
 - Under the context C, rt must be valid.
@@ -448,7 +2673,7 @@ validation_of_REF.CAST rt
 - The instruction is valid with type [rt']->[rt].
 
 validation_of_I31.GET sx
-- The instruction is valid with type [(REF (NULL ?([])) I31)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) I31)]->[I32].
 
 validation_of_VVCONST V128 c_vt
 - The instruction is valid with type []->[V128].
@@ -537,14 +2762,14 @@ validation_of_STRUCT.GET sx? x i
 - |yt*| must be greater than i.
 - Let (mut, zt) be yt*[i].
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x))]->[$unpacktype(zt)].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x))]->[$unpacktype(zt)].
 
 validation_of_STRUCT.SET x i
 - |C.TYPE| must be greater than x.
 - Let (STRUCT yt*) be $expanddt(C.TYPE[x]).
 - |yt*| must be greater than i.
-- Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt) be yt*[i].
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), $unpacktype(zt)]->[].
+- Let ((MUT ?(())), zt) be yt*[i].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), $unpacktype(zt)]->[].
 
 validation_of_ARRAY.NEW x
 - |C.TYPE| must be greater than x.
@@ -573,53 +2798,53 @@ validation_of_ARRAY.NEW_DATA x y
 - |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
 - C.DATA[y] must be equal to OK.
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (mut, t)).
-- Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
+- Let (ARRAY (mut, t)) be $expanddt(C.TYPE[x]).
+- Let numtype be t.
 - The instruction is valid with type [I32, I32]->[(REF (NULL ?()) $idx(x))].
 
 validation_of_ARRAY.GET sx? x
 - |C.TYPE| must be greater than x.
 - Let (ARRAY (mut, zt)) be $expanddt(C.TYPE[x]).
 - (zt is $unpacktype(zt)) and (sx? is ?()) are equivalent.
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32]->[$unpacktype(zt)].
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32]->[$unpacktype(zt)].
 
 validation_of_ARRAY.SET x
 - |C.TYPE| must be greater than x.
-- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, $unpacktype(zt)]->[].
+- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt)]->[].
 
 validation_of_ARRAY.LEN
-- Let $expanddt(C.TYPE[x]) be (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
+- Let $expanddt(C.TYPE[x]) be (ARRAY ((MUT ?(())), zt)).
 - |C.TYPE| must be greater than x.
-- The instruction is valid with type [(REF (NULL ?([])) ARRAY)]->[I32].
+- The instruction is valid with type [(REF (NULL ?(())) ARRAY)]->[I32].
 
 validation_of_ARRAY.FILL x
 - |C.TYPE| must be greater than x.
-- Let (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)) be $expanddt(C.TYPE[x]).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, $unpacktype(zt), I32]->[].
+- Let (ARRAY ((MUT ?(())), zt)) be $expanddt(C.TYPE[x]).
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, $unpacktype(zt), I32]->[].
 
 validation_of_ARRAY.COPY x_1 x_2
 - |C.TYPE| must be greater than x_1.
 - |C.TYPE| must be greater than x_2.
 - Let (ARRAY (mut, zt_2)) be $expanddt(C.TYPE[x_2]).
 - Yet: TODO: prem_to_instrs 2
-- $expanddt(C.TYPE[x_1]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt_1)).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x_1)), I32, (REF (NULL ?([])) $idx(x_2)), I32, I32]->[].
+- $expanddt(C.TYPE[x_1]) must be equal to (ARRAY ((MUT ?(())), zt_1)).
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x_1)), I32, (REF (NULL ?(())) $idx(x_2)), I32, I32]->[].
 
 validation_of_ARRAY.INIT_ELEM x y
 - |C.TYPE| must be greater than x.
 - |C.ELEM| must be greater than y.
 - Yet: TODO: prem_to_instrs 2
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, I32, I32]->[].
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_ARRAY.INIT_DATA x y
-- |C.TYPE| must be greater than x.
 - |C.DATA| must be greater than y.
+- |C.TYPE| must be greater than x.
 - C.DATA[y] must be equal to OK.
-- $expanddt(C.TYPE[x]) must be equal to (ARRAY (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), zt)).
-- Yet: ((t = (numtype <: valtype)) \/ (t = (vectype <: valtype)))
-- The instruction is valid with type [(REF (NULL ?([])) $idx(x)), I32, I32, I32]->[].
+- Let numtype be t.
+- $expanddt(C.TYPE[x]) must be equal to (ARRAY ((MUT ?(())), zt)).
+- The instruction is valid with type [(REF (NULL ?(())) $idx(x)), I32, I32, I32]->[].
 
 validation_of_EXTERN.CONVERT_ANY
 - The instruction is valid with type [(REF nul ANY)]->[(REF nul EXTERN)].
@@ -639,7 +2864,7 @@ validation_of_GLOBAL.GET x
 
 validation_of_GLOBAL.SET x
 - |C.GLOBAL| must be greater than x.
-- Let (YetE (MixE ([[Atom "MUT"], [Quest]], OptE (TupE ([])))), t) be C.GLOBAL[x].
+- Let ((MUT ?(())), t) be C.GLOBAL[x].
 - The instruction is valid with type [t]->[].
 
 validation_of_TABLE.GET x
@@ -722,16 +2947,15 @@ validation_of_DATA.DROP x
 - C.DATA[x] must be equal to OK.
 - The instruction is valid with type []->[].
 
-validation_of_LOAD nt [n, sx]? x { ALIGN: n_A; OFFSET: n_O; }
+validation_of_LOAD nt (n, sx)? x { ALIGN: n_A; OFFSET: n_O; }
 - |C.MEM| must be greater than x.
 - (sx? is ?()) and (n? is ?()) are equivalent.
 - (2 ^ n_A) must be less than or equal to ($size(nt) / 8).
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- C.MEM[x] must be equal to mt.
-- If n is defined,
-  - nt must be equal to inn.
+- n? must be equal to ?().
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32]->[nt].
 
 validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
@@ -740,9 +2964,8 @@ validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
 - If n is defined,
   - (2 ^ n_A) must be less than or equal to (n / 8).
   - (n / 8) must be less than ($size(nt) / 8).
-- C.MEM[x] must be equal to mt.
-- If n is defined,
-  - nt must be equal to inn.
+- n? must be equal to ?().
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32, nt]->[].
 
 validation_of_VLOAD n lns sx x { ALIGN: n_A; OFFSET: n_O; }
@@ -919,7 +3142,7 @@ sxfield u_0
 3. Return ?(S).
 
 diffrt (REF nul_1 ht_1) (REF (NULL u_0?) ht_2)
-1. If u_0? is ?([]), then:
+1. If u_0? is ?(()), then:
   a. Return (REF (NULL ?()) ht_1).
 2. Assert: Due to validation, u_0? is not defined.
 3. Return (REF nul_1 ht_1).
@@ -1164,22 +3387,6 @@ ishape nat
 4. Assert: Due to validation, nat is 64.
 5. Return I64.
 
-forall u_0*
-1. If u_0* is [], then:
-  a. Return YetE (BoolE true).
-  b. Return YetE (BoolE false).
-2. Let [bool] ++ bool'* be u_0*.
-3. If $forall(bool'*) is not YetE (BoolE true), then:
-  a. Return YetE (BoolE false).
-4. If bool is YetE (BoolE true), then:
-  a. Return YetE (BoolE true).
-5. Return YetE (BoolE false).
-
-bool bool
-1. If bool is YetE (BoolE true), then:
-  a. Return 1.
-2. Return 0.
-
 inst_reftype mm rt
 1. Let dt* be mm.TYPE.
 2. Return $subst_all_reftype(rt, dt*).
@@ -1195,7 +3402,7 @@ default u_0
   a. Return ?((F64.CONST 0)).
 5. Assert: Due to validation, u_0 is of the case REF.
 6. Let (REF y_0 ht) be u_0.
-7. If y_0 is (NULL ?([])), then:
+7. If y_0 is (NULL ?(())), then:
   a. Return ?((REF.NULL ht)).
 8. Assert: Due to validation, y_0 is (NULL ?()).
 9. Return ?().
@@ -1265,6 +3472,7 @@ memsxv u_0*
 5. Return $memsxv(xv*).
 
 store
+1. Return.
 
 frame
 1. Let f be the current frame.
@@ -1639,35 +3847,33 @@ rundata (DATA byte* u_0) y
 
 instantiate module externval*
 1. Assert: Due to validation, module is of the case MODULE.
-2. Let (MODULE type* import* func^n_func global* table* mem* elem* data* start? export*) be module.
+2. Let (MODULE type* import* func* global* table* mem* elem* data* start? export*) be module.
 3. Let n_D be |data*|.
 4. Let n_E be |elem*|.
-5. Let (START x)? be start?.
-6. Let mm_init be { TYPE: $alloctypes(type*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_func)^(i_func<n_func); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+5. Let n_F be |func*|.
+6. Let (START x)? be start?.
 7. Let (GLOBAL globaltype expr_G)* be global*.
 8. Let (TABLE tabletype expr_T)* be table*.
 9. Let (ELEM reftype expr_E* elemmode)* be elem*.
 10. Let instr_D* be $concat_instr($rundata(data*[j], j)^(j<n_D)).
 11. Let instr_E* be $concat_instr($runelem(elem*[i], i)^(i<n_E)).
-12. Let z be (s, { LOCAL: []; MODULE: mm_init; }).
-13. Let (_, f) be z.
-14. Enter the activation of f with label [FRAME_]:
+12. Let mm_init be { TYPE: $alloctypes(type*); FUNC: $funcsxv(externval*) ++ (|s.FUNC| + i_F)^(i_F<n_F); GLOBAL: $globalsxv(externval*); TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }.
+13. Let z be { LOCAL: []; MODULE: mm_init; }.
+14. Enter the activation of z with label [FRAME_]:
   a. Let [val_G]* be $eval_expr(expr_G)*.
-15. Let (_, f) be z.
-16. Enter the activation of f with label [FRAME_]:
+15. Enter the activation of z with label [FRAME_]:
   a. Let [ref_T]* be $eval_expr(expr_T)*.
-17. Let (_, f) be z.
-18. Enter the activation of f with label [FRAME_]:
+16. Enter the activation of z with label [FRAME_]:
   a. Let [ref_E]** be $eval_expr(expr_E)**.
-19. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
-20. Let f be { LOCAL: []; MODULE: mm; }.
-21. Enter the activation of f with arity 0 with label [FRAME_]:
+17. Let mm be $allocmodule(module, externval*, val_G*, ref_T*, ref_E**).
+18. Let f be { LOCAL: []; MODULE: mm; }.
+19. Enter the activation of f with arity 0 with label [FRAME_]:
   a. Execute the sequence (instr_E*).
   b. Execute the sequence (instr_D*).
   c. If x is defined, then:
     1) Let ?(x_0) be x.
     2) Execute (CALL x_0).
-22. Return mm.
+20. Return mm.
 
 invoke fa val^n
 1. Let f be { LOCAL: []; MODULE: { TYPE: []; FUNC: []; GLOBAL: []; TABLE: []; MEM: []; ELEM: []; DATA: []; EXPORT: []; }; }.
@@ -1795,12 +4001,12 @@ execution_of_BR_ON_NON_NULL l
 
 execution_of_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?([])) $idx(y))).
+2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
 3. Execute (CALL_REF ?(y)).
 
 execution_of_RETURN_CALL_INDIRECT x y
 1. Execute (TABLE.GET x).
-2. Execute (REF.CAST (REF (NULL ?([])) $idx(y))).
+2. Execute (REF.CAST (REF (NULL ?(())) $idx(y))).
 3. Execute (RETURN_CALL_REF ?(y)).
 
 execution_of_FRAME_
@@ -2045,7 +4251,7 @@ execution_of_NARROW sh_2 sh_1 sx
 execution_of_VCVTOP sh_2 vcvtop u_0? sh_1 u_1? u_2
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 c_1) from the stack.
-3. If u_0? is not defined and u_2 is YetE (MixE ([[Atom "ZERO"], [Quest]], OptE ())), then:
+3. If u_0? is not defined and u_2 is (ZERO ?()), then:
   a. Let i* be $lanes(sh_1, c_1).
   b. If sh_1 is of the case SHAPE, then:
     1) Let (SHAPE lnt_1 lns_1) be sh_1.
@@ -2055,7 +4261,7 @@ execution_of_VCVTOP sh_2 vcvtop u_0? sh_1 u_1? u_2
         1. Let ?(sx) be u_1?.
         2. Let c be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), ?(sx), i)*).
         3. Execute (VVCONST V128 c).
-4. If u_2 is YetE (MixE ([[Atom "ZERO"], [Quest]], OptE ())) and sh_1 is of the case SHAPE, then:
+4. If u_2 is (ZERO ?()) and sh_1 is of the case SHAPE, then:
   a. Let (SHAPE lnt_1 lns_1) be sh_1.
   b. If sh_2 is of the case SHAPE, then:
     1) Let (SHAPE lnt_2 lns_2) be sh_2.
@@ -2608,11 +4814,13 @@ execution_of_TABLE.COPY x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$table(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
+7. If (i + n) > |$table(y).ELEM|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. If j ≤ i, then:
     1) Push (I32.CONST j) to the stack.
     2) Push (I32.CONST i) to the stack.
@@ -2637,11 +4845,13 @@ execution_of_TABLE.INIT x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$elem(y).ELEM| or (j + n) > |$table(x).ELEM|, then:
+7. If (i + n) > |$elem(y).ELEM|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$table(x).ELEM|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else if i < |$elem(y).ELEM|, then:
+10. Else if i < |$elem(y).ELEM|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push $elem(y).ELEM[i] to the stack.
   c. Execute (TABLE.SET x).
@@ -2660,7 +4870,7 @@ execution_of_LOAD nt u_0? x mo
   b. Push (nt.CONST c) to the stack.
 5. Else:
   a. Let ?(y_0) be u_0?.
-  b. Let [n, sx] be y_0.
+  b. Let (n, sx) be y_0.
   c. If ((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|, then:
     1) Trap.
   d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
@@ -2734,22 +4944,24 @@ execution_of_MEMORY.COPY x_1 x_2
 4. Pop (I32.CONST i_2) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST i_1) from the stack.
-7. If (i_1 + n) > |$mem(x_1).DATA| or (i_2 + n) > |$mem(x_2).DATA|, then:
+7. If (i_1 + n) > |$mem(x_1).DATA|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (i_2 + n) > |$mem(x_2).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else:
+10. Else:
   a. If i_1 ≤ i_2, then:
     1) Push (I32.CONST i_1) to the stack.
     2) Push (I32.CONST i_2) to the stack.
-    3) Execute (LOAD I32 ?([8, U]) x_2 $memop0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
     4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST (i_1 + 1)) to the stack.
     6) Push (I32.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
     2) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute (LOAD I32 ?([8, U]) x_2 $memop0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
     4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST i_1) to the stack.
     6) Push (I32.CONST i_2) to the stack.
@@ -2763,11 +4975,13 @@ execution_of_MEMORY.INIT x y
 4. Pop (I32.CONST i) from the stack.
 5. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 6. Pop (I32.CONST j) from the stack.
-7. If (i + n) > |$data(y).DATA| or (j + n) > |$mem(x).DATA|, then:
+7. If (i + n) > |$data(y).DATA|, then:
   a. Trap.
-8. If n is 0, then:
+8. If (j + n) > |$mem(x).DATA|, then:
+  a. Trap.
+9. If n is 0, then:
   a. Do nothing.
-9. Else if i < |$data(y).DATA|, then:
+10. Else if i < |$data(y).DATA|, then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(y).DATA[i]) to the stack.
   c. Execute (STORE I32 ?(8) x $memop0()).

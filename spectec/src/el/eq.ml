@@ -50,15 +50,15 @@ and eq_typ t1 t2 =
   | SeqT ts1, SeqT ts2 -> eq_list eq_typ ts1 ts2
   | InfixT (t11, atom1, t12), InfixT (t21, atom2, t22) ->
     eq_typ t11 t21 && atom1 = atom2 && eq_typ t12 t22
-  | BrackT (brack1, t11), BrackT (brack2, t21) ->
-    brack1 = brack2 && eq_typ t11 t21
+  | BrackT (l1, t11, r1), BrackT (l2, t21, r2) ->
+    l1 = l2 && eq_typ t11 t21 && r1 = r2
   | _, _ -> t1.it = t2.it
 
 and eq_typfield (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1 = atom2 && eq_typ t1 t2 && eq_nl_list eq_prem prems1 prems2
 
-and eq_typcase (atom1, (ts1, prems1), _) (atom2, (ts2, prems2), _) =
-  atom1 = atom2 && eq_list eq_typ ts1 ts2 && eq_nl_list eq_prem prems1 prems2
+and eq_typcase (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
+  atom1 = atom2 && eq_typ t1 t2 && eq_nl_list eq_prem prems1 prems2
 
 and eq_typenum (e1, eo1) (e2, eo2) =
   eq_exp e1 e2 && eq_opt eq_exp eo1 eo2
@@ -78,8 +78,7 @@ and eq_exp e1 e2 =
   | IdxE (e11, e12), IdxE (e21, e22)
   | CommaE (e11, e12), CommaE (e21, e22)
   | CompE (e11, e12), CompE (e21, e22)
-  | FuseE (e11, e12), FuseE (e21, e22) ->
-    eq_exp e11 e21 && eq_exp e12 e22
+  | FuseE (e11, e12), FuseE (e21, e22) -> eq_exp e11 e21 && eq_exp e12 e22
   | SliceE (e11, e12, e13), SliceE (e21, e22, e23) ->
     eq_exp e11 e21 && eq_exp e12 e22 && eq_exp e13 e23
   | UpdE (e11, p1, e12), UpdE (e21, p2, e22)
@@ -92,7 +91,8 @@ and eq_exp e1 e2 =
   | DotE (e11, atom1), DotE (e21, atom2) -> eq_exp e11 e21 && atom1 = atom2
   | InfixE (e11, atom1, e12), InfixE (e21, atom2, e22) ->
     eq_exp e11 e21 && atom1 = atom2 && eq_exp e12 e22
-  | BrackE (brack1, e1), BrackE (brack2, e2) -> brack1 = brack2 && eq_exp e1 e2
+  | BrackE (l1, e1, r1), BrackE (l2, e2, r2) ->
+    l1 = l2 && eq_exp e1 e2 && r1 = r2
   | CallE (id1, e1), CallE (id2, e2) -> id1.it = id2.it && eq_exp e1 e2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iter iter1 iter2

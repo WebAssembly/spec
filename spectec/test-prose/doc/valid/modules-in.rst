@@ -3,7 +3,6 @@
 Modules
 -------
 
-<<<<<<< HEAD
 .. _valid-modules-types:
 
 Types
@@ -16,14 +15,11 @@ $${rule+:
 
 .. _valid-modules-functions:
 
-=======
->>>>>>> al
 Functions
 ~~~~~~~~~
 
 $${rule: Func_ok}
 
-<<<<<<< HEAD
 .. _valid-modules-locals:
 
 Locals
@@ -35,28 +31,20 @@ $${rule+:
 
 .. _valid-modules-tables:
 
-=======
->>>>>>> al
 Tables
 ~~~~~~
 
 $${rule: Table_ok}
 
-<<<<<<< HEAD
 .. _valid-modules-memories:
 
-=======
->>>>>>> al
 Memories
 ~~~~~~~~
 
 $${rule: Mem_ok}
 
-<<<<<<< HEAD
 .. _valid-modules-globals:
 
-=======
->>>>>>> al
 Globals
 ~~~~~~~
 
@@ -65,11 +53,8 @@ $${rule+:
   Globals_ok/*
 }
 
-<<<<<<< HEAD
 .. _valid-modules-element-segments:
 
-=======
->>>>>>> al
 Element Segments
 ~~~~~~~~~~~~~~~~
 
@@ -78,11 +63,8 @@ $${rule+:
   Elemmode_ok/*
 }
 
-<<<<<<< HEAD
 .. _valid-modules-data-segments:
 
-=======
->>>>>>> al
 Data Segments
 ~~~~~~~~~~~~~
 
@@ -91,46 +73,32 @@ $${rule+:
   Datamode_ok/*
 }
 
-<<<<<<< HEAD
 .. _valid-modules-start-function:
 
-=======
->>>>>>> al
 Start Function
 ~~~~~~~~~~~~~~
 
 $${rule: Start_ok}
 
-<<<<<<< HEAD
 .. _valid-modules-exports:
 
 Exports
 ~~~~~~~
 
-$${rule: Export_ok}
+$${rule+: 
+  Export_ok
+  Externidx_ok/*
+}
 
 .. _valid-modules-imports:
 
-=======
-Exports
-~~~~~~~
-
-$${rule+: 
-  Export_ok
-  Externuse_ok/*
-}
-
->>>>>>> al
 Imports
 ~~~~~~~
 
 $${rule: Import_ok}
 
-<<<<<<< HEAD
 .. _valid-modules-modules:
 
-=======
->>>>>>> al
 Modules
 ~~~~~~~
 

@@ -5,12 +5,6 @@ Types
 
 .. _syntax-numtype:
 .. _syntax-c_numtype:
-<<<<<<< HEAD
-.. _syntax-types-number-types:
-=======
-.. _syntax-in:
-.. _syntax-fn:
->>>>>>> al
 
 Number Types
 ~~~~~~~~~~~~
@@ -18,19 +12,10 @@ Number Types
 $${syntax+: 
   numtype
   c_numtype
-<<<<<<< HEAD
-=======
-  {in
-  fn}
->>>>>>> al
 }
 
 .. _syntax-vectype:
 .. _syntax-c_vectype:
-<<<<<<< HEAD
-.. _syntax-types-vector-types:
-=======
->>>>>>> al
 
 Vector Types
 ~~~~~~~~~~~~
@@ -42,7 +27,6 @@ $${syntax+:
 
 .. _syntax-absheaptype:
 .. _syntax-heaptype:
-.. _syntax-types-heap-types:
 
 Heap Types
 ~~~~~~~~~~
@@ -78,22 +62,16 @@ Result Types
 $${syntax: resulttype}
 
 .. _syntax-functype:
-<<<<<<< HEAD
-.. _syntax-types-function-types:
-=======
->>>>>>> al
 
 Function Types
 ~~~~~~~~~~~~~~
 
 $${syntax: functype}
 
-<<<<<<< HEAD
 .. _syntax-packedtype:
 .. _syntax-c_packedtype:
 .. _syntax-storagetype:
 .. _syntax-fieldtype:
-.. _syntax-types-aggregate-types:
 
 Aggregate Types
 ~~~~~~~~~~~~~~~
@@ -106,7 +84,6 @@ $${syntax+:
 }
 
 .. _syntax-comptype:
-.. _syntax-types-composite-types:
 
 Composite Types
 ~~~~~~~~~~~~~~~
@@ -116,7 +93,6 @@ $${syntax: comptype}
 .. _syntax-rectype:
 .. _syntax-subtype:
 .. _syntax-fin:
-.. _syntax-types-recursive-types:
 
 Recursive Types
 ~~~~~~~~~~~~~~~
@@ -127,8 +103,6 @@ $${syntax+:
   fin
 }
 
-=======
->>>>>>> al
 .. _syntax-limits:
 
 Limits
@@ -151,11 +125,7 @@ Table Types
 $${syntax: tabletype}
 
 .. _syntax-globaltype:
-<<<<<<< HEAD
 .. _syntax-mut:
-.. _syntax-types-global-types:
-=======
->>>>>>> al
 
 Global Types
 ~~~~~~~~~~~~
@@ -165,11 +135,13 @@ $${syntax+:
   mut
 }
 
-<<<<<<< HEAD
-.. _syntax-externtype:
-.. _syntax-types-external-types:
+.. _syntax-elemtype:
 
-=======
+Element Types
+~~~~~~~~~~~~~
+
+$${syntax: elemtype}
+
 .. _syntax-datatype:
 
 Data Types
@@ -177,16 +149,8 @@ Data Types
 
 $${syntax: datatype}
 
-.. _syntax-elemtype:
-
-Elem Types
-~~~~~~~~~~
-
-$${syntax: elemtype}
-
 .. _syntax-externtype:
 
->>>>>>> al
 External Types
 ~~~~~~~~~~~~~~
 

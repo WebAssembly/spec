@@ -129,6 +129,7 @@ let argspec = Arg.align
 
   "--root", Arg.String (fun s -> Backend_interpreter.Tester.root := s), " Set the root of watsup. Defaults to current directory";
   "--test-interpreter", Arg.String (fun s -> Backend_interpreter.Tester.test_name := s), " The name of .wast test file for interpreter";
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -204,7 +205,6 @@ let () =
         odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
         let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
         List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
-        Backend_prose.Render.gen_macro (Backend_splice.Splice.get_render_prose env);
         if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
       if not (PS.mem Animate !selected_passes) then

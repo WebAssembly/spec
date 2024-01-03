@@ -5,8 +5,8 @@ EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
 
 OWNDIR = $(PWD)
-SPECDIR = ../spec
-SPECS = $(shell cd $(SPECDIR) && ls -d wasm-*)
+SPECDIR = ../spec/wasm-3.0
+SPECS = $(shell ls $(SPECDIR)/*.$(EXT))
 TESTS = $(SPECS:%=test-%)
 
 SPHINXBUILD = sphinx-build
@@ -35,8 +35,6 @@ SPLICEOUTPUT = $(strip $(subst -in.rst,.rst,$(SPLICEINPUT)))
 
 UTIL = util
 
-MACRO = macros.def
-
 .PHONY: document
 
 document: doc $(CONF) $(MATHDEF) $(INDEX)
@@ -50,7 +48,7 @@ setup: document
 .PHONY: splice
 
 splice: setup 
-	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) -w && mv $(MACRO) $(UTIL)
+	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT) -w
 	rm -f $(INPUTFILES)
 	cd ..
 

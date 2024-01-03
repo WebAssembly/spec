@@ -165,19 +165,19 @@ Hints of the form `hint(show <exp>)` are recognised on a number of constructs an
 * on a relation declaration they control how the rule names are rendered; the expression must be a text literal:
   ```
   relation Instr_ok: context |- instr : functype   hint(show "T")
-  rule Instr_ok: C |- DROP : t -> epsilon
+  rule Instr_ok: C |- DROP : t -> eps
 
   relation Step: instr* ~> instr*                  hint(show "S")
-  rule Step/drop: val DROP ~> epsilon
+  rule Step/drop: val DROP ~> eps
   ```
   After this, the splice `@@@{rule+: Instr_ok/nop}` will generate (in proper Latex)
   ```
   ------------------------ [T-drop]
-  C |- DROP : t -> epsilon
+  C |- DROP : t -> eps
   ```
   Similarly, the splice `@@@{rule+: Step/nop}` will generate
   ```
-  [S-nop]  val DROP ~> epsilon
+  [S-nop]  val DROP ~> eps
   ```
 
 Show hints for variant cases or function definition are expressions with two additional pieces of syntax:

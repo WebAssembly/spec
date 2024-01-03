@@ -20,16 +20,20 @@ type atom =
   | Atom of string               (* atomid *)
   | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)
+  | Top                          (* `^|^` *)
   | Dot                          (* `.` *)
   | Dot2                         (* `..` *)
   | Dot3                         (* `...` *)
   | Semicolon                    (* `;` *)
   | Backslash                    (* `\` *)
-  | In                           (* `in` *)
+  | In                           (* `<-` *)
   | Arrow                        (* `->` *)
+  | Arrow2                       (* ``=>` *)
   | Colon                        (* `:` *)
   | Sub                          (* `<:` *)
+  | Sup                          (* `:>` *)
   | Assign                       (* `:=` *)
+  | Equiv                        (* `==` *)
   | Approx                       (* `~~` *)
   | SqArrow                      (* `~>` *)
   | SqArrowStar                  (* `~>*` *)
@@ -37,15 +41,14 @@ type atom =
   | Succ                         (* `>>` *)
   | Turnstile                    (* `|-` *)
   | Tilesturn                    (* `-|` *)
-  | Quest                        (* `?` *)
-  | Star                         (* `*` *)
-
-type brack =
-  | Paren                        (* ``(` ... `)` *)
-  | Brack                        (* ``[` ... `]` *)
-  | Brace                        (* ``{` ... `}` *)
-
-type dots = Dots | NoDots
+  | Quest                        (* ``?` *)
+  | Plus                         (* ``+` *)
+  | Star                         (* ``*` *)
+  | Comma                        (* ``,` *)
+  | Bar                          (* ``|` *)
+  | LParen | RParen              (* ``(` `)` *)
+  | LBrack | RBrack              (* ``[` `]` *)
+  | LBrace | RBrace              (* ``{` `}` *)
 
 
 (* Iteration *)
@@ -58,6 +61,8 @@ type iter =
 
 
 (* Types *)
+
+and dots = Dots | NoDots
 
 and numtyp =
   | NatT                         (* `nat` *)
@@ -79,12 +84,12 @@ and typ' =
   | CaseT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
   | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)
   | AtomT of atom                (* atom *)
-  | SeqT of typ list             (* `epsilon` / typ typ *)
+  | SeqT of typ list             (* `eps` / typ typ *)
   | InfixT of typ * atom * typ   (* typ atom typ *)
-  | BrackT of brack * typ        (* ``` ([{ typ }]) *)
+  | BrackT of atom * typ * atom  (* ``` ([{ typ }]) *)
 
-and typfield = atom * (typ * premise nl_list) * hint list     (* atom typ prem* hint* *)
-and typcase = atom * (typ list * premise nl_list) * hint list (* atom typ* prem* hint* *)
+and typfield = atom * (typ * premise nl_list) * hint list (* atom typ prem* hint* *)
+and typcase = atom * (typ * premise nl_list) * hint list  (* atom typ* prem* hint* *)
 and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` exp)?)* *)
 
 
@@ -126,7 +131,7 @@ and exp' =
   | UnE of unop * exp            (* unop exp *)
   | BinE of exp * binop * exp    (* exp binop exp *)
   | CmpE of exp * cmpop * exp    (* exp cmpop exp *)
-  | EpsE                         (* `epsilon` *)
+  | EpsE                         (* `eps` *)
   | SeqE of exp list             (* exp exp *)
   | IdxE of exp * exp            (* exp `[` exp `]` *)
   | SliceE of exp * exp * exp    (* exp `[` exp `:` exp `]` *)
@@ -141,7 +146,7 @@ and exp' =
   | ParenE of exp * bool         (* `(` exp `)` *)
   | TupE of exp list             (* `(` list2(exp, `,`) `)` *)
   | InfixE of exp * atom * exp   (* exp atom exp *)
-  | BrackE of brack * exp        (* ``` ([{ exp }]) *)
+  | BrackE of atom * exp * atom  (* ``` ([{ exp }]) *)
   | CallE of id * exp            (* `$` defid exp? *)
   | IterE of exp * iter          (* exp iter *)
   | HoleE of bool                (* `%` or `%%` *)
@@ -166,7 +171,7 @@ and sym' =
   | HexG of int                              (* 0xhex *)
   | CharG of int                             (* U+hex *)
   | TextG of string                          (* `"`text`"` *)
-  | EpsG                                     (* `epsilon` *)
+  | EpsG                                     (* `eps` *)
   | SeqG of sym nl_list                      (* sym sym *)
   | AltG of sym nl_list                      (* sym `|` sym *)
   | RangeG of sym * sym                      (* sym `|` `...` `|` sym *)

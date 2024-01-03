@@ -25,7 +25,7 @@ var it : instrtype
 
 def $with_locals(context, localidx*, localtype*) : context  hint(show %[.LOCAL[%]=%])
 
-def $with_locals(C, epsilon, epsilon) = C
+def $with_locals(C, eps, eps) = C
 def $with_locals(C, x_1 x*, lt_1 lt*) = $with_locals(C[.LOCAL[x_1] = lt_1], x*, lt*)
 
 
@@ -34,7 +34,7 @@ def $clostypes(deftype*) : deftype*        hint(show $clos`*(%))
 
 def $clostype(C, dt) = $subst_all_deftype(dt, dt'*) -- if dt'* = $clostypes(C.TYPE)
 
-def $clostypes(epsilon) = epsilon
+def $clostypes(eps) = eps
 def $clostypes(dt* dt_N) = dt'* $subst_all_deftype(dt_N, dt'*)  -- if dt'* = $clostypes(dt*)
 
 
@@ -158,7 +158,7 @@ rule Subtype_ok:
   C |- SUB fin y* ct : OK(x)
   -- if |y*| <= 1
   -- if (y < x)*
-  -- if ($unrolldt(C.TYPE[y]) = SUB epsilon y'* ct')*
+  -- if ($unrolldt(C.TYPE[y]) = SUB eps y'* ct')*
   -- Comptype_ok: C |- ct : OK
   -- (Comptype_sub: C |- ct <: ct')*
 
@@ -176,13 +176,13 @@ rule Subtype_ok2:
   C |- SUBD fin ht* ct : OK x i
   -- if |ht*| <= 1
   -- if ($before(ht, x, i))*
-  -- if ($unrollht(C, ht) = SUBD epsilon ht'* ct')*
+  -- if ($unrollht(C, ht) = SUBD eps ht'* ct')*
   -- Comptype_ok: C |- ct : OK
   -- (Comptype_sub: C |- ct <: ct')*
 
 
 rule Rectype_ok/empty:
-  C |- REC epsilon : OK(x)
+  C |- REC eps : OK(x)
 
 rule Rectype_ok/cons:
   C |- REC st_1 st* : OK(x)
@@ -194,7 +194,7 @@ rule Rectype_ok/rec2:
   -- Rectype_ok2: C, REC st* |- REC st* : OK x 0
 
 rule Rectype_ok2/empty:
-  C |- REC epsilon : OK x i
+  C |- REC eps : OK x i
 
 rule Rectype_ok2/cons:
   C |- REC st_1 st* : OK x i
@@ -345,7 +345,7 @@ rule Heaptype_sub/bot:
 
 
 rule Reftype_sub/nonnull:
-  C |- REF epsilon ht_1 <: REF epsilon ht_2
+  C |- REF eps ht_1 <: REF eps ht_2
   -- Heaptype_sub: C |- ht_1 <: ht_2
 
 rule Reftype_sub/null:
@@ -409,7 +409,7 @@ rule Storagetype_sub/packed:
 
 
 rule Fieldtype_sub/const:
-  C |- epsilon zt_1 <: epsilon zt_2
+  C |- eps zt_1 <: eps zt_2
   -- Storagetype_sub: C |- zt_1 <: zt_2
 
 rule Fieldtype_sub/var:
@@ -459,7 +459,7 @@ rule Functype_sub:
   C |- ft <: ft
 
 rule Globaltype_sub/const:
-  C |- epsilon t_1 <: epsilon t_2
+  C |- eps t_1 <: eps t_2
   -- Valtype_sub: C |- t_1 <: t_2
 
 rule Globaltype_sub/var:
@@ -510,17 +510,17 @@ relation Expr_ok: context |- expr : resulttype      hint(show "T-expr")
 
 rule Expr_ok:
   C |- instr* : t*
-  -- Instrs_ok: C |- instr* : epsilon ->(epsilon) t*
+  -- Instrs_ok: C |- instr* : eps ->(eps) t*
 
 
 ;; Instruction sequences
 
 rule Instrf_ok/instr:
-  C |- instr : t_1* ->(epsilon) t_2*
+  C |- instr : t_1* ->(eps) t_2*
   -- Instr_ok: C |- instr : t_1* -> t_2*
 
 rule Instrs_ok/empty:
-  C |- epsilon : epsilon ->(epsilon) epsilon
+  C |- eps : eps ->(eps) eps
 
 rule Instrs_ok/seq:
   C |- instr_1 instr_2* : t_1* ->(x_1* x_2*) t_3*
@@ -545,10 +545,10 @@ rule Instr_ok/unreachable:
   C |- UNREACHABLE : t_1* -> t_2*
 
 rule Instr_ok/nop:
-  C |- NOP : epsilon -> epsilon
+  C |- NOP : eps -> eps
 
 rule Instr_ok/drop:
-  C |- DROP : t -> epsilon
+  C |- DROP : t -> eps
 
 
 rule Instr_ok/select-expl:
@@ -565,10 +565,10 @@ rule Instr_ok/select-impl:
 relation Blocktype_ok: context |- blocktype : functype hint(show "K-block")
 
 rule Blocktype_ok/void:
-  C |- _RESULT epsilon : epsilon -> epsilon
+  C |- _RESULT eps : eps -> eps
 
 rule Blocktype_ok/result:
-  C |- _RESULT t : epsilon -> t
+  C |- _RESULT t : eps -> t
 
 rule Blocktype_ok/typeidx:
   C |- _IDX x : ft
@@ -608,13 +608,13 @@ rule Instr_ok/br_table:
   -- Resulttype_sub: C |- t* <: C.LABEL[l']
 
 rule Instr_ok/br_on_null:
-  C |- BR_ON_NULL l : t* (REF NULL ht) -> t* (REF epsilon ht)
+  C |- BR_ON_NULL l : t* (REF NULL ht) -> t* (REF eps ht)
   -- if C.LABEL[l] = t*
   -- Heaptype_ok: C |- ht : OK
 
 rule Instr_ok/br_on_non_null:
   C |- BR_ON_NON_NULL l : t* (REF NULL ht) -> t*
-  -- if C.LABEL[l] = t* (REF epsilon ht)
+  -- if C.LABEL[l] = t* (REF eps ht)
   -- Heaptype_ok: C |- ht : OK
 
 rule Instr_ok/br_on_cast:
@@ -678,7 +678,7 @@ rule Instr_ok/return_call_indirect:
 ;; Numeric instructions
 
 rule Instr_ok/const:
-  C |- CONST nt c_nt : epsilon -> nt
+  C |- CONST nt c_nt : eps -> nt
 
 rule Instr_ok/unop:
   C |- UNOP nt unop : nt -> nt
@@ -705,7 +705,7 @@ rule Instr_ok/reinterpret:
 rule Instr_ok/convert-i:
   C |- CVTOP inn_1 CONVERT inn_2 sx? : inn_2 -> inn_1
   -- if inn_1 =/= inn_2
-  -- if sx? = epsilon <=> $size(inn_1) > $size(inn_2)
+  -- if sx? = eps <=> $size(inn_1) > $size(inn_2)
 
 rule Instr_ok/convert-f:
   C |- CVTOP fnn_1 CONVERT fnn_2 : fnn_2 -> fnn_1
@@ -715,22 +715,22 @@ rule Instr_ok/convert-f:
 ;; Reference instructions
 
 rule Instr_ok/ref.null:
-  C |- REF.NULL ht : epsilon -> (REF NULL ht)
+  C |- REF.NULL ht : eps -> (REF NULL ht)
   -- Heaptype_ok: C |- ht : OK
 
 ;; TODO: need type index
 rule Instr_ok/ref.func:
-  C |- REF.FUNC x : epsilon -> (REF epsilon dt)
+  C |- REF.FUNC x : eps -> (REF eps dt)
   -- if C.FUNC[x] = dt
 
 rule Instr_ok/ref.i31:
-  C |- REF.I31 : I32 -> (REF epsilon I31)
+  C |- REF.I31 : I32 -> (REF eps I31)
 
 rule Instr_ok/ref.is_null:
   C |- REF.IS_NULL : rt -> I32
 
 rule Instr_ok/ref.as_non_null:
-  C |- REF.AS_NON_NULL : (REF NULL ht) -> (REF epsilon ht)
+  C |- REF.AS_NON_NULL : (REF NULL ht) -> (REF eps ht)
   -- Heaptype_ok: C |- ht : OK
 
 rule Instr_ok/ref.eq:
@@ -758,7 +758,7 @@ rule Instr_ok/i31.get:
 ;; Vector instructions
 
 rule Instr_ok/vconst:
-  C |- VVCONST V128 c_vt : epsilon -> V128
+  C |- VVCONST V128 c_vt : eps -> V128
 
 rule Instr_ok/vvunop:
   C |- VVUNOP vt vvunop : V128 -> V128
@@ -827,11 +827,11 @@ rule Instr_ok/extadd_pairwise:
 ;; Structure instructions
 
 rule Instr_ok/struct.new:
-  C |- STRUCT.NEW x : $unpacktype(zt)* -> (REF epsilon $idx(x))
+  C |- STRUCT.NEW x : $unpacktype(zt)* -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
 
 rule Instr_ok/struct.new_default:
-  C |- STRUCT.NEW_DEFAULT x : $unpacktype(zt)* -> (REF epsilon $idx(x))
+  C |- STRUCT.NEW_DEFAULT x : $unpacktype(zt)* -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
   -- if ($default($unpacktype(zt)) = val)*
 
@@ -839,10 +839,10 @@ rule Instr_ok/struct.get:
   C |- STRUCT.GET sx? x i : (REF NULL $idx(x)) -> $unpacktype(zt)
   -- Expand: C.TYPE[x] ~~ STRUCT yt*
   -- if yt*[i] = mut zt
-  -- if sx? = epsilon <=> zt = $unpacktype(zt)
+  -- if sx? = eps <=> zt = $unpacktype(zt)
 
 rule Instr_ok/struct.set:
-  C |- STRUCT.SET x i : (REF NULL $idx(x)) $unpacktype(zt) -> epsilon
+  C |- STRUCT.SET x i : (REF NULL $idx(x)) $unpacktype(zt) -> eps
   -- Expand: C.TYPE[x] ~~ STRUCT yt*
   -- if yt*[i] = MUT zt
 
@@ -850,25 +850,25 @@ rule Instr_ok/struct.set:
 ;; Array instructions
 
 rule Instr_ok/array.new:
-  C |- ARRAY.NEW x : $unpacktype(zt) I32 -> (REF epsilon $idx(x))
+  C |- ARRAY.NEW x : $unpacktype(zt) I32 -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
 
 rule Instr_ok/array.new_default:
-  C |- ARRAY.NEW_DEFAULT x : I32 -> (REF epsilon $idx(x))
+  C |- ARRAY.NEW_DEFAULT x : I32 -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
   -- if $default($unpacktype(zt)) = val
 
 rule Instr_ok/array.new_fixed:
-  C |- ARRAY.NEW_FIXED x n : $unpacktype(zt) -> (REF epsilon $idx(x))
+  C |- ARRAY.NEW_FIXED x n : $unpacktype(zt) -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
 
 rule Instr_ok/array.new_elem:
-  C |- ARRAY.NEW_ELEM x y : I32 I32 -> (REF epsilon $idx(x))
+  C |- ARRAY.NEW_ELEM x y : I32 I32 -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut rt)
   -- Reftype_sub: C |- C.ELEM[y] <: rt
 
 rule Instr_ok/array.new_data:
-  C |- ARRAY.NEW_DATA x y : I32 I32 -> (REF epsilon $idx(x))
+  C |- ARRAY.NEW_DATA x y : I32 I32 -> (REF eps $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut t)
   -- if t = numtype \/ t = vectype
   -- if C.DATA[y] = OK
@@ -876,10 +876,10 @@ rule Instr_ok/array.new_data:
 rule Instr_ok/array.get:
   C |- ARRAY.GET sx? x : (REF NULL $idx(x)) I32 -> $unpacktype(zt)
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
-  -- if sx? = epsilon <=> zt = $unpacktype(zt)
+  -- if sx? = eps <=> zt = $unpacktype(zt)
 
 rule Instr_ok/array.set:
-  C |- ARRAY.SET x : (REF NULL $idx(x)) I32 $unpacktype(zt) -> epsilon
+  C |- ARRAY.SET x : (REF NULL $idx(x)) I32 $unpacktype(zt) -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.len:
@@ -887,22 +887,22 @@ rule Instr_ok/array.len:
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.fill:
-  C |- ARRAY.FILL x : (REF NULL $idx(x)) I32 $unpacktype(zt) I32 -> epsilon
+  C |- ARRAY.FILL x : (REF NULL $idx(x)) I32 $unpacktype(zt) I32 -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.copy:
-  C |- ARRAY.COPY x_1 x_2 : (REF NULL $idx(x_1)) I32 (REF NULL $idx(x_2)) I32 I32 -> epsilon
+  C |- ARRAY.COPY x_1 x_2 : (REF NULL $idx(x_1)) I32 (REF NULL $idx(x_2)) I32 I32 -> eps
   -- Expand: C.TYPE[x_1] ~~ ARRAY (MUT zt_1)
   -- Expand: C.TYPE[x_2] ~~ ARRAY (mut zt_2)
   -- Storagetype_sub: C |- zt_2 <: zt_1
 
 rule Instr_ok/array.init_elem:
-  C |- ARRAY.INIT_ELEM x y : (REF NULL $idx(x)) I32 I32 I32 -> epsilon
+  C |- ARRAY.INIT_ELEM x y : (REF NULL $idx(x)) I32 I32 I32 -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
   -- Storagetype_sub: C |- C.ELEM[y] <: zt
 
 rule Instr_ok/array.init_data:
-  C |- ARRAY.INIT_DATA x y : (REF NULL $idx(x)) I32 I32 I32 -> epsilon
+  C |- ARRAY.INIT_DATA x y : (REF NULL $idx(x)) I32 I32 I32 -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
   -- if t = numtype \/ t = vectype
   -- if C.DATA[y] = OK
@@ -920,11 +920,11 @@ rule Instr_ok/any.convert_extern:
 ;; Local instructions
 
 rule Instr_ok/local.get:
-  C |- LOCAL.GET x : epsilon -> t
+  C |- LOCAL.GET x : eps -> t
   -- if C.LOCAL[x] = init t
 
 rule Instrf_ok/local.set:
-  C |- LOCAL.SET x : t ->(x) epsilon
+  C |- LOCAL.SET x : t ->(x) eps
   -- if C.LOCAL[x] = init t
 
 rule Instrf_ok/local.tee:
@@ -935,11 +935,11 @@ rule Instrf_ok/local.tee:
 ;; Global instructions
 
 rule Instr_ok/global.get:
-  C |- GLOBAL.GET x : epsilon -> t
+  C |- GLOBAL.GET x : eps -> t
   -- if C.GLOBAL[x] = mut t
 
 rule Instr_ok/global.set:
-  C |- GLOBAL.SET x : t -> epsilon
+  C |- GLOBAL.SET x : t -> eps
   -- if C.GLOBAL[x] = MUT t
 
 
@@ -950,11 +950,11 @@ rule Instr_ok/table.get:
   -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.set:
-  C |- TABLE.SET x : I32 rt -> epsilon
+  C |- TABLE.SET x : I32 rt -> eps
   -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.size:
-  C |- TABLE.SIZE x : epsilon -> I32
+  C |- TABLE.SIZE x : eps -> I32
   -- if C.TABLE[x] = tt
 
 rule Instr_ok/table.grow:
@@ -962,30 +962,30 @@ rule Instr_ok/table.grow:
   -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.fill:
-  C |- TABLE.FILL x : I32 rt I32 -> epsilon
+  C |- TABLE.FILL x : I32 rt I32 -> eps
   -- if C.TABLE[x] = lim rt
 
 rule Instr_ok/table.copy:
-  C |- TABLE.COPY x_1 x_2 : I32 I32 I32 -> epsilon
+  C |- TABLE.COPY x_1 x_2 : I32 I32 I32 -> eps
   -- if C.TABLE[x_1] = lim_1 rt_1
   -- if C.TABLE[x_2] = lim_2 rt_2
   -- Reftype_sub: C |- rt_2 <: rt_1
 
 rule Instr_ok/table.init:
-  C |- TABLE.INIT x y : I32 I32 I32 -> epsilon
+  C |- TABLE.INIT x y : I32 I32 I32 -> eps
   -- if C.TABLE[x] = lim rt_1
   -- if C.ELEM[y] = rt_2
   -- Reftype_sub: C |- rt_2 <: rt_1
 
 rule Instr_ok/elem.drop:
-  C |- ELEM.DROP x : epsilon -> epsilon
+  C |- ELEM.DROP x : eps -> eps
   -- if C.ELEM[x] = rt
 
 
 ;; Memory instructions
 
 rule Instr_ok/memory.size:
-  C |- MEMORY.SIZE x : epsilon -> I32
+  C |- MEMORY.SIZE x : eps -> I32
   -- if C.MEM[x] = mt
 
 rule Instr_ok/memory.grow:
@@ -993,21 +993,21 @@ rule Instr_ok/memory.grow:
   -- if C.MEM[x] = mt
 
 rule Instr_ok/memory.fill:
-  C |- MEMORY.FILL x : I32 I32 I32 -> epsilon
+  C |- MEMORY.FILL x : I32 I32 I32 -> eps
   -- if C.MEM[x] = mt
 
 rule Instr_ok/memory.copy:
-  C |- MEMORY.COPY x_1 x_2 : I32 I32 I32 -> epsilon
+  C |- MEMORY.COPY x_1 x_2 : I32 I32 I32 -> eps
   -- if C.MEM[x_1] = mt_1
   -- if C.MEM[x_2] = mt_2
 
 rule Instr_ok/memory.init:
-  C |- MEMORY.INIT x y : I32 I32 I32 -> epsilon
+  C |- MEMORY.INIT x y : I32 I32 I32 -> eps
   -- if C.MEM[x] = mt
   -- if C.DATA[y] = OK
 
 rule Instr_ok/data.drop:
-  C |- DATA.DROP x : epsilon -> epsilon
+  C |- DATA.DROP x : eps -> eps
   -- if C.DATA[x] = OK
 
 rule Instr_ok/load:
@@ -1015,14 +1015,14 @@ rule Instr_ok/load:
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = inn
+  -- if n? = eps \/ nt = inn
 
 rule Instr_ok/store:
-  C |- STORE nt n? x {ALIGN n_A, OFFSET n_O} : I32 nt -> epsilon
+  C |- STORE nt n? x {ALIGN n_A, OFFSET n_O} : I32 nt -> eps
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= $size(nt)/8)
   -- if $(2^(n_A) <= n/8 < $size(nt)/8)?
-  -- if n? = epsilon \/ nt = inn
+  -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
   C |- VLOAD n lns sx x {ALIGN n_A, OFFSET n_O} : I32 -> V128
@@ -1046,7 +1046,7 @@ rule Instr_ok/vload_lane:
   -- if $(laneidx < 128 / n)
 
 rule Instr_ok/vstore:
-  C |- VSTORE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> epsilon
+  C |- VSTORE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) < n/8)
   -- if $(laneidx < 128 / n)
@@ -1070,13 +1070,13 @@ rule Instr_const/ref.func:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- if C.GLOBAL[x] = epsilon t
+  -- if C.GLOBAL[x] = eps t
 
 def $in_numtype(numtype, numtype*) : bool    hint(show % in %)
-def $in_numtype(nt, epsilon) = false
+def $in_numtype(nt, eps) = false
 def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*) 
 def $in_binop(binop, binopIXX*) : bool  hint(show % in %)
-def $in_binop(binop, epsilon) = false
+def $in_binop(binop, eps) = false
 def $in_binop(binop, binopIXX_1 binopIXX'*) = binop = _I binopIXX_1 \/ $in_binop(binop, binopIXX'*) 
 
 rule Instr_const/binop:
@@ -1121,11 +1121,11 @@ rule Type_ok:
 
 rule Local_ok/set:
   C |- LOCAL t : SET t
-  -- if $default(t) =/= epsilon
+  -- if $default(t) =/= eps
 
 rule Local_ok/unset:
   C |- LOCAL t : UNSET t
-  -- if $default(t) = epsilon
+  -- if $default(t) = eps
 
 rule Func_ok:
   C |- FUNC x local* expr : C.TYPE[x]
@@ -1179,7 +1179,7 @@ rule Datamode_ok/passive:
 
 rule Start_ok:
   C |- START x : OK
-  -- Expand: C.FUNC[x] ~~ FUNC (epsilon -> epsilon)
+  -- Expand: C.FUNC[x] ~~ FUNC (eps -> eps)
 
 
 ;; Module im/exports
@@ -1254,7 +1254,7 @@ rule Module_ok:
 
 
 rule Types_ok/empty:
-  C |- epsilon : epsilon
+  C |- eps : eps
 
 rule Types_ok/cons:
   C |- type_1 type* : dt_1* dt*
@@ -1262,7 +1262,7 @@ rule Types_ok/cons:
   -- Types_ok: C[.TYPE =.. dt_1*] |- type* : dt*
 
 rule Globals_ok/empty:
-  C |- epsilon : epsilon
+  C |- eps : eps
 
 rule Globals_ok/cons:
   C |- global_1 global* : gt_1 gt*

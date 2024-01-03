@@ -173,7 +173,7 @@ and t_prem' n prem : eqns * premise' =
   | RulePr (a, b, exp) ->
     unary t_exp n exp (fun exp' -> RulePr (a, b, exp'))
   | IfPr e -> unary t_exp n e (fun e' -> IfPr e')
-  | LetPr (e1, e2, targets) -> binary t_exp t_exp n (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', targets))
+  | LetPr (e1, e2, ids) -> binary t_exp t_exp n (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', ids))
   | ElsePr -> [], prem
   | IterPr (prem, iterexp) ->
     let eqns1, prem' = t_prem n prem in

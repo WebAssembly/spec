@@ -19,6 +19,32 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
+(* Remove or *)
+let remove_or_exp e = match e.it with (* TODO: recursive *)
+| BinE (OrOp, e1, e2) -> [ e1; e2 ]
+| _ -> [ e ]
+
+let remove_or_prem prem = match prem.it with (* TODO: iterPr *)
+| IfPr e -> remove_or_exp e |> List.map (fun e' -> { prem with it = IfPr e' })
+| _ -> [ prem ]
+
+let remove_or rule = match rule.it with
+| RuleD(id, binds, mixop, args, prems) ->
+  let premss = List.map remove_or_prem prems in
+  let premss' = List.fold_right (fun ps pss ->
+    (* Duplice pss *)
+    List.concat_map (fun cur ->
+      List.map (fun p -> p :: cur) ps
+    ) pss
+  ) premss [[]] in
+
+  if List.length premss' = 1 then [ rule ] else
+
+  List.mapi (fun i prems' ->
+    let id' = { id with it = id.it ^ "-" ^ string_of_int i } in
+    { rule with it = RuleD (id', binds, mixop, args, prems') }
+  ) premss'
+
 (* my_free_??? are equivalent to free_??? in Il.Free module, except
    1. i in e^(i<n) is not considered free.
    2. n in e^n can be not considered free, depending on flag.
@@ -77,7 +103,7 @@ let rec my_free_prem ignore_listN prem =
   match prem.it with
   | RulePr (_id, _op, e) -> f e
   | IfPr e -> f e
-  | LetPr (e1, e2, _targets) -> union (f e1) (f e2)
+  | LetPr (e1, e2, _ids) -> union (f e1) (f e2)
   | ElsePr -> empty
   | IterPr (prem', iter) ->
     let free1 = fp prem' in
@@ -182,7 +208,7 @@ let large_enough_subsets xs =
   List.filter ( fun ys -> min <= List.length ys ) yss
 
 let is_not_lhs e = match e.it with
-| LenE _ | IterE (_, (ListN (_, Some _), _)) -> true
+| LenE _ | IterE (_, (ListN (_, Some _), _)) | DotE _ -> true
 | _ -> false
 
 (* Hack to handle RETURN_CALL_ADDR, eventually should be removed *)
@@ -207,7 +233,8 @@ let rows_of_eq vars p_tot_num i l r at =
   |> List.filter_map (fun frees ->
     let covering_vars = List.filter_map (index_of p_tot_num vars) frees in
     if List.length frees = List.length covering_vars then (
-      Some (Assign frees, LetPr (l, r, frees) $ at, [i] @ covering_vars) )
+      let ids = List.map (fun x -> x $ no_region) frees in (* TODO: restore source *)
+      Some (Assign frees, LetPr (l, r, ids) $ at, [i] @ covering_vars) )
     else
       None
   )
@@ -221,7 +248,8 @@ let rec rows_of_prem vars p_tot_num i p = match p.it with
       | _ ->
         [ Condition, p, [i] ]
       )
-  | LetPr (_, _, targets) ->
+  | LetPr (_, _, ids) ->
+    let targets = List.map it ids in
     let covering_vars = List.filter_map (index_of p_tot_num vars) targets in
     [ Assign targets, p, [i] @ covering_vars ]
   | RulePr (_, _, { it = TupE args; _ }) ->
@@ -313,8 +341,9 @@ let animate_clause c = match c.it with
 (* Animate defs *)
 let rec animate_def d = match d.it with
   | RelD (id, mixop, t, rules) ->
-    let new_rules = List.map animate_rule rules in
-    RelD (id, mixop, t, new_rules) $ d.at
+    let rules1 = List.concat_map remove_or rules in
+    let rules2 = List.map animate_rule rules1 in
+    RelD (id, mixop, t, rules2) $ d.at
   | DecD (id, t1, t2, clauses) ->
     let new_clauses = List.map animate_clause clauses in
     DecD (id, t1, t2, new_clauses) $ d.at

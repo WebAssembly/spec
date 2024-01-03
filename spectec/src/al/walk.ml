@@ -1,4 +1,5 @@
 open Ast
+open Util.Source
 open Util.Record
 
 type config = {
@@ -36,34 +37,39 @@ let rec walk_expr f e =
   let { pre_expr = pre; post_expr = post; stop_cond_expr = stop_cond; _ } = f in
   let new_ = walk_expr f in
 
-  let super_walk e = match e with
-  | NumE _
-  | GetCurFrameE
-  | GetCurLabelE
-  | GetCurContextE -> e
-  | UnE (op, e') -> UnE (op, new_ e')
-  | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
-  | CallE (fname, args) -> CallE (fname, List.map new_ args)
-  (* TODO: Implement walker for iter *)
-  | ListE el -> ListE (List.map (new_) el)
-  | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
-  | LenE e' -> LenE (new_ e')
-  | StrE r -> StrE (Record.map new_ r)
-  | AccE (e, p) -> AccE (new_ e, walk_path f p)
-  | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
-  | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
-  | CaseE (t, el) -> CaseE (t, List.map new_ el)
-  | OptE e -> OptE (Option.map new_ e)
-  | TupE (e1, e2) -> TupE (new_ e1, new_ e2)
-  | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
-  | ArityE e' -> ArityE (new_ e')
-  | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
-  | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
-  | ContE e' -> ContE (new_ e')
-  | VarE n -> VarE n
-  | SubE (n, t) -> SubE (n, t)
-  | IterE (e, names, iter) -> IterE (new_ e, names, iter)
-  | YetE _ -> e in
+  let super_walk e = 
+    let e' =
+      match e.it with
+      | NumE _
+      | GetCurFrameE
+      | GetCurLabelE
+      | GetCurContextE -> e.it
+      | UnE (op, e') -> UnE (op, new_ e')
+      | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
+      | CallE (fname, args) -> CallE (fname, List.map new_ args)
+      (* TODO: Implement walker for iter *)
+      | ListE el -> ListE (List.map new_ el)
+      | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
+      | LenE e' -> LenE (new_ e')
+      | StrE r -> StrE (Record.map new_ r)
+      | AccE (e, p) -> AccE (new_ e, walk_path f p)
+      | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
+      | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
+      | CaseE (t, el) -> CaseE (t, List.map new_ el)
+      | OptE e -> OptE (Option.map new_ e)
+      | TupE es -> TupE (List.map new_ es)
+      | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
+      | ArityE e' -> ArityE (new_ e')
+      | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
+      | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
+      | ContE e' -> ContE (new_ e')
+      | VarE n -> VarE n
+      | SubE (n, t) -> SubE (n, t)
+      | IterE (e, names, iter) -> IterE (new_ e, names, iter)
+      | YetE _ -> e.it
+    in
+    { e with it = e' }
+  in
 
   let e1 = pre e in
   let e2 = if stop_cond e1 then e1 else super_walk e1 in
@@ -73,33 +79,43 @@ let rec walk_expr f e =
 and walk_path f p =
   let pre = id in
   let post = id in
-  ( match pre p with
-  | IdxP e -> IdxP (walk_expr f e)
-  | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
-  | DotP (s, note) -> DotP (s, note) )
-  |> post
+
+  let p' =
+    ( match (pre p).it with
+    | IdxP e -> IdxP (walk_expr f e)
+    | SliceP (e1, e2) -> SliceP (walk_expr f e1, walk_expr f e2)
+    | DotP (s, note) -> DotP (s, note) )
+  in
+  let p = { p with it = p' } in
+
+  post p
 
 let rec walk_cond f c =
   let { pre_cond = pre; post_cond = post; stop_cond_cond = stop_cond; _ } = f in
   let new_ = walk_cond f in
   let new_e = walk_expr f in
 
-  let super_walk c = match c with
-  | UnC (op, inner_c) -> UnC (op, new_ inner_c)
-  | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
-  | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
-  | ContextKindC (s, e) -> ContextKindC (s, new_e e)
-  | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
-  | IsDefinedC e -> IsDefinedC (new_e e)
-  | HasTypeC (e, t) -> HasTypeC(new_e e, t)
-  | IsValidC e -> IsValidC (new_e e)
-  | TopLabelC -> c
-  | TopFrameC -> c
-  | TopValueC (Some e) -> TopValueC (Some (new_e e))
-  | TopValueC _ -> c
-  | TopValuesC e -> TopValuesC (new_e e)
-  | MatchC (e1, e2) -> MatchC (new_e e1, new_e e2)
-  | YetC _ -> c in
+  let super_walk c = 
+    let c' =
+      match c.it with
+      | UnC (op, inner_c) -> UnC (op, new_ inner_c)
+      | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
+      | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
+      | ContextKindC (s, e) -> ContextKindC (s, new_e e)
+      | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
+      | IsDefinedC e -> IsDefinedC (new_e e)
+      | HasTypeC (e, t) -> HasTypeC(new_e e, t)
+      | IsValidC e -> IsValidC (new_e e)
+      | TopLabelC -> c.it
+      | TopFrameC -> c.it
+      | TopValueC (Some e) -> TopValueC (Some (new_e e))
+      | TopValueC _ -> c.it
+      | TopValuesC e -> TopValuesC (new_e e)
+      | MatchC (e1, e2) -> MatchC (new_e e1, new_e e2)
+      | YetC _ -> c.it
+    in
+    { c with it = c' }
+  in
 
   let c1 = pre c in
   let c2 = if stop_cond c1 then c1 else super_walk c1 in

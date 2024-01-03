@@ -88,7 +88,8 @@ and free_exp e =
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1)
   | DotE (e1, _) | CaseE (_, e1) ->
     free_exp e1
-  | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
+  | BinE (_, e1, e2) | CmpE (_, e1, e2)
+  | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list free_exp [e1; e2]
   | SliceE (e1, e2, e3) -> free_list free_exp [e1; e2; e3]
   | OptE eo -> free_opt free_exp eo
@@ -120,7 +121,7 @@ and free_prem prem =
   match prem.it with
   | RulePr (id, _op, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
-  | LetPr (e1, e2, _targets) -> union (free_exp e1) (free_exp e2)
+  | LetPr (e1, e2, _ids) -> union (free_exp e1) (free_exp e2)
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
 

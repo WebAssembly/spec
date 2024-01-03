@@ -14,7 +14,7 @@ Comments are either block (`(;...;)`) or line (`;;...\n`) comments.
 
 ```
 list(x, sep) ::=
-  epsilon
+  eps
   x
   x sep list(x, sep)
 ```
@@ -93,7 +93,8 @@ In addition to type expressions, custom _notation_ types can be defined:
 deftyp ::=
   nottyp                                                              free notation
   "{" list(atom typ hint* premise*, ",") "}"                          record
-  "..."? "|" list(varid | atom nottyp hint* premise*, "|") "|" "..."  variant
+  "..."? "|" list(varid | nottyp hint* premise*, "|") "|" "..."       variant
+  list1(arith | arith "|" "..." "|" arith, "|")                       range / enumeration
 
 nottyp ::=
   typ                                       plain type
@@ -125,7 +126,7 @@ exp ::=
   notop exp                            logical negation
   exp logop exp                        logical connective
   exp cmpop exp                        comparison
-  "epsilon"                            empty sequence
+  "eps"                                empty sequence
   exp exp                              sequencing
   exp iter                             iteration
   exp "[" arith "]"                    list indexing
@@ -186,7 +187,7 @@ sym ::=
   gramid"(" list(sym, ",") ")"
   num
   text
-  "epsilon"
+  "eps"
   "(" list(sym, ",") ")"
   "$" "(" arith ")"
   sym iter

@@ -1,4 +1,5 @@
 open Ast
+open Util.Source
 
 let rec instr i1 i2 =
   match i1.it, i2.it with

@@ -1,5 +1,6 @@
 open Ast
 open Printf
+open Util.Source
 open Util.Record
 
 (* helper functions *)
@@ -59,7 +60,7 @@ and string_of_value = function
   | ListV lv -> string_of_array string_of_value "[" ", " "]" !lv
   | NumV n -> Printf.sprintf "0x%LX" n
   | TextV s -> s
-  | TupV (v1, v2) -> "(" ^ string_of_value v1 ^ ", " ^ string_of_value v2 ^ ")"
+  | TupV vl -> string_of_list string_of_value "(" ", " ")" vl
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
   | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST" ^ string_of_list string_of_value " " " " "" tl ^ ")"
   | CaseV (s, []) -> s
@@ -108,12 +109,13 @@ and string_of_record_expr r =
     r "{ "
   ^ "}"
 
-and string_of_expr = function
+and string_of_expr expr =
+  match expr.it with
   | NumE i -> Int64.to_string i
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
       sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
-  | TupE (e1, e2) -> sprintf "(%s, %s)" (string_of_expr e1) (string_of_expr e2)
+  | TupE el -> string_of_list string_of_expr "(" ", " ")" el
   | CallE (n, el) ->
       sprintf "$%s(%s)" 
         n (string_of_list string_of_expr "" ", " "" el)
@@ -145,9 +147,9 @@ and string_of_expr = function
   | SubE (n, _) -> n
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
   | ArrowE (e1, e2) ->
-    (match e1 with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
+    (match e1.it with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
     ^ "->"
-    ^ (match e2 with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
+    ^ (match e2.it with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
   | CaseE (("CONST", _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST" ^ string_of_list string_of_expr " " " " "" tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ string_of_list string_of_expr " " " " "" el ^ ")"
@@ -155,7 +157,8 @@ and string_of_expr = function
   | OptE None -> "?()"
   | YetE s -> sprintf "YetE (%s)" s
 
-and string_of_path = function
+and string_of_path path =
+  match path.it with
   | IdxP e -> sprintf "[%s]" (string_of_expr e)
   | SliceP (e1, e2) ->
       sprintf "[%s : %s]" (string_of_expr e1) (string_of_expr e2)
@@ -163,12 +166,13 @@ and string_of_path = function
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
-and string_of_cond = function
-  | UnC (NotOp, IsCaseOfC (e, c)) ->
+and string_of_cond cond =
+  match cond.it with
+  | UnC (NotOp, { it = IsCaseOfC (e, c); _ }) ->
       sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd c)
-  | UnC (NotOp, IsDefinedC e) ->
+  | UnC (NotOp, { it = IsDefinedC e; _ }) ->
       sprintf "%s is not defined" (string_of_expr e)
-  | UnC (NotOp, IsValidC e) ->
+  | UnC (NotOp, { it = IsValidC e; _ }) ->
       sprintf "%s is not valid" (string_of_expr e)
   | UnC (NotOp, c) -> sprintf "not %s" (string_of_cond c)
   | UnC _ -> failwith "Unreachable condition"
@@ -276,7 +280,7 @@ let rec string_of_instr index depth instr =
   | ExecuteSeqI e ->
       sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
   | PerformI (n, el) ->
-      sprintf "%s Perform %s." (make_index index depth) (string_of_expr (CallE (n, el)))
+      sprintf "%s Perform %s." (make_index index depth) (string_of_expr (CallE (n, el) $ instr.at))
   | ExitI -> make_index index depth ^ " Exit current context."
   | ReplaceI (e1, p, e2) ->
       sprintf "%s Replace %s%s with %s." (make_index index depth)
@@ -327,12 +331,7 @@ let rec structured_string_of_value = function
   | ListV _ -> "ListV"
   | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
-  | TupV (v1, v2) ->
-      "TupV("
-      ^ structured_string_of_value v1
-      ^ ", "
-      ^ structured_string_of_value v2
-      ^ ")"
+  | TupV vl -> string_of_list structured_string_of_value "TupV (" ", " ")" vl
   | ArrowV (v1, v2) ->
       "ArrowV("
       ^ structured_string_of_value v1
@@ -362,7 +361,8 @@ and structured_string_of_record_expr r =
     r "{ "
   ^ "}"
 
-and structured_string_of_expr = function
+and structured_string_of_expr expr = 
+  match expr.it with
   | NumE i -> Int64.to_string i
   | UnE (op, e) ->
      "UnE ("
@@ -377,12 +377,8 @@ and structured_string_of_expr = function
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ")"
-  | TupE (e1, e2) ->
-      "TupE ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ")"
+  | TupE el ->
+      string_of_list structured_string_of_expr "TupE (" ", " ")" el
   | CallE (n, nl) ->
       "CallE ("
       ^ n
@@ -462,20 +458,22 @@ and structured_string_of_expr = function
 
 (* path*)
 
-and structured_string_of_path = function
-  | IdxP e -> sprintf "IdxP(%s)" (structured_string_of_expr e)
+and structured_string_of_path path =
+  match path.it with
+  | IdxP e -> sprintf "IdxP (%s)" (structured_string_of_expr e)
   | SliceP (e1, e2) ->
-      sprintf "SliceP(%s,%s)"
+      sprintf "SliceP (%s,%s)"
         (structured_string_of_expr e1)
         (structured_string_of_expr e2)
-  | DotP (s, _) -> sprintf "DotP(%s)" s
+  | DotP (s, _) -> sprintf "DotP (%s)" s
 
 and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
 
 (* condition *)
 
-and structured_string_of_cond = function
+and structured_string_of_cond cond =
+  match cond.it with
   | UnC (op, c) ->
       "UnC ("
       ^ string_of_unop op
