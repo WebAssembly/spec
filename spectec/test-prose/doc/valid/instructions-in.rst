@@ -283,6 +283,179 @@ $${rule: Instr_ok/ref.i31}
 
 $${rule: Instr_ok/i31.get}
 
+.. _valid-instructions-vector:
+
+Vector Instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _valid-VVCONST:
+
+%{prose-pred: VVCONST}
+
+\
+
+$${rule: Instr_ok/vvconst}
+
+.. _valid-VVUNOP:
+
+%{prose-pred: VVUNOP}
+
+\
+
+$${rule: Instr_ok/vvunop}
+
+.. _valid-VVBINOP:
+
+%{prose-pred: VVBINOP}
+
+\
+
+$${rule: Instr_ok/vvbinop}
+
+.. _valid-VVTERNOP:
+
+%{prose-pred: VVTERNOP}
+
+\
+
+$${rule: Instr_ok/vvternop}
+
+.. _valid-VVTESTOP:
+
+%{prose-pred: VVTESTOP}
+
+\
+
+$${rule: Instr_ok/vvtestop}
+
+.. _valid-SWIZZLE:
+
+%{prose-pred: SWIZZLE}
+
+\
+
+$${rule: Instr_ok/swizzle}
+
+.. _valid-SHUFFLE:
+
+%{prose-pred: SHUFFLE}
+
+\
+
+$${rule: Instr_ok/shuffle}
+
+.. _valid-SPLAT:
+
+%{prose-pred: SPLAT}
+
+\
+
+$${rule: Instr_ok/splat}
+
+.. _valid-EXTRACT_LANE:
+
+%{prose-pred: EXTRACT_LANE}
+
+\
+
+$${rule: Instr_ok/extract_lane}
+
+.. _valid-REPLACE_LANE:
+
+%{prose-pred: REPLACE_LANE}
+
+\
+
+$${rule: Instr_ok/replace_lane}
+
+.. _valid-VUNOP:
+
+%{prose-pred: VUNOP}
+
+\
+
+$${rule: Instr_ok/vunop}
+
+.. _valid-VBINOP:
+
+%{prose-pred: VBINOP}
+
+\
+
+$${rule: Instr_ok/vbinop}
+
+.. _valid-VRELOP:
+
+%{prose-pred: VRELOP}
+
+\
+
+$${rule: Instr_ok/vrelop}
+
+.. _valid-VISHIFTOP:
+
+%{prose-pred: VISHIFTOP}
+
+\
+
+$${rule: Instr_ok/vishiftop}
+
+.. _valid-VTESTOP:
+
+%{prose-pred: ALL_TRUE}
+
+\
+
+$${rule: Instr_ok/vtestop}
+
+.. _valid-VCVTOP:
+
+%{prose-pred: VCVTOP}
+
+\
+
+$${rule: Instr_ok/vcvtop}
+
+.. _valid-NARROW:
+
+%{prose-pred: NARROW}
+
+\
+
+$${rule: Instr_ok/narrow}
+
+.. _valid-BITMASK:
+
+%{prose-pred: BITMASK}
+
+\
+
+$${rule: Instr_ok/bitmask}
+
+.. _valid-DOT:
+
+%{prose-pred: DOT}
+
+\
+
+$${rule: Instr_ok/dot}
+
+.. _valid-EXTMUL_HALF:
+
+%{prose-pred: EXTMUL_HALF}
+
+\
+
+$${rule: Instr_ok/extmul_half}
+
+.. _valid-EXTADD_PAIRWISE:
+
+%{prose-pred: EXTADD_PAIRWISE}
+
+\
+
+$${rule: Instr_ok/extadd_pairwise}
+
 .. _valid-instructions-external-reference:
 
 External Reference Instructions
@@ -463,6 +636,46 @@ $${rule: Instr_ok/load}
 \
 
 $${rule: Instr_ok/store}
+
+.. _valid-VLOAD:
+
+%{prose-pred: VLOAD}
+
+\
+
+$${rule: Instr_ok/vload}
+
+.. _valid-VLOAD_SPLAT:
+
+%{prose-pred: VLOAD_SPLAT}
+
+\
+
+$${rule: Instr_ok/vload_splat}
+
+.. _valid-VLOAD_ZERO:
+
+%{prose-pred: VLOAD_ZERO}
+
+\
+
+$${rule: Instr_ok/vload_zero}
+
+.. _valid-VSTORE:
+
+%{prose-pred: VSTORE}
+
+\
+
+$${rule: Instr_ok/vstore}
+
+.. _valid-VLOAD_LANE:
+
+%{prose-pred: VLOAD_LANE}
+
+\
+
+$${rule: Instr_ok/vload_lane}
 
 .. _valid-MEMORY.SIZE:
 
