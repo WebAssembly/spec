@@ -361,7 +361,7 @@ rule Step_pure/narrow:
   -- if $lanes(sh_2, c) = n_1^lns_1 n_2^lns_1
 
 
-rule Step_pure/vcvtop:
+rule Step_pure/vcvtop-normal:
   (VVCONST V128 c_1) (VCVTOP sh_2 vcvtop eps sh_1 sx eps) ~> (VVCONST V128 c)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
