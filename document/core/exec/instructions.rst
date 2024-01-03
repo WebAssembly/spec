@@ -942,7 +942,7 @@ where:
 
 10. Let :math:`k_2^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(j_2^\ast)`.
 
-11. Let :math:`k^\ast` be the result of computing :math:`\imul_{t_2\K{x}N}(k_1^\ast, k_2^\ast)`.
+11. Let :math:`k^\ast` be the result of computing :math:`\imul_{|t_2|}(k_1^\ast, k_2^\ast)`.
 
 12. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
@@ -956,7 +956,7 @@ where:
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & i^\ast = \lanes_{t_1\K{x}M}(c_1)[\half(0, N) \slice N] \\
      \wedge & j^\ast = \lanes_{t_1\K{x}M}(c_2)[\half(0, N) \slice N] \\
-     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{t_2\K{x}N}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
+     \wedge & c = \lanes^{-1}_{t_2\K{x}N}(\imul_{|t_2|}(\extend^{\sx}_{|t_1|,|t_2|}(i^\ast), \extend^{\sx}_{|t_1|,|t_2|}(j^\ast))))
      \end{array}
 
 where:
@@ -983,7 +983,7 @@ where:
 
 5. Let :math:`(j_1~j_2)^\ast` be the result of computing :math:`\extend^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
 
-6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{N}(j_1, j_2)^\ast`.
+6. Let :math:`k^\ast` be the result of computing :math:`\iadd_{|t_2|}(j_1, j_2)^\ast`.
 
 7. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{t_2\K{x}N}(k^\ast)`.
 
@@ -997,7 +997,7 @@ where:
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
      (\iff & (i_1~i_2)^\ast = \extend^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1)) \\
-     \wedge & j^\ast = \iadd_{N}(i_1, i_2)^\ast \\
+     \wedge & j^\ast = \iadd_{|t_2|}(i_1, i_2)^\ast \\
      \wedge & c = \lanes^{-1}_{t_2\K{x}N}(j^\ast))
      \end{array}
    \end{array}
