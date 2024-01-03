@@ -4,9 +4,9 @@
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <title>WebAssembly Web API</title>
   <meta content="ED" name="w3c-status">
-  <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
+  <meta content="Bikeshed version 4416b18d5, updated Tue Jan 2 15:52:39 2024 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-web-api-2/" rel="canonical">
-  <meta content="c7eef192b77125b88a4ab3ae7a944d10c0860f55" name="document-revision">
+  <meta content="48771711fabb3604fccf236f2bdb33afb0ad2aca" name="revision">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
     color: var(--a-normal-text);
@@ -78,7 +78,6 @@ pre .property::before, pre .property::after {
 }
 </style>
 <style>/* Boilerplate: style-colors */
-
 /* Any --*-text not paired with a --*-bg is assumed to have a transparent bg */
 :root {
     color-scheme: light dark;
@@ -332,11 +331,15 @@ figcaption:not(.no-marker)::before {
 :root {
     --dfnpanel-bg: #ddd;
     --dfnpanel-text: var(--text);
+    --dfnpanel-target-bg: #ffc;
+    --dfnpanel-target-outline: orange;
 }
 @media (prefers-color-scheme: dark) {
     :root {
         --dfnpanel-bg: #222;
         --dfnpanel-text: var(--text);
+        --dfnpanel-target-bg: #333;
+        --dfnpanel-target-outline: silver;
     }
 }
 .dfn-panel {
@@ -359,11 +362,13 @@ figcaption:not(.no-marker)::before {
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel a:focus {
+    outline: 5px auto Highlight;
+    outline: 5px auto -webkit-focus-ring-color;
+}
 .dfn-panel > b + b { margin-top: 0.25em; }
 .dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
 .dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
     max-width: calc(300px - 1.5em - 1em);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -372,67 +377,84 @@ figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
-    left: .5em;
+    left: 8px;
     bottom: 2em;
     margin: 0 auto;
     max-width: calc(100vw - 1.5em - .4em - .5em);
     max-height: 30vh;
+    transition: left 1s ease-out, bottom 1s ease-out;
 }
 
-.dfn-paneled[role="button"] { cursor: pointer; }
+.dfn-panel .link-item:hover {
+    text-decoration: underline;
+}
+.dfn-panel .link-item .copy-icon {
+    opacity: 0;
+}
+.dfn-panel .link-item:hover .copy-icon,
+.dfn-panel .link-item .copy-icon:focus {
+    opacity: 1;
+}
+
+.dfn-panel .copy-icon {
+    display: inline-block;
+    margin-right: 0.5em;
+    width: 0.85em;
+    height: 1em;
+    border-radius: 3px;
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+.dfn-panel .copy-icon .icon {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.dfn-panel .copy-icon .icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    background-color: #ccc;
+    opacity: 0.25;
+    transform: translate(3px, -3px);
+}
+
+.dfn-panel .copy-icon:active .icon::before {
+    opacity: 1;
+}
+
+.dfn-paneled[role="button"] { cursor: help; }
+
+.highlighted {
+    animation: target-fade 3s;
+}
+
+@keyframes target-fade {
+    from {
+        background-color: var(--dfnpanel-target-bg);
+        outline: 5px solid var(--dfnpanel-target-outline);
+    }
+    to {
+        color: var(--a-normal-text);
+        background-color: transparent;
+        outline: transparent;
+    }
+}
 </style>
-<style>/* Boilerplate: style-dfn-panel */
-:root {
-    --dfnpanel-bg: #ddd;
-    --dfnpanel-text: var(--text);
+<style>/* Boilerplate: style-idl-highlighting */
+pre.idl.highlight {
+    background: var(--borderedblock-bg, var(--def-bg));
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --dfnpanel-bg: #222;
-        --dfnpanel-text: var(--text);
-    }
-}
-.dfn-panel {
-    position: absolute;
-    z-index: 35;
-    width: 20em;
-    width: 300px;
-    height: auto;
-    max-height: 500px;
-    overflow: auto;
-    padding: 0.5em 0.75em;
-    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
-    background: var(--dfnpanel-bg);
-    color: var(--dfnpanel-text);
-    border: outset 0.2em;
-    white-space: normal; /* in case it's moved into a pre */
-}
-.dfn-panel:not(.on) { display: none; }
-.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
-.dfn-panel > b { display: block; }
-.dfn-panel a { color: var(--dfnpanel-text); }
-.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
-.dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
-.dfn-panel li a {
-    white-space: pre;
-    display: inline-block;
-    max-width: calc(300px - 1.5em - 1em);
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.dfn-panel.activated {
-    display: inline-block;
-    position: fixed;
-    left: .5em;
-    bottom: 2em;
-    margin: 0 auto;
-    max-width: calc(100vw - 1.5em - .4em - .5em);
-    max-height: 30vh;
-}
-
-.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* Boilerplate: style-issues */
 a[href].issue-return {
@@ -453,8 +475,40 @@ a[href].issue-return {
     margin-bottom: 0;
 }
 </style>
-<style>/* Boilerplate: style-selflinks */
+<style>/* Boilerplate: style-ref-hints */
+:root {
+    --ref-hint-bg: #ddd;
+    --ref-hint-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ref-hint-bg: #222;
+        --ref-hint-text: var(--text);
+    }
+}
 
+.ref-hint {
+    display: inline-block;
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.5em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--ref-hint-bg);
+    color: var(--ref-hint-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+
+.ref-hint * { margin: 0; padding: 0; text-indent: 0; }
+
+.ref-hint ul { padding: 0 0 0 1em; list-style: none; }
+</style>
+<style>/* Boilerplate: style-selflinks */
 :root {
     --selflink-text: white;
     --selflink-bg: gray;
@@ -514,14 +568,6 @@ a.self-link::before            { content: "¶"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
 <style>/* Boilerplate: style-syntax-highlighting */
-
-            pre.idl.highlight {
-                background: var(--borderedblock-bg, var(--def-bg));
-            }
-            
-</style>
-<style>/* Boilerplate: style-syntax-highlighting */
-
 code.highlight { padding: .1em; border-radius: .3em; }
 pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
 
@@ -578,7 +624,6 @@ c-[vc] { color: #0077aa } /* Name.Variable.Class */
 c-[vg] { color: #0077aa } /* Name.Variable.Global */
 c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
-
 
 @media (prefers-color-scheme: dark) {
     .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
@@ -655,21 +700,21 @@ D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
 5 = lab(85,-10,-50)
 6 = lab(85,35,-15)
 */
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+[data-algorithm] var { cursor: pointer; }
+var[data-var-color="0"] { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var[data-var-color="1"] { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var[data-var-color="2"] { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var[data-var-color="3"] { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var[data-var-color="4"] { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var[data-var-color="5"] { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
 </style>
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly Web API</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2023-12-01">1 December 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-01-03">3 January 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -686,7 +731,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </div>
    </details>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2023 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply. </p>
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 <a href="https://www.w3.org/">World Wide Web Consortium</a>. <abbr title="World Wide Web Consortium">W3C</abbr><sup>®</sup> <a href="https://www.w3.org/policies/#Legal_Disclaimer">liability</a>, <a href="https://www.w3.org/policies/#W3C_Trademarks">trademark</a> and <a href="https://www.w3.org/copyright/software-license/" rel="license" title="W3C Software and Document License">permissive document license</a> rules apply. </p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -747,9 +792,9 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
    <h2 class="heading settled" data-level="1" id="streaming-modules"><span class="secno">1. </span><span class="content">Streaming Module Compilation and Instantiation</span><a class="self-link" href="#streaming-modules"></a></h2>
 <pre class="idl highlight def">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>partial</c-> <c- b>namespace</c-> <a class="idl-code" data-link-type="namespace" href="https://webassembly.github.io/spec/js-api/#namespacedef-webassembly" id="ref-for-namespacedef-webassembly"><c- g>WebAssembly</c-></a> {
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-compilestreaming-source-source"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#module" id="ref-for-module"><c- n>Module</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-compilestreaming" id="ref-for-dom-webassembly-compilestreaming"><c- g>compileStreaming</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response"><c- n>Response</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/compileStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-compilestreaming-source-source"><code><c- g>source</c-></code></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise②"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource" id="ref-for-dictdef-webassemblyinstantiatedsource"><c- n>WebAssemblyInstantiatedSource</c-></a>> <a class="idl-code" data-link-type="method" href="#dom-webassembly-instantiatestreaming" id="ref-for-dom-webassembly-instantiatestreaming"><c- g>instantiateStreaming</c-></a>(
-      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-source"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code><a class="self-link" href="#dom-webassembly-instantiatestreaming-source-importobject-importobject"></a></dfn>);
+      <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a data-link-type="idl-name" href="https://fetch.spec.whatwg.org/#response" id="ref-for-response①"><c- n>Response</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-source"><code><c- g>source</c-></code></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-object" id="ref-for-idl-object"><c- b>object</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly/instantiateStreaming(source, importObject), WebAssembly/instantiateStreaming(source)" data-dfn-type="argument" data-export id="dom-webassembly-instantiatestreaming-source-importobject-importobject"><code><c- g>importObject</c-></code></dfn>);
 };
 </pre>
    <div class="algorithm" data-algorithm="compileStreaming(source)" data-algorithm-for="WebAssembly"> The <dfn class="dfn-paneled idl-code" data-dfn-for="WebAssembly" data-dfn-type="method" data-export id="dom-webassembly-compilestreaming"><code>compileStreaming(<var>source</var>)</code></dfn> method, when invoked, returns the result of <a data-link-type="dfn" href="#compile-a-potential-webassembly-response" id="ref-for-compile-a-potential-webassembly-response">compiling a potential WebAssembly response</a> with <var>source</var>. </div>
@@ -791,7 +836,7 @@ and the <a href="https://www.w3.org/TR/wasm-web-api/">WebAssembly Web API</a>.
         <p>If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">reject</a> <var>returnValue</var> with a <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror" id="ref-for-sec-native-error-types-used-in-this-standard-typeerror④">TypeError</a></code> and abort these substeps.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-body-consume-body" id="ref-for-concept-body-consume-body">Consume</a> <var>response</var>’s body as an <code class="idl"><a data-link-type="idl" href="https://tc39.github.io/ecma262/#sec-arraybuffer-objects" id="ref-for-sec-arraybuffer-objects">ArrayBuffer</a></code>, and let <var>bodyPromise</var> be the result.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> Although it is specified here that the response is consumed entirely before compilation proceeds, that is purely for ease of specification; implementations are likely to instead perform processing in a streaming fashion. The difference is unobservable, and thus the simpler model is specified. </p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#upon-fulfillment" id="ref-for-upon-fulfillment①">Upon fulfillment</a> of <var>bodyPromise</var> with value <var>bodyArrayBuffer</var>:</p>
         <ol>
@@ -1137,361 +1182,8 @@ review, approval, and registration with IANA.</p>
 };
 
 </pre>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel */
-"use strict";
-{
-    const dfnsJson = window.dfnsJson || {};
-
-    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
-        return mk.aside({
-            class: "dfn-panel",
-            id: `infopanel-for-${dfnID}`,
-            "data-for": dfnID,
-            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
-            },
-            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
-                `Info about the '${dfnText}' ${external?"external":""} reference.`),
-            mk.a({href:url}, url),
-            mk.b({}, "Referenced in:"),
-            mk.ul({},
-                ...refSections.map(section=>
-                    mk.li({},
-                        ...section.refs.map((ref, refI)=>
-                            [
-                                mk.a({
-                                    href: `#${ref.id}`
-                                    },
-                                    (refI == 0) ? section.title : `(${refI + 1})`
-                                ),
-                                " ",
-                            ]
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-    function genAllDfnPanels() {
-        for(const panelData of Object.values(window.dfnpanelData)) {
-            const dfnID = panelData.dfnID;
-            const dfn = document.getElementById(dfnID);
-            if(!dfn) {
-                console.log(`Can't find dfn#${dfnID}.`, panelData);
-            } else {
-                const panel = genDfnPanel(panelData);
-                append(document.body, panel);
-                insertDfnPopupAction(dfn, panel)
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", ()=>{
-        genAllDfnPanels();
-
-        // Add popup behavior to all dfns to show the corresponding dfn-panel.
-        var dfns = queryAll('.dfn-paneled');
-        for(let dfn of dfns) { ; }
-
-        document.body.addEventListener("click", (e) => {
-            // If not handled already, just hide all dfn panels.
-            hideAllDfnPanels();
-        });
-    })
-
-
-    function hideAllDfnPanels() {
-        // Turn off any currently "on" or "activated" panels.
-        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
-    }
-
-    function showDfnPanel(dfnPanel, dfn) {
-        hideAllDfnPanels(); // Only display one at this time.
-        dfn.setAttribute("aria-expanded", "true");
-        dfnPanel.classList.add("on");
-        dfnPanel.style.left = "5px";
-        dfnPanel.style.top = "0px";
-        const panelRect = dfnPanel.getBoundingClientRect();
-        const panelWidth = panelRect.right - panelRect.left;
-        if (panelRect.right > document.body.scrollWidth) {
-            // Panel's overflowing the screen.
-            // Just drop it below the dfn and flip it rightward instead.
-            // This still wont' fix things if the screen is *really* wide,
-            // but fixing that's a lot harder without 'anchor()'.
-            dfnPanel.style.top = "1.5em";
-            dfnPanel.style.left = "auto";
-            dfnPanel.style.right = "0px";
-        }
-    }
-
-    function pinDfnPanel(dfnPanel) {
-        // Switch it to "activated" state, which pins it.
-        dfnPanel.classList.add("activated");
-        dfnPanel.style.left = null;
-        dfnPanel.style.top = null;
-    }
-
-    function hideDfnPanel(dfnPanel, dfn) {
-        if(!dfn) {
-            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
-        }
-        dfn.setAttribute("aria-expanded", "false")
-        dfnPanel.classList.remove("on");
-        dfnPanel.classList.remove("activated");
-    }
-
-    function toggleDfnPanel(dfnPanel, dfn) {
-        if(dfnPanel.classList.contains("on")) {
-            hideDfnPanel(dfnPanel, dfn);
-        } else {
-            showDfnPanel(dfnPanel, dfn);
-        }
-    }
-
-    function insertDfnPopupAction(dfn, dfnPanel) {
-        // Find dfn panel
-        const panelWrapper = document.createElement('span');
-        panelWrapper.appendChild(dfnPanel);
-        panelWrapper.style.position = "relative";
-        panelWrapper.style.height = "0px";
-        dfn.insertAdjacentElement("afterend", panelWrapper);
-        dfn.setAttribute('role', 'button');
-        dfn.setAttribute('aria-expanded', 'false')
-        dfn.tabIndex = 0;
-        dfn.classList.add('has-dfn-panel');
-        dfn.addEventListener('click', (event) => {
-            showDfnPanel(dfnPanel, dfn);
-            event.stopPropagation();
-        });
-        dfn.addEventListener('keypress', (event) => {
-            const kc = event.keyCode;
-            // 32->Space, 13->Enter
-            if(kc == 32 || kc == 13) {
-                toggleDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        });
-
-        dfnPanel.addEventListener('click', (event) => {
-            if (event.target.nodeName == 'A') {
-                pinDfnPanel(dfnPanel);
-            }
-            event.stopPropagation();
-        });
-
-        dfnPanel.addEventListener('keydown', (event) => {
-            if(event.keyCode == 27) { // Escape key
-                hideDfnPanel(dfnPanel, dfn);
-                event.stopPropagation();
-                event.preventDefault();
-            }
-        })
-    }
-}
-</script>
-<script>/* Boilerplate: script-dfn-panel-json */
-window.dfnpanelData = {};
-window.dfnpanelData['f17862f0'] = {"dfnID": "f17862f0", "url": "https://tc39.github.io/ecma262/#sec-arraybuffer-objects", "dfnText": "ArrayBuffer", "refSections": [{"refs": [{"id": "ref-for-sec-arraybuffer-objects"}], "title": "1. Streaming Module Compilation and Instantiation"}, {"refs": [{"id": "ref-for-sec-arraybuffer-objects\u2460"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
-window.dfnpanelData['58788f9d'] = {"dfnID": "58788f9d", "url": "https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror", "dfnText": "TypeError", "refSections": [{"refs": [{"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"}, {"id": "ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['f6e4cbfd'] = {"dfnID": "f6e4cbfd", "url": "https://tc39.github.io/ecma262/#sec-agent-clusters", "dfnText": "agent cluster", "refSections": [{"refs": [{"id": "ref-for-sec-agent-clusters"}, {"id": "ref-for-sec-agent-clusters\u2460"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['b107f911'] = {"dfnID": "b107f911", "url": "https://tc39.github.io/ecma262/#current-realm", "dfnText": "current realm", "refSections": [{"refs": [{"id": "ref-for-current-realm"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['08a12aad'] = {"dfnID": "08a12aad", "url": "https://fetch.spec.whatwg.org/#response", "dfnText": "Response", "refSections": [{"refs": [{"id": "ref-for-response"}, {"id": "ref-for-response\u2460"}, {"id": "ref-for-response\u2461"}, {"id": "ref-for-response\u2462"}, {"id": "ref-for-response\u2463"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['13c2b84c'] = {"dfnID": "13c2b84c", "url": "https://fetch.spec.whatwg.org/#concept-body-consume-body", "dfnText": "consume body", "refSections": [{"refs": [{"id": "ref-for-concept-body-consume-body"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['d47d0690'] = {"dfnID": "d47d0690", "url": "https://fetch.spec.whatwg.org/#concept-header-list-get", "dfnText": "get", "refSections": [{"refs": [{"id": "ref-for-concept-header-list-get"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['f7b00a8b'] = {"dfnID": "f7b00a8b", "url": "https://fetch.spec.whatwg.org/#concept-response-header-list", "dfnText": "header list", "refSections": [{"refs": [{"id": "ref-for-concept-response-header-list"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['ba6e4111'] = {"dfnID": "ba6e4111", "url": "https://fetch.spec.whatwg.org/#http-tab-or-space-byte", "dfnText": "http tab or space byte", "refSections": [{"refs": [{"id": "ref-for-http-tab-or-space-byte"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['a27468c5'] = {"dfnID": "a27468c5", "url": "https://fetch.spec.whatwg.org/#ok-status", "dfnText": "ok status", "refSections": [{"refs": [{"id": "ref-for-ok-status"}, {"id": "ref-for-ok-status\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['e3201629'] = {"dfnID": "e3201629", "url": "https://fetch.spec.whatwg.org/#concept-response-response", "dfnText": "response", "refSections": [{"refs": [{"id": "ref-for-concept-response-response"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['a1d47575'] = {"dfnID": "a1d47575", "url": "https://fetch.spec.whatwg.org/#concept-response-status", "dfnText": "status", "refSections": [{"refs": [{"id": "ref-for-concept-response-status"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['eb5c4be3'] = {"dfnID": "eb5c4be3", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#serializable", "dfnText": "Serializable", "refSections": [{"refs": [{"id": "ref-for-serializable"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['c4099679'] = {"dfnID": "c4099679", "url": "https://html.spec.whatwg.org/#cors-same-origin", "dfnText": "cors-same-origin", "refSections": [{"refs": [{"id": "ref-for-cors-same-origin"}, {"id": "ref-for-cors-same-origin\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['888d7c65'] = {"dfnID": "888d7c65", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps", "dfnText": "deserialization steps", "refSections": [{"refs": [{"id": "ref-for-deserialization-steps"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['b6ae4501'] = {"dfnID": "b6ae4501", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source", "dfnText": "networking task source", "refSections": [{"refs": [{"id": "ref-for-networking-task-source"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['f32dc6c1'] = {"dfnID": "f32dc6c1", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps", "dfnText": "serialization steps", "refSections": [{"refs": [{"id": "ref-for-serialization-steps"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['c187d599'] = {"dfnID": "c187d599", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization", "dfnText": "sub-deserialization", "refSections": [{"refs": [{"id": "ref-for-sub-deserialization"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['d76ab844'] = {"dfnID": "d76ab844", "url": "https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization", "dfnText": "sub-serialization", "refSections": [{"refs": [{"id": "ref-for-sub-serialization"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['970896d2'] = {"dfnID": "970896d2", "url": "https://infra.spec.whatwg.org/#byte-case-insensitive", "dfnText": "byte-case-insensitive", "refSections": [{"refs": [{"id": "ref-for-byte-case-insensitive"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['dd57410d'] = {"dfnID": "dd57410d", "url": "https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror", "dfnText": "CompileError", "refSections": [{"refs": [{"id": "ref-for-exceptiondef-compileerror"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['29228fdf'] = {"dfnID": "29228fdf", "url": "https://webassembly.github.io/spec/js-api/#module", "dfnText": "Module", "refSections": [{"refs": [{"id": "ref-for-module"}], "title": "1. Streaming Module Compilation and Instantiation"}, {"refs": [{"id": "ref-for-module\u2460"}, {"id": "ref-for-module\u2461"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['9feefb27'] = {"dfnID": "9feefb27", "url": "https://webassembly.github.io/spec/js-api/#namespacedef-webassembly", "dfnText": "WebAssembly", "refSections": [{"refs": [{"id": "ref-for-namespacedef-webassembly"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['ba9b32c1'] = {"dfnID": "ba9b32c1", "url": "https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource", "dfnText": "WebAssemblyInstantiatedSource", "refSections": [{"refs": [{"id": "ref-for-dictdef-webassemblyinstantiatedsource"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['70d2cdbd'] = {"dfnID": "70d2cdbd", "url": "https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module", "dfnText": "asynchronously compile a webassembly module", "refSections": [{"refs": [{"id": "ref-for-asynchronously-compile-a-webassembly-module"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['8beb99bd'] = {"dfnID": "8beb99bd", "url": "https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module", "dfnText": "compile a webassembly module", "refSections": [{"refs": [{"id": "ref-for-compile-a-webassembly-module"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['72f9eaed'] = {"dfnID": "72f9eaed", "url": "https://webassembly.github.io/spec/js-api/#exported-function", "dfnText": "exported function", "refSections": [{"refs": [{"id": "ref-for-exported-function"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
-window.dfnpanelData['275fa0e6'] = {"dfnID": "275fa0e6", "url": "https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate", "dfnText": "instantiate", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-instantiate"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
-window.dfnpanelData['1f72c462'] = {"dfnID": "1f72c462", "url": "https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module", "dfnText": "instantiate a promise of a module", "refSections": [{"refs": [{"id": "ref-for-instantiate-a-promise-of-a-module"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['1295a79f'] = {"dfnID": "1295a79f", "url": "https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx", "dfnText": "function index", "refSections": [{"refs": [{"id": "ref-for-syntax-funcidx"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
-window.dfnpanelData['0bb5940b'] = {"dfnID": "0bb5940b", "url": "https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec", "dfnText": "name section", "refSections": [{"refs": [{"id": "ref-for-binary-namesec"}], "title": "3. Developer-Facing Display Conventions"}], "external": true};
-window.dfnpanelData['dca2de17'] = {"dfnID": "dca2de17", "url": "https://webidl.spec.whatwg.org/#idl-DOMException", "dfnText": "DOMException", "refSections": [{"refs": [{"id": "ref-for-idl-DOMException"}, {"id": "ref-for-idl-DOMException\u2460"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['d54f5897'] = {"dfnID": "d54f5897", "url": "https://webidl.spec.whatwg.org/#datacloneerror", "dfnText": "DataCloneError", "refSections": [{"refs": [{"id": "ref-for-datacloneerror"}, {"id": "ref-for-datacloneerror\u2460"}], "title": "2. Serialization"}], "external": true};
-window.dfnpanelData['889e932f'] = {"dfnID": "889e932f", "url": "https://webidl.spec.whatwg.org/#Exposed", "dfnText": "Exposed", "refSections": [{"refs": [{"id": "ref-for-Exposed"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}, {"id": "ref-for-idl-promise\u2460"}, {"id": "ref-for-idl-promise\u2461"}, {"id": "ref-for-idl-promise\u2462"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['92d13070'] = {"dfnID": "92d13070", "url": "https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy", "dfnText": "get a copy of the buffer source", "refSections": [{"refs": [{"id": "ref-for-dfn-get-buffer-source-copy"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['efd1ec5d'] = {"dfnID": "efd1ec5d", "url": "https://webidl.spec.whatwg.org/#idl-object", "dfnText": "object", "refSections": [{"refs": [{"id": "ref-for-idl-object"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['b262501e'] = {"dfnID": "b262501e", "url": "https://webidl.spec.whatwg.org/#reject", "dfnText": "reject", "refSections": [{"refs": [{"id": "ref-for-reject"}, {"id": "ref-for-reject\u2460"}, {"id": "ref-for-reject\u2461"}, {"id": "ref-for-reject\u2462"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['3b90bdcd'] = {"dfnID": "3b90bdcd", "url": "https://webidl.spec.whatwg.org/#resolve", "dfnText": "resolve", "refSections": [{"refs": [{"id": "ref-for-resolve"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['24bd7d25'] = {"dfnID": "24bd7d25", "url": "https://webidl.spec.whatwg.org/#upon-fulfillment", "dfnText": "upon fulfillment", "refSections": [{"refs": [{"id": "ref-for-upon-fulfillment"}, {"id": "ref-for-upon-fulfillment\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['f14ed351'] = {"dfnID": "f14ed351", "url": "https://webidl.spec.whatwg.org/#upon-rejection", "dfnText": "upon rejection", "refSections": [{"refs": [{"id": "ref-for-upon-rejection"}, {"id": "ref-for-upon-rejection\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": true};
-window.dfnpanelData['dom-webassembly-compilestreaming'] = {"dfnID": "dom-webassembly-compilestreaming", "url": "#dom-webassembly-compilestreaming", "dfnText": "compileStreaming(source)", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-compilestreaming"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};
-window.dfnpanelData['dom-webassembly-instantiatestreaming'] = {"dfnID": "dom-webassembly-instantiatestreaming", "url": "#dom-webassembly-instantiatestreaming", "dfnText": "instantiateStreaming(source, importObject)", "refSections": [{"refs": [{"id": "ref-for-dom-webassembly-instantiatestreaming"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};
-window.dfnpanelData['compile-a-potential-webassembly-response'] = {"dfnID": "compile-a-potential-webassembly-response", "url": "#compile-a-potential-webassembly-response", "dfnText": "compile a potential WebAssembly response", "refSections": [{"refs": [{"id": "ref-for-compile-a-potential-webassembly-response"}, {"id": "ref-for-compile-a-potential-webassembly-response\u2460"}], "title": "1. Streaming Module Compilation and Instantiation"}], "external": false};
-</script>
 <script>/* Boilerplate: script-dom-helper */
+"use strict";
 function query(sel) { return document.querySelector(sel); }
 
 function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
@@ -1685,103 +1377,798 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
+}</script>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+let dfnPanelData = {
+"08a12aad": {"dfnID":"08a12aad","dfnText":"Response","external":true,"refSections":[{"refs":[{"id":"ref-for-response"},{"id":"ref-for-response\u2460"},{"id":"ref-for-response\u2461"},{"id":"ref-for-response\u2462"},{"id":"ref-for-response\u2463"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#response"},
+"0bb5940b": {"dfnID":"0bb5940b","dfnText":"name section","external":true,"refSections":[{"refs":[{"id":"ref-for-binary-namesec"}],"title":"3. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec"},
+"1295a79f": {"dfnID":"1295a79f","dfnText":"function index","external":true,"refSections":[{"refs":[{"id":"ref-for-syntax-funcidx"}],"title":"3. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx"},
+"13c2b84c": {"dfnID":"13c2b84c","dfnText":"consume body","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-body-consume-body"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-body-consume-body"},
+"1f72c462": {"dfnID":"1f72c462","dfnText":"instantiate a promise of a module","external":true,"refSections":[{"refs":[{"id":"ref-for-instantiate-a-promise-of-a-module"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module"},
+"24bd7d25": {"dfnID":"24bd7d25","dfnText":"upon fulfillment","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-fulfillment"},{"id":"ref-for-upon-fulfillment\u2460"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
+"275fa0e6": {"dfnID":"275fa0e6","dfnText":"instantiate","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-webassembly-instantiate"}],"title":"3. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate"},
+"29228fdf": {"dfnID":"29228fdf","dfnText":"Module","external":true,"refSections":[{"refs":[{"id":"ref-for-module"}],"title":"1. Streaming Module Compilation and Instantiation"},{"refs":[{"id":"ref-for-module\u2460"},{"id":"ref-for-module\u2461"}],"title":"2. Serialization"}],"url":"https://webassembly.github.io/spec/js-api/#module"},
+"3b90bdcd": {"dfnID":"3b90bdcd","dfnText":"resolve","external":true,"refSections":[{"refs":[{"id":"ref-for-resolve"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#resolve"},
+"58788f9d": {"dfnID":"58788f9d","dfnText":"TypeError","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2460"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2461"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2462"},{"id":"ref-for-sec-native-error-types-used-in-this-standard-typeerror\u2463"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror"},
+"70d2cdbd": {"dfnID":"70d2cdbd","dfnText":"asynchronously compile a webassembly module","external":true,"refSections":[{"refs":[{"id":"ref-for-asynchronously-compile-a-webassembly-module"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module"},
+"72f9eaed": {"dfnID":"72f9eaed","dfnText":"exported function","external":true,"refSections":[{"refs":[{"id":"ref-for-exported-function"}],"title":"3. Developer-Facing Display Conventions"}],"url":"https://webassembly.github.io/spec/js-api/#exported-function"},
+"888d7c65": {"dfnID":"888d7c65","dfnText":"deserialization steps","external":true,"refSections":[{"refs":[{"id":"ref-for-deserialization-steps"}],"title":"2. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps"},
+"889e932f": {"dfnID":"889e932f","dfnText":"Exposed","external":true,"refSections":[{"refs":[{"id":"ref-for-Exposed"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#Exposed"},
+"8beb99bd": {"dfnID":"8beb99bd","dfnText":"compile a webassembly module","external":true,"refSections":[{"refs":[{"id":"ref-for-compile-a-webassembly-module"}],"title":"2. Serialization"}],"url":"https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module"},
+"92d13070": {"dfnID":"92d13070","dfnText":"get a copy of the buffer source","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-get-buffer-source-copy"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy"},
+"970896d2": {"dfnID":"970896d2","dfnText":"byte-case-insensitive","external":true,"refSections":[{"refs":[{"id":"ref-for-byte-case-insensitive"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://infra.spec.whatwg.org/#byte-case-insensitive"},
+"9feefb27": {"dfnID":"9feefb27","dfnText":"WebAssembly","external":true,"refSections":[{"refs":[{"id":"ref-for-namespacedef-webassembly"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#namespacedef-webassembly"},
+"a1d47575": {"dfnID":"a1d47575","dfnText":"status","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-status"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-response-status"},
+"a27468c5": {"dfnID":"a27468c5","dfnText":"ok status","external":true,"refSections":[{"refs":[{"id":"ref-for-ok-status"},{"id":"ref-for-ok-status\u2460"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#ok-status"},
+"b107f911": {"dfnID":"b107f911","dfnText":"current realm","external":true,"refSections":[{"refs":[{"id":"ref-for-current-realm"}],"title":"2. Serialization"}],"url":"https://tc39.github.io/ecma262/#current-realm"},
+"b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"},{"id":"ref-for-reject\u2461"},{"id":"ref-for-reject\u2462"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#reject"},
+"b6ae4501": {"dfnID":"b6ae4501","dfnText":"networking task source","external":true,"refSections":[{"refs":[{"id":"ref-for-networking-task-source"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
+"ba6e4111": {"dfnID":"ba6e4111","dfnText":"http tab or space byte","external":true,"refSections":[{"refs":[{"id":"ref-for-http-tab-or-space-byte"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#http-tab-or-space-byte"},
+"ba9b32c1": {"dfnID":"ba9b32c1","dfnText":"WebAssemblyInstantiatedSource","external":true,"refSections":[{"refs":[{"id":"ref-for-dictdef-webassemblyinstantiatedsource"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource"},
+"bdbd19d1": {"dfnID":"bdbd19d1","dfnText":"Promise","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-promise"},{"id":"ref-for-idl-promise\u2460"},{"id":"ref-for-idl-promise\u2461"},{"id":"ref-for-idl-promise\u2462"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"c187d599": {"dfnID":"c187d599","dfnText":"sub-deserialization","external":true,"refSections":[{"refs":[{"id":"ref-for-sub-deserialization"}],"title":"2. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization"},
+"c4099679": {"dfnID":"c4099679","dfnText":"cors-same-origin","external":true,"refSections":[{"refs":[{"id":"ref-for-cors-same-origin"},{"id":"ref-for-cors-same-origin\u2460"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://html.spec.whatwg.org/#cors-same-origin"},
+"compile-a-potential-webassembly-response": {"dfnID":"compile-a-potential-webassembly-response","dfnText":"compile a potential WebAssembly response","external":false,"refSections":[{"refs":[{"id":"ref-for-compile-a-potential-webassembly-response"},{"id":"ref-for-compile-a-potential-webassembly-response\u2460"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"#compile-a-potential-webassembly-response"},
+"d47d0690": {"dfnID":"d47d0690","dfnText":"get","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-header-list-get"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-header-list-get"},
+"d54f5897": {"dfnID":"d54f5897","dfnText":"DataCloneError","external":true,"refSections":[{"refs":[{"id":"ref-for-datacloneerror"},{"id":"ref-for-datacloneerror\u2460"}],"title":"2. Serialization"}],"url":"https://webidl.spec.whatwg.org/#datacloneerror"},
+"d76ab844": {"dfnID":"d76ab844","dfnText":"sub-serialization","external":true,"refSections":[{"refs":[{"id":"ref-for-sub-serialization"}],"title":"2. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization"},
+"dacde8b5": {"dfnID":"dacde8b5","dfnText":"a new promise","external":true,"refSections":[{"refs":[{"id":"ref-for-a-new-promise"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"dca2de17": {"dfnID":"dca2de17","dfnText":"DOMException","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMException"},{"id":"ref-for-idl-DOMException\u2460"}],"title":"2. Serialization"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"dd57410d": {"dfnID":"dd57410d","dfnText":"CompileError","external":true,"refSections":[{"refs":[{"id":"ref-for-exceptiondef-compileerror"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror"},
+"dom-webassembly-compilestreaming": {"dfnID":"dom-webassembly-compilestreaming","dfnText":"compileStreaming(source)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-webassembly-compilestreaming"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"#dom-webassembly-compilestreaming"},
+"dom-webassembly-compilestreaming-source-source": {"dfnID":"dom-webassembly-compilestreaming-source-source","dfnText":"source","external":false,"refSections":[],"url":"#dom-webassembly-compilestreaming-source-source"},
+"dom-webassembly-instantiatestreaming": {"dfnID":"dom-webassembly-instantiatestreaming","dfnText":"instantiateStreaming(source, importObject)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-webassembly-instantiatestreaming"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"#dom-webassembly-instantiatestreaming"},
+"dom-webassembly-instantiatestreaming-source-importobject-importobject": {"dfnID":"dom-webassembly-instantiatestreaming-source-importobject-importobject","dfnText":"importObject","external":false,"refSections":[],"url":"#dom-webassembly-instantiatestreaming-source-importobject-importobject"},
+"dom-webassembly-instantiatestreaming-source-importobject-source": {"dfnID":"dom-webassembly-instantiatestreaming-source-importobject-source","dfnText":"source","external":false,"refSections":[],"url":"#dom-webassembly-instantiatestreaming-source-importobject-source"},
+"e3201629": {"dfnID":"e3201629","dfnText":"response","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-response"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-response-response"},
+"eb5c4be3": {"dfnID":"eb5c4be3","dfnText":"Serializable","external":true,"refSections":[{"refs":[{"id":"ref-for-serializable"}],"title":"2. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#serializable"},
+"efd1ec5d": {"dfnID":"efd1ec5d","dfnText":"object","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-object"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#idl-object"},
+"f14ed351": {"dfnID":"f14ed351","dfnText":"upon rejection","external":true,"refSections":[{"refs":[{"id":"ref-for-upon-rejection"},{"id":"ref-for-upon-rejection\u2460"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://webidl.spec.whatwg.org/#upon-rejection"},
+"f17862f0": {"dfnID":"f17862f0","dfnText":"ArrayBuffer","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-arraybuffer-objects"}],"title":"1. Streaming Module Compilation and Instantiation"},{"refs":[{"id":"ref-for-sec-arraybuffer-objects\u2460"}],"title":"3. Developer-Facing Display Conventions"}],"url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
+"f32dc6c1": {"dfnID":"f32dc6c1","dfnText":"serialization steps","external":true,"refSections":[{"refs":[{"id":"ref-for-serialization-steps"}],"title":"2. Serialization"}],"url":"https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps"},
+"f6e4cbfd": {"dfnID":"f6e4cbfd","dfnText":"agent cluster","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-agent-clusters"},{"id":"ref-for-sec-agent-clusters\u2460"}],"title":"2. Serialization"}],"url":"https://tc39.github.io/ecma262/#sec-agent-clusters"},
+"f7b00a8b": {"dfnID":"f7b00a8b","dfnText":"header list","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-header-list"}],"title":"1. Streaming Module Compilation and Instantiation"}],"url":"https://fetch.spec.whatwg.org/#concept-response-header-list"},
+};
+
+document.addEventListener("DOMContentLoaded", ()=>{
+    genAllDfnPanels();
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all dfn panels.
+        hideAllDfnPanels();
+    });
+});
+
+window.addEventListener("resize", () => {
+    // Pin any visible dfn panel
+    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
+});
+
+function genAllDfnPanels() {
+    for(const panelData of Object.values(dfnPanelData)) {
+        const dfnID = panelData.dfnID;
+        const dfn = document.getElementById(dfnID);
+        if(!dfn) {
+            console.log(`Can't find dfn#${dfnID}.`, panelData);
+            continue;
+        }
+        dfn.panelData = panelData;
+        insertDfnPopupAction(dfn);
+    }
+}
+
+function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
+    const dfnPanel = mk.aside({
+        class: "dfn-panel on",
+        id: `infopanel-for-${dfnID}`,
+        "data-for": dfnID,
+        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        },
+        mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+            `Info about the '${dfnText}' ${external?"external":""} reference.`),
+        mk.a({href:url, class:"dfn-link"}, url),
+        refSections.length == 0 ? [] :
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({ href: `#${ref.id}` },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        genLinkingSyntaxes(dfn),
+    );
+
+    dfnPanel.addEventListener('click', (event) => {
+        if (event.target.nodeName == 'A') {
+            scrollToTargetAndHighlight(event);
+            pinDfnPanel(dfnPanel);
+        }
+        event.stopPropagation();
+        refocusOnTarget(event);
+    });
+    dfnPanel.addEventListener('keydown', (event) => {
+        if(event.keyCode == 27) { // Escape key
+            hideDfnPanel({dfnPanel});
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+
+    dfnPanel.dfn = dfn;
+    dfn.dfnPanel = dfnPanel;
+    return dfnPanel;
+}
+
+
+
+function hideAllDfnPanels() {
+    // Delete the currently-active dfn panel.
+    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
+}
+
+function showDfnPanel(dfn) {
+    hideAllDfnPanels(); // Only display one at a time.
+
+    dfn.setAttribute("aria-expanded", "true");
+
+    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
+
+    // Give the dfn a unique tabindex, and then
+    // give all the tabbable panel bits successive indexes.
+    let tabIndex = 100;
+    dfn.tabIndex = tabIndex++;
+    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
+    for (const el of tabbable) {
+        el.tabIndex = tabIndex++;
+    }
+
+    append(document.body, dfnPanel);
+    positionDfnPanel(dfnPanel);
+}
+
+function positionDfnPanel(dfnPanel) {
+    const dfn = dfnPanel.dfn;
+    const dfnPos = getRootLevelAbsolutePosition(dfn);
+    dfnPanel.style.top = dfnPos.bottom + "px";
+    dfnPanel.style.left = dfnPos.left + "px";
+
+    const panelPos = dfnPanel.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
+        dfnPanel.style.left = newLeft + "px";
+    }
+}
+
+function pinDfnPanel(dfnPanel) {
+    // Switch it to "activated" state, which pins it.
+    dfnPanel.classList.add("activated");
+    dfnPanel.style.position = "fixed";
+    dfnPanel.style.left = null;
+    dfnPanel.style.top = null;
+}
+
+function hideDfnPanel({dfn, dfnPanel}) {
+    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
+    if(!dfn) dfn = dfnPanel.dfn;
+    dfn.dfnPanel = undefined;
+    dfnPanel.dfn = undefined;
+    dfn.setAttribute("aria-expanded", "false");
+    dfn.tabIndex = undefined;
+    dfnPanel.remove()
+}
+
+function toggleDfnPanel(dfn) {
+    if(dfn.dfnPanel) {
+        hideDfnPanel(dfn);
+    } else {
+        showDfnPanel(dfn);
+    }
+}
+
+function insertDfnPopupAction(dfn) {
+    dfn.setAttribute('role', 'button');
+    dfn.setAttribute('aria-expanded', 'false')
+    dfn.tabIndex = 0;
+    dfn.classList.add('has-dfn-panel');
+    dfn.addEventListener('click', (event) => {
+        toggleDfnPanel(dfn);
+        event.stopPropagation();
+    });
+    dfn.addEventListener('keypress', (event) => {
+        const kc = event.keyCode;
+        // 32->Space, 13->Enter
+        if(kc == 32 || kc == 13) {
+            toggleDfnPanel(dfn);
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    });
+}
+
+function refocusOnTarget(event) {
+    const target = event.target;
+    setTimeout(() => {
+        // Refocus on the event.target element.
+        // This is needed after browser scrolls to the destination.
+        target.focus();
+    });
+}
+
+// Returns the root-level absolute position {left and top} of element.
+function getRootLevelAbsolutePosition(el) {
+    const boundsRect = el.getBoundingClientRect();
+    let xPos = 0;
+    let yPos = 0;
+
+    while (el) {
+        let xScroll = el.scrollLeft;
+        let yScroll = el.scrollTop;
+
+        // Ignore scrolling of body.
+        if (el.tagName === "BODY") {
+            xScroll = 0;
+            yScroll = 0;
+        }
+        xPos += (el.offsetLeft - xScroll + el.clientLeft);
+        yPos += (el.offsetTop - yScroll + el.clientTop);
+
+        el = el.offsetParent;
+    }
+    return {
+        left: xPos,
+        top: yPos,
+        right: xPos + boundsRect.width,
+        bottom: yPos + boundsRect.height,
+    };
+}
+
+function scrolledIntoView(element) {
+    const rect = element.getBoundingClientRect();
+    return (
+        rect.top > 0 &&
+        rect.bottom < window.innerHeight
+    );
+}
+
+function scrollToTargetAndHighlight(event) {
+    let hash = event.target.hash;
+    if (hash) {
+        hash = decodeURIComponent(hash.substring(1));
+        const dest = document.getElementById(hash);
+        if (dest) {
+            // Maybe prevent default scroll.
+            if (scrolledIntoView(dest)) {
+                event.preventDefault();
+            }
+            dest.classList.add('highlighted');
+            setTimeout(() => dest.classList.remove('highlighted'), 1000);
+        }
+    }
+}
+
+// Functions, divided by link type, that wrap an autolink's
+// contents with the appropriate outer syntax.
+// Alternately, a string naming another type they format
+// the same as.
+function needsFor(type) {
+    switch(type) {
+        case "descriptor":
+        case "value":
+        case "element-attr":
+        case "attr-value":
+        case "element-state":
+        case "method":
+        case "constructor":
+        case "argument":
+        case "attribute":
+        case "const":
+        case "dict-member":
+        case "event":
+        case "enum-value":
+        case "stringifier":
+        case "serializer":
+        case "iterator":
+        case "maplike":
+        case "setlike":
+        case "state":
+        case "mode":
+        case "context":
+        case "facet": return true;
+
+        default: return false;
+    }
+}
+function refusesFor(type) {
+    switch(type) {
+        case "property":
+        case "element":
+        case "interface":
+        case "namespace":
+        case "callback":
+        case "dictionary":
+        case "enum":
+        case "exception":
+        case "typedef":
+        case "http-header":
+        case "permission": return true;
+
+        default: return false;
+    }
+}
+function linkFormatterFromType(type) {
+    switch(type) {
+        case 'scheme':
+        case 'permission':
+        case 'dfn': return (text) => `[=${text}=]`;
+
+        case 'abstract-op': return (text) => `[\$${text}\$]`;
+
+        case 'function':
+        case 'at-rule':
+        case 'selector':
+        case 'value': return (text) => `''${text}''`;
+
+        case 'http-header': return (text) => `[:${text}:]`;
+
+        case 'interface':
+        case 'constructor':
+        case 'method':
+        case 'argument':
+        case 'attribute':
+        case 'callback':
+        case 'dictionary':
+        case 'dict-member':
+        case 'enum':
+        case 'enum-value':
+        case 'exception':
+        case 'const':
+        case 'typedef':
+        case 'stringifier':
+        case 'serializer':
+        case 'iterator':
+        case 'maplike':
+        case 'setlike':
+        case 'extended-attribute':
+        case 'event':
+        case 'idl': return (text) => `{{${text}}}`;
+
+        case 'element-state':
+        case 'element-attr':
+        case 'attr-value':
+        case 'element': return (element) => `<{${element}}>`;
+
+        case 'grammar': return (text) => `${text} (within a <pre class=prod>)`;
+
+        case 'type': return (text)=> `<<${text}>>`;
+
+        case 'descriptor':
+        case 'property': return (text) => `'${text}'`;
+
+        default: return;
+    };
+};
+
+function genLinkingSyntaxes(dfn) {
+    if(dfn.tagName != "DFN") return;
+
+    const type = dfn.getAttribute('data-dfn-type');
+    if(!type) {
+        console.log(`<dfn> doesn't have a data-dfn-type:`, dfn);
+        return [];
+    }
+
+    // Return a function that wraps link text based on the type
+    const linkFormatter = linkFormatterFromType(type);
+    if(!linkFormatter) {
+        console.log(`<dfn> has an unknown data-dfn-type:`, dfn);
+        return [];
+    }
+
+    let ltAlts;
+    if(dfn.hasAttribute('data-lt')) {
+        ltAlts = dfn.getAttribute('data-lt')
+            .split("|")
+            .map(x=>x.trim());
+    } else {
+        ltAlts = [dfn.textContent.trim()];
+    }
+    if(type == "type") {
+        // lt of "<foo>", but "foo" is the interior;
+        // <<foo/bar>> is how you write it with a for,
+        // not <foo/<bar>> or whatever.
+        for(var i = 0; i < ltAlts.length; i++) {
+            const lt = ltAlts[i];
+            const match = /<(.*)>/.exec(lt);
+            if(match) { ltAlts[i] = match[1]; }
+        }
+    }
+
+    let forAlts;
+    if(dfn.hasAttribute('data-dfn-for')) {
+        forAlts = dfn.getAttribute('data-dfn-for')
+            .split(",")
+            .map(x=>x.trim());
+    } else {
+        forAlts = [''];
+    }
+
+    let linkingSyntaxes = [];
+    if(!needsFor(type)) {
+        for(const lt of ltAlts) {
+            linkingSyntaxes.push(linkFormatter(lt));
+        }
+    }
+    if(!refusesFor(type)) {
+        for(const f of forAlts) {
+            linkingSyntaxes.push(linkFormatter(`${f}/${ltAlts[0]}`))
+        }
+    }
+    return [
+        mk.b({}, 'Possible linking syntaxes:'),
+        mk.ul({},
+            ...linkingSyntaxes.map(link => {
+                const copyLink = async () =>
+                    await navigator.clipboard.writeText(link);
+                return mk.li({},
+                    mk.div({ class: 'link-item' },
+                        mk.button({
+                            class: 'copy-icon', title: 'Copy',
+                            type: 'button',
+                            _onclick: copyLink,
+                            tabindex: 0,
+                        }, mk.span({ class: 'icon' }) ),
+                        mk.span({}, link)
+                    )
+                );
+            })
+        )
+    ];
+}
+}
+</script>
+<script>/* Boilerplate: script-ref-hints */
+"use strict";
+{
+let refsData = {
+"#compile-a-potential-webassembly-response": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"wasm-web-api","spec":"wasm-web-api-2","status":"local","text":"compile a potential webassembly response","type":"dfn","url":"#compile-a-potential-webassembly-response"},
+"#dom-webassembly-compilestreaming": {"export":true,"for_":["WebAssembly"],"level":"2","normative":true,"shortname":"wasm-web-api","spec":"wasm-web-api-2","status":"local","text":"compileStreaming(source)","type":"method","url":"#dom-webassembly-compilestreaming"},
+"#dom-webassembly-instantiatestreaming": {"export":true,"for_":["WebAssembly"],"level":"2","normative":true,"shortname":"wasm-web-api","spec":"wasm-web-api-2","status":"local","text":"instantiateStreaming(source, importObject)","type":"method","url":"#dom-webassembly-instantiatestreaming"},
+"https://fetch.spec.whatwg.org/#concept-body-consume-body": {"export":true,"for_":[],"level":"","normative":true,"shortname":"fetch","spec":"fetch","status":"anchor-block","text":"consume body","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-body-consume-body"},
+"https://fetch.spec.whatwg.org/#concept-header-list-get": {"export":true,"for_":["header list"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"get","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-header-list-get"},
+"https://fetch.spec.whatwg.org/#concept-response-header-list": {"export":true,"for_":["response"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"header list","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-response-header-list"},
+"https://fetch.spec.whatwg.org/#concept-response-response": {"export":true,"for_":["Response"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"response","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-response-response"},
+"https://fetch.spec.whatwg.org/#concept-response-status": {"export":true,"for_":["response"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"status","type":"dfn","url":"https://fetch.spec.whatwg.org/#concept-response-status"},
+"https://fetch.spec.whatwg.org/#http-tab-or-space-byte": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"http tab or space byte","type":"dfn","url":"https://fetch.spec.whatwg.org/#http-tab-or-space-byte"},
+"https://fetch.spec.whatwg.org/#ok-status": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"ok status","type":"dfn","url":"https://fetch.spec.whatwg.org/#ok-status"},
+"https://fetch.spec.whatwg.org/#response": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"Response","type":"interface","url":"https://fetch.spec.whatwg.org/#response"},
+"https://html.spec.whatwg.org/#cors-same-origin": {"export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"cors-same-origin","type":"dfn","url":"https://html.spec.whatwg.org/#cors-same-origin"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"deserialization steps","type":"dfn","url":"https://html.spec.whatwg.org/multipage/structured-data.html#deserialization-steps"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#serializable": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"Serializable","type":"extended-attribute","url":"https://html.spec.whatwg.org/multipage/structured-data.html#serializable"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"serialization steps","type":"dfn","url":"https://html.spec.whatwg.org/multipage/structured-data.html#serialization-steps"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"sub-deserialization","type":"dfn","url":"https://html.spec.whatwg.org/multipage/structured-data.html#sub-deserialization"},
+"https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"sub-serialization","type":"dfn","url":"https://html.spec.whatwg.org/multipage/structured-data.html#sub-serialization"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"networking task source","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
+"https://infra.spec.whatwg.org/#byte-case-insensitive": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"byte-case-insensitive","type":"dfn","url":"https://infra.spec.whatwg.org/#byte-case-insensitive"},
+"https://tc39.github.io/ecma262/#current-realm": {"export":true,"for_":[],"level":"262","normative":true,"shortname":"ecma","spec":"ecma-262","status":"anchor-block","text":"current realm","type":"dfn","url":"https://tc39.github.io/ecma262/#current-realm"},
+"https://tc39.github.io/ecma262/#sec-agent-clusters": {"export":true,"for_":[],"level":"262","normative":true,"shortname":"ecma","spec":"ecma-262","status":"anchor-block","text":"agent cluster","type":"dfn","url":"https://tc39.github.io/ecma262/#sec-agent-clusters"},
+"https://tc39.github.io/ecma262/#sec-arraybuffer-objects": {"export":true,"for_":[],"level":"262","normative":true,"shortname":"ecma","spec":"ecma-262","status":"anchor-block","text":"ArrayBuffer","type":"interface","url":"https://tc39.github.io/ecma262/#sec-arraybuffer-objects"},
+"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror": {"export":true,"for_":["ECMAScript"],"level":"262","normative":true,"shortname":"ecma","spec":"ecma-262","status":"anchor-block","text":"TypeError","type":"exception","url":"https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard-typeerror"},
+"https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"name section","type":"dfn","url":"https://webassembly.github.io/spec/core/appendix/custom.html?highlight=name%20section#binary-namesec"},
+"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx": {"export":true,"for_":[],"level":"","normative":true,"shortname":"webassembly","spec":"webassembly","status":"anchor-block","text":"function index","type":"dfn","url":"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-funcidx"},
+"https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"asynchronously compile a webassembly module","type":"dfn","url":"https://webassembly.github.io/spec/js-api/#asynchronously-compile-a-webassembly-module"},
+"https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"compile a webassembly module","type":"dfn","url":"https://webassembly.github.io/spec/js-api/#compile-a-webassembly-module"},
+"https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"WebAssemblyInstantiatedSource","type":"interface","url":"https://webassembly.github.io/spec/js-api/#dictdef-webassemblyinstantiatedsource"},
+"https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"instantiate","type":"dfn","url":"https://webassembly.github.io/spec/js-api/#dom-webassembly-instantiate"},
+"https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"CompileError","type":"exception","url":"https://webassembly.github.io/spec/js-api/#exceptiondef-compileerror"},
+"https://webassembly.github.io/spec/js-api/#exported-function": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"exported function","type":"dfn","url":"https://webassembly.github.io/spec/js-api/#exported-function"},
+"https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"instantiate a promise of a module","type":"dfn","url":"https://webassembly.github.io/spec/js-api/#instantiate-a-promise-of-a-module"},
+"https://webassembly.github.io/spec/js-api/#module": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"Module","type":"interface","url":"https://webassembly.github.io/spec/js-api/#module"},
+"https://webassembly.github.io/spec/js-api/#namespacedef-webassembly": {"export":true,"for_":[],"level":"","normative":true,"shortname":"wasmjs","spec":"wasmjs","status":"anchor-block","text":"WebAssembly","type":"namespace","url":"https://webassembly.github.io/spec/js-api/#namespacedef-webassembly"},
+"https://webidl.spec.whatwg.org/#Exposed": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Exposed","type":"extended-attribute","url":"https://webidl.spec.whatwg.org/#Exposed"},
+"https://webidl.spec.whatwg.org/#a-new-promise": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
+"https://webidl.spec.whatwg.org/#datacloneerror": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DataCloneError","type":"exception","url":"https://webidl.spec.whatwg.org/#datacloneerror"},
+"https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"get a copy of the buffer source","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-get-buffer-source-copy"},
+"https://webidl.spec.whatwg.org/#idl-DOMException": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"DOMException","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-DOMException"},
+"https://webidl.spec.whatwg.org/#idl-object": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"object","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-object"},
+"https://webidl.spec.whatwg.org/#idl-promise": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"Promise","type":"interface","url":"https://webidl.spec.whatwg.org/#idl-promise"},
+"https://webidl.spec.whatwg.org/#reject": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"reject","type":"dfn","url":"https://webidl.spec.whatwg.org/#reject"},
+"https://webidl.spec.whatwg.org/#resolve": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"resolve","type":"dfn","url":"https://webidl.spec.whatwg.org/#resolve"},
+"https://webidl.spec.whatwg.org/#upon-fulfillment": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon fulfillment","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-fulfillment"},
+"https://webidl.spec.whatwg.org/#upon-rejection": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"upon rejection","type":"dfn","url":"https://webidl.spec.whatwg.org/#upon-rejection"},
+};
+
+function mkRefHint(link, ref) {
+    const linkText = link.textContent;
+    let dfnTextElements = '';
+    if (ref.text != linkText) {
+        dfnTextElements =
+            mk.li({},
+                mk.b({}, "Term: "),
+                mk.span({}, ref.text)
+            );
+    }
+    const forList = ref.for_;
+    let forListElements;
+    if(forList.length == 0) {
+        forListElements = [];
+    } else if(forList.length == 1) {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.span({}, forList[0]),
+        );
+    } else {
+        forListElements = mk.li({},
+            mk.b({}, "For: "),
+            mk.ul({},
+                ...forList.map(forItem =>
+                    mk.li({},
+                        mk.span({}, forItem)
+                    ),
+                ),
+            ),
+        );
+    }
+    const url = ref.url;
+    const safeUrl = encodeURIComponent(url);
+    const hintPanel = mk.aside({
+        class: "ref-hint",
+        id: `ref-hint-for-${safeUrl}`,
+        "data-for": url,
+        "aria-labelled-by": `ref-hint-for-${safeUrl}`,
+    },
+        mk.ul({},
+            dfnTextElements,
+            mk.li({},
+                mk.b({}, "URL: "),
+                mk.a({ href: url, class: "ref" }, url),
+            ),
+            mk.li({},
+                mk.b({}, "Type: "),
+                mk.span({}, `${ref.type}`),
+            ),
+            mk.li({},
+                mk.b({}, "Spec: "),
+                mk.span({}, `${ref.spec ? ref.spec : ''}`),
+            ),
+            forListElements
+        ),
+    );
+    hintPanel.forLink = link;
+    setupRefHintEventListeners(link, hintPanel);
+    return hintPanel;
+}
+
+function hideAllRefHints() {
+    queryAll(".ref-hint").forEach(el=>hideRefHint(el));
+}
+
+function hideRefHint(refHint) {
+    const link = refHint.forLink;
+    link.setAttribute("aria-expanded", "false");
+    if(refHint.teardownEventListeners) {
+        refHint.teardownEventListeners();
+    }
+    refHint.remove();
+}
+
+function showRefHint(link) {
+    if(link.classList.contains("dfn-link")) return;
+    const url = link.getAttribute("href");
+    const ref = refsData[url];
+    if(!ref) return;
+
+    hideAllRefHints(); // Only display one at this time.
+
+    const refHint = mkRefHint(link, ref);
+    append(document.body, refHint);
+    link.setAttribute("aria-expanded", "true");
+    positionRefHint(refHint);
+}
+
+function setupRefHintEventListeners(link, refHint) {
+    if (refHint.teardownEventListeners) return;
+    // Add event handlers to hide the refHint after the user moves away
+    // from both the link and refHint, if not hovering either within one second.
+    let timeout = null;
+    const startHidingRefHint = (event) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            hideRefHint(refHint);
+        }, 1000);
+    }
+    const resetHidingRefHint = (event) => {
+        if (timeout) clearTimeout(timeout);
+        timeout = null;
+    };
+    link.addEventListener("mouseleave", startHidingRefHint);
+    link.addEventListener("mouseenter", resetHidingRefHint);
+    link.addEventListener("blur", startHidingRefHint);
+    link.addEventListener("focus", resetHidingRefHint);
+    refHint.addEventListener("mouseleave", startHidingRefHint);
+    refHint.addEventListener("mouseenter", resetHidingRefHint);
+    refHint.addEventListener("blur", startHidingRefHint);
+    refHint.addEventListener("focus", resetHidingRefHint);
+
+    refHint.teardownEventListeners = () => {
+        // remove event listeners
+        resetHidingRefHint();
+        link.removeEventListener("mouseleave", startHidingRefHint);
+        link.removeEventListener("mouseenter", resetHidingRefHint);
+        link.removeEventListener("blur", startHidingRefHint);
+        link.removeEventListener("focus", resetHidingRefHint);
+        refHint.removeEventListener("mouseleave", startHidingRefHint);
+        refHint.removeEventListener("mouseenter", resetHidingRefHint);
+        refHint.removeEventListener("blur", startHidingRefHint);
+        refHint.removeEventListener("focus", resetHidingRefHint);
+    };
+}
+
+function positionRefHint(refHint) {
+    const link = refHint.forLink;
+    const linkPos = getRootLevelAbsolutePosition(link);
+    refHint.style.top = linkPos.bottom + "px";
+    refHint.style.left = linkPos.left + "px";
+
+    const panelPos = refHint.getBoundingClientRect();
+    const panelMargin = 8;
+    const maxRight = document.body.parentNode.clientWidth - panelMargin;
+    if (panelPos.right > maxRight) {
+        const overflowAmount = panelPos.right - maxRight;
+        const newLeft = Math.max(panelMargin, linkPos.left - overflowAmount);
+        refHint.style.left = newLeft + "px";
+    }
+}
+
+// TODO: shared util
+// Returns the root-level absolute position {left and top} of element.
+function getRootLevelAbsolutePosition(el) {
+    const boundsRect = el.getBoundingClientRect();
+    let xPos = 0;
+    let yPos = 0;
+
+    while (el) {
+        let xScroll = el.scrollLeft;
+        let yScroll = el.scrollTop;
+
+        // Ignore scrolling of body.
+        if (el.tagName === "BODY") {
+            xScroll = 0;
+            yScroll = 0;
+        }
+        xPos += (el.offsetLeft - xScroll + el.clientLeft);
+        yPos += (el.offsetTop - yScroll + el.clientTop);
+
+        el = el.offsetParent;
+    }
+    return {
+        left: xPos,
+        top: yPos,
+        right: xPos + boundsRect.width,
+        bottom: yPos + boundsRect.height,
+    };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.addEventListener("mouseover", e=>{
+        let link = e.target.closest("a");
+        if(link) showRefHint(link);
+    });
+    document.body.addEventListener("focus", e=>{
+        let link = e.target.closest("a");
+        if(link) showRefHint(link);
+    });
+
+    document.body.addEventListener("click", (e) => {
+        // If not handled already, just hide all link panels.
+        hideAllRefHints();
+    });
+});
+
+window.addEventListener("resize", () => {
+    // Hide any open ref hint.
+    hideAllRefHints();
+});
 }
 </script>
 <script>/* Boilerplate: script-var-click-highlighting */
+"use strict";
+{
 /*
 Color-choosing design:
 
-Colors are ordered by goodness.
-Each color has a usage count (initially zero).
-Each variable has a last-used color.
-
-* If the var has a last-used color, and that color's usage is 0,
-    return that color.
-* Otherwise, return the lowest-indexed color with the lowest usage.
-    Increment the color's usage and set it as the last-used color
-    for that var.
-* On unclicking, decrement usage of the color.
+* Colors are ordered by goodness.
+* On clicking a var, give it the earliest color
+    with the lowest usage in the algorithm.
+* On re-clicking, re-use the var's most recent color
+    if that's not currently being used elsewhere.
 */
-"use strict";
-{
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
-    const indexCounts = new Map();
-    const indexNames = new Map();
-    function highlightSameAlgoVars(v) {
-        // Find the algorithm container.
-        let algoContainer = null;
-        let searchEl = v;
-        while(algoContainer == null && searchEl != document.body) {
-            searchEl = searchEl.parentNode;
-            if(searchEl.hasAttribute("data-algorithm")) {
-                algoContainer = searchEl;
-            }
-        }
 
-        // Not highlighting document-global vars,
-        // too likely to be unrelated.
-        if(algoContainer == null) return;
+const COLOR_COUNT = 7;
 
-        const algoName = algoContainer.getAttribute("data-algorithm");
-        const varName = getVarName(v);
-        const addClass = !v.classList.contains("selected");
-        let highlightClass = null;
-        if(addClass) {
-            const index = chooseHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] += 1;
-            indexNames.set(algoName+"///"+varName, index);
-            highlightClass = nameFromIndex(index);
-        } else {
-            const index = previousHighlightIndex(algoName, varName);
-            indexCounts.get(algoName)[index] -= 1;
-            highlightClass = nameFromIndex(index);
-        }
+document.addEventListener("click", e=>{
+    if(e.target.nodeName == "VAR") {
+        highlightSameAlgoVars(e.target);
+    }
+});
 
-        // Find all same-name vars, and toggle their class appropriately.
+function highlightSameAlgoVars(v) {
+    // Find the algorithm container.
+    let algoContainer = findAlgoContainer(v);
+
+    // Not highlighting document-global vars,
+    // too likely to be unrelated.
+    if(algoContainer == null) return;
+
+    const varName = nameFromVar(v);
+    if(!v.hasAttribute("data-var-color")) {
+        const newColor = chooseHighlightColor(algoContainer, v);
         for(const el of algoContainer.querySelectorAll("var")) {
-            if(getVarName(el) == varName) {
-                el.classList.toggle("selected", addClass);
-                el.classList.toggle(highlightClass, addClass);
+            if(nameFromVar(el) == varName) {
+                el.setAttribute("data-var-color", newColor);
+                el.setAttribute("data-var-last-color", newColor);
+            }
+        }
+    } else {
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(nameFromVar(el) == varName) {
+                el.removeAttribute("data-var-color");
             }
         }
     }
-    function getVarName(el) {
-        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+}
+function findAlgoContainer(el) {
+    while(el != document.body) {
+        if(el.hasAttribute("data-algorithm")) return el;
+        el = el.parentNode;
     }
-    function chooseHighlightIndex(algoName, varName) {
-        let indexes = null;
-        if(indexCounts.has(algoName)) {
-            indexes = indexCounts.get(algoName);
-        } else {
-            // 7 classes right now
-            indexes = [0,0,0,0,0,0,0];
-            indexCounts.set(algoName, indexes);
-        }
+    return null;
+}
+function nameFromVar(el) {
+    return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+}
+function colorCountsFromContainer(container) {
+    const namesFromColor = Array.from({length:COLOR_COUNT}, x=>new Set());
+    for(let v of container.querySelectorAll("var[data-var-color]")) {
+        let color = +v.getAttribute("data-var-color");
+        namesFromColor[color].add(nameFromVar(v));
+    }
 
-        // If the element was recently unclicked,
-        // *and* that color is still unclaimed,
-        // give it back the same color.
-        const lastIndex = previousHighlightIndex(algoName, varName);
-        if(indexes[lastIndex] === 0) return lastIndex;
-
-        // Find the earliest index with the lowest count.
-        const minCount = Math.min.apply(null, indexes);
-        let index = null;
-        for(var i = 0; i < indexes.length; i++) {
-            if(indexes[i] == minCount) {
-                return i;
-            }
+    return namesFromColor.map(x=>x.size);
+}
+function leastUsedColor(colors) {
+    // Find the earliest color with the lowest count.
+    let minCount = Infinity;
+    let minColor = null;
+    for(var i = 0; i < colors.length; i++) {
+        if(colors[i] < minCount) {
+            minColor = i;
+            minCount = colors[i];
         }
     }
-    function previousHighlightIndex(algoName, varName) {
-        return indexNames.get(algoName+"///"+varName);
+    return minColor;
+}
+function chooseHighlightColor(container, v) {
+    const colorCounts = colorCountsFromContainer(container);
+    if(v.hasAttribute("data-var-last-color")) {
+        let color = +v.getAttribute("data-var-last-color");
+        if(colorCounts[color] == 0) return color;
     }
-    function nameFromIndex(index) {
-        return "selected" + index;
-    }
+    return leastUsedColor(colorCounts);
+}
 }
 </script>
