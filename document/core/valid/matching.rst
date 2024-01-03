@@ -453,6 +453,11 @@ A :ref:`defined type <syntax-deftype>` :math:`\deftype_1` matches a type :math:`
      C \vdashdeftypematch \deftype_1 \matchesdeftype \deftype_2
    }
 
+.. note::
+   Note that there is no explicit definition of type _equivalence_,
+   since it coincides with syntactic equality,
+   as used in the premise of the fomer rule above.
+
 
 .. index:: limits
 .. _match-limits:
