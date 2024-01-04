@@ -12,6 +12,8 @@ depends: [
   "dune" {>= "2.9"}
   "ocaml" {>= "4.12"}
   "menhir" {>= "20220210"}
+  "js_of_ocaml" {>= "5.5.2"}
+  "js_of_ocaml-ppx" {>= "5.5.2"}
   "odoc" {with-doc}
 ]
 build: [
