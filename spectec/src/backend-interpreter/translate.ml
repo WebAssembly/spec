@@ -1,6 +1,7 @@
 open Il
 open Printf
 open Al.Ast
+open Al.Free
 open Construct
 open Util.Source
 open Util.Record
@@ -462,7 +463,7 @@ let extract_bound_names lhs rhs targets cont =
     new_lhs, new_rhs, cont
   | _ ->
     let contains_bound_name e =
-      let names = Al.Free.free_expr e in
+      let names = free_expr e in
       names > [] && disjoint names targets in
     let traverse e =
       let conds_ref = ref [] in
@@ -498,7 +499,7 @@ let rec expr2let lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when Al.Free.free_expr l = [] -> [ ifI (cmpC (EqOp, r, l), cont, []) ]
+      | _ when free_expr l = [] -> [ ifI (cmpC (EqOp, r, l), cont, []) ]
       | _ -> expr2let l r targets cont
     ) bindings cont
   in
@@ -623,15 +624,23 @@ let rec iterpr2instrs pr (iter, ids) =
   let instrs = prem2instrs pr in
   let iter', ids' = iter2iter iter, List.map it ids in
 
-  let f = Al.Free.(
-    function
-    | { it = LetI (lhs, rhs); _ } when List.length (intersection (free_expr lhs) ids') > 0 ->
-        let lhs_ids = intersection (free_expr lhs) ids' in
-        let rhs_ids = intersection (free_expr rhs) ids' in
-        [ letI (iterE (lhs, lhs_ids, iter'), iterE (rhs, rhs_ids, iter')) ]
-    (* TODO: iter for IfI *)
-    | i -> [i]
-  ) in
+  let distribute_iter lhs rhs =
+    let lhs_ids = intersection (free_expr lhs) ids' in
+    let rhs_ids = intersection (free_expr rhs) ids' in
+
+    assert (List.length (lhs_ids @ rhs_ids) > 0);
+    iterE (lhs, lhs_ids, iter'), iterE (rhs, rhs_ids, iter')
+  in
+
+  let f i =
+    match i.it with
+    | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ]
+    (* TODO: Merge `cond` and `expr`, and just insert `IterE` rather than distribute iter *)
+    | IfI ({ it = CmpC (op, lhs, rhs); _ }, il1, il2) ->
+      let lhs', rhs' = distribute_iter lhs rhs in
+      [ ifI (cmpC (op, lhs', rhs'), il1, il2) ]
+    | _ -> [ i ]
+  in
   let walk_config = { Al.Walk.default_config with post_instr = f } in
   Al.Walk.walk_instrs walk_config instrs
 
@@ -675,7 +684,7 @@ let insert_deferred_pop deferred_pop =
     let unbound_variable = get_unbound_variable deferred_pop in
     match instr.it with
     | LetI (lhs, _) ->
-      if Al.Free.free_expr lhs |> List.exists ((=) unbound_variable) then
+      if free_expr lhs |> List.exists ((=) unbound_variable) then
         instr :: deferred_pop
       else
         [ instr ]
