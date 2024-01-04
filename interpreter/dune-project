@@ -20,6 +20,4 @@
   (tags (wasm webassembly spec interpreter))
   (depends
     (ocaml (>= 4.12))
-    (menhir (>= 20220210))
-    (js_of_ocaml (>= 5.5.2))
-    (js_of_ocaml-ppx (>= 5.5.2))))
+    (menhir (>= 20220210))))
