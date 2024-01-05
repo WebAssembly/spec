@@ -267,16 +267,24 @@ let insert_assert exp =
         { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueC (Some (exp2expr ty)))
   | _ -> assertI (topValueC None)
 
+let exp2pop e = [ insert_assert e; popI (exp2expr e) ]
+
+
+(* Assume that only the iter variable is unbound *)
+let is_unbound bounds e =
+  match e.it with
+  | Ast.IterE (_, (ListN (n, _), _))
+  when not (Il.Free.subset (Il.Free.free_exp n) bounds) -> true
+  | _ -> false
+let get_unbound e =
+  match e.it with
+  | Ast.IterE (_, (ListN ({ it = VarE n; _ }, _), _)) -> n.it
+  | _ -> failwith "Invalid deferred expression"
+
 (* `Ast.exp list` -> `instr list * Ast.exp list` *)
-let handle_lhs_stack bounds =
-  List.fold_left
-    (fun (instrs, rest) e ->
-      if List.length rest > 0 then (instrs, rest @ [ e ])
-      else
-        match e.it with
-        | Ast.IterE (_, (ListN (n, _), _)) when not (Il.Free.subset (Il.Free.free_exp n) bounds) -> (instrs, [ e ])
-        | _ -> (instrs @ [ insert_assert e; popI (exp2expr e) ], rest))
-    ([], [])
+let handle_lhs_stack bounds = function
+  | h :: t when is_unbound bounds h -> List.concat_map exp2pop t, Some h
+  | vs -> List.concat_map exp2pop vs, None
 
 let handle_context_winstr winstr =
   match winstr.it with
@@ -669,46 +677,37 @@ let rec insert_instrs target il =
 let prems2instrs =
   List.fold_right (fun prem il -> prem2instrs prem |> insert_instrs il)
 
-(* Assume that only the iter variable is unbound in pop instruction *)
-let get_unbound_variable = function
-  | [ _; { it = PopI ({ it = IterE (_, _, ListN ({ it = VarE x; _ }, _)); _ }); _ } ] -> x
-  | instrs ->
-    Al.Print.string_of_instrs 0 instrs
-    |> Printf.sprintf "Invalid instruction for deferred pop: %s"
-    |> failwith
+let insert_deferred = function
+  | None -> Fun.id
+  | Some exp ->
+    (* Translate deferred lhs *)
+    let deferred_instrs = exp2pop exp in
 
-(* Translate and insert `deferred_exp` right after the unbound variable become bound *)
-let insert_deferred_pop deferred_pop =
+    (* Find unbound variable *)
+    let unbound_variable = get_unbound exp in
 
-  let f instr =
-    let unbound_variable = get_unbound_variable deferred_pop in
-    match instr.it with
-    | LetI (lhs, _) ->
-      if free_expr lhs |> List.exists ((=) unbound_variable) then
-        instr :: deferred_pop
-      else
-        [ instr ]
-    | _ -> [ instr ] in
+    (* Insert the translated instructions right after the binding *)
+    let f instr =
+      match instr.it with
+      | LetI (lhs, _) when free_expr lhs |> List.mem unbound_variable ->
+        instr :: deferred_instrs
+      | _ -> [ instr ] in
 
-  let walk_config = { Al.Walk.default_config with post_instr = f } in
-  Al.Walk.walk_instrs walk_config
+    let walk_config = { Al.Walk.default_config with post_instr = f } in
+    Al.Walk.walk_instrs walk_config
 
-(** reduction -> `instr list` **)
+(** `reduction_group` -> `instr list` **)
 
-let reduction2instrs deferred_lhs reduction_group =
-  let _, rhs, prems, _ = reduction_group in
-
-  (* Translate deferred lhs *)
-  let deferred_pops =
-    List.map (fun exp -> [ insert_assert exp; popI (exp2expr exp) ]) deferred_lhs in 
+let reduction2instrs deferred reduction =
+  let _, rhs, prems, _ = reduction in
 
   (* Translate rhs *)
   rhs2instrs rhs
   |> check_nop
   (* Translate premises *)
   |> prems2instrs prems
-  (* Insert deferred pop instructions *)
-  |> List.fold_right insert_deferred_pop deferred_pops
+  (* Translate and insert deferred pop instructions *)
+  |> insert_deferred deferred
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec split_context_winstr ?(note : Ast.typ option) name stack =
@@ -777,27 +776,27 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let inner_params = ref None in
   let instrs = state_instrs @ match context with
     | [(vs, []), None ] ->
-      let pop_instrs, deferred_exps = handle_lhs_stack bounds vs in
+      let pop_instrs, deferred_opt = handle_lhs_stack bounds vs in
       let inner_pop_instrs = handle_context_winstr winstr in
 
       let instrs = match reduction_group |> Util.Lib.List.split_last with
       (* No premise for last reduction rule: either *)
       | hds, (_, rhs, [], _) when List.length hds > 0 ->
-          assert (List.length deferred_exps = 0);
-          let blocks = List.map (reduction2instrs []) hds in
+          assert (deferred_opt = None);
+          let blocks = List.map (reduction2instrs None) hds in
           let either_body1 = List.fold_right Transpile.merge blocks [] in
           let either_body2 = rhs2instrs rhs |> check_nop in
           eitherI (either_body1, either_body2) |> Transpile.push_either
       (* Normal case *)
       | _ ->
-          let blocks = List.map (reduction2instrs deferred_exps) reduction_group in
+          let blocks = List.map (reduction2instrs deferred_opt) reduction_group in
           List.fold_right Transpile.merge blocks [] in
 
       pop_instrs @ inner_pop_instrs @ instrs
     (* The target instruction is inside a context *)
     | [ ([], []), Some context ; (vs, _is), None ] ->
       let head_instrs = handle_context context vs in
-      let body_instrs = List.map (reduction2instrs []) reduction_group |> List.concat in
+      let body_instrs = List.map (reduction2instrs None) reduction_group |> List.concat in
       head_instrs @ body_instrs
     (* The target instruction is inside different contexts (i.e. return in both label and frame) *)
     | [ ([], [ _ ]), None ] -> ( try
@@ -889,17 +888,6 @@ let translate_rules il =
   let unified_reduction_groups = List.map Il2il.unify_lhs reduction_groups in
 
   List.map reduction_group2algo unified_reduction_groups
-
-(* `Ast.exp` -> `Ast.path` -> `expr` *)
-let path2expr exp path =
-  let rec path2expr' path =
-    match path.it with
-    | Ast.RootP -> exp
-    | Ast.IdxP (p, e) -> Ast.IdxE (path2expr' p, e) $$ (path.at % path.note)
-    | Ast.SliceP (p, e1, e2) -> Ast.SliceE (path2expr' p, e1, e2) $$ (path.at % path.note)
-    | Ast.DotP (p, a) -> Ast.DotE (path2expr' p, a) $$ (path.at % path.note)
-  in
-  path2expr' path |> exp2expr
 
 let config_helper2instrs before after arity return clause =
   let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
