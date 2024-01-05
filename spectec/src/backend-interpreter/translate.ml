@@ -859,11 +859,11 @@ let extract_rules def =
   | _ -> []
 
 let name_of_rule rule =
-  let (Ast.RuleD (id1, _, _, _, _)) = rule.it in
+  let Ast.RuleD (id1, _, _, _, _) = rule.it in
   String.split_on_char '-' id1.it |> List.hd
 
 let rule2tup rule =
-  let (Ast.RuleD (_, tenv, _, exp, prems)) = rule.it in
+  let Ast.RuleD (_, tenv, _, exp, prems) = rule.it in
   match exp.it with
   | Ast.TupE [ lhs; rhs ] -> (lhs, rhs, prems, tenv)
   | _ ->
@@ -889,70 +889,97 @@ let translate_rules il =
 
   List.map reduction_group2algo unified_reduction_groups
 
-let config_helper2instrs before after arity return clause =
-  let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  match e2.it with
-  | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-    { it = Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], { it = Ast.TupE [
-      { it = Ast.VarE _s; _ }; { it = Ast.VarE f; _ }
-    ]; _ }); _ };
-    lhs
-  ]; _ }) ->
-    let enter =
-      enterI (frameE (Some arity, varE f.it), listE ([caseE (("FRAME_", ""), [])]), rhs2instrs lhs)
-    in
-    before @ enter :: after @ return |> prems2instrs prems
-  | _ -> failwith "unreachable"
+let is_store expr = match expr.it with
+  | Ast.VarE s ->
+    s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
+  | _ -> false
 
-let normal_helper2instrs clause =
-  let Ast.DefD (_binds, _e1, e2, prems) = clause.it in
-  [ returnI (Option.some (exp2expr e2)) ] |> prems2instrs prems
+let is_frame expr = match expr.it with
+  | Ast.VarE f ->
+    f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
+  | _ -> false
+
+(* Destructure config into store, frame, and inner_expression *)
+let destructure_config config =
+  match config.it with
+  | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup1) ->
+    (match tup1.it with
+    | Ast.TupE [ state; exp ] ->
+      (match state.it with
+      | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup2) ->
+        (match tup2.it with
+        | Ast.TupE [ store; frame ]
+        when is_store store && is_frame frame -> store, frame, exp
+        | _ -> failwith "Invalid config")
+      | _ -> failwith "Invalid config")
+    | _ -> failwith "Invalid config")
+  | _ -> failwith "Invalid config"
+
+let helper2instrs name clause =
+  let Ast.DefD (_, _, return_value, prems) = clause.it in
+
+  (* TODO: temporary hack for adding return instructions in instantate & invoke *)
+  let return_instrs =
+    (* Return instructions for 'instantiate' *)
+    if name = "instantiate" then
+      let store, frame, rhs = destructure_config return_value in
+      [
+        enterI (
+          frameE (Some (numE 0L), exp2expr frame),
+          listE ([ caseE (("FRAME_", ""), []) ]), rhs2instrs rhs
+        );
+        returnI (Some (tupE [ exp2expr store; varE "mm" ]))
+      ]
+    (* Return instructions for 'invoke *)
+    else if name = "invoke" then
+      let _, frame, rhs = destructure_config return_value in
+      [
+        letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
+        enterI (
+          frameE (Some (varE "k"), exp2expr frame),
+          listE ([caseE (("FRAME_", ""), [])]), rhs2instrs rhs
+        );
+        popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
+        returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))
+      ]
+    else
+      [ returnI (Option.some (exp2expr return_value)) ]
+  in
+
+  prems2instrs prems return_instrs
 
 (** Main translation for helper functions **)
 let helpers2algo partial_funcs def =
   match def.it with
-  | Ast.DecD (_, _, _, []) -> None
-  | Ast.DecD (id, _t1, _t2, clauses) ->
+  | Ast.DecD (id, _, _, clauses) when List.length clauses > 0->
       let name = id.it in
       let unified_clauses = Il2il.unify_defs clauses in
-      let Ast.DefD (_, params, rhs, _) = (List.hd unified_clauses).it in
+      let Ast.DefD (_, params, _, _) = List.hd unified_clauses |> it in
       let al_params =
-        (match params.it with Ast.TupE exps -> exps | _ -> [ params ])
-        |> List.map exp2expr
+        match params.it with
+        | Ast.TupE exps -> List.map exp2expr exps
+        | _ -> [ exp2expr params ]
       in
-      (* TODO: temporary hack for adding return instruction in instantation & invocation *)
-      let translator =
-        if id.it = "instantiate" then
-          let final_store = extract_store rhs |> exp2expr in
-          [returnI (Some (tupE [final_store; varE "mm"]))] |> config_helper2instrs [] [] (numE 0L)
-        else if id.it = "invoke" then
-          [returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))]
-          |> config_helper2instrs 
-            [letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)))] 
-            [popI (iterE (varE "val", ["val"], ListN (varE "k", None)))]
-            (varE "k")
-        else
-          normal_helper2instrs
-      in
-      let blocks = List.map translator unified_clauses in
+      let blocks = List.map (helper2instrs name) unified_clauses in
       let body =
         List.fold_right Transpile.merge blocks []
         |> Transpile.enhance_readability
-        |> if (List.exists ((=) id) partial_funcs) then (fun x -> x ) else Transpile.enforce_return in
+        |> if List.mem id partial_funcs then Fun.id else Transpile.enforce_return in
 
       let algo = FuncA (name, al_params, body) in
       Some algo
   | _ -> None
 
-let is_partial_hint hint = hint.Ast.hintid.it = "partial"
-let get_partial_func def = match def.it with
-  | Ast.HintD {it = Ast.DecH (id, hints); _} when List.exists is_partial_hint hints ->
+let get_partial_func_name def =
+  let is_partial hint = hint.Ast.hintid.it = "partial" in
+  match def.it with
+  | Ast.HintD { it = Ast.DecH (id, hints); _ } when List.exists is_partial hints ->
     Some (id)
   | _ -> None
 
 (** Entry for translating helper functions **)
 let translate_helpers il =
-  let partial_funcs = List.filter_map get_partial_func il in
+  let partial_funcs = List.filter_map get_partial_func_name il in
   List.filter_map (helpers2algo partial_funcs) il
 
 (** Entry **)
