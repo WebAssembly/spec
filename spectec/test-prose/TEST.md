@@ -4048,9 +4048,9 @@ execution_of_SWIZZLE sh
 5. Let i* be $lanes(sh, cv_2).
 6. Assert: Due to validation, sh is of the case SHAPE.
 7. Let (SHAPE lnt lns) be sh.
-8. Assert: Due to validation, k < |i*|.
+8. Assert: Due to validation, k^(k<lns) < |i*|^(k<lns).
 9. Let c* be $lanes(sh, cv_1) ++ 0^(256 - lns).
-10. Assert: Due to validation, i*[k] < |c*|.
+10. Assert: Due to validation, i*[k]^(k<lns) < |c*|^(k<lns).
 11. Let c' be $inverse_of_lanes(sh, c*[i*[k]]^(k<lns)).
 12. Push (VVCONST V128 c') to the stack.
 
@@ -4062,8 +4062,8 @@ execution_of_SHUFFLE sh laneidx*
 5. Let i* be $lanes(sh, cv_1) ++ $lanes(sh, cv_2).
 6. Assert: Due to validation, sh is of the case SHAPE.
 7. Let (SHAPE lnt lns) be sh.
-8. Assert: Due to validation, laneidx*[k] < |i*|.
-9. Assert: Due to validation, k < |laneidx*|.
+8. Assert: Due to validation, laneidx*[k]^(k<lns) < |i*|^(k<lns).
+9. Assert: Due to validation, k^(k<lns) < |laneidx*|^(k<lns).
 10. Let c be $inverse_of_lanes(sh, i*[laneidx*[k]]^(k<lns)).
 11. Push (VVCONST V128 c) to the stack.
 
@@ -4146,7 +4146,7 @@ execution_of_ALL_TRUE sh
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 c) from the stack.
 3. Let i_1* be $lanes(sh, c).
-4. If i_1 is not 0, then:
+4. If i_1* is not 0*, then:
   a. Push (I32.CONST 1) to the stack.
 5. Else:
   a. Push (I32.CONST 0) to the stack.

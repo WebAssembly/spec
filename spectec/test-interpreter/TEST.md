@@ -869,6 +869,230 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 ===== select.wast =====
 - 118/118 (100.00%)
 
+===== simd_address.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/42 (0.00%)
+
+===== simd_align.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/8 (0.00%)
+
+===== simd_bit_shift.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/211 (0.00%)
+
+===== simd_bitwise.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/139 (0.00%)
+
+===== simd_boolean.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/259 (0.00%)
+
+===== simd_const.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/265 (0.00%)
+
+===== simd_conversions.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/232 (0.00%)
+
+===== simd_f32x4.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/772 (0.00%)
+
+===== simd_f32x4_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/1803 (0.00%)
+
+===== simd_f32x4_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/2581 (0.00%)
+
+===== simd_f32x4_pmin_pmax.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/3872 (0.00%)
+
+===== simd_f32x4_rounding.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/176 (0.00%)
+
+===== simd_f64x2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/793 (0.00%)
+
+===== simd_f64x2_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/1806 (0.00%)
+
+===== simd_f64x2_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/2659 (0.00%)
+
+===== simd_f64x2_pmin_pmax.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/3872 (0.00%)
+
+===== simd_f64x2_rounding.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/176 (0.00%)
+
+===== simd_i16x8_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/181 (0.00%)
+
+===== simd_i16x8_arith2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/151 (0.00%)
+
+===== simd_i16x8_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/433 (0.00%)
+
+===== simd_i16x8_extadd_pairwise_i8x16.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/16 (0.00%)
+
+===== simd_i16x8_extmul_i8x16.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/104 (0.00%)
+
+===== simd_i16x8_q15mulr_sat_s.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/26 (0.00%)
+
+===== simd_i16x8_sat_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/204 (0.00%)
+
+===== simd_i32x4_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/181 (0.00%)
+
+===== simd_i32x4_arith2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/121 (0.00%)
+
+===== simd_i32x4_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/433 (0.00%)
+
+===== simd_i32x4_dot_i16x8.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/26 (0.00%)
+
+===== simd_i32x4_extadd_pairwise_i16x8.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/16 (0.00%)
+
+===== simd_i32x4_extmul_i16x8.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/104 (0.00%)
+
+===== simd_i32x4_trunc_sat_f32x4.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/102 (0.00%)
+
+===== simd_i32x4_trunc_sat_f64x2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/102 (0.00%)
+
+===== simd_i64x2_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/187 (0.00%)
+
+===== simd_i64x2_arith2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/21 (0.00%)
+
+===== simd_i64x2_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/102 (0.00%)
+
+===== simd_i64x2_extmul_i32x4.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/104 (0.00%)
+
+===== simd_i8x16_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/121 (0.00%)
+
+===== simd_i8x16_arith2.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/184 (0.00%)
+
+===== simd_i8x16_cmp.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/413 (0.00%)
+
+===== simd_i8x16_sat_arith.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/188 (0.00%)
+
+===== simd_int_to_int_extend.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/228 (0.00%)
+
+===== simd_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/274 (0.00%)
+
+===== simd_load.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/17 (0.00%)
+
+===== simd_load16_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/32 (0.00%)
+
+===== simd_load32_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/20 (0.00%)
+
+===== simd_load64_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/12 (0.00%)
+
+===== simd_load8_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/48 (0.00%)
+
+===== simd_load_extend.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/84 (0.00%)
+
+===== simd_load_splat.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/112 (0.00%)
+
+===== simd_load_zero.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/27 (0.00%)
+
+===== simd_splat.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/158 (0.00%)
+
+===== simd_store.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/17 (0.00%)
+
+===== simd_store16_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/32 (0.00%)
+
+===== simd_store32_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/20 (0.00%)
+
+===== simd_store64_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/12 (0.00%)
+
+===== simd_store8_lane.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
+- 0/48 (0.00%)
+
 ===== stack.wast =====
 - 5/5 (100.00%)
 
@@ -923,6 +1147,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [24511/24539] (99.89%; Normalized 99.35%)
+Total [24511/48866] (50.16%; Normalized 62.75%)
 == Complete.
 ```
