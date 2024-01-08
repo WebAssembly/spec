@@ -831,7 +831,7 @@ and interp_instr (env: env) (instr: instr): env =
     a := Array.append (!a) [|v|];
     env
   | _ ->
-    structured_string_of_instr 0 instr
+    structured_string_of_instr instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
     |> failwith
   in

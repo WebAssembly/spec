@@ -197,11 +197,22 @@ and string_of_cond cond =
       (string_of_expr e2)
   | YetC s -> sprintf "YetC (%s)" s
 
-let make_index index depth =
-  index := !index + 1;
+let _index = ref 0
 
-  let num_idx = string_of_int !index in
-  let alp_idx = Char.escaped (Char.chr (96 + !index)) in
+let get_index () = !_index
+let set_index i = _index := i
+let enter_block f instrs =
+  let index = get_index () in
+  set_index 0;
+  let res = f instrs in
+  set_index index;
+  res
+
+let make_index depth =
+  _index := !_index + 1;
+
+  let num_idx = string_of_int !_index in
+  let alp_idx = Char.escaped (Char.chr (96 + !_index)) in
 
   match depth mod 4 with
   | 0 -> num_idx ^ "."
@@ -210,93 +221,95 @@ let make_index index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> assert false
 
-let rec string_of_instr index depth instr =
+
+let rec string_of_instr' depth instr =
   match instr.it with
   | IfI (c, il, []) ->
-      sprintf "%s If %s, then:%s" (make_index index depth) (string_of_cond c)
-        (string_of_instrs (depth + 1) il)
+      sprintf "%s If %s, then:%s" (make_index depth) (string_of_cond c)
+        (string_of_instrs' (depth + 1) il)
   | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
-      let if_index = make_index index depth in
-      let else_if_index = make_index index depth in
+      let if_index = make_index depth in
+      let else_if_index = make_index depth in
       sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
         if_index
         (string_of_cond c)
-        (string_of_instrs (depth + 1) il1)
+        (string_of_instrs' (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
         (string_of_cond inner_c)
-        (string_of_instrs (depth + 1) inner_il1)
+        (string_of_instrs' (depth + 1) inner_il1)
   | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
-      let if_index = make_index index depth in
-      let else_if_index = make_index index depth in
-      let else_index = make_index index depth in
+      let if_index = make_index depth in
+      let else_if_index = make_index depth in
+      let else_index = make_index depth in
       sprintf "%s If %s, then:%s\n%s Else if %s, then:%s\n%s Else:%s"
         if_index
         (string_of_cond c)
-        (string_of_instrs (depth + 1) il1)
+        (string_of_instrs' (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
         (string_of_cond inner_c)
-        (string_of_instrs (depth + 1) inner_il1)
+        (string_of_instrs' (depth + 1) inner_il1)
         (repeat indent depth ^ else_index)
-        (string_of_instrs (depth + 1) inner_il2)
+        (string_of_instrs' (depth + 1) inner_il2)
   | IfI (c, il1, il2) ->
-      let if_index = make_index index depth in
-      let else_index = make_index index depth in
+      let if_index = make_index depth in
+      let else_index = make_index depth in
       sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_cond c)
-        (string_of_instrs (depth + 1) il1)
+        (string_of_instrs' (depth + 1) il1)
         (repeat indent depth ^ else_index)
-        (string_of_instrs (depth + 1) il2)
+        (string_of_instrs' (depth + 1) il2)
   | OtherwiseI il ->
-      sprintf "%s Otherwise:%s" (make_index index depth)
-        (string_of_instrs (depth + 1) il)
+      sprintf "%s Otherwise:%s" (make_index depth)
+        (string_of_instrs' (depth + 1) il)
   | EitherI (il1, il2) ->
-      let either_index = make_index index depth in
-      let or_index = make_index index depth in
+      let either_index = make_index depth in
+      let or_index = make_index depth in
       sprintf "%s Either:%s\n%s Or:%s" either_index
-        (string_of_instrs (depth + 1) il1)
+        (string_of_instrs' (depth + 1) il1)
         (repeat indent depth ^ or_index)
-        (string_of_instrs (depth + 1) il2)
-  | AssertI c -> sprintf "%s Assert: Due to validation, %s." (make_index index depth) (string_of_cond c)
+        (string_of_instrs' (depth + 1) il2)
+  | AssertI c -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_cond c)
   | PushI e ->
-      sprintf "%s Push %s to the stack." (make_index index depth)
+      sprintf "%s Push %s to the stack." (make_index depth)
         (string_of_expr e)
   | PopI e ->
-      sprintf "%s Pop %s from the stack." (make_index index depth)
+      sprintf "%s Pop %s from the stack." (make_index depth)
         (string_of_expr e)
   | PopAllI e ->
-      sprintf "%s Pop all values %s from the stack." (make_index index depth)
+      sprintf "%s Pop all values %s from the stack." (make_index depth)
         (string_of_expr e)
   | LetI (n, e) ->
-      sprintf "%s Let %s be %s." (make_index index depth) (string_of_expr n)
+      sprintf "%s Let %s be %s." (make_index depth) (string_of_expr n)
         (string_of_expr e)
-  | TrapI -> sprintf "%s Trap." (make_index index depth)
-  | NopI -> sprintf "%s Do nothing." (make_index index depth)
+  | TrapI -> sprintf "%s Trap." (make_index depth)
+  | NopI -> sprintf "%s Do nothing." (make_index depth)
   | ReturnI e_opt ->
-      sprintf "%s Return%s." (make_index index depth)
+      sprintf "%s Return%s." (make_index depth)
         (string_of_opt " " string_of_expr "" e_opt)
   | EnterI (e1, e2, il) ->
-      sprintf "%s Enter %s with label %s:%s" (make_index index depth)
-        (string_of_expr e1) (string_of_expr e2) (string_of_instrs (depth + 1) il)
+      sprintf "%s Enter %s with label %s:%s" (make_index depth)
+        (string_of_expr e1) (string_of_expr e2) (string_of_instrs' (depth + 1) il)
   | ExecuteI e ->
-      sprintf "%s Execute %s." (make_index index depth) (string_of_expr e)
+      sprintf "%s Execute %s." (make_index depth) (string_of_expr e)
   | ExecuteSeqI e ->
-      sprintf "%s Execute the sequence (%s)." (make_index index depth) (string_of_expr e)
+      sprintf "%s Execute the sequence (%s)." (make_index depth) (string_of_expr e)
   | PerformI (n, el) ->
-      sprintf "%s Perform %s." (make_index index depth) (string_of_expr (CallE (n, el) $ instr.at))
-  | ExitI -> make_index index depth ^ " Exit current context."
+      sprintf "%s Perform %s." (make_index depth) (string_of_expr (CallE (n, el) $ instr.at))
+  | ExitI -> make_index depth ^ " Exit current context."
   | ReplaceI (e1, p, e2) ->
-      sprintf "%s Replace %s%s with %s." (make_index index depth)
+      sprintf "%s Replace %s%s with %s." (make_index depth)
         (string_of_expr e1) (string_of_path p) (string_of_expr e2)
   | AppendI (e1, e2) ->
-      sprintf "%s Append %s to the %s." (make_index index depth)
+      sprintf "%s Append %s to the %s." (make_index depth)
         (string_of_expr e2) (string_of_expr e1)
-  | YetI s -> sprintf "%s YetI: %s." (make_index index depth) s
+  | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 
-and string_of_instrs depth instrs =
-  let index = ref 0 in
-  List.fold_left
-    (fun acc i ->
-      acc ^ "\n" ^ repeat indent depth ^ string_of_instr index depth i)
-    "" instrs
+and string_of_instrs' depth instrs =
+  let f acc i =
+    acc ^ "\n" ^ repeat indent depth ^ string_of_instr' depth i in
+  enter_block (List.fold_left f "") instrs
+
+let string_of_instr = string_of_instr' 0
+let string_of_instrs = string_of_instrs' 0
 
 let string_of_algorithm = function
   | RuleA (name, params, instrs) ->
@@ -304,13 +317,13 @@ let string_of_algorithm = function
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
-      ^ string_of_instrs 0 instrs ^ "\n"
+      ^ string_of_instrs instrs ^ "\n"
   | FuncA (name, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ string_of_expr p)
           "" params
-      ^ string_of_instrs 0 instrs ^ "\n"
+      ^ string_of_instrs instrs ^ "\n"
 
 (* structured stringifier *)
 
@@ -515,26 +528,26 @@ and structured_string_of_cond cond =
 
 (* instruction *)
 
-let rec structured_string_of_instr depth instr =
+let rec structured_string_of_instr' depth instr =
   match instr.it with
   | IfI (c, t, e) ->
       "IfI (\n"
       ^ repeat indent (depth + 1)
       ^ structured_string_of_cond c
       ^ "\n" ^ repeat indent depth ^ "then\n"
-      ^ structured_string_of_instrs (depth + 1) t
+      ^ structured_string_of_instrs' (depth + 1) t
       ^ repeat indent depth ^ "else\n"
-      ^ structured_string_of_instrs (depth + 1) e
+      ^ structured_string_of_instrs' (depth + 1) e
       ^ repeat indent depth ^ ")"
   | OtherwiseI b ->
       "OtherwiseI (\n"
-      ^ structured_string_of_instrs (depth + 1) b
+      ^ structured_string_of_instrs' (depth + 1) b
       ^ repeat indent depth ^ ")"
   | EitherI (il1, il2) ->
       "EitherI (\n"
-      ^ structured_string_of_instrs (depth + 1) il1
+      ^ structured_string_of_instrs' (depth + 1) il1
       ^ repeat indent depth ^ "Or\n"
-      ^ structured_string_of_instrs (depth + 1) il2
+      ^ structured_string_of_instrs' (depth + 1) il2
       ^ repeat indent depth ^ ")"
   | AssertI c -> "AssertI (" ^ structured_string_of_cond c ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
@@ -556,7 +569,7 @@ let rec structured_string_of_instr depth instr =
       ^ ", "
       ^ structured_string_of_expr e2
       ^ ", "
-      ^ structured_string_of_instrs (depth + 1) il
+      ^ structured_string_of_instrs' (depth + 1) il
       ^ ")"
   | ExecuteI e -> "ExecuteI (" ^ structured_string_of_expr e ^ ")"
   | ExecuteSeqI e -> "ExecuteSeqI (" ^ structured_string_of_expr e ^ ")"
@@ -583,11 +596,13 @@ let rec structured_string_of_instr depth instr =
       ^ ")"
   | YetI s -> "YetI " ^ s
 
-and structured_string_of_instrs depth instrs =
+and structured_string_of_instrs' depth instrs =
   List.fold_left
-    (fun acc i ->
-      acc ^ repeat indent depth ^ structured_string_of_instr depth i ^ "\n")
+    (fun acc i -> acc ^ repeat indent depth ^ structured_string_of_instr' depth i ^ "\n")
     "" instrs
+
+let structured_string_of_instr = structured_string_of_instr' 0
+let structured_string_of_instrs = structured_string_of_instrs' 0
 
 let structured_string_of_algorithm = function
   | RuleA (name, params, instrs) ->
@@ -596,11 +611,11 @@ let structured_string_of_algorithm = function
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params
       ^ ":\n"
-      ^ structured_string_of_instrs 1 instrs
+      ^ structured_string_of_instrs' 1 instrs
   | FuncA (name, params, instrs) ->
       name
       ^ List.fold_left
           (fun acc p -> acc ^ " " ^ structured_string_of_expr p)
           "" params
       ^ ":\n"
-      ^ structured_string_of_instrs 1 instrs
+      ^ structured_string_of_instrs' 1 instrs
