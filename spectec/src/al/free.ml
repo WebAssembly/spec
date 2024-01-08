@@ -11,6 +11,9 @@ let intersection l1 l2 =
   let s2 = IdSet.of_list l2 in
   IdSet.inter s1 s2 |> IdSet.elements
 
+
+(* Expressions *)
+
 let rec free_expr expr =
   match expr.it with
   | NumE _
@@ -18,8 +21,8 @@ let rec free_expr expr =
   | GetCurContextE
   | GetCurFrameE
   | YetE _ -> []
-  | VarE n
-  | SubE (n, _) -> [n]
+  | VarE id
+  | SubE (id, _) -> [id]
   | UnE (_, e)
   | LenE e
   | ArityE e
@@ -29,27 +32,38 @@ let rec free_expr expr =
   | ArrowE (e1, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) ->
-      Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e
-  | CallE (_, es)
-  | TupE es
-  | ListE es
-  | CaseE (_, es) -> List.concat_map free_expr es
+    Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e
+  | CallE (_, el)
+  | TupE el
+  | ListE el
+  | CaseE (_, el) -> List.concat_map free_expr el
   | StrE r -> Record.fold (fun _k e acc -> free_expr e @ acc) r []
   | AccE (e, p) -> free_expr e @ free_path p
   | ExtE (e1, ps, e2, _)
   | UpdE (e1, ps, e2) -> free_expr e1 @ List.concat_map free_path ps @ free_expr e2
   | OptE e_opt -> List.concat_map free_expr (Option.to_list e_opt)
   | IterE (e, _, i) -> free_expr e @ free_iter i
+
+
+(* Iters *)
+
 and free_iter = function
   | Opt
   | List
   | List1 -> []
   | ListN (e, id_opt) -> Option.to_list id_opt @ free_expr e
+
+
+(* Paths *)
+
 and free_path path =
   match path.it with 
   | IdxP e -> free_expr e
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
   | DotP _ -> []
+
+
+(* Conditions *)
 
 let rec free_cond cond =
   match cond.it with
@@ -69,30 +83,19 @@ let rec free_cond cond =
   | TopValueC (Some e)
   | TopValuesC e -> free_expr e
 
-let free_ns_iter (_, iter) = free_iter iter
+
+(* Instructions *)
 
 let rec free_instr instr =
   match instr.it with
   | IfI (c, il1, il2) -> free_cond c @ List.concat_map free_instr il1 @ List.concat_map free_instr il2
   | OtherwiseI il -> List.concat_map free_instr il
   | EitherI (il1, il2) -> List.concat_map free_instr il1 @ List.concat_map free_instr il2
-  (* empty *)
-  | TrapI
-  | NopI
-  | ReturnI None
-  | ExitI
-  | YetI _ -> []
-  (* One e *)
-  | PushI e
-  | PopI e
-  | PopAllI e
-  | ReturnI (Some e)
-  | ExecuteI e
-  | ExecuteSeqI e -> free_expr e
-  (* Two e *)
-  | LetI (e1, e2)
-  | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
-  (* Others *)
+  | TrapI | NopI | ReturnI None | ExitI | YetI _ -> []
+  | PushI e | PopI e | PopAllI e | ReturnI (Some e) 
+  | ExecuteI e | ExecuteSeqI e -> 
+    free_expr e
+  | LetI (e1, e2) | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
   | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il
   | AssertI c -> free_cond c
   | PerformI (_, el) -> List.concat_map free_expr el

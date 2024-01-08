@@ -1,7 +1,6 @@
 open Ast
 
-val string_of_opt : string -> ('a -> string) -> string -> 'a option -> string
-val string_of_list : ('a -> string) -> string -> string -> string -> 'a list -> string
+val string_of_list : ('a -> string) -> string -> 'a list -> string
 val string_of_kwd : kwd -> string
 val string_of_value : value -> string
 val string_of_iter : iter -> string

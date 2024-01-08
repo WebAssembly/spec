@@ -80,11 +80,13 @@ module Env = struct include Map.Make (String)
 
   (* Printer *)
   let string_of_env env =
+    "\n{" ^
     Print.string_of_list
       (fun (k, v) ->
         k ^ ": " ^ Print.string_of_value v)
-      "\n{" ",\n  " "\n}"
-      (bindings env)
+      ",\n  "
+      (bindings env) ^
+    "\n}"
 
   (* Environment API *)
   let find key env =

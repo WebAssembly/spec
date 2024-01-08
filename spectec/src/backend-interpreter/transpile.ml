@@ -84,7 +84,7 @@ let rec count_instrs instrs =
 
 let rec unify acc l1 l2 =
   match (l1, l2) with
-  | h1 :: t1, h2 :: t2 when Eq.instr h1 h2 -> unify (h1 :: acc) t1 t2
+  | h1 :: t1, h2 :: t2 when Eq.eq_instr h1 h2 -> unify (h1 :: acc) t1 t2
   | _ -> (List.rev acc, l1, l2)
 let unify_head = unify []
 let unify_tail l1 l2 =
@@ -253,7 +253,7 @@ let push_either =
 
 let merge_three_branches i =
   match i.it with
-  | IfI (c1, il1, [ { it = IfI (c2, il2, il3); _ } ]) when Eq.instrs il1 il3 ->
+  | IfI (c1, il1, [ { it = IfI (c2, il2, il3); _ } ]) when Eq.eq_instrs il1 il3 ->
     ifI (binC (AndOp, neg c1, c2), il2, il1)
   | _ -> i
 
@@ -350,7 +350,7 @@ let rec enhance_readability instrs =
     |> Walk.walk_instrs walk_config
   in
 
-  if Eq.instrs instrs instrs' then instrs else enhance_readability instrs'
+  if Eq.eq_instrs instrs instrs' then instrs else enhance_readability instrs'
 
 let rec mk_access ps base =
   match ps with

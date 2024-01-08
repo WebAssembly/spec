@@ -46,7 +46,7 @@ let rec walk_expr f e =
       | GetCurContextE -> e.it
       | UnE (op, e') -> UnE (op, new_ e')
       | BinE (op, e1, e2) -> BinE (op, new_ e1, new_ e2)
-      | CallE (fname, args) -> CallE (fname, List.map new_ args)
+      | CallE (id, el) -> CallE (id, List.map new_ el)
       (* TODO: Implement walker for iter *)
       | ListE el -> ListE (List.map new_ el)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
@@ -55,17 +55,17 @@ let rec walk_expr f e =
       | AccE (e, p) -> AccE (new_ e, walk_path f p)
       | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
       | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)
-      | CaseE (t, el) -> CaseE (t, List.map new_ el)
+      | CaseE (kwd, el) -> CaseE (kwd, List.map new_ el)
       | OptE e -> OptE (Option.map new_ e)
-      | TupE es -> TupE (List.map new_ es)
+      | TupE el -> TupE (List.map new_ el)
       | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
       | ArityE e' -> ArityE (new_ e')
       | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
       | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)
       | ContE e' -> ContE (new_ e')
-      | VarE n -> VarE n
-      | SubE (n, t) -> SubE (n, t)
-      | IterE (e, names, iter) -> IterE (new_ e, names, iter)
+      | VarE id -> VarE id
+      | SubE (id, t) -> SubE (id, t)
+      | IterE (e, ids, iter) -> IterE (new_ e, ids, iter)
       | YetE _ -> e.it
     in
     { e with it = e' }
@@ -101,7 +101,7 @@ let rec walk_cond f c =
       | UnC (op, inner_c) -> UnC (op, new_ inner_c)
       | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
       | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)
-      | ContextKindC (s, e) -> ContextKindC (s, new_e e)
+      | ContextKindC (kwd, e) -> ContextKindC (kwd, new_e e)
       | IsCaseOfC (e, s) -> IsCaseOfC (new_e e, s)
       | IsDefinedC e -> IsDefinedC (new_e e)
       | HasTypeC (e, t) -> HasTypeC(new_e e, t)
@@ -138,14 +138,14 @@ let rec walk_instr f (instr:instr) : instr list =
       | PushI e -> PushI (new_e e)
       | PopI e -> PopI (new_e e)
       | PopAllI e -> PopAllI (new_e e)
-      | LetI (n, e) -> LetI (new_e n, new_e e)
+      | LetI (e1, e2) -> LetI (new_e e1, new_e e2)
       | TrapI -> TrapI
       | NopI -> NopI
       | ReturnI e_opt -> ReturnI (Option.map new_e e_opt)
       | EnterI (e1, e2, il) -> EnterI (new_e e1, new_e e2, new_ il)
       | ExecuteI e -> ExecuteI (new_e e)
       | ExecuteSeqI e -> ExecuteSeqI (new_e e)
-      | PerformI (n, el) -> PerformI (n, List.map new_e el)
+      | PerformI (id, el) -> PerformI (id, List.map new_e el)
       | ExitI -> ExitI
       | ReplaceI (e1, p, e2) -> ReplaceI (new_e e1, walk_path f p, new_e e2)
       | AppendI (e1, e2) -> AppendI (new_e e1, new_e e2)
@@ -161,5 +161,5 @@ let rec walk_instr f (instr:instr) : instr list =
 and walk_instrs f = walk_instr f |> List.concat_map
 
 let walk f algo = match algo with
-  | RuleA (name, params, body) -> RuleA (name, params, walk_instrs f body)
-  | FuncA (name, params, body) -> FuncA (name, params, walk_instrs f body)
+  | RuleA (kwd, params, body) -> RuleA (kwd, params, walk_instrs f body)
+  | FuncA (id, params, body) -> FuncA (id, params, walk_instrs f body)

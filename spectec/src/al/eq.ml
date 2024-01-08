@@ -1,18 +1,18 @@
 open Ast
 open Util.Source
 
-let rec instr i1 i2 =
+let rec eq_instr i1 i2 =
   match i1.it, i2.it with
   | IfI (c1, il11, il12), IfI (c2, il21, il22) ->
     c1 = c2 &&
-    instrs il11 il21 && 
-    instrs il12 il22
+    eq_instrs il11 il21 && 
+    eq_instrs il12 il22
   | EitherI (il11, il12), EitherI (il21, il22) ->
-    instrs il11 il21 && 
-    instrs il12 il22
+    eq_instrs il11 il21 && 
+    eq_instrs il12 il22
   | EnterI (e11, e12, il1), EnterI (e21, e22, il2) ->
     e11 = e21 && e12 = e22 &&
-    instrs il1 il2
+    eq_instrs il1 il2
   | AssertI c1, AssertI c2 -> c1 = c2
   | PushI e1, PushI e2
   | PopI e1, PopI e2
@@ -28,10 +28,10 @@ let rec instr i1 i2 =
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
     e11 = e21 && e12 = e22 && p1 = p2
   | OtherwiseI il1, OtherwiseI il2 ->
-    instrs il1 il2
+    eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2
   | TrapI, TrapI | ExitI, ExitI | NopI, NopI -> true
   | _ -> false
 
-and instrs il1 il2 =
-  List.length il1 = List.length il2 && List.for_all2 instr il1 il2
+and eq_instrs il1 il2 =
+  List.length il1 = List.length il2 && List.for_all2 eq_instr il1 il2
