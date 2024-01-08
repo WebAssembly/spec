@@ -673,7 +673,7 @@ let rec insert_instrs target il =
   | _ -> il @ target
 
 
-(* `premise list` -> `instr list` -> `instr list` *)
+(* `premise list` -> `instr list` (return instructions) -> `instr list` *)
 let prems2instrs =
   List.fold_right (fun prem il -> prem2instrs prem |> insert_instrs il)
 
@@ -893,14 +893,13 @@ let is_store expr = match expr.it with
   | Ast.VarE s ->
     s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
   | _ -> false
-
 let is_frame expr = match expr.it with
   | Ast.VarE f ->
     f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
   | _ -> false
 
-(* Destructure config into store, frame, and inner_expression *)
-let destructure_config config =
+(* Translate Il config expression into triplet of Al expression *)
+let translate_config config =
   match config.it with
   | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup1) ->
     (match tup1.it with
@@ -909,7 +908,8 @@ let destructure_config config =
       | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup2) ->
         (match tup2.it with
         | Ast.TupE [ store; frame ]
-        when is_store store && is_frame frame -> store, frame, exp
+        when is_store store && is_frame frame ->
+          exp2expr store, exp2expr frame, rhs2instrs exp
         | _ -> failwith "Invalid config")
       | _ -> failwith "Invalid config")
     | _ -> failwith "Invalid config")
@@ -918,30 +918,11 @@ let destructure_config config =
 let helper2instrs name clause =
   let Ast.DefD (_, _, return_value, prems) = clause.it in
 
-  (* TODO: temporary hack for adding return instructions in instantate & invoke *)
   let return_instrs =
-    (* Return instructions for 'instantiate' *)
     if name = "instantiate" then
-      let store, frame, rhs = destructure_config return_value in
-      [
-        enterI (
-          frameE (Some (numE 0L), exp2expr frame),
-          listE ([ caseE (("FRAME_", ""), []) ]), rhs2instrs rhs
-        );
-        returnI (Some (tupE [ exp2expr store; varE "mm" ]))
-      ]
-    (* Return instructions for 'invoke *)
+      translate_config return_value |> Manual.return_instrs_of_instantiate
     else if name = "invoke" then
-      let _, frame, rhs = destructure_config return_value in
-      [
-        letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
-        enterI (
-          frameE (Some (varE "k"), exp2expr frame),
-          listE ([caseE (("FRAME_", ""), [])]), rhs2instrs rhs
-        );
-        popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
-        returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))
-      ]
+      translate_config return_value |> Manual.return_instrs_of_invoke
     else
       [ returnI (Option.some (exp2expr return_value)) ]
   in

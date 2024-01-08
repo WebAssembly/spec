@@ -211,3 +211,24 @@ let array_new_data =
   )
 
 let manual_algos = [eval_expr; call_ref; group_bytes_by; array_new_data;]
+
+let return_instrs_of_instantiate config =
+  let store, frame, rhs = config in
+  [
+    enterI (
+      frameE (Some (numE 0L), frame),
+      listE ([ caseE (("FRAME_", ""), []) ]), rhs
+    );
+    returnI (Some (tupE [ store; varE "mm" ]))
+  ]
+let return_instrs_of_invoke config =
+  let _, frame, rhs = config in
+  [
+    letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
+    enterI (
+      frameE (Some (varE "k"), frame),
+      listE ([caseE (("FRAME_", ""), [])]), rhs
+    );
+    popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
+    returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))
+  ]
