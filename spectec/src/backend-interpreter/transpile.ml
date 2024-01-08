@@ -145,7 +145,7 @@ let merge instrs1 instrs2 =
         if not visit_if then
           print_endline
             ("Warning: No corresponding if for"
-            ^ take 100 (Print.string_of_instrs 0 instrs2));
+            ^ take 100 (Print.string_of_instrs instrs2));
         merged
     | _ -> tail1 @ tail2
   in

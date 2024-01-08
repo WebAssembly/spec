@@ -62,7 +62,7 @@ module InfoMap = struct include Map.Make (Int)
         Printf.printf "\n[%s]\n" v.algo_name;
         iter
           (fun _ v' ->
-            Al.Print.string_of_instr (ref 0) 0 v'.instr
+            Al.Print.string_of_instr v'.instr
             |> print_endline)
           im)
 end
@@ -265,6 +265,7 @@ module WasmContext = struct
 
   let is_value = function
     | CaseV ("CONST", _) -> true
+    | CaseV ("VVCONST", _) -> true
     | CaseV (ref, _)
       when String.starts_with ~prefix:"REF." ref -> true
     | _ -> false

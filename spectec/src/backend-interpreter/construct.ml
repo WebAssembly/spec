@@ -258,6 +258,23 @@ let al_of_num = function
   | F32 f32 -> CaseV ("CONST", [ singleton "F32"; al_of_float32 f32 ])
   | F64 f64 -> CaseV ("CONST", [ singleton "F64"; al_of_float64 f64 ])
 
+let al_of_vec = function
+  | V128 v128 -> (*
+    CaseV ("VVCONST", [singleton "V128"; CaseV ("I32x4", List.map (fun i -> NumV (Int64.of_int32 i)) (V128.I32x4.to_lanes v128))])
+    *)
+    CaseV ("VVCONST", [ singleton "V128"; VecV (V128.to_string v128)])
+
+let al_of_vec_shape shape (lanes: int64 list) =
+  al_of_vec (V128 (
+    match shape with
+    | V128.I8x16() -> V128.I8x16.of_lanes (List.map Int64.to_int32 lanes)
+    | V128.I16x8() -> V128.I16x8.of_lanes (List.map Int64.to_int32 lanes)
+    | V128.I32x4() -> V128.I32x4.of_lanes (List.map Int64.to_int32 lanes)
+    | V128.I64x2() -> V128.I64x2.of_lanes lanes
+    | V128.F32x4() -> V128.F32x4.of_lanes (List.map (fun i -> i |> Int64.to_int32 |> F32.of_bits) lanes)
+    | V128.F64x2() -> V128.F64x2.of_lanes (List.map F64.of_bits lanes)
+  ))
+
 let rec al_of_ref = function
   | NullRef ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
   (*
@@ -276,7 +293,7 @@ let rec al_of_ref = function
 
 let al_of_value = function
   | Num n -> al_of_num n
-  | Vec _ -> failwith "TODO"
+  | Vec v -> al_of_vec v
   | Ref r -> al_of_ref r
 
 
@@ -394,6 +411,16 @@ let al_of_cvtop = function
     let op', to_, ext = al_of_float_cvtop "64" op in
     [ singleton "F64"; TextV op'; singleton to_; OptV ext ]
 
+let al_of_vtestop: vec_testop -> value list = function
+  | V128 vop -> (
+      match vop with
+      | V128.I8x16 _ -> [ singleton "I8x16"; ]
+      | V128.I16x8 _ -> [ singleton "I16x8"; ]
+      | V128.I32x4 _ -> [ singleton "I32x4"; ]
+      | V128.I64x2 _ -> [ singleton "I64x2"; ]
+      | _ -> .
+  )
+
 let al_of_pack_size = function
   | Pack.Pack8 -> al_of_int 8
   | Pack.Pack16 -> al_of_int 16
@@ -425,6 +452,7 @@ let rec al_of_instr instr =
   match instr.it with
   (* wasm values *)
   | Const num -> al_of_num num.it
+  | VecConst vec -> al_of_vec vec.it
   | RefNull ht -> CaseV ("REF.NULL", [ al_of_heap_type ht ])
   (* wasm instructions *)
   | Unreachable -> singleton "UNREACHABLE"
@@ -435,6 +463,7 @@ let rec al_of_instr instr =
   | Test op -> CaseV ("TESTOP", al_of_testop op)
   | Compare op -> CaseV ("RELOP", al_of_relop op)
   | Convert op -> CaseV ("CVTOP", al_of_cvtop op)
+  | VecTest vop -> CaseV ("ALL_TRUE", al_of_vtestop vop)
   | RefIsNull -> singleton "REF.IS_NULL"
   | RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
   | Select vtl_opt -> CaseV ("SELECT", [ al_of_opt (al_of_list al_of_val_type) vtl_opt ])
@@ -812,6 +841,10 @@ let al_to_num: value -> num = function
   | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
   | v -> fail "num" v
 
+let al_to_vec: value -> vec = function
+  | CaseV ("VVCONST", [ CaseV ("V128", []); VecV (v128)]) -> V128 (V128.of_bits v128)
+  | v -> fail "vec" v
+
 let rec al_to_ref: value -> ref_ = function
   | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
   | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
@@ -953,6 +986,25 @@ let al_to_cvtop: value list -> cvtop = function
   | CaseV ("F64", []) :: op -> F64 (al_to_float_cvtop op)
   | l -> fail_list "cvtop" l
 
+let al_to_vop i8 i16 i32 i64 f32 f64 = function
+  | [ CaseV ("I8x16", []); vop ] -> V128.I8x16 (i8 vop)
+  | [ CaseV ("I16x8", []); vop ] -> V128.I16x8 (i16 vop)
+  | [ CaseV ("I32x4", []); vop ] -> V128.I32x4 (i32 vop)
+  | [ CaseV ("I64x2", []); vop ] -> V128.I64x2 (i64 vop)
+  | [ CaseV ("F32x4", []); vop ] -> V128.F32x4 (f32 vop)
+  | [ CaseV ("F64x2", []); vop ] -> V128.F64x2 (f64 vop)
+  | l -> fail_list "vop" l
+
+let al_to_ishape_vtestop: value -> V128Op.itestop = function
+  | TextV "AllTrue" -> V128Op.AllTrue
+  | v -> fail "vector testop" v
+let al_to_vtestop: value list -> vec_testop = function
+  | [ CaseV ("I8x16", []); vop ] -> V128 (V128.I8x16 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I16x8", []); vop ] -> V128 (V128.I16x8 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I32x4", []); vop ] -> V128 (V128.I32x4 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I64x2", []); vop ] -> V128 (V128.I64x2 (al_to_ishape_vtestop vop))
+  | l -> fail_list "vtestop" l
+
 let al_to_pack_size: value -> Pack.pack_size = function
   | NumV 8L -> Pack.Pack8
   | NumV 16L -> Pack.Pack16
@@ -987,6 +1039,7 @@ let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
 and al_to_instr': value -> Ast.instr' = function
   (* wasm values *)
   | CaseV ("CONST", _) as v -> Const (al_to_phrase al_to_num v)
+  | CaseV ("VVCONST", _) as v -> VecConst (al_to_phrase al_to_vec v)
   | CaseV ("REF.NULL", [ ht ]) -> RefNull (al_to_heap_type ht)
   (* wasm instructions *)
   | CaseV ("UNREACHABLE", []) -> Unreachable
@@ -997,6 +1050,7 @@ and al_to_instr': value -> Ast.instr' = function
   | CaseV ("TESTOP", op) -> Test (al_to_testop op)
   | CaseV ("RELOP", op) -> Compare (al_to_relop op)
   | CaseV ("CVTOP", op) -> Convert (al_to_cvtop op)
+  | CaseV ("ALL_TRUE", vop) -> VecTest (al_to_vtestop vop)
   | CaseV ("REF.IS_NULL", []) -> RefIsNull
   | CaseV ("REF.FUNC", [ idx ]) -> RefFunc (al_to_idx idx)
   | CaseV ("SELECT", [ vtl_opt ]) -> Select (al_to_opt (al_to_list al_to_val_type) vtl_opt)

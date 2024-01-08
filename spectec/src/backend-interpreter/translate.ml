@@ -8,6 +8,10 @@ open Util.Record
 
 (** helper functions **)
 
+let name_of_rule rule =
+  let Ast.RuleD (id1, _, _, _, _) = rule.it in
+  String.split_on_char '-' id1.it |> List.hd
+
 let check_nop instrs = match instrs with [] -> [ nopI ] | _ -> instrs
 
 let gen_fail_msg_of_exp exp =
@@ -34,20 +38,33 @@ let update_opt v opt_ref = match !opt_ref with
   | None -> opt_ref := Some v
   | Some _ -> ()
 
+let is_state expr = match expr.it with
+  | Ast.VarE z ->
+    z.it = "z" || String.starts_with ~prefix:"z'" z.it || String.starts_with ~prefix:"z_" z.it
+  | _ -> false
+let is_store expr = match expr.it with
+  | Ast.VarE s ->
+    s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
+  | _ -> false
+let is_frame expr = match expr.it with
+  | Ast.VarE f ->
+    f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
+  | _ -> false
+
 (* transform z; e into e *)
 let drop_state e =
   match e.it with
-  | Ast.MixE (* z; e *)
-      ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
-        { it = Ast.TupE [ { it = Ast.VarE { it = "z"; _ }; _ }; e' ]; _ } )
-    -> e'
-  | Ast.MixE (* (s; f); e *)
+  (* z; e *)
+  | Ast.MixE ([ []; [ Ast.Semicolon ]; [ Ast.Star ] ], { it = Ast.TupE [ state; e' ]; _ })
+  when is_state state -> e'
+  (* s; f; e *)
+  | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         { it = Ast.TupE [ { it = Ast.MixE (
           [[]; [ Ast.Semicolon ]; []],
-          { it = Ast.TupE [ { it = Ast.VarE { it = "s"; _}; _}; { it = Ast.VarE { it = "f"; _} ; _}]; _ }
+          { it = Ast.TupE [ store; frame]; _ }
         ); _ }; e' ]; _ } )
-    -> e'
+    when is_store store && is_frame frame -> e'
   | _ -> e
 
 (* transform s; f; e into s *)
@@ -56,9 +73,9 @@ let extract_store e = match e.it with
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         { it = Ast.TupE [ { it = Ast.MixE (
           [[]; [ Ast.Semicolon ]; []],
-          { it = Ast.TupE [ s; _f ]; _ }
+          { it = Ast.TupE [ store; frame ]; _ }
         ); _ }; _e' ]; _ } )
-    -> s
+    when is_store store && is_frame frame -> store
   | _ -> e
 
 (* Ast.exp -> Ast.exp list *)
@@ -453,6 +470,25 @@ let rec exp2cond exp =
       binC (binop, lhs, rhs)
   | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
+(* s; f; e -> `expr * expr * instr list` *)
+let translate_config config =
+
+  match config.it with
+  | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup1) ->
+    (match tup1.it with
+    | Ast.TupE [ state; exp ] ->
+      (match state.it with
+      | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup2) ->
+        (match tup2.it with
+        | Ast.TupE [ store; frame ]
+        when is_store store && is_frame frame ->
+          exp2expr store, exp2expr frame, rhs2instrs exp
+        | _ -> failwith "Invalid config")
+      | _ -> failwith "Invalid config")
+    | _ -> failwith "Invalid config")
+  | _ -> failwith "Invalid config"
+
+
 let lhs_id_ref = ref 0
 let lhs_prefix = "y_"
 let init_lhs_id () = lhs_id_ref := 0
@@ -677,6 +713,48 @@ let rec insert_instrs target il =
 let prems2instrs =
   List.fold_right (fun prem il -> prem2instrs prem |> insert_instrs il)
 
+
+(** Translate reduction rules **)
+
+let helper2instrs name clause =
+  let Ast.DefD (_, _, return_value, prems) = clause.it in
+
+  let return_instrs =
+    if name = "instantiate" then
+      translate_config return_value |> Manual.return_instrs_of_instantiate
+    else if name = "invoke" then
+      translate_config return_value |> Manual.return_instrs_of_invoke
+    else
+      [ returnI (Some (exp2expr return_value)) ]
+  in
+
+  prems2instrs prems return_instrs
+
+(** Main translation for helper functions **)
+let helpers2algo partial_funcs def =
+  match def.it with
+  | Ast.DecD (id, _, _, clauses) when List.length clauses > 0->
+    let name = id.it in
+    let unified_clauses = Il2il.unify_defs clauses in
+    let Ast.DefD (_, params, _, _) = List.hd unified_clauses |> it in
+    let al_params =
+      match params.it with
+      | Ast.TupE exps -> List.map exp2expr exps
+      | _ -> [ exp2expr params ]
+    in
+    let blocks = List.map (helper2instrs name) unified_clauses in
+    let body =
+      List.fold_right Transpile.merge blocks []
+      |> Transpile.enhance_readability
+      |> if List.mem id partial_funcs then Fun.id else Transpile.enforce_return in
+
+    let algo = FuncA (name, al_params, body) in
+    Some algo
+  | _ -> None
+
+
+(** Translate reduction rules **)
+
 let insert_deferred = function
   | None -> Fun.id
   | Some exp ->
@@ -696,10 +774,10 @@ let insert_deferred = function
     let walk_config = { Al.Walk.default_config with post_instr = f } in
     Al.Walk.walk_instrs walk_config
 
-(** `reduction_group` -> `instr list` **)
 
+(* `reduction_group` -> `instr list` *)
 let reduction2instrs deferred reduction =
-  let _, rhs, prems, _ = reduction in
+  let _, rhs, prems = reduction in
 
   (* Translate rhs *)
   rhs2instrs rhs
@@ -742,7 +820,7 @@ let rec split_context_winstr ?(note : Ast.typ option) name stack =
       let new_context = ((vs, hd :: is), c) :: inners in
       new_context, winstr
 
-let un_unify (lhs, rhs, prems, binds) =
+let un_unify (lhs, rhs, prems) =
   let new_lhs, new_prems = List.fold_left (fun (lhs, pl) p -> match p.it with
   | Ast.LetPr (sub, ({ it = Ast.VarE uvar; _} as u), _) when Il2il.is_unified_id uvar.it ->
     let new_lhs = Il2il.transform_expr (fun e -> if Il.Eq.eq_exp e u then sub else e) lhs in
@@ -751,7 +829,7 @@ let un_unify (lhs, rhs, prems, binds) =
     lhs, pl @ [p]
   ) (lhs, []) prems in
 
-  (new_lhs, rhs, new_prems, binds)
+  new_lhs, rhs, new_prems
 
 let rec kind_of_context e =
   match e.it with
@@ -762,37 +840,40 @@ let rec kind_of_context e =
   | Ast.TupE [_ (* z *); e'] -> kind_of_context e'
   | _ -> "Could not get kind_of_context" ^ Print.string_of_exp e |> failwith
 
-let is_in_same_context (lhs1, _, _, _) (lhs2, _, _, _) =
+let is_in_same_context (lhs1, _, _) (lhs2, _, _) =
   kind_of_context lhs1 = kind_of_context lhs2
 
 (** Main translation for reduction rules **)
 (* `reduction_group list` -> `Backend-prose.Algo` *)
 let rec reduction_group2algo (instr_name, reduction_group) =
-  let (lhs, _, _, _) = List.hd reduction_group in
+  let lhs, _, _ = List.hd reduction_group in
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let bounds = Il.Free.free_exp winstr in
   let state_instrs = if (lhs != drop_state lhs) then [ letI (varE "f", getCurFrameE) ] else [] in
   let inner_params = ref None in
-  let instrs = state_instrs @ match context with
+  let instrs =
+    match context with
     | [(vs, []), None ] ->
       let pop_instrs, deferred_opt = handle_lhs_stack bounds vs in
       let inner_pop_instrs = handle_context_winstr winstr in
 
-      let instrs = match reduction_group |> Util.Lib.List.split_last with
-      (* No premise for last reduction rule: either *)
-      | hds, (_, rhs, [], _) when List.length hds > 0 ->
-          assert (deferred_opt = None);
-          let blocks = List.map (reduction2instrs None) hds in
-          let either_body1 = List.fold_right Transpile.merge blocks [] in
-          let either_body2 = rhs2instrs rhs |> check_nop in
-          eitherI (either_body1, either_body2) |> Transpile.push_either
-      (* Normal case *)
-      | _ ->
-          let blocks = List.map (reduction2instrs deferred_opt) reduction_group in
-          List.fold_right Transpile.merge blocks [] in
+      let instrs' =
+        match reduction_group |> Util.Lib.List.split_last with
+        (* No premise for last reduction rule: either *)
+        | hds, (_, rhs, []) when List.length hds > 0 ->
+            assert (deferred_opt = None);
+            let blocks = List.map (reduction2instrs None) hds in
+            let either_body1 = List.fold_right Transpile.merge blocks [] in
+            let either_body2 = rhs2instrs rhs |> check_nop in
+            eitherI (either_body1, either_body2) |> Transpile.push_either
+        (* Normal case *)
+        | _ ->
+            let blocks = List.map (reduction2instrs deferred_opt) reduction_group in
+            List.fold_right Transpile.merge blocks []
+      in
 
-      pop_instrs @ inner_pop_instrs @ instrs
+      pop_instrs @ inner_pop_instrs @ instrs'
     (* The target instruction is inside a context *)
     | [ ([], []), Some context ; (vs, _is), None ] ->
       let head_instrs = handle_context context vs in
@@ -803,7 +884,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       let orig_group = List.map un_unify reduction_group in
       let sub_groups = list_partition_with is_in_same_context orig_group in
       let unified_sub_groups = List.map (fun g -> Il2il.unify_lhs (instr_name, g)) sub_groups in
-      let lhss = List.map (function _, group -> let lhs, _, _, _ = List.hd group in lhs) unified_sub_groups in
+      let lhss = List.map (function _, group -> let lhs, _, _ = List.hd group in lhs) unified_sub_groups in
       let sub_algos = List.map reduction_group2algo unified_sub_groups in
       List.fold_right2 (fun lhs -> function
         | RuleA (_, params, body) -> fun acc ->
@@ -822,146 +903,89 @@ let rec reduction_group2algo (instr_name, reduction_group) =
       [ yetI "TODO" ] in
 
   (* name *)
-  let winstr_name = match winstr.it with
-  | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
-  | _ -> failwith "unreachable"
+  let winstr_name =
+    match winstr.it with
+    | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
+    | _ -> failwith "unreachable"
   in
   let name = name2kwd winstr_name winstr.note in
   (* params *)
-  let al_params = match !inner_params with
-  | None ->
-    if instr_name = "frame" || instr_name = "label"
-    then []
-    else
-      get_params winstr |> List.map exp2expr
-  | Some params -> params
+  let al_params =
+    match !inner_params with
+    | None ->
+      if instr_name = "frame" || instr_name = "label"
+      then []
+      else
+        get_params winstr |> List.map exp2expr
+    | Some params -> params
   in
   (* body *)
-  let body = instrs |> check_nop |> Transpile.enhance_readability |> Transpile.infer_assert in
+  let body =
+    state_instrs @ instrs
+    |> check_nop
+    |> Transpile.enhance_readability
+    |> Transpile.infer_assert
+  in
 
   (* Algo *)
   RuleA (name, al_params, body)
-
-(** Temporarily convert `Ast.RuleD` into `reduction_group`: (id, (lhs, rhs, prems, binds)+) **)
-
-type reduction_group =
-  string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
 
 (* extract rules except Steps/..., Step/pure and Step/read *)
 let extract_rules def =
   match def.it with
   | Ast.RelD (id, _, _, rules) when String.starts_with ~prefix:"Step" id.it ->
-      let filter_context rule =
-        let (Ast.RuleD (ruleid, _, _, _, _)) = rule.it in
-        id.it <> "Steps" && ruleid.it <> "pure" && ruleid.it <> "read"
-      in
-      List.filter filter_context rules
+    let filter_context rule =
+      let Ast.RuleD (ruleid, _, _, _, _) = rule.it in
+      id.it <> "Steps" && ruleid.it <> "pure" && ruleid.it <> "read"
+    in
+    List.filter filter_context rules
   | _ -> []
-
-let name_of_rule rule =
-  let Ast.RuleD (id1, _, _, _, _) = rule.it in
-  String.split_on_char '-' id1.it |> List.hd
-
-let rule2tup rule =
-  let Ast.RuleD (_, tenv, _, exp, prems) = rule.it in
-  match exp.it with
-  | Ast.TupE [ lhs; rhs ] -> (lhs, rhs, prems, tenv)
-  | _ ->
-      Print.string_of_exp exp
-      |> sprintf "Invalid expression `%s` to be reduction rule."
-      |> failwith
 
 (* group reduction rules that have same name *)
 let rec group_rules = function
   | [] -> []
-  | h :: t ->
-      let name = name_of_rule h in
-      let same_rules, diff_rules =
-        List.partition (fun rule -> name_of_rule rule = name) t in
-      let group = (name, List.map rule2tup (h :: same_rules)) in
-      group :: group_rules diff_rules
+  | l ->
+    let rule2tup rule =
+      let Ast.RuleD (_, _, _, exp, prems) = rule.it in
+      match exp.it with
+      | Ast.TupE [ lhs; rhs ] -> lhs, rhs, prems
+      | _ ->
+        Print.string_of_exp exp
+        |> sprintf "Invalid expression `%s` to be reduction rule."
+        |> failwith in
 
-(** Entry for translating reduction rules **)
-let translate_rules il =
-  let rules = List.concat_map extract_rules il in
-  let reduction_groups : reduction_group list = group_rules rules in
-  let unified_reduction_groups = List.map Il2il.unify_lhs reduction_groups in
+    let name = List.hd l |> name_of_rule in
+    let grouped_rules, l' = List.partition (fun rule -> name_of_rule rule = name) l in
+    (name, List.map rule2tup grouped_rules) :: group_rules l'
 
-  List.map reduction_group2algo unified_reduction_groups
 
-let is_store expr = match expr.it with
-  | Ast.VarE s ->
-    s.it = "s" || String.starts_with ~prefix:"s'" s.it || String.starts_with ~prefix:"s_" s.it
-  | _ -> false
-let is_frame expr = match expr.it with
-  | Ast.VarE f ->
-    f.it = "f" || String.starts_with ~prefix:"f'" f.it || String.starts_with ~prefix:"f_" f.it
-  | _ -> false
-
-(* Translate Il config expression into triplet of Al expression *)
-let translate_config config =
-  match config.it with
-  | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup1) ->
-    (match tup1.it with
-    | Ast.TupE [ state; exp ] ->
-      (match state.it with
-      | Ast.MixE ([ []; [ Ast.Semicolon ]; _ ], tup2) ->
-        (match tup2.it with
-        | Ast.TupE [ store; frame ]
-        when is_store store && is_frame frame ->
-          exp2expr store, exp2expr frame, rhs2instrs exp
-        | _ -> failwith "Invalid config")
-      | _ -> failwith "Invalid config")
-    | _ -> failwith "Invalid config")
-  | _ -> failwith "Invalid config"
-
-let helper2instrs name clause =
-  let Ast.DefD (_, _, return_value, prems) = clause.it in
-
-  let return_instrs =
-    if name = "instantiate" then
-      translate_config return_value |> Manual.return_instrs_of_instantiate
-    else if name = "invoke" then
-      translate_config return_value |> Manual.return_instrs_of_invoke
-    else
-      [ returnI (Option.some (exp2expr return_value)) ]
-  in
-
-  prems2instrs prems return_instrs
-
-(** Main translation for helper functions **)
-let helpers2algo partial_funcs def =
-  match def.it with
-  | Ast.DecD (id, _, _, clauses) when List.length clauses > 0->
-      let name = id.it in
-      let unified_clauses = Il2il.unify_defs clauses in
-      let Ast.DefD (_, params, _, _) = List.hd unified_clauses |> it in
-      let al_params =
-        match params.it with
-        | Ast.TupE exps -> List.map exp2expr exps
-        | _ -> [ exp2expr params ]
-      in
-      let blocks = List.map (helper2instrs name) unified_clauses in
-      let body =
-        List.fold_right Transpile.merge blocks []
-        |> Transpile.enhance_readability
-        |> if List.mem id partial_funcs then Fun.id else Transpile.enforce_return in
-
-      let algo = FuncA (name, al_params, body) in
-      Some algo
-  | _ -> None
-
-let get_partial_func_name def =
-  let is_partial hint = hint.Ast.hintid.it = "partial" in
-  match def.it with
-  | Ast.HintD { it = Ast.DecH (id, hints); _ } when List.exists is_partial hints ->
-    Some (id)
-  | _ -> None
-
-(** Entry for translating helper functions **)
+(** Translating helper functions **)
 let translate_helpers il =
+
+  (* Get list of partial functions *)
+  let get_partial_func_name def =
+    let is_partial hint = hint.Ast.hintid.it = "partial" in
+    match def.it with
+    | Ast.HintD { it = Ast.DecH (id, hints); _ } when List.exists is_partial hints ->
+      Some (id)
+    | _ -> None
+  in
   let partial_funcs = List.filter_map get_partial_func_name il in
+
   List.filter_map (helpers2algo partial_funcs) il
+
+(** Translating reduction rules **)
+let translate_rules il =
+
+  (* Extract rules *)
+  List.concat_map extract_rules il
+  (* Group rules that have the same names *)
+  |> group_rules
+  (* Unify lhs *)
+  |> List.map Il2il.unify_lhs
+  (* Translate reduction group into algorithm *)
+  |> List.map reduction_group2algo
+
 
 (** Entry **)
 

@@ -327,10 +327,10 @@ rule Step_pure/vrelop:
 
 
 rule Step_pure/vishiftop:
-  (VVCONST V128 c_1) (CONST I32 n) (VISHIFTOP sh vishiftop) ~> (VVCONST V128 c)
+  (VVCONST V128 cv_1) (CONST I32 n) (VISHIFTOP sh vishiftop) ~> (VVCONST V128 cv)
   -- if sh = SHAPE lnt lns
-  -- if i* = $lanes(sh, c_1)
-  -- if $lanes(sh, c) = $vishiftop(vishiftop, lnt, i, n)*
+  -- if i* = $lanes(sh, cv_1)
+  -- if $lanes(sh, cv) = $vishiftop(vishiftop, lnt, i*, n^lns)
 
 
 rule Step_pure/all_true-true:
