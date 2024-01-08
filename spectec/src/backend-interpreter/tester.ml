@@ -302,7 +302,17 @@ let check expected actual =
   | RefResult (RefPat r) -> Construct.al_of_ref r.it = actual
   | RefResult (RefTypePat ht) -> check_reftype ht actual
   | RefResult NullPat -> check_null actual
-  | VecResult _ -> failwith "VecResult not implemented"
+  | VecResult (VecPat V128 (s, l)) -> (
+    Construct.al_of_vec_shape s (List.map (fun e -> match e with
+    | NumPat n -> (
+      match n.it with
+      | I32 i -> Int64.of_int32 i
+      | I64 i -> i
+      | F32 z -> z |> F32.to_bits |> Int64.of_int32
+      | F64 z -> z |> F64.to_bits
+    )
+    | _ -> failwith "Expected list of numpat for VecResult") l) = actual
+  )
 
 let get_externval = function
   | CaseV ("IMPORT", [ TextV import_module_name; TextV extern_name; _ty ]) ->

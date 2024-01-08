@@ -59,6 +59,7 @@ and string_of_value = function
   | StoreV _ -> "StoreV"
   | ListV lv -> string_of_array string_of_value "[" ", " "]" !lv
   | NumV n -> Printf.sprintf "0x%LX" n
+  | VecV v -> v
   | TextV s -> s
   | TupV vl -> string_of_list string_of_value "(" ", " ")" vl
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
@@ -330,6 +331,7 @@ let rec structured_string_of_value = function
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
   | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
+  | VecV v -> "VecV (" ^ v ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl -> string_of_list structured_string_of_value "TupV (" ", " ")" vl
   | ArrowV (v1, v2) ->

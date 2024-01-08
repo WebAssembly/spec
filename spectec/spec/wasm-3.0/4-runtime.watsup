@@ -32,6 +32,8 @@ var aa : arrayaddr
 
 syntax num hint(desc "number") =
   | CONST numtype c_numtype
+syntax vec hint(desc "vector") =
+  | VVCONST vectype c_vectype
 syntax addrref hint(desc "address reference") =
   | REF.I31_NUM u31                hint(show REF.I31 %)
   | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
@@ -43,7 +45,7 @@ syntax ref hint(desc "reference") =
   | addrref
   | REF.NULL heaptype
 syntax val hint(desc "value") =
-  | num | ref
+  | num | vec | ref
 
 syntax result hint(desc "result") =
   | _VALS val* | TRAP

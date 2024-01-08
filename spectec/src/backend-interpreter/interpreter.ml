@@ -369,6 +369,7 @@ and eval_cond env cond =
     ] in
     let packed_types = [ "I8"; "I16" ] in
     let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
+    let vec_types = [ "V128"; ] in
     let abs_heap_types = [
       "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
       "NOFUNC"; "EXTERN"; "NOEXTERN"
@@ -386,6 +387,8 @@ and eval_cond env cond =
     (* numtype *)
     | CaseV (nt, []) when List.mem nt num_types ->
       s = "numtype" || s = "valtype"
+    | CaseV (vt, []) when List.mem vt vec_types ->
+      s = "vectype" || s = "valtype"
     (* valtype *)
     | CaseV ("REF", _) ->
       s = "reftype" || s = "valtype"
@@ -669,7 +672,8 @@ and execute (wasm_instr: value): unit =
       | _ -> raise Exception.MissingReturnValue
       end
     | _ -> WasmContext.push_value wasm_instr )
-  | CaseV ("CONST", _) ->
+  | CaseV ("CONST", _)
+  | CaseV ("VVCONST", _) ->
     WasmContext.push_value wasm_instr
   | CaseV (name, []) when is_builtin name ->
     call_builtin name;
@@ -725,6 +729,12 @@ and interp_instr (env: env) (instr: instr): env =
       assert (eval_expr env tyE = ty);
       Env.add name v env
     | VarE name, v -> Env.add name v env
+    | CaseE (("VVCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
+      assert (eval_expr env tyE = ty);
+      Env.add name v env
+    | CaseE (("VVCONST", _), [tyE; { it = ListE [{ it = VarE name; _ }; ]; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
+      assert (eval_expr env tyE = ty);
+      Env.add name v env
     (* TODO remove this *)
     | FrameE _, FrameV _ -> env
     | (_, h) ->

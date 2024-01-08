@@ -3,6 +3,7 @@ open Util.Source
 (* Types *)
 
 type ty = string (* TODO *)
+type vec128 = string
 
 (* Identifiers *)
 
@@ -22,6 +23,7 @@ and store = (kwd', value) record
 
 and value =
   | NumV of int64                      (* number *)
+  | VecV of vec128                     (* vector *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
   | StrV of (kwd', value) record       (* key-value mapping *)

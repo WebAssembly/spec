@@ -79,5 +79,5 @@ def $vvternop(vvternop, vectype, cv, cv, cv) : c_vectype    hint(show %#_%#(%, %
 def $vunop(vunop, sh, cv) : c_vectype
 def $vbinop(vbinop, sh, cv, cv) : c_vectype*
 def $vrelop(vrelop, sh, cv, cv) : c_numtype
-def $vishiftop(vishiftop, lnt, k, n) : c_vectype   hint(show %#_%#(%, %))
-def $vcvtop(vcvtop, i, j, sx?, k) : c_vectype   hint(show %#_%#(%, %, %))
+def $vishiftop(vishiftop, lnt, k*, n*) : nat*      hint(show %#_%#(%, %))
+def $vcvtop(vcvtop, i, j, sx?, k) : nat hint(show %#_%#(%, %, %))

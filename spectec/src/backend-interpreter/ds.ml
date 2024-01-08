@@ -265,6 +265,7 @@ module WasmContext = struct
 
   let is_value = function
     | CaseV ("CONST", _) -> true
+    | CaseV ("VVCONST", _) -> true
     | CaseV (ref, _)
       when String.starts_with ~prefix:"REF." ref -> true
     | _ -> false
