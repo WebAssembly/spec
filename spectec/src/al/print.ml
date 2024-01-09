@@ -317,11 +317,14 @@ let rec string_of_instr' depth instr =
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 
 and string_of_instrs' depth instrs =
+  set_index 0;
   let f acc i =
     acc ^ "\n" ^ repeat indent depth ^ string_of_instr' depth i in
   enter_block (List.fold_left f "") instrs
 
-let string_of_instr = string_of_instr' 0
+let string_of_instr instr =
+  set_index 0;
+  string_of_instr' 0 instr
 let string_of_instrs = string_of_instrs' 0
 
 let string_of_algorithm = function
