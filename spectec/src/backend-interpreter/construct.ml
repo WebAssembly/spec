@@ -79,6 +79,7 @@ let dotP kwd = DotP kwd |> mk_path
 
 let mk_cond it = Util.Source.($) it Util.Source.no_region
 
+let iterC (cond, ids, iter) = IterC (cond, ids, iter) |> mk_cond
 let unC (unop, c) = UnC (unop, c) |> mk_cond
 let binC (binop, c1, c2) = BinC (binop, c1, c2) |> mk_cond
 let cmpC (cmpop, e1, e2) = CmpC (cmpop, e1, e2) |> mk_cond

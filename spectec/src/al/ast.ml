@@ -112,6 +112,7 @@ and path' =
 
 and cond = cond' phrase
 and cond' =
+  | IterC of cond * id list * iter  (* iterator on condition *)
   | UnC of unop * cond              (* unop expr *)
   | BinC of binop * cond * cond     (* expr binop expr *)
   | CmpC of cmpop * expr * expr     (* expr cmpop expr *)

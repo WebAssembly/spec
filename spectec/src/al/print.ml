@@ -181,6 +181,8 @@ and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) 
 
 and string_of_cond cond =
   match cond.it with
+  | IterC (c, _, iter) ->
+    sprintf "(%s)%s" (string_of_cond c) (string_of_iter iter)
   | UnC (NotOp, { it = IsCaseOfC (e, kwd); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd kwd)
   | UnC (NotOp, { it = IsDefinedC e; _ }) ->
@@ -505,6 +507,11 @@ and structured_string_of_paths paths =
 
 and structured_string_of_cond cond =
   match cond.it with
+  | IterC (c, ids, iter) ->
+    sprintf "IterC (%s, %s, %s)"
+      (string_of_cond c)
+      (structured_string_of_ids ids)
+      (string_of_iter iter)
   | UnC (op, c) ->
     "UnC ("
     ^ string_of_unop op

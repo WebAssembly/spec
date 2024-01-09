@@ -82,6 +82,7 @@ let rec free_cond cond =
   | IsValidC e
   | TopValueC (Some e)
   | TopValuesC e -> free_expr e
+  | IterC (c, _, iter) -> free_cond c @ free_iter iter
 
 
 (* Instructions *)

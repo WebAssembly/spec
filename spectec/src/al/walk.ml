@@ -98,6 +98,7 @@ let rec walk_cond f c =
   let super_walk c = 
     let c' =
       match c.it with
+      | IterC (inner_c, ids, iter) -> IterC (new_ inner_c, ids, iter)
       | UnC (op, inner_c) -> UnC (op, new_ inner_c)
       | BinC (op, c1, c2) -> BinC (op, new_ c1, new_ c2)
       | CmpC (op, e1, e2) -> CmpC (op, new_e e1, new_e e2)

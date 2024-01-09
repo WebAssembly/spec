@@ -295,6 +295,8 @@ and render_paths env in_math paths =
 
 and render_cond env cond =
   match cond.it with
+  | Al.Ast.IterC (c, _, iter) ->
+      sprintf "(%s)%s" (render_cond env c) (render_iter env iter)
   | Al.Ast.UnC (NotOp, { it = Al.Ast.IsCaseOfC (e, c); _ }) ->
       sprintf "%s is not of the case %s" 
         (render_expr env false e) 

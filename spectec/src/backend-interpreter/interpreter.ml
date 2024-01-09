@@ -287,11 +287,10 @@ and eval_expr env expr =
     )
     else
       ListV (ref (Array.make i v))
-  | IterE (inner_e, names, iter) ->
+  | IterE (inner_e, ids, iter) ->
     let vs =
-      env
-      |> create_sub_al_context names iter
-      |> List.map (fun new_al_context -> eval_expr new_al_context inner_e)
+      create_sub_al_context ids iter env
+      |> List.map (fun env' -> eval_expr env' inner_e)
 
     in
 
@@ -307,6 +306,10 @@ and eval_expr env expr =
 
 and eval_cond env cond =
   match cond.it with
+  (* TODO: remove IterC *)
+  | IterC (c, ids, List) ->
+    create_sub_al_context ids List env
+    |> List.for_all (fun env' -> eval_cond env' c)
   | UnC (NotOp, c) -> eval_cond env c |> not
   | BinC (op, c1, c2) ->
       let b1 = eval_cond env c1 in

@@ -680,12 +680,7 @@ let rec iterpr2instrs pr (iter, ids) =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ]
     (* TODO: Merge `cond` and `expr`, and just insert `IterE` rather than distribute iter *)
-    | IfI ({ it = CmpC (NeOp, lhs, rhs); _ }, il1, il2) ->
-      let lhs', rhs' = distribute_iter lhs rhs in
-      [ ifI (unC (NotOp, cmpC (EqOp, lhs', rhs')), il1, il2) ]
-    | IfI ({ it = CmpC (op, lhs, rhs); _ }, il1, il2) ->
-      let lhs', rhs' = distribute_iter lhs rhs in
-      [ ifI (cmpC (op, lhs', rhs'), il1, il2) ]
+    | IfI (cond, il1, il2) -> [ ifI (iterC (cond, ids', iter'), il1, il2) ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr = f } in
