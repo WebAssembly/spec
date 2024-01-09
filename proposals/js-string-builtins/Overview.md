@@ -153,7 +153,6 @@ The following internal helpers are defined in wasm and used by the below definit
 
 ```wasm
 (module
-  (type $array_i16 (array i16))
   (type $array_i16_mut (array (mut i16)))
 
   (func (export "trap")
@@ -163,10 +162,10 @@ The following internal helpers are defined in wasm and used by the below definit
     local.get 0
     array.len
   )
-  (func (export "array_i16_get") (param (ref $array_i16) i32) (result i32)
+  (func (export "array_i16_mut_get") (param (ref $array_i16_mut) i32) (result i32)
     local.get 0
     local.get 1
-    array.get_u $array_i16
+    array.get_u $array_i16_mut
   )
   (func (export "array_i16_mut_set") (param (ref $array_i16_mut) i32 i32)
     local.get 0
@@ -183,6 +182,8 @@ The following internal helpers are defined in wasm and used by the below definit
 func cast(
   string: externref
 ) -> (ref extern) {
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -197,6 +198,8 @@ func cast(
 func test(
   string: externref
 ) -> i32 {
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     return 0;
@@ -207,19 +210,19 @@ func test(
 ### "wasm:js-string" "fromCharCodeArray"
 
 ```
-/// Convert the specified range of an immutable i16 array into a String,
+/// Convert the specified range of a mutable i16 array into a String,
 /// treating each i16 as an unsigned 16-bit char code.
 ///
 /// The range is given by [start, end). This function traps if the range is
 /// outside the bounds of the array.
 ///
-/// NOTE: This function only takes an immutable i16 array defined in its own
+/// NOTE: This function only takes a mutable i16 array defined in its own
 /// recursion group.
 ///
 /// If this is an issue for toolchains, we can look into how to relax the
 /// function type while still maintaining good performance.
 func fromCharCodeArray(
-  array: (ref null (array i16)),
+  array: (ref null (array (mut i16))),
   start: i32,
   end: i32
 ) -> (ref extern)
@@ -239,14 +242,14 @@ func fromCharCodeArray(
 
   let result = "";
   for(let i = start; i < end; i++) {
-    let charCode = array_i16_get(array, i);
+    let charCode = array_i16_mut_get(array, i);
     result += String.fromCharCode(charCode);
   }
   return result;
 }
 ```
 
-### "wasm:js-string" "copyToCharCodeArray"
+### "wasm:js-string" "intoCharCodeArray"
 
 ```
 /// Copy a string into a pre-allocated mutable i16 array at `start` index.
@@ -255,7 +258,7 @@ func fromCharCodeArray(
 /// the string.
 ///
 /// Traps if the string doesn't fit into the array.
-func copyToCharCodeArray(
+func intoCharCodeArray(
   string: externref,
   array: (ref null (array (mut i16))),
   start: i32
@@ -268,6 +271,8 @@ func copyToCharCodeArray(
   if (array === null)
     trap();
 
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -332,6 +337,8 @@ func charCodeAt(
   // a JS value using standard conversions. Reinterpret as unsigned here.
   index >>>= 0;
 
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -355,6 +362,8 @@ func codePointAt(
   // a JS value using standard conversions. Reinterpret as unsigned here.
   index >>>= 0;
 
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -370,6 +379,8 @@ func codePointAt(
 
 ```
 func length(string: externref) -> i32 {
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -412,14 +423,15 @@ func substring(
   start >>>= 0;
   end >>>= 0;
 
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
 
-  // Ensure the range is ordered and within bounds to avoid the complex
-  // behavior that `substring` performs when that is not the case.
-  if (start > end ||
-      end > string.length)
+  // Ensure the range is within bounds to avoid the complex behavior that
+  // `substring` performs when that is not the case.
+  if (start > string.length)
     return "";
 
   // [1]
@@ -483,7 +495,7 @@ The following internal helpers are defined in wasm and used by the below definit
   (type $array_i8 (array i8))
   (type $array_i8_mut (array (mut i8)))
 
-  (func (export "trap")
+  (func (export "unreachable")
     unreachable
   )
   (func (export "array_len") (param arrayref) (result i32)
@@ -506,6 +518,25 @@ The following internal helpers are defined in wasm and used by the below definit
     array.set $array_i8_mut
   )
 )
+```
+
+```js
+// Triggers a wasm trap, which will generate a WebAssembly.RuntimeError that is
+// uncatchable to WebAssembly with an implementation defined message.
+function trap() {
+  // Directly constructing and throwing a WebAssembly.RuntimeError will yield
+  // an exception that is catchable by the WebAssembly exception-handling
+  // proposal. Workaround this by executing an unreachable trap and
+  // modifying it. The final spec will probably use a non-polyfillable
+  // intrinsic to get this exactly right.
+  try {
+    unreachable();
+  } catch (err) {
+    // Wasm trap error messages are not defined by the JS-API spec currently.
+    err.message = IMPL_DEFINED;
+    throw err;
+  }
+}
 ```
 
 ### "wasm:text-decoder" "decodeStringFromUTF8Array"
@@ -562,7 +593,7 @@ func decodeStringFromUTF8Array(
 ```
 /// Returns the number of bytes string would take when encoded as UTF-8.
 ///
-/// Traps if the string doesn't fit into the array.
+/// Traps if the length of the UTF-8 encoded string doesn't fit into an i32
 func measureStringAsUTF8(
   string: externref,
 ) -> i32
@@ -571,9 +602,8 @@ func measureStringAsUTF8(
   // to a JS value using standard conversions. Reinterpret as unsigned here.
   start >>>= 0;
 
-  if (array === null)
-    trap();
-
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -594,7 +624,9 @@ func measureStringAsUTF8(
 
 ```
 /// Encode a string into a pre-allocated mutable i8 array at `start` index using
-/// the UTF-8 encoding.
+/// the UTF-8 encoding. This uses the replacement character for unpaired
+/// surrogates and so it doesn't support lossless round-tripping with
+/// `decodeStringFromUTF8Array`.
 ///
 /// Returns the number of bytes written.
 ///
@@ -612,6 +644,8 @@ func encodeStringIntoUTF8Array(
   if (array === null)
     trap();
 
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
@@ -637,10 +671,15 @@ func encodeStringIntoUTF8Array(
 
 ```
 /// Encode a string into a new mutable i8 array using UTF-8.
+////
+/// This uses the replacement character for unpaired surrogates and so it
+/// doesn't support lossless round-tripping with `decodeStringFromUTF8Array`.
 func encodeStringToUTF8Array(
   string: externref
 ) -> (ref (array (mut i8)))
 {
+  // Technically a partially redundant test, but want to be clear the null is
+  // not allowed.
   if (string === null ||
       typeof string !== "string")
     trap();
