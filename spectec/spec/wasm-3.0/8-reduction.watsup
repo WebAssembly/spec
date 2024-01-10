@@ -271,7 +271,7 @@ rule Step_pure/swizzle:
   -- if c* = $lanes(sh, cv_1) 0^(256 - lns)
   -- if $lanes(sh, c') = c*[$(i*[k])]^(k<lns)
 
- 
+
 rule Step_pure/shuffle:
   (VVCONST V128 cv_1) (VVCONST V128 cv_2) (SHUFFLE sh laneidx*) ~> (VVCONST V128 c)
   -- if sh = SHAPE lnt lns

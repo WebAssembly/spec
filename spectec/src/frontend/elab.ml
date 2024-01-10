@@ -1314,7 +1314,7 @@ and subst_implicit env s t t' : Subst.subst =
     | IterT (t1, _), IterT (t1', _) -> inst s t1 t1'
     | _ -> s
   in inst s t t'
-  
+
 let bind_implicit env t : env =
   let free = Free.free_typ t in
   Free.Set.fold (fun id' env ->

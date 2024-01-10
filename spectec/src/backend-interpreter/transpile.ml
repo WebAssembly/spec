@@ -16,7 +16,7 @@ let take n str =
   String.sub str 0 len ^ if len <= n then "" else "..."
 
 let rec neg cond =
-  let cond' = 
+  let cond' =
     match cond.it with
     | UnE (NotOp, c) -> c.it
     | BinE (AndOp, c1, c2) -> BinE (OrOp, neg c1, neg c2)
@@ -49,7 +49,7 @@ let both_empty cond1 cond2 =
   | _ -> false
 
 let both_non_empty cond1 cond2 =
-  let get_list cond = 
+  let get_list cond =
     match cond.it with
     | BinE (NeOp, e, { it = ListE []; _ })
     | BinE (NeOp, { it = ListE []; _ }, e)
@@ -285,9 +285,9 @@ let remove_dead_assignment il =
   in
   remove_dead_assignment' il ([], []) |> fst
 
-let remove_sub e = 
-  let e' = 
-    match e.it with 
+let remove_sub e =
+  let e' =
+    match e.it with
     | SubE (n, _) -> VarE n
     | e -> e
   in
@@ -312,14 +312,14 @@ let flatten_if instr =
     ifI (binE (AndOp, e1, e2), il1, il2)
   | _ -> instr
 
-let simplify_record_concat expr = 
+let simplify_record_concat expr =
   let expr' =
     match expr.it with
     | CatE (e1, e2) ->
       let nonempty e = (match e.it with ListE [] | OptE None -> false | _ -> true) in
-      let remove_empty_field e = 
+      let remove_empty_field e =
         let e' =
-          (match e.it with 
+          (match e.it with
           | StrE r -> StrE (Record.filter (fun _ v -> nonempty v) r)
           | e -> e)
         in
@@ -328,7 +328,7 @@ let simplify_record_concat expr =
       CatE (remove_empty_field e1, remove_empty_field e2)
     | e -> e
   in
-  { expr with it = expr' }  
+  { expr with it = expr' }
 
 let rec enhance_readability instrs =
   let walk_config =
@@ -356,17 +356,17 @@ let rec mk_access ps base =
   | h :: t -> accE (base, h) |> mk_access t
   | [] -> base
 
-let is_store expr = match expr.it with 
+let is_store expr = match expr.it with
   | VarE s ->
     s = "s" || String.starts_with ~prefix:"s'" s || String.starts_with ~prefix:"s_" s
   | _ -> false
 
-let is_frame expr = match expr.it with 
+let is_frame expr = match expr.it with
   | VarE f ->
     f = "f" || String.starts_with ~prefix:"f'" f || String.starts_with ~prefix:"f_" f
   | _ -> false
 
-let is_state expr = match expr.it with 
+let is_state expr = match expr.it with
   | TupE [ s; f ] -> is_store s && is_frame f
   | VarE z ->
     z = "z" || String.starts_with ~prefix:"z'" z || String.starts_with ~prefix:"z_" z
@@ -374,9 +374,9 @@ let is_state expr = match expr.it with
 
 let hide_state_args = Lib.List.filter_not (fun arg -> is_state arg || is_store arg)
 
-let hide_state_expr expr = 
-  let expr' = 
-    match expr.it with 
+let hide_state_expr expr =
+  let expr' =
+    match expr.it with
     | CallE (f, args) -> CallE (f, hide_state_args args)
     | TupE [ s; e ] when is_store s -> e.it
     | e -> e

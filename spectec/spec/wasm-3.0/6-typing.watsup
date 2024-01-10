@@ -757,7 +757,7 @@ rule Instr_ok/i31.get:
 
 ;; Vector instructions
 
-rule Instr_ok/vconst:
+rule Instr_ok/vvconst:
   C |- VVCONST V128 c_vt : eps -> V128
 
 rule Instr_ok/vvunop:
@@ -1075,7 +1075,7 @@ rule Instr_const/global.get:
 ;; TODO: builtin elemof
 def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
 def $in_numtype(nt, epsilon) = false
-def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*) 
+def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)
 
 def $in_binop(binop_numtype, ibinop*) : bool  hint(show % <- %)
 def $in_binop(binop, epsilon) = false

@@ -2805,7 +2805,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39

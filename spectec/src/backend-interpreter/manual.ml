@@ -119,11 +119,11 @@ let group_bytes_by =
 
   let bytes_ = iterE (varE "byte", ["byte"], List) in
   let bytes_left = listE [accE (bytes_, sliceP (numE 0L, n))] in
-  let bytes_right = callE 
+  let bytes_right = callE
     (
-      "group_bytes_by", 
+      "group_bytes_by",
       [ n; accE (bytes_, sliceP (n, binE (SubOp, n', n))) ]
-    ) 
+    )
   in
 
   FuncA (
@@ -194,7 +194,7 @@ let array_new_data =
           );
           letI (nt, unpacknumtype);
           letI (
-            bstar, 
+            bstar,
             accE (
               accE (data, dotP ("DATA", "datainst")),
               sliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L))

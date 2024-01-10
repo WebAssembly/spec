@@ -10,28 +10,28 @@ Numeric Instructions
 .. _syntax-fnn:
 .. _syntax-sx:
 .. _syntax-instr-numeric:
-.. _syntax-unopIXX:
-.. _syntax-unopFXX:
-.. _syntax-binopIXX:
-.. _syntax-binopFXX:
-.. _syntax-testopIXX:
-.. _syntax-testopFXX:
-.. _syntax-relopIXX:
-.. _syntax-relopFXX:
+.. _syntax-iunop:
+.. _syntax-funop:
+.. _syntax-ibinop:
+.. _syntax-fbinop:
+.. _syntax-itestop:
+.. _syntax-ftestop:
+.. _syntax-irelop:
+.. _syntax-frelop:
 
 $${syntax+: 
   {inn
   fnn}
   sx
   instr/numeric
-  {unopIXX
-  unopFXX
-  binopIXX
-  binopFXX
-  testopIXX
-  testopFXX
-  relopIXX
-  relopFXX}
+  {iunop
+  funop
+  ibinop
+  fbinop
+  itestop
+  ftestop
+  irelop
+  frelop}
 }
 
 \

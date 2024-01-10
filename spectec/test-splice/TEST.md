@@ -1,7 +1,7 @@
 # Preview
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l --splice-latex -p spec-splice.in.tex -w)
+$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l --splice-latex -p spec-latex.in.tex -w)
 == Parsing...
 == Elaboration...
 == IL Validation...
@@ -712,7 +712,7 @@ warning: rule `Instr_ok/ref.eq` was never spliced
 warning: rule `Instr_ok/ref.test` was never spliced
 warning: rule `Instr_ok/ref.cast` was never spliced
 warning: rule `Instr_ok/i31.get` was never spliced
-warning: rule `Instr_ok/vconst` was never spliced
+warning: rule `Instr_ok/vvconst` was never spliced
 warning: rule `Instr_ok/vvunop` was never spliced
 warning: rule `Instr_ok/vvbinop` was never spliced
 warning: rule `Instr_ok/vvternop` was never spliced

@@ -6,7 +6,7 @@ open Printf
 let string_of_opt prefix stringifier suffix = function
   | None -> ""
   | Some x -> prefix ^ stringifier x ^ suffix
-  
+
 let string_of_list stringifier left sep right = function
   | [] -> left ^ right
   | h :: t ->

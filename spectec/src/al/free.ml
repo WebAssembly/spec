@@ -69,7 +69,7 @@ and free_iter = function
 (* Paths *)
 
 and free_path path =
-  match path.it with 
+  match path.it with
   | IdxP e -> free_expr e
   | SliceP (e1, e2) -> free_expr e1 @ free_expr e2
   | DotP _ -> []
@@ -83,8 +83,8 @@ let rec free_instr instr =
   | OtherwiseI il -> List.concat_map free_instr il
   | EitherI (il1, il2) -> List.concat_map free_instr il1 @ List.concat_map free_instr il2
   | TrapI | NopI | ReturnI None | ExitI | YetI _ -> []
-  | PushI e | PopI e | PopAllI e | ReturnI (Some e) 
-  | ExecuteI e | ExecuteSeqI e -> 
+  | PushI e | PopI e | PopAllI e | ReturnI (Some e)
+  | ExecuteI e | ExecuteSeqI e ->
     free_expr e
   | LetI (e1, e2) | AppendI (e1, e2) -> free_expr e1 @ free_expr e2
   | EnterI (e1, e2, il) -> free_expr e1 @ free_expr e2 @ List.concat_map free_instr il

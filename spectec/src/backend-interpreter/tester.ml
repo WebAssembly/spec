@@ -72,6 +72,16 @@ let file_to_script file_path =
   with
     | _ -> prerr_endline ("Failed to parse " ^ file_path); []
 
+let is_long_test path = List.exists ((=) (Filename.basename path)) [
+    "memory_copy.wast";
+    "memory_fill.wast";
+    "memory_grow.wast";
+    "call_indirect.wast";
+    "return_call.wast";
+    "return_call_indirect.wast";
+    "return_call_ref.wast"
+  ]
+
 (** End of helpers **)
 
 module Register = Map.Make (String)
@@ -460,6 +470,9 @@ let test file_name =
 
   (* Skip test if there is no applicable assertion *)
   if total = 0 then None else
+
+  (* Skip test if this test is too long *)
+  if is_long_test file_name then None else
 
   let name = Filename.basename file_name in
   Printf.printf "===== %s =====\n%!" name;

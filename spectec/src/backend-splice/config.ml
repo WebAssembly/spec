@@ -18,8 +18,8 @@ type config =
     prose : Backend_prose.Config.config;
   }
 
-let default = 
-  { anchors = [ {token = "%"; prefix = ""; suffix = ""; indent = ""} ]; 
+let default =
+  { anchors = [ {token = "%"; prefix = ""; suffix = ""; indent = ""} ];
     latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;
   }

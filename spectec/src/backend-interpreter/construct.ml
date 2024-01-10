@@ -89,7 +89,7 @@ let dotP kwd = DotP kwd |> mk_path
 
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
-let id str = VarE str 
+let id str = VarE str
 let zero = NumV 0L
 
 let get_name = function

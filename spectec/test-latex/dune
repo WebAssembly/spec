@@ -3,11 +3,7 @@
   (deps
     (file ../src/exe-watsup/main.exe)
     (glob_files_rec ../spec/*)
-<<<<<<< HEAD
-=======
-    (file spec-splice.in.tex)
     (file test.watsup)
->>>>>>> main
   )
   (files TEST.md)
 )

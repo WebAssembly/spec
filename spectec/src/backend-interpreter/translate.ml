@@ -517,7 +517,7 @@ let extract_bound_names lhs rhs targets cont =
 
 let rec expr2let lhs rhs targets cont =
   let lhs, rhs, cont = extract_bound_names lhs rhs targets cont in
-  let rec has_name e = match e.it with 
+  let rec has_name e = match e.it with
     | VarE _ | SubE _ -> true
     | IterE (inner_exp, _, _) -> has_name inner_exp
     | _ -> false

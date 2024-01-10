@@ -8,14 +8,14 @@ module Map = Map.Make(String)
 
 (* TODO a hack to remove . s in name, i.e., LOCAL.GET to LOCALGET,
    such that it is macro-compatible *)
-let macroify ?(note = "") s = 
+let macroify ?(note = "") s =
   let is_alphanumeric c = match c with
     | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '-' -> true
     | _ -> false
   in
   let del acc c =
     if is_alphanumeric c then acc ^ (String.make 1 c)
-    else acc 
+    else acc
   in
   String.fold_left del "" (s ^ "-" ^ note)
 
@@ -28,7 +28,7 @@ let font_macro = function
 (* Environment *)
 
 type env =
-  { 
+  {
     sections: string Map.t ref;
     kwds: (Set.t * Set.t) Map.t ref;
     funcs: Set.t ref;
@@ -58,7 +58,7 @@ let macro_template = {|
 
 |}
 
-let gen_macro_word s = 
+let gen_macro_word s =
   let s = if String.uppercase_ascii s = s then String.lowercase_ascii s else s in
   let escape acc c =
     if c = '.' then acc ^ "{.}"
@@ -95,14 +95,14 @@ let gen_macro_kwds env =
         (fun kwd svariants ->
           let svariant = gen_macro_kwd env syntax kwd in
           svariants ^ svariant ^ "\n")
-        terminals "" 
+        terminals ""
       in
       skwd
       ^ ".. " ^ (String.uppercase_ascii syntax) ^ "\n"
       ^ ".. " ^ (String.make (String.length syntax) '-') ^ "\n"
       ^ svariants
       ^ "\n")
-    kwd "" 
+    kwd ""
 
 let gen_macro_func env fname =
   let header = "def-" ^ fname in
@@ -112,10 +112,10 @@ let gen_macro_func env fname =
 let gen_macro_funcs env =
   let func = !(env.funcs) in
   Set.fold
-    (fun fname sfunc -> 
+    (fun fname sfunc ->
       let sword = gen_macro_func env fname in
       sfunc ^ sword ^ "\n")
-    func "" 
+    func ""
 
 let gen_macro' env =
   let skwd = gen_macro_kwds env in
@@ -129,15 +129,15 @@ let gen_macro' env =
 let gen_macro env =
   let s = gen_macro' env in
   let oc = Out_channel.open_text "macros.def" in
-  Fun.protect (fun () -> Out_channel.output_string oc s) 
+  Fun.protect (fun () -> Out_channel.output_string oc s)
     ~finally:(fun () -> Out_channel.close oc)
 
 (* Parsing Sections from Splice Inputs and Outputs *)
 
 let rec read_lines ic lines = match In_channel.input_line ic with
   | Some line -> read_lines ic (line :: lines)
-  | None -> 
-      In_channel.close ic; 
+  | None ->
+      In_channel.close ic;
       List.rev lines
 
 let parse_line line =
@@ -150,7 +150,7 @@ let parse_line line =
 let parse_file input output section2file =
   let ic = In_channel.open_text input in
   let lines = read_lines ic [] in
-  List.fold_left 
+  List.fold_left
     (fun acc line -> match parse_line line with
       | Some section -> Map.add section output acc
       | None -> acc)
@@ -158,7 +158,7 @@ let parse_file input output section2file =
 
 let parse_section pdsts odsts =
   List.fold_left2
-    (fun acc input output -> 
+    (fun acc input output ->
       let suffix = ".rst" in
       let output = String.sub output 0 ((String.length output) - (String.length suffix)) in
       parse_file input output acc)
@@ -168,7 +168,7 @@ let parse_section pdsts odsts =
 
 let extract_ids_kwds = function
   | El.Ast.Nl -> None
-  | El.Ast.Elem elem -> Some elem.it 
+  | El.Ast.Elem elem -> Some elem.it
 
 let extract_typcases_kwds = function
   | El.Ast.Nl -> None
@@ -198,10 +198,10 @@ let rec extract_typ_kwds typ =
 
 let extract_kwd_kwds def =
   match def.it with
-  | El.Ast.SynD (id, subid, _, typ, _) -> 
-      let topsyntax, syntax = 
-        if subid.it = "" then (None, id.it) 
-        else (Some id.it, id.it ^ "-" ^ subid.it) 
+  | El.Ast.SynD (id, subid, _, typ, _) ->
+      let topsyntax, syntax =
+        if subid.it = "" then (None, id.it)
+        else (Some id.it, id.it ^ "-" ^ subid.it)
       in
       let variants = extract_typ_kwds typ.it in
       let variants = List.fold_left (fun acc child -> Set.add child acc) Set.empty variants in
@@ -221,14 +221,14 @@ let check_rst outputs =
 
 let env inputs outputs el =
   let sections = if check_rst outputs then parse_section inputs outputs else Map.empty in
-  let kwds = 
+  let kwds =
     List.fold_left
       (fun acc def -> match extract_kwd_kwds def with
-        | Some (topsyntax, syntax, terminals, nonterminals) -> 
+        | Some (topsyntax, syntax, terminals, nonterminals) ->
             let acc = Map.add syntax (terminals, nonterminals) acc in
             (match topsyntax with
-            | Some topsyntax -> 
-                let terminals, nonterminals = 
+            | Some topsyntax ->
+                let terminals, nonterminals =
                   (match Map.find_opt topsyntax acc with
                   | Some (terminals, nonterminals) -> (terminals, Set.add syntax nonterminals)
                   | None -> (Set.empty, Set.singleton syntax))
@@ -256,28 +256,28 @@ let rec find_kwd' env nonterminals variant = match nonterminals with
     | None -> find_kwd' env rest variant)
   | _ -> None
 
-and find_kwd env syntax variant = 
+and find_kwd env syntax variant =
   let header = "syntax-" ^ syntax in
   let font = font_macro "K" in
   match Map.find_opt syntax !(env.kwds) with
   | Some (terminals, nonterminals) ->
       if Set.mem variant terminals then
-        Some 
+        Some
           (("\\" ^ (macroify ~note:syntax variant)),
           (gen_macro_rhs env header font variant))
       else
         find_kwd' env (Set.elements nonterminals) variant
   | _ -> None
 
-let find_func env fname = 
+let find_func env fname =
   let header = "def-" ^ fname in
   let font = font_macro "F" in
-  Option.map 
-    (fun s -> 
+  Option.map
+    (fun s ->
       ("\\" ^ (macroify s), gen_macro_rhs env header font fname))
     (Set.find_opt fname !(env.funcs))
 
-let find_kwd env kwd = 
+let find_kwd env kwd =
   let variant, syntax = kwd in
   find_kwd env syntax variant
 

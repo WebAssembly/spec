@@ -58,7 +58,7 @@ and string_of_value = function
   | BoolV b -> string_of_bool b
   | VecV v -> v
   | TextV s -> s
-  | TupV vl -> "(" ^ string_of_values ", " vl ^ ")" 
+  | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
   | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
   | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
   | CaseV (s, []) -> s
@@ -353,7 +353,7 @@ let rec structured_string_of_value = function
   | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
   | VecV v -> "VecV (" ^ v ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
-  | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")" 
+  | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
   | ArrowV (v1, v2) ->
     "ArrowV("
     ^ structured_string_of_value v1
@@ -386,7 +386,7 @@ and structured_string_of_record_expr r =
     r "{ "
   ^ "}"
 
-and structured_string_of_expr expr = 
+and structured_string_of_expr expr =
   match expr.it with
   | NumE i -> Int64.to_string i
   | BoolE b -> string_of_bool b
@@ -467,7 +467,7 @@ and structured_string_of_expr expr =
     ^ structured_string_of_expr e2
     ^ ")"
   | CaseE (kwd, el) ->
-    "CaseE (" ^ structured_string_of_kwd kwd 
+    "CaseE (" ^ structured_string_of_kwd kwd
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"

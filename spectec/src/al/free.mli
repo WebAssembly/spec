@@ -1,4 +1,4 @@
-open Ast 
+open Ast
 
 module IdSet : Set.S with type elt = string
 

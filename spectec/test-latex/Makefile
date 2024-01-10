@@ -15,7 +15,16 @@ TESTFILES = $(shell ls *.$(EXT))
 
 .PHONY: all
 
-all: test-gen
+all: test
+
+
+# Test
+
+.PHONY: test
+
+
+test: test-gen
+
 
 # Latex generation
 
@@ -40,7 +49,6 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 	pdflatex $<
 	rm $(GENINNAME).tex
 
-# Test
 test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
 
 test-%.tex: %.$(EXT) $(EXE)
@@ -52,9 +60,13 @@ test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	pdflatex $<
 	rm $(GENINNAME).tex $<
 
-.PHONY: test
 
-test: test-gen
+# Executable
+
+$(EXE): exe
+
+exe:
+	@(cd ..; make exe)
 
 
 # Cleanup
@@ -66,5 +78,5 @@ clean:
 	rm -f *.aux *.log
 
 distclean: clean
-	rm -f $(GENNAME).tex
+	rm -f $(GENINNAME)-*.tex test-*.tex
 	rm -f *.pdf

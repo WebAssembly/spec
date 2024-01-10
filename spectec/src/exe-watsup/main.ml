@@ -174,6 +174,14 @@ let () =
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
 
+    let al = if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
+      log "Translating to AL...";
+      Backend_interpreter.(Translate.translate il @ Manual.manual_algos)
+    ) in
+
+    if !print_al then
+      Printf.printf "%s\n%!" (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
+
     (match !target with
     | Check -> ()
     | Latex ->
@@ -183,41 +191,18 @@ let () =
       | odst :: _ -> Backend_latex.Gen.gen_file odst el
       )
     | Prose ->
-      if not (PS.mem Animate !selected_passes) then
-        failwith "Prose generatiron requires `--animate` flag."
-      else
-      log "Translating to AL...";
-      let al =
-        Backend_interpreter.Translate.translate il
-        @ Backend_interpreter.Manual.manual_algos in
-      (*log "AL Validation...";
-      Backend_interpreter.Validation.valid al;*)
       let prose = Backend_prose.Gen.gen_prose il al in
       print_endline "=================";
       print_endline " Generated prose ";
       print_endline "=================";
       print_endline (Backend_prose.Print.string_of_prose prose);
     | Splice config ->
-        let al = if not (PS.mem Animate !selected_passes) then [] else
-          Backend_interpreter.Translate.translate il
-          @ Backend_interpreter.Manual.manual_algos in
-        let prose = Backend_prose.Gen.gen_prose il al in
-        odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
-        let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
-        List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
-        if !warn then Backend_splice.Splice.warn env;
+      let prose = Backend_prose.Gen.gen_prose il al in
+      odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
+      let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
+      List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
+      if !warn then Backend_splice.Splice.warn env;
     | Interpreter ->
-      if not (PS.mem Animate !selected_passes) then
-        failwith "Interpreter generatiron requires `--animate` flag."
-      else
-      log "Translating to AL...";
-      let al = Backend_interpreter.(
-        Translate.translate il @ Manual.manual_algos
-      ) in
-      if !print_al then
-        List.iter (fun algo -> Al.Print.string_of_algorithm algo |> print_endline) al;
-      (*log "AL Validation...";
-      Backend_interpreter.Validation.valid al;*)
       log "Initializing AL interprter with generated AL...";
       Backend_interpreter.Ds.init al;
       log "Interpreting AL...";

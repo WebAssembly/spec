@@ -12,7 +12,7 @@ module Record = struct include List
     map (fun (k, _) -> k) r
 
   let mem = mem_assoc
-  
+
   let size = length
 
   let add k v r =

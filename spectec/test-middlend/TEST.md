@@ -2668,7 +2668,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -7541,7 +7541,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -12417,7 +12417,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -17298,7 +17298,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -22192,7 +22192,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -27120,7 +27120,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39
@@ -29218,125 +29218,6 @@ syntax code = (local*, expr)
 
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed (binding inference).
-if (sh = SHAPE_shape(lnt, lns))
-if (lnt = $lanetype_packedtype(pt))
-...Animation failed (reorder)
-where sh = SHAPE_shape(lnt, lns)
-if (lnt = $lanetype_packedtype(pt))
-Animation failed (binding inference).
-if (|ct'*{ct'}| = |y*{y}|)
-if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
-(if (y < |C.TYPE_context|))*{ct' y y'}
-if (|y*{y}| <= 1)
-(if (y < x))*{y}
-(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |y*{y}|)
-if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
-(if (y < |C.TYPE_context|))*{ct' y y'}
-if (|y*{y}| <= 1)
-(if (y < x))*{y}
-(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
-if (|ct'*{ct'}| = |ht*{ht}|)
-if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|ht*{ht}| <= 1)
-(if $before(ht, x, i))*{ht}
-(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |ht*{ht}|)
-if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|ht*{ht}| <= 1)
-(if $before(ht, x, i))*{ht}
-(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
-if ((n_1 <= n_2) /\ (n_2 <= k))
-...Animation failed (reorder)
-if (n_1 <= n_2)
-if (n_2 <= k)
-Animation failed (binding inference).
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = $valtype_numtype(numtype))
-...Animation failed (reorder)
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = $valtype_numtype(numtype))
-Animation failed (binding inference).
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = $valtype_vectype(vectype))
-...Animation failed (reorder)
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = $valtype_vectype(vectype))
-Animation failed (binding inference).
-Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-...Animation failed (reorder)
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
-Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-Animation failed (binding inference).
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-...Animation failed (reorder)
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-...Animation failed (reorder)
-where $expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))
-if (x < |C.TYPE_context|)
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (t = $valtype_numtype(numtype))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-where t = $valtype_numtype(numtype)
-if (y < |C.DATA_context|)
-if (x < |C.TYPE_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (t = $valtype_vectype(vectype))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-where t = $valtype_vectype(vectype)
-if (y < |C.DATA_context|)
-if (x < |C.TYPE_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), [c]) = $ext(n, lns, sx, m)^lns{m})
-...Animation failed (reorder)
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), [c]) = $ext(n, lns, sx, m)^lns{m})
-Animation failed (binding inference).
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
-if (l = (128 / lns))
-if ($lanes(SHAPE_shape($ishape(n), l), [c]) = m^l{})
-...Animation failed (reorder)
-where $lanes(SHAPE_shape($ishape(n), l), [c]) = m^l{}
-where (128 / lns) = l
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 
 ;; 0-aux.watsup:11.1-11.15
 syntax N = nat
@@ -32294,7 +32175,7 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     `%|-%:%`(C, I31.GET_instr(sx), `%->%`([REF_valtype(`NULL%?`(?(())), I31_heaptype)], [I32_valtype]))
 
   ;; 6-typing.watsup:760.1-761.39
-  rule vconst {C : context, c_vt : c}:
+  rule vvconst {C : context, c_vt : c}:
     `%|-%:%`(C, VVCONST_instr(V128_vectype, [c_vt]), `%->%`([], [V128_valtype]))
 
   ;; 6-typing.watsup:763.1-764.39

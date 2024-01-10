@@ -308,7 +308,7 @@ let try_prose_anchor env src r sort find : bool =
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
     let prose = find env src id in
-    r := Backend_prose.Render.render_def env.render_prose prose 
+    r := Backend_prose.Render.render_def env.render_prose prose
   );
   b
 

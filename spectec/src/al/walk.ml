@@ -29,7 +29,7 @@ let rec walk_expr f e =
   let { pre_expr = pre; post_expr = post; stop_cond_expr = stop_cond; _ } = f in
   let new_ = walk_expr f in
 
-  let super_walk e = 
+  let super_walk e =
     let e' =
       match e.it with
       | NumE _

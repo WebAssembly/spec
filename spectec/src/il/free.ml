@@ -77,7 +77,7 @@ and free_typfield (_, (binds, t, prems), _) =
   diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
 and free_typcase (_, (binds, t, prems), _) =
   diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
-  
+
 
 (* Expressions *)
 

@@ -138,7 +138,7 @@ and access_path env base path =
           |> Printf.sprintf "Not a record: %s"
           |> failwith)
 
-and replace_path env base path v_new = 
+and replace_path env base path v_new =
   match path.it with
   | IdxP e' ->
       let a = base |> value_to_array in
@@ -495,7 +495,7 @@ and assign lhs rhs env =
 and assign_split ep es vs env =
   let len = Array.length vs in
   let prefix_len, suffix_len =
-    let get_length e = match e.it with 
+    let get_length e = match e.it with
     | ListE es -> Some (List.length es)
     | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
     | _ -> None in
