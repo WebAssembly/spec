@@ -23,6 +23,7 @@ and store = (kwd', value) record
 
 and value =
   | NumV of int64                      (* number *)
+  | BoolV of bool                      (* boolean *)
   | VecV of vec128                     (* vector *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
@@ -46,8 +47,6 @@ type unop =
   | MinusOp  (* `-` *)
 
 type binop =
-  | AndOp    (* `/\` *)
-  | OrOp     (* `\/` *)
   | ImplOp   (* `=>` *)
   | EquivOp  (* `<=>` *)
   | AddOp    (* `+` *)
@@ -55,8 +54,9 @@ type binop =
   | MulOp    (* `*` *)
   | DivOp    (* `/` *)
   | ExpOp    (* `^` *)
-
-type cmpop =
+  (* compare operation *)
+  | AndOp    (* `/\` *)
+  | OrOp     (* `\/` *)
   | EqOp     (* `=` *)
   | NeOp     (* `=/=` *)
   | LtOp     (* `<` *)
@@ -78,6 +78,7 @@ and expr = expr' phrase
 and expr' =
   | VarE of id                          (* varid *)
   | NumE of int64                       (* number *)
+  | BoolE of bool                       (* boolean *)
   | UnE of unop * expr                  (* unop expr *)
   | BinE of binop * expr * expr         (* expr binop expr *)
   | AccE of expr * path                 (* expr `[` path `]` *)
@@ -100,6 +101,18 @@ and expr' =
   | GetCurLabelE                        (* "the current lbael" *)
   | GetCurContextE                      (* "the current context" *)
   | ContE of expr                       (* "the continuation of expr" *)
+  (* Conditions *)
+  | IsCaseOfE of expr * kwd             (* expr is of the case kwd *)
+  | IsValidE of expr                    (* expr is valid *)
+  | ContextKindE of kwd * expr          (* TODO: desugar using IsCaseOf? *)
+  | IsDefinedE of expr                  (* expr is defined *)
+  | MatchE of expr * expr               (* expr matches expr *)
+  | HasTypeE of expr * ty               (* the type of expr is ty *)
+  (* Eonditions used in assertions *)
+  | TopLabelE                           (* "a label is now on the top of the stack" *)
+  | TopFrameE                           (* "a frame is now on the top of the stack" *)
+  | TopValueE of expr option            (* "a value (of type expr)? is now on the top of the stack" *)
+  | TopValuesE of expr                  (* "at least expr number of values on the top of the stack" *)
   (* Administrative Instructions *)
   | SubE of id * ty                     (* varid, with specific type *)
   | YetE of string                      (* for future not yet implemented feature *)
@@ -110,34 +123,15 @@ and path' =
   | SliceP of expr * expr           (* `[` expr `:` expr `]` *)
   | DotP of kwd                     (* `.` atom *)
 
-and cond = cond' phrase
-and cond' =
-  | IterC of cond * id list * iter  (* iterator on condition *)
-  | UnC of unop * cond              (* unop expr *)
-  | BinC of binop * cond * cond     (* expr binop expr *)
-  | CmpC of cmpop * expr * expr     (* expr cmpop expr *)
-  | IsCaseOfC of expr * kwd         (* expr is of the case kwd *)
-  | IsValidC of expr                (* expr is valid *)
-  | ContextKindC of kwd * expr      (* TODO: desugar using IsCaseOf? *)
-  | IsDefinedC of expr              (* expr is defined *)
-  | MatchC of expr * expr           (* expr matches expr *)
-  | HasTypeC of expr * ty           (* the type of expr is ty *)
-  (* Conditions used in assertions *)
-  | TopLabelC                       (* "a label is now on the top of the stack" *)
-  | TopFrameC                       (* "a frame is now on the top of the stack" *)
-  | TopValueC of expr option        (* "a value (of type expr)? is now on the top of the stack" *)
-  | TopValuesC of expr              (* "at least expr number of values on the top of the stack" *)
-  (* Administrative instructions *)
-  | YetC of string                  (* for future not yet implemented feature *)
 
 (* Instructions *)
 
 type instr = (instr', int) note_phrase
 and instr' =
-  | IfI of cond * instr list * instr list (* `if` cond `then` instr* `else` instr* *)
+  | IfI of expr * instr list * instr list (* `if` cond `then` instr* `else` instr* *)
   | EitherI of instr list * instr list    (* `either` instr* `or` instr* *)
   | EnterI of expr * expr * instr list    (* `enter` expr`:` expr `after` instr* *)
-  | AssertI of cond                       (* `assert` cond *)
+  | AssertI of expr                       (* `assert` cond *)
   | PushI of expr                         (* `push` expr *)
   | PopI of expr                          (* `pop` expr *)
   | PopAllI of expr                       (* `popall` expr *)

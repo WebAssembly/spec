@@ -55,6 +55,7 @@ and string_of_value = function
   | StoreV _ -> "StoreV"
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | NumV n -> Printf.sprintf "0x%LX" n
+  | BoolV b -> string_of_bool b
   | VecV v -> v
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")" 
@@ -85,8 +86,6 @@ let string_of_binop = function
   | MulOp -> "·"
   | DivOp -> "/"
   | ExpOp -> "^"
-
-let string_of_cmpop = function
   | EqOp -> "is"
   | NeOp -> "is not"
   | LtOp -> "<"
@@ -119,6 +118,14 @@ and string_of_record_expr r =
 and string_of_expr expr =
   match expr.it with
   | NumE i -> Int64.to_string i
+  | BoolE b -> string_of_bool b
+  | UnE (NotOp, { it = IsCaseOfE (e, kwd); _ }) ->
+    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd kwd)
+  | UnE (NotOp, { it = IsDefinedE e; _ }) ->
+    sprintf "%s is not defined" (string_of_expr e)
+  | UnE (NotOp, { it = IsValidE e; _ }) ->
+    sprintf "%s is not valid" (string_of_expr e)
+  | UnE (NotOp, e) -> sprintf "not %s" (string_of_expr e)
   | UnE (op, e) -> sprintf "(%s %s)" (string_of_unop op) (string_of_expr e)
   | BinE (op, e1, e2) ->
     sprintf "(%s %s %s)" (string_of_expr e1) (string_of_binop op) (string_of_expr e2)
@@ -160,6 +167,20 @@ and string_of_expr expr =
   | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
   | OptE (Some e) -> "?(" ^ string_of_expr e ^ ")"
   | OptE None -> "?()"
+  | ContextKindE (kwd, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_kwd kwd)
+  | IsDefinedE e -> sprintf "%s is defined" (string_of_expr e)
+  | IsCaseOfE (e, kwd) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_kwd kwd)
+  | HasTypeE (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
+  | IsValidE e -> sprintf "%s is valid" (string_of_expr e)
+  | TopLabelE -> "a label is now on the top of the stack"
+  | TopFrameE -> "a frame is now on the top of the stack"
+  | TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
+  | TopValueE None -> "a value is on the top of the stack"
+  | TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
+  | MatchE (e1, e2) ->
+    sprintf "%s matches %s"
+      (string_of_expr e1)
+      (string_of_expr e2)
   | YetE s -> sprintf "YetE (%s)" s
 
 and string_of_exprs sep = string_of_list string_of_expr sep
@@ -176,40 +197,6 @@ and string_of_path path =
 
 and string_of_paths paths = List.map string_of_path paths |> List.fold_left (^) ""
 
-
-(* Conditions *)
-
-and string_of_cond cond =
-  match cond.it with
-  | IterC (c, _, iter) ->
-    sprintf "(%s)%s" (string_of_cond c) (string_of_iter iter)
-  | UnC (NotOp, { it = IsCaseOfC (e, kwd); _ }) ->
-    sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd kwd)
-  | UnC (NotOp, { it = IsDefinedC e; _ }) ->
-    sprintf "%s is not defined" (string_of_expr e)
-  | UnC (NotOp, { it = IsValidC e; _ }) ->
-    sprintf "%s is not valid" (string_of_expr e)
-  | UnC (NotOp, c) -> sprintf "not %s" (string_of_cond c)
-  | UnC _ -> failwith "Unreachable condition"
-  | BinC (op, c1, c2) ->
-    sprintf "%s %s %s" (string_of_cond c1) (string_of_binop op) (string_of_cond c2)
-  | CmpC (op, e1, e2) ->
-    sprintf "%s %s %s" (string_of_expr e1) (string_of_cmpop op) (string_of_expr e2)
-  | ContextKindC (kwd, e) -> sprintf "%s is %s" (string_of_expr e) (string_of_kwd kwd)
-  | IsDefinedC e -> sprintf "%s is defined" (string_of_expr e)
-  | IsCaseOfC (e, kwd) -> sprintf "%s is of the case %s" (string_of_expr e) (string_of_kwd kwd)
-  | HasTypeC (e, t) -> sprintf "the type of %s is %s" (string_of_expr e) t
-  | IsValidC e -> sprintf "%s is valid" (string_of_expr e)
-  | TopLabelC -> "a label is now on the top of the stack"
-  | TopFrameC -> "a frame is now on the top of the stack"
-  | TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (string_of_expr e)
-  | TopValueC None -> "a value is on the top of the stack"
-  | TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (string_of_expr e)
-  | MatchC (e1, e2) ->
-    sprintf "%s matches %s"
-      (string_of_expr e1)
-      (string_of_expr e2)
-  | YetC s -> sprintf "YetC (%s)" s
 
 
 (* Instructions *)
@@ -240,36 +227,36 @@ let make_index depth =
 
 let rec string_of_instr' depth instr =
   match instr.it with
-  | IfI (c, il, []) ->
-    sprintf "%s If %s, then:%s" (make_index depth) (string_of_cond c)
+  | IfI (e, il, []) ->
+    sprintf "%s If %s, then:%s" (make_index depth) (string_of_expr e)
       (string_of_instrs' (depth + 1) il)
-  | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
+  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, []); _ } ]) ->
     let if_index = make_index depth in
     let else_if_index = make_index depth in
     sprintf "%s If %s, then:%s\n%s Else if %s, then:%s"
       if_index
-      (string_of_cond c)
+      (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
       (repeat indent depth ^ else_if_index)
-      (string_of_cond inner_c)
+      (string_of_expr inner_e)
       (string_of_instrs' (depth + 1) inner_il1)
-  | IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
+  | IfI (e, il1, [ { it = IfI (inner_e, inner_il1, inner_il2); _ } ]) ->
     let if_index = make_index depth in
     let else_if_index = make_index depth in
     let else_index = make_index depth in
     sprintf "%s If %s, then:%s\n%s Else if %s, then:%s\n%s Else:%s"
       if_index
-      (string_of_cond c)
+      (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
       (repeat indent depth ^ else_if_index)
-      (string_of_cond inner_c)
+      (string_of_expr inner_e)
       (string_of_instrs' (depth + 1) inner_il1)
       (repeat indent depth ^ else_index)
       (string_of_instrs' (depth + 1) inner_il2)
-  | IfI (c, il1, il2) ->
+  | IfI (e, il1, il2) ->
     let if_index = make_index depth in
     let else_index = make_index depth in
-    sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_cond c)
+    sprintf "%s If %s, then:%s\n%s Else:%s" if_index (string_of_expr e)
       (string_of_instrs' (depth + 1) il1)
       (repeat indent depth ^ else_index)
       (string_of_instrs' (depth + 1) il2)
@@ -283,7 +270,7 @@ let rec string_of_instr' depth instr =
       (string_of_instrs' (depth + 1) il1)
       (repeat indent depth ^ or_index)
       (string_of_instrs' (depth + 1) il2)
-  | AssertI c -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_cond c)
+  | AssertI e -> sprintf "%s Assert: Due to validation, %s." (make_index depth) (string_of_expr e)
   | PushI e ->
     sprintf "%s Push %s to the stack." (make_index depth)
       (string_of_expr e)
@@ -362,6 +349,7 @@ let rec structured_string_of_value = function
   | FrameV _ -> "FrameV (TODO)"
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
+  | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
   | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
   | VecV v -> "VecV (" ^ v ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
@@ -401,6 +389,7 @@ and structured_string_of_record_expr r =
 and structured_string_of_expr expr = 
   match expr.it with
   | NumE i -> Int64.to_string i
+  | BoolE b -> string_of_bool b
   | UnE (op, e) ->
     "UnE ("
     ^ string_of_unop op
@@ -482,6 +471,20 @@ and structured_string_of_expr expr =
     ^ ", [" ^ structured_string_of_exprs el ^ "])"
   | OptE None -> "OptE"
   | OptE (Some e) -> "OptE (" ^ structured_string_of_expr e ^ ")"
+  | ContextKindE (kwd, e) -> sprintf "ContextKindE (%s, %s)" (structured_string_of_kwd kwd) (structured_string_of_expr e)
+  | IsDefinedE e -> "DefinedE (" ^ structured_string_of_expr e ^ ")"
+  | IsCaseOfE (e, kwd) -> "CaseOfE (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_kwd kwd ^ ")"
+  | HasTypeE (e, t) -> "HasTypeE (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
+  | IsValidE e -> "IsValidE (" ^ structured_string_of_expr e ^ ")"
+  | TopLabelE -> "TopLabelE"
+  | TopFrameE -> "TopFrameE"
+  | TopValueE None -> "TopValueE"
+  | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")" 
+  | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"
+  | MatchE (e1, e2) ->
+    Printf.sprintf "Matches (%s, %s)"
+      (structured_string_of_expr e1)
+      (structured_string_of_expr e2)
   | YetE s -> "YetE (" ^ s ^ ")"
 
 and structured_string_of_exprs el = string_of_list structured_string_of_expr ", " el
@@ -502,62 +505,14 @@ and structured_string_of_paths paths =
   List.map string_of_path paths |> List.fold_left (^) ""
 
 
-(* Conditions *)
-
-and structured_string_of_cond cond =
-  match cond.it with
-  | IterC (c, ids, iter) ->
-    sprintf "IterC (%s, %s, %s)"
-      (string_of_cond c)
-      (structured_string_of_ids ids)
-      (string_of_iter iter)
-  | UnC (op, c) ->
-    "UnC ("
-    ^ string_of_unop op
-    ^ ", "
-    ^ structured_string_of_cond c
-    ^ ")"
-  | BinC (op, c1, c2) ->
-    "BinC ("
-    ^ string_of_binop op
-    ^ ", "
-    ^ structured_string_of_cond c1
-    ^ ", "
-    ^ structured_string_of_cond c2
-    ^ ")"
-  | CmpC (op, e1, e2) ->
-    "CmpC ("
-    ^ string_of_cmpop op
-    ^ ", "
-    ^ structured_string_of_expr e1
-    ^ ", "
-    ^ structured_string_of_expr e2
-    ^ ")"
-  | ContextKindC (kwd, e) -> sprintf "ContextKindC (%s, %s)" (structured_string_of_kwd kwd) (structured_string_of_expr e)
-  | IsDefinedC e -> "DefinedC (" ^ structured_string_of_expr e ^ ")"
-  | IsCaseOfC (e, kwd) -> "CaseOfC (" ^ structured_string_of_expr e ^ ", " ^ structured_string_of_kwd kwd ^ ")"
-  | HasTypeC (e, t) -> "HasTypeC (" ^ structured_string_of_expr e ^ ", " ^ t ^ ")"
-  | IsValidC e -> "IsValidC (" ^ structured_string_of_expr e ^ ")"
-  | TopLabelC -> "TopLabelC"
-  | TopFrameC -> "TopFrameC"
-  | TopValueC None -> "TopValueC"
-  | TopValueC (Some e) -> "TopValueC (" ^ structured_string_of_expr e ^ ")" 
-  | TopValuesC e -> "TopValuesC (" ^ structured_string_of_expr e ^ ")"
-  | MatchC (e1, e2) ->
-    Printf.sprintf "Matches (%s, %s)"
-      (structured_string_of_expr e1)
-      (structured_string_of_expr e2)
-  | YetC s -> "YetC (" ^ s ^ ")"
-
-
 (* Instructions *)
 
 let rec structured_string_of_instr' depth instr =
   match instr.it with
-  | IfI (c, t, e) ->
+  | IfI (expr, t, e) ->
     "IfI (\n"
     ^ repeat indent (depth + 1)
-    ^ structured_string_of_cond c
+    ^ structured_string_of_expr expr
     ^ "\n" ^ repeat indent depth ^ "then\n"
     ^ structured_string_of_instrs' (depth + 1) t
     ^ repeat indent depth ^ "else\n"
@@ -573,7 +528,7 @@ let rec structured_string_of_instr' depth instr =
     ^ repeat indent depth ^ "Or\n"
     ^ structured_string_of_instrs' (depth + 1) il2
     ^ repeat indent depth ^ ")"
-  | AssertI c -> "AssertI (" ^ structured_string_of_cond c ^ ")"
+  | AssertI e -> "AssertI (" ^ structured_string_of_expr e ^ ")"
   | PushI e -> "PushI (" ^ structured_string_of_expr e ^ ")"
   | PopI e -> "PopI (" ^ structured_string_of_expr e ^ ")"
   | PopAllI e -> "PopAllI (" ^ structured_string_of_expr e ^ ")"

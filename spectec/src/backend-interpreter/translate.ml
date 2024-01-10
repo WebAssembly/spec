@@ -167,18 +167,34 @@ and exp2expr exp =
       in
       unE (op, exp')
   | Ast.BinE (op, exp1, exp2) ->
-      let lhs = exp2expr exp1 in
-      let rhs = exp2expr exp2 in
-      let op = match op with
+    let lhs = exp2expr exp1 in
+    let rhs = exp2expr exp2 in
+    let op =
+      match op with
       | Ast.AddOp _ -> AddOp
       | Ast.SubOp _ -> SubOp
       | Ast.MulOp _ -> MulOp
       | Ast.DivOp _ -> DivOp
       | Ast.ExpOp _ -> ExpOp
-      | Ast.OrOp -> OrOp (* TODO : remove this *)
-      | _ -> gen_fail_msg_of_exp exp "binary expression" |> failwith
-      in
-      binE (op, lhs, rhs)
+      | Ast.AndOp -> AndOp
+      | Ast.OrOp -> OrOp
+      | Ast.ImplOp -> ImplOp
+      | Ast.EquivOp -> EquivOp
+    in
+    binE (op, lhs, rhs)
+  | Ast.CmpE (op, exp1, exp2) ->
+    let lhs = exp2expr exp1 in
+    let rhs = exp2expr exp2 in
+    let compare_op =
+      match op with
+      | Ast.EqOp -> EqOp
+      | Ast.NeOp -> NeOp
+      | Ast.LtOp _ -> LtOp
+      | Ast.GtOp _ -> GtOp
+      | Ast.LeOp _ -> LeOp
+      | Ast.GeOp _ -> GeOp
+    in
+    binE (compare_op, lhs, rhs)
   (* CaseE *)
   | Ast.CaseE (Ast.Atom cons, arg) -> caseE (name2kwd cons exp.note, exp2args arg)
   (* Tuple *)
@@ -274,15 +290,15 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI topFrameC
-  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (topValuesC (exp2expr e))
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI topFrameE
+  | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (topValuesE (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
-        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI topLabelC
+        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI topLabelE
   | Ast.CaseE
       ( Ast.Atom "CONST",
-        { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueC (Some (exp2expr ty)))
-  | _ -> assertI (topValueC None)
+        { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueE (Some (exp2expr ty)))
+  | _ -> assertI (topValueE None)
 
 let exp2pop e = [ insert_assert e; popI (exp2expr e) ]
 
@@ -363,7 +379,7 @@ let rec rhs2instrs exp =
   | Ast.IterE ({ it = CaseE (Atom atomid, _); note = note; _ }, (Opt, [ id ]))
     when atomid = "CALL" ->
       let new_name = varE (id.it ^ "_0") in
-      [ ifI (isDefinedC (varE id.it),
+      [ ifI (isDefinedE (varE id.it),
         [
           letI (optE (Some new_name), varE id.it);
           executeI (caseE (name2kwd atomid note, [ new_name ]))
@@ -441,34 +457,6 @@ let rec rhs2instrs exp =
       | _ -> failwith "Invalid new state" )
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
-(* `Ast.exp` -> `cond` *)
-let rec exp2cond exp =
-  match exp.it with
-  | Ast.CmpE (op, exp1, exp2) ->
-      let lhs = exp2expr exp1 in
-      let rhs = exp2expr exp2 in
-      let compare_op = match op with
-      | Ast.EqOp -> EqOp
-      | Ast.NeOp -> NeOp
-      | Ast.LtOp _ -> LtOp
-      | Ast.GtOp _ -> GtOp
-      | Ast.LeOp _ -> LeOp
-      | Ast.GeOp _ -> GeOp
-      in
-      cmpC (compare_op, lhs, rhs)
-  | Ast.BinE (op, exp1, exp2) ->
-      let lhs = exp2cond exp1 in
-      let rhs = exp2cond exp2 in
-      let binop = match op with
-      | Ast.AndOp -> AndOp
-      | Ast.OrOp -> OrOp
-      | Ast.ImplOp -> ImplOp
-      | Ast.EquivOp -> EquivOp
-      | _ ->
-          gen_fail_msg_of_exp exp "binary expression for condition" |> failwith
-      in
-      binC (binop, lhs, rhs)
-  | _ -> gen_fail_msg_of_exp exp "condition" |> failwith
 
 (* s; f; e -> `expr * expr * instr list` *)
 let translate_config config =
@@ -517,7 +505,7 @@ let extract_bound_names lhs rhs targets cont =
             e
           else
             let new_e = get_lhs_name() in
-            conds_ref := !conds_ref @ [ cmpC (EqOp, new_e, e) ];
+            conds_ref := !conds_ref @ [ binE (EqOp, new_e, e) ];
             new_e
         );
         stop_cond_expr = contains_bound_name;
@@ -543,7 +531,7 @@ let rec expr2let lhs rhs targets cont =
   let translate_bindings bindings =
     List.fold_right (fun (l, r) cont ->
       match l with
-      | _ when free_expr l = [] -> [ ifI (cmpC (EqOp, r, l), cont, []) ]
+      | _ when free_expr l = [] -> [ ifI (binE (EqOp, r, l), cont, []) ]
       | _ -> expr2let l r targets cont
     ) bindings cont
   in
@@ -552,7 +540,7 @@ let rec expr2let lhs rhs targets cont =
     let bindings, es' = extract_non_names es in
     [
       ifI (
-        isCaseOfC (rhs, tag),
+        isCaseOfE (rhs, tag),
         letI (caseE (tag, es'), rhs) :: translate_bindings bindings,
         []
       );
@@ -564,21 +552,21 @@ let rec expr2let lhs rhs targets cont =
     else
     [
       ifI
-        ( cmpC (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
+        ( binE (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
           letI (listE es', rhs) :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
     [
       ifI
-        ( unC (NotOp, isDefinedC rhs),
+        ( unE (NotOp, isDefinedE rhs),
           cont,
           [] );
     ]
   | OptE (Some ({ it = VarE _; _ })) ->
     [
       ifI
-        ( isDefinedC rhs,
+        ( isDefinedE rhs,
           letI (lhs, rhs) :: cont,
           [] );
      ]
@@ -586,14 +574,14 @@ let rec expr2let lhs rhs targets cont =
     let fresh = get_lhs_name() in
     [
       ifI
-        ( isDefinedC rhs,
+        ( isDefinedE rhs,
           letI (optE (Some fresh), rhs) :: expr2let e fresh targets cont,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
       ifI
-        ( cmpC (GeOp, rhs, b),
+        ( binE (GeOp, rhs, b),
           letI (a, binE (SubOp, rhs, b)) :: cont,
           [] );
     ]
@@ -612,10 +600,10 @@ let rec expr2let lhs rhs targets cont =
     let length_s, bindings_s, suffix' = handle_list suffix in
     (* TODO: This condition should be injected by sideconditions pass *)
     let cond = match length_p, length_s with
-      | None, None -> yetC ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
+      | None, None -> yetE ("Nondeterministic assignment target: " ^ Al.Print.string_of_expr lhs)
       | Some l, None
-      | None, Some l -> cmpC (GeOp, lenE rhs, l)
-      | Some l1, Some l2 -> cmpC (EqOp, lenE rhs, binE (AddOp, l1, l2))
+      | None, Some l -> binE (GeOp, lenE rhs, l)
+      | Some l1, Some l2 -> binE (EqOp, lenE rhs, binE (AddOp, l1, l2))
     in
     [
       ifI
@@ -627,7 +615,7 @@ let rec expr2let lhs rhs targets cont =
   | SubE (s, t) ->
     [
       ifI
-        ( hasTypeC (rhs, t),
+        ( hasTypeE (rhs, t),
           letI (varE s, rhs) :: cont,
           [] )
     ]
@@ -659,7 +647,7 @@ let rulepr2instrs id exp =
     | "Ref_ok", [_s; ref; rt] ->
       letI (rt, callE ("ref_type_of", [ ref ]))
     | "Reftype_sub", [_C; rt1; rt2] ->
-      ifI (matchC (rt1, rt2), [], [])
+      ifI (matchE (rt1, rt2), [], [])
     | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it)
   in
   [ instr ]
@@ -679,8 +667,7 @@ let rec iterpr2instrs pr (iter, ids) =
   let f i =
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ]
-    (* TODO: Merge `cond` and `expr`, and just insert `IterE` rather than distribute iter *)
-    | IfI (cond, il1, il2) -> [ ifI (iterC (cond, ids', iter'), il1, il2) ]
+    | IfI (cond, il1, il2) -> [ ifI (iterE (cond, ids', iter'), il1, il2) ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr = f } in
@@ -688,7 +675,7 @@ let rec iterpr2instrs pr (iter, ids) =
 
 and prem2instrs prem =
   match prem.it with
-  | Ast.IfPr exp -> [ ifI (exp2cond exp, [], []) ]
+  | Ast.IfPr exp -> [ ifI (exp2expr exp, [], []) ]
   | Ast.ElsePr -> [ otherwiseI [] ]
   | Ast.LetPr (exp1, exp2, ids) ->
     init_lhs_id ();
@@ -889,7 +876,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
           inner_params |> update_opt params;
           let kind = kind_of_context lhs in
           [ ifI (
-            contextKindC (kind, getCurContextE),
+            contextKindE (kind, getCurContextE),
             body,
             acc) ]
         | _ -> failwith "unreachable")

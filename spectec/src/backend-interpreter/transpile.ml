@@ -18,30 +18,30 @@ let take n str =
 let rec neg cond =
   let cond' = 
     match cond.it with
-    | UnC (NotOp, c) -> c.it
-    | BinC (AndOp, c1, c2) -> BinC (OrOp, neg c1, neg c2)
-    | BinC (OrOp, c1, c2) -> BinC (AndOp, neg c1, neg c2)
-    | CmpC (EqOp, e1, e2) -> CmpC (NeOp, e1, e2)
-    | CmpC (NeOp, e1, e2) -> CmpC (EqOp, e1, e2)
-    | CmpC (LtOp, e1, e2) -> CmpC (GeOp, e1, e2)
-    | CmpC (GtOp, e1, e2) -> CmpC (LeOp, e1, e2)
-    | CmpC (LeOp, e1, e2) -> CmpC (GtOp, e1, e2)
-    | CmpC (GeOp, e1, e2) -> CmpC (LtOp, e1, e2)
-    | _ -> UnC (NotOp, cond)
+    | UnE (NotOp, c) -> c.it
+    | BinE (AndOp, c1, c2) -> BinE (OrOp, neg c1, neg c2)
+    | BinE (OrOp, c1, c2) -> BinE (AndOp, neg c1, neg c2)
+    | BinE (EqOp, e1, e2) -> BinE (NeOp, e1, e2)
+    | BinE (NeOp, e1, e2) -> BinE (EqOp, e1, e2)
+    | BinE (LtOp, e1, e2) -> BinE (GeOp, e1, e2)
+    | BinE (GtOp, e1, e2) -> BinE (LeOp, e1, e2)
+    | BinE (LeOp, e1, e2) -> BinE (GtOp, e1, e2)
+    | BinE (GeOp, e1, e2) -> BinE (LtOp, e1, e2)
+    | _ -> UnE (NotOp, cond)
   in
   { cond with it = cond' }
 
 let both_empty cond1 cond2 =
   let get_list cond =
     match cond.it with
-    | CmpC (EqOp, e, { it = ListE []; _ })
-    | CmpC (EqOp, { it = ListE []; _ }, e)
-    | CmpC (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | CmpC (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | CmpC (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
-    | CmpC (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | CmpC (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | CmpC (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
+    | BinE (EqOp, e, { it = ListE []; _ })
+    | BinE (EqOp, { it = ListE []; _ }, e)
+    | BinE (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | BinE (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | BinE (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
+    | BinE (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | BinE (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | BinE (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -51,14 +51,14 @@ let both_empty cond1 cond2 =
 let both_non_empty cond1 cond2 =
   let get_list cond = 
     match cond.it with
-    | CmpC (NeOp, e, { it = ListE []; _ })
-    | CmpC (NeOp, { it = ListE []; _ }, e)
-    | CmpC (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | CmpC (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | CmpC (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | CmpC (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | CmpC (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
-    | CmpC (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
+    | BinE (NeOp, e, { it = ListE []; _ })
+    | BinE (NeOp, { it = ListE []; _ }, e)
+    | BinE (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | BinE (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | BinE (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
+    | BinE (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
+    | BinE (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
+    | BinE (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -192,7 +192,7 @@ let rec infer_else instrs =
 
 let if_not_defined cond =
   match cond.it with
-  | CmpC (EqOp, e, { it = OptE None; _ }) -> unC (NotOp, isDefinedC e)
+  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e)
   | _ -> cond
 
 let swap_if instr =
@@ -253,8 +253,8 @@ let push_either =
 
 let merge_three_branches i =
   match i.it with
-  | IfI (c1, il1, [ { it = IfI (c2, il2, il3); _ } ]) when Eq.eq_instrs il1 il3 ->
-    ifI (binC (AndOp, neg c1, c2), il2, il1)
+  | IfI (e1, il1, [ { it = IfI (e2, il2, il3); _ } ]) when Eq.eq_instrs il1 il3 ->
+    ifI (binE (AndOp, neg e1, e2), il2, il1)
   | _ -> i
 
 let remove_dead_assignment il =
@@ -262,10 +262,10 @@ let remove_dead_assignment il =
     List.fold_right
       (fun instr (acc, bounds) ->
         match instr.it with
-        | IfI (c, il1, il2) ->
+        | IfI (e, il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
-          ifI (c, il1', il2') :: acc, bounds1 @ bounds2 @ Free.free_cond c
+          ifI (e, il1', il2') :: acc, bounds1 @ bounds2 @ Free.free_expr e
         | EitherI (il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
@@ -308,8 +308,8 @@ let rec remove_nop acc il = match il with
 
 let flatten_if instr =
   match instr.it with
-  | IfI (c1, [ { it = IfI (c2, il1, il2); _ }], []) ->
-    ifI (binC (AndOp, c1, c2), il1, il2)
+  | IfI (e1, [ { it = IfI (e2, il1, il2); _ }], []) ->
+    ifI (binE (AndOp, e1, e2), il1, il2)
   | _ -> instr
 
 let simplify_record_concat expr = 
@@ -334,8 +334,7 @@ let rec enhance_readability instrs =
   let walk_config =
     {
       Walk.default_config with
-      pre_expr = composite remove_sub simplify_record_concat;
-      pre_cond = if_not_defined;
+      pre_expr = composite remove_sub simplify_record_concat |> composite if_not_defined;
       post_instr =
         unify_if_tail @@ (lift swap_if) @@ early_return @@ (lift merge_three_branches);
     } in

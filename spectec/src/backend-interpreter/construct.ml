@@ -68,6 +68,16 @@ let getCurFrameE = GetCurFrameE |> mk_expr
 let getCurLabelE = GetCurLabelE |> mk_expr
 let getCurContextE = GetCurContextE |> mk_expr
 let contE e = ContE e |> mk_expr
+let isCaseOfE (e, kwd) = IsCaseOfE (e, kwd) |> mk_expr
+let isValidE e = IsValidE e |> mk_expr
+let contextKindE (kwd, e) = ContextKindE (kwd, e) |> mk_expr
+let isDefinedE e = IsDefinedE e |> mk_expr
+let matchE (e1, e2) = MatchE (e1, e2) |> mk_expr
+let hasTypeE (e, ty) = HasTypeE (e, ty) |> mk_expr
+let topLabelE = TopLabelE |> mk_expr
+let topFrameE = TopFrameE |> mk_expr
+let topValueE e_opt = TopValueE e_opt |> mk_expr
+let topValuesE e = TopValuesE e |> mk_expr
 let subE (id, ty) = SubE (id, ty) |> mk_expr
 let yetE s = YetE s |> mk_expr
 
@@ -76,24 +86,6 @@ let mk_path it = Util.Source.($) it Util.Source.no_region
 let idxP e = IdxP e |> mk_path
 let sliceP (e1, e2) = SliceP (e1, e2) |> mk_path
 let dotP kwd = DotP kwd |> mk_path
-
-let mk_cond it = Util.Source.($) it Util.Source.no_region
-
-let iterC (cond, ids, iter) = IterC (cond, ids, iter) |> mk_cond
-let unC (unop, c) = UnC (unop, c) |> mk_cond
-let binC (binop, c1, c2) = BinC (binop, c1, c2) |> mk_cond
-let cmpC (cmpop, e1, e2) = CmpC (cmpop, e1, e2) |> mk_cond
-let isCaseOfC (e, kwd) = IsCaseOfC (e, kwd) |> mk_cond
-let isValidC e = IsValidC e |> mk_cond
-let contextKindC (kwd, e) = ContextKindC (kwd, e) |> mk_cond
-let isDefinedC e = IsDefinedC e |> mk_cond
-let matchC (e1, e2) = MatchC (e1, e2) |> mk_cond
-let hasTypeC (e, ty) = HasTypeC (e, ty) |> mk_cond
-let topLabelC = TopLabelC |> mk_cond
-let topFrameC = TopFrameC |> mk_cond
-let topValueC e_opt = TopValueC e_opt |> mk_cond
-let topValuesC e = TopValuesC e |> mk_cond
-let yetC s = YetC s |> mk_cond
 
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))

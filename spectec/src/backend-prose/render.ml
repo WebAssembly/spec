@@ -90,8 +90,6 @@ let render_al_binop = function
   | Al.Ast.MulOp -> "\\cdot"
   | Al.Ast.DivOp -> "/"
   | Al.Ast.ExpOp -> "^"
-
-let render_al_cmpop = function
   | Al.Ast.EqOp -> "is"
   | Al.Ast.NeOp -> "is not"
   | Al.Ast.LtOp -> "is less than"
@@ -145,12 +143,29 @@ and render_expr env in_math expr =
       let se = render_expr env in_math e in
       let s = sprintf "-%s" se in
       if in_math then s else render_math s
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, c); _ }) ->
+      sprintf "%s is not of the case %s" 
+        (render_expr env false e) 
+        (render_math (render_kwd env c))
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
+      sprintf "%s is not defined" (render_expr env false e)
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+      sprintf "%s is not valid" (render_expr env false e)
+  | Al.Ast.UnE (op, e) ->
+      sprintf "%s %s" (render_al_unop op) (render_expr env false e)
   | Al.Ast.BinE (op, e1, e2) ->
-      let sop = render_al_binop op in
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "{%s} %s {%s}" se1 sop se2 in
-      if in_math then s else render_math s
+      (match op with
+      | AndOp | OrOp | ImplOp | EquivOp | AddOp | SubOp | MulOp | DivOp | ExpOp ->
+        let sop = render_al_binop op in
+        let se1 = render_expr env true e1 in
+        let se2 = render_expr env true e2 in
+        let s = sprintf "{%s} %s {%s}" se1 sop se2 in
+        if in_math then s else render_math s
+      | _ ->
+        sprintf "%s %s %s"
+          (render_expr env false e1)
+          (render_al_binop op)
+          (render_expr env false e2))
   | Al.Ast.TupE el ->
       let sel = render_list (render_expr env true) "(" "~" ")" el in
       if in_math then sel else render_math sel
@@ -273,6 +288,20 @@ and render_expr env in_math expr =
   | Al.Ast.OptE None -> 
       let s = "\\epsilon" in
       if in_math then s else render_math s
+  | Al.Ast.ContextKindE (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_kwd env s)
+  | Al.Ast.IsDefinedE e -> sprintf "%s is defined" (render_expr env false e)
+  | Al.Ast.IsCaseOfE (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_kwd env c))
+  | Al.Ast.HasTypeE (e, t) -> sprintf "the type of %s is %s" (render_expr env false e) t
+  | Al.Ast.IsValidE e -> sprintf "%s is valid" (render_expr env false e)
+  | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
+  | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
+  | Al.Ast.TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
+  | Al.Ast.TopValueE None -> "a value is on the top of the stack"
+  | Al.Ast.TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (render_expr env false e)
+  | Al.Ast.MatchE (e1, e2) ->
+    sprintf "%s matches %s"
+      (render_expr env false e1)
+      (render_expr env false e2)
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
   | _ -> failwith "unreachable"
 
@@ -289,43 +318,6 @@ and render_paths env in_math paths =
   let spaths = List.map (render_path env) paths |> List.fold_left (^) "" in
   if in_math then spaths else render_math spaths
 
-(* Conditions *)
-
-(* assume Conditions are never embedded in math blocks *)
-
-and render_cond env cond =
-  match cond.it with
-  | Al.Ast.IterC (c, _, iter) ->
-      sprintf "(%s)%s" (render_cond env c) (render_iter env iter)
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsCaseOfC (e, c); _ }) ->
-      sprintf "%s is not of the case %s" 
-        (render_expr env false e) 
-        (render_math (render_kwd env c))
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsDefinedC e; _ }) ->
-      sprintf "%s is not defined" (render_expr env false e)
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsValidC e; _ }) ->
-      sprintf "%s is not valid" (render_expr env false e)
-  | Al.Ast.UnC (op, c) ->
-      sprintf "%s %s" (render_al_unop op) (render_cond env c)
-  | Al.Ast.BinC (op, c1, c2) ->
-      sprintf "%s %s %s" (render_cond env c1) (render_al_binop op) (render_cond env c2)
-  | Al.Ast.CmpC (op, e1, e2) ->
-      sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
-  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_kwd env s)
-  | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
-  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_kwd env c))
-  | Al.Ast.HasTypeC (e, t) -> sprintf "the type of %s is %s" (render_expr env false e) t
-  | Al.Ast.IsValidC e -> sprintf "%s is valid" (render_expr env false e)
-  | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
-  | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
-  | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
-  | Al.Ast.TopValueC None -> "a value is on the top of the stack"
-  | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env false e)
-  | Al.Ast.MatchC (e1, e2) ->
-    sprintf "%s matches %s"
-      (render_expr env false e1)
-      (render_expr env false e2)
-  | Al.Ast.YetC s -> sprintf "YetC (%s)" s
 
 (* Instructions *)
 
@@ -353,7 +345,7 @@ let rec render_prose_instr env depth = function
         (render_opt " with type " (render_expr env false) "" e)
   | IfI (c, is) ->
       sprintf "* If %s,%s"
-        (render_cond env c)
+        (render_expr env false c)
         (render_prose_instrs env (depth + 1) is)
   | ForallI (e1, e2, is) ->
       sprintf "* For all %s in %s,%s"
@@ -362,8 +354,8 @@ let rec render_prose_instr env depth = function
         (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
-        (String.capitalize_ascii (render_cond env c1))
-        (render_cond env c2)
+        (String.capitalize_ascii (render_expr env false c1))
+        (render_expr env false c2)
   | YetI s ->
       sprintf "* YetI: %s." s
 
@@ -376,17 +368,17 @@ and render_prose_instrs env depth instrs =
 let rec render_al_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
-      sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
+      sprintf "%s If %s, then:%s" (render_order index depth) (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
         if_index
-        (render_cond env c)
+        (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env inner_c)
+        (render_expr env false inner_c)
         (render_al_instrs env algoname (depth + 1) inner_il1)
   | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
       let if_index = render_order index depth in
@@ -394,17 +386,17 @@ let rec render_al_instr env algoname index depth instr =
       let else_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n\n%s Else:%s"
         if_index
-        (render_cond env c)
+        (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env inner_c)
+        (render_expr env false inner_c)
         (render_al_instrs env algoname (depth + 1) inner_il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env algoname (depth + 1) inner_il2)
   | Al.Ast.IfI (c, il1, il2) ->
       let if_index = render_order index depth in
       let else_index = render_order index depth in
-      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_cond env c)
+      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env algoname (depth + 1) il2)
@@ -420,7 +412,7 @@ let rec render_al_instr env algoname index depth instr =
         (render_al_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c -> 
       let vref = if Macro.find_section env.macro ("valid-" ^ algoname) then ":ref:`validation <valid-" ^ algoname ^">`" else "validation" in
-      sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_cond env c) 
+      sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_expr env false c) 
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
