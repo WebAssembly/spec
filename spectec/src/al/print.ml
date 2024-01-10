@@ -319,7 +319,6 @@ let rec string_of_instr' depth instr =
   | YetI s -> sprintf "%s YetI: %s." (make_index depth) s
 
 and string_of_instrs' depth instrs =
-  set_index 0;
   let f acc i =
     acc ^ "\n" ^ repeat indent depth ^ string_of_instr' depth i in
   enter_block (List.fold_left f "") instrs
