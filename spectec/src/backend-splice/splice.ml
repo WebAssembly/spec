@@ -60,7 +60,7 @@ let get_render_prose env = env.render_prose
 
 let env_el_def env def =
   match def.it with
-  | SynD (id1, id2, _, _) ->
+  | SynD (id1, id2, _, _, _) ->
     if not (Map.mem id1.it env.syn) then
       env.syn <- Map.add id1.it {sdef = def; sfragments = []} env.syn;
     let syntax = Map.find id1.it env.syn in

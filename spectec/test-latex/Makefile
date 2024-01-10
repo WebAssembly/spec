@@ -8,9 +8,7 @@ OWNDIR = $(PWD)
 SPECDIR = ../spec
 SPECS = $(shell cd $(SPECDIR) && ls -d wasm-*)
 SPECFILES = $(shell ls $(SPECS:%=$(SPECDIR)/%/*.$(EXT)))
-
-SPEC = 
-TEST = $(SPEC:%=test-%)
+TESTFILES = $(shell ls *.$(EXT))
 
 
 # Main targets
@@ -24,12 +22,12 @@ all: test-gen
 GENINNAME = spec-gen.include
 GENOUTNAME = spec-gen
 
-.PHONY: gen test-gen
-.INTERMEDIATE: $(SPECS:%=$(GENINNAME)-%.tex)
+.PHONY: gen test-gen test-test
+.INTERMEDIATE: $(SPECS:%=$(GENINNAME)-%.tex) $(TESTFILES:%.$(EXT)=%.tex)
 
 gen: $(SPECS:%=$(GENINNAME)-%.tex)
 
-test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf)
+test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf) test-test
 
 $(GENINNAME)-%.tex: $(SPECFILES) $(EXE)
 	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) -o $(OWNDIR)/$@)
@@ -43,6 +41,16 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 	rm $(GENINNAME).tex
 
 # Test
+test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
+
+test-%.tex: %.$(EXT) $(EXE)
+	$(EXE) $< -o $@
+
+test-%.pdf: test-%.tex $(GENOUTNAME).tex
+	ln -f $< $(GENINNAME).tex
+	ln -f $(GENOUTNAME).tex $<
+	pdflatex $<
+	rm $(GENINNAME).tex $<
 
 .PHONY: test
 

@@ -198,7 +198,7 @@ let rec extract_typ_kwds typ =
 
 let extract_kwd_kwds def =
   match def.it with
-  | El.Ast.SynD (id, subid, typ, _) -> 
+  | El.Ast.SynD (id, subid, _, typ, _) -> 
       let topsyntax, syntax = 
         if subid.it = "" then (None, id.it) 
         else (Some id.it, id.it ^ "-" ^ subid.it) 

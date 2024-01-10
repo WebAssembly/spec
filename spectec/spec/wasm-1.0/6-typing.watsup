@@ -302,7 +302,7 @@ rule Instr_const/const:
 
 rule Instr_const/global.get:
   C |- (GLOBAL.GET x) CONST
-  -- if C.GLOBAL[x] = eps t
+  -- if C.GLOBAL[x] = t
 
 
 rule Expr_const: C |- instr* CONST
