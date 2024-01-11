@@ -21,8 +21,8 @@ let to_map algos =
   let f acc algo =
     let rmap, fmap = acc in
     match algo with
-    | RuleA ((name, _), _, _) -> (RuleMap.add name algo rmap, fmap)
-    | FuncA (name, _, _) -> (rmap, FuncMap.add name algo fmap)
+    | RuleA ((name, _), _, _) -> RuleMap.add name algo rmap, fmap
+    | FuncA (name, _, _) -> rmap, FuncMap.add name algo fmap
   in
   List.fold_left f (RuleMap.empty, FuncMap.empty) algos
 
@@ -104,19 +104,19 @@ type env = value Env.t
 
 (* AL Context *)
 
-module AL_Context = struct
+module AlContext = struct
   (* TODO: Change name *)
   type return_value =
     | Bot
     | None
     | Some of value
 
-  type t = string * return_value * int
+  type t = string * env * return_value * int
 
   let context_stack: t list ref = ref []
   let context_stack_length = ref 0
 
-  let create_context name = (name, Bot, 0)
+  let create_context name = name, Env.empty, Bot, 0
 
   let init_context () =
     context_stack := [];
@@ -138,7 +138,7 @@ module AL_Context = struct
     | _ -> failwith "AL context stack underflow"
 
   let get_name () =
-    let name, _, _ = get_context () in
+    let name, _, _, _ = get_context () in
     name
 
   (* Print *)
@@ -149,7 +149,7 @@ module AL_Context = struct
     | Some v -> string_of_value v
 
   let string_of_context ctx =
-    let name, return_value, depth = ctx in
+    let name, _, return_value, depth = ctx in
     Printf.sprintf "(%s, %s, %s)"
       name
       (string_of_return_value return_value)
@@ -160,38 +160,53 @@ module AL_Context = struct
       (fun acc ctx -> (string_of_context ctx) ^ " :: " ^ acc)
       "[]" !context_stack
 
+  (* Env *)
+
+  let set_env env =
+    let name, _, return_value, depth = pop_context () in
+    push_context (name, env, return_value, depth)
+
+  let update_env n v =
+    let name, env, return_value, depth = pop_context () in
+    push_context (name, Env.add n v env, return_value, depth)
+
+  let get_env () =
+    let _, env, _, _ = get_context () in
+    env
+
   (* Return value *)
+
   let set_return_value v =
-    let name, return_value, depth = pop_context () in
+    let name, env, return_value, depth = pop_context () in
     assert (return_value = Bot);
-    push_context (name, Some v, depth)
+    push_context (name, env, Some v, depth)
 
   let set_return () =
-    let name, return_value, depth = pop_context () in
+    let name, env, return_value, depth = pop_context () in
     assert (return_value = Bot);
-    push_context (name, None, depth)
+    push_context (name, env, None, depth)
 
   let get_return_value () =
-    let _, return_value, _ = get_context () in
+    let _, _, return_value, _ = get_context () in
     return_value
 
   (* Depth *)
 
   let get_depth () =
-    let _, _, depth = get_context () in
+    let _, _, _, depth = get_context () in
     depth
 
   let increase_depth () =
-    let name, return_value, depth = pop_context () in
-    push_context (name, return_value, depth + 1)
+    let name, env, return_value, depth = pop_context () in
+    push_context (name, env, return_value, depth + 1)
 
   let rec decrease_depth () =
-    let name, return_value, depth = pop_context () in
+    let name, env, return_value, depth = pop_context () in
     if depth > 0 then
-      push_context (name, return_value, depth - 1)
+      push_context (name, env, return_value, depth - 1)
     else (
       decrease_depth ();
-      push_context (name, return_value, depth)
+      push_context (name, env, return_value, depth)
     )
 
 end

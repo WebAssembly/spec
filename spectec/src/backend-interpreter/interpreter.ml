@@ -285,7 +285,7 @@ and eval_expr env expr =
     let v = eval_expr env e1 in
     let i = eval_expr env e2 |> al_to_int in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then (
-      AL_Context.pop_context () |> ignore;
+      AlContext.pop_context () |> ignore;
       raise Exception.OutOfMemory
     )
     else
@@ -505,10 +505,10 @@ and assign_split ep es vs env =
 
 (* Instruction *)
 
-and dsl_function_call (fname: string) (args: value list): AL_Context.return_value =
+and dsl_function_call (fname: string) (args: value list): AlContext.return_value =
   (* Numerics *)
   if Numerics.mem fname then
-    AL_Context.Some (Numerics.call_numerics fname args)
+    AlContext.Some (Numerics.call_numerics fname args)
   (* Module & Runtime *)
   else if FuncMap.mem fname !func_map then
     call_algo fname args
@@ -592,7 +592,7 @@ and dsl_function_call (fname: string) (args: value list): AL_Context.return_valu
       | _ -> failwith "Invalid arguments for $ref_type_of"
     in
 
-    AL_Context.Some rt
+    AlContext.Some rt
   ) else
     Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
 
@@ -645,7 +645,7 @@ and execute (wasm_instr: value): unit =
         |> eval_expr (Env.add_store Env.empty)
       in
       begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
-      | AL_Context.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
+      | AlContext.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
         CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
       | _ -> raise Exception.MissingReturnValue
       end
@@ -662,57 +662,55 @@ and execute (wasm_instr: value): unit =
     |> Printf.sprintf "Executing invalid value: %s"
     |> failwith
 
-and interp_instr (env: env) (instr: instr): env =
+and interp_instr (instr: instr): unit =
   (*
   AL_Context.get_name () |> print_endline;
   string_of_instr instr |> Printf.sprintf "[INSTR]: %s" |> prerr_endline;
   WasmContext.string_of_context_stack () |> print_endline;
-  AL_Context.string_of_context_stack () |> print_endline;
+  AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
 
 
   (InfoMap.find instr.note !info_map).covered <- true;
 
-  let res =
+  let env = AlContext.get_env () in
+
   match instr.it with
   (* Block instruction *)
   | IfI (e, il1, il2) ->
     if is_true (eval_expr env e) then
-      interp_instrs env il1
+      interp_instrs il1
     else
-      interp_instrs env il2
+      interp_instrs il2
   | EitherI (il1, il2) ->
-    begin try interp_instrs env il1 with
+    begin try interp_instrs il1 with
     | Exception.MissingReturnValue
-    | Exception.OutOfMemory -> interp_instrs env il2
+    | Exception.OutOfMemory -> interp_instrs il2
     end
-  | AssertI _ -> (*assert (eval_cond env c);*) env
+  | AssertI _ -> () (*assert (eval_cond env c);*)
   | PushI e ->
-    begin match eval_expr env e with
+    (match eval_expr env e with
     | ListV vs -> Array.iter WasmContext.push_value !vs
-    | v -> WasmContext.push_value v
-    end;
-    env
+    | v -> WasmContext.push_value v)
   | PopI ({ it = IterE ({ it = VarE name; _ }, [name'], ListN (e', None)); _ }) when name = name' ->
     let i = eval_expr env e' |> al_to_int in
     let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
-    Env.add name (listV vs) env
+    listV vs |> AlContext.update_env name
   | PopI e ->
-    begin match (e.it, WasmContext.pop_value ()) with
+    begin match e.it, WasmContext.pop_value () with
     | CaseE (("CONST", _), [{ it = VarE nt; _ }; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
-      env
-      |> Env.add nt ty
-      |> Env.add name v
+      AlContext.update_env nt ty;
+      AlContext.update_env name v
     | CaseE (("CONST", _), [tyE; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
-      Env.add name v env
-    | VarE name, v -> Env.add name v env
+      AlContext.update_env name v
+    | VarE name, v -> AlContext.update_env name v
     | CaseE (("VVCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
-      Env.add name v env
+      AlContext.update_env name v
     (* TODO remove this *)
-    | FrameE _, FrameV _ -> env
+    | FrameE _, FrameV _ -> ()
     | (_, h) ->
       Printf.sprintf "Invalid pop: %s := %s"
         (structured_string_of_expr e)
@@ -726,45 +724,39 @@ and interp_instr (env: env) (instr: instr): env =
       else
         acc
     in
-    let vs = pop_all [] |> listV in
-    Env.add name vs env
+    pop_all [] |> listV |> AlContext.update_env name
   | PopAllI e ->
     string_of_expr e
     |> Printf.sprintf "Invalid pop: Popall %s"
     |> failwith
   | LetI (pattern, e) ->
-    assign pattern (eval_expr env e) env
+    assign pattern (eval_expr env e) env |> AlContext.set_env
   | PerformI (f, el) ->
     let args = List.map (eval_expr env) el in
-    dsl_function_call f args |> ignore;
-    env
+    dsl_function_call f args |> ignore
   | TrapI -> raise Exception.Trap
-  | NopI -> env
+  | NopI -> ()
   | ReturnI None ->
-    () |> AL_Context.set_return;
-    env
+    AlContext.set_return ()
   | ReturnI (Some e) ->
-    eval_expr env e |> AL_Context.set_return_value;
-    env
+    eval_expr env e |> AlContext.set_return_value
   | ExecuteI e ->
-    eval_expr env e |> execute;
-    env
+    eval_expr env e |> execute
   | ExecuteSeqI e ->
     eval_expr env e
     |> unwrap_listv_to_list
-    |> List.iter execute;
-    env
+    |> List.iter execute
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
 
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
-    AL_Context.increase_depth ();
+    AlContext.increase_depth ();
 
     (* TODO: refactor cleanup *)
-    let previous_depth = AL_Context.get_depth () in
+    let previous_depth = AlContext.get_depth () in
     let rec cleanup () =
-      let current_depth = AL_Context.get_depth () in
+      let current_depth = AlContext.get_depth () in
       if current_depth = previous_depth then (
         WasmContext.pop_instr () |> execute;
         cleanup ()
@@ -772,64 +764,48 @@ and interp_instr (env: env) (instr: instr): env =
     in
 
     (* NOTE: doesn't have variable scope *)
-    let new_env = interp_instrs env il in
-    cleanup ();
-    new_env
+    interp_instrs il;
+    cleanup ()
   | ExitI ->
     WasmContext.pop_context () |> ignore;
-    AL_Context.decrease_depth ();
-    env
+    AlContext.decrease_depth ()
   | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->
     let a = eval_expr env e1 |> unwrap_listv_to_array in
     let i = eval_expr env e2 |> al_to_int in
     let v = eval_expr env e3 in
-    Array.set a i v;
-    env
+    Array.set a i v
   | ReplaceI (e1, { it = SliceP (e2, e3); _ }, e4) ->
     let a1 = eval_expr env e1 |> unwrap_listv_to_array in (* dest *)
     let i1 = eval_expr env e2 |> al_to_int in   (* start index *)
     let i2 = eval_expr env e3 |> al_to_int in   (* length *)
     let a2 = eval_expr env e4 |> unwrap_listv_to_array in (* src *)
     assert (Array.length a2 = i2);
-    Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
-    env
+    Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2
   | ReplaceI (e1, { it = DotP (s, _); _ }, e2) ->
-    begin match eval_expr env e1 with
+    (match eval_expr env e1 with
     | StrV r ->
-        let v = eval_expr env e2 in
-        Record.replace s v r
-    | _ -> failwith "Not a Record"
-    end;
-    env
+      let v = eval_expr env e2 in
+      Record.replace s v r
+    | _ -> failwith "Not a Record")
   | AppendI (e1, e2) ->
     let a = eval_expr env e1 |> unwrap_listv in
     let v = eval_expr env e2 in
-    a := Array.append (!a) [|v|];
-    env
+    a := Array.append (!a) [|v|]
   | _ ->
     structured_string_of_instr instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
     |> failwith
-  in
 
-  (*
-  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[END INSTR]: %s" |> print_endline;
-  WasmContext.string_of_context_stack () |> print_endline;
-  AL_Context.string_of_context_stack () |> print_endline;
-  print_endline "";
-  *)
 
-  res
-
-and interp_instrs (env: env) (il: instr list): env =
-  match il with
-  | [] -> env
+and interp_instrs: instr list -> unit = function
+  | [] -> ()
+  | [ i ] -> interp_instr i
   | h :: t ->
-    let new_env = interp_instr env h in
-    if AL_Context.get_return_value () = Bot then
-      interp_instrs new_env t
+    interp_instr h;
+    if AlContext.get_return_value () = Bot then
+      interp_instrs t
     else
-      new_env
+      ()
 
 
 
@@ -840,30 +816,29 @@ and interp_instrs (env: env) (il: instr list): env =
 and interp_algo (algo: algorithm) (args: value list): unit =
   let params = get_param algo in
 
-  let env =
-    Env.empty
-    |> Env.add_store
-    |> List.fold_right2 assign params args
-  in
+  Env.empty
+  |> Env.add_store
+  |> List.fold_right2 assign params args
+  |> AlContext.set_env;
 
-  get_body algo |> interp_instrs env |> ignore
+  get_body algo |> interp_instrs
 
-and call_algo (name: string) (args: value list): AL_Context.return_value =
+and call_algo (name: string) (args: value list): AlContext.return_value =
   (*
   print_endline "**************************************";
   Printf.sprintf "[ALGO]: %s" name |> print_endline;
   Print.string_of_list Print.string_of_value "[" ", " "]"args |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
-  AL_Context.string_of_context_stack () |> print_endline;
+  AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
-  let depth = !AL_Context.context_stack_length in
+  let depth = !AlContext.context_stack_length in
   if depth > 70_000 then
     failwith "Stack overflow";
 
   (* Push AL context *)
-  let al_context = AL_Context.create_context name in
-  AL_Context.push_context al_context;
+  let al_context = AlContext.create_context name in
+  AlContext.push_context al_context;
 
   (* Interp algorithm *)
   let algo = lookup name in
@@ -872,12 +847,12 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
   interp_algo algo args;
 
   (* Pop AL context *)
-  let (_, return_value, depth) = AL_Context.pop_context () in
+  let _, _, return_value, depth = AlContext.pop_context () in
 
   (*
   Printf.sprintf "[END ALGO]: %s" name |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
-  AL_Context.string_of_context_stack () |> print_endline;
+  AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
 
@@ -887,16 +862,16 @@ and call_algo (name: string) (args: value list): AL_Context.return_value =
 (* Entry *)
 
 let init_context () =
-  AL_Context.init_context ();
+  AlContext.init_context ();
   WasmContext.init_context ()
 
 let instantiate (args: value list): value =
   init_context();
   match call_algo "instantiate" args with
-  | AL_Context.Some module_inst -> module_inst
+  | AlContext.Some module_inst -> module_inst
   | _ -> failwith "Instantiation doesn't return module instance"
 let invoke (args: value list): value =
   init_context();
   match call_algo "invoke" args with
-  | AL_Context.Some v -> v
+  | AlContext.Some v -> v
   | _ -> failwith "Invocation doesn't return value"
