@@ -665,11 +665,12 @@ and execute (wasm_instr: value): unit =
 and interp_instr (env: env) (instr: instr): env =
   (*
   AL_Context.get_name () |> print_endline;
-  string_of_instr (ref 0) 0 instr |> Printf.sprintf "[INSTR]: %s" |> print_endline;
+  string_of_instr instr |> Printf.sprintf "[INSTR]: %s" |> prerr_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AL_Context.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
+
 
   (InfoMap.find instr.note !info_map).covered <- true;
 
@@ -708,9 +709,6 @@ and interp_instr (env: env) (instr: instr): env =
       Env.add name v env
     | VarE name, v -> Env.add name v env
     | CaseE (("VVCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
-      assert (eval_expr env tyE = ty);
-      Env.add name v env
-    | CaseE (("VVCONST", _), [tyE; { it = ListE [{ it = VarE name; _ }; ]; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       Env.add name v env
     (* TODO remove this *)

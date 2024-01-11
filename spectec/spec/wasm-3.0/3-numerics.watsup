@@ -47,6 +47,8 @@ def $narrow(nat, nat, sx, nat) : nat
 def $ibits(nat, nat) : nat*
 def $ilt_s(nat, nat, nat) : nat
 
+def $vzero : c_vectype ;; TODO
+
 def $unpacked(shape) : numtype
 def $unpacked(sh) = nt
     -- if sh = SHAPE lnt lns

@@ -458,6 +458,163 @@ let inverse_of_signed : numerics =
       );
   }
 
+let v128_to_vec v = VecV(V128.to_bits v)
+let vec_to_v128 = function
+| VecV (v) -> V128.of_bits v
+| _ -> failwith "Operand should be VecV"
+
+let wrap_vunop op v =
+   vec_to_v128 v |> op |> v128_to_vec
+
+let vvunop: numerics =
+  {
+    name = "vvunop";
+    f =
+      (function
+      | [ CaseV ("_VV", [ op ]); CaseV ("V128", []); v ] -> (
+        match op with
+        | CaseV ("NOT", []) -> wrap_vunop V128.V1x128.lognot v
+        | _ -> failwith ("Invalid vvunop: " ^ (Print.string_of_value op)))
+      | _ -> failwith "Invalid vvunop")
+  }
+
+let vunop: numerics =
+  {
+    name = "vunop";
+    f =
+      (function
+      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
+        match ls, ln with
+        | "I8", 16L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.I8x16.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.I8x16.neg v
+          | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
+        | "I16", 8L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.I16x8.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.I16x8.neg v
+          | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
+        | "I32", 4L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.I32x4.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.I32x4.neg v
+          | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
+        | "I64", 2L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.I64x2.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.I64x2.neg v
+          | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
+        | _ -> failwith "Invalid type for viunop")
+      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
+        match ls, ln with
+        | "F32", 4L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.F32x4.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.F32x4.neg v
+          | CaseV ("SQRT", []) -> wrap_vunop V128.F32x4.sqrt v
+          | CaseV ("CEIL", []) -> wrap_vunop V128.F32x4.ceil v
+          | CaseV ("FLOOR", []) -> wrap_vunop V128.F32x4.floor v
+          | CaseV ("TRUNC", []) -> wrap_vunop V128.F32x4.trunc v
+          | CaseV ("NEAREST", []) -> wrap_vunop V128.F32x4.nearest v
+          | _ -> failwith ("Invalid vfunop: " ^ (Print.string_of_value op)))
+        | "F64", 2L -> (
+          match op with
+          | CaseV ("ABS", []) -> wrap_vunop V128.F64x2.abs v
+          | CaseV ("NEG", []) -> wrap_vunop V128.F64x2.neg v
+          | CaseV ("SQRT", []) -> wrap_vunop V128.F64x2.sqrt v
+          | CaseV ("CEIL", []) -> wrap_vunop V128.F64x2.ceil v
+          | CaseV ("FLOOR", []) -> wrap_vunop V128.F64x2.floor v
+          | CaseV ("TRUNC", []) -> wrap_vunop V128.F64x2.trunc v
+          | CaseV ("NEAREST", []) -> wrap_vunop V128.F64x2.nearest v
+          | _ -> failwith ("Invalid vfunop: " ^ (Print.string_of_value op)))
+        | _ -> failwith "Invalid type for vfunop")
+      | _ -> failwith "Invalid vunop")
+  }
+ 
+  
+let wrap_vbinop op v1 v2 =
+  let v1 = vec_to_v128 v1 in
+  let v2 = vec_to_v128 v2 in
+  op v1 v2 |> v128_to_vec
+
+let vvbinop: numerics =
+  {
+    name = "vvbinop";
+    f =
+      (function
+      | [ CaseV ("_VV", [ op ]); CaseV ("V128", []); v1; v2 ] -> (
+        match op with
+        | CaseV ("AND", []) -> wrap_vbinop V128.V1x128.and_ v1 v2
+        | CaseV ("ANDNOT", []) -> wrap_vbinop V128.V1x128.andnot v1 v2
+        | CaseV ("OR", []) -> wrap_vbinop V128.V1x128.or_ v1 v2
+        | CaseV ("XOR", []) -> wrap_vbinop V128.V1x128.xor v1 v2
+        | _ -> failwith ("Invalid vvbinop: " ^ (Print.string_of_value op)))
+      | _ -> failwith "Invalid type for vvbinop")
+  }
+
+let vbinop: numerics =
+  {
+    name = "vbinop";
+    f =
+      (function
+      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v1; v2 ] -> (
+        match ls, ln with
+        | "I8", 16L -> (
+          match op with
+          | CaseV ("ADD", []) -> wrap_vbinop V128.I8x16.add v1 v2
+          | CaseV ("SUB", []) -> wrap_vbinop V128.I8x16.sub v1 v2
+          | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
+        | _ -> failwith "Invalid type for vibinop")
+      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v1; v2 ] -> (
+        match ls, ln with
+        | "F32", 4L -> (
+          match op with
+          | CaseV ("ADD", []) -> wrap_vbinop V128.F32x4.add v1 v2
+          | _ -> failwith ("Invalid vfbinop: " ^ (Print.string_of_value op)))
+        | "F64", 2L -> (
+          match op with
+          | CaseV ("ADD", []) -> wrap_vbinop V128.F64x2.add v1 v2
+          | _ -> failwith ("Invalid vfbinop: " ^ (Print.string_of_value op)))
+        | _ -> failwith "Invalid type for vfbinop")
+      | _ -> failwith "Invalid vbinop")
+  }
+
+let lanes : numerics =
+  {
+    name = "lanes";
+    f = 
+      (function
+      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I8x16.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I16x8.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I32x4.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV (v)] -> listV (List.map i64_to_num (v |> V128.of_bits |> V128.I64x2.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV (v)] -> listV (List.map f32_to_num (v |> V128.of_bits |> V128.F32x4.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV (v)] -> listV (List.map f64_to_num (v |> V128.of_bits |> V128.F64x2.to_lanes))
+      | _ -> failwith "Invaild lanes"
+      );
+  }
+
+let ine: numerics =
+  {
+    name = "ine_128";
+    f = 
+      (function
+      | [ VecV(v1); VecV (v2) ] -> NumV (if v1 = v2 then 0L else 1L)
+      | _ -> failwith "Invaild ine"
+      );
+  }
+
+
+let vzero: numerics =
+  {
+    name = "vzero";
+    f = 
+      (function
+      | _ -> VecV ("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
+      );
+  }
+
 let numerics_list : numerics list = [
   unop;
   binop;
@@ -473,7 +630,14 @@ let numerics_list : numerics list = [
   inverse_of_signed;
   bytes_;
   inverse_of_bytes_;
-  wrap ]
+  wrap;
+  vvunop;
+  vvbinop;
+  vunop;
+  vbinop;
+  lanes;
+  ine;
+  vzero ]
 
 let call_numerics fname args =
   let numerics =

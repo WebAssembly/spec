@@ -279,7 +279,7 @@ syntax testopVIXX = | ALL_TRUE
 syntax relopVIXX = | EQ | NE | LT sx | GT sx | LE sx | GE sx
 syntax relopVFXX = | EQ | NE | LT | GT | LE | GE
 syntax unopVIXX = | ABS | NEG
-syntax binopVIXX = | ADD | SUB
+syntax binopVIXX = | ADD | SUB | SWIZZLE
 syntax minmaxopVIXX = | MIN sx | MAX sx
 syntax satbinopVIXX = | ADD_SAT sx | SUB_SAT sx
 syntax shiftopVIXX = | SHL | SHR sx
@@ -369,7 +369,6 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VVBINOP vectype binop_vvectype                                   hint(show %.%)
   | VVTERNOP vectype ternop_vvectype                                 hint(show %.%)
   | VVTESTOP vectype testop_vvectype                                 hint(show %.%)
-  | SWIZZLE shape
   | SHUFFLE shape laneidx*
   | SPLAT shape                                                     hint(show %.SPLAT)
   | EXTRACT_LANE shape sx? laneidx                                  hint(show %X%.EXTRACT#_#LANE#_#% %)

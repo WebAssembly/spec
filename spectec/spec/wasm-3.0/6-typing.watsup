@@ -772,9 +772,6 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- VVTESTOP vt vvtestop : V128 -> I32
 
-rule Instr_ok/swizzle:
-  C |- SWIZZLE sh : V128 V128 -> V128
-
 rule Instr_ok/shuffle:
   C |- SHUFFLE sh laneidx* : V128 V128 -> V128
   -- (if $(laneidx<$dim(sh) * 2))*
