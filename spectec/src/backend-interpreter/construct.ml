@@ -517,25 +517,25 @@ let al_of_float_vbinop : V128Op.fbinop -> value = function
 
 let al_of_vbinop = al_of_vop al_of_int_vbinop al_of_float_vbinop
 
-let al_of_int_vcvtop : V128Op.icvtop -> value = function
-  | V128Op.ExtendLowS -> case_v "_VI" (singleton "EXTENDLOWS")
-  | V128Op.ExtendLowU -> case_v "_VI" (singleton "EXTENDLOWU")
-  | V128Op.ExtendHighS -> case_v "_VI" (singleton "EXTENDHIGHS")
-  | V128Op.ExtendHighU -> case_v "_VI" (singleton "EXTENDHIGHU")
-  | V128Op.ExtAddPairwiseS -> case_v "_VI" (singleton "EXTADDPAIRWISES")
-  | V128Op.ExtAddPairwiseU -> case_v "_VI" (singleton "EXTADDPAIRWISEU")
-  | V128Op.TruncSatSF32x4 -> case_v "_VI" (singleton "TRUNCSATSF32X4")
-  | V128Op.TruncSatUF32x4 -> case_v "_VI" (singleton "TRUNCSATUF32X4")
-  | V128Op.TruncSatSZeroF64x2 -> case_v "_VI" (singleton "TRUNCSATSZEROF64X2")
-  | V128Op.TruncSatUZeroF64x2 -> case_v "_VI" (singleton "TRUNCSATUZEROF64X2")
+let al_of_int_vcvtop = function
+  | V128Op.ExtendLowS -> singleton "EXTEND", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ExtendLowU -> singleton "EXTEND", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ExtendHighS -> singleton "EXTEND", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ExtendHighU -> singleton "EXTEND", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ExtAddPairwiseS -> singleton "EXTADD_PAIRWISE", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ExtAddPairwiseU -> singleton "EXTADD_PAIRWISE", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.TruncSatSF32x4 -> singleton "TRUNC_SAT", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.TruncSatUF32x4 -> singleton "TRUNC_SAT", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.TruncSatSZeroF64x2 -> singleton "TRUNC_SAT", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.TruncSatUZeroF64x2 -> singleton "TRUNC_SAT", Some (singleton "LOW"), Some (singleton "S"), None
 
-let al_of_float_vcvtop : V128Op.fcvtop -> value = function
-  | V128Op.DemoteZeroF64x2 -> case_v "_VF" (singleton "DEMOTEZEROF64X2")
-  | V128Op.PromoteLowF32x4 -> case_v "_VF" (singleton "PROMOTELOWF32X4")
-  | V128Op.ConvertSI32x4 -> case_v "_VF" (singleton "CONVERTSI32X4")
-  | V128Op.ConvertUI32x4 -> case_v "_VF" (singleton "CONVERTUI32X4")
+let al_of_float_vcvtop = function
+  | V128Op.DemoteZeroF64x2 -> singleton "DEMOTE", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.PromoteLowF32x4 -> singleton "PROMOTE", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ConvertSI32x4 -> singleton "CONVERT", Some (singleton "LOW"), Some (singleton "S"), None
+  | V128Op.ConvertUI32x4 -> singleton "CONVERT", Some (singleton "LOW"), Some (singleton "S"), None
 
-let al_of_vcvtop = al_of_vop al_of_int_vcvtop al_of_float_vcvtop
+(* let al_of_vcvtop = al_of_vcvtop al_of_int_vcvtop al_of_float_vcvtop *)
 
 let al_of_int_vshiftop : V128Op.ishiftop -> value = function
   | V128Op.Shl -> case_v "_VI" (singleton "SHL")

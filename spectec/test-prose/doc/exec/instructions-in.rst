@@ -89,14 +89,6 @@ $${rule+: Step_pure/vvternop}
 
 $${rule+: Step_pure/vvtestop}
 
-.. _exec-SWIZZLE:
-
-%{prose-algo: SWIZZLE}
-
-\
-
-$${rule+: Step_pure/swizzle}
-
 .. _exec-SHUFFLE:
 
 %{prose-algo: SHUFFLE}

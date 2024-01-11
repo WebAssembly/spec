@@ -328,14 +328,6 @@ $${rule: Instr_ok/vvternop}
 
 $${rule: Instr_ok/vvtestop}
 
-.. _valid-SWIZZLE:
-
-%{prose-pred: SWIZZLE}
-
-\
-
-$${rule: Instr_ok/swizzle}
-
 .. _valid-SHUFFLE:
 
 %{prose-pred: SHUFFLE}
