@@ -842,7 +842,7 @@ and call_algo (name: string) (args: value list): AlContext.return_value =
 
   (* Interp algorithm *)
   let algo = lookup name in
-  if (List.length args) <> (List.length (get_param algo)) then
+  if List.length args <> List.length (get_param algo) then
     failwith ("Argument number mismatch for algorithm " ^ name);
   interp_algo algo args;
 
