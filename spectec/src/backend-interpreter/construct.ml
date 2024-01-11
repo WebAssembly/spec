@@ -1205,25 +1205,6 @@ let al_to_cvtop: value list -> cvtop = function
   | CaseV ("F64", []) :: op -> F64 (al_to_float_cvtop op)
   | l -> fail_list "cvtop" l
 
-let al_to_vop i8 i16 i32 i64 f32 f64 = function
-  | [ CaseV ("I8x16", []); vop ] -> V128.I8x16 (i8 vop)
-  | [ CaseV ("I16x8", []); vop ] -> V128.I16x8 (i16 vop)
-  | [ CaseV ("I32x4", []); vop ] -> V128.I32x4 (i32 vop)
-  | [ CaseV ("I64x2", []); vop ] -> V128.I64x2 (i64 vop)
-  | [ CaseV ("F32x4", []); vop ] -> V128.F32x4 (f32 vop)
-  | [ CaseV ("F64x2", []); vop ] -> V128.F64x2 (f64 vop)
-  | l -> fail_list "vop" l
-
-let al_to_ishape_vtestop: value -> V128Op.itestop = function
-  | TextV "AllTrue" -> V128Op.AllTrue
-  | v -> fail "vector testop" v
-let al_to_vtestop: value list -> vec_testop = function
-  | [ CaseV ("I8x16", []); vop ] -> V128 (V128.I8x16 (al_to_ishape_vtestop vop))
-  | [ CaseV ("I16x8", []); vop ] -> V128 (V128.I16x8 (al_to_ishape_vtestop vop))
-  | [ CaseV ("I32x4", []); vop ] -> V128 (V128.I32x4 (al_to_ishape_vtestop vop))
-  | [ CaseV ("I64x2", []); vop ] -> V128 (V128.I64x2 (al_to_ishape_vtestop vop))
-  | l -> fail_list "vtestop" l
-
 (* Vector operator *)
 
 let al_to_extension : value -> Pack.extension = function
