@@ -441,7 +441,7 @@ let wrap : numerics =
     name = "wrap";
     f =
       (function
-        | [ NumV _m; NumV n; NumV i ] -> 
+        | [ NumV _m; NumV n; NumV i ] ->
             let mask = Int64.sub (Int64.shift_left 1L (Int64.to_int n)) 1L in
             NumV (Int64.logand i mask)
       | _ -> failwith "Invalid wrap_"

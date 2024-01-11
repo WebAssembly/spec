@@ -46,9 +46,6 @@ watsup 0.4 generator
 ===== call.wast =====
 - 61/61 (100.00%)
 
-===== call_indirect.wast =====
-- 116/116 (100.00%)
-
 ===== const.wast =====
 - 300/300 (100.00%)
 
@@ -134,9 +131,6 @@ watsup 0.4 generator
 ===== memory.wast =====
 - 45/45 (100.00%)
 
-===== memory_grow.wast =====
-- 78/84 (92.86%)
-
 ===== memory_redundancy.wast =====
 - 7/7 (100.00%)
 
@@ -184,7 +178,7 @@ watsup 0.4 generator
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [9610/9623] (99.86%; Normalized 99.39%)
+Total [9416/9423] (99.93%; Normalized 99.51%)
 == Complete.
 Running test for Wasm 2.0...
 watsup 0.4 generator
@@ -194,28 +188,6 @@ watsup 0.4 generator
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed (binding inference).
-Valtype_sub: `|-%<:%`(t, t')
-if (t' = (numtype <: valtype))
-...Animation failed (reorder)
-Valtype_sub: `|-%<:%`(t, t')
-if (t' = (numtype <: valtype))
-Animation failed (binding inference).
-Valtype_sub: `|-%<:%`(t, t')
-if (t' = (vectype <: valtype))
-...Animation failed (reorder)
-Valtype_sub: `|-%<:%`(t, t')
-if (t' = (vectype <: valtype))
-Animation failed (binding inference).
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
-...Animation failed (reorder)
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 == IL Validation after pass animate...
 == Translating to AL...
 == Initializing AL interprter with generated AL...
@@ -247,9 +219,6 @@ Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 
 ===== call.wast =====
 - 70/70 (100.00%)
-
-===== call_indirect.wast =====
-- 132/132 (100.00%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -373,15 +342,6 @@ Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 ===== memory.wast =====
 - 45/45 (100.00%)
 
-===== memory_copy.wast =====
-- 4349/4353 (99.91%)
-
-===== memory_fill.wast =====
-- 21/25 (84.00%)
-
-===== memory_grow.wast =====
-- 78/84 (92.86%)
-
 ===== memory_init.wast =====
 - 149/149 (100.00%)
 
@@ -465,7 +425,7 @@ Resulttype_sub: `|-%*<:%*`(t*{t}, C.LABEL_context[l'])
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [23920/23934] (99.94%; Normalized 99.69%)
+Total [19340/19340] (100.00%; Normalized 100.00%)
 == Complete.
 Running test for Wasm 3.0...
 watsup 0.4 generator
@@ -475,144 +435,8 @@ watsup 0.4 generator
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
 == Running pass animate...
-Animation failed (binding inference).
-if (|ct'*{ct'}| = |y*{y}|)
-if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
-(if (y < |C.TYPE_context|))*{ct' y y'}
-if (|y*{y}| <= 1)
-(if (y < x))*{y}
-(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |y*{y}|)
-if (|ct'*{ct'}| = |y'*{y'}*{y'}|)
-(if (y < |C.TYPE_context|))*{ct' y y'}
-if (|y*{y}| <= 1)
-(if (y < x))*{y}
-(if ($unrolldt(C.TYPE_context[y]) = SUB_subtype(`FINAL%?`(?()), y'*{y'}, ct')))*{ct' y y'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
-if (|ct'*{ct'}| = |ht*{ht}|)
-if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|ht*{ht}| <= 1)
-(if $before(ht, x, i))*{ht}
-(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-...Animation failed (reorder)
-if (|ct'*{ct'}| = |ht*{ht}|)
-if (|ct'*{ct'}| = |ht'*{ht'}*{ht'}|)
-if (|ht*{ht}| <= 1)
-(if $before(ht, x, i))*{ht}
-(if ($unrollht(C, ht) = SUBD_subtype(`FINAL%?`(?()), ht'*{ht'}, ct')))*{ct' ht ht'}
-Comptype_ok: `%|-%:OK`(C, ct)
-(Comptype_sub: `%|-%<:%`(C, ct, ct'))*{ct'}
-Animation failed (binding inference).
-if ((n_1 <= n_2) /\ (n_2 <= k))
-...Animation failed (reorder)
-if (n_1 <= n_2)
-if (n_2 <= k)
-Animation failed (binding inference).
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = (numtype <: valtype))
-...Animation failed (reorder)
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = (numtype <: valtype))
-Animation failed (binding inference).
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = (vectype <: valtype))
-...Animation failed (reorder)
-Valtype_sub: `%|-%<:%`(C, t, t')
-if (t' = (vectype <: valtype))
-Animation failed (binding inference).
-Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-...Animation failed (reorder)
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_1*{instr_1}, `%->%*%`(t_1*{t_1}, x_1*{x_1}, t_2*{t_2}))
-Blocktype_ok: `%|-%:%`(C, bt, `%->%`(t_1*{t_1}, t_2*{t_2}))
-Instrs_ok: `%|-%*:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()}, instr_2*{instr_2}, `%->%*%`(t_1*{t_1}, x_2*{x_2}, t_2*{t_2}))
-Animation failed (binding inference).
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-...Animation failed (reorder)
-(if (l < |C.LABEL_context|))*{l}
-if (l' < |C.LABEL_context|)
-(Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l]))*{l}
-Resulttype_sub: `%|-%*<:%*`(C, t*{t}, C.LABEL_context[l'])
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-...Animation failed (reorder)
-where $expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))
-if (x < |C.TYPE_context|)
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (t = (numtype <: valtype))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-where (numtype <: valtype) = t
-if (y < |C.DATA_context|)
-if (x < |C.TYPE_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if (x < |C.TYPE_context|)
-if (y < |C.DATA_context|)
-Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (t = (vectype <: valtype))
-if (C.DATA_context[y] = OK)
-...Animation failed (reorder)
-where t = (vectype <: valtype)
-if (y < |C.DATA_context|)
-if (x < |C.TYPE_context|)
-if ($expanddt(C.TYPE_context[x]) = ARRAY_comptype(`%%`(`MUT%?`(?(())), zt)))
-if (C.DATA_context[y] = OK)
-Animation failed (binding inference).
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
-...Animation failed (reorder)
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
-Animation failed (binding inference).
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
-if (l = (128 / lns))
-if ($lanes(SHAPE_shape($ishape(n), l), c) = m^l{})
-...Animation failed (reorder)
-where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
-where (128 / lns) = l
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 == IL Validation after pass animate...
 == Translating to AL...
-...Animation failed (reorder)
-if (a < |$funcinst(z)|)
-where fi = $funcinst(z)[a]
-where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt(fi.TYPE_funcinst)
-where `FUNC%%*%`(y, LOCAL(t)*{t}, instr*{instr}) = fi.CODE_funcinst
-where f = {LOCAL ?(val)^n{val} :: $default(t)*{t}, MODULE fi.MODULE_funcinst}
-where (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x})] = u_0*{u_0}
-...Animation failed (reorder)
-if (a < |$funcinst(z)|)
-where FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})) = $expanddt($funcinst(z)[a].TYPE_funcinst)
-where FRAME__admininstr(k, f, (val' <: admininstr)*{val'} :: (val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr <: admininstr)*{instr}) = u_2
-Animation failed (binding inference).
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
-...Animation failed (reorder)
-if ($ibytes(n, m)^lns{m} = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * n) / 8)) : (n / 8)]^(k<lns){k})
-if ($lanes(SHAPE_shape($ishape(n * 2), lns), c) = $ext(n, lns, sx, m)^lns{m})
-Animation failed (binding inference).
-where $lanes(SHAPE_shape($ishape(n), l), c) = m^l{}
-where (128 / lns) = l
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
-...Animation failed (reorder)
-if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 == Initializing AL interprter with generated AL...
 == Interpreting AL...
 ===== sample.wast =====
@@ -642,9 +466,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 
 ===== call.wast =====
 - 70/70 (100.00%)
-
-===== call_indirect.wast =====
-- 132/132 (100.00%)
 
 ===== const.wast =====
 - 300/300 (100.00%)
@@ -718,9 +539,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 
 ===== ref_as_non_null.wast =====
 - 4/4 (100.00%)
-
-===== return_call_ref.wast =====
-- 30/35 (85.71%)
 
 ===== array.wast =====
 - 31/31 (100.00%)
@@ -825,15 +643,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 ===== memory.wast =====
 - 45/45 (100.00%)
 
-===== memory_copy.wast =====
-- 4349/4353 (99.91%)
-
-===== memory_fill.wast =====
-- 21/25 (84.00%)
-
-===== memory_grow.wast =====
-- 78/84 (92.86%)
-
 ===== memory_init.wast =====
 - 149/149 (100.00%)
 
@@ -870,227 +679,171 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 - 118/118 (100.00%)
 
 ===== simd_address.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/42 (0.00%)
 
 ===== simd_align.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/8 (0.00%)
 
 ===== simd_bit_shift.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/211 (0.00%)
 
 ===== simd_bitwise.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/139 (0.00%)
 
 ===== simd_boolean.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/259 (0.00%)
 
 ===== simd_const.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
-- 0/265 (0.00%)
+- 263/265 (99.25%)
 
 ===== simd_conversions.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/232 (0.00%)
 
 ===== simd_f32x4.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/772 (0.00%)
 
 ===== simd_f32x4_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/1803 (0.00%)
 
 ===== simd_f32x4_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/2581 (0.00%)
 
 ===== simd_f32x4_pmin_pmax.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/3872 (0.00%)
 
 ===== simd_f32x4_rounding.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/176 (0.00%)
 
 ===== simd_f64x2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/793 (0.00%)
 
 ===== simd_f64x2_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/1806 (0.00%)
 
 ===== simd_f64x2_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/2659 (0.00%)
 
 ===== simd_f64x2_pmin_pmax.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/3872 (0.00%)
 
 ===== simd_f64x2_rounding.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/176 (0.00%)
 
 ===== simd_i16x8_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/181 (0.00%)
 
 ===== simd_i16x8_arith2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/151 (0.00%)
 
 ===== simd_i16x8_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/433 (0.00%)
 
 ===== simd_i16x8_extadd_pairwise_i8x16.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/16 (0.00%)
 
 ===== simd_i16x8_extmul_i8x16.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/104 (0.00%)
 
 ===== simd_i16x8_q15mulr_sat_s.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/26 (0.00%)
 
 ===== simd_i16x8_sat_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/204 (0.00%)
 
 ===== simd_i32x4_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/181 (0.00%)
 
 ===== simd_i32x4_arith2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/121 (0.00%)
 
 ===== simd_i32x4_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/433 (0.00%)
 
 ===== simd_i32x4_dot_i16x8.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/26 (0.00%)
 
 ===== simd_i32x4_extadd_pairwise_i16x8.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/16 (0.00%)
 
 ===== simd_i32x4_extmul_i16x8.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/104 (0.00%)
 
 ===== simd_i32x4_trunc_sat_f32x4.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/102 (0.00%)
 
 ===== simd_i32x4_trunc_sat_f64x2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/102 (0.00%)
 
 ===== simd_i64x2_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/187 (0.00%)
 
 ===== simd_i64x2_arith2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/21 (0.00%)
 
 ===== simd_i64x2_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/102 (0.00%)
 
 ===== simd_i64x2_extmul_i32x4.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/104 (0.00%)
 
 ===== simd_i8x16_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/121 (0.00%)
 
 ===== simd_i8x16_arith2.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/184 (0.00%)
 
 ===== simd_i8x16_cmp.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/413 (0.00%)
 
 ===== simd_i8x16_sat_arith.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/188 (0.00%)
 
 ===== simd_int_to_int_extend.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/228 (0.00%)
 
 ===== simd_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/274 (0.00%)
 
 ===== simd_load.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/17 (0.00%)
 
 ===== simd_load16_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/32 (0.00%)
 
 ===== simd_load32_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/20 (0.00%)
 
 ===== simd_load64_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/12 (0.00%)
 
 ===== simd_load8_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/48 (0.00%)
 
 ===== simd_load_extend.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/84 (0.00%)
 
 ===== simd_load_splat.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/112 (0.00%)
 
 ===== simd_load_zero.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/27 (0.00%)
 
 ===== simd_splat.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/158 (0.00%)
 
 ===== simd_store.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/17 (0.00%)
 
 ===== simd_store16_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/32 (0.00%)
 
 ===== simd_store32_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/20 (0.00%)
 
 ===== simd_store64_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/12 (0.00%)
 
 ===== simd_store8_lane.wast =====
-- Uncaught exception: Module Instantiation failed due to Invalid numtype: V128
 - 0/48 (0.00%)
 
 ===== stack.wast =====
@@ -1129,12 +882,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 ===== table_size.wast =====
 - 36/36 (100.00%)
 
-===== return_call.wast =====
-- 26/31 (83.87%)
-
-===== return_call_indirect.wast =====
-- 43/47 (91.49%)
-
 ===== traps.wast =====
 - 32/32 (100.00%)
 
@@ -1147,6 +894,6 @@ if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (lns / 8)])
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [24511/48866] (50.16%; Normalized 62.75%)
+Total [20095/44159] (45.51%; Normalized 62.06%)
 == Complete.
 ```

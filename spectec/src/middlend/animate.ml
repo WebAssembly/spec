@@ -19,6 +19,9 @@ let list_count pred = list_count' pred 0
 
 let not_ f x = not (f x)
 
+(* let debug = print_endline *)
+let debug _ = ()
+
 (* Remove or *)
 let remove_or_exp e = match e.it with (* TODO: recursive *)
 | BinE (OrOp, e1, e2) -> [ e1; e2 ]
@@ -307,15 +310,15 @@ let animate_prems known_vars prems =
   best := (List.length cols + 1, []);
   let candidates = match knuth rows cols [] with
     | [] ->
-      print_endline "Animation failed (binding inference).";
-      prems |> List.map Il.Print.string_of_prem |> List.iter print_endline;
+      debug "Animation failed (binding inference).";
+      prems |> List.map Il.Print.string_of_prem |> List.iter debug;
       [ snd !best ]
     | xs -> List.map List.rev xs in
   best' := (-1, []);
   match List.find_map (fun cand -> select_tight cand other known_vars) candidates with
   | None ->
-    print_endline "...Animation failed (reorder)";
-    (List.hd candidates) |> List.map unwrap |> List.map Il.Print.string_of_prem |> List.iter print_endline;
+    debug "...Animation failed (reorder)";
+    (List.hd candidates) |> List.map unwrap |> List.map Il.Print.string_of_prem |> List.iter debug;
     snd !best'
   | Some x -> x
 

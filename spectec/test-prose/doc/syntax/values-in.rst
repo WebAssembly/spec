@@ -37,24 +37,24 @@ Floating-Point
 ~~~~~~~~~~~~~~
 
 .. _syntax-fN:
-.. _syntax-fNmag:
+.. _syntax-fmag:
 .. _syntax-f32:
 .. _syntax-f64:
 
 $${syntax+: 
   fN
-  fNmag
+  fmag
   f32
   f64
 }
 
-.. _def-fNzero:
+.. _def-fzero:
 
-%{prose-func: fNzero}
+%{prose-func: fzero}
 
 \
 
-$${definition: fNzero}
+$${definition: fzero}
 
 .. _def-signif:
 

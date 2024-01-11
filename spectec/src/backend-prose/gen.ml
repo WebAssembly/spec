@@ -41,10 +41,10 @@ let rec if_expr_to_instrs e =
     let body = if_expr_to_instrs e2 in
     [ match neg_cond with
       | [ CmpI ({ it = IterE ({ it = VarE name; _ }, _, Opt); _ }, Eq, { it = OptE None; _ }) ] ->
-          IfI (isDefinedC (varE name), body)
+          IfI (isDefinedE (varE name), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
-      [ EquivI (exp2cond e1, exp2cond e2) ]
+      [ EquivI (exp2expr e1, exp2expr e2) ]
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
@@ -65,7 +65,7 @@ let rec prem_to_instrs prem = match prem.it with
     )
   | Ast.IterPr (prem, iter) ->
     ( match iter with
-    | Ast.Opt, [id] -> [ IfI (isDefinedC (varE id.it), prem_to_instrs prem) ]
+    | Ast.Opt, [id] -> [ IfI (isDefinedE (varE id.it), prem_to_instrs prem) ]
     | Ast.(List | ListN _), [id] ->
         let name = varE id.it in
         [ ForallI (name, iterE (name, [id.it], Al.Ast.List), prem_to_instrs prem) ]

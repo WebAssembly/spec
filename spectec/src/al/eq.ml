@@ -5,10 +5,10 @@ let rec eq_instr i1 i2 =
   match i1.it, i2.it with
   | IfI (c1, il11, il12), IfI (c2, il21, il22) ->
     c1 = c2 &&
-    eq_instrs il11 il21 && 
+    eq_instrs il11 il21 &&
     eq_instrs il12 il22
   | EitherI (il11, il12), EitherI (il21, il22) ->
-    eq_instrs il11 il21 && 
+    eq_instrs il11 il21 &&
     eq_instrs il12 il22
   | EnterI (e11, e12, il1), EnterI (e21, e22, il2) ->
     e11 = e21 && e12 = e22 &&

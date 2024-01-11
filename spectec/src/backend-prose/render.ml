@@ -8,18 +8,18 @@ open Util.Source
 module Set = Set.Make(String)
 module Map = Map.Make(String)
 
-type env = 
-  { 
+type env =
+  {
     config: config;
     prose: prose;
     macro: Macro.env;
   }
 
-let gen_macro env = 
+let gen_macro env =
   if env.config.macros then
     Macro.gen_macro env.macro
 
-let env config inputs outputs el prose : env = 
+let env config inputs outputs el prose : env =
   let macro = Macro.env inputs outputs el in
   let env = { config; prose; macro; } in
   env
@@ -90,8 +90,6 @@ let render_al_binop = function
   | Al.Ast.MulOp -> "\\cdot"
   | Al.Ast.DivOp -> "/"
   | Al.Ast.ExpOp -> "^"
-
-let render_al_cmpop = function
   | Al.Ast.EqOp -> "is"
   | Al.Ast.NeOp -> "is not"
   | Al.Ast.LtOp -> "is less than"
@@ -103,7 +101,7 @@ let render_al_cmpop = function
 
 (* assume Names and Iters are always embedded in math blocks *)
 
-let rec render_name name = match String.index_opt name '_' with 
+let rec render_name name = match String.index_opt name '_' with
   | Some idx ->
       let base = String.sub name 0 idx in
       let subscript = String.sub name (idx + 1) ((String.length name) - idx - 1) in
@@ -111,12 +109,12 @@ let rec render_name name = match String.index_opt name '_' with
   | _ -> name
 
 and render_kwd env kwd = match Macro.find_kwd env.macro kwd with
-  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs 
+  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
   | None -> render_name (Al.Print.string_of_kwd kwd)
 
 and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
   | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
-  | None -> 
+  | None ->
       let escape acc c =
         if c = '.' then acc ^ "{.}"
         else if c = '_' then acc ^ "\\_"
@@ -145,12 +143,29 @@ and render_expr env in_math expr =
       let se = render_expr env in_math e in
       let s = sprintf "-%s" se in
       if in_math then s else render_math s
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, c); _ }) ->
+      sprintf "%s is not of the case %s"
+        (render_expr env in_math e)
+        (render_math (render_kwd env c))
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
+      sprintf "%s is not defined" (render_expr env in_math e)
+  | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
+      sprintf "%s is not valid" (render_expr env in_math e)
+  | Al.Ast.UnE (op, e) ->
+      sprintf "%s %s" (render_al_unop op) (render_expr env in_math e)
   | Al.Ast.BinE (op, e1, e2) ->
-      let sop = render_al_binop op in
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "{%s} %s {%s}" se1 sop se2 in
-      if in_math then s else render_math s
+      (match op with
+      | AndOp | OrOp | ImplOp | EquivOp | AddOp | SubOp | MulOp | DivOp | ExpOp ->
+        let sop = render_al_binop op in
+        let se1 = render_expr env true e1 in
+        let se2 = render_expr env true e2 in
+        let s = sprintf "{%s} %s {%s}" se1 sop se2 in
+        if in_math then s else render_math s
+      | _ ->
+        sprintf "%s %s %s"
+          (render_expr env in_math e1)
+          (render_al_binop op)
+          (render_expr env in_math e2))
   | Al.Ast.TupE el ->
       let sel = render_list (render_expr env true) "(" "~" ")" el in
       if in_math then sel else render_math sel
@@ -163,7 +178,7 @@ and render_expr env in_math expr =
   | Al.Ast.CatE ({ it = Al.Ast.ListE e1; _ }, { it = Al.Ast.ListE e2; _ }) when List.length e1 = 1 && List.length e2 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
       let se2 = render_expr env true (List.hd e2) in
-      let s = sprintf "%s~%s" se1 se2 in 
+      let s = sprintf "%s~%s" se1 se2 in
       if in_math then s else render_math s
   | Al.Ast.CatE ({ it = Al.Ast.ListE e1; _ }, e2) when List.length e1 = 1 ->
       let se1 = render_expr env true (List.hd e1) in
@@ -192,8 +207,8 @@ and render_expr env in_math expr =
   | Al.Ast.FrameE (Some e1, e2) ->
       sprintf "the activation of %s with arity %s" (render_expr env in_math e2)
         (render_expr env in_math e1)
-  | Al.Ast.ListE el -> 
-      let sel = 
+  | Al.Ast.ListE el ->
+      let sel =
         if List.length el > 0 then
           render_list (render_expr env true) "" "~" "" el
         else
@@ -218,12 +233,12 @@ and render_expr env in_math expr =
         | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
         | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
   | Al.Ast.UpdE (e1, ps, e2) ->
-      sprintf "%s with %s replaced by %s" 
-        (render_expr env in_math e1) 
+      sprintf "%s with %s replaced by %s"
+        (render_expr env in_math e1)
         (render_paths env in_math ps)
         (render_expr env in_math e2)
   | Al.Ast.StrE r ->
-      let sr = 
+      let sr =
         Util.Record.Record.fold
           (fun k v acc -> acc @ [ render_kwd env k ^ "~" ^ render_expr env true v ])
           r []
@@ -241,7 +256,7 @@ and render_expr env in_math expr =
       let siter = render_iter env iter in
       let s = sprintf "{%s}{%s}" sn siter in
       if in_math then s else render_math s
-  | Al.Ast.IterE (e, _, iter) -> 
+  | Al.Ast.IterE (e, _, iter) ->
       let se = render_expr env true e in
       let siter = render_iter env iter in
       let s = sprintf "{(%s)}{%s}" se siter in
@@ -266,13 +281,27 @@ and render_expr env in_math expr =
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" stag ses in
       if in_math then s else render_math s
-  | Al.Ast.OptE (Some e) -> 
+  | Al.Ast.OptE (Some e) ->
       let se = render_expr env true e in
-      let s = sprintf "{%s}^?" se in 
+      let s = sprintf "{%s}^?" se in
       if in_math then s else render_math s
-  | Al.Ast.OptE None -> 
+  | Al.Ast.OptE None ->
       let s = "\\epsilon" in
       if in_math then s else render_math s
+  | Al.Ast.ContextKindE (s, e) -> sprintf "%s is %s" (render_expr env in_math e) (render_kwd env s)
+  | Al.Ast.IsDefinedE e -> sprintf "%s is defined" (render_expr env in_math e)
+  | Al.Ast.IsCaseOfE (e, c) -> sprintf "%s is of the case %s" (render_expr env in_math e) (let case = render_kwd env c in if in_math then case else render_math case) (* TODO *)
+  | Al.Ast.HasTypeE (e, t) -> sprintf "the type of %s is %s" (render_expr env in_math e) t
+  | Al.Ast.IsValidE e -> sprintf "%s is valid" (render_expr env in_math e)
+  | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
+  | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
+  | Al.Ast.TopValueE (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env in_math e)
+  | Al.Ast.TopValueE None -> "a value is on the top of the stack"
+  | Al.Ast.TopValuesE e -> sprintf "there are at least %s values on the top of the stack" (render_expr env in_math e)
+  | Al.Ast.MatchE (e1, e2) ->
+    sprintf "%s matches %s"
+      (render_expr env in_math e1)
+      (render_expr env in_math e2)
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
   | _ -> failwith "unreachable"
 
@@ -285,47 +314,10 @@ and render_path env path =
       sprintf "[%s : %s]" (render_expr env true e1) (render_expr env true e2)
   | Al.Ast.DotP s -> sprintf ".%s" (render_kwd env s)
 
-and render_paths env in_math paths = 
+and render_paths env in_math paths =
   let spaths = List.map (render_path env) paths |> List.fold_left (^) "" in
   if in_math then spaths else render_math spaths
 
-(* Conditions *)
-
-(* assume Conditions are never embedded in math blocks *)
-
-and render_cond env cond =
-  match cond.it with
-  | Al.Ast.IterC (c, _, iter) ->
-      sprintf "(%s)%s" (render_cond env c) (render_iter env iter)
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsCaseOfC (e, c); _ }) ->
-      sprintf "%s is not of the case %s" 
-        (render_expr env false e) 
-        (render_math (render_kwd env c))
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsDefinedC e; _ }) ->
-      sprintf "%s is not defined" (render_expr env false e)
-  | Al.Ast.UnC (NotOp, { it = Al.Ast.IsValidC e; _ }) ->
-      sprintf "%s is not valid" (render_expr env false e)
-  | Al.Ast.UnC (op, c) ->
-      sprintf "%s %s" (render_al_unop op) (render_cond env c)
-  | Al.Ast.BinC (op, c1, c2) ->
-      sprintf "%s %s %s" (render_cond env c1) (render_al_binop op) (render_cond env c2)
-  | Al.Ast.CmpC (op, e1, e2) ->
-      sprintf "%s %s %s" (render_expr env false e1) (render_al_cmpop op) (render_expr env false e2)
-  | Al.Ast.ContextKindC (s, e) -> sprintf "%s is %s" (render_expr env false e) (render_kwd env s)
-  | Al.Ast.IsDefinedC e -> sprintf "%s is defined" (render_expr env false e)
-  | Al.Ast.IsCaseOfC (e, c) -> sprintf "%s is of the case %s" (render_expr env false e) (render_math (render_kwd env c))
-  | Al.Ast.HasTypeC (e, t) -> sprintf "the type of %s is %s" (render_expr env false e) t
-  | Al.Ast.IsValidC e -> sprintf "%s is valid" (render_expr env false e)
-  | Al.Ast.TopLabelC -> "a label is now on the top of the stack"
-  | Al.Ast.TopFrameC -> "a frame is now on the top of the stack"
-  | Al.Ast.TopValueC (Some e) -> sprintf "a value of value type %s is on the top of the stack" (render_expr env false e)
-  | Al.Ast.TopValueC None -> "a value is on the top of the stack"
-  | Al.Ast.TopValuesC e -> sprintf "there are at least %s values on the top of the stack" (render_expr env false e)
-  | Al.Ast.MatchC (e1, e2) ->
-    sprintf "%s matches %s"
-      (render_expr env false e1)
-      (render_expr env false e2)
-  | Al.Ast.YetC s -> sprintf "YetC (%s)" s
 
 (* Instructions *)
 
@@ -353,7 +345,7 @@ let rec render_prose_instr env depth = function
         (render_opt " with type " (render_expr env false) "" e)
   | IfI (c, is) ->
       sprintf "* If %s,%s"
-        (render_cond env c)
+        (render_expr env false c)
         (render_prose_instrs env (depth + 1) is)
   | ForallI (e1, e2, is) ->
       sprintf "* For all %s in %s,%s"
@@ -362,8 +354,8 @@ let rec render_prose_instr env depth = function
         (render_prose_instrs env (depth + 1) is)
   | EquivI (c1, c2) ->
       sprintf "* %s and %s are equivalent."
-        (String.capitalize_ascii (render_cond env c1))
-        (render_cond env c2)
+        (String.capitalize_ascii (render_expr env false c1))
+        (render_expr env false c2)
   | YetI s ->
       sprintf "* YetI: %s." s
 
@@ -376,17 +368,17 @@ and render_prose_instrs env depth instrs =
 let rec render_al_instr env algoname index depth instr =
   match instr.it with
   | Al.Ast.IfI (c, il, []) ->
-      sprintf "%s If %s, then:%s" (render_order index depth) (render_cond env c)
+      sprintf "%s If %s, then:%s" (render_order index depth) (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il)
   | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, []); _ } ]) ->
       let if_index = render_order index depth in
       let else_if_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s"
         if_index
-        (render_cond env c)
+        (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env inner_c)
+        (render_expr env false inner_c)
         (render_al_instrs env algoname (depth + 1) inner_il1)
   | Al.Ast.IfI (c, il1, [ { it = IfI (inner_c, inner_il1, inner_il2); _ } ]) ->
       let if_index = render_order index depth in
@@ -394,17 +386,17 @@ let rec render_al_instr env algoname index depth instr =
       let else_index = render_order index depth in
       sprintf "%s If %s, then:%s\n\n%s Else if %s, then:%s\n\n%s Else:%s"
         if_index
-        (render_cond env c)
+        (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_if_index)
-        (render_cond env inner_c)
+        (render_expr env false inner_c)
         (render_al_instrs env algoname (depth + 1) inner_il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env algoname (depth + 1) inner_il2)
   | Al.Ast.IfI (c, il1, il2) ->
       let if_index = render_order index depth in
       let else_index = render_order index depth in
-      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_cond env c)
+      sprintf "%s If %s, then:%s\n\n%s Else:%s" if_index (render_expr env false c)
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ else_index)
         (render_al_instrs env algoname (depth + 1) il2)
@@ -418,9 +410,9 @@ let rec render_al_instr env algoname index depth instr =
         (render_al_instrs env algoname (depth + 1) il1)
         (repeat indent depth ^ or_index)
         (render_al_instrs env algoname (depth + 1) il2)
-  | Al.Ast.AssertI c -> 
+  | Al.Ast.AssertI c ->
       let vref = if Macro.find_section env.macro ("valid-" ^ algoname) then ":ref:`validation <valid-" ^ algoname ^">`" else "validation" in
-      sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_cond env c) 
+      sprintf "%s Assert: Due to %s, %s." (render_order index depth) vref (render_expr env false c)
   | Al.Ast.PushI e ->
       sprintf "%s Push %s to the stack." (render_order index depth)
         (render_expr env false e)
@@ -471,12 +463,12 @@ and render_al_instrs env algoname depth instrs =
 
 let render_kwd_title env kwd params =
   (* TODO a workaround, for algorithms named label or name
-     that are defined as LABEL_ or FRAME_ in the dsl *) 
-  let (name, syntax) = kwd in 
-  let kwd = 
+     that are defined as LABEL_ or FRAME_ in the dsl *)
+  let (name, syntax) = kwd in
+  let kwd =
     if name = "LABEL" then ("LABEL_", syntax)
     else if name = "FRAME" then ("FRAME_", syntax)
-    else kwd 
+    else kwd
   in
   render_expr env false (Al.Ast.CaseE (kwd, params) $ no_region)
 
@@ -500,7 +492,7 @@ let render_rule env name params instrs =
   render_al_instrs env rname 0 instrs
 
 let render_func env fname params instrs =
-  let title = render_funcname_title env fname params in 
+  let title = render_funcname_title env fname params in
   title ^ "\n" ^
   String.make (String.length title) '.' ^ "\n" ^
   render_al_instrs env fname 0 instrs
@@ -508,7 +500,7 @@ let render_func env fname params instrs =
 let render_def env = function
   | Pred (name, params, instrs) ->
     "\n" ^ render_pred env name params instrs ^ "\n\n"
-  | Algo algo -> (match algo with 
+  | Algo algo -> (match algo with
     | Al.Ast.RuleA (name, params, instrs) ->
       "\n" ^ render_rule env name params instrs ^ "\n\n"
     | Al.Ast.FuncA (name, params, instrs) ->

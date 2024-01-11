@@ -348,7 +348,7 @@ let structured_string_of_atom = function
   | RParen -> "RParen"
   | RBrack -> "RBrack"
   | RBrace -> "RBrace"
-  
+
 let structured_string_of_unop = function
   | NotOp -> "NotOp"
   | PlusOp _ -> "PlusOp"

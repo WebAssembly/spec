@@ -12,12 +12,17 @@ let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_v
 let value_to_array v = v |> value_to_growable_array |> (!)
 let value_to_list v = v |> value_to_array |> Array.to_list
 let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
+let value_to_bool = function BoolV b -> b | v -> failwith (string_of_value v ^ " is not a boolean")
 let value_to_int v = v |> value_to_num |> Int64.to_int
 let check_i32_const = function
   | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
     let n' = Int64.logand 0xFFFFFFFFL n in
     CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
   | v -> v
+let rec is_true = function
+  | BoolV true -> true
+  | ListV a -> Array.for_all is_true !a
+  | _ -> false
 
 let rec int64_exp base exponent =
   if exponent = 0L then
@@ -133,7 +138,7 @@ and access_path env base path =
           |> Printf.sprintf "Not a record: %s"
           |> failwith)
 
-and replace_path env base path v_new = 
+and replace_path env base path v_new =
   match path.it with
   | IdxP e' ->
       let a = base |> value_to_array in
@@ -169,22 +174,27 @@ and eval_expr env expr =
   | NumE i -> NumV i
   (* Numeric Operation *)
   | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
+  | UnE (NotOp, e) ->
+      let b = eval_expr env e |> value_to_bool |> not in
+      BoolV b
   | BinE (op, e1, e2) ->
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      begin match v1, v2 with
-      | NumV v1, NumV v2 ->
-          let result = match op with
-          | AddOp -> Int64.add v1 v2
-          | SubOp -> Int64.sub v1 v2
-          | MulOp -> Int64.mul v1 v2
-          | DivOp -> Int64.div v1 v2
-          | ExpOp -> int64_exp v1 v2
-          | _ -> failwith "Not a mathematical operator"
-          in
-          NumV result
-      | _ -> failwith "Not an integer"
-      end
+    (match op, eval_expr env e1, eval_expr env e2 with
+    | AddOp, NumV i1, NumV i2 -> NumV (Int64.add i1 i2)
+    | SubOp, NumV i1, NumV i2 -> NumV (Int64.sub i1 i2)
+    | MulOp, NumV i1, NumV i2 -> NumV (Int64.mul i1 i2)
+    | DivOp, NumV i1, NumV i2 -> NumV (Int64.div i1 i2)
+    | ExpOp, NumV i1, NumV i2 -> NumV (int64_exp i1 i2)
+    | AndOp, BoolV b1, BoolV b2 -> BoolV (b1 && b2)
+    | OrOp, BoolV b1, BoolV b2 -> BoolV (b1 || b2)
+    | ImplOp, BoolV b1, BoolV b2 -> BoolV (not b1 || b2)
+    | EquivOp, BoolV b1, BoolV b2 -> BoolV (b1 = b2)
+    | EqOp, v1, v2 -> BoolV (v1 = v2)
+    | NeOp, v1, v2 -> BoolV (v1 <> v2)
+    | LtOp, v1, v2 -> BoolV (v1 < v2)
+    | GtOp, v1, v2 -> BoolV (v1 > v2)
+    | LeOp, v1, v2 -> BoolV (v1 <= v2)
+    | GeOp, v1, v2 -> BoolV (v1 >= v2)
+    | _ -> failwith "Invalid BinE")
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map (eval_expr env) el in
@@ -300,60 +310,34 @@ and eval_expr env expr =
     | l, _ -> listV l
     end
   | ArrowE (e1, e2) -> ArrowV (eval_expr env e1, eval_expr env e2)
-  | _ -> structured_string_of_expr expr |> failwith
-
-(* Condition *)
-
-and eval_cond env cond =
-  match cond.it with
-  (* TODO: remove IterC *)
-  | IterC (c, ids, List) ->
-    create_sub_al_context ids List env
-    |> List.for_all (fun env' -> eval_cond env' c)
-  | UnC (NotOp, c) -> eval_cond env c |> not
-  | BinC (op, c1, c2) ->
-      let b1 = eval_cond env c1 in
-      let b2 = eval_cond env c2 in
-      begin match op with
-      | AndOp -> b1 && b2
-      | OrOp -> b1 || b2
-      | ImplOp -> not b1 || b2
-      | EquivOp -> b1 = b2
-      | _ -> failwith "Unreachable"
-      end
-  | CmpC (op, e1, e2) ->
-      let v1 = eval_expr env e1 in
-      let v2 = eval_expr env e2 in
-      begin match op with
-      | EqOp -> v1 = v2
-      | NeOp -> v1 <> v2
-      | LtOp -> v1 < v2
-      | GtOp -> v1 > v2
-      | LeOp -> v1 <= v2
-      | GeOp -> v1 >= v2
-      end
-  | ContextKindC ((kind, _), e) ->
-      begin match kind, eval_expr env e with
+  (* condition *)
+  | ContextKindE ((kind, _), e) ->
+    let b =
+      match kind, eval_expr env e with
       | "frame", FrameV _ -> true
       | "label", LabelV _ -> true
-      | _ -> false
-      end
-  | IsDefinedC e ->
-      begin match eval_expr env e with
+      | _ -> false in
+    BoolV b
+  | IsDefinedE e ->
+    let b =
+      match eval_expr env e with
       | OptV (Some (_)) -> true
       | OptV (_) -> false
-      | _ -> structured_string_of_cond cond |> failwith
-      end
-  | IsCaseOfC (e, (expected_tag, _)) -> (
+      | _ -> structured_string_of_expr e |> failwith in
+    BoolV b
+  | IsCaseOfE (e, (expected_tag, _)) ->
+    let b =
       match eval_expr env e with
       | CaseV (tag, _) -> expected_tag = tag
-      | _ -> false)
+      | _ -> false in
+    BoolV b
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
-  | IsValidC e -> (
-      let valid_lim k = function
-        | TupV [ NumV n; NumV m ] -> n <= m && m <= k
-        | _ -> false
-      in
+  | IsValidE e ->
+    let valid_lim k = function
+      | TupV [ NumV n; NumV m ] -> n <= m && m <= k
+      | _ -> false
+    in
+    let b =
       match eval_expr env e with
       (* valid_tabletype *)
       | TupV [ lim; _ ] -> valid_lim 0xffffffffL lim
@@ -361,8 +345,9 @@ and eval_cond env cond =
       | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim
       (* valid_other *)
       | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
-  )
-  | HasTypeC (e, s) ->
+    in
+    BoolV b
+  | HasTypeE (e, s) ->
 
     (* type definition *)
 
@@ -380,47 +365,48 @@ and eval_cond env cond =
 
     (* check type *)
 
-    begin match eval_expr env e with
-    (* addrref *)
-    | CaseV (ar, _) when List.mem ar addr_refs->
-      s = "addrref" || s = "ref" || s = "val"
-    (* nul *)
-    | CaseV ("REF.NULL", _) ->
-      s = "nul" || s = "ref" || s = "val"
-    (* numtype *)
-    | CaseV (nt, []) when List.mem nt num_types ->
-      s = "numtype" || s = "valtype"
-    | CaseV (vt, []) when List.mem vt vec_types ->
-      s = "vectype" || s = "valtype"
-    (* valtype *)
-    | CaseV ("REF", _) ->
-      s = "reftype" || s = "valtype"
-    (* absheaptype *)
-    | CaseV (aht, []) when List.mem aht abs_heap_types ->
-      s = "absheaptype" || s = "heaptype"
-    (* deftype *)
-    | CaseV ("DEF", [ _; _ ]) ->
-      s = "deftype" || s = "heaptype"
-    (* typevar *)
-    | CaseV ("_IDX", [ _ ]) ->
-      s = "heaptype" || s = "typevar"
-    (* heaptype *)
-    | CaseV ("REC", [ _ ]) ->
-      s = "heaptype" || s = "typevar"
-    (* packedtype *)
-    | CaseV (pt, []) when List.mem pt packed_types ->
-      s = "packedtype" || s = "storagetype"
-    | v ->
-      string_of_value v
-      |> Printf.sprintf "Invalid %s: %s" s
-      |> failwith
-    end
-  | MatchC (e1, e2) ->
+    let b =
+      match eval_expr env e with
+      (* addrref *)
+      | CaseV (ar, _) when List.mem ar addr_refs->
+        s = "addrref" || s = "ref" || s = "val"
+      (* nul *)
+      | CaseV ("REF.NULL", _) ->
+        s = "nul" || s = "ref" || s = "val"
+      (* numtype *)
+      | CaseV (nt, []) when List.mem nt num_types ->
+        s = "numtype" || s = "valtype"
+      | CaseV (vt, []) when List.mem vt vec_types ->
+        s = "vectype" || s = "valtype"
+      (* valtype *)
+      | CaseV ("REF", _) ->
+        s = "reftype" || s = "valtype"
+      (* absheaptype *)
+      | CaseV (aht, []) when List.mem aht abs_heap_types ->
+        s = "absheaptype" || s = "heaptype"
+      (* deftype *)
+      | CaseV ("DEF", [ _; _ ]) ->
+        s = "deftype" || s = "heaptype"
+      (* typevar *)
+      | CaseV ("_IDX", [ _ ]) ->
+        s = "heaptype" || s = "typevar"
+      (* heaptype *)
+      | CaseV ("REC", [ _ ]) ->
+        s = "heaptype" || s = "typevar"
+      (* packedtype *)
+      | CaseV (pt, []) when List.mem pt packed_types ->
+        s = "packedtype" || s = "storagetype"
+      | v ->
+        string_of_value v
+        |> Printf.sprintf "Invalid %s: %s" s
+        |> failwith
+    in
+    BoolV b
+  | MatchE (e1, e2) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
-    match_ref_type v1 v2
-  | _ ->
-    structured_string_of_cond cond |> failwith
+    BoolV (match_ref_type v1 v2)
+  | _ -> structured_string_of_expr expr |> failwith
 
 (* Assignment *)
 
@@ -509,7 +495,7 @@ and assign lhs rhs env =
 and assign_split ep es vs env =
   let len = Array.length vs in
   let prefix_len, suffix_len =
-    let get_length e = match e.it with 
+    let get_length e = match e.it with
     | ListE es -> Some (List.length es)
     | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
     | _ -> None in
@@ -701,8 +687,8 @@ and interp_instr (env: env) (instr: instr): env =
   let res =
   match instr.it with
   (* Block instruction *)
-  | IfI (c, il1, il2) ->
-    if eval_cond env c then
+  | IfI (e, il1, il2) ->
+    if is_true (eval_expr env e) then
       interp_instrs env il1
     else
       interp_instrs env il2
