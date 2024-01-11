@@ -81,10 +81,10 @@ let render_al_unop = function
   | Al.Ast.MinusOp -> "-"
 
 let render_al_binop = function
-  | Al.Ast.AndOp -> "\\land"
-  | Al.Ast.OrOp -> "\\lor"
-  | Al.Ast.ImplOp -> "\\implies"
-  | Al.Ast.EquivOp -> "\\Leftrightarrow"
+  | Al.Ast.AndOp -> "and"
+  | Al.Ast.OrOp -> "or"
+  | Al.Ast.ImplOp -> "implies"
+  | Al.Ast.EquivOp -> "is equivanlent to"
   | Al.Ast.AddOp -> "+"
   | Al.Ast.SubOp -> "-"
   | Al.Ast.MulOp -> "\\cdot"
@@ -155,7 +155,7 @@ and render_expr env in_math expr =
       sprintf "%s %s" (render_al_unop op) (render_expr env in_math e)
   | Al.Ast.BinE (op, e1, e2) ->
       (match op with
-      | AndOp | OrOp | ImplOp | EquivOp | AddOp | SubOp | MulOp | DivOp | ExpOp ->
+      | ImplOp | EquivOp | AddOp | SubOp | MulOp | DivOp | ExpOp ->
         let sop = render_al_binop op in
         let se1 = render_expr env true e1 in
         let se2 = render_expr env true e2 in
