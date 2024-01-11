@@ -400,7 +400,7 @@ rule Step_pure/extmul_half:
 
 
 rule Step_pure/extadd_pairwise:
-  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (EXTADD_PAIRWISE sh_2 sh_1 sx) ~> (VVCONST V128 cv)
+  (VVCONST V128 cv_1) (EXTADD_PAIRWISE sh_2 sh_1 sx) ~> (VVCONST V128 cv)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i^k = $lanes(sh_1, cv_1)

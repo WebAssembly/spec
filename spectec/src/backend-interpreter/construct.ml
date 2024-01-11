@@ -1495,6 +1495,11 @@ let al_to_vsplatop : value list -> vec_splatop = function
   | vl -> (
     match vl with
     | [ CaseV ("I8X16", []) ] -> V128 (V128.I8x16 Splat)
+    | [ CaseV ("I16X8", []) ] -> V128 (V128.I16x8 Splat)
+    | [ CaseV ("I32X4", []) ] -> V128 (V128.I32x4 Splat)
+    | [ CaseV ("I64X2", []) ] -> V128 (V128.I64x2 Splat)
+    | [ CaseV ("F32X4", []) ] -> V128 (V128.F32x4 Splat)
+    | [ CaseV ("F64X2", []) ] -> V128 (V128.F64x2 Splat)
     | _ -> fail_list "vsplatop" vl
   )
 
