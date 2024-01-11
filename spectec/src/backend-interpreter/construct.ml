@@ -81,7 +81,13 @@ let topValuesE e = TopValuesE e |> mk_expr
 let subE (id, ty) = SubE (id, ty) |> mk_expr
 let yetE s = YetE s |> mk_expr
 
+let numV i = NumV i
+let boolV b = BoolV b
 let strV r = StrV r
+let caseV (kwd, vl) = CaseV (kwd, vl)
+let optV opt = OptV opt
+let tupV tup = TupV tup
+let arrowV (v1, v2) = ArrowV (v1, v2)
 
 let mk_path it = Util.Source.($) it Util.Source.no_region
 
@@ -92,7 +98,7 @@ let dotP kwd = DotP kwd |> mk_path
 let singleton x = CaseV (String.uppercase_ascii x, [])
 let listV l = ListV (ref (Array.of_list l))
 let id str = VarE str
-let zero = NumV 0L
+let zero = numV 0L
 
 let get_name = function
   | RuleA ((name, _), _, _) -> name
@@ -123,12 +129,12 @@ let fail_list ty l = listV l |> fail ty
 
 let al_of_list f l = List.map f l |> listV
 let al_of_seq f s = List.of_seq s |> al_of_list f
-let al_of_opt f opt = OptV (Option.map f opt)
+let al_of_opt f opt = Option.map f opt |> optV
 
 
 (* Construct minor *)
 
-let al_of_int64 i64 = NumV i64
+let al_of_int64 i64 = numV i64
 let al_of_int i = Int64.of_int i |> al_of_int64
 let al_of_int32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
@@ -157,23 +163,23 @@ let al_to_list = function
 (* Construct type *)
 
 let al_of_null = function
-  | NoNull -> CaseV ("NULL", [ OptV None ])
-  | Null -> CaseV ("NULL", [ OptV (Some (TupV [])) ])
+  | NoNull -> CaseV ("NULL", [ optV None ])
+  | Null -> CaseV ("NULL", [ optV (Some (tupV [])) ])
 
 let al_of_final = function
-  | NoFinal -> OptV None
-  | Final -> OptV (Some (singleton "FINAL"))
+  | NoFinal -> optV None
+  | Final -> optV (Some (singleton "FINAL"))
 
 let al_of_mut = function
-  | Cons -> OptV None
-  | Var -> OptV (Some (singleton "MUT"))
+  | Cons -> optV None
+  | Var -> optV (Some (singleton "MUT"))
 
 let rec al_of_storage_type = function
   | ValStorageT vt -> al_of_val_type vt
   | PackStorageT _ as st -> string_of_storage_type st |> singleton
 
 and al_of_field_type = function
-  | FieldT (mut, st) -> TupV [ al_of_mut mut; al_of_storage_type st ]
+  | FieldT (mut, st) -> tupV [ al_of_mut mut; al_of_storage_type st ]
 
 and al_of_result_type rt = al_of_list al_of_val_type rt
 
@@ -234,13 +240,13 @@ let al_of_limits default limits =
     | None -> al_of_int64 default
   in
 
-  TupV [ al_of_int32 limits.min; max ]
+  tupV [ al_of_int32 limits.min; max ]
 
 let al_of_global_type = function
-  | GlobalT (mut, vt) -> TupV [ al_of_mut mut; al_of_val_type vt ]
+  | GlobalT (mut, vt) -> tupV [ al_of_mut mut; al_of_val_type vt ]
 
 let al_of_table_type = function
-  | TableT (limits, rt) -> TupV [ al_of_limits default_table_max limits; al_of_ref_type rt ]
+  | TableT (limits, rt) -> tupV [ al_of_limits default_table_max limits; al_of_ref_type rt ]
 
 let al_of_memory_type = function
   | MemoryT limits -> CaseV ("I8", [ al_of_limits default_memory_max limits ])
@@ -395,16 +401,16 @@ let al_of_float_cvtop num_bits = function
 let al_of_cvtop = function
   | I32 op ->
     let op', to_, ext = al_of_int_cvtop "32" op in
-    [ singleton "I32"; TextV op'; singleton to_; OptV ext ]
+    [ singleton "I32"; TextV op'; singleton to_; optV ext ]
   | I64 op ->
     let op', to_, ext = al_of_int_cvtop "64" op in
-    [ singleton "I64"; TextV op'; singleton to_; OptV ext ]
+    [ singleton "I64"; TextV op'; singleton to_; optV ext ]
   | F32 op ->
     let op', to_, ext = al_of_float_cvtop "32" op in
-    [ singleton "F32"; TextV op'; singleton to_; OptV ext ]
+    [ singleton "F32"; TextV op'; singleton to_; optV ext ]
   | F64 op ->
     let op', to_, ext = al_of_float_cvtop "64" op in
-    [ singleton "F64"; TextV op'; singleton to_; OptV ext ]
+    [ singleton "F64"; TextV op'; singleton to_; optV ext ]
 
 (* Vector operator *)
 
@@ -415,12 +421,12 @@ let al_of_extension = function
 let al_of_vop f1 f2 = function
   | V128 vop -> (
       match vop with
-      | V128.I8x16 op -> [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]); f1 op ]
-      | V128.I16x8 op -> [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]); f1 op ]
-      | V128.I32x4 op -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]); f1 op ]
-      | V128.I64x2 op -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]); f1 op ]
-      | V128.F32x4 op -> [ CaseV ("SHAPE", [ singleton "F32"; NumV 4L ]); f2 op ]
-      | V128.F64x2 op -> [ CaseV ("SHAPE", [ singleton "F64"; NumV 2L ]); f2 op ]
+      | V128.I8x16 op -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); f1 op ]
+      | V128.I16x8 op -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); f1 op ]
+      | V128.I32x4 op -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); f1 op ]
+      | V128.I64x2 op -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); f1 op ]
+      | V128.F32x4 op -> [ CaseV ("SHAPE", [ singleton "F32"; numV 4L ]); f2 op ]
+      | V128.F64x2 op -> [ CaseV ("SHAPE", [ singleton "F64"; numV 2L ]); f2 op ]
   )
 
 let al_of_viop f1:
@@ -428,20 +434,20 @@ let al_of_viop f1:
   function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 op -> [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]); f1 op ]
-    | V128.I16x8 op -> [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]); f1 op ]
-    | V128.I32x4 op -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]); f1 op ]
-    | V128.I64x2 op -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]); f1 op ]
+    | V128.I8x16 op -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); f1 op ]
+    | V128.I16x8 op -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); f1 op ]
+    | V128.I32x4 op -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); f1 op ]
+    | V128.I64x2 op -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); f1 op ]
     | _ -> .
   )
 
 let al_of_vtestop : vec_testop -> value list = function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 _ -> [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]) ]
-    | V128.I16x8 _ -> [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]) ]
-    | V128.I32x4 _ -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]) ]
-    | V128.I64x2 _ -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]) ]
+    | V128.I8x16 _ -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]) ]
+    | V128.I16x8 _ -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]) ]
+    | V128.I32x4 _ -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]) ]
+    | V128.I64x2 _ -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]) ]
     | _ -> .
   )
 
@@ -583,12 +589,12 @@ let al_of_vvternop : vec_vternop -> value list = function
 let al_of_vsplatop : vec_splatop -> value list = function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 _ -> [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]) ]
-    | V128.I16x8 _ -> [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]) ]
-    | V128.I32x4 _ -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]) ]
-    | V128.I64x2 _ -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]) ]
-    | V128.F32x4 _ -> [ CaseV ("SHAPE", [ singleton "F32"; NumV 4L ]) ]
-    | V128.F64x2 _ -> [ CaseV ("SHAPE", [ singleton "F64"; NumV 2L ]) ]
+    | V128.I8x16 _ -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]) ]
+    | V128.I16x8 _ -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]) ]
+    | V128.I32x4 _ -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]) ]
+    | V128.I64x2 _ -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]) ]
+    | V128.F32x4 _ -> [ CaseV ("SHAPE", [ singleton "F32"; numV 4L ]) ]
+    | V128.F64x2 _ -> [ CaseV ("SHAPE", [ singleton "F64"; numV 2L ]) ]
   )
 
 let al_of_vextractop : vec_extractop -> value list = function
@@ -597,40 +603,40 @@ let al_of_vextractop : vec_extractop -> value list = function
     | V128.I8x16 vop' -> (
       match vop' with
       | Extract (n, ext) ->
-          [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]); OptV (Some (al_of_extension ext)); al_of_int n; ]
+          [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); optV (Some (al_of_extension ext)); al_of_int n; ]
     )
     | V128.I16x8 vop' -> (
       match vop' with
       | Extract (n, ext) ->
-          [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]); OptV (Some (al_of_extension ext)); al_of_int n; ]
+          [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); optV (Some (al_of_extension ext)); al_of_int n; ]
     )
     | V128.I32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]); OptV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); optV None; al_of_int n ]
     )
     | V128.I64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]); OptV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); optV None; al_of_int n ]
     )
     | V128.F32x4 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "F32"; NumV 4L ]); OptV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "F32"; numV 4L ]); optV None; al_of_int n ]
     )
     | V128.F64x2 vop' -> (
       match vop' with
-      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "F64"; NumV 2L ]); OptV None; al_of_int n ]
+      | Extract (n, _) -> [ CaseV ("SHAPE", [ singleton "F64"; numV 2L ]); optV None; al_of_int n ]
     )
   )
 
 let al_of_vreplaceop : vec_replaceop -> value list = function
   | V128 vop -> (
     match vop with
-    | V128.I8x16 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I8"; NumV 16L ]); al_of_int n ]
-    | V128.I16x8 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I16"; NumV 8L ]); al_of_int n ]
-    | V128.I32x4 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I32"; NumV 4L ]); al_of_int n ]
-    | V128.I64x2 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I64"; NumV 2L ]); al_of_int n ]
-    | V128.F32x4 (Replace n) -> [ CaseV ("SHAPE", [ singleton "F32"; NumV 4L ]); al_of_int n ]
-    | V128.F64x2 (Replace n) -> [ CaseV ("SHAPE", [ singleton "F64"; NumV 2L ]); al_of_int n ]
+    | V128.I8x16 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_int n ]
+    | V128.I16x8 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_int n ]
+    | V128.I32x4 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_int n ]
+    | V128.I64x2 (Replace n) -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); al_of_int n ]
+    | V128.F32x4 (Replace n) -> [ CaseV ("SHAPE", [ singleton "F32"; numV 4L ]); al_of_int n ]
+    | V128.F64x2 (Replace n) -> [ CaseV ("SHAPE", [ singleton "F64"; numV 2L ]); al_of_int n ]
   )
 
 let al_of_pack_size = function
@@ -651,7 +657,7 @@ let al_of_memop f memop =
   in
   [ al_of_num_type memop.ty; f memop.pack ] @ al_of_memidx () @ [ StrV str ]
 
-let al_of_pack_size_extension (p, s) = TupV [ al_of_pack_size p; al_of_extension s ]
+let al_of_pack_size_extension (p, s) = tupV [ al_of_pack_size p; al_of_extension s ]
 
 let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
@@ -727,12 +733,12 @@ let rec al_of_instr instr =
     CaseV ("BR_ON_CAST_FAIL", [ al_of_idx idx; al_of_ref_type rt1; al_of_ref_type rt2 ])
   | Return -> singleton "RETURN"
   | Call idx -> CaseV ("CALL", [ al_of_idx idx ])
-  | CallRef idx -> CaseV ("CALL_REF", [ OptV (Some (al_of_idx idx)) ])
+  | CallRef idx -> CaseV ("CALL_REF", [ optV (Some (al_of_idx idx)) ])
   | CallIndirect (idx1, idx2) ->
     let args = al_with_version [ 2; 3 ] al_of_idx idx1 @ [ al_of_idx idx2 ] in
     CaseV ("CALL_INDIRECT", args)
   | ReturnCall idx -> CaseV ("RETURN_CALL", [ al_of_idx idx ])
-  | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ OptV (Some (al_of_idx idx)) ])
+  | ReturnCallRef idx -> CaseV ("RETURN_CALL_REF", [ optV (Some (al_of_idx idx)) ])
   | ReturnCallIndirect (idx1, idx2) ->
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
   | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)

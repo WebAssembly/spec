@@ -49,8 +49,8 @@ let transpose matrix =
 (* helper functions for recursive type *)
 
 (* null *)
-let null = CaseV ("NULL", [ OptV (Some (listV [])) ])
-let nonull = CaseV ("NULL", [ OptV None ])
+let null = caseV ("NULL", [ optV (Some (listV [])) ])
+let nonull = caseV ("NULL", [ optV None ])
 (* abstract heap types for null *)
 let none = singleton "NONE"
 let nofunc = singleton "NOFUNC"
@@ -86,7 +86,7 @@ let rec create_sub_al_context names iter env =
   let name_to_value name = Env.find name env in
   let option_name_to_list name = name |> name_to_value |> unwrap_optv |> Option.to_list in
   let name_to_list name = name |> name_to_value |> unwrap_listv_to_list in
-  let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in
+  let length_to_list l = List.init l al_of_int in
 
   let name_to_values name =
     match iter with
@@ -147,48 +147,43 @@ and replace_path base path v_new =
       Array.blit (v_new |> unwrap_listv_to_array) 0 a_new i1 i2;
       ListV (ref a_new)
   | DotP (str, _) ->
-      let r = (
-        match base with
-        | FrameV (_, StrV r) -> r
-        | StoreV s -> !s
-        | StrV r -> r
-        | v ->
-            string_of_value v
-            |> Printf.sprintf "Not a record: %s"
-            |> failwith)
-      in
-      let r_new = Record.clone r in
-      Record.replace str v_new r_new;
-      StrV r_new
+    let r =
+      match base with
+      | FrameV (_, StrV r) -> r
+      | StoreV s -> !s
+      | StrV r -> r
+      | v ->
+        string_of_value v
+        |> Printf.sprintf "Not a record: %s"
+        |> failwith in
+    let r_new = Record.clone r in
+    Record.replace str v_new r_new;
+    strV r_new
 
 and eval_expr expr =
   match expr.it with
   (* Value *)
-  | NumE i -> NumV i
+  | NumE i -> numV i
   (* Numeric Operation *)
-  | UnE (MinusOp, inner_e) ->
-    let i = eval_expr inner_e |> al_to_int64 |> Int64.neg in
-    NumV i
-  | UnE (NotOp, e) ->
-    let b = eval_expr e |> al_to_bool |> not in
-    BoolV b
+  | UnE (MinusOp, inner_e) -> eval_expr inner_e |> al_to_int64 |> Int64.neg |> numV
+  | UnE (NotOp, e) -> eval_expr e |> al_to_bool |> not |> boolV
   | BinE (op, e1, e2) ->
     (match op, eval_expr e1, eval_expr e2 with
-    | AddOp, NumV i1, NumV i2 -> NumV (Int64.add i1 i2)
-    | SubOp, NumV i1, NumV i2 -> NumV (Int64.sub i1 i2)
-    | MulOp, NumV i1, NumV i2 -> NumV (Int64.mul i1 i2)
-    | DivOp, NumV i1, NumV i2 -> NumV (Int64.div i1 i2)
-    | ExpOp, NumV i1, NumV i2 -> NumV (int64_exp i1 i2)
-    | AndOp, BoolV b1, BoolV b2 -> BoolV (b1 && b2)
-    | OrOp, BoolV b1, BoolV b2 -> BoolV (b1 || b2)
-    | ImplOp, BoolV b1, BoolV b2 -> BoolV (not b1 || b2)
-    | EquivOp, BoolV b1, BoolV b2 -> BoolV (b1 = b2)
-    | EqOp, v1, v2 -> BoolV (v1 = v2)
-    | NeOp, v1, v2 -> BoolV (v1 <> v2)
-    | LtOp, v1, v2 -> BoolV (v1 < v2)
-    | GtOp, v1, v2 -> BoolV (v1 > v2)
-    | LeOp, v1, v2 -> BoolV (v1 <= v2)
-    | GeOp, v1, v2 -> BoolV (v1 >= v2)
+    | AddOp, NumV i1, NumV i2 -> Int64.add i1 i2 |> numV
+    | SubOp, NumV i1, NumV i2 -> Int64.sub i1 i2 |> numV
+    | MulOp, NumV i1, NumV i2 -> Int64.mul i1 i2 |> numV
+    | DivOp, NumV i1, NumV i2 -> Int64.div i1 i2 |> numV
+    | ExpOp, NumV i1, NumV i2 -> int64_exp i1 i2 |> numV
+    | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
+    | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)
+    | ImplOp, BoolV b1, BoolV b2 -> boolV (not b1 || b2)
+    | EquivOp, BoolV b1, BoolV b2 -> boolV (b1 = b2)
+    | EqOp, v1, v2 -> boolV (v1 = v2)
+    | NeOp, v1, v2 -> boolV (v1 <> v2)
+    | LtOp, v1, v2 -> boolV (v1 < v2)
+    | GtOp, v1, v2 -> boolV (v1 > v2)
+    | LeOp, v1, v2 -> boolV (v1 <= v2)
+    | GeOp, v1, v2 -> boolV (v1 >= v2)
     | _ -> failwith "Invalid BinE")
   (* Function Call *)
   | CallE (fname, el) ->
@@ -211,7 +206,7 @@ and eval_expr expr =
     ListV (Array.append a1 a2 |> ref)
   | LenE e ->
     let a = eval_expr e |> unwrap_listv_to_array in
-    NumV (I64.of_int_u (Array.length a))
+    Array.length a |> I64.of_int_u |> numV
   | StrE r ->
     Record.to_list r
     |> List.map (fun (k, e) -> string_of_kwd k, !e |> eval_expr |> ref)
@@ -221,65 +216,54 @@ and eval_expr expr =
     let base = eval_expr e in
     access_path base p
   | ExtE (e1, ps, e2, dir) ->
-      let v_new = eval_expr e2 |> unwrap_listv_to_array in
-      let rec extend base ps = (
-        match ps with
-        | path :: rest ->
-            let v_new = extend (access_path base path) rest in
-            replace_path base path v_new
-        | [] ->
-            let a = base |> unwrap_listv_to_array in
-            let a_copy = Array.copy a in
-            let a_new = (
-              match dir with
-              | Front -> Array.append v_new a_copy
-              | Back -> Array.append a_copy v_new)
-            in
-            ListV (ref a_new))
-      in
-      let base = eval_expr e1 in
-      extend base ps
+    let rec extend ps base =
+      match ps with
+      | path :: rest -> access_path base path |> extend rest |> replace_path base path
+      | [] ->
+        let v = eval_expr e2 |> unwrap_listv_to_array in
+        let a_copy = base |> unwrap_listv_to_array |> Array.copy in
+        let a_new =
+          match dir with
+          | Front -> Array.append v a_copy
+          | Back -> Array.append a_copy v
+        in
+        ListV (ref a_new)
+    in
+    eval_expr e1 |> extend ps
   | UpdE (e1, ps, e2) ->
-      let v_new = eval_expr e2 in
-      let rec replace base ps = (
-        match ps with
-        | path :: rest ->
-            let v_new = replace (access_path base path) rest in
-            replace_path base path v_new
-        | [] -> v_new)
-      in
-      let base = eval_expr e1 in
-      replace base ps
-  | CaseE ((tag, _), el) -> CaseV (tag, List.map eval_expr el) |> check_i32_const
-  | OptE opt -> OptV (Option.map eval_expr opt)
-  | TupE el -> TupV (List.map eval_expr el)
+    let rec replace ps base =
+      match ps with
+      | path :: rest -> access_path base path |> replace rest |> replace_path base path
+      | [] -> eval_expr e2 in
+    eval_expr e1 |> replace ps
+  | CaseE ((tag, _), el) -> caseV (tag, List.map eval_expr el) |> check_i32_const
+  | OptE opt -> Option.map eval_expr opt |> optV
+  | TupE el -> List.map eval_expr el |> tupV
   (* Context *)
-  | ArityE e -> (
-      match eval_expr e with
-      | LabelV (v, _) -> v
-      | FrameV (Some v, _) -> v
-      | FrameV _ -> NumV 0L
-      | _ -> failwith "Not a context" (* Due to AL validation, unreachable *))
-  | FrameE (e1, e2) -> (
-      let v1 = Option.map eval_expr e1 in
-      let v2 = eval_expr e2 in
-      match (v1, v2) with
-      | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
-      | _ ->
-          (* Due to AL validation unreachable *)
-          "Invalid frame: " ^ string_of_expr expr |> failwith)
+  | ArityE e ->
+    (match eval_expr e with
+    | LabelV (v, _) -> v
+    | FrameV (Some v, _) -> v
+    | FrameV _ -> numV 0L
+    | _ -> failwith "Not a context" (* Due to AL validation, unreachable *))
+  | FrameE (e1, e2) ->
+    let v1 = Option.map eval_expr e1 in
+    let v2 = eval_expr e2 in
+    (match v1, v2 with
+    | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
+    (* Due to AL validation unreachable *)
+    | _ -> "Invalid frame: " ^ string_of_expr expr |> failwith)
   | GetCurFrameE -> WasmContext.get_current_frame ()
   | LabelE (e1, e2) ->
-      let v1 = eval_expr e1 in
-      let v2 = eval_expr e2 in
-      LabelV (v1, v2)
+    let v1 = eval_expr e1 in
+    let v2 = eval_expr e2 in
+    LabelV (v1, v2)
   | GetCurLabelE -> WasmContext.get_current_label ()
   | GetCurContextE -> WasmContext.get_current_context ()
-  | ContE e -> (
-      let v = eval_expr e in
-      match v with
-      | LabelV (_, vs) -> vs
-      | _ -> failwith "Not a label")
+  | ContE e ->
+    (match eval_expr e with
+    | LabelV (_, vs) -> vs
+    | _ -> failwith "Not a label")
   | VarE name -> AlContext.get_env () |> Env.find name
   (* Optimized getter for simple IterE(VarE, ...) *)
   | IterE ({ it = VarE name; _ }, [name'], _) when name = name' ->
@@ -288,12 +272,10 @@ and eval_expr expr =
   | IterE (e1, [], ListN (e2, None)) ->
     let v = eval_expr e1 in
     let i = eval_expr e2 |> al_to_int in
-    if i > 1024 * 64 * 1024 (* 1024 pages *) then (
-      AlContext.pop_context () |> ignore;
-      raise Exception.OutOfMemory
-    )
+    if i > 1024 * 64 * 1024 (* 1024 pages *) then
+      (AlContext.pop_context () |> ignore; raise Exception.OutOfMemory)
     else
-      ListV (ref (Array.make i v))
+      List.init i (fun _ -> v) |> listV
   | IterE (inner_e, ids, iter) ->
     let env = AlContext.get_env () in
     let vs =
@@ -302,47 +284,37 @@ and eval_expr expr =
     AlContext.set_env env;
 
     (match vs, iter with
-    | [], Opt -> OptV None
-    | [v], Opt -> OptV (Some v)
+    | [], Opt -> optV None
+    | [v], Opt -> Option.some v |> optV
     | l, _ -> listV l)
   | ArrowE (e1, e2) -> ArrowV (eval_expr e1, eval_expr e2)
   (* condition *)
   | ContextKindE ((kind, _), e) ->
-    let b =
-      match kind, eval_expr e with
-      | "frame", FrameV _ -> true
-      | "label", LabelV _ -> true
-      | _ -> false in
-    BoolV b
+    (match kind, eval_expr e with
+    | "frame", FrameV _ -> boolV true
+    | "label", LabelV _ -> boolV true
+    | _ -> boolV false)
   | IsDefinedE e ->
-    let b =
-      match eval_expr e with
-      | OptV (Some (_)) -> true
-      | OptV _ -> false
-      | _ -> structured_string_of_expr e |> failwith in
-    BoolV b
+    (match eval_expr e with
+    | OptV (Some _) -> boolV true
+    | OptV _ -> boolV false
+    | _ -> structured_string_of_expr e |> failwith)
   | IsCaseOfE (e, (expected_tag, _)) ->
-    let b =
-      match eval_expr e with
-      | CaseV (tag, _) -> expected_tag = tag
-      | _ -> false in
-    BoolV b
+    (match eval_expr e with
+    | CaseV (tag, _) -> boolV (expected_tag = tag)
+    | _ -> boolV false)
   (* TODO : This sohuld be replaced with executing the validation algorithm *)
   | IsValidE e ->
     let valid_lim k = function
       | TupV [ NumV n; NumV m ] -> n <= m && m <= k
-      | _ -> false
-    in
-    let b =
-      match eval_expr e with
-      (* valid_tabletype *)
-      | TupV [ lim; _ ] -> valid_lim 0xffffffffL lim
-      (* valid_memtype *)
-      | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim
-      (* valid_other *)
-      | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype"
-    in
-    BoolV b
+      | _ -> false in
+    (match eval_expr e with
+    (* valid_tabletype *)
+    | TupV [ lim; _ ] -> valid_lim 0xffffffffL lim |> boolV
+    (* valid_memtype *)
+    | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim |> boolV
+    (* valid_other *)
+    | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype")
   | HasTypeE (e, s) ->
 
     (* type definition *)
@@ -361,47 +333,44 @@ and eval_expr expr =
 
     (* check type *)
 
-    let b =
-      match eval_expr e with
-      (* addrref *)
-      | CaseV (ar, _) when List.mem ar addr_refs->
-        s = "addrref" || s = "ref" || s = "val"
-      (* nul *)
-      | CaseV ("REF.NULL", _) ->
-        s = "nul" || s = "ref" || s = "val"
-      (* numtype *)
-      | CaseV (nt, []) when List.mem nt num_types ->
-        s = "numtype" || s = "valtype"
-      | CaseV (vt, []) when List.mem vt vec_types ->
-        s = "vectype" || s = "valtype"
-      (* valtype *)
-      | CaseV ("REF", _) ->
-        s = "reftype" || s = "valtype"
-      (* absheaptype *)
-      | CaseV (aht, []) when List.mem aht abs_heap_types ->
-        s = "absheaptype" || s = "heaptype"
-      (* deftype *)
-      | CaseV ("DEF", [ _; _ ]) ->
-        s = "deftype" || s = "heaptype"
-      (* typevar *)
-      | CaseV ("_IDX", [ _ ]) ->
-        s = "heaptype" || s = "typevar"
-      (* heaptype *)
-      | CaseV ("REC", [ _ ]) ->
-        s = "heaptype" || s = "typevar"
-      (* packedtype *)
-      | CaseV (pt, []) when List.mem pt packed_types ->
-        s = "packedtype" || s = "storagetype"
-      | v ->
-        string_of_value v
-        |> Printf.sprintf "Invalid %s: %s" s
-        |> failwith
-    in
-    BoolV b
+    (match eval_expr e with
+    (* addrref *)
+    | CaseV (ar, _) when List.mem ar addr_refs->
+      boolV (s = "addrref" || s = "ref" || s = "val")
+    (* nul *)
+    | CaseV ("REF.NULL", _) ->
+      boolV (s = "nul" || s = "ref" || s = "val")
+    (* numtype *)
+    | CaseV (nt, []) when List.mem nt num_types ->
+      boolV (s = "numtype" || s = "valtype")
+    | CaseV (vt, []) when List.mem vt vec_types ->
+      boolV (s = "vectype" || s = "valtype")
+    (* valtype *)
+    | CaseV ("REF", _) ->
+      boolV (s = "reftype" || s = "valtype")
+    (* absheaptype *)
+    | CaseV (aht, []) when List.mem aht abs_heap_types ->
+      boolV (s = "absheaptype" || s = "heaptype")
+    (* deftype *)
+    | CaseV ("DEF", [ _; _ ]) ->
+      boolV (s = "deftype" || s = "heaptype")
+    (* typevar *)
+    | CaseV ("_IDX", [ _ ]) ->
+      boolV (s = "heaptype" || s = "typevar")
+    (* heaptype *)
+    | CaseV ("REC", [ _ ]) ->
+      boolV (s = "heaptype" || s = "typevar")
+    (* packedtype *)
+    | CaseV (pt, []) when List.mem pt packed_types ->
+      boolV (s = "packedtype" || s = "storagetype")
+    | v ->
+      string_of_value v
+      |> Printf.sprintf "Invalid %s: %s" s
+      |> failwith)
   | MatchE (e1, e2) ->
     let v1 = eval_expr e1 in
     let v2 = eval_expr e2 in
-    BoolV (match_ref_type v1 v2)
+    match_ref_type v1 v2 |> boolV
   | _ -> structured_string_of_expr expr |> failwith
 
 (* Assignment *)
@@ -416,7 +385,7 @@ and merge_envs_with_grouping default_env envs =
     let f _ v1 = function
       | ListV arr ->
           v1 :: Array.to_list !arr |> listV |> Option.some
-      | OptV None -> OptV (Option.some v1) |> Option.some
+      | OptV None -> Option.some v1 |> optV |> Option.some
       | _ -> failwith "Unreachable merge"
     in
     Env.union f env acc
@@ -433,9 +402,9 @@ and assign lhs rhs env =
         match iter, rhs with
         | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
         | ListN (expr, None), ListV arr ->
-            let length = NumV (Array.length !arr |> Int64.of_int) in
+            let length = Array.length !arr |> Int64.of_int |> numV in
             assign expr length env, listV [], Array.to_list !arr
-        | Opt, OptV opt -> env, OptV None, Option.to_list opt
+        | Opt, OptV opt -> env, optV None, Option.to_list opt
         | ListN (_, Some _), ListV _ ->
             Printf.sprintf "Invalid iter %s with rhs %s"
               (string_of_iter iter)
@@ -465,21 +434,22 @@ and assign lhs rhs env =
       List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
-      List.fold_right2 assign lhs_s (!rhs_s |> Array.to_list) env
+      List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE ((lhs_tag, _), lhs_s), CaseV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
       List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
-      let n = eval_expr e2 |> al_to_int64 in
-      let invop = match binop with
+    let invop =
+      match binop with
       | AddOp -> Int64.sub
       | SubOp -> Int64.add
       | MulOp -> Int64.unsigned_div
       | DivOp -> Int64.mul
       | _ -> failwith "Invvalid binop for lhs of assignment" in
-      env |> assign e1 (NumV (invop m n))
+    let v = eval_expr e2 |> al_to_int64 |> invop m |> numV in
+    assign e1 v env
   | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
       Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
@@ -492,8 +462,8 @@ and assign_split ep es vs env =
   let len = Array.length vs in
   let prefix_len, suffix_len =
     let get_length e = match e.it with
-    | ListE es -> Some (List.length es)
-    | IterE (_, _, ListN (e, None)) -> Some (eval_expr e |> al_to_int)
+    | ListE es -> List.length es |> Option.some
+    | IterE (_, _, ListN (e, None)) -> eval_expr e |> al_to_int |> Option.some
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -608,7 +578,7 @@ and is_builtin = function
 
 and call_builtin name =
   let local x =
-    match call_algo "local" [ NumV (Int64.of_int x) ] with
+    match call_algo "local" [ numV (Int64.of_int x) ] with
     | Some v -> v
     | _ -> failwith "builtin doesn't return value"
   in
@@ -697,8 +667,10 @@ and interp_instr (instr: instr): unit =
     | v -> WasmContext.push_value v)
   | PopI ({ it = IterE ({ it = VarE name; _ }, [name'], ListN (e', None)); _ }) when name = name' ->
     let i = eval_expr e' |> al_to_int in
-    let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
-    listV vs |> AlContext.update_env name
+    List.init i (fun _ -> WasmContext.pop_value ())
+    |> List.rev
+    |> listV
+    |> AlContext.update_env name
   | PopI e ->
     begin match e.it, WasmContext.pop_value () with
     | CaseE (("CONST", _), [{ it = VarE nt; _ }; { it = VarE name; _ }]), CaseV ("CONST", [ ty; v ]) ->
@@ -798,6 +770,7 @@ and interp_instr (instr: instr): unit =
 
 and interp_instrs: instr list -> unit = function
   | [] -> ()
+  (* For tailcall optimization *)
   | [ i ] -> interp_instr i
   | h :: t ->
     interp_instr h;

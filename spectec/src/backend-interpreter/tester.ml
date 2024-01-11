@@ -101,7 +101,7 @@ let builtin () =
       CaseV ("DEF", [
         CaseV ("REC", [
           [ CaseV ("SUBD", [OptV (Some (singleton "FINAL")); [] |> listV; ftype]) ] |> listV
-        ]); NumV 0L
+        ]); numV 0L
       ]) in
     name, StrV [
       "TYPE", ref (if !Construct.version = 3 then dt else arrow);
@@ -146,14 +146,14 @@ let builtin () =
   let tables = [
     "table",
     listV nulls
-    |> create_table_inst (TupV [ TupV [ NumV 10L; NumV 20L ]; singleton "FUNCREF" ]);
+    |> create_table_inst (TupV [ TupV [ numV 10L; numV 20L ]; singleton "FUNCREF" ]);
   ] in
   (* Builtin memories *)
-  let zeros = List.init 0x10000 (fun _ -> NumV 0L) in
+  let zeros = List.init 0x10000 (fun _ -> numV 0L) in
   let memories = [
     "memory",
     listV zeros
-    |> create_mem_inst (CaseV ("I8", [ TupV [ NumV 1L; NumV 2L ] ]));
+    |> create_mem_inst (CaseV ("I8", [ TupV [ numV 1L; numV 2L ] ]));
   ] in
 
   let append kind (name, inst) extern =
@@ -166,7 +166,7 @@ let builtin () =
       | _ -> failwith "Unreachable"
     in
     let new_extern =
-      StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ NumV addr ])) ]
+      StrV [ "NAME", ref (TextV name); "VALUE", ref (CaseV (kind, [ numV addr ])) ]
     in
 
     (* Update Store *)
