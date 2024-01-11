@@ -412,14 +412,231 @@ let al_of_cvtop = function
     let op', to_, ext = al_of_float_cvtop "64" op in
     [ singleton "F64"; TextV op'; singleton to_; OptV ext ]
 
-let al_of_vtestop: vec_testop -> value list = function
+(* Vector operator *)
+
+let al_of_extension = function
+  | Pack.SX -> singleton "S"
+  | Pack.ZX -> singleton "U"
+
+let al_of_vop f1 f2 = function
   | V128 vop -> (
-      match vop with
-      | V128.I8x16 _ -> [ singleton "I8x16"; ]
-      | V128.I16x8 _ -> [ singleton "I16x8"; ]
-      | V128.I32x4 _ -> [ singleton "I32x4"; ]
-      | V128.I64x2 _ -> [ singleton "I64x2"; ]
-      | _ -> .
+    match vop with
+    | V128.I8x16 op -> [ singleton "I8X16"; f1 op ]
+    | V128.I16x8 op -> [ singleton "I16X8"; f1 op ]
+    | V128.I32x4 op -> [ singleton "I32X4"; f1 op ]
+    | V128.I64x2 op -> [ singleton "I64X2"; f1 op ]
+    | V128.F32x4 op -> [ singleton "F32X4"; f2 op ]
+    | V128.F64x2 op -> [ singleton "F64X2"; f2 op ]
+  )
+
+let al_of_viop f1:
+    ('a, 'a, 'a, 'a, void, void) V128.laneop vecop -> Al.Ast.value list =
+  function
+  | V128 vop -> (
+    match vop with
+    | V128.I8x16 op -> [ singleton "I8X16"; f1 op ]
+    | V128.I16x8 op -> [ singleton "I16X8"; f1 op ]
+    | V128.I32x4 op -> [ singleton "I32X4"; f1 op ]
+    | V128.I64x2 op -> [ singleton "I64X2"; f1 op ]
+    | _ -> .
+  )
+
+let al_of_vtestop : vec_testop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128.I8x16 _ -> [ singleton "I8X16" ]
+    | V128.I16x8 _ -> [ singleton "I16X8" ]
+    | V128.I32x4 _ -> [ singleton "I32X4" ]
+    | V128.I64x2 _ -> [ singleton "I64X2" ]
+    | _ -> .
+  )
+
+let al_of_int_vrelop : V128Op.irelop -> value = function
+  | V128Op.Eq -> case_v "_VI" (singleton "Eq")
+  | V128Op.Ne -> case_v "_VI" (singleton "Ne")
+  | V128Op.LtS -> case_v "_VI" (singleton "LtS")
+  | V128Op.LtU -> case_v "_VI" (singleton "LtU")
+  | V128Op.LeS -> case_v "_VI" (singleton "LeS")
+  | V128Op.LeU -> case_v "_VI" (singleton "LeU")
+  | V128Op.GtS -> case_v "_VI" (singleton "GtS")
+  | V128Op.GtU -> case_v "_VI" (singleton "GtU")
+  | V128Op.GeS -> case_v "_VI" (singleton "GeS")
+  | V128Op.GeU -> case_v "_VI" (singleton "GeU")
+
+let al_of_float_vrelop : V128Op.frelop -> value = function
+  | V128Op.Eq -> case_v "_VF" (singleton "Eq")
+  | V128Op.Ne -> case_v "_VF" (singleton "Ne")
+  | V128Op.Lt -> case_v "_VF" (singleton "Lt")
+  | V128Op.Le -> case_v "_VF" (singleton "Le")
+  | V128Op.Gt -> case_v "_VF" (singleton "Gt")
+  | V128Op.Ge -> case_v "_VF" (singleton "Ge")
+
+let al_of_vrelop = al_of_vop al_of_int_vrelop al_of_float_vrelop
+
+let al_of_int_vunop : V128Op.iunop -> value = function
+  | V128Op.Abs -> case_v "_VI" (singleton "Abs")
+  | V128Op.Neg -> case_v "_VI" (singleton "Neg")
+  | V128Op.Popcnt -> case_v "_VI" (singleton "Popcnt")
+
+let al_of_float_vunop : V128Op.funop -> value = function
+  | V128Op.Abs -> case_v "_VF" (singleton "Abs")
+  | V128Op.Neg -> case_v "_VF" (singleton "Neg")
+  | V128Op.Sqrt -> case_v "_VF" (singleton "Sqrt")
+  | V128Op.Ceil -> case_v "_VF" (singleton "Ceil")
+  | V128Op.Floor -> case_v "_VF" (singleton "Floor")
+  | V128Op.Trunc -> case_v "_VF" (singleton "Trunc")
+  | V128Op.Nearest -> case_v "_VF" (singleton "Nearest")
+
+let al_of_vunop = al_of_vop al_of_int_vunop al_of_float_vunop
+
+let al_of_int_vbinop : V128Op.ibinop -> value = function
+  | V128Op.Add -> case_v "_VI" (singleton "Add")
+  | V128Op.Sub -> case_v "_VI" (singleton "Sub")
+  | V128Op.Mul -> case_v "_VI" (singleton "Mul")
+  | V128Op.MinS -> case_v "_VI" (singleton "MinS")
+  | V128Op.MinU -> case_v "_VI" (singleton "MinU")
+  | V128Op.MaxS -> case_v "_VI" (singleton "MaxS")
+  | V128Op.MaxU -> case_v "_VI" (singleton "MaxU")
+  | V128Op.AvgrU -> case_v "_VI" (singleton "AvgrU")
+  | V128Op.AddSatS -> case_v "_VI" (singleton "AddSatS")
+  | V128Op.AddSatU -> case_v "_VI" (singleton "AddSatU")
+  | V128Op.SubSatS -> case_v "_VI" (singleton "SubSatS")
+  | V128Op.SubSatU -> case_v "_VI" (singleton "SubSatU")
+  | V128Op.DotS -> case_v "_VI" (singleton "DotS")
+  | V128Op.Q15MulRSatS -> case_v "_VI" (singleton "Q15MulRSatS")
+  | V128Op.ExtMulLowS -> case_v "_VI" (singleton "ExtMulLowS")
+  | V128Op.ExtMulHighS -> case_v "_VI" (singleton "ExtMulHighS")
+  | V128Op.ExtMulLowU -> case_v "_VI" (singleton "ExtMulLowU")
+  | V128Op.ExtMulHighU -> case_v "_VI" (singleton "ExtMulHighU")
+  | V128Op.Swizzle -> case_v "_VI" (singleton "Swizzle")
+  | V128Op.Shuffle l -> case_v "Shuffle" (al_of_list al_of_int l)
+  | V128Op.NarrowS -> case_v "_VI" (singleton "NarrowS")
+  | V128Op.NarrowU -> case_v "_VI" (singleton "NarrowU")
+
+let al_of_float_vbinop : V128Op.fbinop -> value = function
+  | V128Op.Add -> case_v "_VF" (singleton "Add")
+  | V128Op.Sub -> case_v "_VF" (singleton "Sub")
+  | V128Op.Mul -> case_v "_VF" (singleton "Mul")
+  | V128Op.Div -> case_v "_VF" (singleton "Div")
+  | V128Op.Min -> case_v "_VF" (singleton "Min")
+  | V128Op.Max -> case_v "_VF" (singleton "Max")
+  | V128Op.Pmin -> case_v "_VF" (singleton "Pmin")
+  | V128Op.Pmax -> case_v "_VF" (singleton "Pmax")
+
+let al_of_vbinop = al_of_vop al_of_int_vbinop al_of_float_vbinop
+
+let al_of_int_vcvtop : V128Op.icvtop -> value = function
+  | V128Op.ExtendLowS -> case_v "_VI" (singleton "ExtendLowS")
+  | V128Op.ExtendLowU -> case_v "_VI" (singleton "ExtendLowU")
+  | V128Op.ExtendHighS -> case_v "_VI" (singleton "ExtendHighS")
+  | V128Op.ExtendHighU -> case_v "_VI" (singleton "ExtendHighU")
+  | V128Op.ExtAddPairwiseS -> case_v "_VI" (singleton "ExtAddPairwiseS")
+  | V128Op.ExtAddPairwiseU -> case_v "_VI" (singleton "ExtAddPairwiseU")
+  | V128Op.TruncSatSF32x4 -> case_v "_VI" (singleton "TruncSatSF32x4")
+  | V128Op.TruncSatUF32x4 -> case_v "_VI" (singleton "TruncSatUF32x4")
+  | V128Op.TruncSatSZeroF64x2 -> case_v "_VI" (singleton "TruncSatSZeroF64x2")
+  | V128Op.TruncSatUZeroF64x2 -> case_v "_VI" (singleton "TruncSatUZeroF64x2")
+
+let al_of_float_vcvtop : V128Op.fcvtop -> value = function
+  | V128Op.DemoteZeroF64x2 -> case_v "_VF" (singleton "DemoteZeroF64x2")
+  | V128Op.PromoteLowF32x4 -> case_v "_VF" (singleton "PromoteLowF32x4")
+  | V128Op.ConvertSI32x4 -> case_v "_VF" (singleton "ConvertSI32x4")
+  | V128Op.ConvertUI32x4 -> case_v "_VF" (singleton "ConvertUI32x4")
+
+let al_of_vcvtop = al_of_vop al_of_int_vcvtop al_of_float_vcvtop
+
+let al_of_int_vshiftop : V128Op.ishiftop -> value = function
+  | V128Op.Shl -> case_v "_VI" (singleton "Shl")
+  | V128Op.ShrS -> case_v "_VI" (singleton "ShrS")
+  | V128Op.ShrU -> case_v "_VI" (singleton "ShrU")
+
+let al_of_vshiftop = al_of_viop al_of_int_vshiftop
+
+let al_of_int_vbitmaskop : V128Op.ibitmaskop -> value = function
+  | V128Op.Bitmask -> case_v "_VI" (singleton "Bitmask")
+
+let al_of_vbitmaskop = al_of_viop al_of_int_vbitmaskop
+
+let al_of_vvtestop : vec_vtestop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128Op.AnyTrue ->
+      [ singleton "V128"; case_v "_VV" (singleton "AnyTrue") ]
+  )
+
+let al_of_vvunop : vec_vunop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128Op.Not -> [ singleton "V128"; case_v "_VV" (singleton "Not") ]
+  )
+
+let al_of_vvbinop : vec_vbinop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128Op.And -> [ singleton "V128"; case_v "_VV" (singleton "And") ]
+    | V128Op.Or -> [ singleton "V128"; case_v "_VV" (singleton "Or") ]
+    | V128Op.Xor -> [ singleton "V128"; case_v "_VV" (singleton "Xor") ]
+    | V128Op.AndNot -> [ singleton "V128"; case_v "_VV" (singleton "AndNot") ]
+  )
+
+let al_of_vvternop : vec_vternop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128Op.Bitselect ->
+      [ singleton "V128"; case_v "_VV" (singleton "Bitselect") ]
+  )
+
+let al_of_vsplatop : vec_splatop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128.I8x16 _ -> [ singleton "I8X16" ]
+    | V128.I16x8 _ -> [ singleton "I16X8" ]
+    | V128.I32x4 _ -> [ singleton "I32X4" ]
+    | V128.I64x2 _ -> [ singleton "I64X2" ]
+    | V128.F32x4 _ -> [ singleton "F32X4" ]
+    | V128.F64x2 _ -> [ singleton "F64X2" ]
+  )
+
+let al_of_vextractop : vec_extractop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128.I8x16 vop' -> (
+      match vop' with
+      | Extract (n, ext) ->
+          [ singleton "I8X16"; OptV (Some (al_of_extension ext)); al_of_int n; ]
+    )
+    | V128.I16x8 vop' -> (
+      match vop' with
+      | Extract (n, ext) ->
+          [ singleton "I16X8"; OptV (Some (al_of_extension ext)); al_of_int n; ]
+    )
+    | V128.I32x4 vop' -> (
+      match vop' with
+      | Extract (n, _) -> [ singleton "I32X4"; OptV None; al_of_int n ]
+    )
+    | V128.I64x2 vop' -> (
+      match vop' with
+      | Extract (n, _) -> [ singleton "I64X2"; OptV None; al_of_int n ]
+    )
+    | V128.F32x4 vop' -> (
+      match vop' with
+      | Extract (n, _) -> [ singleton "F32X4"; OptV None; al_of_int n ]
+    )
+    | V128.F64x2 vop' -> (
+      match vop' with
+      | Extract (n, _) -> [ singleton "F64X2"; OptV None; al_of_int n ]
+    )
+  )
+
+let al_of_vreplaceop : vec_replaceop -> value list = function
+  | V128 vop -> (
+    match vop with
+    | V128.I8x16 (Replace n) -> [ singleton "I8X16"; al_of_int n ]
+    | V128.I16x8 (Replace n) -> [ singleton "I16X8"; al_of_int n ]
+    | V128.I32x4 (Replace n) -> [ singleton "I32X4"; al_of_int n ]
+    | V128.I64x2 (Replace n) -> [ singleton "I64X2"; al_of_int n ]
+    | V128.F32x4 (Replace n) -> [ singleton "F32X4"; al_of_int n ]
+    | V128.F64x2 (Replace n) -> [ singleton "F64X2"; al_of_int n ]
   )
 
 let al_of_pack_size = function
@@ -427,10 +644,6 @@ let al_of_pack_size = function
   | Pack.Pack16 -> al_of_int 16
   | Pack.Pack32 -> al_of_int 32
   | Pack.Pack64 -> al_of_int 64
-
-let al_of_extension = function
-  | Pack.SX -> singleton "S"
-  | Pack.ZX -> singleton "U"
 
 let al_of_memop f memop =
   let str =
@@ -465,6 +678,19 @@ let rec al_of_instr instr =
   | Compare op -> CaseV ("RELOP", al_of_relop op)
   | Convert op -> CaseV ("CVTOP", al_of_cvtop op)
   | VecTest vop -> CaseV ("ALL_TRUE", al_of_vtestop vop)
+  | VecCompare vop -> CaseV ("VRELOP", al_of_vrelop vop)
+  | VecUnary vop -> CaseV ("VUNOP", al_of_vunop vop)
+  | VecBinary vop -> CaseV ("VBINOP", al_of_vbinop vop)
+  | VecConvert vop -> CaseV ("VCVTOP", al_of_vcvtop vop)
+  | VecShift vop -> CaseV ("VISHIFTOP", al_of_vshiftop vop)
+  | VecBitmask vop -> CaseV ("BITMASK", al_of_vbitmaskop vop)
+  | VecTestBits vop -> CaseV ("VVTESTOP", al_of_vvtestop vop)
+  | VecUnaryBits vop -> CaseV ("VVUNOP", al_of_vvunop vop)
+  | VecBinaryBits vop -> CaseV ("VVBINOP", al_of_vvbinop vop)
+  | VecTernaryBits vop -> CaseV ("VVTERNOP", al_of_vvternop vop)
+  | VecSplat vop -> CaseV ("SPLAT", al_of_vsplatop vop)
+  | VecExtract vop -> CaseV ("EXTRACT_LANE", al_of_vextractop vop)
+  | VecReplace vop -> CaseV ("REPLACE_LANE", al_of_vreplaceop vop)
   | RefIsNull -> singleton "REF.IS_NULL"
   | RefFunc idx -> CaseV ("REF.FUNC", [ al_of_idx idx ])
   | Select vtl_opt -> CaseV ("SELECT", [ al_of_opt (al_of_list al_of_val_type) vtl_opt ])
@@ -1006,17 +1232,323 @@ let al_to_vtestop: value list -> vec_testop = function
   | [ CaseV ("I64x2", []); vop ] -> V128 (V128.I64x2 (al_to_ishape_vtestop vop))
   | l -> fail_list "vtestop" l
 
-let al_to_pack_size: value -> Pack.pack_size = function
+(* Vector operator *)
+
+let al_to_extension : value -> Pack.extension = function
+  | CaseV ("S", []) -> Pack.SX
+  | CaseV ("U", []) -> Pack.ZX
+  | v -> fail "extension" v
+
+let al_to_vop f1 f2 = function
+  | [ CaseV ("I8X16", []); vop ] -> V128 (V128.I8x16 (f1 vop))
+  | [ CaseV ("I16X8", []); vop ] -> V128 (V128.I16x8 (f1 vop))
+  | [ CaseV ("I32X4", []); vop ] -> V128 (V128.I32x4 (f1 vop))
+  | [ CaseV ("I64X2", []); vop ] -> V128 (V128.I64x2 (f1 vop))
+  | [ CaseV ("F32X4", []); vop ] -> V128 (V128.F32x4 (f2 vop))
+  | [ CaseV ("F64X2", []); vop ] -> V128 (V128.F64x2 (f2 vop))
+  | l -> fail_list "vop" l
+
+let al_to_viop f1:
+    Al.Ast.value list -> ('a, 'a, 'a, 'a, void, void) V128.laneop vecop =
+  function
+  | [ CaseV ("I8X16", []); vop ] -> V128 (V128.I8x16 (f1 vop))
+  | [ CaseV ("I16X8", []); vop ] -> V128 (V128.I16x8 (f1 vop))
+  | [ CaseV ("I32X4", []); vop ] -> V128 (V128.I32x4 (f1 vop))
+  | [ CaseV ("I64X2", []); vop ] -> V128 (V128.I64x2 (f1 vop))
+  | l -> fail_list "vop" l
+
+let al_to_ishape_vtestop : value -> V128Op.itestop = function
+  | TextV "AllTrue" -> V128Op.AllTrue
+  | v -> fail "vector testop" v
+
+let al_to_vtestop : value list -> vec_testop = function
+  | [ CaseV ("I8X16", []); vop ] -> V128 (V128.I8x16 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I16X8", []); vop ] -> V128 (V128.I16x8 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I32X4", []); vop ] -> V128 (V128.I32x4 (al_to_ishape_vtestop vop))
+  | [ CaseV ("I64X2", []); vop ] -> V128 (V128.I64x2 (al_to_ishape_vtestop vop))
+  | l -> fail_list "vtestop" l
+
+let al_to_int_vrelop : value -> V128Op.irelop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Eq" -> V128Op.Eq
+      | "Ne" -> V128Op.Ne
+      | "LtS" -> V128Op.LtS
+      | "LtU" -> V128Op.LtU
+      | "LeS" -> V128Op.LeS
+      | "LeU" -> V128Op.LeU
+      | "GtS" -> V128Op.GtS
+      | "GtU" -> V128Op.GtU
+      | "GeS" -> V128Op.GeS
+      | "GeU" -> V128Op.GeU
+      | _ -> fail "integer vrelop" v
+    )
+    | _ -> fail "integer vrelop" v
+  )
+
+let al_to_float_vrelop : value -> V128Op.frelop = function
+  | v -> (
+    match v with
+    | CaseV ("_VF", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Eq" -> V128Op.Eq
+      | "Ne" -> V128Op.Ne
+      | "Lt" -> V128Op.Lt
+      | "Le" -> V128Op.Le
+      | "Gt" -> V128Op.Gt
+      | "Ge" -> V128Op.Ge
+      | _ -> fail "float vrelop" v
+    )
+    | _ -> fail "float vrelop" v
+  )
+
+let al_to_vrelop : value list -> vec_relop =
+  al_to_vop al_to_int_vrelop al_to_float_vrelop
+
+let al_to_int_vunop : value -> V128Op.iunop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Abs" -> V128Op.Abs
+      | "Neg" -> V128Op.Neg
+      | "Popcnt" -> V128Op.Popcnt
+      | _ -> fail "integer vunop" v
+    )
+    | _ -> fail "integer vunop" v
+  )
+
+let al_to_float_vunop : value -> V128Op.funop = function
+  | v -> (
+    match v with
+    | CaseV ("_VF", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Abs" -> V128Op.Abs
+      | "Neg" -> V128Op.Neg
+      | "Sqrt" -> V128Op.Sqrt
+      | "Ceil" -> V128Op.Ceil
+      | "Floor" -> V128Op.Floor
+      | "Trunc" -> V128Op.Trunc
+      | "Nearest" -> V128Op.Nearest
+      | _ -> fail "float vunop" v
+    )
+    | _ -> fail "float vunop" v
+  )
+
+let al_to_vunop : value list -> vec_unop =
+  al_to_vop al_to_int_vunop al_to_float_vunop
+
+let al_to_int_vbinop : value -> V128Op.ibinop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Add" -> V128Op.Add
+      | "Sub" -> V128Op.Sub
+      | "Mul" -> V128Op.Mul
+      | "MinS" -> V128Op.MinS
+      | "MinU" -> V128Op.MinU
+      | "MaxS" -> V128Op.MaxS
+      | "MaxU" -> V128Op.MaxU
+      | "AvgrU" -> V128Op.AvgrU
+      | "AddSatS" -> V128Op.AddSatS
+      | "AddSatU" -> V128Op.AddSatU
+      | "SubSatS" -> V128Op.SubSatS
+      | "SubSatU" -> V128Op.SubSatU
+      | "DotS" -> V128Op.DotS
+      | "Q15MulRSatS" -> V128Op.Q15MulRSatS
+      | "ExtMulLowS" -> V128Op.ExtMulLowS
+      | "ExtMulHighS" -> V128Op.ExtMulHighS
+      | "ExtMulLowU" -> V128Op.ExtMulLowU
+      | "ExtMulHighU" -> V128Op.ExtMulHighU
+      | "Swizzle" -> V128Op.Swizzle
+      | "NarrowS" -> V128Op.NarrowS
+      | "NarrowU" -> V128Op.NarrowU
+      | _ -> fail "integer vbinop" v
+    )
+    | CaseV ("Shuffle", [ l ]) -> V128Op.Shuffle (al_to_list al_to_int l)
+    | _ -> fail "integer vbinop" v
+  )
+
+let al_to_float_vbinop : value -> V128Op.fbinop = function
+  | v -> (
+    match v with
+    | CaseV ("_VF", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Add" -> V128Op.Add
+      | "Sub" -> V128Op.Sub
+      | "Mul" -> V128Op.Mul
+      | "Div" -> V128Op.Div
+      | "Min" -> V128Op.Min
+      | "Max" -> V128Op.Max
+      | "Pmin" -> V128Op.Pmin
+      | "Pmax" -> V128Op.Pmax
+      | _ -> fail "float vbinop" v
+    )
+    | _ -> fail "float vbinop" v
+  )
+
+let al_to_vbinop : value list -> vec_binop =
+  al_to_vop al_to_int_vbinop al_to_float_vbinop
+
+let al_to_int_vcvtop : value -> V128Op.icvtop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "ExtendLowS" -> V128Op.ExtendLowS
+      | "ExtendLowU" -> V128Op.ExtendLowU
+      | "ExtendHighS" -> V128Op.ExtendHighS
+      | "ExtendHighU" -> V128Op.ExtendHighU
+      | "ExtAddPairwiseS" -> V128Op.ExtAddPairwiseS
+      | "ExtAddPairwiseU" -> V128Op.ExtAddPairwiseU
+      | "TruncSatSF32x4" -> V128Op.TruncSatSF32x4
+      | "TruncSatUF32x4" -> V128Op.TruncSatUF32x4
+      | "TruncSatSZeroF64x2" -> V128Op.TruncSatSZeroF64x2
+      | "TruncSatUZeroF64x2" -> V128Op.TruncSatUZeroF64x2
+      | _ -> fail "integer vcvtop" v
+    )
+    | _ -> fail "integer vcvtop" v
+  )
+
+let al_to_float_vcvtop : value -> V128Op.fcvtop = function
+  | v -> (
+    match v with
+    | CaseV ("_VF", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "DemoteZeroF64x2" -> V128Op.DemoteZeroF64x2
+      | "PromoteLowF32x4" -> V128Op.PromoteLowF32x4
+      | "ConvertSI32x4" -> V128Op.ConvertSI32x4
+      | "ConvertUI32x4" -> V128Op.ConvertUI32x4
+      | _ -> fail "float vcvtop" v
+    )
+    | _ -> fail "float vcvtop" v
+  )
+
+let al_to_vcvtop : value list -> vec_cvtop =
+  al_to_vop al_to_int_vcvtop al_to_float_vcvtop
+
+let al_to_int_vshiftop : value -> V128Op.ishiftop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Shl" -> V128Op.Shl
+      | "ShrS" -> V128Op.ShrS
+      | "ShrU" -> V128Op.ShrU
+      | _ -> fail "integer vshiftop" v
+    )
+    | _ -> fail "integer vshiftop" v
+  )
+
+let al_to_vshiftop : value list -> vec_shiftop = al_to_viop al_to_int_vshiftop
+
+let al_to_int_vbitmaskop : value -> V128Op.ibitmaskop = function
+  | v -> (
+    match v with
+    | CaseV ("_VI", [ CaseV (vop, []) ]) -> (
+      match vop with
+      | "Bitmask" -> V128Op.Bitmask
+      | _ -> fail "integer vbitmaskop" v
+    )
+    | _ -> fail "integer vbitmaskop" v
+  )
+
+let al_to_vbitmaskop : value list -> vec_bitmaskop =
+  al_to_viop al_to_int_vbitmaskop
+
+let al_to_vvtestop : value list -> vec_vtestop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("V128", []); CaseV ("_VV", [ CaseV (vop, []) ]) ] -> (
+      match vop with
+      | "AnyTrue" -> V128 V128Op.AnyTrue
+      | _ -> fail_list "vvtestop" vl
+    )
+    | _ -> fail_list "vvtestop" vl
+  )
+
+let al_to_vvunop : value list -> vec_vunop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("V128", []); CaseV ("_VV", [ CaseV (vop, []) ]) ] -> (
+      match vop with
+      | "Not" -> V128 V128Op.Not
+      | _ -> fail_list "vvunop" vl
+    )
+    | _ -> fail_list "vvunop" vl
+  )
+
+let al_to_vvbinop : value list -> vec_vbinop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("V128", []); CaseV ("_VV", [ CaseV (vop, []) ]) ] -> (
+      match vop with
+      | "And" -> V128 V128Op.And
+      | "Or" -> V128 V128Op.Or
+      | "Xor" -> V128 V128Op.Xor
+      | "AndNot" -> V128 V128Op.AndNot
+      | _ -> fail_list "vvbinop" vl
+    )
+    | _ -> fail_list "vvbinop" vl
+  )
+
+let al_to_vvternop : value list -> vec_vternop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("V128", []); CaseV ("_VV", [ CaseV (vop, []) ]) ] -> (
+      match vop with
+      | "Bitselect" -> V128 V128Op.Bitselect
+      | _ -> fail_list "vvternop" vl
+    )
+    | _ -> fail_list "vvternop" vl
+  )
+
+let al_to_vsplatop : value list -> vec_splatop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("I8X16", []) ] -> V128 (V128.I8x16 Splat)
+    | _ -> fail_list "vsplatop" vl
+  )
+
+let al_to_vextractop : value list -> vec_extractop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("I8X16", []); OptV (Some ext); n ] ->
+        V128 (V128.I8x16 (Extract (al_to_int n, al_to_extension ext)))
+    | [ CaseV ("I16X8", []); OptV (Some ext); n ] ->
+        V128 (V128.I16x8 (Extract (al_to_int n, al_to_extension ext)))
+    | [ CaseV ("I32X4", []); OptV None; n ] ->
+        V128 (V128.I32x4 (Extract (al_to_int n, ())))
+    | [ CaseV ("I64X2", []); OptV None; n ] ->
+        V128 (V128.I64x2 (Extract (al_to_int n, ())))
+    | [ CaseV ("F32X4", []); OptV None; n ] ->
+        V128 (V128.F32x4 (Extract (al_to_int n, ())))
+    | [ CaseV ("F64X2", []); OptV None; n ] ->
+        V128 (V128.F64x2 (Extract (al_to_int n, ())))
+    | _ -> fail_list "vextractop" vl
+  )
+
+let al_to_vreplaceop : value list -> vec_replaceop = function
+  | vl -> (
+    match vl with
+    | [ CaseV ("I8X16", []); n ] -> V128 (V128.I8x16 (Replace (al_to_int n)))
+    | [ CaseV ("I16X8", []); n ] -> V128 (V128.I16x8 (Replace (al_to_int n)))
+    | [ CaseV ("I32X4", []); n ] -> V128 (V128.I32x4 (Replace (al_to_int n)))
+    | [ CaseV ("I64X2", []); n ] -> V128 (V128.I64x2 (Replace (al_to_int n)))
+    | [ CaseV ("F32X4", []); n ] -> V128 (V128.F32x4 (Replace (al_to_int n)))
+    | [ CaseV ("F64X2", []); n ] -> V128 (V128.F64x2 (Replace (al_to_int n)))
+    | _ -> fail_list "vreplaceop" vl
+  )
+
+let al_to_pack_size : value -> Pack.pack_size = function
   | NumV 8L -> Pack.Pack8
   | NumV 16L -> Pack.Pack16
   | NumV 32L -> Pack.Pack32
   | NumV 64L -> Pack.Pack64
   | v -> fail "pack_size" v
-
-let al_to_extension: value -> Pack.extension = function
-  | CaseV ("S", []) -> Pack.SX
-  | CaseV ("U", []) -> Pack.ZX
-  | v -> fail "extension" v
 
 let al_to_memop (f: value -> 'p) : value list -> (num_type, 'p) memop = function
   | [ nt; p; NumV 0L; StrV str ] ->
@@ -1037,22 +1569,35 @@ let al_to_loadop: value list -> loadop = al_to_opt al_to_pack_size_extension |> 
 let al_to_storeop: value list -> storeop = al_to_opt al_to_pack_size |> al_to_memop
 
 let rec al_to_instr (v: value): Ast.instr = al_to_phrase al_to_instr' v
-and al_to_instr': value -> Ast.instr' = function
-  (* wasm values *)
-  | CaseV ("CONST", _) as v -> Const (al_to_phrase al_to_num v)
-  | CaseV ("VVCONST", _) as v -> VecConst (al_to_phrase al_to_vec v)
-  | CaseV ("REF.NULL", [ ht ]) -> RefNull (al_to_heap_type ht)
-  (* wasm instructions *)
-  | CaseV ("UNREACHABLE", []) -> Unreachable
-  | CaseV ("NOP", []) -> Nop
-  | CaseV ("DROP", []) -> Drop
-  | CaseV ("UNOP", op) -> Unary (al_to_unop op)
-  | CaseV ("BINOP", op) -> Binary (al_to_binop op)
-  | CaseV ("TESTOP", op) -> Test (al_to_testop op)
-  | CaseV ("RELOP", op) -> Compare (al_to_relop op)
-  | CaseV ("CVTOP", op) -> Convert (al_to_cvtop op)
-  | CaseV ("ALL_TRUE", vop) -> VecTest (al_to_vtestop vop)
-  | CaseV ("REF.IS_NULL", []) -> RefIsNull
+and al_to_instr' : value -> Ast.instr' = function
+(* wasm values *)
+| CaseV ("CONST", _) as v -> Const (al_to_phrase al_to_num v)
+| CaseV ("VVCONST", _) as v -> VecConst (al_to_phrase al_to_vec v)
+| CaseV ("REF.NULL", [ ht ]) -> RefNull (al_to_heap_type ht)
+(* wasm instructions *)
+| CaseV ("UNREACHABLE", []) -> Unreachable
+| CaseV ("NOP", []) -> Nop
+| CaseV ("DROP", []) -> Drop
+| CaseV ("UNOP", op) -> Unary (al_to_unop op)
+| CaseV ("BINOP", op) -> Binary (al_to_binop op)
+| CaseV ("TESTOP", op) -> Test (al_to_testop op)
+| CaseV ("RELOP", op) -> Compare (al_to_relop op)
+| CaseV ("CVTOP", op) -> Convert (al_to_cvtop op)
+| CaseV ("ALL_TRUE", vop) -> VecTest (al_to_vtestop vop)
+| CaseV ("VRELOP", vop) -> VecCompare (al_to_vrelop vop)
+| CaseV ("VUNOP", vop) -> VecUnary (al_to_vunop vop)
+| CaseV ("VBINOP", vop) -> VecBinary (al_to_vbinop vop)
+| CaseV ("VCVTOP", vop) -> VecConvert (al_to_vcvtop vop)
+| CaseV ("VISHIFTOP", vop) -> VecShift (al_to_vshiftop vop)
+| CaseV ("BITMASK", vop) -> VecBitmask (al_to_vbitmaskop vop)
+| CaseV ("VVTESTOP", vop) -> VecTestBits (al_to_vvtestop vop)
+| CaseV ("VVUNOP", vop) -> VecUnaryBits (al_to_vvunop vop)
+| CaseV ("VVBINOP", vop) -> VecBinaryBits (al_to_vvbinop vop)
+| CaseV ("VVTERNOP", vop) -> VecTernaryBits (al_to_vvternop vop)
+| CaseV ("SPLAT", vop) -> VecSplat (al_to_vsplatop vop)
+| CaseV ("EXTRACT_LANE", vop) -> VecExtract (al_to_vextractop vop)
+| CaseV ("REPLACE_LANE", vop) -> VecReplace (al_to_vreplaceop vop)
+| CaseV ("REF.IS_NULL", []) -> RefIsNull
   | CaseV ("REF.FUNC", [ idx ]) -> RefFunc (al_to_idx idx)
   | CaseV ("SELECT", [ vtl_opt ]) -> Select (al_to_opt (al_to_list al_to_val_type) vtl_opt)
   | CaseV ("LOCAL.GET", [ idx ]) -> LocalGet (al_to_idx idx)
