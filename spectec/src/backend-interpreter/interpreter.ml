@@ -7,13 +7,6 @@ open Ds
 open Util.Source
 open Util.Record
 
-let value_to_option = function OptV opt -> opt | v -> failwith (string_of_value v ^ " is not a option")
-let value_to_growable_array = function ListV a -> a | v -> failwith (string_of_value v ^ " is not a list")
-let value_to_array v = v |> value_to_growable_array |> (!)
-let value_to_list v = v |> value_to_array |> Array.to_list
-let value_to_num = function NumV n -> n | v -> failwith (string_of_value v ^ " is not a number")
-let value_to_bool = function BoolV b -> b | v -> failwith (string_of_value v ^ " is not a boolean")
-let value_to_int v = v |> value_to_num |> Int64.to_int
 let check_i32_const = function
   | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
     let n' = Int64.logand 0xFFFFFFFFL n in
@@ -91,8 +84,8 @@ let rec create_sub_al_context names iter env =
   in
 
   let name_to_value name = Env.find name env in
-  let option_name_to_list name = name |> name_to_value |> value_to_option |> Option.to_list in
-  let name_to_list name = name |> name_to_value |> value_to_list in
+  let option_name_to_list name = name |> name_to_value |> unwrap_optv |> Option.to_list in
+  let name_to_list name = name |> name_to_value |> unwrap_listv_to_list in
   let length_to_list l = List.init l (fun i -> NumV (Int64.of_int i)) in
 
   let name_to_values name =
@@ -100,7 +93,7 @@ let rec create_sub_al_context names iter env =
     | Opt -> option_name_to_list name
     | ListN (e_n, Some n') when name = n' ->
       eval_expr env e_n
-      |> value_to_int
+      |> al_to_int
       |> length_to_list
     | _ -> name_to_list name
   in
@@ -113,8 +106,8 @@ let rec create_sub_al_context names iter env =
 and access_path env base path =
   match path.it with
   | IdxP e' ->
-      let a = base |> value_to_array in
-      let i = eval_expr env e' |> value_to_int in
+      let a = base |> unwrap_listv_to_array in
+      let i = eval_expr env e' |> al_to_int in
       begin try Array.get a i with
       | Invalid_argument _ ->
         Printf.sprintf "Failed Array.get during ReplaceE: %s[%s]"
@@ -123,9 +116,9 @@ and access_path env base path =
         |> failwith
       end
   | SliceP (e1, e2) ->
-      let a = base |> value_to_array in
-      let i1 = eval_expr env e1 |> value_to_int in
-      let i2 = eval_expr env e2 |> value_to_int in
+      let a = base |> unwrap_listv_to_array in
+      let i1 = eval_expr env e1 |> al_to_int in
+      let i2 = eval_expr env e2 |> al_to_int in
       let a' = Array.sub a i1 i2 in
       ListV (ref a')
   | DotP (str, _) -> (
@@ -141,17 +134,17 @@ and access_path env base path =
 and replace_path env base path v_new =
   match path.it with
   | IdxP e' ->
-      let a = base |> value_to_array in
+      let a = base |> unwrap_listv_to_array in
       let a_new = Array.copy a in
-      let i = eval_expr env e' |> value_to_int in
+      let i = eval_expr env e' |> al_to_int in
       Array.set a_new i v_new;
       ListV (ref a_new)
   | SliceP (e1, e2) ->
-      let a = base |> value_to_array in
+      let a = base |> unwrap_listv_to_array in
       let a_new = Array.copy a in
-      let i1 = eval_expr env e1 |> value_to_int in
-      let i2 = eval_expr env e2 |> value_to_int in
-      Array.blit (v_new |> value_to_array) 0 a_new i1 i2;
+      let i1 = eval_expr env e1 |> al_to_int in
+      let i2 = eval_expr env e2 |> al_to_int in
+      Array.blit (v_new |> unwrap_listv_to_array) 0 a_new i1 i2;
       ListV (ref a_new)
   | DotP (str, _) ->
       let r = (
@@ -173,9 +166,9 @@ and eval_expr env expr =
   (* Value *)
   | NumE i -> NumV i
   (* Numeric Operation *)
-  | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> value_to_num |> Int64.neg)
+  | UnE (MinusOp, inner_e) -> NumV (eval_expr env inner_e |> al_to_int64 |> Int64.neg)
   | UnE (NotOp, e) ->
-      let b = eval_expr env e |> value_to_bool |> not in
+      let b = eval_expr env e |> al_to_bool |> not in
       BoolV b
   | BinE (op, e1, e2) ->
     (match op, eval_expr env e1, eval_expr env e2 with
@@ -211,11 +204,11 @@ and eval_expr env expr =
   (* Data Structure *)
   | ListE el -> listV (List.map (eval_expr env) el)
   | CatE (e1, e2) ->
-      let a1 = eval_expr env e1 |> value_to_array in
-      let a2 = eval_expr env e2 |> value_to_array in
+      let a1 = eval_expr env e1 |> unwrap_listv_to_array in
+      let a2 = eval_expr env e2 |> unwrap_listv_to_array in
       ListV (Array.append a1 a2 |> ref)
   | LenE e ->
-      let a = eval_expr env e |> value_to_array in
+      let a = eval_expr env e |> unwrap_listv_to_array in
       NumV (I64.of_int_u (Array.length a))
   | StrE r ->
       let elist = Record.to_list r in
@@ -225,14 +218,14 @@ and eval_expr env expr =
       let base = eval_expr env e in
       access_path env base p
   | ExtE (e1, ps, e2, dir) ->
-      let v_new = eval_expr env e2 |> value_to_array in
+      let v_new = eval_expr env e2 |> unwrap_listv_to_array in
       let rec extend base ps = (
         match ps with
         | path :: rest ->
             let v_new = extend (access_path env base path) rest in
             replace_path env base path v_new
         | [] ->
-            let a = base |> value_to_array in
+            let a = base |> unwrap_listv_to_array in
             let a_copy = Array.copy a in
             let a_new = (
               match dir with
@@ -290,7 +283,7 @@ and eval_expr env expr =
   (* Optimized getter for list init *)
   | IterE (e1, [], ListN (e2, None)) ->
     let v = eval_expr env e1 in
-    let i = eval_expr env e2 |> value_to_int in
+    let i = eval_expr env e2 |> al_to_int in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then (
       AL_Context.pop_context () |> ignore;
       raise Exception.OutOfMemory
@@ -476,7 +469,7 @@ and assign lhs rhs env =
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
-      let n = eval_expr env e2 |> value_to_num in
+      let n = eval_expr env e2 |> al_to_int64 in
       let invop = match binop with
       | AddOp -> Int64.sub
       | SubOp -> Int64.add
@@ -497,7 +490,7 @@ and assign_split ep es vs env =
   let prefix_len, suffix_len =
     let get_length e = match e.it with
     | ListE es -> Some (List.length es)
-    | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> value_to_int)
+    | IterE (_, _, ListN (e, None)) -> Some (eval_expr env e |> al_to_int)
     | _ -> None in
     match get_length ep, get_length es with
     | None, None -> failwith "Unrecahble: nondeterministic list split"
@@ -508,10 +501,6 @@ and assign_split ep es vs env =
   let prefix = Array.sub vs 0 prefix_len in
   let suffix = Array.sub vs prefix_len suffix_len in
   env |> assign ep (ListV (ref prefix)) |> assign es (ListV (ref suffix))
-
-and assign_opt lhs_opt rhs env = match lhs_opt with
-  | None -> env
-  | Some lhs -> assign lhs rhs env
 
 
 (* Instruction *)
@@ -705,7 +694,7 @@ and interp_instr (env: env) (instr: instr): env =
     end;
     env
   | PopI ({ it = IterE ({ it = VarE name; _ }, [name'], ListN (e', None)); _ }) when name = name' ->
-    let i = eval_expr env e' |> value_to_int in
+    let i = eval_expr env e' |> al_to_int in
     let vs = List.rev (List.init i (fun _ -> WasmContext.pop_value ())) in
     Env.add name (listV vs) env
   | PopI e ->
@@ -764,14 +753,14 @@ and interp_instr (env: env) (instr: instr): env =
     env
   | ExecuteSeqI e ->
     eval_expr env e
-    |> value_to_list
+    |> unwrap_listv_to_list
     |> List.iter execute;
     env
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
 
-    WasmContext.push_context (v1, [], value_to_list v2);
+    WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
     AL_Context.increase_depth ();
 
     (* TODO: refactor cleanup *)
@@ -793,16 +782,16 @@ and interp_instr (env: env) (instr: instr): env =
     AL_Context.decrease_depth ();
     env
   | ReplaceI (e1, { it = IdxP e2; _ }, e3) ->
-    let a = eval_expr env e1 |> value_to_array in
-    let i = eval_expr env e2 |> value_to_int in
+    let a = eval_expr env e1 |> unwrap_listv_to_array in
+    let i = eval_expr env e2 |> al_to_int in
     let v = eval_expr env e3 in
     Array.set a i v;
     env
   | ReplaceI (e1, { it = SliceP (e2, e3); _ }, e4) ->
-    let a1 = eval_expr env e1 |> value_to_array in (* dest *)
-    let i1 = eval_expr env e2 |> value_to_int in   (* start index *)
-    let i2 = eval_expr env e3 |> value_to_int in   (* length *)
-    let a2 = eval_expr env e4 |> value_to_array in (* src *)
+    let a1 = eval_expr env e1 |> unwrap_listv_to_array in (* dest *)
+    let i1 = eval_expr env e2 |> al_to_int in   (* start index *)
+    let i2 = eval_expr env e3 |> al_to_int in   (* length *)
+    let a2 = eval_expr env e4 |> unwrap_listv_to_array in (* src *)
     assert (Array.length a2 = i2);
     Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2;
     env
@@ -815,7 +804,7 @@ and interp_instr (env: env) (instr: instr): env =
     end;
     env
   | AppendI (e1, e2) ->
-    let a = eval_expr env e1 |> value_to_growable_array in
+    let a = eval_expr env e1 |> unwrap_listv in
     let v = eval_expr env e2 in
     a := Array.append (!a) [|v|];
     env
@@ -903,12 +892,12 @@ let init_context () =
   AL_Context.init_context ();
   WasmContext.init_context ()
 
-let instantiation (args: value list): value =
+let instantiate (args: value list): value =
   init_context();
   match call_algo "instantiate" args with
   | AL_Context.Some module_inst -> module_inst
   | _ -> failwith "Instantiation doesn't return module instance"
-let invocation (args: value list): value =
+let invoke (args: value list): value =
   init_context();
   match call_algo "invoke" args with
   | AL_Context.Some v -> v

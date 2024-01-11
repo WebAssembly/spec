@@ -17,9 +17,6 @@ let check_nop instrs = match instrs with [] -> [ nopI ] | _ -> instrs
 let gen_fail_msg_of_exp exp =
   Print.string_of_exp exp |> sprintf "Invalid expression `%s` to be AL %s."
 
-let gen_fail_msg_of_prem prem =
-  Print.string_of_prem prem |> sprintf "Invalid premise `%s` to be AL %s."
-
 let list_partition_with pred xs =
   let rec list_partition acc = function
   | [] -> acc
@@ -67,17 +64,6 @@ let drop_state e =
     when is_store store && is_frame frame -> e'
   | _ -> e
 
-(* transform s; f; e into s *)
-let extract_store e = match e.it with
-  | Ast.MixE (* (s; f); e *)
-      ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
-        { it = Ast.TupE [ { it = Ast.MixE (
-          [[]; [ Ast.Semicolon ]; []],
-          { it = Ast.TupE [ store; frame ]; _ }
-        ); _ }; _e' ]; _ } )
-    when is_store store && is_frame frame -> store
-  | _ -> e
-
 (* Ast.exp -> Ast.exp list *)
 let rec flatten e =
   match e.it with
@@ -89,7 +75,7 @@ let flatten_rec def =
   match def.it with Ast.RecD defs -> defs | _ -> [def]
 
 (** Translate kwds **)
-let name2kwd name note = (name, Il.Print.string_of_typ note)
+let name2kwd name note = name, Il.Print.string_of_typ note
 
 let get_params winstr =
   match winstr.it with
@@ -100,15 +86,6 @@ let get_params winstr =
       []
 
 (** Translate `Ast.exp` **)
-
-(* `Ast.exp` -> `name` *)
-let rec exp2name exp =
-  match exp.it with
-  | Ast.VarE id -> id.it
-  | Ast.SubE (inner_exp, _, _) -> exp2name inner_exp
-  | _ ->
-      gen_fail_msg_of_exp exp "identifier" |> print_endline;
-      "Yet"
 
 let rec iter2iter = function
   | Ast.Opt -> Opt
@@ -268,7 +245,7 @@ and exp2expr exp =
   (* Yet *)
   | _ -> yetE (Print.structured_string_of_exp exp)
 
-(* `Ast.exp` -> `expr` *)
+(* `Ast.exp` -> `expr list` *)
 and exp2args exp =
   match exp.it with
   | Ast.TupE el -> List.map exp2expr el

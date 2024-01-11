@@ -907,13 +907,19 @@ let al_of_module module_ =
 
 (* Destruct data structure *)
 
-let al_to_list (f: value -> 'a): value -> 'a list = function
-  | ListV arr_ref -> Array.to_list !arr_ref |> List.map f
-  | v -> fail "list" v
+let unwrap_optv: value -> value option = function
+  | OptV opt -> opt
+  | v -> fail "OptV" v
+let unwrap_listv: value -> value growable_array = function
+  | ListV ga -> ga
+  | v -> fail "ListV" v
+let unwrap_listv_to_array (v: value): value array = !(unwrap_listv v)
+let unwrap_listv_to_list (v: value): value list = unwrap_listv_to_array v |> Array.to_list
+
+let al_to_opt (f: value -> 'a) (v: value): 'a option = unwrap_optv v |> Option.map f
+let al_to_list (f: value -> 'a) (v: value): 'a list =
+  unwrap_listv v |> (!) |> Array.to_list |> List.map f
 let al_to_seq f s = al_to_list f s |> List.to_seq
-let al_to_opt (f: value -> 'a): value -> 'a option = function
-  | OptV opt -> Option.map f opt
-  | v -> fail "option" v
 let al_to_phrase (f: value -> 'a) (v: value): 'a phrase = f v @@ no_region
 
 
@@ -922,6 +928,9 @@ let al_to_phrase (f: value -> 'a) (v: value): 'a phrase = f v @@ no_region
 let al_to_int64: value -> int64 = function
   | NumV i64 -> i64
   | v -> fail "int64" v
+let al_to_bool: value -> bool = function
+  | BoolV b -> b
+  | v -> fail "boolean" v
 let al_to_int (v: value): int = al_to_int64 v |> Int64.to_int
 let al_to_int32 (v: value): int32 = al_to_int64 v |> Int64.to_int32
 let al_to_float32 (v: value): F32.t = al_to_int32 v |> F32.of_bits

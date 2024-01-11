@@ -245,7 +245,7 @@ let do_action act = match act.it with
     ) in
     Printf.eprintf "[Invoking %s %s...]\n" (Utf8.encode name) (Al.Print.string_of_value args);
 
-    Interpreter.invocation [funcaddr; args]
+    Interpreter.invoke [funcaddr; args]
   | Get (module_name_opt, name) ->
     let module_name = get_module_name module_name_opt in
     let exports = find_export module_name in
@@ -255,7 +255,7 @@ let do_action act = match act.it with
 
     Printf.eprintf "[Getting %s...]\n" (Utf8.encode name);
     let got =
-      match Array.get (Interpreter.value_to_array globals) (Interpreter.value_to_int addr) with
+      match Array.get (unwrap_listv_to_array globals) (al_to_int addr) with
       | StrV r -> Record.find "VALUE" r
       | _ -> failwith "Not a Record"
     in
@@ -395,7 +395,7 @@ let test_assertion assertion =
       let al_module = Construct.al_of_module (extract_module def) in
       let externvals = get_externvals al_module in
       Printf.eprintf "[Trying instantiating module...]\n";
-      Interpreter.instantiation [ al_module ; externvals ] |> ignore;
+      Interpreter.instantiate [ al_module ; externvals ] |> ignore;
 
       fail expected"Module instantiation success"
     with
@@ -416,7 +416,7 @@ let test_module module_name m =
 
     (* Instantiate and store exports *)
     Printf.eprintf "[Instantiating module...]\n";
-    let module_inst = Interpreter.instantiation [ al_module ; externvals ] in
+    let module_inst = Interpreter.instantiate [ al_module ; externvals ] in
 
     (* Store module instance in the register *)
     (match module_name with
