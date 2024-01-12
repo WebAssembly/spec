@@ -244,8 +244,8 @@ module WasmContext = struct
     let v, vs, vs_instr = ctx in
     Printf.sprintf "(%s, %s, %s)"
       (string_of_value v)
-      (string_of_value (listV vs))
-      (string_of_value (listV vs_instr))
+      (string_of_value (listV_of_list vs))
+      (string_of_value (listV_of_list vs_instr))
 
   let string_of_context_stack () =
     List.fold_left
@@ -343,11 +343,11 @@ let init algos =
   (* Initialize store *)
   store :=
     Record.empty
-    |> Record.add "FUNC" (listV [])
-    |> Record.add "GLOBAL" (listV [])
-    |> Record.add "TABLE" (listV [])
-    |> Record.add "MEM" (listV [])
-    |> Record.add "ELEM" (listV [])
-    |> Record.add "DATA" (listV [])
-    |> Record.add "STRUCT" (listV [])
-    |> Record.add "ARRAY" (listV [])
+    |> Record.add "FUNC" (listV [||])
+    |> Record.add "GLOBAL" (listV [||])
+    |> Record.add "TABLE" (listV [||])
+    |> Record.add "MEM" (listV [||])
+    |> Record.add "ELEM" (listV [||])
+    |> Record.add "DATA" (listV [||])
+    |> Record.add "STRUCT" (listV [||])
+    |> Record.add "ARRAY" (listV [||])

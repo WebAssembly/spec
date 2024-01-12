@@ -49,7 +49,7 @@ let transpose matrix =
 (* helper functions for recursive type *)
 
 (* null *)
-let null = caseV ("NULL", [ optV (Some (listV [])) ])
+let null = caseV ("NULL", [ optV (Some (listV [||])) ])
 let nonull = caseV ("NULL", [ optV None ])
 (* abstract heap types for null *)
 let none = singleton "NONE"
@@ -119,8 +119,7 @@ and access_path base path =
       let a = base |> unwrap_listv_to_array in
       let i1 = eval_expr e1 |> al_to_int in
       let i2 = eval_expr e2 |> al_to_int in
-      let a' = Array.sub a i1 i2 in
-      ListV (ref a')
+      Array.sub a i1 i2 |> listV
   | DotP (str, _) -> (
       match base with
       | FrameV (_, StrV r) -> Record.find str r
@@ -134,18 +133,16 @@ and access_path base path =
 and replace_path base path v_new =
   match path.it with
   | IdxP e' ->
-      let a = base |> unwrap_listv_to_array in
-      let a_new = Array.copy a in
-      let i = eval_expr e' |> al_to_int in
-      Array.set a_new i v_new;
-      ListV (ref a_new)
+    let a = unwrap_listv_to_array base |> Array.copy in
+    let i = eval_expr e' |> al_to_int in
+    Array.set a i v_new;
+    listV a
   | SliceP (e1, e2) ->
-      let a = base |> unwrap_listv_to_array in
-      let a_new = Array.copy a in
+      let a = unwrap_listv_to_array base |> Array.copy in
       let i1 = eval_expr e1 |> al_to_int in
       let i2 = eval_expr e2 |> al_to_int in
-      Array.blit (v_new |> unwrap_listv_to_array) 0 a_new i1 i2;
-      ListV (ref a_new)
+      Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
+      listV a
   | DotP (str, _) ->
     let r =
       match base with
@@ -199,14 +196,13 @@ and eval_expr expr =
     *)
     end
   (* Data Structure *)
-  | ListE el -> List.map eval_expr el |> listV
+  | ListE el -> List.map eval_expr el |> listV_of_list
   | CatE (e1, e2) ->
     let a1 = eval_expr e1 |> unwrap_listv_to_array in
     let a2 = eval_expr e2 |> unwrap_listv_to_array in
-    ListV (Array.append a1 a2 |> ref)
+    Array.append a1 a2 |> listV
   | LenE e ->
-    let a = eval_expr e |> unwrap_listv_to_array in
-    Array.length a |> I64.of_int_u |> numV
+    eval_expr e |> unwrap_listv_to_array |> Array.length |> I64.of_int_u |> numV
   | StrE r ->
     Record.to_list r
     |> List.map (fun (k, e) -> string_of_kwd k, !e |> eval_expr |> ref)
@@ -227,7 +223,7 @@ and eval_expr expr =
           | Front -> Array.append v a_copy
           | Back -> Array.append a_copy v
         in
-        ListV (ref a_new)
+        listV a_new
     in
     eval_expr e1 |> extend ps
   | UpdE (e1, ps, e2) ->
@@ -275,7 +271,7 @@ and eval_expr expr =
     if i > 1024 * 64 * 1024 (* 1024 pages *) then
       (AlContext.pop_context () |> ignore; raise Exception.OutOfMemory)
     else
-      List.init i (fun _ -> v) |> listV
+      Array.make i v |> listV
   | IterE (inner_e, ids, iter) ->
     let env = AlContext.get_env () in
     let vs =
@@ -286,7 +282,7 @@ and eval_expr expr =
     (match vs, iter with
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
-    | l, _ -> listV l)
+    | l, _ -> listV_of_list l)
   | ArrowE (e1, e2) -> ArrowV (eval_expr e1, eval_expr e2)
   (* condition *)
   | ContextKindE ((kind, _), e) ->
@@ -384,7 +380,7 @@ and merge_envs_with_grouping default_env envs =
   let merge env acc =
     let f _ v1 = function
       | ListV arr ->
-          v1 :: Array.to_list !arr |> listV |> Option.some
+          Array.append [| v1 |] !arr |> listV |> Option.some
       | OptV None -> Option.some v1 |> optV |> Option.some
       | _ -> failwith "Unreachable merge"
     in
@@ -400,10 +396,10 @@ and assign lhs rhs env =
   | IterE (e, _, iter), _ ->
       let new_env, default_rhs, rhs_list =
         match iter, rhs with
-        | (List | List1), ListV arr -> env, listV [], Array.to_list !arr
+        | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
         | ListN (expr, None), ListV arr ->
             let length = Array.length !arr |> Int64.of_int |> numV in
-            assign expr length env, listV [], Array.to_list !arr
+            assign expr length env, listV [||], Array.to_list !arr
         | Opt, OptV opt -> env, optV None, Option.to_list opt
         | ListN (_, Some _), ListV _ ->
             Printf.sprintf "Invalid iter %s with rhs %s"
@@ -471,9 +467,9 @@ and assign_split ep es vs env =
     | None, Some l -> len - l, l
     | Some l1, Some l2 -> l1, l2 in
   assert (prefix_len >= 0 && suffix_len >= 0 && prefix_len + suffix_len = len);
-  let prefix = Array.sub vs 0 prefix_len in
-  let suffix = Array.sub vs prefix_len suffix_len in
-  env |> assign ep (ListV (ref prefix)) |> assign es (ListV (ref suffix))
+  let prefix = Array.sub vs 0 prefix_len |> listV in
+  let suffix = Array.sub vs prefix_len suffix_len |> listV in
+  env |> assign ep prefix |> assign es suffix
 
 
 (* Instruction *)
@@ -629,25 +625,21 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | CaseV ("REF.NULL", [ ht ]) -> ( match !version with
-    | 3 ->
-      (* substitute heap type*)
-      let dummy_rt = CaseV ("REF", [ null; ht ]) in
-      (* TODO: remove hack *)
-      let mm = callE ("moduleinst", []) |> eval_expr in
-      begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
-      | AlContext.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
-        CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-      | _ -> raise Exception.MissingReturnValue
-      end
-    | _ -> WasmContext.push_value wasm_instr )
+  | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
+    (* TODO: remove hack *)
+    let mm = callE ("moduleinst", []) |> eval_expr in
+    let dummy_rt = CaseV ("REF", [ null; ht ]) in
+
+    (* substitute heap type *)
+    (match call_algo "inst_reftype" [ mm; dummy_rt ] with
+    | AlContext.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
+      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
+    | _ -> raise Exception.MissingReturnValue)
+  | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
-  | CaseV ("VVCONST", _) ->
-    WasmContext.push_value wasm_instr
-  | CaseV (name, []) when is_builtin name ->
-    call_builtin name;
-  | CaseV (fname, args) ->
-    call_algo fname args |> ignore
+  | CaseV ("VVCONST", _) -> WasmContext.push_value wasm_instr
+  | CaseV (name, []) when is_builtin name -> call_builtin name
+  | CaseV (fname, args) -> call_algo fname args |> ignore
   | v ->
     string_of_value v
     |> Printf.sprintf "Executing invalid value: %s"
@@ -686,7 +678,7 @@ and interp_instr (instr: instr): unit =
     let i = eval_expr e' |> al_to_int in
     List.init i (fun _ -> WasmContext.pop_value ())
     |> List.rev
-    |> listV
+    |> listV_of_list
     |> AlContext.update_env name
   | PopI e ->
     begin match e.it, WasmContext.pop_value () with
@@ -715,7 +707,7 @@ and interp_instr (instr: instr): unit =
       else
         acc
     in
-    pop_all [] |> listV |> AlContext.update_env name
+    pop_all [] |> listV_of_list |> AlContext.update_env name
   | PopAllI e ->
     string_of_expr e
     |> Printf.sprintf "Invalid pop: Popall %s"
@@ -726,14 +718,10 @@ and interp_instr (instr: instr): unit =
     List.map eval_expr el |> dsl_function_call f |> ignore
   | TrapI -> raise Exception.Trap
   | NopI -> ()
-  | ReturnI None ->
-    AlContext.set_return ()
-  | ReturnI (Some e) ->
-    eval_expr e |> AlContext.set_return_value
-  | ExecuteI e ->
-    eval_expr e |> execute
-  | ExecuteSeqI e ->
-    eval_expr e |> unwrap_listv_to_list |> List.iter execute
+  | ReturnI None -> AlContext.set_return ()
+  | ReturnI (Some e) -> eval_expr e |> AlContext.set_return_value
+  | ExecuteI e -> eval_expr e |> execute
+  | ExecuteSeqI e -> eval_expr e |> unwrap_listv_to_list |> List.iter execute
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr e1 in
     let v2 = eval_expr e2 in
@@ -778,7 +766,7 @@ and interp_instr (instr: instr): unit =
   | AppendI (e1, e2) ->
     let a = eval_expr e1 |> unwrap_listv in
     let v = eval_expr e2 in
-    a := Array.append (!a) [|v|]
+    a := Array.append !a [|v|]
   | _ ->
     structured_string_of_instr instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"

@@ -94,19 +94,19 @@ let builtin () =
   let create_func_inst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
     let code = singleton winstr_tag in
-    let ptype = List.map singleton type_tags in
-    let arrow = ArrowV (listV ptype, listV []) in
+    let ptype = Array.map singleton type_tags in
+    let arrow = ArrowV (listV ptype, listV [||]) in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [
         CaseV ("REC", [
-          [ CaseV ("SUBD", [OptV (Some (singleton "FINAL")); [] |> listV; ftype]) ] |> listV
+          [| CaseV ("SUBD", [OptV (Some (singleton "FINAL")); listV [||]; ftype]) |] |> listV
         ]); numV 0L
       ]) in
     name, StrV [
       "TYPE", ref (if !Construct.version = 3 then dt else arrow);
       "MODULE", ref (StrV Record.empty); (* dummy module *)
-      "CODE", ref (CaseV ("FUNC", [ ftype; listV []; listV [ code ] ]))
+      "CODE", ref (CaseV ("FUNC", [ ftype; listV [||]; listV [| code |] ]))
     ] in
 
   let create_global_inst t v = StrV [
@@ -126,13 +126,13 @@ let builtin () =
 
   (* Builtin functions *)
   let funcs = List.rev [
-    ("print", []) |> create_func_inst;
-    ("print_i32", [ "I32" ]) |> create_func_inst;
-    ("print_i64", [ "I64" ]) |> create_func_inst;
-    ("print_f32", [ "F32" ]) |> create_func_inst;
-    ("print_f64", [ "F64" ]) |> create_func_inst;
-    ("print_i32_f32", [ "I32"; "F32" ]) |> create_func_inst;
-    ("print_f64_f64", [ "F64"; "F64" ]) |> create_func_inst
+    ("print", [||]) |> create_func_inst;
+    ("print_i32", [| "I32" |]) |> create_func_inst;
+    ("print_i64", [| "I64" |]) |> create_func_inst;
+    ("print_f32", [| "F32" |]) |> create_func_inst;
+    ("print_f64", [| "F64" |]) |> create_func_inst;
+    ("print_i32_f32", [| "I32"; "F32" |]) |> create_func_inst;
+    ("print_f64_f64", [| "F64"; "F64" |]) |> create_func_inst
   ] in
   (* Builtin globals *)
   let globals = List.rev [
@@ -142,14 +142,14 @@ let builtin () =
     "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (TextV "global_type");
   ] in
   (* Builtin tables *)
-  let nulls = List.init 10 (fun _ -> CaseV ("REF.NULL", [ singleton "FUNC" ])) in
+  let nulls = CaseV ("REF.NULL", [ singleton "FUNC" ]) |> Array.make 10 in
   let tables = [
     "table",
     listV nulls
     |> create_table_inst (TupV [ TupV [ numV 10L; numV 20L ]; singleton "FUNCREF" ]);
   ] in
   (* Builtin memories *)
-  let zeros = List.init 0x10000 (fun _ -> numV 0L) in
+  let zeros = numV 0L |> Array.make 0x10000 in
   let memories = [
     "memory",
     listV zeros
@@ -188,18 +188,18 @@ let builtin () =
     |> func_extern
     |> global_extern
     |> table_extern
-    |> memory_extern in
+    |> memory_extern
+    |> Array.of_list in
 
   let module_inst =
     Record.empty
-    |> Record.add "FUNC" (listV [])
-    |> Record.add "GLOBAL" (listV [])
-    |> Record.add "TABLE" (listV [])
-    |> Record.add "MEM" (listV [])
-    |> Record.add "ELEM" (listV [])
-    |> Record.add "DATA" (listV [])
-    |> Record.add "EXPORT" (listV extern)
-  in
+    |> Record.add "FUNC" (listV [||])
+    |> Record.add "GLOBAL" (listV [||])
+    |> Record.add "TABLE" (listV [||])
+    |> Record.add "MEM" (listV [||])
+    |> Record.add "ELEM" (listV [||])
+    |> Record.add "DATA" (listV [||])
+    |> Record.add "EXPORT" (listV extern) in
 
   StrV module_inst
 
@@ -239,10 +239,11 @@ let do_action act = match act.it with
 
     let funcaddr = Array.find_map (extract_addr_of "FUNC" name) export_insts |> Option.get in
 
-    let args = listV (
+    let args = 
       literals
       |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
-    ) in
+      |> listV_of_list
+    in
     Printf.eprintf "[Invoking %s %s...]\n" (Utf8.encode name) (Al.Print.string_of_value args);
 
     Interpreter.invoke [funcaddr; args]
@@ -259,7 +260,7 @@ let do_action act = match act.it with
       | StrV r -> Record.find "VALUE" r
       | _ -> failwith "Not a Record"
     in
-    listV [ got ]
+    listV [| got |]
 
 
 
@@ -344,7 +345,7 @@ let get_externval = function
 
 let get_externvals = function
   | CaseV ("MODULE", _ :: (ListV imports) :: _) ->
-      ListV (Array.map get_externval !imports |> ref)
+      Array.map get_externval !imports |> listV
   | _ -> failwith "Invalid module"
 
 let extract_module def = match def.it with
@@ -368,9 +369,9 @@ let test_assertion assertion =
       (* Invoke *)
       match do_action invoke with
       | ListV arr ->
-        let actual = Array.to_list !arr in
-        assert (List.length actual = List.length expected);
-        if List.for_all2 check expected actual then
+        let actual = !arr in
+        assert (Array.length actual = List.length expected);
+        if Array.to_list actual |> List.for_all2 check expected then
           Success
         else
           listV actual |> Al.Print.string_of_value |> fail_with

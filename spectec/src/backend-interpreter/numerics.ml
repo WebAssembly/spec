@@ -35,10 +35,10 @@ let wrap3
     op (destruct v1) (destruct v2) (destruct v3) |> construct
 
 
-let wrap_i32_unop = wrap1 al_to_int32 (fun i32 -> listV [ al_of_int32 i32 ])
-let wrap_i64_unop = wrap1 al_to_int64 (fun i64 -> listV [ al_of_int64 i64 ])
-let wrap_f32_unop = wrap1 al_to_float32 (fun f32 -> listV [ al_of_float32 f32 ])
-let wrap_f64_unop = wrap1 al_to_float64 (fun f64 -> listV [ al_of_float64 f64 ])
+let wrap_i32_unop = wrap1 al_to_int32 (fun i32 -> listV [| al_of_int32 i32 |])
+let wrap_i64_unop = wrap1 al_to_int64 (fun i64 -> listV [| al_of_int64 i64 |])
+let wrap_f32_unop = wrap1 al_to_float32 (fun f32 -> listV [| al_of_float32 f32 |])
+let wrap_f64_unop = wrap1 al_to_float64 (fun f64 -> listV [| al_of_float64 f64 |])
 let unop: numerics =
   {
     name = "unop";
@@ -90,10 +90,10 @@ let unop: numerics =
       | _ -> failwith "Invalid unop")
   }
 
-let wrap_i32_binop = wrap2 al_to_int32 (fun i32 -> listV [ al_of_int32 i32 ])
-let wrap_i64_binop = wrap2 al_to_int64 (fun i64 -> listV [ al_of_int64 i64 ])
-let wrap_f32_binop = wrap2 al_to_float32 (fun f32 -> listV [ al_of_float32 f32 ])
-let wrap_f64_binop = wrap2 al_to_float64 (fun f64 -> listV [ al_of_float64 f64 ])
+let wrap_i32_binop = wrap2 al_to_int32 (fun i32 -> listV [| al_of_int32 i32 |])
+let wrap_i64_binop = wrap2 al_to_int64 (fun i64 -> listV [| al_of_int64 i64 |])
+let wrap_f32_binop = wrap2 al_to_float32 (fun f32 -> listV [| al_of_float32 f32 |])
+let wrap_f64_binop = wrap2 al_to_float64 (fun f64 -> listV [| al_of_float64 f64 |])
 let catch_ixx_exception f = try f() with
   | Ixx.DivideByZero
   | Ixx.Overflow
@@ -268,7 +268,7 @@ let cvtop : numerics =
           | None -> ""
           | Some (CaseV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
-        listV ([ catch_ixx_exception (fun _ -> match op, t_to, t_from, sx with
+        listV ([| catch_ixx_exception (fun _ -> match op, t_to, t_from, sx with
         (* Conversion to I32 *)
         | "Wrap", "I32", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
         | "Trunc", "I32", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
@@ -306,7 +306,7 @@ let cvtop : numerics =
         | "Convert", "F64", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
         | "Convert", "F64", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
         | "Reinterpret", "F64", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
-        | _ -> failwith ("Invalid cvtop: " ^ op ^ t_to ^ t_from ^ sx) ) ]))
+        | _ -> failwith ("Invalid cvtop: " ^ op ^ t_to ^ t_from ^ sx) ) |]))
       | _ -> failwith "Invalid cvtop");
   }
 
@@ -340,7 +340,7 @@ let ibytes : numerics =
               (Int64.logand bits 255L) :: decompose (Int64.sub n 8L) (Int64.shift_right bits 8)
             in
           assert (n >= 0L && Int64.rem n 8L = 0L);
-          decompose n i |> List.map numV |> listV
+          decompose n i |> List.map numV |> listV_of_list
       | _ -> failwith "Invalid bytes"
       );
   }
@@ -427,17 +427,17 @@ let lanes : numerics =
     f = 
       (function
       | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int32 |> listV
+        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int32 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int32 |> listV
+        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int32 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV
+        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV
+        v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV
+        v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV
+        v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
       | _ -> failwith "Invaild lanes"
       );
   }
@@ -447,7 +447,7 @@ let ine: numerics =
     name = "ine_128";
     f = 
       (function
-      | [ VecV v1; VecV v2 ] -> NumV (if v1 = v2 then 0L else 1L)
+      | [ VecV v1; VecV v2 ] -> if v1 = v2 then 0L else 1L |> numV
       | _ -> failwith "Invaild ine"
       );
   }

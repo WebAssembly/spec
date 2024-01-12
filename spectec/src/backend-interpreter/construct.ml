@@ -96,7 +96,8 @@ let optV opt = OptV opt
 let tupV tup = TupV tup
 let arrowV (v1, v2) = ArrowV (v1, v2)
 let singleton x = CaseV (String.uppercase_ascii x, [])
-let listV l = ListV (ref (Array.of_list l))
+let listV a = ListV (ref a)
+let listV_of_list l = Array.of_list l |> listV
 let zero = numV 0L
 
 let get_name = function
@@ -119,7 +120,7 @@ let fail ty v =
   |> Printf.sprintf "Invalid %s: %s" ty
   |> failwith
 
-let fail_list ty l = listV l |> fail ty
+let fail_list ty l = listV_of_list l |> fail ty
 
 
 (* Destruct *)
@@ -1008,7 +1009,7 @@ let al_to_module: value -> module_ = al_to_phrase al_to_module'
 
 (* Construct data structure *)
 
-let al_of_list f l = List.map f l |> listV
+let al_of_list f l = List.map f l |> listV_of_list
 let al_of_seq f s = List.of_seq s |> al_of_list f
 let al_of_opt f opt = Option.map f opt |> optV
 
@@ -1735,7 +1736,7 @@ let al_of_elem elem =
       al_of_list al_of_const elem.it.einit
       |> unwrap_listv_to_list
       |> List.map (fun expr -> expr |> unwrap_listv_to_list |> List.hd |> (arg_of_case "REF.FUNC" 0))
-      |> listV;
+      |> listV_of_list;
     ])
   else
     CaseV ("ELEM", [
