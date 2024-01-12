@@ -1,53 +1,35 @@
 open Reference_interpreter
 open Al
 open Al.Ast
+open Construct
 
 type numerics = { name : string; f : value list -> value }
 
-let num_to_i32 = function
-  | NumV bits -> bits |> Int64.to_int32 |> I32.of_bits
-  | _ -> failwith "Operand should be NumV"
-let num_to_i64 = function
-  | NumV bits -> bits |> I64.of_bits
-  | _ -> failwith "Operand should be NumV"
-let num_to_f32 = function
-  | NumV bits -> bits |> Int64.to_int32 |> F32.of_bits
-  | _ -> failwith "Operand should be NumV"
-let num_to_f64 = function
-  | NumV bits -> bits |> F64.of_bits
-  | _ -> failwith "Operand should be NumV"
+(* Helper functions *)
+let i32_to_const i = CaseV ("CONST", [ singleton "I32"; al_of_int32 i ])
+let i64_to_const i = CaseV ("CONST", [ singleton "I64"; al_of_int64 i ])
+let f32_to_const f = CaseV ("CONST", [ singleton "F32"; al_of_float32 f ])
+let f64_to_const f = CaseV ("CONST", [ singleton "F64"; al_of_float64 f ])
 
-let num_to_i32_string n = n |> num_to_i32 |> I32.to_string_s
-let num_to_i64_string n = n |> num_to_i64 |> I64.to_string_s
-let num_to_f32_string n = n |> num_to_f32 |> F32.to_string
-let num_to_f64_string n = n |> num_to_f64 |> F64.to_string
+let wrap1
+  (destruct: value -> 'a)
+  (op: 'a -> 'b)
+  (construct: 'b -> value)
+  (v: value): value =
+    destruct v |> op |> construct
+let wrap2
+  (destruct: value -> 'a)
+  (op: 'a -> 'a -> 'b)
+  (construct: 'b -> value)
+  (v1: value)
+  (v2: value): value =
+    op (destruct v1) (destruct v2) |> construct
 
-let int64_of_int32_u x = x |> Int64.of_int32 |> Int64.logand 0x0000_0000_ffff_ffffL
-let bool_to_num b = NumV (Bool.to_int b |> I64.of_int_s)
-let i32_to_num i = NumV ( i |> I32.to_bits |> int64_of_int32_u )
-let i64_to_num i = NumV ( i |> I64.to_bits)
-let f32_to_num f = NumV ( f |> F32.to_bits |> int64_of_int32_u )
-let f64_to_num f = NumV ( f |> F64.to_bits)
 
-let i32_to_const i = CaseV ("CONST", [ CaseV ("I32", []); i |> i32_to_num])
-let i64_to_const i = CaseV ("CONST", [ CaseV ("I64", []); i |> i64_to_num])
-let f32_to_const f = CaseV ("CONST", [ CaseV ("F32", []); f |> f32_to_num])
-let f64_to_const f = CaseV ("CONST", [ CaseV ("F64", []); f |> f64_to_num])
-
-let listV l = ListV (l |> Array.of_list |> ref)
-
-let wrap_i32_unop op i =
-  let result = num_to_i32 i |> op |> i32_to_num in
-  listV [ result ]
-let wrap_i64_unop op i =
-  let result = num_to_i64 i |> op |> i64_to_num in
-  listV [ result ]
-let wrap_f32_unop op f =
-  let result = num_to_f32 f |> op |> f32_to_num in
-  listV [ result ]
-let wrap_f64_unop op f =
-  let result = num_to_f64 f |> op |> f64_to_num in
-  listV [ result ]
+let wrap_i32_unop op = wrap1 al_to_int32 op (fun i32 -> listV [ al_of_int32 i32 ])
+let wrap_i64_unop op = wrap1 al_to_int64 op (fun i64 -> listV [ al_of_int64 i64 ])
+let wrap_f32_unop op = wrap1 al_to_float32 op (fun f32 -> listV [ al_of_float32 f32 ])
+let wrap_f64_unop op = wrap1 al_to_float64 op (fun f64 -> listV [ al_of_float64 f64 ])
 let unop: numerics =
   {
     name = "unop";
@@ -99,26 +81,10 @@ let unop: numerics =
       | _ -> failwith "Invalid unop")
   }
 
-let wrap_i32_binop op i1 i2 =
-  let i1 = num_to_i32 i1 in
-  let i2 = num_to_i32 i2 in
-  let result = op i1 i2 |> i32_to_num in
-  listV [ result ]
-let wrap_i64_binop op i1 i2 =
-  let i1 = num_to_i64 i1 in
-  let i2 = num_to_i64 i2 in
-  let result = op i1 i2 |> i64_to_num in
-  listV [ result ]
-let wrap_f32_binop op f1 f2 =
-  let f1 = num_to_f32 f1 in
-  let f2 = num_to_f32 f2 in
-  let result = op f1 f2 |> f32_to_num in
-  listV [ result ]
-let wrap_f64_binop op f1 f2 =
-  let f1 = num_to_f64 f1 in
-  let f2 = num_to_f64 f2 in
-  let result = op f1 f2 |> f64_to_num in
-  listV [ result ]
+let wrap_i32_binop op = wrap2 al_to_int32 op (fun i32 -> listV [ al_of_int32 i32 ])
+let wrap_i64_binop op = wrap2 al_to_int64 op (fun i64 -> listV [ al_of_int64 i64 ])
+let wrap_f32_binop op = wrap2 al_to_float32 op (fun f32 -> listV [ al_of_float32 f32 ])
+let wrap_f64_binop op = wrap2 al_to_float64 op (fun f64 -> listV [ al_of_float64 f64 ])
 let catch_ixx_exception f = try f() with
   | Ixx.DivideByZero
   | Ixx.Overflow
@@ -192,8 +158,8 @@ let binop : numerics =
       | _ -> failwith "Invalid binop");
   }
 
-let wrap_i32_testop op i = num_to_i32 i |> op |> bool_to_num
-let wrap_i64_testop op i = num_to_i64 i |> op |> bool_to_num
+let wrap_i32_testop op = wrap1 al_to_int32 op al_of_bool
+let wrap_i64_testop op = wrap1 al_to_int64 op al_of_bool
 let testop : numerics =
   {
     name = "testop";
@@ -207,22 +173,10 @@ let testop : numerics =
       | _ -> failwith "Invalid testop");
   }
 
-let wrap_i32_relop op i1 i2 =
-  let i1 = num_to_i32 i1 in
-  let i2 = num_to_i32 i2 in
-  op i1 i2 |> bool_to_num
-let wrap_i64_relop op i1 i2 =
-  let i1 = num_to_i64 i1 in
-  let i2 = num_to_i64 i2 in
-  op i1 i2 |> bool_to_num
-let wrap_f32_relop op f1 f2 =
-  let f1 = num_to_f32 f1 in
-  let f2 = num_to_f32 f2 in
-  op f1 f2 |> bool_to_num
-let wrap_f64_relop op f1 f2 =
-  let f1 = num_to_f64 f1 in
-  let f2 = num_to_f64 f2 in
-  op f1 f2 |> bool_to_num
+let wrap_i32_relop op = wrap2 al_to_int32 op al_of_bool
+let wrap_i64_relop op = wrap2 al_to_int64 op al_of_bool
+let wrap_f32_relop op = wrap2 al_to_float32 op al_of_bool
+let wrap_f64_relop op = wrap2 al_to_float64 op al_of_bool
 let relop : numerics =
   {
     name = "relop";
@@ -279,21 +233,21 @@ let relop : numerics =
   }
 
 (* conversion from i32 *)
-let wrap_i64_cvtop_i32 op n = n |> num_to_i32 |> op |> i64_to_num
-let wrap_f32_cvtop_i32 op n = n |> num_to_i32 |> op |> f32_to_num
-let wrap_f64_cvtop_i32 op n = n |> num_to_i32 |> op |> f64_to_num
+let wrap_i64_cvtop_i32 op = wrap1 al_to_int32 op al_of_int64
+let wrap_f32_cvtop_i32 op = wrap1 al_to_int32 op al_of_float32
+let wrap_f64_cvtop_i32 op = wrap1 al_to_int32 op al_of_float64
 (* conversion from i64 *)
-let wrap_i32_cvtop_i64 op n = n |> num_to_i64 |> op |> i32_to_num
-let wrap_f32_cvtop_i64 op n = n |> num_to_i64 |> op |> f32_to_num
-let wrap_f64_cvtop_i64 op n = n |> num_to_i64 |> op |> f64_to_num
+let wrap_i32_cvtop_i64 op = wrap1 al_to_int64 op al_of_int32
+let wrap_f32_cvtop_i64 op = wrap1 al_to_int64 op al_of_float32
+let wrap_f64_cvtop_i64 op = wrap1 al_to_int64 op al_of_float64
 (* conversion from f32 *)
-let wrap_i32_cvtop_f32 op n = n |> num_to_f32 |> op |> i32_to_num
-let wrap_i64_cvtop_f32 op n = n |> num_to_f32 |> op |> i64_to_num
-let wrap_f64_cvtop_f32 op n = n |> num_to_f32 |> op |> f64_to_num
+let wrap_i32_cvtop_f32 op = wrap1 al_to_float32 op al_of_int32
+let wrap_i64_cvtop_f32 op = wrap1 al_to_float32 op al_of_int64
+let wrap_f64_cvtop_f32 op = wrap1 al_to_float32 op al_of_float64
 (* conversion from i64 *)
-let wrap_i32_cvtop_f64 op n = n |> num_to_f64 |> op |> i32_to_num
-let wrap_i64_cvtop_f64 op n = n |> num_to_f64 |> op |> i64_to_num
-let wrap_f32_cvtop_f64 op n = n |> num_to_f64 |> op |> f32_to_num
+let wrap_i32_cvtop_f64 op = wrap1 al_to_float64 op al_of_int32
+let wrap_i64_cvtop_f64 op = wrap1 al_to_float64 op al_of_int64
+let wrap_f32_cvtop_f64 op = wrap1 al_to_float64 op al_of_float32
 
 let cvtop : numerics =
   {
@@ -377,7 +331,7 @@ let ibytes : numerics =
               (Int64.logand bits 255L) :: decompose (Int64.sub n 8L) (Int64.shift_right bits 8)
             in
           assert (n >= 0L && Int64.rem n 8L = 0L);
-          listV (decompose n i |> List.map (fun x -> NumV x))
+          decompose n i |> List.map numV |> listV
       | _ -> failwith "Invalid bytes"
       );
   }
@@ -468,12 +422,12 @@ let lanes : numerics =
     name = "lanes";
     f = 
       (function
-      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I8x16.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I16x8.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV (v)] -> listV (List.map i32_to_num (v |> V128.of_bits |> V128.I32x4.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV (v)] -> listV (List.map i64_to_num (v |> V128.of_bits |> V128.I64x2.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV (v)] -> listV (List.map f32_to_num (v |> V128.of_bits |> V128.F32x4.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV (v)] -> listV (List.map f64_to_num (v |> V128.of_bits |> V128.F64x2.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I8x16.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I16x8.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I32x4.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV (v)] -> listV (List.map al_of_int64 (v |> V128.of_bits |> V128.I64x2.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV (v)] -> listV (List.map al_of_float32 (v |> V128.of_bits |> V128.F32x4.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV (v)] -> listV (List.map al_of_float64 (v |> V128.of_bits |> V128.F64x2.to_lanes))
       | _ -> failwith "Invaild lanes"
       );
   }

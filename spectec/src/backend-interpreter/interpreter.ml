@@ -589,26 +589,43 @@ and call_builtin name =
   match name with
   | "PRINT" -> print_endline "- print: ()"
   | "PRINT_I32" ->
-    let i32 = local 0 |> as_const "I32" in
-    print_endline ("- print_i32: " ^ Numerics.num_to_i32_string i32)
+    local 0
+    |> as_const "I32"
+    |> al_to_int32
+    |> I32.to_string_s
+    |> Printf.sprintf "- print_i32: %s"
+    |> print_endline
   | "PRINT_I64" ->
-    let i64 = local 0 |> as_const "I64" in
-    print_endline ("- print_i64: " ^ Numerics.num_to_i64_string i64)
+    local 0
+    |> as_const "I64"
+    |> al_to_int64
+    |> I64.to_string_s
+    |> Printf.sprintf "- print_i64: %s"
+    |> print_endline
   | "PRINT_F32" ->
-    let f32 = local 0 |> as_const "F32" in
-    print_endline ("- print_f32: " ^ Numerics.num_to_f32_string f32)
+    local 0
+    |> as_const "F32"
+    |> al_to_float32
+    |> F32.to_string
+    |> Printf.sprintf "- print_f32: %s"
+    |> print_endline
   | "PRINT_F64" ->
-    let f64 = local 0 |> as_const "F64" in
-    print_endline ("- print_f64: " ^ Numerics.num_to_f64_string f64)
+    local 0
+    |> as_const "F64"
+    |> al_to_float64
+    |> F64.to_string
+    |> Printf.sprintf "- print_f64: %s"
+    |> print_endline
   | "PRINT_I32_F32" ->
-    let i32 = local 0 |> as_const "I32" in
-    let f32 = local 1 |> as_const "F32" in
-    print_endline ("- print_i32_f32: " ^ Numerics.num_to_i32_string i32 ^ " " ^ Numerics.num_to_f32_string f32 )
+    let i32 = local 0 |> as_const "I32" |> al_to_int32 |> I32.to_string_s in
+    let f32 = local 1 |> as_const "F32" |> al_to_float32 |> F32.to_string in
+    Printf.sprintf "- print_i32_f32: %s %s" i32 f32 |> print_endline
   | "PRINT_F64_F64" ->
-    let f64 = local 0 |> as_const "F64" in
-    let f64' = local 1 |> as_const "F64" in
-    print_endline ("- print_f64_f64: " ^ Numerics.num_to_f64_string f64 ^ " " ^ Numerics.num_to_f64_string f64' )
-  | _ -> failwith "Impossible"
+    let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
+    let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
+    Printf.sprintf "- print_f64_f64: %s %s" f64 f64' |> print_endline
+  | name ->
+    ("Invalid builtin function: " ^ name) |> failwith
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
