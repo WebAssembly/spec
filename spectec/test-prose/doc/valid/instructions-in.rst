@@ -636,22 +636,8 @@ $${rule: Instr_ok/store}
 \
 
 $${rule: Instr_ok/vload}
-
-.. _valid-VLOAD_SPLAT:
-
-%{prose-pred: VLOAD_SPLAT}
-
-\
-
-$${rule: Instr_ok/vload_splat}
-
-.. _valid-VLOAD_ZERO:
-
-%{prose-pred: VLOAD_ZERO}
-
-\
-
-$${rule: Instr_ok/vload_zero}
+$${rule: Instr_ok/vload-splat}
+$${rule: Instr_ok/vload-zero}
 
 .. _valid-VSTORE:
 

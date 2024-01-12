@@ -668,7 +668,7 @@ let al_to_vvtestop : value list -> vec_vtestop = function
     match vl with
     | [ CaseV ("V128", []); CaseV ("_VV", [ CaseV (vop, []) ]) ] -> (
       match vop with
-      | "ANY_TRUE" -> V128 V128Op.AnyTrue
+      | "ANYTRUE" -> V128 V128Op.AnyTrue
       | _ -> fail_list "vvtestop" vl
     )
     | _ -> fail_list "vvtestop" vl
@@ -1021,6 +1021,8 @@ let al_of_int i = Int64.of_int i |> al_of_int64
 let al_of_int32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
   Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL |> al_of_int64
+let al_of_int32_s i32 =
+  Int64.of_int32 i32 |> al_of_int64
 let al_of_float32 f32 = F32.to_bits f32 |> al_of_int32
 let al_of_float64 f64 = F64.to_bits f64 |> al_of_int64
 let al_of_vector vec = V128.to_bits vec |> vecV
@@ -1526,6 +1528,11 @@ let al_of_pack_size = function
   | Pack.Pack32 -> al_of_int 32
   | Pack.Pack64 -> al_of_int 64
 
+let al_of_pack_shape = function
+  | Pack.Pack8x8 -> CaseV ("PACKSHAPE", [NumV 8L; NumV 8L])
+  | Pack.Pack16x4 -> CaseV ("PACKSHAPE", [NumV 16L; NumV 4L])
+  | Pack.Pack32x2 -> CaseV ("PACKSHAPE", [NumV 32L; NumV 2L])
+
 let al_of_extension = function
   | Pack.SX -> singleton "S"
   | Pack.ZX -> singleton "U"
@@ -1544,6 +1551,21 @@ let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
 let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 
+let al_of_vloadop vmemop =
+  let (pack_size, vextension) = Option.get vmemop.pack in
+
+  let str =
+    Record.empty
+    |> Record.add "ALIGN" (al_of_int vmemop.align)
+    |> Record.add "OFFSET" (al_of_int32 vmemop.offset)
+  in
+
+  let vloadop = match vextension with
+  | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", [ al_of_pack_shape pack_shape; al_of_extension extension; StrV str ])
+  | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size; StrV str ])
+  | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size; StrV str ]) in
+
+  [ vloadop ] @ al_of_memidx ()
 
 (* Construct instruction *)
 
@@ -1624,6 +1646,7 @@ let rec al_of_instr instr =
     CaseV ("RETURN_CALL_INDIRECT", [ al_of_idx idx1; al_of_idx idx2 ])
   | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
   | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
+  | VecLoad vloadop -> CaseV ("VLOAD", al_of_vloadop vloadop)
   | MemorySize -> CaseV ("MEMORY.SIZE", al_of_memidx ())
   | MemoryGrow -> CaseV ("MEMORY.GROW", al_of_memidx ())
   | MemoryFill -> CaseV ("MEMORY.FILL", al_of_memidx ())

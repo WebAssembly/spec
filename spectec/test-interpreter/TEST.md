@@ -679,64 +679,71 @@ watsup 0.4 generator
 - 118/118 (100.00%)
 
 ===== simd_address.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
 - 0/42 (0.00%)
 
 ===== simd_align.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
 - 0/8 (0.00%)
 
 ===== simd_bit_shift.wast =====
-- 0/211 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 134/211 (63.51%)
 
 ===== simd_bitwise.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
 - 126/139 (90.65%)
 
 ===== simd_boolean.wast =====
 - 251/259 (96.91%)
 
 ===== simd_const.wast =====
-- 263/265 (99.25%)
+- 265/265 (100.00%)
 
 ===== simd_conversions.wast =====
 - 0/232 (0.00%)
 
 ===== simd_f32x4.wast =====
-- 22/772 (2.85%)
+- 608/772 (78.76%)
 
 ===== simd_f32x4_arith.wast =====
-- 77/1803 (4.27%)
+- 1193/1803 (66.17%)
 
 ===== simd_f32x4_cmp.wast =====
-- 0/2581 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 2568/2581 (99.50%)
 
 ===== simd_f32x4_pmin_pmax.wast =====
-- 0/3872 (0.00%)
+- 3872/3872 (100.00%)
 
 ===== simd_f32x4_rounding.wast =====
 - 160/176 (90.91%)
 
 ===== simd_f64x2.wast =====
-- 23/793 (2.90%)
+- 627/793 (79.07%)
 
 ===== simd_f64x2_arith.wast =====
-- 78/1806 (4.32%)
+- 1194/1806 (66.11%)
 
 ===== simd_f64x2_cmp.wast =====
-- 0/2659 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 2646/2659 (99.51%)
 
 ===== simd_f64x2_pmin_pmax.wast =====
-- 0/3872 (0.00%)
+- 3872/3872 (100.00%)
 
 ===== simd_f64x2_rounding.wast =====
 - 160/176 (90.91%)
 
 ===== simd_i16x8_arith.wast =====
-- 15/181 (8.29%)
+- 181/181 (100.00%)
 
 ===== simd_i16x8_arith2.wast =====
-- 21/151 (13.91%)
+- 151/151 (100.00%)
 
 ===== simd_i16x8_cmp.wast =====
-- 0/433 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 420/433 (97.00%)
 
 ===== simd_i16x8_extadd_pairwise_i8x16.wast =====
 - 0/16 (0.00%)
@@ -745,19 +752,20 @@ watsup 0.4 generator
 - 0/104 (0.00%)
 
 ===== simd_i16x8_q15mulr_sat_s.wast =====
-- 0/26 (0.00%)
+- 26/26 (100.00%)
 
 ===== simd_i16x8_sat_arith.wast =====
-- 0/204 (0.00%)
+- 204/204 (100.00%)
 
 ===== simd_i32x4_arith.wast =====
-- 15/181 (8.29%)
+- 181/181 (100.00%)
 
 ===== simd_i32x4_arith2.wast =====
-- 21/121 (17.36%)
+- 121/121 (100.00%)
 
 ===== simd_i32x4_cmp.wast =====
-- 0/433 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 420/433 (97.00%)
 
 ===== simd_i32x4_dot_i16x8.wast =====
 - 0/26 (0.00%)
@@ -775,36 +783,39 @@ watsup 0.4 generator
 - 0/102 (0.00%)
 
 ===== simd_i64x2_arith.wast =====
-- 15/187 (8.02%)
+- 187/187 (100.00%)
 
 ===== simd_i64x2_arith2.wast =====
 - 21/21 (100.00%)
 
 ===== simd_i64x2_cmp.wast =====
-- 0/102 (0.00%)
+- 102/102 (100.00%)
 
 ===== simd_i64x2_extmul_i32x4.wast =====
 - 0/104 (0.00%)
 
 ===== simd_i8x16_arith.wast =====
-- 15/121 (12.40%)
+- 121/121 (100.00%)
 
 ===== simd_i8x16_arith2.wast =====
-- 21/184 (11.41%)
+- 184/184 (100.00%)
 
 ===== simd_i8x16_cmp.wast =====
-- 0/413 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 400/413 (96.85%)
 
 ===== simd_i8x16_sat_arith.wast =====
-- 0/188 (0.00%)
+- 188/188 (100.00%)
 
 ===== simd_int_to_int_extend.wast =====
 - 0/228 (0.00%)
 
 ===== simd_lane.wast =====
-- 95/274 (34.67%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 112/274 (40.88%)
 
 ===== simd_load.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
 - 0/17 (0.00%)
 
 ===== simd_load16_lane.wast =====
@@ -820,18 +831,20 @@ watsup 0.4 generator
 - 0/48 (0.00%)
 
 ===== simd_load_extend.wast =====
-- 0/84 (0.00%)
+- 12/84 (14.29%)
 
 ===== simd_load_splat.wast =====
-- 0/112 (0.00%)
+- 112/112 (100.00%)
 
 ===== simd_load_zero.wast =====
-- 0/27 (0.00%)
+- 27/27 (100.00%)
 
 ===== simd_splat.wast =====
-- 0/158 (0.00%)
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
+- 102/158 (64.56%)
 
 ===== simd_store.wast =====
+- Uncaught exception: Module Instantiation failed due to Invalid_argument("option is None")
 - 0/17 (0.00%)
 
 ===== simd_store16_lane.wast =====
@@ -894,6 +907,6 @@ watsup 0.4 generator
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [21231/44159] (48.08%; Normalized 66.19%)
+Total [40780/44159] (92.35%; Normalized 82.29%)
 == Complete.
 ```

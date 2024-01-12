@@ -322,7 +322,7 @@ rule Step_pure/vishiftop:
   (VVCONST V128 cv_1) (CONST I32 n) (VISHIFTOP sh vishiftop) ~> (VVCONST V128 cv)
   -- if sh = SHAPE lnt lns
   -- if i* = $lanes(sh, cv_1)
-  -- if $lanes(sh, cv) = $vishiftop(vishiftop, lnt, i*, n^lns)
+  -- if $lanes(sh, cv) = $vishiftop(vishiftop, lnt, i, n)*
 
 
 rule Step_pure/all_true-true:
@@ -822,84 +822,84 @@ rule Step/elem.drop:
 ;; Memory instructions
 
 rule Step_read/load-num-oob:
-  z; (CONST I32 i) (LOAD nt x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + $size(nt)/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (LOAD nt x marg)  ~>  TRAP
+  -- if $(i + marg.OFFSET + $size(nt)/8 > |$mem(z, x).DATA|)
 
 rule Step_read/load-num-val:
-  z; (CONST I32 i) (LOAD nt x mo)  ~>  (CONST nt c)
-  -- if $ntbytes(nt, c) = $mem(z, x).DATA[i + mo.OFFSET : $size(nt)/8]
+  z; (CONST I32 i) (LOAD nt x marg)  ~>  (CONST nt c)
+  -- if $ntbytes(nt, c) = $mem(z, x).DATA[i + marg.OFFSET : $size(nt)/8]
 
 rule Step_read/load-pack-oob:
-  z; (CONST I32 i) (LOAD nt (n _ sx) x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (LOAD nt (n _ sx) x marg)  ~>  TRAP
+  -- if $(i + marg.OFFSET + n/8 > |$mem(z, x).DATA|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD nt (n _ sx) x mo)  ~>  (CONST nt $ext(n, $size(nt), sx, c))
-  -- if $ibytes(n, c) = $mem(z, x).DATA[i + mo.OFFSET : n/8]
+  z; (CONST I32 i) (LOAD nt (n _ sx) x marg)  ~>  (CONST nt $ext(n, $size(nt), sx, c))
+  -- if $ibytes(n, c) = $mem(z, x).DATA[i + marg.OFFSET : n/8]
 
 
 rule Step_read/vload-oob:
-  z; (CONST I32 i) (VLOAD n lns sx x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n * lns/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VLOAD (SHAPE (PACKSHAPE psl psr) sx marg) x)  ~>  TRAP
+  -- if $(i + marg.OFFSET + psl * psr/8) > |$mem(z, x).DATA|
 
 rule Step_read/vload-val:
-  z; (CONST I32 i) (VLOAD n lns sx x mo)  ~>  (VVCONST V128 cv)
-  -- if $ibytes(n, m)^lns = $mem(z, x).DATA[i + mo.OFFSET + k * n/8 : n/8]^(k<lns)
-  -- if $lanes(SHAPE $ishape($(n * 2)) lns, cv) = $ext(n, lns, sx, m)^lns
+  z; (CONST I32 i) (VLOAD (SHAPE (PACKSHAPE psl psr) sx marg) x)  ~>  (VVCONST V128 cv)
+  -- if $ibytes(psl, m)* = $mem(z, x).DATA[i + marg.OFFSET + k * psl/8 : psl/8]^(k<psr)
+  -- if $lanes(SHAPE $ishape($(psl * 2)) psr, cv) = $ext(psl, $(psl * 2), sx, m)*
 
-rule Step_read/vload_splat-oob:
-  z; (CONST I32 i) (VLOAD_SPLAT n x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, x).DATA|)
+rule Step_read/vload-splat-oob:
+  z; (CONST I32 i) (VLOAD (SPLAT n marg) x)  ~>  TRAP
+  -- if $(i + marg.OFFSET + n/8) > |$mem(z, x).DATA|
 
-rule Step_read/vload_splat-val:
-  z; (CONST I32 i) (VLOAD_SPLAT n x mo)  ~>  (VVCONST V128 cv)
-  -- if $ibytes(n, m) = $mem(z, x).DATA[i + mo.OFFSET : lns/8]
-  -- if l = $(128/lns)
+rule Step_read/vload-splat-val:
+  z; (CONST I32 i) (VLOAD (SPLAT n marg) x)  ~>  (VVCONST V128 cv)
+  -- if $ibytes(n, m) = $mem(z, x).DATA[i + marg.OFFSET : n/8]
+  -- if l = $(128/n)
   -- if $lanes(SHAPE $ishape(n) l, cv) = m^l
 
-rule Step_read/vload_zero-oob:
-  z; (CONST I32 i) (VLOAD_ZERO n x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, x).DATA|)
+rule Step_read/vload-zero-oob:
+  z; (CONST I32 i) (VLOAD (ZERO n marg) x)  ~>  TRAP
+  -- if $(i + marg.OFFSET + n/8) > |$mem(z, x).DATA|
 
-rule Step_read/vload_zero-val:
-  z; (CONST I32 i) (VLOAD_ZERO n x mo)  ~>  (VVCONST V128 cv)
-  -- if $ibytes(n, m) = $mem(z, x).DATA[i + mo.OFFSET : n/8]
-  -- if cv = $ext(n, 128, U, m)
+rule Step_read/vload-zero-val:
+  z; (CONST I32 i) (VLOAD (ZERO n marg) x)  ~>  (VVCONST V128 cv)
+  -- if $ibytes(n, c) = $mem(z, x).DATA[i + marg.OFFSET : n/8]
+  -- if cv = $ext128(n, c)
 
 rule Step_read/vload_lane-oob:
-  z; (CONST I32 i) (VVCONST V128 cv_1) (VLOAD_LANE n x mo laneidx)  ~>  TRAP
-  -- if $(i + mo.OFFSET + n/8 > |$mem(z, x).DATA|)
+  z; (CONST I32 i) (VVCONST V128 cv_1) (VLOAD_LANE n x marg laneidx)  ~>  TRAP
+  -- if $(i + marg.OFFSET + n/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload_lane-val:
-  z; (CONST I32 i) (VVCONST V128 cv_1) (VLOAD_LANE n x mo laneidx)  ~>  (VVCONST V128 cv)
-  -- if $ibytes(n, m) = $mem(z, x).DATA[i + mo.OFFSET : n/8]
+  z; (CONST I32 i) (VVCONST V128 cv_1) (VLOAD_LANE n x marg laneidx)  ~>  (VVCONST V128 cv)
+  -- if $ibytes(n, m) = $mem(z, x).DATA[i + marg.OFFSET : n/8]
   -- if sh = SHAPE $ishape(n) $(128/n)
   -- if $lanes(sh, cv) = $lanes(sh, cv_1)[[laneidx] = m]
 
 
 rule Step/store-num-oob:
-  z; (CONST I32 i) (CONST nt c) (STORE nt x mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + $size(nt)/8) > |$mem(z, x).DATA|
+  z; (CONST I32 i) (CONST nt c) (STORE nt x marg)  ~>  z; TRAP
+  -- if $(i + marg.OFFSET + $size(nt)/8) > |$mem(z, x).DATA|
 
 rule Step/store-num-val:
-  z; (CONST I32 i) (CONST nt c) (STORE nt x mo)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $($size(nt)/8), b*); eps
+  z; (CONST I32 i) (CONST nt c) (STORE nt x marg)  ~>  $with_mem(z, x, $(i + marg.OFFSET), $($size(nt)/8), b*); eps
   -- if b* = $ntbytes(nt, c)
 
 rule Step/store-pack-oob:
-  z; (CONST I32 i) (CONST nt c) (STORE nt n x mo)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + n/8) > |$mem(z, x).DATA|
+  z; (CONST I32 i) (CONST nt c) (STORE nt n x marg)  ~>  z; TRAP
+  -- if $(i + marg.OFFSET + n/8) > |$mem(z, x).DATA|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST nt c) (STORE nt n x mo)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $(n/8), b*); eps
+  z; (CONST I32 i) (CONST nt c) (STORE nt n x marg)  ~>  $with_mem(z, x, $(i + marg.OFFSET), $(n/8), b*); eps
   -- if b* = $ibytes(n, $wrap($size(nt), n, c))
 
 
 rule Step/vstore-oob:
-  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE n x mo laneidx)  ~>  z; TRAP
-  -- if $(i + mo.OFFSET + n) > |$mem(z, x).DATA|
+  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE n x marg laneidx)  ~>  z; TRAP
+  -- if $(i + marg.OFFSET + n) > |$mem(z, x).DATA|
 
 rule Step/vstore-val:
-  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE n x mo laneidx)  ~>  $with_mem(z, x, $(i + mo.OFFSET), $(n/8), b*); eps
+  z; (CONST I32 i) (VVCONST V128 cv) (VSTORE n x marg laneidx)  ~>  $with_mem(z, x, $(i + marg.OFFSET), $(n/8), b*); eps
   -- if b* = $ibytes(n, $lanes(SHAPE $ishape(n) $(128/n), cv)[laneidx])
 
 
@@ -927,7 +927,7 @@ rule Step_read/memory.fill-zero:
 
 rule Step_read/memory.fill-succ:
   z; (CONST I32 i) val (CONST I32 n) (MEMORY.FILL x)  ~>
-    (CONST I32 i) val (STORE I32 8 x $memop0)
+    (CONST I32 i) val (STORE I32 8 x $memarg0)
     (CONST I32 $(i+1)) val (CONST I32 $(n-1)) (MEMORY.FILL x)
   -- otherwise
 
@@ -943,14 +943,14 @@ rule Step_read/memory.copy-zero:
 
 rule Step_read/memory.copy-le:
   z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST I32 i_1) (CONST I32 i_2) (LOAD I32 (8 _ U) x_2 $memop0) (STORE I32 8 x_1 $memop0)
+    (CONST I32 i_1) (CONST I32 i_2) (LOAD I32 (8 _ U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
     (CONST I32 $(i_1 + 1)) (CONST I32 $(i_2 + 1)) (CONST I32 $(n - 1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
   -- if i_1 <= i_2
 
 rule Step_read/memory.copy-gt:
   z; (CONST I32 i_1) (CONST I32 i_2) (CONST I32 n) (MEMORY.COPY x_1 x_2)  ~>
-    (CONST I32 $(i_1+n-1)) (CONST I32 $(i_2+n-1)) (LOAD I32 (8 _ U) x_2 $memop0) (STORE I32 8 x_1 $memop0)
+    (CONST I32 $(i_1+n-1)) (CONST I32 $(i_2+n-1)) (LOAD I32 (8 _ U) x_2 $memarg0) (STORE I32 8 x_1 $memarg0)
     (CONST I32 i_1) (CONST I32 i_2) (CONST I32 $(n-1)) (MEMORY.COPY x_1 x_2)
   -- otherwise
 
@@ -966,7 +966,7 @@ rule Step_read/memory.init-zero:
 
 rule Step_read/memory.init-succ:
   z; (CONST I32 j) (CONST I32 i) (CONST I32 n) (MEMORY.INIT x y)  ~>
-    (CONST I32 j) (CONST I32 $data(z,y).DATA[i]) (STORE I32 8 x $memop0)
+    (CONST I32 j) (CONST I32 $data(z,y).DATA[i]) (STORE I32 8 x $memarg0)
     (CONST I32 $(j+1)) (CONST I32 $(i+1)) (CONST I32 $(n-1)) (MEMORY.INIT x y)
   -- otherwise
 

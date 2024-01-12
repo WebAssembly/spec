@@ -246,5 +246,5 @@ def $memsxt(externtype et*) = $memsxt(et*)  -- otherwise
 
 ;; Shorthands for Instructions
 
-def $memop0 : memop  hint(show )
-def $memop0 = {ALIGN 0, OFFSET 0}
+def $memarg0 : memarg  hint(show )
+def $memarg0 = {ALIGN 0, OFFSET 0}

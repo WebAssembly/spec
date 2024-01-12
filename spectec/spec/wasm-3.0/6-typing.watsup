@@ -1022,17 +1022,17 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD n lns sx x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE (PACKSHAPE psl psr) sx {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= n/8 * lns)
+  -- if $(2^(n_A) <= psl/8 * psr)
 
-rule Instr_ok/vload_splat:
-  C |- VLOAD_SPLAT n x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+rule Instr_ok/vload-splat:
+  C |- VLOAD (SPLAT n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= n/8)
 
-rule Instr_ok/vload_zero:
-  C |- VLOAD_ZERO n x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+rule Instr_ok/vload-zero:
+  C |- VLOAD (ZERO n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) < n/8)
 

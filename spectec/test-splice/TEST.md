@@ -140,13 +140,11 @@ $$
 \mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
 \mathsf{data.drop}~{\mathit{dataidx}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-\mathsf{vload}~{\mathit{n}}~{\mathit{lanesize}}~{\mathit{sx}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-\mathsf{vload\_splat}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-\mathsf{vload\_zero}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
-\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{vstore}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\[0.8ex]
+{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+\mathsf{vload}~{\mathit{vloadop}}~{\mathit{memidx}} \\ &&|&
+\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{vstore}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -433,10 +431,10 @@ warning: syntax `localtype` was never spliced
 warning: syntax `m` was never spliced
 warning: syntax `mem` was never spliced
 warning: syntax `memaddr` was never spliced
+warning: syntax `memarg` was never spliced
 warning: syntax `memidx` was never spliced
 warning: syntax `memidxop` was never spliced
 warning: syntax `meminst` was never spliced
-warning: syntax `memop` was never spliced
 warning: syntax `minmaxopVIXX` was never spliced
 warning: syntax `module` was never spliced
 warning: syntax `moduleinst` was never spliced
@@ -450,6 +448,7 @@ warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
 warning: syntax `packedtype` was never spliced
 warning: syntax `packedval` was never spliced
+warning: syntax `packshape` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
 warning: syntax `reftype` was never spliced
@@ -505,6 +504,7 @@ warning: syntax `valtype` was never spliced
 warning: syntax `valtype` was never spliced
 warning: syntax `vec` was never spliced
 warning: syntax `vectype` was never spliced
+warning: syntax `vloadop` was never spliced
 warning: syntax `zero` was never spliced
 warning: grammar `Babsheaptype` was never spliced
 warning: grammar `Bblocktype` was never spliced
@@ -573,8 +573,8 @@ warning: grammar `Blimits` was never spliced
 warning: grammar `Blocalidx` was never spliced
 warning: grammar `Blocals` was never spliced
 warning: grammar `Bmem` was never spliced
+warning: grammar `Bmemarg` was never spliced
 warning: grammar `Bmemidx` was never spliced
-warning: grammar `Bmemop` was never spliced
 warning: grammar `Bmemsec` was never spliced
 warning: grammar `Bmemtype` was never spliced
 warning: grammar `Bmodule` was never spliced
@@ -770,8 +770,8 @@ warning: rule `Instr_ok/data.drop` was never spliced
 warning: rule `Instr_ok/load` was never spliced
 warning: rule `Instr_ok/store` was never spliced
 warning: rule `Instr_ok/vload` was never spliced
-warning: rule `Instr_ok/vload_splat` was never spliced
-warning: rule `Instr_ok/vload_zero` was never spliced
+warning: rule `Instr_ok/vload-splat` was never spliced
+warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
 warning: rule `Instr_ok/vstore` was never spliced
 warning: rule `Instrf_ok/instr` was never spliced
@@ -978,10 +978,10 @@ warning: rule `Step_read/load-pack-oob` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
 warning: rule `Step_read/vload-oob` was never spliced
 warning: rule `Step_read/vload-val` was never spliced
-warning: rule `Step_read/vload_splat-oob` was never spliced
-warning: rule `Step_read/vload_splat-val` was never spliced
-warning: rule `Step_read/vload_zero-oob` was never spliced
-warning: rule `Step_read/vload_zero-val` was never spliced
+warning: rule `Step_read/vload-splat-oob` was never spliced
+warning: rule `Step_read/vload-splat-val` was never spliced
+warning: rule `Step_read/vload-zero-oob` was never spliced
+warning: rule `Step_read/vload-zero-val` was never spliced
 warning: rule `Step_read/vload_lane-oob` was never spliced
 warning: rule `Step_read/vload_lane-val` was never spliced
 warning: rule `Step_read/memory.size` was never spliced
@@ -1055,6 +1055,7 @@ warning: definition `eleminst` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `ext` was never spliced
+warning: definition `ext128` was never spliced
 warning: definition `ext_arrayinst` was never spliced
 warning: definition `ext_structinst` was never spliced
 warning: definition `fbytes` was never spliced
@@ -1094,8 +1095,8 @@ warning: definition `ishape` was never spliced
 warning: definition `lanes` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
+warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
-warning: definition `memop0` was never spliced
 warning: definition `memsxt` was never spliced
 warning: definition `memsxv` was never spliced
 warning: definition `min` was never spliced
@@ -1265,8 +1266,6 @@ warning: validation prose `VCVTOP` was never spliced
 warning: validation prose `VISHIFTOP` was never spliced
 warning: validation prose `VLOAD` was never spliced
 warning: validation prose `VLOAD_LANE` was never spliced
-warning: validation prose `VLOAD_SPLAT` was never spliced
-warning: validation prose `VLOAD_ZERO` was never spliced
 warning: validation prose `VRELOP` was never spliced
 warning: validation prose `VSTORE` was never spliced
 warning: validation prose `VUNOP` was never spliced

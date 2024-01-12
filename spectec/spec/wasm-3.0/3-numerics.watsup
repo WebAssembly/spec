@@ -28,6 +28,8 @@ def $cvtop(cvtop, numtype, numtype, sx?, c) : c_numtype* hint(show %#$_((%,%))^(
 def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
 def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^(%)#((%)))
 
+def $ext128(nat, c) : c_vectype ;; TODO
+
 def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
 def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
 def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
@@ -80,6 +82,6 @@ def $vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype         
 def $vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype hint(show %#_%#(%, %, %))
 def $vunop(unop_vectype, shape, c_vectype) : c_vectype
 def $vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*
-def $vrelop(relop_vectype, shape, c_vectype, c_vectype) : c_numtype
-def $vishiftop(shiftop_vectype, lanetype, nat*, nat*) : nat*                         hint(show %#_%#(%, %))
+def $vrelop(relop_vectype, shape, nat, nat) : nat
+def $vishiftop(shiftop_vectype, lanetype, nat, nat) : nat                            hint(show %#_%#(%, %))
 def $vcvtop(cvtop_vectype, nat, nat, sx?, nat) : nat                                 hint(show %#_%#(%, %, %))

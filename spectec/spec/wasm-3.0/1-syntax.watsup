@@ -253,9 +253,9 @@ var testop : testop_numtype
 var relop : relop_numtype
 
 
-syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
+syntax memarg hint(desc "memory argument") = {ALIGN u32, OFFSET u32}
 
-var mo : memop
+var marg : memarg
 
 syntax lanetype hint(desc "lane type") =
   | packedtype | numtype
@@ -265,6 +265,14 @@ var lnt : lanetype
 var lns : lanesize
 syntax shape hint(desc "shape") =
   | SHAPE lanetype lanesize      hint(show %X%)
+
+var psl : nat
+var psr : nat
+
+syntax packshape =
+  | PACKSHAPE nat nat
+
+var psh : packshape
 
 syntax half = | LOW | HIGH
 var hf : half
@@ -441,6 +449,9 @@ syntax instr/table hint(desc "table instruction") = ...
   | ELEM.DROP elemidx
   | ...
 
+syntax vloadop =
+  | SHAPE packshape sx memarg | SPLAT nat memarg | ZERO nat memarg
+
 syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.SIZE memidx
   | MEMORY.GROW memidx
@@ -448,13 +459,11 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.COPY memidx memidx
   | MEMORY.INIT memidx dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
-  | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
-  | VLOAD n lanesize sx memidx memop
-  | VLOAD_SPLAT n memidx memop
-  | VLOAD_ZERO n memidx memop
-  | VLOAD_LANE n memidx memop laneidx
-  | VSTORE n memidx memop laneidx
+  | LOAD numtype (n _ sx)? memidx memarg  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
+  | STORE numtype n? memidx memarg        hint(show %.STORE % %) hint(show %.STORE#% % %)
+  | VLOAD vloadop memidx
+  | VLOAD_LANE n memidx memarg laneidx
+  | VSTORE n memidx memarg laneidx
 
 syntax expr hint(desc "expression") =
   instr*
