@@ -447,7 +447,7 @@ let ine: numerics =
     name = "ine_128";
     f = 
       (function
-      | [ VecV v1; VecV v2 ] -> if v1 = v2 then 0L else 1L |> numV
+      | [ VecV v1; VecV v2 ] -> (if v1 = v2 then 0L else 1L) |> numV
       | _ -> failwith "Invaild ine"
       );
   }

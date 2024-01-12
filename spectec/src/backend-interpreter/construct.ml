@@ -1689,7 +1689,7 @@ let al_of_type ty =
       |> arg_of_case "SUBD" 2
       |> arg_of_case "FUNC" 0 
       |> fun rt -> CaseV ("TYPE", [ rt ])
-    | _ -> failwith ("Rectype is no supported in Wasm " ^ (string_of_int !version))
+    | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
 
 let al_of_local l = CaseV ("LOCAL", [ al_of_val_type l.it.ltype ])
 
