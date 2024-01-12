@@ -767,7 +767,7 @@ and interp_instr (instr: instr): unit =
   | AppendI (e1, e2) ->
     let a = eval_expr e1 |> unwrap_listv in
     let v = eval_expr e2 in
-    a := Array.append !a) [|v|]
+    a := Array.append !a [|v|]
   | _ ->
     structured_string_of_instr instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
