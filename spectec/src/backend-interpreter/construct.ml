@@ -89,6 +89,7 @@ let dotP kwd = DotP kwd |> mk_path
 
 let numV i = NumV i
 let boolV b = BoolV b
+let vecV vec = VecV vec
 let strV r = StrV r
 let caseV (kwd, vl) = CaseV (kwd, vl)
 let optV opt = OptV opt
@@ -149,6 +150,9 @@ let al_to_int64: value -> int64 = function
 let al_to_bool: value -> bool = function
   | BoolV b -> b
   | v -> fail "boolean" v
+let al_to_vector: value -> V128.t = function
+  | VecV v -> V128.of_bits v
+  | v -> fail "vector" v
 let al_to_int (v: value): int = al_to_int64 v |> Int64.to_int
 let al_to_int32 (v: value): int32 = al_to_int64 v |> Int64.to_int32
 let al_to_float32 (v: value): F32.t = al_to_int32 v |> F32.of_bits
@@ -1018,6 +1022,7 @@ let al_of_int32 i32 =
   Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL |> al_of_int64
 let al_of_float32 f32 = F32.to_bits f32 |> al_of_int32
 let al_of_float64 f64 = F64.to_bits f64 |> al_of_int64
+let al_of_vector vec = V128.to_bits vec |> vecV
 let al_of_bool b = Bool.to_int b |> al_of_int
 let al_of_idx idx = al_of_int32 idx.it
 let al_of_byte byte = Char.code byte |> al_of_int

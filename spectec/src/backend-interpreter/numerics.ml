@@ -13,23 +13,32 @@ let f64_to_const f = CaseV ("CONST", [ singleton "F64"; al_of_float64 f ])
 
 let wrap1
   (destruct: value -> 'a)
-  (op: 'a -> 'b)
   (construct: 'b -> value)
+  (op: 'a -> 'b)
   (v: value): value =
     destruct v |> op |> construct
 let wrap2
   (destruct: value -> 'a)
-  (op: 'a -> 'a -> 'b)
   (construct: 'b -> value)
+  (op: 'a -> 'a -> 'b)
   (v1: value)
   (v2: value): value =
     op (destruct v1) (destruct v2) |> construct
 
+let wrap3
+  (destruct: value -> 'a)
+  (construct: 'b -> value)
+  (op: 'a -> 'a -> 'a -> 'b)
+  (v1: value)
+  (v2: value)
+  (v3: value): value =
+    op (destruct v1) (destruct v2) (destruct v3) |> construct
 
-let wrap_i32_unop op = wrap1 al_to_int32 op (fun i32 -> listV [ al_of_int32 i32 ])
-let wrap_i64_unop op = wrap1 al_to_int64 op (fun i64 -> listV [ al_of_int64 i64 ])
-let wrap_f32_unop op = wrap1 al_to_float32 op (fun f32 -> listV [ al_of_float32 f32 ])
-let wrap_f64_unop op = wrap1 al_to_float64 op (fun f64 -> listV [ al_of_float64 f64 ])
+
+let wrap_i32_unop = wrap1 al_to_int32 (fun i32 -> listV [ al_of_int32 i32 ])
+let wrap_i64_unop = wrap1 al_to_int64 (fun i64 -> listV [ al_of_int64 i64 ])
+let wrap_f32_unop = wrap1 al_to_float32 (fun f32 -> listV [ al_of_float32 f32 ])
+let wrap_f64_unop = wrap1 al_to_float64 (fun f64 -> listV [ al_of_float64 f64 ])
 let unop: numerics =
   {
     name = "unop";
@@ -81,10 +90,10 @@ let unop: numerics =
       | _ -> failwith "Invalid unop")
   }
 
-let wrap_i32_binop op = wrap2 al_to_int32 op (fun i32 -> listV [ al_of_int32 i32 ])
-let wrap_i64_binop op = wrap2 al_to_int64 op (fun i64 -> listV [ al_of_int64 i64 ])
-let wrap_f32_binop op = wrap2 al_to_float32 op (fun f32 -> listV [ al_of_float32 f32 ])
-let wrap_f64_binop op = wrap2 al_to_float64 op (fun f64 -> listV [ al_of_float64 f64 ])
+let wrap_i32_binop = wrap2 al_to_int32 (fun i32 -> listV [ al_of_int32 i32 ])
+let wrap_i64_binop = wrap2 al_to_int64 (fun i64 -> listV [ al_of_int64 i64 ])
+let wrap_f32_binop = wrap2 al_to_float32 (fun f32 -> listV [ al_of_float32 f32 ])
+let wrap_f64_binop = wrap2 al_to_float64 (fun f64 -> listV [ al_of_float64 f64 ])
 let catch_ixx_exception f = try f() with
   | Ixx.DivideByZero
   | Ixx.Overflow
@@ -158,8 +167,8 @@ let binop : numerics =
       | _ -> failwith "Invalid binop");
   }
 
-let wrap_i32_testop op = wrap1 al_to_int32 op al_of_bool
-let wrap_i64_testop op = wrap1 al_to_int64 op al_of_bool
+let wrap_i32_testop = wrap1 al_to_int32 al_of_bool
+let wrap_i64_testop = wrap1 al_to_int64 al_of_bool
 let testop : numerics =
   {
     name = "testop";
@@ -173,10 +182,10 @@ let testop : numerics =
       | _ -> failwith "Invalid testop");
   }
 
-let wrap_i32_relop op = wrap2 al_to_int32 op al_of_bool
-let wrap_i64_relop op = wrap2 al_to_int64 op al_of_bool
-let wrap_f32_relop op = wrap2 al_to_float32 op al_of_bool
-let wrap_f64_relop op = wrap2 al_to_float64 op al_of_bool
+let wrap_i32_relop = wrap2 al_to_int32 al_of_bool
+let wrap_i64_relop = wrap2 al_to_int64 al_of_bool
+let wrap_f32_relop = wrap2 al_to_float32 al_of_bool
+let wrap_f64_relop = wrap2 al_to_float64 al_of_bool
 let relop : numerics =
   {
     name = "relop";
@@ -233,21 +242,21 @@ let relop : numerics =
   }
 
 (* conversion from i32 *)
-let wrap_i64_cvtop_i32 op = wrap1 al_to_int32 op al_of_int64
-let wrap_f32_cvtop_i32 op = wrap1 al_to_int32 op al_of_float32
-let wrap_f64_cvtop_i32 op = wrap1 al_to_int32 op al_of_float64
+let wrap_i64_cvtop_i32 = wrap1 al_to_int32 al_of_int64
+let wrap_f32_cvtop_i32 = wrap1 al_to_int32 al_of_float32
+let wrap_f64_cvtop_i32 = wrap1 al_to_int32 al_of_float64
 (* conversion from i64 *)
-let wrap_i32_cvtop_i64 op = wrap1 al_to_int64 op al_of_int32
-let wrap_f32_cvtop_i64 op = wrap1 al_to_int64 op al_of_float32
-let wrap_f64_cvtop_i64 op = wrap1 al_to_int64 op al_of_float64
+let wrap_i32_cvtop_i64 = wrap1 al_to_int64 al_of_int32
+let wrap_f32_cvtop_i64 = wrap1 al_to_int64 al_of_float32
+let wrap_f64_cvtop_i64 = wrap1 al_to_int64 al_of_float64
 (* conversion from f32 *)
-let wrap_i32_cvtop_f32 op = wrap1 al_to_float32 op al_of_int32
-let wrap_i64_cvtop_f32 op = wrap1 al_to_float32 op al_of_int64
-let wrap_f64_cvtop_f32 op = wrap1 al_to_float32 op al_of_float64
+let wrap_i32_cvtop_f32 = wrap1 al_to_float32 al_of_int32
+let wrap_i64_cvtop_f32 = wrap1 al_to_float32 al_of_int64
+let wrap_f64_cvtop_f32 = wrap1 al_to_float32 al_of_float64
 (* conversion from i64 *)
-let wrap_i32_cvtop_f64 op = wrap1 al_to_float64 op al_of_int32
-let wrap_i64_cvtop_f64 op = wrap1 al_to_float64 op al_of_int64
-let wrap_f32_cvtop_f64 op = wrap1 al_to_float64 op al_of_float32
+let wrap_i32_cvtop_f64 = wrap1 al_to_float64 al_of_int32
+let wrap_i64_cvtop_f64 = wrap1 al_to_float64 al_of_int64
+let wrap_f32_cvtop_f64 = wrap1 al_to_float64 al_of_float32
 
 let cvtop : numerics =
   {
@@ -412,22 +421,23 @@ let inverse_of_signed : numerics =
       );
   }
 
-let v128_to_vec v = VecV(V128.to_bits v)
-let vec_to_v128 = function
-| VecV (v) -> V128.of_bits v
-| _ -> failwith "Operand should be VecV"
-
 let lanes : numerics =
   {
     name = "lanes";
     f = 
       (function
-      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I8x16.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I16x8.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV (v)] -> listV (List.map al_of_int32 (v |> V128.of_bits |> V128.I32x4.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV (v)] -> listV (List.map al_of_int64 (v |> V128.of_bits |> V128.I64x2.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV (v)] -> listV (List.map al_of_float32 (v |> V128.of_bits |> V128.F32x4.to_lanes))
-      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV (v)] -> listV (List.map al_of_float64 (v |> V128.of_bits |> V128.F64x2.to_lanes))
+      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int32 |> listV
+      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int32 |> listV
+      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV
+      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV
+      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV
+      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV v ] ->
+        v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV
       | _ -> failwith "Invaild lanes"
       );
   }
@@ -437,7 +447,7 @@ let ine: numerics =
     name = "ine_128";
     f = 
       (function
-      | [ VecV(v1); VecV (v2) ] -> NumV (if v1 = v2 then 0L else 1L)
+      | [ VecV v1; VecV v2 ] -> NumV (if v1 = v2 then 0L else 1L)
       | _ -> failwith "Invaild ine"
       );
   }
@@ -447,14 +457,11 @@ let vzero: numerics =
   {
     name = "vzero";
     f = 
-      (function
-      | _ -> VecV ("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
-      );
+      (fun _ -> VecV ("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"));
   }
 
 
-let wrap_vunop op v =
-   vec_to_v128 v |> op |> v128_to_vec
+let wrap_vunop = wrap1 al_to_vector al_of_vector
 
 let vvunop: numerics =
   {
@@ -523,10 +530,7 @@ let vunop: numerics =
   }
  
   
-let wrap_vbinop op v1 v2 =
-  let v1 = vec_to_v128 v1 in
-  let v2 = vec_to_v128 v2 in
-  op v1 v2 |> v128_to_vec
+let wrap_vbinop = wrap2 al_to_vector al_of_vector
 
 let vvbinop: numerics =
   {
@@ -570,11 +574,7 @@ let vbinop: numerics =
       | _ -> failwith "Invalid vbinop")
   }
 
-let wrap_vternop op v1 v2 v3 =
-  let v1 = vec_to_v128 v1 in
-  let v2 = vec_to_v128 v2 in
-  let v3 = vec_to_v128 v3 in
-  op v1 v2 v3 |> v128_to_vec
+let wrap_vternop = wrap3 al_to_vector al_of_vector
 let vvternop: numerics =
   {
     name = "vvternop";
