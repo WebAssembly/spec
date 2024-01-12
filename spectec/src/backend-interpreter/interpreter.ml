@@ -134,16 +134,18 @@ and access_path base path =
 and replace_path base path v_new =
   match path.it with
   | IdxP e' ->
-    let a = unwrap_listv_to_array base |> Array.copy in
-    let i = eval_expr e' |> al_to_int in
-    Array.set a i v_new;
-    ListV (ref a)
+      let a = base |> unwrap_listv_to_array in
+      let a_new = Array.copy a in
+      let i = eval_expr e' |> al_to_int in
+      Array.set a_new i v_new;
+      ListV (ref a_new)
   | SliceP (e1, e2) ->
-      let a = unwrap_listv_to_array base |> Array.copy in
+      let a = base |> unwrap_listv_to_array in
+      let a_new = Array.copy a in
       let i1 = eval_expr e1 |> al_to_int in
       let i2 = eval_expr e2 |> al_to_int in
-      Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
-      ListV (ref a)
+      Array.blit (v_new |> unwrap_listv_to_array) 0 a_new i1 i2;
+      ListV (ref a_new)
   | DotP (str, _) ->
     let r =
       match base with
@@ -203,7 +205,8 @@ and eval_expr expr =
     let a2 = eval_expr e2 |> unwrap_listv_to_array in
     ListV (Array.append a1 a2 |> ref)
   | LenE e ->
-    eval_expr e |> unwrap_listv_to_list |> List.length |> I64.of_int_u |> numV
+    let a = eval_expr e |> unwrap_listv_to_array in
+    Array.length a |> I64.of_int_u |> numV
   | StrE r ->
     Record.to_list r
     |> List.map (fun (k, e) -> string_of_kwd k, !e |> eval_expr |> ref)
@@ -626,21 +629,25 @@ and call_builtin name =
 
 and execute (wasm_instr: value): unit =
   match wasm_instr with
-  | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
-    (* TODO: remove hack *)
-    let mm = callE ("moduleinst", []) |> eval_expr in
-    let dummy_rt = CaseV ("REF", [ null; ht ]) in
-
-    (* substitute heap type *)
-    (match call_algo "inst_reftype" [ mm; dummy_rt ] with
-    | AlContext.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
-      CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
-    | _ -> raise Exception.MissingReturnValue)
-  | CaseV ("REF.NULL", _)
+  | CaseV ("REF.NULL", [ ht ]) -> ( match !version with
+    | 3 ->
+      (* substitute heap type*)
+      let dummy_rt = CaseV ("REF", [ null; ht ]) in
+      (* TODO: remove hack *)
+      let mm = callE ("moduleinst", []) |> eval_expr in
+      begin match call_algo "inst_reftype" [ mm; dummy_rt ] with
+      | AlContext.Some (CaseV ("REF", [ n; ht' ])) when n = null ->
+        CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
+      | _ -> raise Exception.MissingReturnValue
+      end
+    | _ -> WasmContext.push_value wasm_instr )
   | CaseV ("CONST", _)
-  | CaseV ("VVCONST", _) -> WasmContext.push_value wasm_instr
-  | CaseV (name, []) when is_builtin name -> call_builtin name
-  | CaseV (fname, args) -> call_algo fname args |> ignore
+  | CaseV ("VVCONST", _) ->
+    WasmContext.push_value wasm_instr
+  | CaseV (name, []) when is_builtin name ->
+    call_builtin name;
+  | CaseV (fname, args) ->
+    call_algo fname args |> ignore
   | v ->
     string_of_value v
     |> Printf.sprintf "Executing invalid value: %s"
@@ -719,10 +726,14 @@ and interp_instr (instr: instr): unit =
     List.map eval_expr el |> dsl_function_call f |> ignore
   | TrapI -> raise Exception.Trap
   | NopI -> ()
-  | ReturnI None -> AlContext.set_return ()
-  | ReturnI (Some e) -> eval_expr e |> AlContext.set_return_value
-  | ExecuteI e -> eval_expr e |> execute
-  | ExecuteSeqI e -> eval_expr e |> unwrap_listv_to_list |> List.iter execute
+  | ReturnI None ->
+    AlContext.set_return ()
+  | ReturnI (Some e) ->
+    eval_expr e |> AlContext.set_return_value
+  | ExecuteI e ->
+    eval_expr e |> execute
+  | ExecuteSeqI e ->
+    eval_expr e |> unwrap_listv_to_list |> List.iter execute
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr e1 in
     let v2 = eval_expr e2 in
@@ -767,7 +778,7 @@ and interp_instr (instr: instr): unit =
   | AppendI (e1, e2) ->
     let a = eval_expr e1 |> unwrap_listv in
     let v = eval_expr e2 in
-    a := Array.append !a [|v|]
+    a := Array.append (!a) [|v|]
   | _ ->
     structured_string_of_instr instr
     |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"

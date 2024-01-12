@@ -68,23 +68,23 @@ let unop: numerics =
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
         | "F32"  -> (
           match op with
-          | TextV "Neg" -> wrap_f32_unop F32.neg v
-          | TextV "Abs" -> wrap_f32_unop F32.abs v
-          | TextV "Ceil" -> wrap_f32_unop F32.ceil v
-          | TextV "Floor" -> wrap_f32_unop F32.floor v
-          | TextV "Trunc" -> wrap_f32_unop F32.trunc v
-          | TextV "Nearest" -> wrap_f32_unop F32.nearest v
-          | TextV "Sqrt" -> wrap_f32_unop F32.sqrt v
+          | TextV "Neg" -> wrap_f32_unop (F32.neg) v
+          | TextV "Abs" -> wrap_f32_unop (F32.abs) v
+          | TextV "Ceil" -> wrap_f32_unop (F32.ceil) v
+          | TextV "Floor" -> wrap_f32_unop (F32.floor) v
+          | TextV "Trunc" -> wrap_f32_unop (F32.trunc) v
+          | TextV "Nearest" -> wrap_f32_unop (F32.nearest) v
+          | TextV "Sqrt" -> wrap_f32_unop (F32.sqrt) v
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
         | "F64" -> (
           match op with
-          | TextV "Neg" -> wrap_f64_unop F64.neg v
-          | TextV "Abs" -> wrap_f64_unop F64.abs v
-          | TextV "Ceil" -> wrap_f64_unop F64.ceil v
-          | TextV "Floor" -> wrap_f64_unop F64.floor v
-          | TextV "Trunc" -> wrap_f64_unop F64.trunc v
-          | TextV "Nearest" -> wrap_f64_unop F64.nearest v
-          | TextV "Sqrt" -> wrap_f64_unop F64.sqrt v
+          | TextV "Neg" -> wrap_f64_unop (F64.neg) v
+          | TextV "Abs" -> wrap_f64_unop (F64.abs) v
+          | TextV "Ceil" -> wrap_f64_unop (F64.ceil) v
+          | TextV "Floor" -> wrap_f64_unop (F64.floor) v
+          | TextV "Trunc" -> wrap_f64_unop (F64.trunc) v
+          | TextV "Nearest" -> wrap_f64_unop (F64.nearest) v
+          | TextV "Sqrt" -> wrap_f64_unop (F64.sqrt) v
           | _ -> failwith ("Invalid unop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for unop")
       | _ -> failwith "Invalid unop")
@@ -307,7 +307,7 @@ let cvtop : numerics =
         | "Convert", "F64", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
         | "Reinterpret", "F64", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
         | _ -> failwith ("Invalid cvtop: " ^ op ^ t_to ^ t_from ^ sx) ) ]))
-      | _ -> failwith "Invalid cvtop")
+      | _ -> failwith "Invalid cvtop");
   }
 
 let ext : numerics =
@@ -322,7 +322,8 @@ let ext : numerics =
         if Int64.shift_right n3 (i1 - 1) = 0L then NumV n3 else
           let mask = Int64.sub (if i2 = 64 then 0L else Int64.shift_left 1L i2) (Int64.shift_left 1L i1) in
           NumV (Int64.logor n3 mask)
-      | _ -> failwith "Invalid argument fot ext")
+      | _ -> failwith "Invalid argument fot ext"
+      );
   }
 
 let ibytes : numerics =
@@ -340,7 +341,8 @@ let ibytes : numerics =
             in
           assert (n >= 0L && Int64.rem n 8L = 0L);
           decompose n i |> List.map numV |> listV
-      | _ -> failwith "Invalid bytes")
+      | _ -> failwith "Invalid bytes"
+      );
   }
 let inverse_of_ibytes : numerics =
   {
@@ -351,10 +353,11 @@ let inverse_of_ibytes : numerics =
           assert (n = Int64.of_int (Array.length !bs * 8));
           NumV (Array.fold_right (fun b acc ->
             match b with
-            | NumV b when 0L <= b && b < 256L -> Int64.shift_left acc 8 |> Int64.add b 
+            | NumV b when 0L <= b && b < 256L -> Int64.add b (Int64.shift_left acc 8)
             | _ -> failwith ("Invalid inverse_of_ibytes: " ^ Print.string_of_value b ^ " is not a valid byte.")
           ) !bs 0L)
-      | _ -> failwith "Invalid argument for inverse_of_ibytes.")
+      | _ -> failwith "Invalid argument for inverse_of_ibytes."
+      );
   }
 
 let ntbytes : numerics =
@@ -366,7 +369,8 @@ let ntbytes : numerics =
       | [ CaseV ("I64", []); n ] -> ibytes.f [ NumV 64L; n ]
       | [ CaseV ("F32", []); f ] -> ibytes.f [ NumV 32L; f ] (* TODO *)
       | [ CaseV ("F64", []); f ] -> ibytes.f [ NumV 64L; f ] (* TODO *)
-      | _ -> failwith "Invalid ntbytes")
+      | _ -> failwith "Invalid ntbytes"
+      );
   }
 let inverse_of_ntbytes : numerics =
   {
@@ -377,7 +381,8 @@ let inverse_of_ntbytes : numerics =
       | [ CaseV ("I64", []); l ] -> inverse_of_ibytes.f [ NumV 64L; l ]
       | [ CaseV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV 32L; l ] (* TODO *)
       | [ CaseV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV 64L; l ] (* TODO *)
-      | _ -> failwith "Invalid inverse_of_ntbytes")
+      | _ -> failwith "Invalid inverse_of_ntbytes"
+      );
   }
 
 let inverse_of_ztbytes : numerics =
@@ -387,7 +392,8 @@ let inverse_of_ztbytes : numerics =
       (function
       | [ CaseV ("I8", []); l ] -> inverse_of_ibytes.f [ NumV 8L; l ]
       | [ CaseV ("I16", []); l ] -> inverse_of_ibytes.f [ NumV 16L; l ]
-      | args -> inverse_of_ntbytes.f args)
+      | args -> inverse_of_ntbytes.f args
+      );
   }
 
 let bytes_ : numerics = { name = "bytes"; f = ntbytes.f }
@@ -401,7 +407,8 @@ let wrap : numerics =
         | [ NumV _m; NumV n; NumV i ] ->
             let mask = Int64.sub (Int64.shift_left 1L (Int64.to_int n)) 1L in
             NumV (Int64.logand i mask)
-      | _ -> failwith "Invalid wrap_")
+      | _ -> failwith "Invalid wrap_"
+      );
   }
 
 let inverse_of_signed : numerics =
@@ -410,7 +417,8 @@ let inverse_of_signed : numerics =
     f =
       (function
       | [ n; i ] -> wrap.f [ NumV 64L; n; i ]
-      | _ -> failwith "Invalid inverse_of_signed")
+      | _ -> failwith "Invalid inverse_of_signed"
+      );
   }
 
 let lanes : numerics =
@@ -430,7 +438,8 @@ let lanes : numerics =
         v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV
       | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV v ] ->
         v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV
-      | _ -> failwith "Invaild lanes");
+      | _ -> failwith "Invaild lanes"
+      );
   }
 
 let ine: numerics =
@@ -439,7 +448,8 @@ let ine: numerics =
     f = 
       (function
       | [ VecV v1; VecV v2 ] -> NumV (if v1 = v2 then 0L else 1L)
-      | _ -> failwith "Invaild ine");
+      | _ -> failwith "Invaild ine"
+      );
   }
 
 
@@ -630,36 +640,36 @@ let vcvtop: numerics =
       | _ -> failwith "Invalid vcvtop")
   }
 
-let numerics_list : numerics list =
-  [
-    unop;
-    binop;
-    testop;
-    relop;
-    cvtop;
-    ext;
-    ibytes;
-    inverse_of_ibytes;
-    ntbytes;
-    inverse_of_ntbytes;
-    inverse_of_ztbytes;
-    inverse_of_signed;
-    bytes_;
-    inverse_of_bytes_;
-    wrap;
-    vvunop;
-    vvbinop;
-    vvternop;
-    vunop;
-    vbinop;
-    vcvtop;
-    lanes;
-    ine;
-    vzero
-  ]
+let numerics_list : numerics list = [
+  unop;
+  binop;
+  testop;
+  relop;
+  cvtop;
+  ext;
+  ibytes;
+  inverse_of_ibytes;
+  ntbytes;
+  inverse_of_ntbytes;
+  inverse_of_ztbytes;
+  inverse_of_signed;
+  bytes_;
+  inverse_of_bytes_;
+  wrap;
+  vvunop;
+  vvbinop;
+  vvternop;
+  vunop;
+  vbinop;
+  vcvtop;
+  lanes;
+  ine;
+  vzero ]
 
 let call_numerics fname args =
-  let numerics = List.find (fun numerics -> numerics.name = fname) numerics_list in
+  let numerics =
+    List.find (fun numerics -> numerics.name = fname) numerics_list
+  in
   numerics.f args
 
 let mem name = List.exists (fun numerics -> numerics.name = name) numerics_list
