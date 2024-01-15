@@ -395,6 +395,37 @@ let inverse_of_ntbytes : numerics =
       );
   }
 
+let vtbytes : numerics =
+  {
+    name = "vtbytes";
+    f =
+      (function
+      | [ CaseV ("V128", []); VecV v ] ->
+        let v1 = (ibytes.f [ NumV 64L; NumV (Bytes.get_int64_le (Bytes.of_string v) 0) ]) in
+        let v2 = (ibytes.f [ NumV 64L; NumV (Bytes.get_int64_le (Bytes.of_string v) 8) ]) in
+        (match v1, v2 with
+        | ListV l1, ListV l2 -> Array.concat [ !l1; !l2] |> listV
+        | _ -> failwith "Invalid vtbytes")
+      | _ -> failwith "Invalid vtbytes"
+      );
+  }
+let inverse_of_vtbytes : numerics =
+  {
+    name = "inverse_of_vtbytes";
+    f =
+      (function
+      | [ CaseV ("V128", []); ListV l ] ->
+        let v1 = inverse_of_ibytes.f [ NumV 64L; Array.sub !l 0 8 |> listV ] in
+        let v2 = inverse_of_ibytes.f [ NumV 64L; Array.sub !l 8 8 |> listV ] in
+
+        (match v1, v2 with
+        | NumV n1, NumV n2 -> al_of_vector (V128.I64x2.of_lanes [ n1; n2 ])
+        | _ -> failwith "Invalid inverse_of_vtbytes")
+
+      | _ -> failwith "Invalid inverse_of_vtbytes"
+      );
+  }
+
 let inverse_of_ztbytes : numerics =
   {
     name = "inverse_of_ztbytes";
@@ -442,6 +473,29 @@ let ine: numerics =
       );
   }
 
+let inverse_of_ibits : numerics =
+  {
+    name = "inverse_of_ibits";
+    f = 
+      (function
+      | [ NumV _; ListV l ] -> 
+        let na = Array.map (function | NumV e -> e | _ -> failwith "Invaild inverse_of_ibits") !l in
+        NumV (Array.fold_right (fun e acc -> Int64.logor e (Int64.shift_left acc 1)) na 0L)
+      | _ -> failwith "Invaild inverse_of_ibits"
+      );
+  }
+
+
+let ilt_s: numerics =
+  {
+    name = "ilt_s";
+    f =
+      (function
+      | [ _; NumV n1; NumV n2 ] ->
+        I64.lt_s n1 n2 |> al_of_bool
+      | _ -> failwith "Invaild ilt_s"
+      );
+  }
 
 let vzero: numerics =
   {
@@ -707,6 +761,26 @@ let vvternop: numerics =
   }
 
 
+let narrow : numerics =
+  {
+    name = "narrow";
+    f =
+      (function
+      | [ NumV _; NumV n; CaseV ("S", []); NumV i ] -> (
+        match n with
+        | 8L -> NumV (i |> Int64.to_int32 |> I8.saturate_s |> Int64.of_int32)
+        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_s |> Int64.of_int32)
+        | _ -> failwith "Invalid narrow"
+        )
+      | [ NumV _; NumV n; CaseV ("U", []); NumV i ] -> (
+        match n with
+        | 8L -> NumV (i |> Int64.to_int32 |> I8.saturate_u |> Int64.of_int32)
+        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_u |> Int64.of_int32)
+        | _ -> failwith "Invalid narrow"
+        )
+      | _ -> failwith "Invalid narrow");
+  }
+
 let lanes : numerics =
   {
     name = "lanes";
@@ -829,7 +903,9 @@ let numerics_list : numerics list = [
   ibytes;
   inverse_of_ibytes;
   ntbytes;
+  vtbytes;
   inverse_of_ntbytes;
+  inverse_of_vtbytes;
   inverse_of_ztbytes;
   inverse_of_signed;
   bytes_;
@@ -843,9 +919,12 @@ let numerics_list : numerics list = [
   vcvtop;
   vrelop;
   vishiftop;
+  narrow;
   lanes;
   inverse_of_lanes;
   ine;
+  ilt_s;
+  inverse_of_ibits;
   vzero ]
 
 let call_numerics fname args =

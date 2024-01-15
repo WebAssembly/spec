@@ -144,7 +144,8 @@ $$
 {{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 \mathsf{vload}~{\mathit{vloadop}}~{\mathit{memidx}} \\ &&|&
 \mathsf{vload\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{vstore}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
+\mathsf{vstore}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+\mathsf{vstore\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -773,7 +774,7 @@ warning: rule `Instr_ok/vload` was never spliced
 warning: rule `Instr_ok/vload-splat` was never spliced
 warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
-warning: rule `Instr_ok/vstore` was never spliced
+warning: rule `Instr_ok/vstore_lane` was never spliced
 warning: rule `Instrf_ok/instr` was never spliced
 warning: rule `Instrf_ok/local.set` was never spliced
 warning: rule `Instrf_ok/local.tee` was never spliced
@@ -832,6 +833,8 @@ warning: rule `Step/store-pack-oob` was never spliced
 warning: rule `Step/store-pack-val` was never spliced
 warning: rule `Step/vstore-oob` was never spliced
 warning: rule `Step/vstore-val` was never spliced
+warning: rule `Step/vstore_lane-oob` was never spliced
+warning: rule `Step/vstore_lane-val` was never spliced
 warning: rule `Step/memory.grow-succeed` was never spliced
 warning: rule `Step/memory.grow-fail` was never spliced
 warning: rule `Step/data.drop` was never spliced
@@ -978,6 +981,8 @@ warning: rule `Step_read/load-pack-oob` was never spliced
 warning: rule `Step_read/load-pack-val` was never spliced
 warning: rule `Step_read/vload-oob` was never spliced
 warning: rule `Step_read/vload-val` was never spliced
+warning: rule `Step_read/vload-shape-oob` was never spliced
+warning: rule `Step_read/vload-shape-val` was never spliced
 warning: rule `Step_read/vload-splat-oob` was never spliced
 warning: rule `Step_read/vload-splat-val` was never spliced
 warning: rule `Step_read/vload-zero-oob` was never spliced
@@ -1159,6 +1164,7 @@ warning: definition `vbinop` was never spliced
 warning: definition `vcvtop` was never spliced
 warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
+warning: definition `vtbytes` was never spliced
 warning: definition `vunop` was never spliced
 warning: definition `vvbinop` was never spliced
 warning: definition `vvternop` was never spliced
@@ -1267,7 +1273,7 @@ warning: validation prose `VISHIFTOP` was never spliced
 warning: validation prose `VLOAD` was never spliced
 warning: validation prose `VLOAD_LANE` was never spliced
 warning: validation prose `VRELOP` was never spliced
-warning: validation prose `VSTORE` was never spliced
+warning: validation prose `VSTORE_LANE` was never spliced
 warning: validation prose `VUNOP` was never spliced
 warning: validation prose `VVBINOP` was never spliced
 warning: validation prose `VVCONST` was never spliced

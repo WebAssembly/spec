@@ -641,11 +641,11 @@ $${rule: Instr_ok/vload-zero}
 
 .. _valid-VSTORE:
 
-%{prose-pred: VSTORE}
+%{prose-pred: VSTORE_LANE}
 
 \
 
-$${rule: Instr_ok/vstore}
+$${rule: Instr_ok/vstore_lane}
 
 .. _valid-VLOAD_LANE:
 

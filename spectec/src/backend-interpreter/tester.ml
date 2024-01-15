@@ -314,15 +314,18 @@ let check expected actual =
   | RefResult (RefTypePat ht) -> check_reftype ht actual
   | RefResult NullPat -> check_null actual
   | VecResult (VecPat V128 (s, l)) -> (
-    Construct.al_of_vec_shape s (List.map (fun e -> match e with
-    | NumPat n -> (
-      match n.it with
-      | I32 i -> Int64.of_int32 i
-      | I64 i -> i
-      | F32 z -> z |> F32.to_bits |> Int64.of_int32
-      | F64 z -> z |> F64.to_bits
-    )
-    | _ -> failwith "Expected list of numpat for VecResult") l) = actual
+    let lanes = match s with
+    | V128.I8x16 () -> List.map (fun e -> e |> Value.I32Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.I8x16.to_lanes v128)
+    | V128.I16x8 () -> List.map (fun e -> e |> Value.I32Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.I16x8.to_lanes v128)
+    | V128.I32x4 () -> List.map (fun e -> e |> Value.I32Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.I32x4.to_lanes v128)
+    | V128.I64x2 () -> List.map (fun e -> e |> Value.I64Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.I64x2.to_lanes v128)
+    | V128.F32x4 () -> List.map (fun e -> e |> Value.F32Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.F32x4.to_lanes v128)
+    | V128.F64x2 () -> List.map (fun e -> e |> Value.F64Num.to_num |> Construct.al_of_num) (actual |> Construct.al_to_vec |> function | V128 v128 -> V128.F64x2.to_lanes v128)
+    in
+
+    List.for_all2 (fun nr l -> match nr with
+    | NumPat n -> Construct.al_of_num n.it = l
+    | NanPat no -> check_nanop no l) l lanes
   )
 
 let get_externval = function

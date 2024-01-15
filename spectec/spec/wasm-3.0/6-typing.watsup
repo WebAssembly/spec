@@ -1042,8 +1042,8 @@ rule Instr_ok/vload_lane:
   -- if $(2^(n_A) < n/8)
   -- if $(laneidx < 128 / n)
 
-rule Instr_ok/vstore:
-  C |- VSTORE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
+rule Instr_ok/vstore_lane:
+  C |- VSTORE_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) < n/8)
   -- if $(laneidx < 128 / n)

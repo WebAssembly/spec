@@ -2733,7 +2733,7 @@ validation_of_VLOAD_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
 - Let mt be C.MEM[0].
 - The instruction is valid with type [I32, V128]->[V128].
 
-validation_of_VSTORE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
+validation_of_VSTORE_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
 - |C.MEM| must be greater than 0.
 - (2 ^ n_A) must be less than (n / 8).
 - laneidx must be less than (128 / n).
@@ -4612,7 +4612,13 @@ execution_of_LOAD nt u_0? x marg
 execution_of_VLOAD u_0 x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If u_0 is of the case SHAPE, then:
+3. If u_0 is of the case LOAD, then:
+  a. Let (LOAD marg) be u_0.
+  b. If (((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
+    1) Trap.
+  c. Let cv be $inverse_of_vtbytes(V128, $mem(x).DATA[(i + marg.OFFSET) : ($size(V128) / 8)]).
+  d. Push (VVCONST V128 cv) to the stack.
+4. If u_0 is of the case SHAPE, then:
   a. Let (SHAPE y_0 sx marg) be u_0.
   b. If y_0 is of the case PACKSHAPE, then:
     1) Let (PACKSHAPE psl psr) be y_0.
@@ -4622,7 +4628,7 @@ execution_of_VLOAD u_0 x
     4) If (y_0 is psl), then:
       a) Let cv be $inverse_of_lanes((SHAPE $ishape((psl · 2)) psr), $ext(psl, (psl · 2), sx, m)*).
       b) Push (VVCONST V128 cv) to the stack.
-4. If u_0 is of the case SPLAT, then:
+5. If u_0 is of the case SPLAT, then:
   a. Let (SPLAT n marg) be u_0.
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
@@ -4630,7 +4636,7 @@ execution_of_VLOAD u_0 x
   d. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
   e. Let cv be $inverse_of_lanes((SHAPE $ishape(n) l), m^l).
   f. Push (VVCONST V128 cv) to the stack.
-5. If u_0 is of the case ZERO, then:
+6. If u_0 is of the case ZERO, then:
   a. Let (ZERO n marg) be u_0.
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
@@ -4834,7 +4840,17 @@ execution_of_STORE nt u_0? x marg
   c. Let b* be $ibytes(n, $wrap($size(nt), n, c)).
   d. Perform $with_mem(x, (i + marg.OFFSET), (n / 8), b*).
 
-execution_of_VSTORE n x marg laneidx
+execution_of_VSTORE x marg
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv) from the stack.
+3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
+4. Pop (I32.CONST i) from the stack.
+5. If (((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
+  a. Trap.
+6. Let b* be $vtbytes(V128, cv).
+7. Perform $with_mem(x, (i + marg.OFFSET), ($size(V128) / 8), b*).
+
+execution_of_VSTORE_LANE n x marg laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.

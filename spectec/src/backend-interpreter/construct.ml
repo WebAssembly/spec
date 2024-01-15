@@ -1095,10 +1095,7 @@ let al_of_num = function
   | F64 f64 -> CaseV ("CONST", [ singleton "F64"; al_of_float64 f64 ])
 
 let al_of_vec = function
-  | V128 v128 -> (*
-    CaseV ("VVCONST", [singleton "V128"; CaseV ("I32x4", List.map (fun i -> NumV (Int64.of_int32 i)) (V128.I32x4.to_lanes v128))])
-    *)
-    CaseV ("VVCONST", [ singleton "V128"; VecV (V128.to_bits v128) ])
+  | V128 v128 -> CaseV ("VVCONST", [ singleton "V128"; VecV (V128.to_bits v128) ])
 
 let al_of_vec_shape shape (lanes: int64 list) =
   al_of_vec (V128  (
@@ -1276,14 +1273,14 @@ let al_of_viop f1:
     | _ -> .
   )
 
-let al_of_vtestop : vec_testop -> value list = function
+let al_of_vtestop = function
   | V128 vop -> (
     match vop with
     | V128.I8x16 _ -> [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]) ]
     | V128.I16x8 _ -> [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]) ]
     | V128.I32x4 _ -> [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]) ]
     | V128.I64x2 _ -> [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]) ]
-    | _ -> .
+    | _ -> failwith "Invalid shape"
   )
 
 let al_of_int_vrelop : V128Op.irelop -> value = function
@@ -1344,9 +1341,7 @@ let al_of_int_vbinop : V128Op.ibinop -> value = function
   | V128Op.ExtMulLowU -> CaseV ("_VI", [ singleton "EXTMULLOWU" ])
   | V128Op.ExtMulHighU -> CaseV ("_VI", [ singleton "EXTMULHIGHU" ])
   | V128Op.Swizzle -> CaseV ("_VI", [ singleton "SWIZZLE" ])
-  | V128Op.Shuffle l -> CaseV ("SHUFFLE", [ al_of_list al_of_int l ])
-  | V128Op.NarrowS -> CaseV ("_VI", [ singleton "NARROWS" ])
-  | V128Op.NarrowU -> CaseV ("_VI", [ singleton "NARROWU" ])
+  | _ -> failwith "Already handled instruction of type vibinop"
 
 let al_of_float_vbinop : V128Op.fbinop -> value = function
   | V128Op.Add -> CaseV ("_VF", [ singleton "ADD" ])
@@ -1386,11 +1381,6 @@ let al_of_int_vshiftop : V128Op.ishiftop -> value = function
   | V128Op.ShrU -> CaseV ("_VI", [ singleton "SHRU" ])
 
 let al_of_vshiftop = al_of_viop al_of_int_vshiftop
-
-let al_of_int_vbitmaskop : V128Op.ibitmaskop -> value = function
-  | V128Op.Bitmask -> CaseV ("_VI", [ singleton "BITMASK" ])
-
-let al_of_vbitmaskop = al_of_viop al_of_int_vbitmaskop
 
 let al_of_vvtestop : vec_vtestop -> value list = function
   | V128 vop -> (
@@ -1503,8 +1493,37 @@ let al_of_loadop = al_of_opt al_of_pack_size_extension |> al_of_memop
 
 let al_of_storeop = al_of_opt al_of_pack_size |> al_of_memop
 
-let al_of_vloadop vmemop =
-  let (pack_size, vextension) = Option.get vmemop.pack in
+let al_of_vloadop vloadop =
+
+  let str =
+    Record.empty
+    |> Record.add "ALIGN" (al_of_int vloadop.align)
+    |> Record.add "OFFSET" (al_of_int32 vloadop.offset)
+  in
+
+  let vmemop = match vloadop.pack with
+  | Option.Some (pack_size, vextension) -> (
+    match vextension with
+    | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", [ al_of_pack_shape pack_shape; al_of_extension extension; StrV str ])
+    | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size; StrV str ])
+    | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size; StrV str ])
+  )
+  | None -> CaseV ("LOAD", [ StrV str ]) in
+
+  [ vmemop ] @ al_of_memidx ()
+
+let al_of_vstoreop vstoreop =
+  let str =
+    Record.empty
+    |> Record.add "ALIGN" (al_of_int vstoreop.align)
+    |> Record.add "OFFSET" (al_of_int32 vstoreop.offset)
+  in
+
+  al_of_memidx () @ [ StrV str; ]
+
+let al_of_vlaneop vlaneop =
+  let (vmemop, laneidx) = vlaneop in
+  let pack_size = vmemop.pack in
 
   let str =
     Record.empty
@@ -1512,12 +1531,7 @@ let al_of_vloadop vmemop =
     |> Record.add "OFFSET" (al_of_int32 vmemop.offset)
   in
 
-  let vloadop = match vextension with
-  | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", [ al_of_pack_shape pack_shape; al_of_extension extension; StrV str ])
-  | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size; StrV str ])
-  | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size; StrV str ]) in
-
-  [ vloadop ] @ al_of_memidx ()
+  [ al_of_pack_size pack_size; ] @ al_of_memidx () @ [ StrV str; al_of_int laneidx ]
 
 (* Construct instruction *)
 
@@ -1539,10 +1553,15 @@ let rec al_of_instr instr =
   | VecTest vop -> CaseV ("ALL_TRUE", al_of_vtestop vop)
   | VecCompare vop -> CaseV ("VRELOP", al_of_vrelop vop)
   | VecUnary vop -> CaseV ("VUNOP", al_of_vunop vop)
+  | VecBinary V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("SHUFFLE", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_list al_of_int l ])
+  | VecBinary V128 (V128.I8x16 (V128Op.NarrowS)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.NarrowS)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I8x16 (V128Op.NarrowU)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.ZX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.NarrowU)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L]); CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.ZX ])
   | VecBinary vop -> CaseV ("VBINOP", al_of_vbinop vop)
   (* | VecConvert vop -> CaseV ("VCVTOP", al_of_vcvtop vop) *)
   | VecShift vop -> CaseV ("VISHIFTOP", al_of_vshiftop vop)
-  | VecBitmask vop -> CaseV ("BITMASK", al_of_vbitmaskop vop)
+  | VecBitmask vop -> CaseV ("BITMASK", al_of_vtestop vop)
   | VecTestBits vop -> CaseV ("VVTESTOP", al_of_vvtestop vop)
   | VecUnaryBits vop -> CaseV ("VVUNOP", al_of_vvunop vop)
   | VecBinaryBits vop -> CaseV ("VVBINOP", al_of_vvbinop vop)
@@ -1599,6 +1618,9 @@ let rec al_of_instr instr =
   | Load loadop -> CaseV ("LOAD", al_of_loadop loadop)
   | Store storeop -> CaseV ("STORE", al_of_storeop storeop)
   | VecLoad vloadop -> CaseV ("VLOAD", al_of_vloadop vloadop)
+  | VecLoadLane vlaneop -> CaseV ("VLOAD_LANE", al_of_vlaneop vlaneop)
+  | VecStore vstoreop -> CaseV ("VSTORE", al_of_vstoreop vstoreop)
+  | VecStoreLane vlaneop -> CaseV ("VSTORE_LANE", al_of_vlaneop vlaneop)
   | MemorySize -> CaseV ("MEMORY.SIZE", al_of_memidx ())
   | MemoryGrow -> CaseV ("MEMORY.GROW", al_of_memidx ())
   | MemoryFill -> CaseV ("MEMORY.FILL", al_of_memidx ())

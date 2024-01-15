@@ -33,6 +33,7 @@ def $ext128(nat, c) : c_vectype ;; TODO
 def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
 def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
 def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
+def $vtbytes(vectype, c_vectype) : byte*   hint(show $bytes_(%,%))
 def $ztbytes(storagetype, c) : byte*  hint(show $bytes_(%,%))
 
 def $invibytes(N, byte*) : iN(N)
