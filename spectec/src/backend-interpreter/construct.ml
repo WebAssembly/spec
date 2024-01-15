@@ -83,7 +83,6 @@ let topValueE ?(at = no) e_opt = TopValueE e_opt |> mk_expr at
 let topValuesE ?(at = no) e = TopValuesE e |> mk_expr at
 let subE ?(at = no) (id, ty) = SubE (id, ty) |> mk_expr at
 let yetE ?(at = no) s = YetE s |> mk_expr at
->>>>>>> 2b783be9 (Add source as optional argument to constructor shorthands)
 
 let mk_path at it = Util.Source.($) it at
 
