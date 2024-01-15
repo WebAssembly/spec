@@ -99,7 +99,7 @@ and exp2expr exp =
   let at = exp.at in
   match exp.it with
   | Ast.NatE n -> numE (Int64.of_int n) ~at:at
-  | Ast.BoolE b -> boolE b
+  | Ast.BoolE b -> boolE b ~at:at
   (* List *)
   | Ast.LenE inner_exp -> lenE (exp2expr inner_exp) ~at:at
   | Ast.ListE exps -> listE (List.map exp2expr exps) ~at:at
