@@ -820,7 +820,7 @@ watsup 0.4 generator
 - 48/48 (100.00%)
 
 ===== simd_load_extend.wast =====
-- 12/84 (14.29%)
+- 84/84 (100.00%)
 
 ===== simd_load_splat.wast =====
 - 112/112 (100.00%)
@@ -894,6 +894,6 @@ watsup 0.4 generator
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [42959/44159] (97.28%; Normalized 92.20%)
+Total [43031/44159] (97.45%; Normalized 92.79%)
 == Complete.
 ```

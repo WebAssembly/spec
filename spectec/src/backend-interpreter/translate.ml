@@ -648,13 +648,14 @@ let rulepr2instrs id exp =
 let rec iterpr2instrs pr (iter, ids) =
   let instrs = prem2instrs pr in
   let iter', ids' = iter2iter iter, List.map it ids in
+  let lhs_iter = match iter' with | ListN (e, _) -> ListN (e, None) | _ -> iter' in
 
   let distribute_iter lhs rhs =
     let lhs_ids = intersection (free_expr lhs) ids' in
     let rhs_ids = intersection (free_expr rhs) ids' in
 
     assert (List.length (lhs_ids @ rhs_ids) > 0);
-    iterE (lhs, lhs_ids, iter') ~at:lhs.at, iterE (rhs, rhs_ids, iter') ~at:rhs.at
+    iterE (lhs, lhs_ids, lhs_iter) ~at:lhs.at, iterE (rhs, rhs_ids, iter') ~at:rhs.at
   in
 
   let f i =
