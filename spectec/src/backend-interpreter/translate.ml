@@ -98,6 +98,7 @@ let rec iter2iter = function
 and exp2expr exp =
   match exp.it with
   | Ast.NatE n -> numE (Int64.of_int n)
+  | Ast.BoolE b -> boolE b
   (* List *)
   | Ast.LenE inner_exp -> lenE (exp2expr inner_exp)
   | Ast.ListE exps -> listE (List.map exp2expr exps)

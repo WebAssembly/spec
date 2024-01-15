@@ -46,6 +46,7 @@ let mk_expr it = Util.Source.($) it Util.Source.no_region
 
 let varE id = VarE id |> mk_expr
 let numE i = NumE i |> mk_expr
+let boolE b = BoolE b |> mk_expr
 let unE (unop, e) = UnE (unop, e) |> mk_expr
 let binE (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr
 let accE (e, p) = AccE (e, p) |> mk_expr

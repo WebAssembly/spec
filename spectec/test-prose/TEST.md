@@ -3361,7 +3361,7 @@ clostype C dt
 
 before u_0 x i
 1. If the type of u_0 is deftype, then:
-  a. Return YetE (BoolE true).
+  a. Return true.
 2. If u_0 is of the case _IDX, then:
   a. Let (_IDX typeidx) be u_0.
   b. Return (typeidx < x).
@@ -3381,13 +3381,13 @@ unrollht C u_0
 5. Return C.REC[i].
 
 in_binop binop u_0*
-1. Return YetE (BoolE false).
+1. Return false.
 2. Assert: Due to validation, (|u_0*| ≥ 1).
 3. Let [ibinop_1] ++ ibinop'* be u_0*.
 4. Return ((binop is (_I ibinop_1)) or $in_binop(binop, ibinop'*)).
 
 in_numtype nt u_0*
-1. Return YetE (BoolE false).
+1. Return false.
 2. Assert: Due to validation, (|u_0*| ≥ 1).
 3. Let [nt_1] ++ nt'* be u_0*.
 4. Return ((nt is nt_1) or $in_numtype(nt, nt'*)).

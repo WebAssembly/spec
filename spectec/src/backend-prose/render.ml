@@ -139,6 +139,8 @@ and render_expr env in_math expr =
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
+  | Al.Ast.BoolE b -> 
+      string_of_bool b
   | Al.Ast.UnE (MinusOp, e) ->
       let se = render_expr env in_math e in
       let s = sprintf "-%s" se in
@@ -303,7 +305,6 @@ and render_expr env in_math expr =
       (render_expr env in_math e1)
       (render_expr env in_math e2)
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
-  | _ -> failwith "unreachable"
 
 (* assume Paths are always embedded in math blocks *)
 
