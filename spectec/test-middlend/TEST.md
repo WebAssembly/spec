@@ -1042,12 +1042,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -1063,18 +1063,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -3519,11 +3519,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -4137,11 +4137,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -4537,18 +4537,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -4589,7 +4589,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), (instr_E <: admininstr)*{instr_E} :: (instr_D <: admininstr)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -4598,15 +4598,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [(ref_T <: val)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [(ref_E <: val)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -5788,12 +5788,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -5809,18 +5809,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -8415,11 +8415,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -9033,11 +9033,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -9433,18 +9433,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -9485,7 +9485,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -9494,15 +9494,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [$val_ref(ref_E)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -10685,12 +10685,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -10706,18 +10706,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -13314,11 +13314,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -13932,11 +13932,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -14332,18 +14332,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -14384,7 +14384,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -14393,15 +14393,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [$val_ref(ref_E)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -15584,12 +15584,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -15605,18 +15605,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -18223,11 +18223,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -18846,11 +18846,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -19253,18 +19253,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -19305,7 +19305,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -19314,15 +19314,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [$val_ref(ref_E)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -20505,12 +20505,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -20526,18 +20526,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -23144,11 +23144,11 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -23767,11 +23767,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -24174,18 +24174,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -24226,7 +24226,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -24235,15 +24235,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [$val_ref(ref_E)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -25426,12 +25426,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -25447,18 +25447,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- if ($rollrt(x, qt) = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -28180,13 +28180,13 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine_128(cv_1, $vzero))
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if (laneidx*{laneidx}[k] < |i*{i}|))^(k<lns){k}
-    -- (if (k < |laneidx*{laneidx}|))^(k<lns){k}
+    -- (if (laneidx*{laneidx}[k] < |i*{i}|))^(k<lns){}
+    -- (if (k < |laneidx*{laneidx}|))^(k<lns){}
     -- if (sh = SHAPE_shape(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
-    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
+    -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){})
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -28832,11 +28832,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
+    -- if ($lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -29246,18 +29246,18 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}))
     -- if (fa_ex*{fa_ex} = $funcsxv(externval*{externval}))
     -- if (ga_ex*{ga_ex} = $globalsxv(externval*{externval}))
     -- if (ta_ex*{ta_ex} = $tablesxv(externval*{externval}))
     -- if (ma_ex*{ma_ex} = $memsxv(externval*{externval}))
-    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f})
-    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g})
-    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t})
-    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m})
-    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e})
-    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d})
+    -- if (fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){})
+    -- if (ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){})
+    -- if (ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){})
+    -- if (ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){})
+    -- if (ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){})
+    -- if (da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){})
     -- if (xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export})
     -- if (mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}})
     -- if (dt*{dt} = $alloctypes(type*{type}))
@@ -29298,7 +29298,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- if (module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}))
     -- if (global*{global} = GLOBAL(globaltype, expr_G)*{expr_G globaltype})
     -- if (table*{table} = TABLE(tabletype, expr_T)*{expr_T tabletype})
@@ -29307,15 +29307,15 @@ def instantiate : (store, module, externval*) -> config
     -- if (n_F = |func*{func}|)
     -- if (n_E = |elem*{elem}|)
     -- if (n_D = |data*{data}|)
-    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
+    -- if (mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []})
     -- if (z = `%;%`(s, {LOCAL [], MODULE mm_init}))
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_E, z, [$val_ref(ref_E)]))*{expr_E ref_E}*{expr_E ref_E}
     -- if ((s', mm) = $allocmodule(s, module, externval*{externval}, val_G*{val_G}, ref_T*{ref_T}, ref_E*{ref_E}*{ref_E}))
     -- if (f = {LOCAL [], MODULE mm})
-    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i}))
-    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j}))
+    -- if (instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){}))
+    -- if (instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){}))
 
 ;; 9-module.watsup:178.1-178.44
 def invoke : (store, funcaddr, val*) -> config
@@ -30498,12 +30498,12 @@ def subst_externtype : (externtype, typevar*, heaptype*) -> externtype
 ;; 2-syntax-aux.watsup:183.1-183.74
 def subst_all_reftype : (reftype, heaptype*) -> reftype
   ;; 2-syntax-aux.watsup:186.1-186.75
-  def {ht^n : heaptype^n, n : n, rt : reftype, x^n : idx^n} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {ht^n : heaptype^n, n : n, rt : reftype} subst_all_reftype(rt, ht^n{ht}) = $subst_reftype(rt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:184.1-184.74
 def subst_all_deftype : (deftype, heaptype*) -> deftype
   ;; 2-syntax-aux.watsup:187.1-187.75
-  def {dt : deftype, ht^n : heaptype^n, n : n, x^n : idx^n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){x}, ht^n{ht})
+  def {dt : deftype, ht^n : heaptype^n, n : n} subst_all_deftype(dt, ht^n{ht}) = $subst_deftype(dt, $idx(x)^(x<n){}, ht^n{ht})
 
 ;; 2-syntax-aux.watsup:189.1-189.77
 rec {
@@ -30519,18 +30519,18 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){}, REC_heaptype(i)^(i<n){})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){}, DEF_heaptype(qt, i)^(i<n){})^n{st})
     -- where qt = REC_rectype(st^n{st})
 
 ;; 2-syntax-aux.watsup:199.1-199.65
 def rolldt : (typeidx, rectype) -> deftype*
   ;; 2-syntax-aux.watsup:210.1-210.79
-  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){i}
+  def {n : n, qt : rectype, st^n : subtype^n, x : idx} rolldt(x, qt) = DEF_deftype(REC_rectype(st^n{st}), i)^(i<n){}
     -- where REC_rectype(st^n{st}) = $rollrt(x, qt)
 
 ;; 2-syntax-aux.watsup:200.1-200.63
@@ -33303,13 +33303,13 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- where i = $ine_128(cv_1, $vzero)
 
   ;; 8-reduction.watsup:267.1-271.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- where i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2)
     -- where SHAPE_shape(lnt, lns) = sh
-    -- (if (laneidx*{laneidx}[k] < |i*{i}|))^(k<lns){k}
-    -- (if (k < |laneidx*{laneidx}|))^(k<lns){k}
-    -- where $lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k}
+    -- (if (laneidx*{laneidx}[k] < |i*{i}|))^(k<lns){}
+    -- (if (k < |laneidx*{laneidx}|))^(k<lns){}
+    -- where $lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){}
 
   ;; 8-reduction.watsup:274.1-277.38
   rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
@@ -33966,11 +33966,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:852.1-855.82
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:852.1-855.85
+  rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- where $ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k}
-    -- where $lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m}
+    -- (where $ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)])^(k<psr){m}
+    -- where $lanes(SHAPE_shape($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m}
 
   ;; 8-reduction.watsup:857.1-859.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
@@ -34390,19 +34390,19 @@ def instexport : (funcaddr*, globaladdr*, tableaddr*, memaddr*, export) -> expor
 ;; 9-module.watsup:86.1-86.87
 def allocmodule : (store, module, externval*, val*, ref*, ref**) -> (store, moduleinst)
   ;; 9-module.watsup:87.1-127.51
-  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, i_d^n_d : nat^n_d, i_e^n_e : nat^n_e, i_f^n_f : nat^n_f, i_g^n_g : nat^n_g, i_m^n_m : nat^n_m, i_t^n_t : nat^n_t, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
+  def {byte*^n_d : byte*^n_d, da* : dataaddr*, datamode^n_d : datamode^n_d, dt* : deftype*, ea* : elemaddr*, elemmode^n_e : elemmode^n_e, export* : export*, expr_e*^n_e : expr*^n_e, expr_g^n_g : expr^n_g, expr_t^n_t : expr^n_t, externval* : externval*, fa* : funcaddr*, fa_ex* : funcaddr*, func^n_f : func^n_f, ga* : globaladdr*, ga_ex* : globaladdr*, globaltype^n_g : globaltype^n_g, import* : import*, ma* : memaddr*, ma_ex* : memaddr*, memtype^n_m : memtype^n_m, mm : moduleinst, module : module, n_d : n, n_e : n, n_f : n, n_g : n, n_m : n, n_t : n, ref_e** : ref**, ref_t* : ref*, reftype^n_e : reftype^n_e, s : store, s_1 : store, s_2 : store, s_3 : store, s_4 : store, s_5 : store, s_6 : store, start? : start?, ta* : tableaddr*, ta_ex* : tableaddr*, tabletype^n_t : tabletype^n_t, type* : type*, val_g* : val*, xi* : exportinst*} allocmodule(s, module, externval*{externval}, val_g*{val_g}, ref_t*{ref_t}, ref_e*{ref_e}*{ref_e}) = (s_6, mm)
     -- where fa_ex*{fa_ex} = $funcsxv(externval*{externval})
     -- where ga_ex*{ga_ex} = $globalsxv(externval*{externval})
     -- where ma_ex*{ma_ex} = $memsxv(externval*{externval})
     -- where ta_ex*{ta_ex} = $tablesxv(externval*{externval})
     -- where `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func^n_f{func}, GLOBAL(globaltype, expr_g)^n_g{expr_g globaltype}, TABLE(tabletype, expr_t)^n_t{expr_t tabletype}, MEMORY(memtype)^n_m{memtype}, `ELEM%%*%`(reftype, expr_e*{expr_e}, elemmode)^n_e{elemmode expr_e reftype}, `DATA%*%`(byte*{byte}, datamode)^n_d{byte datamode}, start?{start}, export*{export}) = module
     -- where dt*{dt} = $alloctypes(type*{type})
-    -- where fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){i_f}
-    -- where ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){i_g}
-    -- where ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){i_t}
-    -- where ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){i_m}
-    -- where ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){i_e}
-    -- where da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){i_d}
+    -- where fa*{fa} = (|s.FUNC_store| + i_f)^(i_f<n_f){}
+    -- where ga*{ga} = (|s.GLOBAL_store| + i_g)^(i_g<n_g){}
+    -- where ta*{ta} = (|s.TABLE_store| + i_t)^(i_t<n_t){}
+    -- where ma*{ma} = (|s.MEM_store| + i_m)^(i_m<n_m){}
+    -- where ea*{ea} = (|s.ELEM_store| + i_e)^(i_e<n_e){}
+    -- where da*{da} = (|s.DATA_store| + i_d)^(i_d<n_d){}
     -- where xi*{xi} = $instexport(fa_ex*{fa_ex} :: fa*{fa}, ga_ex*{ga_ex} :: ga*{ga}, ta_ex*{ta_ex} :: ta*{ta}, ma_ex*{ma_ex} :: ma*{ma}, export)*{export}
     -- where mm = {TYPE dt*{dt}, FUNC fa_ex*{fa_ex} :: fa*{fa}, GLOBAL ga_ex*{ga_ex} :: ga*{ga}, TABLE ta_ex*{ta_ex} :: ta*{ta}, MEM ma_ex*{ma_ex} :: ma*{ma}, ELEM ea*{ea}, DATA da*{da}, EXPORT xi*{xi}}
     -- where (s_1, fa*{fa}) = $allocfuncs(s, mm, func^n_f{func})
@@ -34442,7 +34442,7 @@ def rundata : (data, idx) -> instr*
 ;; 9-module.watsup:149.1-149.53
 def instantiate : (store, module, externval*) -> config
   ;; 9-module.watsup:150.1-171.64
-  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, i^n_E : nat^n_E, i_F^n_F : nat^n_F, import* : import*, instr_D* : instr*, instr_E* : instr*, j^n_D : nat^n_D, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
+  def {data* : data*, elem* : elem*, elemmode* : elemmode*, export* : export*, expr_E** : expr**, expr_G* : expr*, expr_T* : expr*, externval* : externval*, f : frame, func* : func*, global* : global*, globaltype* : globaltype*, import* : import*, instr_D* : instr*, instr_E* : instr*, mem* : mem*, mm : moduleinst, mm_init : moduleinst, module : module, n_D : n, n_E : n, n_F : n, ref_E** : ref**, ref_T* : ref*, reftype* : reftype*, s : store, s' : store, start? : start?, table* : table*, tabletype* : tabletype*, type* : type*, val_G* : val*, x? : idx?, z : state} instantiate(s, module, externval*{externval}) = `%;%*`(`%;%`(s', f), $admininstr_instr(instr_E)*{instr_E} :: $admininstr_instr(instr_D)*{instr_D} :: CALL_admininstr(x)?{x})
     -- where `MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data*{data}, start?{start}, export*{export}) = module
     -- where n_D = |data*{data}|
     -- where n_E = |elem*{elem}|
@@ -34451,9 +34451,9 @@ def instantiate : (store, module, externval*) -> config
     -- where GLOBAL(globaltype, expr_G)*{expr_G globaltype} = global*{global}
     -- where TABLE(tabletype, expr_T)*{expr_T tabletype} = table*{table}
     -- where `ELEM%%*%`(reftype, expr_E*{expr_E}, elemmode)*{elemmode expr_E reftype} = elem*{elem}
-    -- where instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){j})
-    -- where instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){i})
-    -- where mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){i_F}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
+    -- where instr_D*{instr_D} = $concat_instr($rundata(data*{data}[j], j)^(j<n_D){})
+    -- where instr_E*{instr_E} = $concat_instr($runelem(elem*{elem}[i], i)^(i<n_E){})
+    -- where mm_init = {TYPE $alloctypes(type*{type}), FUNC $funcsxv(externval*{externval}) :: (|s.FUNC_store| + i_F)^(i_F<n_F){}, GLOBAL $globalsxv(externval*{externval}), TABLE [], MEM [], ELEM [], DATA [], EXPORT []}
     -- where z = `%;%`(s, {LOCAL [], MODULE mm_init})
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_G, z, [val_G]))*{expr_G val_G}
     -- (Eval_expr: `%;%~>*%;%*`(z, expr_T, z, [$val_ref(ref_T)]))*{expr_T ref_T}

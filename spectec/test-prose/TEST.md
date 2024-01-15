@@ -4624,10 +4624,9 @@ execution_of_VLOAD u_0 x
     1) Let (PACKSHAPE psl psr) be y_0.
     2) If (((i + marg.OFFSET) + ((psl · psr) / 8)) > |$mem(x).DATA|), then:
       a) Trap.
-    3) Let $ibytes(y_0, m)* be $mem(x).DATA[((i + marg.OFFSET) + ((k · psl) / 8)) : (psl / 8)]^(k<psr).
-    4) If (y_0 is psl), then:
-      a) Let cv be $inverse_of_lanes((SHAPE $ishape((psl · 2)) psr), $ext(psl, (psl · 2), sx, m)*).
-      b) Push (VVCONST V128 cv) to the stack.
+    3) Let m^(k<psr) be $inverse_of_ibytes(psl, $mem(x).DATA[((i + marg.OFFSET) + ((k · psl) / 8)) : (psl / 8)])^(k<psr).
+    4) Let cv be $inverse_of_lanes((SHAPE $ishape((psl · 2)) psr), $ext(psl, (psl · 2), sx, m)^psr).
+    5) Push (VVCONST V128 cv) to the stack.
 5. If u_0 is of the case SPLAT, then:
   a. Let (SPLAT n marg) be u_0.
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:

@@ -55,7 +55,7 @@ let free_defid id = {empty with defid = Set.singleton id.it}
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, id_opt) -> union (free_exp e) (free_opt free_varid id_opt)
+  | ListN (e, _) -> free_exp e
 
 
 (* Types *)
@@ -98,7 +98,7 @@ and free_exp e =
     union (free_list free_exp [e1; e2]) (free_path p)
   | StrE efs -> free_list free_expfield efs
   | CallE (id, e1) -> union (free_defid id) (free_exp e1)
-  | IterE (e1, iter) -> union (free_exp e1) (free_iterexp iter)
+  | IterE (e1, iter) -> union (diff (free_exp e1) (binding_iterexp iter)) (free_iterexp iter)
   | SubE (e1, t1, t2) -> union (free_exp e1) (union (free_typ t1) (free_typ t2))
 
 and free_expfield (_, e) = free_exp e
@@ -114,6 +114,11 @@ and free_path p =
 and free_iterexp (iter, ids) =
     union (free_iter iter) (free_list free_varid ids)
 
+and binding_iterexp (iter, _) =
+  match iter with
+  | Opt | List | List1 | ListN (_, None) -> empty
+  | ListN (_, Some id) -> free_varid id
+
 
 (* Premises *)
 
@@ -123,7 +128,7 @@ and free_prem prem =
   | IfPr e -> free_exp e
   | LetPr (e1, e2, _ids) -> union (free_exp e1) (free_exp e2)
   | ElsePr -> empty
-  | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
+  | IterPr (prem', iter) -> union (diff (free_prem prem') (binding_iterexp iter)) (free_iterexp iter)
 
 
 (* Definitions *)

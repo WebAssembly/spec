@@ -85,39 +85,32 @@ let match_heap_type v1 v2 =
 
 (* Expression *)
 
-let rec create_sub_al_context names iter env =
-
-  (*
-    Currently, the index is mistakenly inserted in names
-    due to IL fault.
-    TODO: remove hack
-  *)
-
-  let names =
+let rec create_sub_env names iter env =
+  let length_to_list l = List.init l al_of_int in
+  let names', env' =
     match iter with
-    | ListN (_, Some _) -> names
-    | _ -> List.filter (fun name -> Env.mem name env) names
+    | ListN (e, Some id) ->
+      (* If iter is iter_with_index, pretend as if there were i = [0 ... n] in the original env *)
+      let indices = eval_expr e
+        |> al_to_int
+        |> length_to_list
+        |> listV_of_list in
+      id :: names, Env.add id indices env
+    | _ -> names, env
   in
 
-  let name_to_value name = Env.find name env in
-  let option_name_to_list name = name |> name_to_value |> unwrap_optv |> Option.to_list in
-  let name_to_list name = name |> name_to_value |> unwrap_listv_to_list in
-  let length_to_list l = List.init l al_of_int in
-
+  let option_name_to_list name = Env.find name env' |> unwrap_optv |> Option.to_list in
+  let name_to_list name = Env.find name env' |> unwrap_listv_to_list in
   let name_to_values name =
     match iter with
     | Opt -> option_name_to_list name
-    | ListN (e_n, Some n') when name = n' ->
-      eval_expr e_n
-      |> al_to_int
-      |> length_to_list
     | _ -> name_to_list name
   in
 
-  names
+  names'
   |> List.map name_to_values
   |> transpose
-  |> List.map (fun vs -> List.fold_right2 Env.add names vs env)
+  |> List.map (fun vs -> List.fold_right2 Env.add names' vs env')
 
 and access_path base path =
   match path.it with
@@ -292,7 +285,7 @@ and eval_expr expr =
   | IterE (inner_e, ids, iter) ->
     let env = AlContext.get_env () in
     let vs =
-      create_sub_al_context ids iter env
+      create_sub_env ids iter env
       |> List.map (fun env' -> AlContext.set_env env'; eval_expr inner_e) in
     AlContext.set_env env;
 
@@ -669,7 +662,6 @@ and interp_instr (instr: instr): unit =
   AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
   *)
-
 
   (InfoMap.find instr.note !info_map).covered <- true;
 

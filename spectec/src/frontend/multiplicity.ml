@@ -283,6 +283,7 @@ type occur = Il.Ast.iter list Env.t
 
 let union = Env.union (fun _ ctx1 ctx2 ->
   Some (if List.length ctx1 < List.length ctx2 then ctx1 else ctx2))
+let diff env1 env2 = Env.fold (fun k _ env2 -> Env.remove k env2) env2 env1
 
 let strip_index = function
   | ListN (e, Some _) -> ListN (e, None)
@@ -417,7 +418,7 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
       | [] -> None
       | iter1::iters' ->
         assert (Il.Eq.eq_iter (strip_index iter) iter1); Some iters'
-    ) (union occur1 occur3)
+    ) (diff occur1 occur3)
   in
   let ids' = List.map (fun (x, _) -> x $ at) (Env.bindings occur1') in
   (iter', ids'), union occur1' occur2

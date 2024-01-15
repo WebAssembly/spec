@@ -247,15 +247,7 @@ let valid_list valid_x_y env xs ys at =
 let rec valid_iter env iter =
   match iter with
   | Opt | List | List1 -> ()
-  | ListN (e, None) -> valid_exp env e (NumT NatT $ e.at)
-  | ListN (e, Some id) ->
-    valid_exp env e (NumT NatT $ e.at);
-    let t', dim = find "variable" env.vars id in
-    equiv_typ env t' (NumT NatT $ e.at) e.at;
-    if not Eq.(eq_list eq_iter dim [ListN (e, None)]) then
-      error e.at ("use of iterated variable `" ^
-        id.it ^ String.concat "" (List.map string_of_iter dim) ^
-        "` outside suitable iteraton context")
+  | ListN (e, _) -> valid_exp env e (NumT NatT $ e.at)
 
 
 (* Types *)
@@ -338,8 +330,11 @@ and infer_exp env e : typ =
   | CallE (id, _) -> snd (find "function" env.defs id)
   | MixE _ -> error e.at "cannot infer type of mixin notation"
   | IterE (e1, iter) ->
-    let iter' = match fst iter with ListN _ -> List | iter' -> iter' in
-    IterT (infer_exp env e1, iter') $ e.at
+    let iter', env' = match fst iter with
+      | ListN (_, Some id) -> List, { env with vars = bind "variable" env.vars id (NumT NatT $ id.at, []) }
+      | ListN _ -> List, env
+      | iter' -> iter', env in
+    IterT (infer_exp env' e1, iter') $ e.at
   | OptE _ -> error e.at "cannot infer type of option"
   | TheE e1 -> as_iter_typ Opt "option" env Check (infer_exp env e1) e1.at
   | ListE _ -> error e.at "cannot infer type of list"
@@ -499,10 +494,12 @@ and valid_path env p t : typ =
 
 and valid_iterexp env (iter, ids) : env =
   valid_iter env iter;
-  let iter' =
+  let iter', env' =
     match iter with
-    | ListN (e, Some _) -> ListN (e, None)
-    | iter -> iter
+    | ListN (e, Some id) ->
+      let iter' = ListN (e, None) in
+      iter', { env with vars = bind "variable" env.vars id (NumT NatT $ id.at, []) }
+    | iter -> iter, env
   in
   List.fold_left (fun env id ->
     match find "variable" env.vars id with
@@ -515,7 +512,7 @@ and valid_iterexp env (iter, ids) : env =
         "` has incompatible dimension `" ^ id.it ^
         String.concat "" (List.map string_of_iter iters) ^
         "` in iteration `_" ^ string_of_iter iter' ^ "`")
-  ) env ids
+  ) env' ids
 
 
 (* Premises *)

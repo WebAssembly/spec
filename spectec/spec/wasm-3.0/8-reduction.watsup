@@ -851,8 +851,8 @@ rule Step_read/vload-shape-oob:
 
 rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD (SHAPE (PACKSHAPE psl psr) sx marg) x)  ~>  (VVCONST V128 cv)
-  -- if $ibytes(psl, m)* = $mem(z, x).DATA[i + marg.OFFSET + k * psl/8 : psl/8]^(k<psr)
-  -- if $lanes(SHAPE $ishape($(psl * 2)) psr, cv) = $ext(psl, $(psl * 2), sx, m)*
+  -- (if $ibytes(psl, m) = $mem(z, x).DATA[i + marg.OFFSET + k * psl/8 : psl/8])^(k<psr)
+  -- if $lanes(SHAPE $ishape($(psl * 2)) psr, cv) = $ext(psl, $(psl * 2), sx, m)^psr
 
 rule Step_read/vload-splat-oob:
   z; (CONST I32 i) (VLOAD (SPLAT n marg) x)  ~>  TRAP
