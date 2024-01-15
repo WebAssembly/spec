@@ -423,7 +423,7 @@ let state_remover algo =
   match Walk.walk walk_config algo with
   | FuncA (name, params, body) -> (match params with
     | { it = TupE [ _; { it = VarE "f"; _ } ]; _ } :: tail ->
-        FuncA (name, tail, letI (varE "f", getCurFrameE) :: body |> remove_dead_assignment)
+        FuncA (name, tail, letI (varE "f", getCurFrameE ()) :: body |> remove_dead_assignment)
     | { it = VarE ("s" | "z"); _ } :: tail ->
         FuncA (name, tail, body)
     | _ -> FuncA(name, params, body))

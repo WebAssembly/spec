@@ -14,79 +14,82 @@ let version = ref 3
 
 (* Constructor Shorthands *)
 
+let no = Util.Source.no_region
+
 let _nid_count = ref 0
 let gen_nid () =
   let nid = !_nid_count in
   _nid_count := nid + 1;
   nid
 
-let mk_instr it = Util.Source.($$) it (Util.Source.no_region, gen_nid())
+let mk_instr at it = Util.Source.($$) it (at, gen_nid())
 
-let ifI (c, il1, il2) = IfI (c, il1, il2) |> mk_instr
-let eitherI (il1, il2) = EitherI (il1, il2) |> mk_instr
-let enterI (e1, e2, il) = EnterI (e1, e2, il) |> mk_instr
-let assertI c = AssertI c |> mk_instr
-let pushI e = PushI e |> mk_instr
-let popI e = PopI e |> mk_instr
-let popallI e = PopAllI e |> mk_instr
-let letI (e1, e2) = LetI (e1, e2) |> mk_instr
-let trapI = TrapI |> mk_instr
-let nopI = NopI |> mk_instr
-let returnI e_opt = ReturnI e_opt |> mk_instr
-let executeI e = ExecuteI e |> mk_instr
-let executeseqI e = ExecuteSeqI e |> mk_instr
-let performI (id, el) = PerformI (id, el) |> mk_instr
-let exitI = ExitI |> mk_instr
-let replaceI (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr
-let appendI (e1, e2) = AppendI (e1, e2) |> mk_instr
-let otherwiseI il = OtherwiseI il |> mk_instr
-let yetI s = YetI s |> mk_instr
+let ifI ?(at = no) (c, il1, il2) = IfI (c, il1, il2) |> mk_instr at
+let eitherI ?(at = no) (il1, il2) = EitherI (il1, il2) |> mk_instr at
+let enterI ?(at = no) (e1, e2, il) = EnterI (e1, e2, il) |> mk_instr at
+let assertI ?(at = no) c = AssertI c |> mk_instr at
+let pushI ?(at = no) e = PushI e |> mk_instr at
+let popI ?(at = no) e = PopI e |> mk_instr at
+let popallI ?(at = no) e = PopAllI e |> mk_instr at
+let letI ?(at = no) (e1, e2) = LetI (e1, e2) |> mk_instr at
+let trapI ?(at = no) () = TrapI |> mk_instr at
+let nopI ?(at = no) () = NopI |> mk_instr at
+let returnI ?(at = no) e_opt = ReturnI e_opt |> mk_instr at
+let executeI ?(at = no) e = ExecuteI e |> mk_instr at
+let executeseqI ?(at = no) e = ExecuteSeqI e |> mk_instr at
+let performI ?(at = no) (id, el) = PerformI (id, el) |> mk_instr at
+let exitI ?(at = no) () = ExitI |> mk_instr at
+let replaceI ?(at = no) (e1, p, e2) = ReplaceI (e1, p, e2) |> mk_instr at
+let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
+let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
+let yetI ?(at = no) s = YetI s |> mk_instr at
 
-let mk_expr it = Util.Source.($) it Util.Source.no_region
+let mk_expr at it = Util.Source.($) it at 
 
-let varE id = VarE id |> mk_expr
-let numE i = NumE i |> mk_expr
-let boolE b = BoolE b |> mk_expr
-let unE (unop, e) = UnE (unop, e) |> mk_expr
-let binE (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr
-let accE (e, p) = AccE (e, p) |> mk_expr
-let updE (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr
-let extE (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr
-let strE r = StrE r |> mk_expr
-let catE (e1, e2) = CatE (e1, e2) |> mk_expr
-let lenE e = LenE e |> mk_expr
-let tupE el = TupE el |> mk_expr
-let caseE (kwd, el) = CaseE (kwd, el) |> mk_expr
-let callE (id, el) = CallE (id, el) |> mk_expr
-let iterE (e, idl, it) = IterE (e, idl, it) |> mk_expr
-let optE e_opt = OptE e_opt |> mk_expr
-let listE el = ListE el |> mk_expr
-let arrowE (e1, e2) = ArrowE (e1, e2) |> mk_expr
-let arityE e = ArityE e |> mk_expr
-let frameE (e_opt, e) = FrameE (e_opt, e) |> mk_expr
-let labelE (e1, e2) = LabelE (e1, e2) |> mk_expr
-let getCurFrameE = GetCurFrameE |> mk_expr
-let getCurLabelE = GetCurLabelE |> mk_expr
-let getCurContextE = GetCurContextE |> mk_expr
-let contE e = ContE e |> mk_expr
-let isCaseOfE (e, kwd) = IsCaseOfE (e, kwd) |> mk_expr
-let isValidE e = IsValidE e |> mk_expr
-let contextKindE (kwd, e) = ContextKindE (kwd, e) |> mk_expr
-let isDefinedE e = IsDefinedE e |> mk_expr
-let matchE (e1, e2) = MatchE (e1, e2) |> mk_expr
-let hasTypeE (e, ty) = HasTypeE (e, ty) |> mk_expr
-let topLabelE = TopLabelE |> mk_expr
-let topFrameE = TopFrameE |> mk_expr
-let topValueE e_opt = TopValueE e_opt |> mk_expr
-let topValuesE e = TopValuesE e |> mk_expr
-let subE (id, ty) = SubE (id, ty) |> mk_expr
-let yetE s = YetE s |> mk_expr
+let varE ?(at = no) id = VarE id |> mk_expr at
+let boolE ?(at = no) b = BoolE b |> mk_expr at
+let numE ?(at = no) i = NumE i |> mk_expr at
+let unE ?(at = no) (unop, e) = UnE (unop, e) |> mk_expr at
+let binE ?(at = no) (binop, e1, e2) = BinE (binop, e1, e2) |> mk_expr at
+let accE ?(at = no) (e, p) = AccE (e, p) |> mk_expr at
+let updE ?(at = no) (e1, pl, e2) = UpdE (e1, pl, e2) |> mk_expr at
+let extE ?(at = no) (e1, pl, e2, dir) = ExtE (e1, pl, e2, dir) |> mk_expr at
+let strE ?(at = no) r = StrE r |> mk_expr at
+let catE ?(at = no) (e1, e2) = CatE (e1, e2) |> mk_expr at
+let lenE ?(at = no) e = LenE e |> mk_expr at
+let tupE ?(at = no) el = TupE el |> mk_expr at
+let caseE ?(at = no) (kwd, el) = CaseE (kwd, el) |> mk_expr at
+let callE ?(at = no) (id, el) = CallE (id, el) |> mk_expr at
+let iterE ?(at = no) (e, idl, it) = IterE (e, idl, it) |> mk_expr at
+let optE ?(at = no) e_opt = OptE e_opt |> mk_expr at
+let listE ?(at = no) el = ListE el |> mk_expr at
+let arrowE ?(at = no) (e1, e2) = ArrowE (e1, e2) |> mk_expr at
+let arityE ?(at = no) e = ArityE e |> mk_expr at
+let frameE ?(at = no) (e_opt, e) = FrameE (e_opt, e) |> mk_expr at
+let labelE ?(at = no) (e1, e2) = LabelE (e1, e2) |> mk_expr at
+let getCurFrameE ?(at = no) () = GetCurFrameE |> mk_expr at
+let getCurLabelE ?(at = no) () = GetCurLabelE |> mk_expr at
+let getCurContextE ?(at = no) () = GetCurContextE |> mk_expr at
+let contE ?(at = no) e = ContE e |> mk_expr at
+let isCaseOfE ?(at = no) (e, kwd) = IsCaseOfE (e, kwd) |> mk_expr at
+let isValidE ?(at = no) e = IsValidE e |> mk_expr at
+let contextKindE ?(at = no) (kwd, e) = ContextKindE (kwd, e) |> mk_expr at
+let isDefinedE ?(at = no) e = IsDefinedE e |> mk_expr at
+let matchE ?(at = no) (e1, e2) = MatchE (e1, e2) |> mk_expr at
+let hasTypeE ?(at = no) (e, ty) = HasTypeE (e, ty) |> mk_expr at
+let topLabelE ?(at = no) () = TopLabelE |> mk_expr at
+let topFrameE ?(at = no) () = TopFrameE |> mk_expr at
+let topValueE ?(at = no) e_opt = TopValueE e_opt |> mk_expr at
+let topValuesE ?(at = no) e = TopValuesE e |> mk_expr at
+let subE ?(at = no) (id, ty) = SubE (id, ty) |> mk_expr at
+let yetE ?(at = no) s = YetE s |> mk_expr at
+>>>>>>> 2b783be9 (Add source as optional argument to constructor shorthands)
 
-let mk_path it = Util.Source.($) it Util.Source.no_region
+let mk_path at it = Util.Source.($) it at
 
-let idxP e = IdxP e |> mk_path
-let sliceP (e1, e2) = SliceP (e1, e2) |> mk_path
-let dotP kwd = DotP kwd |> mk_path
+let idxP ?(at = no) e = IdxP e |> mk_path at
+let sliceP ?(at = no) (e1, e2) = SliceP (e1, e2) |> mk_path at
+let dotP ?(at = no) kwd = DotP kwd |> mk_path at
 
 let numV i = NumV i
 let boolV b = BoolV b

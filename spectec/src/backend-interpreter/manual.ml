@@ -69,7 +69,7 @@ let call_ref =
       popI ref;
       ifI (
         isCaseOfE (ref, ("REF.NULL", "admininstr")),
-        [ trapI ],
+        [ trapI () ],
         []
       );
       assertI (isCaseOfE (ref, ("REF.FUNC_ADDR", "admininstr")));
@@ -189,7 +189,7 @@ let array_new_data =
               binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L)),
               lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))
             ),
-            [trapI],
+            [ trapI () ],
             []
           );
           letI (nt, unpacknumtype);

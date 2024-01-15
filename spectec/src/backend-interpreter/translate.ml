@@ -12,7 +12,7 @@ let name_of_rule rule =
   let Ast.RuleD (id1, _, _, _, _) = rule.it in
   String.split_on_char '-' id1.it |> List.hd
 
-let check_nop instrs = match instrs with [] -> [ nopI ] | _ -> instrs
+let check_nop instrs = match instrs with [] -> [ nopI () ] | _ -> instrs
 
 let gen_fail_msg_of_exp exp =
   Print.string_of_exp exp |> sprintf "Invalid expression `%s` to be AL %s."
@@ -268,11 +268,11 @@ and path2paths path =
 (* `Ast.exp` -> `AssertI` *)
 let insert_assert exp =
   match exp.it with
-  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI topFrameE
+  | Ast.CaseE (Ast.Atom "FRAME_", _) -> assertI (topFrameE ())
   | Ast.IterE (_, (Ast.ListN (e, None), _)) -> assertI (topValuesE (exp2expr e))
   | Ast.CaseE
       (Ast.Atom "LABEL_",
-        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI topLabelE
+        { it = Ast.TupE [ _n; _instrs; _vals ]; _ }) -> assertI (topLabelE ())
   | Ast.CaseE
       ( Ast.Atom "CONST",
         { it = Ast.TupE (ty :: _); _ }) -> assertI (topValueE (Some (exp2expr ty)))
@@ -304,12 +304,12 @@ let handle_context_winstr winstr =
     ( match args.it with
     | Ast.TupE [arity; name; inner_exp] ->
       [
-        letI (exp2expr name, getCurFrameE);
+        letI (exp2expr name, getCurFrameE ());
         letI (exp2expr arity, arityE (exp2expr name));
         insert_assert inner_exp;
         popI (exp2expr inner_exp);
         insert_assert winstr;
-        exitI
+        exitI ()
       ]
     | _ -> failwith "Invalid frame")
   (* Label *)
@@ -318,7 +318,7 @@ let handle_context_winstr winstr =
         (* TODO: append Jump instr *)
         popallI (exp2expr vals);
         insert_assert winstr;
-        exitI
+        exitI ()
       ]
   | _ -> []
 
@@ -326,21 +326,21 @@ let handle_context ctx values = match ctx.it, values with
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        letI (varE "L", getCurLabelE);
+        letI (varE "L", getCurLabelE ());
         letI (exp2expr n, arityE (varE "L"));
         letI (exp2expr instrs, contE (varE "L"));
         ]@ List.map (fun v -> popI (exp2expr v)) first_vs @[
         popallI (exp2expr last_v);
-        exitI
+        exitI ()
       ]
   | Ast.CaseE (Ast.Atom "FRAME_", { it = Ast.TupE [ n; _f; _hole ]; _ }), vs ->
       let first_vs, last_v = Util.Lib.List.split_last vs in
       [
-        letI (varE "F", getCurFrameE);
+        letI (varE "F", getCurFrameE ());
         letI (exp2expr n, arityE (varE "F"));
         ]@ List.map (fun v -> popI (exp2expr v)) first_vs @[
         popallI (exp2expr last_v);
-        exitI
+        exitI ()
       ]
   | _ -> [ yetI "TODO: handle_context" ]
 
@@ -348,7 +348,7 @@ let handle_context ctx values = match ctx.it, values with
 let rec rhs2instrs exp =
   match exp.it with
   (* Trap *)
-  | Ast.CaseE (Atom "TRAP", _) -> [ trapI ]
+  | Ast.CaseE (Atom "TRAP", _) -> [ trapI () ]
   (* Execute instrs *) (* TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
   | Ast.IterE ({ it = VarE id; _ }, (Ast.List, _))
   | Ast.IterE ({ it = SubE ({ it = VarE id; _ }, _, _); _}, (Ast.List, _))
@@ -813,7 +813,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
   let lhs_stack = lhs |> drop_state |> flatten |> List.rev in
   let context, winstr = split_context_winstr instr_name lhs_stack in
   let bounds = Il.Free.free_exp winstr in
-  let state_instrs = if (lhs != drop_state lhs) then [ letI (varE "f", getCurFrameE) ] else [] in
+  let state_instrs = if (lhs != drop_state lhs) then [ letI (varE "f", getCurFrameE ()) ] else [] in
   let inner_params = ref None in
   let instrs =
     match context with
@@ -854,7 +854,7 @@ let rec reduction_group2algo (instr_name, reduction_group) =
           inner_params |> update_opt params;
           let kind = kind_of_context lhs in
           [ ifI (
-            contextKindE (kind, getCurContextE),
+            contextKindE (kind, getCurContextE ()),
             body,
             acc) ]
         | _ -> failwith "unreachable")
