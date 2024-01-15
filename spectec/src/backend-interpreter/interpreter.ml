@@ -6,6 +6,22 @@ open Construct
 open Ds
 open Util.Source
 open Util.Record
+open Printf
+
+let fail_on_instr msg instr =
+  (sprintf "%s: %s @%s" msg
+    (structured_string_of_instr instr) (string_of_region instr.at))
+  |> failwith
+
+let fail_on_expr msg expr =
+  (sprintf "%s: %s @%s" msg 
+    (structured_string_of_expr expr) (string_of_region expr.at))
+  |> failwith
+
+let fail_on_path msg path =
+  (sprintf "%s: %s @%s" msg
+    (structured_string_of_path path) (string_of_region path.at))
+  |> failwith
 
 let check_i32_const = function
   | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
@@ -110,10 +126,10 @@ and access_path base path =
       let i = eval_expr e' |> al_to_int in
       begin try Array.get a i with
       | Invalid_argument _ ->
-        Printf.sprintf "Failed Array.get during ReplaceE: %s[%s]"
-          (string_of_value base)
-          (string_of_int i)
-        |> failwith
+        fail_on_path
+          (sprintf "Failed Array.get on base %s and index %s"
+            (string_of_value base) (string_of_int i))
+          path
       end
   | SliceP (e1, e2) ->
       let a = base |> unwrap_listv_to_array in
@@ -125,10 +141,10 @@ and access_path base path =
       | FrameV (_, StrV r) -> Record.find str r
       | StoreV s -> Record.find str !s
       | StrV r -> Record.find str r
-      | v ->
-          string_of_value v
-          |> Printf.sprintf "Not a record: %s"
-          |> failwith)
+      | v -> 
+        fail_on_path
+          (sprintf "Base %s is not a record" (string_of_value v))
+          path)
 
 and replace_path base path v_new =
   match path.it with
@@ -150,9 +166,10 @@ and replace_path base path v_new =
       | StoreV s -> !s
       | StrV r -> r
       | v ->
-        string_of_value v
-        |> Printf.sprintf "Not a record: %s"
-        |> failwith in
+        fail_on_path
+          (sprintf "Base %s is not a record" (string_of_value v))
+          path
+    in
     let r_new = Record.clone r in
     Record.replace str v_new r_new;
     strV r_new
@@ -181,7 +198,7 @@ and eval_expr expr =
     | GtOp, v1, v2 -> boolV (v1 > v2)
     | LeOp, v1, v2 -> boolV (v1 <= v2)
     | GeOp, v1, v2 -> boolV (v1 >= v2)
-    | _ -> failwith "Invalid BinE")
+    | _ -> fail_on_expr "Invalid BinE" expr)
   (* Function Call *)
   | CallE (fname, el) ->
     let args = List.map eval_expr el in
@@ -191,7 +208,7 @@ and eval_expr expr =
     (*
     | _ ->
       string_of_expr expr
-     |> Printf.sprintf "%s doesn't have return value"
+     |> sprintf "%s doesn't have return value"
      |> failwith
     *)
     end
@@ -241,14 +258,14 @@ and eval_expr expr =
     | LabelV (v, _) -> v
     | FrameV (Some v, _) -> v
     | FrameV _ -> numV 0L
-    | _ -> failwith "Not a context" (* Due to AL validation, unreachable *))
+    | _ -> fail_on_expr "Not a context" expr (* Due to AL validation, unreachable *))
   | FrameE (e1, e2) ->
     let v1 = Option.map eval_expr e1 in
     let v2 = eval_expr e2 in
     (match v1, v2 with
     | (Some (NumV _)|None), StrV _ -> FrameV (v1, v2)
     (* Due to AL validation unreachable *)
-    | _ -> "Invalid frame: " ^ string_of_expr expr |> failwith)
+    | _ -> fail_on_expr "Invalid frame" expr)
   | GetCurFrameE -> WasmContext.get_current_frame ()
   | LabelE (e1, e2) ->
     let v1 = eval_expr e1 in
@@ -259,7 +276,7 @@ and eval_expr expr =
   | ContE e ->
     (match eval_expr e with
     | LabelV (_, vs) -> vs
-    | _ -> failwith "Not a label")
+    | _ -> fail_on_expr "Not a label" expr)
   | VarE name -> AlContext.get_env () |> Env.find name
   (* Optimized getter for simple IterE(VarE, ...) *)
   | IterE ({ it = VarE name; _ }, [name'], _) when name = name' ->
@@ -294,7 +311,7 @@ and eval_expr expr =
     (match eval_expr e with
     | OptV (Some _) -> boolV true
     | OptV _ -> boolV false
-    | _ -> structured_string_of_expr e |> failwith)
+    | _ -> fail_on_expr "Not an option" expr)
   | IsCaseOfE (e, (expected_tag, _)) ->
     (match eval_expr e with
     | CaseV (tag, _) -> boolV (expected_tag = tag)
@@ -310,7 +327,7 @@ and eval_expr expr =
     (* valid_memtype *)
     | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim |> boolV
     (* valid_other *)
-    | _ -> failwith "TODO: Currently, we are already validating tabletype and memtype")
+    | _ -> fail_on_expr "TODO: Currently, we are already validating tabletype and memtype" expr)
   | HasTypeE (e, s) ->
 
     (* type definition *)
@@ -360,14 +377,14 @@ and eval_expr expr =
     | CaseV (pt, []) when List.mem pt packed_types ->
       boolV (s = "packedtype" || s = "storagetype")
     | v ->
-      string_of_value v
-      |> Printf.sprintf "Invalid %s: %s" s
-      |> failwith)
+      fail_on_expr
+        (sprintf "%s doesn't have type %s" (string_of_value v) s)
+        expr)
   | MatchE (e1, e2) ->
     let v1 = eval_expr e1 in
     let v2 = eval_expr e2 in
     match_ref_type v1 v2 |> boolV
-  | _ -> structured_string_of_expr expr |> failwith
+  | _ -> fail_on_expr "No interpreter for" expr
 
 (* Assignment *)
 
@@ -402,15 +419,14 @@ and assign lhs rhs env =
             assign expr length env, listV [||], Array.to_list !arr
         | Opt, OptV opt -> env, optV None, Option.to_list opt
         | ListN (_, Some _), ListV _ ->
-            Printf.sprintf "Invalid iter %s with rhs %s"
+            sprintf "Invalid iter %s with rhs %s"
               (string_of_iter iter)
               (string_of_value rhs)
             |> failwith
         | _, _ ->
-          Printf.sprintf "Invalid assignment: %s = %s"
-            (string_of_expr lhs)
-            (string_of_value rhs)
-          |> failwith
+          fail_on_expr
+            (sprintf "Invalid assignment on value %s" (string_of_value rhs))
+            lhs
       in
 
       let default_env =
@@ -443,16 +459,16 @@ and assign lhs rhs env =
       | SubOp -> Int64.add
       | MulOp -> Int64.unsigned_div
       | DivOp -> Int64.mul
-      | _ -> failwith "Invvalid binop for lhs of assignment" in
+      | _ -> failwith "Invalid binop for lhs of assignment" in
     let v = eval_expr e2 |> al_to_int64 |> invop m |> numV in
     assign e1 v env
   | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
       Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | _, v ->
-      Printf.sprintf "Invalid assignment: %s := %s"
-        (string_of_expr lhs) (string_of_value v)
-      |> failwith
+      fail_on_expr
+        (sprintf "Invalid assignment on value %s" (string_of_value v))
+        lhs
 
 and assign_split ep es vs env =
   let len = Array.length vs in
@@ -462,7 +478,7 @@ and assign_split ep es vs env =
     | IterE (_, _, ListN (e, None)) -> eval_expr e |> al_to_int |> Option.some
     | _ -> None in
     match get_length ep, get_length es with
-    | None, None -> failwith "Unrecahble: nondeterministic list split"
+    | None, None -> failwith "Unreachable: nondeterministic list split"
     | Some l, None -> l, len - l
     | None, Some l -> len - l, l
     | Some l1, Some l2 -> l1, l2 in
@@ -498,7 +514,7 @@ and dsl_function_call (fname: string) (args: value list): AlContext.return_value
         else
           List.hd args
           |> string_of_value
-          |> Printf.sprintf "Invalid null reference: %s"
+          |> sprintf "Invalid null reference: %s"
           |> failwith
       (* i31 *)
       | CaseV ("REF.I31_NUM", [ _ ]) ->
@@ -566,7 +582,7 @@ and dsl_function_call (fname: string) (args: value list): AlContext.return_value
 
     AlContext.Some rt
   ) else
-    Printf.sprintf "Invalid DSL function call: %s" fname |> failwith
+    sprintf "Invalid DSL function call: %s" fname |> failwith
 
 and is_builtin = function
   | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
@@ -576,7 +592,7 @@ and call_builtin name =
   let local x =
     match call_algo "local" [ numV (Int64.of_int x) ] with
     | Some v -> v
-    | _ -> failwith "builtin doesn't return value"
+    | _ -> failwith "Builtin doesn't return a value"
   in
   let as_const ty = function
   | CaseV ("CONST", [ CaseV (ty', []) ; n ])
@@ -589,37 +605,37 @@ and call_builtin name =
     |> as_const "I32"
     |> al_to_int32
     |> I32.to_string_s
-    |> Printf.sprintf "- print_i32: %s"
+    |> sprintf "- print_i32: %s"
     |> print_endline
   | "PRINT_I64" ->
     local 0
     |> as_const "I64"
     |> al_to_int64
     |> I64.to_string_s
-    |> Printf.sprintf "- print_i64: %s"
+    |> sprintf "- print_i64: %s"
     |> print_endline
   | "PRINT_F32" ->
     local 0
     |> as_const "F32"
     |> al_to_float32
     |> F32.to_string
-    |> Printf.sprintf "- print_f32: %s"
+    |> sprintf "- print_f32: %s"
     |> print_endline
   | "PRINT_F64" ->
     local 0
     |> as_const "F64"
     |> al_to_float64
     |> F64.to_string
-    |> Printf.sprintf "- print_f64: %s"
+    |> sprintf "- print_f64: %s"
     |> print_endline
   | "PRINT_I32_F32" ->
     let i32 = local 0 |> as_const "I32" |> al_to_int32 |> I32.to_string_s in
     let f32 = local 1 |> as_const "F32" |> al_to_float32 |> F32.to_string in
-    Printf.sprintf "- print_i32_f32: %s %s" i32 f32 |> print_endline
+    sprintf "- print_i32_f32: %s %s" i32 f32 |> print_endline
   | "PRINT_F64_F64" ->
     let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
     let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
-    Printf.sprintf "- print_f64_f64: %s %s" f64 f64' |> print_endline
+    sprintf "- print_f64_f64: %s %s" f64 f64' |> print_endline
   | name ->
     ("Invalid builtin function: " ^ name) |> failwith
 
@@ -642,13 +658,13 @@ and execute (wasm_instr: value): unit =
   | CaseV (fname, args) -> call_algo fname args |> ignore
   | v ->
     string_of_value v
-    |> Printf.sprintf "Executing invalid value: %s"
+    |> sprintf "Executing invalid value: %s"
     |> failwith
 
 and interp_instr (instr: instr): unit =
   (*
   AL_Context.get_name () |> print_endline;
-  string_of_instr instr |> Printf.sprintf "[INSTR]: %s" |> prerr_endline;
+  string_of_instr instr |> sprintf "[INSTR]: %s" |> prerr_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
@@ -695,10 +711,9 @@ and interp_instr (instr: instr): unit =
     (* TODO remove this *)
     | FrameE _, FrameV _ -> ()
     | (_, h) ->
-      Printf.sprintf "Invalid pop: %s := %s"
-        (structured_string_of_expr e)
-        (structured_string_of_value h)
-      |> failwith
+      fail_on_instr 
+        (sprintf "Invalid pop for value %s: " (structured_string_of_value h)) 
+        instr
     end
   | PopAllI ({ it = IterE ({ it = VarE name; _ }, [name'], List); _ }) when name = name' ->
     let rec pop_all acc =
@@ -708,10 +723,7 @@ and interp_instr (instr: instr): unit =
         acc
     in
     pop_all [] |> listV_of_list |> AlContext.update_env name
-  | PopAllI e ->
-    string_of_expr e
-    |> Printf.sprintf "Invalid pop: Popall %s"
-    |> failwith
+  | PopAllI _ -> fail_on_instr "Invalid pop" instr
   | LetI (pattern, e) ->
     AlContext.get_env () |> assign pattern (eval_expr e) |> AlContext.set_env
   | PerformI (f, el) ->
@@ -762,15 +774,12 @@ and interp_instr (instr: instr): unit =
     | StrV r ->
       let v = eval_expr e2 in
       Record.replace s v r
-    | _ -> failwith "Not a Record")
+    | _ -> fail_on_expr "Not a Record" e1)
   | AppendI (e1, e2) ->
     let a = eval_expr e1 |> unwrap_listv in
     let v = eval_expr e2 in
     a := Array.append !a [|v|]
-  | _ ->
-    structured_string_of_instr instr
-    |> Printf.sprintf "Interpreter is not implemented for the instruction: %s"
-    |> failwith
+  | _ -> fail_on_instr "No interpreter for" instr
 
 
 and interp_instrs: instr list -> unit = function
@@ -803,7 +812,7 @@ and interp_algo (algo: algorithm) (args: value list): unit =
 and call_algo (name: string) (args: value list): AlContext.return_value =
   (*
   print_endline "**************************************";
-  Printf.sprintf "[ALGO]: %s" name |> print_endline;
+  sprintf "[ALGO]: %s" name |> print_endline;
   Print.string_of_list Print.string_of_value "[" ", " "]"args |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AlContext.string_of_context_stack () |> print_endline;
@@ -827,7 +836,7 @@ and call_algo (name: string) (args: value list): AlContext.return_value =
   let _, _, return_value, depth = AlContext.pop_context () in
 
   (*
-  Printf.sprintf "[END ALGO]: %s" name |> print_endline;
+  sprintf "[END ALGO]: %s" name |> print_endline;
   WasmContext.string_of_context_stack () |> print_endline;
   AlContext.string_of_context_stack () |> print_endline;
   print_endline "";
