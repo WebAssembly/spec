@@ -524,25 +524,28 @@ let rec expr2let lhs rhs targets cont =
       | _ -> expr2let l r targets cont
     ) bindings cont
   in
+  let lhs_at = lhs.at in
+  let rhs_at = rhs.at in
+  let at = over_region [ lhs_at; rhs_at ] in
   match lhs.it with
   | CaseE (tag, es) ->
     let bindings, es' = extract_non_names es in
     [
       ifI (
         isCaseOfE (rhs, tag),
-        letI (caseE (tag, es'), rhs) :: translate_bindings bindings,
+        letI (caseE (tag, es') ~at:lhs_at, rhs) ~at:at :: translate_bindings bindings,
         []
       );
     ]
   | ListE es ->
     let bindings, es' = extract_non_names es in
     if List.length es >= 2 then (* TODO: remove this. This is temporarily for a pure function returning stores *)
-    letI (listE es', rhs) :: translate_bindings bindings
+    letI (listE es' ~at:lhs_at, rhs) ~at:at :: translate_bindings bindings
     else
     [
       ifI
         ( binE (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
-          letI (listE es', rhs) :: translate_bindings bindings,
+          letI (listE es' ~at:lhs_at, rhs) ~at:at :: translate_bindings bindings,
           [] );
     ]
   | OptE None ->
@@ -556,7 +559,7 @@ let rec expr2let lhs rhs targets cont =
     [
       ifI
         ( isDefinedE rhs,
-          letI (lhs, rhs) :: cont,
+          letI (lhs, rhs) ~at:at :: cont,
           [] );
      ]
   | OptE (Some e) ->
@@ -564,14 +567,14 @@ let rec expr2let lhs rhs targets cont =
     [
       ifI
         ( isDefinedE rhs,
-          letI (optE (Some fresh), rhs) :: expr2let e fresh targets cont,
+          letI (optE (Some fresh) ~at:lhs_at, rhs) ~at:at :: expr2let e fresh targets cont,
           [] );
      ]
   | BinE (AddOp, a, b) ->
     [
       ifI
         ( binE (GeOp, rhs, b),
-          letI (a, binE (SubOp, rhs, b)) :: cont,
+          letI (a, binE (SubOp, rhs, b) ~at:at) ~at:at :: cont,
           [] );
     ]
   | CatE (prefix, suffix) ->
@@ -597,7 +600,7 @@ let rec expr2let lhs rhs targets cont =
     [
       ifI
         ( cond,
-          letI (catE (prefix', suffix'), rhs)
+          letI (catE (prefix', suffix') ~at:lhs_at, rhs) ~at:at
             :: translate_bindings (bindings_p @ bindings_s),
           [] );
     ]
@@ -605,16 +608,16 @@ let rec expr2let lhs rhs targets cont =
     [
       ifI
         ( hasTypeE (rhs, t),
-          letI (varE s, rhs) :: cont,
+          letI (varE s ~at:lhs_at, rhs) ~at:at :: cont,
           [] )
     ]
   | VarE s when s = "f" || String.starts_with ~prefix:"f_" s ->
-      letI (lhs, rhs) :: cont
+      letI (lhs, rhs) ~at:at :: cont
   | VarE s when s = "s" || String.starts_with ~prefix:"s'" s -> (* HARDCODE: hide state *)
       ( match rhs.it with
-      | CallE (func, args) -> performI (func, args) :: cont
-      | _ -> letI (lhs, rhs) :: cont )
-  | _ -> letI (lhs, rhs) :: cont
+      | CallE (func, args) -> performI (func, args) ~at:rhs_at :: cont
+      | _ -> letI (lhs, rhs) ~at:at :: cont )
+  | _ -> letI (lhs, rhs) ~at:at :: cont
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let rulepr2instrs id exp =
