@@ -112,24 +112,25 @@ let rec insert_otherwise else_body instrs =
   let walk = insert_otherwise else_body in
   List.fold_left_map
     (fun visit_if inst ->
+      let at = inst.at in
       match inst.it with
       | IfI (c, il, []) ->
           let _, il' = walk il in
-          (true, ifI (c, il', else_body))
+          (true, ifI (c, il', else_body) ~at:at)
       | IfI (c, il1, il2) ->
           let visit_if1, il1' = walk il1 in
           let visit_if2, il2' = walk il2 in
           let visit_if = visit_if || visit_if1 || visit_if2 in
-          (visit_if, ifI (c, il1', il2'))
+          (visit_if, ifI (c, il1', il2') ~at:at)
       | OtherwiseI il ->
           let visit_if', il' = walk il in
           let visit_if = visit_if || visit_if' in
-          (visit_if, otherwiseI il')
+          (visit_if, otherwiseI il' ~at:at)
       | EitherI (il1, il2) ->
           let visit_if1, il1' = walk il1 in
           let visit_if2, il2' = walk il2 in
           let visit_if = visit_if || visit_if1 || visit_if2 in
-          (visit_if, eitherI (il1', il2'))
+          (visit_if, eitherI (il1', il2') ~at:at)
       | _ -> (visit_if, inst))
     false instrs
 
@@ -157,19 +158,21 @@ let rec unify_if instrs =
   List.fold_right
     (fun i il ->
       let new_i =
+        let at = i.at in
         match i.it with
-        | IfI (c, il1, il2) -> ifI (c, unify_if il1, unify_if il2)
-        | OtherwiseI il -> otherwiseI (unify_if il)
-        | EitherI (il1, il2) -> eitherI (unify_if il1, unify_if il2)
+        | IfI (c, il1, il2) -> ifI (c, unify_if il1, unify_if il2) ~at:at
+        | OtherwiseI il -> otherwiseI (unify_if il) ~at:at
+        | EitherI (il1, il2) -> eitherI (unify_if il1, unify_if il2) ~at:at
         | _ -> i
       in
-      match (new_i.it, il) with
-      | IfI (c1, body1, []), { it = IfI (c2, body2, []); _ } :: rest
+      match (new_i, il) with
+      | { it = IfI (c1, body1, []); at = at1; _ }, { it = IfI (c2, body2, []); at = at2; _ } :: rest
         when Eq.eq_expr c1 c2 ->
           (* Assumption: common should have no side effect (replace) *)
           let common, own_body1, own_body2 = unify_head body1 body2 in
           let body = unify_if (common @ own_body1 @ own_body2) in
-          ifI (c1, body, []) :: rest
+          let at = over_region [ at1; at2 ] in
+          ifI (c1, body, []) ~at:at :: rest
       | _ -> new_i :: il)
     instrs []
 
@@ -177,29 +180,33 @@ let rec infer_else instrs =
   List.fold_right
     (fun i il ->
       let new_i =
+        let at = i.at in
         match i.it with
-        | IfI (c, il1, il2) -> ifI (c, infer_else il1, infer_else il2)
-        | OtherwiseI il -> otherwiseI (infer_else il)
-        | EitherI (il1, il2) -> eitherI (infer_else il1, infer_else il2)
+        | IfI (c, il1, il2) -> ifI (c, infer_else il1, infer_else il2) ~at:at
+        | OtherwiseI il -> otherwiseI (infer_else il) ~at:at
+        | EitherI (il1, il2) -> eitherI (infer_else il1, infer_else il2) ~at:at
         | _ -> i
       in
-      match (new_i.it, il) with
-      | IfI (c1, then_body1, else_body1), { it = IfI (c2, else_body2, then_body2); _ } :: rest
+      match (new_i, il) with
+      | { it = IfI (c1, then_body1, else_body1); at = at1; _ }, { it = IfI (c2, else_body2, then_body2); at = at2; _ } :: rest
         when eq_cond c1 (neg c2) ->
-          ifI (c1, then_body1 @ then_body2, else_body1 @ else_body2) :: rest
+          let at = over_region [ at1; at2 ] in
+          ifI (c1, then_body1 @ then_body2, else_body1 @ else_body2) ~at:at :: rest
       | _ -> new_i :: il)
     instrs []
 
 let if_not_defined cond =
+  let at = cond.at in
   match cond.it with
-  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e)
+  | BinE (EqOp, e, { it = OptE None; _ }) -> unE (NotOp, isDefinedE e ~at:e.at) ~at:at
   | _ -> cond
 
 let swap_if instr =
+  let at = instr.at in
   match instr.it with
-  | IfI (c, il, []) -> ifI (c, il, [])
-  | IfI (c, [], il) -> ifI (neg c, il, [])
-  | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1)
+  | IfI (c, il, []) -> ifI (c, il, []) ~at:at
+  | IfI (c, [], il) -> ifI (neg c, il, []) ~at:at
+  | IfI (c, il1, il2) when count_instrs il1 > count_instrs il2 -> ifI (neg c, il2, il1) ~at:at
   | _ -> instr
 
 let rec return_at_last = function
@@ -210,21 +217,24 @@ let rec return_at_last = function
     | _ -> return_at_last t
 
 let early_return instr =
+  let at = instr.at in
   match instr.it with
-  | IfI (c, il1, il2) when return_at_last il1 -> ifI (c, il1, []) :: il2
+  | IfI (c, il1, il2) when return_at_last il1 -> ifI (c, il1, []) ~at:at :: il2
   | _ -> [ instr ]
 
 let unify_if_tail instr =
+  let at = instr.at in
   match instr.it with
   | IfI (_, [], []) -> []
   | IfI (c, il1, il2) ->
     let t, il1', il2' = unify_tail il1 il2 in
-    ifI (c, il1', il2') :: t
+    ifI (c, il1', il2') ~at:at :: t
   | _ -> [ instr ]
 
 let remove_unnecessary_branch =
   let rec remove_unnecessary_branch' path_cond instr =
     let new_ = List.concat_map (remove_unnecessary_branch' path_cond) in
+    let instr_at = instr.at in
     match instr.it with
     | IfI (c, il1, il2) ->
       if List.exists (eq_cond c) path_cond then il1
@@ -232,47 +242,51 @@ let remove_unnecessary_branch =
       else
         let new_il1 = List.concat_map (remove_unnecessary_branch' (c :: path_cond)) il1 in
         let new_il2 = List.concat_map (remove_unnecessary_branch' (neg c :: path_cond)) il2 in
-        [ ifI (c, new_il1, new_il2) ]
-    | OtherwiseI il -> [ otherwiseI (new_ il) ]
-    | EitherI (il1, il2) -> [ eitherI (new_ il1, new_ il2) ]
+        [ ifI (c, new_il1, new_il2) ~at:instr_at ]
+    | OtherwiseI il -> [ otherwiseI (new_ il) ~at:instr_at ]
+    | EitherI (il1, il2) -> [ eitherI (new_ il1, new_ il2) ~at:instr_at ]
     | _ -> [ instr ]
   in
   remove_unnecessary_branch' []
 
 let push_either =
   let push_either' i =
+    let either_at = i.at in
     match i.it with
     | EitherI (il1, il2) ->
       (match Lib.List.split_last il1 with
-      | hds, { it = IfI (c, then_body, []); _ } ->
-        eitherI (hds @ [ ifI (c, then_body, il2) ], il2)
+      | hds, { it = IfI (c, then_body, []); at = if_at; _ } ->
+        eitherI (hds @ [ ifI (c, then_body, il2) ~at:if_at ], il2) ~at:either_at
       | _ -> i)
     | _ -> i in
 
   Walk.walk_instr { Walk.default_config with pre_instr = lift push_either' }
 
 let merge_three_branches i =
+  let at1 = i.at in
   match i.it with
-  | IfI (e1, il1, [ { it = IfI (e2, il2, il3); _ } ]) when Eq.eq_instrs il1 il3 ->
-    ifI (binE (AndOp, neg e1, e2), il2, il1)
+  | IfI (e1, il1, [ { it = IfI (e2, il2, il3); at = at2; _ } ]) when Eq.eq_instrs il1 il3 ->
+    let at = over_region [ at1; at2 ] in
+    ifI (binE (AndOp, neg e1, e2), il2, il1) ~at:at
   | _ -> i
 
 let remove_dead_assignment il =
   let rec remove_dead_assignment' il pair =
     List.fold_right
       (fun instr (acc, bounds) ->
+        let at = instr.at in
         match instr.it with
         | IfI (e, il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
-          ifI (e, il1', il2') :: acc, bounds1 @ bounds2 @ Free.free_expr e
+          ifI (e, il1', il2') ~at:at :: acc, bounds1 @ bounds2 @ Free.free_expr e
         | EitherI (il1, il2) ->
           let il1', bounds1 = remove_dead_assignment' il1 ([], bounds) in
           let il2', bounds2 = remove_dead_assignment' il2 ([], bounds) in
-          eitherI (il1', il2') :: acc, bounds1 @ bounds2
+          eitherI (il1', il2') ~at:at :: acc, bounds1 @ bounds2
         | EnterI (e1, e2, il) ->
           let il', bounds = remove_dead_assignment' il ([], bounds) in
-          enterI (e1, e2, il') :: acc, bounds @ Free.free_expr e1 @ Free.free_expr e2
+          enterI (e1, e2, il') ~at:at :: acc, bounds @ Free.free_expr e1 @ Free.free_expr e2
         | LetI (e1, e2) ->
           let bindings = (Free.free_expr e1) in
           if intersect_list bindings bounds = [] then
@@ -298,18 +312,21 @@ let rec remove_nop acc il = match il with
 | i :: il' ->
   let new_ = remove_nop [] in
   let i' =
+    let at = i.at in
     match i.it with
-    | IfI (c, il1, il2) -> ifI (c, new_ il1, new_ il2)
-    | EitherI (il1, il2) -> eitherI (new_ il1, new_ il2)
+    | IfI (c, il1, il2) -> ifI (c, new_ il1, new_ il2) ~at:at
+    | EitherI (il1, il2) -> eitherI (new_ il1, new_ il2) ~at:at
     | _ -> i in
   match acc with
   | { it = NopI; _ } :: acc' -> remove_nop (i' :: acc') il'
   | _ -> remove_nop (i' :: acc) il'
 
 let flatten_if instr =
+  let at1 = instr.at in
   match instr.it with
-  | IfI (e1, [ { it = IfI (e2, il1, il2); _ }], []) ->
-    ifI (binE (AndOp, e1, e2), il1, il2)
+  | IfI (e1, [ { it = IfI (e2, il1, il2); at = at2; _ }], []) ->
+    let at = over_region [ at1; at2 ] in
+    ifI (binE (AndOp, e1, e2) ~at:at, il1, il2) ~at:at1
   | _ -> instr
 
 let simplify_record_concat expr =
@@ -384,29 +401,32 @@ let hide_state_expr expr =
   { expr with it = expr' }
 
 let hide_state instr =
+  let at = instr.at in
   match instr.it with
   (* Return *)
-  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ]
+  | ReturnI (Some e) when is_state e || is_store e -> [ returnI None ~at:at ]
   (* Perform *)
-  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ]
-  | PerformI (f, args) -> [ performI (f, hide_state_args args) ]
+  | LetI (e, { it = CallE (fname, args); _ }) when is_state e || is_store e -> [ performI (fname, hide_state_args args) ~at:at ]
+  | PerformI (f, args) -> [ performI (f, hide_state_args args) ~at:at ]
   (* Append *)
   | LetI (_, { it = ExtE (s, ps, { it = ListE [ e ]; _ }, Back); _ } ) when is_store s ->
-    [ appendI (mk_access ps s, e) ]
+    [ appendI (mk_access ps s, e) ~at:at ]
   (* Append & Return *)
   | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); _ }; e2 ]; _  })) when is_store s ->
     let addr = varE "a" in
-    [ letI (addr, e2); appendI (mk_access ps s, e1); returnI (Some addr) ]
+    [ letI (addr, e2) ~at:at; 
+      appendI (mk_access ps s, e1) ~at:at; 
+      returnI (Some addr) ~at:at ]
   (* Replace store *)
   | LetI (_, { it = UpdE (s, ps, e); _ })
   | ReturnI (Some ({ it = TupE [ { it = UpdE (s, ps, e); _ }; { it = VarE "f"; _ } ]; _ }))
   | ReturnI (Some ({ it = UpdE (s, ps, e); _ })) when is_store s ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs s, t, e) ]
+    [ replaceI (mk_access hs s, t, e) ~at:at ]
   (* Replace frame *)
   | ReturnI (Some ({ it = TupE [ { it = VarE "s"; _ }; { it = UpdE (f, ps, e); _ } ]; _ })) when is_frame f ->
     let hs, t = Lib.List.split_last ps in
-    [ replaceI (mk_access hs f, t, e) ]
+    [ replaceI (mk_access hs f, t, e) ~at:at ]
   | _ -> [ instr ]
 
 let state_remover algo =
@@ -449,21 +469,22 @@ let rec enforce_return_r rinstrs =
   match rinstrs with
   | [] -> []
   | tl :: hd ->
+    let at = tl.at in
     match tl.it with
     | ReturnI _ | TrapI -> rinstrs
     | IfI (c, il1, il2) ->
       ( match enforce_return' il1, enforce_return' il2 with
       | [], [] -> enforce_return_r hd
-      | new_il, [] -> rev new_il @ (assertI c :: hd)
-      | [], new_il -> rev new_il @ (assertI (neg c) :: hd)
-      | new_il1, new_il2 -> ifI (c, new_il1, new_il2) :: hd )
-    | OtherwiseI il -> otherwiseI (enforce_return' il) :: hd
+      | new_il, [] -> rev new_il @ (assertI c ~at:at :: hd)
+      | [], new_il -> rev new_il @ (assertI (neg c) ~at:at :: hd)
+      | new_il1, new_il2 -> ifI (c, new_il1, new_il2) ~at:at :: hd )
+    | OtherwiseI il -> otherwiseI (enforce_return' il) ~at:at :: hd
     | EitherI (il1, il2) ->
       ( match enforce_return' il1, enforce_return' il2 with
       | [], [] -> enforce_return_r hd
       | new_il, []
       | [], new_il -> rev new_il @ hd
-      | new_il1, new_il2 -> eitherI (new_il1, new_il2) :: hd )
+      | new_il1, new_il2 -> eitherI (new_il1, new_il2) ~at:at :: hd )
     | _ -> enforce_return_r hd
 and enforce_return' instrs = instrs |> List.rev |> enforce_return_r |> List.rev
 
