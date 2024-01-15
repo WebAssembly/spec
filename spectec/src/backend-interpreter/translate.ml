@@ -680,9 +680,9 @@ and prem2instrs prem =
 (* Insert `target` at the innermost if instruction *)
 let rec insert_instrs target il =
   match Util.Lib.List.split_last_opt il with
-  | [], Some { it = OtherwiseI il'; at; _ } -> [ otherwiseI (il' @ check_nop target) ~at:at ]
-  | h, Some { it = IfI (cond, il', []); at; _ } ->
-    h @ [ ifI (cond, insert_instrs (check_nop target) il' , []) ~at:at ]
+  | [], Some { it = OtherwiseI il'; _ } -> [ otherwiseI (il' @ check_nop target) ]
+  | h, Some { it = IfI (cond, il', []); _ } ->
+    h @ [ ifI (cond, insert_instrs (check_nop target) il' , []) ]
   | _ -> il @ target
 
 

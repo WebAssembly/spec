@@ -4162,7 +4162,7 @@ execution_of_CALL x
 3. Execute (CALL_REF ?()).
 
 execution_of_CALL_REF
-1. YetI: TODO: It is likely that the value stack of two rules are differ.
+1. YetI: TODO: It is likely that the value stack of two rules are different.
 
 execution_of_RETURN_CALL x
 1. Assert: Due to validation, (x < |$funcaddr()|).

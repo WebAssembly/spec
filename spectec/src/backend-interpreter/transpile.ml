@@ -45,7 +45,7 @@ let both_empty cond1 cond2 =
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
-  | Some e1, Some e2 -> e1 = e2
+  | Some e1, Some e2 -> Eq.eq_expr e1 e2
   | _ -> false
 
 let both_non_empty cond1 cond2 =
@@ -62,11 +62,11 @@ let both_non_empty cond1 cond2 =
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
-  | Some e1, Some e2 -> e1 = e2
+  | Some e1, Some e2 -> Eq.eq_expr e1 e2
   | _ -> false
 
 let eq_cond cond1 cond2 =
-  cond1.it = cond2.it
+  Eq.eq_expr cond1 cond2
   || both_empty cond1 cond2
   || both_non_empty cond1 cond2
 
@@ -165,7 +165,7 @@ let rec unify_if instrs =
       in
       match (new_i.it, il) with
       | IfI (c1, body1, []), { it = IfI (c2, body2, []); _ } :: rest
-        when c1 = c2 ->
+        when Eq.eq_expr c1 c2 ->
           (* Assumption: common should have no side effect (replace) *)
           let common, own_body1, own_body2 = unify_head body1 body2 in
           let body = unify_if (common @ own_body1 @ own_body2) in
