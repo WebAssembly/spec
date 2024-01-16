@@ -3763,13 +3763,13 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i*{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if ($lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx?{sx}, i)*{i})
 
-  ;; 8-reduction.watsup:372.1-377.101
-  rule vcvtop-zero {cv : c_vectype, cv_1 : c_vectype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx, vcvtop : cvtop_vectype, zero : zero}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, ?(sx), zero)], [VVCONST_admininstr(V128_vectype, cv)])
+  ;; 8-reduction.watsup:372.1-377.102
+  rule vcvtop-zero {cv : c_vectype, cv_1 : c_vectype, i* : nat*, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx? : sx?, vcvtop : cvtop_vectype}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VCVTOP_admininstr(sh_2, vcvtop, ?(), sh_1, sx?{sx}, `ZERO%?`(?(())))], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i*{i} = $lanes(sh_1, cv_1))
-    -- if ($lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), ?(sx), i)*{i} :: 0^lns_1{})
+    -- if ($lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx?{sx}, i)*{i} :: 0^lns_1{})
 
   ;; 8-reduction.watsup:380.1-390.31
   rule dot {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i_1 : nat, i_2 : nat, j'* : nat*, j_1* : nat*, j_2* : nat*, k' : nat, k_1^k' : nat^k', k_2^k' : nat^k', lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape}:
@@ -3800,7 +3800,7 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1))
     -- if ($concat_bytes([i_1 i_2]*{i_1 i_2}) = $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i)^k{i})
-    -- if (j*{j} = $iadd(lns_2, i_1, i_2)*{i_1 i_2})
+    -- if (j*{j} = $iadd($storagesize(lnt_2 <: storagetype), i_1, i_2)*{i_1 i_2})
     -- if ($lanes(sh_2, cv) = j*{j})
 
   ;; 8-reduction.watsup:416.1-417.60

@@ -3973,10 +3973,10 @@ execution_of_NARROW sh_2 sh_1 sx
 14. Let cv be $inverse_of_lanes(sh_2, n_1^lns_1 ++ n_2^lns_1).
 15. Push (VVCONST V128 cv) to the stack.
 
-execution_of_VCVTOP sh_2 vcvtop half_u0? sh_1 sx_u1? zero_u2
+execution_of_VCVTOP sh_2 vcvtop half_u0? sh_1 sx_u1? (ZERO _u2?)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_1) from the stack.
-3. If (half_u0? is not defined and (zero_u2 is (ZERO ?()))), then:
+3. If (half_u0? is not defined and _u2? is not defined), then:
   a. Let i* be $lanes(sh_1, cv_1).
   b. If sh_1 is of the case SHAPE, then:
     1) Let (SHAPE lnt_1 lns_1) be sh_1.
@@ -3986,7 +3986,7 @@ execution_of_VCVTOP sh_2 vcvtop half_u0? sh_1 sx_u1? zero_u2
         1. Let ?(sx) be sx_u1?.
         2. Let cv be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), ?(sx), i)*).
         3. Push (VVCONST V128 cv) to the stack.
-4. If ((zero_u2 is (ZERO ?())) and sh_1 is of the case SHAPE), then:
+4. If (_u2? is not defined and sh_1 is of the case SHAPE), then:
   a. Let (SHAPE lnt_1 lns_1) be sh_1.
   b. If sh_2 is of the case SHAPE, then:
     1) Let (SHAPE lnt_2 lns_2) be sh_2.
@@ -3996,16 +3996,15 @@ execution_of_VCVTOP sh_2 vcvtop half_u0? sh_1 sx_u1? zero_u2
       c) Let i* be $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2].
       d) Let cv be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)*).
       e) Push (VVCONST V128 cv) to the stack.
-5. If half_u0? is not defined, then:
+5. If (half_u0? is not defined and (_u2? is ?(()))), then:
   a. Let i* be $lanes(sh_1, cv_1).
   b. If sh_1 is of the case SHAPE, then:
     1) Let (SHAPE lnt_1 lns_1) be sh_1.
     2) If sh_2 is of the case SHAPE, then:
       a) Let (SHAPE lnt_2 lns_2) be sh_2.
-      b) If sx_u1? is defined, then:
-        1. Let ?(sx) be sx_u1?.
-        2. Let cv be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), ?(sx), i)* ++ 0^lns_1).
-        3. Push (VVCONST V128 cv) to the stack.
+      b) Let sx? be sx_u1?.
+      c) Let cv be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)* ++ 0^lns_1).
+      d) Push (VVCONST V128 cv) to the stack.
 
 execution_of_DOT sh_1 sh_2 S
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -4050,7 +4049,7 @@ execution_of_EXTADD_PAIRWISE sh_2 sh_1 sx
 7. Let (SHAPE lnt_2 lns_2) be sh_2.
 8. Let [i_1, i_2]* be $inverse_of_concat_bytes($ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i)^k).
 9. Assert: Due to validation, (|i_1*| is |i_2*|).
-10. Let j* be $iadd(lns_2, i_1, i_2)*.
+10. Let j* be $iadd($storagesize(lnt_2), i_1, i_2)*.
 11. Let cv be $inverse_of_lanes(sh_2, j*).
 12. Push (VVCONST V128 cv) to the stack.
 

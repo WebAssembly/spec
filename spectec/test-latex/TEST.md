@@ -4979,11 +4979,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{vcvtop}~{\mathit{sh}}_{{2}}~{\mathit{vcvtop}}~\epsilon~{\mathit{sh}}_{{1}}~{\mathit{sx}}~{\mathit{zero}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+{[\textsc{\scriptsize E{-}vcvtop{-}zero}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{vcvtop}~{\mathit{sh}}_{{2}}~{\mathit{vcvtop}}~\epsilon~{\mathit{sh}}_{{1}}~{{\mathit{sx}}^?}~\mathsf{zero}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
   \mbox{if}~{\mathit{sh}}_{{1}} = {\mathit{lnt}}_{{1}}~\mathsf{x}~{\mathit{lns}}_{{1}} \\
  &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
  &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}_{{1}}, {\mathit{cv}}_{{1}}) \\
- &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}}, {\mathit{cv}}) = {{{{{\mathit{vcvtop}}}{}}_{{|{\mathit{lnt}}_{{1}}|}}}{({|{\mathit{lnt}}_{{2}}|},\, {\mathit{sx}},\, {\mathit{i}})}^\ast}~{0^{{\mathit{lns}}_{{1}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}}, {\mathit{cv}}) = {{{{{\mathit{vcvtop}}}{}}_{{|{\mathit{lnt}}_{{1}}|}}}{({|{\mathit{lnt}}_{{2}}|},\, {{\mathit{sx}}^?},\, {\mathit{i}})}^\ast}~{0^{{\mathit{lns}}_{{1}}}} \\
 \end{array}
 $$
 
@@ -5026,7 +5026,7 @@ $$
  &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
  &&&&\quad {\land}~{{\mathit{i}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}}, {\mathit{cv}}_{{1}}) \\
  &&&&\quad {\land}~{\mathrm{concat}}({({\mathit{i}}_{{1}}~{\mathit{i}}_{{2}})^\ast}) = {{{{{\mathrm{ext}}}_{({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|})}^{{\mathit{sx}}}}}{({\mathit{i}})}^{{\mathit{k}}}} \\
- &&&&\quad {\land}~{{\mathit{j}}^\ast} = {{\mathrm{iadd}}({\mathit{lns}}_{{2}}, {\mathit{i}}_{{1}}, {\mathit{i}}_{{2}})^\ast} \\
+ &&&&\quad {\land}~{{\mathit{j}}^\ast} = {{\mathrm{iadd}}({|{\mathit{lnt}}_{{2}}|}, {\mathit{i}}_{{1}}, {\mathit{i}}_{{2}})^\ast} \\
  &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}}, {\mathit{cv}}) = {{\mathit{j}}^\ast} \\
 \end{array}
 $$

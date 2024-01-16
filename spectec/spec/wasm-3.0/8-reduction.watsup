@@ -370,11 +370,11 @@ rule Step_pure/vcvtop-half:
 
 
 rule Step_pure/vcvtop-zero:
-  (VVCONST V128 cv_1) (VCVTOP sh_2 vcvtop eps sh_1 sx zero) ~> (VVCONST V128 cv)
+  (VVCONST V128 cv_1) (VCVTOP sh_2 vcvtop eps sh_1 sx? ZERO) ~> (VVCONST V128 cv)
   -- if sh_1 = SHAPE lnt_1 lns_1
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i* = $lanes(sh_1, cv_1)
-  -- if $lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx, i)* 0^lns_1
+  -- if $lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)* 0^lns_1
 
 
 rule Step_pure/dot:
@@ -405,7 +405,7 @@ rule Step_pure/extadd_pairwise:
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i^k = $lanes(sh_1, cv_1)
   -- if $concat_bytes((i_1 i_2)*) = $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i)^k
-  -- if j* = $iadd(lns_2, i_1, i_2)*
+  -- if j* = $iadd($storagesize(lnt_2), i_1, i_2)*
   -- if $lanes(sh_2, cv) = j*
 
 ;; Reference instructions

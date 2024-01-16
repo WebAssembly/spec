@@ -816,57 +816,74 @@ let inverse_of_lanes : numerics =
       );
   }
 
+let rec inverse_of_concat_bytes_helper = function
+  | a :: b :: l -> 
+    [listV_of_list [a; b]] @ inverse_of_concat_bytes_helper l
+  | [] -> []
+  | _ -> failwith "Invaild inverse_of_concat_bytes_helper"
+
+let inverse_of_concat_bytes : numerics =
+  {
+    name = "inverse_of_concat_bytes";
+    f = 
+      (function
+      | [ ListV l ] -> listV_of_list (inverse_of_concat_bytes_helper (Array.to_list !l))
+      | _ -> failwith "Invalid inverse_of_concat_bytes"
+      );
+  }
+
+let iadd : numerics =
+  {
+    name = "iadd";
+    f = 
+      (function
+      | [ NumV 8L; NumV m; NumV n ] -> al_of_int32 (I8.add (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 16L; NumV m; NumV n ] -> al_of_int32 (I16.add (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 32L; NumV m; NumV n ] -> al_of_int32 (I32.add (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 64L; NumV m; NumV n ] -> al_of_int32 (Int64.to_int32 (I64.add m n))
+      | v -> fail_list "Invalid iadd" v
+      );
+  }
+
+let wrap_i32_cvtop_i32 = wrap1 al_to_int32 al_of_int32
+let wrap_i64_cvtop_i64 = wrap1 al_to_int64 al_of_int64
+
 let vcvtop: numerics =
   {
     name = "vcvtop";
-    f =
+    f = 
       (function
-      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
-        match ls, ln with
-        | "I16", 8L -> (
-          match op with
-          | CaseV ("EXTENDLOWS", []) -> wrap_vunop V128.I16x8_convert.extend_low_s v
-          | CaseV ("EXTENDLOWU", []) -> wrap_vunop V128.I16x8_convert.extend_low_u v
-          | CaseV ("EXTENDHIGHS", []) -> wrap_vunop V128.I16x8_convert.extend_high_s v
-          | CaseV ("EXTENDHIGHU", []) -> wrap_vunop V128.I16x8_convert.extend_high_u v
-          | CaseV ("EXTADDPAIRWISES", []) -> wrap_vunop V128.I16x8_convert.extadd_pairwise_s v
-          | CaseV ("EXTADDPAIRWISEU", []) -> wrap_vunop V128.I16x8_convert.extadd_pairwise_u v
-          | _ -> failwith ("Invalid vcvtop: " ^ (Print.string_of_value op)))
-        | "I32", 4L -> (
-          match op with
-          | CaseV ("EXTENDLOWS", []) -> wrap_vunop V128.I32x4_convert.extend_low_s v
-          | CaseV ("EXTENDLOWU", []) -> wrap_vunop V128.I32x4_convert.extend_low_u v
-          | CaseV ("EXTENDHIGHS", []) -> wrap_vunop V128.I32x4_convert.extend_high_s v
-          | CaseV ("EXTENDHIGHU", []) -> wrap_vunop V128.I32x4_convert.extend_high_u v
-          | CaseV ("EXTADDPAIRWISES", []) -> wrap_vunop V128.I32x4_convert.extadd_pairwise_s v
-          | CaseV ("EXTADDPAIRWISEU", []) -> wrap_vunop V128.I32x4_convert.extadd_pairwise_u v
-          | CaseV ("TRUNCSATSF32X4", []) -> wrap_vunop V128.I32x4_convert.trunc_sat_f32x4_s v
-          | CaseV ("TRUNCSATUF32X4", []) -> wrap_vunop V128.I32x4_convert.trunc_sat_f32x4_u v
-          | CaseV ("TRUNCSATSZEROF64X2", []) -> wrap_vunop V128.I32x4_convert.trunc_sat_f64x2_s_zero v
-          | CaseV ("TRUNCSATUZEROF64X2", []) -> wrap_vunop V128.I32x4_convert.trunc_sat_f64x2_u_zero v
-          | _ -> failwith ("Invalid vcvtop: " ^ (Print.string_of_value op)))
-        | "I64", 2L -> (
-          match op with
-          | CaseV ("EXTENDLOWS", []) -> wrap_vunop V128.I64x2_convert.extend_low_s v
-          | CaseV ("EXTENDLOWU", []) -> wrap_vunop V128.I64x2_convert.extend_low_u v
-          | CaseV ("EXTENDHIGHS", []) -> wrap_vunop V128.I64x2_convert.extend_high_s v
-          | CaseV ("EXTENDHIGHU", []) -> wrap_vunop V128.I64x2_convert.extend_high_u v
-          | _ -> failwith ("Invalid vcvtop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vcvtop")
-      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
-        match ls, ln with
-        | "F32", 4L -> (
-          match op with
-          | CaseV ("DEMOTEZEROF64X2", []) -> wrap_vunop V128.F32x4_convert.demote_f64x2_zero v
-          | CaseV ("CONVERTSI32X4", []) -> wrap_vunop V128.F32x4_convert.convert_i32x4_s v
-          | CaseV ("CONVERTUI32X4", []) -> wrap_vunop V128.F32x4_convert.convert_i32x4_u v
-          | _ -> failwith ("Invalid vcvtop: " ^ (Print.string_of_value op)))
-        | "F64", 2L -> (
-          match op with
-          | CaseV ("PROMOTELOWF32X4", []) -> wrap_vunop V128.F64x2_convert.promote_low_f32x4 v
-          | _ -> failwith ("Invalid vcvtop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vcvtop")
-      | _ -> failwith "Invalid vcvtop")
+      | [ CaseV (op, []); NumV m; NumV n; OptV sx_opt; v] -> (
+        let sx = match sx_opt with
+          | None -> ""
+          | Some (CaseV (sx, [])) -> sx
+          | _ -> failwith "invalid cvtop" in
+        match m, n, op, sx with
+        (* Conversion to I16 *)
+        | 8L, 16L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffffffl) v
+        | 8L, 16L, "EXTEND", "U" -> wrap_i32_cvtop_i32 (Int32.logand 0xffl) v
+        (* Conversion to I32 *)
+        | 16L, 32L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffffffl) v
+        | 16L, 32L, "EXTEND", "U" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffl) v
+        | 32L, 32L, "TRUNC_SAT", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
+        | 32L, 32L, "TRUNC_SAT", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
+        | 64L, 32L, "TRUNC_SAT", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
+        | 64L, 32L, "TRUNC_SAT", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
+        (* Conversion to I64 *)
+        | 32L, 64L, "EXTEND", "S" -> wrap_i64_cvtop_i64 (Int64.logand 0xffffffffffffffffL) v
+        | 32L, 64L, "EXTEND", "U" -> wrap_i64_cvtop_i64 (Int64.logand 0xffffffffL) v
+        (* Conversion to F32 *)
+        | 32L, 32L, "CONVERT", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
+        | 32L, 32L, "CONVERT", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
+        | 64L, 32L, "DEMOTE", _ -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
+        (* Conversion to F64 *)
+        | 32L, 64L, "CONVERT", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
+        | 32L, 64L, "CONVERT", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
+        | 32L, 64L, "PROMOTE", _ -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
+        | _ -> failwith ("Invalid vcvtop")
+      )
+      | _ -> failwith "Invalid vcvtop"
+    )
   }
 
 let wrap_vshiftop op v1 v2 =
@@ -916,6 +933,8 @@ let numerics_list : numerics list = [
   vvternop;
   vunop;
   vbinop;
+  inverse_of_concat_bytes;
+  iadd;
   vcvtop;
   vrelop;
   vishiftop;
