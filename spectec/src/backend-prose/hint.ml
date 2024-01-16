@@ -18,7 +18,7 @@ type env =
     show_funcs: El.Ast.exp FMap.t ref;
   }
 
-(* Environment Construction *)
+(* Extracting Hint from DSL *)
 (* Assume each syntax variant / function have at most one "show" hint. *)
 
 let extract_show_hint (hint: El.Ast.hint) =
@@ -57,6 +57,8 @@ let extract_func_hints show_funcs def =
       | hint :: _ -> FMap.add func.it hint show_funcs
       | [] -> show_funcs)
   | _ -> show_funcs
+
+(* Environment Construction *)
 
 let env el =
   let show_kwds = List.fold_left extract_syntax_hints KMap.empty el in

@@ -12,6 +12,7 @@ type env =
   {
     config: config;
     prose: prose;
+    symbol: Symbol.env;
     macro: Macro.env;
     hint: Hint.env;
   }
@@ -21,9 +22,10 @@ let gen_macro env =
     Macro.gen_macro env.macro
 
 let env config inputs outputs el prose : env =
+  let symbol = Symbol.env el in
   let macro = Macro.env inputs outputs el in
   let hint = Hint.env el in
-  let env = { config; prose; macro; hint; } in
+  let env = { config; prose; symbol; macro; hint; } in
   env
 
 (* Helpers *)
