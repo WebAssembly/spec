@@ -41,20 +41,24 @@ let extract_typ_hints typ =
 
 let extract_syntax_hints show_kwds def =
   match def.it with
-  | El.Ast.SynD (syntax, _, _, typ, _) -> 
+  | El.Ast.SynD (id, subid, _, typ, _) -> 
+      let id = 
+        if subid.it = "" then id.it
+        else id.it ^ "-" ^ subid.it
+      in
       let show_hints = extract_typ_hints typ in
       List.fold_left
         (fun acc (variant, hint) -> 
-          KMap.add (variant, syntax.it) hint acc)
+          KMap.add (variant, id) hint acc)
         show_kwds show_hints
   | _ -> show_kwds
 
 let extract_func_hints show_funcs def =
   match def.it with
-  | El.Ast.DecD (func, _, _, hints) ->
+  | El.Ast.DecD (id, _, _, hints) ->
       let show_hints = List.concat_map extract_show_hint hints in
       (match show_hints with
-      | hint :: _ -> FMap.add func.it hint show_funcs
+      | hint :: _ -> FMap.add id.it hint show_funcs
       | [] -> show_funcs)
   | _ -> show_funcs
 
@@ -77,15 +81,15 @@ let env el =
 
 let find_kwd_hint env kwd =
   let variant, syntax = kwd in
-  sprintf "Request keyword (%s, %s): " variant syntax |> print_endline;
+  sprintf "Keyword (%s, %s): " variant syntax |> print_string;
   (match KMap.find_opt kwd !(env.show_kwds) with
   | Some hint -> El.Print.string_of_exp hint 
-  | None -> "not found")
+  | None -> "none")
   |> print_endline 
 
 let find_func_hint env funcname = 
-  sprintf "Request function %s: " funcname |> print_endline;
+  sprintf "Function %s: " funcname |> print_string;
   (match FMap.find_opt funcname !(env.show_funcs) with
   | Some hint -> El.Print.string_of_exp hint 
-  | None -> "not found")
+  | None -> "none")
   |> print_endline

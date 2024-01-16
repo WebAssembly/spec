@@ -19,11 +19,11 @@ type env =
 
 let gen_macro env =
   if env.config.macros then
-    Macro.gen_macro env.macro
+    Macro.gen_macro env.macro env.symbol
 
 let env config inputs outputs el prose : env =
   let symbol = Symbol.env el in
-  let macro = Macro.env inputs outputs el in
+  let macro = Macro.env inputs outputs in
   let hint = Hint.env el in
   let env = { config; prose; symbol; macro; hint; } in
   env
@@ -112,19 +112,23 @@ let rec render_name name = match String.index_opt name '_' with
       base ^ "_{" ^ subscript ^ "}"
   | _ -> name
 
-and render_kwd env kwd = match Macro.find_kwd env.macro kwd with
-  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
+and render_kwd env kwd = match Symbol.find_kwd env.symbol kwd with
+  | Some kwd -> 
+      let lhs, rhs = Macro.macro_kwd env.macro kwd in
+      if env.config.macros then lhs else rhs
   | None -> render_name (Al.Print.string_of_kwd kwd)
 
-and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
-  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
+and render_funcname env fname = match Symbol.find_func env.symbol fname with
+  | Some fname -> 
+      let lhs, rhs = Macro.macro_func env.macro fname in
+      if env.config.macros then lhs else rhs
   | None ->
       let escape acc c =
         if c = '.' then acc ^ "{.}"
         else if c = '_' then acc ^ "\\_"
         else acc ^ (String.make 1 c)
       in
-      String.fold_left escape "" funcname
+      String.fold_left escape "" fname 
 
 let rec render_iter env = function
   | Al.Ast.Opt -> "^?"
@@ -284,6 +288,9 @@ and render_expr env in_math expr =
       if in_math then s else render_math s
   *)
   | Al.Ast.CaseE (tag, es) ->
+      (match Symbol.find_kwd env.symbol tag with
+      | Some tag -> Hint.find_kwd_hint env.hint tag
+      | None -> ());
       let stag = render_kwd env tag in
       let ses = render_list (render_expr env true) "" "~" "" es in
       let s = sprintf "%s~%s" stag ses in

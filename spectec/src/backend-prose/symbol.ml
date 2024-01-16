@@ -102,10 +102,8 @@ and find_kwd env syntax variant =
         find_kwd' env (Set.elements nonterminals) variant
   | _ -> None
 
-let find_func env fname = Set.find_opt fname !(env.funcs)
-
 let find_kwd env kwd =
   let variant, syntax = kwd in
   find_kwd env syntax variant
 
-let find_funcname env funcname = find_func env funcname
+let find_func env fname = Set.find_opt fname !(env.funcs)
