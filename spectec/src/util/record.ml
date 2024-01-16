@@ -26,6 +26,9 @@ module Record = struct include List
     try assoc s r |> (!) with
     | _ -> failwith ("No field name: " ^ s ^ "\n")
 
+  let find_opt s r =
+    assoc_opt s r |> Option.map (!)
+
   let replace k v r =
     let ref = assoc k r in
     ref := v

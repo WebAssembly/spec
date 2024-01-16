@@ -1,5 +1,6 @@
 open Al
 open Al.Ast
+open Al.Walk
 open Util
 open Util.Source
 open Util.Record
@@ -347,6 +348,60 @@ let simplify_record_concat expr =
   in
   { expr with it = expr' }
 
+type count = One of string | Many
+let infer_case_assert instrs =
+  let case_count = ref Record.empty in
+
+  let rec handle_cond c mt_then mt_else =
+    match c.it with
+    | IsCaseOfE ({ it = VarE id; _ }, kwd) ->
+      let k = id in
+      let v = One (fst kwd) in
+      let v_opt = Record.find_opt k !case_count in
+      let v' = if mt_else && match v_opt with None -> true | Some v' -> v = v' then v else Many in
+      case_count := Record.add k v' !case_count
+    | HasTypeE ({ it = VarE id; _ }, _) ->
+      case_count := Record.add id Many !case_count
+    | UnE (NotOp, c') -> handle_cond c' mt_else mt_then
+    | BinE ((AndOp | OrOp), c1, c2) -> handle_cond c1 mt_then mt_else; handle_cond c2 mt_then mt_else
+    | _ -> ()
+  in
+  let handle_if i =
+    match i.it with
+    | IfI (c, il1, il2) -> handle_cond c (il1 = []) (il2 = [])
+    | _ -> ()
+  in
+  let count_cases = walk_instrs { default_config with pre_instr = (fun i -> handle_if i; [ i ]) } in
+  count_cases instrs |> ignore;
+
+  let has_single_case e =
+    match e.it with
+    | VarE id -> ( match Record.find_opt id !case_count with None | Some Many -> false | _ -> true )
+    | _ -> false
+  in
+  let is_single_case_check c =
+    match c.it with
+    | IsCaseOfE (e, _) -> has_single_case e
+    | _ -> false
+  in
+  let rewrite_if i =
+    match i.it with
+    | IfI (c, il1, []) when is_single_case_check c -> assertI c ~at:i.at :: il1
+    | _ -> [ i ] in
+  let rec rewrite_il il =
+    let il' = List.map (fun i ->
+      match i.it with
+      | IfI (c, il1, il2) -> ifI (c, rewrite_il il1, rewrite_il il2) ~at:i.at
+      | OtherwiseI il -> otherwiseI (rewrite_il il) ~at:i.at
+      | EitherI (il1, il2) -> eitherI (rewrite_il il1, rewrite_il il2) ~at:i.at
+      | _ -> i
+    ) il in
+    match Util.Lib.List.split_last_opt il' with
+    | _, None -> []
+    | hd, Some tl -> hd @ rewrite_if tl
+  in
+  rewrite_il instrs
+
 let rec enhance_readability instrs =
   let walk_config =
     {
@@ -363,6 +418,7 @@ let rec enhance_readability instrs =
     |> infer_else
     |> List.concat_map remove_unnecessary_branch
     |> remove_nop []
+    |> infer_case_assert
     |> Walk.walk_instrs walk_config
   in
 
@@ -414,8 +470,8 @@ let hide_state instr =
   (* Append & Return *)
   | ReturnI (Some ({ it = TupE [ { it = ExtE (s, ps, { it = ListE [ e1 ]; _ }, Back); _ }; e2 ]; _  })) when is_store s ->
     let addr = varE "a" in
-    [ letI (addr, e2) ~at:at; 
-      appendI (mk_access ps s, e1) ~at:at; 
+    [ letI (addr, e2) ~at:at;
+      appendI (mk_access ps s, e1) ~at:at;
       returnI (Some addr) ~at:at ]
   (* Replace store *)
   | LetI (_, { it = UpdE (s, ps, e); _ })

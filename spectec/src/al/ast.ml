@@ -108,7 +108,7 @@ and expr' =
   | IsDefinedE of expr                  (* expr is defined *)
   | MatchE of expr * expr               (* expr matches expr *)
   | HasTypeE of expr * ty               (* the type of expr is ty *)
-  (* Eonditions used in assertions *)
+  (* Conditions used in assertions *)
   | TopLabelE                           (* "a label is now on the top of the stack" *)
   | TopFrameE                           (* "a frame is now on the top of the stack" *)
   | TopValueE of expr option            (* "a value (of type expr)? is now on the top of the stack" *)
