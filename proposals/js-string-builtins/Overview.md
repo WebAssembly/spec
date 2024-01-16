@@ -429,12 +429,15 @@ func substring(
       typeof string !== "string")
     trap();
 
-  // Ensure the range is within bounds to avoid the complex behavior that
-  // `substring` performs when that is not the case.
-  if (start > string.length)
+  // Ensure the range is ordered to avoid the complex behavior that `substring`
+  // performs when that is not the case.
+  if (start > end ||
+      start > string.length)
     return "";
 
-  // [1]
+  // If end > string.length, `substring` is specified to clamp it
+  // start is guaranteed to be at least zero (as it is unsigned), so there will
+  // not be any clamping of start.
   return string.substring(start, end);
 }
 ```
