@@ -70,3 +70,20 @@ let env el =
   FMap.iter (fun k v -> sprintf "\t%s => %s" k (El.Print.string_of_exp v) |> print_endline) show_funcs;
   *)
   { show_kwds = ref show_kwds; show_funcs = ref show_funcs }
+
+(* Environment Lookup *)
+
+let find_kwd_hint env kwd =
+  let variant, syntax = kwd in
+  sprintf "Request keyword (%s, %s): " variant syntax |> print_endline;
+  (match KMap.find_opt kwd !(env.show_kwds) with
+  | Some hint -> El.Print.string_of_exp hint 
+  | None -> "not found")
+  |> print_endline 
+
+let find_func_hint env funcname = 
+  sprintf "Request function %s: " funcname |> print_endline;
+  (match FMap.find_opt funcname !(env.show_funcs) with
+  | Some hint -> El.Print.string_of_exp hint 
+  | None -> "not found")
+  |> print_endline

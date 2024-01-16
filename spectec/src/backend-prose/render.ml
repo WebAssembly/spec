@@ -273,13 +273,14 @@ and render_expr env in_math expr =
   | Al.Ast.CaseE (tag, []) ->
       let stag = render_kwd env tag in
       if in_math then stag else render_math stag
-  (* TODO a hard-coded hint for CONST *)
+  (* TODO a hard-coded hint for CONST
   | Al.Ast.CaseE (("CONST", _) as tag, [ e1; e2 ])->
       let stag = render_kwd env tag in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
       let s = sprintf "%s.%s~%s" se1 stag se2 in
       if in_math then s else render_math s
+  *)
   | Al.Ast.CaseE (tag, es) ->
       let stag = render_kwd env tag in
       let ses = render_list (render_expr env true) "" "~" "" es in
