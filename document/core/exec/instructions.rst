@@ -1341,47 +1341,43 @@ Where:
 
 19. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
 
-20. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
+20. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`bit width <bitwidth-fieldtype>`.
+
+21. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
+
+22. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, or the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
 
     a. Trap.
 
-21. Assert: due to :ref:`validation <valid-array.init_data>`, the :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` has a defined :ref:`bit width <bitwidth-fieldtype>`.
-
-22. Let :math:`z` be the :ref:`bit width <bitwidth-fieldtype>` of :ref:`field type <syntax-fieldtype>` :math:`\X{ft}` divided by eight.
-
-23. If the sum of :math:`s` and :math:`n` times :math:`z` is larger than the length of :math:`\datainst.\DIDATA`, then:
-
-    a. Trap.
-
-24. If :math:`n = 0`, then:
+23. If :math:`n = 0`, then:
 
     a. Return.
 
-25. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice z]`.
+24. Let :math:`b^\ast` be the :ref:`byte <syntax-byte>` sequence :math:`\datainst.\DIDATA[s \slice z]`.
 
-26. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft})`.
+25. Let :math:`t` be the :ref:`value type <syntax-valtype>` :math:`\unpacktype(\X{ft})`.
 
-27. Assert: due to :ref:`validation <valid-array.init_data>`, :math:`\bytes_{\X{ft}}` is defined.
+26. Assert: due to :ref:`validation <valid-array.init_data>`, :math:`\bytes_{\X{ft}}` is defined.
 
-28. Let :math:`c` be the constant for which :math:`\bytes_{\X{ft}}(c)` is :math:`b^\ast`.
+27. Let :math:`c` be the constant for which :math:`\bytes_{\X{ft}}(c)` is :math:`b^\ast`.
 
-29. Push the value :math:`\REFARRAYADDR~a` to the stack.
+28. Push the value :math:`\REFARRAYADDR~a` to the stack.
 
-30. Push the value :math:`\I32.\CONST~d` to the stack.
+29. Push the value :math:`\I32.\CONST~d` to the stack.
 
-31. Push the value :math:`t.\CONST~c` to the stack.
+30. Push the value :math:`t.\CONST~c` to the stack.
 
-32. Execute the instruction :math:`\ARRAYSET~x`.
+31. Execute the instruction :math:`\ARRAYSET~x`.
 
-33. Push the value :math:`\REFARRAYADDR~a` to the stack.
+32. Push the value :math:`\REFARRAYADDR~a` to the stack.
 
-34. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
+33. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
 
-35. Push the value :math:`\I32.\CONST~(s+z)` to the stack.
+34. Push the value :math:`\I32.\CONST~(s+z)` to the stack.
 
-36. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+35. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-37. Execute the instruction :math:`\ARRAYINITDATA~x~y`.
+36. Execute the instruction :math:`\ARRAYINITDATA~x~y`.
 
 .. math::
    ~\\[-1ex]
@@ -1462,37 +1458,33 @@ Where:
 
 19. Assert: due to :ref:`validation <valid-array.init_elem>`, the :ref:`array instance <syntax-arrayinst>` :math:`S.\SARRAYS[a]` exists.
 
-20. If :math:`d + n` is larger than or equal to the length of :math:`S.\SARRAYS[a].\AIFIELDS`, then:
+20. If :math:`d + n` is larger than the length of :math:`S.\SARRAYS[a].\AIFIELDS`, or :math:`s + n` is larger than the length of :math:`\eleminst.\EIELEM`, then:
 
     a. Trap.
 
-21. If :math:`s + n` is larger than or equal to the length of :math:`\eleminst.\EIELEM`, then:
-
-    a. Trap.
-
-22. If :math:`n = 0`, then:
+21. If :math:`n = 0`, then:
 
     a. Return.
 
-23. Let :math:`\reff'` be the :ref:`reference value <syntax-ref>` :math:`\eleminst.\EIELEM[s]`.
+22. Let :math:`\reff'` be the :ref:`reference value <syntax-ref>` :math:`\eleminst.\EIELEM[s]`.
 
-24. Push the value :math:`\REFARRAYADDR~a` to the stack.
+23. Push the value :math:`\REFARRAYADDR~a` to the stack.
 
-25. Push the value :math:`\I32.\CONST~d` to the stack.
+24. Push the value :math:`\I32.\CONST~d` to the stack.
 
-26. Push the value :math:`\reff'` to the stack.
+25. Push the value :math:`\reff'` to the stack.
 
-27. Execute the instruction :math:`\ARRAYSET~x`.
+26. Execute the instruction :math:`\ARRAYSET~x`.
 
-28. Push the value :math:`\REFARRAYADDR~a` to the stack.
+27. Push the value :math:`\REFARRAYADDR~a` to the stack.
 
-29. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
+28. Push the value :math:`\I32.\CONST~(d+1)` to the stack.
 
-30. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
+29. Push the value :math:`\I32.\CONST~(s+1)` to the stack.
 
-31. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
+30. Push the value :math:`\I32.\CONST~(n-1)` to the stack.
 
-32. Execute the instruction :math:`\ARRAYINITELEM~x~y`.
+31. Execute the instruction :math:`\ARRAYINITELEM~x~y`.
 
 .. math::
    ~\\[-1ex]
