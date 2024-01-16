@@ -9,6 +9,13 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
+(** Helpers **)
+let take_prefix n str =
+  if String.length str < n then
+    str
+  else
+    String.sub str 0 n
+
 (** Walker-based transformer **)
 let rec transform_expr f e =
   let new_ = transform_expr f in
@@ -68,13 +75,27 @@ let to_right_assoc_cat =
   transform_expr rotate_cw
 
 (** Unifying lhs **)
-let unified_prefix = "u_"
-let _unified_id = ref 0
-let init_unified_id () = _unified_id := 0
-let get_unified_id () = let i = !_unified_id in _unified_id := (i+1); i
-let gen_new_unified () = unified_prefix ^ (string_of_int (get_unified_id())) $ no_region
+
+(* Estimate appropriate id name for a given type *)
+let rec type_to_id ty = match ty.it with
+(* TODO: guess this for "var" in el? *)
+| VarT id -> take_prefix 5 id.it
+| BoolT -> "b"
+| NumT NatT -> "n"
+| NumT IntT -> "i"
+| NumT RatT -> "q"
+| NumT RealT -> "r"
+| TextT -> "s"
+| TupT tys-> List.map type_to_id tys |> String.concat "_"
+| IterT (t, _) -> type_to_id t
+
+let unified_prefix = "u"
+let _unified_idx = ref 0
+let init_unified_idx () = _unified_idx := 0
+let get_unified_idx () = let i = !_unified_idx in _unified_idx := (i+1); i
+let gen_new_unified ty = (type_to_id ty) ^ "_" ^ unified_prefix ^ (string_of_int (get_unified_idx())) $ no_region
 let to_iter e iterexp = IterE (e, iterexp)
-let is_unified_id = String.starts_with ~prefix:unified_prefix
+let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   ( match e1.it, e2.it with
@@ -124,8 +145,9 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
   | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')
   | _ ->
-    let id = gen_new_unified () in
-    match e1.note.it with
+    let ty = e1.note in
+    let id = gen_new_unified ty in
+    match ty.it with
     | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [id])
     | _ -> VarE id
   ) $$ (e1.at % e1.note)
@@ -179,7 +201,7 @@ let apply_template_to_red_group template (lhs, rhs, prems) =
   template, rhs, prioritize_else animated_prems
 
 let unify_lhs' reduction_group =
-  init_unified_id();
+  init_unified_idx();
   let lhs_group = List.map (function (lhs, _, _) -> lhs) reduction_group in
   let hd = List.hd lhs_group in
   let tl = List.tl lhs_group in
@@ -199,7 +221,7 @@ let apply_template_to_def template def =
   DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
 
 let unify_defs defs =
-  init_unified_id();
+  init_unified_idx();
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
   let tl = List.tl lhs_s in

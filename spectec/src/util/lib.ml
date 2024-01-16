@@ -16,6 +16,9 @@ struct
     | x::xs -> let ys, y = split_last xs in x::ys, Some y
     | [] -> [], None
 
+  let last l = snd (split_last l)
+  let last_opt l = snd (split_last_opt l)
+
   let rec nub pred = function
     | [] -> []
     | x::xs -> x :: nub pred (List.filter (fun y -> not (pred x y)) xs)

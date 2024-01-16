@@ -5,6 +5,8 @@ sig
   val split_hd : 'a list -> 'a * 'a list (* raises Failure *)
   val split_last : 'a list -> 'a list * 'a (* raises Failure *)
   val split_last_opt : 'a list -> 'a list * 'a option
+  val last : 'a list -> 'a (* raises Failure *)
+  val last_opt : 'a list -> 'a option
   val nub : ('a -> 'a -> bool) -> 'a list -> 'a list
   val filter_not : ('a -> bool) -> 'a list -> 'a list
 end
