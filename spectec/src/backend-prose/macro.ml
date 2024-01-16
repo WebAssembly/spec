@@ -166,17 +166,17 @@ let parse_section pdsts odsts =
 
 (* Extracting Macro from DSL *)
 
-let extract_ids_kwds = function
+let extract_id_kwd = function
   | El.Ast.Nl -> None
   | El.Ast.Elem elem -> Some elem.it
 
-let extract_typcases_kwds = function
+let extract_typcase_kwd = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom with
     | El.Ast.Atom id -> Some id
     | _ -> None)
 
-let extract_typfields_kwds = function
+let extract_typfield_kwd = function
   | El.Ast.Nl -> None
   | El.Ast.Elem (atom, _, _) -> (match atom with
     | El.Ast.Atom id -> Some id
@@ -188,15 +188,15 @@ let rec extract_typ_kwds typ =
     | El.Ast.Atom id -> [ id ]
     | _ -> [])
   | El.Ast.IterT (typ_inner, _) -> extract_typ_kwds typ_inner.it
-  | El.Ast.StrT typfields -> List.filter_map extract_typfields_kwds typfields
+  | El.Ast.StrT typfields -> List.filter_map extract_typfield_kwd typfields
   | El.Ast.CaseT (_, ids, typcases, _) ->
-      let ids = List.filter_map extract_ids_kwds ids in
-      let typcases = List.filter_map extract_typcases_kwds typcases in
+      let ids = List.filter_map extract_id_kwd ids in
+      let typcases = List.filter_map extract_typcase_kwd typcases in
       ids @ typcases
   | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_kwds t.it) tl
   | _ -> []
 
-let extract_kwd_kwds def =
+let extract_syntax_kwds def =
   match def.it with
   | El.Ast.SynD (id, subid, _, typ, _) ->
       let topsyntax, syntax =
@@ -223,7 +223,7 @@ let env inputs outputs el =
   let sections = if check_rst outputs then parse_section inputs outputs else Map.empty in
   let kwds =
     List.fold_left
-      (fun acc def -> match extract_kwd_kwds def with
+      (fun acc def -> match extract_syntax_kwds def with
         | Some (topsyntax, syntax, terminals, nonterminals) ->
             let acc = Map.add syntax (terminals, nonterminals) acc in
             (match topsyntax with
