@@ -999,11 +999,15 @@ let al_of_opt f opt = Option.map f opt |> optV
 
 let al_of_int64 i64 = numV i64
 let al_of_int i = Int64.of_int i |> al_of_int64
+let al_of_int8 i8 =
+  (* NOTE: int8 is considered to be unsigned *)
+  Int64.of_int32 i8 |> Int64.logand 0x0000_0000_0000_00ffL |> al_of_int64
+let al_of_int16 i16 =
+  (* NOTE: int32 is considered to be unsigned *)
+  Int64.of_int32 i16 |> Int64.logand 0x0000_0000_0000_ffffL |> al_of_int64
 let al_of_int32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
   Int64.of_int32 i32 |> Int64.logand 0x0000_0000_ffff_ffffL |> al_of_int64
-let al_of_int32_s i32 =
-  Int64.of_int32 i32 |> al_of_int64
 let al_of_float32 f32 = F32.to_bits f32 |> al_of_int32
 let al_of_float64 f64 = F64.to_bits f64 |> al_of_int64
 let al_of_vector vec = V128.to_bits vec |> vecV
@@ -1638,6 +1642,7 @@ let rec al_of_instr instr =
   | VecTest vop -> CaseV ("ALL_TRUE", al_of_vtestop vop)
   | VecCompare vop -> CaseV ("VRELOP", al_of_vrelop vop)
   | VecUnary vop -> CaseV ("VUNOP", al_of_vunop vop)
+  | VecBinary V128 (V128.I8x16 (V128Op.Swizzle)) -> CaseV ("SWIZZLE", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); ])
   | VecBinary V128 (V128.I8x16 (V128Op.Shuffle l)) -> CaseV ("SHUFFLE", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_list al_of_int l ])
   | VecBinary V128 (V128.I8x16 (V128Op.NarrowS)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.SX ])
   | VecBinary V128 (V128.I16x8 (V128Op.NarrowS)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.SX ])

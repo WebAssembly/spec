@@ -389,6 +389,7 @@ $$
 {\mathit{vectype}} . {\mathit{binop}}_{{\mathit{vvectype}}} \\ &&|&
 {\mathit{vectype}} . {\mathit{ternop}}_{{\mathit{vvectype}}} \\ &&|&
 {\mathit{vectype}} . {\mathit{testop}}_{{\mathit{vvectype}}} \\ &&|&
+\mathsf{swizzle}~{\mathit{shape}} \\ &&|&
 \mathsf{shuffle}~{\mathit{shape}}~{{\mathit{laneidx}}^\ast} \\ &&|&
 {\mathit{shape}}.\mathsf{splat} \\ &&|&
 \mathsf{extract\_lane}~{\mathit{shape}}~{{\mathit{sx}}^?}~{\mathit{laneidx}} \\ &&|&
@@ -912,7 +913,7 @@ $$
 {\mathrm{unpacked}}({\mathit{sh}}) &=& {\mathit{nt}} &\quad
   \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
  &&&\quad {\land}~{\mathit{lnt}} = {\mathit{nt}} \\
-{\mathrm{unpacked}}({\mathit{shape}}) &=& \mathsf{i{\scriptstyle32}} &\quad
+{\mathrm{unpacked}}({\mathit{sh}}) &=& \mathsf{i{\scriptstyle32}} &\quad
   \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
  &&&\quad {\land}~{\mathit{lnt}} = {\mathit{pt}} \\
 \end{array}
@@ -3220,6 +3221,16 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
+}{
+{\mathit{C}} \vdash \mathsf{swizzle}~{\mathit{sh}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+} \, {[\textsc{\scriptsize T{-}swizzle}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
 ({\mathit{laneidx}} < {\mathrm{dim}}({\mathit{sh}}) \cdot 2)^\ast
 }{
 {\mathit{C}} \vdash \mathsf{shuffle}~{\mathit{sh}}~{{\mathit{laneidx}}^\ast} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
@@ -3868,7 +3879,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{psl}} / 8 \cdot {\mathit{psr}}
 }{
@@ -3882,7 +3893,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8
 }{
@@ -3896,7 +3907,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
 }{
@@ -3910,7 +3921,7 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
  \qquad
@@ -3926,7 +3937,21 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}}.\mathsf{mem}[0] = {\mathit{mt}}
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
+ \qquad
+{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|\mathsf{v{\scriptstyle128}}|} / 8
+}{
+{\mathit{C}} \vdash \mathsf{vstore}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
+\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
+} \, {[\textsc{\scriptsize T{-}vstore}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+{\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
 {2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
  \qquad
@@ -4828,6 +4853,18 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
+{[\textsc{\scriptsize E{-}swizzle}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{swizzle}~{\mathit{sh}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}'}) &\quad
+  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+ &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{2}}) \\
+ &&&&\quad {\land}~{{\mathit{c}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{1}})~{0^{256 - {\mathit{lns}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}'}) = {{{\mathit{c}}^\ast}[{{\mathit{i}}^\ast}[{\mathit{k}}]]^{{\mathit{k}}<{\mathit{lns}}}} \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}shuffle}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~(\mathsf{shuffle}~{\mathit{sh}}~{{\mathit{laneidx}}^\ast}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
   \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
  &&&&\quad {\land}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{1}})~{\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{2}}) \\
@@ -4864,9 +4901,9 @@ $$
 
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
-{[\textsc{\scriptsize E{-}replace\_lane}]} \quad & ({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{1}})~(\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{2}})~({{{\mathit{sh}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{laneidx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
-  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{2}}) \\
- &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}, {\mathit{c}}) = ({{\mathit{i}}^\ast})[[{\mathit{laneidx}}] = {\mathit{c}}_{{1}}] \\
+{[\textsc{\scriptsize E{-}replace\_lane}]} \quad & (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}_{{1}})~({\mathit{nt}}.\mathsf{const}~{\mathit{c}}_{{2}})~({{{\mathit{sh}}.\mathsf{replace}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{laneidx}}) &\hookrightarrow& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathit{cv}}) &\quad
+  \mbox{if}~{{\mathit{i}}^\ast} = {\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}_{{1}}) \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}, {\mathit{cv}}) = ({{\mathit{i}}^\ast})[[{\mathit{laneidx}}] = {\mathit{c}}_{{2}}] \\
 \end{array}
 $$
 

@@ -264,6 +264,14 @@ rule Step_pure/vvtestop:
   -- if i = $ine_128(cv_1, $vzero)
 
 
+rule Step_pure/swizzle:
+  (VVCONST V128 cv_1) (VVCONST V128 cv_2) (SWIZZLE sh) ~> (VVCONST V128 cv')
+  -- if sh = SHAPE lnt lns
+  -- if i* = $lanes(sh, cv_2)
+  -- if c* = $lanes(sh, cv_1) 0^(256 - lns)
+  -- if $lanes(sh, cv') = c*[$(i*[k])]^(k<lns)
+
+
 rule Step_pure/shuffle:
   (VVCONST V128 cv_1) (VVCONST V128 cv_2) (SHUFFLE sh laneidx*) ~> (VVCONST V128 cv)
   -- if sh = SHAPE lnt lns
@@ -291,9 +299,9 @@ rule Step_pure/extract_lane-pack:
 
 
 rule Step_pure/replace_lane:
-  (CONST nt c_1) (VVCONST V128 cv_2) (REPLACE_LANE sh laneidx) ~> (VVCONST V128 cv)
-  -- if i* = $lanes(sh, cv_2)
-  -- if $lanes(sh, c) = (i*)[[laneidx] = c_1]
+  (VVCONST V128 cv_1) (CONST nt c_2) (REPLACE_LANE sh laneidx) ~> (VVCONST V128 cv)
+  -- if i* = $lanes(sh, cv_1)
+  -- if $lanes(sh, cv) = (i*)[[laneidx] = c_2]
 
 
 rule Step_pure/vunop:

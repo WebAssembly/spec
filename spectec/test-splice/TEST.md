@@ -718,6 +718,7 @@ warning: rule `Instr_ok/vvunop` was never spliced
 warning: rule `Instr_ok/vvbinop` was never spliced
 warning: rule `Instr_ok/vvternop` was never spliced
 warning: rule `Instr_ok/vvtestop` was never spliced
+warning: rule `Instr_ok/swizzle` was never spliced
 warning: rule `Instr_ok/shuffle` was never spliced
 warning: rule `Instr_ok/splat` was never spliced
 warning: rule `Instr_ok/extract_lane` was never spliced
@@ -774,6 +775,7 @@ warning: rule `Instr_ok/vload` was never spliced
 warning: rule `Instr_ok/vload-splat` was never spliced
 warning: rule `Instr_ok/vload-zero` was never spliced
 warning: rule `Instr_ok/vload_lane` was never spliced
+warning: rule `Instr_ok/vstore` was never spliced
 warning: rule `Instr_ok/vstore_lane` was never spliced
 warning: rule `Instrf_ok/instr` was never spliced
 warning: rule `Instrf_ok/local.set` was never spliced
@@ -874,6 +876,7 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
+warning: rule `Step_pure/swizzle` was never spliced
 warning: rule `Step_pure/shuffle` was never spliced
 warning: rule `Step_pure/splat` was never spliced
 warning: rule `Step_pure/extract_lane-num` was never spliced
@@ -1257,6 +1260,7 @@ warning: validation prose `STRUCT.GET` was never spliced
 warning: validation prose `STRUCT.NEW` was never spliced
 warning: validation prose `STRUCT.NEW_DEFAULT` was never spliced
 warning: validation prose `STRUCT.SET` was never spliced
+warning: validation prose `SWIZZLE` was never spliced
 warning: validation prose `TABLE.COPY` was never spliced
 warning: validation prose `TABLE.FILL` was never spliced
 warning: validation prose `TABLE.GET` was never spliced
@@ -1273,6 +1277,7 @@ warning: validation prose `VISHIFTOP` was never spliced
 warning: validation prose `VLOAD` was never spliced
 warning: validation prose `VLOAD_LANE` was never spliced
 warning: validation prose `VRELOP` was never spliced
+warning: validation prose `VSTORE` was never spliced
 warning: validation prose `VSTORE_LANE` was never spliced
 warning: validation prose `VUNOP` was never spliced
 warning: validation prose `VVBINOP` was never spliced

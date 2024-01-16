@@ -377,6 +377,7 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VVBINOP vectype binop_vvectype                                   hint(show %.%)
   | VVTERNOP vectype ternop_vvectype                                 hint(show %.%)
   | VVTESTOP vectype testop_vvectype                                 hint(show %.%)
+  | SWIZZLE shape
   | SHUFFLE shape laneidx*
   | SPLAT shape                                                     hint(show %.SPLAT)
   | EXTRACT_LANE shape sx? laneidx                                  hint(show %X%.EXTRACT#_#LANE#_#% %)

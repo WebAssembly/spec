@@ -56,7 +56,7 @@ def $unpacked(shape) : numtype
 def $unpacked(sh) = nt
     -- if sh = SHAPE lnt lns
     -- if lnt = nt
-def $unpacked(shape) = I32
+def $unpacked(sh) = I32
     -- if sh = SHAPE lnt lns
     -- if lnt = pt
 def $dim(shape) : lanesize

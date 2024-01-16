@@ -772,6 +772,9 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- VVTESTOP vt vvtestop : V128 -> I32
 
+rule Instr_ok/swizzle:
+  C |- SWIZZLE sh : V128 V128 -> V128
+
 rule Instr_ok/shuffle:
   C |- SHUFFLE sh laneidx* : V128 V128 -> V128
   -- (if $(laneidx<$dim(sh) * 2))*
@@ -1023,28 +1026,33 @@ rule Instr_ok/store:
 
 rule Instr_ok/vload:
   C |- VLOAD (SHAPE (PACKSHAPE psl psr) sx {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
-  -- if C.MEM[0] = mt
+  -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= psl/8 * psr)
 
 rule Instr_ok/vload-splat:
   C |- VLOAD (SPLAT n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
-  -- if C.MEM[0] = mt
+  -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= n/8)
 
 rule Instr_ok/vload-zero:
   C |- VLOAD (ZERO n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
-  -- if C.MEM[0] = mt
+  -- if C.MEM[x] = mt
   -- if $(2^(n_A) < n/8)
 
 rule Instr_ok/vload_lane:
   C |- VLOAD_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> V128
-  -- if C.MEM[0] = mt
+  -- if C.MEM[x] = mt
   -- if $(2^(n_A) < n/8)
   -- if $(laneidx < 128 / n)
 
+rule Instr_ok/vstore:
+  C |- VSTORE x {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
+  -- if C.MEM[x] = mt
+  -- if $(2^(n_A) <= $size(V128)/8)
+
 rule Instr_ok/vstore_lane:
   C |- VSTORE_LANE n x {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
-  -- if C.MEM[0] = mt
+  -- if C.MEM[x] = mt
   -- if $(2^(n_A) < n/8)
   -- if $(laneidx < 128 / n)
 

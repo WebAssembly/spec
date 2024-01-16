@@ -11,6 +11,16 @@ let i64_to_const i = CaseV ("CONST", [ singleton "I64"; al_of_int64 i ])
 let f32_to_const f = CaseV ("CONST", [ singleton "F32"; al_of_float32 f ])
 let f64_to_const f = CaseV ("CONST", [ singleton "F64"; al_of_float64 f ])
 
+let i8_to_i32 i8 =
+  (* NOTE: This operation extends the sign of i8 to i32 *)
+  I32.shr_s (I32.shl i8 24l) 24l
+let i16_to_i32 i16 =
+  (* NOTE: This operation extends the sign of i8 to i32 *)
+  I32.shr_s (I32.shl i16 16l) 16l
+
+let i32_to_i8 i32 = Int32.logand 0xffl i32
+let i32_to_i16 i32 = Int32.logand 0xffffl i32
+
 let wrap1
   (destruct: value -> 'a)
   (construct: 'b -> value)
@@ -491,8 +501,14 @@ let ilt_s: numerics =
     name = "ilt_s";
     f =
       (function
-      | [ _; NumV n1; NumV n2 ] ->
-        I64.lt_s n1 n2 |> al_of_bool
+      | [ NumV t; NumV n1; NumV n2 ] ->
+        (match t with
+        | 8L -> I8.lt_s (n1 |> Int64.to_int32 |> i8_to_i32) (n2 |> Int64.to_int32 |> i8_to_i32) |> al_of_bool
+        | 16L -> I16.lt_s (n1 |> Int64.to_int32 |> i16_to_i32) (n2 |> Int64.to_int32 |> i16_to_i32) |> al_of_bool
+        | 32L -> I32.lt_s (n1 |> Int64.to_int32) (n2 |> Int64.to_int32) |> al_of_bool
+        | 64L -> I64.lt_s n1 n2 |> al_of_bool
+        | _ -> failwith "Invaild ilt_s"
+        )
       | _ -> failwith "Invaild ilt_s"
       );
   }
@@ -617,7 +633,6 @@ let vbinop: numerics =
           | CaseV ("MAXS", []) -> wrap_vbinop V128.I8x16.max_s v1 v2
           | CaseV ("MAXU", []) -> wrap_vbinop V128.I8x16.max_u v1 v2
           | CaseV ("AVGRU", []) -> wrap_vbinop V128.I8x16.avgr_u v1 v2
-          | CaseV ("SWIZZLE", []) -> wrap_vbinop V128.V8x16.swizzle v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I16", 8L -> (
           match op with
@@ -702,9 +717,45 @@ let vrelop: numerics =
       (function
       | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); NumV v1; NumV v2 ] -> (
         match ls, ln with
-        | "I8", 16L
-        | "I16", 8L
-        | "I32", 4L
+        | "I8", 16L -> (
+          match op with
+          | CaseV ("EQ", []) -> wrap_vrelop I8.eq (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("NE", []) -> wrap_vrelop I8.ne (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("LTS", []) -> wrap_vrelop I8.lt_s (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("LTU", []) -> wrap_vrelop I8.lt_u (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("GTS", []) -> wrap_vrelop I8.gt_s (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("GTU", []) -> wrap_vrelop I8.gt_u (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("LES", []) -> wrap_vrelop I8.le_s (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("LEU", []) -> wrap_vrelop I8.le_u (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("GES", []) -> wrap_vrelop I8.ge_s (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | CaseV ("GEU", []) -> wrap_vrelop I8.ge_u (v1 |> Int64.to_int32 |> i8_to_i32) (v2 |> Int64.to_int32 |> i8_to_i32)
+          | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
+        | "I16", 8L -> (
+          match op with
+          | CaseV ("EQ", []) -> wrap_vrelop I16.eq (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("NE", []) -> wrap_vrelop I16.ne (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("LTS", []) -> wrap_vrelop I16.lt_s  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("LTU", []) -> wrap_vrelop I16.lt_u  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("GTS", []) -> wrap_vrelop I16.gt_s  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("GTU", []) -> wrap_vrelop I16.gt_u  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("LES", []) -> wrap_vrelop I16.le_s  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("LEU", []) -> wrap_vrelop I16.le_u  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("GES", []) -> wrap_vrelop I16.ge_s  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | CaseV ("GEU", []) -> wrap_vrelop I16.ge_u  (v1 |> Int64.to_int32 |> i16_to_i32) (v2 |> Int64.to_int32 |> i16_to_i32)
+          | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
+        | "I32", 4L -> (
+          match op with
+          | CaseV ("EQ", []) -> wrap_vrelop I32.eq (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("NE", []) -> wrap_vrelop I32.ne (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("LTS", []) -> wrap_vrelop I32.lt_s (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("LTU", []) -> wrap_vrelop I32.lt_u (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("GTS", []) -> wrap_vrelop I32.gt_s (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("GTU", []) -> wrap_vrelop I32.gt_u (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("LES", []) -> wrap_vrelop I32.le_s (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("LEU", []) -> wrap_vrelop I32.le_u (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("GES", []) -> wrap_vrelop I32.ge_s (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | CaseV ("GEU", []) -> wrap_vrelop I32.ge_u (v1 |> Int64.to_int32) (v2 |> Int64.to_int32)
+          | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
         | "I64", 2L -> (
           match op with
           | CaseV ("EQ", []) -> wrap_vrelop I64.eq v1 v2
@@ -768,14 +819,14 @@ let narrow : numerics =
       (function
       | [ NumV _; NumV n; CaseV ("S", []); NumV i ] -> (
         match n with
-        | 8L -> NumV (i |> Int64.to_int32 |> I8.saturate_s |> Int64.of_int32)
-        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_s |> Int64.of_int32)
+        | 8L -> NumV (i |> Int64.to_int32 |> i16_to_i32 |> I8.saturate_s |> i32_to_i8 |> Int64.of_int32)
+        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_s |> i32_to_i16 |> Int64.of_int32)
         | _ -> failwith "Invalid narrow"
         )
       | [ NumV _; NumV n; CaseV ("U", []); NumV i ] -> (
         match n with
-        | 8L -> NumV (i |> Int64.to_int32 |> I8.saturate_u |> Int64.of_int32)
-        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_u |> Int64.of_int32)
+        | 8L -> NumV (i |> Int64.to_int32 |> i16_to_i32 |> I8.saturate_u |> Int64.of_int32)
+        | 16L -> NumV (i |> Int64.to_int32 |> I16.saturate_u |> i32_to_i16 |> Int64.of_int32)
         | _ -> failwith "Invalid narrow"
         )
       | _ -> failwith "Invalid narrow");
@@ -787,11 +838,11 @@ let lanes : numerics =
     f = 
       (function
       | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int32_s |> listV_of_list
+        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int8 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int32_s |> listV_of_list
+        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int16 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV v ] ->
-        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32_s |> listV_of_list
+        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV v ] ->
         v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
       | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV v ] ->
@@ -806,8 +857,8 @@ let inverse_of_lanes : numerics =
     name = "inverse_of_lanes";
     f = 
       (function
-      | [ CaseV("SHAPE", [ CaseV ("I8", []); NumV 16L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I8x16.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("I16", []); NumV 8L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I16x8.of_lanes |> V128.to_bits)
+      | [ CaseV("SHAPE", [ CaseV ("I8", []); NumV 16L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> V128.to_bits)
+      | [ CaseV("SHAPE", [ CaseV ("I16", []); NumV 8L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> V128.to_bits)
       | [ CaseV("SHAPE", [ CaseV ("I32", []); NumV 4L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> V128.to_bits)
       | [ CaseV("SHAPE", [ CaseV ("I64", []); NumV 2L ]); ListV lanes; ] -> VecV (List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> V128.to_bits)
       | [ CaseV("SHAPE", [ CaseV ("F32", []); NumV 4L ]); ListV lanes; ] -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
@@ -860,17 +911,17 @@ let vcvtop: numerics =
           | _ -> failwith "invalid cvtop" in
         match m, n, op, sx with
         (* Conversion to I16 *)
-        | 8L, 16L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffffffl) v
+        | 8L, 16L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (fun e -> Int32.logand 0xffffffffl (e |> i8_to_i32)) v
         | 8L, 16L, "EXTEND", "U" -> wrap_i32_cvtop_i32 (Int32.logand 0xffl) v
         (* Conversion to I32 *)
-        | 16L, 32L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffffffl) v
+        | 16L, 32L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (fun e -> Int32.logand 0xffffffffl (e |> i16_to_i32)) v
         | 16L, 32L, "EXTEND", "U" -> wrap_i32_cvtop_i32 (Int32.logand 0xffffl) v
         | 32L, 32L, "TRUNC_SAT", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
         | 32L, 32L, "TRUNC_SAT", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
         | 64L, 32L, "TRUNC_SAT", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
         | 64L, 32L, "TRUNC_SAT", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
         (* Conversion to I64 *)
-        | 32L, 64L, "EXTEND", "S" -> wrap_i64_cvtop_i64 (Int64.logand 0xffffffffffffffffL) v
+        | 32L, 64L, "EXTEND", "S" -> wrap_i64_cvtop_i64 (fun e -> I64.shr_s (I64.shl e 32L) 32L) v
         | 32L, 64L, "EXTEND", "U" -> wrap_i64_cvtop_i64 (Int64.logand 0xffffffffL) v
         (* Conversion to F32 *)
         | 32L, 32L, "CONVERT", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
@@ -886,9 +937,6 @@ let vcvtop: numerics =
     )
   }
 
-let wrap_vshiftop op v1 v2 =
-  op v1 v2 |> al_of_int64
-
 let vishiftop: numerics =
   {
     name = "vishiftop";
@@ -896,16 +944,48 @@ let vishiftop: numerics =
       (function
       | [ CaseV ("_VI", [ op ]); CaseV (ls, []); NumV v1; NumV v2] -> (
         match ls with
-        | "I8"
-        | "I16"
-        | "I32"
-        | "I64" -> (
+        | "I8" -> (
+          let v1p = v1 |> Int64.to_int32 |> i8_to_i32 in
+          let v2p = Int64.rem v2 8L |> Int64.to_int32 in
+
           match op with
-          | CaseV ("SHL", []) -> wrap_vshiftop I64.shl v1 v2
-          | CaseV ("SHRS", []) -> wrap_vshiftop I64.shr_s v1 v2
-          | CaseV ("SHRU", []) -> wrap_vshiftop I64.shr_u v1 v2
-          | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vishiftop")
+          | CaseV ("SHL", []) -> I8.shl v1p v2p |> al_of_int32
+          | CaseV ("SHRS", []) -> I8.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHRU", []) -> I8.shr_u v1p v2p |> al_of_int32
+          | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
+        )
+        | "I16" -> (
+          let v1p = v1 |> Int64.to_int32 |> i16_to_i32 in
+          let v2p = Int64.rem v2 16L |> Int64.to_int32 in
+
+          match op with
+          | CaseV ("SHL", []) -> I16.shl v1p v2p |> al_of_int32
+          | CaseV ("SHRS", []) -> I16.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHRU", []) -> I16.shr_u v1p v2p |> al_of_int32
+          | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
+        )
+        | "I32" -> (
+          let v1p = v1 |> Int64.to_int32 in
+          let v2p = Int64.rem v2 32L |> Int64.to_int32 in
+
+          match op with
+          | CaseV ("SHL", []) -> I32.shl v1p v2p |> al_of_int32
+          | CaseV ("SHRS", []) -> I32.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHRU", []) -> I32.shr_u v1p v2p |> al_of_int32
+          | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
+        )
+        | "I64" -> (
+          let v1p = v1 in
+          let v2p = Int64.rem v2 64L in
+
+          match op with
+          | CaseV ("SHL", []) -> I64.shl v1p v2p |> al_of_int64
+          | CaseV ("SHRS", []) -> I64.shr_s v1p v2p |> al_of_int64
+          | CaseV ("SHRU", []) -> I64.shr_u v1p v2p |> al_of_int64
+          | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
+        )
+        | _ -> failwith "Invalid type for vishiftop"
+        )
       | _ -> failwith "Invalid vishiftop")
   }
 

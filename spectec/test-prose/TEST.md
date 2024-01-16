@@ -2445,6 +2445,9 @@ validation_of_VVTERNOP vt vvternop
 validation_of_VVTESTOP vt vvtestop
 - The instruction is valid with type [V128]->[I32].
 
+validation_of_SWIZZLE sh
+- The instruction is valid with type [V128, V128]->[V128].
+
 validation_of_SHUFFLE sh laneidx*
 - For all laneidx in laneidx*,
   - laneidx must be less than ($dim(sh) · 2).
@@ -2721,23 +2724,29 @@ validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
 - The instruction is valid with type [I32, nt]->[].
 
 validation_of_VLOAD (SHAPE (PACKSHAPE psl psr) sx { ALIGN: n_A; OFFSET: n_O; }) x
-- |C.MEM| must be greater than 0.
+- |C.MEM| must be greater than x.
 - (2 ^ n_A) must be less than or equal to ((psl / 8) · psr).
-- Let mt be C.MEM[0].
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32]->[V128].
 
 validation_of_VLOAD_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
-- |C.MEM| must be greater than 0.
+- |C.MEM| must be greater than x.
 - (2 ^ n_A) must be less than (n / 8).
 - laneidx must be less than (128 / n).
-- Let mt be C.MEM[0].
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32, V128]->[V128].
 
+validation_of_VSTORE x { ALIGN: n_A; OFFSET: n_O; }
+- |C.MEM| must be greater than x.
+- (2 ^ n_A) must be less than or equal to ($size(V128) / 8).
+- Let mt be C.MEM[x].
+- The instruction is valid with type [I32, V128]->[].
+
 validation_of_VSTORE_LANE n x { ALIGN: n_A; OFFSET: n_O; } laneidx
-- |C.MEM| must be greater than 0.
+- |C.MEM| must be greater than x.
 - (2 ^ n_A) must be less than (n / 8).
 - laneidx must be less than (128 / n).
-- Let mt be C.MEM[0].
+- Let mt be C.MEM[x].
 - The instruction is valid with type [I32, V128]->[].
 
 Ki
@@ -3091,15 +3100,14 @@ invfbytes N b*
 1. Let p be $inverse_of_fbytes(N, b*).
 2. Return p.
 
-unpacked shape_u0
-1. Let sh be shape_u0.
-2. If sh is of the case SHAPE, then:
-  a. Let (SHAPE lnt lns) be sh.
-  b. If the type of lnt is numtype, then:
-    1) Let nt be lnt.
-    2) Return nt.
-3. Assert: Due to validation, the type of lnt is packedtype.
-4. Return I32.
+unpacked sh
+1. Assert: Due to validation, sh is of the case SHAPE.
+2. Let (SHAPE lnt lns) be sh.
+3. If the type of lnt is numtype, then:
+  a. Let nt be lnt.
+  b. Return nt.
+4. Assert: Due to validation, the type of lnt is packedtype.
+5. Return I32.
 
 dim sh
 1. Assert: Due to validation, sh is of the case SHAPE.
@@ -3849,6 +3857,20 @@ execution_of_VVTESTOP V128 (_VV ANY_TRUE)
 3. Let i be $ine_128(cv_1, $vzero()).
 4. Push (I32.CONST i) to the stack.
 
+execution_of_SWIZZLE sh
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VVCONST V128 cv_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Let i* be $lanes(sh, cv_2).
+6. Assert: Due to validation, sh is of the case SHAPE.
+7. Let (SHAPE lnt lns) be sh.
+8. Assert: Due to validation, (k < |i*|)^(k<lns).
+9. Let c* be $lanes(sh, cv_1) ++ 0^(256 - lns).
+10. Assert: Due to validation, (i*[k] < |c*|)^(k<lns).
+11. Let cv' be $inverse_of_lanes(sh, c*[i*[k]]^(k<lns)).
+12. Push (VVCONST V128 cv') to the stack.
+
 execution_of_SHUFFLE sh laneidx*
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
@@ -3888,12 +3910,12 @@ execution_of_EXTRACT_LANE sh sx_u0? laneidx
     3) Push (nt.CONST c_2) to the stack.
 
 execution_of_REPLACE_LANE sh laneidx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop (VVCONST V128 cv_2) from the stack.
-3. Assert: Due to validation, a value of value type nt is on the top of the stack.
-4. Pop (nt.CONST c_1) from the stack.
-5. Let i* be $lanes(sh, cv_2).
-6. Assert: Due to validation, (|$inverse_of_lanes(sh, i* with [laneidx] replaced by c_1)| is 1).
+1. Assert: Due to validation, a value of value type nt is on the top of the stack.
+2. Pop (nt.CONST c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VVCONST V128 cv_1) from the stack.
+5. Let i* be $lanes(sh, cv_1).
+6. Let cv be $inverse_of_lanes(sh, i* with [laneidx] replaced by c_2).
 7. Push (VVCONST V128 cv) to the stack.
 
 execution_of_VUNOP sh vunop
