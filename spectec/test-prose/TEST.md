@@ -872,19 +872,19 @@ execution_of_CALL_REF x
 5. Let (REF.FUNC_ADDR a) be ref.
 6. If (a < |$funcinst()|), then:
   a. Let fi be $funcinst()[a].
-  b. If fi.CODE is of the case FUNC, then:
-    1) Let (FUNC y_0 y_1 instr*) be fi.CODE.
-    2) Let (LOCAL t)* be y_1.
-    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
-      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
-      b) Let (t_1^n -> t_2^m) be y_0.
-      c) Assert: Due to validation, there are at least n values on the top of the stack.
-      d) Pop val^n from the stack.
-      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
-      f) Let F be the activation of f with arity m.
-      g) Enter F with label [FRAME_]:
-        1. Let L be the label_m{[]}.
-        2. Enter L with label instr* ++ [LABEL_]:
+  b. Assert: Due to validation, fi.CODE is of the case FUNC.
+  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
+  d. Let (LOCAL t)* be y_1.
+  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
+  g. Let (t_1^n -> t_2^m) be y_0.
+  h. Assert: Due to validation, there are at least n values on the top of the stack.
+  i. Pop val^n from the stack.
+  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  k. Let F be the activation of f with arity m.
+  l. Enter F with label [FRAME_]:
+    1) Let L be the label_m{[]}.
+    2) Enter L with label instr* ++ [LABEL_]:
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.
@@ -2171,19 +2171,19 @@ execution_of_CALL_REF x
 5. Let (REF.FUNC_ADDR a) be ref.
 6. If (a < |$funcinst()|), then:
   a. Let fi be $funcinst()[a].
-  b. If fi.CODE is of the case FUNC, then:
-    1) Let (FUNC y_0 y_1 instr*) be fi.CODE.
-    2) Let (LOCAL t)* be y_1.
-    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
-      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
-      b) Let (t_1^n -> t_2^m) be y_0.
-      c) Assert: Due to validation, there are at least n values on the top of the stack.
-      d) Pop val^n from the stack.
-      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
-      f) Let F be the activation of f with arity m.
-      g) Enter F with label [FRAME_]:
-        1. Let L be the label_m{[]}.
-        2. Enter L with label instr* ++ [LABEL_]:
+  b. Assert: Due to validation, fi.CODE is of the case FUNC.
+  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
+  d. Let (LOCAL t)* be y_1.
+  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
+  g. Let (t_1^n -> t_2^m) be y_0.
+  h. Assert: Due to validation, there are at least n values on the top of the stack.
+  i. Pop val^n from the stack.
+  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  k. Let F be the activation of f with arity m.
+  l. Enter F with label [FRAME_]:
+    1) Let L be the label_m{[]}.
+    2) Enter L with label instr* ++ [LABEL_]:
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.
@@ -4887,19 +4887,19 @@ execution_of_CALL_REF x
 5. Let (REF.FUNC_ADDR a) be ref.
 6. If (a < |$funcinst()|), then:
   a. Let fi be $funcinst()[a].
-  b. If fi.CODE is of the case FUNC, then:
-    1) Let (FUNC y_0 y_1 instr*) be fi.CODE.
-    2) Let (LOCAL t)* be y_1.
-    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
-      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
-      b) Let (t_1^n -> t_2^m) be y_0.
-      c) Assert: Due to validation, there are at least n values on the top of the stack.
-      d) Pop val^n from the stack.
-      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
-      f) Let F be the activation of f with arity m.
-      g) Enter F with label [FRAME_]:
-        1. Let L be the label_m{[]}.
-        2. Enter L with label instr* ++ [LABEL_]:
+  b. Assert: Due to validation, fi.CODE is of the case FUNC.
+  c. Let (FUNC y_0 y_1 instr*) be fi.CODE.
+  d. Let (LOCAL t)* be y_1.
+  e. Assert: Due to validation, $expanddt(fi.TYPE) is of the case FUNC.
+  f. Let (FUNC y_0) be $expanddt(fi.TYPE).
+  g. Let (t_1^n -> t_2^m) be y_0.
+  h. Assert: Due to validation, there are at least n values on the top of the stack.
+  i. Pop val^n from the stack.
+  j. Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  k. Let F be the activation of f with arity m.
+  l. Enter F with label [FRAME_]:
+    1) Let L be the label_m{[]}.
+    2) Enter L with label instr* ++ [LABEL_]:
 
 group_bytes_by n byte*
 1. Let n' be |byte*|.

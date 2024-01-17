@@ -22,23 +22,23 @@ execution_of_CALL_REF ?(x)
 2. Pop u_0 from the stack.
 3. If u_0 is of the case REF.NULL, then:
   a. Trap.
-4. If u_0 is of the case REF.FUNC_ADDR, then:
+4. Assert: u_0 is of the case REF.FUNC_ADDR;
 4. Let (REF.FUNC_ADDR a) be u_0.
 5. If a < |$funcinst()|, then:
   a. Let fi be $funcinst()[a].
-  b. If fi.CODE is of the case FUNC, then:
-    1) Let (FUNC x' y_1 instr* ) be fi.CODE.
-    2) Let (LOCAL t)* be y_1.
-    3) If $expanddt(fi.TYPE) is of the case FUNC, then:
-      a) Let (FUNC y_0) be $expanddt(fi.TYPE).
-      b) Let [t_1^n]->[t_2^m] be y_0.
-      c) Assert: Due to validation, there are at least n values on the top of the stack.
-      d) Pop val^n from the stack.
-      e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
-      f) Let F be the activation of f with arity m.
-      g) Enter F with label [FRAME_]:
-        1. Let L be the label_m{[]}.
-        2. Enter L with label instr* ++ [LABEL_]:
+  b. Assert: fi.CODE is of the case FUNC;
+  1) Let (FUNC x' y_1 instr* ) be fi.CODE.
+  2) Let (LOCAL t)* be y_1.
+  3) Assert: $expanddt(fi.TYPE) is of the case FUNC;
+  a) Let (FUNC y_0) be $expanddt(fi.TYPE).
+  b) Let [t_1^n]->[t_2^m] be y_0.
+  c) Assert: Due to validation, there are at least n values on the top of the stack.
+  d) Pop val^n from the stack.
+  e) Let f be { LOCAL: ?(val)^n ++ $default(t)*; MODULE: fi.MODULE; }.
+  f) Let F be the activation of f with arity m.
+  g) Enter F with label [FRAME_]:
+    1. Let L be the label_m{[]}.
+    2. Enter L with label instr* ++ [LABEL_]:
 
 *)
 
@@ -76,37 +76,30 @@ let call_ref =
       letI (caseE (("REF.FUNC_ADDR", "admininstr"), [a]), ref);
       ifI (
         binE (LtOp, a, lenE (callE ("funcinst", []))),
-        [
-        letI (fi, accE (callE ("funcinst", []), idxP a));
-        ifI (
-          isCaseOfE (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")),
-          [
+        [ letI (fi, accE (callE ("funcinst", []), idxP a));
+          assertI (isCaseOfE (accE (fi, dotP ("CODE", "code")), ("FUNC", "func")));
           letI (caseE (("FUNC", "func"), [y0 ; y1 ; iterE (instr, ["instr"], List)]), accE (fi, dotP ("CODE", "code")));
           letI (iterE (caseE (("LOCAL","local"), [t]), ["t"], List), y1);
-          ifI (
-            isCaseOfE (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
+          assertI (isCaseOfE (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")));
+          letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
+          letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), "->", iterE (t2, ["t_2"], ListN (m, None))), y0);
+          assertI (topValuesE n);
+          popI (iterE (v, ["val"], ListN(n, None)));
+          letI (f, strE (Record.empty
+            |> Record.add
+              ("LOCAL", "frame")
+              (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default", [t]), ["t"], List)))
+            |> Record.add
+              ("MODULE", "frame")
+              (accE (fi, dotP ("MODULE", "module")))
+          ));
+          letI (ff, frameE (Some m, f));
+          enterI (ff, listE ([caseE (("FRAME_", ""), [])]),
             [
-            letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
-            letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), "->", iterE (t2, ["t_2"], ListN (m, None))), y0);
-            assertI (topValuesE n);
-            popI (iterE (v, ["val"], ListN(n, None)));
-            letI (f, strE (Record.empty
-              |> Record.add
-                ("LOCAL", "frame")
-                (catE (iterE (optE (Some v), ["val"], ListN (n, None)), iterE (callE("default", [t]), ["t"], List)))
-              |> Record.add
-                ("MODULE", "frame")
-                (accE (fi, dotP ("MODULE", "module")))
-            ));
-            letI (ff, frameE (Some m, f));
-            enterI (ff, listE ([caseE (("FRAME_", ""), [])]),
-              [
-              letI (ll, labelE (m, listE []));
-              enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (("LABEL_", ""), [])])), []);
-              ]
-            );
-            ], []);
-          ], []);
+            letI (ll, labelE (m, listE []));
+            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (("LABEL_", ""), [])])), []);
+            ]
+          );
         ], []);
       ]
     )

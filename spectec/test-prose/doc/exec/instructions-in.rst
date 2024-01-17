@@ -772,7 +772,7 @@ $${rule: Step_read/call}
 CALL_REF
 ^^^^^^^^
 
-TODO (too deeply nested)
+%{prose-algo: CALL_REF}
 
 \
 
