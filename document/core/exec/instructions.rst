@@ -513,31 +513,31 @@ Most other vector instructions are defined in terms of numeric operators that ar
 
 1. Assert: due to :ref:`validation <valid-vec-replace_lane>`, :math:`x < \dim(\shape)`.
 
-2. Let :math:`t_1` be the type :math:`\unpacked(\shape)`.
+2. Let :math:`t_2` be the type :math:`\unpacked(\shape)`.
 
 3. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` :math:`t_1` is on the top of the stack.
 
-4. Pop the value :math:`t_1.\CONST~c_1` from the stack.
+4. Pop the value :math:`t_2.\CONST~c_2` from the stack.
 
 5. Assert: due to :ref:`validation <valid-vec-replace_lane>`, a value of :ref:`value type <syntax-valtype>` |V128| is on the top of the stack.
 
-6. Pop the value :math:`\V128.\VCONST~c_2` from the stack.
+6. Pop the value :math:`\V128.\VCONST~c_1` from the stack.
 
-7. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\shape}(c_2)`.
+7. Let :math:`i^\ast` be the result of computing :math:`\lanes_{\shape}(c_1)`.
 
-8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_1)`.
+8. Let :math:`c` be the result of computing :math:`\lanes^{-1}_{\shape}(i^\ast \with [x] = c_2)`.
 
 9. Push :math:`\V128.\VCONST~c` on the stack.
 
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (t_1\K{.}\CONST~c_1)~(\V128\K{.}\VCONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
+   (\V128\K{.}\VCONST~c_1)~(t_2\K{.}\CONST~c_2)~(\shape\K{.}\REPLACELANE~x) &\stepto& (\V128\K{.}\VCONST~c)
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-      (\iff & i^\ast = \lanes_{\shape}(c_2) \\
-       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_1))
+      (\iff & i^\ast = \lanes_{\shape}(c_1) \\
+       \wedge & c = \lanes^{-1}_{\shape}(i^\ast \with [x] = c_2))
      \end{array}
    \end{array}
 
