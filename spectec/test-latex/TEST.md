@@ -5050,7 +5050,7 @@ $$
  &&&&\quad {\land}~{\mathit{sh}}_{{2}} = {\mathit{lnt}}_{{2}}~\mathsf{x}~{\mathit{lns}}_{{2}} \\
  &&&&\quad {\land}~{{\mathit{i}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}}, {\mathit{cv}}_{{1}})[{\mathrm{halfop}}({\mathit{hf}}, 0, {\mathit{lns}}_{{2}}) : {\mathit{lns}}_{{2}}] \\
  &&&&\quad {\land}~{{\mathit{j}}^{{\mathit{k}}}} = {\mathrm{lanes}}({\mathit{sh}}_{{1}}, {\mathit{cv}}_{{2}})[{\mathrm{halfop}}({\mathit{hf}}, 0, {\mathit{lns}}_{{2}}) : {\mathit{lns}}_{{2}}] \\
- &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}}, {\mathit{cv}}) = {{\mathrm{imul}}({\mathit{lns}}_{{2}}, {{{{\mathrm{ext}}}_{({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|})}^{{\mathit{sx}}}}}{({\mathit{i}})}, {{{{\mathrm{ext}}}_{({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|})}^{{\mathit{sx}}}}}{({\mathit{j}})})^{{\mathit{k}}}} \\
+ &&&&\quad {\land}~{\mathrm{lanes}}({\mathit{sh}}_{{2}}, {\mathit{cv}}) = {{\mathrm{imul}}({|{\mathit{lnt}}_{{2}}|}, {{{{\mathrm{ext}}}_{({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|})}^{{\mathit{sx}}}}}{({\mathit{i}})}, {{{{\mathrm{ext}}}_{({|{\mathit{lnt}}_{{1}}|},\, {|{\mathit{lnt}}_{{2}}|})}^{{\mathit{sx}}}}}{({\mathit{j}})})^{{\mathit{k}}}} \\
 \end{array}
 $$
 

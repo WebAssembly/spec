@@ -742,7 +742,7 @@ watsup 0.4 generator
 - 16/16 (100.00%)
 
 ===== simd_i16x8_extmul_i8x16.wast =====
-- 0/104 (0.00%)
+- 104/104 (100.00%)
 
 ===== simd_i16x8_q15mulr_sat_s.wast =====
 - 26/26 (100.00%)
@@ -766,7 +766,7 @@ watsup 0.4 generator
 - 16/16 (100.00%)
 
 ===== simd_i32x4_extmul_i16x8.wast =====
-- 0/104 (0.00%)
+- 104/104 (100.00%)
 
 ===== simd_i32x4_trunc_sat_f32x4.wast =====
 - 102/102 (100.00%)
@@ -784,7 +784,7 @@ watsup 0.4 generator
 - 102/102 (100.00%)
 
 ===== simd_i64x2_extmul_i32x4.wast =====
-- 0/104 (0.00%)
+- 104/104 (100.00%)
 
 ===== simd_i8x16_arith.wast =====
 - 121/121 (100.00%)
@@ -894,6 +894,6 @@ watsup 0.4 generator
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [43821/44159] (99.23%; Normalized 97.24%)
+Total [44133/44159] (99.94%; Normalized 99.31%)
 == Complete.
 ```

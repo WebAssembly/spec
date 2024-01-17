@@ -4059,7 +4059,7 @@ execution_of_EXTMUL_HALF sh_2 hf sh_1 sx
 8. Let (SHAPE lnt_2 lns_2) be sh_2.
 9. Let i^k be $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2].
 10. Let j^k be $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2].
-11. Let cv be $inverse_of_lanes(sh_2, $imul(lns_2, $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k).
+11. Let cv be $inverse_of_lanes(sh_2, $imul($storagesize(lnt_2), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k).
 12. Push (VVCONST V128 cv) to the stack.
 
 execution_of_EXTADD_PAIRWISE sh_2 sh_1 sx

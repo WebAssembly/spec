@@ -3667,14 +3667,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i), $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize(lnt_2 <: storagetype), $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i), $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -8584,14 +8584,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -13504,14 +13504,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -18435,14 +18435,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -23378,14 +23378,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -28445,14 +28445,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2})
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = SHAPE_shape(lnt_1, lns_1))
     -- if (sh_2 = SHAPE_shape(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
     -- if (j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2])
-    -- if ($lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
+    -- if ($lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
@@ -33593,14 +33593,14 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- where j'*{j'} = $iadd(i_1, j_1, j_2)*{j_1 j_2}
     -- where $lanes(sh_1, cv) = j'*{j'}
 
-  ;; 8-reduction.watsup:401.1-407.152
+  ;; 8-reduction.watsup:401.1-407.166
   rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
     `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- where SHAPE_shape(lnt_1, lns_1) = sh_1
     -- where SHAPE_shape(lnt_2, lns_2) = sh_2
     -- where i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2]
     -- where j^k{j} = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2]
-    -- where $lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j}
+    -- where $lanes(sh_2, cv) = $imul($storagesize($storagetype_lanetype(lnt_2)), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, i), $ext($storagesize($storagetype_lanetype(lnt_1)), $storagesize($storagetype_lanetype(lnt_2)), sx, j))^k{i j}
 
   ;; 8-reduction.watsup:410.1-417.30
   rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:

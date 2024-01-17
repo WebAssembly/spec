@@ -891,7 +891,20 @@ let iadd : numerics =
       | [ NumV 8L; NumV m; NumV n ] -> al_of_int32 (I8.add (Int64.to_int32 m) (Int64.to_int32 n))
       | [ NumV 16L; NumV m; NumV n ] -> al_of_int32 (I16.add (Int64.to_int32 m) (Int64.to_int32 n))
       | [ NumV 32L; NumV m; NumV n ] -> al_of_int32 (I32.add (Int64.to_int32 m) (Int64.to_int32 n))
-      | [ NumV 64L; NumV m; NumV n ] -> al_of_int32 (Int64.to_int32 (I64.add m n))
+      | [ NumV 64L; NumV m; NumV n ] -> al_of_int64 (I64.add m n)
+      | v -> fail_list "Invalid iadd" v
+      );
+  }
+
+let imul : numerics =
+  {
+    name = "imul";
+    f = 
+      (function
+      | [ NumV 8L; NumV m; NumV n ] -> al_of_int32 (I8.mul (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 16L; NumV m; NumV n ] -> al_of_int32 (I16.mul (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 32L; NumV m; NumV n ] -> al_of_int32 (I32.mul (Int64.to_int32 m) (Int64.to_int32 n))
+      | [ NumV 64L; NumV m; NumV n ] -> al_of_int64 (I64.mul m n)
       | v -> fail_list "Invalid iadd" v
       );
   }
@@ -1015,6 +1028,7 @@ let numerics_list : numerics list = [
   vbinop;
   inverse_of_concat_bytes;
   iadd;
+  imul;
   vcvtop;
   vrelop;
   vishiftop;

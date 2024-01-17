@@ -552,10 +552,6 @@ let al_to_int_vbinop : value -> V128Op.ibinop = function
     | "SUBSATU" -> V128Op.SubSatU
     | "DOTS" -> V128Op.DotS
     | "Q15MULRSATS" -> V128Op.Q15MulRSatS
-    | "EXTMULLOWS" -> V128Op.ExtMulLowS
-    | "EXTMULHIGHS" -> V128Op.ExtMulHighS
-    | "EXTMULLOWU" -> V128Op.ExtMulLowU
-    | "EXTMULHIGHU" -> V128Op.ExtMulHighU
     | "SWIZZLE" -> V128Op.Swizzle
     | "NARROWS" -> V128Op.NarrowS
     | "NARROWU" -> V128Op.NarrowU
@@ -1369,10 +1365,6 @@ let al_of_int_vbinop : V128Op.ibinop -> value = function
   | V128Op.SubSatU -> CaseV ("_VI", [ singleton "SUBSATU" ])
   | V128Op.DotS -> CaseV ("_VI", [ singleton "DOTS" ])
   | V128Op.Q15MulRSatS -> CaseV ("_VI", [ singleton "Q15MULRSATS" ])
-  | V128Op.ExtMulLowS -> CaseV ("_VI", [ singleton "EXTMULLOWS" ])
-  | V128Op.ExtMulHighS -> CaseV ("_VI", [ singleton "EXTMULHIGHS" ])
-  | V128Op.ExtMulLowU -> CaseV ("_VI", [ singleton "EXTMULLOWU" ])
-  | V128Op.ExtMulHighU -> CaseV ("_VI", [ singleton "EXTMULHIGHU" ])
   | V128Op.Swizzle -> CaseV ("_VI", [ singleton "SWIZZLE" ])
   | _ -> failwith "Already handled instruction of type vibinop"
 
@@ -1648,6 +1640,18 @@ let rec al_of_instr instr =
   | VecBinary V128 (V128.I16x8 (V128Op.NarrowS)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.SX ])
   | VecBinary V128 (V128.I8x16 (V128Op.NarrowU)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.ZX ])
   | VecBinary V128 (V128.I16x8 (V128Op.NarrowU)) -> CaseV ("NARROW", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L]); CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.ZX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.ExtMulHighS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.ExtMulHighU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.ZX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.ExtMulLowS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I16x8 (V128Op.ExtMulLowU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.ZX ] )
+  | VecBinary V128 (V128.I32x4 (V128Op.ExtMulHighS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I32x4 (V128Op.ExtMulHighU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.ZX ])
+  | VecBinary V128 (V128.I32x4 (V128Op.ExtMulLowS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I32x4 (V128Op.ExtMulLowU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I16"; numV 8L ]); al_of_extension Pack.ZX ] )
+  | VecBinary V128 (V128.I64x2 (V128Op.ExtMulHighS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I64x2 (V128Op.ExtMulHighU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); singleton "HIGH"; CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.ZX ])
+  | VecBinary V128 (V128.I64x2 (V128Op.ExtMulLowS)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.SX ])
+  | VecBinary V128 (V128.I64x2 (V128Op.ExtMulLowU)) -> CaseV ("EXTMUL_HALF", [ CaseV ("SHAPE", [ singleton "I64"; numV 2L ]); singleton "LOW"; CaseV ("SHAPE", [ singleton "I32"; numV 4L ]); al_of_extension Pack.ZX ] )
   | VecBinary vop -> CaseV ("VBINOP", al_of_vbinop vop)
   | VecConvert V128 (V128.I16x8 (V128Op.ExtAddPairwiseS)) -> CaseV ("EXTADD_PAIRWISE", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L]); CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.SX ])
   | VecConvert V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("EXTADD_PAIRWISE", [ CaseV ("SHAPE", [ singleton "I16"; numV 8L]); CaseV ("SHAPE", [ singleton "I8"; numV 16L ]); al_of_extension Pack.ZX ])

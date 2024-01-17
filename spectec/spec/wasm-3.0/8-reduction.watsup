@@ -404,7 +404,7 @@ rule Step_pure/extmul_half:
   -- if sh_2 = SHAPE lnt_2 lns_2
   -- if i^k = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2]
   -- if j^k = $lanes(sh_1, cv_2)[$halfop(hf, 0, lns_2) : lns_2]
-  -- if $lanes(sh_2, cv) = $imul(lns_2, $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k
+  -- if $lanes(sh_2, cv) = $imul($storagesize(lnt_2), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k
 
 
 rule Step_pure/extadd_pairwise:
