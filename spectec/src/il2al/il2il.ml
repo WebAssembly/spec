@@ -1,8 +1,5 @@
 (**
-
 Functions that trasnforms IL into IL.
-Potentially, this can be moved to the middle-end.
-
 **)
 
 open Il.Ast
