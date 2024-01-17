@@ -168,7 +168,7 @@ Added more precise types for references [#proposal-typedref]_.
 .. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
 
 Garbage Collection
-~~~~~~~~~~~~~~~~~~
+..................
 
 Added managed reference types [#proposal-gc]_.
 
