@@ -7,23 +7,18 @@ open Util.Record
 
 (** Helpers **)
 
-type result =
-  | Success
-  | Fail
-  | Ignore
-
 let success = 1, 1
 let failure = 0, 1
 let pass = 0, 0
 
-let fail expected actual =
+let eprint_fail_log expected actual =
   Printf.eprintf " Fail!\n";
   Printf.eprintf " Expected: %s\n" expected;
   Printf.eprintf " Actual  : %s\n\n" actual;
   let print_stack = false in
   if print_stack then
     Printf.eprintf " Stack: %s\n\n" (Ds.WasmContext.string_of_context_stack ());
-  Fail
+  failure
 
 let not_supported_msg = "We only support the test script with modules and assertions."
 
@@ -84,10 +79,6 @@ let is_long_test path =
     ]
 
 (** End of helpers **)
-
-module Register = Map.Make (String)
-type register = value Register.t
-let register: register ref = ref Register.empty
 
 let builtin () =
 
@@ -205,8 +196,19 @@ let builtin () =
   StrV module_inst
 
 
+module Register = Map.Make (String)
+type register = value Register.t
+let register: register ref = ref Register.empty
+
 let latest = ""
-let get_module_name = function
+
+let store_moduleinst module_name_opt moduleinst =
+  register := Register.add latest moduleinst !register;
+  match module_name_opt with
+  | Some name -> register := Register.add name.it moduleinst !register
+  | None -> ()
+
+let module_name_of = function
   | Some name -> name.it
   | None -> latest
 let find_module_inst name = Register.find name !register
@@ -225,9 +227,9 @@ let extract_addr_of tag name (export: value) =
     when export_name = Utf8.encode name && export_tag = tag -> Some (addr)
   | _ -> None
 
-let do_action act = match act.it with
+let run_action act = match act.it with
   | Invoke (module_name_opt, name, literals) ->
-    let module_name = get_module_name module_name_opt in
+    let module_name = module_name_of module_name_opt in
     let module_inst = find_module_inst module_name in
     let export_insts = match module_inst with
     | StrV r ->
@@ -249,7 +251,7 @@ let do_action act = match act.it with
 
     Interpreter.invoke [funcaddr; args]
   | Get (module_name_opt, name) ->
-    let module_name = get_module_name module_name_opt in
+    let module_name = module_name_of module_name_opt in
     let exports = find_export module_name in
 
     let addr = Array.find_map (extract_addr_of "GLOBAL" name) exports |> Option.get in
@@ -352,118 +354,74 @@ let get_externvals = function
       Array.map get_externval !imports |> listV
   | _ -> failwith "Invalid module"
 
-let extract_module def = match def.it with
+let extract_module def =
+  match def.it with
   | Textual m -> m
   | Encoded (name, bs) ->
     Decode.decode name bs
   | Quoted (_, s) ->
     Parse.string_to_module s
 
+let instantiate m =
+  let m' = extract_module m in
+  (* Construct module and extern *)
+  let al_module = Construct.al_of_module m' in
+  let externvals = get_externvals al_module in
+
+  (* Instantiate and store exports *)
+  Printf.eprintf "[Instantiating module...]\n";
+  Interpreter.instantiate [ al_module ; externvals ]
+
+
+
 let test_assertion assertion =
   match assertion.it with
-  | AssertReturn (invoke, expected) ->
+  | AssertReturn (action, expected) ->
 
-    let fail_with =
-      List.map (fun r -> r.it) expected
-      |> Run.string_of_results
-      |> fail
-    in
+    (* TODO: not unwrap ListV *)
+    let result = run_action action in
+    let actual = unwrap_listv_to_list result in
 
-    begin try
-      (* Invoke *)
-      match do_action invoke with
-      | ListV arr ->
-        let actual = !arr in
-        assert (Array.length actual = List.length expected);
-        if Array.to_list actual |> List.for_all2 check expected then
-          Success
-        else
-          listV actual |> Al.Print.string_of_value |> fail_with
-      | v ->
-        Al.Print.string_of_value v
-        |> Printf.sprintf "Invalid result: %s"
-        |> failwith
-    with e -> msg_of e |> fail_with
-    end
-  | AssertTrap (invoke, msg) ->
-    let expected = "Trap due to " ^ msg in
-    begin try
-      let result = do_action invoke in
-      fail expected (Al.Print.string_of_value result)
-    with
-      | Exception.Trap -> Success
-      | e -> fail expected (Printexc.to_string e)
-    end
-  | AssertUninstantiable (def, msg) ->
-    let expected = "Module instantiation failure due to " ^ msg in
-    begin try
-      let al_module = Construct.al_of_module (extract_module def) in
-      let externvals = get_externvals al_module in
-      Printf.eprintf "[Trying instantiating module...]\n";
-      Interpreter.instantiate [ al_module ; externvals ] |> ignore;
+    assert (List.length actual = List.length expected);
+    if List.for_all2 check expected actual then
+      success
+    else
+      (* TODO: print fail message in check *)
+      failure
+  | AssertTrap (action, msg) -> (
+    try
+      action
+      |> run_action
+      |> Al.Print.string_of_value
+      |> eprint_fail_log ("Trap due to " ^ msg)
+    with Exception.Trap -> success
+  )
+  | AssertUninstantiable (def, _) -> (
+    try
+      ignore (instantiate def); failure
+    with Exception.Trap -> success
+  )
+  | _ -> pass (* ignore other kinds of assertions *)
 
-      fail expected"Module instantiation success"
-    with
-      | Exception.Trap -> Success
-      | e -> fail expected (Printexc.to_string e)
-    end
-  | _ -> Ignore (* ignore other kinds of assertions *)
-
-let test_module module_name m =
-
-  (* Initialize *)
-
-  try
-
-    (* Construct module and extern *)
-    let al_module = Construct.al_of_module m in
-    let externvals = get_externvals al_module in
-
-    (* Instantiate and store exports *)
-    Printf.eprintf "[Instantiating module...]\n";
-    let module_inst = Interpreter.instantiate [ al_module ; externvals ] in
-
-    (* Store module instance in the register *)
-    (match module_name with
-    | Some name ->
-        register := Register.add name.it module_inst !register
-    | None -> ());
-    register := Register.add latest module_inst !register;
-  with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
-
-let test_cmd cmd =
+let run_cmd cmd =
   match cmd.it with
   | Module (module_name, def) ->
-    test_module module_name (extract_module def);
+    def
+    |> instantiate
+    |> store_moduleinst module_name;
     success
-  | Register (name, module_name_opt) ->
-    let s = Utf8.encode name in
-    let module_name = match module_name_opt with
-      | Some s -> s.it
-      | None -> latest
-    in
-    let module_inst = find_module_inst module_name in
-    register := Register.add s module_inst !register;
+  | Register (dst, name_opt) ->
+    let moduleinst = Register.find (module_name_of name_opt) !register in
+    register := Register.add (Utf8.encode dst) moduleinst !register;
     pass
-  | Action a -> (
-    try
-      ignore (do_action a);
-      success
-    with e -> "Direct invocation failed due to " ^ msg_of e |> failwith
-  )
-  | Assertion a -> (
-    match test_assertion a with
-    | Success -> success
-    | _ -> failure
-  )
+  | Action a ->
+    ignore (run_action a); success
+  | Assertion a -> test_assertion a
   | Meta _ -> failwith not_supported_msg
 
-(* Intialize store and registered modules *)
-let init_tester () =
-  register := Register.add "spectest" (builtin ()) Register.empty
-
 let run_wast name script =
-  init_tester ();
+  (* Intialize builtin *)
+  register := Register.add "spectest" (builtin ()) Register.empty;
 
   Printf.printf "===== %s =====\n%!" name;
   Printf.eprintf "===========================\n\n%s\n\n" name;
@@ -473,7 +431,7 @@ let run_wast name script =
     print_runner_results name []; []
   )
   else (
-    let results = List.map (try_run test_cmd) script in
+    let results = List.map (try_run run_cmd) script in
     print_runner_results name results; results
   )
 
