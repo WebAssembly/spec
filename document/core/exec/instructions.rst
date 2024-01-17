@@ -837,7 +837,7 @@ where:
    \end{array}
 
 
-:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero}`
+:math:`t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero}`
 ...............................................................
 
 1. Assert: due to :ref:`syntax <syntax-instr-vec>`, :math:`N = 2 \cdot M`.
@@ -848,7 +848,7 @@ where:
 
 4. Let :math:`i^\ast` be the result of computing :math:`\lanes_{t_1\K{x}M}(c_1)`.
 
-5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx}_{|t_1|,|t_2|}(i^\ast)`.
+5. Let :math:`j^\ast` be the result of computing :math:`\vcvtop^{\sx^?}_{|t_1|,|t_2|}(i^\ast)`.
 
 6. Let :math:`k^\ast` be the concatenation of the two sequences :math:`j^\ast` and :math:`0^M`.
 
@@ -859,11 +859,11 @@ where:
 .. math::
    \begin{array}{l}
    \begin{array}{lcl@{\qquad}l}
-   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
+   (\V128\K{.}\VCONST~c_1)~t_2\K{x}N\K{.}\vcvtop\K{\_}t_1\K{x}M\K{\_}\sx^?\K{\_zero} &\stepto& (\V128\K{.}\VCONST~c) \\
    \end{array}
    \\ \qquad
      \begin{array}[t]{@{}r@{~}l@{}}
-     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
+     (\iff & c = \lanes^{-1}_{t_2\K{x}N}(\vcvtop^{\sx^?}_{|t_1|,|t_2|}(\lanes_{t_1\K{x}M}(c_1))~0^M))
      \end{array}
    \end{array}
 
