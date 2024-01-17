@@ -4,7 +4,7 @@
 $ for v in 1 2 3; do ( \
 >   echo "Generating prose for Wasm $v.0..." && \
 >   cd ../spec/wasm-$v.0 && \
->   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --sideconditions --animate --prose \
+>   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --prose \
 > ) done
 Generating prose for Wasm 1.0...
 watsup 0.4 generator

@@ -5,37 +5,7 @@ open Construct
 open Source
 open Util.Record
 
-(** flag **)
-let test_name = ref ""
-let root = ref ""
-
 (** Helpers **)
-
-let to_path name = Filename.concat !root name
-
-let contains substring str =
-  let regex = Str.regexp_string substring in
-  try
-    ignore (Str.search_forward regex str 0);
-    true
-  with Not_found ->
-    false
-
-let readdir_sorted path =
-  let a = Sys.readdir path in
-  Array.sort compare a;
-  a
-
-let rec readdir_with_path path =
-  readdir_sorted path
-  |> Array.map (Filename.concat path)
-  |> Array.to_list
-  |> List.concat_map (fun p ->
-    if Sys.is_directory p then
-      readdir_with_path p
-    else
-      [ p ]
-  )
 
 type result =
   | Success
@@ -65,12 +35,17 @@ let time f =
   Sys.time() -. start_time
 
 (* string -> Script.script *)
-let file_to_script file_path =
-  let lexbuf = Lexing.from_channel (open_in file_path) in
-  try
-    Parse.parse file_path lexbuf Parse.Script
-  with
-    | _ -> prerr_endline ("Failed to parse " ^ file_path); []
+let wast_file_to_script file_path =
+  let tmp = (open_in file_path) in
+  let lexbuf = Lexing.from_channel tmp in
+
+  let res =
+    try
+      Parse.parse file_path lexbuf Parse.Script
+    with
+      | _ -> prerr_endline ("Failed to parse " ^ file_path); []
+  in
+  close_in tmp; res
 
 let is_long_test path = List.exists ((=) (Filename.basename path)) [
     "memory_copy.wast";
@@ -458,12 +433,14 @@ let test_cmd success cmd =
 let init_tester () =
   register := Register.add "spectest" (builtin ()) Register.empty
 
-(** Entry **)
 let test file_name =
   init_tester ();
 
   (* Parse test *)
-  let script = file_to_script file_name in
+  let script =
+    if is_long_test file_name then []
+    else wast_file_to_script file_name
+  in
   let total = script |> List.filter (fun x -> match x.it with
     | Assertion {it = AssertReturn _; _}
     | Assertion {it = AssertTrap _ ; _}
@@ -472,57 +449,74 @@ let test file_name =
     | _ -> false
   ) |> List.length in
 
-  (* Skip test if there is no applicable assertion *)
-  if total = 0 then None else
-
-  (* Skip test if this test is too long *)
-  if is_long_test file_name then None else
-
-  let name = Filename.basename file_name in
-  Printf.printf "===== %s =====\n%!" name;
+  Printf.printf "===== %s =====\n%!" file_name;
   Printf.eprintf "===========================\n\n%s\n\n" file_name;
 
   (* Run test *)
-  let success = ref 0 in
-  let took = time (fun () ->
-    try
-      List.iter (test_cmd success) script;
-    with
-    | e ->
-      let msg = msg_of e in
-      Printf.eprintf "[Uncaught exception] %s, " msg;
-      Printf.printf
-        "- Uncaught exception: %s\n"
-        msg
-  ) in
 
-  Printf.eprintf "%s took %f ms.\n" name (took *. 1000.);
-  let percentage = (float_of_int !success /. float_of_int total) *. 100. in
-  Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
-  Some (!success, total, percentage, took)
+    let success = ref 0 in
+    let took = time (fun () ->
+      try
+        List.iter (test_cmd success) script;
+      with
+      | e ->
+        let msg = msg_of e in
+        Printf.eprintf "[Uncaught exception] %s, " msg;
+        Printf.printf
+          "- Uncaught exception: %s\n"
+          msg
+    ) in
 
-let test_all () =
-  let sample = to_path "test-interpreter/sample.wast" in
-  let test_path = to_path "test-interpreter/spec-test-" ^ string_of_int !Construct.version in
-  let tests =
-    sample :: (readdir_with_path test_path)
-    |> List.filter (fun wast -> Filename.extension wast = ".wast")
-    |> List.filter (contains !test_name) in
+    Printf.eprintf "%s took %f ms.\n" file_name (took *. 1000.);
+    let percentage =
+      if total = 0 then 100.
+      else
+        (float_of_int !success /. float_of_int total) *. 100. in
+    Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
+    Some (!success, total, took)
 
-  let results = List.filter_map test tests in
 
-  let add_quad (a, b, c, d) (e, f, g, h) = (a + e, b + f, c +. g, d +. h) in
-  let success, total, percentage, time = List.fold_left add_quad (0, 0, 0., 0.) results in
-  let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
-  let percentage_norm = percentage /. float_of_int (List.length results) in
+let rec run_file filename =
+  if Sys.is_directory filename then
+    run_dir filename
+  else
+    match Filename.extension filename with
+    | ".wast" -> Option.to_list (test filename)
+    | ".wat" -> failwith "hi"
+    | ".wasm" -> failwith "hi"
+    | _ -> []
 
-  (* Coverage *)
-  (*
-  Ds.(
-    InfoMap.uncovered !info_map
-    |> InfoMap.print
-  );
-  *)
+and run_dir dirname =
+  dirname
+  |> Sys.readdir
+  |> Array.to_list
+  |> List.sort compare
+  |> List.concat_map
+    (fun filename -> run_file (Filename.concat dirname filename))
 
-  Printf.printf "Total [%d/%d] (%.2f%%; Normalized %.2f%%)\n" success total percentage_all percentage_norm;
-  Printf.eprintf "Took %f ms.\n" (time *. 1000.);
+
+(** Entry **)
+let run filename =
+  if Sys.file_exists filename then (
+
+    let results = run_file filename in
+
+    if Sys.is_directory filename then (
+      let add_quad (a, b, d) (e, f, h) = (a + e, b + f, d +. h) in
+      let success, total, time = List.fold_left add_quad (0, 0, 0.) results in
+      let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
+
+      (* Coverage *)
+      (*
+      Ds.(
+        InfoMap.uncovered !info_map
+        |> InfoMap.print
+      );
+      *)
+
+      Printf.printf "Total [%d/%d] (%.2f%%)\n" success total percentage_all;
+      Printf.eprintf "Took %f ms.\n" (time *. 1000.);
+    )
+  )
+  else 
+    failwith ("No such file: " ^ filename)

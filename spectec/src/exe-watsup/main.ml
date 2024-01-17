@@ -14,7 +14,7 @@ type target =
  | Latex
  | Prose
  | Splice of Backend_splice.Config.config
- | Interpreter
+ | Interpreter of string
 
 let target = ref Latex
 
@@ -117,7 +117,7 @@ let argspec = Arg.align
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
-  "--interpreter", Arg.Unit (fun () -> target := Interpreter), " Generate interpreter";
+  "--interpreter", Arg.String (fun filename -> target := Interpreter filename), " Generate interpreter";
 
   "--print-el", Arg.Set print_el, " Print EL";
   "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
@@ -127,8 +127,6 @@ let argspec = Arg.align
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
 
-  "--root", Arg.String (fun s -> Backend_interpreter.Tester.root := s), " Set the root of watsup. Defaults to current directory";
-  "--test-interpreter", Arg.String (fun s -> Backend_interpreter.Tester.test_name := s), " The name of .wast test file for interpreter";
   "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
 
   "-help", Arg.Unit ignore, "";
@@ -155,6 +153,11 @@ let () =
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     log "IL Validation...";
     Il.Validation.valid il;
+
+
+    (match !target with
+    | Prose | Interpreter _ -> enable_pass Sideconditions; enable_pass Animate
+    | _ -> ());
 
     let il =
       List.fold_left (fun il pass ->
@@ -202,11 +205,11 @@ let () =
       let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
       List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
       if !warn then Backend_splice.Splice.warn env;
-    | Interpreter ->
+    | Interpreter filename ->
       log "Initializing AL interprter with generated AL...";
       Backend_interpreter.Ds.init al;
       log "Interpreting AL...";
-      Backend_interpreter.Tester.test_all ()
+      Backend_interpreter.Runner.run filename
     );
     log "Complete."
   with

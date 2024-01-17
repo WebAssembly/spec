@@ -7,7 +7,7 @@
     interpreter
     numerics
     construct
-    tester
+    runner
     exception
     il2il
     manual
