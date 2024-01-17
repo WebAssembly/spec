@@ -905,7 +905,7 @@ let imul : numerics =
       | [ NumV 16L; NumV m; NumV n ] -> al_of_int32 (I16.mul (Int64.to_int32 m) (Int64.to_int32 n))
       | [ NumV 32L; NumV m; NumV n ] -> al_of_int32 (I32.mul (Int64.to_int32 m) (Int64.to_int32 n))
       | [ NumV 64L; NumV m; NumV n ] -> al_of_int64 (I64.mul m n)
-      | v -> fail_list "Invalid iadd" v
+      | v -> fail_list "Invalid imul" v
       );
   }
 

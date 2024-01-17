@@ -760,7 +760,7 @@ watsup 0.4 generator
 - 433/433 (100.00%)
 
 ===== simd_i32x4_dot_i16x8.wast =====
-- 0/26 (0.00%)
+- 26/26 (100.00%)
 
 ===== simd_i32x4_extadd_pairwise_i16x8.wast =====
 - 16/16 (100.00%)
@@ -894,6 +894,6 @@ watsup 0.4 generator
 ===== unwind.wast =====
 - 49/49 (100.00%)
 
-Total [44133/44159] (99.94%; Normalized 99.31%)
+Total [44159/44159] (100.00%; Normalized 100.00%)
 == Complete.
 ```
