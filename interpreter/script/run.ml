@@ -118,17 +118,20 @@ let input_from get_script run =
   | Assert (at, msg) -> error at "assertion failure" msg
   | Abort _ -> false
 
-let input_script start name lexbuf run =
-  input_from (fun _ -> Parse.parse name lexbuf start) run
+let input_script name lexbuf run =
+  input_from (fun () -> Parse.Script.parse name lexbuf) run
+
+let input_script1 name lexbuf run =
+  input_from (fun () -> Parse.Script1.parse name lexbuf) run
 
 let input_sexpr name lexbuf run =
-  input_from (fun _ ->
-    let var_opt, def = Parse.parse name lexbuf Parse.Module in
+  input_from (fun () ->
+    let var_opt, def = Parse.Module.parse name lexbuf in
     [Module (var_opt, def) @@ no_region]) run
 
 let input_binary name buf run =
   let open Source in
-  input_from (fun _ ->
+  input_from (fun () ->
     [Module (None, Encoded (name, buf) @@ no_region) @@ no_region]) run
 
 let input_sexpr_file input file run =
@@ -162,8 +165,8 @@ let input_file file run =
   dispatch_file_ext
     input_binary_file
     (input_sexpr_file input_sexpr)
-    (input_sexpr_file (input_script Parse.Script))
-    (input_sexpr_file (input_script Parse.Script))
+    (input_sexpr_file input_script)
+    (input_sexpr_file input_script)
     input_js_file
     file run
 
@@ -171,7 +174,7 @@ let input_string string run =
   trace ("Running (\"" ^ String.escaped string ^ "\")...");
   let lexbuf = Lexing.from_string string in
   trace "Parsing...";
-  input_script Parse.Script "string" lexbuf run
+  input_script "string" lexbuf run
 
 
 (* Interactive *)
@@ -195,7 +198,7 @@ let lexbuf_stdin buf len =
 let input_stdin run =
   let lexbuf = Lexing.from_function lexbuf_stdin in
   let rec loop () =
-    let success = input_script Parse.Script1 "stdin" lexbuf run in
+    let success = input_script1 "stdin" lexbuf run in
     if not success then Lexing.flush_input lexbuf;
     if Lexing.(lexbuf.lex_curr_pos >= lexbuf.lex_buffer_len - 1) then
       continuing := false;
@@ -315,7 +318,7 @@ let rec run_definition def : Ast.module_ =
     Decode.decode name bs
   | Quoted (_, s) ->
     trace "Parsing quote...";
-    let def' = Parse.string_to_definition s in
+    let _, def' = Parse.Module.parse_string s in
     run_definition def'
 
 let run_action act : Value.t list =
