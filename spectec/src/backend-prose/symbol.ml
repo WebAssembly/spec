@@ -87,23 +87,26 @@ let env el =
 
 (* Environment Lookup *)
 
-let rec find_kwd' env nonterminals variant = match nonterminals with
-  | nonterminal :: rest -> (match find_kwd env nonterminal variant with
+let rec narrow_kwd' env nonterminals variant = match nonterminals with
+  | nonterminal :: rest -> (match narrow_kwd env nonterminal variant with
     | Some s -> Some s
-    | None -> find_kwd' env rest variant)
+    | None -> narrow_kwd' env rest variant)
   | _ -> None
 
-and find_kwd env syntax variant =
+and narrow_kwd env syntax variant =
   match Map.find_opt syntax !(env.kwds) with
   | Some (terminals, nonterminals) ->
       if Set.mem variant terminals then
         Some (variant, syntax)
       else
-        find_kwd' env (Set.elements nonterminals) variant
+        narrow_kwd' env (Set.elements nonterminals) variant
   | _ -> None
 
-let find_kwd env kwd =
+(* Narrows the given keyword if it exists in the grammar. 
+ * The returned keyword is a tuple of variant name, and its
+ * shallowest nonterminal that defines the variant. *)
+let narrow_kwd env kwd =
   let variant, syntax = kwd in
-  find_kwd env syntax variant
+  narrow_kwd env syntax variant
 
-let find_func env fname = Set.find_opt fname !(env.funcs)
+let find_func env fname = Set.mem fname !(env.funcs)

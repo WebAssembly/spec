@@ -1,5 +1,4 @@
 open Util.Source
-open Printf
 
 module KMap = Map.Make(struct
   type t = string * string
@@ -66,30 +65,37 @@ let extract_func_hints show_funcs def =
 
 let env el =
   let show_kwds = List.fold_left extract_syntax_hints KMap.empty el in
-  (*
-  print_endline "show_kwds";
-  KMap.iter (fun (a, b) v -> sprintf "\t(%s,%s) => %s" a b (El.Print.string_of_exp v) |> print_endline) show_kwds;
-  *)
   let show_funcs = List.fold_left extract_func_hints FMap.empty el in
-  (*
-  print_endline "show_funcs";
-  FMap.iter (fun k v -> sprintf "\t%s => %s" k (El.Print.string_of_exp v) |> print_endline) show_funcs;
-  *)
   { show_kwds = ref show_kwds; show_funcs = ref show_funcs }
 
-(* Environment Lookup *)
+(* Hint Application *)
 
-let find_kwd_hint env kwd =
-  let variant, syntax = kwd in
-  sprintf "Keyword (%s, %s): " variant syntax |> print_string;
-  (match KMap.find_opt kwd !(env.show_kwds) with
-  | Some hint -> El.Print.string_of_exp hint 
-  | None -> "none")
-  |> print_endline 
+let apply_hint args hint =
+  (* TODO Placeholder El args with "!!!", to be expanded into the El hint exp. *)
+  let placeholder = 
+    let text = (El.Ast.TextE "!!!") $ no_region in
+    let arg = El.Ast.ExpA text in
+    (ref arg) $ no_region
+  in
+  let placeholders = List.init (List.length args) (fun _ -> placeholder) in
+  (* Expand hint exp with placeholder args, then manipulate the rendered hint exp by string replacements. *)
+  try
+    let render_latex = Backend_latex.Render.new_env (Backend_latex.Config.latex) in
+    let hint_expanded = Backend_latex.Render.expand_exp (ref placeholders) hint in
+    let hint_rendered = Backend_latex.Render.render_exp render_latex hint_expanded in
+    let hint_replaced =
+      let placeholder = Str.regexp (Backend_latex.Render.render_arg render_latex placeholder) in
+      List.fold_left 
+        (fun hint_rendered arg -> Str.replace_first placeholder arg hint_rendered) 
+        hint_rendered args
+    in
+    Some hint_replaced
+  with _ -> None
 
-let find_func_hint env funcname = 
-  sprintf "Function %s: " funcname |> print_string;
-  (match FMap.find_opt funcname !(env.show_funcs) with
-  | Some hint -> El.Print.string_of_exp hint 
-  | None -> "none")
-  |> print_endline
+let apply_kwd_hint env kwd args = 
+  let hint = KMap.find_opt kwd !(env.show_kwds) in
+  Option.bind hint (apply_hint args)
+
+let apply_func_hint env fname args =
+  let hint = FMap.find_opt fname !(env.show_funcs) in
+  Option.bind hint (apply_hint args)

@@ -1345,11 +1345,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -6091,11 +6091,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -10988,11 +10988,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -15887,11 +15887,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -20808,11 +20808,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -25729,11 +25729,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 
@@ -30802,11 +30802,11 @@ syntax structaddr = addr
 ;; 4-runtime.watsup:14.1-14.51
 syntax arrayaddr = addr
 
-;; 4-runtime.watsup:33.1-34.28
+;; 4-runtime.watsup:33.1-34.56
 syntax num =
   | CONST(numtype, c_numtype)
 
-;; 4-runtime.watsup:35.1-36.30
+;; 4-runtime.watsup:35.1-36.56
 syntax vec =
   | VVCONST(vectype, c_vectype)
 

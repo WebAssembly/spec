@@ -129,8 +129,8 @@ def $with_mem(state, memidx, nat, nat, byte*) : state       hint(show %[.MEM[%].
 def $with_meminst(state, memidx, meminst) : state           hint(show %[.MEM[%] = %])
 def $with_elem(state, elemidx, ref*) : state                hint(show %[.ELEM[%].ELEM = %])
 def $with_data(state, dataidx, byte*) : state               hint(show %[.DATA[%].DATA = %])
-def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCT[%].FIELD[i] = %])
-def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.STRUCT[%].FIELD[i] = %])
+def $with_struct(state, structaddr, nat, fieldval) : state  hint(show %[.STRUCT[%].FIELD[%] = %])
+def $with_array(state, arrayaddr, nat, fieldval) : state    hint(show %[.STRUCT[%].FIELD[%] = %])
 
 def $with_local((s; f), x, v) = s; f[.LOCAL[x] = v]
 def $with_global((s; f), x, v) = s[.GLOBAL[f.MODULE.GLOBAL[x]].VALUE = v]; f

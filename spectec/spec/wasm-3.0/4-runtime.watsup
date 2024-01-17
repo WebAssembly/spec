@@ -31,9 +31,9 @@ var aa : arrayaddr
 ;; Basic values
 
 syntax num hint(desc "number") =
-  | CONST numtype c_numtype
+  | CONST numtype c_numtype        hint(show %.CONST %)
 syntax vec hint(desc "vector") =
-  | VVCONST vectype c_vectype
+  | VVCONST vectype c_vectype      hint(show %.CONST %)
 syntax addrref hint(desc "address reference") =
   | REF.I31_NUM u31                hint(show REF.I31 %)
   | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
