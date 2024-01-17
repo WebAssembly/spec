@@ -76,7 +76,7 @@ let env_def env def =
     let definition = Map.find id.it env.def in
     let clauses = definition.clauses @ [def] in
     env.def <- Map.add id.it {definition with clauses} env.def
-  | VarD _ | SepD | HintD _ ->
+  | FamD _ | VarD _ | SepD | HintD _ ->
     ()
 
 let env config script : env =

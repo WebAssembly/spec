@@ -4257,8 +4257,8 @@ $$
 \dots \\
 \mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
 \mbox{(value type)} & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
-& {{\mathsf{i}}{{\mathit{n}}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
-& {{\mathsf{f}}{{\mathit{n}}}} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
+& {\mathsf{i}}{{\mathit{n}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
+& {\mathsf{f}}{{\mathit{n}}} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 \end{array}
 $$
 
@@ -4996,7 +4996,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(administrative instruction)} & {{\mathit{instr}}} &::=& {\mathit{instr}} \\ &&|&
+\mbox{(administrative instruction)} & {\mathit{instr}} &::=& {\mathit{instr}} \\ &&|&
 {\mathit{addrref}} \\ &&|&
 {{\mathsf{label}}_{{\mathit{n}}}}{\{{{\mathit{instr}}^\ast}\}}~{{\mathit{instr}}^\ast} \\ &&|&
 {{\mathsf{frame}}_{{\mathit{n}}}}{\{{\mathit{frame}}\}}~{{\mathit{instr}}^\ast} \\ &&|&
@@ -5515,8 +5515,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathsf{ok}}{({\mathit{typeidx}})}} &::=& {\mathsf{ok}}{{\mathit{typeidx}}} \\
-& {{\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{n}})}} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{nat}})} \\
+& {\mathsf{ok}}{({\mathit{typeidx}})} &::=& {\mathsf{ok}}{{\mathit{typeidx}}} \\
+& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{n}})} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{nat}})} \\
 \end{array}
 $$
 

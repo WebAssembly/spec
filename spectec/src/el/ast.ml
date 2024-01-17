@@ -81,7 +81,7 @@ and typ' =
   | IterT of typ * iter          (* typ iter *)
   (* The forms below are only allowed in type definitions *)
   | StrT of typfield nl_list     (* `{` list(typfield,`,`') `}` *)
-  | CaseT of dots * id nl_list * typcase nl_list * dots (* `|` list(`...`|varid|typcase, `|`) *)
+  | CaseT of dots * typ nl_list * typcase nl_list * dots (* `|` list(`...`|typ|typcase, `|`) *)
   | RangeT of typenum nl_list    (* exp `|` `...` `|` exp *)
   | AtomT of atom                (* atom *)
   | SeqT of typ list             (* `eps` / typ typ *)
@@ -94,6 +94,11 @@ and typenum = exp * exp option                  (* exp (`|` exp (`|` `...` `|` e
 
 
 (* Expressions *)
+
+and natop =
+  | DecOp   (* n *)
+  | HexOp   (* 0xhex *)
+  | CharOp  (* U+hex *)
 
 and unop =
   | NotOp   (* `~` *)
@@ -124,9 +129,7 @@ and exp' =
   | VarE of id * arg list        (* varid *)
   | AtomE of atom                (* atom *)
   | BoolE of bool                (* bool *)
-  | NatE of nat                  (* nat *)
-  | HexE of nat                  (* 0xhex *)
-  | CharE of nat                 (* 0uhex *)
+  | NatE of natop * nat          (* nat *)
   | TextE of text                (* text *)
   | UnE of unop * exp            (* unop exp *)
   | BinE of exp * binop * exp    (* exp binop exp *)
@@ -168,9 +171,7 @@ and path' =
 and sym = sym' phrase
 and sym' =
   | VarG of id * arg list                    (* gramid (`(` arg,* `)`)? *)
-  | NatG of int                              (* nat *)
-  | HexG of int                              (* 0xhex *)
-  | CharG of int                             (* U+hex *)
+  | NatG of natop * int                      (* nat *)
   | TextG of string                          (* `"`text`"` *)
   | EpsG                                     (* `eps` *)
   | SeqG of sym nl_list                      (* sym sym *)
@@ -205,13 +206,14 @@ and arg' =
 
 and def = def' phrase
 and def' =
-  | SynD of id * id * param list * typ * hint list (* `syntax` synid params hint* `=` typ *)
+  | FamD of id * param list * hint list            (* `syntax` synid params hint* *)
+  | SynD of id * id * arg list * typ * hint list   (* `syntax` synid args hint* `=` typ *)
   | GramD of id * id * param list * typ * gram * hint list (* `grammar` gramid params hint* `:` type `=` gram *)
   | RelD of id * typ * hint list                   (* `relation` relid `:` typ hint* *)
   | RuleD of id * id * exp * premise nl_list       (* `rule` relid ruleid? `:` exp (`--` premise)* *)
   | VarD of id * typ * hint list                   (* `var` varid `:` typ *)
   | DecD of id * param list * typ * hint list      (* `def` `$` defid params `:` typ hint* *)
-  | DefD of id * arg list * exp * premise nl_list  (* `def` `$` defid exp? `=` exp (`--` premise)* *)
+  | DefD of id * arg list * exp * premise nl_list  (* `def` `$` defid args `=` exp (`--` premise)* *)
   | SepD                                           (* separator *)
   | HintD of hintdef
 

@@ -96,7 +96,11 @@ let env_hintdef env hd =
 
 let env_def env d =
   match d.it with
-  | SynD (id1, id2, _ps, t, hints) ->
+  | FamD (id, _ps, hints) ->
+    env.vars := Set.add id.it !(env.vars);
+    env_hintdef env (SynH (id, "" $ id.at, hints) $ d.at);
+    env_hintdef env (VarH (id, hints) $ d.at)
+  | SynD (id1, id2, _args, t, hints) ->
     env.vars := Set.add id1.it !(env.vars);
     env_hintdef env (SynH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
@@ -179,7 +183,7 @@ let rec expand_iter args iter =
 
 and expand_exp args e =
   (match e.it with
-  | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE -> e.it
+  | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> e.it
   | VarE (id, args') -> VarE (id, List.map (expand_arg args) args')
   | UnE (op, e) -> UnE (op, expand_exp args e)
   | BinE (e1, op, e2) ->
@@ -496,9 +500,9 @@ and render_typ env t =
     "\\begin{array}[t]{@{}l@{}l@{}}\n" ^
     concat_map_nl ",\\; " "\\\\\n  " (render_typfield env) tfs ^ " \\;\\}" ^
     "\\end{array}"
-  | CaseT (dots1, ids, tcases, dots2) ->
+  | CaseT (dots1, ts, tcases, dots2) ->
     altern_map_nl " ~|~ " " \\\\ &&|&\n" Fun.id
-      (render_dots dots1 @ map_nl_list (render_synid env) ids @
+      (render_dots dots1 @ map_nl_list (render_typ env) ts @
         map_nl_list (render_typcase env) tcases @ render_dots dots2)
   | RangeT tes ->
     altern_map_nl " ~|~ " "\\\\ &&|&\n" (render_typenum env) tes
@@ -532,14 +536,14 @@ and render_exp env e =
   | VarE (id, args) ->
     render_apply render_varid render_exp env env.show_syn id args
   | BoolE b -> render_atom env (Atom (string_of_bool b))
-  | NatE n -> string_of_int n
-  | HexE n ->
+  | NatE (DecOp, n) -> string_of_int n
+  | NatE (HexOp, n) ->
     let fmt : (_, _, _) format =
       if n < 0x100 then "%02X" else
       if n < 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Printf.sprintf fmt n ^ "}"
-  | CharE n ->
+  | NatE (CharOp, n) ->
     let fmt : (_, _, _) format =
       if n < 0x100 then "%02X" else
       if n < 0x10000 then "%04X" else
@@ -678,14 +682,14 @@ and render_sym env g =
   match g.it with
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym env env.show_gram id args
-  | NatG n -> string_of_int n
-  | HexG n ->
+  | NatG (DecOp, n) -> string_of_int n
+  | NatG (HexOp, n) ->
     let fmt : (_, _, _) format =
       if n < 0x100 then "%02X" else
       if n < 0x10000 then "%04X" else
       "%X"
     in "\\mathtt{0x" ^ Printf.sprintf fmt n ^ "}"
-  | CharG n ->
+  | NatG (CharOp, n) ->
     let fmt : (_, _, _) format =
       if n < 0x100 then "%02X" else
       if n < 0x10000 then "%04X" else
@@ -789,14 +793,10 @@ let render_syndeco env id =
 
 let render_syndef env d =
   match d.it with
-  | SynD (id1, _id2, p::ps, t, _) when ends_sub id1.it ->
-    (* Handle subscripting *)
+  | SynD (id1, _id2, args, t, _) ->
     render_syndeco env id1 ^
-    "{" ^ render_synid env id1 ^ "}_{" ^ render_param env p ^ "}" ^
-      render_params env ps ^ " &::=& " ^ render_typ env t
-  | SynD (id1, _id2, ps, t, _) ->
-    render_syndeco env id1 ^
-    render_synid env id1 ^ render_params env ps ^ " &::=& " ^ render_typ env t
+    render_apply render_synid render_exp env env.show_syn id1 args ^
+    " &::=& " ^ render_typ env t
   | _ -> assert false
 
 let render_gramdef env d =
@@ -838,9 +838,9 @@ let render_reddef env d =
 
 let render_funcdef env d =
   match d.it with
-  | DefD (id1, e1, e2, prems) ->
-    render_exp env (CallE (id1, e1) $ d.at) ^ " &=& " ^
-      render_exp env e2 ^ render_conditions env "&&&" prems
+  | DefD (id1, args, e, prems) ->
+    render_exp env (CallE (id1, args) $ d.at) ^ " &=& " ^
+      render_exp env e ^ render_conditions env "&&&" prems
   | _ -> failwith "render_funcdef"
 
 let rec render_sep_defs ?(sep = " \\\\\n") ?(br = " \\\\[0.8ex]\n") f = function
@@ -902,7 +902,7 @@ let rec render_defs env = function
     | SepD ->
       " \\\\\n" ^
       render_defs env ds'
-    | VarD _ | DecD _ | HintD _ ->
+    | FamD _ | VarD _ | DecD _ | HintD _ ->
       failwith "render_defs"
 
 let render_def env d = render_defs env [d]
@@ -972,5 +972,5 @@ let rec render_script env = function
     | SepD ->
       "\\vspace{1ex}\n\n" ^
       render_script env ds
-    | VarD _ | DecD _ | HintD _ ->
+    | FamD _ | VarD _ | DecD _ | HintD _ ->
       render_script env ds

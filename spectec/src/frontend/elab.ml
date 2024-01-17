@@ -81,12 +81,13 @@ type kind =
   | Transp  (* alias types, notation types, type parameters *)
   | Opaque  (* structures or variants *)
   | Defined of typ * Il.deftyp
+  | Family of (arg list * typ * Il.deftyp) list (* family of types *)
 
 type var_typ = typ
 type syn_typ = param list * kind
 type gram_typ = param list * typ * gram option
 type rel_typ = typ * Il.rule list
-type def_typ = param list * typ * Il.clause list
+type def_typ = param list * typ * (def * Il.clause) list
 
 type env =
   { mutable vars : var_typ Map.t;
@@ -140,14 +141,6 @@ let find_case cases atom at t =
   | None -> error_atom at atom t "unknown case"
 
 
-let rec prefix_id id = prefix_id' id.it $ id.at
-and prefix_id' id =
-  match String.index_opt id '_', String.index_opt id '\'' with
-  | None, None -> id
-  | None, Some n | Some n, None -> String.sub id 0 n
-  | Some n1, Some n2 -> String.sub id 0 (min n1 n2)
-
-
 (* Type Accessors *)
 
 let rec arg_subst s ps args =
@@ -162,15 +155,42 @@ let rec arg_subst s ps args =
     in arg_subst s' ps' as'
   | _, _ -> assert (ps = [] && args = []); s
 
+let aliased dt' =
+  match dt'.it with
+  | Il.AliasT _ -> `Alias
+  | _ -> `NoAlias
+
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
   match find "syntax type" env.typs id with
   | ps, Defined (t, dt') ->
     let t' = if ps = [] then t else  (* optimization *)
       Subst.subst_typ (arg_subst Subst.empty ps args) t in
-    t'.it, (match dt'.it with Il.AliasT _ -> `Alias | _ -> `NoAlias)
+    t'.it, aliased dt'
   | _ps, Opaque -> VarT (id, args), `NoAlias
   | _ps, Transp ->
     error_id (id.it $ at) "invalid forward use of syntax type"
+  | _ps, Family defs ->
+    let rec lookup = function
+      | [] -> error_id (id.it $ at) "undefined case of syntax type family"
+      | (args', t, dt')::defs' ->
+        if args' = [] then t, aliased dt' else   (* optimisation *)
+        let env' =
+          Map.mapi (fun id -> function
+            | ps, (Opaque | Transp) ->
+              let args' = List.map Convert.arg_of_param ps in
+              [(args', VarT (id $ at, args'))]
+            | ps, Defined (t, _dt'), _hints ->
+              [(List.map Convert.arg_of_param ps, t)]
+            | _ps, Family defs, _hints ->
+              List.map (fun (args, t, _dt') -> (args,t)) defs
+          )
+        in
+        match Eval.(match_list match_arg env' Subst.empty args args') with
+        | None -> lookup defs'
+        | Some s -> (Subst.subst_typ s t).it, aliased dt'
+        | exception Eval.Irred ->
+          error_id (id.it $ at) "cannot reduce argument to determine case of syntax type family"
+    in lookup defs
 
 let rec expand' env = function
   | VarT (id, args) as t' ->
@@ -460,7 +480,7 @@ let rec elab_iter env iter : Il.iter =
   | List1 -> Il.List1
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
-      let t = find "variable" env.vars (prefix_id id) in
+      let t = find "variable" env.vars (strip_var_suffix id) in
       if not (equiv_typ env t (NumT NatT $ id.at)) then
         error_typ e.at "iteration index" (NumT NatT $ id.at)
     ) id_opt;
@@ -612,13 +632,13 @@ and infer_exp' env e : Il.exp' * typ =
   | VarE (id, args) ->
     if args <> [] then
       Source.error e.at "syntax" "malformed expression";
-    let t = find "variable" env.vars (prefix_id id) in
+    let t = find "variable" env.vars (strip_var_suffix id) in
     Il.VarE id, t
   | AtomE _ ->
     error e.at "cannot infer type of atom"
   | BoolE b ->
     Il.BoolE b, BoolT $ e.at
-  | NatE n | HexE n | CharE n ->
+  | NatE (_op, n) ->
     Il.NatE n, NumT NatT $ e.at
   | TextE s ->
     Il.TextE s, TextT $ e.at
@@ -743,9 +763,9 @@ and elab_exp' env e t : Il.exp' =
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)
   match e.it with
-  | VarE (id, []) when not (Map.mem (prefix_id id).it env.vars) ->
+  | VarE (id, []) when not (Map.mem (strip_var_suffix id).it env.vars) ->
     (* Infer type of variable *)
-    env.vars <- bind "variable" env.vars (prefix_id id) t;
+    env.vars <- bind "variable" env.vars (strip_var_suffix id) t;
     Il.VarE id
   | VarE _ ->
     let e', t' = infer_exp env e in
@@ -753,7 +773,7 @@ and elab_exp' env e t : Il.exp' =
   | BoolE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "boolean" env e' t' t
-  | NatE _ | HexE _ | CharE _ ->
+  | NatE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "number" env e' t' t
   | TextE _ ->
@@ -1142,6 +1162,12 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     Il.SubE (e', elab_typ env t1, elab_typ env t2)
   else
     match expand env t2 with
+    | RangeT _ ->
+      if sub_typ env t1 (NumT IntT $ t1.at) then
+        (* TODO: can't generally prove it's in range *)
+        e'.it
+      else
+        error e'.at ("literal not in range of type `" ^ string_of_typ t2 ^ "`")
     | IterT (t21, Opt) ->
       Il.OptE (Some (cast_exp phrase env e' t1 t21))
     | IterT (t21, (List | List1)) ->
@@ -1202,7 +1228,7 @@ and elab_sym env g : typ * env =
     let ps, t, _gram = find "grammar" env.syms id in
     let _es', s = elab_args env ps args g.at in
     Subst.subst_typ s t, env
-  | NatG _ | HexG _ | CharG _ -> NumT NatT $ g.at, env
+  | NatG _ -> NumT NatT $ g.at, env
   | TextG _ -> TextT $ g.at, env
   | EpsG -> TupT [] $ g.at, env
   | SeqG gs ->
@@ -1260,7 +1286,7 @@ and elab_gram env gram t =
 and make_binds env free dims at : Il.binds =
   List.map (fun id' ->
     let id = id' $ at in
-    let t = find "variable" env.vars (prefix_id id) in
+    let t = find "variable" env.vars (strip_var_suffix id) in
     let t' = elab_typ env t in
     let ctx = List.map (elab_iter env) (Multiplicity.Env.find id.it dims) in
     (id, t', ctx)
@@ -1357,12 +1383,24 @@ let infer_typ_definition _env t : kind =
 
 let infer_syndef env d =
   match d.it with
-  | SynD (id1, _id2, ps, t, _hints) ->
+  | FamD (id, ps, _hints) ->
+    (*
+    Printf.eprintf "[isyndef %s]\n%!" (string_of_region d.at);
+    *)
+    if not (bound env.typs id) then (
+      let _, _env' = elab_params (local_env env) ps in
+      env.typs <- bind "syntax type" env.typs id (ps, Family []);
+      if ps = [] then  (* only types without parameters double as variables *)
+        env.vars <- bind "variable" env.vars id (VarT (id, []) $ id.at);
+    )
+  | SynD (id1, _id2, args, t, _hints) ->
     (*
     Printf.eprintf "[isyndef %s]\n%!" (string_of_region d.at);
     *)
     if not (bound env.typs id1) then (
-      let _, env' = elab_params (local_env env) ps in
+      let ps = List.map Convert.param_of_arg args in
+      let env' = local_env env in
+      let _, env' = elab_params env' ps in
       let k = infer_typ_definition env' t in
       env.typs <- bind "syntax type" env.typs id1 (ps, k);
       if ps = [] then  (* only types without parameters double as variables *)
@@ -1405,28 +1443,41 @@ let elab_def env d : Il.def list =
   Printf.eprintf "[DEF %s]\n%!" (string_of_region d.at);
   *)
   match d.it with
-  | SynD (id1, id2, ps, t, hints) ->
-    let _ts', env' = elab_params (local_env env) ps in
+  | FamD (id, ps, hints) ->
+    let _ts', _env' = elab_params (local_env env) ps in
+    env.typs <- rebind "syntax type" env.typs id (ps, Family []);
+    [Il.SynD (id, Il.VariantT [] $ d.at) $ d.at]  (* dummy type, filled in by populate_defs *)
+      @ elab_hintdef env (SynH (id, "" $ id.at, hints) $ d.at)
+  | SynD (id1, id2, args, t, hints) ->
+    let env' = local_env env in
+    let ps = List.map Convert.param_of_arg args in
+    let _ts', env' = elab_params env' ps in
     let dt' = elab_typ_definition env' id1 t in
-    let ps1, def1 = find "syntax type" env.typs id1 in
-    let t1, closed =
-      match def1, t.it with
+    let ps1, k1 = find "syntax type" env.typs id1 in
+    let k1', closed =
+      match k1, t.it with
       | Opaque, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of not yet defined syntax type"
       | Opaque, CaseT (NoDots, _, _, dots2) ->
-        t, dots2 = NoDots
+        Defined (t, dt'), dots2 = NoDots
+      | (Opaque | Transp), _ ->
+        Defined (t, dt'), true
       | Defined ({it = CaseT (dots1, ids1, tcs1, Dots); at; _}, _),
           CaseT (Dots, ids2, tcs2, dots2) ->
         if not Eq.(eq_list eq_param ps ps1) then
           error d.at "syntax parameters differ from previous fragment";
-        CaseT (dots1, ids1 @ ids2, tcs1 @ tcs2, dots2) $ over_region [at; t.at],
-          dots2 = NoDots
+        let t1 = CaseT (dots1, ids1 @ ids2, tcs1 @ tcs2, dots2) $ over_region [at; t.at] in
+        Defined (t1, dt'), dots2 = NoDots
       | Defined _, CaseT (Dots, _, _, _) ->
         error_id id1 "extension of non-extensible syntax type"
       | Defined _, _ ->
         error_id id1 "duplicate declaration for syntax type";
-      | _, _ ->
-        t, true
+      | Family _, CaseT (dots1, _, _, dots2) when dots1 = Dots || dots2 = Dots ->
+        error_id id1 "syntax type family cases are not extensible"
+      | Family defs, _ ->
+        (* TODO: for now, type families are erased to a single type *)
+        let _ts', _s = elab_args (local_env env) ps1 args d.at in
+        Family (defs @ [(args, t, dt')]), false
     in
     (*
     Printf.eprintf "[syntax %s] %s ~> %s\n%!" id1.it
@@ -1443,7 +1494,7 @@ let elab_def env d : Il.def list =
       then
         error p.at "parameter still occurs on right-hand side after erasure"
     ) ps;
-    env.typs <- rebind "syntax type" env.typs id1 (ps1, Defined (t1, dt'));
+    env.typs <- rebind "syntax type" env.typs id1 (ps1, k1');
     (if not closed then [] else [Il.SynD (id1, dt') $ d.at])
       @ elab_hintdef env (SynH (id1, id2, hints) $ d.at)
   | GramD _ -> []
@@ -1476,7 +1527,7 @@ let elab_def env d : Il.def list =
     let free = (Free.free_def d).Free.varid in
     let binds' = make_binds env' free dims d.at in
     let rule' = Il.RuleD (id2, binds', mixop, tup_exp' es' e.at, prems') $ d.at in
-    env.rels <- rebind "relation" env.rels id1 (t, rule'::rules');
+    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
     []
   | VarD (id, t, _hints) ->
     let _t' = elab_typ env t in
@@ -1524,7 +1575,7 @@ let elab_def env d : Il.def list =
     in
     let binds' = make_binds env' free dims d.at in
     let clause' = Il.DefD (binds', e1', e2', prems') $ d.at in
-    env.defs <- rebind "definition" env.defs id (ps, t, clause'::clauses');
+    env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [(d, clause')]);
     []
   | SepD ->
     []
@@ -1564,13 +1615,59 @@ let elab_gramdef env d =
 
 let populate_def env d' : Il.def =
   match d'.it with
-  | Il.SynD _ | Il.HintD _ -> d'
+  | Il.SynD (id, _dt') ->
+    (match find "syntax type" env.typs id with
+    | _ps, Family [] ->
+      error_id id "syntax type family has no defined cases";
+    | _ps, Family (def1::defs) ->
+      let _, t1, dt1' = def1 in
+      let _t, dt' =
+        List.fold_left (fun (t1, dt1') (_, t2, dt2') ->
+          match dt1'.it, dt2'.it with
+          | Il.VariantT tcs1', Il.VariantT tcs2' ->
+            (* TODO: for now, merge cases into one variant type *)
+            (* may not yield well-typed IL in all cases *)
+            let rec merge tcs1' tcs2' =
+              match tcs1', tcs2' with
+              | [], _ -> tcs2'
+              | _, [] -> tcs1'
+              | (atom1, tt1, hints1)::tcs1'', (atom2, tt2, hints2)::tcs2'' ->
+                match compare atom1 atom2 with
+                | -1 -> (atom1, tt1, hints1) :: merge tcs1'' ((atom2, tt2, hints2)::tcs2'')
+                | +1 -> (atom2, tt2, hints2) :: merge ((atom1, tt1, hints1)::tcs1'') tcs2''
+                | _ ->
+                  (* TODO: this is a hack *)
+                  let (binds1, t1', prems1) = tt1 in
+                  let (binds2, t2', prems2) = tt2 in
+                  if
+                    binds1 <> [] || binds2 <> [] || prems1 <> [] || prems2 <> [] ||
+                    not (Il.Eq.eq_typ t1' t2')
+                  then
+                    error_id id ("syntax type family case is incompatible (" ^
+                      Il.Print.(string_of_deftyp dt1' ^ " vs " ^ string_of_deftyp dt2' ^ ") for "));
+                  (atom1, tt1, hints1 @ hints2) :: merge tcs1' tcs2'
+            in
+            t1, Il.VariantT (merge (List.sort compare tcs1') (List.sort compare tcs2')) $ dt1'.at
+          | _, _ ->
+            let dt1' = elab_typ_definition env id (expand env t1 $ t1.at) in
+            let dt2' = elab_typ_definition env id (expand env t2 $ t2.at) in
+            if not (Il.Eq.eq_deftyp dt1' dt2') then
+              error_id id ("syntax type family case erases to different IL type (" ^
+                Il.Print.(string_of_deftyp dt1' ^ " vs " ^ string_of_deftyp dt2' ^ ") for "));
+            t1, dt1'
+        ) (t1, dt1') defs
+      in
+      Il.SynD (id, dt') $ d'.at
+    | _ps, _k ->
+      d'
+    )
   | Il.RelD (id, mixop, t', []) ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', List.rev rules') $ d'.at
+    Il.RelD (id, mixop, t', rules') $ d'.at
   | Il.DecD (id, t1', t2', []) ->
     let _, _, clauses' = find "function" env.defs id in
-    Il.DecD (id, t1', t2', List.rev clauses') $ d'.at
+    Il.DecD (id, t1', t2', List.map snd clauses') $ d'.at
+  | Il.HintD _ -> d'
   | _ ->
     assert false
 

@@ -4,9 +4,18 @@ open Ast
 
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let find_nl_list f xs = List.find_opt f (filter_nl xs)
 let iter_nl_list f xs = List.iter f (filter_nl xs)
 let map_filter_nl_list f xs = List.map f (filter_nl xs)
 let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
+let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f x) xs
+
+
+let strip_var_suffix id =
+  match String.index_opt id.it '_', String.index_opt id.it '\'' with
+  | None, None -> id
+  | None, Some n | Some n, None -> String.sub id.it 0 n $ id.at
+  | Some n1, Some n2 -> String.sub id.it 0 (min n1 n2) $ id.at
 
 
 let arg_of_exp e =
@@ -25,7 +34,7 @@ let rec typ_of_exp e =
     | "text" -> TextT
     | _ -> VarT (id, [])
     )
-  | VarE (id, args) -> VarT (id, args)
+  | VarE (id, args) -> VarT (strip_var_suffix id, args)
   | ParenE (e1, _) -> ParenT (typ_of_exp e1)
   | TupE es -> TupT (List.map typ_of_exp es)
   | IterE (e1, iter) -> IterT (typ_of_exp e1, iter)
@@ -58,7 +67,7 @@ let rec exp_of_typ t =
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
   | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
-  | _ -> Source.error t.at "syntax" "malformed expression"
+  | CaseT _ | RangeT _ -> Source.error t.at "syntax" "malformed expression"
   ) $ t.at
 
 and expfield_of_typfield (atom, (t, _prems), _) =
@@ -68,9 +77,7 @@ and expfield_of_typfield (atom, (t, _prems), _) =
 let rec sym_of_exp e =
   (match e.it with
   | VarE (id, args) -> VarG (id, args)
-  | NatE n -> NatG n
-  | HexE n -> HexG n
-  | CharE c -> CharG c
+  | NatE (op, n) -> NatG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
   | SeqE es -> SeqG (List.map (fun e -> Elem (sym_of_exp e)) es)
@@ -84,9 +91,7 @@ let rec sym_of_exp e =
 let rec exp_of_sym g =
   (match g.it with
   | VarG (id, args) -> VarE (id, args)
-  | NatG n -> NatE n
-  | HexG n -> HexE n
-  | CharG n -> CharE n
+  | NatG (op, n) -> NatE (op, n)
   | TextG t -> TextE t
   | EpsG -> EpsE
   | SeqG gs -> SeqE (map_filter_nl_list exp_of_sym gs)
@@ -106,7 +111,12 @@ let exp_of_arg a =
 
 let param_of_arg a =
   (match !(a.it) with
-  | ExpA e -> ExpP ("" $ e.at, typ_of_exp e)
+  | ExpA e ->
+    (match e.it with
+    | VarE (id, []) when strip_var_suffix id <> id ->
+      ExpP (id, VarT (strip_var_suffix id, []) $ e.at)
+    | _ -> ExpP ("" $ e.at, typ_of_exp e)
+    )
   | SynA {it = VarT (id, []); _} -> SynP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
     GramP (id, typ_of_exp (exp_of_sym g))

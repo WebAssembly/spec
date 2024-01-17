@@ -14,18 +14,18 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 ;; TODO
 
-def $unop(unop_valtype, valtype, c) : c_valtype*         hint(show %#_%#((%)))
-def $binop(binop_valtype, valtype, c, c) : c_valtype*    hint(show %#_%#(%, %))
-def $testop(testop_valtype, valtype, c) : c_valtype      hint(show %#_%#((%)))
-def $relop(relop_valtype, valtype, c, c) : c_valtype     hint(show %#_%#(%, %))
-def $cvtop(cvtop, valtype, valtype, sx?, c) : c_valtype* hint(show %#$_((%,%))^(%)#((%)))
+def $unop(unop_(valtype), valtype, const_(valtype)) : const_(valtype)*         hint(show %#_%#((%)))
+def $binop(binop_(valtype), valtype, const_(valtype), const_(valtype)) : const_(valtype)*    hint(show %#_%#(%, %))
+def $testop(testop_(valtype), valtype, const_(valtype)) : const_(valtype)      hint(show %#_%#((%)))
+def $relop(relop_(valtype), valtype, const_(valtype), const_(valtype)) : const_(valtype)     hint(show %#_%#(%, %))
+def $cvtop(cvtop, valtype_1, valtype_2, sx?, const_(valtype_1)) : const_(valtype_2)* hint(show %#$_((%,%))^(%)#((%)))
 
-def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
-def $ext(nat, nat, sx, c) : c_valtype                    hint(show $ext_((%,%))^(%)#((%)))
+def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
+def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
 
-def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
-def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
-def $bytes(valtype, c) : byte*        hint(show $bytes_(%,%))
+def $ibytes(N, iN(N)) : byte*                       hint(show $bytes_(i#%,%))
+def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(f#%,%))
+def $bytes(valtype, const_(valtype)) : byte*        hint(show $bytes_(%,%))
 
 def $invibytes(N, byte*) : iN(N)
 def $invfbytes(N, byte*) : fN(N)

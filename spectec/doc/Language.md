@@ -233,6 +233,7 @@ param ::=
   "grammar" gramid ":" typ
 
 def ::=
+  "syntax" varid params hint*                               syntax declaration
   "syntax" varid params subid* hint* "=" deftyp             syntax definition
   "grammar" gramid params subid* ":" typ hint* "=" gram     grammar definition
   "relation" relid hint* ":" typ                            relation declaration
