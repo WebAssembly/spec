@@ -4179,10 +4179,11 @@ execution_of_RETURN_CALL_REF x?
   c. Exit current context.
   d. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
-    2) If ((a < |$funcinst()|) and $expanddt($funcinst()[a].TYPE) is of the case FUNC), then:
-      a) Let (FUNC y_0) be $expanddt($funcinst()[a].TYPE).
-      b) Let (t_1^n -> t_2^m) be y_0.
-      c) If (|admin_u1*| ≥ n), then:
+    2) If (a < |$funcinst()|), then:
+      a) Assert: Due to validation, $expanddt($funcinst()[a].TYPE) is of the case FUNC.
+      b) Let (FUNC y_0) be $expanddt($funcinst()[a].TYPE).
+      c) Let (t_1^n -> t_2^m) be y_0.
+      d) If (|admin_u1*| ≥ n), then:
         1. Let val'* ++ val^n be admin_u1*.
         2. Push val^n to the stack.
         3. Push (REF.FUNC_ADDR a) to the stack.
@@ -4231,10 +4232,11 @@ execution_of_STRUCT.GET sx? x i
   a. Let (REF.STRUCT_ADDR a) be admin_u0.
   b. If (a < |$structinst()|), then:
     1) Let si be $structinst()[a].
-    2) If ((i < |si.FIELD|) and $expanddt(si.TYPE) is of the case STRUCT), then:
-      a) Let (STRUCT y_0) be $expanddt(si.TYPE).
-      b) Let (mut, zt)* be y_0.
-      c) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+    2) If (i < |si.FIELD|), then:
+      a) Assert: Due to validation, $expanddt(si.TYPE) is of the case STRUCT.
+      b) Let (STRUCT y_0) be $expanddt(si.TYPE).
+      c) Let (mut, zt)* be y_0.
+      d) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
         1. Push $unpackval(zt*[i], sx?, si.FIELD[i]) to the stack.
 
 execution_of_ARRAY.NEW x
@@ -4295,10 +4297,10 @@ execution_of_ARRAY.GET sx? x
     1) Trap.
   c. If ((i < |$arrayinst()[a].FIELD|) and (a < |$arrayinst()|)), then:
     1) Let fv be $arrayinst()[a].FIELD[i].
-    2) If $expanddt($arrayinst()[a].TYPE) is of the case ARRAY, then:
-      a) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
-      b) Let (mut, zt) be y_0.
-      c) Push $unpackval(zt, sx?, fv) to the stack.
+    2) Assert: Due to validation, $expanddt($arrayinst()[a].TYPE) is of the case ARRAY.
+    3) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+    4) Let (mut, zt) be y_0.
+    5) Push $unpackval(zt, sx?, fv) to the stack.
 
 execution_of_ARRAY.LEN
 1. Assert: Due to validation, a value is on the top of the stack.
@@ -4367,45 +4369,45 @@ execution_of_ARRAY.COPY x_1 x_2
     1) If admin_u1 is of the case REF.ARRAY_ADDR, then:
       a) Do nothing.
   d. Else if (i_1 > i_2), then:
-    1) If $expanddt($type(x_2)) is of the case ARRAY, then:
-      a) Let (ARRAY y_0) be $expanddt($type(x_2)).
-      b) Let (mut, zt_2) be y_0.
-      c) Let (REF.ARRAY_ADDR a_1) be admin_u0.
-      d) If admin_u1 is of the case REF.ARRAY_ADDR, then:
-        1. Let (REF.ARRAY_ADDR a_2) be admin_u1.
-        2. Let sx? be $sxfield(zt_2).
-        3. Push (REF.ARRAY_ADDR a_1) to the stack.
-        4. Push (I32.CONST ((i_1 + n) - 1)) to the stack.
-        5. Push (REF.ARRAY_ADDR a_2) to the stack.
-        6. Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-        7. Execute (ARRAY.GET sx? x_2).
-        8. Execute (ARRAY.SET x_1).
-        9. Push (REF.ARRAY_ADDR a_1) to the stack.
-        10. Push (I32.CONST i_1) to the stack.
-        11. Push (REF.ARRAY_ADDR a_2) to the stack.
-        12. Push (I32.CONST i_2) to the stack.
-        13. Push (I32.CONST (n - 1)) to the stack.
-        14. Execute (ARRAY.COPY x_1 x_2).
+    1) Assert: Due to validation, $expanddt($type(x_2)) is of the case ARRAY.
+    2) Let (ARRAY y_0) be $expanddt($type(x_2)).
+    3) Let (mut, zt_2) be y_0.
+    4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
+    5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be admin_u1.
+      b) Let sx? be $sxfield(zt_2).
+      c) Push (REF.ARRAY_ADDR a_1) to the stack.
+      d) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
+      e) Push (REF.ARRAY_ADDR a_2) to the stack.
+      f) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
+      g) Execute (ARRAY.GET sx? x_2).
+      h) Execute (ARRAY.SET x_1).
+      i) Push (REF.ARRAY_ADDR a_1) to the stack.
+      j) Push (I32.CONST i_1) to the stack.
+      k) Push (REF.ARRAY_ADDR a_2) to the stack.
+      l) Push (I32.CONST i_2) to the stack.
+      m) Push (I32.CONST (n - 1)) to the stack.
+      n) Execute (ARRAY.COPY x_1 x_2).
   e. Else:
-    1) If $expanddt($type(x_2)) is of the case ARRAY, then:
-      a) Let (ARRAY y_0) be $expanddt($type(x_2)).
-      b) Let (mut, zt_2) be y_0.
-      c) Let (REF.ARRAY_ADDR a_1) be admin_u0.
-      d) If admin_u1 is of the case REF.ARRAY_ADDR, then:
-        1. Let (REF.ARRAY_ADDR a_2) be admin_u1.
-        2. Let sx? be $sxfield(zt_2).
-        3. Push (REF.ARRAY_ADDR a_1) to the stack.
-        4. Push (I32.CONST i_1) to the stack.
-        5. Push (REF.ARRAY_ADDR a_2) to the stack.
-        6. Push (I32.CONST i_2) to the stack.
-        7. Execute (ARRAY.GET sx? x_2).
-        8. Execute (ARRAY.SET x_1).
-        9. Push (REF.ARRAY_ADDR a_1) to the stack.
-        10. Push (I32.CONST (i_1 + 1)) to the stack.
-        11. Push (REF.ARRAY_ADDR a_2) to the stack.
-        12. Push (I32.CONST (i_2 + 1)) to the stack.
-        13. Push (I32.CONST (n - 1)) to the stack.
-        14. Execute (ARRAY.COPY x_1 x_2).
+    1) Assert: Due to validation, $expanddt($type(x_2)) is of the case ARRAY.
+    2) Let (ARRAY y_0) be $expanddt($type(x_2)).
+    3) Let (mut, zt_2) be y_0.
+    4) Let (REF.ARRAY_ADDR a_1) be admin_u0.
+    5) If admin_u1 is of the case REF.ARRAY_ADDR, then:
+      a) Let (REF.ARRAY_ADDR a_2) be admin_u1.
+      b) Let sx? be $sxfield(zt_2).
+      c) Push (REF.ARRAY_ADDR a_1) to the stack.
+      d) Push (I32.CONST i_1) to the stack.
+      e) Push (REF.ARRAY_ADDR a_2) to the stack.
+      f) Push (I32.CONST i_2) to the stack.
+      g) Execute (ARRAY.GET sx? x_2).
+      h) Execute (ARRAY.SET x_1).
+      i) Push (REF.ARRAY_ADDR a_1) to the stack.
+      j) Push (I32.CONST (i_1 + 1)) to the stack.
+      k) Push (REF.ARRAY_ADDR a_2) to the stack.
+      l) Push (I32.CONST (i_2 + 1)) to the stack.
+      m) Push (I32.CONST (n - 1)) to the stack.
+      n) Execute (ARRAY.COPY x_1 x_2).
 
 execution_of_ARRAY.INIT_ELEM x y
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
@@ -4748,10 +4750,11 @@ execution_of_STRUCT.SET x i
   a. Trap.
 6. If admin_u0 is of the case REF.STRUCT_ADDR, then:
   a. Let (REF.STRUCT_ADDR a) be admin_u0.
-  b. If ((a < |$structinst()|) and $expanddt($structinst()[a].TYPE) is of the case STRUCT), then:
-    1) Let (STRUCT y_0) be $expanddt($structinst()[a].TYPE).
-    2) Let (mut, zt)* be y_0.
-    3) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
+  b. If (a < |$structinst()|), then:
+    1) Assert: Due to validation, $expanddt($structinst()[a].TYPE) is of the case STRUCT.
+    2) Let (STRUCT y_0) be $expanddt($structinst()[a].TYPE).
+    3) Let (mut, zt)* be y_0.
+    4) If ((|mut*| is |zt*|) and (i < |zt*|)), then:
       a) Let fv be $packval(zt*[i], val).
       b) Perform $with_struct(a, i, fv).
 
@@ -4779,11 +4782,11 @@ execution_of_ARRAY.SET x
   b. If (a < |$arrayinst()|), then:
     1) If (i ≥ |$arrayinst()[a].FIELD|), then:
       a) Trap.
-    2) If $expanddt($arrayinst()[a].TYPE) is of the case ARRAY, then:
-      a) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
-      b) Let (mut, zt) be y_0.
-      c) Let fv be $packval(zt, val).
-      d) Perform $with_array(a, i, fv).
+    2) Assert: Due to validation, $expanddt($arrayinst()[a].TYPE) is of the case ARRAY.
+    3) Let (ARRAY y_0) be $expanddt($arrayinst()[a].TYPE).
+    4) Let (mut, zt) be y_0.
+    5) Let fv be $packval(zt, val).
+    6) Perform $with_array(a, i, fv).
 
 execution_of_LOCAL.SET x
 1. Assert: Due to validation, a value is on the top of the stack.

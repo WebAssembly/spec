@@ -412,7 +412,7 @@ $${rule+: Step_read/array.fill-*}
 ARRAY.COPY
 ^^^^^^^^^^
 
-TODO (too deeply nested)
+%{prose-algo: ARRAY.COPY}
 
 \
 

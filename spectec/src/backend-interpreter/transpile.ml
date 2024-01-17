@@ -294,6 +294,7 @@ let remove_dead_assignment il =
             acc, bounds
           else
             (instr :: acc), (diff_list bounds bindings) @ Free.free_expr e2
+        | AssertI _ when acc = [] -> acc, bounds
         | _ ->
           instr :: acc, bounds @ Free.free_instr instr)
       il pair
@@ -354,8 +355,8 @@ let infer_case_assert instrs =
 
   let rec handle_cond c mt_then mt_else =
     match c.it with
-    | IsCaseOfE ({ it = VarE id; _ }, kwd) ->
-      let k = id in
+    | IsCaseOfE (e, kwd) ->
+      let k = Print.string_of_expr e in
       let v = One (fst kwd) in
       let v_opt = Record.find_opt k !case_count in
       let v' = if mt_else && match v_opt with None -> true | Some v' -> v = v' then v else Many in
@@ -374,14 +375,12 @@ let infer_case_assert instrs =
   let count_cases = walk_instrs { default_config with pre_instr = (fun i -> handle_if i; [ i ]) } in
   count_cases instrs |> ignore;
 
-  let has_single_case e =
-    match e.it with
-    | VarE id -> ( match Record.find_opt id !case_count with None | Some Many -> false | _ -> true )
-    | _ -> false
-  in
   let is_single_case_check c =
     match c.it with
-    | IsCaseOfE (e, _) -> has_single_case e
+    | IsCaseOfE (e, _) -> (
+      match Record.find_opt (Print.string_of_expr e) !case_count with
+      | None | Some Many -> false
+      | _ -> true )
     | _ -> false
   in
   let rewrite_if i =
