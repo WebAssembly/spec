@@ -202,9 +202,9 @@ and exp2expr exp =
       | [ []; [ Ast.Semicolon ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ [ Ast.LBrack ]; [ Ast.Dot2 ]; [ Ast.RBrack ]], [ e1; e2 ] ->
           tupE [ exp2expr e1; exp2expr e2 ] ~at:at
-      | [ []; [ Ast.Star; Ast.Arrow ]; [ Ast.Star ] ], [ e1; e2 ]
-      | [ []; [ Ast.Arrow ]; [] ], [ e1; e2 ] ->
-          arrowE (exp2expr e1, exp2expr e2) ~at:at
+      | [ []; [ Ast.Star; atom ]; [ Ast.Star ] ], [ e1; e2 ]
+      | [ []; [ atom ]; [] ], [ e1; e2 ] ->
+          infixE (exp2expr e1, Print.string_of_atom atom, exp2expr e2) ~at:at
       (* Constructor *)
       (* TODO: Need a better way to convert these CaseE into ConsturctE *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->

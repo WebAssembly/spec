@@ -280,10 +280,17 @@ and render_expr env in_math expr =
       let siter = render_iter env iter in
       let s = sprintf "{(%s)}{%s}" se siter in
       if in_math then s else render_math s
-  | Al.Ast.ArrowE (e1, e2) ->
+  | Al.Ast.InfixE (e1, infix, e2) ->
       let se1 = render_expr env true e1 in
+      (* Hardcoded rendering of infix *)
+      let sinfix =
+        match infix with
+        | "->" -> "\\to"
+        | "X" -> "\\times"
+        | _ -> infix
+      in
       let se2 = render_expr env true e2 in
-      let s = sprintf "%s \\to %s" se1 se2 in
+      let s = sprintf "%s %s %s" se1 sinfix se2 in
       if in_math then s else render_math s
   | Al.Ast.CaseE (kwd, es) ->
       let skwd = render_kwd env kwd in

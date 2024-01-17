@@ -53,30 +53,21 @@ def $ilt_s(nat, nat, nat) : nat
 def $vzero : c_vectype ;; TODO
 
 def $unpacked(shape) : numtype
-def $unpacked(sh) = nt
-    -- if sh = SHAPE lnt lns
-    -- if lnt = nt
-def $unpacked(sh) = I32
-    -- if sh = SHAPE lnt lns
-    -- if lnt = pt
+def $unpacked(pt X lns) = I32
+def $unpacked(nt X lns) = nt
+
 def $dim(shape) : lanesize
-def $dim(sh) = lns
-    -- if sh = SHAPE lnt lns
+def $dim(lnt X lns) = lns
+
 def $halfop(half, nat, nat) : nat
-def $halfop(hf, i, j) = i
-    -- if hf = LOW
-def $halfop(hf, i, j) = j
-    -- if hf = HIGH
+def $halfop(LOW, i, j) = i
+def $halfop(HIGH, i, j) = j
 
 def $ishape(nat) : lanetype
-def $ishape(nat) = I8
-    -- if nat = 8
-def $ishape(nat) = I16
-    -- if nat = 16
-def $ishape(nat) = I32
-    -- if nat = 32
-def $ishape(nat) = I64
-    -- if nat = 64
+def $ishape(8) = I8
+def $ishape(16) = I16
+def $ishape(32) = I32
+def $ishape(64) = I64
 
 def $vvunop(unop_vvectype, vectype, c_vectype) : c_vectype                           hint(show %#_%#((%)))
 def $vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype              hint(show %#_%#(%, %))

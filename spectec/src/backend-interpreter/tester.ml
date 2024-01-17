@@ -95,7 +95,7 @@ let builtin () =
     let winstr_tag = String.uppercase_ascii name in
     let code = singleton winstr_tag in
     let ptype = Array.map singleton type_tags in
-    let arrow = ArrowV (listV ptype, listV [||]) in
+    let arrow = TupV [ listV ptype; listV [||] ] in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [

@@ -179,7 +179,7 @@ $${rule+: Step_pure/narrow}
 
 .. _exec-VCVTOP:
 
-TODO (too deeply nested)
+%{prose-algo: VCVTOP}
 
 \
 

@@ -293,7 +293,7 @@ and eval_expr expr =
     | [], Opt -> optV None
     | [v], Opt -> Option.some v |> optV
     | l, _ -> listV_of_list l)
-  | ArrowE (e1, e2) -> ArrowV (eval_expr e1, eval_expr e2)
+  | InfixE (e1, _, e2) -> TupV [ eval_expr e1; eval_expr e2 ]
   (* condition *)
   | ContextKindE ((kind, _), e) ->
     (match kind, eval_expr e with
@@ -432,7 +432,7 @@ and assign lhs rhs env =
       List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) new_env
-  | ArrowE (lhs1, lhs2), ArrowV (rhs1, rhs2) ->
+  | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
       env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->

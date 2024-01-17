@@ -263,8 +263,7 @@ syntax lanesize hint(desc "lane size") = nat
 
 var lnt : lanetype
 var lns : lanesize
-syntax shape hint(desc "shape") =
-  | SHAPE lanetype lanesize      hint(show %X%)
+syntax shape hint(desc "shape") = lanetype X lanesize
 
 var psl : nat
 var psr : nat

@@ -59,7 +59,6 @@ and string_of_value = function
   | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
-  | ArrowV (v1, v2) -> "[" ^ string_of_value v1 ^ "]->[" ^ string_of_value v2 ^ "]"
   | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
   | CaseV (s, []) -> s
   | CaseV (s, vl) -> "(" ^ s ^ " " ^ string_of_values " " vl ^ ")"
@@ -158,10 +157,7 @@ and string_of_expr expr =
   | VarE id -> id
   | SubE (id, _) -> id
   | IterE (e, _, iter) -> string_of_expr e ^ string_of_iter iter
-  | ArrowE (e1, e2) ->
-    (match e1.it with ListE _ -> string_of_expr e1 | _ -> "[" ^ string_of_expr e1 ^ "]" )
-    ^ "->"
-    ^ (match e2.it with ListE _ -> string_of_expr e2 | _ -> "[" ^ string_of_expr e2 ^ "]" )
+  | InfixE (e1, infix, e2) -> "(" ^ string_of_expr e1 ^ " " ^ infix ^ " " ^ string_of_expr e2 ^ ")"
   | CaseE (("CONST", _), hd::tl) -> "(" ^ string_of_expr hd ^ ".CONST " ^ string_of_exprs " " tl ^ ")"
   | CaseE ((s, _), []) -> s
   | CaseE ((s, _), el) -> "(" ^ s ^ " " ^ string_of_exprs " " el ^ ")"
@@ -354,12 +350,6 @@ let rec structured_string_of_value = function
   | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
-  | ArrowV (v1, v2) ->
-    "ArrowV("
-    ^ structured_string_of_value v1
-    ^ ", "
-    ^ structured_string_of_value v2
-    ^ ")"
   | CaseV (s, vl) -> "CaseV(" ^ s ^ ", [" ^ structured_string_of_values vl ^ "])"
   | StrV _r -> "StrV (TODO)"
   | OptV None -> "OptV"
@@ -460,9 +450,11 @@ and structured_string_of_expr expr =
     ^ ", "
     ^ string_of_iter iter
     ^ ")"
-  | ArrowE (e1, e2) ->
-    "ArrowE ("
+  | InfixE (e1, infix, e2) ->
+    "InfixE ("
     ^ structured_string_of_expr e1
+    ^ ", "
+    ^ infix
     ^ ", "
     ^ structured_string_of_expr e2
     ^ ")"

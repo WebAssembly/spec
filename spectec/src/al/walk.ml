@@ -51,7 +51,7 @@ let rec walk_expr f e =
       | CaseE (kwd, el) -> CaseE (kwd, List.map new_ el)
       | OptE e -> OptE (Option.map new_ e)
       | TupE el -> TupE (List.map new_ el)
-      | ArrowE (e1, e2) -> ArrowE (new_ e1, new_ e2)
+      | InfixE (e1, infix, e2) -> InfixE (new_ e1, infix, new_ e2)
       | ArityE e' -> ArityE (new_ e')
       | FrameE (e1_opt, e2) -> FrameE (Option.map new_ e1_opt, new_ e2)
       | LabelE (e1, e2) -> LabelE (new_ e1, new_ e2)

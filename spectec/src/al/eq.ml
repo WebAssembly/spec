@@ -44,8 +44,9 @@ let rec eq_expr e1 e2 =
       it1 = it2
   | OptE eo1, OptE eo2 -> eq_expr_opt eo1 eo2
   | ListE el1, ListE el2 -> eq_exprs el1 el2
-  | ArrowE (e11, e12), ArrowE (e21, e22) ->
+  | InfixE (e11, infix1, e12), InfixE (e21, infix2, e22) ->
       eq_expr e11 e21 &&
+      infix1 = infix2 &&
       eq_expr e12 e22
   | ArityE e1, ArityE e2 -> eq_expr e1 e2
   | FrameE (eo1, e1), FrameE (eo2, e2) ->

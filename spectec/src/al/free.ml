@@ -30,7 +30,7 @@ let rec free_expr expr =
   | ContE e -> free_expr e
   | BinE (_, e1, e2)
   | CatE (e1, e2)
-  | ArrowE (e1, e2)
+  | InfixE (e1, _, e2)
   | LabelE (e1, e2) -> free_expr e1 @ free_expr e2
   | FrameE (e_opt, e) ->
     Option.value (Option.map free_expr e_opt) ~default:[] @ free_expr e

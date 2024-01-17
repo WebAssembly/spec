@@ -910,41 +910,30 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{unpacked}}({\mathit{sh}}) &=& {\mathit{nt}} &\quad
-  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
- &&&\quad {\land}~{\mathit{lnt}} = {\mathit{nt}} \\
-{\mathrm{unpacked}}({\mathit{sh}}) &=& \mathsf{i{\scriptstyle32}} &\quad
-  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
- &&&\quad {\land}~{\mathit{lnt}} = {\mathit{pt}} \\
+{\mathrm{unpacked}}({\mathit{pt}}~\mathsf{x}~{\mathit{lns}}) &=& \mathsf{i{\scriptstyle32}} &  \\
+{\mathrm{unpacked}}({\mathit{nt}}~\mathsf{x}~{\mathit{lns}}) &=& {\mathit{nt}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{dim}}({\mathit{sh}}) &=& {\mathit{lns}} &\quad
-  \mbox{if}~{\mathit{sh}} = {\mathit{lnt}}~\mathsf{x}~{\mathit{lns}} \\
+{\mathrm{dim}}({\mathit{lnt}}~\mathsf{x}~{\mathit{lns}}) &=& {\mathit{lns}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{halfop}}({\mathit{hf}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathit{i}} &\quad
-  \mbox{if}~{\mathit{hf}} = \mathsf{low} \\
-{\mathrm{halfop}}({\mathit{hf}}, {\mathit{i}}, {\mathit{j}}) &=& {\mathit{j}} &\quad
-  \mbox{if}~{\mathit{hf}} = \mathsf{high} \\
+{\mathrm{halfop}}(\mathsf{low}, {\mathit{i}}, {\mathit{j}}) &=& {\mathit{i}} &  \\
+{\mathrm{halfop}}(\mathsf{high}, {\mathit{i}}, {\mathit{j}}) &=& {\mathit{j}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle8}} &\quad
-  \mbox{if}~{\mathit{nat}} = 8 \\
-{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle16}} &\quad
-  \mbox{if}~{\mathit{nat}} = 16 \\
-{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle32}} &\quad
-  \mbox{if}~{\mathit{nat}} = 32 \\
-{\mathrm{ishape}}({\mathit{nat}}) &=& \mathsf{i{\scriptstyle64}} &\quad
-  \mbox{if}~{\mathit{nat}} = 64 \\
+{\mathrm{ishape}}(8) &=& \mathsf{i{\scriptstyle8}} &  \\
+{\mathrm{ishape}}(16) &=& \mathsf{i{\scriptstyle16}} &  \\
+{\mathrm{ishape}}(32) &=& \mathsf{i{\scriptstyle32}} &  \\
+{\mathrm{ishape}}(64) &=& \mathsf{i{\scriptstyle64}} &  \\
 \end{array}
 $$
 

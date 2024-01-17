@@ -87,7 +87,7 @@ let call_ref =
             isCaseOfE (callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]), ("FUNC", "comptype")),
             [
             letI (caseE (("FUNC", "comptype"), [y0]), callE ("expanddt", [ accE (fi, dotP ("TYPE", "type")) ]));
-            letI (arrowE (iterE (t1, ["t_1"], ListN (n, None)), iterE (t2, ["t_2"], ListN (m, None))), y0);
+            letI (infixE (iterE (t1, ["t_1"], ListN (n, None)), "->", iterE (t2, ["t_2"], ListN (m, None))), y0);
             assertI (topValuesE n);
             popI (iterE (v, ["val"], ListN(n, None)));
             letI (f, strE (Record.empty

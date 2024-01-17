@@ -540,7 +540,7 @@ let vunop: numerics =
     name = "vunop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
+      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v ] -> (
         match ls, ln with
         | "I8", 16L -> (
           match op with
@@ -564,7 +564,7 @@ let vunop: numerics =
           | CaseV ("NEG", []) -> wrap_vunop V128.I64x2.neg v
           | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for viunop")
-      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v ] -> (
+      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v ] -> (
         match ls, ln with
         | "F32", 4L -> (
           match op with
@@ -618,7 +618,7 @@ let vbinop: numerics =
     name = "vbinop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v1; v2 ] -> (
+      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
         match ls, ln with
         | "I8", 16L -> (
           match op with
@@ -679,7 +679,7 @@ let vbinop: numerics =
           | CaseV ("MUL", []) -> wrap_vbinop V128.I64x2.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for vibinop")
-      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v1; v2 ] -> (
+      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
         match ls, ln with
         | "F32", 4L -> (
           match op with
@@ -715,7 +715,7 @@ let vrelop: numerics =
     name = "vrelop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); NumV v1; NumV v2 ] -> (
+      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; NumV v1; NumV v2 ] -> (
         match ls, ln with
         | "I8", 16L -> (
           match op with
@@ -770,7 +770,7 @@ let vrelop: numerics =
           | CaseV ("GEU", []) -> wrap_vrelop I64.ge_u v1 v2
           | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for virelop")
-      | [ CaseV ("_VF", [ op ]); CaseV ("SHAPE", [ CaseV (ls, []); NumV (ln) ]); v1; v2 ] -> (
+      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
         match ls, ln with
         | "F32", 4L -> (
           match op with
@@ -837,17 +837,17 @@ let lanes : numerics =
     name = "lanes";
     f = 
       (function
-      | [ CaseV ("SHAPE", [ CaseV ("I8", []); NumV 16L ]); VecV v ] ->
+      | [ TupV [ CaseV ("I8", []); NumV 16L ]; VecV v ] ->
         v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int8 |> listV_of_list
-      | [ CaseV ("SHAPE", [ CaseV ("I16", []); NumV 8L ]); VecV v ] ->
+      | [ TupV [ CaseV ("I16", []); NumV 8L ]; VecV v ] ->
         v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int16 |> listV_of_list
-      | [ CaseV ("SHAPE", [ CaseV ("I32", []); NumV 4L ]); VecV v ] ->
+      | [ TupV [ CaseV ("I32", []); NumV 4L ]; VecV v ] ->
         v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
-      | [ CaseV ("SHAPE", [ CaseV ("I64", []); NumV 2L ]); VecV v ] ->
+      | [ TupV [ CaseV ("I64", []); NumV 2L ]; VecV v ] ->
         v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
-      | [ CaseV ("SHAPE", [ CaseV ("F32", []); NumV 4L ]); VecV v ] ->
+      | [ TupV [ CaseV ("F32", []); NumV 4L ]; VecV v ] ->
         v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
-      | [ CaseV ("SHAPE", [ CaseV ("F64", []); NumV 2L ]); VecV v ] ->
+      | [ TupV [ CaseV ("F64", []); NumV 2L ]; VecV v ] ->
         v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
       | _ -> failwith "Invaild lanes"
       );
@@ -857,12 +857,12 @@ let inverse_of_lanes : numerics =
     name = "inverse_of_lanes";
     f = 
       (function
-      | [ CaseV("SHAPE", [ CaseV ("I8", []); NumV 16L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("I16", []); NumV 8L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("I32", []); NumV 4L ]); ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("I64", []); NumV 2L ]); ListV lanes; ] -> VecV (List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("F32", []); NumV 4L ]); ListV lanes; ] -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
-      | [ CaseV("SHAPE", [ CaseV ("F64", []); NumV 2L ]); ListV lanes; ] -> VecV (List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("I8", []); NumV 16L ]; ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("I16", []); NumV 8L ]; ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("I32", []); NumV 4L ]; ListV lanes; ] -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("I64", []); NumV 2L ]; ListV lanes; ] -> VecV (List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("F32", []); NumV 4L ]; ListV lanes; ] -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("F64", []); NumV 2L ]; ListV lanes; ] -> VecV (List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> V128.to_bits)
       | _ -> failwith "Invaild inverse_of_lanes"
       );
   }
