@@ -12,6 +12,10 @@ type result =
   | Fail
   | Ignore
 
+let success = 1, 1
+let failure = 0, 1
+let pass = 0, 0
+
 let fail expected actual =
   Printf.eprintf " Fail!\n";
   Printf.eprintf " Expected: %s\n" expected;
@@ -29,33 +33,55 @@ let msg_of = function
   (* ^ " " *)
   (* ^ (String.split_on_char '\n' (Printexc.get_backtrace() ) |> List.filteri (fun i _ -> i < 2) |> String.concat "\n" ) *)
 
-let time f =
-  let start_time = Sys.time() in
-  f();
-  Sys.time() -. start_time
+let try_run runner target =
+  let start_time = Sys.time () in
+  let result =
+    try runner target
+    with e -> Printf.eprintf "[Uncaught exception] %s, " (msg_of e); failure
+  in
+  result, Sys.time () -. start_time
+
+let print_runner_results name results =
+  let sum = List.fold_left (+) 0 in
+  let sum_float = List.fold_left (+.) 0. in
+
+  let l', l3 = List.split results in
+  let l1, l2 = List.split l' in
+  let num_success, total, execution_time = sum l1, sum l2, sum_float l3 in
+
+  let percentage =
+    if total = 0 then 100.
+    else (float_of_int num_success /. float_of_int total) *. 100.
+  in
+
+  if name = "Total" then
+    Printf.printf "Total [%d/%d] (%.2f%%)\n\n" num_success total percentage
+  else
+    Printf.printf "- %d/%d (%.2f%%)\n\n" num_success total percentage;
+  Printf.eprintf "%s took %f ms.\n" name (execution_time *. 1000.)
+
 
 (* string -> Script.script *)
-let wast_file_to_script file_path =
-  let tmp = (open_in file_path) in
-  let lexbuf = Lexing.from_channel tmp in
+let parse_wast file_path =
+  let ic = open_in file_path in
+  let lexbuf = Lexing.from_channel ic in
 
   let res =
-    try
-      Parse.parse file_path lexbuf Parse.Script
-    with
-      | _ -> prerr_endline ("Failed to parse " ^ file_path); []
+    try Parse.parse file_path lexbuf Parse.Script
+    with _ -> prerr_endline ("Failed to parse " ^ file_path); []
   in
-  close_in tmp; res
+  close_in ic; res
 
-let is_long_test path = List.exists ((=) (Filename.basename path)) [
-    "memory_copy.wast";
-    "memory_fill.wast";
-    "memory_grow.wast";
-    "call_indirect.wast";
-    "return_call.wast";
-    "return_call_indirect.wast";
-    "return_call_ref.wast"
-  ]
+let is_long_test path =
+  List.mem (Filename.basename path)
+    [ "memory_copy.wast";
+      "memory_fill.wast";
+      "memory_grow.wast";
+      "call_indirect.wast";
+      "return_call.wast";
+      "return_call_indirect.wast";
+      "return_call_ref.wast"
+    ]
 
 (** End of helpers **)
 
@@ -405,118 +431,90 @@ let test_module module_name m =
     register := Register.add latest module_inst !register;
   with e -> "Module Instantiation failed due to " ^ msg_of e |> failwith
 
-let test_cmd success cmd =
+let test_cmd cmd =
   match cmd.it with
-  | Module (module_name, def) -> test_module module_name (extract_module def)
+  | Module (module_name, def) ->
+    test_module module_name (extract_module def);
+    success
   | Register (name, module_name_opt) ->
-      let s = Utf8.encode name in
-      let module_name = match module_name_opt with
-        | Some s -> s.it
-        | None -> latest
-      in
-      let module_inst = find_module_inst module_name in
-      register := Register.add s module_inst !register
+    let s = Utf8.encode name in
+    let module_name = match module_name_opt with
+      | Some s -> s.it
+      | None -> latest
+    in
+    let module_inst = find_module_inst module_name in
+    register := Register.add s module_inst !register;
+    pass
   | Action a -> (
-      try
-        do_action a |> ignore;
-        success := !success + 1
-      with | e -> "Direct invocation failed due to " ^ msg_of e |> failwith
+    try
+      ignore (do_action a);
+      success
+    with e -> "Direct invocation failed due to " ^ msg_of e |> failwith
   )
-  | Assertion a ->
-      begin match test_assertion a with
-        | Success -> success := !success + 1
-        | _ -> ()
-      end
+  | Assertion a -> (
+    match test_assertion a with
+    | Success -> success
+    | _ -> failure
+  )
   | Meta _ -> failwith not_supported_msg
 
 (* Intialize store and registered modules *)
 let init_tester () =
   register := Register.add "spectest" (builtin ()) Register.empty
 
-let test file_name =
+let run_wast name script =
   init_tester ();
 
-  (* Parse test *)
-  let script =
-    if is_long_test file_name then []
-    else wast_file_to_script file_name
-  in
-  let total = script |> List.filter (fun x -> match x.it with
-    | Assertion {it = AssertReturn _; _}
-    | Assertion {it = AssertTrap _ ; _}
-    | Assertion {it = AssertUninstantiable _ ; _}
-    | Action _ -> true
-    | _ -> false
-  ) |> List.length in
+  Printf.printf "===== %s =====\n%!" name;
+  Printf.eprintf "===========================\n\n%s\n\n" name;
 
-  Printf.printf "===== %s =====\n%!" file_name;
-  Printf.eprintf "===========================\n\n%s\n\n" file_name;
+  if script = [] then (
+    (* TODO: print appropriate message *)
+    print_runner_results name []; []
+  )
+  else (
+    let results = List.map (try_run test_cmd) script in
+    print_runner_results name results; results
+  )
 
-  (* Run test *)
+let is_target cmd =
+  match cmd.it with
+  | Assertion { it = AssertReturn _; _ }
+  | Assertion { it = AssertTrap _; _ }
+  | Assertion { it = AssertUninstantiable _; _ }
+  | Module _ | Action _ | Register _ -> true
+  | _ -> false
 
-    let success = ref 0 in
-    let took = time (fun () ->
-      try
-        List.iter (test_cmd success) script;
-      with
-      | e ->
-        let msg = msg_of e in
-        Printf.eprintf "[Uncaught exception] %s, " msg;
-        Printf.printf
-          "- Uncaught exception: %s\n"
-          msg
-    ) in
-
-    Printf.eprintf "%s took %f ms.\n" file_name (took *. 1000.);
-    let percentage =
-      if total = 0 then 100.
-      else
-        (float_of_int !success /. float_of_int total) *. 100. in
-    Printf.printf "- %d/%d (%.2f%%)\n\n" !success total percentage;
-    Some (!success, total, took)
-
-
-let rec run_file filename =
-  if Sys.is_directory filename then
-    run_dir filename
+let rec run_file path =
+  if Sys.is_directory path then
+    run_dir path
   else
-    match Filename.extension filename with
-    | ".wast" -> Option.to_list (test filename)
+    match Filename.extension path with
+    | ".wast" ->
+      if is_long_test path then
+        run_wast path []
+      else
+        path
+        |> parse_wast
+        |> List.filter is_target
+        |> run_wast path
     | ".wat" -> failwith "hi"
     | ".wasm" -> failwith "hi"
     | _ -> []
 
-and run_dir dirname =
-  dirname
+and run_dir path =
+  path
   |> Sys.readdir
   |> Array.to_list
   |> List.sort compare
   |> List.concat_map
-    (fun filename -> run_file (Filename.concat dirname filename))
+    (fun filename -> run_file (Filename.concat path filename))
 
 
 (** Entry **)
-let run filename =
-  if Sys.file_exists filename then (
-
-    let results = run_file filename in
-
-    if Sys.is_directory filename then (
-      let add_quad (a, b, d) (e, f, h) = (a + e, b + f, d +. h) in
-      let success, total, time = List.fold_left add_quad (0, 0, 0.) results in
-      let percentage_all = (float_of_int success /. float_of_int total) *. 100. in
-
-      (* Coverage *)
-      (*
-      Ds.(
-        InfoMap.uncovered !info_map
-        |> InfoMap.print
-      );
-      *)
-
-      Printf.printf "Total [%d/%d] (%.2f%%)\n" success total percentage_all;
-      Printf.eprintf "Took %f ms.\n" (time *. 1000.);
-    )
+let run path =
+  if Sys.file_exists path then (
+    let results = run_file path in
+    if Sys.is_directory path then print_runner_results "Total" results;
   )
-  else 
-    failwith ("No such file: " ^ filename)
+  else failwith ("No such file: " ^ path)
