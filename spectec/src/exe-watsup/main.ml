@@ -81,7 +81,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Unthe -> Middlend.Unthe.transform
   | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
-  | Animate -> Middlend.Animate.transform
+  | Animate -> Il2al.Animate.transform
 
 
 (* Argument parsing *)
@@ -179,7 +179,7 @@ let () =
 
     let al = if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
       log "Translating to AL...";
-      Backend_interpreter.(Translate.translate il @ Manual.manual_algos)
+      (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
     ) in
 
     if !print_al then

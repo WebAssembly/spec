@@ -2,7 +2,7 @@ open Prose
 open Print
 open Il
 open Backend_interpreter.Construct
-open Backend_interpreter.Translate
+open Il2al.Translate
 open Util.Source
 
 let cmpop_to_cmpop = function
@@ -17,7 +17,7 @@ let swap = function Lt -> Gt | Gt -> Lt | Le -> Ge | Ge -> Le | op -> op
 
 let transpile_expr =
   Al.Walk.walk_expr { Al.Walk.default_config with
-    post_expr = Backend_interpreter.Transpile.simplify_record_concat
+    post_expr = Il2al.Transpile.simplify_record_concat
   }
 
 let exp_to_expr e = exp2expr e |> transpile_expr
