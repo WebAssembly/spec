@@ -1410,9 +1410,9 @@ Control Instructions
 ...........................
 
 
-* The label :math:`C.\CLABELS[l_N]` must be defined in the context.
+* The :ref:`label <syntax-label>` :math:`C.\CLABELS[l_N]` must be defined in the context.
 
-* For all :math:`l_i` in :math:`l^\ast`,
+* For each :ref:`label <syntax-label>` :math:`l_i` in :math:`l^\ast`,
   the label :math:`C.\CLABELS[l_i]` must be defined in the context.
 
 * There must be a sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`, such that:

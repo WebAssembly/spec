@@ -54,8 +54,7 @@ def RefWrap(s, kind):
 
 def Instruction(name, opcode, type=None, validation=None, execution=None, operator=None):
     if operator:
-        execution_str = ', '.join([RefWrap(execution, 'execution'),
-                                   RefWrap(operator, 'operator')])
+        execution_str = RefWrap(execution, 'execution') + ' (' + RefWrap(operator, 'operator') + ')'
     else:
         execution_str = RefWrap(execution, 'execution')
 
