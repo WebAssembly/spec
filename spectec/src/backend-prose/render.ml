@@ -12,16 +12,20 @@ type env =
   {
     config: config;
     prose: prose;
+    symbol: Symbol.env;
     macro: Macro.env;
+    hint: Hint.env;
   }
 
 let gen_macro env =
   if env.config.macros then
-    Macro.gen_macro env.macro
+    Macro.gen_macro env.macro env.symbol
 
 let env config inputs outputs el prose : env =
-  let macro = Macro.env inputs outputs el in
-  let env = { config; prose; macro; } in
+  let symbol = Symbol.env el in
+  let macro = Macro.env inputs outputs in
+  let hint = Hint.env el in
+  let env = { config; prose; symbol; macro; hint; } in
   env
 
 (* Helpers *)
@@ -108,19 +112,26 @@ let rec render_name name = match String.index_opt name '_' with
       base ^ "_{" ^ subscript ^ "}"
   | _ -> name
 
-and render_kwd env kwd = match Macro.find_kwd env.macro kwd with
-  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
+and render_kwd env kwd = match Symbol.narrow_kwd env.symbol kwd with
+  | Some kwd -> 
+      let lhs, rhs = Macro.macro_kwd env.macro kwd in
+      if env.config.macros then lhs else rhs
   | None -> render_name (Al.Print.string_of_kwd kwd)
 
-and render_funcname env funcname = match Macro.find_funcname env.macro funcname with
-  | Some (lhs, rhs) -> if env.config.macros then lhs else rhs
-  | None ->
-      let escape acc c =
-        if c = '.' then acc ^ "{.}"
-        else if c = '_' then acc ^ "\\_"
-        else acc ^ (String.make 1 c)
-      in
-      String.fold_left escape "" funcname
+and render_funcname env fname = 
+  if Symbol.find_func env.symbol fname
+  then (
+    let lhs, rhs = Macro.macro_func env.macro fname in
+    if env.config.macros then lhs else rhs
+  )
+  else (
+    let escape acc c =
+      if c = '.' then acc ^ "{.}"
+      else if c = '_' then acc ^ "\\_"
+      else acc ^ (String.make 1 c)
+    in
+    String.fold_left escape "" fname 
+  )
 
 let rec render_iter env = function
   | Al.Ast.Opt -> "^?"
@@ -173,8 +184,14 @@ and render_expr env in_math expr =
       if in_math then sel else render_math sel
   | Al.Ast.CallE (fn, es) ->
       let sfn = render_funcname env fn in
-      let ses = render_list (render_expr env true) "" ", " "" es in
-      let s = sprintf "%s(%s)" sfn ses in
+      let ses = List.map (render_expr env true) es in
+      let sdefault = sprintf "%s(%s)" sfn (String.concat ", " ses) in
+      let shint =
+        if Symbol.find_func env.symbol fn
+        then Hint.apply_func_hint env.hint fn ses
+        else None
+      in
+      let s = Option.value shint ~default:sdefault in
       if in_math then s else render_math s
   (* TODO a better way to flatten single-element list? *)
   | Al.Ast.CatE ({ it = Al.Ast.ListE e1; _ }, { it = Al.Ast.ListE e2; _ }) when List.length e1 = 1 && List.length e2 = 1 ->
@@ -268,20 +285,20 @@ and render_expr env in_math expr =
       let se2 = render_expr env true e2 in
       let s = sprintf "%s \\to %s" se1 se2 in
       if in_math then s else render_math s
-  | Al.Ast.CaseE (tag, []) ->
-      let stag = render_kwd env tag in
-      if in_math then stag else render_math stag
-  (* TODO a hard-coded hint for CONST *)
-  | Al.Ast.CaseE (("CONST", _) as tag, [ e1; e2 ])->
-      let stag = render_kwd env tag in
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "%s.%s~%s" se1 stag se2 in
-      if in_math then s else render_math s
-  | Al.Ast.CaseE (tag, es) ->
-      let stag = render_kwd env tag in
-      let ses = render_list (render_expr env true) "" "~" "" es in
-      let s = sprintf "%s~%s" stag ses in
+  | Al.Ast.CaseE (kwd, es) ->
+      let skwd = render_kwd env kwd in
+      let ses = List.map (render_expr env true) es in
+      let sdefault = 
+        if List.length ses = 0 then skwd
+        else sprintf "%s~%s" skwd (String.concat "~" ses)
+      in
+      let shint =
+        Option.map 
+          (fun kwd_narrow -> Hint.apply_kwd_hint env.hint kwd_narrow ses)
+          (Symbol.narrow_kwd env.symbol kwd)
+      in
+      let shint = Option.join shint in
+      let s = Option.value shint ~default:sdefault in
       if in_math then s else render_math s
   | Al.Ast.OptE (Some e) ->
       let se = render_expr env true e in

@@ -1,11 +1,13 @@
 (library
   (name backend_prose)
-  (libraries util il backend_interpreter)
+  (libraries util el il backend_interpreter backend_latex)
   (modules
     config
     prose
     print
     gen
     render
-    macro)
+    macro
+    hint
+    symbol)
 )
