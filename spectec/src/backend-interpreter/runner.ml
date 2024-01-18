@@ -7,8 +7,30 @@ open Util.Record
 
 (** Helpers **)
 
+(* TODO: move this function to Al_util *)
+let listv_map f = function
+  | ListV arr_ref -> listV (Array.map f !arr_ref)
+  | _ -> failwith "Not a list"
+
+let listv_find f = function
+  | ListV arr_ref -> Array.find_opt f !arr_ref |> Option.get
+  | _ -> failwith "Not a list"
+
+let listv_nth l n =
+  match l with
+  | ListV arr_ref -> Array.get !arr_ref n
+  | _ -> failwith "Not a list"
+
+let casev_nth_arg n = function
+  | CaseV (_, l) -> List.nth l n
+  | _ -> failwith "Not a case"
+
+let strv_find field = function
+  | StrV r -> Record.find field r
+  | _ -> failwith "Not a record"
+
 let success = 1, 1
-let failure = 0, 1
+let fail = 0, 1
 let pass = 0, 0
 
 let eprint_fail_log expected actual =
@@ -17,8 +39,7 @@ let eprint_fail_log expected actual =
   Printf.eprintf " Actual  : %s\n\n" actual;
   let print_stack = false in
   if print_stack then
-    Printf.eprintf " Stack: %s\n\n" (Ds.WasmContext.string_of_context_stack ());
-  failure
+    Printf.eprintf " Stack: %s\n\n" (Ds.WasmContext.string_of_context_stack ())
 
 let not_supported_msg = "We only support the test script with modules and assertions."
 
@@ -32,7 +53,7 @@ let try_run runner target =
   let start_time = Sys.time () in
   let result =
     try runner target
-    with e -> Printf.eprintf "[Uncaught exception] %s, " (msg_of e); failure
+    with e -> Printf.eprintf "[Uncaught exception] %s, " (msg_of e); fail
   in
   result, Sys.time () -. start_time
 
@@ -212,60 +233,6 @@ let module_name_of = function
   | Some name -> name.it
   | None -> latest
 let find_module_inst name = Register.find name !register
-let find_export name =
-    match find_module_inst name with
-    | StrV r ->
-        begin match Record.find "EXPORT" r with
-        | ListV exs -> !exs
-        | _ -> failwith "Invaild module inst"
-        end
-    | _ -> failwith "Invalid module inst"
-
-let extract_addr_of tag name (export: value) =
-  match export with
-  | StrV [ "NAME", { contents = TextV (export_name) }; "VALUE", { contents = CaseV (export_tag, [ addr ]) } ]
-    when export_name = Utf8.encode name && export_tag = tag -> Some (addr)
-  | _ -> None
-
-let run_action act = match act.it with
-  | Invoke (module_name_opt, name, literals) ->
-    let module_name = module_name_of module_name_opt in
-    let module_inst = find_module_inst module_name in
-    let export_insts = match module_inst with
-    | StrV r ->
-        begin match Record.find "EXPORT" r with
-        | ListV exs -> !exs
-        | _ -> failwith "Invaild module inst"
-        end
-    | _ -> failwith "Invalid module inst"
-    in
-
-    let funcaddr = Array.find_map (extract_addr_of "FUNC" name) export_insts |> Option.get in
-
-    let args = 
-      literals
-      |> List.map (fun (l: Script.literal) -> Construct.al_of_value l.it)
-      |> listV_of_list
-    in
-    Printf.eprintf "[Invoking %s %s...]\n" (Utf8.encode name) (Al.Print.string_of_value args);
-
-    Interpreter.invoke [funcaddr; args]
-  | Get (module_name_opt, name) ->
-    let module_name = module_name_of module_name_opt in
-    let exports = find_export module_name in
-
-    let addr = Array.find_map (extract_addr_of "GLOBAL" name) exports |> Option.get in
-    let globals = (Record.find "GLOBAL" !Ds.store) in
-
-    Printf.eprintf "[Getting %s...]\n" (Utf8.encode name);
-    let got =
-      match Array.get (unwrap_listv_to_array globals) (al_to_int addr) with
-      | StrV r -> Record.find "VALUE" r
-      | _ -> failwith "Not a Record"
-    in
-    listV [| got |]
-
-
 
 (* Check invocation result *)
 
@@ -331,48 +298,86 @@ let check expected actual =
     | NanPat no -> check_nanop no l) l lanes
   )
 
+let run_action action =
+  match action.it with
+  | Invoke (name_opt, func_name, args) ->
+    (* Get export instances *)
+    let export_insts =
+      name_opt
+      |> module_name_of
+      |> find_module_inst
+      |> strv_find "EXPORT"
+    in
+
+    (* Get function address *)
+    let func_name' = Utf8.encode func_name in
+    let f export = al_to_string (strv_find "NAME" export) = func_name' in
+    let funcaddr =
+      export_insts
+      |> listv_find f
+      |> strv_find "VALUE"
+      |> casev_nth_arg 0
+    in
+
+    (* Invoke *)
+    let args' = al_of_list al_of_value (List.map it args) in
+
+    Printf.eprintf "[Invoking %s %s...]\n" func_name' (Al.Print.string_of_value args');
+
+    Interpreter.invoke [funcaddr; args']
+  | Get (name_opt, global_name) ->
+    (* Get export instances *)
+    let export_insts =
+      name_opt
+      |> module_name_of
+      |> find_module_inst
+      |> strv_find "EXPORT"
+    in
+
+    (* Get global value *)
+    let globals = Record.find "GLOBAL" !Ds.store in
+    let global_name' = Utf8.encode global_name in
+    let f export = al_to_string (strv_find "NAME" export) = global_name' in
+
+    Printf.eprintf "[Getting %s...]\n" global_name';
+
+    export_insts
+    |> listv_find f
+    |> strv_find "VALUE"
+    |> casev_nth_arg 0
+    |> al_to_int
+    |> listv_nth globals
+    |> strv_find "VALUE"
+    |> Array.make 1
+    |> listV
+
 let get_externval = function
   | CaseV ("IMPORT", [ TextV import_module_name; TextV extern_name; _ty ]) ->
-
-      let export = find_export import_module_name in
-
-      (* Get extern *)
-      let is_matching_export export =
-        match export with
-        | StrV [ "NAME", { contents = TextV export_name }; "VALUE", value ]
-          when export_name = extern_name -> Some !value
-        | _ -> None
-      in
-      Array.find_map is_matching_export export |> Option.get
+    let f export = al_to_string (strv_find "NAME" export) = extern_name in
+    import_module_name
+    |> find_module_inst
+    |> strv_find "EXPORT"
+    |> listv_find f
+    |> strv_find "VALUE"
   | v ->
     Al.Print.string_of_value v
     |> Printf.sprintf "Invalid import: %s"
     |> failwith
 
-let get_externvals = function
-  | CaseV ("MODULE", _ :: (ListV imports) :: _) ->
-      Array.map get_externval !imports |> listV
-  | _ -> failwith "Invalid module"
-
-let extract_module def =
-  match def.it with
-  | Textual m -> m
-  | Encoded (name, bs) ->
-    Decode.decode name bs
-  | Quoted (_, s) ->
-    Parse.string_to_module s
-
-let instantiate m =
-  let m' = extract_module m in
+let instantiate def =
+  let module_ =
+    match def.it with
+    | Textual m -> m
+    | Encoded (name, bs) -> Decode.decode name bs
+    | Quoted (_, s) -> Parse.string_to_module s
+  in
   (* Construct module and extern *)
-  let al_module = Construct.al_of_module m' in
-  let externvals = get_externvals al_module in
+  let al_module = Construct.al_of_module module_ in
+  let externvals = al_module |> casev_nth_arg 1 |> listv_map get_externval in
 
   (* Instantiate and store exports *)
   Printf.eprintf "[Instantiating module...]\n";
   Interpreter.instantiate [ al_module ; externvals ]
-
-
 
 let test_assertion assertion =
   match assertion.it with
@@ -387,18 +392,19 @@ let test_assertion assertion =
       success
     else
       (* TODO: print fail message in check *)
-      failure
+      fail
   | AssertTrap (action, msg) -> (
     try
       action
       |> run_action
       |> Al.Print.string_of_value
-      |> eprint_fail_log ("Trap due to " ^ msg)
+      |> eprint_fail_log ("Trap due to " ^ msg);
+      fail
     with Exception.Trap -> success
   )
   | AssertUninstantiable (def, _) -> (
     try
-      ignore (instantiate def); failure
+      ignore (instantiate def); fail
     with Exception.Trap -> success
   )
   | _ -> pass (* ignore other kinds of assertions *)

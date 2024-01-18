@@ -163,9 +163,10 @@ let al_to_float64 (v: value): F64.t = al_to_int64 v |> F64.of_bits
 let al_to_idx: value -> idx = al_to_phrase al_to_int32
 let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
 let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
-let al_to_name = function
-  | TextV name -> Utf8.decode name
-  | v -> fail "name" v
+let al_to_string = function
+  | TextV str -> str
+  | v -> fail "text" v
+let al_to_name name = name |> al_to_string |> Utf8.decode
 
 
 (* Destruct type *)
