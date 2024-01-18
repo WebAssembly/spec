@@ -25,7 +25,7 @@ let casev_nth_arg n = function
   | CaseV (_, l) -> List.nth l n
   | _ -> failwith "Not a case"
 
-let strv_find field = function
+let strv_access field = function
   | StrV r -> Record.find field r
   | _ -> failwith "Not a record"
 
@@ -104,7 +104,7 @@ let is_long_test path =
 let builtin () =
 
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
-  let create_func_inst (name, type_tags) =
+  let create_funcinst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
     let code = singleton winstr_tag in
     let ptype = Array.map singleton type_tags in
@@ -122,51 +122,51 @@ let builtin () =
       "CODE", ref (CaseV ("FUNC", [ ftype; listV [||]; listV [| code |] ]))
     ] in
 
-  let create_global_inst t v = StrV [
+  let create_globalinst t v = StrV [
     "TYPE", t |> ref;
     "VALUE", v |> ref
   ] in
 
-  let create_table_inst t elems = StrV [
+  let create_tableinst t elems = StrV [
     "TYPE", t |> ref;
     "ELEM", elems |> ref
   ] in
 
-  let create_mem_inst t bytes_ = StrV [
+  let create_meminst t bytes_ = StrV [
     "TYPE", t |> ref;
     "DATA", bytes_ |> ref
   ] in
 
   (* Builtin functions *)
   let funcs = List.rev [
-    ("print", [||]) |> create_func_inst;
-    ("print_i32", [| "I32" |]) |> create_func_inst;
-    ("print_i64", [| "I64" |]) |> create_func_inst;
-    ("print_f32", [| "F32" |]) |> create_func_inst;
-    ("print_f64", [| "F64" |]) |> create_func_inst;
-    ("print_i32_f32", [| "I32"; "F32" |]) |> create_func_inst;
-    ("print_f64_f64", [| "F64"; "F64" |]) |> create_func_inst
+    ("print", [||]) |> create_funcinst;
+    ("print_i32", [| "I32" |]) |> create_funcinst;
+    ("print_i64", [| "I64" |]) |> create_funcinst;
+    ("print_f32", [| "F32" |]) |> create_funcinst;
+    ("print_f64", [| "F64" |]) |> create_funcinst;
+    ("print_i32_f32", [| "I32"; "F32" |]) |> create_funcinst;
+    ("print_f64_f64", [| "F64"; "F64" |]) |> create_funcinst
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_global_inst (TextV "global_type");
-    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_global_inst (TextV "global_type");
-    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_global_inst (TextV "global_type");
-    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_global_inst (TextV "global_type");
+    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_globalinst (TextV "global_type");
+    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_globalinst (TextV "global_type");
+    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_globalinst (TextV "global_type");
+    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_globalinst (TextV "global_type");
   ] in
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ singleton "FUNC" ]) |> Array.make 10 in
   let tables = [
     "table",
     listV nulls
-    |> create_table_inst (TupV [ TupV [ numV 10L; numV 20L ]; singleton "FUNCREF" ]);
+    |> create_tableinst (TupV [ TupV [ numV 10L; numV 20L ]; singleton "FUNCREF" ]);
   ] in
   (* Builtin memories *)
   let zeros = numV 0L |> Array.make 0x10000 in
   let memories = [
     "memory",
     listV zeros
-    |> create_mem_inst (CaseV ("I8", [ TupV [ numV 1L; numV 2L ] ]));
+    |> create_meminst (CaseV ("I8", [ TupV [ numV 1L; numV 2L ] ]));
   ] in
 
   let append kind (name, inst) extern =
@@ -204,7 +204,7 @@ let builtin () =
     |> memory_extern
     |> Array.of_list in
 
-  let module_inst =
+  let moduleinst =
     Record.empty
     |> Record.add "FUNC" (listV [||])
     |> Record.add "GLOBAL" (listV [||])
@@ -214,7 +214,7 @@ let builtin () =
     |> Record.add "DATA" (listV [||])
     |> Record.add "EXPORT" (listV extern) in
 
-  StrV module_inst
+  StrV moduleinst
 
 
 module Register = Map.Make (String)
@@ -232,7 +232,24 @@ let store_moduleinst module_name_opt moduleinst =
 let module_name_of = function
   | Some name -> name.it
   | None -> latest
-let find_module_inst name = Register.find name !register
+let find_moduleinst name = Register.find name !register
+
+let get_export name moduleinst =
+  moduleinst
+  |> strv_access "EXPORT"
+  |> listv_find
+    (fun export -> al_to_string (strv_access "NAME" export) = name)
+
+let get_externval import =
+  let extern_name = al_to_string (casev_nth_arg 1 import) in
+
+  import
+  |> casev_nth_arg 0
+  |> al_to_string
+  |> find_moduleinst
+  |> get_export extern_name
+  |> strv_access "VALUE"
+
 
 (* Check invocation result *)
 
@@ -298,71 +315,36 @@ let check expected actual =
     | NanPat no -> check_nanop no l) l lanes
   )
 
-let run_action action =
-  match action.it with
-  | Invoke (name_opt, func_name, args) ->
-    (* Get export instances *)
-    let export_insts =
-      name_opt
-      |> module_name_of
-      |> find_module_inst
-      |> strv_find "EXPORT"
-    in
+(* TODO: Refactor above codes *)
 
-    (* Get function address *)
-    let func_name' = Utf8.encode func_name in
-    let f export = al_to_string (strv_find "NAME" export) = func_name' in
-    let funcaddr =
-      export_insts
-      |> listv_find f
-      |> strv_find "VALUE"
-      |> casev_nth_arg 0
-    in
+(** Main functions **)
 
-    (* Invoke *)
-    let args' = al_of_list al_of_value (List.map it args) in
+let invoke module_name funcname args =
+  Printf.eprintf "[Invoking %s %s...]\n" funcname (Value.string_of_values args);
 
-    Printf.eprintf "[Invoking %s %s...]\n" func_name' (Al.Print.string_of_value args');
-
-    Interpreter.invoke [funcaddr; args']
-  | Get (name_opt, global_name) ->
-    (* Get export instances *)
-    let export_insts =
-      name_opt
-      |> module_name_of
-      |> find_module_inst
-      |> strv_find "EXPORT"
-    in
-
-    (* Get global value *)
-    let globals = Record.find "GLOBAL" !Ds.store in
-    let global_name' = Utf8.encode global_name in
-    let f export = al_to_string (strv_find "NAME" export) = global_name' in
-
-    Printf.eprintf "[Getting %s...]\n" global_name';
-
-    export_insts
-    |> listv_find f
-    |> strv_find "VALUE"
+  let funcaddr =
+    module_name
+    |> find_moduleinst
+    |> get_export funcname
+    |> strv_access "VALUE"
     |> casev_nth_arg 0
-    |> al_to_int
-    |> listv_nth globals
-    |> strv_find "VALUE"
-    |> Array.make 1
-    |> listV
+  in
 
-let get_externval = function
-  | CaseV ("IMPORT", [ TextV import_module_name; TextV extern_name; _ty ]) ->
-    let f export = al_to_string (strv_find "NAME" export) = extern_name in
-    import_module_name
-    |> find_module_inst
-    |> strv_find "EXPORT"
-    |> listv_find f
-    |> strv_find "VALUE"
-  | v ->
-    Al.Print.string_of_value v
-    |> Printf.sprintf "Invalid import: %s"
-    |> failwith
+  Interpreter.invoke [funcaddr; al_of_list al_of_value args]
+
+let get_global_value module_name globalname =
+  Printf.eprintf "[Getting %s...]\n" globalname;
+
+  module_name
+  |> find_moduleinst
+  |> get_export globalname
+  |> strv_access "VALUE"
+  |> casev_nth_arg 0
+  |> al_to_int
+  |> listv_nth (Record.find "GLOBAL" !Ds.store)
+  |> strv_access "VALUE"
+  |> Array.make 1
+  |> listV
 
 let instantiate def =
   let module_ =
@@ -372,12 +354,22 @@ let instantiate def =
     | Quoted (_, s) -> Parse.string_to_module s
   in
   (* Construct module and extern *)
-  let al_module = Construct.al_of_module module_ in
+  let al_module = al_of_module module_ in
   let externvals = al_module |> casev_nth_arg 1 |> listv_map get_externval in
 
   (* Instantiate and store exports *)
   Printf.eprintf "[Instantiating module...]\n";
   Interpreter.instantiate [ al_module ; externvals ]
+
+
+(** Wast runner **)
+
+let run_action action =
+  match action.it with
+  | Invoke (name_opt, funcname, args) ->
+    invoke (module_name_of name_opt) (Utf8.encode funcname) (List.map it args)
+  | Get (name_opt, globalname) ->
+    get_global_value (module_name_of name_opt) (Utf8.encode globalname)
 
 let test_assertion assertion =
   match assertion.it with
@@ -407,7 +399,8 @@ let test_assertion assertion =
       ignore (instantiate def); fail
     with Exception.Trap -> success
   )
-  | _ -> pass (* ignore other kinds of assertions *)
+  (* ignore other kinds of assertions *)
+  | _ -> pass
 
 let run_cmd cmd =
   match cmd.it with
@@ -416,9 +409,9 @@ let run_cmd cmd =
     |> instantiate
     |> store_moduleinst module_name;
     success
-  | Register (dst, name_opt) ->
+  | Register (modulename, name_opt) ->
     let moduleinst = Register.find (module_name_of name_opt) !register in
-    register := Register.add (Utf8.encode dst) moduleinst !register;
+    register := Register.add (Utf8.encode modulename) moduleinst !register;
     pass
   | Action a ->
     ignore (run_action a); success
@@ -441,13 +434,8 @@ let run_wast name script =
     print_runner_results name results; results
   )
 
-let is_target cmd =
-  match cmd.it with
-  | Assertion { it = AssertReturn _; _ }
-  | Assertion { it = AssertTrap _; _ }
-  | Assertion { it = AssertUninstantiable _; _ }
-  | Module _ | Action _ | Register _ -> true
-  | _ -> false
+
+(** Runner **)
 
 let rec run_file path =
   if Sys.is_directory path then
@@ -458,12 +446,9 @@ let rec run_file path =
       if is_long_test path then
         run_wast path []
       else
-        path
-        |> parse_wast
-        |> List.filter is_target
-        |> run_wast path
-    | ".wat" -> failwith "hi"
-    | ".wasm" -> failwith "hi"
+        path |> parse_wast |> run_wast path
+    | ".wat" -> failwith "TODO"
+    | ".wasm" -> failwith "TODO"
     | _ -> []
 
 and run_dir path =
