@@ -7,7 +7,6 @@ let get_name = function
 
 let listV a = ListV (ref a)
 
-(* TODO: move this function to Al_util *)
 let listv_find f = function
   | ListV arr_ref -> Array.find_opt f !arr_ref |> Option.get
   | _ -> failwith "Not a list"

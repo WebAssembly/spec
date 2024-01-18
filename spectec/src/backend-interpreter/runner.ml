@@ -12,16 +12,6 @@ let success = 1, 1
 let fail = 0, 1
 let pass = 0, 0
 
-let eprint_fail_log expected actual =
-  Printf.eprintf " Fail!\n";
-  Printf.eprintf " Expected: %s\n" expected;
-  Printf.eprintf " Actual  : %s\n\n" actual;
-  let print_stack = false in
-  if print_stack then
-    Printf.eprintf " Stack: %s\n\n" (Ds.WasmContext.string_of_context_stack ())
-
-let not_supported_msg = "We only support the test script with modules and assertions."
-
 let msg_of = function
 | Failure msg -> msg
 | e -> Printexc.to_string e
@@ -281,24 +271,21 @@ let run_action action =
 let test_assertion assertion =
   match assertion.it with
   | AssertReturn (action, expected) ->
-
-    (* TODO: not unwrap ListV *)
     let result = run_action action |> al_to_list al_to_value in
-
     Run.assert_result no_region result (List.map it expected);
     success
-  | AssertTrap (action, msg) -> (
+  | AssertTrap (action, re) -> (
     try
-      action
-      |> run_action
-      |> Al.Print.string_of_value
-      |> eprint_fail_log ("Trap due to " ^ msg);
+      let result = run_action action in
+      Run.assert_message assertion.at "runtime" (Al.Print.string_of_value result) re;
       fail
     with Exception.Trap -> success
   )
-  | AssertUninstantiable (def, _) -> (
+  | AssertUninstantiable (def, re) -> (
     try
-      ignore (instantiate def); fail
+      ignore (instantiate def);
+      Run.assert_message assertion.at "instantiation" "" re;
+      fail
     with Exception.Trap -> success
   )
   (* ignore other kinds of assertions *)
@@ -318,7 +305,7 @@ let run_cmd cmd =
   | Action a ->
     ignore (run_action a); success
   | Assertion a -> test_assertion a
-  | Meta _ -> failwith not_supported_msg
+  | Meta _ -> pass
 
 let run_wast name script =
   (* Intialize builtin *)
