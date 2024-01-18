@@ -3,6 +3,7 @@ open Ast
 open Types
 open Value
 open Al.Ast
+open Al.Al_util
 open Source
 open Util.Record
 
@@ -288,26 +289,66 @@ let al_to_memory_type: value -> memory_type = function
 
 (* Destruct value *)
 
-let al_to_num: value -> num = function
+let rec al_to_field: value -> Aggr.field = function
+  | CaseV ("PACK", [pack_size; c]) ->
+    (* TODO: fix bug in packsize *)
+    let pack_size' =
+      match pack_size with
+      | CaseV ("I8", []) -> Pack.Pack8
+      | CaseV ("I16", []) -> Pack.Pack16
+      | CaseV ("I32", []) -> Pack.Pack32
+      | CaseV ("I64", []) -> Pack.Pack64
+      | v -> fail "packsize" v
+    in
+    Aggr.PackField (pack_size', ref (al_to_int c))
+  | v -> Aggr.ValField (ref (al_to_value v))
+
+and al_to_array: value -> Aggr.array = function
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELD" r ->
+    Aggr.Array (
+      al_to_def_type (Record.find "TYPE" r),
+      al_to_list al_to_field (Record.find "FIELD" r)
+    )
+  | v -> fail "array" v
+
+and al_to_struct: value -> Aggr.struct_ = function
+  | StrV r when Record.mem "TYPE" r && Record.mem "FIELD" r ->
+    Aggr.Struct (
+      al_to_def_type (Record.find "TYPE" r),
+      al_to_list al_to_field (Record.find "FIELD" r)
+    )
+  | v -> fail "struct" v
+
+and al_to_num: value -> num = function
   | CaseV ("CONST", [ CaseV ("I32", []); i32 ]) -> I32 (al_to_int32 i32)
   | CaseV ("CONST", [ CaseV ("I64", []); i64 ]) -> I64 (al_to_int64 i64)
   | CaseV ("CONST", [ CaseV ("F32", []); f32 ]) -> F32 (al_to_float32 f32)
   | CaseV ("CONST", [ CaseV ("F64", []); f64 ]) -> F64 (al_to_float64 f64)
   | v -> fail "num" v
 
-let al_to_vec: value -> vec = function
+and al_to_vec: value -> vec = function
   | CaseV ("VVCONST", [ CaseV ("V128", []); VecV (v128)]) -> V128 (V128.of_bits v128)
   | v -> fail "vec" v
 
-let rec al_to_ref: value -> ref_ = function
+and al_to_ref: value -> ref_ = function
   | CaseV ("REF.NULL", [ ht ]) -> NullRef (al_to_heap_type ht)
   | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
+  | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
+  | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
+    let struct_insts = Record.find "STRUCT" !Ds.store in
+    let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
+    Aggr.StructRef struct_
+  | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
+    let arr_insts = Record.find "ARRAY" !Ds.store in
+    let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
+    Aggr.ArrayRef arr
   | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
   | v -> fail "ref" v
 
-let al_to_value: value -> Value.value = function
+and al_to_value: value -> Value.value = function
   | CaseV ("CONST", _) as v -> Num (al_to_num v)
   | CaseV (ref_, _) as v when String.sub ref_ 0 4 = "REF." -> Ref (al_to_ref v)
+  | CaseV ("VVCONST", _) as v -> Vec (al_to_vec v)
   | v -> fail "value" v
 
 

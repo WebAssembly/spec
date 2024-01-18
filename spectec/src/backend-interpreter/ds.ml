@@ -1,7 +1,6 @@
 open Al
 open Ast
 open Print
-open Construct
 open Util.Source
 open Util.Record
 
@@ -244,8 +243,8 @@ module WasmContext = struct
     let v, vs, vs_instr = ctx in
     Printf.sprintf "(%s, %s, %s)"
       (string_of_value v)
-      (string_of_value (listV_of_list vs))
-      (string_of_value (listV_of_list vs_instr))
+      (string_of_list string_of_value ", " vs)
+      (string_of_list string_of_value ", " vs_instr)
 
   let string_of_context_stack () =
     List.fold_left
@@ -320,7 +319,6 @@ end
 let init algos =
 
   (* Initialize info_map *)
-
   let init_info algo =
     let algo_name = get_name algo in
     let config = {
