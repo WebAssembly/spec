@@ -244,15 +244,9 @@ let get_global_value module_name globalname =
   |> Array.make 1
   |> listV
 
-let instantiate def =
+let instantiate module_ =
   Printf.eprintf "[Instantiating module...]\n";
 
-  let module_ =
-    match def.it with
-    | Textual m -> m
-    | Encoded (name, bs) -> Decode.decode name bs
-    | Quoted (_, s) -> Parse.string_to_module s
-  in
   let al_module = al_of_module module_ in
   let externvals = List.map get_externval module_.it.imports in
 
@@ -260,6 +254,12 @@ let instantiate def =
 
 
 (** Wast runner **)
+
+let module_of_def def =
+  match def.it with
+  | Textual m -> m
+  | Encoded (name, bs) -> Decode.decode name bs
+  | Quoted (_, s) -> Parse.string_to_module s
 
 let run_action action =
   match action.it with
@@ -283,8 +283,8 @@ let test_assertion assertion =
   )
   | AssertUninstantiable (def, re) -> (
     try
-      ignore (instantiate def);
-      Run.assert_message assertion.at "instantiation" "" re;
+      def |> module_of_def |> instantiate |> ignore;
+      Run.assert_message assertion.at "instantiation" "module instance" re;
       fail
     with Exception.Trap -> success
   )
@@ -295,6 +295,7 @@ let run_cmd cmd =
   match cmd.it with
   | Module (module_name, def) ->
     def
+    |> module_of_def
     |> instantiate
     |> store_moduleinst module_name;
     success
