@@ -11,7 +11,7 @@ module Map = Map.Make(String)
 type typ_def = (arg list * typ) list
 type def_def = (arg list * exp * premise list) list
 type gram_def = unit
-type env = {typs : typ_def Map.t; defs : def_def Map.t; grams : gram_def Map.t}
+type env = {typs : typ_def Map.t; defs : def_def Map.t; syms : gram_def Map.t}
 type subst = El.Subst.subst
 
 
@@ -441,7 +441,7 @@ and match_sym env s g1 g2 : subst option =
   | _, ParenG g21 -> match_sym env s g1 g21
   | _, VarG (id, []) when El.Subst.(Map.mem id.it s.gramid) ->
     match_sym env s g1 (El.Subst.subst_sym s g2)
-  | _, VarG (id, []) when not (Map.mem id.it env.grams) ->
+  | _, VarG (id, []) when not (Map.mem id.it env.syms) ->
     (* An unbound type is treated as a pattern variable *)
     if id.it = "_" then Some s else
     Some El.Subst.{s with gramid = Map.add id.it g1 s.gramid}

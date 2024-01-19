@@ -13,6 +13,7 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 
 ;; TODO
+;; need to switch parameter order for type indexing to work
 
 def $unop(unop_(valtype), valtype, const_(valtype)) : const_(valtype)*         hint(show %#_%#((%)))
 def $binop(binop_(valtype), valtype, const_(valtype), const_(valtype)) : const_(valtype)*    hint(show %#_%#(%, %))

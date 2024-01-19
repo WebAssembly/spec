@@ -34,7 +34,7 @@ let rec typ_of_exp e =
     | "text" -> TextT
     | _ -> VarT (id, [])
     )
-  | VarE (id, args) -> VarT (strip_var_suffix id, args)
+  | VarE (id, args) -> VarT (id, args)
   | ParenE (e1, _) -> ParenT (typ_of_exp e1)
   | TupE es -> TupT (List.map typ_of_exp es)
   | IterE (e1, iter) -> IterT (typ_of_exp e1, iter)
@@ -122,3 +122,10 @@ let param_of_arg a =
     GramP (id, typ_of_exp (exp_of_sym g))
   | _ -> Source.error a.at "syntax" "malformed grammar"
   ) $ a.at
+
+let arg_of_param p =
+  (match p.it with
+  | ExpP (id, _t) -> ExpA (VarE (id, []) $ id.at)
+  | SynP id -> SynA (VarT (id, []) $ id.at)
+  | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
+  ) |> ref $ p.at

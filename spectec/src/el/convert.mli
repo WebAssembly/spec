@@ -14,5 +14,6 @@ val exp_of_sym : sym -> exp (* raises Source.Error *)
 val arg_of_exp : exp -> arg (* raises Source.Error *)
 val exp_of_arg : arg -> exp (* raises Source.Error *)
 val param_of_arg : arg -> param (* raises Source.Error *)
+val arg_of_param : param -> arg (* raises Source.Error *)
 
 val strip_var_suffix : id -> id

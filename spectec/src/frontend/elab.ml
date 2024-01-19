@@ -141,6 +141,30 @@ let find_case cases atom at t =
   | None -> error_atom at atom t "unknown case"
 
 
+let to_eval_typ at id (ps, k) =
+  match k with
+  | Opaque | Transp ->
+    let args' = List.map Convert.arg_of_param ps in
+    [(args', VarT (id $ at, args') $ at)]
+  | Defined (t, _dt') ->
+    [(List.map Convert.arg_of_param ps, t)]
+  | Family defs ->
+    List.map (fun (args, t, _dt') -> (args,t)) defs
+
+let to_eval_def (_ps, _t, clauses) =
+  List.map (fun (d, _) ->
+    match d.it with
+    | DefD (_id, args, e, prems) -> (args, e, Convert.filter_nl prems)
+    | _ -> assert false
+  ) clauses
+
+let to_eval_env env at =
+  let typs = Map.mapi (to_eval_typ at) env.typs in
+  let defs = Map.map to_eval_def env.defs in
+  let syms = Map.map ignore env.syms in
+  Eval.{typs; defs; syms}
+
+
 (* Type Accessors *)
 
 let rec arg_subst s ps args =
@@ -173,23 +197,11 @@ let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
     let rec lookup = function
       | [] -> error_id (id.it $ at) "undefined case of syntax type family"
       | (args', t, dt')::defs' ->
-        if args' = [] then t, aliased dt' else   (* optimisation *)
-        let env' =
-          Map.mapi (fun id -> function
-            | ps, (Opaque | Transp) ->
-              let args' = List.map Convert.arg_of_param ps in
-              [(args', VarT (id $ at, args'))]
-            | ps, Defined (t, _dt'), _hints ->
-              [(List.map Convert.arg_of_param ps, t)]
-            | _ps, Family defs, _hints ->
-              List.map (fun (args, t, _dt') -> (args,t)) defs
-          )
-        in
+        if args' = [] then t.it, aliased dt' else   (* optimisation *)
+        let env' = to_eval_env env at in
         match Eval.(match_list match_arg env' Subst.empty args args') with
         | None -> lookup defs'
         | Some s -> (Subst.subst_typ s t).it, aliased dt'
-        | exception Eval.Irred ->
-          error_id (id.it $ at) "cannot reduce argument to determine case of syntax type family"
     in lookup defs
 
 let rec expand' env = function
@@ -270,15 +282,15 @@ let as_struct_typ phrase env dir t at : typfield list =
 let rec as_variant_typid' phrase env id args at : typcase list * dots =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_variant_typid' phrase env id' args' at
-  | CaseT (_dots1, ids, cases, dots2), _ ->
-    let casess = map_filter_nl_list (fun id -> as_variant_typid "" env id []) ids in
+  | CaseT (_dots1, ts, cases, dots2), _ ->
+    let casess = map_filter_nl_list (fun t -> as_variant_typ "" env Infer t at) ts in
     List.concat (filter_nl cases :: List.map fst casess), dots2
   | _ -> error_dir_typ id.at phrase Infer (VarT (id, args) $ id.at) "| ..."
 
 and as_variant_typid phrase env id args : typcase list * dots =
   as_variant_typid' phrase env id args id.at
 
-let as_variant_typ phrase env dir t at : typcase list * dots =
+and as_variant_typ phrase env dir t at : typcase list * dots =
   match expand_singular env t with
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> error_dir_typ at phrase dir t "| ..."
@@ -515,10 +527,10 @@ and elab_typ_definition env id t : Il.deftyp =
     let tfs' = filter_nl tfs in
     check_atoms "record" "field" tfs' t.at;
     Il.StructT (map_filter_nl_list (elab_typfield env) tfs)
-  | CaseT (dots1, ids, cases, _dots2) ->
+  | CaseT (dots1, ts, cases, _dots2) ->
     let cases0 =
       if dots1 = Dots then fst (as_variant_typid "own type" env id []) else [] in
-    let casess = map_filter_nl_list (fun id -> as_variant_typid "parent type" env id []) ids in
+    let casess = map_filter_nl_list (fun t -> as_variant_typ "parent type" env Infer t t.at) ts in
     let cases' =
       List.flatten (cases0 :: List.map fst casess @ [filter_nl cases]) in
     let tcs' = List.map (elab_typcase env t.at) cases' in
