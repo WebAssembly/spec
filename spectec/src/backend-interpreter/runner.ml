@@ -12,6 +12,8 @@ let success = 1, 1
 let fail = 0, 1
 let pass = 0, 0
 
+let num_parse_fail = ref 0
+
 (* Excluded test files *)
 
 let is_long_test path =
@@ -28,6 +30,16 @@ let is_long_test path =
 
 (* Helper functions *)
 
+let sum = List.fold_left (+) 0
+let sum_float = List.fold_left (+.) 0.
+
+let sum_results l =
+  let l1, l2 = List.split l in
+  sum l1, sum l2
+let sum_results_with_time l =
+  let l', times = List.split l in
+  sum_results l', sum_float times
+
 let try_run runner target =
   let start_time = Sys.time () in
   let result =
@@ -38,14 +50,8 @@ let try_run runner target =
   in
   result, Sys.time () -. start_time
 
-let print_runner_results name results =
-  let sum = List.fold_left (+) 0 in
-  let sum_float = List.fold_left (+.) 0. in
-
-  let l', l3 = List.split results in
-  let l1, l2 = List.split l' in
-  let num_success, total, execution_time = sum l1, sum l2, sum_float l3 in
-
+let print_runner_result name result =
+  let (num_success, total), execution_time = result in
   let percentage =
     if total = 0 then 100.
     else (float_of_int num_success /. float_of_int total) *. 100.
@@ -164,78 +170,68 @@ let run_command' command =
 let run_command = try_run run_command'
 
 let run_wast name script =
+  let script =
+    (* Exclude long test *)
+    if is_long_test name then []
+    else script
+  in
+
   (* Intialize builtin *)
   Register.add "spectest" (Builtin.builtin ());
 
-  Printf.printf "===== %s =====\n%!" name;
-  Printf.eprintf "===========================\n\n%s\n\n" name;
+  let result =
+    script
+    |> List.map run_command
+    |> sum_results_with_time
+  in
+  print_runner_result name result; result
 
-  let results = List.map run_command script in
-  print_runner_results name results; results
 
+(** Wasm runner **)
 
-(* Wat runner *)
-
-(* TODO: Refactor wat runner *)
-let run_wat' args (var_opt, def) =
+let run_wasm' args module_ =
   (* Intialize builtin *)
   Register.add "spectest" (Builtin.builtin ());
 
   (* Instantiate *)
-  def
-  |> module_of_def
+  module_
   |> instantiate
-  |> Register.add_with_var var_opt;
+  |> Register.add_with_var None;
 
-  (* TODO: Only Int32 arguments/resultss are acceptable *)
+  (* TODO: Only Int32 arguments/results are acceptable *)
   match args with
   | funcname :: args' ->
-    let open Value in
-    let make_value s = Num (I32 (Int32.of_string s)) in
+    let make_value s = Value.Num (I32 (Int32.of_string s)) in
 
     (* Invoke *)
-    invoke (Register.get_module_name var_opt) funcname (List.map make_value args')
+    invoke (Register.get_module_name None) funcname (List.map make_value args')
     (* Print invocation result *)
     |> al_to_list al_to_value
     |> Value.string_of_values
     |> print_endline;
     success
   | [] -> success
+let run_wasm args = try_run (run_wasm' args)
 
-let run_wat_opt name args wat_opt =
+
+(* Wat runner *)
+
+let run_wat = run_wasm
+
+
+(** Parse **)
+
+let parse_file name parser_ file =
   Printf.printf "===== %s =====\n%!" name;
   Printf.eprintf "===========================\n\n%s\n\n" name;
 
-  (* Some or None *)
-  assert (List.length wat_opt <= 1);
-  List.map (try_run (run_wat' args)) wat_opt
-
-
-(* Parser *)
-
-let parse_wast file_path =
-  let ic = open_in file_path in
-  let lexbuf = Lexing.from_channel ic in
-
-  let res =
-    try
-      Parse.parse file_path lexbuf Parse.Script
-    with _ ->
-      prerr_endline ("Failed to parse " ^ file_path); []
-  in
-  close_in ic; res
-
-let parse_wat file_path =
-  let ic = open_in file_path in
-  let lexbuf = Lexing.from_channel ic in
-
-  let res =
-    try
-      [Parse.parse file_path lexbuf Parse.Module]
-    with _ ->
-      prerr_endline ("Failed to parse " ^ file_path); []
-  in
-  close_in ic; res
+  try
+    parser_ file
+  with e ->
+    print_endline ("- Failed to parse " ^ name ^ "\n");
+    prerr_endline ("- Failed to parse " ^ name ^ "\n");
+    num_parse_fail := !num_parse_fail + 1;
+    raise e
 
 
 (** Runner **)
@@ -243,34 +239,46 @@ let parse_wat file_path =
 let rec run_file path args =
   if Sys.is_directory path then
     run_dir path
-  else
+  else try
+    (* Read file *)
+    let file = In_channel.with_open_bin path In_channel.input_all in
+
+    (* Check file extension *)
     match Filename.extension path with
     | ".wast" ->
-      if is_long_test path then
-        (* Exclude long test *)
-        run_wast path []
-      else
-        path |> parse_wast |> run_wast path
+      file
+      |> parse_file path Parse.string_to_script
+      |> run_wast path
     | ".wat" ->
-        path |> parse_wat |> run_wat_opt path args
-    | ".wasm" -> failwith "TODO"
-    | _ -> []
+      file
+      |> parse_file path Parse.string_to_module
+      |> run_wat args
+    | ".wasm" ->
+      file
+      |> parse_file path (Decode.decode "wasm module")
+      |> run_wasm args
+    | _ -> pass, 0.
+  with Decode.Code _ | Parse.Syntax _ -> pass, 0.
 
 and run_dir path =
   path
   |> Sys.readdir
   |> Array.to_list
   |> List.sort compare
-  |> List.concat_map
-    (fun filename -> run_file (Filename.concat path filename) [])
+  |> List.map (fun filename -> run_file (Filename.concat path filename) [])
+  |> sum_results_with_time
 
 
 (** Entry **)
 let run = function
-  | path :: args ->
-    if Sys.file_exists path then (
-      let results = run_file path args in
-      if Sys.is_directory path then print_runner_results "Total" results;
+  | path :: args when Sys.file_exists path ->
+    (* Run file *)
+    let result = run_file path args in
+
+    (* Print result *)
+    if Sys.is_directory path then (
+      if !num_parse_fail <> 0 then
+        print_endline ((string_of_int !num_parse_fail) ^ " parsing fail");
+      print_runner_result "Total" result;
     )
-    else failwith ("No such file: " ^ path)
-  | [] -> failwith "No file to run"
+  | _ -> failwith "Cannot find file to run"

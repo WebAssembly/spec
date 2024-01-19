@@ -76,16 +76,16 @@ watsup 0.4 generator
 - 638/638 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/conversions.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/conversions.wast
 
 ===== ../../test-interpreter/spec-test-1/custom.wast =====
 - 3/3 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/data.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/data.wast
 
 ===== ../../test-interpreter/spec-test-1/elem.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/elem.wast
 
 ===== ../../test-interpreter/spec-test-1/endianness.wast =====
 - 69/69 (100.00%)
@@ -94,7 +94,7 @@ watsup 0.4 generator
 - 60/60 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/f32.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/f32.wast
 
 ===== ../../test-interpreter/spec-test-1/f32_bitwise.wast =====
 - 361/361 (100.00%)
@@ -103,7 +103,7 @@ watsup 0.4 generator
 - 2401/2401 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/f64.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/f64.wast
 
 ===== ../../test-interpreter/spec-test-1/f64_bitwise.wast =====
 - 361/361 (100.00%)
@@ -115,7 +115,7 @@ watsup 0.4 generator
 - 6/6 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/float_exprs.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/float_exprs.wast
 
 ===== ../../test-interpreter/spec-test-1/float_literals.wast =====
 - 85/85 (100.00%)
@@ -124,7 +124,7 @@ watsup 0.4 generator
 - 90/90 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/float_misc.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/float_misc.wast
 
 ===== ../../test-interpreter/spec-test-1/forward.wast =====
 - 5/5 (100.00%)
@@ -149,7 +149,7 @@ watsup 0.4 generator
 - 89/89 (100.00%)
 
 ===== ../../test-interpreter/spec-test-1/imports.wast =====
-- 0/0 (100.00%)
+- Failed to parse ../../test-interpreter/spec-test-1/imports.wast
 
 ===== ../../test-interpreter/spec-test-1/inline-module.wast =====
 - 1/1 (100.00%)
@@ -261,6 +261,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-1/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
+8 parsing fail
 Total [9983/9983] (100.00%)
 
 == Complete.
