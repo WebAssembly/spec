@@ -221,7 +221,7 @@ and bound_prem prem =
   | RulePr (_id, e) -> free_exp e
   | IfPr e -> bound_exp e
   | ElsePr -> empty
-  | IterPr (prem1, _iter) -> bound_prem prem1
+  | IterPr (prem1, iter) -> union (bound_prem prem1) (bound_iter iter)
 
 
 (* Grammars *)
