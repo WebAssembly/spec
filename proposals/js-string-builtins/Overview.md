@@ -58,6 +58,8 @@ There are several implications of this:
   - Function builtins must be imported with the correct type.
   - Function builtins may become `funcref`, stored in tables, etc.
 
+The `name of the WebAssembly function` JS-API procedure is extended to return the import field name for builtin functions, not an index value.
+
 ## Type builtins
 
 Type builtins could be an instance of the `WebAssembly.Type` interface provided by the [type-imports](https://github.com/webassembly/type-imports) proposal. The values contained in a type builtin would be specified with a predicate.
@@ -133,9 +135,15 @@ namespace WebAssembly {
 
 A wasm module that has enabled builtins will have the specific import specifier, such as `wasm:js-string` for that interface available and eagerly applied.
 
-Concretely this means that imports that refer to that specifier will be eagerly checked for link errors at compile time, those imports will not show up in `WebAssembly.Module.imports()`, and those imports will not need to be provided at instantiation time.
+Concretely this means that imports that refer to that specifier will be eagerly checked for link errors at compile time, those imports will not show up in `WebAssembly.Module.imports()`, and those imports will not need to be provided at instantiation time. No property lookup on the instantiation imports object will be done for those imports.
 
 When the module is instantiated, a unique instantiation of the builtins are created. This means that re-exports of builtin functions will have different identities if they come from different instances. This is a useful property for future extensions to bind memory to builtins or evolve the types as things like type-imports or a core stringref type are added (see below).
+
+## Progressive enhancement
+
+For engines that don't support builtins, any compile options passed to the JS-API will be ignored (due to WebIDL rules for extra parameters). For engines that do support builtins, any imports that refer to a builtin are not looked up on the instantiation import object.
+
+Together this means that it's safe for users to request builtins while still providing a polyfill for backup behavior and the optimal path will be chosen.
 
 ## Feature detection
 
