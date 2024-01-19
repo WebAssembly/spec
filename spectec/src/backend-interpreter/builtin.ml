@@ -1,6 +1,6 @@
 open Construct
 open Al.Ast
-open Util.Record
+open Util
 open Reference_interpreter
 open Ds
 

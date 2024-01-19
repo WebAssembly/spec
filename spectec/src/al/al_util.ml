@@ -1,5 +1,5 @@
 open Ast
-open Util.Record
+open Util
 
 let get_name = function
   | RuleA ((name, _), _, _) -> name

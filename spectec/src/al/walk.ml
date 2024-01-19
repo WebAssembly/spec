@@ -1,6 +1,6 @@
 open Ast
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 type config = {
   pre_instr: instr -> instr list;

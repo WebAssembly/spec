@@ -1,6 +1,6 @@
 open Ast
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 let rec eq_expr e1 e2 =
   match e1.it, e2.it with

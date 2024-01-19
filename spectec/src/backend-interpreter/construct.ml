@@ -5,7 +5,7 @@ open Value
 open Al.Ast
 open Al.Al_util
 open Source
-open Util.Record
+open Util
 
 (* Constant *)
 
@@ -1918,7 +1918,7 @@ let al_of_import_desc module_ idesc =
   match idesc.it with
   | FuncImport x ->
     let dts = def_types_of module_ in
-    let dt = Lib.List32.nth dts x.it |> al_of_def_type in
+    let dt = x.it |> Int32.to_int |> List.nth dts |> al_of_def_type in
     CaseV ("FUNC", [ dt ])
   | TableImport tt -> CaseV ("TABLE", [ al_of_table_type tt ])
   | MemoryImport mt -> CaseV ("MEM", [ al_of_memory_type mt ])

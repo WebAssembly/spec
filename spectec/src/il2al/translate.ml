@@ -4,8 +4,8 @@ open Al.Ast
 open Al.Free
 open Backend_interpreter.Construct
 open Backend_interpreter.Manual
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 (** helper functions **)
 

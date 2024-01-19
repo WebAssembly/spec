@@ -2,8 +2,8 @@ open Al
 open Ast
 open Al_util
 open Print
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 
 (* Map *)

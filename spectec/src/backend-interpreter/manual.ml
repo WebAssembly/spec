@@ -1,6 +1,6 @@
 open Al.Ast
 open Construct
-open Util.Record
+open Util
 
 let eval_expr =
   let instrs = iterE (varE "instr", ["instr"], List) in

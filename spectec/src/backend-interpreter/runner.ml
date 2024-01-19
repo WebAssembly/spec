@@ -3,7 +3,7 @@ open Script
 open Source
 open Al.Al_util
 open Construct
-open Util.Record
+open Util
 open Ds
 
 (* Result *)

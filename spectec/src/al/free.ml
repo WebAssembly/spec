@@ -1,6 +1,6 @@
 open Ast
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 (* TODO: Change list to set *)
 module IdSet = Set.Make (String)

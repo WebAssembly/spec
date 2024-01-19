@@ -4,8 +4,8 @@ open Ast
 open Print
 open Construct
 open Ds
-open Util.Source
-open Util.Record
+open Util
+open Source
 open Printf
 
 let fail_on_instr msg instr =

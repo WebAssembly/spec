@@ -1,7 +1,7 @@
 open Ast
 open Printf
-open Util.Source
-open Util.Record
+open Util
+open Source
 
 
 (* Helper functions *)
