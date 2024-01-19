@@ -116,6 +116,18 @@ namespace WebAssembly {
       Module moduleObject,
       optional object importObject
     );
+
+    # Async streaming compile accepts compile options.
+    Promise<Module> compileStreaming(
+      Promise<Response> source,
+      optional WebAssemblyCompileOptions options);
+
+    # Async streaming compile and instantiate accepts compile options after
+    # imports.
+    Promise<WebAssemblyInstantiatedSource> instantiateStreaming(
+      Promise<Response> source,
+      optional object importObject,
+      optional WebAssemblyCompileOptions options);
 };
 ```
 
