@@ -153,7 +153,7 @@ The following internal helpers are defined in wasm and used by the below definit
 
 ```wasm
 (module
-  (type $array_i16_mut (array (mut i16)))
+  (type $array_i16 (array (mut i16)))
 
   (func (export "trap")
     unreachable
@@ -162,16 +162,16 @@ The following internal helpers are defined in wasm and used by the below definit
     local.get 0
     array.len
   )
-  (func (export "array_i16_mut_get") (param (ref $array_i16_mut) i32) (result i32)
+  (func (export "array_i16_get") (param (ref $array_i16) i32) (result i32)
     local.get 0
     local.get 1
-    array.get_u $array_i16_mut
+    array.get_u $array_i16
   )
-  (func (export "array_i16_mut_set") (param (ref $array_i16_mut) i32 i32)
+  (func (export "array_i16_set") (param (ref $array_i16) i32 i32)
     local.get 0
     local.get 1
     local.get 2
-    array.set $array_i16_mut
+    array.set $array_i16
   )
 )
 ```
@@ -242,7 +242,7 @@ func fromCharCodeArray(
 
   let result = "";
   for(let i = start; i < end; i++) {
-    let charCode = array_i16_mut_get(array, i);
+    let charCode = array_i16_get(array, i);
     result += String.fromCharCode(charCode);
   }
   return result;
@@ -284,7 +284,7 @@ func intoCharCodeArray(
 
   for (let i = 0; i < string.length; i++) {
     let charCode = string.charCodeAt(i);
-    array_i16_mut_set(array, start + i, charCode);
+    array_i16_set(array, start + i, charCode);
   }
   return string.length;
 }
@@ -495,8 +495,7 @@ The following internal helpers are defined in wasm and used by the below definit
 
 ```wasm
 (module
-  (type $array_i8 (array i8))
-  (type $array_i8_mut (array (mut i8)))
+  (type $array_i8 (array (mut i8)))
 
   (func (export "unreachable")
     unreachable
@@ -510,15 +509,15 @@ The following internal helpers are defined in wasm and used by the below definit
     local.get 1
     array.get_u $array_i8
   )
-  (func (export "array_i8_mut_new") (param i32) (result (ref $array_i8_mut))
+  (func (export "array_i8_new") (param i32) (result (ref $array_i8))
     local.get 0
-    array.new_default $array_i8_mut
+    array.new_default $array_i8
   )
-  (func (export "array_i8_mut_set") (param (ref $array_i8_mut) i32 i32)
+  (func (export "array_i8_set") (param (ref $array_i8) i32 i32)
     local.get 0
     local.get 1
     local.get 2
-    array.set $array_i8_mut
+    array.set $array_i8
   )
 )
 ```
@@ -556,7 +555,7 @@ function trap() {
 /// If this is an issue for toolchains, we can look into how to relax the
 /// function type while still maintaining good performance.
 func decodeStringFromUTF8Array(
-  array: (ref null (array i8)),
+  array: (ref null (array (mut i8))),
   start: i32,
   end: i32
 ) -> (ref extern)
@@ -663,7 +662,7 @@ func encodeStringIntoUTF8Array(
     trap();
 
   for (let i = 0; i < bytes.length; i++) {
-    array_i8_mut_set(array, start + i, bytes[i]);
+    array_i8_set(array, start + i, bytes[i]);
   }
 
   return bytes.length;
@@ -691,9 +690,9 @@ func encodeStringToUTF8Array(
   let encoder = new TextEncoder();
   let bytes = encoder.encode(string);
 
-  let array = array_i8_mut_new(bytes.length);
+  let array = array_i8_new(bytes.length);
   for (let i = 0; i < bytes.length; i++) {
-    array_i8_mut_set(array, i, bytes[i]);
+    array_i8_set(array, i, bytes[i]);
   }
   return array;
 }
