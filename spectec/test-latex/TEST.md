@@ -157,7 +157,7 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 \mbox{(index)} & {\mathit{idx}} &::=& {\mathit{u{\scriptstyle32}}} \\
-\mbox{(index)} & {\mathit{laneidx}} &::=& {\mathit{u{\scriptstyle8}}} \\
+\mbox{(lane index)} & {\mathit{laneidx}} &::=& {\mathit{u{\scriptstyle8}}} \\
 \mbox{(type index)} & {\mathit{typeidx}} &::=& {\mathit{idx}} \\
 \mbox{(function index)} & {\mathit{funcidx}} &::=& {\mathit{idx}} \\
 \mbox{(global index)} & {\mathit{globalidx}} &::=& {\mathit{idx}} \\

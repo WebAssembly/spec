@@ -10,6 +10,8 @@ type config =
     include_grammar_desc : bool;
   }
 
+type t = config
+
 let default =
   { macros_for_ids = false;
     macros_for_vdash = false;

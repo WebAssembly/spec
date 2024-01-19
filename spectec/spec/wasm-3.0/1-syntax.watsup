@@ -69,7 +69,7 @@ syntax f64 = fN(64)
 ;;
 
 syntax idx hint(desc "index") = u32
-syntax laneidx hint(desc "index") = u8
+syntax laneidx hint(desc "lane index") = u8
 
 syntax typeidx hint(desc "type index") = idx
 syntax funcidx hint(desc "function index") = idx

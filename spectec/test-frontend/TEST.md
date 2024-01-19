@@ -272,7 +272,7 @@ syntax f64 = fN
 ;; 1-syntax.watsup:71.1-71.36
 syntax idx = u32
 
-;; 1-syntax.watsup:72.1-72.39
+;; 1-syntax.watsup:72.1-72.44
 syntax laneidx = u8
 
 ;; 1-syntax.watsup:74.1-74.45
