@@ -70,9 +70,39 @@ end
 let info_map = ref InfoMap.empty
 
 
+(* Register *)
+
+module Register = struct include Map.Make (String)
+
+
+  let _register: value t ref = ref empty
+  let _latest = ""
+
+  let add name moduleinst = _register := add name moduleinst !_register
+
+  let add_with_var var moduleinst =
+    let open Reference_interpreter.Source in
+    add _latest moduleinst;
+    match var with
+    | Some name -> add name.it moduleinst
+    | _ -> ()
+
+  let find name = find name !_register
+
+  let get_module_name var =
+    let open Reference_interpreter.Source in
+    match var with
+    | Some name -> name.it
+    | None -> _latest
+
+end
+
+
 (* Store *)
 
-let store : store ref = ref Record.empty
+let _store : store ref = ref Record.empty
+let get_store () = !_store
+
 
 (* Environmet *)
 
@@ -97,10 +127,11 @@ module Env = struct include Map.Make (String)
       |> prerr_endline;
       raise Not_found
 
-  let add_store = add "s" (Ast.StoreV store)
+  let add_store = add "s" (Ast.StoreV _store)
 end
 
 type env = value Env.t
+
 
 (* AL Context *)
 
@@ -210,6 +241,7 @@ module AlContext = struct
     )
 
 end
+
 
 (* Wasm Context *)
 
@@ -340,7 +372,7 @@ let init algos =
   func_map := fmap;
 
   (* Initialize store *)
-  store :=
+  _store :=
     Record.empty
     |> Record.add "FUNC" (listV [||])
     |> Record.add "GLOBAL" (listV [||])

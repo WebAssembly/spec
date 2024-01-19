@@ -8,5 +8,6 @@
     runner
     exception
     manual
-    ds)
+    ds
+    builtin)
 )

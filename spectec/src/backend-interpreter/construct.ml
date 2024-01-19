@@ -335,11 +335,11 @@ and al_to_ref: value -> ref_ = function
   | CaseV ("REF.HOST_ADDR", [ i32 ]) -> Script.HostRef (al_to_int32 i32)
   | CaseV ("REF.I31_NUM", [ i ]) -> I31.I31Ref (al_to_int i)
   | CaseV ("REF.STRUCT_ADDR", [ addr ]) ->
-    let struct_insts = Record.find "STRUCT" !Ds.store in
+    let struct_insts = Record.find "STRUCT" (Ds.get_store ()) in
     let struct_ = addr |> al_to_int |> listv_nth struct_insts |> al_to_struct in
     Aggr.StructRef struct_
   | CaseV ("REF.ARRAY_ADDR", [ addr ]) ->
-    let arr_insts = Record.find "ARRAY" !Ds.store in
+    let arr_insts = Record.find "ARRAY" (Ds.get_store ()) in
     let arr = addr |> al_to_int |> listv_nth arr_insts |> al_to_array in
     Aggr.ArrayRef arr
   | CaseV ("REF.EXTERN", [ r ]) -> Extern.ExternRef (al_to_ref r)
