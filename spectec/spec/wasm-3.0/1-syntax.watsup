@@ -327,7 +327,7 @@ var vcvtop : cvtop_vectype
 ;; TODO: do c(numtype)?
 syntax c = nat
 syntax c_numtype = nat  ;; TODO
-syntax c_vectype = byte*;; TODO
+syntax c_vectype = nat  ;; TODO
 var cv : c_vectype
 
 syntax blocktype hint(desc "block type") =

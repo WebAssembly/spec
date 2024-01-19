@@ -2430,7 +2430,7 @@ validation_of_REF.CAST rt
 validation_of_I31.GET sx
 - The instruction is valid with type ([(REF (NULL ?(())) I31)] -> [I32]).
 
-validation_of_VVCONST V128 [c_vt]
+validation_of_VVCONST V128 c_vt
 - The instruction is valid with type ([] -> [V128]).
 
 validation_of_VVUNOP vt vvunop
@@ -3140,7 +3140,7 @@ default valty_u0
 4. If (valty_u0 is F64), then:
   a. Return ?((F64.CONST 0)).
 5. If (valty_u0 is V128), then:
-  a. Return ?((VVCONST V128 0^128)).
+  a. Return ?((VVCONST V128 0)).
 6. Assert: Due to validation, valty_u0 is of the case REF.
 7. Let (REF y_0 ht) be valty_u0.
 8. If (y_0 is (NULL ?(()))), then:
@@ -3850,7 +3850,7 @@ execution_of_VVTERNOP V128 vvternop
 execution_of_VVTESTOP V128 (_VV ANY_TRUE)
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_1) from the stack.
-3. Let i be $ine_128(cv_1, $vzero()).
+3. Let i be $ine(128, cv_1, $vzero()).
 4. Push (I32.CONST i) to the stack.
 
 execution_of_SWIZZLE sh
@@ -3964,7 +3964,7 @@ execution_of_BITMASK sh
 3. Let i_1^lns be $lanes(sh, cv).
 4. Let (lnt X y_0) be sh.
 5. Assert: Due to validation, (y_0 is lns).
-6. Let i be $inverse_of_ibits(32, $ilt_s($storagesize(lnt), i_1, 0)^lns).
+6. Let i be $inverse_of_ibits(32, $ilt(S, $storagesize(lnt), i_1, 0)^lns).
 7. Push (I32.CONST i) to the stack.
 
 execution_of_NARROW sh_2 sh_1 sx
@@ -4639,7 +4639,7 @@ execution_of_VLOAD vload_u0 x
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
-  d. Let cv be $ext128(n, c).
+  d. Let cv be $ext(128, n, U, c).
   e. Push (VVCONST V128 cv) to the stack.
 
 execution_of_VLOAD_LANE n x marg laneidx

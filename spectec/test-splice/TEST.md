@@ -283,7 +283,7 @@ $$
 {\mathrm{default}}~\mathsf{i{\scriptstyle64}} &=& (\mathsf{i{\scriptstyle64}}.\mathsf{const}~0) &  \\[0.8ex]
 {\mathrm{default}}~\mathsf{f{\scriptstyle32}} &=& (\mathsf{f{\scriptstyle32}}.\mathsf{const}~0) &  \\[0.8ex]
 {\mathrm{default}}~\mathsf{f{\scriptstyle64}} &=& (\mathsf{f{\scriptstyle64}}.\mathsf{const}~0) &  \\[0.8ex]
-{\mathrm{default}}~\mathsf{v{\scriptstyle128}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~{\mathtt{0x00}^{128}}) &  \\[0.8ex]
+{\mathrm{default}}~\mathsf{v{\scriptstyle128}} &=& (\mathsf{v{\scriptstyle128}}.\mathsf{const}~0) &  \\[0.8ex]
 {\mathrm{default}}~\mathsf{ref}~\mathsf{null}~{\mathit{ht}} &=& (\mathsf{ref.null}~{\mathit{ht}}) &  \\[0.8ex]
 {\mathrm{default}}~\mathsf{ref}~\epsilon~{\mathit{ht}} &=& \epsilon &  \\
 \end{array}
@@ -1063,7 +1063,6 @@ warning: definition `eleminst` was never spliced
 warning: definition `expanddt` was never spliced
 warning: definition `expon` was never spliced
 warning: definition `ext` was never spliced
-warning: definition `ext128` was never spliced
 warning: definition `ext_arrayinst` was never spliced
 warning: definition `ext_structinst` was never spliced
 warning: definition `fbytes` was never spliced
@@ -1087,11 +1086,11 @@ warning: definition `iadd` was never spliced
 warning: definition `ibits` was never spliced
 warning: definition `ibytes` was never spliced
 warning: definition `idx` was never spliced
-warning: definition `ilt_s` was never spliced
+warning: definition `ilt` was never spliced
 warning: definition `imul` was never spliced
 warning: definition `in_binop` was never spliced
 warning: definition `in_numtype` was never spliced
-warning: definition `ine_128` was never spliced
+warning: definition `ine` was never spliced
 warning: definition `inst_reftype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instexport` was never spliced

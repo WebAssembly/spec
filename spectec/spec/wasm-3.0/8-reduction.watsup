@@ -259,9 +259,10 @@ rule Step_pure/vvternop:
   -- if $vvternop(vvternop, V128, cv_1, cv_2, cv_3) = cv ;; TODO
 
 
+def $vzero: c_vectype ;; HACK for algorithmic backend
 rule Step_pure/vvtestop:
   (VVCONST V128 cv_1) (VVTESTOP V128 (_VV ANY_TRUE)) ~> (CONST I32 i)
-  -- if i = $ine_128(cv_1, $vzero)
+  -- if i = $ine(128, cv_1, $vzero)
 
 
 rule Step_pure/swizzle:
@@ -347,7 +348,7 @@ rule Step_pure/bitmask:
   (VVCONST V128 cv) (BITMASK sh) ~> (CONST I32 i)
   -- if sh = lnt X lns
   -- if i_1^lns = $lanes(sh, cv)
-  -- if $ibits(32, i) = $ilt_s($storagesize(lnt), i_1, 0)^lns
+  -- if $ibits(32, i) = $ilt(S, $storagesize(lnt), i_1, 0)^lns
 
 
 rule Step_pure/narrow:
@@ -879,7 +880,7 @@ rule Step_read/vload-zero-oob:
 rule Step_read/vload-zero-val:
   z; (CONST I32 i) (VLOAD (ZERO n marg) x)  ~>  (VVCONST V128 cv)
   -- if $ibytes(n, c) = $mem(z, x).DATA[i + marg.OFFSET : n/8]
-  -- if cv = $ext128(n, c)
+  -- if cv = $ext(128, n, U, c)
 
 rule Step_read/vload_lane-oob:
   z; (CONST I32 i) (VVCONST V128 cv_1) (VLOAD_LANE n x marg laneidx)  ~>  TRAP

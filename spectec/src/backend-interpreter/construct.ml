@@ -45,7 +45,7 @@ let appendI ?(at = no) (e1, e2) = AppendI (e1, e2) |> mk_instr at
 let otherwiseI ?(at = no) il = OtherwiseI il |> mk_instr at
 let yetI ?(at = no) s = YetI s |> mk_instr at
 
-let mk_expr at it = Util.Source.($) it at 
+let mk_expr at it = Util.Source.($) it at
 
 let varE ?(at = no) id = VarE id |> mk_expr at
 let boolE ?(at = no) b = BoolE b |> mk_expr at
@@ -665,7 +665,7 @@ let al_to_vcvtop : value list -> vec_cvtop = function
   | TupV [ CaseV ("F32", []); NumV 4L ] :: op -> V128 (V128.F32x4 (al_to_float_vcvtop op))
   | TupV [ CaseV ("F64", []); NumV 2L ] :: op -> V128 (V128.F64x2 (al_to_float_vcvtop op))
   | l -> fail_list "vcvtop" l
-  
+
 
 let al_to_int_vshiftop : value -> V128Op.ishiftop = function
   | CaseV ("_VI", [ CaseV (vop, []) ]) as v -> (
@@ -1477,9 +1477,9 @@ let al_of_vcvtop = function
   | V128 vop -> (
     match vop with
     | V128.I8x16 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> failwith "invalid vcvtop"
           | None -> TupV [ singleton "I8"; numV 16L ]
         ) in
@@ -1487,9 +1487,9 @@ let al_of_vcvtop = function
       ) (al_of_int_vcvtop op)
     )
     | V128.I16x8 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> TupV [ singleton "I8"; numV 16L ]
           | None -> TupV [ singleton "I16"; numV 8L ]
         ) in
@@ -1497,9 +1497,9 @@ let al_of_vcvtop = function
       ) (al_of_int_vcvtop op)
     )
     | V128.I32x4 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> TupV [ singleton "I16"; numV 8L ]
           | None -> TupV [ singleton "I32"; numV 4L ]
         ) in
@@ -1507,9 +1507,9 @@ let al_of_vcvtop = function
       ) (al_of_int_vcvtop op)
     )
     | V128.I64x2 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> TupV [ singleton "I32"; numV 4L ]
           | None -> TupV [ singleton "I64"; numV 2L ]
         ) in
@@ -1517,9 +1517,9 @@ let al_of_vcvtop = function
       ) (al_of_int_vcvtop op)
     )
     | V128.F32x4 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> failwith "invalid vcvtop"
           | None -> TupV [ singleton "F32"; numV 4L ]
         ) in
@@ -1527,9 +1527,9 @@ let al_of_vcvtop = function
       ) (al_of_float32_vcvtop op)
     )
     | V128.F64x2 op -> (
-      Option.map (fun (op', half, to_, ext, zero) -> 
+      Option.map (fun (op', half, to_, ext, zero) ->
         let sh = match to_ with Some sh -> sh | None -> (
-          match half with 
+          match half with
           | Some _ -> TupV [ singleton "F32"; numV 4L ]
           | None -> TupV [ singleton "F64"; numV 2L ]
         ) in
@@ -1538,7 +1538,7 @@ let al_of_vcvtop = function
     )
   )
 
-  
+
 let al_of_special_vcvtop = function
   | V128 (V128.I16x8 (V128Op.ExtAddPairwiseS)) -> CaseV ("EXTADD_PAIRWISE", [ TupV [ singleton "I16"; numV 8L]; TupV [ singleton "I8"; numV 16L ]; al_of_extension Pack.SX ])
   | V128 (V128.I16x8 (V128Op.ExtAddPairwiseU)) -> CaseV ("EXTADD_PAIRWISE", [ TupV [ singleton "I16"; numV 8L]; TupV [ singleton "I8"; numV 16L ]; al_of_extension Pack.ZX ])
@@ -1847,7 +1847,7 @@ let al_of_type ty =
     in
 
     match sub_types with
-    | [ subtype ] -> 
+    | [ subtype ] ->
       let rt = subtype |> arg_of_case "SUBD" 2 |> arg_of_case "FUNC" 0 in
       CaseV ("TYPE", [ rt ])
     | _ -> failwith ("Rectype is not supported in Wasm " ^ (string_of_int !version))
