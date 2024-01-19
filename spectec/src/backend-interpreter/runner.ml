@@ -175,6 +175,8 @@ let run_wast name script =
 
 
 (* Wat runner *)
+
+(* TODO: Refactor wat runner *)
 let run_wat' args (var_opt, def) =
   (* Intialize builtin *)
   Register.add "spectest" (Builtin.builtin ());
