@@ -5,39 +5,45 @@ open Print
 open Util.Source
 open Util.Record
 
+
+(* Map *)
+
+module IntMap = Map.Make (Int)
+module Map = Map.Make (String)
+
+
 (* Program *)
 
-module RuleMap = Map.Make (String)
-type rule_map = algorithm RuleMap.t ref
+type rule_map = algorithm Map.t ref
+type func_map = algorithm Map.t ref
 
-module FuncMap = Map.Make (String)
-type func_map = algorithm FuncMap.t ref
-
-let rule_map: rule_map = ref RuleMap.empty
-
-let func_map: func_map = ref FuncMap.empty
+let rule_map: rule_map = ref Map.empty
+let func_map: func_map = ref Map.empty
 
 let to_map algos =
   let f acc algo =
     let rmap, fmap = acc in
     match algo with
-    | RuleA ((name, _), _, _) -> RuleMap.add name algo rmap, fmap
-    | FuncA (name, _, _) -> rmap, FuncMap.add name algo fmap
+    | RuleA ((name, _), _, _) -> Map.add name algo rmap, fmap
+    | FuncA (name, _, _) -> rmap, Map.add name algo fmap
   in
-  List.fold_left f (RuleMap.empty, FuncMap.empty) algos
+  List.fold_left f (Map.empty, Map.empty) algos
+
+let bound_rule name = Map.mem name !rule_map
+let bound_func name = Map.mem name !func_map
 
 let lookup name =
-  if RuleMap.mem name !rule_map then
-    RuleMap.find name !rule_map
-  else if FuncMap.mem name !func_map then
-    FuncMap.find name !func_map
+  if bound_rule name then
+    Map.find name !rule_map
+  else if bound_func name then
+    Map.find name !func_map
   else failwith ("Algorithm not found: " ^ name)
 
 
 (* Info *)
 
 type info = { algo_name: string; instr: instr; mutable covered: bool }
-module InfoMap = struct include Map.Make (Int)
+module InfoMap = struct include IntMap
   type t = int * info
 
   let make_info algo_name instr =
@@ -72,9 +78,7 @@ let info_map = ref InfoMap.empty
 
 (* Register *)
 
-module Register = struct include Map.Make (String)
-
-
+module Register = struct include Map
   let _register: value t ref = ref empty
   let _latest = ""
 
@@ -106,7 +110,7 @@ let get_store () = !_store
 
 (* Environmet *)
 
-module Env = struct include Map.Make (String)
+module Env = struct include Map
 
   (* Printer *)
   let string_of_env env =

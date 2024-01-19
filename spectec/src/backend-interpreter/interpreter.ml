@@ -488,7 +488,7 @@ and dsl_function_call (fname: string) (args: value list): AlContext.return_value
   if Numerics.mem fname then
     AlContext.Some (Numerics.call_numerics fname args)
   (* Module & Runtime *)
-  else if FuncMap.mem fname !func_map then
+  else if bound_func fname then
     call_algo fname args
   (* HARDCODE: hardcoded validation rule *)
   else if fname = "ref_type_of" then (
