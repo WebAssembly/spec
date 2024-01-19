@@ -7,6 +7,8 @@
     (source_tree spec-test-2)
     (source_tree spec-test-3)
     (file sample.wast)
+    (file sample.wat)
+    (file sample.wasm)
   )
   (files TEST.md)
 )
