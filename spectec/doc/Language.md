@@ -95,6 +95,7 @@ deftyp ::=
   nottyp                                                              free notation
   "{" list(atom typ hint* premise*, ",") "}"                          record
   "..."? "|" list(varid | nottyp hint* premise*, "|") "|" "..."       variant
+  list1(arith | arith "|" "..." "|" arith, "|")                       range / enumeration
 
 nottyp ::=
   typ                                       plain type
