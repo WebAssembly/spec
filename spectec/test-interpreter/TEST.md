@@ -22,7 +22,7 @@ watsup 0.4 generator
 $ for v in 1 2 3; do ( \
 >   echo "Running test for Wasm $v.0..." && \
 >   cd ../spec/wasm-$v.0 && \
->   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --interpreter ../../test-interpreter/spec-test-$v --test-version $v \
+>   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --test-version $v --interpreter ../../test-interpreter/spec-test-$v \
 > ) done 2>/dev/null
 Running test for Wasm 1.0...
 watsup 0.4 generator

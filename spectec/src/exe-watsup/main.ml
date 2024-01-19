@@ -14,7 +14,7 @@ type target =
  | Latex
  | Prose
  | Splice of Backend_splice.Config.config
- | Interpreter of string
+ | Interpreter of string list
 
 let target = ref Latex
 
@@ -117,7 +117,7 @@ let argspec = Arg.align
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
-  "--interpreter", Arg.String (fun filename -> target := Interpreter filename), " Generate interpreter";
+  "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args), " Generate interpreter";
 
   "--print-el", Arg.Set print_el, " Print EL";
   "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
@@ -205,11 +205,11 @@ let () =
       let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
       List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
       if !warn then Backend_splice.Splice.warn env;
-    | Interpreter filename ->
+    | Interpreter args ->
       log "Initializing AL interprter with generated AL...";
       Backend_interpreter.Ds.init al;
       log "Interpreting AL...";
-      Backend_interpreter.Runner.run filename
+      Backend_interpreter.Runner.run args
     );
     log "Complete."
   with

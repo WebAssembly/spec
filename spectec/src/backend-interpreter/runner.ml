@@ -145,13 +145,13 @@ let test_assertion assertion =
   (* ignore other kinds of assertions *)
   | _ -> pass
 
-let run_command command =
+let run_command' command =
   match command.it with
-  | Module (module_name, def) ->
+  | Module (var_opt, def) ->
     def
     |> module_of_def
     |> instantiate
-    |> Register.add_with_var module_name;
+    |> Register.add_with_var var_opt;
     success
   | Register (modulename, var_opt) ->
     let moduleinst = Register.find (Register.get_module_name var_opt) in
@@ -161,6 +161,7 @@ let run_command command =
     ignore (run_action a); success
   | Assertion a -> test_assertion a
   | Meta _ -> pass
+let run_command = try_run run_command'
 
 let run_wast name script =
   (* Intialize builtin *)
@@ -169,8 +170,46 @@ let run_wast name script =
   Printf.printf "===== %s =====\n%!" name;
   Printf.eprintf "===========================\n\n%s\n\n" name;
 
-  let results = List.map (try_run run_command) script in
+  let results = List.map run_command script in
   print_runner_results name results; results
+
+
+(* Wat runner *)
+let run_wat' args (var_opt, def) =
+  (* Intialize builtin *)
+  Register.add "spectest" (Builtin.builtin ());
+
+  (* Instantiate *)
+  def
+  |> module_of_def
+  |> instantiate
+  |> Register.add_with_var var_opt;
+
+  (* TODO: Only Int32 arguments/resultss are acceptable *)
+  match args with
+  | funcname :: args' ->
+    let open Value in
+    let make_value s = Num (I32 (Int32.of_string s)) in
+
+    (* Invoke *)
+    invoke (Register.get_module_name var_opt) funcname (List.map make_value args')
+    (* Print invocation result *)
+    |> al_to_list al_to_value
+    |> Value.string_of_values
+    |> print_endline;
+    success
+  | [] -> success
+
+let run_wat_opt name args wat_opt =
+  Printf.printf "===== %s =====\n%!" name;
+  Printf.eprintf "===========================\n\n%s\n\n" name;
+
+  (* Some or None *)
+  assert (List.length wat_opt <= 1);
+  List.map (try_run (run_wat' args)) wat_opt
+
+
+(* Parser *)
 
 let parse_wast file_path =
   let ic = open_in file_path in
@@ -184,10 +223,22 @@ let parse_wast file_path =
   in
   close_in ic; res
 
+let parse_wat file_path =
+  let ic = open_in file_path in
+  let lexbuf = Lexing.from_channel ic in
+
+  let res =
+    try
+      [Parse.parse file_path lexbuf Parse.Module]
+    with _ ->
+      prerr_endline ("Failed to parse " ^ file_path); []
+  in
+  close_in ic; res
+
 
 (** Runner **)
 
-let rec run_file path =
+let rec run_file path args =
   if Sys.is_directory path then
     run_dir path
   else
@@ -198,7 +249,8 @@ let rec run_file path =
         run_wast path []
       else
         path |> parse_wast |> run_wast path
-    | ".wat" -> failwith "TODO"
+    | ".wat" ->
+        path |> parse_wat |> run_wat_opt path args
     | ".wasm" -> failwith "TODO"
     | _ -> []
 
@@ -208,13 +260,15 @@ and run_dir path =
   |> Array.to_list
   |> List.sort compare
   |> List.concat_map
-    (fun filename -> run_file (Filename.concat path filename))
+    (fun filename -> run_file (Filename.concat path filename) [])
 
 
 (** Entry **)
-let run path =
-  if Sys.file_exists path then (
-    let results = run_file path in
-    if Sys.is_directory path then print_runner_results "Total" results;
-  )
-  else failwith ("No such file: " ^ path)
+let run = function
+  | path :: args ->
+    if Sys.file_exists path then (
+      let results = run_file path args in
+      if Sys.is_directory path then print_runner_results "Total" results;
+    )
+    else failwith ("No such file: " ^ path)
+  | [] -> failwith "No file to run"

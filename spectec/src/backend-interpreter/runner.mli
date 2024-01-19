@@ -1,1 +1,1 @@
-val run: string -> unit
+val run: string list -> unit
