@@ -33,12 +33,6 @@ let subst_varid s id =
   | Some {it = VarE (id', []); _} -> id'
   | Some _ -> raise (Invalid_argument "subst_varid")
 
-let subst_synid s id =
-  match Map.find_opt id.it s.synid with
-  | None -> id
-  | Some {it = VarT (id', []); _} -> id'
-  | Some _ -> raise (Invalid_argument "subst_synid")
-
 let subst_gramid s id =
   match Map.find_opt id.it s.gramid with
   | None -> id
@@ -69,8 +63,8 @@ and subst_typ s t =
   | TupT ts -> TupT (subst_list subst_typ s ts)
   | IterT (t1, iter) -> IterT (subst_typ s t1, subst_iter s iter)
   | StrT tfs -> StrT (subst_nl_list subst_typfield s tfs)
-  | CaseT (dots1, ids, tcs, dots2) ->
-    CaseT (dots1, subst_nl_list subst_synid s ids,
+  | CaseT (dots1, ts, tcs, dots2) ->
+    CaseT (dots1, subst_nl_list subst_typ s ts,
       subst_nl_list subst_typcase s tcs, dots2)
   | RangeT tes -> RangeT (subst_nl_list subst_typenum s tes)
   | SeqT ts -> SeqT (subst_list subst_typ s ts)
@@ -96,7 +90,7 @@ and subst_exp s e =
     | Some e' ->
       assert (args = []); e'  (* We do not support higher-order substitutions yet *)
     ).it
-  | AtomE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ -> e.it
+  | AtomE _ | BoolE _ | NatE _ | TextE _ -> e.it
   | UnE (op, e1) -> UnE (op, subst_exp s e1)
   | BinE (e1, op, e2) -> BinE (subst_exp s e1, op, subst_exp s e2)
   | CmpE (e1, op, e2) -> CmpE (subst_exp s e1, op, subst_exp s e2)
@@ -156,7 +150,7 @@ and subst_sym s g =
     | Some g' ->
       assert (args = []); g' (* We do not support higher-order substitutions yet *)
     ).it
-  | NatG _ | HexG _ | CharG _ | TextG _ -> g.it
+  | NatG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_nl_list subst_sym s gs)
   | AltG gs -> AltG (subst_nl_list subst_sym s gs)

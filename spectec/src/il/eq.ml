@@ -45,6 +45,20 @@ and eq_typ t1 t2 =
     eq_typ t11 t21 && eq_iter iter1 iter2
   | _, _ -> t1.it = t2.it
 
+and eq_deftyp dt1 dt2 =
+  match dt1.it, dt2.it with
+  | AliasT t1, AliasT t2 -> eq_typ t1 t2
+  | NotationT (op1, t1), NotationT (op2, t2) -> op1 = op2 && eq_typ t1 t2
+  | StructT tfs1, StructT tfs2 -> eq_list eq_typfield tfs1 tfs2
+  | VariantT tcs1, VariantT tcs2 -> eq_list eq_typcase tcs1 tcs2
+  | _, _ -> false
+
+and eq_typfield (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), _) =
+  atom1 = atom2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
+
+and eq_typcase (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), _) =
+  atom1 = atom2 && eq_typ t1 t2 && eq_list eq_prem prems1 prems2
+
 
 (* Expressions *)
 
