@@ -51,7 +51,7 @@ let load tab i =
   Lib.Array32.get tab.content i
 
 let store tab i r =
-  let TableType (lim, t) = tab.ty in
+  let TableType (_lim, t) = tab.ty in
   if type_of_ref r <> t then raise Type;
   if i < 0l || i >= Lib.Array32.length tab.content then raise Bounds;
   Lib.Array32.set tab.content i r

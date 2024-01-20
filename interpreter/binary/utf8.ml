@@ -8,7 +8,7 @@ let con n = 0x80 lor (n land 0x3f)
 let rec encode ns = Lib.String.implode (List.map Char.chr (encode' ns))
 and encode' = function
   | [] -> []
-  | n::ns when n < 0 ->
+  | n::_ns when n < 0 ->
     raise Utf8
   | n::ns when n < 0x80 ->
     n :: encode' ns
@@ -32,7 +32,7 @@ and decode' = function
   | [] -> []
   | b1::bs when b1 < 0x80 ->
     code 0x0 b1 :: decode' bs
-  | b1::bs when b1 < 0xc0 ->
+  | b1::_bs when b1 < 0xc0 ->
     raise Utf8
   | b1::b2::bs when b1 < 0xe0 ->
     code 0x80 ((b1 land 0x1f) lsl 6 + con b2) :: decode' bs
