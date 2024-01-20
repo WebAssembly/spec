@@ -99,8 +99,8 @@ and check_typ env ctx t =
       check_typ env ctx tI;
       iter_nl_list (check_prem env ctx) prems
     ) tfs
-  | CaseT (_, ids, tcs, _) ->
-    iter_nl_list (check_synid env ctx) ids;
+  | CaseT (_, ts, tcs, _) ->
+    iter_nl_list (check_typ env ctx) ts;
     iter_nl_list (fun (_, (tI, prems), _) ->
       check_typ env ctx tI;
       iter_nl_list (check_prem env ctx) prems
@@ -122,8 +122,6 @@ and check_exp env ctx e =
   | AtomE _
   | BoolE _
   | NatE _
-  | HexE _
-  | CharE _
   | TextE _
   | SizeE _
   | EpsE
@@ -179,8 +177,6 @@ and check_sym env ctx g =
     check_gramid env ctx id;
     List.iter (check_arg env ctx) args
   | NatG _
-  | HexG _
-  | CharG _
   | TextG _
   | EpsG -> ()
   | SeqG gs

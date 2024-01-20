@@ -18,5 +18,6 @@ val subst_typ : subst -> typ -> typ
 val subst_exp : subst -> exp -> exp
 val subst_path : subst -> path -> path
 val subst_prem : subst -> premise -> premise
+val subst_sym : subst -> sym -> sym
 val subst_arg : subst -> arg -> arg
 val subst_param : subst -> param -> param

@@ -2,6 +2,8 @@
 
 module List :
 sig
+  val take : int -> 'a list -> 'a list (* raises Failure *)
+  val drop : int -> 'a list -> 'a list (* raises Failure *)
   val split_hd : 'a list -> 'a * 'a list (* raises Failure *)
   val split_last : 'a list -> 'a list * 'a (* raises Failure *)
   val nub : ('a -> 'a -> bool) -> 'a list -> 'a list
