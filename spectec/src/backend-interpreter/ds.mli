@@ -6,6 +6,12 @@ val bound_rule : string -> bool
 val bound_func : string -> bool
 val lookup : string -> algorithm
 
+val get_store : unit -> store
+
+type env = value Env.t
+val lookup_env : string -> env -> value
+val add_store : env -> env
+
 module Info : sig
   type info = { algo_name: string; instr: instr; mutable covered: bool }
   val make_info : string -> instr -> info
@@ -20,12 +26,6 @@ module Register : sig
   val find : string -> value
   val get_module_name : Reference_interpreter.Script.var option -> string
 end
-
-val get_store : unit -> store
-
-type env = value Env.t
-val lookup_env : string -> env -> value
-val add_store : env -> env
 
 module AlContext : sig
   type return_value = 

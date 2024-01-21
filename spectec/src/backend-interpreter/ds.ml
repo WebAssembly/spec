@@ -41,6 +41,36 @@ let lookup name =
   else failwith ("Algorithm not found: " ^ name)
 
 
+(* Store *)
+
+let _store : store ref = ref Record.empty
+let get_store () = !_store
+
+
+(* Environment *)
+
+type env = value Env.t
+
+let string_of_env env =
+  "\n{" ^
+  Print.string_of_list
+    (fun (k, v) ->
+      k ^ ": " ^ Print.string_of_value v)
+    ",\n  "
+    (Env.bindings env) ^
+  "\n}"
+
+let lookup_env key env =
+  try Env.find key env
+  with Not_found ->
+    Printf.sprintf "The key '%s' is not in the map: %s."
+      key (string_of_env env)
+    |> prerr_endline;
+    raise Not_found
+
+let add_store = Env.add "s" (Ast.StoreV _store)
+
+
 (* Info *)
 
 module Info = struct
@@ -99,36 +129,6 @@ module Register = struct
     | Some name -> name.it
     | None -> _latest
 end
-
-
-(* Store *)
-
-let _store : store ref = ref Record.empty
-let get_store () = !_store
-
-
-(* Environment *)
-
-type env = value Env.t
-
-let string_of_env env =
-  "\n{" ^
-  Print.string_of_list
-    (fun (k, v) ->
-      k ^ ": " ^ Print.string_of_value v)
-    ",\n  "
-    (Env.bindings env) ^
-  "\n}"
-
-let lookup_env key env =
-  try Env.find key env
-  with Not_found ->
-    Printf.sprintf "The key '%s' is not in the map: %s."
-      key (string_of_env env)
-    |> prerr_endline;
-    raise Not_found
-
-let add_store = Env.add "s" (Ast.StoreV _store)
 
 
 (* AL Context *)
