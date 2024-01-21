@@ -33,7 +33,7 @@ let to_map algos =
 let bound_rule name = Map.mem name !rule_map
 let bound_func name = Map.mem name !func_map
 
-let lookup name =
+let lookup_algo name =
   if bound_rule name then
     Map.find name !rule_map
   else if bound_func name then

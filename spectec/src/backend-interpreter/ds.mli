@@ -4,7 +4,7 @@ module Env : Map.S with type key = string
 
 val bound_rule : string -> bool
 val bound_func : string -> bool
-val lookup : string -> algorithm
+val lookup_algo : string -> algorithm
 
 val get_store : unit -> store
 

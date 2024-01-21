@@ -115,29 +115,29 @@ let rec create_sub_env names iter env =
 and access_path base path =
   match path.it with
   | IdxP e' ->
-      let a = base |> unwrap_listv_to_array in
-      let i = eval_expr e' |> al_to_int in
-      begin try Array.get a i with
-      | Invalid_argument _ ->
-        fail_on_path
-          (sprintf "Failed Array.get on base %s and index %s"
-            (string_of_value base) (string_of_int i))
-          path
-      end
+    let a = base |> unwrap_listv_to_array in
+    let i = eval_expr e' |> al_to_int in
+    begin try Array.get a i with
+    | Invalid_argument _ ->
+      fail_on_path
+        (sprintf "Failed Array.get on base %s and index %s"
+          (string_of_value base) (string_of_int i))
+        path
+    end
   | SliceP (e1, e2) ->
-      let a = base |> unwrap_listv_to_array in
-      let i1 = eval_expr e1 |> al_to_int in
-      let i2 = eval_expr e2 |> al_to_int in
-      Array.sub a i1 i2 |> listV
+    let a = base |> unwrap_listv_to_array in
+    let i1 = eval_expr e1 |> al_to_int in
+    let i2 = eval_expr e2 |> al_to_int in
+    Array.sub a i1 i2 |> listV
   | DotP (str, _) -> (
-      match base with
-      | FrameV (_, StrV r) -> Record.find str r
-      | StoreV s -> Record.find str !s
-      | StrV r -> Record.find str r
-      | v -> 
-        fail_on_path
-          (sprintf "Base %s is not a record" (string_of_value v))
-          path)
+    match base with
+    | FrameV (_, StrV r) -> Record.find str r
+    | StoreV s -> Record.find str !s
+    | StrV r -> Record.find str r
+    | v -> 
+      fail_on_path
+        (sprintf "Base %s is not a record" (string_of_value v))
+        path)
 
 and replace_path base path v_new =
   match path.it with
@@ -147,11 +147,11 @@ and replace_path base path v_new =
     Array.set a i v_new;
     listV a
   | SliceP (e1, e2) ->
-      let a = unwrap_listv_to_array base |> Array.copy in
-      let i1 = eval_expr e1 |> al_to_int in
-      let i2 = eval_expr e2 |> al_to_int in
-      Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
-      listV a
+    let a = unwrap_listv_to_array base |> Array.copy in
+    let i1 = eval_expr e1 |> al_to_int in
+    let i2 = eval_expr e2 |> al_to_int in
+    Array.blit (unwrap_listv_to_array v_new) 0 a i1 i2;
+    listV a
   | DotP (str, _) ->
     let r =
       match base with
@@ -402,47 +402,47 @@ and assign lhs rhs env =
   match lhs.it, rhs with
   | VarE name, v -> Env.add name v env
   | IterE ({ it = VarE n; _ }, _, List), ListV _ -> (* Optimized assign for simple IterE(VarE, ...) *)
-      Env.add n rhs env
+    Env.add n rhs env
   | IterE (e, _, iter), _ ->
-      let new_env, default_rhs, rhs_list =
-        match iter, rhs with
-        | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
-        | ListN (expr, None), ListV arr ->
-            let length = Array.length !arr |> Int64.of_int |> numV in
-            assign expr length env, listV [||], Array.to_list !arr
-        | Opt, OptV opt -> env, optV None, Option.to_list opt
-        | ListN (_, Some _), ListV _ ->
-            sprintf "Invalid iter %s with rhs %s"
-              (string_of_iter iter)
-              (string_of_value rhs)
-            |> failwith
-        | _, _ ->
-          fail_on_expr
-            (sprintf "Invalid assignment on value %s" (string_of_value rhs))
-            lhs
-      in
+    let new_env, default_rhs, rhs_list =
+      match iter, rhs with
+      | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
+      | ListN (expr, None), ListV arr ->
+        let length = Array.length !arr |> Int64.of_int |> numV in
+        assign expr length env, listV [||], Array.to_list !arr
+      | Opt, OptV opt -> env, optV None, Option.to_list opt
+      | ListN (_, Some _), ListV _ ->
+        sprintf "Invalid iter %s with rhs %s"
+          (string_of_iter iter)
+          (string_of_value rhs)
+        |> failwith
+      | _, _ ->
+        fail_on_expr
+          (sprintf "Invalid assignment on value %s" (string_of_value rhs))
+          lhs
+    in
 
-      let default_env =
-        Al.Free.free_expr e
-        |> List.map (fun n -> n, default_rhs)
-        |> List.to_seq
-        |> Env.of_seq
-      in
+    let default_env =
+      Al.Free.free_expr e
+      |> List.map (fun n -> n, default_rhs)
+      |> List.to_seq
+      |> Env.of_seq
+    in
 
-      List.map (fun v -> assign e v Env.empty) rhs_list
+    List.map (fun v -> assign e v Env.empty) rhs_list
       |> merge_envs_with_grouping default_env
       |> Env.union (fun _ _ v -> Some v) new_env
   | InfixE (lhs1, _, lhs2), TupV [rhs1; rhs2] ->
-      env |> assign lhs1 rhs1 |> assign lhs2 rhs2
+    env |> assign lhs1 rhs1 |> assign lhs2 rhs2
   | TupE lhs_s, TupV rhs_s
     when List.length lhs_s = List.length rhs_s ->
-      List.fold_right2 assign lhs_s rhs_s env
+    List.fold_right2 assign lhs_s rhs_s env
   | ListE lhs_s, ListV rhs_s
     when List.length lhs_s = Array.length !rhs_s ->
-      List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
+    List.fold_right2 assign lhs_s (Array.to_list !rhs_s) env
   | CaseE ((lhs_tag, _), lhs_s), CaseV (rhs_tag, rhs_s)
     when lhs_tag = rhs_tag && List.length lhs_s = List.length rhs_s ->
-      List.fold_right2 assign lhs_s rhs_s env
+    List.fold_right2 assign lhs_s rhs_s env
   | OptE (Some lhs), OptV (Some rhs) -> assign lhs rhs env
   (* Assumption: e1 is the assign target *)
   | BinE (binop, e1, e2), NumV m ->
@@ -457,11 +457,11 @@ and assign lhs rhs env =
     assign e1 v env
   | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
-      Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
+    Record.fold (fun k v acc -> (Record.find (string_of_kwd k) r2 |> assign v) acc) r1 env
   | _, v ->
-      fail_on_expr
-        (sprintf "Invalid assignment on value %s" (string_of_value v))
-        lhs
+    fail_on_expr
+      (sprintf "Invalid assignment on value %s" (string_of_value v))
+      lhs
 
 and assign_split ep es vs env =
   let len = Array.length vs in
@@ -819,7 +819,7 @@ and call_algo (name: string) (args: value list): AlContext.return_value =
   AlContext.push_context al_context;
 
   (* Interp algorithm *)
-  let algo = lookup name in
+  let algo = lookup_algo name in
   if List.length args <> List.length (get_param algo) then
     failwith ("Argument number mismatch for algorithm " ^ name);
   interp_algo algo args;
