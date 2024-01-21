@@ -8,17 +8,18 @@ open Source
 
 (* Map *)
 
-module IntMap = Map.Make (Int)
+module InfoMap = Map.Make (Int)
+module Env = Map.Make (String)
 module Map = Map.Make (String)
 
 
 (* Program *)
 
-type rule_map = algorithm Map.t ref
-type func_map = algorithm Map.t ref
+type rule_map = algorithm Map.t
+type func_map = algorithm Map.t
 
-let rule_map: rule_map = ref Map.empty
-let func_map: func_map = ref Map.empty
+let rule_map: rule_map ref = ref Map.empty
+let func_map: func_map ref = ref Map.empty
 
 let to_map algos =
   let f acc algo =
@@ -42,47 +43,46 @@ let lookup name =
 
 (* Info *)
 
-type info = { algo_name: string; instr: instr; mutable covered: bool }
-module InfoMap = struct include IntMap
-  type t = int * info
+module Info = struct
+  type info = { algo_name: string; instr: instr; mutable covered: bool }
+  let info_map : info InfoMap.t ref = ref InfoMap.empty
 
   let make_info algo_name instr =
     { algo_name; instr; covered = false }
 
-  let uncovered =
-    filter (fun _ info -> not info.covered)
-
   let rec partition_by_algo info_map =
-    match choose_opt info_map with
+    match InfoMap.choose_opt info_map with
     | None -> []
     | Some (_, info) ->
       let f _ v = v.algo_name = info.algo_name in
-      let im1, im2 = partition f info_map in
+      let im1, im2 = InfoMap.partition f info_map in
       im1 :: partition_by_algo im2
 
-  let print info_map =
-    partition_by_algo info_map
+  let print () =
+    partition_by_algo !info_map
     |> List.iter
       (fun im ->
-        let _, v = choose im in
+        let _, v = InfoMap.choose im in
         Printf.printf "\n[%s]\n" v.algo_name;
-        iter
+        InfoMap.iter
           (fun _ v' ->
             Al.Print.string_of_instr v'.instr
             |> print_endline)
           im)
-end
 
-let info_map = ref InfoMap.empty
+  let add k i = info_map := InfoMap.add k i !info_map
+
+  let find k = InfoMap.find k !info_map
+end
 
 
 (* Register *)
 
-module Register = struct include Map
-  let _register: value t ref = ref empty
+module Register = struct
+  let _register : value Map.t ref = ref Map.empty
   let _latest = ""
 
-  let add name moduleinst = _register := add name moduleinst !_register
+  let add name moduleinst = _register := Map.add name moduleinst !_register
 
   let add_with_var var moduleinst =
     let open Reference_interpreter.Source in
@@ -91,14 +91,13 @@ module Register = struct include Map
     | Some name -> add name.it moduleinst
     | _ -> ()
 
-  let find name = find name !_register
+  let find name = Map.find name !_register
 
   let get_module_name var =
     let open Reference_interpreter.Source in
     match var with
     | Some name -> name.it
     | None -> _latest
-
 end
 
 
@@ -108,33 +107,28 @@ let _store : store ref = ref Record.empty
 let get_store () = !_store
 
 
-(* Environmet *)
-
-module Env = struct include Map
-
-  (* Printer *)
-  let string_of_env env =
-    "\n{" ^
-    Print.string_of_list
-      (fun (k, v) ->
-        k ^ ": " ^ Print.string_of_value v)
-      ",\n  "
-      (bindings env) ^
-    "\n}"
-
-  (* Environment API *)
-  let find key env =
-    try find key env
-    with Not_found ->
-      Printf.sprintf "The key '%s' is not in the map: %s."
-        key (string_of_env env)
-      |> prerr_endline;
-      raise Not_found
-
-  let add_store = add "s" (Ast.StoreV _store)
-end
+(* Environment *)
 
 type env = value Env.t
+
+let string_of_env env =
+  "\n{" ^
+  Print.string_of_list
+    (fun (k, v) ->
+      k ^ ": " ^ Print.string_of_value v)
+    ",\n  "
+    (Env.bindings env) ^
+  "\n}"
+
+let lookup_env key env =
+  try Env.find key env
+  with Not_found ->
+    Printf.sprintf "The key '%s' is not in the map: %s."
+      key (string_of_env env)
+    |> prerr_endline;
+    raise Not_found
+
+let add_store = Env.add "s" (Ast.StoreV _store)
 
 
 (* AL Context *)
@@ -351,18 +345,18 @@ module WasmContext = struct
     | _ -> failwith "Wasm instr stack underflow"
 end
 
+
 (* Initialization *)
 
 let init algos =
-
   (* Initialize info_map *)
   let init_info algo =
     let algo_name = get_name algo in
     let config = {
       Walk.default_config with pre_instr =
         (fun i ->
-          let info = InfoMap.make_info algo_name i in
-          info_map := InfoMap.add i.note info !info_map;
+          let info = Info.make_info algo_name i in
+          Info.add i.note info;
           [i])
     } in
     Walk.walk config algo

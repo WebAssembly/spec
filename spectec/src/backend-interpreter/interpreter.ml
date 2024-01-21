@@ -99,8 +99,8 @@ let rec create_sub_env names iter env =
     | _ -> names, env
   in
 
-  let option_name_to_list name = Env.find name env' |> unwrap_optv |> Option.to_list in
-  let name_to_list name = Env.find name env' |> unwrap_listv_to_list in
+  let option_name_to_list name = lookup_env name env' |> unwrap_optv |> Option.to_list in
+  let name_to_list name = lookup_env name env' |> unwrap_listv_to_list in
   let name_to_values name =
     match iter with
     | Opt -> option_name_to_list name
@@ -270,10 +270,10 @@ and eval_expr expr =
     (match eval_expr e with
     | LabelV (_, vs) -> vs
     | _ -> fail_on_expr "Not a label" expr)
-  | VarE name -> AlContext.get_env () |> Env.find name
+  | VarE name -> AlContext.get_env () |> lookup_env name
   (* Optimized getter for simple IterE(VarE, ...) *)
   | IterE ({ it = VarE name; _ }, [name'], _) when name = name' ->
-    AlContext.get_env () |> Env.find name
+    AlContext.get_env () |> lookup_env name
   (* Optimized getter for list init *)
   | IterE (e1, [], ListN (e2, None)) ->
     let v = eval_expr e1 in
@@ -663,7 +663,7 @@ and interp_instr (instr: instr): unit =
   print_endline "";
   *)
 
-  (InfoMap.find instr.note !info_map).covered <- true;
+  (Info.find instr.note).covered <- true;
 
   match instr.it with
   (* Block instruction *)
@@ -795,7 +795,7 @@ and interp_algo (algo: algorithm) (args: value list): unit =
   let params = get_param algo in
 
   Env.empty
-  |> Env.add_store
+  |> add_store
   |> List.fold_right2 assign params args
   |> AlContext.set_env;
 
