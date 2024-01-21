@@ -35,16 +35,6 @@ let wrap2
   (v2: value): value =
     op (destruct v1) (destruct v2) |> construct
 
-let wrap3
-  (destruct: value -> 'a)
-  (construct: 'b -> value)
-  (op: 'a -> 'a -> 'a -> 'b)
-  (v1: value)
-  (v2: value)
-  (v3: value): value =
-    op (destruct v1) (destruct v2) (destruct v3) |> construct
-
-
 let wrap_i32_unop = wrap1 al_to_int32 (fun i32 -> listV [| al_of_int32 i32 |])
 let wrap_i64_unop = wrap1 al_to_int64 (fun i64 -> listV [| al_of_int64 i64 |])
 let wrap_f32_unop = wrap1 al_to_float32 (fun f32 -> listV [| al_of_float32 f32 |])
