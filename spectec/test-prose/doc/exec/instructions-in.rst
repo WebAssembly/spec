@@ -89,37 +89,37 @@ $${rule+: Step_pure/vvternop}
 
 $${rule+: Step_pure/vvtestop}
 
-.. _exec-SHUFFLE:
+.. _exec-VSHUFFLE:
 
-%{prose-algo: SHUFFLE}
-
-\
-
-$${rule+: Step_pure/shuffle}
-
-.. _exec-SPLAT:
-
-%{prose-algo: SPLAT}
+%{prose-algo: VSHUFFLE}
 
 \
 
-$${rule+: Step_pure/splat}
+$${rule+: Step_pure/vshuffle}
 
-.. _exec-EXTRACT_LANE:
+.. _exec-VSPLAT:
 
-%{prose-algo: EXTRACT_LANE}
-
-\
-
-$${rule+: Step_pure/extract_lane-*}
-
-.. _exec-REPLACE_LANE:
-
-%{prose-algo: REPLACE_LANE}
+%{prose-algo: VSPLAT}
 
 \
 
-$${rule+: Step_pure/replace_lane}
+$${rule+: Step_pure/vsplat}
+
+.. _exec-VEXTRACT_LANE:
+
+%{prose-algo: VEXTRACT_LANE}
+
+\
+
+$${rule+: Step_pure/vextract_lane-*}
+
+.. _exec-VREPLACE_LANE:
+
+%{prose-algo: VREPLACE_LANE}
+
+\
+
+$${rule+: Step_pure/vreplace_lane}
 
 .. _exec-VUNOP:
 
@@ -153,29 +153,29 @@ $${rule+: Step_pure/vrelop}
 
 $${rule+: Step_pure/vishiftop}
 
-.. _exec-ALL_TRUE:
+.. _exec-VALL_TRUE:
 
-%{prose-algo: ALL_TRUE}
-
-\
-
-$${rule+: Step_pure/all_true-*}
-
-.. _exec-BITMASK:
-
-%{prose-algo: BITMASK}
+%{prose-algo: VALL_TRUE}
 
 \
 
-$${rule+: Step_pure/bitmask}
+$${rule+: Step_pure/vall_true-*}
 
-.. _exec-NARROW:
+.. _exec-VBITMASK:
 
-%{prose-algo: NARROW}
+%{prose-algo: VBITMASK}
 
 \
 
-$${rule+: Step_pure/narrow}
+$${rule+: Step_pure/vbitmask}
+
+.. _exec-VNARROW:
+
+%{prose-algo: VNARROW}
+
+\
+
+$${rule+: Step_pure/vnarrow}
 
 .. _exec-VCVTOP:
 
@@ -185,29 +185,29 @@ $${rule+: Step_pure/narrow}
 
 $${rule+: Step_pure/vcvtop-*}
 
-.. _exec-DOT:
+.. _exec-VDOT:
 
-%{prose-algo: DOT}
-
-\
-
-$${rule+: Step_pure/dot}
-
-.. _exec-EXTMUL:
-
-%{prose-algo: EXTMUL}
+%{prose-algo: VDOT}
 
 \
 
-$${rule+: Step_pure/extmul}
+$${rule+: Step_pure/vdot}
 
-.. _exec-EXTADD_PAIRWISE:
+.. _exec-VEXTMUL:
 
-%{prose-algo: EXTADD_PAIRWISE}
+%{prose-algo: VEXTMUL}
 
 \
 
-$${rule+: Step_pure/extadd_pairwise}
+$${rule+: Step_pure/vextmul}
+
+.. _exec-VEXTADD_PAIRWISE:
+
+%{prose-algo: VEXTADD_PAIRWISE}
+
+\
+
+$${rule+: Step_pure/vextadd_pairwise}
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~

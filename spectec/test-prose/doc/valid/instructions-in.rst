@@ -328,37 +328,37 @@ $${rule: Instr_ok/vvternop}
 
 $${rule: Instr_ok/vvtestop}
 
-.. _valid-SHUFFLE:
+.. _valid-VSHUFFLE:
 
-%{prose-pred: SHUFFLE}
-
-\
-
-$${rule: Instr_ok/shuffle}
-
-.. _valid-SPLAT:
-
-%{prose-pred: SPLAT}
+%{prose-pred: VSHUFFLE}
 
 \
 
-$${rule: Instr_ok/splat}
+$${rule: Instr_ok/vshuffle}
 
-.. _valid-EXTRACT_LANE:
+.. _valid-VSPLAT:
 
-%{prose-pred: EXTRACT_LANE}
-
-\
-
-$${rule: Instr_ok/extract_lane}
-
-.. _valid-REPLACE_LANE:
-
-%{prose-pred: REPLACE_LANE}
+%{prose-pred: VSPLAT}
 
 \
 
-$${rule: Instr_ok/replace_lane}
+$${rule: Instr_ok/vsplat}
+
+.. _valid-VEXTRACT_LANE:
+
+%{prose-pred: VEXTRACT_LANE}
+
+\
+
+$${rule: Instr_ok/vextract_lane}
+
+.. _valid-VREPLACE_LANE:
+
+%{prose-pred: VREPLACE_LANE}
+
+\
+
+$${rule: Instr_ok/vreplace_lane}
 
 .. _valid-VUNOP:
 
@@ -394,7 +394,7 @@ $${rule: Instr_ok/vishiftop}
 
 .. _valid-VTESTOP:
 
-%{prose-pred: ALL_TRUE}
+%{prose-pred: VALL_TRUE}
 
 \
 
@@ -408,45 +408,45 @@ $${rule: Instr_ok/vtestop}
 
 $${rule: Instr_ok/vcvtop}
 
-.. _valid-NARROW:
+.. _valid-VNARROW:
 
-%{prose-pred: NARROW}
-
-\
-
-$${rule: Instr_ok/narrow}
-
-.. _valid-BITMASK:
-
-%{prose-pred: BITMASK}
+%{prose-pred: VNARROW}
 
 \
 
-$${rule: Instr_ok/bitmask}
+$${rule: Instr_ok/vnarrow}
 
-.. _valid-DOT:
+.. _valid-VBITMASK:
 
-%{prose-pred: DOT}
-
-\
-
-$${rule: Instr_ok/dot}
-
-.. _valid-EXTMUL:
-
-%{prose-pred: EXTMUL}
+%{prose-pred: VBITMASK}
 
 \
 
-$${rule: Instr_ok/extmul}
+$${rule: Instr_ok/vbitmask}
 
-.. _valid-EXTADD_PAIRWISE:
+.. _valid-VDOT:
 
-%{prose-pred: EXTADD_PAIRWISE}
+%{prose-pred: VDOT}
 
 \
 
-$${rule: Instr_ok/extadd_pairwise}
+$${rule: Instr_ok/vdot}
+
+.. _valid-VEXTMUL:
+
+%{prose-pred: VEXTMUL}
+
+\
+
+$${rule: Instr_ok/vextmul}
+
+.. _valid-VEXTADD_PAIRWISE:
+
+%{prose-pred: VEXTADD_PAIRWISE}
+
+\
+
+$${rule: Instr_ok/vextadd_pairwise}
 
 .. _valid-instructions-external-reference:
 

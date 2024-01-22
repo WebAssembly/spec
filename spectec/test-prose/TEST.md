@@ -2445,22 +2445,22 @@ validation_of_VVTERNOP vt vvternop
 validation_of_VVTESTOP vt vvtestop
 - The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_SWIZZLE sh
+validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_SHUFFLE sh laneidx*
+validation_of_VSHUFFLE sh laneidx*
 - For all laneidx in laneidx*,
   - laneidx must be less than ($dim(sh) · 2).
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_SPLAT sh
+validation_of_VSPLAT sh
 - The instruction is valid with type ([$unpacked(sh)] -> [V128]).
 
-validation_of_EXTRACT_LANE sh sx? laneidx
+validation_of_VEXTRACT_LANE sh sx? laneidx
 - laneidx must be less than $dim(sh).
 - The instruction is valid with type ([V128] -> [$unpacked(sh)]).
 
-validation_of_REPLACE_LANE sh laneidx
+validation_of_VREPLACE_LANE sh laneidx
 - laneidx must be less than $dim(sh).
 - The instruction is valid with type ([V128, $unpacked(sh)] -> [V128]).
 
@@ -2476,25 +2476,25 @@ validation_of_VRELOP sh vrelop
 validation_of_VISHIFTOP sh vishiftop
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_ALL_TRUE sh
+validation_of_VALL_TRUE sh
 - The instruction is valid with type ([V128] -> [I32]).
 
 validation_of_VCVTOP sh vcvtop hf? sh sx? zero
 - The instruction is valid with type ([V128] -> [V128]).
 
-validation_of_NARROW sh sh sx
+validation_of_VNARROW sh sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_BITMASK sh
+validation_of_VBITMASK sh
 - The instruction is valid with type ([V128] -> [I32]).
 
-validation_of_DOT sh sh sx
+validation_of_VDOT sh sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_EXTMUL sh half sh sx
+validation_of_VEXTMUL sh half sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_EXTADD_PAIRWISE sh sh sx
+validation_of_VEXTADD_PAIRWISE sh sh sx
 - The instruction is valid with type ([V128] -> [V128]).
 
 validation_of_STRUCT.NEW x
@@ -3853,7 +3853,7 @@ execution_of_VVTESTOP V128 (_VV ANY_TRUE)
 3. Let i be $ine(128, cv_1, $vzero()).
 4. Push (I32.CONST i) to the stack.
 
-execution_of_SWIZZLE sh
+execution_of_VSWIZZLE sh
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -3866,7 +3866,7 @@ execution_of_SWIZZLE sh
 10. Let cv' be $inverse_of_lanes(sh, c*[i*[k]]^(k<lns)).
 11. Push (VVCONST V128 cv') to the stack.
 
-execution_of_SHUFFLE sh laneidx*
+execution_of_VSHUFFLE sh laneidx*
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -3878,14 +3878,14 @@ execution_of_SHUFFLE sh laneidx*
 9. Let cv be $inverse_of_lanes(sh, i*[laneidx*[k]]^(k<lns)).
 10. Push (VVCONST V128 cv) to the stack.
 
-execution_of_SPLAT sh
+execution_of_VSPLAT sh
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_1) from the stack.
 3. Assert: Due to validation, (nt is $unpacked(sh)).
 4. Let cv be $inverse_of_lanes(sh, c_1^$dim(sh)).
 5. Push (VVCONST V128 cv) to the stack.
 
-execution_of_EXTRACT_LANE sh sx_u0? laneidx
+execution_of_VEXTRACT_LANE sh sx_u0? laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_1) from the stack.
 3. Assert: Due to validation, (laneidx < |$lanes(sh, cv_1)|).
@@ -3901,7 +3901,7 @@ execution_of_EXTRACT_LANE sh sx_u0? laneidx
   b. Let c_2 be $ext($storagesize(lnt), $storagesize(nt), sx, $lanes(sh, cv_1)[laneidx]).
   c. Push (nt.CONST c_2) to the stack.
 
-execution_of_REPLACE_LANE sh laneidx
+execution_of_VREPLACE_LANE sh laneidx
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -3949,7 +3949,7 @@ execution_of_VISHIFTOP sh vishiftop
 7. Let cv be $inverse_of_lanes(sh, $vishiftop(vishiftop, lnt, i, n)*).
 8. Push (VVCONST V128 cv) to the stack.
 
-execution_of_ALL_TRUE sh
+execution_of_VALL_TRUE sh
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv) from the stack.
 3. Let i_1* be $lanes(sh, cv).
@@ -3958,7 +3958,7 @@ execution_of_ALL_TRUE sh
 5. Else:
   a. Push (I32.CONST 0) to the stack.
 
-execution_of_BITMASK sh
+execution_of_VBITMASK sh
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv) from the stack.
 3. Let i_1^lns be $lanes(sh, cv).
@@ -3967,7 +3967,7 @@ execution_of_BITMASK sh
 6. Let i be $inverse_of_ibits(32, $ilt(S, $storagesize(lnt), i_1, 0)^lns).
 7. Push (I32.CONST i) to the stack.
 
-execution_of_NARROW sh_2 sh_1 sx
+execution_of_VNARROW sh_2 sh_1 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -4010,7 +4010,7 @@ execution_of_VCVTOP sh_2 vcvtop half_u0? sh_1 sx_u1? (ZERO _u2?)
   e. Let cv be $inverse_of_lanes(sh_2, $vcvtop(vcvtop, $storagesize(lnt_1), $storagesize(lnt_2), sx?, i)* ++ 0^lns_1).
   f. Push (VVCONST V128 cv) to the stack.
 
-execution_of_DOT sh_1 sh_2 S
+execution_of_VDOT sh_1 sh_2 S
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -4027,7 +4027,7 @@ execution_of_DOT sh_1 sh_2 S
 14. Let cv be $inverse_of_lanes(sh_1, j'*).
 15. Push (VVCONST V128 cv) to the stack.
 
-execution_of_EXTMUL sh_2 hf sh_1 sx
+execution_of_VEXTMUL sh_2 hf sh_1 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -4039,7 +4039,7 @@ execution_of_EXTMUL sh_2 hf sh_1 sx
 9. Let cv be $inverse_of_lanes(sh_2, $imul($storagesize(lnt_2), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, i), $ext($storagesize(lnt_1), $storagesize(lnt_2), sx, j))^k).
 10. Push (VVCONST V128 cv) to the stack.
 
-execution_of_EXTADD_PAIRWISE sh_2 sh_1 sx
+execution_of_VEXTADD_PAIRWISE sh_2 sh_1 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_1) from the stack.
 3. Let i^k be $lanes(sh_1, cv_1).
