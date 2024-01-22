@@ -381,9 +381,9 @@ and eval_expr expr =
 
 (* Assignment *)
 
-and has_same_keys r1 r2 =
-  let k1 = Record.keys r1 |> List.map string_of_kwd |> List.sort String.compare in
-  let k2 = Record.keys r2 |> List.sort String.compare in
+and has_same_keys re rv =
+  let k1 = Record.keys re |> List.map string_of_kwd |> List.sort String.compare in
+  let k2 = Record.keys rv |> List.sort String.compare in
   k1 = k2
 
 and merge_envs_with_grouping default_env envs =

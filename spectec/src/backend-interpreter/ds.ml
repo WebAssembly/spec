@@ -254,11 +254,6 @@ module WasmContext = struct
     | h :: _ -> h
     | _ -> failwith "Wasm context stack underflow"
 
-  let get_nth_context n =
-    match List.nth_opt !context_stack n with
-    | Some ctx -> ctx
-    | None -> failwith "Wasm context stack underflow"
-
   let init_context () = context_stack := [top_level_context]
 
   let push_context ctx = context_stack := ctx :: !context_stack
@@ -283,17 +278,21 @@ module WasmContext = struct
       "[]" !context_stack
 
   (* Context *)
+
+  let get_value_with_condition f =
+    match List.find_opt (fun (v, _, _) -> f v) !context_stack with
+    | Some (v, _, _) -> v
+    | None -> failwith "Wasm context stack underflow"
+
   let get_current_context () =
     let ctx, _, _ = get_context () in
     ctx
 
   let get_current_frame () =
-    let rec get_current_frame' n =
-      match get_nth_context n with
-      | (FrameV _ as f, _, _) -> f
-      | _ -> get_current_frame' (n+1)
-    in
-    get_current_frame' 0
+    let match_frame = function
+      | FrameV _ -> true
+      | _ -> false
+    in get_value_with_condition match_frame 
 
   let get_module_instance () =
     match get_current_frame () with
@@ -301,12 +300,10 @@ module WasmContext = struct
     | _ -> failwith "Invalid frame"
 
   let get_current_label () =
-    let rec get_current_label' n =
-      match get_nth_context n with
-      | (LabelV _ as l, _, _) -> l
-      | _ -> get_current_label' (n+1)
-    in
-    get_current_label' 0
+    let match_label = function
+      | LabelV _ -> true
+      | _ -> false
+    in get_value_with_condition match_label 
 
   (* Value stack *)
 
