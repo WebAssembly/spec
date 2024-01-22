@@ -4456,11 +4456,11 @@ relation Step_read: `%~>%*`(config, admininstr*)
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, marg)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.78
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m* : m*, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
+  ;; 8-reduction.watsup:861.1-864.81
+  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
     `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, marg)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- if ($ibytes(psl, m)*{m} = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]^(k<psr){k})
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)*{m})
+    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
+    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:866.1-868.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:

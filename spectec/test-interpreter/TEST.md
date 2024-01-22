@@ -1845,7 +1845,7 @@ watsup 0.4 generator
 - 49/49 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_extend.wast =====
-- 14/86 (16.28%)
+- 86/86 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load_splat.wast =====
 - 114/114 (100.00%)
@@ -1958,7 +1958,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [45692/45764] (99.84%)
+Total [45764/45764] (100.00%)
 
 == Complete.
 ```
