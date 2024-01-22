@@ -954,22 +954,22 @@ syntax instr =
   | VVBINOP(vectype, binop_vvectype)
   | VVTERNOP(vectype, ternop_vvectype)
   | VVTESTOP(vectype, testop_vvectype)
-  | SWIZZLE(shape)
-  | SHUFFLE(shape, laneidx*)
-  | SPLAT(shape)
-  | EXTRACT_LANE(shape, sx?, laneidx)
-  | REPLACE_LANE(shape, laneidx)
+  | VSWIZZLE(shape)
+  | VSHUFFLE(shape, laneidx*)
+  | VSPLAT(shape)
+  | VEXTRACT_LANE(shape, sx?, laneidx)
+  | VREPLACE_LANE(shape, laneidx)
   | VUNOP(shape, unop_vectype)
   | VBINOP(shape, binop_vectype)
   | VRELOP(shape, relop_vectype)
   | VISHIFTOP(shape, shiftop_vectype)
-  | ALL_TRUE(shape)
-  | BITMASK(shape)
-  | NARROW(shape, shape, sx)
+  | VALL_TRUE(shape)
+  | VBITMASK(shape)
+  | VNARROW(shape, shape, sx)
   | VCVTOP(shape, cvtop_vectype, half?, shape, sx?, zero)
-  | EXTMUL(shape, half, shape, sx)
-  | DOT(shape, shape, sx)
-  | EXTADD_PAIRWISE(shape, shape, sx)
+  | VEXTMUL(shape, half, shape, sx)
+  | VDOT(shape, shape, sx)
+  | VEXTADD_PAIRWISE(shape, shape, sx)
   | REF.NULL(heaptype)
   | REF.I31
   | REF.FUNC(funcidx)
@@ -1794,22 +1794,22 @@ syntax admininstr =
   | VVBINOP(vectype, binop_vvectype)
   | VVTERNOP(vectype, ternop_vvectype)
   | VVTESTOP(vectype, testop_vvectype)
-  | SWIZZLE(shape)
-  | SHUFFLE(shape, laneidx*)
-  | SPLAT(shape)
-  | EXTRACT_LANE(shape, sx?, laneidx)
-  | REPLACE_LANE(shape, laneidx)
+  | VSWIZZLE(shape)
+  | VSHUFFLE(shape, laneidx*)
+  | VSPLAT(shape)
+  | VEXTRACT_LANE(shape, sx?, laneidx)
+  | VREPLACE_LANE(shape, laneidx)
   | VUNOP(shape, unop_vectype)
   | VBINOP(shape, binop_vectype)
   | VRELOP(shape, relop_vectype)
   | VISHIFTOP(shape, shiftop_vectype)
-  | ALL_TRUE(shape)
-  | BITMASK(shape)
-  | NARROW(shape, shape, sx)
+  | VALL_TRUE(shape)
+  | VBITMASK(shape)
+  | VNARROW(shape, shape, sx)
   | VCVTOP(shape, cvtop_vectype, half?, shape, sx?, zero)
-  | EXTMUL(shape, half, shape, sx)
-  | DOT(shape, shape, sx)
-  | EXTADD_PAIRWISE(shape, shape, sx)
+  | VEXTMUL(shape, half, shape, sx)
+  | VDOT(shape, shape, sx)
+  | VEXTADD_PAIRWISE(shape, shape, sx)
   | REF.NULL(heaptype)
   | REF.I31
   | REF.FUNC(funcidx)
@@ -3002,27 +3002,27 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vvtestop {C : context, vt : vectype, vvtestop : testop_vvectype}:
     `%|-%:%`(C, VVTESTOP_instr(vt, vvtestop), `%->%`([V128_valtype], [I32_valtype]))
 
-  ;; 6-typing.watsup:775.1-776.38
-  rule swizzle {C : context, sh : shape}:
-    `%|-%:%`(C, SWIZZLE_instr(sh), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:775.1-776.39
+  rule vswizzle {C : context, sh : shape}:
+    `%|-%:%`(C, VSWIZZLE_instr(sh), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:778.1-780.35
-  rule shuffle {C : context, laneidx* : laneidx*, sh : shape}:
-    `%|-%:%`(C, SHUFFLE_instr(sh, laneidx*{laneidx}), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  rule vshuffle {C : context, laneidx* : laneidx*, sh : shape}:
+    `%|-%:%`(C, VSHUFFLE_instr(sh, laneidx*{laneidx}), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
     -- (if (laneidx < ($dim(sh) * 2)))*{laneidx}
 
-  ;; 6-typing.watsup:782.1-783.40
-  rule splat {C : context, sh : shape}:
-    `%|-%:%`(C, SPLAT_instr(sh), `%->%`([($unpacked(sh) <: valtype)], [V128_valtype]))
+  ;; 6-typing.watsup:782.1-783.41
+  rule vsplat {C : context, sh : shape}:
+    `%|-%:%`(C, VSPLAT_instr(sh), `%->%`([($unpacked(sh) <: valtype)], [V128_valtype]))
 
   ;; 6-typing.watsup:785.1-787.27
-  rule extract_lane {C : context, laneidx : laneidx, sh : shape, sx? : sx?}:
-    `%|-%:%`(C, EXTRACT_LANE_instr(sh, sx?{sx}, laneidx), `%->%`([V128_valtype], [($unpacked(sh) <: valtype)]))
+  rule vextract_lane {C : context, laneidx : laneidx, sh : shape, sx? : sx?}:
+    `%|-%:%`(C, VEXTRACT_LANE_instr(sh, sx?{sx}, laneidx), `%->%`([V128_valtype], [($unpacked(sh) <: valtype)]))
     -- if (laneidx < $dim(sh))
 
   ;; 6-typing.watsup:789.1-791.27
-  rule replace_lane {C : context, laneidx : laneidx, sh : shape}:
-    `%|-%:%`(C, REPLACE_LANE_instr(sh, laneidx), `%->%`([V128_valtype ($unpacked(sh) <: valtype)], [V128_valtype]))
+  rule vreplace_lane {C : context, laneidx : laneidx, sh : shape}:
+    `%|-%:%`(C, VREPLACE_LANE_instr(sh, laneidx), `%->%`([V128_valtype ($unpacked(sh) <: valtype)], [V128_valtype]))
     -- if (laneidx < $dim(sh))
 
   ;; 6-typing.watsup:793.1-794.37
@@ -3041,33 +3041,33 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
     `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:805.1-806.33
+  ;; 6-typing.watsup:805.1-806.34
   rule vtestop {C : context, sh : shape}:
-    `%|-%:%`(C, ALL_TRUE_instr(sh), `%->%`([V128_valtype], [I32_valtype]))
+    `%|-%:%`(C, VALL_TRUE_instr(sh), `%->%`([V128_valtype], [I32_valtype]))
 
   ;; 6-typing.watsup:808.1-809.55
   rule vcvtop {C : context, hf? : half?, sh : shape, sx? : sx?, vcvtop : cvtop_vectype, zero : zero}:
     `%|-%:%`(C, VCVTOP_instr(sh, vcvtop, hf?{hf}, sh, sx?{sx}, zero), `%->%`([V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:811.1-812.43
-  rule narrow {C : context, sh : shape, sx : sx}:
-    `%|-%:%`(C, NARROW_instr(sh, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:811.1-812.44
+  rule vnarrow {C : context, sh : shape, sx : sx}:
+    `%|-%:%`(C, VNARROW_instr(sh, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:814.1-815.32
-  rule bitmask {C : context, sh : shape}:
-    `%|-%:%`(C, BITMASK_instr(sh), `%->%`([V128_valtype], [I32_valtype]))
+  ;; 6-typing.watsup:814.1-815.33
+  rule vbitmask {C : context, sh : shape}:
+    `%|-%:%`(C, VBITMASK_instr(sh), `%->%`([V128_valtype], [I32_valtype]))
 
-  ;; 6-typing.watsup:817.1-818.40
-  rule dot {C : context, sh : shape, sx : sx}:
-    `%|-%:%`(C, DOT_instr(sh, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:817.1-818.41
+  rule vdot {C : context, sh : shape, sx : sx}:
+    `%|-%:%`(C, VDOT_instr(sh, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:820.1-821.48
-  rule extmul {C : context, half : half, sh : shape, sx : sx}:
-    `%|-%:%`(C, EXTMUL_instr(sh, half, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:820.1-821.49
+  rule vextmul {C : context, half : half, sh : shape, sx : sx}:
+    `%|-%:%`(C, VEXTMUL_instr(sh, half, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:823.1-824.47
-  rule extadd_pairwise {C : context, sh : shape, sx : sx}:
-    `%|-%:%`(C, EXTADD_PAIRWISE_instr(sh, sh, sx), `%->%`([V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:823.1-824.48
+  rule vextadd_pairwise {C : context, sh : shape, sx : sx}:
+    `%|-%:%`(C, VEXTADD_PAIRWISE_instr(sh, sh, sx), `%->%`([V128_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:829.1-831.43
   rule struct.new {C : context, mut* : mut*, x : idx, zt* : storagetype*}:
@@ -3830,43 +3830,43 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if (i = $ine(128, cv_1, $vzero))
 
   ;; 8-reduction.watsup:268.1-273.47
-  rule swizzle {c* : c*, cv' : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, lns : lanesize, lnt : lanetype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SWIZZLE_admininstr(sh)], [VVCONST_admininstr(V128_vectype, cv')])
+  rule vswizzle {c* : c*, cv' : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, lns : lanesize, lnt : lanetype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) VSWIZZLE_admininstr(sh)], [VVCONST_admininstr(V128_vectype, cv')])
     -- if (sh = `%X%`(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_2))
     -- if (c*{c} = $lanes(sh, cv_1) :: 0^(256 - lns){})
     -- if ($lanes(sh, cv') = c*{c}[i*{i}[k]]^(k<lns){k})
 
   ;; 8-reduction.watsup:276.1-280.52
-  rule shuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) SHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vshuffle {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i* : nat*, k^lns : nat^lns, laneidx* : laneidx*, lns : lanesize, lnt : lanetype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) VSHUFFLE_admininstr(sh, laneidx*{laneidx})], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh = `%X%`(lnt, lns))
     -- if (i*{i} = $lanes(sh, cv_1) :: $lanes(sh, cv_2))
     -- if ($lanes(sh, cv) = i*{i}[laneidx*{laneidx}[k]]^(k<lns){k})
 
   ;; 8-reduction.watsup:283.1-286.38
-  rule splat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
-    `%*~>%*`([CONST_admininstr(nt, c_1) SPLAT_admininstr(sh)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vsplat {c_1 : c, cv : c_vectype, nt : numtype, sh : shape}:
+    `%*~>%*`([CONST_admininstr(nt, c_1) VSPLAT_admininstr(sh)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (nt = $unpacked(sh))
     -- if ($lanes(sh, cv) = c_1^$dim(sh){})
 
   ;; 8-reduction.watsup:289.1-293.86
-  rule extract_lane-num {c_2 : c, cv_1 : c_vectype, laneidx : laneidx, lns : lanesize, lnt : lanetype, nt : numtype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) EXTRACT_LANE_admininstr(sh, ?(), laneidx)], [CONST_admininstr(nt, c_2)])
+  rule vextract_lane-num {c_2 : c, cv_1 : c_vectype, laneidx : laneidx, lns : lanesize, lnt : lanetype, nt : numtype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VEXTRACT_LANE_admininstr(sh, ?(), laneidx)], [CONST_admininstr(nt, c_2)])
     -- if (nt = $unpacked(sh))
     -- if (sh = `%X%`(lnt, lns))
     -- if (c_2 = $ext($storagesize(lnt <: storagetype), $storagesize(nt <: storagetype), U_sx, $lanes(sh, cv_1)[laneidx]))
 
   ;; 8-reduction.watsup:295.1-299.87
-  rule extract_lane-pack {c_2 : c, cv_1 : c_vectype, laneidx : laneidx, lns : lanesize, lnt : lanetype, nt : numtype, sh : shape, sx : sx}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) EXTRACT_LANE_admininstr(sh, ?(sx), laneidx)], [CONST_admininstr(nt, c_2)])
+  rule vextract_lane-pack {c_2 : c, cv_1 : c_vectype, laneidx : laneidx, lns : lanesize, lnt : lanetype, nt : numtype, sh : shape, sx : sx}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VEXTRACT_LANE_admininstr(sh, ?(sx), laneidx)], [CONST_admininstr(nt, c_2)])
     -- if (nt = $unpacked(sh))
     -- if (sh = `%X%`(lnt, lns))
     -- if (c_2 = $ext($storagesize(lnt <: storagetype), $storagesize(nt <: storagetype), sx, $lanes(sh, cv_1)[laneidx]))
 
   ;; 8-reduction.watsup:302.1-305.47
-  rule replace_lane {c_2 : c, cv : c_vectype, cv_1 : c_vectype, i* : nat*, laneidx : laneidx, nt : numtype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) CONST_admininstr(nt, c_2) REPLACE_LANE_admininstr(sh, laneidx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vreplace_lane {c_2 : c, cv : c_vectype, cv_1 : c_vectype, i* : nat*, laneidx : laneidx, nt : numtype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) CONST_admininstr(nt, c_2) VREPLACE_LANE_admininstr(sh, laneidx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (i*{i} = $lanes(sh, cv_1))
     -- if ($lanes(sh, cv) = i*{i}[[laneidx] = c_2])
 
@@ -3901,26 +3901,26 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh, cv) = $vishiftop(vishiftop, lnt, i, n)*{i})
 
   ;; 8-reduction.watsup:337.1-340.24
-  rule all_true-true {cv : c_vectype, i_1* : nat*, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) ALL_TRUE_admininstr(sh)], [CONST_admininstr(I32_numtype, 1)])
+  rule vall_true-true {cv : c_vectype, i_1* : nat*, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) VALL_TRUE_admininstr(sh)], [CONST_admininstr(I32_numtype, 1)])
     -- if (i_1*{i_1} = $lanes(sh, cv))
     -- (if (i_1 =/= 0))*{i_1}
 
   ;; 8-reduction.watsup:342.1-344.15
-  rule all_true-false {cv : c_vectype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) ALL_TRUE_admininstr(sh)], [CONST_admininstr(I32_numtype, 0)])
+  rule vall_true-false {cv : c_vectype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) VALL_TRUE_admininstr(sh)], [CONST_admininstr(I32_numtype, 0)])
     -- otherwise
 
   ;; 8-reduction.watsup:347.1-351.63
-  rule bitmask {cv : c_vectype, i : nat, i_1^lns : nat^lns, lns : lanesize, lnt : lanetype, sh : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) BITMASK_admininstr(sh)], [CONST_admininstr(I32_numtype, i)])
+  rule vbitmask {cv : c_vectype, i : nat, i_1^lns : nat^lns, lns : lanesize, lnt : lanetype, sh : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv) VBITMASK_admininstr(sh)], [CONST_admininstr(I32_numtype, i)])
     -- if (sh = `%X%`(lnt, lns))
     -- if (i_1^lns{i_1} = $lanes(sh, cv))
     -- if ($ibits(32, i) = $ilt(S_sx, $storagesize(lnt <: storagetype), i_1, 0)^lns{i_1})
 
   ;; 8-reduction.watsup:354.1-362.47
-  rule narrow {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i_1^lns_1 : nat^lns_1, i_2^lns_1 : nat^lns_1, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, n_1^lns_1 : n^lns_1, n_2^lns_1 : n^lns_1, sh_1 : shape, sh_2 : shape, sx : sx}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) NARROW_admininstr(sh_2, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vnarrow {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i_1^lns_1 : nat^lns_1, i_2^lns_1 : nat^lns_1, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, n_1^lns_1 : n^lns_1, n_2^lns_1 : n^lns_1, sh_1 : shape, sh_2 : shape, sx : sx}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) VNARROW_admininstr(sh_2, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = `%X%`(lnt_1, lns_1))
     -- if (sh_2 = `%X%`(lnt_2, lns_2))
     -- if (i_1^lns_1{i_1} = $lanes(sh_1, cv_1))
@@ -3954,8 +3954,8 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, cv) = $vcvtop(vcvtop, $storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx?{sx}, i)*{i} :: 0^lns_1{})
 
   ;; 8-reduction.watsup:389.1-399.31
-  rule dot {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i_1 : nat, i_2 : nat, j'* : nat*, j_1* : nat*, j_2* : nat*, k' : nat, k_1^k' : nat^k', k_2^k' : nat^k', lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) DOT_admininstr(sh_1, sh_2, S_sx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vdot {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, i_1 : nat, i_2 : nat, j'* : nat*, j_1* : nat*, j_2* : nat*, k' : nat, k_1^k' : nat^k', k_2^k' : nat^k', lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) VDOT_admininstr(sh_1, sh_2, S_sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = `%X%`(lnt_1, lns_1))
     -- if (sh_2 = `%X%`(lnt_2, lns_2))
     -- if (i_1 = $storagesize(lnt_1 <: storagetype))
@@ -3967,8 +3967,8 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
   ;; 8-reduction.watsup:402.1-408.166
-  rule extmul {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vextmul {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) VEXTMUL_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = `%X%`(lnt_1, lns_1))
     -- if (sh_2 = `%X%`(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
@@ -3976,8 +3976,8 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_2, cv) = $imul($storagesize(lnt_2 <: storagetype), $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, i), $ext($storagesize(lnt_1 <: storagetype), $storagesize(lnt_2 <: storagetype), sx, j))^k{i j})
 
   ;; 8-reduction.watsup:411.1-418.30
-  rule extadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) EXTADD_PAIRWISE_admininstr(sh_2, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule vextadd_pairwise {cv : c_vectype, cv_1 : c_vectype, i^k : nat^k, i_1* : nat*, i_2* : nat*, j* : nat*, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VEXTADD_PAIRWISE_admininstr(sh_2, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = `%X%`(lnt_1, lns_1))
     -- if (sh_2 = `%X%`(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1))

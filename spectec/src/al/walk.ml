@@ -44,7 +44,7 @@ let rec walk_expr f e =
       | ListE el -> ListE (List.map new_ el)
       | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
       | LenE e' -> LenE (new_ e')
-      | StrE r -> StrE (Record.map new_ r)
+      | StrE r -> StrE (Record.map id new_ r)
       | AccE (e, p) -> AccE (new_ e, walk_path f p)
       | ExtE (e1, ps, e2, dir) -> ExtE (new_ e1, List.map (walk_path f) ps, new_ e2, dir)
       | UpdE (e1, ps, e2) -> UpdE (new_ e1, List.map (walk_path f) ps, new_ e2)

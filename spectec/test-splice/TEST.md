@@ -882,22 +882,22 @@ warning: rule `Instr_ok/vvunop` was never spliced
 warning: rule `Instr_ok/vvbinop` was never spliced
 warning: rule `Instr_ok/vvternop` was never spliced
 warning: rule `Instr_ok/vvtestop` was never spliced
-warning: rule `Instr_ok/swizzle` was never spliced
-warning: rule `Instr_ok/shuffle` was never spliced
-warning: rule `Instr_ok/splat` was never spliced
-warning: rule `Instr_ok/extract_lane` was never spliced
-warning: rule `Instr_ok/replace_lane` was never spliced
+warning: rule `Instr_ok/vswizzle` was never spliced
+warning: rule `Instr_ok/vshuffle` was never spliced
+warning: rule `Instr_ok/vsplat` was never spliced
+warning: rule `Instr_ok/vextract_lane` was never spliced
+warning: rule `Instr_ok/vreplace_lane` was never spliced
 warning: rule `Instr_ok/vunop` was never spliced
 warning: rule `Instr_ok/vbinop` was never spliced
 warning: rule `Instr_ok/vrelop` was never spliced
 warning: rule `Instr_ok/vishiftop` was never spliced
 warning: rule `Instr_ok/vtestop` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
-warning: rule `Instr_ok/narrow` was never spliced
-warning: rule `Instr_ok/bitmask` was never spliced
-warning: rule `Instr_ok/dot` was never spliced
-warning: rule `Instr_ok/extmul` was never spliced
-warning: rule `Instr_ok/extadd_pairwise` was never spliced
+warning: rule `Instr_ok/vnarrow` was never spliced
+warning: rule `Instr_ok/vbitmask` was never spliced
+warning: rule `Instr_ok/vdot` was never spliced
+warning: rule `Instr_ok/vextmul` was never spliced
+warning: rule `Instr_ok/vextadd_pairwise` was never spliced
 warning: rule `Instr_ok/struct.new` was never spliced
 warning: rule `Instr_ok/struct.new_default` was never spliced
 warning: rule `Instr_ok/struct.get` was never spliced
@@ -1040,27 +1040,27 @@ warning: rule `Step_pure/vvunop` was never spliced
 warning: rule `Step_pure/vvbinop` was never spliced
 warning: rule `Step_pure/vvternop` was never spliced
 warning: rule `Step_pure/vvtestop` was never spliced
-warning: rule `Step_pure/swizzle` was never spliced
-warning: rule `Step_pure/shuffle` was never spliced
-warning: rule `Step_pure/splat` was never spliced
-warning: rule `Step_pure/extract_lane-num` was never spliced
-warning: rule `Step_pure/extract_lane-pack` was never spliced
-warning: rule `Step_pure/replace_lane` was never spliced
+warning: rule `Step_pure/vswizzle` was never spliced
+warning: rule `Step_pure/vshuffle` was never spliced
+warning: rule `Step_pure/vsplat` was never spliced
+warning: rule `Step_pure/vextract_lane-num` was never spliced
+warning: rule `Step_pure/vextract_lane-pack` was never spliced
+warning: rule `Step_pure/vreplace_lane` was never spliced
 warning: rule `Step_pure/vunop` was never spliced
 warning: rule `Step_pure/vbinop-val` was never spliced
 warning: rule `Step_pure/vbinop-trap` was never spliced
 warning: rule `Step_pure/vrelop` was never spliced
 warning: rule `Step_pure/vishiftop` was never spliced
-warning: rule `Step_pure/all_true-true` was never spliced
-warning: rule `Step_pure/all_true-false` was never spliced
-warning: rule `Step_pure/bitmask` was never spliced
-warning: rule `Step_pure/narrow` was never spliced
+warning: rule `Step_pure/vall_true-true` was never spliced
+warning: rule `Step_pure/vall_true-false` was never spliced
+warning: rule `Step_pure/vbitmask` was never spliced
+warning: rule `Step_pure/vnarrow` was never spliced
 warning: rule `Step_pure/vcvtop-normal` was never spliced
 warning: rule `Step_pure/vcvtop-half` was never spliced
 warning: rule `Step_pure/vcvtop-zero` was never spliced
-warning: rule `Step_pure/dot` was never spliced
-warning: rule `Step_pure/extmul` was never spliced
-warning: rule `Step_pure/extadd_pairwise` was never spliced
+warning: rule `Step_pure/vdot` was never spliced
+warning: rule `Step_pure/vextmul` was never spliced
+warning: rule `Step_pure/vextadd_pairwise` was never spliced
 warning: rule `Step_pure/ref.i31` was never spliced
 warning: rule `Step_pure/ref.is_null-true` was never spliced
 warning: rule `Step_pure/ref.is_null-false` was never spliced
@@ -1349,7 +1349,6 @@ warning: definition `with_table` was never spliced
 warning: definition `with_tableinst` was never spliced
 warning: definition `wrap` was never spliced
 warning: definition `ztbytes` was never spliced
-warning: validation prose `ALL_TRUE` was never spliced
 warning: validation prose `ANY.CONVERT_EXTERN` was never spliced
 warning: validation prose `ARRAY.COPY` was never spliced
 warning: validation prose `ARRAY.FILL` was never spliced
@@ -1364,7 +1363,6 @@ warning: validation prose `ARRAY.NEW_ELEM` was never spliced
 warning: validation prose `ARRAY.NEW_FIXED` was never spliced
 warning: validation prose `ARRAY.SET` was never spliced
 warning: validation prose `BINOP` was never spliced
-warning: validation prose `BITMASK` was never spliced
 warning: validation prose `BLOCK` was never spliced
 warning: validation prose `BR` was never spliced
 warning: validation prose `BR_IF` was never spliced
@@ -1379,14 +1377,10 @@ warning: validation prose `CALL_REF` was never spliced
 warning: validation prose `CONST` was never spliced
 warning: validation prose `CVTOP` was never spliced
 warning: validation prose `DATA.DROP` was never spliced
-warning: validation prose `DOT` was never spliced
 warning: validation prose `DROP` was never spliced
 warning: validation prose `ELEM.DROP` was never spliced
-warning: validation prose `EXTADD_PAIRWISE` was never spliced
 warning: validation prose `EXTEND` was never spliced
 warning: validation prose `EXTERN.CONVERT_ANY` was never spliced
-warning: validation prose `EXTMUL` was never spliced
-warning: validation prose `EXTRACT_LANE` was never spliced
 warning: validation prose `GLOBAL.GET` was never spliced
 warning: validation prose `GLOBAL.SET` was never spliced
 warning: validation prose `I31.GET` was never spliced
@@ -1399,7 +1393,6 @@ warning: validation prose `MEMORY.FILL` was never spliced
 warning: validation prose `MEMORY.GROW` was never spliced
 warning: validation prose `MEMORY.INIT` was never spliced
 warning: validation prose `MEMORY.SIZE` was never spliced
-warning: validation prose `NARROW` was never spliced
 warning: validation prose `NOP` was never spliced
 warning: validation prose `REF.AS_NON_NULL` was never spliced
 warning: validation prose `REF.CAST` was never spliced
@@ -1410,20 +1403,16 @@ warning: validation prose `REF.IS_NULL` was never spliced
 warning: validation prose `REF.NULL` was never spliced
 warning: validation prose `REF.TEST` was never spliced
 warning: validation prose `RELOP` was never spliced
-warning: validation prose `REPLACE_LANE` was never spliced
 warning: validation prose `RETURN` was never spliced
 warning: validation prose `RETURN_CALL` was never spliced
 warning: validation prose `RETURN_CALL_INDIRECT` was never spliced
 warning: validation prose `RETURN_CALL_REF` was never spliced
 warning: validation prose `SELECT` was never spliced
-warning: validation prose `SHUFFLE` was never spliced
-warning: validation prose `SPLAT` was never spliced
 warning: validation prose `STORE` was never spliced
 warning: validation prose `STRUCT.GET` was never spliced
 warning: validation prose `STRUCT.NEW` was never spliced
 warning: validation prose `STRUCT.NEW_DEFAULT` was never spliced
 warning: validation prose `STRUCT.SET` was never spliced
-warning: validation prose `SWIZZLE` was never spliced
 warning: validation prose `TABLE.COPY` was never spliced
 warning: validation prose `TABLE.FILL` was never spliced
 warning: validation prose `TABLE.GET` was never spliced
@@ -1434,14 +1423,25 @@ warning: validation prose `TABLE.SIZE` was never spliced
 warning: validation prose `TESTOP` was never spliced
 warning: validation prose `UNOP` was never spliced
 warning: validation prose `UNREACHABLE` was never spliced
+warning: validation prose `VALL_TRUE` was never spliced
 warning: validation prose `VBINOP` was never spliced
+warning: validation prose `VBITMASK` was never spliced
 warning: validation prose `VCVTOP` was never spliced
+warning: validation prose `VDOT` was never spliced
+warning: validation prose `VEXTADD_PAIRWISE` was never spliced
+warning: validation prose `VEXTMUL` was never spliced
+warning: validation prose `VEXTRACT_LANE` was never spliced
 warning: validation prose `VISHIFTOP` was never spliced
 warning: validation prose `VLOAD` was never spliced
 warning: validation prose `VLOAD_LANE` was never spliced
+warning: validation prose `VNARROW` was never spliced
 warning: validation prose `VRELOP` was never spliced
+warning: validation prose `VREPLACE_LANE` was never spliced
+warning: validation prose `VSHUFFLE` was never spliced
+warning: validation prose `VSPLAT` was never spliced
 warning: validation prose `VSTORE` was never spliced
 warning: validation prose `VSTORE_LANE` was never spliced
+warning: validation prose `VSWIZZLE` was never spliced
 warning: validation prose `VUNOP` was never spliced
 warning: validation prose `VVBINOP` was never spliced
 warning: validation prose `VVCONST` was never spliced

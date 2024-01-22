@@ -772,22 +772,22 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- VVTESTOP vt vvtestop : V128 -> I32
 
-rule Instr_ok/swizzle:
-  C |- SWIZZLE sh : V128 V128 -> V128
+rule Instr_ok/vswizzle:
+  C |- VSWIZZLE sh : V128 V128 -> V128
 
-rule Instr_ok/shuffle:
-  C |- SHUFFLE sh laneidx* : V128 V128 -> V128
+rule Instr_ok/vshuffle:
+  C |- VSHUFFLE sh laneidx* : V128 V128 -> V128
   -- (if $(laneidx<$dim(sh) * 2))*
 
-rule Instr_ok/splat:
-  C |- SPLAT sh : $unpacked(sh) -> V128
+rule Instr_ok/vsplat:
+  C |- VSPLAT sh : $unpacked(sh) -> V128
 
-rule Instr_ok/extract_lane:
-  C |- EXTRACT_LANE sh sx? laneidx : V128 -> $unpacked(sh)
+rule Instr_ok/vextract_lane:
+  C |- VEXTRACT_LANE sh sx? laneidx : V128 -> $unpacked(sh)
   -- if laneidx < $dim(sh)
 
-rule Instr_ok/replace_lane:
-  C |- REPLACE_LANE sh laneidx : V128 $unpacked(sh) -> V128
+rule Instr_ok/vreplace_lane:
+  C |- VREPLACE_LANE sh laneidx : V128 $unpacked(sh) -> V128
   -- if laneidx < $dim(sh)
 
 rule Instr_ok/vunop:
@@ -803,25 +803,25 @@ rule Instr_ok/vishiftop:
   C |- VISHIFTOP sh vishiftop : V128 V128 -> V128
 
 rule Instr_ok/vtestop:
-  C |- ALL_TRUE sh : V128 -> I32
+  C |- VALL_TRUE sh : V128 -> I32
 
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
 
-rule Instr_ok/narrow:
-  C |- NARROW sh sh sx : V128 V128 -> V128
+rule Instr_ok/vnarrow:
+  C |- VNARROW sh sh sx : V128 V128 -> V128
 
-rule Instr_ok/bitmask:
-  C |- BITMASK sh : V128 -> I32
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
 
-rule Instr_ok/dot:
-  C |- DOT sh sh sx : V128 V128 -> V128
+rule Instr_ok/vdot:
+  C |- VDOT sh sh sx : V128 V128 -> V128
 
-rule Instr_ok/extmul:
-  C |- EXTMUL sh half sh sx : V128 V128 -> V128
+rule Instr_ok/vextmul:
+  C |- VEXTMUL sh half sh sx : V128 V128 -> V128
 
-rule Instr_ok/extadd_pairwise:
-  C |- EXTADD_PAIRWISE sh sh sx : V128 -> V128
+rule Instr_ok/vextadd_pairwise:
+  C |- VEXTADD_PAIRWISE sh sh sx : V128 -> V128
 
 
 ;; Structure instructions

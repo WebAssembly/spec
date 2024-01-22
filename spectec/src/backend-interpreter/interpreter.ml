@@ -192,12 +192,6 @@ and eval_expr expr =
     begin match dsl_function_call fname args with
     | Some v -> v
     | _ -> raise Exception.MissingReturnValue
-    (*
-    | _ ->
-      string_of_expr expr
-     |> sprintf "%s doesn't have return value"
-     |> failwith
-    *)
     end
   (* Data Structure *)
   | ListE el -> List.map eval_expr el |> listV_of_list
@@ -208,10 +202,7 @@ and eval_expr expr =
   | LenE e ->
     eval_expr e |> unwrap_listv_to_array |> Array.length |> I64.of_int_u |> numV
   | StrE r ->
-    Record.to_list r
-    |> List.map (fun (k, e) -> string_of_kwd k, !e |> eval_expr |> ref)
-    |> Record.of_list
-    |> strV
+    r |> Record.map string_of_kwd eval_expr |> strV
   | AccE (e, p) ->
     let base = eval_expr e in
     access_path base p
@@ -710,8 +701,8 @@ and interp_instr (instr: instr): unit =
     in
     pop_all [] |> listV_of_list |> AlContext.update_env name
   | PopAllI _ -> fail_on_instr "Invalid pop" instr
-  | LetI (pattern, e) ->
-    AlContext.get_env () |> assign pattern (eval_expr e) |> AlContext.set_env
+  | LetI (e1, e2) ->
+    AlContext.get_env () |> assign e1 (eval_expr e2) |> AlContext.set_env
   | PerformI (f, el) ->
     List.map eval_expr el |> dsl_function_call f |> ignore
   | TrapI -> raise Exception.Trap
@@ -754,7 +745,7 @@ and interp_instr (instr: instr): unit =
     let i2 = eval_expr e3 |> al_to_int in   (* length *)
     let a2 = eval_expr e4 |> unwrap_listv_to_array in (* src *)
     assert (Array.length a2 = i2);
-    Array.iteri (fun i v -> Array.set a1 (i1 + i) v) a2
+    Array.blit a2 0 a1 i1 i2
   | ReplaceI (e1, { it = DotP (s, _); _ }, e2) ->
     (match eval_expr e1 with
     | StrV r ->
