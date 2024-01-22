@@ -817,8 +817,8 @@ rule Instr_ok/bitmask:
 rule Instr_ok/dot:
   C |- DOT sh sh sx : V128 V128 -> V128
 
-rule Instr_ok/extmul_half:
-  C |- EXTMUL_HALF sh half sh sx : V128 V128 -> V128
+rule Instr_ok/extmul:
+  C |- EXTMUL sh half sh sx : V128 V128 -> V128
 
 rule Instr_ok/extadd_pairwise:
   C |- EXTADD_PAIRWISE sh sh sx : V128 -> V128
@@ -1025,17 +1025,17 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE (PACKSHAPE psl psr) sx {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
+  C |- VLOAD (SHAPE (PACKSHAPE psl psr) sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= psl/8 * psr)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
+  C |- VLOAD (SPLAT n) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= n/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO n {ALIGN n_A, OFFSET n_O}) x : I32 -> V128
+  C |- VLOAD (ZERO n) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) < n/8)
 

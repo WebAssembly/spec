@@ -142,10 +142,10 @@ $$
 \mathsf{data.drop}~{\mathit{dataidx}} \\ &&|&
 {{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
 {{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-\mathsf{vload}~{\mathit{vloadop}}~{\mathit{memidx}} \\ &&|&
-\mathsf{vload\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{vstore}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-\mathsf{vstore\_lane}~{\mathit{n}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
+\mathsf{v{\scriptstyle128}.load}~{\mathit{vloadop}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{v{\scriptstyle128}.store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -732,7 +732,7 @@ warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok/narrow` was never spliced
 warning: rule `Instr_ok/bitmask` was never spliced
 warning: rule `Instr_ok/dot` was never spliced
-warning: rule `Instr_ok/extmul_half` was never spliced
+warning: rule `Instr_ok/extmul` was never spliced
 warning: rule `Instr_ok/extadd_pairwise` was never spliced
 warning: rule `Instr_ok/struct.new` was never spliced
 warning: rule `Instr_ok/struct.new_default` was never spliced
@@ -895,7 +895,7 @@ warning: rule `Step_pure/vcvtop-normal` was never spliced
 warning: rule `Step_pure/vcvtop-half` was never spliced
 warning: rule `Step_pure/vcvtop-zero` was never spliced
 warning: rule `Step_pure/dot` was never spliced
-warning: rule `Step_pure/extmul_half` was never spliced
+warning: rule `Step_pure/extmul` was never spliced
 warning: rule `Step_pure/extadd_pairwise` was never spliced
 warning: rule `Step_pure/ref.i31` was never spliced
 warning: rule `Step_pure/ref.is_null-true` was never spliced
@@ -1221,7 +1221,7 @@ warning: validation prose `ELEM.DROP` was never spliced
 warning: validation prose `EXTADD_PAIRWISE` was never spliced
 warning: validation prose `EXTEND` was never spliced
 warning: validation prose `EXTERN.CONVERT_ANY` was never spliced
-warning: validation prose `EXTMUL_HALF` was never spliced
+warning: validation prose `EXTMUL` was never spliced
 warning: validation prose `EXTRACT_LANE` was never spliced
 warning: validation prose `GLOBAL.GET` was never spliced
 warning: validation prose `GLOBAL.SET` was never spliced

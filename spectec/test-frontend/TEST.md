@@ -732,17 +732,17 @@ syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:452.1-453.81
+;; 1-syntax.watsup:452.1-456.52
 syntax vloadop =
-  | LOAD(memarg)
-  | SHAPE(packshape, sx, memarg)
-  | SPLAT(nat, memarg)
-  | ZERO(nat, memarg)
+  | _LOAD
+  | SHAPE(packshape, sx)
+  | SPLAT(nat)
+  | ZERO(nat)
 
-;; 1-syntax.watsup:455.1-467.40
+;; 1-syntax.watsup:458.1-470.79
 rec {
 
-;; 1-syntax.watsup:455.1-467.40
+;; 1-syntax.watsup:458.1-470.79
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -790,7 +790,7 @@ syntax instr =
   | BITMASK(shape)
   | NARROW(shape, shape, sx)
   | VCVTOP(shape, cvtop_vectype, half?, shape, sx?, zero)
-  | EXTMUL_HALF(shape, half, shape, sx)
+  | EXTMUL(shape, half, shape, sx)
   | DOT(shape, shape, sx)
   | EXTADD_PAIRWISE(shape, shape, sx)
   | REF.NULL(heaptype)
@@ -841,67 +841,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memarg)
   | STORE(numtype, n?, memidx, memarg)
-  | VLOAD(vloadop, memidx)
+  | VLOAD(vloadop, memidx, memarg)
   | VLOAD_LANE(n, memidx, memarg, laneidx)
   | VSTORE(memidx, memarg)
   | VSTORE_LANE(n, memidx, memarg, laneidx)
 }
 
-;; 1-syntax.watsup:469.1-470.9
+;; 1-syntax.watsup:472.1-473.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:482.1-482.61
+;; 1-syntax.watsup:485.1-485.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:483.1-483.49
+;; 1-syntax.watsup:486.1-486.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:485.1-486.15
+;; 1-syntax.watsup:488.1-489.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:487.1-488.16
+;; 1-syntax.watsup:490.1-491.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:489.1-490.27
+;; 1-syntax.watsup:492.1-493.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:491.1-492.25
+;; 1-syntax.watsup:494.1-495.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:493.1-494.23
+;; 1-syntax.watsup:496.1-497.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:495.1-496.17
+;; 1-syntax.watsup:498.1-499.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:497.1-498.30
+;; 1-syntax.watsup:500.1-501.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:499.1-500.22
+;; 1-syntax.watsup:502.1-503.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:501.1-502.16
+;; 1-syntax.watsup:504.1-505.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:504.1-505.66
+;; 1-syntax.watsup:507.1-508.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:506.1-507.24
+;; 1-syntax.watsup:509.1-510.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:508.1-509.30
+;; 1-syntax.watsup:511.1-512.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:511.1-512.76
+;; 1-syntax.watsup:514.1-515.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -1630,7 +1630,7 @@ syntax admininstr =
   | BITMASK(shape)
   | NARROW(shape, shape, sx)
   | VCVTOP(shape, cvtop_vectype, half?, shape, sx?, zero)
-  | EXTMUL_HALF(shape, half, shape, sx)
+  | EXTMUL(shape, half, shape, sx)
   | DOT(shape, shape, sx)
   | EXTADD_PAIRWISE(shape, shape, sx)
   | REF.NULL(heaptype)
@@ -1681,7 +1681,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memarg)
   | STORE(numtype, n?, memidx, memarg)
-  | VLOAD(vloadop, memidx)
+  | VLOAD(vloadop, memidx, memarg)
   | VLOAD_LANE(n, memidx, memarg, laneidx)
   | VSTORE(memidx, memarg)
   | VSTORE_LANE(n, memidx, memarg, laneidx)
@@ -2884,9 +2884,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule dot {C : context, sh : shape, sx : sx}:
     `%|-%:%`(C, DOT_instr(sh, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:820.1-821.53
-  rule extmul_half {C : context, half : half, sh : shape, sx : sx}:
-    `%|-%:%`(C, EXTMUL_HALF_instr(sh, half, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:820.1-821.48
+  rule extmul {C : context, half : half, sh : shape, sx : sx}:
+    `%|-%:%`(C, EXTMUL_instr(sh, half, sh, sx), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:823.1-824.47
   rule extadd_pairwise {C : context, sh : shape, sx : sx}:
@@ -3103,19 +3103,19 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
 
   ;; 6-typing.watsup:1027.1-1030.34
   rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, {ALIGN n_A, OFFSET n_O}), x), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= ((psl / 8) * psr))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n, {ALIGN n_A, OFFSET n_O}), x), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n, {ALIGN n_A, OFFSET n_O}), x), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -3790,8 +3790,8 @@ relation Step_pure: `%*~>%*`(admininstr*, admininstr*)
     -- if ($lanes(sh_1, cv) = j'*{j'})
 
   ;; 8-reduction.watsup:402.1-408.166
-  rule extmul_half {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
-    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_HALF_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
+  rule extmul {cv : c_vectype, cv_1 : c_vectype, cv_2 : c_vectype, hf : half, i^k : nat^k, j^k : nat^k, k : nat, lns_1 : lanesize, lns_2 : lanesize, lnt_1 : lanetype, lnt_2 : lanetype, sh_1 : shape, sh_2 : shape, sx : sx}:
+    `%*~>%*`([VVCONST_admininstr(V128_vectype, cv_1) VVCONST_admininstr(V128_vectype, cv_2) EXTMUL_admininstr(sh_2, hf, sh_1, sx)], [VVCONST_admininstr(V128_vectype, cv)])
     -- if (sh_1 = `%X%`(lnt_1, lns_1))
     -- if (sh_2 = `%X%`(lnt_2, lns_2))
     -- if (i^k{i} = $lanes(sh_1, cv_1)[$halfop(hf, 0, lns_2) : lns_2])
@@ -4266,45 +4266,45 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.63
   rule vload-oob {i : nat, marg : memarg, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(LOAD_vloadop(marg), x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, marg)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ($size(V128_valtype) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.78
   rule vload-val {cv : c_vectype, i : nat, marg : memarg, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(LOAD_vloadop(marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, marg)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + marg.OFFSET_memarg) : ($size(V128_valtype) / 8)])
 
   ;; 8-reduction.watsup:857.1-859.61
   rule vload-shape-oob {i : nat, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, marg)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:861.1-864.81
   rule vload-shape-val {cv : c_vectype, i : nat, m^psr : m^psr, marg : memarg, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, marg)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + marg.OFFSET_memarg) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){m}
     -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
 
   ;; 8-reduction.watsup:866.1-868.53
   rule vload-splat-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n, marg), x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, marg)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, marg : memarg, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, marg)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + marg.OFFSET_memarg) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.53
   rule vload-zero-oob {i : nat, marg : memarg, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n, marg), x)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, marg)]), [TRAP_admininstr])
     -- if (((i + marg.OFFSET_memarg) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, marg : memarg, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n, marg), x)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, marg)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + marg.OFFSET_memarg) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 

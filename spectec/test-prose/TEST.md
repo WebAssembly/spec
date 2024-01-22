@@ -2491,7 +2491,7 @@ validation_of_BITMASK sh
 validation_of_DOT sh sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_EXTMUL_HALF sh half sh sx
+validation_of_EXTMUL sh half sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_EXTADD_PAIRWISE sh sh sx
@@ -2723,7 +2723,7 @@ validation_of_STORE nt n? x { ALIGN: n_A; OFFSET: n_O; }
 - Let mt be C.MEM[x].
 - The instruction is valid with type ([I32, nt] -> []).
 
-validation_of_VLOAD (SHAPE (PACKSHAPE psl psr) sx { ALIGN: n_A; OFFSET: n_O; }) x
+validation_of_VLOAD (SHAPE (PACKSHAPE psl psr) sx) x { ALIGN: n_A; OFFSET: n_O; }
 - |C.MEM| must be greater than x.
 - (2 ^ n_A) must be less than or equal to ((psl / 8) · psr).
 - Let mt be C.MEM[x].
@@ -4027,7 +4027,7 @@ execution_of_DOT sh_1 sh_2 S
 14. Let cv be $inverse_of_lanes(sh_1, j'*).
 15. Push (VVCONST V128 cv) to the stack.
 
-execution_of_EXTMUL_HALF sh_2 hf sh_1 sx
+execution_of_EXTMUL sh_2 hf sh_1 sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
@@ -4608,17 +4608,16 @@ execution_of_LOAD nt n_sx_u0? x marg
   d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
-execution_of_VLOAD vload_u0 x
+execution_of_VLOAD vload_u0 x marg
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If vload_u0 is of the case LOAD, then:
-  a. Let (LOAD marg) be vload_u0.
-  b. If (((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
-    1) Trap.
-  c. Let cv be $inverse_of_vtbytes(V128, $mem(x).DATA[(i + marg.OFFSET) : ($size(V128) / 8)]).
-  d. Push (VVCONST V128 cv) to the stack.
-4. If vload_u0 is of the case SHAPE, then:
-  a. Let (SHAPE y_0 sx marg) be vload_u0.
+3. If ((((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|) and (vload_u0 is _LOAD)), then:
+  a. Trap.
+4. If (vload_u0 is _LOAD), then:
+  a. Let cv be $inverse_of_vtbytes(V128, $mem(x).DATA[(i + marg.OFFSET) : ($size(V128) / 8)]).
+  b. Push (VVCONST V128 cv) to the stack.
+5. If vload_u0 is of the case SHAPE, then:
+  a. Let (SHAPE y_0 sx) be vload_u0.
   b. Assert: Due to validation, y_0 is of the case PACKSHAPE.
   c. Let (PACKSHAPE psl psr) be y_0.
   d. If (((i + marg.OFFSET) + ((psl · psr) / 8)) > |$mem(x).DATA|), then:
@@ -4626,16 +4625,16 @@ execution_of_VLOAD vload_u0 x
   e. Let m^psr be $inverse_of_ibytes(psl, $mem(x).DATA[((i + marg.OFFSET) + ((k · psl) / 8)) : (psl / 8)])^(k<psr).
   f. Let cv be $inverse_of_lanes(($ishape((psl · 2)) X psr), $ext(psl, (psl · 2), sx, m)^psr).
   g. Push (VVCONST V128 cv) to the stack.
-5. If vload_u0 is of the case SPLAT, then:
-  a. Let (SPLAT n marg) be vload_u0.
+6. If vload_u0 is of the case SPLAT, then:
+  a. Let (SPLAT n) be vload_u0.
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let l be (128 / n).
   d. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
   e. Let cv be $inverse_of_lanes(($ishape(n) X l), m^l).
   f. Push (VVCONST V128 cv) to the stack.
-6. If vload_u0 is of the case ZERO, then:
-  a. Let (ZERO n marg) be vload_u0.
+7. If vload_u0 is of the case ZERO, then:
+  a. Let (ZERO n) be vload_u0.
   b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).

@@ -193,13 +193,13 @@ $${rule+: Step_pure/vcvtop-*}
 
 $${rule+: Step_pure/dot}
 
-.. _exec-EXTMUL_HALF:
+.. _exec-EXTMUL:
 
-%{prose-algo: EXTMUL_HALF}
+%{prose-algo: EXTMUL}
 
 \
 
-$${rule+: Step_pure/extmul_half}
+$${rule+: Step_pure/extmul}
 
 .. _exec-EXTADD_PAIRWISE:
 
@@ -597,6 +597,38 @@ $${rule+: Step_read/load-*}
 \
 
 $${rule+: Step/store-*}
+
+.. _exec-VLOAD:
+
+%{prose-algo: VLOAD}
+
+\
+
+$${rule+: Step_read/vload-*}
+
+.. _exec-VLOAD_LANE:
+
+%{prose-algo: VLOAD_LANE}
+
+\
+
+$${rule+: Step_read/vload_lane-*}
+
+.. _exec-VSTORE:
+
+%{prose-algo: VSTORE}
+
+\
+
+$${rule+: Step/vstore-*}
+
+.. _exec-VSTORE_LANE:
+
+%{prose-algo: VSTORE_LANE}
+
+\
+
+$${rule+: Step/vstore_lane-*}
 
 .. _exec-MEMORY.SIZE:
 

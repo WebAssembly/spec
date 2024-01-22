@@ -432,13 +432,13 @@ $${rule: Instr_ok/bitmask}
 
 $${rule: Instr_ok/dot}
 
-.. _valid-EXTMUL_HALF:
+.. _valid-EXTMUL:
 
-%{prose-pred: EXTMUL_HALF}
+%{prose-pred: EXTMUL}
 
 \
 
-$${rule: Instr_ok/extmul_half}
+$${rule: Instr_ok/extmul}
 
 .. _valid-EXTADD_PAIRWISE:
 
@@ -639,14 +639,6 @@ $${rule: Instr_ok/vload}
 $${rule: Instr_ok/vload-splat}
 $${rule: Instr_ok/vload-zero}
 
-.. _valid-VSTORE:
-
-%{prose-pred: VSTORE_LANE}
-
-\
-
-$${rule: Instr_ok/vstore_lane}
-
 .. _valid-VLOAD_LANE:
 
 %{prose-pred: VLOAD_LANE}
@@ -654,6 +646,23 @@ $${rule: Instr_ok/vstore_lane}
 \
 
 $${rule: Instr_ok/vload_lane}
+
+.. _valid-VSTORE:
+
+%{prose-pred: VSTORE}
+
+\
+
+$${rule: Instr_ok/vstore}
+
+.. _valid-VSTORE_LANE:
+
+%{prose-pred: VSTORE_LANE}
+
+\
+
+$${rule: Instr_ok/vstore_lane}
+
 
 .. _valid-MEMORY.SIZE:
 
