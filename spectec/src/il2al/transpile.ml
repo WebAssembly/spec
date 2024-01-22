@@ -350,19 +350,20 @@ let simplify_record_concat expr =
   { expr with it = expr' }
 
 type count = One of string | Many
+module Counter = Map.Make (String)
 let infer_case_assert instrs =
-  let case_count = ref Record.empty in
+  let case_count = ref Counter.empty in
 
   let rec handle_cond c mt_then mt_else =
     match c.it with
     | IsCaseOfE (e, kwd) ->
       let k = Print.string_of_expr e in
       let v = One (fst kwd) in
-      let v_opt = Record.find_opt k !case_count in
+      let v_opt = Counter.find_opt k !case_count in
       let v' = if mt_else && match v_opt with None -> true | Some v' -> v = v' then v else Many in
-      case_count := Record.add k v' !case_count
+      case_count := Counter.add k v' !case_count
     | HasTypeE ({ it = VarE id; _ }, _) ->
-      case_count := Record.add id Many !case_count
+      case_count := Counter.add id Many !case_count
     | UnE (NotOp, c') -> handle_cond c' mt_else mt_then
     | BinE ((AndOp | OrOp), c1, c2) -> handle_cond c1 mt_then mt_else; handle_cond c2 mt_then mt_else
     | _ -> ()
@@ -378,7 +379,7 @@ let infer_case_assert instrs =
   let is_single_case_check c =
     match c.it with
     | IsCaseOfE (e, _) -> (
-      match Record.find_opt (Print.string_of_expr e) !case_count with
+      match Counter.find_opt (Print.string_of_expr e) !case_count with
       | None | Some Many -> false
       | _ -> true )
     | _ -> false
