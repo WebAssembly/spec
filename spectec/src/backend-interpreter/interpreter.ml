@@ -1,9 +1,10 @@
 open Reference_interpreter
-open Al
-open Ast
-open Print
 open Construct
 open Ds
+open Al
+open Ast
+open Al_util
+open Print
 open Util
 open Source
 open Printf

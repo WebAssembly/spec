@@ -103,19 +103,6 @@ let listV a = ListV (ref a)
 let listV_of_list l = Array.of_list l |> listV
 let zero = numV 0L
 
-let get_name = function
-  | RuleA ((name, _), _, _) -> name
-  | FuncA (name, _, _) -> name
-
-let get_param = function
-  | RuleA (_, params, _) -> params
-  | FuncA (_, params, _) -> params
-
-let get_body = function
-  | RuleA (_, _, body) -> body
-  | FuncA (_, _, body) -> body
-
-
 (* Failure *)
 
 let fail ty v =

@@ -4,6 +4,13 @@ open Util
 open Reference_interpreter
 open Ds
 
+(* Helper functions *)
+let i32_to_const i = CaseV ("CONST", [ singleton "I32"; al_of_int32 i ])
+let i64_to_const i = CaseV ("CONST", [ singleton "I64"; al_of_int64 i ])
+let f32_to_const f = CaseV ("CONST", [ singleton "F32"; al_of_float32 f ])
+let f64_to_const f = CaseV ("CONST", [ singleton "F64"; al_of_float64 f ])
+
+
 let builtin () =
 
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
@@ -52,10 +59,10 @@ let builtin () =
   ] in
   (* Builtin globals *)
   let globals = List.rev [
-    "global_i32", 666   |> I32.of_int_u |> Numerics.i32_to_const |> create_globalinst (TextV "global_type");
-    "global_i64", 666   |> I64.of_int_u |> Numerics.i64_to_const |> create_globalinst (TextV "global_type");
-    "global_f32", 666.6 |> F32.of_float |> Numerics.f32_to_const |> create_globalinst (TextV "global_type");
-    "global_f64", 666.6 |> F64.of_float |> Numerics.f64_to_const |> create_globalinst (TextV "global_type");
+    "global_i32", 666   |> I32.of_int_u |> i32_to_const |> create_globalinst (TextV "global_type");
+    "global_i64", 666   |> I64.of_int_u |> i64_to_const |> create_globalinst (TextV "global_type");
+    "global_f32", 666.6 |> F32.of_float |> f32_to_const |> create_globalinst (TextV "global_type");
+    "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TextV "global_type");
   ] in
   (* Builtin tables *)
   let nulls = CaseV ("REF.NULL", [ singleton "FUNC" ]) |> Array.make 10 in
