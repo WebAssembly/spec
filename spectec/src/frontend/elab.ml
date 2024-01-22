@@ -140,14 +140,6 @@ let find_case cases atom at t =
   | None -> error_atom at atom t "unknown case"
 
 
-let rec prefix_id id = prefix_id' id.it $ id.at
-and prefix_id' id =
-  match String.index_opt id '_', String.index_opt id '\'' with
-  | None, None -> id
-  | None, Some n | Some n, None -> String.sub id 0 n
-  | Some n1, Some n2 -> String.sub id 0 (min n1 n2)
-
-
 (* Type Accessors *)
 
 let rec arg_subst s ps args =
@@ -250,15 +242,15 @@ let as_struct_typ phrase env dir t at : typfield list =
 let rec as_variant_typid' phrase env id args at : typcase list * dots =
   match as_defined_typid' env id args at with
   | VarT (id', args'), `Alias -> as_variant_typid' phrase env id' args' at
-  | CaseT (_dots1, ids, cases, dots2), _ ->
-    let casess = map_filter_nl_list (fun id -> as_variant_typid "" env id []) ids in
+  | CaseT (_dots1, ts, cases, dots2), _ ->
+    let casess = map_filter_nl_list (fun t -> as_variant_typ "" env Infer t at) ts in
     List.concat (filter_nl cases :: List.map fst casess), dots2
   | _ -> error_dir_typ id.at phrase Infer (VarT (id, args) $ id.at) "| ..."
 
 and as_variant_typid phrase env id args : typcase list * dots =
   as_variant_typid' phrase env id args id.at
 
-let as_variant_typ phrase env dir t at : typcase list * dots =
+and as_variant_typ phrase env dir t at : typcase list * dots =
   match expand_singular env t with
   | VarT (id, args) -> as_variant_typid' phrase env id args at
   | _ -> error_dir_typ at phrase dir t "| ..."
@@ -460,7 +452,7 @@ let rec elab_iter env iter : Il.iter =
   | List1 -> Il.List1
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
-      let t = find "variable" env.vars (prefix_id id) in
+      let t = find "variable" env.vars (strip_var_suffix id) in
       if not (equiv_typ env t (NumT NatT $ id.at)) then
         error_typ e.at "iteration index" (NumT NatT $ id.at)
     ) id_opt;
@@ -495,10 +487,10 @@ and elab_typ_definition env id t : Il.deftyp =
     let tfs' = filter_nl tfs in
     check_atoms "record" "field" tfs' t.at;
     Il.StructT (map_filter_nl_list (elab_typfield env) tfs)
-  | CaseT (dots1, ids, cases, _dots2) ->
+  | CaseT (dots1, ts, cases, _dots2) ->
     let cases0 =
       if dots1 = Dots then fst (as_variant_typid "own type" env id []) else [] in
-    let casess = map_filter_nl_list (fun id -> as_variant_typid "parent type" env id []) ids in
+    let casess = map_filter_nl_list (fun t -> as_variant_typ "parent type" env Infer t t.at) ts in
     let cases' =
       List.flatten (cases0 :: List.map fst casess @ [filter_nl cases]) in
     let tcs' = List.map (elab_typcase env t.at) cases' in
@@ -612,13 +604,13 @@ and infer_exp' env e : Il.exp' * typ =
   | VarE (id, args) ->
     if args <> [] then
       Source.error e.at "syntax" "malformed expression";
-    let t = find "variable" env.vars (prefix_id id) in
+    let t = find "variable" env.vars (strip_var_suffix id) in
     Il.VarE id, t
   | AtomE _ ->
     error e.at "cannot infer type of atom"
   | BoolE b ->
     Il.BoolE b, BoolT $ e.at
-  | NatE n | HexE n | CharE n ->
+  | NatE (_op, n) ->
     Il.NatE n, NumT NatT $ e.at
   | TextE s ->
     Il.TextE s, TextT $ e.at
@@ -743,9 +735,9 @@ and elab_exp' env e t : Il.exp' =
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)
   match e.it with
-  | VarE (id, []) when not (Map.mem (prefix_id id).it env.vars) ->
+  | VarE (id, []) when not (Map.mem (strip_var_suffix id).it env.vars) ->
     (* Infer type of variable *)
-    env.vars <- bind "variable" env.vars (prefix_id id) t;
+    env.vars <- bind "variable" env.vars (strip_var_suffix id) t;
     Il.VarE id
   | VarE _ ->
     let e', t' = infer_exp env e in
@@ -753,7 +745,7 @@ and elab_exp' env e t : Il.exp' =
   | BoolE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "boolean" env e' t' t
-  | NatE _ | HexE _ | CharE _ ->
+  | NatE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "number" env e' t' t
   | TextE _ ->
@@ -1142,6 +1134,12 @@ and cast_exp' phrase env e' t1 t2 : Il.exp' =
     Il.SubE (e', elab_typ env t1, elab_typ env t2)
   else
     match expand env t2 with
+    | RangeT _ ->
+      if sub_typ env t1 (NumT IntT $ t1.at) then
+        (* TODO: can't generally prove it's in range *)
+        e'.it
+      else
+        error e'.at ("literal not in range of type `" ^ string_of_typ t2 ^ "`")
     | IterT (t21, Opt) ->
       Il.OptE (Some (cast_exp phrase env e' t1 t21))
     | IterT (t21, (List | List1)) ->
@@ -1202,7 +1200,7 @@ and elab_sym env g : typ * env =
     let ps, t, _gram = find "grammar" env.syms id in
     let _es', s = elab_args env ps args g.at in
     Subst.subst_typ s t, env
-  | NatG _ | HexG _ | CharG _ -> NumT NatT $ g.at, env
+  | NatG _ -> NumT NatT $ g.at, env
   | TextG _ -> TextT $ g.at, env
   | EpsG -> TupT [] $ g.at, env
   | SeqG gs ->
@@ -1260,7 +1258,7 @@ and elab_gram env gram t =
 and make_binds env free dims at : Il.binds =
   List.map (fun id' ->
     let id = id' $ at in
-    let t = find "variable" env.vars (prefix_id id) in
+    let t = find "variable" env.vars (strip_var_suffix id) in
     let t' = elab_typ env t in
     let ctx = List.map (elab_iter env) (Multiplicity.Env.find id.it dims) in
     (id, t', ctx)
@@ -1476,13 +1474,14 @@ let elab_def env d : Il.def list =
     let free = (Free.free_def d).Free.varid in
     let binds' = make_binds env' free dims d.at in
     let rule' = Il.RuleD (id2, binds', mixop, tup_exp' es' e.at, prems') $ d.at in
-    env.rels <- rebind "relation" env.rels id1 (t, rule'::rules');
+    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule'] );
     []
   | VarD (id, t, _hints) ->
     let _t' = elab_typ env t in
     env.vars <- rebind "variable" env.vars id t;
     []
   | DecD (id, ps, t, hints) ->
+Printf.printf "[elab def] %s\n%!" (El.Print.string_of_def d);
     let ts', env' = elab_params (local_env env) ps in
     let t' = elab_typ env' t in
     env.defs <- bind "function" env.defs id (ps, t, []);
@@ -1524,7 +1523,7 @@ let elab_def env d : Il.def list =
     in
     let binds' = make_binds env' free dims d.at in
     let clause' = Il.DefD (binds', e1', e2', prems') $ d.at in
-    env.defs <- rebind "definition" env.defs id (ps, t, clause'::clauses');
+    env.defs <- rebind "definition" env.defs id (ps, t, clauses' @ [clause']);
     []
   | SepD ->
     []
@@ -1567,10 +1566,10 @@ let populate_def env d' : Il.def =
   | Il.SynD _ | Il.HintD _ -> d'
   | Il.RelD (id, mixop, t', []) ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', List.rev rules') $ d'.at
+    Il.RelD (id, mixop, t', rules') $ d'.at
   | Il.DecD (id, t1', t2', []) ->
     let _, _, clauses' = find "function" env.defs id in
-    Il.DecD (id, t1', t2', List.rev clauses') $ d'.at
+    Il.DecD (id, t1', t2', clauses') $ d'.at
   | _ ->
     assert false
 

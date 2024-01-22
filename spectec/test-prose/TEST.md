@@ -10,6 +10,79 @@ Generating prose for Wasm 1.0...
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
+[elab def] def Ki : nat
+[elab def] def min(nat, nat) : nat
+[elab def] def sum(nat*) : nat
+[elab def] def signif(N) : nat
+[elab def] def expon(N) : nat
+[elab def] def M(N) : nat
+[elab def] def E(N) : nat
+[elab def] def fzero(N) : fN(N)
+[elab def] def size(valtype) : nat
+[elab def] def memop0 : memop
+[elab def] def signed(N, nat) : int
+[elab def] def invsigned(N, int) : nat
+[elab def] def unop(unop_valtype, valtype, c) : c_valtype*
+[elab def] def binop(binop_valtype, valtype, c, c) : c_valtype*
+[elab def] def testop(testop_valtype, valtype, c) : c_valtype
+[elab def] def relop(relop_valtype, valtype, c, c) : c_valtype
+[elab def] def cvtop(cvtop, valtype, valtype, sx?, c) : c_valtype*
+[elab def] def wrap(nat, nat, c) : nat
+[elab def] def ext(nat, nat, sx, c) : c_valtype
+[elab def] def ibytes(N, iN(N)) : byte*
+[elab def] def fbytes(N, fN(N)) : byte*
+[elab def] def bytes(valtype, c) : byte*
+[elab def] def invibytes(N, byte*) : iN(N)
+[elab def] def invfbytes(N, byte*) : fN(N)
+[elab def] def default(valtype) : val
+[elab def] def funcsxv(externval*) : funcaddr*
+[elab def] def globalsxv(externval*) : globaladdr*
+[elab def] def tablesxv(externval*) : tableaddr*
+[elab def] def memsxv(externval*) : memaddr*
+[elab def] def store(state) : store
+[elab def] def frame(state) : frame
+[elab def] def funcaddr(state) : funcaddr*
+[elab def] def funcinst(state) : funcinst*
+[elab def] def globalinst(state) : globalinst*
+[elab def] def tableinst(state) : tableinst*
+[elab def] def meminst(state) : meminst*
+[elab def] def moduleinst(state) : moduleinst
+[elab def] def type(state, typeidx) : functype
+[elab def] def func(state, funcidx) : funcinst
+[elab def] def global(state, globalidx) : globalinst
+[elab def] def table(state, tableidx) : tableinst
+[elab def] def mem(state, memidx) : meminst
+[elab def] def local(state, localidx) : val
+[elab def] def with_local(state, localidx, val) : state
+[elab def] def with_global(state, globalidx, val) : state
+[elab def] def with_table(state, tableidx, nat, funcaddr) : state
+[elab def] def with_tableinst(state, tableidx, tableinst) : state
+[elab def] def with_mem(state, memidx, nat, nat, byte*) : state
+[elab def] def with_meminst(state, memidx, meminst) : state
+[elab def] def growtable(tableinst, nat) : tableinst
+[elab def] def growmemory(meminst, nat) : meminst
+[elab def] def funcs(externval*) : funcaddr*
+[elab def] def globals(externval*) : globaladdr*
+[elab def] def tables(externval*) : tableaddr*
+[elab def] def mems(externval*) : memaddr*
+[elab def] def allocfunc(store, moduleinst, func) : (store, funcaddr)
+[elab def] def allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
+[elab def] def allocglobal(store, globaltype, val) : (store, globaladdr)
+[elab def] def allocglobals(store, globaltype*, val*) : (store, globaladdr*)
+[elab def] def alloctable(store, tabletype) : (store, tableaddr)
+[elab def] def alloctables(store, tabletype*) : (store, tableaddr*)
+[elab def] def allocmem(store, memtype) : (store, memaddr)
+[elab def] def allocmems(store, memtype*) : (store, memaddr*)
+[elab def] def instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
+[elab def] def allocmodule(store, module, externval*, val*) : (store, moduleinst)
+[elab def] def concat_instr((instr*)*) : instr*
+[elab def] def initelem(store, moduleinst, u32*, (funcaddr*)*) : store
+[elab def] def initdata(store, moduleinst, u32*, (byte*)*) : store
+[elab def] def instantiate(store, module, externval*) : config
+[elab def] def invoke(store, funcaddr, val*) : config
+[elab def] def concat_bytes((byte*)*) : byte*
+[elab def] def utf8(name) : byte*
+[elab def] def concat_locals((local*)*) : local*
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
@@ -914,6 +987,96 @@ Generating prose for Wasm 2.0...
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
+[elab def] def Ki : nat
+[elab def] def min(nat, nat) : nat
+[elab def] def sum(nat*) : nat
+[elab def] def signif(N) : nat
+[elab def] def expon(N) : nat
+[elab def] def M(N) : nat
+[elab def] def E(N) : nat
+[elab def] def fzero(N) : fN(N)
+[elab def] def size(valtype) : nat
+[elab def] def free_dataidx_instr(instr) : dataidx*
+[elab def] def free_dataidx_instrs(instr*) : dataidx*
+[elab def] def free_dataidx_expr(expr) : dataidx*
+[elab def] def free_dataidx_func(func) : dataidx*
+[elab def] def free_dataidx_funcs(func*) : dataidx*
+[elab def] def memop0 : memop
+[elab def] def s33_to_u32(s33) : u32
+[elab def] def signed(N, nat) : int
+[elab def] def invsigned(N, int) : nat
+[elab def] def unop(unop_numtype, numtype, c) : c_numtype*
+[elab def] def binop(binop_numtype, numtype, c, c) : c_numtype*
+[elab def] def testop(testop_numtype, numtype, c) : c_numtype
+[elab def] def relop(relop_numtype, numtype, c, c) : c_numtype
+[elab def] def cvtop(cvtop, numtype, numtype, sx?, c) : c_numtype*
+[elab def] def wrap(nat, nat, c) : nat
+[elab def] def ext(nat, nat, sx, c) : c_numtype
+[elab def] def ibytes(N, iN(N)) : byte*
+[elab def] def fbytes(N, fN(N)) : byte*
+[elab def] def ntbytes(numtype, c) : byte*
+[elab def] def invibytes(N, byte*) : iN(N)
+[elab def] def invfbytes(N, byte*) : fN(N)
+[elab def] def default(valtype) : val
+[elab def] def funcsxv(externval*) : funcaddr*
+[elab def] def globalsxv(externval*) : globaladdr*
+[elab def] def tablesxv(externval*) : tableaddr*
+[elab def] def memsxv(externval*) : memaddr*
+[elab def] def store(state) : store
+[elab def] def frame(state) : frame
+[elab def] def funcaddr(state) : funcaddr*
+[elab def] def funcinst(state) : funcinst*
+[elab def] def globalinst(state) : globalinst*
+[elab def] def tableinst(state) : tableinst*
+[elab def] def meminst(state) : meminst*
+[elab def] def eleminst(state) : eleminst*
+[elab def] def datainst(state) : datainst*
+[elab def] def moduleinst(state) : moduleinst
+[elab def] def type(state, typeidx) : functype
+[elab def] def func(state, funcidx) : funcinst
+[elab def] def global(state, globalidx) : globalinst
+[elab def] def table(state, tableidx) : tableinst
+[elab def] def mem(state, memidx) : meminst
+[elab def] def elem(state, tableidx) : eleminst
+[elab def] def data(state, dataidx) : datainst
+[elab def] def local(state, localidx) : val
+[elab def] def with_local(state, localidx, val) : state
+[elab def] def with_global(state, globalidx, val) : state
+[elab def] def with_table(state, tableidx, nat, ref) : state
+[elab def] def with_tableinst(state, tableidx, tableinst) : state
+[elab def] def with_mem(state, memidx, nat, nat, byte*) : state
+[elab def] def with_meminst(state, memidx, meminst) : state
+[elab def] def with_elem(state, elemidx, ref*) : state
+[elab def] def with_data(state, dataidx, byte*) : state
+[elab def] def growtable(tableinst, nat, ref) : tableinst
+[elab def] def growmemory(meminst, nat) : meminst
+[elab def] def blocktype(state, blocktype) : functype
+[elab def] def funcs(externval*) : funcaddr*
+[elab def] def globals(externval*) : globaladdr*
+[elab def] def tables(externval*) : tableaddr*
+[elab def] def mems(externval*) : memaddr*
+[elab def] def allocfunc(store, moduleinst, func) : (store, funcaddr)
+[elab def] def allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
+[elab def] def allocglobal(store, globaltype, val) : (store, globaladdr)
+[elab def] def allocglobals(store, globaltype*, val*) : (store, globaladdr*)
+[elab def] def alloctable(store, tabletype) : (store, tableaddr)
+[elab def] def alloctables(store, tabletype*) : (store, tableaddr*)
+[elab def] def allocmem(store, memtype) : (store, memaddr)
+[elab def] def allocmems(store, memtype*) : (store, memaddr*)
+[elab def] def allocelem(store, reftype, ref*) : (store, elemaddr)
+[elab def] def allocelems(store, reftype*, (ref*)*) : (store, elemaddr*)
+[elab def] def allocdata(store, byte*) : (store, dataaddr)
+[elab def] def allocdatas(store, (byte*)*) : (store, dataaddr*)
+[elab def] def instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
+[elab def] def allocmodule(store, module, externval*, val*, (ref*)*) : (store, moduleinst)
+[elab def] def concat_instr((instr*)*) : instr*
+[elab def] def runelem(elem, idx) : instr*
+[elab def] def rundata(data, idx) : instr*
+[elab def] def instantiate(store, module, externval*) : config
+[elab def] def invoke(store, funcaddr, val*) : config
+[elab def] def concat_bytes((byte*)*) : byte*
+[elab def] def utf8(name) : byte*
+[elab def] def concat_locals(local**) : local*
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...
@@ -2213,6 +2376,170 @@ Generating prose for Wasm 3.0...
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
+[elab def] def Ki : nat
+[elab def] def min(nat, nat) : nat
+[elab def] def sum(nat*) : nat
+[elab def] def signif(N) : nat
+[elab def] def expon(N) : nat
+[elab def] def M(N) : nat
+[elab def] def E(N) : nat
+[elab def] def fzero(N) : fN(N)
+[elab def] def setminus(idx*, idx*) : idx*
+[elab def] def setminus1(idx, idx*) : idx*
+[elab def] def free_dataidx_instr(instr) : dataidx*
+[elab def] def free_dataidx_instrs(instr*) : dataidx*
+[elab def] def free_dataidx_expr(expr) : dataidx*
+[elab def] def free_dataidx_func(func) : dataidx*
+[elab def] def free_dataidx_funcs(func*) : dataidx*
+[elab def] def concat_bytes((byte*)*) : byte*
+[elab def] def size(valtype) : nat
+[elab def] def packedsize(packedtype) : nat
+[elab def] def storagesize(storagetype) : nat
+[elab def] def unpacktype(storagetype) : valtype
+[elab def] def unpacknumtype(storagetype) : numtype
+[elab def] def sxfield(storagetype) : sx?
+[elab def] def diffrt(reftype, reftype) : reftype
+[elab def] def idx(typeidx) : typevar
+[elab def] def subst_typevar(typevar, typevar*, heaptype*) : heaptype
+[elab def] def subst_numtype(numtype, typevar*, heaptype*) : numtype
+[elab def] def subst_vectype(vectype, typevar*, heaptype*) : vectype
+[elab def] def subst_heaptype(heaptype, typevar*, heaptype*) : heaptype
+[elab def] def subst_reftype(reftype, typevar*, heaptype*) : reftype
+[elab def] def subst_valtype(valtype, typevar*, heaptype*) : valtype
+[elab def] def subst_packedtype(packedtype, typevar*, heaptype*) : packedtype
+[elab def] def subst_storagetype(storagetype, typevar*, heaptype*) : storagetype
+[elab def] def subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype
+[elab def] def subst_comptype(comptype, typevar*, heaptype*) : comptype
+[elab def] def subst_subtype(subtype, typevar*, heaptype*) : subtype
+[elab def] def subst_rectype(rectype, typevar*, heaptype*) : rectype
+[elab def] def subst_deftype(deftype, typevar*, heaptype*) : deftype
+[elab def] def subst_globaltype(globaltype, typevar*, heaptype*) : globaltype
+[elab def] def subst_functype(functype, typevar*, heaptype*) : functype
+[elab def] def subst_tabletype(tabletype, typevar*, heaptype*) : tabletype
+[elab def] def subst_memtype(memtype, typevar*, heaptype*) : memtype
+[elab def] def subst_externtype(externtype, typevar*, heaptype*) : externtype
+[elab def] def subst_all_reftype(reftype, heaptype*) : reftype
+[elab def] def subst_all_deftype(deftype, heaptype*) : deftype
+[elab def] def subst_all_deftypes(deftype*, heaptype*) : deftype*
+[elab def] def rollrt(typeidx, rectype) : rectype
+[elab def] def unrollrt(rectype) : rectype
+[elab def] def rolldt(typeidx, rectype) : deftype*
+[elab def] def unrolldt(deftype) : subtype
+[elab def] def expanddt(deftype) : comptype
+[elab def] def funcsxt(externtype*) : deftype*
+[elab def] def globalsxt(externtype*) : globaltype*
+[elab def] def tablesxt(externtype*) : tabletype*
+[elab def] def memsxt(externtype*) : memtype*
+[elab def] def memarg0 : memarg
+[elab def] def s33_to_u32(s33) : u32
+[elab def] def signed(N, nat) : int
+[elab def] def invsigned(N, int) : nat
+[elab def] def unop(unop_numtype, numtype, c) : c_numtype*
+[elab def] def binop(binop_numtype, numtype, c, c) : c_numtype*
+[elab def] def testop(testop_numtype, numtype, c) : c_numtype
+[elab def] def relop(relop_numtype, numtype, c, c) : c_numtype
+[elab def] def cvtop(cvtop, numtype, numtype, sx?, c) : c_numtype*
+[elab def] def wrap(nat, nat, c) : nat
+[elab def] def ext(nat, nat, sx, c) : c_numtype
+[elab def] def ibytes(N, iN(N)) : byte*
+[elab def] def fbytes(N, fN(N)) : byte*
+[elab def] def ntbytes(numtype, c_numtype) : byte*
+[elab def] def vtbytes(vectype, c_vectype) : byte*
+[elab def] def ztbytes(storagetype, c) : byte*
+[elab def] def invibytes(N, byte*) : iN(N)
+[elab def] def invfbytes(N, byte*) : fN(N)
+[elab def] def iadd(N, c, c) : c
+[elab def] def imul(N, c, c) : c
+[elab def] def ine(N, c, c) : c_numtype
+[elab def] def ilt(sx, N, c, c) : c_numtype
+[elab def] def lanes(shape, c_vectype) : c*
+[elab def] def narrow(N, N, sx, c) : c
+[elab def] def ibits(N, N) : c*
+[elab def] def unpacked(shape) : numtype
+[elab def] def dim(shape) : lanesize
+[elab def] def halfop(half, nat, nat) : nat
+[elab def] def ishape(nat) : lanetype
+[elab def] def vvunop(unop_vvectype, vectype, c_vectype) : c_vectype
+[elab def] def vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype
+[elab def] def vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype
+[elab def] def vunop(unop_vectype, shape, c_vectype) : c_vectype
+[elab def] def vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*
+[elab def] def vrelop(relop_vectype, shape, c, c) : c_numtype
+[elab def] def vishiftop(shiftop_vectype, lanetype, c, c) : c
+[elab def] def vcvtop(cvtop_vectype, N, N, sx?, c) : c
+[elab def] def inst_reftype(moduleinst, reftype) : reftype
+[elab def] def default(valtype) : val?
+[elab def] def packval(storagetype, val) : fieldval
+[elab def] def unpackval(storagetype, sx?, fieldval) : val
+[elab def] def funcsxv(externval*) : funcaddr*
+[elab def] def globalsxv(externval*) : globaladdr*
+[elab def] def tablesxv(externval*) : tableaddr*
+[elab def] def memsxv(externval*) : memaddr*
+[elab def] def store(state) : store
+[elab def] def frame(state) : frame
+[elab def] def funcaddr(state) : funcaddr*
+[elab def] def funcinst(state) : funcinst*
+[elab def] def globalinst(state) : globalinst*
+[elab def] def tableinst(state) : tableinst*
+[elab def] def meminst(state) : meminst*
+[elab def] def eleminst(state) : eleminst*
+[elab def] def datainst(state) : datainst*
+[elab def] def structinst(state) : structinst*
+[elab def] def arrayinst(state) : arrayinst*
+[elab def] def moduleinst(state) : moduleinst
+[elab def] def type(state, typeidx) : deftype
+[elab def] def func(state, funcidx) : funcinst
+[elab def] def global(state, globalidx) : globalinst
+[elab def] def table(state, tableidx) : tableinst
+[elab def] def mem(state, memidx) : meminst
+[elab def] def elem(state, tableidx) : eleminst
+[elab def] def data(state, dataidx) : datainst
+[elab def] def local(state, localidx) : val?
+[elab def] def with_local(state, localidx, val) : state
+[elab def] def with_global(state, globalidx, val) : state
+[elab def] def with_table(state, tableidx, nat, ref) : state
+[elab def] def with_tableinst(state, tableidx, tableinst) : state
+[elab def] def with_mem(state, memidx, nat, nat, byte*) : state
+[elab def] def with_meminst(state, memidx, meminst) : state
+[elab def] def with_elem(state, elemidx, ref*) : state
+[elab def] def with_data(state, dataidx, byte*) : state
+[elab def] def with_struct(state, structaddr, nat, fieldval) : state
+[elab def] def with_array(state, arrayaddr, nat, fieldval) : state
+[elab def] def ext_structinst(state, structinst*) : state
+[elab def] def ext_arrayinst(state, arrayinst*) : state
+[elab def] def growtable(tableinst, nat, ref) : tableinst
+[elab def] def growmemory(meminst, nat) : meminst
+[elab def] def with_locals(context, localidx*, localtype*) : context
+[elab def] def clostype(context, deftype) : deftype
+[elab def] def clostypes(deftype*) : deftype*
+[elab def] def before(heaptype, typeidx, nat) : bool
+[elab def] def unrollht(context, heaptype) : subtype
+[elab def] def in_numtype(numtype, numtype*) : bool
+[elab def] def in_binop(binop_numtype, ibinop*) : bool
+[elab def] def blocktype(state, blocktype) : functype
+[elab def] def vzero : c_vectype
+[elab def] def alloctypes(type*) : deftype*
+[elab def] def allocfunc(store, moduleinst, func) : (store, funcaddr)
+[elab def] def allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
+[elab def] def allocglobal(store, globaltype, val) : (store, globaladdr)
+[elab def] def allocglobals(store, globaltype*, val*) : (store, globaladdr*)
+[elab def] def alloctable(store, tabletype, ref) : (store, tableaddr)
+[elab def] def alloctables(store, tabletype*, ref*) : (store, tableaddr*)
+[elab def] def allocmem(store, memtype) : (store, memaddr)
+[elab def] def allocmems(store, memtype*) : (store, memaddr*)
+[elab def] def allocelem(store, reftype, ref*) : (store, elemaddr)
+[elab def] def allocelems(store, reftype*, (ref*)*) : (store, elemaddr*)
+[elab def] def allocdata(store, byte*) : (store, dataaddr)
+[elab def] def allocdatas(store, (byte*)*) : (store, dataaddr*)
+[elab def] def instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
+[elab def] def allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, moduleinst)
+[elab def] def concat_instr((instr*)*) : instr*
+[elab def] def runelem(elem, idx) : instr*
+[elab def] def rundata(data, idx) : instr*
+[elab def] def instantiate(store, module, externval*) : config
+[elab def] def invoke(store, funcaddr, val*) : config
+[elab def] def utf8(name) : byte*
+[elab def] def concat_locals((local*)*) : local*
 == IL Validation...
 == Running pass sideconditions...
 == IL Validation after pass sideconditions...

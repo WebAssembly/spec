@@ -50,18 +50,13 @@ module VarSet = Set.Make(String)
 let atom_vars = ref VarSet.empty
 let scopes = ref []
 
-let strip_ticks id =
-  let i = ref (String.length id) in
-  while !i > 0 && id.[!i - 1] = '\'' do decr i done;
-  String.sub id 0 !i
-
 
 (* Parentheses Role etc *)
 
 type prec = Op | Seq | Post | Prim
 
 let prec_of_exp = function  (* as far as iteration is concerned *)
-  | VarE _ | BoolE _ | NatE _ | HexE _ | CharE _ | TextE _ | EpsE | StrE _
+  | VarE _ | BoolE _ | NatE _ | TextE _ | EpsE | StrE _
   | ParenE _ | TupE _ | BrackE _ | CallE _ | HoleE _ -> Prim
   | AtomE _ | IdxE _ | SliceE _ | UpdE _ | ExtE _ | DotE _ | IterE _ -> Post
   | SeqE _ -> Seq
@@ -84,7 +79,7 @@ let signify_pars prec = function
 let is_post_exp e =
   match e.it with
   | VarE _ | AtomE _
-  | BoolE _ | NatE _ | HexE _ | CharE _
+  | BoolE _ | NatE _
   | EpsE
   | ParenE _ | TupE _ | BrackE _
   | IdxE _ | SliceE _ | ExtE _
@@ -241,7 +236,7 @@ exit_scope :
   | (* empty *) { atom_vars := List.hd !scopes; scopes := List.tl !scopes }
 
 check_atom :
-  | UPID EOF { VarSet.mem (strip_ticks $1) !atom_vars }
+  | UPID EOF { VarSet.mem (El.Convert.strip_var_suffix ($1 $ at $sloc)).it !atom_vars }
 
 
 (* Operators *)
@@ -345,13 +340,13 @@ deftyp_ :
             | Nl -> if at = None then y1, Nl::y2, at else Nl::y1, y2, at
             | Elem (t, prems, hints) ->
               match t.it with
-              | VarT (id, []) when prems = [] && hints = [] ->
-                (Elem id)::y1, y2, Some t.at
               | AtomT atom
               | SeqT ({it = AtomT atom; _}::_)
               | InfixT (_, atom, _)
               | BrackT (atom, _, _) when at = None ->
                 y1, (Elem (atom, (t, prems), hints))::y2, at
+              | _ when prems = [] && hints = [] ->
+                (Elem t)::y1, y2, Some t.at
               | _ ->
                 let at = Option.value at ~default:t.at in
                 Source.error at "syntax" "misplaced type";
@@ -421,9 +416,9 @@ casetyp :
 exp_lit : exp_lit_ { $1 $ at $sloc }
 exp_lit_ :
   | BOOLLIT { BoolE $1 }
-  | NATLIT { NatE $1 }
-  | HEXLIT { HexE $1 }
-  | CHARLIT { CharE $1 }
+  | NATLIT { NatE (DecOp, $1) }
+  | HEXLIT { NatE (HexOp, $1) }
+  | CHARLIT { NatE (CharOp, $1) }
   | TEXTLIT { TextE $1 }
 
 exp_var_ :
@@ -621,9 +616,9 @@ premise_ :
 sym_prim_ :
   | gramid { VarG ($1, []) }
   | gramid_lparen comma_list(arg) RPAREN { VarG ($1, $2) }
-  | NATLIT { NatG $1 }
-  | HEXLIT { HexG $1 }
-  | CHARLIT { CharG $1 }
+  | NATLIT { NatG (DecOp, $1) }
+  | HEXLIT { NatG (HexOp, $1) }
+  | CHARLIT { NatG (CharOp, $1) }
   | TEXTLIT { TextG $1 }
   | EPS { EpsG }
   | LPAREN tup_list(sym) RPAREN

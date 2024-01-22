@@ -13,9 +13,11 @@ type env =
 
 (* Extracting Macro from DSL *)
 
-let extract_id_kwd = function
+let extract_typ_kwd = function
   | El.Ast.Nl -> None
-  | El.Ast.Elem elem -> Some elem.it
+  | El.Ast.Elem typ -> (match typ.it with
+    | El.Ast.VarT (id, _) -> Some id.it
+    | _ -> None)
 
 let extract_typcase_kwd = function
   | El.Ast.Nl -> None
@@ -36,8 +38,8 @@ let rec extract_typ_kwds typ =
     | _ -> [])
   | El.Ast.IterT (typ_inner, _) -> extract_typ_kwds typ_inner.it
   | El.Ast.StrT typfields -> List.filter_map extract_typfield_kwd typfields
-  | El.Ast.CaseT (_, ids, typcases, _) ->
-      let ids = List.filter_map extract_id_kwd ids in
+  | El.Ast.CaseT (_, typs, typcases, _) ->
+      let ids = List.filter_map extract_typ_kwd typs in
       let typcases = List.filter_map extract_typcase_kwd typcases in
       ids @ typcases
   | El.Ast.SeqT tl -> List.concat_map (fun t -> extract_typ_kwds t.it) tl
