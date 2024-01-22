@@ -89,20 +89,20 @@ Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
 .. _syntax-instr-memory:
-.. _syntax-memarg:
+.. _syntax-memop:
 
 $${syntax+: 
   instr/memory
-  memarg
+  memop
 }
 
-.. _def-memarg0:
+.. _def-memop0:
 
-%{prose-func: memarg0}
+%{prose-func: memop0}
 
 \
 
-$${definition: memarg0}
+$${definition: memop0}
 
 .. _syntax-blocktype:
 .. _syntax-instr-control:

@@ -2430,7 +2430,7 @@ watsup 0.4 generator
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat
@@ -3405,7 +3405,7 @@ memsxt exter_u0*
 4. Let [externtype] ++ et* be exter_u0*.
 5. Return $memsxt(et*).
 
-memarg0
+memop0
 1. Return { ALIGN: 0; OFFSET: 0; }.
 
 signed N i
@@ -4919,64 +4919,64 @@ execution_of_TABLE.INIT x y
   f. Push (I32.CONST (n - 1)) to the stack.
   g. Execute (TABLE.INIT x y).
 
-execution_of_LOAD nt n_sx_u0? x marg
+execution_of_LOAD nt n_sx_u0? x mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If ((((i + marg.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and n_sx_u0? is not defined), then:
+3. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and n_sx_u0? is not defined), then:
   a. Trap.
 4. If n_sx_u0? is not defined, then:
-  a. Let c be $inverse_of_ntbytes(nt, $mem(x).DATA[(i + marg.OFFSET) : ($size(nt) / 8)]).
+  a. Let c be $inverse_of_ntbytes(nt, $mem(x).DATA[(i + mo.OFFSET) : ($size(nt) / 8)]).
   b. Push (nt.CONST c) to the stack.
 5. Else:
   a. Let ?(y_0) be n_sx_u0?.
   b. Let (n, sx) be y_0.
-  c. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
+  c. If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
-  d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
+  d. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
   e. Push (nt.CONST $ext(n, $size(nt), sx, c)) to the stack.
 
-execution_of_VLOAD vload_u0 x marg
+execution_of_VLOAD vload_u0 x mo
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 2. Pop (I32.CONST i) from the stack.
-3. If ((((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|) and (vload_u0 is _LOAD)), then:
+3. If ((((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|) and (vload_u0 is _LOAD)), then:
   a. Trap.
 4. If (vload_u0 is _LOAD), then:
-  a. Let cv be $inverse_of_vtbytes(V128, $mem(x).DATA[(i + marg.OFFSET) : ($size(V128) / 8)]).
+  a. Let cv be $inverse_of_vtbytes(V128, $mem(x).DATA[(i + mo.OFFSET) : ($size(V128) / 8)]).
   b. Push (VVCONST V128 cv) to the stack.
 5. If vload_u0 is of the case SHAPE, then:
   a. Let (SHAPE y_0 sx) be vload_u0.
   b. Assert: Due to validation, y_0 is of the case PACKSHAPE.
   c. Let (PACKSHAPE psl psr) be y_0.
-  d. If (((i + marg.OFFSET) + ((psl · psr) / 8)) > |$mem(x).DATA|), then:
+  d. If (((i + mo.OFFSET) + ((psl · psr) / 8)) > |$mem(x).DATA|), then:
     1) Trap.
-  e. Let m^psr be $inverse_of_ibytes(psl, $mem(x).DATA[((i + marg.OFFSET) + ((k · psl) / 8)) : (psl / 8)])^(k<psr).
+  e. Let m^psr be $inverse_of_ibytes(psl, $mem(x).DATA[((i + mo.OFFSET) + ((k · psl) / 8)) : (psl / 8)])^(k<psr).
   f. Let cv be $inverse_of_lanes(($ishape((psl · 2)) X psr), $ext(psl, (psl · 2), sx, m)^psr).
   g. Push (VVCONST V128 cv) to the stack.
 6. If vload_u0 is of the case SPLAT, then:
   a. Let (SPLAT n) be vload_u0.
-  b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
+  b. If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let l be (128 / n).
-  d. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
+  d. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
   e. Let cv be $inverse_of_lanes(($ishape(n) X l), m^l).
   f. Push (VVCONST V128 cv) to the stack.
 7. If vload_u0 is of the case ZERO, then:
   a. Let (ZERO n) be vload_u0.
-  b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
+  b. If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
-  c. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
+  c. Let c be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
   d. Let cv be $ext(128, n, U, c).
   e. Push (VVCONST V128 cv) to the stack.
 
-execution_of_VLOAD_LANE n x marg laneidx
+execution_of_VLOAD_LANE n x mo laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv_1) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
+5. If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
   a. Trap.
 6. Let sh be ($ishape(n) X (128 / n)).
-7. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + marg.OFFSET) : (n / 8)]).
+7. Let m be $inverse_of_ibytes(n, $mem(x).DATA[(i + mo.OFFSET) : (n / 8)]).
 8. Let cv be $inverse_of_lanes(sh, $lanes(sh, cv_1) with [laneidx] replaced by m).
 9. Push (VVCONST V128 cv) to the stack.
 
@@ -4998,7 +4998,7 @@ execution_of_MEMORY.FILL x
 9. Else:
   a. Push (I32.CONST i) to the stack.
   b. Push val to the stack.
-  c. Execute (STORE I32 ?(8) x $memarg0()).
+  c. Execute (STORE I32 ?(8) x $memop0()).
   d. Push (I32.CONST (i + 1)) to the stack.
   e. Push val to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
@@ -5021,15 +5021,15 @@ execution_of_MEMORY.COPY x_1 x_2
   a. If (i_1 ≤ i_2), then:
     1) Push (I32.CONST i_1) to the stack.
     2) Push (I32.CONST i_2) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute (STORE I32 ?(8) x_1 $memarg0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
+    4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST (i_1 + 1)) to the stack.
     6) Push (I32.CONST (i_2 + 1)) to the stack.
   b. Else:
     1) Push (I32.CONST ((i_1 + n) - 1)) to the stack.
     2) Push (I32.CONST ((i_2 + n) - 1)) to the stack.
-    3) Execute (LOAD I32 ?((8, U)) x_2 $memarg0()).
-    4) Execute (STORE I32 ?(8) x_1 $memarg0()).
+    3) Execute (LOAD I32 ?((8, U)) x_2 $memop0()).
+    4) Execute (STORE I32 ?(8) x_1 $memop0()).
     5) Push (I32.CONST i_1) to the stack.
     6) Push (I32.CONST i_2) to the stack.
   c. Push (I32.CONST (n - 1)) to the stack.
@@ -5051,7 +5051,7 @@ execution_of_MEMORY.INIT x y
 10. Else if (i < |$data(y).DATA|), then:
   a. Push (I32.CONST j) to the stack.
   b. Push (I32.CONST $data(y).DATA[i]) to the stack.
-  c. Execute (STORE I32 ?(8) x $memarg0()).
+  c. Execute (STORE I32 ?(8) x $memop0()).
   d. Push (I32.CONST (j + 1)) to the stack.
   e. Push (I32.CONST (i + 1)) to the stack.
   f. Push (I32.CONST (n - 1)) to the stack.
@@ -5148,43 +5148,43 @@ execution_of_TABLE.GROW x
 execution_of_ELEM.DROP x
 1. Perform $with_elem(x, []).
 
-execution_of_STORE nt n_u0? x marg
+execution_of_STORE nt n_u0? x mo
 1. Assert: Due to validation, a value of value type nt is on the top of the stack.
 2. Pop (nt.CONST c) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If ((((i + marg.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and n_u0? is not defined), then:
+5. If ((((i + mo.OFFSET) + ($size(nt) / 8)) > |$mem(x).DATA|) and n_u0? is not defined), then:
   a. Trap.
 6. If n_u0? is not defined, then:
   a. Let b* be $ntbytes(nt, c).
-  b. Perform $with_mem(x, (i + marg.OFFSET), ($size(nt) / 8), b*).
+  b. Perform $with_mem(x, (i + mo.OFFSET), ($size(nt) / 8), b*).
 7. Else:
   a. Let ?(n) be n_u0?.
-  b. If (((i + marg.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
+  b. If (((i + mo.OFFSET) + (n / 8)) > |$mem(x).DATA|), then:
     1) Trap.
   c. Let b* be $ibytes(n, $wrap($size(nt), n, c)).
-  d. Perform $with_mem(x, (i + marg.OFFSET), (n / 8), b*).
+  d. Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
 
-execution_of_VSTORE x marg
+execution_of_VSTORE x mo
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If (((i + marg.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
+5. If (((i + mo.OFFSET) + ($size(V128) / 8)) > |$mem(x).DATA|), then:
   a. Trap.
 6. Let b* be $vtbytes(V128, cv).
-7. Perform $with_mem(x, (i + marg.OFFSET), ($size(V128) / 8), b*).
+7. Perform $with_mem(x, (i + mo.OFFSET), ($size(V128) / 8), b*).
 
-execution_of_VSTORE_LANE n x marg laneidx
+execution_of_VSTORE_LANE n x mo laneidx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VVCONST V128 cv) from the stack.
 3. Assert: Due to validation, a value of value type I32 is on the top of the stack.
 4. Pop (I32.CONST i) from the stack.
-5. If (((i + marg.OFFSET) + n) > |$mem(x).DATA|), then:
+5. If (((i + mo.OFFSET) + n) > |$mem(x).DATA|), then:
   a. Trap.
 6. If (laneidx < |$lanes(($ishape(n) X (128 / n)), cv)|), then:
   a. Let b* be $ibytes(n, $lanes(($ishape(n) X (128 / n)), cv)[laneidx]).
-  b. Perform $with_mem(x, (i + marg.OFFSET), (n / 8), b*).
+  b. Perform $with_mem(x, (i + mo.OFFSET), (n / 8), b*).
 
 execution_of_MEMORY.GROW x
 1. Assert: Due to validation, a value of value type I32 is on the top of the stack.

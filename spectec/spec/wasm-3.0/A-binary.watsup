@@ -300,36 +300,36 @@ grammar Binstr/table : instr = ...
 
 ;; Memory instructions
 
-syntax memidxop = (memidx, memarg)
+syntax memidxop = (memidx, memop)
 
-grammar Bmemarg : memidxop =
+grammar Bmemop : memidxop =
   | n:Bu32 m:Bu32 => (0, {ALIGN n, OFFSET m})            -- if $(n < 2^6)
   | n:Bu32 x:Bmemidx m:Bu32 => (x, {ALIGN n, OFFSET m})  -- if $(2^6 <= n < 2^7)
 
 grammar Binstr/memory : instr = ...
-  | 0x28 (x,mo):Bmemarg => LOAD I32 x mo
-  | 0x29 (x,mo):Bmemarg => LOAD I64 x mo
-  | 0x2A (x,mo):Bmemarg => LOAD F32 x mo
-  | 0x2B (x,mo):Bmemarg => LOAD F64 x mo
-  | 0x2C (x,mo):Bmemarg => LOAD I32 (8 _ S) x mo
-  | 0x2D (x,mo):Bmemarg => LOAD I32 (8 _ U) x mo
-  | 0x2E (x,mo):Bmemarg => LOAD I32 (16 _ S) x mo
-  | 0x2F (x,mo):Bmemarg => LOAD I32 (16 _ U) x mo
-  | 0x30 (x,mo):Bmemarg => LOAD I64 (8 _ S) x mo
-  | 0x31 (x,mo):Bmemarg => LOAD I64 (8 _ U) x mo
-  | 0x32 (x,mo):Bmemarg => LOAD I64 (16 _ S) x mo
-  | 0x33 (x,mo):Bmemarg => LOAD I64 (16 _ U) x mo
-  | 0x34 (x,mo):Bmemarg => LOAD I64 (32 _ S) x mo
-  | 0x35 (x,mo):Bmemarg => LOAD I64 (32 _ U) x mo
-  | 0x36 (x,mo):Bmemarg => STORE I32 x mo
-  | 0x37 (x,mo):Bmemarg => STORE I64 x mo
-  | 0x38 (x,mo):Bmemarg => STORE F32 x mo
-  | 0x39 (x,mo):Bmemarg => STORE F64 x mo
-  | 0x3A (x,mo):Bmemarg => STORE I32 8 x mo
-  | 0x3B (x,mo):Bmemarg => STORE I32 16 x mo
-  | 0x3C (x,mo):Bmemarg => STORE I64 8 x mo
-  | 0x3D (x,mo):Bmemarg => STORE I64 16 x mo
-  | 0x3E (x,mo):Bmemarg => STORE I64 32 x mo
+  | 0x28 (x,mo):Bmemop => LOAD I32 x mo
+  | 0x29 (x,mo):Bmemop => LOAD I64 x mo
+  | 0x2A (x,mo):Bmemop => LOAD F32 x mo
+  | 0x2B (x,mo):Bmemop => LOAD F64 x mo
+  | 0x2C (x,mo):Bmemop => LOAD I32 (8 _ S) x mo
+  | 0x2D (x,mo):Bmemop => LOAD I32 (8 _ U) x mo
+  | 0x2E (x,mo):Bmemop => LOAD I32 (16 _ S) x mo
+  | 0x2F (x,mo):Bmemop => LOAD I32 (16 _ U) x mo
+  | 0x30 (x,mo):Bmemop => LOAD I64 (8 _ S) x mo
+  | 0x31 (x,mo):Bmemop => LOAD I64 (8 _ U) x mo
+  | 0x32 (x,mo):Bmemop => LOAD I64 (16 _ S) x mo
+  | 0x33 (x,mo):Bmemop => LOAD I64 (16 _ U) x mo
+  | 0x34 (x,mo):Bmemop => LOAD I64 (32 _ S) x mo
+  | 0x35 (x,mo):Bmemop => LOAD I64 (32 _ U) x mo
+  | 0x36 (x,mo):Bmemop => STORE I32 x mo
+  | 0x37 (x,mo):Bmemop => STORE I64 x mo
+  | 0x38 (x,mo):Bmemop => STORE F32 x mo
+  | 0x39 (x,mo):Bmemop => STORE F64 x mo
+  | 0x3A (x,mo):Bmemop => STORE I32 8 x mo
+  | 0x3B (x,mo):Bmemop => STORE I32 16 x mo
+  | 0x3C (x,mo):Bmemop => STORE I64 8 x mo
+  | 0x3D (x,mo):Bmemop => STORE I64 16 x mo
+  | 0x3E (x,mo):Bmemop => STORE I64 32 x mo
   | 0x3F x:Bmemidx => MEMORY.SIZE x
   | 0x40 x:Bmemidx => MEMORY.GROW x
   | 0xFC 8:Bu32 y:Bdataidx x:Bmemidx => MEMORY.INIT x y

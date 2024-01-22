@@ -60,7 +60,7 @@ watsup 0.4 generator
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat
@@ -240,7 +240,7 @@ watsup 0.4 generator
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat
@@ -420,7 +420,7 @@ watsup 0.4 generator
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat
@@ -1314,7 +1314,7 @@ watsup 0.4 generator
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat

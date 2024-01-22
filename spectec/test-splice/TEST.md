@@ -58,7 +58,7 @@ $ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l --splice
 [elab def] def globalsxt(externtype*) : globaltype*
 [elab def] def tablesxt(externtype*) : tabletype*
 [elab def] def memsxt(externtype*) : memtype*
-[elab def] def memarg0 : memarg
+[elab def] def memop0 : memop
 [elab def] def s33_to_u32(s33) : u32
 [elab def] def signed(N, nat) : int
 [elab def] def invsigned(N, int) : nat
@@ -304,12 +304,12 @@ $$
 \mathsf{memory.copy}~{\mathit{memidx}}~{\mathit{memidx}} \\ &&|&
 \mathsf{memory.init}~{\mathit{memidx}}~{\mathit{dataidx}} \\ &&|&
 \mathsf{data.drop}~{\mathit{dataidx}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-\mathsf{v{\scriptstyle128}.load}~{\mathit{vloadop}}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\ &&|&
-\mathsf{v{\scriptstyle128}.store}~{\mathit{memidx}}~{\mathit{memarg}} \\ &&|&
-{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memarg}}~{\mathit{laneidx}} \\[0.8ex]
+{{\mathit{numtype}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+{{\mathit{numtype}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+\mathsf{v{\scriptstyle128}.load}~{\mathit{vloadop}}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\ &&|&
+\mathsf{v{\scriptstyle128}.store}~{\mathit{memidx}}~{\mathit{memop}} \\ &&|&
+{{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{memidx}}~{\mathit{memop}}~{\mathit{laneidx}} \\[0.8ex]
 & {\mathit{expr}} &::=& {{\mathit{instr}}^\ast} \\
 \end{array}
 $$
@@ -596,10 +596,10 @@ warning: syntax `localtype` was never spliced
 warning: syntax `m` was never spliced
 warning: syntax `mem` was never spliced
 warning: syntax `memaddr` was never spliced
-warning: syntax `memarg` was never spliced
 warning: syntax `memidx` was never spliced
 warning: syntax `memidxop` was never spliced
 warning: syntax `meminst` was never spliced
+warning: syntax `memop` was never spliced
 warning: syntax `minmaxopVIXX` was never spliced
 warning: syntax `module` was never spliced
 warning: syntax `moduleinst` was never spliced
@@ -738,8 +738,8 @@ warning: grammar `Blimits` was never spliced
 warning: grammar `Blocalidx` was never spliced
 warning: grammar `Blocals` was never spliced
 warning: grammar `Bmem` was never spliced
-warning: grammar `Bmemarg` was never spliced
 warning: grammar `Bmemidx` was never spliced
+warning: grammar `Bmemop` was never spliced
 warning: grammar `Bmemsec` was never spliced
 warning: grammar `Bmemtype` was never spliced
 warning: grammar `Bmodule` was never spliced
@@ -1266,8 +1266,8 @@ warning: definition `ishape` was never spliced
 warning: definition `lanes` was never spliced
 warning: definition `local` was never spliced
 warning: definition `mem` was never spliced
-warning: definition `memarg0` was never spliced
 warning: definition `meminst` was never spliced
+warning: definition `memop0` was never spliced
 warning: definition `memsxt` was never spliced
 warning: definition `memsxv` was never spliced
 warning: definition `min` was never spliced
