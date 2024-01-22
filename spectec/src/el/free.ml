@@ -48,6 +48,7 @@ let bound_opt = free_opt
 let bound_list = free_list
 let bound_nl_list = free_nl_list
 
+
 (* Identifiers *)
 
 let free_synid id = {empty with synid = Set.singleton id.it}
@@ -66,7 +67,7 @@ let bound_varid id = if id.it = "" then empty else free_varid id
 let rec free_iter iter =
   match iter with
   | Opt | List | List1 -> empty
-  | ListN (e, _) -> free_exp e
+  | ListN (e, id_opt) -> union (free_exp e) (free_opt free_varid id_opt)
 
 
 (* Types *)
@@ -114,7 +115,7 @@ and free_exp e =
     union (free_list free_exp [e1; e2]) (free_path p)
   | StrE efs -> free_nl_list free_expfield efs
   | CallE (id, args) -> union (free_defid id) (free_list free_arg args)
-  | IterE (e1, iter) -> union (diff (free_exp e1) (binding_iter iter)) (free_iter iter)
+  | IterE (e1, iter) -> union (free_exp e1) (free_iter iter)
   | TypE (e1, t) -> union (free_exp e1) (free_typ t)
 
 and free_expfield (_, e) = free_exp e
@@ -203,10 +204,6 @@ and pat_iter iter =
   | Opt | List | List1 -> empty
   | ListN (e, id_opt) -> union (pat_exp e) (bound_opt bound_varid id_opt)
 
-and binding_iter iter=
-  match iter with
-  | Opt | List | List1 | ListN (_, None) -> empty
-  | ListN (_, Some id) -> free_varid id
 
 (* Premises *)
 
@@ -215,7 +212,7 @@ and free_prem prem =
   | RulePr (id, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
   | ElsePr -> empty
-  | IterPr (prem1, iter) -> union (diff (free_prem prem1) (binding_iter iter)) (free_iter iter)
+  | IterPr (prem1, iter) -> union (free_prem prem1) (free_iter iter)
 
 (* We consider all variables "bound" that occur in a judgement
  * or are bound in a condition. *)
