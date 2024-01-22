@@ -1063,12 +1063,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -5814,12 +5814,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -10717,12 +10717,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -15622,12 +15622,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -20550,12 +20550,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -25478,12 +25478,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- if (qt = REC_rectype(st^n{st}))
 
 ;; 2-syntax-aux.watsup:199.1-199.65
@@ -30560,12 +30560,12 @@ def subst_all_deftypes : (deftype*, heaptype*) -> deftype*
 ;; 2-syntax-aux.watsup:197.1-197.65
 def rollrt : (typeidx, rectype) -> rectype
   ;; 2-syntax-aux.watsup:206.1-206.93
-  def {i^n^n : nat^n^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, st^n : subtype^n, x : idx} rollrt(x, REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, $idx(x + i)^(i<n){i}, REC_heaptype(i)^(i<n){i})^n{st})
 
 ;; 2-syntax-aux.watsup:198.1-198.63
 def unrollrt : rectype -> rectype
   ;; 2-syntax-aux.watsup:207.1-208.22
-  def {i^n^n : nat^n^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{i st})
+  def {i^n : nat^n, n : n, qt : rectype, st^n : subtype^n} unrollrt(REC_rectype(st^n{st})) = REC_rectype($subst_subtype(st, REC_typevar(i)^(i<n){i}, DEF_heaptype(qt, i)^(i<n){i})^n{st})
     -- where qt = REC_rectype(st^n{st})
 
 ;; 2-syntax-aux.watsup:199.1-199.65

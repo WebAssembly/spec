@@ -75,7 +75,7 @@ let rec check_iter env ctx iter =
   match iter with
   | Opt | List | List1 -> ()
   | ListN (e, id_opt) ->
-    Option.iter (fun id -> check_varid env (strip_index iter::ctx) id) id_opt;
+    Option.iter (fun id -> check_varid env [strip_index iter] id) id_opt;
     check_exp env ctx e
 
 and check_typ env ctx t =

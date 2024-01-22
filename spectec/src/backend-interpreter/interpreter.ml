@@ -87,19 +87,6 @@ let match_heap_type v1 v2 =
 (* Expression *)
 
 let rec create_sub_al_context names iter env =
-
-  (*
-    Currently, the index is mistakenly inserted in names
-    due to IL fault.
-    TODO: remove hack
-  *)
-
-  let names =
-    match iter with
-    | ListN (_, Some _) -> names
-    | _ -> List.filter (fun name -> Env.mem name env) names
-  in
-
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
   let name_to_list name = lookup_env name env |> unwrap_listv_to_list in
   let length_to_list l = List.init l al_of_int in
