@@ -327,7 +327,7 @@ let handle_context_winstr winstr =
       ]
   | _ -> []
 
-let handle_context ctx values = 
+let handle_context ctx values =
   let at = ctx.at in
   match ctx.it, values with
   | Ast.CaseE (Ast.Atom "LABEL_", { it = Ast.TupE [ n; instrs; _hole ]; _ }), vs ->
@@ -336,7 +336,7 @@ let handle_context ctx values =
         letI (varE "L", getCurLabelE ()) ~at:at;
         letI (exp2expr n, arityE (varE "L")) ~at:at;
         letI (exp2expr instrs, contE (varE "L")) ~at:at;
-      ] @ List.map (fun v -> popI (exp2expr v) ~at:at) first_vs @ 
+      ] @ List.map (fun v -> popI (exp2expr v) ~at:at) first_vs @
       [
         popallI (exp2expr last_v) ~at:at;
         exitI () ~at:at

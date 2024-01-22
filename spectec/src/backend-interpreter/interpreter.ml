@@ -15,7 +15,7 @@ let fail_on_instr msg instr =
   |> failwith
 
 let fail_on_expr msg expr =
-  (sprintf "%s: %s @%s" msg 
+  (sprintf "%s: %s @%s" msg
     (structured_string_of_expr expr) (string_of_region expr.at))
   |> failwith
 
@@ -128,7 +128,7 @@ and access_path base path =
     | FrameV (_, StrV r) -> Record.find str r
     | StoreV s -> Record.find str !s
     | StrV r -> Record.find str r
-    | v -> 
+    | v ->
       fail_on_path
         (sprintf "Base %s is not a record" (string_of_value v))
         path)
@@ -697,8 +697,8 @@ and interp_instr (instr: instr): unit =
     (* TODO remove this *)
     | FrameE _, FrameV _ -> ()
     | (_, h) ->
-      fail_on_instr 
-        (sprintf "Invalid pop for value %s: " (structured_string_of_value h)) 
+      fail_on_instr
+        (sprintf "Invalid pop for value %s: " (structured_string_of_value h))
         instr
     end
   | PopAllI ({ it = IterE ({ it = VarE name; _ }, [name'], List); _ }) when name = name' ->

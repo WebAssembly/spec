@@ -28,10 +28,10 @@ module Register : sig
 end
 
 module AlContext : sig
-  type return_value = 
+  type return_value =
     | Bot
     | None
-    | Some of value 
+    | Some of value
   type t = string * env * return_value * int
 
   val context_stack_length : int ref
@@ -66,7 +66,7 @@ module WasmContext : sig
   val push_context : t -> unit
   val pop_context : unit -> t
 
-  val string_of_context : t -> string 
+  val string_of_context : t -> string
   val string_of_context_stack : unit -> string
 
   val get_current_context : unit -> value
@@ -77,7 +77,7 @@ module WasmContext : sig
   val get_value_stack : unit -> value list
   val push_value : value -> unit
   val pop_value : unit -> value
-  
+
   val pop_instr : unit -> value
 end
 

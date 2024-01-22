@@ -471,7 +471,7 @@ and structured_string_of_expr expr =
   | TopLabelE -> "TopLabelE"
   | TopFrameE -> "TopFrameE"
   | TopValueE None -> "TopValueE"
-  | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")" 
+  | TopValueE (Some e) -> "TopValueE (" ^ structured_string_of_expr e ^ ")"
   | TopValuesE e -> "TopValuesE (" ^ structured_string_of_expr e ^ ")"
   | MatchE (e1, e2) ->
     Printf.sprintf "Matches (%s, %s)"

@@ -41,7 +41,7 @@ let math = ":math:"
 
 let render_math s = math ^ sprintf "`%s`" s
 
-let force_math in_math s = if in_math then s else render_math s 
+let force_math in_math s = if in_math then s else render_math s
 
 let render_opt prefix stringifier suffix = function
   | None -> ""
@@ -115,12 +115,12 @@ let rec render_name name = match String.index_opt name '_' with
   | _ -> name
 
 and render_kwd env kwd = match Symbol.narrow_kwd env.symbol kwd with
-  | Some kwd -> 
+  | Some kwd ->
       let lhs, rhs = Macro.macro_kwd env.macro kwd in
       if env.config.macros then lhs else rhs
   | None -> render_name (Al.Print.string_of_kwd kwd)
 
-and render_funcname env fname = 
+and render_funcname env fname =
   if Symbol.find_func env.symbol fname
   then (
     let lhs, rhs = Macro.macro_func env.macro fname in
@@ -132,7 +132,7 @@ and render_funcname env fname =
       else if c = '_' then acc ^ "\\_"
       else acc ^ (String.make 1 c)
     in
-    String.fold_left escape "" fname 
+    String.fold_left escape "" fname
   )
 
 let rec render_iter env = function
@@ -152,7 +152,7 @@ and render_expr env in_math expr =
   | Al.Ast.NumE i ->
       let si = Int64.to_string i in
       if in_math then si else render_math si
-  | Al.Ast.BoolE b -> 
+  | Al.Ast.BoolE b ->
       string_of_bool b
   | Al.Ast.UnE (MinusOp, e) ->
       let se = render_expr env in_math e in
@@ -296,12 +296,12 @@ and render_expr env in_math expr =
   | Al.Ast.CaseE (kwd, es) ->
       let skwd = render_kwd env kwd in
       let ses = List.map (render_expr env true) es in
-      let sdefault = 
+      let sdefault =
         if List.length ses = 0 then skwd
         else sprintf "%s~%s" skwd (String.concat "~" ses)
       in
       let shint =
-        Option.map 
+        Option.map
           (fun kwd_narrow -> Hint.apply_kwd_hint env.hint kwd_narrow ses)
           (Symbol.narrow_kwd env.symbol kwd)
       in
@@ -341,10 +341,10 @@ and render_expr env in_math expr =
   | Al.Ast.TopLabelE ->
       let s = "\\textrm{a label is now on the top of the stack}" in
       force_math in_math s
-  | Al.Ast.TopFrameE -> 
+  | Al.Ast.TopFrameE ->
       let s = "\\textrm{a frame is now on the top of the stack}" in
       force_math in_math s
-  | Al.Ast.TopValueE (Some e) -> 
+  | Al.Ast.TopValueE (Some e) ->
       let se = render_expr env true e in
       let s = sprintf "\\textrm{a value of value type }%s\\textrm{ is on the top of the stack}" se in
       force_math in_math s

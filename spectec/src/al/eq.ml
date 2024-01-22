@@ -26,7 +26,7 @@ let rec eq_expr e1 e2 =
       eq_paths pl1 pl2 &&
       eq_expr e12 e22 &&
       d1 = d2
-  | StrE r1, StrE r2 -> eq_expr_record r1 r2 
+  | StrE r1, StrE r2 -> eq_expr_record r1 r2
   | CatE (e11, e12), CatE (e21, e22) ->
       eq_expr e11 e21 &&
       eq_expr e12 e22
@@ -55,7 +55,7 @@ let rec eq_expr e1 e2 =
   | LabelE (e11, e12), LabelE (e21, e22) ->
       eq_expr e11 e21 &&
       eq_expr e12 e22
-  | GetCurFrameE, GetCurFrameE 
+  | GetCurFrameE, GetCurFrameE
   | GetCurLabelE, GetCurLabelE
   | GetCurContextE, GetCurContextE -> true
   | ContE e1, ContE e2 -> eq_expr e1 e2
@@ -124,7 +124,7 @@ and eq_instr i1 i2 =
     eq_instrs il11 il21 &&
     eq_instrs il12 il22
   | EnterI (e11, e12, il1), EnterI (e21, e22, il2) ->
-    eq_expr e11 e21 && 
+    eq_expr e11 e21 &&
     eq_expr e12 e22 &&
     eq_instrs il1 il2
   | AssertI e1, AssertI e2
@@ -132,7 +132,7 @@ and eq_instr i1 i2 =
   | PopI e1, PopI e2
   | PopAllI e1, PopAllI e2 -> eq_expr e1 e2
   | LetI (e11, e12), LetI (e21, e22) ->
-    eq_expr e11 e21 && 
+    eq_expr e11 e21 &&
     eq_expr e12 e22
   | TrapI, TrapI
   | NopI, NopI -> true
@@ -140,15 +140,15 @@ and eq_instr i1 i2 =
   | ExecuteI e1, ExecuteI e2
   | ExecuteSeqI e1, ExecuteSeqI e2 -> eq_expr e1 e2
   | PerformI (id1, el1), PerformI (id2, el2) ->
-    id1 = id2 && 
+    id1 = id2 &&
     eq_exprs el1 el2
   | ExitI, ExitI -> true
   | ReplaceI (e11, p1, e12), ReplaceI (e21, p2, e22) ->
-    eq_expr e11 e21 && 
+    eq_expr e11 e21 &&
     eq_path p1 p2 &&
     eq_expr e12 e22
   | AppendI (e11, e12), AppendI (e21, e22) ->
-    eq_expr e11 e21 && 
+    eq_expr e11 e21 &&
     eq_expr e12 e22
   | OtherwiseI il1, OtherwiseI il2 -> eq_instrs il1 il2
   | YetI s1, YetI s2 -> s1 = s2

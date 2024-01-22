@@ -2,7 +2,7 @@ open Util.Source
 
 module KMap = Map.Make(struct
   type t = string * string
-  let compare (a1, a2) (b1, b2) = 
+  let compare (a1, a2) (b1, b2) =
     let c1 = String.compare a1 b1 in
     let c2 = String.compare a2 b2 in
     if c1 = 0 then c2 else c1
@@ -36,18 +36,18 @@ let extract_typcase_hint = function
 let extract_typ_hints typ =
   match typ.it with
   | El.Ast.CaseT (_, _, typcases, _) -> List.filter_map extract_typcase_hint typcases
-  | _ -> [] 
+  | _ -> []
 
 let extract_syntax_hints show_kwds def =
   match def.it with
-  | El.Ast.SynD (id, subid, _, typ, _) -> 
-      let id = 
+  | El.Ast.SynD (id, subid, _, typ, _) ->
+      let id =
         if subid.it = "" then id.it
         else id.it ^ "-" ^ subid.it
       in
       let show_hints = extract_typ_hints typ in
       List.fold_left
-        (fun acc (variant, hint) -> 
+        (fun acc (variant, hint) ->
           KMap.add (variant, id) hint acc)
         show_kwds show_hints
   | _ -> show_kwds
@@ -72,7 +72,7 @@ let env el =
 
 let apply_hint args hint =
   (* TODO Placeholder El args with "!!!", to be expanded into the El hint exp. *)
-  let placeholder = 
+  let placeholder =
     let text = (El.Ast.TextE "!!!") $ no_region in
     let arg = El.Ast.ExpA text in
     (ref arg) $ no_region
@@ -85,14 +85,14 @@ let apply_hint args hint =
     let hint_rendered = Backend_latex.Render.render_exp render_latex hint_expanded in
     let hint_replaced =
       let placeholder = Str.regexp (Backend_latex.Render.render_arg render_latex placeholder) in
-      List.fold_left 
-        (fun hint_rendered arg -> Str.replace_first placeholder arg hint_rendered) 
+      List.fold_left
+        (fun hint_rendered arg -> Str.replace_first placeholder arg hint_rendered)
         hint_rendered args
     in
     Some hint_replaced
   with _ -> None
 
-let apply_kwd_hint env kwd args = 
+let apply_kwd_hint env kwd args =
   let hint = KMap.find_opt kwd !(env.show_kwds) in
   Option.bind hint (apply_hint args)
 

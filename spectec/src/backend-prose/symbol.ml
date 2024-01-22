@@ -65,8 +65,8 @@ let extract_syntax_kwds el =
           (* Update kwd mapping from syntax to terminals and nonterminals *)
           let terminals', nonterminals' =
             (match Map.find_opt syntax acc with
-            | Some (terminals', nonterminals') -> 
-                (Set.union terminals terminals', Set.union nonterminals nonterminals') 
+            | Some (terminals', nonterminals') ->
+                (Set.union terminals terminals', Set.union nonterminals nonterminals')
             | None -> (terminals, nonterminals))
           in
           let acc = Map.add syntax (terminals', nonterminals') acc in
@@ -116,7 +116,7 @@ and narrow_kwd env syntax variant =
         narrow_kwd' env (Set.elements nonterminals) variant
   | _ -> None
 
-(* Narrows the given keyword if it exists in the grammar. 
+(* Narrows the given keyword if it exists in the grammar.
  * The returned keyword is a tuple of variant name, and its
  * shallowest nonterminal that defines the variant. *)
 let narrow_kwd env kwd =

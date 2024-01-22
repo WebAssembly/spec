@@ -292,7 +292,7 @@ module WasmContext = struct
     let match_frame = function
       | FrameV _ -> true
       | _ -> false
-    in get_value_with_condition match_frame 
+    in get_value_with_condition match_frame
 
   let get_module_instance () =
     match get_current_frame () with
@@ -303,7 +303,7 @@ module WasmContext = struct
     let match_label = function
       | LabelV _ -> true
       | _ -> false
-    in get_value_with_condition match_label 
+    in get_value_with_condition match_label
 
   (* Value stack *)
 

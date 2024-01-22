@@ -378,14 +378,14 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VVTESTOP vectype testop_vvectype                         hint(show %.%)
   | SWIZZLE shape                                            hint(show %.SWIZZLE)
   | SHUFFLE shape laneidx*                                   hint(show %.SHUFFLE %)
-  | SPLAT shape                                              hint(show %.SPLAT)               
+  | SPLAT shape                                              hint(show %.SPLAT)
   | EXTRACT_LANE shape sx? laneidx                           hint(show %.EXTRACT#_#LANE#_#% %)
-  | REPLACE_LANE shape laneidx                               hint(show %.REPLACE#_#LANE %)    
+  | REPLACE_LANE shape laneidx                               hint(show %.REPLACE#_#LANE %)
   | VUNOP shape unop_vectype                                 hint(show %.%)
   | VBINOP shape binop_vectype                               hint(show %.%)
   | VRELOP shape relop_vectype                               hint(show %.%)
   | VISHIFTOP shape shiftop_vectype                          hint(show %.%)
-  | ALL_TRUE shape                                           hint(show %.ALL_TRUE)            
+  | ALL_TRUE shape                                           hint(show %.ALL_TRUE)
   | BITMASK shape                                            hint(show %.BITMASK)
   | NARROW shape shape sx                                    hint(show %.NARROW#_#%#_#%)
   | VCVTOP shape cvtop_vectype half? shape sx? zero          hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
@@ -450,7 +450,7 @@ syntax instr/table hint(desc "table instruction") = ...
   | ...
 
 syntax vloadop =
-  | _LOAD                        
+  | _LOAD
   | SHAPE packshape sx          hint(show %#_#%)
   | SPLAT nat                   hint(show %#_#SPLAT)
   | ZERO nat                    hint(show %#_#ZERO)
