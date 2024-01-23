@@ -206,6 +206,8 @@ and exp2expr exp =
       | [ []; [ Ast.Star; atom ]; [ Ast.Star ] ], [ e1; e2 ]
       | [ []; [ atom ]; [] ], [ e1; e2 ] ->
           infixE (exp2expr e1, Print.string_of_atom atom, exp2expr e2) ~at:at
+      | [ []; [ Ast.Arrow ]; [ Ast.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
+          infixE (exp2expr e1, "->", catE (exp2expr e2, exp2expr e3)) ~at:at
       (* Constructor *)
       (* TODO: Need a better way to convert these CaseE into ConsturctE *)
       | [ [ Ast.Atom "FUNC" ]; []; [ Ast.Star ]; [] ], _ ->
@@ -243,10 +245,10 @@ and exp2expr exp =
       | [ Ast.Atom name ] :: ll, el
         when List.for_all (fun l -> l = [] || l = [ Ast.Star ] || l = [ Ast.Quest ]) ll ->
           caseE ((name, String.lowercase_ascii name), List.map exp2expr el) ~at:at
-      | _ -> yetE (Print.structured_string_of_exp exp) ~at:at)
+      | _ -> yetE (Print.string_of_exp exp) ~at:at)
   | Ast.OptE inner_exp -> optE (Option.map exp2expr inner_exp) ~at:at
   (* Yet *)
-  | _ -> yetE (Print.structured_string_of_exp exp) ~at:at
+  | _ -> yetE (Print.string_of_exp exp) ~at:at
 
 (* `Ast.exp` -> `expr list` *)
 and exp2args exp =

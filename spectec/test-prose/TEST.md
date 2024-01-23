@@ -2581,19 +2581,19 @@ validation_of_SELECT ?([t])
 - The instruction is valid with type ([t, t, I32] -> [t]).
 
 validation_of_BLOCK bt instr*
-- Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type YetE (MixE ([[], [Arrow], [Star], []], TupE ([IterE (VarE "t_1", (List, ["t_1"])), IterE (VarE "x", (List, ["x"])), IterE (VarE "t_2", (List, ["t_2"]))]))).
+- Under the context C with .LABEL prepended by [t_2*], instr* must be valid with type (t_1* -> x* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
 - The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_LOOP bt instr*
-- Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type YetE (MixE ([[], [Arrow], [Star], []], TupE ([IterE (VarE "t_1", (List, ["t_1"])), IterE (VarE "x", (List, ["x"])), IterE (VarE "t_2", (List, ["t_2"]))]))).
+- Under the context C with .LABEL prepended by [t_1*], instr* must be valid with type (t_1* -> x* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
 - The instruction is valid with type (t_1* -> t_2*).
 
 validation_of_IF bt instr_1* instr_2*
-- Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type YetE (MixE ([[], [Arrow], [Star], []], TupE ([IterE (VarE "t_1", (List, ["t_1"])), IterE (VarE "x_1", (List, ["x_1"])), IterE (VarE "t_2", (List, ["t_2"]))]))).
+- Under the context C with .LABEL prepended by [t_2*], instr_1* must be valid with type (t_1* -> x_1* ++ t_2*).
 - Under the context C, bt must be valid with type (t_1* -> t_2*).
-- Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type YetE (MixE ([[], [Arrow], [Star], []], TupE ([IterE (VarE "t_1", (List, ["t_1"])), IterE (VarE "x_2", (List, ["x_2"])), IterE (VarE "t_2", (List, ["t_2"]))]))).
+- Under the context C with .LABEL prepended by [t_2*], instr_2* must be valid with type (t_1* -> x_2* ++ t_2*).
 - The instruction is valid with type (t_1* ++ [I32] -> t_2*).
 
 validation_of_BR l
