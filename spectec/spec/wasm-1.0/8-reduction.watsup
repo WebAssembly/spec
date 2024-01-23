@@ -143,38 +143,38 @@ rule Step_pure/return-label:
 
 rule Step_pure/unop-val:
   (CONST t c_1) (UNOP t unop)  ~>  (CONST t c)
-  -- if $unop(unop, t, c_1) = c  ;; TODO
+  -- if $unop(t, unop, c_1) = c  ;; TODO
 
 rule Step_pure/unop-trap:
   (CONST t c_1) (UNOP t unop)  ~>  TRAP
-  -- if $unop(unop, t, c_1) = eps  ;; TODO
+  -- if $unop(t, unop, c_1) = eps  ;; TODO
 
 
 rule Step_pure/binop-val:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  (CONST t c)
-  -- if $binop(binop, t, c_1, c_2) = c  ;; TODO
+  -- if $binop(t, binop, c_1, c_2) = c  ;; TODO
 
 rule Step_pure/binop-trap:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  TRAP
-  -- if $binop(binop, t, c_1, c_2) = eps  ;; TODO
+  -- if $binop(t, binop, c_1, c_2) = eps  ;; TODO
 
 
 rule Step_pure/testop:
   (CONST t c_1) (TESTOP t testop)  ~>  (CONST I32 c)
-  -- if c = $testop(testop, t, c_1)
+  -- if c = $testop(t, testop, c_1)
 
 rule Step_pure/relop:
   (CONST t c_1) (CONST t c_2) (RELOP t relop)  ~>  (CONST I32 c)
-  -- if c = $relop(relop, t, c_1, c_2)
+  -- if c = $relop(t, relop, c_1, c_2)
 
 
 rule Step_pure/cvtop-val:
   (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  (CONST t_2 c)
-  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
   (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  TRAP
-  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = eps  ;; TODO
+  -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = eps  ;; TODO
 
 
 ;; Local instructions

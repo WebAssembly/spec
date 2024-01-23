@@ -57,9 +57,9 @@ let free_relid id = {empty with relid = Set.singleton id.it}
 let free_varid id = {empty with varid = Set.singleton id.it}
 let free_defid id = {empty with defid = Set.singleton id.it}
 
-let bound_synid id = if id.it = "" then empty else free_synid id
-let bound_gramid id = if id.it = "" then empty else free_gramid id
-let bound_varid id = if id.it = "" then empty else free_varid id
+let bound_synid id = if id.it = "_" then empty else free_synid id
+let bound_gramid id = if id.it = "_" then empty else free_gramid id
+let bound_varid id = if id.it = "_" then empty else free_varid id
 
 
 (* Iterations *)

@@ -7,8 +7,17 @@ type subst =
     synid : typ Map.t;
     gramid : sym Map.t;
   }
+type t = subst
 
 val empty : subst
+val union : subst -> subst -> subst (* right overrides *)
+
+val add_varid : subst -> id -> exp -> subst
+val add_synid : subst -> id -> typ -> subst
+val add_gramid : subst -> id -> sym -> subst
+val mem_varid : subst -> id -> bool
+val mem_synid : subst -> id -> bool
+val mem_gramid : subst -> id -> bool
 
 val subst_list : (subst -> 'a -> 'a) -> subst -> 'a list -> 'a list
 val subst_nl_list : (subst -> 'a -> 'a) -> subst -> 'a nl_list -> 'a nl_list

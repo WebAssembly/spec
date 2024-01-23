@@ -50,6 +50,10 @@ module VarSet = Set.Make(String)
 let atom_vars = ref VarSet.empty
 let scopes = ref []
 
+let check_varid_bind id =
+  if id.it = (El.Convert.strip_var_suffix id).it then id else
+    Source.error id.at "syntax" "invalid identifer suffix in binding position"
+
 
 (* Parentheses Role etc *)
 
@@ -223,12 +227,14 @@ atom :
   | TOP { Top }
   | INFINITY { Infinity }
 
-varid_bind :
+varid_bind_with_suffix :
   | varid { $1 }
   | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
+varid_bind :
+  | varid_bind_with_suffix { check_varid_bind $1 }
 varid_bind_lparen :
-  | varid_lparen { $1 }
-  | atomid_lparen { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
+  | varid_lparen { check_varid_bind $1 }
+  | atomid_lparen { atom_vars := VarSet.add $1 !atom_vars; check_varid_bind ($1 $ at $sloc) }
 
 enter_scope :
   | (* empty *) { scopes := !atom_vars :: !scopes }
@@ -306,7 +312,7 @@ iter :
 
 (* Types *)
 
-typ_prim : typ_prim_ { $1 $ at $sloc }
+(*typ_prim : typ_prim_ { $1 $ at $sloc }*)
 typ_prim_ :
   | varid { VarT ($1, []) }
   | varid_lparen comma_list(arg) RPAREN { VarT ($1, $2) }
@@ -357,7 +363,7 @@ deftyp_ :
 
 (*nottyp_prim : nottyp_prim_ { $1 $ at $sloc }*)
 nottyp_prim_ :
-  | typ_prim { $1.it }
+  | typ_prim_ { $1 }
   | atom { AtomT $1 }
   | atomid_lparen nottyp RPAREN
     { SeqT [AtomT (Atom $1) $ at $loc($1); ParenT $2 $ at $loc($2)] }
@@ -668,12 +674,11 @@ arg_ :
 
 param : param_ { $1 $ at $sloc }
 param_ :
-  | varid_bind COLON typ { ExpP ($1, $3) }
+  | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
-    { match $1.it with
-      | VarT (id, []) when El.Convert.strip_var_suffix id <> id ->
-        ExpP (id, VarT (El.Convert.strip_var_suffix id, []) $ $1.at)
-      | _ -> ExpP ("" $ at $sloc, $1) }
+    { let id =
+        try El.Convert.varid_of_typ $1 with Source.Error _ -> "" $ at $sloc
+      in ExpP (id, $1) }
   | SYNTAX varid_bind { SynP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }
 

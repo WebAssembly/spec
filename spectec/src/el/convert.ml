@@ -14,6 +14,7 @@ let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f
 let strip_var_suffix id =
   match String.index_opt id.it '_', String.index_opt id.it '\'' with
   | None, None -> id
+  | Some n, None when n = String.length id.it - 1 -> id  (* keep trailing underscores *)
   | None, Some n | Some n, None -> String.sub id.it 0 n $ id.at
   | Some n1, Some n2 -> String.sub id.it 0 (min n1 n2) $ id.at
 
@@ -22,9 +23,7 @@ let arg_of_exp e =
   ref (ExpA e) $ e.at
 
 
-let rec typ_of_exp e =
-  (match e.it with
-  | VarE (id, []) ->
+let typ_of_varid id =
     (match id.it with
     | "bool" -> BoolT
     | "nat" -> NumT NatT
@@ -33,7 +32,24 @@ let rec typ_of_exp e =
     | "real" -> NumT RealT
     | "text" -> TextT
     | _ -> VarT (id, [])
-    )
+    ) $ id.at
+
+let varid_of_typ t =
+  (match t.it with
+  | VarT (id, []) -> id.it
+  | BoolT -> "bool"
+  | NumT NatT -> "nat"
+  | NumT IntT -> "int"
+  | NumT RatT -> "rat"
+  | NumT RealT -> "real"
+  | TextT -> "text"
+  | _ -> Source.error t.at "syntax" "malformed variable"
+  ) $ t.at
+
+
+let rec typ_of_exp e =
+  (match e.it with
+  | VarE (id, []) -> (typ_of_varid id).it
   | VarE (id, args) -> VarT (id, args)
   | ParenE (e1, _) -> ParenT (typ_of_exp e1)
   | TupE es -> TupT (List.map typ_of_exp es)
@@ -53,12 +69,7 @@ and typfield_of_expfield (atom, e) =
 let rec exp_of_typ t =
   (match t.it with
   | VarT (id, args) -> VarE (id, args)
-  | BoolT -> VarE ("bool" $ t.at, [])
-  | NumT NatT -> VarE ("nat" $ t.at, [])
-  | NumT IntT -> VarE ("int" $ t.at, [])
-  | NumT RatT -> VarE ("rat" $ t.at, [])
-  | NumT RealT -> VarE ("real" $ t.at, [])
-  | TextT -> VarE ("text" $ t.at, [])
+  | BoolT | NumT _ | TextT -> VarE (varid_of_typ t, [])
   | ParenT t1 -> ParenE (exp_of_typ t1, false)
   | TupT ts -> TupE (List.map exp_of_typ ts)
   | IterT (t1, iter) -> IterE (exp_of_typ t1, iter)
@@ -113,8 +124,8 @@ let param_of_arg a =
   (match !(a.it) with
   | ExpA e ->
     (match e.it with
-    | VarE (id, []) when strip_var_suffix id <> id ->
-      ExpP (id, VarT (strip_var_suffix id, []) $ e.at)
+    | TypE ({it = VarE (id, []); _}, t) -> ExpP (id, t)
+    | VarE (id, _) -> ExpP (id, typ_of_exp e)
     | _ -> ExpP ("" $ e.at, typ_of_exp e)
     )
   | SynA {it = VarT (id, []); _} -> SynP id

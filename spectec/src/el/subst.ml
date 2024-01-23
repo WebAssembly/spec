@@ -12,11 +12,29 @@ type subst =
     gramid : sym Map.t;
   }
 
+type t = subst
+
 let empty =
   { varid = Map.empty;
     synid = Map.empty;
     gramid = Map.empty;
   }
+
+let mem_varid s id = Map.mem id.it s.varid
+let mem_synid s id = Map.mem id.it s.synid
+let mem_gramid s id = Map.mem id.it s.gramid
+let add_varid s id e = {s with varid = Map.add id.it e s.varid}
+let add_synid s id t = {s with synid = Map.add id.it t s.synid}
+let add_gramid s id g = {s with gramid = Map.add id.it g s.gramid}
+
+let union s1 s2 =
+  { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
+    synid = Map.union (fun _ _t1 t2 -> Some t2) s1.synid s2.synid;
+    gramid = Map.union (fun _ _g1 g2 -> Some g2) s1.gramid s2.gramid;
+  }
+
+
+(* Helpers *)
 
 let subst_opt subst_x s xo = Option.map (subst_x s) xo
 let subst_list subst_x s xs = List.map (subst_x s) xs
@@ -54,10 +72,9 @@ and subst_typ s t =
   (match t.it with
   | VarT (id, args) ->
     (match Map.find_opt id.it s.synid with
-    | None -> t
-    | Some t' ->
-      assert (args = []); t'  (* We do not support higher-order substitutions yet *)
-    ).it
+    | None -> VarT (id, List.map (subst_arg s) args)
+    | Some t' -> assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
+    )
   | BoolT | NumT _ | TextT | AtomT _ -> t.it
   | ParenT t1 -> ParenT (subst_typ s t1)
   | TupT ts -> TupT (subst_list subst_typ s ts)
@@ -86,10 +103,9 @@ and subst_exp s e =
   (match e.it with
   | VarE (id, args) ->
     (match Map.find_opt id.it s.varid with
-    | None -> e
-    | Some e' ->
-      assert (args = []); e'  (* We do not support higher-order substitutions yet *)
-    ).it
+    | None -> VarE (id, List.map (subst_arg s) args)
+    | Some e' -> assert (args = []); e'.it  (* We do not support higher-order substitutions yet *)
+    )
   | AtomE _ | BoolE _ | NatE _ | TextE _ -> e.it
   | UnE (op, e1) -> UnE (op, subst_exp s e1)
   | BinE (e1, op, e2) -> BinE (subst_exp s e1, op, subst_exp s e2)
@@ -146,10 +162,9 @@ and subst_sym s g =
   (match g.it with
   | VarG (id, args) ->
     (match Map.find_opt id.it s.gramid with
-    | None -> g
-    | Some g' ->
-      assert (args = []); g' (* We do not support higher-order substitutions yet *)
-    ).it
+    | None -> VarG (id, List.map (subst_arg s) args)
+    | Some g' -> assert (args = []); g'.it (* We do not support higher-order substitutions yet *)
+    )
   | NatG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_nl_list subst_sym s gs)

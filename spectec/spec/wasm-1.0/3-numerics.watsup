@@ -13,13 +13,13 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 
 ;; TODO
-;; need to switch parameter order for type indexing to work
+;; TODO: fix printing
 
-def $unop(unop_(valtype), valtype, const_(valtype)) : const_(valtype)*         hint(show %#_%#((%)))
-def $binop(binop_(valtype), valtype, const_(valtype), const_(valtype)) : const_(valtype)*    hint(show %#_%#(%, %))
-def $testop(testop_(valtype), valtype, const_(valtype)) : const_(valtype)      hint(show %#_%#((%)))
-def $relop(relop_(valtype), valtype, const_(valtype), const_(valtype)) : const_(valtype)     hint(show %#_%#(%, %))
-def $cvtop(cvtop, valtype_1, valtype_2, sx?, const_(valtype_1)) : const_(valtype_2)* hint(show %#$_((%,%))^(%)#((%)))
+def $unop(valtype, unop_(valtype), const_(valtype)) : const_(valtype)*         hint(show %#_%#((%)))
+def $binop(valtype, binop_(valtype), const_(valtype), const_(valtype)) : const_(valtype)*    hint(show %#_%#(%, %))
+def $testop(valtype, testop_(valtype), const_(valtype)) : const_(valtype)      hint(show %#_%#((%)))
+def $relop(valtype, relop_(valtype), const_(valtype), const_(valtype)) : const_(valtype)     hint(show %#_%#(%, %))
+def $cvtop(valtype_1, valtype_2, cvtop, sx?, const_(valtype_1)) : const_(valtype_2)* hint(show %#$_((%,%))^(%)#((%)))
 
 def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
 def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
