@@ -582,54 +582,30 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
-syntax lanetype =
-  | I8
-  | I16
-  | I32
-  | I64
-  | F32
-  | F64
-
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
-syntax shape = `%X%`(lanetype, lanesize)
-
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
-
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
+;; 1-syntax.watsup:261.1-261.24
 syntax unopVVXX =
   | NOT
 
-;; 1-syntax.watsup:282.1-282.45
+;; 1-syntax.watsup:262.1-262.45
 syntax binopVVXX =
   | AND
   | ANDNOT
   | OR
   | XOR
 
-;; 1-syntax.watsup:283.1-283.32
+;; 1-syntax.watsup:263.1-263.32
 syntax ternopVVXX =
   | BITSELECT
 
-;; 1-syntax.watsup:284.1-284.31
+;; 1-syntax.watsup:264.1-264.31
 syntax testopVVXX =
   | ANY_TRUE
 
-;; 1-syntax.watsup:285.1-285.31
+;; 1-syntax.watsup:265.1-265.31
 syntax testopVIXX =
   | ALL_TRUE
 
-;; 1-syntax.watsup:286.1-286.61
+;; 1-syntax.watsup:266.1-266.61
 syntax relopVIXX =
   | EQ
   | NE
@@ -638,7 +614,7 @@ syntax relopVIXX =
   | LE(sx)
   | GE(sx)
 
-;; 1-syntax.watsup:287.1-287.49
+;; 1-syntax.watsup:267.1-267.49
 syntax relopVFXX =
   | EQ
   | NE
@@ -647,33 +623,33 @@ syntax relopVFXX =
   | LE
   | GE
 
-;; 1-syntax.watsup:288.1-288.30
+;; 1-syntax.watsup:268.1-268.30
 syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:289.1-289.41
+;; 1-syntax.watsup:269.1-269.41
 syntax binopVIXX =
   | ADD
   | SUB
   | SWIZZLE
 
-;; 1-syntax.watsup:290.1-290.40
+;; 1-syntax.watsup:270.1-270.40
 syntax minmaxopVIXX =
   | MIN(sx)
   | MAX(sx)
 
-;; 1-syntax.watsup:291.1-291.48
+;; 1-syntax.watsup:271.1-271.48
 syntax satbinopVIXX =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
-;; 1-syntax.watsup:292.1-292.36
+;; 1-syntax.watsup:272.1-272.36
 syntax shiftopVIXX =
   | SHL
   | SHR(sx)
 
-;; 1-syntax.watsup:293.1-293.70
+;; 1-syntax.watsup:273.1-273.70
 syntax unopVFXX =
   | ABS
   | NEG
@@ -683,7 +659,7 @@ syntax unopVFXX =
   | TRUNC
   | NEAREST
 
-;; 1-syntax.watsup:294.1-294.69
+;; 1-syntax.watsup:274.1-274.69
 syntax binopVFXX =
   | ADD
   | SUB
@@ -694,33 +670,33 @@ syntax binopVFXX =
   | PMIN
   | PMAX
 
-;; 1-syntax.watsup:297.1-297.38
+;; 1-syntax.watsup:277.1-277.38
 syntax unop_vvectype =
   | _VV(unopVVXX)
 
-;; 1-syntax.watsup:298.1-298.40
+;; 1-syntax.watsup:278.1-278.40
 syntax binop_vvectype =
   | _VV(binopVVXX)
 
-;; 1-syntax.watsup:299.1-299.42
+;; 1-syntax.watsup:279.1-279.42
 syntax ternop_vvectype =
   | _VV(ternopVVXX)
 
-;; 1-syntax.watsup:300.1-300.42
+;; 1-syntax.watsup:280.1-280.42
 syntax testop_vvectype =
   | _VV(testopVVXX)
 
-;; 1-syntax.watsup:302.1-302.43
+;; 1-syntax.watsup:282.1-282.43
 syntax shiftop_vectype =
   | _VI(shiftopVIXX)
 
-;; 1-syntax.watsup:303.1-303.61
+;; 1-syntax.watsup:283.1-283.61
 syntax unop_vectype =
   | _VI(unopVIXX)
   | _VF(unopVFXX)
   | POPCNT
 
-;; 1-syntax.watsup:304.1-304.112
+;; 1-syntax.watsup:284.1-284.112
 syntax binop_vectype =
   | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
   | _VF(binopVFXX)
@@ -728,16 +704,16 @@ syntax binop_vectype =
   | AVGR_U
   | Q15MULR_SAT_S
 
-;; 1-syntax.watsup:305.1-305.41
+;; 1-syntax.watsup:285.1-285.41
 syntax testop_vectype =
   | _VI(testopVIXX)
 
-;; 1-syntax.watsup:306.1-306.55
+;; 1-syntax.watsup:286.1-286.55
 syntax relop_vectype =
   | _VI(relopVIXX)
   | _VF(relopVFXX)
 
-;; 1-syntax.watsup:307.1-307.73
+;; 1-syntax.watsup:287.1-287.73
 syntax cvtop_vectype =
   | EXTEND
   | TRUNC_SAT
@@ -745,31 +721,53 @@ syntax cvtop_vectype =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:328.1-328.15
+;; 1-syntax.watsup:308.1-308.15
 syntax c = nat
 
-;; 1-syntax.watsup:329.1-329.23
+;; 1-syntax.watsup:309.1-309.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:330.1-330.23
+;; 1-syntax.watsup:310.1-310.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:333.1-335.17
+;; 1-syntax.watsup:313.1-315.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
+syntax lanetype =
+  | I8
+  | I16
+  | I32
+  | I64
+  | F32
+  | F64
+
+;; 1-syntax.watsup:355.1-355.54
+syntax shape = `%X%`(lanetype, lanesize)
+
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
+
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -868,67 +866,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -1708,7 +1706,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -3128,21 +3126,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size(nt <: valtype) / 8))))?{n}
     -- if ((n?{n} = ?()) \/ (nt = (inn <: numtype)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -4293,45 +4291,45 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + ($size(V128_valtype) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : ($size(V128_valtype) / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -5311,7 +5309,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -5338,185 +5497,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -5615,67 +5611,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -6479,7 +6475,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -6600,7 +6596,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -8030,21 +8026,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < ($size($valtype_numtype(nt)) / 8))))?{n}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -9195,45 +9191,45 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + ($size(V128_valtype) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : ($size(V128_valtype) / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -10213,7 +10209,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -10240,185 +10397,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -10517,67 +10511,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -11382,7 +11376,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -11503,7 +11497,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -12935,21 +12929,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (!($size($valtype_numtype(nt))) / 8))))?{n}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -14100,45 +14094,45 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (!($size(V128_valtype)) / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (!($size(V128_valtype)) / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -15118,7 +15112,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -15145,185 +15300,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -15422,67 +15414,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -16287,7 +16279,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -16408,7 +16400,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -17849,21 +17841,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -19019,47 +19011,47 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if ($size(V128_valtype) = ?(o0))
     -- if (((i + mo.OFFSET_memop) + (o0 / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($size(V128_valtype) = ?(o0))
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (o0 / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -20046,7 +20038,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -20073,185 +20226,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -20350,67 +20340,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -21215,7 +21205,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -21336,7 +21326,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -22777,21 +22767,21 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
 
@@ -23947,47 +23937,47 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if ($size(V128_valtype) = ?(o0))
     -- if (((i + mo.OFFSET_memop) + (o0 / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($size(V128_valtype) = ?(o0))
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (o0 / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -24974,7 +24964,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -25001,185 +25152,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -25278,67 +25266,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -26143,7 +26131,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -26264,7 +26252,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -27791,23 +27779,23 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
     -- if ((n?{n} = ?()) \/ (nt = $numtype_inn(inn)))
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) <= (n / 8))
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
     -- if (C.MEM_context[x] = mt)
     -- if ((2 ^ n_A) < (n / 8))
@@ -29022,47 +29010,47 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- if ($size(V128_valtype) = ?(o0))
     -- if (((i + mo.OFFSET_memop) + (o0 / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($size(V128_valtype) = ?(o0))
     -- if ($vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (o0 / 8)])
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (if ($ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)]))^(k<psr){k m}
-    -- if ($lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m})
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (if ($ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)]))^(k<N){k m}
+    -- if ($lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m})
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (l = (128 / n))
     -- if ($lanes(`%X%`($ishape(n), l), cv) = m^l{})
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- if ($ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)])
     -- if (cv = $ext(128, n, U_sx, c))
 
@@ -30056,7 +30044,168 @@ syntax cvtop =
 ;; 1-syntax.watsup:256.1-256.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:260.1-261.25
+;; 1-syntax.watsup:261.1-261.24
+syntax unopVVXX =
+  | NOT
+
+;; 1-syntax.watsup:262.1-262.45
+syntax binopVVXX =
+  | AND
+  | ANDNOT
+  | OR
+  | XOR
+
+;; 1-syntax.watsup:263.1-263.32
+syntax ternopVVXX =
+  | BITSELECT
+
+;; 1-syntax.watsup:264.1-264.31
+syntax testopVVXX =
+  | ANY_TRUE
+
+;; 1-syntax.watsup:265.1-265.31
+syntax testopVIXX =
+  | ALL_TRUE
+
+;; 1-syntax.watsup:266.1-266.61
+syntax relopVIXX =
+  | EQ
+  | NE
+  | LT(sx)
+  | GT(sx)
+  | LE(sx)
+  | GE(sx)
+
+;; 1-syntax.watsup:267.1-267.49
+syntax relopVFXX =
+  | EQ
+  | NE
+  | LT
+  | GT
+  | LE
+  | GE
+
+;; 1-syntax.watsup:268.1-268.30
+syntax unopVIXX =
+  | ABS
+  | NEG
+
+;; 1-syntax.watsup:269.1-269.41
+syntax binopVIXX =
+  | ADD
+  | SUB
+  | SWIZZLE
+
+;; 1-syntax.watsup:270.1-270.40
+syntax minmaxopVIXX =
+  | MIN(sx)
+  | MAX(sx)
+
+;; 1-syntax.watsup:271.1-271.48
+syntax satbinopVIXX =
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
+
+;; 1-syntax.watsup:272.1-272.36
+syntax shiftopVIXX =
+  | SHL
+  | SHR(sx)
+
+;; 1-syntax.watsup:273.1-273.70
+syntax unopVFXX =
+  | ABS
+  | NEG
+  | SQRT
+  | CEIL
+  | FLOOR
+  | TRUNC
+  | NEAREST
+
+;; 1-syntax.watsup:274.1-274.69
+syntax binopVFXX =
+  | ADD
+  | SUB
+  | MUL
+  | DIV
+  | MIN
+  | MAX
+  | PMIN
+  | PMAX
+
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.61
+syntax unop_vectype =
+  | _VI(unopVIXX)
+  | _VF(unopVFXX)
+  | POPCNT
+
+;; 1-syntax.watsup:284.1-284.112
+syntax binop_vectype =
+  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
+  | _VF(binopVFXX)
+  | MUL
+  | AVGR_U
+  | Q15MULR_SAT_S
+
+;; 1-syntax.watsup:285.1-285.41
+syntax testop_vectype =
+  | _VI(testopVIXX)
+
+;; 1-syntax.watsup:286.1-286.55
+syntax relop_vectype =
+  | _VI(relopVIXX)
+  | _VF(relopVFXX)
+
+;; 1-syntax.watsup:287.1-287.73
+syntax cvtop_vectype =
+  | EXTEND
+  | TRUNC_SAT
+  | CONVERT
+  | DEMOTE
+  | PROMOTE
+
+;; 1-syntax.watsup:308.1-308.15
+syntax c = nat
+
+;; 1-syntax.watsup:309.1-309.23
+syntax c_numtype = nat
+
+;; 1-syntax.watsup:310.1-310.23
+syntax c_vectype = nat
+
+;; 1-syntax.watsup:313.1-315.17
+syntax blocktype =
+  | _RESULT(valtype?)
+  | _IDX(funcidx)
+
+;; 1-syntax.watsup:356.1-356.27
+syntax half =
+  | LOW
+  | HIGH
+
+;; 1-syntax.watsup:354.1-354.45
+syntax lanesize = nat
+
+;; 1-syntax.watsup:353.1-353.64
 syntax lanetype =
   | I8
   | I16
@@ -30083,185 +30232,22 @@ def lanetype_packedtype : packedtype -> lanetype
   def lanetype_packedtype(I8_packedtype) = I8_lanetype
   def lanetype_packedtype(I16_packedtype) = I16_lanetype
 
-;; 1-syntax.watsup:262.1-262.45
-syntax lanesize = nat
-
-;; 1-syntax.watsup:266.1-266.54
+;; 1-syntax.watsup:355.1-355.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:271.1-272.22
-syntax packshape =
-  | PACKSHAPE(nat, nat)
+;; 1-syntax.watsup:444.1-444.29
+syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:276.1-276.27
-syntax half =
-  | LOW
-  | HIGH
-
-;; 1-syntax.watsup:281.1-281.24
-syntax unopVVXX =
-  | NOT
-
-;; 1-syntax.watsup:282.1-282.45
-syntax binopVVXX =
-  | AND
-  | ANDNOT
-  | OR
-  | XOR
-
-;; 1-syntax.watsup:283.1-283.32
-syntax ternopVVXX =
-  | BITSELECT
-
-;; 1-syntax.watsup:284.1-284.31
-syntax testopVVXX =
-  | ANY_TRUE
-
-;; 1-syntax.watsup:285.1-285.31
-syntax testopVIXX =
-  | ALL_TRUE
-
-;; 1-syntax.watsup:286.1-286.61
-syntax relopVIXX =
-  | EQ
-  | NE
-  | LT(sx)
-  | GT(sx)
-  | LE(sx)
-  | GE(sx)
-
-;; 1-syntax.watsup:287.1-287.49
-syntax relopVFXX =
-  | EQ
-  | NE
-  | LT
-  | GT
-  | LE
-  | GE
-
-;; 1-syntax.watsup:288.1-288.30
-syntax unopVIXX =
-  | ABS
-  | NEG
-
-;; 1-syntax.watsup:289.1-289.41
-syntax binopVIXX =
-  | ADD
-  | SUB
-  | SWIZZLE
-
-;; 1-syntax.watsup:290.1-290.40
-syntax minmaxopVIXX =
-  | MIN(sx)
-  | MAX(sx)
-
-;; 1-syntax.watsup:291.1-291.48
-syntax satbinopVIXX =
-  | ADD_SAT(sx)
-  | SUB_SAT(sx)
-
-;; 1-syntax.watsup:292.1-292.36
-syntax shiftopVIXX =
-  | SHL
-  | SHR(sx)
-
-;; 1-syntax.watsup:293.1-293.70
-syntax unopVFXX =
-  | ABS
-  | NEG
-  | SQRT
-  | CEIL
-  | FLOOR
-  | TRUNC
-  | NEAREST
-
-;; 1-syntax.watsup:294.1-294.69
-syntax binopVFXX =
-  | ADD
-  | SUB
-  | MUL
-  | DIV
-  | MIN
-  | MAX
-  | PMIN
-  | PMAX
-
-;; 1-syntax.watsup:297.1-297.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:298.1-298.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:299.1-299.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:300.1-300.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:302.1-302.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:303.1-303.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
-  | POPCNT
-
-;; 1-syntax.watsup:304.1-304.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
-  | MUL
-  | AVGR_U
-  | Q15MULR_SAT_S
-
-;; 1-syntax.watsup:305.1-305.41
-syntax testop_vectype =
-  | _VI(testopVIXX)
-
-;; 1-syntax.watsup:306.1-306.55
-syntax relop_vectype =
-  | _VI(relopVIXX)
-  | _VF(relopVFXX)
-
-;; 1-syntax.watsup:307.1-307.73
-syntax cvtop_vectype =
-  | EXTEND
-  | TRUNC_SAT
-  | CONVERT
-  | DEMOTE
-  | PROMOTE
-
-;; 1-syntax.watsup:328.1-328.15
-syntax c = nat
-
-;; 1-syntax.watsup:329.1-329.23
-syntax c_numtype = nat
-
-;; 1-syntax.watsup:330.1-330.23
-syntax c_vectype = nat
-
-;; 1-syntax.watsup:333.1-335.17
-syntax blocktype =
-  | _RESULT(valtype?)
-  | _IDX(funcidx)
-
-;; 1-syntax.watsup:452.1-456.52
+;; 1-syntax.watsup:445.1-448.44
 syntax vloadop =
-  | _LOAD
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 rec {
 
-;; 1-syntax.watsup:458.1-470.78
+;; 1-syntax.watsup:450.1-462.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -30360,67 +30346,67 @@ syntax instr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:472.1-473.9
+;; 1-syntax.watsup:464.1-465.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:485.1-485.61
+;; 1-syntax.watsup:477.1-477.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:486.1-486.49
+;; 1-syntax.watsup:478.1-478.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:488.1-489.15
+;; 1-syntax.watsup:480.1-481.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:490.1-491.16
+;; 1-syntax.watsup:482.1-483.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:492.1-493.27
+;; 1-syntax.watsup:484.1-485.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:494.1-495.25
+;; 1-syntax.watsup:486.1-487.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:496.1-497.23
+;; 1-syntax.watsup:488.1-489.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:498.1-499.17
+;; 1-syntax.watsup:490.1-491.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:500.1-501.30
+;; 1-syntax.watsup:492.1-493.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:502.1-503.22
+;; 1-syntax.watsup:494.1-495.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:504.1-505.16
+;; 1-syntax.watsup:496.1-497.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:507.1-508.66
+;; 1-syntax.watsup:499.1-500.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:509.1-510.24
+;; 1-syntax.watsup:501.1-502.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:511.1-512.30
+;; 1-syntax.watsup:503.1-504.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:514.1-515.76
+;; 1-syntax.watsup:506.1-507.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -31226,7 +31212,7 @@ syntax admininstr =
   | DATA.DROP(dataidx)
   | LOAD(numtype, (n, sx)?, memidx, memop)
   | STORE(numtype, n?, memidx, memop)
-  | VLOAD(vloadop, memidx, memop)
+  | VLOAD(vloadop?, memidx, memop)
   | VLOAD_LANE(n, memidx, memop, laneidx)
   | VSTORE(memidx, memop)
   | VSTORE_LANE(n, memidx, memop, laneidx)
@@ -31347,7 +31333,7 @@ def admininstr_instr : instr -> admininstr
   def {x : dataidx} admininstr_instr(DATA.DROP_instr(x)) = DATA.DROP_admininstr(x)
   def {x0 : numtype, x1 : (n, sx)?, x2 : memidx, x3 : memop} admininstr_instr(LOAD_instr(x0, x1, x2, x3)) = LOAD_admininstr(x0, x1, x2, x3)
   def {x0 : numtype, x1 : n?, x2 : memidx, x3 : memop} admininstr_instr(STORE_instr(x0, x1, x2, x3)) = STORE_admininstr(x0, x1, x2, x3)
-  def {x0 : vloadop, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
+  def {x0 : vloadop?, x1 : memidx, x2 : memop} admininstr_instr(VLOAD_instr(x0, x1, x2)) = VLOAD_admininstr(x0, x1, x2)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VLOAD_LANE_instr(x0, x1, x2, x3)) = VLOAD_LANE_admininstr(x0, x1, x2, x3)
   def {x0 : memidx, x1 : memop} admininstr_instr(VSTORE_instr(x0, x1)) = VSTORE_admininstr(x0, x1)
   def {x0 : n, x1 : memidx, x2 : memop, x3 : laneidx} admininstr_instr(VSTORE_LANE_instr(x0, x1, x2, x3)) = VSTORE_LANE_admininstr(x0, x1, x2, x3)
@@ -32924,23 +32910,23 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
     -- if ((2 ^ n_A) <= (o0 / 8))
     -- (if (((2 ^ n_A) <= (n / 8)) /\ ((n / 8) < (o1 / 8))))?{n o1}
 
-  ;; 6-typing.watsup:1027.1-1030.34
-  rule vload {C : context, mt : memtype, n_A : n, n_O : n, psl : nat, psr : nat, sx : sx, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+  ;; 6-typing.watsup:1027.1-1030.30
+  rule vload {C : context, M : M, N : N, mt : memtype, n_A : n, n_O : n, sx : sx, x : idx}:
+    `%|-%:%`(C, VLOAD_instr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
-    -- if ((2 ^ n_A) <= ((psl / 8) * psr))
+    -- if ((2 ^ n_A) <= ((M / 8) * N))
     -- where mt = C.MEM_context[x]
 
   ;; 6-typing.watsup:1032.1-1035.26
   rule vload-splat {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(SPLAT_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(SPLAT_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
     -- if ((2 ^ n_A) <= (n / 8))
     -- where mt = C.MEM_context[x]
 
   ;; 6-typing.watsup:1037.1-1040.25
   rule vload-zero {C : context, mt : memtype, n : n, n_A : n, n_O : n, x : idx}:
-    `%|-%:%`(C, VLOAD_instr(ZERO_vloadop(n), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
+    `%|-%:%`(C, VLOAD_instr(?(ZERO_vloadop(n)), x, {ALIGN n_A, OFFSET n_O}), `%->%`([I32_valtype], [V128_valtype]))
     -- if (x < |C.MEM_context|)
     -- if ((2 ^ n_A) < (n / 8))
     -- where mt = C.MEM_context[x]
@@ -34166,47 +34152,47 @@ relation Step_read: `%~>%*`(config, admininstr*)
 
   ;; 8-reduction.watsup:849.1-851.61
   rule vload-oob {i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [TRAP_admininstr])
     -- where ?(o0) = $size(V128_valtype)
     -- if (((i + mo.OFFSET_memop) + (o0 / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:853.1-855.76
   rule vload-val {cv : c_vectype, i : nat, mo : memop, x : idx, z : state, o0 : nat}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(_LOAD_vloadop, x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- where ?(o0) = $size(V128_valtype)
     -- where $vtbytes(V128_vectype, cv) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (o0 / 8)]
 
-  ;; 8-reduction.watsup:857.1-859.59
-  rule vload-shape-oob {i : nat, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [TRAP_admininstr])
-    -- if (((i + mo.OFFSET_memop) + ((psl * psr) / 8)) > |$mem(z, x).DATA_meminst|)
+  ;; 8-reduction.watsup:857.1-859.55
+  rule vload-shape-oob {M : M, N : N, i : nat, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [TRAP_admininstr])
+    -- if (((i + mo.OFFSET_memop) + ((M * N) / 8)) > |$mem(z, x).DATA_meminst|)
 
-  ;; 8-reduction.watsup:861.1-864.81
-  rule vload-shape-val {cv : c_vectype, i : nat, k^psr : nat^psr, m^psr : m^psr, mo : memop, psl : nat, psr : nat, sx : sx, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SHAPE_vloadop(PACKSHAPE_packshape(psl, psr), sx), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
-    -- (where $ibytes(psl, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * psl) / 8)) : (psl / 8)])^(k<psr){k m}
-    -- where $lanes(`%X%`($ishape(psl * 2), psr), cv) = $ext(psl, (psl * 2), sx, m)^psr{m}
+  ;; 8-reduction.watsup:861.1-864.71
+  rule vload-shape-val {M : M, N : N, cv : c_vectype, i : nat, k^N : nat^N, m^N : m^N, mo : memop, sx : sx, x : idx, z : state}:
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SHAPE_vloadop(`%X%`(M, N), sx)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    -- (where $ibytes(M, m) = $mem(z, x).DATA_meminst[((i + mo.OFFSET_memop) + ((k * M) / 8)) : (M / 8)])^(k<N){k m}
+    -- where $lanes(`%X%`($ishape(M * 2), N), cv) = $ext(M, (M * 2), sx, m)^N{m}
 
   ;; 8-reduction.watsup:866.1-868.51
   rule vload-splat-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:870.1-874.41
   rule vload-splat-val {cv : c_vectype, i : nat, l : labelidx, m : m, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(SPLAT_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(SPLAT_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- where l = (128 / n)
     -- where $ibytes(n, m) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
     -- where $lanes(`%X%`($ishape(n), l), cv) = m^l{}
 
   ;; 8-reduction.watsup:876.1-878.51
   rule vload-zero-oob {i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [TRAP_admininstr])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [TRAP_admininstr])
     -- if (((i + mo.OFFSET_memop) + (n / 8)) > |$mem(z, x).DATA_meminst|)
 
   ;; 8-reduction.watsup:880.1-883.32
   rule vload-zero-val {c : c, cv : c_vectype, i : nat, mo : memop, n : n, x : idx, z : state}:
-    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(ZERO_vloadop(n), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
+    `%~>%*`(`%;%*`(z, [CONST_admininstr(I32_numtype, i) VLOAD_admininstr(?(ZERO_vloadop(n)), x, mo)]), [VVCONST_admininstr(V128_vectype, cv)])
     -- where $ibytes(n, c) = $mem(z, x).DATA_meminst[(i + mo.OFFSET_memop) : (n / 8)]
     -- where cv = $ext(128, n, U_sx, c)
 

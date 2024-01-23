@@ -847,21 +847,21 @@ rule Step_read/load-pack-val:
   -- if $ibytes(n, c) = $mem(z, x).DATA[i + mo.OFFSET : n/8]
 
 rule Step_read/vload-oob:
-  z; (CONST I32 i) (VLOAD _LOAD x mo)  ~>  TRAP
+  z; (CONST I32 i) (VLOAD x mo)  ~>  TRAP
   -- if $(i + mo.OFFSET + $size(V128)/8 > |$mem(z, x).DATA|)
 
 rule Step_read/vload-val:
-  z; (CONST I32 i) (VLOAD _LOAD x mo)  ~>  (VVCONST V128 cv)
+  z; (CONST I32 i) (VLOAD x mo)  ~>  (VVCONST V128 cv)
   -- if $vtbytes(V128, cv) = $mem(z, x).DATA[i + mo.OFFSET : $size(V128)/8]
 
 rule Step_read/vload-shape-oob:
-  z; (CONST I32 i) (VLOAD (SHAPE (PACKSHAPE psl psr) sx) x mo)  ~>  TRAP
-  -- if $(i + mo.OFFSET + psl * psr/8) > |$mem(z, x).DATA|
+  z; (CONST I32 i) (VLOAD (SHAPE (M X N) sx) x mo)  ~>  TRAP
+  -- if $(i + mo.OFFSET + M * N/8) > |$mem(z, x).DATA|
 
 rule Step_read/vload-shape-val:
-  z; (CONST I32 i) (VLOAD (SHAPE (PACKSHAPE psl psr) sx) x mo)  ~>  (VVCONST V128 cv)
-  -- (if $ibytes(psl, m) = $mem(z, x).DATA[i + mo.OFFSET + k * psl/8 : psl/8])^(k<psr)
-  -- if $lanes($ishape($(psl * 2)) X psr, cv) = $ext(psl, $(psl * 2), sx, m)^psr
+  z; (CONST I32 i) (VLOAD (SHAPE (M X N) sx) x mo)  ~>  (VVCONST V128 cv)
+  -- (if $ibytes(M, m) = $mem(z, x).DATA[i + mo.OFFSET + k * M/8 : M/8])^(k<N)
+  -- if $lanes($ishape($(M * 2)) X N, cv) = $ext(M, $(M * 2), sx, m)^N
 
 rule Step_read/vload-splat-oob:
   z; (CONST I32 i) (VLOAD (SPLAT n) x mo)  ~>  TRAP

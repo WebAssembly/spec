@@ -1629,9 +1629,9 @@ let al_of_pack_size = function
   | Pack.Pack64 -> al_of_int 64
 
 let al_of_pack_shape = function
-  | Pack.Pack8x8 -> CaseV ("PACKSHAPE", [NumV 8L; NumV 8L])
-  | Pack.Pack16x4 -> CaseV ("PACKSHAPE", [NumV 16L; NumV 4L])
-  | Pack.Pack32x2 -> CaseV ("PACKSHAPE", [NumV 32L; NumV 2L])
+  | Pack.Pack8x8 -> TupV [NumV 8L; NumV 8L]
+  | Pack.Pack16x4 -> TupV [NumV 16L; NumV 4L]
+  | Pack.Pack32x2 -> TupV [NumV 32L; NumV 2L]
 
 let al_of_extension = function
   | Pack.SX -> singleton "S"
@@ -1665,8 +1665,8 @@ let al_of_vloadop vloadop =
     | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", [ al_of_pack_shape pack_shape; al_of_extension extension ])
     | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size ])
     | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size ])
-  )
-  | None -> CaseV ("_LOAD", []) in
+  ) |> Option.some |> optV
+  | None -> OptV None in
 
   [ vmemop ] @ al_of_memidx () @ [ StrV str ]
 

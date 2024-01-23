@@ -257,26 +257,6 @@ syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
 
 var mo : memop
 
-syntax lanetype hint(desc "lane type") =
-  | packedtype | numtype
-syntax lanesize hint(desc "lane size") = nat
-
-var lnt : lanetype
-var lns : lanesize
-syntax shape hint(desc "shape") = lanetype X lanesize
-
-var psl : nat
-var psr : nat
-
-syntax packshape =
-  | PACKSHAPE nat nat
-
-var psh : packshape
-
-syntax half = | LOW | HIGH
-var hf : half
-
-var sh : shape
 
 syntax unopVVXX = | NOT
 syntax binopVVXX = | AND | ANDNOT | OR | XOR
@@ -370,6 +350,16 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
   | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
   | ...
 
+syntax lanetype hint(desc "lane type") = | packedtype | numtype
+syntax lanesize hint(desc "lane size") = nat
+syntax shape hint(desc "shape") = lanetype X lanesize
+syntax half = | LOW | HIGH
+
+var lnt : lanetype
+var lns : lanesize
+var sh : shape
+var hf : half
+
 syntax instr/vector hint(desc "vector instruction") = ...
   | VVCONST vectype c_vectype                                 hint(show %.CONST %)
   | VVUNOP vectype unop_vvectype                              hint(show %.%)
@@ -393,6 +383,7 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VDOT shape shape sx                                       hint(show %.VDOT#_#%#_#%)
   | VEXTADD_PAIRWISE shape shape sx                           hint(show %.VEXTADD_PAIRWISE#_#%#_#%)
   | ...
+
 
 syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL heaptype
@@ -449,11 +440,12 @@ syntax instr/table hint(desc "table instruction") = ...
   | ELEM.DROP elemidx
   | ...
 
+
+syntax packshape = nat X nat
 syntax vloadop =
-  | _LOAD
-  | SHAPE packshape sx          hint(show %#_#%)
-  | SPLAT nat                   hint(show %#_#SPLAT)
-  | ZERO nat                    hint(show %#_#ZERO)
+  | SHAPE packshape sx  hint(show %#_#%)
+  | SPLAT nat           hint(show %#_#SPLAT)
+  | ZERO nat            hint(show %#_#ZERO)
 
 syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.SIZE memidx
@@ -462,9 +454,9 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.COPY memidx memidx
   | MEMORY.INIT memidx dataidx
   | DATA.DROP dataidx
-  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)  hint(show %.LOAD#% % %)
-  | STORE numtype n? memidx memop        hint(show %.STORE % %) hint(show %.STORE#% % %)
-  | VLOAD vloadop memidx memop           hint(show V128.LOAD % % %)
+  | LOAD numtype (n _ sx)? memidx memop  hint(show %.LOAD % %)    hint(show %.LOAD#% % %)
+  | STORE numtype n? memidx memop        hint(show %.STORE % %)   hint(show %.STORE#% % %)
+  | VLOAD vloadop? memidx memop          hint(show V128.LOAD % %) hint(show V128.LOAD#% % %)
   | VLOAD_LANE n memidx memop laneidx    hint(show V128.LOAD#%#_#LANE % % %)
   | VSTORE memidx memop                  hint(show V128.STORE % %)
   | VSTORE_LANE n memidx memop laneidx   hint(show V128.STORE#%#_#LANE % % %)

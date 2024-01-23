@@ -1025,9 +1025,9 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE (PACKSHAPE psl psr) sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE (M X N) sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[x] = mt
-  -- if $(2^(n_A) <= psl/8 * psr)
+  -- if $(2^(n_A) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
   C |- VLOAD (SPLAT n) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
