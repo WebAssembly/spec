@@ -34,8 +34,9 @@ flags on the command line.
 *)
 let all_passes = [ Sub; Totalize; Unthe; Wild; Sideconditions; Animate ]
 
-let log = ref false  (* log execution steps *)
-let warn = ref false (* warn about unused or reused splices *)
+let log = ref false      (* log execution steps *)
+let in_place = ref false (* splice patch files in place *)
+let warn = ref false     (* warn about unused or reused splices *)
 
 type file_kind =
   | Spec
@@ -105,6 +106,7 @@ let argspec = Arg.align
 [
   "-v", Arg.Unit banner, " Show version";
   "-p", Arg.Unit (fun () -> file_kind := Patch), " Patch files";
+  "-i", Arg.Set in_place, " Splice patch files in-place";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unused or multiply used splices";
@@ -201,7 +203,8 @@ let () =
       print_endline (Backend_prose.Print.string_of_prose prose);
     | Splice config ->
       let prose = Backend_prose.Gen.gen_prose il al in
-      odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> "");
+      if !in_place then odsts := !pdsts;
+      odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> ""); (* TODO *)
       let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
       List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
       if !warn then Backend_splice.Splice.warn env;

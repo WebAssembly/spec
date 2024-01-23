@@ -34,7 +34,8 @@ LATEXOUTNAME = spec-latex
 test-latex: $(SPECS:%=$(LATEXOUTNAME)-%.pdf)
 
 $(LATEXOUTNAME)-%.tex: $(LATEXINNAME).tex $(SPECFILES) $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) --splice-latex -p $(OWNDIR)/$< -o $(OWNDIR)/$@)
+	cp $< $@
+	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) --splice-latex -i -p $(OWNDIR)/$@)
 
 $(LATEXOUTNAME)-%.pdf: $(LATEXOUTNAME)-%.tex
 	pdflatex $<
@@ -51,7 +52,8 @@ SPHINXDIR = _sphinx
 test-sphinx: $(SPECS:%=sphinx-splice-%)
 
 $(SPHINXOUTNAME)-%.rst: $(SPHINXINNAME).rst $(SPECFILES) $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) --splice-sphinx -p $(OWNDIR)/$< -o $(OWNDIR)/$@)
+	cp $< $@
+	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) --splice-sphinx -i -p $(OWNDIR)/$@)
 
 sphinx-splice-%: sphinx-html-% sphinx-pdf-%
 	#
