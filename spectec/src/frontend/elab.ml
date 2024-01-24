@@ -1474,7 +1474,7 @@ let elab_def env d : Il.def list =
     let free = (Free.free_def d).Free.varid in
     let binds' = make_binds env' free dims d.at in
     let rule' = Il.RuleD (id2, binds', mixop, tup_exp' es' e.at, prems') $ d.at in
-    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule'] );
+    env.rels <- rebind "relation" env.rels id1 (t, rules' @ [rule']);
     []
   | VarD (id, t, _hints) ->
     let _t' = elab_typ env t in

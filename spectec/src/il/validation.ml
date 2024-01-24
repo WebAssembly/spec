@@ -526,8 +526,14 @@ and valid_prem env prem =
     valid_expmix env mixop e (find "relation" env.rels id) e.at
   | IfPr e ->
     valid_exp env e (BoolT $ e.at)
-  | LetPr (e1, e2, _ids) ->
-    valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at)
+  | LetPr (e1, e2, ids) ->
+    valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at);
+    let ids = List.map it ids in
+    let target_ids = (Free.Set.of_list ids) in
+    let lhs_ids = (Free.free_exp e1).varid in
+    if not (Free.Set.subset target_ids lhs_ids) then
+      error prem.at ("binding premise's target(s) `" ^ String.concat "," ids ^
+        "` is not contained in the left hand side expression `" ^ string_of_exp e1)
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->

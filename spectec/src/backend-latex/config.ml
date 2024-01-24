@@ -17,7 +17,3 @@ let default =
     macros_for_vdash = false;
     include_grammar_desc = false;
   }
-
-let latex = default
-
-let sphinx = default
