@@ -104,6 +104,7 @@ let is_post_exp e =
 %token DOLLAR TICK
 %token BOT TOP
 %token HOLE MULTIHOLE SKIP MULTISKIP FUSE
+%token<int> HOLEN SKIPN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
 %token IF OTHERWISE HINT_LPAREN
@@ -442,10 +443,12 @@ exp_call_ :
   | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
 
 exp_hole_ :
-  | HOLE { HoleE (`Use, `One) }
-  | MULTIHOLE { HoleE (`Use, `All) }
-  | SKIP { HoleE (`Skip, `One) }
-  | MULTISKIP { HoleE (`Skip, `All) }
+  | HOLEN { HoleE (`Use, `Num $1) }
+  | HOLE { HoleE (`Use, `Next) }
+  | MULTIHOLE { HoleE (`Use, `Rest) }
+  | SKIPN { HoleE (`Skip, `Num $1) }
+  | SKIP { HoleE (`Skip, `Next) }
+  | MULTISKIP { HoleE (`Skip, `Rest) }
 
 (*exp_prim : exp_prim_ { $1 $ at $sloc }*)
 exp_prim_ :

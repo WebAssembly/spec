@@ -376,9 +376,9 @@ and match_exp env s e1 e2 : subst option =
       Some s
     else
       None
-  | _, VarE (id, []) ->
+  | _, (VarE (id, []) as e2') ->
     (* Treat as a fresh pattern variable. Need to check domain. *)
-    let t' = reduce_typ env (El.Convert.typ_of_exp e2) in
+    let t' = reduce_typ env (El.Convert.typ_of_exp (e2' $ id.at)) in
     if
       match e1.it, t'.it with
       | BoolE _, BoolT

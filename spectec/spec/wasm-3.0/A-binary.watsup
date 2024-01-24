@@ -17,20 +17,20 @@ grammar Bvec(grammar BX : el) : el* =
 
 grammar Bbyte : byte = | b:0x00 | ... | b:0xFF => b
 
-grammar BuN(N) : uN(N) hint(show Bu#N) =
+grammar BuN(N) : uN(N) hint(show Bu#%) =
   | n:Bbyte                 => n                       -- if $(n < 2^7 /\ n < 2^N)
   | n:Bbyte m:BuN(($(N-7))) => $(2^7 * m + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar BsN(N) : sN(N) hint(show Bs#N) =
+grammar BsN(N) : sN(N) hint(show Bs#%) =
   | n:Bbyte                 => n                       -- if $(n < 2^6 /\ n < 2^(N-1))
   | n:Bbyte                 => $(n - 2^7)              -- if $(2^6 <= n < 2^7 /\ n >= 2^7 - 2^(N-1))
   | n:Bbyte i:BuN(($(N-7))) => $(2^7 * i + (n - 2^7))  -- if $(n >= 2^7 /\ N > 7)
 
-grammar BiN(N) : iN(N) hint(show Bi#N) =
+grammar BiN(N) : iN(N) hint(show Bi#%) =
   | i:BsN(N)                => $invsigned(N, i)
 
 
-grammar BfN(N) : fN(N) hint(show Bf#N) =
+grammar BfN(N) : fN(N) hint(show Bf#%) =
   | b*:Bbyte^(N/8)  => $invfbytes(N, b*)
 
 

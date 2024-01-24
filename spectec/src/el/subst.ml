@@ -175,6 +175,7 @@ and subst_sym s g =
   | IterG (g1, iter) -> IterG (subst_sym s g1, subst_iter s iter)
   | ArithG e -> ArithG (subst_exp s e)
   | AttrG (e, g1) -> AttrG (subst_exp s e, subst_sym s g1)
+  | FuseG (g1, g2) -> FuseG (subst_sym s g1, subst_sym s g2)
   ) $ g.at
 
 (*

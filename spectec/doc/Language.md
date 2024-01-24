@@ -175,9 +175,11 @@ path ::=
 
 
 hole ::=
-  "%"                                  use one operand
+  "%"                                  use next operand
+  "%"digit*                            use numbered operand
   "%%"                                 use all operands
-  "!%"                                 skip one operand
+  "!%"                                 skip next operand
+  "!%"digit*                           skip numbered operand
   "!%%"                                skip all operands
 ```
 
