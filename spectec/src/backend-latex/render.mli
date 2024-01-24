@@ -5,7 +5,7 @@ open El.Ast
 
 type env
 
-val env : Config.config -> El.Ast.script -> env
+val env : Config.t -> El.Ast.script -> env
 
 val with_syntax_decoration : bool -> env -> env
 val with_rule_decoration : bool -> env -> env
