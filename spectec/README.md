@@ -239,12 +239,12 @@ To run a wast file,
 ```
 $ git checkout al
 $ make
-$ ./watsup spec/* --animate --sideconditions --interpreter test-interpreter/sample.wast
+$ ./watsup spec/* --interpreter test-interpreter/sample.wast
 ```
 
 You may also run all wast files in the directory.
 ```
 $ git checkout al
 $ make
-$ ./watsup spec/* --animate --sideconditions --interpreter ../test/core
+$ ./watsup spec/* --interpreter ../test/core
 ```
