@@ -1313,7 +1313,7 @@ and subst_implicit env s t t' : Subst.subst =
     | IterT (t1, _), IterT (t1', _) -> inst s t1 t1'
     | _ -> s
   in inst s t t'
-  
+
 let bind_implicit env t : env =
   let free = Free.free_typ t in
   Free.Set.fold (fun id' env ->
@@ -1567,10 +1567,10 @@ let populate_def env d' : Il.def =
   | Il.SynD _ | Il.HintD _ -> d'
   | Il.RelD (id, mixop, t', []) ->
     let _, rules' = find "relation" env.rels id in
-    Il.RelD (id, mixop, t', List.rev rules') $ d'.at
+    Il.RelD (id, mixop, t', rules') $ d'.at
   | Il.DecD (id, t1', t2', []) ->
     let _, _, clauses' = find "function" env.defs id in
-    Il.DecD (id, t1', t2', List.rev clauses') $ d'.at
+    Il.DecD (id, t1', t2', clauses') $ d'.at
   | _ ->
     assert false
 

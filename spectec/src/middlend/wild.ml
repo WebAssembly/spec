@@ -166,7 +166,6 @@ and t_exp' env e : binds * exp' =
 
   | TupE es -> t_list t_exp env es (fun es' -> TupE es')
   | ListE es -> t_list t_exp env es (fun es' -> ListE es')
-
   | IterE (e, iterexp) ->
     let binds1, e' = t_exp env e in
     let iterexp', binds1' = under_iterexp iterexp binds1 in
@@ -198,7 +197,7 @@ and t_prem' env prem : binds * premise' =
   | RulePr (a, b, exp) ->
     unary t_exp env exp (fun exp' -> RulePr (a, b, exp'))
   | IfPr e -> unary t_exp env e (fun e' -> IfPr e')
-  | LetPr (e1, e2) -> binary t_exp t_exp env (e1, e2) (fun (e1', e2') -> LetPr (e1', e2'))
+  | LetPr (e1, e2, ids) -> binary t_exp t_exp env (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', ids))
   | ElsePr -> [], prem
   | IterPr (prem, iterexp) ->
     let binds1, prem' = t_prem env prem in

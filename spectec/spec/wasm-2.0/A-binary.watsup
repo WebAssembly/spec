@@ -44,10 +44,6 @@ grammar Bf64 : f64 = | p:BfN(64) => p
 
 ;; Names
 
-def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
-def $concat_bytes(eps) = eps
-def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
-
 def $utf8(name) : byte*
 def $utf8(c) = b  -- if c < U+0080 /\ c = b
 def $utf8(c) = b_1 b_2  -- if U+0080 <= c < U+0800 /\ c = $(2^6*(b_1 - 0xC0) + (b_2 - 0x80))

@@ -1,0 +1,10 @@
+(library
+  (name il2al)
+  (libraries backend_interpreter middlend util il al)
+  (modules
+    animate
+    il2il
+    translate
+    transpile
+  )
+)

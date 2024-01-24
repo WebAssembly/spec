@@ -1,0 +1,8 @@
+*.aux
+*.log
+*.pdf
+_sphinx
+exec
+syntax
+util
+valid

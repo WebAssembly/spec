@@ -1,5 +1,5 @@
 let gen_string ?(decorated = true) el =
-  let env = Render.env Config.latex el
+  let env = Render.env Config.default el
     |> Render.with_syntax_decoration decorated
     |> Render.with_rule_decoration decorated
   in Render.render_script env el

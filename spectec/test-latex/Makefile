@@ -22,7 +22,8 @@ all: test
 
 .PHONY: test
 
-test: test-gen test-latex test-sphinx
+
+test: test-gen
 
 
 # Latex generation
@@ -60,56 +61,6 @@ test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	rm $(GENINNAME).tex $<
 
 
-# Latex splicing
-
-SPLICEINNAME = spec-splice.in
-SPLICEOUTNAME = spec-splice
-
-.PHONY: test-splice
-
-test-latex: $(SPECS:%=$(SPLICEOUTNAME)-%.pdf)
-
-$(SPLICEOUTNAME)-%.tex: $(SPLICEINNAME).tex $(SPECFILES) $(EXE)
-	cp $< $@
-	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) -p $(OWNDIR)/$@)
-
-$(SPLICEOUTNAME)-%.pdf: $(SPLICEOUTNAME)-%.tex
-	pdflatex $<
-
-
-# Sphinx splicing
-
-SPHINXINNAME = spec-sphinx.in
-SPHINXOUTNAME = spec-sphinx
-SPHINXDIR = _sphinx
-
-.PHONY: test-sphinx
-
-test-sphinx: $(SPECS:%=sphinx-splice-%)
-
-$(SPHINXOUTNAME)-%.rst: $(SPHINXINNAME).rst $(SPECFILES) $(EXE)
-	cp $< $@
-	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) --sphinx -p $(OWNDIR)/$@)
-
-sphinx-splice-%: sphinx-html-% sphinx-pdf-%
-	#
-
-sphinx-html-%: $(SPHINXOUTNAME)-%.rst conf.py
-	mkdir -p $(SPHINXDIR)/_build
-	cp $(SPHINXOUTNAME)-$*.rst $(SPHINXDIR)/$(SPHINXOUTNAME).rst
-	cp conf.py $(SPHINXDIR)
-	sphinx-build -W -b html $(SPHINXDIR) $(SPHINXDIR)/_build
-	sed "s/textsc{/mathrm{/g" $(SPHINXDIR)/_build/$(SPHINXOUTNAME).html >$(SPHINXOUTNAME).html.tmp
-	mv -f $(SPHINXOUTNAME).html.tmp $(SPHINXDIR)/_build/$(SPHINXOUTNAME)-$*.html
-
-sphinx-pdf-%: $(SPHINXOUTNAME)-%.rst conf.py
-	mkdir -p $(SPHINXDIR)/_build
-	cp $(SPHINXOUTNAME)-$*.rst $(SPHINXDIR)/$(SPHINXOUTNAME).rst
-	cp conf.py $(SPHINXDIR)
-	sphinx-build -W -b latex $(SPHINXDIR) $(SPHINXDIR)/_build
-	(cd $(SPHINXDIR)/_build && ln -f $(SPHINXOUTNAME).tex $(SPHINXOUTNAME)-$*.tex && pdflatex $(SPHINXOUTNAME)-$*.tex)
-
-
 # Executable
 
 $(EXE): exe
@@ -125,8 +76,7 @@ exe:
 clean:
 	dune clean
 	rm -f *.aux *.log
-	rm -rf $(SPHINXDIR)
 
 distclean: clean
-	rm -f $(GENINNAME)-*.tex test-*.tex $(SPLICEOUTNAME)-*.tex $(SPHINXOUTNAME)-*.rst
+	rm -f $(GENINNAME)-*.tex test-*.tex
 	rm -f *.pdf

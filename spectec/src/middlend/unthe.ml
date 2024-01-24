@@ -141,7 +141,6 @@ and t_exp' n e : eqns * exp' =
 
   | TupE es -> t_list t_exp n es (fun es' -> TupE es')
   | ListE es -> t_list t_exp n es (fun es' -> ListE es')
-
   | IterE (e, iterexp) ->
     let eqns1, e' = t_exp n e in
     let iterexp', eqns1' = under_iterexp iterexp eqns1 in
@@ -174,7 +173,7 @@ and t_prem' n prem : eqns * premise' =
   | RulePr (a, b, exp) ->
     unary t_exp n exp (fun exp' -> RulePr (a, b, exp'))
   | IfPr e -> unary t_exp n e (fun e' -> IfPr e')
-  | LetPr (e1, e2) -> binary t_exp t_exp n (e1, e2) (fun (e1', e2') -> LetPr (e1', e2'))
+  | LetPr (e1, e2, ids) -> binary t_exp t_exp n (e1, e2) (fun (e1', e2') -> LetPr (e1', e2', ids))
   | ElsePr -> [], prem
   | IterPr (prem, iterexp) ->
     let eqns1, prem' = t_prem n prem in
