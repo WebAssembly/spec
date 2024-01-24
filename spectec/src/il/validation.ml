@@ -533,7 +533,7 @@ and valid_prem env prem =
     let lhs_ids = (Free.free_exp e1).varid in
     if not (Free.Set.subset target_ids lhs_ids) then
       error prem.at ("binding premise's target(s) `" ^ String.concat "," ids ^
-        "` is not contained in the left hand side expression `" ^ string_of_exp e1)
+        "` is not contained in the left-hand side expression")
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->
