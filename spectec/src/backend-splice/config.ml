@@ -31,8 +31,8 @@ let latex =
       {token = "@@"; prefix = "$"; suffix ="$"; indent = ""};
       {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
     ];
-    latex = Backend_latex.Config.latex;
-    prose = Backend_prose.Config.latex;
+    latex = Backend_latex.Config.default;
+    prose = Backend_prose.Config.default;
   }
 
 let sphinx =
@@ -40,6 +40,6 @@ let sphinx =
       {token = "$"; prefix = ":math:`"; suffix ="`"; indent = ""};
       {token = "$$"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
     ];
-    latex = Backend_latex.Config.sphinx;
-    prose = Backend_prose.Config.sphinx;
+    latex = Backend_latex.Config.default;
+    prose = Backend_prose.Config.default;
   }
