@@ -71,6 +71,10 @@ def $storagesize(storagetype) : nat  hint(show |%|)
 def $storagesize(valtype) = $size(valtype)
 def $storagesize(packedtype) = $packedsize(packedtype)
 
+def $lanesize(lanetype) : nat  hint(show |%|)
+def $lanesize(numtype) = $size(numtype)
+def $lanesize(packedtype) = $packedsize(packedtype)
+
 
 ;; Unpacking
 

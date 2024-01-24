@@ -21,6 +21,7 @@ syntax uN(N) hint(desc "unsigned integer") = 0 | ... | 2^N-1
 syntax sN(N) hint(desc "signed integer") = -2^(N-1) | ... | -1 | 0 | +1 | ... | 2^(N-1)-1
 syntax iN(N) hint(desc "integer") = uN(N)
 
+syntax u8 = uN(8)
 syntax u31 = uN(31)
 syntax u32 = uN(32)
 syntax u64 = uN(64)
@@ -68,6 +69,7 @@ syntax f64 = fN(64)
 ;;
 
 syntax idx hint(desc "index") = u32
+syntax laneidx hint(desc "lane index") = u8
 
 syntax typeidx hint(desc "type index") = idx
 syntax funcidx hint(desc "function index") = idx
@@ -85,32 +87,44 @@ var l : labelidx
 var x33 : s33 hint(show x)
 
 
+;;
 ;; Types
+;;
+
+;; Value types
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
+
 syntax vectype hint(desc "vector type") =
   | V128
+
 syntax reftype hint(desc "reference type") =
   | FUNCREF | EXTERNREF
+
 syntax valtype hint(desc "value type") =
   | numtype | vectype | reftype | BOT
 
 syntax inn hint(show I#n) = | I32 | I64
 syntax fnn hint(show F#n) = | F32 | F64
 
-var t : valtype
-var nt : numtype
-var vt : vectype
-var rt : reftype
 
 syntax resulttype hint(desc "result type") =
   valtype*
+
+
+;; Type definitons
+
+syntax packedtype = | I8 | I16
+
+
+;; External types
 
 syntax mut = MUT?
 
 syntax limits hint(desc "limits") =
   `[u32 .. u32]
+
 syntax globaltype hint(desc "global type") =
   mut valtype
 syntax functype hint(desc "function type") =
@@ -126,15 +140,28 @@ syntax datatype hint(desc "data type") =
 syntax externtype hint(desc "external type") =
   | FUNC functype | GLOBAL globaltype | TABLE tabletype | MEM memtype
 
+
+;; Meta variables
+
 var lim : limits
+
+var t : valtype
 var ft : functype
 var gt : globaltype
-var tt : tabletype
 var mt : memtype
+var nt : numtype
+var pt : packedtype
+var rt : reftype
+var tt : tabletype
+var vt : vectype
 var xt : externtype
 
 
+;;
 ;; Operators
+;;
+
+;; Numeric operators
 
 syntax sx hint(desc "signedness") = | U | S
 
@@ -166,17 +193,66 @@ var testop : testop_numtype
 var relop : relop_numtype
 
 
+;; Vector operators
+
+syntax unopVVXX = | NOT
+syntax binopVVXX = | AND | ANDNOT | OR | XOR
+syntax ternopVVXX = | BITSELECT
+syntax testopVVXX = | ANY_TRUE
+syntax testopVIXX = | ALL_TRUE
+syntax relopVIXX = | EQ | NE | LT sx | GT sx | LE sx | GE sx
+syntax relopVFXX = | EQ | NE | LT | GT | LE | GE
+syntax unopVIXX = | ABS | NEG
+syntax binopVIXX = | ADD | SUB | SWIZZLE
+syntax minmaxopVIXX = | MIN sx | MAX sx
+syntax satbinopVIXX = | ADD_SAT sx | SUB_SAT sx
+syntax shiftopVIXX = | SHL | SHR sx
+syntax unopVFXX = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
+syntax binopVFXX = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
+
+
+syntax unop_vvectype = | _VV unopVVXX
+syntax binop_vvectype = | _VV binopVVXX
+syntax ternop_vvectype = | _VV ternopVVXX
+syntax testop_vvectype = | _VV testopVVXX
+
+syntax shiftop_vectype = | _VI shiftopVIXX
+syntax unop_vectype = | _VI unopVIXX | _VF unopVFXX | POPCNT
+syntax binop_vectype = | _VI binopVIXX minmaxopVIXX satbinopVIXX | _VF binopVFXX | MUL | AVGR_U | Q15MULR_SAT_S
+syntax testop_vectype = | _VI testopVIXX
+syntax relop_vectype = | _VI relopVIXX | _VF relopVFXX
+syntax cvtop_vectype = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
+
+
+var vvunop : unop_vvectype
+var vvbinop : binop_vvectype
+var vvternop : ternop_vvectype
+var vvtestop : testop_vvectype
+
+var vishiftop : shiftop_vectype
+var vunop : unop_vectype
+var vbinop : binop_vectype
+var vtestop : testop_vectype
+var vrelop : relop_vectype
+var vcvtop : cvtop_vectype
+
+
+;; Memory operators
+
 syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
 
-var mo:memop
+var mo : memop
 
 
+;;
 ;; Instructions
+;;
 
 ;; TODO: do c(numtype)?
 syntax c = nat
 syntax c_numtype = nat  ;; TODO
 syntax c_vectype = nat  ;; TODO
+var cv : c_vectype
 
 syntax blocktype hint(desc "block type") =
   | _RESULT valtype?
@@ -210,6 +286,42 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
   | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
   | ...
 
+syntax lanetype hint(desc "lane type") = | packedtype | numtype
+syntax lanesize hint(desc "lane size") = nat
+syntax shape hint(desc "shape") = lanetype X lanesize
+syntax half = | LOW | HIGH
+syntax zero = ZERO?
+
+var lnt : lanetype
+var lns : lanesize
+var sh : shape
+var hf : half
+
+syntax instr/vector hint(desc "vector instruction") = ...
+  | VVCONST vectype c_vectype                                 hint(show %.CONST %)
+  | VVUNOP vectype unop_vvectype                              hint(show %.%)
+  | VVBINOP vectype binop_vvectype                            hint(show %.%)
+  | VVTERNOP vectype ternop_vvectype                          hint(show %.%)
+  | VVTESTOP vectype testop_vvectype                          hint(show %.%)
+  | VSWIZZLE shape                                            hint(show %.VSWIZZLE)
+  | VSHUFFLE shape laneidx*                                   hint(show %.VSHUFFLE %)
+  | VSPLAT shape                                              hint(show %.VSPLAT)
+  | VEXTRACT_LANE shape sx? laneidx                           hint(show %.VEXTRACT#_#LANE#_#% %)
+  | VREPLACE_LANE shape laneidx                               hint(show %.VREPLACE#_#LANE %)
+  | VUNOP shape unop_vectype                                  hint(show %.%)
+  | VBINOP shape binop_vectype                                hint(show %.%)
+  | VRELOP shape relop_vectype                                hint(show %.%)
+  | VISHIFTOP shape shiftop_vectype                           hint(show %.%)
+  | VALL_TRUE shape                                           hint(show %.VALL_TRUE)
+  | VBITMASK shape                                            hint(show %.VBITMASK)
+  | VNARROW shape shape sx                                    hint(show %.VNARROW#_#%#_#%)
+  | VCVTOP shape cvtop_vectype half? shape sx? zero           hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
+  | VEXTMUL shape half shape sx                               hint(show %.VEXTMUL#_#%#_#%#_#%)
+  | VDOT shape shape sx                                       hint(show %.VDOT#_#%#_#%)
+  | VEXTADD_PAIRWISE shape shape sx                           hint(show %.VEXTADD_PAIRWISE#_#%#_#%)
+  | ...
+
+
 syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL reftype
   | REF.FUNC funcidx
@@ -238,6 +350,13 @@ syntax instr/table hint(desc "table instruction") = ...
   | ELEM.DROP elemidx
   | ...
 
+
+syntax packshape = nat X nat
+syntax vloadop =
+  | SHAPE packshape sx  hint(show %#_#%)
+  | SPLAT nat           hint(show %#_#SPLAT)
+  | ZERO nat            hint(show %#_#ZERO)
+
 syntax instr/memory hint(desc "memory instruction") = ...
   | MEMORY.SIZE
   | MEMORY.GROW
@@ -247,6 +366,10 @@ syntax instr/memory hint(desc "memory instruction") = ...
   | DATA.DROP dataidx
   | LOAD numtype (n _ sx)? memop  hint(show %.LOAD % %)  hint(show %.LOAD#% %)
   | STORE numtype n? memop        hint(show %.STORE % %) hint(show %.STORE#% %)
+  | VLOAD vloadop? memop          hint(show V128.LOAD %) hint(show V128.LOAD#% %)
+  | VLOAD_LANE n memop laneidx    hint(show V128.LOAD#%#_#LANE % %)
+  | VSTORE memop                  hint(show V128.STORE %)
+  | VSTORE_LANE n memop laneidx   hint(show V128.STORE#%#_#LANE % %)
 
 syntax expr hint(desc "expression") =
   instr*
@@ -257,7 +380,9 @@ var in : instr
 var e : expr
 
 
+;;
 ;; Modules
+;;
 
 syntax elemmode = | ACTIVE tableidx expr | PASSIVE | DECLARE
 syntax datamode = | ACTIVE memidx expr | PASSIVE

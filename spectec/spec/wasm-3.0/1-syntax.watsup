@@ -94,7 +94,6 @@ var x33 : s33 hint(show x)
 ;; Value types
 
 syntax nul = NULL?
-syntax zero = ZERO?
 
 syntax numtype hint(desc "number type") =
   | I32 | I64 | F32 | F64
@@ -223,6 +222,8 @@ var zt : storagetype
 ;; Operators
 ;;
 
+;; Numeric operators
+
 syntax sx hint(desc "signedness") = | U | S
 
 syntax iunop = | CLZ | CTZ | POPCNT
@@ -253,10 +254,7 @@ var testop : testop_numtype
 var relop : relop_numtype
 
 
-syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
-
-var mo : memop
-
+;; Vector operators
 
 syntax unopVVXX = | NOT
 syntax binopVVXX = | AND | ANDNOT | OR | XOR
@@ -298,6 +296,13 @@ var vbinop : binop_vectype
 var vtestop : testop_vectype
 var vrelop : relop_vectype
 var vcvtop : cvtop_vectype
+
+
+;; Memory operators
+
+syntax memop hint(desc "memory operator") = {ALIGN u32, OFFSET u32}
+
+var mo : memop
 
 
 ;;
@@ -354,6 +359,7 @@ syntax lanetype hint(desc "lane type") = | packedtype | numtype
 syntax lanesize hint(desc "lane size") = nat
 syntax shape hint(desc "shape") = lanetype X lanesize
 syntax half = | LOW | HIGH
+syntax zero = ZERO?
 
 var lnt : lanetype
 var lns : lanesize

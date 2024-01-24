@@ -25,6 +25,7 @@ watsup 0.4 generator
 [elab def] def size(valtype) : nat
 [elab def] def packedsize(packedtype) : nat
 [elab def] def storagesize(storagetype) : nat
+[elab def] def lanesize(lanetype) : nat
 [elab def] def unpacktype(storagetype) : valtype
 [elab def] def unpacknumtype(storagetype) : numtype
 [elab def] def sxfield(storagetype) : sx?
@@ -205,6 +206,7 @@ watsup 0.4 generator
 [elab def] def size(valtype) : nat
 [elab def] def packedsize(packedtype) : nat
 [elab def] def storagesize(storagetype) : nat
+[elab def] def lanesize(lanetype) : nat
 [elab def] def unpacktype(storagetype) : valtype
 [elab def] def unpacknumtype(storagetype) : numtype
 [elab def] def sxfield(storagetype) : sx?
@@ -385,6 +387,7 @@ watsup 0.4 generator
 [elab def] def size(valtype) : nat
 [elab def] def packedsize(packedtype) : nat
 [elab def] def storagesize(storagetype) : nat
+[elab def] def lanesize(lanetype) : nat
 [elab def] def unpacktype(storagetype) : valtype
 [elab def] def unpacknumtype(storagetype) : numtype
 [elab def] def sxfield(storagetype) : sx?
@@ -874,7 +877,10 @@ watsup 0.4 generator
 [elab def] def M(N) : nat
 [elab def] def E(N) : nat
 [elab def] def fzero(N) : fN(N)
+[elab def] def concat_bytes((byte*)*) : byte*
 [elab def] def size(valtype) : nat
+[elab def] def packedsize(packedtype) : nat
+[elab def] def lanesize(lanetype) : nat
 [elab def] def free_dataidx_instr(instr) : dataidx*
 [elab def] def free_dataidx_instrs(instr*) : dataidx*
 [elab def] def free_dataidx_expr(expr) : dataidx*
@@ -894,8 +900,28 @@ watsup 0.4 generator
 [elab def] def ibytes(N, iN(N)) : byte*
 [elab def] def fbytes(N, fN(N)) : byte*
 [elab def] def ntbytes(numtype, c) : byte*
+[elab def] def vtbytes(vectype, c_vectype) : byte*
 [elab def] def invibytes(N, byte*) : iN(N)
 [elab def] def invfbytes(N, byte*) : fN(N)
+[elab def] def iadd(N, c, c) : c
+[elab def] def imul(N, c, c) : c
+[elab def] def ine(N, c, c) : c_numtype
+[elab def] def ilt(sx, N, c, c) : c_numtype
+[elab def] def lanes(shape, c_vectype) : c*
+[elab def] def narrow(N, N, sx, c) : c
+[elab def] def ibits(N, N) : c*
+[elab def] def unpacked(shape) : numtype
+[elab def] def dim(shape) : lanesize
+[elab def] def halfop(half, nat, nat) : nat
+[elab def] def ishape(nat) : lanetype
+[elab def] def vvunop(unop_vvectype, vectype, c_vectype) : c_vectype
+[elab def] def vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype
+[elab def] def vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype
+[elab def] def vunop(unop_vectype, shape, c_vectype) : c_vectype
+[elab def] def vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*
+[elab def] def vrelop(relop_vectype, shape, c, c) : c_numtype
+[elab def] def vishiftop(shiftop_vectype, lanetype, c, c) : c
+[elab def] def vcvtop(cvtop_vectype, N, N, sx?, c) : c
 [elab def] def default(valtype) : val
 [elab def] def funcsxv(externval*) : funcaddr*
 [elab def] def globalsxv(externval*) : globaladdr*
@@ -930,6 +956,7 @@ watsup 0.4 generator
 [elab def] def growtable(tableinst, nat, ref) : tableinst
 [elab def] def growmemory(meminst, nat) : meminst
 [elab def] def blocktype(state, blocktype) : functype
+[elab def] def vzero : c_vectype
 [elab def] def funcs(externval*) : funcaddr*
 [elab def] def globals(externval*) : globaladdr*
 [elab def] def tables(externval*) : tableaddr*
@@ -953,7 +980,6 @@ watsup 0.4 generator
 [elab def] def rundata(data, idx) : instr*
 [elab def] def instantiate(store, module, externval*) : config
 [elab def] def invoke(store, funcaddr, val*) : config
-[elab def] def concat_bytes((byte*)*) : byte*
 [elab def] def utf8(name) : byte*
 [elab def] def concat_locals(local**) : local*
 == IL Validation...
@@ -1172,6 +1198,177 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-2/select.wast =====
 - 120/120 (100.00%)
 
+===== ../../test-interpreter/spec-test-2/simd/simd_address.wast =====
+- 45/45 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_align.wast =====
+- 54/54 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_bit_shift.wast =====
+- 213/213 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_bitwise.wast =====
+- 141/141 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_boolean.wast =====
+- 261/261 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_const.wast =====
+- 577/577 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_conversions.wast =====
+- 234/234 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f32x4.wast =====
+- 774/774 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f32x4_arith.wast =====
+- 1806/1806 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f32x4_cmp.wast =====
+- 2583/2583 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f32x4_pmin_pmax.wast =====
+- 3873/3873 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f32x4_rounding.wast =====
+- 177/177 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f64x2.wast =====
+- 795/795 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f64x2_arith.wast =====
+- 1809/1809 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f64x2_cmp.wast =====
+- 2661/2661 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f64x2_pmin_pmax.wast =====
+- 3873/3873 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_f64x2_rounding.wast =====
+- 177/177 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_arith.wast =====
+- 183/183 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_arith2.wast =====
+- 153/153 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_cmp.wast =====
+- 435/435 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_extadd_pairwise_i8x16.wast =====
+- 17/17 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_extmul_i8x16.wast =====
+- 105/105 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_q15mulr_sat_s.wast =====
+- 27/27 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i16x8_sat_arith.wast =====
+- 206/206 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_arith.wast =====
+- 183/183 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_arith2.wast =====
+- 123/123 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_cmp.wast =====
+- 435/435 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_dot_i16x8.wast =====
+- 27/27 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_extadd_pairwise_i16x8.wast =====
+- 17/17 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_extmul_i16x8.wast =====
+- 105/105 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f32x4.wast =====
+- 103/103 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i32x4_trunc_sat_f64x2.wast =====
+- 103/103 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i64x2_arith.wast =====
+- 189/189 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i64x2_arith2.wast =====
+- 23/23 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i64x2_cmp.wast =====
+- 103/103 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i64x2_extmul_i32x4.wast =====
+- 105/105 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i8x16_arith.wast =====
+- 123/123 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i8x16_arith2.wast =====
+- 186/186 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i8x16_cmp.wast =====
+- 415/415 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_i8x16_sat_arith.wast =====
+- 190/190 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_int_to_int_extend.wast =====
+- 229/229 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_lane.wast =====
+- 286/286 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_linking.wast =====
+- 2/2 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load.wast =====
+- 31/31 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load16_lane.wast =====
+- 33/33 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load32_lane.wast =====
+- 21/21 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load64_lane.wast =====
+- 13/13 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load8_lane.wast =====
+- 49/49 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load_extend.wast =====
+- 86/86 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load_splat.wast =====
+- 114/114 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_load_zero.wast =====
+- 29/29 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_splat.wast =====
+- 162/162 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_store.wast =====
+- 19/19 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_store16_lane.wast =====
+- 33/33 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_store32_lane.wast =====
+- 21/21 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_store64_lane.wast =====
+- 13/13 (100.00%)
+
+===== ../../test-interpreter/spec-test-2/simd/simd_store8_lane.wast =====
+- 49/49 (100.00%)
+
 ===== ../../test-interpreter/spec-test-2/skip-stack-guard-page.wast =====
 - 1/1 (100.00%)
 
@@ -1253,7 +1450,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-2/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [20388/20388] (100.00%)
+Total [45187/45187] (100.00%)
 
 == Complete.
 Running test for Wasm 3.0...
@@ -1279,6 +1476,7 @@ watsup 0.4 generator
 [elab def] def size(valtype) : nat
 [elab def] def packedsize(packedtype) : nat
 [elab def] def storagesize(storagetype) : nat
+[elab def] def lanesize(lanetype) : nat
 [elab def] def unpacktype(storagetype) : valtype
 [elab def] def unpacknumtype(storagetype) : numtype
 [elab def] def sxfield(storagetype) : sx?
