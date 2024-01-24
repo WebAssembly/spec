@@ -13,7 +13,7 @@ val with_rule_decoration : bool -> env -> env
 
 (* Utilities *)
 
-val expand_exp : arg list ref -> exp -> exp
+val expand_exp : arg list -> int ref -> exp -> exp
 
 
 (* Generators *)

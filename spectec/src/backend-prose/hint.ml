@@ -85,7 +85,7 @@ let apply_hint env args hint =
   let placeholders = List.init (List.length args) (fun _ -> placeholder) in
   (* Expand hint exp with placeholder args, then manipulate the rendered hint exp by string replacements. *)
   try
-    let hint_expanded = Backend_latex.Render.expand_exp (ref placeholders) hint in
+    let hint_expanded = Backend_latex.Render.expand_exp placeholders (ref 0) hint in
     let hint_rendered = Backend_latex.Render.render_exp env.render_latex hint_expanded in
     let hint_replaced =
       let placeholder = Str.regexp (Backend_latex.Render.render_arg env.render_latex placeholder) in

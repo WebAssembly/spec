@@ -1234,6 +1234,7 @@ and elab_sym env g : typ * env =
     let t1, env1 = elab_sym env g1 in
     let _e' = elab_exp env1 e t1 in
     TupT [] $ g.at, env
+  | FuseG _ -> error g.at "misplaced token concatenation"
 
 and elab_sym_list env = function
   | [] -> [], env
