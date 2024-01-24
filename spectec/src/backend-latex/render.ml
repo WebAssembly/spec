@@ -172,105 +172,107 @@ let render_exp_fwd = ref (fun _ -> assert false)
 let render_arg_fwd = ref (fun _ -> assert false)
 let render_args_fwd = ref (fun _ -> assert false)
 
-let rec expand_iter args iter =
+let rec expand_iter args i iter =
   match iter with
   | Opt | List | List1 -> iter
-  | ListN (e, id_opt) -> ListN (expand_exp args e, id_opt)
+  | ListN (e, id_opt) -> ListN (expand_exp args i e, id_opt)
 
-and expand_exp args e =
+and expand_exp args i e =
   (match e.it with
   | AtomE _ | BoolE _ | NatE _ | TextE _ | EpsE -> e.it
-  | VarE (id, args') -> VarE (id, List.map (expand_arg args) args')
-  | UnE (op, e) -> UnE (op, expand_exp args e)
+  | VarE (id, args') -> VarE (id, List.map (expand_arg args i) args')
+  | UnE (op, e) -> UnE (op, expand_exp args i e)
   | BinE (e1, op, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     BinE (e1', op, e2')
   | CmpE (e1, op, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     CmpE (e1', op, e2')
-  | SeqE es -> SeqE (List.map (expand_exp args) es)
+  | SeqE es -> SeqE (List.map (expand_exp args i) es)
   | IdxE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     IdxE (e1', e2')
   | SliceE (e1, e2, e3) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
-    let e3' = expand_exp args e3 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
+    let e3' = expand_exp args i e3 in
     SliceE (e1', e2', e3')
   | UpdE (e1, p, e2) ->
-    let e1' = expand_exp args e1 in
-    let p' = expand_path args p in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let p' = expand_path args i p in
+    let e2' = expand_exp args i e2 in
     UpdE (e1', p', e2')
   | ExtE (e1, p, e2) ->
-    let e1' = expand_exp args e1 in
-    let p' = expand_path args p in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let p' = expand_path args i p in
+    let e2' = expand_exp args i e2 in
     ExtE (e1', p', e2')
-  | StrE efs -> StrE (map_nl_list (expand_expfield args) efs)
-  | DotE (e, atom) -> DotE (expand_exp args e, atom)
+  | StrE efs -> StrE (map_nl_list (expand_expfield args i) efs)
+  | DotE (e, atom) -> DotE (expand_exp args i e, atom)
   | CommaE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     CommaE (e1', e2')
   | CompE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     CompE (e1', e2')
-  | LenE e -> LenE (expand_exp args e)
+  | LenE e -> LenE (expand_exp args i e)
   | SizeE id -> SizeE id
-  | ParenE (e, b) -> ParenE (expand_exp args e, b)
-  | TupE es -> TupE (List.map (expand_exp args) es)
+  | ParenE (e, b) -> ParenE (expand_exp args i e, b)
+  | TupE es -> TupE (List.map (expand_exp args i) es)
   | InfixE (e1, atom, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     InfixE (e1', atom, e2')
-  | BrackE (l, e1, r) -> BrackE (l, expand_exp args e1, r)
-  | CallE (id, args') -> CallE (id, List.map (expand_arg args) args')
+  | BrackE (l, e1, r) -> BrackE (l, expand_exp args i e1, r)
+  | CallE (id, args') -> CallE (id, List.map (expand_arg args i) args')
   | IterE (e1, iter) ->
-    let e1' = expand_exp args e1 in
-    let iter' = expand_iter args iter in
+    let e1' = expand_exp args i e1 in
+    let iter' = expand_iter args i iter in
     IterE (e1', iter')
-  | TypE (e1, t) -> TypE (expand_exp args e1, t)
-  | HoleE (u, `One) ->
-    (match !args with
-    | [] -> raise Arity_mismatch
-    | arg::args' -> args := args';
+  | TypE (e1, t) -> TypE (expand_exp args i e1, t)
+  | HoleE (u, `Num j) ->
+    (match List.nth_opt args j with
+    | None -> raise Arity_mismatch
+    | Some arg -> i := j + 1;
       if u = `Use then CallE ("" $ e.at, [arg]) else SeqE []
     )
-  | HoleE (u, `All) ->
-    let args' = !args in args := [];
+  | HoleE (u, `Next) -> (expand_exp args i (HoleE (u, `Num !i) $ e.at)).it
+  | HoleE (u, `Rest) ->
+    let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
+    i := List.length args;
     if u = `Use then CallE ("" $ e.at, args') else SeqE []
   | FuseE (e1, e2) ->
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     FuseE (e1', e2')
   ) $ e.at
 
-and expand_expfield args (atom, e) =
-  (atom, expand_exp args e)
+and expand_expfield args i (atom, e) =
+  (atom, expand_exp args i e)
 
-and expand_path args p =
+and expand_path args i p =
   (match p.it with
   | RootP -> RootP
   | IdxP (p1, e1) ->
-    let p1' = expand_path args p1 in
-    let e1' = expand_exp args e1 in
+    let p1' = expand_path args i p1 in
+    let e1' = expand_exp args i e1 in
     IdxP (p1', e1')
   | SliceP (p1, e1, e2) ->
-    let p1' = expand_path args p1 in
-    let e1' = expand_exp args e1 in
-    let e2' = expand_exp args e2 in
+    let p1' = expand_path args i p1 in
+    let e1' = expand_exp args i e1 in
+    let e2' = expand_exp args i e2 in
     SliceP (p1', e1', e2')
-  | DotP (p1, atom) -> DotP (expand_path args p1, atom)
+  | DotP (p1, atom) -> DotP (expand_path args i p1, atom)
   ) $ p.at
 
-and expand_arg args a =
+and expand_arg args i a =
   ref (match !(a.it) with
-  | ExpA e -> ExpA (expand_exp args e)
+  | ExpA e -> ExpA (expand_exp args i e)
   | a' -> a'
   ) $ a.at
 
@@ -287,9 +289,7 @@ let render_expand render env (show : exp list Map.t ref) id args f =
       | [] -> f ()
       | showexp::showexps' ->
         try
-          let rargs = ref args in
-          let e = expand_exp rargs showexp in
-          if !rargs <> [] then raise Arity_mismatch;
+          let e = expand_exp args (ref 0) showexp in
           (* Avoid cyclic expansion *)
           show := Map.remove id.it !show;
           Fun.protect (fun () -> render env e)

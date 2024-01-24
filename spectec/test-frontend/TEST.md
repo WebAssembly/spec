@@ -864,7 +864,7 @@ def setminus1 : (idx, idx*) -> idx*
   ;; 2-syntax-aux.watsup:15.1-15.60
   def {x : idx, y* : idx*, y_1 : idx} setminus1(x, [y_1] :: y*{y}) = $setminus1(x, y*{y})
     -- otherwise
-  ;; 2-syntax-aux.watsup:14.1-14.57
+  ;; 2-syntax-aux.watsup:14.1-14.61
   def {x : idx, y* : idx*, y_1 : idx} setminus1(x, [y_1] :: y*{y}) = []
     -- if (x = y_1)
   ;; 2-syntax-aux.watsup:13.1-13.27
@@ -4367,7 +4367,7 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{fzero}}({\mathit{N}}) &=& {+((1 + 0 \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{0}})} &  \\
+{+0} &=& {+((1 + 0 \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{0}})} &  \\
 \end{array}
 $$
 

@@ -182,10 +182,12 @@ and string_of_exp e =
   | CallE (id, args) -> "$" ^ id.it ^ string_of_args args
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iter iter
   | TypE (e1, t) -> string_of_exp e1 ^ " : " ^ string_of_typ t
-  | HoleE (`Use, `One) -> "%"
-  | HoleE (`Use, `All) -> "%%"
-  | HoleE (`Skip, `One) -> "!%"
-  | HoleE (`Skip, `All) -> "!%%"
+  | HoleE (`Use, `Num i) -> "%" ^ string_of_int i
+  | HoleE (`Use, `Next) -> "%"
+  | HoleE (`Use, `Rest) -> "%%"
+  | HoleE (`Skip, `Num i) -> "!%" ^ string_of_int i
+  | HoleE (`Skip, `Next) -> "!%"
+  | HoleE (`Skip, `Rest) -> "!%%"
   | FuseE (e1, e2) -> string_of_exp e1 ^ "#" ^ string_of_exp e2
 
 and string_of_exps sep es =

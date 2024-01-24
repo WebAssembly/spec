@@ -11,7 +11,7 @@ def $setminus(eps, y*) = eps
 def $setminus(x_1 x*, y*) = $setminus1(x_1, y*) $setminus(x*, y*)
 
 def $setminus1(x, eps) = x
-def $setminus1(x, y_1 y*) = eps            -- if x = y_1
+def $setminus1(x, y_1 y*) = eps                -- if x = y_1
 def $setminus1(x, y_1 y*) = $setminus1(x, y*)  -- otherwise
 
 
