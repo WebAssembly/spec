@@ -1,8 +1,10 @@
 type config =
   {
-    (* Generate macros *)
+    (* Generate macro definitions in a separate file *)
     macros: bool;
   }
+
+type t = config
 
 let default = { macros = false; }
 

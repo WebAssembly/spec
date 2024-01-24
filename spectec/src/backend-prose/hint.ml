@@ -13,6 +13,7 @@ module FMap = Map.Make(String)
 
 type env =
   {
+    render_latex: Backend_latex.Render.env;
     show_kwds: El.Ast.exp KMap.t ref;
     show_funcs: El.Ast.exp FMap.t ref;
   }
@@ -63,14 +64,18 @@ let extract_func_hints show_funcs def =
 
 (* Environment Construction *)
 
-let env el =
+let env render_latex el =
   let show_kwds = List.fold_left extract_syntax_hints KMap.empty el in
   let show_funcs = List.fold_left extract_func_hints FMap.empty el in
-  { show_kwds = ref show_kwds; show_funcs = ref show_funcs }
+  {
+    render_latex;
+    show_kwds = ref show_kwds;
+    show_funcs = ref show_funcs
+  }
 
 (* Hint Application *)
 
-let apply_hint args hint =
+let apply_hint env args hint =
   (* TODO Placeholder El args with "!!!", to be expanded into the El hint exp. *)
   let placeholder =
     let text = (El.Ast.TextE "!!!") $ no_region in
@@ -80,11 +85,10 @@ let apply_hint args hint =
   let placeholders = List.init (List.length args) (fun _ -> placeholder) in
   (* Expand hint exp with placeholder args, then manipulate the rendered hint exp by string replacements. *)
   try
-    let render_latex = Backend_latex.Render.new_env (Backend_latex.Config.latex) in
     let hint_expanded = Backend_latex.Render.expand_exp (ref placeholders) hint in
-    let hint_rendered = Backend_latex.Render.render_exp render_latex hint_expanded in
+    let hint_rendered = Backend_latex.Render.render_exp env.render_latex hint_expanded in
     let hint_replaced =
-      let placeholder = Str.regexp (Backend_latex.Render.render_arg render_latex placeholder) in
+      let placeholder = Str.regexp (Backend_latex.Render.render_arg env.render_latex placeholder) in
       List.fold_left
         (fun hint_rendered arg -> Str.replace_first placeholder arg hint_rendered)
         hint_rendered args
@@ -94,8 +98,8 @@ let apply_hint args hint =
 
 let apply_kwd_hint env kwd args =
   let hint = KMap.find_opt kwd !(env.show_kwds) in
-  Option.bind hint (apply_hint args)
+  Option.bind hint (apply_hint env args)
 
 let apply_func_hint env fname args =
   let hint = FMap.find_opt fname !(env.show_funcs) in
-  Option.bind hint (apply_hint args)
+  Option.bind hint (apply_hint env args)

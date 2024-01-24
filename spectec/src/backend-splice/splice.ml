@@ -56,8 +56,6 @@ type env =
     mutable pprose : pred_prose Map.t;
   }
 
-let get_render_prose env = env.render_prose
-
 let env_el_def env def =
   match def.it with
   | SynD (id1, id2, _, _, _) ->
@@ -95,10 +93,12 @@ let env_prose_def env prose =
     | Al.Ast.FuncA (id, _, _) -> env.fprose <- Map.add id {fdef = prose; use = ref 0} env.fprose)
 
 let env config pdsts odsts el prose : env =
+  let render_latex = Backend_latex.Render.env config.latex el in
+  let render_prose = Backend_prose.Render.env config.prose pdsts odsts render_latex el prose in
   let env =
     { config;
-      render_latex = Backend_latex.Render.env config.latex el;
-      render_prose = Backend_prose.Render.env config.prose pdsts odsts el prose;
+      render_latex;
+      render_prose;
       syn = Map.empty;
       gram = Map.empty;
       rel = Map.empty;
@@ -319,29 +319,6 @@ let splice_anchor env src anchor buf =
   let r = ref "" in
   ignore (
     try_exp_anchor env src r ||
-(*
-<<<<<<< HEAD:spectec/src/backend-splice/splice.ml
-    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax true ||
-    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax false ||
-    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar false ||
-    try_def_anchor env src r "relation" "relation" "" find_relation false ||
-    try_def_anchor env src r "rule+" "relation" "rule" find_rule true ||
-    try_def_anchor env src r "rule" "relation" "rule" find_rule false ||
-    try_def_anchor env src r "definition" "definition" "" find_func false ||
-    try_prose_anchor env src r "prose-pred" find_pred_prose ||
-    try_prose_anchor env src r "prose-algo" find_rule_prose ||
-    try_prose_anchor env src r "prose-func" find_func_prose ||
-    error src "unknown definition sort";
-  );
-  let s =
-    if anchor.indent = "" then !r else
-    Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
-  in
-  Buffer.add_string buf anchor.prefix;
-  Buffer.add_string buf s;
-  Buffer.add_string buf anchor.suffix
-=======
-*)
     try_def_anchor env src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
     try_def_anchor env src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
     try_def_anchor env src r "relation-ignore" "relation" "" find_relation Ignored ||

@@ -21,10 +21,10 @@ let gen_macro env =
   if env.config.macros then
     Macro.gen_macro env.macro env.symbol
 
-let env config inputs outputs el prose : env =
+let env config inputs outputs render_latex el prose : env =
   let symbol = Symbol.env el in
   let macro = Macro.env inputs outputs in
-  let hint = Hint.env el in
+  let hint = Hint.env render_latex el in
   let env = { config; prose; symbol; macro; hint; } in
   env
 
