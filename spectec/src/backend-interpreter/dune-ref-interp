@@ -1,7 +1,8 @@
 (include_subdirs unqualified)
 (library
   (name reference_interpreter)
-  (modules :standard))
+  (modules :standard \ main)
+  (libraries menhirLib))
 
 ; For parsing
 (subdir
@@ -13,7 +14,7 @@
    (chdir
     %{workspace_root}
     (run %{bin:ocamllex} -ml -q -o %{target} %{deps}))))
- (ocamlyacc
+ (menhir
   (modules parser)))
 
 (env

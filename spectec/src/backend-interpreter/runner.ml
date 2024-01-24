@@ -76,6 +76,11 @@ let get_externval import =
   |> get_export (Utf8.encode import.it.Ast.item_name)
   |> strv_access "VALUE"
 
+let textual_to_module textual =
+  match (snd textual).it with
+  | Script.Textual m -> m
+  | _ -> assert false
+
 
 (** Main functions **)
 
@@ -119,7 +124,7 @@ let module_of_def def =
   match def.it with
   | Textual m -> m
   | Encoded (name, bs) -> Decode.decode name bs
-  | Quoted (_, s) -> Parse.string_to_module s
+  | Quoted (_, s) -> Parse.Module.parse_string s |> textual_to_module
 
 let run_action action =
   match action.it with
@@ -247,11 +252,12 @@ let rec run_file path args =
     match Filename.extension path with
     | ".wast" ->
       file
-      |> parse_file path Parse.string_to_script
+      |> parse_file path Parse.Script.parse_string
       |> run_wast path
     | ".wat" ->
       file
-      |> parse_file path Parse.string_to_module
+      |> parse_file path Parse.Module.parse_string
+      |> textual_to_module
       |> run_wat args
     | ".wasm" ->
       file
