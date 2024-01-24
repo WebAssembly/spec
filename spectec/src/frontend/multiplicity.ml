@@ -181,7 +181,8 @@ and check_sym env ctx g =
   | EpsG -> ()
   | SeqG gs
   | AltG gs -> iter_nl_list (check_sym env ctx) gs
-  | RangeG (g1, g2) ->
+  | RangeG (g1, g2)
+  | FuseG (g1, g2) ->
     check_sym env ctx g1;
     check_sym env ctx g2
   | ParenG g1 ->

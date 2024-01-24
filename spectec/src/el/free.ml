@@ -231,7 +231,7 @@ and free_sym g =
   | VarG (id, args) -> union (free_gramid id) (free_list free_arg args)
   | NatG _ | TextG _ | EpsG -> empty
   | SeqG gs | AltG gs -> free_nl_list free_sym gs
-  | RangeG (g1, g2) -> union (free_sym g1) (free_sym g2)
+  | RangeG (g1, g2) | FuseG (g1, g2) -> union (free_sym g1) (free_sym g2)
   | ParenG g1 -> free_sym g1
   | TupG gs -> free_list free_sym gs
   | IterG (g1, iter) -> union (free_sym g1) (free_iter iter)

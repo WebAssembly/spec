@@ -275,6 +275,10 @@ and expand_arg args a =
   ) $ a.at
 
 
+(* Attempt to show-expand the application `id(args)`, using the hints `show`,
+ * and the function `render` for rendering the resulting expression.
+ * If no hint can be found, fall back to the default of rendering `f`.
+ *)
 let render_expand render env (show : exp list Map.t ref) id args f =
   match Map.find_opt id.it !show with
   | None -> f ()
@@ -298,6 +302,10 @@ let render_expand render env (show : exp list Map.t ref) id args f =
 let ends_sub id = id <> "" && id.[String.length id - 1] = '_'
 let chop_sub id = String.sub id 0 (String.length id - 1)
 
+(* Render the application `id(args)`, using the hints `show`,
+ * and the function `render_id`, `render_exp` for rendering the id and
+ * possible show expansion results, respectively.
+ *)
 let render_apply render_id render_exp env show id args =
   render_expand render_exp env show id args
     (fun () ->
@@ -377,7 +385,7 @@ let render_id env style show id =
 let render_synid env id = render_id env `Var env.show_syn id
 let render_varid env id = render_id env `Var env.show_var id
 let render_defid env id = render_id env `Func (ref Map.empty) id
-let render_gramid env id = render_id env `Token env.show_syn
+let render_gramid env id = render_id env `Token env.show_gram
   (* TODO: HACK for now *)
   (let len = String.length id.it in
   if len > 1 && is_upper id.it.[0] then String.sub id.it 1 (len - 1) $ id.at else id)
@@ -616,6 +624,10 @@ and render_exp env e =
   | CallE (id, args) ->
     render_apply render_defid render_exp env env.show_def id args
   | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
+  | TypE ({it = VarE ({it = ""; _}, []); _}, t) ->
+    (* HACK for rendering shorthand parameters that have been turned into args
+     * with arg_of_param, for use in render_apply. *)
+    render_typ env t
   | TypE (e1, _) -> render_exp env e1
   | FuseE (e1, e2) ->
     (* Hack for printing t.LOADn_sx *)
@@ -702,6 +714,8 @@ and render_sym env g =
   | IterG (g1, iter) -> "{" ^ render_sym env g1 ^ render_iter env iter ^ "}"
   | ArithG e -> render_exp env e
   | AttrG (e, g1) -> render_exp env e ^ "{:}" ^ render_sym env g1
+  | FuseG (g1, g2) ->
+    "{" ^ render_sym env g1 ^ "}" ^ "{" ^ render_sym env g2 ^ "}"
 
 and render_syms sep env gs =
   altern_map_nl sep " \\\\ &&&" (render_sym env) gs
@@ -739,7 +753,7 @@ let render_param env p =
   | SynP id -> render_synid env id
   | GramP (id, _t) -> render_gramid env id
 
-let render_params env = function
+let _render_params env = function
   | [] -> ""
   | ps -> "(" ^ concat ", " (List.map (render_param env) ps) ^ ")"
 
@@ -789,23 +803,18 @@ let render_syndeco env id =
 
 let render_syndef env d =
   match d.it with
-  | SynD (id1, _id2, p::ps, t, _) when ends_sub id1.it ->
-    (* Handle subscripting *)
-    render_syndeco env id1 ^
-    "{" ^ render_synid env id1 ^ "}_{" ^ render_param env p ^ "}" ^
-      render_params env ps ^ " &::=& " ^ render_typ env t
   | SynD (id1, _id2, ps, t, _) ->
+    let args = List.map arg_of_param ps in
     render_syndeco env id1 ^
-    render_synid env id1 ^ render_params env ps ^ " &::=& " ^ render_typ env t
+    render_apply render_synid render_exp env env.show_syn id1 args ^
+      " &::=& " ^ render_typ env t
   | _ -> assert false
 
 let render_gramdef env d =
   match d.it with
-  | GramD (id1, _id2, p::ps, _t, gram, _) when ends_sub id1.it ->
-    "& " ^ "{" ^ render_gramid env id1 ^ "}_{" ^ render_param env p ^ "}" ^
-      render_params env ps ^ " &::=& " ^ render_gram env gram
   | GramD (id1, _id2, ps, _t, gram, _) ->
-    "& " ^ render_gramid env id1 ^ render_params env ps ^
+    let args = List.map arg_of_param ps in
+    "& " ^ render_apply render_gramid render_exp_as_sym env env.show_gram id1 args ^
       " &::=& " ^ render_gram env gram
   | _ -> assert false
 

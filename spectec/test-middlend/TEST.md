@@ -732,7 +732,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -741,10 +741,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -752,20 +752,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -4766,7 +4766,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -4775,10 +4775,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -4786,20 +4786,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -8928,7 +8928,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -8937,10 +8937,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -8948,20 +8948,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -13093,7 +13093,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -13102,10 +13102,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -13113,20 +13113,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -17276,7 +17276,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -17285,10 +17285,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -17296,20 +17296,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -21459,7 +21459,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -21468,10 +21468,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -21479,20 +21479,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -25829,7 +25829,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -25838,10 +25838,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -25849,20 +25849,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})

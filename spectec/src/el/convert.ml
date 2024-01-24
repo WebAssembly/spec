@@ -77,6 +77,7 @@ and expfield_of_typfield (atom, (t, _prems), _) =
 let rec sym_of_exp e =
   (match e.it with
   | VarE (id, args) -> VarG (id, args)
+  | AtomE (Atom id) -> VarG (id $ e.at, [])  (* for uppercase grammar ids in show hints *)
   | NatE (op, n) -> NatG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
@@ -85,6 +86,7 @@ let rec sym_of_exp e =
   | TupE es -> TupG (List.map sym_of_exp es)
   | IterE (e1, iter) -> IterG (sym_of_exp e1, iter)
   | TypE (e1, t) -> AttrG (e1, sym_of_exp (exp_of_typ t))
+  | FuseE (e1, e2) -> FuseG (sym_of_exp e1, sym_of_exp e2)
   | _ -> ArithG e
   ) $ e.at
 
@@ -100,6 +102,7 @@ let rec exp_of_sym g =
   | IterG (g1, iter) -> IterE (exp_of_sym g1, iter)
   | ArithG e -> e.it
   | AttrG (e, g2) -> TypE (e, typ_of_exp (exp_of_sym g2))
+  | FuseG (g1, g2) -> FuseE (exp_of_sym g1, exp_of_sym g2)
   | _ -> Source.error g.at "syntax" "malformed expression"
   ) $ g.at
 
@@ -120,7 +123,7 @@ let param_of_arg a =
 
 let arg_of_param p =
   (match p.it with
-  | ExpP (id, _t) -> ExpA (VarE (id, []) $ id.at)
+  | ExpP (id, t) -> ExpA (TypE(VarE (id, []) $ id.at, t) $ p.at)
   | SynP id -> SynA (VarT (id, []) $ id.at)
   | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
   ) |> ref $ p.at

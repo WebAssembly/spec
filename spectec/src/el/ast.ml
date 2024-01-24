@@ -182,6 +182,7 @@ and sym' =
   | IterG of sym * iter                      (* sym iter *)
   | ArithG of exp                            (* `$(` exp `)` *)
   | AttrG of exp * sym                       (* exp `:` sym *)
+  | FuseG of sym * sym                       (* sym `#` sym *)
 
 and prod = prod' phrase
 and prod' = sym * exp * premise nl_list      (* `|` sym `=>` exp (`--` premise)* *)

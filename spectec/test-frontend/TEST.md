@@ -882,7 +882,7 @@ def setminus : (idx*, idx*) -> idx*
   def {y* : idx*} setminus([], y*{y}) = []
 }
 
-;; 2-syntax-aux.watsup:20.1-20.68
+;; 2-syntax-aux.watsup:20.1-20.71
 def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:23.1-23.34
   def {in : instr} free_dataidx_instr(in) = []
@@ -891,10 +891,10 @@ def free_dataidx_instr : instr -> dataidx*
   ;; 2-syntax-aux.watsup:21.1-21.45
   def {x : idx, y : idx} free_dataidx_instr(MEMORY.INIT_instr(x, y)) = [y]
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 rec {
 
-;; 2-syntax-aux.watsup:25.1-25.70
+;; 2-syntax-aux.watsup:25.1-25.73
 def free_dataidx_instrs : instr* -> dataidx*
   ;; 2-syntax-aux.watsup:27.1-27.99
   def {instr : instr, instr'* : instr*} free_dataidx_instrs([instr] :: instr'*{instr'}) = $free_dataidx_instr(instr) :: $free_dataidx_instrs(instr'*{instr'})
@@ -902,20 +902,20 @@ def free_dataidx_instrs : instr* -> dataidx*
   def free_dataidx_instrs([]) = []
 }
 
-;; 2-syntax-aux.watsup:29.1-29.66
+;; 2-syntax-aux.watsup:29.1-29.69
 def free_dataidx_expr : expr -> dataidx*
   ;; 2-syntax-aux.watsup:30.1-30.56
   def {in* : instr*} free_dataidx_expr(in*{in}) = $free_dataidx_instrs(in*{in})
 
-;; 2-syntax-aux.watsup:32.1-32.66
+;; 2-syntax-aux.watsup:32.1-32.69
 def free_dataidx_func : func -> dataidx*
   ;; 2-syntax-aux.watsup:33.1-33.62
   def {e : expr, loc* : local*, x : idx} free_dataidx_func(`FUNC%%*%`(x, loc*{loc}, e)) = $free_dataidx_expr(e)
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 rec {
 
-;; 2-syntax-aux.watsup:35.1-35.68
+;; 2-syntax-aux.watsup:35.1-35.71
 def free_dataidx_funcs : func* -> dataidx*
   ;; 2-syntax-aux.watsup:37.1-37.92
   def {func : func, func'* : func*} free_dataidx_funcs([func] :: func'*{func'}) = $free_dataidx_func(func) :: $free_dataidx_funcs(func'*{func'})
@@ -4413,8 +4413,8 @@ $$
 \dots \\
 \mbox{(reference type)} & {\mathit{reftype}} &::=& \mathsf{ref}~{\mathit{nul}}~{\mathit{heaptype}} \\
 \mbox{(value type)} & {\mathit{valtype}} &::=& {\mathit{numtype}} ~|~ {\mathit{vectype}} ~|~ {\mathit{reftype}} ~|~ \mathsf{bot} \\
-& {{\mathsf{i}}{{\mathit{n}}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
-& {{\mathsf{f}}{{\mathit{n}}}} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
+& {\mathsf{i}}{{\mathit{n}}} &::=& \mathsf{i{\scriptstyle32}} ~|~ \mathsf{i{\scriptstyle64}} \\
+& {\mathsf{f}}{{\mathit{n}}} &::=& \mathsf{f{\scriptstyle32}} ~|~ \mathsf{f{\scriptstyle64}} \\
 \end{array}
 $$
 
@@ -4639,35 +4639,35 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instr}}}}(\mathsf{memory.init}~{\mathit{x}}~{\mathit{y}}) &=& {\mathit{y}} &  \\
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instr}}}}(\mathsf{data.drop}~{\mathit{x}}) &=& {\mathit{x}} &  \\
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instr}}}}({\mathit{in}}) &=& \epsilon &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}(\mathsf{memory.init}~{\mathit{x}}~{\mathit{y}}) &=& {\mathit{y}} &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}(\mathsf{data.drop}~{\mathit{x}}) &=& {\mathit{x}} &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{in}}) &=& \epsilon &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instrs}}}}(\epsilon) &=& \epsilon &  \\
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instrs}}}}({\mathit{instr}}~{{\mathit{instr}'}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instr}}}}({\mathit{instr}})~{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instrs}}}}({{\mathit{instr}'}^\ast}) &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{instr}}~{{\mathit{instr}'}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{instr}})~{\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{instr}'}^\ast}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{expr}}}}({{\mathit{in}}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{instrs}}}}({{\mathit{in}}^\ast}) &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{in}}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{in}}^\ast}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{func}}}}(\mathsf{func}~{\mathit{x}}~{{\mathit{loc}}^\ast}~{\mathit{e}}) &=& {\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{expr}}}}({\mathit{e}}) &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}(\mathsf{func}~{\mathit{x}}~{{\mathit{loc}}^\ast}~{\mathit{e}}) &=& {\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{e}}) &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{funcs}}}}(\epsilon) &=& \epsilon &  \\
-{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{funcs}}}}({\mathit{func}}~{{\mathit{func}'}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{func}}}}({\mathit{func}})~{\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{funcs}}}}({{\mathit{func}'}^\ast}) &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}(\epsilon) &=& \epsilon &  \\
+{\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{func}}~{{\mathit{func}'}^\ast}) &=& {\mathrm{free}}_{{\mathit{dataidx}}}({\mathit{func}})~{\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{func}'}^\ast}) &  \\
 \end{array}
 $$
 
@@ -5152,7 +5152,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(administrative instruction)} & {{\mathit{instr}}} &::=& {\mathit{instr}} \\ &&|&
+\mbox{(administrative instruction)} & {\mathit{instr}} &::=& {\mathit{instr}} \\ &&|&
 {\mathit{addrref}} \\ &&|&
 {{\mathsf{label}}_{{\mathit{n}}}}{\{{{\mathit{instr}}^\ast}\}}~{{\mathit{instr}}^\ast} \\ &&|&
 {{\mathsf{frame}}_{{\mathit{n}}}}{\{{\mathit{frame}}\}}~{{\mathit{instr}}^\ast} \\ &&|&
@@ -5419,13 +5419,13 @@ $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{with}}_{{\mathit{struct}}}(({\mathit{s}} ; {\mathit{f}}), {\mathit{a}}, {\mathit{i}}, {\mathit{fv}}) &=& {\mathit{s}}[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; {\mathit{f}} &  \\
+({\mathit{s}} ; {\mathit{f}})[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] &=& {\mathit{s}}[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; {\mathit{f}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
-{\mathrm{with}}_{{\mathit{array}}}(({\mathit{s}} ; {\mathit{f}}), {\mathit{a}}, {\mathit{i}}, {\mathit{fv}}) &=& {\mathit{s}}[\mathsf{array}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; {\mathit{f}} &  \\
+({\mathit{s}} ; {\mathit{f}})[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] &=& {\mathit{s}}[\mathsf{array}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; {\mathit{f}} &  \\
 \end{array}
 $$
 
@@ -5671,8 +5671,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathsf{ok}}{({\mathit{typeidx}})}} &::=& {\mathsf{ok}}{{\mathit{typeidx}}} \\
-& {{\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{n}})}} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{nat}})} \\
+& {\mathsf{ok}}{({\mathit{typeidx}})} &::=& {\mathsf{ok}}{{\mathit{typeidx}}} \\
+& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{n}})} &::=& {\mathsf{ok}}{({\mathit{typeidx}},\, {\mathit{nat}})} \\
 \end{array}
 $$
 
@@ -8715,7 +8715,7 @@ $$
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 {[\textsc{\scriptsize E{-}struct.set{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~{\mathit{val}}~(\mathsf{struct.set}~{\mathit{x}}~{\mathit{i}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &  \\
-{[\textsc{\scriptsize E{-}struct.set{-}struct}]} \quad & {\mathit{z}} ; (\mathsf{ref.struct}~{\mathit{a}})~{\mathit{val}}~(\mathsf{struct.set}~{\mathit{x}}~{\mathit{i}}) &\hookrightarrow& {\mathrm{with}}_{{\mathit{struct}}}({\mathit{z}}, {\mathit{a}}, {\mathit{i}}, {\mathit{fv}}) ; \epsilon &\quad
+{[\textsc{\scriptsize E{-}struct.set{-}struct}]} \quad & {\mathit{z}} ; (\mathsf{ref.struct}~{\mathit{a}})~{\mathit{val}}~(\mathsf{struct.set}~{\mathit{x}}~{\mathit{i}}) &\hookrightarrow& {\mathit{z}}[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; \epsilon &\quad
   \mbox{if}~{\mathit{z}}.\mathsf{struct}[{\mathit{a}}].\mathsf{type} \approx \mathsf{struct}~{({\mathit{mut}}~{\mathit{zt}})^\ast} \\
  &&&&\quad {\land}~{\mathit{fv}} = {{\mathrm{pack}}}_{{{\mathit{zt}}^\ast}[{\mathit{i}}]}({\mathit{val}}) \\
 \end{array}
@@ -8786,7 +8786,7 @@ $$
 {[\textsc{\scriptsize E{-}array.set{-}null}]} \quad & {\mathit{z}} ; (\mathsf{ref.null}~{\mathit{ht}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &  \\
 {[\textsc{\scriptsize E{-}array.set{-}oob}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathit{z}} ; \mathsf{trap} &\quad
   \mbox{if}~{\mathit{i}} \geq {|{\mathit{z}}.\mathsf{array}[{\mathit{a}}].\mathsf{field}|} \\
-{[\textsc{\scriptsize E{-}array.set{-}array}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathrm{with}}_{{\mathit{array}}}({\mathit{z}}, {\mathit{a}}, {\mathit{i}}, {\mathit{fv}}) ; \epsilon &\quad
+{[\textsc{\scriptsize E{-}array.set{-}array}]} \quad & {\mathit{z}} ; (\mathsf{ref.array}~{\mathit{a}})~(\mathsf{i{\scriptstyle32}}.\mathsf{const}~{\mathit{i}})~{\mathit{val}}~(\mathsf{array.set}~{\mathit{x}}) &\hookrightarrow& {\mathit{z}}[\mathsf{struct}[{\mathit{a}}].\mathsf{field}[{\mathit{i}}] = {\mathit{fv}}] ; \epsilon &\quad
   \mbox{if}~{\mathit{z}}.\mathsf{array}[{\mathit{a}}].\mathsf{type} \approx \mathsf{array}~({\mathit{mut}}~{\mathit{zt}}) \\
  &&&&\quad {\land}~{\mathit{fv}} = {{\mathrm{pack}}}_{{\mathit{zt}}}({\mathit{val}}) \\
 \end{array}
@@ -9353,17 +9353,17 @@ $$
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
 & {\mathtt{byte}} &::=& {\mathit{b}}{:}\mathtt{0x00} ~|~ \dots ~|~ {\mathit{b}}{:}\mathtt{0xFF} &\Rightarrow& {\mathit{b}} \\
-& {\mathtt{uN}}({\mathit{N}}) &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
+& {{\mathtt{u}}}{{\mathit{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
   \mbox{if}~{\mathit{n}} < {2^{7}} \land {\mathit{n}} < {2^{{\mathit{N}}}} \\ &&|&
-{\mathit{n}}{:}{\mathtt{byte}}~{\mathit{m}}{:}{\mathtt{uN}}(({\mathit{N}} - 7)) &\Rightarrow& {2^{7}} \cdot {\mathit{m}} + ({\mathit{n}} - {2^{7}}) &\quad
+{\mathit{n}}{:}{\mathtt{byte}}~{\mathit{m}}{:}{{\mathtt{u}}}{({\mathit{N}} - 7)} &\Rightarrow& {2^{7}} \cdot {\mathit{m}} + ({\mathit{n}} - {2^{7}}) &\quad
   \mbox{if}~{\mathit{n}} \geq {2^{7}} \land {\mathit{N}} > 7 \\
-& {\mathtt{sN}}({\mathit{N}}) &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
+& {{\mathtt{s}}}{{\mathit{N}}} &::=& {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} &\quad
   \mbox{if}~{\mathit{n}} < {2^{6}} \land {\mathit{n}} < {2^{{\mathit{N}} - 1}} \\ &&|&
 {\mathit{n}}{:}{\mathtt{byte}} &\Rightarrow& {\mathit{n}} - {2^{7}} &\quad
   \mbox{if}~{2^{6}} \leq {\mathit{n}} < {2^{7}} \land {\mathit{n}} \geq {2^{7}} - {2^{{\mathit{N}} - 1}} \\ &&|&
-{\mathit{n}}{:}{\mathtt{byte}}~{\mathit{i}}{:}{\mathtt{uN}}(({\mathit{N}} - 7)) &\Rightarrow& {2^{7}} \cdot {\mathit{i}} + ({\mathit{n}} - {2^{7}}) &\quad
+{\mathit{n}}{:}{\mathtt{byte}}~{\mathit{i}}{:}{{\mathtt{u}}}{({\mathit{N}} - 7)} &\Rightarrow& {2^{7}} \cdot {\mathit{i}} + ({\mathit{n}} - {2^{7}}) &\quad
   \mbox{if}~{\mathit{n}} \geq {2^{7}} \land {\mathit{N}} > 7 \\
-& {\mathtt{iN}}({\mathit{N}}) &::=& {\mathit{i}}{:}{\mathtt{sN}}({\mathit{N}}) &\Rightarrow& {{{{{\mathrm{signed}}^{{-1}}}}{}}_{{\mathit{N}}}}{{\mathit{i}}} \\
+& {{\mathtt{i}}}{{\mathit{N}}} &::=& {\mathit{i}}{:}{{\mathtt{s}}}{{\mathit{N}}} &\Rightarrow& {{{{{\mathrm{signed}}^{{-1}}}}{}}_{{\mathit{N}}}}{{\mathit{i}}} \\
 \end{array}
 $$
 
@@ -9371,7 +9371,7 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{fN}}({\mathit{N}}) &::=& {{\mathit{b}}^\ast}{:}{{\mathtt{byte}}^{{\mathit{N}} / 8}} &\Rightarrow& {\mathrm{invfbytes}}({\mathit{N}}, {{\mathit{b}}^\ast}) \\
+& {{\mathtt{f}}}{{\mathit{N}}} &::=& {{\mathit{b}}^\ast}{:}{{\mathtt{byte}}^{{\mathit{N}} / 8}} &\Rightarrow& {\mathrm{invfbytes}}({\mathit{N}}, {{\mathit{b}}^\ast}) \\
 \end{array}
 $$
 
@@ -9379,11 +9379,11 @@ $$
 
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
-& {\mathtt{u{\scriptstyle32}}} &::=& {\mathit{n}}{:}{\mathtt{uN}}(32) &\Rightarrow& {\mathit{n}} \\
-& {\mathtt{u{\scriptstyle64}}} &::=& {\mathit{n}}{:}{\mathtt{uN}}(64) &\Rightarrow& {\mathit{n}} \\
-& {\mathtt{s{\scriptstyle33}}} &::=& {\mathit{i}}{:}{\mathtt{sN}}(33) &\Rightarrow& {\mathit{i}} \\
-& {\mathtt{f{\scriptstyle32}}} &::=& {\mathit{p}}{:}{\mathtt{fN}}(32) &\Rightarrow& {\mathit{p}} \\
-& {\mathtt{f{\scriptstyle64}}} &::=& {\mathit{p}}{:}{\mathtt{fN}}(64) &\Rightarrow& {\mathit{p}} \\
+& {\mathtt{u{\scriptstyle32}}} &::=& {\mathit{n}}{:}{{\mathtt{u}}}{32} &\Rightarrow& {\mathit{n}} \\
+& {\mathtt{u{\scriptstyle64}}} &::=& {\mathit{n}}{:}{{\mathtt{u}}}{64} &\Rightarrow& {\mathit{n}} \\
+& {\mathtt{s{\scriptstyle33}}} &::=& {\mathit{i}}{:}{{\mathtt{s}}}{33} &\Rightarrow& {\mathit{i}} \\
+& {\mathtt{f{\scriptstyle32}}} &::=& {\mathit{p}}{:}{{\mathtt{f}}}{32} &\Rightarrow& {\mathit{p}} \\
+& {\mathtt{f{\scriptstyle64}}} &::=& {\mathit{p}}{:}{{\mathtt{f}}}{64} &\Rightarrow& {\mathit{p}} \\
 \end{array}
 $$
 
@@ -10032,7 +10032,7 @@ $$
 $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
 & {\mathtt{module}} &::=& \mathtt{0x00}~\mathtt{0x61}~\mathtt{0x73}~\mathtt{0x6D}~1{:}{\mathtt{u{\scriptstyle32}}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{type}}^\ast}{:}{\mathtt{typesec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{import}}^\ast}{:}{\mathtt{importsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{typeidx}}^{{\mathit{n}}}}{:}{\mathtt{funcsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{table}}^\ast}{:}{\mathtt{tablesec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{mem}}^\ast}{:}{\mathtt{memsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{global}}^\ast}{:}{\mathtt{globalsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{export}}^\ast}{:}{\mathtt{exportsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{start}}^\ast}{:}{\mathtt{startsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{elem}}^\ast}{:}{\mathtt{elemsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{m}'}^\ast}{:}{\mathtt{datacntsec}}~{{\mathtt{customsec}}^\ast} \\ &&&{({{\mathit{local}}^\ast},\, {\mathit{expr}})^{{\mathit{n}}}}{:}{\mathtt{codesec}}~{{\mathtt{customsec}}^\ast} \\ &&&{{\mathit{data}}^{{\mathit{m}}}}{:}{\mathtt{datasec}}~{{\mathtt{customsec}}^\ast} &\Rightarrow& \mathsf{module}~{{\mathit{type}}^\ast}~{{\mathit{import}}^\ast}~{{\mathit{func}}^{{\mathit{n}}}}~{{\mathit{global}}^\ast}~{{\mathit{table}}^\ast}~{{\mathit{mem}}^\ast}~{{\mathit{elem}}^\ast}~{{\mathit{data}}^{{\mathit{m}}}}~{{\mathit{start}}^\ast}~{{\mathit{export}}^\ast} &\quad
-  \mbox{if}~{{\mathit{m}'}^\ast} = \epsilon \lor {\mathrm{free}}_{{\mathit{dataidx}}_{{\mathit{funcs}}}}({{\mathit{func}}^{{\mathit{n}}}}) = \epsilon \\
+  \mbox{if}~{{\mathit{m}'}^\ast} = \epsilon \lor {\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{func}}^{{\mathit{n}}}}) = \epsilon \\
  &&&&&&\quad {\land}~{\mathit{m}} = {\mathrm{sum}}({{\mathit{m}'}^\ast}) \\
  &&&&&&\quad {\land}~(({\mathit{func}} = \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}))^\ast \\
 \end{array}

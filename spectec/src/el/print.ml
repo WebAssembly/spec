@@ -235,6 +235,7 @@ and string_of_sym g =
   | IterG (g1, iter) -> string_of_sym g1 ^ string_of_iter iter
   | ArithG e -> string_of_exp e
   | AttrG (e, g1) -> string_of_exp e ^ ":" ^ string_of_sym g1
+  | FuseG (g1, g2) -> string_of_sym g1 ^ "#" ^ string_of_sym g2
 
 and string_of_prod prod =
   let (g, e, prems) = prod.it in
