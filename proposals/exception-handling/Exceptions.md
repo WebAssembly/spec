@@ -451,4 +451,4 @@ A `catch` handler is a pair of tag and label index:
 | `catch` | `0x00` | tag : `varuint32`, label : `varuint32` |
 | `catch_ref` | `0x01` | tag : `varuint32`, label : `varuint32` |
 | `catch_all` | `0x02` | label : `varuint32` |
-| `catch_all_ref` | `0x02` | label : `varuint32` |
+| `catch_all_ref` | `0x03` | label : `varuint32` |
