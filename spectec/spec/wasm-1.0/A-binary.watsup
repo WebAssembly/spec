@@ -572,7 +572,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    data^m:Bdatasec
+    data*:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data* start* export*
     -- if (func = FUNC typeidx local* expr)*
