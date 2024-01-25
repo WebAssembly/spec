@@ -21,11 +21,17 @@ OUTDIR = _build/default/src
 
 .PHONY: exe
 
-exe:
+CLONEDIR = src/backend-interpreter/reference-interpreter
+exe: $(CLONEDIR)
 	rm -f ./$(NAME)
 	dune build $(SRCDIR)/$(EXE)
 	ln -f $(OUTDIR)/$(EXE) ./$(NAME)
 
+REFDIR = $(CLONEDIR)/interpreter
+$(CLONEDIR):
+	@rm -rf $(CLONEDIR)
+	git clone --single-branch https://github.com/WebAssembly/gc.git $(CLONEDIR)
+	@(cd $(REFDIR); git checkout 3fa0537 -q; rm dune-project jslib/wast.ml script/run.mli valid/match.mli; cp ../../dune-ref-interp dune)
 
 # Latex
 
@@ -58,6 +64,7 @@ $(TESTDIRS): test-%: exe
 clean:
 	dune clean
 	rm -f src/frontend/parser.{automaton,conflicts}
+	rm -rf $(CLONEDIR)
 	for dir in $(TESTDIRS); do (cd $$dir && make clean); done
 
 distclean: clean

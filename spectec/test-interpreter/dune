@@ -1,0 +1,14 @@
+(mdx
+  (libraries spectec)
+  (deps
+    (file ../src/exe-watsup/main.exe)
+    (glob_files_rec ../spec/*)
+    (source_tree spec-test-1)
+    (source_tree spec-test-2)
+    (source_tree spec-test-3)
+    (file sample.wast)
+    (file sample.wat)
+    (file sample.wasm)
+  )
+  (files TEST.md)
+)

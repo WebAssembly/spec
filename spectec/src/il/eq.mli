@@ -2,9 +2,11 @@ open Ast
 
 val eq_id : id -> id -> bool
 val eq_iter : iter -> iter -> bool
+val eq_iterexp : iterexp -> iterexp -> bool
 val eq_typ : typ -> typ -> bool
 val eq_deftyp : deftyp -> deftyp -> bool
 val eq_exp : exp -> exp -> bool
+val eq_path : path -> path -> bool
 val eq_prem : premise -> premise -> bool
 
 val eq_opt : ('a -> 'a -> bool) -> 'a option -> 'a option -> bool

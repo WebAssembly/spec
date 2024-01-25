@@ -77,7 +77,7 @@ and free_typfield (_, (binds, t, prems), _) =
   diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
 and free_typcase (_, (binds, t, prems), _) =
   diff (union (free_typ t) (free_list free_prem prems)) (bound_binds binds)
-  
+
 
 (* Expressions *)
 
@@ -121,7 +121,7 @@ and free_prem prem =
   match prem.it with
   | RulePr (id, _op, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
-  | LetPr (e1, e2) -> union (free_exp e1) (free_exp e2)
+  | LetPr (e1, e2, _ids) -> union (free_exp e1) (free_exp e2)
   | ElsePr -> empty
   | IterPr (prem', iter) -> union (free_prem prem') (free_iterexp iter)
 

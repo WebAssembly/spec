@@ -1,4 +1,14 @@
 ;;
+;; Auxiliary definitions on Values
+;;
+
+;; Bytes
+
+def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
+def $concat_bytes(eps) = eps
+def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
+
+;;
 ;; Auxiliary Definitions on Types
 ;;
 
@@ -13,6 +23,13 @@ def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
+def $packedsize(packedtype) : nat  hint(show |%|)
+def $packedsize(I8) = 8
+def $packedsize(I16) = 16
+
+def $lanesize(lanetype) : nat  hint(show |%|)
+def $lanesize(numtype) = $size(numtype)
+def $lanesize(packedtype) = $packedsize(packedtype)
 
 ;;
 ;; Auxiliary definitions on Indices

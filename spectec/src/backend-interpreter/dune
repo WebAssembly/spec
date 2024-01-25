@@ -1,0 +1,13 @@
+(library
+  (name backend_interpreter)
+  (libraries reference_interpreter util il el str middlend al)
+  (modules
+    interpreter
+    numerics
+    construct
+    runner
+    exception
+    manual
+    ds
+    builtin)
+)

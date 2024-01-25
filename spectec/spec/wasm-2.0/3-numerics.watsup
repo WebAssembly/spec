@@ -31,9 +31,46 @@ def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^
 def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
 def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
 def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
+def $vtbytes(vectype, c_vectype) : byte*   hint(show $bytes_(%,%))
 
 def $invibytes(N, byte*) : iN(N)
 def $invfbytes(N, byte*) : fN(N)
 
 def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
+
+def $iadd(N, c, c) : c
+def $imul(N, c, c) : c
+def $ine(N, c, c) : c_numtype
+def $ilt(sx, N, c, c) : c_numtype
+
+def $lanes(shape, c_vectype) : c* hint(show $lanes_(%,%))
+def $narrow(N, N, sx, c) : c
+def $ibits(N, N) : c*
+
+def $unpacked(shape) : numtype
+def $unpacked(pt X lns) = I32
+def $unpacked(nt X lns) = nt
+
+def $dim(shape) : lanesize
+def $dim(lnt X lns) = lns
+
+def $halfop(half, nat, nat) : nat
+def $halfop(LOW, i, j) = i
+def $halfop(HIGH, i, j) = j
+
+def $ishape(nat) : lanetype
+def $ishape(8) = I8
+def $ishape(16) = I16
+def $ishape(32) = I32
+def $ishape(64) = I64
+
+def $vvunop(unop_vvectype, vectype, c_vectype) : c_vectype                           hint(show %#_%#((%)))
+def $vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype              hint(show %#_%#(%, %))
+def $vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype hint(show %#_%#(%, %, %))
+
+def $vunop(unop_vectype, shape, c_vectype) : c_vectype                               hint(show %#_%#((%)))
+def $vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*                 hint(show %#_%#(%, %))
+def $vrelop(relop_vectype, shape, c, c) : c_numtype                                  hint(show %#_%#(%, %))
+def $vishiftop(shiftop_vectype, lanetype, c, c) : c                                  hint(show %#_%#(%, %))
+def $vcvtop(cvtop_vectype, N, N, sx?, c) : c                                         hint(show %#$_((%,%))^(%)#((%)))

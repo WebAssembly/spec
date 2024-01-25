@@ -1,5 +1,5 @@
 (library
   (name backend_latex)
   (libraries util el frontend str)
-  (modules config render gen splice)
+  (modules config render gen)
 )

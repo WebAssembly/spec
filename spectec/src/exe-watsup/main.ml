@@ -11,10 +11,12 @@ let version = "0.4"
 
 type target =
  | Check
- | Latex of Backend_latex.Config.config
+ | Latex
  | Prose
+ | Splice of Backend_splice.Config.config
+ | Interpreter of string list
 
-let target = ref (Latex Backend_latex.Config.latex)
+let target = ref Latex
 
 type pass =
   | Sub
@@ -32,19 +34,24 @@ flags on the command line.
 *)
 let all_passes = [ Sub; Totalize; Unthe; Wild; Sideconditions; Animate ]
 
-let log = ref false  (* log execution steps *)
-let dst = ref false  (* patch files *)
-let dry = ref false  (* dry run for patching *)
-let warn = ref false (* warn about unused or reused splices *)
+let log = ref false      (* log execution steps *)
+let in_place = ref false (* splice patch files in place *)
+let warn = ref false     (* warn about unused or reused splices *)
 
-let srcs = ref []    (* src file arguments *)
-let dsts = ref []    (* destination file arguments *)
-let odst = ref ""    (* generation file argument *)
+type file_kind =
+  | Spec
+  | Patch
+  | Output
+let file_kind = ref Spec
+let srcs = ref []    (* spec src file arguments *)
+let pdsts = ref []   (* patch file arguments *)
+let odsts = ref []   (* output file arguments *)
 
 let print_el = ref false
 let print_elab_il = ref false
 let print_final_il = ref false
 let print_all_il = ref false
+let print_al = ref false
 
 module PS = Set.Make(struct type t = pass let compare = compare; end)
 let selected_passes = ref (PS.empty)
@@ -75,7 +82,7 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
   | Unthe -> Middlend.Unthe.transform
   | Wild -> Middlend.Wild.transform
   | Sideconditions -> Middlend.Sideconditions.transform
-  | Animate -> Middlend.Animate.transform
+  | Animate -> Il2al.Animate.transform
 
 
 (* Argument parsing *)
@@ -83,10 +90,14 @@ let run_pass : pass -> Il.Ast.script -> Il.Ast.script = function
 let banner () =
   print_endline (name ^ " " ^ version ^ " generator")
 
-let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...]"
+let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...] [-o file ...]"
 
 let add_arg source =
-  let args = if !dst then dsts else srcs in args := !args @ [source]
+  let args = match !file_kind with
+  | Spec -> srcs
+  | Patch -> pdsts
+  | Output -> odsts in
+  args := !args @ [source]
 
 let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
   "--" ^ pass_flag pass, Arg.Unit (fun () -> enable_pass pass), " " ^ pass_desc pass
@@ -94,25 +105,31 @@ let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
 let argspec = Arg.align
 [
   "-v", Arg.Unit banner, " Show version";
-  "-o", Arg.String (fun s -> odst := s), " Generate file";
-  "-p", Arg.Set dst, " Patch files";
-  "-d", Arg.Set dry, " Dry run (when -p) ";
+  "-p", Arg.Unit (fun () -> file_kind := Patch), " Patch files";
+  "-i", Arg.Set in_place, " Splice patch files in-place";
+  "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unused or multiply used splices";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
-  "--latex", Arg.Unit (fun () -> target := Latex Backend_latex.Config.latex),
+  "--latex", Arg.Unit (fun () -> target := Latex),
     " Generate Latex (default)";
-  "--sphinx", Arg.Unit (fun () -> target := Latex Backend_latex.Config.sphinx),
-    " Generate Latex for Sphinx";
+  "--splice-latex", Arg.Unit (fun () -> target := Splice Backend_splice.Config.latex),
+    " Splice Sphinx";
+  "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
+    " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
+  "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args), " Generate interpreter";
 
   "--print-el", Arg.Set print_el, " Print EL";
   "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
   "--print-final-il", Arg.Set print_final_il, " Print final IL";
   "--print-all-il", Arg.Set print_all_il, " Print IL after each step";
+  "--print-al", Arg.Set print_al, " Print al";
 ] @ List.map pass_argspec all_passes @ [
   "--all-passes", Arg.Unit (fun () -> List.iter enable_pass all_passes)," Run all passes";
+
+  "--test-version", Arg.Int (fun i -> Backend_interpreter.Construct.version := i), " The version of wasm, default to 3";
 
   "-help", Arg.Unit ignore, "";
   "--help", Arg.Unit ignore, "";
@@ -139,6 +156,11 @@ let () =
     log "IL Validation...";
     Il.Validation.valid il;
 
+
+    (match !target with
+    | Prose | Interpreter _ -> enable_pass Sideconditions; enable_pass Animate
+    | _ -> ());
+
     let il =
       List.fold_left (fun il pass ->
         if not (PS.mem pass !selected_passes) then il else
@@ -157,30 +179,40 @@ let () =
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
 
+    let al = if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
+      log "Translating to AL...";
+      (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
+    ) in
+
+    if !print_al then
+      Printf.printf "%s\n%!" (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
+
     (match !target with
     | Check -> ()
-    | Latex config ->
+    | Latex ->
       log "Latex Generation...";
-      if !odst = "" && !dsts = [] then
-        print_endline (Backend_latex.Gen.gen_string el);
-      if !odst <> "" then
-        Backend_latex.Gen.gen_file !odst el;
-      if !dsts <> [] then (
-        let env = Backend_latex.Splice.(env config el) in
-        List.iter (Backend_latex.Splice.splice_file ~dry:!dry env) !dsts;
-        if !warn then Backend_latex.Splice.warn env;
-      );
-    | Prose ->
-      log "Prose Generation...";
-      let ir = true in
-      if ir then
-        let program = Backend_prose.Il2ir.translate il in
-        List.map Backend_prose.Print.string_of_program program
-        |> List.iter print_endline
-      else (
-        let prose = Backend_prose.Translate.translate el in
-        print_endline prose
+      (match !odsts with
+      | [] -> print_endline (Backend_latex.Gen.gen_string el)
+      | odst :: _ -> Backend_latex.Gen.gen_file odst el
       )
+    | Prose ->
+      let prose = Backend_prose.Gen.gen_prose il al in
+      print_endline "=================";
+      print_endline " Generated prose ";
+      print_endline "=================";
+      print_endline (Backend_prose.Print.string_of_prose prose);
+    | Splice config ->
+      let prose = Backend_prose.Gen.gen_prose il al in
+      if !in_place then odsts := !pdsts;
+      odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> ""); (* TODO *)
+      let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
+      List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
+      if !warn then Backend_splice.Splice.warn env;
+    | Interpreter args ->
+      log "Initializing AL interprter with generated AL...";
+      Backend_interpreter.Ds.init al;
+      log "Interpreting AL...";
+      Backend_interpreter.Runner.run args
     );
     log "Complete."
   with
