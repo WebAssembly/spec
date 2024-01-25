@@ -1,9 +1,9 @@
 open Reference_interpreter
-open Construct
 open Ds
 open Al
 open Ast
 open Al_util
+open Construct
 open Print
 open Util
 open Source
@@ -69,9 +69,9 @@ let transpose matrix =
 let null = caseV ("NULL", [ optV (Some (listV [||])) ])
 let nonull = caseV ("NULL", [ optV None ])
 (* abstract heap types for null *)
-let none = singleton "NONE"
-let nofunc = singleton "NOFUNC"
-let noextern = singleton "NOEXTERN"
+let none = nullary "NONE"
+let nofunc = nullary "NOFUNC"
+let noextern = nullary "NOEXTERN"
 
 
 let match_ref_type v1 v2 =
@@ -496,7 +496,7 @@ and dsl_function_call (fname: string) (args: value list): AlContext.return_value
           |> failwith
       (* i31 *)
       | CaseV ("REF.I31_NUM", [ _ ]) ->
-        CaseV ("REF", [ nonull; singleton "I31"])
+        CaseV ("REF", [ nonull; nullary "I31"])
       (* struct *)
       | CaseV ("REF.STRUCT_ADDR", [ NumV i ]) ->
         let e =
@@ -550,11 +550,11 @@ and dsl_function_call (fname: string) (args: value list): AlContext.return_value
         CaseV ("REF", [ nonull; dt])
       (* host *)
       | CaseV ("REF.HOST_ADDR", [ _ ]) ->
-        CaseV ("REF", [ nonull; singleton "ANY"])
+        CaseV ("REF", [ nonull; nullary "ANY"])
       (* extern *)
       (* TODO: check null *)
       | CaseV ("REF.EXTERN", [ _ ]) ->
-        CaseV ("REF", [ nonull; singleton "EXTERN"])
+        CaseV ("REF", [ nonull; nullary "EXTERN"])
       | _ -> failwith "Invalid arguments for $ref_type_of"
     in
 

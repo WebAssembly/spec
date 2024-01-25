@@ -1,14 +1,15 @@
-open Construct
-open Al.Ast
+open Al
+open Ast
+open Al_util
 open Util
 open Reference_interpreter
 open Ds
 
 (* Helper functions *)
-let i32_to_const i = CaseV ("CONST", [ singleton "I32"; al_of_int32 i ])
-let i64_to_const i = CaseV ("CONST", [ singleton "I64"; al_of_int64 i ])
-let f32_to_const f = CaseV ("CONST", [ singleton "F32"; al_of_float32 f ])
-let f64_to_const f = CaseV ("CONST", [ singleton "F64"; al_of_float64 f ])
+let i32_to_const i = CaseV ("CONST", [ nullary "I32"; Construct.al_of_int32 i ])
+let i64_to_const i = CaseV ("CONST", [ nullary "I64"; Construct.al_of_int64 i ])
+let f32_to_const f = CaseV ("CONST", [ nullary "F32"; Construct.al_of_float32 f ])
+let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f ])
 
 
 let builtin () =
@@ -16,14 +17,14 @@ let builtin () =
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
   let create_funcinst (name, type_tags) =
     let winstr_tag = String.uppercase_ascii name in
-    let code = singleton winstr_tag in
-    let ptype = Array.map singleton type_tags in
+    let code = nullary winstr_tag in
+    let ptype = Array.map nullary type_tags in
     let arrow = TupV [ listV ptype; listV [||] ] in
     let ftype = CaseV ("FUNC", [ arrow ]) in
     let dt =
       CaseV ("DEF", [
         CaseV ("REC", [
-          [| CaseV ("SUBD", [OptV (Some (singleton "FINAL")); listV [||]; ftype]) |] |> listV
+          [| CaseV ("SUBD", [OptV (Some (nullary "FINAL")); listV [||]; ftype]) |] |> listV
         ]); numV 0L
       ]) in
     name, StrV [
@@ -65,11 +66,11 @@ let builtin () =
     "global_f64", 666.6 |> F64.of_float |> f64_to_const |> create_globalinst (TextV "global_type");
   ] in
   (* Builtin tables *)
-  let nulls = CaseV ("REF.NULL", [ singleton "FUNC" ]) |> Array.make 10 in
+  let nulls = CaseV ("REF.NULL", [ nullary "FUNC" ]) |> Array.make 10 in
   let tables = [
     "table",
     listV nulls
-    |> create_tableinst (TupV [ TupV [ numV 10L; numV 20L ]; singleton "FUNCREF" ]);
+    |> create_tableinst (TupV [ TupV [ numV 10L; numV 20L ]; nullary "FUNCREF" ]);
   ] in
   (* Builtin memories *)
   let zeros = numV 0L |> Array.make 0x10000 in

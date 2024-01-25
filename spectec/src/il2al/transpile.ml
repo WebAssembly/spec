@@ -1,10 +1,10 @@
 open Al
-open Al.Ast
-open Al.Walk
+open Ast
+open Walk
+open Al_util
 open Util
 open Util.Source
 open Util.Record
-open Backend_interpreter.Construct
 
 (** helper *)
 let (@@) (g: instr -> instr list) (f: instr -> instr list) (i: instr): instr list =

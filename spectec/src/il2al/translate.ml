@@ -1,8 +1,9 @@
+open Al
+open Ast
+open Free
+open Al_util
 open Il
 open Printf
-open Al.Ast
-open Al.Free
-open Backend_interpreter.Construct
 open Backend_interpreter.Manual
 open Util
 open Source
