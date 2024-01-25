@@ -528,12 +528,15 @@ and valid_prem env prem =
     valid_exp env e (BoolT $ e.at)
   | LetPr (e1, e2, ids) ->
     valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at);
-    let ids = List.map it ids in
-    let target_ids = (Free.Set.of_list ids) in
-    let lhs_ids = (Free.free_exp e1).varid in
-    if not (Free.Set.subset target_ids lhs_ids) then
-      error prem.at ("binding premise's target(s) `" ^ String.concat "," ids ^
-        "` is not contained in the left-hand side expression")
+    let target_ids = Free.Set.of_list (List.map it ids) in
+    let free_ids = (Free.free_exp e1).varid in
+    let diff_ids = Free.Set.diff target_ids free_ids in
+    if diff_ids <> Free.Set.empty then
+      error prem.at ("target identifier(s) " ^
+        ( Free.Set.elements diff_ids |>
+          List.map (fun id -> "`" ^ id ^ "`") |>
+          String.concat ", " ) ^
+        " not contained in left-hand side expression")
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->

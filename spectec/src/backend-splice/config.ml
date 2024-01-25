@@ -12,10 +12,10 @@ type config =
     anchors : anchor list;
 
     (* Latex *)
-    latex : Backend_latex.Config.config;
+    latex : Backend_latex.Config.t;
 
     (* Prose *)
-    prose : Backend_prose.Config.config;
+    prose : Backend_prose.Config.t;
   }
 
 type t = config

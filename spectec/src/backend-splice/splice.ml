@@ -4,6 +4,7 @@ open El.Ast
 open Backend_prose.Prose
 open Config
 
+
 (* Errors *)
 
 type source = {file : string; s : string; mutable i : int}
@@ -39,24 +40,24 @@ type syntax = {sdef : El.Ast.def; sfragments : (string * El.Ast.def * use) list}
 type grammar = {gdef : El.Ast.def; gfragments : (string * El.Ast.def * use) list}
 type relation = {rdef : El.Ast.def; rules : (string * El.Ast.def * use) list}
 type definition = {fdef : El.Ast.def; clauses : El.Ast.def list; use : use}
-type rule_prose = {rdef : Backend_prose.Prose.def; use : use}
-type func_prose = {fdef : Backend_prose.Prose.def; use : use}
-type pred_prose = {pdef : Backend_prose.Prose.def; use : use}
+type validation_prose = {vprose : Backend_prose.Prose.def; use : use}
+type execution_prose = {eprose : Backend_prose.Prose.def; use : use}
+type definition_prose = {fprose : Backend_prose.Prose.def; use : use}
 
 type env =
-  { config : Config.config;
-    render_latex : Backend_latex.Render.env;
-    render_prose : Backend_prose.Render.env;
+  { config : Config.t;
+    latex : Backend_latex.Render.env;
+    prose : Backend_prose.Render.env;
     mutable syn : syntax Map.t;
     mutable gram : grammar Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
-    mutable rprose : rule_prose Map.t;
-    mutable fprose : func_prose Map.t;
-    mutable pprose : pred_prose Map.t;
+    mutable valid_prose : validation_prose Map.t;
+    mutable exec_prose : execution_prose Map.t;
+    mutable def_prose : definition_prose Map.t;
   }
 
-let env_el_def env def =
+let env_def env def =
   match def.it with
   | SynD (id1, id2, _, _, _) ->
     if not (Map.mem id1.it env.syn) then
@@ -85,31 +86,31 @@ let env_el_def env def =
   | VarD _ | SepD | HintD _ ->
     ()
 
-let env_prose_def env prose =
+let env_prose env prose =
   match prose with
-  | Pred ((id, _), _, _) -> env.pprose <- Map.add id {pdef = prose; use = ref 0} env.pprose
-  | Algo algo -> (match algo with
-    | Al.Ast.RuleA ((id, _), _, _) -> env.rprose <- Map.add id {rdef = prose; use = ref 0} env.rprose
-    | Al.Ast.FuncA (id, _, _) -> env.fprose <- Map.add id {fdef = prose; use = ref 0} env.fprose)
+  | Pred ((id, _), _, _) ->
+    env.valid_prose <- Map.add id {vprose = prose; use = ref 0} env.valid_prose
+  | Algo (Al.Ast.RuleA ((id, _), _, _)) ->
+    env.exec_prose <- Map.add id {eprose = prose; use = ref 0} env.exec_prose
+  | Algo (Al.Ast.FuncA (id, _, _)) ->
+    env.def_prose <- Map.add id {fprose = prose; use = ref 0} env.def_prose
 
-let env config pdsts odsts el prose : env =
-  let render_latex = Backend_latex.Render.env config.latex el in
-  let render_prose = Backend_prose.Render.env config.prose pdsts odsts render_latex el prose in
+let env (config : config) pdsts odsts el pr : env =
+  let latex = Backend_latex.Render.env config.latex el in
+  let prose = Backend_prose.Render.env config.prose pdsts odsts latex el pr in
   let env =
-    { config;
-      render_latex;
-      render_prose;
+    { config; latex; prose;
       syn = Map.empty;
       gram = Map.empty;
       rel = Map.empty;
       def = Map.empty;
-      rprose = Map.empty;
-      fprose = Map.empty;
-      pprose = Map.empty
+      valid_prose = Map.empty;
+      exec_prose = Map.empty;
+      def_prose = Map.empty;
     }
   in
-  List.iter (env_el_def env) el;
-  List.iter (env_prose_def env) prose;
+  List.iter (env_def env) el;
+  List.iter (env_prose env) pr;
   env
 
 
@@ -129,10 +130,18 @@ let warn env =
   Map.iter (fun id1 {rules; _} ->
   	List.iter (fun (id2, _, use) -> warn_use use "rule" id1 id2) rules
   ) env.rel;
-  Map.iter (fun id1 ({use; _}: definition) -> warn_use use "definition" id1 "") env.def;
-  Map.iter (fun id1 ({use; _}: rule_prose) -> warn_use use "execution prose" id1 "") env.rprose;
-  Map.iter (fun id1 ({use; _}: func_prose) -> warn_use use "function prose" id1 "") env.fprose;
-  Map.iter (fun id1 ({use; _}: pred_prose) -> warn_use use "validation prose" id1 "") env.pprose
+  Map.iter (fun id1 ({use; _}: definition) ->
+    warn_use use "definition" id1 ""
+  ) env.def;
+  Map.iter (fun id1 ({use; _}: validation_prose) ->
+    warn_use use "validation prose" id1 ""
+  ) env.valid_prose;
+  Map.iter (fun id1 ({use; _}: execution_prose) ->
+    warn_use use "execution prose" id1 ""
+  ) env.exec_prose;
+  Map.iter (fun id1 ({use; _}: definition_prose) ->
+    warn_use use "definition prose" id1 ""
+  ) env.def_prose
 
 
 let find_nosub space src id1 id2 =
@@ -179,17 +188,21 @@ let find_func env src id1 id2 =
       error src ("definition `" ^ id1 ^ "` has no clauses");
     incr definition.use; definition.clauses
 
-let find_rule_prose env src id = match Map.find_opt id env.rprose with
-  | None -> error src ("unknown execution prose identifier `" ^ id ^ "`")
-  | Some rprose -> incr rprose.use; rprose.rdef
+let find_vrule_prose env src id =
+  match Map.find_opt id env.valid_prose with
+  | None -> error src ("unknown validation identifier `" ^ id ^ "`")
+  | Some prose -> incr prose.use; prose.vprose
 
-let find_func_prose env src id = match Map.find_opt id env.fprose with
-  | None -> error src ("unknown function prose identifier `" ^ id ^ "`")
-  | Some fprose -> incr fprose.use; fprose.fdef
+let find_rrule_prose env src id =
+  match Map.find_opt id env.exec_prose with
+  | None -> error src ("unknown execution identifier `" ^ id ^ "`")
+  | Some prose -> incr prose.use; prose.eprose
 
-let find_pred_prose env src id = match Map.find_opt id env.pprose with
-  | None -> error src ("unknown validation prose identifier `" ^ id ^ "`")
-  | Some pprose -> incr pprose.use; pprose.pdef
+let find_def_prose env src id =
+  match Map.find_opt id env.def_prose with
+  | None -> error src ("unknown definition identifier `" ^ id ^ "`")
+  | Some prose -> incr prose.use; prose.fprose
+
 
 (* Parsing *)
 
@@ -268,11 +281,11 @@ let try_def_anchor env src r sort space1 space2 find mode : bool =
     let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
     if mode <> Ignored then
-    ( let env' = env.render_latex
+      let env' = env.latex
         |> Backend_latex.Render.with_syntax_decoration (mode = Decorated)
         |> Backend_latex.Render.with_rule_decoration (mode = Decorated)
-      in r := Backend_latex.Render.render_defs env' defs
-    )
+      in
+      r := Backend_latex.Render.render_defs env' defs
   );
   b
 
@@ -293,7 +306,7 @@ let try_exp_anchor env src r : bool =
         let at' = {left = shift at.left; right = shift at.right} in
         raise (Source.Error (at', msg))
     in
-    r := Backend_latex.Render.render_exp env.render_latex exp
+    r := Backend_latex.Render.render_exp env.latex exp
   );
   b
 
@@ -308,9 +321,10 @@ let try_prose_anchor env src r sort find : bool =
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
     let prose = find env src id in
-    r := Backend_prose.Render.render_def env.render_prose prose
+    r := Backend_prose.Render.render_def env.prose prose
   );
   b
+
 
 (* Splicing *)
 
@@ -331,9 +345,13 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "rule+" "relation" "rule" find_rule Decorated ||
     try_def_anchor env src r "rule" "relation" "rule" find_rule Undecorated ||
     try_def_anchor env src r "definition" "definition" "" find_func Undecorated ||
-    try_prose_anchor env src r "prose-pred" find_pred_prose ||
-    try_prose_anchor env src r "prose-algo" find_rule_prose ||
-    try_prose_anchor env src r "prose-func" find_func_prose ||
+    (* TODO: make anchors consistent:
+     * - change anchors to `rule-prose` (for both pred and algo) and `def-prose`
+     * - add anchors `rule-prose-ignore` and `rule-def-ignore`
+     *)
+    try_prose_anchor env src r "prose-pred" find_vrule_prose ||
+    try_prose_anchor env src r "prose-algo" find_rrule_prose ||
+    try_prose_anchor env src r "prose-func" find_def_prose ||
     error src "unknown definition sort";
   );
   if !r <> "" then
@@ -368,14 +386,15 @@ let splice_string env file s : string =
   splice_all env {file; s; i = 0} buf;
   Buffer.contents buf
 
-let splice_file env file_in file_out =
-  let ic = In_channel.open_text file_in in
+let splice_file ?(dry = false) env infile outfile =
+  let ic = In_channel.open_text infile in
   let s =
     Fun.protect (fun () -> In_channel.input_all ic)
       ~finally:(fun () -> In_channel.close ic)
   in
-  let s' = splice_string env file_in s in
-  if file_out = "" then print_endline s' else
-    let oc = Out_channel.open_text file_out in
-    Fun.protect (fun () -> Out_channel.output_string oc s')
-      ~finally:(fun () -> Out_channel.close oc)
+  let s' = splice_string env infile s in
+  if not dry then
+    if outfile = "" then print_endline s' else
+      let oc = Out_channel.open_text outfile in
+      Fun.protect (fun () -> Out_channel.output_string oc s')
+        ~finally:(fun () -> Out_channel.close oc)
