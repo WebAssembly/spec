@@ -141,11 +141,11 @@ let find_case cases atom at t =
   | None -> error_atom at atom t "unknown case"
 
 
-let to_eval_typ at id (ps, k) =
+let to_eval_typ id (ps, k) =
   match k with
   | Opaque | Transp ->
     let args' = List.map Convert.arg_of_param ps in
-    [(args', VarT (id $ at, args') $ at)]
+    [(args', VarT (id $ no_region, args') $ no_region)]
   | Defined (t, _dt') ->
     [(List.map Convert.arg_of_param ps, t)]
   | Family defs ->
@@ -158,8 +158,8 @@ let to_eval_def (_ps, _t, clauses) =
     | _ -> assert false
   ) clauses
 
-let to_eval_env env at =
-  let typs = Map.mapi (to_eval_typ at) env.typs in
+let to_eval_env env =
+  let typs = Map.mapi to_eval_typ env.typs in
   let defs = Map.map to_eval_def env.defs in
   let syms = Map.map ignore env.syms in
   Eval.{typs; defs; syms}
@@ -198,7 +198,7 @@ let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
       | [] -> error_id (id.it $ at) "undefined case of syntax type family"
       | (args', t, dt')::defs' ->
         if args' = [] then t.it, aliased dt' else   (* optimisation *)
-        let env' = to_eval_env env at in
+        let env' = to_eval_env env in
         match Eval.(match_list match_arg env' Subst.empty args args') with
         | None -> lookup defs'
         | Some s -> (Subst.subst_typ s t).it, aliased dt'
@@ -317,14 +317,14 @@ let is_variant_typ = is_x_typ as_variant_typ
 (* Type Equivalence and Shallow Numeric Subtyping *)
 
 let equiv_typ env t1 t2 =
-  Eval.equiv_typ (to_eval_env env t1.at) t1 t2
+  Eval.equiv_typ (to_eval_env env) t1 t2
 
 let sub_typ env t1 t2 =
   match expand env t1, expand env t2 with
   | NumT t1', NumT t2' -> t1' <= t2'
   | RangeT (Elem (e1, _)::_), NumT t2' ->
     (* TODO: this should use infer_exp *)
-    (match (Eval.reduce_exp (to_eval_env env e1.at) e1).it with
+    (match (Eval.reduce_exp (to_eval_env env) e1).it with
     | NatE _ -> true
     | UnE (MinusOp, _) -> t2' <= IntT
     | _ -> assert false
@@ -535,6 +535,7 @@ and elab_typ_definition env id t : Il.deftyp =
   | RangeT tes ->
     (* TODO: for now, erase ranges to nat or int *)
     let ts' = map_filter_nl_list (elab_typenum env) tes in
+    (* HACK: assume that left-most enumerator is the smallest *)
     Il.AliasT (List.hd ts')
   | _ ->
     match elab_typ_notation env t with
@@ -955,11 +956,10 @@ and elab_exp_notation env e nt t : Il.exp =
   | true, mixop, _ -> Il.MixE (mixop, e') $$ e.at % elab_typ env t
 
 and elab_exp_notation' env e t : Il.exp list * Subst.t =
-  (* *)
+  (*
   Printf.eprintf "[notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  (* *)
-let es', s =
+  *)
   match e.it, t.it with
   | AtomE atom, AtomT atom' ->
     if atom <> atom' then error_typ e.at "atom" t;
@@ -974,7 +974,6 @@ let es', s =
     elab_exp_notation' env e1 t1
 
   | SeqE [], SeqT [] ->
-Printf.eprintf "[seq nil]\n%!";
     [], Subst.empty
   (* Iterations at the end of a sequence may be inlined *)
   | _, SeqT [t1] when is_iter_typ env t1 ->
@@ -999,10 +998,7 @@ Printf.eprintf "[seq nil]\n%!";
       es1' @ es2', Subst.union s2 s2
     )
   | SeqE (e1::es2), SeqT (t1::ts2) ->
-Printf.eprintf "[seq cons head]\n%!";
     let es1', s1 = elab_exp_notation' env (unparen_exp e1) t1 in
-let bs = List.map (fun (x,e)-> x^"="^El.Print.string_of_exp e) (Subst.Map.bindings s1.varid) in
-Printf.eprintf "[seq cons tail] %s\n%!" (String.concat ", " bs);
     let es2', s2 = elab_exp_notation' env (SeqE es2 $ e.at) (Subst.subst_typ s1 (SeqT ts2 $ t.at)) in
     es1' @ es2', Subst.union s1 s2
   (* Trailing elements can be omitted if they can be eps *)
@@ -1047,16 +1043,10 @@ Printf.eprintf "[seq cons tail] %s\n%!" (String.concat ", " bs);
     elab_exp_notation' env e t1
 
   | _, VarT (id, _) ->
-Printf.eprintf "[attr %s]\n%!" id.it;
     [elab_exp env e t], Subst.add_varid Subst.empty id e
 
   | _, _ ->
-Printf.eprintf "[typ %s]\n%!" (El.Print.string_of_typ t);
     [elab_exp env e t], Subst.empty
-in
-let bs = List.map (fun (x,e)-> x^"="^El.Print.string_of_exp e) (Subst.Map.bindings s.varid) in
-Printf.eprintf "-> %s\n%!" (String.concat ", " bs);
-es', s
 
 
 and elab_exp_notation_iter env es (t1, iter) t at : Il.exp =
@@ -1173,23 +1163,18 @@ and cast_exp phrase env e' t1 t2 : Il.exp =
   e'' $$ e'.at % elab_typ env t2
 
 and cast_exp' phrase env e' t1 t2 : Il.exp' =
-  (* *)
-  Printf.eprintf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)  equiv=%b\n%!"
+  (*
+  Printf.eprintf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)\n%!"
     (string_of_region e'.at)
     (string_of_typ t1) (string_of_typ t2)
     (string_of_typ (expand env t1 $ t1.at))
-    (string_of_typ (expand env t2 $ t2.at))
-false(*    (equiv_typ env t1 t2)*);
-  (* *)
-Printf.eprintf "[0]\n%!";
+    (string_of_typ (expand env t2 $ t2.at));
+  *)
   if equiv_typ env t1 t2 then
-(Printf.eprintf "[1]\n%!";
     e'.it
-)
   else if sub_typ env t1 t2 then
     Il.SubE (e', elab_typ env t1, elab_typ env t2)
   else
-(Printf.eprintf "[2]\n%!";
     match expand env t2 with
     | RangeT _ ->
       if sub_typ env t1 (NumT IntT $ t1.at) then
@@ -1203,7 +1188,6 @@ Printf.eprintf "[0]\n%!";
       Il.ListE [cast_exp phrase env e' t1 t21]
     | _ ->
       (cast_exp_variant phrase env e' t1 t2).it
-)
 
 and cast_exp_variant phrase env e' t1 t2 : Il.exp =
   if equiv_typ env t1 t2 then e' else
@@ -1216,7 +1200,7 @@ and cast_exp_variant phrase env e' t1 t2 : Il.exp =
       List.iter (fun (atom, (t1', _prems1), _) ->
         let t2', _prems2 = find_case cases2 atom t1.at t2 in
         (* Shallow subtyping on variants *)
-        let env' = to_eval_env env e'.at in
+        let env' = to_eval_env env in
         if not (Eq.eq_typ (Eval.reduce_typ env' t1') (Eval.reduce_typ env' t2')) then
           failwith "bla" (*error_atom e'.at atom t1 "type mismatch for case"*)
       ) cases1
@@ -1327,13 +1311,13 @@ and make_binds env free dims at : Il.binds =
 
 and elab_args env ps args at : Il.exp list * Subst.subst =
   let rec loop ps args es s =
-    (* *)
+    (*
     if ps <> [] || args <> [] then
     Printf.eprintf "[args] {%s}  :  {%s}[%s]\n%!"
       (String.concat " " (List.map string_of_arg args))
       (String.concat " " (List.map string_of_param ps))
       (String.concat ", " (List.map (fun (x, e) -> x^"="^string_of_exp e) Subst.(Map.bindings s.varid)));
-    (* *)
+    *)
     match ps, args with
     | [], [] -> List.rev es, s
     | [], a::_ -> error a.at "too many arguments"
@@ -1485,6 +1469,7 @@ let elab_hintdef _env hd : Il.def list =
 let elab_def env d : Il.def list =
   (*
   Printf.eprintf "[DEF %s]\n%!" (string_of_region d.at);
+  let ds' =
   *)
   match d.it with
   | FamD (id, ps, hints) ->
@@ -1625,6 +1610,11 @@ let elab_def env d : Il.def list =
     []
   | HintD hd ->
     elab_hintdef env hd
+  (*
+  in
+  Printf.eprintf "[DEF %s] done\n%!" (string_of_region d.at);
+  ds'
+  *)
 
 let elab_gramdef env d =
   match d.it with
@@ -1658,6 +1648,9 @@ let elab_gramdef env d =
 
 
 let populate_def env d' : Il.def =
+  (*
+  Printf.eprintf "[populate %s]\n%!" (string_of_region d'.at);
+  *)
   match d'.it with
   | Il.SynD (id, _dt') ->
     (match find "syntax type" env.typs id with
@@ -1666,7 +1659,7 @@ let populate_def env d' : Il.def =
     | _ps, Family (def1::defs) ->
       let _, t1, dt1' = def1 in
       let _t, dt' =
-        List.fold_left (fun (t1, dt1') (_, t2, dt2') ->
+        List.fold_left (fun (t1, dt1') (_, _t2, dt2') ->
           match dt1'.it, dt2'.it with
           | Il.VariantT tcs1', Il.VariantT tcs2' ->
             (* TODO: for now, merge cases into one variant type *)
@@ -1681,23 +1674,27 @@ let populate_def env d' : Il.def =
                 | +1 -> (atom2, tt2, hints2) :: merge ((atom1, tt1, hints1)::tcs1'') tcs2''
                 | _ ->
                   (* TODO: this is a hack *)
+(*
                   let (binds1, t1', prems1) = tt1 in
                   let (binds2, t2', prems2) = tt2 in
                   if
                     binds1 <> [] || binds2 <> [] || prems1 <> [] || prems2 <> [] ||
                     not (Il.Eq.eq_typ t1' t2')
                   then
-                    error_id id ("syntax type family case is incompatible (" ^
-                      Il.Print.(string_of_deftyp dt1' ^ " vs " ^ string_of_deftyp dt2' ^ ") for "));
-                  (atom1, tt1, hints1 @ hints2) :: merge tcs1' tcs2'
+                    error_id id ("syntax type family case is incompatible (`" ^
+                      Il.Print.(string_of_deftyp dt1' ^ "` vs `" ^ string_of_deftyp dt2' ^ "`) for"));
+*)
+                  (atom1, tt1, hints1 @ hints2) :: merge tcs1'' tcs2''
             in
             t1, Il.VariantT (merge (List.sort compare tcs1') (List.sort compare tcs2')) $ dt1'.at
           | _, _ ->
             let dt1' = elab_typ_definition env id (expand env t1 $ t1.at) in
+(*
             let dt2' = elab_typ_definition env id (expand env t2 $ t2.at) in
             if not (Il.Eq.eq_deftyp dt1' dt2') then
               error_id id ("syntax type family case erases to different IL type (" ^
                 Il.Print.(string_of_deftyp dt1' ^ " vs " ^ string_of_deftyp dt2' ^ ") for "));
+*)
             t1, dt1'
         ) (t1, dt1') defs
       in
@@ -1772,9 +1769,15 @@ let recursify_defs ds' : Il.def list =
 
 let elab ds : Il.script =
   let env = new_env () in
+Printf.eprintf "[INFER DEF]\n%!";
   List.iter (infer_syndef env) ds;
+Printf.eprintf "[ELAB DEF]\n%!";
   let ds' = List.concat_map (elab_def env) ds in
+Printf.eprintf "[POPULATE DEF]\n%!";
   let ds' = List.map (populate_def env) ds' in
+Printf.eprintf "[INFER GRAMDEF]\n%!";
   List.iter (infer_gramdef env) ds;
+Printf.eprintf "[ELAB GRAMDEF]\n%!";
   List.iter (elab_gramdef env) ds;
+Printf.eprintf "[RECURSIFY]\n%!";
   recursify_defs ds'

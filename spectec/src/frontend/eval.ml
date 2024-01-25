@@ -53,11 +53,11 @@ let equiv_opt equiv_x env xo1 xo2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  (* *)
+  (*
   if t.it <> NumT NatT then
   Printf.eprintf "[reduce_typ] %s\n%!" (El.Print.string_of_typ t);
   let t' =
-  (* *)
+  *)
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
@@ -71,12 +71,12 @@ let rec reduce_typ env t : typ =
     let tcs' = Convert.concat_map_nl_list (reduce_casetyp env) ts in
     CaseT (NoDots, [], tcs' @ tcs, NoDots) $ t.at
   | _ -> t
-  (* *)
+  (*
   in
   if t.it <> NumT NatT then
   Printf.eprintf "[reduce_typ] %s -> %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
   t'
-  (* *)
+  *)
 
 and reduce_casetyp env t : typcase nl_list =
   match (reduce_typ env t).it with
@@ -104,11 +104,11 @@ and is_normal_exp e =
   | _ -> false
 
 and reduce_exp env e : exp =
-  (* *)
+  (*
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
   Printf.eprintf "[reduce_exp] %s\n%!" (El.Print.string_of_exp e));
   let e' =
-  (* *)
+  *)
   match e.it with
   | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | SizeE _ -> e
   | UnE (op, e1) ->
@@ -264,12 +264,12 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     IterE (e1', iter) $ e.at  (* TODO *)
   | HoleE _ | FuseE _ -> assert false
-  (* *)
+  (*
   in
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
   Printf.eprintf "[reduce_exp] %s -> %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
   e'
-  (* *)
+  *)
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
@@ -354,13 +354,13 @@ and match_typ env s t1 t2 : subst option =
 (* Expressions *)
 
 and match_exp env s e1 e2 : subst option =
-  (* *)
+  (*
   Printf.eprintf "[match_exp] (%s) == (%s)[%s]=(%s)\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-  (* *)
+  *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
   | (ParenE (e11, _) | TypE (e11, _)), _ -> match_exp env s e11 e2
@@ -505,11 +505,11 @@ and match_sym env s g1 g2 : subst option =
 (* Parameters *)
 
 and match_arg env s a1 a2 : subst option =
-  (* *)
+  (*
   Printf.eprintf "[match_arg] (%s) == (%s)\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
-  (* *)
+  *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | SynA t1, SynA t2 -> match_typ env s t1 t2
@@ -520,22 +520,19 @@ and match_arg env s a1 a2 : subst option =
 (* Type Equivalence *)
 
 and equiv_typ env t1 t2 =
-  (* *)
+  (*
   Printf.eprintf "[equiv_typ] (%s) == (%s)\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
-  (* *)
+  *)
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2)
     when (El.Convert.strip_var_suffix id1).it = (El.Convert.strip_var_suffix id2).it ->
-Printf.eprintf "[eq1]\n%!";
     equiv_list equiv_arg env args1 args2 || (* optimization *)
     equiv_typ env (reduce_typ env t1) (reduce_typ env t2)
-  | VarT _, _ ->Printf.eprintf "[eq2]\n%!";
- equiv_typ env (reduce_typ env t1) t2
-  | _, VarT _ ->Printf.eprintf "[eq3]\n%!";
- equiv_typ env t1 (reduce_typ env t2)
+  | VarT _, _ -> equiv_typ env (reduce_typ env t1) t2
+  | _, VarT _ -> equiv_typ env t1 (reduce_typ env t2)
   | ParenT t11, _ -> equiv_typ env t11 t2
   | _, ParenT t21 -> equiv_typ env t1 t21
   | TupT ts1, TupT ts2 | SeqT ts1, SeqT ts2 -> equiv_list equiv_typ env ts1 ts2
@@ -550,14 +547,14 @@ Printf.eprintf "[eq1]\n%!";
     equiv_nl_list equiv_typcase env tcs1 tcs2
   | RangeT tes1, RangeT tes2 -> equiv_nl_list equiv_typenum env tes1 tes2
   | _, _ -> t1.it = t2.it
-  (* *)
+  (*
   in
   Printf.eprintf "[equiv_typ] (%s) == (%s) -> %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
   b
-  (* *)
+  *)
 
 and equiv_typfield env (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1 = atom2 && equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
@@ -571,11 +568,11 @@ and equiv_exp env e1 e2 =
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
 and equiv_arg env a1 a2 =
-  (* *)
+  (*
   Printf.eprintf "[equiv_arg] (%s) == (%s)\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
-  (* *)
+  *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | SynA t1, SynA t2 -> equiv_typ env t1 t2

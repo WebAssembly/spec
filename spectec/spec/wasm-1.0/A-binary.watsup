@@ -220,143 +220,143 @@ grammar Binstr/numeric-const : instr = ...
   | ...
 
 grammar Binstr/numeric-test-i32 : instr = ...
-  | 0x45 => TESTOP I32 (_I EQZ)
+  | 0x45 => TESTOP I32 EQZ
   | ...
 
 grammar Binstr/numeric-rel-i32 : instr = ...
-  | 0x46 => RELOP I32 (_I EQ)
-  | 0x47 => RELOP I32 (_I NE)
-  | 0x48 => RELOP I32 (_I (LT S))
-  | 0x49 => RELOP I32 (_I (LT U))
-  | 0x4A => RELOP I32 (_I (GT S))
-  | 0x4B => RELOP I32 (_I (GT U))
-  | 0x4C => RELOP I32 (_I (LE S))
-  | 0x4D => RELOP I32 (_I (LE U))
-  | 0x4E => RELOP I32 (_I (GE S))
-  | 0x4F => RELOP I32 (_I (GE U))
+  | 0x46 => RELOP I32 EQ
+  | 0x47 => RELOP I32 NE
+  | 0x48 => RELOP I32 (LT S)
+  | 0x49 => RELOP I32 (LT U)
+  | 0x4A => RELOP I32 (GT S)
+  | 0x4B => RELOP I32 (GT U)
+  | 0x4C => RELOP I32 (LE S)
+  | 0x4D => RELOP I32 (LE U)
+  | 0x4E => RELOP I32 (GE S)
+  | 0x4F => RELOP I32 (GE U)
   | ...
 
 grammar Binstr/numeric-test-i64 : instr = ...
-  | 0x50 => TESTOP I64 (_I EQZ)
+  | 0x50 => TESTOP I64 EQZ
   | ...
 
 grammar Binstr/numeric-rel-i64 : instr = ...
-  | 0x51 => RELOP I64 (_I EQ)
-  | 0x52 => RELOP I64 (_I NE)
-  | 0x53 => RELOP I64 (_I (LT S))
-  | 0x54 => RELOP I64 (_I (LT U))
-  | 0x55 => RELOP I64 (_I (GT S))
-  | 0x56 => RELOP I64 (_I (GT U))
-  | 0x57 => RELOP I64 (_I (LE S))
-  | 0x58 => RELOP I64 (_I (LE U))
-  | 0x59 => RELOP I64 (_I (GE S))
-  | 0x5A => RELOP I64 (_I (GE U))
+  | 0x51 => RELOP I64 EQ
+  | 0x52 => RELOP I64 NE
+  | 0x53 => RELOP I64 (LT S)
+  | 0x54 => RELOP I64 (LT U)
+  | 0x55 => RELOP I64 (GT S)
+  | 0x56 => RELOP I64 (GT U)
+  | 0x57 => RELOP I64 (LE S)
+  | 0x58 => RELOP I64 (LE U)
+  | 0x59 => RELOP I64 (GE S)
+  | 0x5A => RELOP I64 (GE U)
   | ...
 
 grammar Binstr/numeric-rel-f32 : instr = ...
-  | 0x5B => RELOP F32 (_F EQ)
-  | 0x5C => RELOP F32 (_F NE)
-  | 0x5D => RELOP F32 (_F LT)
-  | 0x5E => RELOP F32 (_F GT)
-  | 0x5F => RELOP F32 (_F LE)
-  | 0x60 => RELOP F32 (_F GE)
+  | 0x5B => RELOP F32 EQ
+  | 0x5C => RELOP F32 NE
+  | 0x5D => RELOP F32 LT
+  | 0x5E => RELOP F32 GT
+  | 0x5F => RELOP F32 LE
+  | 0x60 => RELOP F32 GE
   | ...
 
 grammar Binstr/numeric-rel-f64 : instr = ...
-  | 0x61 => RELOP F64 (_F EQ)
-  | 0x62 => RELOP F64 (_F NE)
-  | 0x63 => RELOP F64 (_F LT)
-  | 0x64 => RELOP F64 (_F GT)
-  | 0x65 => RELOP F64 (_F LE)
-  | 0x66 => RELOP F64 (_F GE)
+  | 0x61 => RELOP F64 EQ
+  | 0x62 => RELOP F64 NE
+  | 0x63 => RELOP F64 LT
+  | 0x64 => RELOP F64 GT
+  | 0x65 => RELOP F64 LE
+  | 0x66 => RELOP F64 GE
   | ...
 
 grammar Binstr/numeric-un-i32 : instr = ...
-  | 0x67 => UNOP I32 (_I CLZ)
-  | 0x68 => UNOP I32 (_I CTZ)
-  | 0x69 => UNOP I32 (_I POPCNT)
+  | 0x67 => UNOP I32 CLZ
+  | 0x68 => UNOP I32 CTZ
+  | 0x69 => UNOP I32 POPCNT
   | ...
 
 grammar Binstr/numeric-bin-i32 : instr = ...
-  | 0x6A => BINOP I32 (_I ADD)
-  | 0x6B => BINOP I32 (_I SUB)
-  | 0x6C => BINOP I32 (_I MUL)
-  | 0x6D => BINOP I32 (_I (DIV S))
-  | 0x6E => BINOP I32 (_I (DIV U))
-  | 0x6F => BINOP I32 (_I (REM S))
-  | 0x70 => BINOP I32 (_I (REM U))
-  | 0x71 => BINOP I32 (_I AND)
-  | 0x72 => BINOP I32 (_I OR)
-  | 0x73 => BINOP I32 (_I XOR)
-  | 0x74 => BINOP I32 (_I SHL)
-  | 0x75 => BINOP I32 (_I (SHR S))
-  | 0x76 => BINOP I32 (_I (SHR U))
-  | 0x77 => BINOP I32 (_I ROTL)
-  | 0x78 => BINOP I32 (_I ROTR)
+  | 0x6A => BINOP I32 ADD
+  | 0x6B => BINOP I32 SUB
+  | 0x6C => BINOP I32 MUL
+  | 0x6D => BINOP I32 (DIV S)
+  | 0x6E => BINOP I32 (DIV U)
+  | 0x6F => BINOP I32 (REM S)
+  | 0x70 => BINOP I32 (REM U)
+  | 0x71 => BINOP I32 AND
+  | 0x72 => BINOP I32 OR
+  | 0x73 => BINOP I32 XOR
+  | 0x74 => BINOP I32 SHL
+  | 0x75 => BINOP I32 (SHR S)
+  | 0x76 => BINOP I32 (SHR U)
+  | 0x77 => BINOP I32 ROTL
+  | 0x78 => BINOP I32 ROTR
   | ...
 
 grammar Binstr/numeric-un-i64 : instr = ...
-  | 0x79 => UNOP I64 (_I CLZ)
-  | 0x7A => UNOP I64 (_I CTZ)
-  | 0x7B => UNOP I64 (_I POPCNT)
+  | 0x79 => UNOP I64 CLZ
+  | 0x7A => UNOP I64 CTZ
+  | 0x7B => UNOP I64 POPCNT
   | ...
 
 grammar Binstr/numeric-bin-i64 : instr = ...
-  | 0x7C => BINOP I64 (_I ADD)
-  | 0x7D => BINOP I64 (_I SUB)
-  | 0x7E => BINOP I64 (_I MUL)
-  | 0x7F => BINOP I64 (_I (DIV S))
-  | 0x80 => BINOP I64 (_I (DIV U))
-  | 0x81 => BINOP I64 (_I (REM S))
-  | 0x82 => BINOP I64 (_I (REM U))
-  | 0x83 => BINOP I64 (_I AND)
-  | 0x84 => BINOP I64 (_I OR)
-  | 0x85 => BINOP I64 (_I XOR)
-  | 0x86 => BINOP I64 (_I SHL)
-  | 0x87 => BINOP I64 (_I (SHR S))
-  | 0x88 => BINOP I64 (_I (SHR U))
-  | 0x89 => BINOP I64 (_I ROTL)
-  | 0x8A => BINOP I64 (_I ROTR)
+  | 0x7C => BINOP I64 ADD
+  | 0x7D => BINOP I64 SUB
+  | 0x7E => BINOP I64 MUL
+  | 0x7F => BINOP I64 (DIV S)
+  | 0x80 => BINOP I64 (DIV U)
+  | 0x81 => BINOP I64 (REM S)
+  | 0x82 => BINOP I64 (REM U)
+  | 0x83 => BINOP I64 AND
+  | 0x84 => BINOP I64 OR
+  | 0x85 => BINOP I64 XOR
+  | 0x86 => BINOP I64 SHL
+  | 0x87 => BINOP I64 (SHR S)
+  | 0x88 => BINOP I64 (SHR U)
+  | 0x89 => BINOP I64 ROTL
+  | 0x8A => BINOP I64 ROTR
   | ...
 
 grammar Binstr/numeric-un-f32 : instr = ...
-  | 0x8B => UNOP F32 (_F ABS)
-  | 0x8C => UNOP F32 (_F NEG)
-  | 0x8D => UNOP F32 (_F CEIL)
-  | 0x8E => UNOP F32 (_F FLOOR)
-  | 0x8F => UNOP F32 (_F TRUNC)
-  | 0x90 => UNOP F32 (_F NEAREST)
-  | 0x91 => UNOP F32 (_F SQRT)
+  | 0x8B => UNOP F32 ABS
+  | 0x8C => UNOP F32 NEG
+  | 0x8D => UNOP F32 CEIL
+  | 0x8E => UNOP F32 FLOOR
+  | 0x8F => UNOP F32 TRUNC
+  | 0x90 => UNOP F32 NEAREST
+  | 0x91 => UNOP F32 SQRT
   | ...
 
 grammar Binstr/numeric-bin-f32 : instr = ...
-  | 0x92 => BINOP F32 (_F ADD)
-  | 0x93 => BINOP F32 (_F SUB)
-  | 0x94 => BINOP F32 (_F MUL)
-  | 0x95 => BINOP F32 (_F DIV)
-  | 0x96 => BINOP F32 (_F MIN)
-  | 0x97 => BINOP F32 (_F MAX)
-  | 0x98 => BINOP F32 (_F COPYSIGN)
+  | 0x92 => BINOP F32 ADD
+  | 0x93 => BINOP F32 SUB
+  | 0x94 => BINOP F32 MUL
+  | 0x95 => BINOP F32 DIV
+  | 0x96 => BINOP F32 MIN
+  | 0x97 => BINOP F32 MAX
+  | 0x98 => BINOP F32 COPYSIGN
   | ...
 
 grammar Binstr/numeric-un-f64 : instr = ...
-  | 0x99 => UNOP F64 (_F ABS)
-  | 0x9A => UNOP F64 (_F NEG)
-  | 0x9B => UNOP F64 (_F CEIL)
-  | 0x9C => UNOP F64 (_F FLOOR)
-  | 0x9D => UNOP F64 (_F TRUNC)
-  | 0x9E => UNOP F64 (_F NEAREST)
-  | 0x9F => UNOP F64 (_F SQRT)
+  | 0x99 => UNOP F64 ABS
+  | 0x9A => UNOP F64 NEG
+  | 0x9B => UNOP F64 CEIL
+  | 0x9C => UNOP F64 FLOOR
+  | 0x9D => UNOP F64 TRUNC
+  | 0x9E => UNOP F64 NEAREST
+  | 0x9F => UNOP F64 SQRT
   | ...
 
 grammar Binstr/numeric-bin-f64 : instr = ...
-  | 0xA0 => BINOP F64 (_F ADD)
-  | 0xA1 => BINOP F64 (_F SUB)
-  | 0xA2 => BINOP F64 (_F MUL)
-  | 0xA3 => BINOP F64 (_F DIV)
-  | 0xA4 => BINOP F64 (_F MIN)
-  | 0xA5 => BINOP F64 (_F MAX)
-  | 0xA6 => BINOP F64 (_F COPYSIGN)
+  | 0xA0 => BINOP F64 ADD
+  | 0xA1 => BINOP F64 SUB
+  | 0xA2 => BINOP F64 MUL
+  | 0xA3 => BINOP F64 DIV
+  | 0xA4 => BINOP F64 MIN
+  | 0xA5 => BINOP F64 MAX
+  | 0xA6 => BINOP F64 COPYSIGN
   | ...
 
 
@@ -574,7 +574,7 @@ grammar Bmodule : module =
     Bcustomsec*
 
 
-    data^m:Bdatasec
+    data*:Bdatasec
     Bcustomsec* =>
       MODULE type* import* func^n global* table* mem* elem* data* start* export*
     -- if (func = FUNC typeidx local* expr)*

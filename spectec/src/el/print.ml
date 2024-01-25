@@ -110,7 +110,7 @@ and string_of_typ t =
   | StrT tfs ->
     "{" ^ concat ", " (map_filter_nl_list string_of_typfield tfs) ^ "}"
   | CaseT (dots1, ts, tcases, dots2) ->
-    "\n  | " ^ concat "\n  | "
+    "| " ^ concat " | "
       (strings_of_dots dots1 @ map_filter_nl_list string_of_typ ts @
         map_filter_nl_list string_of_typcase tcases @ strings_of_dots dots2)
   | RangeT tes -> concat " | " (map_filter_nl_list string_of_typenum tes)
