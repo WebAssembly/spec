@@ -25,7 +25,7 @@ Types are representable as an enumeration.
 
 .. code-block:: pseudo
 
-   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Externref
+   type val_type = I32 | I64 | F32 | F64 | V128 | Funcref | Exnref | Externref
 
    func is_num(t : val_type | Unknown) : bool =
      return t = I32 || t = I64 || t = F32 || t = F64 || t = Unknown
@@ -34,7 +34,7 @@ Types are representable as an enumeration.
      return t = V128 || t = Unknown
 
    func is_ref(t : val_type | Unknown) : bool =
-     return t = Funcref || t = Externref || t = Unknown
+     return t = Funcref || t = Exnref || t = Externref || t = Unknown
 
 The algorithm uses two separate stacks: the *value stack* and the *control stack*.
 The former tracks the :ref:`types <syntax-valtype>` of operand values on the :ref:`stack <stack>`,
@@ -212,22 +212,26 @@ Other instructions are checked in a similar manner.
          error_if(frame.opcode =/= if)
          push_ctrl(else, frame.start_types, frame.end_types)
 
-       case (try t1*->t2*)
+       case (try_table t1*->t2* handler*)
          pop_vals([t1*])
-         push_ctrl(try, [t1*], [t2*])
-
-       case (catch x)
-         let frame = pop_ctrl()
-         error_if(frame.opcode =/= try || frame.opcode =/= catch)
-         push_ctrl(catch, tags[x].type.params, frame.end_types)
-
-       case (catch_all)
-         let frame = pop_ctrl()
-         error_if(frame.opcode =/= try || frame.opcode =/= catch)
-         push_ctrl(catch_all, [], frame.end_types)
+         foreach (handler in handler*)
+           error_if(ctrls.size() < handler.label)
+           push_ctrl(catch, [], label_types(ctrls[handler.label]))
+           switch (handler.clause)
+             case (catch x)
+               push_vals(tags[x].type.params)
+             case (catch_ref x)
+               push_vals(tags[x].type.params)
+               push_val(Exnref)
+             case (catch_all)
+               skip
+             case (catch_all_ref)
+               push_val(Exnref)
+           pop_ctrl()
+         push_ctrl(try_table, [t1*], [t2*])
 
        case (throw x)
-          pop.vals(tags[x].type.params)
+          pop_vals(tags[x].type.params)
           unreachable()
 
        case (br n)

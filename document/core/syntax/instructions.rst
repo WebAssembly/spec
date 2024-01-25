@@ -621,11 +621,9 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
 .. _syntax-block:
 .. _syntax-loop:
 .. _syntax-if:
-.. _syntax-try:
-.. _syntax-try-catch:
-.. _syntax-try-delegate:
+.. _syntax-try_table:
 .. _syntax-throw:
-.. _syntax-rethrow:
+.. _syntax-throw_ref:
 .. _syntax-br:
 .. _syntax-br_if:
 .. _syntax-br_table:
