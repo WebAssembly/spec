@@ -6,7 +6,10 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
+type reduction_group = (exp * exp * (premise list)) list
+
 (** Helpers **)
+
 let take_prefix n str =
   if String.length str < n then
     str
@@ -14,6 +17,7 @@ let take_prefix n str =
     String.sub str 0 n
 
 (** Walker-based transformer **)
+
 let rec transform_expr f e =
   let new_ = transform_expr f in
   { e with it = match (f e).it with

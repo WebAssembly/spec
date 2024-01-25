@@ -961,7 +961,6 @@ let translate_helpers il =
 
 (** Translating reduction rules **)
 let translate_rules il =
-
   (* Extract rules *)
   List.concat_map extract_rules il
   (* Group rules that have the same names *)
@@ -981,4 +980,4 @@ let translate il =
 
   (* Transpile *)
   (* Can be turned off *)
-  List.map Transpile.state_remover algos
+  List.map Transpile.remove_state algos
