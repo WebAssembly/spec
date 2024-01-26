@@ -487,6 +487,8 @@ warning: syntax `valtype` was never spliced
 warning: syntax `valtype` was never spliced
 warning: syntax `vec` was never spliced
 warning: syntax `vectype` was never spliced
+warning: syntax `vibinop` was never spliced
+warning: syntax `viunop` was never spliced
 warning: syntax `vloadop` was never spliced
 warning: syntax `zero` was never spliced
 warning: grammar `Babsheaptype` was never spliced

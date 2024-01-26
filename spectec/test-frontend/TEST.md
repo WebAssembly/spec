@@ -637,50 +637,65 @@ syntax binopVFXX =
   | PMIN
   | PMAX
 
-;; 1-syntax.watsup:275.1-275.38
-syntax unop_vvectype =
-  | _VV(unopVVXX)
-
-;; 1-syntax.watsup:276.1-276.40
-syntax binop_vvectype =
-  | _VV(binopVVXX)
-
-;; 1-syntax.watsup:277.1-277.42
-syntax ternop_vvectype =
-  | _VV(ternopVVXX)
-
-;; 1-syntax.watsup:278.1-278.42
-syntax testop_vvectype =
-  | _VV(testopVVXX)
-
-;; 1-syntax.watsup:280.1-280.43
-syntax shiftop_vectype =
-  | _VI(shiftopVIXX)
-
-;; 1-syntax.watsup:281.1-281.61
-syntax unop_vectype =
-  | _VI(unopVIXX)
-  | _VF(unopVFXX)
+;; 1-syntax.watsup:274.1-274.36
+syntax viunop =
+  | ABS
+  | NEG
   | POPCNT
 
-;; 1-syntax.watsup:282.1-282.112
-syntax binop_vectype =
-  | _VI(binopVIXX, minmaxopVIXX, satbinopVIXX)
-  | _VF(binopVFXX)
+;; 1-syntax.watsup:275.1-275.90
+syntax vibinop =
+  | ADD
+  | SUB
+  | SWIZZLE
+  | MIN(sx)
+  | MAX(sx)
+  | ADD_SAT(sx)
+  | SUB_SAT(sx)
   | MUL
   | AVGR_U
   | Q15MULR_SAT_S
 
-;; 1-syntax.watsup:283.1-283.41
+;; 1-syntax.watsup:277.1-277.38
+syntax unop_vvectype =
+  | _VV(unopVVXX)
+
+;; 1-syntax.watsup:278.1-278.40
+syntax binop_vvectype =
+  | _VV(binopVVXX)
+
+;; 1-syntax.watsup:279.1-279.42
+syntax ternop_vvectype =
+  | _VV(ternopVVXX)
+
+;; 1-syntax.watsup:280.1-280.42
+syntax testop_vvectype =
+  | _VV(testopVVXX)
+
+;; 1-syntax.watsup:282.1-282.43
+syntax shiftop_vectype =
+  | _VI(shiftopVIXX)
+
+;; 1-syntax.watsup:283.1-283.50
+syntax unop_vectype =
+  | _VI(viunop)
+  | _VF(unopVFXX)
+
+;; 1-syntax.watsup:284.1-284.53
+syntax binop_vectype =
+  | _VI(vibinop)
+  | _VF(binopVFXX)
+
+;; 1-syntax.watsup:285.1-285.41
 syntax testop_vectype =
   | _VI(testopVIXX)
 
-;; 1-syntax.watsup:284.1-284.55
+;; 1-syntax.watsup:286.1-286.55
 syntax relop_vectype =
   | _VI(relopVIXX)
   | _VF(relopVFXX)
 
-;; 1-syntax.watsup:285.1-285.73
+;; 1-syntax.watsup:287.1-287.73
 syntax cvtop_vectype =
   | EXTEND
   | TRUNC_SAT
@@ -688,32 +703,32 @@ syntax cvtop_vectype =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:303.1-303.68
+;; 1-syntax.watsup:305.1-305.68
 syntax memop = {ALIGN u32, OFFSET u32}
 
-;; 1-syntax.watsup:313.1-313.15
+;; 1-syntax.watsup:315.1-315.15
 syntax c = nat
 
-;; 1-syntax.watsup:314.1-314.23
+;; 1-syntax.watsup:316.1-316.23
 syntax c_numtype = nat
 
-;; 1-syntax.watsup:315.1-315.23
+;; 1-syntax.watsup:317.1-317.23
 syntax c_vectype = nat
 
-;; 1-syntax.watsup:318.1-320.17
+;; 1-syntax.watsup:320.1-322.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:361.1-361.27
+;; 1-syntax.watsup:363.1-363.27
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:359.1-359.45
+;; 1-syntax.watsup:361.1-361.45
 syntax lanesize = nat
 
-;; 1-syntax.watsup:358.1-358.64
+;; 1-syntax.watsup:360.1-360.64
 syntax lanetype =
   | I8
   | I16
@@ -722,25 +737,25 @@ syntax lanetype =
   | F32
   | F64
 
-;; 1-syntax.watsup:360.1-360.54
+;; 1-syntax.watsup:362.1-362.54
 syntax shape = `%X%`(lanetype, lanesize)
 
-;; 1-syntax.watsup:450.1-450.29
+;; 1-syntax.watsup:452.1-452.29
 syntax packshape = `%X%`(nat, nat)
 
-;; 1-syntax.watsup:451.1-454.44
+;; 1-syntax.watsup:453.1-456.44
 syntax vloadop =
   | SHAPE(packshape, sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:362.1-362.20
+;; 1-syntax.watsup:364.1-364.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:456.1-468.78
+;; 1-syntax.watsup:458.1-470.78
 rec {
 
-;; 1-syntax.watsup:456.1-468.78
+;; 1-syntax.watsup:458.1-470.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -845,61 +860,61 @@ syntax instr =
   | VSTORE_LANE(n, memidx, memop, laneidx)
 }
 
-;; 1-syntax.watsup:470.1-471.9
+;; 1-syntax.watsup:472.1-473.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:483.1-483.61
+;; 1-syntax.watsup:485.1-485.61
 syntax elemmode =
   | ACTIVE(tableidx, expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:484.1-484.49
+;; 1-syntax.watsup:486.1-486.49
 syntax datamode =
   | ACTIVE(memidx, expr)
   | PASSIVE
 
-;; 1-syntax.watsup:486.1-487.15
+;; 1-syntax.watsup:488.1-489.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:488.1-489.16
+;; 1-syntax.watsup:490.1-491.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:490.1-491.27
+;; 1-syntax.watsup:492.1-493.27
 syntax func = `FUNC%%*%`(typeidx, local*, expr)
 
-;; 1-syntax.watsup:492.1-493.25
+;; 1-syntax.watsup:494.1-495.25
 syntax global = GLOBAL(globaltype, expr)
 
-;; 1-syntax.watsup:494.1-495.23
+;; 1-syntax.watsup:496.1-497.23
 syntax table = TABLE(tabletype, expr)
 
-;; 1-syntax.watsup:496.1-497.17
+;; 1-syntax.watsup:498.1-499.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:498.1-499.30
+;; 1-syntax.watsup:500.1-501.30
 syntax elem = `ELEM%%*%`(reftype, expr*, elemmode)
 
-;; 1-syntax.watsup:500.1-501.22
+;; 1-syntax.watsup:502.1-503.22
 syntax data = `DATA%*%`(byte*, datamode)
 
-;; 1-syntax.watsup:502.1-503.16
+;; 1-syntax.watsup:504.1-505.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:505.1-506.66
+;; 1-syntax.watsup:507.1-508.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:507.1-508.24
+;; 1-syntax.watsup:509.1-510.24
 syntax export = EXPORT(name, externidx)
 
-;; 1-syntax.watsup:509.1-510.30
+;; 1-syntax.watsup:511.1-512.30
 syntax import = IMPORT(name, name, externtype)
 
-;; 1-syntax.watsup:512.1-513.76
+;; 1-syntax.watsup:514.1-515.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
