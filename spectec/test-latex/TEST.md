@@ -451,20 +451,15 @@ $$
 & {\mathit{shiftopVIXX}} &::=& \mathsf{shl} ~|~ {\mathsf{shr\_}}{{\mathit{sx}}} \\
 & {\mathit{unopVFXX}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{sqrt} ~|~ \mathsf{ceil} ~|~ \mathsf{floor} ~|~ \mathsf{trunc} ~|~ \mathsf{nearest} \\
 & {\mathit{binopVFXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{mul} ~|~ \mathsf{div} ~|~ \mathsf{min} ~|~ \mathsf{max} ~|~ \mathsf{pmin} ~|~ \mathsf{pmax} \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{viunop}} &::=& {\mathit{unopVIXX}} ~|~ \mathsf{popcnt} \\
+& {\mathit{vibinop}} &::=& {\mathit{binopVIXX}} ~|~ {\mathit{minmaxopVIXX}} ~|~ {\mathit{satbinopVIXX}} ~|~ \mathsf{mul} ~|~ \mathsf{avgr\_u} ~|~ \mathsf{q{\scriptstyle15}mulr\_sat\_s} \\
 & {\mathit{unop}}_{{\mathit{vvectype}}} &::=& {\mathit{unopVVXX}} \\
 & {\mathit{binop}}_{{\mathit{vvectype}}} &::=& {\mathit{binopVVXX}} \\
 & {\mathit{ternop}}_{{\mathit{vvectype}}} &::=& {\mathit{ternopVVXX}} \\
 & {\mathit{testop}}_{{\mathit{vvectype}}} &::=& {\mathit{testopVVXX}} \\
 & {\mathit{shiftop}}_{{\mathit{vectype}}} &::=& {\mathit{shiftopVIXX}} \\
-& {\mathit{unop}}_{{\mathit{vectype}}} &::=& {\mathit{unopVIXX}} ~|~ {\mathit{unopVFXX}} ~|~ \mathsf{popcnt} \\
-& {\mathit{binop}}_{{\mathit{vectype}}} &::=& {\mathit{binopVIXX}}~{\mathit{minmaxopVIXX}}~{\mathit{satbinopVIXX}} ~|~ {\mathit{binopVFXX}} ~|~ \mathsf{mul} ~|~ \mathsf{avgr\_u} ~|~ \mathsf{q{\scriptstyle15}mulr\_sat\_s} \\
+& {\mathit{unop}}_{{\mathit{vectype}}} &::=& {\mathit{viunop}} ~|~ {\mathit{unopVFXX}} \\
+& {\mathit{binop}}_{{\mathit{vectype}}} &::=& {\mathit{vibinop}} ~|~ {\mathit{binopVFXX}} \\
 & {\mathit{testop}}_{{\mathit{vectype}}} &::=& {\mathit{testopVIXX}} \\
 & {\mathit{relop}}_{{\mathit{vectype}}} &::=& {\mathit{relopVIXX}} ~|~ {\mathit{relopVFXX}} \\
 & {\mathit{cvtop}}_{{\mathit{vectype}}} &::=& \mathsf{extend} ~|~ \mathsf{trunc\_sat} ~|~ \mathsf{convert} ~|~ \mathsf{demote} ~|~ \mathsf{promote} \\
