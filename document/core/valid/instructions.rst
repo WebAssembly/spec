@@ -265,6 +265,10 @@ Reference Instructions
      C \vdashinstr \REFTEST~\X{rt} : [\X{rt}'] \to [\I32]
    }
 
+.. note::
+   The liberty to pick a supertype :math:`\X{rt}'` allows typing the instruction with the least precise super type of :math:`\X{rt}` as input, that is, the top type in the corresponding heap subtyping hierarchy.
+
+
 .. _valid-ref.cast:
 
 :math:`\REFCAST~\X{rt}`
@@ -284,6 +288,9 @@ Reference Instructions
    }{
      C \vdashinstr \REFCAST~\X{rt} : [\X{rt}'] \to [\X{rt}]
    }
+
+.. note::
+   The liberty to pick a supertype :math:`\X{rt}'` allows typing the instruction with the least precise super type of :math:`\X{rt}` as input, that is, the top type in the corresponding heap subtyping hierarchy.
 
 
 .. index:: aggregate reference

@@ -95,6 +95,28 @@ We further assume that :ref:`validation <valid-valtype>` and :ref:`subtyping <ma
    func is_struct(t : comp_type) : bool
    func is_array(t : comp_type) : bool
 
+Finally, the following function computes the least precise supertype of a given :ref:`heap type <syntax-heaptype>` (its corresponding top type):
+
+.. code-block:: pseudo
+
+   func top_heap_type(t : heap_type) : heap_type =
+     switch (t)
+       case (Any | Eq | I31 | Struct | Array | None)
+         return Any
+       case (Func | Nofunc)
+         return Func
+       case (Extern | Noextern)
+         return Extern
+       case (Def(dt))
+         switch (dt.rec.types[dt.proj].body)
+           case (Struct(_) | Array(_))
+             return Any
+           case (Func(_))
+             return Func
+       case (Bot)
+         raise CannotOccurInSource
+
+
 Context
 .......
 
@@ -311,6 +333,11 @@ Other instructions are checked in a similar manner.
        case (ref.as_non_null)
          let rt = pop_ref()
          push_val(Ref(rt.heap, false))
+
+       case (ref.test rt)
+         validate_ref_type(rt)
+         pop_val(Ref(top_heap_type(rt), true))
+         push_val(I32)
 
        case (local.get x)
          get_local(x)
