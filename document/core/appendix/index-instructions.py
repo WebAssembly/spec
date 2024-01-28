@@ -89,7 +89,7 @@ INSTRUCTIONS = [
     Instruction(None, r'\hex{07}'),
     Instruction(r'\THROW~x', r'\hex{08}', r'[t_1^\ast~t_x^\ast] \to [t_2^\ast]', r'valid-throw', r'exec-throw'),
     Instruction(None, r'\hex{09}'),
-    Instruction(r'\THROWREF', r'\hex{0A}', r'[t_1^\ast~(\REF~\NULL~\EXN)] \to [t_2^\ast]', r'valid-throw_ref', r'exec-throw_ref'),
+    Instruction(r'\THROWREF', r'\hex{0A}', r'[t_1^\ast~\EXNREF] \to [t_2^\ast]', r'valid-throw_ref', r'exec-throw_ref'),
     Instruction(r'\END', r'\hex{0B}'),
     Instruction(r'\BR~l', r'\hex{0C}', r'[t_1^\ast~t^\ast] \to [t_2^\ast]', r'valid-br', r'exec-br'),
     Instruction(r'\BRIF~l', r'\hex{0D}', r'[t^\ast~\I32] \to [t^\ast]', r'valid-br_if', r'exec-br_if'),
