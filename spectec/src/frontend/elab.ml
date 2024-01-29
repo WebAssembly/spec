@@ -1482,7 +1482,6 @@ let elab_def env d : Il.def list =
     env.vars <- rebind "variable" env.vars id t;
     []
   | DecD (id, ps, t, hints) ->
-Printf.printf "[elab def] %s\n%!" (El.Print.string_of_def d);
     let ts', env' = elab_params (local_env env) ps in
     let t' = elab_typ env' t in
     env.defs <- bind "function" env.defs id (ps, t, []);

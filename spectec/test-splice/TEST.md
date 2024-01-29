@@ -4,216 +4,33 @@
 $ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup -l --splice-latex -p spec-latex.in.tex -w)
 == Parsing...
 == Elaboration...
-[elab def] def Ki : nat
-[elab def] def min(nat, nat) : nat
-[elab def] def sum(nat*) : nat
-[elab def] def signif(N) : nat
-[elab def] def expon(N) : nat
-[elab def] def M(N) : nat
-[elab def] def E(N) : nat
-[elab def] def fzero(N) : fN(N)
-[elab def] def setminus(idx*, idx*) : idx*
-[elab def] def setminus1(idx, idx*) : idx*
-[elab def] def free_dataidx_instr(instr) : dataidx*
-[elab def] def free_dataidx_instrs(instr*) : dataidx*
-[elab def] def free_dataidx_expr(expr) : dataidx*
-[elab def] def free_dataidx_func(func) : dataidx*
-[elab def] def free_dataidx_funcs(func*) : dataidx*
-[elab def] def concat_bytes((byte*)*) : byte*
-[elab def] def size(valtype) : nat
-[elab def] def packedsize(packedtype) : nat
-[elab def] def storagesize(storagetype) : nat
-[elab def] def lanesize(lanetype) : nat
-[elab def] def unpacktype(storagetype) : valtype
-[elab def] def unpacknumtype(storagetype) : numtype
-[elab def] def sxfield(storagetype) : sx?
-[elab def] def diffrt(reftype, reftype) : reftype
-[elab def] def idx(typeidx) : typevar
-[elab def] def subst_typevar(typevar, typevar*, heaptype*) : heaptype
-[elab def] def subst_numtype(numtype, typevar*, heaptype*) : numtype
-[elab def] def subst_vectype(vectype, typevar*, heaptype*) : vectype
-[elab def] def subst_heaptype(heaptype, typevar*, heaptype*) : heaptype
-[elab def] def subst_reftype(reftype, typevar*, heaptype*) : reftype
-[elab def] def subst_valtype(valtype, typevar*, heaptype*) : valtype
-[elab def] def subst_packedtype(packedtype, typevar*, heaptype*) : packedtype
-[elab def] def subst_storagetype(storagetype, typevar*, heaptype*) : storagetype
-[elab def] def subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype
-[elab def] def subst_comptype(comptype, typevar*, heaptype*) : comptype
-[elab def] def subst_subtype(subtype, typevar*, heaptype*) : subtype
-[elab def] def subst_rectype(rectype, typevar*, heaptype*) : rectype
-[elab def] def subst_deftype(deftype, typevar*, heaptype*) : deftype
-[elab def] def subst_globaltype(globaltype, typevar*, heaptype*) : globaltype
-[elab def] def subst_functype(functype, typevar*, heaptype*) : functype
-[elab def] def subst_tabletype(tabletype, typevar*, heaptype*) : tabletype
-[elab def] def subst_memtype(memtype, typevar*, heaptype*) : memtype
-[elab def] def subst_externtype(externtype, typevar*, heaptype*) : externtype
-[elab def] def subst_all_reftype(reftype, heaptype*) : reftype
-[elab def] def subst_all_deftype(deftype, heaptype*) : deftype
-[elab def] def subst_all_deftypes(deftype*, heaptype*) : deftype*
-[elab def] def rollrt(typeidx, rectype) : rectype
-[elab def] def unrollrt(rectype) : rectype
-[elab def] def rolldt(typeidx, rectype) : deftype*
-[elab def] def unrolldt(deftype) : subtype
-[elab def] def expanddt(deftype) : comptype
-[elab def] def funcsxt(externtype*) : deftype*
-[elab def] def globalsxt(externtype*) : globaltype*
-[elab def] def tablesxt(externtype*) : tabletype*
-[elab def] def memsxt(externtype*) : memtype*
-[elab def] def memop0 : memop
-[elab def] def s33_to_u32(s33) : u32
-[elab def] def signed(N, nat) : int
-[elab def] def invsigned(N, int) : nat
-[elab def] def unop(unop_numtype, numtype, c) : c_numtype*
-[elab def] def binop(binop_numtype, numtype, c, c) : c_numtype*
-[elab def] def testop(testop_numtype, numtype, c) : c_numtype
-[elab def] def relop(relop_numtype, numtype, c, c) : c_numtype
-[elab def] def cvtop(cvtop, numtype, numtype, sx?, c) : c_numtype*
-[elab def] def wrap(nat, nat, c) : nat
-[elab def] def ext(nat, nat, sx, c) : c_numtype
-[elab def] def ibytes(N, iN(N)) : byte*
-[elab def] def fbytes(N, fN(N)) : byte*
-[elab def] def ntbytes(numtype, c_numtype) : byte*
-[elab def] def vtbytes(vectype, c_vectype) : byte*
-[elab def] def ztbytes(storagetype, c) : byte*
-[elab def] def invibytes(N, byte*) : iN(N)
-[elab def] def invfbytes(N, byte*) : fN(N)
-[elab def] def iadd(N, c, c) : c
-[elab def] def imul(N, c, c) : c
-[elab def] def ine(N, c, c) : c_numtype
-[elab def] def ilt(sx, N, c, c) : c_numtype
-[elab def] def lanes(shape, c_vectype) : c*
-[elab def] def narrow(N, N, sx, c) : c
-[elab def] def ibits(N, N) : c*
-[elab def] def unpacked(shape) : numtype
-[elab def] def dim(shape) : lanesize
-[elab def] def halfop(half, nat, nat) : nat
-[elab def] def ishape(nat) : lanetype
-[elab def] def vvunop(unop_vvectype, vectype, c_vectype) : c_vectype
-[elab def] def vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype
-[elab def] def vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype
-[elab def] def vunop(unop_vectype, shape, c_vectype) : c_vectype
-[elab def] def vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*
-[elab def] def vrelop(relop_vectype, shape, c, c) : c_numtype
-[elab def] def vishiftop(shiftop_vectype, lanetype, c, c) : c
-[elab def] def vcvtop(cvtop_vectype, N, N, sx?, c) : c
-[elab def] def inst_reftype(moduleinst, reftype) : reftype
-[elab def] def default(valtype) : val?
-[elab def] def packval(storagetype, val) : fieldval
-[elab def] def unpackval(storagetype, sx?, fieldval) : val
-[elab def] def funcsxv(externval*) : funcaddr*
-[elab def] def globalsxv(externval*) : globaladdr*
-[elab def] def tablesxv(externval*) : tableaddr*
-[elab def] def memsxv(externval*) : memaddr*
-[elab def] def store(state) : store
-[elab def] def frame(state) : frame
-[elab def] def funcaddr(state) : funcaddr*
-[elab def] def funcinst(state) : funcinst*
-[elab def] def globalinst(state) : globalinst*
-[elab def] def tableinst(state) : tableinst*
-[elab def] def meminst(state) : meminst*
-[elab def] def eleminst(state) : eleminst*
-[elab def] def datainst(state) : datainst*
-[elab def] def structinst(state) : structinst*
-[elab def] def arrayinst(state) : arrayinst*
-[elab def] def moduleinst(state) : moduleinst
-[elab def] def type(state, typeidx) : deftype
-[elab def] def func(state, funcidx) : funcinst
-[elab def] def global(state, globalidx) : globalinst
-[elab def] def table(state, tableidx) : tableinst
-[elab def] def mem(state, memidx) : meminst
-[elab def] def elem(state, tableidx) : eleminst
-[elab def] def data(state, dataidx) : datainst
-[elab def] def local(state, localidx) : val?
-[elab def] def with_local(state, localidx, val) : state
-[elab def] def with_global(state, globalidx, val) : state
-[elab def] def with_table(state, tableidx, nat, ref) : state
-[elab def] def with_tableinst(state, tableidx, tableinst) : state
-[elab def] def with_mem(state, memidx, nat, nat, byte*) : state
-[elab def] def with_meminst(state, memidx, meminst) : state
-[elab def] def with_elem(state, elemidx, ref*) : state
-[elab def] def with_data(state, dataidx, byte*) : state
-[elab def] def with_struct(state, structaddr, nat, fieldval) : state
-[elab def] def with_array(state, arrayaddr, nat, fieldval) : state
-[elab def] def ext_structinst(state, structinst*) : state
-[elab def] def ext_arrayinst(state, arrayinst*) : state
-[elab def] def growtable(tableinst, nat, ref) : tableinst
-[elab def] def growmemory(meminst, nat) : meminst
-[elab def] def with_locals(context, localidx*, localtype*) : context
-[elab def] def clostype(context, deftype) : deftype
-[elab def] def clostypes(deftype*) : deftype*
-[elab def] def before(heaptype, typeidx, nat) : bool
-[elab def] def unrollht(context, heaptype) : subtype
-[elab def] def in_numtype(numtype, numtype*) : bool
-[elab def] def in_binop(binop_numtype, ibinop*) : bool
-[elab def] def blocktype(state, blocktype) : functype
-[elab def] def vzero : c_vectype
-[elab def] def alloctypes(type*) : deftype*
-[elab def] def allocfunc(store, moduleinst, func) : (store, funcaddr)
-[elab def] def allocfuncs(store, moduleinst, func*) : (store, funcaddr*)
-[elab def] def allocglobal(store, globaltype, val) : (store, globaladdr)
-[elab def] def allocglobals(store, globaltype*, val*) : (store, globaladdr*)
-[elab def] def alloctable(store, tabletype, ref) : (store, tableaddr)
-[elab def] def alloctables(store, tabletype*, ref*) : (store, tableaddr*)
-[elab def] def allocmem(store, memtype) : (store, memaddr)
-[elab def] def allocmems(store, memtype*) : (store, memaddr*)
-[elab def] def allocelem(store, reftype, ref*) : (store, elemaddr)
-[elab def] def allocelems(store, reftype*, (ref*)*) : (store, elemaddr*)
-[elab def] def allocdata(store, byte*) : (store, dataaddr)
-[elab def] def allocdatas(store, (byte*)*) : (store, dataaddr*)
-[elab def] def instexport(funcaddr*, globaladdr*, tableaddr*, memaddr*, export) : exportinst
-[elab def] def allocmodule(store, module, externval*, val*, ref*, (ref*)*) : (store, moduleinst)
-[elab def] def concat_instr((instr*)*) : instr*
-[elab def] def runelem(elem, idx) : instr*
-[elab def] def rundata(data, idx) : instr*
-[elab def] def instantiate(store, module, externval*) : config
-[elab def] def invoke(store, funcaddr, val*) : config
-[elab def] def utf8(name) : byte*
-[elab def] def concat_locals((local*)*) : local*
 == IL Validation...
+== Running pass sideconditions...
+== IL Validation after pass sideconditions...
+== Running pass animate...
+== IL Validation after pass animate...
+== Translating to AL...
+== Prose Generation...
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
-prem_to_instr: Invalid prem 2
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[y], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2}))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(`%%`(mut, zt)*{mut zt})))
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 3
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], STRUCT_comptype(yt*{yt})))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (rt <: storagetype)))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, (t <: storagetype)))))
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(mut, zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x_1], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt_1))))
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x_2], ARRAY_comptype(`%%`(mut, zt_2))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-prem_to_instr: Invalid prem 2
-prem_to_instrs: Invalid prem (Expand: `%~~%`(C.TYPE_context[x], ARRAY_comptype(`%%`(`MUT%?`(?(())), zt))))
-if_expr_to_instrs: Invalid if_prem (((t = (numtype <: valtype)) \/ (t = (vectype <: valtype))))
 prem_to_instr: Invalid prem 2
 prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+prem_to_instr: Invalid prem 2
+== Splicing...
 \documentclass[a4paper]{scrartcl}
 
 \usepackage{amsmath}
@@ -1452,5 +1269,243 @@ warning: validation prose `VVCONST` was never spliced
 warning: validation prose `VVTERNOP` was never spliced
 warning: validation prose `VVTESTOP` was never spliced
 warning: validation prose `VVUNOP` was never spliced
+warning: execution prose `ANY.CONVERT_EXTERN` was never spliced
+warning: execution prose `ARRAY.COPY` was never spliced
+warning: execution prose `ARRAY.FILL` was never spliced
+warning: execution prose `ARRAY.GET` was never spliced
+warning: execution prose `ARRAY.INIT_DATA` was never spliced
+warning: execution prose `ARRAY.INIT_ELEM` was never spliced
+warning: execution prose `ARRAY.LEN` was never spliced
+warning: execution prose `ARRAY.NEW` was never spliced
+warning: execution prose `ARRAY.NEW_DATA` was never spliced
+warning: execution prose `ARRAY.NEW_DEFAULT` was never spliced
+warning: execution prose `ARRAY.NEW_ELEM` was never spliced
+warning: execution prose `ARRAY.NEW_FIXED` was never spliced
+warning: execution prose `ARRAY.SET` was never spliced
+warning: execution prose `BINOP` was never spliced
+warning: execution prose `BLOCK` was never spliced
+warning: execution prose `BR` was never spliced
+warning: execution prose `BR_IF` was never spliced
+warning: execution prose `BR_ON_CAST` was never spliced
+warning: execution prose `BR_ON_CAST_FAIL` was never spliced
+warning: execution prose `BR_ON_NON_NULL` was never spliced
+warning: execution prose `BR_ON_NULL` was never spliced
+warning: execution prose `BR_TABLE` was never spliced
+warning: execution prose `CALL` was never spliced
+warning: execution prose `CALL_INDIRECT` was never spliced
+warning: execution prose `CALL_REF` was never spliced
+warning: execution prose `CVTOP` was never spliced
+warning: execution prose `DATA.DROP` was never spliced
+warning: execution prose `DROP` was never spliced
+warning: execution prose `ELEM.DROP` was never spliced
+warning: execution prose `EXTEND` was never spliced
+warning: execution prose `EXTERN.CONVERT_ANY` was never spliced
+warning: execution prose `FRAME_` was never spliced
+warning: execution prose `GLOBAL.GET` was never spliced
+warning: execution prose `GLOBAL.SET` was never spliced
+warning: execution prose `I31.GET` was never spliced
+warning: execution prose `IF` was never spliced
+warning: execution prose `LABEL_` was never spliced
+warning: execution prose `LOAD` was never spliced
+warning: execution prose `LOCAL.GET` was never spliced
+warning: execution prose `LOCAL.SET` was never spliced
+warning: execution prose `LOCAL.TEE` was never spliced
+warning: execution prose `LOOP` was never spliced
+warning: execution prose `MEMORY.COPY` was never spliced
+warning: execution prose `MEMORY.FILL` was never spliced
+warning: execution prose `MEMORY.GROW` was never spliced
+warning: execution prose `MEMORY.INIT` was never spliced
+warning: execution prose `MEMORY.SIZE` was never spliced
+warning: execution prose `NOP` was never spliced
+warning: execution prose `REF.AS_NON_NULL` was never spliced
+warning: execution prose `REF.CAST` was never spliced
+warning: execution prose `REF.EQ` was never spliced
+warning: execution prose `REF.FUNC` was never spliced
+warning: execution prose `REF.I31` was never spliced
+warning: execution prose `REF.IS_NULL` was never spliced
+warning: execution prose `REF.TEST` was never spliced
+warning: execution prose `RELOP` was never spliced
+warning: execution prose `RETURN` was never spliced
+warning: execution prose `RETURN_CALL` was never spliced
+warning: execution prose `RETURN_CALL_INDIRECT` was never spliced
+warning: execution prose `RETURN_CALL_REF` was never spliced
+warning: execution prose `SELECT` was never spliced
+warning: execution prose `STORE` was never spliced
+warning: execution prose `STRUCT.GET` was never spliced
+warning: execution prose `STRUCT.NEW` was never spliced
+warning: execution prose `STRUCT.NEW_DEFAULT` was never spliced
+warning: execution prose `STRUCT.SET` was never spliced
+warning: execution prose `TABLE.COPY` was never spliced
+warning: execution prose `TABLE.FILL` was never spliced
+warning: execution prose `TABLE.GET` was never spliced
+warning: execution prose `TABLE.GROW` was never spliced
+warning: execution prose `TABLE.INIT` was never spliced
+warning: execution prose `TABLE.SET` was never spliced
+warning: execution prose `TABLE.SIZE` was never spliced
+warning: execution prose `TESTOP` was never spliced
+warning: execution prose `UNOP` was never spliced
+warning: execution prose `UNREACHABLE` was never spliced
+warning: execution prose `VALL_TRUE` was never spliced
+warning: execution prose `VBINOP` was never spliced
+warning: execution prose `VBITMASK` was never spliced
+warning: execution prose `VCVTOP` was never spliced
+warning: execution prose `VDOT` was never spliced
+warning: execution prose `VEXTADD_PAIRWISE` was never spliced
+warning: execution prose `VEXTMUL` was never spliced
+warning: execution prose `VEXTRACT_LANE` was never spliced
+warning: execution prose `VISHIFTOP` was never spliced
+warning: execution prose `VLOAD` was never spliced
+warning: execution prose `VLOAD_LANE` was never spliced
+warning: execution prose `VNARROW` was never spliced
+warning: execution prose `VRELOP` was never spliced
+warning: execution prose `VREPLACE_LANE` was never spliced
+warning: execution prose `VSHUFFLE` was never spliced
+warning: execution prose `VSPLAT` was never spliced
+warning: execution prose `VSTORE` was never spliced
+warning: execution prose `VSTORE_LANE` was never spliced
+warning: execution prose `VSWIZZLE` was never spliced
+warning: execution prose `VUNOP` was never spliced
+warning: execution prose `VVBINOP` was never spliced
+warning: execution prose `VVTERNOP` was never spliced
+warning: execution prose `VVTESTOP` was never spliced
+warning: execution prose `VVUNOP` was never spliced
+warning: definition prose `E` was never spliced
+warning: definition prose `Ki` was never spliced
+warning: definition prose `M` was never spliced
+warning: definition prose `allocdata` was never spliced
+warning: definition prose `allocdatas` was never spliced
+warning: definition prose `allocelem` was never spliced
+warning: definition prose `allocelems` was never spliced
+warning: definition prose `allocfunc` was never spliced
+warning: definition prose `allocfuncs` was never spliced
+warning: definition prose `allocglobal` was never spliced
+warning: definition prose `allocglobals` was never spliced
+warning: definition prose `allocmem` was never spliced
+warning: definition prose `allocmems` was never spliced
+warning: definition prose `allocmodule` was never spliced
+warning: definition prose `alloctable` was never spliced
+warning: definition prose `alloctables` was never spliced
+warning: definition prose `alloctypes` was never spliced
+warning: definition prose `arrayinst` was never spliced
+warning: definition prose `before` was never spliced
+warning: definition prose `blocktype` was never spliced
+warning: definition prose `clostype` was never spliced
+warning: definition prose `clostypes` was never spliced
+warning: definition prose `concat_bytes` was never spliced
+warning: definition prose `concat_instr` was never spliced
+warning: definition prose `concat_locals` was never spliced
+warning: definition prose `data` was never spliced
+warning: definition prose `datainst` was never spliced
+warning: definition prose `default` was never spliced
+warning: definition prose `diffrt` was never spliced
+warning: definition prose `dim` was never spliced
+warning: definition prose `elem` was never spliced
+warning: definition prose `eleminst` was never spliced
+warning: definition prose `eval_expr` was never spliced
+warning: definition prose `expanddt` was never spliced
+warning: definition prose `expon` was never spliced
+warning: definition prose `ext_arrayinst` was never spliced
+warning: definition prose `ext_structinst` was never spliced
+warning: definition prose `frame` was never spliced
+warning: definition prose `free_dataidx_expr` was never spliced
+warning: definition prose `free_dataidx_func` was never spliced
+warning: definition prose `free_dataidx_funcs` was never spliced
+warning: definition prose `free_dataidx_instr` was never spliced
+warning: definition prose `free_dataidx_instrs` was never spliced
+warning: definition prose `func` was never spliced
+warning: definition prose `funcaddr` was never spliced
+warning: definition prose `funcinst` was never spliced
+warning: definition prose `funcsxt` was never spliced
+warning: definition prose `funcsxv` was never spliced
+warning: definition prose `fzero` was never spliced
+warning: definition prose `global` was never spliced
+warning: definition prose `globalinst` was never spliced
+warning: definition prose `globalsxt` was never spliced
+warning: definition prose `globalsxv` was never spliced
+warning: definition prose `group_bytes_by` was never spliced
+warning: definition prose `growmemory` was never spliced
+warning: definition prose `growtable` was never spliced
+warning: definition prose `halfop` was never spliced
+warning: definition prose `idx` was never spliced
+warning: definition prose `in_binop` was never spliced
+warning: definition prose `in_numtype` was never spliced
+warning: definition prose `inst_reftype` was never spliced
+warning: definition prose `instantiate` was never spliced
+warning: definition prose `instexport` was never spliced
+warning: definition prose `invfbytes` was never spliced
+warning: definition prose `invibytes` was never spliced
+warning: definition prose `invoke` was never spliced
+warning: definition prose `invsigned` was never spliced
+warning: definition prose `ishape` was never spliced
+warning: definition prose `lanesize` was never spliced
+warning: definition prose `local` was never spliced
+warning: definition prose `mem` was never spliced
+warning: definition prose `meminst` was never spliced
+warning: definition prose `memop0` was never spliced
+warning: definition prose `memsxt` was never spliced
+warning: definition prose `memsxv` was never spliced
+warning: definition prose `min` was never spliced
+warning: definition prose `moduleinst` was never spliced
+warning: definition prose `packedsize` was never spliced
+warning: definition prose `packval` was never spliced
+warning: definition prose `rolldt` was never spliced
+warning: definition prose `rollrt` was never spliced
+warning: definition prose `rundata` was never spliced
+warning: definition prose `runelem` was never spliced
+warning: definition prose `setminus` was never spliced
+warning: definition prose `setminus1` was never spliced
+warning: definition prose `signed` was never spliced
+warning: definition prose `signif` was never spliced
+warning: definition prose `size` was never spliced
+warning: definition prose `storagesize` was never spliced
+warning: definition prose `store` was never spliced
+warning: definition prose `structinst` was never spliced
+warning: definition prose `subst_all_deftype` was never spliced
+warning: definition prose `subst_all_deftypes` was never spliced
+warning: definition prose `subst_all_reftype` was never spliced
+warning: definition prose `subst_comptype` was never spliced
+warning: definition prose `subst_deftype` was never spliced
+warning: definition prose `subst_externtype` was never spliced
+warning: definition prose `subst_fieldtype` was never spliced
+warning: definition prose `subst_functype` was never spliced
+warning: definition prose `subst_globaltype` was never spliced
+warning: definition prose `subst_heaptype` was never spliced
+warning: definition prose `subst_memtype` was never spliced
+warning: definition prose `subst_numtype` was never spliced
+warning: definition prose `subst_packedtype` was never spliced
+warning: definition prose `subst_rectype` was never spliced
+warning: definition prose `subst_reftype` was never spliced
+warning: definition prose `subst_storagetype` was never spliced
+warning: definition prose `subst_subtype` was never spliced
+warning: definition prose `subst_tabletype` was never spliced
+warning: definition prose `subst_typevar` was never spliced
+warning: definition prose `subst_valtype` was never spliced
+warning: definition prose `subst_vectype` was never spliced
+warning: definition prose `sum` was never spliced
+warning: definition prose `sxfield` was never spliced
+warning: definition prose `table` was never spliced
+warning: definition prose `tableinst` was never spliced
+warning: definition prose `tablesxt` was never spliced
+warning: definition prose `tablesxv` was never spliced
+warning: definition prose `type` was never spliced
+warning: definition prose `unpacked` was never spliced
+warning: definition prose `unpacknumtype` was never spliced
+warning: definition prose `unpacktype` was never spliced
+warning: definition prose `unpackval` was never spliced
+warning: definition prose `unrolldt` was never spliced
+warning: definition prose `unrollht` was never spliced
+warning: definition prose `unrollrt` was never spliced
+warning: definition prose `utf8` was never spliced
+warning: definition prose `with_array` was never spliced
+warning: definition prose `with_data` was never spliced
+warning: definition prose `with_elem` was never spliced
+warning: definition prose `with_global` was never spliced
+warning: definition prose `with_local` was never spliced
+warning: definition prose `with_locals` was never spliced
+warning: definition prose `with_mem` was never spliced
+warning: definition prose `with_meminst` was never spliced
+warning: definition prose `with_struct` was never spliced
+warning: definition prose `with_table` was never spliced
+warning: definition prose `with_tableinst` was never spliced
 == Complete.
 ```

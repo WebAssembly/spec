@@ -95,17 +95,6 @@ let unify_tail l1 l2 =
 let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
 let diff_list xs ys = Lib.List.filter_not (fun x -> List.mem x ys) xs
 
-let dedup l =
-  let rec aux acc = function
-    | [] -> List.rev acc
-    | x :: xs ->
-      if List.mem x acc then
-        aux acc xs
-      else
-        aux (x :: acc) xs
-  in
-  aux [] l
-
 (** AL -> AL transpilers *)
 
 (* Recursively append else block to every empty if *)
@@ -485,7 +474,7 @@ let hide_state instr =
     [ replaceI (mk_access hs f, t, e) ~at:at ]
   | _ -> [ instr ]
 
-let state_remover algo =
+let remove_state algo =
   let walk_config =
       {
         Walk.default_config with

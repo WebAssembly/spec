@@ -666,7 +666,9 @@ let rec iterpr2instrs pr (iter, ids) =
     let at = i.at in
     match i.it with
     | LetI (lhs, rhs) -> [ letI (distribute_iter lhs rhs) ~at:at ]
-    | IfI (cond, il1, il2) -> [ ifI (iterE (cond, ids', iter') ~at:cond.at, il1, il2) ~at:at ]
+    | IfI (cond, il1, il2) -> 
+        let cond_ids = intersection (free_expr cond) ids' in
+        [ ifI (iterE (cond, cond_ids, iter') ~at:cond.at, il1, il2) ~at:at ]
     | _ -> [ i ]
   in
   let walk_config = { Al.Walk.default_config with post_instr = f } in
@@ -961,7 +963,6 @@ let translate_helpers il =
 
 (** Translating reduction rules **)
 let translate_rules il =
-
   (* Extract rules *)
   List.concat_map extract_rules il
   (* Group rules that have the same names *)
@@ -981,4 +982,4 @@ let translate il =
 
   (* Transpile *)
   (* Can be turned off *)
-  List.map Transpile.state_remover algos
+  List.map Transpile.remove_state algos

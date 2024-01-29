@@ -13,10 +13,8 @@ type target =
  | Check
  | Latex
  | Prose
- | Splice of Backend_splice.Config.config
+ | Splice of Backend_splice.Config.t
  | Interpreter of string list
-
-let target = ref Latex
 
 type pass =
   | Sub
@@ -34,14 +32,17 @@ flags on the command line.
 *)
 let all_passes = [ Sub; Totalize; Unthe; Wild; Sideconditions; Animate ]
 
-let log = ref false      (* log execution steps *)
-let in_place = ref false (* splice patch files in place *)
-let warn = ref false     (* warn about unused or reused splices *)
-
 type file_kind =
   | Spec
   | Patch
   | Output
+
+let target = ref Latex
+let log = ref false      (* log execution steps *)
+let in_place = ref false (* splice patch files in place *)
+let dry = ref false      (* dry run for patching *)
+let warn = ref false     (* warn about unused or reused splices *)
+
 let file_kind = ref Spec
 let srcs = ref []    (* spec src file arguments *)
 let pdsts = ref []   (* patch file arguments *)
@@ -93,11 +94,12 @@ let banner () =
 let usage = "Usage: " ^ name ^ " [option] [file ...] [-p file ...] [-o file ...]"
 
 let add_arg source =
-  let args = match !file_kind with
-  | Spec -> srcs
-  | Patch -> pdsts
-  | Output -> odsts in
-  args := !args @ [source]
+  let args =
+    match !file_kind with
+    | Spec -> srcs
+    | Patch -> pdsts
+    | Output -> odsts
+  in args := !args @ [source]
 
 let pass_argspec pass : Arg.key * Arg.spec * Arg.doc =
   "--" ^ pass_flag pass, Arg.Unit (fun () -> enable_pass pass), " " ^ pass_desc pass
@@ -107,6 +109,7 @@ let argspec = Arg.align
   "-v", Arg.Unit banner, " Show version";
   "-p", Arg.Unit (fun () -> file_kind := Patch), " Patch files";
   "-i", Arg.Set in_place, " Splice patch files in-place";
+  "-d", Arg.Set dry, " Dry run (when -p) ";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set log, " Log execution steps";
   "-w", Arg.Set warn, " Warn about unused or multiply used splices";
@@ -119,7 +122,8 @@ let argspec = Arg.align
   "--splice-sphinx", Arg.Unit (fun () -> target := Splice Backend_splice.Config.sphinx),
     " Splice Sphinx";
   "--prose", Arg.Unit (fun () -> target := Prose), " Generate prose";
-  "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args), " Generate interpreter";
+  "--interpreter", Arg.Rest_all (fun args -> target := Interpreter args),
+    " Generate interpreter";
 
   "--print-el", Arg.Set print_el, " Print EL";
   "--print-il", Arg.Set print_elab_il, " Print IL (after elaboration)";
@@ -156,10 +160,11 @@ let () =
     log "IL Validation...";
     Il.Validation.valid il;
 
-
     (match !target with
-    | Prose | Interpreter _ -> enable_pass Sideconditions; enable_pass Animate
-    | _ -> ());
+    | Prose | Splice _ | Interpreter _ ->
+      enable_pass Sideconditions; enable_pass Animate
+    | _ -> ()
+    );
 
     let il =
       List.fold_left (fun il pass ->
@@ -179,39 +184,68 @@ let () =
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
 
-    let al = if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
-      log "Translating to AL...";
-      (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
-    ) in
+    let al =
+      if !target = Check || not (PS.mem Animate !selected_passes) then [] else (
+        log "Translating to AL...";
+        (Il2al.Translate.translate il @ Backend_interpreter.Manual.manual_algos)
+      )
+    in
 
     if !print_al then
-      Printf.printf "%s\n%!" (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
+      Printf.printf "%s\n%!"
+        (List.map Al.Print.string_of_algorithm al |> String.concat "\n");
 
     (match !target with
     | Check -> ()
+
     | Latex ->
       log "Latex Generation...";
       (match !odsts with
       | [] -> print_endline (Backend_latex.Gen.gen_string el)
-      | odst :: _ -> Backend_latex.Gen.gen_file odst el
+      | [odst] -> Backend_latex.Gen.gen_file odst el
+      | _ ->
+        prerr_endline "too many output file names";
+        exit 2
       )
+
     | Prose ->
+      log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose il al in
-      print_endline "=================";
-      print_endline " Generated prose ";
-      print_endline "=================";
-      print_endline (Backend_prose.Print.string_of_prose prose);
+      let oc =
+        match !odsts with
+        | [] -> stdout
+        | [odst] -> open_out odst
+        | _ ->
+          prerr_endline "too many output file names";
+          exit 2
+      in
+      output_string oc "=================\n";
+      output_string oc " Generated prose \n";
+      output_string oc "=================\n";
+      output_string oc (Backend_prose.Print.string_of_prose prose);
+      if oc != stdout then close_out oc
+
     | Splice config ->
+      if !in_place then
+        odsts := !pdsts
+      else if !odsts = [] then
+        odsts := List.map (Fun.const "") !pdsts
+      else if List.length !odsts <> List.length !pdsts then
+      (
+        prerr_endline "inconsistent number of input and output file names";
+        exit 2
+      );
+      log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose il al in
-      if !in_place then odsts := !pdsts;
-      odsts := !odsts @ List.init (List.length !pdsts - List.length !odsts) (fun _ -> ""); (* TODO *)
+      log "Splicing...";
       let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
-      List.iter2 (Backend_splice.Splice.splice_file env) !pdsts !odsts;
+      List.iter2 (Backend_splice.Splice.splice_file ~dry:!dry env) !pdsts !odsts;
       if !warn then Backend_splice.Splice.warn env;
+
     | Interpreter args ->
-      log "Initializing AL interprter with generated AL...";
+      log "Initializing interpreter...";
       Backend_interpreter.Ds.init al;
-      log "Interpreting AL...";
+      log "Interpreting...";
       Backend_interpreter.Runner.run args
     );
     log "Complete."

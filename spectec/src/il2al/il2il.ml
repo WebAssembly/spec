@@ -6,17 +6,23 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
+type reduction_group = (exp * exp * (premise list)) list
+
 (** Helpers **)
+
 let take_prefix n str =
   if String.length str < n then
     str
   else
     String.sub str 0 n
 
+
 (** Walker-based transformer **)
+
 let rec transform_expr f e =
   let new_ = transform_expr f in
-  { e with it = match (f e).it with
+  let it =
+    match (f e).it with
     | VarE _
     | BoolE _
     | NatE _
@@ -41,9 +47,12 @@ let rec transform_expr f e =
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
     | CaseE (atom, e1) -> CaseE (atom, new_ e1)
-    | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2) }
+    | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2)
+  in { e with it }
+
 
 (** Change right_assoc cat into left_assoc cat **)
+
 let to_left_assoc_cat =
   let rec rotate_ccw e =
     begin match e.it with
@@ -57,7 +66,9 @@ let to_left_assoc_cat =
     end in
   transform_expr rotate_ccw
 
+
 (** Change left_assoc cat into right_assoc cat **)
+
 let to_right_assoc_cat =
   let rec rotate_cw e =
     begin match e.it with
@@ -95,98 +106,99 @@ let to_iter e iterexp = IterE (e, iterexp)
 let is_unified_id id = String.split_on_char '_' id |> Util.Lib.List.last |> String.starts_with ~prefix:unified_prefix
 
 let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
-  ( match e1.it, e2.it with
-  | VarE id, _
-  | IterE ({ it = VarE id; _}, _) , _
-    when is_unified_id id.it -> e1.it
-  | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
+  let it =
+    match e1.it, e2.it with
+    | VarE id, _
+    | IterE ({ it = VarE id; _}, _) , _
+      when is_unified_id id.it -> e1.it
+    | UnE (unop1, e1), UnE (unop2, e2) when unop1 = unop2 ->
       UnE (unop1, overlap e1 e2)
-  | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
+    | BinE (binop1, e1, e1'), BinE (binop2, e2, e2') when binop1 = binop2 ->
       BinE (binop1, overlap e1 e2, overlap e1' e2')
-  | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
+    | CmpE (cmpop1, e1, e1'), CmpE (cmpop2, e2, e2') when cmpop1 = cmpop2 ->
       CmpE (cmpop1, overlap e1 e2, overlap e1' e2')
-  | IdxE (e1, e1'), IdxE (e2, e2') ->
+    | IdxE (e1, e1'), IdxE (e2, e2') ->
       IdxE (overlap e1 e2, overlap e1' e2')
-  | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
+    | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
       SliceE (overlap e1 e2, overlap e1' e2', overlap e1'' e2'')
-  | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when eq_path path1 path2 ->
+    | UpdE (e1, path1, e1'), UpdE (e2, path2, e2') when eq_path path1 path2 ->
       UpdE (overlap e1 e2, path1, overlap e1' e2')
-  | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
+    | ExtE (e1, path1, e1'), ExtE (e2, path2, e2') when eq_path path1 path2 ->
       ExtE (overlap e1 e2, path1, overlap e1' e2')
-  | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
+    | StrE efs1, StrE efs2 when List.map fst efs1 = List.map fst efs2 ->
       StrE (List.map2 (fun (a1, e1) (_, e2) -> (a1, overlap e1 e2)) efs1 efs2)
-  | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
+    | DotE (e1, atom1), DotE (e2, atom2) when atom1 = atom2 ->
       DotE (overlap e1 e2, atom1)
-  | CompE (e1, e1'), CompE (e2, e2') ->
+    | CompE (e1, e1'), CompE (e2, e2') ->
       CompE (overlap e1 e2, overlap e1' e2')
-  | LenE e1, LenE e2 ->
+    | LenE e1, LenE e2 ->
       LenE (overlap e1 e2)
-  | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
+    | TupE es1, TupE es2 when List.length es1 = List.length es2 ->
       TupE (List.map2 overlap es1 es2)
-  | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
+    | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
       MixE (mixop1, overlap e1 e2)
-  | CallE (id1, e1), CallE (id2, e2) when eq_id id1 id2->
+    | CallE (id1, e1), CallE (id2, e2) when eq_id id1 id2->
       CallE (id1, overlap e1 e2)
-  | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
+    | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
       IterE (overlap e1 e2, itere1)
-  | OptE (Some e1), OptE (Some e2) ->
+    | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap e1 e2))
-  | TheE e1, TheE e2 ->
+    | TheE e1, TheE e2 ->
       TheE (overlap e1 e2)
-  | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
+    | ListE es1, ListE es2 when List.length es1 = List.length es2 ->
       ListE (List.map2 overlap es1 es2)
-  | CatE (e1, e1'), CatE (e2, e2') ->
+    | CatE (e1, e1'), CatE (e2, e2') ->
       CatE (overlap e1 e2, overlap e1' e2')
-  | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
+    | CaseE (atom1, e1), CaseE (atom2, e2) when atom1 = atom2 ->
       CaseE (atom1, overlap e1 e2)
-  | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
+    | SubE (e1, typ1, typ1'), SubE (e2, typ2, typ2') when eq_typ typ1 typ2 && eq_typ typ1' typ2' ->
       SubE (overlap e1 e2, typ1, typ1')
-  | _ ->
-    let ty = e1.note in
-    let id = gen_new_unified ty in
-    match ty.it with
-    | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [id])
-    | _ -> VarE id
-  ) $$ (e1.at % e1.note)
+    | _ ->
+      let ty = e1.note in
+      let id = gen_new_unified ty in
+      match ty.it with
+      | IterT (ty, iter) -> to_iter (VarE id $$ no_region % ty) (iter, [id])
+      | _ -> VarE id
+  in { e1 with it }
 
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
-let rec collect_unified template e = if eq_exp template e then [], [] else match template.it, e.it with
-  | VarE id, _
-  | IterE ({ it = VarE id; _}, _) , _
-    when is_unified_id id.it ->
-    [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-    [id, template.note, []]
-  (* one e *)
-  | UnE (_, e1), UnE (_, e2)
-  | DotE (e1, _), DotE (e2, _)
-  | LenE e1, LenE e2
-  | MixE (_, e1), MixE (_, e2)
-  | CallE (_, e1), CallE (_, e2)
-  | IterE (e1, _), IterE (e2, _)
-  | OptE (Some e1), OptE (Some e2)
-  | TheE e1, TheE e2
-  | CaseE (_, e1), CaseE (_, e2)
-  | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
-  (* two e *)
-  | BinE (_, e1, e1'), BinE (_, e2, e2')
-  | CmpE (_, e1, e1'), CmpE (_, e2, e2')
-  | IdxE (e1, e1'), IdxE (e2, e2')
-  | UpdE (e1, _, e1'), UpdE (e2, _, e2')
-  | ExtE (e1, _, e1'), ExtE (e2, _, e2')
-  | CompE (e1, e1'), CompE (e2, e2')
-  | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
-  (* others *)
-  | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
-      pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
-  | StrE efs1, StrE efs2 ->
-      List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
-  | TupE es1, TupE es2
-  | ListE es1, ListE es2 ->
-      List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
-  | _ -> failwith "Impossible collect_unified"
+let rec collect_unified template e = if eq_exp template e then [], [] else
+  match template.it, e.it with
+    | VarE id, _
+    | IterE ({ it = VarE id; _}, _) , _
+      when is_unified_id id.it ->
+      [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
+      [id, template.note, []]
+    | UnE (_, e1), UnE (_, e2)
+    | DotE (e1, _), DotE (e2, _)
+    | LenE e1, LenE e2
+    | MixE (_, e1), MixE (_, e2)
+    | CallE (_, e1), CallE (_, e2)
+    | IterE (e1, _), IterE (e2, _)
+    | OptE (Some e1), OptE (Some e2)
+    | TheE e1, TheE e2
+    | CaseE (_, e1), CaseE (_, e2)
+    | SubE (e1, _, _), SubE (e2, _, _) -> collect_unified e1 e2
+    | BinE (_, e1, e1'), BinE (_, e2, e2')
+    | CmpE (_, e1, e1'), CmpE (_, e2, e2')
+    | IdxE (e1, e1'), IdxE (e2, e2')
+    | UpdE (e1, _, e1'), UpdE (e2, _, e2')
+    | ExtE (e1, _, e1'), ExtE (e2, _, e2')
+    | CompE (e1, e1'), CompE (e2, e2')
+    | CatE (e1, e1'), CatE (e2, e2') -> pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')
+    | SliceE (e1, e1', e1''), SliceE (e2, e2', e2'') ->
+        pairwise_concat (pairwise_concat (collect_unified e1 e2) (collect_unified e1' e2')) (collect_unified e1'' e2'')
+    | StrE efs1, StrE efs2 ->
+        List.fold_left2 (fun acc (_, e1) (_, e2) -> pairwise_concat acc (collect_unified e1 e2)) ([], []) efs1 efs2
+    | TupE es1, TupE es2
+    | ListE es1, ListE es2 ->
+        List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
+    | _ -> failwith "Impossible collect_unified"
+
 
 (** If prems include a otherwise premise, make it first prem **)
+
 let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others
