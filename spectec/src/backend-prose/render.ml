@@ -82,9 +82,18 @@ let render_prose_cmpop = function
   | Le -> "less than or equal to"
   | Ge -> "greater than or equal to"
 
+let is_text_al_unop = function
+  | Al.Ast.NotOp -> true
+  | Al.Ast.MinusOp -> false
+
 let render_al_unop = function
   | Al.Ast.NotOp -> "not"
   | Al.Ast.MinusOp -> "-"
+
+let is_text_al_binop = function
+  | Al.Ast.AddOp | Al.Ast.SubOp | Al.Ast.MulOp
+  | Al.Ast.DivOp | Al.Ast.ExpOp -> false
+  | _ -> true
 
 let render_al_binop = function
   | Al.Ast.AndOp -> "and"
@@ -147,6 +156,21 @@ and render_iters env iters = List.map (render_iter env) iters |> List.fold_left 
 
 (* Expressions and Paths *)
 
+and is_text_al_expr expr =
+  match expr.it with
+  | Al.Ast.UnE (op, _) when is_text_al_unop op -> true 
+  | Al.Ast.BinE (op, _, _) when is_text_al_binop op -> true 
+  | Al.Ast.GetCurLabelE | Al.Ast.GetCurFrameE
+  | Al.Ast.GetCurContextE | Al.Ast.FrameE _
+  | Al.Ast.ExtE _ | Al.Ast.UpdE _
+  | Al.Ast.ContE _ | Al.Ast.LabelE _
+  | Al.Ast.ContextKindE _ | Al.Ast.IsDefinedE _
+  | Al.Ast.IsCaseOfE _ | Al.Ast.HasTypeE _
+  | Al.Ast.IsValidE _ | Al.Ast.TopLabelE
+  | Al.Ast.TopFrameE | Al.Ast.TopValueE _
+  | Al.Ast.TopValuesE _ | Al.Ast.MatchE _ -> true
+  | _ -> false
+
 and render_expr env in_math expr =
   match expr.it with
   | Al.Ast.NumE i ->
@@ -168,17 +192,16 @@ and render_expr env in_math expr =
       sprintf "%s is not valid" (render_expr env in_math e)
   | Al.Ast.UnE (op, e) ->
       sprintf "%s %s" (render_al_unop op) (render_expr env in_math e)
+  | Al.Ast.BinE (op, e1, e2) when is_text_al_binop op ->
+      let sop = render_al_binop op in
+      let se1 = render_expr env in_math e1 in
+      let se2 = render_expr env in_math e2 in
+      sprintf "%s %s %s" se1 sop se2
   | Al.Ast.BinE (op, e1, e2) ->
       let sop = render_al_binop op in
       let se1 = render_expr env true e1 in
       let se2 = render_expr env true e2 in
-      let s =
-        (match op with
-        | AddOp | SubOp | MulOp | DivOp | ExpOp ->
-          sprintf "{%s} %s {%s}" se1 sop se2
-        | _ ->
-          sprintf "%s \\textrm{ %s } %s" se1 sop se2)
-      in
+      let s = sprintf "{%s} %s {%s}" se1 sop se2 in
       force_math in_math s
   | Al.Ast.TupE el ->
       let sel = render_list (render_expr env true) "(" "~" ")" el in
@@ -276,6 +299,14 @@ and render_expr env in_math expr =
       let siter = render_iter env iter in
       let s = sprintf "{%s}{%s}" sn siter in
       force_math in_math s
+  | Al.Ast.IterE (e, ids, iter) when is_text_al_expr e ->
+      let se = render_expr env in_math e in
+      let ids = List.map Al.Al_util.varE ids in
+      let sids = render_list (render_expr env true) "" "~" "" ids in
+      let sids = if (List.length ids > 1) then "(" ^ sids ^ ")" else sids in 
+      let siter = render_iter env iter in
+      let sloop = render_math (sprintf "%s%s" sids siter) in
+      sprintf "for all %s, %s" sloop se
   | Al.Ast.IterE (e, _, iter) ->
       let se = render_expr env true e in
       let siter = render_iter env iter in
@@ -315,51 +346,37 @@ and render_expr env in_math expr =
   | Al.Ast.OptE None ->
       let s = "\\epsilon" in
       force_math in_math s
-  (* Assume conditional expressions are always embedded in math blocks. *)
+  (* assume conditional expressions are never embedded in math blocks. *)
   | Al.Ast.ContextKindE (kwd, e) ->
       let skwd = render_kwd env kwd in
-      let se = render_expr env true e in
-      let s = sprintf "%s\\textrm{ is }%s" se skwd in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "%s is %s" se skwd
   | Al.Ast.IsDefinedE e ->
-      let se = render_expr env true e in
-      let s = sprintf "%s\\textrm{ is defined}" se in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "%s is defined" se
   | Al.Ast.IsCaseOfE (e, kwd) ->
-      let se = render_expr env true e in
-      let skwd = render_kwd env kwd in
-      let s = sprintf "%s\\textrm{ is of the case }%s" se skwd in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      let skwd = render_math (render_kwd env kwd) in
+      sprintf "%s is of the case %s" se skwd
   | Al.Ast.HasTypeE (e, t) ->
-      let se = render_expr env true e in
-      let s = sprintf "\\textrm{the type of }%s\\textrm{ is }%s" se t in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "the type of %s is %s" se t
   | Al.Ast.IsValidE e ->
-      let se = render_expr env true e in
-      let s = sprintf "%s\\textrm{ is valid}" se in
-      force_math in_math s
-  | Al.Ast.TopLabelE ->
-      let s = "\\textrm{a label is now on the top of the stack}" in
-      force_math in_math s
-  | Al.Ast.TopFrameE ->
-      let s = "\\textrm{a frame is now on the top of the stack}" in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "%s is valid" se
+  | Al.Ast.TopLabelE -> "a label is now on the top of the stack"
+  | Al.Ast.TopFrameE -> "a frame is now on the top of the stack"
   | Al.Ast.TopValueE (Some e) ->
-      let se = render_expr env true e in
-      let s = sprintf "\\textrm{a value of value type }%s\\textrm{ is on the top of the stack}" se in
-      force_math in_math s
-  | Al.Ast.TopValueE None ->
-      let s = "\\textrm{a value is on the top of the stack}" in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "a value of value type %s is on the top of the stack" se
+  | Al.Ast.TopValueE None -> "a value is on the top of the stack"
   | Al.Ast.TopValuesE e ->
-      let se = render_expr env true e in
-      let s = sprintf "\\textrm{there are at least }%s\\textrm{ values on the top of the stack}" se in
-      force_math in_math s
+      let se = render_expr env in_math e in
+      sprintf "there are at least %s values on the top of the stack" se
   | Al.Ast.MatchE (e1, e2) ->
-      let se1 = render_expr env true e1 in
-      let se2 = render_expr env true e2 in
-      let s = sprintf "%s\\textrm{ matches }%s" se1 se2 in
-      force_math in_math s
+      let se1 = render_expr env in_math e1 in
+      let se2 = render_expr env in_math e2 in
+      sprintf "%s matches %s" se1 se2
   | Al.Ast.YetE s -> sprintf "YetE (%s)" s
 
 (* assume Paths are always embedded in math blocks *)
