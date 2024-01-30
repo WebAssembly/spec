@@ -12,10 +12,9 @@ type env =
   {
     config: config;
     prose: prose;
+    render_latex: Backend_latex.Render.env;
     symbol: Symbol.env;
     macro: Macro.env;
-    hint: Hint.env;
-    render_latex: Backend_latex.Render.env;
   }
 
 let gen_macro env =
@@ -25,8 +24,7 @@ let gen_macro env =
 let env config inputs outputs render_latex el prose : env =
   let symbol = Symbol.env el in
   let macro = Macro.env inputs outputs in
-  let hint = Hint.env render_latex el in
-  let env = { config; prose; symbol; macro; hint; render_latex; } in
+  let env = { config; prose; render_latex; symbol; macro; } in
   env
 
 (* Translation from Al exp to El exp *)

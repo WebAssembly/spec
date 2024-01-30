@@ -8,6 +8,5 @@
     gen
     render
     macro
-    hint
     symbol)
 )
