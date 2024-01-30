@@ -30,7 +30,7 @@ let env config inputs outputs render_latex el prose : env =
 (* Translation from Al exp to El exp *)
 
 let al_to_el_unop = function
-  | Al.Ast.NotOp -> Some El.Ast.NotOp
+  | Al.Ast.MinusOp -> Some El.Ast.MinusOp
   | _ -> None
 
 let al_to_el_binop = function 
@@ -233,7 +233,9 @@ let rec repeat str num =
 
 let math = ":math:"
 
-let render_math s = math ^ sprintf "`%s`" s
+let render_math s =
+  if (String.length s > 0) then math ^ sprintf "`%s`" s
+  else s
 
 let render_opt prefix stringifier suffix = function
   | None -> ""
@@ -408,11 +410,9 @@ and render_expr' env expr =
       sprintf "%s(%s)" sfn (String.concat ", " ses)
   | Al.Ast.IterE (e, ids, iter) ->
       let se = render_expr env e in
-      let ids = List.map Al.Al_util.varE ids in
-      let sids = render_list (render_expr env) "" "~" "" ids in
-      let sids = if (List.length ids > 1) then "(" ^ sids ^ ")" else sids in 
-      let siter = render_iter env iter in
-      let sloop = render_math (sprintf "%s%s" sids siter) in
+      let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
+      let loop = Al.Al_util.iterE (ids, [], iter) in
+      let sloop = render_expr env loop in
       sprintf "for all %s, %s" sloop se
   | Al.Ast.OptE (Some e) ->
       let se = render_expr env e in
