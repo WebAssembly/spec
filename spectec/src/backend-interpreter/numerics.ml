@@ -590,58 +590,58 @@ let vbinop: numerics =
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I8x16.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I8x16.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I8x16.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I8x16.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I8x16.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I8x16.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I8x16.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I8x16.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I8x16.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I8x16.max_u v1 v2
-          | CaseV ("AVGRU", []) -> wrap_vbinop V128.I8x16.avgr_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.max_u v1 v2
+          | CaseV ("AVGR_U", []) -> wrap_vbinop V128.I8x16.avgr_u v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I16", 8L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I16x8.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I16x8.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I16x8.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I16x8.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I16x8.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I16x8.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I16x8.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I16x8.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I16x8.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I16x8.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I16x8.mul v1 v2
-          | CaseV ("AVGRU", []) -> wrap_vbinop V128.I16x8.avgr_u v1 v2
-          | CaseV ("Q15MULRSATS", []) -> wrap_vbinop V128.I16x8.q15mulr_sat_s v1 v2
+          | CaseV ("AVGR_U", []) -> wrap_vbinop V128.I16x8.avgr_u v1 v2
+          | CaseV ("Q15MULR_SAT_S", []) -> wrap_vbinop V128.I16x8.q15mulr_sat_s v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I32", 4L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I32x4.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I32x4.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I32x4.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I32x4.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I32x4.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I32x4.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I32x4.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I32x4.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I32x4.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I32x4.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I32x4.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I64", 2L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I64x2.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I64x2.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I64x2.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I64x2.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I64x2.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I64x2.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I64x2.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I64x2.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I64x2.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I64x2.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I64x2.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for vibinop")
