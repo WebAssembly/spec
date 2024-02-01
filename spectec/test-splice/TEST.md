@@ -661,6 +661,7 @@ warning: rule `Heaptype_sub/noextern` was never spliced
 warning: rule `Heaptype_sub/bot` was never spliced
 warning: rule `Import_ok` was never spliced
 warning: rule `Instr_const/const` was never spliced
+warning: rule `Instr_const/vvconst` was never spliced
 warning: rule `Instr_const/ref.null` was never spliced
 warning: rule `Instr_const/ref.func` was never spliced
 warning: rule `Instr_const/global.get` was never spliced

@@ -3986,6 +3986,16 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
+{\mathit{C}} \vdash ({\mathit{vt}}.\mathsf{const}~{\mathit{c}}_{{\mathit{vt}}})~\mathsf{const}
+} \, {[\textsc{\scriptsize C{-}instr{-}vvconst}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
 {\mathit{C}} \vdash (\mathsf{ref.null}~{\mathit{ht}})~\mathsf{const}
 } \, {[\textsc{\scriptsize C{-}instr{-}ref.null}]}
 \qquad

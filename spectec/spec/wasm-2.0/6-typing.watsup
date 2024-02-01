@@ -518,6 +518,9 @@ relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
 rule Instr_const/const:
   C |- (CONST nt c) CONST
 
+rule Instr_const/vvconst:
+  C |- (VVCONST vt c_vt) CONST
+
 rule Instr_const/ref.null:
   C |- (REF.NULL rt) CONST
 
