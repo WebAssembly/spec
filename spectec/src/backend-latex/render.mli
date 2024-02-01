@@ -11,12 +11,6 @@ val with_syntax_decoration : bool -> env -> env
 val with_rule_decoration : bool -> env -> env
 
 
-(* Utilities *)
-
-(* TODO: this should not be public *)
-val expand_exp : arg list -> int ref -> exp -> exp
-
-
 (* Generators *)
 
 val render_atom : env -> atom -> string
