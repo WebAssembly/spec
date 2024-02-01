@@ -29,6 +29,8 @@ let env config inputs outputs render_latex el prose : env =
 
 (* Translation from Al exp to El exp *)
 
+let (let*) = Option.bind
+
 let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
   | _ -> None
@@ -50,26 +52,20 @@ let rec al_to_el_iter iter = match iter with
   | Al.Ast.List -> Some El.Ast.List
   | Al.Ast.List1 -> Some El.Ast.List1
   | Al.Ast.ListN (e, id) ->
-      let ele = al_to_el_exp e in
+      let* ele = al_to_el_exp e in
       let elid = Option.map (fun id -> id $ no_region) id in
-      (match ele with
-      | Some ele -> Some (El.Ast.ListN (ele, elid))
-      | _ -> None)
+      Some (El.Ast.ListN (ele, elid))
 
 and al_to_el_path pl =
   let fold_path p elp = 
     let elp' = (match p.it with
       | Al.Ast.IdxP ei ->
-          let elei = al_to_el_exp ei in
-          (match elei with
-          | Some elei -> Some (El.Ast.IdxP (elp, elei))
-          | _ -> None)
+          let* elei = al_to_el_exp ei in
+          Some (El.Ast.IdxP (elp, elei))
       | Al.Ast.SliceP (el, eh) ->
-          let elel = al_to_el_exp el in
-          let eleh = al_to_el_exp eh in
-          (match elel, eleh with
-          | Some elel, Some eleh -> Some (El.Ast.SliceP (elp, elel, eleh))
-          | _ -> None)
+          let* elel = al_to_el_exp el in
+          let* eleh = al_to_el_exp eh in
+          Some (El.Ast.SliceP (elp, elel, eleh))
       | Al.Ast.DotP kwd ->
           let (kwd, _) = kwd in
           let elatom = El.Ast.Atom kwd in
@@ -89,138 +85,106 @@ and al_to_el_exp expr =
         let eli = El.Ast.NatE (El.Ast.DecOp, ei) in
         Some eli
     | Al.Ast.UnE (op, e) ->
-        let elop = al_to_el_unop op in 
-        let ele = al_to_el_exp e in
-        (match elop, ele with
-        | Some elop, Some ele -> Some (El.Ast.UnE (elop, ele))
-        | _ -> None)
+        let* elop = al_to_el_unop op in 
+        let* ele = al_to_el_exp e in
+        Some (El.Ast.UnE (elop, ele))
     | Al.Ast.BinE (op, e1, e2) ->
-        let elop = al_to_el_binop op in
-        let ele1 = al_to_el_exp e1 in
-        let ele2 = al_to_el_exp e2 in
-        (match elop, ele1, ele2 with
-        | Some elop, Some ele1, Some ele2 ->
-            Some (El.Ast.BinE (ele1, elop, ele2))
-        | _ -> None)
+        let* elop = al_to_el_binop op in
+        let* ele1 = al_to_el_exp e1 in
+        let* ele2 = al_to_el_exp e2 in
+        Some (El.Ast.BinE (ele1, elop, ele2))
     | Al.Ast.TupE el ->
-        let elel = List.filter_map al_to_el_exp el in
-        if (List.length el = List.length elel) then
-          Some (El.Ast.TupE elel)
-        else
-          None
+        let* elel = al_to_el_exps el in
+        Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, el) ->
         let elid = id $ no_region in
-        let elel = List.filter_map al_to_el_exp el in
+        let* elel = al_to_el_exps el in
         let elel = List.map
           (fun ele ->
             let elarg = El.Ast.ExpA ele in
             (ref elarg) $ no_region)
           elel
         in
-        if (List.length el = List.length elel) then
-          Some (El.Ast.CallE (elid, elel))
-        else
-          None
+        Some (El.Ast.CallE (elid, elel))
     | Al.Ast.CatE (e1, e2) ->
-        let ele1 = al_to_el_exp e1 in
-        let ele2 = al_to_el_exp e2 in
-        (match ele1, ele2 with
-        | Some ele1, Some ele2 -> Some (El.Ast.SeqE [ ele1; ele2 ])
-        | _ -> None)
+        let* ele1 = al_to_el_exp e1 in
+        let* ele2 = al_to_el_exp e2 in
+        Some (El.Ast.SeqE [ ele1; ele2 ])
     | Al.Ast.LenE e ->
-        let ele = al_to_el_exp e in
-        (match ele with
-        | Some ele -> Some (El.Ast.LenE ele)
-        | _ -> None)
+        let* ele = al_to_el_exp e in
+        Some (El.Ast.LenE ele)
     | Al.Ast.ListE el ->
-        let elel = List.filter_map al_to_el_exp el in
-        if (List.length el = List.length elel) then (
-          if (List.length elel > 0) then Some (El.Ast.SeqE elel)
-          else Some (El.Ast.EpsE))
-        else
-          None
+        let* elel = al_to_el_exps el in
+        if (List.length elel > 0) then Some (El.Ast.SeqE elel)
+        else Some (El.Ast.EpsE)
     | Al.Ast.AccE (e, p) ->
-        let ele = al_to_el_exp e in
+        let* ele = al_to_el_exp e in
         (match p.it with
         | Al.Ast.IdxP ei ->
-            let elei = al_to_el_exp ei in
-            (match ele, elei with
-            | Some ele, Some elei -> Some (El.Ast.IdxE (ele, elei))
-            | _ -> None)
+            let* elei = al_to_el_exp ei in
+            Some (El.Ast.IdxE (ele, elei))
         | Al.Ast.SliceP (el, eh) ->
-            let elel = al_to_el_exp el in
-            let eleh = al_to_el_exp eh in
-            (match ele, elel, eleh with
-            | Some ele, Some elel, Some eleh -> Some (El.Ast.SliceE (ele, elel, eleh))
-            | _ -> None)
-        | DotP kwd ->
-            let (kwd, _) = kwd in
+            let* elel = al_to_el_exp el in
+            let* eleh = al_to_el_exp eh in
+            Some (El.Ast.SliceE (ele, elel, eleh))
+        | DotP (kwd, _) ->
             let elatom = El.Ast.Atom kwd in
-            (match ele with
-            | Some ele -> Some (El.Ast.DotE (ele, elatom))
-            | _ -> None))
+            Some (El.Ast.DotE (ele, elatom)))
     | Al.Ast.UpdE (e1, pl, e2) ->
-        let ele1 = al_to_el_exp e1 in
-        let elp = al_to_el_path pl in
-        let ele2 = al_to_el_exp e2 in
-        (match ele1, elp, ele2 with
-        | Some ele1, Some elp, Some ele2 -> Some (El.Ast.UpdE (ele1, elp, ele2))
-        | _ -> None)
+        let* ele1 = al_to_el_exp e1 in
+        let* elp = al_to_el_path pl in
+        let* ele2 = al_to_el_exp e2 in
+        Some (El.Ast.UpdE (ele1, elp, ele2))
     | Al.Ast.ExtE (e1, pl, e2, _) ->
-        let ele1 = al_to_el_exp e1 in
-        let elp = al_to_el_path pl in
-        let ele2 = al_to_el_exp e2 in
-        (match ele1, elp, ele2 with
-        | Some ele1, Some elp, Some ele2 -> Some (El.Ast.ExtE (ele1, elp, ele2))
-        | _ -> None)
+        let* ele1 = al_to_el_exp e1 in
+        let* elp = al_to_el_path pl in
+        let* ele2 = al_to_el_exp e2 in
+        Some (El.Ast.ExtE (ele1, elp, ele2))
     | Al.Ast.StrE r ->
-        let elexpfield =
-          Util.Record.fold
-            (fun kwd e acc ->
-              let (kwd, _) = kwd in
-              let elatom = El.Ast.Atom kwd in
-              let ele = al_to_el_exp e in
-              (match ele with
-              | Some ele -> 
-                  let elelem = El.Ast.Elem (elatom, ele) in
-                  acc @ [ elelem ]
-              | None -> [])
-            )
-            r []
-        in
-        if (Util.Record.size r = List.length elexpfield) then
-          Some (El.Ast.StrE elexpfield)
-        else
-          None
+        let* elexpfield = al_to_el_expfield r in
+        Some (El.Ast.StrE elexpfield)
     | Al.Ast.VarE id | Al.Ast.SubE (id, _) -> 
         let elid = id $ no_region in
         Some (El.Ast.VarE (elid, []))
     | Al.Ast.IterE (e, _, iter) ->
-        let ele = al_to_el_exp e in
-        let eliter = al_to_el_iter iter in
-        (match ele, eliter with
-        | Some ele, Some eliter -> Some (El.Ast.IterE (ele, eliter))
-        | _ -> None)
+        let* ele = al_to_el_exp e in
+        let* eliter = al_to_el_iter iter in
+        Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.InfixE (e1, op, e2) ->
-        let ele1 = al_to_el_exp e1 in
-        let elop = al_to_el_infixop op in
-        let ele2 = al_to_el_exp e2 in
-        (match ele1, elop, ele2 with
-        | Some ele1, Some elop, Some ele2 -> Some (El.Ast.InfixE (ele1, elop, ele2))
-        | _ -> None)
-    | Al.Ast.CaseE (kwd, el) ->
-        let (kwd, _) = kwd in 
+        let* ele1 = al_to_el_exp e1 in
+        let* elop = al_to_el_infixop op in
+        let* ele2 = al_to_el_exp e2 in
+        Some (El.Ast.InfixE (ele1, elop, ele2))
+    | Al.Ast.CaseE ((kwd, _), el) ->
         let ekwd = (El.Ast.AtomE (El.Ast.Atom kwd)) $ no_region in
-        let elel = List.filter_map al_to_el_exp el in
-        if (List.length el = List.length elel) then
-          Some (El.Ast.SeqE ([ ekwd ] @ elel))
-        else
-          None
-    | Al.Ast.OptE (Some e) -> Option.map it (al_to_el_exp e)
+        let* elel = al_to_el_exps el in
+        Some (El.Ast.SeqE ([ ekwd ] @ elel))
+    | Al.Ast.OptE (Some e) ->
+        let* ele = al_to_el_exp e in
+        Some (ele.it)
     | Al.Ast.OptE None -> Some (El.Ast.EpsE)
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
+
+and al_to_el_exps exprs =
+  List.fold_left
+    (fun exps e ->
+      let* exps = exps in
+      let* exp = al_to_el_exp e in
+      Some (exps @ [ exp ]))
+    (Some []) exprs
+
+and al_to_el_expfield record =
+  Util.Record.fold
+    (fun (kwd, _) e expfield ->
+      let* expfield = expfield in
+      let elatom = El.Ast.Atom kwd in
+      let* ele = al_to_el_exp e in
+      let elelem = El.Ast.Elem (elatom, ele) in
+      Some (expfield @ [ elelem ]))
+    record (Some [])
+
 
 (* Helpers *)
 
