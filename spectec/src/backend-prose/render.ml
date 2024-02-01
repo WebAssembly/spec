@@ -304,12 +304,27 @@ and render_iters env iters = List.map (render_iter env) iters |> List.fold_left 
 
 (* Expressions and Paths *)
 
-(* fallback when expr cannot be embedded in a math block *)
+(* Invariant: All AL expressions fall into one of the three categories:
+  1. EL-like expression, only containing EL subexpressions
+  2. AL-only expression, possibly containing EL subexpressions 
+  3. pseudo-EL-like expression, containing at least one AL-only subexpression *)
+
+(* Category 1 is translated to EL then rendered by the Latex backend *)
+
+and render_expr env expr = match al_to_el_exp expr with
+  | Some exp -> 
+      (* embedded math blocks cannot have line-breaks *)
+      let newline = Str.regexp "\n" in
+      let sexp = Backend_latex.Render.render_exp env.render_latex exp in
+      let sexp = Str.global_replace newline "" sexp in
+      render_math sexp
+  | None -> render_expr' env expr
+
+(* Categories 2 and 3 are rendered by the prose backend,
+   yet EL subexpressions are still rendered by the Latex backend *)
 
 and render_expr' env expr =
   match expr.it with
-  | Al.Ast.VarE n | Al.Ast.SubE (n, _) -> n
-  | Al.Ast.NumE i -> Int64.to_string i
   | Al.Ast.BoolE b -> string_of_bool b
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, kwd); _ }) ->
       let se = render_expr env e in
@@ -317,23 +332,19 @@ and render_expr' env expr =
       sprintf "%s is not of the case %s" se skwd
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
       let se = render_expr env e in
-      sprintf "%s is not defined" se 
+      sprintf "%s is not defined" se
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
       let se = render_expr env e in
-      sprintf "%s is not valid" se 
-  | Al.Ast.UnE (op, e) ->
+      sprintf "%s is not valid" se
+  | Al.Ast.UnE (op, e) when Option.is_none (al_to_el_unop op) ->
       let sop = render_al_unop op in
       let se = render_expr env e in
       sprintf "%s %s" sop se
-  | Al.Ast.BinE (op, e1, e2) ->
+  | Al.Ast.BinE (op, e1, e2) when Option.is_none (al_to_el_binop op)  ->
       let sop = render_al_binop op in
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "%s %s %s" se1 sop se2
-  | Al.Ast.AccE (e, p) ->
-      let se = render_expr env e in
-      let sp = render_path env p in
-      sprintf "%s%s" se sp
   | Al.Ast.UpdE (e1, ps, e2) ->
       let se1 = render_expr env e1 in
       let sps = render_paths env ps in
@@ -346,47 +357,12 @@ and render_expr' env expr =
       (match dir with
       | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
       | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.StrE r ->
-      let sr =
-        Util.Record.fold
-          (fun kwd e acc -> 
-            let skwd = render_math (render_kwd env kwd) in
-            let se = render_expr env e in
-            acc @ [ skwd ^ " : " ^ se ])
-          r []
-      in
-      render_list Fun.id "{" ", " "}" sr
-  | Al.Ast.CatE (e1, e2) ->
-      let se1 = render_expr env e1 in
-      let se2 = render_expr env e2 in
-      sprintf "%s %s" se1 se2
-  | Al.Ast.LenE e ->
-      let se = render_expr env e in
-      "the length of " ^ se
-  | Al.Ast.TupE el -> render_list (render_expr env) "(" ", " ")" el
-  | Al.Ast.CaseE (kwd, es) ->
-      let skwd = render_math (render_kwd env kwd) in
-      let ses = List.map (render_expr env) es in
-      sprintf "%s(%s)" skwd (String.concat ", " ses)
-  | Al.Ast.CallE (fn, es) ->
-      let sfn = render_funcname env fn in
-      let ses = List.map (render_expr env) es in
-      sprintf "%s(%s)" sfn (String.concat ", " ses)
-  | Al.Ast.IterE (e, ids, iter) ->
+  | Al.Ast.IterE (e, ids, iter) when Option.is_none (al_to_el_exp e) ->
       let se = render_expr env e in
       let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
       let loop = Al.Al_util.iterE (ids, [], iter) in
       let sloop = render_expr env loop in
       sprintf "for all %s, %s" sloop se
-  | Al.Ast.OptE (Some e) ->
-      let se = render_expr env e in
-      sprintf "{%s}^?" se
-  | Al.Ast.OptE None -> "()" 
-  | Al.Ast.ListE el -> render_list (render_expr env) "[" ", " "]" el
-  | Al.Ast.InfixE (e1, infix, e2) ->
-      let se1 = render_expr env e1 in
-      let se2 = render_expr env e2 in
-      sprintf "%s %s %s" se1 infix se2
   | Al.Ast.ArityE e -> 
       let se = render_expr env e in
       sprintf "the arity of %s" se 
@@ -437,16 +413,10 @@ and render_expr' env expr =
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "%s matches %s" se1 se2
-  | Al.Ast.YetE s -> sprintf "YetE (%s)" s
-
-and render_expr env expr = match al_to_el_exp expr with
-  | Some exp -> 
-      (* embedded math blocks cannot have line-breaks *)
-      let newline = Str.regexp "\n" in
-      let sexp = Backend_latex.Render.render_exp env.render_latex exp in
-      let sexp = Str.global_replace newline "" sexp in
-      render_math sexp
-  | None -> render_expr' env expr
+  | _ ->
+      let s = Al.Print.string_of_expr expr in
+      sprintf "warning: %s was not properly handled by prose backend" s |> prerr_endline;
+      s
 
 and render_path env path =
   match path.it with
