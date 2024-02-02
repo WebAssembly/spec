@@ -11,57 +11,57 @@ $${rule+:
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-CONST:
+.. _valid-const:
 
-%{prose-pred: CONST}
+$${rule-prose: valid/const}
 
 \
 
 $${rule: Instr_ok/const}
 
-.. _valid-UNOP:
+.. _valid-unop:
 
-%{prose-pred: UNOP}
+$${rule-prose: valid/unop}
 
 \
 
 $${rule: Instr_ok/unop}
 
-.. _valid-BINOP:
+.. _valid-binop:
 
-%{prose-pred: BINOP}
+$${rule-prose: valid/binop}
 
 \
 
 $${rule: Instr_ok/binop}
 
-.. _valid-TESTOP:
+.. _valid-testop:
 
-%{prose-pred: TESTOP}
+$${rule-prose: valid/testop}
 
 \
 
 $${rule: Instr_ok/testop}
 
-.. _valid-RELOP:
+.. _valid-relop:
 
-%{prose-pred: RELOP}
+$${rule-prose: valid/relop}
 
 \
 
 $${rule: Instr_ok/relop}
 
-.. _valid-EXTEND:
+.. _valid-extend:
 
-%{prose-pred: EXTEND}
+$${rule-prose: valid/extend}
 
 \
 
 $${rule: Instr_ok/extend}
 
-.. _valid-CVTOP:
+.. _valid-cvtop:
 
-%{prose-pred: CVTOP}
+$${rule-prose: valid/cvtop}
 
 \
 
@@ -73,57 +73,57 @@ $${rule+:
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-REF.NULL:
+.. _valid-ref.null:
 
-%{prose-pred: REF.NULL}
+$${rule-prose: valid/ref.null}
 
 \
 
 $${rule: Instr_ok/ref.null}
 
-.. _valid-REF.FUNC:
+.. _valid-ref.func:
 
-%{prose-pred: REF.FUNC}
+$${rule-prose: valid/ref.func}
 
 \
 
 $${rule: Instr_ok/ref.func}
 
-.. _valid-REF.IS_NULL:
+.. _valid-ref.is_null:
 
-%{prose-pred: REF.IS_NULL}
+$${rule-prose: valid/ref.is_null}
 
 \
 
 $${rule: Instr_ok/ref.is_null}
 
-.. _valid-REF.AS_NON_NULL:
+.. _valid-ref.as_non_null:
 
-%{prose-pred: REF.AS_NON_NULL}
+$${rule-prose: valid/ref.as_non_null}
 
 \
 
 $${rule: Instr_ok/ref.as_non_null}
 
-.. _valid-REF.EQ:
+.. _valid-ref.eq:
 
-%{prose-pred: REF.EQ}
+$${rule-prose: valid/ref.eq}
 
 \
 
 $${rule: Instr_ok/ref.eq}
 
-.. _valid-REF.TEST:
+.. _valid-ref.test:
 
-%{prose-pred: REF.TEST}
+$${rule-prose: valid/ref.test}
 
 \
 
 $${rule: Instr_ok/ref.test}
 
-.. _valid-REF.CAST:
+.. _valid-ref.cast:
 
-%{prose-pred: REF.CAST}
+$${rule-prose: valid/ref.cast}
 
 \
 
@@ -134,129 +134,129 @@ $${rule: Instr_ok/ref.cast}
 Aggregate Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-STRUCT.NEW:
+.. _valid-struct.new:
 
-%{prose-pred: STRUCT.NEW}
+$${rule-prose: valid/struct.new}
 
 \
 
 $${rule: Instr_ok/struct.new}
 
-.. _valid-STRUCT.NEW_DEFAULT:
+.. _valid-struct.new_default:
 
-%{prose-pred: STRUCT.NEW_DEFAULT}
+$${rule-prose: valid/struct.new_default}
 
 \
 
 $${rule: Instr_ok/struct.new_default}
 
-.. _valid-STRUCT.GET:
+.. _valid-struct.get:
 
-%{prose-pred: STRUCT.GET}
+$${rule-prose: valid/struct.get}
 
 \
 
 $${rule: Instr_ok/struct.get}
 
-.. _valid-STRUCT.SET:
+.. _valid-struct.set:
 
-%{prose-pred: STRUCT.SET}
+$${rule-prose: valid/struct.set}
 
 \
 
 $${rule: Instr_ok/struct.set}
 
-.. _valid-ARRAY.NEW:
+.. _valid-array.new:
 
-%{prose-pred: ARRAY.NEW}
+$${rule-prose: valid/array.new}
 
 \
 
 $${rule: Instr_ok/array.new}
 
-.. _valid-ARRAY.NEW_DEFAULT:
+.. _valid-array.new_default:
 
-%{prose-pred: ARRAY.NEW_DEFAULT}
+$${rule-prose: valid/array.new_default}
 
 \
 
 $${rule: Instr_ok/array.new_default}
 
-.. _valid-ARRAY.NEW_FIXED:
+.. _valid-array.new_fixed:
 
-%{prose-pred: ARRAY.NEW_FIXED}
+$${rule-prose: valid/array.new_fixed}
 
 \
 
 $${rule: Instr_ok/array.new_fixed}
 
-.. _valid-ARRAY.NEW_ELEM:
+.. _valid-array.new_elem:
 
-%{prose-pred: ARRAY.NEW_ELEM}
+$${rule-prose: valid/array.new_elem}
 
 \
 
 $${rule: Instr_ok/array.new_elem}
 
-.. _valid-ARRAY.NEW_DATA:
+.. _valid-array.new_data:
 
-%{prose-pred: ARRAY.NEW_DATA}
+$${rule-prose: valid/array.new_data}
 
 \
 
 $${rule: Instr_ok/array.new_data}
 
-.. _valid-ARRAY.GET:
+.. _valid-array.get:
 
-%{prose-pred: ARRAY.GET}
+$${rule-prose: valid/array.get}
 
 \
 
 $${rule: Instr_ok/array.get}
 
-.. _valid-ARRAY.SET:
+.. _valid-array.set:
 
-%{prose-pred: ARRAY.SET}
+$${rule-prose: valid/array.set}
 
 \
 
 $${rule: Instr_ok/array.set}
 
-.. _valid-ARRAY.LEN:
+.. _valid-array.len:
 
-%{prose-pred: ARRAY.LEN}
+$${rule-prose: valid/array.len}
 
 \
 
 $${rule: Instr_ok/array.len}
 
-.. _valid-ARRAY.FILL:
+.. _valid-array.fill:
 
-%{prose-pred: ARRAY.FILL}
+$${rule-prose: valid/array.fill}
 
 \
 
 $${rule: Instr_ok/array.fill}
 
-.. _valid-ARRAY.COPY:
+.. _valid-array.copy:
 
-%{prose-pred: ARRAY.COPY}
+$${rule-prose: valid/array.copy}
 
 \
 
 $${rule: Instr_ok/array.copy}
 
-.. _valid-ARRAY.INIT_DATA:
+.. _valid-array.init_data:
 
-%{prose-pred: ARRAY.INIT_DATA}
+$${rule-prose: valid/array.init_data}
 
 \
 
 $${rule: Instr_ok/array.init_data}
 
-.. _valid-ARRAY.INIT_ELEM:
+.. _valid-array.init_elem:
 
-%{prose-pred: ARRAY.INIT_ELEM}
+$${rule-prose: valid/array.init_elem}
 
 \
 
@@ -267,17 +267,17 @@ $${rule: Instr_ok/array.init_elem}
 Scalar Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-REF.I31:
+.. _valid-ref.i31:
 
-%{prose-pred: REF.I31}
+$${rule-prose: valid/ref.i31}
 
 \
 
 $${rule: Instr_ok/ref.i31}
 
-.. _valid-I31.GET:
+.. _valid-i31.get:
 
-%{prose-pred: I31.GET}
+$${rule-prose: valid/i31.get}
 
 \
 
@@ -288,161 +288,161 @@ $${rule: Instr_ok/i31.get}
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-VVCONST:
+.. _valid-vvconst:
 
-%{prose-pred: VVCONST}
+$${rule-prose: valid/vvconst}
 
 \
 
 $${rule: Instr_ok/vvconst}
 
-.. _valid-VVUNOP:
+.. _valid-vvunop:
 
-%{prose-pred: VVUNOP}
+$${rule-prose: valid/vvunop}
 
 \
 
 $${rule: Instr_ok/vvunop}
 
-.. _valid-VVBINOP:
+.. _valid-vvbinop:
 
-%{prose-pred: VVBINOP}
+$${rule-prose: valid/vvbinop}
 
 \
 
 $${rule: Instr_ok/vvbinop}
 
-.. _valid-VVTERNOP:
+.. _valid-vvternop:
 
-%{prose-pred: VVTERNOP}
+$${rule-prose: valid/vvternop}
 
 \
 
 $${rule: Instr_ok/vvternop}
 
-.. _valid-VVTESTOP:
+.. _valid-vvtestop:
 
-%{prose-pred: VVTESTOP}
+$${rule-prose: valid/vvtestop}
 
 \
 
 $${rule: Instr_ok/vvtestop}
 
-.. _valid-VSHUFFLE:
+.. _valid-vshuffle:
 
-%{prose-pred: VSHUFFLE}
+$${rule-prose: valid/vshuffle}
 
 \
 
 $${rule: Instr_ok/vshuffle}
 
-.. _valid-VSPLAT:
+.. _valid-vsplat:
 
-%{prose-pred: VSPLAT}
+$${rule-prose: valid/vsplat}
 
 \
 
 $${rule: Instr_ok/vsplat}
 
-.. _valid-VEXTRACT_LANE:
+.. _valid-vextract_lane:
 
-%{prose-pred: VEXTRACT_LANE}
+$${rule-prose: valid/vextract_lane}
 
 \
 
 $${rule: Instr_ok/vextract_lane}
 
-.. _valid-VREPLACE_LANE:
+.. _valid-vreplace_lane:
 
-%{prose-pred: VREPLACE_LANE}
+$${rule-prose: valid/vreplace_lane}
 
 \
 
 $${rule: Instr_ok/vreplace_lane}
 
-.. _valid-VUNOP:
+.. _valid-vunop:
 
-%{prose-pred: VUNOP}
+$${rule-prose: valid/vunop}
 
 \
 
 $${rule: Instr_ok/vunop}
 
-.. _valid-VBINOP:
+.. _valid-vbinop:
 
-%{prose-pred: VBINOP}
+$${rule-prose: valid/vbinop}
 
 \
 
 $${rule: Instr_ok/vbinop}
 
-.. _valid-VRELOP:
+.. _valid-vrelop:
 
-%{prose-pred: VRELOP}
+$${rule-prose: valid/vrelop}
 
 \
 
 $${rule: Instr_ok/vrelop}
 
-.. _valid-VISHIFTOP:
+.. _valid-vishiftop:
 
-%{prose-pred: VISHIFTOP}
+$${rule-prose: valid/vishiftop}
 
 \
 
 $${rule: Instr_ok/vishiftop}
 
-.. _valid-VTESTOP:
+.. _valid-vtestop:
 
-%{prose-pred: VALL_TRUE}
+$${rule-prose: valid/vall_true}
 
 \
 
 $${rule: Instr_ok/vtestop}
 
-.. _valid-VCVTOP:
+.. _valid-vcvtop:
 
-%{prose-pred: VCVTOP}
+$${rule-prose: valid/vcvtop}
 
 \
 
 $${rule: Instr_ok/vcvtop}
 
-.. _valid-VNARROW:
+.. _valid-vnarrow:
 
-%{prose-pred: VNARROW}
+$${rule-prose: valid/vnarrow}
 
 \
 
 $${rule: Instr_ok/vnarrow}
 
-.. _valid-VBITMASK:
+.. _valid-vbitmask:
 
-%{prose-pred: VBITMASK}
+$${rule-prose: valid/vbitmask}
 
 \
 
 $${rule: Instr_ok/vbitmask}
 
-.. _valid-VDOT:
+.. _valid-vdot:
 
-%{prose-pred: VDOT}
+$${rule-prose: valid/vdot}
 
 \
 
 $${rule: Instr_ok/vdot}
 
-.. _valid-VEXTMUL:
+.. _valid-vextmul:
 
-%{prose-pred: VEXTMUL}
+$${rule-prose: valid/vextmul}
 
 \
 
 $${rule: Instr_ok/vextmul}
 
-.. _valid-VEXTADD_PAIRWISE:
+.. _valid-vextadd_pairwise:
 
-%{prose-pred: VEXTADD_PAIRWISE}
+$${rule-prose: valid/vextadd_pairwise}
 
 \
 
@@ -453,17 +453,17 @@ $${rule: Instr_ok/vextadd_pairwise}
 External Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-EXTERN.CONVERT_ANY:
+.. _valid-extern.convert_any:
 
-%{prose-pred: EXTERN.CONVERT_ANY}
+$${rule-prose: valid/extern.convert_any}
 
 \
 
 $${rule: Instr_ok/extern.convert_any}
 
-.. _valid-ANY.CONVERT_EXTERN:
+.. _valid-any.convert_extern:
 
-%{prose-pred: ANY.CONVERT_EXTERN}
+$${rule-prose: valid/any.convert_extern}
 
 \
 
@@ -474,17 +474,17 @@ $${rule: Instr_ok/any.convert_extern}
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-DROP:
+.. _valid-drop:
 
-%{prose-pred: DROP}
+$${rule-prose: valid/drop}
 
 \
 
 $${rule: Instr_ok/drop}
 
-.. _valid-SELECT:
+.. _valid-select:
 
-%{prose-pred: SELECT}
+$${rule-prose: valid/select}
 
 \
 
@@ -495,15 +495,15 @@ $${rule+: Instr_ok/select-*}
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-LOCAL.GET:
+.. _valid-local.get:
 
-%{prose-pred: LOCAL.GET}
+$${rule-prose: valid/local.get}
 
 \
 
 $${rule: Instr_ok/local.get}
 
-.. _valid-LOCAL.SET:
+.. _valid-local.set:
 
 LOCAL.SET
 ^^^^^^^^^
@@ -514,7 +514,7 @@ TODO (not found)
 
 $${rule+: Instrf_ok/local.set}
 
-.. _valid-LOCAL.TEE:
+.. _valid-local.tee:
 
 LOCAL.TEE
 ^^^^^^^^^
@@ -525,17 +525,17 @@ TODO (not found)
 
 $${rule+: Instrf_ok/local.tee}
 
-.. _valid-GLOBAL.GET:
+.. _valid-global.get:
 
-%{prose-pred: GLOBAL.GET}
+$${rule-prose: valid/global.get}
 
 \
 
 $${rule: Instr_ok/global.get}
 
-.. _valid-GLOBAL.SET:
+.. _valid-global.set:
 
-%{prose-pred: GLOBAL.SET}
+$${rule-prose: valid/global.set}
 
 \
 
@@ -544,65 +544,65 @@ $${rule: Instr_ok/global.set}
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-.. _valid-TABLE.GET:
+.. _valid-table.get:
 
-%{prose-pred: TABLE.GET}
+$${rule-prose: valid/table.get}
 
 \
 
 $${rule: Instr_ok/table.get}
 
-.. _valid-TABLE.SET:
+.. _valid-table.set:
 
-%{prose-pred: TABLE.SET}
+$${rule-prose: valid/table.set}
 
 \
 
 $${rule: Instr_ok/table.set}
 
-.. _valid-TABLE.SIZE:
+.. _valid-table.size:
 
-%{prose-pred: TABLE.SIZE}
+$${rule-prose: valid/table.size}
 
 \
 
 $${rule: Instr_ok/table.size}
 
-.. _valid-TABLE.GROW:
+.. _valid-table.grow:
 
-%{prose-pred: TABLE.GROW}
+$${rule-prose: valid/table.grow}
 
 \
 
 $${rule: Instr_ok/table.grow}
 
-.. _valid-TABLE.FILL:
+.. _valid-table.fill:
 
-%{prose-pred: TABLE.FILL}
+$${rule-prose: valid/table.fill}
 
 \
 
 $${rule: Instr_ok/table.fill}
 
-.. _valid-TABLE.COPY:
+.. _valid-table.copy:
 
-%{prose-pred: TABLE.COPY}
+$${rule-prose: valid/table.copy}
 
 \
 
 $${rule: Instr_ok/table.copy}
 
-.. _valid-TABLE.INIT:
+.. _valid-table.init:
 
-%{prose-pred: TABLE.INIT}
+$${rule-prose: valid/table.init}
 
 \
 
 $${rule: Instr_ok/table.init}
 
-.. _valid-ELEM.DROP:
+.. _valid-elem.drop:
 
-%{prose-pred: ELEM.DROP}
+$${rule-prose: valid/elem.drop}
 
 \
 
@@ -613,25 +613,25 @@ $${rule: Instr_ok/elem.drop}
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-.. _valid-LOAD:
+.. _valid-load:
 
-%{prose-pred: LOAD}
+$${rule-prose: valid/load}
 
 \
 
 $${rule: Instr_ok/load}
 
-.. _valid-STORE:
+.. _valid-store:
 
-%{prose-pred: STORE}
+$${rule-prose: valid/store}
 
 \
 
 $${rule: Instr_ok/store}
 
-.. _valid-VLOAD:
+.. _valid-vload:
 
-%{prose-pred: VLOAD}
+$${rule-prose: valid/vload}
 
 \
 
@@ -639,74 +639,74 @@ $${rule: Instr_ok/vload}
 $${rule: Instr_ok/vload-splat}
 $${rule: Instr_ok/vload-zero}
 
-.. _valid-VLOAD_LANE:
+.. _valid-vload_lane:
 
-%{prose-pred: VLOAD_LANE}
+$${rule-prose: valid/vload_lane}
 
 \
 
 $${rule: Instr_ok/vload_lane}
 
-.. _valid-VSTORE:
+.. _valid-vstore:
 
-%{prose-pred: VSTORE}
+$${rule-prose: valid/vstore}
 
 \
 
 $${rule: Instr_ok/vstore}
 
-.. _valid-VSTORE_LANE:
+.. _valid-vstore_lane:
 
-%{prose-pred: VSTORE_LANE}
+$${rule-prose: valid/vstore_lane}
 
 \
 
 $${rule: Instr_ok/vstore_lane}
 
 
-.. _valid-MEMORY.SIZE:
+.. _valid-memory.size:
 
-%{prose-pred: MEMORY.SIZE}
+$${rule-prose: valid/memory.size}
 
 \
 
 $${rule: Instr_ok/memory.size}
 
-.. _valid-MEMORY.GROW:
+.. _valid-memory.grow:
 
-%{prose-pred: MEMORY.GROW}
+$${rule-prose: valid/memory.grow}
 
 \
 
 $${rule: Instr_ok/memory.grow}
 
-.. _valid-MEMORY.FILL:
+.. _valid-memory.fill:
 
-%{prose-pred: MEMORY.FILL}
+$${rule-prose: valid/memory.fill}
 
 \
 
 $${rule: Instr_ok/memory.fill}
 
-.. _valid-MEMORY.COPY:
+.. _valid-memory.copy:
 
-%{prose-pred: MEMORY.COPY}
+$${rule-prose: valid/memory.copy}
 
 \
 
 $${rule: Instr_ok/memory.copy}
 
-.. _valid-MEMORY.INIT:
+.. _valid-memory.init:
 
-%{prose-pred: MEMORY.INIT}
+$${rule-prose: valid/memory.init}
 
 \
 
 $${rule: Instr_ok/memory.init}
 
-.. _valid-DATA.DROP:
+.. _valid-data.drop:
 
-%{prose-pred: DATA.DROP}
+$${rule-prose: valid/data.drop}
 
 \
 
@@ -717,95 +717,95 @@ $${rule: Instr_ok/data.drop}
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-NOP:
+.. _valid-nop:
 
-%{prose-pred: NOP}
+$${rule-prose: valid/nop}
 
 \
 
 $${rule: Instr_ok/nop}
 
-.. _valid-UNREACHABLE:
+.. _valid-unreachable:
 
-%{prose-pred: UNREACHABLE}
+$${rule-prose: valid/unreachable}
 
 \
 
 $${rule: Instr_ok/unreachable}
 
-.. _valid-BLOCK:
+.. _valid-block:
 
-%{prose-pred: BLOCK}
+$${rule-prose: valid/block}
 
 \
 
 $${rule: Instr_ok/block}
 
-.. _valid-LOOP:
+.. _valid-loop:
 
-%{prose-pred: LOOP}
+$${rule-prose: valid/loop}
 
 \
 
 $${rule: Instr_ok/loop}
 
-.. _valid-IF:
+.. _valid-if:
 
-%{prose-pred: IF}
+$${rule-prose: valid/if}
 
 \
 
 $${rule: Instr_ok/if}
 
-.. _valid-BR:
+.. _valid-br:
 
-%{prose-pred: BR}
+$${rule-prose: valid/br}
 
 \
 
 $${rule: Instr_ok/br}
 
-.. _valid-BR_IF:
+.. _valid-br_if:
 
-%{prose-pred: BR_IF}
+$${rule-prose: valid/br_if}
 
 \
 
 $${rule: Instr_ok/br_if}
 
-.. _valid-BR_TABLE:
+.. _valid-br_table:
 
-%{prose-pred: BR_TABLE}
+$${rule-prose: valid/br_table}
 
 \
 
 $${rule: Instr_ok/br_table}
 
-.. _valid-BR_ON_NULL:
+.. _valid-br_on_null:
 
-%{prose-pred: BR_ON_NULL}
+$${rule-prose: valid/br_on_null}
 
 \
 
 $${rule: Instr_ok/br_on_null}
 
-.. _valid-BR_ON_NON_NULL:
+.. _valid-br_on_non_null:
 
-%{prose-pred: BR_ON_NON_NULL}
+$${rule-prose: valid/br_on_non_null}
 
 \
 
 $${rule: Instr_ok/br_on_non_null}
 
-.. _valid-BR_ON_CAST:
+.. _valid-br_on_cast:
 
-%{prose-pred: BR_ON_CAST}
+$${rule-prose: valid/br_on_cast}
 
 \
 
 $${rule: Instr_ok/br_on_cast}
 
-.. _valid-BR_ON_CAST_FAIL:
+.. _valid-br_on_cast_fail:
 
 TODO (typo in DSL typing rule)
 
@@ -813,58 +813,58 @@ TODO (typo in DSL typing rule)
 
 $${rule: Instr_ok/br_on_cast_fail}
 
-.. _valid-RETURN:
+.. _valid-return:
 
-%{prose-pred: RETURN}
+$${rule-prose: valid/return}
 
 \
 
 $${rule: Instr_ok/return}
 
-.. _valid-CALL:
+.. _valid-call:
 
-%{prose-pred: CALL}
+$${rule-prose: valid/call}
 
 \
 
 $${rule: Instr_ok/call}
 
-.. _valid-CALL_REF:
+.. _valid-call_ref:
 
-%{prose-pred: CALL_REF}
+$${rule-prose: valid/call_ref}
 
 \
 
 $${rule+: Instr_ok/call_ref}
 
 
-.. _valid-CALL_INDIRECT:
+.. _valid-call_indirect:
 
-%{prose-pred: CALL_INDIRECT}
+$${rule-prose: valid/call_indirect}
 
 \
 
 $${rule+: Instr_ok/call_indirect}
 
-.. _valid-RETURN_CALL:
+.. _valid-return_call:
 
-%{prose-pred: RETURN_CALL}
+$${rule-prose: valid/return_call}
 
 \
 
 $${rule+: Instr_ok/return_call}
 
-.. _valid-RETURN_CALL_REF:
+.. _valid-return_call_ref:
 
-%{prose-pred: RETURN_CALL_REF}
+$${rule-prose: valid/return_call_ref}
 
 \
 
 $${rule+: Instr_ok/return_call_ref}
 
-.. _valid-RETURN_CALL_INDIRECT:
+.. _valid-return_call_indirect:
 
-%{prose-pred: RETURN_CALL_INDIRECT}
+$${rule-prose: valid/return_call_indirect}
 
 \
 
@@ -894,7 +894,7 @@ $${rule+:
 
 .. _def-in_binop:
 
-%{prose-func: in_binop}
+$${definition-prose: in_binop}
 
 \
 
@@ -902,7 +902,7 @@ $${definition: in_binop}
 
 .. _def-in_numtype:
 
-%{prose-func: in_numtype}
+$${definition-prose: in_numtype}
 
 \
 

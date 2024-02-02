@@ -8,7 +8,7 @@ Allocation
 
 .. _def-alloctypes:
 
-%{prose-func: alloctypes}
+$${definition-prose: alloctypes}
 
 \
 
@@ -16,7 +16,7 @@ $${definition: alloctypes}
 
 .. _def-allocfunc:
 
-%{prose-func: allocfunc}
+$${definition-prose: allocfunc}
 
 \
 
@@ -24,7 +24,7 @@ $${definition: allocfunc}
 
 .. _def-allocfuncs:
 
-%{prose-func: allocfuncs}
+$${definition-prose: allocfuncs}
 
 \
 
@@ -32,7 +32,7 @@ $${definition: allocfuncs}
 
 .. _def-alloctable:
 
-%{prose-func: alloctable}
+$${definition-prose: alloctable}
 
 \
 
@@ -40,7 +40,7 @@ $${definition: alloctable}
 
 .. _def-alloctables:
 
-%{prose-func: alloctables}
+$${definition-prose: alloctables}
 
 \
 
@@ -48,7 +48,7 @@ $${definition: alloctables}
 
 .. _def-allocmem:
 
-%{prose-func: allocmem}
+$${definition-prose: allocmem}
 
 \
 
@@ -56,7 +56,7 @@ $${definition: allocmem}
 
 .. _def-allocmems:
 
-%{prose-func: allocmems}
+$${definition-prose: allocmems}
 
 \
 
@@ -64,7 +64,7 @@ $${definition: allocmems}
 
 .. _def-allocglobal:
 
-%{prose-func: allocglobal}
+$${definition-prose: allocglobal}
 
 \
 
@@ -72,7 +72,7 @@ $${definition: allocglobal}
 
 .. _def-allocglobals:
 
-%{prose-func: allocglobals}
+$${definition-prose: allocglobals}
 
 \
 
@@ -80,7 +80,7 @@ $${definition: allocglobals}
 
 .. _def-allocelem:
 
-%{prose-func: allocelem}
+$${definition-prose: allocelem}
 
 \
 
@@ -88,7 +88,7 @@ $${definition: allocelem}
 
 .. _def-allocelems:
 
-%{prose-func: allocelems}
+$${definition-prose: allocelems}
 
 \
 
@@ -96,7 +96,7 @@ $${definition: allocelems}
 
 .. _def-allocdata:
 
-%{prose-func: allocdata}
+$${definition-prose: allocdata}
 
 \
 
@@ -104,7 +104,7 @@ $${definition: allocdata}
 
 .. _def-allocdatas:
 
-%{prose-func: allocdatas}
+$${definition-prose: allocdatas}
 
 \
 
@@ -112,7 +112,7 @@ $${definition: allocdatas}
 
 .. _def-growtable:
 
-%{prose-func: growtable}
+$${definition-prose: growtable}
 
 \
 
@@ -120,7 +120,7 @@ $${definition: growtable}
 
 .. _def-growmemory:
 
-%{prose-func: growmemory}
+$${definition-prose: growmemory}
 
 \
 
@@ -128,7 +128,7 @@ $${definition: growmemory}
 
 .. _def-instexport:
 
-%{prose-func: instexport}
+$${definition-prose: instexport}
 
 \
 
@@ -136,7 +136,7 @@ $${definition: instexport}
 
 .. _def-allocmodule:
 
-%{prose-func: allocmodule}
+$${definition-prose: allocmodule}
 
 \
 
@@ -149,7 +149,7 @@ Instantiation
 
 .. _def-inst_reftype:
 
-%{prose-func: inst_reftype}
+$${definition-prose: inst_reftype}
 
 \
 
@@ -157,7 +157,7 @@ $${definition: inst_reftype}
 
 .. _def-concat_instr:
 
-%{prose-func: concat_instr}
+$${definition-prose: concat_instr}
 
 \
 
@@ -165,7 +165,7 @@ $${definition: concat_instr}
 
 .. _def-rundata:
 
-%{prose-func: rundata}
+$${definition-prose: rundata}
 
 \
 
@@ -173,7 +173,7 @@ $${definition: rundata}
 
 .. _def-runelem:
 
-%{prose-func: runelem}
+$${definition-prose: runelem}
 
 \
 
@@ -181,7 +181,7 @@ $${definition: runelem}
 
 .. _def-instantiate:
 
-%{prose-func: instantiate}
+$${definition-prose: instantiate}
 
 \
 
@@ -194,7 +194,7 @@ Invocation
 
 .. _def-invoke:
 
-%{prose-func: invoke}
+$${definition-prose: invoke}
 
 \
 
@@ -207,7 +207,7 @@ Address Getters
 
 .. _def-funcaddr:
 
-%{prose-func: funcaddr}
+$${definition-prose: funcaddr}
 
 \
 
@@ -220,7 +220,7 @@ Getters
 
 .. _def-type:
 
-%{prose-func: type}
+$${definition-prose: type}
 
 \
 
@@ -228,7 +228,7 @@ $${definition: type}
 
 .. _def-func:
 
-%{prose-func: func}
+$${definition-prose: func}
 
 \
 
@@ -236,7 +236,7 @@ $${definition: func}
 
 .. _def-global:
 
-%{prose-func: global}
+$${definition-prose: global}
 
 \
 
@@ -244,7 +244,7 @@ $${definition: global}
 
 .. _def-table:
 
-%{prose-func: table}
+$${definition-prose: table}
 
 \
 
@@ -252,7 +252,7 @@ $${definition: table}
 
 .. _def-mem:
 
-%{prose-func: mem}
+$${definition-prose: mem}
 
 \
 
@@ -260,7 +260,7 @@ $${definition: mem}
 
 .. _def-elem:
 
-%{prose-func: elem}
+$${definition-prose: elem}
 
 \
 
@@ -268,7 +268,7 @@ $${definition: elem}
 
 .. _def-data:
 
-%{prose-func: data}
+$${definition-prose: data}
 
 \
 
@@ -276,7 +276,7 @@ $${definition: data}
 
 .. _def-local:
 
-%{prose-func: local}
+$${definition-prose: local}
 
 \
 
@@ -289,7 +289,7 @@ Setters
 
 .. _def-with_local:
 
-%{prose-func: with_local}
+$${definition-prose: with_local}
 
 \
 
@@ -297,7 +297,7 @@ $${definition: with_local}
 
 .. _def-with_locals:
 
-%{prose-func: with_locals}
+$${definition-prose: with_locals}
 
 \
 
@@ -305,7 +305,7 @@ $${definition: with_locals}
 
 .. _def-with_global:
 
-%{prose-func: with_global}
+$${definition-prose: with_global}
 
 \
 
@@ -313,7 +313,7 @@ $${definition: with_global}
 
 .. _def-with_table:
 
-%{prose-func: with_table}
+$${definition-prose: with_table}
 
 \
 
@@ -321,7 +321,7 @@ $${definition: with_table}
 
 .. _def-with_tableinst:
 
-%{prose-func: with_tableinst}
+$${definition-prose: with_tableinst}
 
 \
 
@@ -329,7 +329,7 @@ $${definition: with_tableinst}
 
 .. _def-with_mem:
 
-%{prose-func: with_mem}
+$${definition-prose: with_mem}
 
 \
 
@@ -337,7 +337,7 @@ $${definition: with_mem}
 
 .. _def-with_meminst:
 
-%{prose-func: with_meminst}
+$${definition-prose: with_meminst}
 
 \
 
@@ -345,7 +345,7 @@ $${definition: with_meminst}
 
 .. _def-with_elem:
 
-%{prose-func: with_elem}
+$${definition-prose: with_elem}
 
 \
 
@@ -353,7 +353,7 @@ $${definition: with_elem}
 
 .. _def-with_data:
 
-%{prose-func: with_data}
+$${definition-prose: with_data}
 
 \
 
@@ -361,7 +361,7 @@ $${definition: with_data}
 
 .. _def-with_array:
 
-%{prose-func: with_array}
+$${definition-prose: with_array}
 
 \
 
@@ -369,7 +369,7 @@ $${definition: with_array}
 
 .. _def-with_struct:
 
-%{prose-func: with_struct}
+$${definition-prose: with_struct}
 
 \
 
