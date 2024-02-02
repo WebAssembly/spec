@@ -4,13 +4,15 @@
 
 ;; Default values
 
+def $vzero: c_vectype ;; HACK for algorithmic backend
+
 def $default(valtype) : val  hint(show $default_%)
 
 def $default(I32) = (CONST I32 0)
 def $default(I64) = (CONST I64 0)
 def $default(F32) = (CONST F32 0)
 def $default(F64) = (CONST F64 0)
-def $default(V128) = (VVCONST V128 0)
+def $default(V128) = (VVCONST V128 $vzero)
 def $default(FUNCREF) = (REF.NULL FUNCREF)
 def $default(EXTERNREF) = (REF.NULL EXTERNREF)
 
