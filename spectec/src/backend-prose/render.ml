@@ -383,12 +383,19 @@ and render_expr' env expr =
 
 and render_path env path =
   match path.it with
-  | Al.Ast.IdxP e -> sprintf "[%s]" (render_expr env e)
+  | Al.Ast.IdxP e ->
+      let se = render_expr env e in
+      let space = if (String.starts_with ~prefix:math se) then " " else "" in
+      sprintf "the %s%s-th element" (render_expr env e) space
   | Al.Ast.SliceP (e1, e2) ->
-      sprintf "[%s : %s]" (render_expr env e1) (render_expr env e2)
-  | Al.Ast.DotP s -> sprintf ".%s" (render_math (render_kwd env s))
+      let se1 = render_expr env e1 in
+      let se2 = render_expr env e2 in
+      sprintf "the slice from %s to %s" se1 se2 
+  | Al.Ast.DotP (s, _) -> s 
 
-and render_paths env paths = List.map (render_path env) paths |> List.fold_left (^) ""
+and render_paths env paths =
+  let spaths = List.map (render_path env) paths in
+  String.concat " of " spaths
 
 (* Instructions *)
 
