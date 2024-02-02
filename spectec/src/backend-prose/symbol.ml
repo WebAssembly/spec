@@ -21,19 +21,19 @@ let extract_typ_kwd = function
 
 let extract_typcase_kwd = function
   | El.Ast.Nl -> None
-  | El.Ast.Elem (atom, _, _) -> (match atom with
+  | El.Ast.Elem (atom, _, _) -> (match atom.it with
     | El.Ast.Atom id -> Some id
     | _ -> None)
 
 let extract_typfield_kwd = function
   | El.Ast.Nl -> None
-  | El.Ast.Elem (atom, _, _) -> (match atom with
+  | El.Ast.Elem (atom, _, _) -> (match atom.it with
     | El.Ast.Atom id -> Some id
     | _ -> None)
 
 let rec extract_typ_kwds typ =
   match typ with
-  | El.Ast.AtomT atom -> (match atom with
+  | El.Ast.AtomT atom -> (match atom.it with
     | El.Ast.Atom id -> [ id ]
     | _ -> [])
   | El.Ast.IterT (typ_inner, _) -> extract_typ_kwds typ_inner.it

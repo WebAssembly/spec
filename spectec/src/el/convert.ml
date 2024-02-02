@@ -88,7 +88,7 @@ and expfield_of_typfield (atom, (t, _prems), _) =
 let rec sym_of_exp e =
   (match e.it with
   | VarE (id, args) -> VarG (id, args)
-  | AtomE (Atom id) -> VarG (id $ e.at, [])  (* for uppercase grammar ids in show hints *)
+  | AtomE {it = Atom id; _} -> VarG (id $ e.at, [])  (* for uppercase grammar ids in show hints *)
   | NatE (op, n) -> NatG (op, n)
   | TextE s -> TextG s
   | EpsE -> EpsG
