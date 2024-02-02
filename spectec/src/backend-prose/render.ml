@@ -217,18 +217,6 @@ let render_order index depth =
   | 3 -> alp_idx ^ ")"
   | _ -> failwith "unreachable"
 
-let render_list stringifier left sep right = function
-  | [] -> left ^ right
-  | h :: t ->
-      let limit = 16 in
-      let is_long = List.length t > limit in
-      left
-      ^ List.fold_left
-          (fun acc elem -> acc ^ sep ^ stringifier elem)
-          (stringifier h) (List.filteri (fun i _ -> i <= limit) t)
-      ^ (if is_long then (sep ^ "...") else "")
-      ^ right
-
 (* Operators *)
 
 let render_prose_cmpop = function
@@ -275,20 +263,6 @@ and render_kwd env kwd = match Symbol.narrow_kwd env.symbol kwd with
       if env.config.macros then lhs else rhs
   | None -> render_name (Al.Print.string_of_kwd kwd)
 
-and render_funcname env fname =
-  if Symbol.find_func env.symbol fname
-  then (
-    let lhs, rhs = Macro.macro_func env.macro fname in
-    if env.config.macros then lhs else rhs
-  )
-  else (
-    let escape acc c =
-      if c = '.' then acc ^ "{.}"
-      else if c = '_' then acc ^ "\\_"
-      else acc ^ (String.make 1 c)
-    in
-    String.fold_left escape "" fname
-  )
 
 (* Expressions and Paths *)
 
