@@ -229,18 +229,18 @@ let render_prose_cmpop = function
 
 let render_al_unop = function
   | Al.Ast.NotOp -> "not"
-  | Al.Ast.MinusOp -> "-"
+  | Al.Ast.MinusOp -> "minus"
 
 let render_al_binop = function
   | Al.Ast.AndOp -> "and"
   | Al.Ast.OrOp -> "or"
   | Al.Ast.ImplOp -> "implies"
   | Al.Ast.EquivOp -> "is equivanlent to"
-  | Al.Ast.AddOp -> "+"
-  | Al.Ast.SubOp -> "-"
-  | Al.Ast.MulOp -> "\\cdot"
-  | Al.Ast.DivOp -> "/"
-  | Al.Ast.ExpOp -> "^"
+  | Al.Ast.AddOp -> "plus"
+  | Al.Ast.SubOp -> "minus"
+  | Al.Ast.MulOp -> "multiplied by"
+  | Al.Ast.DivOp -> "divided by"
+  | Al.Ast.ExpOp -> "to the power of"
   | Al.Ast.EqOp -> "is"
   | Al.Ast.NeOp -> "is not"
   | Al.Ast.LtOp -> "is less than"
@@ -298,11 +298,11 @@ and render_expr' env expr =
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsValidE e; _ }) ->
       let se = render_expr env e in
       sprintf "%s is not valid" se
-  | Al.Ast.UnE (op, e) when Option.is_none (al_to_el_unop op) ->
+  | Al.Ast.UnE (op, e) ->
       let sop = render_al_unop op in
       let se = render_expr env e in
       sprintf "%s %s" sop se
-  | Al.Ast.BinE (op, e1, e2) when Option.is_none (al_to_el_binop op)  ->
+  | Al.Ast.BinE (op, e1, e2) ->
       let sop = render_al_binop op in
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
@@ -319,7 +319,7 @@ and render_expr' env expr =
       (match dir with
       | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
       | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.IterE (e, ids, iter) when Option.is_none (al_to_el_exp e) ->
+  | Al.Ast.IterE (e, ids, iter) when al_to_el_exp e = None ->
       let se = render_expr env e in
       let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
       let loop = Al.Al_util.iterE (ids, [], iter) in
@@ -376,9 +376,9 @@ and render_expr' env expr =
       let se2 = render_expr env e2 in
       sprintf "%s matches %s" se1 se2
   | _ ->
-      let s = Al.Print.string_of_expr expr in
+      let se = Al.Print.string_of_expr expr in
       let at = Util.Source.string_of_region expr.at in
-      sprintf "warning: %s (%s) was not properly handled by prose backend\n" s at
+      sprintf "warning: %s (%s) was not properly handled by prose backend\n" se at
       |> failwith;
 
 and render_path env path =
@@ -391,7 +391,7 @@ and render_path env path =
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "the slice from %s to %s" se1 se2 
-  | Al.Ast.DotP (s, _) -> s 
+  | Al.Ast.DotP kwd -> render_math (render_kwd env kwd)
 
 and render_paths env paths =
   let spaths = List.map (render_path env) paths in
