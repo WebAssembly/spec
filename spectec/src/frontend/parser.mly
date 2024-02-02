@@ -672,7 +672,7 @@ gram :
 arg : arg_ { ref $1 $ at $sloc }
 arg_ :
   | exp_bin { ExpA $1 }
-  | SYNTAX typ { SynA $2 }
+  | SYNTAX typ { TypA $2 }
   | GRAMMAR sym { GramA $2 }
 
 param : param_ { $1 $ at $sloc }
@@ -682,7 +682,7 @@ param_ :
     { let id =
         try El.Convert.varid_of_typ $1 with Source.Error _ -> "" $ at $sloc
       in ExpP (id, $1) }
-  | SYNTAX varid_bind { SynP $2 }
+  | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }
 
 
@@ -692,10 +692,10 @@ def_ :
     { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
   | SYNTAX varid_bind ruleid_list hint* EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      SynD ($2, id $ at $loc($3), [], $6, $4) }
+      TypD ($2, id $ at $loc($3), [], $6, $4) }
   | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* EQ deftyp exit_scope
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
-      SynD ($2, id $ at $loc($6), $4, $9, $7) }
+      TypD ($2, id $ at $loc($6), $4, $9, $7) }
   | GRAMMAR varid_bind ruleid_list COLON typ hint* EQ gram
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       GramD ($2, id $ at $loc($3), [], $5, $8, $6) }
@@ -721,7 +721,7 @@ def_ :
     { SepD }
   | SYNTAX varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      HintD (SynH ($2, id $ at $loc($3), $4) $ at $sloc) }
+      HintD (TypH ($2, id $ at $loc($3), $4) $ at $sloc) }
   | SYNTAX varid_bind ruleid_list atomid hint*
     { HintD (AtomH ($4 $ at $loc($4), $5) $ at $sloc) }
   | GRAMMAR varid_bind ruleid_list hint*

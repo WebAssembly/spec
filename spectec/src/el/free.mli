@@ -3,7 +3,7 @@ open Ast
 module Set : Set.S with type elt = string
 
 type sets =
-  { synid : Set.t;
+  { typid : Set.t;
     gramid : Set.t;
     relid : Set.t;
     varid : Set.t;
@@ -27,3 +27,6 @@ val pat_arg : arg -> sets
 val bound_exp : exp -> sets
 val bound_arg : arg -> sets
 val bound_prem : premise -> sets
+
+val bound_list : ('a -> sets) -> 'a list -> sets
+val bound_nl_list : ('a -> sets) -> 'a nl_list -> sets

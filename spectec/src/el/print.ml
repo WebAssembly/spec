@@ -256,7 +256,7 @@ and string_of_gram gram =
 and string_of_arg a =
   match !(a.it) with
   | ExpA e -> string_of_exp e
-  | SynA t -> "syntax " ^ string_of_typ t
+  | TypA t -> "syntax " ^ string_of_typ t
   | GramA g -> "grammar " ^ string_of_sym g
 
 and string_of_args = function
@@ -265,8 +265,8 @@ and string_of_args = function
 
 let string_of_param p =
   match p.it with
-  | ExpP (id, t) -> (if id.it = "" then "" else id.it ^ " : ") ^ string_of_typ t
-  | SynP id -> "syntax " ^ id.it
+  | ExpP (id, t) -> (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
+  | TypP id -> "syntax " ^ id.it
   | GramP (id, t) -> "grammar " ^ id.it ^ " : " ^ string_of_typ t
 
 let string_of_params = function
@@ -277,7 +277,7 @@ let string_of_def d =
   match d.it with
   | FamD (id, ps, _hints) ->
     "syntax " ^ id.it ^ string_of_params ps
-  | SynD (id1, id2, args, t, _hints) ->
+  | TypD (id1, id2, args, t, _hints) ->
     let id2' = if id2.it = "" then "" else "/" ^ id2.it in
     "syntax " ^ id1.it ^ id2' ^ string_of_args args ^ " = " ^ string_of_typ t
   | GramD (id1, id2, ps, t, gram, _hints) ->

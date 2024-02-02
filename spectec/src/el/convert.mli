@@ -8,7 +8,7 @@ val concat_map_nl_list : ('a -> 'b nl_list) -> 'a nl_list -> 'b nl_list
 val map_filter_nl_list : ('a -> 'b) -> 'a nl_list -> 'b list
 
 val typ_of_varid : id -> typ
-val varid_of_typ : typ -> id (* raises Source.Error *)
+val varid_of_typ : typ -> id
 
 val typ_of_exp : exp -> typ (* raises Source.Error *)
 val exp_of_typ : typ -> exp (* raises Source.Error *)

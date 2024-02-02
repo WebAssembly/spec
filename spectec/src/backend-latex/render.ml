@@ -20,16 +20,16 @@ type rel_sort = TypingRel | ReductionRel
 type env =
   { config : config;
     vars : Set.t ref;
-    show_syn : exp list Map.t ref;
+    show_typ : exp list Map.t ref;
     show_gram : exp list Map.t ref;
     show_var : exp list Map.t ref;
     show_rel : exp list Map.t ref;
     show_def : exp list Map.t ref;
     show_case : exp list Map.t ref;
     show_field : exp list Map.t ref;
-    desc_syn : exp list Map.t ref;
+    desc_typ : exp list Map.t ref;
     desc_gram : exp list Map.t ref;
-    deco_syn : bool;
+    deco_typ : bool;
     deco_rule : bool;
     current_rel : string;
   }
@@ -37,21 +37,21 @@ type env =
 let new_env config =
   { config;
     vars = ref Set.empty;
-    show_syn = ref Map.empty;
+    show_typ = ref Map.empty;
     show_gram = ref Map.empty;
     show_var = ref Map.empty;
     show_rel = ref Map.empty;
     show_def = ref Map.empty;
     show_case = ref Map.empty;
     show_field = ref Map.empty;
-    desc_syn = ref Map.empty;
+    desc_typ = ref Map.empty;
     desc_gram = ref Map.empty;
-    deco_syn = false;
+    deco_typ = false;
     deco_rule = false;
     current_rel = "";
   }
 
-let with_syntax_decoration b env = {env with deco_syn = b}
+let with_syntax_decoration b env = {env with deco_typ = b}
 let with_rule_decoration b env = {env with deco_rule = b}
 
 
@@ -81,10 +81,10 @@ let env_hintdef env hd =
   | AtomH (id, hints) ->
     env_hints "show" env.show_field id.it hints;
     env_hints "show" env.show_case id.it hints
-  | SynH (id1, id2, hints) ->
+  | TypH (id1, id2, hints) ->
     let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
-    env_hints "desc" env.desc_syn id hints;
-    env_hints "show" env.show_syn id1.it hints;
+    env_hints "desc" env.desc_typ id hints;
+    env_hints "show" env.show_typ id1.it hints;
     env_hints "show" env.show_var id1.it hints
   | GramH (id1, id2, hints) ->
     let id = if id2.it = "" then id1.it else id1.it ^ "/" ^ id2.it in
@@ -98,11 +98,11 @@ let env_def env d =
   match d.it with
   | FamD (id, _ps, hints) ->
     env.vars := Set.add id.it !(env.vars);
-    env_hintdef env (SynH (id, "" $ id.at, hints) $ d.at);
+    env_hintdef env (TypH (id, "" $ id.at, hints) $ d.at);
     env_hintdef env (VarH (id, hints) $ d.at)
-  | SynD (id1, id2, _args, t, hints) ->
+  | TypD (id1, id2, _args, t, hints) ->
     env.vars := Set.add id1.it !(env.vars);
-    env_hintdef env (SynH (id1, id2, hints) $ d.at);
+    env_hintdef env (TypH (id1, id2, hints) $ d.at);
     env_hintdef env (VarH (id1, hints) $ d.at);
     env_typ env t
   | GramD (id1, id2, _ps, _t, _gram, hints) ->
@@ -386,7 +386,7 @@ let rec render_id_sub env style show at = function
 let render_id env style show id =
   render_id_sub env style show id.at (String.split_on_char '_' id.it)
 
-let render_synid env id = render_id env `Var env.show_syn id
+let render_typid env id = render_id env `Var env.show_typ id
 let render_varid env id = render_id env `Var env.show_var id
 let render_defid env id = render_id env `Func (ref Map.empty) id
 let render_gramid env id = render_id env `Token env.show_gram
@@ -542,7 +542,7 @@ and render_exp env e =
   *)
   match e.it with
   | VarE (id, args) ->
-    render_apply render_varid render_exp env env.show_syn id args
+    render_apply render_varid render_exp env env.show_typ id args
   | BoolE b -> render_atom env (Atom (string_of_bool b))
   | NatE (DecOp, n) -> string_of_int n
   | NatE (HexOp, n) ->
@@ -628,7 +628,7 @@ and render_exp env e =
   | CallE (id, args) ->
     render_apply render_defid render_exp env env.show_def id args
   | IterE (e1, iter) -> "{" ^ render_exp env e1 ^ render_iter env iter ^ "}"
-  | TypE ({it = VarE ({it = ""; _}, []); _}, t) ->
+  | TypE ({it = VarE ({it = "_"; _}, []); _}, t) ->
     (* HACK for rendering shorthand parameters that have been turned into args
      * with arg_of_param, for use in render_apply. *)
     render_typ env t
@@ -743,7 +743,7 @@ and render_gram env gram =
 and render_arg env arg =
   match !(arg.it) with
   | ExpA e -> render_exp env e
-  | SynA t -> render_typ env t
+  | TypA t -> render_typ env t
   | GramA g -> render_sym env g
 
 and render_args env args =
@@ -753,8 +753,8 @@ and render_args env args =
 
 let render_param env p =
   match p.it with
-  | ExpP (id, t) -> if id.it = "" then render_typ env t else render_varid env id
-  | SynP id -> render_synid env id
+  | ExpP (id, t) -> if id.it = "_" then render_typ env t else render_varid env id
+  | TypP id -> render_typid env id
   | GramP (id, _t) -> render_gramid env id
 
 let _render_params env = function
@@ -777,14 +777,14 @@ let merge_gram gram1 gram2 =
   | (dots1, prods1, _), (_, prods2, dots2) ->
     (dots1, prods1 @ strip_nl prods2, dots2) $ gram1.at
 
-let rec merge_syndefs = function
+let rec merge_typdefs = function
   | [] -> []
-  | {it = SynD (id1, _, ps, t1, _); at; _}::
-    {it = SynD (id2, _, _ps, t2, _); _}::ds when id1.it = id2.it ->
-    let d' = SynD (id1, "" $ no_region, ps, merge_typ t1 t2, []) $ at in
-    merge_syndefs (d'::ds)
+  | {it = TypD (id1, _, ps, t1, _); at; _}::
+    {it = TypD (id2, _, _ps, t2, _); _}::ds when id1.it = id2.it ->
+    let d' = TypD (id1, "" $ no_region, ps, merge_typ t1 t2, []) $ at in
+    merge_typdefs (d'::ds)
   | d::ds ->
-    d :: merge_syndefs ds
+    d :: merge_typdefs ds
 
 let rec merge_gramdefs = function
   | [] -> []
@@ -800,16 +800,16 @@ let string_of_desc = function
   | Some ({at; _}::_) -> error at "malformed description hint"
   | _ -> None
 
-let render_syndeco env id =
-  match env.deco_syn, string_of_desc (Map.find_opt id.it !(env.desc_syn)) with
+let render_typdeco env id =
+  match env.deco_typ, string_of_desc (Map.find_opt id.it !(env.desc_typ)) with
   | true, Some s -> "\\mbox{(" ^ s ^ ")} & "
   | _ -> "& "
 
-let render_syndef env d =
+let render_typdef env d =
   match d.it with
-  | SynD (id1, _id2, args, t, _) ->
-    render_syndeco env id1 ^
-    render_apply render_synid render_exp env env.show_syn id1 args ^
+  | TypD (id1, _id2, args, t, _) ->
+    render_typdeco env id1 ^
+    render_apply render_typid render_exp env env.show_typ id1 args ^
     " &::=& " ^ render_typ env t
   | _ -> assert false
 
@@ -878,11 +878,11 @@ let rec render_defs env = function
   | [] -> ""
   | d::ds' as ds ->
     match d.it with
-    | SynD _ ->
-      let ds' = merge_syndefs ds in
-      let deco = if env.deco_syn then "l" else "l@{}" in
+    | TypD _ ->
+      let ds' = merge_typdefs ds in
+      let deco = if env.deco_typ then "l" else "l@{}" in
       "\\begin{array}{@{}" ^ deco ^ "rrl@{}l@{}}\n" ^
-        render_sep_defs (render_syndef env) ds' ^
+        render_sep_defs (render_typdef env) ds' ^
       "\\end{array}"
     | GramD _ ->
       let ds' = merge_gramdefs ds in
@@ -922,12 +922,12 @@ let render_def env d = render_defs env [d]
 
 (* Scripts *)
 
-let rec split_syndefs syndefs = function
-  | [] -> List.rev syndefs, []
+let rec split_typdefs typdefs = function
+  | [] -> List.rev typdefs, []
   | d::ds ->
     match d.it with
-    | SynD _ -> split_syndefs (d::syndefs) ds
-    | _ -> List.rev syndefs, d::ds
+    | TypD _ -> split_typdefs (d::typdefs) ds
+    | _ -> List.rev typdefs, d::ds
 
 let rec split_gramdefs gramdefs = function
   | [] -> List.rev gramdefs, []
@@ -955,9 +955,9 @@ let rec render_script env = function
   | [] -> ""
   | d::ds ->
     match d.it with
-    | SynD _ ->
-      let syndefs, ds' = split_syndefs [d] ds in
-      "$$\n" ^ render_defs env syndefs ^ "\n$$\n\n" ^
+    | TypD _ ->
+      let typdefs, ds' = split_typdefs [d] ds in
+      "$$\n" ^ render_defs env typdefs ^ "\n$$\n\n" ^
       render_script env ds'
     | GramD _ ->
       let gramdefs, ds' = split_gramdefs [d] ds in

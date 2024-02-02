@@ -150,13 +150,13 @@ and eq_sym g1 g2 =
 and eq_arg a1 a2 =
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
-  | SynA t1, SynA t2 -> eq_typ t1 t2
+  | TypA t1, TypA t2 -> eq_typ t1 t2
   | GramA g1, GramA g2 -> eq_sym g1 g2
   | _, _ -> false
 
 and eq_param p1 p2 =
   match p1.it, p2.it with
   | ExpP (id1, t1), ExpP (id2, t2) -> id1.it = id2.it && eq_typ t1 t2
-  | SynP id1, SynP id2 -> id1.it = id2.it
+  | TypP id1, TypP id2 -> id1.it = id2.it
   | GramP (id1, t1), GramP (id2, t2) -> id1.it = id2.it && eq_typ t1 t2
   | _, _ -> false

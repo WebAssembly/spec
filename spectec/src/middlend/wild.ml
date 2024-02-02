@@ -49,7 +49,7 @@ let rec is_universal env exp : bool =
   match exp.it with
   | TupE es -> List.for_all (is_universal env) es
   | CaseE _ -> begin match exp.note.it with
-    | VarT i -> S.mem i.it env.unit_variants
+    | VarT (i, _) -> S.mem i.it env.unit_variants
     | _ -> false
   end
   | _ -> false
@@ -145,10 +145,11 @@ and t_exp' env e : binds * exp' =
   | DotE (exp, a) -> t_e env exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e env exp (fun exp' -> LenE exp')
   | MixE (mo, exp) -> t_e env exp (fun exp' -> MixE (mo, exp'))
-  | CallE (f, exp) ->t_e env exp (fun exp' -> CallE (f, exp'))
-  | OptE (Some exp) ->t_e env exp (fun exp' -> OptE (Some exp'))
-  | TheE exp ->t_e env exp (fun exp' -> TheE exp')
-  | CaseE (a, exp) ->t_e env exp (fun exp' -> CaseE (a, exp'))
+  | CallE (f, args) -> t_list t_arg env args (fun args' -> CallE (f, args'))
+  | ProjE (exp, i) -> t_e env exp (fun exp' -> ProjE (exp', i))
+  | OptE (Some exp) -> t_e env exp (fun exp' -> OptE (Some exp'))
+  | TheE exp -> t_e env exp (fun exp' -> TheE exp')
+  | CaseE (a, exp) -> t_e env exp (fun exp' -> CaseE (a, exp'))
   | SubE (exp, a, b) -> t_e env exp (fun exp' -> SubE (exp', a, b))
 
   | BinE (bo, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
@@ -190,6 +191,12 @@ and t_path' env path = match path with
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp env (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
   | DotP (path, a) -> unary t_path env path (fun path' -> DotP (path', a))
 
+and t_arg env = phrase t_arg' env
+
+and t_arg' env arg = match arg with
+  | ExpA exp -> unary t_exp env exp (fun exp' -> ExpA exp')
+  | TypA _ -> [], arg
+
 let rec t_prem env : premise -> binds * premise = phrase t_prem' env
 
 and t_prem' env prem : binds * premise' =
@@ -219,7 +226,7 @@ let t_rule env x = { x with it = t_rule' env x.it }
 let t_rules env = List.map (t_rule env)
 
 let rec t_def' env = function
-  | SynD (id, { it = VariantT []; _ }) as def ->
+  | TypD (id, _, [{ it = InstD (_, _, { it = VariantT []; _ }); _ }]) as def ->
     env.unit_variants <- S.add id.it env.unit_variants;
     def
   | RecD defs -> RecD (t_defs env defs)

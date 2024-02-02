@@ -158,7 +158,7 @@ let () =
     if !print_elab_il || !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     log "IL Validation...";
-    Il.Validation.valid il;
+    Il.Valid.valid il;
 
     (match !target with
     | Prose | Splice _ | Interpreter _ ->
@@ -175,7 +175,7 @@ let () =
           let il = run_pass pass il in
           if !print_all_il then Printf.printf "%s\n%!" (Il.Print.string_of_script il);
           log ("IL Validation after pass " ^ pass_flag pass ^ "...");
-          Il.Validation.valid il;
+          Il.Valid.valid il;
           il
         )
       ) il all_passes

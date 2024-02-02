@@ -44,7 +44,7 @@ The environment consist of:
   * Which SubE type pairs have been observed, but not yet generated
 *)
 type env =
-  { mutable typ : (id * typcase list) M.t;
+  { mutable typ : (param list * id * arg list * typcase list) M.t;
     mutable pairs : S.t
   }
 
@@ -53,27 +53,43 @@ let new_env () : env =
     pairs = S.empty;
   }
 
-let lookup (env : env) (id : id) : id * typcase list =
+let lookup (env : env) (id : id) : param list * id * arg list * typcase list =
   match M.find_opt id.it env.typ with
   | None -> error id.at ("unknown type `" ^ id.it ^ "`")
   | Some t -> t
 
-let register_variant (env : env) (id : id) (cases : typcase list) =
+let arg_of_param param =
+  match param.it with
+  | ExpP (id, t) -> ExpA (VarE id $$ param.at % t) $ param.at
+  | TypP id -> TypA (VarT (id, []) $ param.at) $ param.at
+
+let register_variant (env : env) (id : id) params (cases : typcase list) =
   if M.mem id.it env.typ then
     error id.at ("duplicate declaration for type `" ^ id.it ^ "`")
   else
-    env.typ <- M.add id.it (id, cases) env.typ
+    env.typ <- M.add id.it (params, id, List.map arg_of_param params, cases) env.typ
 
-let register_alias (env : env) (id : id) (id2 : id) =
+let subst_of_args =
+  List.fold_left2 (fun s arg param ->
+    match arg.it, param.it with
+    | ExpA e, ExpP (id, _) -> Il.Subst.add_varid s id e
+    | TypA t, TypP id -> Il.Subst.add_typid s id t
+    | _, _ -> assert false
+  ) Il.Subst.empty
+
+let register_alias (env : env) (id : id) params (id2 : id) args =
   match M.find_opt id2.it env.typ with
-  | Some type_info ->
-    env.typ <- M.add id.it type_info env.typ
+  | Some (params2, id3, args2, cases) ->
+    let s = subst_of_args args params2 in
+    let args' = Il.Subst.(subst_list subst_arg s args2) in
+    let cases' = Il.Subst.(subst_list subst_typcase s cases) in
+    env.typ <- M.add id.it (params, id3, args', cases') env.typ
   | None -> () (* Not an alias of a variant type *)
 
 let injection_name (sub : id) (sup : id) = sup.it ^ "_" ^ sub.it $ no_region
 
 let var_of_typ typ = match typ.it with
-  | VarT id -> Some id
+  | VarT (id, args) -> Some (id, args)
   | NumT _ -> None
   | _ -> error typ.at ("Non-variable or number type expression not supported:\n" ^ Il.Print.string_of_typ typ)
 
@@ -85,9 +101,9 @@ let rec t_exp env exp =
   match exp'.it with
   | SubE (e, sub_ty, sup_ty) ->
     begin match var_of_typ sub_ty, var_of_typ sup_ty with
-    | Some sub, Some sup ->
+    | Some (sub, args_sub), Some (sup, args_sup) ->
       env.pairs <- S.add (sub, sup) env.pairs;
-      { exp' with it = CallE (injection_name sub sup, e)}
+      { exp' with it = CallE (injection_name sub sup, args_sub @ args_sup @ [ExpA e $ e.at])}
     | _, _ -> exp'
   end
   | _ -> exp'
@@ -111,8 +127,9 @@ and t_exp' env = function
   | LenE exp -> LenE exp
   | TupE es -> TupE (List.map (t_exp env) es)
   | MixE (mixop, exp) -> MixE (mixop, t_exp env exp)
-  | CallE (a, exp) -> CallE (a, t_exp env exp)
+  | CallE (a, args) -> CallE (a, List.map (t_arg env) args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
+  | ProjE (e, i) -> ProjE (t_exp env e, i)
   | OptE None -> OptE None
   | OptE (Some exp) -> OptE (Some exp)
   | TheE exp -> TheE exp
@@ -135,6 +152,14 @@ and t_path' env = function
 
 and t_path env x = { x with it = t_path' env x.it }
 
+and t_arg' env = function
+  | ExpA exp -> ExpA (t_exp env exp)
+  | TypA t -> TypA t
+
+and t_arg env x = { x with it = t_arg' env x.it }
+
+let t_args env = List.map (t_arg env)
+
 let rec t_prem' env = function
   | RulePr (id, mixop, exp) -> RulePr (id, mixop, t_exp env exp)
   | IfPr e -> IfPr (t_exp env e)
@@ -148,7 +173,7 @@ let t_prems env = List.map (t_prem env)
 
 let t_clause' env = function
  | DefD (binds, lhs, rhs, prems) ->
-   DefD (binds, t_exp env lhs, t_exp env rhs, t_prems env prems)
+   DefD (binds, t_args env lhs, t_exp env rhs, t_prems env prems)
 
 let t_clause env (clause : clause) = { clause with it = t_clause' env clause.it }
 
@@ -162,8 +187,8 @@ let t_rule env x = { x with it = t_rule' env x.it }
 
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
-  | DecD (id, typ1, typ2, clauses) ->
-    DecD (id, typ1, typ2, t_clauses env clauses)
+  | DecD (id, params, typ, clauses) ->
+    DecD (id, params, typ, t_clauses env clauses)
   | RelD (id, mixop, typ, rules) ->
     RelD (id, mixop, typ, List.map (t_rule env) rules)
   | def -> def
@@ -174,10 +199,11 @@ and t_def env (def : def) = { def with it = t_def' env def.it }
 
 let rec add_type_info env (def : def) = match def.it with
   | RecD defs -> List.iter (add_type_info env) defs
-  | SynD (id, deftyp) ->
+  | TypD (id, params, [inst]) ->  (* TODO: handle type families *)
+    let InstD (_, _, deftyp) = inst.it in
     begin match deftyp.it with
-    | VariantT cases -> register_variant env id cases
-    | AliasT {it = VarT id2; _} -> register_alias env id id2
+    | VariantT cases -> register_variant env id params cases
+    | AliasT {it = VarT (id2, args); _} -> register_alias env id params id2 args
     | _ -> ()
     end
   | _ ->()
@@ -191,32 +217,48 @@ let ready_pairs (env : env) =
   S.elements ready
 
 
+(* Rename parameters to avoid name clashes *)
+let rec rename_params s = function
+  | [] -> []
+  | { it = ExpP (id, t); at; _ } :: params ->
+    let id' = (id.it ^ "_2") $ id.at in
+    let t' = Il.Subst.subst_typ s t in
+    (ExpP (id', t') $ at) ::
+      rename_params (Il.Subst.add_varid s id (VarE id' $$ id.at % t')) params
+  | { it = TypP id; at; _ } :: params ->
+    let id' = (id.it ^ "_2") $ id.at in
+    (TypP id' $ at) ::
+      rename_params (Il.Subst.add_typid s id (VarT (id', []) $ id.at)) params
+
 let insert_injections env (def : def) : def list =
   add_type_info env def;
   let pairs = ready_pairs env in
   [ def ] @
   List.map (fun (sub, sup) ->
     let name = injection_name sub sup in
-    let sub_ty = VarT sub $ no_region in
-    let sup_ty = VarT sup $ no_region in
-    let (real_id, cases) = lookup env sub in
+    let (params_sub, real_id_sub, args_sub, cases_sub) = lookup env sub in
+    let (params_sup, _, _, _) = lookup env sup in
+    let params_sup' = rename_params Il.Subst.empty params_sup in
+    let sub_ty = VarT (sub, List.map arg_of_param params_sub) $ no_region in
+    let sup_ty = VarT (sup, List.map arg_of_param params_sup') $ no_region in
+    let real_ty = VarT (real_id_sub, args_sub) $ no_region in
     let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
-        let binds = List.mapi (fun i arg_typ_i -> ("x" ^ string_of_int i $ no_region, arg_typ_i, [])) ts in
+        let binds = List.mapi (fun i (_, arg_typ_i) -> ("x" ^ string_of_int i $ no_region, arg_typ_i, [])) ts in
         let xes = List.map (fun (x, arg_typ_i, _) -> VarE x $$ no_region % arg_typ_i) binds in
         let xe = TupE xes $$ no_region % arg_typ in
         DefD (binds,
-          CaseE (a, xe) $$ no_region % (VarT real_id $ no_region),
+          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
           CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
         DefD ([(x, arg_typ, [])],
-          CaseE (a, xe) $$ no_region % (VarT real_id $ no_region),
+          [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
           CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
-      ) cases in
-    DecD (name, sub_ty, sup_ty, clauses) $ no_region
+      ) cases_sub in
+    DecD (name, params_sub @ params_sup' @ [ExpP ("_" $ no_region, sub_ty) $ no_region], sup_ty, clauses) $ no_region
   ) pairs
 
 

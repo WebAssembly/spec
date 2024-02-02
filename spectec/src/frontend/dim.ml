@@ -56,7 +56,7 @@ let check_env (env : renv ref) : env =
 
 (* Collecting constraints *)
 
-let check_synid _env _ctx _id = ()   (* Types are always global *)
+let check_typid _env _ctx _id = ()   (* Types are always global *)
 let check_gramid _env _ctx _id = ()  (* Grammars are always global *)
 
 let check_varid env ctx id =
@@ -81,7 +81,7 @@ let rec check_iter env ctx iter =
 and check_typ env ctx t =
   match t.it with
   | VarT (id, args) ->
-    check_synid env ctx id;
+    check_typid env ctx id;
     List.iter (check_arg env ctx) args
   | BoolT
   | NumT _
@@ -218,7 +218,7 @@ and check_prem env ctx prem =
 and check_arg env ctx a =
   match !(a.it) with
   | ExpA e -> check_exp env ctx e
-  | SynA t -> check_typ env ctx t
+  | TypA t -> check_typ env ctx t
   | GramA g -> check_sym env ctx g
 
 let check_param env ctx p =
@@ -226,7 +226,7 @@ let check_param env ctx p =
   | ExpP (id, t) ->
     check_varid env ctx id;
     check_typ env ctx t
-  | SynP id -> check_synid env ctx id
+  | TypP id -> check_typid env ctx id
   | GramP (id, t) ->
     check_gramid env ctx id;
     check_typ env ctx t
@@ -237,7 +237,7 @@ let check_def d : env =
   | FamD (_id, ps, _hints) ->
     List.iter (check_param env []) ps;
     check_env env
-  | SynD (_id1, _id2, args, t, _hints) ->
+  | TypD (_id1, _id2, args, t, _hints) ->
     List.iter (check_arg env []) args;
     check_typ env [] t;
     check_env env
@@ -356,13 +356,16 @@ and annot_exp env e : Il.Ast.exp * occur =
     | MixE (op, e1) ->
       let e1', occur1 = annot_exp env e1 in
       MixE (op, e1'), occur1
-    | CallE (id, e1) ->
-      let e1', occur1 = annot_exp env e1 in
-      CallE (id, e1'), occur1
+    | CallE (id, as1) ->
+      let as1', occurs = List.split (List.map (annot_arg env) as1) in
+      CallE (id, as1'), List.fold_left union Env.empty occurs
     | IterE (e1, iter) ->
       let e1', occur1 = annot_exp env e1 in
       let iter', occur' = annot_iterexp env occur1 iter e.at in
       IterE (e1', iter'), occur'
+    | ProjE (e1, i) ->
+      let e1', occur1 = annot_exp env e1 in
+      ProjE (e1', i), occur1
     | OptE None ->
       OptE None, Env.empty
     | OptE (Some e1) ->
@@ -422,6 +425,14 @@ and annot_iterexp env occur1 (iter, ids) at : Il.Ast.iterexp * occur =
   let ids' = List.map (fun (x, _) -> x $ at) (Env.bindings occur1') in
   (iter', ids'), union occur1' occur2
 
+and annot_arg env a : Il.Ast.arg * occur =
+  let it, occur =
+    match a.it with
+    | ExpA e ->
+      let e', occur1 = annot_exp env e in
+      ExpA e', occur1
+    | TypA t -> TypA t, Env.empty
+  in {a with it}, occur
 
 and annot_prem env prem : Il.Ast.premise * occur =
   let it, occur =
@@ -444,12 +455,12 @@ and annot_prem env prem : Il.Ast.premise * occur =
       IterPr (prem1', iter'), occur'
   in {prem with it}, occur
 
-let annot_exp env e =
-  let e', occurs = annot_exp env e in
-  assert (Env.for_all (fun _ ctx -> ctx = []) occurs);
-  e'
 
-let annot_prem env prem =
-  let prem', occurs = annot_prem env prem in
+let annot_top annot_x env x =
+  let x', occurs = annot_x env x in
   assert (Env.for_all (fun _ ctx -> ctx = []) occurs);
-  prem'
+  x'
+
+let annot_exp = annot_top annot_exp
+let annot_arg = annot_top annot_arg
+let annot_prem = annot_top annot_prem

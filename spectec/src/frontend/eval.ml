@@ -19,10 +19,7 @@ type subst = Subst.t
 
 exception Irred
 
-let (let*) x f =
-  match x with
-  | Some y -> f y
-  | None -> None
+let (let*) = Option.bind
 
 
 (* Matching Lists *)
@@ -206,17 +203,17 @@ and reduce_exp env e : exp =
   | UpdE (e1, p, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
-    (match e1'.it, e2'.it with
-    | _ -> UpdE (e1', p, e2') $ e.at
-    )
+    reduce_path env e1' p
+      (fun e' p' -> if p'.it = RootP then e2' else UpdE (e', p', e2') $ e.at)
   | ExtE (e1, p, e2) ->
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
-    (* TODO *)
-    (match e1'.it, e2'.it with
-    | _ -> ExtE (e1', p, e2') $ e.at
-    )
+    reduce_path env e1' p
+      (fun e' p' ->
+        if p'.it = RootP
+        then reduce_exp env (SeqE [e'; e2'] $ e.at)
+        else ExtE (e', p', e2') $ e.at
+      )
   | StrE efs -> StrE (Convert.map_nl_list (reduce_expfield env) efs) $ e.at
   | DotE (e1, atom) ->
     let e1' = reduce_exp env e1 in
@@ -273,22 +270,60 @@ and reduce_exp env e : exp =
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
-and reduce_arg env arg : arg =
-  match !(arg.it) with
-  | ExpA e -> ref (ExpA (reduce_exp env e)) $ arg.at
-  | SynA _t -> arg  (* types are reduced on demand *)
-  | GramA _g -> arg
+and reduce_path env e p f =
+  match p.it with
+  | RootP -> f e p
+  | IdxP (p1, e1) ->
+    let e1' = reduce_exp env e1 in
+    let f' e' p1' =
+      match e'.it, e1'.it with
+      | SeqE es, NatE (_, i) when i < List.length es ->
+        SeqE (List.mapi (fun j eJ -> if j = i then f eJ p1' else eJ) es) $ e'.at
+      | _ ->
+        f e' (IdxP (p1', e1') $ p.at)
+    in
+    reduce_path env e p1 f'
+  | SliceP (p1, e1, e2) ->
+    let e1' = reduce_exp env e1 in
+    let e2' = reduce_exp env e2 in
+    let f' e' p1' =
+      match e'.it, e1'.it, e2'.it with
+      | SeqE es, NatE (_, i), NatE (_, n) when i + n < List.length es ->
+        let e1' = SeqE Lib.List.(take i es) $ e'.at in
+        let e2' = SeqE Lib.List.(take n (drop i es)) $ e'.at in
+        let e3' = SeqE Lib.List.(drop (i + n) es) $ e'.at in
+        reduce_exp env (SeqE [e1'; f e2' p1'; e3'] $ e'.at)
+      | _ ->
+        f e' (SliceP (p1', e1', e2') $ p.at)
+    in
+    reduce_path env e p1 f'
+  | DotP (p1, atom) ->
+    let f' e' p1' =
+      match e'.it with
+      | StrE efs ->
+        StrE (Convert.map_nl_list (fun (atomI, eI) ->
+          if atomI = atom then (atomI, f eI p1') else (atomI, eI)) efs) $ e'.at
+      | _ ->
+        f e' (DotP (p1', atom) $ p.at)
+    in
+    reduce_path env e p1 f'
+
+and reduce_arg env a : arg =
+  match !(a.it) with
+  | ExpA e -> ref (ExpA (reduce_exp env e)) $ a.at
+  | TypA _t -> a  (* types are reduced on demand *)
+  | GramA _g -> a
 
 and reduce_exp_call env id args = function
   | [] -> None
-  | (args', e, prems)::defs' ->
+  | (args', e, prems)::clauses' ->
     match match_list match_arg env Subst.empty args args' with
     | exception Irred -> None
-    | None -> reduce_exp_call env id args defs'
+    | None -> reduce_exp_call env id args clauses'
     | Some s ->
       match reduce_prems env Subst.(subst_list subst_prem s prems) with
       | None -> None
-      | Some false -> reduce_exp_call env id args defs'
+      | Some false -> reduce_exp_call env id args clauses'
       | Some true -> Some (reduce_exp env e)
 
 and reduce_prems env = function
@@ -329,12 +364,11 @@ and match_typ env s t1 t2 : subst option =
   match t1.it, t2.it with
   | ParenT t11, _ -> match_typ env s t11 t2
   | _, ParenT t21 -> match_typ env s t1 t21
-  | _, VarT (id, []) when Subst.mem_synid s id ->
+  | _, VarT (id, []) when Subst.mem_typid s id ->
     match_typ env s t1 (Subst.subst_typ s t2)
   | _, VarT (id, []) when not (Map.mem id.it env.typs) ->
     (* An unbound type is treated as a pattern variable *)
-    if id.it = "" then Some s else
-    Some (Subst.add_synid s id t1)
+    Some (Subst.add_typid s id t1)
   | VarT (id1, args1), VarT (id2, args2) when id1.it = id2.it ->
     (* Optimization for the common case where args are absent or equivalent. *)
     (match match_list match_arg env s args1 args2 with
@@ -398,13 +432,12 @@ and match_exp env s e1 e2 : subst option =
         )
       | _, _ -> true (* TODO: support deep checing? *)
     then
-      if id.it = "" then Some s else
+      if id.it = "_" then Some s else
       Some (Subst.add_varid s id e1)
     else None
   | AtomE atom1, AtomE atom2 when atom1 = atom2 -> Some s
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
-  | NatE (_, n1), NatE (_, n2)
-    when n1 = n2 -> Some s
+  | NatE (_, n1), NatE (_, n2) when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
   | UnE (MinusOp, e11), UnE (MinusOp, e21) -> match_exp env s e11 e21
 (*
@@ -491,7 +524,6 @@ and match_sym env s g1 g2 : subst option =
     match_sym env s g1 (Subst.subst_sym s g2)
   | _, VarG (id, []) when not (Map.mem id.it env.syms) ->
     (* An unbound type is treated as a pattern variable *)
-    if id.it = "" then Some s else
     Some (Subst.add_gramid s id g1)
   | VarG (id1, args1), VarG (id2, args2) when id1.it = id2.it ->
     (* Optimization for the common case where args are absent or equivalent. *)
@@ -512,7 +544,7 @@ and match_arg env s a1 a2 : subst option =
   *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
-  | SynA t1, SynA t2 -> match_typ env s t1 t2
+  | TypA t1, TypA t2 -> match_typ env s t1 t2
   | GramA g1, GramA g2 -> match_sym env s g1 g2
   | _, _ -> assert false
 
@@ -575,6 +607,6 @@ and equiv_arg env a1 a2 =
   *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
-  | SynA t1, SynA t2 -> equiv_typ env t1 t2
+  | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | GramA g1, GramA g2 -> Eq.eq_sym g1 g2
   | _, _ -> false

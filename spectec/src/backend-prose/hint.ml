@@ -41,7 +41,7 @@ let extract_typ_hints typ =
 
 let extract_syntax_hints show_kwds def =
   match def.it with
-  | El.Ast.SynD (id, subid, _, typ, _) ->
+  | El.Ast.TypD (id, subid, _, typ, _) ->
       let id =
         if subid.it = "" then id.it
         else id.it ^ "-" ^ subid.it

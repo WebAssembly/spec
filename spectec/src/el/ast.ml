@@ -126,7 +126,7 @@ and cmpop =
 
 and exp = exp' phrase
 and exp' =
-  | VarE of id * arg list        (* varid *)
+  | VarE of id * arg list        (* varid (`(` arg,* `)`)? *)
   | AtomE of atom                (* atom *)
   | BoolE of bool                (* bool *)
   | NatE of natop * nat          (* nat *)
@@ -196,19 +196,19 @@ and gram' = dots * prod nl_list * dots       (* `|` list(`...`|prod, `|`) *)
 and param = param' phrase
 and param' =
   | ExpP of id * typ                         (* varid `:` typ *)
-  | SynP of id                               (* `syntax` varid *)
+  | TypP of id                               (* `syntax` varid *)
   | GramP of id * typ                        (* `grammar` gramid `:` typ *)
 
 and arg = arg' ref phrase
 and arg' =
   | ExpA of exp                              (* exp *)
-  | SynA of typ                              (* `syntax` typ *)
+  | TypA of typ                              (* `syntax` typ *)
   | GramA of sym                             (* `grammar` sym *)
 
 and def = def' phrase
 and def' =
-  | FamD of id * param list * hint list            (* `syntax` synid params hint* *)
-  | SynD of id * id * arg list * typ * hint list   (* `syntax` synid args hint* `=` typ *)
+  | FamD of id * param list * hint list            (* `syntax` typid params hint* *)
+  | TypD of id * id * arg list * typ * hint list   (* `syntax` typid args hint* `=` typ *)
   | GramD of id * id * param list * typ * gram * hint list (* `grammar` gramid params hint* `:` type `=` gram *)
   | RelD of id * typ * hint list                   (* `relation` relid `:` typ hint* *)
   | RuleD of id * id * exp * premise nl_list       (* `rule` relid ruleid? `:` exp (`--` premise)* *)
@@ -228,7 +228,7 @@ and premise' =
 and hintdef = hintdef' phrase
 and hintdef' =
   | AtomH of id * hint list
-  | SynH of id * id * hint list
+  | TypH of id * id * hint list
   | GramH of id * id * hint list
   | RelH of id * hint list
   | VarH of id * hint list

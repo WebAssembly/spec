@@ -78,7 +78,7 @@ let rec t_exp env e : premise list =
   | DotE (exp, _)
   | LenE exp
   | MixE (_, exp)
-  | CallE (_, exp)
+  | ProjE (exp, _)
   | OptE (Some exp)
   | TheE exp
   | CaseE (_, exp)
@@ -95,6 +95,8 @@ let rec t_exp env e : premise list =
   | UpdE (exp1, path, exp2)
   | ExtE (exp1, path, exp2)
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
+  | CallE (_, args)
+  -> List.concat_map (t_arg env) args
   | StrE fields
   -> List.concat_map (fun (_, e) -> t_exp env e) fields
   | TupE es | ListE es
@@ -116,6 +118,10 @@ and t_path env path = match path.it with
   | IdxP (path, e) -> t_path env path @ t_exp env e
   | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
   | DotP (path, _) -> t_path env path
+
+and t_arg env arg = match arg.it with
+  | ExpA exp -> t_exp env exp
+  | TypA _ -> []
 
 
 let rec t_prem env prem = match prem.it with

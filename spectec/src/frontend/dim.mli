@@ -8,4 +8,5 @@ val check_typdef : El.Ast.typ -> El.Ast.premise El.Ast.nl_list -> env
   (* raises Source.Error *)
 
 val annot_exp : env' -> Il.Ast.exp -> Il.Ast.exp
+val annot_arg : env' -> Il.Ast.arg -> Il.Ast.arg
 val annot_prem : env' -> Il.Ast.premise -> Il.Ast.premise

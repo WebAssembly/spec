@@ -112,7 +112,7 @@ and exp2expr exp =
   | Ast.CatE (exp1, exp2) -> catE (exp2expr exp1, exp2expr exp2) ~at:at
   (* Variable *)
   | Ast.VarE id -> varE id.it ~at:at
-  | Ast.SubE ({ it = Ast.VarE id; _}, { it = VarT t; _ }, _) -> subE (id.it, t.it) ~at:at
+  | Ast.SubE ({ it = Ast.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at
   | Ast.SubE (inner_exp, _, _) -> exp2expr inner_exp
   | Ast.IterE (inner_exp, (iter, ids)) ->
       let names = List.map (fun id -> id.it) ids in
@@ -177,11 +177,11 @@ and exp2expr exp =
     in
     binE (compare_op, lhs, rhs) ~at:at
   (* CaseE *)
-  | Ast.CaseE (Ast.Atom cons, arg) -> caseE (name2kwd cons exp.note, exp2args arg) ~at:at
+  | Ast.CaseE (Ast.Atom cons, arg) -> caseE (name2kwd cons exp.note, exp2exprs arg) ~at:at
   (* Tuple *)
   | Ast.TupE exps -> tupE (List.map exp2expr exps) ~at:at
   (* Call *)
-  | Ast.CallE (id, inner_exp) -> callE (id.it, exp2args inner_exp) ~at:at
+  | Ast.CallE (id, args) -> callE (id.it, args2exprs args) ~at:at
   (* Record expression *)
   | Ast.StrE expfields ->
       let f acc = function
@@ -252,10 +252,16 @@ and exp2expr exp =
   | _ -> yetE (Print.string_of_exp exp) ~at:at
 
 (* `Ast.exp` -> `expr list` *)
-and exp2args exp =
+and exp2exprs exp =
   match exp.it with
   | Ast.TupE el -> List.map exp2expr el
   | _ -> [ exp2expr exp ]
+
+(* `Ast.arg list` -> `expr list` *)
+and args2exprs args = List.concat_map ( fun arg ->
+  match arg.it with
+  | Ast.ExpA el -> [ exp2expr el ]
+  | Ast.TypA _ -> [] ) args
 
 (* `Ast.path` -> `path list` *)
 and path2paths path =
@@ -436,7 +442,7 @@ let rec rhs2instrs exp =
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
-      [ executeI (caseE (name2kwd atomid exp.note, exp2args argexp)) ~at:at ]
+      [ executeI (caseE (name2kwd atomid exp.note, exp2exprs argexp)) ~at:at ]
   | Ast.MixE
       ( [ []; [ Ast.Semicolon ]; [ Ast.Star ] ],
         (* z' ; instr'* *)
@@ -446,7 +452,7 @@ let rec rhs2instrs exp =
       match state_exp.it with
       | Ast.MixE ([ []; [ Ast.Semicolon ]; [] ], _)
       | Ast.VarE _ -> push_instrs
-      | Ast.CallE (f, args) -> push_instrs @ [ performI (f.it, exp2args args) ~at:at ]
+      | Ast.CallE (f, args) -> push_instrs @ [ performI (f.it, args2exprs args) ~at:at ]
       | _ -> failwith "Invalid new state" )
   | _ -> gen_fail_msg_of_exp exp "rhs instructions" |> failwith
 
@@ -627,7 +633,7 @@ let rec expr2let lhs rhs targets cont =
 let rulepr2instrs id exp =
   let instr =
     let at = id.at in
-    match id.it, exp2args exp with
+    match id.it, exp2exprs exp with
     | "Eval_expr", [_; lhs; _z; rhs] ->
       (* TODO: Name of f..? *)
       enterI (
@@ -721,12 +727,8 @@ let helpers2algo partial_funcs def =
   | Ast.DecD (id, _, _, clauses) when List.length clauses > 0->
     let name = id.it in
     let unified_clauses = Il2il.unify_defs clauses in
-    let Ast.DefD (_, params, _, _) = List.hd unified_clauses |> it in
-    let al_params =
-      match params.it with
-      | Ast.TupE exps -> List.map exp2expr exps
-      | _ -> [ exp2expr params ]
-    in
+    let Ast.DefD (_, args, _, _) = List.hd unified_clauses |> it in
+    let al_params = args2exprs args in
     let blocks = List.map (helper2instrs name) unified_clauses in
     let body =
       List.fold_right Transpile.merge blocks []
@@ -774,7 +776,7 @@ let reduction2instrs deferred reduction =
 
 (* TODO: Perhaps this should be tail recursion *)
 let rec split_context_winstr ?(note : Ast.typ option) name stack =
-  let top = Ast.VarT ("TOP" $ no_region) $ no_region in
+  let top = Ast.VarT ("TOP" $ no_region, []) $ no_region in
   let wrap typ e = e $$ no_region % typ in
   match stack with
   | [] ->

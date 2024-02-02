@@ -36,14 +36,14 @@ let typ_of_varid id =
 
 let varid_of_typ t =
   (match t.it with
-  | VarT (id, []) -> id.it
+  | VarT (id, _) -> id.it
   | BoolT -> "bool"
   | NumT NatT -> "nat"
   | NumT IntT -> "int"
   | NumT RatT -> "rat"
   | NumT RealT -> "real"
   | TextT -> "text"
-  | _ -> Source.error t.at "syntax" "malformed variable"
+  | _ -> "_"
   ) $ t.at
 
 
@@ -129,9 +129,9 @@ let param_of_arg a =
     (match e.it with
     | TypE ({it = VarE (id, []); _}, t) -> ExpP (id, t)
     | VarE (id, _) -> ExpP (id, typ_of_exp e)
-    | _ -> ExpP ("" $ e.at, typ_of_exp e)
+    | _ -> ExpP ("_" $ e.at, typ_of_exp e)
     )
-  | SynA {it = VarT (id, []); _} -> SynP id
+  | TypA {it = VarT (id, []); _} -> TypP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
     GramP (id, typ_of_exp (exp_of_sym g))
   | _ -> Source.error a.at "syntax" "malformed grammar"
@@ -139,7 +139,7 @@ let param_of_arg a =
 
 let arg_of_param p =
   (match p.it with
-  | ExpP (id, t) -> ExpA (TypE(VarE (id, []) $ id.at, t) $ p.at)
-  | SynP id -> SynA (VarT (id, []) $ id.at)
+  | ExpP (id, t) -> ExpA (TypE (VarE (id, []) $ id.at, t) $ p.at)
+  | TypP id -> TypA (VarT (id, []) $ id.at)
   | GramP (id, _t) -> GramA (VarG (id, []) $ id.at)
   ) |> ref $ p.at

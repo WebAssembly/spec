@@ -21,7 +21,7 @@ let transpile_expr =
   }
 
 let exp_to_expr e = exp2expr e |> transpile_expr
-let exp_to_args es = exp2args es |> List.map transpile_expr
+let exp_to_args es = exp2exprs es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   let fail _ =

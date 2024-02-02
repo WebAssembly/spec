@@ -38,14 +38,20 @@ let rec transform_expr f e =
     | LenE e1 -> LenE (new_ e1)
     | TupE es -> TupE ((List.map new_) es)
     | MixE (op, e1) -> MixE (op, new_ e1)
-    | CallE (id, e1) -> CallE (id, new_ e1)
+    | CallE (id, as1) -> CallE (id, List.map (transform_arg f) as1)
     | IterE (e1, iter) -> IterE (new_ e1, iter) (* TODO iter *)
+    | ProjE (e1, i) -> ProjE (new_ e1, i)
     | OptE eo -> OptE ((Option.map new_) eo)
     | TheE e1 -> TheE (new_ e1)
     | ListE es -> ListE ((List.map new_) es)
     | CatE (e1, e2) -> CatE (new_ e1, new_ e2)
     | CaseE (atom, e1) -> CaseE (atom, new_ e1)
     | SubE (e1, _t1, t2) -> SubE (new_ e1, _t1, t2) }
+
+and transform_arg f a =
+  { a with it = match a.it with
+    | ExpA e -> ExpA (transform_expr f e)
+    | TypA t -> TypA t }
 
 (** Change right_assoc cat into left_assoc cat **)
 let to_left_assoc_cat =
@@ -80,14 +86,14 @@ let to_right_assoc_cat =
 (* Estimate appropriate id name for a given type *)
 let rec type_to_id ty = match ty.it with
 (* TODO: guess this for "var" in el? *)
-| VarT id -> take_prefix 5 id.it
+| VarT (id, _) -> take_prefix 5 id.it
 | BoolT -> "b"
 | NumT NatT -> "n"
 | NumT IntT -> "i"
 | NumT RatT -> "q"
 | NumT RealT -> "r"
 | TextT -> "s"
-| TupT tys-> List.map type_to_id tys |> String.concat "_"
+| TupT tys -> List.map type_to_id (List.map snd tys) |> String.concat "_"
 | IterT (t, _) -> type_to_id t
 
 let unified_prefix = "u"
@@ -129,10 +135,12 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
       TupE (List.map2 overlap es1 es2)
   | MixE (mixop1, e1), MixE (mixop2, e2) when mixop1 = mixop2 ->
       MixE (mixop1, overlap e1 e2)
-  | CallE (id1, e1), CallE (id2, e2) when eq_id id1 id2->
-      CallE (id1, overlap e1 e2)
+  | CallE (id1, as1), CallE (id2, as2) when eq_id id1 id2 ->
+      CallE (id1, List.map2 overlap_arg as1 as2)
   | IterE (e1, itere1), IterE (e2, itere2) when eq_iterexp itere1 itere2 ->
       IterE (overlap e1 e2, itere1)
+  | ProjE (e1, i1), ProjE (e2, i2) when i1 = i2 ->
+      ProjE (overlap e1 e2, i1)
   | OptE (Some e1), OptE (Some e2) ->
       OptE (Some (overlap e1 e2))
   | TheE e1, TheE e2 ->
@@ -153,6 +161,13 @@ let rec overlap e1 e2 = if eq_exp e1 e2 then e1 else
     | _ -> VarE id
   ) $$ (e1.at % e1.note)
 
+and overlap_arg a1 a2 = if eq_arg a1 a2 then a1 else
+  ( match a1.it, a2.it with
+    | ExpA e1, ExpA e2 -> ExpA (overlap e1 e2)
+    | TypA _, TypA _ -> a1.it
+    | _, _ -> assert false
+  ) $ a1.at
+
 let pairwise_concat (a,b) (c,d) = (a@c, b@d)
 
 let rec collect_unified template e = if eq_exp template e then [], [] else match template.it, e.it with
@@ -166,7 +181,6 @@ let rec collect_unified template e = if eq_exp template e then [], [] else match
   | DotE (e1, _), DotE (e2, _)
   | LenE e1, LenE e2
   | MixE (_, e1), MixE (_, e2)
-  | CallE (_, e1), CallE (_, e2)
   | IterE (e1, _), IterE (e2, _)
   | OptE (Some e1), OptE (Some e2)
   | TheE e1, TheE e2
@@ -188,7 +202,16 @@ let rec collect_unified template e = if eq_exp template e then [], [] else match
   | TupE es1, TupE es2
   | ListE es1, ListE es2 ->
       List.fold_left2 (fun acc e1 e2 -> pairwise_concat acc (collect_unified e1 e2)) ([], []) es1 es2
+  | CallE (_, as1), CallE (_, as2) -> collect_unified_args as1 as2
   | _ -> failwith "Impossible collect_unified"
+
+and collect_unified_arg template a = if eq_arg template a then [], [] else match template.it, a.it with
+  | ExpA template', ExpA e -> collect_unified template' e
+  | TypA _, TypA _ -> [], []
+  | _ -> failwith "Impossible collect_unified_arg"
+
+and collect_unified_args as1 as2 =
+  List.fold_left2 (fun acc a1 a2 -> pairwise_concat acc (collect_unified_arg a1 a2)) ([], []) as1 as2
 
 (** If prems include a otherwise premise, make it first prem **)
 let prioritize_else prems =
@@ -217,8 +240,8 @@ let unify_lhs (reduction_name, reduction_group) =
 
 let apply_template_to_def template def =
   let DefD (binds, lhs, rhs, prems) = def.it in
-  let new_prems, new_binds = collect_unified template lhs in
-  let animated_prems = Animate.animate_prems (Il.Free.free_exp template) new_prems in
+  let new_prems, new_binds = collect_unified_args template lhs in
+  let animated_prems = Animate.animate_prems Il.Free.(free_list free_arg template) new_prems in
   DefD (binds @ new_binds, template, rhs, (animated_prems @ prems) |> prioritize_else) $ no_region
 
 let unify_defs defs =
@@ -226,5 +249,5 @@ let unify_defs defs =
   let lhs_s = List.map (fun x -> let DefD(_, lhs, _, _) = x.it in lhs) defs in
   let hd = List.hd lhs_s in
   let tl = List.tl lhs_s in
-  let template = List.fold_left overlap hd tl in
+  let template = List.fold_left (List.map2 overlap_arg) hd tl in
   List.map (apply_template_to_def template) defs

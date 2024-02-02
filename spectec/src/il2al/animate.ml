@@ -54,7 +54,7 @@ let remove_or rule = match rule.it with
    2. n in e^n can be not considered free, depending on flag.
 *)
 let empty =
-  {synid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+  {typid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
 let free_varid id = {empty with varid = Set.singleton id.it}
 
 let rec my_free_exp ignore_listN e =
@@ -66,8 +66,9 @@ let rec my_free_exp ignore_listN e =
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _)
-  | CallE (_, e1) | DotE (e1, _) | CaseE (_, e1) ->
+  | DotE (e1, _) | ProjE (e1, _) | CaseE (_, e1) ->
     f e1
+  | CallE (_, as1) -> free_list (my_free_arg ignore_listN) as1
   | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
   | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
@@ -99,6 +100,12 @@ and my_free_iterexp ignore_listN (iter, _) =
   | ListN (e, None) -> empty, if ignore_listN then empty else f e
   | ListN (e, Some id) -> free_varid id, if ignore_listN then empty else f e
   | _ -> empty, empty
+
+and my_free_arg ignore_listN arg =
+  let f = my_free_exp ignore_listN in
+  match arg.it with
+  | ExpA e -> f e
+  | TypA _ -> empty
 
 let rec my_free_prem ignore_listN prem =
   let f = my_free_exp ignore_listN in
@@ -194,6 +201,7 @@ let rec index_of acc xs x = match xs with
   | h :: t -> if h = x then Some acc else index_of (acc + 1) t x
 
 let free_exp_list e = (my_free_exp false e).varid |> Set.elements
+let free_arg_list e = (my_free_arg false e).varid |> Set.elements
 
 let rec powset = function
 | [] -> [ [] ]
@@ -204,8 +212,7 @@ let wrap x = [x]
 let singletons = List.map wrap
 
 let arg_grouper e _ = match e.it with
-| CallE (_, { it = TupE args; _ }) -> List.map (fun arg -> free_exp_list arg) args
-| CallE (_, arg) -> [ free_exp_list arg ]
+| CallE (_, args) -> List.map free_arg_list args
 | _ -> failwith "Unreachable"
 
 let large_enough_subsets xs =
@@ -293,7 +300,7 @@ let rec pre_process prem = match prem.it with
       [[]; [Approx]; []],
       { it = TupE [dt; ct]; _ }
     ) ->
-      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
+      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
       [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
@@ -345,9 +352,9 @@ let animate_rule r = match r.it with
 
 (* Animate clause *)
 let animate_clause c = match c.it with
-  | DefD (binds, e1, e2, prems) ->
-    let new_prems = animate_prems (my_free_exp false e1) prems in
-    DefD (binds, e1, e2, new_prems) $ c.at
+  | DefD (binds, args, e, prems) ->
+    let new_prems = animate_prems (free_list (my_free_arg false) args) prems in
+    DefD (binds, args, e, new_prems) $ c.at
 
 (* Animate defs *)
 let rec animate_def d = match d.it with

@@ -8,7 +8,7 @@ module Map = Map.Make(String)
 
 type subst =
   { varid : exp Map.t;
-    synid : typ Map.t;
+    typid : typ Map.t;
     gramid : sym Map.t;
   }
 
@@ -16,20 +16,21 @@ type t = subst
 
 let empty =
   { varid = Map.empty;
-    synid = Map.empty;
+    typid = Map.empty;
     gramid = Map.empty;
   }
 
 let mem_varid s id = Map.mem id.it s.varid
-let mem_synid s id = Map.mem id.it s.synid
+let mem_typid s id = Map.mem id.it s.typid
 let mem_gramid s id = Map.mem id.it s.gramid
-let add_varid s id e = {s with varid = Map.add id.it e s.varid}
-let add_synid s id t = {s with synid = Map.add id.it t s.synid}
-let add_gramid s id g = {s with gramid = Map.add id.it g s.gramid}
+
+let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
+let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
+let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
 
 let union s1 s2 =
   { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
-    synid = Map.union (fun _ _t1 t2 -> Some t2) s1.synid s2.synid;
+    typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
     gramid = Map.union (fun _ _g1 g2 -> Some g2) s1.gramid s2.gramid;
   }
 
@@ -71,7 +72,7 @@ let rec subst_iter s iter =
 and subst_typ s t =
   (match t.it with
   | VarT (id, args) ->
-    (match Map.find_opt id.it s.synid with
+    (match Map.find_opt id.it s.typid with
     | None -> VarT (id, List.map (subst_arg s) args)
     | Some t' -> assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
@@ -195,13 +196,13 @@ and subst_arg s a =
   ref
   (match !(a.it) with
   | ExpA e -> ExpA (subst_exp s e)
-  | SynA t -> SynA (subst_typ s t)
+  | TypA t -> TypA (subst_typ s t)
   | GramA g -> GramA (subst_sym s g)
   ) $ a.at
 
 and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
-  | SynP id -> SynP id
+  | TypP id -> TypP id
   | GramP (id, t) -> GramP (id, subst_typ s t)
   ) $ p.at

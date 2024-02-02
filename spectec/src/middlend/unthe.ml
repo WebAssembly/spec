@@ -120,10 +120,11 @@ and t_exp' n e : eqns * exp' =
   | DotE (exp, a) -> t_e n exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e n exp (fun exp' -> LenE exp')
   | MixE (mo, exp) -> t_e n exp (fun exp' -> MixE (mo, exp'))
-  | CallE (f, exp) ->t_e n exp (fun exp' -> CallE (f, exp'))
-  | OptE (Some exp) ->t_e n exp (fun exp' -> OptE (Some exp'))
-  | TheE exp ->t_e n exp (fun exp' -> TheE exp')
-  | CaseE (a, exp) ->t_e n exp (fun exp' -> CaseE (a, exp'))
+  | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
+  | ProjE (exp, i) -> t_e n exp (fun exp' -> ProjE (exp', i))
+  | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
+  | TheE exp -> t_e n exp (fun exp' -> TheE exp')
+  | CaseE (a, exp) -> t_e n exp (fun exp' -> CaseE (a, exp'))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
 
   | BinE (bo, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
@@ -165,6 +166,12 @@ and t_path' n path = match path with
   | IdxP (path, e) -> binary t_path t_exp n (path, e) (fun (path', e') -> IdxP (path', e'))
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
   | DotP (path, a) -> unary t_path n path (fun path' -> DotP (path', a))
+
+and t_arg n = phrase t_arg' n
+
+and t_arg' n arg = match arg with
+  | ExpA exp -> unary t_exp n exp (fun exp' -> ExpA exp')
+  | TypA _ -> [], arg
 
 let rec t_prem n : premise -> eqns * premise = phrase t_prem' n
 
