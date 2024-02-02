@@ -271,6 +271,8 @@ syntax shiftopVIXX = | SHL | SHR sx
 syntax unopVFXX = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 syntax binopVFXX = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
+syntax viunop = | unopVIXX | POPCNT
+syntax vibinop = | binopVIXX | minmaxopVIXX | satbinopVIXX | MUL | AVGR_U | Q15MULR_SAT_S
 
 syntax unop_vvectype = | _VV unopVVXX
 syntax binop_vvectype = | _VV binopVVXX
@@ -278,8 +280,8 @@ syntax ternop_vvectype = | _VV ternopVVXX
 syntax testop_vvectype = | _VV testopVVXX
 
 syntax shiftop_vectype = | _VI shiftopVIXX
-syntax unop_vectype = | _VI unopVIXX | _VF unopVFXX | POPCNT
-syntax binop_vectype = | _VI binopVIXX minmaxopVIXX satbinopVIXX | _VF binopVFXX | MUL | AVGR_U | Q15MULR_SAT_S
+syntax unop_vectype = | _VI viunop | _VF unopVFXX
+syntax binop_vectype = | _VI vibinop | _VF binopVFXX
 syntax testop_vectype = | _VI testopVIXX
 syntax relop_vectype = | _VI relopVIXX | _VF relopVFXX
 syntax cvtop_vectype = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE

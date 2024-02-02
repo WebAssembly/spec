@@ -307,12 +307,12 @@ and reduce_arg env a : arg =
 and reduce_exp_call env id args = function
   | [] -> None
   | {it = DefD (_binds, args', e, prems); _}::clauses' ->
-    (* *)
+    (*
     Printf.eprintf "[reduce_exp_call] $%s(%s) =: $%s(%s)\n%!"
       id.it (String.concat ", " (List.map Print.string_of_arg args))
       id.it (String.concat ", " (List.map Print.string_of_arg args'));
     let eo =
-    (* *)
+    *)
     match match_list match_arg env Subst.empty args args' with
     | exception Irred -> None
     | None -> reduce_exp_call env id args clauses'
@@ -321,14 +321,14 @@ and reduce_exp_call env id args = function
       | None -> None
       | Some false -> reduce_exp_call env id args clauses'
       | Some true -> Some (reduce_exp env e)
-    (* *)
+    (*
     in
     Printf.eprintf "[reduce_exp_call] $%s(%s) =: $%s(%s) => %s\n%!"
       id.it (String.concat ", " (List.map Print.string_of_arg args))
       id.it (String.concat ", " (List.map Print.string_of_arg args'))
       (match eo with None -> "-" | Some e -> Print.string_of_exp e);
     eo
-    (* *)
+    *)
 
 and reduce_prems env = function
   | [] -> Some true

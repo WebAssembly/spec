@@ -244,49 +244,49 @@ let cvtop : numerics =
     name = "cvtop";
     f =
       (function
-      | [ TextV op; CaseV (t_from, []); CaseV (t_to, []); OptV sx_opt; v ] -> (
+      | [ CaseV (op, []); CaseV (t_from, []); CaseV (t_to, []); OptV sx_opt; v ] -> (
         let sx = match sx_opt with
           | None -> ""
           | Some (CaseV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
         listV ([| catch_ixx_exception (fun _ -> match op, t_to, t_from, sx with
         (* Conversion to I32 *)
-        | "Wrap", "I32", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
-        | "Trunc", "I32", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
-        | "Trunc", "I32", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_u v
-        | "Trunc", "I32", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_s v
-        | "Trunc", "I32", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_u v
-        | "TruncSat", "I32", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
-        | "TruncSat", "I32", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
-        | "TruncSat", "I32", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
-        | "TruncSat", "I32", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
-        | "Reinterpret", "I32", "F32", "" -> wrap_i32_cvtop_f32 I32_convert.reinterpret_f32 v
-        (* Conversion to I64 *)
-        | "Extend", "I64", "I32", "S" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_s v
-        | "Extend", "I64", "I32", "U" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_u v
-        | "Trunc", "I64", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_s v
-        | "Trunc", "I64", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_u v
-        | "Trunc", "I64", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_s v
-        | "Trunc", "I64", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_u v
-        | "TruncSat", "I64", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_s v
-        | "TruncSat", "I64", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_u v
-        | "TruncSat", "I64", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_s v
-        | "TruncSat", "I64", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_u v
-        | "Reinterpret", "I64", "F64", "" -> wrap_i64_cvtop_f64 I64_convert.reinterpret_f64 v
-        (* Conversion to F32 *)
-        | "Demote", "F32", "F64", "" -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
-        | "Convert", "F32", "I32", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
-        | "Convert", "F32", "I32", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
-        | "Convert", "F32", "I64", "S" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_s v
-        | "Convert", "F32", "I64", "U" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_u v
-        | "Reinterpret", "F32", "I32", "" -> wrap_f32_cvtop_i32 F32_convert.reinterpret_i32 v
-        (* Conversion to F64 *)
-        | "Promote", "F64", "F32", "" -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
-        | "Convert", "F64", "I32", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
-        | "Convert", "F64", "I32", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
-        | "Convert", "F64", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
-        | "Convert", "F64", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
-        | "Reinterpret", "F64", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
+        | "WRAP", "I32", "I64", "" -> wrap_i32_cvtop_i64 I32_convert.wrap_i64 v
+        | "TRUNC", "I32", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_s v
+        | "TRUNC", "I32", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_f32_u v
+        | "TRUNC", "I32", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_s v
+        | "TRUNC", "I32", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_f64_u v
+        | "TRUNCSAT", "I32", "F32", "S" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_s v
+        | "TRUNCSAT", "I32", "F32", "U" -> wrap_i32_cvtop_f32 I32_convert.trunc_sat_f32_u v
+        | "TRUNCSAT", "I32", "F64", "S" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_s v
+        | "TRUNCSAT", "I32", "F64", "U" -> wrap_i32_cvtop_f64 I32_convert.trunc_sat_f64_u v
+        | "REINTERPRET", "I32", "F32", "" -> wrap_i32_cvtop_f32 I32_convert.reinterpret_f32 v
+        (* CONVERSION TO I64 *)
+        | "EXTEND", "I64", "I32", "S" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_s v
+        | "EXTEND", "I64", "I32", "U" -> wrap_i64_cvtop_i32 I64_convert.extend_i32_u v
+        | "TRUNC", "I64", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_s v
+        | "TRUNC", "I64", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_f32_u v
+        | "TRUNC", "I64", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_s v
+        | "TRUNC", "I64", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_f64_u v
+        | "TRUNCSAT", "I64", "F32", "S" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_s v
+        | "TRUNCSAT", "I64", "F32", "U" -> wrap_i64_cvtop_f32 I64_convert.trunc_sat_f32_u v
+        | "TRUNCSAT", "I64", "F64", "S" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_s v
+        | "TRUNCSAT", "I64", "F64", "U" -> wrap_i64_cvtop_f64 I64_convert.trunc_sat_f64_u v
+        | "REINTERPRET", "I64", "F64", "" -> wrap_i64_cvtop_f64 I64_convert.reinterpret_f64 v
+        (* CONVERSION TO F32 *)
+        | "DEMOTE", "F32", "F64", "" -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
+        | "CONVERT", "F32", "I32", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
+        | "CONVERT", "F32", "I32", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
+        | "CONVERT", "F32", "I64", "S" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_s v
+        | "CONVERT", "F32", "I64", "U" -> wrap_f32_cvtop_i64 F32_convert.convert_i64_u v
+        | "REINTERPRET", "F32", "I32", "" -> wrap_f32_cvtop_i32 F32_convert.reinterpret_i32 v
+        (* CONVERSION TO F64 *)
+        | "PROMOTE", "F64", "F32", "" -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
+        | "CONVERT", "F64", "I32", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
+        | "CONVERT", "F64", "I32", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
+        | "CONVERT", "F64", "I64", "S" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_s v
+        | "CONVERT", "F64", "I64", "U" -> wrap_f64_cvtop_i64 F64_convert.convert_i64_u v
+        | "REINTERPRET", "F64", "I64", "" -> wrap_f64_cvtop_i64 F64_convert.reinterpret_i64 v
         | _ -> failwith ("Invalid cvtop: " ^ op ^ t_to ^ t_from ^ sx) ) |]))
       | _ -> failwith "Invalid cvtop");
   }
@@ -590,58 +590,58 @@ let vbinop: numerics =
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I8x16.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I8x16.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I8x16.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I8x16.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I8x16.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I8x16.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I8x16.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I8x16.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I8x16.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I8x16.max_u v1 v2
-          | CaseV ("AVGRU", []) -> wrap_vbinop V128.I8x16.avgr_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I8x16.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I8x16.max_u v1 v2
+          | CaseV ("AVGR_U", []) -> wrap_vbinop V128.I8x16.avgr_u v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I16", 8L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I16x8.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I16x8.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I16x8.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I16x8.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I16x8.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I16x8.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I16x8.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I16x8.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I16x8.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I16x8.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I16x8.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I16x8.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I16x8.mul v1 v2
-          | CaseV ("AVGRU", []) -> wrap_vbinop V128.I16x8.avgr_u v1 v2
-          | CaseV ("Q15MULRSATS", []) -> wrap_vbinop V128.I16x8.q15mulr_sat_s v1 v2
+          | CaseV ("AVGR_U", []) -> wrap_vbinop V128.I16x8.avgr_u v1 v2
+          | CaseV ("Q15MULR_SAT_S", []) -> wrap_vbinop V128.I16x8.q15mulr_sat_s v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I32", 4L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I32x4.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I32x4.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I32x4.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I32x4.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I32x4.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I32x4.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I32x4.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I32x4.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I32x4.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I32x4.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I32x4.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I32x4.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I32x4.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | "I64", 2L -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.I64x2.add v1 v2
           | CaseV ("SUB", []) -> wrap_vbinop V128.I64x2.sub v1 v2
-          | CaseV ("ADDSATS", []) -> wrap_vbinop V128.I64x2.add_sat_s v1 v2
-          | CaseV ("ADDSATU", []) -> wrap_vbinop V128.I64x2.add_sat_u v1 v2
-          | CaseV ("SUBSATS", []) -> wrap_vbinop V128.I64x2.sub_sat_s v1 v2
-          | CaseV ("SUBSATU", []) -> wrap_vbinop V128.I64x2.sub_sat_u v1 v2
-          | CaseV ("MINS", []) -> wrap_vbinop V128.I64x2.min_s v1 v2
-          | CaseV ("MINU", []) -> wrap_vbinop V128.I64x2.min_u v1 v2
-          | CaseV ("MAXS", []) -> wrap_vbinop V128.I64x2.max_s v1 v2
-          | CaseV ("MAXU", []) -> wrap_vbinop V128.I64x2.max_u v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.add_sat_s v1 v2
+          | CaseV ("ADD_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.add_sat_u v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.sub_sat_s v1 v2
+          | CaseV ("SUB_SAT", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.sub_sat_u v1 v2
+          | CaseV ("MIN", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.min_s v1 v2
+          | CaseV ("MIN", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.min_u v1 v2
+          | CaseV ("MAX", [CaseV ("S", [])]) -> wrap_vbinop V128.I64x2.max_s v1 v2
+          | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I64x2.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
         | _ -> failwith "Invalid type for vibinop")

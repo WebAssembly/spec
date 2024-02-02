@@ -219,7 +219,6 @@ rule Step_pure/vvternop:
   -- if $vvternop(vvternop, V128, cv_1, cv_2, cv_3) = cv ;; TODO
 
 
-def $vzero: c_vectype ;; HACK for algorithmic backend
 rule Step_pure/vvtestop:
   (VVCONST V128 cv_1) (VVTESTOP V128 (_VV ANY_TRUE)) ~> (CONST I32 i)
   -- if i = $ine(128, cv_1, $vzero)

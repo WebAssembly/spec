@@ -8,7 +8,7 @@ by performing dataflow analysis.
 open Util
 open Source
 open Il.Ast
-open Il.Free
+open Free
 
 
 (* Helpers *)
@@ -49,78 +49,6 @@ let remove_or rule = match rule.it with
     { rule with it = RuleD (id', binds, mixop, args, prems') }
   ) premss'
 
-(* my_free_??? are equivalent to free_??? in Il.Free module, except
-   1. i in e^(i<n) is not considered free.
-   2. n in e^n can be not considered free, depending on flag.
-*)
-let empty =
-  {typid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
-let free_varid id = {empty with varid = Set.singleton id.it}
-
-let rec my_free_exp ignore_listN e =
-  let f = my_free_exp ignore_listN in
-  let fp = my_free_path ignore_listN in
-  let fef = my_free_expfield ignore_listN in
-  let fi = my_free_iterexp ignore_listN in
-  match e.it with
-  | VarE id -> free_varid id
-  | BoolE _ | NatE _ | TextE _ -> empty
-  | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _)
-  | DotE (e1, _) | ProjE (e1, _) | CaseE (_, e1) ->
-    f e1
-  | CallE (_, as1) -> free_list (my_free_arg ignore_listN) as1
-  | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
-    free_list f [e1; e2]
-  | SliceE (e1, e2, e3) -> free_list f [e1; e2; e3]
-  | OptE eo -> free_opt f eo
-  | TupE es | ListE es -> free_list f es
-  | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
-    union (free_list f [e1; e2]) (fp p)
-  | StrE efs -> free_list fef efs
-  | IterE (e1, iter) ->
-    let free1 = f e1 in
-    let bound, free2 = fi iter in
-    diff (union free1 free2) bound
-
-and my_free_expfield ignore_listN (_, e) = my_free_exp ignore_listN e
-
-and my_free_path ignore_listN p =
-  let f = my_free_exp ignore_listN in
-  let fp = my_free_path ignore_listN in
-  match p.it with
-  | RootP -> empty
-  | IdxP (p1, e) -> union (fp p1) (f e)
-  | SliceP (p1, e1, e2) ->
-    union (fp p1) (union (f e1) (f e2))
-  | DotP (p1, _) -> fp p1
-
-and my_free_iterexp ignore_listN (iter, _) =
-  let f = my_free_exp ignore_listN in
-  match iter with
-  | ListN (e, None) -> empty, if ignore_listN then empty else f e
-  | ListN (e, Some id) -> free_varid id, if ignore_listN then empty else f e
-  | _ -> empty, empty
-
-and my_free_arg ignore_listN arg =
-  let f = my_free_exp ignore_listN in
-  match arg.it with
-  | ExpA e -> f e
-  | TypA _ -> empty
-
-let rec my_free_prem ignore_listN prem =
-  let f = my_free_exp ignore_listN in
-  let fp = my_free_prem ignore_listN in
-  let fi = my_free_iterexp ignore_listN in
-  match prem.it with
-  | RulePr (_id, _op, e) -> f e
-  | IfPr e -> f e
-  | LetPr (e1, e2, _ids) -> union (f e1) (f e2)
-  | ElsePr -> empty
-  | IterPr (prem', iter) ->
-    let free1 = fp prem' in
-    let bound, free2 = fi iter in
-    diff (union free1 free2) bound
-
 (* Helper for handling free-var set *)
 let subset x y = Set.subset x.varid y.varid
 
@@ -133,13 +61,13 @@ let unwrap (_, p, _) = p
 (* Check if a given premise is tight:
      all free variables in the premise is known *)
 let is_tight env (tag, prem, _) = match tag with
-  | Condition -> subset (my_free_prem false prem) env
+  | Condition -> subset (free_prem false prem) env
   | _ -> false
 
 (* Check if a given premise is an assignment:
      all free variables except to-be-assigned are known *)
 let is_assign env (tag, prem, _) = match tag with
-  | Assign frees -> subset (diff (my_free_prem false prem) {empty with varid = (Set.of_list frees)}) env
+  | Assign frees -> subset (diff (free_prem false prem) {empty with varid = (Set.of_list frees)}) env
   | _ -> false
 
 let best' = ref (-1, [])
@@ -164,7 +92,7 @@ and select_assign prems acc env = ( match prems with
     None
   | _ ->
     let assigns' = List.map unwrap assigns in
-    let new_env = assigns' |> List.map (my_free_prem false) |> List.fold_left union env in
+    let new_env = assigns' |> List.map (free_prem false) |> List.fold_left union env in
     select_tight non_assigns (acc @ assigns') new_env
 )
 
@@ -200,8 +128,8 @@ let rec index_of acc xs x = match xs with
   | [] -> None
   | h :: t -> if h = x then Some acc else index_of (acc + 1) t x
 
-let free_exp_list e = (my_free_exp false e).varid |> Set.elements
-let free_arg_list e = (my_free_arg false e).varid |> Set.elements
+let free_exp_list e = (free_exp false e).varid |> Set.elements
+let free_arg_list e = (free_arg false e).varid |> Set.elements
 
 let rec powset = function
 | [] -> [ [] ]
@@ -284,7 +212,7 @@ let rec rows_of_prem vars p_tot_num i p = match p.it with
   | _ -> [ Condition, p, [i] ]
 
 let build_matrix prems known_vars =
-  let all_vars = prems |> List.map (my_free_prem false) |> List.fold_left union empty in
+  let all_vars = prems |> List.map (free_prem false) |> List.fold_left union empty in
   let unknown_vars = (diff all_vars known_vars).varid |> Set.elements in
   let prem_num = List.length prems in
 
@@ -337,7 +265,7 @@ let animate_rule r = match r.it with
     match (mixop, args.it) with
     (* c |- e : t *)
     | ([ [] ; [Turnstile] ; [Colon] ; []] , TupE ([c; e; _t])) ->
-      let new_prems = animate_prems (union (my_free_exp false c) (my_free_exp false e)) prems in
+      let new_prems = animate_prems (union (free_exp false c) (free_exp false e)) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     (* lhs* ~> rhs* *)
     | ([ [] ; [Star ; SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
@@ -345,7 +273,7 @@ let animate_rule r = match r.it with
     | ([ [] ; [SqArrow] ; [Star]] , TupE ([lhs; _rhs]))
     (* lhs ~> rhs *)
     | ([ [] ; [SqArrow] ; []] , TupE ([lhs; _rhs])) ->
-      let new_prems = animate_prems (my_free_exp true lhs) prems in
+      let new_prems = animate_prems (free_exp true lhs) prems in
       RuleD(id, binds, mixop, args, new_prems) $ r.at
     | _ -> r
   )
@@ -353,7 +281,7 @@ let animate_rule r = match r.it with
 (* Animate clause *)
 let animate_clause c = match c.it with
   | DefD (binds, args, e, prems) ->
-    let new_prems = animate_prems (free_list (my_free_arg false) args) prems in
+    let new_prems = animate_prems (free_list (free_arg false) args) prems in
     DefD (binds, args, e, new_prems) $ c.at
 
 (* Animate defs *)

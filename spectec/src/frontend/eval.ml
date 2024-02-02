@@ -71,7 +71,7 @@ let rec reduce_typ env t : typ =
   (*
   in
   if t.it <> NumT NatT then
-  Printf.eprintf "[reduce_typ] %s -> %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
+  Printf.eprintf "[reduce_typ] %s => %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
   t'
   *)
 
@@ -264,7 +264,7 @@ and reduce_exp env e : exp =
   (*
   in
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
-  Printf.eprintf "[reduce_exp] %s -> %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
+  Printf.eprintf "[reduce_exp] %s => %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
   e'
   *)
 
@@ -389,11 +389,12 @@ and match_typ env s t1 t2 : subst option =
 
 and match_exp env s e1 e2 : subst option =
   (*
-  Printf.eprintf "[match_exp] (%s) == (%s)[%s]=(%s)\n%!"
+  Printf.eprintf "[match_exp] (%s) =: (%s)[%s] = (%s)\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
+  let so =
   *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
@@ -426,16 +427,16 @@ and match_exp env s e1 e2 : subst option =
           | _ -> false
         ) (Convert.filter_nl tes)
       | (AtomE atom | SeqE ({it = AtomE atom; _}::_)), CaseT (_, _, tcs, _) ->
-        (match El.Convert.find_nl_list (fun (atomN, _, _) -> atomN = atom) tcs with
+        (match El.Convert.find_nl_list (fun (atomN, _, _) -> atomN.it = atom.it) tcs with
         | Some (_, (tN, _), _) -> match_exp env s e1 (Convert.exp_of_typ tN) <> None
         | None -> false
         )
-      | _, _ -> true (* TODO: support deep checing? *)
+      | _, _ -> true (* TODO: support deep checking? *)
     then
       if id.it = "_" then Some s else
       Some (Subst.add_varid s id e1)
     else None
-  | AtomE atom1, AtomE atom2 when atom1 = atom2 -> Some s
+  | AtomE atom1, AtomE atom2 when atom1.it = atom2.it -> Some s
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
   | NatE (_, n1), NatE (_, n2) when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s
@@ -487,6 +488,18 @@ and match_exp env s e1 e2 : subst option =
   | _, (HoleE _ | FuseE _) -> assert false
   | _, _ when is_normal_exp e1 -> None
   | _, _ -> raise Irred
+  (*
+  in
+  Printf.eprintf "[match_exp] (%s) =: (%s) => %s\n%!"
+    (Print.string_of_exp e1)
+    (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)))
+    (match so with
+    | None -> "-"
+    | Some s ->
+    (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
+    );
+  so
+  *)
 
 and match_expfield env s (atom1, e1) (atom2, e2) =
   if atom1 <> atom2 then None else
@@ -559,12 +572,18 @@ and equiv_typ env t1 t2 =
   let b =
   *)
   match t1.it, t2.it with
-  | VarT (id1, args1), VarT (id2, args2)
-    when (El.Convert.strip_var_suffix id1).it = (El.Convert.strip_var_suffix id2).it ->
+  | VarT (id1, args1), VarT (id2, args2) ->
+    (El.Convert.strip_var_suffix id1).it = (El.Convert.strip_var_suffix id2).it &&
     equiv_list equiv_arg env args1 args2 || (* optimization *)
-    equiv_typ env (reduce_typ env t1) (reduce_typ env t2)
-  | VarT _, _ -> equiv_typ env (reduce_typ env t1) t2
-  | _, VarT _ -> equiv_typ env t1 (reduce_typ env t2)
+    let t1' = reduce_typ env t1 in
+    let t2' = reduce_typ env t2 in
+    (t1' <> t1 || t2' <> t2) && equiv_typ env t1' t2'
+  | VarT _, _ ->
+    let t1' = reduce_typ env t1 in
+    t1' <> t1 && equiv_typ env t1' t2
+  | _, VarT _ ->
+    let t2' = reduce_typ env t2 in
+    t2' <> t2 && equiv_typ env t1 t2'
   | ParenT t11, _ -> equiv_typ env t11 t2
   | _, ParenT t21 -> equiv_typ env t1 t21
   | TupT ts1, TupT ts2 | SeqT ts1, SeqT ts2 -> equiv_list equiv_typ env ts1 ts2
@@ -581,7 +600,7 @@ and equiv_typ env t1 t2 =
   | _, _ -> t1.it = t2.it
   (*
   in
-  Printf.eprintf "[equiv_typ] (%s) == (%s) -> %b\n%!"
+  Printf.eprintf "[equiv_typ] (%s) == (%s) => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;

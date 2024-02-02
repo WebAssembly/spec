@@ -76,37 +76,50 @@ let find_case cases atom at =
 
 (* Type Accessors *)
 
-let expand_app env id as_ : deftyp' =
+(* Returns None when args cannot be reduced enough to decide family instance. *)
+let expand_app env id as_ : deftyp' option =
   (* *)
   Printf.eprintf "[expand_app] %s(%s)\n%!" id.it
     (String.concat "< " (List.map Print.string_of_arg as_));
+  let dto' =
   (* *)
   let env' = to_eval_env env in
   let as_ = List.map (Eval.reduce_arg env') as_ in
   let _ps, insts = find "syntax type" env.typs id in
   let rec lookup = function
-    | [] -> AliasT (VarT (id, as_) $ id.at)  (* no match, cannot reduce *)
+    | [] -> None  (* no match, cannot reduce *)
     | inst::insts' ->
       let InstD (_binds, as', dt) = inst.it in
-      if as' = [] && as_ = [] then dt.it else   (* optimisation *)
+      if as' = [] && as_ = [] then Some dt.it else   (* optimisation *)
       match Eval.(match_list match_arg env' Subst.empty as_ as') with
-      | exception Eval.Irred -> AliasT (VarT (id, as_) $ id.at)  (* cannot reduce *)
+      | exception Eval.Irred -> None  (* cannot reduce *)
       | None -> lookup insts'
-      | Some s -> (Subst.subst_deftyp s dt).it
+      | Some s -> Some (Subst.subst_deftyp s dt).it
   in lookup insts
+  (* *)
+  in
+  Printf.eprintf "[expand_app] %s(%s) => %s\n%!" id.it
+    (String.concat "< " (List.map Print.string_of_arg as_))
+    (match dto' with None -> "-" | Some dt' -> string_of_deftyp (dt' $ id.at));
+  dto'
+  (* *)
 
 let rec expand env t : typ' =
   match t.it with
   | VarT (id, as_) ->
     (match expand_app env id as_ with
-    | AliasT t1 -> expand env t1
+    | Some (AliasT t1) -> expand env t1
     | _ -> t.it
     )
   | _ -> t.it
 
 let expand_def env t : deftyp' =
   match expand env t with
-  | VarT (id, as_) -> expand_app env id as_
+  | VarT (id, as_) ->
+    (match expand_app env id as_ with
+    | Some dt' -> dt'
+    | None -> AliasT t
+    )
   | _ -> AliasT t
 
 
@@ -192,14 +205,14 @@ let sub_typ' env t1 t2 =
   | NumT t1', NumT t2' -> t1' < t2'
   | VarT (id1, as1), VarT (id2, as2) ->
     (match expand_app env id1 as1, expand_app env id2 as2 with
-    | StructT tfs1, StructT tfs2 ->
+    | Some (StructT tfs1), Some (StructT tfs2) ->
       List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
         try
           let _binds1, t1, prems1 = find_field tfs1 atom t2.at in
           Eval.equiv_typ env' t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         with Error _ -> false
       ) tfs2
-    | VariantT tcs1, VariantT tcs2 ->
+    | Some (VariantT tcs1), Some (VariantT tcs2) ->
       List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
         try
           let _binds2, t2, prems2 = find_case tcs2 atom t1.at in
