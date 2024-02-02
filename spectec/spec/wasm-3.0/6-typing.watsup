@@ -893,7 +893,7 @@ rule Instr_ok/vrelop:
   C |- VRELOP sh vrelop : V128 V128 -> V128
 
 rule Instr_ok/vishiftop:
-  C |- VISHIFTOP sh vishiftop : V128 V128 -> V128
+  C |- VISHIFTOP sh vishiftop : V128 I32 -> V128
 
 rule Instr_ok/vtestop:
   C |- VALL_TRUE sh : V128 -> I32
