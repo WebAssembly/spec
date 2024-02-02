@@ -2845,9 +2845,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -7763,9 +7763,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -12684,9 +12684,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -17610,9 +17610,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -22556,9 +22556,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -27562,9 +27562,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -32688,9 +32688,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:

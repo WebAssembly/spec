@@ -3535,7 +3535,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash {\mathit{sh}} . {\mathit{vishiftop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+{\mathit{C}} \vdash {\mathit{sh}} . {\mathit{vishiftop}} : \mathsf{v{\scriptstyle128}}~\mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vishiftop}]}
 \qquad
 \end{array}

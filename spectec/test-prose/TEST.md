@@ -1071,7 +1071,7 @@ validation_of_VRELOP sh vrelop
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_VISHIFTOP sh vishiftop
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, I32] -> [V128]).
 
 validation_of_VALL_TRUE sh
 - The instruction is valid with type ([V128] -> [I32]).
@@ -1399,10 +1399,12 @@ default valty_u0
   a. Return (F32.CONST 0).
 4. If (valty_u0 is F64), then:
   a. Return (F64.CONST 0).
-5. If (valty_u0 is FUNCREF), then:
+5. If (valty_u0 is V128), then:
+  a. Return (VVCONST V128 0).
+6. If (valty_u0 is FUNCREF), then:
   a. Return (REF.NULL FUNCREF).
-6. Assert: Due to validation, (valty_u0 is EXTERNREF).
-7. Return (REF.NULL EXTERNREF).
+7. Assert: Due to validation, (valty_u0 is EXTERNREF).
+8. Return (REF.NULL EXTERNREF).
 
 funcsxv exter_u0*
 1. If (exter_u0* is []), then:
@@ -3013,7 +3015,7 @@ validation_of_VRELOP sh vrelop
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_VISHIFTOP sh vishiftop
-- The instruction is valid with type ([V128, V128] -> [V128]).
+- The instruction is valid with type ([V128, I32] -> [V128]).
 
 validation_of_VALL_TRUE sh
 - The instruction is valid with type ([V128] -> [I32]).
