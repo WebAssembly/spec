@@ -185,7 +185,6 @@ and al_to_el_expfield record =
       Some (expfield @ [ elelem ]))
     record (Some [])
 
-
 (* Helpers *)
 
 let indent = "   "
@@ -290,17 +289,6 @@ and render_funcname env fname =
     in
     String.fold_left escape "" fname
   )
-
-let rec render_iter env = function
-  | Al.Ast.Opt -> "^?"
-  | Al.Ast.List -> "^\\ast"
-  | Al.Ast.List1 -> "^{+}"
-  | Al.Ast.ListN (expr, None) -> "^{" ^ render_expr env expr ^ "}"
-  | Al.Ast.ListN (expr, Some name) ->
-      "^{(" ^ render_name name ^ "<" ^ render_expr env expr ^ ")}"
-
-and render_iters env iters = List.map (render_iter env) iters |> List.fold_left (^) ""
-
 
 (* Expressions and Paths *)
 
@@ -415,8 +403,9 @@ and render_expr' env expr =
       sprintf "%s matches %s" se1 se2
   | _ ->
       let s = Al.Print.string_of_expr expr in
-      sprintf "warning: %s was not properly handled by prose backend" s |> prerr_endline;
-      s
+      let at = Util.Source.string_of_region expr.at in
+      sprintf "warning: %s (%s) was not properly handled by prose backend\n" s at
+      |> failwith;
 
 and render_path env path =
   match path.it with
@@ -426,7 +415,6 @@ and render_path env path =
   | Al.Ast.DotP s -> sprintf ".%s" (render_math (render_kwd env s))
 
 and render_paths env paths = List.map (render_path env) paths |> List.fold_left (^) ""
-
 
 (* Instructions *)
 
