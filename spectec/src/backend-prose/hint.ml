@@ -26,7 +26,7 @@ let extract_show_hint (hint: El.Ast.hint) =
 
 let extract_typcase_hint = function
   | El.Ast.Nl -> None
-  | El.Ast.Elem (atom, _, hints) -> (match atom with
+  | El.Ast.Elem (atom, _, hints) -> (match atom.it with
     | El.Ast.Atom id ->
         let show_hints = List.concat_map extract_show_hint hints in
         (match show_hints with
