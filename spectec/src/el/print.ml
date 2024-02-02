@@ -13,7 +13,8 @@ let space f x = " " ^ f x ^ " "
 
 (* Operators *)
 
-let string_of_atom = function
+let string_of_atom atom =
+  match atom.it with
   | Atom atomid -> atomid
   | Infinity -> "infinity"
   | Bot -> "_|_"

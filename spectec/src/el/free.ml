@@ -280,7 +280,8 @@ let free_def d =
     union
       (free_params ps)
       (diff (union (free_typ t) (free_gram gram)) (bound_params ps))
-  | VarD _ | SepD -> empty
+  | VarD (_id, t, _hints) -> free_typ t
+  | SepD -> empty
   | RelD (_id, t, _hints) -> free_typ t
   | RuleD (id1, _id2, e, prems) ->
     union (free_relid id1) (union (free_exp e) (free_nl_list free_prem prems))
