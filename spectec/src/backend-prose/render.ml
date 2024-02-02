@@ -377,9 +377,8 @@ and render_expr' env expr =
       sprintf "%s matches %s" se1 se2
   | _ ->
       let se = Al.Print.string_of_expr expr in
-      let at = Util.Source.string_of_region expr.at in
-      sprintf "warning: %s (%s) was not properly handled by prose backend\n" se at
-      |> failwith;
+      let msg = sprintf "%s was not properly handled\n" se in
+      Util.Source.error expr.at "prose backend error: " msg 
 
 and render_path env path =
   match path.it with
@@ -391,7 +390,8 @@ and render_path env path =
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
       sprintf "the slice from %s to %s" se1 se2 
-  | Al.Ast.DotP kwd -> render_math (render_kwd env kwd)
+  | Al.Ast.DotP kwd ->
+      sprintf "the field %s" (render_math (render_kwd env kwd))
 
 and render_paths env paths =
   let spaths = List.map (render_path env) paths in
