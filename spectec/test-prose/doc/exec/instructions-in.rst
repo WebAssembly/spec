@@ -6,49 +6,49 @@ Instructions
 Numeric Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-UNOP:
+.. _exec-unop:
 
-%{prose-algo: UNOP}
+$${rule-prose: exec/unop}
 
 \
 
 $${rule+: Step_pure/unop-*}
 
-.. _exec-BINOP:
+.. _exec-binop:
 
-%{prose-algo: BINOP}
+$${rule-prose: exec/binop}
 
 \
 
 $${rule+: Step_pure/binop-*}
 
-.. _exec-TESTOP:
+.. _exec-testop:
 
-%{prose-algo: TESTOP}
+$${rule-prose: exec/testop}
 
 \
 
 $${rule: Step_pure/testop}
 
-.. _exec-RELOP:
+.. _exec-relop:
 
-%{prose-algo: RELOP}
+$${rule-prose: exec/relop}
 
 \
 
 $${rule: Step_pure/relop}
 
-.. _exec-EXTEND:
+.. _exec-extend:
 
-%{prose-algo: EXTEND}
+$${rule-prose: exec/extend}
 
 \
 
 $${rule: Step_pure/extend}
 
-.. _exec-CVTOP:
+.. _exec-cvtop:
 
-%{prose-algo: CVTOP}
+$${rule-prose: exec/cvtop}
 
 \
 
@@ -57,153 +57,153 @@ $${rule+: Step_pure/cvtop-*}
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-VVUNOP:
+.. _exec-vvunop:
 
-%{prose-algo: VVUNOP}
+$${rule-prose: exec/vvunop}
 
 \
 
 $${rule+: Step_pure/vvunop}
 
-.. _exec-VVBINOP:
+.. _exec-vvbinop:
 
-%{prose-algo: VVBINOP}
+$${rule-prose: exec/vvbinop}
 
 \
 
 $${rule+: Step_pure/vvbinop}
 
-.. _exec-VVTERNOP:
+.. _exec-vvternop:
 
-%{prose-algo: VVTERNOP}
+$${rule-prose: exec/vvternop}
 
 \
 
 $${rule+: Step_pure/vvternop}
 
-.. _exec-VVTESTOP:
+.. _exec-vvtestop:
 
-%{prose-algo: VVTESTOP}
+$${rule-prose: exec/vvtestop}
 
 \
 
 $${rule+: Step_pure/vvtestop}
 
-.. _exec-VSHUFFLE:
+.. _exec-vshuffle:
 
-%{prose-algo: VSHUFFLE}
+$${rule-prose: exec/vshuffle}
 
 \
 
 $${rule+: Step_pure/vshuffle}
 
-.. _exec-VSPLAT:
+.. _exec-vsplat:
 
-%{prose-algo: VSPLAT}
+$${rule-prose: exec/vsplat}
 
 \
 
 $${rule+: Step_pure/vsplat}
 
-.. _exec-VEXTRACT_LANE:
+.. _exec-vextract_lane:
 
-%{prose-algo: VEXTRACT_LANE}
+$${rule-prose: exec/vextract_lane}
 
 \
 
 $${rule+: Step_pure/vextract_lane-*}
 
-.. _exec-VREPLACE_LANE:
+.. _exec-vreplace_lane:
 
-%{prose-algo: VREPLACE_LANE}
+$${rule-prose: exec/vreplace_lane}
 
 \
 
 $${rule+: Step_pure/vreplace_lane}
 
-.. _exec-VUNOP:
+.. _exec-vunop:
 
-%{prose-algo: VUNOP}
+$${rule-prose: exec/vunop}
 
 \
 
 $${rule+: Step_pure/vunop}
 
-.. _exec-VBINOP:
+.. _exec-vbinop:
 
-%{prose-algo: VBINOP}
+$${rule-prose: exec/vbinop}
 
 \
 
 $${rule+: Step_pure/vbinop-*}
 
-.. _exec-VRELOP:
+.. _exec-vrelop:
 
-%{prose-algo: VRELOP}
+$${rule-prose: exec/vrelop}
 
 \
 
 $${rule+: Step_pure/vrelop}
 
-.. _exec-VISHIFTOP:
+.. _exec-vishiftop:
 
-%{prose-algo: VISHIFTOP}
+$${rule-prose: exec/vishiftop}
 
 \
 
 $${rule+: Step_pure/vishiftop}
 
-.. _exec-VALL_TRUE:
+.. _exec-vall_true:
 
-%{prose-algo: VALL_TRUE}
+$${rule-prose: exec/vall_true}
 
 \
 
 $${rule+: Step_pure/vall_true-*}
 
-.. _exec-VBITMASK:
+.. _exec-vbitmask:
 
-%{prose-algo: VBITMASK}
+$${rule-prose: exec/vbitmask}
 
 \
 
 $${rule+: Step_pure/vbitmask}
 
-.. _exec-VNARROW:
+.. _exec-vnarrow:
 
-%{prose-algo: VNARROW}
+$${rule-prose: exec/vnarrow}
 
 \
 
 $${rule+: Step_pure/vnarrow}
 
-.. _exec-VCVTOP:
+.. _exec-vcvtop:
 
-%{prose-algo: VCVTOP}
+$${rule-prose: exec/vcvtop}
 
 \
 
 $${rule+: Step_pure/vcvtop-*}
 
-.. _exec-VDOT:
+.. _exec-vdot:
 
-%{prose-algo: VDOT}
+$${rule-prose: exec/vdot}
 
 \
 
 $${rule+: Step_pure/vdot}
 
-.. _exec-VEXTMUL:
+.. _exec-vextmul:
 
-%{prose-algo: VEXTMUL}
+$${rule-prose: exec/vextmul}
 
 \
 
 $${rule+: Step_pure/vextmul}
 
-.. _exec-VEXTADD_PAIRWISE:
+.. _exec-vextadd_pairwise:
 
-%{prose-algo: VEXTADD_PAIRWISE}
+$${rule-prose: exec/vextadd_pairwise}
 
 \
 
@@ -212,65 +212,65 @@ $${rule+: Step_pure/vextadd_pairwise}
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-REF.FUNC:
+.. _exec-ref.func:
 
-%{prose-algo: REF.FUNC}
+$${rule-prose: exec/ref.func}
 
 \
 
 $${rule+: Step_read/ref.func}
 
-.. _exec-REF.IS_NULL:
+.. _exec-ref.is_null:
 
-%{prose-algo: REF.IS_NULL}
+$${rule-prose: exec/ref.is_null}
 
 \
 
 $${rule+: Step_pure/ref.is_null-*}
 
-.. _exec-REF.AS_NON_NULL:
+.. _exec-ref.as_non_null:
 
-%{prose-algo: REF.AS_NON_NULL}
+$${rule-prose: exec/ref.as_non_null}
 
 \
 
 $${rule+: Step_pure/ref.as_non_null-*}
 
-.. _exec-REF.EQ:
+.. _exec-ref.eq:
 
-%{prose-algo: REF.EQ}
+$${rule-prose: exec/ref.eq}
 
 \
 
 $${rule+: Step_pure/ref.eq-*}
 
-.. _exec-REF.TEST:
+.. _exec-ref.test:
 
-%{prose-algo: REF.TEST}
+$${rule-prose: exec/ref.test}
 
 \
 
 $${rule+: Step_read/ref.test-*}
 
-.. _exec-REF.CAST:
+.. _exec-ref.cast:
 
-%{prose-algo: REF.CAST}
+$${rule-prose: exec/ref.cast}
 
 \
 
 $${rule: Step_read/ref.cast-*}
 
-.. _exec-REF.I31:
+.. _exec-ref.i31:
 
-%{prose-algo: REF.I31}
+$${rule-prose: exec/ref.i31}
 
 \
 
 $${rule+: Step_pure/ref.i31}
 
-.. _exec-I31.GET:
+.. _exec-i31.get:
 
-%{prose-algo: I31.GET}
+$${rule-prose: exec/i31.get}
 
 \
 
@@ -278,29 +278,29 @@ $${rule+: Step_pure/i31.get-*}
 
 .. _def-ext_structinst:
 
-%{prose-func: ext_structinst}
+$${definition-prose: ext_structinst}
 
 \
 
 $${definition: ext_structinst}
 
-.. _exec-STRUCT.NEW:
+.. _exec-struct.new:
 
-%{prose-algo: STRUCT.NEW}
+$${rule-prose: exec/struct.new}
 
 \
 
 $${rule+: Step/struct.new}
 
-.. _exec-STRUCT.NEW_DEFAULT:
+.. _exec-struct.new_default:
 
-%{prose-algo: STRUCT.NEW_DEFAULT}
+$${rule-prose: exec/struct.new_default}
 
 \
 
 $${rule+: Step_read/struct.new_default}
 
-.. _exec-STRUCT.GET:
+.. _exec-struct.get:
 
 STRUCT.GET
 ^^^^^^^^^^
@@ -311,25 +311,25 @@ TODO (too deeply nested)
 
 $${rule+: Step_read/struct.get-*}
 
-.. _exec-STRUCT.SET:
+.. _exec-struct.set:
 
-%{prose-algo: STRUCT.SET}
+$${rule-prose: exec/struct.set}
 
 \
 
 $${rule+: Step/struct.set-*}
 
-.. _exec-ARRAY.NEW:
+.. _exec-array.new:
 
-%{prose-algo: ARRAY.NEW}
+$${rule-prose: exec/array.new}
 
 \
 
 $${rule+: Step_read/array.new}
 
-.. _exec-ARRAY.NEW_DEFAULT:
+.. _exec-array.new_default:
 
-%{prose-algo: ARRAY.NEW_DEFAULT}
+$${rule-prose: exec/array.new_default}
 
 \
 
@@ -337,23 +337,23 @@ $${rule+: Step_read/array.new_default}
 
 .. _def-ext_arrayinst:
 
-%{prose-func: ext_arrayinst}
+$${definition-prose: ext_arrayinst}
 
 \
 
 $${definition: ext_arrayinst}
 
-.. _exec-ARRAY.NEW_FIXED:
+.. _exec-array.new_fixed:
 
-%{prose-algo: ARRAY.NEW_FIXED}
+$${rule-prose: exec/array.new_fixed}
 
 \
 
 $${rule+: Step/array.new_fixed}
 
-.. _exec-ARRAY.NEW_ELEM:
+.. _exec-array.new_elem:
 
-%{prose-algo: ARRAY.NEW_ELEM}
+$${rule-prose: exec/array.new_elem}
 
 \
 
@@ -361,90 +361,90 @@ $${rule+: Step_read/array.new_elem-*}
 
 .. _def-concat_bytes:
 
-%{prose-func: concat_bytes}
+$${definition-prose: concat_bytes}
 
 \
 
 $${definition: concat_bytes}
 
-.. _exec-ARRAY.NEW_DATA:
+.. _exec-array.new_data:
 
-%{prose-algo: ARRAY.NEW_DATA}
+$${rule-prose: exec/array.new_data}
 
 \
 
 $${rule+: Step_read/array.new_data-*}
 
-.. _exec-ARRAY.GET:
+.. _exec-array.get:
 
-%{prose-algo: ARRAY.GET}
+$${rule-prose: exec/array.get}
 
 \
 
 $${rule+: Step_read/array.get-*}
 
-.. _exec-ARRAY.SET:
+.. _exec-array.set:
 
-%{prose-algo: ARRAY.SET}
+$${rule-prose: exec/array.set}
 
 \
 
 $${rule+: Step/array.set-*}
 
-.. _exec-ARRAY.LEN:
+.. _exec-array.len:
 
-%{prose-algo: ARRAY.LEN}
+$${rule-prose: exec/array.len}
 
 \
 
 $${rule+: Step_read/array.len-*}
 
-.. _exec-ARRAY.FILL:
+.. _exec-array.fill:
 
-%{prose-algo: ARRAY.FILL}
+$${rule-prose: exec/array.fill}
 
 \
 
 $${rule+: Step_read/array.fill-*}
 
-.. _exec-ARRAY.COPY:
+.. _exec-array.copy:
 
 ARRAY.COPY
 ^^^^^^^^^^
 
-%{prose-algo: ARRAY.COPY}
+$${rule-prose: exec/array.copy}
 
 \
 
 $${rule+: Step_read/array.copy-*}
 
-.. _exec-ARRAY.INIT_ELEM:
+.. _exec-array.init_elem:
 
-%{prose-algo: ARRAY.INIT_ELEM}
+$${rule-prose: exec/array.init_elem}
 
 \
 
 $${rule+: Step_read/array.init_elem-*}
 
-.. _exec-ARRAY.INIT_DATA:
+.. _exec-array.init_data:
 
-%{prose-algo: ARRAY.INIT_DATA}
+$${rule-prose: exec/array.init_data}
 
 \
 
 $${rule+: Step_read/array.init_data-*}
 
-.. _exec-EXTERN.CONVERT_ANY:
+.. _exec-extern.convert_any:
 
-%{prose-algo: EXTERN.CONVERT_ANY}
+$${rule-prose: exec/extern.convert_any}
 
 \
 
 $${rule+: Step_pure/extern.convert_any-*}
 
-.. _exec-ANY.CONVERT_EXTERN:
+.. _exec-any.convert_extern:
 
-%{prose-algo: ANY.CONVERT_EXTERN}
+$${rule-prose: exec/any.convert_extern}
 
 \
 
@@ -453,17 +453,17 @@ $${rule+: Step_pure/any.convert_extern-*}
 Parametric Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-DROP:
+.. _exec-drop:
 
-%{prose-algo: DROP}
+$${rule-prose: exec/drop}
 
 \
 
 $${rule: Step_pure/drop}
 
-.. _exec-SELECT:
+.. _exec-select:
 
-%{prose-algo: SELECT}
+$${rule-prose: exec/select}
 
 \
 
@@ -472,41 +472,41 @@ $${rule+: Step_pure/select-*}
 Variable Instructions
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-LOCAL.GET:
+.. _exec-local.get:
 
-%{prose-algo: LOCAL.GET}
+$${rule-prose: exec/local.get}
 
 \
 
 $${rule: Step_read/local.get}
 
-.. _exec-LOCAL.SET:
+.. _exec-local.set:
 
-%{prose-algo: LOCAL.SET}
+$${rule-prose: exec/local.set}
 
 \
 
 $${rule: Step/local.set}
 
-.. _exec-LOCAL.TEE:
+.. _exec-local.tee:
 
-%{prose-algo: LOCAL.TEE}
+$${rule-prose: exec/local.tee}
 
 \
 
 $${rule: Step_pure/local.tee}
 
-.. _exec-GLOBAL.GET:
+.. _exec-global.get:
 
-%{prose-algo: GLOBAL.GET}
+$${rule-prose: exec/global.get}
 
 \
 
 $${rule: Step_read/global.get}
 
-.. _exec-GLOBAL.SET:
+.. _exec-global.set:
 
-%{prose-algo: GLOBAL.SET}
+$${rule-prose: exec/global.set}
 
 \
 
@@ -515,65 +515,65 @@ $${rule: Step/global.set}
 Table Instructions
 ~~~~~~~~~~~~~~~~~~
 
-.. _exec-TABLE.GET:
+.. _exec-table.get:
 
-%{prose-algo: TABLE.GET}
+$${rule-prose: exec/table.get}
 
 \
 
 $${rule+: Step_read/table.get-*}
 
-.. _exec-TABLE.SET:
+.. _exec-table.set:
 
-%{prose-algo: TABLE.SET}
+$${rule-prose: exec/table.set}
 
 \
 
 $${rule+: Step/table.set-*}
 
-.. _exec-TABLE.SIZE:
+.. _exec-table.size:
 
-%{prose-algo: TABLE.SIZE}
+$${rule-prose: exec/table.size}
 
 \
 
 $${rule: Step_read/table.size}
 
-.. _exec-TABLE.GROW:
+.. _exec-table.grow:
 
-%{prose-algo: TABLE.GROW}
+$${rule-prose: exec/table.grow}
 
 \
 
 $${rule: Step/table.grow-*}
 
-.. _exec-TABLE.FILL:
+.. _exec-table.fill:
 
-%{prose-algo: TABLE.FILL}
+$${rule-prose: exec/table.fill}
 
 \
 
 $${rule+: Step_read/table.fill-*}
 
-.. _exec-TABLE.COPY:
+.. _exec-table.copy:
 
-%{prose-algo: TABLE.COPY}
+$${rule-prose: exec/table.copy}
 
 \
 
 $${rule+: Step_read/table.copy-*}
 
-.. _exec-TABLE.INIT:
+.. _exec-table.init:
 
-%{prose-algo: TABLE.INIT}
+$${rule-prose: exec/table.init}
 
 \
 
 $${rule+: Step_read/table.init-*}
 
-.. _exec-ELEM.DROP:
+.. _exec-elem.drop:
 
-%{prose-algo: ELEM.DROP}
+$${rule-prose: exec/elem.drop}
 
 \
 
@@ -582,97 +582,97 @@ $${rule: Step/elem.drop}
 Memory Instructions
 ~~~~~~~~~~~~~~~~~~~
 
-.. _exec-LOAD:
+.. _exec-load:
 
-%{prose-algo: LOAD}
+$${rule-prose: exec/load}
 
 \
 
 $${rule+: Step_read/load-*}
 
-.. _exec-STORE:
+.. _exec-store:
 
-%{prose-algo: STORE}
+$${rule-prose: exec/store}
 
 \
 
 $${rule+: Step/store-*}
 
-.. _exec-VLOAD:
+.. _exec-vload:
 
-%{prose-algo: VLOAD}
+$${rule-prose: exec/vload}
 
 \
 
 $${rule+: Step_read/vload-*}
 
-.. _exec-VLOAD_LANE:
+.. _exec-vload_lane:
 
-%{prose-algo: VLOAD_LANE}
+$${rule-prose: exec/vload_lane}
 
 \
 
 $${rule+: Step_read/vload_lane-*}
 
-.. _exec-VSTORE:
+.. _exec-vstore:
 
-%{prose-algo: VSTORE}
+$${rule-prose: exec/vstore}
 
 \
 
 $${rule+: Step/vstore-*}
 
-.. _exec-VSTORE_LANE:
+.. _exec-vstore_lane:
 
-%{prose-algo: VSTORE_LANE}
+$${rule-prose: exec/vstore_lane}
 
 \
 
 $${rule+: Step/vstore_lane-*}
 
-.. _exec-MEMORY.SIZE:
+.. _exec-memory.size:
 
-%{prose-algo: MEMORY.SIZE}
+$${rule-prose: exec/memory.size}
 
 \
 
 $${rule: Step_read/memory.size}
 
-.. _exec-MEMORY.GROW:
+.. _exec-memory.grow:
 
-%{prose-algo: MEMORY.GROW}
+$${rule-prose: exec/memory.grow}
 
 \
 
 $${rule+: Step/memory.grow-*}
 
-.. _exec-MEMORY.FILL:
+.. _exec-memory.fill:
 
-%{prose-algo: MEMORY.FILL}
+$${rule-prose: exec/memory.fill}
 
 \
 
 $${rule+: Step_read/memory.fill-*}
 
-.. _exec-MEMORY.COPY:
+.. _exec-memory.copy:
 
-%{prose-algo: MEMORY.COPY}
+$${rule-prose: exec/memory.copy}
 
 \
 
 $${rule+: Step_read/memory.copy-*}
 
-.. _exec-MEMORY.INIT:
+.. _exec-memory.init:
 
-%{prose-algo: MEMORY.INIT}
+$${rule-prose: exec/memory.init}
 
 \
 
 $${rule+: Step_read/memory.init-*}
 
-.. _exec-DATA.DROP:
+.. _exec-data.drop:
 
-%{prose-algo: DATA.DROP}
+$${rule-prose: exec/data.drop}
 
 \
 
@@ -681,17 +681,17 @@ $${rule: Step/data.drop}
 Control Instructions
 ~~~~~~~~~~~~~~~~~~~~
 
-.. _exec-NOP:
+.. _exec-nop:
 
-%{prose-algo: NOP}
+$${rule-prose: exec/nop}
 
 \
 
 $${rule: Step_pure/nop}
 
-.. _exec-UNREACHABLE:
+.. _exec-unreachable:
 
-%{prose-algo: UNREACHABLE}
+$${rule-prose: exec/unreachable}
 
 \
 
@@ -699,103 +699,103 @@ $${rule: Step_pure/unreachable}
 
 .. _def-blocktype:
 
-%{prose-func: blocktype}
+$${definition-prose: blocktype}
 
 \
 
 $${definition: blocktype}
 
-.. _exec-BLOCK:
+.. _exec-block:
 
-%{prose-algo: BLOCK}
+$${rule-prose: exec/block}
 
 \
 
 $${rule+: Step_read/block}
 
-.. _exec-LOOP:
+.. _exec-loop:
 
-%{prose-algo: LOOP}
+$${rule-prose: exec/loop}
 
 \
 
 $${rule+: Step_read/loop}
 
-.. _exec-IF:
+.. _exec-if:
 
-%{prose-algo: IF}
+$${rule-prose: exec/if}
 
 \
 
 $${rule+: Step_pure/if-*}
 
-.. _exec-BR:
+.. _exec-br:
 
-%{prose-algo: BR}
+$${rule-prose: exec/br}
 
 \
 
 $${rule+: Step_pure/br-*}
 
-.. _exec-BR_IF:
+.. _exec-br_if:
 
-%{prose-algo: BR_IF}
+$${rule-prose: exec/br_if}
 
 \
 
 $${rule+: Step_pure/br_if-*}
 
-.. _exec-BR_TABLE:
+.. _exec-br_table:
 
-%{prose-algo: BR_TABLE}
+$${rule-prose: exec/br_table}
 
 \
 
 $${rule+: Step_pure/br_table-*}
 
-.. _exec-BR_ON_NULL:
+.. _exec-br_on_null:
 
-%{prose-algo: BR_ON_NULL}
+$${rule-prose: exec/br_on_null}
 
 \
 
 $${rule+: Step_pure/br_on_null-*}
 
-.. _exec-BR_ON_NON_NULL:
+.. _exec-br_on_non_null:
 
-%{prose-algo: BR_ON_NON_NULL}
+$${rule-prose: exec/br_on_non_null}
 
 \
 
 $${rule+: Step_pure/br_on_non_null-*}
 
-.. _exec-BR_ON_CAST:
+.. _exec-br_on_cast:
 
-%{prose-algo: BR_ON_CAST}
+$${rule-prose: exec/br_on_cast}
 
 \
 
 $${rule+: Step_read/br_on_cast-*}
 
-.. _exec-BR_ON_CAST_FAIL:
+.. _exec-br_on_cast_fail:
 
-%{prose-algo: BR_ON_CAST_FAIL}
+$${rule-prose: exec/br_on_cast_fail}
 
 \
 
 $${rule+: Step_read/br_on_cast_fail-*}
 
-.. _exec-RETURN:
+.. _exec-return:
 
-%{prose-algo: RETURN}
+$${rule-prose: exec/return}
 
 \
 
 $${rule+: Step_pure/return-*}
 
-.. _exec-CALL:
+.. _exec-call:
 
-%{prose-algo: CALL}
+$${rule-prose: exec/call}
 
 \
 
@@ -804,23 +804,23 @@ $${rule: Step_read/call}
 CALL_REF
 ^^^^^^^^
 
-%{prose-algo: CALL_REF}
+$${rule-prose: exec/call_ref}
 
 \
 
 $${rule+: Step_read/call_ref-*}
 
-.. _exec-CALL_INDIRECT:
+.. _exec-call_indirect:
 
-%{prose-algo: CALL_INDIRECT}
+$${rule-prose: exec/call_indirect}
 
 \
 
 $${rule+: Step_pure/call_indirect-*}
 
-.. _exec-RETURN_CALL:
+.. _exec-return_call:
 
-%{prose-algo: RETURN_CALL}
+$${rule-prose: exec/return_call}
 
 \
 
@@ -835,9 +835,9 @@ TODO (too deeply nested)
 
 $${rule+: Step_read/return_call_ref-*}
 
-.. _exec-RETURN_CALL_INDIRECT:
+.. _exec-return_call_indirect:
 
-%{prose-algo: RETURN_CALL_INDIRECT}
+$${rule-prose: exec/return_call_indirect}
 
 \
 
@@ -846,9 +846,9 @@ $${rule+: Step_pure/return_call_indirect}
 Blocks
 ~~~~~~
 
-.. _exec-LABEL_:
+.. _exec-label:
 
-%{prose-algo: LABEL_}
+$${rule-prose: exec/label}
 
 \
 
@@ -857,9 +857,9 @@ $${rule+: Step_pure/label-vals}
 Function Calls
 ~~~~~~~~~~~~~~
 
-.. _exec-FRAME_:
+.. _exec-frame:
 
-%{prose-algo: FRAME_}
+$${rule-prose: exec/frame}
 
 \
 

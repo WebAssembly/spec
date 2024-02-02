@@ -99,7 +99,7 @@ Recursive Types
 
 .. _def-before:
 
-%{prose-func: before}
+$${definition-prose: before}
 
 \
 
