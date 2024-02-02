@@ -16,7 +16,8 @@ type nat = int
 type text = string
 type id = string phrase
 
-type atom =
+type atom = (atom', string ref) note_phrase
+and atom' =
   | Atom of string               (* atomid *)
   | Infinity                     (* infinity *)
   | Bot                          (* `_|_` *)

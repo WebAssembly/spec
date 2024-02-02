@@ -3535,7 +3535,7 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash {\mathit{sh}} . {\mathit{vishiftop}} : \mathsf{v{\scriptstyle128}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+{\mathit{C}} \vdash {\mathit{sh}} . {\mathit{vishiftop}} : \mathsf{v{\scriptstyle128}}~\mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vishiftop}]}
 \qquad
 \end{array}
@@ -3978,6 +3978,16 @@ $$
 }{
 {\mathit{C}} \vdash ({\mathit{nt}}.\mathsf{const}~{\mathit{c}})~\mathsf{const}
 } \, {[\textsc{\scriptsize C{-}instr{-}const}]}
+\qquad
+\end{array}
+$$
+
+$$
+\begin{array}{@{}c@{}}\displaystyle
+\frac{
+}{
+{\mathit{C}} \vdash ({\mathit{vt}}.\mathsf{const}~{\mathit{c}}_{{\mathit{vt}}})~\mathsf{const}
+} \, {[\textsc{\scriptsize C{-}instr{-}vvconst}]}
 \qquad
 \end{array}
 $$

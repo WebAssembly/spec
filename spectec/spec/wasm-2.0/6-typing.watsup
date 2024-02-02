@@ -346,7 +346,7 @@ rule Instr_ok/vrelop:
   C |- VRELOP sh vrelop : V128 V128 -> V128
 
 rule Instr_ok/vishiftop:
-  C |- VISHIFTOP sh vishiftop : V128 V128 -> V128
+  C |- VISHIFTOP sh vishiftop : V128 I32 -> V128
 
 rule Instr_ok/vtestop:
   C |- VALL_TRUE sh : V128 -> I32
@@ -517,6 +517,9 @@ relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
 
 rule Instr_const/const:
   C |- (CONST nt c) CONST
+
+rule Instr_const/vvconst:
+  C |- (VVCONST vt c_vt) CONST
 
 rule Instr_const/ref.null:
   C |- (REF.NULL rt) CONST

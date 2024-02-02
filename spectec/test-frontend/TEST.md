@@ -2982,9 +2982,9 @@ relation Instr_ok: `%|-%:%`(context, instr, functype)
   rule vrelop {C : context, sh : shape, vrelop : relop_vectype}:
     `%|-%:%`(C, VRELOP_instr(sh, vrelop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
 
-  ;; 6-typing.watsup:895.1-896.50
+  ;; 6-typing.watsup:895.1-896.49
   rule vishiftop {C : context, sh : shape, vishiftop : shiftop_vectype}:
-    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype V128_valtype], [V128_valtype]))
+    `%|-%:%`(C, VISHIFTOP_instr(sh, vishiftop), `%->%`([V128_valtype I32_valtype], [V128_valtype]))
 
   ;; 6-typing.watsup:898.1-899.34
   rule vtestop {C : context, sh : shape}:
@@ -3209,25 +3209,25 @@ relation Expr_ok: `%|-%:%`(context, expr, resulttype)
     `%|-%:%`(C, instr*{instr}, t*{t})
     -- Instrs_ok: `%|-%*:%`(C, instr*{instr}, `%->%*%`([], [], t*{t}))
 
-;; 6-typing.watsup:1085.1-1085.64
+;; 6-typing.watsup:1088.1-1088.64
 rec {
 
-;; 6-typing.watsup:1085.1-1085.64
+;; 6-typing.watsup:1088.1-1088.64
 def in_binop : (binop_numtype, ibinop*) -> bool
-  ;; 6-typing.watsup:1086.1-1086.38
+  ;; 6-typing.watsup:1089.1-1089.38
   def {binop : binop_numtype, epsilon : ibinop*} in_binop(binop, epsilon) = false
-  ;; 6-typing.watsup:1087.1-1087.92
+  ;; 6-typing.watsup:1090.1-1090.92
   def {binop : binop_numtype, ibinop'* : ibinop*, ibinop_1 : ibinop} in_binop(binop, [ibinop_1] :: ibinop'*{ibinop'}) = ((binop = _I_binop_numtype(ibinop_1)) \/ $in_binop(binop, ibinop'*{ibinop'}))
 }
 
-;; 6-typing.watsup:1081.1-1081.63
+;; 6-typing.watsup:1084.1-1084.63
 rec {
 
-;; 6-typing.watsup:1081.1-1081.63
+;; 6-typing.watsup:1084.1-1084.63
 def in_numtype : (numtype, numtype*) -> bool
-  ;; 6-typing.watsup:1082.1-1082.37
+  ;; 6-typing.watsup:1085.1-1085.37
   def {epsilon : numtype*, nt : numtype} in_numtype(nt, epsilon) = false
-  ;; 6-typing.watsup:1083.1-1083.68
+  ;; 6-typing.watsup:1086.1-1086.68
   def {nt : numtype, nt'* : numtype*, nt_1 : numtype} in_numtype(nt, [nt_1] :: nt'*{nt'}) = ((nt = nt_1) \/ $in_numtype(nt, nt'*{nt'}))
 }
 
@@ -3237,20 +3237,24 @@ relation Instr_const: `%|-%CONST`(context, instr)
   rule const {C : context, c : c, nt : numtype}:
     `%|-%CONST`(C, CONST_instr(nt, c))
 
-  ;; 6-typing.watsup:1070.1-1071.27
+  ;; 6-typing.watsup:1070.1-1071.31
+  rule vvconst {C : context, c_vt : c, vt : vectype}:
+    `%|-%CONST`(C, VVCONST_instr(vt, c_vt))
+
+  ;; 6-typing.watsup:1073.1-1074.27
   rule ref.null {C : context, ht : heaptype}:
     `%|-%CONST`(C, REF.NULL_instr(ht))
 
-  ;; 6-typing.watsup:1073.1-1074.26
+  ;; 6-typing.watsup:1076.1-1077.26
   rule ref.func {C : context, x : idx}:
     `%|-%CONST`(C, REF.FUNC_instr(x))
 
-  ;; 6-typing.watsup:1076.1-1078.24
+  ;; 6-typing.watsup:1079.1-1081.24
   rule global.get {C : context, t : valtype, x : idx}:
     `%|-%CONST`(C, GLOBAL.GET_instr(x))
     -- if (C.GLOBAL_context[x] = `%%`(`MUT%?`(?()), t))
 
-  ;; 6-typing.watsup:1089.1-1092.38
+  ;; 6-typing.watsup:1092.1-1095.38
   rule binop {C : context, binop : binop_numtype, nt : numtype}:
     `%|-%CONST`(C, BINOP_instr(nt, binop))
     -- if $in_numtype(nt, [I32_numtype I64_numtype])
@@ -3258,195 +3262,195 @@ relation Instr_const: `%|-%CONST`(context, instr)
 
 ;; 6-typing.watsup:1064.1-1064.77
 relation Expr_const: `%|-%CONST`(context, expr)
-  ;; 6-typing.watsup:1095.1-1096.38
+  ;; 6-typing.watsup:1098.1-1099.38
   rule _ {C : context, instr* : instr*}:
     `%|-%CONST`(C, instr*{instr})
     -- (Instr_const: `%|-%CONST`(C, instr))*{instr}
 
 ;; 6-typing.watsup:1065.1-1065.78
 relation Expr_ok_const: `%|-%:%CONST`(context, expr, valtype)
-  ;; 6-typing.watsup:1099.1-1102.33
+  ;; 6-typing.watsup:1102.1-1105.33
   rule _ {C : context, expr : expr, t : valtype}:
     `%|-%:%CONST`(C, expr, t)
     -- Expr_ok: `%|-%:%`(C, expr, [t])
     -- Expr_const: `%|-%CONST`(C, expr)
 
-;; 6-typing.watsup:1111.1-1111.73
+;; 6-typing.watsup:1114.1-1114.73
 relation Type_ok: `%|-%:%*`(context, type, deftype*)
-  ;; 6-typing.watsup:1123.1-1127.53
+  ;; 6-typing.watsup:1126.1-1130.53
   rule _ {C : context, dt* : deftype*, rectype : rectype, x : idx}:
     `%|-%:%*`(C, TYPE(rectype), dt*{dt})
     -- if (x = |C.TYPE_context|)
     -- if (dt*{dt} = $rolldt(x, rectype))
     -- Rectype_ok: `%|-%:%`(C[TYPE_context =.. dt*{dt}], rectype, OK_oktypeidx(x))
 
-;; 6-typing.watsup:1113.1-1113.74
+;; 6-typing.watsup:1116.1-1116.74
 relation Local_ok: `%|-%:%`(context, local, localtype)
-  ;; 6-typing.watsup:1129.1-1131.28
+  ;; 6-typing.watsup:1132.1-1134.28
   rule set {C : context, t : valtype}:
     `%|-%:%`(C, LOCAL(t), `%%`(SET_init, t))
     -- if ($default(t) =/= ?())
 
-  ;; 6-typing.watsup:1133.1-1135.26
+  ;; 6-typing.watsup:1136.1-1138.26
   rule unset {C : context, t : valtype}:
     `%|-%:%`(C, LOCAL(t), `%%`(UNSET_init, t))
     -- if ($default(t) = ?())
 
-;; 6-typing.watsup:1112.1-1112.73
+;; 6-typing.watsup:1115.1-1115.73
 relation Func_ok: `%|-%:%`(context, func, deftype)
-  ;; 6-typing.watsup:1137.1-1141.82
+  ;; 6-typing.watsup:1140.1-1144.82
   rule _ {C : context, expr : expr, local* : local*, lt* : localtype*, t_1* : valtype*, t_2* : valtype*, x : idx}:
     `%|-%:%`(C, `FUNC%%*%`(x, local*{local}, expr), C.TYPE_context[x])
     -- Expand: `%~~%`(C.TYPE_context[x], FUNC_comptype(`%->%`(t_1*{t_1}, t_2*{t_2})))
     -- (Local_ok: `%|-%:%`(C, local, lt))*{local lt}
     -- Expr_ok: `%|-%:%`(C ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL `%%`(SET_init, t_1)*{t_1} :: lt*{lt}, LABEL [], RETURN ?()} ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [t_2*{t_2}], RETURN ?()} ++ {TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?(t_2*{t_2})}, expr, t_2*{t_2})
 
-;; 6-typing.watsup:1114.1-1114.75
+;; 6-typing.watsup:1117.1-1117.75
 relation Global_ok: `%|-%:%`(context, global, globaltype)
-  ;; 6-typing.watsup:1143.1-1147.40
+  ;; 6-typing.watsup:1146.1-1150.40
   rule _ {C : context, expr : expr, gt : globaltype, mut : mut, t : valtype}:
     `%|-%:%`(C, GLOBAL(gt, expr), gt)
     -- Globaltype_ok: `%|-%:OK`(C, gt)
     -- if (gt = `%%`(mut, t))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, t)
 
-;; 6-typing.watsup:1115.1-1115.74
+;; 6-typing.watsup:1118.1-1118.74
 relation Table_ok: `%|-%:%`(context, table, tabletype)
-  ;; 6-typing.watsup:1149.1-1153.41
+  ;; 6-typing.watsup:1152.1-1156.41
   rule _ {C : context, expr : expr, limits : limits, rt : reftype, tt : tabletype}:
     `%|-%:%`(C, TABLE(tt, expr), tt)
     -- Tabletype_ok: `%|-%:OK`(C, tt)
     -- if (tt = `%%`(limits, rt))
     -- Expr_ok_const: `%|-%:%CONST`(C, expr, (rt <: valtype))
 
-;; 6-typing.watsup:1116.1-1116.72
+;; 6-typing.watsup:1119.1-1119.72
 relation Mem_ok: `%|-%:%`(context, mem, memtype)
-  ;; 6-typing.watsup:1155.1-1157.30
+  ;; 6-typing.watsup:1158.1-1160.30
   rule _ {C : context, mt : memtype}:
     `%|-%:%`(C, MEMORY(mt), mt)
     -- Memtype_ok: `%|-%:OK`(C, mt)
 
-;; 6-typing.watsup:1119.1-1119.77
+;; 6-typing.watsup:1122.1-1122.77
 relation Elemmode_ok: `%|-%:%`(context, elemmode, reftype)
-  ;; 6-typing.watsup:1168.1-1171.45
+  ;; 6-typing.watsup:1171.1-1174.45
   rule active {C : context, expr : expr, lim : limits, rt : reftype, x : idx}:
     `%|-%:%`(C, ACTIVE_elemmode(x, expr), rt)
     -- if (C.TABLE_context[x] = `%%`(lim, rt))
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1173.1-1174.20
+  ;; 6-typing.watsup:1176.1-1177.20
   rule passive {C : context, rt : reftype}:
     `%|-%:%`(C, PASSIVE_elemmode, rt)
 
-  ;; 6-typing.watsup:1176.1-1177.20
+  ;; 6-typing.watsup:1179.1-1180.20
   rule declare {C : context, rt : reftype}:
     `%|-%:%`(C, DECLARE_elemmode, rt)
 
-;; 6-typing.watsup:1117.1-1117.73
+;; 6-typing.watsup:1120.1-1120.73
 relation Elem_ok: `%|-%:%`(context, elem, reftype)
-  ;; 6-typing.watsup:1159.1-1162.37
+  ;; 6-typing.watsup:1162.1-1165.37
   rule _ {C : context, elemmode : elemmode, expr* : expr*, rt : reftype}:
     `%|-%:%`(C, `ELEM%%*%`(rt, expr*{expr}, elemmode), rt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, (rt <: valtype)))*{expr}
     -- Elemmode_ok: `%|-%:%`(C, elemmode, rt)
 
-;; 6-typing.watsup:1120.1-1120.77
+;; 6-typing.watsup:1123.1-1123.77
 relation Datamode_ok: `%|-%:OK`(context, datamode)
-  ;; 6-typing.watsup:1179.1-1182.45
+  ;; 6-typing.watsup:1182.1-1185.45
   rule active {C : context, expr : expr, mt : memtype, x : idx}:
     `%|-%:OK`(C, ACTIVE_datamode(x, expr))
     -- if (C.MEM_context[x] = mt)
     -- (Expr_ok_const: `%|-%:%CONST`(C, expr, I32_valtype))*{}
 
-  ;; 6-typing.watsup:1184.1-1185.20
+  ;; 6-typing.watsup:1187.1-1188.20
   rule passive {C : context}:
     `%|-%:OK`(C, PASSIVE_datamode)
 
-;; 6-typing.watsup:1118.1-1118.73
+;; 6-typing.watsup:1121.1-1121.73
 relation Data_ok: `%|-%:OK`(context, data)
-  ;; 6-typing.watsup:1164.1-1166.37
+  ;; 6-typing.watsup:1167.1-1169.37
   rule _ {C : context, b* : byte*, datamode : datamode}:
     `%|-%:OK`(C, `DATA%*%`(b*{b}, datamode))
     -- Datamode_ok: `%|-%:OK`(C, datamode)
 
-;; 6-typing.watsup:1121.1-1121.74
+;; 6-typing.watsup:1124.1-1124.74
 relation Start_ok: `%|-%:OK`(context, start)
-  ;; 6-typing.watsup:1187.1-1189.44
+  ;; 6-typing.watsup:1190.1-1192.44
   rule _ {C : context, x : idx}:
     `%|-%:OK`(C, START(x))
     -- Expand: `%~~%`(C.FUNC_context[x], FUNC_comptype(`%->%`([], [])))
 
-;; 6-typing.watsup:1194.1-1194.80
+;; 6-typing.watsup:1197.1-1197.80
 relation Import_ok: `%|-%:%`(context, import, externtype)
-  ;; 6-typing.watsup:1198.1-1200.33
+  ;; 6-typing.watsup:1201.1-1203.33
   rule _ {C : context, name_1 : name, name_2 : name, xt : externtype}:
     `%|-%:%`(C, IMPORT(name_1, name_2, xt), xt)
     -- Externtype_ok: `%|-%:OK`(C, xt)
 
-;; 6-typing.watsup:1196.1-1196.83
+;; 6-typing.watsup:1199.1-1199.83
 relation Externidx_ok: `%|-%:%`(context, externidx, externtype)
-  ;; 6-typing.watsup:1207.1-1209.23
+  ;; 6-typing.watsup:1210.1-1212.23
   rule func {C : context, dt : deftype, x : idx}:
     `%|-%:%`(C, FUNC_externidx(x), FUNC_externtype(dt))
     -- if (C.FUNC_context[x] = dt)
 
-  ;; 6-typing.watsup:1211.1-1213.25
+  ;; 6-typing.watsup:1214.1-1216.25
   rule global {C : context, gt : globaltype, x : idx}:
     `%|-%:%`(C, GLOBAL_externidx(x), GLOBAL_externtype(gt))
     -- if (C.GLOBAL_context[x] = gt)
 
-  ;; 6-typing.watsup:1215.1-1217.24
+  ;; 6-typing.watsup:1218.1-1220.24
   rule table {C : context, tt : tabletype, x : idx}:
     `%|-%:%`(C, TABLE_externidx(x), TABLE_externtype(tt))
     -- if (C.TABLE_context[x] = tt)
 
-  ;; 6-typing.watsup:1219.1-1221.22
+  ;; 6-typing.watsup:1222.1-1224.22
   rule mem {C : context, mt : memtype, x : idx}:
     `%|-%:%`(C, MEM_externidx(x), MEM_externtype(mt))
     -- if (C.MEM_context[x] = mt)
 
-;; 6-typing.watsup:1195.1-1195.80
+;; 6-typing.watsup:1198.1-1198.80
 relation Export_ok: `%|-%:%`(context, export, externtype)
-  ;; 6-typing.watsup:1202.1-1204.39
+  ;; 6-typing.watsup:1205.1-1207.39
   rule _ {C : context, externidx : externidx, name : name, xt : externtype}:
     `%|-%:%`(C, EXPORT(name, externidx), xt)
     -- Externidx_ok: `%|-%:%`(C, externidx, xt)
 
-;; 6-typing.watsup:1228.1-1228.77
+;; 6-typing.watsup:1231.1-1231.77
 rec {
 
-;; 6-typing.watsup:1228.1-1228.77
+;; 6-typing.watsup:1231.1-1231.77
 relation Globals_ok: `%|-%*:%*`(context, global*, globaltype*)
-  ;; 6-typing.watsup:1271.1-1272.17
+  ;; 6-typing.watsup:1274.1-1275.17
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1274.1-1277.54
+  ;; 6-typing.watsup:1277.1-1280.54
   rule cons {C : context, global : global, global_1 : global, gt* : globaltype*, gt_1 : globaltype}:
     `%|-%*:%*`(C, [global_1] :: global*{}, [gt_1] :: gt*{gt})
     -- Global_ok: `%|-%:%`(C, global, gt_1)
     -- Globals_ok: `%|-%*:%*`(C[GLOBAL_context =.. [gt_1]], global*{}, gt*{gt})
 }
 
-;; 6-typing.watsup:1227.1-1227.75
+;; 6-typing.watsup:1230.1-1230.75
 rec {
 
-;; 6-typing.watsup:1227.1-1227.75
+;; 6-typing.watsup:1230.1-1230.75
 relation Types_ok: `%|-%*:%*`(context, type*, deftype*)
-  ;; 6-typing.watsup:1263.1-1264.17
+  ;; 6-typing.watsup:1266.1-1267.17
   rule empty {C : context}:
     `%|-%*:%*`(C, [], [])
 
-  ;; 6-typing.watsup:1266.1-1269.49
+  ;; 6-typing.watsup:1269.1-1272.49
   rule cons {C : context, dt* : deftype*, dt_1 : deftype, type* : type*, type_1 : type}:
     `%|-%*:%*`(C, [type_1] :: type*{type}, dt_1*{} :: dt*{dt})
     -- Type_ok: `%|-%:%*`(C, type_1, [dt_1])
     -- Types_ok: `%|-%*:%*`(C[TYPE_context =.. dt_1*{}], type*{type}, dt*{dt})
 }
 
-;; 6-typing.watsup:1226.1-1226.76
+;; 6-typing.watsup:1229.1-1229.76
 relation Module_ok: `|-%:OK`(module)
-  ;; 6-typing.watsup:1237.1-1260.29
+  ;; 6-typing.watsup:1240.1-1263.29
   rule _ {C : context, C' : context, data^n : data^n, dt* : deftype*, dt'* : deftype*, elem* : elem*, et* : externtype*, export* : export*, func* : func*, global* : global*, gt* : globaltype*, idt* : deftype*, igt* : globaltype*, import* : import*, imt* : memtype*, itt* : tabletype*, ixt* : externtype*, mem* : mem*, mt* : memtype*, n : n, rt* : reftype*, start? : start?, table* : table*, tt* : tabletype*, type* : type*}:
     `|-%:OK`(`MODULE%*%*%*%*%*%*%*%*%*%*`(type*{type}, import*{import}, func*{func}, global*{global}, table*{table}, mem*{mem}, elem*{elem}, data^n{data}, start?{start}, export*{export}))
     -- Types_ok: `%|-%*:%*`({TYPE [], REC [], FUNC [], GLOBAL [], TABLE [], MEM [], ELEM [], DATA [], LOCAL [], LABEL [], RETURN ?()}, type*{type}, dt'*{dt'})

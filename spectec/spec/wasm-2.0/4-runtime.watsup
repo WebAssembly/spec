@@ -28,10 +28,12 @@ var da : dataaddr
 
 syntax num hint(desc "number") =
   | CONST numtype c_numtype
+syntax vec hint(desc "vector") =
+  | VVCONST vectype c_vectype      hint(show %.CONST %)
 syntax ref hint(desc "reference") =
   | REF.NULL reftype | REF.FUNC_ADDR funcaddr | REF.HOST_ADDR hostaddr
 syntax val hint(desc "value") =
-  | num | ref
+  | num | vec | ref
 
 syntax result hint(desc "result") =
   | _VALS val* | TRAP
