@@ -95,10 +95,10 @@ let call_ref =
               (accE (fi, dotP ("MODULE", "module")))
           ));
           letI (ff, frameE (Some m, f));
-          enterI (ff, listE ([caseE (("FRAME_", ""), [])]),
+          enterI (ff, listE ([caseE (("FRAME_", "admininstr"), [])]),
             [
             letI (ll, labelE (m, listE []));
-            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (("LABEL_", ""), [])])), []);
+            enterI (ll, catE (iterE (instr, ["instr"], List), listE ([caseE (("LABEL_", "admininstr"), [])])), []);
             ]
           );
         ], []);
@@ -211,7 +211,7 @@ let return_instrs_of_instantiate config =
   [
     enterI (
       frameE (Some (numE 0L), frame),
-      listE ([ caseE (("FRAME_", ""), []) ]), rhs
+      listE ([ caseE (("FRAME_", "admininstr"), []) ]), rhs
     );
     returnI (Some (tupE [ store; varE "mm" ]))
   ]
@@ -221,7 +221,7 @@ let return_instrs_of_invoke config =
     letI (varE "k", lenE (iterE (varE "t_2", ["t_2"], List)));
     enterI (
       frameE (Some (varE "k"), frame),
-      listE ([caseE (("FRAME_", ""), [])]), rhs
+      listE ([caseE (("FRAME_", "admininstr"), [])]), rhs
     );
     popI (iterE (varE "val", ["val"], ListN (varE "k", None)));
     returnI (Some (iterE (varE "val", ["val"], ListN (varE "k", None))))

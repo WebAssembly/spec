@@ -43,16 +43,28 @@ let al_to_el_binop = function
   | Al.Ast.ExpOp -> Some El.Ast.ExpOp
   | _ -> None
 
-let al_to_el_infixop = function
-  | "->" -> Some El.Ast.Arrow
-  | s -> Some (El.Ast.Atom s)
+(* TODO hardcoded types for infixop atom,
+   *)
+let al_to_el_infixop op =
+  let elatom, typ = match op with
+  | "->" -> Some El.Ast.Arrow, ""
+  | "X" -> Some (El.Ast.Atom "X"), "shape"
+  | _ -> None, ""
+  in
+  Option.map
+    (fun elatom -> elatom $$ no_region % ref typ)
+    elatom
+
+let al_to_el_kwd (id, typ) = 
+  let elatom = El.Ast.Atom id in
+  elatom $$ no_region % (ref typ)
 
 let rec al_to_el_iter iter = match iter with
   | Al.Ast.Opt -> Some El.Ast.Opt
   | Al.Ast.List -> Some El.Ast.List
   | Al.Ast.List1 -> Some El.Ast.List1
   | Al.Ast.ListN (e, id) ->
-      let* ele = al_to_el_exp e in
+      let* ele = al_to_el_expr e in
       let elid = Option.map (fun id -> id $ no_region) id in
       Some (El.Ast.ListN (ele, elid))
 
@@ -60,15 +72,14 @@ and al_to_el_path pl =
   let fold_path p elp = 
     let elp' = (match p.it with
       | Al.Ast.IdxP ei ->
-          let* elei = al_to_el_exp ei in
+          let* elei = al_to_el_expr ei in
           Some (El.Ast.IdxP (elp, elei))
       | Al.Ast.SliceP (el, eh) ->
-          let* elel = al_to_el_exp el in
-          let* eleh = al_to_el_exp eh in
+          let* elel = al_to_el_expr el in
+          let* eleh = al_to_el_expr eh in
           Some (El.Ast.SliceP (elp, elel, eleh))
       | Al.Ast.DotP kwd ->
-          let (kwd, _) = kwd in
-          let elatom = El.Ast.Atom kwd in
+          let elatom = al_to_el_kwd kwd in
           Some (El.Ast.DotP (elp, elatom)))
     in
     Option.map (fun elp' -> elp' $ no_region) elp'
@@ -77,7 +88,7 @@ and al_to_el_path pl =
     (fun elp p -> Option.bind elp (fold_path p))
     (Some (El.Ast.RootP $ no_region)) pl
 
-and al_to_el_exp expr =
+and al_to_el_expr expr =
   let exp' =
     match expr.it with
     | Al.Ast.NumE i -> 
@@ -86,19 +97,19 @@ and al_to_el_exp expr =
         Some eli
     | Al.Ast.UnE (op, e) ->
         let* elop = al_to_el_unop op in 
-        let* ele = al_to_el_exp e in
+        let* ele = al_to_el_expr e in
         Some (El.Ast.UnE (elop, ele))
     | Al.Ast.BinE (op, e1, e2) ->
         let* elop = al_to_el_binop op in
-        let* ele1 = al_to_el_exp e1 in
-        let* ele2 = al_to_el_exp e2 in
+        let* ele1 = al_to_el_expr e1 in
+        let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.BinE (ele1, elop, ele2))
     | Al.Ast.TupE el ->
-        let* elel = al_to_el_exps el in
+        let* elel = al_to_el_exprs el in
         Some (El.Ast.TupE elel)
     | Al.Ast.CallE (id, el) ->
         let elid = id $ no_region in
-        let* elel = al_to_el_exps el in
+        let* elel = al_to_el_exprs el in
         let elel = List.map
           (fun ele ->
             let elarg = El.Ast.ExpA ele in
@@ -107,80 +118,81 @@ and al_to_el_exp expr =
         in
         Some (El.Ast.CallE (elid, elel))
     | Al.Ast.CatE (e1, e2) ->
-        let* ele1 = al_to_el_exp e1 in
-        let* ele2 = al_to_el_exp e2 in
+        let* ele1 = al_to_el_expr e1 in
+        let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.SeqE [ ele1; ele2 ])
     | Al.Ast.LenE e ->
-        let* ele = al_to_el_exp e in
+        let* ele = al_to_el_expr e in
         Some (El.Ast.LenE ele)
     | Al.Ast.ListE el ->
-        let* elel = al_to_el_exps el in
+        let* elel = al_to_el_exprs el in
         if (List.length elel > 0) then Some (El.Ast.SeqE elel)
         else Some (El.Ast.EpsE)
     | Al.Ast.AccE (e, p) ->
-        let* ele = al_to_el_exp e in
+        let* ele = al_to_el_expr e in
         (match p.it with
         | Al.Ast.IdxP ei ->
-            let* elei = al_to_el_exp ei in
+            let* elei = al_to_el_expr ei in
             Some (El.Ast.IdxE (ele, elei))
         | Al.Ast.SliceP (el, eh) ->
-            let* elel = al_to_el_exp el in
-            let* eleh = al_to_el_exp eh in
+            let* elel = al_to_el_expr el in
+            let* eleh = al_to_el_expr eh in
             Some (El.Ast.SliceE (ele, elel, eleh))
-        | DotP (kwd, _) ->
-            let elatom = El.Ast.Atom kwd in
+        | DotP kwd ->
+            let elatom = al_to_el_kwd kwd in
             Some (El.Ast.DotE (ele, elatom)))
     | Al.Ast.UpdE (e1, pl, e2) ->
-        let* ele1 = al_to_el_exp e1 in
+        let* ele1 = al_to_el_expr e1 in
         let* elp = al_to_el_path pl in
-        let* ele2 = al_to_el_exp e2 in
+        let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.UpdE (ele1, elp, ele2))
     | Al.Ast.ExtE (e1, pl, e2, _) ->
-        let* ele1 = al_to_el_exp e1 in
+        let* ele1 = al_to_el_expr e1 in
         let* elp = al_to_el_path pl in
-        let* ele2 = al_to_el_exp e2 in
+        let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.ExtE (ele1, elp, ele2))
     | Al.Ast.StrE r ->
-        let* elexpfield = al_to_el_expfield r in
+        let* elexpfield = al_to_el_record r in
         Some (El.Ast.StrE elexpfield)
     | Al.Ast.VarE id | Al.Ast.SubE (id, _) -> 
         let elid = id $ no_region in
         Some (El.Ast.VarE (elid, []))
     | Al.Ast.IterE (e, _, iter) ->
-        let* ele = al_to_el_exp e in
+        let* ele = al_to_el_expr e in
         let* eliter = al_to_el_iter iter in
         Some (El.Ast.IterE (ele, eliter))
     | Al.Ast.InfixE (e1, op, e2) ->
-        let* ele1 = al_to_el_exp e1 in
+        let* ele1 = al_to_el_expr e1 in
         let* elop = al_to_el_infixop op in
-        let* ele2 = al_to_el_exp e2 in
+        let* ele2 = al_to_el_expr e2 in
         Some (El.Ast.InfixE (ele1, elop, ele2))
-    | Al.Ast.CaseE ((kwd, _), el) ->
-        let ekwd = (El.Ast.AtomE (El.Ast.Atom kwd)) $ no_region in
-        let* elel = al_to_el_exps el in
+    | Al.Ast.CaseE (kwd, el) ->
+        let elatom = al_to_el_kwd kwd in
+        let ekwd = (El.Ast.AtomE elatom) $ no_region in
+        let* elel = al_to_el_exprs el in
         Some (El.Ast.SeqE ([ ekwd ] @ elel))
     | Al.Ast.OptE (Some e) ->
-        let* ele = al_to_el_exp e in
+        let* ele = al_to_el_expr e in
         Some (ele.it)
     | Al.Ast.OptE None -> Some (El.Ast.EpsE)
     | _ -> None
   in
   Option.map (fun exp' -> exp' $ no_region) exp'
 
-and al_to_el_exps exprs =
+and al_to_el_exprs exprs =
   List.fold_left
     (fun exps e ->
       let* exps = exps in
-      let* exp = al_to_el_exp e in
+      let* exp = al_to_el_expr e in
       Some (exps @ [ exp ]))
     (Some []) exprs
 
-and al_to_el_expfield record =
+and al_to_el_record record =
   Util.Record.fold
-    (fun (kwd, _) e expfield ->
+    (fun kwd e expfield ->
       let* expfield = expfield in
-      let elatom = El.Ast.Atom kwd in
-      let* ele = al_to_el_exp e in
+      let elatom = al_to_el_kwd kwd in
+      let* ele = al_to_el_expr e in
       let elelem = El.Ast.Elem (elatom, ele) in
       Some (expfield @ [ elelem ]))
     record (Some [])
@@ -248,20 +260,12 @@ let render_al_binop = function
   | Al.Ast.LeOp -> "is less than or equal to"
   | Al.Ast.GeOp -> "is greater than or equal to"
 
-(* Names and Iters *)
+(* Names *)
 
-let rec render_name name = match String.index_opt name '_' with
-  | Some idx ->
-      let base = String.sub name 0 idx in
-      let subscript = String.sub name (idx + 1) ((String.length name) - idx - 1) in
-      base ^ "_{" ^ subscript ^ "}"
-  | _ -> name
-
-and render_kwd env kwd = match Symbol.narrow_kwd env.symbol kwd with
-  | Some kwd ->
-      let lhs, rhs = Macro.macro_kwd env.macro kwd in
-      if env.config.macros then lhs else rhs
-  | None -> render_name (Al.Print.string_of_kwd kwd)
+let render_kwd env kwd =
+  let elatom = al_to_el_kwd kwd in
+  let satom = Backend_latex.Render.render_atom env.render_latex elatom in
+  render_math satom
 
 
 (* Expressions and Paths *)
@@ -273,7 +277,7 @@ and render_kwd env kwd = match Symbol.narrow_kwd env.symbol kwd with
 
 (* Category 1 is translated to EL then rendered by the Latex backend *)
 
-and render_expr env expr = match al_to_el_exp expr with
+let rec render_expr env expr = match al_to_el_expr expr with
   | Some exp -> 
       (* embedded math blocks cannot have line-breaks *)
       let newline = Str.regexp "\n" in
@@ -319,7 +323,7 @@ and render_expr' env expr =
       (match dir with
       | Al.Ast.Front -> sprintf "%s with %s prepended by %s" se1 sps se2
       | Al.Ast.Back -> sprintf "%s with %s appended by %s" se1 sps se2)
-  | Al.Ast.IterE (e, ids, iter) when al_to_el_exp e = None ->
+  | Al.Ast.IterE (e, ids, iter) when al_to_el_expr e = None ->
       let se = render_expr env e in
       let ids = Al.Al_util.tupE (List.map Al.Al_util.varE ids) in
       let loop = Al.Al_util.iterE (ids, [], iter) in

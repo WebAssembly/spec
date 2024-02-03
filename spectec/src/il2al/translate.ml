@@ -408,7 +408,7 @@ let rec rhs2instrs exp =
         }) ->
           [
             letI (varE "F", frameE (Some (varE arity.it), varE fname.it)) ~at:at;
-            enterI (varE "F", listE ([caseE (("FRAME_", ""), [])]), rhs2instrs labelexp) ~at:at;
+            enterI (varE "F", listE ([caseE (("FRAME_", "admininstr"), [])]), rhs2instrs labelexp) ~at:at;
           ]
   (* TODO: Label *)
   | Ast.CaseE
@@ -427,12 +427,12 @@ let rec rhs2instrs exp =
       | Ast.CatE (valexp, instrsexp) ->
           [
             letI (varE "L", label_expr) ~at:at;
-            enterI (varE "L", catE (exp2expr instrsexp, listE ([caseE (("LABEL_", ""), [])])), [pushI (exp2expr valexp)]) ~at:at;
+            enterI (varE "L", catE (exp2expr instrsexp, listE ([caseE (("LABEL_", "admininstr"), [])])), [pushI (exp2expr valexp)]) ~at:at;
           ]
       | _ ->
           [
             letI (varE "L", label_expr) ~at:at;
-            enterI (varE "L", catE(exp2expr instrs_exp2, listE ([caseE (("LABEL_", ""), [])])), []) ~at:at;
+            enterI (varE "L", catE(exp2expr instrs_exp2, listE ([caseE (("LABEL_", "admininstr"), [])])), []) ~at:at;
           ])
   (* Execute instr *)
   | Ast.CaseE (Atom atomid, argexp) ->
@@ -632,13 +632,13 @@ let rulepr2instrs id exp =
       (* TODO: Name of f..? *)
       enterI (
         frameE (None, varE "z"),
-        listE [caseE (("FRAME_", ""), [])],
+        listE [caseE (("FRAME_", "admininstr"), [])],
         [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
       ) ~at:at
     | "Step_read", [ { it = TupE [ { it = TupE [ _s; f ]; _ }; lhs ]; _ }; rhs] ->
       enterI (
         frameE (None, f),
-        listE [caseE (("FRAME_", ""), [])],
+        listE [caseE (("FRAME_", "admininstr"), [])],
         [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
       ) ~at:at
     | "Ref_ok", [_s; ref; rt] ->
