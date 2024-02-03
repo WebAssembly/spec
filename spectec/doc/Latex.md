@@ -28,7 +28,9 @@ splice ::=
   tag"{" desc "}"
 
 desc ::=
-  ":" exp                               expression splice
+  ":" exp                               untyped expression splice
+  "exp" typ ":" exp                     typed expression splice
+  "exp" relid ":" exp                   typed relation splice
   sort ":" group*                       definition splice
 
 group ::=
@@ -54,7 +56,7 @@ The `tag` can be configured differently for different file formats. Currently, t
 
 There are two forms of splices:
 
-1. _Expression splices_ (`tag{: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it.
+1. _Expression splices_ (`tag{: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it. Optionally, these slices may be prefixed with a type or a relation identifier, which is necessary if the expression contains custom notation that is supposed to be type-set with macros (the type information is needed to generate the right macro names for atoms).
 
 2. _Definition splices_ (`tag{sort: group* }`). This splice renders and inserts (a set of) [definitions](Language.md#definitions) from the DSL, identified by the _names_ in the `group`. The following `sort`s are recognised:
 
