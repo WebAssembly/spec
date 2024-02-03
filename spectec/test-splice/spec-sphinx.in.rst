@@ -23,7 +23,7 @@ $${syntax: {instr/numeric instr/local instr/global instr/memory} expr}
 
 **Typing** ${relation: Instr_ok}
 
-An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${: instr* : t_1* -> t_2*}, according to the following rules:
+An instruction sequence ${:instr*} is well-typed with an instruction type ${exp functype: t_1* -> t_2*}, written ${:instr*} :math:`:` ${exp functype: t_1* -> t_2*}, according to the following rules:
 
 $${rule:
   {Instrs_ok/empty Instrs_ok/seq}

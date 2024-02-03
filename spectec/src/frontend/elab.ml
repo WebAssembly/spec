@@ -958,9 +958,12 @@ and elab_exp_notation' env tid e t : Il.exp list =
     if atom.it <> atom'.it then error_typ e.at "infix expression" t;
     let es1' = elab_exp_notation' env tid e1 t1 in
     let es2' = elab_exp_notation' env tid e2 t2 in
+    ignore (elab_atom atom tid);
     es1' @ es2'
   | BrackE (l, e1, r), BrackT (l', t1, r') ->
     if (l.it, r.it) <> (l'.it, r'.it) then error_typ e.at "bracket expression" t;
+    ignore (elab_atom l tid);
+    ignore (elab_atom r tid);
     elab_exp_notation' env tid e1 t1
 
   | SeqE [], SeqT [] ->
@@ -1661,11 +1664,20 @@ let recursify_defs ds' : Il.def list =
   ) sccs
 
 
-let elab ds : Il.script =
+let elab ds : Il.script * env =
   let env = new_env () in
   List.iter (infer_syndef env) ds;
   let ds' = List.concat_map (elab_def env) ds in
   let ds' = List.map (populate_def env) ds' in
   List.iter (infer_gramdef env) ds;
   List.iter (elab_gramdef env) ds;
-  recursify_defs ds'
+  recursify_defs ds', env
+
+let elab_exp env e t : Il.exp =
+  let _ = elab_typ env t in
+  elab_exp env e t
+
+let elab_rel env e id : Il.exp =
+  match (elab_prem env (RulePr (id, e) $ e.at)).it with
+  | Il.RulePr (_, _, e') -> e'
+  | _ -> assert false

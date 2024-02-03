@@ -160,7 +160,7 @@ let () =
     if !print_el then
       Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
-    let il = Frontend.Elab.elab el in
+    let il, elab_env = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     log "IL Validation...";
@@ -245,7 +245,7 @@ let () =
       log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose il al in
       log "Splicing...";
-      let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
+      let env = Backend_splice.Splice.(env config !pdsts !odsts elab_env el prose) in
       List.iter2 (Backend_splice.Splice.splice_file ~dry:!dry env) !pdsts !odsts;
       if !warn_math then Backend_splice.Splice.warn_math env;
       if !warn_prose then Backend_splice.Splice.warn_prose env;
