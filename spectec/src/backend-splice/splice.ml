@@ -43,7 +43,8 @@ type relation_prose = {ralgos : (string * Backend_prose.Prose.def * use) list}
 type definition_prose = {falgo : Backend_prose.Prose.def; use : use}
 
 type env =
-  { config : Config.t;
+  { elab : Frontend.Elab.env;
+    config : Config.t;
     latex : Backend_latex.Render.env;
     prose : Backend_prose.Render.env;
     mutable syn : syntax Map.t;
@@ -105,11 +106,11 @@ let env_prose env prose =
   | Algo (Al.Ast.FuncA (id, _, _)) ->
     env.def_prose <- Map.add id {falgo = prose; use = ref 0} env.def_prose
 
-let env (config : config) pdsts odsts el pr : env =
+let env (config : config) pdsts odsts elab el pr : env =
   let latex = Backend_latex.Render.env config.latex el in
   let prose = Backend_prose.Render.env config.prose pdsts odsts latex el pr in
   let env =
-    { config; latex; prose;
+    { elab; config; latex; prose;
       syn = Map.empty;
       gram = Map.empty;
       rel = Map.empty;
@@ -235,15 +236,21 @@ let try_string src s : bool =
 let try_anchor_start src anchor : bool =
   try_string src (anchor ^ "{")
 
-let rec parse_anchor_end src j depth =
+let rec parse_to_colon src =
   if eos src then
-    error {src with i = j} "unclosed anchor"
+    error src "colon `:` expected"
+  else if get src <> ':' then
+    (adv src; parse_to_colon src)
+
+let rec parse_to_anchor_end i0 depth src =
+  if eos src then
+    error {src with i = i0} "unclosed anchor"
   else if get src = '{' then
-    (adv src; parse_anchor_end src j (depth + 1))
+    (adv src; parse_to_anchor_end i0 (depth + 1) src)
   else if get src <> '}' then
-    (adv src; parse_anchor_end src j depth)
+    (adv src; parse_to_anchor_end i0 depth src)
   else if depth > 0 then
-    (adv src; parse_anchor_end src j (depth - 1))
+    (adv src; parse_to_anchor_end i0 (depth - 1) src)
 
 let rec parse_id' src =
   if not (eos src) then
@@ -300,26 +307,63 @@ let try_def_anchor env src r sort space1 space2 find mode : bool =
   );
   b
 
+let run_parser find_end parser src =
+  let i = src.i in
+  find_end src;
+  let s = str src i in
+  adv src;
+  try parser s with Source.Error (at, msg) ->
+    (* Translate relative positions *)
+    let pos = pos {src with i} in
+    let shift {line; column; _} =
+      { file = src.file; line = line + pos.line - 1;
+        column = if line = 1 then column + pos.column - 1 else column} in
+    let at' = {left = shift at.left; right = shift at.right} in
+    raise (Source.Error (at', msg))
+
+let try_relid src : id option =
+  let i = src.i in
+  parse_space src;
+  let id = try parse_id src "relation" with Source.Error _ -> " " in
+  if id.[0] <> Char.lowercase_ascii id.[0] then
+    let pos = pos {src with i} in
+    let left = {file = src.file; line = pos.line; column = pos.column} in
+    let right = {left with column = left.column + String.length id} in
+    Some (id $ {left; right})
+  else
+    (advn src (i - src.i); None)
+
+let parse_typ src : typ =
+  run_parser parse_to_colon Frontend.Parse.parse_typ src
+
+let parse_exp src i0 : exp =
+  run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_exp src
+
 let try_exp_anchor env src r : bool =
-  let b = try_string src ":" in
-  if b then (
-  	let j = src.i in
-    parse_anchor_end src (j - 4) 0;
-    let s = str src j in
-    adv src;
-    let exp =
-      try Frontend.Parse.parse_exp s with Source.Error (at, msg) ->
-        (* Translate relative positions *)
-        let pos = pos {src with i = j} in
-        let shift {line; column; _} =
-          { file = src.file; line = line + pos.line - 1;
-            column = if false(*line = 1*) then column + pos.column - 1 else column} in
-        let at' = {left = shift at.left; right = shift at.right} in
-        raise (Source.Error (at', msg))
+  let i0 = src.i - 2 in
+  if try_string src ":" then (
+    let exp = parse_exp src i0 in
+    r := Backend_latex.Render.render_exp env.latex exp;
+    true
+  )
+  else if try_string src "exp " then (
+    let elab =
+      match try_relid src with
+      | None ->
+        let typ = parse_typ src in
+        fun env exp -> Frontend.Elab.elab_exp env exp typ
+      | Some id ->
+        parse_space src;
+        if not (try_string src ":") then
+          error src "colon `:` expected";
+        fun env exp -> Frontend.Elab.elab_rel env exp id
     in
-    r := Backend_latex.Render.render_exp env.latex exp
-  );
-  b
+    let exp = parse_exp src i0 in
+    let _ = elab env.elab exp in
+    r := Backend_latex.Render.render_exp env.latex exp;
+    true
+  )
+  else false
 
 let try_prose_anchor env src r sort space1 space2 find mode : bool =
   let b = try_string src (sort ^ ":") in

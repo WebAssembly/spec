@@ -128,9 +128,10 @@ let is_post_exp e =
 %left PLUS MINUS COMPOSE
 %left STAR SLASH BACKSLASH
 
-%start script expression check_atom
+%start script typ_eof exp_eof check_atom
 %type<El.Ast.script> script
-%type<El.Ast.exp> expression
+%type<El.Ast.typ> typ_eof
+%type<El.Ast.exp> exp_eof
 %type<bool> check_atom
 
 %%
@@ -759,7 +760,10 @@ hint :
 script :
   | def* EOF { $1 }
 
-expression :
+typ_eof :
+  | typ EOF { $1 }
+
+exp_eof :
   | exp EOF { $1 }
 
 %%

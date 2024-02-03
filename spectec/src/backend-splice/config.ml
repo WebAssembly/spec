@@ -22,8 +22,8 @@ type t = config
 
 let latex =
   { anchors = [
-      {token = "@@"; prefix = "$"; suffix = "$"; indent = ""};
-      {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
+      {token = "@"; prefix = "$"; suffix = "$"; indent = ""};
+      {token = "@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
     ];
     latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;
