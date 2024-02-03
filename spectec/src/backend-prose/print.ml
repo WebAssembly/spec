@@ -3,6 +3,7 @@ open Prose
 open Printf
 
 (* Helpers *)
+
 let string_of_opt prefix stringifier suffix = function
   | None -> ""
   | Some x -> prefix ^ stringifier x ^ suffix
@@ -81,30 +82,3 @@ let string_of_def = function
 | Algo algo -> string_of_algorithm algo
 
 let string_of_prose prose = List.map string_of_def prose |> String.concat "\n"
-
-(* Structured string *)
-
-let string_of_structured_instr = function
-  | LetI _ -> "LetI(...)"
-  | CmpI _ -> "CmpI(...)"
-  | MustValidI (e1, e2, eo) ->
-      "MustValidI ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ", "
-      ^ "(" ^ string_of_opt "" structured_string_of_expr "" eo ^ ")"
-      ^ ")"
-  | MustMatchI (e1, e2) ->
-      "MustMatchI ("
-      ^ structured_string_of_expr e1
-      ^ ", "
-      ^ structured_string_of_expr e2
-      ^ ")"
-  | IsValidI e_opt ->
-      "IsValidI" ^ string_of_opt " (" structured_string_of_expr ")" e_opt
-  | IfI _ -> "IfI(...)"
-  | ForallI _ -> "ForallI(...)"
-  | EquivI _ -> "EquivI ..."
-  | YetI s -> "YetI (" ^ s ^ ")"
-
