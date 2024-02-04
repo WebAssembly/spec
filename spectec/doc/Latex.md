@@ -50,7 +50,7 @@ regexp ::=
 
 The `tag` can be configured differently for different file formats. Currently, two formats are supported:
 
-* _Latex._ Tags are `@` and `@@`, generating `$...$` and `$$...$$`, respectively.
+* _Latex._ Tags are `#` and `##`, generating `$...$` and `$$...$$`, respectively.
 
 * _Sphinx._ Tags are `$` and `$$`, generating `:math:'...'` and `.. math:: ...`, respectively.
 
@@ -98,21 +98,21 @@ The names in a definition splice refer to definitions according to the indicated
 
 ```
 ;; insert definitions of types
-@@@{syntax: numtype vectype valtype}
+$${syntax: numtype vectype valtype}
 
 ;; insert grammar for control and reference instructions together
-@@@{syntax: {instr/control instr/reference}}
+$${syntax: {instr/control instr/reference}}
 
 ;; insert grammar for all instructions in a single grammar
-@@@{syntax: {instr/*}}
+$${syntax: {instr/*}}
 
 ;; insert typing rules for `unreachable`, `nop` and `drop`,
 ;; putting the first on its own, the latter two on the same line
-@@@{rule: Instr_ok/unreachable {Instr_ok/nop Instr_ok/drop}}
+$${rule: Instr_ok/unreachable {Instr_ok/nop Instr_ok/drop}}
 
 ;; insert reduction rules for `block`, `loop` and all the ones for `if`,
 ;; as well as `br` and `br_if`, but with small vertical space
-@@@{rule: {Step/block Step/loop Step/if-*} {Step/br Step/br_if}}
+$${rule: {Step/block Step/loop Step/if-*} {Step/br Step/br_if}}
 ```
 
 
@@ -172,12 +172,12 @@ Hints of the form `hint(show <exp>)` are recognised on a number of constructs an
   relation Step: instr* ~> instr*                  hint(show "S")
   rule Step/drop: val DROP ~> eps
   ```
-  After this, the splice `@@@{rule+: Instr_ok/nop}` will generate (in proper Latex)
+  After this, the splice `$${rule+: Instr_ok/nop}` will generate (in proper Latex)
   ```
   ------------------------ [T-drop]
   C |- DROP : t -> eps
   ```
-  Similarly, the splice `@@@{rule+: Step/nop}` will generate
+  Similarly, the splice `$${rule+: Step/nop}` will generate
   ```
   [S-nop]  val DROP ~> eps
   ```
