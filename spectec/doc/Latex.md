@@ -28,9 +28,9 @@ splice ::=
   tag"{" desc "}"
 
 desc ::=
+  relid ":" exp                         typed relation expression splice
+  typ ":" exp                           typed expression splice
   ":" exp                               untyped expression splice
-  "exp" typ ":" exp                     typed expression splice
-  "exp" relid ":" exp                   typed relation splice
   sort ":" group*                       definition splice
 
 group ::=
@@ -50,13 +50,13 @@ regexp ::=
 
 The `tag` can be configured differently for different file formats. Currently, two formats are supported:
 
-* _Latex._ Tags are `@@` and `@@@`, generating `$...$` and `$$...$$`, respectively.
+* _Latex._ Tags are `@` and `@@`, generating `$...$` and `$$...$$`, respectively.
 
 * _Sphinx._ Tags are `$` and `$$`, generating `:math:'...'` and `.. math:: ...`, respectively.
 
 There are two forms of splices:
 
-1. _Expression splices_ (`tag{: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it. Optionally, these slices may be prefixed with a type or a relation identifier, which is necessary if the expression contains custom notation that is supposed to be type-set with macros (the type information is needed to generate the right macro names for atoms).
+1. _Expression splices_ (`tag{typ: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it. These slices may be prefixed with a relation identifier or a type. They can be omitted if the type can be inferred from the expression, but are necessary if it contains user-defined notation or atoms _and_ is supposed to be type-set with macros (the type information is needed to generate the right macro names for atoms).
 
 2. _Definition splices_ (`tag{sort: group* }`). This splice renders and inserts (a set of) [definitions](Language.md#definitions) from the DSL, identified by the _names_ in the `group`. The following `sort`s are recognised:
 

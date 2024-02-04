@@ -340,30 +340,28 @@ let parse_exp src i0 : exp =
   run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_exp src
 
 let try_exp_anchor env src r : bool =
-  let i0 = src.i - 2 in
+  let i0 = src.i in
   if try_string src ":" then (
-    let exp = parse_exp src i0 in
+    let exp = parse_exp src (i0 - 2) in
     r := Backend_latex.Render.render_exp env.latex exp;
     true
   )
-  else if try_string src "exp " then (
-    let elab =
-      match try_relid src with
-      | None ->
-        let typ = parse_typ src in
-        fun env exp -> Frontend.Elab.elab_exp env exp typ
-      | Some id ->
-        parse_space src;
-        if not (try_string src ":") then
-          error src "colon `:` expected";
-        fun env exp -> Frontend.Elab.elab_rel env exp id
-    in
-    let exp = parse_exp src i0 in
-    let _ = elab env.elab exp in
-    r := Backend_latex.Render.render_exp env.latex exp;
-    true
-  )
-  else false
+  else
+    match try_relid src with
+    | Some id when try_string src ":" ->
+      let exp = parse_exp src (i0 - 2) in
+      let _ = Frontend.Elab.elab_rel env.elab exp id in
+      r := Backend_latex.Render.render_exp env.latex exp;
+      true
+    | Some _ -> advn src (i0 - src.i); false
+    | None ->
+      match parse_typ src with
+      | typ ->
+        let exp = parse_exp src (i0 - 2) in
+        let _ = Frontend.Elab.elab_exp env.elab exp typ in
+        r := Backend_latex.Render.render_exp env.latex exp;
+        true
+      | exception Source.Error _ -> advn src (i0 - src.i); false
 
 let try_prose_anchor env src r sort space1 space2 find mode : bool =
   let b = try_string src (sort ^ ":") in
@@ -386,7 +384,6 @@ let splice_anchor env src anchor buf =
   let r = ref "" in
   let prose = ref false in
   ignore (
-    try_exp_anchor env src r ||
     try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
     try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
     try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
@@ -399,6 +396,7 @@ let splice_anchor env src anchor buf =
     try_def_anchor env src r "relation-ignore" "relation" "" find_relation Ignored ||
     try_def_anchor env src r "rule-ignore" "relation" "rule" find_rule Ignored ||
     try_def_anchor env src r "definition-ignore" "definition" "" find_def Ignored ||
+    try_exp_anchor env src r ||
     (prose := true; false) ||
     try_prose_anchor env src r "rule-prose" "prose relation" "rule" find_rule_prose Undecorated ||
     try_prose_anchor env src r "definition-prose" "prose definition" "" find_def_prose Undecorated ||

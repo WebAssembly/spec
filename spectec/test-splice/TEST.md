@@ -283,6 +283,8 @@ $$
 
 \subsection*{Reduction $\boxed{{{\mathit{instr}}^\ast} \hookrightarrow {{\mathit{instr}}^\ast}}$}
 
+The relation ${\mathit{config}} \hookrightarrow {\mathit{config}}$ checks that a function type is well-formed.
+
 $$
 \begin{array}{@{}l@{}lcl@{}l@{}}
 & {\mathit{z}} ; {{\mathit{instr}}^\ast} &\hookrightarrow& {\mathit{z}} ; {{\mathit{instr}'}^\ast} &\quad

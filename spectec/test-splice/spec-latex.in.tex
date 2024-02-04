@@ -38,7 +38,7 @@
 
 \subsection*{Typing @{relation: Instr_ok}}
 
-An instruction sequence @{:instr*} is well-typed with an instruction type @{exp functype: t_1* -> t_2*}, written @{:instr*} $:$ @{exp functype: t_1* -> t_2*}, according to the following rules:
+An instruction sequence @{:instr*} is well-typed with an instruction type @{functype: t_1* -> t_2*}, written @{:instr*} $:$ @{functype: t_1* -> t_2*}, according to the following rules:
 
 @@{rule:
   {Instrs_ok/empty Instrs_ok/seq}
@@ -67,6 +67,8 @@ An instruction sequence @{:instr*} is well-typed with an instruction type @{exp 
 
 
 \subsection*{Reduction @{relation: Step_pure}}
+
+The relation @{Step: config ~> config} checks that a function type is well-formed.
 
 @@{rule: Step/pure Step/read}
 
