@@ -4433,7 +4433,7 @@ Control Instructions
 .. _exec-return_call_indirect:
 
 :math:`\RETURNCALLINDIRECT~x~y`
-.............................
+...............................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
