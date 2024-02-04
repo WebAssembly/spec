@@ -20,22 +20,22 @@ Grammar Notation
 
 The following conventions are adopted in defining grammar rules for abstract syntax.
 
-* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: :math:`\K{i32}, \K{end}, {\to}, [, ]`.
+* Terminal symbols (atoms) are written in sans-serif font or in symbolic form: ${valtype: I32}, ${instr:NOP}, :math:`\to`, :math:`[`, :math:`]`.
 
-* Nonterminal symbols are written in italic font: :math:`\X{valtype}, \X{instr}`.
+* Nonterminal symbols are written in italic font: ${:valtype}, ${:instr}.
 
-* :math:`A^n` is a sequence of :math:`n\geq 0` iterations  of :math:`A`.
+* ${:A^n} is a sequence of ${:n >= 0} iterations of ${:A}.
 
-* :math:`A^\ast` is a possibly empty sequence of iterations of :math:`A`.
-  (This is a shorthand for :math:`A^n` used where :math:`n` is not relevant.)
+* ${:A*} is a possibly empty sequence of iterations of ${:A}.
+  (This is a shorthand for ${:A^n} used where ${:n} is not relevant.)
 
-* :math:`A^+` is a non-empty sequence of iterations of :math:`A`.
-  (This is a shorthand for :math:`A^n` where :math:`n \geq 1`.)
+* ${:A+}` is a non-empty sequence of iterations of ${:A}.
+  (This is a shorthand for ${:A^n} where ${:n >= 1}.)
 
-* :math:`A^?` is an optional occurrence of :math:`A`.
-  (This is a shorthand for :math:`A^n` where :math:`n \leq 1`.)
+* ${:A?}` is an optional occurrence of ${:A}.
+  (This is a shorthand for ${:A^n} where ${:n <= 1}.)
 
-* Productions are written :math:`\X{sym} ::= A_1 ~|~ \dots ~|~ A_n`.
+* Productions are written ${syntax: sym}.
 
 * Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\X{sym} ::= A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\X{sym} ::= \dots ~|~ A_2`.
 
@@ -60,11 +60,11 @@ Auxiliary Notation
 
 When dealing with syntactic constructs the following notation is also used:
 
-* :math:`\epsilon` denotes the empty sequence.
+* ${:eps} denotes the empty sequence.
 
-* :math:`|s|` denotes the length of a sequence :math:`s`.
+* ${:|s|} denotes the length of a sequence ${:s}.
 
-* :math:`s[i]` denotes the :math:`i`-th element of a sequence :math:`s`, starting from :math:`0`.
+* ${:s[i]} denotes the ${:i}-th element of a sequence ${:s}`, starting from ${:0}.
 
 * :math:`s[i \slice n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
 

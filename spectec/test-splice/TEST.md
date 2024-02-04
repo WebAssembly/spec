@@ -320,6 +320,7 @@ $$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+warning: syntax `A` was never spliced
 warning: syntax `E` was never spliced
 warning: syntax `M` was never spliced
 warning: syntax `N` was never spliced
@@ -458,6 +459,7 @@ warning: syntax `structinst` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
+warning: syntax `sym` was never spliced
 warning: syntax `table` was never spliced
 warning: syntax `tableaddr` was never spliced
 warning: syntax `tableidx` was never spliced

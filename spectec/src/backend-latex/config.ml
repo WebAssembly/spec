@@ -1,5 +1,8 @@
 type config =
   {
+    (* Spacing for display math *)
+    display : bool;
+
     (* Generate ids as macro calls `\id` instead of `\mathit{id}` *)
     macros_for_ids : bool;
 
@@ -13,7 +16,8 @@ type config =
 type t = config
 
 let default =
-  { macros_for_ids = false;
+  { display = true;
+    macros_for_ids = false;
     macros_for_atoms = false;
     include_grammar_desc = false;
   }

@@ -4686,6 +4686,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation...
 == Running pass sub...
 
@@ -9603,6 +9609,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass sub...
 == Running pass totalize...
@@ -14524,6 +14536,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass totalize...
 == Running pass the-elimination...
@@ -19471,6 +19489,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass the-elimination...
 == Running pass wildcards...
 
@@ -24416,6 +24440,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass wildcards...
 == Running pass sideconditions...
@@ -29516,6 +29546,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass sideconditions...
 == Running pass animate...
@@ -34694,6 +34730,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass animate...
 == Complete.
