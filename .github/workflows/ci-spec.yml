@@ -30,8 +30,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Setup Bikeshed
-        run: pip install bikeshed && bikeshed update
+      # - name: Setup Bikeshed
+      #   run: pip install bikeshed && bikeshed update
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
@@ -40,8 +40,8 @@ jobs:
         run: cd spectec && opam exec make
       - name: Build main spec
         run: cd document/core && opam exec make main
-      - name: Run Bikeshed
-        run: cd document/core && opam exec make bikeshed
+      # - name: Run Bikeshed
+      #   run: cd document/core && opam exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
