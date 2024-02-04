@@ -25,7 +25,7 @@ jobs:
         with:
           ocaml-compiler: 4.14.x
       - name: Setup Dune
-        run: opam install --yes dune menhir mdx && eval $(opam env) && dune --version
+        run: opam install --yes dune menhir mdx && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -37,11 +37,11 @@ jobs:
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==5.1.0
       - name: Build SpecTec
-        run: cd spectec && make
+        run: cd spectec && opam exec make
       - name: Build main spec
-        run: cd document/core && make main
+        run: cd document/core && opem exec make main
       - name: Run Bikeshed
-        run: cd document/core && make bikeshed
+        run: cd document/core && opem exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
