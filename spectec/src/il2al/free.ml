@@ -1,5 +1,5 @@
 (*
-free_??? are equivalent to free_??? in Il.Free module, except
+free_??? are equivalent to those in Il.Free module, except
 1. i in e^(i<n) is not considered free.
 2. n in e^n can be not considered free, depending on flag.
 *)
