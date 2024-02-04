@@ -148,7 +148,7 @@ Conventions
 * The meta variable :math:`z` ranges over floating-point values where clear from context.
 
 
-.. index:: ! numeric vectors, integer, floating-point, lane, SIMD
+.. index:: ! numeric vector, integer, floating-point, lane, SIMD
    pair: abstract syntax; vector
 .. _syntax-vecnum:
 

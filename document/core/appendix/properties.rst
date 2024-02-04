@@ -1,8 +1,8 @@
 .. index:: ! soundness, type system
 .. _soundness:
 
-Soundness
----------
+Type Soundness
+--------------
 
 The :ref:`type system <type-system>` of WebAssembly is *sound*, implying both *type safety* and *memory safety* with respect to the WebAssembly semantics. For example:
 
@@ -50,10 +50,11 @@ Results
 :ref:`Results <syntax-result>` :math:`\TRAP`
 ............................................
 
-* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any sequence :math:`t^\ast` of :ref:`value types <syntax-valtype>`.
+* The result is valid with :ref:`result type <syntax-resulttype>` :math:`[t^\ast]`, for any :ref:`valid <valid-resulttype>` :ref:`closed <type-closed>` :ref:`result types <syntax-resulttype>`.
 
 .. math::
    \frac{
+     \vdashresulttype [t^\ast] \ok
    }{
      S \vdashresult \TRAP : [t^\ast]
    }
@@ -110,16 +111,21 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      (S \vdashdatainst \datainst \ok)^\ast
      \\
      S = \{
+       \begin{array}[t]{@{}l@{}}
        \SFUNCS~\funcinst^\ast,
+       \SGLOBALS~\globalinst^\ast, \\
        \STABLES~\tableinst^\ast,
        \SMEMS~\meminst^\ast,
-       \SGLOBALS~\globalinst^\ast,
        \SELEMS~\eleminst^\ast,
        \SDATAS~\datainst^\ast \}
+       \end{array}
      \end{array}
    }{
      \vdashstore S \ok
    }
+
+.. note::
+   The validity condition on type instances ensures the absence of cyclic types.
 
 
 .. index:: function type, function instance
@@ -128,21 +134,29 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\}`
 .......................................................................................................................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>` under an empty :ref:`context <context>`.
 
 * The :ref:`module instance <syntax-moduleinst>` :math:`\moduleinst` must be :ref:`valid <valid-moduleinst>` with some :ref:`context <context>` :math:`C`.
 
-* Under :ref:`context <context>` :math:`C`, the :ref:`function <syntax-func>` :math:`\func` must be :ref:`valid <valid-func>` with :ref:`function type <syntax-functype>` :math:`\functype`.
+* Under :ref:`context <context>` :math:`C`:
+
+  * The :ref:`function <syntax-func>` :math:`\func` must be :ref:`valid <valid-func>` with some :ref:`function type <syntax-functype>` :math:`\functype'`.
+
+  * The :ref:`function type <syntax-functype>` :math:`\functype'` must :ref:`match <match-functype>` :math:`\functype`.
 
 * Then the function instance is valid with :ref:`function type <syntax-functype>` :math:`\functype`.
 
 .. math::
    \frac{
+     \begin{array}{@{}c@{}}
      \vdashfunctype \functype \ok
      \qquad
      S \vdashmoduleinst \moduleinst : C
+     \\
+     C \vdashfunc \func : \functype'
      \qquad
-     C \vdashfunc \func : \functype
+     C \vdashfunctypematch \functype' \matchesfunctype \functype
+     \end{array}
    }{
      S \vdashfuncinst \{\FITYPE~\functype, \FIMODULE~\moduleinst, \FICODE~\func\} : \functype
    }
@@ -154,9 +168,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Host Function Instances <syntax-funcinst>` :math:`\{\FITYPE~\functype, \FIHOSTCODE~\X{hf}\}`
 ..................................................................................................
 
-* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>`.
+* The :ref:`function type <syntax-functype>` :math:`\functype` must be :ref:`valid <valid-functype>` under an empty :ref:`context <context>`.
 
-* Let :math:`[t_1^\ast] \to [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
+* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
 * For every :ref:`valid <valid-store>` :ref:`store <syntax-store>` :math:`S_1` :ref:`extending <extend-store>` :math:`S` and every sequence :math:`\val^\ast` of :ref:`values <syntax-val>` whose :ref:`types <valid-val>` coincide with :math:`t_1^\ast`:
 
@@ -173,7 +187,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. math::
    \frac{
      \begin{array}[b]{@{}l@{}}
-     \vdashfunctype [t_1^\ast] \to [t_2^\ast] \ok \\
+     \vdashfunctype [t_1^\ast] \toF [t_2^\ast] \ok \\
      \end{array}
      \quad
      \begin{array}[b]{@{}l@{}}
@@ -209,13 +223,15 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Table Instances <syntax-tableinst>` :math:`\{ \TITYPE~(\limits~t), \TIELEM~\reff^\ast \}`
 ...............................................................................................
 
-* The :ref:`table type <syntax-tabletype>` :math:`\limits~t` must be :ref:`valid <valid-tabletype>`.
+* The :ref:`table type <syntax-tabletype>` :math:`\limits~t` must be :ref:`valid <valid-tabletype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`\reff^\ast` must equal :math:`\limits.\LMIN`.
 
 * For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the table's elements :math:`\reff^n`:
 
-  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with :ref:`reference type <syntax-reftype>` :math:`t`.
+  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>` :math:`t'_i`.
+
+  * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
 
 * Then the table instance is valid with :ref:`table type <syntax-tabletype>` :math:`\limits~t`.
 
@@ -225,7 +241,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
      \qquad
      n = \limits.\LMIN
      \qquad
-     (S \vdash \reff : t)^n
+     (S \vdash \reff : t')^n
+     \qquad
+     (\vdashreftypematch t' \matchesvaltype t)^n
    }{
      S \vdashtableinst \{ \TITYPE~(\limits~t), \TIELEM~\reff^n \} : \limits~t
    }
@@ -237,7 +255,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Memory Instances <syntax-meminst>` :math:`\{ \MITYPE~\limits, \MIDATA~b^\ast \}`
 ......................................................................................
 
-* The :ref:`memory type <syntax-memtype>` :math:`\limits` must be :ref:`valid <valid-memtype>`.
+* The :ref:`memory type <syntax-memtype>` :math:`\limits` must be :ref:`valid <valid-memtype>` under the empty :ref:`context <context>`.
 
 * The length of :math:`b^\ast` must equal :math:`\limits.\LMIN` multiplied by the :ref:`page size <page-size>` :math:`64\,\F{Ki}`.
 
@@ -259,9 +277,11 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Global Instances <syntax-globalinst>` :math:`\{ \GITYPE~(\mut~t), \GIVALUE~\val \}`
 .........................................................................................
 
-* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>`.
+* The :ref:`global type <syntax-globaltype>` :math:`\mut~t` must be :ref:`valid <valid-globaltype>` under the empty :ref:`context <context>`.
 
-* The :ref:`value <syntax-val>` :math:`\val` must be :ref:`valid <valid-val>` with :ref:`value type <syntax-valtype>` :math:`t`.
+* The :ref:`value <syntax-val>` :math:`\val` must be :ref:`valid <valid-val>` with some :ref:`value type <syntax-valtype>` :math:`t'`.
+
+* The :ref:`value type <syntax-valtype>` :math:`t'` must :ref:`match <match-valtype>` the :ref:`value type <syntax-valtype>` :math:`t`.
 
 * Then the global instance is valid with :ref:`global type <syntax-globaltype>` :math:`\mut~t`.
 
@@ -269,7 +289,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    \frac{
      \vdashglobaltype \mut~t \ok
      \qquad
-     S \vdashval \val : t
+     S \vdashval \val : t'
+     \qquad
+     \vdashvaltypematch t' \matchesvaltype t
    }{
      S \vdashglobalinst \{ \GITYPE~(\mut~t), \GIVALUE~\val \} : \mut~t
    }
@@ -278,18 +300,26 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 .. index:: element instance, reference
 .. _valid-eleminst:
 
-:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EIELEM~\X{fa}^\ast \}`
-............................................................................
+:ref:`Element Instances <syntax-eleminst>` :math:`\{ \EITYPE~t, \EIELEM~\reff^\ast \}`
+......................................................................................
+
+* The :ref:`reference type <syntax-reftype>` :math:`t` must be :ref:`valid <valid-reftype>` under the empty :ref:`context <context>`.
 
 * For each :ref:`reference <syntax-ref>` :math:`\reff_i` in the elements :math:`\reff^n`:
 
-  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with :ref:`reference type <syntax-reftype>` :math:`t`.
+  * The :ref:`reference <syntax-ref>` :math:`\reff_i` must be :ref:`valid <valid-ref>` with some :ref:`reference type <syntax-reftype>` :math:`t'_i`.
+
+  * The :ref:`reference type <syntax-reftype>` :math:`t'_i` must :ref:`match <match-reftype>` the :ref:`reference type <syntax-reftype>` :math:`t`.
 
 * Then the element instance is valid with :ref:`reference type <syntax-reftype>` :math:`t`.
 
 .. math::
    \frac{
-     (S \vdash \reff : t)^\ast
+     \vdashreftype t \ok
+     \qquad
+     (S \vdash \reff : t')^\ast
+     \qquad
+     (\vdashreftypematch t' \matchesvaltype t)^\ast
    }{
      S \vdasheleminst \{ \EITYPE~t, \EIELEM~\reff^\ast \} : t
    }
@@ -334,9 +364,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 :ref:`Module Instances <syntax-moduleinst>` :math:`\moduleinst`
 ...............................................................
 
-* Each :ref:`function type <syntax-functype>` :math:`\functype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-functype>`.
+* Each :ref:`defined type <syntax-deftype>` :math:`\deftype_i` in :math:`\moduleinst.\MITYPES` must be :ref:`valid <valid-deftype>`.
 
-* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr_i` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype'_i`.
+* For each :ref:`function address <syntax-funcaddr>` :math:`\funcaddr_i` in :math:`\moduleinst.\MIFUNCS`, the :ref:`external value <syntax-externval>` :math:`\EVFUNC~\funcaddr_i` must be :ref:`valid <valid-externval-func>` with some :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\functype_i`.
 
 * For each :ref:`table address <syntax-tableaddr>` :math:`\tableaddr_i` in :math:`\moduleinst.\MITABLES`, the :ref:`external value <syntax-externval>` :math:`\EVTABLE~\tableaddr_i` must be :ref:`valid <valid-externval-table>` with some :ref:`external type <syntax-externtype>` :math:`\ETTABLE~\tabletype_i`.
 
@@ -352,7 +382,9 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 
 * For each :ref:`export instance <syntax-exportinst>` :math:`\exportinst_i` in :math:`\moduleinst.\MIEXPORTS`, the :ref:`name <syntax-name>` :math:`\exportinst_i.\EINAME` must be different from any other name occurring in :math:`\moduleinst.\MIEXPORTS`.
 
-* Let :math:`{\functype'}^\ast` be the concatenation of all :math:`\functype'_i` in order.
+* Let :math:`\deftype^\ast` be the concatenation of all :math:`\deftype_i` in order.
+
+* Let :math:`\functype^\ast` be the concatenation of all :math:`\functype_i` in order.
 
 * Let :math:`\tabletype^\ast` be the concatenation of all :math:`\tabletype_i` in order.
 
@@ -365,15 +397,15 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
 * Let :math:`n` be the length of :math:`\moduleinst.\MIDATAS`.
 
 * Then the module instance is valid with :ref:`context <context>`
-  :math:`\{\CTYPES~\functype^\ast,` :math:`\CFUNCS~{\functype'}^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
+  :math:`\{\CTYPES~\deftype^\ast,` :math:`\CFUNCS~\functype^\ast,` :math:`\CTABLES~\tabletype^\ast,` :math:`\CMEMS~\memtype^\ast,` :math:`\CGLOBALS~\globaltype^\ast,` :math:`\CELEMS~\reftype^\ast,` :math:`\CDATAS~{\ok}^n\}`.
 
 .. math::
    ~\\[-1ex]
    \frac{
      \begin{array}{@{}c@{}}
-     (\vdashfunctype \functype \ok)^\ast
+     (\vdashdeftype \deftype \ok)^\ast
      \\
-     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype')^\ast
+     (S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype)^\ast
      \qquad
      (S \vdashexternval \EVTABLE~\tableaddr : \ETTABLE~\tabletype)^\ast
      \\
@@ -392,7 +424,7 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
    }{
      S \vdashmoduleinst \{
        \begin{array}[t]{@{}l@{~}l@{}}
-       \MITYPES & \functype^\ast, \\
+       \MITYPES & \deftype^\ast, \\
        \MIFUNCS & \funcaddr^\ast, \\
        \MITABLES & \tableaddr^\ast, \\
        \MIMEMS & \memaddr^\ast, \\
@@ -401,8 +433,8 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
        \MIDATAS & \dataaddr^n, \\
        \MIEXPORTS & \exportinst^\ast ~\} : \{
          \begin{array}[t]{@{}l@{~}l@{}}
-         \CTYPES & \functype^\ast, \\
-         \CFUNCS & {\functype'}^\ast, \\
+         \CTYPES & \deftype^\ast, \\
+         \CFUNCS & \functype^\ast, \\
          \CTABLES & \tabletype^\ast, \\
          \CMEMS & \memtype^\ast, \\
          \CGLOBALS & \globaltype^\ast, \\
@@ -411,6 +443,51 @@ Module instances are classified by *module contexts*, which are regular :ref:`co
          \end{array}
        \end{array}
    }
+
+
+.. scratch
+  .. index:: context, store, frame
+  .. _valid-context:
+
+  Context Validity
+  ~~~~~~~~~~~~~~~~
+
+  A :ref:`context <context>` :math:`C` is valid when every type occurring in it is valid.
+
+  .. math::
+     \frac{
+       \begin{array}{@{}c@{}}
+       x^n = 0 \dots (n-1)
+       \qquad
+       (S; \{CTYPES~\functype^n[0 \slice x]\} \vdashfunctype \functype \ok)^n
+       \\
+       (S; C \vdashfunctype \functype' \ok)^\ast
+       \qquad
+       (S; C \vdashtabletype \tabletype \ok)^\ast
+       \\
+       (S; C \vdashmemtype \memtype \ok)^\ast
+       \qquad
+       (S; C \vdashglobaltype \globaltype \ok)^\ast
+       \qquad
+       (S; C \vdashreftype \reftype \ok)^\ast
+       \\
+       C = \{
+         \begin{array}[t]{@{}l@{~}l@{}}
+         \CTYPES & \functype^n, \\
+         \CFUNCS & {\functype'}^\ast, \\
+         \CTABLES & \tabletype^\ast, \\
+         \CMEMS & \memtype^\ast, \\
+         \CGLOBALS & \globaltype^\ast, \\
+         \CELEMS & \reftype^\ast, \\
+         \CDATAS & {\ok}^\ast ~\}
+         \end{array}
+       \end{array}
+     }{
+       S \vdashcontext C \ok
+     }
+
+  .. note::
+     It is an invariant of the semantics that every context either consists of only static types or only dynamic types.
 
 
 .. index:: configuration, administrative instruction, store, frame
@@ -513,6 +590,7 @@ Administrative Instructions
 
 Typing rules for :ref:`administrative instructions <syntax-instr-admin>` are specified as follows.
 In addition to the :ref:`context <context>` :math:`C`, typing of these instructions is defined under a given :ref:`store <syntax-store>` :math:`S`.
+
 To that end, all previous typing judgements :math:`C \vdash \X{prop}` are generalized to include the store, as in :math:`S; C \vdash \X{prop}`, by implicitly adding :math:`S` to all rules -- :math:`S` is never modified by the pre-existing rules, but it is accessed in the extra rules for :ref:`administrative instructions <valid-instr-admin>` given below.
 
 
@@ -521,10 +599,11 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\TRAP`
 .............
 
-* The instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`, for any sequences of :ref:`value types <syntax-valtype>` :math:`t_1^\ast` and :math:`t_2^\ast`.
+* The instruction is valid with any :ref:`valid <valid-instrtype>` :ref:`instruction type <syntax-instrtype>` of the form :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
+     C \vdashinstrtype [t_1^\ast] \to [t_2^\ast] \ok
    }{
      S; C \vdashadmininstr \TRAP : [t_1^\ast] \to [t_2^\ast]
    }
@@ -535,12 +614,12 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\REFEXTERNADDR~\externaddr`
 ..................................
 
-* The instruction is valid with type :math:`[] \to [\EXTERNREF]`.
+* The instruction is valid with type :math:`[] \to [(\REF~\EXTERN)]`.
 
 .. math::
    \frac{
    }{
-     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [\EXTERNREF]
+     S; C \vdashadmininstr \REFEXTERNADDR~\externaddr : [] \to [(\REF~\EXTERN)]
    }
 
 
@@ -549,15 +628,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\REFFUNCADDR~\funcaddr`
 ..............................
 
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC~\functype`.
+* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC~\functype`.
 
-* Then the instruction is valid with type :math:`[] \to [\FUNCREF]`.
+* Then the instruction is valid with type :math:`[] \to [(\REF~\functype)]`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~\functype
+     S \vdashexternval \EVFUNC~a : \ETFUNC~\functype
    }{
-     S; C \vdashadmininstr \REFFUNCADDR~\funcaddr : [] \to [\FUNCREF]
+     S; C \vdashadmininstr \REFFUNCADDR~a : [] \to [(\REF~\functype)]
    }
 
 
@@ -566,13 +645,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\INVOKE~\funcaddr`
 .........................
 
-* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC ([t_1^\ast] \to [t_2^\ast])`.
+* The :ref:`external function value <syntax-externval>` :math:`\EVFUNC~\funcaddr` must be :ref:`valid <valid-externval-func>` with :ref:`external function type <syntax-externtype>` :math:`\ETFUNC \functype'`.
+
+* Let :math:`[t_1^\ast] \toF [t_2^\ast])` be the :ref:`function type <syntax-functype>` :math:`\functype`.
 
 * Then the instruction is valid with type :math:`[t_1^\ast] \to [t_2^\ast]`.
 
 .. math::
    \frac{
-     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \to [t_2^\ast]
+     S \vdashexternval \EVFUNC~\funcaddr : \ETFUNC~[t_1^\ast] \toF [t_2^\ast]
    }{
      S; C \vdashadmininstr \INVOKE~\funcaddr : [t_1^\ast] \to [t_2^\ast]
    }
@@ -583,20 +664,20 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END`
 ..................................................
 
-* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to [t_2^*]`.
+* The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \toX{x^\ast} [t_2^*]`.
 
 * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
 
 * Under context :math:`C'`,
-  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to [t_2^*]`.
+  the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \toX{{x'}^\ast} [t_2^*]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t_2^*]`.
 
 .. math::
    \frac{
-     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \to [t_2^*]
+     S; C \vdashinstrseq \instr_0^\ast : [t_1^n] \toX{x^\ast} [t_2^*]
      \qquad
-     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \to [t_2^*]
+     S; C,\CLABELS\,[t_1^n] \vdashinstrseq \instr^\ast : [] \toX{{x'}^\ast} [t_2^*]
    }{
      S; C \vdashadmininstr \LABEL_n\{\instr_0^\ast\}~\instr^\ast~\END : [] \to [t_2^*]
    }
@@ -607,13 +688,15 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 :math:`\FRAME_n\{F\}~\instr^\ast~\END`
 ...........................................
 
-* Under the return type :math:`[t^n]`,
+* Under the :ref:`valid <valid-resulttype>` return type :math:`[t^n]`,
   the :ref:`thread <syntax-frame>` :math:`F; \instr^\ast` must be :ref:`valid <valid-frame>` with :ref:`result type <syntax-resulttype>` :math:`[t^n]`.
 
 * Then the compound instruction is valid with type :math:`[] \to [t^n]`.
 
 .. math::
    \frac{
+     C \vdashresulttype [t^n] \ok
+     \qquad
      S; [t^n] \vdashinstrseq F; \instr^\ast : [t^n]
    }{
      S; C \vdashadmininstr \FRAME_n\{F\}~\instr^\ast~\END : [] \to [t^n]
@@ -773,13 +856,22 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Element Instance <syntax-eleminst>` :math:`\eleminst`
 ...........................................................
 
-* The vector :math:`\eleminst.\EIELEM` must either remain unchanged or shrink to length :math:`0`.
+* The vector :math:`\eleminst.\EIELEM` must:
+
+  * either remain unchanged,
+
+  * or shrink to length :math:`0`.
 
 .. math::
    \frac{
-     \X{fa}_1^\ast = \X{fa}_2^\ast \vee \X{fa}_2^\ast = \epsilon
    }{
-     \vdasheleminstextends \{\EIELEM~\X{fa}_1^\ast\} \extendsto \{\EIELEM~\X{fa}_2^\ast\}
+     \vdasheleminstextends \{\EIELEM~a^\ast\} \extendsto \{\EIELEM~a^\ast\}
+   }
+
+.. math::
+   \frac{
+   }{
+     \vdasheleminstextends \{\EIELEM~a^\ast\} \extendsto \{\EIELEM~\epsilon\}
    }
 
 
@@ -789,13 +881,22 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Data Instance <syntax-datainst>` :math:`\datainst`
 ........................................................
 
-* The vector :math:`\datainst.\DIDATA` must either remain unchanged or shrink to length :math:`0`.
+* The vector :math:`\datainst.\DIDATA` must:
+
+  * either remain unchanged,
+
+  * or shrink to length :math:`0`.
 
 .. math::
    \frac{
-     b_1^\ast = b_2^\ast \vee b_2^\ast = \epsilon
    }{
-     \vdashdatainstextends \{\DIDATA~b_1^\ast\} \extendsto \{\DIDATA~b_2^\ast\}
+     \vdashdatainstextends \{\DIDATA~b^\ast\} \extendsto \{\DIDATA~b^\ast\}
+   }
+
+.. math::
+   \frac{
+   }{
+     \vdashdatainstextends \{\DIDATA~b^\ast\} \extendsto \{\DIDATA~\epsilon\}
    }
 
 
@@ -845,3 +946,152 @@ Consequently, given a :ref:`valid store <valid-store>`, no computation defined b
 .. [#cite-fm2021]
    Machine-verified formalizations and soundness proofs of the semantics from the official specification are described in the following article:
    Conrad Watt, Xiaojia Rao, Jean Pichon-Pharabod, Martin Bodin, Philippa Gardner. |FM2021|_. Proceedings of the 24th International Symposium on Formal Methods (FM 2021). Springer 2021.
+
+
+.. index:: type system
+
+Type System Properties
+----------------------
+
+.. index:: ! principal types, type system, subtyping, polymorphism, instruction, syntax, instruction type
+.. _principality:
+
+Principal Types
+~~~~~~~~~~~~~~~
+
+The :ref:`type system <type-system>` of WebAssembly features both :ref:`subtyping <match>` and simple forms of :ref:`polymorphism <polymorphism>` for :ref:`instruction types <syntax-instrtype>`.
+That has the effect that every instruction or instruction sequence can be classified with multiple different instruction types.
+
+However, the typing rules still allow deriving *principal types* for instruction sequences.
+That is, every valid instruction sequence has one particular type scheme, possibly containing some unconstrained place holder *type variables*, that is a subtype of all its valid instruction types, after substituting its type variables with suitable specific types.
+
+Moreover, when deriving an instruction type in a "forward" manner, i.e., the *input* of the instruction sequence is already fixed to specific types,
+then it has a principal *output* type expressible without type variables, up to a possibly :ref:`polymorphic stack <polymorphism>` bottom representable with one single variable.
+In other words, "forward" principal types are effectively *closed*.
+
+.. note::
+   For example, in isolation, the instruction :math:`\REFASNONNULL` has the type :math:`[(\REF~\NULL~\X{ht})] \to [(\REF~\X{ht})]` for any choice of valid :ref:`heap type <syntax-type>` :math:`\X{ht}`.
+   Moreover, if the input type :math:`[(\REF~\NULL~\X{ht})]` is already determined, i.e., a specific :math:`\X{ht}` is given, then the output type :math:`[(\REF~\X{ht})]` is fully determined as well.
+
+   The implication of the latter property is that a validator for *complete* instruction sequences (as they occur in valid modules) can be implemented with a simple left-to-right :ref:`algorithm <algo-valid>` that does not require the introduction of type variables.
+
+   A typing algorithm capable of handling *partial* instruction sequences (as might be considered for program analysis or program manipulation)
+   needs to introduce type variables and perform substitutions,
+   but it does not need to perform backtracking or record any non-syntactic constraints on these type variables.
+
+Technically, the :ref:`syntax <syntax-type>` of :ref:`heap <syntax-heaptype>`, :ref:`value <syntax-valtype>`, and :ref:`result <syntax-resulttype>` types can be enriched with type variables as follows:
+
+.. math::
+   \begin{array}{llll}
+   \production{heap type} & \heaptype &::=&
+     \dots ~|~ \alpha_{\heaptype} \\
+   \production{value type} & \valtype &::=&
+     \dots ~|~ \alpha_{\valtype} ~|~ \alpha_{\X{numvectype}} \\
+   \production{result type} & \resulttype &::=&
+     [\alpha_{\valtype^\ast}^?~\valtype^\ast] \\
+   \end{array}
+
+where each :math:`\alpha_{\X{xyz}}` ranges over a set of type variables for syntactic class :math:`\X{xyz}`, respectively.
+The special class :math:`\X{numvectype}` is defined as :math:`\numtype ~|~ \vectype ~|~ \BOT`,
+and is only needed to handle unannotated |SELECT| instructions.
+
+A type is *closed* when it does not contain any type variables, and *open* otherwise.
+A *type substitution* :math:`\sigma` is a finite mapping from type variables to closed types of the respective syntactic class.
+When applied to an open type, it replaces the type variables :math:`\alpha` from its domain with the respective :math:`\sigma(\alpha)`.
+
+**Theorem (Principal Types).**
+If an instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with some closed :ref:`instruction type <syntax-instrtype>` :math:`\instrtype` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype`),
+then it is also valid with a possibly open instruction type :math:`\instrtype_{\min}` (i.e., :math:`C \vdashinstrseq \instr^\ast : \instrtype_{\min}`),
+such that for *every* closed type :math:`\instrtype'` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : \instrtype'`),
+there exists a substitution :math:`\sigma`,
+such that :math:`\sigma(\instrtype_{\min})` is a subtype of :math:`\instrtype'` (i.e., :math:`C \vdashinstrtypematch \sigma(\instrtype_{\min}) \matchesinstrtype \instrtype'`).
+Furthermore, :math:`\instrtype_{\min}` is unique up to the choice of type variables.
+
+**Theorem (Closed Principal Forward Types).**
+If closed input type :math:`[t_1^\ast]` is given and the instruction sequence :math:`\instr^\ast` is :ref:`valid <valid-config>` with :ref:`instruction type <syntax-instrtype>` :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [t_2^\ast]`),
+then it is also valid with instruction type :math:`[t_1^\ast] \toX{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [\alpha_{\valtype^\ast}~t^\ast]`),
+where all :math:`t^\ast` are closed,
+such that for *every* closed result type :math:`[{t'_2}^\ast]` with which :math:`\instr^\ast` is valid (i.e., for all :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [{t'_2}^\ast]`),
+there exists a substitution :math:`\sigma`,
+such that :math:`[{t'_2}^\ast] = [\sigma(\alpha_{\valtype^\ast})~t^\ast]`.
+
+
+.. index:: ! type lattice, subtyping, least upper bound, greatest lower bound, instruction type
+
+Type Lattice
+~~~~~~~~~~~~
+
+The :ref:`Principal Types <principality>` property depends on the existence of a *greatest lower bound* for any pair of types.
+
+**Theorem (Greatest Lower Bounds for Value Types).**
+For any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`),
+there exists a valid value type :math:`t` that is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t \matchesvaltype t_1` and :math:`C \vdashvaltypematch t \matchesvaltype t_2`),
+such that *every* valid value type :math:`t'` that also is a subtype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t' \matchesvaltype t_1` and :math:`C \vdashvaltypematch t' \matchesvaltype t_2`),
+is a subtype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t' \matchesvaltype t`).
+
+.. note::
+   The greatest lower bound of two types may be |BOT|.
+
+**Theorem (Conditional Least Upper Bounds for Value Types).**
+Any two value types :math:`t_1` and :math:`t_2` that are :ref:`valid <valid-valtype>`
+(i.e., :math:`C \vdashvaltype t_1 \ok` and :math:`C \vdashvaltype t_2 \ok`)
+either have no common supertype,
+or there exists a valid value type :math:`t` that is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., :math:`C \vdashvaltype t \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t`),
+such that *every* valid value type :math:`t'` that also is a supertype of both :math:`t_1` and :math:`t_2`
+(i.e., for all :math:`C \vdashvaltype t' \ok` and :math:`C \vdashvaltypematch t_1 \matchesvaltype t'` and :math:`C \vdashvaltypematch t_2 \matchesvaltype t'`),
+is a supertype of :math:`t`
+(i.e., :math:`C \vdashvaltypematch t \matchesvaltype t'`).
+
+.. note::
+   If a top type was added to the type system,
+   a least upper bound would exist for any two types.
+
+**Corollary (Type Lattice).**
+Assuming the addition of a provisional top type,
+:ref:`value types <syntax-valtype>` form a lattice with respect to their :ref:`subtype <match-valtype>` relation.
+
+Finally, value types can be partitioned into multiple disjoint hierarchies that are not related by subtyping, except through |BOT|.
+
+**Theorem (Disjoint Subtype Hierarchies).**
+The greatest lower bound of two :ref:`value types <syntax-valtype>` is :math:`\BOT` or :math:`\REF~\BOT`
+if and only if they do not have a least upper bound.
+
+In other words, types that do not have common supertypes,
+do not have common subtypes either (other than :math:`\BOT` or :math:`\REF~\BOT`), and vice versa.
+
+.. note::
+   Types from disjoint hierarchies can safely be represented in mutually incompatible ways in an implementation,
+   because their values can never flow to the same place.
+
+
+.. index:: ! compositionality, instruction type, subtyping
+
+Compositionality
+~~~~~~~~~~~~~~~~
+
+:ref:`Valid <valid-instr-seq>` :ref:`instruction sequences <syntax-instr>` can be freely *composed*, as long as their types match up.
+
+**Theorem (Composition).**
+If two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` are valid with types :math:`[t_1^\ast] \toX{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \toX{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \toX{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \toX{x_2^\ast} [t_2^\ast]`),
+then the concatenated instruction sequence :math:`(\instr_1^\ast\;\instr_2^\ast)` is valid with type :math:`[t_1^\ast] \toX{x_1^\ast\,x_2^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr_1^\ast\;\instr_2^\ast : [t_1^\ast] \toX{x_1^\ast\,x_2^\ast} [t_2^\ast]`).
+
+.. note::
+   More generally, instead of a shared type :math:`[t^\ast]`, it suffices if the output type of :math:`\instr_1^\ast` is a :ref:`subtype <match-resulttype>` of the input type of  :math:`\instr_1^\ast`,
+   since the subtype can always be weakened to its supertype by subsumption.
+
+Inversely, valid instruction sequences can also freely be *decomposed*, that is, splitting them anywhere produces two instruction sequences that are both :ref:`valid <valid-instr-seq>`.
+
+**Theorem (Decomposition).**
+If an instruction sequence :math:`\instr^\ast` that is valid with type :math:`[t_1^\ast] \toX{x^\ast} [t_2^\ast]` (i.e., :math:`C \vdashinstrseq \instr^\ast : [t_1^\ast] \toX{x^\ast} [t_2^\ast]`)
+is split into two instruction sequences :math:`\instr_1^\ast` and :math:`\instr_2^\ast` at any point (i.e., :math:`\instr^\ast = \instr_1^\ast\;\instr_2^\ast`),
+then these are separately valid with some types :math:`[t_1^\ast] \toX{x_1^\ast} [t^\ast]` and  :math:`[t^\ast] \toX{x_2^\ast} [t_2^\ast]`, respectively (i.e., :math:`C \vdashinstrseq \instr_1^\ast : [t_1^\ast] \toX{x_1^\ast} [t^\ast]` and :math:`C \vdashinstrseq \instr_1^\ast : [t^\ast] \toX{x_2^\ast} [t_2^\ast]`),
+where :math:`x^\ast = x_1^\ast\;x_2^\ast`.
+
+.. note::
+   This property holds because validation is required even for unreachable code.
+   Without that, :math:`\instr_2^\ast` might not be valid in isolation.
