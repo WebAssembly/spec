@@ -94,6 +94,9 @@ $(BUILDDIR): $(SPLICEDIR)/$(BUILDDIR)
 $(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
 	mkdir -p $@
 
+$(SPLICEDIR)/util/katex: util/katex
+	ln -s $< $@
+
 $(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTEC) $(SPECTECFILES)
 	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@
 
