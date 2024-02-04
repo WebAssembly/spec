@@ -380,34 +380,38 @@ let try_prose_anchor env src r sort space1 space2 find mode : bool =
 (* Splicing *)
 
 let splice_anchor env src anchor buf =
+  let open Backend_latex in
+  let config = {(Render.config env.latex) with Config.display = anchor.newline} in
+  let env' = {env with latex = Render.env_with_config env.latex config} in
   parse_space src;
   let r = ref "" in
-  let prose = ref false in
+  let prose = ref true in
   ignore (
-    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
-    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
-    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
-    try_def_anchor env src r "relation" "relation" "" find_relation Undecorated ||
-    try_def_anchor env src r "rule" "relation" "rule" find_rule Undecorated ||
-    try_def_anchor env src r "rule+" "relation" "rule" find_rule Decorated ||
-    try_def_anchor env src r "definition" "definition" "" find_def Undecorated ||
-    try_def_anchor env src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
-    try_def_anchor env src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
-    try_def_anchor env src r "relation-ignore" "relation" "" find_relation Ignored ||
-    try_def_anchor env src r "rule-ignore" "relation" "rule" find_rule Ignored ||
-    try_def_anchor env src r "definition-ignore" "definition" "" find_def Ignored ||
-    try_exp_anchor env src r ||
-    (prose := true; false) ||
-    try_prose_anchor env src r "rule-prose" "prose relation" "rule" find_rule_prose Undecorated ||
-    try_prose_anchor env src r "definition-prose" "prose definition" "" find_def_prose Undecorated ||
-    try_prose_anchor env src r "rule-prose-ignore" "prose relation" "rule" find_rule_prose Ignored ||
-    try_prose_anchor env src r "definition-prose-ignore" "prose definition" "" find_def_prose Ignored ||
+    try_prose_anchor env' src r "rule-prose" "prose relation" "rule" find_rule_prose Undecorated ||
+    try_prose_anchor env' src r "definition-prose" "prose definition" "" find_def_prose Undecorated ||
+    try_prose_anchor env' src r "rule-prose-ignore" "prose relation" "rule" find_rule_prose Ignored ||
+    try_prose_anchor env' src r "definition-prose-ignore" "prose definition" "" find_def_prose Ignored ||
+    (prose := false; false) ||
+    try_def_anchor env' src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
+    try_def_anchor env' src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
+    try_def_anchor env' src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
+    try_def_anchor env' src r "relation" "relation" "" find_relation Undecorated ||
+    try_def_anchor env' src r "rule" "relation" "rule" find_rule Undecorated ||
+    try_def_anchor env' src r "rule+" "relation" "rule" find_rule Decorated ||
+    try_def_anchor env' src r "definition" "definition" "" find_def Undecorated ||
+    try_def_anchor env' src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
+    try_def_anchor env' src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
+    try_def_anchor env' src r "relation-ignore" "relation" "" find_relation Ignored ||
+    try_def_anchor env' src r "rule-ignore" "relation" "rule" find_rule Ignored ||
+    try_def_anchor env' src r "definition-ignore" "definition" "" find_def Ignored ||
+    try_exp_anchor env' src r ||
     error src "unknown anchor sort";
   );
   if !r <> "" then
   ( let s =
-      if !prose || anchor.indent = "" then !r else
-      Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
+      if !prose || anchor.newline && anchor.indent = "" then !r else
+      let nl = if anchor.newline then "\n" ^ anchor.indent else "" in
+      Str.(global_replace (regexp "\n") nl !r)
     in
     if not !prose then Buffer.add_string buf anchor.prefix;
     Buffer.add_string buf s;

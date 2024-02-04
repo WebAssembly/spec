@@ -45,14 +45,6 @@ let as_alt_sym sym =
   | _ -> [Elem sym]
 
 
-(* Identifier Status *)
-
-module VarSet = Set.Make(String)
-
-let atom_vars = ref VarSet.empty
-let scopes = ref []
-
-
 (* Parentheses Role etc *)
 
 type prec = Op | Seq | Post | Prim
@@ -231,18 +223,18 @@ atom_ :
 
 varid_bind :
   | varid { $1 }
-  | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
+  | atomid_ { Atom.make_var $1; $1 $ at $sloc }
 varid_bind_lparen :
   | varid_lparen { $1 }
-  | atomid_lparen { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
+  | atomid_lparen { Atom.make_var $1; $1 $ at $sloc }
 
 enter_scope :
-  | (* empty *) { scopes := !atom_vars :: !scopes }
+  | (* empty *) { Atom.enter_scope () }
 exit_scope :
-  | (* empty *) { atom_vars := List.hd !scopes; scopes := List.tl !scopes }
+  | (* empty *) { Atom.exit_scope () }
 
 check_atom :
-  | UPID EOF { VarSet.mem (El.Convert.strip_var_suffix ($1 $ at $sloc)).it !atom_vars }
+  | UPID EOF { Atom.is_var (El.Convert.strip_var_suffix ($1 $ at $sloc)).it }
 
 
 (* Operators *)
@@ -425,6 +417,7 @@ casetyp :
   | exp_lit { $1 }
   | PLUS arith_un { UnE (PlusOp, $2) $ at $sloc }
   | MINUS arith_un { UnE (MinusOp, $2) $ at $sloc }
+  | DOLLAR LPAREN exp RPAREN { $3 }
 
 
 (* Expressions *)

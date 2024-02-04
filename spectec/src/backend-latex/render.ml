@@ -118,6 +118,12 @@ let env config script : env =
   List.iter (env_def env) script;
   env
 
+let config env : Config.t =
+  env.config
+
+let env_with_config env config : env =
+  {env with config}
+
 
 (* Helpers *)
 
@@ -890,16 +896,17 @@ let rec classify_rel e : rel_sort option =
 let rec render_defs env = function
   | [] -> ""
   | d::ds' as ds ->
+    let sp = if env.config.display then "" else "@{~}" in
     match d.it with
     | SynD _ ->
       let ds' = merge_syndefs ds in
       let deco = if env.deco_syn then "l" else "l@{}" in
-      "\\begin{array}{@{}" ^ deco ^ "rrl@{}l@{}}\n" ^
+      "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_syndef env) ds' ^
       "\\end{array}"
     | GramD _ ->
       let ds' = merge_gramdefs ds in
-      "\\begin{array}{@{}l@{}rrlll@{}l@{}}\n" ^
+      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "lll@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
     | RelD (id, t, _hints) ->
@@ -915,13 +922,13 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
+        "\\begin{array}{@{}l@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
       | None -> error d.at "unrecognized form of relation"
       )
     | DefD _ ->
-      "\\begin{array}{@{}lcl@{}l@{}}\n" ^
+      "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_funcdef env) ds ^
       "\\end{array}"
     | SepD ->

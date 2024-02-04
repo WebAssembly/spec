@@ -1,7 +1,7 @@
 (library
   (name frontend)
   (libraries util el il)
-  (modules lexer parser parse multiplicity elab)
+  (modules lexer atom parser parse multiplicity elab)
 )
 
 (ocamllex
