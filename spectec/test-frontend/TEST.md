@@ -4823,6 +4823,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation...
 == Complete.
 ```
