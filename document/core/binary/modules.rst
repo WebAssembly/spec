@@ -223,7 +223,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
 .. note::
    The encoding of a table type cannot start with byte :math:`\hex{40}`,
    hence decoding is unambiguous.
-   The zero byte following it is reserved for futre extensions.
+   The zero byte following it is reserved for future extensions.
 
 
 .. index:: ! memory section, memory, memory type

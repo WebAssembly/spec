@@ -4432,22 +4432,22 @@ Control Instructions
 
 .. _exec-return_call_indirect:
 
-:math:`\RETURNCALLINDIRECT~x`
-.............................
+:math:`\RETURNCALLINDIRECT~x~y`
+...............................
 
 1. Let :math:`F` be the :ref:`current <exec-notation-textual>` :ref:`frame <syntax-frame>`.
 
-2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITABLES[0]` exists.
+2. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITABLES[x]` exists.
 
-3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[0]`.
+3. Let :math:`\X{ta}` be the :ref:`table address <syntax-tableaddr>` :math:`F.\AMODULE.\MITABLES[x]`.
 
 4. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`S.\STABLES[\X{ta}]` exists.
 
 5. Let :math:`\X{tab}` be the :ref:`table instance <syntax-tableinst>` :math:`S.\STABLES[\X{ta}]`.
 
-6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[x]` is defined.
+6. Assert: due to :ref:`validation <valid-call_indirect>`, :math:`F.\AMODULE.\MITYPES[y]` is defined.
 
-7. Let :math:`\X{dt}_{\F{expect}}` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[x]`.
+7. Let :math:`\X{dt}_{\F{expect}}` be the :ref:`defined type <syntax-deftype>` :math:`F.\AMODULE.\MITYPES[y]`.
 
 8. Assert: due to :ref:`validation <valid-call_indirect>`, a value with :ref:`value type <syntax-valtype>` |I32| is on the top of the stack.
 
@@ -4478,10 +4478,10 @@ Control Instructions
 
 .. math::
    \begin{array}{lcl@{\qquad}l}
-   \val~(\RETURNCALLINDIRECT~x) &\stepto& (\RETURNINVOKE~a)
-     & (\iff \val~(\CALLINDIRECT~x) \stepto (\INVOKE~a)) \\
-   \val~(\RETURNCALLINDIRECT~x) &\stepto& \TRAP
-     & (\iff \val~(\CALLINDIRECT~x) \stepto \TRAP) \\
+   \val~(\RETURNCALLINDIRECT~x~y) &\stepto& (\RETURNINVOKE~a)
+     & (\iff \val~(\CALLINDIRECT~x~y) \stepto (\INVOKE~a)) \\
+   \val~(\RETURNCALLINDIRECT~x~y) &\stepto& \TRAP
+     & (\iff \val~(\CALLINDIRECT~x~y) \stepto \TRAP) \\
    \end{array}
 
 
