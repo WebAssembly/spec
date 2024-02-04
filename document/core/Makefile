@@ -70,7 +70,7 @@ spectec:
 	(cd $(SPECTECDIR); make exe >/dev/null)
 
 SPECTECFILES = $(shell ls $(SPECTECSPEC)/*.$(SPECTECEXT))
-RSTDIRS = $(shell ls -d [a-z]*/ util/bikeshed/)
+RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/)
 RSTFILES = $(shell ls -d *.rst [a-z]*/*.rst) $(GENERATED)
 CTRLFILES = $(shell ls Makefile *.* util/*.* util/bikeshed/*.*) $(shell ls static/*)
 ALLFILES = $(RSTDIRS) $(RSTFILES) $(CTRLFILES)
@@ -94,6 +94,9 @@ $(BUILDDIR): $(SPLICEDIR)/$(BUILDDIR)
 $(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
 	mkdir -p $@
 
+$(SPLICEDIR)/util/katex: util/katex
+	cp -R $< $@   # F it!
+
 $(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTEC) $(SPECTECFILES)
 	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@
 
@@ -102,7 +105,6 @@ $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %
 
 ######
 
-KATEXDIR = $(shell ls -d util/katex 2>/dev/null || ls -d ../util/katex)
 
 # Dirty hack to avoid rebuilding the Bikeshed version for every push.
 .PHONY: bikeshed-keep
@@ -188,11 +190,11 @@ bikeshed-nested: $(GENERATED)
 	mkdir -p $(BUILDDIR)/bikeshed_mathjax/
 	bikeshed spec index.bs $(BUILDDIR)/bikeshed_mathjax/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/
-	(cd $(KATEXDIR) && yarn && yarn build && npm install --only=prod)
+	(cd util/katex/ && yarn && yarn build && npm install --only=prod)
 	python3 util/mathjax2katex.py $(BUILDDIR)/bikeshed_mathjax/index.html \
 		>$(BUILDDIR)/html/bikeshed/index.html
 	mkdir -p $(BUILDDIR)/html/bikeshed/katex/dist/
-	cp -r $(KATEXDIR)/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
+	cp -r util/katex/dist/* $(BUILDDIR)/html/bikeshed/katex/dist/
 	patch -p0 $(BUILDDIR)/html/bikeshed/katex/dist/katex.css \
 		< util/katex_fix.patch
 	cp $(BUILDDIR)/bikeshed_singlehtml/_static/pygments.css \
