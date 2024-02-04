@@ -70,9 +70,9 @@ spectec:
 	(cd $(SPECTECDIR); make exe >/dev/null)
 
 SPECTECFILES = $(shell ls $(SPECTECSPEC)/*.$(SPECTECEXT))
-RSTDIRS = $(shell ls -d [a-z]*/)
+RSTDIRS = $(shell ls -d [a-z]*/ util/[a-z]*/)
 RSTFILES = $(shell ls -d *.rst [a-z]*/*.rst) $(GENERATED)
-CTRLFILES = Makefile conf.py $(shell ls util/*.*) $(shell ls static/*)
+CTRLFILES = $(shell ls Makefile *.* util/*.* util/bikeshed/*.*) $(shell ls static/*)
 ALLFILES = $(RSTDIRS) $(RSTFILES) $(CTRLFILES)
 SPLICEDFILES = spectec $(ALLFILES:%=$(SPLICEDIR)/%) $(BUILDDIR)
 
