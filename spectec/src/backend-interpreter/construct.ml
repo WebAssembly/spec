@@ -61,13 +61,13 @@ let al_to_null: value -> null = function
   | v -> fail "null" v
 
 let al_to_final: value -> final = function
-  | OptV None -> NoFinal
-  | OptV (Some (CaseV ("FINAL", []))) -> Final
+  | CaseV ("FINAL", [ OptV None ]) -> NoFinal
+  | CaseV ("FINAL", [ OptV _ ]) -> Final
   | v -> fail "final" v
 
 let al_to_mut: value -> mut = function
-  | OptV None -> Cons
-  | OptV (Some (CaseV ("MUT", []))) -> Var
+  | CaseV ("MUT", [ OptV None ]) -> Cons
+  | CaseV ("MUT", [ OptV _ ]) -> Var
   | v -> fail "mut" v
 
 let rec al_to_storage_type: value -> storage_type = function
@@ -115,9 +115,9 @@ and al_to_heap_type: value -> heap_type = function
     | "I31" -> I31HT
     | "STRUCT" -> StructHT
     | "ARRAY" -> ArrayHT
-    | "FUNC" -> FuncHT
+    | "FUNC" | "FUNCREF" -> FuncHT
     | "NOFUNC" -> NoFuncHT
-    | "EXTERN" -> ExternHT
+    | "EXTERN" | "EXTERNREF" -> ExternHT
     | "NOEXTERN" -> NoExternHT
     | _ -> fail "abstract heap type" v)
   | v -> fail "heap type" v
@@ -983,12 +983,12 @@ let al_of_null = function
   | Null -> some "NULL"
 
 let al_of_final = function
-  | NoFinal -> optV None
-  | Final -> optV (Some (nullary "FINAL"))
+  | NoFinal -> some "FINAL"
+  | Final -> none "FINAL"
 
 let al_of_mut = function
-  | Cons -> optV None
-  | Var -> optV (Some (nullary "MUT"))
+  | Cons -> some "MUT"
+  | Var -> none "MUT"
 
 let rec al_of_storage_type = function
   | ValStorageT vt -> al_of_val_type vt
@@ -1020,16 +1020,15 @@ and al_of_heap_type = function
   | VarHT (RecX i) -> CaseV ("REC", [ al_of_int32 i ])
   | DefHT dt -> al_of_def_type dt
   | BotHT -> nullary "BOT"
+  | FuncHT | ExternHT as ht when !version = 2 ->
+    string_of_heap_type ht ^ "REF" |> nullary
   | ht -> string_of_heap_type ht |> nullary
 
 and al_of_ref_type (null, ht) =
   if !version = 3 then
     CaseV ("REF", [ al_of_null null; al_of_heap_type ht ])
   else
-    match al_of_heap_type ht with
-    | CaseV ("FUNC", []) -> nullary "FUNC" (* TODO: "FUNCREF" *)
-    | CaseV ("EXTERN", []) -> nullary "EXTERN" (* TODO: "EXTERNREF" *)
-    | _ -> failwith "Not supported reftype for wasm <= 2.0"
+    al_of_heap_type ht
 
 and al_of_num_type nt = string_of_num_type nt |> nullary
 
