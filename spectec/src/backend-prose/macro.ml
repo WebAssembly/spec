@@ -31,6 +31,10 @@ type env =
     sections: string Map.t ref;
   }
 
+(* Environment Lookup *)
+
+let find_section env s = Map.mem s !(env.sections)
+
 (* Macro Generation *)
 
 let macro_template = {|
@@ -84,10 +88,10 @@ let gen_macro_kwd env syntax kwd =
   gen_macro_rule ~note:syntax env header font kwd
 
 let gen_macro_kwds env kwds =
-  Map.fold
+  Symbol.Map.fold
     (fun syntax variants skwd ->
       let terminals, _ = variants in
-      let svariants = Set.fold
+      let svariants = Symbol.Set.fold
         (fun kwd svariants ->
           let svariant = gen_macro_kwd env syntax kwd in
           svariants ^ svariant ^ "\n")
@@ -106,15 +110,17 @@ let gen_macro_func env fname =
   gen_macro_rule env header font fname
 
 let gen_macro_funcs env funcs =
-  Set.fold
+  Symbol.Set.fold
     (fun fname sfunc ->
       let sword = gen_macro_func env fname in
       sfunc ^ sword ^ "\n")
     funcs ""
 
 let gen_macro' env (symbol: Symbol.env)  =
-  let skwd = gen_macro_kwds env !(symbol.kwds) in
-  let sfunc = gen_macro_funcs env !(symbol.funcs) in
+  let kwds = Symbol.kwds symbol in
+  let skwd = gen_macro_kwds env kwds in
+  let funcs = Symbol.funcs symbol in
+  let sfunc = gen_macro_funcs env funcs in
   macro_template
   ^ ".. syntax\n.. ------\n\n"
   ^ skwd
@@ -168,9 +174,8 @@ let env inputs outputs =
   let sections = if check_rst outputs then parse_section inputs outputs else Map.empty in
   { sections = ref sections; }
 
-(* Environment Lookup *)
 
-let find_section env s = Map.mem s !(env.sections)
+(* Macro generation *)
 
 let macro_kwd env kwd =
   let variant, syntax = kwd in

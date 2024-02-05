@@ -3,20 +3,23 @@
  * syntactic elements, associated with the types defined here and in a few
  * other places:
  *
- *   x : var
+ *   x : idx
  *   v : value
  *   e : instr
  *   f : func
  *   m : module_
  *
- *   t : value_type
+ *   t : val_type
  *   s : func_type
  *   c : context / config
  *
  * These conventions mostly follow standard practice in language semantics.
  *)
 
+(* Types *)
+
 open Types
+open Pack
 
 type void = Lib.void
 
@@ -95,26 +98,26 @@ struct
   type replaceop = (nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop, nreplaceop) V128.laneop
 end
 
-type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Values.op
-type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Values.op
-type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Values.op
-type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Values.op
-type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Values.op
+type testop = (I32Op.testop, I64Op.testop, F32Op.testop, F64Op.testop) Value.op
+type unop = (I32Op.unop, I64Op.unop, F32Op.unop, F64Op.unop) Value.op
+type binop = (I32Op.binop, I64Op.binop, F32Op.binop, F64Op.binop) Value.op
+type relop = (I32Op.relop, I64Op.relop, F32Op.relop, F64Op.relop) Value.op
+type cvtop = (I32Op.cvtop, I64Op.cvtop, F32Op.cvtop, F64Op.cvtop) Value.op
 
-type vec_testop = (V128Op.testop) Values.vecop
-type vec_relop = (V128Op.relop) Values.vecop
-type vec_unop = (V128Op.unop) Values.vecop
-type vec_binop = (V128Op.binop) Values.vecop
-type vec_cvtop = (V128Op.cvtop) Values.vecop
-type vec_shiftop = (V128Op.shiftop) Values.vecop
-type vec_bitmaskop = (V128Op.bitmaskop) Values.vecop
-type vec_vtestop = (V128Op.vtestop) Values.vecop
-type vec_vunop = (V128Op.vunop) Values.vecop
-type vec_vbinop = (V128Op.vbinop) Values.vecop
-type vec_vternop = (V128Op.vternop) Values.vecop
-type vec_splatop = (V128Op.splatop) Values.vecop
-type vec_extractop = (V128Op.extractop) Values.vecop
-type vec_replaceop = (V128Op.replaceop) Values.vecop
+type vec_testop = (V128Op.testop) Value.vecop
+type vec_relop = (V128Op.relop) Value.vecop
+type vec_unop = (V128Op.unop) Value.vecop
+type vec_binop = (V128Op.binop) Value.vecop
+type vec_cvtop = (V128Op.cvtop) Value.vecop
+type vec_shiftop = (V128Op.shiftop) Value.vecop
+type vec_bitmaskop = (V128Op.bitmaskop) Value.vecop
+type vec_vtestop = (V128Op.vtestop) Value.vecop
+type vec_vunop = (V128Op.vunop) Value.vecop
+type vec_vbinop = (V128Op.vbinop) Value.vecop
+type vec_vternop = (V128Op.vternop) Value.vecop
+type vec_splatop = (V128Op.splatop) Value.vecop
+type vec_extractop = (V128Op.extractop) Value.vecop
+type vec_replaceop = (V128Op.replaceop) Value.vecop
 
 type ('t, 'p) memop = {ty : 't; align : int; offset : int32; pack : 'p}
 type loadop = (num_type, (pack_size * extension) option) memop
@@ -127,41 +130,47 @@ type vec_laneop = (vec_type, pack_size) memop * int
 
 (* Expressions *)
 
-type var = int32 Source.phrase
-type num = Values.num Source.phrase
-type vec = Values.vec Source.phrase
+type idx = int32 Source.phrase
+type num = Value.num Source.phrase
+type vec = Value.vec Source.phrase
 type name = Utf8.unicode
 
-type block_type = VarBlockType of var | ValBlockType of value_type option
+type block_type = VarBlockType of idx | ValBlockType of val_type option
 
 type instr = instr' Source.phrase
 and instr' =
   | Unreachable                       (* trap unconditionally *)
   | Nop                               (* do nothing *)
   | Drop                              (* forget a value *)
-  | Select of value_type list option  (* branchless conditional *)
+  | Select of val_type list option    (* branchless conditional *)
   | Block of block_type * instr list  (* execute in sequence *)
   | Loop of block_type * instr list   (* loop header *)
-  | If of block_type * instr list * instr list  (* conditional *)
-  | Br of var                         (* break to n-th surrounding label *)
-  | BrIf of var                       (* conditional break *)
-  | BrTable of var list * var         (* indexed break *)
+  | If of block_type * instr list * instr list   (* conditional *)
+  | Br of idx                         (* break to n-th surrounding label *)
+  | BrIf of idx                       (* conditional break *)
+  | BrTable of idx list * idx         (* indexed break *)
+  | BrOnNull of idx                   (* break on null *)
+  | BrOnNonNull of idx                (* break on non-null *)
   | Return                            (* break from function body *)
-  | Call of var                       (* call function *)
-  | CallIndirect of var * var         (* call function through table *)
-  | LocalGet of var                   (* read local variable *)
-  | LocalSet of var                   (* write local variable *)
-  | LocalTee of var                   (* write local variable and keep value *)
-  | GlobalGet of var                  (* read global variable *)
-  | GlobalSet of var                  (* write global variable *)
-  | TableGet of var                   (* read table element *)
-  | TableSet of var                   (* write table element *)
-  | TableSize of var                  (* size of table *)
-  | TableGrow of var                  (* grow table *)
-  | TableFill of var                  (* fill table range with value *)
-  | TableCopy of var * var            (* copy table range *)
-  | TableInit of var * var            (* initialize table range from segment *)
-  | ElemDrop of var                   (* drop passive element segment *)
+  | Call of idx                       (* call function *)
+  | CallRef of idx                    (* call function through reference *)
+  | CallIndirect of idx * idx         (* call function through table *)
+  | ReturnCall of idx                 (* tail-call function *)
+  | ReturnCallRef of idx              (* tail call through reference *)
+  | ReturnCallIndirect of idx * idx   (* tail-call function through table *)
+  | LocalGet of idx                   (* read local idxiable *)
+  | LocalSet of idx                   (* write local idxiable *)
+  | LocalTee of idx                   (* write local idxiable and keep value *)
+  | GlobalGet of idx                  (* read global idxiable *)
+  | GlobalSet of idx                  (* write global idxiable *)
+  | TableGet of idx                   (* read table element *)
+  | TableSet of idx                   (* write table element *)
+  | TableSize of idx                  (* size of table *)
+  | TableGrow of idx                  (* grow table *)
+  | TableFill of idx                  (* fill table with unique value *)
+  | TableCopy of idx * idx            (* copy table range *)
+  | TableInit of idx * idx            (* initialize table range from segment *)
+  | ElemDrop of idx                   (* drop passive element segment *)
   | Load of loadop                    (* read memory at address *)
   | Store of storeop                  (* write memory at address *)
   | VecLoad of vec_loadop             (* read memory at address *)
@@ -172,11 +181,12 @@ and instr' =
   | MemoryGrow                        (* grow memory *)
   | MemoryFill                        (* fill memory range with value *)
   | MemoryCopy                        (* copy memory ranges *)
-  | MemoryInit of var                 (* initialize memory range from segment *)
-  | DataDrop of var                   (* drop passive data segment *)
-  | RefNull of ref_type               (* null reference *)
-  | RefFunc of var                    (* function reference *)
+  | MemoryInit of idx                 (* initialize memory range from segment *)
+  | DataDrop of idx                   (* drop passive data segment *)
+  | RefNull of heap_type              (* null reference *)
   | RefIsNull                         (* null test *)
+  | RefAsNonNull                      (* null cast *)
+  | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
@@ -200,9 +210,15 @@ and instr' =
   | VecReplace of vec_replaceop       (* replace lane in vector *)
 
 
-(* Globals & Functions *)
+(* Locals, globals & Functions *)
 
 type const = instr list Source.phrase
+
+type local = local' Source.phrase
+and local' =
+{
+  ltype : val_type;
+}
 
 type global = global' Source.phrase
 and global' =
@@ -214,8 +230,8 @@ and global' =
 type func = func' Source.phrase
 and func' =
 {
-  ftype : var;
-  locals : value_type list;
+  ftype : idx;
+  locals : local list;
   body : instr list;
 }
 
@@ -226,6 +242,7 @@ type table = table' Source.phrase
 and table' =
 {
   ttype : table_type;
+  tinit : const;
 }
 
 type memory = memory' Source.phrase
@@ -237,7 +254,7 @@ and memory' =
 type segment_mode = segment_mode' Source.phrase
 and segment_mode' =
   | Passive
-  | Active of {index : var; offset : const}
+  | Active of {index : idx; offset : const}
   | Declarative
 
 type elem_segment = elem_segment' Source.phrase
@@ -258,14 +275,14 @@ and data_segment' =
 
 (* Modules *)
 
-type type_ = func_type Source.phrase
+type type_ = def_type Source.phrase
 
 type export_desc = export_desc' Source.phrase
 and export_desc' =
-  | FuncExport of var
-  | TableExport of var
-  | MemoryExport of var
-  | GlobalExport of var
+  | FuncExport of idx
+  | TableExport of idx
+  | MemoryExport of idx
+  | GlobalExport of idx
 
 type export = export' Source.phrase
 and export' =
@@ -276,7 +293,7 @@ and export' =
 
 type import_desc = import_desc' Source.phrase
 and import_desc' =
-  | FuncImport of var
+  | FuncImport of idx
   | TableImport of table_type
   | MemoryImport of memory_type
   | GlobalImport of global_type
@@ -292,7 +309,7 @@ and import' =
 type start = start' Source.phrase
 and start' =
 {
-  sfunc : var;
+  sfunc : idx;
 }
 
 type module_ = module_' Source.phrase
@@ -329,47 +346,43 @@ let empty_module =
 
 open Source
 
-let func_type_for (m : module_) (x : var) : func_type =
-  (Lib.List32.nth m.it.types x.it).it
+let ft (m : module_) (x : idx) : func_type =
+  as_func_def_type (Lib.List32.nth m.it.types x.it).it
 
-let import_type (m : module_) (im : import) : extern_type =
-  let {idesc; _} = im.it in
-  match idesc.it with
-  | FuncImport x -> ExternFuncType (func_type_for m x)
-  | TableImport t -> ExternTableType t
-  | MemoryImport t -> ExternMemoryType t
-  | GlobalImport t -> ExternGlobalType t
+let import_type_of (m : module_) (im : import) : import_type =
+  let {idesc; module_name; item_name} = im.it in
+  let et =
+    match idesc.it with
+    | FuncImport x -> ExternFuncT (ft m x)
+    | TableImport tt -> ExternTableT tt
+    | MemoryImport mt -> ExternMemoryT mt
+    | GlobalImport gt -> ExternGlobalT gt
+  in ImportT (et, module_name, item_name)
 
-let export_type (m : module_) (ex : export) : extern_type =
-  let {edesc; _} = ex.it in
-  let its = List.map (import_type m) m.it.imports in
-  let open Lib.List32 in
-  match edesc.it with
-  | FuncExport x ->
-    let fts =
-      funcs its @ List.map (fun f -> func_type_for m f.it.ftype) m.it.funcs
-    in ExternFuncType (nth fts x.it)
-  | TableExport x ->
-    let tts = tables its @ List.map (fun t -> t.it.ttype) m.it.tables in
-    ExternTableType (nth tts x.it)
-  | MemoryExport x ->
-    let mts = memories its @ List.map (fun m -> m.it.mtype) m.it.memories in
-    ExternMemoryType (nth mts x.it)
-  | GlobalExport x ->
-    let gts = globals its @ List.map (fun g -> g.it.gtype) m.it.globals in
-    ExternGlobalType (nth gts x.it)
+let export_type_of (m : module_) (ex : export) : export_type =
+  let {edesc; name} = ex.it in
+  let its = List.map (import_type_of m) m.it.imports in
+  let ets = List.map extern_type_of_import_type its in
+  let et =
+    match edesc.it with
+    | FuncExport x ->
+      let fts = funcs ets @ List.map (fun f -> ft m f.it.ftype) m.it.funcs in
+      ExternFuncT (Lib.List32.nth fts x.it)
+    | TableExport x ->
+      let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
+      ExternTableT (Lib.List32.nth tts x.it)
+    | MemoryExport x ->
+      let mts = memories ets @ List.map (fun m -> m.it.mtype) m.it.memories in
+      ExternMemoryT (Lib.List32.nth mts x.it)
+    | GlobalExport x ->
+      let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
+      ExternGlobalT (Lib.List32.nth gts x.it)
+  in ExportT (et, name)
 
-let string_of_name n =
-  let b = Buffer.create 16 in
-  let escape uc =
-    if uc < 0x20 || uc >= 0x7f then
-      Buffer.add_string b (Printf.sprintf "\\u{%02x}" uc)
-    else begin
-      let c = Char.chr uc in
-      if c = '\"' || c = '\\' then Buffer.add_char b '\\';
-      Buffer.add_char b c
-    end
-  in
-  List.iter escape n;
-  Buffer.contents b
-
+let module_type_of (m : module_) : module_type =
+  let its = List.map (import_type_of m) m.it.imports in
+  let ets = List.map (export_type_of m) m.it.exports in
+  let a = Array.make (List.length m.it.types) BotHT in
+  let s = fun (StatX x) -> a.(Int32.to_int x) in
+  List.iteri (fun i dt -> a.(i) <- DefHT (subst_def_type s dt.it)) m.it.types;
+  subst_module_type s (ModuleT (its, ets))

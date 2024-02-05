@@ -50,7 +50,7 @@ $${syntax+:
 
 .. _def-fzero:
 
-%{prose-func: fzero}
+$${definition-prose: fzero}
 
 \
 
@@ -58,7 +58,7 @@ $${definition: fzero}
 
 .. _def-signif:
 
-%{prose-func: signif}
+$${definition-prose: signif}
 
 \
 
@@ -66,7 +66,7 @@ $${definition: signif}
 
 .. _def-M:
 
-%{prose-func: M}
+$${definition-prose: M}
 
 \
 
@@ -74,7 +74,7 @@ $${definition: M}
 
 .. _def-expon:
 
-%{prose-func: expon}
+$${definition-prose: expon}
 
 \
 
@@ -82,7 +82,7 @@ $${definition: expon}
 
 .. _def-E:
 
-%{prose-func: E}
+$${definition-prose: E}
 
 \
 
@@ -101,7 +101,7 @@ $${syntax+:
 
 .. _def-utf8:
 
-%{prose-func: utf8}
+$${definition-prose: utf8}
 
 \
 

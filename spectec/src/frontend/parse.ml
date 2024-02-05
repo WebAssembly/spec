@@ -8,9 +8,13 @@ let with_lexbuf name lexbuf start =
   with Parser.Error ->
     raise (Source.Error (Lexer.region lexbuf, "unexpected token"))
 
+let parse_typ s =
+  let lexbuf = Lexing.from_string s in
+  with_lexbuf "(string)" lexbuf Parser.typ_eof
+
 let parse_exp s =
   let lexbuf = Lexing.from_string s in
-  with_lexbuf "(string)" lexbuf Parser.expression
+  with_lexbuf "(string)" lexbuf Parser.exp_eof
 
 let parse_script s =
   let lexbuf = Lexing.from_string s in

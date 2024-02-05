@@ -3,11 +3,11 @@ name: CI for specs
 on:
   push:
     branches: [ main ]
-    paths: [ document ]
+    paths: [ document/** ]
 
   pull_request:
     branches: [ main ]
-    paths: [ document ]
+    paths: [ document/** ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -20,20 +20,28 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: "recursive"
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.14.x
+      - name: Setup Dune
+        run: opam install --yes dune menhir mdx && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Setup Bikeshed
-        run: pip install bikeshed && bikeshed update
+      # - name: Setup Bikeshed
+      #   run: pip install bikeshed && bikeshed update
       - name: Setup TexLive
         run: sudo apt-get update -y && sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Sphinx
         run: pip install six && pip install sphinx==5.1.0
+      - name: Build SpecTec
+        run: cd spectec && opam exec make
       - name: Build main spec
-        run: cd document/core && make main
-      - name: Run Bikeshed
-        run: cd document/core && make bikeshed
+        run: cd document/core && opam exec make main
+      # - name: Run Bikeshed
+      #   run: cd document/core && opam exec make bikeshed
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:

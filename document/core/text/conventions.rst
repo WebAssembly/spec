@@ -49,6 +49,7 @@ In order to distinguish symbols of the textual syntax from symbols of the abstra
   (This is a shorthand for :math:`T^n` where :math:`n \leq 1`.)
 
 * :math:`x{:}T` denotes the same language as the nonterminal :math:`T`, but also binds the variable :math:`x` to the attribute synthesized for :math:`T`.
+  A pattern may also be used instead of a variable, e.g., :math:`(x,y){:}T`.
 
 * Productions are written :math:`\T{sym} ::= T_1 \Rightarrow A_1 ~|~ \dots ~|~ T_n \Rightarrow A_n`, where each :math:`A_i` is the attribute that is synthesized for :math:`\T{sym}` in the given case, usually from attribute variables bound in :math:`T_i`.
 

@@ -1,0 +1,9 @@
+;;
+;; Auxiliary definitions used for describing meta conventions
+;;
+
+;; Syntax notation
+
+syntax A = nat
+
+syntax sym = $(A_1) | ... | $(A_n)

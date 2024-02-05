@@ -38,10 +38,11 @@ type file_kind =
   | Output
 
 let target = ref Latex
-let log = ref false      (* log execution steps *)
-let in_place = ref false (* splice patch files in place *)
-let dry = ref false      (* dry run for patching *)
-let warn = ref false     (* warn about unused or reused splices *)
+let log = ref false        (* log execution steps *)
+let in_place = ref false   (* splice patch files in place *)
+let dry = ref false        (* dry run for patching *)
+let warn_math = ref false  (* warn about unused or reused math splices *)
+let warn_prose = ref false (* warn about unused or reused prose splices *)
 
 let file_kind = ref Spec
 let srcs = ref []    (* spec src file arguments *)
@@ -112,7 +113,12 @@ let argspec = Arg.align
   "-d", Arg.Set dry, " Dry run (when -p) ";
   "-o", Arg.Unit (fun () -> file_kind := Output), " Output files";
   "-l", Arg.Set log, " Log execution steps";
-  "-w", Arg.Set warn, " Warn about unused or multiply used splices";
+  "-w", Arg.Unit (fun () -> warn_math := true; warn_prose := true),
+    " Warn about unused or multiply used splices";
+  "--warn-math", Arg.Set warn_math,
+    " Warn about unused or multiply used math splices";
+  "--warn-prose", Arg.Set warn_prose,
+    " Warn about unused or multiply used prose splices";
 
   "--check", Arg.Unit (fun () -> target := Check), " Check only";
   "--latex", Arg.Unit (fun () -> target := Latex),
@@ -154,7 +160,7 @@ let () =
     if !print_el then
       Printf.printf "%s\n%!" (El.Print.string_of_script el);
     log "Elaboration...";
-    let il = Frontend.Elab.elab el in
+    let il, elab_env = Frontend.Elab.elab el in
     if !print_elab_il || !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
     log "IL Validation...";
@@ -180,6 +186,7 @@ let () =
         )
       ) il all_passes
     in
+    last_pass := "";
 
     if !print_final_il && not !print_all_il then
       Printf.printf "%s\n%!" (Il.Print.string_of_script il);
@@ -238,9 +245,10 @@ let () =
       log "Prose Generation...";
       let prose = Backend_prose.Gen.gen_prose il al in
       log "Splicing...";
-      let env = Backend_splice.Splice.(env config !pdsts !odsts el prose) in
+      let env = Backend_splice.Splice.(env config !pdsts !odsts elab_env el prose) in
       List.iter2 (Backend_splice.Splice.splice_file ~dry:!dry env) !pdsts !odsts;
-      if !warn then Backend_splice.Splice.warn env;
+      if !warn_math then Backend_splice.Splice.warn_math env;
+      if !warn_prose then Backend_splice.Splice.warn_prose env;
 
     | Interpreter args ->
       log "Initializing interpreter...";
@@ -252,7 +260,7 @@ let () =
   with
   | Source.Error (at, msg) ->
     let pass = if !last_pass = "" then "" else "(pass " ^ !last_pass ^ ") " in
-    prerr_endline (Source.string_of_region at ^ ": " ^ pass ^ msg);
+    Source.print_error at (pass ^ msg);
     exit 1
   | exn ->
     flush_all ();

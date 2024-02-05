@@ -122,6 +122,12 @@ let env config script : env =
   List.iter (env_def env) script;
   env
 
+let config env : Config.t =
+  env.config
+
+let env_with_config env config : env =
+  {env with config}
+
 
 (* Helpers *)
 
@@ -420,51 +426,55 @@ let render_rule_deco env pre id1 id2 post =
 (* Operators *)
 
 let render_atom env atom =
-  match atom.it with
-  | Atom id when id.[0] = '_' && id <> "_" -> ""
-  | Atom id ->
-    if id <> "_" && !(atom.note) = "" then
-      failwith (string_of_region atom.at ^
-        ": latex backend: render atom `" ^ id ^ "` without type id");
-    render_atomid env id !(atom.note)
-  | Infinity -> "\\infty"
-  | Bot -> "\\bot"
-  | Top -> "\\top"
-  | Dot -> "."
-  | Dot2 -> ".."
-  | Dot3 -> "\\dots"
-  | Semicolon -> ";"
-  | Backslash -> "\\setminus"
-  | In -> "\\in"
-  | Arrow -> "\\rightarrow"
-  | Arrow2 -> "\\Rightarrow"
-  | Colon -> ":"
-  | Sub -> "\\leq"
-  | Sup -> "\\geq"
-  | Assign -> ":="
-  | Equiv -> "\\equiv"
-  | Approx -> "\\approx"
-  | SqArrow -> "\\hookrightarrow"
-  | SqArrowStar -> "\\hookrightarrow^\\ast"
-  | Prec -> "\\prec"
-  | Succ -> "\\succ"
-  | Tilesturn -> "\\dashv"
-  | Turnstile ->
-    if env.config.macros_for_vdash then
-      "\\vdash" ^ env.current_rel
+  let macros = env.config.macros_for_atoms in
+  let tid =
+    if not macros then
+      ""
+    else if !(atom.note) <> "" then
+      !(atom.note)
     else
-      "\\vdash"
-  | Quest -> "{}^?"
-  | Plus -> "{}^+"
-  | Star -> "{}^\\ast"
-  | Comma -> ","
-  | Bar -> "\\mid"
-  | LParen -> "("
-  | RParen -> ")"
-  | LBrack -> "["
-  | RBrack -> "]"
-  | LBrace -> "\\{"
-  | RBrace -> "\\}"
+      error atom.at
+        ("cannot infer type of notation `" ^ El.Print.string_of_atom atom ^ "`")
+  in
+  let s =
+    match atom.it with
+    | Atom id when id.[0] = '_' && id <> "_" -> ""
+    | Atom id -> render_atomid env id tid
+    | Infinity -> "\\infty"
+    | Bot -> "\\bot"
+    | Top -> "\\top"
+    | Dot -> if macros then "\\dot" else "."
+    | Dot2 -> if macros then "\\dotdot" else ".."
+    | Dot3 -> "\\dots"
+    | Semicolon -> if macros then "\\semicolon" else ";"
+    | Backslash -> "\\setminus"
+    | In -> "\\in"
+    | Arrow -> "\\rightarrow"
+    | Arrow2 -> "\\Rightarrow"
+    | Colon -> if macros then "\\colon" else ":"
+    | Sub -> "\\leq"
+    | Sup -> "\\geq"
+    | Assign -> if macros then "\\assign" else ":="
+    | Equiv -> "\\equiv"
+    | Approx -> "\\approx"
+    | SqArrow -> "\\hookrightarrow"
+    | SqArrowStar -> "\\hookrightarrow^\\ast"
+    | Prec -> "\\prec"
+    | Succ -> "\\succ"
+    | Tilesturn -> "\\dashv"
+    | Turnstile -> "\\vdash"
+    | Quest -> if macros then "\\quest" else "{}^?"
+    | Plus -> if macros then "\\plus" else "{}^+"
+    | Star -> if macros then "\\ast" else "{}^\\ast"
+    | Comma -> if macros then "\\comma" else ","
+    | Bar -> "\\mid"
+    | LParen -> if macros then "\\lparen" else "("
+    | RParen -> if macros then "\\rparen" else ")"
+    | LBrack -> if macros then "\\lbrack" else "["
+    | RBrack -> if macros then "\\rbrack" else "]"
+    | LBrace -> if macros then "\\lbrace" else "\\{"
+    | RBrace -> if macros then "\\rbrace" else "\\}"
+  in s ^ tid
 
 let render_unop = function
   | NotOp -> "\\neg"
@@ -889,16 +899,17 @@ let rec classify_rel e : rel_sort option =
 let rec render_defs env = function
   | [] -> ""
   | d::ds' as ds ->
+    let sp = if env.config.display then "" else "@{~}" in
     match d.it with
     | SynD _ ->
       let ds' = merge_syndefs ds in
       let deco = if env.deco_syn then "l" else "l@{}" in
-      "\\begin{array}{@{}" ^ deco ^ "rrl@{}l@{}}\n" ^
+      "\\begin{array}{@{}" ^ deco ^ "r" ^ sp ^ "r" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_syndef env) ds' ^
       "\\end{array}"
     | GramD _ ->
       let ds' = merge_gramdefs ds in
-      "\\begin{array}{@{}l@{}rrlll@{}l@{}}\n" ^
+      "\\begin{array}{@{}l@{}r" ^ sp ^ "r" ^ sp ^ "lll@{}l@{}}\n" ^
         render_sep_defs (render_gramdef env) ds' ^
       "\\end{array}"
     | RelD (id, t, _hints) ->
@@ -914,13 +925,13 @@ let rec render_defs env = function
             (render_ruledef env) ds ^
         "\\end{array}"
       | Some ReductionRel ->
-        "\\begin{array}{@{}l@{}lcl@{}l@{}}\n" ^
+        "\\begin{array}{@{}l@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
           render_sep_defs (render_reddef env) ds ^
         "\\end{array}"
       | None -> error d.at "unrecognized form of relation"
       )
     | DefD _ ->
-      "\\begin{array}{@{}lcl@{}l@{}}\n" ^
+      "\\begin{array}{@{}l" ^ sp ^ "c" ^ sp ^ "l@{}l@{}}\n" ^
         render_sep_defs (render_funcdef env) ds ^
       "\\end{array}"
     | SepD ->

@@ -23,7 +23,7 @@ $${syntax: {instr/numeric instr/local instr/global instr/memory} expr}
 
 **Typing** ${relation: Instr_ok}
 
-An instruction sequence ${:instr*} is well-typed with an instruction type ${: t_1* -> t_2*}, written ${: instr* : t_1* -> t_2*}, according to the following rules:
+An instruction sequence ${:instr*} is well-typed with an instruction type ${functype: t_1* -> t_2*}, written ${:instr*} :math:`:` ${functype: t_1* -> t_2*}, according to the following rules:
 
 $${rule:
   {Instrs_ok/empty Instrs_ok/seq}
@@ -51,6 +51,8 @@ $${definition: {funcaddr funcinst} {func table}}
 
 
 **Reduction** ${relation: Step_pure}
+
+The relation ${Step: config ~> config} checks that a function type is well-formed.
 
 $${rule: Step/pure Step/read}
 

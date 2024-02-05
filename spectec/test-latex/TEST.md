@@ -278,7 +278,7 @@ $$
 & {\mathit{relopVIXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ {\mathsf{lt\_}}{{\mathit{sx}}} ~|~ {\mathsf{gt\_}}{{\mathit{sx}}} ~|~ {\mathsf{le\_}}{{\mathit{sx}}} ~|~ {\mathsf{ge\_}}{{\mathit{sx}}} \\
 & {\mathit{relopVFXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ \mathsf{lt} ~|~ \mathsf{gt} ~|~ \mathsf{le} ~|~ \mathsf{ge} \\
 & {\mathit{unopVIXX}} &::=& \mathsf{abs} ~|~ \mathsf{neg} \\
-& {\mathit{binopVIXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{swizzle} \\
+& {\mathit{binopVIXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} \\
 & {\mathit{minmaxopVIXX}} &::=& \mathsf{min}~{\mathit{sx}} ~|~ \mathsf{max}~{\mathit{sx}} \\
 & {\mathit{satbinopVIXX}} &::=& \mathsf{add\_sat}~{\mathit{sx}} ~|~ \mathsf{sub\_sat}~{\mathit{sx}} \\
 & {\mathit{shiftopVIXX}} &::=& \mathsf{shl} ~|~ {\mathsf{shr\_}}{{\mathit{sx}}} \\
@@ -3845,14 +3845,14 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|{\mathit{nt}}|} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {|{\mathit{nt}}|} / 8
  \qquad
-({2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
+({2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
  \qquad
 {{\mathit{n}}^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{n}}}
 }{
 {\mathit{C}} \vdash {{\mathit{nt}}.\mathsf{load}}{{({\mathit{n}}~\mathsf{\_}~{\mathit{sx}})^?}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow {\mathit{nt}}
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow {\mathit{nt}}
 } \, {[\textsc{\scriptsize T{-}load}]}
 \qquad
 \end{array}
@@ -3863,14 +3863,14 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|{\mathit{nt}}|} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {|{\mathit{nt}}|} / 8
  \qquad
-({2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
+({2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {\mathit{n}} / 8 < {|{\mathit{nt}}|} / 8)^?
  \qquad
 {{\mathit{n}}^?} = \epsilon \lor {\mathit{nt}} = {\mathsf{i}}{{\mathit{n}}}
 }{
 {\mathit{C}} \vdash {{\mathit{nt}}.\mathsf{store}}{{{\mathit{n}}^?}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~{\mathit{nt}} \rightarrow \epsilon
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~{\mathit{nt}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}store}]}
 \qquad
 \end{array}
@@ -3881,10 +3881,10 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{M}} / 8 \cdot {\mathit{N}}
+{2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {\mathit{M}} / 8 \cdot {\mathit{N}}
 }{
 {\mathit{C}} \vdash {\mathsf{v{\scriptstyle128}.load}}{({{({\mathit{M}}~\mathsf{x}~{\mathit{N}})}{\mathsf{\_}}}{{\mathit{sx}}})}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vload}]}
 \qquad
 \end{array}
@@ -3895,10 +3895,10 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {\mathit{n}} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {\mathit{n}} / 8
 }{
 {\mathit{C}} \vdash {\mathsf{v{\scriptstyle128}.load}}{({{{\mathit{n}}}{\mathsf{\_}}}{\mathsf{splat}})}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}splat}]}
 \qquad
 \end{array}
@@ -3909,10 +3909,10 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} < {\mathit{n}} / 8
 }{
 {\mathit{C}} \vdash {\mathsf{v{\scriptstyle128}.load}}{({{{\mathit{n}}}{\mathsf{\_}}}{\mathsf{zero}})}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vload{-}zero}]}
 \qquad
 \end{array}
@@ -3923,12 +3923,12 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} < {\mathit{n}} / 8
  \qquad
 {\mathit{laneidx}} < 128 / {\mathit{n}}
 }{
 {\mathit{C}} \vdash {{{\mathsf{v{\scriptstyle128}.load}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \mathsf{v{\scriptstyle128}}
 } \, {[\textsc{\scriptsize T{-}vload\_lane}]}
 \qquad
 \end{array}
@@ -3939,10 +3939,10 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} \leq {|\mathsf{v{\scriptstyle128}}|} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} \leq {|\mathsf{v{\scriptstyle128}}|} / 8
 }{
 {\mathit{C}} \vdash \mathsf{v{\scriptstyle128}.store}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore}]}
 \qquad
 \end{array}
@@ -3953,12 +3953,12 @@ $$
 \frac{
 {\mathit{C}}.\mathsf{mem}[{\mathit{x}}] = {\mathit{mt}}
  \qquad
-{2^{{\mathit{n}}_{{\mathsf{a}}}}} < {\mathit{n}} / 8
+{2^{{\mathit{n}}_{{\mathit{A}}}}} < {\mathit{n}} / 8
  \qquad
 {\mathit{laneidx}} < 128 / {\mathit{n}}
 }{
 {\mathit{C}} \vdash {{{\mathsf{v{\scriptstyle128}.store}}{{\mathit{n}}}}{\mathsf{\_}}}{\mathsf{lane}}~{\mathit{x}}~\{ \begin{array}[t]{@{}l@{}}
-\mathsf{align}~{\mathit{n}}_{{\mathsf{a}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
+\mathsf{align}~{\mathit{n}}_{{\mathit{A}}},\; \mathsf{offset}~{\mathit{n}}_{{\mathsf{o}}} \}\end{array}~{\mathit{laneidx}} : \mathsf{i{\scriptstyle32}}~\mathsf{v{\scriptstyle128}} \rightarrow \epsilon
 } \, {[\textsc{\scriptsize T{-}vstore\_lane}]}
 \qquad
 \end{array}
@@ -6551,6 +6551,15 @@ $$
   \mbox{if}~{{\mathit{m}'}^\ast} = \epsilon \lor {\mathrm{free}}_{{\mathit{dataidx}}}({{\mathit{func}}^{{\mathit{n}}}}) = \epsilon \\
  &&&&&&\quad {\land}~{\mathit{m}} = {\mathrm{sum}}({{\mathit{m}'}^\ast}) \\
  &&&&&&\quad {\land}~(({\mathit{func}} = \mathsf{func}~{\mathit{typeidx}}~{{\mathit{local}}^\ast}~{\mathit{expr}}))^\ast \\
+\end{array}
+$$
+
+\vspace{1ex}
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
+& {\mathit{A}} &::=& {\mathit{nat}} \\
+& {\mathit{sym}} &::=& {\mathit{A}}_{{1}} ~|~ \dots ~|~ {\mathit{A}}_{{\mathit{n}}} \\
 \end{array}
 $$
 
