@@ -102,7 +102,8 @@ type rel_typ = typ * Il.rule list
 type def_typ = param list * typ * (def * Il.clause) list
 
 type env =
-  { mutable vars : var_typ Map.t;
+  { mutable gvars : var_typ Map.t; (* variable type declarations *)
+    mutable vars : var_typ Map.t;  (* local bindings *)
     mutable typs : typ_typ Map.t;
     mutable syms : gram_typ Map.t;
     mutable rels : rel_typ Map.t;
@@ -110,26 +111,27 @@ type env =
   }
 
 let new_env () =
-  { vars = Map.empty
+  { gvars = Map.empty
       |> Map.add "bool" (BoolT $ no_region)
       |> Map.add "nat" (NumT NatT $ no_region)
       |> Map.add "int" (NumT IntT $ no_region)
       |> Map.add "rat" (NumT RatT $ no_region)
       |> Map.add "real" (NumT RealT $ no_region)
       |> Map.add "text" (TextT $ no_region);
+    vars = Map.empty;
     typs = Map.empty;
     syms = Map.empty;
     rels = Map.empty;
     defs = Map.empty;
   }
 
-let local_env env = {env with vars = env.vars; typs = env.typs}
+let local_env env = {env with gvars = env.gvars; vars = env.vars; typs = env.typs}
 
 let bound env' id = Map.mem id.it env'
 
 let find space env' id =
   match Map.find_opt id.it env' with
-  | None -> failwith (string_of_region id.at^": "^space^" "^id.it) (*error_id id ("undeclared " ^ space)*)
+  | None -> error_id id ("undeclared " ^ space)
   | Some t -> t
 
 let bind space env' id t =
@@ -173,10 +175,12 @@ let to_eval_def (_ps, _t, clauses) =
   ) clauses
 
 let to_eval_env env =
+  (* Need to include gvars, since matching can encounter uimplicit vars *)
+  let vars = Map.union (fun _ _ t -> Some t) env.gvars env.vars in
   let typs = Map.mapi to_eval_typ env.typs in
   let defs = Map.map to_eval_def env.defs in
   let syms = Map.map ignore env.syms in
-  Eval.{typs; defs; syms}
+  Eval.{vars; typs; defs; syms}
 
 
 (* Type Accessors *)
@@ -350,16 +354,7 @@ let equiv_typ env t1 t2 =
   Eval.equiv_typ (to_eval_env env) t1 t2
 
 let sub_typ env t1 t2 =
-  match expand env t1, expand env t2 with
-  | NumT t1', NumT t2' -> t1' <= t2'
-  | RangeT (Elem (e1, _)::_), NumT t2' ->
-    (* TODO: this should use infer_exp *)
-    (match (Eval.reduce_exp (to_eval_env env) e1).it with
-    | NatE _ -> true
-    | UnE (MinusOp, _) -> t2' <= IntT
-    | _ -> assert false
-    )
-  | _ -> equiv_typ env t1 t2
+  Eval.sub_typ (to_eval_env env) t1 t2
 
 
 (* Hints *)
@@ -519,9 +514,7 @@ let rec elab_iter env iter : Il.iter =
   | List1 -> Il.List1
   | ListN (e, id_opt) ->
     Option.iter (fun id ->
-      let t = find "variable" env.vars (strip_var_suffix id) in
-      if not (equiv_typ env t (NumT NatT $ id.at)) then
-        error_typ e.at "iteration index" (NumT NatT $ id.at)
+      ignore (elab_exp env (VarE (id, []) $ id.at) (NumT NatT $ id.at))
     ) id_opt;
     Il.ListN (elab_exp env e (NumT NatT $ e.at), id_opt)
 
@@ -618,7 +611,7 @@ and elab_typenum env tid (e1, e2o) : Il.typ =
 
 and elab_typ_notation env tid t : bool * Il.mixop * Il.typ list =
   (*
-  Printf.eprintf "[typ_not %s] %s = %s\n%!"
+  Printf.eprintf "[el.elab_typ_notation %s] %s = %s\n%!"
     (string_of_region t.at) tid.it (string_of_typ t);
   *)
   assert (tid.it <> "");
@@ -675,14 +668,23 @@ and infer_exp env e : Il.exp * typ =
 
 and infer_exp' env e : Il.exp' * typ =
   (*
-  Printf.eprintf "[infer %s] %s\n%!"
+  Printf.eprintf "[el.infer_exp %s] %s\n%!"
     (string_of_region e.at) (string_of_exp e);
   *)
   match e.it with
   | VarE (id, args) ->
     if args <> [] then
+      (* Args may only occur due to syntactic overloading with types *)
       Source.error e.at "syntax" "malformed expression";
-    let t = find "variable" env.vars (strip_var_suffix id) in
+    let t =
+      try
+        find "variable" env.vars id
+      with Source.Error _ ->
+        (* If the variable itself is not yet declared, use type hint if available. *)
+        let t = find "variable" env.gvars (strip_var_suffix id) in
+        env.vars <- bind "variable" env.vars id t;
+        t
+    in
     Il.VarE id, t
   | AtomE _ ->
     error e.at "cannot infer type of atom"
@@ -809,14 +811,22 @@ and elab_exp env e t : Il.exp =
 
 and elab_exp' env e t : Il.exp' =
   (* *)
-  Printf.eprintf "[elab %s] %s  :  %s\n%!"
+  Printf.eprintf "[el.elab_exp %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   (* *)
   match e.it with
-  | VarE (id, []) when not (Map.mem (strip_var_suffix id).it env.vars) ->
-    (* Infer type of variable *)
-    env.vars <- bind "variable" env.vars (strip_var_suffix id) t;
-    Il.VarE id
+  | VarE (id, []) when not (Map.mem id.it env.vars) ->
+    if bound env.gvars (strip_var_suffix id) then
+      (* Variable type must be consistent with possible type hint. *)
+      let t' = find "" env.gvars (strip_var_suffix id) in
+      env.vars <- bind "variable" env.vars id t';
+      let e' = elab_exp env e t' in
+      cast_exp' "variable" env e' t' t
+    else (
+Printf.eprintf "[el.bind var] %s  :  %s\n%!" id.it (string_of_typ t);
+      env.vars <- bind "variable" env.vars id t;
+      Il.VarE id
+    )
   | VarE _ ->
     let e', t' = infer_exp env e in
     cast_exp' "variable" env e' t' t
@@ -961,7 +971,7 @@ and elab_exp_iter env es (t1, iter) t at : Il.exp =
 
 and elab_exp_iter' env es (t1, iter) t at : Il.exp' =
   (*
-  Printf.eprintf "[iteration %s] %s  :  %s = (%s)%s\n%!"
+  Printf.eprintf "[el.elab_exp_iter %s] %s  :  %s = (%s)%s\n%!"
     (string_of_region at)
     (String.concat " " (List.map string_of_exp es))
     (string_of_typ t) (string_of_typ t1) (string_of_iter iter);
@@ -1000,7 +1010,7 @@ and elab_exp_notation env tid e nt t : Il.exp =
 
 and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
   (*
-  Printf.eprintf "[notation %s] %s  :  %s\n%!"
+  Printf.eprintf "[el.elab_exp_notation %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
   *)
   assert (tid.it <> "");
@@ -1104,7 +1114,7 @@ and elab_exp_notation_iter env tid es (t1, iter) t at : Il.exp =
 
 and elab_exp_notation_iter' env tid es (t1, iter) t at : Il.exp' =
   (*
-  Printf.eprintf "[niteration %s] %s  :  %s = %s\n%!"
+  Printf.eprintf "[el.elab_exp_notation_iter %s] %s  :  %s = %s\n%!"
     (string_of_region at)
     (String.concat " " (List.map string_of_exp es))
     tid.it (string_of_typ t);
@@ -1136,7 +1146,7 @@ and elab_exp_notation_iter' env tid es (t1, iter) t at : Il.exp' =
 
 and elab_exp_variant env tid e cases t at : Il.exp =
   (*
-  Printf.eprintf "[variant %s] {%s}  :  %s = %s\n%!"
+  Printf.eprintf "[el.elab_exp_variant %s] {%s}  :  %s = %s\n%!"
     (string_of_region at)
     (string_of_exp e)
     tid.it (string_of_typ t);
@@ -1214,7 +1224,7 @@ and cast_exp phrase env e' t1 t2 : Il.exp =
 
 and cast_exp' phrase env e' t1 t2 : Il.exp' =
   (*
-  Printf.eprintf "[cast %s] (%s) <: (%s)  >>  (%s) <: (%s)\n%!"
+  Printf.eprintf "[el.cast_exp %s] (%s) <: (%s)  >>  (%s) <: (%s)\n%!"
     (string_of_region e'.at)
     (string_of_typ t1) (string_of_typ t2)
     (string_of_typ (expand env t1 $ t1.at))
@@ -1353,7 +1363,7 @@ and elab_gram env gram t =
 and make_binds env free dims at : Il.binds =
   List.map (fun id' ->
     let id = id' $ at in
-    let t = find "variable" env.vars (strip_var_suffix id) in
+    let t = find "variable" env.vars id in
     let t' = elab_typ env t in
     let ctx = List.map (elab_iter env) (Dim.Env.find id.it dims) in
     (id, t', ctx)
@@ -1389,7 +1399,7 @@ and elab_args env as_ ps at : Il.arg list * Subst.subst =
 and elab_args' env as_ ps aos' s at : Il.arg list * Subst.subst =
   (*
   if as_ <> [] || ps <> [] then
-  Printf.eprintf "[as] {%s}  :  {%s}[%s]\n%!"
+  Printf.eprintf "[el.elab_args] {%s}  :  {%s}[%s]\n%!"
     (String.concat " " (List.map string_of_arg as_))
     (String.concat " " (List.map string_of_param ps))
     (String.concat ", " (List.map (fun (x, e) -> x^"="^string_of_exp e) Subst.(Map.bindings s.varid)));
@@ -1417,44 +1427,47 @@ and subst_implicit env s t t' : Subst.subst =
     | _ -> s
   in inst s t t'
 
-let bind_implicit env t : env =
-  let free = Free.free_typ t in
-  Free.Set.fold (fun id' env ->
-    if Map.mem id' env.typs then env else
-    let id = id' $ t.at in
-    { env with
-      typs = bind "syntax type" env.typs id ([], Transp);
-      vars = bind "variable" env.vars id (VarT (id, []) $ id.at);
-    }
-  ) free.typid env
-
-let elab_params env ps : Il.param list * env =
-  List.fold_left (fun (ps', env) p ->
+let elab_params env ps : Il.param list =
+  List.fold_left (fun ps' p ->
+    (* *)
+    Printf.eprintf "[el.elab_param] %s\n%!" (El.Print.string_of_param p);
+    (* *)
     match p.it with
     | ExpP (id, t) ->
       let t' = elab_typ env t in
-      ps' @ [Il.ExpP (id, t') $ p.at],
       (* If a variable isn't globally declared, this is a local declaration. *)
-      (* Shadowing is allowed, but only with consistent type. *)
-      if not (bound env.vars (strip_var_suffix id)) then
-        {env with vars = bind "variable" env.vars id t}
-      else
-        let t2 = find "" env.vars (strip_var_suffix id) in
-        if equiv_typ env t t2 then env else
+      if bound env.gvars (strip_var_suffix id) then (
+        let t2 = find "" env.gvars (strip_var_suffix id) in
+        if not (sub_typ env t t2) then
           error_typ2 id.at "local variable" t t2 ", shadowing with different type"
+      );
+      (* Shadowing is allowed, but only with consistent type. *)
+      if bound env.vars (strip_var_suffix id) then (
+        let t2 = find "" env.vars (strip_var_suffix id) in
+        if not (equiv_typ env t t2) then
+          error_typ2 id.at "local variable" t t2 ", shadowing with different type"
+      )
+      else
+        env.vars <- bind "variable" env.vars id t;
+      ps' @ [Il.ExpP (id, t') $ p.at]
     | TypP id ->
-      ps' @ [Il.TypP id $ p.at],
-      { env with
-        typs = bind "syntax type" env.typs id ([], Transp);
-        vars = bind "variable" env.vars id (VarT (id, []) $ id.at);
-      }
+      env.typs <- bind "syntax type" env.typs id ([], Transp);
+      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+      ps' @ [Il.TypP id $ p.at]
     | GramP (id, t) ->
       (* Treat unbound type identifiers in t as implicitly bound. *)
-      let env' = bind_implicit env t in
-      let _t' = elab_typ env' t in
-      ps',  (* Grammar parameters are erased *)
-      {env' with syms = bind "grammar" env'.syms id ([], t, None)}
-  ) ([], env) ps
+      let free = Free.free_typ t in
+      env.syms <- bind "grammar" env.syms id ([], t, None);
+      Free.Set.iter (fun id' ->
+        if not (Map.mem id' env.typs) then (
+          let id = id' $ t.at in
+          env.typs <- bind "syntax type" env.typs id ([], Transp);
+          env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+        )
+      ) free.typid;
+      let _t' = elab_typ env t in
+      ps'  (* Grammar parameters are erased *)
+  ) [] ps
 
 
 let infer_typ_definition _env t : kind =
@@ -1466,40 +1479,41 @@ let infer_typdef env d =
   match d.it with
   | FamD (id, ps, _hints) ->
     (*
-    Printf.eprintf "[itypdef %s]\n%!" (string_of_region d.at);
+    Printf.eprintf "[el.infer_typdef %s]\n%!" (string_of_region d.at);
     *)
     if not (bound env.typs id) then (
-      let _ps', _env' = elab_params (local_env env) ps in
+      let _ps' = elab_params (local_env env) ps in
       env.typs <- bind "syntax type" env.typs id (ps, Family []);
       if ps = [] then  (* only types without parameters double as variables *)
-        env.vars <- bind "variable" env.vars id (VarT (id, []) $ id.at);
+        env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
     )
   | TypD (id1, _id2, as_, t, _hints) ->
     (*
-    Printf.eprintf "[itypdef %s]\n%!" (string_of_region d.at);
+    Printf.eprintf "[el.infer_typdef %s]\n%!" (string_of_region d.at);
     *)
     if not (bound env.typs id1) then (
       let ps = List.map Convert.param_of_arg as_ in
       let env' = local_env env in
-      let _ps', env' = elab_params env' ps in
+      let _ps' = elab_params env' ps in
       let k = infer_typ_definition env' t in
       env.typs <- bind "syntax type" env.typs id1 (ps, k);
       if ps = [] then  (* only types without parameters double as variables *)
-        env.vars <- bind "variable" env.vars id1 (VarT (id1, []) $ id1.at);
+        env.gvars <- bind "variable" env.gvars id1 (VarT (id1, []) $ id1.at);
     )
   | VarD (id, t, _hints) ->
     (* This is to ensure that we get rebind errors in syntactic order. *)
-    env.vars <- bind "variable" env.vars id t;
+    env.gvars <- bind "variable" env.gvars id t;
   | _ -> ()
 
 let infer_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, t, _gram, _hints) ->
     (*
-    Printf.eprintf "[igramdef %s]\n%!" (string_of_region d.at);
+    Printf.eprintf "[el.infer_gramdef %s]\n%!" (string_of_region d.at);
     *)
     if not (bound env.syms id1) then (
-      let _ps', env' = elab_params env ps in
+      let env' = local_env env in
+      let _ps' = elab_params env' ps in
       let _t' = elab_typ env' t in
       env.syms <- bind "grammar" env.syms id1 (ps, t, None);
     )
@@ -1520,20 +1534,20 @@ let elab_hintdef _env hd : Il.def list =
     []
 
 let elab_def env d : Il.def list =
-  (*
-  Printf.eprintf "[DEF %s]\n%!" (string_of_region d.at);
+  (* *)
+  Printf.eprintf "[el.elab_def %s]\n%!" (string_of_region d.at);
   let ds' =
-  *)
+  (* *)
   match d.it with
   | FamD (id, ps, hints) ->
-    let ps', _env' = elab_params (local_env env) ps in
+    let ps' = elab_params (local_env env) ps in
     env.typs <- rebind "syntax type" env.typs id (ps, Family []);
     [Il.TypD (id, ps', []) $ d.at]
       @ elab_hintdef env (TypH (id, "" $ id.at, hints) $ d.at)
   | TypD (id1, id2, as_, t, hints) ->
     let env' = local_env env in
     let ps = List.map Convert.param_of_arg as_ in
-    let ps', env' = elab_params env' ps in
+    let ps' = elab_params env' ps in
     let dt' = elab_typ_definition env' id1 t in
     let ps1, k1 = find "syntax type" env.typs id1 in
     let free = Free.(free_list free_arg as_).Free.varid in
@@ -1605,10 +1619,11 @@ let elab_def env d : Il.def list =
     []
   | VarD (id, t, _hints) ->
     let _t' = elab_typ env t in
-    env.vars <- rebind "variable" env.vars id t;
+    env.gvars <- rebind "variable" env.gvars id t;
     []
   | DecD (id, ps, t, hints) ->
-    let ps', env' = elab_params (local_env env) ps in
+    let env' = local_env env in
+    let ps' = elab_params env' ps in
     let t' = elab_typ env' t in
     env.defs <- bind "function" env.defs id (ps, t, []);
     [Il.DecD (id, ps', t', []) $ d.at]
@@ -1655,19 +1670,20 @@ let elab_def env d : Il.def list =
     []
   | HintD hd ->
     elab_hintdef env hd
-  (*
+  (* *)
   in
-  Printf.eprintf "[DEF %s] done\n%!" (string_of_region d.at);
+  Printf.eprintf "[el.elab_def %s] done\n%!" (string_of_region d.at);
   ds'
-  *)
+  (* *)
 
 let elab_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, t, gram, _hints) ->
     (*
-    Printf.eprintf "[GRAMDEF %s]\n%!" (string_of_region d.at);
+    Printf.eprintf "[el.elab_gramdef %s]\n%!" (string_of_region d.at);
     *)
-    let _ps', env' = elab_params (local_env env) ps in
+    let env' = local_env env in
+    let _ps' = elab_params env' ps in
     let _t' = elab_typ env' t in
     elab_gram env' gram t;
     let ps1, t1, gram1_opt = find "grammar" env.syms id1 in

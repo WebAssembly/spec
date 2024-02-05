@@ -789,6 +789,7 @@ let () = render_args_fwd := render_args
 
 
 let merge_typ t1 t2 =
+Printf.eprintf "[merge_typ]\nt1 = %s\nt2 = %s\n%!" (El.Print.string_of_typ t1) (El.Print.string_of_typ t2);
   match t1.it, t2.it with
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
     CaseT (dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at
@@ -801,9 +802,10 @@ let merge_gram gram1 gram2 =
 
 let rec merge_typdefs = function
   | [] -> []
-  | {it = TypD (id1, _, ps, t1, _); at; _}::
-    {it = TypD (id2, _, _ps, t2, _); _}::ds when id1.it = id2.it ->
-    let d' = TypD (id1, "" $ no_region, ps, merge_typ t1 t2, []) $ at in
+  | {it = TypD (id1, _, as1, t1, _); at; _}::
+    {it = TypD (id2, _, as2, t2, _); _}::ds
+    when id1.it = id2.it && El.Eq.(eq_list eq_arg as1 as2) ->
+    let d' = TypD (id1, "" $ no_region, as1, merge_typ t1 t2, []) $ at in
     merge_typdefs (d'::ds)
   | d::ds ->
     d :: merge_typdefs ds

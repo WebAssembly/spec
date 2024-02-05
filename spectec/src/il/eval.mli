@@ -4,7 +4,7 @@ module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
 
 type typ_def = instance list
 type def_def = clause list
-type env = {typs : typ_def Map.t; defs : def_def Map.t}
+type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t}
 type subst = Subst.t
 
 val (let*) : subst option -> (subst -> subst option) -> subst option
@@ -12,7 +12,9 @@ val (let*) : subst option -> (subst -> subst option) -> subst option
 val reduce_exp : env -> exp -> exp
 val reduce_typ : env -> typ -> typ
 val reduce_arg : env -> arg -> arg
+
 val equiv_typ : env -> typ -> typ -> bool
+val sub_typ : env -> typ -> typ -> bool
 
 exception Irred (* indicates that argument is not normalised enough to decide *)
 

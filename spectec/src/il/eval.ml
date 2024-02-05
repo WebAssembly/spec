@@ -9,7 +9,7 @@ module Map = Map.Make(String)
 
 type typ_def = instance list
 type def_def = clause list
-type env = {typs : typ_def Map.t; defs : def_def Map.t}
+type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t}
 type subst = Subst.t
 
 
@@ -41,31 +41,34 @@ let equiv_list equiv_x env xs1 xs2 =
 let rec reduce_typ env t : typ =
   (* *)
   if t.it <> NumT NatT then
-  Printf.eprintf "[reduce_typ] %s\n%!" (Print.string_of_typ t);
+  Printf.eprintf "[il.reduce_typ] %s\n%!" (Print.string_of_typ t);
   let t' =
   (* *)
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_typ_app env id args' (Map.find id.it env.typs) with
-    | Some {it = AliasT t'; _} -> reduce_typ env t'
+    (match reduce_typ_app env id args' with
+    | Some (AliasT t') -> reduce_typ env t'
     | _ -> VarT (id, args') $ t.at
     )
   | _ -> t
   (* *)
   in
   if t.it <> NumT NatT then
-  Printf.eprintf "[reduce_typ] %s => %s\n%!" (Print.string_of_typ t) (Print.string_of_typ t');
+  Printf.eprintf "[il.reduce_typ] %s => %s\n%!" (Print.string_of_typ t) (Print.string_of_typ t');
   t'
   (* *)
 
-and reduce_typ_app env id args = function
+and reduce_typ_app env id args : deftyp' option =
+  reduce_typ_app' env id args (Map.find id.it env.typs)
+
+and reduce_typ_app' env id args = function
   | [] -> None
   | {it = InstD (_binds, args', dt); _}::defs' ->
     match match_list match_arg env Subst.empty args args' with
     | exception Irred -> None
-    | None -> reduce_typ_app env id args defs'
-    | Some s -> Some (Subst.subst_deftyp s dt)
+    | None -> reduce_typ_app' env id args defs'
+    | Some s -> Some (Subst.subst_deftyp s dt).it
 
 
 (* Expression Reduction *)
@@ -80,7 +83,7 @@ and is_normal_exp e =
 and reduce_exp env e : exp =
   (* *)
   (match e.it with VarE {it = "nat"; _} -> () | _ ->
-  Printf.eprintf "[reduce_exp] %s\n%!" (Print.string_of_exp e));
+  Printf.eprintf "[il.reduce_exp] %s\n%!" (Print.string_of_exp e));
   let e' =
   (* *)
   match e.it with
@@ -246,16 +249,21 @@ and reduce_exp env e : exp =
   | CaseE (atom, e1) -> CaseE (atom, reduce_exp env e1) $> e
   | SubE (e1, t1, t2) ->
     let e1' = reduce_exp env e1 in
-    if is_normal_exp e1 then
+    (match e1'.it with
+    | SubE (e11', t11', _t12') ->
+      let t2' = reduce_typ env t2 in
+      SubE (e11', t11', t2') $> e
+    | _ when is_normal_exp e1 ->
       {e1' with note = e.note}
-    else
+    | _ ->
       let t1' = reduce_typ env t1 in
       let t2' = reduce_typ env t2 in
       SubE (e1, t1', t2') $> e
+    )
   (* *)
   in
   (match e.it with VarE {it = "nat"; _} -> () | _ ->
-  Printf.eprintf "[reduce_exp] %s => %s\n%!" (Print.string_of_exp e) (Print.string_of_exp e'));
+  Printf.eprintf "[il.reduce_exp] %s => %s\n%!" (Print.string_of_exp e) (Print.string_of_exp e'));
   e'
   (* *)
 
@@ -308,7 +316,7 @@ and reduce_exp_call env id args = function
   | [] -> None
   | {it = DefD (_binds, args', e, prems); _}::clauses' ->
     (*
-    Printf.eprintf "[reduce_exp_call] $%s(%s) =: $%s(%s)\n%!"
+    Printf.eprintf "[il.reduce_exp_call] $%s(%s) =: $%s(%s)\n%!"
       id.it (String.concat ", " (List.map Print.string_of_arg args))
       id.it (String.concat ", " (List.map Print.string_of_arg args'));
     let eo =
@@ -323,7 +331,7 @@ and reduce_exp_call env id args = function
       | Some true -> Some (reduce_exp env e)
     (*
     in
-    Printf.eprintf "[reduce_exp_call] $%s(%s) =: $%s(%s) => %s\n%!"
+    Printf.eprintf "[il.reduce_exp_call] $%s(%s) =: $%s(%s) => %s\n%!"
       id.it (String.concat ", " (List.map Print.string_of_arg args))
       id.it (String.concat ", " (List.map Print.string_of_arg args'))
       (match eo with None -> "-" | Some e -> Print.string_of_exp e);
@@ -401,7 +409,7 @@ and match_typbind env s (id1, t1) (id2, t2) =
 
 and match_exp env s e1 e2 : subst option =
   (* *)
-  Printf.eprintf "[match_exp] %s =: %s[%s] = %s\n%!"
+  Printf.eprintf "[il.match_exp] %s =: %s[%s] = %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
@@ -464,6 +472,8 @@ and match_exp env s e1 e2 : subst option =
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let* s' = match_exp env s e11 e21 in
     match_iterexp env s' iter1 iter2
+  | SubE (e11, t11, _t12), SubE (e21, t21, _t22) when equiv_typ env t11 t21 ->
+    match_exp env s e11 e21
   | _, SubE (e21, t21, _t22) when is_normal_exp e1 ->
     let t21' = reduce_typ env t21 in
     if
@@ -473,18 +483,22 @@ and match_exp env s e1 e2 : subst option =
       | TextE _, TextT -> true
       | UnE (MinusOp _, _), NumT t -> t >= IntT
       | CaseE (atom, _), VarT (id, as_) ->
-        (match reduce_typ_app env id as_ (Map.find id.it env.typs) with
-        | Some {it = VariantT tcs; _} ->
+        (match reduce_typ_app env id as_ with
+        | Some (VariantT tcs) ->
           (* Assumes that we only have shallow subtyping. *)
           List.exists (fun (atomN, _, _) -> atomN = atom) tcs
-        | _ -> false
+        | Some _ -> false
+        | None -> raise Irred
         )
-      | _, _ -> true  (* Assumes well-typedness. *)
+      | VarE id1, _ ->
+        let t1 = reduce_typ env (Map.find id1.it env.vars) in
+        sub_typ env t1 t21
+      | _, _ -> false
     then match_exp env s {e1 with note = t21} e21
     else None
   | _, _ when is_normal_exp e1 -> None
   | _, _ ->
-Printf.eprintf "[match irred] %s =: %s\n%!"
+Printf.eprintf "[il.match irred] %s =: %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
    raise Irred
@@ -501,7 +515,7 @@ and match_iterexp env s (iter1, _ids1) (iter2, _ids2) =
 
 and match_arg env s a1 a2 : subst option =
   (*
-  Printf.eprintf "[match_arg] (%s) == (%s)\n%!"
+  Printf.eprintf "[il.match_arg] (%s) == (%s)\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
   *)
@@ -515,43 +529,43 @@ and match_arg env s a1 a2 : subst option =
 
 and equiv_typ env t1 t2 =
   (* *)
-  Printf.eprintf "[equiv_typ] %s == %s\n%!"
+  Printf.eprintf "[il.equiv_typ] %s == %s\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
   (* *)
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) ->
-Printf.eprintf "[1]\n%!";
     id1.it = id2.it && equiv_list equiv_arg env as1 as2 || (* optimization *)
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
     (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2'
   | VarT _, _ ->
-Printf.eprintf "[2]\n%!";
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
   | _, VarT _ ->
-Printf.eprintf "[3]\n%!";
     let t2' = reduce_typ env t2 in
     t2 <> t2' && equiv_typ env t1 t2'
-  | TupT xts1, TupT xts2 -> equiv_list equiv_typbind env xts1 xts2
+  | TupT xts1, TupT xts2 -> equiv_tup env xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     equiv_typ env t11 t21 && Eq.eq_iter iter1 iter2
   | _, _ ->
-Printf.eprintf "[4]\n%!";
     t1.it = t2.it
   (* *)
   in
-  Printf.eprintf "[equiv_typ] %s == %s => %b\n%!"
+  Printf.eprintf "[il.equiv_typ] %s == %s => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
   b
   (* *)
 
-and equiv_typbind env (id1, t1) (id2, t2) =
-  id1.it = id2.it && equiv_typ env t1 t2
+and equiv_tup env xts1 xts2 =
+  match xts1, xts2 with
+  | (id1, t1)::xts1', (id2, t2)::xts2' ->
+    let s = Subst.(add_varid empty) id2 (VarE id1 $$ id1.at % t1) in
+    equiv_typ env t1 t2 && equiv_tup env xts1' (List.map (Subst.subst_typbind s) xts2')
+  | _, _ -> xts1 = xts2
 
 
 and equiv_exp env e1 e2 =
@@ -560,7 +574,7 @@ and equiv_exp env e1 e2 =
 
 and equiv_arg env a1 a2 =
   (*
-  Printf.eprintf "[equiv_arg] (%s) == (%s)\n%!"
+  Printf.eprintf "[il.equiv_arg] (%s) == (%s)\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
   *)
@@ -568,3 +582,44 @@ and equiv_arg env a1 a2 =
   | ExpA e1, ExpA e2 -> equiv_exp env e1 e2
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | _, _ -> false
+
+
+(* Subtyping *)
+
+and sub_typ env t1 t2 =
+  (* *)
+  Printf.eprintf "[il.sub_typ] %s <: %s  eq=%b\n%!"
+    (Print.string_of_typ t1) (Print.string_of_typ t2)
+    (t1.it = t2.it);
+  (* *)
+  equiv_typ env t1 t2 ||
+  match (reduce_typ env t1).it, (reduce_typ env t2).it with
+  | NumT t1', NumT t2' -> t1' < t2'
+  | VarT (id1, as1), VarT (id2, as2) ->
+    (match reduce_typ_app env id1 as1, reduce_typ_app env id2 as2 with
+    | Some (StructT tfs1), Some (StructT tfs2) ->
+      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
+        match find_field tfs1 atom with
+        | Some (_binds1, t1, prems1) ->
+          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+        | None -> false
+      ) tfs2
+    | Some (VariantT tcs1), Some (VariantT tcs2) ->
+      List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
+        match find_case tcs2 atom with
+        | Some (_binds2, t2, prems2) ->
+          equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
+        | None -> false
+      ) tcs1
+    | _, _ -> false
+    )
+  | _, _ ->
+    false
+
+and find_field tfs atom =
+  List.find_opt (fun (atom', _, _) -> atom' = atom) tfs |> Option.map snd3
+
+and find_case tcs atom =
+  List.find_opt (fun (atom', _, _) -> atom' = atom) tcs |> Option.map snd3
+
+and snd3 (_, x, _) = x

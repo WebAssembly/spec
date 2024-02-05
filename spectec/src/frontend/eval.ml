@@ -11,7 +11,7 @@ module Map = Map.Make(String)
 type typ_def = (arg list * typ) list
 type def_def = (arg list * exp * premise list) list
 type gram_def = unit
-type env = {typs : typ_def Map.t; defs : def_def Map.t; syms : gram_def Map.t}
+type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t; syms : gram_def Map.t}
 type subst = Subst.t
 
 
@@ -52,7 +52,7 @@ let equiv_opt equiv_x env xo1 xo2 =
 let rec reduce_typ env t : typ =
   (*
   if t.it <> NumT NatT then
-  Printf.eprintf "[reduce_typ] %s\n%!" (El.Print.string_of_typ t);
+  Printf.eprintf "[el.reduce_typ] %s\n%!" (El.Print.string_of_typ t);
   let t' =
   *)
   match t.it with
@@ -71,7 +71,7 @@ let rec reduce_typ env t : typ =
   (*
   in
   if t.it <> NumT NatT then
-  Printf.eprintf "[reduce_typ] %s => %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
+  Printf.eprintf "[el.reduce_typ] %s => %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
   t'
   *)
 
@@ -103,7 +103,7 @@ and is_normal_exp e =
 and reduce_exp env e : exp =
   (*
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
-  Printf.eprintf "[reduce_exp] %s\n%!" (El.Print.string_of_exp e));
+  Printf.eprintf "[el.reduce_exp] %s\n%!" (El.Print.string_of_exp e));
   let e' =
   *)
   match e.it with
@@ -264,7 +264,7 @@ and reduce_exp env e : exp =
   (*
   in
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
-  Printf.eprintf "[reduce_exp] %s => %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
+  Printf.eprintf "[el.reduce_exp] %s => %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
   e'
   *)
 
@@ -389,7 +389,7 @@ and match_typ env s t1 t2 : subst option =
 
 and match_exp env s e1 e2 : subst option =
   (*
-  Printf.eprintf "[match_exp] (%s) =: (%s)[%s] = (%s)\n%!"
+  Printf.eprintf "[el.match_exp] %s =: %s[%s] = %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
@@ -411,9 +411,15 @@ and match_exp env s e1 e2 : subst option =
       Some s
     else
       None
-  | _, (VarE (id, []) as e2') ->
+  | _, VarE (id, []) ->
     (* Treat as a fresh pattern variable. Need to check domain. *)
-    let t' = reduce_typ env (El.Convert.typ_of_exp (e2' $ id.at)) in
+Printf.eprintf "[1] %s\n%!" id.it;
+    let find_var id =
+      try Map.find id.it env.vars with Not_found ->
+        (* Implicitly bound *)
+        Map.find (El.Convert.strip_var_suffix id).it env.vars
+    in
+    let t' = reduce_typ env (find_var id) in
     if
       match e1.it, t'.it with
       | BoolE _, BoolT
@@ -431,7 +437,11 @@ and match_exp env s e1 e2 : subst option =
         | Some (_, (tN, _), _) -> match_exp env s e1 (Convert.exp_of_typ tN) <> None
         | None -> false
         )
-      | _, _ -> true (* TODO: support deep checking? *)
+      | VarE (id1, []), _ ->
+Printf.eprintf "[2] %s\n%!" id1.it;
+        let t1 = reduce_typ env (find_var id1) in
+        sub_typ env t1 t'
+      | _, _ -> false
     then
       if id.it = "_" then Some s else
       Some (Subst.add_varid s id e1)
@@ -490,7 +500,7 @@ and match_exp env s e1 e2 : subst option =
   | _, _ -> raise Irred
   (*
   in
-  Printf.eprintf "[match_exp] (%s) =: (%s) => %s\n%!"
+  Printf.eprintf "[el.match_exp] %s =: %s => %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)))
     (match so with
@@ -526,7 +536,7 @@ and match_path env s p1 p2 =
 
 and match_sym env s g1 g2 : subst option =
   (*
-  Printf.eprintf "[match_sym] (%s) == (%s)\n%!"
+  Printf.eprintf "[el.match_sym] %s =: %s\n%!"
     (Print.string_of_sym g1)
     (Print.string_of_sym g2);
   *)
@@ -550,11 +560,11 @@ and match_sym env s g1 g2 : subst option =
 (* Parameters *)
 
 and match_arg env s a1 a2 : subst option =
-  (*
-  Printf.eprintf "[match_arg] (%s) == (%s)\n%!"
+  (* *)
+  Printf.eprintf "[el.match_arg] %s =: %s\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
-  *)
+  (* *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
@@ -566,7 +576,7 @@ and match_arg env s a1 a2 : subst option =
 
 and equiv_typ env t1 t2 =
   (*
-  Printf.eprintf "[equiv_typ] (%s) == (%s)\n%!"
+  Printf.eprintf "[el.equiv_typ] %s == %s\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
@@ -600,7 +610,7 @@ and equiv_typ env t1 t2 =
   | _, _ -> t1.it = t2.it
   (*
   in
-  Printf.eprintf "[equiv_typ] (%s) == (%s) => %b\n%!"
+  Printf.eprintf "[el.equiv_typ] (%s) == (%s) => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
@@ -620,7 +630,7 @@ and equiv_exp env e1 e2 =
 
 and equiv_arg env a1 a2 =
   (*
-  Printf.eprintf "[equiv_arg] (%s) == (%s)\n%!"
+  Printf.eprintf "[el.equiv_arg] (%s) == (%s)\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
   *)
@@ -629,3 +639,21 @@ and equiv_arg env a1 a2 =
   | TypA t1, TypA t2 -> equiv_typ env t1 t2
   | GramA g1, GramA g2 -> Eq.eq_sym g1 g2
   | _, _ -> false
+
+
+(* Subtyping *)
+
+and sub_typ env t1 t2 =
+  (* *)
+  if not (Eq.eq_typ t1 t2) then
+  Printf.eprintf "[el.sub_typ] %s <: %s\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2);
+  (* *)
+  match (reduce_typ env t1).it, (reduce_typ env t2).it with
+  | NumT t1', NumT t2' -> t1' <= t2'
+  | RangeT (Elem (e1, _)::_), NumT t2' ->
+    (match (reduce_exp env e1).it with
+    | NatE _ -> true
+    | UnE (MinusOp, _) -> t2' <= IntT
+    | _ -> assert false
+    )
+  | _, _ -> equiv_typ env t1 t2

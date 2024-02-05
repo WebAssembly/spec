@@ -35,9 +35,10 @@ let new_env () =
 let local_env env = {env with vars = env.vars; typs = env.typs}
 
 let to_eval_env env =
+  let vars = Env.map (fun (t, _iters) -> t) env.vars in
   let typs = Env.map (fun (_ps, insts) -> insts) env.typs in
   let defs = Env.map (fun (_ps, _t, clauses) -> clauses) env.defs in
-  Eval.{typs; defs}
+  Eval.{vars; typs; defs}
 
 (* TODO
 let fwd_deftyp id = NotationT ([[]; []], VarT (id $ no_region, []) $ no_region)
@@ -79,7 +80,7 @@ let find_case cases atom at =
 (* Returns None when args cannot be reduced enough to decide family instance. *)
 let expand_app env id as_ : deftyp' option =
   (* *)
-  Printf.eprintf "[expand_app] %s(%s)\n%!" id.it
+  Printf.eprintf "[il.expand_app] %s(%s)\n%!" id.it
     (String.concat "< " (List.map Print.string_of_arg as_));
   let dto' =
   (* *)
@@ -98,7 +99,7 @@ let expand_app env id as_ : deftyp' option =
   in lookup insts
   (* *)
   in
-  Printf.eprintf "[expand_app] %s(%s) => %s\n%!" id.it
+  Printf.eprintf "[il.expand_app] %s(%s) => %s\n%!" id.it
     (String.concat "< " (List.map Print.string_of_arg as_))
     (match dto' with None -> "-" | Some dt' -> string_of_deftyp (dt' $ id.at));
   dto'
@@ -173,7 +174,7 @@ let as_variant_typ phrase env dir t at : typcase list =
   | _ -> as_error at phrase dir t "| ..."
 
 
-(* Type Equivalence *)
+(* Type Equivalence and Subtyping *)
 
 let equiv_typ env t1 t2 at =
   if not (Eval.equiv_typ (to_eval_env env) t1 t2) then
@@ -190,42 +191,8 @@ and selfify_typ env e t =
     in TupT (List.map (fun (xI, tI) -> xI, Subst.subst_typ s tI) xts) $ t.at
   | _ -> t
 
-
-(* Subtyping *)
-
-let sub_typ' env t1 t2 =
-  (* *)
-  Printf.eprintf "[sub] (%s) <: (%s)  eq=%b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
-  (* *)
-  let env' = to_eval_env env in
-  Eval.equiv_typ env' t1 t2 ||
-  match expand env t1, expand env t2 with
-  | NumT t1', NumT t2' -> t1' < t2'
-  | VarT (id1, as1), VarT (id2, as2) ->
-    (match expand_app env id1 as1, expand_app env id2 as2 with
-    | Some (StructT tfs1), Some (StructT tfs2) ->
-      List.for_all (fun (atom, (_binds2, t2, prems2), _) ->
-        try
-          let _binds1, t1, prems1 = find_field tfs1 atom t2.at in
-          Eval.equiv_typ env' t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
-        with Error _ -> false
-      ) tfs2
-    | Some (VariantT tcs1), Some (VariantT tcs2) ->
-      List.for_all (fun (atom, (_binds1, t1, prems1), _) ->
-        try
-          let _binds2, t2, prems2 = find_case tcs2 atom t1.at in
-          Eval.equiv_typ env' t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
-        with Error _ -> false
-      ) tcs1
-    | _, _ -> false
-    )
-  | _, _ ->
-    false
-
 let sub_typ env t1 t2 at =
-  if not (sub_typ' env t1 t2) then
+  if not (Eval.sub_typ (to_eval_env env) t1 t2) then
     error at ("expression's type `" ^ string_of_typ t1 ^ "` " ^
       "does not match expected supertype `" ^ string_of_typ t2 ^ "`")
 
@@ -312,7 +279,7 @@ and valid_typbind env dim (id, t) =
 
 and valid_deftyp env dt =
   (* *)
-  Printf.eprintf "[valid_deftyp %s]\n%!" (string_of_region dt.at);
+  Printf.eprintf "[il.valid_deftyp %s]\n%!" (string_of_region dt.at);
   (* *)
   match dt.it with
   | AliasT t ->
@@ -396,7 +363,7 @@ and infer_exp env e : typ =
 
 and valid_exp env e t =
   (* *)
-  Printf.eprintf "[valid_exp %s] %s  :  %s  ==  %s  {%s}\n%!"
+  Printf.eprintf "[il.valid_exp %s] %s  :  %s  ==  %s  {%s}\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ e.note) (string_of_typ t)
     (String.concat ", " (List.map (fun (x, (t, iters)) ->
       x ^ " : " ^ string_of_typ t ^ (String.concat "" (List.map string_of_iter iters))
@@ -512,19 +479,19 @@ and valid_exp env e t =
     let _binds, t1, _prems = find_case cases atom e1.at in
     valid_exp env e1 t1
   | SubE (e1, t1, t2) ->
-Printf.eprintf "[valid_exp %s] sub 0\n%!" (string_of_region e.at);
+Printf.eprintf "[il.valid_exp %s] sub 0\n%!" (string_of_region e.at);
     valid_typ env [] t1;
     valid_typ env [] t2;
-Printf.eprintf "[valid_exp %s] sub 1\n%!" (string_of_region e.at);
+Printf.eprintf "[il.valid_exp %s] sub 1\n%!" (string_of_region e.at);
     valid_exp env e1 t1;
-Printf.eprintf "[valid_exp %s] sub 2\n%!" (string_of_region e.at);
+Printf.eprintf "[il.valid_exp %s] sub 2\n%!" (string_of_region e.at);
     equiv_typ env t2 t e.at;
-Printf.eprintf "[valid_exp %s] sub 3\n%!" (string_of_region e.at);
+Printf.eprintf "[il.valid_exp %s] sub 3\n%!" (string_of_region e.at);
     sub_typ env t1 t2 e.at
-;Printf.eprintf "[valid_exp %s] sub 4\n%!" (string_of_region e.at);
+;Printf.eprintf "[il.valid_exp %s] sub 4\n%!" (string_of_region e.at);
   (* *)
   );
-  Printf.eprintf "[valid_exp %s] done\n%!" (string_of_region e.at);
+  Printf.eprintf "[il.valid_exp %s] done\n%!" (string_of_region e.at);
   (* *)
 
 
@@ -626,7 +593,7 @@ and valid_binds env binds =
 
 and valid_arg env a p s =
   (* *)
-  Printf.eprintf "[valid_arg %s]\n%!" (string_of_region a.at);
+  Printf.eprintf "[il.valid_arg %s]\n%!" (string_of_region a.at);
   (* *)
   match a.it, p.it with
   | ExpA e, ExpP (id, t) -> valid_exp env e (Subst.subst_typ s t); Subst.add_varid s id e
@@ -636,7 +603,7 @@ and valid_arg env a p s =
 and valid_args env as_ ps s at : Subst.t =
   (* *)
   if as_ <> [] || ps <> [] then
-  Printf.eprintf "[valid_args] (%s)  :  (%s)\n%!"
+  Printf.eprintf "[il.valid_args] (%s)  :  (%s)\n%!"
     (String.concat ", " (List.map Print.string_of_arg as_))
     (String.concat ", " (List.map Print.string_of_param ps));
   (* *)
@@ -658,7 +625,7 @@ let valid_param env p =
 
 let valid_instance env ps inst =
   (* *)
-  Printf.eprintf "[valid_inst %s]\n%!" (string_of_region inst.at);
+  Printf.eprintf "[il.valid_inst %s]\n%!" (string_of_region inst.at);
   (* *)
   match inst.it with
   | InstD (binds, as_, dt) ->
@@ -669,7 +636,7 @@ let valid_instance env ps inst =
 
 let valid_rule env mixop t rule =
   (* *)
-  Printf.eprintf "[valid_rule %s] %s  :  %s%s\n%!"
+  Printf.eprintf "[il.valid_rule %s] %s  :  %s%s\n%!"
     (string_of_region rule.at) (string_of_rule rule)
     (string_of_mixop mixop) (string_of_typ t);
   (* *)
@@ -682,7 +649,7 @@ let valid_rule env mixop t rule =
 
 let valid_clause env ps t clause =
   (* *)
-  Printf.eprintf "[valid_clause %s] %s  :  (%s) -> %s\n%!"
+  Printf.eprintf "[il.valid_clause %s] %s  :  (%s) -> %s\n%!"
     (string_of_region clause.at) (string_of_clause ("" $ no_region) clause)
     (String.concat ", " (List.map string_of_param ps))
     (string_of_typ t);
@@ -730,7 +697,7 @@ type bind = {bind : 'a. string -> 'a Env.t -> id -> 'a -> 'a Env.t}
 
 let rec valid_def {bind} env d =
   (* *)
-  Printf.eprintf "[valid_def %s]\n%!" (string_of_region d.at);
+  Printf.eprintf "[il.valid_def %s] %s\n%!" (string_of_region d.at) (Print.string_of_def d);
   (* *)
   match d.it with
   | TypD (id, ps, insts) ->

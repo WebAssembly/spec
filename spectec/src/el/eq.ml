@@ -32,7 +32,7 @@ let rec eq_iter iter1 iter2 =
 
 and eq_typ t1 t2 =
   (*
-  Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
+  Printf.printf "[el.eq] (%s) == (%s)  eq=%b\n%!"
     (Print.string_of_typ t1) (Print.string_of_typ t2)
     (t1.it = t2.it);
   *)

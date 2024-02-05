@@ -181,8 +181,8 @@ and string_of_exp e =
   | CatE (e1, e2) -> string_of_exp e1 ^ " :: " ^ string_of_exp e2
   | CaseE (atom, e1) ->
     string_of_atom atom ^ "_" ^ string_of_typ e.note ^ string_of_exp_args e1
-  | SubE (e1, _t1, t2) ->
-    "(" ^ string_of_exp e1 ^ " <: " ^ string_of_typ t2 ^ ")"
+  | SubE (e1, t1, t2) ->
+    "(" ^ string_of_exp e1 ^ " : " ^ string_of_typ t1 ^ " <: " ^ string_of_typ t2 ^ ")"
 
 and string_of_exp_args e =
   match e.it with

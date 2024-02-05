@@ -59,7 +59,7 @@ let rec subst_iter s iter =
 
 and subst_typ s t =
   (* *)
-  Printf.eprintf "[subst_typ] %s\n%!" (Print.string_of_typ t);
+  Printf.eprintf "[il.subst_typ] %s\n%!" (Print.string_of_typ t);
   (* *)
   (match t.it with
   | VarT (id, args) ->

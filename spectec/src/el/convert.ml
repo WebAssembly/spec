@@ -31,7 +31,7 @@ let typ_of_varid id =
     | "rat" -> NumT RatT
     | "real" -> NumT RealT
     | "text" -> TextT
-    | _ -> VarT (id, [])
+    | _ -> VarT (strip_var_suffix id, [])
     ) $ id.at
 
 let varid_of_typ t =
