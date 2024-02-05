@@ -20,8 +20,8 @@ let transpile_expr =
     post_expr = Il2al.Transpile.simplify_record_concat
   }
 
-let exp_to_expr e = exp_to_expr e |> transpile_expr
-let exp_to_args es = exp_to_args es |> List.map transpile_expr
+let exp_to_expr e = translate_expr e |> transpile_expr
+let exp_to_args es = translate_args es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   let fail _ =
@@ -87,7 +87,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
-  let name = name_to_kwd winstr_name winstr.note in
+  let name = kwd winstr_name winstr.note in
   (* params *)
   let params = get_params winstr |> List.map exp_to_expr in
   (* body *)
