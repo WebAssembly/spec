@@ -294,7 +294,7 @@ and render_expr' env expr =
   | Al.Ast.BoolE b -> string_of_bool b
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsCaseOfE (e, kwd); _ }) ->
       let se = render_expr env e in
-      let skwd = render_math (render_kwd env kwd) in
+      let skwd = render_kwd env kwd in
       sprintf "%s is not of the case %s" se skwd
   | Al.Ast.UnE (NotOp, { it = Al.Ast.IsDefinedE e; _ }) ->
       let se = render_expr env e in
@@ -350,7 +350,7 @@ and render_expr' env expr =
       let se2 = render_expr env e2 in
       sprintf "the label whose arity is %s and whose continuation is %s" se1 se2
   | Al.Ast.ContextKindE (kwd, e) ->
-      let skwd = render_math (render_kwd env kwd) in
+      let skwd = render_kwd env kwd in
       let se = render_expr env e in
       sprintf "%s is %s" se skwd
   | Al.Ast.IsDefinedE e ->
@@ -358,7 +358,7 @@ and render_expr' env expr =
       sprintf "%s is defined" se
   | Al.Ast.IsCaseOfE (e, kwd) ->
       let se = render_expr env e in
-      let skwd = render_math (render_kwd env kwd) in
+      let skwd = render_kwd env kwd in
       sprintf "%s is of the case %s" se skwd
   | Al.Ast.HasTypeE (e, t) ->
       let se = render_expr env e in
@@ -395,7 +395,7 @@ and render_path env path =
       let se2 = render_expr env e2 in
       sprintf "the slice from %s to %s" se1 se2 
   | Al.Ast.DotP kwd ->
-      sprintf "the field %s" (render_math (render_kwd env kwd))
+      sprintf "the field %s" (render_kwd env kwd)
 
 and render_paths env paths =
   let spaths = List.map (render_path env) paths in
