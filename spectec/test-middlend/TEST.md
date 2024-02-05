@@ -458,11 +458,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -510,7 +509,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -5217,11 +5215,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -5269,7 +5266,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -10141,11 +10137,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -10193,7 +10188,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -15068,11 +15062,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -15120,7 +15113,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -20020,11 +20012,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -20072,7 +20063,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -24972,11 +24962,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -25024,7 +25013,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -30078,11 +30066,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -30130,7 +30117,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)

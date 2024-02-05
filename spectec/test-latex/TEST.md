@@ -278,7 +278,7 @@ $$
 & {\mathit{relopVIXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ {\mathsf{lt\_}}{{\mathit{sx}}} ~|~ {\mathsf{gt\_}}{{\mathit{sx}}} ~|~ {\mathsf{le\_}}{{\mathit{sx}}} ~|~ {\mathsf{ge\_}}{{\mathit{sx}}} \\
 & {\mathit{relopVFXX}} &::=& \mathsf{eq} ~|~ \mathsf{ne} ~|~ \mathsf{lt} ~|~ \mathsf{gt} ~|~ \mathsf{le} ~|~ \mathsf{ge} \\
 & {\mathit{unopVIXX}} &::=& \mathsf{abs} ~|~ \mathsf{neg} \\
-& {\mathit{binopVIXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{swizzle} \\
+& {\mathit{binopVIXX}} &::=& \mathsf{add} ~|~ \mathsf{sub} \\
 & {\mathit{minmaxopVIXX}} &::=& \mathsf{min}~{\mathit{sx}} ~|~ \mathsf{max}~{\mathit{sx}} \\
 & {\mathit{satbinopVIXX}} &::=& \mathsf{add\_sat}~{\mathit{sx}} ~|~ \mathsf{sub\_sat}~{\mathit{sx}} \\
 & {\mathit{shiftopVIXX}} &::=& \mathsf{shl} ~|~ {\mathsf{shr\_}}{{\mathit{sx}}} \\
