@@ -1457,8 +1457,8 @@ let al_of_special_vcvtop = function
 
 let al_of_int_vshiftop : V128Op.ishiftop -> value = function
   | V128Op.Shl -> CaseV ("_VI", [ nullary "SHL" ])
-  | V128Op.ShrS -> CaseV ("_VI", [ nullary "SHRS" ])
-  | V128Op.ShrU -> CaseV ("_VI", [ nullary "SHRU" ])
+  | V128Op.ShrS -> CaseV ("_VI", [ caseV ("SHR", [nullary "S"]) ])
+  | V128Op.ShrU -> CaseV ("_VI", [ caseV ("SHR", [nullary "U"]) ])
 
 let al_of_vshiftop = al_of_viop al_of_int_vshiftop
 

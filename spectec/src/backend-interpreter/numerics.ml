@@ -929,8 +929,8 @@ let vishiftop: numerics =
 
           match op with
           | CaseV ("SHL", []) -> I8.shl v1p v2p |> al_of_int32
-          | CaseV ("SHRS", []) -> I8.shr_s v1p v2p |> al_of_int32
-          | CaseV ("SHRU", []) -> I8.shr_u v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("S", [])]) -> I8.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("U", [])]) -> I8.shr_u v1p v2p |> al_of_int32
           | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
         )
         | "I16" -> (
@@ -939,8 +939,8 @@ let vishiftop: numerics =
 
           match op with
           | CaseV ("SHL", []) -> I16.shl v1p v2p |> al_of_int32
-          | CaseV ("SHRS", []) -> I16.shr_s v1p v2p |> al_of_int32
-          | CaseV ("SHRU", []) -> I16.shr_u v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("S", [])]) -> I16.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("U", [])]) -> I16.shr_u v1p v2p |> al_of_int32
           | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
         )
         | "I32" -> (
@@ -949,8 +949,8 @@ let vishiftop: numerics =
 
           match op with
           | CaseV ("SHL", []) -> I32.shl v1p v2p |> al_of_int32
-          | CaseV ("SHRS", []) -> I32.shr_s v1p v2p |> al_of_int32
-          | CaseV ("SHRU", []) -> I32.shr_u v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("S", [])]) -> I32.shr_s v1p v2p |> al_of_int32
+          | CaseV ("SHR", [CaseV ("U", [])]) -> I32.shr_u v1p v2p |> al_of_int32
           | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
         )
         | "I64" -> (
@@ -959,8 +959,8 @@ let vishiftop: numerics =
 
           match op with
           | CaseV ("SHL", []) -> I64.shl v1p v2p |> al_of_int64
-          | CaseV ("SHRS", []) -> I64.shr_s v1p v2p |> al_of_int64
-          | CaseV ("SHRU", []) -> I64.shr_u v1p v2p |> al_of_int64
+          | CaseV ("SHR", [CaseV ("S", [])]) -> I64.shr_s v1p v2p |> al_of_int64
+          | CaseV ("SHR", [CaseV ("U", [])]) -> I64.shr_u v1p v2p |> al_of_int64
           | _ -> failwith ("Invalid vishiftop: " ^ (Print.string_of_value op))
         )
         | _ -> failwith "Invalid type for vishiftop"
