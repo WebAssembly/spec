@@ -1013,9 +1013,12 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
     if atom.it <> atom'.it then error_typ e.at "infix expression" t;
     let es1', s1 = elab_exp_notation' env tid e1 t1 in
     let es2', s2 = elab_exp_notation' env tid e2 (Subst.subst_typ s1 t2) in
+    ignore (elab_atom atom tid);
     es1' @ es2', Subst.union s1 s2
   | BrackE (l, e1, r), BrackT (l', t1, r') ->
     if (l.it, r.it) <> (l'.it, r'.it) then error_typ e.at "bracket expression" t;
+    ignore (elab_atom l tid);
+    ignore (elab_atom r tid);
     elab_exp_notation' env tid e1 t1
 
   | SeqE [], SeqT [] ->
@@ -1772,7 +1775,7 @@ let recursify_defs ds' : Il.def list =
   ) sccs
 
 
-let elab ds : Il.script =
+let elab ds : Il.script * env =
   let env = new_env () in
 Printf.eprintf "[INFER DEF]\n%!";
   List.iter (infer_typdef env) ds;
@@ -1785,6 +1788,15 @@ Printf.eprintf "[INFER GRAMDEF]\n%!";
 Printf.eprintf "[ELAB GRAMDEF]\n%!";
   List.iter (elab_gramdef env) ds;
 Printf.eprintf "[RECURSIFY]\n%!";
-let ds' =
-  recursify_defs ds'
-in Printf.eprintf "[DONE]\n%!"; ds'
+let ds', _ =
+  recursify_defs ds', env
+in Printf.eprintf "[DONE]\n%!"; ds', env
+
+let elab_exp env e t : Il.exp =
+  let _ = elab_typ env t in
+  elab_exp env e t
+
+let elab_rel env e id : Il.exp =
+  match (elab_prem env (RulePr (id, e) $ e.at)).it with
+  | Il.RulePr (_, _, e') -> e'
+  | _ -> assert false

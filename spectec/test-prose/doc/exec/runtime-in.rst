@@ -20,7 +20,7 @@ $${syntax+:
 
 .. _def-default:
 
-%{prose-func: default}
+$${definition-prose: default}
 
 \
 
@@ -76,7 +76,7 @@ $${syntax: moduleinst}
 
 .. _def-moduleinst:
 
-%{prose-func: moduleinst}
+$${definition-prose: moduleinst}
 
 \
 
@@ -91,7 +91,7 @@ $${syntax: funcinst}
 
 .. _def-funcinst:
 
-%{prose-func: funcinst}
+$${definition-prose: funcinst}
 
 \
 
@@ -106,7 +106,7 @@ $${syntax: tableinst}
 
 .. _def-tableinst:
 
-%{prose-func: tableinst}
+$${definition-prose: tableinst}
 
 \
 
@@ -121,7 +121,7 @@ $${syntax: meminst}
 
 .. _def-meminst:
 
-%{prose-func: meminst}
+$${definition-prose: meminst}
 
 \
 
@@ -136,7 +136,7 @@ $${syntax: globalinst}
 
 .. _def-globalinst:
 
-%{prose-func: globalinst}
+$${definition-prose: globalinst}
 
 \
 
@@ -151,7 +151,7 @@ $${syntax: eleminst}
 
 .. _def-eleminst:
 
-%{prose-func: eleminst}
+$${definition-prose: eleminst}
 
 \
 
@@ -166,7 +166,7 @@ $${syntax: datainst}
 
 .. _def-datainst:
 
-%{prose-func: datainst}
+$${definition-prose: datainst}
 
 \
 
@@ -188,7 +188,7 @@ $${syntax: externval}
 
 .. _def-funcsxv:
 
-%{prose-func: funcsxv}
+$${definition-prose: funcsxv}
 
 \
 
@@ -196,7 +196,7 @@ $${definition: funcsxv}
 
 .. _def-tablesxv:
 
-%{prose-func: tablesxv}
+$${definition-prose: tablesxv}
 
 \
 
@@ -204,7 +204,7 @@ $${definition: tablesxv}
 
 .. _def-memsxv:
 
-%{prose-func: memsxv}
+$${definition-prose: memsxv}
 
 \
 
@@ -212,7 +212,7 @@ $${definition: memsxv}
 
 .. _def-globalsxv:
 
-%{prose-func: globalsxv}
+$${definition-prose: globalsxv}
 
 \
 
@@ -236,7 +236,7 @@ $${syntax+:
 
 .. _def-arrayinst:
 
-%{prose-func: arrayinst}
+$${definition-prose: arrayinst}
 
 \
 
@@ -244,7 +244,7 @@ $${definition: arrayinst}
 
 .. _def-structinst:
 
-%{prose-func: structinst}
+$${definition-prose: structinst}
 
 \
 
@@ -296,7 +296,7 @@ Typing
 
 .. _def-store:
 
-%{prose-func: store}
+$${definition-prose: store}
 
 \
 
@@ -304,7 +304,7 @@ $${definition: store}
 
 .. _def-frame:
 
-%{prose-func: frame}
+$${definition-prose: frame}
 
 \
 

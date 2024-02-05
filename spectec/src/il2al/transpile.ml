@@ -6,7 +6,9 @@ open Util
 open Util.Source
 open Util.Record
 
-(** helper *)
+
+(* Helpers *)
+
 let (@@) (g: instr -> instr list) (f: instr -> instr list) (i: instr): instr list =
   f i |> List.map g |> List.flatten
 let composite (g: 'a -> 'a) (f: 'a -> 'a) (x: 'a): 'a = f x |> g
@@ -95,7 +97,8 @@ let unify_tail l1 l2 =
 let intersect_list xs ys = List.filter (fun x -> List.mem x ys) xs
 let diff_list xs ys = Lib.List.filter_not (fun x -> List.mem x ys) xs
 
-(** AL -> AL transpilers *)
+
+(* AL -> AL transpilers *)
 
 (* Recursively append else block to every empty if *)
 let rec insert_otherwise else_body instrs =
@@ -142,7 +145,8 @@ let merge instrs1 instrs2 =
   in
   head @ unified_tail
 
-(** Enhance readability of AL **)
+
+(* Enhance readability of AL *)
 
 let rec unify_if instrs =
   List.fold_right
@@ -544,6 +548,6 @@ let contains_return il =
   List.map (Walk.walk_instr config) il |> ignore;
   !ret
 
-(** If intrs contain a return statement, make sure that every path has return statement in the end **)
+(* If intrs contain a return statement, make sure that every path has return statement in the end *)
 let enforce_return instrs =
   if contains_return instrs then enforce_return' instrs else instrs

@@ -458,11 +458,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -510,7 +509,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -4686,6 +4684,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation...
 == Running pass sub...
 
@@ -5211,11 +5215,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -5263,7 +5266,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -9604,6 +9606,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass sub...
 == Running pass totalize...
 
@@ -10129,11 +10137,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -10181,7 +10188,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -14525,6 +14531,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass totalize...
 == Running pass the-elimination...
 
@@ -15050,11 +15062,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -15102,7 +15113,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -19471,6 +19481,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass the-elimination...
 == Running pass wildcards...
 
@@ -19996,11 +20012,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -20048,7 +20063,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -24417,6 +24431,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass wildcards...
 == Running pass sideconditions...
 
@@ -24942,11 +24962,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -24994,7 +25013,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -29517,6 +29535,12 @@ def concat_locals : local** -> local*
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
 
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
+
 == IL Validation after pass sideconditions...
 == Running pass animate...
 
@@ -30042,11 +30066,10 @@ syntax unopVIXX =
   | ABS
   | NEG
 
-;; 1-syntax.watsup:267.1-267.41
+;; 1-syntax.watsup:267.1-267.31
 syntax binopVIXX =
   | ADD
   | SUB
-  | SWIZZLE
 
 ;; 1-syntax.watsup:268.1-268.40
 syntax minmaxopVIXX =
@@ -30094,7 +30117,6 @@ syntax viunop =
 syntax vibinop =
   | ADD
   | SUB
-  | SWIZZLE
   | MIN(sx)
   | MAX(sx)
   | ADD_SAT(sx)
@@ -34694,6 +34716,12 @@ def concat_locals : local** -> local*
 
 ;; A-binary.watsup:670.1-670.29
 syntax code = (local*, expr)
+
+;; C-conventions.watsup:7.1-7.15
+syntax A = nat
+
+;; C-conventions.watsup:9.1-9.35
+syntax sym = A
 
 == IL Validation after pass animate...
 == Complete.

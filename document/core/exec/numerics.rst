@@ -104,18 +104,19 @@ Conventions:
 
 
 
-.. index:: bit, integer, floating-point
+.. index:: bit, integer, floating-point, numeric vector
 .. _aux-bits:
 
 Representations
 ~~~~~~~~~~~~~~~
 
-Numbers have an underlying binary representation as a sequence of bits:
+Numbers and numeric vectors have an underlying binary representation as a sequence of bits:
 
 .. math::
    \begin{array}{lll@{\qquad}l}
-   \bits_{\K{i}N}(i) &=& \ibits_N(i) \\
-   \bits_{\K{f}N}(z) &=& \fbits_N(z) \\
+   \bits_{\IN}(i) &=& \ibits_N(i) \\
+   \bits_{\FN}(z) &=& \fbits_N(z) \\
+   \bits_{\VN}(i) &=& \ibits_N(i) \\
    \end{array}
 
 Each of these functions is a bijection, hence they are invertible.
@@ -161,6 +162,33 @@ Floating-Point
 where :math:`M = \significand(N)` and :math:`E = \exponent(N)`.
 
 
+.. index:: numeric vector, shape, lane
+.. _aux-lanes:
+.. _syntax-i128:
+
+Vectors
+.......
+
+Numeric vectors have the same underlying representation as an |i128|.
+They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
+
+.. math::
+   \begin{array}{l}
+   \begin{array}{lll@{\qquad}l}
+   \lanes_{t\K{x}N}(c) &=&
+     c_0~\dots~c_{N-1} \\
+   \end{array}
+   \\ \qquad
+     \begin{array}[t]{@{}r@{~}l@{}l@{~}l@{~}l}
+     (\where & B &=& |t| / 8 \\
+     \wedge & b^{16} &=& \bytes_{\i128}(c) \\
+     \wedge & c_i &=& \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
+     \end{array}
+   \end{array}
+
+These functions are bijections, so they are invertible.
+
+
 .. index:: byte, little endian, memory
 .. _aux-littleendian:
 .. _aux-bytes:
@@ -178,31 +206,6 @@ When a number is stored into :ref:`memory <syntax-mem>`, it is converted into a 
    \end{array}
 
 Again these functions are invertible bijections.
-
-
-.. index:: numeric vectors, shape
-.. _aux-lanes:
-
-Vectors
-.......
-
-Numeric vectors have the same underlying representation as an |i128|. They can also be interpreted as a sequence of numeric values packed into a |V128| with a particular |shape|.
-
-.. math::
-   \begin{array}{l}
-   \begin{array}{lll@{\qquad}l}
-   \lanes_{t\K{x}N}(c) &=&
-     c_0~\dots~c_{N-1} \\
-   \end{array}
-   \\ \qquad
-     \begin{array}[t]{@{}r@{~}l@{}}
-     (\where & B = |t| / 8 \\
-     \wedge & b^{16} = \bytes_{\i128}(c) \\
-     \wedge & c_i = \bytes_{t}^{-1}(b^{16}[i \cdot B \slice B]))
-     \end{array}
-   \end{array}
-
-These functions are bijections, so they are invertible.
 
 
 .. index:: integer

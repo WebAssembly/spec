@@ -24,10 +24,9 @@ let rec pos' src j (line, column) : Source.pos =
       (if src.s.[j] = '\n' then line + 1, 1 else line, column + 1)
 
 let pos src = pos' src 0 (1, 1)
+let region src = let pos = pos src in {left = pos; right = pos}
 
-let error src msg =
-  let pos = pos src in
-  Source.error {left = pos; right = pos} "splice replacement" msg
+let error src msg = Source.error (region src) "splicing" msg
 
 
 (* Environment *)
@@ -40,20 +39,19 @@ type syntax = {sdef : El.Ast.def; sfragments : (string * El.Ast.def * use) list}
 type grammar = {gdef : El.Ast.def; gfragments : (string * El.Ast.def * use) list}
 type relation = {rdef : El.Ast.def; rules : (string * El.Ast.def * use) list}
 type definition = {fdef : El.Ast.def; clauses : El.Ast.def list; use : use}
-type validation_prose = {vprose : Backend_prose.Prose.def; use : use}
-type execution_prose = {eprose : Backend_prose.Prose.def; use : use}
-type definition_prose = {fprose : Backend_prose.Prose.def; use : use}
+type relation_prose = {ralgos : (string * Backend_prose.Prose.def * use) list}
+type definition_prose = {falgo : Backend_prose.Prose.def; use : use}
 
 type env =
-  { config : Config.t;
+  { elab : Frontend.Elab.env;
+    config : Config.t;
     latex : Backend_latex.Render.env;
     prose : Backend_prose.Render.env;
     mutable syn : syntax Map.t;
     mutable gram : grammar Map.t;
     mutable rel : relation Map.t;
     mutable def : definition Map.t;
-    mutable valid_prose : validation_prose Map.t;
-    mutable exec_prose : execution_prose Map.t;
+    mutable rel_prose : relation_prose Map.t;
     mutable def_prose : definition_prose Map.t;
   }
 
@@ -86,26 +84,38 @@ let env_def env def =
   | FamD _ | VarD _ | SepD | HintD _ ->
     ()
 
+let valid_id = "valid"
+let exec_id = "exec"
+
+let normalize_id id =
+  let id' =
+    if id = "" || id.[String.length id - 1] <> '_' then id else
+    String.sub id 0 (String.length id - 1)
+  in String.lowercase_ascii id'
+
 let env_prose env prose =
   match prose with
   | Pred ((id, _), _, _) ->
-    env.valid_prose <- Map.add id {vprose = prose; use = ref 0} env.valid_prose
+    let relation = Map.find valid_id env.rel_prose in
+    let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
+    env.rel_prose <- Map.add valid_id {ralgos} env.rel_prose
   | Algo (Al.Ast.RuleA ((id, _), _, _)) ->
-    env.exec_prose <- Map.add id {eprose = prose; use = ref 0} env.exec_prose
+    let relation = Map.find exec_id env.rel_prose in
+    let ralgos = (normalize_id id, prose, ref 0) :: relation.ralgos in
+    env.rel_prose <- Map.add exec_id {ralgos} env.rel_prose
   | Algo (Al.Ast.FuncA (id, _, _)) ->
-    env.def_prose <- Map.add id {fprose = prose; use = ref 0} env.def_prose
+    env.def_prose <- Map.add id {falgo = prose; use = ref 0} env.def_prose
 
-let env (config : config) pdsts odsts el pr : env =
+let env (config : config) pdsts odsts elab el pr : env =
   let latex = Backend_latex.Render.env config.latex el in
   let prose = Backend_prose.Render.env config.prose pdsts odsts latex el pr in
   let env =
-    { config; latex; prose;
+    { elab; config; latex; prose;
       syn = Map.empty;
       gram = Map.empty;
       rel = Map.empty;
       def = Map.empty;
-      valid_prose = Map.empty;
-      exec_prose = Map.empty;
+      rel_prose = Map.(add valid_id {ralgos = []} (add exec_id {ralgos = []} empty));
       def_prose = Map.empty;
     }
   in
@@ -120,7 +130,7 @@ let warn_use use space id1 id2 =
     let msg = if !use = 0 then "never spliced" else "spliced more than once" in
     prerr_endline ("warning: " ^ space ^ " `" ^ id ^ "` was " ^ msg)
 
-let warn env =
+let warn_math env =
   Map.iter (fun id1 {sfragments; _} ->
     List.iter (fun (id2, _, use) -> warn_use use "syntax" id1 id2) sfragments
   ) env.syn;
@@ -130,16 +140,15 @@ let warn env =
   Map.iter (fun id1 {rules; _} ->
   	List.iter (fun (id2, _, use) -> warn_use use "rule" id1 id2) rules
   ) env.rel;
-  Map.iter (fun id1 ({use; _}: definition) ->
+  Map.iter (fun id1 ({use; _} : definition) ->
     warn_use use "definition" id1 ""
-  ) env.def;
-  Map.iter (fun id1 ({use; _}: validation_prose) ->
-    warn_use use "validation prose" id1 ""
-  ) env.valid_prose;
-  Map.iter (fun id1 ({use; _}: execution_prose) ->
-    warn_use use "execution prose" id1 ""
-  ) env.exec_prose;
-  Map.iter (fun id1 ({use; _}: definition_prose) ->
+  ) env.def
+
+let warn_prose env =
+  Map.iter (fun id1 {ralgos} ->
+    List.iter (fun (id2, _, use) -> warn_use use "rule prose" id1 id2) ralgos
+  ) env.rel_prose;
+  Map.iter (fun id1 ({use; _} : definition_prose) ->
     warn_use use "definition prose" id1 ""
   ) env.def_prose
 
@@ -157,6 +166,16 @@ let find_entries space src id1 id2 entries =
   if defs = [] then
     error src ("unknown " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`");
   List.map (fun (_, def, use) -> incr use; def) defs
+
+let find_entry space src id1 id2 entries =
+  match find_entries space src id1 id2 entries with
+  | [def] -> def
+  | defs ->
+    Printf.eprintf "warning: %s `%s/%s` has multiple definitions\n%!" space id1 id2;
+    List.hd defs
+(* TODO: this should be an error
+    error src ("duplicate " ^ space ^ " identifier `" ^ id1 ^ "/" ^ id2 ^ "`")
+*)
 
 let find_syntax env src id1 id2 =
   match Map.find_opt id1 env.syn with
@@ -179,7 +198,7 @@ let find_rule env src id1 id2 =
   | None -> error src ("unknown relation identifier `" ^ id1 ^ "`")
   | Some relation -> find_entries "rule" src id1 id2 relation.rules
 
-let find_func env src id1 id2 =
+let find_def env src id1 id2 =
   find_nosub "definition" src id1 id2;
   match Map.find_opt id1 env.def with
   | None -> error src ("unknown definition identifier `" ^ id1 ^ "`")
@@ -188,20 +207,16 @@ let find_func env src id1 id2 =
       error src ("definition `" ^ id1 ^ "` has no clauses");
     incr definition.use; definition.clauses
 
-let find_vrule_prose env src id =
-  match Map.find_opt id env.valid_prose with
-  | None -> error src ("unknown validation identifier `" ^ id ^ "`")
-  | Some prose -> incr prose.use; prose.vprose
+let find_rule_prose env src id1 id2 =
+  match Map.find_opt id1 env.rel_prose with
+  | None -> error src ("unknown prose relation identifier `" ^ id1 ^ "`")
+  | Some relation -> find_entry "prose rule" src id1 id2 relation.ralgos
 
-let find_rrule_prose env src id =
-  match Map.find_opt id env.exec_prose with
-  | None -> error src ("unknown execution identifier `" ^ id ^ "`")
-  | Some prose -> incr prose.use; prose.eprose
-
-let find_def_prose env src id =
-  match Map.find_opt id env.def_prose with
-  | None -> error src ("unknown definition identifier `" ^ id ^ "`")
-  | Some prose -> incr prose.use; prose.fprose
+let find_def_prose env src id1 id2 =
+  find_nosub "definition" src id1 id2;
+  match Map.find_opt id1 env.def_prose with
+  | None -> error src ("unknown prose definition identifier `" ^ id1 ^ "`")
+  | Some definition -> incr definition.use; definition.falgo
 
 
 (* Parsing *)
@@ -221,15 +236,21 @@ let try_string src s : bool =
 let try_anchor_start src anchor : bool =
   try_string src (anchor ^ "{")
 
-let rec parse_anchor_end src j depth =
+let rec parse_to_colon src =
   if eos src then
-    error {src with i = j} "unclosed anchor"
+    error src "colon `:` expected"
+  else if get src <> ':' then
+    (adv src; parse_to_colon src)
+
+let rec parse_to_anchor_end i0 depth src =
+  if eos src then
+    error {src with i = i0} "unclosed anchor"
   else if get src = '{' then
-    (adv src; parse_anchor_end src j (depth + 1))
+    (adv src; parse_to_anchor_end i0 (depth + 1) src)
   else if get src <> '}' then
-    (adv src; parse_anchor_end src j depth)
+    (adv src; parse_to_anchor_end i0 depth src)
   else if depth > 0 then
-    (adv src; parse_anchor_end src j (depth - 1))
+    (adv src; parse_to_anchor_end i0 (depth - 1) src)
 
 let rec parse_id' src =
   if not (eos src) then
@@ -245,7 +266,7 @@ let parse_id src space : string =
     error {src with i = j} ("expected " ^ space ^ " identifier or `}`");
   str src j
 
-let parse_id_id env src space1 space2 find : El.Ast.def list =
+let parse_id_id env src space1 space2 find =
   let j = src.i in
   let id1 = parse_id src space1 in
   let id2 =
@@ -273,12 +294,9 @@ let rec parse_group_list env src space1 space2 find : El.Ast.def list list =
 type mode = Decorated | Undecorated | Ignored
 
 let try_def_anchor env src r sort space1 space2 find mode : bool =
-  let b = try_string src sort in
+  let b = try_string src (sort ^ ":") in
   if b then
-  ( parse_space src;
-    if not (try_string src ":") then
-      error src "colon `:` expected";
-    let groups = parse_group_list env src space1 space2 find in
+  ( let groups = parse_group_list env src space1 space2 find in
     let defs = List.tl (List.concat_map ((@) [SepD $ no_region]) groups) in
     if mode <> Ignored then
       let env' = env.latex
@@ -289,39 +307,72 @@ let try_def_anchor env src r sort space1 space2 find mode : bool =
   );
   b
 
-let try_exp_anchor env src r : bool =
-  let b = try_string src ":" in
-  if b then (
-  	let j = src.i in
-    parse_anchor_end src (j - 4) 0;
-    let s = str src j in
-    adv src;
-    let exp =
-      try Frontend.Parse.parse_exp s with Source.Error (at, msg) ->
-        (* Translate relative positions *)
-        let pos = pos {src with i = j} in
-        let shift {line; column; _} =
-          { file = src.file; line = line + pos.line - 1;
-            column = if false(*line = 1*) then column + pos.column - 1 else column} in
-        let at' = {left = shift at.left; right = shift at.right} in
-        raise (Source.Error (at', msg))
-    in
-    r := Backend_latex.Render.render_exp env.latex exp
-  );
-  b
+let run_parser find_end parser src =
+  let i = src.i in
+  find_end src;
+  let s = str src i in
+  adv src;
+  try parser s with Source.Error (at, msg) ->
+    (* Translate relative positions *)
+    let pos = pos {src with i} in
+    let shift {line; column; _} =
+      { file = src.file; line = line + pos.line - 1;
+        column = if line = 1 then column + pos.column - 1 else column} in
+    let at' = {left = shift at.left; right = shift at.right} in
+    raise (Source.Error (at', msg))
 
-let try_prose_anchor env src r sort find : bool =
-  let b = try_string src sort in
+let try_relid src : id option =
+  let i = src.i in
+  parse_space src;
+  let id = try parse_id src "relation" with Source.Error _ -> " " in
+  if id.[0] <> Char.lowercase_ascii id.[0] then
+    let pos = pos {src with i} in
+    let left = {file = src.file; line = pos.line; column = pos.column} in
+    let right = {left with column = left.column + String.length id} in
+    Some (id $ {left; right})
+  else
+    (advn src (i - src.i); None)
+
+let parse_typ src : typ =
+  run_parser parse_to_colon Frontend.Parse.parse_typ src
+
+let parse_exp src i0 : exp =
+  run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_exp src
+
+let try_exp_anchor env src r : bool =
+  let i0 = src.i in
+  if try_string src ":" then (
+    let exp = parse_exp src (i0 - 2) in
+    r := Backend_latex.Render.render_exp env.latex exp;
+    true
+  )
+  else
+    match try_relid src with
+    | Some id when try_string src ":" ->
+      let exp = parse_exp src (i0 - 2) in
+      let _ = Frontend.Elab.elab_rel env.elab exp id in
+      r := Backend_latex.Render.render_exp env.latex exp;
+      true
+    | Some _ -> advn src (i0 - src.i); false
+    | None ->
+      match parse_typ src with
+      | typ ->
+        let exp = parse_exp src (i0 - 2) in
+        let _ = Frontend.Elab.elab_exp env.elab exp typ in
+        r := Backend_latex.Render.render_exp env.latex exp;
+        true
+      | exception Source.Error _ -> advn src (i0 - src.i); false
+
+let try_prose_anchor env src r sort space1 space2 find mode : bool =
+  let b = try_string src (sort ^ ":") in
   if b then (
     parse_space src;
-    if not (try_string src ":") then
-      error src "colon `:` expected";
+    let algo = parse_id_id env src space1 space2 find in
     parse_space src;
-    let id = parse_id src "prose name" in
     if not (try_string src "}") then
       error src "closing bracket `}` expected";
-    let prose = find env src id in
-    r := Backend_prose.Render.render_def env.prose prose
+    if mode <> Ignored then
+      r := Backend_prose.Render.render_def env.prose algo
   );
   b
 
@@ -329,39 +380,42 @@ let try_prose_anchor env src r sort find : bool =
 (* Splicing *)
 
 let splice_anchor env src anchor buf =
+  let open Backend_latex in
+  let config = {(Render.config env.latex) with Config.display = anchor.newline} in
+  let env' = {env with latex = Render.env_with_config env.latex config} in
   parse_space src;
   let r = ref "" in
+  let prose = ref true in
   ignore (
-    try_exp_anchor env src r ||
-    try_def_anchor env src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
-    try_def_anchor env src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
-    try_def_anchor env src r "relation-ignore" "relation" "" find_relation Ignored ||
-    try_def_anchor env src r "rule-ignore" "relation" "rule" find_rule Ignored ||
-    try_def_anchor env src r "definition-ignore" "definition" "" find_func Ignored ||
-    try_def_anchor env src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
-    try_def_anchor env src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
-    try_def_anchor env src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
-    try_def_anchor env src r "relation" "relation" "" find_relation Undecorated ||
-    try_def_anchor env src r "rule+" "relation" "rule" find_rule Decorated ||
-    try_def_anchor env src r "rule" "relation" "rule" find_rule Undecorated ||
-    try_def_anchor env src r "definition" "definition" "" find_func Undecorated ||
-    (* TODO: make anchors consistent:
-     * - change anchors to `rule-prose` (for both pred and algo) and `def-prose`
-     * - add anchors `rule-prose-ignore` and `rule-def-ignore`
-     *)
-    try_prose_anchor env src r "prose-pred" find_vrule_prose ||
-    try_prose_anchor env src r "prose-algo" find_rrule_prose ||
-    try_prose_anchor env src r "prose-func" find_def_prose ||
-    error src "unknown definition sort";
+    try_prose_anchor env' src r "rule-prose" "prose relation" "rule" find_rule_prose Undecorated ||
+    try_prose_anchor env' src r "definition-prose" "prose definition" "" find_def_prose Undecorated ||
+    try_prose_anchor env' src r "rule-prose-ignore" "prose relation" "rule" find_rule_prose Ignored ||
+    try_prose_anchor env' src r "definition-prose-ignore" "prose definition" "" find_def_prose Ignored ||
+    (prose := false; false) ||
+    try_def_anchor env' src r "syntax" "syntax" "fragment" find_syntax Undecorated ||
+    try_def_anchor env' src r "syntax+" "syntax" "fragment" find_syntax Decorated ||
+    try_def_anchor env' src r "grammar" "grammar" "fragment" find_grammar Undecorated ||
+    try_def_anchor env' src r "relation" "relation" "" find_relation Undecorated ||
+    try_def_anchor env' src r "rule" "relation" "rule" find_rule Undecorated ||
+    try_def_anchor env' src r "rule+" "relation" "rule" find_rule Decorated ||
+    try_def_anchor env' src r "definition" "definition" "" find_def Undecorated ||
+    try_def_anchor env' src r "syntax-ignore" "syntax" "fragment" find_syntax Ignored ||
+    try_def_anchor env' src r "grammar-ignore" "grammar" "fragment" find_grammar Ignored ||
+    try_def_anchor env' src r "relation-ignore" "relation" "" find_relation Ignored ||
+    try_def_anchor env' src r "rule-ignore" "relation" "rule" find_rule Ignored ||
+    try_def_anchor env' src r "definition-ignore" "definition" "" find_def Ignored ||
+    try_exp_anchor env' src r ||
+    error src "unknown anchor sort";
   );
   if !r <> "" then
   ( let s =
-      if anchor.indent = "" then !r else
-      Str.(global_replace (regexp "\n") ("\n" ^ anchor.indent) !r)
+      if !prose || anchor.newline && anchor.indent = "" then !r else
+      let nl = if anchor.newline then "\n" ^ anchor.indent else "" in
+      Str.(global_replace (regexp "\n") nl !r)
     in
-    Buffer.add_string buf anchor.prefix;
+    if not !prose then Buffer.add_string buf anchor.prefix;
     Buffer.add_string buf s;
-    Buffer.add_string buf anchor.suffix;
+    if not !prose then Buffer.add_string buf anchor.suffix;
   )
 
 let rec try_anchors env src buf = function

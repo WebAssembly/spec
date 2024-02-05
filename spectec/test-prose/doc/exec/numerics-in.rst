@@ -10,7 +10,7 @@ Sign Interpretation
 
 .. _def-signed:
 
-%{prose-func: signed}
+$${definition-prose: signed}
 
 \
 
@@ -18,7 +18,7 @@ $${definition: signed}
 
 .. _def-invsigned:
 
-%{prose-func: invsigned}
+$${definition-prose: invsigned}
 
 \
 

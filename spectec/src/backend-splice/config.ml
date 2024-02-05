@@ -1,8 +1,9 @@
 type anchor =
   {
     token : string;   (* anchor token *)
-    prefix : string;  (* prefix generated for splice *)
-    suffix : string;  (* suffix generated for splice *)
+    prefix : string;  (* prefix generated for math splice *)
+    suffix : string;  (* suffix generated for math splice *)
+    newline : bool;   (* use newlines *)
     indent : string;  (* inserted after generated newlines *)
   }
 
@@ -20,25 +21,19 @@ type config =
 
 type t = config
 
-let default =
-  { anchors = [ {token = "%"; prefix = ""; suffix = ""; indent = ""} ];
-    latex = Backend_latex.Config.default;
-    prose = Backend_prose.Config.default;
-  }
-
 let latex =
-  { anchors = default.anchors @ [
-      {token = "@@"; prefix = "$"; suffix ="$"; indent = ""};
-      {token = "@@@"; prefix = "$$\n"; suffix = "\n$$"; indent = ""};
+  { anchors = [
+      {token = "#"; prefix = "$"; suffix = "$"; newline = false; indent = ""};
+      {token = "##"; prefix = "$$\n"; suffix = "\n$$"; newline = true; indent = ""};
     ];
     latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;
   }
 
 let sphinx =
-  { anchors = default.anchors @ [
-      {token = "$"; prefix = ":math:`"; suffix ="`"; indent = ""};
-      {token = "$$"; prefix = ".. math::\n   "; suffix = ""; indent = "   "};
+  { anchors = [
+      {token = "$"; prefix = ":math:`"; suffix = "`"; newline = false; indent = ""};
+      {token = "$$"; prefix = ".. math::\n   "; suffix = ""; newline = true; indent = "   "};
     ];
     latex = Backend_latex.Config.default;
     prose = Backend_prose.Config.default;

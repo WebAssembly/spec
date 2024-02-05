@@ -50,3 +50,6 @@ let note {note; _} = note
 exception Error of region * string
 
 let error at category msg = raise (Error (at, category ^ " error: " ^ msg))
+
+let print_error at msg = prerr_endline (string_of_region at ^ ": " ^ msg)
+let print_warn at msg = prerr_endline (string_of_region at ^ ": warning: " ^ msg)

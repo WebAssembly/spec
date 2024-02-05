@@ -1,10 +1,13 @@
 type config =
   {
-    (* Generate id's as macro calls `\id` instead of `\mathit{id}` *)
+    (* Spacing for display math *)
+    display : bool;
+
+    (* Generate ids as macro calls `\id` instead of `\mathit{id}` *)
     macros_for_ids : bool;
 
-    (* Generate vdash's as macro calls `\vdashRelid` instead of `\vdash` *)
-    macros_for_vdash : bool;
+    (* Generate atoms as macro calls, e.g., `\vdashRelid` instead of `\vdash` *)
+    macros_for_atoms : bool;
 
     (* Decorate grammars with l.h.s. description like "(instruction) instr ::= ..." *)
     include_grammar_desc : bool;
@@ -13,7 +16,8 @@ type config =
 type t = config
 
 let default =
-  { macros_for_ids = false;
-    macros_for_vdash = false;
+  { display = true;
+    macros_for_ids = false;
+    macros_for_atoms = false;
     include_grammar_desc = false;
   }

@@ -8,7 +8,7 @@ General Constants
 
 .. _def-Ki:
 
-%{prose-func: Ki}
+$${definition-prose: Ki}
 
 \
 
@@ -29,7 +29,7 @@ Size
 
 .. _def-size:
 
-%{prose-func: size}
+$${definition-prose: size}
 
 \
 
@@ -37,7 +37,7 @@ $${definition: size}
 
 .. _def-packedsize:
 
-%{prose-func: packedsize}
+$${definition-prose: packedsize}
 
 \
 
@@ -45,7 +45,7 @@ $${definition: packedsize}
 
 .. _def-storagesize:
 
-%{prose-func: storagesize}
+$${definition-prose: storagesize}
 
 \
 
@@ -56,7 +56,7 @@ Projections
 
 .. _def-funcsxt:
 
-%{prose-func: funcsxt}
+$${definition-prose: funcsxt}
 
 \
 
@@ -64,7 +64,7 @@ $${definition: funcsxt}
 
 .. _def-globalsxt:
 
-%{prose-func: globalsxt}
+$${definition-prose: globalsxt}
 
 \
 
@@ -72,7 +72,7 @@ $${definition: globalsxt}
 
 .. _def-tablesxt:
 
-%{prose-func: tablesxt}
+$${definition-prose: tablesxt}
 
 \
 
@@ -80,7 +80,7 @@ $${definition: tablesxt}
 
 .. _def-memsxt:
 
-%{prose-func: memsxt}
+$${definition-prose: memsxt}
 
 \
 
@@ -91,7 +91,7 @@ Packed Fields
 
 .. _def-packval:
 
-%{prose-func: packval}
+$${definition-prose: packval}
 
 \
 
@@ -99,7 +99,7 @@ $${definition: packval}
 
 .. _def-unpackval:
 
-%{prose-func: unpackval}
+$${definition-prose: unpackval}
 
 \
 
@@ -107,7 +107,7 @@ $${definition: unpackval}
 
 .. _def-sxfield:
 
-%{prose-func: sxfield}
+$${definition-prose: sxfield}
 
 \
 

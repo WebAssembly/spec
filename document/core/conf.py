@@ -60,7 +60,7 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2022, WebAssembly Community Group'
+copyright = u'2023, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
@@ -79,7 +79,7 @@ draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'
 # built documents.
 #
 # The short X.Y version.
-version = u'2.0'
+version = u'3.0'
 # The full version, including alpha/beta/rc tags.
 release = version + ('' if proposal == '' else ' + ') + proposal + draft
 

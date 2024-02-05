@@ -6,15 +6,11 @@ open El.Ast
 type env
 
 val env : Config.t -> El.Ast.script -> env
+val env_with_config : env -> Config.t -> env
+val config : env -> Config.t
 
 val with_syntax_decoration : bool -> env -> env
 val with_rule_decoration : bool -> env -> env
-
-
-(* Utilities *)
-
-(* TODO: this should not be public *)
-val expand_exp : arg list -> int ref -> exp -> exp
 
 
 (* Generators *)

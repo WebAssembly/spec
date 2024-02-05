@@ -45,12 +45,7 @@ let as_alt_sym sym =
   | _ -> [Elem sym]
 
 
-(* Identifier Status *)
-
-module VarSet = Set.Make(String)
-
-let atom_vars = ref VarSet.empty
-let scopes = ref []
+(* Identifiers *)
 
 let check_varid_bind id =
   if id.it = (El.Convert.strip_var_suffix id).it then id else
@@ -132,9 +127,10 @@ let is_post_exp e =
 %left PLUS MINUS COMPOSE
 %left STAR SLASH BACKSLASH
 
-%start script expression check_atom
+%start script typ_eof exp_eof check_atom
 %type<El.Ast.script> script
-%type<El.Ast.exp> expression
+%type<El.Ast.typ> typ_eof
+%type<El.Ast.exp> exp_eof
 %type<bool> check_atom
 
 %%
@@ -234,20 +230,20 @@ atom_ :
 
 varid_bind_with_suffix :
   | varid { $1 }
-  | atomid_ { atom_vars := VarSet.add $1 !atom_vars; $1 $ at $sloc }
+  | atomid_ { Atom.make_var $1; $1 $ at $sloc }
 varid_bind :
   | varid_bind_with_suffix { check_varid_bind $1 }
 varid_bind_lparen :
   | varid_lparen { check_varid_bind $1 }
-  | atomid_lparen { atom_vars := VarSet.add $1 !atom_vars; check_varid_bind ($1 $ at $sloc) }
+  | atomid_lparen { Atom.make_var $1; check_varid_bind ($1 $ at $sloc) }
 
 enter_scope :
-  | (* empty *) { scopes := !atom_vars :: !scopes }
+  | (* empty *) { Atom.enter_scope () }
 exit_scope :
-  | (* empty *) { atom_vars := List.hd !scopes; scopes := List.tl !scopes }
+  | (* empty *) { Atom.exit_scope () }
 
 check_atom :
-  | UPID EOF { VarSet.mem (El.Convert.strip_var_suffix ($1 $ at $sloc)).it !atom_vars }
+  | UPID EOF { Atom.is_var (El.Convert.strip_var_suffix ($1 $ at $sloc)).it }
 
 
 (* Operators *)
@@ -430,6 +426,7 @@ casetyp :
   | exp_lit { $1 }
   | PLUS arith_un { UnE (PlusOp, $2) $ at $sloc }
   | MINUS arith_un { UnE (MinusOp, $2) $ at $sloc }
+  | DOLLAR LPAREN exp RPAREN { $3 }
 
 
 (* Expressions *)
@@ -770,7 +767,10 @@ hint :
 script :
   | def* EOF { $1 }
 
-expression :
+typ_eof :
+  | typ EOF { $1 }
+
+exp_eof :
   | exp EOF { $1 }
 
 %%

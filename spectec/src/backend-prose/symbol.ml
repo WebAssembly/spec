@@ -99,6 +99,11 @@ let env el =
   let funcs = extract_func_kwds el in
   { kwds = ref kwds; funcs = ref funcs; }
 
+(* Environment Getters *)
+
+let kwds env = !(env.kwds)
+let funcs env = !(env.funcs)
+
 (* Environment Lookup *)
 
 let rec narrow_kwd' env nonterminals variant = match nonterminals with

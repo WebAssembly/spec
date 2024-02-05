@@ -28,7 +28,9 @@ splice ::=
   tag"{" desc "}"
 
 desc ::=
-  ":" exp                               expression splice
+  relid ":" exp                         typed relation expression splice
+  typ ":" exp                           typed expression splice
+  ":" exp                               untyped expression splice
   sort ":" group*                       definition splice
 
 group ::=
@@ -48,13 +50,13 @@ regexp ::=
 
 The `tag` can be configured differently for different file formats. Currently, two formats are supported:
 
-* _Latex._ Tags are `@@` and `@@@`, generating `$...$` and `$$...$$`, respectively.
+* _Latex._ Tags are `#` and `##`, generating `$...$` and `$$...$$`, respectively.
 
 * _Sphinx._ Tags are `$` and `$$`, generating `:math:'...'` and `.. math:: ...`, respectively.
 
 There are two forms of splices:
 
-1. _Expression splices_ (`tag{: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it.
+1. _Expression splices_ (`tag{typ: exp }`). The body of this splice is an [expression](Language.md#expressions) in the DSL. The effect is to render this expression and insert it. These slices may be prefixed with a relation identifier or a type. They can be omitted if the type can be inferred from the expression, but are necessary if it contains user-defined notation or atoms _and_ is supposed to be type-set with macros (the type information is needed to generate the right macro names for atoms).
 
 2. _Definition splices_ (`tag{sort: group* }`). This splice renders and inserts (a set of) [definitions](Language.md#definitions) from the DSL, identified by the _names_ in the `group`. The following `sort`s are recognised:
 
@@ -96,21 +98,21 @@ The names in a definition splice refer to definitions according to the indicated
 
 ```
 ;; insert definitions of types
-@@@{syntax: numtype vectype valtype}
+$${syntax: numtype vectype valtype}
 
 ;; insert grammar for control and reference instructions together
-@@@{syntax: {instr/control instr/reference}}
+$${syntax: {instr/control instr/reference}}
 
 ;; insert grammar for all instructions in a single grammar
-@@@{syntax: {instr/*}}
+$${syntax: {instr/*}}
 
 ;; insert typing rules for `unreachable`, `nop` and `drop`,
 ;; putting the first on its own, the latter two on the same line
-@@@{rule: Instr_ok/unreachable {Instr_ok/nop Instr_ok/drop}}
+$${rule: Instr_ok/unreachable {Instr_ok/nop Instr_ok/drop}}
 
 ;; insert reduction rules for `block`, `loop` and all the ones for `if`,
 ;; as well as `br` and `br_if`, but with small vertical space
-@@@{rule: {Step/block Step/loop Step/if-*} {Step/br Step/br_if}}
+$${rule: {Step/block Step/loop Step/if-*} {Step/br Step/br_if}}
 ```
 
 
@@ -170,12 +172,12 @@ Hints of the form `hint(show <exp>)` are recognised on a number of constructs an
   relation Step: instr* ~> instr*                  hint(show "S")
   rule Step/drop: val DROP ~> eps
   ```
-  After this, the splice `@@@{rule+: Instr_ok/nop}` will generate (in proper Latex)
+  After this, the splice `$${rule+: Instr_ok/nop}` will generate (in proper Latex)
   ```
   ------------------------ [T-drop]
   C |- DROP : t -> eps
   ```
-  Similarly, the splice `@@@{rule+: Step/nop}` will generate
+  Similarly, the splice `$${rule+: Step/nop}` will generate
   ```
   [S-nop]  val DROP ~> eps
   ```

@@ -8,7 +8,7 @@ open Util.Source
 
 type reduction_group = (exp * exp * (premise list)) list
 
-(** Helpers **)
+(* Helpers *)
 
 let take_prefix n str =
   if String.length str < n then
@@ -17,7 +17,7 @@ let take_prefix n str =
     String.sub str 0 n
 
 
-(** Walker-based transformer **)
+(* Walker-based transformer *)
 
 let rec transform_expr f e =
   let new_ = transform_expr f in
@@ -57,8 +57,7 @@ and transform_arg f a =
     | ExpA e -> ExpA (transform_expr f e)
     | TypA t -> TypA t }
 
-(** Change right_assoc cat into left_assoc cat **)
-
+(* Change right_assoc cat into left_assoc cat *)
 let to_left_assoc_cat =
   let rec rotate_ccw e =
     begin match e.it with
@@ -73,8 +72,7 @@ let to_left_assoc_cat =
   transform_expr rotate_ccw
 
 
-(** Change left_assoc cat into right_assoc cat **)
-
+(* Change left_assoc cat into right_assoc cat *)
 let to_right_assoc_cat =
   let rec rotate_cw e =
     begin match e.it with
@@ -88,7 +86,8 @@ let to_right_assoc_cat =
     end in
   transform_expr rotate_cw
 
-(** Unifying lhs **)
+
+(* Unifying lhs *)
 
 (* Estimate appropriate id name for a given type *)
 let rec type_to_id ty = match ty.it with
@@ -220,8 +219,7 @@ and collect_unified_arg template a = if eq_arg template a then [], [] else match
 and collect_unified_args as1 as2 =
   List.fold_left2 (fun acc a1 a2 -> pairwise_concat acc (collect_unified_arg a1 a2)) ([], []) as1 as2
 
-(** If prems include a otherwise premise, make it first prem **)
-
+(* If otherwise premises are included, make them the first *)
 let prioritize_else prems =
   let other, non_others = List.partition (fun p -> p.it = ElsePr) prems in
   other @ non_others

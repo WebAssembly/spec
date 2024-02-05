@@ -98,7 +98,7 @@ $${syntax+:
 
 .. _def-memop0:
 
-%{prose-func: memop0}
+%{definition-prose: memop0}
 
 \
 
