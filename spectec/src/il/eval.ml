@@ -247,6 +247,8 @@ and reduce_exp env e : exp =
     | _ -> CatE (e1', e2')
     ) $> e
   | CaseE (atom, e1) -> CaseE (atom, reduce_exp env e1) $> e
+  | SubE (e1, t1, t2) when equiv_typ env t1 t2 ->
+    reduce_exp env e1
   | SubE (e1, t1, t2) ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
@@ -328,7 +330,7 @@ and reduce_exp_call env id args = function
       match reduce_prems env Subst.(subst_list subst_prem s prems) with
       | None -> None
       | Some false -> reduce_exp_call env id args clauses'
-      | Some true -> Some (reduce_exp env e)
+      | Some true -> Some (reduce_exp env (Subst.subst_exp s e))
     (*
     in
     Printf.eprintf "[il.reduce_exp_call] $%s(%s) =: $%s(%s) => %s\n%!"
@@ -472,8 +474,10 @@ and match_exp env s e1 e2 : subst option =
   | IterE (e11, iter1), IterE (e21, iter2) ->
     let* s' = match_exp env s e11 e21 in
     match_iterexp env s' iter1 iter2
-  | SubE (e11, t11, _t12), SubE (e21, t21, _t22) when equiv_typ env t11 t21 ->
-    match_exp env s e11 e21
+  | SubE (e11, t11, _t12), SubE (e21, t21, _t22) when sub_typ env t11 t21 ->
+    match_exp env s (reduce_exp env (SubE (e11, t11, t21) $> e21)) e21
+  | SubE (_e11, t11, _t12), SubE (_e21, t21, _t22) when disj_typ env t11 t21 ->
+    None
   | _, SubE (e21, t21, _t22) when is_normal_exp e1 ->
     let t21' = reduce_typ env t21 in
     if
@@ -539,7 +543,11 @@ and equiv_typ env t1 t2 =
     id1.it = id2.it && equiv_list equiv_arg env as1 as2 || (* optimization *)
     let t1' = reduce_typ env t1 in
     let t2' = reduce_typ env t2 in
-    (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2'
+    (t1 <> t1' || t2 <> t2') && equiv_typ env t1' t2' ||
+    (match reduce_typ_app env id1 as1, reduce_typ_app env id2 as2 with
+    | Some dt1, Some dt2 -> Eq.eq_deftyp (dt1 $ t1.at) (dt2 $ t2.at)
+    | _, _ -> false
+    )
   | VarT _, _ ->
     let t1' = reduce_typ env t1 in
     t1 <> t1' && equiv_typ env t1' t2
@@ -623,3 +631,57 @@ and find_case tcs atom =
   List.find_opt (fun (atom', _, _) -> atom' = atom) tcs |> Option.map snd3
 
 and snd3 (_, x, _) = x
+
+
+(* Type Equivalence *)
+
+and disj_typ env t1 t2 =
+  (* *)
+  Printf.eprintf "[il.disj_typ] %s ## %s\n%!"
+    (Print.string_of_typ t1)
+    (Print.string_of_typ t2);
+  let b =
+  (* *)
+  match t1.it, t2.it with
+  | VarT (id1, as1), VarT (id2, as2) ->
+    (match reduce_typ_app env id1 as1, reduce_typ_app env id2 as2 with
+    | Some (StructT tfs1), Some (StructT tfs2) ->
+      List.exists (fun (atom, (_binds2, t2, _prems2), _) ->
+        match find_field tfs1 atom with
+        | Some (_binds1, t1, _prems1) -> disj_typ env t1 t2
+        | None -> true
+      ) tfs2
+    | Some (VariantT tcs1), Some (VariantT tcs2) ->
+      List.exists (fun (atom, (_binds1, t1, _prems1), _) ->
+        match find_case tcs2 atom with
+        | Some (_binds2, t2, _prems2) -> disj_typ env t1 t2
+        | None -> true
+      ) tcs1
+    | _, _ -> true
+    )
+  | VarT _, _ ->
+    let t1' = reduce_typ env t1 in
+    t1 <> t1' && disj_typ env t1' t2
+  | _, VarT _ ->
+    let t2' = reduce_typ env t2 in
+    t2 <> t2' && disj_typ env t1 t2'
+  | TupT xts1, TupT xts2 -> disj_tup env xts1 xts2
+  | IterT (t11, iter1), IterT (t21, iter2) ->
+    disj_typ env t11 t21 || not (Eq.eq_iter iter1 iter2)
+  | _, _ ->
+    t1.it <> t2.it
+  (* *)
+  in
+  Printf.eprintf "[il.disj_typ] %s ## %s => %b\n%!"
+    (Print.string_of_typ t1)
+    (Print.string_of_typ t2)
+    b;
+  b
+  (* *)
+
+and disj_tup env xts1 xts2 =
+  match xts1, xts2 with
+  | (id1, t1)::xts1', (id2, t2)::xts2' ->
+    let s = Subst.(add_varid empty) id2 (VarE id1 $$ id1.at % t1) in
+    disj_typ env t1 t2 || disj_tup env xts1' (List.map (Subst.subst_typbind s) xts2')
+  | _, _ -> xts1 <> xts2

@@ -81,7 +81,7 @@ def $vunop(shape, vunop_(shape), vconst_(V128)) : vconst_(V128)
     hint(show %2#_%1#((%3)))
 def $vbinop(shape, vbinop_(shape), vconst_(V128), vconst_(V128)) : vconst_(V128)*
     hint(show %2#_%1#(%3, %4))
-def $vrelop(shape, vrelop_(shape), vconst_(V128), vconst_(V128)) : u32
+def $vrelop(shape, vrelop_(shape), vconst_(V128), vconst_(V128)) : vconst_(V128)
     hint(show %2#_%1#(%3, %4))
 def $vshiftop(shape, vshiftop_(shape), lanetype, vconst_(V128), vconst_(V128)) : vconst_(V128)
     hint(show %2#_%1#(%3, %4))

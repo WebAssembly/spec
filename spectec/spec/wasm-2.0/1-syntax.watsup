@@ -13,10 +13,6 @@ var nm : name
 ;; Values
 ;;
 
-;;
-;; Values
-;;
-
 ;; Integers
 
 syntax bit hint(desc "bit") = 0 | 1

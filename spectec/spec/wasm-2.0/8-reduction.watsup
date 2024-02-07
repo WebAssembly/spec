@@ -274,18 +274,22 @@ rule Step_pure/vbinop-trap:
 
 rule Step_pure/vrelop:
   (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP (lt X N) vrelop)  ~>  (VCONST V128 c)
+  -- if $vrelop(lt X N, vrelop, c_1, c_2) = c
+(; TODO
   -- var c'_1 : const_($unpacked(lt))
   -- var c'_2 : const_($unpacked(lt))
   -- if c'_1* = $lanes_(lt X N, c_1)
   -- if c'_2* = $lanes_(lt X N, c_2)
   -- if c = $invlanes_($IN($lanesize(lt)) X N, $ext(1, $lanesize(lt), S, $vrelop(lt X N, vrelop, c'_1, c'_2))*)
+;)
 
 
-rule Step_pure/vishiftop:
-  (VCONST V128 cv_1) (CONST I32 n) (VISHIFTOP sh vishiftop) ~> (VCONST V128 cv)
-  -- if sh = lnt X lns
-  -- if i* = $lanes(sh, cv_1)
-  -- if $lanes(sh, cv) = $vishiftop(vishiftop, lnt, i, n)*
+(; TODO
+rule Step_pure/vshiftop:
+  (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (imm X N) vshiftop) ~> (VCONST V128 c)
+  -- var c' : imm
+  -- if c'* = $lanes_(imm X N, cc_1)
+  -- if c = $invlanes_(inn X N, $vhiftop(vshiftop, inn, c', n)*)
 
 
 rule Step_pure/vall_true-true:
@@ -370,7 +374,7 @@ rule Step_pure/vextadd_pairwise:
   -- if $concat_bytes((i_1 i_2)*) = $ext($lanesize(lnt_1), $lanesize(lnt_2), sx, i)^k
   -- if j* = $iadd($lanesize(lnt_2), i_1, i_2)*
   -- if $lanes(sh_2, cv) = j*
-
+;)
 
 
 ;; Local instructions
@@ -493,7 +497,7 @@ rule Step_read/load-num-trap:
 
 rule Step_read/load-num-val:
   z; (CONST I32 i) (LOAD nt mo)  ~>  (CONST nt c)
-  -- if $ntbytes(nt, c) = $mem(z, 0).DATA[i + mo.OFFSET : $size(nt)/8]
+  -- if $nbytes(nt, c) = $mem(z, 0).DATA[i + mo.OFFSET : $size(nt)/8]
 
 rule Step_read/load-pack-trap:
   z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  TRAP
@@ -509,26 +513,30 @@ rule Step_read/vload-oob:
 
 rule Step_read/vload-val:
   z; (CONST I32 i) (VLOAD mo)  ~>  (VCONST V128 cv)
-  -- if $vtbytes(V128, cv) = $mem(z, 0).DATA[i + mo.OFFSET : $size(V128)/8]
+  -- if $vbytes(V128, cv) = $mem(z, 0).DATA[i + mo.OFFSET : $size(V128)/8]
 
 rule Step_read/vload-shape-oob:
   z; (CONST I32 i) (VLOAD (SHAPE (M X N) sx) mo)  ~>  TRAP
   -- if $(i + mo.OFFSET + M * N/8) > |$mem(z, 0).DATA|
 
+(; TODO
 rule Step_read/vload-shape-val:
   z; (CONST I32 i) (VLOAD (SHAPE (M X N) sx) mo)  ~>  (VCONST V128 cv)
   -- (if $ibytes(M, m) = $mem(z, 0).DATA[i + mo.OFFSET + k * M/8 : M/8])^(k<N)
-  -- if $lanes($ishape($(M * 2)) X N, cv) = $ext(M, $(M * 2), sx, m)^N
+  -- if $lanes_($IN($(M * 2)) X N, cv) = $ext(M, $(M * 2), sx, m)^N
+;)
 
 rule Step_read/vload-splat-oob:
   z; (CONST I32 i) (VLOAD (SPLAT n) mo)  ~>  TRAP
   -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).DATA|
 
+(; TODO
 rule Step_read/vload-splat-val:
   z; (CONST I32 i) (VLOAD (SPLAT n) mo)  ~>  (VCONST V128 cv)
   -- if $ibytes(n, m) = $mem(z, 0).DATA[i + mo.OFFSET : n/8]
   -- if l = $(128/n)
-  -- if $lanes($ishape(n) X l, cv) = m^l
+  -- if $lanes_($IN(n) X l, cv) = m^l
+;)
 
 rule Step_read/vload-zero-oob:
   z; (CONST I32 i) (VLOAD (ZERO n) mo)  ~>  TRAP
@@ -543,11 +551,13 @@ rule Step_read/vload_lane-oob:
   z; (CONST I32 i) (VCONST V128 cv_1) (VLOAD_LANE n mo laneidx)  ~>  TRAP
   -- if $(i + mo.OFFSET + n/8 > |$mem(z, 0).DATA|)
 
+(; TODO
 rule Step_read/vload_lane-val:
   z; (CONST I32 i) (VCONST V128 cv_1) (VLOAD_LANE n mo laneidx)  ~>  (VCONST V128 cv)
   -- if $ibytes(n, m) = $mem(z, 0).DATA[i + mo.OFFSET : n/8]
-  -- if sh = $ishape(n) X $(128/n)
-  -- if $lanes(sh, cv) = $lanes(sh, cv_1)[[laneidx] = m]
+  -- if sh = $IN(n) X $(128/n)
+  -- if $lanes_(sh, cv) = $lanes(sh, cv_1)[[laneidx] = m]
+;)
 
 
 rule Step/store-num-trap:
@@ -556,7 +566,7 @@ rule Step/store-num-trap:
 
 rule Step/store-num-val:
   z; (CONST I32 i) (CONST nt c) (STORE nt mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(nt)/8), b*); eps
-  -- if b* = $ntbytes(nt, c)
+  -- if b* = $nbytes(nt, c)
 
 rule Step/store-pack-trap:
   z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  z; TRAP
@@ -572,15 +582,17 @@ rule Step/vstore-oob:
 
 rule Step/vstore-val:
   z; (CONST I32 i) (VCONST V128 cv) (VSTORE mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $($size(V128)/8), b*); eps
-  -- if b* = $vtbytes(V128, cv)
+  -- if b* = $vbytes(V128, cv)
 
 rule Step/vstore_lane-oob:
   z; (CONST I32 i) (VCONST V128 cv) (VSTORE_LANE n mo laneidx)  ~>  z; TRAP
   -- if $(i + mo.OFFSET + n) > |$mem(z, 0).DATA|
 
+(; TODO
 rule Step/vstore_lane-val:
   z; (CONST I32 i) (VCONST V128 cv) (VSTORE_LANE n mo laneidx)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
-  -- if b* = $ibytes(n, $lanes($ishape(n) X $(128/n), cv)[laneidx])
+  -- if b* = $ibytes(n, $lanes_($IN(n) X $(128/n), cv)[laneidx])
+;)
 
 
 rule Step_read/memory.size:

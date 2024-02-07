@@ -75,6 +75,14 @@ let find_case cases atom at =
   | None -> error at ("unknown case `" ^ string_of_atom atom ^ "`")
 
 
+let typ_string env t =
+  let t' = Eval.reduce_typ (to_eval_env env) t in
+  if Eq.eq_typ t t' then
+    "`" ^ string_of_typ t ^ "`"
+  else
+    "`" ^ string_of_typ t ^ "` = `" ^ string_of_typ t' ^ "`"
+
+
 (* Type Accessors *)
 
 (* Returns None when args cannot be reduced enough to decide family instance. *)
@@ -178,8 +186,8 @@ let as_variant_typ phrase env dir t at : typcase list =
 
 let equiv_typ env t1 t2 at =
   if not (Eval.equiv_typ (to_eval_env env) t1 t2) then
-    error at ("expression's type `" ^ string_of_typ t1 ^ "` " ^
-      "does not match expected type `" ^ string_of_typ t2 ^ "`")
+    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
+      "does not match expected type `" ^ typ_string env t2 ^ "`")
 
 and selfify_typ env e t =
   match expand env t with
@@ -193,8 +201,8 @@ and selfify_typ env e t =
 
 let sub_typ env t1 t2 at =
   if not (Eval.sub_typ (to_eval_env env) t1 t2) then
-    error at ("expression's type `" ^ string_of_typ t1 ^ "` " ^
-      "does not match expected supertype `" ^ string_of_typ t2 ^ "`")
+    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
+      "does not match expected supertype `" ^ typ_string env t2 ^ "`")
 
 
 (* Operators *)
@@ -301,7 +309,7 @@ and valid_typ_mix env mixop t at =
   in
   if List.length mixop <> arity + 1 then
     error at ("inconsistent arity in mixin notation, `" ^ string_of_mixop mixop ^
-      "` applied to " ^ string_of_typ t);
+      "` applied to " ^ typ_string env t);
   valid_typ env [] t
 
 and valid_typfield env (_atom, (binds, t, prems), _hints) =
