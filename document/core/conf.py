@@ -60,16 +60,16 @@ master_doc = 'index'
 name = 'WebAssembly'
 project = u'WebAssembly'
 title = u'WebAssembly Specification'
-copyright = u'2023, WebAssembly Community Group'
+copyright = u'2017-2024, WebAssembly Community Group'
 author = u'WebAssembly Community Group'
 editor = u'Andreas Rossberg (editor)'
 logo = 'static/webassembly.png'
 
 # The name of the GitHub repository this resides in
-repo = 'spec'
+repo = 'function-references'
 
 # The name of the proposal it represents, if any
-proposal = ''
+proposal = 'tail calls + function references'
 
 # The draft version string (clear out for release cuts)
 draft = ' (Draft ' + date.today().strftime("%Y-%m-%d") + ')'

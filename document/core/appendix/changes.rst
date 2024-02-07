@@ -138,6 +138,33 @@ Added vector type and instructions that manipulate multiple numeric values in pa
 * New injection/projection :ref:`vector instructions <syntax-instr-vec>`: :math:`\K{i}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{f}\!N\!\K{x}\!M\!\K{.splat}`, :math:`\K{i}\!N\!\K{x}\!M\!\K{.bitmask}`
 
 
+Release 2.?
+~~~~~~~~~~~
+
+.. index:: reference, reference type, heap type, value type, local, local type, instruction, instruction type, table, function, function type, matching, subtyping
+
+Typeful References
+..................
+
+Added more precise types for references [#proposal-typedref]_.
+
+* New generalised form of :ref:`reference types <syntax-reftype>`: :math:`(\REF~\NULL^?~\heaptype)`
+
+* New class of :ref:`heap types <syntax-heaptype>`: |FUNC|, |EXTERN|, :math:`\typeidx`
+
+* Basic :ref:`subtyping <match>` on :ref:`reference <match-reftype>` and :ref:`value <match-valtype>` types
+
+* New :ref:`reference instructions <syntax-instr-ref>`: |REFASNONNULL|, |BRONNULL|, |BRONNONNULL|
+
+* New :ref:`control instruction <syntax-instr-control>`: |CALLREF|
+
+* Refined typing of :ref:`reference instruction <syntax-instr-ref>` |REFFUNC| with more precise result type
+
+* Refined typing of :ref:`local instructions <valid-instr-variable>` and :ref:`instruction sequences <valid-instr-seq>` to track the :ref:`initialization status <syntax-init>` of :ref:`locals <syntax-local>` with non-:ref:`defaultable <valid-defaultable>` type
+
+* Extended :ref:`table definitions <syntax-table>` with optional initializer expression
+
+
 .. [#proposal-signext]
    https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
 
