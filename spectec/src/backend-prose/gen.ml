@@ -20,8 +20,8 @@ let transpile_expr =
     post_expr = Il2al.Transpile.simplify_record_concat
   }
 
-let exp_to_expr e = exp2expr e |> transpile_expr
-let exp_to_args es = exp2exprs es |> List.map transpile_expr
+let exp_to_expr e = translate_expr e |> transpile_expr
+let exp_to_argexpr e = translate_argexpr e |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   let fail _ =
@@ -44,7 +44,7 @@ let rec if_expr_to_instrs e =
           IfI (isDefinedE (varE name), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
-      [ EquivI (exp2expr e1, exp2expr e2) ]
+      [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
@@ -53,13 +53,13 @@ let rec prem_to_instrs prem = match prem.it with
   | Ast.IfPr e ->
     if_expr_to_instrs e
   | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
-    ( match exp_to_args exp with
+    ( match exp_to_argexpr exp with
     | [c; e; t] -> [ MustValidI (c, e, Some t) ]
     | [c; e] -> [ MustValidI (c, e, None) ]
     | _ -> failwith "prem_to_instr: Invalid prem 1"
     )
   | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_sub" id.it ->
-    ( match exp_to_args exp with
+    ( match exp_to_argexpr exp with
     | [t1; t2] -> [ MustMatchI (t1, t2) ]
     | _ -> print_endline "prem_to_instr: Invalid prem 2"; [ YetI "TODO: prem_to_instrs 2" ]
     )
@@ -87,7 +87,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
-  let name = name2kwd winstr_name winstr.note in
+  let name = kwd winstr_name winstr.note in
   (* params *)
   let params = get_params winstr |> List.map exp_to_expr in
   (* body *)
