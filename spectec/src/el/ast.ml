@@ -221,6 +221,7 @@ and def' =
 
 and premise = premise' phrase
 and premise' =
+  | VarPr of id * typ                        (* `var` id `:` typ *)
   | RulePr of id * exp                       (* ruleid `:` exp *)
   | IfPr of exp                              (* `if` exp *)
   | ElsePr                                   (* `otherwise` *)

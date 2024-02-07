@@ -2,13 +2,18 @@ open Util
 open Source
 open Ast
 
+let error at msg = Source.error at "syntax" msg
+
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
+let forall_nl_list f xs = List.for_all f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
 let iter_nl_list f xs = List.iter f (filter_nl xs)
 let map_filter_nl_list f xs = List.map f (filter_nl xs)
 let map_nl_list f xs = List.map (function Nl -> Nl | Elem x -> Elem (f x)) xs
+let filter_nl_list f xs = List.filter (function Nl -> true | Elem x -> f x) xs
 let concat_map_nl_list f xs = List.concat_map (function Nl -> [Nl] | Elem x -> f x) xs
+let concat_map_filter_nl_list f xs = List.concat_map (function Nl -> [] | Elem x -> f x) xs
 
 
 let strip_var_suffix id =
@@ -31,7 +36,7 @@ let typ_of_varid id =
     | "rat" -> NumT RatT
     | "real" -> NumT RealT
     | "text" -> TextT
-    | _ -> VarT (strip_var_suffix id, [])
+    | _ -> VarT (id, [])
     ) $ id.at
 
 let varid_of_typ t =
@@ -59,7 +64,7 @@ let rec typ_of_exp e =
   | SeqE es -> SeqT (List.map typ_of_exp es)
   | InfixE (e1, atom, e2) -> InfixT (typ_of_exp e1, atom, typ_of_exp e2)
   | BrackE (l, e1, r) -> BrackT (l, typ_of_exp e1, r)
-  | _ -> Source.error e.at "syntax" "malformed type"
+  | _ -> error e.at "malformed type"
   ) $ e.at
 
 and typfield_of_expfield (atom, e) =
@@ -78,7 +83,7 @@ let rec exp_of_typ t =
   | SeqT ts -> SeqE (List.map exp_of_typ ts)
   | InfixT (t1, atom, t2) -> InfixE (exp_of_typ t1, atom, exp_of_typ t2)
   | BrackT (l, t1, r) -> BrackE (l, exp_of_typ t1, r)
-  | CaseT _ | RangeT _ -> Source.error t.at "syntax" "malformed expression"
+  | CaseT _ | RangeT _ -> error t.at "malformed expression"
   ) $ t.at
 
 and expfield_of_typfield (atom, (t, _prems), _) =
@@ -114,27 +119,31 @@ let rec exp_of_sym g =
   | ArithG e -> e.it
   | AttrG (e, g2) -> TypE (e, typ_of_exp (exp_of_sym g2))
   | FuseG (g1, g2) -> FuseE (exp_of_sym g1, exp_of_sym g2)
-  | _ -> Source.error g.at "syntax" "malformed expression"
+  | _ -> error g.at "malformed expression"
   ) $ g.at
 
 
 let exp_of_arg a =
   match !(a.it) with
   | ExpA e -> e
-  | _ -> Source.error a.at "syntax" "malformed expression"
+  | _ -> error a.at "malformed expression"
 
 let param_of_arg a =
   (match !(a.it) with
   | ExpA e ->
     (match e.it with
     | TypE ({it = VarE (id, []); _}, t) -> ExpP (id, t)
-    | VarE (id, _) -> ExpP (id, typ_of_exp e)
+    | VarE (id, args) ->
+      ExpP (id, typ_of_exp (VarE (strip_var_suffix id, args) $ e.at))
     | _ -> ExpP ("_" $ e.at, typ_of_exp e)
     )
-  | TypA {it = VarT (id, []); _} -> TypP id
+  | TypA {it = VarT (id, []); _} ->
+    if id.it <> (strip_var_suffix id).it then
+      error id.at "invalid identifer suffix in binding position";
+    TypP id
   | GramA {it = AttrG ({it = VarE (id, []); _}, g); _} ->
     GramP (id, typ_of_exp (exp_of_sym g))
-  | _ -> Source.error a.at "syntax" "malformed grammar"
+  | _ -> error a.at "malformed grammar"
   ) $ a.at
 
 let arg_of_param p =

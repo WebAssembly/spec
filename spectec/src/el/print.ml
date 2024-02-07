@@ -211,6 +211,7 @@ and string_of_path p =
 
 and string_of_prem prem =
   match prem.it with
+  | VarPr (id, t) -> "var " ^ id.it ^ ": " ^ string_of_typ t
   | RulePr (id, e) -> id.it ^ ": " ^ string_of_exp e
   | IfPr e -> "if " ^ string_of_exp e
   | ElsePr -> "otherwise"

@@ -257,16 +257,16 @@ rule Instr_ok/const:
   C |- CONST nt c_nt : eps -> nt
 
 rule Instr_ok/unop:
-  C |- UNOP nt unop : nt -> nt
+  C |- UNOP nt unop_nt : nt -> nt
 
 rule Instr_ok/binop:
-  C |- BINOP nt binop : nt nt -> nt
+  C |- BINOP nt binop_nt : nt nt -> nt
 
 rule Instr_ok/testop:
-  C |- TESTOP nt testop : nt -> I32
+  C |- TESTOP nt testop_nt : nt -> I32
 
 rule Instr_ok/relop:
-  C |- RELOP nt relop : nt nt -> I32
+  C |- RELOP nt relop_nt : nt nt -> I32
 
 
 rule Instr_ok/extend:
@@ -304,20 +304,21 @@ rule Instr_ok/ref.is_null:
 ;; Vector instructions
 
 rule Instr_ok/vvconst:
-  C |- VVCONST V128 c_vt : eps -> V128
+  C |- VCONST V128 vc : eps -> V128
 
 rule Instr_ok/vvunop:
-  C |- VVUNOP vt vvunop : V128 -> V128
+  C |- VVUNOP V128 vvunop : V128 -> V128
 
 rule Instr_ok/vvbinop:
-  C |- VVBINOP vt vvbinop : V128 V128 -> V128
+  C |- VVBINOP V128 vvbinop : V128 V128 -> V128
 
 rule Instr_ok/vvternop:
-  C |- VVTERNOP vt vvternop : V128 V128 V128 -> V128
+  C |- VVTERNOP V128 vvternop : V128 V128 V128 -> V128
 
 rule Instr_ok/vvtestop:
-  C |- VVTESTOP vt vvtestop : V128 -> I32
+  C |- VVTESTOP V128 vvtestop : V128 -> I32
 
+;; TODO: sh = (vt X N)...
 rule Instr_ok/vswizzle:
   C |- VSWIZZLE sh : V128 V128 -> V128
 
@@ -326,15 +327,15 @@ rule Instr_ok/vshuffle:
   -- (if $(laneidx<$dim(sh) * 2))*
 
 rule Instr_ok/vsplat:
-  C |- VSPLAT sh : $unpacked(sh) -> V128
+  C |- VSPLAT sh : $unpacked($lanetype(sh)) -> V128
 
 rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE sh sx? laneidx : V128 -> $unpacked(sh)
-  -- if laneidx < $dim(sh)
+  C |- VEXTRACT_LANE sh sx? i : V128 -> $unpacked($lanetype(sh))
+  -- if i < $dim(sh)
 
 rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE sh laneidx : V128 $unpacked(sh) -> V128
-  -- if laneidx < $dim(sh)
+  C |- VREPLACE_LANE sh i : V128 $unpacked($lanetype(sh)) -> V128
+  -- if i < $dim(sh)
 
 rule Instr_ok/vunop:
   C |- VUNOP sh vunop : V128 -> V128
@@ -342,14 +343,14 @@ rule Instr_ok/vunop:
 rule Instr_ok/vbinop:
   C |- VBINOP sh vbinop : V128 V128 -> V128
 
+rule Instr_ok/vtestop:
+  C |- VTESTOP sh vtestop : V128 -> I32
+
 rule Instr_ok/vrelop:
   C |- VRELOP sh vrelop : V128 V128 -> V128
 
-rule Instr_ok/vishiftop:
-  C |- VISHIFTOP sh vishiftop : V128 I32 -> V128
-
-rule Instr_ok/vtestop:
-  C |- VALL_TRUE sh : V128 -> I32
+rule Instr_ok/vshiftop:
+  C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
 
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
@@ -519,7 +520,7 @@ rule Instr_const/const:
   C |- (CONST nt c) CONST
 
 rule Instr_const/vvconst:
-  C |- (VVCONST vt c_vt) CONST
+  C |- (VCONST vt vc) CONST
 
 rule Instr_const/ref.null:
   C |- (REF.NULL rt) CONST

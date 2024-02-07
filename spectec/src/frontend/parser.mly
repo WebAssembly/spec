@@ -599,10 +599,10 @@ path_ :
 (* Premises *)
 
 premise_list :
-  | nl_dash_list(premise) { $1 }
+  | enter_scope nl_dash_list(premise) exit_scope { $2 }
 
 premise_bin_list :
-  | nl_dash_list(premise_bin) { $1 }
+  | enter_scope nl_dash_list(premise_bin) exit_scope { $2 }
 
 (*premise_post : premise_post_ { $1 $ at $sloc }*)
 premise_post_ :
@@ -628,6 +628,7 @@ premise : premise_ { $1 $ at $sloc }
 premise_ :
   | premise_post_ { $1 }
   | relid COLON exp { RulePr ($1, $3) }
+  | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
         match e.it with
@@ -746,7 +747,7 @@ def_ :
       HintD (GramH ($2, id $ at $loc($3), $4) $ at $sloc) }
   | RELATION relid hint*
     { HintD (RelH ($2, $3) $ at $sloc) }
-  | VAR varid hint*
+  | VAR varid_bind hint*
     { HintD (VarH ($2, $3) $ at $sloc) }
   | DEF DOLLAR defid hint*
     { HintD (DecH ($3, $4) $ at $sloc) }

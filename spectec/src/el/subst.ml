@@ -72,6 +72,8 @@ let rec subst_iter s iter =
 and subst_typ s t =
   (match t.it with
   | VarT (id, args) ->
+    if id.it <> (Convert.strip_var_suffix id).it then
+      Util.Source.error id.at "syntax" "identifer suffix encountered during substitution";
     (match Map.find_opt id.it s.typid with
     | None -> VarT (id, List.map (subst_arg s) args)
     | Some t' -> assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
@@ -150,6 +152,7 @@ and subst_path s p =
 
 and subst_prem s prem =
   (match prem.it with
+  | VarPr (id, t) -> VarPr (id, subst_typ s t)
   | RulePr (id, e) -> RulePr (id, subst_exp s e)
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr

@@ -209,6 +209,7 @@ and pat_iter iter =
 
 and free_prem prem =
   match prem.it with
+  | VarPr (id, t) -> union (free_varid id) (free_typ t)
   | RulePr (id, e) -> union (free_relid id) (free_exp e)
   | IfPr e -> free_exp e
   | ElsePr -> empty
@@ -218,6 +219,7 @@ and free_prem prem =
  * or are bound in a condition. *)
 and bound_prem prem =
   match prem.it with
+  | VarPr (_id, _t) -> empty
   | RulePr (_id, e) -> free_exp e
   | IfPr e -> bound_exp e
   | ElsePr -> empty

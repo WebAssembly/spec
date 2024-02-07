@@ -208,6 +208,7 @@ and check_gram env ctx gram =
 
 and check_prem env ctx prem =
   match prem.it with
+  | VarPr (id, t) -> check_varid env ctx id; check_typ env ctx t
   | RulePr (_id, e) -> check_exp env ctx e
   | IfPr e -> check_exp env ctx e
   | ElsePr -> ()

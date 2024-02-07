@@ -158,6 +158,7 @@ and path p =
 and prem pr =
   visit_prem pr;
   match pr.it with
+  | VarPr (x, t) -> varid x; typ t
   | RulePr (x, e) -> relid x; exp e
   | IfPr e -> exp e
   | ElsePr -> ()

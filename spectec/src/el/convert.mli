@@ -1,11 +1,14 @@
 open Ast
 
 val filter_nl : 'a nl_list -> 'a list
+val filter_nl_list : ('a -> bool) -> 'a nl_list -> 'a nl_list
+val forall_nl_list : ('a -> bool) -> 'a nl_list -> bool
 val find_nl_list : ('a -> bool) -> 'a nl_list -> 'a option
 val iter_nl_list : ('a -> unit) -> 'a nl_list -> unit
 val map_nl_list : ('a -> 'b) -> 'a nl_list -> 'b nl_list
-val concat_map_nl_list : ('a -> 'b nl_list) -> 'a nl_list -> 'b nl_list
 val map_filter_nl_list : ('a -> 'b) -> 'a nl_list -> 'b list
+val concat_map_nl_list : ('a -> 'b nl_list) -> 'a nl_list -> 'b nl_list
+val concat_map_filter_nl_list : ('a -> 'b list) -> 'a nl_list -> 'b list
 
 val typ_of_varid : id -> typ
 val varid_of_typ : typ -> id

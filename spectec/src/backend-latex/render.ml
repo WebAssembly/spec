@@ -686,6 +686,7 @@ and render_fieldname env atom at =
 
 and render_prem env prem =
   match prem.it with
+  | VarPr _ -> assert false
   | RulePr (id, e) -> render_exp {env with current_rel = id.it} e
   | IfPr e -> render_exp env e
   | ElsePr -> error prem.at "misplaced `otherwise` premise"
@@ -696,7 +697,8 @@ and render_prem env prem =
 
 and word s = "\\mbox{" ^ s ^ "}"
 
-and render_conditions env tabs = function
+and render_conditions env tabs prems =
+  match filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems with
   | [] -> " & "
   | [Elem {it = ElsePr; _}] -> " &\\quad\n  " ^ word "otherwise"
   | (Elem {it = ElsePr; _})::prems ->
@@ -848,9 +850,10 @@ let render_gramdef env d =
 let render_ruledef env d =
   match d.it with
   | RuleD (id1, id2, e, prems) ->
+    let prems' = filter_nl_list (function {it = VarPr _; _} -> false | _ -> true) prems in
     "\\frac{\n" ^
       (if has_nl prems then "\\begin{array}{@{}c@{}}\n" else "") ^
-      altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_prem env)) prems ^
+      altern_map_nl " \\qquad\n" " \\\\\n" (suffix "\n" (render_prem env)) prems' ^
       (if has_nl prems then "\\end{array}\n" else "") ^
     "}{\n" ^
       render_exp {env with current_rel = id1.it} e ^ "\n" ^
