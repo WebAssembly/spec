@@ -1,18 +1,5 @@
-[![CI for specs](https://github.com/WebAssembly/function-references/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/function-references/actions/workflows/ci-spec.yml)
-[![CI for interpreter & tests](https://github.com/WebAssembly/function-references/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/function-references/actions/workflows/ci-interpreter.yml)
-
-# Function Reference Types Proposal for WebAssembly
-
-This repository is a clone of [github.com/WebAssembly/spec/](https://github.com/WebAssembly/spec/).
-It is meant for discussion, prototype specification and implementation of a proposal to add support for basic function reference types to WebAssembly.
-
-* See the [overview](proposals/function-references/Overview.md) for a summary of the proposal.
-
-* See the [modified spec](https://webassembly.github.io/function-references/core) for details.
-
-The repository is now based on the [bulk operations proposal](proposals/bulk-memory-operations/Overview.md) and includes all respective changes.
-
-Original README from upstream repository follows...
+[![CI for specs](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-spec.yml)
+[![CI for interpreter & tests](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml/badge.svg)](https://github.com/WebAssembly/spec/actions/workflows/ci-interpreter.yml)
 
 # spec
 
