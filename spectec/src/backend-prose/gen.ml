@@ -20,8 +20,8 @@ let transpile_expr =
     post_expr = Il2al.Transpile.simplify_record_concat
   }
 
-let exp_to_expr e = exp2expr e |> transpile_expr
-let exp_to_args es = exp2args es |> List.map transpile_expr
+let exp_to_expr e = translate_expr e |> transpile_expr
+let exp_to_args es = translate_args es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   let fail _ =
@@ -44,7 +44,7 @@ let rec if_expr_to_instrs e =
           IfI (isDefinedE (varE name), body)
       | _ -> fail() ]
   | Ast.BinE (Ast.EquivOp, e1, e2) ->
-      [ EquivI (exp2expr e1, exp2expr e2) ]
+      [ EquivI (exp_to_expr e1, exp_to_expr e2) ]
   | _ -> [ fail() ]
 
 let rec prem_to_instrs prem = match prem.it with
@@ -87,7 +87,7 @@ let vrule_group_to_prose ((_name, vrules): vrule_group) =
   | Ast.CaseE (Ast.Atom winstr_name, _) -> winstr_name
   | _ -> failwith "unreachable"
   in
-  let name = name2kwd winstr_name winstr.note in
+  let name = kwd winstr_name winstr.note in
   (* params *)
   let params = get_params winstr |> List.map exp_to_expr in
   (* body *)
