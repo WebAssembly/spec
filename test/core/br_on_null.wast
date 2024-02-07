@@ -64,3 +64,46 @@
 
 (assert_return (invoke "args-null" (i32.const 3)) (i32.const 3))
 (assert_return (invoke "args-f" (i32.const 3)) (i32.const 9))
+
+;; https://github.com/WebAssembly/gc/issues/516
+(assert_invalid
+ (module
+   (type $ty (func))
+
+   (func $ty_ref_to_func_ref (param (ref null $ty)) (result funcref)
+     local.get 0
+   )
+
+   (func (param funcref) (result funcref)
+     ref.null $ty
+     local.get 0
+
+     ;; This instruction is typed `[funcref funcref] -> [funcref (ref
+     ;; func)]`. The stack coming into this instruction is `[(ref null $ty)
+     ;; funcref]` which matches because of `(ref null $ty) <: funcref`. However,
+     ;; that subtyping relation doesn't mean that this instruction can *push* a
+     ;; `(ref null $ty)`. The label type effectively erases the `(ref null
+     ;; $ty)`, turning it into an `funcref`. Finally, a type mismatch error
+     ;; should be reported at the `call` instruction below, which expects a
+     ;; `(ref null $ty)` but is given the `funcref` (that is "actually" a `(ref
+     ;; null $ty)`).
+     ;;
+     ;; This tests that validators are correctly doing
+     ;;
+     ;;     pop_operands(label_types)
+     ;;     push_operands(label_types)
+     ;;
+     ;; rather than incorrectly doing either
+     ;;
+     ;;     push_operands(pop_operands(label_types))
+     ;;
+     ;; or just inspecting the types on the stack without any pushing or
+     ;; popping, neither of which handle subtyping correctly.
+     br_on_null 0
+
+     drop
+     call $ty_ref_to_func_ref
+   )
+ )
+"type mismatch"
+)

@@ -280,24 +280,3 @@
   )
   "type mismatch"
 )
-
-;; https://github.com/WebAssembly/gc/issues/516
-(assert_invalid
-  (module
-    (func (param anyref) (result anyref)
-      ref.null struct
-      local.get 0
-      ;; This instruction is typed `[anyref anyref] -> [anyref (ref any)]`. The stack
-      ;; coming into this instruction is `[structref anyref]` which matches because of
-      ;; `structref <: anyref`. However, that subtyping relation doesn't mean that this
-      ;; instruction can *push* a `structref`. The label type effectively erases the
-      ;; `structref`, turning it into an `anyref`. Finally, a type mismatch error should
-      ;; be reported at the `br_on_cast_fail` instruction, which expects a `structref`
-      ;; but is given the `anyref` (that is "actually" a `structref`).
-      br_on_null 0
-      drop
-      br_on_cast_fail 0  structref structref
-    )
-  )
-  "type mismatch"
-)
