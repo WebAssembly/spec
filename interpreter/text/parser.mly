@@ -24,10 +24,9 @@ let positions_to_region position1 position2 =
     right = position_to_pos position2
   }
 
-let at () =
-  positions_to_region (Parsing.symbol_start_pos ()) (Parsing.symbol_end_pos ())
-let ati i =
-  positions_to_region (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos i)
+let at (l, r) = positions_to_region l r
+
+let (@@) x loc = x @@ at loc
 
 
 (* Literals *)
@@ -35,36 +34,38 @@ let ati i =
 let num f s =
   try f s with Failure _ -> error s.at "constant out of range"
 
-let vec f shape ss at =
-  try f shape ss at with
-  | Failure _ -> error at "constant out of range"
-  | Invalid_argument _ -> error at "wrong number of lane literals"
+let vec f shape ss loc =
+  try f shape ss (at loc) with
+  | Failure _ -> error (at loc) "constant out of range"
+  | Invalid_argument _ -> error (at loc) "wrong number of lane literals"
 
-let vec_lane_nan shape l at =
+let vec_lane_nan shape l at' =
   let open Value in
+  let open Source in
   match shape with
-  | V128.F32x4 () -> NanPat (F32 l @@ at)
-  | V128.F64x2 () -> NanPat (F64 l @@ at)
-  | _ -> error at "invalid vector constant"
+  | V128.F32x4 () -> NanPat (F32 l @@ at')
+  | V128.F64x2 () -> NanPat (F64 l @@ at')
+  | _ -> error at' "invalid vector constant"
 
-let vec_lane_lit shape l at =
+let vec_lane_lit shape l at' =
   let open Value in
+  let open Source in
   match shape with
-  | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at)
-  | V128.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at)
-  | V128.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at)
-  | V128.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at)
-  | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at)
-  | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at)
+  | V128.I8x16 () -> NumPat (I32 (I8.of_string l) @@ at')
+  | V128.I16x8 () -> NumPat (I32 (I16.of_string l) @@ at')
+  | V128.I32x4 () -> NumPat (I32 (I32.of_string l) @@ at')
+  | V128.I64x2 () -> NumPat (I64 (I64.of_string l) @@ at')
+  | V128.F32x4 () -> NumPat (F32 (F32.of_string l) @@ at')
+  | V128.F64x2 () -> NumPat (F64 (F64.of_string l) @@ at')
 
 let vec_lane_index s at =
   match int_of_string s with
   | n when 0 <= n && n < 256 -> n
   | _ | exception Failure _ -> error at "malformed lane index"
 
-let shuffle_lit ss at =
+let shuffle_lit ss loc =
   if not (List.length ss = 16) then
-    error at "invalid lane length";
+    error (at loc) "invalid lane length";
   List.map (fun s -> vec_lane_index s.it s.at) ss
 
 let nanop f nan =
@@ -75,17 +76,17 @@ let nanop f nan =
   | F64 _ -> F64 nan.it @@ nan.at
   | I32 _ | I64 _ -> error nan.at "NaN pattern with non-float type"
 
-let nat s at =
+let nat s loc =
   try
     let n = int_of_string s in
     if n >= 0 then n else raise (Failure "")
-  with Failure _ -> error at "integer constant out of range"
+  with Failure _ -> error (at loc) "integer constant out of range"
 
-let nat32 s at =
-  try I32.of_string_u s with Failure _ -> error at "i32 constant out of range"
+let nat32 s loc =
+  try I32.of_string_u s with Failure _ -> error (at loc) "i32 constant out of range"
 
-let name s at =
-  try Utf8.decode s with Utf8.Utf8 -> error at "malformed UTF-8 encoding"
+let name s loc =
+  try Utf8.decode s with Utf8.Utf8 -> error (at loc) "malformed UTF-8 encoding"
 
 
 (* Symbolic variables *)
@@ -127,9 +128,9 @@ let empty_context () =
     deferred_locals = ref []
   }
 
-let enter_block (c : context) at = {c with labels = scoped "label" 1l c.labels at}
-let enter_let (c : context) at = {c with locals = empty (); deferred_locals = ref []}
-let enter_func (c : context) at = {(enter_let c at) with labels = empty ()}
+let enter_block (c : context) loc = {c with labels = scoped "label" 1l c.labels (at loc)}
+let enter_let (c : context) loc = {c with locals = empty (); deferred_locals = ref []}
+let enter_func (c : context) loc = {(enter_let c at) with labels = empty ()}
 
 let defer_locals (c : context) f =
   c.deferred_locals := (fun () -> ignore (f ())) :: !(c.deferred_locals)
@@ -186,36 +187,36 @@ let define_type (c : context) (ty : type_) =
   c.types.list <- c.types.list @ [ty]
 
 
-let anon_type (c : context) at = bind "type" c.types.space 1l at
-let anon_func (c : context) at = bind "function" c.funcs 1l at
-let anon_locals (c : context) n at =
-  defer_locals c (fun () -> bind "local" c.locals n at)
-let anon_global (c : context) at = bind "global" c.globals 1l at
-let anon_table (c : context) at = bind "table" c.tables 1l at
-let anon_memory (c : context) at = bind "memory" c.memories 1l at
-let anon_elem (c : context) at = bind "elem segment" c.elems 1l at
-let anon_data (c : context) at = bind "data segment" c.datas 1l at
-let anon_label (c : context) at = bind "label" c.labels 1l at
+let anon_type (c : context) loc = bind "type" c.types.space 1l (at loc)
+let anon_func (c : context) loc = bind "function" c.funcs 1l (at loc)
+let anon_locals (c : context) n loc =
+  defer_locals c (fun () -> bind "local" c.locals n (at loc))
+let anon_global (c : context) loc = bind "global" c.globals 1l (at loc)
+let anon_table (c : context) loc = bind "table" c.tables 1l (at loc)
+let anon_memory (c : context) loc = bind "memory" c.memories 1l (at loc)
+let anon_elem (c : context) loc = bind "elem segment" c.elems 1l (at loc)
+let anon_data (c : context) loc = bind "data segment" c.datas 1l (at loc)
+let anon_label (c : context) loc = bind "label" c.labels 1l (at loc)
 
 
-let inline_func_type (c : context) ft at =
+let inline_func_type (c : context) ft loc =
   let dt = DefFuncT ft in
   match Lib.List.index_where (fun ty -> ty.it = dt) c.types.list with
-  | Some i -> Int32.of_int i @@ at
+  | Some i -> Int32.of_int i @@ loc
   | None ->
-    let i = anon_type c at in define_type c (dt @@ at);
-    i @@ at
+    let i = anon_type c loc in define_type c (dt @@ loc);
+    i @@ loc
 
-let inline_func_type_explicit (c : context) x ft at =
+let inline_func_type_explicit (c : context) x ft loc =
   if ft = FuncT ([], []) then
     (* Deferring ensures that type lookup is only triggered when
        symbolic identifiers are used, and not for desugared functions *)
     defer_locals c (fun () ->
       let FuncT (ts1, _ts2) = func_type c x in
-      bind "local" c.locals (Lib.List32.length ts1) at
+      bind "local" c.locals (Lib.List32.length ts1) (at loc)
     )
   else if ft <> func_type c x then
-    error at "inline function type does not match explicit type";
+    error (at loc) "inline function type does not match explicit type";
   x
 
 %}
@@ -267,7 +268,7 @@ let inline_func_type_explicit (c : context) x ft at =
 /* Auxiliaries */
 
 name :
-  | STRING { name $1 (at ()) }
+  | STRING { name $1 $sloc }
 
 string_list :
   | /* empty */ { "" }
@@ -329,8 +330,8 @@ memory_type :
   | limits { fun c -> MemoryT $1 }
 
 limits :
-  | NAT { {min = nat32 $1 (ati 1); max = None} }
-  | NAT NAT { {min = nat32 $1 (ati 1); max = Some (nat32 $2 (ati 2))} }
+  | NAT { {min = nat32 $1 $loc($1); max = None} }
+  | NAT NAT { {min = nat32 $1 $loc($1); max = Some (nat32 $2 $loc($2))} }
 
 type_use :
   | LPAR TYPE var RPAR { fun c -> $3 c type_ }
@@ -339,33 +340,33 @@ type_use :
 /* Immediates */
 
 num :
-  | NAT { $1 @@ at () }
-  | INT { $1 @@ at () }
-  | FLOAT { $1 @@ at () }
+  | NAT { $1 @@ $sloc }
+  | INT { $1 @@ $sloc }
+  | FLOAT { $1 @@ $sloc }
 
 var :
-  | NAT { let at = at () in fun c lookup -> nat32 $1 at @@ at }
-  | VAR { let at = at () in fun c lookup -> lookup c ($1 @@ at) @@ at }
+  | NAT { let at = $sloc in fun c lookup -> nat32 $1 at @@ at }
+  | VAR { let at = $sloc in fun c lookup -> lookup c ($1 @@ at) @@ at }
 
 var_list :
   | /* empty */ { fun c lookup -> [] }
   | var var_list { fun c lookup -> $1 c lookup :: $2 c lookup }
 
 bind_var_opt :
-  | /* empty */ { let at = at () in fun c anon bind -> anon c at }
+  | /* empty */ { let at = $sloc in fun c anon bind -> anon c at }
   | bind_var { fun c anon bind -> bind c $1 }  /* Sugar */
 
 bind_var :
-  | VAR { $1 @@ at () }
+  | VAR { $1 @@ $sloc }
 
 labeling_opt :
   | /* empty */
-    { let at = at () in
+    { let at = $sloc in
       fun c xs ->
       List.iter (fun x -> error x.at "mismatching label") xs;
       let c' = enter_block c at in ignore (anon_label c' at); c' }
   | bind_var
-    { let at = at () in
+    { let at = $sloc in
       fun c xs ->
       List.iter
         (fun x -> if x.it <> $1.it then error x.at "mismatching label") xs;
@@ -377,14 +378,14 @@ labeling_end_opt :
 
 offset_opt :
   | /* empty */ { 0l }
-  | OFFSET_EQ_NAT { nat32 $1 (at ()) }
+  | OFFSET_EQ_NAT { nat32 $1 $sloc }
 
 align_opt :
   | /* empty */ { None }
   | ALIGN_EQ_NAT
-    { let n = nat $1 (at ()) in
+    { let n = nat $1 $sloc in
       if not (Lib.Int.is_power_of_two n) then
-        error (at ()) "alignment must be a power of two";
+        error (at $sloc) "alignment must be a power of two";
       Some (Lib.Int.log2 n) }
 
 
@@ -397,8 +398,8 @@ instr_list :
   | call_instr_instr_list { $1 }
 
 instr1 :
-  | plain_instr { let at = at () in fun c -> [$1 c @@ at] }
-  | block_instr { let at = at () in fun c -> [$1 c @@ at] }
+  | plain_instr { let at = $sloc in fun c -> [$1 c @@ at] }
+  | block_instr { let at = $sloc in fun c -> [$1 c @@ at] }
   | expr { $1 }  /* Sugar */
 
 plain_instr :
@@ -429,24 +430,24 @@ plain_instr :
   | TABLE_FILL var { fun c -> table_fill ($2 c table) }
   | TABLE_COPY var var { fun c -> table_copy ($2 c table) ($3 c table) }
   | TABLE_INIT var var { fun c -> table_init ($2 c table) ($3 c elem) }
-  | TABLE_GET { let at = at () in fun c -> table_get (0l @@ at) }  /* Sugar */
-  | TABLE_SET { let at = at () in fun c -> table_set (0l @@ at) }  /* Sugar */
-  | TABLE_SIZE { let at = at () in fun c -> table_size (0l @@ at) }  /* Sugar */
-  | TABLE_GROW { let at = at () in fun c -> table_grow (0l @@ at) }  /* Sugar */
-  | TABLE_FILL { let at = at () in fun c -> table_fill (0l @@ at) }  /* Sugar */
+  | TABLE_GET { let at = $sloc in fun c -> table_get (0l @@ at) }  /* Sugar */
+  | TABLE_SET { let at = $sloc in fun c -> table_set (0l @@ at) }  /* Sugar */
+  | TABLE_SIZE { let at = $sloc in fun c -> table_size (0l @@ at) }  /* Sugar */
+  | TABLE_GROW { let at = $sloc in fun c -> table_grow (0l @@ at) }  /* Sugar */
+  | TABLE_FILL { let at = $sloc in fun c -> table_fill (0l @@ at) }  /* Sugar */
   | TABLE_COPY  /* Sugar */
-    { let at = at () in fun c -> table_copy (0l @@ at) (0l @@ at) }
+    { let at = $sloc in fun c -> table_copy (0l @@ at) (0l @@ at) }
   | TABLE_INIT var  /* Sugar */
-    { let at = at () in fun c -> table_init (0l @@ at) ($2 c elem) }
+    { let at = $sloc in fun c -> table_init (0l @@ at) ($2 c elem) }
   | ELEM_DROP var { fun c -> elem_drop ($2 c elem) }
   | LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | VEC_LOAD offset_opt align_opt { fun c -> $1 $3 $2 }
   | VEC_STORE offset_opt align_opt { fun c -> $1 $3 $2 }
   | VEC_LOAD_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
+    { let at = at $sloc in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
   | VEC_STORE_LANE offset_opt align_opt NAT
-    { let at = at () in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
+    { let at = at $sloc in fun c -> $1 $3 $2 (vec_lane_index $4 at) }
   | MEMORY_SIZE { fun c -> memory_size }
   | MEMORY_GROW { fun c -> memory_grow }
   | MEMORY_FILL { fun c -> memory_fill }
@@ -463,22 +464,22 @@ plain_instr :
   | UNARY { fun c -> $1 }
   | BINARY { fun c -> $1 }
   | CONVERT { fun c -> $1 }
-  | VEC_CONST VEC_SHAPE list(num) { let at = at () in fun c -> fst (vec $1 $2 $3 at) }
+  | VEC_CONST VEC_SHAPE list(num) { let at = $sloc in fun c -> fst (vec $1 $2 $3 at) }
   | VEC_UNARY { fun c -> $1 }
   | VEC_BINARY { fun c -> $1 }
   | VEC_TERNARY { fun c -> $1 }
   | VEC_TEST { fun c -> $1 }
   | VEC_SHIFT { fun c -> $1 }
   | VEC_BITMASK { fun c -> $1 }
-  | VEC_SHUFFLE list(num) { let at = at () in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
+  | VEC_SHUFFLE list(num) { let at = $sloc in fun c -> i8x16_shuffle (shuffle_lit $2 at) }
   | VEC_SPLAT { fun c -> $1 }
-  | VEC_EXTRACT NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
-  | VEC_REPLACE NAT { let at = at () in fun c -> $1 (vec_lane_index $2 at) }
+  | VEC_EXTRACT NAT { let at = at $sloc in fun c -> $1 (vec_lane_index $2 at) }
+  | VEC_REPLACE NAT { let at = at $sloc in fun c -> $1 (vec_lane_index $2 at) }
 
 
 select_instr_instr_list :
   | SELECT select_instr_results_instr_list
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let b, ts, es = $2 c in
       (select (if b then (Some ts) else None) @@ at1) :: es }
 
@@ -491,31 +492,31 @@ select_instr_results_instr_list :
 
 call_instr_instr_list :
   | CALL_INDIRECT var call_instr_type_instr_list
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $3 c in
       (call_indirect ($2 c table) x @@ at1) :: es }
   | CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $2 c in
       (call_indirect (0l @@ at1) x @@ at1) :: es }
   | RETURN_CALL_INDIRECT var call_instr_type_instr_list
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $3 c in
       (return_call_indirect ($2 c table) x @@ at1) :: es }
   | RETURN_CALL_INDIRECT call_instr_type_instr_list  /* Sugar */
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $2 c in
       (return_call_indirect (0l @@ at1) x @@ at1) :: es }
 
 call_instr_type_instr_list :
   | type_use call_instr_params_instr_list
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c ->
       match $2 c with
       | FuncT ([], []), es -> $1 c, es
       | ft, es -> inline_func_type_explicit c ($1 c) ft at1, es }
   | call_instr_params_instr_list
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let ft, es = $1 c in inline_func_type c ft at, es }
 
 call_instr_params_instr_list :
@@ -545,12 +546,12 @@ block_instr :
 
 block :
   | type_use block_param_body
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let ft, es = $2 c in
       let x = inline_func_type_explicit c ($1 c) ft at1 in
       VarBlockType x, es }
   | block_param_body  /* Sugar */
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let ft, es = $1 c in
       let bt =
         match ft with
@@ -574,7 +575,7 @@ block_result_body :
 
 expr :  /* Sugar */
   | LPAR expr1 RPAR
-    { let at = at () in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
+    { let at = $sloc in fun c -> let es, e' = $2 c in es @ [e' @@ at] }
 
 expr1 :  /* Sugar */
   | plain_instr expr_list { fun c -> $2 c, $1 c }
@@ -583,12 +584,12 @@ expr1 :  /* Sugar */
   | CALL_INDIRECT var call_expr_type
     { fun c -> let x, es = $3 c in es, call_indirect ($2 c table) x }
   | CALL_INDIRECT call_expr_type  /* Sugar */
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $2 c in es, call_indirect (0l @@ at1) x }
   | RETURN_CALL_INDIRECT var call_expr_type
     { fun c -> let x, es = $3 c in es, return_call_indirect ($2 c table) x }
   | RETURN_CALL_INDIRECT call_expr_type  /* Sugar */
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let x, es = $2 c in es, return_call_indirect (0l @@ at1) x }
   | BLOCK labeling_opt block
     { fun c -> let c' = $2 c [] in let bt, es = $3 c' in [], block bt es }
@@ -606,13 +607,13 @@ select_expr_results :
 
 call_expr_type :
   | type_use call_expr_params
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c ->
       match $2 c with
       | FuncT ([], []), es -> $1 c, es
       | ft, es -> inline_func_type_explicit c ($1 c) ft at1, es }
   | call_expr_params
-    { let at1 = ati 1 in
+    { let at1 = $loc($1) in
       fun c -> let ft, es = $1 c in inline_func_type c ft at1, es }
 
 call_expr_params :
@@ -631,12 +632,12 @@ call_expr_results :
 
 if_block :
   | type_use if_block_param_body
-    { let at = at () in
+    { let at = $sloc in
       fun c c' -> let ft, es = $2 c c' in
       let x = inline_func_type_explicit c ($1 c) ft at in
       VarBlockType x, es }
   | if_block_param_body  /* Sugar */
-    { let at = at () in
+    { let at = $sloc in
       fun c c' -> let ft, es = $1 c c' in
       let bt =
         match ft with
@@ -671,17 +672,17 @@ expr_list :
   | expr expr_list { fun c -> $1 c @ $2 c }
 
 const_expr :
-  | instr_list { let at = at () in fun c -> $1 c @@ at }
+  | instr_list { let at = $sloc in fun c -> $1 c @@ at }
 
 const_expr1 :
-  | instr1 instr_list { let at = at () in fun c -> ($1 c @ $2 c) @@ at }
+  | instr1 instr_list { let at = $sloc in fun c -> ($1 c @ $2 c) @@ at }
 
 
 /* Functions */
 
 func :
   | LPAR FUNC bind_var_opt func_fields RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let x = $3 c anon_func bind_func @@ at in fun () -> $4 c x at }
 
 func_fields :
@@ -726,7 +727,7 @@ func_fields_import_result :  /* Sugar */
 func_fields_body :
   | func_result_body { $1 }
   | LPAR PARAM val_type_list RPAR func_fields_body
-    { let at3 = ati 3 in
+    { let at3 = $loc($3) in
       (fun c -> let FuncT (ts1, ts2) = fst $5 c in
         FuncT (snd $3 c @ ts1, ts2)),
       (fun c -> anon_locals c (fst $3) at3; snd $5 c) }
@@ -744,11 +745,11 @@ func_result_body :
 
 func_body :
   | instr_list
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore (anon_label c at);
       {ftype = -1l @@ at; locals = []; body = $1 c} }
   | LPAR LOCAL local_type_list RPAR func_body
-    { let at3 = ati 3 in
+    { let at3 = $loc($3) in
       fun c -> anon_locals c (fst $3) at3; let f = $5 c in
       {f with locals = snd $3 c @ f.Ast.locals} }
   | LPAR LOCAL bind_var local_type RPAR func_body  /* Sugar */
@@ -756,7 +757,7 @@ func_body :
       {f with locals = $4 c :: f.Ast.locals} }
 
 local_type :
-  | val_type { let at = at () in fun c -> {ltype = $1 c} @@ at }
+  | val_type { let at = $sloc in fun c -> {ltype = $1 c} @@ at }
 
 local_type_list :
   | list(local_type)
@@ -773,14 +774,14 @@ memory_use :
 
 offset :
   | LPAR OFFSET const_expr RPAR { $3 }
-  | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
+  | expr { let at = $sloc in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_kind :
   | FUNC { (NoNull, FuncHT) }
 
 elem_expr :
   | LPAR ITEM const_expr RPAR { $3 }
-  | expr { let at = at () in fun c -> $1 c @@ at }  /* Sugar */
+  | expr { let at = $sloc in fun c -> $1 c @@ at }  /* Sugar */
 
 elem_expr_list :
   | /* empty */ { fun c -> [] }
@@ -788,7 +789,7 @@ elem_expr_list :
 
 elem_var_list :
   | var_list
-    { let f = function {at; _} as x -> [ref_func x @@ at] @@ at in
+    { let f = function {at = at'; _} as x -> Source.([ref_func x @@ at'] @@ at') in
       fun c -> List.map f ($1 c func) }
 
 elem_list :
@@ -800,29 +801,29 @@ elem_list :
 
 elem :
   | LPAR ELEM bind_var_opt elem_list RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let etype, einit = $4 c in
       { etype; einit; emode = Passive @@ at } @@ at }
   | LPAR ELEM bind_var_opt table_use offset elem_list RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let etype, einit = $6 c in
       { etype; einit;
         emode = Active {index = $4 c table; offset = $5 c} @@ at } @@ at }
   | LPAR ELEM bind_var_opt DECLARE elem_list RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let etype, einit = $5 c in
       { etype; einit; emode = Declarative @@ at } @@ at }
   | LPAR ELEM bind_var_opt offset elem_list RPAR  /* Sugar */
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () -> let etype, einit = $5 c in
       { etype; einit;
         emode = Active {index = 0l @@ at; offset = $4 c} @@ at } @@ at }
   | LPAR ELEM bind_var_opt offset elem_var_list RPAR  /* Sugar */
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_elem bind_elem);
       fun () ->
       { etype = (NoNull, FuncHT); einit = $5 c;
@@ -830,7 +831,7 @@ elem :
 
 table :
   | LPAR TABLE bind_var_opt table_fields RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let x = $3 c anon_table bind_table @@ at in
       fun () -> $4 c x at }
 
@@ -873,23 +874,23 @@ table_fields :
 
 data :
   | LPAR DATA bind_var_opt string_list RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_data bind_data);
       fun () -> {dinit = $4; dmode = Passive @@ at} @@ at }
   | LPAR DATA bind_var_opt memory_use offset string_list RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
       {dinit = $6; dmode = Active {index = $4 c memory; offset = $5 c} @@ at} @@ at }
   | LPAR DATA bind_var_opt offset string_list RPAR  /* Sugar */
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore ($3 c anon_data bind_data);
       fun () ->
       {dinit = $5; dmode = Active {index = 0l @@ at; offset = $4 c} @@ at} @@ at }
 
 memory :
   | LPAR MEMORY bind_var_opt memory_fields RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let x = $3 c anon_memory bind_memory @@ at in
       fun () -> $4 c x at }
 
@@ -914,7 +915,7 @@ memory_fields :
 
 global :
   | LPAR GLOBAL bind_var_opt global_fields RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> let x = $3 c anon_global bind_global @@ at in
       fun () -> $4 c x at }
 
@@ -938,7 +939,7 @@ import_desc :
     { fun c -> ignore ($3 c anon_func bind_func);
       fun () -> FuncImport ($4 c) }
   | LPAR FUNC bind_var_opt func_type RPAR  /* Sugar */
-    { let at4 = ati 4 in
+    { let at4 = $loc($4) in
       fun c -> ignore ($3 c anon_func bind_func);
       fun () -> FuncImport (inline_func_type c ($4 c) at4) }
   | LPAR TABLE bind_var_opt table_type RPAR
@@ -953,7 +954,7 @@ import_desc :
 
 import :
   | LPAR IMPORT name name import_desc RPAR
-    { let at = at () and at5 = ati 5 in
+    { let at = $sloc and at5 = $loc($5) in
       fun c -> let df = $5 c in
       fun () -> {module_name = $3; item_name = $4; idesc = df () @@ at5} @@ at }
 
@@ -968,29 +969,29 @@ export_desc :
 
 export :
   | LPAR EXPORT name export_desc RPAR
-    { let at = at () and at4 = ati 4 in
+    { let at = $sloc and at4 = $loc($4) in
       fun c -> {name = $3; edesc = $4 c @@ at4} @@ at }
 
 inline_export :
   | LPAR EXPORT name RPAR
-    { let at = at () in fun d c -> {name = $3; edesc = d @@ at} @@ at }
+    { let at = $sloc in fun d c -> {name = $3; edesc = d @@ at} @@ at }
 
 
 /* Modules */
 
 type_ :
-  | def_type { let at = at () in fun c -> define_type c ($1 c @@ at) }
+  | def_type { let at = $sloc in fun c -> define_type c ($1 c @@ at) }
 
 type_def :
   | LPAR TYPE type_ RPAR
-    { let at = at () in
+    { let at = $sloc in
       fun c -> ignore (anon_type c at); fun () -> $3 c }
   | LPAR TYPE bind_var type_ RPAR  /* Sugar */
     { fun c -> ignore (bind_type c $3); fun () -> $4 c }
 
 start :
   | LPAR START var RPAR
-    { let at = at () in fun c -> {sfunc = $3 c func} @@ at }
+    { let at = $sloc in fun c -> {sfunc = $3 c func} @@ at }
 
 module_fields :
   | /* empty */
@@ -1063,98 +1064,98 @@ module_fields1 :
       {m with exports = $1 c :: m.exports} }
 
 module_var :
-  | VAR { $1 @@ at () }  /* Sugar */
+  | VAR { $1 @@ $sloc }  /* Sugar */
 
 module_ :
   | LPAR MODULE option(module_var) module_fields RPAR
-    { $3, Textual ($4 (empty_context ()) () () @@ at ()) @@ at () }
+    { $3, Textual ($4 (empty_context ()) () () @@ $sloc) @@ $sloc }
 
 inline_module :  /* Sugar */
-  | module_fields { Textual ($1 (empty_context ()) () () @@ at ()) @@ at () }
+  | module_fields { Textual ($1 (empty_context ()) () () @@ $sloc) @@ $sloc }
 
 inline_module1 :  /* Sugar */
-  | module_fields1 { Textual ($1 (empty_context ()) () () @@ at ()) @@ at () }
+  | module_fields1 { Textual ($1 (empty_context ()) () () @@ $sloc) @@ $sloc }
 
 
 /* Scripts */
 
 script_var :
-  | VAR { $1 @@ at () }  /* Sugar */
+  | VAR { $1 @@ $sloc }  /* Sugar */
 
 script_module :
   | module_ { $1 }
   | LPAR MODULE option(module_var) BIN string_list RPAR
-    { $3, Encoded ("binary:" ^ string_of_pos (at()).left, $5) @@ at() }
+    { $3, Encoded ("binary:" ^ string_of_pos (at $sloc).left, $5) @@ $sloc }
   | LPAR MODULE option(module_var) QUOTE string_list RPAR
-    { $3, Quoted ("quote:" ^ string_of_pos (at()).left, $5) @@ at() }
+    { $3, Quoted ("quote:" ^ string_of_pos (at $sloc).left, $5) @@ $sloc }
 
 action :
   | LPAR INVOKE option(module_var) name list(literal) RPAR
-    { Invoke ($3, $4, $5) @@ at () }
+    { Invoke ($3, $4, $5) @@ $sloc }
   | LPAR GET option(module_var) name RPAR
-    { Get ($3, $4) @@ at() }
+    { Get ($3, $4) @@ $sloc }
 
 assertion :
   | LPAR ASSERT_MALFORMED script_module STRING RPAR
-    { AssertMalformed (snd $3, $4) @@ at () }
+    { AssertMalformed (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_INVALID script_module STRING RPAR
-    { AssertInvalid (snd $3, $4) @@ at () }
+    { AssertInvalid (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_UNLINKABLE script_module STRING RPAR
-    { AssertUnlinkable (snd $3, $4) @@ at () }
+    { AssertUnlinkable (snd $3, $4) @@ $sloc }
   | LPAR ASSERT_TRAP script_module STRING RPAR
-    { AssertUninstantiable (snd $3, $4) @@ at () }
-  | LPAR ASSERT_RETURN action list(result) RPAR { AssertReturn ($3, $4) @@ at () }
-  | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ at () }
-  | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ at () }
+    { AssertUninstantiable (snd $3, $4) @@ $sloc }
+  | LPAR ASSERT_RETURN action list(result) RPAR { AssertReturn ($3, $4) @@ $sloc }
+  | LPAR ASSERT_TRAP action STRING RPAR { AssertTrap ($3, $4) @@ $sloc }
+  | LPAR ASSERT_EXHAUSTION action STRING RPAR { AssertExhaustion ($3, $4) @@ $sloc }
 
 cmd :
-  | action { Action $1 @@ at () }
-  | assertion { Assertion $1 @@ at () }
-  | script_module { Module (fst $1, snd $1) @@ at () }
-  | LPAR REGISTER name option(module_var) RPAR { Register ($3, $4) @@ at () }
-  | meta { Meta $1 @@ at () }
+  | action { Action $1 @@ $sloc }
+  | assertion { Assertion $1 @@ $sloc }
+  | script_module { Module (fst $1, snd $1) @@ $sloc }
+  | LPAR REGISTER name option(module_var) RPAR { Register ($3, $4) @@ $sloc }
+  | meta { Meta $1 @@ $sloc }
 
 meta :
-  | LPAR SCRIPT option(script_var) list(cmd) RPAR { Script ($3, $4) @@ at () }
-  | LPAR INPUT option(script_var) STRING RPAR { Input ($3, $4) @@ at () }
-  | LPAR OUTPUT option(script_var) STRING RPAR { Output ($3, Some $4) @@ at () }
-  | LPAR OUTPUT option(script_var) RPAR { Output ($3, None) @@ at () }
+  | LPAR SCRIPT option(script_var) list(cmd) RPAR { Script ($3, $4) @@ $sloc }
+  | LPAR INPUT option(script_var) STRING RPAR { Input ($3, $4) @@ $sloc }
+  | LPAR OUTPUT option(script_var) STRING RPAR { Output ($3, Some $4) @@ $sloc }
+  | LPAR OUTPUT option(script_var) RPAR { Output ($3, None) @@ $sloc }
 
 literal_num :
   | LPAR CONST num RPAR { snd (num $2 $3) }
 
 literal_vec :
-  | LPAR VEC_CONST VEC_SHAPE list(num) RPAR { snd (vec $2 $3 $4 (at ())) }
+  | LPAR VEC_CONST VEC_SHAPE list(num) RPAR { snd (vec $2 $3 $4 $sloc) }
 
 literal_ref :
   | LPAR REF_NULL heap_type RPAR { Value.NullRef ($3 (empty_context ())) }
-  | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 (ati 3)) }
+  | LPAR REF_EXTERN NAT RPAR { Script.ExternRef (nat32 $3 $loc($3)) }
 
 literal :
-  | literal_num { Value.Num $1 @@ at () }
-  | literal_vec { Value.Vec $1 @@ at () }
-  | literal_ref { Value.Ref $1 @@ at () }
+  | literal_num { Value.Num $1 @@ $sloc }
+  | literal_vec { Value.Vec $1 @@ $sloc }
+  | literal_ref { Value.Ref $1 @@ $sloc }
 
 numpat :
   | num { fun sh -> vec_lane_lit sh $1.it $1.at }
-  | NAN { fun sh -> vec_lane_nan sh $1 (ati 3) }
+  | NAN { fun sh -> vec_lane_nan sh $1 (at $sloc) }
 
 result :
-  | literal_num { NumResult (NumPat ($1 @@ at())) @@ at () }
-  | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ ati 3))) @@ at () }
-  | literal_ref { RefResult (RefPat ($1 @@ at ())) @@ at () }
-  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ at () }
-  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ at () }
-  | LPAR REF_NULL RPAR { RefResult NullPat @@ at () }
+  | literal_num { NumResult (NumPat ($1 @@ $sloc)) @@ $sloc }
+  | LPAR CONST NAN RPAR { NumResult (NanPat (nanop $2 ($3 @@ $loc($3)))) @@ $sloc }
+  | literal_ref { RefResult (RefPat ($1 @@ $sloc)) @@ $sloc }
+  | LPAR REF_FUNC RPAR { RefResult (RefTypePat FuncHT) @@ $sloc }
+  | LPAR REF_EXTERN RPAR { RefResult (RefTypePat ExternHT) @@ $sloc }
+  | LPAR REF_NULL RPAR { RefResult NullPat @@ $sloc }
   | LPAR VEC_CONST VEC_SHAPE list(numpat) RPAR {
     if V128.num_lanes $3 <> List.length $4 then
-      error (at ()) "wrong number of lane literals";
-    VecResult (VecPat (Value.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ at ()
+      error (at $sloc) "wrong number of lane literals";
+    VecResult (VecPat (Value.V128 ($3, List.map (fun lit -> lit $3) $4))) @@ $sloc
   }
 
 script :
   | list(cmd) EOF { $1 }
-  | inline_module1 EOF { [Module (None, $1) @@ at ()] }  /* Sugar */
+  | inline_module1 EOF { [Module (None, $1) @@ $sloc] }  /* Sugar */
 
 script1 :
   | cmd { [$1] }
