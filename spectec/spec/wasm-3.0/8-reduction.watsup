@@ -647,12 +647,12 @@ rule Step_pure/vshiftop:
 
 
 ;; TODO: introduce $vitestop for uniformity
-rule Step_pure/vall_true-true:
+rule Step_pure/vtestop-true:
   (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 1)
   -- if i_1* = $lanes_(inn X N, c)
   -- (if $(i_1 =/= 0))*
 
-rule Step_pure/vall_true-false:
+rule Step_pure/vtestop-false:
   (VCONST V128 c) (VTESTOP (inn X N) ALL_TRUE) ~> (CONST I32 0)
   -- otherwise
 

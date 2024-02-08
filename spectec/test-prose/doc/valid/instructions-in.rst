@@ -288,13 +288,13 @@ $${rule: Instr_ok/i31.get}
 Vector Instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. _valid-vvconst:
+.. _valid-vconst:
 
-$${rule-prose: valid/vvconst}
+$${rule-prose: valid/vconst}
 
 \
 
-$${rule: Instr_ok/vvconst}
+$${rule: Instr_ok/vconst}
 
 .. _valid-vvunop:
 
@@ -384,17 +384,17 @@ $${rule-prose: valid/vrelop}
 
 $${rule: Instr_ok/vrelop}
 
-.. _valid-vishiftop:
+.. _valid-vshiftop:
 
-$${rule-prose: valid/vishiftop}
+$${rule-prose: valid/vshiftop}
 
 \
 
-$${rule: Instr_ok/vishiftop}
+$${rule: Instr_ok/vshiftop}
 
 .. _valid-vtestop:
 
-$${rule-prose: valid/vall_true}
+$${rule-prose: valid/vtestop}
 
 \
 

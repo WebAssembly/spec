@@ -10,47 +10,23 @@ Numeric Instructions
 .. _syntax-fnn:
 .. _syntax-sx:
 .. _syntax-instr-numeric:
-.. _syntax-iunop:
-.. _syntax-funop:
-.. _syntax-ibinop:
-.. _syntax-fbinop:
-.. _syntax-itestop:
-.. _syntax-ftestop:
-.. _syntax-irelop:
-.. _syntax-frelop:
+.. _syntax-unop:
+.. _syntax-binop:
+.. _syntax-testop:
+.. _syntax-relop:
 
 $${syntax+: 
   {inn
   fnn}
   sx
   instr/numeric
-  {iunop
-  funop
-  ibinop
-  fbinop
-  itestop
-  ftestop
-  irelop
-  frelop}
+  {unop_
+  binop_
+  testop_
+  relop_
+  cvtop}
 }
 
-\
-
-Occasionally, it is convenient to group operators together according to the following grammar shorthands:
-
-.. _syntax-unop_numtype:
-.. _syntax-binop_numtype:
-.. _syntax-testop-numtype:
-.. _syntax-relop_numtype:
-.. _syntax-cvtop:
-
-$${syntax+:
-  unop_numtype
-  binop_numtype
-  testop_numtype
-  relop_numtype
-  cvtop
-}
 
 .. _syntax-instr-reference:
 

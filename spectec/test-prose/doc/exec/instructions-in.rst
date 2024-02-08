@@ -145,21 +145,21 @@ $${rule-prose: exec/vrelop}
 
 $${rule+: Step_pure/vrelop}
 
-.. _exec-vishiftop:
+.. _exec-vshiftop:
 
-$${rule-prose: exec/vishiftop}
-
-\
-
-$${rule+: Step_pure/vishiftop}
-
-.. _exec-vall_true:
-
-$${rule-prose: exec/vall_true}
+$${rule-prose: exec/vshiftop}
 
 \
 
-$${rule+: Step_pure/vall_true-*}
+$${rule+: Step_pure/vshiftop}
+
+.. _exec-vtestop:
+
+$${rule-prose: exec/vtestop}
+
+\
+
+$${rule+: Step_pure/vtestop-*}
 
 .. _exec-vbitmask:
 
