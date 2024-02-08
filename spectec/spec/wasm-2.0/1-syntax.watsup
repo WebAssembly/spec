@@ -306,27 +306,27 @@ syntax half hint(desc "lane part") = | LOW | HIGH
 syntax zero = ZERO?
 
 syntax instr/vector hint(desc "vector instruction") = ...
-  | VCONST vectype vconst_(vectype)           hint(show %.CONST %)
-  | VVUNOP vectype vvunop                     hint(show %.%)
-  | VVBINOP vectype vvbinop                   hint(show %.%)
-  | VVTERNOP vectype vvternop                 hint(show %.%)
-  | VVTESTOP vectype vvtestop                 hint(show %.%)
-  | VSWIZZLE shape                            hint(show %.SWIZZLE)
-  | VSHUFFLE shape laneidx*                   hint(show %.SHUFFLE %)
-  | VSPLAT shape                              hint(show %.SPLAT)
-  | VEXTRACT_LANE shape sx? laneidx           hint(show %.EXTRACT_LANE_#% %)
-  | VREPLACE_LANE shape laneidx               hint(show %.REPLACE_LANE %)
-  | VUNOP shape vunop_(shape)                 hint(show %.%)
-  | VBINOP shape vbinop_(shape)               hint(show %.%)
-  | VTESTOP shape vtestop_(shape)             hint(show %.%)
-  | VRELOP shape vrelop_(shape)               hint(show %.%)
-  | VSHIFTOP shape vshiftop_(shape)           hint(show %.%)
-  | VBITMASK shape                            hint(show %.BITMASK)
-  | VNARROW shape shape sx                    hint(show %.NARROW#_#%#_#%)
+  | VCONST vectype vconst_(vectype)     hint(show %.CONST %)
+  | VVUNOP vectype vvunop               hint(show %.%)
+  | VVBINOP vectype vvbinop             hint(show %.%)
+  | VVTERNOP vectype vvternop           hint(show %.%)
+  | VVTESTOP vectype vvtestop           hint(show %.%)
+  | VSWIZZLE shape                      hint(show %.SWIZZLE)
+  | VSHUFFLE shape laneidx*             hint(show %.SHUFFLE %)
+  | VSPLAT shape                        hint(show %.SPLAT)
+  | VEXTRACT_LANE shape sx? laneidx     hint(show %.EXTRACT_LANE_#% %)
+  | VREPLACE_LANE shape laneidx         hint(show %.REPLACE_LANE %)
+  | VUNOP shape vunop_(shape)           hint(show %.%)
+  | VBINOP shape vbinop_(shape)         hint(show %.%)
+  | VTESTOP shape vtestop_(shape)       hint(show %.%)
+  | VRELOP shape vrelop_(shape)         hint(show %.%)
+  | VSHIFTOP shape vshiftop_(shape)     hint(show %.%)
+  | VBITMASK shape                      hint(show %.BITMASK)
   | VCVTOP shape vcvtop half? shape sx? zero  hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
-  | VEXTMUL shape half shape sx               hint(show %.EXTMUL#_#%#_#%#_#%)
-  | VDOT shape shape sx                       hint(show %.DOT#_#%#_#%)
-  | VEXTADD_PAIRWISE shape shape sx           hint(show %.EXTADD_PAIRWISE_#%#_#%)
+  | VNARROW shape shape sx              hint(show %.NARROW#_#%#_#%)
+  | VEXTMUL shape half shape sx         hint(show %.EXTMUL#_#%#_#%#_#%)
+  | VDOT shape shape sx                 hint(show %.DOT#_#%#_#%)
+  | VEXTADD_PAIRWISE shape shape sx     hint(show %.EXTADD_PAIRWISE_#%#_#%)
   | ...
 
 syntax instr/reference hint(desc "reference instruction") = ...
@@ -358,9 +358,8 @@ syntax instr/table hint(desc "table instruction") = ...
   | ...
 
 
-syntax packshape = nat X nat
 syntax vloadop =
-  | SHAPE packshape sx  hint(show %#_#%)
+  | SHAPE nat X nat sx  hint(show %#X#%#_#%)
   | SPLAT nat           hint(show %#_#SPLAT)
   | ZERO nat            hint(show %#_#ZERO)
 

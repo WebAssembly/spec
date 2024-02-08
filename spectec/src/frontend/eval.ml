@@ -671,6 +671,13 @@ and sub_typ env t1 t2 =
     | UnE (MinusOp, _) -> t2' <= IntT
     | _ -> assert false
     )
+  | NumT t1', RangeT (Elem (e2, _)::_) ->
+    (* HACK to treat nat and int interconvertible with ranges *)
+    (match (reduce_exp env e2).it with
+    | NatE _ -> t1' <= NatT
+    | UnE (MinusOp, _) -> true
+    | _ -> assert false
+    )
   | StrT tfs1, StrT tfs2 ->
     El.Convert.forall_nl_list (fun (atom, (t2, prems2), _) ->
       match find_field tfs1 atom with

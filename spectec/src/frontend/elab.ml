@@ -691,7 +691,10 @@ and infer_exp' env e : Il.exp' * typ =
         find "variable" env.vars id
       else
         (* If the variable itself is not yet declared, use type hint if available. *)
-        let t = find "variable" env.gvars (strip_var_suffix id) in
+        let t =
+          try find "variable" env.gvars (strip_var_suffix id) with Error _ ->
+            find "variable" env.vars id  (* just to get the proper error message *)
+        in
         env.vars <- bind "variable" env.vars id t;
         t
     in

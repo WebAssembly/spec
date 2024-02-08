@@ -48,12 +48,12 @@ def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
 
-def $iadd(N, iN(N), iN(N)) : iN(N)      hint(show $iadd_%(%, %))
-def $imul(N, iN(N), iN(N)) : iN(N)      hint(show $imul_%(%, %))
-def $ine(N, iN(N), iN(N)) : u32         hint(show $ine_%(%, %))
-def $ilt(sx, N, iN(N), iN(N)) : u32     hint(show $ilt_%2^(%1)(%3, %4))
+def $iadd(N, iN(N), iN(N)) : iN(N)      hint(show $iadd_%(%,%))
+def $imul(N, iN(N), iN(N)) : iN(N)      hint(show $imul_%(%,%))
+def $ine(N, iN(N), iN(N)) : u32         hint(show $ine_%(%,%))
+def $ilt(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_%^(%)(%,%))
 
-def $narrow(sx, M, N, iN(M)) : iN(N)
+def $narrow(M, N, sx, iN(M)) : iN(N)    hint(show $narrow_((%,%))^(%)#(%))
 
 
 ;; Vectors
@@ -77,13 +77,16 @@ def $vvbinop(vectype, vvbinop, vconst_(vectype), vconst_(vectype)) : vconst_(vec
 def $vvternop(vectype, vvternop, vconst_(vectype), vconst_(vectype), vconst_(vectype)) : vconst_(vectype)
     hint(show %2#_%1#(%3, %4, %5))
 
+;; TODO: rename these to mapunop etc?
 def $vunop(shape, vunop_(shape), vconst_(V128)) : vconst_(V128)
     hint(show %2#_%1#((%3)))
 def $vbinop(shape, vbinop_(shape), vconst_(V128), vconst_(V128)) : vconst_(V128)*
     hint(show %2#_%1#(%3, %4))
 def $vrelop(shape, vrelop_(shape), vconst_(V128), vconst_(V128)) : vconst_(V128)
     hint(show %2#_%1#(%3, %4))
-def $vshiftop(shape, vshiftop_(shape), lanetype, vconst_(V128), vconst_(V128)) : vconst_(V128)
-    hint(show %2#_%1#(%3, %4))
-def $vcvtop(shape, vcvtop, N, N, sx?, vconst_(V128)) : vconst_(V128)
+
+def $vcvtop(shape_1, shape_2, vcvtop, sx?, const_($unpacked($lanetype(shape_1)))) : const_($unpacked($lanetype(shape_2)))
     hint(show %2#$_((%1,%))^(%5)#((%6)))
+
+def $vishiftop(shape, vshiftop_(shape), const_($unpacked($lanetype(shape))), u32) : const_($unpacked($lanetype(shape)))
+    hint(show %2#_%1#(%3, %4))

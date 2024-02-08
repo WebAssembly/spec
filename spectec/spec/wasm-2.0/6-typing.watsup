@@ -353,7 +353,7 @@ rule Instr_ok/vshiftop:
   C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
 
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
+  C |- VCVTOP sh vcvtop sh sx? zero : V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh sh sx : V128 V128 -> V128
@@ -476,7 +476,7 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE (M X N) sx) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= M/8 * N)
 
@@ -491,10 +491,10 @@ rule Instr_ok/vload-zero:
   -- if $(2^(n_A) < n/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE n {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE n {ALIGN n_A, OFFSET n_O} i : I32 V128 -> V128
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) < n/8)
-  -- if $(laneidx < 128 / n)
+  -- if $(i < 128 / n)
 
 rule Instr_ok/vstore:
   C |- VSTORE {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps

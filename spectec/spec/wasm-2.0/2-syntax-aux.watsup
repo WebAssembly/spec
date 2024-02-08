@@ -46,7 +46,7 @@ def $lanetype(lt X N) = lt
 def $dim(shape) : nat
 def $dim(lt X N) = N
 
-def $IN(N) : lanetype  hint(show I#N)
+def $IN(N) : imm  hint(show I#N)
 def $IN(8) = I8
 def $IN(16) = I16
 def $IN(32) = I32
