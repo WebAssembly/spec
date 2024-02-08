@@ -241,7 +241,7 @@ rule Step_pure/vshuffle:
 
 rule Step_pure/vsplat:
   (CONST $unpacked(lt) c_1) (VSPLAT (lt X N)) ~> (VCONST V128 c)
-  -- if c = $invlanes_(lt X N, c_1^N)
+  -- if c = $invlanes_(lt X N, $pack(lt, c_1)^N)
 
 
 rule Step_pure/vextract_lane-num:
@@ -255,7 +255,7 @@ rule Step_pure/vextract_lane-pack:
 
 rule Step_pure/vreplace_lane:
   (VCONST V128 c_1) (CONST $unpacked(lt) c_2) (VREPLACE_LANE (lt X N) i) ~> (VCONST V128 c)
-  -- if c = $invlanes_(lt X N, $lanes_(lt X N, c_1)[[i] = c_2])
+  -- if c = $invlanes_(lt X N, $lanes_(lt X N, c_1)[[i] = $pack(lt, c_2)])
 
 
 rule Step_pure/vunop:
@@ -286,7 +286,7 @@ rule Step_pure/vrelop:
 
 rule Step_pure/vshiftop:
   (VCONST V128 c_1) (CONST I32 n) (VSHIFTOP (imm X N) vshiftop) ~> (VCONST V128 c)
-  -- var c' : const_($unpacked(imm))
+  -- var c' : lconst_(imm)
   -- if c'* = $lanes_(imm X N, c_1)
   -- if c = $invlanes_(imm X N, $vishiftop(imm X N, vshiftop, c', n)*)
 
@@ -319,7 +319,7 @@ rule Step_pure/vnarrow:
 
 rule Step_pure/vcvtop-normal:
   (VCONST V128 c_1) (VCVTOP (lt_2 X N_2) vcvtop eps (lt_1 X N_1) sx) ~> (VCONST V128 c)
-  -- var c' : const_($unpacked(lt_1))
+  -- var c' : lconst_(lt_1)
   -- if c'* = $lanes_(lt_1 X N_1, c_1)
   -- if c = $invlanes_(lt_2 X N_2, $vcvtop(lt_1 X N_1, lt_2 X N_2, vcvtop, sx, c')*)
 
@@ -514,26 +514,9 @@ rule Step_read/vload-splat-oob:
 rule Step_read/vload-splat-val:
   z; (CONST I32 i) (VLOAD (SPLAT N) mo)  ~>  (VCONST V128 c)
   -- if $ibytes(N, j) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
-  -- if N = $size(inn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if c = $invlanes_(inn X M, j*)
-
-rule Step_read/vload-splat-pack:
-  z; (CONST I32 i) (VLOAD (SPLAT N) mo)  ~>  (VCONST V128 c)
-  -- if $ibytes(N, j) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
-  -- if N = $packedsize(pnn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if c = $invlanes_(pnn X M, $ext(N, $size($unpacked(pnn)), U, j)*)
-
-(; This is incorrect due to incoherent use of j*
-rule Step_read/vload-splat-val:
-  z; (CONST I32 i) (VLOAD (SPLAT N) mo)  ~>  (VCONST V128 c)
-  -- var j : iN(N)
-  -- if $ibytes(N, j) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
   -- if N = $lanesize(imm)  ;; TODO: relate implicitly
   -- if M = $(128/N)
   -- if c = $invlanes_(imm X M, j*)
-;)
 
 
 rule Step_read/vload-zero-oob:
@@ -553,25 +536,9 @@ rule Step_read/vload_lane-oob:
 rule Step_read/vload_lane-val:
   z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N mo j)  ~>  (VCONST V128 c)
   -- if $ibytes(N, k) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
-  -- if N = $size(inn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if c = $invlanes_(inn X M, $lanes_(inn X M, c_1)[[j] = k])
-
-rule Step_read/vload_lane-pack:
-  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N mo j)  ~>  (VCONST V128 c)
-  -- if $ibytes(N, k) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
-  -- if N = $packedsize(pnn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if c = $invlanes_(pnn X M, $lanes_(pnn X M, c_1)[[j] = $ext(N, $size($unpacked(pnn)), U, k)])
-
-(; This is incorrect due to incoherent use of k
-rule Step_read/vload_lane-val:
-  z; (CONST I32 i) (VCONST V128 c_1) (VLOAD_LANE N mo j)  ~>  (VCONST V128 c)
-  -- if $ibytes(N, k) = $mem(z, 0).DATA[i + mo.OFFSET : N/8]
   -- if N = $lanesize(imm)  ;; TODO: relate implicitly
   -- if M = $(128/N)
   -- if c = $invlanes_(imm X M, $lanes_(imm X M, c_1)[[j] = k])
-;)
 
 
 rule Step/store-num-trap:
@@ -605,23 +572,9 @@ rule Step/vstore_lane-oob:
 
 rule Step/vstore_lane-val:
   z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE N mo j)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(N/8), b*); eps
-  -- if N = $size(inn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if b* = $ibytes(N, $lanes_(inn X M, c)[j])
-
-rule Step/vstore_lane-pack:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE N mo j)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(N/8), b*); eps
-  -- if N = $packedsize(pnn)  ;; TODO: relate implicitly
-  -- if M = $(128/N)
-  -- if b* = $ibytes(N, $wrap($size($unpacked(pnn)), N, $lanes_(pnn X M, c)[j]))
-
-(; This is incorrect due to incoherent use of lane contents
-rule Step/vstore_lane-val:
-  z; (CONST I32 i) (VCONST V128 c) (VSTORE_LANE N mo j)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(N/8), b*); eps
   -- if N = $lanesize(imm)  ;; TODO: relate implicitly
   -- if M = $(128/N)
   -- if b* = $ibytes(N, $lanes_(imm X M, c)[j])
-;)
 
 
 rule Step_read/memory.size:

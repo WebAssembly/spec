@@ -181,6 +181,7 @@ var xt : externtype
 
 def $size(valtype) : nat  hint(partial) hint(show |%|)
 def $packedsize(packedtype) : nat  hint(partial) hint(show |%|)
+def $lanesize(lanetype) : nat  hint(partial) hint(show |%|)
 
 syntax const_(numtype)
 syntax const_(inn) = iN($size(inn))
@@ -191,6 +192,7 @@ syntax vconst_(vnn) = vN($size(vnn))
 syntax pconst_(pnn) = iN($packedsize(pnn))
 
 syntax lconst_(lanetype)
+syntax lconst_(imm) = iN($lanesize(imm))  ;; HACK
 syntax lconst_(numtype) = const_(numtype)
 syntax lconst_(packedtype) = pconst_(packedtype)
 
