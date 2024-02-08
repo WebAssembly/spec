@@ -50,11 +50,11 @@ let equiv_opt equiv_x env xo1 xo2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  (* *)
+  (*
   if t.it <> NumT NatT then
   Printf.eprintf "[el.reduce_typ] %s\n%!" (El.Print.string_of_typ t);
   let t' =
-  (* *)
+  *)
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
@@ -72,12 +72,12 @@ let rec reduce_typ env t : typ =
     let tcs' = Convert.concat_map_nl_list (reduce_casetyp env) ts in
     CaseT (NoDots, [], tcs' @ tcs, NoDots) $ t.at
   | _ -> t
-  (* *)
+  (*
   in
   if t.it <> NumT NatT then
   Printf.eprintf "[el.reduce_typ] %s => %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
   t'
-  (* *)
+  *)
 
 and reduce_casetyp env t : typcase nl_list =
   match (reduce_typ env t).it with
@@ -105,11 +105,11 @@ and is_normal_exp e =
   | _ -> false
 
 and reduce_exp env e : exp =
-  (* *)
+  (*
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
   Printf.eprintf "[el.reduce_exp] %s\n%!" (El.Print.string_of_exp e));
   let e' =
-  (* *)
+  *)
   match e.it with
   | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | SizeE _ -> e
   | UnE (op, e1) ->
@@ -265,12 +265,12 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     IterE (e1', iter) $ e.at  (* TODO *)
   | HoleE _ | FuseE _ -> assert false
-  (* *)
+  (*
   in
   (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
   Printf.eprintf "[el.reduce_exp] %s => %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
   e'
-  (* *)
+  *)
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
@@ -393,14 +393,14 @@ and match_typ env s t1 t2 : subst option =
 (* Expressions *)
 
 and match_exp env s e1 e2 : subst option =
-  (* *)
+  (*
   Printf.eprintf "[el.match_exp] %s =: %s[%s] = %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
   let so =
-  (* *)
+  *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
   | (ParenE (e11, _) | TypE (e11, _)), _ -> match_exp env s e11 e2
@@ -418,7 +418,6 @@ and match_exp env s e1 e2 : subst option =
       None
   | _, VarE (id2, []) ->
     (* Treat as a fresh pattern variable. If declared, need to check domain. *)
-Printf.eprintf "[1] %s\n%!" id2.it;
     let find_var id =
       match Map.find_opt id.it env.vars with
       | None ->
@@ -448,7 +447,6 @@ Printf.eprintf "[1] %s\n%!" id2.it;
           | None -> false
           )
         | VarE (id1, []), _ ->
-Printf.eprintf "[2] %s\n%!" id1.it;
           (match find_var id1 with
           | None -> false
           | Some t1 -> sub_typ env t1 t2'
@@ -511,7 +509,7 @@ Printf.eprintf "[2] %s\n%!" id1.it;
   | _, (HoleE _ | FuseE _) -> assert false
   | _, _ when is_normal_exp e1 -> None
   | _, _ -> raise Irred
-  (* *)
+  (*
   in
   Printf.eprintf "[el.match_exp] %s =: %s => %s\n%!"
     (Print.string_of_exp e1)
@@ -522,7 +520,7 @@ Printf.eprintf "[2] %s\n%!" id1.it;
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     );
   so
-  (* *)
+  *)
 
 and match_expfield env s (atom1, e1) (atom2, e2) =
   if atom1 <> atom2 then None else
@@ -573,11 +571,11 @@ and match_sym env s g1 g2 : subst option =
 (* Parameters *)
 
 and match_arg env s a1 a2 : subst option =
-  (* *)
+  (*
   Printf.eprintf "[el.match_arg] %s =: %s\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
-  (* *)
+  *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
@@ -588,12 +586,12 @@ and match_arg env s a1 a2 : subst option =
 (* Type Equivalence *)
 
 and equiv_typ env t1 t2 =
-  (* *)
+  (*
   Printf.eprintf "[el.equiv_typ] %s == %s\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
-  (* *)
+  *)
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2) ->
     (El.Convert.strip_var_suffix id1).it = (El.Convert.strip_var_suffix id2).it &&
@@ -622,14 +620,14 @@ and equiv_typ env t1 t2 =
     equiv_nl_list equiv_typcase env tcs1 tcs2
   | RangeT tes1, RangeT tes2 -> equiv_nl_list equiv_typenum env tes1 tes2
   | _, _ -> t1.it = t2.it
-  (* *)
+  (*
   in
   Printf.eprintf "[el.equiv_typ] %s == %s => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
   b
-  (* *)
+  *)
 
 and equiv_typfield env (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1.it = atom2.it && equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
@@ -658,11 +656,11 @@ and equiv_arg env a1 a2 =
 (* Subtyping *)
 
 and sub_typ env t1 t2 =
-  (* *)
+  (*
   (*if not (Eq.eq_typ t1 t2) then*)
   Printf.eprintf "[el.sub_typ] %s <: %s\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2);
   let b =
-  (* *)
+  *)
   match (reduce_typ env t1).it, (reduce_typ env t2).it with
   | NumT t1', NumT t2' -> t1' <= t2'
   | RangeT (Elem (e1, _)::_), NumT t2' ->
@@ -695,12 +693,12 @@ and sub_typ env t1 t2 =
   | IterT (t11, iter1), IterT (t21, iter2) ->
     sub_typ env t11 t21 && Eq.eq_iter iter1 iter2
   | _, _ -> equiv_typ env t1 t2
-  (* *)
+  (*
   in
   (*if not (Eq.eq_typ t1 t2) then*)
   Printf.eprintf "[el.sub_typ] %s <: %s => %b\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2) b;
   b
-  (* *)
+  *)
 
 and find_field tfs atom =
   El.Convert.find_nl_list (fun (atom', _, _) -> atom'.it = atom.it) tfs

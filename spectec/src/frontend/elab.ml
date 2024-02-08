@@ -823,10 +823,10 @@ and elab_exp env e t : Il.exp =
     elab_exp_notation env (expand_id env t) e (as_notation_typ "" env Check t e.at) t
 
 and elab_exp' env e t : Il.exp' =
-  (* *)
+  (*
   Printf.eprintf "[el.elab_exp %s] %s  :  %s\n%!"
     (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  (* *)
+  *)
   match e.it with
   | VarE (id, []) when not (Map.mem id.it env.vars) ->
     if bound env.gvars (strip_var_suffix id) then
@@ -836,7 +836,6 @@ and elab_exp' env e t : Il.exp' =
       let e' = elab_exp env e t' in
       cast_exp' "variable" env e' t' t
     else (
-Printf.eprintf "[el.bind var] %s  :  %s\n%!" id.it (string_of_typ t);
       env.vars <- bind "variable" env.vars id t;
       Il.VarE id
     )
@@ -1447,9 +1446,9 @@ and subst_implicit env s t t' : Subst.subst =
 
 let elab_params env ps : Il.param list =
   List.fold_left (fun ps' p ->
-    (* *)
+    (*
     Printf.eprintf "[el.elab_param] %s\n%!" (El.Print.string_of_param p);
-    (* *)
+    *)
     match p.it with
     | ExpP (id, t) ->
       let t' = elab_typ env t in
@@ -1554,10 +1553,10 @@ let elab_hintdef _env hd : Il.def list =
     []
 
 let elab_def env d : Il.def list =
-  (* *)
+  (*
   Printf.eprintf "[el.elab_def %s]\n%!" (string_of_region d.at);
   let ds' =
-  (* *)
+  *)
   match d.it with
   | FamD (id, ps, hints) ->
     let ps' = elab_params (local_env env) ps in
@@ -1692,11 +1691,11 @@ let elab_def env d : Il.def list =
     []
   | HintD hd ->
     elab_hintdef env hd
-  (* *)
+  (*
   in
   Printf.eprintf "[el.elab_def %s] done\n%!" (string_of_region d.at);
   ds'
-  (* *)
+  *)
 
 let elab_gramdef env d =
   match d.it with
@@ -1741,10 +1740,8 @@ let populate_def env d' : Il.def =
       error_id id "syntax type family has no defined cases";
     | _ps, Family insts ->
       let insts' = List.map (fun (_, _, inst') -> inst') insts in
-Printf.eprintf "%s%!" (Il.Print.string_of_def (Il.TypD (id, ps', insts') $ d'.at));
       Il.TypD (id, ps', insts') $ d'.at
     | _ps, _k ->
-Printf.eprintf "%s%!" (Il.Print.string_of_def d');
       d'
     )
   | Il.RelD (id, mixop, t', []) ->
@@ -1815,20 +1812,12 @@ let recursify_defs ds' : Il.def list =
 
 let elab ds : Il.script * env =
   let env = new_env () in
-Printf.eprintf "[INFER DEF]\n%!";
   List.iter (infer_typdef env) ds;
-Printf.eprintf "[ELAB DEF]\n%!";
   let ds' = List.concat_map (elab_def env) ds in
-Printf.eprintf "[POPULATE DEF]\n%!";
   let ds' = List.map (populate_def env) ds' in
-Printf.eprintf "[INFER GRAMDEF]\n%!";
   List.iter (infer_gramdef env) ds;
-Printf.eprintf "[ELAB GRAMDEF]\n%!";
   List.iter (elab_gramdef env) ds;
-Printf.eprintf "[RECURSIFY]\n%!";
-let ds', _ =
   recursify_defs ds', env
-in Printf.eprintf "[DONE]\n%!"; ds', env
 
 let elab_exp env e t : Il.exp =
   let _ = elab_typ env t in

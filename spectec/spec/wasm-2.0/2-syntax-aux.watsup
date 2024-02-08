@@ -34,11 +34,11 @@ def $lanesize(numtype) = $size(numtype)
 def $lanesize(packedtype) = $packedsize(packedtype)
 
 
-;; Packing
+;; Unpacking
 
-def $unpacked(lanetype) : numtype
-def $unpacked(numtype) = numtype
-def $unpacked(packedtype) = I32
+def $unpack(lanetype) : numtype
+def $unpack(numtype) = numtype
+def $unpack(packedtype) = I32
 
 
 ;; Shapes

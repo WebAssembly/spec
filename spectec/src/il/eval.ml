@@ -39,11 +39,11 @@ let equiv_list equiv_x env xs1 xs2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  (* *)
+  (*
   if t.it <> NumT NatT then
   Printf.eprintf "[il.reduce_typ] %s\n%!" (Print.string_of_typ t);
   let t' =
-  (* *)
+  *)
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
@@ -52,12 +52,12 @@ let rec reduce_typ env t : typ =
     | _ -> VarT (id, args') $ t.at
     )
   | _ -> t
-  (* *)
+  (*
   in
   if t.it <> NumT NatT then
   Printf.eprintf "[il.reduce_typ] %s => %s\n%!" (Print.string_of_typ t) (Print.string_of_typ t');
   t'
-  (* *)
+  *)
 
 and reduce_typ_app env id args : deftyp' option =
   reduce_typ_app' env id args (Map.find id.it env.typs)
@@ -81,11 +81,11 @@ and is_normal_exp e =
   | _ -> false
 
 and reduce_exp env e : exp =
-  (* *)
+  (*
   (match e.it with VarE {it = "nat"; _} -> () | _ ->
   Printf.eprintf "[il.reduce_exp] %s\n%!" (Print.string_of_exp e));
   let e' =
-  (* *)
+  *)
   match e.it with
   | VarE _ | BoolE _ | NatE _ | TextE _ -> e
   | UnE (op, e1) ->
@@ -262,12 +262,12 @@ and reduce_exp env e : exp =
       let t2' = reduce_typ env t2 in
       SubE (e1, t1', t2') $> e
     )
-  (* *)
+  (*
   in
   (match e.it with VarE {it = "nat"; _} -> () | _ ->
   Printf.eprintf "[il.reduce_exp] %s => %s\n%!" (Print.string_of_exp e) (Print.string_of_exp e'));
   e'
-  (* *)
+  *)
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
@@ -410,13 +410,13 @@ and match_typbind env s (id1, t1) (id2, t2) =
 (* Expressions *)
 
 and match_exp env s e1 e2 : subst option =
-  (* *)
+  (*
   Printf.eprintf "[il.match_exp] %s =: %s[%s] = %s\n%!"
     (Print.string_of_exp e1)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-  (* *)
+  *)
   assert (Eq.eq_exp e1 (reduce_exp env e1));
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
   | _, VarE id when Subst.mem_varid s id ->
@@ -502,10 +502,12 @@ and match_exp env s e1 e2 : subst option =
     else None
   | _, _ when is_normal_exp e1 -> None
   | _, _ ->
-Printf.eprintf "[il.match irred] %s =: %s\n%!"
-    (Print.string_of_exp e1)
-    (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-   raise Irred
+    (*
+    Printf.eprintf "[il.match irred] %s =: %s\n%!"
+      (Print.string_of_exp e1)
+      (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
+    *)
+    raise Irred
 
 and match_expfield env s (atom1, e1) (atom2, e2) =
   if atom1 <> atom2 then None else
@@ -532,12 +534,12 @@ and match_arg env s a1 a2 : subst option =
 (* Type Equivalence *)
 
 and equiv_typ env t1 t2 =
-  (* *)
+  (*
   Printf.eprintf "[il.equiv_typ] %s == %s\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
-  (* *)
+  *)
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) ->
     id1.it = id2.it && equiv_list equiv_arg env as1 as2 || (* optimization *)
@@ -559,14 +561,14 @@ and equiv_typ env t1 t2 =
     equiv_typ env t11 t21 && Eq.eq_iter iter1 iter2
   | _, _ ->
     t1.it = t2.it
-  (* *)
+  (*
   in
   Printf.eprintf "[il.equiv_typ] %s == %s => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
   b
-  (* *)
+  *)
 
 and equiv_tup env xts1 xts2 =
   match xts1, xts2 with
@@ -595,11 +597,11 @@ and equiv_arg env a1 a2 =
 (* Subtyping *)
 
 and sub_typ env t1 t2 =
-  (* *)
+  (*
   Printf.eprintf "[il.sub_typ] %s <: %s  eq=%b\n%!"
     (Print.string_of_typ t1) (Print.string_of_typ t2)
     (t1.it = t2.it);
-  (* *)
+  *)
   equiv_typ env t1 t2 ||
   match (reduce_typ env t1).it, (reduce_typ env t2).it with
   | NumT t1', NumT t2' -> t1' < t2'
@@ -636,12 +638,12 @@ and snd3 (_, x, _) = x
 (* Type Equivalence *)
 
 and disj_typ env t1 t2 =
-  (* *)
+  (*
   Printf.eprintf "[il.disj_typ] %s ## %s\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2);
   let b =
-  (* *)
+  *)
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) ->
     (match reduce_typ_app env id1 as1, reduce_typ_app env id2 as2 with
@@ -670,14 +672,14 @@ and disj_typ env t1 t2 =
     disj_typ env t11 t21 || not (Eq.eq_iter iter1 iter2)
   | _, _ ->
     t1.it <> t2.it
-  (* *)
+  (*
   in
   Printf.eprintf "[il.disj_typ] %s ## %s => %b\n%!"
     (Print.string_of_typ t1)
     (Print.string_of_typ t2)
     b;
   b
-  (* *)
+  *)
 
 and disj_tup env xts1 xts2 =
   match xts1, xts2 with

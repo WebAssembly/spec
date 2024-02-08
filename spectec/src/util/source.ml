@@ -49,7 +49,7 @@ let note {note; _} = note
 
 exception Error of region * string
 
-let debug_errors = true
+let debug_errors = false
 
 let string_of_error at msg = string_of_region at ^ ": " ^ msg
 

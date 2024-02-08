@@ -791,7 +791,6 @@ let () = render_args_fwd := render_args
 
 
 let merge_typ t1 t2 =
-Printf.eprintf "[merge_typ]\nt1 = %s\nt2 = %s\n%!" (El.Print.string_of_typ t1) (El.Print.string_of_typ t2);
   match t1.it, t2.it with
   | CaseT (dots1, ids1, cases1, _), CaseT (_, ids2, cases2, dots2) ->
     CaseT (dots1, ids1 @ strip_nl ids2, cases1 @ strip_nl cases2, dots2) $ t1.at

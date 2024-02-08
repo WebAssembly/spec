@@ -27,7 +27,7 @@ var da : dataaddr
 ;; Basic values
 
 syntax num hint(desc "number") =
-  | CONST numtype const_(numtype)
+  | CONST numtype const_(numtype)        hint(show %.CONST %)
 syntax vec hint(desc "vector") =
   | VCONST vectype vconst_(vectype)      hint(show %.CONST %)
 syntax ref hint(desc "reference") =

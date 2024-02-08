@@ -56,39 +56,56 @@ def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
-def $size(valtype) : nat  hint(partial) hint(show |%|)
+;;def $size(valtype) : nat  hint(partial) hint(show |%|)
+;;def $packedsize(packedtype) : nat  hint(show |%|)
+;;def $lanesize(lanetype) : nat  hint(show |%|)
+;;def $storagesize(storagetype) : nat  hint(show |%|)
+
 def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
-def $packedsize(packedtype) : nat  hint(show |%|)
 def $packedsize(I8) = 8
 def $packedsize(I16) = 16
 
-def $storagesize(storagetype) : nat  hint(show |%|)
 def $storagesize(valtype) = $size(valtype)
 def $storagesize(packedtype) = $packedsize(packedtype)
 
-def $lanesize(lanetype) : nat  hint(show |%|)
 def $lanesize(numtype) = $size(numtype)
 def $lanesize(packedtype) = $packedsize(packedtype)
 
 
 ;; Unpacking
 
-def $unpacktype(storagetype) : valtype  hint(show $unpack(%))
-def $unpacktype(valtype) = valtype
-def $unpacktype(packedtype) = I32
+def $lunpack(lanetype) : numtype  hint(show $unpack(%))
+def $lunpack(numtype) = numtype
+def $lunpack(packedtype) = I32
 
-def $unpacknumtype(storagetype) : numtype  hint(show $unpack(%))
-def $unpacknumtype(numtype) = numtype
-def $unpacknumtype(packedtype) = I32
+def $unpack(storagetype) : valtype  hint(show $unpack(%))
+def $unpack(valtype) = valtype
+def $unpack(packedtype) = I32
+
+def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
+def $nunpack(numtype) = numtype
+def $nunpack(packedtype) = I32
+
+def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
+def $vunpack(vectype) = vectype
 
 def $sxfield(storagetype) : sx?  hint(show $sx(%))
 def $sxfield(valtype) = eps
 def $sxfield(packedtype) = S
+
+
+;; Shapes
+
+def $lanetype(shape) : lanetype
+def $lanetype(lnn X N) = lnn
+
+def $dim(shape) : nat
+def $dim(lnn X N) = N
 
 
 ;; Type difference

@@ -56,15 +56,17 @@ def $ilt(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_%^(%)(%,%))
 def $narrow(M, N, sx, iN(M)) : iN(N)    hint(show $narrow_((%,%))^(%)#(%))
 
 
-;; Packed types
+;; Packed values
 
-def $pack(lanetype, const_($unpacked(lanetype))) : lconst_(lanetype)
-def $pack(numtype, c) = c
-def $pack(packedtype, c) = $wrap($size($unpacked(packedtype)), $packedsize(packedtype), c)
+def $packnum(lanetype, const_($unpack(lanetype))) : lconst_(lanetype)
+    hint(show $pack_(%,%))
+def $packnum(numtype, c) = c
+def $packnum(packedtype, c) = $wrap($size($unpack(packedtype)), $packedsize(packedtype), c)
 
-def $unpack(lanetype, lconst_(lanetype)) : const_($unpacked(lanetype))
-def $unpack(numtype, c) = c
-def $unpack(packedtype, c) = $ext($packedsize(packedtype), $size($unpacked(packedtype)), U, c)
+def $unpacknum(lanetype, lconst_(lanetype)) : const_($unpack(lanetype))
+    hint(show $unpack_(%,%))
+def $unpacknum(numtype, c) = c
+def $unpacknum(packedtype, c) = $ext($packedsize(packedtype), $size($unpack(packedtype)), U, c)
 
 
 ;; Vectors

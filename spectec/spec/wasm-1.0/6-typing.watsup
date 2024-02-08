@@ -211,16 +211,16 @@ rule Instr_ok/const:
   C |- CONST t c_t : eps -> t
 
 rule Instr_ok/unop:
-  C |- UNOP t unop : t -> t
+  C |- UNOP t unop_t : t -> t
 
 rule Instr_ok/binop:
-  C |- BINOP t binop : t t -> t
+  C |- BINOP t binop_t : t t -> t
 
 rule Instr_ok/testop:
-  C |- TESTOP t testop : t -> I32
+  C |- TESTOP t testop_t : t -> I32
 
 rule Instr_ok/relop:
-  C |- RELOP t relop : t t -> I32
+  C |- RELOP t relop_t : t t -> I32
 
 
 rule Instr_ok/reinterpret:
