@@ -256,8 +256,6 @@ syntax vsatbinop_(shape)
 syntax vsatbinop_(imm X N) = | ADD_SAT sx | SUB_SAT sx
 syntax vsatbinop_(fnn X N) = |               ;; uninhabited
 
-;; TODO: other ops? POPCNT, AVGR, Q15MULRSAT, DOT
-
 
 ;; Memory operators
 
@@ -328,6 +326,8 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VDOT shape shape sx                 hint(show %.DOT#_#%#_#%)
   | VEXTADD_PAIRWISE shape shape sx     hint(show %.EXTADD_PAIRWISE_#%#_#%)
   | ...
+
+;; TODO: other ops? POPCNT, AVGR, Q15MULRSAT
 
 syntax instr/reference hint(desc "reference instruction") = ...
   | REF.NULL reftype

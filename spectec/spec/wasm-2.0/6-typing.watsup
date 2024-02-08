@@ -329,6 +329,7 @@ rule Instr_ok/vshuffle:
 rule Instr_ok/vsplat:
   C |- VSPLAT sh : $unpacked($lanetype(sh)) -> V128
 
+;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
   C |- VEXTRACT_LANE sh sx? i : V128 -> $unpacked($lanetype(sh))
   -- if i < $dim(sh)
@@ -352,8 +353,9 @@ rule Instr_ok/vrelop:
 rule Instr_ok/vshiftop:
   C |- VSHIFTOP sh vshiftop : V128 I32 -> V128
 
+;; TODO: This rule (or the abstract syntax) is too liberal, since many of the combinations are illegal
 rule Instr_ok/vcvtop:
-  C |- VCVTOP sh vcvtop sh sx? zero : V128 -> V128
+  C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh sh sx : V128 V128 -> V128
@@ -365,7 +367,7 @@ rule Instr_ok/vdot:
   C |- VDOT sh sh sx : V128 V128 -> V128
 
 rule Instr_ok/vextmul:
-  C |- VEXTMUL sh half sh sx : V128 V128 -> V128
+  C |- VEXTMUL sh hf sh sx : V128 V128 -> V128
 
 rule Instr_ok/vextadd_pairwise:
   C |- VEXTADD_PAIRWISE sh sh sx : V128 -> V128
