@@ -233,8 +233,6 @@ let check_stack (c : context) ts1 ts2 at =
      " but stack has " ^ string_of_result_type ts1)
 
 let pop c (ell1, ts1) (ell2, ts2) at =
-Printf.eprintf "[pop] %s\n%!"
-(String.concat " " (List.map string_of_val_type ts1));
   let n1 = List.length ts1 in
   let n2 = List.length ts2 in
   let n = min n1 n2 in
@@ -243,8 +241,6 @@ Printf.eprintf "[pop] %s\n%!"
   (ell2, if ell1 = Ellipses then [] else Lib.List.take (n2 - n) ts2)
 
 let push c (ell1, ts1) (ell2, ts2) =
-Printf.eprintf "[push] %s\n%!"
-(String.concat " " (List.map string_of_val_type ts1));
   assert (ell1 = NoEllipses || ts2 = []);
   (if ell1 = Ellipses || ell2 = Ellipses then Ellipses else NoEllipses),
   ts2 @ ts1
@@ -895,14 +891,12 @@ and check_seq (c : context) (s : infer_result_type) (es : instr list)
     s, []
 
   | e::es' ->
-Printf.eprintf "---- %s%!" (Sexpr.to_string 80 (Arrange.instr e));
     let {ins; outs}, xs = check_instr c e s in
     check_seq (init_locals c xs) (push c outs (pop c ins s e.at)) es'
 
 and check_block (c : context) (es : instr list) (it : instr_type) at =
   let InstrT (ts1, ts2, _xs) = it in
   let s, xs' = check_seq c (stack ts1) es in
-Printf.eprintf "---- end\n%!";
   let s' = pop c (stack ts2) s at in
   require (snd s' = []) at
     ("type mismatch: block requires " ^ string_of_result_type ts2 ^
