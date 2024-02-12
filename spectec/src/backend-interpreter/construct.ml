@@ -1269,7 +1269,7 @@ let al_of_int_vtestop : V128Op.itestop -> value = function
   | V128Op.AllTrue -> nullary "ALL_TRUE"
 
 let al_of_float_vtestop : Ast.void -> value = function
-  | _ -> assert false
+  | _ -> .
 
 let al_of_vtestop = al_of_vop al_of_int_vtestop al_of_float_vtestop
 

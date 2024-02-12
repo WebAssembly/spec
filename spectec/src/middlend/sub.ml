@@ -91,7 +91,7 @@ let injection_name (sub : id) (sup : id) = sup.it ^ "_" ^ sub.it $ no_region
 let var_of_typ typ = match typ.it with
   | VarT (id, args) -> Some (id, args)
   | NumT _ -> None
-  | _ -> error typ.at ("Non-variable or number type expression not supported:\n" ^ Il.Print.string_of_typ typ)
+  | _ -> error typ.at ("Non-variable or number type expression not supported `" ^ Il.Print.string_of_typ typ ^ "`")
 
 (* Step 1 and 4: Collect SubE occurrences, and replace with function *)
 
@@ -100,17 +100,42 @@ let rec t_exp env exp =
   let exp' = t_exp2 env exp in
   match exp'.it with
   | SubE (e, sub_ty, sup_ty) ->
+(Printf.eprintf "[sub @ %s] %s  <:  %s\n%!" (string_of_region exp'.at) (Il.Print.string_of_typ sub_ty) (Il.Print.string_of_typ sup_ty);
     begin match var_of_typ sub_ty, var_of_typ sup_ty with
     | Some (sub, args_sub), Some (sup, args_sup) ->
       env.pairs <- S.add (sub, sup) env.pairs;
       { exp' with it = CallE (injection_name sub sup, args_sub @ args_sup @ [ExpA e $ e.at])}
-    | _, _ -> exp'
-  end
+    | _, _ ->
+Printf.eprintf "[sub @ %s REMAINS] %s  <:  %s\n%!" (string_of_region exp'.at) (Il.Print.string_of_typ sub_ty) (Il.Print.string_of_typ sup_ty);
+     exp'
+    end
+)
   | _ -> exp'
 
 (* Traversal boilerplate *)
 
-and t_exp2 env x = { x with it = t_exp' env x.it }
+and t_typ env x = { x with it = t_typ' env x.it }
+
+and t_typ' env = function
+  | VarT (id, args) -> VarT (id, t_args env args)
+  | (BoolT | NumT _ | TextT) as t -> t
+  | TupT xts -> TupT (List.map (fun (id, t) -> (id, t_typ env t)) xts)
+  | IterT (t, iter) -> IterT (t_typ env t, iter)
+
+and t_deftyp env x = { x with it = t_deftyp' env x.it }
+
+and t_deftyp' env = function
+  | AliasT t -> AliasT (t_typ env t)
+  | NotationT (mixop, t) -> NotationT (mixop, t_typ env t)
+  | StructT typfields -> StructT (List.map (t_typfield env) typfields)
+  | VariantT typcases -> VariantT (List.map (t_typcase env) typcases)
+
+and t_typfield env (atom, (binds, t, prems), hints) =
+  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
+and t_typcase env (atom, (binds, t, prems), hints) =
+  (atom, (t_binds env binds, t_typ env t, t_prems env prems), hints)
+
+and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
 and t_exp' env = function
   | (VarE _ | BoolE _ | NatE _ | TextE _) as e -> e
@@ -127,7 +152,7 @@ and t_exp' env = function
   | LenE exp -> LenE exp
   | TupE es -> TupE (List.map (t_exp env) es)
   | MixE (mixop, exp) -> MixE (mixop, t_exp env exp)
-  | CallE (a, args) -> CallE (a, List.map (t_arg env) args)
+  | CallE (a, args) -> CallE (a, t_args env args)
   | IterE (e, iterexp) -> IterE (t_exp env e, t_iterexp env iterexp)
   | ProjE (e, i) -> ProjE (t_exp env e, i)
   | OptE None -> OptE None
@@ -150,7 +175,7 @@ and t_path' env = function
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
   | DotP (path, a) -> DotP (t_path env path, a)
 
-and t_path env x = { x with it = t_path' env x.it }
+and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 
 and t_arg' env = function
   | ExpA exp -> ExpA (t_exp env exp)
@@ -158,9 +183,23 @@ and t_arg' env = function
 
 and t_arg env x = { x with it = t_arg' env x.it }
 
-let t_args env = List.map (t_arg env)
+and t_bind' env = function
+  | ExpB (id, t, dim) -> ExpB (id, t_typ env t, dim)
+  | TypB id -> TypB id
 
-let rec t_prem' env = function
+and t_bind env x = { x with it = t_bind' env x.it }
+
+and t_param' env = function
+  | ExpP (id, t) -> ExpP (id, t_typ env t)
+  | TypP id -> TypP id
+
+and t_param env x = { x with it = t_param' env x.it }
+
+and t_args env = List.map (t_arg env)
+and t_binds env = List.map (t_bind env)
+and t_params env = List.map (t_param env)
+
+and t_prem' env = function
   | RulePr (id, mixop, exp) -> RulePr (id, mixop, t_exp env exp)
   | IfPr e -> IfPr (t_exp env e)
   | LetPr (e1, e2, ids) -> LetPr (t_exp env e1, t_exp env e2, ids)
@@ -169,29 +208,39 @@ let rec t_prem' env = function
 
 and t_prem env x = { x with it = t_prem' env x.it }
 
-let t_prems env = List.map (t_prem env)
+and t_prems env = List.map (t_prem env)
 
 let t_clause' env = function
  | DefD (binds, lhs, rhs, prems) ->
-   DefD (binds, t_args env lhs, t_exp env rhs, t_prems env prems)
+   DefD (t_binds env binds, (*DO NOT intro calls on LHS: t_args env*) lhs, t_exp env rhs, t_prems env prems)
 
 let t_clause env (clause : clause) = { clause with it = t_clause' env clause.it }
 
 let t_clauses env = List.map (t_clause env)
 
+let t_inst' env = function
+ | InstD (binds, args, deftyp) ->
+   InstD (t_binds env binds, (*DO NOT intro calls on LHS: t_args env*) args, t_deftyp env deftyp)
+
+let t_inst env (inst : inst) = { inst with it = t_inst' env inst.it }
+
+let t_insts env = List.map (t_inst env)
+
 let t_rule' env = function
   | RuleD (id, binds, mixop, exp, prems) ->
-    RuleD (id, binds, mixop, t_exp env exp, t_prems env prems)
+    RuleD (id, t_binds env binds, mixop, t_exp env exp, t_prems env prems)
 
 let t_rule env x = { x with it = t_rule' env x.it }
 
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
   | DecD (id, params, typ, clauses) ->
-    DecD (id, params, typ, t_clauses env clauses)
+    DecD (id, t_params env params, typ, t_clauses env clauses)
+  | TypD (id, params, insts) ->
+    TypD (id, t_params env params, t_insts env insts)
   | RelD (id, mixop, typ, rules) ->
-    RelD (id, mixop, typ, List.map (t_rule env) rules)
-  | def -> def
+    RelD (id, mixop, t_typ env typ, List.map (t_rule env) rules)
+  | HintD _ as def -> def
 
 and t_def env (def : def) = { def with it = t_def' env def.it }
 
@@ -245,8 +294,12 @@ let insert_injections env (def : def) : def list =
     let clauses = List.map (fun (a, (_binds, arg_typ, _prems), _hints) ->
       match arg_typ.it with
       | TupT ts ->
-        let binds = List.mapi (fun i (_, arg_typ_i) -> ("x" ^ string_of_int i $ no_region, arg_typ_i, [])) ts in
-        let xes = List.map (fun (x, arg_typ_i, _) -> VarE x $$ no_region % arg_typ_i) binds in
+        let binds = List.mapi (fun i (_, arg_typ_i) -> ExpB ("x" ^ string_of_int i $ no_region, arg_typ_i, []) $ no_region) ts in
+        let xes = List.map (fun bind ->
+          match bind.it with
+          | ExpB (x, arg_typ_i, _) -> VarE x $$ no_region % arg_typ_i
+          | TypB _ -> assert false) binds
+        in
         let xe = TupE xes $$ no_region % arg_typ in
         DefD (binds,
           [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
@@ -254,7 +307,7 @@ let insert_injections env (def : def) : def list =
       | _ ->
         let x = "x" $ no_region in
         let xe = VarE x $$ no_region % arg_typ in
-        DefD ([(x, arg_typ, [])],
+        DefD ([ExpB (x, arg_typ, []) $ x.at],
           [ExpA (CaseE (a, xe) $$ no_region % real_ty) $ no_region],
           CaseE (a, xe) $$ no_region % sup_ty, []) $ no_region
       ) cases_sub in
@@ -266,6 +319,6 @@ let transform (defs : script) =
   let env = new_env () in
   let defs' = List.map (t_def env) defs in
   let defs'' = List.concat_map (insert_injections env) defs' in
-  S.iter (fun (sub, sup) -> error sub.at ("left-over subtype coercion " ^ sub.it ^ " <: " ^ sup.it)) env.pairs;
+  S.iter (fun (sub, sup) -> error sup.at ("left-over subtype coercion `" ^ sub.it ^ "` <: `" ^ sup.it ^ "`")) env.pairs;
   defs''
 

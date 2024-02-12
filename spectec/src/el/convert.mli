@@ -3,6 +3,7 @@ open Ast
 val filter_nl : 'a nl_list -> 'a list
 val filter_nl_list : ('a -> bool) -> 'a nl_list -> 'a nl_list
 val forall_nl_list : ('a -> bool) -> 'a nl_list -> bool
+val exists_nl_list : ('a -> bool) -> 'a nl_list -> bool
 val find_nl_list : ('a -> bool) -> 'a nl_list -> 'a option
 val iter_nl_list : ('a -> unit) -> 'a nl_list -> unit
 val map_nl_list : ('a -> 'b) -> 'a nl_list -> 'b nl_list

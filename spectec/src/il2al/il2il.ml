@@ -6,7 +6,7 @@ open Il.Ast
 open Il.Eq
 open Util.Source
 
-type reduction_group = (exp * exp * (premise list)) list
+type reduction_group = (exp * exp * (prem list)) list
 
 (* Helpers *)
 
@@ -183,7 +183,7 @@ let rec collect_unified template e = if eq_exp template e then [], [] else
     | IterE ({ it = VarE id; _}, _) , _
       when is_unified_id id.it ->
       [ IfPr (CmpE (EqOp, template, e) $$ no_region % (BoolT $ no_region)) $ no_region ],
-      [id, template.note, []]
+      [ ExpB (id, template.note, []) $ no_region ]
     | UnE (_, e1), UnE (_, e2)
     | DotE (e1, _), DotE (e2, _)
     | LenE e1, LenE e2

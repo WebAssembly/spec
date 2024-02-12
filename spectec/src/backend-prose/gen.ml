@@ -76,7 +76,7 @@ let rec prem_to_instrs prem = match prem.it with
     [ YetI s ]
 
 type vrule_group =
-  string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
+  string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
 
 (** Main translation for typing rules **)
 let vrule_group_to_prose ((_name, vrules): vrule_group) =

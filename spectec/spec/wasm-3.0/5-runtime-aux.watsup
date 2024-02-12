@@ -33,10 +33,10 @@ def $packval(storagetype, val) : fieldval         hint(show $pack_(%,%))
 def $unpackval(storagetype, sx?, fieldval) : val  hint(show $unpack_(%)^(%)#((%)))
 
 def $packval(t, val) = val
-def $packval(pt, CONST I32 i) = PACK pt $wrap(32, $packedsize(pt), i)
+def $packval(pt, CONST I32 i) = PACK pt $wrap(32, $psize(pt), i)
 
 def $unpackval(t, eps, val) = val
-def $unpackval(pt, sx, PACK pt i) = CONST I32 $ext($packedsize(pt), 32, sx, i)
+def $unpackval(pt, sx, PACK pt i) = CONST I32 $ext($psize(pt), 32, sx, i)
 
 
 ;; Projections

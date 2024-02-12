@@ -52,7 +52,7 @@ let subset x y = Set.subset x.varid y.varid
 type tag =
   | Condition
   | Assign of string list
-(* type row = tag * premise * int list *)
+(* type row = tag * prem * int list *)
 let unwrap (_, p, _) = p
 
 (* are all free variables in the premise known? *)

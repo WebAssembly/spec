@@ -247,17 +247,16 @@ and expand_exp args i e =
     let iter' = expand_iter args i iter in
     IterE (e1', iter')
   | TypE (e1, t) -> TypE (expand_exp args i e1, t)
-  | HoleE (u, `Num j) ->
+  | HoleE (`Num j) ->
     (match List.nth_opt args j with
     | None -> raise Arity_mismatch
-    | Some arg -> i := j + 1;
-      if u = `Use then CallE ("" $ e.at, [arg]) else SeqE []
+    | Some arg -> i := j + 1; CallE ("" $ e.at, [arg])
     )
-  | HoleE (u, `Next) -> (expand_exp args i (HoleE (u, `Num !i) $ e.at)).it
-  | HoleE (u, `Rest) ->
+  | HoleE `Next -> (expand_exp args i (HoleE (`Num !i) $ e.at)).it
+  | HoleE `Rest ->
     let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
     i := List.length args;
-    if u = `Use then CallE ("" $ e.at, args') else SeqE []
+    CallE ("" $ e.at, args')
   | FuseE (e1, e2) ->
     let e1' = expand_exp args i e1 in
     let e2' = expand_exp args i e2 in

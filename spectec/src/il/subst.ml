@@ -33,9 +33,11 @@ let subst_opt subst_x s xo = Option.map (subst_x s) xo
 let subst_list subst_x s xs = List.map (subst_x s) xs
 
 let rec subst_list_dep subst_x bound_x s = function
-  | [] -> []
+  | [] -> [], s
   | x::xs ->
-    subst_x s x :: subst_list_dep subst_x bound_x (remove_varids s (bound_x x).Free.varid) xs
+    let x' = subst_x s x in
+    let xs', s' = subst_list_dep subst_x bound_x (remove_varids s (bound_x x).Free.varid) xs in
+    x'::xs', s'
 
 
 (* Identifiers *)
@@ -62,13 +64,13 @@ and subst_typ s t =
   Printf.eprintf "[il.subst_typ] %s\n%!" (Print.string_of_typ t);
   *)
   (match t.it with
-  | VarT (id, args) ->
+  | VarT (id, as_) ->
     (match Map.find_opt id.it s.typid with
-    | None -> VarT (id, List.map (subst_arg s) args)
-    | Some t' -> assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
+    | None -> VarT (id, subst_args s as_)
+    | Some t' -> assert (as_ = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT -> t.it
-  | TupT xts -> TupT (subst_list_dep subst_typbind Free.bound_typbind s xts)
+  | TupT xts -> TupT (fst (subst_list_dep subst_typbind Free.bound_typbind s xts))
   | IterT (t1, iter) -> IterT (subst_typ s t1, subst_iter s iter)
   ) $ t.at
 
@@ -83,10 +85,13 @@ and subst_deftyp s dt =
   | VariantT tcs -> VariantT (subst_list subst_typcase s tcs)
   ) $ dt.at
 
-and subst_typfield s (atom, (binds, t, prems), hints) =
-  (atom, (binds, subst_typ s t, subst_list subst_prem s prems), hints)
-and subst_typcase s (atom, (binds, t, prems), hints) =
-  (atom, (binds, subst_typ s t, subst_list subst_prem s prems), hints)
+and subst_typfield s (atom, (bs, t, prems), hints) =
+  let bs', s' = subst_binds s bs in
+  (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
+
+and subst_typcase s (atom, (bs, t, prems), hints) =
+  let bs', s' = subst_binds s bs in
+  (atom, (bs', subst_typ s' t, subst_list subst_prem s' prems), hints)
 
 
 (* Expressions *)
@@ -112,7 +117,7 @@ and subst_exp s e =
   | LenE e1 -> LenE (subst_exp s e1)
   | TupE es -> TupE (subst_list subst_exp s es)
   | MixE (op, e1) -> MixE (op, subst_exp s e1)
-  | CallE (id, args) -> CallE (id, subst_list subst_arg s args)
+  | CallE (id, as_) -> CallE (id, subst_args s as_)
   | IterE (e1, iterexp) -> IterE (subst_exp s e1, subst_iterexp s iterexp)
   | ProjE (e1, i) -> ProjE (subst_exp s e1, i)
   | OptE eo -> OptE (subst_opt subst_exp s eo)
@@ -159,11 +164,21 @@ and subst_arg s a =
   | TypA t -> TypA (subst_typ s t)
   ) $ a.at
 
+and subst_bind s b =
+  (match b.it with
+  | ExpB (id, t, iters) -> ExpB (id, subst_typ s t, iters)
+  | TypB id -> TypB id
+  ) $ b.at
+
 and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
   | TypP id -> TypP id
   ) $ p.at
+
+and subst_args s as_ = subst_list subst_arg s as_
+and subst_binds s bs = subst_list_dep subst_bind Free.bound_bind s bs
+and subst_params s ps = subst_list_dep subst_param Free.bound_param s ps
 
 
 (* Optimizations *)

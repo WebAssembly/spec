@@ -6,10 +6,11 @@ open Ast
 
 (* Environment *)
 
+module Set = Set.Make(String)
 module Map = Map.Make(String)
 
 type typ_def = (arg list * typ) list
-type def_def = (arg list * exp * premise list) list
+type def_def = (arg list * exp * prem list) list
 type gram_def = unit
 type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t; syms : gram_def Map.t}
 type subst = Subst.t
@@ -17,7 +18,13 @@ type subst = Subst.t
 
 (* Helpers *)
 
+(* This exception indicates that a an application cannot be reduced because a pattern
+ * match cannot be decided.
+ * When assume_coherent_matches is set, that case is treated as a non-match.
+ *)
 exception Irred
+
+let assume_coherent_matches = ref true
 
 let (let*) = Option.bind
 
@@ -29,7 +36,7 @@ let rec match_list match_x env s xs1 xs2 : subst option =
   | [], [] -> Some s
   | x1::xs1', x2::xs2' ->
     let* s' = match_x env s x1 x2 in
-    match_list match_x env s' xs1' xs2'
+    match_list match_x env (Subst.union s s') xs1' xs2'
   | _, _ -> None
 
 let match_nl_list match_x env s xs1 xs2 =
@@ -46,6 +53,9 @@ let equiv_opt equiv_x env xo1 xo2 =
   | Some x1, Some x2 -> equiv_x env x1 x2
   | _, _ -> false
 
+let disj_list disj_x env xs1 xs2 =
+  List.length xs1 <> List.length xs2 || List.exists2 (disj_x env) xs1 xs2
+
 
 (* Type Reduction (weak-head) *)
 
@@ -59,7 +69,7 @@ let rec reduce_typ env t : typ =
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
     let id' = El.Convert.strip_var_suffix id in
-    (match reduce_typ_app env id args' (Map.find id'.it env.typs) with
+    (match reduce_typ_app env id args' t.at (Map.find id'.it env.typs) with
     | Some t' ->
       if id'.it <> id.it then
         Source.error id.at "syntax" "identifer suffix encountered during reduction";
@@ -84,15 +94,36 @@ and reduce_casetyp env t : typcase nl_list =
   | CaseT (NoDots, [], tcs, NoDots) -> tcs
   | _ -> assert false
 
-and reduce_typ_app env id args = function
-  | [] -> None
+and reduce_typ_app env id args at = function
+  | [] ->
+    if !assume_coherent_matches then None else
+    let args = if args = [] then "" else
+      "(" ^ String.concat ", " (List.map Print.string_of_arg args) ^ ")" in
+    Source.error at "type"
+      ("undefined instance of partial syntax type definition: `" ^ id.it ^ args ^ "`")
   | (args', t)::insts' ->
+    (*
+    Printf.eprintf "[el.reduce_typ_app] %s(%s) =: %s(%s)\n%!"
+      id.it (String.concat ", " (List.map Print.string_of_arg args))
+      id.it (String.concat ", " (List.map Print.string_of_arg args'));
+    let to' =
+    *)
     (* HACK: check for forward reference to yet undefined type (should throw?) *)
     if Eq.eq_typ t (VarT (id, args') $ id.at) then None else
     match match_list match_arg env Subst.empty args args' with
-    | exception Irred -> None
-    | None -> reduce_typ_app env id args insts'
+    | exception Irred ->
+      if not !assume_coherent_matches then None else
+      reduce_typ_app env id args at insts'
+    | None -> reduce_typ_app env id args at insts'
     | Some s -> Some (reduce_typ env (Subst.subst_typ s t))
+    (*
+    in
+    Printf.eprintf "[el.reduce_typ_app] %s(%s) =: %s(%s) => %s\n%!"
+      id.it (String.concat ", " (List.map Print.string_of_arg args))
+      id.it (String.concat ", " (List.map Print.string_of_arg args'))
+      (if to' = None then "-" else "!");
+    to'
+    *)
 
 
 (* Expression Reduction *)
@@ -257,7 +288,10 @@ and reduce_exp env e : exp =
     BrackE (atom1, e1', atom2) $ e.at
   | CallE (id, args) ->
     let args' = List.map (reduce_arg env) args in
-    (match reduce_exp_call env id args' (Map.find id.it env.defs) with
+    let clauses = Map.find id.it env.defs in
+    (* Allow for uninterpreted functions *)
+    if not !assume_coherent_matches && clauses = [] then CallE (id, args') $ e.at else
+    (match reduce_exp_call env id args' e.at clauses with
     | None -> CallE (id, args') $ e.at
     | Some e -> e
     )
@@ -318,16 +352,23 @@ and reduce_arg env a : arg =
   | TypA _t -> a  (* types are reduced on demand *)
   | GramA _g -> a
 
-and reduce_exp_call env id args = function
-  | [] -> None
+and reduce_exp_call env id args at = function
+  | [] ->
+    if !assume_coherent_matches then None else
+    let args = if args = [] then "" else
+      "(" ^ String.concat ", " (List.map Print.string_of_arg args) ^ ")" in
+    Source.error at "type"
+      ("undefined call to partial function: `$" ^ id.it ^ args ^ "`")
   | (args', e, prems)::clauses' ->
     match match_list match_arg env Subst.empty args args' with
-    | exception Irred -> None
-    | None -> reduce_exp_call env id args clauses'
+    | exception Irred ->
+      if not !assume_coherent_matches then None else
+      reduce_exp_call env id args at clauses'
+    | None -> reduce_exp_call env id args at clauses'
     | Some s ->
       match reduce_prems env Subst.(subst_list subst_prem s prems) with
       | None -> None
-      | Some false -> reduce_exp_call env id args clauses'
+      | Some false -> reduce_exp_call env id args at clauses'
       | Some true -> Some (reduce_exp env (Subst.subst_exp s e))
 
 and reduce_prems env = function
@@ -392,6 +433,13 @@ and match_typ env s t1 t2 : subst option =
 
 (* Expressions *)
 
+(* Matching can produce one of several results:
+   - Some s: matches producing substitutions
+   - None: does not match
+   - exception Irred: lacking normal form, can't decide between Some or None
+   - exception Error: some inner application was undefined, i.e., non-exhaustive
+*)
+
 and match_exp env s e1 e2 : subst option =
   (*
   Printf.eprintf "[el.match_exp] %s =: %s[%s] = %s\n%!"
@@ -399,7 +447,7 @@ and match_exp env s e1 e2 : subst option =
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-  let so =
+  match
   *)
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
@@ -412,22 +460,25 @@ and match_exp env s e1 e2 : subst option =
 *)
   | _, VarE (id2, []) when Subst.mem_varid s id2 ->
     (* A pattern variable already in the substitution is non-linear *)
-    if equiv_exp env e1 (Subst.subst_exp s e2) then
+    let e2' = Subst.subst_exp s e2 in
+    if equiv_exp env e1 e2' then
       Some s
-    else
+    else if is_normal_exp e1 && is_normal_exp e2' then
       None
+    else
+      raise Irred
   | _, VarE (id2, []) ->
     (* Treat as a fresh pattern variable. If declared, need to check domain. *)
     let find_var id =
       match Map.find_opt id.it env.vars with
       | None ->
         (* Implicitly bound *)
-        Map.find_opt (El.Convert.strip_var_suffix id).it env.vars
+        Map.find_opt (El.Convert.strip_var_suffix id).it env.vars  (* TODO: should be gvars *)
       | some -> some
     in
     if
-      match find_var id2 with
-      | None -> true
+      match Map.find_opt (El.Convert.strip_var_suffix id2).it env.vars (* gvars *) with
+      | None -> true  (* undeclared pattern variable always matches *)
       | Some t2 ->
         let t2' = reduce_typ env t2 in
         match e1.it, t2'.it with
@@ -443,15 +494,17 @@ and match_exp env s e1 e2 : subst option =
           ) (Convert.filter_nl tes)
         | (AtomE atom | SeqE ({it = AtomE atom; _}::_)), CaseT (_, _, tcs, _) ->
           (match El.Convert.find_nl_list (fun (atomN, _, _) -> atomN.it = atom.it) tcs with
-          | Some (_, (tN, _), _) -> match_exp env s e1 (Convert.exp_of_typ tN) <> None
+          | Some (_, (tN, _), _) ->
+            match_exp env s e1 (Convert.exp_of_typ tN) <> None
           | None -> false
           )
         | VarE (id1, []), _ ->
           (match find_var id1 with
-          | None -> false
-          | Some t1 -> sub_typ env t1 t2'
+          | None -> raise Irred
+          | Some t1 -> sub_typ env t1 t2' ||
+            if disj_typ env t1 t2' then false else raise Irred
           )
-        | _, (RangeT _ | StrT _ | CaseT _) -> false
+        | _, (RangeT _ | StrT _ | CaseT _) -> raise Irred
         | _, _ -> true
     then
       if id2.it = "_" then Some s else
@@ -510,15 +563,21 @@ and match_exp env s e1 e2 : subst option =
   | _, _ when is_normal_exp e1 -> None
   | _, _ -> raise Irred
   (*
-  in
-  Printf.eprintf "[el.match_exp] %s =: %s => %s\n%!"
-    (Print.string_of_exp e1)
-    (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)))
-    (match so with
-    | None -> "-"
-    | Some s ->
-    (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
-    );
+  with
+  | exception Irred ->
+    Printf.eprintf "[el.match_exp] %s =: %s => ?\n%!"
+      (Print.string_of_exp e1)
+      (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
+      raise Irred
+  | so ->
+    Printf.eprintf "[el.match_exp] %s =: %s => %s\n%!"
+      (Print.string_of_exp e1)
+      (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)))
+      (match so with
+      | None -> "-"
+      | Some s ->
+      (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
+      );
   so
   *)
 
@@ -642,7 +701,7 @@ and equiv_exp env e1 e2 =
 
 and equiv_arg env a1 a2 =
   (*
-  Printf.eprintf "[el.equiv_arg] (%s) == (%s)\n%!"
+  Printf.eprintf "[el.equiv_arg] %s == %s\n%!"
     (Print.string_of_arg a1)
     (Print.string_of_arg a2);
   *)
@@ -690,8 +749,6 @@ and sub_typ env t1 t2 =
         equiv_typ env t1 t2 && Eq.eq_nl_list Eq.eq_prem prems1 prems2
       | None -> false
     ) tcs1
-  | IterT (t11, iter1), IterT (t21, iter2) ->
-    sub_typ env t11 t21 && Eq.eq_iter iter1 iter2
   | _, _ -> equiv_typ env t1 t2
   (*
   in
@@ -708,4 +765,86 @@ and find_case tcs atom =
   El.Convert.find_nl_list (fun (atom', _, _) -> atom'.it = atom.it) tcs
   |> Option.map snd3
 
+and fst3 (x, _, _) = x
 and snd3 (_, x, _) = x
+
+
+(* Type Disjointness *)
+
+and disj_typ env t1 t2 =
+  (*
+  (*if not (Eq.eq_typ t1 t2) then*)
+  Printf.eprintf "[el.disj_typ] %s ## %s\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2);
+  let b =
+  *)
+  match t1.it, t2.it with
+  | VarT (id1, args1), VarT (id2, args2) ->
+    let t1' = reduce_typ env t1 in
+    let t2' = reduce_typ env t2 in
+    if t1' <> t1 || t2' <> t2 then
+      disj_typ env t1' t2'
+    else
+      (El.Convert.strip_var_suffix id1).it <> (El.Convert.strip_var_suffix id2).it ||
+      disj_list disj_arg env args1 args2
+  | VarT _, _ ->
+    let t1' = reduce_typ env t1 in
+    t1' <> t1 && disj_typ env t1' t2
+  | _, VarT _ ->
+    let t2' = reduce_typ env t2 in
+    t2' <> t2 && disj_typ env t1 t2'
+  | ParenT t11, _ -> disj_typ env t11 t2
+  | _, ParenT t21 -> disj_typ env t1 t21
+  | TupT ts1, TupT ts2 | SeqT ts1, SeqT ts2 -> disj_list disj_typ env ts1 ts2
+  | IterT (t11, iter1), IterT (t21, iter2) ->
+    disj_typ env t11 t21 || not (Eq.eq_iter iter1 iter2)
+  | AtomT atom1, AtomT atom2 -> atom1.it <> atom2.it
+  | InfixT (t11, atom1, t12), InfixT (t21, atom2, t22) ->
+    disj_typ env t11 t21 || atom1.it <> atom2.it || disj_typ env t12 t22
+  | BrackT (atom11, t11, atom12), BrackT (atom21, t21, atom22) ->
+    atom11.it <> atom21.it || disj_typ env t11 t21 || atom12 = atom22
+  | StrT tfs1, StrT tfs2 ->
+    unordered (atoms tfs1) (atoms tfs2) ||
+    El.Convert.exists_nl_list (fun (atom, (t2, _prems2), _) ->
+      match find_field tfs1 atom with
+      | Some (t1, _prems1) -> disj_typ env t1 t2
+      | None -> true
+    ) tfs2
+  | CaseT (NoDots, [], tcs1, NoDots), CaseT (NoDots, [], tcs2, NoDots) ->
+    Set.disjoint (atoms tcs1) (atoms tcs2) ||
+    El.Convert.exists_nl_list (fun (atom, (t1, _prems1), _) ->
+      match find_case tcs2 atom with
+      | Some (t2, _prems2) -> disj_typ env t1 t2
+      | None -> false
+    ) tcs1
+  | RangeT _, RangeT _ -> false  (* approximation *)
+  | _, _ -> t1.it <> t2.it
+  (*
+  in
+  (*if not (Eq.eq_typ t1 t2) then*)
+  Printf.eprintf "[el.disj_typ] %s ## %s => %b\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2) b;
+  b
+  *)
+
+and atoms xs =
+  Set.of_list (List.map Print.string_of_atom
+    (El.Convert.map_filter_nl_list fst3 xs))
+
+and unordered s1 s2 = not Set.(subset s1 s2 || subset s2 s1)
+
+and disj_exp env e1 e2 =
+  (* TODO: this does not reduce inner type arguments *)
+  let e1' = reduce_exp env e1 in
+  let e2' = reduce_exp env e2 in
+  is_normal_exp e1' && is_normal_exp e2' && not (Eq.eq_exp e1' e2')
+
+and disj_arg env a1 a2 =
+  (*
+  Printf.eprintf "[el.disj_arg] %s ## %s\n%!"
+    (Print.string_of_arg a1)
+    (Print.string_of_arg a2);
+  *)
+  match !(a1.it), !(a2.it) with
+  | ExpA e1, ExpA e2 -> disj_exp env e1 e2
+  | TypA t1, TypA t2 -> disj_typ env t1 t2
+  | GramA g1, GramA g2 -> not (Eq.eq_sym g1 g2)
+  | _, _ -> false

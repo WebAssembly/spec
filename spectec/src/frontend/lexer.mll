@@ -206,9 +206,6 @@ and token = parse
   | "%" { HOLE }
   | "%"(nat as s) { HOLEN (nat lexbuf s) }
   | "%%" { MULTIHOLE }
-  | "!%" { SKIP }
-  | "!%"(nat as s) { SKIPN (nat lexbuf s) }
-  | "!%%" { MULTISKIP }
   | "#" { FUSE }
 
   | "`" { TICK }

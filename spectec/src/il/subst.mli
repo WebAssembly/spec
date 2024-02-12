@@ -18,12 +18,16 @@ val subst_iter : subst -> iter -> iter
 val subst_typ : subst -> typ -> typ
 val subst_exp : subst -> exp -> exp
 val subst_path : subst -> path -> path
-val subst_prem : subst -> premise -> premise
+val subst_prem : subst -> prem -> prem
 val subst_arg : subst -> arg -> arg
 val subst_param : subst -> param -> param
 val subst_deftyp : subst -> deftyp -> deftyp
 val subst_typcase : subst -> typcase -> typcase
 val subst_typfield : subst -> typfield -> typfield
 val subst_typbind : subst -> id * typ -> id * typ
+
+val subst_args : subst -> arg list -> arg list
+val subst_binds : subst -> bind list -> bind list * subst
+val subst_params : subst -> param list -> param list * subst
 
 val subst_list : (subst -> 'a -> 'a) -> subst -> 'a list -> 'a list

@@ -3,7 +3,7 @@ open El.Ast
 module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
 
 type typ_def = (arg list * typ) list
-type def_def = (arg list * exp * premise list) list
+type def_def = (arg list * exp * prem list) list
 type gram_def = unit
 type env = {vars : typ Map.t; typs : typ_def Map.t; defs : def_def Map.t; syms : gram_def Map.t}
 type subst = El.Subst.t

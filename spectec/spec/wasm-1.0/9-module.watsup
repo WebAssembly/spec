@@ -125,10 +125,6 @@ def $allocmodule(s, module, externval*, val*) = (s_4, mm)
 ;; Instantiation
 ;;
 
-def $concat_instr((instr*)*) : instr*
-def $concat_instr(eps) = eps
-def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
-
 def $initelem(store, moduleinst, u32*, (funcaddr*)*) : store
 def $initelem(s, mm, eps, eps) = s
 def $initelem(s, mm, i i'*, (a*) (a'*)*) = s_2

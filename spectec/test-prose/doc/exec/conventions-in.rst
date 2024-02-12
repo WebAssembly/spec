@@ -14,6 +14,15 @@ $${definition-prose: Ki}
 
 $${definition: Ki}
 
+.. _def-concat_:
+
+$${definition-prose: concat_}
+
+\
+
+$${definition: concat_}
+
+
 Formal Notation
 ~~~~~~~~~~~~~~~
 
@@ -35,21 +44,21 @@ $${definition-prose: size}
 
 $${definition: size}
 
-.. _def-packedsize:
+.. _def-psize:
 
-$${definition-prose: packedsize}
-
-\
-
-$${definition: packedsize}
-
-.. _def-storagesize:
-
-$${definition-prose: storagesize}
+$${definition-prose: psize}
 
 \
 
-$${definition: storagesize}
+$${definition: psize}
+
+.. _def-zsize:
+
+$${definition-prose: zsize}
+
+\
+
+$${definition: zsize}
 
 Projections
 ~~~~~~~~~~~

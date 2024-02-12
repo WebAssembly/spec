@@ -435,7 +435,7 @@ and annot_arg env a : Il.Ast.arg * occur =
     | TypA t -> TypA t, Env.empty
   in {a with it}, occur
 
-and annot_prem env prem : Il.Ast.premise * occur =
+and annot_prem env prem : Il.Ast.prem * occur =
   let it, occur =
     match prem.it with
     | RulePr (id, op, e) ->

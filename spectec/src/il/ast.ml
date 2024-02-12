@@ -83,8 +83,8 @@ and deftyp' =
   | StructT of typfield list            (* record type *)
   | VariantT of typcase list            (* variant type *)
 
-and typfield = atom * (binds * typ * premise list) * hint list   (* record field *)
-and typcase = atom * (binds * typ * premise list) * hint list    (* variant case *)
+and typfield = atom * (bind list * typ * prem list) * hint list  (* record field *)
+and typcase = atom * (bind list * typ * prem list) * hint list   (* variant case *)
 
 
 (* Expressions *)
@@ -156,45 +156,48 @@ and iterexp = iter * id list
 
 (* Definitions *)
 
-and param = param' phrase
-and param' =
-  | ExpP of id * typ                                  (* varid `:` typ *)
-  | TypP of id                                        (* `syntax` varid *)
-
 and arg = arg' phrase
 and arg' =
   | ExpA of exp                                       (* exp *)
   | TypA of typ                                       (* `syntax` typ *)
 
-and binds = (id * typ * iter list) list
+and bind = bind' phrase
+and bind' =
+  | ExpB of id * typ * iter list
+  | TypB of id
+
+and param = param' phrase
+and param' =
+  | ExpP of id * typ                                  (* varid `:` typ *)
+  | TypP of id                                        (* `syntax` varid *)
 
 and def = def' phrase
 and def' =
-  | TypD of id * param list * instance list           (* syntax type (family) *)
+  | TypD of id * param list * inst list               (* syntax type (family) *)
   | RelD of id * mixop * typ * rule list              (* relation *)
   | DecD of id * param list * typ * clause list       (* definition *)
   | RecD of def list                                  (* recursive *)
   | HintD of hintdef
 
-and instance = instance' phrase
-and instance' =
-  | InstD of binds * arg list * deftyp                (* family instance clause *)
+and inst = inst' phrase
+and inst' =
+  | InstD of bind list * arg list * deftyp            (* family instance clause *)
 
 and rule = rule' phrase
 and rule' =
-  | RuleD of id * binds * mixop * exp * premise list  (* relation rule *)
+  | RuleD of id * bind list * mixop * exp * prem list (* relation rule *)
 
 and clause = clause' phrase
 and clause' =
-  | DefD of binds * arg list * exp * premise list     (* definition clause *)
+  | DefD of bind list * arg list * exp * prem list    (* definition clause *)
 
-and premise = premise' phrase
-and premise' =
+and prem = prem' phrase
+and prem' =
   | RulePr of id * mixop * exp                        (* premise *)
   | IfPr of exp                                       (* side condition *)
   | LetPr of exp * exp * id list                      (* assignment *)
   | ElsePr                                            (* otherwise *)
-  | IterPr of premise * iterexp                       (* iteration *)
+  | IterPr of prem * iterexp                          (* iteration *)
 
 and hintdef = hintdef' phrase
 and hintdef' =

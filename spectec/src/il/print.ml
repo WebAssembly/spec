@@ -108,7 +108,7 @@ and string_of_typ t =
   | BoolT -> "bool"
   | NumT t -> string_of_numtyp t
   | TextT -> "text"
-  | TupT xts -> "<" ^ concat ", " (List.map string_of_typbind xts) ^ ">"
+  | TupT xts -> "(" ^ concat ", " (List.map string_of_typbind xts) ^ ")"
   | IterT (t1, iter) -> string_of_typ t1 ^ string_of_iter iter
 
 and string_of_typ_args t =
@@ -120,25 +120,29 @@ and string_of_typ_args t =
 and string_of_typbind (id, t) =
   (if id.it = "_" then "" else id.it ^ " : ") ^ string_of_typ t
 
-and string_of_deftyp dt =
+and string_of_deftyp layout dt =
   match dt.it with
   | AliasT t -> string_of_typ t
   | NotationT (mixop, t) -> string_of_typ_mix mixop t
-  | StructT tfs -> "{" ^ concat ", " (List.map string_of_typfield tfs) ^ "}"
-  | VariantT tcs -> "|" ^ concat " |" (List.map string_of_typcase tcs)
+  | StructT tfs when layout = `H ->
+    "{" ^ concat ", " (List.map string_of_typfield tfs) ^ "}"
+  | StructT tfs ->
+    "\n{\n  " ^ concat ",\n  " (List.map string_of_typfield tfs) ^ "\n}"
+  | VariantT tcs when layout = `H ->
+    "| " ^ concat " | " (List.map string_of_typcase tcs)
+  | VariantT tcs ->
+    "\n  | " ^ concat "\n  | " (List.map string_of_typcase tcs)
 
 and string_of_typ_mix mixop t =
   if mixop = [[]; []] then string_of_typ t else
   string_of_mixop mixop ^ string_of_typ_args t
 
-and string_of_typfield (atom, (binds, t, prems), _hints) =
-  string_of_binds binds ^
-  string_of_atom atom ^ " " ^ string_of_typ t ^
+and string_of_typfield (atom, (bs, t, prems), _hints) =
+  string_of_atom atom ^ string_of_binds bs ^ " " ^ string_of_typ t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
-and string_of_typcase (atom, (binds, t, prems), _hints) =
-  string_of_binds binds ^ " " ^
-  string_of_atom atom ^ string_of_typ_args t ^
+and string_of_typcase (atom, (bs, t, prems), _hints) =
+  string_of_atom atom ^ string_of_binds bs ^ string_of_typ_args t ^
     concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 
@@ -170,7 +174,7 @@ and string_of_exp e =
     string_of_exp e1 ^ "." ^ string_of_atom atom ^ "_" ^ string_of_typ e1.note
   | CompE (e1, e2) -> string_of_exp e1 ^ " ++ " ^ string_of_exp e2
   | LenE e1 -> "|" ^ string_of_exp e1 ^ "|"
-  | TupE es -> "<" ^ string_of_exps ", " es ^ ">"
+  | TupE es -> "(" ^ string_of_exps ", " es ^ ")"
   | MixE (op, e1) -> string_of_mixop op ^ string_of_exp_args e1
   | CallE (id, as1) -> "$" ^ id.it ^ string_of_args as1
   | IterE (e1, iter) -> string_of_exp e1 ^ string_of_iterexp iter
@@ -228,14 +232,6 @@ and string_of_prem prem =
 
 (* Definitions *)
 
-and string_of_bind (id, t, iters) =
-  let dim = String.concat "" (List.map string_of_iter iters) in
-  id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
-
-and string_of_binds = function
-  | [] -> ""
-  | binds -> " {" ^ concat ", " (List.map string_of_bind binds) ^ "}"
-
 and string_of_arg a =
   match a.it with
   | ExpA e -> string_of_exp e
@@ -244,6 +240,17 @@ and string_of_arg a =
 and string_of_args = function
   | [] -> ""
   | as_ -> "(" ^ concat ", " (List.map string_of_arg as_) ^ ")"
+
+and string_of_bind bind =
+  match bind.it with
+  | ExpB (id, t, iters) ->
+    let dim = String.concat "" (List.map string_of_iter iters) in
+    id.it ^ dim ^ " : " ^ string_of_typ t ^ dim
+  | TypB id -> "syntax " ^ id.it
+
+and string_of_binds = function
+  | [] -> ""
+  | bs -> "{" ^ concat ", " (List.map string_of_bind bs) ^ "}"
 
 let string_of_param p =
   match p.it with
@@ -258,39 +265,39 @@ let region_comment indent at =
   if at = no_region then "" else
   indent ^ ";; " ^ string_of_region at ^ "\n"
 
-let string_of_instance id inst =
+let string_of_inst id inst =
   match inst.it with
-  | InstD (binds, as_, dt) ->
+  | InstD (bs, as_, dt) ->
     "\n" ^ region_comment "  " inst.at ^
-    "  syntax " ^ id.it ^ string_of_binds binds ^ string_of_args as_ ^ " = " ^
-      string_of_deftyp dt ^ "\n"
+    "  syntax " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
+      string_of_deftyp `V dt ^ "\n"
 
 let string_of_rule rule =
   match rule.it with
-  | RuleD (id, binds, mixop, e, prems) ->
+  | RuleD (id, bs, mixop, e, prems) ->
     let id' = if id.it = "" then "_" else id.it in
     "\n" ^ region_comment "  " rule.at ^
-    "  rule " ^ id' ^ string_of_binds binds ^ ":\n    " ^
+    "  rule " ^ id' ^ string_of_binds bs ^ ":\n    " ^
       string_of_exp {e with it = MixE (mixop, e)} ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let string_of_clause id clause =
   match clause.it with
-  | DefD (binds, as_, e, prems) ->
+  | DefD (bs, as_, e, prems) ->
     "\n" ^ region_comment "  " clause.at ^
-    "  def" ^ string_of_binds binds ^ " " ^ id.it ^ string_of_args as_ ^ " = " ^
+    "  def " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
       string_of_exp e ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
 let rec string_of_def d =
   let pre = "\n" ^ region_comment "" d.at in
   match d.it with
-  | TypD (id, _ps, [{it = InstD (binds, as_, dt); _}]) ->
-    pre ^ "syntax " ^ id.it ^ string_of_binds binds ^ string_of_args as_ ^ " = " ^
-      string_of_deftyp dt ^ "\n"
+  | TypD (id, _ps, [{it = InstD (bs, as_, dt); _}]) ->
+    pre ^ "syntax " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
+      string_of_deftyp `V dt ^ "\n"
   | TypD (id, ps, insts) ->
     pre ^ "syntax " ^ id.it ^ string_of_params ps ^
-     concat "\n" (List.map (string_of_instance id) insts) ^ "\n"
+     concat "\n" (List.map (string_of_inst id) insts) ^ "\n"
   | RelD (id, mixop, t, rules) ->
     pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
       concat "\n" (List.map string_of_rule rules) ^ "\n"

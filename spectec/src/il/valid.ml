@@ -14,7 +14,7 @@ let error at msg = Source.error at "validation" msg
 module Env = Map.Make(String)
 
 type var_typ = typ * iter list
-type typ_typ = param list * instance list
+type typ_typ = param list * inst list
 type rel_typ = mixop * typ
 type def_typ = param list * typ * clause list
 
@@ -39,12 +39,6 @@ let to_eval_env env =
   let typs = Env.map (fun (_ps, insts) -> insts) env.typs in
   let defs = Env.map (fun (_ps, _t, clauses) -> clauses) env.defs in
   Eval.{vars; typs; defs}
-
-(* TODO
-let fwd_deftyp id = NotationT ([[]; []], VarT (id $ no_region, []) $ no_region)
-let fwd_deftyp_bad = fwd_deftyp "(undefined)" $ no_region
-let fwd_deftyp_ok = fwd_deftyp "(forward)" $ no_region
-*)
 
 let find space env' id =
   match Env.find_opt id.it env' with
@@ -109,7 +103,7 @@ let expand_app env id as_ : deftyp' option =
   in
   Printf.eprintf "[il.expand_app] %s(%s) => %s\n%!" id.it
     (String.concat "< " (List.map Print.string_of_arg as_))
-    (match dto' with None -> "-" | Some dt' -> string_of_deftyp (dt' $ id.at));
+    (match dto' with None -> "-" | Some dt' -> string_of_deftyp `H (dt' $ id.at));
   dto'
   *)
 
@@ -187,7 +181,12 @@ let as_variant_typ phrase env dir t at : typcase list =
 let equiv_typ env t1 t2 at =
   if not (Eval.equiv_typ (to_eval_env env) t1 t2) then
     error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
-      "does not match expected type `" ^ typ_string env t2 ^ "`")
+      "does not equal expected type `" ^ typ_string env t2 ^ "`")
+
+let sub_typ env t1 t2 at =
+  if not (Eval.sub_typ (to_eval_env env) t1 t2) then
+    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
+      "does not match expected supertype `" ^ typ_string env t2 ^ "`")
 
 and selfify_typ env e t =
   match expand env t with
@@ -198,11 +197,6 @@ and selfify_typ env e t =
       ) (Subst.empty, 0) xts
     in TupT (List.map (fun (xI, tI) -> xI, Subst.subst_typ s tI) xts) $ t.at
   | _ -> t
-
-let sub_typ env t1 t2 at =
-  if not (Eval.sub_typ (to_eval_env env) t1 t2) then
-    error at ("expression's type `" ^ typ_string env t1 ^ "` " ^
-      "does not match expected supertype `" ^ typ_string env t2 ^ "`")
 
 
 (* Operators *)
@@ -264,10 +258,6 @@ and valid_typ env dim t =
   match t.it with
   | VarT (id, as_) ->
     let ps, _insts = find "syntax type" env.typs id in
-(* TODO
-    if dt = fwd_deftyp_bad then
-      error t.at ("invalid forward reference to syntax type `" ^ id.it ^ "`");
-*)
     ignore (valid_args env as_ ps Subst.empty t.at)
   | BoolT
   | NumT _
@@ -312,15 +302,15 @@ and valid_typ_mix env mixop t at =
       "` applied to " ^ typ_string env t);
   valid_typ env [] t
 
-and valid_typfield env (_atom, (binds, t, prems), _hints) =
+and valid_typfield env (_atom, (bs, t, prems), _hints) =
   let env' = local_env env in
-  valid_binds env' binds;
+  List.iter (valid_bind env') bs;
   valid_typ env' [] t;
   List.iter (valid_prem env') prems
 
-and valid_typcase env (_atom, (binds, t, prems), _hints) =
+and valid_typcase env (_atom, (bs, t, prems), _hints) =
   let env' = local_env env in
-  valid_binds env' binds;
+  List.iter (valid_bind env') bs;
   valid_typ env' [] t;
   List.iter (valid_prem env') prems
 
@@ -531,7 +521,7 @@ and valid_path env p t : typ =
     | DotP (p1, atom) ->
       let t1 = valid_path env p1 t in
       let tfs = as_struct_typ "path" env Check t1 p1.at in
-      let _binds, t, _prems = find_field tfs atom p1.at in
+      let _bs, t, _prems = find_field tfs atom p1.at in
       t
   in
   equiv_typ env p.note t' p.at;
@@ -568,15 +558,14 @@ and valid_prem env prem =
     valid_exp env e (BoolT $ e.at)
   | LetPr (e1, e2, ids) ->
     valid_exp env (CmpE (EqOp, e1, e2) $$ prem.at % (BoolT $ prem.at))  (BoolT $ prem.at);
-    let target_ids = Free.Set.of_list (List.map it ids) in
-    let free_ids = (Free.free_exp e1).varid in
-    let diff_ids = Free.Set.diff target_ids free_ids in
-    if diff_ids <> Free.Set.empty then
+    let target_ids = Free.(free_list free_varid ids) in
+    let free_ids = Free.(free_exp e1) in
+    if not (Free.subset target_ids free_ids) then
       error prem.at ("target identifier(s) " ^
-        ( Free.Set.elements diff_ids |>
+        ( Free.Set.elements (Free.diff target_ids free_ids).varid |>
           List.map (fun id -> "`" ^ id ^ "`") |>
           String.concat ", " ) ^
-        " not contained in left-hand side expression")
+        " do not occur in left-hand side expression")
   | ElsePr ->
     ()
   | IterPr (prem', iter) ->
@@ -585,14 +574,6 @@ and valid_prem env prem =
 
 
 (* Definitions *)
-
-and valid_binds env binds =
-  List.iter (fun (id, t, dim) ->
-(*TODO
-    valid_typ env dim t;
-*)
-    env.vars <- bind "variable" env.vars id (t, dim)
-  ) binds
 
 and valid_arg env a p s =
   (*
@@ -618,6 +599,14 @@ and valid_args env as_ ps s at : Subst.t =
     let s' = valid_arg env a p s in
     valid_args env as' ps' s' at
 
+and valid_bind env b =
+  match b.it with
+  | ExpB (id, t, dim) ->
+    valid_typ env dim t;
+    env.vars <- bind "variable" env.vars id (t, dim)
+  | TypB id ->
+    env.typs <- bind "syntax" env.typs id ([], [])
+
 let valid_param env p =
   match p.it with
   | ExpP (id, t) ->
@@ -626,64 +615,53 @@ let valid_param env p =
   | TypP id ->
     env.typs <- bind "syntax" env.typs id ([], [])
 
-let valid_instance env ps inst =
+let valid_inst env ps inst =
   (*
+  Printf.eprintf "--------------------------\n%!";
   Printf.eprintf "[il.valid_inst %s]\n%!" (string_of_region inst.at);
   *)
   match inst.it with
-  | InstD (binds, as_, dt) ->
+  | InstD (bs, as_, dt) ->
     let env' = local_env env in
-    valid_binds env' binds;
+    List.iter (valid_bind env') bs;
     let _s = valid_args env' as_ ps Subst.empty inst.at in
     valid_deftyp env' dt
 
 let valid_rule env mixop t rule =
   (*
+  Printf.eprintf "--------------------------\n%!";
   Printf.eprintf "[il.valid_rule %s] %s  :  %s%s\n%!"
     (string_of_region rule.at) (string_of_rule rule)
     (string_of_mixop mixop) (string_of_typ t);
   *)
   match rule.it with
-  | RuleD (_id, binds, mixop', e, prems) ->
+  | RuleD (_id, bs, mixop', e, prems) ->
     let env' = local_env env in
-    valid_binds env' binds;
+    List.iter (valid_bind env') bs;
     valid_expmix env' mixop' e (mixop, t) e.at;
     List.iter (valid_prem env') prems
 
 let valid_clause env ps t clause =
   (*
+  Printf.eprintf "--------------------------\n%!";
   Printf.eprintf "[il.valid_clause %s] %s  :  (%s) -> %s\n%!"
     (string_of_region clause.at) (string_of_clause ("" $ no_region) clause)
     (String.concat ", " (List.map string_of_param ps))
     (string_of_typ t);
   *)
   match clause.it with
-  | DefD (binds, as_, e, prems) ->
+  | DefD (bs, as_, e, prems) ->
     let env' = local_env env in
-    valid_binds env' binds;
+    List.iter (valid_bind env') bs;
     let s = valid_args env' as_ ps Subst.empty clause.at in
     valid_exp env' e (Subst.subst_typ s t);
     List.iter (valid_prem env') prems
-(*
-    let free_rh =
-      Free.(Set.diff (Set.diff (free_exp e2).varid
-        (free_exp e1).varid) (free_list free_prem prems).varid)
-    in
-    if free_rh <> Free.Set.empty then
-      error clause.at ("definition contains unbound variable(s) `" ^
-        String.concat "`, `" (Free.Set.elements free_rh) ^ "`")
-*)
 
 let infer_def env d =
   match d.it with
   | TypD (id, ps, _insts) ->
     let env' = local_env env in
     List.iter (valid_param env') ps;
-(* TODO
-    let fwd_deftyp =
-      match dt.it with NotationT _ -> fwd_deftyp_bad | _ -> fwd_deftyp_ok in
-    env.typs <- bind "syntax type" env.typs id (ps, fwd_deftyp)
-*)
     env.typs <- bind "syntax type" env.typs id (ps, [])
   | RelD (id, mixop, t, _rules) ->
     valid_typ_mix env mixop t d.at;
@@ -700,13 +678,14 @@ type bind = {bind : 'a. string -> 'a Env.t -> id -> 'a -> 'a Env.t}
 
 let rec valid_def {bind} env d =
   (*
+  Printf.eprintf "--------------------------------------------------------\n%!";
   Printf.eprintf "[il.valid_def %s] %s\n%!" (string_of_region d.at) (Print.string_of_def d);
   *)
   match d.it with
   | TypD (id, ps, insts) ->
     let env' = local_env env in
     List.iter (valid_param env') ps;
-    List.iter (valid_instance env ps) insts;
+    List.iter (valid_inst env ps) insts;
     env.typs <- bind "syntax type" env.typs id (ps, insts);
   | RelD (id, mixop, t, rules) ->
     valid_typ_mix env mixop t d.at;

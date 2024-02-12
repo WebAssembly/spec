@@ -180,22 +180,22 @@ var xt : externtype
 
 ;; Constants
 
-def $size(valtype) : nat  hint(partial) hint(show |%|)
-def $packedsize(packedtype) : nat  hint(partial) hint(show |%|)
-def $lanesize(lanetype) : nat  hint(partial) hint(show |%|)
+def $size(valtype) : nat      hint(partial) hint(show |%|)
+def $psize(packedtype) : nat  hint(show |%|)
+def $lsize(lanetype) : nat    hint(show |%|)
 
-syntax const_(numtype)
-syntax const_(inn) = iN($size(inn))
-syntax const_(fnn) = fN($size(fnn))
+syntax num_(numtype)
+syntax num_(inn) = iN($size(inn))
+syntax num_(fnn) = fN($size(fnn))
 
-syntax vconst_(vnn) = vN($size(vnn))
+syntax pnum_(pnn) = iN($psize(pnn))
 
-syntax pconst_(pnn) = iN($packedsize(pnn))
+syntax lnum_(lanetype)
+syntax lnum_(numtype) = num_(numtype)
+syntax lnum_(packedtype) = pnum_(packedtype)
+syntax lnum_(imm) = iN($lsize(imm))  ;; HACK
 
-syntax lconst_(lanetype)
-syntax lconst_(imm) = iN($lanesize(imm))  ;; HACK
-syntax lconst_(numtype) = const_(numtype)
-syntax lconst_(packedtype) = pconst_(packedtype)
+syntax vec_(vnn) = vN($size(vnn))
 
 
 ;; Numeric operators
@@ -308,7 +308,7 @@ syntax instr/control hint(desc "control instruction") =
   | ...
 
 syntax instr/numeric hint(desc "numeric instruction") = ...
-  | CONST numtype const_(numtype)    hint(show %.CONST %)
+  | CONST numtype num_(numtype)      hint(show %.CONST %)
   | UNOP numtype unop_(numtype)      hint(show %.%)
   | BINOP numtype binop_(numtype)    hint(show %.%)
   | TESTOP numtype testop_(numtype)  hint(show %.%)
@@ -321,7 +321,7 @@ syntax half hint(desc "lane part") = | LOW | HIGH
 syntax zero = ZERO?
 
 syntax instr/vector hint(desc "vector instruction") = ...
-  | VCONST vectype vconst_(vectype)     hint(show %.CONST %)
+  | VCONST vectype vec_(vectype)        hint(show %.CONST %)
   | VVUNOP vectype vvunop               hint(show %.%)
   | VVBINOP vectype vvbinop             hint(show %.%)
   | VVTERNOP vectype vvternop           hint(show %.%)

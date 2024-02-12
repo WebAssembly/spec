@@ -131,10 +131,6 @@ def $allocmodule(s, module, externval*, val_g*, ref_t*, (ref_e*)*) = (s_6, mm)
 ;; Instantiation
 ;;
 
-def $concat_instr((instr*)*) : instr*
-def $concat_instr(eps) = eps
-def $concat_instr((instr*) (instr'*)*) = instr* $concat_instr((instr'*)*)
-
 def $runelem(elem, idx) : instr*
 def $runelem(ELEM reftype expr* (PASSIVE), y) = eps
 def $runelem(ELEM reftype expr* (DECLARE), y) = (ELEM.DROP y)
@@ -167,8 +163,8 @@ def $instantiate(s, module, externval*) = s'; f; instr_E* instr_D* (CALL x)?
   -- (Eval_expr : z; expr_E ~>* z; ref_E)**
   -- if (s', mm) = $allocmodule(s, module, externval*, val_G*, ref_T*, (ref_E*)*)
   -- if f = { MODULE mm }
-  -- if instr_E* = $concat_instr($runelem(elem*[i], i)^(i<n_E))
-  -- if instr_D* = $concat_instr($rundata(data*[j], j)^(j<n_D))
+  -- if instr_E* = $concat_(instr, $runelem(elem*[i], i)^(i<n_E))
+  -- if instr_D* = $concat_(instr, $rundata(data*[j], j)^(j<n_D))
 
 
 ;;

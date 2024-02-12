@@ -11,7 +11,6 @@ Number Types
 
 $${syntax+: 
   numtype
-  const_
 }
 
 .. _syntax-vectype:
@@ -22,7 +21,6 @@ Vector Types
 
 $${syntax+: 
   vectype
-  vconst_
 }
 
 .. _syntax-absheaptype:

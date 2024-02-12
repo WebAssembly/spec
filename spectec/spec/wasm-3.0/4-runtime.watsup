@@ -31,9 +31,9 @@ var aa : arrayaddr
 ;; Basic values
 
 syntax num hint(desc "number") =
-  | CONST numtype const_(numtype)        hint(show %.CONST %)
+  | CONST numtype num_(numtype)          hint(show %.CONST %)
 syntax vec hint(desc "vector") =
-  | VCONST vectype vconst_(vectype)      hint(show %.CONST %)
+  | VCONST vectype vec_(vectype)         hint(show %.CONST %)
 syntax addrref hint(desc "address reference") =
   | REF.I31_NUM u31                      hint(show REF.I31 %)
   | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %)
@@ -92,7 +92,7 @@ syntax exportinst hint(desc "export instance") =
     VALUE externval }
 
 syntax packedval hint(desc "packed value") =
-  | PACK packedtype pconst_(packedtype)    hint(show %.PACK %)
+  | PACK packedtype pnum_(packedtype)    hint(show %.PACK %)
 syntax fieldval hint(desc "field value") =
   | val | packedval
 syntax structinst hint(desc "structure instance") =

@@ -1,6 +1,6 @@
 open Il.Ast
 
-type reduction_group = (exp * exp * (premise list)) list
+type reduction_group = (exp * exp * (prem list)) list
 
 val transform_expr : (exp -> exp) -> exp -> exp
 val is_unified_id : string -> bool

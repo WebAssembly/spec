@@ -178,9 +178,6 @@ hole ::=
   "%"                                  use next operand
   "%"digit*                            use numbered operand
   "%%"                                 use all operands
-  "!%"                                 skip next operand
-  "!%"digit*                           skip numbered operand
-  "!%%"                                skip all operands
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.

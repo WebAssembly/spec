@@ -123,9 +123,9 @@ var xt : externtype
 
 def $size(valtype) : nat  hint(partial) hint(show |%|)
 
-syntax const_(valtype)
-syntax const_(inn) = iN($size(inn))
-syntax const_(fnn) = fN($size(fnn))
+syntax val_(valtype)
+syntax val_(inn) = iN($size(inn))
+syntax val_(fnn) = fN($size(fnn))
 
 
 ;; Operators
@@ -186,7 +186,7 @@ syntax instr/control hint(desc "control instruction") =
   | ...
 
 syntax instr/numeric hint(desc "numeric instruction") = ...
-  | CONST valtype const_(valtype)    hint(show %.CONST %)
+  | CONST valtype val_(valtype)      hint(show %.CONST %)
   | UNOP valtype unop_(valtype)      hint(show %.%)
   | BINOP valtype binop_(valtype)    hint(show %.%)
   | TESTOP valtype testop_(valtype)  hint(show %.%)

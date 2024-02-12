@@ -30,7 +30,8 @@ Because passes have dependencies, and because some flags enable multiple
 passers (--all-passes, some targets), we do _not_ want to use the order of
 flags on the command line.
 *)
-let all_passes = [ Sub; Totalize; Unthe; Wild; Sideconditions; Animate ]
+let _skip_passes = [ Sub ]
+let all_passes = [ Totalize; Unthe; Wild; Sideconditions; Animate ]
 
 type file_kind =
   | Spec
@@ -259,8 +260,13 @@ let () =
     log "Complete."
   with
   | Source.Error (at, msg) ->
-    let pass = if !last_pass = "" then "" else "(pass " ^ !last_pass ^ ") " in
-    Source.print_error at (pass ^ msg);
+    let msg' =
+      if !last_pass <> "" || String.starts_with ~prefix:"validation" msg then
+        "(after pass " ^ !last_pass ^ ") " ^ msg
+      else
+        msg
+    in
+    Source.print_error at msg';
     exit 1
   | exn ->
     flush_all ();

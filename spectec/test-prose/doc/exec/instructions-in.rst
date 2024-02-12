@@ -359,14 +359,6 @@ $${rule-prose: exec/array.new_elem}
 
 $${rule+: Step_read/array.new_elem-*}
 
-.. _def-concat_bytes:
-
-$${definition-prose: concat_bytes}
-
-\
-
-$${definition: concat_bytes}
-
 .. _exec-array.new_data:
 
 $${rule-prose: exec/array.new_data}

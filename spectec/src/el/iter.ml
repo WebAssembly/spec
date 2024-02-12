@@ -15,7 +15,7 @@ sig
   val visit_typ : typ -> unit
   val visit_exp : exp -> unit
   val visit_path : path -> unit
-  val visit_prem : premise -> unit
+  val visit_prem : prem -> unit
   val visit_sym : sym -> unit
   val visit_def : def -> unit
 

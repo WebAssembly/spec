@@ -6,4 +6,5 @@
 
 syntax A = nat
 
-syntax sym = $(A_1) | ... | $(A_n)
+;; TODO: get rid of parameters
+syntax sym(A_1, A_n) = $(A_1) | ... | $(A_n)

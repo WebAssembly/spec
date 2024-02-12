@@ -7,6 +7,7 @@ let error at msg = Source.error at "syntax" msg
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs
 let forall_nl_list f xs = List.for_all f (filter_nl xs)
+let exists_nl_list f xs = List.exists f (filter_nl xs)
 let find_nl_list f xs = List.find_opt f (filter_nl xs)
 let iter_nl_list f xs = List.iter f (filter_nl xs)
 let map_filter_nl_list f xs = List.map f (filter_nl xs)

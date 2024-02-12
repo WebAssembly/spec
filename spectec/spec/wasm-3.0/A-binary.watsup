@@ -51,7 +51,7 @@ def $utf8(ch) = b  -- if ch < U+0080 /\ ch = b
 def $utf8(ch) = b_1 b_2  -- if U+0080 <= ch < U+0800 /\ ch = $(2^6*(b_1 - 0xC0) + (b_2 - 0x80))
 def $utf8(ch) = b_1 b_2 b_3  -- if (U+0800 <= ch < U+D800 \/ U+E000 <= ch < U+10000) /\ ch = $(2^12*(b_1 - 0xE0) + 2^6*(b_2 - 0x80) + (b_3 - 0x80))
 def $utf8(ch) = b_1 b_2 b_3 b_4  -- if (U+10000 <= ch < U+11000) /\ ch = $(2^18*(b_1 - 0xF0) + 2^12*(b_2 - 0x80) + 2^6*(b_3 - 0x80) + (b_4 - 0x80))
-def $utf8(ch*) = $concat_bytes($utf8(ch)*)
+def $utf8(ch*) = $concat_(byte, $utf8(ch)*)
 
 grammar Bname : name =
   | b*:Bvec(Bbyte) => name  -- if $utf8(name) = b*
@@ -656,18 +656,13 @@ grammar Belemsec : elem* hint(desc "element section") =
 
 ;; Code section
 
-def $concat_locals((local*)*) : local*  hint(show $concat(%))
-def $concat_locals(eps) = eps
-def $concat_locals((loc*) (loc'*)*) = loc* $concat_locals((loc'*)*)
-
-
 syntax code = (local*, expr)
 
 grammar Blocals : local* hint(desc "local") =
   | n:Bu32 t:Bvaltype => (LOCAL t)^n
 
 grammar Bfunc : code =
-  | local**:Bvec(Blocals) expr:Bexpr => ($concat_locals(local**), expr)
+  | local**:Bvec(Blocals) expr:Bexpr => ($concat_(local, local**), expr)
 
 grammar Bcode : code =
   | sz:Bu32 code:Bfunc => code  -- if sz = ||Bfunc||
@@ -752,4 +747,4 @@ grammar Bmodule : module =
       MODULE type* import* func^n global* table* mem* elem* data^m start* export*
     -- if m'* = eps \/ $free_dataidx_funcs(func^n) = eps
     -- if m = $sum(m'*)
-    -- if (func = FUNC typeidx local* expr)*
+    -- if (func = FUNC typeidx local* expr)^n

@@ -100,8 +100,8 @@ let is_post_exp e =
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE SKIP MULTISKIP FUSE
-%token<int> HOLEN SKIPN
+%token HOLE MULTIHOLE FUSE
+%token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
 %token IF OTHERWISE HINT_LPAREN
@@ -413,10 +413,10 @@ nottyp_rel_ :
 nottyp : nottyp_rel { $1 }
 
 fieldtyp :
-  | fieldid typ_post hint* premise_bin_list { ($1, ($2, $4), $3) }
+  | fieldid typ_post hint* prem_bin_list { ($1, ($2, $4), $3) }
 
 casetyp :
-  | nottyp hint* premise_list { $1, $3, $2 }
+  | nottyp hint* prem_list { $1, $3, $2 }
 
 %inline enumtyp(X) :
   | X { ($1, None) }
@@ -454,12 +454,9 @@ exp_call_ :
   | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
 
 exp_hole_ :
-  | HOLEN { HoleE (`Use, `Num $1) }
-  | HOLE { HoleE (`Use, `Next) }
-  | MULTIHOLE { HoleE (`Use, `Rest) }
-  | SKIPN { HoleE (`Skip, `Num $1) }
-  | SKIP { HoleE (`Skip, `Next) }
-  | MULTISKIP { HoleE (`Skip, `Rest) }
+  | HOLEN { HoleE (`Num $1) }
+  | HOLE { HoleE `Next }
+  | MULTIHOLE { HoleE `Rest }
 
 (*exp_prim : exp_prim_ { $1 $ at $sloc }*)
 exp_prim_ :
@@ -598,24 +595,24 @@ path_ :
 
 (* Premises *)
 
-premise_list :
-  | enter_scope nl_dash_list(premise) exit_scope { $2 }
+prem_list :
+  | enter_scope nl_dash_list(prem) exit_scope { $2 }
 
-premise_bin_list :
-  | enter_scope nl_dash_list(premise_bin) exit_scope { $2 }
+prem_bin_list :
+  | enter_scope nl_dash_list(prem_bin) exit_scope { $2 }
 
-(*premise_post : premise_post_ { $1 $ at $sloc }*)
-premise_post_ :
+(*prem_post : prem_post_ { $1 $ at $sloc }*)
+prem_post_ :
   | OTHERWISE { ElsePr }
-  | LPAREN premise RPAREN iter*
+  | LPAREN prem RPAREN iter*
     { let rec iters prem = function
         | [] -> prem
         | iter::iters' -> iters (IterPr (prem, iter) $ at $sloc) iters'
       in (iters $2 $4).it }
 
-premise_bin : premise_bin_ { $1 $ at $sloc }
-premise_bin_ :
-  | premise_post_ { $1 }
+prem_bin : prem_bin_ { $1 $ at $sloc }
+prem_bin_ :
+  | prem_post_ { $1 }
   | relid COLON exp_bin { RulePr ($1, $3) }
   | IF exp_bin
     { let rec iters e =
@@ -624,9 +621,9 @@ premise_bin_ :
         | _ -> IfPr e
       in iters $2 }
 
-premise : premise_ { $1 $ at $sloc }
-premise_ :
-  | premise_post_ { $1 }
+prem : prem_ { $1 $ at $sloc }
+prem_ :
+  | prem_post_ { $1 }
   | relid COLON exp { RulePr ($1, $3) }
   | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
@@ -679,7 +676,7 @@ sym : sym_alt { $1 }
 
 prod : prod_ { $1 $ at $sloc }
 prod_ :
-  | sym ARROW2 exp premise_list { ($1, $3, $4) }
+  | sym ARROW2 exp prem_list { ($1, $3, $4) }
 
 gram :
   | dots_list(prod) { $1 $ at $sloc }
@@ -691,6 +688,7 @@ arg : arg_ { ref $1 $ at $sloc }
 arg_ :
   | exp_bin { ExpA $1 }
   | SYNTAX typ { TypA $2 }
+  | SYNTAX atomid_ { Atom.make_var $2; TypA (VarT ($2 $ at $loc($2), []) $ at $loc($2)) }
   | GRAMMAR sym { GramA $2 }
 
 param : param_ { $1 $ at $sloc }
@@ -706,7 +704,7 @@ param_ :
 
 def : def_ { $1 $ at $sloc }
 def_ :
-  | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint*
+  | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* exit_scope
     { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
   | SYNTAX varid_bind ruleid_list hint* EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
@@ -722,19 +720,19 @@ def_ :
       GramD ($2, id $ at $loc($6), $4, $8, $11, $9) }
   | RELATION relid COLON nottyp hint*
     { RelD ($2, $4, $5) }
-  | RULE relid ruleid_list COLON exp premise_list
+  | RULE relid ruleid_list COLON exp prem_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       RuleD ($2, id $ at $loc($3), $5, $6) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
     { DecD ($3, [], $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN COLON typ hint*
-    { DecD ($3, List.map El.Convert.param_of_arg $4, $7, $8) }
-  | DEF DOLLAR defid EQ exp premise_list
+  | DEF DOLLAR defid_lparen enter_scope comma_list(arg) RPAREN COLON typ hint* exit_scope
+    { DecD ($3, List.map El.Convert.param_of_arg $5, $8, $9) }
+  | DEF DOLLAR defid EQ exp prem_list
     { DefD ($3, [], $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN EQ exp premise_list
-    { DefD ($3, $4, $7, $8) }
+  | DEF DOLLAR defid_lparen enter_scope comma_list(arg) RPAREN EQ exp prem_list exit_scope
+    { DefD ($3, $5, $8, $9) }
   | NL_NL_NL
     { SepD }
   | SYNTAX varid_bind ruleid_list hint*
