@@ -749,6 +749,9 @@ and sub_typ env t1 t2 =
         equiv_typ env t1 t2 && Eq.eq_nl_list Eq.eq_prem prems1 prems2
       | None -> false
     ) tcs1
+  | TupT ts1, TupT ts2 
+  | SeqT ts1, SeqT ts2 ->
+    List.length ts1 = List.length ts2 && List.for_all2 (sub_typ env) ts1 ts2
   | _, _ -> equiv_typ env t1 t2
   (*
   in

@@ -346,7 +346,16 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(shape)} & {\mathit{shape}} &::=& {\mathit{lanetype}}~\mathsf{x}~{\mathit{nat}} \\
+\mbox{(dimension)} & {\mathit{dim}} &::=& 1 ~|~ 2 ~|~ 4 ~|~ 8 ~|~ 16 \\
+\mbox{(shape)} & {\mathit{shape}} &::=& {\mathit{lanetype}}~\mathsf{x}~{\mathit{dim}} \\
+\mbox{(shape)} & {\mathit{ishape}} &::=& {\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{dim}} \\
+\mbox{(shape)} & {\mathit{fshape}} &::=& {\mathsf{f}}{{\mathit{n}}}~\mathsf{x}~{\mathit{dim}} \\
+\mbox{(shape)} & {\mathit{pshape}} &::=& {\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{dim}} \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{vvunop}} &::=& \mathsf{not} \\
 & {\mathit{vvbinop}} &::=& \mathsf{and} ~|~ \mathsf{andnot} ~|~ \mathsf{or} ~|~ \mathsf{xor} \\
 & {\mathit{vvternop}} &::=& \mathsf{bitselect} \\
@@ -356,7 +365,8 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathit{vunop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} \\
+& {{\mathit{vunop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{mul} &\quad
+  \mbox{if}~{\mathit{N}} \leq 8 \\
 & {{\mathit{vunop}}}_{{\mathsf{f}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{sqrt} ~|~ \mathsf{ceil} ~|~ \mathsf{floor} ~|~ \mathsf{trunc} ~|~ \mathsf{nearest} \\
 \end{array}
 $$
@@ -464,31 +474,25 @@ $$
 {\mathit{vectype}} . {\mathit{vvbinop}} \\ &&|&
 {\mathit{vectype}} . {\mathit{vvternop}} \\ &&|&
 {\mathit{vectype}} . {\mathit{vvtestop}} \\ &&|&
-{\mathit{shape}}.\mathsf{swizzle} \\ &&|&
-{\mathit{shape}}.\mathsf{shuffle}~{{\mathit{laneidx}}^\ast} \\ &&|&
+{\mathit{ishape}}.\mathsf{swizzle} &\quad
+  \mbox{if}~{\mathit{ishape}} = \mathsf{i{\scriptstyle8}}~\mathsf{x}~16 \\ &&|&
+{\mathit{ishape}}.\mathsf{shuffle}~{{\mathit{laneidx}}^\ast} &\quad
+  \mbox{if}~{\mathit{ishape}} = \mathsf{i{\scriptstyle8}}~\mathsf{x}~16 \land {|{{\mathit{laneidx}}^\ast}|} = {\mathrm{dim}}({\mathit{ishape}}) \\ &&|&
 {\mathit{shape}}.\mathsf{splat} \\ &&|&
-{{\mathit{shape}}.\mathsf{extract\_lane\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}} \\ &&|&
+{{\mathit{shape}}.\mathsf{extract\_lane\_}}{{{\mathit{sx}}^?}}~{\mathit{laneidx}} &\quad
+  \mbox{if}~{\mathrm{lanetype}}({\mathit{shape}}) = {\mathit{numtype}} \Leftrightarrow {{\mathit{sx}}^?} = \epsilon \\ &&|&
 {\mathit{shape}}.\mathsf{replace\_lane}~{\mathit{laneidx}} \\ &&|&
 {\mathit{shape}} . {{\mathit{vunop}}}_{{\mathit{shape}}} \\ &&|&
 {\mathit{shape}} . {{\mathit{vbinop}}}_{{\mathit{shape}}} \\ &&|&
 {\mathit{shape}} . {{\mathit{vtestop}}}_{{\mathit{shape}}} \\ &&|&
 {\mathit{shape}} . {{\mathit{vrelop}}}_{{\mathit{shape}}} \\ &&|&
 {\mathit{shape}} . {{\mathit{vshiftop}}}_{{\mathit{shape}}} \\ &&|&
-{\mathit{shape}}.\mathsf{bitmask} \\ &&|&
+{\mathit{ishape}}.\mathsf{bitmask} \\ &&|&
 {\mathit{shape}} . {{{{{{{{{\mathit{vcvtop}}}{\mathsf{\_}}}{{{\mathit{half}}^?}}}{\mathsf{\_}}}{{\mathit{shape}}}}{\mathsf{\_}}}{{{\mathit{sx}}^?}}}{\mathsf{\_}}}{{\mathit{zero}}} \\ &&|&
-{{{{{\mathit{shape}}.\mathsf{narrow}}{\mathsf{\_}}}{{\mathit{shape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
-{{{{{{{\mathit{shape}}.\mathsf{extmul}}{\mathsf{\_}}}{{\mathit{half}}}}{\mathsf{\_}}}{{\mathit{shape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
-{{{{{\mathit{shape}}.\mathsf{dot}}{\mathsf{\_}}}{{\mathit{shape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
-{{{{\mathit{shape}}.\mathsf{extadd\_pairwise\_}}{{\mathit{shape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
-\dots \\
-\end{array}
-$$
-
-\vspace{1ex}
-
-$$
-\begin{array}{@{}lrrl@{}l@{}}
-\mbox{(instruction)} & {\mathit{instr}} &::=& \dots \\ &&|&
+{{{{{\mathit{ishape}}.\mathsf{narrow}}{\mathsf{\_}}}{{\mathit{ishape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
+{{{{{\mathit{ishape}}.\mathsf{dot}}{\mathsf{\_}}}{{\mathit{ishape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
+{{{{{{{\mathit{ishape}}.\mathsf{extmul}}{\mathsf{\_}}}{{\mathit{half}}}}{\mathsf{\_}}}{{\mathit{ishape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
+{{{{\mathit{ishape}}.\mathsf{extadd\_pairwise\_}}{{\mathit{ishape}}}}{\mathsf{\_}}}{{\mathit{sx}}} \\ &&|&
 \mathsf{ref.null}~{\mathit{heaptype}} \\ &&|&
 \mathsf{ref.i{\scriptstyle31}} \\ &&|&
 \mathsf{ref.func}~{\mathit{funcidx}} \\ &&|&
@@ -717,6 +721,12 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{dim}}({\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}) &=& {\mathit{N}} &  \\
+\end{array}
+$$
+
+$$
+\begin{array}{@{}lcl@{}l@{}}
+{|{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}|} &=& {|{\mathsf{i}}{{\mathit{n}}}|} \cdot {\mathit{N}} &  \\
 \end{array}
 $$
 
@@ -6653,7 +6663,12 @@ $$
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{A}} &::=& {\mathit{nat}} \\
-& {\mathit{sym}} &::=& {\mathit{A}}_{{1}} ~|~  \dots  ~|~ {\mathit{A}}_{{\mathit{n}}} \\
+& {\mathit{sym}} &::=& {\mathit{A}}_{{1}} ~|~ {} \dots {} ~|~ {\mathit{A}}_{{\mathit{n}}} \\
+& {\mathit{sym}} &::=& {\mathit{A}}_{{1}} ~|~ {\mathit{A}}_{{2}} \\
+& {\mathit{r}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
+\mathsf{field\_{\scriptstyle1}}~{\mathit{A}}_{{1}},\; \\
+  \mathsf{field\_{\scriptstyle2}}~{\mathit{A}}_{{2}},\; \\
+  {} \dots {}~() \;\}\end{array} \\
 \end{array}
 $$
 

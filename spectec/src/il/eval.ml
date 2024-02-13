@@ -685,6 +685,7 @@ and sub_typ env t1 t2 =
   let t2' = reduce_typ env t2 in
   match t1'.it, t2'.it with
   | NumT t1', NumT t2' -> t1' < t2'
+  | TupT xts1, TupT xts2 -> sub_tup env xts1 xts2
   | VarT (id1, as1), VarT (id2, as2) ->
     (match reduce_typ_app env id1 as1 t1'.at, reduce_typ_app env id2 as2 t2'.at with
     | Some (StructT tfs1), Some (StructT tfs2) ->
@@ -701,10 +702,20 @@ and sub_typ env t1 t2 =
           equiv_typ env t1 t2 && Eq.eq_list Eq.eq_prem prems1 prems2
         | None -> false
       ) tcs1
+    | Some (NotationT (mixop1, t11)), Some (NotationT (mixop2, t21)) ->
+      mixop1 = mixop2 && sub_typ env t11 t21
     | _, _ -> false
     )
   | _, _ ->
     false
+
+and sub_tup env xts1 xts2 =
+  match xts1, xts2 with
+  | (id1, t1)::xts1', (id2, t2)::xts2' ->
+    let s = Subst.(add_varid empty) id2 (VarE id1 $$ id1.at % t1) in
+    sub_typ env t1 t2 && sub_tup env xts1' (List.map (Subst.subst_typbind s) xts2')
+  | _, _ -> xts1 = xts2
+
 
 and find_field tfs atom =
   List.find_opt (fun (atom', _, _) -> atom' = atom) tfs |> Option.map snd3

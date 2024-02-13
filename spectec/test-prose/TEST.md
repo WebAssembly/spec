@@ -1044,7 +1044,7 @@ validation_of_VVTESTOP V128 vvtestop
 validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VSHUFFLE (lnn X N) i*
+validation_of_VSHUFFLE (imm X N) i*
 - For all i in i*,
   - i must be less than (N · 2).
 - The instruction is valid with type ([V128, V128] -> [V128]).
@@ -1314,6 +1314,15 @@ lsize lanet_u0
 3. Let packedtype be lanet_u0.
 4. Return $psize(packedtype).
 
+lanetype (lnn X N)
+1. Return lnn.
+
+dim (lnn X N)
+1. Return N.
+
+shsize (lnn X N)
+1. Return ($lsize(lnn) · N).
+
 concat_bytes byte_u0*
 1. If (byte_u0* is []), then:
   a. Return [].
@@ -1326,12 +1335,6 @@ unpack lanet_u0
   b. Return numtype.
 2. Assert: Due to validation, the type of lanet_u0 is packedtype.
 3. Return I32.
-
-lanetype (lt X N)
-1. Return lt.
-
-dim (lt X N)
-1. Return N.
 
 free_dataidx_instr instr_u0
 1. If instr_u0 is of the case MEMORY.INIT, then:
@@ -2990,7 +2993,7 @@ validation_of_VVTESTOP V128 vvtestop
 validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VSHUFFLE (lnn X N) i*
+validation_of_VSHUFFLE (imm X N) i*
 - For all i in i*,
   - i must be less than (N · 2).
 - The instruction is valid with type ([V128, V128] -> [V128]).
@@ -3262,6 +3265,15 @@ zsize stora_u0
 3. Let packedtype be stora_u0.
 4. Return $psize(packedtype).
 
+lanetype (lnn X N)
+1. Return lnn.
+
+dim (lnn X N)
+1. Return N.
+
+shsize (lnn X N)
+1. Return ($lsize(lnn) · N).
+
 setminus1 x idx_u0*
 1. If (idx_u0* is []), then:
   a. Return [x].
@@ -3333,12 +3345,6 @@ sxfield stora_u0
   a. Return ?().
 2. Assert: Due to validation, the type of stora_u0 is packedtype.
 3. Return ?(S).
-
-lanetype (lnn X N)
-1. Return lnn.
-
-dim (lnn X N)
-1. Return N.
 
 diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
 1. If (_u0? is ?(())), then:

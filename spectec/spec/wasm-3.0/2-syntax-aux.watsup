@@ -90,11 +90,14 @@ def $sxfield(packedtype) = S
 
 ;; Shapes
 
-def $lanetype(shape) : lanetype
+;;def $lanetype(shape) : lanetype
 def $lanetype(lnn X N) = lnn
 
-def $dim(shape) : nat
+;;def $dim(shape) : nat
 def $dim(lnn X N) = N
+
+;;def $shsize(shape) : nat
+def $shsize(lnn X N) = $($lsize(lnn) * N)
 
 
 ;; Type difference

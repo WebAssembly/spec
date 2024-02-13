@@ -228,7 +228,7 @@ let aliased_inst inst' =
   aliased dt'
 
 let as_defined_typid' env id args at : typ' * [`Alias | `NoAlias] =
-  match find "syntax type" env.typs id with
+  match find "syntax type" env.typs (strip_var_suffix id) with
   | ps, Defined (t, dt') ->
     let t' = if ps = [] then t else  (* optimization *)
       Subst.subst_typ (arg_subst Subst.empty ps args) t in
@@ -554,7 +554,7 @@ let rec elab_iter env iter : Il.iter =
 and elab_typ env t : Il.typ =
   match t.it with
   | VarT (id, as_) ->
-    let ps, _ = find "syntax type" env.typs id in
+    let ps, _ = find "syntax type" env.typs (strip_var_suffix id) in
     let as', _s = elab_args `Rhs env as_ ps t.at in
     Il.VarT (id, as') $ t.at
   | BoolT -> Il.BoolT $ t.at

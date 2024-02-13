@@ -322,7 +322,7 @@ rule Instr_ok/vswizzle:
   C |- VSWIZZLE sh : V128 V128 -> V128
 
 rule Instr_ok/vshuffle:
-  C |- VSHUFFLE (lnn X N) i* : V128 V128 -> V128
+  C |- VSHUFFLE (imm X N) i* : V128 V128 -> V128
   -- (if $(i < N*2))*
 
 rule Instr_ok/vsplat:

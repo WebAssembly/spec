@@ -43,11 +43,14 @@ def $unpack(packedtype) = I32
 
 ;; Shapes
 
-def $lanetype(shape) : lanetype
-def $lanetype(lt X N) = lt
+;;def $lanetype(shape) : lanetype
+def $lanetype(lnn X N) = lnn
 
-def $dim(shape) : nat
-def $dim(lt X N) = N
+;;def $dim(shape) : nat
+def $dim(lnn X N) = N
+
+;;def $shsize(shape) : nat
+def $shsize(lnn X N) = $($lsize(lnn) * N)
 
 
 ;;

@@ -72,11 +72,13 @@ let rec subst_iter s iter =
 and subst_typ s t =
   (match t.it with
   | VarT (id, args) ->
-    if id.it <> (Convert.strip_var_suffix id).it then
-      Util.Source.error id.at "syntax" "identifer suffix encountered during substitution";
-    (match Map.find_opt id.it s.typid with
+    let id' = Convert.strip_var_suffix id in
+    (match Map.find_opt id'.it s.typid with
     | None -> VarT (id, List.map (subst_arg s) args)
-    | Some t' -> assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
+    | Some t' ->
+      if id'.it <> id.it then
+        Util.Source.error id.at "syntax" "identifer suffix encountered during substitution";
+      assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
     )
   | BoolT | NumT _ | TextT | AtomT _ -> t.it
   | ParenT t1 -> ParenT (subst_typ s t1)

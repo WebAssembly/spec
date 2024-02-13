@@ -350,6 +350,7 @@ warning: syntax `datainst` was never spliced
 warning: syntax `datamode` was never spliced
 warning: syntax `datatype` was never spliced
 warning: syntax `deftype` was never spliced
+warning: syntax `dim` was never spliced
 warning: syntax `elem` was never spliced
 warning: syntax `elemaddr` was never spliced
 warning: syntax `elemidx` was never spliced
@@ -369,6 +370,7 @@ warning: syntax `fin` was never spliced
 warning: syntax `fmag` was never spliced
 warning: syntax `fnn` was never spliced
 warning: syntax `frame` was never spliced
+warning: syntax `fshape` was never spliced
 warning: syntax `func` was never spliced
 warning: syntax `funcaddr` was never spliced
 warning: syntax `funcidx` was never spliced
@@ -392,6 +394,7 @@ warning: syntax `instr/reference` was never spliced
 warning: syntax `instr/heap` was never spliced
 warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
+warning: syntax `ishape` was never spliced
 warning: syntax `labelidx` was never spliced
 warning: syntax `laneidx` was never spliced
 warning: syntax `lanetype` was never spliced
@@ -425,6 +428,8 @@ warning: syntax `packedtype` was never spliced
 warning: syntax `packedval` was never spliced
 warning: syntax `pnn` was never spliced
 warning: syntax `pnum_` was never spliced
+warning: syntax `pshape` was never spliced
+warning: syntax `record` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
 warning: syntax `reftype` was never spliced
@@ -445,6 +450,8 @@ warning: syntax `subtype` was never spliced
 warning: syntax `subtype` was never spliced
 warning: syntax `sx` was never spliced
 warning: syntax `sym` was never spliced
+warning: syntax `symsplit/1` was never spliced
+warning: syntax `symsplit/2` was never spliced
 warning: syntax `table` was never spliced
 warning: syntax `tableaddr` was never spliced
 warning: syntax `tableidx` was never spliced
@@ -1115,6 +1122,7 @@ warning: definition `runelem` was never spliced
 warning: definition `s33_to_u32` was never spliced
 warning: definition `setminus` was never spliced
 warning: definition `setminus1` was never spliced
+warning: definition `shsize` was never spliced
 warning: definition `signed` was never spliced
 warning: definition `signif` was never spliced
 warning: definition `store` was never spliced
@@ -1468,6 +1476,7 @@ warning: definition prose `rundata` was never spliced
 warning: definition prose `runelem` was never spliced
 warning: definition prose `setminus` was never spliced
 warning: definition prose `setminus1` was never spliced
+warning: definition prose `shsize` was never spliced
 warning: definition prose `signed` was never spliced
 warning: definition prose `signif` was never spliced
 warning: definition prose `size` was never spliced
