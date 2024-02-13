@@ -325,7 +325,6 @@ Recursive Types
 
 *Recursive types* denote a group of mutually recursive :ref:`composite types <syntax-comptype>`, each of which can optionally declare a list of :ref:`type indices <syntax-typeidx>` of supertypes that it :ref:`matches <match-comptype>`.
 Each type can also be declared *final*, preventing further subtyping.
-.
 
 .. math::
    \begin{array}{llrl}
