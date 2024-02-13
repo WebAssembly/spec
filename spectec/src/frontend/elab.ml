@@ -1663,7 +1663,7 @@ let elab_no_binds env d =
 let elab_def env d : Il.def list =
   (*
   Printf.eprintf "--------------------------------------------------------\n%!";
-  Printf.eprintf "[el.elab_def %s]\n%!" (string_of_region d.at);
+  Printf.eprintf "[el.elab_def %s]\n%s\n%!" (string_of_region d.at) (El.Print.string_of_def d);
   let ds' =
   *)
   match d.it with

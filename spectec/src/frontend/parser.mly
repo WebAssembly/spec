@@ -100,7 +100,7 @@ let is_post_exp e =
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE FUSE
+%token HOLE MULTIHOLE NOTHING FUSE
 %token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
@@ -457,6 +457,7 @@ exp_hole_ :
   | HOLEN { HoleE (`Num $1) }
   | HOLE { HoleE `Next }
   | MULTIHOLE { HoleE `Rest }
+  | NOTHING { HoleE `None }
 
 (*exp_prim : exp_prim_ { $1 $ at $sloc }*)
 exp_prim_ :

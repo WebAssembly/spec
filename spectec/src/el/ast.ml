@@ -154,7 +154,7 @@ and exp' =
   | CallE of id * arg list       (* `$` defid (`(` arg,* `)`)? *)
   | IterE of exp * iter          (* exp iter *)
   | TypE of exp * typ            (* exp `:` typ *)
-  | HoleE of [`Num of int | `Next | `Rest]  (* `%N` or `%` or `%%` or `!%N` or `!%` or `!%%` *)
+  | HoleE of [`Num of int | `Next | `Rest | `None]  (* `%N` or `%` or `%%` or `!%` *)
   | FuseE of exp * exp           (* exp `#` exp *)
 
 and expfield = atom * exp        (* atom exp *)

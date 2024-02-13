@@ -285,7 +285,7 @@ let string_of_clause id clause =
   match clause.it with
   | DefD (bs, as_, e, prems) ->
     "\n" ^ region_comment "  " clause.at ^
-    "  def " ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
+    "  def $" ^ id.it ^ string_of_binds bs ^ string_of_args as_ ^ " = " ^
       string_of_exp e ^
       concat "" (List.map (prefix "\n    -- " string_of_prem) prems)
 
@@ -302,7 +302,7 @@ let rec string_of_def d =
     pre ^ "relation " ^ id.it ^ ": " ^ string_of_typ_mix mixop t ^
       concat "\n" (List.map string_of_rule rules) ^ "\n"
   | DecD (id, ps, t, clauses) ->
-    pre ^ "def " ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^
+    pre ^ "def $" ^ id.it ^ string_of_params ps ^ " : " ^ string_of_typ t ^
       concat "" (List.map (string_of_clause id) clauses) ^ "\n"
   | RecD ds ->
     pre ^ "rec {\n" ^ concat "" (List.map string_of_def ds) ^ "}" ^ "\n"

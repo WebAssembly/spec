@@ -37,9 +37,9 @@ The following conventions are adopted in defining grammar rules for abstract syn
 
 * Productions are written ${syntax: sym}.
 
-* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, :math:`\X{sym} ::= A_1 ~|~ \dots`, and starting continuations with ellipses, :math:`\X{sym} ::= \dots ~|~ A_2`.
+* Large productions may be split into multiple definitions, indicated by ending the first one with explicit ellipses, ${syntax: symsplit/1}, and starting continuations with ellipses, ${syntax: symsplit/2}.
 
-* Some productions are augmented with side conditions in parentheses, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
+* Some productions are augmented with side conditions, ":math:`(\iff \X{condition})`", that provide a shorthand for a combinatorial expansion of the production into many separate cases.
 
 * If the same meta variable or non-terminal symbol appears multiple times in a production, then all those occurrences must have the same instantiation.
   (This is a shorthand for a side condition requiring multiple different variables to be equal.)
@@ -66,39 +66,41 @@ When dealing with syntactic constructs the following notation is also used:
 
 * ${:s[i]} denotes the ${:i}-th element of a sequence ${:s}`, starting from ${:0}.
 
-* :math:`s[i \slice n]` denotes the sub-sequence :math:`s[i]~\dots~s[i+n-1]` of a sequence :math:`s`.
+* ${:s[i:n]} denotes the sub-sequence ${:s[i]...s[i+n-1]} of a sequence ${:s}.
 
-* :math:`s \with [i] = A` denotes the same sequence as :math:`s`,
-  except that the :math:`i`-th element is replaced with :math:`A`.
+* ${:s[[i]=A]} denotes the same sequence as ${:s},
+  except that the ${:i}-th element is replaced with ${:A}.
 
-* :math:`s \with [i \slice n] = A^n` denotes the same sequence as :math:`s`,
-  except that the sub-sequence :math:`s[i \slice n]` is replaced with :math:`A^n`.
+* ${:s[[i:n]=A^n]} denotes the same sequence as ${:s},
+  except that the sub-sequence ${:s[i:n]} is replaced with ${:A^n}.
 
-* :math:`\concat(s^\ast)` denotes the flat sequence formed by concatenating all sequences :math:`s_i` in :math:`s^\ast`.
+* ${:$concat(s*)} denotes the flat sequence formed by concatenating all sequences ${:s_i} in ${:s*}.
 
 Moreover, the following conventions are employed:
 
-* The notation :math:`x^n`, where :math:`x` is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of :math:`x` (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
+* The notation ${:x^n}, where ${:x} is a non-terminal symbol, is treated as a meta variable ranging over respective sequences of ${:x} (similarly for ${:x*}, ${:x+}, ${:x?}).
 
-* When given a sequence :math:`x^n`,
-  then the occurrences of :math:`x` in a sequence written :math:`(A_1~x~A_2)^n` are assumed to be in point-wise correspondence with :math:`x^n`
-  (similarly for :math:`x^\ast`, :math:`x^+`, :math:`x^?`).
+* When given a sequence ${:x^n},
+  then the occurrences of ${:x} in an iterated sequence ${:(!%...x...!%)^n} are assumed to be in point-wise correspondence with ${:x^n}
+  (similarly for ${:x*}, ${:x+}, ${:x?}).
   This implicitly expresses a form of mapping syntactic constructions over a sequence.
 
 
-Productions of the following form are interpreted as *records* that map a fixed set of fields :math:`\K{field}_i` to "values" :math:`A_i`, respectively:
+Productions of the following form are interpreted as *records* that map a fixed set of fields ${:FIELD_i} to "values" ${:A_i}, respectively:
 
-.. math::
-   \X{r} ~::=~ \{ \K{field}_1~A_1, \K{field}_2~A_2, \dots \}
+$${syntax:record}
 
 The following notation is adopted for manipulating such records:
 
-* :math:`r.\K{field}` denotes the contents of the :math:`\K{field}` component of :math:`r`.
+* ${:r.FIELD} denotes the contents of the ${:FIELD} component of ${:r}.
 
-* :math:`r \with \K{field} = A` denotes the same record as :math:`r`,
-  except that the contents of the :math:`\K{field}` component is replaced with :math:`A`.
+* ${:r[.FIELD=A]} denotes the same record as ${:r},
+  except that the contents of the ${:FIELD} component is replaced with ${:A}.
 
-* :math:`r_1 \compose r_2` denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:
+* ${:r[.FIELD=..A^n]} denotes the same record as ${:r},
+  except that ${:A^n} is appended to the sequence of the ${:FIELD} component.
+
+* ${:r_1++r_2} denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:
 
   .. math::
      \{ \K{field}_1\,A_1^\ast, \K{field}_2\,A_2^\ast, \dots \} \compose \{ \K{field}_1\,B_1^\ast, \K{field}_2\,B_2^\ast, \dots \} = \{ \K{field}_1\,A_1^\ast~B_1^\ast, \K{field}_2\,A_2^\ast~B_2^\ast, \dots \}

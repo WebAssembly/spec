@@ -64,7 +64,7 @@ let bound_list = free_list
 
 (* Identifiers *)
 
-let free_typid id = {empty with typid = Set.singleton id.it}
+let free_typid id = {empty with typid = Set.singleton (Convert.strip_var_suffix id).it}
 let free_gramid id = {empty with gramid = Set.singleton id.it}
 let free_relid id = {empty with relid = Set.singleton id.it}
 let free_varid id = {empty with varid = Set.singleton id.it}

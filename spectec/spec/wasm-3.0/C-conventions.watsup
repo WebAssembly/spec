@@ -6,5 +6,11 @@
 
 syntax A = nat
 
-;; TODO: get rid of parameters
-syntax sym(A_1, A_n) = $(A_1) | ... | $(A_n)
+syntax sym = | _FIRST A_1 | _DOTS hint(show !%...!%) | _LAST A_n
+syntax symsplit/1 hint(show sym) = | _FIRST A_1 | ...
+syntax symsplit/2 hint(show sym) = ... | _LAST A_2
+
+syntax record hint(show r) =
+  { FIELD_1 A_1 hint(show FIELD#_#1 %),
+    FIELD_2 A_2 hint(show FIELD#_#2 %),
+    DOTS ()     hint(show !%...!%) }

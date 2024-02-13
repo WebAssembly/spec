@@ -178,6 +178,7 @@ hole ::=
   "%"                                  use next operand
   "%"digit*                            use numbered operand
   "%%"                                 use all operands
+  "!%"                                 empty expression
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.

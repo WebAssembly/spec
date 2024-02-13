@@ -257,6 +257,7 @@ and expand_exp args i e =
     let args' = try Lib.List.drop !i args with Failure _ -> raise Arity_mismatch in
     i := List.length args;
     CallE ("" $ e.at, args')
+  | HoleE `None -> HoleE `None
   | FuseE (e1, e2) ->
     let e1' = expand_exp args i e1 in
     let e2' = expand_exp args i e2 in
@@ -658,7 +659,8 @@ and render_exp env e =
     (* Hack for printing t.LOADn_sx *)
     let e2' = as_paren_exp (fuse_exp e2 true) in
     "{" ^ render_exp env e1 ^ "}" ^ "{" ^ render_exp env e2' ^ "}"
-  | HoleE _ -> assert false
+  | HoleE `None -> "{}"
+  | HoleE _ -> error e.at "misplaced hole"
 
 and render_exps sep env es =
   concat sep (List.filter ((<>) "") (List.map (render_exp env) es))
