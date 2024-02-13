@@ -250,6 +250,7 @@ def ::=
   "def" "$" defid hint+
 
 premise ::=
+  "var" id ":" typ                                          local variable declaration
   relid ":" exp                                             relational premise
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition
