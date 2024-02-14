@@ -23,7 +23,8 @@ let create size r =
   try Lib.Array32.make size r
   with Out_of_memory | Invalid_argument _ -> raise OutOfMemory
 
-let alloc (TableT (lim, _t) as ty) r =
+let alloc (TableT (lim, t) as ty) r =
+  assert Free.((ref_type t).types = Set.empty);
   if not (valid_limits lim) then raise Type;
   {ty; content = create lim.min r}
 
@@ -52,7 +53,7 @@ let load tab i =
 
 let store tab i r =
   let TableT (lim, t) = tab.ty in
-  if not (Match.match_ref_type (type_of_ref r) t) then raise Type;
+  if not (Match.match_ref_type [] (type_of_ref r) t) then raise Type;
   if i < 0l || i >= Lib.Array32.length tab.content then raise Bounds;
   Lib.Array32.set tab.content i r
 

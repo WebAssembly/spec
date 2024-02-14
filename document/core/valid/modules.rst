@@ -5,6 +5,62 @@ Modules
 Furthermore, most definitions are themselves classified with a suitable type.
 
 
+.. index:: type, type index, defined type, recursive type
+   pair: abstract syntax; type
+   single: abstract syntax; type
+.. _valid-types:
+
+Types
+~~~~~
+
+The sequence of :ref:`types <syntax-type>` defined in a module is validated incrementally, yielding a suitable :ref:`context <context>`.
+
+:math:`\type^\ast`
+..................
+
+* If the sequence is empty, then:
+
+  * The :ref:`context <context>` :math:`C` must be empty.
+
+  * Then the type sequence is valid.
+
+* Otherwise:
+
+  * Let the :ref:`recursive type <syntax-rectype>` :math:`\rectype` be the last element in the sequence.
+
+  * The sequence without :math:`\rectype` must be valid for some context :math:`C'`.
+
+  * Let the :ref:`type index <syntax-typeidx>` :math:`x` be the length of :math:`C'.\CTYPES`, i.e., the first type index free in :math:`C'`.
+
+  * Let the sequence of :ref:`defined types <syntax-deftype>` :math:`\deftype^\ast` be the result :math:`\rolldt_{x}(\rectype)` of :ref:`rolling up <aux-roll-deftype>` into its sequence of :ref:`defined types <syntax-deftype>`.
+
+  * The :ref:`recursive type <syntax-rectype>` :math:`\rectype` must be :ref:`valid <valid-rectype>` under the context :math:`C` for :ref:`type index <syntax-typeidx>` :math:`x`.
+
+  * The current :ref:`context <context>` :math:`C` be the same as :math:`C'`, but with :math:`\deftype^\ast` appended to |CTYPES|.
+
+  * Then the type sequence is valid.
+
+.. math::
+   \frac{
+   }{
+     \{\} \vdashtypes \epsilon \ok
+   }
+
+.. math::
+   \frac{
+     C' \vdashtypes \type^\ast \ok
+     \qquad
+     C = C' \with \CTYPES = C'.\CTYPES~\rolldt_{|C'.\CTYPES|}(\rectype)
+     \qquad
+     C \vdashrectype \rectype ~{\ok}(|C'.\CTYPES|)
+   }{
+     C \vdashtypes \type^\ast~\rectype \ok
+   }
+
+.. note::
+   Despite the appearance, the context :math:`C` is effectively an _output_ of this judgement.
+
+
 .. index:: function, local, function index, local index, type index, function type, value type, local type, expression, import
    pair: abstract syntax; function
    single: abstract syntax; function
@@ -14,15 +70,15 @@ Furthermore, most definitions are themselves classified with a suitable type.
 Functions
 ~~~~~~~~~
 
-Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` referring to :ref:`function types <syntax-functype>` of the form :math:`[t_1^\ast] \toF [t_2^\ast]`.
+Functions :math:`\func` are classified by :ref:`defined types <syntax-deftype>` that :ref:`expand <aux-expand-deftype>` to :ref:`function types <syntax-functype>` of the form :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]`.
 
 
 :math:`\{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \}`
 .....................................................
 
-* The type :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
-* Let :math:`[t_1^\ast] \toF [t_2^\ast]` be the :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]`.
+* Let :math:`\TFUNC~[t_1^\ast] \toF [t_2^\ast]` be the :ref:`expansion <aux-expand-deftype>` of the :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]`.
 
 * For each local declared by a :ref:`value type <syntax-valtype>` :math:`t` in :math:`t^\ast`:
 
@@ -42,17 +98,17 @@ Functions :math:`\func` are classified by :ref:`type indices <syntax-typeidx>` r
 * Under the context :math:`C'`,
   the expression :math:`\expr` must be valid with type :math:`[t_2^\ast]`.
 
-* Then the function definition is valid with type :math:`[t_1^\ast] \toF [t_2^\ast]`.
+* Then the function definition is valid with type :math:`C.\CTYPES[x]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = [t_1^\ast] \toF [t_2^\ast]
+     \expanddt(C.\CTYPES[x]) = \TFUNC~[t_1^\ast] \toF [t_2^\ast]
      \qquad
-     (C \vdashlocal t : \init~t)^\ast
+     (C \vdashlocal \{\LTYPE~t\} : \init~t)^\ast
      \qquad
      C,\CLOCALS\,(\SET~t_1)^\ast~(\init~t)^\ast,\CLABELS~[t_2^\ast],\CRETURN~[t_2^\ast] \vdashexpr \expr : [t_2^\ast]
    }{
-     C \vdashfunc \{ \FTYPE~x, \FLOCALS~t^\ast, \FBODY~\expr \} : x
+     C \vdashfunc \{ \FTYPE~x, \FLOCALS~\{\LTYPE~t\}^\ast, \FBODY~\expr \} : C.\CTYPES[x]
    }
 
 
@@ -85,14 +141,14 @@ Locals
      \qquad
      C \vdashvaltypedefaultable t \defaultable
    }{
-     C \vdashlocal \{ \LTYPE~t \} : \SET~t \ok
+     C \vdashlocal \{ \LTYPE~t \} : \SET~t
    }
 
 .. math::
    \frac{
      C \vdashvaltype t \ok
    }{
-     C \vdashlocal \{ LTYPE~t \} : \UNSET~t \ok
+     C \vdashlocal \{ \LTYPE~t \} : \UNSET~t
    }
 
 .. note::
@@ -165,11 +221,14 @@ Memories :math:`\mem` are classified by :ref:`memory types <syntax-memtype>`.
    pair: validation; global
    single: abstract syntax; global
 .. _valid-global:
+.. _valid-globalseq:
 
 Globals
 ~~~~~~~
 
 Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>` of the form :math:`\mut~t`.
+
+Sequences of globals are handled incrementally, such that each definition has access to previous definitions.
 
 
 :math:`\{ \GTYPE~\mut~t, \GINIT~\expr \}`
@@ -193,6 +252,38 @@ Globals :math:`\global` are classified by :ref:`global types <syntax-globaltype>
    }{
      C \vdashglobal \{ \GTYPE~\mut~t, \GINIT~\expr \} : \mut~t
    }
+
+
+:math:`\global^\ast`
+....................
+
+* If the sequence is empty, then it is valid with the empty sequence of :ref:`global types <syntax-globaltype>`.
+
+* Else:
+
+  * The first global definition must be :ref:`valid <valid-global>` with some type :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1`.
+
+  * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1` apppended to the |CGLOBALS| vector.
+
+  * Under context :math:`C'`, the remainder of the sequence must be valid with some sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+
+  * Then the sequence is valid with the sequence of :ref:`global types <syntax-globaltype>` consisting of :math:`\X{gt}_1` prepended to :math:`\X{gt}^\ast`.
+
+.. math::
+   ~\\
+   \frac{
+   }{
+     C \vdashglobals \epsilon : \epsilon
+   }
+   \qquad
+   \frac{
+     C \vdashglobal \global_1 : \X{gt}_1
+     \qquad
+     C \compose \{\CGLOBALS~\X{gt}_1\} \vdashglobals \global^\ast : \X{gt}^\ast
+   }{
+     C \vdashglobals \global_1~\global^\ast : \X{gt}_1~\X{gt}^\ast
+   }
+
 
 
 .. index:: element, table, table index, expression, constant, function index
@@ -375,18 +466,14 @@ Start function declarations :math:`\start` are not classified by any type.
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Let :math:`y` be the :ref:`type index <syntax-typeidx>` :math:`C.\CFUNCS[x]`.
-
-* Assert: The type :math:`C.\CTYPES[y]` is defined in the context.
-
-* The type :math:`C.\CTYPES[y]` must be the :ref:`function type <syntax-functype>` :math:`[] \toF []`.
+* The :ref:`expansion <aux-expand-deftype>` of :math:`C.\CFUNCS[x]` must be a :ref:`function type <syntax-functype>` :math:`\TFUNC~[] \toF []`.
 
 * Then the start function is valid.
 
 
 .. math::
    \frac{
-     C.\CTYPES[C.\CFUNCS[x]] = [] \toF []
+     \expanddt(C.\CFUNCS[x]) = \TFUNC~[] \toF []
    }{
      C \vdashstart \{ \SFUNC~x \} \ok
    }
@@ -424,13 +511,15 @@ Exports :math:`\export` and export descriptions :math:`\exportdesc` are classifi
 
 * The function :math:`C.\CFUNCS[x]` must be defined in the context.
 
-* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~C.\CFUNCS[x]`.
+* Let :math:`\X{dt}` be the :ref:`defined type <syntax-deftype>` :math:`C.\CFUNCS[x]`.
+
+* Then the export description is valid with :ref:`external type <syntax-externtype>` :math:`\ETFUNC~\X{dt}`.
 
 .. math::
    \frac{
-     C.\CFUNCS[x] = \functype
+     C.\CFUNCS[x] = \X{dt}
    }{
-     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\functype
+     C \vdashexportdesc \EDFUNC~x : \ETFUNC~\X{dt}
    }
 
 
@@ -509,15 +598,15 @@ Imports :math:`\import` and import descriptions :math:`\importdesc` are classifi
 :math:`\IDFUNC~x`
 .................
 
-* The :ref:`function type <syntax-functype>` :math:`C.\CTYPES[x]` must be defined in the context.
+* The :ref:`defined type <syntax-deftype>` :math:`C.\CTYPES[x]` must be a :ref:`function type <syntax-functype>`.
 
-* Then the import description is valid with type :math:`\ETFUNC~x`.
+* Then the import description is valid with type :math:`\ETFUNC~C.\CTYPES[x]`.
 
 .. math::
    \frac{
-     C.\CTYPES[x] = \functype
+     \expanddt(C.\CTYPES[x]) = \TFUNC~\functype
    }{
-     C \vdashimportdesc \IDFUNC~x : \ETFUNC~x
+     C \vdashimportdesc \IDFUNC~x : \ETFUNC~C.\CTYPES[x]
    }
 
 
@@ -586,12 +675,14 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\module` be the module to validate.
 
+* The :ref:`types <syntax-type>` :math:`\module.\MTYPES` must be :ref:`valid <valid-type>` yielding a :ref:`context <context>` :math:`C_0`.
+
 * Let :math:`C` be a :ref:`context <context>` where:
 
-  * :math:`C.\CTYPES` is :math:`\module.\MTYPES`,
+  * :math:`C.\CTYPES` is :math:`C_0.\CTYPES`,
 
-  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{ft}^\ast`,
-    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`function types <syntax-functype>` :math:`\X{ft}^\ast` as determined below,
+  * :math:`C.\CFUNCS` is :math:`\etfuncs(\X{it}^\ast)` concatenated with :math:`\X{dt}^\ast`,
+    with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`defined types <syntax-deftype>` :math:`\X{dt}^\ast` as determined below,
 
   * :math:`C.\CTABLES` is :math:`\ettables(\X{it}^\ast)` concatenated with :math:`\X{tt}^\ast`,
     with the import's :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast` and the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}^\ast` as determined below,
@@ -614,12 +705,6 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CREFS` is the set :math:`\freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)`, i.e., the set of :ref:`function indices <syntax-funcidx>` occurring in the module, except in its :ref:`functions <syntax-func>` or :ref:`start function <syntax-start>`.
 
-* For each function type :math:`\functype_i` in :math:`\module.\MTYPES`:
-
-  * Let :math:`C_i` be the :ref:`context <context>` where :math:`C_i.\CTYPES` is :math:`C.\CTYPES[0 \slice i]` and all other fields are empty.
-
-  * The function  :math:`\functype_i` must be :ref:`valid <valid-functype>` under context :math:`C_i`.
-
 * Let :math:`C'` be the :ref:`context <context>` where:
 
   * :math:`C'.\CGLOBALS` is the sequence :math:`\etglobals(\X{it}^\ast)`,
@@ -632,10 +717,26 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * all other fields are empty.
 
+* Under the context :math:`C'`:
+
+  * The sequence :math:`\module.\MGLOBALS` of :ref:`globals <syntax-global>` must be :ref:`valid <valid-globalseq>` with a sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
+
+  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
+    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
+
+  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
+    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
+
 * Under the context :math:`C`:
 
   * For each :math:`\func_i` in :math:`\module.\MFUNCS`,
-    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`function type <syntax-functype>` :math:`\X{ft}_i`.
+    the definition :math:`\func_i` must be :ref:`valid <valid-func>` with a :ref:`defined type <syntax-deftype>` :math:`\X{dt}_i`.
+
+  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
+    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
+
+  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
+    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
 
   * If :math:`\module.\MSTART` is non-empty,
     then :math:`\module.\MSTART` must be :ref:`valid <valid-start>`.
@@ -646,34 +747,11 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
   * For each :math:`\export_i` in :math:`\module.\MEXPORTS`,
     the segment :math:`\export_i` must be :ref:`valid <valid-export>` with :ref:`external type <syntax-externtype>` :math:`\X{et}_i`.
 
-* Under the context :math:`C'`:
-
-  * For each :math:`\table_i` in :math:`\module.\MTABLES`,
-    the definition :math:`\table_i` must be :ref:`valid <valid-table>` with a :ref:`table type <syntax-tabletype>` :math:`\X{tt}_i`.
-
-  * For each :math:`\mem_i` in :math:`\module.\MMEMS`,
-    the definition :math:`\mem_i` must be :ref:`valid <valid-mem>` with a :ref:`memory type <syntax-memtype>` :math:`\X{mt}_i`.
-
-  * For each :math:`\global_i` in :math:`\module.\MGLOBALS`,
-    the definition :math:`\global_i` must be :ref:`valid <valid-global>` with a :ref:`global type <syntax-globaltype>` :math:`\X{gt}_i`.
-
-  * For each :math:`\elem_i` in :math:`\module.\MELEMS`,
-    the segment :math:`\elem_i` must be :ref:`valid <valid-elem>` with :ref:`reference type <syntax-reftype>` :math:`\X{rt}_i`.
-
-  * For each :math:`\data_i` in :math:`\module.\MDATAS`,
-    the segment :math:`\data_i` must be :ref:`valid <valid-data>`.
-
-* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
-
-* All export names :math:`\export_i.\ENAME` must be different.
-
-* Let :math:`\X{ft}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{ft}_i`, in index order.
+* Let :math:`\X{dt}^\ast` be the concatenation of the internal :ref:`function types <syntax-functype>` :math:`\X{dt}_i`, in index order.
 
 * Let :math:`\X{tt}^\ast` be the concatenation of the internal :ref:`table types <syntax-tabletype>` :math:`\X{tt}_i`, in index order.
 
 * Let :math:`\X{mt}^\ast` be the concatenation of the internal :ref:`memory types <syntax-memtype>` :math:`\X{mt}_i`, in index order.
-
-* Let :math:`\X{gt}^\ast` be the concatenation of the internal :ref:`global types <syntax-globaltype>` :math:`\X{gt}_i`, in index order.
 
 * Let :math:`\X{rt}^\ast` be the concatenation of the :ref:`reference types <syntax-reftype>` :math:`\X{rt}_i`, in index order.
 
@@ -681,24 +759,28 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
 * Let :math:`\X{et}^\ast` be the concatenation of :ref:`external types <syntax-externtype>` :math:`\X{et}_i` of the exports, in index order.
 
+* The length of :math:`C.\CMEMS` must not be larger than :math:`1`.
+
+* All export names :math:`\export_i.\ENAME` must be different.
+
 * Then the module is valid with :ref:`external types <syntax-externtype>` :math:`\X{it}^\ast \to \X{et}^\ast`.
 
 .. math::
    \frac{
      \begin{array}{@{}c@{}}
-     \vdashtypes \type^\ast \ok
+     C_0 \vdashtypes \type^\ast \ok
      \quad
-     (C \vdashfunc \func : \X{ft})^\ast
+     C' \vdashglobals \global^\ast : \X{gt}^\ast
      \quad
      (C' \vdashtable \table : \X{tt})^\ast
      \quad
      (C' \vdashmem \mem : \X{mt})^\ast
      \quad
-     (C' \vdashglobal \global : \X{gt})^\ast
+     (C \vdashfunc \func : \X{dt})^\ast
      \\
-     (C' \vdashelem \elem : \X{rt})^\ast
+     (C \vdashelem \elem : \X{rt})^\ast
      \quad
-     (C' \vdashdata \data \ok)^n
+     (C \vdashdata \data \ok)^n
      \quad
      (C \vdashstart \start \ok)^?
      \quad
@@ -706,7 +788,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \quad
      (C \vdashexport \export : \X{et})^\ast
      \\
-     \X{ift}^\ast = \etfuncs(\X{it}^\ast)
+     \X{idt}^\ast = \etfuncs(\X{it}^\ast)
      \qquad
      \X{itt}^\ast = \ettables(\X{it}^\ast)
      \qquad
@@ -716,9 +798,9 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \\
      x^\ast = \freefuncidx(\module \with \MFUNCS = \epsilon \with \MSTART = \epsilon)
      \\
-     C = \{ \CTYPES~\type^\ast, \CFUNCS~\X{ift}^\ast\,\X{ft}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
+     C = \{ \CTYPES~C_0.\CTYPES, \CFUNCS~\X{idt}^\ast\,\X{dt}^\ast, \CTABLES~\X{itt}^\ast\,\X{tt}^\ast, \CMEMS~\X{imt}^\ast\,\X{mt}^\ast, \CGLOBALS~\X{igt}^\ast\,\X{gt}^\ast, \CELEMS~\X{rt}^\ast, \CDATAS~{\ok}^n, \CREFS~x^\ast \}
      \\
-     C' = \{ \CTYPES~\type^\ast, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
+     C' = \{ \CTYPES~C_0.\CTYPES, \CGLOBALS~\X{igt}^\ast, \CFUNCS~(C.\CFUNCS), \CREFS~(C.\CREFS) \}
      \qquad
      |C.\CMEMS| \leq 1
      \qquad
@@ -742,35 +824,15 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
      \vdashmodule \module : \X{it}^\ast \to \X{et}^\ast
    }
 
-.. _valid-types:
-
-where:
-
-.. math::
-   \frac{
-     \vdashtypes \type^\ast \ok
-     \qquad
-     \{\CTYPES~\type^\ast\} \vdashtypes \type \ok
-   }{
-     \vdashtypes \type^\ast~\type \ok
-   }
-   \qquad
-   \frac{
-   }{
-     \vdashtypes \epsilon \ok
-   }
-
-
 .. note::
-   Most definitions in a module -- particularly functions -- are mutually recursive.
+   All functions in a module are mutually recursive.
    Consequently, the definition of the :ref:`context <context>` :math:`C` in this rule is recursive:
    it depends on the outcome of validation of the function, table, memory, and global definitions contained in the module,
    which itself depends on :math:`C`.
    However, this recursion is just a specification device.
    All types needed to construct :math:`C` can easily be determined from a simple pre-pass over the module that does not perform any actual validation.
 
-   Globals, however, are not recursive and not accessible within :ref:`constant expressions <valid-const>` when they are defined locally.
-   The effect of defining the limited context :math:`C'` for validating certain definitions is that they can only access functions and imported globals and nothing else.
+   Globals, however, are not recursive but evaluated sequentially, such that each :ref:`constant expressions <valid-const>` only has access to imported or previously defined globals.
 
 .. note::
    The restriction on the number of memories may be lifted in future versions of WebAssembly.

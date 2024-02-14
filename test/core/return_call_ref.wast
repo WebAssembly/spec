@@ -180,7 +180,7 @@
 (assert_return (invoke "type-second-f32") (f32.const 32))
 (assert_return (invoke "type-second-f64") (f64.const 64.1))
 
-(assert_trap (invoke "null") "null function")
+(assert_trap (invoke "null") "null function reference")
 
 (assert_return (invoke "fac-acc" (i64.const 0) (i64.const 1)) (i64.const 1))
 (assert_return (invoke "fac-acc" (i64.const 1) (i64.const 1)) (i64.const 1))

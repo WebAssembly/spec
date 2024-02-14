@@ -13,11 +13,6 @@ Appendix
    custom
    changes
 
-.. only:: singlehtml
-
-   .. toctree::
-
-      index-types
-      index-instructions
-      index-rules
-
+   index-types
+   index-instructions
+   index-rules

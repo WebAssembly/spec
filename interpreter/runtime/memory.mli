@@ -1,5 +1,4 @@
 open Types
-open Value
 
 type memory
 type t = memory
@@ -29,6 +28,11 @@ val store_byte : memory -> address -> int -> unit (* raises Bounds *)
 val load_bytes : memory -> address -> int -> string (* raises Bounds *)
 val store_bytes : memory -> address -> string -> unit (* raises Bounds *)
 
+
+(* Typed accessors *)
+
+open Value
+
 val load_num :
   memory -> address -> offset -> num_type -> num (* raises Bounds *)
 val store_num :
@@ -48,3 +52,12 @@ val store_vec :
 val load_vec_packed :
   Pack.pack_size -> Pack.vec_extension -> memory -> address -> offset -> vec_type -> vec
     (* raises Type, Bounds *)
+
+val load_val :
+  memory -> address -> offset -> val_type -> value (* raises Type, Bounds *)
+val store_val :
+  memory -> address -> offset -> value -> unit (* raises Type, Bounds *)
+val load_val_storage :
+  memory -> address -> offset -> storage_type -> value (* raises Type, Bounds *)
+val store_val_storage :
+  memory -> address -> offset -> storage_type -> value -> unit (* raises Type, Bounds *)

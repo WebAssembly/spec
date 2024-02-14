@@ -64,6 +64,7 @@ let list free xs = List.fold_left union empty (List.map free xs)
 
 let var_type = function
   | StatX x -> types (idx' x)
+  | RecX _ -> empty
 
 let num_type = function
   | I32T | I64T | F32T | F64T -> empty
@@ -72,9 +73,13 @@ let vec_type = function
   | V128T -> empty
 
 let heap_type = function
-  | FuncHT | ExternHT | BotHT -> empty
+  | AnyHT | NoneHT | EqHT
+  | I31HT | StructHT | ArrayHT -> empty
+  | FuncHT | NoFuncHT -> empty
+  | ExternHT | NoExternHT -> empty
   | VarHT x -> var_type x
-  | DefHT dt -> empty  (* assume closed *)
+  | DefHT _ct -> empty  (* assume closed *)
+  | BotHT -> empty
 
 let ref_type = function
   | (_, t) -> heap_type t
@@ -85,13 +90,41 @@ let val_type = function
   | RefT t -> ref_type t
   | BotT -> empty
 
-let func_type (FuncT (ins, out)) = list val_type ins ++ list val_type out
+let pack_type t = empty
+
+let storage_type = function
+  | ValStorageT t -> val_type t
+  | PackStorageT t -> pack_type t
+
+let field_type (FieldT (_mut, st)) = storage_type st
+
+let struct_type (StructT fts) = list field_type fts
+let array_type (ArrayT ft) = field_type ft
+let func_type (FuncT (ts1, ts2)) = list val_type ts1 ++ list val_type ts2
+
+let str_type = function
+  | DefStructT st -> struct_type st
+  | DefArrayT at -> array_type at
+  | DefFuncT ft -> func_type ft
+
+let sub_type = function
+  | SubT (_fin, hts, st) -> list heap_type hts ++ str_type st
+
+let rec_type = function
+  | RecT sts -> list sub_type sts
+
+let def_type = function
+  | DefT (rt, _i) -> rec_type rt
+
 let global_type (GlobalT (_mut, t)) = val_type t
 let table_type (TableT (_lim, t)) = ref_type t
 let memory_type (MemoryT (_lim)) = empty
 
-let def_type = function
-  | DefFuncT ft -> func_type ft
+let extern_type = function
+  | ExternFuncT dt -> def_type dt
+  | ExternTableT tt -> table_type tt
+  | ExternMemoryT mt -> memory_type mt
+  | ExternGlobalT gt -> global_type gt
 
 let block_type = function
   | VarBlockType x -> types (idx x)
@@ -102,12 +135,28 @@ let rec instr (e : instr) =
   | Unreachable | Nop | Drop -> empty
   | Select tso -> list val_type (Lib.Option.get tso [])
   | RefIsNull | RefAsNonNull -> empty
+  | RefTest t | RefCast t -> ref_type t
+  | RefEq -> empty
   | RefNull t -> heap_type t
   | RefFunc x -> funcs (idx x)
+  | RefI31 | I31Get _ -> empty
+  | StructNew (x, _) | ArrayNew (x, _) | ArrayNewFixed (x, _) -> types (idx x)
+  | ArrayNewElem (x, y) -> types (idx x) ++ elems (idx y)
+  | ArrayNewData (x, y) -> types (idx x) ++ datas (idx y)
+  | StructGet (x, _, _) | StructSet (x, _) -> types (idx x)
+  | ArrayGet (x, _) | ArraySet x -> types (idx x)
+  | ArrayLen -> empty
+  | ArrayCopy (x, y) -> types (idx x) ++ types (idx y)
+  | ArrayFill x -> types (idx x)
+  | ArrayInitData (x, y) -> types (idx x) ++ datas (idx y)
+  | ArrayInitElem (x, y) -> types (idx x) ++ elems (idx y)
+  | ExternConvert _ -> empty
   | Const _ | Test _ | Compare _ | Unary _ | Binary _ | Convert _ -> empty
   | Block (bt, es) | Loop (bt, es) -> block_type bt ++ block es
   | If (bt, es1, es2) -> block_type bt ++ block es1 ++ block es2
   | Br x | BrIf x | BrOnNull x | BrOnNonNull x -> labels (idx x)
+  | BrOnCast (x, t1, t2) | BrOnCastFail (x, t1, t2) ->
+    labels (idx x) ++ ref_type t1 ++ ref_type t2
   | BrTable (xs, x) -> list (fun x -> labels (idx x)) (x::xs)
   | Return -> empty
   | Call x | ReturnCall x -> funcs (idx x)
@@ -155,7 +204,7 @@ let elem (s : elem_segment) =
 let data (s : data_segment) =
   segment_mode memories s.it.dmode
 
-let type_ (t : type_) = def_type t.it
+let type_ (t : type_) = rec_type t.it
 
 let export_desc (d : export_desc) =
   match d.it with
