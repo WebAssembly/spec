@@ -2,13 +2,13 @@
 
 ## Introduction
 
-This proposal adds function references that are typed and can be called directly. Unlike `funcref` and the existing `call_indirect` instruction, typed function references need not be stored into a table to be called (though they can). A typed function reference can be formed from any function index.
+This proposal adds function references that are typed and can be called directly. Unlike `funcref` and the existing `call_indirect` instruction, typed function references do not need to be stored in a table to be called (though they can). A typed function reference can be formed from any function index.
 
 The proposal distinguished regular and nullable function reference. The former cannot be null, and a call through them does not require any runtime check.
 
 The proposal has instructions for producing and consuming (calling) function references. It also includes instruction for testing and converting between regular and nullable references.
 
-Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialisation, the proposal also tracks the initialisation status of locals during validation.
+Typed references have no canonical default value, because they cannot be null. To enable storing them in locals, which so far depend on default values for initialization, the proposal also tracks the initialization status of locals during validation.
 
 
 ### Motivation
@@ -24,7 +24,7 @@ Typed references have no canonical default value, because they cannot be null. T
 
 ### Summary
 
-* This proposal is based on the [reference types proposal](https://github.com/WebAssembly/reference-types))
+* This proposal is based on the [reference types proposal](https://github.com/WebAssembly/reference-types)
 
 * Add a new form of *typed reference type* `ref $t` and a nullable variant `(ref null $t)`, where `$t` is a type index; can be used as both a value type or an element type for tables
 
@@ -38,7 +38,7 @@ Typed references have no canonical default value, because they cannot be null. T
 
 * Track initialisation status of locals during validation and only allow `local.get` after a `local.set/tee` in the same or a surrounding block.
 
-* Add an optional initialiser expression to table definitions, for element types that do not have an implicit default value.
+* Add an optional initializer expression to table definitions, for element types that do not have an implicit default value.
 
 
 ### Examples
@@ -64,7 +64,7 @@ It is also possible to create a typed function table:
 ```wasm
 (table 1 (ref $i32-i32) (ref.func $inc))
 ```
-Such a table can neither contain `null` entries nor functions of another type. Because entries can't be `null`, tables of concrete type are required to be declared with an explicit initialisation value. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialised with an initializer or by growing it.
+Such a table can neither contain `null` entries nor functions of another type. Because entries can't be `null`, tables of concrete type are required to be declared with an explicit initialisation value. Any use of `call_indirect` on this table does hence avoid all runtime checks beyond the basic bounds check. By using multiple tables, each one can be given a homogeneous type. The table can be initialized with an initializer or by growing it.
 
 Typed function references are a subtype of `funcref`, so they can also be used as untyped references. All previous uses of `ref.func` remain valid:
 ```wasm
@@ -165,7 +165,7 @@ The following rules, now defined in terms of heap types, replace and extend the 
 
 * Function-level locals must have a type that is defaultable.
 
-* Table definitions with a type that is not defaultable must have an initialiser value. (Imports are not affected.)
+* Table definitions with a type that is not defaultable must have an initializer value. (Imports are not affected.)
 
 
 #### Local Types
@@ -283,7 +283,7 @@ A subsumption rule allows to go to a supertype for any instruction:
 
 ### Tables
 
-Table definitions have an initialiser value:
+Table definitions have an initializer value:
 
 * `(table <tabletype> <constexpr>)` is an extended form of table definition
   - `(table <limits> <reftype> <constexpr>) ok` iff `<limits> <reftype> ok` and `<constexpr> : <reftype>`
@@ -363,9 +363,9 @@ In addition to the rules for basic reference types:
 
 #### `Table`
 
-* The `Table` constructor gets an additional optional argument `init` that is used to initialise the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
+* The `Table` constructor gets an additional optional argument `init` that is used to initialize the table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
-* The `Table` method `grow` gets an additional optional argument `init` that is used to initialise the new table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
+* The `Table` method `grow` gets an additional optional argument `init` that is used to initialize the new table slots. It defaults to `null`. A `TypeError` is produced if the argument is omitted and the table's element type is not defaultable.
 
 
 ### Type Reflection

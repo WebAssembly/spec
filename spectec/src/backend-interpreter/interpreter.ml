@@ -80,9 +80,9 @@ let match_ref_type v1 v2 =
   Match.match_ref_type [] rt1 rt2
 
 let match_heap_type v1 v2 =
-  let rt1 = Construct.al_to_heap_type v1 in
-  let rt2 = Construct.al_to_heap_type v2 in
-  Match.match_heap_type [] rt1 rt2
+  let ht1 = Construct.al_to_heap_type v1 in
+  let ht2 = Construct.al_to_heap_type v2 in
+  Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
 
 (* Expression *)
 

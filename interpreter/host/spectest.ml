@@ -17,11 +17,19 @@ let global (GlobalT (_, t) as gt) =
     | VecT V128T -> Vec (V128 (V128.I32x4.of_lanes [666l; 666l; 666l; 666l]))
     | RefT (_, t) -> Ref (NullRef t)
     | BotT -> assert false
-  in Global.alloc gt v
+  in ExternGlobal (Global.alloc gt v)
 
-let table tt = Table.alloc tt (NullRef BotHT)
-let memory mt = Memory.alloc mt
-let func f ft = Func.alloc_host ft (f ft)
+let table =
+  let tt = TableT ({min = 10l; max = Some 20l}, (Null, FuncHT)) in
+  ExternTable (Table.alloc tt (NullRef FuncHT))
+
+let memory =
+  let mt = MemoryT {min = 1l; max = Some 2l} in
+  ExternMemory (Memory.alloc mt)
+
+let func f ft =
+  let dt = DefT (RecT [SubT (Final, [], DefFuncT ft)], 0l) in
+  ExternFunc (Func.alloc_host dt (f ft))
 
 let print_value v =
   Printf.printf "%s : %s\n"
@@ -35,17 +43,17 @@ let print _ vs =
 
 let lookup name t =
   match Utf8.encode name, t with
-  | "print", _ -> ExternFunc (func print (FuncT ([], [])))
-  | "print_i32", _ -> ExternFunc (func print (FuncT ([NumT I32T], [])))
-  | "print_i64", _ -> ExternFunc (func print (FuncT ([NumT I64T], [])))
-  | "print_f32", _ -> ExternFunc (func print (FuncT ([NumT F32T], [])))
-  | "print_f64", _ -> ExternFunc (func print (FuncT ([NumT F64T], [])))
-  | "print_i32_f32", _ -> ExternFunc (func print (FuncT ([NumT I32T; NumT F32T], [])))
-  | "print_f64_f64", _ -> ExternFunc (func print (FuncT ([NumT F64T; NumT F64T], [])))
-  | "global_i32", _ -> ExternGlobal (global (GlobalT (Cons, NumT I32T)))
-  | "global_i64", _ -> ExternGlobal (global (GlobalT (Cons, NumT I64T)))
-  | "global_f32", _ -> ExternGlobal (global (GlobalT (Cons, NumT F32T)))
-  | "global_f64", _ -> ExternGlobal (global (GlobalT (Cons, NumT F64T)))
-  | "table", _ -> ExternTable (table (TableT ({min = 10l; max = Some 20l}, (Null, FuncHT))))
-  | "memory", _ -> ExternMemory (memory (MemoryT {min = 1l; max = Some 2l}))
+  | "print", _ -> func print (FuncT ([], []))
+  | "print_i32", _ -> func print (FuncT ([NumT I32T], []))
+  | "print_i64", _ -> func print (FuncT ([NumT I64T], []))
+  | "print_f32", _ -> func print (FuncT ([NumT F32T], []))
+  | "print_f64", _ -> func print (FuncT ([NumT F64T], []))
+  | "print_i32_f32", _ -> func print (FuncT ([NumT I32T; NumT F32T], []))
+  | "print_f64_f64", _ -> func print (FuncT ([NumT F64T; NumT F64T], []))
+  | "global_i32", _ -> global (GlobalT (Cons, NumT I32T))
+  | "global_i64", _ -> global (GlobalT (Cons, NumT I64T))
+  | "global_f32", _ -> global (GlobalT (Cons, NumT F32T))
+  | "global_f64", _ -> global (GlobalT (Cons, NumT F64T))
+  | "table", _ -> table
+  | "memory", _ -> memory
   | _ -> raise Not_found

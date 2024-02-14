@@ -11,6 +11,7 @@ bug-reports: "https://github.com/WebAssembly/spec/issues"
 depends: [
   "dune" {>= "2.9"}
   "ocaml" {>= "4.12"}
+  "menhir" {>= "20220210"}
   "odoc" {with-doc}
 ]
 build: [

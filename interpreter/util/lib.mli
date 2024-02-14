@@ -19,24 +19,25 @@ sig
   val drop : int -> 'a list -> 'a list (* raises Failure *)
   val split : int -> 'a list -> 'a list * 'a list (* raises Failure *)
 
+  val lead : 'a list -> 'a list (* raises Failure *)
   val last : 'a list -> 'a (* raises Failure *)
   val split_last : 'a list -> 'a list * 'a (* raises Failure *)
 
   val index_of : 'a -> 'a list -> int option
   val index_where : ('a -> bool) -> 'a list -> int option
-  val map_filter : ('a -> 'b option) -> 'a list -> 'b list
-  val concat_map : ('a -> 'b list) -> 'a list -> 'b list
   val pairwise : ('a -> 'a -> 'b) -> 'a list -> 'b list
 end
 
 module List32 :
 sig
+  val init : int32 -> (int32 -> 'a) -> 'a list
   val make : int32 -> 'a -> 'a list
   val length : 'a list -> int32
   val nth : 'a list -> int32 -> 'a (* raises Failure *)
   val replace : 'a list -> int32 -> 'a -> 'a list (* raises Failure *)
   val take : int32 -> 'a list -> 'a list (* raises Failure *)
   val drop : int32 -> 'a list -> 'a list (* raises Failure *)
+  val iteri : (int32 -> 'a -> unit) -> 'a list -> unit
   val mapi : (int32 -> 'a -> 'b) -> 'a list -> 'b list
 
   val index_of : 'a -> 'a list -> int32 option

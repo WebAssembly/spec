@@ -29,6 +29,8 @@ let br_if x = BrIf x
 let br_table xs x = BrTable (xs, x)
 let br_on_null x = BrOnNull x
 let br_on_non_null x = BrOnNonNull x
+let br_on_cast x t1 t2 = BrOnCast (x, t1, t2)
+let br_on_cast_fail x t1 t2 = BrOnCastFail (x, t1, t2)
 
 let return = Return
 let call x = Call x
@@ -101,7 +103,37 @@ let memory_init x = MemoryInit x
 let data_drop x = DataDrop x
 
 let ref_is_null = RefIsNull
-let ref_as_non_null = RefAsNonNull
+let ref_as_non_null = RefAsNonNull  
+let ref_test t = RefTest t
+let ref_cast t = RefCast t
+let ref_eq = RefEq
+
+let ref_i31 = RefI31
+let i31_get_u = I31Get ZX
+let i31_get_s = I31Get SX
+let struct_new x = StructNew (x, Explicit)
+let struct_new_default x = StructNew (x, Implicit)
+let struct_get x y = StructGet (x, y, None)
+let struct_get_u x y = StructGet (x, y, Some ZX)
+let struct_get_s x y = StructGet (x, y, Some SX)
+let struct_set x y = StructSet (x, y)
+let array_new x = ArrayNew (x, Explicit)
+let array_new_default x = ArrayNew (x, Implicit)
+let array_new_fixed x n = ArrayNewFixed (x, n)
+let array_new_elem x y = ArrayNewElem (x, y)
+let array_new_data x y = ArrayNewData (x, y)
+let array_get x = ArrayGet (x, None)
+let array_get_u x = ArrayGet (x, Some ZX)
+let array_get_s x = ArrayGet (x, Some SX)
+let array_set x = ArraySet x
+let array_len = ArrayLen
+let array_copy x y = ArrayCopy (x, y)
+let array_fill x = ArrayFill x
+let array_init_data x y = ArrayInitData (x, y)
+let array_init_elem x y = ArrayInitElem (x, y)
+
+let any_convert_extern = ExternConvert Internalize
+let extern_convert_any = ExternConvert Externalize
 
 let i32_clz = Unary (I32 I32Op.Clz)
 let i32_ctz = Unary (I32 I32Op.Ctz)

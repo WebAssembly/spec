@@ -137,7 +137,7 @@ let test_assertion assertion =
   match assertion.it with
   | AssertReturn (action, expected) ->
     let result = run_action action |> al_to_list al_to_value in
-    Run.assert_result no_region result (List.map it expected);
+    Run.assert_result no_region result expected;
     success
   | AssertTrap (action, re) -> (
     try

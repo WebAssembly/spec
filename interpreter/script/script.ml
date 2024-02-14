@@ -1,6 +1,6 @@
 type var = string Source.phrase
 
-type Value.ref_ += ExternRef of int32
+type Value.ref_ += HostRef of int32
 type num = Value.num Source.phrase
 type ref_ = Value.ref_ Source.phrase
 type literal = Value.t Source.phrase
@@ -64,24 +64,22 @@ and meta' =
 
 and script = command list
 
-exception Syntax of Source.region * string
-
 
 let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | ExternRef _ -> Types.ExternHT
+    | HostRef _ -> Types.AnyHT
     | r -> type_of_ref' r
 
 let () =
   let string_of_ref' = !Value.string_of_ref' in
   Value.string_of_ref' := function
-    | ExternRef n -> "ref " ^ Int32.to_string n
+    | HostRef n -> "(host " ^ Int32.to_string n ^ ")"
     | r -> string_of_ref' r
 
 let () =
   let eq_ref' = !Value.eq_ref' in
   Value.eq_ref' := fun r1 r2 ->
     match r1, r2 with
-    | ExternRef n1, ExternRef n2 -> n1 = n2
+    | HostRef n1, HostRef n2 -> n1 = n2
     | _, _ -> eq_ref' r1 r2

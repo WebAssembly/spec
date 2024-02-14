@@ -9,7 +9,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    This separation enables *parallel* and *streaming* compilation of the functions in a module.
 
 
-.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index
+.. index:: index, type index, function index, table index, memory index, global index, element index, data index, local index, label index, field index
    pair: binary format; type index
    pair: binary format; function index
    pair: binary format; table index
@@ -19,6 +19,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
    pair: binary format; data index
    pair: binary format; local index
    pair: binary format; label index
+   pair: binary format; field index
 .. _binary-typeidx:
 .. _binary-funcidx:
 .. _binary-tableidx:
@@ -28,6 +29,7 @@ except that :ref:`function definitions <syntax-func>` are split into two section
 .. _binary-dataidx:
 .. _binary-localidx:
 .. _binary-labelidx:
+.. _binary-fieldidx:
 .. _binary-index:
 
 Indices
@@ -46,6 +48,7 @@ All :ref:`indices <syntax-index>` are encoded with their respective value.
    \production{data index} & \Bdataidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{local index} & \Blocalidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \production{label index} & \Blabelidx &::=& l{:}\Bu32 &\Rightarrow& l \\
+   \production{field index} & \Bfieldidx &::=& x{:}\Bu32 &\Rightarrow& x \\
    \end{array}
 
 
@@ -127,7 +130,7 @@ Their contents consist of a :ref:`name <syntax-name>` further identifying the cu
    If an implementation interprets the data of a custom section, then errors in that data, or the placement of the section, must not invalidate the module.
 
 
-.. index:: ! type section, type definition
+.. index:: ! type section, type definition, recursive type
    pair: binary format; type section
    pair: section; type
 .. _binary-typedef:
@@ -137,12 +140,12 @@ Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`function types <syntax-functype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
+It decodes into a vector of :ref:`recursive types <syntax-rectype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{type section} & \Btypesec &::=&
-     \X{ft}^\ast{:\,}\Bsection_1(\Bvec(\Bfunctype)) &\Rightarrow& \X{ft}^\ast \\
+     \X{rt}^\ast{:\,}\Bsection_1(\Bvec(\Brectype)) &\Rightarrow& \X{rt}^\ast \\
    \end{array}
 
 
@@ -212,7 +215,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
    \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
-         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\
+         \qquad \iff \X{tt} = \limits~(\REF~\NULL^?~\X{ht}) \\ &&|&
      \hex{40}~~\hex{00}~~\X{tt}{:}\Btabletype~~e{:}\Bexpr
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~e \} \\
    \end{array}
@@ -220,7 +223,7 @@ It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTA
 .. note::
    The encoding of a table type cannot start with byte :math:`\hex{40}`,
    hence decoding is unambiguous.
-   The zero byte following it is reserved for futre extensions.
+   The zero byte following it is reserved for future extensions.
 
 
 .. index:: ! memory section, memory, memory type
@@ -525,7 +528,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bmagic \\ &&&
      \Bversion \\ &&&
      \Bcustomsec^\ast \\ &&&
-     \functype^\ast{:\,}\Btypesec \\ &&&
+     \rectype^\ast{:\,}\Btypesec \\ &&&
      \Bcustomsec^\ast \\ &&&
      \import^\ast{:\,}\Bimportsec \\ &&&
      \Bcustomsec^\ast \\ &&&
@@ -551,7 +554,7 @@ Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs
      \Bcustomsec^\ast
      \quad\Rightarrow\quad \{~
        \begin{array}[t]{@{}l@{}}
-       \MTYPES~\functype^\ast, \\
+       \MTYPES~\rectype^\ast, \\
        \MFUNCS~\func^n, \\
        \MTABLES~\table^\ast, \\
        \MMEMS~\mem^\ast, \\

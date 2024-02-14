@@ -1,7 +1,6 @@
 {
 open Parser
 open Operators
-open Types
 open Source
 
 let convert_pos pos =
@@ -15,7 +14,7 @@ let region lexbuf =
   let right = convert_pos (Lexing.lexeme_end_p lexbuf) in
   {left = left; right = right}
 
-let error lexbuf msg = raise (Script.Syntax (region lexbuf, msg))
+let error lexbuf msg = raise (Parse_error.Syntax (region lexbuf, msg))
 let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
@@ -28,9 +27,9 @@ let string s =
   while !i < String.length s - 1 do
     let c = if s.[!i] <> '\\' then s.[!i] else
       match (incr i; s.[!i]) with
-      | 'n' -> '\n'
-      | 'r' -> '\r'
-      | 't' -> '\t'
+      | 'n' -> '\x0a'
+      | 'r' -> '\x0d'
+      | 't' -> '\x09'
       | '\\' -> '\\'
       | '\'' -> '\''
       | '\"' -> '\"'
@@ -62,10 +61,12 @@ let letter = ['a'-'z''A'-'Z']
 let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
-let space = [' ''\t''\n''\r']
+let ascii_newline = ['\x0a''\x0d']
+let newline = ascii_newline | "\x0a\x0d"
+let space = [' ''\x09''\x0a''\x0d']
 let control = ['\x00'-'\x1f'] # space
 let ascii = ['\x00'-'\x7f']
-let ascii_no_nl = ascii # '\x0a'
+let ascii_no_nl = ascii # ascii_newline
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
     ['\xc2'-'\xdf'] utf8cont
@@ -111,8 +112,9 @@ let ixx = "i" ("32" | "64")
 let fxx = "f" ("32" | "64")
 let nxx = ixx | fxx
 let vxxx = "v128"
-let mixx = "i" ("8" | "16" | "32" | "64")
-let mfxx = "f" ("32" | "64")
+let pixx = "i" ("8" | "16")
+let mixx = ixx | pixx
+let mfxx = fxx
 let sign = "s" | "u"
 let mem_size = "8" | "16" | "32"
 let v128_int_shape = "i8x16" | "i16x8" | "i32x4" | "i64x2"
@@ -128,19 +130,21 @@ rule token = parse
   | float as s { FLOAT s }
 
   | string as s { STRING (string s) }
-  | '"'character*('\n'|eof) { error lexbuf "unclosed string literal" }
-  | '"'character*['\x00'-'\x09''\x0b'-'\x1f''\x7f']
+  | '"'character*(newline|eof) { error lexbuf "unclosed string literal" }
+  | '"'character*(control#ascii_newline)
     { error lexbuf "illegal control character in string literal" }
   | '"'character*'\\'_
     { error_nest (Lexing.lexeme_end_p lexbuf) lexbuf "illegal escape" }
 
   | keyword as s
     { match s with
-      | "i32" -> NUM_TYPE I32T
-      | "i64" -> NUM_TYPE I64T
-      | "f32" -> NUM_TYPE F32T
-      | "f64" -> NUM_TYPE F64T
-      | "v128" -> VEC_TYPE V128T
+      | "i8" -> PACK_TYPE Pack.Pack8
+      | "i16" -> PACK_TYPE Pack.Pack16
+      | "i32" -> NUM_TYPE Types.I32T
+      | "i64" -> NUM_TYPE Types.I64T
+      | "f32" -> NUM_TYPE Types.F32T
+      | "f64" -> NUM_TYPE Types.F64T
+      | "v128" -> VEC_TYPE Types.V128T
       | "i8x16" -> VEC_SHAPE (V128.I8x16 ())
       | "i16x8" -> VEC_SHAPE (V128.I16x8 ())
       | "i32x4" -> VEC_SHAPE (V128.I32x4 ())
@@ -148,12 +152,33 @@ rule token = parse
       | "f32x4" -> VEC_SHAPE (V128.F32x4 ())
       | "f64x2" -> VEC_SHAPE (V128.F64x2 ())
 
-      | "extern" -> EXTERN
-      | "externref" -> EXTERNREF
+      | "any" -> ANY
+      | "anyref" -> ANYREF
+      | "none" -> NONE
+      | "nullref" -> NULLREF
+      | "eq" -> EQ
+      | "eqref" -> EQREF
+      | "i31" -> I31
+      | "i31ref" -> I31REF
+      | "structref" -> STRUCTREF
+      | "arrayref" -> ARRAYREF
+      | "nofunc" -> NOFUNC
       | "funcref" -> FUNCREF
+      | "nullfuncref" -> NULLFUNCREF
+      | "extern" -> EXTERN
+      | "noextern" -> NOEXTERN
+      | "externref" -> EXTERNREF
+      | "nullexternref" -> NULLEXTERNREF
       | "ref" -> REF
       | "null" -> NULL
+
+      | "array" -> ARRAY
+      | "struct" -> STRUCT
+      | "field" -> FIELD
       | "mut" -> MUT
+      | "sub" -> SUB
+      | "final" -> FINAL
+      | "rec" -> REC
 
       | "nop" -> NOP
       | "unreachable" -> UNREACHABLE
@@ -164,8 +189,10 @@ rule token = parse
       | "br" -> BR
       | "br_if" -> BR_IF
       | "br_table" -> BR_TABLE
-      | "br_on_null" -> BR_ON_NULL
-      | "br_on_non_null" -> BR_ON_NON_NULL
+      | "br_on_null" -> BR_ON_NULL br_on_null
+      | "br_on_non_null" -> BR_ON_NULL br_on_non_null
+      | "br_on_cast" -> BR_ON_CAST br_on_cast
+      | "br_on_cast_fail" -> BR_ON_CAST br_on_cast_fail
       | "return" -> RETURN
       | "if" -> IF
       | "then" -> THEN
@@ -283,9 +310,45 @@ rule token = parse
 
       | "ref.null" -> REF_NULL
       | "ref.func" -> REF_FUNC
+      | "ref.struct" -> REF_STRUCT
+      | "ref.array" -> REF_ARRAY
       | "ref.extern" -> REF_EXTERN
+      | "ref.host" -> REF_HOST
+
       | "ref.is_null" -> REF_IS_NULL
       | "ref.as_non_null" -> REF_AS_NON_NULL
+      | "ref.test" -> REF_TEST
+      | "ref.cast" -> REF_CAST
+      | "ref.eq" -> REF_EQ
+
+      | "ref.i31" -> REF_I31
+      | "i31.get_u" -> I31_GET i31_get_u
+      | "i31.get_s" -> I31_GET i31_get_s
+
+      | "struct.new" -> STRUCT_NEW struct_new
+      | "struct.new_default" -> STRUCT_NEW struct_new_default
+      | "struct.get" -> STRUCT_GET struct_get
+      | "struct.get_u" -> STRUCT_GET struct_get_u
+      | "struct.get_s" -> STRUCT_GET struct_get_s
+      | "struct.set" -> STRUCT_SET
+
+      | "array.new" -> ARRAY_NEW array_new
+      | "array.new_default" -> ARRAY_NEW array_new_default
+      | "array.new_fixed" -> ARRAY_NEW_FIXED
+      | "array.new_elem" -> ARRAY_NEW_ELEM
+      | "array.new_data" -> ARRAY_NEW_DATA
+      | "array.get" -> ARRAY_GET array_get
+      | "array.get_u" -> ARRAY_GET array_get_u
+      | "array.get_s" -> ARRAY_GET array_get_s
+      | "array.set" -> ARRAY_SET
+      | "array.len" -> ARRAY_LEN
+      | "array.copy" -> ARRAY_COPY
+      | "array.fill" -> ARRAY_FILL
+      | "array.init_data" -> ARRAY_INIT_DATA
+      | "array.init_elem" -> ARRAY_INIT_ELEM
+
+      | "any.convert_extern" -> EXTERN_CONVERT any_convert_extern
+      | "extern.convert_any" -> EXTERN_CONVERT extern_convert_any
 
       | "i32.clz" -> UNARY i32_clz
       | "i32.ctz" -> UNARY i32_ctz
@@ -708,11 +771,11 @@ rule token = parse
   | id as s { VAR s }
 
   | ";;"utf8_no_nl*eof { EOF }
-  | ";;"utf8_no_nl*'\n' { Lexing.new_line lexbuf; token lexbuf }
+  | ";;"utf8_no_nl*newline { Lexing.new_line lexbuf; token lexbuf }
   | ";;"utf8_no_nl* { token lexbuf (* causes error on following position *) }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; token lexbuf }
-  | space#'\n' { token lexbuf }
-  | '\n' { Lexing.new_line lexbuf; token lexbuf }
+  | space#ascii_newline { token lexbuf }
+  | newline { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
   | reserved { unknown lexbuf }
@@ -723,7 +786,7 @@ rule token = parse
 and comment start = parse
   | ";)" { () }
   | "(;" { comment (Lexing.lexeme_start_p lexbuf) lexbuf; comment start lexbuf }
-  | '\n' { Lexing.new_line lexbuf; comment start lexbuf }
+  | newline { Lexing.new_line lexbuf; comment start lexbuf }
   | utf8_no_nl { comment start lexbuf }
   | eof { error_nest start lexbuf "unclosed comment" }
   | _ { error lexbuf "malformed UTF-8 encoding" }

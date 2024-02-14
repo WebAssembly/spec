@@ -48,7 +48,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    then it is shadowed and the earlier label becomes inaccessible.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, reference
    pair: text format; instruction
 .. _text-blockinstr:
 .. _text-plaininstr:
@@ -102,6 +102,8 @@ However, the special case of a type use that is syntactically empty or consists 
 .. _text-br_table:
 .. _text-br_on_null:
 .. _text-br_on_non_null:
+.. _text-br_on_cast:
+.. _text-br_on_cast_fail:
 .. _text-return:
 .. _text-call:
 .. _text-call_ref:
@@ -122,6 +124,8 @@ All other control instruction are represented verbatim.
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{br\_on\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNULL~l \\ &&|&
      \text{br\_on\_non\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNONNULL~l \\ &&|&
+     \text{br\_on\_cast}~~l{:}\Tlabelidx_I~~t_1{:}\Treftype~~t_2{:}\Treftype &\Rightarrow& \BRONCAST~l~t_1~t_2 \\ &&|&
+     \text{br\_on\_cast\_fail}~~l{:}\Tlabelidx_I~~t_1{:}\Treftype~~t_2{:}\Treftype &\Rightarrow& \BRONCASTFAIL~l~t_1~t_2 \\ &&|&
      \text{return} &\Rightarrow& \RETURN \\ &&|&
      \text{call}~~x{:}\Tfuncidx_I &\Rightarrow& \CALL~x \\ &&|&
      \text{call\_ref}~~x{:}\Ttypeidx &\Rightarrow& \CALLREF~x \\ &&|&
@@ -175,6 +179,33 @@ Reference Instructions
 .. _text-ref.func:
 .. _text-ref.is_null:
 .. _text-ref.as_non_null:
+.. _text-struct.new:
+.. _text-struct.new_default:
+.. _text-struct.get:
+.. _text-struct.get_s:
+.. _text-struct.get_u:
+.. _text-struct.set:
+.. _text-array.new:
+.. _text-array.new_default:
+.. _text-array.new_fixed:
+.. _text-array.new_elem:
+.. _text-array.new_data:
+.. _text-array.get:
+.. _text-array.get_s:
+.. _text-array.get_u:
+.. _text-array.set:
+.. _text-array.len:
+.. _text-array.fill:
+.. _text-array.copy:
+.. _text-array.init_data:
+.. _text-array.init_elem:
+.. _text-ref.i31:
+.. _text-i31.get_s:
+.. _text-i31.get_u:
+.. _text-ref.test:
+.. _text-ref.cast:
+.. _text-any.convert_extern:
+.. _text-extern.convert_any:
 
 .. math::
    \begin{array}{llclll}
@@ -182,7 +213,35 @@ Reference Instructions
      \text{ref.null}~~t{:}\Theaptype &\Rightarrow& \REFNULL~t \\ &&|&
      \text{ref.func}~~x{:}\Tfuncidx &\Rightarrow& \REFFUNC~x \\ &&|&
      \text{ref.is\_null} &\Rightarrow& \REFISNULL \\ &&|&
-     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\
+     \text{ref.as\_non\_null} &\Rightarrow& \REFASNONNULL \\ &&|&
+     \text{ref.eq} &\Rightarrow& \REFEQ \\ &&|&
+     \text{ref.test}~~t{:}\Treftype &\Rightarrow& \REFTEST~t \\ &&|&
+     \text{ref.cast}~~t{:}\Treftype &\Rightarrow& \REFCAST~t \\ &&|&
+     \text{struct.new}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEW~x \\ &&|&
+     \text{struct.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \STRUCTNEWDEFAULT~x \\ &&|&
+     \text{struct.get}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGET~x~y \\ &&|&
+     \text{struct.get\_u}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETU~x~y \\ &&|&
+     \text{struct.get\_s}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTGETS~x~y \\ &&|&
+     \text{struct.set}~~x{:}\Ttypeidx_I~~y{:}\Tfieldidx_{I,x} &\Rightarrow& \STRUCTSET~x~y \\ &&|&
+     \text{array.new}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEW~x \\ &&|&
+     \text{array.new\_default}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYNEWDEFAULT~x \\ &&|&
+     \text{array.new\_fixed}~~x{:}\Ttypeidx_I~~n{:}\Tu32 &\Rightarrow& \ARRAYNEWFIXED~x~n \\ &&|&
+     \text{array.new\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYNEWDATA~x~y \\ &&|&
+     \text{array.new\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYNEWELEM~x~y \\ &&|&
+     \text{array.get}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGET~x \\ &&|&
+     \text{array.get\_u}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETU~x \\ &&|&
+     \text{array.get\_s}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYGETS~x \\ &&|&
+     \text{array.set}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYSET~x \\ &&|&
+     \text{array.len} &\Rightarrow& \ARRAYLEN \\ &&|&
+     \text{array.fill}~~x{:}\Ttypeidx_I &\Rightarrow& \ARRAYFILL~x \\ &&|&
+     \text{array.copy}~~x{:}\Ttypeidx_I~~y{:}\Ttypeidx_I &\Rightarrow& \ARRAYCOPY~x~y \\ &&|&
+     \text{array.init\_data}~~x{:}\Ttypeidx_I~~y{:}\Tdataidx_I &\Rightarrow& \ARRAYINITDATA~x~y \\ &&|&
+     \text{array.init\_elem}~~x{:}\Ttypeidx_I~~y{:}\Telemidx_I &\Rightarrow& \ARRAYINITELEM~x~y \\ &&|&
+     \text{ref.i31} &\Rightarrow& \REFI31 \\ &&|&
+     \text{i31.get\_u} &\Rightarrow& \I31GETU \\ &&|&
+     \text{i31.get\_s} &\Rightarrow& \I31GETS \\ &&|&
+     \text{any.convert\_extern} &\Rightarrow& \ANYCONVERTEXTERN \\ &&|&
+     \text{extern.convert\_any} &\Rightarrow& \EXTERNCONVERTANY \\
    \end{array}
 
 
@@ -870,6 +929,10 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f32x4.abs} &\Rightarrow& \F32X4.\VABS\\ &&|&
      \text{f32x4.neg} &\Rightarrow& \F32X4.\VNEG\\ &&|&
      \text{f32x4.sqrt} &\Rightarrow& \F32X4.\VSQRT\\ &&|&
+     \text{f32x4.ceil} &\Rightarrow& \F32X4.\VCEIL\\ &&|&
+     \text{f32x4.floor} &\Rightarrow& \F32X4.\VFLOOR\\ &&|&
+     \text{f32x4.trunc} &\Rightarrow& \F32X4.\VTRUNC\\ &&|&
+     \text{f32x4.nearest} &\Rightarrow& \F32X4.\VNEAREST\\ &&|&
      \text{f32x4.add} &\Rightarrow& \F32X4.\VADD\\ &&|&
      \text{f32x4.sub} &\Rightarrow& \F32X4.\VSUB\\ &&|&
      \text{f32x4.mul} &\Rightarrow& \F32X4.\VMUL\\ &&|&
@@ -886,6 +949,10 @@ Vector constant instructions have a mandatory :ref:`shape <syntax-vec-shape>` de
      \text{f64x2.abs} &\Rightarrow& \F64X2.\VABS\\ &&|&
      \text{f64x2.neg} &\Rightarrow& \F64X2.\VNEG\\ &&|&
      \text{f64x2.sqrt} &\Rightarrow& \F64X2.\VSQRT\\ &&|&
+     \text{f64x2.ceil} &\Rightarrow& \F64X2.\VCEIL\\ &&|&
+     \text{f64x2.floor} &\Rightarrow& \F64X2.\VFLOOR\\ &&|&
+     \text{f64x2.trunc} &\Rightarrow& \F64X2.\VTRUNC\\ &&|&
+     \text{f64x2.nearest} &\Rightarrow& \F64X2.\VNEAREST\\ &&|&
      \text{f64x2.add} &\Rightarrow& \F64X2.\VADD\\ &&|&
      \text{f64x2.sub} &\Rightarrow& \F64X2.\VSUB\\ &&|&
      \text{f64x2.mul} &\Rightarrow& \F64X2.\VMUL\\ &&|&
@@ -930,7 +997,7 @@ Such a folded instruction can appear anywhere a regular instruction can.
 
 .. math::
    \begin{array}{lllll}
-   \production{instruction} & 
+   \production{instruction} &
      \text{(}~\Tplaininstr~~\Tfoldedinstr^\ast~\text{)}
        &\equiv\quad \Tfoldedinstr^\ast~~\Tplaininstr \\ &
      \text{(}~\text{block}~~\Tlabel~~\Tblocktype~~\Tinstr^\ast~\text{)}

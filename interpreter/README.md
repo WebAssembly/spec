@@ -179,15 +179,36 @@ float:  <num>.<num>?(e|E <num>)? | 0x<hexnum>.<hexnum>?(p|P <num>)?
 name:   $(<letter> | <digit> | _ | . | + | - | * | / | \ | ^ | ~ | = | < | > | ! | ? | @ | # | $ | % | & | | | : | ' | `)+
 string: "(<char> | \n | \t | \\ | \' | \" | \<hex><hex> | \u{<hex>+})*"
 
+num: <int> | <float>
+var: <nat> | <name>
+
+unop:  ctz | clz | popcnt | ...
+binop: add | sub | mul | ...
+relop: eq | ne | lt | ...
+sign:  s | u
+offset: offset=<nat>
+align: align=(1|2|4|8|...)
+cvtop: trunc | extend | wrap | ...
+castop: data | array | i31
+externop: internalize | externalize
+
 num_type: i32 | i64 | f32 | f64
 vec_type: v128
 vec_shape: i8x16 | i16x8 | i32x4 | i64x2 | f32x4 | f64x2 | v128
-heap_type: func | extern | (type <var>)
+heap_type: any | eq | i31 | data | array | func | extern | none | nofunc | noextern | <var> | (rtt <var>)
 ref_type:
   ( ref null? <heap_type> )
-  ( ref null? <var> )         ;; = (ref null (type <var>))
+  ( rtt <var> )               ;; = (ref (rtt <var>))
+  anyref                      ;; = (ref null any)
+  eqref                       ;; = (ref null eq)
+  i31ref                      ;; = (ref i31)
+  dataref                     ;; = (ref null data)
+  arrayref                    ;; = (ref null array)
   funcref                     ;; = (ref null func)
   externref                   ;; = (ref null extern)
+  nullref                     ;; = (ref null none)
+  nullfuncref                 ;; = (ref null nofunc)
+  nullexternref               ;; = (ref null noextern)
 val_type: <num_type> | <vec_type> | <ref_type>
 block_type : ( result <val_type>* )*
 func_type:   ( type <var> )? <param>* <result>*
@@ -240,6 +261,8 @@ op:
   br_table <var>+
   br_on_null <var>
   br_on_non_null <var>
+  br_on_cast <var> <ref_type> <ref_type>
+  br_on_cast_fail <var> <ref_type> <ref_type> 
   call <var>
   call_ref <var>
   call_indirect <var>? (type <var>)? <func_type>
@@ -273,9 +296,25 @@ op:
   memory.init <var>
   data.drop <var>
   ref.null <heap_type>
+  ref.func <var>
   ref.is_null
   ref_as_non_null
-  ref.func <var>
+  ref.test <var>
+  ref.cast <var>
+  ref.eq
+  i31.new
+  i31.get_<sign>
+  struct.new(_<default>)? <var>
+  struct.get(_<sign>)? <var> <var>
+  struct.set <var> <var>
+  array.new(_<default>)? <var>
+  array.new_fixed <var> <nat>
+  array.new_elem <var> <var>
+  array.new_data <var> <var>
+  array.get(_<sign>)? <var>
+  array.set <var>
+  array.len <var>
+  extern.<externop>
   <num_type>.const <num>
   <num_type>.<unop>
   <num_type>.<binop>
@@ -395,7 +434,8 @@ const:
   ( <num_type>.const <num> )                 ;; number value
   ( <vec_type> <vec_shape> <num>+ )          ;; vector value
   ( ref.null <ref_kind> )                    ;; null reference
-  ( ref.extern <nat> )                       ;; host reference
+  ( ref.host <nat> )                         ;; host reference
+  ( ref.extern <nat> )                       ;; external host reference
 
 assertion:
   ( assert_return <action> <result_pat>* )   ;; assert action has expected results
@@ -409,9 +449,11 @@ assertion:
 result_pat:
   ( <num_type>.const <num_pat> )
   ( <vec_type>.const <vec_shape> <num_pat>+ )
-  ( ref.extern )
-  ( ref.func )
+  ( ref )
   ( ref.null )
+  ( ref.func )
+  ( ref.extern )
+  ( ref.<castop> )
 
 num_pat:
   <num>                                      ;; literal result
@@ -485,7 +527,7 @@ module:
   ( module <name>? binary <string>* )        ;; module in binary format (may be malformed)
 
 action:
-  ( invoke <name>? <string> <expr>* )        ;; invoke function export
+  ( invoke <name>? <string> <const>* )       ;; invoke function export
   ( get <name>? <string> )                   ;; get global export
 
 assertion:
@@ -499,9 +541,11 @@ assertion:
 
 result_pat:
   ( <num_type>.const <num_pat> )
-  ( ref.extern )
-  ( ref.func )
+  ( ref )
   ( ref.null )
+  ( ref.func )
+  ( ref.extern )
+  ( ref.<castop> )
 
 num_pat:
   <value>                                    ;; literal result

@@ -129,14 +129,18 @@ It is convenient to define identifier contexts as :ref:`records <notation-record
         & \IDATA & (\Tid^?)^\ast, \\
         & \ILOCALS & (\Tid^?)^\ast, \\
         & \ILABELS & (\Tid^?)^\ast, \\
-        & \ITYPEDEFS & \functype^\ast ~\} \\
+        & \IFIELDS & ((\Tid^?)^\ast)^\ast ~\} \\
+        & \ITYPEDEFS & \subtype^\ast ~\} \\
      \end{array}
    \end{array}
 
 For each index space, such a context contains the list of :ref:`identifiers <text-id>` assigned to the defined indices.
 Unnamed indices are associated with empty (:math:`\epsilon`) entries in these lists.
+Fields have *dependent* name spaces, and hence a separate list of field identifiers per type.
 
 An identifier context is *well-formed* if no index space contains duplicate identifiers.
+For fields, names need only be unique within a single type.
+
 
 
 Conventions

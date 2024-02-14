@@ -24,3 +24,6 @@ Any form of :ref:`type <syntax-type>` can be *instantiated* into a :ref:`closed 
 
 .. math::
    \insttype_{\moduleinst}(t) = t[\subst \moduleinst.\MITYPES]
+
+.. note::
+   This is the runtime equivalent to :ref:`type closure <type-closure>`.

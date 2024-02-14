@@ -41,6 +41,7 @@ let list_of_opt = function None -> [] | Some x -> [x]
 let list f xs = List.map f xs
 let listi f xs = List.mapi f xs
 let opt f xo = list f (list_of_opt xo)
+let opt_s f xo = Lib.Option.get (Lib.Option.map f xo) ""
 
 let tab head f xs = if xs = [] then [] else [Node (head, list f xs)]
 let atom f x = Atom (f x)
@@ -56,27 +57,64 @@ let break_string s =
 
 (* Types *)
 
+let mutability node = function
+  | Cons -> node
+  | Var -> Node ("mut", [node])
+
 let num_type t = string_of_num_type t
 let vec_type t = string_of_vec_type t
-let ref_type t = string_of_ref_type t
+let ref_type t =
+  match t with
+  | (Null, AnyHT) -> "anyref"
+  | (Null, EqHT) -> "eqref"
+  | (Null, I31HT) -> "i31ref"
+  | (Null, StructHT) -> "structref"
+  | (Null, ArrayHT) -> "arrayref"
+  | (Null, FuncHT) -> "funcref"
+  | t -> string_of_ref_type t
+
 let heap_type t = string_of_heap_type t
 let val_type t = string_of_val_type t
+let storage_type t = string_of_storage_type t
+
+let final = function
+  | NoFinal -> ""
+  | Final -> " final"
 
 let decls kind ts = tab kind (atom val_type) ts
+
+let field_type (FieldT (mut, t)) =
+  mutability (atom storage_type t) mut
+
+let struct_type (StructT fts) =
+  Node ("struct", list (fun ft -> Node ("field", [field_type ft])) fts)
+
+let array_type (ArrayT ft) =
+  Node ("array", [field_type ft])
 
 let func_type (FuncT (ts1, ts2)) =
   Node ("func", decls "param" ts1 @ decls "result" ts2)
 
-let def_type dt =
-  match dt with
+let str_type st =
+  match st with
+  | DefStructT st -> struct_type st
+  | DefArrayT at -> array_type at
   | DefFuncT ft -> func_type ft
+
+let sub_type = function
+  | SubT (Final, [], st) -> str_type st
+  | SubT (fin, xs, st) ->
+    Node (String.concat " "
+      (("sub" ^ final fin ):: List.map heap_type xs), [str_type st])
+
+let rec_type i j st =
+  Node ("type $" ^ nat (i + j), [sub_type st])
 
 let limits nat {min; max} =
   String.concat " " (nat min :: opt nat max)
 
-let global_type = function
-  | GlobalT (Cons, t) -> atom string_of_val_type t
-  | GlobalT (Var, t) -> Node ("mut", [atom string_of_val_type t])
+let global_type (GlobalT (mut, t)) =
+  mutability (atom string_of_val_type t) mut
 
 let pack_size = function
   | Pack8 -> "8"
@@ -421,6 +459,14 @@ let vec_laneop instr (op, i) =
   memop (instr ^ pack_size op.pack ^ "_lane") vec_type op
     (packed_size op.pack) ^ " " ^ nat i
 
+let initop = function
+  | Explicit -> ""
+  | Implicit -> "_default"
+
+let externop = function
+  | Internalize -> "any.convert_extern"
+  | Externalize -> "extern.convert_any"
+
 
 (* Expressions *)
 
@@ -454,6 +500,10 @@ let rec instr e =
       "br_table " ^ String.concat " " (list var (xs @ [x])), []
     | BrOnNull x -> "br_on_null " ^ var x, []
     | BrOnNonNull x -> "br_on_non_null " ^ var x, []
+    | BrOnCast (x, t1, t2) ->
+      "br_on_cast " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
+    | BrOnCastFail (x, t1, t2) ->
+      "br_on_cast_fail " ^ var x, [Atom (ref_type t1); Atom (ref_type t2)]
     | Return -> "return", []
     | Call x -> "call " ^ var x, []
     | CallRef x -> "call_ref " ^ var x, []
@@ -489,9 +539,30 @@ let rec instr e =
     | MemoryInit x -> "memory.init " ^ var x, []
     | DataDrop x -> "data.drop " ^ var x, []
     | RefNull t -> "ref.null", [Atom (heap_type t)]
+    | RefFunc x -> "ref.func " ^ var x, []
     | RefIsNull -> "ref.is_null", []
     | RefAsNonNull -> "ref.as_non_null", []
-    | RefFunc x -> "ref.func " ^ var x, []
+    | RefTest t -> "ref.test", [Atom (ref_type t)]
+    | RefCast t -> "ref.cast", [Atom (ref_type t)]
+    | RefEq -> "ref.eq", []
+    | RefI31 -> "ref.i31", []
+    | I31Get ext -> "i31.get" ^ extension ext, []
+    | StructNew (x, op) -> "struct.new" ^ initop op ^ " " ^ var x, []
+    | StructGet (x, y, exto) ->
+      "struct.get" ^ opt_s extension exto ^ " " ^ var x ^ " " ^ var y, []
+    | StructSet (x, y) -> "struct.set " ^ var x ^ " " ^ var y, []
+    | ArrayNew (x, op) -> "array.new" ^ initop op ^ " " ^ var x, []
+    | ArrayNewFixed (x, n) -> "array.new_fixed " ^ var x ^ " " ^ nat32 n, []
+    | ArrayNewElem (x, y) -> "array.new_elem " ^ var x ^ " " ^ var y, []
+    | ArrayNewData (x, y) -> "array.new_data " ^ var x ^ " " ^ var y, []
+    | ArrayGet (x, exto) -> "array.get" ^ opt_s extension exto ^ " " ^ var x, []
+    | ArraySet x -> "array.set " ^ var x, []
+    | ArrayLen -> "array.len", []
+    | ArrayCopy (x, y) -> "array.copy " ^ var x ^ " " ^ var y, []
+    | ArrayFill x -> "array.fill " ^ var x, []
+    | ArrayInitData (x, y) -> "array.init_data " ^ var x ^ " " ^ var y, []
+    | ArrayInitElem (x, y) -> "array.init_elem " ^ var x ^ " " ^ var y, []
+    | ExternConvert op -> externop op, []
     | Const n -> constop n.it ^ " " ^ num n, []
     | Test op -> testop op, []
     | Compare op -> relop op, []
@@ -593,8 +664,12 @@ let data i seg =
 
 (* Modules *)
 
-let type_ i ty =
-  Node ("type $" ^ nat i, [def_type ty.it])
+let type_ (ns, i) ty =
+  match ty.it with
+  | RecT [st] when not Free.(Set.mem (Int32.of_int i) (type_ ty).types) ->
+    rec_type i 0 st :: ns, i + 1
+  | RecT sts ->
+    Node ("rec", List.mapi (rec_type i) sts) :: ns, i + List.length sts
 
 let import_desc fx tx mx gx d =
   match d.it with
@@ -645,7 +720,7 @@ let module_with_var_opt x_opt m =
   let gx = ref 0 in
   let imports = list (import fx tx mx gx) m.it.imports in
   Node ("module" ^ var_opt x_opt,
-    listi type_ m.it.types @
+    List.rev (fst (List.fold_left type_ ([], 0) m.it.types)) @
     imports @
     listi (table !tx) m.it.tables @
     listi (memory !mx) m.it.memories @
@@ -672,8 +747,9 @@ let num mode = if mode = `Binary then hex_string_of_num else string_of_num
 let vec mode = if mode = `Binary then hex_string_of_vec else string_of_vec
 
 let ref_ = function
-  | NullRef t -> Node ("ref.null " ^ Types.string_of_heap_type t, [])
-  | Script.ExternRef n -> Node ("ref.extern " ^ nat32 n, [])
+  | NullRef t -> Node ("ref.null " ^ heap_type t, [])
+  | Script.HostRef n -> Node ("ref.host " ^ nat32 n, [])
+  | Extern.ExternRef (Script.HostRef n) -> Node ("ref.extern " ^ nat32 n, [])
   | _ -> assert false
 
 let literal mode lit =
@@ -690,14 +766,14 @@ let definition mode x_opt def =
         match def.it with
         | Textual m -> m
         | Encoded (_, bs) -> Decode.decode "" bs
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Quoted (_, s) -> unquote (snd (Parse.Module.parse_string s))
       in module_with_var_opt x_opt (unquote def)
     | `Binary ->
       let rec unquote def =
         match def.it with
         | Textual m -> Encode.encode m
         | Encoded (_, bs) -> Encode.encode (Decode.decode "" bs)
-        | Quoted (_, s) -> unquote (Parse.string_to_module s)
+        | Quoted (_, s) -> unquote (snd (Parse.Module.parse_string s))
       in binary_module_with_var_opt x_opt (unquote def)
     | `Original ->
       match def.it with
@@ -785,4 +861,4 @@ let command mode cmd =
   | Assertion ass -> assertion mode ass
   | Meta _ -> assert false
 
-let script mode scr = Lib.List.concat_map (command mode) scr
+let script mode scr = List.concat_map (command mode) scr

@@ -83,6 +83,11 @@ struct
     | n, y::ys' when n > 0 -> split' (n - 1) (y::xs) ys'
     | _ -> failwith "split"
 
+  let rec lead = function
+    | x::[] -> []
+    | x::xs -> x :: lead xs
+    | [] -> failwith "last"
+
   let rec last = function
     | x::[] -> x
     | _::xs -> last xs
@@ -102,17 +107,6 @@ struct
 
   let index_of x = index_where ((=) x)
 
-  let rec map_filter f = function
-    | [] -> []
-    | x::xs ->
-      match f x with
-      | None -> map_filter f xs
-      | Some y -> y :: map_filter f xs
-
-  let rec concat_map f = function
-    | [] -> []
-    | x::xs -> f x @ concat_map f xs
-
   let rec pairwise f = function
     | [] -> []
     | x1::x2::xs -> f x1 x2 :: pairwise f xs
@@ -121,6 +115,10 @@ end
 
 module List32 =
 struct
+  let rec init n f = init' n f []
+  and init' n f xs =
+    if n = 0l then xs else init' (Int32.sub n 1l) f (f (Int32.sub n 1l) :: xs)
+
   let rec make n x = make' n x []
   and make' n x xs =
     if n = 0l then xs else make' (Int32.sub n 1l) x (x::xs)
@@ -155,6 +153,11 @@ struct
     | 0l, _ -> xs
     | n, _::xs' when n > 0l -> drop (Int32.sub n 1l) xs'
     | _ -> failwith "drop"
+
+  let rec iteri f xs = iteri' f 0l xs
+  and iteri' f i = function
+    | [] -> ()
+    | x::xs -> f i x; iteri' f (Int32.add i 1l) xs
 
   let rec mapi f xs = mapi' f 0l xs
   and mapi' f i = function

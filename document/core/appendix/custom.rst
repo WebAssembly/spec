@@ -60,6 +60,8 @@ Id  Subsection
  0  :ref:`module name <binary-modulenamesec>`
  1  :ref:`function names <binary-funcnamesec>`    
  2  :ref:`local names <binary-localnamesec>`
+ 4  :ref:`type names <binary-typenamesec>`
+10  :ref:`field names <binary-fieldnamesec>`
 ==  ===========================================
 
 Each subsection may occur at most once, and in order of increasing id.
@@ -141,5 +143,37 @@ It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning lo
 .. math::
    \begin{array}{llclll}
    \production{local name subsection} & \Blocalnamesubsec &::=&
+     \Bnamesubsection_2(\Bindirectnamemap) \\
+   \end{array}
+
+
+.. index:: type, type index
+.. _binary-typenamesec:
+
+Type Names
+..............
+
+The *type name subsection* has the id 4.
+It consists of a :ref:`name map <binary-namemap>` assigning type names to :ref:`type indices <syntax-typeidx>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{type name subsection} & \Btypenamesubsec &::=&
+     \Bnamesubsection_1(\Bnamemap) \\
+   \end{array}
+
+
+.. index:: type, field, type index, field index
+.. _binary-fieldnamesec:
+
+Field Names
+...........
+
+The *field name subsection* has the id 10.
+It consists of an :ref:`indirect name map <binary-indirectnamemap>` assigning field names to :ref:`field indices <syntax-fieldidx>` grouped by :ref:`type indices <syntax-typeidx>`.
+
+.. math::
+   \begin{array}{llclll}
+   \production{field name subsection} & \Bfieldnamesubsec &::=&
      \Bnamesubsection_2(\Bindirectnamemap) \\
    \end{array}
