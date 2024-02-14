@@ -143,9 +143,9 @@ syntax resulttype hint(desc "result type") =
 
 ;; Packed types
 
-syntax packedtype hint(des "packed type") = | I8 | I16
-syntax lanetype hint(desc "lane type") = | numtype | packedtype
-syntax storagetype hint(desc "storage type") = | valtype | packedtype
+syntax packtype hint(desc "packed type") = | I8 | I16
+syntax lanetype hint(desc "lane type") = | numtype | packtype
+syntax storagetype hint(desc "storage type") = | valtype | packtype
 
 syntax pnn hint(show I#n) = | I8 | I16
 syntax lnn hint(show I#n) = | numtype | pnn
@@ -224,7 +224,7 @@ var ht : heaptype
 ;; var lt : localtype  ;; defined in typing
 var mt : memtype
 var nt : numtype
-var pt : packedtype
+var pt : packtype
 var qt : rectype       ;; TODO: better choice?
 var rt : reftype
 var st : subtype
@@ -242,7 +242,7 @@ var zt : storagetype
 ;; Constants
 
 def $size(valtype) : nat       hint(partial) hint(show |%|)
-def $psize(packedtype) : nat   hint(show |%|)
+def $psize(packtype) : nat   hint(show |%|)
 def $lsize(lanetype) : nat     hint(show |%|)
 def $zsize(storagetype) : nat  hint(show |%|)
 def $lanetype(shape) : lanetype
@@ -251,19 +251,19 @@ syntax num_(numtype)
 syntax num_(inn) = iN($size(inn))
 syntax num_(fnn) = fN($size(fnn))
 
-syntax pnum_(pnn) = iN($psize(pnn))
+syntax pack_(pnn) = iN($psize(pnn))
 
-syntax lnum_(lanetype)
-syntax lnum_(numtype) = num_(numtype)
-syntax lnum_(packedtype) = pnum_(packedtype)
-syntax lnum_(imm) = iN($lsize(imm))  ;; HACK
+syntax lane_(lanetype)
+syntax lane_(numtype) = num_(numtype)
+syntax lane_(packtype) = pack_(packtype)
+syntax lane_(imm) = iN($lsize(imm))  ;; HACK
 
 syntax vec_(vnn) = vN($size(vnn))
 
 syntax zval_(storagetype)
 syntax zval_(numtype) = num_(numtype)
 syntax zval_(vectype) = vec_(vectype)
-syntax zval_(packedtype) = pnum_(packedtype)
+syntax zval_(packtype) = pack_(packtype)
 
 
 ;; Numeric operators

@@ -225,9 +225,9 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {\mathit{packedtype}} &::=& \mathsf{i{\scriptstyle8}} ~|~ \mathsf{i{\scriptstyle16}} \\
-\mbox{(lane type)} & {\mathit{lanetype}} &::=& {\mathit{numtype}} ~|~ {\mathit{packedtype}} \\
-\mbox{(storage type)} & {\mathit{storagetype}} &::=& {\mathit{valtype}} ~|~ {\mathit{packedtype}} \\
+\mbox{(packed type)} & {\mathit{packtype}} &::=& \mathsf{i{\scriptstyle8}} ~|~ \mathsf{i{\scriptstyle16}} \\
+\mbox{(lane type)} & {\mathit{lanetype}} &::=& {\mathit{numtype}} ~|~ {\mathit{packtype}} \\
+\mbox{(storage type)} & {\mathit{storagetype}} &::=& {\mathit{valtype}} ~|~ {\mathit{packtype}} \\
 & {\mathsf{i}}{{\mathit{n}}} &::=& \mathsf{i{\scriptstyle8}} ~|~ \mathsf{i{\scriptstyle16}} \\
 & {\mathsf{i}}{{\mathit{n}}} &::=& {\mathit{numtype}} ~|~ {\mathsf{i}}{{\mathit{n}}} \\
 & {\mathsf{i}}{{\mathit{n}}} &::=& {\mathsf{i}}{{\mathit{n}}} ~|~ {\mathsf{i}}{{\mathit{n}}} \\
@@ -281,15 +281,15 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {{\mathit{num}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& {{\mathit{i}}}{{|{\mathsf{i}}{{\mathit{n}}}|}} \\
 & {{\mathit{num}}}_{{\mathsf{f}}{{\mathit{n}}}} &::=& {{\mathit{f}}}{{|{\mathsf{f}}{{\mathit{n}}}|}} \\
-& {{\mathit{pnum}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& {{\mathit{i}}}{{|{\mathsf{i}}{{\mathit{n}}}|}} \\
+& {{\mathit{pack}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& {{\mathit{i}}}{{|{\mathsf{i}}{{\mathit{n}}}|}} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathit{lnum}}}_{{\mathit{numtype}}} &::=& {{\mathit{num}}}_{{\mathit{numtype}}} \\
-& {{\mathit{lnum}}}_{{\mathit{packedtype}}} &::=& {{\mathit{pnum}}}_{{\mathit{packedtype}}} \\
-& {{\mathit{lnum}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& {{\mathit{i}}}{{|{\mathsf{i}}{{\mathit{n}}}|}} \\
+& {{\mathit{lane}}}_{{\mathit{numtype}}} &::=& {{\mathit{num}}}_{{\mathit{numtype}}} \\
+& {{\mathit{lane}}}_{{\mathit{packtype}}} &::=& {{\mathit{pack}}}_{{\mathit{packtype}}} \\
+& {{\mathit{lane}}}_{{\mathsf{i}}{{\mathit{n}}}} &::=& {{\mathit{i}}}{{|{\mathsf{i}}{{\mathit{n}}}|}} \\
 & {{\mathit{vec}}}_{{\mathsf{v}}{{\mathit{n}}}} &::=& {{\mathit{v}}}{{|{\mathsf{v}}{{\mathit{n}}}|}} \\
 \end{array}
 $$
@@ -298,7 +298,7 @@ $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {{\mathit{zval}}}_{{\mathit{numtype}}} &::=& {{\mathit{num}}}_{{\mathit{numtype}}} \\
 & {{\mathit{zval}}}_{{\mathit{vectype}}} &::=& {{\mathit{vec}}}_{{\mathit{vectype}}} \\
-& {{\mathit{zval}}}_{{\mathit{packedtype}}} &::=& {{\mathit{pnum}}}_{{\mathit{packedtype}}} \\
+& {{\mathit{zval}}}_{{\mathit{packtype}}} &::=& {{\mathit{pack}}}_{{\mathit{packtype}}} \\
 \end{array}
 $$
 
@@ -679,14 +679,14 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {|{\mathit{numtype}}|} &=& {|{\mathit{numtype}}|} &  \\
-{|{\mathit{packedtype}}|} &=& {|{\mathit{packedtype}}|} &  \\
+{|{\mathit{packtype}}|} &=& {|{\mathit{packtype}}|} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {|{\mathit{valtype}}|} &=& {|{\mathit{valtype}}|} &  \\
-{|{\mathit{packedtype}}|} &=& {|{\mathit{packedtype}}|} &  \\
+{|{\mathit{packtype}}|} &=& {|{\mathit{packtype}}|} &  \\
 \end{array}
 $$
 
@@ -695,21 +695,21 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{unpack}}({\mathit{numtype}}) &=& {\mathit{numtype}} &  \\
-{\mathrm{unpack}}({\mathit{packedtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
+{\mathrm{unpack}}({\mathit{packtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{unpack}}({\mathit{valtype}}) &=& {\mathit{valtype}} &  \\
-{\mathrm{unpack}}({\mathit{packedtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
+{\mathrm{unpack}}({\mathit{packtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{unpack}}({\mathit{numtype}}) &=& {\mathit{numtype}} &  \\
-{\mathrm{unpack}}({\mathit{packedtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
+{\mathrm{unpack}}({\mathit{packtype}}) &=& \mathsf{i{\scriptstyle32}} &  \\
 \end{array}
 $$
 
@@ -722,7 +722,7 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{sx}}({\mathit{valtype}}) &=& \epsilon &  \\
-{\mathrm{sx}}({\mathit{packedtype}}) &=& \mathsf{s} &  \\
+{\mathrm{sx}}({\mathit{packtype}}) &=& \mathsf{s} &  \\
 \end{array}
 $$
 
@@ -1058,14 +1058,14 @@ $$
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathrm{pack}}}_{{\mathit{numtype}}}({\mathit{c}}) &=& {\mathit{c}} &  \\
-{{\mathrm{pack}}}_{{\mathit{packedtype}}}({\mathit{c}}) &=& {{{\mathrm{wrap}}}_{({|{\mathrm{unpack}}({\mathit{packedtype}})|},\, {|{\mathit{packedtype}}|})}}{({\mathit{c}})} &  \\
+{{\mathrm{pack}}}_{{\mathit{packtype}}}({\mathit{c}}) &=& {{{\mathrm{wrap}}}_{({|{\mathrm{unpack}}({\mathit{packtype}})|},\, {|{\mathit{packtype}}|})}}{({\mathit{c}})} &  \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {{\mathrm{unpack}}}_{{\mathit{numtype}}}({\mathit{c}}) &=& {\mathit{c}} &  \\
-{{\mathrm{unpack}}}_{{\mathit{packedtype}}}({\mathit{c}}) &=& {{{{\mathrm{ext}}}_{({|{\mathit{packedtype}}|},\, {|{\mathrm{unpack}}({\mathit{packedtype}})|})}^{\mathsf{u}}}}{({\mathit{c}})} &  \\
+{{\mathrm{unpack}}}_{{\mathit{packtype}}}({\mathit{c}}) &=& {{{{\mathrm{ext}}}_{({|{\mathit{packtype}}|},\, {|{\mathrm{unpack}}({\mathit{packtype}})|})}^{\mathsf{u}}}}{({\mathit{c}})} &  \\
 \end{array}
 $$
 
@@ -1156,8 +1156,8 @@ $$
 \mbox{(export instance)} & {\mathit{exportinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{name}~{\mathit{name}},\; \\
   \mathsf{value}~{\mathit{externval}} \;\}\end{array} \\
-\mbox{(packed value)} & {\mathit{packedval}} &::=& {\mathit{packedtype}}.\mathsf{pack}~{{\mathit{pnum}}}_{{\mathit{packedtype}}} \\
-\mbox{(field value)} & {\mathit{fieldval}} &::=& {\mathit{val}} ~|~ {\mathit{packedval}} \\
+\mbox{(packed value)} & {\mathit{packval}} &::=& {\mathit{packtype}}.\mathsf{pack}~{{\mathit{pack}}}_{{\mathit{packtype}}} \\
+\mbox{(field value)} & {\mathit{fieldval}} &::=& {\mathit{val}} ~|~ {\mathit{packval}} \\
 \mbox{(structure instance)} & {\mathit{structinst}} &::=& \{\; \begin{array}[t]{@{}l@{}l@{}}
 \mathsf{type}~{\mathit{deftype}},\; \\
   \mathsf{field}~{{\mathit{fieldval}}^\ast} \;\}\end{array} \\
@@ -1726,7 +1726,7 @@ $$
 \end{array}
 $$
 
-$\boxed{{\mathit{context}} \vdash {\mathit{packedtype}} : \mathsf{ok}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{packtype}} : \mathsf{ok}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{fieldtype}} : \mathsf{ok}}$
 
@@ -1756,8 +1756,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash {\mathit{packedtype}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}packed}]}
+{\mathit{C}} \vdash {\mathit{packtype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -1776,10 +1776,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}} \vdash {\mathit{packedtype}} : \mathsf{ok}
+{\mathit{C}} \vdash {\mathit{packtype}} : \mathsf{ok}
 }{
-{\mathit{C}} \vdash {\mathit{packedtype}} : \mathsf{ok}
-} \, {[\textsc{\scriptsize K{-}storage{-}packed}]}
+{\mathit{C}} \vdash {\mathit{packtype}} : \mathsf{ok}
+} \, {[\textsc{\scriptsize K{-}storage{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -2409,7 +2409,7 @@ $$
 
 \vspace{1ex}
 
-$\boxed{{\mathit{context}} \vdash {\mathit{packedtype}} \leq {\mathit{packedtype}}}$
+$\boxed{{\mathit{context}} \vdash {\mathit{packtype}} \leq {\mathit{packtype}}}$
 
 $\boxed{{\mathit{context}} \vdash {\mathit{storagetype}} \leq {\mathit{storagetype}}}$
 
@@ -2421,8 +2421,8 @@ $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
 }{
-{\mathit{C}} \vdash {\mathit{packedtype}} \leq {\mathit{packedtype}}
-} \, {[\textsc{\scriptsize S{-}packed}]}
+{\mathit{C}} \vdash {\mathit{packtype}} \leq {\mathit{packtype}}
+} \, {[\textsc{\scriptsize S{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -2443,10 +2443,10 @@ $$
 $$
 \begin{array}{@{}c@{}}\displaystyle
 \frac{
-{\mathit{C}} \vdash {\mathit{packedtype}}_{{1}} \leq {\mathit{packedtype}}_{{2}}
+{\mathit{C}} \vdash {\mathit{packtype}}_{{1}} \leq {\mathit{packtype}}_{{2}}
 }{
-{\mathit{C}} \vdash {\mathit{packedtype}}_{{1}} \leq {\mathit{packedtype}}_{{2}}
-} \, {[\textsc{\scriptsize S{-}storage{-}packed}]}
+{\mathit{C}} \vdash {\mathit{packtype}}_{{1}} \leq {\mathit{packtype}}_{{2}}
+} \, {[\textsc{\scriptsize S{-}storage{-}pack}]}
 \qquad
 \end{array}
 $$
@@ -6114,10 +6114,10 @@ $$
 \begin{array}{@{}l@{}rrlll@{}l@{}}
 & {\mathtt{mut}} &::=& \mathtt{0x00} &\Rightarrow& \epsilon \\ &&|&
 \mathtt{0x01} &\Rightarrow& \mathsf{mut} \\
-& {\mathtt{packedtype}} &::=& \mathtt{0x78} &\Rightarrow& \mathsf{i{\scriptstyle8}} \\ &&|&
+& {\mathtt{packtype}} &::=& \mathtt{0x78} &\Rightarrow& \mathsf{i{\scriptstyle8}} \\ &&|&
 \mathtt{0x77} &\Rightarrow& \mathsf{i{\scriptstyle16}} \\
 & {\mathtt{storagetype}} &::=& {\mathit{t}}{:}{\mathtt{valtype}} &\Rightarrow& {\mathit{t}} \\ &&|&
-{\mathit{pt}}{:}{\mathtt{packedtype}} &\Rightarrow& {\mathit{pt}} \\
+{\mathit{pt}}{:}{\mathtt{packtype}} &\Rightarrow& {\mathit{pt}} \\
 & {\mathtt{fieldtype}} &::=& {\mathit{zt}}{:}{\mathtt{storagetype}}~{\mathit{mut}}{:}{\mathtt{mut}} &\Rightarrow& {\mathit{mut}}~{\mathit{zt}} \\
 & {\mathtt{comptype}} &::=& \mathtt{0x60}~{{\mathit{t}}_{{1}}^\ast}{:}{\mathtt{resulttype}}~{{\mathit{t}}_{{2}}^\ast}{:}{\mathtt{resulttype}} &\Rightarrow& \mathsf{func}~({{\mathit{t}}_{{1}}^\ast} \rightarrow {{\mathit{t}}_{{2}}^\ast}) \\ &&|&
 \mathtt{0x59}~{{\mathit{yt}}^\ast}{:}{\mathtt{vec}}({\mathtt{fieldtype}}) &\Rightarrow& \mathsf{struct}~{{\mathit{yt}}^\ast} \\ &&|&

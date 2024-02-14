@@ -83,7 +83,7 @@ Field Types
 $${rule+:
   Fieldtype_sub/*
   Storagetype_sub/*
-  Packedtype_sub
+  Packtype_sub
 }
 
 .. _valid-matching-defined-types:

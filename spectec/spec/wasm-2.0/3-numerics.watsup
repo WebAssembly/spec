@@ -58,23 +58,23 @@ def $narrow(M, N, sx, iN(M)) : iN(N)    hint(show $narrow_((%,%))^(%)#(%))
 
 ;; Packed values
 
-def $packnum(lanetype, num_($unpack(lanetype))) : lnum_(lanetype)
+def $packnum(lanetype, num_($unpack(lanetype))) : lane_(lanetype)
     hint(show $pack_(%,%))
 def $packnum(numtype, c) = c
-def $packnum(packedtype, c) = $wrap($size($unpack(packedtype)), $psize(packedtype), c)
+def $packnum(packtype, c) = $wrap($size($unpack(packtype)), $psize(packtype), c)
 
-def $unpacknum(lanetype, lnum_(lanetype)) : num_($unpack(lanetype))
+def $unpacknum(lanetype, lane_(lanetype)) : num_($unpack(lanetype))
     hint(show $unpack_(%,%))
 def $unpacknum(numtype, c) = c
-def $unpacknum(packedtype, c) = $ext($psize(packedtype), $size($unpack(packedtype)), U, c)
+def $unpacknum(packtype, c) = $ext($psize(packtype), $size($unpack(packtype)), U, c)
 
 
 ;; Vectors
 
-def $lanes_(shape, vec_(V128)) : lnum_($lanetype(shape))*
+def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
     hint(show $lanes_(%,%))
 
-def $invlanes_(shape, lnum_($lanetype(shape))*) : vec_(V128)
+def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
     hint(show $lanes^(-1)#_%#(%,%))
 def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
@@ -98,7 +98,7 @@ def $vbinop(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
 def $vrelop(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
     hint(show %2#_%1#(%3, %4))
 
-def $vcvtop(shape_1, shape_2, vcvtop, sx?, lnum_($lanetype(shape_1))) : lnum_($lanetype(shape_2))
+def $vcvtop(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
     hint(show %3#$_((%1,%2))^(%5)#((%6)))
 
 def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1, ishape_2), sx, vec_(V128)) : vec_(V128)
@@ -107,5 +107,5 @@ def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1, ishape_2), sx, vec_(V128
     hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
 
 ;; TODO: refactor for consistency?
-def $vishiftop(ishape, vshiftop_(ishape), lnum_($lanetype(ishape)), u32) : lnum_($lanetype(ishape))
+def $vishiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
     hint(show %2#_%1#(%3, %4))

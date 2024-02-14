@@ -1297,19 +1297,19 @@ size valty_u0
 5. If (valty_u0 is V128), then:
   a. Return 128.
 
-psize packe_u0
-1. If (packe_u0 is I8), then:
+psize packt_u0
+1. If (packt_u0 is I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packe_u0 is I16).
+2. Assert: Due to validation, (packt_u0 is I16).
 3. Return 16.
 
 lsize lanet_u0
 1. If the type of lanet_u0 is numtype, then:
   a. Let numtype be lanet_u0.
   b. Return $size(numtype).
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $psize(packedtype).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $psize(packtype).
 
 lanetype (lnn X N)
 1. Return lnn.
@@ -1330,7 +1330,7 @@ unpack lanet_u0
 1. If the type of lanet_u0 is numtype, then:
   a. Let numtype be lanet_u0.
   b. Return numtype.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Return I32.
 
 free_dataidx_instr instr_u0
@@ -1385,16 +1385,16 @@ invfbytes N b*
 packnum lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $wrap($size($unpack(packedtype)), $psize(packedtype), c).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $wrap($size($unpack(packtype)), $psize(packtype), c).
 
 unpacknum lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $ext($psize(packedtype), $size($unpack(packedtype)), U, c).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $ext($psize(packtype), $size($unpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $inverse_of_lanes_(sh, c*).
@@ -2058,7 +2058,7 @@ execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
   b. If (i < |$lanes_((nt X N), c_1)|), then:
     1) Let c_2 be $lanes_((nt X N), c_1)[i].
     2) Push (nt.CONST c_2) to the stack.
-4. If the type of lanet_u0 is packedtype, then:
+4. If the type of lanet_u0 is packtype, then:
   a. Let pt be lanet_u0.
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.
@@ -3220,27 +3220,27 @@ size valty_u0
 5. If (valty_u0 is V128), then:
   a. Return 128.
 
-psize packe_u0
-1. If (packe_u0 is I8), then:
+psize packt_u0
+1. If (packt_u0 is I8), then:
   a. Return 8.
-2. Assert: Due to validation, (packe_u0 is I16).
+2. Assert: Due to validation, (packt_u0 is I16).
 3. Return 16.
 
 lsize lanet_u0
 1. If the type of lanet_u0 is numtype, then:
   a. Let numtype be lanet_u0.
   b. Return $size(numtype).
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $psize(packedtype).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $psize(packtype).
 
 zsize stora_u0
 1. If the type of stora_u0 is valtype, then:
   a. Let valtype be stora_u0.
   b. Return $size(valtype).
-2. Assert: Due to validation, the type of stora_u0 is packedtype.
-3. Let packedtype be stora_u0.
-4. Return $psize(packedtype).
+2. Assert: Due to validation, the type of stora_u0 is packtype.
+3. Let packtype be stora_u0.
+4. Return $psize(packtype).
 
 lanetype (lnn X N)
 1. Return lnn.
@@ -3297,21 +3297,21 @@ lunpack lanet_u0
 1. If the type of lanet_u0 is numtype, then:
   a. Let numtype be lanet_u0.
   b. Return numtype.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
 3. Return I32.
 
 unpack stora_u0
 1. If the type of stora_u0 is valtype, then:
   a. Let valtype be stora_u0.
   b. Return valtype.
-2. Assert: Due to validation, the type of stora_u0 is packedtype.
+2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Return I32.
 
 nunpack stora_u0
 1. If the type of stora_u0 is numtype, then:
   a. Let numtype be stora_u0.
   b. Return numtype.
-2. If the type of stora_u0 is packedtype, then:
+2. If the type of stora_u0 is packtype, then:
   a. Return I32.
 
 vunpack vectype
@@ -3320,7 +3320,7 @@ vunpack vectype
 sxfield stora_u0
 1. If the type of stora_u0 is valtype, then:
   a. Return ?().
-2. Assert: Due to validation, the type of stora_u0 is packedtype.
+2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Return ?(S).
 
 diffrt (REF nul_1 ht_1) (REF (NULL _u0?) ht_2)
@@ -3352,7 +3352,7 @@ subst_numtype nt xx* ht*
 subst_vectype vt xx* ht*
 1. Return vt.
 
-subst_packedtype pt xx* ht*
+subst_packtype pt xx* ht*
 1. Return pt.
 
 subst_heaptype heapt_u0 xx* ht*
@@ -3385,9 +3385,9 @@ subst_storagetype stora_u0 xx* ht*
 1. If the type of stora_u0 is valtype, then:
   a. Let t be stora_u0.
   b. Return $subst_valtype(t, xx*, ht*).
-2. Assert: Due to validation, the type of stora_u0 is packedtype.
+2. Assert: Due to validation, the type of stora_u0 is packtype.
 3. Let pt be stora_u0.
-4. Return $subst_packedtype(pt, xx*, ht*).
+4. Return $subst_packtype(pt, xx*, ht*).
 
 subst_fieldtype (mut, zt) xx* ht*
 1. Return (mut, $subst_storagetype(zt, xx*, ht*)).
@@ -3542,16 +3542,16 @@ invfbytes N b*
 packnum lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $wrap($size($lunpack(packedtype)), $psize(packedtype), c).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $wrap($size($lunpack(packtype)), $psize(packtype), c).
 
 unpacknum lanet_u0 c
 1. If the type of lanet_u0 is numtype, then:
   a. Return c.
-2. Assert: Due to validation, the type of lanet_u0 is packedtype.
-3. Let packedtype be lanet_u0.
-4. Return $ext($psize(packedtype), $size($lunpack(packedtype)), U, c).
+2. Assert: Due to validation, the type of lanet_u0 is packtype.
+3. Let packtype be lanet_u0.
+4. Return $ext($psize(packtype), $size($lunpack(packtype)), U, c).
 
 invlanes_ sh c*
 1. Let vc be $inverse_of_lanes_(sh, c*).
@@ -3592,7 +3592,7 @@ packval stora_u0 val_u1
 2. Assert: Due to validation, val_u1 is of the case CONST.
 3. Let (y_0.CONST i) be val_u1.
 4. Assert: Due to validation, (y_0 is I32).
-5. Assert: Due to validation, the type of stora_u0 is packedtype.
+5. Assert: Due to validation, the type of stora_u0 is packtype.
 6. Let pt be stora_u0.
 7. Return (PACK pt $wrap(32, $psize(pt), i)).
 
@@ -4374,7 +4374,7 @@ execution_of_VEXTRACT_LANE (lanet_u0 X N) sx_u1? i
   b. If (i < |$lanes_((nt X N), c_1)|), then:
     1) Let c_2 be $lanes_((nt X N), c_1)[i].
     2) Push (nt.CONST c_2) to the stack.
-4. If the type of lanet_u0 is packedtype, then:
+4. If the type of lanet_u0 is packtype, then:
   a. Let pt be lanet_u0.
   b. If sx_u1? is defined, then:
     1) Let ?(sx) be sx_u1?.

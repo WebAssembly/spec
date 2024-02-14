@@ -396,12 +396,12 @@ warning: syntax `instr/table` was never spliced
 warning: syntax `instrtype` was never spliced
 warning: syntax `ishape` was never spliced
 warning: syntax `labelidx` was never spliced
+warning: syntax `lane_` was never spliced
+warning: syntax `lane_` was never spliced
+warning: syntax `lane_` was never spliced
 warning: syntax `laneidx` was never spliced
 warning: syntax `lanetype` was never spliced
 warning: syntax `lnn` was never spliced
-warning: syntax `lnum_` was never spliced
-warning: syntax `lnum_` was never spliced
-warning: syntax `lnum_` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
 warning: syntax `localtype` was never spliced
@@ -424,10 +424,10 @@ warning: syntax `num_` was never spliced
 warning: syntax `numtype` was never spliced
 warning: syntax `oktypeidx` was never spliced
 warning: syntax `oktypeidxnat` was never spliced
-warning: syntax `packedtype` was never spliced
-warning: syntax `packedval` was never spliced
+warning: syntax `pack_` was never spliced
+warning: syntax `packtype` was never spliced
+warning: syntax `packval` was never spliced
 warning: syntax `pnn` was never spliced
-warning: syntax `pnum_` was never spliced
 warning: syntax `pshape` was never spliced
 warning: syntax `record` was never spliced
 warning: syntax `rectype` was never spliced
@@ -574,7 +574,7 @@ warning: grammar `Bmodule` was never spliced
 warning: grammar `Bmut` was never spliced
 warning: grammar `Bname` was never spliced
 warning: grammar `Bnumtype` was never spliced
-warning: grammar `Bpackedtype` was never spliced
+warning: grammar `Bpacktype` was never spliced
 warning: grammar `Brectype` was never spliced
 warning: grammar `Breftype` was never spliced
 warning: grammar `Bresulttype` was never spliced
@@ -788,8 +788,8 @@ warning: rule `Memtype_sub` was never spliced
 warning: rule `Module_ok` was never spliced
 warning: rule `Numtype_ok` was never spliced
 warning: rule `Numtype_sub` was never spliced
-warning: rule `Packedtype_ok` was never spliced
-warning: rule `Packedtype_sub` was never spliced
+warning: rule `Packtype_ok` was never spliced
+warning: rule `Packtype_sub` was never spliced
 warning: rule `Rectype_ok/empty` was never spliced
 warning: rule `Rectype_ok/cons` was never spliced
 warning: rule `Rectype_ok/rec2` was never spliced
@@ -1000,9 +1000,9 @@ warning: rule `Step_read/memory.init-succ` was never spliced
 warning: rule `Steps/refl` was never spliced
 warning: rule `Steps/trans` was never spliced
 warning: rule `Storagetype_ok/val` was never spliced
-warning: rule `Storagetype_ok/packed` was never spliced
+warning: rule `Storagetype_ok/pack` was never spliced
 warning: rule `Storagetype_sub/val` was never spliced
-warning: rule `Storagetype_sub/packed` was never spliced
+warning: rule `Storagetype_sub/pack` was never spliced
 warning: rule `Subtype_ok` was never spliced
 warning: rule `Subtype_ok2` was never spliced
 warning: rule `Table_ok` was never spliced
@@ -1135,7 +1135,7 @@ warning: definition `subst_globaltype` was never spliced
 warning: definition `subst_heaptype` was never spliced
 warning: definition `subst_memtype` was never spliced
 warning: definition `subst_numtype` was never spliced
-warning: definition `subst_packedtype` was never spliced
+warning: definition `subst_packtype` was never spliced
 warning: definition `subst_rectype` was never spliced
 warning: definition `subst_reftype` was never spliced
 warning: definition `subst_storagetype` was never spliced
@@ -1490,7 +1490,7 @@ warning: definition prose `subst_globaltype` was never spliced
 warning: definition prose `subst_heaptype` was never spliced
 warning: definition prose `subst_memtype` was never spliced
 warning: definition prose `subst_numtype` was never spliced
-warning: definition prose `subst_packedtype` was never spliced
+warning: definition prose `subst_packtype` was never spliced
 warning: definition prose `subst_rectype` was never spliced
 warning: definition prose `subst_reftype` was never spliced
 warning: definition prose `subst_storagetype` was never spliced

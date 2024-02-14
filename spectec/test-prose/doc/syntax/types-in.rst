@@ -66,7 +66,7 @@ Function Types
 
 $${syntax: functype}
 
-.. _syntax-packedtype:
+.. _syntax-packtype:
 .. _syntax-storagetype:
 .. _syntax-fieldtype:
 
@@ -74,7 +74,7 @@ Aggregate Types
 ~~~~~~~~~~~~~~~
 
 $${syntax+: 
-  packedtype
+  packtype
   storagetype
   fieldtype
 }

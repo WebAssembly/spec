@@ -46,7 +46,7 @@ def $free_dataidx_funcs(func func'*) = $free_dataidx_func(func) $free_dataidx_fu
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
 ;;def $size(valtype) : nat       hint(partial) hint(show |%|)
-;;def $psize(packedtype) : nat   hint(show |%|)
+;;def $psize(packtype) : nat     hint(show |%|)
 ;;def $lsize(lanetype) : nat     hint(show |%|)
 ;;def $zsize(storagetype) : nat  hint(show |%|)
 
@@ -60,32 +60,32 @@ def $psize(I8) = 8
 def $psize(I16) = 16
 
 def $lsize(numtype) = $size(numtype)
-def $lsize(packedtype) = $psize(packedtype)
+def $lsize(packtype) = $psize(packtype)
 
 def $zsize(valtype) = $size(valtype)
-def $zsize(packedtype) = $psize(packedtype)
+def $zsize(packtype) = $psize(packtype)
 
 
 ;; Unpacking
 
 def $lunpack(lanetype) : numtype  hint(show $unpack(%))
 def $lunpack(numtype) = numtype
-def $lunpack(packedtype) = I32
+def $lunpack(packtype) = I32
 
 def $unpack(storagetype) : valtype  hint(show $unpack(%))
 def $unpack(valtype) = valtype
-def $unpack(packedtype) = I32
+def $unpack(packtype) = I32
 
 def $nunpack(storagetype) : numtype  hint(show $unpack(%)) hint(partial)
 def $nunpack(numtype) = numtype
-def $nunpack(packedtype) = I32
+def $nunpack(packtype) = I32
 
 def $vunpack(storagetype) : vectype  hint(show $unpack(%)) hint(partial)
 def $vunpack(vectype) = vectype
 
 def $sxfield(storagetype) : sx?  hint(show $sx(%))
 def $sxfield(valtype) = eps
-def $sxfield(packedtype) = S
+def $sxfield(packtype) = S
 
 
 ;; Shapes
@@ -127,7 +127,7 @@ def $subst_heaptype(heaptype, typevar*, heaptype*) : heaptype          hint(show
 def $subst_reftype(reftype, typevar*, heaptype*) : reftype             hint(show %#`[%:=%])
 def $subst_valtype(valtype, typevar*, heaptype*) : valtype             hint(show %#`[%:=%])
 
-def $subst_packedtype(packedtype, typevar*, heaptype*) : packedtype    hint(show %#`[%:=%])
+def $subst_packtype(packtype, typevar*, heaptype*) : packtype          hint(show %#`[%:=%])
 def $subst_storagetype(storagetype, typevar*, heaptype*) : storagetype hint(show %#`[%:=%])
 def $subst_fieldtype(fieldtype, typevar*, heaptype*) : fieldtype       hint(show %#`[%:=%])
 
@@ -162,10 +162,10 @@ def $subst_valtype(vt, xx*, ht*) = $subst_vectype(vt, xx*, ht*)
 def $subst_valtype(rt, xx*, ht*) = $subst_reftype(rt, xx*, ht*)
 def $subst_valtype(BOT, xx*, ht*) = BOT
 
-def $subst_packedtype(pt, xx*, ht*) = pt
+def $subst_packtype(pt, xx*, ht*) = pt
 
 def $subst_storagetype(t, xx*, ht*) = $subst_valtype(t, xx*, ht*)
-def $subst_storagetype(pt, xx*, ht*) = $subst_packedtype(pt, xx*, ht*)
+def $subst_storagetype(pt, xx*, ht*) = $subst_packtype(pt, xx*, ht*)
 
 def $subst_fieldtype((mut zt), xx*, ht*) = mut $subst_storagetype(zt, xx*, ht*)
 

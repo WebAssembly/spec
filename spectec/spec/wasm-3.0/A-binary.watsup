@@ -128,13 +128,13 @@ grammar Bmut : mut =
   | 0x00 => eps
   | 0x01 => MUT
 
-grammar Bpackedtype : packedtype =
+grammar Bpacktype : packtype =
   | 0x78 => I8
   | 0x77 => I16
 
 grammar Bstoragetype : storagetype =
   | t:Bvaltype => t
-  | pt:Bpackedtype => pt
+  | pt:Bpacktype => pt
 
 grammar Bfieldtype : fieldtype =
   | zt:Bstoragetype mut:Bmut => mut zt

@@ -18,7 +18,7 @@ def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
 ;;def $size(valtype) : nat      hint(partial) hint(show |%|)
-;;def $psize(packedtype) : nat  hint(show |%|)
+;;def $psize(packtype) : nat    hint(show |%|)
 ;;def $lsize(lanetype) : nat    hint(show |%|)
 
 def $size(I32) = 32
@@ -31,14 +31,14 @@ def $psize(I8) = 8
 def $psize(I16) = 16
 
 def $lsize(numtype) = $size(numtype)
-def $lsize(packedtype) = $psize(packedtype)
+def $lsize(packtype) = $psize(packtype)
 
 
 ;; Unpacking
 
 def $unpack(lanetype) : numtype
 def $unpack(numtype) = numtype
-def $unpack(packedtype) = I32
+def $unpack(packtype) = I32
 
 
 ;; Shapes

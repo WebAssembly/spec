@@ -87,7 +87,7 @@ Field Types
 ~~~~~~~~~~~
 
 $${rule+: 
-  Packedtype_ok
+  Packtype_ok
   Storagetype_ok/*
   Fieldtype_ok
 }

@@ -109,7 +109,7 @@ rule Instrtype_ok:
 syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))
 syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %))
 
-relation Packedtype_ok: context |- packedtype : OK    hint(show "K-packed")
+relation Packtype_ok: context |- packtype : OK        hint(show "K-pack")
 relation Fieldtype_ok: context |- fieldtype : OK      hint(show "K-field")
 relation Storagetype_ok: context |- storagetype : OK  hint(show "K-storage")
 relation Comptype_ok: context |- comptype : OK        hint(show "K-comp")
@@ -125,16 +125,16 @@ relation Comptype_sub: context |- comptype <: comptype  hint(show "S-comp")
 relation Deftype_sub: context |- deftype <: deftype     hint(show "S-def")
 
 
-rule Packedtype_ok:
-  C |- packedtype : OK
+rule Packtype_ok:
+  C |- packtype : OK
 
 rule Storagetype_ok/val:
   C |- valtype : OK
   -- Valtype_ok: C |- valtype : OK
 
-rule Storagetype_ok/packed:
-  C |- packedtype : OK
-  -- Packedtype_ok: C |- packedtype : OK
+rule Storagetype_ok/pack:
+  C |- packtype : OK
+  -- Packtype_ok: C |- packtype : OK
 
 rule Fieldtype_ok:
   C |- mut zt : OK
@@ -388,24 +388,24 @@ rule Instrtype_sub:
 
 ;; Type definitions
 
-relation Packedtype_sub: context |- packedtype <: packedtype         hint(show "S-packed")
+relation Packtype_sub: context |- packtype <: packtype               hint(show "S-pack")
 relation Storagetype_sub: context |- storagetype <: storagetype      hint(show "S-storage")
 relation Fieldtype_sub: context |- fieldtype <: fieldtype            hint(show "S-field")
 ;;relation Comptype_sub: context |- comptype <: comptype             hint(show "S-comp")
 relation Functype_sub: context |- functype <: functype               hint(show "S-func")
 ;;relation Deftype_sub: context |- deftype <: deftype                hint(show "S-def")
 
-rule Packedtype_sub:
-  C |- packedtype <: packedtype
+rule Packtype_sub:
+  C |- packtype <: packtype
 
 
 rule Storagetype_sub/val:
   C |- valtype_1 <: valtype_2
   -- Valtype_sub: C |- valtype_1 <: valtype_2
 
-rule Storagetype_sub/packed:
-  C |- packedtype_1 <: packedtype_2
-  -- Packedtype_sub: C |- packedtype_1 <: packedtype_2
+rule Storagetype_sub/pack:
+  C |- packtype_1 <: packtype_2
+  -- Packtype_sub: C |- packtype_1 <: packtype_2
 
 
 rule Fieldtype_sub/const:

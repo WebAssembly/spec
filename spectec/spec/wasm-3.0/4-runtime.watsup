@@ -91,10 +91,10 @@ syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
 
-syntax packedval hint(desc "packed value") =
-  | PACK packedtype pnum_(packedtype)    hint(show %.PACK %)
+syntax packval hint(desc "packed value") =
+  | PACK packtype pack_(packtype)    hint(show %.PACK %)
 syntax fieldval hint(desc "field value") =
-  | val | packedval
+  | val | packval
 syntax structinst hint(desc "structure instance") =
   { TYPE deftype,
     FIELD fieldval* }
@@ -124,7 +124,7 @@ var xi : exportinst
 var si : structinst
 var ai : arrayinst
 var fv : fieldval
-var pv : packedval
+var pv : packval
 
 
 ;; Configurations proper

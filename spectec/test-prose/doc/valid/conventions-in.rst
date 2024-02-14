@@ -115,13 +115,13 @@ $${definition-prose: subst_valtype}
 
 $${definition: subst_valtype}
 
-.. _def-subst_packedtype:
+.. _def-subst_packtype:
 
-$${definition-prose: subst_packedtype}
+$${definition-prose: subst_packtype}
 
 \
 
-$${definition: subst_packedtype}
+$${definition: subst_packtype}
 
 .. _def-subst_storagetype:
 
