@@ -628,8 +628,8 @@ rule Step_pure/vbinop-trap:
 
 
 rule Step_pure/vrelop:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP (lnn X N) vrelop)  ~>  (VCONST V128 c)
-  -- if $vrelop(lnn X N, vrelop, c_1, c_2) = c
+  (VCONST V128 c_1) (VCONST V128 c_2) (VRELOP sh vrelop)  ~>  (VCONST V128 c)
+  -- if $vrelop(sh, vrelop, c_1, c_2) = c
 (; TODO: this should be implemented at the same level as other pointwise ops
   -- if c'_1* = $lanes_(lnn X N, c_1)
   -- if c'_2* = $lanes_(lnn X N, c_2)
@@ -686,30 +686,14 @@ rule Step_pure/vcvtop-zero:
   -- if c = $invlanes_(inn_2 X N_2, $vcvtop(inn_1 X N_1, inn_2 X N_2, vcvtop, sx?, ci)* 0^N_1)
 
 
-rule Step_pure/vdot:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VDOT (inn_1 X N_1) (inn_2 X N_2) S) ~> (VCONST V128 c)
-  -- var cj_1 : iN($lsize(inn_1))
-  -- var cj_2 : iN($lsize(inn_1))
-  -- if ci_1* = $lanes_(inn_2 X N_2, c_1)
-  -- if ci_2* = $lanes_(inn_2 X N_2, c_2)
-  -- if $concat_(iN($lsize(inn_1)), (cj_1 cj_2)*) = $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*
-  -- if c = $invlanes_(inn_1 X N_1, $iadd($lsize(inn_1), cj_1, cj_2)*)
+rule Step_pure/vextunop:
+  (VCONST V128 c_1) (VEXTUNOP sh_1 sh_2 vextunop sx) ~> (VCONST V128 c)
+  -- if $vextunop(sh_1, sh_2, vextunop, sx, c_1) = c
 
 
-rule Step_pure/vextmul:
-  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTMUL (inn_1 X N_1) hf (inn_2 X N_2) sx) ~> (VCONST V128 c)
-  -- if ci_1* = $lanes_(inn_2 X N_2, c_1)[$halfop(hf, 0, N_1) : N_1]
-  -- if ci_2* = $lanes_(inn_2 X N_2, c_2)[$halfop(hf, 0, N_1) : N_1]
-  -- if c = $invlanes_(inn_1 X N_1, $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_2))*)
-
-
-rule Step_pure/vextadd_pairwise:
-  (VCONST V128 c_1) (VEXTADD_PAIRWISE (inn_1 X N_1) (inn_2 X N_2) sx) ~> (VCONST V128 c)
-  -- var cj_1 : iN($lsize(inn_1))
-  -- var cj_2 : iN($lsize(inn_1))
-  -- if ci_1* = $lanes_(inn_2 X N_2, c_1)
-  -- if $concat_(iN($lsize(inn_1)), (cj_1 cj_2)*) = $ext($lsize(inn_2), $lsize(inn_1), sx, ci_1)*
-  -- if c = $invlanes_(inn_1 X N_1, $iadd($lsize(inn_1), cj_1, cj_2)*)
+rule Step_pure/vextbinop:
+  (VCONST V128 c_1) (VCONST V128 c_2) (VEXTBINOP sh_1 sh_2 vextbinop sx) ~> (VCONST V128 c)
+  -- if $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2) = c
 
 
 ;; Local instructions

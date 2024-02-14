@@ -865,6 +865,9 @@ rule Instr_ok/vvternop:
 rule Instr_ok/vvtestop:
   C |- VVTESTOP V128 vvtestop : V128 -> I32
 
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
+
 rule Instr_ok/vswizzle:
   C |- VSWIZZLE sh : V128 V128 -> V128
 
@@ -906,17 +909,14 @@ rule Instr_ok/vcvtop:
 rule Instr_ok/vnarrow:
   C |- VNARROW sh sh sx : V128 V128 -> V128
 
+rule Instr_ok/vextunop:
+  C |- VEXTUNOP sh sh vextunop sx : V128 -> V128
+
+rule Instr_ok/vextbinop:
+  C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
+
 rule Instr_ok/vbitmask:
   C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vdot:
-  C |- VDOT sh sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextmul:
-  C |- VEXTMUL sh hf sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextadd_pairwise:
-  C |- VEXTADD_PAIRWISE sh sh sx : V128 -> V128
 
 
 ;; Local instructions

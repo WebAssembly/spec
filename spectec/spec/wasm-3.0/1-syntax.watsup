@@ -348,9 +348,16 @@ syntax vcvtop = | EXTEND | TRUNC_SAT | CONVERT | DEMOTE | PROMOTE
 ;; fNxM <- fN'xM'  N < N'  DEMOTE ZERO
 ;; fNxM <- fN'xM'  N > N'  PROMOTE LOW
 
-syntax vshiftop_(shape)
+syntax vshiftop_(ishape)
 syntax vshiftop_(imm X N) = | SHL | SHR sx
-syntax vshiftop_(fnn X N) = |                ;; uninhabited
+
+syntax vextunop_(ishape_1, ishape_2)  hint(show vextunop_((%,%)))
+syntax vextunop_(imm_1 X N_1, imm_2 X N_2) =
+  | EXTADD_PAIRWISE -- if 16 <= $lsize(imm_1) <= 32
+syntax vextbinop_(ishape_1, ishape_2)  hint(show vextbinop_((%,%)))
+syntax vextbinop_(imm_1 X N_1, imm_2 X N_2) =
+  | EXTMUL half
+  | DOT         -- if $lsize(imm_1) = 32
 
 
 ;; Memory operators
@@ -430,15 +437,15 @@ syntax instr/vector hint(desc "vector instruction") = ...
   | VBINOP shape vbinop_(shape)         hint(show %.%)
   | VTESTOP shape vtestop_(shape)       hint(show %.%)
   | VRELOP shape vrelop_(shape)         hint(show %.%)
-  | VSHIFTOP shape vshiftop_(shape)     hint(show %.%)
+  | VSHIFTOP ishape vshiftop_(ishape)   hint(show %.%)
   | VBITMASK ishape                     hint(show %.BITMASK)
   | VCVTOP shape vcvtop half? shape sx? zero  hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%) hint(show %.%#_#%#_#%#_#%#_#%)
   | VNARROW ishape ishape sx            hint(show %.NARROW#_#%#_#%)
-  | VDOT ishape ishape sx               hint(show %.DOT#_#%#_#%)
-  | VEXTMUL ishape half ishape sx       hint(show %.EXTMUL#_#%#_#%#_#%)
-  | VEXTADD_PAIRWISE ishape ishape sx   hint(show %.EXTADD_PAIRWISE_#%#_#%)
+  | VEXTUNOP ishape_1 ishape_2 vextunop_(ishape_1, ishape_2) sx
+    -- if $($lsize(imm_1) = 2*$lsize(imm_2))
+  | VEXTBINOP ishape_1 ishape_2 vextbinop_(ishape_1, ishape_2) sx
+    -- if $($lsize(imm_1) = 2*$lsize(imm_2))
   | ...
-;; TODO: abstract EXTADD into extunop, DOT, EXTMUL into extbinop
 ;; TODO: check for missing constraints
 
 syntax instr/reference hint(desc "reference instruction") = ...

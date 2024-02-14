@@ -261,7 +261,7 @@ let () =
   with
   | Source.Error (at, msg) ->
     let msg' =
-      if !last_pass <> "" || String.starts_with ~prefix:"validation" msg then
+      if !last_pass <> "" && String.starts_with ~prefix:"validation" msg then
         "(after pass " ^ !last_pass ^ ") " ^ msg
       else
         msg

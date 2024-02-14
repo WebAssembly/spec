@@ -295,16 +295,28 @@ and reduce_exp env e : exp =
     reduce_exp env e1
   | SubE (e1, t1, t2) ->
     let e1' = reduce_exp env e1 in
+    let t1' = reduce_typ env t1 in
+    let t2' = reduce_typ env t2 in
     (match e1'.it with
     | SubE (e11', t11', _t12') ->
-      let t2' = reduce_typ env t2 in
-      SubE (e11', t11', t2') $> e
-    | _ when is_normal_exp e1 ->
+      reduce_exp env (SubE (e11', t11', t2') $> e)
+    | TupE es' ->
+      (match t1.it, t2.it with
+      | TupT xts1, TupT xts2 ->
+        let s1 = List.fold_left2 (fun s (x, _) e ->
+          Subst.add_varid s x e) Subst.empty xts1 es' in
+        let s2 = List.fold_left2 (fun s (x, _) e ->
+          Subst.add_varid s x e) Subst.empty xts2 es' in
+        TupE (List.map2 (fun eI ((_, t1I), (_, t2I)) ->
+          let t1I' = Subst.subst_typ s1 t1I in
+          let t2I' = Subst.subst_typ s2 t2I in
+          reduce_exp env (SubE (eI, t1I', t2I') $$ eI.at % t2I')
+        ) es' (List.combine xts1 xts2)) $> e
+      | _ -> SubE (e1', t1', t2') $> e
+      )
+    | _ when is_normal_exp e1' ->
       {e1' with note = e.note}
-    | _ ->
-      let t1' = reduce_typ env t1 in
-      let t2' = reduce_typ env t2 in
-      SubE (e1, t1', t2') $> e
+    | _ -> SubE (e1', t1', t2') $> e
     )
   (*
   in
@@ -370,6 +382,7 @@ and reduce_exp_call env id args at = function
       id.it (String.concat ", " (List.map Print.string_of_arg args'));
     let eo =
     *)
+    assert (List.for_all (fun a -> Eq.eq_arg a (reduce_arg env a)) args);
     match match_list match_arg env Subst.empty args args' with
     | exception Irred ->
       if not !assume_coherent_matches then None else
@@ -460,8 +473,9 @@ and match_typbind env s (id1, t1) (id2, t2) =
 
 and match_exp env s e1 e2 : subst option =
   (*
-  Printf.eprintf "[il.match_exp] %s =: %s[%s] = %s\n%!"
+  Printf.eprintf "[il.match_exp] %s : %s =: %s[%s] = %s\n%!"
     (Print.string_of_exp e1)
+    (Print.string_of_typ e1.note)
     (Print.string_of_exp e2)
     (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
     (Print.string_of_exp ((*reduce_exp env*) (Subst.subst_exp s e2)));
@@ -478,7 +492,8 @@ and match_exp env s e1 e2 : subst option =
       None
   | _, VarE id ->
     (* Treat as a fresh pattern variable. *)
-    Some (Subst.add_varid s id e1)
+    let e1' = reduce_exp env (SubE (e1, e1.note, e2.note) $$ e1.at % e2.note) in
+    Some (Subst.add_varid s id e1')
   | BoolE b1, BoolE b2 when b1 = b2 -> Some s
   | NatE n1, NatE n2 when n1 = n2 -> Some s
   | TextE s1, TextE s2 when s1 = s2 -> Some s

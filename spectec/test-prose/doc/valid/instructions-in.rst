@@ -424,29 +424,21 @@ $${rule-prose: valid/vbitmask}
 
 $${rule: Instr_ok/vbitmask}
 
-.. _valid-vdot:
+.. _valid-vextunop:
 
-$${rule-prose: valid/vdot}
-
-\
-
-$${rule: Instr_ok/vdot}
-
-.. _valid-vextmul:
-
-$${rule-prose: valid/vextmul}
+$${rule-prose: valid/vextunop}
 
 \
 
-$${rule: Instr_ok/vextmul}
+$${rule: Instr_ok/vextunop}
 
-.. _valid-vextadd_pairwise:
+.. _valid-vextbinop:
 
-$${rule-prose: valid/vextadd_pairwise}
+$${rule-prose: valid/vextbinop}
 
 \
 
-$${rule: Instr_ok/vextadd_pairwise}
+$${rule: Instr_ok/vextbinop}
 
 .. _valid-instructions-external-reference:
 

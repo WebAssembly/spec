@@ -185,29 +185,21 @@ $${rule-prose: exec/vcvtop}
 
 $${rule+: Step_pure/vcvtop-*}
 
-.. _exec-vdot:
+.. _exec-vextunop:
 
-$${rule-prose: exec/vdot}
-
-\
-
-$${rule+: Step_pure/vdot}
-
-.. _exec-vextmul:
-
-$${rule-prose: exec/vextmul}
+$${rule-prose: exec/vextunop}
 
 \
 
-$${rule+: Step_pure/vextmul}
+$${rule+: Step_pure/vextunop}
 
-.. _exec-vextadd_pairwise:
+.. _exec-vextbinop:
 
-$${rule-prose: exec/vextadd_pairwise}
+$${rule-prose: exec/vextbinop}
 
 \
 
-$${rule+: Step_pure/vextadd_pairwise}
+$${rule+: Step_pure/vextbinop}
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
