@@ -313,11 +313,15 @@ syntax vvternop = | BITSELECT
 syntax vvtestop = | ANY_TRUE
 
 syntax vunop_(shape)
-syntax vunop_(imm X N) = | ABS | NEG | MUL -- if N <= 8
+syntax vunop_(imm X N) = | ABS | NEG | POPCNT -- if imm = I8
 syntax vunop_(fnn X N) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax vbinop_(shape)
-syntax vbinop_(imm X N) = | ADD | SUB
+syntax vbinop_(imm X N) =
+  | ADD | SUB
+  | MUL            -- if $lsize(imm) >= 16
+  | AVGR_U         -- if $lsize(imm) <= 16
+  | Q15MULR_SAT_S  -- if imm = I16
 syntax vbinop_(fnn X N) = | ADD | SUB | MUL | DIV | MIN | MAX | PMIN | PMAX
 
 syntax vtestop_(shape)

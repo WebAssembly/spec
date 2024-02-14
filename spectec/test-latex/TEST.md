@@ -365,15 +365,21 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathit{vunop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{mul} &\quad
-  \mbox{if}~{\mathit{N}} \leq 8 \\
+& {{\mathit{vunop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{popcnt} &\quad
+  \mbox{if}~{\mathsf{i}}{{\mathit{n}}} = \mathsf{i{\scriptstyle8}} \\
 & {{\mathit{vunop}}}_{{\mathsf{f}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{abs} ~|~ \mathsf{neg} ~|~ \mathsf{sqrt} ~|~ \mathsf{ceil} ~|~ \mathsf{floor} ~|~ \mathsf{trunc} ~|~ \mathsf{nearest} \\
 \end{array}
 $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-& {{\mathit{vbinop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{add} ~|~ \mathsf{sub} \\
+& {{\mathit{vbinop}}}_{{\mathsf{i}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{add} ~|~ \mathsf{sub} \\ &&|&
+\mathsf{mul} &\quad
+  \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} \geq 16 \\ &&|&
+\mathsf{avgr\_u} &\quad
+  \mbox{if}~{|{\mathsf{i}}{{\mathit{n}}}|} \leq 16 \\ &&|&
+\mathsf{q{\scriptstyle15}mulr\_sat\_s} &\quad
+  \mbox{if}~{\mathsf{i}}{{\mathit{n}}} = \mathsf{i{\scriptstyle16}} \\
 & {{\mathit{vbinop}}}_{{\mathsf{f}}{{\mathit{n}}}~\mathsf{x}~{\mathit{N}}} &::=& \mathsf{add} ~|~ \mathsf{sub} ~|~ \mathsf{mul} ~|~ \mathsf{div} ~|~ \mathsf{min} ~|~ \mathsf{max} ~|~ \mathsf{pmin} ~|~ \mathsf{pmax} \\
 \end{array}
 $$

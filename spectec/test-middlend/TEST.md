@@ -590,12 +590,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -611,13 +611,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -629,21 +635,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -653,7 +659,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -663,7 +669,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -671,75 +677,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -847,61 +853,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -5425,12 +5431,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -5446,13 +5452,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -5464,21 +5476,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -5488,7 +5500,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -5498,7 +5510,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -5506,75 +5518,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -5682,61 +5694,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -10264,12 +10276,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -10285,13 +10297,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -10303,21 +10321,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -10327,7 +10345,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -10337,7 +10355,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -10345,75 +10363,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -10521,61 +10539,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -15140,12 +15158,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -15161,13 +15179,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -15179,21 +15203,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -15203,7 +15227,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -15213,7 +15237,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -15221,75 +15245,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -15397,61 +15421,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -20016,12 +20040,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -20037,13 +20061,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -20055,21 +20085,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -20079,7 +20109,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -20089,7 +20119,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -20097,75 +20127,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -20273,61 +20303,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
@@ -25050,12 +25080,12 @@ syntax vvtestop =
 
 ;; 1-syntax.watsup:315.1-315.21
 syntax vunop_(shape : shape)
-  ;; 1-syntax.watsup:316.1-316.56
+  ;; 1-syntax.watsup:316.1-316.61
   syntax vunop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ABS
   | NEG
-  | MUL
-    -- if (N <= 8)
+  | POPCNT{imm : imm}
+    -- if (imm = I8_imm)
 
 
   ;; 1-syntax.watsup:317.1-317.77
@@ -25071,13 +25101,19 @@ syntax vunop_(shape : shape)
 
 ;; 1-syntax.watsup:319.1-319.22
 syntax vbinop_(shape : shape)
-  ;; 1-syntax.watsup:320.1-320.38
+  ;; 1-syntax.watsup:320.1-324.35
   syntax vbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD
   | SUB
+  | MUL
+    -- if ($lsize((imm : imm <: lanetype)) >= 16)
+  | AVGR_U
+    -- if ($lsize((imm : imm <: lanetype)) <= 16)
+  | Q15MULR_SAT_S{imm : imm}
+    -- if (imm = I16_imm)
 
 
-  ;; 1-syntax.watsup:321.1-321.76
+  ;; 1-syntax.watsup:325.1-325.76
   syntax vbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | ADD
   | SUB
@@ -25089,21 +25125,21 @@ syntax vbinop_(shape : shape)
   | PMAX
 
 
-;; 1-syntax.watsup:323.1-323.23
+;; 1-syntax.watsup:327.1-327.23
 syntax vtestop_(shape : shape)
-  ;; 1-syntax.watsup:324.1-324.38
+  ;; 1-syntax.watsup:328.1-328.38
   syntax vtestop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ALL_TRUE
 
 
-  ;; 1-syntax.watsup:325.1-325.29
+  ;; 1-syntax.watsup:329.1-329.29
   syntax vtestop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:327.1-327.22
+;; 1-syntax.watsup:331.1-331.22
 syntax vrelop_(shape : shape)
-  ;; 1-syntax.watsup:328.1-328.68
+  ;; 1-syntax.watsup:332.1-332.68
   syntax vrelop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | EQ
   | NE
@@ -25113,7 +25149,7 @@ syntax vrelop_(shape : shape)
   | GE(sx)
 
 
-  ;; 1-syntax.watsup:329.1-329.56
+  ;; 1-syntax.watsup:333.1-333.56
   syntax vrelop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   | EQ
   | NE
@@ -25123,7 +25159,7 @@ syntax vrelop_(shape : shape)
   | GE
 
 
-;; 1-syntax.watsup:331.1-331.66
+;; 1-syntax.watsup:335.1-335.66
 syntax vcvtop =
   | EXTEND
   | TRUNC_SAT
@@ -25131,75 +25167,75 @@ syntax vcvtop =
   | DEMOTE
   | PROMOTE
 
-;; 1-syntax.watsup:342.1-342.22
+;; 1-syntax.watsup:346.1-346.22
 syntax vlimop_(shape : shape)
-  ;; 1-syntax.watsup:343.1-343.44
+  ;; 1-syntax.watsup:347.1-347.44
   syntax vlimop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | MIN(sx)
   | MAX(sx)
 
 
-  ;; 1-syntax.watsup:344.1-344.28
+  ;; 1-syntax.watsup:348.1-348.28
   syntax vlimop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:346.1-346.24
+;; 1-syntax.watsup:350.1-350.24
 syntax vshiftop_(shape : shape)
-  ;; 1-syntax.watsup:347.1-347.43
+  ;; 1-syntax.watsup:351.1-351.43
   syntax vshiftop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | SHL
   | SHR(sx)
 
 
-  ;; 1-syntax.watsup:348.1-348.30
+  ;; 1-syntax.watsup:352.1-352.30
   syntax vshiftop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:351.1-351.25
+;; 1-syntax.watsup:355.1-355.25
 syntax vsatbinop_(shape : shape)
-  ;; 1-syntax.watsup:352.1-352.55
+  ;; 1-syntax.watsup:356.1-356.55
   syntax vsatbinop_{imm : imm, N : N}(`%X%`((imm : imm <: lanetype), N)) =
   | ADD_SAT(sx)
   | SUB_SAT(sx)
 
 
-  ;; 1-syntax.watsup:353.1-353.31
+  ;; 1-syntax.watsup:357.1-357.31
   syntax vsatbinop_{fnn : fnn, N : N}(`%X%`((fnn : fnn <: lanetype), N)) =
   |
 
 
-;; 1-syntax.watsup:358.1-358.68
+;; 1-syntax.watsup:362.1-362.68
 syntax memop =
 {
   ALIGN u32,
   OFFSET u32
 }
 
-;; 1-syntax.watsup:360.1-363.44
+;; 1-syntax.watsup:364.1-367.44
 syntax vloadop =
   | SHAPE(nat : nat, nat : nat, sx : sx)
   | SPLAT(nat)
   | ZERO(nat)
 
-;; 1-syntax.watsup:372.1-374.17
+;; 1-syntax.watsup:376.1-378.17
 syntax blocktype =
   | _RESULT(valtype?)
   | _IDX(funcidx)
 
-;; 1-syntax.watsup:412.1-412.50
+;; 1-syntax.watsup:416.1-416.50
 syntax half =
   | LOW
   | HIGH
 
-;; 1-syntax.watsup:413.1-413.20
+;; 1-syntax.watsup:417.1-417.20
 syntax zero = `ZERO%?`(()?)
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 rec {
 
-;; 1-syntax.watsup:501.1-513.78
+;; 1-syntax.watsup:505.1-517.78
 syntax instr =
   | UNREACHABLE
   | NOP
@@ -25307,61 +25343,61 @@ syntax instr =
   | VSTORE_LANE(n : n, memidx : memidx, memop : memop, laneidx : laneidx)
 }
 
-;; 1-syntax.watsup:515.1-516.9
+;; 1-syntax.watsup:519.1-520.9
 syntax expr = instr*
 
-;; 1-syntax.watsup:528.1-528.61
+;; 1-syntax.watsup:532.1-532.61
 syntax elemmode =
   | ACTIVE(tableidx : tableidx, expr : expr)
   | PASSIVE
   | DECLARE
 
-;; 1-syntax.watsup:529.1-529.49
+;; 1-syntax.watsup:533.1-533.49
 syntax datamode =
   | ACTIVE(memidx : memidx, expr : expr)
   | PASSIVE
 
-;; 1-syntax.watsup:531.1-532.15
+;; 1-syntax.watsup:535.1-536.15
 syntax type = TYPE(rectype)
 
-;; 1-syntax.watsup:533.1-534.16
+;; 1-syntax.watsup:537.1-538.16
 syntax local = LOCAL(valtype)
 
-;; 1-syntax.watsup:535.1-536.27
+;; 1-syntax.watsup:539.1-540.27
 syntax func = `FUNC%%*%`(typeidx : typeidx, local*, expr : expr)
 
-;; 1-syntax.watsup:537.1-538.25
+;; 1-syntax.watsup:541.1-542.25
 syntax global = GLOBAL(globaltype : globaltype, expr : expr)
 
-;; 1-syntax.watsup:539.1-540.23
+;; 1-syntax.watsup:543.1-544.23
 syntax table = TABLE(tabletype : tabletype, expr : expr)
 
-;; 1-syntax.watsup:541.1-542.17
+;; 1-syntax.watsup:545.1-546.17
 syntax mem = MEMORY(memtype)
 
-;; 1-syntax.watsup:543.1-544.30
+;; 1-syntax.watsup:547.1-548.30
 syntax elem = `ELEM%%*%`(reftype : reftype, expr*, elemmode : elemmode)
 
-;; 1-syntax.watsup:545.1-546.22
+;; 1-syntax.watsup:549.1-550.22
 syntax data = `DATA%*%`(byte*, datamode : datamode)
 
-;; 1-syntax.watsup:547.1-548.16
+;; 1-syntax.watsup:551.1-552.16
 syntax start = START(funcidx)
 
-;; 1-syntax.watsup:550.1-551.66
+;; 1-syntax.watsup:554.1-555.66
 syntax externidx =
   | FUNC(funcidx)
   | GLOBAL(globalidx)
   | TABLE(tableidx)
   | MEM(memidx)
 
-;; 1-syntax.watsup:552.1-553.24
+;; 1-syntax.watsup:556.1-557.24
 syntax export = EXPORT(name : name, externidx : externidx)
 
-;; 1-syntax.watsup:554.1-555.30
+;; 1-syntax.watsup:558.1-559.30
 syntax import = IMPORT(name : name, name : name, externtype : externtype)
 
-;; 1-syntax.watsup:557.1-558.76
+;; 1-syntax.watsup:561.1-562.76
 syntax module = `MODULE%*%*%*%*%*%*%*%*%*%*`(type*, import*, func*, global*, table*, mem*, elem*, data*, start*, export*)
 
 ;; 2-syntax-aux.watsup:8.1-8.33
