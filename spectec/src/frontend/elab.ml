@@ -21,6 +21,8 @@ let error_atom at atom t msg =
 let error_id id msg =
   error id.at (msg ^ " `" ^ id.it ^ "`")
 
+module Debug = struct include El.Debug include Il.Debug end
+
 
 (* Helpers *)
 
@@ -640,10 +642,10 @@ and elab_typenum env tid (e1, e2o) : Il.typ =
   elab_typ env (snd (infer_exp env e1))
 
 and elab_typ_notation env tid t : bool * Il.mixop * id list * Il.typ list =
-  (*
-  Printf.eprintf "[el.elab_typ_notation %s] %s = %s\n%!"
-    (string_of_region t.at) tid.it (string_of_typ t);
-  *)
+  Debug.(log_at "el.elab_typ_notation" t.at
+    (fun _ -> fmt "%s = %s" tid.it (el_typ t))
+    (fun (_, mixop, _, ts') -> fmt "%s(%s)" (il_mixop mixop) (list il_typ ts'))
+  ) @@ fun _ ->
   assert (tid.it <> "");
   match t.it with
   | VarT (id, as_) ->
@@ -702,14 +704,14 @@ and must_elab_exp env e =
   | _ -> false
 
 and infer_exp env e : Il.exp * typ =
+  Debug.(log_at "el.infer_exp" e.at
+    (fun _ -> fmt "%s" (el_exp e))
+    (fun (e', t) -> fmt "%s : %s" (il_exp e') (el_typ t))
+  ) @@ fun _ ->
   let e', t = infer_exp' env e in
   e' $$ e.at % elab_typ env t, t
 
 and infer_exp' env e : Il.exp' * typ =
-  (*
-  Printf.eprintf "[el.infer_exp %s] %s\n%!"
-    (string_of_region e.at) (string_of_exp e);
-  *)
   match e.it with
   | VarE (id, args) ->
     if args <> [] then
@@ -860,10 +862,10 @@ and elab_exp env e t : Il.exp =
     elab_exp_notation env (expand_id env t) e (as_notation_typ "" env Check t e.at) t
 
 and elab_exp' env e t : Il.exp' =
-  (*
-  Printf.eprintf "[el.elab_exp %s] %s  :  %s\n%!"
-    (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  *)
+  Debug.(log_at "el.infer_exp" e.at
+    (fun _ -> fmt "%s : %s" (el_exp e) (el_typ t))
+    (fun e' -> fmt "%s" (il_exp (e' $$ no_region % elab_typ env t)))
+  ) @@ fun _ ->
   match e.it with
   | VarE (id, []) when not (Map.mem id.it env.vars) ->
     if bound env.gvars (strip_var_suffix id) then
@@ -1019,12 +1021,10 @@ and elab_exp_iter env es (t1, iter) t at : Il.exp =
   e' $$ at % elab_typ env t
 
 and elab_exp_iter' env es (t1, iter) t at : Il.exp' =
-  (*
-  Printf.eprintf "[el.elab_exp_iter %s] %s  :  %s = (%s)%s\n%!"
-    (string_of_region at)
-    (String.concat " " (List.map string_of_exp es))
-    (string_of_typ t) (string_of_typ t1) (string_of_iter iter);
-  *)
+  Debug.(log_at "el.elab_exp_iter" at
+    (fun _ -> fmt "%s : %s = (%s)%s" (seq el_exp es) (el_typ t) (el_typ t1) (el_iter iter))
+    (fun e' -> fmt "%s" (il_exp (e' $$ at % elab_typ env t)))
+  ) @@ fun _ ->
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
    * then assume this is a singleton iteration and fallback to variant *)
@@ -1058,10 +1058,10 @@ and elab_exp_notation env tid e nt t : Il.exp =
   | true, mixop, _, _ -> Il.MixE (mixop, e') $$ e.at % elab_typ env t
 
 and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
-  (*
-  Printf.eprintf "[el.elab_exp_notation %s] %s  :  %s\n%!"
-    (string_of_region e.at) (string_of_exp e) (string_of_typ t);
-  *)
+  Debug.(log_at "el.elab_exp_notation" e.at
+    (fun _ -> fmt "%s : %s" (el_exp e) (el_typ t))
+    (fun (es', _) -> fmt "%s" (seq il_exp es'))
+  ) @@ fun _ ->
   assert (tid.it <> "");
   match e.it, t.it with
   | AtomE atom, AtomT atom' ->
@@ -1162,12 +1162,10 @@ and elab_exp_notation_iter env tid es (t1, iter) t at : Il.exp =
   e' $$ at % tup_typ_bind' ids ts' t.at
 
 and elab_exp_notation_iter' env tid es (t1, iter) t at : Il.exp' =
-  (*
-  Printf.eprintf "[el.elab_exp_notation_iter %s] %s  :  %s = %s\n%!"
-    (string_of_region at)
-    (String.concat " " (List.map string_of_exp es))
-    tid.it (string_of_typ t);
-  *)
+  Debug.(log_at "el.elab_exp_notation_iter" at
+    (fun _ -> fmt "%s : %s = (%s)%s" (seq el_exp es) (el_typ t) (el_typ t1) (el_iter iter))
+    (fun e' -> fmt "%s" (il_exp (e' $$ at % elab_typ env t)))
+  ) @@ fun _ ->
   assert (tid.it <> "");
   match es, iter with
   (* If the sequence actually starts with a non-nullary constructor,
@@ -1194,20 +1192,10 @@ and elab_exp_notation_iter' env tid es (t1, iter) t at : Il.exp' =
     error_typ env at "expression" t
 
 and elab_exp_variant env tid e cases t at : Il.exp =
-  (*
-  Printf.eprintf "[el.elab_exp_variant %s] {%s}  :  %s = %s\n%!"
-    (string_of_region at)
-    (string_of_exp e)
-    tid.it (string_of_typ t);
-  (*
-    (String.concat " | "
-      (List.map (fun (atom, ts, _) ->
-          string_of_typ (SeqT ((AtomT atom $ at) :: ts) $ at)
-        ) cases
-      )
-    );
-  *)
-  *)
+  Debug.(log_at "el.elab_exp_variant" e.at
+    (fun _ -> fmt "%s : %s = %s" (el_exp e) tid.it (el_typ t))
+    (fun e' -> fmt "%s" (il_exp e'))
+  ) @@ fun _ ->
   assert (tid.it <> "");
   let atom =
     match e.it with
@@ -1272,15 +1260,13 @@ and cast_exp phrase env e' t1 t2 : Il.exp =
   e'' $$ e'.at % elab_typ env (expand_nondef env t2)
 
 and cast_exp' phrase env e' t1 t2 : Il.exp' =
-  (*
-  Printf.eprintf "[el.cast_exp %s] %s <: %s  >>  (%s) <: (%s) = %s\n%!"
-    (string_of_region e'.at)
-    (string_of_typ t1) (string_of_typ t2)
-    (string_of_typ (expand env t1 $ t1.at))
-    (string_of_typ (expand env t2 $ t2.at))
-    (string_of_typ (expand_nondef env t2))
-    ;
-  *)
+  Debug.(log_at "el.cast_exp" e'.at
+    (fun _ -> fmt "%s <: %s  >>  (%s) <: (%s) = %s" (el_typ t1) (el_typ t1)
+      (el_typ (expand env t1 $ t1.at)) (el_typ (expand env t2 $ t2.at))
+      (el_typ (expand_nondef env t2))
+    )
+    (fun r -> fmt "%s" (il_exp (r $$ e'.at % elab_typ env t2)))
+  ) @@ fun _ ->
   if equiv_typ env t1 t2 then e'.it else
   match expand env t2 with
   | RangeT _ ->
@@ -1501,13 +1487,6 @@ and elab_args in_lhs env as_ ps at : Il.arg list * Subst.subst =
   elab_args' in_lhs env as_ ps [] Subst.empty at
 
 and elab_args' in_lhs env as_ ps aos' s at : Il.arg list * Subst.subst =
-  (*
-  if as_ <> [] || ps <> [] then
-  Printf.eprintf "[el.elab_args] {%s}  :  {%s}[%s]\n%!"
-    (String.concat " " (List.map string_of_arg as_))
-    (String.concat " " (List.map string_of_param ps))
-    (String.concat ", " (List.map (fun (x, e) -> x^"="^string_of_exp e) Subst.(Map.bindings s.varid)));
-  *)
   match as_, ps with
   | [], [] -> List.rev (List.filter_map Fun.id aos'), s
   | a::_, [] -> error a.at "too many arguments"
@@ -1533,9 +1512,6 @@ and subst_implicit env s t t' : Subst.subst =
 
 let elab_params env ps : Il.param list =
   List.fold_left (fun ps' p ->
-    (*
-    Printf.eprintf "[el.elab_param] %s\n%!" (El.Print.string_of_param p);
-    *)
     match p.it with
     | ExpP (id, t) ->
       let t' = elab_typ env t in
@@ -1657,11 +1633,8 @@ let elab_no_binds env d =
 
 
 let elab_def env d : Il.def list =
-  (*
-  Printf.eprintf "--------------------------------------------------------\n%!";
-  Printf.eprintf "[el.elab_def %s]\n%s\n%!" (string_of_region d.at) (El.Print.string_of_def d);
-  let ds' =
-  *)
+  Debug.(log_in "el.elab_def" line);
+  Debug.(log_in_at "el.elab_def" d.at (fun _ -> el_def d));
   match d.it with
   | FamD (id, ps, hints) ->
     let ps' = elab_params (local_env env) ps in
@@ -1762,19 +1735,12 @@ let elab_def env d : Il.def list =
     []
   | HintD hd ->
     elab_hintdef env hd
-  (*
-  in
-  Printf.eprintf "[el.elab_def %s] done\n%!" (string_of_region d.at);
-  ds'
-  *)
 
 let elab_gramdef env d =
   match d.it with
   | GramD (id1, _id2, ps, t, gram, _hints) ->
-    (*
-    Printf.eprintf "--------------------------------------------------------\n%!";
-    Printf.eprintf "[el.elab_gramdef %s]\n%!" (string_of_region d.at);
-    *)
+    Debug.(log_in "el.elab_gramdef" line);
+    Debug.(log_in_at "el.elab_gramdef" d.at (fun _ -> el_def d));
     let env' = local_env env in
     let _ps' = elab_params env' ps in
     let _t' = elab_typ env' t in
@@ -1803,9 +1769,8 @@ let elab_gramdef env d =
 
 
 let populate_def env d' : Il.def =
-  (*
-  Printf.eprintf "[populate %s]\n%!" (string_of_region d'.at);
-  *)
+  Debug.(log_in "el.populate_def" dline);
+  Debug.(log_in_at "el.populate_def" d'.at (Fun.const ""));
   match d'.it with
   | Il.TypD (id, ps', _dt') ->
     (match find "syntax type" env.typs id with

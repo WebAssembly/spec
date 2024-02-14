@@ -31,11 +31,6 @@ let rec eq_iter iter1 iter2 =
 (* Types *)
 
 and eq_typ t1 t2 =
-  (*
-  Printf.printf "[el.eq] (%s) == (%s)  eq=%b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
-  *)
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2) ->
     id1.it = id2.it && eq_list eq_arg args1 args2

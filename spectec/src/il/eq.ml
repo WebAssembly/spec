@@ -35,13 +35,6 @@ let rec eq_iter iter1 iter2 =
 (* Types *)
 
 and eq_typ t1 t2 =
-  (*
-  if t1.it <> t2.it then
-  Printf.printf "[il.eq_typ] %s == %s  eq=%b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
-  let b =
-  *)
   t1.it = t2.it ||
   match t1.it, t2.it with
   | VarT (id1, as1), VarT (id2, as2) -> eq_id id1 id2 && eq_list eq_arg as1 as2
@@ -49,13 +42,6 @@ and eq_typ t1 t2 =
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
   | _, _ -> t1.it = t2.it
-  (*
-  in
-  if t1.it <> t2.it then
-  Printf.printf "[il.eq_typ] %s == %s => %b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2) b;
-  b
-  *)
 
 and eq_deftyp dt1 dt2 =
   match dt1.it, dt2.it with
@@ -75,12 +61,6 @@ and eq_typcase (atom1, (_binds1, t1, prems1), _) (atom2, (_binds2, t2, prems2), 
 (* Expressions *)
 
 and eq_exp e1 e2 =
-  (*
-  if e1.it <> e2.it then
-  Printf.printf "[il.eq_exp] %s == %s\n%!"
-    (Print.string_of_exp e1) (Print.string_of_exp e2);
-  let b =
-  *)
   match e1.it, e2.it with
   | VarE id1, VarE id2 -> eq_id id1 id2
   | UnE (op1, e11), UnE (op2, e21) -> op1 = op2 && eq_exp e11 e21
@@ -112,13 +92,6 @@ and eq_exp e1 e2 =
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
     eq_exp e1 e2 && eq_typ t11 t21 && eq_typ t12 t22
   | _, _ -> e1.it = e2.it
-  (*
-  in
-  if e1.it <> e2.it then
-  Printf.printf "[il.eq_exp] %s == %s => %b\n%!"
-    (Print.string_of_exp e1) (Print.string_of_exp e2) b;
-  b
-  *)
 
 and eq_expfield (atom1, e1) (atom2, e2) =
   atom1 = atom2 && eq_exp e1 e2

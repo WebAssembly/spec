@@ -60,11 +60,10 @@ let disj_list disj_x env xs1 xs2 =
 (* Type Reduction (weak-head) *)
 
 let rec reduce_typ env t : typ =
-  (*
-  if t.it <> NumT NatT then
-  Printf.eprintf "[el.reduce_typ] %s\n%!" (El.Print.string_of_typ t);
-  let t' =
-  *)
+  Debug.(log_if "el.reduce_typ" (t.it <> NumT NatT)
+    (fun _ -> fmt "%s" (el_typ t))
+    (fun r -> fmt "%s" (el_typ r))
+  ) @@ fun _ ->
   match t.it with
   | VarT (id, args) ->
     let args' = List.map (reduce_arg env) args in
@@ -82,12 +81,6 @@ let rec reduce_typ env t : typ =
     let tcs' = Convert.concat_map_nl_list (reduce_casetyp env) ts in
     CaseT (NoDots, [], tcs' @ tcs, NoDots) $ t.at
   | _ -> t
-  (*
-  in
-  if t.it <> NumT NatT then
-  Printf.eprintf "[el.reduce_typ] %s => %s\n%!" (El.Print.string_of_typ t) (El.Print.string_of_typ t');
-  t'
-  *)
 
 and reduce_casetyp env t : typcase nl_list =
   match (reduce_typ env t).it with
@@ -102,12 +95,10 @@ and reduce_typ_app env id args at = function
     Source.error at "type"
       ("undefined instance of partial syntax type definition: `" ^ id.it ^ args ^ "`")
   | (args', t)::insts' ->
-    (*
-    Printf.eprintf "[el.reduce_typ_app] %s(%s) =: %s(%s)\n%!"
-      id.it (String.concat ", " (List.map Print.string_of_arg args))
-      id.it (String.concat ", " (List.map Print.string_of_arg args'));
-    let to' =
-    *)
+    Debug.(log "el.reduce_typ_app"
+      (fun _ -> fmt "%s(%s) =: %s(%s)" id.it (el_args args) id.it (el_args args'))
+      (fun r -> fmt "%s" (opt (Fun.const "!") r))
+    ) @@ fun _ ->
     (* HACK: check for forward reference to yet undefined type (should throw?) *)
     if Eq.eq_typ t (VarT (id, args') $ id.at) then None else
     match match_list match_arg env Subst.empty args args' with
@@ -116,14 +107,6 @@ and reduce_typ_app env id args at = function
       reduce_typ_app env id args at insts'
     | None -> reduce_typ_app env id args at insts'
     | Some s -> Some (reduce_typ env (Subst.subst_typ s t))
-    (*
-    in
-    Printf.eprintf "[el.reduce_typ_app] %s(%s) =: %s(%s) => %s\n%!"
-      id.it (String.concat ", " (List.map Print.string_of_arg args))
-      id.it (String.concat ", " (List.map Print.string_of_arg args'))
-      (if to' = None then "-" else "!");
-    to'
-    *)
 
 
 (* Expression Reduction *)
@@ -136,11 +119,10 @@ and is_normal_exp e =
   | _ -> false
 
 and reduce_exp env e : exp =
-  (*
-  (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
-  Printf.eprintf "[el.reduce_exp] %s\n%!" (El.Print.string_of_exp e));
-  let e' =
-  *)
+  Debug.(log "el.reduce_typ"
+    (fun _ -> fmt "%s" (el_exp e))
+    (fun r -> fmt "%s" (el_exp r))
+  ) @@ fun _ ->
   match e.it with
   | VarE _ | AtomE _ | BoolE _ | NatE _ | TextE _ | SizeE _ -> e
   | UnE (op, e1) ->
@@ -299,12 +281,6 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     IterE (e1', iter) $ e.at  (* TODO *)
   | HoleE _ | FuseE _ -> assert false
-  (*
-  in
-  (match e.it with VarE ({it = "nat"; _}, []) -> () | _ ->
-  Printf.eprintf "[el.reduce_exp] %s => %s\n%!" (El.Print.string_of_exp e) (El.Print.string_of_exp e'));
-  e'
-  *)
 
 and reduce_expfield env (atom, e) : expfield = (atom, reduce_exp env e)
 
@@ -441,14 +417,10 @@ and match_typ env s t1 t2 : subst option =
 *)
 
 and match_exp env s e1 e2 : subst option =
-  (*
-  Printf.eprintf "[el.match_exp] %s =: %s[%s] = %s\n%!"
-    (Print.string_of_exp e1)
-    (Print.string_of_exp e2)
-    (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
-    (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-  match
-  *)
+  Debug.(log "el.match_exp"
+    (fun _ -> fmt "%s =: %s" (el_exp e1) (el_exp e2))
+    (fun r -> fmt "%s" (opt el_subst r))
+  ) @@ fun _ ->
   match e1.it, (reduce_exp env (Subst.subst_exp s e2)).it with
 (*
   | (ParenE (e11, _) | TypE (e11, _)), _ -> match_exp env s e11 e2
@@ -562,24 +534,6 @@ and match_exp env s e1 e2 : subst option =
   | _, (HoleE _ | FuseE _) -> assert false
   | _, _ when is_normal_exp e1 -> None
   | _, _ -> raise Irred
-  (*
-  with
-  | exception Irred ->
-    Printf.eprintf "[el.match_exp] %s =: %s => ?\n%!"
-      (Print.string_of_exp e1)
-      (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)));
-      raise Irred
-  | so ->
-    Printf.eprintf "[el.match_exp] %s =: %s => %s\n%!"
-      (Print.string_of_exp e1)
-      (Print.string_of_exp (reduce_exp env (Subst.subst_exp s e2)))
-      (match so with
-      | None -> "-"
-      | Some s ->
-      (String.concat " " (List.map (fun (x, e) -> x^"="^Print.string_of_exp e) (Subst.Map.bindings s.varid)))
-      );
-  so
-  *)
 
 and match_expfield env s (atom1, e1) (atom2, e2) =
   if atom1 <> atom2 then None else
@@ -605,11 +559,10 @@ and match_path env s p1 p2 =
 (* Grammars *)
 
 and match_sym env s g1 g2 : subst option =
-  (*
-  Printf.eprintf "[el.match_sym] %s =: %s\n%!"
-    (Print.string_of_sym g1)
-    (Print.string_of_sym g2);
-  *)
+  Debug.(log "el.match_sym"
+    (fun _ -> fmt "%s =: %s" (el_sym g1) (el_sym g2))
+    (fun r -> fmt "%s" (opt el_subst r))
+  ) @@ fun _ ->
   match g1.it, g2.it with
   | ParenG g11, _ -> match_sym env s g11 g2
   | _, ParenG g21 -> match_sym env s g1 g21
@@ -630,11 +583,10 @@ and match_sym env s g1 g2 : subst option =
 (* Parameters *)
 
 and match_arg env s a1 a2 : subst option =
-  (*
-  Printf.eprintf "[el.match_arg] %s =: %s\n%!"
-    (Print.string_of_arg a1)
-    (Print.string_of_arg a2);
-  *)
+  Debug.(log "el.match_arg"
+    (fun _ -> fmt "%s =: %s" (el_arg a1) (el_arg a2))
+    (fun r -> fmt "%s" (opt el_subst r))
+  ) @@ fun _ ->
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> match_exp env s e1 e2
   | TypA t1, TypA t2 -> match_typ env s t1 t2
@@ -645,12 +597,9 @@ and match_arg env s a1 a2 : subst option =
 (* Type Equivalence *)
 
 and equiv_typ env t1 t2 =
-  (*
-  Printf.eprintf "[el.equiv_typ] %s == %s\n%!"
-    (Print.string_of_typ t1)
-    (Print.string_of_typ t2);
-  let b =
-  *)
+  Debug.(log "el.equiv_typ"
+    (fun _ -> fmt "%s == %s" (el_typ t1) (el_typ t2)) Bool.to_string
+  ) @@ fun _ ->
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2) ->
     (El.Convert.strip_var_suffix id1).it = (El.Convert.strip_var_suffix id2).it &&
@@ -679,14 +628,6 @@ and equiv_typ env t1 t2 =
     equiv_nl_list equiv_typcase env tcs1 tcs2
   | RangeT tes1, RangeT tes2 -> equiv_nl_list equiv_typenum env tes1 tes2
   | _, _ -> t1.it = t2.it
-  (*
-  in
-  Printf.eprintf "[el.equiv_typ] %s == %s => %b\n%!"
-    (Print.string_of_typ t1)
-    (Print.string_of_typ t2)
-    b;
-  b
-  *)
 
 and equiv_typfield env (atom1, (t1, prems1), _) (atom2, (t2, prems2), _) =
   atom1.it = atom2.it && equiv_typ env t1 t2 && Eq.(eq_nl_list eq_prem prems1 prems2)
@@ -696,10 +637,16 @@ and equiv_typenum env (e11, e12o) (e21, e22o) =
   equiv_exp env e11 e21 && equiv_opt equiv_exp env e12o e22o
 
 and equiv_exp env e1 e2 =
+  Debug.(log "el.equiv_exp"
+    (fun _ -> fmt "%s == %s" (el_exp e1) (el_exp e2)) Bool.to_string
+  ) @@ fun _ ->
   (* TODO: this does not reduce inner type arguments *)
   Eq.eq_exp (reduce_exp env e1) (reduce_exp env e2)
 
 and equiv_arg env a1 a2 =
+  Debug.(log "el.equiv_arg"
+    (fun _ -> fmt "%s == %s" (el_arg a1) (el_arg a2)) Bool.to_string
+  ) @@ fun _ ->
   (*
   Printf.eprintf "[el.equiv_arg] %s == %s\n%!"
     (Print.string_of_arg a1)
@@ -715,11 +662,9 @@ and equiv_arg env a1 a2 =
 (* Subtyping *)
 
 and sub_typ env t1 t2 =
-  (*
-  (*if not (Eq.eq_typ t1 t2) then*)
-  Printf.eprintf "[el.sub_typ] %s <: %s\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2);
-  let b =
-  *)
+  Debug.(log "el.sub_typ"
+    (fun _ -> fmt "%s <: %s" (el_typ t1) (el_typ t2)) Bool.to_string
+  ) @@ fun _ ->
   match (reduce_typ env t1).it, (reduce_typ env t2).it with
   | NumT t1', NumT t2' -> t1' <= t2'
   | RangeT (Elem (e1, _)::_), NumT t2' ->
@@ -753,12 +698,6 @@ and sub_typ env t1 t2 =
   | SeqT ts1, SeqT ts2 ->
     List.length ts1 = List.length ts2 && List.for_all2 (sub_typ env) ts1 ts2
   | _, _ -> equiv_typ env t1 t2
-  (*
-  in
-  (*if not (Eq.eq_typ t1 t2) then*)
-  Printf.eprintf "[el.sub_typ] %s <: %s => %b\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2) b;
-  b
-  *)
 
 and find_field tfs atom =
   El.Convert.find_nl_list (fun (atom', _, _) -> atom'.it = atom.it) tfs
@@ -775,11 +714,9 @@ and snd3 (_, x, _) = x
 (* Type Disjointness *)
 
 and disj_typ env t1 t2 =
-  (*
-  (*if not (Eq.eq_typ t1 t2) then*)
-  Printf.eprintf "[el.disj_typ] %s ## %s\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2);
-  let b =
-  *)
+  Debug.(log "el.disj_typ"
+    (fun _ -> fmt "%s ## %s" (el_typ t1) (el_typ t2)) Bool.to_string
+  ) @@ fun _ ->
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2) ->
     let t1' = reduce_typ env t1 in
@@ -821,12 +758,6 @@ and disj_typ env t1 t2 =
     ) tcs1
   | RangeT _, RangeT _ -> false  (* approximation *)
   | _, _ -> t1.it <> t2.it
-  (*
-  in
-  (*if not (Eq.eq_typ t1 t2) then*)
-  Printf.eprintf "[el.disj_typ] %s ## %s => %b\n%!" (Print.string_of_typ t1) (Print.string_of_typ t2) b;
-  b
-  *)
 
 and atoms xs =
   Set.of_list (List.map Print.string_of_atom
@@ -841,11 +772,6 @@ and disj_exp env e1 e2 =
   is_normal_exp e1' && is_normal_exp e2' && not (Eq.eq_exp e1' e2')
 
 and disj_arg env a1 a2 =
-  (*
-  Printf.eprintf "[el.disj_arg] %s ## %s\n%!"
-    (Print.string_of_arg a1)
-    (Print.string_of_arg a2);
-  *)
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> disj_exp env e1 e2
   | TypA t1, TypA t2 -> disj_typ env t1 t2

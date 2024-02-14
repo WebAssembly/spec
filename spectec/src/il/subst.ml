@@ -60,9 +60,6 @@ let rec subst_iter s iter =
 (* Types *)
 
 and subst_typ s t =
-  (*
-  Printf.eprintf "[il.subst_typ] %s\n%!" (Print.string_of_typ t);
-  *)
   (match t.it with
   | VarT (id, as_) ->
     (match Map.find_opt id.it s.typid with

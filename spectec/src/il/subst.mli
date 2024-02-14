@@ -1,6 +1,6 @@
 open Ast
 
-module Map : Map.S with type key = string
+module Map : Map.S with type key = string with type 'a t = 'a Map.Make(String).t
 
 type subst = {varid : exp Map.t; typid : typ Map.t}
 type t = subst
