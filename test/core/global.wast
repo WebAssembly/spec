@@ -358,6 +358,9 @@
   "unknown global"
 )
 
+(module (global i32 (i32.const 0)) (global i32 (global.get 0)))
+(module (global $g i32 (i32.const 0)) (global i32 (global.get $g)))
+
 (assert_invalid
   (module (global (import "test" "global-mut-i32") (mut i32)) (global i32 (global.get 0)))
   "constant expression required"
@@ -608,17 +611,83 @@
   "type mismatch"
 )
 
+
+;; Definition order
+
+(module
+  (global (export "g") i32 (i32.const 4))
+)
+(register "G")
+
+(module
+  (global $g0 (import "G" "g") i32)
+  (global $g1 i32 (i32.const 8))
+  (global $g2 i32 (global.get $g0))
+  (global $g3 i32 (global.get $g1))
+
+  (global $gf funcref (ref.func $f))
+  (func $f)
+
+  (table $t 10 funcref (ref.null func))
+  (elem (table $t) (global.get $g2) funcref (ref.func $f))
+  (elem (table $t) (global.get $g3) funcref (global.get $gf))
+
+  (memory $m 1)
+  (data (global.get $g2) "\44\44\44\44")
+  (data (global.get $g3) "\88\88\88\88")
+
+  (func (export "get-elem") (param $i i32) (result funcref)
+    (table.get $t (local.get $i))
+  )
+  (func (export "get-data") (param $i i32) (result i32)
+    (i32.load (local.get $i))
+  )
+)
+
+(assert_return (invoke "get-elem" (i32.const 0)) (ref.null))
+(assert_return (invoke "get-elem" (i32.const 4)) (ref.func))
+(assert_return (invoke "get-elem" (i32.const 8)) (ref.func))
+
+(assert_return (invoke "get-data" (i32.const 4)) (i32.const 0x44444444))
+(assert_return (invoke "get-data" (i32.const 8)) (i32.const 0x88888888))
+
+(assert_invalid
+  (module 
+    (global $g1 i32 (global.get $g2))
+    (global $g2 i32 (i32.const 0))
+  )
+  "unknown global"
+)
+
+(assert_invalid
+  (module
+    (global $g funcref (ref.null func))
+    (table $t 10 funcref (global.get $g))
+  )
+  "unknown global"
+)
+
+
 ;; Duplicate identifier errors
 
-(assert_malformed (module quote
-  "(global $foo i32 (i32.const 0))"
-  "(global $foo i32 (i32.const 0))")
-  "duplicate global")
-(assert_malformed (module quote
-  "(import \"\" \"\" (global $foo i32))"
-  "(global $foo i32 (i32.const 0))")
-  "duplicate global")
-(assert_malformed (module quote
-  "(import \"\" \"\" (global $foo i32))"
-  "(import \"\" \"\" (global $foo i32))")
-  "duplicate global")
+(assert_malformed
+  (module quote
+    "(global $foo i32 (i32.const 0))"
+    "(global $foo i32 (i32.const 0))"
+  )
+  "duplicate global"
+)
+(assert_malformed
+  (module quote
+    "(import \"\" \"\" (global $foo i32))"
+    "(global $foo i32 (i32.const 0))"
+  )
+  "duplicate global"
+)
+(assert_malformed
+  (module quote
+    "(import \"\" \"\" (global $foo i32))"
+    "(import \"\" \"\" (global $foo i32))"
+  )
+  "duplicate global"
+)

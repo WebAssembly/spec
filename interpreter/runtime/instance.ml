@@ -33,9 +33,16 @@ and extern =
 type Value.ref_ += FuncRef of func_inst
 
 let () =
+  let eq_ref' = !Value.eq_ref' in
+  Value.eq_ref' := fun r1 r2 ->
+    match r1, r2 with
+    | FuncRef _, FuncRef _ -> failwith "eq_ref"
+    | _, _ -> eq_ref' r1 r2
+
+let () =
   let type_of_ref' = !Value.type_of_ref' in
   Value.type_of_ref' := function
-    | FuncRef f -> DefHT (DefFuncT (Func.type_of f))
+    | FuncRef f -> DefHT (Func.type_of f)
     | r -> type_of_ref' r
 
 let () =

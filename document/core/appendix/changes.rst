@@ -165,6 +165,34 @@ Added more precise types for references [#proposal-typedref]_.
 * Extended :ref:`table definitions <syntax-table>` with optional initializer expression
 
 
+.. index:: reference, reference type, heap type, field type, storage type, structure type, array type, composite type, sub type, recursive type
+
+Garbage Collection
+..................
+
+Added managed reference types [#proposal-gc]_.
+
+* New forms of :ref:`heap types <syntax-heaptype>`: |ANY|, |EQT|, |I31|, |STRUCT|, |ARRAY|, |NONE|, |NOFUNC|, |NOEXTERN|
+
+* New :ref:`reference type <syntax-reftype>` short-hands: |ANYREF|, |EQREF|, |I31REF|, |STRUCTREF|, |ARRAYREF|, |NULLREF|, |NULLFUNCREF|, |NULLEXTERNREF|
+
+* New forms of type definitions: :ref:`structure <syntax-structtype>` and :ref:`array types <syntax-arraytype>`, :ref:`sub types <syntax-subtype>`, and :ref:`recursive types <syntax-rectype>`
+
+* Enriched :ref:`subtyping <match>` based on explicitly declared :ref:`sub types <syntax-subtype>` and the new heap types
+
+* New generic :ref:`reference instructions <syntax-instr-ref>`: |REFEQ|, |REFTEST|, |REFCAST|, |BRONCAST|, |BRONCASTFAIL|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`unboxed scalars <syntax-i31>`: |REFI31|, :math:`\I31GET\K{\_}\sx`
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`structure types <syntax-structtype>`: |STRUCTNEW|, |STRUCTNEWDEFAULT|, :math:`\STRUCTGET\K{\_}\sx^?`, |STRUCTSET|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for :ref:`array types <syntax-structtype>`: |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ARRAYNEWDATA|, |ARRAYNEWELEM|, :math:`\ARRAYGET\K{\_}\sx^?`, |ARRAYSET|, |ARRAYLEN|, |ARRAYFILL|, |ARRAYCOPY|, |ARRAYINITDATA|, |ARRAYINITELEM|
+
+* New :ref:`reference instructions <syntax-instr-ref>` for converting :ref:`host types <syntax-externtype>`: |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|
+
+* Extended set of :ref:`constant instructions <valid-const>` with |REFI31|, |STRUCTNEW|, |STRUCTNEWDEFAULT|, |ARRAYNEW|, |ARRAYNEWDEFAULT|, |ARRAYNEWFIXED|, |ANYCONVERTEXTERN|, |EXTERNCONVERTANY|, and |GLOBALGET| for any previously declared immutable :ref:`global <syntax-global>`
+
+
 .. [#proposal-signext]
    https://github.com/WebAssembly/spec/tree/main/proposals/sign-extension-ops/
 
@@ -226,3 +254,6 @@ Added more precise types for references [#proposal-typedref]_.
 
 .. [#proposal-typedref]
    https://github.com/WebAssembly/spec/tree/main/proposals/function-references/
+
+.. [#proposal-gc]
+   https://github.com/WebAssembly/spec/tree/main/proposals/gc/

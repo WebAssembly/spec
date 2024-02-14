@@ -175,6 +175,15 @@
 (assert_return (invoke "call-7") (i32.const 65))
 (assert_return (invoke "call-9") (i32.const 66))
 
+(module
+  (global i32 (i32.const 0))
+  (table 1 funcref) (elem (global.get 0) $f) (func $f)
+)
+(module
+  (global $g i32 (i32.const 0))
+  (table 1 funcref) (elem (global.get $g) $f) (func $f)
+)
+
 
 ;; Corner cases
 

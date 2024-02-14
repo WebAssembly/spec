@@ -127,6 +127,9 @@ type vec_loadop = (vec_type, (pack_size * vec_extension) option) memop
 type vec_storeop = (vec_type, unit) memop
 type vec_laneop = (vec_type, pack_size) memop * int
 
+type initop = Explicit | Implicit
+type externop = Internalize | Externalize
+
 
 (* Expressions *)
 
@@ -149,8 +152,10 @@ and instr' =
   | Br of idx                         (* break to n-th surrounding label *)
   | BrIf of idx                       (* conditional break *)
   | BrTable of idx list * idx         (* indexed break *)
-  | BrOnNull of idx                   (* break on null *)
-  | BrOnNonNull of idx                (* break on non-null *)
+  | BrOnNull of idx                   (* break on type *)
+  | BrOnNonNull of idx                (* break on type inverted *)
+  | BrOnCast of idx * ref_type * ref_type     (* break on type *)
+  | BrOnCastFail of idx * ref_type * ref_type (* break on type inverted *)
   | Return                            (* break from function body *)
   | Call of idx                       (* call function *)
   | CallRef of idx                    (* call function through reference *)
@@ -183,16 +188,36 @@ and instr' =
   | MemoryCopy                        (* copy memory ranges *)
   | MemoryInit of idx                 (* initialize memory range from segment *)
   | DataDrop of idx                   (* drop passive data segment *)
-  | RefNull of heap_type              (* null reference *)
-  | RefIsNull                         (* null test *)
-  | RefAsNonNull                      (* null cast *)
-  | RefFunc of idx                    (* function reference *)
   | Const of num                      (* constant *)
   | Test of testop                    (* numeric test *)
   | Compare of relop                  (* numeric comparison *)
   | Unary of unop                     (* unary numeric operator *)
   | Binary of binop                   (* binary numeric operator *)
   | Convert of cvtop                  (* conversion *)
+  | RefNull of heap_type              (* null reference *)
+  | RefFunc of idx                    (* function reference *)
+  | RefIsNull                         (* type test *)
+  | RefAsNonNull                      (* type cast *)
+  | RefTest of ref_type               (* type test *)
+  | RefCast of ref_type               (* type cast *)
+  | RefEq                             (* reference equality *)
+  | RefI31                            (* scalar reference *)
+  | I31Get of extension               (* read scalar *)
+  | StructNew of idx * initop         (* allocate structure *)
+  | StructGet of idx * idx * extension option  (* read structure field *)
+  | StructSet of idx * idx            (* write structure field *)
+  | ArrayNew of idx * initop          (* allocate array *)
+  | ArrayNewFixed of idx * int32      (* allocate fixed array *)
+  | ArrayNewElem of idx * idx         (* allocate array from element segment *)
+  | ArrayNewData of idx * idx         (* allocate array from data segment *)
+  | ArrayGet of idx * extension option  (* read array slot *)
+  | ArraySet of idx                   (* write array slot *)
+  | ArrayLen                          (* read array length *)
+  | ArrayCopy of idx * idx            (* copy between two arrays *)
+  | ArrayFill of idx                  (* fill array with value *)
+  | ArrayInitData of idx * idx        (* fill array from data segment *)
+  | ArrayInitElem of idx * idx        (* fill array from elem segment *)
+  | ExternConvert of externop         (* extern conversion *)
   | VecConst of vec                   (* constant *)
   | VecTest of vec_testop             (* vector test *)
   | VecCompare of vec_relop           (* vector comparison *)
@@ -275,7 +300,7 @@ and data_segment' =
 
 (* Modules *)
 
-type type_ = def_type Source.phrase
+type type_ = rec_type Source.phrase
 
 type export_desc = export_desc' Source.phrase
 and export_desc' =
@@ -346,28 +371,35 @@ let empty_module =
 
 open Source
 
-let ft (m : module_) (x : idx) : func_type =
-  as_func_def_type (Lib.List32.nth m.it.types x.it).it
+let def_types_of (m : module_) : def_type list =
+  let rts = List.map Source.it m.it.types in
+  List.fold_left (fun dts rt ->
+    let x = Lib.List32.length dts in
+    dts @ List.map (subst_def_type (subst_of dts)) (roll_def_types x rt)
+  ) [] rts
 
 let import_type_of (m : module_) (im : import) : import_type =
   let {idesc; module_name; item_name} = im.it in
+  let dts = def_types_of m in
   let et =
     match idesc.it with
-    | FuncImport x -> ExternFuncT (ft m x)
+    | FuncImport x -> ExternFuncT (Lib.List32.nth dts x.it)
     | TableImport tt -> ExternTableT tt
     | MemoryImport mt -> ExternMemoryT mt
     | GlobalImport gt -> ExternGlobalT gt
-  in ImportT (et, module_name, item_name)
+  in ImportT (subst_extern_type (subst_of dts) et, module_name, item_name)
 
 let export_type_of (m : module_) (ex : export) : export_type =
   let {edesc; name} = ex.it in
+  let dts = def_types_of m in
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map extern_type_of_import_type its in
   let et =
     match edesc.it with
     | FuncExport x ->
-      let fts = funcs ets @ List.map (fun f -> ft m f.it.ftype) m.it.funcs in
-      ExternFuncT (Lib.List32.nth fts x.it)
+      let dts = funcs ets @ List.map (fun f ->
+        Lib.List32.nth dts f.it.ftype.it) m.it.funcs in
+      ExternFuncT (Lib.List32.nth dts x.it)
     | TableExport x ->
       let tts = tables ets @ List.map (fun t -> t.it.ttype) m.it.tables in
       ExternTableT (Lib.List32.nth tts x.it)
@@ -377,12 +409,9 @@ let export_type_of (m : module_) (ex : export) : export_type =
     | GlobalExport x ->
       let gts = globals ets @ List.map (fun g -> g.it.gtype) m.it.globals in
       ExternGlobalT (Lib.List32.nth gts x.it)
-  in ExportT (et, name)
+  in ExportT (subst_extern_type (subst_of dts) et, name)
 
 let module_type_of (m : module_) : module_type =
   let its = List.map (import_type_of m) m.it.imports in
   let ets = List.map (export_type_of m) m.it.exports in
-  let a = Array.make (List.length m.it.types) BotHT in
-  let s = fun (StatX x) -> a.(Int32.to_int x) in
-  List.iteri (fun i dt -> a.(i) <- DefHT (subst_def_type s dt.it)) m.it.types;
-  subst_module_type s (ModuleT (its, ets))
+  ModuleT (its, ets)
