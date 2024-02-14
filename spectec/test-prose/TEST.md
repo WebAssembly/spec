@@ -1041,6 +1041,9 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] -> [I32]).
 
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] -> [I32]).
+
 validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
@@ -1081,17 +1084,11 @@ validation_of_VCVTOP sh vcvtop hf? sh sx? zero
 validation_of_VNARROW sh sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] -> [I32]).
-
-validation_of_VDOT sh sh sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VEXTMUL sh hf sh sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VEXTADD_PAIRWISE sh sh sx
+validation_of_VEXTUNOP sh sh vextunop sx
 - The instruction is valid with type ([V128] -> [V128]).
+
+validation_of_VEXTBINOP sh sh vextbinop sx
+- The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
@@ -2094,12 +2091,12 @@ execution_of_VBINOP sh vbinop
 6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
   a. Trap.
 
-execution_of_VRELOP (lnn X N) vrelop
+execution_of_VRELOP sh vrelop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VCONST V128 c_1) from the stack.
-5. Let c be $vrelop((lnn X N), vrelop, c_1, c_2).
+5. Let c be $vrelop(sh, vrelop, c_1, c_2).
 6. Execute (VCONST V128 c).
 
 execution_of_VSHIFTOP (imm X N) vshiftop
@@ -2169,35 +2166,18 @@ execution_of_VCVTOP (lanet_u0 X N_2) vcvtop half_u1? (lanet_u2 X N_1) sx_u3? (ZE
     4) Let c be $invlanes_((inn_2 X N_2), $vcvtop((inn_1 X N_1), (inn_2 X N_2), vcvtop, sx?, ci)* ++ 0^N_1).
     5) Execute (VCONST V128 c).
 
-execution_of_VDOT (inn_1 X N_1) (inn_2 X N_2) S
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop (VCONST V128 c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop (VCONST V128 c_1) from the stack.
-5. Let ci_1* be $lanes_((inn_2 X N_2), c_1).
-6. Let ci_2* be $lanes_((inn_2 X N_2), c_2).
-7. Assert: Due to validation, (|ci_1*| is |ci_2*|).
-8. Let [cj_1, cj_2]* be $inverse_of_concat_($imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*).
-9. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
-10. Execute (VCONST V128 c).
-
-execution_of_VEXTMUL (inn_1 X N_1) hf (inn_2 X N_2) sx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop (VCONST V128 c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop (VCONST V128 c_1) from the stack.
-5. Let ci_1* be $lanes_((inn_2 X N_2), c_1)[$halfop(hf, 0, N_1) : N_1].
-6. Let ci_2* be $lanes_((inn_2 X N_2), c_2)[$halfop(hf, 0, N_1) : N_1].
-7. Assert: Due to validation, (|ci_1*| is |ci_2*|).
-8. Let c be $invlanes_((inn_1 X N_1), $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_2))*).
-9. Execute (VCONST V128 c).
-
-execution_of_VEXTADD_PAIRWISE (inn_1 X N_1) (inn_2 X N_2) sx
+execution_of_VEXTUNOP sh_1 sh_2 vextunop sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_1) from the stack.
-3. Assert: Due to validation, (ci* is $lanes_((inn_2 X N_2), c_1)).
-4. Assert: Due to validation, ($concat_([ci_1, ci_2]*) is $ext($lsize(inn_2), $lsize(inn_1), sx, i)*).
-5. Assert: Due to validation, (c is $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), ci_1, ci_2)*)).
+3. Let c be $vextunop(sh_1, sh_2, vextunop, sx, c_1).
+4. Execute (VCONST V128 c).
+
+execution_of_VEXTBINOP sh_1 sh_2 vextbinop sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VCONST V128 c_1) from the stack.
+5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
 6. Execute (VCONST V128 c).
 
 execution_of_LOCAL.TEE x
@@ -2990,6 +2970,9 @@ validation_of_VVTERNOP V128 vvternop
 validation_of_VVTESTOP V128 vvtestop
 - The instruction is valid with type ([V128] -> [I32]).
 
+validation_of_VBITMASK sh
+- The instruction is valid with type ([V128] -> [I32]).
+
 validation_of_VSWIZZLE sh
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
@@ -3030,17 +3013,11 @@ validation_of_VCVTOP sh vcvtop hf? sh sx? zero
 validation_of_VNARROW sh sh sx
 - The instruction is valid with type ([V128, V128] -> [V128]).
 
-validation_of_VBITMASK sh
-- The instruction is valid with type ([V128] -> [I32]).
-
-validation_of_VDOT sh sh sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VEXTMUL sh hf sh sx
-- The instruction is valid with type ([V128, V128] -> [V128]).
-
-validation_of_VEXTADD_PAIRWISE sh sh sx
+validation_of_VEXTUNOP sh sh vextunop sx
 - The instruction is valid with type ([V128] -> [V128]).
+
+validation_of_VEXTBINOP sh sh vextbinop sx
+- The instruction is valid with type ([V128, V128] -> [V128]).
 
 validation_of_LOCAL.GET x
 - |C.LOCAL| must be greater than x.
@@ -4430,12 +4407,12 @@ execution_of_VBINOP sh vbinop
 6. If ($vbinop(sh, vbinop, c_1, c_2) is []), then:
   a. Trap.
 
-execution_of_VRELOP (lnn X N) vrelop
+execution_of_VRELOP sh vrelop
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_2) from the stack.
 3. Assert: Due to validation, a value is on the top of the stack.
 4. Pop (VCONST V128 c_1) from the stack.
-5. Let c be $vrelop((lnn X N), vrelop, c_1, c_2).
+5. Let c be $vrelop(sh, vrelop, c_1, c_2).
 6. Execute (VCONST V128 c).
 
 execution_of_VSHIFTOP (imm X N) vshiftop
@@ -4505,35 +4482,18 @@ execution_of_VCVTOP (lanet_u0 X N_2) vcvtop half_u1? (lanet_u2 X N_1) sx_u3? (ZE
     4) Let c be $invlanes_((inn_2 X N_2), $vcvtop((inn_1 X N_1), (inn_2 X N_2), vcvtop, sx?, ci)* ++ 0^N_1).
     5) Execute (VCONST V128 c).
 
-execution_of_VDOT (inn_1 X N_1) (inn_2 X N_2) S
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop (VCONST V128 c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop (VCONST V128 c_1) from the stack.
-5. Let ci_1* be $lanes_((inn_2 X N_2), c_1).
-6. Let ci_2* be $lanes_((inn_2 X N_2), c_2).
-7. Assert: Due to validation, (|ci_1*| is |ci_2*|).
-8. Let [cj_1, cj_2]* be $inverse_of_concat_($imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_1), $ext($lsize(inn_2), $lsize(inn_1), S, ci_2))*).
-9. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
-10. Execute (VCONST V128 c).
-
-execution_of_VEXTMUL (inn_1 X N_1) hf (inn_2 X N_2) sx
-1. Assert: Due to validation, a value is on the top of the stack.
-2. Pop (VCONST V128 c_2) from the stack.
-3. Assert: Due to validation, a value is on the top of the stack.
-4. Pop (VCONST V128 c_1) from the stack.
-5. Let ci_1* be $lanes_((inn_2 X N_2), c_1)[$halfop(hf, 0, N_1) : N_1].
-6. Let ci_2* be $lanes_((inn_2 X N_2), c_2)[$halfop(hf, 0, N_1) : N_1].
-7. Assert: Due to validation, (|ci_1*| is |ci_2*|).
-8. Let c be $invlanes_((inn_1 X N_1), $imul($lsize(inn_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_1), $ext($lsize(inn_2), $lsize(inn_1), sx, ci_2))*).
-9. Execute (VCONST V128 c).
-
-execution_of_VEXTADD_PAIRWISE (inn_1 X N_1) (inn_2 X N_2) sx
+execution_of_VEXTUNOP sh_1 sh_2 vextunop sx
 1. Assert: Due to validation, a value is on the top of the stack.
 2. Pop (VCONST V128 c_1) from the stack.
-3. Let ci_1* be $lanes_((inn_2 X N_2), c_1).
-4. Let [cj_1, cj_2]* be $inverse_of_concat_($ext($lsize(inn_2), $lsize(inn_1), sx, ci_1)*).
-5. Let c be $invlanes_((inn_1 X N_1), $iadd($lsize(inn_1), cj_1, cj_2)*).
+3. Let c be $vextunop(sh_1, sh_2, vextunop, sx, c_1).
+4. Execute (VCONST V128 c).
+
+execution_of_VEXTBINOP sh_1 sh_2 vextbinop sx
+1. Assert: Due to validation, a value is on the top of the stack.
+2. Pop (VCONST V128 c_2) from the stack.
+3. Assert: Due to validation, a value is on the top of the stack.
+4. Pop (VCONST V128 c_1) from the stack.
+5. Let c be $vextbinop(sh_1, sh_2, vextbinop, sx, c_1, c_2).
 6. Execute (VCONST V128 c).
 
 execution_of_LOCAL.TEE x

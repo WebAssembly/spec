@@ -480,15 +480,12 @@ warning: syntax `vcvtop` was never spliced
 warning: syntax `vec` was never spliced
 warning: syntax `vec_` was never spliced
 warning: syntax `vectype` was never spliced
-warning: syntax `vlimop_` was never spliced
-warning: syntax `vlimop_` was never spliced
+warning: syntax `vextbinop_` was never spliced
+warning: syntax `vextunop_` was never spliced
 warning: syntax `vloadop` was never spliced
 warning: syntax `vnn` was never spliced
 warning: syntax `vrelop_` was never spliced
 warning: syntax `vrelop_` was never spliced
-warning: syntax `vsatbinop_` was never spliced
-warning: syntax `vsatbinop_` was never spliced
-warning: syntax `vshiftop_` was never spliced
 warning: syntax `vshiftop_` was never spliced
 warning: syntax `vtestop_` was never spliced
 warning: syntax `vtestop_` was never spliced
@@ -732,6 +729,7 @@ warning: rule `Instr_ok/vvunop` was never spliced
 warning: rule `Instr_ok/vvbinop` was never spliced
 warning: rule `Instr_ok/vvternop` was never spliced
 warning: rule `Instr_ok/vvtestop` was never spliced
+warning: rule `Instr_ok/vbitmask` was never spliced
 warning: rule `Instr_ok/vswizzle` was never spliced
 warning: rule `Instr_ok/vshuffle` was never spliced
 warning: rule `Instr_ok/vsplat` was never spliced
@@ -744,10 +742,9 @@ warning: rule `Instr_ok/vrelop` was never spliced
 warning: rule `Instr_ok/vshiftop` was never spliced
 warning: rule `Instr_ok/vcvtop` was never spliced
 warning: rule `Instr_ok/vnarrow` was never spliced
+warning: rule `Instr_ok/vextunop` was never spliced
+warning: rule `Instr_ok/vextbinop` was never spliced
 warning: rule `Instr_ok/vbitmask` was never spliced
-warning: rule `Instr_ok/vdot` was never spliced
-warning: rule `Instr_ok/vextmul` was never spliced
-warning: rule `Instr_ok/vextadd_pairwise` was never spliced
 warning: rule `Instr_ok/local.get` was never spliced
 warning: rule `Instr_ok/global.get` was never spliced
 warning: rule `Instr_ok/global.set` was never spliced
@@ -904,9 +901,8 @@ warning: rule `Step_pure/vnarrow` was never spliced
 warning: rule `Step_pure/vcvtop-normal` was never spliced
 warning: rule `Step_pure/vcvtop-half` was never spliced
 warning: rule `Step_pure/vcvtop-zero` was never spliced
-warning: rule `Step_pure/vdot` was never spliced
-warning: rule `Step_pure/vextmul` was never spliced
-warning: rule `Step_pure/vextadd_pairwise` was never spliced
+warning: rule `Step_pure/vextunop` was never spliced
+warning: rule `Step_pure/vextbinop` was never spliced
 warning: rule `Step_pure/local.tee` was never spliced
 warning: rule `Step_read/br_on_cast-succeed` was never spliced
 warning: rule `Step_read/br_on_cast-fail` was never spliced
@@ -1166,6 +1162,8 @@ warning: definition `utf8` was never spliced
 warning: definition `vbinop` was never spliced
 warning: definition `vbytes` was never spliced
 warning: definition `vcvtop` was never spliced
+warning: definition `vextbinop` was never spliced
+warning: definition `vextunop` was never spliced
 warning: definition `vishiftop` was never spliced
 warning: definition `vrelop` was never spliced
 warning: definition `vunop` was never spliced
@@ -1241,9 +1239,8 @@ warning: rule prose `exec/br_on_cast` was never spliced
 warning: rule prose `exec/loop` was never spliced
 warning: rule prose `exec/block` was never spliced
 warning: rule prose `exec/local.tee` was never spliced
-warning: rule prose `exec/vextadd_pairwise` was never spliced
-warning: rule prose `exec/vextmul` was never spliced
-warning: rule prose `exec/vdot` was never spliced
+warning: rule prose `exec/vextbinop` was never spliced
+warning: rule prose `exec/vextunop` was never spliced
 warning: rule prose `exec/vcvtop` was never spliced
 warning: rule prose `exec/vnarrow` was never spliced
 warning: rule prose `exec/vbitmask` was never spliced
@@ -1312,10 +1309,8 @@ warning: rule prose `valid/table.get` was never spliced
 warning: rule prose `valid/global.set` was never spliced
 warning: rule prose `valid/global.get` was never spliced
 warning: rule prose `valid/local.get` was never spliced
-warning: rule prose `valid/vextadd_pairwise` was never spliced
-warning: rule prose `valid/vextmul` was never spliced
-warning: rule prose `valid/vdot` was never spliced
-warning: rule prose `valid/vbitmask` was never spliced
+warning: rule prose `valid/vextbinop` was never spliced
+warning: rule prose `valid/vextunop` was never spliced
 warning: rule prose `valid/vnarrow` was never spliced
 warning: rule prose `valid/vcvtop` was never spliced
 warning: rule prose `valid/vshiftop` was never spliced
@@ -1328,6 +1323,7 @@ warning: rule prose `valid/vextract_lane` was never spliced
 warning: rule prose `valid/vsplat` was never spliced
 warning: rule prose `valid/vshuffle` was never spliced
 warning: rule prose `valid/vswizzle` was never spliced
+warning: rule prose `valid/vbitmask` was never spliced
 warning: rule prose `valid/vvtestop` was never spliced
 warning: rule prose `valid/vvternop` was never spliced
 warning: rule prose `valid/vvbinop` was never spliced
