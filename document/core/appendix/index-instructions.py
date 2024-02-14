@@ -341,7 +341,7 @@ INSTRUCTIONS = [
     Instruction(r'\ARRAYINITELEM~x~y', r'\hex{FB}~\hex{13}', r'[(\REF~\NULL~x)~\I32~\I32~\I32] \to []', r'valid-array.init_elem', r'exec-array.init_elem'),
     Instruction(r'\REFTEST~(\REF~t)', r'\hex{FB}~\hex{14}', r"[(\REF~t')] \to [\I32]", r'valid-ref.test', r'exec-ref.test'),
     Instruction(r'\REFTEST~(\REF~\NULL~t)', r'\hex{FB}~\hex{15}', r"[(REF~\NULL~t')] \to [\I32]", r'valid-ref.test', r'exec-ref.test'),
-    Instruction(r'\REFCAST~(\REF~t)', r'\hex{FB}~\hex{16}', r"[(\REF~t')] \to [(\REF~t)]", r'valid-ref.test', r'exec-ref.test'),
+    Instruction(r'\REFCAST~(\REF~t)', r'\hex{FB}~\hex{16}', r"[(\REF~t')] \to [(\REF~t)]", r'valid-ref.cast', r'exec-ref.cast'),
     Instruction(r'\REFCAST~(\REF~\NULL~t)', r'\hex{FB}~\hex{17}', r"[(\REF~\NULL~t')] \to [(\REF~\NULL~t)]", r'valid-ref.cast', r'exec-ref.cast'),
     Instruction(r'\BRONCAST~t_1~t_2', r'\hex{FB}~\hex{18}', r'[t_1] \to [t_1\reftypediff t_2]', r'valid-br_on_cast', r'exec-br_on_cast'),
     Instruction(r'\BRONCASTFAIL~t_1~t_2', r'\hex{FB}~\hex{19}', r'[t_1] \to [t_2]', r'valid-br_on_cast_fail', r'exec-br_on_cast_fail'),
