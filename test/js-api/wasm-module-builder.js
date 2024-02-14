@@ -456,7 +456,7 @@ let kExprBrOnCast = 0x18;
 let kExprBrOnCastFail = 0x19;
 let kExprExternInternalize = 0x1a;
 let kExprExternExternalize = 0x1b;
-let kExprI31New = 0x1c;
+let kExprRefI31 = 0x1c;
 let kExprI31GetS = 0x1d;
 let kExprI31GetU = 0x1e;
 
@@ -1199,6 +1199,10 @@ class WasmModuleBuilder {
       binary.emit_section(kTableSectionCode, section => {
         section.emit_u32v(wasm.tables.length);
         for (let table of wasm.tables) {
+          if (table.has_init) {
+            section.emit_u8(0x40);  // "has initializer"
+            section.emit_u8(0x00);  // Reserved byte.
+          }
           section.emit_type(table.type);
           section.emit_u8(table.has_max);
           section.emit_u32v(table.initial_size);

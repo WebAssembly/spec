@@ -693,3 +693,23 @@ Matching
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}
+
+
+.. index:: value type
+.. _embed-default-value:
+
+Value types
+~~~~~~~~~~~
+
+:math:`\F{default\_value}(\type) : \val`
+...............................................
+
+1. If :math:`\default_{type}` is not defined, then return :math:`\ERROR`.
+
+1. Else, return the :ref:`value <syntax-val>` :math:`\default_{type}`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{default\_value}(t) &=& v && (\iff \default_t = v) \\
+   \F{default\_value}(t) &=& \ERROR && (\iff \default_t = \epsilon) \\
+   \end{array}
