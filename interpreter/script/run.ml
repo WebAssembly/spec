@@ -231,7 +231,7 @@ let string_of_nan = function
 
 let type_of_result r =
   let open Types in
-  match r with
+  match r.it with
   | NumResult (NumPat n) -> NumT (Value.type_of_num n.it)
   | NumResult (NanPat n) -> NumT (Value.type_of_num n.it)
   | VecResult (VecPat v) -> VecT (Value.type_of_vec v)
@@ -259,7 +259,7 @@ let string_of_ref_pat (p : ref_pat) =
   | NullPat -> "null"
 
 let string_of_result r =
-  match r with
+  match r.it with
   | NumResult np -> string_of_num_pat np
   | VecResult vp -> string_of_vec_pat vp
   | RefResult rp -> string_of_ref_pat rp
@@ -408,7 +408,7 @@ let assert_pat v r =
 let assert_result at got expect =
   if
     List.length got <> List.length expect ||
-    List.exists2 (fun v r -> not (assert_pat v r)) got expect
+    List.exists2 (fun v r -> not (assert_pat v r.it)) got expect
   then begin
     print_string "Result: "; print_values got;
     print_string "Expect: "; print_results expect;
@@ -474,9 +474,8 @@ let run_assertion ass =
 
   | AssertReturn (act, rs) ->
     trace ("Asserting return...");
-    let got_vs = run_action act in
-    let expect_rs = List.map (fun r -> r.it) rs in
-    assert_result ass.at got_vs expect_rs
+    let vs = run_action act in
+    assert_result ass.at vs rs
 
   | AssertTrap (act, re) ->
     trace ("Asserting trap...");

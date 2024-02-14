@@ -19,6 +19,7 @@ EXE = exe-$(NAME)/main.exe
 SRCDIR = src
 OUTDIR = _build/default/src
 CLONEDIR = src/backend-interpreter/reference-interpreter
+ROOTDIR = ..
 
 .PHONY: exe
 
@@ -29,8 +30,9 @@ exe: $(CLONEDIR)
 
 $(CLONEDIR):
 	@rm -rf $(CLONEDIR)
-	git clone --single-branch https://github.com/WebAssembly/gc.git $(CLONEDIR)
-	@(cd $(CLONEDIR)/interpreter; git checkout 3fa0537 -q; rm dune-project jslib/wast.ml script/run.mli valid/match.mli; cp ../../dune-ref-interp dune)
+	mkdir -p $@
+	cp -R $(ROOTDIR)/interpreter $(CLONEDIR)
+	@(cd $(CLONEDIR)/interpreter; rm dune-project jslib/wast.ml; cp ../../dune-ref-interp dune)
 
 
 # Latex
