@@ -674,7 +674,7 @@ Matching
 
 .. math::
    \begin{array}{lclll}
-   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff \vdashvaltypematch t_1 \matchesvaltype t_2) \\
+   \F{match\_reftype}(t_1, t_2) &=& \TRUE && (\iff {} \vdashvaltypematch t_1 \matchesvaltype t_2) \\
    \F{match\_reftype}(t_1, t_2) &=& \FALSE && (\otherwise) \\
    \end{array}
 
@@ -690,6 +690,6 @@ Matching
 
 .. math::
    \begin{array}{lclll}
-   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
+   \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff {} \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
    \end{array}
