@@ -2,6 +2,7 @@
 # -*- coding: latin-1 -*-
 
 import queue
+import multiprocessing
 import os
 import re
 import shelve
@@ -229,7 +230,8 @@ def Main():
       sys.stderr.write('.')
 
   q = queue.Queue()
-  for i in range(len(os.sched_getaffinity(0))):
+  for i in range(len(os.sched_getaffinity(0)) if "sched_getaffinity" in dir(os)
+                 else multiprocessing.cpu_count()):
     t = threading.Thread(target=Worker)
     t.daemon = True
     t.start()
