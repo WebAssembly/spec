@@ -695,7 +695,7 @@ Matching
    \end{array}
 
 
-.. index:: value type
+.. index:: value type, value
 .. _embed-default-value:
 
 Value types
