@@ -630,11 +630,12 @@ Globals
    \end{array}
 
 
-.. index:: reference, reference type
+.. index:: reference, reference type, value type, value
 .. _embed-ref-type:
+.. _embed-val-default:
 
-References
-~~~~~~~~~~
+Values
+~~~~~~
 
 :math:`\F{ref\_type}(\store, \reff) : \reftype`
 ...............................................
@@ -654,6 +655,20 @@ References
    In future versions of WebAssembly,
    not all references may carry precise type information at run time.
    In such cases, this function may return a less precise supertype.
+
+
+:math:`\F{val\_default}(\type) : \val`
+...............................................
+
+1. If :math:`\default_{type}` is not defined, then return :math:`\ERROR`.
+
+1. Else, return the :ref:`value <syntax-val>` :math:`\default_{type}`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{val\_default}(t) &=& v && (\iff \default_t = v) \\
+   \F{val\_default}(t) &=& \ERROR && (\iff \default_t = \epsilon) \\
+   \end{array}
 
 
 .. index:: value type, external type, subtyping
@@ -692,24 +707,4 @@ Matching
    \begin{array}{lclll}
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \TRUE && (\iff \vdashexterntypematch \X{et}_1 \matchesexterntype \X{et}_2) \\
    \F{match\_externtype}(\X{et}_1, \X{et}_2) &=& \FALSE && (\otherwise) \\
-   \end{array}
-
-
-.. index:: value type, value
-.. _embed-default-value:
-
-Value types
-~~~~~~~~~~~
-
-:math:`\F{default\_value}(\type) : \val`
-...............................................
-
-1. If :math:`\default_{type}` is not defined, then return :math:`\ERROR`.
-
-1. Else, return the :ref:`value <syntax-val>` :math:`\default_{type}`.
-
-.. math::
-   \begin{array}{lclll}
-   \F{default\_value}(t) &=& v && (\iff \default_t = v) \\
-   \F{default\_value}(t) &=& \ERROR && (\iff \default_t = \epsilon) \\
    \end{array}

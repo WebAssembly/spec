@@ -115,8 +115,8 @@ urlPrefix: https://webassembly.github.io/spec/core/; spec: WebAssembly; type: df
     text: global_read; url: appendix/embedding.html#embed-global-read
     text: global_write; url: appendix/embedding.html#embed-global-write
     text: ref_type; url: appendix/embedding.html#embed-ref-type
+    text: val_default; url: appendix/embedding.html#embed-val-default
     text: match_valtype; url: appendix/embedding.html#embed-match-valtype
-    text: default_value; url: appendix/embedding.html#embed-default-value
     text: error; url: appendix/embedding.html#embed-error
     text: store; url: exec/runtime.html#syntax-store
     text: table type; url: syntax/types.html#syntax-tabletype
@@ -895,7 +895,7 @@ which can be simultaneously referenced by multiple {{Instance}} objects. Each
 <div algorithm>
     The algorithm <dfn>DefaultValue</dfn>(|valuetype|) performs the following steps:
     1. If |valuetype| equals [=externref=], return [=ToWebAssemblyValue=](undefined, |valuetype|).
-    1. Return [=default_value=](|valuetype|).
+    1. Return [=val_default=](|valuetype|).
 </div>
 
 <div algorithm>
