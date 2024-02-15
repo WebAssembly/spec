@@ -114,7 +114,7 @@ let rec translate_iter = function
 and translate_expr exp =
   let at = exp.at in
   match exp.it with
-  | Il.NatE n -> numE (Int64.of_int n) ~at:at
+  | Il.NatE n -> numE n ~at:at
   | Il.BoolE b -> boolE b ~at:at
   (* List *)
   | Il.LenE inner_exp -> lenE (translate_expr inner_exp) ~at:at
@@ -507,7 +507,7 @@ let rec translate_letpr lhs rhs targets cont =
     else
     [
       ifI
-        ( binE (EqOp, lenE rhs, numE (Int64.of_int (List.length es))),
+        ( binE (EqOp, lenE rhs, numE (Z.of_int (List.length es))),
           letI (listE es' ~at:lhs_at, rhs) ~at:at :: translate_bindings bindings,
           [] );
     ]
@@ -546,7 +546,7 @@ let rec translate_letpr lhs rhs targets cont =
       match e.it with
       | ListE es ->
         let bindings', es' = extract_non_names es in
-        Some (numE (Int64.of_int (List.length es))), bindings', listE es'
+        Some (numE (Z.of_int (List.length es))), bindings', listE es'
       | IterE (({ it = VarE _; _ } | { it = SubE _; _ }), _, ListN (e', None)) ->
         Some e', [], e
       | _ ->

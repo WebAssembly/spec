@@ -112,7 +112,7 @@ let group_bytes_by =
   let n' = varE "n'" in
 
   let bytes_ = iterE (varE "byte", ["byte"], List) in
-  let bytes_left = listE [accE (bytes_, sliceP (numE 0L, n))] in
+  let bytes_left = listE [accE (bytes_, sliceP (numE Z.zero, n))] in
   let bytes_right = callE
     (
       "group_bytes_by",
@@ -161,7 +161,7 @@ let array_new_data =
   let unpacknumtype = callE ("unpacknumtype", [zt]) in
   (* include z or not ??? *)
   let data = callE ("data", [y]) in
-  let group_bytes_by = callE ("group_bytes_by", [binE (DivOp, storagesize, numE 8L); bstar]) in
+  let group_bytes_by = callE ("group_bytes_by", [binE (DivOp, storagesize, numE (Z.of_int 8)); bstar]) in
   let inverse_of_bytes_ = iterE (callE ("inverse_of_ibytes", [storagesize; gb]), ["gb"], List) in
 
   RuleA (
@@ -180,7 +180,7 @@ let array_new_data =
           ifI (
             binE (
               GtOp,
-              binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L)),
+              binE (AddOp, i, binE (DivOp, binE (MulOp, n, storagesize), numE (Z.of_int 8))),
               lenE (accE (callE ("data", [y]), dotP ("DATA", "datainst")))
             ),
             [ trapI () ],
@@ -191,7 +191,7 @@ let array_new_data =
             bstar,
             accE (
               accE (data, dotP ("DATA", "datainst")),
-              sliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE 8L))
+              sliceP (i, binE (DivOp, binE (MulOp, n, storagesize), numE (Z.of_int 8)))
             )
           );
           letI (gbstar, group_bytes_by);
@@ -210,7 +210,7 @@ let return_instrs_of_instantiate config =
   let store, frame, rhs = config in
   [
     enterI (
-      frameE (Some (numE 0L), frame),
+      frameE (Some (numE Z.zero), frame),
       listE ([ caseE (("FRAME_", "admininstr"), []) ]), rhs
     );
     returnI (Some (tupE [ store; varE "mm" ]))

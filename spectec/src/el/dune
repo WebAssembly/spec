@@ -1,5 +1,5 @@
 (library
   (name el)
-  (libraries util)
+  (libraries util zarith)
   (modules ast eq free subst convert print iter)
 )

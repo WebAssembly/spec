@@ -135,7 +135,7 @@ Lowering from EL into IL infers additional information and makes it explicit in 
 
 ### Prerequisites
 
-You will need `ocaml` installed with `dune`, `menhir`, and `mdx` using `opam`.
+You will need `ocaml` installed with `dune`, `menhir`, `mdx`, and the `zarith` library using `opam`.
 
 * Install `opam` version 2.0.5 or higher.
   ```
@@ -146,12 +146,11 @@ You will need `ocaml` installed with `dune`, `menhir`, and `mdx` using `opam`.
 * Set `ocaml` as version 5.0.0 or higher.
   ```
   $ opam switch create 5.0.0
-  $ opam install dune menhir mdx
   ```
   
-* Install `dune` version 3.11.0, `menhir` version 20230608, and `mdx` version 2.3.1 via `opam` (default versions)
+* Install `dune` version 3.11.0, `menhir` version 20230608, `mdx` version 2.3.1, and `zarith` version 1.12, via `opam` (default versions)
   ```
-  $ opam install dune menhir mdx
+  $ opam install dune menhir mdx zarith
   ```
 
 ### Building the Project

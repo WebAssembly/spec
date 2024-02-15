@@ -54,7 +54,7 @@ and string_of_value = function
   | FrameV _ -> "FrameV"
   | StoreV _ -> "StoreV"
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
-  | NumV n -> Printf.sprintf "0x%LX" n
+  | NumV n -> "0x" ^ Z.format "%X" n
   | BoolV b -> string_of_bool b
   | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> s
@@ -116,7 +116,7 @@ and string_of_record_expr r =
 
 and string_of_expr expr =
   match expr.it with
-  | NumE i -> Int64.to_string i
+  | NumE i -> Z.to_string i
   | BoolE b -> string_of_bool b
   | UnE (NotOp, { it = IsCaseOfE (e, kwd); _ }) ->
     sprintf "%s is not of the case %s" (string_of_expr e) (string_of_kwd kwd)
@@ -346,7 +346,7 @@ let rec structured_string_of_value = function
   | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
-  | NumV n -> "NumV (" ^ Int64.to_string n ^ ")"
+  | NumV n -> "NumV (" ^ Z.to_string n ^ ")"
   | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
@@ -378,7 +378,7 @@ and structured_string_of_record_expr r =
 
 and structured_string_of_expr expr =
   match expr.it with
-  | NumE i -> Int64.to_string i
+  | NumE i -> Z.to_string i
   | BoolE b -> string_of_bool b
   | UnE (op, e) ->
     "UnE ("

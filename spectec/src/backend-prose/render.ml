@@ -91,9 +91,8 @@ and al_to_el_path pl =
 and al_to_el_expr expr =
   let exp' =
     match expr.it with
-    | Al.Ast.NumE i -> 
-        let ei = Int64.to_int i in
-        let eli = El.Ast.NatE (El.Ast.DecOp, ei) in
+    | Al.Ast.NumE i ->
+        let eli = El.Ast.NatE (El.Ast.DecOp, i) in
         Some eli
     | Al.Ast.UnE (op, e) ->
         let* elop = al_to_el_unop op in 
