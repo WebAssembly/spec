@@ -370,7 +370,7 @@ A {{Module}} object represents a single WebAssembly module. Each {{Module}} obje
                     1. Throw a {{LinkError}} exception.
                 1. If |valtype| is [=v128=],
                     1. Throw a {{LinkError}} exception.
-                1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws an exception, catch it, and throw a {{LinkError}} exception.
+                1. Let |value| be [=ToWebAssemblyValue=](|v|, |valtype|). If this operation throws a {{TypeError}}, catch it, and throw a {{LinkError}} exception.
                 1. Let |store| be the [=surrounding agent=]'s [=associated store=].
                 1. Let (|store|, |globaladdr|) be [=global_alloc=](|store|, [=const=] |valtype|, |value|).
                 1. Set the [=surrounding agent=]'s [=associated store=] to |store|.
