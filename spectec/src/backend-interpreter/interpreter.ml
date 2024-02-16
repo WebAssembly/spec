@@ -26,26 +26,13 @@ let fail_on_path msg path =
 
 let check_i32_const = function
   | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
-    let n' = Int64.logand 0xFFFFFFFFL n in
+    let n' = Z.logand (Z.of_int64 0xFFFF_FFFFL) n in
     CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
   | v -> v
 let rec is_true = function
   | BoolV true -> true
   | ListV a -> Array.for_all is_true !a
   | _ -> false
-
-let rec int64_exp base exponent =
-  if exponent = 0L then
-    1L
-  else if exponent = 1L then
-    base
-  else
-    let half_pow = int64_exp base (Int64.div exponent 2L) in
-    let pow = Int64.mul half_pow half_pow in
-    if Int64.rem exponent 2L = 0L then
-      pow
-    else
-      Int64.mul base pow
 
 let is_matrix matrix =
   match matrix with
@@ -166,15 +153,15 @@ and eval_expr expr =
   (* Value *)
   | NumE i -> numV i
   (* Numeric Operation *)
-  | UnE (MinusOp, inner_e) -> eval_expr inner_e |> al_to_int64 |> Int64.neg |> numV
+  | UnE (MinusOp, inner_e) -> eval_expr inner_e |> al_to_z |> Z.neg |> numV
   | UnE (NotOp, e) -> eval_expr e |> al_to_bool |> not |> boolV
   | BinE (op, e1, e2) ->
     (match op, eval_expr e1, eval_expr e2 with
-    | AddOp, NumV i1, NumV i2 -> Int64.add i1 i2 |> numV
-    | SubOp, NumV i1, NumV i2 -> Int64.sub i1 i2 |> numV
-    | MulOp, NumV i1, NumV i2 -> Int64.mul i1 i2 |> numV
-    | DivOp, NumV i1, NumV i2 -> Int64.div i1 i2 |> numV
-    | ExpOp, NumV i1, NumV i2 -> int64_exp i1 i2 |> numV
+    | AddOp, NumV i1, NumV i2 -> Z.add i1 i2 |> numV
+    | SubOp, NumV i1, NumV i2 -> Z.sub i1 i2 |> numV
+    | MulOp, NumV i1, NumV i2 -> Z.mul i1 i2 |> numV
+    | DivOp, NumV i1, NumV i2 -> Z.div i1 i2 |> numV
+    | ExpOp, NumV i1, NumV i2 -> Z.pow i1 (Z.to_int i2) |> numV
     | AndOp, BoolV b1, BoolV b2 -> boolV (b1 && b2)
     | OrOp, BoolV b1, BoolV b2 -> boolV (b1 || b2)
     | ImplOp, BoolV b1, BoolV b2 -> boolV (not b1 || b2)
@@ -200,7 +187,7 @@ and eval_expr expr =
     let a2 = eval_expr e2 |> unwrap_listv_to_array in
     Array.append a1 a2 |> listV
   | LenE e ->
-    eval_expr e |> unwrap_listv_to_array |> Array.length |> I64.of_int_u |> numV
+    eval_expr e |> unwrap_listv_to_array |> Array.length |> Z.of_int |> numV
   | StrE r ->
     r |> Record.map string_of_kwd eval_expr |> strV
   | AccE (e, p) ->
@@ -235,7 +222,7 @@ and eval_expr expr =
     (match eval_expr e with
     | LabelV (v, _) -> v
     | FrameV (Some v, _) -> v
-    | FrameV _ -> numV 0L
+    | FrameV _ -> numV Z.zero
     | _ -> fail_on_expr "Not a context" expr (* Due to AL validation, unreachable *))
   | FrameE (e1, e2) ->
     let v1 = Option.map eval_expr e1 in
@@ -301,9 +288,9 @@ and eval_expr expr =
       | _ -> false in
     (match eval_expr e with
     (* valid_tabletype *)
-    | TupV [ lim; _ ] -> valid_lim 0xffffffffL lim |> boolV
+    | TupV [ lim; _ ] -> valid_lim (Z.of_int 0xffffffff) lim |> boolV
     (* valid_memtype *)
-    | CaseV ("I8", [ lim ]) -> valid_lim 0x10000L lim |> boolV
+    | CaseV ("I8", [ lim ]) -> valid_lim (Z.of_int 0x10000) lim |> boolV
     (* valid_other *)
     | _ -> fail_on_expr "TODO: Currently, we are already validating tabletype and memtype" expr)
   | HasTypeE (e, s) ->
@@ -393,7 +380,7 @@ and assign lhs rhs env =
       match iter, rhs with
       | (List | List1), ListV arr -> env, listV [||], Array.to_list !arr
       | ListN (expr, None), ListV arr ->
-        let length = Array.length !arr |> Int64.of_int |> numV in
+        let length = Array.length !arr |> Z.of_int |> numV in
         assign expr length env, listV [||], Array.to_list !arr
       | Opt, OptV opt -> env, optV None, Option.to_list opt
       | ListN (_, Some _), ListV _ ->
@@ -433,12 +420,12 @@ and assign lhs rhs env =
   | BinE (binop, e1, e2), NumV m ->
     let invop =
       match binop with
-      | AddOp -> Int64.sub
-      | SubOp -> Int64.add
-      | MulOp -> Int64.unsigned_div
-      | DivOp -> Int64.mul
+      | AddOp -> Z.sub
+      | SubOp -> Z.add
+      | MulOp -> Z.div
+      | DivOp -> Z.mul
       | _ -> failwith "Invalid binop for lhs of assignment" in
-    let v = eval_expr e2 |> al_to_int64 |> invop m |> numV in
+    let v = eval_expr e2 |> al_to_z |> invop m |> numV in
     assign e1 v env
   | CatE (e1, e2), ListV vs -> assign_split e1 e2 !vs env
   | StrE r1, StrV r2 when has_same_keys r1 r2 ->
@@ -568,7 +555,7 @@ and is_builtin = function
 
 and call_builtin name =
   let local x =
-    match call_algo "local" [ numV (Int64.of_int x) ] with
+    match call_algo "local" [ numV (Z.of_int x) ] with
     | Some v -> v
     | _ -> failwith "Builtin doesn't return a value"
   in

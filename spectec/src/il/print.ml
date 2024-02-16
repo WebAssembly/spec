@@ -148,7 +148,7 @@ and string_of_exp e =
   match e.it with
   | VarE id -> id.it
   | BoolE b -> string_of_bool b
-  | NatE n -> string_of_int n
+  | NatE n -> Z.to_string n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (op, e1, e2) ->

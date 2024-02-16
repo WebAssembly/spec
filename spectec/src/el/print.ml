@@ -147,9 +147,9 @@ and string_of_exp e =
   | VarE (id, args) -> id.it ^ string_of_args args
   | AtomE atom -> string_of_atom atom
   | BoolE b -> string_of_bool b
-  | NatE (DecOp, n) -> string_of_int n
-  | NatE (HexOp, n) -> Printf.sprintf "0x%X" n
-  | NatE (CharOp, n) -> Printf.sprintf "U+%X" n
+  | NatE (DecOp, n) -> Z.to_string n
+  | NatE (HexOp, n) -> "0x" ^ Z.format "%X" n
+  | NatE (CharOp, n) -> "U+" ^ Z.format "%X" n
   | TextE t -> "\"" ^ String.escaped t ^ "\""
   | UnE (op, e2) -> string_of_unop op ^ " " ^ string_of_exp e2
   | BinE (e1, op, e2) ->
@@ -225,9 +225,9 @@ and string_of_prem prem =
 and string_of_sym g =
   match g.it with
   | VarG (id, args) -> id.it ^ string_of_args args
-  | NatG (DecOp, n) -> string_of_int n
-  | NatG (HexOp, n) -> Printf.sprintf "0x%X" n
-  | NatG (CharOp, n) -> Printf.sprintf "U+%X" n
+  | NatG (DecOp, n) -> Z.to_string n
+  | NatG (HexOp, n) -> "0x" ^ Z.format "%X" n
+  | NatG (CharOp, n) -> "U+" ^ Z.format "%X" n
   | TextG t -> "\"" ^ String.escaped t ^ "\""
   | EpsG -> "eps"
   | SeqG gs -> "{" ^ concat " " (map_filter_nl_list string_of_sym gs) ^ "}"

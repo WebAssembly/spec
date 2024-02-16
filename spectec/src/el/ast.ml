@@ -12,7 +12,7 @@ type 'a nl_list = 'a nl_elem list
 
 (* Terminals *)
 
-type nat = int
+type nat = Z.t
 type text = string
 type id = string phrase
 
@@ -172,7 +172,7 @@ and path' =
 and sym = sym' phrase
 and sym' =
   | VarG of id * arg list                    (* gramid (`(` arg,* `)`)? *)
-  | NatG of natop * int                      (* nat *)
+  | NatG of natop * nat                      (* nat *)
   | TextG of string                          (* `"`text`"` *)
   | EpsG                                     (* `eps` *)
   | SeqG of sym nl_list                      (* sym sym *)

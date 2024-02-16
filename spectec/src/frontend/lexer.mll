@@ -19,17 +19,10 @@ let error_nest start lexbuf msg =
   lexbuf.Lexing.lex_start_p <- start;
   error lexbuf msg
 
-let nat lexbuf s =
-  try
-    let n = int_of_string s in
-    if n >= 0 then n else raise (Failure "")
-  with Failure _ -> error lexbuf "nat literal out of range"
-
-let hex lexbuf s =
-  try
-    let n = int_of_string s in
-    if n >= 0 then n else raise (Failure "")
-  with Failure _ -> error lexbuf "hex literal out of range"
+let nat _lexbuf s = Z.of_string s
+let hex _lexbuf s = Z.of_string s
+let int lexbuf s =
+  try int_of_string s with Failure _ -> error lexbuf "hex literal out of range"
 
 let text _lexbuf s =
   let b = Buffer.create (String.length s) in
@@ -204,10 +197,10 @@ and token = parse
   | "_|_" { BOT }
   | "^|^" { TOP }
   | "%" { HOLE }
-  | "%"(nat as s) { HOLEN (nat lexbuf s) }
+  | "%"(nat as s) { HOLEN (int lexbuf s) }
   | "%%" { MULTIHOLE }
   | "!%" { SKIP }
-  | "!%"(nat as s) { SKIPN (nat lexbuf s) }
+  | "!%"(nat as s) { SKIPN (int lexbuf s) }
   | "!%%" { MULTISKIP }
   | "#" { FUSE }
 

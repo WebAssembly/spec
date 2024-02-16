@@ -80,7 +80,7 @@ let sliceP ?(at = no) (e1, e2) = SliceP (e1, e2) |> mk_path at
 let dotP ?(at = no) kwd = DotP kwd |> mk_path at
 
 let numV i = NumV i
-let numV_of_int i = Int64.of_int i |> numV
+let numV_of_int i = Z.of_int i |> numV
 let boolV b = BoolV b
 let vecV vec = VecV vec
 let strV r = StrV r
@@ -90,8 +90,8 @@ let tupV vl = TupV vl
 let nullary s = CaseV (String.uppercase_ascii s, [])
 let listV a = ListV (ref a)
 let listV_of_list l = Array.of_list l |> listV
-let zero = numV 0L
-let one = numV 1L
+let zero = numV Z.zero
+let one = numV Z.one
 let empty_list = listV [||]
 let singleton v = listV [|v|]
 
@@ -167,10 +167,10 @@ let get_body = function
 let unwrap_textv: value -> string = function
   | TextV str -> str
   | v -> fail "text" v
-let unwrap_numv: value -> int64 = function
-  | NumV i64 -> i64
+let unwrap_numv: value -> Z.t = function
+  | NumV i -> i
   | v -> fail "int64" v
-let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Int64.to_int
+let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Z.to_int
 let unwrap_boolv: value -> bool = function
   | BoolV b -> b
   | v -> fail "boolean" v
