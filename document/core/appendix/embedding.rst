@@ -657,12 +657,12 @@ Values
    In such cases, this function may return a less precise supertype.
 
 
-:math:`\F{val\_default}(\type) : \val`
+:math:`\F{val\_default}(\valtype) : \val`
 ...............................................
 
-1. If :math:`\default_{type}` is not defined, then return :math:`\ERROR`.
+1. If :math:`\default_{valtype}` is not defined, then return :math:`\ERROR`.
 
-1. Else, return the :ref:`value <syntax-val>` :math:`\default_{type}`.
+1. Else, return the :ref:`value <syntax-val>` :math:`\default_{valtype}`.
 
 .. math::
    \begin{array}{lclll}
