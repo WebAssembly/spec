@@ -337,7 +337,7 @@ let rec translate_rhs exp =
     ] -> [ pushI (translate_exp exp) ~at:at ]
   (* multiple rhs' *)
   | Il.CatE (e1, e2) -> translate_rhs e1 @ translate_rhs e2
-  | Il.ListE e -> List.concat_map translate_rhs e
+  | Il.ListE es -> List.concat_map translate_rhs es
   (* Frame *)
   | Il.CaseE (
       Il.Atom "FRAME_",
