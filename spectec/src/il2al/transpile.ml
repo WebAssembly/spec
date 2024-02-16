@@ -38,13 +38,13 @@ let both_empty cond1 cond2 =
   let get_list cond =
     match cond.it with
     | BinE (EqOp, e, { it = ListE []; _ })
-    | BinE (EqOp, { it = ListE []; _ }, e)
-    | BinE (EqOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | BinE (EqOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | BinE (LtOp, { it = LenE e; _ }, { it = NumE 1L; _ })
-    | BinE (LeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | BinE (GeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | BinE (GeOp, { it = NumE 1L; _ }, { it = LenE e; _ }) -> Some e
+    | BinE (EqOp, { it = ListE []; _ }, e) -> Some e
+    | BinE (EqOp, { it = LenE e; _ }, { it = NumE z; _ })
+    | BinE (EqOp, { it = NumE z; _ }, { it = LenE e; _ })
+    | BinE (LeOp, { it = LenE e; _ }, { it = NumE z; _ })
+    | BinE (GeOp, { it = NumE z; _ }, { it = LenE e; _ }) when z = Z.zero -> Some e
+    | BinE (LtOp, { it = LenE e; _ }, { it = NumE z; _ })
+    | BinE (GeOp, { it = NumE z; _ }, { it = LenE e; _ }) when z = Z.one -> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with
@@ -55,13 +55,13 @@ let both_non_empty cond1 cond2 =
   let get_list cond =
     match cond.it with
     | BinE (NeOp, e, { it = ListE []; _ })
-    | BinE (NeOp, { it = ListE []; _ }, e)
-    | BinE (NeOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | BinE (NeOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | BinE (LtOp, { it = NumE 0L; _ }, { it = LenE e; _ })
-    | BinE (GtOp, { it = LenE e; _ }, { it = NumE 0L; _ })
-    | BinE (LeOp, { it = NumE 1L; _ }, { it = LenE e; _ })
-    | BinE (GeOp, { it = LenE e; _ }, { it = NumE 1L; _ }) -> Some e
+    | BinE (NeOp, { it = ListE []; _ }, e) -> Some e
+    | BinE (NeOp, { it = LenE e; _ }, { it = NumE z; _ })
+    | BinE (NeOp, { it = NumE z; _ }, { it = LenE e; _ })
+    | BinE (LtOp, { it = NumE z; _ }, { it = LenE e; _ })
+    | BinE (GtOp, { it = LenE e; _ }, { it = NumE z; _ }) when z = Z.zero -> Some e
+    | BinE (LeOp, { it = NumE z; _ }, { it = LenE e; _ })
+    | BinE (GeOp, { it = LenE e; _ }, { it = NumE z; _ }) when z = Z.one-> Some e
     | _ -> None
   in
   match get_list cond1, get_list cond2 with

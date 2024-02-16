@@ -25,7 +25,7 @@ let builtin () =
       CaseV ("DEF", [
         CaseV ("REC", [
           [| CaseV ("SUBD", [none "FINAL"; listV [||]; ftype]) |] |> listV
-        ]); numV 0L
+        ]); numV Z.zero
       ]) in
     name, StrV [
       "TYPE", ref (if !Construct.version = 3 then dt else arrow);
@@ -70,14 +70,14 @@ let builtin () =
   let tables = [
     "table",
     listV nulls
-    |> create_tableinst (TupV [ TupV [ numV 10L; numV 20L ]; nullary "FUNCREF" ]);
+    |> create_tableinst (TupV [ TupV [ numV (Z.of_int 10); numV (Z.of_int 20) ]; nullary "FUNCREF" ]);
   ] in
   (* Builtin memories *)
-  let zeros = numV 0L |> Array.make 0x10000 in
+  let zeros = numV Z.zero |> Array.make 0x10000 in
   let memories = [
     "memory",
     listV zeros
-    |> create_meminst (CaseV ("I8", [ TupV [ numV 1L; numV 2L ] ]));
+    |> create_meminst (CaseV ("I8", [ TupV [ numV Z.one; numV (Z.of_int 2) ] ]));
   ] in
 
   let append kind (name, inst) extern =
@@ -86,7 +86,7 @@ let builtin () =
 
     let addr =
       match Record.find kind (get_store ()) with
-      | ListV a -> Array.length !a |> Int64.of_int
+      | ListV a -> Array.length !a |> Z.of_int
       | _ -> failwith "Unreachable"
     in
     let new_extern =

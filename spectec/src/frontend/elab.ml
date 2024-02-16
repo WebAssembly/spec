@@ -829,7 +829,7 @@ and infer_exp' env e : Il.exp' * typ =
     Il.LenE e1', NumT NatT $ e.at
   | SizeE id ->
     let _ = find "grammar" env.syms id in
-    NatE 0, NumT NatT $ e.at
+    NatE Z.zero, NumT NatT $ e.at
   | ParenE (e1, _) ->
     infer_exp' env e1
   | TupE es ->

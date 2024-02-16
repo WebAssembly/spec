@@ -22,7 +22,7 @@ type ('a, 'b) record = ('a * 'b ref) list
 and store = (kwd', value) record
 
 and value =
-  | NumV of int64                      (* number *)
+  | NumV of Z.t                        (* number *)
   | BoolV of bool                      (* boolean *)
   | VecV of vec128                     (* vector *)
   | TextV of string                    (* string *)
@@ -76,7 +76,7 @@ type iter =
 and expr = expr' phrase
 and expr' =
   | VarE of id                          (* varid *)
-  | NumE of int64                       (* number *)
+  | NumE of Z.t                         (* number *)
   | BoolE of bool                       (* boolean *)
   | UnE of unop * expr                  (* unop expr *)
   | BinE of binop * expr * expr         (* expr binop expr *)

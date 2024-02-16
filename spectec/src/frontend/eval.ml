@@ -157,22 +157,22 @@ and reduce_exp env e : exp =
     | EquivOp, BoolE false, _ -> UnE (NotOp, e2') $ e.at
     | EquivOp, _, BoolE true -> e1'
     | EquivOp, _, BoolE false -> UnE (NotOp, e1') $ e.at
-    | AddOp, NatE (op, n1), NatE (_, n2) -> NatE (op, n1 + n2) $ e.at
-    | AddOp, NatE (_, 0), _ -> e2'
-    | AddOp, _, NatE (_, 0) -> e1'
-    | SubOp, NatE (op, n1), NatE (_, n2) -> NatE (op, n1 - n2) $ e.at
-    | SubOp, NatE (_, 0), _ -> UnE (MinusOp, e2') $ e.at
-    | SubOp, _, NatE (_, 0) -> e1'
-    | MulOp, NatE (op, n1), NatE (_, n2) -> NatE (op, n1 * n2) $ e.at
-    | MulOp, NatE (_, 1), _ -> e2'
-    | MulOp, _, NatE (_, 1) -> e1'
-    | DivOp, NatE (op, n1), NatE (_, n2) -> NatE (op, n1 / n2) $ e.at
-    | DivOp, NatE (_, 0), _ -> e1'
-    | DivOp, _, NatE (_, 1) -> e1'
-    | ExpOp, NatE (op, n1), NatE (_, n2) -> NatE (op, int_of_float (float n1 ** float n2)) $ e.at
-    | ExpOp, NatE (_, (0 | 1)), _ -> e1'
-    | ExpOp, _, NatE (op, 0) -> NatE (op, 1) $ e.at
-    | ExpOp, _, NatE (_, 1) -> e1'
+    | AddOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 + n2)) $ e.at
+    | AddOp, NatE (_, z0), _ when z0 = Z.zero -> e2'
+    | AddOp, _, NatE (_, z0) when z0 = Z.zero -> e1'
+    | SubOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 - n2)) $ e.at
+    | SubOp, NatE (_, z0), _ when z0 = Z.zero -> UnE (MinusOp, e2') $ e.at
+    | SubOp, _, NatE (_, z0) when z0 = Z.zero -> e1'
+    | MulOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 * n2)) $ e.at
+    | MulOp, NatE (_, z1), _ when z1 = Z.one -> e2'
+    | MulOp, _, NatE (_, z1) when z1 = Z.one -> e1'
+    | DivOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 / n2)) $ e.at
+    | DivOp, NatE (_, z0), _ when z0 = Z.zero -> e1'
+    | DivOp, _, NatE (_, z1) when z1 = Z.one -> e1'
+    | ExpOp, NatE (op, n1), NatE (_, n2) -> NatE (op, Z.(n1 ** to_int n2)) $ e.at
+    | ExpOp, NatE (_, z01), _ when z01 = Z.zero || z01 = Z.one -> e1'
+    | ExpOp, _, NatE (op, z0) when z0 = Z.zero -> NatE (op, Z.one) $ e.at
+    | ExpOp, _, NatE (_, z1) when z1 = Z.one -> e1'
     | _ -> BinE (e1', op, e2') $ e.at
     )
   | CmpE (e1, op, e2) ->
@@ -205,7 +205,7 @@ and reduce_exp env e : exp =
     let e1' = reduce_exp env e1 in
     let e2' = reduce_exp env e2 in
     (match e1'.it, e2'.it with
-    | SeqE es, NatE (_, i) when i < List.length es -> List.nth es i
+    | SeqE es, NatE (_, i) when i < Z.of_int (List.length es) -> List.nth es (Z.to_int i)
     | _ -> IdxE (e1', e2') $ e.at
     )
   | SliceE (e1, e2, e3) ->
@@ -213,8 +213,8 @@ and reduce_exp env e : exp =
     let e2' = reduce_exp env e2 in
     let e3' = reduce_exp env e3 in
     (match e1'.it, e2'.it, e3'.it with
-    | SeqE es, NatE (_, i), NatE (_, n) when i + n < List.length es ->
-      SeqE (Lib.List.take n (Lib.List.drop i es))
+    | SeqE es, NatE (_, i), NatE (_, n) when Z.(i + n) < Z.of_int (List.length es) ->
+      SeqE (Lib.List.take (Z.to_int n) (Lib.List.drop (Z.to_int i) es))
     | _ -> SliceE (e1', e2', e3')
     ) $ e.at
   | UpdE (e1, p, e2) ->
@@ -256,7 +256,7 @@ and reduce_exp env e : exp =
   | LenE e1 ->
     let e1' = reduce_exp env e1 in
     (match e1'.it with
-    | SeqE es -> NatE (DecOp, List.length es)
+    | SeqE es -> NatE (DecOp, Z.of_int (List.length es))
     | _ -> LenE e1'
     ) $ e.at
   | ParenE (e1, _) | TypE (e1, _) -> reduce_exp env e1
@@ -291,8 +291,8 @@ and reduce_path env e p f =
     let e1' = reduce_exp env e1 in
     let f' e' p1' =
       match e'.it, e1'.it with
-      | SeqE es, NatE (_, i) when i < List.length es ->
-        SeqE (List.mapi (fun j eJ -> if j = i then f eJ p1' else eJ) es) $ e'.at
+      | SeqE es, NatE (_, i) when i < Z.of_int (List.length es) ->
+        SeqE (List.mapi (fun j eJ -> if Z.of_int j = i then f eJ p1' else eJ) es) $ e'.at
       | _ ->
         f e' (IdxP (p1', e1') $ p.at)
     in
@@ -302,10 +302,10 @@ and reduce_path env e p f =
     let e2' = reduce_exp env e2 in
     let f' e' p1' =
       match e'.it, e1'.it, e2'.it with
-      | SeqE es, NatE (_, i), NatE (_, n) when i + n < List.length es ->
-        let e1' = SeqE Lib.List.(take i es) $ e'.at in
-        let e2' = SeqE Lib.List.(take n (drop i es)) $ e'.at in
-        let e3' = SeqE Lib.List.(drop (i + n) es) $ e'.at in
+      | SeqE es, NatE (_, i), NatE (_, n) when Z.(i + n) < Z.of_int (List.length es) ->
+        let e1' = SeqE Lib.List.(take (Z.to_int i) es) $ e'.at in
+        let e2' = SeqE Lib.List.(take (Z.to_int n) (drop (Z.to_int i) es)) $ e'.at in
+        let e3' = SeqE Lib.List.(drop Z.(to_int (i + n)) es) $ e'.at in
         reduce_exp env (SeqE [e1'; f e2' p1'; e3'] $ e'.at)
       | _ ->
         f e' (SliceP (p1', e1', e2') $ p.at)

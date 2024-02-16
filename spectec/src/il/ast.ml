@@ -6,7 +6,7 @@ open Util.Source
 
 (* Terminals *)
 
-type nat = int
+type nat = Z.t
 type text = string
 type id = string phrase
 

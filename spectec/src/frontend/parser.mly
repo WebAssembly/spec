@@ -107,7 +107,7 @@ let is_post_exp e =
 %token IF OTHERWISE HINT_LPAREN
 %token EPS INFINITY
 %token<bool> BOOLLIT
-%token<int> NATLIT HEXLIT CHARLIT
+%token<Z.t> NATLIT HEXLIT CHARLIT
 %token<string> TEXTLIT
 %token<string> UPID LOID DOTID UPID_LPAREN LOID_LPAREN
 %token EOF
@@ -209,7 +209,7 @@ gramid_lparen : id_lparen { $1 $ at $sloc }
 ruleid : ruleid_ { $1 }
 ruleid_ :
   | id { $1 }
-  | NATLIT { Int.to_string $1 }
+  | NATLIT { Z.to_string $1 }
   | BOOLLIT { Bool.to_string $1 }
   | IF { "if" }
   | VAR { "var" }

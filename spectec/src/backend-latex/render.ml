@@ -566,19 +566,19 @@ and render_exp env e =
   | VarE (id, args) ->
     render_apply render_varid render_exp env env.show_typ id args
   | BoolE b -> render_atom env (Atom (string_of_bool b) $$ e.at % ref "bool")
-  | NatE (DecOp, n) -> string_of_int n
+  | NatE (DecOp, n) -> Z.to_string n
   | NatE (HexOp, n) ->
-    let fmt : (_, _, _) format =
-      if n < 0x100 then "%02X" else
-      if n < 0x10000 then "%04X" else
+    let fmt =
+      if n < Z.of_int 0x100 then "%02X" else
+      if n < Z.of_int 0x10000 then "%04X" else
       "%X"
-    in "\\mathtt{0x" ^ Printf.sprintf fmt n ^ "}"
+    in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
   | NatE (CharOp, n) ->
-    let fmt : (_, _, _) format =
-      if n < 0x100 then "%02X" else
-      if n < 0x10000 then "%04X" else
+    let fmt =
+      if n < Z.of_int 0x100 then "%02X" else
+      if n < Z.of_int 0x10000 then "%04X" else
       "%X"
-    in "\\mathrm{U{+}" ^ Printf.sprintf fmt n ^ "}"
+    in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | TextE t -> "``" ^ t ^ "''"
   | UnE (op, e2) -> "{" ^ render_unop op ^ render_exp env e2 ^ "}"
   | BinE (e1, ExpOp, ({it = ParenE (e2, _); _ } | e2)) ->
@@ -719,19 +719,19 @@ and render_sym env g =
   match g.it with
   | VarG (id, args) ->
     render_apply render_gramid render_exp_as_sym env env.show_gram id args
-  | NatG (DecOp, n) -> string_of_int n
+  | NatG (DecOp, n) -> Z.to_string n
   | NatG (HexOp, n) ->
-    let fmt : (_, _, _) format =
-      if n < 0x100 then "%02X" else
-      if n < 0x10000 then "%04X" else
+    let fmt =
+      if n < Z.of_int 0x100 then "%02X" else
+      if n < Z.of_int 0x10000 then "%04X" else
       "%X"
-    in "\\mathtt{0x" ^ Printf.sprintf fmt n ^ "}"
+    in "\\mathtt{0x" ^ Z.format fmt n ^ "}"
   | NatG (CharOp, n) ->
-    let fmt : (_, _, _) format =
-      if n < 0x100 then "%02X" else
-      if n < 0x10000 then "%04X" else
+    let fmt =
+      if n < Z.of_int 0x100 then "%02X" else
+      if n < Z.of_int 0x10000 then "%04X" else
       "%X"
-    in "\\mathrm{U{+}" ^ Printf.sprintf fmt n ^ "}"
+    in "\\mathrm{U{+}" ^ Z.format fmt n ^ "}"
   | TextG t -> "`" ^ t ^ "'"
   | EpsG -> "\\epsilon"
   | SeqG gs -> render_syms "~" env gs
