@@ -630,11 +630,12 @@ Globals
    \end{array}
 
 
-.. index:: reference, reference type
+.. index:: reference, reference type, value type, value
 .. _embed-ref-type:
+.. _embed-val-default:
 
-References
-~~~~~~~~~~
+Values
+~~~~~~
 
 :math:`\F{ref\_type}(\store, \reff) : \reftype`
 ...............................................
@@ -654,6 +655,20 @@ References
    In future versions of WebAssembly,
    not all references may carry precise type information at run time.
    In such cases, this function may return a less precise supertype.
+
+
+:math:`\F{val\_default}(\valtype) : \val`
+...............................................
+
+1. If :math:`\default_{valtype}` is not defined, then return :math:`\ERROR`.
+
+1. Else, return the :ref:`value <syntax-val>` :math:`\default_{valtype}`.
+
+.. math::
+   \begin{array}{lclll}
+   \F{val\_default}(t) &=& v && (\iff \default_t = v) \\
+   \F{val\_default}(t) &=& \ERROR && (\iff \default_t = \epsilon) \\
+   \end{array}
 
 
 .. index:: value type, external type, subtyping
