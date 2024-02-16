@@ -20,7 +20,7 @@ let transpile_expr =
     post_expr = Il2al.Transpile.simplify_record_concat
   }
 
-let exp_to_expr e = translate_expr e |> transpile_expr
+let exp_to_expr e = translate_exp e |> transpile_expr
 let exp_to_args es = translate_args es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
