@@ -2,6 +2,7 @@ BUILDDIR      = _build
 STATICDIR     = _static
 DOWNLOADDIR   = _download
 NAME          = WebAssembly
+DECISION_URL  = https://github.com/WebAssembly/meetings/blob/main/main/2017/WG-12-06.md
 
 .PHONY: all
 all:
@@ -28,17 +29,30 @@ diff: all
 	@echo "Done. The diff is at $(BUILDDIR)/html/diff.html"
 
 .PHONY: WD-tar
-WD-tar:
-	bikeshed echidna --just-tar index.bs $(BUILDDIR)/html/index.html
-	mv test.tar $(BUILDDIR)/WD.tar
+WD-tar: all
+	bikeshed echidna --md-status=WD --just-tar index.bs $(BUILDDIR)/html/index.html > $(BUILDDIR)/WD.tar
 	@echo "Built $(BUILDDIR)/WD.tar."
 
 .PHONY: WD-echidna
-WD-echidna:
+WD-echidna: all
 	@if [ -z $(W3C_USERNAME) ] || \
 	    [ -z $(W3C_PASSWORD) ] || \
 			[ -z $(DECISION_URL) ] ; then \
 		echo "Must provide W3C_USERNAME, W3C_PASSWORD, and DECISION_URL environment variables"; \
 		exit 1; \
 	fi
-	bikeshed echidna index.bs --u $(W3C_USERNAME) --p $(W3C_PASSWORD) --d $(DECISION_URL)
+	bikeshed echidna --md-status=WD index.bs --u $(W3C_USERNAME) --p $(W3C_PASSWORD) --decision  $(DECISION_URL)
+
+.PHONY: WD-echidna-CI
+WD-echidna-CI: WD-tar
+	@if [ -z $(W3C_ECHIDNA_TOKEN_WEBAPI) ] || \
+			[ -z $(DECISION_URL) ] ; then \
+		echo "Must provide W3C_ECHIDNA_TOKEN_WEBAPI and DECISION_URL environment variables"; \
+		exit 1; \
+	fi
+	curl 'https://labs.w3.org/echidna/api/request' \
+		-F "tar=@$(BUILDDIR)/WD.tar" \
+		-F "token=$(W3C_ECHIDNA_TOKEN_WEBAPI)" \
+		-F "decision=$(DECISION_URL)" | tee $(BUILDDIR)/WD-echidna-id.txt
+	@echo
+	@echo "Published working draft. Check its status at https://labs.w3.org/echidna/api/status?id=`cat $(BUILDDIR)/WD-echidna-id.txt`"
