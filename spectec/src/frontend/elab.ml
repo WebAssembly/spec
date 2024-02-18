@@ -8,7 +8,7 @@ open Print
 module Il = struct include Il include Ast end
 
 module Set = Free.Set
-module Map = Map.Make(String)
+module Map = Map.Make (String)
 
 
 (* Errors *)

@@ -3,11 +3,11 @@ name: CI for specs
 on:
   push:
     branches: [ main ]
-    paths: [ document/** ]
+    paths: [ document/**, spectec/** ]
 
   pull_request:
     branches: [ main ]
-    paths: [ document/** ]
+    paths: [ document/**, spectec/** ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

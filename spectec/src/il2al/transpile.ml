@@ -108,22 +108,22 @@ let rec insert_otherwise else_body instrs =
       let at = inst.at in
       match inst.it with
       | IfI (c, il, []) ->
-          let _, il' = walk il in
-          (true, ifI (c, il', else_body) ~at:at)
+        let _, il' = walk il in
+        (true, ifI (c, il', else_body) ~at:at)
       | IfI (c, il1, il2) ->
-          let visit_if1, il1' = walk il1 in
-          let visit_if2, il2' = walk il2 in
-          let visit_if = visit_if || visit_if1 || visit_if2 in
-          (visit_if, ifI (c, il1', il2') ~at:at)
+        let visit_if1, il1' = walk il1 in
+        let visit_if2, il2' = walk il2 in
+        let visit_if = visit_if || visit_if1 || visit_if2 in
+        (visit_if, ifI (c, il1', il2') ~at:at)
       | OtherwiseI il ->
-          let visit_if', il' = walk il in
-          let visit_if = visit_if || visit_if' in
-          (visit_if, otherwiseI il' ~at:at)
+        let visit_if', il' = walk il in
+        let visit_if = visit_if || visit_if' in
+        (visit_if, otherwiseI il' ~at:at)
       | EitherI (il1, il2) ->
-          let visit_if1, il1' = walk il1 in
-          let visit_if2, il2' = walk il2 in
-          let visit_if = visit_if || visit_if1 || visit_if2 in
-          (visit_if, eitherI (il1', il2') ~at:at)
+        let visit_if1, il1' = walk il1 in
+        let visit_if2, il2' = walk il2 in
+        let visit_if = visit_if || visit_if1 || visit_if2 in
+        (visit_if, eitherI (il1', il2') ~at:at)
       | _ -> (visit_if, inst))
     false instrs
 
@@ -135,16 +135,17 @@ let merge instrs1 instrs2 =
   let unified_tail =
     match tail2 with
     | [{ it = OtherwiseI else_body; _ }] ->
-        let visit_if, merged = insert_otherwise else_body tail1 in
-        if not visit_if then
-          print_endline
-            ("Warning: No corresponding if for"
-            ^ take 100 (Print.string_of_instrs instrs2));
-        merged
+      let visit_if, merged = insert_otherwise else_body tail1 in
+      if not visit_if then
+        print_endline
+          ("Warning: No corresponding if for"
+          ^ take 100 (Print.string_of_instrs instrs2));
+      merged
     | _ -> tail1 @ tail2
   in
   head @ unified_tail
 
+let merge_blocks blocks = List.fold_right merge blocks []
 
 (* Enhance readability of AL *)
 
@@ -162,11 +163,11 @@ let rec unify_if instrs =
       match (new_i, il) with
       | { it = IfI (c1, body1, []); at = at1; _ }, { it = IfI (c2, body2, []); at = at2; _ } :: rest
         when Eq.eq_expr c1 c2 ->
-          (* Assumption: common should have no side effect (replace) *)
-          let common, own_body1, own_body2 = unify_head body1 body2 in
-          let body = unify_if (common @ own_body1 @ own_body2) in
-          let at = over_region [ at1; at2 ] in
-          ifI (c1, body, []) ~at:at :: rest
+        (* Assumption: common should have no side effect (replace) *)
+        let common, own_body1, own_body2 = unify_head body1 body2 in
+        let body = unify_if (common @ own_body1 @ own_body2) in
+        let at = over_region [ at1; at2 ] in
+        ifI (c1, body, []) ~at:at :: rest
       | _ -> new_i :: il)
     instrs []
 
@@ -184,8 +185,8 @@ let rec infer_else instrs =
       match (new_i, il) with
       | { it = IfI (c1, then_body1, else_body1); at = at1; _ }, { it = IfI (c2, else_body2, then_body2); at = at2; _ } :: rest
         when eq_cond c1 (neg c2) ->
-          let at = over_region [ at1; at2 ] in
-          ifI (c1, then_body1 @ then_body2, else_body1 @ else_body2) ~at:at :: rest
+        let at = over_region [ at1; at2 ] in
+        ifI (c1, then_body1 @ then_body2, else_body1 @ else_body2) ~at:at :: rest
       | _ -> new_i :: il)
     instrs []
 
@@ -513,41 +514,40 @@ let rec infer_assert instrs =
     | _ -> instrs
   else instrs
 
-let rec enforce_return_r rinstrs =
+let rec enforce_return' il =
   let rev = List.rev in
-  match rinstrs with
+  match il with
   | [] -> []
-  | tl :: hd ->
-    let at = tl.at in
-    match tl.it with
-    | ReturnI _ | TrapI -> rinstrs
+  | hd :: tl ->
+    let at = hd.at in
+    match hd.it with
+    | ReturnI _ | TrapI -> il
     | IfI (c, il1, il2) ->
-      ( match enforce_return' il1, enforce_return' il2 with
-      | [], [] -> enforce_return_r hd
-      | new_il, [] -> rev new_il @ (assertI c ~at:at :: hd)
-      | [], new_il -> rev new_il @ (assertI (neg c) ~at:at :: hd)
-      | new_il1, new_il2 -> ifI (c, new_il1, new_il2) ~at:at :: hd )
-    | OtherwiseI il -> otherwiseI (enforce_return' il) ~at:at :: hd
+      (match enforce_return il1, enforce_return il2 with
+      | [], [] -> enforce_return' tl
+      | new_il, [] -> rev new_il @ (assertI c ~at:at :: tl)
+      | [], new_il -> rev new_il @ (assertI (neg c) ~at:at :: tl)
+      | new_il1, new_il2 -> ifI (c, new_il1, new_il2) ~at:at :: tl
+      )
+    | OtherwiseI il -> otherwiseI (enforce_return il) ~at:at :: tl
     | EitherI (il1, il2) ->
-      ( match enforce_return' il1, enforce_return' il2 with
-      | [], [] -> enforce_return_r hd
+      (match enforce_return il1, enforce_return il2 with
+      | [], [] -> enforce_return' tl
       | new_il, []
-      | [], new_il -> rev new_il @ hd
-      | new_il1, new_il2 -> eitherI (new_il1, new_il2) ~at:at :: hd )
-    | _ -> enforce_return_r hd
-and enforce_return' instrs = instrs |> List.rev |> enforce_return_r |> List.rev
+      | [], new_il -> rev new_il @ tl
+      | new_il1, new_il2 -> eitherI (new_il1, new_il2) ~at:at :: tl
+      )
+    | _ -> enforce_return' tl
+
+and enforce_return il = il |> List.rev |> enforce_return' |> List.rev
 
 let contains_return il =
   let ret = ref false in
-  let config =
-    {
-      Walk.default_config with
-      pre_instr =
-        (fun i -> (match i.it with ReturnI _ | TrapI -> ret := true | _ -> ()); [ i ])
-    } in
+  let pre_instr = fun i -> (match i.it with ReturnI _ | TrapI -> ret := true | _ -> ()); [ i ] in
+  let config = { Walk.default_config with pre_instr } in
   List.map (Walk.walk_instr config) il |> ignore;
   !ret
 
 (* If intrs contain a return statement, make sure that every path has return statement in the end *)
-let enforce_return instrs =
-  if contains_return instrs then enforce_return' instrs else instrs
+let ensure_return il =
+  if contains_return il then enforce_return il else il
