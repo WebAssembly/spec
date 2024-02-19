@@ -175,7 +175,8 @@ and eval_expr env expr =
     | _ -> fail_on_expr "Invalid BinE" expr)
   (* Function Call *)
   | CallE (fname, el) ->
-    (match dsl_function_call fname (List.map (eval_expr env) el) with
+    let args = List.map (eval_expr env) el in
+    (match call_func fname args  with
     | Some v -> v
     | _ -> raise Exception.MissingReturnValue
     )
@@ -456,7 +457,7 @@ and assign_split ep es vs env =
 (* Instruction *)
 
 
-and create_context (name: string) (args: value list) : AlContext.ctx =
+and create_context (name: string) (args: value list) : AlContext.mode =
 
   let algo = lookup_algo name in
   let params = get_param algo in
@@ -471,12 +472,14 @@ and create_context (name: string) (args: value list) : AlContext.ctx =
     |> List.fold_right2 assign params args
   in
 
-  AlContext.Al (name, body, env, None, 0)
+  AlContext.al (name, body, env)
 
-and dsl_function_call (fname: string) (args: value list): value option =
+and call_func (fname: string) (args: value list): value option =
   (* Module & Runtime *)
   if bound_func fname then
-    call_algo fname args
+    [create_context fname args]
+    |> run
+    |> AlContext.get_return_value
   (* Numerics *)
   else if Numerics.mem fname then
     Some (Numerics.call_numerics fname args)
@@ -572,7 +575,7 @@ and is_builtin = function
 
 and call_builtin name =
   let local x =
-    match call_algo "local" [ numV (Z.of_int x) ] with
+    match call_func "local" [ numV (Z.of_int x) ] with
     | Some v -> v
     | _ -> failwith "Builtin doesn't return a value"
   in
@@ -621,29 +624,27 @@ and call_builtin name =
   | name ->
     ("Invalid builtin function: " ^ name) |> failwith
 
-and execute (ctx: AlContext.t) (wasm_instr: value) : AlContext.t =
-  match wasm_instr with
+and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
     (* TODO: remove hack *)
-    let mm = call_algo "moduleinst" [] |> Option.get in
+    let mm = call_func "moduleinst" [] |> Option.get in
     let dummy_rt = CaseV ("REF", [ null; ht ]) in
 
     (* substitute heap type *)
-    (match call_algo "inst_reftype" [ mm; dummy_rt ] with
+    (match call_func "inst_reftype" [ mm; dummy_rt ] with
     | Some (CaseV ("REF", [ n; ht' ])) when n = null ->
       CaseV ("REF.NULL", [ ht' ]) |> WasmContext.push_value
     | _ -> raise Exception.MissingReturnValue);
     ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
-  | CaseV ("VVCONST", _) -> WasmContext.push_value wasm_instr; ctx
+  | CaseV ("VVCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when is_builtin name -> call_builtin name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
   | v ->
     string_of_value v
     |> sprintf "Executing invalid value: %s"
     |> failwith
-
 
 and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
   (*
@@ -665,8 +666,9 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
       AlContext.add_instrs il2 ctx
   | EitherI (il1, il2) ->
     (try
-      let ctx' = AlContext.add_instrs il1 ctx in
-      run ctx'
+      ctx
+      |> AlContext.add_instrs il1
+      |> run
     with
     | Exception.MissingReturnValue
     | Exception.OutOfMemory ->
@@ -729,29 +731,29 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     in
     AlContext.set_env new_env ctx
   | PerformI (f, el) ->
-    dsl_function_call f (List.map (eval_expr env) el) |> ignore;
+    let args = List.map (eval_expr env) el in
+    call_func f args |> ignore;
     ctx
   | TrapI -> raise Exception.Trap
   | NopI -> ctx
   | ReturnI None -> AlContext.pop_context ctx
   | ReturnI (Some e) ->
-    AlContext.set_return_value (eval_expr env e) (AlContext.pop_context ctx)
-  | ExecuteI e -> AlContext.Execute (eval_expr env e) :: ctx
+    AlContext.return (eval_expr env e) :: AlContext.pop_context ctx
+  | ExecuteI e -> AlContext.execute (eval_expr env e) :: ctx
   | ExecuteSeqI e ->
     let ctx' =
       e
       |> eval_expr env
       |> unwrap_listv_to_list
-      |> List.map (fun v -> AlContext.Execute v)
+      |> List.map AlContext.execute
     in
-    ctx'@ctx
+    ctx' @ ctx
   | EnterI (e1, e2, il) ->
     let v1 = eval_expr env e1 in
     let v2 = eval_expr env e2 in
     WasmContext.push_context (v1, [], unwrap_listv_to_list v2);
-    ctx
-    |> AlContext.increase_depth
-    |> AlContext.add_instrs il
+
+    AlContext.enter (il, env) :: ctx
   | ExitI ->
     WasmContext.pop_context () |> ignore;
     AlContext.decrease_depth ctx
@@ -784,43 +786,51 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
     ctx
   | _ -> fail_on_instr "No interpreter for" instr
 
-
-and step_wasm (ctx: AlContext.t) : AlContext.t =
-  let open WasmContext in
-  execute ctx (pop_instr ())
-
-
-and step : AlContext.t -> AlContext.t = function
-  | AlContext.Al (_, [], _, _, 0) :: ctx -> ctx
-  | AlContext.Al (_, [], _, _, n) :: ctx -> AlContext.Wasm n :: ctx
-  | AlContext.Al (name, h :: t, env, rv, n) :: ctx ->
-    let new_ctx = AlContext.Al (name, t, env, rv, n) :: ctx in
-    step_instr new_ctx env h
-  | AlContext.Wasm 0 :: ctx -> ctx
-  | AlContext.Execute v :: ctx -> execute ctx v
-  | ctx -> step_wasm ctx
-  
+and step : AlContext.t -> AlContext.t = AlContext.(function
+  | Al (name, il, env) :: ctx ->
+    (match il with
+    | [] -> ctx
+    | [{ it = ExecuteI _; _ } as i] -> step_instr ctx env i
+    | h :: t ->
+      let new_ctx = Al (name, t, env) :: ctx in
+      step_instr new_ctx env h
+    )
+  | Wasm n :: ctx->
+    if n = 0 then
+      ctx
+    else
+      step_wasm (Wasm n :: ctx) (WasmContext.pop_instr ())
+  | Enter (il, env) :: ctx ->
+    (match il with
+    | [] ->
+      (match ctx with
+      | Wasm n :: t -> Wasm (n + 1) :: t
+      | Enter ([], _) :: t -> Wasm 2 :: t
+      | ctx -> Wasm 1 :: ctx
+      )
+    | h :: t ->
+      let new_ctx = Enter (t, env) :: ctx in
+      step_instr new_ctx env h
+    )
+  | Execute v :: ctx -> step_wasm ctx v
+  | _ -> failwith "Unreachable"
+)
 
 and run (ctx: AlContext.t) : AlContext.t =
-  if not (AlContext.is_empty ctx) then
+  if AlContext.is_reducible ctx then
     run (step ctx)
   else ctx
-
-(* Algorithm *)
-
-and call_algo (name: string) (args: value list) : value option =
-  let ctx = create_context name args :: AlContext.empty in
-  AlContext.get_return_value (run ctx)
 
 (* Entry *)
 
 let instantiate (args: value list) : value =
   WasmContext.init_context ();
-  match call_algo "instantiate" args with
+  match call_func "instantiate" args with
   | Some module_inst -> module_inst
   | None -> failwith "Instantiation doesn't return module instance"
+
 let invoke (args: value list) : value =
   WasmContext.init_context ();
-  match call_algo "invoke" args with
+  match call_func "invoke" args with
   | Some v -> v
   | None -> failwith "Invocation doesn't return any values"

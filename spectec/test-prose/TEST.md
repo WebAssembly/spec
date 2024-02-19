@@ -4614,17 +4614,18 @@ execution_of_RETURN_CALL x
 3. Execute (RETURN_CALL_REF ?()).
 
 execution_of_RETURN_CALL_REF x?
-1. If not the current context is frame, then:
-  a. If the current context is label, then:
-    1) Pop all values val* from the stack.
-    2) Exit current context.
-    3) Push val* to the stack.
-    4) Execute (RETURN_CALL_REF x?).
-2. Else:
+1. If the current context is label, then:
+  a. Pop all values val* from the stack.
+  b. Exit current context.
+  c. Push val* to the stack.
+  d. Execute (RETURN_CALL_REF x?).
+2. Else if the current context is frame, then:
   a. Pop admin_u0 from the stack.
   b. Pop all values admin_u1* from the stack.
   c. Exit current context.
-  d. If admin_u0 is of the case REF.FUNC_ADDR, then:
+  d. If admin_u0 is of the case REF.NULL, then:
+    1) Trap.
+  e. If admin_u0 is of the case REF.FUNC_ADDR, then:
     1) Let (REF.FUNC_ADDR a) be admin_u0.
     2) If (a < |$funcinst()|), then:
       a) Assert: Due to validation, $expanddt($funcinst()[a].TYPE) is of the case FUNC.
@@ -4635,8 +4636,6 @@ execution_of_RETURN_CALL_REF x?
         2. Push val^n to the stack.
         3. Push (REF.FUNC_ADDR a) to the stack.
         4. Execute (CALL_REF x?).
-  e. If admin_u0 is of the case REF.NULL, then:
-    1) Trap.
 
 execution_of_REF.FUNC x
 1. Assert: Due to validation, (x < |$funcaddr()|).

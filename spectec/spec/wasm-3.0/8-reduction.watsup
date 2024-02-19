@@ -172,15 +172,15 @@ rule Step_read/return_call:
   z; (RETURN_CALL x)  ~>  (REF.FUNC_ADDR $funcaddr(z)[x]) (RETURN_CALL_REF)
 
 
-rule Step_read/return_call_ref-frame-null:
-  z; (FRAME_ k `{f} val* (REF.NULL ht) (RETURN_CALL_REF x?) instr*)  ~>  TRAP
+rule Step_read/return_call_ref-label:
+  z; (LABEL_ k `{instr'*} val* (RETURN_CALL_REF x?) instr*)  ~>  val* (RETURN_CALL_REF x?)
 
 rule Step_read/return_call_ref-frame-addr:
   z; (FRAME_ k `{f} val'* val^n (REF.FUNC_ADDR a) (RETURN_CALL_REF x?) instr*)  ~>  val^n (REF.FUNC_ADDR a) (CALL_REF x?)
   -- Expand: $funcinst(z)[a].TYPE ~~ FUNC (t_1^n -> t_2^m)
 
-rule Step_read/return_call_ref-label:
-  z; (LABEL_ k `{instr'*} val* (RETURN_CALL_REF x?) instr*)  ~>  val* (RETURN_CALL_REF x?)
+rule Step_read/return_call_ref-frame-null:
+  z; (FRAME_ k `{f} val* (REF.NULL ht) (RETURN_CALL_REF x?) instr*)  ~>  TRAP
 
 
 rule Step_pure/call_indirect-call:

@@ -28,18 +28,23 @@ module Register : sig
 end
 
 module AlContext : sig
-  type ctx =
-    (* Top level context *)
-    | Return of value option
+  type mode =
     (* Al context *)
-    | Al of string * instr list * env * value option * int
+    | Al of string * instr list * env
     (* Wasm context *)
     | Wasm of int
-    (* Special context for preparing execute *)
+    (* Special context for enter/execute *)
+    | Enter of instr list * env
     | Execute of value
-  type t = ctx list
-  val empty : t
-  val is_empty : t -> bool
+    (* Return register *)
+    | Return of value
+  val al : string * instr list * env -> mode
+  val wasm : int -> mode
+  val enter : instr list * env -> mode
+  val execute : value -> mode
+  val return : value -> mode
+  type t = mode list
+  val is_reducible : t -> bool
   val pop_context : t -> t
   val get_name : t -> string
   val add_instrs : instr list -> t -> t
@@ -47,8 +52,6 @@ module AlContext : sig
   val get_env : t -> env
   val update_env : string -> value -> t -> t
   val get_return_value : t -> value option
-  val set_return_value : value -> t -> t
-  val increase_depth : t -> t
   val decrease_depth : t -> t
 end
 
