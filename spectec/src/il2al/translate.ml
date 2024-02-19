@@ -551,29 +551,22 @@ and translate_letpr lhs rhs ids cont =
 
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let translate_rulepr id exp =
-  let instr =
-    let at = id.at in
-    match id.it, translate_args exp with
-    | "Eval_expr", [_; lhs; _z; rhs] ->
-      (* TODO: Name of f..? *)
-      enterI (
-        frameE (None, varE "z"),
-        listE [caseE (("FRAME_", "admininstr"), [])],
-        [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
-      ) ~at:at
-    | "Step_read", [ { it = TupE [ { it = TupE [ _s; f ]; _ }; lhs ]; _ }; rhs] ->
-      enterI (
-        frameE (None, f),
-        listE [caseE (("FRAME_", "admininstr"), [])],
-        [ letI (rhs, callE ("eval_expr", [ lhs ])) ]
-      ) ~at:at
-    | "Ref_ok", [_s; ref; rt] ->
-      letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at
-    | "Reftype_sub", [_C; rt1; rt2] ->
-      ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at
-    | _ -> prerr_endline (Il.Print.string_of_exp exp); yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at
-  in
-  [ instr ]
+  let at = id.at in
+  match id.it, translate_args exp with
+  | "Eval_expr", [z; lhs; _; rhs] ->
+    [
+      (* TODO: not pushing store without store remover transpiler *)
+      pushI (frameE (None, z));
+      letI (rhs, callE ("eval_expr", [ lhs ])) ~at:at;
+      popI (frameE (None, z));
+    ]
+  | "Ref_ok", [_s; ref; rt] ->
+    [ letI (rt, callE ("ref_type_of", [ ref ]) ~at:at) ~at:at ]
+  | "Reftype_sub", [_C; rt1; rt2] ->
+    [ ifI (matchE (rt1, rt2) ~at:at, [], []) ~at:at ]
+  | _ ->
+    prerr_endline (Il.Print.string_of_exp exp);
+    [ yetI ("TODO: Unsupported rule premise:" ^ id.it) ~at:at ]
 
 let rec translate_iterpr pr (iter, ids) =
   let instrs = translate_prem pr in
@@ -647,6 +640,7 @@ let translate_config config =
 
 let translate_helper_body name clause =
   let Il.DefD (_, _, re, prems) = clause.it in
+  (* TODO: Remove hack *)
   let return_instrs =
     if name = "instantiate" then
       translate_config re |> return_instrs_of_instantiate

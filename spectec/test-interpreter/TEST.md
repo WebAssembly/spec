@@ -1274,6 +1274,9 @@ watsup 0.4 generator
 ===== ../../test-interpreter/spec-test-3/tail-call/return_call_indirect.wast =====
 - 0/0 (100.00%)
 
+===== ../../test-interpreter/spec-test-3/tail-call/return_call_ref.wast =====
+- 0/0 (100.00%)
+
 ===== ../../test-interpreter/spec-test-3/token.wast =====
 - 0/0 (100.00%)
 

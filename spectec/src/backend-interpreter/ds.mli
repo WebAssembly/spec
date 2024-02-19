@@ -28,35 +28,28 @@ module Register : sig
 end
 
 module AlContext : sig
-  type return_value =
-    | Bot
-    | None
-    | Some of value
-  type t = string * env * return_value * int
-
-  val context_stack_length : int ref
-  val create_context : string -> t
-  val init_context : unit -> unit
-  val push_context : t -> unit
-  val pop_context : unit -> t
-  val get_context : unit -> t
-  val get_name : unit -> string
-
-  val string_of_return_value : return_value -> string
-  val string_of_context : t -> string
-  val string_of_context_stack : unit -> string
-
-  val set_env : env -> unit
-  val update_env : string -> value -> unit
-  val get_env : unit -> env
-
-  val set_return_value : value -> unit
-  val set_return : unit -> unit
-  val get_return_value : unit -> return_value
-
-  val get_depth : unit -> int
-  val increase_depth : unit -> unit
-  val decrease_depth : unit -> unit
+  type ctx =
+    (* Top level context *)
+    | Return of value option
+    (* Al context *)
+    | Al of string * instr list * env * value option * int
+    (* Wasm context *)
+    | Wasm of int
+    (* Special context for preparing execute *)
+    | Execute of value
+  type t = ctx list
+  val empty : t
+  val is_empty : t -> bool
+  val pop_context : t -> t
+  val get_name : t -> string
+  val add_instrs : instr list -> t -> t
+  val set_env : env -> t -> t
+  val get_env : t -> env
+  val update_env : string -> value -> t -> t
+  val get_return_value : t -> value option
+  val set_return_value : value -> t -> t
+  val increase_depth : t -> t
+  val decrease_depth : t -> t
 end
 
 module WasmContext : sig

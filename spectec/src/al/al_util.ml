@@ -192,3 +192,10 @@ let casev_nth_arg n = function
 let unwrap_strv = function
   | StrV r -> r
   | v -> fail "struct" v
+
+let arity_of_frame: value -> value = function
+  | FrameV (Some v, _) -> v
+  | v -> fail "frame" v
+let unwrap_frame: value -> value = function
+  | FrameV (_, v) -> v
+  | v -> fail "frame" v

@@ -134,109 +134,81 @@ end
 (* AL Context *)
 
 module AlContext = struct
-  (* TODO: Change name *)
-  type return_value =
-    | Bot
-    | None
-    | Some of value
+  type ctx =
+    (* Top level context *)
+    | Return of value option
+    (* Al context *)
+    | Al of string * instr list * env * value option * int
+    (* Wasm context *)
+    | Wasm of int
+    (* Special context for preparing execute *)
+    | Execute of value
 
-  type t = string * env * return_value * int
+  type t = ctx list
 
-  let context_stack: t list ref = ref []
-  let context_stack_length = ref 0
+  let empty = [ Return None ]
 
-  let create_context name = name, Env.empty, Bot, 0
+  let is_empty = function
+    | [ Return _ ] -> true
+    | _ -> false
 
-  let init_context () =
-    context_stack := [];
-    context_stack_length := 0
+  let get_context = List.hd
 
-  let push_context ctx =
-    context_stack := ctx :: !context_stack;
-    context_stack_length := 1 + !context_stack_length
+  let pop_context = List.tl
 
-  let pop_context () =
-    context_stack_length := !context_stack_length - 1;
-    match !context_stack with
-    | h :: t -> context_stack := t; h
-    | _ -> failwith "AL context stack underflow"
+  let get_al_context = function
+    | Al (name, il, env, rv, n) :: _ -> name, il, env, rv, n
+    | _ -> failwith "Not in AL context"
 
-  let get_context () =
-    match !context_stack with
-    | h :: _ -> h
-    | _ -> failwith "AL context stack underflow"
+  let get_name ctx =
+    match get_context ctx with
+    | Al (name, _, _, _, _) -> name
+    | Wasm _ -> "Wasm"
+    | Execute _ -> "Execute"
+    | Return _ -> "Return"
 
-  let get_name () =
-    let name, _, _, _ = get_context () in
-    name
+  let add_instrs il = function
+    | Al (name, il', env, rv, n) :: t -> Al (name, il@il', env, rv, n) :: t
+    | _ -> failwith "Not in AL context"
 
-  (* Print *)
-
-  let string_of_return_value = function
-    | Bot -> "⊥"
-    | None -> "None"
-    | Some v -> string_of_value v
-
-  let string_of_context ctx =
-    let name, _, return_value, depth = ctx in
-    Printf.sprintf "(%s, %s, %s)"
-      name
-      (string_of_return_value return_value)
-      (string_of_int depth)
-
-  let string_of_context_stack () =
-    List.fold_left
-      (fun acc ctx -> (string_of_context ctx) ^ " :: " ^ acc)
-      "[]" !context_stack
-
-  (* Env *)
-
-  let set_env env =
-    let name, _, return_value, depth = pop_context () in
-    push_context (name, env, return_value, depth)
-
-  let update_env n v =
-    let name, env, return_value, depth = pop_context () in
-    push_context (name, Env.add n v env, return_value, depth)
-
-  let get_env () =
-    let _, env, _, _ = get_context () in
+  let get_env ctx =
+    let _, _, env, _, _ = get_al_context ctx in
     env
 
-  (* Return value *)
+  let set_env env = function
+    | Al (name, instrs, _, return_value, n) :: t -> Al (name, instrs, env, return_value, n) :: t
+    | _ -> failwith "Not in AL context"
 
-  let set_return_value v =
-    let name, env, return_value, depth = pop_context () in
-    assert (return_value = Bot);
-    push_context (name, env, Some v, depth)
+  let update_env k v = function
+    | Al (name, il, env, rv, n) :: t -> Al (name, il, Env.add k v env, rv, n) :: t
+    | _ -> failwith "Not in AL context"
 
-  let set_return () =
-    let name, env, return_value, depth = pop_context () in
-    assert (return_value = Bot);
-    push_context (name, env, None, depth)
+  let get_return_value = function
+    | Al (_, _, _, rv, _) :: _ -> rv
+    | Return rv :: _ -> rv
+    | _ -> failwith "Not in AL context"
 
-  let get_return_value () =
-    let _, _, return_value, _ = get_context () in
-    return_value
+  let set_return_value rv = function
+    | Al (name, instrs, env, _, n) :: t -> Al (name, instrs, env, Some rv, n) :: t
+    | Return _ :: t-> Return (Some rv) :: t
+    | _ -> failwith "Not in AL context"
 
-  (* Depth *)
+  let increase_depth = function
+    | Al (name, instrs, env, return_value, n) :: t -> Al (name, instrs, env, return_value, n + 1) :: t
+    | _ -> failwith "Not in AL context"
 
-  let get_depth () =
-    let _, _, _, depth = get_context () in
-    depth
+  let rec decrease_depth = function
+    | Al (name, instrs, env, return_value, n) :: t ->
+      if n = 0 then
+        Al (name, instrs, env, return_value, 0) :: decrease_depth t
+      else if n > 0 then
+        Al (name, instrs, env, return_value, n - 1) :: t
+      else
+        failwith "Negative depth"
+    | Wasm 1 :: t -> t
+    | Wasm n :: t -> Wasm (n-1) :: t
+    | _ -> failwith "Not in Al or Wasm context"
 
-  let increase_depth () =
-    let name, env, return_value, depth = pop_context () in
-    push_context (name, env, return_value, depth + 1)
-
-  let rec decrease_depth () =
-    let name, env, return_value, depth = pop_context () in
-    if depth > 0 then
-      push_context (name, env, return_value, depth - 1)
-    else (
-      decrease_depth ();
-      push_context (name, env, return_value, depth)
-    )
 
 end
 
