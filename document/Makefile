@@ -34,13 +34,13 @@ WD-tar:
 
 # macOS: do “brew install tar” & run “make” as: TAR=gtar make -e WD-echidna
 .PHONY: WD-echidna
-WD-echidna: WD-tar
+WD-echidna:
 	for dir in $(DIRS); \
 		do $(MAKE) -e -C $$dir $@;\
 	done
 
 .PHONY: WD-echidna-CI
-WD-echidna-CI: WD-tar
+WD-echidna-CI:
 	for dir in $(DIRS); \
 		do $(MAKE) -e -C $$dir $@;\
 	done
