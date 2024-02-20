@@ -50,6 +50,7 @@ TESTDIRS = $(shell ls -d test-*)
 .PHONY: test testpromote $(TESTDIRS)
 
 test: exe $(TESTDIRS)
+	@echo "(dune runtest)"
 	@dune runtest && echo OK || (echo Failure. Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:

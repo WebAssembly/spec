@@ -1,7 +1,7 @@
 # Test
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- test.watsup -o test.tex && cat test.tex)
+$ (../src/exe-watsup/main.exe test.watsup -o test.tex && cat test.tex)
 $$
 \begin{array}{@{}lcl@{}l@{}}
 {\mathrm{test}}_{{\mathit{sub}}_{{\mathsf{atom}}_{{22}}}}({\mathit{n}}_{{3}_{{\mathsf{atom}}_{{\mathit{y}}}}}) &=& 0 &  \\
@@ -34,7 +34,7 @@ $$
 # Preview
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- ../spec/wasm-3.0/*.watsup)
+$ (../src/exe-watsup/main.exe ../spec/wasm-3.0/*.watsup)
 \vspace{1ex}
 
 $$

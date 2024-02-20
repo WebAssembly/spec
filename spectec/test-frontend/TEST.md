@@ -1,7 +1,7 @@
 # Test
 
 ```sh
-$ (dune exec ../src/exe-watsup/main.exe -- test.watsup -o test.tex && cat test.tex)
+$ (../src/exe-watsup/main.exe test.watsup -o test.tex && cat test.tex)
 $$
 \begin{array}{@{}lrrl@{}l@{}}
 & {\mathit{testmixfix}} &::=& \{{{\mathit{nat}}^\ast}\} ~|~ [{{\mathit{nat}}^\ast}] ~|~ {\mathit{nat}} \rightarrow {\mathit{nat}} \\
@@ -137,7 +137,7 @@ $$
 # Preview
 
 ```sh
-$ (cd ../spec/wasm-3.0 && dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --print-il --check)
+$ (cd ../spec/wasm-3.0 && ../../src/exe-watsup/main.exe *.watsup -v -l --print-il --check)
 watsup 0.4 generator
 == Parsing...
 == Elaboration...

@@ -2,7 +2,7 @@
 
 ```sh
 $ cd ../spec/wasm-3.0 && \
-> dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --interpreter ../../test-interpreter/sample.wat addTwo 30 12 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wat addTwo 30 12 2> /dev/null
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -17,7 +17,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/sample.wat =====
 == Complete.
 $ cd ../spec/wasm-3.0 && \
-> dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --interpreter ../../test-interpreter/sample.wasm addTwo 40 2 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wasm addTwo 40 2 2> /dev/null
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -32,7 +32,7 @@ watsup 0.4 generator
 ===== ../../test-interpreter/sample.wasm =====
 == Complete.
 $ cd ../spec/wasm-3.0 && \
-> dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --interpreter ../../test-interpreter/sample.wast 2> /dev/null
+> ../../src/exe-watsup/main.exe *.watsup -v -l --interpreter ../../test-interpreter/sample.wast 2> /dev/null
 watsup 0.4 generator
 == Parsing...
 == Elaboration...
@@ -54,7 +54,7 @@ Expect: 43 : [i32]
 $ for v in 1 2 3; do ( \
 >   echo "Running test for Wasm $v.0..." && \
 >   cd ../spec/wasm-$v.0 && \
->   dune exec ../../src/exe-watsup/main.exe -- *.watsup -v -l --test-version $v --interpreter ../../test-interpreter/spec-test-$v \
+>   ../../src/exe-watsup/main.exe *.watsup -v -l --test-version $v --interpreter ../../test-interpreter/spec-test-$v \
 > ) done 2>/dev/null
 Running test for Wasm 1.0...
 watsup 0.4 generator
@@ -1400,6 +1400,9 @@ Expect: "out of bounds memory access"
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/tail-call/return_call_indirect.wast =====
+- 0/0 (100.00%)
+
+===== ../../test-interpreter/spec-test-3/tail-call/return_call_ref.wast =====
 - 0/0 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/token.wast =====

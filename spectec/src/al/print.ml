@@ -16,7 +16,7 @@ let string_of_list stringifier sep = function
     List.fold_left
         (fun acc elem -> acc ^ sep ^ stringifier elem)
         (stringifier h) (List.filteri (fun i _ -> i <= limit) t)
-    ^ (if is_long then (sep ^ "...") else "")
+    ^ (if is_long then (sep ^ "..." ^ stringifier (List.hd (List.rev t))) else "")
 
 let rec repeat str num =
   if num = 0 then ""
