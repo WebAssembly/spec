@@ -636,7 +636,7 @@ and execute (ctx: AlContext.t) (wasm_instr: value) : AlContext.t =
     ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
-  | CaseV ("VVCONST", _) -> WasmContext.push_value wasm_instr; ctx
+  | CaseV ("VCONST", _) -> WasmContext.push_value wasm_instr; ctx
   | CaseV (name, []) when is_builtin name -> call_builtin name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
   | v ->
@@ -701,7 +701,7 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
       assert (eval_expr env tyE = ty);
       AlContext.update_env name v ctx
     | VarE name, v -> AlContext.update_env name v ctx
-    | CaseE (("VVCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
+    | CaseE (("VCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VCONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       AlContext.update_env name v ctx
     (* TODO remove this *)

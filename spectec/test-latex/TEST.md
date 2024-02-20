@@ -145,8 +145,8 @@ $$
 (0 + {\mathit{m}} \cdot {2^{{-{{\mathrm{M}}}_{{\mathit{N}}}}}}) \cdot {2^{{\mathit{n}}}} &\quad
   \mbox{if}~2 - {2^{{{\mathrm{E}}}_{{\mathit{N}}} - 1}} = {\mathit{n}} \\ &&|&
 \infty \\ &&|&
-{\mathsf{nan}}{({\mathit{n}})} &\quad
-  \mbox{if}~1 \leq {\mathit{n}} < {{\mathrm{M}}}_{{\mathit{N}}} \\
+{\mathsf{nan}}{({\mathit{m}})} &\quad
+  \mbox{if}~1 \leq {\mathit{m}} < {{\mathrm{M}}}_{{\mathit{N}}} \\
 \end{array}
 $$
 

@@ -267,8 +267,8 @@ syntax fmag{N : N}(N) =
   | SUBNORM{N : N, n : n}(m : m, n : n)
     -- if ((2 - (2 ^ ($E(N) - 1))) = n)
   | INF
-  | NAN{n : n}(n : n)
-    -- if ((1 <= n) /\ (n < $M(N)))
+  | NAN{m : m}(m : m)
+    -- if ((1 <= m) /\ (m < $M(N)))
 
 ;; 1-syntax.watsup:55.1-57.34
 syntax fN{N : N}(N) =

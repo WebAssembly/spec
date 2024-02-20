@@ -2,6 +2,7 @@ module type RepType =
 sig
   type t
 
+  val bitwidth : int
   val mantissa : int
 
   val zero : t
@@ -28,6 +29,12 @@ module type S =
 sig
   type t
   type bits
+  val bitwidth : int
+  val mantissa : int
+  val exponent : int
+  val zero : t
+  val pos_inf : t
+  val neg_inf : t
   val pos_nan : t
   val neg_nan : t
   val is_inf : t -> bool
@@ -59,15 +66,18 @@ sig
   val le : t -> t -> bool
   val gt : t -> t -> bool
   val ge : t -> t -> bool
-  val zero : t
 end
 
 module Make (Rep : RepType) : S with type bits = Rep.t =
 struct
-  let _ = assert (Rep.mantissa <= 52)
+  let _ = assert (Rep.mantissa < Rep.bitwidth - 2)
 
   type t = Rep.t
   type bits = Rep.t
+
+  let bitwidth = Rep.bitwidth
+  let mantissa = Rep.mantissa
+  let exponent = bitwidth - mantissa - 1
 
   let pos_inf = Rep.bits_of_float (1.0 /. 0.0)
   let neg_inf = Rep.bits_of_float (-. (1.0 /. 0.0))

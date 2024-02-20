@@ -586,7 +586,7 @@ Expect: "out of bounds memory access"
 - 102/120 (85.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_address.wast =====
-- 6/45 (13.33%)
+- 9/45 (20.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_align.wast =====
 - 46/54 (85.19%)
@@ -601,7 +601,7 @@ Expect: "out of bounds memory access"
 - 2/261 (0.77%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_const.wast =====
-- 371/577 (64.30%)
+- 575/577 (99.65%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_conversions.wast =====
 - 2/234 (0.85%)
@@ -709,10 +709,10 @@ Expect: "out of bounds memory access"
 - 1/229 (0.44%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_lane.wast =====
-- 11/286 (3.85%)
+- 12/286 (4.20%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_linking.wast =====
-- 0/2 (0.00%)
+- 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_load.wast =====
 - 14/31 (45.16%)
@@ -739,22 +739,22 @@ Expect: "out of bounds memory access"
 - 6/29 (20.69%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_splat.wast =====
-- 3/162 (1.85%)
+- 4/162 (2.47%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store.wast =====
 - 2/19 (10.53%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store16_lane.wast =====
-- 0/33 (0.00%)
+- 1/33 (3.03%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store32_lane.wast =====
-- 0/21 (0.00%)
+- 1/21 (4.76%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store64_lane.wast =====
-- 0/13 (0.00%)
+- 1/13 (7.69%)
 
 ===== ../../test-interpreter/spec-test-2/simd/simd_store8_lane.wast =====
-- 0/49 (0.00%)
+- 1/49 (2.04%)
 
 ===== ../../test-interpreter/spec-test-2/skip-stack-guard-page.wast =====
 - 1/1 (100.00%)
@@ -837,7 +837,7 @@ Expect: "out of bounds memory access"
 ===== ../../test-interpreter/spec-test-2/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [6412/45187] (14.19%)
+Total [6627/45187] (14.67%)
 
 == Complete.
 Running test for Wasm 3.0...
@@ -1181,7 +1181,7 @@ Expect: "out of bounds memory access"
 - 102/120 (85.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_address.wast =====
-- 6/45 (13.33%)
+- 9/45 (20.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_align.wast =====
 - 46/54 (85.19%)
@@ -1196,7 +1196,7 @@ Expect: "out of bounds memory access"
 - 2/261 (0.77%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_const.wast =====
-- 371/577 (64.30%)
+- 575/577 (99.65%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_conversions.wast =====
 - 2/234 (0.85%)
@@ -1304,10 +1304,10 @@ Expect: "out of bounds memory access"
 - 1/229 (0.44%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_lane.wast =====
-- 11/286 (3.85%)
+- 12/286 (4.20%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_linking.wast =====
-- 0/2 (0.00%)
+- 2/2 (100.00%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_load.wast =====
 - 14/31 (45.16%)
@@ -1334,22 +1334,22 @@ Expect: "out of bounds memory access"
 - 6/29 (20.69%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_splat.wast =====
-- 3/162 (1.85%)
+- 4/162 (2.47%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store.wast =====
 - 2/19 (10.53%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store16_lane.wast =====
-- 0/33 (0.00%)
+- 1/33 (3.03%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store32_lane.wast =====
-- 0/21 (0.00%)
+- 1/21 (4.76%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store64_lane.wast =====
-- 0/13 (0.00%)
+- 1/13 (7.69%)
 
 ===== ../../test-interpreter/spec-test-3/simd/simd_store8_lane.wast =====
-- 0/49 (0.00%)
+- 1/49 (2.04%)
 
 ===== ../../test-interpreter/spec-test-3/skip-stack-guard-page.wast =====
 - 1/1 (100.00%)
@@ -1441,7 +1441,7 @@ Expect: "out of bounds memory access"
 ===== ../../test-interpreter/spec-test-3/utf8-invalid-encoding.wast =====
 - 0/0 (100.00%)
 
-Total [6861/45764] (14.99%)
+Total [7076/45764] (15.46%)
 
 == Complete.
 ```

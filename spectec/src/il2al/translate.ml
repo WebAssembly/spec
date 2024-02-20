@@ -210,7 +210,7 @@ and translate_exp exp =
     | [ []; [ Il.Arrow ]; [ Il.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
       infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     (* Constructor *)
-    (* TODO: Need a better way to convert these CaseE into ConsturctE *)
+    (* TODO: Need a better way to convert these CaseE into ConstructE *)
     | [ [ Il.Atom "FUNC" ]; []; [ Il.Star ]; [] ], _ ->
       caseE (("FUNC", "func"), List.map translate_exp exps) ~at:at
     | [ [ Il.Atom "OK" ] ], [] ->
@@ -332,7 +332,7 @@ let rec translate_rhs exp =
   | Il.CaseE (Atom id, _) when List.mem id [
       (* TODO: Consider automating this *)
       "CONST";
-      "VVCONST";
+      "VCONST";
       "REF.I31_NUM";
       "REF.STRUCT_ADDR";
       "REF.ARRAY_ADDR";
