@@ -25,7 +25,7 @@ jobs:
         with:
           ocaml-compiler: 4.14.x
       - name: Setup Dune
-        run: opam install --yes dune menhir mdx arith && opam exec dune --version
+        run: opam install --yes dune menhir mdx zarith && opam exec dune --version
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
