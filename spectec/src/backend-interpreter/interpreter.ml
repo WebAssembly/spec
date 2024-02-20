@@ -24,11 +24,6 @@ let fail_on_path msg path =
     (structured_string_of_path path) (string_of_region path.at))
   |> failwith
 
-let check_i32_const = function
-  | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
-    let n' = Z.logand (Z.of_int64 0xFFFF_FFFFL) n in
-    CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
-  | v -> v
 let rec is_true = function
   | BoolV true -> true
   | ListV a -> Array.for_all is_true !a
@@ -213,7 +208,7 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE ((tag, _), el) -> caseV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | CaseE ((tag, _), el) -> caseV (tag, List.map (eval_expr env) el)
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -301,7 +296,7 @@ and eval_expr env expr =
       "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
       "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
     ] in
-    let packed_types = [ "I8"; "I16" ] in
+    let pack_types = [ "I8"; "I16" ] in
     let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
     let vec_types = [ "V128"; ] in
     let abs_heap_types = [
@@ -338,9 +333,9 @@ and eval_expr env expr =
     (* heaptype *)
     | CaseV ("REC", [ _ ]) ->
       boolV (s = "heaptype" || s = "typevar")
-    (* packedtype *)
-    | CaseV (pt, []) when List.mem pt packed_types ->
-      boolV (s = "packedtype" || s = "storagetype")
+    (* packtype *)
+    | CaseV (pt, []) when List.mem pt pack_types ->
+      boolV (s = "packtype" || s = "storagetype")
     | v ->
       fail_on_expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)

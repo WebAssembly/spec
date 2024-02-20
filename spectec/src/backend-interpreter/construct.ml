@@ -37,47 +37,37 @@ let al_to_phrase (f: value -> 'a) (v: value): 'a phrase = f v @@ no_region
 
 (* Destruct minor *)
 
-type masks =
-  {sign : Z.t; exponent : Z.t; mantissa : Z.t; width_e : int; width_m : int; bias : Z.t}
+type layout = { width : int; exponent : int; mantissa : int }
+let layout32 = { width = 32; exponent = 8; mantissa = 23 }
+let layout64 = { width = 64; exponent = 11; mantissa = 52 }
 
-let masks32 =
-  { sign = Z.of_int32 0x8000_0000l;
-    exponent = Z.of_int32 0x7f80_0000l;
-    mantissa = Z.of_int32 0x007f_ffffl;
-    width_e = 8;
-    width_m = 23;
-    bias = Z.of_int 127;
-  }
-let masks64 =
-  { sign = Z.of_int64 0x8000_0000_0000_0000L;
-    exponent = Z.of_int64 0x7ff0_0000_0000_0000L;
-    mantissa = Z.of_int64 0x000f_ffff_ffff_ffffL;
-    width_e = 11;
-    width_m = 52;
-    bias = Z.of_int 1023;
-  }
+let mask_sign layout = Z.shift_left Z.one (layout.width - 1)
+let mask_mag layout = Z.pred (mask_sign layout)
+let mask_mant layout = Z.(pred (shift_left one layout.mantissa))
+let mask_exp layout = Z.(mask_mag layout - mask_mant layout)
+let bias layout = let em1 = layout.exponent - 1 in Z.((one + one)**em1 - one)
 
 let al_to_z: value -> Z.t = unwrap_numv
 let al_to_intN signed unsigned z = if z < Z.zero then signed z else unsigned z
 
-let al_to_fmagN masks = function
+let al_to_fmagN layout = function
   | CaseV ("NORM", [ m; n ]) ->
-    Z.(shift_left (al_to_z n + masks.bias) masks.width_m + al_to_z m)
+    Z.(shift_left (al_to_z n + bias layout) layout.mantissa + al_to_z m)
   | CaseV ("SUBNORM", [ m ]) -> al_to_z m
-  | CaseV ("INF", []) -> masks.exponent
-  | CaseV ("NAN", [ m ]) -> Z.(masks.exponent + al_to_z m)
+  | CaseV ("INF", []) -> mask_exp layout
+  | CaseV ("NAN", [ m ]) -> Z.(mask_exp layout + al_to_z m)
   | v -> fail "al_to_fmagN" v
 
-let al_to_floatN masks = function
-  | CaseV ("POS", [ mag ]) -> al_to_fmagN masks mag
-  | CaseV ("NEG", [ mag ]) -> Z.(masks.sign + al_to_fmagN masks mag)
+let al_to_floatN layout = function
+  | CaseV ("POS", [ mag ]) -> al_to_fmagN layout mag
+  | CaseV ("NEG", [ mag ]) -> Z.(mask_sign layout + al_to_fmagN layout mag)
   | v -> fail "al_to_floatN" v
 
 let al_to_int (v: value): int = al_to_z v |> Z.to_int
 let al_to_int32 (v: value): int32 = al_to_z v |> al_to_intN Z.to_int32 Z.to_int32_unsigned
 let al_to_int64 (v: value): int64 = al_to_z v |> al_to_intN Z.to_int64 Z.to_int64_unsigned
-let al_to_float32 (v: value): F32.t = al_to_floatN masks32 v |> Z.to_int32 |> F32.of_bits
-let al_to_float64 (v: value): F64.t = al_to_floatN masks64 v |> Z.to_int64 |> F64.of_bits
+let al_to_float32 (v: value): F32.t = al_to_floatN layout32 v |> Z.to_int32_unsigned |> F32.of_bits
+let al_to_float64 (v: value): F64.t = al_to_floatN layout64 v |> Z.to_int64_unsigned |> F64.of_bits
 let al_to_idx: value -> idx = al_to_phrase al_to_int32
 let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
 let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
@@ -761,7 +751,7 @@ and al_to_instr': value -> Ast.instr' = function
     VecBinary (al_to_special_vbinop v)
   | CaseV ("VCVTOP", vop) -> VecConvert (al_to_vcvtop vop)
   | CaseV ("VEXTADD_PAIRWISE", _) as v -> VecConvert (al_to_special_vcvtop v)
-  | CaseV ("VISHIFTOP", vop) -> VecShift (al_to_vshiftop vop)
+  | CaseV ("VSHIFTOP", vop) -> VecShift (al_to_vshiftop vop)
   | CaseV ("VBITMASK", vop) -> VecBitmask (al_to_vbitmaskop vop)
   | CaseV ("VVTESTOP", vop) -> VecTestBits (al_to_vvtestop vop)
   | CaseV ("VVUNOP", vop) -> VecUnaryBits (al_to_vvunop vop)
@@ -993,21 +983,21 @@ let al_of_opt f opt = Option.map f opt |> optV
 
 let al_of_z z = numV z
 
-let al_of_fmagN masks i =
-  let n = Z.logand i masks.exponent in
-  let m = Z.logand i masks.mantissa in
+let al_of_fmagN layout i =
+  let n = Z.logand i (mask_exp layout) in
+  let m = Z.logand i (mask_mant layout) in
   if n = Z.zero then
     CaseV ("SUBNORM", [ al_of_z m ])
-  else if n <> masks.exponent then
-    CaseV ("NORM", [ al_of_z m; al_of_z Z.(shift_right n masks.width_m - masks.bias) ])
+  else if n <> mask_exp layout then
+    CaseV ("NORM", [ al_of_z m; al_of_z Z.(shift_right n layout.mantissa - bias layout) ])
   else if m = Z.zero then
     CaseV ("INF", [])
   else
     CaseV ("NAN", [ al_of_z m ])
 
-let al_of_floatN masks i =
-  let i' = Z.logand i Z.(masks.exponent + masks.mantissa) in
-  let mag = al_of_fmagN masks i in
+let al_of_floatN layout i =
+  let i' = Z.logand i (mask_mag layout) in
+  let mag = al_of_fmagN layout i in
   CaseV ((if i' = i then "POS" else "NEG"), [ mag ])
 
 let al_of_int i = Z.of_int i |> al_of_z
@@ -1023,8 +1013,8 @@ let al_of_int32 i32 =
 let al_of_int64 i64 =
   (* NOTE: int32 is considered to be unsigned *)
   Z.of_int64_unsigned i64 |> al_of_z
-let al_of_float32 f32 = F32.to_bits f32 |> Z.of_int32 |> al_of_floatN masks32
-let al_of_float64 f64 = F64.to_bits f64 |> Z.of_int64 |> al_of_floatN masks64
+let al_of_float32 f32 = F32.to_bits f32 |> Z.of_int32_unsigned |> al_of_floatN layout32
+let al_of_float64 f64 = F64.to_bits f64 |> Z.of_int64_unsigned |> al_of_floatN layout64
 let al_of_vector vec = V128.to_bits vec |> vecV
 let al_of_bool b = Bool.to_int b |> al_of_int
 let al_of_idx idx = al_of_int32 idx.it
@@ -1710,7 +1700,7 @@ let rec al_of_instr instr =
   | VecUnary vop -> CaseV ("VUNOP", al_of_vunop vop)
   | VecBinary vop -> (match al_of_vbinop vop with Some l -> CaseV ("VBINOP", l) | None -> al_of_special_vbinop vop)
   | VecConvert vop -> (match al_of_vcvtop vop with Some l -> CaseV ("VCVTOP", l) | None -> al_of_special_vcvtop vop)
-  | VecShift vop -> CaseV ("VISHIFTOP", al_of_vshiftop vop)
+  | VecShift vop -> CaseV ("VSHIFTOP", al_of_vshiftop vop)
   | VecBitmask vop -> CaseV ("VBITMASK", al_of_vbitmaskop vop)
   | VecTestBits vop -> CaseV ("VVTESTOP", al_of_vvtestop vop)
   | VecUnaryBits vop -> CaseV ("VVUNOP", al_of_vvunop vop)

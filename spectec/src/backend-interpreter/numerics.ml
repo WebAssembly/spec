@@ -535,9 +535,6 @@ let vunop: numerics =
           | CaseV ("ABS", []) -> wrap_vunop V128.I64x2.abs v
           | CaseV ("NEG", []) -> wrap_vunop V128.I64x2.neg v
           | _ -> failwith ("Invalid viunop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for viunop")
-      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v ] -> (
-        match ls, ln with
         | "F32", z when z = Z.of_int 4 -> (
           match op with
           | CaseV ("ABS", []) -> wrap_vunop V128.F32x4.abs v
@@ -558,7 +555,7 @@ let vunop: numerics =
           | CaseV ("TRUNC", []) -> wrap_vunop V128.F64x2.trunc v
           | CaseV ("NEAREST", []) -> wrap_vunop V128.F64x2.nearest v
           | _ -> failwith ("Invalid vfunop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vfunop")
+        | _ -> failwith "Invalid type for vunop")
       | _ -> failwith "Invalid vunop")
   }
 
@@ -650,9 +647,6 @@ let vbinop: numerics =
           | CaseV ("MAX", [CaseV ("U", [])]) -> wrap_vbinop V128.I64x2.max_u v1 v2
           | CaseV ("MUL", []) -> wrap_vbinop V128.I64x2.mul v1 v2
           | _ -> failwith ("Invalid vibinop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vibinop")
-      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
-        match ls, ln with
         | "F32", z when z = Z.of_int 4 -> (
           match op with
           | CaseV ("ADD", []) -> wrap_vbinop V128.F32x4.add v1 v2
@@ -675,94 +669,93 @@ let vbinop: numerics =
           | CaseV ("PMIN", []) -> wrap_vbinop V128.F64x2.pmin v1 v2
           | CaseV ("PMAX", []) -> wrap_vbinop V128.F64x2.pmax v1 v2
           | _ -> failwith ("Invalid vfbinop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vfbinop")
+        | _ -> failwith "Invalid type for vbinop")
       | _ -> failwith "Invalid vbinop")
   }
 
 let wrap_vrelop op v1 v2 =
-  op v1 v2 |> al_of_bool
+  let v1 = al_to_vector v1 in
+  let v2 = al_to_vector v2 in
+  op v1 v2 |> al_of_vector
 
 let vrelop: numerics =
   {
     name = "vrelop";
     f =
       (function
-      | [ TupV [ CaseV (ls, []); NumV (ln) ]; op; NumV v1; NumV v2 ] -> (
+      | [ TupV [ CaseV (ls, []); NumV (ln) ]; op; v1; v2 ] -> (
         match ls, ln with
         | "I8", z when z = Z.of_int 16 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop I8.eq (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("NE", []) -> wrap_vrelop I8.ne (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("LTS", []) -> wrap_vrelop I8.lt_s (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("LTU", []) -> wrap_vrelop I8.lt_u (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("GTS", []) -> wrap_vrelop I8.gt_s (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("GTU", []) -> wrap_vrelop I8.gt_u (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("LES", []) -> wrap_vrelop I8.le_s (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("LEU", []) -> wrap_vrelop I8.le_u (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("GES", []) -> wrap_vrelop I8.ge_s (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
-          | CaseV ("GEU", []) -> wrap_vrelop I8.ge_u (v1 |> z_to_int32 |> i8_to_i32) (v2 |> z_to_int32 |> i8_to_i32)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.I8x16.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.I8x16.ne v1 v2
+          | CaseV ("LT", [CaseV ("S", [])]) -> wrap_vrelop V128.I8x16.lt_s v1 v2
+          | CaseV ("LT", [CaseV ("U", [])]) -> wrap_vrelop V128.I8x16.lt_u v1 v2
+          | CaseV ("GT", [CaseV ("S", [])]) -> wrap_vrelop V128.I8x16.gt_s v1 v2
+          | CaseV ("GT", [CaseV ("U", [])]) -> wrap_vrelop V128.I8x16.gt_u v1 v2
+          | CaseV ("LE", [CaseV ("S", [])]) -> wrap_vrelop V128.I8x16.le_s v1 v2
+          | CaseV ("LE", [CaseV ("U", [])]) -> wrap_vrelop V128.I8x16.le_u v1 v2
+          | CaseV ("GE", [CaseV ("S", [])]) -> wrap_vrelop V128.I8x16.ge_s v1 v2
+          | CaseV ("GE", [CaseV ("U", [])]) -> wrap_vrelop V128.I8x16.ge_u v1 v2
           | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
         | "I16", z when z = Z.of_int 8 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop I16.eq (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("NE", []) -> wrap_vrelop I16.ne (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("LTS", []) -> wrap_vrelop I16.lt_s  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("LTU", []) -> wrap_vrelop I16.lt_u  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("GTS", []) -> wrap_vrelop I16.gt_s  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("GTU", []) -> wrap_vrelop I16.gt_u  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("LES", []) -> wrap_vrelop I16.le_s  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("LEU", []) -> wrap_vrelop I16.le_u  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("GES", []) -> wrap_vrelop I16.ge_s  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
-          | CaseV ("GEU", []) -> wrap_vrelop I16.ge_u  (v1 |> z_to_int32 |> i16_to_i32) (v2 |> z_to_int32 |> i16_to_i32)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.I16x8.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.I16x8.ne v1 v2
+          | CaseV ("LT", [CaseV ("S", [])]) -> wrap_vrelop V128.I16x8.lt_s v1 v2
+          | CaseV ("LT", [CaseV ("U", [])]) -> wrap_vrelop V128.I16x8.lt_u v1 v2
+          | CaseV ("GT", [CaseV ("S", [])]) -> wrap_vrelop V128.I16x8.gt_s v1 v2
+          | CaseV ("GT", [CaseV ("U", [])]) -> wrap_vrelop V128.I16x8.gt_u v1 v2
+          | CaseV ("LE", [CaseV ("S", [])]) -> wrap_vrelop V128.I16x8.le_s v1 v2
+          | CaseV ("LE", [CaseV ("U", [])]) -> wrap_vrelop V128.I16x8.le_u v1 v2
+          | CaseV ("GE", [CaseV ("S", [])]) -> wrap_vrelop V128.I16x8.ge_s v1 v2
+          | CaseV ("GE", [CaseV ("U", [])]) -> wrap_vrelop V128.I16x8.ge_u v1 v2
           | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
         | "I32", z when z = Z.of_int 4 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop I32.eq (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("NE", []) -> wrap_vrelop I32.ne (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("LTS", []) -> wrap_vrelop I32.lt_s (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("LTU", []) -> wrap_vrelop I32.lt_u (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("GTS", []) -> wrap_vrelop I32.gt_s (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("GTU", []) -> wrap_vrelop I32.gt_u (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("LES", []) -> wrap_vrelop I32.le_s (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("LEU", []) -> wrap_vrelop I32.le_u (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("GES", []) -> wrap_vrelop I32.ge_s (v1 |> z_to_int32) (v2 |> z_to_int32)
-          | CaseV ("GEU", []) -> wrap_vrelop I32.ge_u (v1 |> z_to_int32) (v2 |> z_to_int32)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.I32x4.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.I32x4.ne v1 v2
+          | CaseV ("LT", [CaseV ("S", [])]) -> wrap_vrelop V128.I32x4.lt_s v1 v2
+          | CaseV ("LT", [CaseV ("U", [])]) -> wrap_vrelop V128.I32x4.lt_u v1 v2
+          | CaseV ("GT", [CaseV ("S", [])]) -> wrap_vrelop V128.I32x4.gt_s v1 v2
+          | CaseV ("GT", [CaseV ("U", [])]) -> wrap_vrelop V128.I32x4.gt_u v1 v2
+          | CaseV ("LE", [CaseV ("S", [])]) -> wrap_vrelop V128.I32x4.le_s v1 v2
+          | CaseV ("LE", [CaseV ("U", [])]) -> wrap_vrelop V128.I32x4.le_u v1 v2
+          | CaseV ("GE", [CaseV ("S", [])]) -> wrap_vrelop V128.I32x4.ge_s v1 v2
+          | CaseV ("GE", [CaseV ("U", [])]) -> wrap_vrelop V128.I32x4.ge_u v1 v2
           | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
         | "I64", z when z = Z.of_int 2 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop I64.eq (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("NE", []) -> wrap_vrelop I64.ne (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("LTS", []) -> wrap_vrelop I64.lt_s (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("LTU", []) -> wrap_vrelop I64.lt_u (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("GTS", []) -> wrap_vrelop I64.gt_s (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("GTU", []) -> wrap_vrelop I64.gt_u (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("LES", []) -> wrap_vrelop I64.le_s (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("LEU", []) -> wrap_vrelop I64.le_u (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("GES", []) -> wrap_vrelop I64.ge_s (v1 |> z_to_int64) (v2 |> z_to_int64)
-          | CaseV ("GEU", []) -> wrap_vrelop I64.ge_u (v1 |> z_to_int64) (v2 |> z_to_int64)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.I64x2.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.I64x2.ne v1 v2
+          | CaseV ("LT", [CaseV ("S", [])]) -> wrap_vrelop V128.I64x2.lt_s v1 v2
+          | CaseV ("LT", [CaseV ("U", [])]) -> wrap_vrelop V128.I64x2.lt_u v1 v2
+          | CaseV ("GT", [CaseV ("S", [])]) -> wrap_vrelop V128.I64x2.gt_s v1 v2
+          | CaseV ("GT", [CaseV ("U", [])]) -> wrap_vrelop V128.I64x2.gt_u v1 v2
+          | CaseV ("LE", [CaseV ("S", [])]) -> wrap_vrelop V128.I64x2.le_s v1 v2
+          | CaseV ("LE", [CaseV ("U", [])]) -> wrap_vrelop V128.I64x2.le_u v1 v2
+          | CaseV ("GE", [CaseV ("S", [])]) -> wrap_vrelop V128.I64x2.ge_s v1 v2
+          | CaseV ("GE", [CaseV ("U", [])]) -> wrap_vrelop V128.I64x2.ge_u v1 v2
           | _ -> failwith ("Invalid virelop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for virelop")
-      | [ CaseV ("_VF", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
-        match ls, ln with
         | "F32", z when z = Z.of_int 4 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop F32.eq (al_to_float32 v1) (al_to_float32 v2)
-          | CaseV ("NE", []) -> wrap_vrelop F32.ne (al_to_float32 v1) (al_to_float32 v2)
-          | CaseV ("LT", []) -> wrap_vrelop F32.lt (al_to_float32 v1) (al_to_float32 v2)
-          | CaseV ("GT", []) -> wrap_vrelop F32.gt (al_to_float32 v1) (al_to_float32 v2)
-          | CaseV ("LE", []) -> wrap_vrelop F32.le (al_to_float32 v1) (al_to_float32 v2)
-          | CaseV ("GE", []) -> wrap_vrelop F32.ge (al_to_float32 v1) (al_to_float32 v2)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.F32x4.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.F32x4.ne v1 v2
+          | CaseV ("LT", []) -> wrap_vrelop V128.F32x4.lt v1 v2
+          | CaseV ("GT", []) -> wrap_vrelop V128.F32x4.gt v1 v2
+          | CaseV ("LE", []) -> wrap_vrelop V128.F32x4.le v1 v2
+          | CaseV ("GE", []) -> wrap_vrelop V128.F32x4.ge v1 v2
           | _ -> failwith ("Invalid vfrelop: " ^ (Print.string_of_value op)))
         | "F64", z when z = Z.of_int 2 -> (
           match op with
-          | CaseV ("EQ", []) -> wrap_vrelop F64.eq (al_to_float64 v1) (al_to_float64 v2)
-          | CaseV ("NE", []) -> wrap_vrelop F64.ne (al_to_float64 v1) (al_to_float64 v2)
-          | CaseV ("LT", []) -> wrap_vrelop F64.lt (al_to_float64 v1) (al_to_float64 v2)
-          | CaseV ("GT", []) -> wrap_vrelop F64.gt (al_to_float64 v1) (al_to_float64 v2)
-          | CaseV ("LE", []) -> wrap_vrelop F64.le (al_to_float64 v1) (al_to_float64 v2)
-          | CaseV ("GE", []) -> wrap_vrelop F64.ge (al_to_float64 v1) (al_to_float64 v2)
+          | CaseV ("EQ", []) -> wrap_vrelop V128.F64x2.eq v1 v2
+          | CaseV ("NE", []) -> wrap_vrelop V128.F64x2.ne v1 v2
+          | CaseV ("LT", []) -> wrap_vrelop V128.F64x2.lt v1 v2
+          | CaseV ("GT", []) -> wrap_vrelop V128.F64x2.gt v1 v2
+          | CaseV ("LE", []) -> wrap_vrelop V128.F64x2.le v1 v2
+          | CaseV ("GE", []) -> wrap_vrelop V128.F64x2.ge v1 v2
           | _ -> failwith ("Invalid vfrelop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for vfrelop")
+        | _ -> failwith "Invalid type for vrelop")
       | _ -> failwith "Invalid vrelop")
   }
 
@@ -806,7 +799,7 @@ let narrow : numerics =
 
 let lanes : numerics =
   {
-    name = "lanes";
+    name = "lanes_";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; VecV v ] when z = Z.of_int 16 ->
@@ -821,7 +814,7 @@ let lanes : numerics =
         v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
       | [ TupV [ CaseV ("F64", []); NumV z ]; VecV v ] when z = Z.of_int 2 ->
         v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
-      | _ -> failwith "Invaild lanes"
+      | vs -> failwith ("Invalid lanes_: " ^ Print.(string_of_list string_of_value " " vs))
       );
   }
 let inverse_of_lanes : numerics =
@@ -835,7 +828,7 @@ let inverse_of_lanes : numerics =
       | [ TupV [ CaseV ("I64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> VecV (List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> V128.to_bits)
       | [ TupV [ CaseV ("F32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
       | [ TupV [ CaseV ("F64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> VecV (List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> V128.to_bits)
-      | _ -> failwith "Invaild inverse_of_lanes"
+      | _ -> failwith "Invalid inverse_of_lanes_"
       );
   }
 
@@ -848,7 +841,7 @@ let inverse_of_lsize : numerics =
       | [ NumV z ] when z = Z.of_int 16 -> CaseV ("I16", [])
       | [ NumV z ] when z = Z.of_int 32 -> CaseV ("I32", [])
       | [ NumV z ] when z = Z.of_int 64 -> CaseV ("I64", [])
-      | _ -> failwith "Invaild inverse_of_lsize"
+      | _ -> failwith "Invalid inverse_of_lsize"
       );
   }
 
@@ -856,7 +849,7 @@ let rec inverse_of_concat_helper = function
   | a :: b :: l ->
     [listV_of_list [a; b]] @ inverse_of_concat_helper l
   | [] -> []
-  | _ -> failwith "Invaild inverse_of_concat_bytes_helper"
+  | _ -> failwith "Invalid inverse_of_concat_bytes_helper"
 
 let inverse_of_concat : numerics =
   {
