@@ -311,7 +311,7 @@ let rec translate_rhs exp =
   let at = exp.at in
   match exp.it with
   (* Trap *)
-  | Il.CaseE (Atom "TRAP", []) -> [ trapI () ~at:at ]
+  | Il.CaseE (Atom "TRAP", _) -> [ trapI () ~at:at ]
   (* Execute instrs
    * TODO: doing this based on variable name is too ad-hoc. Need smarter way. *)
   | Il.IterE ({ it = VarE id; _ }, (Il.List, _))

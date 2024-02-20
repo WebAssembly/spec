@@ -329,7 +329,7 @@ let ibytes : numerics =
             in
           assert Z.(n >= Z.zero && rem n (of_int 8) = zero);
           decompose n i |> List.map numV |> listV_of_list
-      | _ -> failwith "Invalid bytes"
+      | vs -> failwith ("Invalid ibytes: " ^ Print.(string_of_list string_of_value " " vs))
       );
   }
 let inverse_of_ibytes : numerics =
@@ -355,8 +355,8 @@ let nbytes : numerics =
       (function
       | [ CaseV ("I32", []); n ] -> ibytes.f [ NumV (Z.of_int 32); n ]
       | [ CaseV ("I64", []); n ] -> ibytes.f [ NumV (Z.of_int 64); n ]
-      | [ CaseV ("F32", []); f ] -> ibytes.f [ NumV (Z.of_int 32); f ] (* TODO *)
-      | [ CaseV ("F64", []); f ] -> ibytes.f [ NumV (Z.of_int 64); f ] (* TODO *)
+      | [ CaseV ("F32", []); f ] -> ibytes.f [ NumV (Z.of_int 32); al_to_float32 f |> F32.to_bits |> al_of_int32 ]
+      | [ CaseV ("F64", []); f ] -> ibytes.f [ NumV (Z.of_int 64); al_to_float64 f |> F64.to_bits |> al_of_int64 ]
       | _ -> failwith "Invalid nbytes"
       );
   }
@@ -367,8 +367,8 @@ let inverse_of_nbytes : numerics =
       (function
       | [ CaseV ("I32", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 32); l ]
       | [ CaseV ("I64", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 64); l ]
-      | [ CaseV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 32); l ] (* TODO *)
-      | [ CaseV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 64); l ] (* TODO *)
+      | [ CaseV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 32); l ] |> al_to_int32 |> F32.of_bits |> al_of_float32
+      | [ CaseV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 64); l ] |> al_to_int64 |> F64.of_bits |> al_of_float64
       | _ -> failwith "Invalid inverse_of_nbytes"
       );
   }
@@ -426,7 +426,7 @@ let wrap : numerics =
         | [ NumV _m; NumV n; NumV i ] ->
             let mask = Z.pred (Z.shift_left Z.one (Z.to_int n)) in
             NumV (Z.logand i mask)
-      | _ -> failwith "Invalid wrap_"
+      | _ -> failwith "Invalid wrap"
       );
   }
 
@@ -826,7 +826,7 @@ let lanes : numerics =
   }
 let inverse_of_lanes : numerics =
   {
-    name = "inverse_of_lanes";
+    name = "inverse_of_lanes_";
     f =
       (function
       | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> V128.to_bits)
@@ -836,6 +836,19 @@ let inverse_of_lanes : numerics =
       | [ TupV [ CaseV ("F32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
       | [ TupV [ CaseV ("F64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> VecV (List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> V128.to_bits)
       | _ -> failwith "Invaild inverse_of_lanes"
+      );
+  }
+
+let inverse_of_lsize : numerics =
+  {
+    name = "inverse_of_lsize";
+    f =
+      (function
+      | [ NumV z ] when z = Z.of_int 8 -> CaseV ("I8", [])
+      | [ NumV z ] when z = Z.of_int 16 -> CaseV ("I16", [])
+      | [ NumV z ] when z = Z.of_int 32 -> CaseV ("I32", [])
+      | [ NumV z ] when z = Z.of_int 64 -> CaseV ("I64", [])
+      | _ -> failwith "Invaild inverse_of_lsize"
       );
   }
 
@@ -1006,6 +1019,7 @@ let numerics_list : numerics list = [
   narrow;
   lanes;
   inverse_of_lanes;
+  inverse_of_lsize;
   ine;
   ilt;
   inverse_of_ibits;

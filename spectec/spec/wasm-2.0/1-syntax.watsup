@@ -58,12 +58,12 @@ syntax fN(N) hint(desc "floating-point number") hint(show f#%) =
 
 syntax fmag(N) hint(desc "floating-point magnitude") hint(show f#%#mag) =
   | NORM m n     hint(show $((1 + %*2^(-$M(N))) * 2^%))  -- if $(2-2^($E(N)-1) <= n <= 2^($E(N)-1)-1)
-  | SUBNORM m n  hint(show $((0 + %*2^(-$M(N))) * 2^n))  -- if $(2-2^($E(N)-1) = n)
+  | SUBNORM m    hint(show $((0 + %*2^(-$M(N))) * 2^n))  -- if $(2-2^($E(N)-1) = n)
   | INF          hint(show infinity)
   | NAN m        hint(show NAN#((%)))                    -- if $(1 <= m < $M(N))
 
 def $fzero(N) : fN(N)  hint(show $(+0))
-def $fzero(N) = POS (NORM 0 0)
+def $fzero(N) = POS (SUBNORM 0)
 
 syntax f32 = fN(32)
 syntax f64 = fN(64)
