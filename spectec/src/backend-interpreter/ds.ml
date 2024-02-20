@@ -159,6 +159,11 @@ module AlContext = struct
     | [] | [ Return _ ] -> false
     | _ -> true
 
+  let can_tail_call instr =
+    match instr.it with
+    | IfI _ | EitherI _ | PopI _ | LetI _ | ReturnI _ -> false
+    | _ -> true
+
   let get_name ctx =
     match List.hd ctx with
     | Al (name, _, _) -> name

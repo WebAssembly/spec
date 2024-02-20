@@ -737,7 +737,7 @@ and step : AlContext.t -> AlContext.t = AlContext.(function
   | Al (name, il, env) :: ctx ->
     (match il with
     | [] -> ctx
-    | [{ it = ExecuteI _; _ } as i] -> step_instr ctx env i
+    | [instr] when AlContext.can_tail_call instr -> step_instr ctx env instr
     | h :: t ->
       let new_ctx = Al (name, t, env) :: ctx in
       step_instr new_ctx env h

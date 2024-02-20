@@ -46,6 +46,7 @@ module AlContext : sig
   type t = mode list
   val tl : t -> t
   val is_reducible : t -> bool
+  val can_tail_call : instr -> bool
   val get_name : t -> string
   val add_instrs : instr list -> t -> t
   val set_env : env -> t -> t
