@@ -48,7 +48,7 @@ let mask_exp layout = Z.(mask_mag layout - mask_mant layout)
 let bias layout = let em1 = layout.exponent - 1 in Z.((one + one)**em1 - one)
 
 let al_to_z: value -> Z.t = unwrap_numv
-let al_to_intN signed unsigned z = if z < Z.zero then signed z else unsigned z
+let z_to_intN signed unsigned z = if z < Z.zero then signed z else unsigned z
 
 let al_to_fmagN layout = function
   | CaseV ("NORM", [ m; n ]) ->
@@ -63,11 +63,17 @@ let al_to_floatN layout = function
   | CaseV ("NEG", [ mag ]) -> Z.(mask_sign layout + al_to_fmagN layout mag)
   | v -> fail "al_to_floatN" v
 
+let e64 = Z.(shift_left one 64)
+let z_to_vec128 i =
+  let hi, lo = Z.div_rem i e64 in
+  V128.I64x2.of_lanes [Z.to_int64_unsigned lo; Z.to_int64_unsigned hi]
+
 let al_to_int (v: value): int = al_to_z v |> Z.to_int
-let al_to_int32 (v: value): int32 = al_to_z v |> al_to_intN Z.to_int32 Z.to_int32_unsigned
-let al_to_int64 (v: value): int64 = al_to_z v |> al_to_intN Z.to_int64 Z.to_int64_unsigned
+let al_to_int32 (v: value): I32.t = al_to_z v |> z_to_intN Z.to_int32 Z.to_int32_unsigned
+let al_to_int64 (v: value): I64.t = al_to_z v |> z_to_intN Z.to_int64 Z.to_int64_unsigned
 let al_to_float32 (v: value): F32.t = al_to_floatN layout32 v |> Z.to_int32_unsigned |> F32.of_bits
 let al_to_float64 (v: value): F64.t = al_to_floatN layout64 v |> Z.to_int64_unsigned |> F64.of_bits
+let al_to_vec128 (v: value): V128.t = al_to_z v |> z_to_vec128
 let al_to_idx: value -> idx = al_to_phrase al_to_int32
 let al_to_byte (v: value): Char.t = al_to_int v |> Char.chr
 let al_to_bytes (v: value): string = al_to_seq al_to_byte v |> String.of_seq
@@ -75,7 +81,6 @@ let al_to_string = function
   | TextV str -> str
   | v -> fail "text" v
 let al_to_name name = name |> al_to_string |> Utf8.decode
-let al_to_vector = unwrap_vecv
 let al_to_bool = unwrap_boolv
 
 
@@ -236,7 +241,7 @@ and al_to_num: value -> num = function
   | v -> fail "num" v
 
 and al_to_vec: value -> vec = function
-  | CaseV ("VCONST", [ CaseV ("V128", []); VecV (v128)]) -> V128 (V128.of_bits v128)
+  | CaseV ("VCONST", [ CaseV ("V128", []); v128 ]) -> V128 (al_to_vec128 v128)
   | v -> fail "vec" v
 
 and al_to_ref: value -> ref_ = function
@@ -699,10 +704,10 @@ let al_to_vmemop (f: value -> 'p): value list -> (vec_type, 'p) memop = function
   | v -> fail_list "vmemop" v
 
 let al_to_pack_shape = function
-  | TupV [NumV z1; NumV z2] when z1 = eight && z2 = eight -> Pack.Pack8x8
-  | TupV [NumV z1; NumV z2] when z1 = sixteen && z2 = four -> Pack.Pack16x4
-  | TupV [NumV z1; NumV z2] when z1 = thirtytwo && z2 = two -> Pack.Pack32x2
-  | v -> fail "pack shape" v
+  | [NumV z1; NumV z2] when z1 = eight && z2 = eight -> Pack.Pack8x8
+  | [NumV z1; NumV z2] when z1 = sixteen && z2 = four -> Pack.Pack16x4
+  | [NumV z1; NumV z2] when z1 = thirtytwo && z2 = two -> Pack.Pack32x2
+  | vs -> fail "pack shape" (TupV vs)
 
 let pack_shape_to_pack_size = function
   | Pack.Pack8x8 -> Pack.Pack8
@@ -710,10 +715,11 @@ let pack_shape_to_pack_size = function
   | Pack.Pack32x2 -> Pack.Pack32
 
 let al_to_vloadop': value -> Pack.pack_size * Pack.vec_extension = function
-  | CaseV ("SHAPE", [ pack_shape; ext ]) ->
+  | CaseV ("SHAPE", [ v1; v2; ext ] ) ->
+    let pack_shape = al_to_pack_shape [v1; v2] in
     (
-      pack_shape_to_pack_size (al_to_pack_shape pack_shape),
-      Pack.ExtLane (al_to_pack_shape pack_shape, al_to_extension ext)
+      pack_shape_to_pack_size pack_shape,
+      Pack.ExtLane (pack_shape, al_to_extension ext)
     )
   | CaseV ("SPLAT", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtSplat
   | CaseV ("ZERO", [ pack_size ]) -> al_to_pack_size pack_size, Pack.ExtZero
@@ -1000,6 +1006,11 @@ let al_of_floatN layout i =
   let mag = al_of_fmagN layout i in
   CaseV ((if i' = i then "POS" else "NEG"), [ mag ])
 
+let vec128_to_z vec =
+  match V128.I64x2.to_lanes vec with
+  | [ v1; v2 ] -> Z.(of_int64_unsigned v1 + e64 * of_int64_unsigned v2)
+  | _ -> assert false
+
 let al_of_int i = Z.of_int i |> al_of_z
 let al_of_int8 i8 =
   (* NOTE: int8 is considered to be unsigned *)
@@ -1015,7 +1026,7 @@ let al_of_int64 i64 =
   Z.of_int64_unsigned i64 |> al_of_z
 let al_of_float32 f32 = F32.to_bits f32 |> Z.of_int32_unsigned |> al_of_floatN layout32
 let al_of_float64 f64 = F64.to_bits f64 |> Z.of_int64_unsigned |> al_of_floatN layout64
-let al_of_vector vec = V128.to_bits vec |> vecV
+let al_of_vec128 vec = vec128_to_z vec |> al_of_z
 let al_of_bool b = Bool.to_int b |> al_of_int
 let al_of_idx idx = al_of_int32 idx.it
 let al_of_byte byte = Char.code byte |> al_of_int
@@ -1132,7 +1143,7 @@ let al_of_num = function
   | F64 f64 -> CaseV ("CONST", [ nullary "F64"; al_of_float64 f64 ])
 
 let al_of_vec = function
-  | V128 v128 -> CaseV ("VCONST", [ nullary "V128"; VecV (V128.to_bits v128) ])
+  | V128 v128 -> CaseV ("VCONST", [ nullary "V128"; al_of_vec128 v128 ])
 
 let al_of_vec_shape shape (lanes: int64 list) =
   al_of_vec (V128  (
@@ -1616,9 +1627,9 @@ let al_of_pack_size = function
   | Pack.Pack64 -> al_of_int 64
 
 let al_of_pack_shape = function
-  | Pack.Pack8x8 -> TupV [NumV eight; NumV eight]
-  | Pack.Pack16x4 -> TupV [NumV sixteen; NumV four]
-  | Pack.Pack32x2 -> TupV [NumV thirtytwo; NumV two]
+  | Pack.Pack8x8 -> [NumV eight; NumV eight]
+  | Pack.Pack16x4 -> [NumV sixteen; NumV four]
+  | Pack.Pack32x2 -> [NumV thirtytwo; NumV two]
 
 let al_of_extension = function
   | Pack.SX -> nullary "S"
@@ -1649,7 +1660,7 @@ let al_of_vloadop vloadop =
   let vmemop = match vloadop.pack with
   | Option.Some (pack_size, vextension) -> (
     match vextension with
-    | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", [ al_of_pack_shape pack_shape; al_of_extension extension ])
+    | Pack.ExtLane (pack_shape, extension) -> CaseV ("SHAPE", al_of_pack_shape pack_shape @ [al_of_extension extension])
     | Pack.ExtSplat -> CaseV ("SPLAT", [ al_of_pack_size pack_size ])
     | Pack.ExtZero -> CaseV ("ZERO", [ al_of_pack_size pack_size ])
   ) |> Option.some |> optV

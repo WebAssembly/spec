@@ -56,7 +56,6 @@ and string_of_value = function
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | NumV n -> "0x" ^ Z.format "%X" n
   | BoolV b -> string_of_bool b
-  | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> s
   | TupV vl -> "(" ^ string_of_values ", " vl ^ ")"
   | CaseV ("CONST", hd::tl) -> "(" ^ string_of_value hd ^ ".CONST " ^ string_of_values " " tl ^ ")"
@@ -347,7 +346,6 @@ let rec structured_string_of_value = function
   | ListV _ -> "ListV"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
   | NumV n -> "NumV (" ^ Z.to_string n ^ ")"
-  | VecV v -> "VecV (" ^ String.concat " " (List.init 4 (fun i -> Int32.to_string (Bytes.get_int32_le (Bytes.of_string v) (i*4)))) ^ ")"
   | TextV s -> "TextV (" ^ s ^ ")"
   | TupV vl ->  "TupV (" ^ structured_string_of_values vl ^ ")"
   | CaseV (s, vl) -> "CaseV(" ^ s ^ ", [" ^ structured_string_of_values vl ^ "])"

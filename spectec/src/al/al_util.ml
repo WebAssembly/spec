@@ -82,7 +82,6 @@ let dotP ?(at = no) kwd = DotP kwd |> mk_path at
 let numV i = NumV i
 let numV_of_int i = Z.of_int i |> numV
 let boolV b = BoolV b
-let vecV vec = VecV vec
 let strV r = StrV r
 let caseV (s, vl) = CaseV (s, vl)
 let optV v_opt = OptV v_opt
@@ -174,9 +173,6 @@ let unwrap_numv_to_int (v: value): int = unwrap_numv v |> Z.to_int
 let unwrap_boolv: value -> bool = function
   | BoolV b -> b
   | v -> fail "boolean" v
-let unwrap_vecv: value -> vec128 = function
-  | VecV v -> v
-  | v -> fail "vector" v
 let unwrap_tupv: value -> value list = function
   | TupV l -> l
   | v -> fail "tuple" v

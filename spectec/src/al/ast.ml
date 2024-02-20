@@ -24,7 +24,6 @@ and store = (kwd', value) record
 and value =
   | NumV of Z.t                        (* number *)
   | BoolV of bool                      (* boolean *)
-  | VecV of vec128                     (* vector *)
   | TextV of string                    (* string *)
   | ListV of value growable_array      (* list of values *)
   | StrV of (kwd', value) record       (* key-value mapping *)

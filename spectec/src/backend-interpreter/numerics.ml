@@ -302,7 +302,7 @@ let ext : numerics =
     name = "ext";
     f =
       (function
-      | [ NumV z; _; CaseV ("U", []); NumV v ] when z = Z.of_int 128 -> VecV (V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> V128.to_bits) (* HARDCODE *)
+      | [ NumV z; _; CaseV ("U", []); NumV v ] when z = Z.of_int 128 -> V128.I64x2.of_lanes [ z_to_int64 v; 0L ] |> al_of_vec128 (* HARDCODE *)
       | [ _; _; CaseV ("U", []); v ] -> v
       | [ NumV n1; NumV n2; CaseV ("S", []); NumV n3 ] ->
         let i1 = Z.to_int n1 in
@@ -378,12 +378,9 @@ let vbytes : numerics =
     name = "vbytes";
     f =
       (function
-      | [ CaseV ("V128", []); VecV v ] ->
-        let v1 = (ibytes.f [ NumV (Z.of_int 64); NumV (Z.of_int64 (Bytes.get_int64_le (Bytes.of_string v) 0)) ]) in
-        let v2 = (ibytes.f [ NumV (Z.of_int 64); NumV (Z.of_int64 (Bytes.get_int64_le (Bytes.of_string v) 8)) ]) in
-        (match v1, v2 with
-        | ListV l1, ListV l2 -> Array.concat [ !l1; !l2] |> listV
-        | _ -> failwith "Invalid vbytes")
+      | [ CaseV ("V128", []); v ] ->
+        let s = v |> al_to_vec128 |> V128.to_bits in
+        Array.init 16 (fun i -> s.[i] |> Char.code |> al_of_int) |> listV
       | _ -> failwith "Invalid vbytes"
       );
   }
@@ -397,7 +394,7 @@ let inverse_of_vbytes : numerics =
         let v2 = inverse_of_ibytes.f [ NumV (Z.of_int 64); Array.sub !l 8 8 |> listV ] in
 
         (match v1, v2 with
-        | NumV n1, NumV n2 -> al_of_vector (V128.I64x2.of_lanes [ z_to_int64 n1; z_to_int64 n2 ])
+        | NumV n1, NumV n2 -> al_of_vec128 (V128.I64x2.of_lanes [ z_to_int64 n1; z_to_int64 n2 ])
         | _ -> failwith "Invalid inverse_of_vbytes")
 
       | _ -> failwith "Invalid inverse_of_vbytes"
@@ -446,7 +443,7 @@ let ine: numerics =
     name = "ine";
     f =
       (function
-      | [ _; VecV v1; VecV v2 ] -> (if v1 = v2 then Z.zero else Z.one) |> numV
+      | [ _; v1; v2 ] -> (if v1 = v2 then Z.zero else Z.one) |> numV
       | _ -> failwith "Invaild ine"
       );
   }
@@ -483,17 +480,7 @@ let ilt: numerics =
   }
 
 
-let al_to_vector v = v |> al_to_vector |> V128.of_bits
-
-let vzero: numerics =
-  {
-    name = "vzero";
-    f =
-      (fun _ -> VecV ("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"));
-  }
-
-
-let wrap_vunop = map al_to_vector al_of_vector
+let wrap_vunop = map al_to_vec128 al_of_vec128
 
 let vvunop: numerics =
   {
@@ -560,12 +547,12 @@ let vunop: numerics =
   }
 
 
-let wrap_vvbinop = map2 al_to_vector al_of_vector
+let wrap_vvbinop = map2 al_to_vec128 al_of_vec128
 
 let wrap_vbinop op v1 v2 =
-  let v1 = al_to_vector v1 in
-  let v2 = al_to_vector v2 in
-  [ op v1 v2 |> al_of_vector ] |> listV_of_list
+  let v1 = al_to_vec128 v1 in
+  let v2 = al_to_vec128 v2 in
+  [ op v1 v2 |> al_of_vec128 ] |> listV_of_list
 
 let vvbinop: numerics =
   {
@@ -674,9 +661,9 @@ let vbinop: numerics =
   }
 
 let wrap_vrelop op v1 v2 =
-  let v1 = al_to_vector v1 in
-  let v2 = al_to_vector v2 in
-  op v1 v2 |> al_of_vector
+  let v1 = al_to_vec128 v1 in
+  let v2 = al_to_vec128 v2 in
+  op v1 v2 |> al_of_vec128
 
 let vrelop: numerics =
   {
@@ -760,10 +747,11 @@ let vrelop: numerics =
   }
 
 let wrap_vternop op v1 v2 v3 =
-  let v1 = al_to_vector v1 in
-  let v2 = al_to_vector v2 in
-  let v3 = al_to_vector v3 in
-  op v1 v2 v3 |> al_of_vector
+  let v1 = al_to_vec128 v1 in
+  let v2 = al_to_vec128 v2 in
+  let v3 = al_to_vec128 v3 in
+  op v1 v2 v3 |> al_of_vec128
+
 let vvternop: numerics =
   {
     name = "vvternop";
@@ -802,18 +790,18 @@ let lanes : numerics =
     name = "lanes_";
     f =
       (function
-      | [ TupV [ CaseV ("I8", []); NumV z ]; VecV v ] when z = Z.of_int 16 ->
-        v |> V128.of_bits |> V128.I8x16.to_lanes |> List.map al_of_int8 |> listV_of_list
-      | [ TupV [ CaseV ("I16", []); NumV z ]; VecV v ] when z = Z.of_int 8 ->
-        v |> V128.of_bits |> V128.I16x8.to_lanes |> List.map al_of_int16 |> listV_of_list
-      | [ TupV [ CaseV ("I32", []); NumV z ]; VecV v ] when z = Z.of_int 4 ->
-        v |> V128.of_bits |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
-      | [ TupV [ CaseV ("I64", []); NumV z ]; VecV v ] when z = Z.of_int 2 ->
-        v |> V128.of_bits |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
-      | [ TupV [ CaseV ("F32", []); NumV z ]; VecV v ] when z = Z.of_int 4 ->
-        v |> V128.of_bits |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
-      | [ TupV [ CaseV ("F64", []); NumV z ]; VecV v ] when z = Z.of_int 2 ->
-        v |> V128.of_bits |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
+      | [ TupV [ CaseV ("I8", []); NumV z ]; v ] when z = Z.of_int 16 ->
+        v |> al_to_vec128 |> V128.I8x16.to_lanes |> List.map al_of_int8 |> listV_of_list
+      | [ TupV [ CaseV ("I16", []); NumV z ]; v ] when z = Z.of_int 8 ->
+        v |> al_to_vec128 |> V128.I16x8.to_lanes |> List.map al_of_int16 |> listV_of_list
+      | [ TupV [ CaseV ("I32", []); NumV z ]; v ] when z = Z.of_int 4 ->
+        v |> al_to_vec128 |> V128.I32x4.to_lanes |> List.map al_of_int32 |> listV_of_list
+      | [ TupV [ CaseV ("I64", []); NumV z ]; v ] when z = Z.of_int 2 ->
+        v |> al_to_vec128 |> V128.I64x2.to_lanes |> List.map al_of_int64 |> listV_of_list
+      | [ TupV [ CaseV ("F32", []); NumV z ]; v ] when z = Z.of_int 4 ->
+        v |> al_to_vec128 |> V128.F32x4.to_lanes |> List.map al_of_float32 |> listV_of_list
+      | [ TupV [ CaseV ("F64", []); NumV z ]; v ] when z = Z.of_int 2 ->
+        v |> al_to_vec128 |> V128.F64x2.to_lanes |> List.map al_of_float64 |> listV_of_list
       | vs -> failwith ("Invalid lanes_: " ^ Print.(string_of_list string_of_value " " vs))
       );
   }
@@ -822,12 +810,12 @@ let inverse_of_lanes : numerics =
     name = "inverse_of_lanes_";
     f =
       (function
-      | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> V128.to_bits)
-      | [ TupV [ CaseV ("I16", []); NumV z ]; ListV lanes; ] when z = Z.of_int 8 -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> V128.to_bits)
-      | [ TupV [ CaseV ("I32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> VecV (List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> V128.to_bits)
-      | [ TupV [ CaseV ("I64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> VecV (List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> V128.to_bits)
-      | [ TupV [ CaseV ("F32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> VecV (List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> V128.to_bits)
-      | [ TupV [ CaseV ("F64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> VecV (List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> V128.to_bits)
+      | [ TupV [ CaseV ("I8", []); NumV z ]; ListV lanes; ] when z = Z.of_int 16 -> List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i8_to_i32 |> V128.I8x16.of_lanes |> al_of_vec128
+      | [ TupV [ CaseV ("I16", []); NumV z ]; ListV lanes; ] when z = Z.of_int 8 -> List.map al_to_int32 (!lanes |> Array.to_list) |> List.map i16_to_i32 |> V128.I16x8.of_lanes |> al_of_vec128
+      | [ TupV [ CaseV ("I32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> List.map al_to_int32 (!lanes |> Array.to_list) |> V128.I32x4.of_lanes |> al_of_vec128
+      | [ TupV [ CaseV ("I64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> List.map al_to_int64 (!lanes |> Array.to_list) |> V128.I64x2.of_lanes |> al_of_vec128
+      | [ TupV [ CaseV ("F32", []); NumV z ]; ListV lanes; ] when z = Z.of_int 4 -> List.map al_to_float32 (!lanes |> Array.to_list) |> V128.F32x4.of_lanes |> al_of_vec128
+      | [ TupV [ CaseV ("F64", []); NumV z ]; ListV lanes; ] when z = Z.of_int 2 -> List.map al_to_float64 (!lanes |> Array.to_list) |> V128.F64x2.of_lanes |> al_of_vec128
       | _ -> failwith "Invalid inverse_of_lanes_"
       );
   }
@@ -1016,7 +1004,7 @@ let numerics_list : numerics list = [
   ine;
   ilt;
   inverse_of_ibits;
-  vzero ]
+]
 
 let call_numerics fname args =
   let numerics =
