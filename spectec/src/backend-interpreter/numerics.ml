@@ -31,7 +31,7 @@ let unop: numerics =
     name = "unop";
     f =
       (function
-      | [ CaseV (_, [op]); CaseV (t, []); v ] -> (
+      | [ CaseV (t, []); op; v ] -> (
         match t with
         | "I32" -> (
           match op with
@@ -92,7 +92,7 @@ let binop : numerics =
     name = "binop";
     f =
       (function
-      | [ CaseV (_, [op]); CaseV (t, []); v1; v2 ] -> (
+      | [ CaseV (t, []); op; v1; v2 ] -> (
         match t with
         | "I32"  -> (
           match op with
@@ -150,8 +150,8 @@ let binop : numerics =
           | CaseV ("MAX", []) -> wrap_f64_binop F64.max v1 v2
           | CaseV ("COPYSIGN", []) -> wrap_f64_binop F64.copysign v1 v2
           | _ -> failwith ("Invalid binop: " ^ (Print.string_of_value op)))
-        | _ -> failwith "Invalid type for binop")
-      | _ -> failwith "Invalid binop");
+        | s -> failwith ("Invalid type for binop: " ^ s))
+      | vs -> failwith ("Invalid binop: " ^ Print.(string_of_list string_of_value " " vs)))
   }
 
 let wrap_i32_testop = map al_to_int32 al_of_bool
@@ -161,7 +161,7 @@ let testop : numerics =
     name = "testop";
     f =
       (function
-      | [ CaseV ("_I", [CaseV ("EQZ", [])]); CaseV (t, []); i ] -> (
+      | [ CaseV (t, []); CaseV ("EQZ", []); i ] -> (
           match t with
           | "I32" -> wrap_i32_testop I32.eqz i
           | "I64" -> wrap_i64_testop I64.eqz i
@@ -178,7 +178,7 @@ let relop : numerics =
     name = "relop";
     f =
       (function
-      | [ CaseV (_, [op]); CaseV (t, []); v1; v2 ] -> (
+      | [ CaseV (t, []); op; v1; v2 ] -> (
         match t with
         | "I32"  -> (
           match op with
@@ -250,7 +250,7 @@ let cvtop : numerics =
     name = "cvtop";
     f =
       (function
-      | [ CaseV (op, []); CaseV (t_from, []); CaseV (t_to, []); OptV sx_opt; v ] -> (
+      | [ CaseV (t_from, []); CaseV (t_to, []); CaseV (op, []); OptV sx_opt; v ] -> (
         let sx = match sx_opt with
           | None -> ""
           | Some (CaseV (sx, [])) -> sx
@@ -348,34 +348,34 @@ let inverse_of_ibytes : numerics =
       );
   }
 
-let ntbytes : numerics =
+let nbytes : numerics =
   {
-    name = "ntbytes";
+    name = "nbytes";
     f =
       (function
       | [ CaseV ("I32", []); n ] -> ibytes.f [ NumV (Z.of_int 32); n ]
       | [ CaseV ("I64", []); n ] -> ibytes.f [ NumV (Z.of_int 64); n ]
       | [ CaseV ("F32", []); f ] -> ibytes.f [ NumV (Z.of_int 32); f ] (* TODO *)
       | [ CaseV ("F64", []); f ] -> ibytes.f [ NumV (Z.of_int 64); f ] (* TODO *)
-      | _ -> failwith "Invalid ntbytes"
+      | _ -> failwith "Invalid nbytes"
       );
   }
-let inverse_of_ntbytes : numerics =
+let inverse_of_nbytes : numerics =
   {
-    name = "inverse_of_ntbytes";
+    name = "inverse_of_nbytes";
     f =
       (function
       | [ CaseV ("I32", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 32); l ]
       | [ CaseV ("I64", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 64); l ]
       | [ CaseV ("F32", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 32); l ] (* TODO *)
       | [ CaseV ("F64", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 64); l ] (* TODO *)
-      | _ -> failwith "Invalid inverse_of_ntbytes"
+      | _ -> failwith "Invalid inverse_of_nbytes"
       );
   }
 
-let vtbytes : numerics =
+let vbytes : numerics =
   {
-    name = "vtbytes";
+    name = "vbytes";
     f =
       (function
       | [ CaseV ("V128", []); VecV v ] ->
@@ -383,13 +383,13 @@ let vtbytes : numerics =
         let v2 = (ibytes.f [ NumV (Z.of_int 64); NumV (Z.of_int64 (Bytes.get_int64_le (Bytes.of_string v) 8)) ]) in
         (match v1, v2 with
         | ListV l1, ListV l2 -> Array.concat [ !l1; !l2] |> listV
-        | _ -> failwith "Invalid vtbytes")
-      | _ -> failwith "Invalid vtbytes"
+        | _ -> failwith "Invalid vbytes")
+      | _ -> failwith "Invalid vbytes"
       );
   }
-let inverse_of_vtbytes : numerics =
+let inverse_of_vbytes : numerics =
   {
-    name = "inverse_of_vtbytes";
+    name = "inverse_of_vbytes";
     f =
       (function
       | [ CaseV ("V128", []); ListV l ] ->
@@ -398,25 +398,25 @@ let inverse_of_vtbytes : numerics =
 
         (match v1, v2 with
         | NumV n1, NumV n2 -> al_of_vector (V128.I64x2.of_lanes [ z_to_int64 n1; z_to_int64 n2 ])
-        | _ -> failwith "Invalid inverse_of_vtbytes")
+        | _ -> failwith "Invalid inverse_of_vbytes")
 
-      | _ -> failwith "Invalid inverse_of_vtbytes"
+      | _ -> failwith "Invalid inverse_of_vbytes"
       );
   }
 
-let inverse_of_ztbytes : numerics =
+let inverse_of_zbytes : numerics =
   {
-    name = "inverse_of_ztbytes";
+    name = "inverse_of_zbytes";
     f =
       (function
       | [ CaseV ("I8", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 8); l ]
       | [ CaseV ("I16", []); l ] -> inverse_of_ibytes.f [ NumV (Z.of_int 16); l ]
-      | args -> inverse_of_ntbytes.f args
+      | args -> inverse_of_nbytes.f args
       );
   }
 
-let bytes_ : numerics = { name = "bytes"; f = ntbytes.f }
-let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_ntbytes.f }
+let bytes_ : numerics = { name = "bytes"; f = nbytes.f }
+let inverse_of_bytes_ : numerics = { name = "inverse_of_bytes"; f = inverse_of_nbytes.f }
 
 let wrap : numerics =
   {
@@ -500,7 +500,7 @@ let vvunop: numerics =
     name = "vvunop";
     f =
       (function
-      | [ CaseV ("_VV", [ op ]); CaseV ("V128", []); v ] -> (
+      | [ CaseV ("V128", []); op; v ] -> (
         match op with
         | CaseV ("NOT", []) -> wrap_vunop V128.V1x128.lognot v
         | _ -> failwith ("Invalid vvunop: " ^ (Print.string_of_value op)))
@@ -512,7 +512,7 @@ let vunop: numerics =
     name = "vunop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v ] -> (
+      | [ TupV [ CaseV (ls, []); NumV (ln) ]; op; v ] -> (
         match ls, ln with
         | "I8", z when z = Z.of_int 16 -> (
           match op with
@@ -575,7 +575,7 @@ let vvbinop: numerics =
     name = "vvbinop";
     f =
       (function
-      | [ CaseV ("_VV", [ op ]); CaseV ("V128", []); v1; v2 ] -> (
+      | [ CaseV ("V128", []); op; v1; v2 ] -> (
         match op with
         | CaseV ("AND", []) -> wrap_vvbinop V128.V1x128.and_ v1 v2
         | CaseV ("ANDNOT", []) -> wrap_vvbinop V128.V1x128.andnot v1 v2
@@ -590,7 +590,7 @@ let vbinop: numerics =
     name = "vbinop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; v1; v2 ] -> (
+      | [ TupV [ CaseV (ls, []); NumV (ln) ]; op; v1; v2 ] -> (
         match ls, ln with
         | "I8", z when z = Z.of_int 16 -> (
           match op with
@@ -687,7 +687,7 @@ let vrelop: numerics =
     name = "vrelop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); TupV [ CaseV (ls, []); NumV (ln) ]; NumV v1; NumV v2 ] -> (
+      | [ TupV [ CaseV (ls, []); NumV (ln) ]; op; NumV v1; NumV v2 ] -> (
         match ls, ln with
         | "I8", z when z = Z.of_int 16 -> (
           match op with
@@ -776,7 +776,7 @@ let vvternop: numerics =
     name = "vvternop";
     f =
       (function
-      | [ CaseV ("_VV", [ op ]); CaseV ("V128", []); v1; v2; v3] -> (
+      | [ CaseV ("V128", []); op; v1; v2; v3] -> (
         match op with
         | CaseV ("BITSELECT", []) -> wrap_vternop V128.V1x128.bitselect v1 v2 v3
         | _ -> failwith ("Invalid vvternop: " ^ (Print.string_of_value op)))
@@ -839,19 +839,19 @@ let inverse_of_lanes : numerics =
       );
   }
 
-let rec inverse_of_concat_bytes_helper = function
+let rec inverse_of_concat_helper = function
   | a :: b :: l ->
-    [listV_of_list [a; b]] @ inverse_of_concat_bytes_helper l
+    [listV_of_list [a; b]] @ inverse_of_concat_helper l
   | [] -> []
   | _ -> failwith "Invaild inverse_of_concat_bytes_helper"
 
-let inverse_of_concat_bytes : numerics =
+let inverse_of_concat : numerics =
   {
-    name = "inverse_of_concat_bytes";
+    name = "inverse_of_concat";
     f =
       (function
-      | [ ListV l ] -> listV_of_list (inverse_of_concat_bytes_helper (Array.to_list !l))
-      | _ -> failwith "Invalid inverse_of_concat_bytes"
+      | [ ListV l ] -> listV_of_list (inverse_of_concat_helper (Array.to_list !l))
+      | _ -> failwith "Invalid inverse_of_concat"
       );
   }
 
@@ -889,12 +889,12 @@ let vcvtop: numerics =
     name = "vcvtop";
     f =
       (function
-      | [ CaseV (op, []); NumV m; NumV n; OptV sx_opt; v] -> (
+      | [ TupV [ _; NumV m ]; TupV [ _; NumV n ]; CaseV (op, []); OptV sx_opt; v] -> (
         let sx = match sx_opt with
           | None -> ""
           | Some (CaseV (sx, [])) -> sx
           | _ -> failwith "invalid cvtop" in
-        match z_to_int64 m, z_to_int64 n, op, sx with
+        match Int64.div 128L (z_to_int64 m), Int64.div 128L (z_to_int64 n), op, sx with
         (* Conversion to I16 *)
         | 8L, 16L, "EXTEND", "S" -> wrap_i32_cvtop_i32 (fun e -> Int32.logand 0xffffffffl (e |> i8_to_i32)) v
         | 8L, 16L, "EXTEND", "U" -> wrap_i32_cvtop_i32 (Int32.logand 0xffl) v
@@ -911,11 +911,11 @@ let vcvtop: numerics =
         (* Conversion to F32 *)
         | 32L, 32L, "CONVERT", "S" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_s v
         | 32L, 32L, "CONVERT", "U" -> wrap_f32_cvtop_i32 F32_convert.convert_i32_u v
-        | 64L, 32L, "DEMOTE", _ -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
+        | 64L, 32L, "DEMOTE", "" -> wrap_f32_cvtop_f64 F32_convert.demote_f64 v
         (* Conversion to F64 *)
         | 32L, 64L, "CONVERT", "S" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_s v
         | 32L, 64L, "CONVERT", "U" -> wrap_f64_cvtop_i32 F64_convert.convert_i32_u v
-        | 32L, 64L, "PROMOTE", _ -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
+        | 32L, 64L, "PROMOTE", "" -> wrap_f64_cvtop_f32 F64_convert.promote_f32 v
         | _ -> failwith ("Invalid vcvtop")
       )
       | _ -> failwith "Invalid vcvtop"
@@ -927,7 +927,7 @@ let vishiftop: numerics =
     name = "vishiftop";
     f =
       (function
-      | [ CaseV ("_VI", [ op ]); CaseV (ls, []); NumV v1; NumV v2] -> (
+      | [ TupV [ CaseV (ls, []); _ ]; op; NumV v1; NumV v2] -> (
         match ls with
         | "I8" -> (
           let v1p = v1 |> z_to_int32 |> i8_to_i32 in
@@ -983,11 +983,11 @@ let numerics_list : numerics list = [
   ext;
   ibytes;
   inverse_of_ibytes;
-  ntbytes;
-  vtbytes;
-  inverse_of_ntbytes;
-  inverse_of_vtbytes;
-  inverse_of_ztbytes;
+  nbytes;
+  vbytes;
+  inverse_of_nbytes;
+  inverse_of_vbytes;
+  inverse_of_zbytes;
   inverse_of_signed;
   bytes_;
   inverse_of_bytes_;
@@ -997,7 +997,7 @@ let numerics_list : numerics list = [
   vvternop;
   vunop;
   vbinop;
-  inverse_of_concat_bytes;
+  inverse_of_concat;
   iadd;
   imul;
   vcvtop;
