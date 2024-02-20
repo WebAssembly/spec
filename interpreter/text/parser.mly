@@ -202,16 +202,16 @@ let inline_type_explicit (c : context) x ft loc =
     error (at loc) "inline function type does not match explicit type";
   x
 
-let index_type_of_num_type t at =
+let index_type_of_num_type t loc =
   match t with
   | I32Type -> I32IndexType
   | I64Type -> I64IndexType
-  | _ -> error at "illegal memory index type"
+  | _ -> error (at loc) "illegal memory index type"
 
-let index_type_of_value_type t at =
+let index_type_of_value_type t loc =
   match t with
-  | NumType t -> index_type_of_num_type t at
-  | _ -> error at "illegal memory index type"
+  | NumType t -> index_type_of_num_type t loc
+  | _ -> error (at loc) "illegal memory index type"
 
 let memory_data init it c x at =
   let size = Int64.(div (add (of_int (String.length init)) 65535L) 65536L) in
@@ -316,7 +316,7 @@ table_type :
   | limits32 ref_type { TableType ($1, $2) }
 
 memory_type :
-  | value_type limits64 { MemoryType ($2, index_type_of_value_type $1 (at ())) }
+  | value_type limits64 { MemoryType ($2, index_type_of_value_type $1 $sloc) }
   | limits64 { MemoryType ($1, I32IndexType) }
 
 limits32 :
@@ -860,7 +860,7 @@ memory_fields :
   | LPAR DATA string_list RPAR  /* Sugar */
     { memory_data $3 I32IndexType }
   | value_type LPAR DATA string_list RPAR  /* Sugar */
-    { memory_data $4 (index_type_of_value_type $1 (at ())) }
+    { memory_data $4 (index_type_of_value_type $1 $sloc) }
 
 global :
   | LPAR GLOBAL bind_var_opt global_fields RPAR
