@@ -153,16 +153,14 @@ module AlContext = struct
 
   type t = mode list
 
+  let tl = List.tl
+
   let is_reducible = function
     | [] | [ Return _ ] -> false
     | _ -> true
 
-  let get_context = List.hd
-
-  let pop_context = List.tl
-
   let get_name ctx =
-    match get_context ctx with
+    match List.hd ctx with
     | Al (name, _, _) -> name
     | Wasm _ -> "Wasm"
     | Execute _ -> "Execute"

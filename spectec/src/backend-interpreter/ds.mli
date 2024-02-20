@@ -44,8 +44,8 @@ module AlContext : sig
   val execute : value -> mode
   val return : value -> mode
   type t = mode list
+  val tl : t -> t
   val is_reducible : t -> bool
-  val pop_context : t -> t
   val get_name : t -> string
   val add_instrs : instr list -> t -> t
   val set_env : env -> t -> t
