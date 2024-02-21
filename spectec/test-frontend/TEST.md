@@ -264,7 +264,7 @@ def $E(N : N) : nat
 syntax fmag{N : N}(N) =
   | NORM{n : n}(m : m, n : n)
     -- if (((2 - (2 ^ ($E(N) - 1))) <= n) /\ (n <= ((2 ^ ($E(N) - 1)) - 1)))
-  | SUBNORM{N : N, n : n}(m : m, n : n)
+  | SUBNORM{N : N, n : n}(m : m)
     -- if ((2 - (2 ^ ($E(N) - 1))) = n)
   | INF
   | NAN{m : m}(m : m)
@@ -277,8 +277,8 @@ syntax fN{N : N}(N) =
 
 ;; 1-syntax.watsup:65.1-65.40
 def $fzero(N : N) : fN(N)
-  ;; 1-syntax.watsup:66.1-66.31
-  def $fzero{N : N}(N) = POS_fN(N)(NORM_fmag(N)(0, 0))
+  ;; 1-syntax.watsup:66.1-66.32
+  def $fzero{N : N}(N) = POS_fN(N)(SUBNORM_fmag(N)(0))
 
 ;; 1-syntax.watsup:68.1-68.20
 syntax f32 = fN(32)
@@ -4081,18 +4081,18 @@ relation Step_read: `%~>%*`(config, admininstr*)
   rule return_call{z : state, x : idx}:
     `%~>%*`(`%;%*`(z, [RETURN_CALL_admininstr(x)]), [REF.FUNC_ADDR_admininstr($funcaddr(z)[(x : uN(32) <: nat)]) RETURN_CALL_REF_admininstr(?())])
 
-  ;; 8-reduction.watsup:175.1-176.78
-  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
-    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, (val : val <: admininstr)*{val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr : instr <: admininstr)*{instr})]), [TRAP_admininstr])
+  ;; 8-reduction.watsup:175.1-176.91
+  rule return_call_ref-label{z : state, k : nat, instr'* : instr*, val* : val*, x? : idx?, instr* : instr*}:
+    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, (val : val <: admininstr)*{val} :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr : instr <: admininstr)*{instr})]), (val : val <: admininstr)*{val} :: [RETURN_CALL_REF_admininstr(x?{x})])
 
   ;; 8-reduction.watsup:178.1-180.59
   rule return_call_ref-frame-addr{z : state, k : nat, f : frame, val'* : val*, val^n : val^n, n : n, a : addr, x? : idx?, instr* : instr*, t_1^n : valtype^n, t_2^m : valtype^m, m : m}:
     `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, (val' : val <: admininstr)*{val'} :: (val : val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr : instr <: admininstr)*{instr})]), (val : val <: admininstr)^n{val} :: [REF.FUNC_ADDR_admininstr(a) CALL_REF_admininstr(x?{x})])
     -- Expand: `%~~%`($funcinst(z)[a].TYPE_funcinst, FUNC_comptype(`%->%`(t_1^n{t_1}, t_2^m{t_2})))
 
-  ;; 8-reduction.watsup:182.1-183.91
-  rule return_call_ref-label{z : state, k : nat, instr'* : instr*, val* : val*, x? : idx?, instr* : instr*}:
-    `%~>%*`(`%;%*`(z, [LABEL__admininstr(k, instr'*{instr'}, (val : val <: admininstr)*{val} :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr : instr <: admininstr)*{instr})]), (val : val <: admininstr)*{val} :: [RETURN_CALL_REF_admininstr(x?{x})])
+  ;; 8-reduction.watsup:182.1-183.78
+  rule return_call_ref-frame-null{z : state, k : nat, f : frame, val* : val*, ht : heaptype, x? : idx?, instr* : instr*}:
+    `%~>%*`(`%;%*`(z, [FRAME__admininstr(k, f, (val : val <: admininstr)*{val} :: [REF.NULL_admininstr(ht)] :: [RETURN_CALL_REF_admininstr(x?{x})] :: (instr : instr <: admininstr)*{instr})]), [TRAP_admininstr])
 
   ;; 8-reduction.watsup:247.1-248.55
   rule ref.func{z : state, x : idx}:
