@@ -70,8 +70,10 @@ let rec reduce_typ env t : typ =
     let id' = El.Convert.strip_var_suffix id in
     (match reduce_typ_app env id args' t.at (Map.find id'.it env.typs) with
     | Some t' ->
+(* TODO: renable?
       if id'.it <> id.it then
         Source.error id.at "syntax" "identifer suffix encountered during reduction";
+*)
       t'
     | None -> VarT (id, args') $ t.at
     )
@@ -119,7 +121,7 @@ and is_normal_exp e =
   | _ -> false
 
 and reduce_exp env e : exp =
-  Debug.(log "el.reduce_typ"
+  Debug.(log "el.reduce_exp"
     (fun _ -> fmt "%s" (el_exp e))
     (fun r -> fmt "%s" (el_exp r))
   ) @@ fun _ ->

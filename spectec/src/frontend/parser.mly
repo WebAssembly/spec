@@ -93,7 +93,7 @@ let is_post_exp e =
 %}
 
 %token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
-%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH
+%token COLON SEMICOLON COMMA DOT DOTDOT DOTDOTDOT BAR BARBAR DASH BIGCOMP BIGAND BIGOR
 %token COMMA_NL NL_BAR NL_NL_DASH NL_NL_NL
 %token EQ NE LT GT LE GE APPROX EQUIV ASSIGN SUB SUP EQDOT2
 %token NOT AND OR
@@ -118,7 +118,7 @@ let is_post_exp e =
 %left AND
 %nonassoc TURNSTILE
 %nonassoc TILESTURN
-%right SQARROW SQARROWSTAR PREC SUCC
+%right SQARROW SQARROWSTAR PREC SUCC BIGCOMP BIGAND BIGOR
 %left COLON SUB SUP ASSIGN EQUIV APPROX
 %left COMMA COMMA_NL
 %right EQ NE LT GT LE GE IN
@@ -222,9 +222,15 @@ atom :
   | atom_ { $1 $$ $sloc }
 atom_ :
   | atomid { Atom $1 }
+  | TICK EQ { Equal }
   | TICK QUEST { Quest }
   | TICK PLUS { Plus }
   | TICK STAR { Star }
+  | TICK BAR { Bar }
+  | TICK DOT { Dot }
+  | TICK DOTDOT { Dot2 }
+  | TICK DOTDOTDOT { Dot3 }
+  | TICK COMPOSE { Comp }
   | BOT { Bot }
   | TOP { Top }
   | INFINITY { Infinity }
@@ -283,6 +289,9 @@ check_atom :
   | SEMICOLON { Semicolon }
   | BACKSLASH { Backslash }
   | ARROW { Arrow }
+  | BIGCOMP { BigComp }
+  | BIGAND { BigAnd }
+  | BIGOR { BigOr }
 
 %inline relop :
   | relop_ { $1 $$ $sloc }
@@ -531,7 +540,7 @@ exp_rel_ :
 exp : exp_rel { $1 }
 
 fieldexp :
-  | fieldid exp_post+
+  | fieldid exp_atom+
     { ($1, match $2 with [e] -> e | es -> SeqE es $ $loc($2)) }
 
 

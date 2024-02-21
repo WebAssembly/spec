@@ -98,38 +98,36 @@ The following notation is adopted for manipulating such records:
   except that the contents of the ${:FIELD} component is replaced with ${:A}.
 
 * ${:r[.FIELD=..A^n]} denotes the same record as ${:r},
-  except that ${:A^n} is appended to the sequence of the ${:FIELD} component.
+  except that ${:A^n} is appended to the sequence of the ${:FIELD} component,
+  i.e, it is short for ${:r[.FIELD=r.FIELD A^n]}.
 
 * ${:r_1++r_2} denotes the composition of two records with the same fields of sequences by appending each sequence point-wise:
 
-  .. math::
-     \{ \K{field}_1\,A_1^\ast, \K{field}_2\,A_2^\ast, \dots \} \compose \{ \K{field}_1\,B_1^\ast, \K{field}_2\,B_2^\ast, \dots \} = \{ \K{field}_1\,A_1^\ast~B_1^\ast, \K{field}_2\,A_2^\ast~B_2^\ast, \dots \}
+  $${recordeq:
+{FIELD_1 A_1*, FIELD_2 A_2*, DOTS `...} `++ {FIELD_1 B_1*, FIELD_2 B_2*, DOTS `...} `=
+{FIELD_1 A_1* B_1*, FIELD_2 A_2* B_2*, DOTS `...}
+}
 
-* :math:`\bigcompose r^\ast` denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.
+* ${:(++) r*} denotes the composition of a sequence of records, respectively; if the sequence is empty, then all fields of the resulting record are empty.
 
-The update notation for sequences and records generalizes recursively to nested components accessed by "paths" :math:`\X{pth} ::= ([\dots] \;| \;.\K{field})^+`:
+The update notation for sequences and records generalizes recursively to nested components accessed by "paths" ${syntax:pth}:
 
-* :math:`s \with [i]\,\X{pth} = A` is short for :math:`s \with [i] = (s[i] \with \X{pth} = A)`,
+* ${:s[.I_PTH=A]} is short for ${:s[[i]=(s[i][.PTH=A])]},
 
-* :math:`r \with \K{field}\,\X{pth} = A` is short for :math:`r \with \K{field} = (r.\K{field} \with \X{pth} = A)`,
+* ${:r[.FIELD_PTH=A]} is short for ${:r[.FIELD=(s.FIELD[.PTH=A])]},
 
-where :math:`r \with~.\K{field} = A` is shortened to :math:`r \with \K{field} = A`.
+where ${:r[.DOT_FIELD_PTH=A]} is shortened to ${:r[.FIELD=A]}.
 
 
-.. index:: ! vector
-   pair: abstract syntax; vector
-.. _syntax-vec:
+.. index:: ! list
+   pair: abstract syntax; list
+.. _syntax-list:
 
-Vectors
-~~~~~~~
+Lists
+~~~~~
 
-*Vectors* are bounded sequences of the form :math:`A^n` (or :math:`A^\ast`),
-where the :math:`A` can either be values or complex constructions.
-A vector can have at most :math:`2^{32}-1` elements.
+*Lists* are bounded sequences of the form ${:A^n} (or ${:A*}),
+where the ${:A} can either be values or complex constructions.
+A list can have at most ${:$(2^32-1)} elements.
 
-.. math::
-   \begin{array}{lllll}
-   \production{vector} & \vec(A) &::=&
-     A^n
-     & (\iff n < 2^{32})\\
-   \end{array}
+$${syntax:list}

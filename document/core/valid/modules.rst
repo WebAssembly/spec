@@ -263,7 +263,7 @@ Sequences of globals are handled incrementally, such that each definition has ac
 
   * The first global definition must be :ref:`valid <valid-global>` with some type :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1`.
 
-  * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1` apppended to the |CGLOBALS| vector.
+  * Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`global type <syntax-globaltype>` :math:`\X{gt}_1` apppended to the |CGLOBALS| list.
 
   * Under context :math:`C'`, the remainder of the sequence must be valid with some sequence :math:`\X{gt}^\ast` of :ref:`global types <syntax-globaltype>`.
 
@@ -695,7 +695,7 @@ The :ref:`external types <syntax-externtype>` classifying a module may contain f
 
   * :math:`C.\CELEMS` is :math:`{\X{rt}}^\ast` as determined below,
 
-  * :math:`C.\CDATAS` is :math:`{\ok}^n`, where :math:`n` is the length of the vector :math:`\module.\MDATAS`,
+  * :math:`C.\CDATAS` is :math:`{\ok}^n`, where :math:`n` is the length of the list :math:`\module.\MDATAS`,
 
   * :math:`C.\CLOCALS` is empty,
 

@@ -48,7 +48,7 @@ The following grammar handles the corresponding update to the :ref:`identifier c
    then it is shadowed and the earlier label becomes inaccessible.
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, polymorphism, reference
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, list, polymorphism, reference
    pair: text format; instruction
 .. _text-blockinstr:
 .. _text-plaininstr:
@@ -120,7 +120,7 @@ All other control instruction are represented verbatim.
      \text{nop} &\Rightarrow& \NOP \\ &&|&
      \text{br}~~l{:}\Tlabelidx_I &\Rightarrow& \BR~l \\ &&|&
      \text{br\_if}~~l{:}\Tlabelidx_I &\Rightarrow& \BRIF~l \\ &&|&
-     \text{br\_table}~~l^\ast{:}\Tvec(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
+     \text{br\_table}~~l^\ast{:}\Tlist(\Tlabelidx_I)~~l_N{:}\Tlabelidx_I
        &\Rightarrow& \BRTABLE~l^\ast~l_N \\ &&|&
      \text{br\_on\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNULL~l \\ &&|&
      \text{br\_on\_non\_null}~~l{:}\Tlabelidx_I &\Rightarrow& \BRONNONNULL~l \\ &&|&

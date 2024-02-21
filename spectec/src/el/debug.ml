@@ -2,6 +2,7 @@ include Util.Debug_log
 
 open Print
 
+let el_atom = string_of_atom
 let el_iter = string_of_iter
 let el_typ = string_of_typ
 let el_exp = string_of_exp

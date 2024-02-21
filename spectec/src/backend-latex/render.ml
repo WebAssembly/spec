@@ -455,6 +455,7 @@ let render_atom env atom =
     | Sub -> "\\leq"
     | Sup -> "\\geq"
     | Assign -> if macros then "\\assign" else ":="
+    | Equal -> "="
     | Equiv -> "\\equiv"
     | Approx -> "\\approx"
     | SqArrow -> "\\hookrightarrow"
@@ -467,7 +468,11 @@ let render_atom env atom =
     | Plus -> if macros then "\\plus" else "{}^+"
     | Star -> if macros then "\\ast" else "{}^\\ast"
     | Comma -> if macros then "\\comma" else ","
+    | Comp -> if macros then "\\compose" else "\\oplus"
     | Bar -> "\\mid"
+    | BigComp -> if macros then "\\bigcompose" else "\\bigoplus"
+    | BigAnd -> "\\bigwedge"
+    | BigOr -> "\\bigvee"
     | LParen -> if macros then "\\lparen" else "("
     | RParen -> if macros then "\\rparen" else ")"
     | LBrack -> if macros then "\\lbrack" else "["
@@ -679,6 +684,10 @@ and render_path env p =
     render_path env p1 ^ "." ^ render_fieldname env atom p.at
 
 and render_fieldname env atom at =
+  El.Debug.(log "render.fieldname"
+    (fun _ -> fmt "%s %s" (el_atom atom) (mapping (fun xs -> string_of_int (List.length xs)) !(env.show_field)))
+    (fun s -> s)
+  ) @@ fun _ ->
   render_expand render_exp env env.show_field (El.Print.string_of_atom atom $ at) []
     (fun () -> render_atom env atom)
 

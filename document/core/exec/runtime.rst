@@ -10,7 +10,7 @@ Runtime Structure
 .. index:: ! value, number, reference, constant, number type, vector type, reference type, ! host address, value type, integer, floating-point, vector number, ! default value, unboxed scalar, structure, array, external reference
    pair: abstract syntax; value
 .. _syntax-num:
-.. _syntax-vecc:
+.. _syntax-vec:
 .. _syntax-ref:
 .. _syntax-ref.i31num:
 .. _syntax-ref.struct:
@@ -44,7 +44,7 @@ Any of the aformentioned references can furthermore be wrapped up as an *externa
      \I64.\CONST~\i64 \\&&|&
      \F32.\CONST~\f32 \\&&|&
      \F64.\CONST~\f64 \\
-   \production{vector} & \vecc &::=&
+   \production{vector} & \vec &::=&
      \V128.\CONST~\i128 \\
    \production{reference} & \reff &::=&
      \REFNULL~(\absheaptype~|~\deftype) \\&&|&
@@ -55,7 +55,7 @@ Any of the aformentioned references can furthermore be wrapped up as an *externa
      \REFHOSTADDR~\hostaddr \\&&|&
      \REFEXTERN~\reff \\
    \production{value} & \val &::=&
-     \num ~|~ \vecc ~|~ \reff \\
+     \num ~|~ \vec ~|~ \reff \\
    \end{array}
 
 .. note::
@@ -233,7 +233,7 @@ even where this identity is not observable from within WebAssembly code itself
 Conventions
 ...........
 
-* The notation :math:`\F{addr}(A)` denotes the set of addresses from address space :math:`\X{addr}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`vector <syntax-vec>` of its elements.
+* The notation :math:`\F{addr}(A)` denotes the set of addresses from address space :math:`\X{addr}` occurring free in :math:`A`. We sometimes reinterpret this set as the :ref:`list <syntax-list>` of its elements.
 
 
 
@@ -311,18 +311,18 @@ Table Instances
 ~~~~~~~~~~~~~~~
 
 A *table instance* is the runtime representation of a :ref:`table <syntax-table>`.
-It records its :ref:`type <syntax-tabletype>` and holds a vector of :ref:`reference values <syntax-ref>`.
+It records its :ref:`type <syntax-tabletype>` and holds a list of :ref:`reference values <syntax-ref>`.
 
 .. math::
    \begin{array}{llll}
    \production{table instance} & \tableinst &::=&
-     \{ \TITYPE~\tabletype, \TIELEM~\vec(\reff) \} \\
+     \{ \TITYPE~\tabletype, \TIELEM~\list(\reff) \} \\
    \end{array}
 
 Table elements can be mutated through :ref:`table instructions <syntax-instr-table>`, the execution of an active :ref:`element segment <syntax-elem>`, or by external means provided by the :ref:`embedder <embedder>`.
 
 It is an invariant of the semantics that all table elements have a type :ref:`matching <match-reftype>` the element type of :math:`\tabletype`.
-It also is an invariant that the length of the element vector never exceeds the maximum size of :math:`\tabletype`, if present.
+It also is an invariant that the length of the element list never exceeds the maximum size of :math:`\tabletype`, if present.
 
 
 .. index:: ! memory instance, memory, byte, ! page size, memory type, embedder, data segment, instruction
@@ -335,19 +335,19 @@ Memory Instances
 ~~~~~~~~~~~~~~~~
 
 A *memory instance* is the runtime representation of a linear :ref:`memory <syntax-mem>`.
-It records its :ref:`type <syntax-memtype>` and holds a vector of :ref:`bytes <syntax-byte>`.
+It records its :ref:`type <syntax-memtype>` and holds a list of :ref:`bytes <syntax-byte>`.
 
 .. math::
    \begin{array}{llll}
    \production{memory instance} & \meminst &::=&
-     \{ \MITYPE~\memtype, \MIDATA~\vec(\byte) \} \\
+     \{ \MITYPE~\memtype, \MIDATA~\list(\byte) \} \\
    \end{array}
 
-The length of the vector always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
+The length of the list always is a multiple of the WebAssembly *page size*, which is defined to be the constant :math:`65536` -- abbreviated :math:`64\,\F{Ki}`.
 
 The bytes can be mutated through :ref:`memory instructions <syntax-instr-memory>`, the execution of an active :ref:`data segment <syntax-data>`, or by external means provided by the :ref:`embedder <embedder>`.
 
-It is an invariant of the semantics that the length of the byte vector, divided by page size, never exceeds the maximum size of :math:`\memtype`, if present.
+It is an invariant of the semantics that the length of the byte list, divided by page size, never exceeds the maximum size of :math:`\memtype`, if present.
 
 
 .. index:: ! global instance, global, value, mutability, instruction, embedder
@@ -381,12 +381,12 @@ Element Instances
 ~~~~~~~~~~~~~~~~~
 
 An *element instance* is the runtime representation of an :ref:`element segment <syntax-elem>`.
-It holds a vector of references and their common :ref:`type <syntax-reftype>`.
+It holds a list of references and their common :ref:`type <syntax-reftype>`.
 
 .. math::
   \begin{array}{llll}
   \production{element instance} & \eleminst &::=&
-    \{ \EITYPE~\reftype, \EIELEM~\vec(\reff) \} \\
+    \{ \EITYPE~\reftype, \EIELEM~\list(\reff) \} \\
   \end{array}
 
 
@@ -399,12 +399,12 @@ Data Instances
 ~~~~~~~~~~~~~~
 
 An *data instance* is the runtime representation of a :ref:`data segment <syntax-data>`.
-It holds a vector of :ref:`bytes <syntax-byte>`.
+It holds a list of :ref:`bytes <syntax-byte>`.
 
 .. math::
   \begin{array}{llll}
   \production{data instance} & \datainst &::=&
-    \{ \DIDATA~\vec(\byte) \} \\
+    \{ \DIDATA~\list(\byte) \} \\
   \end{array}
 
 
@@ -480,14 +480,14 @@ Aggregate Instances
 
 A *structure instance* is the runtime representation of a heap object allocated from a :ref:`structure type <syntax-structtype>`.
 Likewise, an *array instance* is the runtime representation of a heap object allocated from an :ref:`array type <syntax-arraytype>`.
-Both record their respective :ref:`defined type <syntax-deftype>` and hold a vector of the values of their *fields*.
+Both record their respective :ref:`defined type <syntax-deftype>` and hold a list of the values of their *fields*.
 
 .. math::
    \begin{array}{llcl}
    \production{structure instance} & \structinst &::=&
-     \{ \SITYPE~\deftype, \SIFIELDS~\vec(\fieldval) \} \\
+     \{ \SITYPE~\deftype, \SIFIELDS~\list(\fieldval) \} \\
    \production{array instance} & \arrayinst &::=&
-     \{ \AITYPE~\deftype, \AIFIELDS~\vec(\fieldval) \} \\
+     \{ \AITYPE~\deftype, \AIFIELDS~\list(\fieldval) \} \\
    \production{field value} & \fieldval &::=&
      \val ~|~ \packedval \\
    \production{packed value} & \packedval &::=&

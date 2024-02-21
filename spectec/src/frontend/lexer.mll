@@ -84,8 +84,9 @@ let symbol =
   ['+''-''*''/''\\''^''~''=''<''>''!''?''@''#''$''%''&''|'':''`''.''\'']
 
 let space = [' ''\t''\n''\r']
-let control = ['\x00'-'\x1f'] # space
+let control = ['\x00'-'\x1f''\x7f'] # space
 let ascii = ['\x00'-'\x7f']
+let printable = ascii # control
 let ascii_no_nl = ascii # '\x0a'
 let utf8cont = ['\x80'-'\xbf']
 let utf8enc =
@@ -171,6 +172,9 @@ and token = parse
   | "~" { NOT }
   | "/\\" { AND }
   | "\\/" { OR }
+  | "(++)" { BIGCOMP }
+  | "(/\\)" { BIGAND }
+  | "(\\/)" { BIGOR }
 
   | "?" { QUEST }
   | "+" { PLUS }
@@ -250,9 +254,10 @@ and token = parse
   | '\n' { Lexing.new_line lexbuf; token lexbuf }
   | eof { EOF }
 
+  | printable { error lexbuf "malformed token" }
   | control { error lexbuf "misplaced control character" }
   | utf8enc { error lexbuf "misplaced unicode character" }
-  | _ { error lexbuf "malformed token or UTF-8 encoding" }
+  | _ { error lexbuf "malformed UTF-8 encoding" }
 
 and comment start = parse
   | ";)" { () }

@@ -123,12 +123,12 @@ Value Types
 Result Types
 ~~~~~~~~~~~~
 
-:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`vectors <binary-vec>` of :ref:`value types <binary-valtype>`.
+:ref:`Result types <syntax-resulttype>` are encoded by the respective :ref:`lists <binary-list>` of :ref:`value types <binary-valtype>`.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{result type} & \Bresulttype &::=&
-     t^\ast{:\,}\Bvec(\Bvaltype) &\Rightarrow& [t^\ast] \\
+     t^\ast{:\,}\Blist(\Bvaltype) &\Rightarrow& [t^\ast] \\
    \end{array}
 
 
@@ -139,7 +139,7 @@ Result Types
 Function Types
 ~~~~~~~~~~~~~~
 
-:ref:`Function types <syntax-functype>` are encoded by the respective :ref:`vectors <binary-vec>` of parameter and result types.
+:ref:`Function types <syntax-functype>` are encoded by the respective :ref:`lists <binary-list>` of parameter and result types.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
@@ -174,7 +174,7 @@ Aggregate Types
      \X{ft}{:\,}\Bfieldtype
        &\Rightarrow& \X{ft} \\
    \production{structure type} & \Bstructtype &::=&
-     \X{ft}^\ast{:\,}\Bvec(\Bfieldtype)
+     \X{ft}^\ast{:\,}\Blist(\Bfieldtype)
        &\Rightarrow& \X{ft}^\ast \\
    \production{field type} & \Bfieldtype &::=&
      \X{st}{:}\Bstoragetype~~m{:}\Bmut
@@ -222,20 +222,20 @@ Composite Types
 Recursive Types
 ~~~~~~~~~~~~~~~
 
-:ref:`Recursive types <syntax-rectype>` are encoded by the byte :math:`\hex{4E}` followed by a :ref:`vector <binary-vec>` of :ref:`sub types <syntax-subtype>`.
+:ref:`Recursive types <syntax-rectype>` are encoded by the byte :math:`\hex{4E}` followed by a :ref:`list <binary-list>` of :ref:`sub types <syntax-subtype>`.
 Additional shorthands are recognized for unary recursions and sub types without super types.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{recursive type} & \Brectype &::=&
-     \hex{4E}~~\X{st}^\ast{:\,}\Bvec(\Bsubtype)
+     \hex{4E}~~\X{st}^\ast{:\,}\Blist(\Bsubtype)
        &\Rightarrow& \TREC~\X{st}^\ast \\ &&|&
      \X{st}{:}\Bsubtype
        &\Rightarrow& \TREC~\X{st} \\
    \production{sub type} & \Bsubtype &::=&
-     \hex{50}~~x^\ast{:\,}\Bvec(\Btypeidx)~~\X{ct}{:}\Bcomptype
+     \hex{50}~~x^\ast{:\,}\Blist(\Btypeidx)~~\X{ct}{:}\Bcomptype
        &\Rightarrow& \TSUB~x^\ast~\X{ct} \\ &&|&
-     \hex{4F}~~x^\ast{:\,}\Bvec(\Btypeidx)~~\X{ct}{:}\Bcomptype
+     \hex{4F}~~x^\ast{:\,}\Blist(\Btypeidx)~~\X{ct}{:}\Bcomptype
        &\Rightarrow& \TSUB~\TFINAL~x^\ast~\X{ct} \\ &&|&
      \X{ct}{:}\Bcomptype
        &\Rightarrow& \TSUB~\TFINAL~\epsilon~\X{ct} \\

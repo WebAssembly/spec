@@ -150,17 +150,17 @@ To avoid unnecessary clutter, empty components are omitted when writing out iden
 For example, the record :math:`\{\}` is shorthand for an :ref:`identifier context <text-context>` whose components are all empty.
 
 
-.. index:: vector
-   pair: text format; vector
-.. _text-vec:
+.. index:: list
+   pair: text format; list
+.. _text-list:
 
-Vectors
-~~~~~~~
+Lists
+~~~~~
 
-:ref:`Vectors <syntax-vec>` are written as plain sequences, but with a restriction on the length of these sequence.
+:ref:`Lists <syntax-list>` are written as plain sequences, but with a restriction on the length of these sequence.
 
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
-   \production{vector} & \Tvec(\T{A}) &::=&
+   \production{list} & \Tlist(\T{A}) &::=&
      (x{:}\T{A})^n &\Rightarrow& x^n & (\iff n < 2^{32}) \\
    \end{array}

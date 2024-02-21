@@ -55,7 +55,7 @@ all:	pdf html bikeshed
 main:	pdf html
 
 
-###############################
+########################################
 ## File generation and SpecTec splicing
 
 GENERATED = appendix/index-instructions.rst
@@ -97,7 +97,7 @@ $(RSTDIRS:%=$(SPLICEDIR)/%): $(SPLICEDIR)
 $(SPLICEDIR)/util/katex: util/katex
 	cp -R $< $@   # F it!
 
-$(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTEC) $(SPECTECFILES)
+$(RSTFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: % $(SPECTECFILES)
 	$(SPECTEC) $(SPECTECFILES) --splice-sphinx -p $< -o $@
 
 $(CTRLFILES:%=$(SPLICEDIR)/%): $(SPLICEDIR)/%: %

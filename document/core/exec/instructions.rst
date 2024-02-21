@@ -3893,7 +3893,7 @@ Memory Instructions
    \end{array}
 
 
-.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, vector, address, table address, table instance, store, frame
+.. index:: control instructions, structured control, label, block, branch, result type, label index, function index, type index, list, address, table address, table instance, store, frame
    pair: execution; instruction
    single: abstract syntax; instruction
 .. _exec-label:

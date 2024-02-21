@@ -28,6 +28,17 @@ let region src = let pos = pos src in {left = pos; right = pos}
 
 let error src msg = Source.error (region src) "splicing" msg
 
+let try_with_error src i f x =
+  try f x with Source.Error (at, msg) ->
+    (* Translate relative positions *)
+    let pos = pos {src with i} in
+    let shift {line; column; _} =
+      { file = src.file; line = line + pos.line - 1;
+        column = if line = 1 then column + pos.column - 1 else column} in
+    let at' = {left = shift at.left; right = shift at.right} in
+Printexc.print_backtrace stdout;
+    raise (Source.Error (at', msg))
+
 
 (* Environment *)
 
@@ -307,20 +318,6 @@ let try_def_anchor env src r sort space1 space2 find mode : bool =
   );
   b
 
-let run_parser find_end parser src =
-  let i = src.i in
-  find_end src;
-  let s = str src i in
-  adv src;
-  try parser s with Source.Error (at, msg) ->
-    (* Translate relative positions *)
-    let pos = pos {src with i} in
-    let shift {line; column; _} =
-      { file = src.file; line = line + pos.line - 1;
-        column = if line = 1 then column + pos.column - 1 else column} in
-    let at' = {left = shift at.left; right = shift at.right} in
-    raise (Source.Error (at', msg))
-
 let try_relid src : id option =
   let i = src.i in
   parse_space src;
@@ -333,11 +330,24 @@ let try_relid src : id option =
   else
     (advn src (i - src.i); None)
 
+let run_parser find_end parser src =
+  let i = src.i in
+  find_end src;
+  let s = str src i in
+  adv src;
+  try_with_error src i parser s
+
 let parse_typ src : typ =
   run_parser parse_to_colon Frontend.Parse.parse_typ src
 
 let parse_exp src i0 : exp =
   run_parser (parse_to_anchor_end i0 0) Frontend.Parse.parse_exp src
+
+let elab_exp src i elaborator env exp typ =
+  try_with_error src i (elaborator env.elab exp) typ
+
+let render_exp src i renderer env exp =
+  try_with_error src i renderer env.latex exp
 
 let try_exp_anchor env src r : bool =
   let i0 = src.i in
@@ -349,17 +359,19 @@ let try_exp_anchor env src r : bool =
   else
     match try_relid src with
     | Some id when try_string src ":" ->
+      let i = src.i in
       let exp = parse_exp src (i0 - 2) in
-      let _ = Frontend.Elab.elab_rel env.elab exp id in
-      r := Backend_latex.Render.render_exp env.latex exp;
+      let _ = elab_exp src i Frontend.Elab.elab_rel env exp id in
+      r := render_exp src i Backend_latex.Render.render_exp env exp;
       true
     | Some _ -> advn src (i0 - src.i); false
     | None ->
       match parse_typ src with
       | typ ->
+        let i = src.i in
         let exp = parse_exp src (i0 - 2) in
-        let _ = Frontend.Elab.elab_exp env.elab exp typ in
-        r := Backend_latex.Render.render_exp env.latex exp;
+        let _ = elab_exp src i Frontend.Elab.elab_exp env exp typ in
+        r := render_exp src i Backend_latex.Render.render_exp env exp;
         true
       | exception Source.Error _ -> advn src (i0 - src.i); false
 

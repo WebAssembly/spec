@@ -14,19 +14,19 @@ and provide initialization in the form of :ref:`data <syntax-data>` and :ref:`el
 .. math::
    \begin{array}{llrll}
    \production{module} & \module &::=& \{ &
-     \MTYPES~\vec(\rectype), \\&&&&
-     \MFUNCS~\vec(\func), \\&&&&
-     \MTABLES~\vec(\table), \\&&&&
-     \MMEMS~\vec(\mem), \\&&&&
-     \MGLOBALS~\vec(\global), \\&&&&
-     \MELEMS~\vec(\elem), \\&&&&
-     \MDATAS~\vec(\data), \\&&&&
+     \MTYPES~\list(\rectype), \\&&&&
+     \MFUNCS~\list(\func), \\&&&&
+     \MTABLES~\list(\table), \\&&&&
+     \MMEMS~\list(\mem), \\&&&&
+     \MGLOBALS~\list(\global), \\&&&&
+     \MELEMS~\list(\elem), \\&&&&
+     \MDATAS~\list(\data), \\&&&&
      \MSTART~\start^?, \\&&&&
-     \MIMPORTS~\vec(\import), \\&&&&
-     \MEXPORTS~\vec(\export) \quad\} \\
+     \MIMPORTS~\list(\import), \\&&&&
+     \MEXPORTS~\list(\export) \quad\} \\
    \end{array}
 
-Each of the vectors -- and thus the entire module -- may be empty.
+Each of the lists -- and thus the entire module -- may be empty.
 
 
 .. index:: ! index, ! index space, ! type index, ! function index, ! table index, ! memory index, ! global index, ! local index, ! label index, ! element index, ! data index, ! field index, function, global, table, memory, element, data, local, parameter, import, field
@@ -113,10 +113,10 @@ Conventions
 
 * The meta variables :math:`x, y` range over indices in any of the other index spaces.
 
-* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`vector <syntax-vec>` of its elements.
+* The notation :math:`\F{idx}(A)` denotes the set of indices from index space :math:`\X{idx}` occurring free in :math:`A`. Sometimes this set is reinterpreted as the :ref:`list <syntax-list>` of its elements.
 
 .. note::
-   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the vector :math:`x~y`.
+   For example, if :math:`\instr^\ast` is :math:`(\DATADROP~x) (\MEMORYINIT~y)`, then :math:`\freedataidx(\instr^\ast) = \{x, y\}`, or equivalently, the list :math:`x~y`.
 
 
 .. index:: ! type definition, type index, function type, aggregate type
@@ -126,7 +126,7 @@ Conventions
 Types
 ~~~~~
 
-The |MTYPES| component of a module defines a vector of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
+The |MTYPES| component of a module defines a list of :ref:`recursive types <syntax-rectype>`, each of consisting of a list of :ref:`sub types <syntax-subtype>` referenced by individual :ref:`type indices <syntax-typeidx>`.
 All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` types used in a module must be defined in this component.
 
 
@@ -139,12 +139,12 @@ All :ref:`function <syntax-functype>` or :ref:`aggregate <syntax-aggrtype>` type
 Functions
 ~~~~~~~~~
 
-The |MFUNCS| component of a module defines a vector of *functions* with the following structure:
+The |MFUNCS| component of a module defines a list of *functions* with the following structure:
 
 .. math::
    \begin{array}{llrl}
    \production{function} & \func &::=&
-     \{ \FTYPE~\typeidx, \FLOCALS~\vec(\local), \FBODY~\expr \} \\
+     \{ \FTYPE~\typeidx, \FLOCALS~\list(\local), \FBODY~\expr \} \\
    \production{local} & \local &::=&
      \{ \LTYPE~\valtype \} \\
    \end{array}
@@ -152,7 +152,7 @@ The |MFUNCS| component of a module defines a vector of *functions* with the foll
 The |FTYPE| of a function declares its signature by reference to a :ref:`type <syntax-type>` defined in the module.
 The parameters of the function are referenced through 0-based :ref:`local indices <syntax-localidx>` in the function's body; they are mutable.
 
-The |FLOCALS| declare a vector of mutable local variables and their types.
+The |FLOCALS| declare a list of mutable local variables and their types.
 These variables are referenced through :ref:`local indices <syntax-localidx>` in the function's body.
 The index of the first local is the smallest index not referencing a parameter.
 
@@ -169,7 +169,7 @@ starting with the smallest index not referencing a function :ref:`import <syntax
 Tables
 ~~~~~~
 
-The |MTABLES| component of a module defines a vector of *tables* described by their :ref:`table type <syntax-tabletype>`:
+The |MTABLES| component of a module defines a list of *tables* described by their :ref:`table type <syntax-tabletype>`:
 
 .. math::
    \begin{array}{llrl}
@@ -194,7 +194,7 @@ Most constructs implicitly reference table index :math:`0`.
 Memories
 ~~~~~~~~
 
-The |MMEMS| component of a module defines a vector of *linear memories* (or *memories* for short) as described by their :ref:`memory type <syntax-memtype>`:
+The |MMEMS| component of a module defines a list of *linear memories* (or *memories* for short) as described by their :ref:`memory type <syntax-memtype>`:
 
 .. math::
    \begin{array}{llrl}
@@ -202,7 +202,7 @@ The |MMEMS| component of a module defines a vector of *linear memories* (or *mem
      \{ \MTYPE~\memtype \} \\
    \end{array}
 
-A memory is a vector of raw uninterpreted bytes.
+A memory is a list of raw uninterpreted bytes.
 The |LMIN| size in the :ref:`limits <syntax-limits>` of the memory type specifies the initial size of that memory, while its |LMAX|, if present, restricts the size to which it can grow later.
 Both are in units of :ref:`page size <page-size>`.
 
@@ -225,7 +225,7 @@ Most constructs implicitly reference memory index :math:`0`.
 Globals
 ~~~~~~~
 
-The |MGLOBALS| component of a module defines a vector of *global variables* (or *globals* for short):
+The |MGLOBALS| component of a module defines a list of *global variables* (or *globals* for short):
 
 .. math::
    \begin{array}{llrl}
@@ -241,7 +241,7 @@ Globals are referenced through :ref:`global indices <syntax-globalidx>`,
 starting with the smallest index not referencing a global :ref:`import <syntax-import>`.
 
 
-.. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, vector
+.. index:: ! element, ! element mode, ! active, ! passive, ! declarative, element index, table, table index, expression, constant, function index, list
    pair: abstract syntax; element
    pair: abstract syntax; element mode
    single: table; element
@@ -253,9 +253,9 @@ starting with the smallest index not referencing a global :ref:`import <syntax-i
 Element Segments
 ~~~~~~~~~~~~~~~~
 
-The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`vector <syntax-vec>` of elements.
+The initial contents of a table is uninitialized. *Element segments* can be used to initialize a subrange of a table from a static :ref:`list <syntax-list>` of elements.
 
-The |MELEMS| component of a module defines a vector of element segments.
+The |MELEMS| component of a module defines a list of element segments.
 Each element segment defines a :ref:`reference type <syntax-reftype>` and a corresponding list of :ref:`constant <valid-constant>` element :ref:`expressions <syntax-expr>`.
 
 Element segments have a mode that identifies them as either *passive*, *active*, or *declarative*.
@@ -266,7 +266,7 @@ A declarative element segment is not available at runtime but merely serves to f
 .. math::
    \begin{array}{llrl}
    \production{element segment} & \elem &::=&
-     \{ \ETYPE~\reftype, \EINIT~\vec(\expr), \EMODE~\elemmode \} \\
+     \{ \ETYPE~\reftype, \EINIT~\list(\expr), \EMODE~\elemmode \} \\
    \production{element segment mode} & \elemmode &::=&
      \EPASSIVE \\&&|&
      \EACTIVE~\{ \ETABLE~\tableidx, \EOFFSET~\expr \} \\&&|&
@@ -278,7 +278,7 @@ The |EOFFSET| is given by a :ref:`constant <valid-constant>` :ref:`expression <s
 Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 
 
-.. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, vector
+.. index:: ! data, active, passive, data index, memory, memory index, expression, constant, byte, list
    pair: abstract syntax; data
    single: memory; data
    single: data; segment
@@ -288,9 +288,9 @@ Element segments are referenced through :ref:`element indices <syntax-elemidx>`.
 Data Segments
 ~~~~~~~~~~~~~
 
-The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`vector <syntax-vec>` of :ref:`bytes <syntax-byte>`.
+The initial contents of a :ref:`memory <syntax-mem>` are zero bytes. *Data segments* can be used to initialize a range of memory from a static :ref:`list <syntax-list>` of :ref:`bytes <syntax-byte>`.
 
-The |MDATAS| component of a module defines a vector of data segments.
+The |MDATAS| component of a module defines a list of data segments.
 
 Like element segments, data segments have a mode that identifies them as either *passive* or *active*.
 A passive data segment's contents can be copied into a memory using the |MEMORYINIT| instruction.
@@ -299,7 +299,7 @@ An active data segment copies its contents into a memory during :ref:`instantiat
 .. math::
    \begin{array}{llrl}
    \production{data segment} & \data &::=&
-     \{ \DINIT~\vec(\byte), \DMODE~\datamode \} \\
+     \{ \DINIT~\list(\byte), \DMODE~\datamode \} \\
    \production{data segment mode} & \datamode &::=&
      \DPASSIVE \\&&|&
      \DACTIVE~\{ \DMEM~\memidx, \DOFFSET~\expr \} \\

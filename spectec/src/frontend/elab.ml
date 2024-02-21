@@ -78,8 +78,8 @@ let cat_exp' e1' e2' =
 (* Environment *)
 
 type kind =
-  | Transp  (* alias types, notation types, type parameters *)
-  | Opaque  (* structures or variants *)
+  | Transp  (* alias types, notation types *)
+  | Opaque  (* structures or variants, type parameter *)
   | Defined of typ * Il.deftyp
   | Family of (arg list * typ * Il.inst) list (* family of types *)
 
@@ -124,13 +124,17 @@ let find space env' id =
   | None -> error_id (spaceid space id) ("undeclared " ^ space)
   | Some t -> t
 
-let bind space env' id t =
+let bind_shadow _space env' id t =
   if id.it = "_" then
     env'
-  else if Map.mem id.it env' then
-    error_id (spaceid space id) ("duplicate declaration for " ^ space)
   else
     Map.add id.it t env'
+
+let bind space env' id t =
+  if Map.mem id.it env' then
+    error_id (spaceid space id) ("duplicate declaration for " ^ space)
+  else
+    bind_shadow space env' id t
 
 let rebind _space env' id t =
   assert (Map.mem id.it env');
@@ -429,6 +433,7 @@ let elab_atom atom tid =
   | Sub -> Il.Sub
   | Sup -> Il.Sup
   | Assign -> Il.Assign
+  | Equal -> Il.Equal
   | Equiv -> Il.Equiv
   | Approx -> Il.Approx
   | SqArrow -> Il.SqArrow
@@ -441,7 +446,11 @@ let elab_atom atom tid =
   | Plus -> Il.Plus
   | Star -> Il.Star
   | Comma -> Il.Comma
+  | Comp -> Il.Comp
   | Bar -> Il.Bar
+  | BigComp -> Il.BigComp
+  | BigAnd -> Il.BigAnd
+  | BigOr -> Il.BigOr
   | LParen -> Il.LParen
   | RParen -> Il.RParen
   | LBrack -> Il.LBrack
@@ -871,7 +880,7 @@ and elab_exp env e t : Il.exp =
     elab_exp_notation env (expand_id env t) e (as_notation_typ "" env Check t e.at) t
 
 and elab_exp' env e t : Il.exp' =
-  Debug.(log_at "el.infer_exp" e.at
+  Debug.(log_at "el.elab_exp" e.at
     (fun _ -> fmt "%s : %s" (el_exp e) (el_typ t))
     (fun e' -> fmt "%s" (il_exp (e' $$ no_region % elab_typ env t)))
   ) @@ fun _ ->
@@ -1472,8 +1481,8 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
     Some (Il.ExpA e' $ a.at), Subst.add_varid s id e
   | TypA ({it = VarT (id', []); _} as t), TypP id when in_lhs = `Lhs ->
     let id'' = strip_var_suffix id' in
-    env.typs <- bind "syntax type" env.typs id'' ([], Transp);
-    env.gvars <- bind "variable" env.gvars id'' (VarT (id'', []) $ id''.at);
+    env.typs <- bind_shadow "syntax type" env.typs id'' ([], Opaque);
+    env.gvars <- bind_shadow "variable" env.gvars id'' (VarT (id'', []) $ id''.at);
     Some (Il.TypA (Il.VarT (id'', []) $ t.at) $ a.at), Subst.add_typid s id t
   | TypA t, TypP _ when in_lhs = `Lhs ->
     error t.at "misplaced syntax type"
@@ -1493,6 +1502,9 @@ and elab_arg in_lhs env a p s : Il.arg option * Subst.subst =
     error a.at "sort mismatch for argument"
 
 and elab_args in_lhs env as_ ps at : Il.arg list * Subst.subst =
+  Debug.(log_in_at "el.elab_args" at
+    (fun _ -> fmt "%s : %s" (list el_arg as_) (list el_param ps))
+  );
   elab_args' in_lhs env as_ ps [] Subst.empty at
 
 and elab_args' in_lhs env as_ ps aos' s at : Il.arg list * Subst.subst =
@@ -1540,8 +1552,8 @@ let elab_params env ps : Il.param list =
         env.vars <- bind "variable" env.vars id t;
       ps' @ [Il.ExpP (id, t') $ p.at]
     | TypP id ->
-      env.typs <- bind "syntax type" env.typs id ([], Transp);
-      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
+      env.typs <- bind_shadow "syntax type" env.typs id ([], Opaque);
+      env.gvars <- bind_shadow "variable" env.gvars id (VarT (id, []) $ id.at);
       ps' @ [Il.TypP id $ p.at]
     | GramP (id, t) ->
       (* Treat unbound type identifiers in t as implicitly bound. *)
@@ -1552,7 +1564,7 @@ let elab_params env ps : Il.param list =
           let id = id' $ t.at in
           if id.it <> (strip_var_suffix id).it then
             error_id id "invalid identifer suffix in binding position";
-          env.typs <- bind "syntax type" env.typs id ([], Transp);
+          env.typs <- bind "syntax type" env.typs id ([], Opaque);
           env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
         )
       ) free.typid;
@@ -1569,20 +1581,19 @@ let infer_typ_definition _env t : kind =
 let infer_typdef env d =
   match d.it with
   | FamD (id, ps, _hints) ->
-    (*
-    Printf.eprintf "[el.infer_typdef %s]\n%!" (string_of_region d.at);
-    *)
-    if not (bound env.typs id) then (
-      let _ps' = elab_params (local_env env) ps in
-      env.typs <- bind "syntax type" env.typs id (ps, Family []);
-      if ps = [] then  (* only types without parameters double as variables *)
-        env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
-    )
+    let _ps' = elab_params (local_env env) ps in
+    env.typs <- bind "syntax type" env.typs id (ps, Family []);
+    if ps = [] then  (* only types without parameters double as variables *)
+      env.gvars <- bind "variable" env.gvars id (VarT (id, []) $ id.at);
   | TypD (id1, _id2, as_, t, _hints) ->
-    (*
-    Printf.eprintf "[el.infer_typdef %s]\n%!" (string_of_region d.at);
-    *)
-    if not (bound env.typs id1) then (
+    if bound env.typs id1 then (
+      let _ps, k = find "syntax type" env.typs id1 in
+      let extension =
+        match t.it with CaseT (Dots, _, _, _) -> true | _ -> false in
+      if k <> Family [] && not extension then (* force error *)
+        ignore (env.typs <- bind "syntax type" env.typs id1 ([], Family []))
+    )
+    else (
       let ps = List.map Convert.param_of_arg as_ in
       let env' = local_env env in
       let _ps' = elab_params env' ps in

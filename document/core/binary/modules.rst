@@ -77,8 +77,8 @@ The following parameterized grammar rule defines the generic structure of a sect
      \epsilon &\Rightarrow& \epsilon
    \end{array}
 
-For most sections, the contents :math:`\B{B}` encodes a :ref:`vector <binary-vec>`.
-In these cases, the empty result :math:`\epsilon` is interpreted as the empty vector.
+For most sections, the contents :math:`\B{B}` encodes a :ref:`list <binary-list>`.
+In these cases, the empty result :math:`\epsilon` is interpreted as the empty list.
 
 .. note::
    Other than for unknown :ref:`custom sections <binary-customsec>`,
@@ -140,12 +140,12 @@ Type Section
 ~~~~~~~~~~~~
 
 The *type section* has the id 1.
-It decodes into a vector of :ref:`recursive types <syntax-rectype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`recursive types <syntax-rectype>` that represent the |MTYPES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{type section} & \Btypesec &::=&
-     \X{rt}^\ast{:\,}\Bsection_1(\Bvec(\Brectype)) &\Rightarrow& \X{rt}^\ast \\
+     \X{rt}^\ast{:\,}\Bsection_1(\Blist(\Brectype)) &\Rightarrow& \X{rt}^\ast \\
    \end{array}
 
 
@@ -160,12 +160,12 @@ Import Section
 ~~~~~~~~~~~~~~
 
 The *import section* has the id 2.
-It decodes into a vector of :ref:`imports <syntax-import>` that represent the |MIMPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`imports <syntax-import>` that represent the |MIMPORTS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{import section} & \Bimportsec &::=&
-     \X{im}^\ast{:}\Bsection_2(\Bvec(\Bimport)) &\Rightarrow& \X{im}^\ast \\
+     \X{im}^\ast{:}\Bsection_2(\Blist(\Bimport)) &\Rightarrow& \X{im}^\ast \\
    \production{import} & \Bimport &::=&
      \X{mod}{:}\Bname~~\X{nm}{:}\Bname~~d{:}\Bimportdesc
        &\Rightarrow& \{ \IMODULE~\X{mod}, \INAME~\X{nm}, \IDESC~d \} \\
@@ -186,13 +186,13 @@ Function Section
 ~~~~~~~~~~~~~~~~
 
 The *function section* has the id 3.
-It decodes into a vector of :ref:`type indices <syntax-typeidx>` that represent the |FTYPE| fields of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`type indices <syntax-typeidx>` that represent the |FTYPE| fields of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
 The |FLOCALS| and |FBODY| fields of the respective functions are encoded separately in the :ref:`code section <binary-codesec>`.
 
 .. math::
    \begin{array}{llclll}
    \production{function section} & \Bfuncsec &::=&
-     x^\ast{:}\Bsection_3(\Bvec(\Btypeidx)) &\Rightarrow& x^\ast \\
+     x^\ast{:}\Bsection_3(\Blist(\Btypeidx)) &\Rightarrow& x^\ast \\
    \end{array}
 
 
@@ -206,12 +206,12 @@ Table Section
 ~~~~~~~~~~~~~
 
 The *table section* has the id 4.
-It decodes into a vector of :ref:`tables <syntax-table>` that represent the |MTABLES| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`tables <syntax-table>` that represent the |MTABLES| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{table section} & \Btablesec &::=&
-     \X{tab}^\ast{:}\Bsection_4(\Bvec(\Btable)) &\Rightarrow& \X{tab}^\ast \\
+     \X{tab}^\ast{:}\Bsection_4(\Blist(\Btable)) &\Rightarrow& \X{tab}^\ast \\
    \production{table} & \Btable &::=&
      \X{tt}{:}\Btabletype
        &\Rightarrow& \{ \TTYPE~\X{tt}, \TINIT~(\REFNULL~\X{ht}) \}
@@ -236,12 +236,12 @@ Memory Section
 ~~~~~~~~~~~~~~
 
 The *memory section* has the id 5.
-It decodes into a vector of :ref:`memories <syntax-mem>` that represent the |MMEMS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`memories <syntax-mem>` that represent the |MMEMS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{memory section} & \Bmemsec &::=&
-     \X{mem}^\ast{:}\Bsection_5(\Bvec(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
+     \X{mem}^\ast{:}\Bsection_5(\Blist(\Bmem)) &\Rightarrow& \X{mem}^\ast \\
    \production{memory} & \Bmem &::=&
      \X{mt}{:}\Bmemtype &\Rightarrow& \{ \MTYPE~\X{mt} \} \\
    \end{array}
@@ -257,12 +257,12 @@ Global Section
 ~~~~~~~~~~~~~~
 
 The *global section* has the id 6.
-It decodes into a vector of :ref:`globals <syntax-global>` that represent the |MGLOBALS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`globals <syntax-global>` that represent the |MGLOBALS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{global section} & \Bglobalsec &::=&
-     \X{glob}^\ast{:}\Bsection_6(\Bvec(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
+     \X{glob}^\ast{:}\Bsection_6(\Blist(\Bglobal)) &\Rightarrow& \X{glob}^\ast \\
    \production{global} & \Bglobal &::=&
      \X{gt}{:}\Bglobaltype~~e{:}\Bexpr
        &\Rightarrow& \{ \GTYPE~\X{gt}, \GINIT~e \} \\
@@ -280,12 +280,12 @@ Export Section
 ~~~~~~~~~~~~~~
 
 The *export section* has the id 7.
-It decodes into a vector of :ref:`exports <syntax-export>` that represent the |MEXPORTS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`exports <syntax-export>` that represent the |MEXPORTS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{export section} & \Bexportsec &::=&
-     \X{ex}^\ast{:}\Bsection_7(\Bvec(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
+     \X{ex}^\ast{:}\Bsection_7(\Blist(\Bexport)) &\Rightarrow& \X{ex}^\ast \\
    \production{export} & \Bexport &::=&
      \X{nm}{:}\Bname~~d{:}\Bexportdesc
        &\Rightarrow& \{ \ENAME~\X{nm}, \EDESC~d \} \\
@@ -332,35 +332,35 @@ Element Section
 ~~~~~~~~~~~~~~~
 
 The *element section* has the id 9.
-It decodes into a vector of :ref:`element segments <syntax-elem>` that represent the |MELEMS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`element segments <syntax-elem>` that represent the |MELEMS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{element section} & \Belemsec &::=&
-     \X{seg}^\ast{:}\Bsection_9(\Bvec(\Belem)) &\Rightarrow& \X{seg}^\ast \\
+     \X{seg}^\ast{:}\Bsection_9(\Blist(\Belem)) &\Rightarrow& \X{seg}^\ast \\
    \production{element segment} & \Belem &::=&
-     0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Bvec(\Bfuncidx)
+     0{:}\Bu32~~e{:}\Bexpr~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     1{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     2{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     2{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Belemkind~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     3{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Bvec(\Bfuncidx)
+     3{:}\Bu32~~\X{et}:\Belemkind~~y^\ast{:}\Blist(\Bfuncidx)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~\X{et}, \EINIT~((\REFFUNC~y)~\END)^\ast, \EMODE~\EDECLARATIVE \} \\ &&|&
-     4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     4{:}\Bu32~~e{:}\Bexpr~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~(\REF~\NULL~\FUNC), \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~0, \EOFFSET~e \} \} \\ &&|&
-     5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     5{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EPASSIVE \} \\ &&|&
-     6{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     6{:}\Bu32~~x{:}\Btableidx~~e{:}\Bexpr~~\X{et}:\Breftype~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EACTIVE~\{ \ETABLE~x, \EOFFSET~e \} \} \\ &&|&
-     7{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Bvec(\Bexpr)
+     7{:}\Bu32~~\X{et}:\Breftype~~\X{el}^\ast{:}\Blist(\Bexpr)
        &\Rightarrow& \\&&&\quad
        \{ \ETYPE~et, \EINIT~\X{el}^\ast, \EMODE~\EDECLARATIVE \} \\
    \production{element kind} & \Belemkind &::=&
@@ -389,7 +389,7 @@ Code Section
 ~~~~~~~~~~~~
 
 The *code section* has the id 10.
-It decodes into a vector of *code* entries that are pairs of :ref:`value type <syntax-valtype>` vectors and :ref:`expressions <syntax-expr>`.
+It decodes into a list of *code* entries that are pairs of :ref:`value type <syntax-valtype>` lists and :ref:`expressions <syntax-expr>`.
 They represent the |FLOCALS| and |FBODY| field of the :ref:`functions <syntax-func>` in the |MFUNCS| component of a :ref:`module <syntax-module>`.
 The |FTYPE| fields of the respective functions are encoded separately in the :ref:`function section <binary-funcsec>`.
 
@@ -401,7 +401,7 @@ The encoding of each code entry consists of
   * the declaration of *locals*,
   * the function *body* as an :ref:`expression <binary-expr>`.
 
-Local declarations are compressed into a vector whose entries consist of
+Local declarations are compressed into a list whose entries consist of
 
 * a |U32| *count*,
 * a :ref:`value type <binary-valtype>`,
@@ -411,13 +411,13 @@ denoting *count* locals of the same value type.
 .. math::
    \begin{array}{llclll@{\qquad}l}
    \production{code section} & \Bcodesec &::=&
-     \X{code}^\ast{:}\Bsection_{10}(\Bvec(\Bcode))
+     \X{code}^\ast{:}\Bsection_{10}(\Blist(\Bcode))
        &\Rightarrow& \X{code}^\ast \\
    \production{code} & \Bcode &::=&
      \X{size}{:}\Bu32~~\X{code}{:}\Bfunc
        &\Rightarrow& \X{code} & (\iff \X{size} = ||\Bfunc||) \\
    \production{function} & \Bfunc &::=&
-     (\local^\ast)^\ast{:}\Bvec(\Blocals)~~e{:}\Bexpr
+     (\local^\ast)^\ast{:}\Blist(\Blocals)~~e{:}\Bexpr
        &\Rightarrow& \concat((\local^\ast)^\ast), e
          & (\iff |\concat((\local^\ast)^\ast)| < 2^{32}) \\
    \production{locals} & \Blocals &::=&
@@ -426,7 +426,7 @@ denoting *count* locals of the same value type.
 
 Here, :math:`\X{code}` ranges over pairs :math:`(\valtype^\ast, \expr)`.
 The meta function :math:`\concat((\local^\ast)^\ast)` concatenates all sequences :math:`\local_i^\ast` in :math:`(\local^\ast)^\ast`.
-Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`vector <syntax-vec>` is malformed.
+Any code for which the length of the resulting sequence is out of bounds of the maximum size of a :ref:`list <syntax-list>` is malformed.
 
 .. note::
    Like with :ref:`sections <binary-section>`, the code :math:`\X{size}` is not needed for decoding, but can be used to skip functions when navigating through a binary.
@@ -445,18 +445,18 @@ Data Section
 ~~~~~~~~~~~~
 
 The *data section* has the id 11.
-It decodes into a vector of :ref:`data segments <syntax-data>` that represent the |MDATAS| component of a :ref:`module <syntax-module>`.
+It decodes into a list of :ref:`data segments <syntax-data>` that represent the |MDATAS| component of a :ref:`module <syntax-module>`.
 
 .. math::
    \begin{array}{llclll}
    \production{data section} & \Bdatasec &::=&
-     \X{seg}^\ast{:}\Bsection_{11}(\Bvec(\Bdata)) &\Rightarrow& \X{seg}^\ast \\
+     \X{seg}^\ast{:}\Bsection_{11}(\Blist(\Bdata)) &\Rightarrow& \X{seg}^\ast \\
    \production{data segment} & \Bdata &::=&
-     0{:}\Bu32~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+     0{:}\Bu32~~e{:}\Bexpr~~b^\ast{:}\Blist(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~0, \DOFFSET~e \} \} \\ &&|&
-     1{:}\Bu32~~b^\ast{:}\Bvec(\Bbyte)
+     1{:}\Bu32~~b^\ast{:}\Blist(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DPASSIVE \} \\ &&|&
-     2{:}\Bu32~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Bvec(\Bbyte)
+     2{:}\Bu32~~x{:}\Bmemidx~~e{:}\Bexpr~~b^\ast{:}\Blist(\Bbyte)
        &\Rightarrow& \{ \DINIT~b^\ast, \DMODE~\DACTIVE~\{ \DMEM~x, \DOFFSET~e \} \} \\
    \end{array}
 
@@ -479,7 +479,7 @@ Data Count Section
 ~~~~~~~~~~~~~~~~~~
 
 The *data count section* has the id 12.
-It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number of :ref:`data segments <syntax-data>` in the :ref:`data section <binary-datasec>`. If this count does not match the length of the data segment vector, the module is malformed.
+It decodes into an optional :ref:`u32 <syntax-uint>` that represents the number of :ref:`data segments <syntax-data>` in the :ref:`data section <binary-datasec>`. If this count does not match the length of the data segment list, the module is malformed.
 
 .. math::
    \begin{array}{llclll}
@@ -513,9 +513,9 @@ The preamble is followed by a sequence of :ref:`sections <binary-section>`.
 while other sections must occur at most once and in the prescribed order.
 All sections can be empty.
 
-The lengths of vectors produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
+The lengths of lists produced by the (possibly empty) :ref:`function <binary-funcsec>` and :ref:`code <binary-codesec>` section must match up.
 
-Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` vector.
+Similarly, the optional data count must match the length of the :ref:`data segment <binary-datasec>` list.
 Furthermore, it must be present if any :ref:`data index <syntax-dataidx>` occurs in the code section.
 
 .. math::

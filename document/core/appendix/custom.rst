@@ -75,25 +75,25 @@ Name Maps
 .........
 
 A *name map* assigns :ref:`names <syntax-name>` to :ref:`indices <syntax-index>` in a given :ref:`index space <syntax-index>`.
-It consists of a :ref:`vector <binary-vec>` of index/name pairs in order of increasing index value.
+It consists of a :ref:`list <binary-list>` of index/name pairs in order of increasing index value.
 Each index must be unique, but the assigned names need not be.
 
 .. math::
    \begin{array}{llclll}
    \production{name map} & \Bnamemap &::=&
-     \Bvec(\Bnameassoc) \\
+     \Blist(\Bnameassoc) \\
    \production{name association} & \Bnameassoc &::=&
      \Bidx~\Bname \\
    \end{array}
 
 An *indirect name map* assigns :ref:`names <syntax-name>` to a two-dimensional :ref:`index space <syntax-index>`, where secondary indices are *grouped* by primary indices.
-It consists of a vector of primary index/name map pairs in order of increasing index value, where each name map in turn maps secondary indices to names.
+It consists of a list of primary index/name map pairs in order of increasing index value, where each name map in turn maps secondary indices to names.
 Each primary index must be unique, and likewise each secondary index per individual name map.
 
 .. math::
    \begin{array}{llclll}
    \production{indirect name map} & \Bindirectnamemap &::=&
-     \Bvec(\Bindirectnameassoc) \\
+     \Blist(\Bindirectnameassoc) \\
    \production{indirect name association} & \Bindirectnameassoc &::=&
      \Bidx~\Bnamemap \\
    \end{array}

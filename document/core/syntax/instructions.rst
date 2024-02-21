@@ -713,7 +713,7 @@ The |DATADROP| instruction prevents further use of a passive data segment. This 
    This restriction may be lifted in future versions.
 
 
-.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, vector, trap, function, table, function type, value type, type index
+.. index:: ! control instruction, ! structured control, ! label, ! block, ! block type, ! branch, ! unwinding, stack type, label index, function index, type index, list, trap, function, table, function type, value type, type index
    pair: abstract syntax; instruction
    pair: abstract syntax; block type
    pair: block; type
@@ -754,7 +754,7 @@ Instructions in this group affect the flow of control.
      \IF~\blocktype~\instr^\ast~\ELSE~\instr^\ast~\END \\&&|&
      \BR~\labelidx \\&&|&
      \BRIF~\labelidx \\&&|&
-     \BRTABLE~\vec(\labelidx)~\labelidx \\&&|&
+     \BRTABLE~\list(\labelidx)~\labelidx \\&&|&
      \BRONNULL~\labelidx \\&&|&
      \BRONNONNULL~\labelidx \\&&|&
      \BRONCAST~\labelidx~\reftype~\reftype \\&&|&
@@ -800,7 +800,7 @@ In case of |LOOP| it is a *backward jump* to the beginning of the loop.
 Branch instructions come in several flavors:
 |BR| performs an unconditional branch,
 |BRIF| performs a conditional branch,
-and |BRTABLE| performs an indirect branch through an operand indexing into the label vector that is an immediate to the instruction, or to a default target if the operand is out of bounds.
+and |BRTABLE| performs an indirect branch through an operand indexing into the label list that is an immediate to the instruction, or to a default target if the operand is out of bounds.
 The |BRONNULL| and |BRONNONNULL| instructions check whether a reference operand is :ref:`null <syntax-null>` and branch if that is the case or not the case, respectively.
 Similarly, |BRONCAST| and |BRONCASTFAIL| attempt a downcast on a reference operand and branch if that succeeds, or fails, respectively.
 

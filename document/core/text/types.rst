@@ -128,7 +128,7 @@ Function Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{function type} & \Tfunctype_I &::=&
-     \text{(}~\text{func}~~t_1^\ast{:\,}\Tvec(\Tparam_I)~~t_2^\ast{:\,}\Tvec(\Tresult_I)~\text{)}
+     \text{(}~\text{func}~~t_1^\ast{:\,}\Tlist(\Tparam_I)~~t_2^\ast{:\,}\Tlist(\Tresult_I)~\text{)}
        &\Rightarrow& [t_1^\ast] \to [t_2^\ast] \\
    \production{parameter} & \Tparam_I &::=&
      \text{(}~\text{param}~~\Tid^?~~t{:}\Tvaltype_I~\text{)}
@@ -182,7 +182,7 @@ Aggregate Types
      \text{(}~\text{array}~~\X{ft}{:}\Tfieldtype_I~\text{)}
        &\Rightarrow& \X{ft} \\
    \production{structure type} & \Tstructtype_I &::=&
-     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tvec(\Tfield_I)~\text{)}
+     \text{(}~\text{struct}~~\X{ft}^\ast{:\,}\Tlist(\Tfield_I)~\text{)}
        &\Rightarrow& \X{ft}^\ast \\
    \production{field} & \Tfield_I &::=&
      \text{(}~\text{field}~~\Tid^?~~\X{ft}{:}\Tfieldtype_I~\text{)}
@@ -249,13 +249,13 @@ Recursive Types
 .. math::
    \begin{array}{llclll@{\qquad\qquad}l}
    \production{recursive type} & \Trectype_I &::=&
-     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tvec(\Ttypedef_I)~\text{)}
+     \text{(}~\text{rec}~~\X{st}^\ast{:\,}\Tlist(\Ttypedef_I)~\text{)}
        &\Rightarrow& \TREC~\X{st}^\ast \\
    \production{defined type} & \Ttypedef_I &::=&
      \text{(}~\text{type}~~\Tid^?~~\X{st}{:}\Tsubtype_I~\text{)}
        &\Rightarrow& \X{st} \\
    \production{sub type} & \Tsubtype_I &::=&
-     \text{(}~\text{sub}~~\text{final}^?~~x^\ast{:\,}\Tvec(\Ttypeidx_I)~~\X{ct}{:}\Tcomptype_I~\text{)}
+     \text{(}~\text{sub}~~\text{final}^?~~x^\ast{:\,}\Tlist(\Ttypeidx_I)~~\X{ct}{:}\Tcomptype_I~\text{)}
        &\Rightarrow& \TSUB~\TFINAL^?~x^\ast~\X{ct} \\
    \end{array}
 

@@ -217,7 +217,7 @@ Conventions
 * The meta variable :math:`t` ranges over value types or subclasses thereof where clear from context.
 
 
-.. index:: ! result type, value type, instruction, execution, function
+.. index:: ! result type, value type, list, instruction, execution, function
    pair: abstract syntax; result type
    pair: result; type
 .. _syntax-resulttype:
@@ -231,11 +231,11 @@ which is a sequence of values, written with brackets.
 .. math::
    \begin{array}{llrl}
    \production{result type} & \resulttype &::=&
-     [\vec(\valtype)] \\
+     [\list(\valtype)] \\
    \end{array}
 
 
-.. index:: ! function type, value type, vector, function, parameter, result, result type
+.. index:: ! function type, value type, list, function, parameter, result, result type
    pair: abstract syntax; function type
    pair: function; type
 .. _syntax-functype:
@@ -244,7 +244,7 @@ Function Types
 ~~~~~~~~~~~~~~
 
 *Function types* classify the signature of :ref:`functions <syntax-func>`,
-mapping a vector of parameters to a vector of results.
+mapping a list of parameters to a list of results.
 They are also used to classify the inputs and outputs of :ref:`instructions <syntax-instr>`.
 
 .. math::

@@ -891,7 +891,7 @@ Finally, :ref:`frames <syntax-frame>` are classified with *frame contexts*, whic
 
 * Let :math:`t^\ast` be the concatenation of all :math:`t_i` in order.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`value types <syntax-valtype>` :math:`t^\ast` prepended to the |CLOCALS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`value types <syntax-valtype>` :math:`t^\ast` prepended to the |CLOCALS| list.
 
 * Then the frame is valid with :ref:`frame context <frame-context>` :math:`C'`.
 
@@ -975,7 +975,7 @@ To that end, all previous typing judgements :math:`C \vdash \X{prop}` are genera
 
 * The instruction sequence :math:`\instr_0^\ast` must be :ref:`valid <valid-instr-seq>` with some type :math:`[t_1^n] \to_{x^\ast} [t_2^*]`.
 
-* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| vector.
+* Let :math:`C'` be the same :ref:`context <context>` as :math:`C`, but with the :ref:`result type <syntax-resulttype>` :math:`[t_1^n]` prepended to the |CLABELS| list.
 
 * Under context :math:`C'`,
   the instruction sequence :math:`\instr^\ast` must be :ref:`valid <valid-instr-seq>` with type :math:`[] \to_{{x'}^\ast} [t_2^*]`.
@@ -1181,7 +1181,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * The :ref:`reference type <syntax-reftype>` :math:`\eleminst.\EITYPE` must remain unchanged.
 
-* The vector :math:`\eleminst.\EIELEM` must:
+* The list :math:`\eleminst.\EIELEM` must:
 
   * either remain unchanged,
 
@@ -1206,7 +1206,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 :ref:`Data Instance <syntax-datainst>` :math:`\datainst`
 ........................................................
 
-* The vector :math:`\datainst.\DIDATA` must:
+* The list :math:`\datainst.\DIDATA` must:
 
   * either remain unchanged,
 
@@ -1237,7 +1237,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * Let :math:`\TSTRUCT~\fieldtype^\ast` be the :ref:`expansion <aux-expand-deftype>` of :math:`\structinst.\SITYPE`.
 
-* The length of the vector :math:`\structinst.\SIFIELDS` must remain unchanged.
+* The length of the list :math:`\structinst.\SIFIELDS` must remain unchanged.
 
 * Assert: due to :ref:`store well-formedness <valid-structinst>`, the length of :math:`\structinst.\SIFIELDS` is the same as the length of :math:`\fieldtype^\ast`.
 
@@ -1267,7 +1267,7 @@ a store state :math:`S'` extends state :math:`S`, written :math:`S \extendsto S'
 
 * Let :math:`\TARRAY~\fieldtype` be the :ref:`expansion <aux-expand-deftype>` of :math:`\arrayinst.\AITYPE`.
 
-* The length of the vector :math:`\arrayinst.\AIFIELDS` must remain unchanged.
+* The length of the list :math:`\arrayinst.\AIFIELDS` must remain unchanged.
 
 * Let :math:`\mut~\X{st}` be the structure of :math:`\fieldtype`.
 

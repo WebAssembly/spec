@@ -5,12 +5,31 @@
 ;; Syntax notation
 
 syntax A = nat
+syntax B = nat
 
-syntax sym = | _FIRST A_1 | _DOTS hint(show !%...!%) | _LAST A_n
+syntax sym = | _FIRST A_1 | _DOTS hint(show `...) | _LAST A_n
 syntax symsplit/1 hint(show sym) = | _FIRST A_1 | ...
 syntax symsplit/2 hint(show sym) = ... | _LAST A_2
 
+syntax recorddots hint(show `...) = `...
 syntax record hint(show r) =
-  { FIELD_1 A_1 hint(show FIELD#_#1 %),
-    FIELD_2 A_2 hint(show FIELD#_#2 %),
-    DOTS ()     hint(show !%...!%) }
+  { FIELD_1 A_1 hint(show FIELD_ 1), FIELD_2 A_2 hint(show FIELD_ 2), DOTS recorddots hint(show !%) }
+
+syntax recordstar hint(show r) =
+  { FIELD_1 A_1* hint(show FIELD_ 1), FIELD_2 A_2* hint(show FIELD_ 2), DOTS recorddots hint(show !%) }
+
+syntax recordeq = recordstar `++ recordstar `= recordstar
+
+syntax pth = | PTHSYNTAX hint(show (`[i] `| !%.FIELD)+)
+
+syntax pthaux =
+  { PTH ()           hint(show pth),
+    I_PTH ()         hint(show `[i] pth),
+    FIELD_PTH ()     hint(show FIELD pth),
+    DOT_FIELD_PTH () hint(show !%.FIELD)
+  }
+
+
+;; Lists
+
+syntax list(syntax A) = | _LIST A*  -- if |A*| < $(2^32)

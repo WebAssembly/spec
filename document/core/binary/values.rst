@@ -105,12 +105,12 @@ Floating-Point
 Names
 ~~~~~
 
-:ref:`Names <syntax-name>` are encoded as a :ref:`vector <binary-vec>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's character sequence.
+:ref:`Names <syntax-name>` are encoded as a :ref:`list <binary-list>` of bytes containing the |Unicode|_ (Section 3.9) UTF-8 encoding of the name's character sequence.
 
 .. math::
    \begin{array}{llclllll}
    \production{name} & \Bname &::=&
-     b^\ast{:}\Bvec(\Bbyte) &\Rightarrow& \name
+     b^\ast{:}\Blist(\Bbyte) &\Rightarrow& \name
        && (\iff \utf8(\name) = b^\ast) \\
    \end{array}
 

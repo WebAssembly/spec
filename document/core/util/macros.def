@@ -115,7 +115,7 @@
 
 .. Auxiliary productions
 
-.. |vec| mathdef:: \xref{syntax/conventions}{syntax-vec}{\X{vec}}
+.. |list| mathdef:: \xref{syntax/conventions}{syntax-list}{\X{list}}
 
 
 .. Values, terminals
@@ -674,7 +674,7 @@
 
 .. Auxiliary productions
 
-.. |Bvec| mathdef:: \xref{binary/conventions}{binary-vec}{\B{vec}}
+.. |Blist| mathdef:: \xref{binary/conventions}{binary-list}{\B{list}}
 
 
 .. Values, non-terminals
@@ -813,7 +813,7 @@
 
 .. Auxiliary productions
 
-.. |Tvec| mathdef:: \xref{text/conventions}{text-vec}{\T{vec}}
+.. |Tlist| mathdef:: \xref{text/conventions}{text-list}{\T{list}}
 
 
 .. Lexical grammar, terminals
@@ -1322,7 +1322,7 @@
 .. Values & Results, non-terminals
 
 .. |num| mathdef:: \xref{exec/runtime}{syntax-num}{\X{num}}
-.. |vecc| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
+.. |vec| mathdef:: \xref{exec/runtime}{syntax-vec}{\X{vec}}
 .. |reff| mathdef:: \xref{exec/runtime}{syntax-ref}{\X{ref}}
 .. |val| mathdef:: \xref{exec/runtime}{syntax-val}{\X{val}}
 .. |result| mathdef:: \xref{exec/runtime}{syntax-result}{\X{result}}
