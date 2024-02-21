@@ -6,7 +6,7 @@
   <meta content="ED" name="w3c-status">
   <meta content="Bikeshed version d5d58a306, updated Fri Jan 26 16:12:28 2024 -0800" name="generator">
   <link href="https://www.w3.org/TR/wasm-js-api-2/" rel="canonical">
-  <meta content="bcd1924a3ab490e753ba8362e8279a513d2c3015" name="revision">
+  <meta content="c2c2e7119a662f899a5dcbd892986891dd0d0b7e" name="revision">
 <style>
 emu-const {
     font-family: serif;
@@ -719,7 +719,7 @@ var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBC
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">WebAssembly JavaScript Interface</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-15">15 February 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#ED">Editor’s Draft</a>, <time class="dt-updated" datetime="2024-02-21">21 February 2024</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -2351,7 +2351,7 @@ This slot holds a <a data-link-type="dfn" href="https://webassembly.github.io/sp
        <li data-md>
         <p>Let <var>constructor</var> be a new object, implementing the <a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-nativeerror-object-structure" id="ref-for-sec-nativeerror-object-structure">NativeError Object Structure</a>, with <var>NativeError</var> set to <var>error</var>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">!</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createmethodproperty" id="ref-for-sec-createmethodproperty">CreateMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>).</p>
+        <p><a data-link-type="dfn" href="https://tc39.github.io/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands②①">!</a> <a data-link-type="abstract-op">CreateMethodProperty</a>(<var>namespaceObject</var>, <var>error</var>, <var>constructor</var>).</p>
       </ol>
     </ol>
    </div>
@@ -2645,7 +2645,6 @@ In practice, an implementation may run out of resources for valid modules below 
      <li><span class="dfn-paneled" id="4c6c6f05">CreateArrayFromList</span>
      <li><span class="dfn-paneled" id="6df10f44">CreateBuiltinFunction</span>
      <li><span class="dfn-paneled" id="d2c61922">CreateDataProperty</span>
-     <li><span class="dfn-paneled" id="51df071b">CreateMethodProperty</span>
      <li><span class="dfn-paneled" id="d7a47d32">DetachArrayBuffer</span>
      <li><span class="dfn-paneled" id="abf85593">Get</span>
      <li><span class="dfn-paneled" id="d83ccb33">GetIteratorFromMethod</span>
@@ -3204,7 +3203,6 @@ let dfnPanelData = {
 "4ad913ae": {"dfnID":"4ad913ae","dfnText":"surrounding agent","external":true,"refSections":[{"refs":[{"id":"ref-for-surrounding-agent"},{"id":"ref-for-surrounding-agent\u2460"},{"id":"ref-for-surrounding-agent\u2461"},{"id":"ref-for-surrounding-agent\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-surrounding-agent\u2463"},{"id":"ref-for-surrounding-agent\u2464"},{"id":"ref-for-surrounding-agent\u2465"},{"id":"ref-for-surrounding-agent\u2466"},{"id":"ref-for-surrounding-agent\u2467"},{"id":"ref-for-surrounding-agent\u2468"},{"id":"ref-for-surrounding-agent\u2460\u24ea"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-surrounding-agent\u2460\u2460"},{"id":"ref-for-surrounding-agent\u2460\u2461"},{"id":"ref-for-surrounding-agent\u2460\u2462"},{"id":"ref-for-surrounding-agent\u2460\u2463"},{"id":"ref-for-surrounding-agent\u2460\u2464"},{"id":"ref-for-surrounding-agent\u2460\u2465"},{"id":"ref-for-surrounding-agent\u2460\u2466"},{"id":"ref-for-surrounding-agent\u2460\u2467"},{"id":"ref-for-surrounding-agent\u2460\u2468"},{"id":"ref-for-surrounding-agent\u2461\u24ea"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2460"},{"id":"ref-for-surrounding-agent\u2461\u2461"}],"title":"4.5. Globals"},{"refs":[{"id":"ref-for-surrounding-agent\u2461\u2462"},{"id":"ref-for-surrounding-agent\u2461\u2463"},{"id":"ref-for-surrounding-agent\u2461\u2464"},{"id":"ref-for-surrounding-agent\u2461\u2465"},{"id":"ref-for-surrounding-agent\u2461\u2466"},{"id":"ref-for-surrounding-agent\u2461\u2467"},{"id":"ref-for-surrounding-agent\u2461\u2468"},{"id":"ref-for-surrounding-agent\u2462\u24ea"},{"id":"ref-for-surrounding-agent\u2462\u2460"},{"id":"ref-for-surrounding-agent\u2462\u2461"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/executable-code-and-execution-contexts.html#surrounding-agent"},
 "4c6c6f05": {"dfnID":"4c6c6f05","dfnText":"CreateArrayFromList","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-createarrayfromlist"}],"title":"4.6. Exported Functions"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createarrayfromlist"},
 "4fc7e98f": {"dfnID":"4fc7e98f","dfnText":"global","external":true,"refSections":[{"refs":[{"id":"ref-for-external-types"},{"id":"ref-for-external-types\u2460"},{"id":"ref-for-external-types\u2461"},{"id":"ref-for-external-types\u2462"},{"id":"ref-for-external-types\u2463"},{"id":"ref-for-external-types\u2464"},{"id":"ref-for-external-types\u2465"},{"id":"ref-for-external-types\u2466"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-external-types\u2467"},{"id":"ref-for-external-types\u2468"},{"id":"ref-for-external-types\u2460\u24ea"},{"id":"ref-for-external-types\u2460\u2460"}],"title":"4.1. Modules"}],"url":"https://webassembly.github.io/spec/core/syntax/types.html#external-types"},
-"51df071b": {"dfnID":"51df071b","dfnText":"CreateMethodProperty","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-createmethodproperty"}],"title":"4.7. Error Objects"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createmethodproperty"},
 "53275e46": {"dfnID":"53275e46","dfnText":"append","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"},{"id":"ref-for-list-append\u2460"},{"id":"ref-for-list-append\u2461"},{"id":"ref-for-list-append\u2462"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-list-append\u2463"},{"id":"ref-for-list-append\u2464"},{"id":"ref-for-list-append\u2465"}],"title":"4.1. Modules"},{"refs":[{"id":"ref-for-list-append\u2466"},{"id":"ref-for-list-append\u2467"},{"id":"ref-for-list-append\u2468"},{"id":"ref-for-list-append\u2460\u24ea"}],"title":"4.6. Exported Functions"}],"url":"https://infra.spec.whatwg.org/#list-append"},
 "5372cca8": {"dfnID":"5372cca8","dfnText":"boolean","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-boolean"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-idl-boolean\u2460"}],"title":"4.5. Globals"}],"url":"https://webidl.spec.whatwg.org/#idl-boolean"},
 "56f81a8e": {"dfnID":"56f81a8e","dfnText":"new","external":true,"refSections":[{"refs":[{"id":"ref-for-new"}],"title":"4. The WebAssembly Namespace"},{"refs":[{"id":"ref-for-new\u2460"}],"title":"4.3. Memories"},{"refs":[{"id":"ref-for-new\u2461"}],"title":"4.4. Tables"},{"refs":[{"id":"ref-for-new\u2462"}],"title":"4.5. Globals"}],"url":"https://webidl.spec.whatwg.org/#new"},
@@ -3941,7 +3939,6 @@ let refsData = {
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"Call","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-call"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createarrayfromlist": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"CreateArrayFromList","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createarrayfromlist"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"CreateDataProperty","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createdataproperty"},
-"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createmethodproperty": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"CreateMethodProperty","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-createmethodproperty"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-get-o-p": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"Get","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-get-o-p"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"GetIteratorFromMethod","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiteratorfrommethod"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"GetMethod","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod"},
