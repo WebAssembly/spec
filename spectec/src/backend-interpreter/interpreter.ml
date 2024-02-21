@@ -364,15 +364,18 @@ and eval_expr env expr =
     | _ -> fail_on_expr "TODO: Currently, we are already validating tabletype and memtype" expr)
   | HasTypeE (e, s) ->
 
+    (* TODO: This shouldn't be hardcoded *)
+
     (* type definition *)
 
     let addr_refs = [
       "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
       "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
     ] in
-    let pack_types = [ "I8"; "I16" ] in
-    let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
-    let vec_types = [ "V128"; ] in
+    let pnn_types = [ "I8"; "I16" ] in
+    let inn_types = [ "I32"; "I64" ] in
+    let fnn_types = [ "F32"; "F64" ] in
+    let vnn_types = [ "V128"; ] in
     let abs_heap_types = [
       "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
       "NOFUNC"; "EXTERN"; "NOEXTERN"
@@ -388,10 +391,12 @@ and eval_expr env expr =
     | CaseV ("REF.NULL", _) ->
       boolV (s = "nul" || s = "ref" || s = "val")
     (* numtype *)
-    | CaseV (nt, []) when List.mem nt num_types ->
-      boolV (s = "numtype" || s = "valtype")
-    | CaseV (vt, []) when List.mem vt vec_types ->
-      boolV (s = "vectype" || s = "valtype")
+    | CaseV (nt, []) when List.mem nt inn_types ->
+      boolV (s = "inn" || s = "imm" || s = "numtype" || s = "valtype")
+    | CaseV (nt, []) when List.mem nt fnn_types ->
+      boolV (s = "fnn" || s = "numtype" || s = "valtype")
+    | CaseV (vt, []) when List.mem vt vnn_types ->
+      boolV (s = "vnn" || s = "vectype" || s = "valtype")
     (* valtype *)
     | CaseV ("REF", _) ->
       boolV (s = "reftype" || s = "valtype")
@@ -408,8 +413,8 @@ and eval_expr env expr =
     | CaseV ("REC", [ _ ]) ->
       boolV (s = "heaptype" || s = "typevar")
     (* packtype *)
-    | CaseV (pt, []) when List.mem pt pack_types ->
-      boolV (s = "packtype" || s = "storagetype")
+    | CaseV (pt, []) when List.mem pt pnn_types ->
+      boolV (s = "pnn" || s = "imm" || s = "packtype" || s = "storagetype")
     | v ->
       fail_on_expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)
