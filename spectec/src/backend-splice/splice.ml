@@ -57,7 +57,7 @@ type env =
 
 let env_def env def =
   match def.it with
-  | SynD (id1, id2, _, _, _) ->
+  | TypD (id1, id2, _, _, _) ->
     if not (Map.mem id1.it env.syn) then
       env.syn <- Map.add id1.it {sdef = def; sfragments = []} env.syn;
     let syntax = Map.find id1.it env.syn in
@@ -81,7 +81,7 @@ let env_def env def =
     let definition = Map.find id.it env.def in
     let clauses = definition.clauses @ [def] in
     env.def <- Map.add id.it {definition with clauses} env.def
-  | VarD _ | SepD | HintD _ ->
+  | FamD _ | VarD _ | SepD | HintD _ ->
     ()
 
 let valid_id = "valid"

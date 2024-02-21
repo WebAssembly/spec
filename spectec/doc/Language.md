@@ -178,9 +178,7 @@ hole ::=
   "%"                                  use next operand
   "%"digit*                            use numbered operand
   "%%"                                 use all operands
-  "!%"                                 skip next operand
-  "!%"digit*                           skip numbered operand
-  "!%%"                                skip all operands
+  "!%"                                 empty expression
 ```
 
 The various meta notations for lists, records, and tuples mirror the syntactic conventions defined in the Wasm spec.
@@ -236,6 +234,7 @@ param ::=
   "grammar" gramid ":" typ
 
 def ::=
+  "syntax" varid params hint*                               syntax declaration
   "syntax" varid params subid* hint* "=" deftyp             syntax definition
   "grammar" gramid params subid* ":" typ hint* "=" gram     grammar definition
   "relation" relid hint* ":" typ                            relation declaration
@@ -251,6 +250,7 @@ def ::=
   "def" "$" defid hint+
 
 premise ::=
+  "var" id ":" typ                                          local variable declaration
   relid ":" exp                                             relational premise
   "if" exp                                                  side condition
   "otherwise"                                               fallback side condition

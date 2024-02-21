@@ -143,38 +143,38 @@ rule Step_pure/return-label:
 
 rule Step_pure/unop-val:
   (CONST t c_1) (UNOP t unop)  ~>  (CONST t c)
-  -- if $unop(unop, t, c_1) = c  ;; TODO
+  -- if $unop(t, unop, c_1) = c  ;; TODO
 
 rule Step_pure/unop-trap:
   (CONST t c_1) (UNOP t unop)  ~>  TRAP
-  -- if $unop(unop, t, c_1) = eps  ;; TODO
+  -- if $unop(t, unop, c_1) = eps  ;; TODO
 
 
 rule Step_pure/binop-val:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  (CONST t c)
-  -- if $binop(binop, t, c_1, c_2) = c  ;; TODO
+  -- if $binop(t, binop, c_1, c_2) = c  ;; TODO
 
 rule Step_pure/binop-trap:
   (CONST t c_1) (CONST t c_2) (BINOP t binop)  ~>  TRAP
-  -- if $binop(binop, t, c_1, c_2) = eps  ;; TODO
+  -- if $binop(t, binop, c_1, c_2) = eps  ;; TODO
 
 
 rule Step_pure/testop:
   (CONST t c_1) (TESTOP t testop)  ~>  (CONST I32 c)
-  -- if c = $testop(testop, t, c_1)
+  -- if c = $testop(t, testop, c_1)
 
 rule Step_pure/relop:
   (CONST t c_1) (CONST t c_2) (RELOP t relop)  ~>  (CONST I32 c)
-  -- if c = $relop(relop, t, c_1, c_2)
+  -- if c = $relop(t, relop, c_1, c_2)
 
 
 rule Step_pure/cvtop-val:
   (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  (CONST t_2 c)
-  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = c  ;; TODO
+  -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = c  ;; TODO
 
 rule Step_pure/cvtop-trap:
   (CONST t_1 c_1) (CVTOP t_2 cvtop t_1 sx?)  ~>  TRAP
-  -- if $cvtop(cvtop, t_1, t_2, sx?, c_1) = eps  ;; TODO
+  -- if $cvtop(t_1, t_2, cvtop, sx?, c_1) = eps  ;; TODO
 
 
 ;; Local instructions
@@ -209,11 +209,11 @@ rule Step_read/load-num-val:
   -- if $bytes(t, c) = $mem(z, 0).DATA[i + mo.OFFSET : $size(t)/8]
 
 rule Step_read/load-pack-trap:
-  z; (CONST I32 i) (LOAD t (n _ sx) mo)  ~>  TRAP
+  z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  TRAP
   -- if $(i + mo.OFFSET + n/8 > |$mem(z, 0).DATA|)
 
 rule Step_read/load-pack-val:
-  z; (CONST I32 i) (LOAD t (n _ sx) mo)  ~>  (CONST t $ext(n, $size(t), sx, c))
+  z; (CONST I32 i) (LOAD inn (n _ sx) mo)  ~>  (CONST inn $ext(n, $size(inn), sx, c))
   -- if $ibytes(n, c) = $mem(z, 0).DATA[i + mo.OFFSET : n/8]
 
 
@@ -226,12 +226,12 @@ rule Step/store-num-val:
   -- if b* = $bytes(t, c)
 
 rule Step/store-pack-trap:
-  z; (CONST I32 i) (CONST t c) (STORE t n mo)  ~>  z; TRAP
+  z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  z; TRAP
   -- if $(i + mo.OFFSET + n/8) > |$mem(z, 0).DATA|
 
 rule Step/store-pack-val:
-  z; (CONST I32 i) (CONST t c) (STORE t n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
-  -- if b* = $ibytes(n, $wrap($size(t), n, c))
+  z; (CONST I32 i) (CONST inn c) (STORE inn n mo)  ~>  $with_mem(z, 0, $(i + mo.OFFSET), $(n/8), b*); eps
+  -- if b* = $ibytes(n, $wrap($size(inn), n, c))
 
 
 rule Step_read/memory.size:

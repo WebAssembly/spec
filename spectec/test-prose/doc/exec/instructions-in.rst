@@ -145,21 +145,21 @@ $${rule-prose: exec/vrelop}
 
 $${rule+: Step_pure/vrelop}
 
-.. _exec-vishiftop:
+.. _exec-vshiftop:
 
-$${rule-prose: exec/vishiftop}
-
-\
-
-$${rule+: Step_pure/vishiftop}
-
-.. _exec-vall_true:
-
-$${rule-prose: exec/vall_true}
+$${rule-prose: exec/vshiftop}
 
 \
 
-$${rule+: Step_pure/vall_true-*}
+$${rule+: Step_pure/vshiftop}
+
+.. _exec-vtestop:
+
+$${rule-prose: exec/vtestop}
+
+\
+
+$${rule+: Step_pure/vtestop-*}
 
 .. _exec-vbitmask:
 
@@ -185,29 +185,21 @@ $${rule-prose: exec/vcvtop}
 
 $${rule+: Step_pure/vcvtop-*}
 
-.. _exec-vdot:
+.. _exec-vextunop:
 
-$${rule-prose: exec/vdot}
-
-\
-
-$${rule+: Step_pure/vdot}
-
-.. _exec-vextmul:
-
-$${rule-prose: exec/vextmul}
+$${rule-prose: exec/vextunop}
 
 \
 
-$${rule+: Step_pure/vextmul}
+$${rule+: Step_pure/vextunop}
 
-.. _exec-vextadd_pairwise:
+.. _exec-vextbinop:
 
-$${rule-prose: exec/vextadd_pairwise}
+$${rule-prose: exec/vextbinop}
 
 \
 
-$${rule+: Step_pure/vextadd_pairwise}
+$${rule+: Step_pure/vextbinop}
 
 Reference Instructions
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -358,14 +350,6 @@ $${rule-prose: exec/array.new_elem}
 \
 
 $${rule+: Step_read/array.new_elem-*}
-
-.. _def-concat_bytes:
-
-$${definition-prose: concat_bytes}
-
-\
-
-$${definition: concat_bytes}
 
 .. _exec-array.new_data:
 

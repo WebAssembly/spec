@@ -155,14 +155,6 @@ $${definition-prose: inst_reftype}
 
 $${definition: inst_reftype}
 
-.. _def-concat_instr:
-
-$${definition-prose: concat_instr}
-
-\
-
-$${definition: concat_instr}
-
 .. _def-rundata:
 
 $${definition-prose: rundata}

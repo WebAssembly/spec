@@ -46,21 +46,21 @@ $${syntax: deftype}
 Unpacking
 ~~~~~~~~~
 
-.. _def-unpacktype:
+.. _def-unpack:
 
-$${definition-prose: unpacktype}
-
-\
-
-$${definition: unpacktype}
-
-.. _def-unpacknumtype:
-
-$${definition-prose: unpacknumtype}
+$${definition-prose: unpack}
 
 \
 
-$${definition: unpacknumtype}
+$${definition: unpack}
+
+.. _def-nunpack:
+
+$${definition-prose: nunpack}
+
+\
+
+$${definition: nunpack}
 
 .. _valid-conventions-substitution:
 
@@ -115,13 +115,13 @@ $${definition-prose: subst_valtype}
 
 $${definition: subst_valtype}
 
-.. _def-subst_packedtype:
+.. _def-subst_packtype:
 
-$${definition-prose: subst_packedtype}
+$${definition-prose: subst_packtype}
 
 \
 
-$${definition: subst_packedtype}
+$${definition: subst_packtype}
 
 .. _def-subst_storagetype:
 

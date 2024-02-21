@@ -9,23 +9,28 @@ def $signed(N, i) = i           -- if $(0 <= 2^(N-1))
 def $signed(N, i) = $(i - 2^N)  -- if $(2^(N-1) <= i < 2^N)
 
 def $invsigned(N, int) : nat    hint(show $signed^(-1)#_%#(%))
-def $invsigned(N, i) = j        -- if $signed(N, j) = i
+def $invsigned(N, ii) = j       -- if $signed(N, j) = ii
 
 
 ;; TODO
 
-def $unop(unop_valtype, valtype, c) : c_valtype*         hint(show %#_%#((%)))
-def $binop(binop_valtype, valtype, c, c) : c_valtype*    hint(show %#_%#(%, %))
-def $testop(testop_valtype, valtype, c) : c_valtype      hint(show %#_%#((%)))
-def $relop(relop_valtype, valtype, c, c) : c_valtype     hint(show %#_%#(%, %))
-def $cvtop(cvtop, valtype, valtype, sx?, c) : c_valtype* hint(show %#$_((%,%))^(%)#((%)))
+def $unop(valtype, unop_(valtype), val_(valtype)) : val_(valtype)*
+    hint(show %2#_%1#((%3)))
+def $binop(valtype, binop_(valtype), val_(valtype), val_(valtype)) : val_(valtype)*
+    hint(show %2#_%1#(%3, %4))
+def $testop(valtype, testop_(valtype), val_(valtype)) : val_(I32)
+    hint(show %2#_%1#((%3)))
+def $relop(valtype, relop_(valtype), val_(valtype), val_(valtype)) : val_(I32)
+    hint(show %2#_%1#(%3, %4))
+def $cvtop(valtype_1, valtype_2, cvtop, sx?, val_(valtype_1)) : val_(valtype_2)*
+    hint(show %3#$_((%1,%2))^(%4)#((%5)))
 
-def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
-def $ext(nat, nat, sx, c) : c_valtype                    hint(show $ext_((%,%))^(%)#((%)))
+def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
+def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
 
-def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
-def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
-def $bytes(valtype, c) : byte*        hint(show $bytes_(%,%))
+def $ibytes(N, iN(N)) : byte*                       hint(show $bytes_(i#%,%))
+def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(f#%,%))
+def $bytes(valtype, val_(valtype)) : byte*          hint(show $bytes_(%,%))
 
 def $invibytes(N, byte*) : iN(N)
 def $invfbytes(N, byte*) : fN(N)

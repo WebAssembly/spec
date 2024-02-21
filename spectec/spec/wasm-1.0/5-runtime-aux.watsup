@@ -8,8 +8,8 @@ def $default(valtype) : val  hint(show $default_%)
 
 def $default(I32) = (CONST I32 0)
 def $default(I64) = (CONST I64 0)
-def $default(F32) = (CONST F32 0)
-def $default(F64) = (CONST F64 0)
+def $default(F32) = (CONST F32 $fzero(32))
+def $default(F64) = (CONST F64 $fzero(64))
 
 
 ;; Projections

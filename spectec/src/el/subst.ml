@@ -8,15 +8,34 @@ module Map = Map.Make(String)
 
 type subst =
   { varid : exp Map.t;
-    synid : typ Map.t;
+    typid : typ Map.t;
     gramid : sym Map.t;
   }
 
+type t = subst
+
 let empty =
   { varid = Map.empty;
-    synid = Map.empty;
+    typid = Map.empty;
     gramid = Map.empty;
   }
+
+let mem_varid s id = Map.mem id.it s.varid
+let mem_typid s id = Map.mem id.it s.typid
+let mem_gramid s id = Map.mem id.it s.gramid
+
+let add_varid s id e = if id.it = "_" then s else {s with varid = Map.add id.it e s.varid}
+let add_typid s id t = if id.it = "_" then s else {s with typid = Map.add id.it t s.typid}
+let add_gramid s id g = if id.it = "_" then s else {s with gramid = Map.add id.it g s.gramid}
+
+let union s1 s2 =
+  { varid = Map.union (fun _ _e1 e2 -> Some e2) s1.varid s2.varid;
+    typid = Map.union (fun _ _t1 t2 -> Some t2) s1.typid s2.typid;
+    gramid = Map.union (fun _ _g1 g2 -> Some g2) s1.gramid s2.gramid;
+  }
+
+
+(* Helpers *)
 
 let subst_opt subst_x s xo = Option.map (subst_x s) xo
 let subst_list subst_x s xs = List.map (subst_x s) xs
@@ -53,11 +72,14 @@ let rec subst_iter s iter =
 and subst_typ s t =
   (match t.it with
   | VarT (id, args) ->
-    (match Map.find_opt id.it s.synid with
-    | None -> t
+    let id' = Convert.strip_var_suffix id in
+    (match Map.find_opt id'.it s.typid with
+    | None -> VarT (id, List.map (subst_arg s) args)
     | Some t' ->
-      assert (args = []); t'  (* We do not support higher-order substitutions yet *)
-    ).it
+      if id'.it <> id.it then
+        Util.Source.error id.at "syntax" "identifer suffix encountered during substitution";
+      assert (args = []); t'.it  (* We do not support higher-order substitutions yet *)
+    )
   | BoolT | NumT _ | TextT | AtomT _ -> t.it
   | ParenT t1 -> ParenT (subst_typ s t1)
   | TupT ts -> TupT (subst_list subst_typ s ts)
@@ -86,10 +108,9 @@ and subst_exp s e =
   (match e.it with
   | VarE (id, args) ->
     (match Map.find_opt id.it s.varid with
-    | None -> e
-    | Some e' ->
-      assert (args = []); e'  (* We do not support higher-order substitutions yet *)
-    ).it
+    | None -> VarE (id, List.map (subst_arg s) args)
+    | Some e' -> assert (args = []); e'.it  (* We do not support higher-order substitutions yet *)
+    )
   | AtomE _ | BoolE _ | NatE _ | TextE _ -> e.it
   | UnE (op, e1) -> UnE (op, subst_exp s e1)
   | BinE (e1, op, e2) -> BinE (subst_exp s e1, op, subst_exp s e2)
@@ -113,7 +134,7 @@ and subst_exp s e =
   | CallE (id, args) -> CallE (id, subst_list subst_arg s args)
   | IterE (e1, iter) -> IterE (subst_exp s e1, subst_iter s iter)
   | TypE (e1, t) -> TypE (subst_exp s e1, subst_typ s t)
-  | HoleE (x, y) -> HoleE (x, y)
+  | HoleE h -> HoleE h
   | FuseE (e1, e2) -> FuseE (subst_exp s e1, subst_exp s e2)
   ) $ e.at
 
@@ -133,6 +154,7 @@ and subst_path s p =
 
 and subst_prem s prem =
   (match prem.it with
+  | VarPr (id, t) -> VarPr (id, subst_typ s t)
   | RulePr (id, e) -> RulePr (id, subst_exp s e)
   | IfPr e -> IfPr (subst_exp s e)
   | ElsePr -> ElsePr
@@ -146,10 +168,9 @@ and subst_sym s g =
   (match g.it with
   | VarG (id, args) ->
     (match Map.find_opt id.it s.gramid with
-    | None -> g
-    | Some g' ->
-      assert (args = []); g' (* We do not support higher-order substitutions yet *)
-    ).it
+    | None -> VarG (id, List.map (subst_arg s) args)
+    | Some g' -> assert (args = []); g'.it (* We do not support higher-order substitutions yet *)
+    )
   | NatG _ | TextG _ -> g.it
   | EpsG -> EpsG
   | SeqG gs -> SeqG (subst_nl_list subst_sym s gs)
@@ -180,13 +201,13 @@ and subst_arg s a =
   ref
   (match !(a.it) with
   | ExpA e -> ExpA (subst_exp s e)
-  | SynA t -> SynA (subst_typ s t)
+  | TypA t -> TypA (subst_typ s t)
   | GramA g -> GramA (subst_sym s g)
   ) $ a.at
 
 and subst_param s p =
   (match p.it with
   | ExpP (id, t) -> ExpP (id, subst_typ s t)
-  | SynP id -> SynP id
+  | TypP id -> TypP id
   | GramP (id, t) -> GramP (id, subst_typ s t)
   ) $ p.at

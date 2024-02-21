@@ -19,19 +19,27 @@ def $invsigned(N, i) = j        -- if $signed(N, j) = i
 
 ;; TODO
 
-def $unop(unop_numtype, numtype, c) : c_numtype*         hint(show %#_%#((%)))
-def $binop(binop_numtype, numtype, c, c) : c_numtype*    hint(show %#_%#(%, %))
-def $testop(testop_numtype, numtype, c) : c_numtype      hint(show %#_%#((%)))
-def $relop(relop_numtype, numtype, c, c) : c_numtype     hint(show %#_%#(%, %))
-def $cvtop(cvtop, numtype, numtype, sx?, c) : c_numtype* hint(show %#$_((%,%))^(%)#((%)))
+def $unop(numtype, unop_(numtype), num_(numtype)) : num_(numtype)*
+    hint(show %2#_%1#((%3)))
+def $binop(numtype, binop_(numtype), num_(numtype), num_(numtype)) : num_(numtype)*
+    hint(show %2#_%1#(%3, %4))
+def $testop(numtype, testop_(numtype), num_(numtype)) : num_(I32)
+    hint(show %2#_%1#((%3)))
+def $relop(numtype, relop_(numtype), num_(numtype), num_(numtype)) : num_(I32)
+    hint(show %2#_%1#(%3, %4))
+def $cvtop(numtype_1, numtype_2, cvtop, sx?, num_(numtype_1)) : num_(numtype_2)*
+    hint(show %3#$_((%1,%2))^(%4)#((%5)))
 
-def $wrap(nat, nat, c) : nat                             hint(show $wrap_((%,%))#((%)))
-def $ext(nat, nat, sx, c) : c_numtype                    hint(show $ext_((%,%))^(%)#((%)))
+def $wrap(M, N, iN(M)) : iN(N)                      hint(show $wrap_((%,%))#((%)))
+def $ext(M, N, sx, iN(M)) : iN(N)                   hint(show $ext_((%,%))^(%)#((%)))
 
-def $ibytes(N, iN(N)) : byte*         hint(show $bytes_(i#%,%))
-def $fbytes(N, fN(N)) : byte*         hint(show $bytes_(f#%,%))
-def $ntbytes(numtype, c) : byte*      hint(show $bytes_(%,%))
-def $vtbytes(vectype, c_vectype) : byte*   hint(show $bytes_(%,%))
+def $ibits(N, iN(N)) : bit*                         hint(show $bits_(i#%,%))
+def $fbits(N, fN(N)) : bit*                         hint(show $bits_(f#%,%))
+def $ibytes(N, iN(N)) : byte*                       hint(show $bytes_(i#%,%))
+def $fbytes(N, fN(N)) : byte*                       hint(show $bytes_(f#%,%))
+def $nbytes(numtype, num_(numtype)) : byte*         hint(show $bytes_(%,%))
+def $vbytes(vectype, vec_(vectype)) : byte*         hint(show $bytes_(%,%))
+
 
 def $invibytes(N, byte*) : iN(N)
 def $invfbytes(N, byte*) : fN(N)
@@ -39,38 +47,65 @@ def $invfbytes(N, byte*) : fN(N)
 def $invibytes(N, b*) = n  -- if $ibytes(N, n) = b*
 def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
-def $iadd(N, c, c) : c
-def $imul(N, c, c) : c
-def $ine(N, c, c) : c_numtype
-def $ilt(sx, N, c, c) : c_numtype
 
-def $lanes(shape, c_vectype) : c* hint(show $lanes_(%,%))
-def $narrow(N, N, sx, c) : c
-def $ibits(N, N) : c*
+def $iadd(N, iN(N), iN(N)) : iN(N)      hint(show $iadd_%(%,%))
+def $imul(N, iN(N), iN(N)) : iN(N)      hint(show $imul_%(%,%))
+def $ine(N, iN(N), iN(N)) : u32         hint(show $ine_%(%,%))
+def $ilt(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_%^(%)(%,%))
 
-def $unpacked(shape) : numtype
-def $unpacked(pt X lns) = I32
-def $unpacked(nt X lns) = nt
+def $narrow(M, N, sx, iN(M)) : iN(N)    hint(show $narrow_((%,%))^(%)#(%))
 
-def $dim(shape) : lanesize
-def $dim(lnt X lns) = lns
+
+;; Packed values
+
+def $packnum(lanetype, num_($unpack(lanetype))) : lane_(lanetype)
+    hint(show $pack_(%,%))
+def $packnum(numtype, c) = c
+def $packnum(packtype, c) = $wrap($size($unpack(packtype)), $psize(packtype), c)
+
+def $unpacknum(lanetype, lane_(lanetype)) : num_($unpack(lanetype))
+    hint(show $unpack_(%,%))
+def $unpacknum(numtype, c) = c
+def $unpacknum(packtype, c) = $ext($psize(packtype), $size($unpack(packtype)), U, c)
+
+
+;; Vectors
+
+def $lanes_(shape, vec_(V128)) : lane_($lanetype(shape))*
+    hint(show $lanes_(%,%))
+
+def $invlanes_(shape, lane_($lanetype(shape))*) : vec_(V128)
+    hint(show $lanes^(-1)#_%#(%,%))
+def $invlanes_(sh, c*) = vc  -- if c* = $lanes_(sh, vc)
 
 def $halfop(half, nat, nat) : nat
 def $halfop(LOW, i, j) = i
 def $halfop(HIGH, i, j) = j
 
-def $ishape(nat) : lanetype
-def $ishape(8) = I8
-def $ishape(16) = I16
-def $ishape(32) = I32
-def $ishape(64) = I64
+;; TODO: return lists for nondeterminism
+def $vvunop(vectype, vvunop, vec_(vectype)) : vec_(vectype)
+    hint(show %2#_%1#((%3)))
+def $vvbinop(vectype, vvbinop, vec_(vectype), vec_(vectype)) : vec_(vectype)
+    hint(show %2#_%1#(%3, %4))
+def $vvternop(vectype, vvternop, vec_(vectype), vec_(vectype), vec_(vectype)) : vec_(vectype)
+    hint(show %2#_%1#(%3, %4, %5))
 
-def $vvunop(unop_vvectype, vectype, c_vectype) : c_vectype                           hint(show %#_%#((%)))
-def $vvbinop(binop_vvectype, vectype, c_vectype, c_vectype) : c_vectype              hint(show %#_%#(%, %))
-def $vvternop(ternop_vvectype, vectype, c_vectype, c_vectype, c_vectype) : c_vectype hint(show %#_%#(%, %, %))
+;; TODO: rename these to mapunop etc?
+def $vunop(shape, vunop_(shape), vec_(V128)) : vec_(V128)
+    hint(show %2#_%1#((%3)))
+def $vbinop(shape, vbinop_(shape), vec_(V128), vec_(V128)) : vec_(V128)*
+    hint(show %2#_%1#(%3, %4))
+def $vrelop(shape, vrelop_(shape), vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %2#_%1#(%3, %4))
 
-def $vunop(unop_vectype, shape, c_vectype) : c_vectype                               hint(show %#_%#((%)))
-def $vbinop(binop_vectype, shape, c_vectype, c_vectype) : c_vectype*                 hint(show %#_%#(%, %))
-def $vrelop(relop_vectype, shape, c, c) : c_numtype                                  hint(show %#_%#(%, %))
-def $vishiftop(shiftop_vectype, lanetype, c, c) : c                                  hint(show %#_%#(%, %))
-def $vcvtop(cvtop_vectype, N, N, sx?, c) : c                                         hint(show %#$_((%,%))^(%)#((%)))
+def $vcvtop(shape_1, shape_2, vcvtop, sx?, lane_($lanetype(shape_1))) : lane_($lanetype(shape_2))
+    hint(show %3#$_((%1,%2))^(%5)#((%6)))
+
+def $vextunop(ishape_1, ishape_2, vextunop_(ishape_1, ishape_2), sx, vec_(V128)) : vec_(V128)
+    hint(show %3#$_((%1,%2))^(%5)#((%6)))
+def $vextbinop(ishape_1, ishape_2, vextbinop_(ishape_1, ishape_2), sx, vec_(V128), vec_(V128)) : vec_(V128)
+    hint(show %3#$_((%1,%2))^(%5)#((%6,%7)))
+
+;; TODO: refactor for consistency?
+def $vishiftop(ishape, vshiftop_(ishape), lane_($lanetype(ishape)), u32) : lane_($lanetype(ishape))
+    hint(show %2#_%1#(%3, %4))

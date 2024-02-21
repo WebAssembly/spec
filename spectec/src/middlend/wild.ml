@@ -20,7 +20,7 @@ open Il.Ast
 
 (* Errors *)
 
-let _error at msg = Source.error at "wild" msg
+let error at msg = Source.error at "wildcard elimination" msg
 
 (* Environment
 
@@ -49,7 +49,7 @@ let rec is_universal env exp : bool =
   match exp.it with
   | TupE es -> List.for_all (is_universal env) es
   | CaseE _ -> begin match exp.note.it with
-    | VarT i -> S.mem i.it env.unit_variants
+    | VarT (i, _) -> S.mem i.it env.unit_variants
     | _ -> false
   end
   | _ -> false
@@ -59,11 +59,6 @@ let is_universal_and_multi_value env exp : bool =
   | IterE (e, (Opt, [])) -> is_universal env e
   | _ -> false
 
-
-(* We pull out fresh variables and equating side conditions. *)
-
-type bind = (id * typ * iter list)
-type binds = bind list
 
 (* Fresh name generation *)
 
@@ -76,16 +71,22 @@ let fresh_id env : id =
 
 (* If a bind and premise is generated under an iteration, wrap them accordingly *)
 
-let under_iterexp (iter, vs) binds : iterexp * binds =
-   let new_vs = List.map (fun (v, _, _) -> v) binds in
+let under_iterexp (iter, vs) binds : iterexp * bind list =
+   let new_vs = List.map (fun bind ->
+     match bind.it with
+     | ExpB (v, _, _) -> v
+     | TypB _ -> error bind.at "unexpected type binding") binds in
    let iterexp' = (iter, vs @ new_vs) in
-   let binds' = List.map (fun (v, t, is) -> (v, t, is@[iter])) binds in
+   let binds' = List.map (fun bind ->
+     match bind.it with
+     | ExpB (v, t, is) -> ExpB (v, t, is@[iter]) $ bind.at
+     | TypB _ -> assert false) binds in
    iterexp', binds'
 
 (* Generic traversal helpers *)
 
-type 'a traversal = env -> 'a -> binds * 'a
-type ('a, 'b) traversal_k = env -> 'a -> ('a -> 'b) -> binds * 'b
+type 'a traversal = env -> 'a -> bind list * 'a
+type ('a, 'b) traversal_k = env -> 'a -> ('a -> 'b) -> bind list * 'b
 
 let phrase (t : 'a traversal) : ('a, 'b) note_phrase traversal
   = fun env x -> let binds, x' = t env x.it in binds, x' $$ x.at % x.note
@@ -116,7 +117,7 @@ let ternary (t1 : 'a traversal) (t2 : 'b traversal) (t3 : 'c traversal) : ('a * 
 (* Expr traversal *)
 
 
-let rec t_exp env e : binds * exp =
+let rec t_exp env e : bind list * exp =
   (* Descend first using t_exp2, and then see if we have to pull out the current expression *)
   let binds, e' = t_exp2 env e in
   if is_universal_and_multi_value env e'
@@ -124,7 +125,7 @@ let rec t_exp env e : binds * exp =
     let t = e.note in
     let x = fresh_id env in
     let xe = VarE x $$ no_region % t in
-    let bind = (x, t, []) in
+    let bind = ExpB (x, t, []) $ no_region in
     binds @ [bind], xe
   else binds, e'
 
@@ -137,7 +138,7 @@ and t_ee env x k = binary t_exp t_exp env x k
 and t_eee env x k = ternary t_exp t_exp t_exp env x k
 and t_epe env x k = ternary t_exp t_path t_exp env x k
 
-and t_exp' env e : binds * exp' =
+and t_exp' env e : bind list * exp' =
   match e with
   | VarE _ | BoolE _ | NatE _ | TextE _ | OptE None -> [], e
 
@@ -145,10 +146,11 @@ and t_exp' env e : binds * exp' =
   | DotE (exp, a) -> t_e env exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e env exp (fun exp' -> LenE exp')
   | MixE (mo, exp) -> t_e env exp (fun exp' -> MixE (mo, exp'))
-  | CallE (f, exp) ->t_e env exp (fun exp' -> CallE (f, exp'))
-  | OptE (Some exp) ->t_e env exp (fun exp' -> OptE (Some exp'))
-  | TheE exp ->t_e env exp (fun exp' -> TheE exp')
-  | CaseE (a, exp) ->t_e env exp (fun exp' -> CaseE (a, exp'))
+  | CallE (f, args) -> t_list t_arg env args (fun args' -> CallE (f, args'))
+  | ProjE (exp, i) -> t_e env exp (fun exp' -> ProjE (exp', i))
+  | OptE (Some exp) -> t_e env exp (fun exp' -> OptE (Some exp'))
+  | TheE exp -> t_e env exp (fun exp' -> TheE exp')
+  | CaseE (a, exp) -> t_e env exp (fun exp' -> CaseE (a, exp'))
   | SubE (exp, a, b) -> t_e env exp (fun exp' -> SubE (exp', a, b))
 
   | BinE (bo, exp1, exp2) -> t_ee env (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
@@ -190,9 +192,15 @@ and t_path' env path = match path with
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp env (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
   | DotP (path, a) -> unary t_path env path (fun path' -> DotP (path', a))
 
-let rec t_prem env : premise -> binds * premise = phrase t_prem' env
+and t_arg env = phrase t_arg' env
 
-and t_prem' env prem : binds * premise' =
+and t_arg' env arg = match arg with
+  | ExpA exp -> unary t_exp env exp (fun exp' -> ExpA exp')
+  | TypA _ -> [], arg
+
+let rec t_prem env : prem -> bind list * prem = phrase t_prem' env
+
+and t_prem' env prem : bind list * prem' =
   match prem with
   | RulePr (a, b, exp) ->
     unary t_exp env exp (fun exp' -> RulePr (a, b, exp'))
@@ -219,7 +227,7 @@ let t_rule env x = { x with it = t_rule' env x.it }
 let t_rules env = List.map (t_rule env)
 
 let rec t_def' env = function
-  | SynD (id, { it = VariantT []; _ }) as def ->
+  | TypD (id, _, [{ it = InstD (_, _, { it = VariantT []; _ }); _ }]) as def ->
     env.unit_variants <- S.add id.it env.unit_variants;
     def
   | RecD defs -> RecD (t_defs env defs)

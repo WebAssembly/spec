@@ -6,6 +6,7 @@
 include Fxx.Make
   (struct
     include Int32
+    let bitwidth = 32
     let mantissa = 23
     let pos_nan = 0x7fc0_0000l
     let neg_nan = 0xffc0_0000l

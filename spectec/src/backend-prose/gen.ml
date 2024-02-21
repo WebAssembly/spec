@@ -21,7 +21,7 @@ let transpile_expr =
   }
 
 let exp_to_expr e = translate_exp e |> transpile_expr
-let exp_to_args es = translate_args es |> List.map transpile_expr
+let exp_to_argexpr es = translate_argexp es |> List.map transpile_expr
 
 let rec if_expr_to_instrs e =
   let fail _ =
@@ -53,13 +53,13 @@ let rec prem_to_instrs prem = match prem.it with
   | Ast.IfPr e ->
     if_expr_to_instrs e
   | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_ok" id.it ->
-    ( match exp_to_args exp with
+    ( match exp_to_argexpr exp with
     | [c; e; t] -> [ MustValidI (c, e, Some t) ]
     | [c; e] -> [ MustValidI (c, e, None) ]
     | _ -> failwith "prem_to_instr: Invalid prem 1"
     )
   | Ast.RulePr (id, _, exp) when String.ends_with ~suffix:"_sub" id.it ->
-    ( match exp_to_args exp with
+    ( match exp_to_argexpr exp with
     | [t1; t2] -> [ MustMatchI (t1, t2) ]
     | _ -> print_endline "prem_to_instr: Invalid prem 2"; [ YetI "TODO: prem_to_instrs 2" ]
     )
@@ -76,7 +76,7 @@ let rec prem_to_instrs prem = match prem.it with
     [ YetI s ]
 
 type vrule_group =
-  string * (Ast.exp * Ast.exp * Ast.premise list * Ast.binds) list
+  string * (Ast.exp * Ast.exp * Ast.prem list * Ast.bind list) list
 
 (** Main translation for typing rules **)
 let vrule_group_to_prose ((_name, vrules): vrule_group) =

@@ -52,7 +52,7 @@ let subset x y = Set.subset x.varid y.varid
 type tag =
   | Condition
   | Assign of string list
-(* type row = tag * premise * int list *)
+(* type row = tag * prem * int list *)
 let unwrap (_, p, _) = p
 
 (* are all free variables in the premise known? *)
@@ -125,6 +125,7 @@ let rec index_of acc xs x = match xs with
   | h :: t -> if h = x then Some acc else index_of (acc + 1) t x
 
 let free_exp_list e = (free_exp false e).varid |> Set.elements
+let free_arg_list e = (free_arg false e).varid |> Set.elements
 
 let rec powset = function
 | [] -> [ [] ]
@@ -136,8 +137,7 @@ let singletons = List.map wrap
 
 let group_arg e _ =
   match e.it with
-  | CallE (_, { it = TupE args; _ }) -> List.map (fun arg -> free_exp_list arg) args
-  | CallE (_, arg) -> [ free_exp_list arg ]
+  | CallE (_, args) -> List.map free_arg_list args
   | _ -> failwith "Unreachable"
 
 let large_enough_subsets xs =
@@ -226,7 +226,7 @@ let rec pre_process prem = match prem.it with
       [[]; [Approx]; []],
       { it = TupE [dt; ct]; _ }
     ) ->
-      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, dt); note = ct.note } in
+      let expanded_dt = { dt with it = CallE ("expanddt" $ no_region, [ExpA dt $ no_region]); note = ct.note } in
       [ { prem with it = IfPr (CmpE (EqOp, expanded_dt, ct) $$ no_region % (BoolT $ no_region)) } ]
   (* Split -- if e1 /\ e2 *)
   | IfPr ( { it = BinE (AndOp, e1, e2); _ } ) ->
@@ -275,9 +275,9 @@ let animate_rule r = match r.it with
 
 (* Animate clause *)
 let animate_clause c = match c.it with
-  | DefD (binds, e1, e2, prems) ->
-    let new_prems = animate_prems (free_exp false e1) prems in
-    DefD (binds, e1, e2, new_prems) $ c.at
+  | DefD (binds, args, e, prems) ->
+    let new_prems = animate_prems (free_list (free_arg false) args) prems in
+    DefD (binds, args, e, new_prems) $ c.at
 
 (* Animate defs *)
 let rec animate_def d = match d.it with

@@ -27,11 +27,6 @@ let fail_on_path msg path =
     (structured_string_of_path path) (string_of_region path.at))
   |> failwith
 
-let check_i32_const = function
-  | CaseV ("CONST", [ CaseV ("I32", []); NumV (n) ]) ->
-    let n' = Z.logand (Z.of_int64 0xFFFF_FFFFL) n in
-    CaseV ("CONST", [ CaseV ("I32", []); NumV (n') ])
-  | v -> v
 
 let is_matrix matrix =
   match matrix with
@@ -287,7 +282,7 @@ and eval_expr env expr =
       | path :: rest -> access_path env base path |> replace rest |> replace_path env base path
       | [] -> eval_expr env e2 in
     eval_expr env e1 |> replace ps
-  | CaseE ((tag, _), el) -> caseV (tag, List.map (eval_expr env) el) |> check_i32_const
+  | CaseE ((tag, _), el) -> caseV (tag, List.map (eval_expr env) el)
   | OptE opt -> Option.map (eval_expr env) opt |> optV
   | TupE el -> List.map (eval_expr env) el |> tupV
   (* Context *)
@@ -369,15 +364,18 @@ and eval_expr env expr =
     | _ -> fail_on_expr "TODO: Currently, we are already validating tabletype and memtype" expr)
   | HasTypeE (e, s) ->
 
+    (* TODO: This shouldn't be hardcoded *)
+
     (* type definition *)
 
     let addr_refs = [
       "REF.I31_NUM"; "REF.STRUCT_ADDR"; "REF.ARRAY_ADDR";
       "REF.FUNC_ADDR"; "REF.HOST_ADDR"; "REF.EXTERN";
     ] in
-    let packed_types = [ "I8"; "I16" ] in
-    let num_types = [ "I32"; "I64"; "F32"; "F64" ] in
-    let vec_types = [ "V128"; ] in
+    let pnn_types = [ "I8"; "I16" ] in
+    let inn_types = [ "I32"; "I64" ] in
+    let fnn_types = [ "F32"; "F64" ] in
+    let vnn_types = [ "V128"; ] in
     let abs_heap_types = [
       "ANY"; "EQ"; "I31"; "STRUCT"; "ARRAY"; "NONE"; "FUNC";
       "NOFUNC"; "EXTERN"; "NOEXTERN"
@@ -393,10 +391,12 @@ and eval_expr env expr =
     | CaseV ("REF.NULL", _) ->
       boolV (s = "nul" || s = "ref" || s = "val")
     (* numtype *)
-    | CaseV (nt, []) when List.mem nt num_types ->
-      boolV (s = "numtype" || s = "valtype")
-    | CaseV (vt, []) when List.mem vt vec_types ->
-      boolV (s = "vectype" || s = "valtype")
+    | CaseV (nt, []) when List.mem nt inn_types ->
+      boolV (s = "inn" || s = "imm" || s = "numtype" || s = "valtype")
+    | CaseV (nt, []) when List.mem nt fnn_types ->
+      boolV (s = "fnn" || s = "numtype" || s = "valtype")
+    | CaseV (vt, []) when List.mem vt vnn_types ->
+      boolV (s = "vnn" || s = "vectype" || s = "valtype")
     (* valtype *)
     | CaseV ("REF", _) ->
       boolV (s = "reftype" || s = "valtype")
@@ -412,9 +412,9 @@ and eval_expr env expr =
     (* heaptype *)
     | CaseV ("REC", [ _ ]) ->
       boolV (s = "heaptype" || s = "typevar")
-    (* packedtype *)
-    | CaseV (pt, []) when List.mem pt packed_types ->
-      boolV (s = "packedtype" || s = "storagetype")
+    (* packtype *)
+    | CaseV (pt, []) when List.mem pt pnn_types ->
+      boolV (s = "pnn" || s = "imm" || s = "packtype" || s = "storagetype")
     | v ->
       fail_on_expr
         (sprintf "%s doesn't have type %s" (string_of_value v) s)
@@ -643,7 +643,7 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
       assert (eval_expr env tyE = ty);
       AlContext.update_env name v ctx
     | VarE name, v -> AlContext.update_env name v ctx
-    | CaseE (("VVCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VVCONST", [ ty; v ]) ->
+    | CaseE (("VCONST", _), [tyE; { it = VarE name; _ }]), CaseV ("VCONST", [ ty; v ]) ->
       assert (eval_expr env tyE = ty);
       AlContext.update_env name v ctx
     | (_, h) ->
@@ -725,7 +725,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
     ctx
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
-  | CaseV ("VVCONST", _) as v -> WasmContext.push_value v; ctx
+  | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
   | CaseV (name, []) when is_builtin name -> call_builtin name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
   | v ->

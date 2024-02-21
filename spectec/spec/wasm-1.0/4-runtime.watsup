@@ -22,7 +22,7 @@ var ma : memaddr
 ;; Basic values
 
 syntax val hint(desc "value") =
-  | CONST valtype c_valtype
+  | CONST valtype val_(valtype)   hint(show %.CONST %)
 
 syntax result hint(desc "result") =
   | _VALS val* | TRAP

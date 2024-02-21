@@ -16,7 +16,7 @@ open Il.Ast
 
 (* Errors *)
 
-let _error at msg = Source.error at "sideconditions" msg
+let error at msg = Source.error at "side condition" msg
 
 module Env = Map.Make(String)
 
@@ -47,7 +47,7 @@ let env_under_iter env ((_, vs) : iterexp) =
     if List.mem v vs' then (t, fst (Lib.List.split_last is)) else (t, is)
   ) env
 
-let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
+let iter_side_conditions env ((iter, vs) : iterexp) : prem list =
   (* let iter' = if iter = Opt then Opt else List in *)
   let ves = List.map (fun v ->
     let (t,is) = Env.find v.it env in
@@ -60,7 +60,7 @@ let iter_side_conditions env ((iter, vs) : iterexp) : premise list =
   | ListN (ne, _), es -> List.map (has_len ne) es
 
 (* Expr traversal *)
-let rec t_exp env e : premise list =
+let rec t_exp env e : prem list =
   (* First the conditions to be generated here *)
   begin match e.it with
   | IdxE (exp1, exp2) ->
@@ -78,7 +78,7 @@ let rec t_exp env e : premise list =
   | DotE (exp, _)
   | LenE exp
   | MixE (_, exp)
-  | CallE (_, exp)
+  | ProjE (exp, _)
   | OptE (Some exp)
   | TheE exp
   | CaseE (_, exp)
@@ -95,6 +95,8 @@ let rec t_exp env e : premise list =
   | UpdE (exp1, path, exp2)
   | ExtE (exp1, path, exp2)
   -> t_exp env exp1 @ t_path env path @ t_exp env exp2
+  | CallE (_, args)
+  -> List.concat_map (t_arg env) args
   | StrE fields
   -> List.concat_map (fun (_, e) -> t_exp env e) fields
   | TupE es | ListE es
@@ -116,6 +118,10 @@ and t_path env path = match path.it with
   | IdxP (path, e) -> t_path env path @ t_exp env e
   | SliceP (path, e1, e2) -> t_path env path @ t_exp env e1 @ t_exp env e2
   | DotP (path, _) -> t_path env path
+
+and t_arg env arg = match arg.it with
+  | ExpA exp -> t_exp env exp
+  | TypA _ -> []
 
 
 let rec t_prem env prem = match prem.it with
@@ -152,7 +158,11 @@ let reduce_prems prems = prems
 
 let t_rule' = function
   | RuleD (id, binds, mixop, exp, prems) ->
-    let env = List.fold_left (fun env (v, t, i) -> Env.add v.it (t, i) env) Env.empty binds in
+    let env = List.fold_left (fun env bind ->
+      match bind.it with
+      | ExpB (v, t, i) -> Env.add v.it (t, i) env
+      | TypB _ -> error bind.at "unexpected type argument in rule") Env.empty binds
+    in
     let extra_prems = t_prems env prems @ t_exp env exp in
     let prems' = reduce_prems (extra_prems @ prems) in
     RuleD (id, binds, mixop, exp, prems')

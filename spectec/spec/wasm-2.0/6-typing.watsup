@@ -257,16 +257,16 @@ rule Instr_ok/const:
   C |- CONST nt c_nt : eps -> nt
 
 rule Instr_ok/unop:
-  C |- UNOP nt unop : nt -> nt
+  C |- UNOP nt unop_nt : nt -> nt
 
 rule Instr_ok/binop:
-  C |- BINOP nt binop : nt nt -> nt
+  C |- BINOP nt binop_nt : nt nt -> nt
 
 rule Instr_ok/testop:
-  C |- TESTOP nt testop : nt -> I32
+  C |- TESTOP nt testop_nt : nt -> I32
 
 rule Instr_ok/relop:
-  C |- RELOP nt relop : nt nt -> I32
+  C |- RELOP nt relop_nt : nt nt -> I32
 
 
 rule Instr_ok/extend:
@@ -304,70 +304,72 @@ rule Instr_ok/ref.is_null:
 ;; Vector instructions
 
 rule Instr_ok/vvconst:
-  C |- VVCONST V128 c_vt : eps -> V128
+  C |- VCONST V128 c : eps -> V128
 
 rule Instr_ok/vvunop:
-  C |- VVUNOP vt vvunop : V128 -> V128
+  C |- VVUNOP V128 vvunop : V128 -> V128
 
 rule Instr_ok/vvbinop:
-  C |- VVBINOP vt vvbinop : V128 V128 -> V128
+  C |- VVBINOP V128 vvbinop : V128 V128 -> V128
 
 rule Instr_ok/vvternop:
-  C |- VVTERNOP vt vvternop : V128 V128 V128 -> V128
+  C |- VVTERNOP V128 vvternop : V128 V128 V128 -> V128
 
 rule Instr_ok/vvtestop:
-  C |- VVTESTOP vt vvtestop : V128 -> I32
+  C |- VVTESTOP V128 vvtestop : V128 -> I32
+
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
 
 rule Instr_ok/vswizzle:
   C |- VSWIZZLE sh : V128 V128 -> V128
 
 rule Instr_ok/vshuffle:
-  C |- VSHUFFLE sh laneidx* : V128 V128 -> V128
-  -- (if $(laneidx<$dim(sh) * 2))*
+  C |- VSHUFFLE (imm X N) i* : V128 V128 -> V128
+  -- (if $(i < N*2))*
 
 rule Instr_ok/vsplat:
-  C |- VSPLAT sh : $unpacked(sh) -> V128
+  C |- VSPLAT (lnn X N) : $unpack(lnn) -> V128
 
+;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE sh sx? laneidx : V128 -> $unpacked(sh)
-  -- if laneidx < $dim(sh)
+  C |- VEXTRACT_LANE (lnn X N) sx? i : V128 -> $unpack(lnn)
+  -- if i < N
 
 rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE sh laneidx : V128 $unpacked(sh) -> V128
-  -- if laneidx < $dim(sh)
+  C |- VREPLACE_LANE (lnn X N) i : V128 $unpack(lnn) -> V128
+  -- if i < N
 
 rule Instr_ok/vunop:
-  C |- VUNOP sh vunop : V128 -> V128
+  C |- VUNOP sh vunop_sh : V128 -> V128
 
 rule Instr_ok/vbinop:
-  C |- VBINOP sh vbinop : V128 V128 -> V128
-
-rule Instr_ok/vrelop:
-  C |- VRELOP sh vrelop : V128 V128 -> V128
-
-rule Instr_ok/vishiftop:
-  C |- VISHIFTOP sh vishiftop : V128 I32 -> V128
+  C |- VBINOP sh vbinop_sh : V128 V128 -> V128
 
 rule Instr_ok/vtestop:
-  C |- VALL_TRUE sh : V128 -> I32
+  C |- VTESTOP sh vtestop_sh : V128 -> I32
 
+rule Instr_ok/vrelop:
+  C |- VRELOP sh vrelop_sh : V128 V128 -> V128
+
+rule Instr_ok/vshiftop:
+  C |- VSHIFTOP sh vshiftop_sh : V128 I32 -> V128
+
+;; TODO: This rule (or the abstract syntax) is too liberal, since many of the combinations are illegal
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh sh sx : V128 V128 -> V128
 
+rule Instr_ok/vextunop:
+  C |- VEXTUNOP sh sh vextunop sx : V128 -> V128
+
+rule Instr_ok/vextbinop:
+  C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
+
 rule Instr_ok/vbitmask:
   C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vdot:
-  C |- VDOT sh sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextmul:
-  C |- VEXTMUL sh half sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextadd_pairwise:
-  C |- VEXTADD_PAIRWISE sh sh sx : V128 -> V128
 
 
 ;; Local instructions
@@ -475,25 +477,25 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE (M X N) sx) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[0] = mt
   -- if $(2^(n_A) <= M/8 * N)
 
 rule Instr_ok/vload-splat:
-  C |- VLOAD (SPLAT n) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SPLAT N) {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) <= n/8)
+  -- if $(2^(n_A) <= N/8)
 
 rule Instr_ok/vload-zero:
-  C |- VLOAD (ZERO n) {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (ZERO N) {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < n/8)
+  -- if $(2^(n_A) < N/8)
 
 rule Instr_ok/vload_lane:
-  C |- VLOAD_LANE n {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> V128
+  C |- VLOAD_LANE N {ALIGN n_A, OFFSET n_O} i : I32 V128 -> V128
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < n/8)
-  -- if $(laneidx < 128 / n)
+  -- if $(2^(n_A) < N/8)
+  -- if $(i < 128 / N)
 
 rule Instr_ok/vstore:
   C |- VSTORE {ALIGN n_A, OFFSET n_O} : I32 V128 -> eps
@@ -501,10 +503,10 @@ rule Instr_ok/vstore:
   -- if $(2^(n_A) <= $size(V128)/8)
 
 rule Instr_ok/vstore_lane:
-  C |- VSTORE_LANE n {ALIGN n_A, OFFSET n_O} laneidx : I32 V128 -> eps
+  C |- VSTORE_LANE N {ALIGN n_A, OFFSET n_O} i : I32 V128 -> eps
   -- if C.MEM[0] = mt
-  -- if $(2^(n_A) < n/8)
-  -- if $(laneidx < 128 / n)
+  -- if $(2^(n_A) < N/8)
+  -- if $(i < 128 / N)
 
 
 ;;
@@ -518,8 +520,8 @@ relation Expr_ok_const: context |- expr : valtype CONST  hint(show "TC-expr")
 rule Instr_const/const:
   C |- (CONST nt c) CONST
 
-rule Instr_const/vvconst:
-  C |- (VVCONST vt c_vt) CONST
+rule Instr_const/vconst:
+  C |- (VCONST vt vc) CONST
 
 rule Instr_const/ref.null:
   C |- (REF.NULL rt) CONST

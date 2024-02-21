@@ -31,11 +31,6 @@ let rec eq_iter iter1 iter2 =
 (* Types *)
 
 and eq_typ t1 t2 =
-  (*
-  Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
-  *)
   match t1.it, t2.it with
   | VarT (id1, args1), VarT (id2, args2) ->
     id1.it = id2.it && eq_list eq_arg args1 args2
@@ -122,6 +117,7 @@ and eq_path p1 p2 =
 
 and eq_prem prem1 prem2 =
   match prem1.it, prem2.it with
+  | VarPr (id1, t1), VarPr (id2, t2) -> id1.it = id2.it && eq_typ t1 t2
   | RulePr (id1, e1), RulePr (id2, e2) -> id1.it = id2.it && eq_exp e1 e2
   | IfPr e1, IfPr e2 -> eq_exp e1 e2
   | IterPr (prem11, iter1), IterPr (prem21, iter2) ->
@@ -152,13 +148,13 @@ and eq_sym g1 g2 =
 and eq_arg a1 a2 =
   match !(a1.it), !(a2.it) with
   | ExpA e1, ExpA e2 -> eq_exp e1 e2
-  | SynA t1, SynA t2 -> eq_typ t1 t2
+  | TypA t1, TypA t2 -> eq_typ t1 t2
   | GramA g1, GramA g2 -> eq_sym g1 g2
   | _, _ -> false
 
 and eq_param p1 p2 =
   match p1.it, p2.it with
   | ExpP (id1, t1), ExpP (id2, t2) -> id1.it = id2.it && eq_typ t1 t2
-  | SynP id1, SynP id2 -> id1.it = id2.it
+  | TypP id1, TypP id2 -> id1.it = id2.it
   | GramP (id1, t1), GramP (id2, t2) -> id1.it = id2.it && eq_typ t1 t2
   | _, _ -> false

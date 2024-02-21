@@ -9,7 +9,7 @@ open Il.Ast
 include Il.Free
 
 let empty =
-  {synid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
+  {typid = Set.empty; relid = Set.empty; varid = Set.empty; defid = Set.empty}
 let free_varid id = {empty with varid = Set.singleton id.it}
 
 let rec free_exp ignore_listN e =
@@ -17,11 +17,12 @@ let rec free_exp ignore_listN e =
   let fp = free_path ignore_listN in
   let fef = free_expfield ignore_listN in
   let fi = free_iterexp ignore_listN in
+  let fa = free_arg ignore_listN in
   match e.it with
   | VarE id -> free_varid id
   | BoolE _ | NatE _ | TextE _ -> empty
   | UnE (_, e1) | LenE e1 | TheE e1 | MixE (_, e1) | SubE (e1, _, _)
-  | CallE (_, e1) | DotE (e1, _) | CaseE (_, e1) ->
+  | DotE (e1, _) | CaseE (_, e1) | ProjE (e1, _) ->
     f e1
   | BinE (_, e1, e2) | CmpE (_, e1, e2) | IdxE (e1, e2) | CompE (e1, e2) | CatE (e1, e2) ->
     free_list f [e1; e2]
@@ -31,12 +32,19 @@ let rec free_exp ignore_listN e =
   | UpdE (e1, p, e2) | ExtE (e1, p, e2) ->
     union (free_list f [e1; e2]) (fp p)
   | StrE efs -> free_list fef efs
+  | CallE (_, args) -> free_list fa args
   | IterE (e1, iter) ->
     let free1 = f e1 in
     let bound, free2 = fi iter in
     diff (union free1 free2) bound
 
 and free_expfield ignore_listN (_, e) = free_exp ignore_listN e
+
+and free_arg ignore_listN arg =
+  let f = free_exp ignore_listN in
+  match arg.it with
+  | ExpA e -> f e
+  | TypA _ -> empty
 
 and free_path ignore_listN p =
   let f = free_exp ignore_listN in

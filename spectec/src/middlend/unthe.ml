@@ -15,12 +15,11 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "unthe" msg
+let error at msg = Source.error at "option projection" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 
-type bind = (id * typ * iter list)
-type eqn = (bind * premise)
+type eqn = bind * prem
 type eqns = eqn list
 
 (* Fresh name generation *)
@@ -41,13 +40,18 @@ let update_iterexp_vars (sets : Il.Free.sets) ((iter, vs) : iterexp) : iterexp =
 (* If a bind and premise is generated under an iteration, wrap them accordingly *)
 
 let under_iterexp (iter, vs) eqns : iterexp * eqns =
-   let new_vs = List.map (fun ((v, _, _), _) -> v) eqns in
+   let new_vs = List.map (fun (bind, _) ->
+     match bind.it with
+     | ExpB (v, _, _) -> v
+     | TypB _ -> error bind.at "unexpected type binding") eqns in
    let iterexp' = (iter, vs @ new_vs) in
-   let eqns' = List.map (fun ((v, t, is), pr) ->
-     let pr_iterexp = update_iterexp_vars (Il.Free.free_prem pr) (iter, vs @ new_vs) in
-     let pr' = IterPr (pr, pr_iterexp) $ no_region in
-     ((v, t, is@[iter]), pr')
-   ) eqns in
+   let eqns' = List.map (fun (bind, pr) ->
+     match bind.it with
+     | ExpB (v, t, is) ->
+       let pr_iterexp = update_iterexp_vars (Il.Free.free_prem pr) (iter, vs @ new_vs) in
+       let pr' = IterPr (pr, pr_iterexp) $ no_region in
+       (ExpB (v, t, is@[iter]) $ bind.at, pr')
+     | TypB _ -> error bind.at "unexpected type binding") eqns in
    iterexp', eqns'
 
 
@@ -96,7 +100,7 @@ let rec t_exp n e : eqns * exp =
     in
     let x = fresh_id n in
     let xe = VarE x $$ no_region % t in
-    let bind = (x, t, []) in
+    let bind = ExpB (x, t, []) $ no_region in
     let prem = IfPr (
       CmpE (EqOp, exp, OptE (Some xe) $$ no_region % ot) $$ no_region % (BoolT $ no_region)
     ) $ no_region in
@@ -120,10 +124,11 @@ and t_exp' n e : eqns * exp' =
   | DotE (exp, a) -> t_e n exp (fun exp' -> DotE (exp', a))
   | LenE exp -> t_e n exp (fun exp' -> LenE exp')
   | MixE (mo, exp) -> t_e n exp (fun exp' -> MixE (mo, exp'))
-  | CallE (f, exp) ->t_e n exp (fun exp' -> CallE (f, exp'))
-  | OptE (Some exp) ->t_e n exp (fun exp' -> OptE (Some exp'))
-  | TheE exp ->t_e n exp (fun exp' -> TheE exp')
-  | CaseE (a, exp) ->t_e n exp (fun exp' -> CaseE (a, exp'))
+  | CallE (f, args) -> t_list t_arg n args (fun args' -> CallE (f, args'))
+  | ProjE (exp, i) -> t_e n exp (fun exp' -> ProjE (exp', i))
+  | OptE (Some exp) -> t_e n exp (fun exp' -> OptE (Some exp'))
+  | TheE exp -> t_e n exp (fun exp' -> TheE exp')
+  | CaseE (a, exp) -> t_e n exp (fun exp' -> CaseE (a, exp'))
   | SubE (exp, a, b) -> t_e n exp (fun exp' -> SubE (exp', a, b))
 
   | BinE (bo, exp1, exp2) -> t_ee n (exp1, exp2) (fun (e1', e2') -> BinE (bo, e1', e2'))
@@ -166,9 +171,15 @@ and t_path' n path = match path with
   | SliceP (path, e1, e2) -> ternary t_path t_exp t_exp n (path, e1, e2) (fun (path', e1', e2') -> SliceP (path', e1', e2'))
   | DotP (path, a) -> unary t_path n path (fun path' -> DotP (path', a))
 
-let rec t_prem n : premise -> eqns * premise = phrase t_prem' n
+and t_arg n = phrase t_arg' n
 
-and t_prem' n prem : eqns * premise' =
+and t_arg' n arg = match arg with
+  | ExpA exp -> unary t_exp n exp (fun exp' -> ExpA exp')
+  | TypA _ -> [], arg
+
+let rec t_prem n : prem -> eqns * prem = phrase t_prem' n
+
+and t_prem' n prem : eqns * prem' =
   match prem with
   | RulePr (a, b, exp) ->
     unary t_exp n exp (fun exp' -> RulePr (a, b, exp'))

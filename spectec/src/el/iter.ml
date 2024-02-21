@@ -5,7 +5,7 @@ open Ast
 module type Arg =
 sig
   val visit_atom : atom -> unit
-  val visit_synid : id -> unit
+  val visit_typid : id -> unit
   val visit_gramid : id -> unit
   val visit_relid : id -> unit
   val visit_ruleid : id -> unit
@@ -15,7 +15,7 @@ sig
   val visit_typ : typ -> unit
   val visit_exp : exp -> unit
   val visit_path : path -> unit
-  val visit_prem : premise -> unit
+  val visit_prem : prem -> unit
   val visit_sym : sym -> unit
   val visit_def : def -> unit
 
@@ -25,7 +25,7 @@ end
 module Skip =
 struct
   let visit_atom _ = ()
-  let visit_synid _ = ()
+  let visit_typid _ = ()
   let visit_gramid _ = ()
   let visit_relid _ = ()
   let visit_ruleid _ = ()
@@ -61,7 +61,7 @@ let nat _n = ()
 let text _s = ()
 
 let atom at = visit_atom at
-let synid x = visit_synid x
+let typid x = visit_typid x
 let gramid x = visit_gramid x
 let relid x = visit_relid x
 let ruleid x = visit_ruleid x
@@ -93,7 +93,7 @@ and numtyp _t = ()
 and typ t =
   visit_typ t;
   match t.it with
-  | VarT (x, as_) -> synid x; args as_
+  | VarT (x, as_) -> typid x; args as_
   | BoolT | TextT -> ()
   | NumT nt -> numtyp nt
   | ParenT t1 -> typ t1
@@ -158,6 +158,7 @@ and path p =
 and prem pr =
   visit_prem pr;
   match pr.it with
+  | VarPr (x, t) -> varid x; typ t
   | RulePr (x, e) -> relid x; exp e
   | IfPr e -> exp e
   | ElsePr -> ()
@@ -197,13 +198,13 @@ and gram gr =
 and arg a =
   match !(a.it) with
   | ExpA e -> exp e
-  | SynA t -> typ t
+  | TypA t -> typ t
   | GramA g -> sym g
 
 and param p =
   match p.it with
   | ExpP (x, t) -> varid x; typ t
-  | SynP x -> synid x
+  | TypP x -> typid x
   | GramP (x, t) -> gramid x; typ t
 
 and args as_ = list arg as_
@@ -212,7 +213,7 @@ and params ps = list param ps
 let hintdef d =
   match d.it with
   | AtomH (x, hs) -> varid x; hints hs
-  | SynH (x1, x2, hs) -> synid x1; ruleid x2; hints hs
+  | TypH (x1, x2, hs) -> typid x1; ruleid x2; hints hs
   | GramH (x1, x2, hs) -> gramid x1; ruleid x2; hints hs
   | RelH (x, hs) -> relid x; hints hs
   | VarH (x, hs) -> varid x; hints hs
@@ -221,8 +222,9 @@ let hintdef d =
 let def d =
   visit_def d;
   match d.it with
-  | SynD (x1, x2, ps, t, hs) -> synid x1; ruleid x2; params ps; typ t; hints hs
-  | GramD (x1, x2, ps, t, gr, hs) -> synid x1; ruleid x2; params ps; typ t; gram gr; hints hs
+  | FamD (x, ps, hs) -> typid x; params ps; hints hs
+  | TypD (x1, x2, as_, t, hs) -> typid x1; ruleid x2; args as_; typ t; hints hs
+  | GramD (x1, x2, ps, t, gr, hs) -> typid x1; ruleid x2; params ps; typ t; gram gr; hints hs
   | VarD (x, t, hs) -> varid x; typ t; hints hs
   | SepD -> ()
   | RelD (x, t, hs) -> relid x; typ t; hints hs

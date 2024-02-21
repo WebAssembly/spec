@@ -12,6 +12,9 @@ let eq_opt eq_x xo1 xo2 =
 let eq_list eq_x xs1 xs2 =
   List.length xs1 = List.length xs2 && List.for_all2 eq_x xs1 xs2
 
+let eq_pair eq_x eq_y (x1, y1) (x2, y2) =
+  eq_x x1 x2 && eq_y y1 y2
+
 
 (* Ids *)
 
@@ -32,15 +35,10 @@ let rec eq_iter iter1 iter2 =
 (* Types *)
 
 and eq_typ t1 t2 =
-  (*
-  Printf.printf "[eq] (%s) == (%s)  eq=%b\n%!"
-    (Print.string_of_typ t1) (Print.string_of_typ t2)
-    (t1.it = t2.it);
-  *)
   t1.it = t2.it ||
   match t1.it, t2.it with
-  | VarT id1, VarT id2 -> eq_id id1 id2
-  | TupT ts1, TupT ts2 -> eq_list eq_typ ts1 ts2
+  | VarT (id1, as1), VarT (id2, as2) -> eq_id id1 id2 && eq_list eq_arg as1 as2
+  | TupT xts1, TupT xts2 -> eq_list (eq_pair eq_id eq_typ) xts1 xts2
   | IterT (t11, iter1), IterT (t21, iter2) ->
     eq_typ t11 t21 && eq_iter iter1 iter2
   | _, _ -> t1.it = t2.it
@@ -84,10 +82,11 @@ and eq_exp e1 e2 =
   | StrE efs1, StrE efs2 -> eq_list eq_expfield efs1 efs2
   | DotE (e11, atom1), DotE (e21, atom2) -> eq_exp e11 e21 && atom1 = atom2
   | MixE (op1, e1), MixE (op2, e2) -> op1 = op2 && eq_exp e1 e2
-  | CallE (id1, e1), CallE (id2, e2) -> eq_id id1 id2 && eq_exp e1 e2
+  | CallE (id1, as1), CallE (id2, as2) -> eq_id id1 id2 && eq_list eq_arg as1 as2
   | IterE (e11, iter1), IterE (e21, iter2) ->
     eq_exp e11 e21 && eq_iterexp iter1 iter2
   | OptE eo1, OptE eo2 -> eq_opt eq_exp eo1 eo2
+  | ProjE (e1, i1), ProjE (e2, i2) -> eq_exp e1 e2 && i1 = i2
   | TheE e1, TheE e2 -> eq_exp e1 e2
   | CaseE (atom1, e1), CaseE (atom2, e2) -> atom1 = atom2 && eq_exp e1 e2
   | SubE (e1, t11, t12), SubE (e2, t21, t22) ->
@@ -121,3 +120,12 @@ and eq_prem prem1 prem2 =
   | IterPr (prem1, e1), IterPr (prem2, e2) ->
     eq_prem prem1 prem2 && eq_iterexp e1 e2
   | _, _ -> prem1.it = prem2.it
+
+
+(* Definitions *)
+
+and eq_arg a1 a2 =
+  match a1.it, a2.it with
+  | ExpA e1, ExpA e2 -> eq_exp e1 e2
+  | TypA t1, TypA t2 -> eq_typ t1 t2
+  | _, _ -> false

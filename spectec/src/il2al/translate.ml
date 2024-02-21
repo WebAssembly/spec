@@ -84,7 +84,7 @@ let disjoint xs ys = List.for_all (fun x -> not (List.mem x ys)) xs
 let kwd name note = name, Il.Print.string_of_typ note
 let wrap typ e = e $$ no_region % typ
 
-let top = Il.VarT ("TOP" $ no_region) $ no_region
+let top = Il.VarT ("TOP" $ no_region, []) $ no_region
 let hole = Il.TextE "_" |> wrap top
 
 
@@ -112,7 +112,7 @@ and translate_exp exp =
   | Il.CatE (exp1, exp2) -> catE (translate_exp exp1, translate_exp exp2) ~at:at
   (* Variable *)
   | Il.VarE id -> varE id.it ~at:at
-  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT t; _ }, _) -> subE (id.it, t.it) ~at:at
+  | Il.SubE ({ it = Il.VarE id; _}, { it = VarT (t, _); _ }, _) -> subE (id.it, t.it) ~at:at
   | Il.SubE (inner_exp, _, _) -> translate_exp inner_exp
   | Il.IterE (inner_exp, (iter, ids)) ->
     let names = List.map (fun id -> id.it) ids in
@@ -177,11 +177,11 @@ and translate_exp exp =
     in
     binE (compare_op, lhs, rhs) ~at:at
   (* CaseE *)
-  | Il.CaseE (Il.Atom cons, arg) -> caseE (kwd cons exp.note, translate_args arg) ~at:at
+  | Il.CaseE (Il.Atom cons, argexp) -> caseE (kwd cons exp.note, translate_argexp argexp) ~at:at
   (* Tuple *)
   | Il.TupE exps -> tupE (List.map translate_exp exps) ~at:at
   (* Call *)
-  | Il.CallE (id, inner_exp) -> callE (id.it, translate_args inner_exp) ~at:at
+  | Il.CallE (id, args) -> callE (id.it, translate_args args) ~at:at
   (* Record expression *)
   | Il.StrE expfields ->
     let f acc = function
@@ -210,7 +210,7 @@ and translate_exp exp =
     | [ []; [ Il.Arrow ]; [ Il.Star ]; [] ], [ e1; e2; e3 ] -> (* HARDCODE *)
       infixE (translate_exp e1, "->", catE (translate_exp e2, translate_exp e3)) ~at:at
     (* Constructor *)
-    (* TODO: Need a better way to convert these CaseE into ConsturctE *)
+    (* TODO: Need a better way to convert these CaseE into ConstructE *)
     | [ [ Il.Atom "FUNC" ]; []; [ Il.Star ]; [] ], _ ->
       caseE (("FUNC", "func"), List.map translate_exp exps) ~at:at
     | [ [ Il.Atom "OK" ] ], [] ->
@@ -252,10 +252,16 @@ and translate_exp exp =
   | _ -> yetE (Il.Print.string_of_exp exp) ~at:at
 
 (* `Il.exp` -> `expr list` *)
-and translate_args exp =
+and translate_argexp exp =
   match exp.it with
   | Il.TupE el -> List.map translate_exp el
   | _ -> [ translate_exp exp ]
+
+(* `Il.arg list` -> `expr list` *)
+and translate_args args = List.concat_map ( fun arg ->
+  match arg.it with
+  | Il.ExpA el -> [ translate_exp el ]
+  | Il.TypA _ -> [] ) args
 
 (* `Il.path` -> `path list` *)
 and translate_path path =
@@ -326,7 +332,7 @@ let rec translate_rhs exp =
   | Il.CaseE (Atom id, _) when List.mem id [
       (* TODO: Consider automating this *)
       "CONST";
-      "VVCONST";
+      "VCONST";
       "REF.I31_NUM";
       "REF.STRUCT_ADDR";
       "REF.ARRAY_ADDR";
@@ -375,8 +381,8 @@ let rec translate_rhs exp =
       ]
     )
   (* Execute instr *)
-  | Il.CaseE (Atom id, ae) ->
-    [ executeI (caseE (kwd id exp.note, translate_args ae)) ~at:at ]
+  | Il.CaseE (Atom atomid, argexp) ->
+      [ executeI (caseE (kwd atomid exp.note, translate_argexp argexp)) ~at:at ]
   | Il.MixE
     ( [ []; [ Il.Semicolon ]; [ Il.Star ] ],
       (* z' ; instr'* *)
@@ -552,7 +558,7 @@ and translate_letpr lhs rhs ids cont =
 (* HARDCODE: Translate each RulePr manually based on their names *)
 let translate_rulepr id exp =
   let at = id.at in
-  match id.it, translate_args exp with
+  match id.it, translate_argexp exp with
   | "Eval_expr", [z; lhs; _; rhs] ->
     [
       (* TODO: not pushing store without store remover transpiler *)
@@ -658,12 +664,8 @@ let translate_helper partial_funcs def =
   | Il.DecD (id, _, _, clauses) when List.length clauses > 0 ->
     let name = id.it in
     let unified_clauses = Il2il.unify_defs clauses in
-    let Il.DefD (_, params, _, _) = List.hd unified_clauses |> it in
-    let params' =
-      match params.it with
-      | Il.TupE exps -> List.map translate_exp exps
-      | _ -> [ translate_exp params ]
-    in
+    let Il.DefD (_, args, _, _) = List.hd unified_clauses |> it in
+    let params' = translate_args args in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       blocks

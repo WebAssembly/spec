@@ -46,6 +46,13 @@ let as_alt_sym sym =
   | _ -> [Elem sym]
 
 
+(* Identifiers *)
+
+let check_varid_bind id =
+  if id.it = (El.Convert.strip_var_suffix id).it then id else
+    Source.error id.at "syntax" "invalid identifer suffix in binding position"
+
+
 (* Parentheses Role etc *)
 
 type prec = Op | Seq | Post | Prim
@@ -94,8 +101,8 @@ let is_post_exp e =
 %token IN ARROW ARROW2 DARROW2 SQARROW SQARROWSTAR PREC SUCC TURNSTILE TILESTURN
 %token DOLLAR TICK
 %token BOT TOP
-%token HOLE MULTIHOLE SKIP MULTISKIP FUSE
-%token<int> HOLEN SKIPN
+%token HOLE MULTIHOLE NOTHING FUSE
+%token<int> HOLEN
 %token BOOL NAT INT RAT REAL TEXT
 %token SYNTAX GRAMMAR RELATION RULE VAR DEF
 %token IF OTHERWISE HINT_LPAREN
@@ -222,12 +229,14 @@ atom_ :
   | TOP { Top }
   | INFINITY { Infinity }
 
-varid_bind :
+varid_bind_with_suffix :
   | varid { $1 }
   | atomid_ { Atom.make_var $1; $1 $ $sloc }
+varid_bind :
+  | varid_bind_with_suffix { check_varid_bind $1 }
 varid_bind_lparen :
-  | varid_lparen { $1 }
-  | atomid_lparen { Atom.make_var $1; $1 $ $sloc }
+  | varid_lparen { check_varid_bind $1 }
+  | atomid_lparen { Atom.make_var $1; check_varid_bind ($1 $ $sloc) }
 
 enter_scope :
   | (* empty *) { Atom.enter_scope () }
@@ -309,7 +318,7 @@ iter :
 
 (* Types *)
 
-typ_prim : typ_prim_ { $1 $ $sloc }
+(*typ_prim : typ_prim_ { $1 $ $sloc }*)
 typ_prim_ :
   | varid { VarT ($1, []) }
   | varid_lparen comma_list(arg) RPAREN { VarT ($1, $2) }
@@ -360,7 +369,7 @@ deftyp_ :
 
 (*nottyp_prim : nottyp_prim_ { $1 $ $sloc }*)
 nottyp_prim_ :
-  | typ_prim { $1.it }
+  | typ_prim_ { $1 }
   | atom { AtomT $1 }
   | atomid_lparen nottyp RPAREN
     { SeqT [
@@ -405,10 +414,10 @@ nottyp_rel_ :
 nottyp : nottyp_rel { $1 }
 
 fieldtyp :
-  | fieldid typ_post hint* premise_bin_list { ($1, ($2, $4), $3) }
+  | fieldid typ_post hint* prem_bin_list { ($1, ($2, $4), $3) }
 
 casetyp :
-  | nottyp hint* premise_list { $1, $3, $2 }
+  | nottyp hint* prem_list { $1, $3, $2 }
 
 %inline enumtyp(X) :
   | X { ($1, None) }
@@ -446,12 +455,10 @@ exp_call_ :
   | DOLLAR defid_lparen comma_list(arg) RPAREN { CallE ($2, $3) }
 
 exp_hole_ :
-  | HOLEN { HoleE (`Use, `Num $1) }
-  | HOLE { HoleE (`Use, `Next) }
-  | MULTIHOLE { HoleE (`Use, `Rest) }
-  | SKIPN { HoleE (`Skip, `Num $1) }
-  | SKIP { HoleE (`Skip, `Next) }
-  | MULTISKIP { HoleE (`Skip, `Rest) }
+  | HOLEN { HoleE (`Num $1) }
+  | HOLE { HoleE `Next }
+  | MULTIHOLE { HoleE `Rest }
+  | NOTHING { HoleE `None }
 
 (*exp_prim : exp_prim_ { $1 $ $sloc }*)
 exp_prim_ :
@@ -590,24 +597,24 @@ path_ :
 
 (* Premises *)
 
-premise_list :
-  | nl_dash_list(premise) { $1 }
+prem_list :
+  | enter_scope nl_dash_list(prem) exit_scope { $2 }
 
-premise_bin_list :
-  | nl_dash_list(premise_bin) { $1 }
+prem_bin_list :
+  | enter_scope nl_dash_list(prem_bin) exit_scope { $2 }
 
-(*premise_post : premise_post_ { $1 $ $sloc }*)
-premise_post_ :
+(*prem_post : prem_post_ { $1 $ $sloc }*)
+prem_post_ :
   | OTHERWISE { ElsePr }
-  | LPAREN premise RPAREN iter*
+  | LPAREN prem RPAREN iter*
     { let rec iters prem = function
         | [] -> prem
         | iter::iters' -> iters (IterPr (prem, iter) $ $sloc) iters'
       in (iters $2 $4).it }
 
-premise_bin : premise_bin_ { $1 $ $sloc }
-premise_bin_ :
-  | premise_post_ { $1 }
+prem_bin : prem_bin_ { $1 $ $sloc }
+prem_bin_ :
+  | prem_post_ { $1 }
   | relid COLON exp_bin { RulePr ($1, $3) }
   | IF exp_bin
     { let rec iters e =
@@ -616,10 +623,11 @@ premise_bin_ :
         | _ -> IfPr e
       in iters $2 }
 
-premise : premise_ { $1 $ $sloc }
-premise_ :
-  | premise_post_ { $1 }
+prem : prem_ { $1 $ $sloc }
+prem_ :
+  | prem_post_ { $1 }
   | relid COLON exp { RulePr ($1, $3) }
+  | VAR varid_bind_with_suffix COLON typ { VarPr ($2, $4) }
   | IF exp
     { let rec iters e =
         match e.it with
@@ -670,7 +678,7 @@ sym : sym_alt { $1 }
 
 prod : prod_ { $1 $ $sloc }
 prod_ :
-  | sym ARROW2 exp premise_list { ($1, $3, $4) }
+  | sym ARROW2 exp prem_list { ($1, $3, $4) }
 
 gram :
   | dots_list(prod) { $1 $ $sloc }
@@ -681,25 +689,31 @@ gram :
 arg : arg_ { ref $1 $ $sloc }
 arg_ :
   | exp_bin { ExpA $1 }
-  | SYNTAX typ { SynA $2 }
+  | SYNTAX typ { TypA $2 }
+  | SYNTAX atomid_ { Atom.make_var $2; TypA (VarT ($2 $ $loc($2), []) $ $loc($2)) }
   | GRAMMAR sym { GramA $2 }
 
 param : param_ { $1 $ $sloc }
 param_ :
-  | varid_bind COLON typ { ExpP ($1, $3) }
-  | typ { ExpP ("" $ $sloc, $1) }
-  | SYNTAX varid_bind { SynP $2 }
+  | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
+  | typ
+    { let id =
+        try El.Convert.varid_of_typ $1 with Source.Error _ -> "" $ $sloc
+      in ExpP (id, $1) }
+  | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }
 
 
 def : def_ { $1 $ $sloc }
 def_ :
+  | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* exit_scope
+    { FamD ($2, List.map El.Convert.param_of_arg $4, $7) }
   | SYNTAX varid_bind ruleid_list hint* EQ deftyp
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      SynD ($2, id $ $loc($3), [], $6, $4) }
-  | SYNTAX varid_bind_lparen enter_scope comma_list(param) RPAREN ruleid_list hint* EQ deftyp exit_scope
+      TypD ($2, id $ $loc($3), [], $6, $4) }
+  | SYNTAX varid_bind_lparen enter_scope comma_list(arg) RPAREN ruleid_list hint* EQ deftyp exit_scope
     { let id = if $6 = "" then "" else String.sub $6 1 (String.length $6 - 1) in
-      SynD ($2, id $ $loc($6), $4, $9, $7) }
+      TypD ($2, id $ $loc($6), $4, $9, $7) }
   | GRAMMAR varid_bind ruleid_list COLON typ hint* EQ gram
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       GramD ($2, id $ $loc($3), [], $5, $8, $6) }
@@ -708,24 +722,24 @@ def_ :
       GramD ($2, id $ $loc($6), $4, $8, $11, $9) }
   | RELATION relid COLON nottyp hint*
     { RelD ($2, $4, $5) }
-  | RULE relid ruleid_list COLON exp premise_list
+  | RULE relid ruleid_list COLON exp prem_list
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
       RuleD ($2, id $ $loc($3), $5, $6) }
   | VAR varid_bind COLON typ hint*
     { VarD ($2, $4, $5) }
   | DEF DOLLAR defid COLON typ hint*
     { DecD ($3, [], $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN COLON typ hint*
-    { DecD ($3, List.map El.Convert.param_of_arg $4, $7, $8) }
-  | DEF DOLLAR defid EQ exp premise_list
+  | DEF DOLLAR defid_lparen enter_scope comma_list(arg) RPAREN COLON typ hint* exit_scope
+    { DecD ($3, List.map El.Convert.param_of_arg $5, $8, $9) }
+  | DEF DOLLAR defid EQ exp prem_list
     { DefD ($3, [], $5, $6) }
-  | DEF DOLLAR defid_lparen comma_list(arg) RPAREN EQ exp premise_list
-    { DefD ($3, $4, $7, $8) }
+  | DEF DOLLAR defid_lparen enter_scope comma_list(arg) RPAREN EQ exp prem_list exit_scope
+    { DefD ($3, $5, $8, $9) }
   | NL_NL_NL
     { SepD }
   | SYNTAX varid_bind ruleid_list hint*
     { let id = if $3 = "" then "" else String.sub $3 1 (String.length $3 - 1) in
-      HintD (SynH ($2, id $ $loc($3), $4) $ $sloc) }
+      HintD (TypH ($2, id $ $loc($3), $4) $ $sloc) }
   | SYNTAX varid_bind ruleid_list atomid hint*
     { HintD (AtomH ($4 $ $loc($4), $5) $ $sloc) }
   | GRAMMAR varid_bind ruleid_list hint*
@@ -733,7 +747,7 @@ def_ :
       HintD (GramH ($2, id $ $loc($3), $4) $ $sloc) }
   | RELATION relid hint*
     { HintD (RelH ($2, $3) $ $sloc) }
-  | VAR varid hint*
+  | VAR varid_bind hint*
     { HintD (VarH ($2, $3) $ $sloc) }
   | DEF DOLLAR defid hint*
     { HintD (DecH ($3, $4) $ $sloc) }

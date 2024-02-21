@@ -109,7 +109,7 @@ rule Instrtype_ok:
 syntax oktypeidx hint(show OK#((typeidx)))    = | OK typeidx      hint(show OK#(%))
 syntax oktypeidxnat hint(show OK#(typeidx,n)) = | OK typeidx nat  hint(show OK#(%, %))
 
-relation Packedtype_ok: context |- packedtype : OK    hint(show "K-packed")
+relation Packtype_ok: context |- packtype : OK        hint(show "K-pack")
 relation Fieldtype_ok: context |- fieldtype : OK      hint(show "K-field")
 relation Storagetype_ok: context |- storagetype : OK  hint(show "K-storage")
 relation Comptype_ok: context |- comptype : OK        hint(show "K-comp")
@@ -125,16 +125,16 @@ relation Comptype_sub: context |- comptype <: comptype  hint(show "S-comp")
 relation Deftype_sub: context |- deftype <: deftype     hint(show "S-def")
 
 
-rule Packedtype_ok:
-  C |- packedtype : OK
+rule Packtype_ok:
+  C |- packtype : OK
 
 rule Storagetype_ok/val:
   C |- valtype : OK
   -- Valtype_ok: C |- valtype : OK
 
-rule Storagetype_ok/packed:
-  C |- packedtype : OK
-  -- Packedtype_ok: C |- packedtype : OK
+rule Storagetype_ok/pack:
+  C |- packtype : OK
+  -- Packtype_ok: C |- packtype : OK
 
 rule Fieldtype_ok:
   C |- mut zt : OK
@@ -388,24 +388,24 @@ rule Instrtype_sub:
 
 ;; Type definitions
 
-relation Packedtype_sub: context |- packedtype <: packedtype         hint(show "S-packed")
+relation Packtype_sub: context |- packtype <: packtype               hint(show "S-pack")
 relation Storagetype_sub: context |- storagetype <: storagetype      hint(show "S-storage")
 relation Fieldtype_sub: context |- fieldtype <: fieldtype            hint(show "S-field")
 ;;relation Comptype_sub: context |- comptype <: comptype             hint(show "S-comp")
 relation Functype_sub: context |- functype <: functype               hint(show "S-func")
 ;;relation Deftype_sub: context |- deftype <: deftype                hint(show "S-def")
 
-rule Packedtype_sub:
-  C |- packedtype <: packedtype
+rule Packtype_sub:
+  C |- packtype <: packtype
 
 
 rule Storagetype_sub/val:
   C |- valtype_1 <: valtype_2
   -- Valtype_sub: C |- valtype_1 <: valtype_2
 
-rule Storagetype_sub/packed:
-  C |- packedtype_1 <: packedtype_2
-  -- Packedtype_sub: C |- packedtype_1 <: packedtype_2
+rule Storagetype_sub/pack:
+  C |- packtype_1 <: packtype_2
+  -- Packtype_sub: C |- packtype_1 <: packtype_2
 
 
 rule Fieldtype_sub/const:
@@ -681,16 +681,16 @@ rule Instr_ok/const:
   C |- CONST nt c_nt : eps -> nt
 
 rule Instr_ok/unop:
-  C |- UNOP nt unop : nt -> nt
+  C |- UNOP nt unop_nt : nt -> nt
 
 rule Instr_ok/binop:
-  C |- BINOP nt binop : nt nt -> nt
+  C |- BINOP nt binop_nt : nt nt -> nt
 
 rule Instr_ok/testop:
-  C |- TESTOP nt testop : nt -> I32
+  C |- TESTOP nt testop_nt : nt -> I32
 
 rule Instr_ok/relop:
-  C |- RELOP nt relop : nt nt -> I32
+  C |- RELOP nt relop_nt : nt nt -> I32
 
 
 rule Instr_ok/extend:
@@ -758,22 +758,22 @@ rule Instr_ok/i31.get:
 ;; Structure instructions
 
 rule Instr_ok/struct.new:
-  C |- STRUCT.NEW x : $unpacktype(zt)* -> (REF $idx(x))
+  C |- STRUCT.NEW x : $unpack(zt)* -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
 
 rule Instr_ok/struct.new_default:
-  C |- STRUCT.NEW_DEFAULT x : $unpacktype(zt)* -> (REF $idx(x))
+  C |- STRUCT.NEW_DEFAULT x : $unpack(zt)* -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ STRUCT (mut zt)*
-  -- if ($default($unpacktype(zt)) = val)*
+  -- if ($default($unpack(zt)) = val)*
 
 rule Instr_ok/struct.get:
-  C |- STRUCT.GET sx? x i : (REF NULL $idx(x)) -> $unpacktype(zt)
+  C |- STRUCT.GET sx? x i : (REF NULL $idx(x)) -> $unpack(zt)
   -- Expand: C.TYPE[x] ~~ STRUCT yt*
   -- if yt*[i] = mut zt
-  -- if sx? = eps <=> zt = $unpacktype(zt)
+  -- if sx? = eps <=> zt = $unpack(zt)
 
 rule Instr_ok/struct.set:
-  C |- STRUCT.SET x i : (REF NULL $idx(x)) $unpacktype(zt) -> eps
+  C |- STRUCT.SET x i : (REF NULL $idx(x)) $unpack(zt) -> eps
   -- Expand: C.TYPE[x] ~~ STRUCT yt*
   -- if yt*[i] = MUT zt
 
@@ -781,16 +781,16 @@ rule Instr_ok/struct.set:
 ;; Array instructions
 
 rule Instr_ok/array.new:
-  C |- ARRAY.NEW x : $unpacktype(zt) I32 -> (REF $idx(x))
+  C |- ARRAY.NEW x : $unpack(zt) I32 -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
 
 rule Instr_ok/array.new_default:
   C |- ARRAY.NEW_DEFAULT x : I32 -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
-  -- if $default($unpacktype(zt)) = val
+  -- if $default($unpack(zt)) = val
 
 rule Instr_ok/array.new_fixed:
-  C |- ARRAY.NEW_FIXED x n : $unpacktype(zt) -> (REF $idx(x))
+  C |- ARRAY.NEW_FIXED x n : $unpack(zt) -> (REF $idx(x))
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
 
 rule Instr_ok/array.new_elem:
@@ -805,12 +805,12 @@ rule Instr_ok/array.new_data:
   -- if C.DATA[y] = OK
 
 rule Instr_ok/array.get:
-  C |- ARRAY.GET sx? x : (REF NULL $idx(x)) I32 -> $unpacktype(zt)
+  C |- ARRAY.GET sx? x : (REF NULL $idx(x)) I32 -> $unpack(zt)
   -- Expand: C.TYPE[x] ~~ ARRAY (mut zt)
-  -- if sx? = eps <=> zt = $unpacktype(zt)
+  -- if sx? = eps <=> zt = $unpack(zt)
 
 rule Instr_ok/array.set:
-  C |- ARRAY.SET x : (REF NULL $idx(x)) I32 $unpacktype(zt) -> eps
+  C |- ARRAY.SET x : (REF NULL $idx(x)) I32 $unpack(zt) -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.len:
@@ -818,7 +818,7 @@ rule Instr_ok/array.len:
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.fill:
-  C |- ARRAY.FILL x : (REF NULL $idx(x)) I32 $unpacktype(zt) I32 -> eps
+  C |- ARRAY.FILL x : (REF NULL $idx(x)) I32 $unpack(zt) I32 -> eps
   -- Expand: C.TYPE[x] ~~ ARRAY (MUT zt)
 
 rule Instr_ok/array.copy:
@@ -850,71 +850,73 @@ rule Instr_ok/any.convert_extern:
 
 ;; Vector instructions
 
-rule Instr_ok/vvconst:
-  C |- VVCONST V128 c_vt : eps -> V128
+rule Instr_ok/vconst:
+  C |- VCONST V128 c : eps -> V128
 
 rule Instr_ok/vvunop:
-  C |- VVUNOP vt vvunop : V128 -> V128
+  C |- VVUNOP V128 vvunop : V128 -> V128
 
 rule Instr_ok/vvbinop:
-  C |- VVBINOP vt vvbinop : V128 V128 -> V128
+  C |- VVBINOP V128 vvbinop : V128 V128 -> V128
 
 rule Instr_ok/vvternop:
-  C |- VVTERNOP vt vvternop : V128 V128 V128 -> V128
+  C |- VVTERNOP V128 vvternop : V128 V128 V128 -> V128
 
 rule Instr_ok/vvtestop:
-  C |- VVTESTOP vt vvtestop : V128 -> I32
+  C |- VVTESTOP V128 vvtestop : V128 -> I32
+
+rule Instr_ok/vbitmask:
+  C |- VBITMASK sh : V128 -> I32
 
 rule Instr_ok/vswizzle:
   C |- VSWIZZLE sh : V128 V128 -> V128
 
 rule Instr_ok/vshuffle:
-  C |- VSHUFFLE sh laneidx* : V128 V128 -> V128
-  -- (if $(laneidx<$dim(sh) * 2))*
+  C |- VSHUFFLE (imm X N) i* : V128 V128 -> V128
+  -- (if $(i < N*2))*
 
 rule Instr_ok/vsplat:
-  C |- VSPLAT sh : $unpacked(sh) -> V128
+  C |- VSPLAT (lnn X N) : $lunpack(lnn) -> V128
 
+;; TODO: This rule (or the abstract syntax) is too liberal, since some combinations are illegal
 rule Instr_ok/vextract_lane:
-  C |- VEXTRACT_LANE sh sx? laneidx : V128 -> $unpacked(sh)
-  -- if laneidx < $dim(sh)
+  C |- VEXTRACT_LANE (lnn X N) sx? i : V128 -> $lunpack(lnn)
+  -- if i < N
 
 rule Instr_ok/vreplace_lane:
-  C |- VREPLACE_LANE sh laneidx : V128 $unpacked(sh) -> V128
-  -- if laneidx < $dim(sh)
+  C |- VREPLACE_LANE (lnn X N) i : V128 $lunpack(lnn) -> V128
+  -- if i < N
 
 rule Instr_ok/vunop:
-  C |- VUNOP sh vunop : V128 -> V128
+  C |- VUNOP sh vunop_sh : V128 -> V128
 
 rule Instr_ok/vbinop:
-  C |- VBINOP sh vbinop : V128 V128 -> V128
-
-rule Instr_ok/vrelop:
-  C |- VRELOP sh vrelop : V128 V128 -> V128
-
-rule Instr_ok/vishiftop:
-  C |- VISHIFTOP sh vishiftop : V128 I32 -> V128
+  C |- VBINOP sh vbinop_sh : V128 V128 -> V128
 
 rule Instr_ok/vtestop:
-  C |- VALL_TRUE sh : V128 -> I32
+  C |- VTESTOP sh vtestop_sh : V128 -> I32
 
+rule Instr_ok/vrelop:
+  C |- VRELOP sh vrelop_sh : V128 V128 -> V128
+
+rule Instr_ok/vshiftop:
+  C |- VSHIFTOP sh vshiftop_sh : V128 I32 -> V128
+
+;; TODO: This rule (or the abstract syntax) is too liberal, since many of the combinations are illegal
 rule Instr_ok/vcvtop:
   C |- VCVTOP sh vcvtop hf? sh sx? zero : V128 -> V128
 
 rule Instr_ok/vnarrow:
   C |- VNARROW sh sh sx : V128 V128 -> V128
 
+rule Instr_ok/vextunop:
+  C |- VEXTUNOP sh sh vextunop sx : V128 -> V128
+
+rule Instr_ok/vextbinop:
+  C |- VEXTBINOP sh sh vextbinop sx : V128 V128 -> V128
+
 rule Instr_ok/vbitmask:
   C |- VBITMASK sh : V128 -> I32
-
-rule Instr_ok/vdot:
-  C |- VDOT sh sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextmul:
-  C |- VEXTMUL sh half sh sx : V128 V128 -> V128
-
-rule Instr_ok/vextadd_pairwise:
-  C |- VEXTADD_PAIRWISE sh sh sx : V128 -> V128
 
 
 ;; Local instructions
@@ -1025,7 +1027,7 @@ rule Instr_ok/store:
   -- if n? = eps \/ nt = inn
 
 rule Instr_ok/vload:
-  C |- VLOAD (SHAPE (M X N) sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
+  C |- VLOAD (SHAPE M X N sx) x {ALIGN n_A, OFFSET n_O} : I32 -> V128
   -- if C.MEM[x] = mt
   -- if $(2^(n_A) <= M/8 * N)
 
@@ -1068,7 +1070,7 @@ rule Instr_const/const:
   C |- (CONST nt c) CONST
 
 rule Instr_const/vvconst:
-  C |- (VVCONST vt c_vt) CONST
+  C |- (VCONST vt c_vt) CONST
 
 rule Instr_const/ref.null:
   C |- (REF.NULL ht) CONST
@@ -1085,14 +1087,14 @@ def $in_numtype(numtype, numtype*) : bool    hint(show % <- %)
 def $in_numtype(nt, epsilon) = false
 def $in_numtype(nt, nt_1 nt'*) = nt = nt_1 \/ $in_numtype(nt, nt'*)
 
-def $in_binop(binop_numtype, ibinop*) : bool  hint(show % <- %)
-def $in_binop(binop, epsilon) = false
-def $in_binop(binop, ibinop_1 ibinop'*) = binop = _I ibinop_1 \/ $in_binop(binop, ibinop'*)
+def $in_binop(numtype, binop_(numtype), binop_(numtype)*) : bool  hint(show %2 <- %3)
+def $in_binop(nt, binop, epsilon) = false
+def $in_binop(nt, binop, (ibinop_1) ibinop'*) = binop = ibinop_1 \/ $in_binop(nt, binop, ibinop'*)
 
 rule Instr_const/binop:
-  C |- (BINOP nt binop) CONST
-  -- if $in_numtype(nt, I32 I64)
-  -- if $in_binop(binop, ADD SUB MUL)
+  C |- (BINOP inn binop) CONST
+  -- if $in_numtype(inn, I32 I64)
+  -- if $in_binop(inn, binop, ADD SUB MUL)
 
 
 rule Expr_const: C |- instr* CONST

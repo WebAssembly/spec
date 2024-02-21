@@ -8,6 +8,7 @@ def $concat_bytes((byte*)*) : byte*  hint(show $concat(%))
 def $concat_bytes(eps) = eps
 def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 
+
 ;;
 ;; Auxiliary Definitions on Types
 ;;
@@ -16,20 +17,41 @@ def $concat_bytes((b*) (b'*)*) = b* $concat_bytes((b'*)*)
 
 ;; def |I n| = |F n| = |V n| = n        ;; ????
 
-def $size(valtype) : nat  hint(partial) hint(show |%|)
+;;def $size(valtype) : nat      hint(partial) hint(show |%|)
+;;def $psize(packtype) : nat    hint(show |%|)
+;;def $lsize(lanetype) : nat    hint(show |%|)
+
 def $size(I32) = 32
 def $size(I64) = 64
 def $size(F32) = 32
 def $size(F64) = 64
 def $size(V128) = 128
 
-def $packedsize(packedtype) : nat  hint(show |%|)
-def $packedsize(I8) = 8
-def $packedsize(I16) = 16
+def $psize(I8) = 8
+def $psize(I16) = 16
 
-def $lanesize(lanetype) : nat  hint(show |%|)
-def $lanesize(numtype) = $size(numtype)
-def $lanesize(packedtype) = $packedsize(packedtype)
+def $lsize(numtype) = $size(numtype)
+def $lsize(packtype) = $psize(packtype)
+
+
+;; Unpacking
+
+def $unpack(lanetype) : numtype
+def $unpack(numtype) = numtype
+def $unpack(packtype) = I32
+
+
+;; Shapes
+
+;;def $lanetype(shape) : lanetype
+def $lanetype(lnn X N) = lnn
+
+;;def $dim(shape) : nat
+def $dim(lnn X N) = N
+
+;;def $shsize(shape) : nat
+def $shsize(lnn X N) = $($lsize(lnn) * N)
+
 
 ;;
 ;; Auxiliary definitions on Indices

@@ -31,15 +31,15 @@ var aa : arrayaddr
 ;; Basic values
 
 syntax num hint(desc "number") =
-  | CONST numtype c_numtype        hint(show %.CONST %)
+  | CONST numtype num_(numtype)          hint(show %.CONST %)
 syntax vec hint(desc "vector") =
-  | VVCONST vectype c_vectype      hint(show %.CONST %)
+  | VCONST vectype vec_(vectype)         hint(show %.CONST %)
 syntax addrref hint(desc "address reference") =
-  | REF.I31_NUM u31                hint(show REF.I31 %)
-  | REF.STRUCT_ADDR structaddr     hint(show REF.STRUCT %)
-  | REF.ARRAY_ADDR arrayaddr       hint(show REF.ARRAY %)
-  | REF.FUNC_ADDR funcaddr         hint(show REF.FUNC %)
-  | REF.HOST_ADDR hostaddr         hint(show REF.HOST %)
+  | REF.I31_NUM u31                      hint(show REF.I31 %)
+  | REF.STRUCT_ADDR structaddr           hint(show REF.STRUCT %)
+  | REF.ARRAY_ADDR arrayaddr             hint(show REF.ARRAY %)
+  | REF.FUNC_ADDR funcaddr               hint(show REF.FUNC %)
+  | REF.HOST_ADDR hostaddr               hint(show REF.HOST %)
   | REF.EXTERN addrref
 syntax ref hint(desc "reference") =
   | addrref
@@ -69,8 +69,6 @@ var xv : externval
 
 ;; Instances
 
-syntax c_packedtype = nat  ;; TODO
-
 syntax funcinst hint(desc "function instance") =
   { TYPE deftype,
     MODULE moduleinst,
@@ -93,10 +91,10 @@ syntax exportinst hint(desc "export instance") =
   { NAME name,
     VALUE externval }
 
-syntax packedval hint(desc "packed value") =
-  | PACK packedtype c_packedtype     hint(show %.PACK %)
+syntax packval hint(desc "packed value") =
+  | PACK packtype pack_(packtype)    hint(show %.PACK %)
 syntax fieldval hint(desc "field value") =
-  | val | packedval
+  | val | packval
 syntax structinst hint(desc "structure instance") =
   { TYPE deftype,
     FIELD fieldval* }
@@ -126,7 +124,7 @@ var xi : exportinst
 var si : structinst
 var ai : arrayinst
 var fv : fieldval
-var pv : packedval
+var pv : packval
 
 
 ;; Configurations proper
