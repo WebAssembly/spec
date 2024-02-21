@@ -331,6 +331,18 @@ document](https://github.com/WebAssembly/design/blob/master/BinaryEncoding.md).
 
 The type `exnref` is represented by the type opcode `-0x17`.
 
+When combined with the [GC proposal](https://github.com/WebAssembly/gc/blob/main/proposals/gc/MVP.md),
+there also is a value type `nullexnref` with opcode `-0x0c`.
+Furthermore, these opcodes also function as heap type,
+i.e., `exn` is a new heap type with opcode `-0x17`,
+and `noexn` is a new heap type with opcode `-0x0c`;
+`exnref` and `nullexnref` are shorthands for `(ref null exn)` and `(ref null noexn)`, respectively.
+
+The heap type `noexn` is a subtype of `exn`.
+They are not in a subtype relation with any other type (except bottom),
+such that they form a new disjoint hierarchy of heap types.
+
+
 ##### tag_type
 
 We reserve a bit to denote the exception attribute:
