@@ -4798,7 +4798,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
@@ -9624,7 +9624,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
@@ -14487,7 +14487,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
@@ -19350,7 +19350,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
@@ -24369,7 +24369,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
@@ -29466,7 +29466,7 @@ syntax castop = (nul, nul)
 ;; A-binary.watsup:305.1-305.34
 syntax memidxop = (memidx, memop)
 
-;; A-binary.watsup:659.1-659.29
+;; A-binary.watsup:961.1-961.29
 syntax code = (local*, expr)
 
 ;; C-conventions.watsup:7.1-7.15
