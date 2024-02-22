@@ -47,6 +47,30 @@ let inverse_of_signed =
       )
   }
 
+let sat : numerics =
+  {
+    name = "sat";
+    f =
+      (function
+      | [ NumV z; CaseV ("U", []); NumV i ] ->
+        if Z.(gt i (shift_left one (Z.to_int z) |> pred)) then
+          NumV Z.(shift_left one (Z.to_int z) |> pred)
+        else if Z.(lt i zero) then
+          NumV Z.zero
+        else
+          NumV i
+      | [ NumV z; CaseV ("S", []); NumV i ] ->
+        let n = Z.to_int z - 1 in
+        if Z.(lt i (shift_left one n |> neg)) then
+          inverse_of_signed.f [ NumV z; NumV Z.(shift_left one n |> neg) ]
+        else if Z.(gt i (shift_left one n |> pred)) then
+          inverse_of_signed.f [ NumV z; NumV Z.(shift_left one n |> pred) ]
+        else
+          NumV i
+      | v -> fail_list "Invalid idiv" v
+      );
+  }
+
 let iadd : numerics =
   {
     name = "iadd";
@@ -123,7 +147,7 @@ let inot : numerics =
     name = "inot";
     f =
       (function
-      | [ NumV _; NumV m ] -> Z.(lognot m) |> al_of_z
+      | [ NumV z; NumV m ] -> Z.(logand (lognot m) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid inot" v
       );
   }
@@ -132,7 +156,7 @@ let iand : numerics =
     name = "iand";
     f =
       (function
-      | [ NumV _; NumV m; NumV n ] -> Z.(logand m n) |> al_of_z
+      | [ NumV z; NumV m; NumV n ] -> Z.(logand (logand m n) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid imul" v
       );
   }
@@ -141,7 +165,7 @@ let iandnot : numerics =
     name = "iandnot";
     f =
       (function
-      | [ NumV _; NumV m; NumV n ] -> Z.(logand m n |> lognot) |> al_of_z
+      | [ NumV z; NumV m; NumV n ] -> Z.(logand (logand m n |> lognot) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid iandnot" v
       );
   }
@@ -150,7 +174,7 @@ let ior : numerics =
     name = "ior";
     f =
       (function
-      | [ NumV _; NumV m; NumV n ] -> Z.(logor m n) |> al_of_z
+      | [ NumV z; NumV m; NumV n ] -> Z.(logand (logor m n) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid ior" v
       );
   }
@@ -159,7 +183,7 @@ let ixor : numerics =
     name = "ixor";
     f =
       (function
-      | [ NumV _; NumV m; NumV n ] -> Z.(logxor m n) |> al_of_z
+      | [ NumV z; NumV m; NumV n ] -> Z.(logand (logxor m n) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid ixor" v
       );
   }
@@ -339,6 +363,16 @@ let ige : numerics =
       | v -> fail_list "Invalid ige" v
       );
   }
+let ibitselect : numerics =
+  {
+    name = "ibitselect";
+    f =
+      (function
+      | [ NumV _ as z; NumV _ as i1; NumV _ as i2; NumV _ as i3 ] ->
+        ior.f [ z; iand.f [ z; i1; i3 ]; iand.f [ z; i2; inot.f [ z; i3 ]]]
+      | v -> fail_list "Invalid ibitselect" v
+      );
+  }
 let iabs : numerics =
   {
     name = "iabs";
@@ -353,7 +387,7 @@ let ineg : numerics =
     name = "iabs";
     f =
       (function
-      | [ NumV _; NumV m ] -> Z.neg m |> al_of_z
+      | [ NumV z; NumV m ] -> Z.(logand (neg m) (maskN z)) |> al_of_z
       | v -> fail_list "Invalid ineg" v
       );
   }
@@ -377,7 +411,42 @@ let imax : numerics =
       | v -> fail_list "Invalid imax" v
       );
   }
-
+let iaddsat : numerics =
+  {
+    name = "iaddsat";
+    f =
+      (function
+      | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(add m n)]
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
+        let m = signed.f [ z; NumV m ] |> al_to_z in
+        let n = signed.f [ z; NumV n ] |> al_to_z in
+        sat.f [ z; nullary "S"; NumV Z.(add m n)]
+      | v -> fail_list "Invalid iaddsat" v
+      );
+  }
+let isubsat : numerics =
+  {
+    name = "isubsat";
+    f =
+      (function
+      | [ NumV _ as z; CaseV ("U", []); NumV m; NumV n ] -> sat.f [ z; nullary "U"; NumV Z.(sub m n)]
+      | [ NumV _ as z; CaseV ("S", []); NumV m; NumV n ] ->
+        let m = signed.f [ z; NumV m ] |> al_to_z in
+        let n = signed.f [ z; NumV n ] |> al_to_z in
+        sat.f [ z; nullary "S"; NumV Z.(sub m n)]
+      | v -> fail_list "Invalid isubsat" v
+      );
+  }
+let iq15mulrsat_s : numerics =
+  {
+    name = "iq15mulrsat_s";
+    f =
+      (function
+      | [ NumV _ as z; NumV m; NumV n ] ->
+        sat.f [ z; ishr.f [ z; NumV Z.(mul m n + (shift_left one 14)); al_of_int 15 ]]
+      | v -> fail_list "Invalid iq15mulrsat_s" v
+      );
+  }
 
 let ext : numerics =
   {
@@ -956,6 +1025,7 @@ let numerics_list : numerics list = [
   inverse_of_concat;
   signed;
   inverse_of_signed;
+  sat;
   iadd;
   isub;
   imul;
@@ -980,10 +1050,14 @@ let numerics_list : numerics list = [
   igt;
   ile;
   ige;
+  ibitselect;
   iabs;
   ineg;
   imin;
   imax;
+  iaddsat;
+  isubsat;
+  iq15mulrsat_s;
   ext;
   wrap;
   vrelop;
