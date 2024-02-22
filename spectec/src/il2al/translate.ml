@@ -665,7 +665,12 @@ let translate_helper partial_funcs def =
     let name = id.it in
     let unified_clauses = Il2il.unify_defs clauses in
     let Il.DefD (_, args, _, _) = List.hd unified_clauses |> it in
-    let params' = translate_args args in
+    let params =
+      args
+      |> translate_args
+      |> List.map
+        Walk.(walk_expr { default_config with pre_expr = Transpile.remove_sub })
+    in
     let blocks = List.map (translate_helper_body name) unified_clauses in
     let body =
       blocks
@@ -673,7 +678,7 @@ let translate_helper partial_funcs def =
       |> Transpile.enhance_readability
       |> if List.mem id partial_funcs then Fun.id else Transpile.ensure_return in
 
-    Some (FuncA (name, params', body))
+    Some (FuncA (name, params, body))
   | _ -> None
 
 
@@ -920,13 +925,19 @@ and translate_rgroup (instr_name, rgroup) =
         get_params winstr |> List.map translate_exp
     | Some params -> params
   in
+  (* TODO: refactor transpiles *)
+  let al_params' =
+    List.map
+      Walk.(walk_expr { default_config with pre_expr = Transpile.remove_sub })
+      al_params
+  in
   let body =
     state_instr @ instrs
     |> insert_nop
     |> Transpile.enhance_readability
     |> Transpile.infer_assert
   in
-  RuleA (kwd, al_params, body)
+  RuleA (kwd, al_params', body)
 
 
 let rule_to_tup rule =
