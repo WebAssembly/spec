@@ -475,7 +475,7 @@ let render_atom env atom =
     | BigOr -> "\\bigvee"
     | LParen -> if macros then "\\lparen" else "("
     | RParen -> if macros then "\\rparen" else ")"
-    | LBrack -> if macros then "\\lbrack" else "["
+    | LBrack -> if macros then "\\lbrack" else "{}["
     | RBrack -> if macros then "\\rbrack" else "]"
     | LBrace -> if macros then "\\lbrace" else "\\{"
     | RBrace -> if macros then "\\rbrace" else "\\}"
@@ -618,16 +618,16 @@ and render_exp env e =
       render_exps "," env (as_tup_exp e2) ^ "}" ^
       (if es = [] then "" else "\\," ^ render_exp env (SeqE es $ e.at))
   | SeqE es -> render_exps "~" env es
-  | IdxE (e1, e2) -> render_exp env e1 ^ "[" ^ render_exp env e2 ^ "]"
+  | IdxE (e1, e2) -> render_exp env e1 ^ "{}[" ^ render_exp env e2 ^ "]"
   | SliceE (e1, e2, e3) ->
     render_exp env e1 ^
-      "[" ^ render_exp env e2 ^ " : " ^ render_exp env e3 ^ "]"
+      "{}[" ^ render_exp env e2 ^ " : " ^ render_exp env e3 ^ "]"
   | UpdE (e1, p, e2) ->
     render_exp env e1 ^
-      "[" ^ render_path env p ^ " = " ^ render_exp env e2 ^ "]"
+      "{}[" ^ render_path env p ^ " = " ^ render_exp env e2 ^ "]"
   | ExtE (e1, p, e2) ->
     render_exp env e1 ^
-      "[" ^ render_path env p ^ " = .." ^ render_exp env e2 ^ "]"
+      "{}[" ^ render_path env p ^ " = .." ^ render_exp env e2 ^ "]"
   | StrE efs ->
     "\\{ " ^
     "\\begin{array}[t]{@{}l@{}}\n" ^
@@ -676,9 +676,9 @@ and render_expfield env (atom, e) =
 and render_path env p =
   match p.it with
   | RootP -> ""
-  | IdxP (p1, e) -> render_path env p1 ^ "[" ^ render_exp env e ^ "]"
+  | IdxP (p1, e) -> render_path env p1 ^ "{}[" ^ render_exp env e ^ "]"
   | SliceP (p1, e1, e2) ->
-    render_path env p1 ^ "[" ^ render_exp env e1 ^ " : " ^ render_exp env e2 ^ "]"
+    render_path env p1 ^ "{}[" ^ render_exp env e1 ^ " : " ^ render_exp env e2 ^ "]"
   | DotP ({it = RootP; _}, atom) -> render_fieldname env atom p.at
   | DotP (p1, atom) ->
     render_path env p1 ^ "." ^ render_fieldname env atom p.at

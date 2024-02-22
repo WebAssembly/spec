@@ -64,7 +64,7 @@ $$
 
 $$
 \begin{array}{@{}lrrl@{}l@{}}
-\mbox{(limits)} & {\mathit{limits}} &::=& [{\mathit{u{\scriptstyle32}}} .. {\mathit{u{\scriptstyle32}}}] \\[0.8ex]
+\mbox{(limits)} & {\mathit{limits}} &::=& {}[{\mathit{u{\scriptstyle32}}} .. {\mathit{u{\scriptstyle32}}}] \\[0.8ex]
 \mbox{(global type)} & {\mathit{globaltype}} &::=& {\mathit{mut}}~{\mathit{valtype}} \\
 \mbox{(function type)} & {\mathit{functype}} &::=& {\mathit{resulttype}} \rightarrow {\mathit{resulttype}} \\
 \mbox{(table type)} & {\mathit{tabletype}} &::=& {\mathit{limits}}~{\mathit{reftype}} \\
@@ -145,9 +145,9 @@ $$
 }
 \qquad
 \frac{
-(({\mathit{C}}.\mathsf{local}[{\mathit{x}}_{{1}}] = {\mathit{init}}~{\mathit{t}}))^\ast
+(({\mathit{C}}.\mathsf{local}{}[{\mathit{x}}_{{1}}] = {\mathit{init}}~{\mathit{t}}))^\ast
  \qquad
-{\mathit{C}'} = {\mathit{C}}[\mathsf{local}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~{\mathit{t}})^\ast}]
+{\mathit{C}'} = {\mathit{C}}{}[\mathsf{local}{}[{{\mathit{x}}_{{1}}^\ast}] = {(\mathsf{set}~{\mathit{t}})^\ast}]
  \qquad
 {\mathit{C}} \vdash {\mathit{instr}}_{{1}} : {{\mathit{t}}_{{1}}^\ast} \rightarrow ({{\mathit{x}}_{{1}}^\ast})~{{\mathit{t}}_{{2}}^\ast}
  \qquad
@@ -275,8 +275,8 @@ $$
 \begin{array}{@{}lcl@{}l@{}}
 ({\mathit{s}} ; {\mathit{f}}).\mathsf{module}.\mathsf{func} &=& {\mathit{f}}.\mathsf{module}.\mathsf{func} &  \\
 ({\mathit{s}} ; {\mathit{f}}).\mathsf{func} &=& {\mathit{s}}.\mathsf{func} &  \\[0.8ex]
-{({\mathit{s}} ; {\mathit{f}}).\mathsf{func}}{[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{func}[{\mathit{f}}.\mathsf{module}.\mathsf{func}[{\mathit{x}}]] &  \\
-{({\mathit{s}} ; {\mathit{f}}).\mathsf{table}}{[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{table}[{\mathit{f}}.\mathsf{module}.\mathsf{table}[{\mathit{x}}]] &  \\
+{({\mathit{s}} ; {\mathit{f}}).\mathsf{func}}{{}[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{func}{}[{\mathit{f}}.\mathsf{module}.\mathsf{func}{}[{\mathit{x}}]] &  \\
+{({\mathit{s}} ; {\mathit{f}}).\mathsf{table}}{{}[{\mathit{x}}]} &=& {\mathit{s}}.\mathsf{table}{}[{\mathit{f}}.\mathsf{module}.\mathsf{table}{}[{\mathit{x}}]] &  \\
 \end{array}
 $$
 
@@ -321,6 +321,7 @@ $$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 warning: syntax `A` was never spliced
+warning: syntax `B` was never spliced
 warning: syntax `E` was never spliced
 warning: syntax `M` was never spliced
 warning: syntax `N` was never spliced
@@ -401,6 +402,7 @@ warning: syntax `lane_` was never spliced
 warning: syntax `lane_` was never spliced
 warning: syntax `laneidx` was never spliced
 warning: syntax `lanetype` was never spliced
+warning: syntax `list` was never spliced
 warning: syntax `lnn` was never spliced
 warning: syntax `local` was never spliced
 warning: syntax `localidx` was never spliced
@@ -429,7 +431,12 @@ warning: syntax `packtype` was never spliced
 warning: syntax `packval` was never spliced
 warning: syntax `pnn` was never spliced
 warning: syntax `pshape` was never spliced
+warning: syntax `pth` was never spliced
+warning: syntax `pthaux` was never spliced
 warning: syntax `record` was never spliced
+warning: syntax `recorddots` was never spliced
+warning: syntax `recordeq` was never spliced
+warning: syntax `recordstar` was never spliced
 warning: syntax `rectype` was never spliced
 warning: syntax `ref` was never spliced
 warning: syntax `reftype` was never spliced
@@ -1078,6 +1085,7 @@ warning: definition `expon` was never spliced
 warning: definition `ext` was never spliced
 warning: definition `ext_arrayinst` was never spliced
 warning: definition `ext_structinst` was never spliced
+warning: definition `fadd` was never spliced
 warning: definition `fbits` was never spliced
 warning: definition `fbytes` was never spliced
 warning: definition `frame` was never spliced
@@ -1097,14 +1105,24 @@ warning: definition `growmemory` was never spliced
 warning: definition `growtable` was never spliced
 warning: definition `halfop` was never spliced
 warning: definition `iadd` was never spliced
+warning: definition `iand` was never spliced
 warning: definition `ibits` was never spliced
 warning: definition `ibytes` was never spliced
+warning: definition `iclz` was never spliced
+warning: definition `ictz` was never spliced
+warning: definition `idiv` was never spliced
 warning: definition `idx` was never spliced
+warning: definition `ieq` was never spliced
+warning: definition `ieqz` was never spliced
+warning: definition `ige` was never spliced
+warning: definition `igt` was never spliced
+warning: definition `ile` was never spliced
 warning: definition `ilt` was never spliced
 warning: definition `imul` was never spliced
 warning: definition `in_binop` was never spliced
 warning: definition `in_numtype` was never spliced
 warning: definition `ine` was never spliced
+warning: definition `inot` was never spliced
 warning: definition `inst_reftype` was never spliced
 warning: definition `instantiate` was never spliced
 warning: definition `instexport` was never spliced
@@ -1113,6 +1131,15 @@ warning: definition `invibytes` was never spliced
 warning: definition `invlanes_` was never spliced
 warning: definition `invoke` was never spliced
 warning: definition `invsigned` was never spliced
+warning: definition `ior` was never spliced
+warning: definition `ipopcnt` was never spliced
+warning: definition `irem` was never spliced
+warning: definition `irotl` was never spliced
+warning: definition `irotr` was never spliced
+warning: definition `ishl` was never spliced
+warning: definition `ishr` was never spliced
+warning: definition `isub` was never spliced
+warning: definition `ixor` was never spliced
 warning: definition `lanes_` was never spliced
 warning: definition `lanetype` was never spliced
 warning: definition `local` was never spliced
@@ -1425,6 +1452,7 @@ warning: definition prose `alloctables` was never spliced
 warning: definition prose `alloctypes` was never spliced
 warning: definition prose `arrayinst` was never spliced
 warning: definition prose `before` was never spliced
+warning: definition prose `binop` was never spliced
 warning: definition prose `blocktype` was never spliced
 warning: definition prose `clostype` was never spliced
 warning: definition prose `clostypes` was never spliced
@@ -1487,6 +1515,7 @@ warning: definition prose `nunpack` was never spliced
 warning: definition prose `packnum` was never spliced
 warning: definition prose `packval` was never spliced
 warning: definition prose `psize` was never spliced
+warning: definition prose `relop` was never spliced
 warning: definition prose `rolldt` was never spliced
 warning: definition prose `rollrt` was never spliced
 warning: definition prose `rundata` was never spliced
@@ -1526,7 +1555,9 @@ warning: definition prose `table` was never spliced
 warning: definition prose `tableinst` was never spliced
 warning: definition prose `tablesxt` was never spliced
 warning: definition prose `tablesxv` was never spliced
+warning: definition prose `testop` was never spliced
 warning: definition prose `type` was never spliced
+warning: definition prose `unop` was never spliced
 warning: definition prose `unpack` was never spliced
 warning: definition prose `unpacknum` was never spliced
 warning: definition prose `unpackval` was never spliced

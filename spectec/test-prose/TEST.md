@@ -3536,6 +3536,113 @@ invsigned N i
 1. Let j be $inverse_of_signed(N, i).
 2. Return j.
 
+unop I32 unop__u0 i
+1. If (unop__u0 is CLZ), then:
+  a. Return [$iclz($size(I32), i)].
+2. If (unop__u0 is CTZ), then:
+  a. Return [$ictz($size(I32), i)].
+3. Assert: Due to validation, (unop__u0 is POPCNT).
+4. Return [$ipopcnt($size(I32), i)].
+
+binop numty_u1 binop_u0 num__u2 num__u3
+1. If (binop_u0 is ADD), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$iadd($size(inn), i, j)].
+2. If (binop_u0 is SUB), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$isub($size(inn), i, j)].
+3. If (binop_u0 is MUL), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$imul($size(inn), i, j)].
+4. Let i be num__u2.
+5. If the type of numty_u1 is inn, then:
+  a. Let inn be numty_u1.
+  b. Let j be num__u3.
+  c. If binop_u0 is of the case DIV, then:
+    1) Let (DIV sx) be binop_u0.
+    2) Return [$idiv($size(inn), sx, i, j)].
+  d. If binop_u0 is of the case REM, then:
+    1) Let (REM sx) be binop_u0.
+    2) Return [$irem($size(inn), sx, i, j)].
+6. If (binop_u0 is AND), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$iand($size(inn), i, j)].
+7. If (binop_u0 is OR), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$ior($size(inn), i, j)].
+8. If (binop_u0 is XOR), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$ixor($size(inn), i, j)].
+9. If (binop_u0 is SHL), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$ishl($size(inn), i, j)].
+10. Let i be num__u2.
+11. If the type of numty_u1 is inn, then:
+  a. Let inn be numty_u1.
+  b. Let j be num__u3.
+  c. If binop_u0 is of the case SHR, then:
+    1) Let (SHR sx) be binop_u0.
+    2) Return [$ishr($size(inn), sx, i, j)].
+12. If (binop_u0 is ROTL), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$irotl($size(inn), i, j)].
+13. If (binop_u0 is ROTR), then:
+  a. Let i be num__u2.
+  b. If the type of numty_u1 is inn, then:
+    1) Let inn be numty_u1.
+    2) Let j be num__u3.
+    3) Return [$irotr($size(inn), i, j)].
+14. Assert: Due to validation, (numty_u1 is F32).
+15. Assert: Due to validation, (binop_u0 is ADD).
+16. Let f32_1 be num__u2.
+17. Let f32_2 be num__u3.
+18. Return [$fadd(32, f32_1, f32_2)].
+
+testop I32 EQZ i
+1. Return $ieqz($size(I32), i).
+
+relop I32 relop_u0 i j
+1. If (relop_u0 is EQ), then:
+  a. Return $ieq($size(I32), i, j).
+2. If (relop_u0 is NE), then:
+  a. Return $ine($size(I32), i, j).
+3. If relop_u0 is of the case LT, then:
+  a. Let (LT sx) be relop_u0.
+  b. Return $ilt($size(I32), sx, i, j).
+4. If relop_u0 is of the case GT, then:
+  a. Let (GT sx) be relop_u0.
+  b. Return $igt($size(I32), sx, i, j).
+5. If relop_u0 is of the case LE, then:
+  a. Let (LE sx) be relop_u0.
+  b. Return $ile($size(I32), sx, i, j).
+6. Assert: Due to validation, relop_u0 is of the case GE.
+7. Let (GE sx) be relop_u0.
+8. Return $ige($size(I32), sx, i, j).
+
 invibytes N b*
 1. Let n be $inverse_of_ibytes(N, b*).
 2. Return n.
