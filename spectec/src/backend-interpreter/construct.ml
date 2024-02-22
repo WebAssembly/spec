@@ -1014,10 +1014,10 @@ let vec128_to_z vec =
 let al_of_int i = Z.of_int i |> al_of_z
 let al_of_int8 i8 =
   (* NOTE: int8 is considered to be unsigned *)
-  Z.of_int32 Int32.(logand i8 0x0000_00ffl) |> al_of_z
+  Z.of_int32_unsigned Int32.(logand i8 0x0000_00ffl) |> al_of_z
 let al_of_int16 i16 =
   (* NOTE: int32 is considered to be unsigned *)
-  Z.of_int32 Int32.(logand i16 0x0000_ffffl) |> al_of_z
+  Z.of_int32_unsigned Int32.(logand i16 0x0000_ffffl) |> al_of_z
 let al_of_int32 i32 =
   (* NOTE: int32 is considered to be unsigned *)
   Z.of_int32_unsigned i32 |> al_of_z

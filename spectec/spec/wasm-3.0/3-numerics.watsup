@@ -50,12 +50,58 @@ def $invfbytes(N, b*) = p  -- if $fbytes(N, p) = b*
 
 
 def $iadd(N, iN(N), iN(N)) : iN(N)      hint(show $iadd_%(%,%))
+def $isub(N, iN(N), iN(N)) : iN(N)      hint(show $isub_%(%,%))
 def $imul(N, iN(N), iN(N)) : iN(N)      hint(show $imul_%(%,%))
+def $idiv(N, sx, iN(N), iN(N)) : iN(N)  hint(show $idiv_%^(%)(%,%))
+def $irem(N, sx, iN(N), iN(N)) : iN(N)  hint(show $irem_%^(%)(%,%))
+def $inot(N, iN(N)) : iN(N)             hint(show $inot_%(%))
+def $iand(N, iN(N), iN(N)) : iN(N)      hint(show $iand_%(%,%))
+def $ior(N, iN(N), iN(N)) : iN(N)       hint(show $ior_%(%,%))
+def $ixor(N, iN(N), iN(N)) : iN(N)      hint(show $ixor_%(%,%))
+def $ishl(N, iN(N), iN(N)) : iN(N)      hint(show $ishl_%(%,%))
+def $ishr(N, sx, iN(N), iN(N)) : iN(N)  hint(show $ishr_%^(%)(%,%))
+def $irotl(N, iN(N), iN(N)) : iN(N)     hint(show $irotl_%(%,%))
+def $irotr(N, iN(N), iN(N)) : iN(N)     hint(show $irotr_%(%,%))
+def $iclz(N, iN(N)) : iN(N)             hint(show $iclz_%(%))
+def $ictz(N, iN(N)) : iN(N)             hint(show $iclz_%(%))
+def $ipopcnt(N, iN(N)) : iN(N)          hint(show $ipopcnt_%(%))
+def $ieqz(N, iN(N)) : u32               hint(show $ieqz_%(%))
+def $ieq(N, iN(N), iN(N)) : u32         hint(show $ieq_%(%,%))
 def $ine(N, iN(N), iN(N)) : u32         hint(show $ine_%(%,%))
 def $ilt(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_%^(%)(%,%))
+def $igt(N, sx, iN(N), iN(N)) : u32     hint(show $ilt_%^(%)(%,%))
+def $ile(N, sx, iN(N), iN(N)) : u32     hint(show $ile_%^(%)(%,%))
+def $ige(N, sx, iN(N), iN(N)) : u32     hint(show $ihe_%^(%)(%,%))
+
+def $fadd(N, fN(N), fN(N)) : fN(N)      hint(show $fadd_%(%,%))
 
 def $narrow(M, N, sx, iN(M)) : iN(N)    hint(show $narrow_((%,%))^(%)#(%))
 
+def $binop(inn, ADD, i, j) = $iadd($size(inn), i, j)
+def $binop(inn, SUB, i, j) = $isub($size(inn), i, j)
+def $binop(inn, MUL, i, j) = $imul($size(inn), i, j)
+def $binop(inn, DIV sx, i, j) = $idiv($size(inn), sx, i, j)
+def $binop(inn, REM sx, i, j) = $irem($size(inn), sx, i, j)
+def $binop(inn, AND, i, j) = $iand($size(inn), i, j)
+def $binop(inn, OR, i, j) = $ior($size(inn), i, j)
+def $binop(inn, XOR, i, j) = $ixor($size(inn), i, j)
+def $binop(inn, SHL, i, j) = $ishl($size(inn), i, j)
+def $binop(inn, SHR sx, i, j) = $ishr($size(inn), sx, i, j)
+def $binop(inn, ROTL, i, j) = $irotl($size(inn), i, j)
+def $binop(inn, ROTR, i, j) = $irotr($size(inn), i, j)
+
+def $unop(I32, CLZ, i) = $iclz($size(I32), i)
+def $unop(I32, CTZ, i) = $ictz($size(I32), i)
+def $unop(I32, POPCNT, i) = $ipopcnt($size(I32), i)
+def $testop(I32, EQZ, i) = $ieqz($size(I32), i)
+def $relop(I32, EQ, i, j) = $ieq($size(I32), i, j)
+def $relop(I32, NE, i, j) = $ine($size(I32), i, j)
+def $relop(I32, LT sx, i, j) = $ilt($size(I32), sx, i, j)
+def $relop(I32, GT sx, i, j) = $igt($size(I32), sx, i, j)
+def $relop(I32, LE sx, i, j) = $ile($size(I32), sx, i, j)
+def $relop(I32, GE sx, i, j) = $ige($size(I32), sx, i, j)
+
+def $binop(F32, ADD, f32_1, f32_2) = $fadd(32, f32_1, f32_2)
 
 ;; Packed values
 

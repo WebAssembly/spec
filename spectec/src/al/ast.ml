@@ -3,7 +3,6 @@ open Util.Source
 (* Types *)
 
 type ty = string (* TODO *)
-type vec128 = string
 
 (* Identifiers *)
 
