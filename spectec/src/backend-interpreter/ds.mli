@@ -6,11 +6,13 @@ val bound_rule : string -> bool
 val bound_func : string -> bool
 val lookup_algo : string -> algorithm
 
-val get_store : unit -> store
-
 type env = value Env.t
 val lookup_env : string -> env -> value
-val add_store : env -> env
+
+module Store : sig
+  val get : unit -> value
+  val access : string -> value
+end
 
 module Info : sig
   type info = { algo_name: string; instr: instr; mutable covered: bool }

@@ -43,8 +43,25 @@ let lookup_algo name =
 
 (* Store *)
 
-let _store : store ref = ref Record.empty
-let get_store () = !_store
+module Store = struct
+  let store = ref Record.empty
+
+  let init () =
+    store :=
+      Record.empty
+      |> Record.add "FUNC" (listV [||])
+      |> Record.add "GLOBAL" (listV [||])
+      |> Record.add "TABLE" (listV [||])
+      |> Record.add "MEM" (listV [||])
+      |> Record.add "ELEM" (listV [||])
+      |> Record.add "DATA" (listV [||])
+      |> Record.add "STRUCT" (listV [||])
+      |> Record.add "ARRAY" (listV [||])
+
+  let get () = strV !store
+
+  let access field = Record.find field !store
+end
 
 
 (* Environment *)
@@ -67,8 +84,6 @@ let lookup_env key env =
       key (string_of_env env)
     |> prerr_endline;
     raise Not_found
-
-let add_store = Env.add "s" (Ast.StoreV _store)
 
 
 (* Info *)
@@ -331,13 +346,4 @@ let init algos =
   func_map := fmap;
 
   (* Initialize store *)
-  _store :=
-    Record.empty
-    |> Record.add "FUNC" (listV [||])
-    |> Record.add "GLOBAL" (listV [||])
-    |> Record.add "TABLE" (listV [||])
-    |> Record.add "MEM" (listV [||])
-    |> Record.add "ELEM" (listV [||])
-    |> Record.add "DATA" (listV [||])
-    |> Record.add "STRUCT" (listV [||])
-    |> Record.add "ARRAY" (listV [||])
+  Store.init ()

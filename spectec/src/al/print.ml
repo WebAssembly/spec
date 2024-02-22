@@ -52,7 +52,6 @@ and string_of_value = function
   (*| FrameV (None, v2) -> sprintf "(Frame %s)" (string_of_value v2)
   | FrameV (Some v1, v2) -> sprintf "(Frame %s %s)" (string_of_value v1) (string_of_value v2) *)
   | FrameV _ -> "FrameV"
-  | StoreV _ -> "StoreV"
   | ListV lv -> "[" ^ string_of_values ", " (Array.to_list !lv) ^ "]"
   | NumV n -> "0x" ^ Z.format "%X" n
   | BoolV b -> string_of_bool b
@@ -342,7 +341,6 @@ let structured_string_of_ids ids =
 let rec structured_string_of_value = function
   | LabelV (v1, v2) -> "LabelV (" ^ structured_string_of_value v1 ^ "," ^ structured_string_of_value v2 ^ ")"
   | FrameV _ -> "FrameV (TODO)"
-  | StoreV _ -> "StoreV"
   | ListV _ -> "ListV"
   | BoolV b -> "BoolV (" ^ string_of_bool b ^ ")"
   | NumV n -> "NumV (" ^ Z.to_string n ^ ")"

@@ -1,6 +1,8 @@
 open Al
 open Ast
 open Al_util
+open Print
+open Construct
 open Util
 open Reference_interpreter
 open Ds
@@ -12,6 +14,7 @@ let f32_to_const f = CaseV ("CONST", [ nullary "F32"; Construct.al_of_float32 f 
 let f64_to_const f = CaseV ("CONST", [ nullary "F64"; Construct.al_of_float64 f ])
 
 
+(* TODO: Refactor builtin call logic *)
 let builtin () =
 
   (* TODO : Change this into host fnuction instance, instead of current normal function instance *)
@@ -85,7 +88,7 @@ let builtin () =
     (* Generate ExternFunc *)
 
     let addr =
-      match Record.find kind (get_store ()) with
+      match Store.access kind with
       | ListV a -> Array.length !a |> Z.of_int
       | _ -> failwith "Unreachable"
     in
@@ -95,7 +98,7 @@ let builtin () =
 
     (* Update Store *)
 
-    (match Record.find kind (get_store ()) with
+    (match Store.access kind with
     | ListV a -> a := Array.append !a [|inst|]
     | _ -> failwith "Invalid store field");
 
@@ -126,3 +129,55 @@ let builtin () =
     |> Record.add "EXPORT" (listV extern) in
 
   StrV moduleinst
+
+let is_builtin = function
+  | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
+  | _ -> false
+
+let call name =
+  let local =
+    WasmContext.get_current_frame ()
+    |> unwrap_frame
+    |> strv_access "LOCAL"
+    |> listv_nth
+  in
+  let as_const ty = function
+  | CaseV ("CONST", [ CaseV (ty', []) ; n ])
+  | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
+  | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
+  match name with
+  | "PRINT" -> print_endline "- print: ()"
+  | "PRINT_I32" ->
+    local 0
+    |> as_const "I32"
+    |> al_to_int32
+    |> I32.to_string_s
+    |> Printf.printf "- print_i32: %s\n"
+  | "PRINT_I64" ->
+    local 0
+    |> as_const "I64"
+    |> al_to_int64
+    |> I64.to_string_s
+    |> Printf.printf "- print_i64: %s\n"
+  | "PRINT_F32" ->
+    local 0
+    |> as_const "F32"
+    |> al_to_float32
+    |> F32.to_string
+    |> Printf.printf "- print_f32: %s\n"
+  | "PRINT_F64" ->
+    local 0
+    |> as_const "F64"
+    |> al_to_float64
+    |> F64.to_string
+    |> Printf.printf "- print_f64: %s\n"
+  | "PRINT_I32_F32" ->
+    let i32 = local 0 |> as_const "I32" |> al_to_int32 |> I32.to_string_s in
+    let f32 = local 1 |> as_const "F32" |> al_to_float32 |> F32.to_string in
+    Printf.printf "- print_i32_f32: %s %s\n" i32 f32
+  | "PRINT_F64_F64" ->
+    let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
+    let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
+    Printf.printf "- print_f64_f64: %s %s\n" f64 f64'
+  | name ->
+    ("Invalid builtin function: " ^ name) |> failwith

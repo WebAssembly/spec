@@ -31,7 +31,6 @@ and value =
   | TupV of value list                 (* tuple of values *)
   | FrameV of value option * value     (* TODO: desugar using CaseV? *)
   | LabelV of value * value            (* TODO: desugar using CaseV? *)
-  | StoreV of store ref                (* TODO: check Wasm specificity? *)
 
 type extend_dir =                      (* direction of extension *)
   | Front                              (* extend from the front *)

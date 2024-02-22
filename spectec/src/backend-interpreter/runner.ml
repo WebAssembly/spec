@@ -104,7 +104,7 @@ let get_global_value module_name globalname =
   |> strv_access "VALUE"
   |> casev_nth_arg 0
   |> al_to_int
-  |> listv_nth (Record.find "GLOBAL" (get_store ()))
+  |> listv_nth (Store.access "GLOBAL")
   |> strv_access "VALUE"
   |> Array.make 1
   |> listV

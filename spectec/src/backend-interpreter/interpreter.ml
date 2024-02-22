@@ -27,24 +27,6 @@ let fail_on_path msg path =
     (structured_string_of_path path) (string_of_region path.at))
   |> failwith
 
-
-let is_matrix matrix =
-  match matrix with
-  | [] -> true  (* Empty matrix is considered a valid matrix *)
-  | row :: rows -> List.for_all (fun r -> List.length row = List.length r) rows
-
-let transpose matrix =
-  assert (is_matrix matrix);
-  let rec transpose' = function
-    | [] -> []
-    | [] :: _ -> []
-    | (x :: xs) :: xss ->
-      let new_row = (x :: List.map List.hd xss) in
-      let new_rows = transpose' (xs :: List.map List.tl xss) in
-      new_row :: new_rows in
-  transpose' matrix
-
-
 (* helper functions for recursive type *)
 
 let null = caseV ("NULL", [ optV (Some (listV [||])) ])
@@ -63,7 +45,7 @@ let match_heap_type v1 v2 =
   let ht2 = Construct.al_to_heap_type v2 in
   Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
 
-let rec ref_type_of = function
+let ref_type_of = function
   (* null *)
   | CaseV ("REF.NULL", [ ht ]) as v ->
     if match_heap_type none ht then
@@ -80,59 +62,15 @@ let rec ref_type_of = function
   (* i31 *)
   | CaseV ("REF.I31_NUM", [ _ ]) ->
     CaseV ("REF", [ nonull; nullary "I31"])
-  (* struct *)
-  | CaseV ("REF.STRUCT_ADDR", [ NumV i ]) ->
-    let e =
-      accE (
-        accE (
-          accE (
-            varE "s",
-            dotP ("STRUCT", "struct")
-          ),
-          idxP (numE i)
-        ),
-        dotP ("TYPE", "type")
-      )
-    in
-    (* TODO: remove hack *)
-    let dt = eval_expr (add_store Env.empty) e in
-    CaseV ("REF", [ nonull; dt])
-  (* array *)
-  | CaseV ("REF.ARRAY_ADDR", [ NumV i ]) ->
-    let e =
-      accE (
-        accE (
-          accE (
-            varE "s",
-            dotP ("ARRAY", "array")
-          ),
-          idxP (numE i)
-        ),
-        dotP ("TYPE", "type")
-      )
-    in
-    (* TODO: remove hack *)
-    let dt = eval_expr (add_store Env.empty) e in
-    CaseV ("REF", [ nonull; dt])
-  (* func *)
-  | CaseV ("REF.FUNC_ADDR", [ NumV i ]) ->
-    let e =
-      accE (
-        accE (
-          accE (
-            varE "s",
-            dotP ("FUNC", "func")
-          ),
-          idxP (numE i)
-        ),
-        dotP ("TYPE", "type")
-      )
-    in
-    (* TODO: remove hack *)
-    let dt = eval_expr (add_store Env.empty) e in
-    CaseV ("REF", [ nonull; dt])
   (* host *)
   | CaseV ("REF.HOST_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "ANY"])
+  (* array/func/struct addr *)
+  | CaseV (name, [ NumV i ])
+  when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
+    let field_name = String.sub name 4 (String.length name - 9) in
+    let object_ = listv_nth (Store.access field_name) (Z.to_int i) in
+    let dt = strv_access "TYPE" object_ in
+    CaseV ("REF", [ nonull; dt])
   (* extern *)
   (* TODO: check null *)
   | CaseV ("REF.EXTERN", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXTERN"])
@@ -141,7 +79,24 @@ let rec ref_type_of = function
 
 (* Expression *)
 
-and create_sub_al_context names iter env =
+(* TODO: move to util? *)
+let is_matrix matrix =
+  match matrix with
+  | [] -> true  (* Empty matrix is considered a valid matrix *)
+  | row :: rows -> List.for_all (fun r -> List.length row = List.length r) rows
+
+let transpose matrix =
+  assert (is_matrix matrix);
+  let rec transpose' = function
+    | [] -> []
+    | [] :: _ -> []
+    | (x :: xs) :: xss ->
+      let new_row = (x :: List.map List.hd xss) in
+      let new_rows = transpose' (xs :: List.map List.tl xss) in
+      new_row :: new_rows in
+  transpose' matrix
+
+let rec create_sub_al_context names iter env =
   let option_name_to_list name = lookup_env name env |> unwrap_optv |> Option.to_list in
   let name_to_list name = lookup_env name env |> unwrap_listv_to_list in
   let length_to_list l = List.init l al_of_int in
@@ -181,7 +136,6 @@ and access_path env base path =
   | DotP (str, _) -> (
     match base with
     | FrameV (_, StrV r) -> Record.find str r
-    | StoreV s -> Record.find str !s
     | StrV r -> Record.find str r
     | v ->
       fail_on_path
@@ -205,7 +159,6 @@ and replace_path env base path v_new =
     let r =
       match base with
       | FrameV (_, StrV r) -> r
-      | StoreV s -> !s
       | StrV r -> r
       | v ->
         fail_on_path
@@ -310,6 +263,7 @@ and eval_expr env expr =
     (match eval_expr env e with
     | LabelV (_, vs) -> vs
     | _ -> fail_on_expr "Not a label" expr)
+  | VarE "s" -> Store.get ()
   | VarE name -> lookup_env name env
   (* Optimized getter for simple IterE(VarE, ...) *)
   | IterE ({ it = VarE name; _ }, [name'], _) when name = name' ->
@@ -319,7 +273,6 @@ and eval_expr env expr =
     let v = eval_expr env e1 in
     let i = eval_expr env e2 |> al_to_int in
     if i > 1024 * 64 * 1024 (* 1024 pages *) then
-      (* TODO: pop context? *)
       raise Exception.OutOfMemory
     else
       Array.make i v |> listV
@@ -528,64 +481,6 @@ and assign_split ep es vs env =
   env |> assign ep prefix |> assign es suffix
 
 
-(* Builtin *)
-
-and is_builtin = function
-  | "PRINT" | "PRINT_I32" | "PRINT_I64" | "PRINT_F32" | "PRINT_F64" | "PRINT_I32_F32" | "PRINT_F64_F64" -> true
-  | _ -> false
-
-and call_builtin name =
-  let local x =
-    match call_func "local" [ numV (Z.of_int x) ] with
-    | Some v -> v
-    | _ -> failwith "Builtin doesn't return a value"
-  in
-  let as_const ty = function
-  | CaseV ("CONST", [ CaseV (ty', []) ; n ])
-  | OptV (Some (CaseV ("CONST", [ CaseV (ty', []) ; n ]))) when ty = ty' -> n
-  | v -> failwith ("Not " ^ ty ^ ".CONST: " ^ string_of_value v) in
-  match name with
-  | "PRINT" -> print_endline "- print: ()"
-  | "PRINT_I32" ->
-    local 0
-    |> as_const "I32"
-    |> al_to_int32
-    |> I32.to_string_s
-    |> sprintf "- print_i32: %s"
-    |> print_endline
-  | "PRINT_I64" ->
-    local 0
-    |> as_const "I64"
-    |> al_to_int64
-    |> I64.to_string_s
-    |> sprintf "- print_i64: %s"
-    |> print_endline
-  | "PRINT_F32" ->
-    local 0
-    |> as_const "F32"
-    |> al_to_float32
-    |> F32.to_string
-    |> sprintf "- print_f32: %s"
-    |> print_endline
-  | "PRINT_F64" ->
-    local 0
-    |> as_const "F64"
-    |> al_to_float64
-    |> F64.to_string
-    |> sprintf "- print_f64: %s"
-    |> print_endline
-  | "PRINT_I32_F32" ->
-    let i32 = local 0 |> as_const "I32" |> al_to_int32 |> I32.to_string_s in
-    let f32 = local 1 |> as_const "F32" |> al_to_float32 |> F32.to_string in
-    sprintf "- print_i32_f32: %s %s" i32 f32 |> print_endline
-  | "PRINT_F64_F64" ->
-    let f64 = local 0 |> as_const "F64" |> al_to_float64 |> F64.to_string in
-    let f64' = local 1 |> as_const "F64" |> al_to_float64 |> F64.to_string in
-    sprintf "- print_f64_f64: %s %s" f64 f64' |> print_endline
-  | name ->
-    ("Invalid builtin function: " ^ name) |> failwith
-
-
 (* Step *)
 
 and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.t =
@@ -712,9 +607,13 @@ and step_instr (ctx: AlContext.t) (env: value Env.t) (instr: instr) : AlContext.
   | _ -> fail_on_instr "No interpreter for" instr
 
 and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
+  (* TODO: Change ref.null semantics *)
   | CaseV ("REF.NULL", [ ht ]) when !version = 3 ->
-    (* TODO: remove hack *)
-    let mm = call_func "moduleinst" [] |> Option.get in
+    let mm =
+      WasmContext.get_current_frame ()
+      |> unwrap_frame
+      |> strv_access "MODULE"
+    in
     let dummy_rt = CaseV ("REF", [ null; ht ]) in
 
     (* substitute heap type *)
@@ -726,7 +625,7 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
   | CaseV ("REF.NULL", _)
   | CaseV ("CONST", _)
   | CaseV ("VCONST", _) as v -> WasmContext.push_value v; ctx
-  | CaseV (name, []) when is_builtin name -> call_builtin name; ctx
+  | CaseV (name, []) when Builtin.is_builtin name -> Builtin.call name; ctx
   | CaseV (fname, args) -> create_context fname args :: ctx
   | v ->
     string_of_value v
@@ -780,7 +679,6 @@ and create_context (name: string) (args: value list) : AlContext.mode =
 
   let env =
     Env.empty
-    |> add_store
     |> List.fold_right2 assign params args
   in
 
