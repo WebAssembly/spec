@@ -487,7 +487,7 @@
     "\05\03\01\00\01"          ;; Memory section
     "\0a\17\01"                ;; Code section
     ;; function 0
-    "\0f\01\01"                ;; local type count
+    "\15\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
@@ -544,7 +544,7 @@
     "\05\03\01\00\01"          ;; Memory section
     "\0a\16\01"                ;; Code section
     ;; function 0
-    "\10\01\01"                ;; local type count
+    "\14\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\41\03"                   ;; i32.const 3
@@ -624,7 +624,7 @@
     "\05\03\01\00\01"          ;; Memory section
     "\0a\15\01"                ;; Code section
     ;; function 0
-    "\0e\01\01"                ;; local type count
+    "\13\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
@@ -643,7 +643,7 @@
     "\05\03\01\00\01"          ;; Memory section
     "\0a\15\01"                ;; Code section
     ;; function 0
-    "\0e\01\01"                ;; local type count
+    "\13\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\28"                      ;; i32.load
@@ -737,7 +737,7 @@
     "\05\03\01\00\01"          ;; Memory section
     "\0a\16\01"                ;; Code section
     ;; function 0
-    "\0f\01\01"                ;; local type count
+    "\14\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\41\03"                   ;; i32.const 3
@@ -757,7 +757,7 @@
     "\0a\16\01"                ;; Code section
 
     ;; function 0
-    "\0f\01\01"                ;; local type count
+    "\14\01\01"                ;; local type count
     "\7f"                      ;; i32
     "\41\00"                   ;; i32.const 0
     "\41\03"                   ;; i32.const 3
