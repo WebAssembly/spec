@@ -76,7 +76,7 @@ and t_typcase env (atom, (binds, t, prems), hints) =
 
 (* Expr traversal *)
 
-and t_exp2 env x = { x with it = t_exp' env x.it }
+and t_exp2 env x = { x with it = t_exp' env x.it; note = t_typ env x.note }
 
 and t_exp' env = function
   | (VarE _ | BoolE _ | NatE _ | TextE _) as e -> e
@@ -116,7 +116,7 @@ and t_path' env = function
   | SliceP (path, e1, e2) -> SliceP (t_path env path, t_exp env e1, t_exp env e2)
   | DotP (path, a) -> DotP (t_path env path, a)
 
-and t_path env x = { x with it = t_path' env x.it }
+and t_path env x = { x with it = t_path' env x.it; note = t_typ env x.note }
 
 and t_arg' env = function
   | ExpA exp -> ExpA (t_exp env exp)
@@ -174,26 +174,27 @@ let t_rule env x = { x with it = t_rule' env x.it }
 let rec t_def' env = function
   | RecD defs -> RecD (List.map (t_def env) defs)
   | DecD (id, params, typ, clauses) ->
+    let params' = t_params env params in
+    let typ' = t_typ env typ in
     let clauses' = List.map (t_clause env) clauses in
-    if is_partial env id
-    then
-      let typ' = IterT (t_typ env typ, Opt) $ no_region in
+    if is_partial env id then
+      let typ'' = IterT (typ', Opt) $ no_region in
       let clauses'' = List.map (fun clause -> match clause.it with
         DefD (binds, lhs, rhs, prems) ->
           { clause with
-            it = DefD (t_binds env binds, lhs, OptE (Some rhs) $$ no_region % typ', prems) }
+            it = DefD (t_binds env binds, lhs, OptE (Some rhs) $$ no_region % typ'', prems) }
         ) clauses' in
       let binds, args = List.mapi (fun i param -> match param.it with
         | ExpP (_, typI) ->
           let x = ("x" ^ string_of_int i) $ no_region in
-          [ExpB (x, t_typ env typI, []) $ x.at], ExpA (VarE x $$ no_region % t_typ env typI) $ no_region
+          [ExpB (x, typI, []) $ x.at], ExpA (VarE x $$ no_region % typI) $ no_region
         | TypP id -> [], TypA (VarT (id, []) $ no_region) $ no_region
-        ) params |> List.split in
+        ) params' |> List.split in
       let catch_all = DefD (List.concat binds, args,
-        OptE None $$ no_region % typ', []) $ no_region in
-      DecD (id, params, typ', clauses'' @ [ catch_all ])
+        OptE None $$ no_region % typ'', []) $ no_region in
+      DecD (id, params', typ'', clauses'' @ [ catch_all ])
     else
-      DecD (id, params, t_typ env typ, clauses')
+      DecD (id, params', typ', clauses')
   | TypD (id, params, insts) ->
     TypD (id, t_params env params, t_insts env insts)
   | RelD (id, mixop, typ, rules) ->
