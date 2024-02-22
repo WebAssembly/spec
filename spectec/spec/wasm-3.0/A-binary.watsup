@@ -479,6 +479,7 @@ grammar Binstr/numeric-un-f64 : instr = ...
   | 0x9D => UNOP F64 TRUNC
   | 0x9E => UNOP F64 NEAREST
   | 0x9F => UNOP F64 SQRT
+  | 0xC4 => UNOP I32 (EXTEND 32)
   | ...
 
 grammar Binstr/numeric-bin-f64 : instr = ...
@@ -521,11 +522,10 @@ grammar Binstr/numeric-cvt : instr = ...
   | ...
 
 grammar Binstr/numeric-extend : instr = ...
-  | 0xC0 => EXTEND I32 8
-  | 0xC1 => EXTEND I32 16
-  | 0xC2 => EXTEND I64 8
-  | 0xC3 => EXTEND I64 16
-  | 0xC4 => EXTEND I64 32
+  | 0xC0 => UNOP I32 (EXTEND 8)
+  | 0xC1 => UNOP I32 (EXTEND 16)
+  | 0xC2 => UNOP I32 (EXTEND 8)
+  | 0xC3 => UNOP I32 (EXTEND 16)
   | ...
 
 

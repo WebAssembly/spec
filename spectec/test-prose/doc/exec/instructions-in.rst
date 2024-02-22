@@ -38,14 +38,6 @@ $${rule-prose: exec/relop}
 
 $${rule: Step_pure/relop}
 
-.. _exec-extend:
-
-$${rule-prose: exec/extend}
-
-\
-
-$${rule: Step_pure/extend}
-
 .. _exec-cvtop:
 
 $${rule-prose: exec/cvtop}

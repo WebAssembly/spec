@@ -693,10 +693,6 @@ rule Instr_ok/relop:
   C |- RELOP nt relop_nt : nt nt -> I32
 
 
-rule Instr_ok/extend:
-  C |- EXTEND nt n : nt -> nt
-  -- if n <= $size(nt)
-
 rule Instr_ok/reinterpret:
   C |- CVTOP nt_1 REINTERPRET nt_2 : nt_2 -> nt_1
   -- if nt_1 =/= nt_2

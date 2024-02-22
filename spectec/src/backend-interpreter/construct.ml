@@ -279,10 +279,10 @@ let al_to_int_unop: value -> IntOp.unop = function
   | CaseV ("CLZ", []) -> IntOp.Clz
   | CaseV ("CTZ", []) -> IntOp.Ctz
   | CaseV ("POPCNT", []) -> IntOp.Popcnt
-  | CaseV ("EXTEND8S", []) -> IntOp.ExtendS Pack.Pack8
-  | CaseV ("EXTEND16S", []) -> IntOp.ExtendS Pack.Pack16
-  | CaseV ("EXTEND32S", []) -> IntOp.ExtendS Pack.Pack32
-  | CaseV ("EXTEND64S", []) -> IntOp.ExtendS Pack.Pack64
+  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 8 -> IntOp.ExtendS Pack.Pack8
+  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 16 -> IntOp.ExtendS Pack.Pack16
+  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 32 -> IntOp.ExtendS Pack.Pack32
+  | CaseV ("EXTEND", [NumV z]) when z = Z.of_int 64 -> IntOp.ExtendS Pack.Pack64
   | v -> fail "integer unop" v
 let al_to_float_unop: value -> FloatOp.unop = function
   | CaseV ("NEG", []) -> FloatOp.Neg
@@ -1190,10 +1190,10 @@ let al_of_int_unop = function
   | IntOp.Clz -> CaseV ("CLZ", [])
   | IntOp.Ctz -> CaseV ("CTZ", [])
   | IntOp.Popcnt -> CaseV ("POPCNT", [])
-  | IntOp.ExtendS Pack.Pack8 -> CaseV ("EXTEND8S", [])
-  | IntOp.ExtendS Pack.Pack16 -> CaseV ("EXTEND16S", [])
-  | IntOp.ExtendS Pack.Pack32 -> CaseV ("EXTEND32S", [])
-  | IntOp.ExtendS Pack.Pack64 -> CaseV ("EXTEND64S", [])
+  | IntOp.ExtendS Pack.Pack8 -> CaseV ("EXTEND", [al_of_int 8])
+  | IntOp.ExtendS Pack.Pack16 -> CaseV ("EXTEND", [al_of_int 16])
+  | IntOp.ExtendS Pack.Pack32 -> CaseV ("EXTEND", [al_of_int 32])
+  | IntOp.ExtendS Pack.Pack64 -> CaseV ("EXTEND", [al_of_int 64])
 let al_of_float_unop = function
   | FloatOp.Neg -> CaseV ("NEG", [])
   | FloatOp.Abs -> CaseV ("ABS", [])

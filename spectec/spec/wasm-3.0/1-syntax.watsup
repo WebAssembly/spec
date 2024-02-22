@@ -271,7 +271,7 @@ syntax zval_(packtype) = pack_(packtype)
 syntax sx hint(desc "signedness") = | U | S
 
 syntax unop_(numtype)
-syntax unop_(inn) = | CLZ | CTZ | POPCNT
+syntax unop_(inn) = | CLZ | CTZ | POPCNT | EXTEND n
 syntax unop_(fnn) = | ABS | NEG | SQRT | CEIL | FLOOR | TRUNC | NEAREST
 
 syntax binop_(numtype)
@@ -413,7 +413,6 @@ syntax instr/numeric hint(desc "numeric instruction") = ...
   | TESTOP numtype testop_(numtype)  hint(show %.%)
   | RELOP numtype relop_(numtype)    hint(show %.%)
   | CVTOP numtype cvtop numtype sx?  hint(show %.%#_#%#_#%)
-  | EXTEND numtype n                 hint(show %.EXTEND#%)
   | ...
 
 syntax half hint(desc "lane part") = | LOW | HIGH

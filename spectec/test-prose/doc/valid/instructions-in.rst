@@ -51,14 +51,6 @@ $${rule-prose: valid/relop}
 
 $${rule: Instr_ok/relop}
 
-.. _valid-extend:
-
-$${rule-prose: valid/extend}
-
-\
-
-$${rule: Instr_ok/extend}
-
 .. _valid-cvtop:
 
 $${rule-prose: valid/cvtop}
