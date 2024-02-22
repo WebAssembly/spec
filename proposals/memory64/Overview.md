@@ -49,14 +49,14 @@ have to support 32-bit memory addresses in their ABI.
   - `idxtype ::= i32 | i64`
 
 * The [limits][syntax limits] structure is parameterised by index syntax
-  - `limits_iv ::= {min iv, max iv?}`
+  - `limits(iv) ::= {min iv, max iv?}`
   The parameter is omitted where it is immaterial.
 
 * The [table type][syntax tabletype] continues to use i32 indices
-  - `tabletype ::= limits_i32 elemtype`
+  - `tabletype ::= limits(i32) elemtype`
 
 * The [memory type][syntax memtype] structure is extended to have an index type
-  - `memtype ::= idxtype limits_iv  (iff idxtype = type(iv))`
+  - `memtype ::= idxtype limits(type(iv))`
   - where
     ```
     type(\i32) = \I32
