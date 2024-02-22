@@ -3,6 +3,7 @@
 NAME = watsup
 EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
+LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec
@@ -39,7 +40,7 @@ gen: $(SPECS:%=$(GENINNAME)-%.tex)
 test-gen: $(SPECS:%=$(GENOUTNAME)-%.pdf) test-test
 
 $(GENINNAME)-%.tex: $(SPECFILES) $(EXE)
-	(cd $(SPECDIR)/$* && $(EXE) *.$(EXT) -o $(OWNDIR)/$@)
+	(cd $(SPECDIR)/$* && $(EXE) -l *.$(EXT) -o $(OWNDIR)/$@)
 
 $(GENOUTNAME)-%.tex: $(GENOUTNAME).tex
 	ln -f $< $@
@@ -52,7 +53,7 @@ $(GENOUTNAME)-%.pdf: $(GENOUTNAME)-%.tex $(EXE) $(GENINNAME)-%.tex
 test-test: $(TESTFILES:%.$(EXT)=test-%.pdf)
 
 test-%.tex: %.$(EXT) $(EXE)
-	$(EXE) $< -o $@
+	$(EXE) -l $< -o $@
 
 test-%.pdf: test-%.tex $(GENOUTNAME).tex
 	ln -f $< $(GENINNAME).tex
@@ -76,6 +77,7 @@ exe:
 clean:
 	dune clean
 	rm -f *.aux *.log
+	rm -f $(LOG)
 
 distclean: clean
 	rm -f $(GENINNAME)-*.tex test-*.tex

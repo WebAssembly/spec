@@ -2,6 +2,7 @@
 
 NAME = watsup
 EXT = $(NAME)
+LOG = _log
 
 
 # Main targets
@@ -52,14 +53,15 @@ TESTDIRS = $(shell ls -d test-*)
 test: exe $(TESTDIRS) dunetest
 
 dunetest:
-	@echo "(dune runtest)"
-	@dune runtest && echo OK || (echo Failure. Run \`make testpromote\` to accept changes in test expectations. && false)
+	@echo "#### Running (dune runtest)"
+	@dune runtest && echo OK || (echo "=>" Failure running dune test. && echo "=>" Run \`make testpromote\` to accept changes in test expectations. && false)
 
 testpromote:
 	dune promote
 
 $(TESTDIRS): test-%: exe
-	(cd $@ && make test >/dev/null)
+	@echo "#### Running (cd $@; make test)"
+	@(cd $@ && (make test >$(LOG) || (cat $(LOG) && echo "=>" Failure running $@. See log above. && false)))
 
 
 # Cleanup

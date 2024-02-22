@@ -2,3 +2,4 @@
 *.log
 *.pdf
 spec-gen-include.tex
+_log

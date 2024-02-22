@@ -3,6 +3,7 @@
 NAME = watsup
 EXE = $(PWD)/../$(NAME)
 EXT = $(NAME)
+LOG = _log
 
 OWNDIR = $(PWD)
 SPECDIR = ../spec/wasm-3.0
@@ -51,7 +52,7 @@ setup: document
 .PHONY: splice
 
 splice: setup 
-	cd $(SPHINXDIR) && $(EXE) ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
+	cd $(SPHINXDIR) && $(EXE) -l ../$(SPECDIR)/*.$(EXT) --sideconditions --animate --splice-sphinx -o $(SPLICEOUTPUT) -p $(SPLICEINPUT)
 	rm -f $(INPUTFILES)
 	cd ..
 
@@ -89,7 +90,7 @@ exe:
 
 clean:
 	dune clean
-	rm -rf $(SPHINXDIR)
+	rm -rf $(SPHINXDIR) $(LOG)
 	rm -f *.pdf
 
 distclean: clean
