@@ -27,55 +27,6 @@ let fail_on_path msg path =
     (structured_string_of_path path) (string_of_region path.at))
   |> failwith
 
-(* helper functions for recursive type *)
-
-let null = caseV ("NULL", [ optV (Some (listV [||])) ])
-let nonull = caseV ("NULL", [ optV None ])
-let none = nullary "NONE"
-let nofunc = nullary "NOFUNC"
-let noextern = nullary "NOEXTERN"
-
-let match_ref_type v1 v2 =
-  let rt1 = Construct.al_to_ref_type v1 in
-  let rt2 = Construct.al_to_ref_type v2 in
-  Match.match_ref_type [] rt1 rt2
-
-let match_heap_type v1 v2 =
-  let ht1 = Construct.al_to_heap_type v1 in
-  let ht2 = Construct.al_to_heap_type v2 in
-  Match.match_ref_type [] (Types.Null, ht1) (Types.Null, ht2)
-
-let ref_type_of = function
-  (* null *)
-  | CaseV ("REF.NULL", [ ht ]) as v ->
-    if match_heap_type none ht then
-      CaseV ("REF", [ null; none])
-    else if match_heap_type nofunc ht then
-      CaseV ("REF", [ null; nofunc])
-    else if match_heap_type noextern ht then
-      CaseV ("REF", [ null; noextern])
-    else
-      v
-      |> string_of_value
-      |> sprintf "Invalid null reference: %s"
-      |> failwith
-  (* i31 *)
-  | CaseV ("REF.I31_NUM", [ _ ]) ->
-    CaseV ("REF", [ nonull; nullary "I31"])
-  (* host *)
-  | CaseV ("REF.HOST_ADDR", [ _ ]) -> CaseV ("REF", [ nonull; nullary "ANY"])
-  (* array/func/struct addr *)
-  | CaseV (name, [ NumV i ])
-  when String.starts_with ~prefix:"REF." name && String.ends_with ~suffix:"_ADDR" name ->
-    let field_name = String.sub name 4 (String.length name - 9) in
-    let object_ = listv_nth (Store.access field_name) (Z.to_int i) in
-    let dt = strv_access "TYPE" object_ in
-    CaseV ("REF", [ nonull; dt])
-  (* extern *)
-  (* TODO: check null *)
-  | CaseV ("REF.EXTERN", [ _ ]) -> CaseV ("REF", [ nonull; nullary "EXTERN"])
-  | _ -> failwith "Invalid arguments for $ref_type_of"
-
 
 (* Expression *)
 
@@ -373,9 +324,10 @@ and eval_expr env expr =
         (sprintf "%s doesn't have type %s" (string_of_value v) s)
         expr)
   | MatchE (e1, e2) ->
-    let v1 = eval_expr env e1 in
-    let v2 = eval_expr env e2 in
-    match_ref_type v1 v2 |> boolV
+    (* Deferred to reference interpreter *)
+    let rt1 = e1 |> eval_expr env |> Construct.al_to_ref_type in
+    let rt2 = e2 |> eval_expr env |> Construct.al_to_ref_type in
+    boolV (Match.match_ref_type [] rt1 rt2)
   | _ -> fail_on_expr "No interpreter for" expr
 
 
@@ -614,6 +566,8 @@ and step_wasm (ctx: AlContext.t) : value -> AlContext.t = function
       |> unwrap_frame
       |> strv_access "MODULE"
     in
+    (* TODO: some *)
+    let null = caseV ("NULL", [ optV (Some (listV [||])) ]) in
     let dummy_rt = CaseV ("REF", [ null; ht ]) in
 
     (* substitute heap type *)
@@ -693,11 +647,8 @@ and call_func (fname: string) (args: value list) : value option =
   (* Numerics *)
   else if Numerics.mem fname then
     Some (Numerics.call_numerics fname args)
-  (* HARDCODE: hardcoded validation rule *)
   else if fname = "ref_type_of" then 
-    match args with
-    | [v] -> Some (ref_type_of v)
-    | _ -> failwith "Arity mismatch for ref_type_of"
+    Some (Manual.ref_type_of args)
   else
     failwith ("Invalid DSL function call: " ^ fname)
 
