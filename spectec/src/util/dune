@@ -1,4 +1,4 @@
 (library
   (name util)
-  (modules lib utf8 scc source record debug_log)
+  (modules lib utf8 scc source record debug_log error)
 )

@@ -35,7 +35,7 @@ let al_to_el_unop = function
   | Al.Ast.MinusOp -> Some El.Ast.MinusOp
   | _ -> None
 
-let al_to_el_binop = function 
+let al_to_el_binop = function
   | Al.Ast.AddOp -> Some El.Ast.AddOp
   | Al.Ast.SubOp -> Some El.Ast.SubOp
   | Al.Ast.MulOp -> Some El.Ast.MulOp
@@ -55,7 +55,7 @@ let al_to_el_infixop op =
     (fun elatom -> elatom $$ no_region % ref typ)
     elatom
 
-let al_to_el_kwd (id, typ) = 
+let al_to_el_kwd (id, typ) =
   let elatom = El.Ast.Atom id in
   elatom $$ no_region % (ref typ)
 
@@ -69,7 +69,7 @@ let rec al_to_el_iter iter = match iter with
       Some (El.Ast.ListN (ele, elid))
 
 and al_to_el_path pl =
-  let fold_path p elp = 
+  let fold_path p elp =
     let elp' = (match p.it with
       | Al.Ast.IdxP ei ->
           let* elei = al_to_el_expr ei in
@@ -95,7 +95,7 @@ and al_to_el_expr expr =
         let eli = El.Ast.NatE (El.Ast.DecOp, i) in
         Some eli
     | Al.Ast.UnE (op, e) ->
-        let* elop = al_to_el_unop op in 
+        let* elop = al_to_el_unop op in
         let* ele = al_to_el_expr e in
         Some (El.Ast.UnE (elop, ele))
     | Al.Ast.BinE (op, e1, e2) ->
@@ -153,7 +153,7 @@ and al_to_el_expr expr =
     | Al.Ast.StrE r ->
         let* elexpfield = al_to_el_record r in
         Some (El.Ast.StrE elexpfield)
-    | Al.Ast.VarE id | Al.Ast.SubE (id, _) -> 
+    | Al.Ast.VarE id | Al.Ast.SubE (id, _) ->
         let elid = id $ no_region in
         Some (El.Ast.VarE (elid, []))
     | Al.Ast.IterE (e, _, iter) ->
@@ -271,13 +271,13 @@ let render_kwd env kwd =
 
 (* Invariant: All AL expressions fall into one of the three categories:
   1. EL-like expression, only containing EL subexpressions
-  2. AL-only expression, possibly containing EL subexpressions 
+  2. AL-only expression, possibly containing EL subexpressions
   3. pseudo-EL-like expression, containing at least one AL-only subexpression *)
 
 (* Category 1 is translated to EL then rendered by the Latex backend *)
 
 let rec render_expr env expr = match al_to_el_expr expr with
-  | Some exp -> 
+  | Some exp ->
       (* embedded math blocks cannot have line-breaks *)
       let newline = Str.regexp "\n" in
       let sexp = Backend_latex.Render.render_exp env.render_latex exp in
@@ -328,19 +328,19 @@ and render_expr' env expr =
       let loop = Al.Al_util.iterE (ids, [], iter) in
       let sloop = render_expr env loop in
       sprintf "for all %s, %s" sloop se
-  | Al.Ast.ArityE e -> 
+  | Al.Ast.ArityE e ->
       let se = render_expr env e in
-      sprintf "the arity of %s" se 
+      sprintf "the arity of %s" se
   | Al.Ast.GetCurLabelE -> "the current label"
   | Al.Ast.GetCurFrameE -> "the current frame"
   | Al.Ast.GetCurContextE -> "the current context"
   | Al.Ast.FrameE (None, e2) ->
       let se2 = render_expr env e2 in
-      sprintf "the activation of %s" se2 
+      sprintf "the activation of %s" se2
   | Al.Ast.FrameE (Some e1, e2) ->
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
-      sprintf "the activation of %s with arity %s" se2 se1 
+      sprintf "the activation of %s with arity %s" se2 se1
   | Al.Ast.ContE e ->
       let se = render_expr env e in
       sprintf "the continuation of %s" se
@@ -381,7 +381,7 @@ and render_expr' env expr =
   | _ ->
       let se = Al.Print.string_of_expr expr in
       let msg = sprintf "%s was not properly handled\n" se in
-      Util.Source.error expr.at "prose backend error: " msg 
+      Util.Error.error expr.at "prose backend error: " msg
 
 and render_path env path =
   match path.it with
@@ -392,7 +392,7 @@ and render_path env path =
   | Al.Ast.SliceP (e1, e2) ->
       let se1 = render_expr env e1 in
       let se2 = render_expr env e2 in
-      sprintf "the slice from %s to %s" se1 se2 
+      sprintf "the slice from %s to %s" se1 se2
   | Al.Ast.DotP kwd ->
       sprintf "the field %s" (render_kwd env kwd)
 
@@ -495,7 +495,7 @@ let rec render_al_instr env algoname index depth instr =
         (repeat indent depth ^ or_index)
         (render_al_instrs env algoname (depth + 1) il2)
   | Al.Ast.AssertI c ->
-      let vref = 
+      let vref =
         if Macro.find_section env.macro ("valid-" ^ algoname) then
           ":ref:`validation <valid-" ^ algoname ^">`"
         else

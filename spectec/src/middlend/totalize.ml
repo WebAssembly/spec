@@ -20,7 +20,7 @@ open Il.Ast
 
 (* Errors *)
 
-let _error at msg = Source.error at "totality" msg
+let _error at msg = Error.error at "totality" msg
 
 (* Environment *)
 

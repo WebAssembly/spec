@@ -4,6 +4,11 @@ open Source
 open El.Ast
 
 
+(* Errors *)
+
+let error at msg = Error.error at "syntax" msg
+
+
 (* Position handling *)
 
 let position_to_pos position =
@@ -50,7 +55,7 @@ let as_alt_sym sym =
 
 let check_varid_bind id =
   if id.it = (El.Convert.strip_var_suffix id).it then id else
-    Source.error id.at "syntax" "invalid identifer suffix in binding position"
+    error id.at "invalid identifer suffix in binding position"
 
 
 (* Parentheses Role etc *)
@@ -374,7 +379,7 @@ deftyp_ :
                 (Elem t)::y1, y2, Some t.at
               | _ ->
                 let at = Option.value at ~default:t.at in
-                Source.error at "syntax" "misplaced type";
+                error at "misplaced type";
           ) y ([], [], None)
       in CaseT (x, y1, y2, z) }
   | nl_bar_list1(enumtyp(enum1), enumtyp(arith)) { RangeT $1 }
@@ -558,17 +563,17 @@ arith_prim_ :
   | LPAREN arith_bin STAR RPAREN
     { (* HACK: to allow "(s*)" as arithmetic expression. *)
       if not (is_post_exp $2) then
-        Source.error (at $loc($3)) "syntax" "misplaced token";
+        error (at $loc($3)) "misplaced token";
       IterE ($2, List) }
   | LPAREN arith_bin PLUS RPAREN
     { (* HACK: to allow "(s+)" as arithmetic expression. *)
       if not (is_post_exp $2) then
-        Source.error (at $loc($3)) "syntax" "misplaced token";
+        error (at $loc($3)) "misplaced token";
       IterE ($2, List1) }
   | LPAREN arith_bin QUEST RPAREN
     { (* HACK: to allow "(s?)" as arithmetic expression. *)
       if not (is_post_exp $2) then
-        Source.error (at $loc($3)) "syntax" "misplaced token";
+        error (at $loc($3)) "misplaced token";
       IterE ($2, Opt) }
   | DOLLAR LPAREN exp RPAREN { $3.it }
 
@@ -711,7 +716,7 @@ param_ :
   | varid_bind_with_suffix COLON typ { ExpP ($1, $3) }
   | typ
     { let id =
-        try El.Convert.varid_of_typ $1 with Source.Error _ -> "" $ $sloc
+        try El.Convert.varid_of_typ $1 with Error.Error _ -> "" $ $sloc
       in ExpP (id, $1) }
   | SYNTAX varid_bind { TypP $2 }
   | GRAMMAR gramid COLON typ { GramP ($2, $4) }

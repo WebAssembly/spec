@@ -13,7 +13,9 @@ module Map = Map.Make (String)
 
 (* Errors *)
 
-let error at msg = Source.error at "type" msg
+exception Error = Error.Error
+
+let error at msg = Error.error at "type" msg
 
 let error_atom at atom t msg =
   error at (msg ^ " `" ^ string_of_atom atom ^ "` in type `" ^ string_of_typ t ^ "`")
@@ -732,7 +734,7 @@ and infer_exp' env e : Il.exp' * typ =
   | VarE (id, args) ->
     if args <> [] then
       (* Args may only occur due to syntactic overloading with types *)
-      Source.error e.at "syntax" "malformed expression";
+      Error.error e.at "syntax" "malformed expression";
     let t =
       if bound env.vars id then
         find "variable" env.vars id
@@ -874,7 +876,7 @@ and elab_exp env e t : Il.exp =
   try
     let e' = elab_exp' env e t in
     e' $$ e.at % elab_typ env t
-  with Source.Error _ when is_notation_typ env t ->
+  with Error _ when is_notation_typ env t ->
     elab_exp_notation env (expand_id env t) e (as_notation_typ "" env Check t e.at) t
 
 and elab_exp' env e t : Il.exp' =
@@ -1111,7 +1113,7 @@ and elab_exp_notation' env tid e t : Il.exp list * Subst.t =
       let es1' = [cast_empty "omitted sequence tail" env t1 e.at (!!!env tid t1)] in
       let es2', s2 = elab_exp_notation' env tid e (SeqT ts2 $ t.at) in
       es1' @ es2', s2
-    with Source.Error _ ->
+    with Error _ ->
       (*
       Printf.eprintf "[backtrack %s] %s  :  %s\n%!"
         (string_of_region e.at) (string_of_exp e) (string_of_typ t);

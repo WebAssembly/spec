@@ -15,7 +15,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "option projection" msg
+let error at msg = Error.error at "option projection" msg
 
 (* We pull out fresh variables and equating side conditions. *)
 

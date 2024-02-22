@@ -20,7 +20,7 @@ open Il.Ast
 
 (* Errors *)
 
-let error at msg = Source.error at "wildcard elimination" msg
+let error at msg = Error.error at "wildcard elimination" msg
 
 (* Environment
 

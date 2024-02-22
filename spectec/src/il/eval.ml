@@ -69,7 +69,7 @@ and reduce_typ_app env id args at : deftyp' option =
 and reduce_typ_app' env id args at = function
   | [] ->
     if !assume_coherent_matches then None else
-    Source.error at "validation"
+    Error.error at "validation"
       ("undefined instance of partial type `" ^ id.it ^ "`")
   | {it = InstD (_binds, args', dt); _}::insts' ->
     Debug.(log "il.reduce_typ_app'"
@@ -338,7 +338,7 @@ and reduce_arg env a : arg =
 and reduce_exp_call env id args at = function
   | [] ->
     if !assume_coherent_matches then None else
-    Source.error at "validation"
+    Error.error at "validation"
       ("undefined call to partial function `$" ^ id.it ^ "`")
   | {it = DefD (_binds, args', e, prems); _}::clauses' ->
     Debug.(log "il.reduce_exp_call"

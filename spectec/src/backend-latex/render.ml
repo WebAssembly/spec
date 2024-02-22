@@ -7,7 +7,7 @@ open Config
 
 (* Errors *)
 
-let error at msg = Source.error at "latex generation" msg
+let error at msg = Error.error at "latex generation" msg
 
 
 (* Environment *)

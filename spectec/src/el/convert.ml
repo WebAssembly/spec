@@ -2,7 +2,7 @@ open Util
 open Source
 open Ast
 
-let error at msg = Source.error at "syntax" msg
+let error at msg = Error.error at "syntax" msg
 
 
 let filter_nl xs = List.filter_map (function Nl -> None | Elem x -> Some x) xs

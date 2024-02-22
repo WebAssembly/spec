@@ -72,7 +72,7 @@ let rec reduce_typ env t : typ =
     | Some t' ->
 (* TODO: renable?
       if id'.it <> id.it then
-        Source.error id.at "syntax" "identifer suffix encountered during reduction";
+        Error.error id.at "syntax" "identifer suffix encountered during reduction";
 *)
       t'
     | None -> VarT (id, args') $ t.at
@@ -94,7 +94,7 @@ and reduce_typ_app env id args at = function
     if !assume_coherent_matches then None else
     let args = if args = [] then "" else
       "(" ^ String.concat ", " (List.map Print.string_of_arg args) ^ ")" in
-    Source.error at "type"
+    Error.error at "type"
       ("undefined instance of partial syntax type definition: `" ^ id.it ^ args ^ "`")
   | (args', t)::insts' ->
     Debug.(log "el.reduce_typ_app"
@@ -335,7 +335,7 @@ and reduce_exp_call env id args at = function
     if !assume_coherent_matches then None else
     let args = if args = [] then "" else
       "(" ^ String.concat ", " (List.map Print.string_of_arg args) ^ ")" in
-    Source.error at "type"
+    Error.error at "type"
       ("undefined call to partial function: `$" ^ id.it ^ args ^ "`")
   | (args', e, prems)::clauses' ->
     match match_list match_arg env Subst.empty args args' with
@@ -705,7 +705,7 @@ and sub_typ env t1 t2 =
         equiv_typ env t1 t2 && Eq.eq_nl_list Eq.eq_prem prems1 prems2
       | None -> false
     ) tcs1
-  | TupT ts1, TupT ts2 
+  | TupT ts1, TupT ts2
   | SeqT ts1, SeqT ts2 ->
     List.length ts1 = List.length ts2 && List.for_all2 (sub_typ env) ts1 ts2
   | _, _ -> equiv_typ env t1 t2

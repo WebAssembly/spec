@@ -7,7 +7,7 @@ open Convert
 
 (* Errors *)
 
-let error at msg = Source.error at "multiplicity" msg
+let error at msg = Error.error at "multiplicity" msg
 
 
 (* Environment *)
